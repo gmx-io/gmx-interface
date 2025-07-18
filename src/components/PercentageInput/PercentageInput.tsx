@@ -116,7 +116,7 @@ export default function PercentageInput({
 
   return (
     <TooltipWithPortal
-      disableHandleStyle
+      styleType="none"
       disabled={!error || isPanelVisible}
       renderContent={() => <div>{error}</div>}
       position={tooltipPosition}

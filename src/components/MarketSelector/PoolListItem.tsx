@@ -91,7 +91,7 @@ export function PoolListItem(props: {
             className="TokenSelector-tooltip"
             handle={<div className="TokenSelector-tooltip-backing" />}
             position={isInFirstHalf ? "bottom" : "top"}
-            disableHandleStyle
+            styleType="none"
             closeOnDoubleClick
             fitHandleWidth
             content={state.message}

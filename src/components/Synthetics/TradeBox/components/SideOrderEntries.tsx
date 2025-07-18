@@ -105,7 +105,7 @@ function SideOrderEntry({
         content={priceError}
         tooltipClassName="!min-w-[25rem]"
         position="top-end"
-        disableHandleStyle
+        styleType="none"
       >
         <SuggestionInput
           label="$"
@@ -123,7 +123,7 @@ function SideOrderEntry({
             content={sizeTooltipMsg}
             tooltipClassName="!min-w-[25rem]"
             position="top-end"
-            disableHandleStyle
+            styleType="none"
           >
             <SuggestionInput
               isError={!!percentageError}
@@ -143,7 +143,7 @@ function SideOrderEntry({
           content={sizeTooltipMsg}
           tooltipClassName="!min-w-[25rem]"
           position="top-end"
-          disableHandleStyle
+          styleType="none"
         >
           <SuggestionInput
             isError={!!sizeError}

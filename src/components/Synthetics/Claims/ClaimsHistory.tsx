@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import formatDate from "date-fns/format";
-import { useCallback, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 
 import { getExplorerUrl } from "config/chains";
 import { CLAIMS_HISTORY_PER_PAGE } from "config/ui";
@@ -14,7 +14,7 @@ import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { formatTokenAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 
-import Button from "components/Button/Button";
+import { HistoryControl } from "components/HistoryControl/HistoryControl";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Referrals/usePagination";
 import { ClaimsHistorySkeleton } from "components/Skeleton/Skeleton";
@@ -23,7 +23,8 @@ import { MarketFilter } from "components/Synthetics/TableMarketFilter/MarketFilt
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
-import downloadIcon from "img/ic_download_simple.svg";
+import CalendarIcon from "img/ic_calendar.svg?react";
+import DownloadIcon from "img/ic_download2.svg?react";
 
 import { claimCollateralEventTitles } from "./ClaimHistoryRow/ClaimCollateralHistoryRow";
 import { claimFundingFeeEventTitles } from "./ClaimHistoryRow/ClaimFundingFeesHistoryRow";
@@ -35,7 +36,7 @@ import "./ClaimsHistory.scss";
 
 const CLAIMS_HISTORY_PREFETCH_SIZE = 100;
 
-export function ClaimsHistory() {
+export const useClaimsHistoryState = (): ClaimsHistoryProps & { controls: ReactNode } => {
   const chainId = useSelector(selectChainId);
   const account = useAccount();
 
@@ -83,71 +84,110 @@ export function ClaimsHistory() {
 
   const handleCsvDownload = useDownloadAsCsv(claimActions);
 
+  const controls = (
+    <div className="flex">
+      <DateRangeSelect
+        handle={<HistoryControl icon={<CalendarIcon />} label={<Trans>All time</Trans>} />}
+        startDate={startDate}
+        endDate={endDate}
+        onChange={setDateRange}
+      />
+      <HistoryControl icon={<DownloadIcon />} label={<Trans>CSV</Trans>} onClick={handleCsvDownload} />
+    </div>
+  );
+
+  return {
+    isLoading,
+    isEmpty,
+    hasFilters,
+    eventNameFilter,
+    setEventNameFilter,
+    marketAddressesFilter,
+    setMarketAddressesFilter,
+    currentPage,
+    setCurrentPage,
+    pageCount,
+    currentPageData,
+    controls,
+  };
+};
+
+export type ClaimsHistoryProps = {
+  isLoading: boolean;
+  isEmpty: boolean;
+  hasFilters: boolean;
+  eventNameFilter: string[];
+  setEventNameFilter: (eventNameFilter: string[]) => void;
+  marketAddressesFilter: string[];
+  setMarketAddressesFilter: (marketAddressesFilter: string[]) => void;
+  currentPage: number;
+  setCurrentPage: (currentPage: number) => void;
+  pageCount: number;
+  currentPageData: ClaimAction[];
+};
+
+export function ClaimsHistory({
+  isLoading,
+  isEmpty,
+  hasFilters,
+  eventNameFilter,
+  setEventNameFilter,
+  marketAddressesFilter,
+  setMarketAddressesFilter,
+  currentPage,
+  setCurrentPage,
+  pageCount,
+  currentPageData,
+}: ClaimsHistoryProps) {
   return (
-    <>
-      <div className="App-box">
-        <div className="ClaimsHistory-controls">
-          <div>
-            <Trans>Claims History</Trans>
-          </div>
-          <div className="ClaimsHistory-controls-right">
-            <div className="ClaimsHistory-filters">
-              <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
-            </div>
-            <Button variant="secondary" imgSrc={downloadIcon} onClick={handleCsvDownload}>
-              CSV
-            </Button>
-          </div>
-        </div>
+    <div className="App-box">
+      <TableScrollFadeContainer>
+        <table className="ClaimsHistory-table">
+          <colgroup>
+            <col className="ClaimsHistory-action-column" />
+            <col className="ClaimsHistory-market-column" />
+            <col className="ClaimsHistory-size-column" />
+          </colgroup>
+          <thead>
+            <TableTheadTr bordered>
+              <TableTh>
+                <ActionFilter value={eventNameFilter} onChange={setEventNameFilter} />
+              </TableTh>
+              <TableTh>
+                <MarketFilter excludeSpotOnly value={marketAddressesFilter} onChange={setMarketAddressesFilter} />
+              </TableTh>
+              <TableTh className="ClaimsHistory-price-header">
+                <Trans>Size</Trans>
+              </TableTh>
+            </TableTheadTr>
+          </thead>
+          <tbody>
+            {isLoading ? (
+              <ClaimsHistorySkeleton />
+            ) : (
+              currentPageData.map((claimAction) => <ClaimHistoryRow key={claimAction.id} claimAction={claimAction} />)
+            )}
+            {isEmpty && !hasFilters && (
+              <TableTr hoverable={false} bordered={false}>
+                <TableTd colSpan={3} className="text-slate-100">
+                  <Trans>No claims yet</Trans>
+                </TableTd>
+              </TableTr>
+            )}
 
-        <TableScrollFadeContainer>
-          <table className="ClaimsHistory-table">
-            <colgroup>
-              <col className="ClaimsHistory-action-column" />
-              <col className="ClaimsHistory-market-column" />
-              <col className="ClaimsHistory-size-column" />
-            </colgroup>
-            <thead>
-              <TableTheadTr bordered>
-                <TableTh>
-                  <ActionFilter value={eventNameFilter} onChange={setEventNameFilter} />
-                </TableTh>
-                <TableTh>
-                  <MarketFilter excludeSpotOnly value={marketAddressesFilter} onChange={setMarketAddressesFilter} />
-                </TableTh>
-                <TableTh className="ClaimsHistory-price-header">
-                  <Trans>Size</Trans>
-                </TableTh>
-              </TableTheadTr>
-            </thead>
-            <tbody>
-              {isLoading ? (
-                <ClaimsHistorySkeleton />
-              ) : (
-                currentPageData.map((claimAction) => <ClaimHistoryRow key={claimAction.id} claimAction={claimAction} />)
-              )}
-              {isEmpty && !hasFilters && (
-                <TableTr hoverable={false} bordered={false}>
-                  <TableTd colSpan={3} className="text-slate-100">
-                    <Trans>No claims yet</Trans>
-                  </TableTd>
-                </TableTr>
-              )}
+            {isEmpty && hasFilters && (
+              <TableTr hoverable={false} bordered={false}>
+                <TableTd colSpan={3} className="text-slate-100">
+                  <Trans>No claims match the selected filters</Trans>
+                </TableTd>
+              </TableTr>
+            )}
+          </tbody>
+        </table>
+      </TableScrollFadeContainer>
 
-              {isEmpty && hasFilters && (
-                <TableTr hoverable={false} bordered={false}>
-                  <TableTd colSpan={3} className="text-slate-100">
-                    <Trans>No claims match the selected filters</Trans>
-                  </TableTd>
-                </TableTr>
-              )}
-            </tbody>
-          </table>
-        </TableScrollFadeContainer>
-
-        <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
-      </div>
-    </>
+      <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
+    </div>
   );
 }
 

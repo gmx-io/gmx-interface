@@ -66,7 +66,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
 
       return (
         <Tooltip
-          disableHandleStyle
+          styleType="none"
           handleClassName="cursor-help"
           handle={formattedMarketNames}
           renderContent={() => {
@@ -92,7 +92,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
       const indexName = getMarketIndexName(claimAction.markets[0]);
       return (
         <TooltipWithPortal
-          disableHandleStyle
+          styleType="none"
           handleClassName="cursor-help *:cursor-auto"
           handle={
             <MarketWithDirectionLabel
@@ -205,7 +205,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
     <TableTr>
       <TableTd>
         <div className="flex">
-          <div className="ClaimHistoryRow-action-handle">{_(eventTitleDescriptor)}</div>
+          <div className="ClaimHistoryRow-action-handle font-medium">{_(eventTitleDescriptor)}</div>
           <ExternalLink
             className="ClaimHistoryRow-external-link ml-5"
             href={`${getExplorerUrl(chainId)}tx/${claimAction.transaction.hash}`}
@@ -214,14 +214,18 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
           </ExternalLink>
         </div>
         <TooltipWithPortal
-          disableHandleStyle
+          styleType="none"
           handle={<span className="ClaimHistoryRow-time muted">{formattedTimestamp}</span>}
           tooltipClassName="ClaimHistoryRow-tooltip-portal"
           renderContent={renderIsoTimestamp}
         />
       </TableTd>
-      <TableTd>{marketContent}</TableTd>
-      <TableTd>{sizeContent}</TableTd>
+      <TableTd>
+        <span className="font-medium">{marketContent}</span>
+      </TableTd>
+      <TableTd>
+        <span className="font-medium">{sizeContent}</span>
+      </TableTd>
     </TableTr>
   );
 }

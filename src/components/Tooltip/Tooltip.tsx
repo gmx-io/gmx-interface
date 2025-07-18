@@ -31,6 +31,7 @@ import { DEFAULT_TOOLTIP_POSITION, TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } fro
 import { usePrevious } from "lib/usePrevious";
 
 import InfoIcon from "img/ic_info_circle.svg?react";
+import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 
 import "./Tooltip.scss";
 
@@ -73,7 +74,7 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
   fitHandleWidth?: boolean;
   closeOnDoubleClick?: boolean;
 
-  styleType?: "icon" | "underline" | "none";
+  styleType?: "icon" | "iconStroke" | "underline" | "none";
 };
 
 export type TooltipProps<T extends ElementType | undefined> = InnerTooltipProps<T> &
@@ -256,6 +257,7 @@ export default function Tooltip<T extends ElementType>({
             <>{handle ?? children}</>
           )}
           {styleType === "icon" && <InfoIcon className="h-16 w-16" />}
+          {styleType === "iconStroke" && <InfoIconStroke className="h-16 w-16" />}
         </div>
       </span>
       {visible && withPortal && <FloatingPortal>{tooltipContent}</FloatingPortal>}

@@ -40,6 +40,7 @@ export const LOCALE_DATE_LOCALE_MAP: Record<keyof typeof locales, DateLocale> = 
 };
 
 type Props = {
+  handle?: React.ReactNode;
   startDate?: Date;
   endDate?: Date;
   onChange: (date: [Date | undefined, Date | undefined]) => void;
@@ -109,7 +110,7 @@ const PRESET_LABELS: Record<PresetPeriod, MessageDescriptor> = {
 
 const DATE_RANGE_SELECT_PRESETS: PresetPeriod[] = ["days7", "days30", "days90", "days365", "allTime"];
 
-export function DateRangeSelect({ startDate, endDate, onChange, handleClassName }: Props) {
+export function DateRangeSelect({ startDate, endDate, onChange, handleClassName, handle }: Props) {
   const rangeState = useMemo<[Range]>(
     () => [{ key: "selection", startDate, endDate, color: endDate && startDate ? RANGE_COLORS[0] : "transparent" }],
     [endDate, startDate]
@@ -179,16 +180,22 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
   return (
     <>
       <Popover as="div" className="DateRangeSelect-anchor" ref={refs.setReference}>
-        <Popover.Button
-          as={Button}
-          className={handleClassName}
-          variant="secondary"
-          imgSrc={calendarIcon}
-          refName="buttonRef"
-          slim
-        >
-          {buttonText}
-        </Popover.Button>
+        {handle ? (
+          <Popover.Button as="div" className={handleClassName} refName="buttonRef">
+            {handle}
+          </Popover.Button>
+        ) : (
+          <Popover.Button
+            as={Button}
+            className={handleClassName}
+            variant="secondary"
+            imgSrc={calendarIcon}
+            refName="buttonRef"
+            slim
+          >
+            {buttonText}
+          </Popover.Button>
+        )}
         <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>
           <div className="DateRangeSelect-common-items">
             {DATE_RANGE_SELECT_PRESETS.map((preset) => (

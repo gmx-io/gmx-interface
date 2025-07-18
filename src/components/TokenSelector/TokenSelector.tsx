@@ -258,7 +258,7 @@ export default function TokenSelector(props: Props) {
                     className="TokenSelector-tooltip"
                     handle={<div className="TokenSelector-tooltip-backing" />}
                     position={tokenIndex < filteredTokens.length / 2 ? "bottom" : "top"}
-                    disableHandleStyle
+                    styleType="none"
                     closeOnDoubleClick
                     fitHandleWidth
                     renderContent={() => tokenState.message}

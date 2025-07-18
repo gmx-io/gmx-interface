@@ -22,11 +22,11 @@ import {
   usePositionsV1,
 } from "pages/Actions/ActionsV1/ActionsV1";
 
-import { ClaimsHistory } from "components/Synthetics/Claims/ClaimsHistory";
+import { ClaimsHistory, useClaimsHistoryState } from "components/Synthetics/Claims/ClaimsHistory";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
-import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
+import { TradeHistory, useTradeHistoryState } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tabs from "components/Tabs/Tabs";
 
 enum TabKey {
@@ -149,10 +149,28 @@ export function HistoricalLists({ chainId, account }: Props) {
     [tabLabels]
   );
 
+  const tradeHistoryState = useTradeHistoryState({
+    account,
+    hideDashboardLink: true,
+  });
+
+  const { controls: claimsHistoryControls, ...claimsHistoryProps } = useClaimsHistoryState();
+
   return (
     <div>
       <div className="py-10">
-        <Tabs options={tabsOptions} selectedValue={tabKey} onChange={setTabKey} type="inline" />
+        <Tabs
+          options={tabsOptions}
+          selectedValue={tabKey}
+          onChange={setTabKey}
+          type="inline"
+          rightContent={
+            <>
+              {tabKey === TabKey.Trades ? tradeHistoryState.controls : undefined}
+              {tabKey === TabKey.Claims ? claimsHistoryControls : undefined}
+            </>
+          }
+        />
       </div>
 
       {tabKey === TabKey.Positions && (
@@ -178,8 +196,8 @@ export function HistoricalLists({ chainId, account }: Props) {
           setOrderTypesFilter={setOrderTypesFilter}
         />
       )}
-      {tabKey === TabKey.Trades && <TradeHistory account={account} hideDashboardLink />}
-      {tabKey === TabKey.Claims && <ClaimsHistory />}
+      {tabKey === TabKey.Trades && <TradeHistory {...tradeHistoryState} />}
+      {tabKey === TabKey.Claims && <ClaimsHistory {...claimsHistoryProps} />}
     </div>
   );
 }

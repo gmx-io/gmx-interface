@@ -5,8 +5,8 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
 
 .button {
   cursor: pointer;
-  font-size: var(--font-size-body-medium);
-  line-height: var(--line-height-body-medium);
+  font-size: 13px;
+  line-height: 16.25px;
   display: inline-flex;
   align-items: center;
   font-weight: 500;
@@ -150,6 +150,6 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
   }
 
   &.slim {
-    padding: 11px 16px;
+    padding: 8px 12px;
   }
 }

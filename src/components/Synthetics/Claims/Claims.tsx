@@ -8,7 +8,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useClaimCollateralHistory } from "domain/synthetics/claimHistory";
 
 import { ClaimableCard } from "./ClaimableCard";
-import { ClaimsHistory } from "./ClaimsHistory";
+import { ClaimsHistory, ClaimsHistoryProps } from "./ClaimsHistory";
 import { SettleAccruedCard } from "./SettleAccruedCard";
 import { AccruedPositionPriceImpactRebateModal } from "../AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal";
 import { ClaimablePositionPriceImpactRebateModal } from "../ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal";
@@ -19,19 +19,18 @@ import "./Claims.scss";
 
 const CLAIMS_HISTORY_PREFETCH_SIZE = 100;
 
-const MARGIN_RIGHT = { marginRight: 4 };
-const MARGIN_LEFT = { marginLeft: 4 };
-
 export function Claims({
   isSettling,
   setIsSettling,
   setPendingTxns,
   allowedSlippage,
+  claimsHistoryProps,
 }: {
   isSettling: boolean;
   setIsSettling: (v: boolean) => void;
   setPendingTxns: (txns: any) => void;
   allowedSlippage: number;
+  claimsHistoryProps: ClaimsHistoryProps;
 }) {
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
@@ -108,19 +107,17 @@ export function Claims({
             <SettleAccruedCard
               onSettleClick={handleSettleClick}
               onAccruedPositionPriceImpactRebateClick={handleAccruedPositionPriceImpactRebateClick}
-              style={isMobile ? undefined : MARGIN_RIGHT}
             />
           )}
           {account && !isLoading && (
             <ClaimableCard
               onClaimClick={handleClaimClick}
               onClaimablePositionPriceImpactFeesClick={handleClaimablePositionPriceImpactFeesClick}
-              style={isMobile ? undefined : MARGIN_LEFT}
             />
           )}
         </div>
 
-        <ClaimsHistory />
+        <ClaimsHistory {...claimsHistoryProps} />
       </div>
     </>
   );

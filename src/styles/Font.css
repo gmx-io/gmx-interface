@@ -71,6 +71,7 @@
   src:
     local(""),
     url("fonts/tthoves/tt-hoves-pro-mono-trial-regular.ttf") format("truetype");
+  font-variant-numeric: tabular-nums lining-nums;
   /* apply this font only for numbers */
   unicode-range: U+31-39;
 }
@@ -88,18 +89,6 @@
 @font-face {
   font-family: "TTHoves";
   font-style: normal;
-  font-weight: 300;
-  src: url("fonts/tthoves/tt-hoves-pro-mono-trial-light.ttf");
-  src:
-    local(""),
-    url("fonts/tthoves/tt-hoves-pro-mono-trial-light.ttf") format("truetype");
-  /* apply this font only for numbers */
-  unicode-range: U+31-39;
-}
-
-@font-face {
-  font-family: "TTHoves";
-  font-style: normal;
   font-weight: 500;
   src: url("fonts/tthoves/tt-hoves-pro-trial-medium.ttf");
   src:
@@ -110,50 +99,22 @@
 @font-face {
   font-family: "TTHoves";
   font-style: normal;
-  font-weight: bold;
-  src: url("fonts/tthoves/tt-hoves-pro-trial-bold.ttf");
-  src:
-    local(""),
-    url("fonts/tthoves/tt-hoves-pro-trial-bold.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "TTHovesMono";
-  font-style: normal;
-  font-weight: 400;
-  src: url("fonts/tthoves/tt-hoves-pro-mono-trial-regular.ttf");
-  src:
-    local(""),
-    url("fonts/tthoves/tt-hoves-pro-mono-trial-regular.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "TTHovesMono";
-  font-style: normal;
-  font-weight: 300;
-  src: url("fonts/tthoves/tt-hoves-pro-mono-trial-light.ttf");
-  src:
-    local(""),
-    url("fonts/tthoves/tt-hoves-pro-mono-trial-light.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "TTHovesMono";
-  font-style: normal;
   font-weight: 500;
   src: url("fonts/tthoves/tt-hoves-pro-mono-trial-medium.ttf");
   src:
     local(""),
     url("fonts/tthoves/tt-hoves-pro-mono-trial-medium.ttf") format("truetype");
+  font-variant-numeric: tabular-nums lining-nums;
+  /* apply this font only for numbers */
+  unicode-range: U+31-39;
 }
 
 @font-face {
-  font-family: "TTHovesMono";
-  src: url("fonts/tthoves/tt-hoves-pro-trial-regular.ttf");
+  font-family: "TTHoves";
+  font-style: normal;
+  font-weight: bold;
+  src: url("fonts/tthoves/tt-hoves-pro-trial-bold.ttf");
   src:
     local(""),
-    url("fonts/tthoves/tt-hoves-pro-trial-regular.ttf") format("truetype");
-
-  /* apply this font for commas and full-stops */
-  unicode-range: U+002C, U+002E;
+    url("fonts/tthoves/tt-hoves-pro-trial-bold.ttf") format("truetype");
 }

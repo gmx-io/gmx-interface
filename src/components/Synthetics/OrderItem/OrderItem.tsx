@@ -107,7 +107,7 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
     if (showDebugValues) {
       return (
         <Tooltip
-          disableHandleStyle
+          styleType="none"
           handle={<TitleWithIcon bordered order={order} />}
           position="bottom-start"
           content={
@@ -174,7 +174,6 @@ function Title({ order, showDebugValues }: { order: OrderInfo; showDebugValues: 
 
   return (
     <Tooltip
-      disableHandleStyle
       handle={<TitleWithIcon bordered order={order} />}
       position="bottom-start"
       tooltipClassName={isTwapOrder(order) ? "!p-0" : undefined}
@@ -585,10 +584,32 @@ function OrderItemLarge({
                 ))}
               </>
             }
-            disableHandleStyle
+            styleType="none"
           />
         ) : (
-          <OrderItemMarket indexName={indexName} isLong={order.isLong} tokenSymbol={tokenSymbol} poolName={poolName} />
+          <Tooltip
+            handle={
+              <MarketWithDirectionLabel
+                bordered
+                indexName={indexName}
+                isLong={order.isLong}
+                tokenSymbol={tokenSymbol}
+              />
+            }
+            content={
+              <StatsTooltipRow
+                label={t`Market`}
+                value={
+                  <div className="flex items-center">
+                    <span>{indexName && indexName}</span>
+                    <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
+                  </div>
+                }
+                showDollar={false}
+              />
+            }
+            styleType="none"
+          />
         )}
       </TableTd>
       <TableTd>
@@ -820,7 +841,7 @@ function OrderItemTypeLabel({ order }: { order: OrderInfo }) {
 
   return (
     <Tooltip
-      disableHandleStyle
+      styleType="none"
       handle={
         <span
           className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
@@ -850,40 +871,5 @@ function OrderItemTypeLabel({ order }: { order: OrderInfo }) {
         ) : null
       }
     />
-  );
-}
-
-function OrderItemMarket({
-  indexName,
-  isLong,
-  tokenSymbol,
-  poolName,
-}: {
-  indexName: string;
-  isLong: boolean;
-  tokenSymbol: string;
-  poolName: string | undefined;
-}) {
-  return (
-    <div className={cx("flex items-center gap-4")}>
-      <TokenIcon className="size-20 !align-[-3px]" displaySize={20} symbol={tokenSymbol} />
-      <Tooltip
-        handle={<span className="font-medium">{indexName}</span>}
-        content={
-          <StatsTooltipRow
-            label={t`Market`}
-            value={
-              <div className="flex items-center">
-                <span>{indexName && indexName}</span>
-                <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
-              </div>
-            }
-            showDollar={false}
-          />
-        }
-        disableHandleStyle
-      />
-      <span className={cx(isLong ? "text-green-500" : "text-red-500")}>{isLong ? t`Long` : t`Short`}</span>
-    </div>
   );
 }

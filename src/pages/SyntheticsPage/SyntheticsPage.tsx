@@ -58,6 +58,7 @@ import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import { NpsModal } from "components/NpsModal/NpsModal";
 import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
 import { Claims } from "components/Synthetics/Claims/Claims";
+import { useClaimsHistoryState } from "components/Synthetics/Claims/ClaimsHistory";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
@@ -66,7 +67,7 @@ import { SwapCard } from "components/Synthetics/SwapCard/SwapCard";
 import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { useIsCurtainOpen } from "components/Synthetics/TradeBox/Curtain";
 import { TradeBoxResponsiveContainer } from "components/Synthetics/TradeBox/TradeBoxResponsiveContainer";
-import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
+import { TradeHistory, useTradeHistoryState } from "components/Synthetics/TradeHistory/TradeHistory";
 import { Chart } from "components/Synthetics/TVChart/Chart";
 import { ChartHeader } from "components/Synthetics/TVChart/ChartHeader";
 import Tabs from "components/Tabs/Tabs";
@@ -83,8 +84,8 @@ enum ListSection {
 }
 
 const TAB_CLASSNAME = {
-  active: "border-b-2 border-b-blue-500",
-  regular: "border-b-2 border-b-[transparent]",
+  active: "border-b-2 border-b-blue-500 mb-[-1.5px]",
+  regular: "border-b-2 border-b-[transparent] mb-[-1.5px]",
 };
 
 export function SyntheticsPage(p: Props) {
@@ -258,6 +259,8 @@ export function SyntheticsPage(p: Props) {
     [tabLabels]
   );
 
+  const { controls: claimsHistoryControls, ...claimsHistoryProps } = useClaimsHistoryState();
+
   function renderClaims() {
     return (
       <Claims
@@ -265,6 +268,7 @@ export function SyntheticsPage(p: Props) {
         isSettling={isSettling}
         setPendingTxns={setPendingTxns}
         allowedSlippage={savedAllowedSlippage}
+        claimsHistoryProps={claimsHistoryProps}
       />
     );
   }
@@ -284,6 +288,10 @@ export function SyntheticsPage(p: Props) {
 
   useMeasureComponentMountTime({ metricType: "syntheticsPage", onlyForLocation: "#/trade" });
 
+  const tradeHistoryState = useTradeHistoryState({
+    account,
+  });
+
   return (
     <div className="flex h-full flex-col gap-8">
       <AppHeader leftContent={<ChartHeader isMobile={isMobile} />} />
@@ -299,7 +307,7 @@ export function SyntheticsPage(p: Props) {
                   selectedValue={listSection}
                   onChange={handleTabChange}
                   type="block"
-                  className="border-b border-slate-600 bg-slate-900"
+                  className="border-b-[1.5px] border-slate-600 bg-slate-900"
                   qa="exchange-list-tabs"
                   rightContent={
                     <div className="flex shrink-0 items-center gap-16 px-12">
@@ -313,15 +321,19 @@ export function SyntheticsPage(p: Props) {
                           <Plural value={selectedOrderKeys.length} one="Cancel order" other="Cancel # orders" />
                         </button>
                       )}
-                      <Checkbox
-                        isChecked={shouldShowPositionLines}
-                        setIsChecked={setShouldShowPositionLines}
-                        className={cx("muted chart-positions text-[13px]", { active: shouldShowPositionLines })}
-                      >
-                        <span className="font-medium">
-                          <Trans>Chart positions</Trans>
-                        </span>
-                      </Checkbox>
+                      {[ListSection.Positions, ListSection.Orders].includes(listSection as ListSection) && (
+                        <Checkbox
+                          isChecked={shouldShowPositionLines}
+                          setIsChecked={setShouldShowPositionLines}
+                          className={cx("muted chart-positions text-[13px]", { active: shouldShowPositionLines })}
+                        >
+                          <span className="font-medium">
+                            <Trans>Chart positions</Trans>
+                          </span>
+                        </Checkbox>
+                      )}
+                      {listSection === ListSection.Trades && tradeHistoryState.controls}
+                      {listSection === ListSection.Claims && claimsHistoryControls}
                     </div>
                   }
                 />
@@ -350,7 +362,7 @@ export function SyntheticsPage(p: Props) {
                   onCancelSelectedOrders={onCancelSelectedOrders}
                 />
               )}
-              {listSection === ListSection.Trades && <TradeHistory account={account} />}
+              {listSection === ListSection.Trades && <TradeHistory {...tradeHistoryState} />}
               {listSection === ListSection.Claims && renderClaims()}
             </div>
           )}
@@ -410,7 +422,7 @@ export function SyntheticsPage(p: Props) {
                 onCancelSelectedOrders={onCancelSelectedOrders}
               />
             )}
-            {listSection === ListSection.Trades && <TradeHistory account={account} />}
+            {listSection === ListSection.Trades && <TradeHistory {...tradeHistoryState} />}
             {listSection === ListSection.Claims && renderClaims()}
           </div>
         )}

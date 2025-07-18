@@ -540,10 +540,6 @@ msgstr ""
 msgid "Market Swap"
 msgstr "Markt-Tausch"
 
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-msgid "Trade History"
-msgstr "Handelshistorie"
-
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Tabs/NestedTab.tsx
 msgid "More"
@@ -568,10 +564,6 @@ msgstr "Du musst auf dieser Seite sein, um den Transfer zu akzeptieren. <0>Klick
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Don't show this message again for 30 days."
 msgstr "Diese Meldung 30 Tage lang nicht mehr anzeigen."
-
-#: src/components/Exchange/PositionSeller.jsx
-#~ msgid "Only market orders are available"
-#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "hide"
@@ -1152,6 +1144,11 @@ msgstr "GLP verkaufen"
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
 msgstr ""
 
+#: src/components/Synthetics/Claims/ClaimsHistory.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "CSV"
+msgstr ""
+
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Short Liq."
@@ -1661,6 +1658,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "RPnL"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
@@ -2835,10 +2836,6 @@ msgstr "Nicht genügend verfügbare Liquidität, um den Auftrag zu erfüllen. De
 msgid "Annualized data based on the past 7 days."
 msgstr ""
 
-#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-#~ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/>{botanixDisclaimer}<2/>Please try increasing max network fee buffer to {0} in <3>Settings</3>."
-#~ msgstr ""
-
 #: src/components/Exchange/OrdersToa.jsx
 #: src/components/Exchange/OrdersToa.jsx
 msgid "Enable Orders"
@@ -3783,10 +3780,6 @@ msgstr ""
 msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than -{0}, may result in failed orders if prices are volatile."
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-msgid "RPnL ($)"
-msgstr ""
-
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "There is no price impact. There is a single<0/>execution price for increasing longs or<1/>decreasing shorts for this size."
 msgstr ""
@@ -3807,10 +3800,6 @@ msgstr ""
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Impact+Fees"
 msgstr ""
-
-#: src/components/Exchange/SwapBox.jsx
-#~ msgid "There is a \"Close\" button on each position row; clicking it will display the option to set trigger orders.<0/><1/>GMX V1 position opening is permanently disabled, so it's recommended to close all V1 positions and <2>migrate to V2</2>."
-#~ msgstr ""
 
 #: src/components/TVChartContainer/constants.ts
 msgid "TP - Short Dec."
@@ -3998,7 +3987,6 @@ msgstr "Trigger-Preis für den Auftrag."
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -4829,9 +4817,11 @@ msgstr "Verfügbare Liquidität"
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr "Bei der Eröffnung der Position wird eine Momentaufnahme des USD-Wertes deines {0} Kollaterals erstellt."
 
+#: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "All time"
 msgstr "Gesamtzeit"
 
@@ -6048,10 +6038,6 @@ msgstr ""
 msgid "Min position size: {0}"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/StakeNotification.tsx
-#~ msgid "Transaction request sent"
-#~ msgstr ""
-
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/sidecarOrders/utils.ts
@@ -6912,10 +6898,6 @@ msgstr "Order bearbeiten"
 msgid "Claims"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "Stake {0}"
-#~ msgstr ""
-
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
@@ -6930,17 +6912,9 @@ msgstr "Datum"
 msgid "Buy GMX using FIAT gateways:"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/StakeNotification.tsx
-#~ msgid "{0} {fromAmount} for {toAmount}"
-#~ msgstr ""
-
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Referral code created!"
 msgstr "Referral Code erstellt!"
-
-#: src/components/Exchange/SwapBox.jsx
-#~ msgid "There is a \"Close\" button on each position row; clicking it will display the option to close positions via market orders.<0/>Trigger orders, increasing positions (market or limit), adding collateral, and swapping on GMX V1 are now disabled. You can still close existing positions using market orders.<1/>Please migrate your positions to GMX V2."
-#~ msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Price above Mark Price"
@@ -7270,7 +7244,6 @@ msgstr ""
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -8011,10 +7984,6 @@ msgstr ""
 msgid "LAST PRICE"
 msgstr ""
 
-#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-#~ msgid "Rabby Wallet is currently experiencing network fee issues on Botanix. Please try another wallet if you're using it."
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
 msgstr ""
@@ -8053,10 +8022,6 @@ msgstr "Ausführungspreis"
 #: src/components/Exchange/OrdersList.jsx
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr "Der Preis, zu dem der Auftrag ausgeführt werden kann, kann geringfügig vom Chartpreis abweichen, da Marktaufträge den Preis ändern können, Limit-/Trigger-Aufträge hingegen nicht."
-
-#: src/components/Synthetics/Claims/ClaimsHistory.tsx
-msgid "Claims History"
-msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
@@ -8326,10 +8291,6 @@ msgstr ""
 #: src/components/Referrals/TradersStats.tsx
 msgid "You will receive a {currentTierDiscount}% discount on opening and closing fees."
 msgstr ""
-
-#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "Unstake {0}"
-#~ msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"

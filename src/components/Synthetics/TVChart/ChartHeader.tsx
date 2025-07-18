@@ -131,12 +131,12 @@ function ChartHeaderInfoMobile() {
 
         <div>
           <div className="ExchangeChart-info-label mb-4">
-            <TooltipWithPortal disableHandleStyle renderContent={renderNetFeeHeaderTooltipContent}>
+            <TooltipWithPortal styleType="none" renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net Rate / 1h</Trans>
             </TooltipWithPortal>
           </div>
           <TooltipWithPortal
-            disableHandleStyle
+            styleType="none"
             as="div"
             className="inline-flex flex-row items-center gap-8"
             position="bottom-end"
@@ -310,13 +310,13 @@ function ChartHeaderInfoDesktop() {
 
         <ChartHeaderItem
           label={
-            <TooltipWithPortal disableHandleStyle renderContent={renderNetFeeHeaderTooltipContent}>
+            <TooltipWithPortal styleType="none" renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net Rate / 1h</Trans>
             </TooltipWithPortal>
           }
           value={
             <TooltipWithPortal
-              disableHandleStyle
+              styleType="none"
               as="div"
               className="Chart-header-value flex flex-row items-center gap-8"
               position="bottom-end"

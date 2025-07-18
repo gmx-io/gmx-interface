@@ -148,7 +148,7 @@ export function useChartHeaderFormattedValues() {
 
     return (
       <TooltipWithPortal
-        disableHandleStyle
+        styleType="none"
         handle={
           <span className="flex items-center justify-center gap-4">
             <LongIcon width={12} className="relative top-1 opacity-70" />${formatAmountHuman(liquidity, USD_DECIMALS)}
@@ -169,7 +169,7 @@ export function useChartHeaderFormattedValues() {
 
     return (
       <TooltipWithPortal
-        disableHandleStyle
+        styleType="none"
         handle={
           <span className="flex items-center justify-center gap-4">
             <ShortIcon width={12} className="relative opacity-70" />${formatAmountHuman(liquidity, USD_DECIMALS)}

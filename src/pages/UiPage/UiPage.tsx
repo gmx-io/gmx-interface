@@ -275,7 +275,7 @@ export default function UiPage() {
         {icons.map((icon) => (
           <Tooltip
             key={icon.src}
-            disableHandleStyle
+            styleType="none"
             as={"div"}
             className="ImageTooltip"
             closeDelay={500}
@@ -306,7 +306,7 @@ export default function UiPage() {
         {otherImages.map((src) => (
           <Tooltip
             key={src.src}
-            disableHandleStyle
+            styleType="none"
             as={"div"}
             className="ImageTooltip"
             closeDelay={500}
