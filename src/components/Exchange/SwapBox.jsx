@@ -6,27 +6,19 @@ import { BsArrowRight } from "react-icons/bs";
 import { IoMdSwap } from "react-icons/io";
 import { useHistory } from "react-router-dom";
 
-import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant, isSupportedChain } from "config/chains";
+import { ARBITRUM, getConstant } from "config/chains";
 import { getContract } from "config/contracts";
-import { isDevelopment } from "config/env";
 import {
-  USD_DECIMALS,
+  BASIS_POINTS_DIVISOR,
   BASIS_POINTS_DIVISOR_BIGINT,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
-  BASIS_POINTS_DIVISOR,
-  MAX_ALLOWED_LEVERAGE,
+  USD_DECIMALS,
 } from "config/factors";
-import { get1InchSwapUrl } from "config/links";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import * as Api from "domain/legacy";
 import { useUserReferralCode } from "domain/referrals/hooks";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
-import {
-  approveTokens,
-  getMostAbundantStableToken,
-  replaceNativeTokenAddress,
-  shouldRaiseGasError,
-} from "domain/tokens";
+import { getMostAbundantStableToken, replaceNativeTokenAddress, shouldRaiseGasError } from "domain/tokens";
 import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -46,7 +38,6 @@ import {
   SWAP_ORDER_OPTIONS,
   USDG_ADDRESS,
   USDG_DECIMALS,
-  adjustForDecimals,
   calculatePositionDelta,
   getExchangeRate,
   getExchangeRateDisplay,
@@ -57,17 +48,16 @@ import {
 } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
+  PRECISION,
   bigNumberify,
   expandDecimals,
   formatAmount,
   formatAmountFree,
   limitDecimals,
   parseValue,
-  PRECISION,
 } from "lib/numbers";
 import { getLeverage } from "lib/positions/getLeverage";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { usePrevious } from "lib/usePrevious";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
@@ -89,7 +79,6 @@ import ShortIcon from "img/short.svg?react";
 import SwapIcon from "img/swap.svg?react";
 
 import ConfirmationBox from "./ConfirmationBox";
-import { ErrorCode, ErrorDisplayType } from "./constants";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import FeesTooltip from "./FeesTooltip";
 import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
@@ -167,13 +156,10 @@ export default function SwapBox(props) {
     positionRouterApproved,
     isWaitingForPluginApproval,
     approveOrderBook,
-    approvePositionRouter,
     setIsWaitingForPluginApproval,
     isWaitingForPositionRouterApproval,
     setIsWaitingForPositionRouterApproval,
     isPluginApproving,
-    isPositionRouterApproving,
-    savedShouldDisableValidationForTesting,
     minExecutionFee,
     minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
@@ -187,7 +173,6 @@ export default function SwapBox(props) {
   const [fromValue, setFromValue] = useState("");
   const [toValue, setToValue] = useState("");
   const [anchorOnFromAmount, setAnchorOnFromAmount] = useState(true);
-  const [isApproving, setIsApproving] = useState(false);
   const [isWaitingForApproval, setIsWaitingForApproval] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalError, setModalError] = useState(false);
@@ -316,8 +301,6 @@ export default function SwapBox(props) {
     tokenAddresses: [tokenAllowanceAddress].filter(Boolean),
   });
   const tokenAllowance = tokensAllowanceData?.[tokenAllowanceAddress];
-
-  const hasOutdatedUi = useHasOutdatedUi();
 
   const fromToken = getToken(chainId, fromTokenAddress);
   const toToken = getToken(chainId, toTokenAddress);
@@ -736,304 +719,6 @@ export default function SwapBox(props) {
     });
   }
 
-  const getSwapError = () => {
-    if (IS_NETWORK_DISABLED[chainId]) {
-      return [t`Swaps disabled, pending ${getChainName(chainId)} upgrade`];
-    }
-
-    if (fromTokenAddress === toTokenAddress) {
-      return [t`Select different tokens`];
-    }
-
-    if (!isMarketOrder) {
-      if ((toToken.isStable || toToken.isUsdg) && (fromToken.isStable || fromToken.isUsdg)) {
-        return [t`Select different tokens`];
-      }
-
-      if (fromToken.isNative && toToken.isWrapped) {
-        return [t`Select different tokens`];
-      }
-
-      if (toToken.isNative && fromToken.isWrapped) {
-        return [t`Select different tokens`];
-      }
-    }
-
-    if (fromAmount === undefined) {
-      return [t`Enter an amount`];
-    }
-    if (toAmount === undefined) {
-      return [t`Enter an amount`];
-    }
-
-    const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
-    if (!fromTokenInfo || fromTokenInfo.minPrice === undefined) {
-      return [t`Incorrect network`];
-    }
-    if (
-      !savedShouldDisableValidationForTesting &&
-      fromTokenInfo &&
-      fromTokenInfo.balance !== undefined &&
-      fromAmount !== undefined &&
-      fromAmount > fromTokenInfo.balance
-    ) {
-      return [t`Insufficient ${fromTokenInfo.symbol} balance`];
-    }
-
-    const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
-
-    if (!isMarketOrder) {
-      if (!triggerRatioValue || triggerRatio == 0n) {
-        return [t`Enter a price`];
-      }
-
-      const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
-      if (currentRate !== undefined && currentRate < triggerRatio) {
-        return triggerRatioInverted ? [t`Price below Mark Price`] : [t`Price above Mark Price`];
-      }
-    }
-
-    if (
-      !isWrapOrUnwrap &&
-      toToken &&
-      toTokenAddress !== USDG_ADDRESS &&
-      toTokenInfo &&
-      toTokenInfo.availableAmount !== undefined &&
-      toAmount > toTokenInfo.availableAmount
-    ) {
-      return [t`Insufficient Liquidity`];
-    }
-    if (
-      !isWrapOrUnwrap &&
-      toAmount !== undefined &&
-      toTokenInfo.bufferAmount !== undefined &&
-      toTokenInfo.poolAmount !== undefined &&
-      toTokenInfo.bufferAmount > toTokenInfo.poolAmount - toAmount
-    ) {
-      return [t`Insufficient Liquidity`];
-    }
-
-    if (
-      fromUsdMin !== undefined &&
-      fromTokenInfo.maxUsdgAmount !== undefined &&
-      fromTokenInfo.maxUsdgAmount > 0 &&
-      fromTokenInfo.usdgAmount !== undefined &&
-      fromTokenInfo.maxPrice !== undefined
-    ) {
-      const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS);
-      const nextUsdgAmount = fromTokenInfo.usdgAmount + usdgFromAmount;
-
-      if (nextUsdgAmount > fromTokenInfo.maxUsdgAmount) {
-        return [t`Insufficient liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientLiquiditySwap];
-      }
-    }
-
-    return [false];
-  };
-
-  const getLeverageError = () => {
-    if (IS_NETWORK_DISABLED[chainId]) {
-      return [t`Leverage disabled, pending ${getChainName(chainId)} upgrade`];
-    }
-    if (hasOutdatedUi) {
-      return [t`Page outdated, please refresh`];
-    }
-
-    if (toAmount === undefined) {
-      return [t`Enter an amount`];
-    }
-
-    let toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
-    if (toTokenInfo && toTokenInfo.isStable) {
-      const SWAP_OPTION_LABEL = {
-        [LONG]: "Longing",
-        [SHORT]: "Shorting",
-      };
-      return [t`${SWAP_OPTION_LABEL[swapOption]} ${toTokenInfo.symbol} not supported`];
-    }
-
-    const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
-    if (
-      !savedShouldDisableValidationForTesting &&
-      fromTokenInfo &&
-      fromTokenInfo.balance !== undefined &&
-      fromAmount !== undefined &&
-      fromAmount > fromTokenInfo.balance
-    ) {
-      return [t`Insufficient ${fromTokenInfo.symbol} balance`];
-    }
-
-    if (leverage !== undefined && leverage == 0) {
-      return [t`Enter an amount`];
-    }
-    if (!isMarketOrder && (!triggerPriceValue || triggerPriceUsd == 0n)) {
-      return [t`Enter a price`];
-    }
-
-    if (!hasExistingPosition && fromUsdMin !== undefined && fromUsdMin < expandDecimals(10, USD_DECIMALS)) {
-      return [t`Min order: 10 USD`];
-    }
-
-    if (leverage !== undefined && leverage < 1.1 * BASIS_POINTS_DIVISOR) {
-      return [t`Min leverage: 1.1x`];
-    }
-
-    if (leverage !== undefined && leverage > MAX_ALLOWED_LEVERAGE) {
-      return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
-    }
-
-    if (!isMarketOrder && entryMarkPrice && triggerPriceUsd && !savedShouldDisableValidationForTesting) {
-      if (isLong && entryMarkPrice < triggerPriceUsd) {
-        return [t`Price above Mark Price`];
-      }
-      if (!isLong && entryMarkPrice > triggerPriceUsd) {
-        return [t`Price below Mark Price`];
-      }
-    }
-
-    if (isLong) {
-      let requiredAmount = toAmount;
-      if (fromTokenAddress !== toTokenAddress) {
-        const { amount: swapAmount } = getNextToAmount(
-          chainId,
-          fromAmount,
-          fromTokenAddress,
-          toTokenAddress,
-          infoTokens,
-          undefined,
-          undefined,
-          usdgSupply,
-          totalTokenWeights,
-          isSwap
-        );
-        requiredAmount = requiredAmount + swapAmount;
-
-        if (toToken && toTokenAddress !== USDG_ADDRESS) {
-          if (toTokenInfo.availableAmount === undefined) {
-            return [t`Liquidity data not loaded`];
-          }
-          if (toTokenInfo.availableAmount !== undefined && requiredAmount > toTokenInfo.availableAmount) {
-            return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientLiquidityLeverage];
-          }
-        }
-
-        if (
-          toTokenInfo.poolAmount !== undefined &&
-          toTokenInfo.bufferAmount !== undefined &&
-          toTokenInfo.bufferAmount > toTokenInfo.poolAmount - swapAmount
-        ) {
-          return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientLiquidityLeverage];
-        }
-
-        if (
-          fromUsdMin !== undefined &&
-          fromTokenInfo.maxUsdgAmount !== undefined &&
-          fromTokenInfo.maxUsdgAmount > 0 &&
-          fromTokenInfo.minPrice !== undefined &&
-          fromTokenInfo.usdgAmount !== undefined
-        ) {
-          const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS);
-          const nextUsdgAmount = fromTokenInfo.usdgAmount + usdgFromAmount;
-          if (nextUsdgAmount > fromTokenInfo.maxUsdgAmount) {
-            return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.TokenPoolExceeded];
-          }
-        }
-      }
-
-      if (toTokenInfo && toTokenInfo.maxPrice !== undefined) {
-        const sizeUsd = bigMath.mulDiv(toAmount, toTokenInfo.maxPrice, expandDecimals(1, toTokenInfo.decimals));
-        if (
-          toTokenInfo.maxGlobalLongSize !== undefined &&
-          toTokenInfo.maxGlobalLongSize > 0 &&
-          toTokenInfo.maxAvailableLong !== undefined &&
-          sizeUsd > toTokenInfo.maxAvailableLong
-        ) {
-          return [t`Max ${toTokenInfo.symbol} long exceeded`];
-        }
-      }
-    }
-
-    if (isShort) {
-      let stableTokenAmount = 0n;
-      if (fromTokenAddress !== shortCollateralAddress && fromAmount !== undefined && fromAmount > 0) {
-        const { amount: nextToAmount } = getNextToAmount(
-          chainId,
-          fromAmount,
-          fromTokenAddress,
-          shortCollateralAddress,
-          infoTokens,
-          undefined,
-          undefined,
-          usdgSupply,
-          totalTokenWeights,
-          isSwap
-        );
-        stableTokenAmount = nextToAmount;
-        if (stableTokenAmount > shortCollateralToken.availableAmount) {
-          return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientCollateralIn];
-        }
-
-        if (
-          shortCollateralToken.bufferAmount !== undefined &&
-          shortCollateralToken.poolAmount !== undefined &&
-          shortCollateralToken.bufferAmount > shortCollateralToken.poolAmount - stableTokenAmount
-        ) {
-          // suggest swapping to collateralToken
-          return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientCollateralIn];
-        }
-
-        if (
-          fromTokenInfo.maxUsdgAmount !== undefined &&
-          fromTokenInfo.maxUsdgAmount > 0 &&
-          fromTokenInfo.minPrice !== undefined &&
-          fromTokenInfo.usdgAmount !== undefined
-        ) {
-          const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS);
-          const nextUsdgAmount = fromTokenInfo.usdgAmount + usdgFromAmount;
-          if (nextUsdgAmount > fromTokenInfo.maxUsdgAmount) {
-            return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.TokenPoolExceededShorts];
-          }
-        }
-      }
-      if (
-        !shortCollateralToken ||
-        !fromTokenInfo ||
-        !toTokenInfo ||
-        toTokenInfo.maxPrice === undefined ||
-        shortCollateralToken.availableAmount === undefined
-      ) {
-        return [t`Fetching token info...`];
-      }
-
-      const sizeUsd = bigMath.mulDiv(toAmount, toTokenInfo.maxPrice, expandDecimals(1, toTokenInfo.decimals));
-      const sizeTokens = bigMath.mulDiv(
-        sizeUsd,
-        expandDecimals(1, shortCollateralToken.decimals),
-        shortCollateralToken.minPrice
-      );
-
-      if (toTokenInfo.maxAvailableShort === undefined) {
-        return [t`Liquidity data not loaded`];
-      }
-
-      if (
-        toTokenInfo.maxGlobalShortSize !== undefined &&
-        toTokenInfo.maxGlobalShortSize > 0 &&
-        toTokenInfo.maxAvailableShort !== undefined &&
-        sizeUsd > toTokenInfo.maxAvailableShort
-      ) {
-        return [t`Max ${toTokenInfo.symbol} short exceeded`];
-      }
-
-      stableTokenAmount = stableTokenAmount + sizeTokens;
-      if (stableTokenAmount > shortCollateralToken.availableAmount) {
-        return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientProfitLiquidity];
-      }
-    }
-
-    return [false];
-  };
-
   const getToLabel = () => {
     if (isSwap) {
       return t`Receive`;
@@ -1042,13 +727,6 @@ export default function SwapBox(props) {
       return t`Long`;
     }
     return t`Short`;
-  };
-
-  const getError = () => {
-    if (isSwap) {
-      return getSwapError();
-    }
-    return getLeverageError();
   };
 
   const renderOrdersToa = () => {
@@ -1063,126 +741,6 @@ export default function SwapBox(props) {
         isPluginApproving={isPluginApproving}
       />
     );
-  };
-
-  const isPrimaryEnabled = () => {
-    if (IS_NETWORK_DISABLED[chainId]) {
-      return false;
-    }
-    if (isStopOrder) {
-      return true;
-    }
-    if (!active) {
-      return true;
-    }
-    const [error, errorType] = getError();
-    if (error && errorType !== ErrorDisplayType.Modal) {
-      return false;
-    }
-    if (needOrderBookApproval && isWaitingForPluginApproval) {
-      return false;
-    }
-    if ((needApproval && isWaitingForApproval) || isApproving) {
-      return false;
-    }
-    if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
-      return false;
-    }
-    if (isPositionRouterApproving) {
-      return false;
-    }
-    if (isApproving) {
-      return false;
-    }
-    if (isSubmitting) {
-      return false;
-    }
-
-    return true;
-  };
-
-  const getPrimaryText = () => {
-    if (isStopOrder) {
-      return t`Open a position`;
-    }
-    if (!active) {
-      return t`Connect Wallet`;
-    }
-    if (!isSupportedChain(chainId, isDevelopment())) {
-      return t`Incorrect Network`;
-    }
-    const [error, errorType] = getError();
-    if (error && errorType !== ErrorDisplayType.Modal) {
-      return error;
-    }
-
-    if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
-      return t`Enabling Leverage...`;
-    }
-    if (isPositionRouterApproving) {
-      return t`Enabling Leverage...`;
-    }
-    if (needPositionRouterApproval) {
-      return t`Enable Leverage`;
-    }
-
-    if (needApproval && isWaitingForApproval) {
-      return t`Waiting for Approval`;
-    }
-    if (isApproving) {
-      return t`Approving ${fromToken.assetSymbol ?? fromToken.symbol}...`;
-    }
-    if (needApproval) {
-      return t`Approve ${fromToken.assetSymbol ?? fromToken.symbol}`;
-    }
-
-    if (needOrderBookApproval && isWaitingForPluginApproval) {
-      return t`Enabling Orders...`;
-    }
-    if (isPluginApproving) {
-      return t`Enabling Orders...`;
-    }
-    if (needOrderBookApproval) {
-      return t`Enable Orders`;
-    }
-
-    if (!isMarketOrder) return t`Create ${orderOption.charAt(0) + orderOption.substring(1).toLowerCase()} Order`;
-
-    if (isSwap) {
-      if (toUsdMax !== undefined && toUsdMax < bigMath.mulDiv(fromUsdMin, 95n, 100n)) {
-        return t`High Slippage, Swap Anyway`;
-      }
-      return t`Swap`;
-    }
-
-    if (isLong) {
-      const indexTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
-      if (indexTokenInfo && indexTokenInfo.minPrice !== undefined) {
-        const { amount: nextToAmount } = getNextToAmount(
-          chainId,
-          fromAmount,
-          fromTokenAddress,
-          indexTokenAddress,
-          infoTokens,
-          undefined,
-          undefined,
-          usdgSupply,
-          totalTokenWeights,
-          isSwap
-        );
-        const nextToAmountUsd = bigMath.mulDiv(
-          nextToAmount,
-          indexTokenInfo.minPrice,
-          expandDecimals(1, indexTokenInfo.decimals)
-        );
-        if (fromTokenAddress === USDG_ADDRESS && nextToAmountUsd < bigMath.mulDiv(fromUsdMin, 98n, 100n)) {
-          return t`High USDG Slippage, Long Anyway`;
-        }
-      }
-      return t`Long ${toToken.symbol}`;
-    }
-
-    return t`Short ${toToken.symbol}`;
   };
 
   const onSelectFromToken = (token) => {
@@ -1629,76 +1187,6 @@ export default function SwapBox(props) {
     increasePosition();
   };
 
-  function approveFromToken() {
-    approveTokens({
-      setIsApproving,
-      signer,
-      tokenAddress: fromToken.address,
-      spender: routerAddress,
-      chainId: chainId,
-      onApproveSubmitted: () => {
-        setIsWaitingForApproval(true);
-      },
-      infoTokens,
-      getTokenInfo,
-      pendingTxns,
-      setPendingTxns,
-      permitParams: undefined,
-    });
-  }
-
-  const onClickPrimary = () => {
-    if (isStopOrder) {
-      setOrderOption(MARKET);
-      return;
-    }
-
-    if (!active) {
-      openConnectModal();
-      return;
-    }
-
-    if (needPositionRouterApproval) {
-      approvePositionRouter({
-        sentMsg: t`Enable leverage sent.`,
-        failMsg: t`Enable leverage failed.`,
-      });
-      return;
-    }
-
-    if (needApproval) {
-      approveFromToken();
-      return;
-    }
-
-    if (needOrderBookApproval) {
-      setOrdersToaOpen(true);
-      return;
-    }
-
-    const [, errorType, errorCode] = getError();
-
-    if (errorType === ErrorDisplayType.Modal) {
-      setModalError(errorCode);
-      return;
-    }
-
-    if (isSwap) {
-      if (fromTokenAddress === ZeroAddress && toTokenAddress === nativeTokenAddress) {
-        wrap();
-        return;
-      }
-
-      if (fromTokenAddress === nativeTokenAddress && toTokenAddress === ZeroAddress) {
-        unwrap();
-        return;
-      }
-    }
-
-    setIsConfirming(true);
-    setIsHigherSlippageAllowed(false);
-  };
-
   const isStopOrder = orderOption === STOP;
   const showFromAndToSection = !isStopOrder;
   const showTriggerPriceSection = !isSwap && !isMarketOrder && !isStopOrder;
@@ -1894,65 +1382,6 @@ export default function SwapBox(props) {
     );
   }
 
-  const ERROR_TOOLTIP_MSG = {
-    [ErrorCode.InsufficientLiquiditySwap]: t`Swap amount exceeds Available Liquidity.`,
-    [ErrorCode.InsufficientLiquidityLeverage]: (
-      <Trans>
-        <p>{toToken.symbol} is required for collateral.</p>
-        <p>
-          Swap amount from {fromToken.symbol} to {toToken.symbol} exceeds {toToken.symbol} Available Liquidity. Reduce
-          the "Pay" size, or use {toToken.symbol} as the "Pay" token to use it for collateral.
-        </p>
-        <ExternalLink href={get1InchSwapUrl(chainId, fromToken.symbol, toToken.symbol)}>
-          You can buy {toToken.symbol} on 1inch.
-        </ExternalLink>
-      </Trans>
-    ),
-    [ErrorCode.TokenPoolExceeded]: (
-      <Trans>
-        <p>{toToken.symbol} is required for collateral.</p>
-        <p>
-          Swap amount from {fromToken.symbol} to {toToken.symbol} exceeds {fromToken.symbol} acceptable amount. Reduce
-          the "Pay" size, or use {toToken.symbol} as the "Pay" token to use it for collateral.
-        </p>
-        <ExternalLink href={get1InchSwapUrl(chainId, fromToken.symbol, toToken.symbol)}>
-          You can buy {toToken.symbol} on 1inch.
-        </ExternalLink>
-      </Trans>
-    ),
-    [ErrorCode.TokenPoolExceededShorts]: (
-      <Trans>
-        <p>{shortCollateralToken.symbol} is required for collateral.</p>
-        <p>
-          Swap amount from {fromToken.symbol} to {shortCollateralToken.symbol} exceeds {fromToken.symbol} acceptable
-          amount. Reduce the "Pay" size, or use {shortCollateralToken.symbol} as the "Pay" token to use it for
-          collateral.
-        </p>
-        <ExternalLink href={get1InchSwapUrl(chainId, fromToken.symbol, shortCollateralToken.symbol)}>
-          You can buy {shortCollateralToken.symbol} on 1inch.
-        </ExternalLink>
-      </Trans>
-    ),
-    [ErrorCode.InsufficientCollateralIn]: (
-      <Trans>
-        <p>{shortCollateralToken.symbol} is required for collateral.</p>
-        <p>
-          Swap amount from {fromToken.symbol} to {shortCollateralToken.symbol} exceeds {shortCollateralToken.symbol}{" "}
-          available liquidity. Reduce the "Pay" size, or change the "Collateral In" token.
-        </p>
-      </Trans>
-    ),
-    [ErrorCode.InsufficientProfitLiquidity]: (
-      <Trans>
-        <p>{shortCollateralToken.symbol} is required for collateral.</p>
-        <p>
-          Short amount for {toToken.symbol} with {shortCollateralToken.symbol} exceeds potential profits liquidity.
-          Reduce the "Short Position" size, or change the "Collateral In" token.
-        </p>
-      </Trans>
-    ),
-  };
-
   const existingCurrentIndexShortPosition =
     isShort &&
     positions
@@ -1965,32 +1394,9 @@ export default function SwapBox(props) {
     existingCurrentIndexCollateralToken.address.toLowerCase() !== shortCollateralAddress?.toLowerCase();
 
   function renderPrimaryButton() {
-    const [errorMessage, errorType, errorCode] = getError();
-    const primaryTextMessage = getPrimaryText();
-    if (errorType === ErrorDisplayType.Tooltip && errorMessage === primaryTextMessage && ERROR_TOOLTIP_MSG[errorCode]) {
-      return (
-        <Tooltip
-          isHandlerDisabled
-          handle={
-            <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
-              {primaryTextMessage}
-            </Button>
-          }
-          position="bottom"
-          className="Tooltip-flex"
-          renderContent={() => ERROR_TOOLTIP_MSG[errorCode]}
-        />
-      );
-    }
     return (
-      <Button
-        type="submit"
-        variant="primary-action"
-        className="w-full"
-        onClick={onClickPrimary}
-        disabled={!isPrimaryEnabled()}
-      >
-        {primaryTextMessage}
+      <Button disabled variant="primary-action" className="w-full">
+        <Trans>V1 trading disabled. Switch to V2</Trans>
       </Button>
     );
   }
@@ -2009,12 +1415,7 @@ export default function SwapBox(props) {
 
   return (
     <div className="Exchange-swap-box">
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          onClickPrimary();
-        }}
-      >
+      <form>
         <div className="Exchange-swap-box-inner App-box-highlight">
           <div>
             <Tabs
@@ -2319,17 +1720,18 @@ export default function SwapBox(props) {
           {isStopOrder && (
             <div className="Exchange-swap-section Exchange-trigger-order-info">
               <Trans>
-                Take profit and stop loss orders can be set after opening a position. <br />
-                <br />
-                There will be a "Close" button on each position row, clicking this will display the option to set
-                trigger orders. <br />
-                <br />
-                For screenshots and more information, please see the{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/trading/v1#stop-loss--take-profit-orders">
-                  docs
-                </ExternalLink>
-                .
+                There is a "Close" button on each position row, clicking it will display the option to close positions
+                via market orders.
               </Trans>
+              <br />
+              <br />
+              <Trans>
+                Trigger orders, increasing positions (market or limit), adding collateral, and swapping on GMX V1 are
+                now disabled. You can still close existing positions using market orders.
+              </Trans>
+              <br />
+              <br />
+              <Trans>Please migrate your positions to GMX V2.</Trans>
             </div>
           )}
           <div className="Exchange-swap-button-container">{renderPrimaryButton()}</div>

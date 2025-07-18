@@ -2,6 +2,7 @@ import { AbFlag, getAbFlagUrlParams } from "config/ab";
 import { UserAnalyticsEventItem } from "lib/oracleKeeperFetcher";
 import { sleep } from "lib/sleep";
 
+import { getOrSetSessionId, SESSION_ID_KEY, setLastEventTime } from "./sessionId";
 import { metrics } from "../metrics/Metrics";
 
 type CommonEventParams = {
@@ -45,10 +46,6 @@ type AnalyticsEventParams = {
   data: object;
 };
 
-export const SESSION_ID_KEY = "sessionId";
-const MAX_SESSION_ID_AGE = 1000 * 60 * 60 * 24 * 4; // 4 days
-const USER_ANALYTICS_LAST_EVENT_TIME_KEY = "USER_ANALYTICS_LAST_EVENT_TIME";
-
 const MAX_DEDUP_INTERVAL = 1000 * 60 * 60 * 24; // 1 day
 const USER_ANALYTICS_DEDUP_EVENTS_STORAGE = "USER_ANALYTICS_DEDUP_EVENTS_STORAGE";
 const USER_ANALYTICS_INTERACTION_IDS_STORAGE = "USER_ANALYTICS_INTERACTION_IDS_STORAGE";
@@ -69,11 +66,6 @@ export class UserAnalytics {
     return this.commonEventParams.isInited;
   };
 
-  getLastEventTime() {
-    const lastEventTime = localStorage.getItem(USER_ANALYTICS_LAST_EVENT_TIME_KEY);
-    return parseInt(lastEventTime as string) || 0;
-  }
-
   getDedupEventsStorage() {
     const dedupEventsStorageStr = localStorage.getItem(USER_ANALYTICS_DEDUP_EVENTS_STORAGE);
     const dedupEventsStorage = dedupEventsStorageStr ? (JSON.parse(dedupEventsStorageStr) as DedupEventsStorage) : {};
@@ -92,10 +84,6 @@ export class UserAnalytics {
 
   setDebug = (val: boolean) => {
     this.debug = val;
-  };
-
-  setLastEventTime = (time: number) => {
-    localStorage.setItem(USER_ANALYTICS_LAST_EVENT_TIME_KEY, time.toString());
   };
 
   shouldSkipEvent(key: string, event: string, dedupInterval: number = MAX_DEDUP_INTERVAL) {
@@ -144,34 +132,18 @@ export class UserAnalytics {
     return interactionId;
   };
 
-  setSessionId(sessionId: string) {
-    localStorage.setItem(SESSION_ID_KEY, sessionId);
-    this.setLastEventTime(Date.now());
-  }
-
   getSessionIdUrlParams() {
-    const sessionIdParam = `${SESSION_ID_KEY}=${this.getOrSetSessionId()}`;
+    const sessionIdParam = `${SESSION_ID_KEY}=${getOrSetSessionId()}`;
     const abFlagsParams = getAbFlagUrlParams();
 
     return [sessionIdParam, abFlagsParams].filter(Boolean).join("&");
-  }
-
-  getOrSetSessionId() {
-    let sessionId = localStorage.getItem(SESSION_ID_KEY);
-
-    if (!sessionId || Date.now() - this.getLastEventTime() > MAX_SESSION_ID_AGE) {
-      sessionId = Math.random().toString(36).substring(2, 15);
-      this.setSessionId(sessionId);
-    }
-
-    return sessionId;
   }
 
   pushEvent = async <T extends AnalyticsEventParams = never>(
     params: T,
     options: { onlyOncePerSession?: boolean; dedupKey?: string; dedupInterval?: number; instantSend?: boolean } = {}
   ) => {
-    const sessionId = this.getOrSetSessionId();
+    const sessionId = getOrSetSessionId();
 
     const dedupKey = options.dedupKey ? options.dedupKey : options.onlyOncePerSession ? sessionId : undefined;
 
@@ -183,7 +155,7 @@ export class UserAnalytics {
       this.saveDedupEventData(dedupKey, params.event);
     }
 
-    this.setLastEventTime(Date.now());
+    setLastEventTime(Date.now());
 
     const item: UserAnalyticsEventItem = {
       type: "userAnalyticsEvent",
@@ -212,9 +184,9 @@ export class UserAnalytics {
   };
 
   pushProfileProps = (data: ProfileProps) => {
-    this.setLastEventTime(Date.now());
+    setLastEventTime(Date.now());
 
-    const sessionId = this.getOrSetSessionId();
+    const sessionId = getOrSetSessionId();
 
     metrics.pushBatchItem({
       type: "userAnalyticsProfile",

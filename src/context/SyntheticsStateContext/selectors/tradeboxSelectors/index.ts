@@ -330,6 +330,11 @@ export const selectTradeboxTwapNumberOfParts = (s: SyntheticsState) => s.tradebo
 export const selectTradeboxIsWrapOrUnwrap = createSelector((q) => {
   const fromToken = q(selectTradeboxFromToken);
   const toToken = q(selectTradeboxToToken);
+  const tradeFlags = q(selectTradeboxTradeFlags);
+
+  if (!tradeFlags.isSwap) {
+    return false;
+  }
 
   return Boolean(fromToken && toToken && (getIsWrap(fromToken, toToken) || getIsUnwrap(fromToken, toToken)));
 });
@@ -337,6 +342,11 @@ export const selectTradeboxIsWrapOrUnwrap = createSelector((q) => {
 export const selectTradeboxIsStakeOrUnstake = createSelector((q) => {
   const fromToken = q(selectTradeboxFromToken);
   const toToken = q(selectTradeboxToToken);
+  const tradeFlags = q(selectTradeboxTradeFlags);
+
+  if (!tradeFlags.isSwap) {
+    return false;
+  }
 
   return Boolean(fromToken && toToken && (getIsStake(fromToken, toToken) || getIsUnstake(fromToken, toToken)));
 });

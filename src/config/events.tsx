@@ -33,14 +33,61 @@ export type EventData = {
 export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
-  // {
-  //   id: "botanix-launch",
-  //   title: "GMX is live on Botanix",
-  //   isActive: true,
-  //   startDate: "30 Jun 2025, 0:00",
-  //   endDate: "8 Jul 2025, 0:00",
-  //   bodyText: <>GMX is now natively deployed on the Botanix network. Use the network switcher to connect.</>,
-  // },
+  {
+    id: "avax-pump-and-arb-listing",
+    isActive: true,
+    startDate: "17 Jul 2025, 10:00",
+    endDate: "24 Jul 2025, 12:00",
+    title: "PUMP and ARB markets added",
+    bodyText: (
+      <>
+        <Link to="/trade/long?to=PUMP">Trade</Link> <TokenSymbolWithIcon symbol="PUMP" />
+        /USD on Arbitrum or Avalanche, or <Link to="/pools">provide liquidity</Link> using{" "}
+        <TokenSymbolWithIcon symbol="WBTC" />, <TokenSymbolWithIcon symbol="USDC" />, or{" "}
+        <TokenSymbolWithIcon symbol="WAVAX" />.
+        <br />
+        <br />
+        <Link to="/pools">Provide liquidity</Link> to GM: ARB/USD <span className="text-slate-100">[ARB-ARB]</span>{" "}
+        using <TokenSymbolWithIcon symbol="ARB" />.
+      </>
+    ),
+  },
+  {
+    id: "v1-trading-disabled",
+    title: "GMX V1 disabled",
+    isActive: true,
+    bodyText: (
+      <>
+        <Trans>
+          Increasing positions (market or limit), adding collateral, and swapping on GMX V1 are now disabled. You can
+          still close existing positions.
+        </Trans>
+        <br />
+        <br />
+        <Trans>Please migrate your positions to GMX V2.</Trans>
+      </>
+    ),
+    startDate: "10 Jul 2025, 00:00",
+    endDate: "10 Aug 2025, 00:00",
+  },
+  {
+    id: "botanix-launch-event",
+    title: "GMX is live on Botanix",
+    isActive: true,
+    startDate: "2 Jul 2025, 0:00",
+    endDate: "10 Jul 2025, 0:00",
+    bodyText: (
+      <>
+        GMX is now natively deployed on the Botanix network. Use the network switcher to connect.
+        <br />
+        <br />
+        <ExternalLink href="https://x.com/GMX_IO/status/1940367677190762617">
+          Learn how to trade and provide liquidity
+        </ExternalLink>
+        .
+      </>
+    ),
+  },
   {
     id: "listing-xmr-crv-moodeng-pi",
     title: "CRV, MOODENG, PI and XMR markets added on Arbitrum",
@@ -86,26 +133,6 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "16 Jun 2025, 00:00",
     endDate: "26 Jun 2025, 00:00",
-  },
-  {
-    id: "avalanche-issue",
-    title: "Avalanche congestion impact",
-    isActive: true,
-    startDate: "30 May 2025, 08:00",
-    endDate: "30 May 2026, 08:00",
-    chains: [AVALANCHE],
-    bodyText: (
-      <>
-        Avalanche’s recent upgrade may prevent some GMX V2 orders from executing during congestion. The Avalanche team
-        is investigating.
-        <br />
-        <br />
-        Arbitrum is unaffected and trading remains fully operational.
-        <br />
-        <br />
-        <ExternalLink href="https://t.me/GMX_Announcements/1076">Read more</ExternalLink>.
-      </>
-    ),
   },
   {
     id: "zro-listing",
