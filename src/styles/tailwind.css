@@ -31,13 +31,11 @@
   }
 
   .text-subheadline {
-    @apply text-14 font-medium leading-text-sm text-secondary;
-    letter-spacing: 0.028px;
+    @apply text-14 font-medium leading-text-sm text-secondary tracking-body;
   }
 
   .text-description {
-    @apply text-16 font-normal leading-text-sm text-secondary;
-    letter-spacing: 0.028px;
+    @apply text-16 font-normal leading-text-sm text-secondary tracking-body;
   }
 
   .btn-landing-bg {

@@ -3,9 +3,7 @@ body,
 #root {
   margin: 0;
   padding: 0;
-  color: var(--color-white);
   font-size: 10px;
-  background-color: var(--main-bg-color);
 }
 
 /**
@@ -33,7 +31,6 @@ code {
 *::before,
 *::after {
   box-sizing: border-box;
-  letter-spacing: 0.05rem;
 }
 
 @supports (scrollbar-width: auto) {
