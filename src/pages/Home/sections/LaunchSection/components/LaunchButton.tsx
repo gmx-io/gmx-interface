@@ -1,18 +1,36 @@
-import React from "react";
+import { REDIRECT_CHAIN_IDS } from "pages/Home/hooks/useGoToTrade";
 
+import IcArb from "img/ic_arb_24.svg?react";
 import IcArrowRight from "img/ic_arrowright16.svg?react";
+import IcAvax from "img/ic_avax_24.svg?react";
+import IcBase from "img/ic_base.svg?react";
+import IcBotanix from "img/ic_botanix_landing.svg?react";
+import IcSol from "img/ic_sol_24.svg?react";
+
+const icons = {
+  [REDIRECT_CHAIN_IDS.Arbitum]: IcArb,
+  [REDIRECT_CHAIN_IDS.Base]: IcBase,
+  [REDIRECT_CHAIN_IDS.Solana]: IcSol,
+  [REDIRECT_CHAIN_IDS.Avalanche]: IcAvax,
+  [REDIRECT_CHAIN_IDS.Botanix]: IcBotanix,
+};
+
+const names = {
+  [REDIRECT_CHAIN_IDS.Arbitum]: "Arbitrum",
+  [REDIRECT_CHAIN_IDS.Base]: "Base",
+  [REDIRECT_CHAIN_IDS.Solana]: "Solana",
+  [REDIRECT_CHAIN_IDS.Avalanche]: "Avalanche",
+  [REDIRECT_CHAIN_IDS.Botanix]: "Botanix",
+};
 
 type Props = {
-  icon: React.FunctionComponent<
-    React.SVGProps<SVGSVGElement> & {
-      title?: string;
-    }
-  >;
-  name: string;
+  chainId: REDIRECT_CHAIN_IDS;
   onClick: () => void;
 };
 
-export default function LaunchButton({ icon: Icon, name, onClick }: Props) {
+export function LaunchButton({ chainId, onClick }: Props) {
+  const Icon = icons[chainId];
+  const name = names[chainId];
   return (
     <button
       onClick={onClick}

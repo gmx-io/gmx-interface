@@ -1,13 +1,7 @@
 import { Trans } from "@lingui/macro";
 
-import IcArb from "img/ic_arb_24.svg?react";
-import IcAvax from "img/ic_avax_24.svg?react";
-import IcBase from "img/ic_base.svg?react";
-import IcBotanix from "img/ic_botanix_landing.svg?react";
-import IcSol from "img/ic_sol_24.svg?react";
-
-import LaunchButton from "./components/LaunchButton";
-import { useGoToTrade } from "../../hooks/useGoToTrade";
+import { LaunchButtonContainer } from "./components/LaunchButtonContainer";
+import { REDIRECT_CHAIN_IDS, useGoToTrade } from "../../hooks/useGoToTrade";
 
 type Props = {
   showRedirectModal: (to: string) => void;
@@ -17,29 +11,8 @@ export function LaunchSection({ showRedirectModal }: Props) {
   const goToTradeArbitrum = useGoToTrade({
     showRedirectModal,
     buttonPosition: "LaunchSection",
-    chain: "arb",
+    chainId: REDIRECT_CHAIN_IDS.Arbitum,
   });
-  const goToTradeBase = useGoToTrade({
-    showRedirectModal,
-    buttonPosition: "LaunchSection",
-    chain: "base",
-  });
-  const goToTradeSolana = useGoToTrade({
-    showRedirectModal,
-    buttonPosition: "LaunchSection",
-    chain: "solana",
-  });
-  const goToTradeAvax = useGoToTrade({
-    showRedirectModal,
-    buttonPosition: "LaunchSection",
-    chain: "avax",
-  });
-  const goToTradeBotanix = useGoToTrade({
-    showRedirectModal,
-    buttonPosition: "LaunchSection",
-    chain: "botanix",
-  });
-
   return (
     <section className="flex w-full items-center justify-center px-16 py-80 text-fiord-700 sm:px-80 sm:py-[120px]">
       <div className="flex max-w-[1200px] flex-col items-stretch justify-center gap-24 sm:flex-row sm:items-center">
@@ -61,11 +34,11 @@ export function LaunchSection({ showRedirectModal }: Props) {
           </button>
         </div>
         <div className="grid grid-flow-row grid-cols-1 gap-16 sm:grid-cols-2">
-          <LaunchButton icon={IcArb} name="Arbitrum" onClick={goToTradeArbitrum} />
-          <LaunchButton icon={IcBase} name="Base" onClick={goToTradeBase} />
-          <LaunchButton icon={IcSol} name="Solana" onClick={goToTradeSolana} />
-          <LaunchButton icon={IcAvax} name="Avax" onClick={goToTradeAvax} />
-          <LaunchButton icon={IcBotanix} name="Botanix" onClick={goToTradeBotanix} />
+          <LaunchButtonContainer chainId={REDIRECT_CHAIN_IDS.Arbitum} />
+          <LaunchButtonContainer chainId={REDIRECT_CHAIN_IDS.Base} />
+          <LaunchButtonContainer chainId={REDIRECT_CHAIN_IDS.Solana} />
+          <LaunchButtonContainer chainId={REDIRECT_CHAIN_IDS.Avalanche} />
+          <LaunchButtonContainer chainId={REDIRECT_CHAIN_IDS.Botanix} />
         </div>
       </div>
     </section>
