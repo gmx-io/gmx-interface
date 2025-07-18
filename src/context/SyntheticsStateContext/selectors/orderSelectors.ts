@@ -8,7 +8,7 @@ import {
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";
-import { selectMarketsInfoData, selectPositionsInfoData, selectUiFeeFactor } from "./globalSelectors";
+import { selectChainId, selectMarketsInfoData, selectPositionsInfoData, selectUiFeeFactor } from "./globalSelectors";
 import { makeSelectFindSwapPath } from "./tradeSelectors";
 
 const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;
@@ -18,6 +18,7 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
     const orderInfo = q((s) => (orderId ? selectOrdersInfoData(s)?.[orderId] : undefined));
     const positionsInfoData = q(selectPositionsInfoData);
     const marketsInfoData = q(selectMarketsInfoData);
+    const chainId = q(selectChainId);
 
     if (!orderInfo) return { errors: [], level: undefined };
     if (!marketsInfoData) return { errors: [], level: undefined };
@@ -33,6 +34,7 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
       marketsInfoData,
       findSwapPath,
       uiFeeFactor,
+      chainId,
     });
 
     return { errors, level };

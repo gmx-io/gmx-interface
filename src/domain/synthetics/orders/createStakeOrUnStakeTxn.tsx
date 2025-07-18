@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import { ethers, Signer } from "ethers";
 import { encodeFunctionData } from "viem";
 
@@ -104,6 +105,8 @@ export async function createStakeOrUnstakeTxn(chainId: number, signer: Signer, p
         switch (event.event) {
           case TxnEventName.Error:
             reject(event.data.error);
+
+            helperToast.error(t`Failed to ${p.isStake ? "stake" : "unstake"}`);
             break;
 
           case TxnEventName.Sent: {

@@ -195,6 +195,7 @@ describe("Exchange Router Multicall", () => {
     it("Token transfers with multiple orders, external swaps, update and cancel", () => {
       const params1 = {
         ...commonParams,
+        swapPath: [],
         payTokenAddress: NATIVE_TOKEN_ADDRESS,
         payTokenAmount: parseValue("1", WETH.decimals)!, // 1 ETH
         externalSwapQuote: mockExternalSwap({
@@ -209,6 +210,7 @@ describe("Exchange Router Multicall", () => {
 
       const params2 = {
         ...commonParams,
+        swapPath: [],
         payTokenAddress: USDC.address,
         payTokenAmount: parseValue("1000", USDC.decimals)!, // 1000 USDC
         externalSwapQuote: mockExternalSwap({

@@ -225,8 +225,6 @@ export function SettingsModal({
     [isTradningModeChanging, settings.expressOrdersEnabled, subaccountState.subaccount, tradingMode]
   );
 
-  const isBotanix = chainId === BOTANIX;
-
   return (
     <SlideModal
       isVisible={isSettingsVisible}
@@ -398,7 +396,8 @@ export function SettingsModal({
               />
             </ToggleSwitch>
 
-            {!isBotanix && (
+            {/* External swaps are enabled by default on Botanix */}
+            {chainId !== BOTANIX && (
               <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
                 <Trans>Enable external swaps</Trans>
               </ToggleSwitch>
