@@ -10,6 +10,13 @@ const flattenColorPalette = require("tailwindcss/lib/util/flattenColorPalette");
  * @See https://www.notion.so/gmxio/Colors-Clean-Up-13303574745d80deb5dcebb6f15e41ad#13303574745d8066aad0cbd650848ca6
  */
 const colors = {
+  secondary: "#BEC0DA",
+  primary: "#FFFFFF",
+  fiord: {
+    500: "#3C4067",
+    600: "#171827",
+    700: "#090A14",
+  },
   blue: {
     300: "#7885ff",
     400: "#4d5ffa",
@@ -194,12 +201,21 @@ module.exports = {
       14: "1.4rem",
       15: "1.5rem",
       16: "1.6rem",
+      18: "1.8rem",
       24: "2.4rem",
+      32: "3.2rem",
       34: "3.4rem",
+      50: "5rem",
+      80: "8rem",
+      100: "10rem",
     },
     lineHeight: {
       1: "1",
       2: "2",
+      'text-sm': "136%",
+      'text-md': "144%",
+      'heading-lg': "98%",
+      'heading-md': "108%",
       // Normal is browser dependent. See https://developer.mozilla.org/en-US/docs/Web/CSS/line-height#normal
       base: "normal",
     },
@@ -218,6 +234,10 @@ module.exports = {
       gridTemplateColumns: fromPairs(
         range(200, 501, 50).map((space) => [`auto-fill-${space}`, `repeat(auto-fill, minmax(${space}px, 1fr))`])
       ),
+      fontFamily: {
+        sans: ["TTHoves", "sans-serif"],
+        mono: ["TTHovesMono", "monospace"],
+      },
     },
   },
   plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin],
