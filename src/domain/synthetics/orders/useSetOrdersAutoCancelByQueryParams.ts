@@ -90,7 +90,7 @@ export function useSetOrdersAutoCancelByQueryParams() {
           }
         );
       } else {
-        helperToast.success("No orders eligble for conversion.");
+        helperToast.success("No orders eligible for conversion.");
       }
 
       emitMetricCounter<SetAutoCloseOrdersAction>({
