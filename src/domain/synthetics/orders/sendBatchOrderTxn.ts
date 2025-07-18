@@ -196,6 +196,7 @@ export const makeBatchOrderSimulation = async ({
             expiresAt: onchainData.expiresAt,
             isActive: onchainData.active,
             nonce: onchainData.approvalNonce,
+            multichainNonce: onchainData.multichainApprovalNonce,
             integrationId: onchainData.integrationId,
           },
           signedData: {

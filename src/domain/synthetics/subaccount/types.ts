@@ -1,5 +1,7 @@
 import type { Wallet } from "ethers";
 
+import type { ContractName } from "sdk/configs/contracts";
+
 import type { SubaccountOnchainData } from "./useSubaccountOnchainData";
 
 export type SubaccountSerializedConfig = {
@@ -29,6 +31,7 @@ export type SubaccountApproval = {
 export type SignedSubbacountApproval = SubaccountApproval & {
   signature: string;
   signedAt: number;
+  subaccountRouterType: Extract<ContractName, "SubaccountGelatoRelayRouter" | "MultichainSubaccountRouter">;
 };
 
 export type SubaccountValidations = {

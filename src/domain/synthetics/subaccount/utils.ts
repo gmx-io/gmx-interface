@@ -155,7 +155,18 @@ export function getIsSubaccountNonceExpired(subaccount: {
     return false;
   }
 
-  const onChainNonce = subaccount.onchainData.approvalNonce;
+  let onChainNonce: bigint;
+  if (
+    subaccount.signedApproval.subaccountRouterType === "SubaccountGelatoRelayRouter" ||
+    !subaccount.signedApproval.subaccountRouterType
+  ) {
+    onChainNonce = subaccount.onchainData.approvalNonce;
+  } else if (subaccount.signedApproval.subaccountRouterType === "MultichainSubaccountRouter") {
+    onChainNonce = subaccount.onchainData.multichainApprovalNonce;
+  } else {
+    throw new Error(`Invalid subaccount router type: ${subaccount.signedApproval.subaccountRouterType}`);
+  }
+
   const signedNonce = subaccount.signedApproval.nonce;
 
   return signedNonce !== onChainNonce;
@@ -195,6 +206,7 @@ export function getEmptySubaccountApproval(subaccountAddress: string): SignedSub
     signature: ZERO_DATA,
     signedAt: 0,
     integrationId: zeroHash,
+    subaccountRouterType: "SubaccountGelatoRelayRouter",
   };
 }
 
@@ -204,8 +216,8 @@ export function getIsEmptySubaccountApproval(subaccountApproval: SignedSubbacoun
     subaccountApproval.nonce === 0n &&
     subaccountApproval.expiresAt === 0n &&
     subaccountApproval.maxAllowedCount === 0n &&
-    subaccountApproval.shouldAdd === false
-    // TODO: Add integrationId check
+    subaccountApproval.shouldAdd === false &&
+    subaccountApproval.integrationId === zeroHash
   );
 }
 
@@ -239,8 +251,8 @@ export async function getInitialSubaccountApproval({
   const defaultSubaccountApproval = await createAndSignSubaccountApproval(
     chainId,
     signer,
+    provider,
     subaccountAddress,
-    onchainData.approvalNonce,
     {
       shouldAdd: !onchainData.active,
       expiresAt,
@@ -318,13 +330,17 @@ export async function signUpdatedSubaccountSettings({
     nextExpiresAt = oldExpiresAt + nextRemainingSeconds - oldRemainingSeconds;
   }
 
-  const nonce = await getSubaccountApprovalNonceForProvider(chainId, signer, provider);
-
-  const signedSubaccountApproval = await createAndSignSubaccountApproval(chainId, signer, subaccount.address, nonce, {
-    expiresAt: nextExpiresAt,
-    maxAllowedCount: nextMaxAllowedCount,
-    shouldAdd: !subaccount.onchainData.active,
-  });
+  const signedSubaccountApproval = await createAndSignSubaccountApproval(
+    chainId,
+    signer,
+    provider,
+    subaccount.address,
+    {
+      expiresAt: nextExpiresAt,
+      maxAllowedCount: nextMaxAllowedCount,
+      shouldAdd: !subaccount.onchainData.active,
+    }
+  );
 
   return signedSubaccountApproval;
 }
@@ -332,8 +348,8 @@ export async function signUpdatedSubaccountSettings({
 export async function createAndSignSubaccountApproval(
   chainId: ContractsChainId,
   mainAccountSigner: WalletSigner,
+  provider: Provider,
   subaccountAddress: string,
-  nonce: bigint,
   params: {
     shouldAdd: boolean;
     expiresAt: bigint;
@@ -341,6 +357,8 @@ export async function createAndSignSubaccountApproval(
   }
 ): Promise<SignedSubbacountApproval> {
   const srcChainId = await getMultichainInfoFromSigner(mainAccountSigner, chainId);
+
+  const nonce = await getSubaccountApprovalNonceForProvider(chainId, mainAccountSigner, provider);
 
   const relayRouterAddress = getOrderRelayRouterAddress(chainId, true, srcChainId !== undefined);
 
@@ -376,6 +394,7 @@ export async function createAndSignSubaccountApproval(
     ...typedData,
     signature,
     signedAt: Date.now(),
+    subaccountRouterType: srcChainId !== undefined ? "MultichainSubaccountRouter" : "SubaccountGelatoRelayRouter",
   };
 }
 
@@ -444,7 +463,6 @@ export async function getSubaccountOnchainData({
   provider: Provider;
   subaccountAddress: string;
 }) {
-  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
   const account = signer.address;
 
   const calls: {
@@ -458,11 +476,13 @@ export async function getSubaccountOnchainData({
       | undefined;
   } = {
     approvalNonce: {
-      contractAddress: getExpressContractAddress(chainId, {
-        isSubaccount: true,
-        isMultichain: srcChainId !== undefined,
-        scope: "subaccount",
-      }),
+      contractAddress: getContract(chainId, "SubaccountGelatoRelayRouter"),
+      abi: abis.AbstractSubaccountApprovalNonceable,
+      functionName: "subaccountApprovalNonces",
+      args: [account],
+    },
+    multichainApprovalNonce: {
+      contractAddress: getContract(chainId, "MultichainSubaccountRouter"),
       abi: abis.AbstractSubaccountApprovalNonceable,
       functionName: "subaccountApprovalNonces",
       args: [account],
