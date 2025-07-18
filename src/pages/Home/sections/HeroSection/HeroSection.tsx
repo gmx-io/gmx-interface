@@ -1,5 +1,7 @@
 import { Trans } from "@lingui/macro";
 
+import { useHomePageContext } from "pages/Home/contexts/HomePageContext";
+
 import bgProtection from "img/bg_protection.png";
 import AsssetsBg from "img/bg_support_assets.png";
 import IcGears from "img/ic_gears.svg?react";
@@ -19,11 +21,8 @@ const assetsBgStyle = {
   backgroundImage: `url(${AsssetsBg})`,
 };
 
-type Props = {
-  showRedirectModal: (to: string) => void;
-};
-
-export function HeroSection({ showRedirectModal }: Props) {
+export function HeroSection() {
+  const { showRedirectModal } = useHomePageContext();
   const goToTradeArbitrum = useGoToTrade({
     showRedirectModal,
     buttonPosition: "HeroSection",

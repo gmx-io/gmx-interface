@@ -1,5 +1,5 @@
+import { useHomePageContext } from "pages/Home/contexts/HomePageContext";
 import { REDIRECT_CHAIN_IDS, useGoToTrade } from "pages/Home/hooks/useGoToTrade";
-import { useShowRedirectModal } from "pages/Home/hooks/useShowRedirectModal";
 
 import { LaunchButton } from "./LaunchButton";
 
@@ -8,7 +8,7 @@ type Props = {
 };
 
 export function LaunchButtonContainer({ chainId }: Props) {
-  const showRedirectModal = useShowRedirectModal();
+  const { showRedirectModal } = useHomePageContext();
   const onClick = useGoToTrade({
     chainId,
     showRedirectModal,
