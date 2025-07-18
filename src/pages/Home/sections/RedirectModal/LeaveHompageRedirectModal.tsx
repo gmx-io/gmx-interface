@@ -5,7 +5,6 @@ import { createPortal } from "react-dom";
 
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
-import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 
 import IcCross from "img/ic_cross.svg?react";
 import IcLandingChecked from "img/ic_landing_checked.svg?react";
@@ -13,10 +12,14 @@ import IcLandingChecked from "img/ic_landing_checked.svg?react";
 type LeaveHomepageRedirectModalProps = {
   onClose: () => void;
   to: string;
+  setRedirectPopupTimestamp: (timestamp: number) => void;
 };
 
-export function LeaveHomepageRedirectModal({ onClose, to }: LeaveHomepageRedirectModalProps) {
-  const [, setRedirectPopupTimestamp] = useRedirectPopupTimestamp();
+export function LeaveHomepageRedirectModal({
+  onClose,
+  to,
+  setRedirectPopupTimestamp,
+}: LeaveHomepageRedirectModalProps) {
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
   const onClickAgree = () => {
     userAnalytics.pushEvent<LandingPageAgreementConfirmationEvent>({

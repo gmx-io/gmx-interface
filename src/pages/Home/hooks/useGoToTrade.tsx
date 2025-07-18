@@ -4,7 +4,8 @@ import { ARBITRUM, AVALANCHE, BOTANIX, UiSupportedChain } from "config/chains";
 import { getAppBaseUrl, shouldShowRedirectModal } from "lib/legacy";
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
-import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
+
+import { useHomePageContext } from "../contexts/HomePageContext";
 
 export enum REDIRECT_CHAIN_IDS {
   Arbitum = ARBITRUM,
@@ -21,7 +22,7 @@ type Props = {
 };
 
 export function useGoToTrade({ showRedirectModal, buttonPosition, chainId }: Props) {
-  const [redirectPopupTimestamp] = useRedirectPopupTimestamp();
+  const { redirectPopupTimestamp } = useHomePageContext();
   return useCallback(() => {
     userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
       {
