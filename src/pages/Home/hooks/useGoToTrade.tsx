@@ -1,17 +1,26 @@
 import { useCallback } from "react";
 
+import { ARBITRUM, AVALANCHE, BOTANIX, UiSupportedChain } from "config/chains";
 import { getAppBaseUrl, shouldShowRedirectModal } from "lib/legacy";
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
 import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 
+export enum REDIRECT_CHAIN_IDS {
+  Arbitum = ARBITRUM,
+  Avalanche = AVALANCHE,
+  Botanix = BOTANIX,
+  Solana = "Solana",
+  Base = "Base",
+}
+
 type Props = {
-  chain: "arb" | "base" | "solana" | "avax" | "botanix";
+  chainId: REDIRECT_CHAIN_IDS;
   showRedirectModal: (to: string) => void;
   buttonPosition: LandingPageLaunchAppEvent["data"]["buttonPosition"];
 };
 
-export function useGoToTrade({ showRedirectModal, buttonPosition, chain }: Props) {
+export function useGoToTrade({ showRedirectModal, buttonPosition, chainId }: Props) {
   const [redirectPopupTimestamp] = useRedirectPopupTimestamp();
   return useCallback(() => {
     userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
@@ -25,11 +34,17 @@ export function useGoToTrade({ showRedirectModal, buttonPosition, chain }: Props
       },
       { instantSend: true }
     );
-    if (chain === "solana") {
+    if (chainId === REDIRECT_CHAIN_IDS.Solana) {
       showRedirectModal("https://gmxsol.io/");
+    } else if (chainId === REDIRECT_CHAIN_IDS.Base) {
+      showRedirectModal(makeLink(REDIRECT_CHAIN_IDS.Arbitum));
     } else {
-      const baseUrl = getAppBaseUrl();
-      showRedirectModal(`${baseUrl}/trade?${userAnalytics.getSessionIdUrlParams()}&chain=${chain}`);
+      showRedirectModal(makeLink(chainId));
     }
-  }, [showRedirectModal, redirectPopupTimestamp, buttonPosition, chain]);
+  }, [showRedirectModal, redirectPopupTimestamp, buttonPosition, chainId]);
+}
+
+function makeLink(chainId: UiSupportedChain) {
+  const baseUrl = getAppBaseUrl();
+  return `${baseUrl}/trade?${userAnalytics.getSessionIdUrlParams()}&chainId=${chainId}`;
 }

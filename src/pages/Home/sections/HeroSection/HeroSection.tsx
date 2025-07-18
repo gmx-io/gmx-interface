@@ -13,7 +13,7 @@ import { ChainIcons } from "./components/ChainIcons";
 import { HeroBackground } from "./components/HeroBackground";
 import { ProtectionBackground } from "./components/ProtectionBackground";
 import { SeamlessBackground } from "./components/SeamlessBackground";
-import { useGoToTrade } from "../../hooks/useGoToTrade";
+import { REDIRECT_CHAIN_IDS, useGoToTrade } from "../../hooks/useGoToTrade";
 
 const assetsBgStyle = {
   backgroundImage: `url(${AsssetsBg})`,
@@ -27,7 +27,7 @@ export function HeroSection({ showRedirectModal }: Props) {
   const goToTradeArbitrum = useGoToTrade({
     showRedirectModal,
     buttonPosition: "HeroSection",
-    chain: "arb",
+    chainId: REDIRECT_CHAIN_IDS.Arbitum,
   });
 
   return (
