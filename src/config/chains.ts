@@ -187,12 +187,11 @@ export function getFallbackRpcUrl(chainId: number): string {
   return sample(FALLBACK_PROVIDERS[chainId]);
 }
 
-// TODO MLTCH: remove this
 function getAlchemyKey() {
-  // if (ALCHEMY_WHITELISTED_DOMAINS.includes(self.location.host)) {
-  return "RcaXYTizJs51m-w9SnRyDrxSZhE5H9Mf";
-  // }
-  // return "EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
+  if (ALCHEMY_WHITELISTED_DOMAINS.includes(self.location.host)) {
+    return "RcaXYTizJs51m-w9SnRyDrxSZhE5H9Mf";
+  }
+  return "EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
 }
 
 export function getAlchemyArbitrumHttpUrl() {
@@ -219,8 +218,16 @@ export function getAlchemyOptimismSepoliaHttpUrl() {
   return `https://opt-sepolia.g.alchemy.com/v2/${getAlchemyKey()}`;
 }
 
+export function getAlchemyOptimismSepoliaWsUrl() {
+  return `wss://opt-sepolia.g.alchemy.com/v2/${getAlchemyKey()}`;
+}
+
 export function getAlchemyArbitrumSepoliaHttpUrl() {
   return `https://arb-sepolia.g.alchemy.com/v2/${getAlchemyKey()}`;
+}
+
+export function getAlchemyArbitrumSepoliaWsUrl() {
+  return `wss://arb-sepolia.g.alchemy.com/v2/${getAlchemyKey()}`;
 }
 
 export function getAlchemyBaseMainnetHttpUrl() {
@@ -233,6 +240,14 @@ export function getAlchemyBaseMainnetWsUrl() {
 
 export function getAlchemyBaseSepoliaHttpUrl() {
   return `https://base-sepolia.g.alchemy.com/v2/${getAlchemyKey()}`;
+}
+
+export function getAlchemySepoliaHttpUrl() {
+  return `https://eth-sepolia.g.alchemy.com/v2/${getAlchemyKey()}`;
+}
+
+export function getAlchemySepoliaWsUrl() {
+  return `wss://eth-sepolia.g.alchemy.com/v2/${getAlchemyKey()}`;
 }
 
 export function getExplorerUrl(chainId: number): string {
