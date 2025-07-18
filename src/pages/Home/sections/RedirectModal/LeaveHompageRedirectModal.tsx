@@ -10,12 +10,12 @@ import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 import IcCross from "img/ic_cross.svg?react";
 import IcLandingChecked from "img/ic_landing_checked.svg?react";
 
-type RedirectModalProps = {
+type LeaveHomepageRedirectModalProps = {
   onClose: () => void;
   to: string;
 };
 
-export function RedirectModal({ onClose, to }: RedirectModalProps) {
+export function LeaveHomepageRedirectModal({ onClose, to }: LeaveHomepageRedirectModalProps) {
   const [, setRedirectPopupTimestamp] = useRedirectPopupTimestamp();
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
   const onClickAgree = () => {
