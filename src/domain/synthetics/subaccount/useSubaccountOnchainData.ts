@@ -55,7 +55,7 @@ export function useSubaccountOnchainData(
           contractAddress: srcChainId
             ? getContract(chainId, "MultichainSubaccountRouter")
             : getContract(chainId, "SubaccountGelatoRelayRouter"),
-          abiId: "SubaccountGelatoRelayRouter",
+          abiId: "AbstractSubaccountApprovalNonceable",
           calls: {
             subaccountApproval: {
               methodName: "subaccountApprovalNonces",

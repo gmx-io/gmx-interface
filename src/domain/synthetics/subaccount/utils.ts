@@ -1,6 +1,14 @@
 import cryptoJs from "crypto-js";
 import { ethers, Provider } from "ethers";
-import { decodeFunctionResult, encodeAbiParameters, encodeFunctionData, keccak256, maxUint256, zeroHash } from "viem";
+import {
+  decodeFunctionResult,
+  encodeAbiParameters,
+  encodeFunctionData,
+  Hex,
+  keccak256,
+  maxUint256,
+  zeroHash,
+} from "viem";
 
 import { ContractsChainId } from "config/static/chains";
 import {
@@ -513,7 +521,7 @@ export async function getSubaccountOnchainData({
 
   const [_, decodedMulticallResults] = decodeFunctionResult({
     abi: abis.Multicall,
-    data: result as `0x${string}`,
+    data: result as Hex,
     functionName: "aggregate",
   }) as [bigint, string[]];
 
@@ -525,7 +533,7 @@ export async function getSubaccountOnchainData({
     acc[key] = decodeFunctionResult({
       abi: call.abi,
       functionName: call.functionName,
-      data: decodedMulticallResults[index] as `0x${string}`,
+      data: decodedMulticallResults[index] as Hex,
     });
 
     return acc;
