@@ -7,7 +7,7 @@ import IcLayerZero from "img/ic_layer_zero.svg?react";
 
 export function SponsorsSection() {
   return (
-    <div className="flex gap-24 border-t-[0.5px] border-[#D8DBE9] bg-[#F4F5F9] px-16 py-80 text-fiord-700 sm:py-60">
+    <div className="flex gap-24 border-t-[0.5px] border-[#D8DBE9] bg-[#F4F5F9] px-16 py-80 text-fiord-700 sm:px-80 sm:py-60">
       <div className="mx-auto flex flex-col justify-between gap-28 sm:w-[1200px] sm:flex-row sm:items-center">
         <div className="flex flex-col gap-16 sm:w-[380px]">
           <h3 className="text-[40px] font-medium leading-heading-md -tracking-[1.28]">
