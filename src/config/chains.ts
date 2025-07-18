@@ -3,15 +3,15 @@ import sample from "lodash/sample";
 import { arbitrumSepolia, base, optimismSepolia, sepolia } from "viem/chains";
 
 import {
+  AnyChainId,
   ARBITRUM_SEPOLIA,
-  SOURCE_OPTIMISM_SEPOLIA,
+  BOTANIX,
+  ContractsChainId,
   SUPPORTED_CHAIN_IDS as SDK_SUPPORTED_CHAIN_IDS,
   SUPPORTED_CHAIN_IDS_DEV as SDK_SUPPORTED_CHAIN_IDS_DEV,
-  SOURCE_SEPOLIA,
-  ContractsChainId,
-  AnyChainId,
-  BOTANIX,
   SOURCE_BASE_MAINNET,
+  SOURCE_OPTIMISM_SEPOLIA,
+  SOURCE_SEPOLIA,
 } from "sdk/configs/chains";
 
 import { isDevelopment } from "./env";
@@ -187,11 +187,12 @@ export function getFallbackRpcUrl(chainId: number): string {
   return sample(FALLBACK_PROVIDERS[chainId]);
 }
 
+// TODO MLTCH: remove this
 function getAlchemyKey() {
-  if (ALCHEMY_WHITELISTED_DOMAINS.includes(self.location.host)) {
-    return "RcaXYTizJs51m-w9SnRyDrxSZhE5H9Mf";
-  }
-  return "EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
+  // if (ALCHEMY_WHITELISTED_DOMAINS.includes(self.location.host)) {
+  return "RcaXYTizJs51m-w9SnRyDrxSZhE5H9Mf";
+  // }
+  // return "EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
 }
 
 export function getAlchemyArbitrumHttpUrl() {
