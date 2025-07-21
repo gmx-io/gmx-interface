@@ -7673,10 +7673,6 @@ msgstr "Cancel Take Profit"
 msgid "Top PnL ($)"
 msgstr "Top PnL ($)"
 
-#: src/components/Synthetics/GmxAccountModal/AvailableToTradeAssetsView.tsx
-msgid "Gmx Balance"
-msgstr "Gmx Balance"
-
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Invalid address. Please make sure you have entered a valid Ethereum address"
 msgstr "Invalid address. Please make sure you have entered a valid Ethereum address"
@@ -8557,6 +8553,10 @@ msgstr "Open {marketName} in Explorer"
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Partial Liquidation"
 msgstr "Partial Liquidation"
+
+#: src/components/Synthetics/GmxAccountModal/AvailableToTradeAssetsView.tsx
+msgid "Gmx Account"
+msgstr "Gmx Account"
 
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx

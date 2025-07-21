@@ -7667,10 +7667,6 @@ msgstr ""
 msgid "Top PnL ($)"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/AvailableToTradeAssetsView.tsx
-msgid "Gmx Balance"
-msgstr ""
-
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Invalid address. Please make sure you have entered a valid Ethereum address"
 msgstr ""
@@ -8551,6 +8547,10 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Partial Liquidation"
 msgstr "部分的清算"
+
+#: src/components/Synthetics/GmxAccountModal/AvailableToTradeAssetsView.tsx
+msgid "Gmx Account"
+msgstr ""
 
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx

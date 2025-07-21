@@ -15,13 +15,13 @@ import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 import Button from "components/Button/Button";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
-type FilterType = "all" | "gmxBalance" | "wallet";
+type FilterType = "all" | "gmxAccount" | "wallet";
 
-const FILTERS: FilterType[] = ["all", "gmxBalance", "wallet"];
+const FILTERS: FilterType[] = ["all", "gmxAccount", "wallet"];
 
 const FILTER_TITLE_MAP: Record<FilterType, MessageDescriptor> = {
   all: msg`All`,
-  gmxBalance: msg`Gmx Balance`,
+  gmxAccount: msg`Gmx Account`,
   wallet: msg`Wallet`,
 };
 
@@ -63,7 +63,7 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
       const matchesChainFilter =
         noChainFilter ||
         activeFilter === "all" ||
-        (activeFilter === "gmxBalance" && token.isGmxAccount) ||
+        (activeFilter === "gmxAccount" && token.isGmxAccount) ||
         (activeFilter === "wallet" && !token.isGmxAccount);
 
       return matchesSearch && matchesChainFilter;
