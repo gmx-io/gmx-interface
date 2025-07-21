@@ -1,13 +1,6 @@
 import { Trans } from "@lingui/macro";
 
-import glvCoin from "img/bg_coin_glv.png";
-import gmCoin from "img/bg_coin_gm.png";
-import gmxCoin from "img/bg_coin_gmx.png";
-import IcGlvPool from "img/ic_glv_pool.svg?react";
-import IcGmPool from "img/ic_gm_pool.svg?react";
-import IcGmxPool from "img/ic_gmx_pool.svg?react";
-
-import { PoolCard } from "./components/PoolCard";
+import { PoolCardContainer } from "./components/PoolCardContainer";
 
 export function LiqiuditySection() {
   return (
@@ -27,30 +20,9 @@ export function LiqiuditySection() {
           </button>
         </div>
         <div className="flex w-full flex-col justify-between gap-16 sm:flex-row">
-          <PoolCard
-            description="Stake for rewards and governance rights"
-            name="GMX"
-            to="/"
-            apr={10}
-            iconComponent={IcGmxPool}
-            coinImage={gmxCoin}
-          />
-          <PoolCard
-            description="Steady returns without management "
-            name="GLV"
-            to="/"
-            apr={10}
-            iconComponent={IcGlvPool}
-            coinImage={glvCoin}
-          />
-          <PoolCard
-            description="Invest with control over risk and reward"
-            name="GM"
-            to="/"
-            apr={10}
-            iconComponent={IcGmPool}
-            coinImage={gmCoin}
-          />
+          <PoolCardContainer pool="GMX" />
+          <PoolCardContainer pool="GLV" />
+          <PoolCardContainer pool="GM" />
         </div>
       </div>
     </section>

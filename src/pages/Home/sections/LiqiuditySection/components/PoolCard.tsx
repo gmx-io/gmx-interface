@@ -11,7 +11,7 @@ type Props = {
   name: string;
   description: string;
   apr: number;
-  to: string;
+  onClick: () => void;
   coinImage: string;
   iconComponent: React.FunctionComponent<
     React.SVGProps<SVGSVGElement> & {
@@ -24,9 +24,10 @@ const style: React.CSSProperties = {
   backgroundImage: `url(${bgPoolsGradient})`,
 };
 
-export function PoolCard({ name, to, apr, description, iconComponent, coinImage }: Props) {
+export function PoolCard({ name, apr, description, iconComponent, coinImage, onClick }: Props) {
   return (
     <div
+      onClick={onClick}
       style={style}
       className="group relative h-[200px] w-full cursor-pointer overflow-hidden rounded-20 bg-fiord-600 bg-cover text-white transition-transform duration-300 hover:-translate-y-4 sm:h-[380px] sm:w-[384px]"
     >
