@@ -7,7 +7,6 @@ import { HomePageContextProvider } from "./contexts/HomePageContext";
 import { HeroSection } from "./sections/HeroSection/HeroSection";
 import { LaunchSection } from "./sections/LaunchSection/LaunchSection";
 import { LiqiuditySection } from "./sections/LiqiuditySection/LiqiuditySection";
-import { RedirectModal } from "./sections/RedirectModal/RedirectModal";
 import { SponsorsSection } from "./sections/SponsorsSection/SponsorsSection";
 
 export default function Home(_) {
