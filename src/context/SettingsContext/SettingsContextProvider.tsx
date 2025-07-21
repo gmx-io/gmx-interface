@@ -176,27 +176,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     undefined | { disabledSwapMarkets?: string[]; manualPath?: string[] }
   >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
 
-  const [externalSwapsWasForceEnabled, setExternalSwapsWasForceEnabled] = useLocalStorageByChainId(
-    chainId,
-    EXTERNAL_SWAPS_ENABLED_KEY,
-    false
-  );
-
-  useEffect(() => {
-    // Force enable external swaps for Botanix
-    // We need this for existing users who have disabled external swaps in local storage
-    if (chainId === BOTANIX && !externalSwapsWasForceEnabled) {
-      setExternalSwapsEnabled(true);
-      setExternalSwapsWasForceEnabled(true);
-    }
-  }, [
-    chainId,
-    externalSwapsEnabled,
-    externalSwapsWasForceEnabled,
-    setExternalSwapsEnabled,
-    setExternalSwapsWasForceEnabled,
-  ]);
-
   const [expressOrdersEnabled, setExpressOrdersEnabled] = useLocalStorageSerializeKey(
     getExpressOrdersEnabledKey(chainId, account),
     false
