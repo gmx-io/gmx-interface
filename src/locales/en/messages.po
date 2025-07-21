@@ -8755,6 +8755,7 @@ msgid "Anonymous chat with GMX"
 msgstr "Anonymous chat with GMX"
 
 #: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 msgid "Loading"
 msgstr "Loading"
 
