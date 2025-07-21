@@ -504,7 +504,7 @@ function MarketTokenListItem({
       });
 
   return (
-    <tr key={market.address} className="group/row cursor-pointer hover:bg-cold-blue-900">
+    <tr key={market.address} className="group/row cursor-pointer hover:bg-slate-800">
       <td className={cx("pr-4", rowVerticalPadding, isMobile ? "pl-8" : "pl-16")} onClick={handleFavoriteClick}>
         <FavoriteStar isFavorite={isFavorite} />
       </td>

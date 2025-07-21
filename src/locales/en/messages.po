@@ -807,6 +807,10 @@ msgstr "Open positions through a simple swap interface. Conveniently swap from a
 msgid "Incentives Distribution History"
 msgstr "Incentives Distribution History"
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No markets matched"
+msgstr "No markets matched"
+
 #: src/components/InputSection/InputSection.jsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "MAX"
@@ -3355,8 +3359,8 @@ msgstr "Claiming..."
 
 #. Filter option for tokens favorites
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-msgid "All"
-msgstr "All"
+#~ msgid "All"
+#~ msgstr "All"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Increase"
@@ -6540,6 +6544,11 @@ msgstr "Vested GMX not withdrawn"
 msgid "FEES"
 msgstr "FEES"
 
+#. Filter option for tokens favorites
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "All Markets"
+msgstr "All Markets"
+
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -7594,7 +7603,6 @@ msgid "Fee APY"
 msgstr "Fee APY"
 
 #: src/components/MarketSelector/MarketSelector.tsx
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched."
 msgstr "No markets matched."
 

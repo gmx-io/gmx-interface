@@ -71,10 +71,7 @@ export default function SearchInput({
           height={16}
           width={16}
           onClick={handleClick}
-          className={cx("relative -top-1 ", {
-            "text-slate-100": !isFocused,
-            "text-white": isFocused,
-          })}
+          className={cx("relative -top-1 p-2 text-slate-100")}
         />
       </div>
       <input
@@ -87,10 +84,10 @@ export default function SearchInput({
         onKeyDown={onKeyDown}
         onFocus={handleFocus}
         autoFocus={autoFocus ?? !isSmallerScreen}
-        className={cx("block w-full rounded-4 border  placeholder-slate-100", {
-          "border-cold-blue-500": isFocused,
-          "border-gray-800": !isFocused,
-          "py-10 pl-40 pr-34 text-16": size === "m",
+        className={cx("block w-full rounded-8 border placeholder-slate-100", {
+          "border-blue-300": isFocused,
+          "border-slate-600": !isFocused,
+          "p-8 pl-32 text-[13px]": size === "m",
           "py-[8.5px] pl-34 pr-30 text-14 ": size === "s",
         })}
       />

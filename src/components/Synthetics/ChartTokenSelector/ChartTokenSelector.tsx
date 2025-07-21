@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import partition from "lodash/partition";
 import React, { useCallback, useMemo, useState } from "react";
+import { IoClose } from "react-icons/io5";
 import { useMedia } from "react-use";
 import type { Address } from "viem";
 
@@ -43,11 +44,12 @@ import {
   isChartAvailableForToken,
 } from "sdk/configs/tokens";
 
+import Button from "components/Button/Button";
+import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
-import { TableTd, TableTr } from "components/Table/Table";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -219,25 +221,20 @@ function MarketsList() {
     [chooseSuitableMarket, close, tradeType]
   );
 
-  const rowVerticalPadding = cx({
+  const rowVerticalPadding = cx("px-12 py-10", {
     "group-last-of-type/row:pb-8": !isMobile,
-    "h-50": !isMobile && !isSwap,
-    "py-4": (!isMobile && isSwap) || (isMobile && !isSwap),
-    "py-8": isMobile && isSwap,
   });
-  const rowHorizontalPadding = isMobile
-    ? cx("px-2 first-of-type:pl-5 last-of-type:pr-8")
-    : cx("px-5 first-of-type:pl-16 last-of-type:pr-16");
+  const rowHorizontalPadding = cx("pr-8");
   const thClassName = cx(
-    "text-body-medium sticky top-0 z-10 whitespace-nowrap border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-slate-100",
+    "sticky top-0 z-10 whitespace-nowrap bg-slate-900 text-left text-[11px] font-medium uppercase text-slate-100",
     "first-of-type:text-left",
-    isMobile ? "first-of-type:!pl-40" : "first-of-type:!pl-37",
+    "first-of-type:!pl-44",
     rowVerticalPadding,
     rowHorizontalPadding
   );
 
   const tdClassName = cx(
-    "text-body-medium",
+    "text-body-small font-medium",
     isMobile ? "align-top" : "align-middle",
     rowVerticalPadding,
     rowHorizontalPadding
@@ -263,17 +260,26 @@ function MarketsList() {
 
   const availableLiquidityLabel = isMobile ? (isSmallMobile ? t`LIQ.` : t`AVAIL. LIQ.`) : t`AVAILABLE LIQ.`;
 
+  const handleClearSearch = useCallback(() => {
+    setSearchKeyword("");
+  }, []);
+
   return (
     <>
       <SelectorBaseMobileHeaderContent>
-        <div className="flex flex-col gap-8">
-          <SearchInput
-            className="w-full *:!text-body-medium"
-            value={searchKeyword}
-            setValue={setSearchKeyword}
-            onKeyDown={handleKeyDown}
-            placeholder={placeholder}
-          />
+        <div className="flex flex-col gap-12">
+          <div className="flex items-center gap-12">
+            <SearchInput
+              className="w-full *:!text-body-medium"
+              value={searchKeyword}
+              setValue={setSearchKeyword}
+              onKeyDown={handleKeyDown}
+              placeholder={placeholder}
+            />
+            <Button variant="ghost" onClick={handleClearSearch}>
+              <IoClose />
+            </Button>
+          </div>
           <ButtonRowScrollFadeContainer>
             <FavoriteTabs favoritesKey="chart-token-selector" />
           </ButtonRowScrollFadeContainer>
@@ -282,14 +288,19 @@ function MarketsList() {
 
       {!isMobile && (
         <>
-          <div className="m-16 flex justify-between gap-16">
-            <SearchInput
-              className="w-full *:!text-body-medium"
-              value={searchKeyword}
-              setValue={setSearchKeyword}
-              onKeyDown={handleKeyDown}
-              placeholder={placeholder}
-            />
+          <div className="flex flex-col justify-between gap-16 border-b border-slate-600 p-12">
+            <div className="flex items-center gap-12">
+              <SearchInput
+                className="w-full"
+                value={searchKeyword}
+                setValue={setSearchKeyword}
+                onKeyDown={handleKeyDown}
+                placeholder={placeholder}
+              />
+              <Button variant="secondary" onClick={handleClearSearch} className="!p-8">
+                <IoClose size={16} color="var(--color-slate-100)" />
+              </Button>
+            </div>
             <ButtonRowScrollFadeContainer>
               <FavoriteTabs favoritesKey="chart-token-selector" />
             </ButtonRowScrollFadeContainer>
@@ -303,7 +314,7 @@ function MarketsList() {
         })}
       >
         <table className="text-sm w-full border-separate border-spacing-0">
-          <thead className="bg-slate-800">
+          <thead>
             <tr>
               <th className={cx(thClassName, isMobile ? "min-w-[18ch]" : "min-w-[28ch]")} colSpan={2}>
                 <Trans>Market</Trans>
@@ -365,15 +376,11 @@ function MarketsList() {
                 />
               )
             )}
-            {options && options.length > 0 && !sortedTokens?.length && (
-              <TableTr hoverable={false} bordered={false}>
-                <TableTd colSpan={isSwap ? 2 : 3} className="text-body-medium text-slate-100">
-                  <Trans>No markets matched.</Trans>
-                </TableTd>
-              </TableTr>
-            )}
           </tbody>
         </table>
+        {options && options.length > 0 && !sortedTokens?.length && (
+          <EmptyTableContent isLoading={false} isEmpty={true} emptyText={<Trans>No markets matched</Trans>} />
+        )}
       </div>
     </>
   );
@@ -556,7 +563,7 @@ function MarketListItem({
 
   if (isSwap) {
     return (
-      <tr key={token.symbol} className="group/row cursor-pointer hover:bg-cold-blue-900">
+      <tr key={token.symbol} className="group/row cursor-pointer hover:bg-slate-800">
         <td className={cx("pl-9 pr-9 text-center", rowVerticalPadding)} onClick={handleFavoriteClick}>
           <FavoriteStar isFavorite={isFavorite} />
         </td>
@@ -579,18 +586,11 @@ function MarketListItem({
   }
 
   return (
-    <tr
-      key={token.symbol}
-      className="group/row cursor-pointer hover:bg-cold-blue-900"
-      onClick={handleSelectLargePosition}
-    >
-      <td
-        className={cx("text-center", rowVerticalPadding, isMobile ? "pl-10 pr-4 pt-6 align-top" : "px-9 text-center")}
-        onClick={handleFavoriteClick}
-      >
+    <tr key={token.symbol} className="group/row cursor-pointer hover:bg-slate-800" onClick={handleSelectLargePosition}>
+      <td className={cx("w-16 px-12 text-center", rowVerticalPadding)} onClick={handleFavoriteClick}>
         <FavoriteStar isFavorite={isFavorite} />
       </td>
-      <td className={cx("text-body-medium pl-4", rowVerticalPadding, isMobile ? "pr-2" : "pr-8")}>
+      <td className={cx("pl-4 text-[13px] font-medium", rowVerticalPadding, isMobile ? "pr-2" : "pr-8")}>
         <div className={cx("flex", isMobile ? "items-start" : "items-center")}>
           <TokenIcon className="ChartToken-list-icon mr-8" symbol={token.symbol} displaySize={16} importSize={24} />
           <span className={cx("flex flex-wrap gap-4", isMobile ? "flex-col items-start" : "items-center")}>
@@ -617,13 +617,13 @@ function MarketListItem({
       {!isMobile && (
         <>
           <td className={tdClassName}>
-            <span className="inline-flex items-center gap-4">
-              <LongIcon width={12} className="relative top-1 opacity-70" />
+            <span className="inline-flex items-center gap-6">
+              <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
               {formatAmountHuman(openInterestLong ?? 0n, USD_DECIMALS, true)}
             </span>
           </td>
           <td className={tdClassName}>
-            <span className="inline-flex items-center gap-4">
+            <span className="mb-2 inline-flex items-center gap-6">
               <ShortIcon width={12} className="relative top-1 opacity-70" />
               {formatAmountHuman(openInterestShort ?? 0n, USD_DECIMALS, true)}
             </span>
@@ -633,27 +633,27 @@ function MarketListItem({
 
       {!isMobile ? (
         <>
-          <td className={cx(tdClassName, "group hover:bg-cold-blue-700")} onClick={handleSelectLong}>
-            <div className="inline-flex items-center justify-end gap-4">
-              <LongIcon width={12} className="relative top-1 opacity-70" />
+          <td className={cx(tdClassName, "group hover:bg-slate-800")} onClick={handleSelectLong}>
+            <div className="inline-flex items-center justify-end gap-6">
+              <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
               {formatAmountHuman(maxLongLiquidityPool?.maxLongLiquidity, USD_DECIMALS, true)}
             </div>
           </td>
-          <td className={cx(tdClassName, "group hover:bg-cold-blue-700")} onClick={handleSelectShort}>
-            <div className="inline-flex items-center justify-end gap-4">
-              <ShortIcon width={12} className="relative top-1 opacity-70" />
+          <td className={cx(tdClassName, "group hover:bg-slate-800")} onClick={handleSelectShort}>
+            <div className="inline-flex items-center justify-end gap-6">
+              <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />
               {formatAmountHuman(maxShortLiquidityPool?.maxShortLiquidity, USD_DECIMALS, true)}
             </div>
           </td>
         </>
       ) : (
         <td colSpan={2} className={cx(tdClassName)}>
-          <div className="flex items-center justify-end gap-4">
-            <LongIcon width={12} className="relative top-1 opacity-70" />
+          <div className="flex items-center justify-end gap-6">
+            <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
             {formatAmountHuman(maxLongLiquidityPool?.maxLongLiquidity, USD_DECIMALS, true)}
           </div>
-          <div className="flex items-center justify-end gap-4">
-            <ShortIcon width={12} className="relative top-1 opacity-70" />
+          <div className="flex items-center justify-end gap-6">
+            <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />
             {formatAmountHuman(maxShortLiquidityPool?.maxShortLiquidity, USD_DECIMALS, true)}
           </div>
         </td>

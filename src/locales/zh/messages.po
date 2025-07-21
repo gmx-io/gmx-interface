@@ -807,6 +807,10 @@ msgstr "通过简单的互换界面开立头寸。方便地从任何币值换成
 msgid "Incentives Distribution History"
 msgstr ""
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No markets matched"
+msgstr ""
+
 #: src/components/InputSection/InputSection.jsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "MAX"
@@ -3355,8 +3359,8 @@ msgstr "领取中"
 
 #. Filter option for tokens favorites
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-msgid "All"
-msgstr ""
+#~ msgid "All"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Increase"
@@ -6534,6 +6538,11 @@ msgstr "归属的GMX未被撤回"
 msgid "FEES"
 msgstr "费用"
 
+#. Filter option for tokens favorites
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "All Markets"
+msgstr ""
+
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -7588,7 +7597,6 @@ msgid "Fee APY"
 msgstr ""
 
 #: src/components/MarketSelector/MarketSelector.tsx
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched."
 msgstr ""
 

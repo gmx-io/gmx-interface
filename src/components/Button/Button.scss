@@ -6,11 +6,11 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
 .button {
   cursor: pointer;
   font-size: 13px;
-  line-height: 16.25px;
+  line-height: 16px;
   display: inline-flex;
   align-items: center;
   font-weight: 500;
-  padding: 18px 20px;
+  padding: 12px 8px;
   border: none;
   user-select: none;
 
@@ -78,7 +78,7 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
     }
 
     &:not([disabled], .disabled):hover {
-      background-color: var(--color-cold-blue-700);
+      background-color: var(--color-slate-800);
     }
 
     &:not([disabled], .disabled):active {
@@ -89,7 +89,7 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
   &.ghost {
     background-color: transparent;
     border-radius: 8px;
-    color: var(--color-white);
+    color: var(--color-slate-100);
     position: relative;
     letter-spacing: 0;
 
@@ -110,11 +110,13 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
     }
 
     &:not([disabled], .disabled):hover {
-      background-color: var(--color-cold-blue-700);
+      color: var(--color-white);
+      background-color: var(--color-slate-800);
     }
 
     &:not([disabled], .disabled):active {
-      background: var(--color-cold-blue-500);
+      color: var(--color-white);
+      background: var(--color-slate-800);
     }
   }
 
