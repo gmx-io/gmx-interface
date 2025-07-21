@@ -3357,11 +3357,6 @@ msgstr "La orden no se puede ejecutar pues la posición restante sería menor de
 msgid "Claiming..."
 msgstr "Reclamando..."
 
-#. Filter option for tokens favorites
-#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-#~ msgid "All"
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Increase"
 msgstr "Solicitar incremento del mercado"

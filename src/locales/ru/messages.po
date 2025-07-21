@@ -3357,11 +3357,6 @@ msgstr "Ордер не может быть выполнен, так как ос
 msgid "Claiming..."
 msgstr "Утверждение..."
 
-#. Filter option for tokens favorites
-#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-#~ msgid "All"
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Increase"
 msgstr "Запрос на рыночное увеличение"

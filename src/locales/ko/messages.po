@@ -3357,11 +3357,6 @@ msgstr "포지션의 금액이 $5.00 이하로 남게되면 주문은 실행될 
 msgid "Claiming..."
 msgstr "수령중..."
 
-#. Filter option for tokens favorites
-#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-#~ msgid "All"
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Increase"
 msgstr "마켓 증가 요청"

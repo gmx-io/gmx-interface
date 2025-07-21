@@ -543,7 +543,7 @@ table.Position-list .Exchange-list-item-active {
   content: "";
   border-left: 2px solid var(--color-cold-blue-500);
   position: absolute;
-  left: -10px;
+  left: -8px;
   bottom: -1px;
   height: 21px;
 }
@@ -959,7 +959,7 @@ table.Exchange-list-small td {
   }
 }
 
-@media (max-width: 1300px) {
+@media (max-width: 1100px) {
   .Exchange-list.large {
     display: none;
   }

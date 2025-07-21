@@ -3357,11 +3357,6 @@ msgstr "订单无法执行，剩余头寸小于5美元"
 msgid "Claiming..."
 msgstr "领取中"
 
-#. Filter option for tokens favorites
-#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-#~ msgid "All"
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Increase"
 msgstr "要求市场增加"

@@ -3357,11 +3357,6 @@ msgstr "ポジション金額が$5未満になるため注文を執行できま�
 msgid "Claiming..."
 msgstr "請求中..."
 
-#. Filter option for tokens favorites
-#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-#~ msgid "All"
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Increase"
 msgstr "市場増加リクエスト"

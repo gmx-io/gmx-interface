@@ -40,6 +40,7 @@ import { getPositiveOrNegativeClass } from "lib/utils";
 import { getMarketIndexName } from "sdk/utils/markets";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
+import AppCard, { AppCardSection } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
 import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -80,7 +81,7 @@ export function PositionItem(p: Props) {
   function renderNetValue() {
     return (
       <Tooltip
-        handle={<span className="font-medium">{formatUsd(p.position.netValue)}</span>}
+        handle={<span className={p.isLarge ? "font-medium" : undefined}>{formatUsd(p.position.netValue)}</span>}
         position={p.isLarge ? "bottom-start" : "bottom-end"}
         renderContent={() => (
           <div>
@@ -173,7 +174,7 @@ export function PositionItem(p: Props) {
         <div className={cx("position-list-collateral", { isSmall: !p.isLarge })}>
           <Tooltip
             handle={
-              <span data-qa="position-collateral-value" className="font-medium">
+              <span data-qa="position-collateral-value" className={p.isLarge ? "font-medium" : undefined}>
                 {formatUsd(p.position.remainingCollateralUsd)}
               </span>
             }
@@ -264,7 +265,7 @@ export function PositionItem(p: Props) {
           )}
         </div>
 
-        <div className="Exchange-list-info-label Position-collateral-amount muted">
+        <div className="muted text-body-small">
           (
           {formatBalanceAmount(
             p.position.remainingCollateralAmount,
@@ -344,7 +345,7 @@ export function PositionItem(p: Props) {
         <Tooltip
           handle={
             (
-              <span className="font-medium">
+              <span className="font-medium text-slate-100">
                 {formatLiquidationPrice(p.position.liquidationPrice, {
                   displayDecimals: marketDecimals,
                   visualMultiplier: p.position.indexToken.visualMultiplier,
@@ -395,7 +396,7 @@ export function PositionItem(p: Props) {
                       displaySize={20}
                       importSize={24}
                     />
-                    <span className="font-medium">
+                    <span className="font-medium text-slate-100">
                       {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
                     </span>
                   </>
@@ -454,7 +455,7 @@ export function PositionItem(p: Props) {
           </div>
         </TableTd>
         <TableTd>
-          <span className="font-medium">{formatUsd(p.position.sizeInUsd)}</span>
+          <span className="font-medium text-slate-100">{formatUsd(p.position.sizeInUsd)}</span>
           <PositionItemOrdersLarge positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
         </TableTd>
         <TableTd>
@@ -488,7 +489,7 @@ export function PositionItem(p: Props) {
           {p.position.isOpening ? (
             t`Opening...`
           ) : (
-            <span className="font-medium">
+            <span className="font-medium text-slate-100">
               {formatUsd(p.position.entryPrice, {
                 displayDecimals: marketDecimals,
                 visualMultiplier: p.position.indexToken.visualMultiplier,
@@ -499,7 +500,7 @@ export function PositionItem(p: Props) {
         <TableTd>
           {/* markPrice */}
           {
-            <span className="font-medium">
+            <span className="font-medium text-slate-100">
               {formatUsd(p.position.markPrice, {
                 displayDecimals: marketDecimals,
                 visualMultiplier: p.position.indexToken.visualMultiplier,
@@ -554,171 +555,152 @@ export function PositionItem(p: Props) {
     const { indexName, poolName } = p.position;
 
     return (
-      <div className="App-card flex flex-col justify-between" data-qa="position-item">
-        <div className="flex flex-grow flex-col">
-          <div className="flex-grow">
-            <div
-              className={cx("App-card-title Position-card-title text-body-medium", {
-                "Position-active-card": isCurrentMarket,
-              })}
-              onClick={() => p.onSelectPositionClick?.()}
-            >
-              <span className="Exchange-list-title flex">
-                <TokenIcon
-                  className="PositionList-token-icon"
-                  symbol={p.position.indexToken?.symbol}
-                  displaySize={20}
-                  importSize={24}
-                />
-                {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
+      <AppCard dataQa="position-item">
+        <AppCardSection onClick={() => p.onSelectPositionClick?.()}>
+          <div className="text-body-medium flex items-center gap-8">
+            <span className="text-body-medium flex items-center gap-4 font-medium">
+              <TokenIcon className="" symbol={p.position.indexToken?.symbol} displaySize={16} importSize={24} />
+              {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
+            </span>
+            <div className="text-body-small flex items-center gap-4">
+              <span className={cx("rounded-4 leading-1")}>{formatLeverage(p.position.leverage) || "..."}</span>
+              <span
+                className={cx("Exchange-list-side", {
+                  positive: p.position.isLong,
+                  negative: !p.position.isLong,
+                })}
+              >
+                {p.position.isLong ? t`Long` : t`Short`}
               </span>
-              <div className="flex items-center">
-                <span className={cx("mr-8 rounded-4 px-4 leading-1")}>
-                  {formatLeverage(p.position.leverage) || "..."}
-                </span>
-                <span
-                  className={cx("Exchange-list-side", {
-                    positive: p.position.isLong,
-                    negative: !p.position.isLong,
-                  })}
-                >
-                  {p.position.isLong ? t`Long` : t`Short`}
-                </span>
-              </div>
-              {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
             </div>
-
-            <div className="App-card-divider" />
-            <div className="App-card-content">
-              {showDebugValues && (
-                <div className="App-card-row">
-                  <div className="label">Key</div>
-                  <div className="debug-key muted">{p.position.contractKey}</div>
-                </div>
-              )}
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Pool</Trans>
-                </div>
-                <div>
-                  <div className="flex items-start">
-                    <span>{indexName && indexName}</span>
-                    <span className="subtext">{poolName && `[${poolName}]`}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Size</Trans>
-                </div>
-                <div>{formatUsd(p.position.sizeInUsd)}</div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Net Value</Trans>
-                </div>
-                <div>{renderNetValue()}</div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">{savedShowPnlAfterFees ? t`PnL After Fees` : t`PnL`}</div>
-                <div>
-                  <span
-                    className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {
-                      positive: displayedPnl > 0,
-                      negative: displayedPnl < 0,
-                      muted: displayedPnl == 0n,
-                    })}
-                    onClick={p.openSettings}
-                  >
-                    {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
-                  </span>
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Collateral</Trans>
-                </div>
-                <div>{renderCollateral()}</div>
-              </div>
+            {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
+          </div>
+        </AppCardSection>
+        <AppCardSection>
+          {showDebugValues && (
+            <div className="App-card-row">
+              <div className="font-medium text-slate-100">Key</div>
+              <div className="debug-key muted">{p.position.contractKey}</div>
             </div>
-            <div className="App-card-divider" />
-            <div className="App-card-content">
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Entry Price</Trans>
-                </div>
-                <div>
-                  {formatUsd(p.position.entryPrice, {
-                    displayDecimals: marketDecimals,
-                    visualMultiplier: p.position.indexToken.visualMultiplier,
-                  })}
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Mark Price</Trans>
-                </div>
-                <div>
-                  {formatUsd(p.position.markPrice, {
-                    displayDecimals: marketDecimals,
-                    visualMultiplier: p.position.indexToken.visualMultiplier,
-                  })}
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Liq. Price</Trans>
-                </div>
-                <div>{renderLiquidationPrice()}</div>
-              </div>
+          )}
+          <div className="App-card-row">
+            <div className="font-medium text-slate-100">
+              <Trans>Pool</Trans>
             </div>
-            <div className="App-card-divider" />
-            <div className="flex flex-wrap gap-15">
-              <div className="label">
-                <Trans>Orders</Trans>
-              </div>
-              <div className="flex-grow">
-                <PositionItemOrdersSmall positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
+            <div>
+              <div className="flex items-start">
+                <span>{indexName && indexName}</span>
+                <span className="subtext">{poolName && `[${poolName}]`}</span>
               </div>
             </div>
           </div>
-          {!p.hideActions && (
-            <footer>
-              <div className="App-card-divider" />
-              <div className="Position-item-action">
-                <div className="Position-item-buttons">
-                  <Button variant="secondary" disabled={p.position.sizeInUsd == 0n} onClick={p.onClosePositionClick}>
-                    <Trans>Close</Trans>
-                  </Button>
-                  <Button variant="secondary" disabled={p.position.sizeInUsd == 0n} onClick={p.onEditCollateralClick}>
-                    <Trans>Edit Collateral</Trans>
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    disabled={p.position.sizeInUsd == 0n}
-                    onClick={() => {
-                      p.onSelectPositionClick?.(TradeMode.Trigger, true);
-                    }}
-                  >
-                    <Trans>TP/SL</Trans>
-                  </Button>
-                </div>
-                <div>
-                  {!p.position.isOpening && !p.hideActions && (
-                    <PositionDropdown
-                      handleMarketSelect={() => p.onSelectPositionClick?.()}
-                      handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market, true)}
-                      handleShare={p.onShareClick}
-                      handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit, true)}
-                      handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket, true)}
-                    />
-                  )}
-                </div>
+          <div className="App-card-row">
+            <div className="font-medium text-slate-100">
+              <Trans>Size</Trans>
+            </div>
+            <div>{formatUsd(p.position.sizeInUsd)}</div>
+          </div>
+          <div className="App-card-row">
+            <div className="font-medium text-slate-100">
+              <Trans>Net Value</Trans>
+            </div>
+            <div>{renderNetValue()}</div>
+          </div>
+          <div className="App-card-row">
+            <div className="font-medium text-slate-100">{savedShowPnlAfterFees ? t`PnL After Fees` : t`PnL`}</div>
+            <div>
+              <span
+                className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {
+                  positive: displayedPnl > 0,
+                  negative: displayedPnl < 0,
+                  muted: displayedPnl == 0n,
+                })}
+                onClick={p.openSettings}
+              >
+                {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
+              </span>
+            </div>
+          </div>
+          <div className="App-card-row">
+            <div className="font-medium text-slate-100">
+              <Trans>Collateral</Trans>
+            </div>
+            <div>{renderCollateral()}</div>
+          </div>
+        </AppCardSection>
+        <AppCardSection>
+          <div className="App-card-row">
+            <div className="font-medium text-slate-100">
+              <Trans>Entry Price</Trans>
+            </div>
+            <div>
+              {formatUsd(p.position.entryPrice, {
+                displayDecimals: marketDecimals,
+                visualMultiplier: p.position.indexToken.visualMultiplier,
+              })}
+            </div>
+          </div>
+          <div className="App-card-row">
+            <div className="font-medium text-slate-100">
+              <Trans>Mark Price</Trans>
+            </div>
+            <div>
+              {formatUsd(p.position.markPrice, {
+                displayDecimals: marketDecimals,
+                visualMultiplier: p.position.indexToken.visualMultiplier,
+              })}
+            </div>
+          </div>
+          <div className="App-card-row">
+            <div className="font-medium text-slate-100">
+              <Trans>Liq. Price</Trans>
+            </div>
+            <div>{renderLiquidationPrice()}</div>
+          </div>
+        </AppCardSection>
+        <AppCardSection>
+          <div className="font-medium text-slate-100">
+            <Trans>Orders</Trans>
+          </div>
+
+          <PositionItemOrdersSmall positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
+        </AppCardSection>
+
+        {!p.hideActions && (
+          <AppCardSection>
+            <div className="flex items-center justify-between">
+              <div className="flex gap-8">
+                <Button variant="secondary" disabled={p.position.sizeInUsd == 0n} onClick={p.onClosePositionClick}>
+                  <Trans>Close</Trans>
+                </Button>
+                <Button variant="secondary" disabled={p.position.sizeInUsd == 0n} onClick={p.onEditCollateralClick}>
+                  <Trans>Edit Collateral</Trans>
+                </Button>
+                <Button
+                  variant="secondary"
+                  disabled={p.position.sizeInUsd == 0n}
+                  onClick={() => {
+                    p.onSelectPositionClick?.(TradeMode.Trigger, true);
+                  }}
+                >
+                  <Trans>TP/SL</Trans>
+                </Button>
               </div>
-            </footer>
-          )}
-        </div>
-      </div>
+              <div>
+                {!p.position.isOpening && !p.hideActions && (
+                  <PositionDropdown
+                    handleMarketSelect={() => p.onSelectPositionClick?.()}
+                    handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market, true)}
+                    handleShare={p.onShareClick}
+                    handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit, true)}
+                    handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket, true)}
+                  />
+                )}
+              </div>
+            </div>
+          </AppCardSection>
+        )}
+      </AppCard>
     );
   }
 

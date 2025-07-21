@@ -440,15 +440,6 @@ button.App-connect-wallet:hover {
   justify-content: start;
 }
 
-.Position-card-title::after {
-  content: "";
-  position: absolute;
-  left: -$app-card-padding;
-  top: -$app-card-padding;
-  bottom: -$app-card-padding;
-  right: -$app-card-padding;
-}
-
 .App-card-title-small {
   font-size: var(--font-size-body-medium);
   display: inline-flex;

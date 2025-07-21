@@ -84,7 +84,7 @@ enum ListSection {
 }
 
 const TAB_CLASSNAME = {
-  active: "border-b-2 border-b-blue-500 mb-[-1.5px]",
+  active: "border-b-2 border-b-blue-300 mb-[-1.5px]",
   regular: "border-b-2 border-b-[transparent] mb-[-1.5px]",
 };
 
@@ -390,16 +390,16 @@ export function SyntheticsPage(p: Props) {
         )}
 
         {isMobile && (
-          <div className="Exchange-lists small min-w-0" data-qa="trade-table-small">
-            <div className="Exchange-list-tab-container">
-              <Tabs
-                options={tabsOptions}
-                selectedValue={listSection}
-                onChange={handleTabChange}
-                type="inline"
-                className="Exchange-list-tabs"
-              />
-            </div>
+          <div className="flex w-full flex-col gap-8" data-qa="trade-table-small">
+            <Tabs
+              options={tabsOptions}
+              selectedValue={listSection}
+              onChange={handleTabChange}
+              type="block"
+              className="rounded-8 border-b-[1.5px] border-slate-600 bg-slate-900"
+              regularOptionClassname="first:rounded-l-8 last:rounded-r-8"
+            />
+
             {listSection === ListSection.Positions && (
               <PositionList
                 onOrdersClick={handlePositionListOrdersClick}

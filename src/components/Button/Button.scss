@@ -10,7 +10,7 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
   display: inline-flex;
   align-items: center;
   font-weight: 500;
-  padding: 12px 8px;
+  padding: 8px 12px;
   border: none;
   user-select: none;
 
@@ -55,9 +55,9 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
   }
 
   &.secondary {
-    background-color: var(--color-slate-700);
+    background-color: var(--color-slate-800);
     border-radius: 8px;
-    color: var(--color-white);
+    color: var(--color-slate-100);
     position: relative;
     letter-spacing: 0;
 
@@ -78,11 +78,13 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
     }
 
     &:not([disabled], .disabled):hover {
-      background-color: var(--color-slate-800);
+      background-color: var(--color-fill-surfaceHover);
+      color: var(--color-white);
     }
 
     &:not([disabled], .disabled):active {
-      background: var(--color-cold-blue-500);
+      background: var(--color-slate-800);
+      color: var(--color-white);
     }
   }
 
