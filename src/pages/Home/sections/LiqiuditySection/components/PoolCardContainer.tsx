@@ -43,6 +43,7 @@ const COIN_IMAGES: Record<Pool, string> = {
 
 export function PoolCardContainer({ pool }: Props) {
   const onClick = useGoToPools({ pool });
+  //TODO: get apr from api
   return (
     <PoolCard
       name={NAMES[pool]}
