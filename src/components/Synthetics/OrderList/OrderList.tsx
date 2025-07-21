@@ -1,4 +1,4 @@
-import { Plural, Trans, t } from "@lingui/macro";
+import { Plural, Trans } from "@lingui/macro";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef } from "react";
 import { useMeasure, useMedia } from "react-use";
 
@@ -37,8 +37,9 @@ import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
+import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
-import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { Table, TableTh, TableTheadTr } from "components/Table/Table";
 
 import { OrderItem } from "../OrderItem/OrderItem";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
@@ -239,9 +240,11 @@ export function OrderList({
       )}
 
       {isContainerSmall && orders.length === 0 && (
-        <div className="rounded-4 bg-slate-900 p-14 text-slate-500">
-          {isLoading ? t`Loading...` : t`No open orders`}
-        </div>
+        <EmptyTableContent
+          isLoading={isLoading}
+          isEmpty={orders.length === 0}
+          emptyText={<Trans>No open orders</Trans>}
+        />
       )}
 
       {!isContainerSmall && (
@@ -281,13 +284,11 @@ export function OrderList({
             </TableTheadTr>
           </thead>
           <tbody>
-            {orders.length === 0 && (
-              <TableTr hoverable={false} bordered={false}>
-                <TableTd colSpan={7} className="text-slate-500">
-                  {isLoading ? t`Loading...` : t`No open orders`}
-                </TableTd>
-              </TableTr>
-            )}
+            <EmptyTableContent
+              isLoading={isLoading}
+              isEmpty={orders.length === 0}
+              emptyText={<Trans>No open orders</Trans>}
+            />
             {!isLoading &&
               orders.map((order) => (
                 <OrderItem

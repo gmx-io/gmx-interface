@@ -14,13 +14,14 @@ import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { formatTokenAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 
+import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { HistoryControl } from "components/HistoryControl/HistoryControl";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Referrals/usePagination";
 import { ClaimsHistorySkeleton } from "components/Skeleton/Skeleton";
 import { DateRangeSelect } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
 import { MarketFilter } from "components/Synthetics/TableMarketFilter/MarketFilter";
-import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
 import CalendarIcon from "img/ic_calendar.svg?react";
@@ -167,23 +168,20 @@ export function ClaimsHistory({
             ) : (
               currentPageData.map((claimAction) => <ClaimHistoryRow key={claimAction.id} claimAction={claimAction} />)
             )}
-            {isEmpty && !hasFilters && (
-              <TableTr hoverable={false} bordered={false}>
-                <TableTd colSpan={3} className="text-slate-100">
-                  <Trans>No claims yet</Trans>
-                </TableTd>
-              </TableTr>
-            )}
-
-            {isEmpty && hasFilters && (
-              <TableTr hoverable={false} bordered={false}>
-                <TableTd colSpan={3} className="text-slate-100">
-                  <Trans>No claims match the selected filters</Trans>
-                </TableTd>
-              </TableTr>
-            )}
           </tbody>
         </table>
+
+        {isEmpty && !hasFilters && (
+          <EmptyTableContent isLoading={false} isEmpty={isEmpty} emptyText={<Trans>No claims yet</Trans>} />
+        )}
+
+        {isEmpty && hasFilters && (
+          <EmptyTableContent
+            isLoading={false}
+            isEmpty={isEmpty}
+            emptyText={<Trans>No claims match the selected filters</Trans>}
+          />
+        )}
       </TableScrollFadeContainer>
 
       <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />

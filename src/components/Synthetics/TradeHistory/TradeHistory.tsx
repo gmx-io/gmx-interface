@@ -13,11 +13,12 @@ import { TradeAction, TradeActionType, useTradeHistory } from "domain/synthetics
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
+import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { HistoryControl } from "components/HistoryControl/HistoryControl";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Referrals/usePagination";
 import { TradesHistorySkeleton } from "components/Skeleton/Skeleton";
-import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -247,22 +248,18 @@ export function TradeHistory(p: Props) {
                   />
                 ))
               )}
-              {isEmpty && hasFilters && (
-                <TableTr hoverable={false} bordered={false}>
-                  <TableTd className="text-slate-100" colSpan={5}>
-                    <Trans>No trades match the selected filters</Trans>
-                  </TableTd>
-                </TableTr>
-              )}
-              {isEmpty && !hasFilters && !isLoading && (
-                <TableTr hoverable={false} bordered={false}>
-                  <TableTd className="text-slate-100" colSpan={5}>
-                    <Trans>No trades yet</Trans>
-                  </TableTd>
-                </TableTr>
-              )}
             </tbody>
           </table>
+          {isEmpty && hasFilters && (
+            <EmptyTableContent
+              isLoading={false}
+              isEmpty={isEmpty}
+              emptyText={<Trans>No trades match the selected filters</Trans>}
+            />
+          )}
+          {isEmpty && !hasFilters && !isLoading && (
+            <EmptyTableContent isLoading={false} isEmpty={isEmpty} emptyText={<Trans>No trades yet</Trans>} />
+          )}
         </TableScrollFadeContainer>
 
         <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />

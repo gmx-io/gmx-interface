@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { memo, useCallback, useState } from "react";
 import { useMedia } from "react-use";
 
@@ -14,10 +14,11 @@ import { getByKey } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
 
+import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import PositionShare from "components/Exchange/PositionShare";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
-import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { Table, TableTh, TableTheadTr } from "components/Table/Table";
 
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode, showCurtain?: boolean) => void;
@@ -56,9 +57,11 @@ export function PositionList(p: Props) {
     <div>
       {isMobile && (
         <>
-          {positions.length === 0 && (
-            <div className="App-card text-slate-100">{isLoading ? t`Loading...` : t`No open positions`}</div>
-          )}
+          <EmptyTableContent
+            isLoading={isLoading}
+            isEmpty={positions.length === 0}
+            emptyText={<Trans>No open positions</Trans>}
+          />
           <div className="grid grid-cols-1 gap-8 min-[800px]:grid-cols-2">
             {!isLoading &&
               positions.map((position) => (
@@ -114,13 +117,11 @@ export function PositionList(p: Props) {
             </TableTheadTr>
           </thead>
           <tbody>
-            {positions.length === 0 && (
-              <TableTr hoverable={false} bordered={false}>
-                <TableTd colSpan={15}>
-                  <div className="text-slate-100">{isLoading ? t`Loading...` : t`No open positions`}</div>
-                </TableTd>
-              </TableTr>
-            )}
+            <EmptyTableContent
+              isLoading={isLoading}
+              isEmpty={positions.length === 0}
+              emptyText={<Trans>No open positions</Trans>}
+            />
             {!isLoading &&
               positions.map((position) => (
                 <PositionItemWrapper
