@@ -223,6 +223,9 @@ export function mockMarketsInfoData(
       maxPositionImpactFactorPositive: expandDecimals(2, 23),
       maxPositionImpactFactorNegative: expandDecimals(1, 23),
       maxPositionImpactFactorForLiquidations: expandDecimals(1, 23),
+      maxLendableImpactFactor: expandDecimals(1, 23),
+      maxLendableImpactFactorForWithdrawals: expandDecimals(1, 23),
+      maxLendableImpactUsd: expandDecimals(1, 23),
       positionImpactExponentFactor: expandDecimals(2, 30),
 
       swapFeeFactorForBalanceWasImproved: expandDecimals(2, 27),

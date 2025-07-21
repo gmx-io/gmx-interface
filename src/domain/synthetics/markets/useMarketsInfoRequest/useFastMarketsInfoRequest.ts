@@ -198,6 +198,9 @@ export function useFastMarketsInfoRequest(chainId: number) {
             maxPositionImpactFactorPositive: BigInt(mInfo.maxPositionImpactFactorPositive),
             maxPositionImpactFactorNegative: BigInt(mInfo.maxPositionImpactFactorNegative),
             maxPositionImpactFactorForLiquidations: BigInt(mInfo.maxPositionImpactFactorForLiquidations),
+            maxLendableImpactFactor: 0n,
+            maxLendableImpactFactorForWithdrawals: 0n,
+            maxLendableImpactUsd: 0n,
             positionImpactExponentFactor: BigInt(mInfo.positionImpactExponentFactor),
 
             swapFeeFactorForBalanceWasImproved: BigInt(mInfo.swapFeeFactorForPositiveImpact),

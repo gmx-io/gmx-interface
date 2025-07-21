@@ -66,6 +66,8 @@ export type PositionInfo = Position & {
   pendingClaimableFundingFeesUsd: bigint;
 };
 
+export type PositionInfoLoaded = PositionInfo & { marketInfo: MarketInfo };
+
 export type PositionsData = {
   [positionKey: string]: Position;
 };

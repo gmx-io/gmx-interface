@@ -1,33 +1,36 @@
-import { ethers } from "ethers";
-
-import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "config/factors";
-import { UserReferralInfo } from "domain/referrals";
-import { getPositionFee } from "domain/synthetics/fees";
-import { MarketInfo } from "domain/synthetics/markets";
-import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "configs/factors";
+import { MarketInfo } from "types/markets";
+import { DecreasePositionSwapType, OrderType } from "types/orders";
+import { PositionInfo, PositionInfoLoaded } from "types/positions";
+import { UserReferralInfo } from "types/referrals";
+import { TokenData } from "types/tokens";
+import { DecreasePositionAmounts, NextPositionValues } from "types/trade";
+import { bigMath } from "utils/bigmath";
+import { getPositionFee } from "utils/fees";
 import {
-  PositionInfo,
-  PositionInfoLoaded,
+  applyFactor,
+  BASIS_POINTS_DIVISOR_BIGINT,
+  expandDecimals,
+  getBasisPoints,
+  roundUpDivision,
+  USD_DECIMALS,
+  MaxUint256,
+} from "utils/numbers";
+import {
   getLeverage,
   getLiquidationPrice,
   getMinCollateralFactorForPosition,
+  getNetPriceImpactDeltaUsdForDecrease,
   getPositionPnlUsd,
-} from "domain/synthetics/positions";
-import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
-import { DUST_USD } from "lib/legacy";
-import { applyFactor, getBasisPoints, roundUpDivision } from "lib/numbers";
-import { DecreasePositionAmounts, NextPositionValues } from "sdk/types/trade";
-import { bigMath } from "sdk/utils/bigmath";
-import { getNetPriceImpactDeltaUsdForDecrease } from "sdk/utils/positions";
-import { getSwapStats } from "sdk/utils/swap/swapStats";
-import { getIsEquivalentTokens } from "sdk/utils/tokens";
-
+} from "utils/positions";
 import {
   getAcceptablePriceInfo,
   getDefaultAcceptablePriceImpactBps,
   getMarkPrice,
   getOrderThresholdType,
-} from "./prices";
+} from "utils/prices";
+import { getSwapStats } from "utils/swap";
+import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens } from "utils/tokens";
 
 export function getDecreasePositionAmounts(p: {
   marketInfo: MarketInfo;
@@ -85,6 +88,7 @@ export function getDecreasePositionAmounts(p: {
     proportionalPendingImpactDeltaUsd: 0n,
     totalPendingImpactDeltaUsd: 0n,
     priceImpactDiffUsd: 0n,
+    balanceWasImproved: false,
     acceptablePriceDeltaBps: 0n,
     recommendedAcceptablePriceDeltaBps: 0n,
 
@@ -153,7 +157,7 @@ export function getDecreasePositionAmounts(p: {
     const positionFeeInfo = getPositionFee(
       marketInfo,
       values.sizeDeltaUsd,
-      values.totalPendingImpactDeltaUsd > 0,
+      values.balanceWasImproved,
       userReferralInfo
     );
 
@@ -240,12 +244,7 @@ export function getDecreasePositionAmounts(p: {
   const profitAmount = convertToTokenAmount(profitUsd, collateralToken.decimals, values.collateralPrice)!;
 
   // Fees
-  const positionFeeInfo = getPositionFee(
-    marketInfo,
-    values.sizeDeltaUsd,
-    values.totalPendingImpactDeltaUsd > 0,
-    userReferralInfo
-  );
+  const positionFeeInfo = getPositionFee(marketInfo, values.sizeDeltaUsd, values.balanceWasImproved, userReferralInfo);
   const estimatedPositionFeeCost = estimateCollateralCost(
     positionFeeInfo.positionFeeUsd,
     collateralToken,
@@ -388,7 +387,7 @@ export function getIsFullClose(p: {
   const { position, sizeDeltaUsd, indexPrice, remainingCollateralUsd, minCollateralUsd, minPositionSizeUsd } = p;
   const { marketInfo, isLong } = position;
 
-  if (position.sizeInUsd - sizeDeltaUsd < DUST_USD) {
+  if (position.sizeInUsd - sizeDeltaUsd < expandDecimals(1, USD_DECIMALS)) {
     return true;
   }
 
@@ -518,6 +517,7 @@ function applyAcceptablePrice(p: {
 
   values.acceptablePrice = acceptablePriceInfo.acceptablePrice;
   values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
+  values.balanceWasImproved = acceptablePriceInfo.balanceWasImproved;
 
   const totalImpactValues = getNetPriceImpactDeltaUsdForDecrease({
     marketInfo,
@@ -536,7 +536,7 @@ function applyAcceptablePrice(p: {
       if (isLong) {
         values.acceptablePrice = 0n;
       } else {
-        values.acceptablePrice = ethers.MaxUint256;
+        values.acceptablePrice = MaxUint256;
       }
     } else {
       let maxNegativePriceImpactBps = fixedAcceptablePriceImpactBps;

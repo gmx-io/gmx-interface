@@ -1,5 +1,6 @@
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 import { MarketInfo } from "types/markets";
+import { PositionInfoLoaded } from "types/positions";
 import { UserReferralInfo } from "types/referrals";
 import { Token, TokenData } from "types/tokens";
 
@@ -12,8 +13,8 @@ import {
   getPriceImpactForPosition,
   getProportionalPendingImpactValues,
 } from "./fees";
-import { getCappedPoolPnl, getMarketPnl, getPoolUsdWithoutPnl } from "./markets";
-import { applyFactor, expandDecimals } from "./numbers";
+import { getCappedPoolPnl, getMarketPnl, getOpenInterestUsd, getPoolUsdWithoutPnl } from "./markets";
+import { applyFactor, expandDecimals, PRECISION } from "./numbers";
 import { convertToUsd, getIsEquivalentTokens } from "./tokens";
 
 export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
@@ -175,7 +176,7 @@ export function getLiquidationPrice(p: {
     priceImpactDeltaUsd = priceImapctForPosition.priceImpactDeltaUsd;
 
     if (priceImpactDeltaUsd > 0) {
-      priceImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, priceImpactDeltaUsd);
+      priceImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeInUsd, priceImpactDeltaUsd);
     }
 
     const pendingImpactUsd = convertToUsd(
@@ -283,7 +284,7 @@ export function getNetPriceImpactDeltaUsdForDecrease({
   }
 
   if (totalImpactDeltaUsd > 0) {
-    totalImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, totalImpactDeltaUsd);
+    totalImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeDeltaUsd, totalImpactDeltaUsd);
   }
 
   totalImpactDeltaUsd = capPositionImpactUsdByMaxImpactPool(marketInfo, totalImpactDeltaUsd);
@@ -293,4 +294,22 @@ export function getNetPriceImpactDeltaUsdForDecrease({
     proportionalPendingImpactDeltaUsd,
     priceImpactDiffUsd,
   };
+}
+
+export function getMinCollateralFactorForPosition(position: PositionInfoLoaded, openInterestDelta: bigint) {
+  const marketInfo = position.marketInfo;
+
+  const isLong = position.isLong;
+  const openInterest = getOpenInterestUsd(marketInfo, isLong) + openInterestDelta;
+  const minCollateralFactorMultiplier = isLong
+    ? marketInfo.minCollateralFactorForOpenInterestLong
+    : marketInfo.minCollateralFactorForOpenInterestShort;
+  let minCollateralFactor = bigMath.mulDiv(openInterest, minCollateralFactorMultiplier, PRECISION);
+  const minCollateralFactorForMarket = marketInfo.minCollateralFactor;
+
+  if (minCollateralFactorForMarket > minCollateralFactor) {
+    minCollateralFactor = minCollateralFactorForMarket;
+  }
+
+  return minCollateralFactor;
 }

@@ -14,13 +14,14 @@ export function PositionSellerPriceImpactFeesRow() {
   const totalPriceImpactPercentage =
     (fees?.positionPriceImpact?.precisePercentage ?? 0n) + (fees?.priceImpactDiff?.precisePercentage ?? 0n);
 
-  const formattedPriceImpactPercentage = totalPriceImpactPercentage
-    ? "..."
-    : formatPercentage(totalPriceImpactPercentage, {
-        bps: false,
-        signed: true,
-        displayDecimals: 3,
-      });
+  const formattedPriceImpactPercentage =
+    totalPriceImpactPercentage === undefined
+      ? "..."
+      : formatPercentage(totalPriceImpactPercentage, {
+          bps: false,
+          signed: true,
+          displayDecimals: 3,
+        });
 
   const isPriceImpactPositive = totalPriceImpactPercentage > 0;
 

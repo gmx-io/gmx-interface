@@ -2,17 +2,10 @@ import { t } from "@lingui/macro";
 import { ethers } from "ethers";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import {
-  MarketInfo,
-  getCappedPoolPnl,
-  getMarketPnl,
-  getOpenInterestUsd,
-  getPoolUsdWithoutPnl,
-} from "domain/synthetics/markets";
+import { MarketInfo, getCappedPoolPnl, getMarketPnl, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
 import { CHART_PERIODS } from "lib/legacy";
 import {
-  PRECISION,
   applyFactor,
   calculateDisplayDecimals,
   expandDecimals,
@@ -154,7 +147,7 @@ export function getEstimatedLiquidationTimeInHours(
   });
 
   if (priceImpactDeltaUsd > 0) {
-    priceImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, priceImpactDeltaUsd);
+    priceImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeInUsd, priceImpactDeltaUsd);
   }
 
   const pendingImpactUsd = convertToUsd(
@@ -321,24 +314,6 @@ export function willPositionCollateralBeSufficientForPosition(
     minCollateralFactor,
     position.sizeInUsd + sideDeltaUsd
   );
-}
-
-export function getMinCollateralFactorForPosition(position: PositionInfoLoaded, openInterestDelta: bigint) {
-  const marketInfo = position.marketInfo;
-
-  const isLong = position.isLong;
-  const openInterest = getOpenInterestUsd(marketInfo, isLong) + openInterestDelta;
-  const minCollateralFactorMultiplier = isLong
-    ? marketInfo.minCollateralFactorForOpenInterestLong
-    : marketInfo.minCollateralFactorForOpenInterestShort;
-  let minCollateralFactor = bigMath.mulDiv(openInterest, minCollateralFactorMultiplier, PRECISION);
-  const minCollateralFactorForMarket = marketInfo.minCollateralFactor;
-
-  if (minCollateralFactorForMarket > minCollateralFactor) {
-    minCollateralFactor = minCollateralFactorForMarket;
-  }
-
-  return minCollateralFactor;
 }
 
 export function getIsPositionInfoLoaded(pos: PositionInfo | PositionInfoLoaded | undefined): pos is PositionInfoLoaded {

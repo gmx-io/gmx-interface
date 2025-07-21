@@ -1,7 +1,13 @@
 import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
-import { MAX_AUTO_CANCEL_ORDERS_KEY, MIN_COLLATERAL_USD_KEY, MIN_POSITION_SIZE_USD_KEY } from "config/dataStore";
+import {
+  CLAIMABLE_COLLATERAL_DELAY_KEY,
+  CLAIMABLE_COLLATERAL_REDUCTION_FACTOR_KEY,
+  MAX_AUTO_CANCEL_ORDERS_KEY,
+  MIN_COLLATERAL_USD_KEY,
+  MIN_POSITION_SIZE_USD_KEY,
+} from "config/dataStore";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import type { ContractsChainId } from "sdk/configs/chains";
@@ -10,6 +16,8 @@ export type PositionsConstantsResult = {
     minCollateralUsd?: bigint;
     minPositionSizeUsd?: bigint;
     maxAutoCancelOrders?: bigint;
+    claimableCollateralDelay?: bigint;
+    claimableCollateralReductionFactor?: bigint;
   };
   error?: Error;
 };
@@ -37,6 +45,14 @@ export function usePositionsConstantsRequest(chainId: ContractsChainId): Positio
             methodName: "getUint",
             params: [MAX_AUTO_CANCEL_ORDERS_KEY],
           },
+          claimableCollateralDelay: {
+            methodName: "getUint",
+            params: [CLAIMABLE_COLLATERAL_DELAY_KEY],
+          },
+          claimableCollateralReductionFactor: {
+            methodName: "getUint",
+            params: [CLAIMABLE_COLLATERAL_REDUCTION_FACTOR_KEY],
+          },
         },
       },
     },
@@ -45,6 +61,8 @@ export function usePositionsConstantsRequest(chainId: ContractsChainId): Positio
         minCollateralUsd: res.data.dataStore.minCollateralUsd.returnValues[0],
         minPositionSizeUsd: res.data.dataStore.minPositionSizeUsd.returnValues[0],
         maxAutoCancelOrders: res.data.dataStore.maxAutoCancelOrders.returnValues[0],
+        claimableCollateralDelay: res.data.dataStore.claimableCollateralDelay.returnValues[0],
+        claimableCollateralReductionFactor: res.data.dataStore.claimableCollateralReductionFactor.returnValues[0],
       };
     },
   });

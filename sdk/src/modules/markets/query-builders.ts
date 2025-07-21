@@ -403,6 +403,18 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.maxPositionImpactFactorForLiquidations],
         },
+        maxLendableImpactFactor: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxLendableImpactFactor],
+        },
+        maxLendableImpactFactorForWithdrawals: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxLendableImpactFactorForWithdrawals],
+        },
+        maxLendableImpactUsd: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxLendableImpactUsd],
+        },
         minCollateralFactor: {
           methodName: "getUint",
           params: [prebuiltHashedKeys.minCollateralFactor],

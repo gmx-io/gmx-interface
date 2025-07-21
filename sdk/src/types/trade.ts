@@ -112,6 +112,7 @@ export type DecreasePositionAmounts = {
   proportionalPendingImpactDeltaUsd: bigint;
   totalPendingImpactDeltaUsd: bigint;
   priceImpactDiffUsd: bigint;
+  balanceWasImproved: boolean;
   payedRemainingCollateralAmount: bigint;
 
   payedOutputUsd: bigint;

@@ -73,13 +73,14 @@ export function getCappedPositionImpactUsd(
   opts: { fallbackToZero?: boolean; shouldCapNegativeImpact?: boolean } = {}
 ) {
   sizeDeltaUsd = isIncrease ? sizeDeltaUsd : sizeDeltaUsd * -1n;
+
   const { priceImpactDeltaUsd, balanceWasImproved } = getPriceImpactForPosition(marketInfo, sizeDeltaUsd, isLong, opts);
 
   if (priceImpactDeltaUsd < 0 && !opts.shouldCapNegativeImpact) {
     return { priceImpactDeltaUsd, balanceWasImproved };
   }
 
-  const cappedImpactUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, priceImpactDeltaUsd);
+  const cappedImpactUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeDeltaUsd, priceImpactDeltaUsd);
 
   return {
     priceImpactDeltaUsd: cappedImpactUsd,
@@ -107,17 +108,19 @@ export function capPositionImpactUsdByMaxImpactPool(marketInfo: MarketInfo, posi
   return positionImpactDeltaUsd;
 }
 
-export function capPositionImpactUsdByMaxPriceImpactFactor(marketInfo: MarketInfo, positionImpactDeltaUsd: bigint) {
+export function capPositionImpactUsdByMaxPriceImpactFactor(
+  marketInfo: MarketInfo,
+  sizeDeltaUsd: bigint,
+  positionImpactDeltaUsd: bigint
+) {
   const { maxPositiveImpactFactor, maxNegativeImpactFactor } = getMaxPositionImpactFactors(marketInfo);
-  const maxPriceImpactFactor = positionImpactDeltaUsd > 0 ? maxPositiveImpactFactor : maxNegativeImpactFactor;
 
-  const maxPriceImpactUsdBasedOnMaxPriceImpactFactor = applyFactor(
-    bigMath.abs(positionImpactDeltaUsd),
-    maxPriceImpactFactor
-  );
+  const maxPriceImapctFactor = positionImpactDeltaUsd > 0 ? maxPositiveImpactFactor : maxNegativeImpactFactor;
 
-  if (bigMath.abs(positionImpactDeltaUsd) > bigMath.abs(maxPriceImpactUsdBasedOnMaxPriceImpactFactor)) {
-    positionImpactDeltaUsd = maxPriceImpactUsdBasedOnMaxPriceImpactFactor;
+  const maxPriceImpactUsdBasedOnMaxPriceImpactFactor = applyFactor(bigMath.abs(sizeDeltaUsd), maxPriceImapctFactor);
+
+  if (bigMath.abs(positionImpactDeltaUsd) > maxPriceImpactUsdBasedOnMaxPriceImpactFactor) {
+    positionImpactDeltaUsd = maxPriceImpactUsdBasedOnMaxPriceImpactFactor * (positionImpactDeltaUsd > 0 ? 1n : -1n);
   }
 
   return positionImpactDeltaUsd;

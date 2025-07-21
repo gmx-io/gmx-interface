@@ -118,16 +118,14 @@ export function PositionItem(p: Props) {
             />
             <StatsTooltipRow
               label={t`Net Price Impact`}
-              value={formatUsd(p.position.netPriceImapctDeltaUsd) || "..."}
+              value={formatDeltaUsd(p.position.netPriceImapctDeltaUsd) || "..."}
               showDollar={false}
-              textClassName={cx({
-                "text-red-500": p.position.netPriceImapctDeltaUsd !== 0n,
-              })}
+              textClassName={getPositiveOrNegativeClass(p.position.netPriceImapctDeltaUsd)}
             />
 
             <StatsTooltipRow
               label={t`Price Impact Rebates`}
-              value={formatUsd(p.position.priceImpactDiffUsd) || "..."}
+              value={formatDeltaUsd(p.position.priceImpactDiffUsd) || "..."}
               showDollar={false}
               textClassName={cx({
                 "text-green-500": p.position.priceImpactDiffUsd !== 0n,

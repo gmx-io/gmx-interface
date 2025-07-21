@@ -52,10 +52,7 @@ import { getNameByOrderType, substractMaxLeverageSlippage } from "domain/synthet
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { getApprovalRequirements } from "domain/synthetics/tokens/utils";
-import {
-  getIncreasePositionAmounts,
-  getNextPositionValuesForIncreaseTrade,
-} from "domain/synthetics/trade/utils/increase";
+import { getIncreasePositionAmounts } from "domain/synthetics/trade/utils/increase";
 import { getCommonError, getExpressError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
 import { approveTokens } from "domain/tokens/approveTokens";
 import { numericBinarySearch } from "lib/binarySearch";
@@ -72,6 +69,7 @@ import { getContract } from "sdk/configs/contracts";
 import { getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/types/fees";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
+import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";

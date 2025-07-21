@@ -6,7 +6,7 @@ import { PositionInfoLoaded } from "domain/synthetics/positions";
 import { TokenData } from "domain/synthetics/tokens";
 import { expandDecimals } from "lib/numbers";
 
-import { getDecreasePositionAmounts } from "./decrease";
+import { getDecreasePositionAmounts } from "../../../../../sdk/src/utils/trade/decrease";
 
 const closeSizeUsd = BigInt(99);
 
@@ -111,6 +111,9 @@ const marketInfo: MarketInfo = {
   maxPositionImpactFactorPositive: BigInt("0x1027e72f1f12813088000000"),
   maxPositionImpactFactorNegative: BigInt("0x1027e72f1f12813088000000"),
   maxPositionImpactFactorForLiquidations: BigInt("0x00"),
+  maxLendableImpactFactor: BigInt("0x00"),
+  maxLendableImpactFactorForWithdrawals: BigInt("0x00"),
+  maxLendableImpactUsd: BigInt("0x00"),
   positionImpactExponentFactor: BigInt("0x193e5939a08ce9dbd480000000"),
   swapFeeFactorForBalanceWasImproved: BigInt("0x019d971e4fe8401e74000000"),
   swapFeeFactorForBalanceWasNotImproved: BigInt("0x024306c4097859c43c000000"),

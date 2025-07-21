@@ -10,13 +10,14 @@ import {
   ExternalSwapQuote,
   FindSwapPath,
   IncreasePositionAmounts,
+  NextPositionValues,
   SwapOptimizationOrderArray,
   TriggerThresholdType,
 } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { getPositionFee, getPriceImpactForPosition, getTotalSwapVolumeFromSwapStats } from "utils/fees";
 import { applyFactor } from "utils/numbers";
-import { getLeverage } from "utils/positions";
+import { getEntryPrice, getLeverage, getLiquidationPrice, getPositionPnlUsd } from "utils/positions";
 import {
   getAcceptablePriceInfo,
   getDefaultAcceptablePriceImpactBps,
@@ -323,6 +324,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
   });
 
   values.positionPriceImpactDeltaUsd = acceptablePriceInfo.priceImpactDeltaUsd;
+
   values.acceptablePrice = acceptablePriceInfo.acceptablePrice;
   values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
 
@@ -500,5 +502,92 @@ export function getIncreasePositionPrices({
     collateralPrice,
     triggerThresholdType,
     triggerPrice,
+  };
+}
+
+export function getNextPositionValuesForIncreaseTrade(p: {
+  existingPosition?: PositionInfo;
+  marketInfo: MarketInfo;
+  collateralToken: TokenData;
+  sizeDeltaUsd: bigint;
+  sizeDeltaInTokens: bigint;
+  collateralDeltaUsd: bigint;
+  collateralDeltaAmount: bigint;
+  indexPrice: bigint;
+  isLong: boolean;
+  showPnlInLeverage: boolean;
+  minCollateralUsd: bigint;
+  userReferralInfo: UserReferralInfo | undefined;
+}): NextPositionValues {
+  const {
+    existingPosition,
+    marketInfo,
+    collateralToken,
+    sizeDeltaUsd,
+    sizeDeltaInTokens,
+    collateralDeltaUsd,
+    collateralDeltaAmount,
+    indexPrice,
+    isLong,
+    showPnlInLeverage,
+    minCollateralUsd,
+    userReferralInfo,
+  } = p;
+
+  const nextCollateralUsd = existingPosition ? existingPosition.collateralUsd + collateralDeltaUsd : collateralDeltaUsd;
+
+  const nextCollateralAmount = existingPosition
+    ? existingPosition.collateralAmount + collateralDeltaAmount
+    : collateralDeltaAmount;
+
+  const nextSizeUsd = existingPosition ? existingPosition.sizeInUsd + sizeDeltaUsd : sizeDeltaUsd;
+  const nextSizeInTokens = existingPosition ? existingPosition.sizeInTokens + sizeDeltaInTokens : sizeDeltaInTokens;
+
+  const nextEntryPrice =
+    getEntryPrice({
+      sizeInUsd: nextSizeUsd,
+      sizeInTokens: nextSizeInTokens,
+      indexToken: marketInfo.indexToken,
+    }) ?? indexPrice;
+
+  const nextPnl = existingPosition
+    ? getPositionPnlUsd({
+        marketInfo,
+        sizeInUsd: nextSizeUsd,
+        sizeInTokens: nextSizeInTokens,
+        markPrice: indexPrice,
+        isLong,
+      })
+    : undefined;
+
+  const nextLeverage = getLeverage({
+    sizeInUsd: nextSizeUsd,
+    collateralUsd: nextCollateralUsd,
+    pnl: showPnlInLeverage ? nextPnl : undefined,
+    pendingBorrowingFeesUsd: 0n, // deducted on order
+    pendingFundingFeesUsd: 0n, // deducted on order
+  });
+
+  const nextLiqPrice = getLiquidationPrice({
+    marketInfo,
+    collateralToken,
+    sizeInUsd: nextSizeUsd,
+    sizeInTokens: nextSizeInTokens,
+    collateralUsd: nextCollateralUsd,
+    collateralAmount: nextCollateralAmount,
+    minCollateralUsd,
+    pendingBorrowingFeesUsd: 0n, // deducted on order
+    pendingFundingFeesUsd: 0n, // deducted on order
+    pendingImpactAmount: existingPosition?.pendingImpactAmount ?? 0n,
+    isLong: isLong,
+    userReferralInfo,
+  });
+
+  return {
+    nextSizeUsd,
+    nextCollateralUsd,
+    nextEntryPrice,
+    nextLeverage,
+    nextLiqPrice,
   };
 }

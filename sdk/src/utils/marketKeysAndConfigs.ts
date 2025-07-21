@@ -8,6 +8,9 @@ import {
   FUNDING_INCREASE_FACTOR_PER_SECOND,
   IS_MARKET_DISABLED_KEY,
   MAX_FUNDING_FACTOR_PER_SECOND,
+  MAX_LENDABLE_IMPACT_FACTOR_FOR_WITHDRAWALS_KEY,
+  MAX_LENDABLE_IMPACT_FACTOR_KEY,
+  MAX_LENDABLE_IMPACT_USD_KEY,
   MAX_OPEN_INTEREST_KEY,
   MAX_PNL_FACTOR_FOR_TRADERS_KEY,
   MAX_PNL_FACTOR_KEY,
@@ -189,6 +192,18 @@ export function hashMarketConfigKeys(market: MarketConfig) {
     maxPositionImpactFactorForLiquidations: [
       ["bytes32", "address"],
       [MAX_POSITION_IMPACT_FACTOR_FOR_LIQUIDATIONS_KEY, marketAddress],
+    ],
+    maxLendableImpactFactor: [
+      ["bytes32", "address"],
+      [MAX_LENDABLE_IMPACT_FACTOR_KEY, marketAddress],
+    ],
+    maxLendableImpactFactorForWithdrawals: [
+      ["bytes32", "address"],
+      [MAX_LENDABLE_IMPACT_FACTOR_FOR_WITHDRAWALS_KEY, marketAddress],
+    ],
+    maxLendableImpactUsd: [
+      ["bytes32", "address"],
+      [MAX_LENDABLE_IMPACT_USD_KEY, marketAddress],
     ],
     minCollateralFactor: [
       ["bytes32", "address"],

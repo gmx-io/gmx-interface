@@ -61,7 +61,12 @@ export function SyntheticsStats() {
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { kinkMarketsBorrowingRatesData } = useKinkModelMarketsRates(chainId);
   const {
-    positionsConstants: { minCollateralUsd, minPositionSizeUsd },
+    positionsConstants: {
+      minCollateralUsd,
+      minPositionSizeUsd,
+      claimableCollateralDelay,
+      claimableCollateralReductionFactor,
+    },
   } = usePositionsConstantsRequest(chainId);
 
   const markets = Object.values(marketsInfoData || {});
@@ -758,7 +763,7 @@ export function SyntheticsStats() {
               }
 
               function renderPositionImpactCell() {
-                const summaryPoolUsd = (longPoolUsd ?? 0n) + (shortPoolUsd ?? 0n);
+                const summaryPoolUsd = market.poolValueMax;
 
                 const bonusApr =
                   summaryPoolUsd > 0n
@@ -1045,6 +1050,21 @@ export function SyntheticsStats() {
                               value={formatFactor(market.maxPositionImpactFactorForLiquidations)}
                               showDollar={false}
                             />
+                            <StatsTooltipRow
+                              label="Max Lendable Impact Factor"
+                              value={formatFactor(market.maxLendableImpactFactor)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Max Lendable Impact Factor for Withdrawals"
+                              value={formatFactor(market.maxLendableImpactFactorForWithdrawals)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Max Lendable Impact USD"
+                              value={formatUsd(market.maxLendableImpactUsd)}
+                              showDollar={false}
+                            />
                             <br />
                             <div className="Tooltip-divider" />
                             <br />
@@ -1185,6 +1205,16 @@ export function SyntheticsStats() {
                               showDollar={false}
                             />
                             <br />
+                            <StatsTooltipRow
+                              label="Claimable Collateral Delay"
+                              value={claimableCollateralDelay?.toString() || "..."}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Claimable Collateral Reduction Factor"
+                              value={formatFactor(claimableCollateralReductionFactor ?? 0n)}
+                              showDollar={false}
+                            />
                           </>
                         )}
                       />

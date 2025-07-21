@@ -260,6 +260,10 @@ export class Markets extends Module {
             maxPositionImpactFactorNegative: dataStoreValues.maxPositionImpactFactorNegative.returnValues[0],
             maxPositionImpactFactorForLiquidations:
               dataStoreValues.maxPositionImpactFactorForLiquidations.returnValues[0],
+            maxLendableImpactFactor: dataStoreValues.maxLendableImpactFactor.returnValues[0],
+            maxLendableImpactFactorForWithdrawals:
+              dataStoreValues.maxLendableImpactFactorForWithdrawals.returnValues[0],
+            maxLendableImpactUsd: dataStoreValues.maxLendableImpactUsd.returnValues[0],
             positionImpactExponentFactor: dataStoreValues.positionImpactExponentFactor.returnValues[0],
             swapFeeFactorForBalanceWasImproved: dataStoreValues.swapFeeFactorForBalanceWasImproved.returnValues[0],
             swapFeeFactorForBalanceWasNotImproved:
