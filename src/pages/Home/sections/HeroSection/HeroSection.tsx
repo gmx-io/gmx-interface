@@ -1,5 +1,7 @@
 import { Trans } from "@lingui/macro";
 
+import { useHomePageContext } from "pages/Home/contexts/HomePageContext";
+
 import bgProtection from "img/bg_protection.png";
 import AsssetsBg from "img/bg_support_assets.png";
 import IcGears from "img/ic_gears.svg?react";
@@ -13,12 +15,20 @@ import { ChainIcons } from "./components/ChainIcons";
 import { HeroBackground } from "./components/HeroBackground";
 import { ProtectionBackground } from "./components/ProtectionBackground";
 import { SeamlessBackground } from "./components/SeamlessBackground";
+import { REDIRECT_CHAIN_IDS, useGoToTrade } from "../../hooks/useGoToTrade";
 
 const assetsBgStyle = {
   backgroundImage: `url(${AsssetsBg})`,
 };
 
 export function HeroSection() {
+  const { showRedirectModal } = useHomePageContext();
+  const goToTradeArbitrum = useGoToTrade({
+    showRedirectModal,
+    buttonPosition: "HeroSection",
+    chainId: REDIRECT_CHAIN_IDS.Arbitum,
+  });
+
   return (
     <section className="overflow-hidden bg-fiord-700">
       <div className="mx-auto px-16 sm:max-w-[1360px] sm:px-80">
@@ -31,8 +41,13 @@ export function HeroSection() {
             {/* Stats and description */}
             <div className="flex flex-wrap items-end justify-between gap-56 ">
               <div className="flex flex-1 flex-col-reverse items-stretch gap-36 sm:flex-row">
-                <button className="btn-landing-bg flex w-full flex-col items-start gap-4 rounded-12 pb-12 pl-12 pr-8 pt-8 text-16 font-medium sm:w-[200px]">
-                  <IcLinkArrow className="size-16 self-end rounded-full bg-white text-blue-600" />
+                <button
+                  className="btn-landing-bg flex w-full flex-col items-start gap-4 rounded-12 pb-12 pl-12 pr-8 pt-8 text-16 font-medium sm:w-[200px]"
+                  onClick={goToTradeArbitrum}
+                >
+                  <div className="self-end rounded-full bg-white p-4">
+                    <IcLinkArrow className="size-8 text-blue-600" />
+                  </div>
                   <Trans>Trade Now</Trans>
                 </button>
                 <div className="text-subheadline sm:w-[226px]">
@@ -180,7 +195,7 @@ export function HeroSection() {
                   GMX Express
                 </p>
               </div>
-              <button className="btn-landing-bg rounded-6 px-16 py-10 text-16 font-medium">
+              <button className="btn-landing-bg rounded-6 px-16 py-10 text-16 font-medium" onClick={goToTradeArbitrum}>
                 <Trans>Trade Now</Trans>
               </button>
             </div>

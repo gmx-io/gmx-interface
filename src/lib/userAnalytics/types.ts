@@ -12,7 +12,7 @@ export type LandingPageLaunchAppEvent = {
   event: "LandingPageAction";
   data: {
     action: "LaunchApp";
-    buttonPosition: "MenuButton" | "StickyHeader" | "Title" | "Chains";
+    buttonPosition: "MenuButton" | "StickyHeader" | "Title" | "Chains" | "LaunchSection" | "HeroSection";
     shouldSeeConfirmationDialog: boolean;
   };
 };
