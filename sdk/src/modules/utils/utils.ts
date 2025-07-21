@@ -167,7 +167,7 @@ export class Utils extends Module {
 
     switch (tradeFeesType) {
       case "swap": {
-        if (!swapAmounts || !swapAmounts.swapStrategy.swapPathStats) return null;
+        if (!swapAmounts?.swapStrategy.swapPathStats) return null;
 
         return estimateExecuteSwapOrderGasLimit(gasLimits, {
           swapsCount: swapAmounts.swapStrategy.swapPathStats?.swapPath.length,
