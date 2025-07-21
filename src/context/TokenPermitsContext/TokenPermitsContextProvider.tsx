@@ -68,9 +68,15 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
       }
 
       try {
-        const tokenPermit = await createAndSignTokenPermit(chainId, signer, tokenAddress, spenderAddress, value);
+        const { permit, onchainParams } = await createAndSignTokenPermit(
+          chainId,
+          signer,
+          tokenAddress,
+          spenderAddress,
+          value
+        );
 
-        setTokenPermits(tokenPermits?.concat(tokenPermit) ?? [tokenPermit]);
+        setTokenPermits(tokenPermits?.concat(permit) ?? [permit]);
       } catch (e) {
         metrics.pushError(e, "tokenPermits.addTokenPermit");
         throw e;
