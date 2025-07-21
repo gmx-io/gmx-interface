@@ -635,6 +635,13 @@ export const MARKETS: Record<UiContractsChain, Record<string, MarketConfig>> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // ARB/USD [ARB-ARB]
+    "0x672fEA44f4583DdaD620d60C1Ac31021F47558Cb": {
+      marketTokenAddress: "0x672fEA44f4583DdaD620d60C1Ac31021F47558Cb",
+      indexTokenAddress: "0x912CE59144191C1204E64559FE8253a0e49E6548",
+      longTokenAddress: "0x912CE59144191C1204E64559FE8253a0e49E6548",
+      shortTokenAddress: "0x912CE59144191C1204E64559FE8253a0e49E6548",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
@@ -746,6 +753,13 @@ export const MARKETS: Record<UiContractsChain, Record<string, MarketConfig>> = {
     "0xe19da27Bf9733c429445E289B662bECDCa6ce10b": {
       marketTokenAddress: "0xe19da27Bf9733c429445E289B662bECDCa6ce10b",
       indexTokenAddress: "0xd42C991a4FAb293C57a7bf25C2E2ec5aE1dB1714",
+      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+    },
+    // PUMP/USD [WAVAX-USDC]
+    "0x94cE6F65188a92F297C7f0A5A7B3cAd9013450F8": {
+      marketTokenAddress: "0x94cE6F65188a92F297C7f0A5A7B3cAd9013450F8",
+      indexTokenAddress: "0xdA598795DfE56388ca3D35e2ccFA96EFf83eC306",
       longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
       shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
     },

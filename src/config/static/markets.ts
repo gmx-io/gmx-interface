@@ -370,6 +370,10 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
     "0x4C0Bb704529Fa49A26bD854802d70206982c6f1B": {
       enabled: true,
     },
+    // ARB/USD [ARB-ARB]
+    "0x672fEA44f4583DdaD620d60C1Ac31021F47558Cb": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
@@ -434,6 +438,10 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
     },
     // MELANIA/USD [WAVAX-USDC]
     "0xe19da27Bf9733c429445E289B662bECDCa6ce10b": {
+      enabled: true,
+    },
+    // PUMP/USD [WAVAX-USDC]
+    "0x94cE6F65188a92F297C7f0A5A7B3cAd9013450F8": {
       enabled: true,
     },
   },
