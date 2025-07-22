@@ -4,7 +4,7 @@ import { useLocalStorage } from "react-use";
 
 import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/localStorage";
 
-import { LeaveHomepageRedirectModal } from "../sections/RedirectModal/LeaveHompageRedirectModal";
+import { LeaveHomepageRedirectModal } from "../sections/LeaveHomepageRedirectModal/LeaveHompageRedirectModal";
 
 type HomePageContextType = {
   showRedirectModal: (to: string) => void;
