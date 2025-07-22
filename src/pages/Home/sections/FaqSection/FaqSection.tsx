@@ -4,7 +4,7 @@ import { FaqItem } from "./components/FaqItem";
 
 export function FaqSection() {
   return (
-    <section className="flex w-full bg-fiord-700 px-16 py-80 text-white sm:px-80 sm:py-[120px]">
+    <section className="flex w-full bg-fiord-700 px-16 py-[120px] text-white sm:px-80">
       <div className="mx-auto flex w-[1200px] flex-col gap-36 overflow-hidden sm:flex-row sm:gap-[120px]">
         <div>
           <h2 className="text-heading-2 mb-20">
