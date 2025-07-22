@@ -19,7 +19,7 @@ export function FaqSection() {
         </div>
         <div className="flex w-full flex-col gap-12 sm:w-[800px]">
           <FaqItem title="What Makes GMX More Efficient and Reliable for Trades Compared with Other Perpetual Platforms?">
-            <>
+            <Trans>
               <p>
                 GMX V2 routes every order against its own liquidity pools, which currently hold over $300 million, and
                 quote the oracle index price rather than relying on an order book or external market makers. This
@@ -35,7 +35,7 @@ export function FaqSection() {
                 GMX V2 uses a unique multi-asset AMM (Automated Market Maker) model that routes trades against a
                 dynamically balanced liquidity pool instead of traditional order books. This design significantly
               </p>
-            </>
+            </Trans>
           </FaqItem>
           <FaqItem title={t`What Makes GMX One of the Best Places to Earn Yield on My Crypto?`}>
             <Trans>
