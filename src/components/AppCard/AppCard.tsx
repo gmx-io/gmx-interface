@@ -1,12 +1,15 @@
 import cx from "classnames";
+import { forwardRef } from "react";
 
-export default function AppCard({ children, dataQa }: { children: React.ReactNode; dataQa?: string }) {
-  return (
-    <div className="rounded-8 bg-slate-900" data-qa={dataQa}>
-      {children}
-    </div>
-  );
-}
+export const AppCard = forwardRef<HTMLDivElement, { children: React.ReactNode; dataQa?: string }>(
+  ({ children, dataQa }, ref) => {
+    return (
+      <div className="rounded-8 bg-slate-900" data-qa={dataQa} ref={ref}>
+        {children}
+      </div>
+    );
+  }
+);
 
 export function AppCardSection({
   children,

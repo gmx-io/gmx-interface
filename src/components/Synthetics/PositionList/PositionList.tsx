@@ -119,11 +119,6 @@ export function PositionList(p: Props) {
               </TableTheadTr>
             </thead>
             <tbody>
-              <EmptyTableContent
-                isLoading={isLoading}
-                isEmpty={positions.length === 0}
-                emptyText={<Trans>No open positions</Trans>}
-              />
               {!isLoading &&
                 positions.map((position) => (
                   <PositionItemWrapper
@@ -142,6 +137,11 @@ export function PositionList(p: Props) {
                 ))}
             </tbody>
           </Table>
+          <EmptyTableContent
+            isLoading={isLoading}
+            isEmpty={positions.length === 0}
+            emptyText={<Trans>No open positions</Trans>}
+          />
         </TableScrollFadeContainer>
       )}
       {positionToShare && (

@@ -285,11 +285,6 @@ export function OrderList({
               </TableTheadTr>
             </thead>
             <tbody>
-              <EmptyTableContent
-                isLoading={isLoading}
-                isEmpty={orders.length === 0}
-                emptyText={<Trans>No open orders</Trans>}
-              />
               {!isLoading &&
                 orders.map((order) => (
                   <OrderItem
@@ -307,6 +302,11 @@ export function OrderList({
                 ))}
             </tbody>
           </Table>
+          <EmptyTableContent
+            isLoading={isLoading}
+            isEmpty={orders.length === 0}
+            emptyText={<Trans>No open orders</Trans>}
+          />
         </TableScrollFadeContainer>
       )}
 

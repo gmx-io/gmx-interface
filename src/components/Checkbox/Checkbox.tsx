@@ -43,7 +43,7 @@ export default function Checkbox(props: Props) {
         {isChecked && !isPartialChecked && <BsCheck />}
         {isPartialChecked && <TiMinus />}
       </span>
-      {props.children && <span>{props.children}</span>}
+      {props.children && props.children}
     </div>
   );
 }

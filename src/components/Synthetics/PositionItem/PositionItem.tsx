@@ -40,7 +40,7 @@ import { getPositiveOrNegativeClass } from "lib/utils";
 import { getMarketIndexName } from "sdk/utils/markets";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
-import AppCard, { AppCardSection } from "components/AppCard/AppCard";
+import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
 import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
