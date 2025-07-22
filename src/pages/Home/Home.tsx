@@ -4,6 +4,7 @@ import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageViewEvent } from "lib/userAnalytics/types";
 
 import { HomePageContextProvider } from "./contexts/HomePageContext";
+import { FaqSection } from "./sections/FaqSection/FaqSection";
 import { HeroSection } from "./sections/HeroSection/HeroSection";
 import { LaunchSection } from "./sections/LaunchSection/LaunchSection";
 import { LiqiuditySection } from "./sections/LiqiuditySection/LiqiuditySection";
@@ -29,6 +30,7 @@ export default function Home(_) {
         <LaunchSection />
         <LiqiuditySection />
         <SponsorsSection />
+        <FaqSection />
       </div>
     </HomePageContextProvider>
   );
