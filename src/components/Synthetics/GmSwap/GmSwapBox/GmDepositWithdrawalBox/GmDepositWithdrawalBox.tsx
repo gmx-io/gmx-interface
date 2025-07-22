@@ -32,8 +32,6 @@ import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
-import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import { useBestGmPoolAddressForGlv } from "components/Synthetics/MarketStats/hooks/useBestGmPoolForGlv";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
@@ -811,9 +809,10 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
             shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
           />
         </div>
-        <SwitchToSettlementChainWarning topic="liquidity" />
+        {/* <SwitchToSettlementChainWarning topic="liquidity" /> */}
         <div className="Exchange-swap-button-container mb-14 border-b border-stroke-primary pb-14">
-          <SwitchToSettlementChainButtons>{submitButton}</SwitchToSettlementChainButtons>
+          {/* <SwitchToSettlementChainButtons>{}</SwitchToSettlementChainButtons> */}
+          {submitButton}
         </div>
         <InfoRows fees={fees} executionFee={executionFee} isDeposit={isDeposit} />
       </form>

@@ -1,15 +1,24 @@
 import { t } from "@lingui/macro";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { zeroAddress } from "viem";
 
+import { getContract } from "config/contracts";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { selectBlockTimestampData, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectBlockTimestampData,
+  selectChainId,
+  selectSrcChainId,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { createDepositTxn, createWithdrawalTxn, GlvInfo, MarketInfo } from "domain/synthetics/markets";
 import { createGlvDepositTxn } from "domain/synthetics/markets/createGlvDepositTxn";
 import { createGlvWithdrawalTxn } from "domain/synthetics/markets/createGlvWithdrawalTxn";
+import { buildAndSignMultichainDepositTxn } from "domain/synthetics/markets/createMultichainDepositTxn";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { helperToast } from "lib/helperToast";
 import {
@@ -20,8 +29,13 @@ import {
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics";
+import { ExpressTxnData, sendExpressTransaction } from "lib/transactions";
 import { makeUserAnalyticsOrderFailResultHandler, sendUserAnalyticsOrderConfirmClickEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
+import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
+import { getWrappedToken } from "sdk/configs/tokens";
+import { nowInSeconds } from "sdk/utils/time";
+import { IRelayUtils } from "typechain-types/MultichainGmRouter";
 
 import { Operation } from "../types";
 
@@ -75,10 +89,90 @@ export const useDepositWithdrawalTransactions = ({
 }: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const chainId = useSelector(selectChainId);
+  const srcChainId = useSelector(selectSrcChainId);
+  const globalExpressParams = useSelector(selectExpressGlobalParams);
   const { signer, account } = useWallet();
   const { setPendingDeposit, setPendingWithdrawal } = useSyntheticsEvents();
   const { setPendingTxns } = usePendingTxns();
   const blockTimestampData = useSelector(selectBlockTimestampData);
+
+  const transferRequests = useMemo((): IRelayUtils.TransferRequestsStruct => {
+    const requests: IRelayUtils.TransferRequestsStruct = {
+      tokens: [],
+      receivers: [],
+      amounts: [],
+    };
+
+    if (longToken && longTokenAmount !== undefined && longTokenAmount > 0n) {
+      requests.tokens.push(longToken.address);
+      requests.receivers.push(getContract(chainId, "DepositVault"));
+      requests.amounts.push(longTokenAmount);
+    }
+
+    if (shortToken && shortTokenAmount !== undefined && shortTokenAmount > 0n) {
+      requests.tokens.push(shortToken.address);
+      requests.receivers.push(getContract(chainId, "DepositVault"));
+      requests.amounts.push(shortTokenAmount);
+    }
+
+    if (executionFee?.feeTokenAmount !== undefined) {
+      requests.tokens.push(getWrappedToken(chainId).address);
+      requests.receivers.push(getContract(chainId, "MultichainGmRouter"));
+      requests.amounts.push(executionFee.feeTokenAmount);
+    }
+
+    return requests;
+  }, [chainId, executionFee?.feeTokenAmount, longToken, longTokenAmount, shortToken, shortTokenAmount]);
+
+  const asyncResult = useArbitraryRelayParamsAndPayload({
+    isGmxAccount: srcChainId !== undefined,
+    expressTransactionBuilder: async ({ relayParams, gasPaymentParams }) => {
+      if (!account || !marketInfo || marketTokenAmount === undefined || !srcChainId || !signer || !executionFee) {
+        throw new Error("Account is not set");
+      }
+
+      const initialLongTokenAddress = longToken?.address || marketInfo.longTokenAddress;
+      const initialShortTokenAddress = marketInfo.isSameCollaterals
+        ? initialLongTokenAddress
+        : shortToken?.address || marketInfo.shortTokenAddress;
+
+      const txnData = await buildAndSignMultichainDepositTxn({
+        emptySignature: true,
+        account,
+        chainId,
+        params: {
+          addresses: {
+            receiver: account,
+            callbackContract: zeroAddress,
+            uiFeeReceiver: zeroAddress,
+            market: marketToken.address,
+            initialLongToken: initialLongTokenAddress,
+            initialShortToken: initialShortTokenAddress,
+            longTokenSwapPath: [],
+            shortTokenSwapPath: [],
+          },
+          callbackGasLimit: 0n,
+          dataList: [],
+          minMarketTokens: marketTokenAmount,
+          shouldUnwrapNativeToken: false,
+          executionFee: executionFee.feeTokenAmount,
+        },
+        srcChainId,
+        relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
+        relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
+        relayParams: {
+          ...relayParams,
+          deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+        },
+        signer,
+        transferRequests,
+      });
+
+      return {
+        txnData,
+      };
+    },
+  });
 
   const onCreateDeposit = useCallback(
     function onCreateDeposit() {
@@ -136,6 +230,62 @@ export const useDepositWithdrawalTransactions = ({
       const initialShortTokenAddress = marketInfo.isSameCollaterals
         ? initialLongTokenAddress
         : shortToken?.address || marketInfo.shortTokenAddress;
+
+      if (srcChainId !== undefined) {
+        if (glvInfo && selectedMarketForGlv) {
+          throw new Error("Not implemented");
+        }
+
+        if (!globalExpressParams?.relayerFeeTokenAddress) {
+          throw new Error("Relayer fee token address is not set");
+        }
+
+        if (!asyncResult.data) {
+          throw new Error("Async result is not set");
+        }
+
+        return buildAndSignMultichainDepositTxn({
+          chainId,
+          srcChainId,
+          signer,
+          account,
+          relayerFeeAmount: asyncResult.data.gasPaymentParams.relayerFeeAmount,
+          relayerFeeTokenAddress: asyncResult.data.gasPaymentParams.relayerFeeTokenAddress,
+          relayParams: {
+            ...asyncResult.data.relayParamsPayload,
+            deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+          },
+          transferRequests,
+          params: {
+            addresses: {
+              receiver: account,
+              callbackContract: zeroAddress,
+              uiFeeReceiver: zeroAddress,
+              market: marketToken.address,
+              initialLongToken: initialLongTokenAddress,
+              initialShortToken: initialShortTokenAddress,
+              longTokenSwapPath: [],
+              shortTokenSwapPath: [],
+            },
+            callbackGasLimit: 0n,
+            dataList: [],
+            minMarketTokens: marketTokenAmount,
+            shouldUnwrapNativeToken: false,
+            executionFee: executionFee.feeTokenAmount,
+          },
+        })
+          .then(async (txnData: ExpressTxnData) => {
+            await sendExpressTransaction({
+              chainId,
+              // TODO MLTCH: pass true when we can
+              isSponsoredCall: false,
+              txnData,
+            });
+          })
+          .then(makeTxnSentMetricsHandler(metricData.metricId))
+          .catch(makeTxnErrorMetricsHandler(metricData.metricId))
+          .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
+      }
 
       if (glvInfo && selectedMarketForGlv) {
         return createGlvDepositTxn(chainId, signer, {
@@ -210,11 +360,15 @@ export const useDepositWithdrawalTransactions = ({
       tokensData,
       signer,
       chainId,
+      srcChainId,
       shouldDisableValidation,
       blockTimestampData,
       setPendingTxns,
       setPendingDeposit,
+      globalExpressParams?.relayerFeeTokenAddress,
+      asyncResult.data,
       isMarketTokenDeposit,
+      transferRequests,
     ]
   );
 
