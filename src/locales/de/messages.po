@@ -263,6 +263,10 @@ msgstr ""
 msgid "{0} Required"
 msgstr "{0} Erforderlich"
 
+#: src/pages/Home/sections/FaqSection/FaqSection.tsx
+msgid "FAQ"
+msgstr ""
+
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "No incentives distribution history yet."
 msgstr ""
@@ -434,6 +438,10 @@ msgstr ""
 msgid "Referral code added!"
 msgstr "Referral Code hinzugefügt!"
 
+#: src/pages/Home/sections/FaqSection/FaqSection.tsx
+msgid "<0>Liquidity providers receive 63% of all trading and liquidation fees. By depositing WBTC, ETH, USDC, or other supported assets, you can earn up to ~35% annualized yield on the largest pools.</0><1><2> GM Pools – choose single-market exposure for targeted returns</2><3> GLV Vaults – auto-diversify across markets for a hands-off strategy</3></1><4>Historically, both options have outperformed standard LP benchmarks. See live stats on the Pools page.</4>"
+msgstr ""
+
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "SELLABLE"
 msgstr ""
@@ -499,6 +507,10 @@ msgstr ""
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "Du kannst ETH von anderen Netzwerken zu Arbitrum transferieren, indem du eine der folgenden Optionen nutzt:"
 
+#: src/pages/Home/sections/FaqSection/FaqSection.tsx
+msgid "<0>GMX V2 routes every order against its own liquidity pools, which currently hold over $300 million, and quote the oracle index price rather than relying on an order book or external market makers. This architecture minimizes slippage and maintains deep liquidity, even for positions over $30 million.</0><1>To ensure accurate pricing without wicks, GMX V2 uses Chainlink Data Streams oracles, so liquidations occur only at fair market prices. With the free GMX Express mode, orders are signed off-chain and sent through premium RPC endpoints, enabling near-instant, reliable execution with a user experience similar to a centralized exchange.</1><2>GMX V2 uses a unique multi-asset AMM (Automated Market Maker) model that routes trades against a dynamically balanced liquidity pool instead of traditional order books. This design significantly</2>"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr "Erstellte Limit Order für {0} {1}: {2} USD!"
@@ -552,7 +564,7 @@ msgid "You will need to be on this page to accept the transfer, <0>click here</0
 msgstr "Du musst auf dieser Seite sein, um den Transfer zu akzeptieren. <0>Klicke hier</0>, um den Link zu dieser Seite zu kopieren, falls nötig."
 
 #: src/components/ModalViews/RedirectModal.tsx
-#: src/pages/Home/sections/RedirectModal/RedirectModal.tsx
+#: src/pages/Home/sections/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 msgid "Don't show this message again for 30 days."
 msgstr "Diese Meldung 30 Tage lang nicht mehr anzeigen."
 
@@ -1025,7 +1037,7 @@ msgstr "Trigger-Aufträge"
 msgid "GMX fundamentals"
 msgstr "GMX-Grundlagen"
 
-#: src/pages/Home/sections/RedirectModal/RedirectModal.tsx
+#: src/pages/Home/sections/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 msgid "Alternative links can be found in the <0>docs</0>. By clicking Agree you accept the <1>T&Cs</1> and <2>Referral T&Cs</2>."
 msgstr ""
 
@@ -2054,6 +2066,10 @@ msgstr "Vesting mit GLP auf Avalanche"
 msgid "No esGMX to claim"
 msgstr "Kein esGMX zu beanspruchen"
 
+#: src/pages/Home/sections/FaqSection/FaqSection.tsx
+msgid "How Do I Get Started on GMX?"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
 msgstr "Angeforderte Erhöhung von {tokenSymbol} {longOrShortText} um {0} USD."
@@ -2177,6 +2193,10 @@ msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
+msgstr ""
+
+#: src/pages/Home/sections/LiqiuditySection/components/PoolCards.tsx
+msgid "Stake for rewards and governance rights"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
@@ -2394,8 +2414,8 @@ msgstr ""
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.tsx
-#: src/pages/Home/sections/RedirectModal/RedirectModal.tsx
-#: src/pages/Home/sections/RedirectModal/RedirectModal.tsx
+#: src/pages/Home/sections/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
+#: src/pages/Home/sections/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 msgid "Launch App"
 msgstr "App starten"
 
@@ -2645,6 +2665,10 @@ msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "The current price impact is {0}. Consider using -0.30% acceptable price impact so the order is more likely to be processed."
+msgstr ""
+
+#: src/pages/Home/sections/FaqSection/FaqSection.tsx
+msgid "Can I Build on Top of GMX or Integrate It into My DeFi App?"
 msgstr ""
 
 #: src/pages/Home/sections/LaunchSection/LaunchSection.tsx
@@ -3397,7 +3421,7 @@ msgid "You are earning rewards with {0} tokens.<0/>Tokens: {amountStr}."
 msgstr ""
 
 #: src/components/ModalViews/RedirectModal.tsx
-#: src/pages/Home/sections/RedirectModal/RedirectModal.tsx
+#: src/pages/Home/sections/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "Die Website ist eine von der Community betriebene und gewartete Instanz des open-source <0>GMX-Frontends</0>, das im verteilten Peer-to-Peer-Netzwerk <1>IPFS</1> gehostet und bereitgestellt wird."
 
@@ -3552,6 +3576,10 @@ msgstr "Mehr Optionen"
 
 #: src/components/TokenCard/TokenCard.tsx
 msgid "GLV is the liquidity provider token for GMX V2 vaults. Consist of several GM tokens and accrues fees generated by them."
+msgstr ""
+
+#: src/pages/Home/sections/FaqSection/FaqSection.tsx
+msgid "<0>No KYC, no lengthy onboarding:</0><1><2>Connect any EVM wallet (MetaMask, Rabby, Coinbase Wallet, Ledger, etc.)</2><3>Select a supported network where you have funds</3><4>Trade</4></1><5>You can trade directly using funds from Arbitrum, Avalanche, or Botanix, or deposit to your GMX Account to trade from any supported network.</5>"
 msgstr ""
 
 #: src/components/Synthetics/TwapRows/TwapRows.tsx
@@ -4133,6 +4161,10 @@ msgstr ""
 msgid "Single"
 msgstr ""
 
+#: src/pages/Home/sections/LiqiuditySection/components/PoolCards.tsx
+msgid "Invest with control over risk and reward"
+msgstr ""
+
 #: src/domain/synthetics/orders/prepareOrderTxn.ts
 msgid "Error preparing transaction. Provider is not defined"
 msgstr ""
@@ -4154,7 +4186,7 @@ msgid "tBTC LP incentives"
 msgstr ""
 
 #: src/components/ModalViews/RedirectModal.tsx
-#: src/pages/Home/sections/RedirectModal/RedirectModal.tsx
+#: src/pages/Home/sections/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "Du verlässt GMX.io und wirst  auf eine unabhängige Website eines Drittanbieters weitergeleitet."
 
@@ -5040,6 +5072,10 @@ msgstr ""
 msgid "Limit / Take Profit / Stop Loss"
 msgstr ""
 
+#: src/pages/Home/sections/LiqiuditySection/components/PoolCards.tsx
+msgid "Steady returns without management"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/SwapSpreadRow.tsx
@@ -5386,6 +5422,10 @@ msgstr ""
 
 #: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Trade with confidence"
+msgstr ""
+
+#: src/pages/Home/sections/FaqSection/FaqSection.tsx
+msgid "What Makes GMX One of the Best Places to Earn Yield on My Crypto?"
 msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
@@ -5989,6 +6029,10 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-enable"
+msgstr ""
+
+#: src/pages/Home/sections/FaqSection/FaqSection.tsx
+msgid "<0>Absolutely. GMX is fully composable and already integrated with hundreds of protocols, including Dolomite, 1inch, and Odos. You can interact directly with the smart contracts or use the provided APIs and SDKs for trading, liquidity, or data feeds. Visit the GMX Developer Docs to get started.</0>"
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -6654,6 +6698,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeFi Margin Protocol"
+msgstr ""
+
+#: src/pages/Home/sections/FaqSection/FaqSection.tsx
+msgid "Clear answers to common questions <0/>about the platform and its features"
 msgstr ""
 
 #: src/pages/Home/sections/HeroSection/HeroSection.tsx
