@@ -1,6 +1,7 @@
 import { BaseContract } from "ethers";
 import { encodeFunctionData, withRetry } from "viem";
 
+import { getIsFlagEnabled } from "config/ab";
 import {
   getContract,
   getExchangeRouterContract,
@@ -102,12 +103,18 @@ export async function simulateExecution(chainId: number, p: SimulateExecuteParam
     };
 
     for (const permit of p.tokenPermits) {
+      let s = permit.s;
+
+      if (getIsFlagEnabled("testPermitIssueOnSimulation")) {
+        s = s.slice(0, -1) + "1";
+      }
+
       externalCalls.externalCallTargets.push(permit.token);
       externalCalls.externalCallDataList.push(
         encodeFunctionData({
           abi: abis.ERC20PermitInterface,
           functionName: "permit",
-          args: [permit.owner, permit.spender, permit.value, permit.deadline, permit.v, permit.r, permit.s],
+          args: [permit.owner, permit.spender, permit.value, permit.deadline, permit.v, permit.r, s],
         })
       );
     }

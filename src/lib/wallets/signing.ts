@@ -38,18 +38,6 @@ export async function signTypedData({ signer, domain, types, typedData }: SignTy
 
   const primaryType = Object.keys(types).filter((t) => t !== "EIP712Domain")[0];
 
-  if (signer.signTypedData) {
-    try {
-      return await signer.signTypedData(domain, types, typedData);
-    } catch (e) {
-      if (e.message.includes("requires a provider")) {
-        // ignore and try to send request directly to provider
-      } else {
-        throw e;
-      }
-    }
-  }
-
   const provider = signer.provider;
   const from = await signer.getAddress();
 

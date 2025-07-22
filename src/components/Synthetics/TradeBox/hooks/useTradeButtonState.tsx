@@ -21,10 +21,7 @@ import {
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
-import {
-  selectAddTokenPermit,
-  selectTokenPermits,
-} from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
+import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import {
   selectExternalSwapQuote,
   selectTradeboxDecreasePositionAmounts,
@@ -56,7 +53,7 @@ import {
   getNextPositionValuesForIncreaseTrade,
 } from "domain/synthetics/trade/utils/increase";
 import { getCommonError, getExpressError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
-import { approveTokens } from "domain/tokens/approveTokens";
+import { useApproveToken } from "domain/tokens/useApproveTokens";
 import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
@@ -64,10 +61,8 @@ import { formatAmountFree } from "lib/numbers";
 import { sleep } from "lib/sleep";
 import { mustNeverExist } from "lib/types";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
-import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
+import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
-import { getContract } from "sdk/configs/contracts";
 import { getToken, getTokenBySymbol, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/types/fees";
 import { TokenData } from "sdk/types/tokens";
@@ -129,7 +124,7 @@ export function useTradeboxButtonState({
   const { setPendingTxns } = usePendingTxns();
   const { openConnectModal } = useConnectModal();
 
-  const addTokenPermit = useSelector(selectAddTokenPermit);
+  const { approveToken } = useApproveToken();
 
   const {
     onSubmitWrapOrUnwrap,
@@ -276,7 +271,7 @@ export function useTradeboxButtonState({
   ]);
 
   const onSubmit = useCallback(async () => {
-    if (!account) {
+    if (!account || !signer) {
       sendUserAnalyticsConnectWalletClickEvent("ActionButton");
       openConnectModal?.();
       return;
@@ -287,36 +282,12 @@ export function useTradeboxButtonState({
 
       if (!chainId || isApproving || !tokenToApprove) return;
 
-      userAnalytics.pushEvent<TokenApproveClickEvent>({
-        event: "TokenApproveAction",
-        data: {
-          action: "ApproveClick",
-        },
-      });
-
-      approveTokens({
-        setIsApproving,
-        signer,
+      approveToken({
         tokenAddress: tokenToApprove.tokenAddress,
-        spender: getContract(chainId, "SyntheticsRouter"),
-        pendingTxns: [],
-        setPendingTxns,
-        infoTokens: {},
         chainId,
-        approveAmount: undefined,
-        permitParams: expressParams
-          ? {
-              addTokenPermit,
-            }
-          : undefined,
-        onApproveFail: () => {
-          userAnalytics.pushEvent<TokenApproveResultEvent>({
-            event: "TokenApproveAction",
-            data: {
-              action: "ApproveFail",
-            },
-          });
-        },
+        signer,
+        allowPermit: Boolean(expressParams),
+        setIsApproving,
       });
 
       return;
@@ -363,11 +334,10 @@ export function useTradeboxButtonState({
     isIncrease,
     expressParams,
     openConnectModal,
+    approveToken,
     chainId,
     isApproving,
     signer,
-    setPendingTxns,
-    addTokenPermit,
     onSubmitStakeOrUnstake,
     onSubmitWrapOrUnwrap,
     onSubmitSwap,

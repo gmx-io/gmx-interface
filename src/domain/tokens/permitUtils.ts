@@ -1,6 +1,8 @@
 import { ethers } from "ethers";
 import { decodeFunctionResult, encodeFunctionData, recoverTypedDataAddress } from "viem";
 
+import { getIsFlagEnabled } from "config/ab";
+import { parseError } from "lib/errors";
 import { defined } from "lib/guards";
 import { WalletSigner } from "lib/wallets";
 import { signTypedData, splitSignature } from "lib/wallets/signing";
@@ -61,11 +63,11 @@ export async function createAndSignTokenPermit(
     v,
     r,
     s,
+    onchainParams,
   };
 
   return {
     permit,
-    onchainParams,
   };
 }
 
@@ -157,32 +159,12 @@ export async function getTokenPermitParams(
   };
 }
 
-export async function validateTokenPermitSignature(
-  chainId: number,
-  permit: SignedTokenPermit,
-  onchainParams: {
-    name: string;
-    version: string;
-    nonce: bigint;
-  }
-): Promise<{
-  isValid: boolean;
-  recoveredAddress?: string;
-  error?: string;
-}> {
+export async function validateTokenPermitSignature(chainId: number, permit: SignedTokenPermit) {
   try {
-    // Check if permit is expired
-    if (getIsPermitExpired(permit)) {
-      return {
-        isValid: false,
-        error: "Permit is expired",
-      };
-    }
-
     const domain = {
       chainId,
-      name: onchainParams.name,
-      version: onchainParams.version,
+      name: permit.onchainParams.name,
+      version: permit.onchainParams.version,
       verifyingContract: permit.token as `0x${string}`,
     };
 
@@ -200,16 +182,20 @@ export async function validateTokenPermitSignature(
       owner: permit.owner,
       spender: permit.spender,
       value: permit.value,
-      nonce: onchainParams.nonce,
+      nonce: permit.onchainParams.nonce,
       deadline: permit.deadline,
     };
 
     // Reconstruct the signature from v, r, s components
-    const signature = ethers.Signature.from({
+    let signature = ethers.Signature.from({
       r: permit.r,
       s: permit.s,
       v: permit.v,
     }).serialized;
+
+    if (getIsFlagEnabled("testPermitIssue")) {
+      signature = signature + 1;
+    }
 
     // Recover the signer address from the signature
     const recoveredAddress = await recoverTypedDataAddress({
@@ -226,13 +212,13 @@ export async function validateTokenPermitSignature(
     return {
       isValid,
       recoveredAddress,
-      error: isValid ? undefined : "Recovered address does not match permit owner",
+      error: isValid ? undefined : parseError("Recovered address does not match permit owner"),
     };
   } catch (error) {
     return {
       isValid: false,
       recoveredAddress: undefined,
-      error: `Signature validation failed: ${error instanceof Error ? error.message : String(error)}`,
+      error: parseError(error),
     };
   }
 }

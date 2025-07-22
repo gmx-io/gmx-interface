@@ -1,6 +1,5 @@
 import { getSwapDebugSettings } from "config/externalSwaps";
 import { UserReferralInfo } from "domain/referrals";
-import { ErrorLike, parseError } from "lib/errors";
 import { applyFactor } from "lib/numbers";
 import { MarketInfo } from "sdk/types/markets";
 import { PositionInfo } from "sdk/types/positions";
@@ -141,16 +140,6 @@ export function getExternalSwapInputsByLeverageSize({
     internalSwapTotalFeesDeltaUsd,
     internalSwapAmounts: swapAmounts,
   };
-}
-
-export function getIsPossibleExternalSwapError(error: ErrorLike) {
-  const parsedError = parseError(error);
-
-  const isExternalCallError = parsedError?.contractError === "ExternalCallFailed";
-
-  const isPayloadRelatedError = parsedError?.errorMessage?.includes("execution reverted");
-
-  return isExternalCallError || isPayloadRelatedError;
 }
 
 export function getBestSwapStrategy({

@@ -1,16 +1,18 @@
-import React, { createContext, useCallback, useContext, useMemo } from "react";
+import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 import { getTokenPermitsKey } from "config/localStorage";
-import { createAndSignTokenPermit, getIsPermitExpired } from "domain/tokens/permitUtils";
+import { createAndSignTokenPermit, getIsPermitExpired, validateTokenPermitSignature } from "domain/tokens/permitUtils";
 import { useChainId } from "lib/chains";
+import { getInvalidPermitSignatureError } from "lib/errors/customErrors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { metrics } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
 import { SignedTokenPermit } from "sdk/types/tokens";
 
 export type TokenPermitsState = {
   tokenPermits: SignedTokenPermit[];
   addTokenPermit: AddTokenPermitFn;
+  setIsPermitsDisabled: (disabled: boolean) => void;
+  isPermitsDisabled: boolean;
   resetTokenPermits: () => void;
 };
 
@@ -29,6 +31,7 @@ export function useTokenPermitsContext() {
 export function TokenPermitsContextProvider({ children }: { children: React.ReactNode }) {
   const { chainId } = useChainId();
   const { signer } = useWallet();
+  const [isPermitsDisabled, setIsPermitsDisabled] = useState(false);
 
   const [tokenPermits, setTokenPermits] = useLocalStorageSerializeKey<SignedTokenPermit[]>(
     getTokenPermitsKey(chainId, signer?.address),
@@ -67,20 +70,19 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
         return;
       }
 
-      try {
-        const { permit, onchainParams } = await createAndSignTokenPermit(
-          chainId,
-          signer,
-          tokenAddress,
-          spenderAddress,
-          value
-        );
+      const { permit } = await createAndSignTokenPermit(chainId, signer, tokenAddress, spenderAddress, value);
 
-        setTokenPermits(tokenPermits?.concat(permit) ?? [permit]);
-      } catch (e) {
-        metrics.pushError(e, "tokenPermits.addTokenPermit");
-        throw e;
+      const validationResult = await validateTokenPermitSignature(chainId, permit);
+
+      if (!validationResult.isValid) {
+        throw getInvalidPermitSignatureError({
+          permit,
+          recoveredAddress: validationResult.recoveredAddress,
+          error: validationResult.error,
+        });
       }
+
+      setTokenPermits(tokenPermits?.concat(permit) ?? [permit]);
     },
     [chainId, setTokenPermits, tokenPermits, signer]
   );
@@ -91,11 +93,13 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
 
   const state = useMemo(() => {
     return {
+      isPermitsDisabled,
+      setIsPermitsDisabled,
       tokenPermits: tokenPermits?.filter((permit) => !getIsPermitExpired(permit)) ?? [],
       addTokenPermit,
       resetTokenPermits,
     };
-  }, [tokenPermits, addTokenPermit, resetTokenPermits]);
+  }, [isPermitsDisabled, tokenPermits, addTokenPermit, resetTokenPermits]);
 
   return <TokenPermitsContext.Provider value={state}>{children}</TokenPermitsContext.Provider>;
 }

@@ -20,6 +20,7 @@ export type AdditionalErrorParams = {
   slippageInputId?: string;
   defaultMessage?: ReactNode;
   isInternalSwapFallback?: boolean;
+  isPermitIssue?: boolean;
   setIsSettingsVisible: (isVisible: boolean) => void;
 };
 
@@ -31,6 +32,7 @@ export function getTxnErrorToast(
     slippageInputId,
     defaultMessage = getDefaultErrorMessage(errorData),
     isInternalSwapFallback,
+    isPermitIssue,
     setIsSettingsVisible,
   }: AdditionalErrorParams
 ) {
@@ -86,6 +88,10 @@ export function getTxnErrorToast(
     );
 
     return toastParams;
+  }
+
+  if (isPermitIssue) {
+    toastParams.errorContent = getInvalidPermitSignatureToastContent();
   }
 
   if (
@@ -278,6 +284,14 @@ export function getInvalidNetworkToastContent(chainId: number) {
 }
 
 export const signerAddressError = "Signer address does not match account address";
+
+export function getInvalidPermitSignatureToastContent() {
+  return (
+    <Trans>
+      <div>Permit signature is invalid. Please try again.</div>
+    </Trans>
+  );
+}
 
 /**
  * @deprecated
