@@ -117,9 +117,11 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
               )}
             </div>
             <div className="App-header-container-right">
-              <div className="mr-22">
-                <OneClickPromoBanner isShort={shouldShorten1CTBanner} openSettings={openSettings} />
-              </div>
+              {!isHomeSite() ? (
+                <div className="mr-22">
+                  <OneClickPromoBanner isShort={shouldShorten1CTBanner} openSettings={openSettings} />
+                </div>
+              ) : null}
 
               <AppHeaderUser
                 disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
