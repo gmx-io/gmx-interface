@@ -27,8 +27,16 @@ export function FaqItem({ title, children }: Props) {
           />
         </span>
       </div>
-      <div className="leading-body-md flex flex-col gap-16 text-16 -tracking-[0.512px] text-secondary">
-        {isOpen && children}
+      <div
+        className={cx(
+          "leading-body-md flex flex-col gap-16 overflow-hidden text-16 -tracking-[0.512px] text-secondary transition-all duration-300 ease-in-out",
+          {
+            "max-h-0 opacity-0": !isOpen,
+            "max-h-[1000px] opacity-100": isOpen,
+          }
+        )}
+      >
+        {children}
       </div>
     </div>
   );
