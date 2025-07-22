@@ -150,6 +150,10 @@ export function getSwapError(p: {
     return [t`No swap path found`, "noSwapPath"];
   }
 
+  if (fromToken.symbol === "STBTC" && toToken.symbol === "BTC") {
+    return [t`No swap path found`, "noSwapPath"];
+  }
+
   if (!isLimit && (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)) {
     return [t`Insufficient liquidity`];
   }
