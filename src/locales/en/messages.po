@@ -1330,6 +1330,10 @@ msgstr "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgid "Buy token on:"
 msgstr "Buy token on:"
 
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Please sign a new approval to continue."
+msgstr "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Please sign a new approval to continue."
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -1344,6 +1348,10 @@ msgstr "Failed Limit Swap"
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "Liq. {longOrShortText} - {marketIndexName}"
+
+#: src/components/TVChartContainer/constants.ts
+msgid "Market - Long Inc."
+msgstr "Market - Long Inc."
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Longing..."
@@ -2104,6 +2112,10 @@ msgstr "Size"
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "We value your experience and insights and invite you to participate in an anonymous one-on-one chat."
 msgstr "We value your experience and insights and invite you to participate in an anonymous one-on-one chat."
+
+#: src/components/TVChartContainer/constants.ts
+msgid "Market - Short Inc."
+msgstr "Market - Short Inc."
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Header/AppHeaderChainAndSettings.tsx
@@ -4537,6 +4549,10 @@ msgstr "Enter a code"
 #: src/components/Synthetics/GmList/GmListItem.tsx
 msgid "Details"
 msgstr "Details"
+
+#: src/components/TVChartContainer/constants.ts
+msgid "Market - Short Dec."
+msgstr "Market - Short Dec."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Umami DAO"
@@ -8164,6 +8180,10 @@ msgstr "Increase Size (Stop Market)"
 msgid "Stop Loss PnL"
 msgstr "Stop Loss PnL"
 
+#: src/components/TVChartContainer/constants.ts
+msgid "Market - Long Dec."
+msgstr "Market - Long Dec."
+
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing {balanceFormatted}  to Main Account"
 msgstr "Withdrawing {balanceFormatted}  to Main Account"
@@ -8287,6 +8307,7 @@ msgstr "2nd Place"
 msgid "LAST PRICE"
 msgstr "LAST PRICE"
 
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
 msgstr "Re-sign"

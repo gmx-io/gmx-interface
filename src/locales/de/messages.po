@@ -1330,6 +1330,10 @@ msgstr "Swap aktiv: {0}, ausgeführt: {1}, abgebrochen: {2}"
 msgid "Buy token on:"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Please sign a new approval to continue."
+msgstr ""
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -1343,6 +1347,10 @@ msgstr "Limit Swap fehlgeschlagen"
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
+msgstr ""
+
+#: src/components/TVChartContainer/constants.ts
+msgid "Market - Long Inc."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
@@ -2103,6 +2111,10 @@ msgstr "Größe"
 
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "We value your experience and insights and invite you to participate in an anonymous one-on-one chat."
+msgstr ""
+
+#: src/components/TVChartContainer/constants.ts
+msgid "Market - Short Inc."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
@@ -4533,6 +4545,10 @@ msgstr "Einen Code eingeben"
 
 #: src/components/Synthetics/GmList/GmListItem.tsx
 msgid "Details"
+msgstr ""
+
+#: src/components/TVChartContainer/constants.ts
+msgid "Market - Short Dec."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -8158,6 +8174,10 @@ msgstr ""
 msgid "Stop Loss PnL"
 msgstr ""
 
+#: src/components/TVChartContainer/constants.ts
+msgid "Market - Long Dec."
+msgstr ""
+
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing {balanceFormatted}  to Main Account"
 msgstr ""
@@ -8281,6 +8301,7 @@ msgstr ""
 msgid "LAST PRICE"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
 msgstr ""
