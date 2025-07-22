@@ -6,11 +6,7 @@ import { LandingPageProtocolTokenEvent } from "lib/userAnalytics/types";
 
 import { useHomePageContext } from "../contexts/HomePageContext";
 
-type Props = {
-  pool: LandingPageProtocolTokenEvent["data"]["type"];
-};
-
-export function useGoToPools({ pool }: Props) {
+export function useGoToPools(pool: LandingPageProtocolTokenEvent["data"]["type"]) {
   const { showRedirectModal } = useHomePageContext();
 
   return useCallback(() => {

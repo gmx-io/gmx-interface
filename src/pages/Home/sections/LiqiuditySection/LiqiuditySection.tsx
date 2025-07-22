@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 
-import { PoolCardContainer } from "./components/PoolCardContainer";
+import { PoolCards } from "./components/PoolCards";
 
 export function LiqiuditySection() {
   return (
@@ -20,9 +20,7 @@ export function LiqiuditySection() {
           </button>
         </div>
         <div className="flex w-full flex-col justify-between gap-16 sm:flex-row">
-          <PoolCardContainer pool="GMX" />
-          <PoolCardContainer pool="GLV" />
-          <PoolCardContainer pool="GM" />
+          <PoolCards />
         </div>
       </div>
     </section>
