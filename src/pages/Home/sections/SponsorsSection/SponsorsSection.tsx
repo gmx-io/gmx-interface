@@ -13,7 +13,7 @@ export function SponsorsSection() {
           <h3 className="text-[40px] font-medium leading-heading-md -tracking-[1.28]">
             <Trans>Supported by</Trans>
           </h3>
-          <h4 className="text-18 font-medium leading-text-sm -tracking-[0.576px]">
+          <h4 className="leading-body-sm text-18 font-medium -tracking-[0.576px]">
             <Trans>over 100 protocols</Trans>
           </h4>
         </div>
