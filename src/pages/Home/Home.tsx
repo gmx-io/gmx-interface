@@ -4,11 +4,11 @@ import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageViewEvent } from "lib/userAnalytics/types";
 
 import { HomePageContextProvider } from "./contexts/HomePageContext";
-import { FaqSection } from "./sections/FaqSection/FaqSection";
-import { HeroSection } from "./sections/HeroSection/HeroSection";
-import { LaunchSection } from "./sections/LaunchSection/LaunchSection";
-import { LiqiuditySection } from "./sections/LiqiuditySection/LiqiuditySection";
-import { SponsorsSection } from "./sections/SponsorsSection/SponsorsSection";
+import { FaqSection } from "./FaqSection/FaqSection";
+import { HeroSection } from "./HeroSection/HeroSection";
+import { LaunchSection } from "./LaunchSection/LaunchSection";
+import { LiqiuditySection } from "./LiqiuditySection/LiqiuditySection";
+import { SponsorsSection } from "./SponsorsSection/SponsorsSection";
 
 export default function Home(_) {
   useEffect(() => {
