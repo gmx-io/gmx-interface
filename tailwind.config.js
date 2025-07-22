@@ -224,8 +224,8 @@ module.exports = {
     lineHeight: {
       1: "1",
       2: "2",
-      'text-sm': "136%",
-      'text-md': "144%",
+      'body-sm': "136%",
+      'body-md': "144%",
       'heading-lg': "98%",
       'heading-md': "108%",
       // Normal is browser dependent. See https://developer.mozilla.org/en-US/docs/Web/CSS/line-height#normal
