@@ -10,12 +10,12 @@ import IcMidChevron from "img/ic_mid_chevron.svg?react";
 import IcChecked from "img/ic_new_checked.svg?react";
 import IcProtection from "img/ic_protection.svg?react";
 
-import { IconBox } from "./../../components/IconBox";
-import { ChainIcons } from "./components/ChainIcons";
-import { HeroBackground } from "./components/HeroBackground";
-import { ProtectionBackground } from "./components/ProtectionBackground";
-import { SeamlessBackground } from "./components/SeamlessBackground";
-import { REDIRECT_CHAIN_IDS, useGoToTrade } from "../../hooks/useGoToTrade";
+import { ChainIcons } from "./ChainIcons";
+import { HeroBackground } from "./HeroBackground";
+import { ProtectionBackground } from "./ProtectionBackground";
+import { SeamlessBackground } from "./SeamlessBackground";
+import { IconBox } from "../components/IconBox";
+import { REDIRECT_CHAIN_IDS, useGoToTrade } from "../hooks/useGoToTrade";
 
 const assetsBgStyle = {
   backgroundImage: `url(${AsssetsBg})`,
