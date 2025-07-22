@@ -10,15 +10,9 @@ export function FaqSection() {
           <h2 className="text-heading-2 mb-20">
             <Trans>FAQ</Trans>
           </h2>
-          <h3 className="leading-body-sm text-16 font-medium -tracking-[0.576px] text-slate-100 sm:text-18">
-            <Trans>
-              Clear answers to common questions <br />
-              about the platform and its features
-            </Trans>
-          </h3>
         </div>
         <div className="flex w-full flex-col gap-12 sm:w-[800px]">
-          <FaqItem title="What Makes GMX More Efficient and Reliable for Trades Compared with Other Perpetual Platforms?">
+          <FaqItem title="What makes GMX more efficient and reliable for trades compared with other perpetual platforms?">
             <Trans>
               <p>
                 GMX V2 routes every order against its own liquidity pools, which currently hold over $300 million, and
@@ -37,7 +31,7 @@ export function FaqSection() {
               </p>
             </Trans>
           </FaqItem>
-          <FaqItem title={t`What Makes GMX One of the Best Places to Earn Yield on My Crypto?`}>
+          <FaqItem title={t`What makes GMX one of the best places to earn yield on my crypto?`}>
             <Trans>
               <p>
                 Liquidity providers receive 63% of all trading and liquidation fees. By depositing WBTC, ETH, USDC, or
@@ -52,7 +46,7 @@ export function FaqSection() {
               </p>
             </Trans>
           </FaqItem>
-          <FaqItem title={t`How Do I Get Started on GMX?`}>
+          <FaqItem title={t`How do I get started on GMX?`}>
             <Trans>
               <p>No KYC, no lengthy onboarding:</p>
               <ul className="list-decimal pl-12">
@@ -66,7 +60,7 @@ export function FaqSection() {
               </p>
             </Trans>
           </FaqItem>
-          <FaqItem title={t`Can I Build on Top of GMX or Integrate It into My DeFi App?`}>
+          <FaqItem title={t`Can I build on top of GMX or integrate it into my DeFi app?`}>
             <Trans>
               <p>
                 Absolutely. GMX is fully composable and already integrated with hundreds of protocols, including
