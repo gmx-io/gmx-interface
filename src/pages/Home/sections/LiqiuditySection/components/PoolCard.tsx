@@ -41,17 +41,17 @@ export function PoolCard({ name, apr, description, iconComponent, coinImage, onC
           <IconBox iconComponent={iconComponent} />
           <div>
             <h4 className="text-[28px] font-medium leading-heading-md -tracking-[0.896px]">{name}</h4>
-            <h5 className="text-14 font-normal leading-text-sm tracking-[0.168px]">{description}</h5>
+            <h5 className="leading-body-sm text-14 font-normal tracking-[0.168px]">{description}</h5>
           </div>
         </div>
         <div className="flex flex-row items-end justify-between">
           <div className="flex flex-col gap-4">
-            <p className="text-12 font-medium leading-text-sm tracking-body text-secondary sm:text-14">
+            <p className="leading-body-sm text-12 font-medium tracking-body text-secondary sm:text-14">
               <Trans>Annually</Trans>
             </p>
             <p className="text-[28px] font-medium leading-[98%] sm:text-[50px] sm:-tracking-[2px]">
               {apr}%{" "}
-              <span className="text-12 font-medium leading-text-sm tracking-body text-secondary sm:text-14">
+              <span className="leading-body-sm text-12 font-medium tracking-body text-secondary sm:text-14">
                 <Trans>APR</Trans>
               </span>
             </p>

@@ -19,7 +19,7 @@ export function LaunchSection() {
           <h2 className="text-heading-2 mb-20 sm:mb-24">
             <Trans>Runs entirely on public chains</Trans>
           </h2>
-          <p className="mb-36 text-18 font-normal leading-text-md -tracking-[0.036px] sm:mb-24">
+          <p className="leading-body-md mb-36 text-18 font-normal -tracking-[0.036px] sm:mb-24">
             <Trans>
               Operates on open, permissionless networks to ensure transparency, decentralisation, and unrestricted
               access
