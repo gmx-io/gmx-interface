@@ -16,7 +16,7 @@ export function FaqItem({ title, children }: Props) {
   };
 
   return (
-    <div className="flex flex-col gap-16 border-b-[0.5px] border-fiord-500 py-28">
+    <div className="flex flex-col border-b-[0.5px] border-fiord-500 py-28">
       <div className="mb-12 flex cursor-pointer items-center justify-between gap-[44px] hover:text-blue-600">
         <h4 className="text-heading-4" onClick={handleClick}>
           {title}
