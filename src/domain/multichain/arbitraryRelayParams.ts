@@ -45,7 +45,7 @@ export function getRawBaseRelayerParams({
   account: string;
   globalExpressParams: GlobalExpressParams;
 }): Partial<{
-  rawBaseRelayParamsPayload: RawRelayParamsPayload | RawRelayParamsPayload;
+  rawBaseRelayParamsPayload: RawRelayParamsPayload;
   baseRelayFeeSwapParams: {
     feeParams: RelayFeePayload;
     externalCalls: ExternalCallsPayload;
@@ -107,7 +107,7 @@ async function estimateArbitraryGasLimit({
 }: {
   chainId: ContractsChainId;
   provider: Provider;
-  rawRelayParamsPayload: RawRelayParamsPayload | RawRelayParamsPayload;
+  rawRelayParamsPayload: RawRelayParamsPayload;
   gasPaymentParams: GasPaymentParams;
   expressTransactionBuilder: ExpressTransactionBuilder;
   subaccount: Subaccount | undefined;
@@ -152,7 +152,7 @@ export async function estimateArbitraryRelayFee({
 }: {
   chainId: ContractsChainId;
   provider: Provider;
-  rawRelayParamsPayload: RawRelayParamsPayload | RawRelayParamsPayload;
+  rawRelayParamsPayload: RawRelayParamsPayload;
   expressTransactionBuilder: ExpressTransactionBuilder;
   gasPaymentParams: GasPaymentParams;
   subaccount: Subaccount | undefined;

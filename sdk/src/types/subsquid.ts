@@ -5747,6 +5747,103 @@ export interface PricesConnection {
   totalCount: Scalars["Int"]["output"];
 }
 
+export interface ProcessorStatus {
+  __typename?: "ProcessorStatus";
+  id: Scalars["String"]["output"];
+  lastParsedBlockNumber: Scalars["Int"]["output"];
+  lastParsedBlockTimestamp: Scalars["Int"]["output"];
+  lastProcessorCallTimestamp: Scalars["Int"]["output"];
+}
+
+export interface ProcessorStatusEdge {
+  __typename?: "ProcessorStatusEdge";
+  cursor: Scalars["String"]["output"];
+  node: ProcessorStatus;
+}
+
+export enum ProcessorStatusOrderByInput {
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  lastParsedBlockNumber_ASC = "lastParsedBlockNumber_ASC",
+  lastParsedBlockNumber_ASC_NULLS_FIRST = "lastParsedBlockNumber_ASC_NULLS_FIRST",
+  lastParsedBlockNumber_ASC_NULLS_LAST = "lastParsedBlockNumber_ASC_NULLS_LAST",
+  lastParsedBlockNumber_DESC = "lastParsedBlockNumber_DESC",
+  lastParsedBlockNumber_DESC_NULLS_FIRST = "lastParsedBlockNumber_DESC_NULLS_FIRST",
+  lastParsedBlockNumber_DESC_NULLS_LAST = "lastParsedBlockNumber_DESC_NULLS_LAST",
+  lastParsedBlockTimestamp_ASC = "lastParsedBlockTimestamp_ASC",
+  lastParsedBlockTimestamp_ASC_NULLS_FIRST = "lastParsedBlockTimestamp_ASC_NULLS_FIRST",
+  lastParsedBlockTimestamp_ASC_NULLS_LAST = "lastParsedBlockTimestamp_ASC_NULLS_LAST",
+  lastParsedBlockTimestamp_DESC = "lastParsedBlockTimestamp_DESC",
+  lastParsedBlockTimestamp_DESC_NULLS_FIRST = "lastParsedBlockTimestamp_DESC_NULLS_FIRST",
+  lastParsedBlockTimestamp_DESC_NULLS_LAST = "lastParsedBlockTimestamp_DESC_NULLS_LAST",
+  lastProcessorCallTimestamp_ASC = "lastProcessorCallTimestamp_ASC",
+  lastProcessorCallTimestamp_ASC_NULLS_FIRST = "lastProcessorCallTimestamp_ASC_NULLS_FIRST",
+  lastProcessorCallTimestamp_ASC_NULLS_LAST = "lastProcessorCallTimestamp_ASC_NULLS_LAST",
+  lastProcessorCallTimestamp_DESC = "lastProcessorCallTimestamp_DESC",
+  lastProcessorCallTimestamp_DESC_NULLS_FIRST = "lastProcessorCallTimestamp_DESC_NULLS_FIRST",
+  lastProcessorCallTimestamp_DESC_NULLS_LAST = "lastProcessorCallTimestamp_DESC_NULLS_LAST",
+}
+
+export interface ProcessorStatusWhereInput {
+  AND?: InputMaybe<Array<ProcessorStatusWhereInput>>;
+  OR?: InputMaybe<Array<ProcessorStatusWhereInput>>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  lastParsedBlockNumber_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  lastParsedBlockNumber_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  lastParsedBlockNumber_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  lastParsedBlockNumber_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  lastParsedBlockNumber_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  lastParsedBlockNumber_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  lastParsedBlockNumber_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  lastParsedBlockNumber_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  lastParsedBlockNumber_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  lastParsedBlockTimestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  lastParsedBlockTimestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  lastParsedBlockTimestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  lastParsedBlockTimestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  lastParsedBlockTimestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  lastParsedBlockTimestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  lastParsedBlockTimestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  lastParsedBlockTimestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  lastParsedBlockTimestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  lastProcessorCallTimestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  lastProcessorCallTimestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  lastProcessorCallTimestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  lastProcessorCallTimestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  lastProcessorCallTimestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  lastProcessorCallTimestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  lastProcessorCallTimestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  lastProcessorCallTimestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  lastProcessorCallTimestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+}
+
+export interface ProcessorStatusesConnection {
+  __typename?: "ProcessorStatusesConnection";
+  edges: Array<ProcessorStatusEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
+}
+
 export interface Query {
   __typename?: "Query";
   accountPnlHistoryStats: Array<AccountPnlHistoryPointObject>;
@@ -5816,6 +5913,9 @@ export interface Query {
   priceById?: Maybe<Price>;
   prices: Array<Price>;
   pricesConnection: PricesConnection;
+  processorStatusById?: Maybe<ProcessorStatus>;
+  processorStatuses: Array<ProcessorStatus>;
+  processorStatusesConnection: ProcessorStatusesConnection;
   squidStatus?: Maybe<SquidStatus>;
   swapInfoById?: Maybe<SwapInfo>;
   swapInfos: Array<SwapInfo>;
@@ -6212,6 +6312,24 @@ export interface QuerypricesConnectionArgs {
   first?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy: Array<PriceOrderByInput>;
   where?: InputMaybe<PriceWhereInput>;
+}
+
+export interface QueryprocessorStatusByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QueryprocessorStatusesArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<ProcessorStatusOrderByInput>>;
+  where?: InputMaybe<ProcessorStatusWhereInput>;
+}
+
+export interface QueryprocessorStatusesConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<ProcessorStatusOrderByInput>;
+  where?: InputMaybe<ProcessorStatusWhereInput>;
 }
 
 export interface QueryswapInfoByIdArgs {

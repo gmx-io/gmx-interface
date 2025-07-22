@@ -46,7 +46,7 @@ export type ExpressTransactionBuilder = ({
   gasPaymentParams,
   subaccount,
 }: {
-  relayParams: RawRelayParamsPayload | RawRelayParamsPayload;
+  relayParams: RawRelayParamsPayload;
   gasPaymentParams: GasPaymentParams;
   subaccount: Subaccount | undefined;
 }) => Promise<{ txnData: ExpressTxnData }>;
