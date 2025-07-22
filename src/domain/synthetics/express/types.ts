@@ -10,7 +10,6 @@ import type { FindSwapPath } from "../trade";
 export type GlobalExpressParams = {
   tokensData: TokensData;
   marketsInfoData: MarketsInfoData;
-  subaccount: Subaccount | undefined;
   tokenPermits: SignedTokenPermit[];
   gasPaymentTokenAddress: string;
   relayerFeeTokenAddress: string;

@@ -3,12 +3,21 @@ import {
   EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY,
 } from "config/localStorage";
 import { selectIsExpressTransactionAvailable } from "context/SyntheticsStateContext/selectors/expressSelectors";
-import { selectRawSubaccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import {
+  selectChainId,
+  selectRawSubaccount,
+  selectSrcChainId,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectTradeboxIsFromTokenGmxAccount,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpressTxnParams } from "domain/synthetics/express";
+import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
 import {
   getIsSubaccountActionsExceeded,
+  getIsSubaccountApprovalInvalid,
   getIsSubaccountExpired,
   getIsSubaccountNonceExpired,
 } from "domain/synthetics/subaccount";
@@ -24,7 +33,10 @@ export function useExpressTradingWarnings({
   payTokenAddress: string | undefined;
   expressParams: ExpressTxnParams | undefined;
 }) {
+  const chainId = useSelector(selectChainId);
+  const srcChainId = useSelector(selectSrcChainId);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
+  const isGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
   const isExpressTransactionAvailable = useSelector(selectIsExpressTransactionAvailable);
   const rawSubaccount = useSelector(selectRawSubaccount);
 
@@ -47,6 +59,16 @@ export function useExpressTradingWarnings({
     shouldShowAllowedActionsWarning:
       isExpressTransactionAvailable && rawSubaccount && getIsSubaccountActionsExceeded(rawSubaccount, 1),
     shouldShowOutOfGasPaymentBalanceWarning: expressParams?.gasPaymentValidations.isOutGasTokenBalance,
+    shouldShowSubaccountApprovalInvalidWarning:
+      isExpressTransactionAvailable &&
+      rawSubaccount &&
+      getIsSubaccountApprovalInvalid({
+        chainId,
+        signedApproval: rawSubaccount.signedApproval,
+        subaccountRouterAddress: getOrderRelayRouterAddress(chainId, true, isGmxAccount),
+        onchainData: rawSubaccount.onchainData,
+        signerChainId: srcChainId ?? chainId,
+      }),
   };
 
   const shouldShowWarning = Object.values(conditions).some(Boolean);

@@ -221,6 +221,7 @@ export async function removeSubaccountExpressTxn({
     isGmxAccount: srcChainId !== undefined,
     relayerFeeAmount,
     globalExpressParams: globalExpressParams,
+    subaccount,
   });
 
   if (!relayFeeParams || !relayParamsPayload) {
@@ -230,7 +231,7 @@ export async function removeSubaccountExpressTxn({
   const txnData = await buildAndSignRemoveSubaccountTxn({
     chainId,
     signer,
-    subaccount: subaccount!,
+    subaccount,
     relayParamsPayload: {
       ...relayParamsPayload,
       deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),

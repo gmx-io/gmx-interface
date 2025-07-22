@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { ReactNode, useCallback, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import {
@@ -11,6 +11,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { usePrevious } from "lib/usePrevious";
 import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 
@@ -76,7 +77,15 @@ export function ExpressTradingWarningCard({
     shouldShowExpiredSubaccountWarning,
     shouldShowNonceExpiredWarning,
     shouldShowOutOfGasPaymentBalanceWarning,
+    shouldShowSubaccountApprovalInvalidWarning,
   } = useExpressTradingWarnings({ expressParams, payTokenAddress, isWrapOrUnwrap });
+
+  const prevShouldShowSubaccountApprovalInvalidWarning = usePrevious(shouldShowSubaccountApprovalInvalidWarning);
+  useEffect(() => {
+    if (!prevShouldShowSubaccountApprovalInvalidWarning && shouldShowSubaccountApprovalInvalidWarning && !isVisible) {
+      setIsVisible(true);
+    }
+  }, [isVisible, prevShouldShowSubaccountApprovalInvalidWarning, shouldShowSubaccountApprovalInvalidWarning]);
 
   const { gasPaymentTokensText, gasPaymentTokenSymbols } = useGasPaymentTokensText(chainId);
 
@@ -130,6 +139,16 @@ export function ExpressTradingWarningCard({
     onClick = () => {
       history.push(`/trade/swap?to=${gasPaymentTokenSymbols[0]}`);
     };
+  } else if (shouldShowSubaccountApprovalInvalidWarning) {
+    icon = <OneClickIcon className="-mt-4" />;
+    content = (
+      <Trans>
+        One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Please
+        sign a new approval to continue.
+      </Trans>
+    );
+    buttonText = <Trans>Re-sign</Trans>;
+    onClick = handleUpdateSubaccountSettings;
   } else {
     return null;
   }

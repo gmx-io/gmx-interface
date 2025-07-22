@@ -5,6 +5,10 @@ import {
   selectExpressGlobalParams,
   selectIsExpressTransactionAvailable,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectSubaccountForSettlementChainAction,
+  selectSubaccountForMultichainAction,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
@@ -48,6 +52,9 @@ export function useExpressOrdersParams({
 
   const showDebugValues = useShowDebugValues();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const subaccount = useSelector(
+    isGmxAccount ? selectSubaccountForMultichainAction : selectSubaccountForSettlementChainAction
+  );
   const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
 
   const isAvailable = isExpressAvailable && orderParams && !getBatchIsNativePayment(orderParams);
@@ -81,6 +88,7 @@ export function useExpressOrdersParams({
         requireValidations: false,
         estimationMethod: "approximate",
         isGmxAccount: p.isGmxAccount,
+        subaccount: p.subaccount,
       });
 
       return nextApproximateParams;
@@ -95,6 +103,7 @@ export function useExpressOrdersParams({
               orderParams,
               globalExpressParams,
               isGmxAccount,
+              subaccount,
             }
           : undefined,
       forceRecalculate,
@@ -116,6 +125,7 @@ export function useExpressOrdersParams({
         requireValidations: false,
         estimationMethod: "estimateGas",
         isGmxAccount: p.isGmxAccount,
+        subaccount: p.subaccount,
       });
 
       return expressParams;
@@ -130,6 +140,7 @@ export function useExpressOrdersParams({
               orderParams,
               globalExpressParams,
               isGmxAccount,
+              subaccount,
             }
           : undefined,
       forceRecalculate,

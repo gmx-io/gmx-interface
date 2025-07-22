@@ -25,7 +25,7 @@ import {
 import {
   getSubaccountValidations,
   hashSubaccountApproval,
-  SignedSubbacountApproval,
+  SignedSubacсountApproval,
   Subaccount,
   SubaccountValidations,
 } from "domain/synthetics/subaccount";
@@ -70,6 +70,7 @@ export async function estimateBatchExpressParams({
   globalExpressParams,
   requireValidations,
   estimationMethod = "approximate",
+  subaccount,
 }: {
   chainId: ContractsChainId;
   isGmxAccount: boolean;
@@ -79,6 +80,7 @@ export async function estimateBatchExpressParams({
   globalExpressParams: GlobalExpressParams | undefined;
   estimationMethod: ExpressParamsEstimationMethod;
   requireValidations: boolean;
+  subaccount: Subaccount | undefined;
 }): Promise<ExpressTxnParams | undefined> {
   if (!globalExpressParams) {
     return undefined;
@@ -106,6 +108,7 @@ export async function estimateBatchExpressParams({
     estimationMethod,
     requireValidations,
     isGmxAccount,
+    subaccount,
   });
 
   return expressParams;
@@ -186,6 +189,7 @@ export async function estimateExpressParams({
   globalExpressParams,
   estimationMethod = "approximate",
   requireValidations = true,
+  subaccount: rawSubaccount,
 }: {
   chainId: ContractsChainId;
   isGmxAccount: boolean;
@@ -194,6 +198,7 @@ export async function estimateExpressParams({
   transactionParams: ExpressTransactionEstimatorParams;
   estimationMethod: "approximate" | "estimateGas";
   requireValidations: boolean;
+  subaccount: Subaccount | undefined;
 }): Promise<ExpressTxnParams | undefined> {
   if (requireValidations && !transactionParams.isValid) {
     return undefined;
@@ -223,14 +228,15 @@ export async function estimateExpressParams({
     account,
   } = transactionParams;
 
-  const subaccountValidations = globalExpressParams.subaccount
+  const subaccountValidations = rawSubaccount
     ? getSubaccountValidations({
         requiredActions: subaccountActions,
-        subaccount: globalExpressParams.subaccount,
+        subaccount: rawSubaccount,
+        subaccountRouterAddress: getOrderRelayRouterAddress(chainId, true, isGmxAccount),
       })
     : undefined;
 
-  const subaccount = subaccountValidations?.isValid ? globalExpressParams.subaccount : undefined;
+  const subaccount = subaccountValidations?.isValid ? rawSubaccount : undefined;
 
   const baseRelayerGasLimit = estimateRelayerGasLimit({
     gasLimits,
@@ -631,7 +637,7 @@ export async function getBatchSignatureParams({
   relayRouterAddress,
 }: {
   account: string;
-  subaccountApproval: SignedSubbacountApproval | undefined;
+  subaccountApproval: SignedSubacсountApproval | undefined;
   signer: WalletSigner | Wallet;
   relayParams: RelayParamsPayload | RelayParamsPayload;
   batchParams: BatchOrderTxnParams;
@@ -657,7 +663,7 @@ export async function getBatchSignatureParams({
       { name: "autoCancel", type: "bool" },
       { name: "referralCode", type: "bytes32" },
       { name: "dataList", type: "bytes32[]" },
-    ].filter<{ name: string; type: string }>(Boolean as any),
+    ],
     CreateOrderAddresses: [
       { name: "receiver", type: "address" },
       { name: "cancellationReceiver", type: "address" },

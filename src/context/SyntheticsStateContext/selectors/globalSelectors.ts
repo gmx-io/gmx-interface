@@ -1,3 +1,4 @@
+import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
 import type { FeaturesSettings } from "domain/synthetics/features/useDisabledFeatures";
 import { getIsInvalidSubaccount } from "domain/synthetics/subaccount/utils";
 
@@ -104,15 +105,53 @@ export const selectPositiveFeePositionsSortedByUsd = createSelector((q) => {
   );
 });
 
-export const selectSubaccountForAction = createSelector((q) => {
+export const selectSubaccountForSettlementChainAction = createSelector((q) => {
+  const chainId = q(selectChainId);
   const rawSubaccount = q(selectRawSubaccount);
   const isEnabled = q(selectIsSubaccountRelayRouterEnabled);
 
-  if (!isEnabled || !rawSubaccount || getIsInvalidSubaccount(rawSubaccount, 1)) {
+  if (
+    !isEnabled ||
+    !rawSubaccount ||
+    getIsInvalidSubaccount({
+      subaccount: rawSubaccount,
+      requiredActions: 1,
+      subaccountRouterAddress: getOrderRelayRouterAddress(chainId, true, false),
+    })
+  ) {
     return undefined;
   }
 
   return rawSubaccount;
+});
+
+export const selectSubaccountForMultichainAction = createSelector((q) => {
+  const chainId = q(selectChainId);
+  const rawSubaccount = q(selectRawSubaccount);
+  const isEnabled = q(selectIsSubaccountRelayRouterEnabled);
+
+  if (
+    !isEnabled ||
+    !rawSubaccount ||
+    getIsInvalidSubaccount({
+      subaccount: rawSubaccount,
+      requiredActions: 1,
+      subaccountRouterAddress: getOrderRelayRouterAddress(chainId, true, true),
+    })
+  ) {
+    return undefined;
+  }
+
+  return rawSubaccount;
+});
+
+export const selectSubaccountForChainAction = createSelector((q) => {
+  const srcChainId = q(selectSrcChainId);
+  if (srcChainId !== undefined) {
+    return q(selectSubaccountForMultichainAction);
+  }
+
+  return q(selectSubaccountForSettlementChainAction);
 });
 
 export const selectOracleSettings = (s: SyntheticsState) => s.globals.oracleSettings;

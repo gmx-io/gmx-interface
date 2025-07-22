@@ -14,6 +14,7 @@ import {
   selectAccount,
   selectChainId,
   selectSrcChainId,
+  selectSubaccountForChainAction,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -91,7 +92,7 @@ export function OrderList({
 
   const account = useSelector(selectAccount);
   const globalExpressParams = useSelector(selectExpressGlobalParams);
-
+  const subaccount = useSelector(selectSubaccountForChainAction);
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
 
   const orders = useFilteredOrders({
@@ -171,6 +172,7 @@ export function OrderList({
       estimationMethod: "approximate",
       provider,
       isGmxAccount: srcChainId !== undefined,
+      subaccount,
     });
 
     sendBatchOrderTxn({

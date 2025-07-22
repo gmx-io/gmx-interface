@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import type { OrderTxnType, OrderType } from "domain/synthetics/orders";
-import type { SignedSubbacountApproval } from "domain/synthetics/subaccount";
+import type { SignedSubacсountApproval } from "domain/synthetics/subaccount";
 import type { OrderMetricId } from "lib/metrics/types";
 import type { SignedTokenPermit } from "sdk/types/tokens";
 import type { ExternalSwapQuote } from "sdk/types/trade";
@@ -80,7 +80,7 @@ export type PendingExpressTxnParams = {
   key: string;
   taskId: string | undefined;
   isSponsoredCall: boolean;
-  subaccountApproval?: SignedSubbacountApproval;
+  subaccountApproval?: SignedSubacсountApproval;
   tokenPermits?: SignedTokenPermit[];
   payTokenAddresses?: string[];
   pendingOrdersKeys?: string[];

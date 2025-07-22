@@ -14,6 +14,7 @@ import {
   selectMarketsInfoData,
   selectOrdersInfoData,
   selectSrcChainId,
+  selectSubaccountForChainAction,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   makeSelectOrderEditorPositionOrderError,
@@ -56,6 +57,7 @@ export function DynamicLines({
   const { marketsData } = useMarkets(chainId);
   const { pendingOrdersUpdates } = useSyntheticsEvents();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const subaccount = useSelector(selectSubaccountForChainAction);
 
   const onCancelOrder = useCallback(
     async (key: string) => {
@@ -82,6 +84,7 @@ export function DynamicLines({
         estimationMethod: "approximate",
         provider,
         isGmxAccount: srcChainId !== undefined,
+        subaccount,
       });
 
       sendBatchOrderTxn({
@@ -106,6 +109,7 @@ export function DynamicLines({
       setCancellingOrdersKeys,
       signer,
       srcChainId,
+      subaccount,
     ]
   );
 

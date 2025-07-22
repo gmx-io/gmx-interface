@@ -6,7 +6,12 @@ import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
-import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectAccount,
+  selectChainId,
+  selectSubaccountForMultichainAction,
+  selectSubaccountForSettlementChainAction,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
@@ -20,7 +25,11 @@ import {
   RawRelayParamsPayload,
   RelayFeePayload,
 } from "domain/synthetics/express";
-import { estimateExpressParams, getGasPaymentValidations } from "domain/synthetics/express/expressOrderUtils";
+import {
+  estimateExpressParams,
+  getGasPaymentValidations,
+  getOrderRelayRouterAddress,
+} from "domain/synthetics/express/expressOrderUtils";
 import { getSubaccountValidations } from "domain/synthetics/subaccount";
 import type { Subaccount, SubaccountValidations } from "domain/synthetics/subaccount/types";
 import { convertToTokenAmount } from "domain/tokens";
@@ -182,12 +191,14 @@ export function getArbitraryRelayParamsAndPayload({
   isGmxAccount,
   relayerFeeAmount,
   globalExpressParams,
+  subaccount,
 }: {
   chainId: ContractsChainId;
   isGmxAccount: boolean;
   account: string;
   relayerFeeAmount: bigint;
   globalExpressParams: GlobalExpressParams;
+  subaccount: Subaccount | undefined;
 }): Partial<{
   relayFeeParams:
     | {
@@ -253,10 +264,11 @@ export function getArbitraryRelayParamsAndPayload({
   });
 
   const subaccountValidations =
-    globalExpressParams.subaccount &&
+    subaccount &&
     getSubaccountValidations({
       requiredActions: 1,
-      subaccount: globalExpressParams.subaccount,
+      subaccount,
+      subaccountRouterAddress: getOrderRelayRouterAddress(chainId, true, isGmxAccount),
     });
 
   return {
@@ -277,6 +289,9 @@ export function useArbitraryRelayParamsAndPayload({
   const account = useSelector(selectAccount);
   const chainId = useSelector(selectChainId);
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const subaccount = useSelector(
+    isGmxAccount ? selectSubaccountForMultichainAction : selectSubaccountForSettlementChainAction
+  );
   const { provider } = useJsonRpcProvider(chainId);
 
   const estimationKey = `${globalExpressParams?.gasPaymentTokenAddress}`;
@@ -304,7 +319,7 @@ export function useArbitraryRelayParamsAndPayload({
             expressTransactionBuilder: p.expressTransactionBuilder,
             rawRelayParamsPayload: rawBaseRelayParamsPayload,
             gasPaymentParams: baseRelayFeeSwapParams.gasPaymentParams,
-            subaccount: p.globalExpressParams.subaccount,
+            subaccount: p.subaccount,
           }),
         "gasLimit"
       ).catch((error) => {
@@ -320,6 +335,7 @@ export function useArbitraryRelayParamsAndPayload({
           globalExpressParams: p.globalExpressParams,
           provider: p.provider,
           requireValidations: true,
+          subaccount: p.subaccount,
           transactionParams: {
             account: p.account,
             isValid: true,
@@ -353,6 +369,7 @@ export function useArbitraryRelayParamsAndPayload({
               globalExpressParams,
               expressTransactionBuilder,
               isGmxAccount,
+              subaccount,
             }
           : undefined,
       forceRecalculate,
