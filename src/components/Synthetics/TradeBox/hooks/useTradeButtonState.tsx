@@ -732,7 +732,7 @@ function NoSwapPathTooltipContent({
         <span onClick={makeHandleSwapClick(fromToken.symbol, swapToTokenSymbol)} className="Tradebox-handle">
           Swap {fromToken.symbol} to {swapToTokenSymbol}
         </span>
-        , then to {toToken?.symbol}
+        , then to {toToken?.symbol}.
       </Trans>
     );
   }
