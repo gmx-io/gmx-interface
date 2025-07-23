@@ -20,7 +20,7 @@ export default function Checkbox(props: Props) {
   return (
     <div
       className={cx(
-        "group flex items-center gap-8 text-slate-100 hover:text-slate-400",
+        "group flex items-center gap-8",
         { disabled, selected: isChecked, fullRow: asRow, noLabel: !props.children },
         className
       )}

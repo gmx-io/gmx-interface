@@ -176,7 +176,7 @@ function fontComponentsPlugin({ addComponents, addBase }) {
     },
     ".text-body-medium": {
       fontSize: "1.4rem",
-      lineHeight: "1.8rem",
+      lineHeight: "1.75rem",
     },
     ".text-body-small": {
       fontSize: "1.2rem",

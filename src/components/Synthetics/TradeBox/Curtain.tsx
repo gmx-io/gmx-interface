@@ -240,7 +240,8 @@ export function Curtain({
           style={CURTAIN_STYLE}
         >
           <div
-            className="flex touch-none select-none items-stretch justify-between gap-4 border-b border-b-slate-600 bg-slate-900 pr-8"
+            className={`flex touch-none select-none items-stretch justify-between gap-4 border-b 
+            border-b-slate-600 bg-slate-800 pr-8 shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]`}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}

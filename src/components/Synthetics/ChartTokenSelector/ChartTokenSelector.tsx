@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import partition from "lodash/partition";
 import React, { useCallback, useMemo, useState } from "react";
-import { IoClose } from "react-icons/io5";
 import { useMedia } from "react-use";
 import type { Address } from "viem";
 
@@ -44,7 +43,6 @@ import {
   isChartAvailableForToken,
 } from "sdk/configs/tokens";
 
-import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
@@ -82,7 +80,7 @@ export default function ChartTokenSelector(props: Props) {
       popoverPlacement="bottom-start"
       popoverYOffset={16}
       popoverXOffset={-8}
-      handleClassName={cx("rounded-8 bg-slate-700 py-10 pl-8 pr-12", { "mr-24": oneRowLabels === false })}
+      handleClassName={cx("rounded-8 bg-slate-800 py-10 pl-8 pr-12", { "mr-24": oneRowLabels === false })}
       chevronClassName={chevronClassName}
       desktopPanelClassName="w-[880px] max-w-[100vw]"
       label={
@@ -260,26 +258,18 @@ function MarketsList() {
 
   const availableLiquidityLabel = isMobile ? (isSmallMobile ? t`LIQ.` : t`AVAIL. LIQ.`) : t`AVAILABLE LIQ.`;
 
-  const handleClearSearch = useCallback(() => {
-    setSearchKeyword("");
-  }, []);
-
   return (
     <>
       <SelectorBaseMobileHeaderContent>
         <div className="flex flex-col gap-12">
-          <div className="flex items-center gap-12">
-            <SearchInput
-              className="w-full *:!text-body-medium"
-              value={searchKeyword}
-              setValue={setSearchKeyword}
-              onKeyDown={handleKeyDown}
-              placeholder={placeholder}
-            />
-            <Button variant="ghost" onClick={handleClearSearch}>
-              <IoClose />
-            </Button>
-          </div>
+          <SearchInput
+            className="w-full *:!text-body-medium"
+            value={searchKeyword}
+            setValue={setSearchKeyword}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholder}
+          />
+
           <ButtonRowScrollFadeContainer>
             <FavoriteTabs favoritesKey="chart-token-selector" />
           </ButtonRowScrollFadeContainer>
@@ -289,18 +279,13 @@ function MarketsList() {
       {!isMobile && (
         <>
           <div className="flex flex-col justify-between gap-16 border-b border-slate-600 p-12">
-            <div className="flex items-center gap-12">
-              <SearchInput
-                className="w-full"
-                value={searchKeyword}
-                setValue={setSearchKeyword}
-                onKeyDown={handleKeyDown}
-                placeholder={placeholder}
-              />
-              <Button variant="secondary" onClick={handleClearSearch} className="!p-8">
-                <IoClose size={16} color="var(--color-slate-100)" />
-              </Button>
-            </div>
+            <SearchInput
+              className="w-full"
+              value={searchKeyword}
+              setValue={setSearchKeyword}
+              onKeyDown={handleKeyDown}
+              placeholder={placeholder}
+            />
             <ButtonRowScrollFadeContainer>
               <FavoriteTabs favoritesKey="chart-token-selector" />
             </ButtonRowScrollFadeContainer>

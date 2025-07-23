@@ -298,6 +298,34 @@ export function SyntheticsPage(p: Props) {
 
   const { isTablet } = useBreakpoints();
 
+  const tabsRightContent = (
+    <div className="flex shrink-0 items-center gap-16 px-12">
+      {listSection === ListSection.Orders && selectedOrderKeys.length > 0 && (
+        <button
+          className="text-[13px] font-medium text-slate-100 hover:text-slate-400"
+          disabled={isCancelOrdersProcessing}
+          type="button"
+          onClick={onCancelSelectedOrders}
+        >
+          <Plural value={selectedOrderKeys.length} one="Cancel order" other="Cancel # orders" />
+        </button>
+      )}
+      {[ListSection.Positions, ListSection.Orders].includes(listSection as ListSection) && (
+        <Checkbox
+          isChecked={shouldShowPositionLines}
+          setIsChecked={setShouldShowPositionLines}
+          className={cx("muted chart-positions text-[13px]", { active: shouldShowPositionLines })}
+        >
+          <span className="font-medium">
+            <Trans>Chart positions</Trans>
+          </span>
+        </Checkbox>
+      )}
+      {listSection === ListSection.Trades && tradeHistoryState.controls}
+      {listSection === ListSection.Claims && claimsHistoryControls}
+    </div>
+  );
+
   return (
     <div className="flex flex-col gap-8">
       <AppHeader
@@ -328,33 +356,7 @@ export function SyntheticsPage(p: Props) {
                   type="block"
                   className="border-b-[1.5px] border-slate-600 bg-slate-900"
                   qa="exchange-list-tabs"
-                  rightContent={
-                    <div className="flex shrink-0 items-center gap-16 px-12">
-                      {listSection === ListSection.Orders && selectedOrderKeys.length > 0 && (
-                        <button
-                          className="text-[13px] font-medium text-slate-100 hover:text-slate-400"
-                          disabled={isCancelOrdersProcessing}
-                          type="button"
-                          onClick={onCancelSelectedOrders}
-                        >
-                          <Plural value={selectedOrderKeys.length} one="Cancel order" other="Cancel # orders" />
-                        </button>
-                      )}
-                      {[ListSection.Positions, ListSection.Orders].includes(listSection as ListSection) && (
-                        <Checkbox
-                          isChecked={shouldShowPositionLines}
-                          setIsChecked={setShouldShowPositionLines}
-                          className={cx("muted chart-positions text-[13px]", { active: shouldShowPositionLines })}
-                        >
-                          <span className="font-medium">
-                            <Trans>Chart positions</Trans>
-                          </span>
-                        </Checkbox>
-                      )}
-                      {listSection === ListSection.Trades && tradeHistoryState.controls}
-                      {listSection === ListSection.Claims && claimsHistoryControls}
-                    </div>
-                  }
+                  rightContent={tabsRightContent}
                 />
                 <div className="align-right Exchange-should-show-position-lines"></div>
               </div>
@@ -417,6 +419,7 @@ export function SyntheticsPage(p: Props) {
               type="block"
               className="rounded-8 border-b-[1.5px] border-slate-600 bg-slate-900"
               regularOptionClassname="first:rounded-l-8 last:rounded-r-8"
+              rightContent={tabsRightContent}
             />
 
             {listSection === ListSection.Positions && (
