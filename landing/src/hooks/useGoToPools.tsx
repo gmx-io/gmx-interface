@@ -1,13 +1,12 @@
 import { useCallback } from "react";
 
-import { getAppBaseUrl } from "lib/legacy";
-import { userAnalytics } from "lib/userAnalytics";
-import { LandingPageProtocolTokenEvent } from "lib/userAnalytics/types";
+import type { LandingPageProtocolTokenEvent } from "lib/userAnalytics/types";
+import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
 
 import { useHomePageContext } from "../contexts/HomePageContext";
 
 export function useGoToPools(pool: LandingPageProtocolTokenEvent["data"]["type"]) {
-  const { showRedirectModal } = useHomePageContext();
+  const { redirectWithWarning } = useHomePageContext();
 
   return useCallback(() => {
     userAnalytics.pushEvent<LandingPageProtocolTokenEvent>(
@@ -20,10 +19,10 @@ export function useGoToPools(pool: LandingPageProtocolTokenEvent["data"]["type"]
       },
       { instantSend: true }
     );
-    showRedirectModal(makeLink(pool === "GMX" ? "/stake" : "/pools"));
-  }, [showRedirectModal, pool]);
+    redirectWithWarning(makeLink(pool === "GMX" ? "/stake" : "/pools"));
+  }, [redirectWithWarning, pool]);
 }
 
 function makeLink(path: string) {
-  return `${getAppBaseUrl()}/${path}?${userAnalytics.getSessionIdUrlParams()}`;
+  return `${import.meta.env.VITE_APP_BASE_URL}/${path}?${userAnalytics.getSessionIdUrlParams()}`;
 }

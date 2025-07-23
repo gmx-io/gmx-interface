@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 
-import { ARBITRUM, AVALANCHE, BOTANIX, UiSupportedChain } from "config/chains";
-import { getAppBaseUrl, shouldShowRedirectModal } from "lib/legacy";
-import { userAnalytics } from "lib/userAnalytics";
-import { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
+import type { UiSupportedChain } from "config/chains";
+import type { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
+import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
+import { ARBITRUM, AVALANCHE, BOTANIX } from "sdk/configs/chainIds";
 
 import { useHomePageContext } from "../contexts/HomePageContext";
 
@@ -17,12 +17,11 @@ export enum REDIRECT_CHAIN_IDS {
 
 type Props = {
   chainId: REDIRECT_CHAIN_IDS;
-  showRedirectModal: (to: string) => void;
   buttonPosition: LandingPageLaunchAppEvent["data"]["buttonPosition"];
 };
 
-export function useGoToTrade({ showRedirectModal, buttonPosition, chainId }: Props) {
-  const { redirectPopupTimestamp } = useHomePageContext();
+export function useGoToTrade({ buttonPosition, chainId }: Props) {
+  const { shouldShowRedirectModal, redirectWithWarning } = useHomePageContext();
   return useCallback(() => {
     userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
       {
@@ -30,22 +29,21 @@ export function useGoToTrade({ showRedirectModal, buttonPosition, chainId }: Pro
         data: {
           action: "LaunchApp",
           buttonPosition: buttonPosition,
-          shouldSeeConfirmationDialog: shouldShowRedirectModal(redirectPopupTimestamp),
+          shouldSeeConfirmationDialog: shouldShowRedirectModal(),
         },
       },
       { instantSend: true }
     );
     if (chainId === REDIRECT_CHAIN_IDS.Solana) {
-      showRedirectModal("https://gmxsol.io/");
+      redirectWithWarning("https://gmxsol.io/");
     } else if (chainId === REDIRECT_CHAIN_IDS.Base) {
-      showRedirectModal(makeLink(REDIRECT_CHAIN_IDS.Arbitum));
+      redirectWithWarning(makeLink(REDIRECT_CHAIN_IDS.Arbitum));
     } else {
-      showRedirectModal(makeLink(chainId));
+      redirectWithWarning(makeLink(chainId));
     }
-  }, [showRedirectModal, redirectPopupTimestamp, buttonPosition, chainId]);
+  }, [redirectWithWarning, shouldShowRedirectModal, buttonPosition, chainId]);
 }
 
 function makeLink(chainId: UiSupportedChain) {
-  const baseUrl = getAppBaseUrl();
-  return `${baseUrl}/trade?${userAnalytics.getSessionIdUrlParams()}&chainId=${chainId}`;
+  return `${import.meta.env.VITE_APP_BASE_URL}/trade?${userAnalytics.getSessionIdUrlParams()}&chainId=${chainId}`;
 }
