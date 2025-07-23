@@ -10,14 +10,6 @@ const flattenColorPalette = require("tailwindcss/lib/util/flattenColorPalette");
  * @See https://www.notion.so/gmxio/Colors-Clean-Up-13303574745d80deb5dcebb6f15e41ad#13303574745d8066aad0cbd650848ca6
  */
 const colors = {
-  secondary: "#BEC0DA",
-  primary: "#FFFFFF",
-  fiord: {
-    500: "#3C4067",
-    600: "#171827",
-    700: "#090A14",
-    800: "#121421",
-  },
   blue: {
     300: "#7885ff",
     400: "#4d5ffa",
@@ -120,17 +112,6 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
         display: "none",
       },
     },
-    ".sr-only": {
-      position: "absolute",
-      width: "1px",
-      height: "1px",
-      padding: "0",
-      margin: "-1px",
-      overflow: "hidden",
-      clip: "rect(0, 0, 0, 0)",
-      whiteSpace: "nowrap",
-      border: "0",
-    },
   });
 
   addVariant("desktop-hover", [`@media (hover: hover) {&:not(:active):hover}`]);
@@ -213,27 +194,14 @@ module.exports = {
       14: "1.4rem",
       15: "1.5rem",
       16: "1.6rem",
-      18: "1.8rem",
       24: "2.4rem",
-      32: "3.2rem",
       34: "3.4rem",
-      50: "5rem",
-      80: "8rem",
-      100: "10rem",
     },
     lineHeight: {
       1: "1",
       2: "2",
-      'body-sm': "136%",
-      'body-md': "144%",
-      'heading-lg': "98%",
-      'heading-md': "108%",
       // Normal is browser dependent. See https://developer.mozilla.org/en-US/docs/Web/CSS/line-height#normal
       base: "normal",
-    },
-    letterSpacing: {
-      ...defaultConfig.theme.letterSpacing,
-      body: "0.028px",
     },
     // @see https://tailwindcss.com/docs/customizing-colors
     colors: colors,
@@ -250,10 +218,6 @@ module.exports = {
       gridTemplateColumns: fromPairs(
         range(200, 501, 50).map((space) => [`auto-fill-${space}`, `repeat(auto-fill, minmax(${space}px, 1fr))`])
       ),
-      fontFamily: {
-        sans: ["TTHoves", "sans-serif"],
-        mono: ["TTHovesMono", "monospace"],
-      },
     },
   },
   plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin],
