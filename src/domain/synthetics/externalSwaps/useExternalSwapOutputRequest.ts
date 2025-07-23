@@ -4,6 +4,8 @@ import useSWR from "swr";
 
 import { BOTANIX } from "config/chains";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectBotanixStakingAssetsPerShare } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { metrics, OpenOceanQuoteTiming } from "lib/metrics";
 import { useDebounce } from "lib/useDebounce";
 import { getContract } from "sdk/configs/contracts";
@@ -11,7 +13,6 @@ import { convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/types/trade";
 
 import { getOpenOceanTxnData, OpenOceanQuote } from "./openOcean";
-import { useBotanixStakingAssetsPerShare } from "./useBotanixStakingAssetsPerShare";
 import { getBotanixStakingExternalSwapQuote } from "../../../../sdk/src/utils/swap/botanixStaking";
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
 
@@ -51,7 +52,7 @@ export function useExternalSwapOutputRequest({
   const tokensKey = `${tokenInAddress}:${tokenOutAddress};`;
   const prevTokensKey = usePrevious(tokensKey);
   const prevAmountIn = usePrevious(amountIn);
-  const botanixAssetsPerShare = useBotanixStakingAssetsPerShare({ chainId });
+  const botanixAssetsPerShare = useSelector(selectBotanixStakingAssetsPerShare);
 
   const { data } = useSWR<OpenOceanQuote | undefined>(debouncedKey, {
     keepPreviousData: enabled && prevTokensKey === tokensKey && prevAmountIn === amountIn,

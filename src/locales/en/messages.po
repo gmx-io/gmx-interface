@@ -4159,6 +4159,10 @@ msgstr "PnL Analysis"
 msgid "View Details"
 msgstr "View Details"
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+#~ msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
+#~ msgstr "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
+
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Longs"
