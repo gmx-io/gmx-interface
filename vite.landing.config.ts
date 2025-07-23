@@ -11,8 +11,13 @@ export default defineConfig((props) => {
     root: resolve(__dirname, "landing"),
     build: {
       ...config.build,
+      sourcemap: false,
       outDir: resolve(__dirname, "build"),
+      minify: "terser",
       rollupOptions: {
+        output: {
+          manualChunks: undefined,
+        },
         input: {
           main: resolve(__dirname, "./landing/index.html"),
         },
