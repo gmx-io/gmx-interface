@@ -1,3 +1,4 @@
+import { extendError } from "lib/errors";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
 
 import type {
@@ -7,7 +8,6 @@ import type {
   PendingShiftData,
   PendingWithdrawalData,
 } from "./types";
-import { extendError } from "lib/errors";
 
 export function getPendingOrderKey(
   data: Omit<PendingOrderData, "txnType" | "triggerPrice" | "acceptablePrice" | "autoCancel">

@@ -18,6 +18,7 @@ import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/
 import {
   selectChainId,
   selectGasPaymentTokenAllowance,
+  selectMarketsInfoData,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -45,6 +46,7 @@ import {
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
+import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { getNameByOrderType, substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
@@ -567,6 +569,10 @@ export function useDetectAndSetAvailableMaxLeverage({
   const userReferralInfo = useUserReferralInfo();
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
+  const externalSwapQuoteParams = useSelector(selectExternalSwapQuoteParams);
+  const chainId = useSelector(selectChainId);
+  const marketsInfoData = useSelector(selectMarketsInfoData);
+
   return useCallback(() => {
     if (!collateralToken || !toToken || !fromToken || !marketInfo || minCollateralUsd === undefined) return;
 
@@ -594,6 +600,9 @@ export function useDetectAndSetAvailableMaxLeverage({
           fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
           leverage,
           triggerPrice,
+          marketsInfoData,
+          chainId,
+          externalSwapQuoteParams,
         });
 
         const nextPositionValues = getNextPositionValuesForIncreaseTrade({
@@ -655,6 +664,9 @@ export function useDetectAndSetAvailableMaxLeverage({
     findSwapPath,
     fromToken,
     externalSwapQuote,
+    externalSwapQuoteParams,
+    chainId,
+    marketsInfoData,
     fromTokenAmount,
     isLeverageSliderEnabled,
     isLong,
@@ -685,44 +697,42 @@ function NoSwapPathTooltipContent({
   toToken: TokenData | undefined;
 }) {
   const { setFromTokenAddress, setToTokenAddress, setTradeType, setTradeMode } = useSelector(selectTradeboxState);
-  const handleBotanixClick = useCallback(() => {
-    setTradeType(TradeType.Swap);
-    setTradeMode(TradeMode.Market);
-    setFromTokenAddress(fromToken?.address);
-    setToTokenAddress(getTokenBySymbol(chainId, "STBTC")?.address);
-  }, [chainId, fromToken?.address, setFromTokenAddress, setToTokenAddress, setTradeMode, setTradeType]);
 
-  const handleBotanixStBtcToPBtcClick = useCallback(() => {
-    setTradeType(TradeType.Swap);
-    setTradeMode(TradeMode.Market);
-    setFromTokenAddress(getTokenBySymbol(chainId, "STBTC")?.address);
-    setToTokenAddress(getTokenBySymbol(chainId, "PBTC")?.address);
-  }, [chainId, setFromTokenAddress, setToTokenAddress, setTradeMode, setTradeType]);
+  const makeHandleSwapClick = useCallback(
+    (fromTokenSymbol: string, toTokenSymbol: string) => () => {
+      setTradeType(TradeType.Swap);
+      setTradeMode(TradeMode.Market);
+      setFromTokenAddress(getTokenBySymbol(chainId, fromTokenSymbol)?.address);
+      setToTokenAddress(getTokenBySymbol(chainId, toTokenSymbol)?.address);
+    },
+    [chainId, setFromTokenAddress, setToTokenAddress, setTradeMode, setTradeType]
+  );
 
-  if (!fromToken || !collateralToken) {
+  if (!fromToken) {
     return <Trans>No swap path available.</Trans>;
   }
 
   if (chainId === BOTANIX) {
-    if (fromToken?.symbol === "STBTC" && toToken?.symbol === "BTC") {
+    if (collateralToken) {
       return (
         <Trans>
           No swap path available.{" "}
-          <span onClick={handleBotanixStBtcToPBtcClick} className="Tradebox-handle">
-            Swap STBTC to PBTC
-          </span>
-          , then to BTC
+          <span onClick={makeHandleSwapClick(fromToken.symbol, "STBTC")} className="Tradebox-handle">
+            Swap {fromToken.symbol} to STBTC
+          </span>{" "}
+          to use {collateralToken.symbol} as collateral.
         </Trans>
       );
     }
 
+    const swapToTokenSymbol = fromToken.symbol === "STBTC" ? "PBTC" : "STBTC";
     return (
       <Trans>
         No swap path available.{" "}
-        <span onClick={handleBotanixClick} className="Tradebox-handle">
-          Swap {fromToken.symbol} to STBTC
-        </span>{" "}
-        to use {collateralToken.symbol} as collateral.
+        <span onClick={makeHandleSwapClick(fromToken.symbol, swapToTokenSymbol)} className="Tradebox-handle">
+          Swap {fromToken.symbol} to {swapToTokenSymbol}
+        </span>
+        , then to {toToken?.symbol}.
       </Trans>
     );
   }

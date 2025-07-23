@@ -318,6 +318,7 @@ describe("Increase Order Payloads", () => {
     it("Market Increase with External Swap, Pay With Native Token", () => {
       const params = {
         ...commonParams,
+        swapPath: [],
         payTokenAddress: NATIVE_TOKEN_ADDRESS,
         payTokenAmount: parseValue("1", WETH.decimals)!, // 1 ETH
         collateralTokenAddress: USDC.address,
@@ -400,6 +401,7 @@ describe("Increase Order Payloads", () => {
     it("Market Increase with External Swap, Pay With ERC20", () => {
       const params = {
         ...commonParams,
+        swapPath: [],
         payTokenAddress: USDC.address,
         payTokenAmount: parseValue("1000", USDC.decimals)!, // 1000 USDC
         collateralTokenAddress: WETH.address,
