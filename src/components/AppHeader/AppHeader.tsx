@@ -36,7 +36,7 @@ export function AppHeader({ leftContent }: Props) {
           disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
           openSettings={openSettings}
           menuToggle={
-            <div className="hidden max-[1100px]:block">
+            <div className="hidden max-[1024px]:block">
               <MobileSideNav />
             </div>
           }

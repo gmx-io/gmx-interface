@@ -154,7 +154,7 @@
   }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1024px) {
   .token-table-wrapper {
     display: none;
   }

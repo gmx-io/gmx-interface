@@ -959,7 +959,7 @@ table.Exchange-list-small td {
   }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1024px) {
   .Exchange-list.large {
     display: none;
   }
@@ -989,7 +989,7 @@ table.Exchange-list-small td {
   }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1024px) {
   .Chart-24h-low {
     display: block;
   }

@@ -2,6 +2,7 @@ import { Plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import uniq from "lodash/uniq";
 import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { useMedia } from "react-use";
 
 import { getSyntheticsListSectionKey } from "config/localStorage";
@@ -38,6 +39,7 @@ import { TradeMode } from "domain/synthetics/trade";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
 import { getMidPrice } from "domain/tokens";
+import { useBreakpoints } from "lib/breakpoints";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
 import { getPageTitle } from "lib/legacy";
@@ -68,8 +70,11 @@ import { useIsCurtainOpen } from "components/Synthetics/TradeBox/Curtain";
 import { TradeBoxResponsiveContainer } from "components/Synthetics/TradeBox/TradeBoxResponsiveContainer";
 import { TradeHistory, useTradeHistoryState } from "components/Synthetics/TradeHistory/TradeHistory";
 import { Chart } from "components/Synthetics/TVChart/Chart";
-import { ChartHeader } from "components/Synthetics/TVChart/ChartHeader";
+import ChartHeader from "components/Synthetics/TVChart/ChartHeader";
 import Tabs from "components/Tabs/Tabs";
+
+import logoIcon from "img/logo-icon.svg";
+import logoText from "img/logo-text.svg";
 
 export type Props = {
   openSettings: () => void;
@@ -96,7 +101,7 @@ export function SyntheticsPage(p: Props) {
 
   useExternalSwapHandler();
 
-  const isMobile = useMedia("(max-width: 1100px)");
+  const isMobile = useMedia("(max-width: 1024px)");
 
   const [isSettling, setIsSettling] = useState(false);
   const [listSection, setListSection] = useLocalStorageSerializeKey(
@@ -291,10 +296,25 @@ export function SyntheticsPage(p: Props) {
     account,
   });
 
+  const { isTablet } = useBreakpoints();
+
   return (
     <div className="flex flex-col gap-8">
-      <AppHeader leftContent={<ChartHeader isMobile={isMobile} />} />
-      <div className="grid grow grid-cols-[1fr_auto] gap-8 pt-0 max-[1100px]:grid-cols-1 max-[800px]:p-10">
+      <AppHeader
+        leftContent={
+          isTablet ? (
+            <Link to="/" className="flex items-center gap-5 p-8">
+              <img src={logoIcon} alt="GMX Logo" />
+              <img src={logoText} alt="GMX Logo" />
+            </Link>
+          ) : (
+            <ChartHeader />
+          )
+        }
+      />
+
+      {isTablet ? <ChartHeader /> : null}
+      <div className="grid grow grid-cols-[1fr_auto] gap-8 pt-0 max-[1024px]:grid-cols-1 max-[800px]:p-10">
         {isMobile && <OneClickPromoBanner openSettings={openSettings} />}
         <div className="Exchange-left flex flex-col gap-8">
           <Chart />

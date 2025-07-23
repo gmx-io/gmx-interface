@@ -74,7 +74,7 @@ export function OrderList({
   const positionsData = usePositionsInfoData();
   const isLoading = useIsOrdersLoading();
 
-  const isScreenSmall = useMedia("(max-width: 1100px)");
+  const isScreenSmall = useMedia("(max-width: 1024px)");
   const isContainerSmall = isScreenSmall;
 
   const chainId = useSelector(selectChainId);

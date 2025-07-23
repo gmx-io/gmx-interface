@@ -152,13 +152,13 @@ export function AppRoutes() {
             <HomeRoutes showRedirectModal={showRedirectModal} />
           </div>
         ) : (
-          <div className="flex h-full w-full gap-8 p-8 pr-0 max-[1100px]:pb-52">
-            <div className="hidden min-[1100px]:block">
+          <div className="flex h-full w-full gap-8 p-8 pb-52 pr-0 lg:pb-0">
+            <div className="hidden lg:block">
               <SideNav />
             </div>
             <div className="flex h-full grow flex-col overflow-y-auto pr-8">
               <MainRoutes openSettings={openSettings} />
-              <div className="mt-auto hidden min-[1100px]:block">
+              <div className="mt-auto hidden lg:block">
                 <Footer />
               </div>
             </div>

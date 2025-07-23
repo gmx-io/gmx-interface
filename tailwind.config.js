@@ -222,7 +222,7 @@ module.exports = {
     // @see https://tailwindcss.com/blog/tailwindcss-v3-2#max-width-and-dynamic-breakpoints
     // "these features will only be available if your project uses a simple screens configuration."
     // So we just copy the default screens config
-    screens: defaultConfig.theme.screens,
+    screens: { ...defaultConfig.theme.screens, sm: "400px" },
     extend: {
       gridTemplateColumns: fromPairs(
         range(200, 501, 50).map((space) => [`auto-fill-${space}`, `repeat(auto-fill, minmax(${space}px, 1fr))`])

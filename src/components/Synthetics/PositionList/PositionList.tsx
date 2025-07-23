@@ -52,7 +52,7 @@ export function PositionList(p: Props) {
   }, []);
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const isLoading = useIsPositionsLoading();
-  const isMobile = useMedia("(max-width: 1100px)");
+  const isMobile = useMedia("(max-width: 1024px)");
 
   return (
     <div>

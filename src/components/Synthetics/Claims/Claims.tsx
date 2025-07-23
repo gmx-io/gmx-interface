@@ -72,7 +72,7 @@ export function Claims({
     setIsClaiming(false);
   }, []);
 
-  const isMobile = useMedia("(max-width: 1100px)");
+  const isMobile = useMedia("(max-width: 1024px)");
 
   return (
     <>

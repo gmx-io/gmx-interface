@@ -230,7 +230,7 @@ $tabs-threshold: 990px;
       margin-bottom: 0.5rem;
       font-size: 1.5rem;
 
-      @media screen and (max-width: 1100px) {
+      @media screen and (max-width: 1024px) {
         font-size: 1.2rem;
       }
     }
@@ -241,7 +241,7 @@ $tabs-threshold: 990px;
       white-space: nowrap;
       font-size: 2rem;
 
-      @media screen and (max-width: 1100px) {
+      @media screen and (max-width: 1024px) {
         font-size: 1.5rem;
       }
     }

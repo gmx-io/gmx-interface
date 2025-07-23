@@ -83,7 +83,7 @@ export function ExpandableRow({
   const previousHasError = usePrevious(hasError);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const isMobile = useMedia(`(max-width: 1100px)`, false);
+  const isMobile = useMedia(`(max-width: 1024px)`, false);
 
   const handleAnimationComplete = useCallback(
     (definition: string) => {

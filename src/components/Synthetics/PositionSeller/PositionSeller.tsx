@@ -891,7 +891,7 @@ export function PositionSeller() {
     tokensToApprove,
   ]);
 
-  const isMobile = useMedia("(max-width: 1100px)");
+  const isMobile = useMedia("(max-width: 1024px)");
 
   return (
     <div className="text-body-medium">

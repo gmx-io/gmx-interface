@@ -26,7 +26,7 @@ function SideNav() {
 
   return (
     <nav
-      className={cx("flex shrink-0 flex-col bg-slate-950", {
+      className={cx("flex h-full shrink-0 flex-col bg-slate-950 pb-8", {
         "w-[156px]": !isCollapsed,
       })}
     >

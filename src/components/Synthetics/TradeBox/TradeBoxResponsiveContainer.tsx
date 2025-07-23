@@ -5,7 +5,7 @@ import { TradeBox } from "./TradeBox";
 import { TradeBoxHeaderTabs } from "./TradeBoxHeaderTabs";
 
 export function TradeBoxResponsiveContainer() {
-  const isMobile = useMedia("(max-width: 1100px)");
+  const isMobile = useMedia("(max-width: 1024px)");
 
   if (!isMobile) {
     return (

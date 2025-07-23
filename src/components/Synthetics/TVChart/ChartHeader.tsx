@@ -2,11 +2,12 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BiChevronDown, BiChevronLeft, BiChevronRight, BiChevronUp } from "react-icons/bi";
-import { useEffectOnce, useMedia } from "react-use";
+import { useEffectOnce } from "react-use";
 
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useBreakpoints } from "lib/breakpoints";
 import { useChainId } from "lib/chains";
 import { getToken } from "sdk/configs/tokens";
 
@@ -21,7 +22,7 @@ const MIN_FADE_AREA = 24; //px
 const MAX_SCROLL_LEFT_TO_END_AREA = 50; //px
 const MIN_SCROLL_END_SPACE = 5; // px
 
-function ChartHeaderInfoMobile() {
+function ChartHeaderMobile() {
   const { chartToken } = useSelector(selectChartToken);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
@@ -57,8 +58,6 @@ function ChartHeaderInfoMobile() {
     setDetailsVisible((prev) => !prev);
   }, [setDetailsVisible]);
 
-  const isSmallMobile = useMedia("(max-width: 400px)");
-
   const details = useMemo(() => {
     if (!detailsVisible) {
       return null;
@@ -66,12 +65,7 @@ function ChartHeaderInfoMobile() {
 
     if (isSwap) {
       return (
-        <div
-          className={cx("grid gap-14 pt-16", {
-            "grid-cols-1 grid-rows-2": isSmallMobile,
-            "grid-cols-[repeat(2,_auto)] grid-rows-1": !isSmallMobile,
-          })}
-        >
+        <div className="grid grid-cols-[repeat(2,_auto)] grid-rows-1 gap-14 pt-16 sm:grid-cols-1 sm:grid-rows-2">
           <div>
             <div className="ExchangeChart-info-label mb-4">
               <Trans>24h High</Trans>
@@ -89,12 +83,7 @@ function ChartHeaderInfoMobile() {
     }
 
     return (
-      <div
-        className={cx("grid gap-16", {
-          "grid-cols-1 grid-rows-4": isSmallMobile,
-          "grid-cols-[repeat(2,_auto)] grid-rows-2": !isSmallMobile,
-        })}
-      >
+      <div className="grid grid-cols-[repeat(2,_auto)] grid-rows-2 gap-16 sm:grid-cols-1 sm:grid-rows-2">
         <div>
           <div className="ExchangeChart-info-label mb-4">
             <Trans>24h Volume</Trans>
@@ -159,7 +148,6 @@ function ChartHeaderInfoMobile() {
     netRateShort,
     shortOIPercentage,
     shortOIValue,
-    isSmallMobile,
     detailsVisible,
     high24,
     low24,
@@ -193,7 +181,7 @@ function ChartHeaderInfoMobile() {
   );
 }
 
-function ChartHeaderInfoDesktop() {
+function ChartHeaderDesktop() {
   const { chartToken } = useSelector(selectChartToken);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
@@ -403,8 +391,8 @@ function ChartHeaderInfoDesktop() {
   const scrollToRight = useCallback(() => scrollTo(1), [scrollTo]);
 
   return (
-    <div className="grid grid-cols-[auto_auto] gap-16">
-      <div className="flex items-center justify-start">
+    <div className="flex gap-16 overflow-hidden">
+      <div className="flex shrink-0 items-center justify-start">
         <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={true} />
       </div>
       <div className="relative flex overflow-hidden">
@@ -432,7 +420,7 @@ function ChartHeaderInfoDesktop() {
             {scrollRight > 0 && <BiChevronRight className="text-slate-100" size={24} />}
           </div>
         </div>
-        <div className="Chart-top-scrollable gap-20" ref={scrollableRef}>
+        <div className={cx("flex gap-20 overflow-x-auto scrollbar-hide")} ref={scrollableRef}>
           <div className="Chart-price">
             <div className="mb-2 text-[13px]">{avgPrice}</div>
             <div className="text-body-small">{dayPriceDelta}</div>
@@ -455,6 +443,8 @@ const ChartHeaderItem = ({ label, value }: { label: ReactNode; value: ReactNode 
   );
 };
 
-export function ChartHeader({ isMobile }: { isMobile: boolean }) {
-  return isMobile ? <ChartHeaderInfoMobile /> : <ChartHeaderInfoDesktop />;
+export default function ChartHeader() {
+  const { isSmallMobile } = useBreakpoints();
+
+  return isSmallMobile ? <ChartHeaderMobile /> : <ChartHeaderDesktop />;
 }

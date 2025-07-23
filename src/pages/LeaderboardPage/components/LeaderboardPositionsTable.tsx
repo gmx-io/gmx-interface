@@ -129,7 +129,7 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
         />
       </div>
       <TableScrollFadeContainer>
-        <table className="w-full min-w-[1100px] table-fixed">
+        <table className="w-full min-w-[1024px] table-fixed">
           <thead>
             <TableTheadTr bordered className="text-body-medium">
               <TableHeaderCell
