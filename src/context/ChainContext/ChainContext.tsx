@@ -1,6 +1,7 @@
 import { createContext, PropsWithChildren, useContext, useMemo } from "react";
 
 import { isDevelopment } from "config/env";
+import { isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useChainIdImpl } from "lib/chains/useChainIdImpl";
 import { ARBITRUM, ARBITRUM_SEPOLIA, ContractsChainId, SourceChainId } from "sdk/configs/chains";
@@ -17,10 +18,11 @@ if (isDevelopment()) {
 } else {
   initialChainId = ARBITRUM;
 }
+const realChainId = window.ethereum?.chainId ? parseInt(window.ethereum?.chainId) : initialChainId;
 
 export const context = createContext<ChainContext>({
   chainId: initialChainId,
-  srcChainId: undefined,
+  srcChainId: isSourceChain(realChainId) ? realChainId : undefined,
   isConnectedToChainId: false,
 });
 

@@ -1,7 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback } from "react";
-import { useChainId as useWagmiChainId } from "wagmi";
 
 import {
   ARBITRUM,
@@ -16,7 +15,7 @@ import {
 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getChainIcon, getIcon } from "config/icons";
-import { IS_SOURCE_BASE_ALLOWED, isSourceChain } from "config/multichain";
+import { IS_SOURCE_BASE_ALLOWED } from "config/multichain";
 import { useChainId } from "lib/chains";
 import { isHomeSite, shouldShowRedirectModal } from "lib/legacy";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
@@ -111,8 +110,8 @@ if (isDevelopment()) {
 }
 
 export function AppHeaderChainAndSettings({ small, menuToggle, openSettings, showRedirectModal }: Props) {
-  const { chainId: settlementChainId } = useChainId();
-  const walletChainId = useWagmiChainId();
+  const { chainId: settlementChainId, srcChainId } = useChainId();
+
   const { active, account } = useWallet();
   const { openConnectModal } = useConnectModal();
   const showConnectionOptions = !isHomeSite();
@@ -121,7 +120,7 @@ export function AppHeaderChainAndSettings({ small, menuToggle, openSettings, sho
 
   const tradeLink = tradePageVersion === 2 ? "/trade" : "/v1";
 
-  const visualChainId = walletChainId !== undefined && isSourceChain(walletChainId) ? walletChainId : settlementChainId;
+  const visualChainId = srcChainId ?? settlementChainId;
 
   const trackLaunchApp = useCallback(() => {
     userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
