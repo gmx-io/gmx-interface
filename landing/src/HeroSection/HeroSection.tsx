@@ -1,6 +1,5 @@
 import { Trans } from "@lingui/macro";
-
-import { useHomePageContext } from "pages/Home/contexts/HomePageContext";
+import { useHomePageContext } from "../contexts/HomePageContext";
 
 import bgProtection from "img/bg_protection.png";
 import AsssetsBg from "img/bg_support_assets.png";
