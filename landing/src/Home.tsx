@@ -1,6 +1,7 @@
-import { userAnalytics } from "lib/userAnalytics";
-import { LandingPageViewEvent } from "lib/userAnalytics/types";
 import { useEffect } from "react";
+
+import type { LandingPageViewEvent } from "lib/userAnalytics/types";
+import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
 
 import { HomePageContextProvider } from "./contexts/HomePageContext";
 import { FaqSection } from "./FaqSection/FaqSection";
