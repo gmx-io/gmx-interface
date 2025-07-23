@@ -13,7 +13,6 @@ import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 
 import Button from "components/Button/Button";
-import Footer from "components/Footer/Footer";
 import Modal from "components/Modal/Modal";
 
 import "./CompleteAccountTransfer.css";
@@ -156,7 +155,6 @@ export default function CompleteAccountTransfer() {
           </div>
         </div>
       )}
-      <Footer />
     </div>
   );
 }

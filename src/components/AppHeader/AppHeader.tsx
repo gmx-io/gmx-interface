@@ -4,6 +4,8 @@ import { CURRENT_PROVIDER_LOCALSTORAGE_KEY } from "config/localStorage";
 import { SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
+import { MobileSideNav } from "components/SideNav/MobileSideNav";
+
 import { AppHeaderUser } from "./AppHeaderUser";
 
 type Props = {
@@ -33,6 +35,11 @@ export function AppHeader({ leftContent }: Props) {
         <AppHeaderUser
           disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
           openSettings={openSettings}
+          menuToggle={
+            <div className="hidden max-[1100px]:block">
+              <MobileSideNav />
+            </div>
+          }
         />
       </div>
     </header>

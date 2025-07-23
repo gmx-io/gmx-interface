@@ -26,7 +26,6 @@ import useWallet from "lib/wallets/useWallet";
 import Loader from "components/Common/Loader";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
 import AddAffiliateCode from "components/Referrals/AddAffiliateCode";
 import AffiliatesStats from "components/Referrals/AffiliatesStats";
@@ -164,7 +163,6 @@ function Referrals() {
           </>
         )}
       </div>
-      <Footer />
     </SEO>
   );
 }

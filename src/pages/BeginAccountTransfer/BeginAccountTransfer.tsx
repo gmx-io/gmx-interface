@@ -18,7 +18,6 @@ import { abis } from "sdk/abis";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
-import Footer from "components/Footer/Footer";
 import Modal from "components/Modal/Modal";
 
 import "./BeginAccountTransfer.css";
@@ -406,7 +405,6 @@ export default function BeginAccountTransfer() {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

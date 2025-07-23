@@ -18,7 +18,6 @@ import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import ButtonLink from "components/Button/ButtonLink";
 import Loader from "components/Common/Loader";
 import SEO from "components/Common/SEO";
-import Footer from "components/Footer/Footer";
 import { GmSwapBox, GmSwapBoxProps } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
 import { GmSwapBoxHeader } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader";
 import { useCompositionData } from "components/Synthetics/MarketStats/hooks/useCompositionData";
@@ -116,7 +115,6 @@ export function PoolsDetails() {
         ) : (
           <Loader />
         )}
-        <Footer />
       </div>
     </SEO>
   );

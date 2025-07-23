@@ -16,7 +16,6 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
 import { MarketsList } from "components/Synthetics/MarketsList/MarketsList";
 
@@ -173,7 +172,6 @@ export default function DashboardV2() {
             )}
           </div>
         </div>
-        <Footer />
       </div>
     </SEO>
   );

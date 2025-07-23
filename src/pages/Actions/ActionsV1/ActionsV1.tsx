@@ -18,7 +18,6 @@ import { getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import OrdersList from "components/Exchange/OrdersList";
 import PositionsList from "components/Exchange/PositionsList";
 import TradeHistory from "components/Exchange/TradeHistory";
-import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
 
 import "./ActionsV1.css";
@@ -88,7 +87,6 @@ function ActionsV1({
           shouldShowPaginationButtons
         />
       </div>
-      <Footer />
     </div>
   );
 }

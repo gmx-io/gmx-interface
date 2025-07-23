@@ -7,7 +7,6 @@ import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/S
 import { useChainId } from "lib/chains";
 
 import AddressView from "components/AddressView/AddressView";
-import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
 
 import { DailyAndCumulativePnL } from "./DailyAndCumulativePnL";
@@ -71,8 +70,6 @@ export function AccountDashboard() {
       )}
 
       {version === 1 && <HistoricalListsV1 account={account} chainId={chainId} />}
-
-      <Footer />
     </div>
   );
 }

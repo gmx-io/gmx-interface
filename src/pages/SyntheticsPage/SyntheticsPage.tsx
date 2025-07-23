@@ -53,7 +53,6 @@ import { getOrderKeys } from "sdk/utils/orders";
 import { AppHeader } from "components/AppHeader/AppHeader";
 import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
-import Footer from "components/Footer/Footer";
 import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import { NpsModal } from "components/NpsModal/NpsModal";
 import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
@@ -293,7 +292,7 @@ export function SyntheticsPage(p: Props) {
   });
 
   return (
-    <div className="flex h-full flex-col gap-8">
+    <div className="flex flex-col gap-8">
       <AppHeader leftContent={<ChartHeader isMobile={isMobile} />} />
       <div className="grid grow grid-cols-[1fr_auto] gap-8 pt-0 max-[1100px]:grid-cols-1 max-[800px]:p-10">
         {isMobile && <OneClickPromoBanner openSettings={openSettings} />}
@@ -378,7 +377,7 @@ export function SyntheticsPage(p: Props) {
             )}
           </>
         ) : (
-          <div className="w-[40rem] min-[1501px]:w-[41.85rem]">
+          <div className="w-[40rem] max-[1400px]:w-[36rem] min-[1501px]:w-[41.85rem]">
             <TradeBoxResponsiveContainer />
 
             <div className="mt-12 flex flex-col gap-12">
@@ -427,13 +426,10 @@ export function SyntheticsPage(p: Props) {
           </div>
         )}
       </div>
-      <div className="mt-auto">
-        <Footer isMobileTradePage={isMobile} />
-        <PositionSeller />
-        <PositionEditor />
-        <InterviewModal type="trader" isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
-        <NpsModal />
-      </div>
+      <PositionSeller />
+      <PositionEditor />
+      <InterviewModal type="trader" isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
+      <NpsModal />
     </div>
   );
 }

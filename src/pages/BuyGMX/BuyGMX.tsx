@@ -12,7 +12,6 @@ import useWallet from "lib/wallets/useWallet";
 import Button from "components/Button/Button";
 import Card from "components/Common/Card";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Footer from "components/Footer/Footer";
 
 import bondProtocolIcon from "img/ic_bondprotocol_arbitrum.svg";
 import gmxArbitrumIcon from "img/ic_gmx_arbitrum.svg";
@@ -188,7 +187,6 @@ export default function BuyGMX() {
           </Card>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

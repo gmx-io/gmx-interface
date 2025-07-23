@@ -20,6 +20,7 @@ import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 type Props = {
   openSettings: () => void;
   disconnectAccountAndCloseSettings: () => void;
+  menuToggle?: React.ReactNode;
 };
 
 const NETWORK_OPTIONS = [
@@ -46,7 +47,7 @@ if (isDevelopment()) {
   });
 }
 
-export function AppHeaderUser({ openSettings, disconnectAccountAndCloseSettings }: Props) {
+export function AppHeaderUser({ openSettings, disconnectAccountAndCloseSettings, menuToggle }: Props) {
   const { chainId } = useChainId();
   const { active, account } = useWallet();
   const { openConnectModal } = useConnectModal();
@@ -73,6 +74,7 @@ export function AppHeaderUser({ openSettings, disconnectAccountAndCloseSettings 
               selectorLabel={selectorLabel}
               openSettings={openSettings}
             />
+            {menuToggle ? menuToggle : null}
           </>
         ) : null}
       </div>
@@ -92,6 +94,7 @@ export function AppHeaderUser({ openSettings, disconnectAccountAndCloseSettings 
       </div>
       <NotifyButton />
       <NetworkDropdown networkOptions={NETWORK_OPTIONS} selectorLabel={selectorLabel} openSettings={openSettings} />
+      {menuToggle ? menuToggle : null}
     </div>
   );
 }
@@ -100,8 +103,8 @@ const NotifyButton = () => {
   const { openNotifyModal } = useNotifyModalState();
 
   return (
-    <div className="cursor-pointer rounded-8 bg-slate-700 p-11" onClick={openNotifyModal}>
+    <button className="cursor-pointer rounded-8 bg-slate-700 p-11" onClick={openNotifyModal}>
       <BellIcon className="text-slate-100" />
-    </div>
+    </button>
   );
 };

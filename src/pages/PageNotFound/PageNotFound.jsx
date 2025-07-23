@@ -4,7 +4,6 @@ import { getPageTitle } from "lib/legacy";
 import { getHomeUrl, getTradePageUrl } from "lib/legacy";
 
 import SEO from "components/Common/SEO";
-import Footer from "components/Footer/Footer";
 
 import "./PageNotFound.css";
 
@@ -28,7 +27,6 @@ function PageNotFound() {
             </p>
           </div>
         </div>
-        <Footer />
       </div>
     </SEO>
   );

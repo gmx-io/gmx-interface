@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 
-import Footer from "components/Footer/Footer";
 import GlpSwap from "components/Glp/GlpSwap";
 import PageTitle from "components/PageTitle/PageTitle";
 
@@ -16,7 +15,6 @@ export default function BuyGlp() {
         qa="buy-glp-page"
       />
       <GlpSwap isBuying={false} />
-      <Footer />
     </div>
   );
 }

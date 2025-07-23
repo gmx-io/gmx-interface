@@ -5,7 +5,6 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { VersionNetworkSwitcherRow } from "pages/AccountDashboard/VersionNetworkSwitcherRow";
 
-import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
 import { TradeHistory, useTradeHistoryState } from "components/Synthetics/TradeHistory/TradeHistory";
 
@@ -44,7 +43,6 @@ export default function SyntheticsActions() {
         {tradeHistoryState.controls}
         <TradeHistory {...tradeHistoryState} />
       </div>
-      <Footer />
     </div>
   );
 }

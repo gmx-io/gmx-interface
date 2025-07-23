@@ -6,7 +6,6 @@ import { getPageTitle } from "lib/legacy";
 import Card from "components/Common/Card";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Footer from "components/Footer/Footer";
 
 import "./Jobs.css";
 
@@ -29,7 +28,6 @@ function Jobs() {
           <NoJob />
         </div>
       </div>
-      <Footer />
     </SEO>
   );
 }

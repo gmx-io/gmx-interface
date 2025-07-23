@@ -48,7 +48,6 @@ import SwapBox from "components/Exchange/SwapBox";
 import TradeHistory from "components/Exchange/TradeHistory";
 import UsefulLinks from "components/Exchange/UsefulLinks";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Footer from "components/Footer/Footer";
 import Tabs from "components/Tabs/Tabs";
 
 import "./Exchange.css";
@@ -1139,7 +1138,6 @@ export const Exchange = forwardRef(
           <div className="Exchange-lists small">{getListSection()}</div>
           <UsefulLinks className="Useful-links-exchange" />
         </div>
-        <Footer />
       </div>
     );
   }

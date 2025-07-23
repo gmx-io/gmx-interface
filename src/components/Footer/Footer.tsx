@@ -19,15 +19,14 @@ import { UserFeedbackModal } from "../UserFeedbackModal/UserFeedbackModal";
 type Props = {
   showRedirectModal?: (to: string) => void;
   redirectPopupTimestamp?: number;
-  isMobileTradePage?: boolean;
+  isMobileSideNav?: boolean;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMobileTradePage }: Props) {
+export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMobileSideNav }: Props) {
   const isHome = isHomeSite();
   const [isUserFeedbackModalVisible, setIsUserFeedbackModalVisible] = useState(false);
 
-  const isMobile = useMedia("(max-width: 1024px)");
   const isVerySmall = useMedia("(max-width: 580px)");
 
   const linkClassName = cx(
@@ -40,8 +39,8 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
 
   return (
     <>
-      <div className="flex w-full justify-between">
-        <div className="flex flex-row items-center justify-center">
+      <div className={cx("flex w-full justify-between", { "flex-col": isMobileSideNav })}>
+        <div className={cx("flex flex-row items-center justify-center", { "flex-wrap": isMobileSideNav })}>
           {getFooterLinks(isHome).map(({ external, label, link, isAppLink }) => {
             if (external) {
               return (
@@ -78,15 +77,15 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
           })}
           {!isHome && (
             <div className={linkClassName} onClick={() => setIsUserFeedbackModalVisible(true)}>
-              <FeedbackIcon />
+              {isMobileSideNav ? null : <FeedbackIcon />}
               <Trans>Leave feedback</Trans>
             </div>
           )}
         </div>
         <div
           className={cx("flex", {
-            "justify-center": isMobile,
-            "justify-end": !isMobile,
+            "justify-center": isMobileSideNav,
+            "justify-end": !isMobileSideNav,
           })}
         >
           {SOCIAL_LINKS.map((platform) => {

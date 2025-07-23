@@ -15,7 +15,6 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import SpinningLoader from "components/Common/SpinningLoader";
-import Footer from "components/Footer/Footer";
 
 import { RebateGroup, usePriceImpactRebateGroups } from "./hooks/usePriceImpactRebatesStats";
 
@@ -60,7 +59,6 @@ export const PriceImpactRebatesStatsPage = memo(() => {
           </button>
         )}
       </div>
-      <Footer />
     </div>
   );
 });

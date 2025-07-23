@@ -28,6 +28,7 @@ import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
 import EventToastContainer from "components/EventToast/EventToastContainer";
 import useEventToast from "components/EventToast/useEventToast";
+import Footer from "components/Footer/Footer";
 import { Header } from "components/Header/Header";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { NotifyModal } from "components/NotifyModal/NotifyModal";
@@ -152,9 +153,14 @@ export function AppRoutes() {
           </div>
         ) : (
           <div className="flex h-full w-full gap-8 p-8 pr-0 max-[1100px]:pb-52">
-            <SideNav />
+            <div className="hidden min-[1100px]:block">
+              <SideNav />
+            </div>
             <div className="flex h-full grow flex-col overflow-y-auto pr-8">
               <MainRoutes openSettings={openSettings} />
+              <div className="mt-auto hidden min-[1100px]:block">
+                <Footer />
+              </div>
             </div>
           </div>
         )}

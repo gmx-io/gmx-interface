@@ -27,7 +27,7 @@ function SideNav() {
   return (
     <nav
       className={cx("flex shrink-0 flex-col bg-slate-950", {
-        "w-[164px]": !isCollapsed,
+        "w-[156px]": !isCollapsed,
       })}
     >
       <div className={cx("flex w-full", { "justify-center": isCollapsed })}>
@@ -38,7 +38,7 @@ function SideNav() {
         <MenuSection isCollapsed={isCollapsed} />
 
         <ul className={cx("flex list-none flex-col gap-8 px-0")}>
-          <NavItem icon={<DocsIcon />} label={t`Docs`} isCollapsed={isCollapsed} to="https://docs.gmx.io" external />
+          <DocsNavItem isCollapsed={isCollapsed} />
           <NavItem
             icon={<CollapseIcon />}
             label={t`Collapse`}
@@ -51,7 +51,11 @@ function SideNav() {
   );
 }
 
-function LogoSection({ isCollapsed }: { isCollapsed: boolean | undefined }) {
+export const DocsNavItem = ({ isCollapsed }: { isCollapsed: boolean | undefined }) => (
+  <NavItem icon={<DocsIcon />} label={t`Docs`} isCollapsed={isCollapsed} to="https://docs.gmx.io" external />
+);
+
+export function LogoSection({ isCollapsed }: { isCollapsed: boolean | undefined }) {
   return (
     <Link
       to="/"
@@ -118,7 +122,7 @@ type NavItemType = {
   to?: string;
 };
 
-function MenuSection({ isCollapsed }: { isCollapsed: boolean | undefined }) {
+export function MenuSection({ isCollapsed }: { isCollapsed: boolean | undefined }) {
   const mainNavItems = useMemo(
     (): NavItemType[] => [
       { icon: <TradeIcon />, label: t`Trade`, key: "trade", to: "/trade" },
