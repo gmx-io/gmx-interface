@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/macro";
-import { useHomePageContext } from "../contexts/HomePageContext";
 
 import bgProtection from "img/bg_protection.png";
 import AsssetsBg from "img/bg_support_assets.png";
@@ -21,9 +20,7 @@ const assetsBgStyle = {
 };
 
 export function HeroSection() {
-  const { showRedirectModal } = useHomePageContext();
   const goToTradeArbitrum = useGoToTrade({
-    showRedirectModal,
     buttonPosition: "HeroSection",
     chainId: REDIRECT_CHAIN_IDS.Arbitum,
   });
