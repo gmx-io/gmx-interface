@@ -8,10 +8,8 @@ type Props = {
 };
 
 export function LaunchButtonContainer({ chainId }: Props) {
-  const { showRedirectModal } = useHomePageContext();
   const onClick = useGoToTrade({
     chainId,
-    showRedirectModal,
     buttonPosition: "LaunchSection",
   });
   return <LaunchButton chainId={chainId} onClick={onClick} />;
