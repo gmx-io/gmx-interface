@@ -17,7 +17,6 @@ import {
   formatTradeActionTimestampISO,
 } from "components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared";
 import { TableTd, TableTr } from "components/Table/Table";
-import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import NewLink20ReactComponent from "img/ic_new_link_20.svg?react";
@@ -65,7 +64,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
       );
 
       return (
-        <Tooltip
+        <TooltipWithPortal
           styleType="none"
           handleClassName="cursor-help"
           handle={formattedMarketNames}

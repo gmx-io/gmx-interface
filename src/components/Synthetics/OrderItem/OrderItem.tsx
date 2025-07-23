@@ -38,6 +38,7 @@ import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
 import { calculateDisplayDecimals, formatAmount, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getWrappedToken } from "sdk/configs/tokens";
 
+import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
@@ -45,14 +46,12 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import TwapOrdersList from "./TwapOrdersList/TwapOrdersList";
 import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
 
 import "./OrderItem.scss";
-import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 
 type Props = {
   order: OrderInfo;
@@ -107,7 +106,7 @@ function OrderSize({ order, showDebugValues, className }: { order: OrderInfo; sh
   if (isSwapOrderType(order.orderType)) {
     if (showDebugValues) {
       return (
-        <Tooltip
+        <TooltipWithPortal
           styleType="none"
           handle={<SizeWithIcon order={order} className={className} />}
           position="bottom-start"
@@ -174,7 +173,7 @@ function OrderSize({ order, showDebugValues, className }: { order: OrderInfo; sh
   }
 
   return (
-    <Tooltip
+    <TooltipWithPortal
       handle={<SizeWithIcon order={order} className={className} />}
       position="bottom-start"
       tooltipClassName={isTwapOrder(order) ? "!p-0" : undefined}
@@ -265,7 +264,7 @@ export function SizeWithIcon({ order, className }: { order: OrderInfo, className
         className={cx("inline-flex flex-wrap gap-y-8 whitespace-pre-wrap")}
       >
         {isTwapOrder(order) ? (
-          <Tooltip
+          <TooltipWithPortal
             handle={handle}
             position="bottom-start"
             content={<TwapOrdersList order={order} />}
@@ -327,7 +326,7 @@ function MarkPrice({ order, className }: { order: OrderInfo, className?: string 
     const { markSwapRatioText } = getSwapRatioText(order);
 
     return (
-      <Tooltip
+      <TooltipWithPortal
         handle={
           <span className={className}>
             {isSwapOrderType(order.orderType) ? markSwapRatioText : markPriceFormatted}
@@ -352,7 +351,7 @@ function MarkPrice({ order, className }: { order: OrderInfo, className?: string 
     const positionOrder = order as PositionOrderInfo;
 
     return (
-      <Tooltip
+      <TooltipWithPortal
         handle={<span className="font-medium">{markPriceFormatted}</span>}
         position="bottom-end"
         renderContent={() => {
@@ -397,7 +396,7 @@ function TriggerPrice({ order, hideActions, className }: { order: OrderInfo; hid
     );
 
     return (
-      <Tooltip
+      <TooltipWithPortal
         position="bottom-end"
         handle={
           <span className="font-medium">
@@ -430,7 +429,7 @@ function TriggerPrice({ order, hideActions, className }: { order: OrderInfo; hid
     return (
       <>
         {!hideActions ? (
-          <Tooltip
+          <TooltipWithPortal
             position="bottom-end"
             handle={<span className="font-medium">{swapRatioText}</span>}
             renderContent={() => (
@@ -455,7 +454,7 @@ function TriggerPrice({ order, hideActions, className }: { order: OrderInfo; hid
       positionOrder?.indexToken?.visualMultiplier
     );
     return (
-      <Tooltip
+      <TooltipWithPortal
         handle={
           <span className="font-medium">
             {`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {
@@ -562,7 +561,7 @@ function OrderItemLarge({
       )}
       <TableTd>
         {isSwap ? (
-          <Tooltip
+          <TooltipWithPortal
             handle={
               <SwapMarketLabel
                 bordered
@@ -584,7 +583,7 @@ function OrderItemLarge({
             styleType="none"
           />
         ) : (
-          <Tooltip
+          <TooltipWithPortal
             handle={
               <MarketWithDirectionLabel
                 bordered
@@ -834,7 +833,7 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo, className?
   }
 
   return (
-    <Tooltip
+    <TooltipWithPortal
       styleType="none"
       handle={
         <span

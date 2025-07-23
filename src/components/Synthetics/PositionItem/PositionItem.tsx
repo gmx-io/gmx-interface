@@ -46,7 +46,6 @@ import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { TwapOrderProgress } from "../OrderItem/OrderItem";
@@ -80,7 +79,7 @@ export function PositionItem(p: Props) {
 
   function renderNetValue() {
     return (
-      <Tooltip
+      <TooltipWithPortal
         handle={<span className={p.isLarge ? "font-medium" : undefined}>{formatUsd(p.position.netValue)}</span>}
         position={p.isLarge ? "bottom-start" : "bottom-end"}
         renderContent={() => (
@@ -172,7 +171,7 @@ export function PositionItem(p: Props) {
     return (
       <>
         <div className={cx("position-list-collateral", { isSmall: !p.isLarge })}>
-          <Tooltip
+          <TooltipWithPortal
             handle={
               <span data-qa="position-collateral-value" className={p.isLarge ? "font-medium" : undefined}>
                 {formatUsd(p.position.remainingCollateralUsd)}
@@ -342,7 +341,7 @@ export function PositionItem(p: Props) {
 
     if (liqPriceWarning || estimatedLiquidationHours) {
       return (
-        <Tooltip
+        <TooltipWithPortal
           handle={
             (
               <span className="font-medium text-slate-100">
@@ -387,7 +386,7 @@ export function PositionItem(p: Props) {
           {/* title */}
           <div className={cx("Position-item-info relative")}>
             <div className="Exchange-list-title">
-              <Tooltip
+              <TooltipWithPortal
                 handle={
                   <>
                     <TokenIcon
@@ -747,7 +746,7 @@ function PositionItemOrdersLarge({
 
   return (
     <div>
-      <Tooltip
+      <TooltipWithPortal
         className="Position-list-active-orders"
         handle={
           <>
