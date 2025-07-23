@@ -152,7 +152,7 @@ export function AppRoutes() {
             <HomeRoutes showRedirectModal={showRedirectModal} />
           </div>
         ) : (
-          <div className="flex h-full w-full gap-8 p-8 pb-52 pr-0 lg:pb-0">
+          <div className="flex h-full w-full gap-8 p-8 pr-0 max-lg:pb-40 lg:pb-0">
             <div className="hidden lg:block">
               <SideNav />
             </div>

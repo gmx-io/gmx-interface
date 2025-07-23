@@ -4,11 +4,9 @@ import { CSSProperties, PropsWithChildren, useCallback, useEffect, useRef, useSt
 import { RemoveScroll } from "react-remove-scroll";
 import { createGlobalState } from "react-use";
 
-import Button from "components/Button/Button";
-
 import LeftArrowIcon from "img/ic_arrowleft16.svg?react";
 
-const HEADER_HEIGHT = 52;
+const HEADER_HEIGHT = 40;
 const DECELERATION = 0.01;
 const DIRECTION_THRESHOLD = 2;
 const MOVEMENT_THRESHOLD = 10;
@@ -238,12 +236,11 @@ export function Curtain({
         <div
           data-qa={dataQa}
           ref={curtainRef}
-          className="text-body-medium fixed left-0 right-0 z-[901] flex flex-col rounded-t-4 border-x border-t border-gray-800 bg-slate-800
-                     shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]"
+          className="text-body-medium fixed left-0 right-0 z-[901] flex flex-col rounded-t-4"
           style={CURTAIN_STYLE}
         >
           <div
-            className="flex touch-none select-none items-stretch justify-between gap-4 px-15 pb-8 pt-8"
+            className="flex touch-none select-none items-stretch justify-between gap-4 border-b border-b-slate-600 bg-slate-900 pr-8"
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
@@ -251,27 +248,22 @@ export function Curtain({
             <div className="grow" onClick={headerClick}>
               {header}
             </div>
-            <Button
-              variant="secondary"
-              type="button"
-              className="size-35 !bg-cold-blue-900 !px-0 !py-0"
-              onClick={handleToggle}
-            >
+            <button onClick={handleToggle} className="p-10">
               <LeftArrowIcon
                 className={cx("transition-transform duration-500 ease-out", isOpen ? "rotate-[270deg]" : "rotate-90")}
               />
-            </Button>
+            </button>
           </div>
 
           <div
-            className="flex grow flex-col overflow-y-auto"
+            className="flex grow flex-col overflow-y-auto bg-slate-900"
             ref={scrollableContainerRef}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerCancel}
           >
-            <div className="flex grow flex-col px-15 pb-10">{children}</div>
+            <div className="flex grow flex-col">{children}</div>
           </div>
         </div>
       </RemoveScroll>

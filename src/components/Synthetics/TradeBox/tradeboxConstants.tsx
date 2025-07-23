@@ -47,7 +47,7 @@ export const tradeTypeClassNames = {
 };
 
 export const mobileTradeTypeClassNames = {
-  [TradeType.Long]: "!bg-[#1F3445] border-b border-b-green-500",
-  [TradeType.Short]: "!bg-[#392A46] border-b border-b-red-500",
-  [TradeType.Swap]: "!bg-[#252B57] border-b border-b-blue-300",
+  [TradeType.Long]: "!bg-[#192E38] border-b-[2px] border-b-green-500",
+  [TradeType.Short]: "!bg-[#2D192D] border-b-[2px] border-b-red-500",
+  [TradeType.Swap]: "!bg-[#22243A] border-b-[2px] border-b-blue-300",
 };

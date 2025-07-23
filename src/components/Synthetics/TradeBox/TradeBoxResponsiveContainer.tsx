@@ -1,24 +1,24 @@
-import { useMedia } from "react-use";
+import { useBreakpoints } from "lib/breakpoints";
 
 import { Curtain } from "./Curtain";
 import { TradeBox } from "./TradeBox";
 import { TradeBoxHeaderTabs } from "./TradeBoxHeaderTabs";
 
 export function TradeBoxResponsiveContainer() {
-  const isMobile = useMedia("(max-width: 1024px)");
+  const { isTablet } = useBreakpoints();
 
-  if (!isMobile) {
+  if (!isTablet) {
     return (
       <div className="text-body-medium flex flex-col rounded-8" data-qa="tradebox">
         <TradeBoxHeaderTabs />
-        <TradeBox isMobile={isMobile} />
+        <TradeBox isMobile={isTablet} />
       </div>
     );
   }
 
   return (
     <Curtain header={<TradeBoxHeaderTabs isInCurtain />} dataQa="tradebox">
-      <TradeBox isMobile={isMobile} />
+      <TradeBox isMobile={isTablet} />
     </Curtain>
   );
 }
