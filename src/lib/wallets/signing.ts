@@ -14,9 +14,16 @@ export type SignTypedDataParams = {
   types: SignatureTypes;
   typedData: Record<string, any>;
   domain: SignatureDomain;
+  shouldUseSignerMethod?: boolean;
 };
 
-export async function signTypedData({ signer, domain, types, typedData }: SignTypedDataParams) {
+export async function signTypedData({
+  signer,
+  domain,
+  types,
+  typedData,
+  shouldUseSignerMethod = false,
+}: SignTypedDataParams) {
   // filter inputs
   for (const [key, value] of Object.entries(domain)) {
     if (value === undefined) {
@@ -33,6 +40,18 @@ export async function signTypedData({ signer, domain, types, typedData }: SignTy
   for (const [key, value] of Object.entries(typedData)) {
     if (value === undefined) {
       delete typedData[key];
+    }
+  }
+
+  if (shouldUseSignerMethod && signer.signTypedData) {
+    try {
+      return await signer.signTypedData(domain, types, typedData);
+    } catch (e) {
+      if (e.message.includes("requires a provider")) {
+        // ignore and try to send request directly to provider
+      } else {
+        throw e;
+      }
     }
   }
 

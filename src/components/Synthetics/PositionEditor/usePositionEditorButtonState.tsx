@@ -496,7 +496,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     onSubmit,
   };
 
-  if (isApproving) {
+  if (isApproving && tokensToApprove.length) {
     const tokenToApprove = tokensToApprove[0];
     return {
       text: (

@@ -820,7 +820,7 @@ export function PositionSeller() {
       };
     }
 
-    if (isApproving) {
+    if (isApproving && tokensToApprove.length) {
       const tokenToApprove = tokensToApprove[0];
       return {
         text: (
