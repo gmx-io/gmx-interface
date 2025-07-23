@@ -467,8 +467,8 @@ msgid "No pools matched."
 msgstr "No pools matched."
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}"
-msgstr "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}"
+#~ msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}"
+#~ msgstr "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}"
 
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -4160,8 +4160,8 @@ msgid "View Details"
 msgstr "View Details"
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
-#~ msgstr "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
+msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
+msgstr "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
 
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
