@@ -1,5 +1,5 @@
-import { useHomePageContext } from "pages/Home/contexts/HomePageContext";
-import { REDIRECT_CHAIN_IDS, useGoToTrade } from "pages/Home/hooks/useGoToTrade";
+import { useHomePageContext } from "landing/contexts/HomePageContext";
+import { REDIRECT_CHAIN_IDS, useGoToTrade } from "landing/hooks/useGoToTrade";
 
 import { LaunchButton } from "./LaunchButton";
 

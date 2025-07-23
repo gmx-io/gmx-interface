@@ -23,9 +23,10 @@
     "baseUrl": "./src",
     "paths": {
       "sdk": ["../sdk/src/index.ts"],
-      "sdk/*": ["../sdk/src/*"]
+      "sdk/*": ["../sdk/src/*"],
+      "landing/*": ["../landing/src/*"]
     }
   },
   "references": [{ "path": "./sdk" }],
-  "include": ["src", "scripts", "sdk/src/utils/twap/twap"]
+  "include": ["src", "scripts", "sdk/src/utils/twap/twap", "landing"]
 }

@@ -1,8 +1,7 @@
 import { Trans } from "@lingui/macro";
 
-import { useHomePageContext } from "pages/Home/contexts/HomePageContext";
-
 import { LaunchButtonContainer } from "./LaunchButtonContainer";
+import { useHomePageContext } from "../contexts/HomePageContext";
 import { REDIRECT_CHAIN_IDS, useGoToTrade } from "../hooks/useGoToTrade";
 
 export function LaunchSection() {
