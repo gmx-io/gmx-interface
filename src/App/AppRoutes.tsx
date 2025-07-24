@@ -139,7 +139,7 @@ export function AppRoutes() {
 
   return (
     <>
-      {isHome && <HomeRoutes showRedirectModal={showRedirectModal} />}
+      {isHome && <HomeRoutes />}
       {!isHome && (
         <div className="App">
           <div className="App-content">
