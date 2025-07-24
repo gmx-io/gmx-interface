@@ -195,7 +195,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
           >
             {props.label}
             <FaChevronDown
-              className={cx("-my-5 -mr-4 inline-block align-middle text-[12px] text-slate-100", props.chevronClassName)}
+              className={cx("-my-5 -mr-4 inline-block text-[12px] text-slate-100", props.chevronClassName)}
             />
           </Popover.Button>
           {popoverProps.open && (

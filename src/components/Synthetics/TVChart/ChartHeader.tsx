@@ -66,15 +66,15 @@ function ChartHeaderMobile() {
 
     if (isSwap) {
       return (
-        <div className="grid grid-cols-[repeat(2,_auto)] grid-rows-1 gap-14 sm:grid-cols-1 sm:grid-rows-2">
+        <div className="grid grid-cols-[auto_auto] grid-rows-2 gap-14">
           <div>
-            <div className="ExchangeChart-info-label mb-4">
+            <div className="mb-4 text-[11px] font-medium uppercase text-slate-100">
               <Trans>24h High</Trans>
             </div>
             <div>${high24}</div>
           </div>
           <div>
-            <div className="ExchangeChart-info-label mb-4">
+            <div className="mb-4 text-[11px] font-medium uppercase text-slate-100">
               <Trans>24h Low</Trans>
             </div>
             <div>${low24}</div>
@@ -84,33 +84,33 @@ function ChartHeaderMobile() {
     }
 
     return (
-      <div className="grid grid-cols-[repeat(2,_auto)] grid-rows-2 gap-16 sm:grid-cols-1 sm:grid-rows-2">
+      <div className="grid grid-cols-[auto_auto] grid-rows-2 gap-16">
         <div>
-          <div className="ExchangeChart-info-label mb-4">
+          <div className="mb-4 text-[11px] font-medium uppercase text-slate-100">
             <Trans>24h Volume</Trans>
           </div>
           {dailyVolume}
         </div>
 
         <div>
-          <div className="mb-4 whitespace-nowrap">
-            <span className="text-body-small whitespace-nowrap text-slate-100">
+          <div className="mb-4 whitespace-nowrap text-[11px] font-medium text-slate-100">
+            <span className="whitespace-nowrap text-[11px] font-medium uppercase text-slate-100">
               <Trans>Open Interest</Trans>
             </span>
-            <span className="text-slate-100">{" ("}</span>
-            <span className="positive">{longOIPercentage}</span>
-            <span className="text-slate-100">/</span>
-            <span className="negative">{shortOIPercentage}</span>
-            <span className="text-slate-100">{")"}</span>
+            <span>{" ("}</span>
+            <span>{longOIPercentage}</span>
+            <span>/</span>
+            <span>{shortOIPercentage}</span>
+            <span>{")"}</span>
           </div>
-          <div className="flex flex-row items-center gap-8">
+          <div className="flex flex-row items-center gap-8 ">
             <div className="flex flex-row items-center gap-8">{longOIValue}</div>
             <div className="flex flex-row items-center gap-8">{shortOIValue}</div>
           </div>
         </div>
 
         <div>
-          <div className="ExchangeChart-info-label mb-4">
+          <div className="mb-4 text-[11px] font-medium uppercase text-slate-100">
             <Trans>Available Liquidity</Trans>
           </div>
           <div className="flex flex-row items-center gap-8">
@@ -120,7 +120,7 @@ function ChartHeaderMobile() {
         </div>
 
         <div>
-          <div className="ExchangeChart-info-label mb-4">
+          <div className="mb-4 text-[11px] font-medium uppercase text-slate-100">
             <TooltipWithPortal styleType="none" renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net Rate / 1h</Trans>
             </TooltipWithPortal>
@@ -166,8 +166,8 @@ function ChartHeaderMobile() {
           role="button"
           onClick={toggleDetailsVisible}
         >
-          <div className="flex flex-col">
-            <div className="mr-4">{avgPrice}</div>
+          <div className="flex flex-col items-end">
+            <div className="mr-4 font-medium">{avgPrice}</div>
             <div className="ExchangeChart-daily-change text-body-small">{dayPriceDelta}</div>
           </div>
           <span className={cx("inline-flex cursor-pointer items-center justify-center rounded-4 pt-6 text-slate-100")}>
