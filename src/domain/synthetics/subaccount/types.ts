@@ -26,8 +26,9 @@ export type SubaccountApproval = {
   expiresAt: bigint;
   maxAllowedCount: bigint;
   actionType: string;
+  desChainId: ContractsChainId;
   deadline: bigint;
-  integrationId: string | undefined;
+  integrationId: string;
 };
 
 export type SignedSubacсountApproval = SubaccountApproval & {

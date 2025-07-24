@@ -56,6 +56,7 @@ import {
 } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 import { setUiFeeReceiverIsExpress } from "sdk/utils/twap/uiFeeReceiver";
+import { GelatoRelayRouter, MultichainSubaccountRouter, SubaccountGelatoRelayRouter } from "typechain-types";
 import { MultichainOrderRouter } from "typechain-types/MultichainOrderRouter";
 
 import { approximateL1GasBuffer, estimateBatchGasLimit, estimateRelayerGasLimit, GasLimitsConfig } from "../fees";
@@ -570,7 +571,7 @@ export async function buildAndSignExpressBatchOrderTxn({
           BigInt(srcChainId),
           subaccount.signedApproval?.subaccount,
           params.paramsLists,
-        ],
+        ] satisfies Parameters<MultichainSubaccountRouter["batch"]>,
       });
     } else {
       batchCalldata = encodeFunctionData({
@@ -601,7 +602,7 @@ export async function buildAndSignExpressBatchOrderTxn({
           params.account,
           subaccount.signedApproval?.subaccount,
           params.paramsLists,
-        ],
+        ] satisfies Parameters<SubaccountGelatoRelayRouter["batch"]>,
       });
     } else {
       batchCalldata = encodeFunctionData({
@@ -614,7 +615,7 @@ export async function buildAndSignExpressBatchOrderTxn({
           },
           params.account,
           params.paramsLists,
-        ],
+        ] satisfies Parameters<GelatoRelayRouter["batch"]>,
       });
     }
   }
