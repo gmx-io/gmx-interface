@@ -8,7 +8,7 @@ import { callContract } from "lib/contracts";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
-import { GlvRouter } from "typechain-types";
+import { IGlvDepositUtils } from "typechain-types/GlvRouter";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -92,8 +92,8 @@ export async function createGlvDepositTxn(chainId: ContractsChainId, signer: Sig
           shouldUnwrapNativeToken,
           isMarketTokenDeposit: p.isMarketTokenDeposit,
           dataList: [],
-        },
-      ] satisfies Parameters<GlvRouter["createGlvDeposit"]>,
+        } satisfies IGlvDepositUtils.CreateGlvDepositParamsStruct,
+      ],
     },
   ];
 

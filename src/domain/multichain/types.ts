@@ -37,7 +37,7 @@ export type MultichainFundingHistoryItem = {
   isFromWs?: boolean;
 };
 
-type StrippedGeneratedType<T> = Omit<T, keyof [] | `${number}`>;
+export type StrippedGeneratedType<T> = Omit<T, keyof [] | `${number}`>;
 
 export type BridgeOutParams = StrippedGeneratedType<IRelayUtils.BridgeOutParamsStructOutput>;
 
