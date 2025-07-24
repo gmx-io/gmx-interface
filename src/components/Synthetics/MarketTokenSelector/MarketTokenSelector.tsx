@@ -249,6 +249,7 @@ function MarketTokenSelectorInternal(props: Props) {
                 setValue={setSearchKeyword}
                 onKeyDown={handleKeyDown}
                 placeholder="Search Pool"
+                withClearButton
               />
               <FavoriteTabs favoritesKey="gm-token-selector" />
             </div>

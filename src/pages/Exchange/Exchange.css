@@ -1129,9 +1129,6 @@ table.Exchange-list-small td {
 }
 
 @media (max-width: 450px) {
-  .chart-positions {
-    display: none;
-  }
   .Chart-min-max-price {
     display: none;
   }

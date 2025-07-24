@@ -15,6 +15,7 @@ import { shortenAddressOrEns } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import { Avatar } from "components/Avatar/Avatar";
+import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import BellIcon from "img/bell.svg?react";
@@ -47,13 +48,13 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
     <div className="relative">
       <Menu>
         <Menu.Button as="div">
-          <button className="flex items-center gap-8 rounded-8 bg-slate-700 px-16 py-10 max-md:p-6">
-            <Avatar size={20} ensName={ensName} address={account} />
+          <Button variant="secondary" className="flex  items-center gap-8 max-md:p-6">
+            <Avatar size={24} ensName={ensName} address={account} />
 
-            <span className="text-body-medium font-medium">
+            <span className="text-body-medium font-medium text-white">
               {shortenAddressOrEns(ensName || account, displayAddressLength)}
             </span>
-          </button>
+          </Button>
         </Menu.Button>
         <div>
           <Menu.Items as="div" className="menu-items">

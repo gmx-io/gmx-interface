@@ -23,6 +23,7 @@ type Props = {
    */
   autoFocus?: boolean;
   qa?: string;
+  withClearButton?: boolean;
 };
 
 export default function SearchInput({
@@ -34,6 +35,7 @@ export default function SearchInput({
   autoFocus,
   size = "m",
   qa = "token-search-input",
+  withClearButton = false,
 }: Props) {
   const isSmallerScreen = useMedia("(max-width: 700px)");
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -120,9 +122,11 @@ export default function SearchInput({
           </button>
         )}
       </div>
-      <Button variant="secondary" onClick={handleClear} className="!p-8">
-        <IoClose size={16} />
-      </Button>
+      {withClearButton ? (
+        <Button variant="secondary" onClick={handleClear} className="!p-8">
+          <IoClose size={16} />
+        </Button>
+      ) : null}
     </div>
   );
 }

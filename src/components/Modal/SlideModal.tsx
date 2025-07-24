@@ -257,7 +257,7 @@ function MobileSlideModal({
           data-qa={qa}
           ref={setCurtainRef}
           className={cx(
-            "text-body-medium fixed left-0 right-0 z-[10000] flex flex-col rounded-t-4 border-x border-t border-gray-800 bg-slate-800",
+            "text-body-medium fixed left-0 right-0 z-[10000] flex flex-col rounded-t-4 bg-slate-900",
             className
           )}
           style={curtainStyle}
@@ -265,7 +265,7 @@ function MobileSlideModal({
         >
           <div onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
             <div className="flex touch-none select-none items-stretch justify-between gap-4 px-14 pb-14 pt-14">
-              <div className="text-body-large grow">{label}</div>
+              <div className="text-body-medium grow pl-4 font-medium">{label}</div>
 
               <MdClose fontSize={20} className="cursor-pointer text-slate-100 hover:opacity-90" onClick={handleClose} />
             </div>

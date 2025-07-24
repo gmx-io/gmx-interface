@@ -12,6 +12,7 @@ import { useTradePageVersion } from "lib/useTradePageVersion";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
+import Button from "components/Button/Button";
 import type { ModalProps } from "components/Modal/Modal";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 
@@ -95,7 +96,7 @@ function NavIcons({ selectorLabel }) {
 
   return (
     <>
-      <span className="text-body-small inline-block h-fit rounded-4 bg-slate-600 px-7 py-4 font-medium max-md:text-[13px]">
+      <span className="text-body-small inline-block h-fit rounded-4 bg-slate-600 px-7 py-4 font-medium text-white max-md:text-[13px]">
         V{currentVersion}
       </span>
       <button>
@@ -112,12 +113,10 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, openSe
   return (
     <div className="relative flex items-center gap-8">
       <Menu>
-        <Menu.Button
-          as="div"
-          className="flex cursor-pointer items-center gap-8 rounded-8 bg-slate-700 p-8 pr-10 max-md:p-4"
-          data-qa="networks-dropdown-handle"
-        >
-          <NavIcons selectorLabel={selectorLabel} />
+        <Menu.Button as="div" data-qa="networks-dropdown-handle">
+          <Button variant="secondary" className="flex items-center gap-8 max-md:p-6">
+            <NavIcons selectorLabel={selectorLabel} />
+          </Button>
         </Menu.Button>
         <Menu.Items as="div" className="menu-items network-dropdown-items" data-qa="networks-dropdown">
           <div className="dropdown-label">

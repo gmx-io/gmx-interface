@@ -417,7 +417,7 @@ export function SyntheticsPage(p: Props) {
                 type="block"
                 className={cx("w-[max(100%,600px)] rounded-t-8 border-b-[1.5px] border-slate-600 bg-slate-900", {
                   "mb-8 rounded-b-8": [ListSection.Positions, ListSection.Orders].includes(listSection as ListSection),
-                  "w-[max(100%,410px)]": isMobile,
+                  "w-[max(100%,420px)]": isMobile,
                 })}
                 regularOptionClassname={cx({
                   "first:rounded-l-8 last:rounded-r-8": [ListSection.Positions, ListSection.Orders].includes(
@@ -428,7 +428,9 @@ export function SyntheticsPage(p: Props) {
               />
             </div>
 
-            {isMobile ? <div className=" border-b border-slate-600 bg-slate-900 py-4">{actions}</div> : null}
+            {isMobile && [ListSection.Trades, ListSection.Claims].includes(listSection as ListSection) ? (
+              <div className="border-b border-slate-600 bg-slate-900 py-4">{actions}</div>
+            ) : null}
 
             {listSection === ListSection.Positions && (
               <PositionList

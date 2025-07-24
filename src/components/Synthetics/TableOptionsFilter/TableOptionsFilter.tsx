@@ -154,7 +154,13 @@ export function TableOptionsFilter<T>({
   return (
     <TableFilterBase label={label} isActive={isActive} popupPlacement={popupPlacement} asButton={asButton}>
       <div className="p-12">
-        <SearchInput placeholder={placeholder} value={search} setValue={setSearch} onKeyDown={handleSearchEnterKey} />
+        <SearchInput
+          placeholder={placeholder}
+          value={search}
+          setValue={setSearch}
+          onKeyDown={handleSearchEnterKey}
+          withClearButton
+        />
       </div>
 
       {beforeContent}

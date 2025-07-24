@@ -10,6 +10,8 @@ import { useNotifyModalState } from "lib/useNotifyModalState";
 import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 
+import Button from "components/Button/Button";
+
 import connectWalletImg from "img/ic_wallet_24.svg";
 import BellIcon from "img/new-bell.svg?react";
 
@@ -103,8 +105,8 @@ const NotifyButton = () => {
   const { openNotifyModal } = useNotifyModalState();
 
   return (
-    <button className="cursor-pointer rounded-8 bg-slate-700 p-11 max-md:p-7" onClick={openNotifyModal}>
-      <BellIcon className="text-slate-100" />
-    </button>
+    <Button variant="secondary" onClick={openNotifyModal}>
+      <BellIcon width={20} height={20} className="box-content p-2" />
+    </Button>
   );
 };

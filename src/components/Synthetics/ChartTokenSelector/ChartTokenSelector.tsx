@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import partition from "lodash/partition";
 import React, { useCallback, useMemo, useState } from "react";
-import { useMedia } from "react-use";
 import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
@@ -55,12 +54,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
 
-import {
-  SELECTOR_BASE_MOBILE_THRESHOLD,
-  SelectorBase,
-  SelectorBaseMobileHeaderContent,
-  useSelectorClose,
-} from "../SelectorBase/SelectorBase";
+import { SelectorBase, SelectorBaseMobileHeaderContent, useSelectorClose } from "../SelectorBase/SelectorBase";
 
 type Props = {
   selectedToken: Token | undefined;
@@ -165,8 +159,7 @@ function MarketsList() {
   const dayVolumes = dayVolumesData?.byIndexToken;
   const indexTokenStatsMap = useSelector(selectIndexTokenStatsMap).indexMap;
 
-  const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
-  const isSmallMobile = useMedia("(max-width: 450px)");
+  const { isMobile, isSmallMobile } = useBreakpoints();
 
   const close = useSelectorClose();
 
@@ -280,6 +273,7 @@ function MarketsList() {
             <FavoriteTabs favoritesKey="chart-token-selector" />
           </ButtonRowScrollFadeContainer>
         </div>
+        <div className="mt-12 h-[0.5px] w-[2000px] -translate-x-1/2 bg-slate-600" />
       </SelectorBaseMobileHeaderContent>
 
       {!isMobile && (
@@ -291,6 +285,7 @@ function MarketsList() {
               setValue={setSearchKeyword}
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
+              withClearButton
             />
             <ButtonRowScrollFadeContainer>
               <FavoriteTabs favoritesKey="chart-token-selector" />
@@ -330,15 +325,17 @@ function MarketsList() {
                     </Sorter>
                   </th>
                   {!isMobile && (
-                    <th className={thClassName} colSpan={2}>
-                      <Sorter {...getSorterProps("combinedOpenInterest")}>
-                        <Trans>OPEN INTEREST</Trans>
-                      </Sorter>
-                    </th>
+                    <>
+                      <th className={thClassName} colSpan={2}>
+                        <Sorter {...getSorterProps("combinedOpenInterest")}>
+                          <Trans>OPEN INTEREST</Trans>
+                        </Sorter>
+                      </th>
+                      <th className={thClassName} colSpan={2}>
+                        <Sorter {...getSorterProps("combinedAvailableLiquidity")}>{availableLiquidityLabel}</Sorter>
+                      </th>
+                    </>
                   )}
-                  <th className={thClassName} colSpan={2}>
-                    <Sorter {...getSorterProps("combinedAvailableLiquidity")}>{availableLiquidityLabel}</Sorter>
-                  </th>
                 </>
               )}
             </tr>
@@ -583,8 +580,8 @@ function MarketListItem({
       </td>
       <td className={cx("pl-4 text-[13px] font-medium", rowVerticalPadding, isMobile ? "pr-2" : "pr-8")}>
         <div className={cx("flex", isMobile ? "items-start" : "items-center")}>
-          <TokenIcon className="ChartToken-list-icon mr-8" symbol={token.symbol} displaySize={16} importSize={24} />
-          <span className={cx("flex flex-wrap gap-4", isMobile ? "flex-col items-start" : "items-center")}>
+          <TokenIcon className="ChartToken-list-icon mr-6" symbol={token.symbol} displaySize={16} importSize={24} />
+          <span className={cx("flex flex-wrap items-center gap-6")}>
             <span className="-mt-2 leading-1">{getMarketIndexName({ indexToken: token, isSpotOnly: false })}</span>
             <span className="rounded-4 bg-slate-700 px-4 pb-5 pt-3 leading-1">
               {maxLeverage ? `${maxLeverage}x` : "-"}
@@ -637,18 +634,7 @@ function MarketListItem({
             </div>
           </td>
         </>
-      ) : (
-        <td colSpan={2} className={cx(tdClassName)}>
-          <div className="flex items-center justify-end gap-6">
-            <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
-            {formatAmountHuman(maxLongLiquidityPool?.maxLongLiquidity, USD_DECIMALS, true)}
-          </div>
-          <div className="flex items-center justify-end gap-6">
-            <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />
-            {formatAmountHuman(maxShortLiquidityPool?.maxShortLiquidity, USD_DECIMALS, true)}
-          </div>
-        </td>
-      )}
+      ) : null}
     </tr>
   );
 }
