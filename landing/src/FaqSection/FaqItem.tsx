@@ -18,9 +18,9 @@ export function FaqItem({ title, children }: Props) {
   return (
     <div className="flex flex-col border-b-[0.5px] border-fiord-500 py-28">
       <div className="mb-12 flex cursor-pointer items-center justify-between gap-[44px] hover:text-blue-600">
-        <h4 className="text-heading-4" onClick={handleClick}>
+        <h3 className="text-heading-4" onClick={handleClick}>
           {title}
-        </h4>
+        </h3>
         <span className="text-heading-4">
           <IcCross
             className={cx("size-24 origin-center transition-transform duration-300", { "rotate-45": !isOpen })}
