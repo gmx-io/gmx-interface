@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 
-import { PoolCards } from "./components/PoolCards";
+import { PoolCards } from "./PoolCards";
 
 export function LiqiuditySection() {
   return (
