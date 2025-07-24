@@ -69,7 +69,7 @@ export function LeaveHomepageRedirectModal({
             <Trans>Launch App</Trans>
           </h3>
           <button className="mr-4" onClick={onClose}>
-            <IcCross className="size-20" />
+            <IcCross className="size-20 text-slate-100" />
           </button>
         </div>
         <div className="flex flex-col gap-16 p-20 text-14 font-normal leading-[130%] tracking-body">
