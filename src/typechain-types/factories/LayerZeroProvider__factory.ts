@@ -192,6 +192,11 @@ const _abi = [
             type: "uint256",
           },
           {
+            internalType: "uint256",
+            name: "minAmountOut",
+            type: "uint256",
+          },
+          {
             internalType: "address",
             name: "provider",
             type: "address",

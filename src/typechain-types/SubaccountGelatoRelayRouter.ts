@@ -30,6 +30,7 @@ export type SubaccountApprovalStruct = {
   maxAllowedCount: BigNumberish;
   actionType: BytesLike;
   nonce: BigNumberish;
+  desChainId: BigNumberish;
   deadline: BigNumberish;
   integrationId: BytesLike;
   signature: BytesLike;
@@ -42,6 +43,7 @@ export type SubaccountApprovalStructOutput = [
   maxAllowedCount: bigint,
   actionType: string,
   nonce: bigint,
+  desChainId: bigint,
   deadline: bigint,
   integrationId: string,
   signature: string,
@@ -52,6 +54,7 @@ export type SubaccountApprovalStructOutput = [
   maxAllowedCount: bigint;
   actionType: string;
   nonce: bigint;
+  desChainId: bigint;
   deadline: bigint;
   integrationId: string;
   signature: string;

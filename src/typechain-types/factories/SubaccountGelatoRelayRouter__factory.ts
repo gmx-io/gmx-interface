@@ -501,6 +501,11 @@ const _abi = [
           },
           {
             internalType: "uint256",
+            name: "desChainId",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
             name: "deadline",
             type: "uint256",
           },
@@ -922,6 +927,11 @@ const _abi = [
           },
           {
             internalType: "uint256",
+            name: "desChainId",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
             name: "deadline",
             type: "uint256",
           },
@@ -1148,6 +1158,11 @@ const _abi = [
           {
             internalType: "uint256",
             name: "nonce",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "desChainId",
             type: "uint256",
           },
           {
@@ -1916,6 +1931,11 @@ const _abi = [
           {
             internalType: "uint256",
             name: "nonce",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "desChainId",
             type: "uint256",
           },
           {

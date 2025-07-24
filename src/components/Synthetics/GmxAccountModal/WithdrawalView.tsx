@@ -310,6 +310,7 @@ export const WithdrawalView = () => {
     return {
       token: selectedTokenAddress as Address,
       amount: inputAmount,
+      minAmountOut: inputAmount,
       data: encodeAbiParameters(
         [
           {
