@@ -3,8 +3,8 @@ import cx from "classnames";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { userAnalytics } from "lib/userAnalytics";
-import { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
+import type { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
+import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
 
 import IcCross from "img/ic_cross.svg?react";
 import IcLandingChecked from "img/ic_landing_checked.svg?react";

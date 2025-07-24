@@ -1,11 +1,11 @@
 import { Trans } from "@lingui/macro";
 import React from "react";
 
-import { IconBox } from "pages/Home/components/IconBox";
-
 import bgPoolsGradient from "img/bg_pools_gradient.png";
 import BgPoolsLines from "img/bg_pools_lines.svg?react";
 import IcLinkArrow from "img/ic_link_arrow.svg?react";
+
+import { IconBox } from "../components/IconBox";
 
 type Props = {
   name: string;
@@ -34,6 +34,7 @@ export function PoolCard({ name, apr, description, iconComponent, coinImage, onC
       <BgPoolsLines className="absolute left-0 top-0 h-full w-full transition-transform duration-300 group-hover:translate-y-4" />
       <img
         src={coinImage}
+        alt={name}
         className="absolute -bottom-85 -right-45 aspect-square size-[216px] transition-transform duration-300 group-hover:z-10 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:scale-[1.019] sm:-bottom-30 sm:-right-63"
       />
       <div style={style} className="relative z-20 flex h-full w-full flex-col justify-between p-20">

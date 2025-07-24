@@ -1,7 +1,5 @@
 import { t } from "@lingui/macro";
 
-import { useGoToPools } from "pages/Home/hooks/useGoToPools";
-
 import glvCoin from "img/bg_coin_glv.png";
 import gmCoin from "img/bg_coin_gm.png";
 import gmxCoin from "img/bg_coin_gmx.png";
@@ -10,6 +8,7 @@ import IcGmPool from "img/ic_gm_pool.svg?react";
 import IcGmxPool from "img/ic_gmx_pool.svg?react";
 
 import { PoolCard } from "./PoolCard";
+import { useGoToPools } from "../hooks/useGoToPools";
 
 export function PoolCards() {
   const onClickGmx = useGoToPools("GMX");

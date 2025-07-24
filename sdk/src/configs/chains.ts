@@ -1,11 +1,8 @@
 import { defineChain } from "viem";
 import { arbitrum, avalanche, avalancheFuji, Chain } from "viem/chains";
 
-export const AVALANCHE = 43114;
-export const AVALANCHE_FUJI = 43113;
-export const ARBITRUM = 42161;
-export const ETH_MAINNET = 1;
-export const BOTANIX = 3637;
+import { AVALANCHE, AVALANCHE_FUJI, ARBITRUM, BOTANIX, ETH_MAINNET } from "./chainIds";
+export { AVALANCHE, AVALANCHE_FUJI, ARBITRUM, BOTANIX, ETH_MAINNET };
 
 export const SUPPORTED_CHAIN_IDS: UiSupportedChain[] = [ARBITRUM, AVALANCHE, BOTANIX];
 export const SUPPORTED_CHAIN_IDS_DEV: UiSupportedChain[] = [...SUPPORTED_CHAIN_IDS, AVALANCHE_FUJI];

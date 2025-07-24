@@ -1,4 +1,4 @@
-import { REDIRECT_CHAIN_IDS } from "pages/Home/hooks/useGoToTrade";
+import { REDIRECT_CHAIN_IDS } from "landing/hooks/useGoToTrade";
 
 import IcArb from "img/ic_arb_24.svg?react";
 import IcArrowRight from "img/ic_arrowright16.svg?react";

@@ -263,7 +263,7 @@ msgstr ""
 msgid "{0} Required"
 msgstr "{0} 요구됨"
 
-#: src/pages/Home/sections/FaqSection/FaqSection.tsx
+#: landing/src/FaqSection/FaqSection.tsx
 msgid "FAQ"
 msgstr ""
 
@@ -438,7 +438,7 @@ msgstr ""
 msgid "Referral code added!"
 msgstr "추천인 코드가 추가되었습니다!"
 
-#: src/pages/Home/sections/FaqSection/FaqSection.tsx
+#: landing/src/FaqSection/FaqSection.tsx
 msgid "<0>Liquidity providers receive 63% of all trading and liquidation fees. By depositing WBTC, ETH, USDC, or other supported assets, you can earn up to ~35% annualized yield on the largest pools.</0><1><2> GM Pools – choose single-market exposure for targeted returns</2><3> GLV Vaults – auto-diversify across markets for a hands-off strategy</3></1><4>Historically, both options have outperformed standard LP benchmarks. See live stats on the Pools page.</4>"
 msgstr ""
 
@@ -507,7 +507,7 @@ msgstr ""
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "아래의 옵션중 하나를 사용해, ETH를 Arbitrum에 보낼 수 있습니다."
 
-#: src/pages/Home/sections/FaqSection/FaqSection.tsx
+#: landing/src/FaqSection/FaqSection.tsx
 msgid "<0>GMX V2 routes every order against its own liquidity pools, which currently hold over $300 million, and quote the oracle index price rather than relying on an order book or external market makers. This architecture minimizes slippage and maintains deep liquidity, even for positions over $30 million.</0><1>To ensure accurate pricing without wicks, GMX V2 uses Chainlink Data Streams oracles, so liquidations occur only at fair market prices. With the free GMX Express mode, orders are signed off-chain and sent through premium RPC endpoints, enabling near-instant, reliable execution with a user experience similar to a centralized exchange.</1><2>GMX V2 uses a unique multi-asset AMM (Automated Market Maker) model that routes trades against a dynamically balanced liquidity pool instead of traditional order books. This design significantly</2>"
 msgstr ""
 
@@ -563,8 +563,8 @@ msgstr ""
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr "이전을 수락하려면 이 페이지에 있어야 합니다. 필요에 따라, <0>여기를 클릭하세요</0>를 통해 페이지 링크를 복사하세요."
 
+#: landing/src/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: src/components/ModalViews/RedirectModal.tsx
-#: src/pages/Home/sections/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 msgid "Don't show this message again for 30 days."
 msgstr "30일 동안 해당 메시지 다시보지 않기"
 
@@ -739,6 +739,10 @@ msgstr ""
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 msgid "MARKET"
 msgstr "마켓"
+
+#: landing/src/RoadmapSection/Quareters.tsx
+msgid "Multichain"
+msgstr ""
 
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What did you like the most about our service?"
@@ -1037,7 +1041,7 @@ msgstr "트리거 주문"
 msgid "GMX fundamentals"
 msgstr "GMX 펀더멘탈"
 
-#: src/pages/Home/sections/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
+#: landing/src/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 msgid "Alternative links can be found in the <0>docs</0>. By clicking Agree you accept the <1>T&Cs</1> and <2>Referral T&Cs</2>."
 msgstr ""
 
@@ -1131,7 +1135,7 @@ msgstr ""
 msgid "GMX V1 markets are disabled. GLP is being phased out and no longer supports GMX V1 markets."
 msgstr ""
 
-#: src/pages/Home/sections/LiqiuditySection/LiqiuditySection.tsx
+#: landing/src/LiqiuditySection/LiqiuditySection.tsx
 msgid "Start Earning"
 msgstr ""
 
@@ -1252,7 +1256,7 @@ msgstr "풀 선택"
 msgid "WEIGHT"
 msgstr "비중"
 
-#: src/pages/Home/sections/LiqiuditySection/components/PoolCard.tsx
+#: landing/src/LiqiuditySection/PoolCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "APR"
@@ -2066,10 +2070,6 @@ msgstr "Avalanche에서 GMX로 베스팅하기"
 msgid "No esGMX to claim"
 msgstr "수령할 수 있는 esGMX가 없습니다"
 
-#: src/pages/Home/sections/FaqSection/FaqSection.tsx
-msgid "How Do I Get Started on GMX?"
-msgstr ""
-
 #: src/components/Exchange/SwapBox.jsx
 msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
 msgstr "{tokenSymbol} {longOrShortText} {0} USD의 증가 요청됨."
@@ -2195,7 +2195,7 @@ msgstr ""
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr ""
 
-#: src/pages/Home/sections/LiqiuditySection/components/PoolCards.tsx
+#: landing/src/LiqiuditySection/PoolCards.tsx
 msgid "Stake for rewards and governance rights"
 msgstr ""
 
@@ -2211,6 +2211,10 @@ msgstr ""
 #: src/pages/Dashboard/MarketsListV1.tsx
 msgid "TOKEN"
 msgstr "토큰"
+
+#: landing/src/RoadmapSection/Quareters.tsx
+msgid "Cross-Collateral"
+msgstr ""
 
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Transfer NFT"
@@ -2302,8 +2306,12 @@ msgstr ""
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/HeroSection.tsx
 msgid "Trade with"
+msgstr ""
+
+#: landing/src/RoadmapSection/Quareters.tsx
+msgid "Just in Time Liquidity"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
@@ -2411,11 +2419,11 @@ msgstr ""
 msgid "Max number of parts: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgstr ""
 
+#: landing/src/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
+#: landing/src/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.tsx
-#: src/pages/Home/sections/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/pages/Home/sections/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 msgid "Launch App"
 msgstr "앱 실행하기"
 
@@ -2505,7 +2513,7 @@ msgstr "수령할 양"
 msgid "Job openings at GMX."
 msgstr "GMX의 구인"
 
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/HeroSection.tsx
 msgid "Trade from your wallet"
 msgstr ""
 
@@ -2530,7 +2538,7 @@ msgstr "{fromText}에서 {toMinText}로"
 msgid "Otherwise, try changing the RPC url in your wallet settings with the help of <0>chainlist.org</0>."
 msgstr ""
 
-#: src/pages/Home/sections/LiqiuditySection/LiqiuditySection.tsx
+#: landing/src/LiqiuditySection/LiqiuditySection.tsx
 msgid "in available liquidity"
 msgstr ""
 
@@ -2667,11 +2675,7 @@ msgstr ""
 msgid "The current price impact is {0}. Consider using -0.30% acceptable price impact so the order is more likely to be processed."
 msgstr ""
 
-#: src/pages/Home/sections/FaqSection/FaqSection.tsx
-msgid "Can I Build on Top of GMX or Integrate It into My DeFi App?"
-msgstr ""
-
-#: src/pages/Home/sections/LaunchSection/LaunchSection.tsx
+#: landing/src/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
 msgstr ""
 
@@ -2861,7 +2865,7 @@ msgstr ""
 msgid "Trade"
 msgstr "트레이드"
 
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/HeroSection.tsx
 msgid "No deposits required"
 msgstr ""
 
@@ -2877,7 +2881,7 @@ msgstr ""
 msgid "V2 doesn't currently support this network"
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/HeroSection.tsx
 msgid "100x leverage from your wallet"
 msgstr ""
 
@@ -3035,6 +3039,10 @@ msgstr "자신에게 전송하는 것은 지원되지 않습니다"
 msgid "Generating session..."
 msgstr ""
 
+#: landing/src/FaqSection/FaqSection.tsx
+msgid "How do I get started on GMX?"
+msgstr ""
+
 #: src/pages/Exchange/Exchange.tsx
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "{tokenSymbol} {longOrShortText} 감소, -{0} USD."
@@ -3080,7 +3088,7 @@ msgstr ""
 msgid "Leverage"
 msgstr "레버리지"
 
-#: src/pages/Home/sections/SponsorsSection/SponsorsSection.tsx
+#: landing/src/SponsorsSection/SponsorsSection.tsx
 msgid "over 100 protocols"
 msgstr ""
 
@@ -3135,7 +3143,7 @@ msgstr ""
 msgid "Lev."
 msgstr ""
 
-#: src/pages/Home/sections/LiqiuditySection/components/PoolCard.tsx
+#: landing/src/LiqiuditySection/PoolCard.tsx
 msgid "Annually"
 msgstr ""
 
@@ -3420,8 +3428,8 @@ msgstr ""
 msgid "You are earning rewards with {0} tokens.<0/>Tokens: {amountStr}."
 msgstr ""
 
+#: landing/src/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: src/components/ModalViews/RedirectModal.tsx
-#: src/pages/Home/sections/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "웹사이트는 오픈소스인 <0>GMX front end</0>를 이용하고 커뮤니티에의해 배포되며, P2P <1>IPFS network<1/>에 의해 서빙및 호스팅됩니다."
 
@@ -3578,7 +3586,7 @@ msgstr "더 많은 설정"
 msgid "GLV is the liquidity provider token for GMX V2 vaults. Consist of several GM tokens and accrues fees generated by them."
 msgstr ""
 
-#: src/pages/Home/sections/FaqSection/FaqSection.tsx
+#: landing/src/FaqSection/FaqSection.tsx
 msgid "<0>No KYC, no lengthy onboarding:</0><1><2>Connect any EVM wallet (MetaMask, Rabby, Coinbase Wallet, Ledger, etc.)</2><3>Select a supported network where you have funds</3><4>Trade</4></1><5>You can trade directly using funds from Arbitrum, Avalanche, or Botanix, or deposit to your GMX Account to trade from any supported network.</5>"
 msgstr ""
 
@@ -3698,7 +3706,7 @@ msgstr ""
 msgid "Opening..."
 msgstr "여는 중..."
 
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/HeroSection.tsx
 msgid "Secure & Permissionless"
 msgstr ""
 
@@ -3718,10 +3726,10 @@ msgstr "자금 수수료"
 msgid "Approval failed"
 msgstr "승인 실패"
 
+#: landing/src/HeroSection/HeroSection.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Open Interest"
 msgstr "미결제 약정"
 
@@ -3884,6 +3892,7 @@ msgstr ""
 msgid "Rebates earned by this account as a trader."
 msgstr "트레이더로서 이 계정이 획득한 소개 보수."
 
+#: landing/src/RoadmapSection/RoadmapSection.tsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -3920,7 +3929,7 @@ msgstr ""
 msgid "Vesting Status"
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/HeroSection.tsx
 msgid "Guaranteed Liquidity"
 msgstr ""
 
@@ -4161,7 +4170,7 @@ msgstr ""
 msgid "Single"
 msgstr ""
 
-#: src/pages/Home/sections/LiqiuditySection/components/PoolCards.tsx
+#: landing/src/LiqiuditySection/PoolCards.tsx
 msgid "Invest with control over risk and reward"
 msgstr ""
 
@@ -4185,8 +4194,8 @@ msgstr "GMX에서 트레이드하고 <0>$250.000</0> 상금을 획득하세요! 
 msgid "tBTC LP incentives"
 msgstr ""
 
+#: landing/src/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: src/components/ModalViews/RedirectModal.tsx
-#: src/pages/Home/sections/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "귀하는 GMX.io 페이지를 벗어나, 써드파티 웹사이트로 리다이렉트되고 있습니다."
 
@@ -4299,7 +4308,7 @@ msgstr ""
 msgid "Execute order simulation failed."
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/HeroSection.tsx
 msgid "Support for"
 msgstr ""
 
@@ -4471,7 +4480,7 @@ msgstr "미디어 키트"
 msgid "UniDex Leverage"
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/HeroSection.tsx
 msgid "Numerous Assets"
 msgstr ""
 
@@ -4877,7 +4886,7 @@ msgstr "베스팅 옵션을 선택한 후 \"수령하기\" 버튼을 클릭해�
 msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/HeroSection.tsx
 msgid "Save on Costs"
 msgstr ""
 
@@ -5002,6 +5011,10 @@ msgstr ""
 msgid "Yield Farming"
 msgstr ""
 
+#: landing/src/RoadmapSection/Quareters.tsx
+msgid "GMX Express"
+msgstr ""
+
 #: src/lib/contracts/callContract.tsx
 msgid "Transaction completed!"
 msgstr "트랜잭션 완료!"
@@ -5072,7 +5085,7 @@ msgstr ""
 msgid "Limit / Take Profit / Stop Loss"
 msgstr ""
 
-#: src/pages/Home/sections/LiqiuditySection/components/PoolCards.tsx
+#: landing/src/LiqiuditySection/PoolCards.tsx
 msgid "Steady returns without management"
 msgstr ""
 
@@ -5115,6 +5128,10 @@ msgstr "스왑 주문 제출 완료!"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
 msgstr "로딩중..."
+
+#: landing/src/RoadmapSection/Quareters.tsx
+msgid "Solana Support"
+msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Include PnL In Leverage Display"
@@ -5312,6 +5329,10 @@ msgstr "목표 가중치"
 msgid "Winners:"
 msgstr ""
 
+#: landing/src/FaqSection/FaqSection.tsx
+msgid "What makes GMX one of the best places to earn yield on my crypto?"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "포지션을 닫을 때, 어떤 토큰으로 이익을 수취할 지 선택할 수 있습니다."
@@ -5420,12 +5441,8 @@ msgstr "최대 {0} in"
 msgid "Stop Loss Decrease"
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/HeroSection.tsx
 msgid "Trade with confidence"
-msgstr ""
-
-#: src/pages/Home/sections/FaqSection/FaqSection.tsx
-msgid "What Makes GMX One of the Best Places to Earn Yield on My Crypto?"
 msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
@@ -5467,7 +5484,7 @@ msgstr ""
 msgid "Sell GLV"
 msgstr ""
 
-#: src/pages/Home/sections/LaunchSection/LaunchSection.tsx
+#: landing/src/LaunchSection/LaunchSection.tsx
 msgid "Operates on open, permissionless networks to ensure transparency, decentralisation, and unrestricted access"
 msgstr ""
 
@@ -5538,7 +5555,7 @@ msgstr ""
 msgid "Perpie"
 msgstr ""
 
-#: src/pages/Home/sections/SponsorsSection/SponsorsSection.tsx
+#: landing/src/SponsorsSection/SponsorsSection.tsx
 msgid "Supported by"
 msgstr ""
 
@@ -5678,6 +5695,10 @@ msgstr "현재 {0} 롱"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
+msgstr ""
+
+#: landing/src/RoadmapSection/Quareters.tsx
+msgid "Cross-Margin"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
@@ -5857,8 +5878,8 @@ msgstr ""
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/HeroSection.tsx
 msgid "Trade Now"
 msgstr ""
 
@@ -6031,7 +6052,7 @@ msgstr ""
 msgid "Re-enable"
 msgstr ""
 
-#: src/pages/Home/sections/FaqSection/FaqSection.tsx
+#: landing/src/FaqSection/FaqSection.tsx
 msgid "<0>Absolutely. GMX is fully composable and already integrated with hundreds of protocols, including Dolomite, 1inch, and Odos. You can interact directly with the smart contracts or use the provided APIs and SDKs for trading, liquidity, or data feeds. Visit the GMX Developer Docs to get started.</0>"
 msgstr ""
 
@@ -6245,6 +6266,10 @@ msgstr "지정가 주문 제출 완료!"
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Last 7d"
+msgstr ""
+
+#: landing/src/RoadmapSection/Quareters.tsx
+msgid "Botanix Support"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/StakeNotification.tsx
@@ -6563,6 +6588,10 @@ msgstr ""
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr ""
 
+#: landing/src/RoadmapSection/Quareters.tsx
+msgid "Net Open Interest"
+msgstr ""
+
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Explorer"
 msgstr ""
@@ -6700,11 +6729,7 @@ msgstr ""
 msgid "DeFi Margin Protocol"
 msgstr ""
 
-#: src/pages/Home/sections/FaqSection/FaqSection.tsx
-msgid "Clear answers to common questions <0/>about the platform and its features"
-msgstr ""
-
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/HeroSection.tsx
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
 msgstr ""
 
@@ -6813,7 +6838,7 @@ msgstr ""
 msgid "Liquidity incentives program is live on {avalancheLink}."
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/HeroSection.tsx
 msgid "keep more of what you earn"
 msgstr ""
 
@@ -7386,6 +7411,10 @@ msgstr ""
 msgid "Position"
 msgstr "포지션"
 
+#: landing/src/RoadmapSection/Quareters.tsx
+msgid "Real World Assets"
+msgstr ""
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Bonus Rebate"
 msgstr ""
@@ -7422,7 +7451,7 @@ msgstr ""
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>There is no price impact. There is a single<3/>execution price for decreasing longs for<4/>this size."
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/HeroSection.tsx
 msgid "Seamless Trading"
 msgstr ""
 
@@ -7544,11 +7573,15 @@ msgstr "{0} 풀 수용량 도달됨"
 msgid "Staked"
 msgstr "스테이킹 완료"
 
+#: landing/src/RoadmapSection/Quareters.tsx
+msgid "Staking and trading tiers"
+msgstr ""
+
 #: src/components/Footer/Footer.tsx
 msgid "Leave feedback"
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/HeroSection.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr ""
@@ -7641,7 +7674,7 @@ msgstr ""
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/HeroSection.tsx
 msgid "No loss of fund ownership"
 msgstr ""
 
@@ -7672,6 +7705,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
+msgstr ""
+
+#: landing/src/FaqSection/FaqSection.tsx
+msgid "Can I build on top of GMX or integrate it into my DeFi app?"
 msgstr ""
 
 #: src/components/MarketSelector/MarketSelector.tsx
@@ -7746,8 +7783,8 @@ msgstr "스테이킹됨"
 msgid "There is not enough {0} in your account on {1} to send this transaction.<0/><1/><2>Buy or Transfer {2} to {3}</2>"
 msgstr ""
 
+#: landing/src/HeroSection/HeroSection.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
 msgid "Total Volume"
 msgstr "총 거래량"
 
@@ -8235,7 +8272,7 @@ msgstr ""
 msgid "{column}"
 msgstr ""
 
-#: src/pages/Home/sections/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/HeroSection.tsx
 msgid "Stay Safe from <0/> Liquidations"
 msgstr ""
 
@@ -8274,7 +8311,7 @@ msgstr ""
 msgid "Please <0>read here</0> for more information."
 msgstr ""
 
-#: src/pages/Home/sections/LaunchSection/LaunchSection.tsx
+#: landing/src/LaunchSection/LaunchSection.tsx
 msgid "Open App"
 msgstr ""
 
@@ -8365,6 +8402,10 @@ msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing longs for<0/>this size. Max long size: {0}<1/><2/>Execution prices for decreasing shorts."
+msgstr ""
+
+#: landing/src/RoadmapSection/Quareters.tsx
+msgid "Market Groups"
 msgstr ""
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
@@ -8536,7 +8577,7 @@ msgstr ""
 msgid "Limit"
 msgstr "지정가"
 
-#: src/pages/Home/sections/LiqiuditySection/LiqiuditySection.tsx
+#: landing/src/LiqiuditySection/LiqiuditySection.tsx
 msgid "Deposited by 13 654 users."
 msgstr ""
 
