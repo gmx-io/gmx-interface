@@ -22,7 +22,7 @@ export function MobileSideNav() {
       </Button>
       {isOpen ? (
         <Portal>
-          <div className="fixed right-0 top-0 z-[100] flex h-full w-[36rem] flex-col border-l border-slate-600 bg-slate-900">
+          <div className="fixed right-0 top-0 z-[100] flex h-full w-[36rem] flex-col border-l border-slate-600 bg-slate-900 max-lg:pb-40">
             <div className="grow border-b border-slate-600 p-8">
               <div className="flex items-center justify-between">
                 <LogoSection isCollapsed={false} />

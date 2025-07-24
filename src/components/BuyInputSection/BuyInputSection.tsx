@@ -245,7 +245,7 @@ const MaxButton = ({ onClick }: { onClick: (e: React.MouseEvent<HTMLButtonElemen
   return (
     <button
       type="button"
-      className="-my-4 rounded-full bg-slate-600 px-8 py-2 font-medium"
+      className="-my-4 rounded-full bg-slate-600 px-8 py-2 font-medium hover:bg-slate-500"
       onClick={onClick}
       data-qa="input-max"
     >

@@ -19,10 +19,10 @@ import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import BellIcon from "img/bell.svg?react";
-import copy from "img/ic_copy_20.svg";
-import externalLink from "img/ic_new_link_20.svg";
+import CopyIcon from "img/ic_copy_20.svg?react";
+import ExternalLinkIcon from "img/ic_new_link_20.svg?react";
 import PnlAnalysisIcon from "img/ic_pnl_analysis_20.svg?react";
-import disconnect from "img/ic_sign_out_20.svg";
+import DisconnectIcon from "img/ic_sign_out_20.svg?react";
 
 import "./AddressDropdown.scss";
 
@@ -66,7 +66,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
                   helperToast.success(t`Address copied to your clipboard`);
                 }}
               >
-                <img width={20} className="size-20" src={copy} alt="Copy user address" />
+                <CopyIcon width={20} className="size-20" />
                 <p>
                   <Trans>Copy Address</Trans>
                 </p>
@@ -82,7 +82,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
             </Menu.Item>
             <Menu.Item>
               <ExternalLink href={accountUrl} className="menu-item">
-                <img width={20} className="size-20" src={externalLink} alt="Open address in explorer" />
+                <ExternalLinkIcon width={20} className="size-20" />
                 <p>
                   <Trans>View in Explorer</Trans>
                 </p>
@@ -112,7 +112,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
                   disconnectAccountAndCloseSettings();
                 }}
               >
-                <img width={20} className="size-20" src={disconnect} alt="Disconnect the wallet" />
+                <DisconnectIcon width={20} className="size-20" />
                 <p>
                   <Trans>Disconnect</Trans>
                 </p>

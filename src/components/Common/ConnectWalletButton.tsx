@@ -1,18 +1,18 @@
 import { ReactNode } from "react";
+import { FaWallet } from "react-icons/fa6";
 
-import "./ConnectWalletButton.scss";
+import Button from "components/Button/Button";
 
 type Props = {
-  imgSrc: string;
   children: ReactNode;
   onClick: () => void;
 };
 
-export default function ConnectWalletButton({ imgSrc, children, onClick }: Props) {
+export default function ConnectWalletButton({ children, onClick }: Props) {
   return (
-    <button data-qa="connect-wallet-button" className="connect-wallet-btn" onClick={onClick}>
-      {imgSrc && <img className="btn-icon" src={imgSrc} alt="Connect Wallet" />}
-      <span className="btn-label">{children}</span>
-    </button>
+    <Button variant="secondary" data-qa="connect-wallet-button" className="flex items-center gap-6" onClick={onClick}>
+      <FaWallet size={20} className="box-content p-2" />
+      <span>{children}</span>
+    </Button>
   );
 }

@@ -12,7 +12,6 @@ import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 
-import connectWalletImg from "img/ic_wallet_24.svg";
 import BellIcon from "img/new-bell.svg?react";
 
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
@@ -66,7 +65,6 @@ export function AppHeaderUser({ openSettings, disconnectAccountAndCloseSettings,
                 sendUserAnalyticsConnectWalletClickEvent("Header");
                 openConnectModal();
               }}
-              imgSrc={connectWalletImg}
             >
               <Trans>Connect Wallet</Trans>
             </ConnectWalletButton>
