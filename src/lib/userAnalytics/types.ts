@@ -12,7 +12,7 @@ export type LandingPageLaunchAppEvent = {
   event: "LandingPageAction";
   data: {
     action: "LaunchApp";
-    buttonPosition: "MenuButton" | "StickyHeader" | "Title" | "Chains";
+    buttonPosition: "MenuButton" | "StickyHeader" | "Title" | "Chains" | "LaunchSection" | "HeroSection";
     shouldSeeConfirmationDialog: boolean;
   };
 };
@@ -21,7 +21,6 @@ export type LandingPageProtocolTokenEvent = {
   event: "LandingPageAction";
   data: {
     action: "ProtocolTokenAction";
-    chain: "Arbitrum" | "Avalanche" | "Botanix";
     type: "GMX" | "GM" | "GLV" | "GLP";
   };
 };
