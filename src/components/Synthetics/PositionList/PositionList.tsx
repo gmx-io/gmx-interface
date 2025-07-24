@@ -86,7 +86,7 @@ export function PositionList(p: Props) {
 
       {!isMobile && (
         <TableScrollFadeContainer>
-          <Table className="!w-[max(100%,760px)]">
+          <Table className="!w-[max(100%,840px)]">
             <thead className="text-body-medium">
               <TableTheadTr>
                 <TableTh>

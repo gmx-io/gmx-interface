@@ -833,11 +833,6 @@ table.Exchange-list-small td {
   max-height: 350px;
   overflow-y: auto;
 }
-
-.Exchange-list-info-label {
-  margin-top: 0.31rem;
-}
-
 .Exchange-list-muted {
   font-size: var(--font-size-body-medium);
 }

@@ -3,7 +3,6 @@ import cx from "classnames";
 import uniq from "lodash/uniq";
 import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { useMedia } from "react-use";
 
 import { getSyntheticsListSectionKey } from "config/localStorage";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -100,8 +99,6 @@ export function SyntheticsPage(p: Props) {
   const { setPendingTxns } = usePendingTxns();
 
   useExternalSwapHandler();
-
-  const isMobile = useMedia("(max-width: 1024px)");
 
   const [isSettling, setIsSettling] = useState(false);
   const [listSection, setListSection] = useLocalStorageSerializeKey(
@@ -296,9 +293,9 @@ export function SyntheticsPage(p: Props) {
     account,
   });
 
-  const { isTablet } = useBreakpoints();
+  const { isTablet, isMobile } = useBreakpoints();
 
-  const tabsRightContent = (
+  const actions = (
     <div className="flex shrink-0 items-center gap-16 px-12">
       {listSection === ListSection.Orders && selectedOrderKeys.length > 0 && (
         <button
@@ -331,9 +328,9 @@ export function SyntheticsPage(p: Props) {
       <AppHeader
         leftContent={
           isTablet ? (
-            <Link to="/" className="flex items-center gap-5 p-8">
+            <Link to="/" className="flex items-center gap-5 p-8 max-md:p-[4.5px]">
               <img src={logoIcon} alt="GMX Logo" />
-              <img src={logoText} alt="GMX Logo" />
+              <img src={logoText} className="max-md:hidden" alt="GMX Logo" />
             </Link>
           ) : (
             <ChartHeader />
@@ -342,11 +339,11 @@ export function SyntheticsPage(p: Props) {
       />
 
       {isTablet ? <ChartHeader /> : null}
-      <div className="grid grow grid-cols-[1fr_auto] gap-8 pt-0 max-[1024px]:grid-cols-1 max-[800px]:p-10">
-        {isMobile && <OneClickPromoBanner openSettings={openSettings} />}
+      <div className="grid grow grid-cols-[1fr_auto] gap-8 pt-0 max-[1024px]:grid-cols-1">
+        {isTablet && <OneClickPromoBanner openSettings={openSettings} />}
         <div className="Exchange-left flex flex-col gap-8">
           <Chart />
-          {!isMobile && (
+          {!isTablet && (
             <div className="Exchange-lists large" data-qa="trade-table-large">
               <div className="">
                 <Tabs
@@ -356,7 +353,7 @@ export function SyntheticsPage(p: Props) {
                   type="block"
                   className="border-b-[1.5px] border-slate-600 bg-slate-900"
                   qa="exchange-list-tabs"
-                  rightContent={tabsRightContent}
+                  rightContent={actions}
                 />
                 <div className="align-right Exchange-should-show-position-lines"></div>
               </div>
@@ -389,7 +386,7 @@ export function SyntheticsPage(p: Props) {
           )}
         </div>
 
-        {isMobile ? (
+        {isTablet ? (
           <>
             <div className="absolute">
               <TradeBoxResponsiveContainer />
@@ -410,17 +407,28 @@ export function SyntheticsPage(p: Props) {
           </div>
         )}
 
-        {isMobile && (
-          <div className="flex w-full flex-col gap-8" data-qa="trade-table-small">
-            <Tabs
-              options={tabsOptions}
-              selectedValue={listSection}
-              onChange={handleTabChange}
-              type="block"
-              className="rounded-8 border-b-[1.5px] border-slate-600 bg-slate-900"
-              regularOptionClassname="first:rounded-l-8 last:rounded-r-8"
-              rightContent={tabsRightContent}
-            />
+        {isTablet && (
+          <div className="flex w-full flex-col" data-qa="trade-table-small">
+            <div className="overflow-x-auto scrollbar-hide">
+              <Tabs
+                options={tabsOptions}
+                selectedValue={listSection}
+                onChange={handleTabChange}
+                type="block"
+                className={cx("w-[max(100%,600px)] rounded-t-8 border-b-[1.5px] border-slate-600 bg-slate-900", {
+                  "mb-8 rounded-b-8": [ListSection.Positions, ListSection.Orders].includes(listSection as ListSection),
+                  "w-[max(100%,410px)]": isMobile,
+                })}
+                regularOptionClassname={cx({
+                  "first:rounded-l-8 last:rounded-r-8": [ListSection.Positions, ListSection.Orders].includes(
+                    listSection as ListSection
+                  ),
+                })}
+                rightContent={!isMobile ? actions : undefined}
+              />
+            </div>
+
+            {isMobile ? <div className=" border-b border-slate-600 bg-slate-900 py-4">{actions}</div> : null}
 
             {listSection === ListSection.Positions && (
               <PositionList

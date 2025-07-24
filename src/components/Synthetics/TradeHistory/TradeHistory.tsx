@@ -1,5 +1,9 @@
+import { offset, flip, autoUpdate, shift } from "@floating-ui/dom";
+import { useFloating } from "@floating-ui/react";
+import { Popover } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo, useState } from "react";
+import { BsThreeDotsVertical } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import type { Address } from "viem";
 
@@ -10,6 +14,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
 import { TradeAction, TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
+import { useBreakpoints } from "lib/breakpoints";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
@@ -42,6 +47,28 @@ type ActionFilter = {
   eventName: TradeActionType;
   isDepositOrWithdraw: boolean;
   isTwap: boolean;
+};
+
+const ActionsPopover = ({ children }: { children: ReactNode }) => {
+  const { refs, floatingStyles } = useFloating({
+    middleware: [offset(10), flip(), shift()],
+    placement: "top-end",
+    whileElementsMounted: autoUpdate,
+  });
+
+  return (
+    <Popover as="div" ref={refs.setReference}>
+      <Popover.Button as="div" refName="buttonRef">
+        <button className="flex items-center gap-4 px-4 py-8 font-medium text-slate-100 hover:text-white">
+          <Trans>Actions</Trans>
+          <BsThreeDotsVertical />
+        </button>
+      </Popover.Button>
+      <Popover.Panel ref={refs.setFloating} style={floatingStyles}>
+        <div className="rounded-8 border border-slate-600 bg-slate-900 p-8">{children}</div>
+      </Popover.Panel>
+    </Popover>
+  );
 };
 
 export function useTradeHistoryState(p: {
@@ -125,8 +152,10 @@ export function useTradeHistoryState(p: {
     minCollateralUsd: minCollateralUsd,
   });
 
-  const controls = (
-    <div className="flex items-center">
+  const { isTablet, isDesktop } = useBreakpoints();
+
+  const actions = (
+    <>
       {pnlAnalysisButton}
 
       <DateRangeSelect
@@ -137,8 +166,17 @@ export function useTradeHistoryState(p: {
       />
 
       <HistoryControl icon={<DownloadIcon />} label={<Trans>CSV</Trans>} onClick={handleCsvDownload} />
-    </div>
+    </>
   );
+
+  const controls =
+    !isTablet && isDesktop ? (
+      <ActionsPopover>
+        <div className="flex flex-col gap-2">{actions}</div>
+      </ActionsPopover>
+    ) : (
+      <div className="flex items-center">{actions}</div>
+    );
 
   return {
     isLoading,

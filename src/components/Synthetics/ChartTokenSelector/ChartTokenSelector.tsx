@@ -33,6 +33,7 @@ import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
 import { stripBlacklistedWords, type Token } from "domain/tokens";
 import { getMidPrice } from "domain/tokens/utils";
+import { useBreakpoints } from "lib/breakpoints";
 import { formatAmountHuman, formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { searchBy } from "lib/searchBy";
@@ -73,7 +74,7 @@ export default function ChartTokenSelector(props: Props) {
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
   const poolName = marketInfo && !isSwap ? getMarketPoolName(marketInfo) : null;
 
-  const chevronClassName = oneRowLabels === undefined ? undefined : oneRowLabels ? "!-mt-4" : "!-mt-1 self-start";
+  const { isMobile } = useBreakpoints();
 
   return (
     <SelectorBase
@@ -81,7 +82,6 @@ export default function ChartTokenSelector(props: Props) {
       popoverYOffset={16}
       popoverXOffset={-8}
       handleClassName={cx("rounded-8 bg-slate-800 py-10 pl-8 pr-12", { "mr-24": oneRowLabels === false })}
-      chevronClassName={chevronClassName}
       desktopPanelClassName="w-[880px] max-w-[100vw]"
       label={
         selectedToken ? (
@@ -91,9 +91,14 @@ export default function ChartTokenSelector(props: Props) {
               "items-center": oneRowLabels,
             })}
           >
-            <TokenIcon className="mr-6" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
+            <TokenIcon
+              className="mr-6"
+              symbol={selectedToken.symbol}
+              displaySize={isMobile ? 32 : 20}
+              importSize={40}
+            />
             <span
-              className={cx("flex justify-start pr-8", {
+              className={cx("flex justify-start", {
                 "flex-col": !oneRowLabels,
                 "flex-row items-center": oneRowLabels,
               })}

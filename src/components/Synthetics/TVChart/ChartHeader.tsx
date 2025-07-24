@@ -1,7 +1,8 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BiChevronDown, BiChevronLeft, BiChevronRight, BiChevronUp } from "react-icons/bi";
+import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { useEffectOnce } from "react-use";
 
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
@@ -65,7 +66,7 @@ function ChartHeaderMobile() {
 
     if (isSwap) {
       return (
-        <div className="grid grid-cols-[repeat(2,_auto)] grid-rows-1 gap-14 pt-16 sm:grid-cols-1 sm:grid-rows-2">
+        <div className="grid grid-cols-[repeat(2,_auto)] grid-rows-1 gap-14 sm:grid-cols-1 sm:grid-rows-2">
           <div>
             <div className="ExchangeChart-info-label mb-4">
               <Trans>24h High</Trans>
@@ -154,28 +155,31 @@ function ChartHeaderMobile() {
   ]);
 
   return (
-    <div className="bg-slate-800">
-      <div className="p-16">
-        <div className="flex items-start justify-between">
-          <div className="inline-flex">
-            <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={false} />
-          </div>
+    <div className="rounded-8 bg-slate-800">
+      <div className="flex items-start justify-between">
+        <div className="inline-flex">
+          <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={false} />
+        </div>
 
-          <div className="flex cursor-pointer flex-row items-start gap-8" role="button" onClick={toggleDetailsVisible}>
-            <div className="flex flex-col">
-              <div className="mr-4">{avgPrice}</div>
-              <div className="ExchangeChart-daily-change text-body-small">{dayPriceDelta}</div>
-            </div>
-            <span className={cx("inline-flex cursor-pointer items-center justify-center rounded-4")}>
-              {detailsVisible ? (
-                <BiChevronUp className="-ml-6 -mt-2" size={24} />
-              ) : (
-                <BiChevronDown className="-ml-6 -mt-2" size={24} />
-              )}
-            </span>
+        <div
+          className="flex cursor-pointer flex-row items-start gap-8 p-8"
+          role="button"
+          onClick={toggleDetailsVisible}
+        >
+          <div className="flex flex-col">
+            <div className="mr-4">{avgPrice}</div>
+            <div className="ExchangeChart-daily-change text-body-small">{dayPriceDelta}</div>
           </div>
+          <span className={cx("inline-flex cursor-pointer items-center justify-center rounded-4 pt-6 text-slate-100")}>
+            {detailsVisible ? (
+              <FaChevronUp className="-ml-6 -mt-2" size={12} />
+            ) : (
+              <FaChevronDown className="-ml-6 -mt-2" size={12} />
+            )}
+          </span>
         </div>
       </div>
+
       {details ? <div className="border-t-[1px] border-t-slate-600 p-16">{details}</div> : null}
     </div>
   );
@@ -444,7 +448,7 @@ const ChartHeaderItem = ({ label, value }: { label: ReactNode; value: ReactNode 
 };
 
 export default function ChartHeader() {
-  const { isSmallMobile } = useBreakpoints();
+  const { isMobile } = useBreakpoints();
 
-  return isSmallMobile ? <ChartHeaderMobile /> : <ChartHeaderDesktop />;
+  return isMobile ? <ChartHeaderMobile /> : <ChartHeaderDesktop />;
 }

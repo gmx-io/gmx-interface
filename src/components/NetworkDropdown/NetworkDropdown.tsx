@@ -95,13 +95,13 @@ function NavIcons({ selectorLabel }) {
 
   return (
     <>
-      <span className="text-body-small inline-block h-fit rounded-4 bg-slate-600 px-7 py-4 font-medium">
+      <span className="text-body-small inline-block h-fit rounded-4 bg-slate-600 px-7 py-4 font-medium max-md:text-[13px]">
         V{currentVersion}
       </span>
       <button>
         <img className="network-dropdown-icon" src={icon} alt={selectorLabel} />
       </button>
-      <button>
+      <button className="max-md:hidden">
         <FiChevronDown className="text-slate-100" size={20} />
       </button>
     </>
@@ -114,7 +114,7 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, openSe
       <Menu>
         <Menu.Button
           as="div"
-          className="flex cursor-pointer items-center gap-8 rounded-8 bg-slate-700 p-8 pr-10"
+          className="flex cursor-pointer items-center gap-8 rounded-8 bg-slate-700 p-8 pr-10 max-md:p-4"
           data-qa="networks-dropdown-handle"
         >
           <NavIcons selectorLabel={selectorLabel} />

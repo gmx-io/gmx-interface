@@ -395,7 +395,7 @@ export function PositionItem(p: Props) {
                       displaySize={20}
                       importSize={24}
                     />
-                    <span className="font-medium text-slate-100">
+                    <span className="font-medium">
                       {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
                     </span>
                   </>
@@ -454,7 +454,7 @@ export function PositionItem(p: Props) {
           </div>
         </TableTd>
         <TableTd>
-          <span className="font-medium text-slate-100">{formatUsd(p.position.sizeInUsd)}</span>
+          <span className="font-medium">{formatUsd(p.position.sizeInUsd)}</span>
           <PositionItemOrdersLarge positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
         </TableTd>
         <TableTd>
@@ -488,7 +488,7 @@ export function PositionItem(p: Props) {
           {p.position.isOpening ? (
             t`Opening...`
           ) : (
-            <span className="font-medium text-slate-100">
+            <span className="font-medium">
               {formatUsd(p.position.entryPrice, {
                 displayDecimals: marketDecimals,
                 visualMultiplier: p.position.indexToken.visualMultiplier,
@@ -499,7 +499,7 @@ export function PositionItem(p: Props) {
         <TableTd>
           {/* markPrice */}
           {
-            <span className="font-medium text-slate-100">
+            <span className="font-medium">
               {formatUsd(p.position.markPrice, {
                 displayDecimals: marketDecimals,
                 visualMultiplier: p.position.indexToken.visualMultiplier,
@@ -518,7 +518,7 @@ export function PositionItem(p: Props) {
               <>
                 <TableTd>
                   <button
-                    className="font-medium text-slate-100"
+                    className="font-medium text-slate-100 hover:text-white"
                     onClick={p.onClosePositionClick}
                     disabled={p.position.sizeInUsd == 0n}
                     data-qa="position-close-button"

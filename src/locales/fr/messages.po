@@ -1299,6 +1299,10 @@ msgstr "Échange limité échoué"
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "Actions"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Longing..."
 msgstr "Long en cours..."

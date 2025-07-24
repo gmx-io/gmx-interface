@@ -27,13 +27,13 @@ export function ClaimableCardUI({ title, style, sections }: Props) {
 
   return (
     <div
-      className="flex w-full flex-col gap-12 border-b-[1.5px] border-r-[1.5px] border-slate-600 bg-slate-900 px-20 py-12 last:border-r-0"
+      className="flex w-full flex-col gap-12 border-b-[1.5px] border-slate-600 bg-slate-900 px-20 py-12 last:border-r-0 lg:border-r-[1.5px]"
       style={style}
     >
       <div className="text-[11px] font-medium uppercase text-slate-100">{title}</div>
       <div
-        className={cx("flex gap-4", {
-          "flex-col": !isHorizontal,
+        className={cx("grid grid-cols-2", {
+          "grid-cols-1": !isHorizontal,
         })}
       >
         <Section title={t`Funding fees`} {...section1} />
@@ -48,8 +48,11 @@ function Section({ buttonText, onButtonClick, tooltipText, title, usd }: Section
   const usdFormatted = useMemo(() => formatDeltaUsd(usd), [usd]);
 
   return (
-    <div className="flex grow items-center justify-between border-r border-r-slate-600 px-20 first:pl-0 last:border-r-0 last:pr-0">
-      <div className="flex flex-col">
+    <div
+      className={`flex grow items-end justify-between gap-8 border-r border-r-slate-600 px-20
+        first:pl-0 last:border-r-0 last:pr-0 max-xl:flex-col max-xl:items-start`}
+    >
+      <div className="flex flex-col gap-4">
         <span className="font-medium">
           {tooltipText ? (
             <Tooltip handle={usdFormatted} position="bottom-start" renderContent={renderTooltipContent} />
@@ -59,8 +62,8 @@ function Section({ buttonText, onButtonClick, tooltipText, title, usd }: Section
         </span>
         <span className="text-body-small text-slate-100">{title}</span>
       </div>
-      <div>
-        <Button slim variant="secondary" disabled={usd <= 0} onClick={onButtonClick}>
+      <div className="max-xl:w-full">
+        <Button slim variant="secondary" disabled={usd <= 0} onClick={onButtonClick} className="max-xl:w-full">
           {buttonText}
         </Button>
       </div>

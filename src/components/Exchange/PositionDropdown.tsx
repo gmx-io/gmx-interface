@@ -40,7 +40,7 @@ export default function PositionDropdown({
     <Menu>
       <Menu.Button as="div" ref={refs.setReference}>
         <button>
-          <HiDotsVertical fontSize={13} fontWeight={500} className="text-slate-100" />
+          <HiDotsVertical fontSize={13} fontWeight={500} className="text-slate-100 hover:text-white" />
         </button>
       </Menu.Button>
       <FloatingPortal>

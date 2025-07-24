@@ -16,8 +16,11 @@ export function MobileSideNav() {
 
   return (
     <div>
-      <button className="rounded-8 bg-slate-700 p-10 text-slate-100" onClick={handleToggle}>
-        <RxHamburgerMenu size={18} />
+      <button
+        className="rounded-8 bg-slate-700 p-10 text-[18px] text-slate-100 max-md:p-9 max-md:text-[14px]"
+        onClick={handleToggle}
+      >
+        <RxHamburgerMenu />
         {isOpen ? (
           <Portal>
             <div className="fixed right-0 top-0 z-[100] flex h-full w-[36rem] flex-col border-l border-slate-600 bg-slate-900">

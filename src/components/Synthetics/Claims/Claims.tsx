@@ -1,7 +1,5 @@
 import { Trans } from "@lingui/macro";
-import cx from "classnames";
 import { useCallback, useState } from "react";
-import { useMedia } from "react-use";
 
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -72,8 +70,6 @@ export function Claims({
     setIsClaiming(false);
   }, []);
 
-  const isMobile = useMedia("(max-width: 1024px)");
-
   return (
     <>
       <ClaimModal isVisible={isClaiming} onClose={handleClaimModalClose} setPendingTxns={setPendingTxns} />
@@ -98,11 +94,7 @@ export function Claims({
             <Trans>Loading...</Trans>
           </div>
         )}
-        <div
-          className={cx("flex", "w-full", {
-            "flex-col": isMobile,
-          })}
-        >
+        <div className={"flex w-full max-lg:flex-col"}>
           {account && !isLoading && (
             <SettleAccruedCard
               onSettleClick={handleSettleClick}
