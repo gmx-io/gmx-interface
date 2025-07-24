@@ -6,9 +6,9 @@ import {
   type ContractsChainId,
   type SettlementChainId,
   type SourceChainId,
+  AnyChainId,
   ARBITRUM,
   ARBITRUM_SEPOLIA,
-  DEFAULT_CHAIN_ID,
   isSupportedChain,
 } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -18,17 +18,28 @@ import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 
 const IS_DEVELOPMENT = isDevelopment();
 
-let initialChainId: ContractsChainId;
+let INITIAL_CHAIN_ID: ContractsChainId;
 if (IS_DEVELOPMENT) {
-  initialChainId = ARBITRUM_SEPOLIA;
+  INITIAL_CHAIN_ID = ARBITRUM_SEPOLIA;
 } else {
-  initialChainId = ARBITRUM;
+  INITIAL_CHAIN_ID = ARBITRUM;
 }
 
-function useEthereumChainId() {
-  const [chainId, setChainId] = useState<number | undefined>(
-    window.ethereum?.chainId ? parseInt(window.ethereum?.chainId) : initialChainId
-  );
+function getEthereumChainId() {
+  if (!window.ethereum?.chainId) {
+    return undefined;
+  }
+
+  const chainId = parseInt(window.ethereum.chainId);
+  if (isContractsChain(chainId) || isSourceChain(chainId)) {
+    return chainId;
+  }
+
+  return undefined;
+}
+
+function useEthereumChainId(): AnyChainId | undefined {
+  const [chainId, setChainId] = useState<AnyChainId | undefined>(getEthereumChainId());
   useEffect(() => {
     const handler = (chainId: string) => {
       const rawChainId = parseInt(chainId);
@@ -54,7 +65,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
 } {
   let { chainId: connectedChainId } = useAccount();
   const unsanitizedChainId = useEthereumChainId();
-  const [displayedChainId, setDisplayedChainId] = useState(connectedChainId ?? unsanitizedChainId ?? DEFAULT_CHAIN_ID);
+  const [displayedChainId, setDisplayedChainId] = useState(connectedChainId ?? unsanitizedChainId ?? INITIAL_CHAIN_ID);
 
   const rawChainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
   const chainIdFromLocalStorage = rawChainIdFromLocalStorage ? parseInt(rawChainIdFromLocalStorage) : undefined;
@@ -95,7 +106,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
       return;
     }
 
-    setDisplayedChainId(DEFAULT_CHAIN_ID);
+    setDisplayedChainId(INITIAL_CHAIN_ID);
   }, [
     chainIdFromLocalStorage,
     isCurrentChainSource,
@@ -120,7 +131,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
       return;
     }
 
-    setDisplayedChainId(DEFAULT_CHAIN_ID);
+    setDisplayedChainId(INITIAL_CHAIN_ID);
     localStorage.removeItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
   }, [
     chainIdFromLocalStorage,
@@ -161,7 +172,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
       return { chainId: settlementChainId, srcChainId };
     }
 
-    return { chainId: DEFAULT_CHAIN_ID, srcChainId };
+    return { chainId: INITIAL_CHAIN_ID, srcChainId };
   }
 
   if (isCurrentChainSupported) {
@@ -180,5 +191,5 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
     };
   }
 
-  return { chainId: DEFAULT_CHAIN_ID, isConnectedToChainId: false, srcChainId };
+  return { chainId: INITIAL_CHAIN_ID, isConnectedToChainId: false, srcChainId };
 }

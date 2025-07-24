@@ -169,6 +169,10 @@ export function getIsSubaccountNonceExpired({
     return false;
   }
 
+  if (chainId !== signedApproval.signatureChainId) {
+    return false;
+  }
+
   let onChainNonce: bigint;
   if (
     signedApproval.subaccountRouterAddress === getContract(chainId, "SubaccountGelatoRelayRouter") ||
@@ -178,9 +182,11 @@ export function getIsSubaccountNonceExpired({
   } else if (signedApproval.subaccountRouterAddress === getContract(chainId, "MultichainSubaccountRouter")) {
     onChainNonce = onchainData.multichainApprovalNonce;
   } else {
-    throw new Error(
-      `Invalid subaccount router address: ${signedApproval.subaccountRouterAddress} for chainId: ${chainId}`
+    // eslint-disable-next-line no-console
+    console.error(
+      `Invalid subaccount router address: ${signedApproval.subaccountRouterAddress} at ${signedApproval.signatureChainId} for chainId: ${chainId}`
     );
+    return false;
   }
 
   const signedNonce = signedApproval.nonce;
