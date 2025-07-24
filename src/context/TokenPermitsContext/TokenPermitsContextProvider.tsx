@@ -1,6 +1,6 @@
-import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
+import React, { createContext, useCallback, useContext, useMemo } from "react";
 
-import { getTokenPermitsKey } from "config/localStorage";
+import { getTokenPermitsKey, PERMITS_DISABLED_KEY } from "config/localStorage";
 import { createAndSignTokenPermit, getIsPermitExpired, validateTokenPermitSignature } from "domain/tokens/permitUtils";
 import { useChainId } from "lib/chains";
 import { getInvalidPermitSignatureError } from "lib/errors/customErrors";
@@ -31,7 +31,7 @@ export function useTokenPermitsContext() {
 export function TokenPermitsContextProvider({ children }: { children: React.ReactNode }) {
   const { chainId } = useChainId();
   const { signer } = useWallet();
-  const [isPermitsDisabled, setIsPermitsDisabled] = useState(false);
+  const [isPermitsDisabled, setIsPermitsDisabled] = useLocalStorageSerializeKey(PERMITS_DISABLED_KEY, false);
 
   const [tokenPermits, setTokenPermits] = useLocalStorageSerializeKey<SignedTokenPermit[]>(
     getTokenPermitsKey(chainId, signer?.address),
@@ -91,15 +91,16 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
     setTokenPermits([]);
   }, [setTokenPermits]);
 
-  const state = useMemo(() => {
-    return {
-      isPermitsDisabled,
+  const state = useMemo(
+    () => ({
+      isPermitsDisabled: Boolean(isPermitsDisabled),
       setIsPermitsDisabled,
       tokenPermits: tokenPermits?.filter((permit) => !getIsPermitExpired(permit)) ?? [],
       addTokenPermit,
       resetTokenPermits,
-    };
-  }, [isPermitsDisabled, tokenPermits, addTokenPermit, resetTokenPermits]);
+    }),
+    [isPermitsDisabled, setIsPermitsDisabled, tokenPermits, addTokenPermit, resetTokenPermits]
+  );
 
   return <TokenPermitsContext.Provider value={state}>{children}</TokenPermitsContext.Provider>;
 }

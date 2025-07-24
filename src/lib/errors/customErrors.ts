@@ -31,7 +31,15 @@ export function getInvalidPermitSignatureError({
     data: {
       originalError: error,
       recoveredAddress,
-      permit,
+      owner: permit.owner,
+      spender: permit.spender,
+      value: permit.value,
+      deadline: permit.deadline,
+      onchainParams: {
+        name: permit.onchainParams.name,
+        version: permit.onchainParams.version,
+        nonce: permit.onchainParams.nonce,
+      },
     },
   });
 }

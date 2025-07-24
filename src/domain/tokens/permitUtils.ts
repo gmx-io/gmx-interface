@@ -23,7 +23,7 @@ export async function createAndSignTokenPermit(
 ) {
   const onchainParams = await getTokenPermitParams(chainId, signer.address, tokenAddress, signer.provider);
 
-  const owner = await signer.getAddress();
+  const owner = signer.address;
 
   const domain = {
     chainId,

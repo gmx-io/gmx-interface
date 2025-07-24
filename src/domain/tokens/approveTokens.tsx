@@ -128,10 +128,6 @@ export async function approveTokens({
         </div>
       );
 
-      if (permitParams?.isPermitsDisabled) {
-        permitParams.setIsPermitsDisabled(false);
-      }
-
       if (onApproveSubmitted) {
         onApproveSubmitted({ isPermit: false });
       }
