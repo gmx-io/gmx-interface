@@ -258,6 +258,13 @@ export type ErrorEvent = {
 };
 
 export type ExpressOrderMetricData = {
+  isExpressValid: boolean;
+  isOutGasTokenBalance: boolean;
+  needGasTokenApproval: boolean;
+  isSubaccountValid: boolean | undefined;
+  isSubbaccountExpired: boolean | undefined;
+  isSubaccountActionsExceeded: boolean | undefined;
+  isSubaccountNonceExpired: boolean | undefined;
   isSponsoredCall: boolean;
   approximateGasLimit: number;
   approximateL1GasLimit: number;

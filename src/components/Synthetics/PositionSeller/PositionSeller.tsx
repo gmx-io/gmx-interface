@@ -42,10 +42,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
-import {
-  selectAddTokenPermit,
-  selectTokenPermits,
-} from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
+import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
@@ -62,7 +59,8 @@ import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoC
 import { ORDER_OPTION_TO_TRADE_MODE, OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError, getExpressError } from "domain/synthetics/trade/utils/validation";
-import { approveTokens, Token } from "domain/tokens";
+import { Token } from "domain/tokens";
+import { useApproveToken } from "domain/tokens/useApproveTokens";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
@@ -78,10 +76,7 @@ import {
 } from "lib/numbers";
 import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { userAnalytics } from "lib/userAnalytics";
-import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
-import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import {
@@ -104,9 +99,9 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
@@ -147,7 +142,7 @@ export function PositionSeller() {
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const tokenPermits = useSelector(selectTokenPermits);
-  const addTokenPermit = useSelector(selectAddTokenPermit);
+  const { approveToken } = useApproveToken();
   const noncesData = useSelector(selectExpressNoncesData);
   const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
 
@@ -466,7 +461,7 @@ export function PositionSeller() {
   ]);
 
   async function onSubmit() {
-    if (!account) {
+    if (!account || !signer) {
       openConnectModal?.();
       return;
     }
@@ -474,36 +469,12 @@ export function PositionSeller() {
     if (isAllowanceLoaded && tokensToApprove.length) {
       if (!chainId || isApproving) return;
 
-      userAnalytics.pushEvent<TokenApproveClickEvent>({
-        event: "TokenApproveAction",
-        data: {
-          action: "ApproveClick",
-        },
-      });
-
-      approveTokens({
-        setIsApproving,
+      approveToken({
         signer,
         tokenAddress: tokensToApprove[0].tokenAddress,
-        spender: getContract(chainId, "SyntheticsRouter"),
-        pendingTxns: [],
-        setPendingTxns: () => null,
-        infoTokens: {},
         chainId,
-        permitParams: expressParams
-          ? {
-              addTokenPermit,
-            }
-          : undefined,
-        approveAmount: undefined,
-        onApproveFail: () => {
-          userAnalytics.pushEvent<TokenApproveResultEvent>({
-            event: "TokenApproveAction",
-            data: {
-              action: "ApproveFail",
-            },
-          });
-        },
+        allowPermit: Boolean(expressParams),
+        setIsApproving,
       });
 
       return;
@@ -849,7 +820,7 @@ export function PositionSeller() {
       };
     }
 
-    if (isApproving) {
+    if (isApproving && tokensToApprove.length) {
       const tokenToApprove = tokensToApprove[0];
       return {
         text: (

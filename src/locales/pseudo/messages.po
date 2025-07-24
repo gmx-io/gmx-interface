@@ -4744,6 +4744,10 @@ msgstr ""
 msgid "Market Composition"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Permit signature is invalid. Please try again.</0>"
+msgstr ""
+
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here"
 msgstr ""

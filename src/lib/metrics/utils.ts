@@ -586,6 +586,13 @@ function getExpressMetricData({
   }
 
   const expressData: ExpressOrderMetricData = {
+    isExpressValid: expressParams.gasPaymentValidations.isValid,
+    isOutGasTokenBalance: expressParams.gasPaymentValidations.isOutGasTokenBalance,
+    needGasTokenApproval: expressParams.gasPaymentValidations.needGasPaymentTokenApproval,
+    isSubaccountValid: expressParams.subaccountValidations?.isValid,
+    isSubbaccountExpired: expressParams.subaccountValidations?.isExpired,
+    isSubaccountActionsExceeded: expressParams.subaccountValidations?.isActionsExceeded,
+    isSubaccountNonceExpired: expressParams.subaccountValidations?.isNonceExpired,
     isSponsoredCall: Boolean(expressParams?.isSponsoredCall),
     approximateGasLimit: fastExpressParams ? Number(fastExpressParams.gasLimit) : 0,
     approximateL1GasLimit: fastExpressParams ? Number(fastExpressParams.l1GasLimit) : 0,

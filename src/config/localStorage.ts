@@ -67,6 +67,7 @@ export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";
 
 export const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
+export const PERMITS_DISABLED_KEY = "permits-disabled";
 
 export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
