@@ -8,4 +8,3 @@ export default {
     autoprefixer: {},
   },
 }
-console.log(resolve(import.meta.dirname, "./tailwind.config.js"));
