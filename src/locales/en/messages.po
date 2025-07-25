@@ -1912,8 +1912,8 @@ msgid "GMX Alerts"
 msgstr "GMX Alerts"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - Net Price Impact + Price Impact Rebates"
-msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - Net Price Impact + Price Impact Rebates"
+#~ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - Net Price Impact + Price Impact Rebates"
+#~ msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - Net Price Impact + Price Impact Rebates"
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Show details"
@@ -3061,8 +3061,8 @@ msgid "Order creation failed."
 msgstr "Order creation failed."
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee - Net Price Impact + Price Impact Rebates"
-msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee - Net Price Impact + Price Impact Rebates"
+#~ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee - Net Price Impact + Price Impact Rebates"
+#~ msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee - Net Price Impact + Price Impact Rebates"
 
 #: src/components/Synthetics/MissedCoinsHint/MissedCoinsHint.tsx
 msgid "Can’t find the coin you need? Let us know"
@@ -3292,6 +3292,10 @@ msgstr "Buying..."
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Enter a new ratio or allowed slippage"
 msgstr "Enter a new ratio or allowed slippage"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Net value is the amount held in the position inclusive of Pnl, fees and net price impact at close."
+msgstr "Net value is the amount held in the position inclusive of Pnl, fees and net price impact at close."
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap UI Fee"

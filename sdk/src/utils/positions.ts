@@ -104,6 +104,27 @@ export function getPositionNetValue(p: {
   );
 }
 
+export function getPositionPnlAfterFees({
+  pnl,
+  totalPendingFeesUsd,
+  closingFeeUsd,
+  uiFeeUsd,
+  totalPendingImpactDeltaUsd,
+  priceImpactDiffUsd,
+}: {
+  pnl: bigint;
+  totalPendingFeesUsd: bigint;
+  closingFeeUsd: bigint;
+  uiFeeUsd: bigint;
+  totalPendingImpactDeltaUsd: bigint;
+  priceImpactDiffUsd: bigint;
+}) {
+  const pnlAfterFees =
+    pnl - totalPendingFeesUsd - closingFeeUsd - uiFeeUsd + totalPendingImpactDeltaUsd + priceImpactDiffUsd;
+
+  return pnlAfterFees;
+}
+
 export function getLeverage(p: {
   sizeInUsd: bigint;
   collateralUsd: bigint;
@@ -263,8 +284,8 @@ export function getNetPriceImpactDeltaUsdForDecrease({
 }) {
   const { proportionalPendingImpactDeltaUsd } = getProportionalPendingImpactValues({
     sizeInUsd,
-    pendingImpactAmount,
     sizeDeltaUsd,
+    pendingImpactAmount,
     indexToken: marketInfo.indexToken,
   });
 
@@ -273,13 +294,12 @@ export function getNetPriceImpactDeltaUsdForDecrease({
 
   if (totalImpactDeltaUsd < 0) {
     const { maxNegativeImpactFactor } = getMaxPositionImpactFactors(marketInfo);
-    const maxPriceImpactFactor = applyFactor(sizeDeltaUsd, maxNegativeImpactFactor);
 
-    const minPriceImpactUsd = -applyFactor(sizeDeltaUsd, maxPriceImpactFactor);
+    const maxNegativeImpactUsd = -applyFactor(sizeDeltaUsd, maxNegativeImpactFactor);
 
-    if (totalImpactDeltaUsd < minPriceImpactUsd) {
-      priceImpactDiffUsd = minPriceImpactUsd - totalImpactDeltaUsd;
-      totalImpactDeltaUsd = minPriceImpactUsd;
+    if (totalImpactDeltaUsd < maxNegativeImpactUsd) {
+      priceImpactDiffUsd = maxNegativeImpactUsd - totalImpactDeltaUsd;
+      totalImpactDeltaUsd = maxNegativeImpactUsd;
     }
   }
 

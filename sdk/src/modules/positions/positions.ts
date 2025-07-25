@@ -31,6 +31,7 @@ import {
   getPositionKey,
   getPositionNetValue,
   getPositionPendingFeesUsd,
+  getPositionPnlAfterFees,
   getPositionPnlUsd,
 } from "utils/positions";
 import { getAcceptablePriceInfo, getMarkPrice } from "utils/prices";
@@ -609,13 +610,14 @@ export class Positions extends Module {
         priceImpactDiffUsd: netPriceImapctValues?.priceImpactDiffUsd ?? 0n,
       });
 
-      const pnlAfterFees =
-        pnl -
-        totalPendingFeesUsd -
-        closingFeeUsd -
-        uiFeeUsd -
-        (netPriceImapctValues?.totalImpactDeltaUsd ?? 0n) +
-        (netPriceImapctValues?.priceImpactDiffUsd ?? 0n);
+      const pnlAfterFees = getPositionPnlAfterFees({
+        pnl,
+        totalPendingFeesUsd,
+        closingFeeUsd,
+        uiFeeUsd,
+        totalPendingImpactDeltaUsd: netPriceImapctValues?.totalImpactDeltaUsd ?? 0n,
+        priceImpactDiffUsd: netPriceImapctValues?.priceImpactDiffUsd ?? 0n,
+      });
 
       const pnlAfterFeesPercentage =
         collateralUsd != 0n ? getBasisPoints(pnlAfterFees, collateralUsd + closingFeeUsd) : 0n;

@@ -84,9 +84,9 @@ export function PositionItem(p: Props) {
         position={p.isLarge ? "bottom-start" : "bottom-end"}
         renderContent={() => (
           <div>
-            {p.position.uiFeeUsd > 0
-              ? t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee - Net Price Impact + Price Impact Rebates`
-              : t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - Net Price Impact + Price Impact Rebates`}
+            <Trans>
+              Net value is the amount held in the position inclusive of Pnl, fees and net price impact at close.
+            </Trans>
             <br />
             <br />
             <StatsTooltipRow
@@ -123,14 +123,16 @@ export function PositionItem(p: Props) {
               textClassName={getPositiveOrNegativeClass(p.position.netPriceImapctDeltaUsd)}
             />
 
-            <StatsTooltipRow
-              label={t`Price Impact Rebates`}
-              value={formatDeltaUsd(p.position.priceImpactDiffUsd) || "..."}
-              showDollar={false}
-              textClassName={cx({
-                "text-green-500": p.position.priceImpactDiffUsd !== 0n,
-              })}
-            />
+            {p.position.priceImpactDiffUsd !== 0n && (
+              <StatsTooltipRow
+                label={t`Price Impact Rebates`}
+                value={formatDeltaUsd(p.position.priceImpactDiffUsd) || "..."}
+                showDollar={false}
+                textClassName={cx({
+                  "text-green-500": p.position.priceImpactDiffUsd !== 0n,
+                })}
+              />
+            )}
 
             <StatsTooltipRow
               label={t`Close Fee`}
