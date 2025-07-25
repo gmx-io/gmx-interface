@@ -52,6 +52,7 @@ export default defineConfig(({ mode }) => {
       outDir: "build",
       sourcemap: true,
       rollupOptions: {
+        maxParallelFileOps: 2,
         output: {
           manualChunks: {
             web3: ["ethers", "viem", "date-fns", "@rainbow-me/rainbowkit", "lodash", "@gelatonetwork/relay-sdk"],
