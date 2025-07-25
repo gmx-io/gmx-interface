@@ -80,8 +80,8 @@ const colors = {
   },
   fill: {
     surfaceElevated50: "#1E20337f",
+    surfaceElevatedHover: "#18192a",
     surfaceHover: "#A0A3C41A",
-    surfaceHover50: "linear-gradient(0deg, rgba(160, 163, 196, 0.10) 0%, rgba(160, 163, 196, 0.10) 100%), rgba(30, 32, 51, 0.50)",
   },
 };
 
@@ -229,6 +229,7 @@ module.exports = {
       ),
       fontFamily: {
         'tthoves': ['TTHoves', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        'tthoves-native': ['TTHovesNative', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
     },
   },
