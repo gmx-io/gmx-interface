@@ -2099,8 +2099,8 @@ msgid "You can edit the default Allowed Slippage in the settings menu on the top
 msgstr ""
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
-msgid "Last 365d"
-msgstr ""
+#~ msgid "Last 365d"
+#~ msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "<0>Read more</0> about fees."
@@ -5308,6 +5308,10 @@ msgstr ""
 msgid "Transaction"
 msgstr "Transaktion"
 
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+msgid "Last year"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
@@ -5436,6 +5440,10 @@ msgstr ""
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 msgstr ""
 
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+msgid "30d"
+msgstr ""
+
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
 msgstr ""
@@ -5457,7 +5465,6 @@ msgstr "Die Netzwerkgebühren sind derzeit sehr hoch, was auf eine vorübergehen
 msgid "There are more shorts than longs, borrow fees for longing is currently zero"
 msgstr "Es gibt mehr Shorts als Longs, Leihgebühren für Longing sind derzeit gleich Null"
 
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 90d"
 msgstr ""
@@ -5623,6 +5630,10 @@ msgstr "Aktuell {0} long"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
+msgstr ""
+
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+msgid "90d"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
@@ -6180,7 +6191,6 @@ msgstr "Erstellen"
 msgid "Limit order submitted!"
 msgstr "Limit-Order übermittelt!"
 
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Last 7d"
 msgstr ""
@@ -7652,8 +7662,8 @@ msgid "APY"
 msgstr ""
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
-msgid "Last month"
-msgstr "Letzter Monat"
+#~ msgid "Last month"
+#~ msgstr "Letzter Monat"
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -8166,7 +8176,6 @@ msgstr ""
 msgid "Execution prices for increasing longs and<0/>decreasing shorts."
 msgstr ""
 
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 30d"
@@ -8190,6 +8199,10 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Please <0>read here</0> for more information."
+msgstr ""
+
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+msgid "7d"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx

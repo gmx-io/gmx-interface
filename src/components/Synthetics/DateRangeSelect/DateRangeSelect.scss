@@ -6,10 +6,10 @@
   &-popover {
     position: relative;
     z-index: 1000;
-
-    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    border-radius: 8px;
     background-color: var(--dark-blue-bg);
-    border: 1px solid var(--color-gray-800);
+    border: 0.5px solid var(--color-gray-800);
   }
 
   &-common-items {
@@ -28,11 +28,12 @@
   }
 
   &-monthAndYearPickers select {
-    background-color: var(--dark-blue-bg);
     color: var(--color-white);
 
     background-image: none;
     padding: 10px;
+    font-weight: 500;
+    font-size: 16px;
 
     option {
       color: var(--color-white);
@@ -40,16 +41,81 @@
     }
   }
 
+  &-month {
+    padding: 0;
+  }
+
+  &-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  &-day {
+    width: 100%;
+    height: 36px;
+    padding-left: 1px;
+    padding-right: 1px;
+    margin-bottom: 2px;
+  }
+
+  &-dayNumber,
+  &-inRange,
+  &-startEdge,
+  &-endEdge,
+  &-dayEndPreview,
+  &-dayStartPreview {
+    display: block;
+    width: 100%;
+    height: 100%;
+    font-weight: 500;
+    font-size: 13px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
   &-dayNumber span {
     color: var(--color-white);
   }
 
-  &-nextPrevButton {
-    background-color: var(--color-cold-blue-900);
+  &-weekDay {
+    color: var(--color-slate-100);
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 500;
   }
 
-  &-prevButton i {
-    border-color: transparent white transparent transparent;
+  &-prevButton,
+  &-nextButton {
+    margin: 0;
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    background-color: var(--color-slate-800);
+    position: relative;
+  }
+
+  &-prevButton i,
+  &-nextButton i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    background-image: url("img/ic_chevron_left.svg");
+    background-size: 16px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    margin: 0;
+  }
+
+  &-nextButton i {
+    transform: translate(-50%, -50%) rotate(180deg);
   }
 
   &-prevButton:hover {
@@ -76,7 +142,7 @@
       bottom: 0;
 
       background-color: var(--color-blue-600);
-      border-radius: 4px;
+      border-radius: 8px;
       z-index: 0;
     }
   }
@@ -94,8 +160,8 @@
   &-dayStartOfWeek &-inRange,
   &-dayStartOfMonth &-inRange,
   &-dayStartOfMonth &-dayInPreview {
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
   }
 
   &-dayEndPreview,
@@ -104,21 +170,31 @@
   &-dayEndOfWeek &-inRange,
   &-dayEndOfMonth &-inRange,
   &-dayEndOfMonth &-dayInPreview {
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
   }
 
   &-dayStartOfWeek &-dayEndPreview,
   &-dayEndOfWeek &-dayStartPreview,
   &-dayStartOfMonth &-dayEndPreview,
   &-dayEndOfMonth &-dayStartPreview {
-    border-radius: 4px;
+    border-radius: 8px;
   }
 
   &-dayHovered {
     ::after {
       border-radius: 4px !important;
     }
+  }
+
+  &-dayToday &-dayNumber span::after {
+    background-color: var(--color-blue-300) !important;
+    border-radius: 4px !important;
+    width: 4px !important;
+    height: 4px !important;
+    bottom: 2px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
   }
 
   &-dayDisabled {
@@ -129,5 +205,11 @@
     &-month {
       width: auto;
     }
+  }
+
+  &-monthAndYearWrapper {
+    padding: 12px;
+    border-bottom: 0.5px solid var(--color-slate-600);
+    height: unset;
   }
 }

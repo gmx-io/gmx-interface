@@ -2099,8 +2099,8 @@ msgid "You can edit the default Allowed Slippage in the settings menu on the top
 msgstr "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
-msgid "Last 365d"
-msgstr "Last 365d"
+#~ msgid "Last 365d"
+#~ msgstr "Last 365d"
 
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "<0>Read more</0> about fees."
@@ -5311,6 +5311,10 @@ msgstr "Cancel TWAP Swap"
 msgid "Transaction"
 msgstr "Transaction"
 
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+msgid "Last year"
+msgstr "Last year"
+
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
@@ -5439,6 +5443,10 @@ msgstr "You can buy AVAX directly on <0>Avalanche</0> using these options:"
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+msgid "30d"
+msgstr "30d"
+
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
 msgstr "Claim Affiliate Vault Rewards"
@@ -5460,7 +5468,6 @@ msgstr "The network fees are very high currently, which may be due to a temporar
 msgid "There are more shorts than longs, borrow fees for longing is currently zero"
 msgstr "There are more shorts than longs, borrow fees for longing is currently zero"
 
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 90d"
 msgstr "Last 90d"
@@ -5627,6 +5634,10 @@ msgstr "Current {0} long"
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
 msgstr "{0} orders were not updated as max order limit reached"
+
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+msgid "90d"
+msgstr "90d"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order created!"
@@ -6183,7 +6194,6 @@ msgstr "Create"
 msgid "Limit order submitted!"
 msgstr "Limit order submitted!"
 
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Last 7d"
 msgstr "Last 7d"
@@ -7658,8 +7668,8 @@ msgid "APY"
 msgstr "APY"
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
-msgid "Last month"
-msgstr "Last month"
+#~ msgid "Last month"
+#~ msgstr "Last month"
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -8172,7 +8182,6 @@ msgstr "You do not have any eligible trade during the competition window."
 msgid "Execution prices for increasing longs and<0/>decreasing shorts."
 msgstr "Execution prices for increasing longs and<0/>decreasing shorts."
 
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 30d"
@@ -8197,6 +8206,10 @@ msgstr "trigger"
 #: src/components/Glp/GlpSwap.jsx
 msgid "Please <0>read here</0> for more information."
 msgstr "Please <0>read here</0> for more information."
+
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+msgid "7d"
+msgstr "7d"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
