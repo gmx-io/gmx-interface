@@ -1,5 +1,4 @@
-$suggestion-input-hover-background: linear-gradient(0deg, #090a144d, #090a144d),
-  linear-gradient(0deg, var(--color-fill-slate-700), var(--color-fill-slate-700));
+$suggestion-input-hover-background: var(--color-fill-surfaceElevatedHover);
 
 .Suggestion-input-wrapper {
   position: relative;

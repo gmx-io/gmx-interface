@@ -240,13 +240,17 @@ export function Curtain({
           style={CURTAIN_STYLE}
         >
           <div
-            className={`flex touch-none select-none items-stretch justify-between gap-4 border-b 
-            border-b-slate-600 bg-slate-800 pr-8 shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]`}
+            className={cx(
+              "flex touch-none select-none items-stretch justify-between gap-4 border-slate-600 bg-slate-800 pr-8 shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]",
+              {
+                "border-b border-t bg-slate-900": isOpen,
+              }
+            )}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
           >
-            <div className="grow" onClick={headerClick}>
+            <div className="-mb-1 grow" onClick={headerClick}>
               {header}
             </div>
             <button onClick={handleToggle} className="p-10">

@@ -53,14 +53,14 @@
 
     color: inherit;
     font-size: var(--font-size-body-medium);
-
-    border: 1px solid var(--color-gray-700);
+    background-color: var(--color-slate-800);
     border-radius: var(--border-radius-sm);
-    padding: 12px;
+    padding: 8px 16px;
+    font-weight: 500;
 
     &:hover,
     &:active {
-      background: var(--color-cold-blue-900);
+      background: var(--color-slate-700);
       box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
     }
 

@@ -67,11 +67,12 @@ export function SelectorBaseMobileButton(
   props: PropsWithChildren<{
     onSelect: () => void;
     disabled?: boolean;
+    rowClassName?: string;
   }>
 ) {
   return (
     <button
-      className={cx("SelectorBaseUtils-mobile-row", {
+      className={cx("SelectorBaseUtils-mobile-row", props.rowClassName, {
         "SelectorBaseUtils-mobile-row-disabled": props.disabled,
       })}
       onClick={props.onSelect}

@@ -396,7 +396,7 @@ export function SyntheticsPage(p: Props) {
             )}
           </>
         ) : (
-          <div className="w-[40rem] max-[1400px]:w-[36rem] min-[1501px]:w-[41.85rem]">
+          <div className="w-[40rem] max-xl:w-[36rem]">
             <TradeBoxResponsiveContainer />
 
             <div className="mt-12 flex flex-col gap-12">
