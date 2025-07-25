@@ -110,6 +110,7 @@ export type DecreasePositionAmounts = {
   fundingFeeUsd: bigint;
   swapProfitFeeUsd: bigint;
   proportionalPendingImpactDeltaUsd: bigint;
+  closePriceImpactDeltaUsd: bigint;
   totalPendingImpactDeltaUsd: bigint;
   priceImpactDiffUsd: bigint;
   balanceWasImproved: boolean;
@@ -304,6 +305,8 @@ export type TradeFees = {
   priceImpactDiff?: FeeItem;
   positionCollateralPriceImpact?: FeeItem;
   collateralPriceImpactDiff?: FeeItem;
+  proportionalPendingImpact?: FeeItem;
+  closePriceImpact?: FeeItem;
   positionFeeFactor?: bigint;
   borrowFee?: FeeItem;
   fundingFee?: FeeItem;

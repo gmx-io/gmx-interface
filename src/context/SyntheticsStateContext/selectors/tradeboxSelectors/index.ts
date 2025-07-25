@@ -408,7 +408,6 @@ export const selectTradeboxLeverageStrategy = createSelector((q) => {
 });
 
 export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
-  // const tokensData = q(selectTokensData);
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeType = q(selectTradeboxTradeType);
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
@@ -422,7 +421,7 @@ export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
   const triggerPrice = q(selectTradeboxTriggerPrice);
   const externalSwapQuote = q(selectExternalSwapQuote);
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
-  // const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
+
   const fromToken = q(selectTradeboxFromToken);
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
 
@@ -784,6 +783,8 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         positionPriceImpactDeltaUsd: decreaseAmounts.totalPendingImpactDeltaUsd,
         priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
         borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
+        proportionalPendingImpactDeltaUsd: decreaseAmounts.proportionalPendingImpactDeltaUsd,
+        closePriceImpactDeltaUsd: decreaseAmounts.closePriceImpactDeltaUsd,
         fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
         feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
         swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,

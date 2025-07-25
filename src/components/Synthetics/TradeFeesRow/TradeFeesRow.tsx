@@ -34,6 +34,8 @@ type Props = {
   swapPriceImpact?: FeeItem;
   positionFee?: FeeItem;
   positionPriceImpact?: FeeItem;
+  proportionalPendingImpact?: FeeItem;
+  closePriceImpact?: FeeItem;
   priceImpactDiff?: FeeItem;
   borrowFee?: FeeItem;
   fundingFee?: FeeItem;
@@ -291,6 +293,30 @@ export function TradeFeesRow(p: Props) {
         }
       : undefined;
 
+    console.log("p.proportionalPendingImpact", p.proportionalPendingImpact);
+
+    const proportionalPendingImpactDeltaUsdRow =
+      showDebugValues &&
+      (p.proportionalPendingImpact?.deltaUsd !== undefined && p.proportionalPendingImpact.deltaUsd !== 0n
+        ? {
+            id: "proportionalPendingImpactDeltaUsd",
+            label: <div className="text-white">{t`Proportional Pending Impact`}:</div>,
+            value: formatDeltaUsd(p.proportionalPendingImpact.deltaUsd),
+            className: getPositiveOrNegativeClass(p.proportionalPendingImpact.deltaUsd, "text-green-500"),
+          }
+        : undefined);
+
+    const closePriceImpactDeltaUsdRow =
+      showDebugValues &&
+      (p.closePriceImpact?.deltaUsd !== undefined && p.closePriceImpact.deltaUsd !== 0n
+        ? {
+            id: "closePriceImpactDeltaUsd",
+            label: <div className="text-white">{t`Close Price Impact`}:</div>,
+            value: formatDeltaUsd(p.closePriceImpact.deltaUsd),
+            className: getPositiveOrNegativeClass(p.closePriceImpact.deltaUsd, "text-green-500"),
+          }
+        : undefined);
+
     const netPriceImpactRow =
       p.positionPriceImpact?.deltaUsd !== undefined && p.positionPriceImpact.deltaUsd !== 0n
         ? {
@@ -385,6 +411,8 @@ export function TradeFeesRow(p: Props) {
 
     if (p.feesType === "decrease") {
       return [
+        closePriceImpactDeltaUsdRow,
+        proportionalPendingImpactDeltaUsdRow,
         netPriceImpactRow,
         priceImpactDiffRow,
         borrowFeeRow,

@@ -248,6 +248,8 @@ export const selectPositionSellerFees = createSelector((q) => {
       swapPriceImpactDeltaUsd: swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd || 0n,
       positionPriceImpactDeltaUsd: decreaseAmounts.totalPendingImpactDeltaUsd,
       priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
+      proportionalPendingImpactDeltaUsd: decreaseAmounts.proportionalPendingImpactDeltaUsd,
+      closePriceImpactDeltaUsd: decreaseAmounts.closePriceImpactDeltaUsd,
       borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
       fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
       feeDiscountUsd: decreaseAmounts.feeDiscountUsd,

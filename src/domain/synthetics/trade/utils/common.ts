@@ -97,6 +97,8 @@ export function getTradeFees(p: {
   positionFeeUsd: bigint;
   swapPriceImpactDeltaUsd: bigint;
   positionPriceImpactDeltaUsd: bigint;
+  proportionalPendingImpactDeltaUsd?: bigint;
+  closePriceImpactDeltaUsd?: bigint;
   priceImpactDiffUsd: bigint;
   borrowingFeeUsd: bigint;
   fundingFeeUsd: bigint;
@@ -118,6 +120,8 @@ export function getTradeFees(p: {
     fundingFeeUsd,
     feeDiscountUsd,
     swapProfitFeeUsd,
+    proportionalPendingImpactDeltaUsd,
+    closePriceImpactDeltaUsd,
     uiFeeFactor,
   } = p;
 
@@ -176,6 +180,9 @@ export function getTradeFees(p: {
   const positionCollateralPriceImpact = getFeeItem(positionPriceImpactDeltaUsd, bigMath.abs(collateralDeltaUsd));
   const collateralPriceImpactDiff = getFeeItem(priceImpactDiffUsd, collateralDeltaUsd);
 
+  const proportionalPendingImpact = getFeeItem(proportionalPendingImpactDeltaUsd, sizeDeltaUsd);
+  const closePriceImpact = getFeeItem(closePriceImpactDeltaUsd, sizeDeltaUsd);
+
   const totalFees = getTotalFeeItem([
     ...(swapFees || []),
     externalSwapFee,
@@ -210,6 +217,8 @@ export function getTradeFees(p: {
     positionPriceImpact,
     priceImpactDiff,
     positionCollateralPriceImpact,
+    proportionalPendingImpact,
+    closePriceImpact,
     collateralPriceImpactDiff,
     borrowFee,
     fundingFee,

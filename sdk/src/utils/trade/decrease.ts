@@ -86,6 +86,7 @@ export function getDecreasePositionAmounts(p: {
     acceptablePrice: 0n,
 
     proportionalPendingImpactDeltaUsd: 0n,
+    closePriceImpactDeltaUsd: 0n,
     totalPendingImpactDeltaUsd: 0n,
     priceImpactDiffUsd: 0n,
     balanceWasImproved: false,
@@ -527,6 +528,7 @@ function applyAcceptablePrice(p: {
     priceImpactDeltaUsd: acceptablePriceInfo.priceImpactDeltaUsd,
   });
 
+  values.closePriceImpactDeltaUsd = acceptablePriceInfo.priceImpactDeltaUsd;
   values.totalPendingImpactDeltaUsd = totalImpactValues.totalImpactDeltaUsd;
   values.proportionalPendingImpactDeltaUsd = totalImpactValues.proportionalPendingImpactDeltaUsd;
   values.priceImpactDiffUsd = totalImpactValues.priceImpactDiffUsd;
