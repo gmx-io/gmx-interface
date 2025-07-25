@@ -299,7 +299,6 @@ export function getNetPriceImpactDeltaUsdForDecrease({
 
     if (totalImpactDeltaUsd < maxNegativeImpactUsd) {
       priceImpactDiffUsd = maxNegativeImpactUsd - totalImpactDeltaUsd;
-      totalImpactDeltaUsd = maxNegativeImpactUsd;
     }
   }
 
