@@ -30,7 +30,6 @@ import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
-import "./StatusNotification.scss";
 import { useToastAutoClose } from "./useToastAutoClose";
 
 // eslint-disable-next-line import/order
@@ -355,7 +354,9 @@ export function OrderStatusNotification({
   return (
     <div className={cx("StatusNotification", { error: hasError })}>
       <div className="StatusNotification-content">
-        <div className="StatusNotification-title">{title}</div>
+        <div className={cx("StatusNotification-title", { "text-green-500": !hasError, "text-red-500": hasError })}>
+          {title}
+        </div>
 
         <div className="StatusNotification-items">
           {externalSwapStatus}
