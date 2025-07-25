@@ -2,7 +2,7 @@ import { Plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import uniq from "lodash/uniq";
 import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
-import { useMedia } from "react-use";
+import { Link } from "react-router-dom";
 
 import { getSyntheticsListSectionKey } from "config/localStorage";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -38,6 +38,7 @@ import { TradeMode } from "domain/synthetics/trade";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
 import { getMidPrice } from "domain/tokens";
+import { useBreakpoints } from "lib/breakpoints";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
 import { getPageTitle } from "lib/legacy";
@@ -50,12 +51,14 @@ import useWallet from "lib/wallets/useWallet";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getOrderKeys } from "sdk/utils/orders";
 
+import { AppHeader } from "components/AppHeader/AppHeader";
+import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
-import Footer from "components/Footer/Footer";
 import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import { NpsModal } from "components/NpsModal/NpsModal";
 import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
 import { Claims } from "components/Synthetics/Claims/Claims";
+import { useClaimsHistoryState } from "components/Synthetics/Claims/ClaimsHistory";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
@@ -64,9 +67,13 @@ import { SwapCard } from "components/Synthetics/SwapCard/SwapCard";
 import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { useIsCurtainOpen } from "components/Synthetics/TradeBox/Curtain";
 import { TradeBoxResponsiveContainer } from "components/Synthetics/TradeBox/TradeBoxResponsiveContainer";
-import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
+import { TradeHistory, useTradeHistoryState } from "components/Synthetics/TradeHistory/TradeHistory";
 import { Chart } from "components/Synthetics/TVChart/Chart";
+import ChartHeader from "components/Synthetics/TVChart/ChartHeader";
 import Tabs from "components/Tabs/Tabs";
+
+import logoIcon from "img/logo-icon.svg";
+import logoText from "img/logo-text.svg";
 
 export type Props = {
   openSettings: () => void;
@@ -79,6 +86,11 @@ enum ListSection {
   Claims = "Claims",
 }
 
+const TAB_CLASSNAME = {
+  active: "border-b-2 border-b-blue-300 mb-[-1.5px]",
+  regular: "border-b-2 border-b-[transparent] mb-[-1.5px]",
+};
+
 export function SyntheticsPage(p: Props) {
   const { openSettings } = p;
   const { chainId } = useChainId();
@@ -87,8 +99,6 @@ export function SyntheticsPage(p: Props) {
   const { setPendingTxns } = usePendingTxns();
 
   useExternalSwapHandler();
-
-  const isMobile = useMedia("(max-width: 1100px)");
 
   const [isSettling, setIsSettling] = useState(false);
   const [listSection, setListSection] = useLocalStorageSerializeKey(
@@ -200,25 +210,43 @@ export function SyntheticsPage(p: Props) {
       );
     }
 
+    let indicator: BadgeIndicator | undefined = undefined;
+
+    if (ordersWarningsCount > 0 && !ordersErrorsCount) {
+      indicator = "warning";
+    }
+
+    if (ordersErrorsCount > 0) {
+      indicator = "error";
+    }
+
     return (
-      <div className="flex">
-        <Trans>Orders ({ordersCount})</Trans>
-        <div
-          className={cx("relative top-3 size-6 rounded-full", {
-            "bg-yellow-500": ordersWarningsCount > 0 && !ordersErrorsCount,
-            "bg-red-500": ordersErrorsCount > 0,
-          })}
-        />
+      <div className="flex gap-4">
+        <Trans>Orders</Trans>
+        <Badge value={ordersCount} indicator={indicator} />
       </div>
     );
   }, [ordersCount, ordersErrorsCount, ordersWarningsCount]);
 
   const tabLabels = useMemo(
     () => ({
-      [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
+      [ListSection.Positions]: (
+        <div className="flex gap-4">
+          <Trans>Positions</Trans>
+          <Badge value={positionsCount} />
+        </div>
+      ),
       [ListSection.Orders]: renderOrdersTabTitle(),
       [ListSection.Trades]: t`Trades`,
-      [ListSection.Claims]: totalClaimables > 0 ? t`Claims (${totalClaimables})` : t`Claims`,
+      [ListSection.Claims]:
+        totalClaimables > 0 ? (
+          <div className="flex gap-4">
+            <Trans>Claims</Trans>
+            <Badge value={totalClaimables} />
+          </div>
+        ) : (
+          t`Claims`
+        ),
     }),
     [positionsCount, renderOrdersTabTitle, totalClaimables]
   );
@@ -227,9 +255,12 @@ export function SyntheticsPage(p: Props) {
       Object.values(ListSection).map((value) => ({
         value,
         label: tabLabels[value],
+        className: TAB_CLASSNAME,
       })),
     [tabLabels]
   );
+
+  const { controls: claimsHistoryControls, ...claimsHistoryProps } = useClaimsHistoryState();
 
   function renderClaims() {
     return (
@@ -238,6 +269,7 @@ export function SyntheticsPage(p: Props) {
         isSettling={isSettling}
         setPendingTxns={setPendingTxns}
         allowedSlippage={savedAllowedSlippage}
+        claimsHistoryProps={claimsHistoryProps}
       />
     );
   }
@@ -257,48 +289,73 @@ export function SyntheticsPage(p: Props) {
 
   useMeasureComponentMountTime({ metricType: "syntheticsPage", onlyForLocation: "#/trade" });
 
+  const tradeHistoryState = useTradeHistoryState({
+    account,
+  });
+
+  const { isTablet, isMobile } = useBreakpoints();
+
+  const actions = (
+    <div className="flex shrink-0 items-center gap-16 px-12">
+      {listSection === ListSection.Orders && selectedOrderKeys.length > 0 && (
+        <button
+          className="text-[13px] font-medium text-slate-100 hover:text-slate-400"
+          disabled={isCancelOrdersProcessing}
+          type="button"
+          onClick={onCancelSelectedOrders}
+        >
+          <Plural value={selectedOrderKeys.length} one="Cancel order" other="Cancel # orders" />
+        </button>
+      )}
+      {[ListSection.Positions, ListSection.Orders].includes(listSection as ListSection) && (
+        <Checkbox
+          isChecked={shouldShowPositionLines}
+          setIsChecked={setShouldShowPositionLines}
+          className={cx("muted chart-positions text-[13px]", { active: shouldShowPositionLines })}
+        >
+          <span className="font-medium">
+            <Trans>Chart positions</Trans>
+          </span>
+        </Checkbox>
+      )}
+      {listSection === ListSection.Trades && tradeHistoryState.controls}
+      {listSection === ListSection.Claims && claimsHistoryControls}
+    </div>
+  );
+
   return (
-    <div
-      className={cx("Exchange page-layout", {
-        "!pb-[333px]": isMobile,
-      })}
-    >
-      <div className="-mt-15 grid grow grid-cols-[1fr_auto] gap-12 px-32 pt-0 max-[1100px]:grid-cols-1 max-[800px]:p-10">
-        {isMobile && <OneClickPromoBanner openSettings={openSettings} />}
-        <div className="Exchange-left flex flex-col">
+    <div className="flex flex-col gap-8">
+      <AppHeader
+        leftContent={
+          isTablet ? (
+            <Link to="/" className="flex items-center gap-5 p-8 max-md:p-[4.5px]">
+              <img src={logoIcon} alt="GMX Logo" />
+              <img src={logoText} className="max-md:hidden" alt="GMX Logo" />
+            </Link>
+          ) : (
+            <ChartHeader />
+          )
+        }
+      />
+
+      {isTablet ? <ChartHeader /> : null}
+      <div className="grid grow grid-cols-[1fr_auto] gap-8 pt-0 max-[1024px]:grid-cols-1">
+        {isTablet && <OneClickPromoBanner openSettings={openSettings} />}
+        <div className="Exchange-left flex flex-col gap-8">
           <Chart />
-          {!isMobile && (
+          {!isTablet && (
             <div className="Exchange-lists large" data-qa="trade-table-large">
-              <div className="Exchange-list-tab-container">
+              <div className="">
                 <Tabs
                   options={tabsOptions}
                   selectedValue={listSection}
                   onChange={handleTabChange}
-                  type="inline"
-                  className="Exchange-list-tabs"
+                  type="block"
+                  className="border-b-[1.5px] border-slate-600 bg-slate-900"
                   qa="exchange-list-tabs"
+                  rightContent={actions}
                 />
-                <div className="align-right Exchange-should-show-position-lines">
-                  {listSection === ListSection.Orders && selectedOrderKeys.length > 0 && (
-                    <button
-                      className="muted cancel-order-btn text-body-medium"
-                      disabled={isCancelOrdersProcessing}
-                      type="button"
-                      onClick={onCancelSelectedOrders}
-                    >
-                      <Plural value={selectedOrderKeys.length} one="Cancel order" other="Cancel # orders" />
-                    </button>
-                  )}
-                  <Checkbox
-                    isChecked={shouldShowPositionLines}
-                    setIsChecked={setShouldShowPositionLines}
-                    className={cx("muted chart-positions", { active: shouldShowPositionLines })}
-                  >
-                    <span>
-                      <Trans>Chart positions</Trans>
-                    </span>
-                  </Checkbox>
-                </div>
+                <div className="align-right Exchange-should-show-position-lines"></div>
               </div>
 
               {listSection === ListSection.Positions && (
@@ -323,13 +380,13 @@ export function SyntheticsPage(p: Props) {
                   onCancelSelectedOrders={onCancelSelectedOrders}
                 />
               )}
-              {listSection === ListSection.Trades && <TradeHistory account={account} />}
+              {listSection === ListSection.Trades && <TradeHistory {...tradeHistoryState} />}
               {listSection === ListSection.Claims && renderClaims()}
             </div>
           )}
         </div>
 
-        {isMobile ? (
+        {isTablet ? (
           <>
             <div className="absolute">
               <TradeBoxResponsiveContainer />
@@ -339,7 +396,7 @@ export function SyntheticsPage(p: Props) {
             )}
           </>
         ) : (
-          <div className="w-[40rem] min-[1501px]:w-[41.85rem]">
+          <div className="w-[40rem] max-xl:w-[36rem]">
             <TradeBoxResponsiveContainer />
 
             <div className="mt-12 flex flex-col gap-12">
@@ -350,17 +407,31 @@ export function SyntheticsPage(p: Props) {
           </div>
         )}
 
-        {isMobile && (
-          <div className="Exchange-lists small min-w-0" data-qa="trade-table-small">
-            <div className="Exchange-list-tab-container">
+        {isTablet && (
+          <div className="flex w-full flex-col" data-qa="trade-table-small">
+            <div className="overflow-x-auto scrollbar-hide">
               <Tabs
                 options={tabsOptions}
                 selectedValue={listSection}
                 onChange={handleTabChange}
-                type="inline"
-                className="Exchange-list-tabs"
+                type="block"
+                className={cx("w-[max(100%,600px)] rounded-t-8 border-b-[1.5px] border-slate-600 bg-slate-900", {
+                  "mb-8 rounded-b-8": [ListSection.Positions, ListSection.Orders].includes(listSection as ListSection),
+                  "w-[max(100%,420px)]": isMobile,
+                })}
+                regularOptionClassname={cx({
+                  "first:rounded-l-8 last:rounded-r-8": [ListSection.Positions, ListSection.Orders].includes(
+                    listSection as ListSection
+                  ),
+                })}
+                rightContent={!isMobile ? actions : undefined}
               />
             </div>
+
+            {isMobile && [ListSection.Trades, ListSection.Claims].includes(listSection as ListSection) ? (
+              <div className="border-b border-slate-600 bg-slate-900 py-4">{actions}</div>
+            ) : null}
+
             {listSection === ListSection.Positions && (
               <PositionList
                 onOrdersClick={handlePositionListOrdersClick}
@@ -383,7 +454,7 @@ export function SyntheticsPage(p: Props) {
                 onCancelSelectedOrders={onCancelSelectedOrders}
               />
             )}
-            {listSection === ListSection.Trades && <TradeHistory account={account} />}
+            {listSection === ListSection.Trades && <TradeHistory {...tradeHistoryState} />}
             {listSection === ListSection.Claims && renderClaims()}
           </div>
         )}
@@ -392,7 +463,6 @@ export function SyntheticsPage(p: Props) {
       <PositionEditor />
       <InterviewModal type="trader" isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
       <NpsModal />
-      <Footer isMobileTradePage={isMobile} />
     </div>
   );
 }

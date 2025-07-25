@@ -6,6 +6,13 @@ body,
   color: var(--color-white);
   font-size: 10px;
   background-color: var(--main-bg-color);
+  height: 100%;
+  width: 100%;
+}
+
+#root > div {
+  height: 100%;
+  width: 100%;
 }
 
 /**
@@ -35,12 +42,6 @@ code {
 *::before,
 *::after {
   box-sizing: border-box;
-  font-family: "Relative", sans-serif;
-  letter-spacing: 0.05rem;
-}
-
-input {
-  font-family: "RelativeNumber";
 }
 
 @supports (scrollbar-width: auto) {
@@ -74,8 +75,8 @@ input {
 
 :root {
   --main-bg-color: var(--color-slate-950);
-  --dark-blue: var(--color-slate-800);
-  --dark-blue-bg: var(--color-slate-800);
+  --dark-blue: var(--color-slate-900);
+  --dark-blue-bg: var(--color-slate-900);
   --dark-blue-accent: var(--color-slate-100);
   --primary-btn-bg: var(--color-blue-600);
   --primary-btn-hover: var(--color-blue-400);
@@ -87,7 +88,7 @@ input {
   --warning-yellow: var(--color-yellow-500);
   --avax-red: #e84143;
   --arbitrum-blue: #28a0f0;
-  --border-radius-sm: 0.4rem; // 4px
+  --border-radius-sm: 8px;
   --error-red: var(--color-red-500);
   --error-red-hover: var(--color-red-400);
   --green: var(--color-green-500);
@@ -371,7 +372,7 @@ button.btn-link:hover .logout-icon {
 }
 
 .page-layout {
-  min-height: calc(100vh - 62px);
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   padding-bottom: calc(4.7rem + 8rem);

@@ -59,7 +59,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
       {glvOrMarketInfo ? (
         <>
           <div
-            className={cx("flex items-center gap-20 border-stroke-primary", {
+            className={cx("flex items-center gap-20 border-slate-600", {
               "border-r": !isMobile,
               "mb-12 border-b pb-14": isMobile,
             })}

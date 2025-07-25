@@ -1,12 +1,14 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BiChevronDown, BiChevronLeft, BiChevronRight, BiChevronUp } from "react-icons/bi";
-import { useEffectOnce, useMedia } from "react-use";
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
+import { useEffectOnce } from "react-use";
 
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useBreakpoints } from "lib/breakpoints";
 import { useChainId } from "lib/chains";
 import { getToken } from "sdk/configs/tokens";
 
@@ -21,7 +23,7 @@ const MIN_FADE_AREA = 24; //px
 const MAX_SCROLL_LEFT_TO_END_AREA = 50; //px
 const MIN_SCROLL_END_SPACE = 5; // px
 
-function ChartHeaderInfoMobile() {
+function ChartHeaderMobile() {
   const { chartToken } = useSelector(selectChartToken);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
@@ -57,8 +59,6 @@ function ChartHeaderInfoMobile() {
     setDetailsVisible((prev) => !prev);
   }, [setDetailsVisible]);
 
-  const isSmallMobile = useMedia("(max-width: 400px)");
-
   const details = useMemo(() => {
     if (!detailsVisible) {
       return null;
@@ -66,20 +66,15 @@ function ChartHeaderInfoMobile() {
 
     if (isSwap) {
       return (
-        <div
-          className={cx("grid gap-14 pt-16", {
-            "grid-cols-1 grid-rows-2": isSmallMobile,
-            "grid-cols-[repeat(2,_auto)] grid-rows-1": !isSmallMobile,
-          })}
-        >
+        <div className="grid grid-cols-[auto_auto] grid-rows-2 gap-14">
           <div>
-            <div className="ExchangeChart-info-label mb-4">
+            <div className="mb-4 text-[11px] font-medium uppercase text-slate-100">
               <Trans>24h High</Trans>
             </div>
             <div>${high24}</div>
           </div>
           <div>
-            <div className="ExchangeChart-info-label mb-4">
+            <div className="mb-4 text-[11px] font-medium uppercase text-slate-100">
               <Trans>24h Low</Trans>
             </div>
             <div>${low24}</div>
@@ -89,38 +84,33 @@ function ChartHeaderInfoMobile() {
     }
 
     return (
-      <div
-        className={cx("grid gap-16", {
-          "grid-cols-1 grid-rows-4": isSmallMobile,
-          "grid-cols-[repeat(2,_auto)] grid-rows-2": !isSmallMobile,
-        })}
-      >
+      <div className="grid grid-cols-[auto_auto] grid-rows-2 gap-16">
         <div>
-          <div className="ExchangeChart-info-label mb-4">
+          <div className="mb-4 text-[11px] font-medium uppercase text-slate-100">
             <Trans>24h Volume</Trans>
           </div>
           {dailyVolume}
         </div>
 
         <div>
-          <div className="mb-4 whitespace-nowrap">
-            <span className="text-body-small whitespace-nowrap text-slate-100">
+          <div className="mb-4 whitespace-nowrap text-[11px] font-medium text-slate-100">
+            <span className="whitespace-nowrap text-[11px] font-medium uppercase text-slate-100">
               <Trans>Open Interest</Trans>
             </span>
-            <span className="text-slate-100">{" ("}</span>
-            <span className="positive">{longOIPercentage}</span>
-            <span className="text-slate-100">/</span>
-            <span className="negative">{shortOIPercentage}</span>
-            <span className="text-slate-100">{")"}</span>
+            <span>{" ("}</span>
+            <span>{longOIPercentage}</span>
+            <span>/</span>
+            <span>{shortOIPercentage}</span>
+            <span>{")"}</span>
           </div>
-          <div className="flex flex-row items-center gap-8">
+          <div className="flex flex-row items-center gap-8 ">
             <div className="flex flex-row items-center gap-8">{longOIValue}</div>
             <div className="flex flex-row items-center gap-8">{shortOIValue}</div>
           </div>
         </div>
 
         <div>
-          <div className="ExchangeChart-info-label mb-4">
+          <div className="mb-4 text-[11px] font-medium uppercase text-slate-100">
             <Trans>Available Liquidity</Trans>
           </div>
           <div className="flex flex-row items-center gap-8">
@@ -130,13 +120,13 @@ function ChartHeaderInfoMobile() {
         </div>
 
         <div>
-          <div className="ExchangeChart-info-label mb-4">
-            <TooltipWithPortal disableHandleStyle renderContent={renderNetFeeHeaderTooltipContent}>
+          <div className="mb-4 text-[11px] font-medium uppercase text-slate-100">
+            <TooltipWithPortal styleType="none" renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net Rate / 1h</Trans>
             </TooltipWithPortal>
           </div>
           <TooltipWithPortal
-            disableHandleStyle
+            styleType="none"
             as="div"
             className="inline-flex flex-row items-center gap-8"
             position="bottom-end"
@@ -159,41 +149,43 @@ function ChartHeaderInfoMobile() {
     netRateShort,
     shortOIPercentage,
     shortOIValue,
-    isSmallMobile,
     detailsVisible,
     high24,
     low24,
   ]);
 
   return (
-    <div className="mb-10 rounded-4 bg-slate-800 ">
-      <div className="p-16">
-        <div className="flex items-start justify-between">
-          <div className="inline-flex">
-            <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={false} />
-          </div>
+    <div className="rounded-8 bg-slate-800">
+      <div className="flex items-start justify-between">
+        <div className="inline-flex">
+          <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={false} />
+        </div>
 
-          <div className="flex cursor-pointer flex-row items-start gap-8" role="button" onClick={toggleDetailsVisible}>
-            <div className="flex flex-col">
-              <div className="mr-4">{avgPrice}</div>
-              <div className="ExchangeChart-daily-change text-body-small">{dayPriceDelta}</div>
-            </div>
-            <span className={cx("inline-flex cursor-pointer items-center justify-center rounded-4")}>
-              {detailsVisible ? (
-                <BiChevronUp className="-ml-6 -mt-2" size={24} />
-              ) : (
-                <BiChevronDown className="-ml-6 -mt-2" size={24} />
-              )}
-            </span>
+        <div
+          className="flex cursor-pointer flex-row items-start gap-8 p-8"
+          role="button"
+          onClick={toggleDetailsVisible}
+        >
+          <div className="flex flex-col items-end">
+            <div className="mr-4 font-medium">{avgPrice}</div>
+            <div className="ExchangeChart-daily-change text-body-small">{dayPriceDelta}</div>
           </div>
+          <span className={cx("inline-flex cursor-pointer items-center justify-center rounded-4 pt-6 text-slate-100")}>
+            {detailsVisible ? (
+              <FaChevronUp className="-ml-6 -mt-2" size={12} />
+            ) : (
+              <FaChevronDown className="-ml-6 -mt-2" size={12} />
+            )}
+          </span>
         </div>
       </div>
-      {details ? <div className="border-t-[1px] border-t-stroke-primary p-16">{details}</div> : null}
+
+      {details ? <div className="border-t-[1px] border-t-slate-600 p-16">{details}</div> : null}
     </div>
   );
 }
 
-function ChartHeaderInfoDesktop() {
+function ChartHeaderDesktop() {
   const { chartToken } = useSelector(selectChartToken);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
@@ -276,66 +268,60 @@ function ChartHeaderInfoDesktop() {
     if (isSwap) {
       return (
         <>
-          <div className="text-body-small">
-            <div className="ExchangeChart-info-label mb-4">
-              <Trans>24h High</Trans>
-            </div>
-            <div className="Chart-header-value">${high24}</div>
-          </div>
-          <div>
-            <div className="ExchangeChart-info-label mb-4">
-              <Trans>24h Low</Trans>
-            </div>
-            <div className="Chart-header-value">${low24}</div>
-          </div>
+          <ChartHeaderItem label={<Trans>24h High</Trans>} value={<>${high24}</>} />
+          <ChartHeaderItem label={<Trans>24h Low</Trans>} value={<>${low24}</>} />
         </>
       );
     }
 
     return (
       <>
-        <div>
-          <div className="ExchangeChart-info-label mb-4">24h Volume</div>
-          <div className="Chart-header-value">{dailyVolume}</div>
-        </div>
-        <div>
-          <div className="ExchangeChart-info-label mb-4 whitespace-nowrap text-[1.25rem]">
-            <Trans>Open Interest</Trans>
-            {" ("}
-            <span className="positive">{longOIPercentage}</span>/<span className="negative">{shortOIPercentage}</span>
-            {")"}
-          </div>
-          <div className="Chart-header-value flex flex-row items-center gap-8">
-            <div className="flex flex-row items-center gap-4">{longOIValue}</div>
-            <div className="flex flex-row items-center gap-4">{shortOIValue}</div>
-          </div>
-        </div>
-        <div>
-          <div className="ExchangeChart-info-label mb-4">
-            <Trans>Available Liquidity</Trans>
-          </div>
-          <div className="Chart-header-value flex flex-row items-center gap-8">
-            <div className="flex flex-row items-center gap-4">{liquidityLong}</div>
-            <div className="flex flex-row items-center gap-4">{liquidityShort}</div>
-          </div>
-        </div>
-        <div>
-          <div className="ExchangeChart-info-label mb-4">
-            <TooltipWithPortal disableHandleStyle renderContent={renderNetFeeHeaderTooltipContent}>
+        <ChartHeaderItem label={<Trans>24h Volume</Trans>} value={dailyVolume} />
+
+        <ChartHeaderItem
+          label={<Trans>Open Interest {`(${longOIPercentage}/${shortOIPercentage})`}</Trans>}
+          value={
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4">{longOIValue}</div>
+              <span className="text-slate-100">/</span>
+              <div className="flex items-center gap-4">{shortOIValue}</div>
+            </div>
+          }
+        />
+
+        <ChartHeaderItem
+          label={<Trans>Available Liquidity</Trans>}
+          value={
+            <div className="flex items-center gap-4">
+              <span>{liquidityLong}</span>
+              <span className="text-slate-100">/</span>
+              <span>{liquidityShort}</span>
+            </div>
+          }
+        />
+
+        <ChartHeaderItem
+          label={
+            <TooltipWithPortal styleType="none" renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net Rate / 1h</Trans>
             </TooltipWithPortal>
-          </div>
-          <TooltipWithPortal
-            disableHandleStyle
-            as="div"
-            className="Chart-header-value flex flex-row items-center gap-8"
-            position="bottom-end"
-            content={<NetRate1hTooltip />}
-          >
-            <div>{netRateLong}</div>
-            <div>{netRateShort}</div>
-          </TooltipWithPortal>
-        </div>
+          }
+          value={
+            <TooltipWithPortal
+              styleType="none"
+              as="div"
+              className="Chart-header-value flex flex-row items-center gap-8"
+              position="bottom-end"
+              content={<NetRate1hTooltip />}
+            >
+              <div className="flex items-center gap-4">
+                <div>{netRateLong}</div>
+                <span className="text-slate-100">/</span>
+                <div>{netRateShort}</div>
+              </div>
+            </TooltipWithPortal>
+          }
+        />
       </>
     );
   }, [
@@ -409,9 +395,9 @@ function ChartHeaderInfoDesktop() {
   const scrollToRight = useCallback(() => scrollTo(1), [scrollTo]);
 
   return (
-    <div className="Chart-header mb-10 rounded-4 py-8 pr-8">
-      <div className="flex items-center justify-start pl-8">
-        <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={false} />
+    <div className="flex gap-16 overflow-hidden">
+      <div className="flex shrink-0 items-center justify-start">
+        <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={true} />
       </div>
       <div className="relative flex overflow-hidden">
         <div className="pointer-events-none absolute z-40 flex h-full w-full flex-row justify-between">
@@ -438,9 +424,9 @@ function ChartHeaderInfoDesktop() {
             {scrollRight > 0 && <BiChevronRight className="text-slate-100" size={24} />}
           </div>
         </div>
-        <div className="Chart-top-scrollable" ref={scrollableRef}>
+        <div className={cx("flex gap-20 overflow-x-auto scrollbar-hide")} ref={scrollableRef}>
           <div className="Chart-price">
-            <div className="text-body-medium mb-4">{avgPrice}</div>
+            <div className="mb-2 text-[13px]">{avgPrice}</div>
             <div className="text-body-small">{dayPriceDelta}</div>
           </div>
           {additionalInfo}
@@ -450,6 +436,19 @@ function ChartHeaderInfoDesktop() {
   );
 }
 
-export function ChartHeader({ isMobile }: { isMobile: boolean }) {
-  return isMobile ? <ChartHeaderInfoMobile /> : <ChartHeaderInfoDesktop />;
+const ChartHeaderItem = ({ label, value }: { label: ReactNode; value: ReactNode }) => {
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.08em] text-slate-100">
+        {label}
+      </div>
+      <div className="text-body-medium">{value}</div>
+    </div>
+  );
+};
+
+export default function ChartHeader() {
+  const { isMobile } = useBreakpoints();
+
+  return isMobile ? <ChartHeaderMobile /> : <ChartHeaderDesktop />;
 }

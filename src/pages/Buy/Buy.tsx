@@ -3,7 +3,6 @@ import { t } from "@lingui/macro";
 import { getPageTitle } from "lib/legacy";
 
 import SEO from "components/Common/SEO";
-import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
 import TokenCard from "components/TokenCard/TokenCard";
 
@@ -19,7 +18,6 @@ export default function BuyGMXGLP() {
             <TokenCard />
           </div>
         </div>
-        <Footer />
       </div>
     </SEO>
   );

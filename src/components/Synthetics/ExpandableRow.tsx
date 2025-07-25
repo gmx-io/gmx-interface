@@ -6,6 +6,7 @@ import { useMedia } from "react-use";
 
 import { usePrevious } from "lib/usePrevious";
 
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { SyntheticsInfoRow } from "./SyntheticsInfoRow";
@@ -60,6 +61,8 @@ interface Props {
   className?: string;
   contentClassName?: string;
   scrollIntoViewOnMobile?: boolean;
+  withToggleSwitch?: boolean;
+  row?: boolean;
 }
 
 export function ExpandableRow({
@@ -74,11 +77,13 @@ export function ExpandableRow({
   className,
   contentClassName,
   scrollIntoViewOnMobile = false,
+  withToggleSwitch = false,
+  row = true,
 }: Props) {
   const previousHasError = usePrevious(hasError);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const isMobile = useMedia(`(max-width: 1100px)`, false);
+  const isMobile = useMedia(`(max-width: 1024px)`, false);
 
   const handleAnimationComplete = useCallback(
     (definition: string) => {
@@ -109,24 +114,43 @@ export function ExpandableRow({
 
   const disabled = disableCollapseOnError && hasError;
 
+  const value = withToggleSwitch ? (
+    <ToggleSwitch isChecked={open} setIsChecked={onToggle} disabled={disabled} />
+  ) : open ? (
+    <BiChevronUp className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
+  ) : (
+    <BiChevronDown className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
+  );
+
   return (
     <div className={className}>
-      <SyntheticsInfoRow
-        className={cx("group relative -my-14 !items-center py-14 gmx-hover:text-blue-300", {
-          "cursor-not-allowed": disabled,
-        })}
-        onClick={disabled ? undefined : handleOnClick}
-        label={
-          <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">{label}</span>
-        }
-        value={
-          open ? (
-            <BiChevronUp className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
-          ) : (
-            <BiChevronDown className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
-          )
-        }
-      />
+      {row ? (
+        <SyntheticsInfoRow
+          className={cx("group relative -my-14 !items-center py-14 gmx-hover:text-blue-300", {
+            "cursor-not-allowed": disabled,
+          })}
+          onClick={disabled ? undefined : handleOnClick}
+          label={
+            <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">{label}</span>
+          }
+          value={value}
+        />
+      ) : (
+        <div
+          className={cx(
+            `inline-flex w-fit cursor-pointer items-center gap-4 rounded-full
+            border-[0.5px] border-slate-600 px-12 py-8 align-middle text-[13px]
+            font-medium hover:bg-slate-800`,
+            {
+              "cursor-not-allowed": disabled,
+            }
+          )}
+          onClick={disabled ? undefined : handleOnClick}
+        >
+          {label}
+          {value}
+        </div>
+      )}
 
       <AnimatePresence initial={false}>
         {open && (

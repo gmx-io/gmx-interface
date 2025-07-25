@@ -221,6 +221,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
         label={
           <TooltipWithPortal
             position="left-start"
+            styleType="icon"
             content={
               <Trans>
                 Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does
@@ -241,6 +242,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
       label={
         <TooltipWithPortal
           position="left-start"
+          styleType="icon"
           content={
             <Trans>
               Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does

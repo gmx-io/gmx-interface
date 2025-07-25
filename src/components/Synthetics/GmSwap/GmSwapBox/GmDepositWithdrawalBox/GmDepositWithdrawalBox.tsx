@@ -664,7 +664,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
     if (submitState.errorDescription) {
       return (
-        <TooltipWithPortal content={submitState.errorDescription} disableHandleStyle>
+        <TooltipWithPortal content={submitState.errorDescription} styleType="none">
           {btn}
         </TooltipWithPortal>
       );
@@ -804,7 +804,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           />
         </div>
 
-        <div className="Exchange-swap-button-container mb-14 border-b border-stroke-primary pb-14">{submitButton}</div>
+        <div className="Exchange-swap-button-container mb-14 border-b border-slate-600 pb-14">{submitButton}</div>
 
         <InfoRows fees={fees} executionFee={executionFee} isDeposit={isDeposit} />
       </form>

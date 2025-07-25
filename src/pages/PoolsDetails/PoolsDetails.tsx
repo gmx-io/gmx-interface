@@ -18,7 +18,6 @@ import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import ButtonLink from "components/Button/ButtonLink";
 import Loader from "components/Common/Loader";
 import SEO from "components/Common/SEO";
-import Footer from "components/Footer/Footer";
 import { GmSwapBox, GmSwapBoxProps } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
 import { GmSwapBoxHeader } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader";
 import { useCompositionData } from "components/Synthetics/MarketStats/hooks/useCompositionData";
@@ -73,7 +72,7 @@ export function PoolsDetails() {
                 {glvOrMarketInfo && <MarketGraphs glvOrMarketInfo={glvOrMarketInfo} />}
                 <PoolsDetailsCard title={<Trans>Composition</Trans>} childrenContainerClassName="!p-0">
                   <div className={cx("grid", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
-                    <div className={cx("border-stroke-primary", { "border-r": !isMobile, "border-b": isMobile })}>
+                    <div className={cx("border-slate-600", { "border-r": !isMobile, "border-b": isMobile })}>
                       <MarketComposition
                         type="backing"
                         label={<Trans>Backing Composition</Trans>}
@@ -116,7 +115,6 @@ export function PoolsDetails() {
         ) : (
           <Loader />
         )}
-        <Footer />
       </div>
     </SEO>
   );

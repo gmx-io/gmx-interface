@@ -141,9 +141,9 @@ export function TestPermits() {
                 <div className="flex min-w-0 flex-1 flex-col">
                   <div className="flex flex-col gap-2 hover:underline" onClick={() => handleTokenClick(token)}>
                     <span className="text-lg truncate font-medium">{token.symbol}</span>
-                    <span className="text-xs text-slate-400 truncate">{token.name}</span>
+                    <span className="text-xs truncate text-slate-400">{token.name}</span>
                   </div>
-                  <div className="text-slate-400 mt-2 flex flex-col gap-1 text-[11px]">
+                  <div className="mt-2 flex flex-col gap-1 text-[11px] text-slate-400">
                     <span className="text-xs text-slate-400 ">{token.address}</span>
                     <div>
                       <span className="font-semibold">permitSupported:</span>{" "}

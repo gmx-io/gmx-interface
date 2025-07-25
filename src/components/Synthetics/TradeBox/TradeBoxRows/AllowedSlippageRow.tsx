@@ -35,6 +35,7 @@ export function AllowedSlippageRow({ slippageInputId }: { slippageInputId: strin
         <TooltipWithPortal
           handle={t`Allowed Slippage`}
           position="left-start"
+          styleType="icon"
           content={
             <div className="text-white">
               <Trans>

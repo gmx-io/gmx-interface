@@ -168,7 +168,7 @@ export function GmListItem({
           </div>
         </div>
 
-        <div className="flex flex-col gap-10 border-t border-stroke-primary pt-8">
+        <div className="flex flex-col gap-10 border-t border-slate-600 pt-8">
           <SyntheticsInfoRow
             label={<Trans>TVL (Supply)</Trans>}
             value={

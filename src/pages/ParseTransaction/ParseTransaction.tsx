@@ -188,7 +188,7 @@ export function ParseTransactionPage() {
                     />
                   ))}
                   <TableTr>
-                    <TableTd padding="compact" className="bg-slate-950" colSpan={3}></TableTd>
+                    <TableTd padding="compact" className="bg-slate-900" colSpan={3}></TableTd>
                   </TableTr>
                 </Fragment>
               );

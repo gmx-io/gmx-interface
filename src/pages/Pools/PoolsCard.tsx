@@ -18,7 +18,7 @@ export default function PoolsCard({
         <span className="text-body-medium mb-16 text-slate-100">{description}</span>
         <div>{children}</div>
       </div>
-      {bottom && <div className="border-t border-stroke-primary p-8">{bottom}</div>}
+      {bottom && <div className="border-t border-slate-600 p-8">{bottom}</div>}
     </div>
   );
 }

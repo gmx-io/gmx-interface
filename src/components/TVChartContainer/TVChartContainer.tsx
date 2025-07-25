@@ -1,7 +1,7 @@
 import { CSSProperties, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLatest, useLocalStorage, useMedia } from "react-use";
 
-import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
+import { TV_SAVE_LOAD_CHARTS_KEY, WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { TokenPrices } from "domain/tokens";
@@ -57,12 +57,25 @@ export default function TVChartContainer({
   const [isChartChangingSymbol, setIsChartChangingSymbol] = useState(false);
   const [chartDataLoading, setChartDataLoading] = useState(true);
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
+  const [wasChartOverridden, setWasChartOverridden] = useLocalStorage<boolean>(WAS_TV_CHART_OVERRIDDEN_KEY, false);
 
   const [tradePageVersion] = useTradePageVersion();
 
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
   const [datafeed, setDatafeed] = useState<DataFeed | null>(null);
+
+  useEffect(() => {
+    if (chartReady && tvWidgetRef.current && !wasChartOverridden) {
+      tvWidgetRef.current.applyOverrides({
+        "paneProperties.background": "#121421",
+        "paneProperties.backgroundGradientStartColor": "#121421",
+        "paneProperties.backgroundGradientEndColor": "#121421",
+      });
+      tvWidgetRef.current.saveChartToServer();
+      setWasChartOverridden(true);
+    }
+  }, [chartReady, wasChartOverridden, setWasChartOverridden]);
 
   useEffect(() => {
     const newDatafeed = new DataFeed(chainId, oracleKeeperFetcher, tradePageVersion);

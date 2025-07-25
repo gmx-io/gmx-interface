@@ -7,7 +7,6 @@ import { getPageTitle } from "lib/legacy";
 
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
 
 import { communityProjects, dashboardProjects, gmxPages, integrations, telegramGroups } from "./ecosystemConstants";
@@ -256,7 +255,6 @@ export default function Ecosystem() {
             })}
           </div>
         </div>
-        <Footer />
       </div>
     </SEO>
   );

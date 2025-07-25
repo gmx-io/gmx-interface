@@ -16,7 +16,6 @@ import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
 
-import Footer from "components/Footer/Footer";
 import { GlvList } from "components/Synthetics/GmList/GlvList";
 import { GmList } from "components/Synthetics/GmList/GmList";
 
@@ -112,8 +111,6 @@ export default function Pools() {
           isDeposit
         />
       </div>
-
-      <Footer />
     </div>
   );
 }

@@ -79,7 +79,7 @@ const colors = {
   },
   slate: {
     "100": "bg-slate-100",
-    "500": "bg-slate-500",
+    "500": "bg-slate-100",
     "600": "bg-slate-600",
     "700": "bg-slate-700",
     "800": "bg-slate-800",
@@ -275,7 +275,7 @@ export default function UiPage() {
         {icons.map((icon) => (
           <Tooltip
             key={icon.src}
-            disableHandleStyle
+            styleType="none"
             as={"div"}
             className="ImageTooltip"
             closeDelay={500}
@@ -306,7 +306,7 @@ export default function UiPage() {
         {otherImages.map((src) => (
           <Tooltip
             key={src.src}
-            disableHandleStyle
+            styleType="none"
             as={"div"}
             className="ImageTooltip"
             closeDelay={500}

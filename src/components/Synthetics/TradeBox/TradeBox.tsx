@@ -88,7 +88,7 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import SettingsIcon24 from "img/ic_settings_24.svg?react";
+import SettingsIcon from "img/ic_settings.svg?react";
 
 import { useIsCurtainOpen } from "./Curtain";
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
@@ -101,13 +101,13 @@ import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAccep
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
-import "./TradeBox.scss";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
+import "./TradeBox.scss";
 
 export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
@@ -887,209 +887,212 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   }, [availableTradeModes, localizedTradeModeLabels]);
 
   return (
-    <>
-      <div className="flex items-center justify-between">
-        <Tabs
-          options={tabsOptions}
-          regularOptionClassname="py-10"
-          type="inline"
-          selectedValue={tradeMode}
-          onChange={onSelectTradeMode}
-          qa="trade-mode"
-        />
-        <div className="flex gap-4">
-          <TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradePlace="tradebox" />
-          <div className="relative">
-            <SettingsIcon24
-              className="cursor-pointer text-slate-100 gmx-hover:text-white"
-              onClick={() => setIsSettingsVisible(true)}
+    <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef}>
+      <div className="flex flex-col rounded-b-8 bg-slate-900 pb-16">
+        <div className="flex flex-col gap-12 p-12">
+          <div className="flex items-center justify-between">
+            <Tabs
+              options={tabsOptions}
+              type="inline"
+              selectedValue={tradeMode}
+              onChange={onSelectTradeMode}
+              qa="trade-mode"
+              className="bg-slate-900"
+              regularOptionClassname="py-10 hover:bg-slate-700 grow"
             />
-            {settingsWarningDotVisible && <div className="absolute bottom-6 right-3 h-6 w-6 rounded-full bg-red-400" />}
-          </div>
-        </div>
-      </div>
-      <form onSubmit={handleFormSubmit} ref={formRef} className="text-body-medium flex grow flex-col">
-        <div className="flex flex-col gap-2">
-          {(isSwap || isIncrease) && renderTokenInputs()}
-          {isTrigger && renderDecreaseSizeInput()}
-          {isSwap && isLimit && renderTriggerRatioInput()}
-          {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
-        </div>
+            <div className="flex items-center gap-4">
+              <TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradePlace="tradebox" />
 
-        {showSectionBetweenInputsAndButton && (
-          <div className="flex flex-col gap-14 pt-12">
-            {maxAutoCancelOrdersWarning}
-            {isSwap && isLimit && !isTwap && (
-              <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
-                <Trans>
-                  The actual trigger price at which order gets filled will depend on fees and price impact at the time
-                  of execution to guarantee that you receive the minimum receive amount.
-                </Trans>
-              </AlertInfoCard>
-            )}
-
-            {isPosition && (
-              <>
-                {isIncrease && isLeverageSliderEnabled && (
-                  <div className="flex items-start gap-6">
-                    <LeverageSlider
-                      className="grow"
-                      marks={leverageSliderMarks}
-                      value={leverageOption}
-                      onChange={setLeverageOption}
-                      isPositive={isLong}
-                      isSlim
-                    />
-                    <SuggestionInput
-                      className="w-48"
-                      inputClassName="text-clip"
-                      value={leverageInputValue}
-                      setValue={setLeverageInputValue}
-                      onBlur={handleLeverageInputBlur}
-                      onKeyDown={handleLeverageInputKeyDown}
-                      symbol="x"
-                    />
-                  </div>
+              <div className="relative">
+                <SettingsIcon
+                  className="cursor-pointer text-slate-100 gmx-hover:text-white"
+                  onClick={() => setIsSettingsVisible(true)}
+                />
+                {settingsWarningDotVisible && (
+                  <div className="absolute bottom-6 right-3 h-6 w-6 rounded-full bg-red-400" />
                 )}
-                {isTrigger && (
-                  <SyntheticsInfoRow
-                    label={t`Market`}
-                    value={
-                      <MarketSelector
-                        chainId={chainId}
+              </div>
+            </div>
+          </div>
+          <div className="text-body-medium flex grow flex-col">
+            <div className="flex flex-col gap-4">
+              {(isSwap || isIncrease) && renderTokenInputs()}
+              {isTrigger && renderDecreaseSizeInput()}
+              {isSwap && isLimit && renderTriggerRatioInput()}
+              {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
+            </div>
+
+            {showSectionBetweenInputsAndButton && (
+              <div className="flex flex-col gap-14 pt-12">
+                {maxAutoCancelOrdersWarning}
+                {isSwap && isLimit && !isTwap && (
+                  <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
+                    <Trans>
+                      The actual trigger price at which order gets filled will depend on fees and price impact at the
+                      time of execution to guarantee that you receive the minimum receive amount.
+                    </Trans>
+                  </AlertInfoCard>
+                )}
+
+                {isPosition && (
+                  <>
+                    {isIncrease && isLeverageSliderEnabled && (
+                      <div className="flex items-start gap-12">
+                        <LeverageSlider
+                          className="grow"
+                          marks={leverageSliderMarks}
+                          value={leverageOption}
+                          onChange={setLeverageOption}
+                          isPositive={isLong}
+                          isSlim
+                        />
+                        <SuggestionInput
+                          className="w-48 !rounded-8 py-5"
+                          inputClassName="text-clip"
+                          value={leverageInputValue}
+                          setValue={setLeverageInputValue}
+                          onBlur={handleLeverageInputBlur}
+                          onKeyDown={handleLeverageInputKeyDown}
+                          symbol="x"
+                        />
+                      </div>
+                    )}
+                    {isTrigger && (
+                      <SyntheticsInfoRow
                         label={t`Market`}
-                        className="-mr-4"
-                        selectedIndexName={
-                          toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined
+                        value={
+                          <MarketSelector
+                            chainId={chainId}
+                            label={t`Market`}
+                            className="-mr-4"
+                            selectedIndexName={
+                              toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined
+                            }
+                            markets={sortedAllMarkets ?? EMPTY_ARRAY}
+                            isSideMenu
+                            onSelectMarket={handleSelectMarket}
+                            size="m"
+                          />
                         }
-                        markets={sortedAllMarkets ?? EMPTY_ARRAY}
-                        isSideMenu
-                        onSelectMarket={handleSelectMarket}
-                        size="m"
                       />
-                    }
+                    )}
+
+                    <MarketPoolSelectorRow />
+
+                    <CollateralSelectorRow
+                      selectedMarketAddress={marketInfo?.marketTokenAddress}
+                      onSelectCollateralAddress={onSelectCollateralAddress}
+                      isMarket={isMarket}
+                    />
+
+                    {isTrigger && selectedPosition && selectedPosition?.leverage !== undefined && (
+                      <ToggleSwitch
+                        isChecked={keepLeverageChecked}
+                        setIsChecked={setKeepLeverage}
+                        disabled={decreaseAmounts?.isFullClose}
+                      >
+                        <span className="text-14 text-slate-100">
+                          <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
+                        </span>
+                      </ToggleSwitch>
+                    )}
+                  </>
+                )}
+
+                {isTwap && (
+                  <TwapRows
+                    duration={duration}
+                    numberOfParts={numberOfParts}
+                    setNumberOfParts={setNumberOfParts}
+                    setDuration={setDuration}
+                    sizeUsd={isSwap ? payUsd : increaseAmounts?.sizeDeltaUsd}
+                    marketInfo={marketInfo}
+                    type={isSwap ? "swap" : "increase"}
+                    isLong={isLong}
                   />
                 )}
 
-                <MarketPoolSelectorRow />
-
-                <CollateralSelectorRow
-                  selectedMarketAddress={marketInfo?.marketTokenAddress}
-                  onSelectCollateralAddress={onSelectCollateralAddress}
-                  isMarket={isMarket}
-                />
-
-                {isTrigger && selectedPosition && selectedPosition?.leverage !== undefined && (
-                  <ToggleSwitch
-                    isChecked={keepLeverageChecked}
-                    setIsChecked={setKeepLeverage}
-                    disabled={decreaseAmounts?.isFullClose}
-                  >
-                    <span className="text-14 text-slate-100">
-                      <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
-                    </span>
-                  </ToggleSwitch>
+                {!isTrigger && !isSwap && !isTwap && <LimitAndTPSLGroup />}
+                {priceImpactWarningState.shouldShowWarning && (
+                  <HighPriceImpactOrFeesWarningCard
+                    priceImpactWarningState={priceImpactWarningState}
+                    collateralImpact={fees?.positionCollateralPriceImpact}
+                    positionImpact={fees?.positionPriceImpact}
+                    swapPriceImpact={fees?.swapPriceImpact}
+                    swapProfitFee={fees?.swapProfitFee}
+                    executionFeeUsd={executionFee?.feeUsd}
+                    externalSwapFeeItem={fees?.externalSwapFee}
+                  />
                 )}
-              </>
+              </div>
             )}
-
-            {isTwap && (
-              <TwapRows
-                duration={duration}
-                numberOfParts={numberOfParts}
-                setNumberOfParts={setNumberOfParts}
-                setDuration={setDuration}
-                sizeUsd={isSwap ? payUsd : increaseAmounts?.sizeDeltaUsd}
-                marketInfo={marketInfo}
-                type={isSwap ? "swap" : "increase"}
-                isLong={isLong}
+            <div className="flex flex-col gap-14 pt-14">
+              <div>{button}</div>
+              <ExpressTradingWarningCard
+                expressParams={submitButtonState.expressParams}
+                payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}
+                isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
               />
-            )}
-
-            {!isTrigger && !isSwap && !isTwap && <LimitAndTPSLGroup />}
-            {priceImpactWarningState.shouldShowWarning && (
-              <HighPriceImpactOrFeesWarningCard
-                priceImpactWarningState={priceImpactWarningState}
-                collateralImpact={fees?.positionCollateralPriceImpact}
-                positionImpact={fees?.positionPriceImpact}
-                swapPriceImpact={fees?.swapPriceImpact}
-                swapProfitFee={fees?.swapProfitFee}
-                executionFeeUsd={executionFee?.feeUsd}
-                externalSwapFeeItem={fees?.externalSwapFee}
-              />
-            )}
-          </div>
-        )}
-        <div className="flex flex-col gap-14 pt-14">
-          <div>{button}</div>
-          <ExpressTradingWarningCard
-            expressParams={submitButtonState.expressParams}
-            payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}
-            isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
-          />
-          <div className="h-1 bg-stroke-primary" />
-          {isSwap && !isTwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
-          {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
-            <SyntheticsInfoRow
-              label={t`Receive`}
-              value={formatTokenAmountWithUsd(
-                decreaseAmounts.receiveTokenAmount,
-                decreaseAmounts.receiveUsd,
-                collateralToken?.symbol,
-                collateralToken?.decimals,
-                { isStable: collateralToken?.isStable }
+              <div className="h-1 bg-slate-600" />
+              {isSwap && !isTwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
+              {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
+                <SyntheticsInfoRow
+                  label={t`Receive`}
+                  value={formatTokenAmountWithUsd(
+                    decreaseAmounts.receiveTokenAmount,
+                    decreaseAmounts.receiveUsd,
+                    collateralToken?.symbol,
+                    collateralToken?.decimals
+                  )}
+                />
               )}
-            />
-          )}
 
-          {isTrigger && (
-            <SyntheticsInfoRow
-              label={t`PnL`}
-              value={
-                <ValueTransition
-                  from={
-                    <>
-                      {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
-                      {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
-                    </>
-                  }
-                  to={
-                    decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0 ? (
-                      <>
-                        {formatDeltaUsd(nextPositionValues?.nextPnl)} (
-                        {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
-                      </>
-                    ) : undefined
+              {isTrigger && (
+                <SyntheticsInfoRow
+                  label={t`PnL`}
+                  value={
+                    <ValueTransition
+                      from={
+                        <>
+                          {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
+                          {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
+                        </>
+                      }
+                      to={
+                        decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0 ? (
+                          <>
+                            {formatDeltaUsd(nextPositionValues?.nextPnl)} (
+                            {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
+                          </>
+                        ) : undefined
+                      }
+                    />
                   }
                 />
-              }
-            />
-          )}
-          {!(isTrigger && !selectedPosition) && !isSwap && !isTwap && (
-            <SyntheticsInfoRow
-              label={t`Liquidation Price`}
-              value={
-                <ValueTransition
-                  from={
-                    selectedPosition
-                      ? formatLiquidationPrice(selectedPosition?.liquidationPrice, {
-                          visualMultiplier: toToken?.visualMultiplier,
-                        })
-                      : undefined
+              )}
+              {!(isTrigger && !selectedPosition) && !isSwap && !isTwap && (
+                <SyntheticsInfoRow
+                  label={t`Liquidation Price`}
+                  value={
+                    <ValueTransition
+                      from={
+                        selectedPosition
+                          ? formatLiquidationPrice(selectedPosition?.liquidationPrice, {
+                              visualMultiplier: toToken?.visualMultiplier,
+                            })
+                          : undefined
+                      }
+                      to={nextLiqPriceFormatted}
+                    />
                   }
-                  to={nextLiqPriceFormatted}
                 />
-              }
-            />
-          )}
-          {!isTwap && <PriceImpactFeesRow />}
-          <TradeBoxAdvancedGroups
-            slippageInputId={submitButtonState.slippageInputId}
-            gasPaymentParams={submitButtonState.expressParams?.gasPaymentParams}
-            totalExecutionFee={submitButtonState.totalExecutionFee}
-          />
+              )}
+              {!isTwap && <PriceImpactFeesRow />}
+              <TradeBoxAdvancedGroups slippageInputId={submitButtonState.slippageInputId} />
+            </div>
+          </div>
         </div>
-      </form>
-    </>
+      </div>
+    </form>
   );
 }

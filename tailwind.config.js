@@ -11,8 +11,9 @@ const flattenColorPalette = require("tailwindcss/lib/util/flattenColorPalette");
  */
 const colors = {
   blue: {
-    300: "#7885ff",
-    400: "#4d5ffa",
+    100: "#A4C3F9",
+    300: "#7885FF",
+    400: "#2D42FC",
     500: "#3d51ff",
     600: "#2d42fc",
     700: "#2e3dcd",
@@ -20,7 +21,7 @@ const colors = {
   "cold-blue": {
     500: "#3a3f79",
     700: "#282b54",
-    900: "#1e203e",
+    900: "#1E223C",
   },
   "pale-blue": {
     100: "rgba(180,187,255, 0.1)",
@@ -28,13 +29,15 @@ const colors = {
   },
   slate: {
     100: "#a0a3c4",
-    500: "#3e4361",
-    600: "#373c58",
-    700: "#23263b",
+    400: "#BEC0DA",
+    500: "#646a8f",
+    600: "#363a59",
+    650: "#3C40677f",
+    700: "#22243a",
     750: "#17182c",
-    800: "#16182e",
-    900: "#101124",
-    950: "#08091b",
+    800: "#1e2033",
+    900: "#121421",
+    950: "#090A14",
   },
   gray: {
     50: "rgba(255, 255, 255, 0.95)",
@@ -52,27 +55,35 @@ const colors = {
   yellow: {
     300: "#ffe166",
     500: "#f3b50c",
+    900: "#2E2D29",
   },
   red: {
+    100: "#F9A4A5",
     400: "#ff637a",
     500: "#FF506A",
     700: "#B33055",
+    900: "#2D192D",
   },
   green: {
+    100: "#A4F9D9",
     300: "#56dba8",
     400: "#8CF3CB",
     500: "#0FDE8D",
+    700: "#178969",
     600: "#1F3445",
     700: "#0FDE8D",
     800: "#178969",
+    900: "#192E38",
   },
   white: "#ffffff",
   black: "#000000",
-  stroke: {
-    primary: "#252A47",
+  button: {
+    secondary: "#23263b",
   },
   fill: {
-    tertiary: "#B4BBFF1A",
+    surfaceElevated50: "#1E20337f",
+    surfaceElevatedHover: "#18192a",
+    surfaceHover: "#A0A3C41A",
   },
 };
 
@@ -124,7 +135,7 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
   addUtilities({
     ".text-input-bg": {
       background:
-        "linear-gradient(90deg, var(--color-cold-blue-900) 0%, color-mix(in srgb, var(--color-slate-500) 40%, transparent) 100%)",
+        "linear-gradient(90deg, var(--color-slate-900) 0%, color-mix(in srgb, var(--color-slate-100) 40%, transparent) 100%)",
     },
   });
 }
@@ -167,7 +178,7 @@ function fontComponentsPlugin({ addComponents, addBase }) {
     },
     ".text-body-medium": {
       fontSize: "1.4rem",
-      lineHeight: "1.8rem",
+      lineHeight: "1.75rem",
     },
     ".text-body-small": {
       fontSize: "1.2rem",
@@ -213,11 +224,15 @@ module.exports = {
     // @see https://tailwindcss.com/blog/tailwindcss-v3-2#max-width-and-dynamic-breakpoints
     // "these features will only be available if your project uses a simple screens configuration."
     // So we just copy the default screens config
-    screens: defaultConfig.theme.screens,
+    screens: { ...defaultConfig.theme.screens, sm: "400px" },
     extend: {
       gridTemplateColumns: fromPairs(
         range(200, 501, 50).map((space) => [`auto-fill-${space}`, `repeat(auto-fill, minmax(${space}px, 1fr))`])
       ),
+      fontFamily: {
+        'tthoves': ['TTHoves', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        'tthoves-native': ['TTHovesNative', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+      },
     },
   },
   plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin],

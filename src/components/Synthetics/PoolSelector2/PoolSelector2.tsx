@@ -199,7 +199,11 @@ function PoolListItemMobile({
   const openFeesState = numberToState(openFees);
 
   return (
-    <SelectorBaseMobileButton key={marketStat.marketInfo.marketTokenAddress} onSelect={onSelect}>
+    <SelectorBaseMobileButton
+      key={marketStat.marketInfo.marketTokenAddress}
+      onSelect={onSelect}
+      rowClassName="!px-16 !py-12"
+    >
       <div className="PoolSelector2-mobile-column-pool" data-qa={`pool-selector-row-${poolName}`}>
         <div className="PoolSelector2-mobile-collateral-logos">
           <TokenIcon

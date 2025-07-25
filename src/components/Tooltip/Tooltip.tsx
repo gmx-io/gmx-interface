@@ -30,6 +30,9 @@ import {
 import { DEFAULT_TOOLTIP_POSITION, TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
 import { usePrevious } from "lib/usePrevious";
 
+import InfoIcon from "img/ic_info_circle.svg?react";
+import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
+
 import "./Tooltip.scss";
 
 export type TooltipPosition = Placement;
@@ -70,6 +73,8 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
   shouldStopPropagation?: boolean;
   fitHandleWidth?: boolean;
   closeOnDoubleClick?: boolean;
+
+  styleType?: "icon" | "iconStroke" | "underline" | "none";
 };
 
 export type TooltipProps<T extends ElementType | undefined> = InnerTooltipProps<T> &
@@ -97,6 +102,7 @@ export default function Tooltip<T extends ElementType>({
   shouldStopPropagation,
   fitHandleWidth,
   closeOnDoubleClick,
+  styleType = "underline",
   ...containerProps
 }: TooltipProps<T>) {
   const [visible, setVisible] = useState(false);
@@ -201,7 +207,7 @@ export default function Tooltip<T extends ElementType>({
       {...getFloatingProps()}
       className={cx("Tooltip-popup", tooltipClassName)}
     >
-      <FloatingArrow ref={arrowRef} context={context} className="fill-slate-600" />
+      <FloatingArrow ref={arrowRef} context={context} className="fill-slate-700" />
       {finalContent}
     </div>
   ) : undefined;
@@ -231,7 +237,10 @@ export default function Tooltip<T extends ElementType>({
     <span {...containerProps} className={cx("Tooltip", className)} style={style}>
       <span
         ref={refs.setReference}
-        className={cx({ "Tooltip-handle": !disableHandleStyle }, handleClassName)}
+        className={cx(
+          { "Tooltip-handle": !disableHandleStyle, "Tooltip-underline": styleType === "underline" },
+          handleClassName
+        )}
         style={handleStyle}
         {...getReferenceProps({
           onClick: (e: MouseEvent) => {
@@ -240,12 +249,16 @@ export default function Tooltip<T extends ElementType>({
           },
         })}
       >
-        {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
-        {isHandlerDisabled ? (
-          <div className="pointer-events-none w-full flex-none [text-decoration:inherit]">{handle ?? children}</div>
-        ) : (
-          <>{handle ?? children}</>
-        )}
+        <div className="flex items-center gap-2">
+          {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
+          {isHandlerDisabled ? (
+            <div className="pointer-events-none w-full flex-none [text-decoration:inherit]">{handle ?? children}</div>
+          ) : (
+            <>{handle ?? children}</>
+          )}
+          {styleType === "icon" && <InfoIcon className="h-16 w-16" />}
+          {styleType === "iconStroke" && <InfoIconStroke className="h-16 w-16" />}
+        </div>
       </span>
       {visible && withPortal && <FloatingPortal>{tooltipContent}</FloatingPortal>}
       {visible && !withPortal && tooltipContent}

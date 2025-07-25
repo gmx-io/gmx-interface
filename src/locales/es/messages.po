@@ -54,7 +54,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/components/Synthetics/TVChart/Chart.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
 msgid "PRICE"
 msgstr "PRECIO"
@@ -427,6 +426,7 @@ msgstr ""
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions"
 msgstr "Posiciones"
 
@@ -476,6 +476,7 @@ msgstr ""
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Orders"
 msgstr "Órdenes"
 
@@ -524,6 +525,7 @@ msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgstr "Token inválido de token: \"{0}\" a token: \"{toTokenAddress}\""
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Stats"
@@ -541,10 +543,6 @@ msgstr ""
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr ""
-
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-msgid "Trade History"
-msgstr "Historial de Operaciones"
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Tabs/NestedTab.tsx
@@ -684,7 +682,6 @@ msgstr ""
 msgid "Max. Leverage Exceeded"
 msgstr ""
 
-#: src/components/SearchInput/SearchInput.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search Token"
 msgstr "Buscar Token"
@@ -813,8 +810,10 @@ msgstr "Abre posiciones a través de una simple interfaz de intercambio. Interca
 msgid "Incentives Distribution History"
 msgstr ""
 
-#: src/components/BuyInputSection/BuyInputSection.tsx
-#: src/components/BuyInputSection/BuyInputSection.tsx
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No markets matched"
+msgstr ""
+
 #: src/components/InputSection/InputSection.jsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "MAX"
@@ -1048,7 +1047,7 @@ msgstr "Fundamentales de GMX"
 msgid "Referral Code"
 msgstr "Código de Referido"
 
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
 msgid "Charts by TradingView"
 msgstr ""
 
@@ -1150,6 +1149,11 @@ msgstr "Vender GLP"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
+msgstr ""
+
+#: src/components/Synthetics/Claims/ClaimsHistory.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "CSV"
 msgstr ""
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
@@ -1296,6 +1300,10 @@ msgstr "Intercambio Límite Fallido"
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "Actions"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
@@ -1626,6 +1634,10 @@ msgstr ""
 msgid "GMX (Chinese)"
 msgstr ""
 
+#: src/components/SearchInput/SearchInput.tsx
+msgid "Search"
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Price is below Mark Price"
 msgstr "El precio se encuentra por debajo del precio de referencia"
@@ -1662,6 +1674,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "RPnL"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
@@ -1950,6 +1966,7 @@ msgstr ""
 msgid "The fees' USD value is calculated at the time they are earned and does not include incentives."
 msgstr ""
 
+#: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -2041,6 +2058,7 @@ msgstr "Tamaño"
 msgid "We value your experience and insights and invite you to participate in an anonymous one-on-one chat."
 msgstr ""
 
+#: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Referrals/AddAffiliateCode.jsx
@@ -2086,8 +2104,8 @@ msgid "You can edit the default Allowed Slippage in the settings menu on the top
 msgstr ""
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
-msgid "Last 365d"
-msgstr ""
+#~ msgid "Last 365d"
+#~ msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "<0>Read more</0> about fees."
@@ -2433,6 +2451,10 @@ msgstr ""
 msgid "{actionDisplay} Order"
 msgstr "{actionDisplay} Orden"
 
+#: src/components/Synthetics/TVChart/Chart.tsx
+msgid "Market Graph"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "There are more longs than shorts, borrow fees for shorting is currently zero"
 msgstr "Hay más largos que cortos, la tasa de préstamo para entrar a corto es cero en estos momentos"
@@ -2566,6 +2588,10 @@ msgstr "No hay suficiente liquidez de intercambio disponible para llenar la orde
 
 #: src/pages/Stake/Stake.tsx
 msgid "Earn prizes by participating in GMX Trading Competitions."
+msgstr ""
+
+#: src/components/SideNav/SideNav.tsx
+msgid "Collapse"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
@@ -2836,6 +2862,7 @@ msgid "No liquidity is available for increasing shorts for<0/>this size. Max sho
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Trade"
 msgstr "Comercio"
 
@@ -3160,7 +3187,6 @@ msgid "Claim failed."
 msgstr "Reclamación fallida."
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions{0}"
 msgstr ""
 
@@ -3338,11 +3364,6 @@ msgstr "La orden no se puede ejecutar pues la posición restante sería menor de
 #: src/pages/Stake/ClaimModal.tsx
 msgid "Claiming..."
 msgstr "Reclamando..."
-
-#. Filter option for tokens favorites
-#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-msgid "All"
-msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Increase"
@@ -3676,7 +3697,6 @@ msgid "Approval failed"
 msgstr "Aprobación fallida"
 
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
-#: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Home/Home.tsx
 msgid "Open Interest"
@@ -3767,10 +3787,6 @@ msgstr ""
 msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than -{0}, may result in failed orders if prices are volatile."
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-msgid "RPnL ($)"
-msgstr ""
-
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "There is no price impact. There is a single<0/>execution price for increasing longs or<1/>decreasing shorts for this size."
 msgstr ""
@@ -3803,6 +3819,10 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {3} USD"
 msgstr "Solicitar incremento {0} {longOrShortText}, +{1} USD, Precio Aceptable: {2} {3} USD"
+
+#: src/components/SideNav/SideNav.tsx
+msgid "Earn"
+msgstr "Ganar"
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -4285,6 +4305,7 @@ msgstr "Además, las órdenes de activación son órdenes de mercado y no se gar
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "Documentos"
 
@@ -4410,8 +4431,8 @@ msgstr "Orden"
 msgid "Staked on Avalanche"
 msgstr ""
 
-#: src/components/Footer/constants.ts
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
+#: src/components/Footer/constants.tsx
 msgid "Media Kit"
 msgstr "Kit de Medios"
 
@@ -4731,10 +4752,6 @@ msgstr ""
 msgid "There may not be sufficient liquidity to execute your order when the Min. Receive are met."
 msgstr ""
 
-#: src/components/Synthetics/TVChart/Chart.tsx
-msgid "DEPTH"
-msgstr ""
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total Trades"
@@ -4815,9 +4832,11 @@ msgstr "Liquidez Disponible"
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr "Se registra el valor en USD de tu {0} garantía en el momento que la posición se abre."
 
+#: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "All time"
 msgstr "Todo el tiempo"
 
@@ -4981,6 +5000,7 @@ msgid "GMX Announcements"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 #: src/pages/Referrals/Referrals.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
@@ -5047,17 +5067,14 @@ msgid "Swap Order submitted!"
 msgstr "¡Orden de Intercambio enviada!"
 
 #: src/App/MainRoutes.tsx
+#: src/components/EmptyTableContent/EmptyTableContent.tsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Synthetics/Claims/Claims.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#: src/components/Synthetics/OrderList/OrderList.tsx
-#: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
-#: src/components/Synthetics/PositionList/PositionList.tsx
-#: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -5182,6 +5199,7 @@ msgstr "Falló la actualización del código de referido."
 #: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Synthetics/TVChart/Chart.tsx
 #: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
@@ -5303,6 +5321,10 @@ msgstr ""
 msgid "Transaction"
 msgstr "Transacción"
 
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+msgid "Last year"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
@@ -5368,6 +5390,10 @@ msgstr ""
 msgid "Max {0} in"
 msgstr "Máx. {0} dentro"
 
+#: src/components/EmptyTableContent/EmptyTableContent.tsx
+msgid "No items yet"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop Loss Decrease"
 msgstr ""
@@ -5427,6 +5453,10 @@ msgstr ""
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 msgstr ""
 
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+msgid "30d"
+msgstr ""
+
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
 msgstr ""
@@ -5448,7 +5478,6 @@ msgstr "Las tasas de red son muy altas actualmente, lo que puede deberse a un au
 msgid "There are more shorts than longs, borrow fees for longing is currently zero"
 msgstr "Hay más cortos que largos, la tasa de préstamo para entrar a largo es cero en estos momentos"
 
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 90d"
 msgstr ""
@@ -5614,6 +5643,10 @@ msgstr "Actual {0} a largo "
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
+msgstr ""
+
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+msgid "90d"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
@@ -6151,6 +6184,7 @@ msgid "less than a minute"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Ecosystem"
 msgstr "Ecosistema"
 
@@ -6170,7 +6204,6 @@ msgstr "Crear"
 msgid "Limit order submitted!"
 msgstr "¡Orden limite enviada!"
 
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Last 7d"
 msgstr ""
@@ -6313,10 +6346,6 @@ msgstr "Las tasas de red son altas actualmente, lo que puede deberse a un aument
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Scan the QR code"
 msgstr "Escanear el código QR"
-
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-msgid "Claims ({totalClaimables})"
-msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
@@ -6534,6 +6563,11 @@ msgstr "GMX adquirido no retirado"
 msgid "FEES"
 msgstr "COMISIONES"
 
+#. Filter option for tokens favorites
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "All Markets"
+msgstr ""
+
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -6700,6 +6734,7 @@ msgid "Top Positions"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Pools"
 msgstr ""
 
@@ -6894,6 +6929,7 @@ msgstr "Editar orden"
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
 msgstr ""
 
@@ -6950,7 +6986,7 @@ msgstr "Introduzca la Dirección del Receptor"
 msgid "Additional reserve required"
 msgstr ""
 
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
 #: src/pages/TermsAndConditions/TermsAndConditions.jsx
 msgid "Terms and Conditions"
 msgstr "Términos y Condiciones"
@@ -6974,6 +7010,10 @@ msgstr ""
 
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Vault Capacity"
+msgstr ""
+
+#: src/components/Synthetics/TVChart/Chart.tsx
+msgid "Depth"
 msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
@@ -7568,7 +7608,7 @@ msgstr "Las comisiones se mostrarán una vez que haya introducido una cantidad e
 msgid "GLP Vault"
 msgstr ""
 
-#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.tsx
 #: src/pages/ReferralTerms/ReferralTerms.jsx
 msgid "Referral Terms"
 msgstr "Términos de Referido"
@@ -7582,7 +7622,6 @@ msgid "Fee APY"
 msgstr ""
 
 #: src/components/MarketSelector/MarketSelector.tsx
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched."
 msgstr ""
 
@@ -7636,8 +7675,8 @@ msgid "APY"
 msgstr ""
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
-msgid "Last month"
-msgstr "El mes pasado"
+#~ msgid "Last month"
+#~ msgstr "El mes pasado"
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -7865,6 +7904,7 @@ msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Leaderboard"
 msgstr "Tabla de clasificación"
 
@@ -7980,7 +8020,6 @@ msgstr ""
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Orders ({ordersCount})"
 msgstr ""
 
@@ -8013,10 +8052,6 @@ msgstr "Precio de Ejecución"
 #: src/components/Exchange/OrdersList.jsx
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr "El precio al que se puede ejecutar la orden puede diferir ligeramente del precio del gráfico, ya que las órdenes de mercado pueden cambiar el precio mientras que las órdenes de límite/activación no."
-
-#: src/components/Synthetics/Claims/ClaimsHistory.tsx
-msgid "Claims History"
-msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
@@ -8150,7 +8185,6 @@ msgstr ""
 msgid "Execution prices for increasing longs and<0/>decreasing shorts."
 msgstr ""
 
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 30d"
@@ -8174,6 +8208,10 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Please <0>read here</0> for more information."
+msgstr ""
+
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
+msgid "7d"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -8235,6 +8273,7 @@ msgstr ""
 msgid "Partial Liquidation"
 msgstr "Liquidación Parcial"
 
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "24h Volume"
@@ -8472,6 +8511,10 @@ msgstr "Vendiendo..."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute as the max. allowed leverage is exceeded. Consider decreasing the order's leverage by editing and decreasing its size. <0>Read more</0>."
+msgstr ""
+
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+msgid "Open Interest ({longOIPercentage}/{shortOIPercentage})"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx

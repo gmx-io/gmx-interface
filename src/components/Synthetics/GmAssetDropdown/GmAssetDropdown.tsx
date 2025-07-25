@@ -110,7 +110,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
           as="div"
           ref={refs.setFloating}
           style={floatingStyles}
-          className="z-30 rounded-4 border border-stroke-primary bg-slate-800 outline-none"
+          className="z-30 rounded-4 border border-slate-600 bg-slate-800 outline-none"
           onClick={handleMenuItemsClick}
         >
           {market && (

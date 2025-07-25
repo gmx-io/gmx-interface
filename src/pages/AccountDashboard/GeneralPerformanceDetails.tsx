@@ -98,7 +98,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
       <TableTd>{formatUsd(row.volume, { maxThreshold: null })}</TableTd>
       <TableTd>
         <TooltipWithPortal
-          disableHandleStyle
+          styleType="none"
           tooltipClassName="cursor-help *:cursor-auto"
           className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
             "text-green-500 decoration-green-500/50": row.pnlUsd > 0,
@@ -137,7 +137,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
       </TableTd>
       <TableTd>
         <TooltipWithPortal
-          disableHandleStyle
+          styleType="none"
           tooltipClassName="cursor-help *:cursor-auto"
           className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
             "text-green-500 decoration-green-500/50": row.pnlBps > 0n,

@@ -1,5 +1,3 @@
-$left-arrow-bg: var(--color-slate-600);
-
 .Tooltip {
   position: relative;
 }
@@ -16,7 +14,7 @@ $left-arrow-bg: var(--color-slate-600);
   max-width: 100vw;
   text-align: left;
   white-space: normal;
-  background-color: var(--color-slate-600);
+  background-color: var(--color-slate-700);
   box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.25);
   z-index: 10000;
   color: var(--color-white);
@@ -123,6 +121,9 @@ $left-arrow-bg: var(--color-slate-600);
   cursor: help;
   position: relative;
   display: inline-flex;
+}
+
+.Tooltip-underline {
   text-decoration: underline;
   text-decoration-style: dashed;
   text-decoration-thickness: 1px;

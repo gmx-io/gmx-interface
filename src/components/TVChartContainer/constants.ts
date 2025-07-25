@@ -29,17 +29,16 @@ const chartStyleOverrides: Partial<WidgetOverrides> = ["candleStyle", "hollowCan
 );
 
 const chartOverrides: Partial<WidgetOverrides> = {
-  "paneProperties.background": "#16182e",
-  "paneProperties.backgroundGradientStartColor": "#16182e",
-  "paneProperties.backgroundGradientEndColor": "#16182e",
+  "paneProperties.background": "#121421",
+  "paneProperties.backgroundGradientStartColor": "#121421",
+  "paneProperties.backgroundGradientEndColor": "#121421",
   "paneProperties.backgroundType": "solid",
-  "paneProperties.vertGridProperties.color": "rgba(35, 38, 59, 1)",
+  "paneProperties.vertGridProperties.color": "#363A59",
   "paneProperties.vertGridProperties.style": 2,
-  "paneProperties.horzGridProperties.color": "rgba(35, 38, 59, 1)",
+  "paneProperties.horzGridProperties.color": "#363A59",
   "paneProperties.horzGridProperties.style": 2,
-  "mainSeriesProperties.priceLineColor": "#3a3e5e",
+  "mainSeriesProperties.priceLineColor": "#8B94B6",
   "scalesProperties.textColor": "#fff",
-  "scalesProperties.lineColor": "#16182e",
   "mainSeriesProperties.statusViewStyle.showExchange": false,
   ...chartStyleOverrides,
 };
@@ -86,7 +85,7 @@ export const defaultChartProps = {
   enabled_features: enabledFeatures,
   disabled_features: disabledFeatures,
   custom_css_url: "/tradingview-chart.css",
-  loading_screen: { backgroundColor: "#16182e", foregroundColor: "#2962ff" },
+  loading_screen: { backgroundColor: "#121421", foregroundColor: "#2962ff" },
   favorites: {},
   custom_formatters: {
     timeFormatter: {

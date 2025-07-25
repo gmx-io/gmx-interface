@@ -22,7 +22,6 @@ type ButtonProps = HTMLProps<HTMLButtonElement> & {
   newTab?: boolean;
   showExternalLinkArrow?: boolean;
   buttonRef?: RefObject<HTMLButtonElement>;
-  slim?: boolean;
   qa?: string;
 };
 
@@ -41,11 +40,13 @@ export default function Button({
   newTab,
   buttonRef,
   showExternalLinkArrow: showExternalLinkArrowOverride,
-  slim,
   qa,
   ...rest
 }: ButtonProps) {
-  const classNames = cx("button", variant, className, textAlign, { slim });
+  const classNames = cx("button ", variant, className, textAlign, {
+    "px-24 py-18 text-16": variant === "primary-action",
+    "px-12 py-8 text-[13px] max-md:px-10 max-md:py-6": variant !== "primary-action",
+  });
   const showExternalLinkArrow = showExternalLinkArrowOverride ?? variant === "secondary";
 
   const img = useMemo(() => {

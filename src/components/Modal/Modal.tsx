@@ -34,7 +34,6 @@ export type ModalProps = PropsWithChildren<{
   onAfterOpen?: () => void;
   contentPadding?: boolean;
   qa?: string;
-  noDivider?: boolean;
   contentClassName?: string;
 }>;
 
@@ -47,7 +46,6 @@ export default function Modal({
   headerContent,
   footerContent,
   contentPadding = true,
-  noDivider = false,
   onAfterOpen,
   setIsVisible,
   qa,
@@ -109,6 +107,7 @@ export default function Modal({
               style={isVisible ? VISIBLE_STYLES : HIDDEN_STYLES}
               onClick={() => setIsVisible(false)}
             />
+
             <div className={cx("Modal-content flex flex-col", contentClassName)} onClick={stopPropagation} data-qa={qa}>
               <div className="Modal-header-wrapper">
                 <div className="Modal-title-bar">
@@ -119,13 +118,11 @@ export default function Modal({
                 </div>
                 {headerContent}
               </div>
-              {!noDivider && <div className="divider" />}
-              <div className="overflow-auto">
+              <div className="mt-4 overflow-auto">
                 <div className={cx("Modal-body", { "no-content-padding": !contentPadding })}>{children}</div>
               </div>
               {footerContent && (
                 <>
-                  <div className="divider" />
                   <div>{footerContent}</div>
                 </>
               )}

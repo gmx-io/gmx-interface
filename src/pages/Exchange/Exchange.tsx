@@ -37,6 +37,7 @@ import useWallet from "lib/wallets/useWallet";
 import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
+import { AppHeader } from "components/AppHeader/AppHeader";
 import Checkbox from "components/Checkbox/Checkbox";
 import ExchangeBanner from "components/Exchange/ExchangeBanner";
 import ExchangeTVChart, { getChartToken } from "components/Exchange/ExchangeTVChart";
@@ -47,7 +48,6 @@ import SwapBox from "components/Exchange/SwapBox";
 import TradeHistory from "components/Exchange/TradeHistory";
 import UsefulLinks from "components/Exchange/UsefulLinks";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Footer from "components/Footer/Footer";
 import Tabs from "components/Tabs/Tabs";
 
 import "./Exchange.css";
@@ -1069,10 +1069,11 @@ export const Exchange = forwardRef(
     };
 
     return (
-      <div className="Exchange page-layout">
+      <div className="flex flex-col gap-8">
+        <AppHeader />
         {showBanner && <ExchangeBanner hideBanner={hideBanner} />}
-        <div className="Exchange-content">
-          <div className="Exchange-left">
+        <div className="flex gap-8">
+          <div className="grow">
             {renderChart()}
             <div className="Exchange-lists large">{getListSection()}</div>
           </div>
@@ -1137,7 +1138,6 @@ export const Exchange = forwardRef(
           <div className="Exchange-lists small">{getListSection()}</div>
           <UsefulLinks className="Useful-links-exchange" />
         </div>
-        <Footer />
       </div>
     );
   }

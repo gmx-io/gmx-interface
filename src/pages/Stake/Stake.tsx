@@ -20,7 +20,6 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Footer from "components/Footer/Footer";
 import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import PageTitle from "components/PageTitle/PageTitle";
 import { BotanixBanner } from "components/Synthetics/BotanixBanner/BotanixBanner";
@@ -299,7 +298,6 @@ function StakeContent() {
       <UserIncentiveDistributionList />
 
       <InterviewModal type="lp" isVisible={isLpInterviewModalVisible} setIsVisible={setIsLpInterviewModalVisible} />
-      <Footer />
     </div>
   );
 }
@@ -315,7 +313,6 @@ export default function Stake() {
       <PageTitle isTop title={t`Stake`} qa="earn-page" />
 
       <BotanixBanner />
-      <Footer />
     </div>
   ) : (
     <StakeContent />

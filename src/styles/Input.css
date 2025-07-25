@@ -20,6 +20,6 @@
   box-sizing: border-box;
 
   &::placeholder {
-    color: var(--color-slate-500);
+    color: var(--color-slate-100);
   }
 }
