@@ -14,9 +14,16 @@ export type SignTypedDataParams = {
   types: SignatureTypes;
   typedData: Record<string, any>;
   domain: SignatureDomain;
+  shouldUseSignerMethod?: boolean;
 };
 
-export async function signTypedData({ signer, domain, types, typedData }: SignTypedDataParams) {
+export async function signTypedData({
+  signer,
+  domain,
+  types,
+  typedData,
+  shouldUseSignerMethod = false,
+}: SignTypedDataParams) {
   // filter inputs
   for (const [key, value] of Object.entries(domain)) {
     if (value === undefined) {
@@ -36,9 +43,7 @@ export async function signTypedData({ signer, domain, types, typedData }: SignTy
     }
   }
 
-  const primaryType = Object.keys(types).filter((t) => t !== "EIP712Domain")[0];
-
-  if (signer.signTypedData) {
+  if (shouldUseSignerMethod && signer.signTypedData) {
     try {
       return await signer.signTypedData(domain, types, typedData);
     } catch (e) {
@@ -49,6 +54,8 @@ export async function signTypedData({ signer, domain, types, typedData }: SignTy
       }
     }
   }
+
+  const primaryType = Object.keys(types).filter((t) => t !== "EIP712Domain")[0];
 
   const provider = signer.provider;
   const from = await signer.getAddress();

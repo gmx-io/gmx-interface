@@ -49,6 +49,7 @@ export const PRODUCTION_PREVIEW_KEY = "production-preview";
 export const REQUIRED_UI_VERSION_KEY = "required-ui-version";
 export const DEBUG_SWAP_SETTINGS_KEY = "debug-swap-settings";
 export const EXTERNAL_SWAPS_ENABLED_KEY = "external-swaps-enabled";
+export const EXTERNAL_SWAPS_WAS_FORCE_ENABLED_KEY = "external-swaps-was-force-enabled";
 export const DEBUG_SWAP_MARKETS_CONFIG_KEY = "debug-swap-markets-config";
 
 export const ONE_CLICK_TRADING_PROMO_HIDDEN_KEY = "one-click-trading-promo-hidden";
@@ -66,6 +67,7 @@ export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";
 
 export const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
+export const PERMITS_DISABLED_KEY = "permits-disabled";
 
 export const AB_FLAG_STORAGE_KEY = "ab-flags";
 

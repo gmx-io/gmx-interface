@@ -29,10 +29,7 @@ import {
   selectPositionEditorSelectedCollateralToken,
   selectPositionEditorSetCollateralInputValue,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
-import {
-  selectAddTokenPermit,
-  selectTokenPermits,
-} from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
+import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
@@ -48,7 +45,7 @@ import {
 import { convertToTokenAmount, getApprovalRequirements, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
 import { getCommonError, getEditCollateralError, getExpressError } from "domain/synthetics/trade/utils/validation";
-import { approveTokens } from "domain/tokens";
+import { useApproveToken } from "domain/tokens/useApproveTokens";
 import { bigNumberBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -60,8 +57,6 @@ import {
 } from "lib/metrics/utils";
 import { expandDecimals, formatAmountFree } from "lib/numbers";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { userAnalytics } from "lib/userAnalytics";
-import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import {
@@ -416,10 +411,10 @@ export function usePositionEditorButtonState(operation: Operation): {
     );
   }, [detectAndSetMaxSize, tooltipName]);
 
-  const addTokenPermit = useSelector(selectAddTokenPermit);
+  const { approveToken } = useApproveToken();
 
   async function onSubmit() {
-    if (!account) {
+    if (!account || !signer) {
       openConnectModal?.();
       return;
     }
@@ -427,36 +422,12 @@ export function usePositionEditorButtonState(operation: Operation): {
     if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
       if (!chainId || isApproving) return;
 
-      userAnalytics.pushEvent<TokenApproveClickEvent>({
-        event: "TokenApproveAction",
-        data: {
-          action: "ApproveClick",
-        },
-      });
-
-      approveTokens({
+      approveToken({
         setIsApproving,
-        signer,
         tokenAddress: tokensToApprove[0].tokenAddress,
-        spender: getContract(chainId, "SyntheticsRouter"),
-        pendingTxns: [],
-        setPendingTxns: () => null,
-        infoTokens: {},
         chainId,
-        permitParams: expressParams
-          ? {
-              addTokenPermit,
-            }
-          : undefined,
-        approveAmount: undefined,
-        onApproveFail: () => {
-          userAnalytics.pushEvent<TokenApproveResultEvent>({
-            event: "TokenApproveAction",
-            data: {
-              action: "ApproveFail",
-            },
-          });
-        },
+        signer,
+        allowPermit: Boolean(expressParams),
       });
 
       return;
@@ -525,7 +496,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     onSubmit,
   };
 
-  if (isApproving) {
+  if (isApproving && tokensToApprove.length) {
     const tokenToApprove = tokensToApprove[0];
     return {
       text: (

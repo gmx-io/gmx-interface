@@ -4,11 +4,14 @@ import { Link } from "react-router-dom";
 
 import { getChainName, getExplorerUrl } from "config/chains";
 import { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContextProvider";
+import { INVALID_PERMIT_SIGNATURE_ERROR } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
+import { metrics } from "lib/metrics";
 import Token from "sdk/abis/Token.json";
 import { getNativeToken, getToken } from "sdk/configs/tokens";
 import { InfoTokens, TokenInfo } from "sdk/types/tokens";
 
+import { getInvalidPermitSignatureToastContent } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
@@ -21,10 +24,12 @@ type Params = {
   permitParams:
     | {
         addTokenPermit: AddTokenPermitFn;
+        setIsPermitsDisabled: (disabled: boolean) => void;
+        isPermitsDisabled: boolean;
       }
     | undefined;
-  onApproveSubmitted?: () => void;
-  onApproveFail?: (error: Error) => void;
+  onApproveSubmitted?: ({ isPermit }: { isPermit: boolean }) => void;
+  onApproveFail?: (error: Error, { isPermit }: { isPermit: boolean }) => void;
   getTokenInfo?: (infoTokens: InfoTokens, tokenAddress: string) => TokenInfo;
   infoTokens?: InfoTokens;
   pendingTxns?: any[];
@@ -63,11 +68,11 @@ export async function approveTokens({
     // ...ignore in case of glv / gm approval
   }
 
-  if (permitParams?.addTokenPermit && shouldUsePermit) {
+  if (permitParams?.addTokenPermit && shouldUsePermit && !permitParams.isPermitsDisabled) {
     return await permitParams
       .addTokenPermit(tokenAddress, spender, approveAmount)
       .then(() => {
-        onApproveSubmitted?.();
+        onApproveSubmitted?.({ isPermit: true });
         helperToast.success(
           <div>
             <Trans>Permit signed!</Trans>
@@ -76,10 +81,16 @@ export async function approveTokens({
         );
       })
       .catch((e) => {
-        onApproveFail?.(e);
+        onApproveFail?.(e, { isPermit: true });
         let failMsg;
+        let isUserError = false;
+
         if (e.message.includes("user rejected")) {
+          isUserError = true;
           failMsg = t`Permit signing was cancelled`;
+        } else if (e.message.includes(INVALID_PERMIT_SIGNATURE_ERROR)) {
+          permitParams.setIsPermitsDisabled(true);
+          failMsg = getInvalidPermitSignatureToastContent();
         } else {
           failMsg = (
             <>
@@ -89,6 +100,11 @@ export async function approveTokens({
             </>
           );
         }
+
+        if (!isUserError) {
+          metrics.pushError(e, "approveTokens.permitError");
+        }
+
         helperToast.error(failMsg);
       })
       .finally(() => {
@@ -111,8 +127,9 @@ export async function approveTokens({
           <br />
         </div>
       );
+
       if (onApproveSubmitted) {
-        onApproveSubmitted();
+        onApproveSubmitted({ isPermit: false });
       }
       if (getTokenInfo && infoTokens && pendingTxns && setPendingTxns) {
         const token = getTokenInfo(infoTokens, tokenAddress);
@@ -124,7 +141,7 @@ export async function approveTokens({
       }
     })
     .catch((e) => {
-      onApproveFail?.(e);
+      onApproveFail?.(e, { isPermit: false });
       // eslint-disable-next-line no-console
       console.error(e);
       let failMsg;

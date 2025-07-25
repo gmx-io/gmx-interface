@@ -150,7 +150,7 @@ describe("increaseOrderHelper", () => {
             positionPriceImpactDeltaUsd: 0n,
             limitOrderType: undefined,
             triggerThresholdType: undefined,
-            externalSwapQuote: undefined,
+            swapStrategy: expect.any(Object),
           }),
         })
       );
