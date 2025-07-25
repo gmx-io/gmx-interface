@@ -255,6 +255,7 @@ export const selectPositionSellerFees = createSelector((q) => {
       feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
       swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
       uiFeeFactor,
+      type: "decrease",
     }),
     executionFee: getExecutionFee(
       chainId,

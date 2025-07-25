@@ -135,6 +135,7 @@ export const selectOrderEditorSwapFees = createSelector((q) => {
     swapProfitFeeUsd: 0n,
     uiFeeFactor,
     externalSwapQuote: undefined,
+    type: "increase",
   });
 });
 

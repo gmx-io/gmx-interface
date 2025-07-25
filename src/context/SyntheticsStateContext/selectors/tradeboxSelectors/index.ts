@@ -731,6 +731,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         feeDiscountUsd: 0n,
         swapProfitFeeUsd: 0n,
         uiFeeFactor,
+        type: "swap",
       });
     }
     case "increase": {
@@ -755,6 +756,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         feeDiscountUsd: increaseAmounts.feeDiscountUsd,
         swapProfitFeeUsd: 0n,
         uiFeeFactor,
+        type: "increase",
       });
     }
     case "decrease": {
@@ -789,6 +791,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
         swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
         uiFeeFactor,
+        type: "decrease",
       });
     }
     case "edit":
