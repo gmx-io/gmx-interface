@@ -229,7 +229,7 @@ export default function TokenSelector(props: Props) {
             isLoaded={Boolean(visibleTokens.length)}
           />
         )}
-        <div className="TokenSelector-tokens">
+        <div className="flex flex-col gap-8 overflow-y-auto">
           {sortedFilteredTokens.map((token, tokenIndex) => {
             let info = infoTokens?.[token.address] || ({} as TokenInfo);
 
@@ -250,7 +250,10 @@ export default function TokenSelector(props: Props) {
               <div
                 key={token.address}
                 data-qa={`${qa}-token-${token.symbol}`}
-                className={cx("TokenSelector-token-row", { disabled: tokenState.disabled })}
+                className={cx(
+                  "text-body-medium flex w-full items-center justify-between rounded-8 bg-slate-800 p-8  hover:bg-slate-700",
+                  { disabled: tokenState.disabled }
+                )}
                 onClick={() => !tokenState.disabled && onSelectToken(token)}
               >
                 {tokenState.disabled && tokenState.message && (
@@ -266,31 +269,25 @@ export default function TokenSelector(props: Props) {
                 )}
                 <div className="Token-info">
                   {showTokenImgInDropdown && (
-                    <TokenIcon
-                      symbol={token.symbol}
-                      className="token-logo"
-                      displaySize={40}
-                      importSize={40}
-                      badge={tokenBadge}
-                    />
+                    <TokenIcon symbol={token.symbol} className="" displaySize={40} importSize={40} badge={tokenBadge} />
                   )}
-                  <div className="ml-8 flex items-center gap-4">
-                    <div className="Token-text">
+                  <div className="text-body-large ml-8 flex items-center gap-4">
+                    <div>
                       {token.isMarketToken && marketToken ? `GM: ${getMarketIndexName(marketToken)}` : token.symbol}
                     </div>
                     {marketToken && <span className="text-accent">[{getMarketPoolName(marketToken)}]</span>}
                   </div>
                 </div>
-                <div className="Token-balance">
+                <div className="text-body-large flex flex-col items-end gap-4">
                   {(showBalances && balance !== undefined && (
-                    <div className="Token-text">
+                    <div>
                       {balance > 0 &&
                         formatBalanceAmount(balance, token.decimals, undefined, { isStable: token.isStable })}
                       {balance == 0n && "-"}
                     </div>
                   )) ||
                     null}
-                  <span className="text-accent">
+                  <span className="text-body-small text-slate-100">
                     {showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
                       <div>${formatAmount(balanceUsd, 30, 2, true)}</div>
                     )}

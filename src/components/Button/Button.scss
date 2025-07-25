@@ -5,18 +5,12 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
 
 .button {
   cursor: pointer;
-  font-size: 13px;
-  line-height: 16px;
+  line-height: 1.25;
   display: inline-flex;
   align-items: center;
   font-weight: 500;
-  padding: 8px 12px;
   border: none;
   user-select: none;
-
-  @media (max-width: 768px) {
-    padding: 6px 10px;
-  }
 
   &.center {
     justify-content: center;

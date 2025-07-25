@@ -1,11 +1,9 @@
 .TokenSelector-modal .Modal-content {
   width: 42rem;
   position: absolute;
-  max-height: 100vh;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  border: none;
+  top: auto;
+  bottom: auto;
+  right: auto;
 }
 
 .TokenSelector-token-name {

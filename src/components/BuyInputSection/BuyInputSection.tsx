@@ -151,7 +151,7 @@ export default function BuyInputSection(props: Props) {
           border-slate-800 bg-slate-800 px-14 pb-16 pt-12 text-12 leading-[16px]`,
           {
             "bg-opacity-70": isDisabled,
-            "focus-within:border-blue-300 hover:border-blue-300": !isDisabled,
+            "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300": !isDisabled,
           }
         )}
         onClick={handleBoxClick}

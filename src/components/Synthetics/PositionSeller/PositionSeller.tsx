@@ -1033,8 +1033,6 @@ export function PositionSeller() {
                 isWrapOrUnwrap={false}
               />
 
-              <div className="h-1 bg-slate-600" />
-
               {!isTwap && (
                 <>
                   {receiveTokenRow}

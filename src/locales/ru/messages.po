@@ -678,7 +678,6 @@ msgstr ""
 msgid "Max. Leverage Exceeded"
 msgstr ""
 
-#: src/components/SearchInput/SearchInput.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search Token"
 msgstr "Искать Токен"
@@ -1629,6 +1628,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Chinese)"
+msgstr ""
+
+#: src/components/SearchInput/SearchInput.tsx
+msgid "Search"
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx

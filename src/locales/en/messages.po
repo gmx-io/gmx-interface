@@ -678,7 +678,6 @@ msgstr "Max network fee buffer precision is 0.01%"
 msgid "Max. Leverage Exceeded"
 msgstr "Max. Leverage Exceeded"
 
-#: src/components/SearchInput/SearchInput.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search Token"
 msgstr "Search Token"
@@ -1630,6 +1629,10 @@ msgstr "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Chinese)"
 msgstr "GMX (Chinese)"
+
+#: src/components/SearchInput/SearchInput.tsx
+msgid "Search"
+msgstr "Search"
 
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Price is below Mark Price"

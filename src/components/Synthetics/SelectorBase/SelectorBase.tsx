@@ -257,7 +257,6 @@ function SelectorBaseMobile(props: Props) {
         qa={props.qa}
         headerRef={headerContentRef}
         contentPadding={props.mobileModalContentPadding}
-        noDivider
         footerContent={props.footerContent}
       >
         <SelectorContextProvider close={toggleVisibility} mobileHeader={headerContent}>

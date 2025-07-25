@@ -84,7 +84,7 @@ export default function SearchInput({
           ref={inputRef}
           data-qa={qa}
           type="text"
-          placeholder={placeholder ?? t`Search Token`}
+          placeholder={placeholder ?? t`Search`}
           value={value}
           onChange={handleChange}
           onKeyDown={onKeyDown}
@@ -92,7 +92,7 @@ export default function SearchInput({
           autoFocus={autoFocus ?? !isSmallerScreen}
           className={cx("block w-full rounded-8 border bg-slate-800 leading-1 placeholder-slate-100", {
             "border-blue-300": isFocused,
-            "border-slate-600": !isFocused,
+            "border-slate-800": !isFocused,
             "p-8 pl-32 text-[13px]": size === "m",
             "py-[8.5px] pl-34 pr-30 text-14 ": size === "s",
           })}

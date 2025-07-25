@@ -32,16 +32,13 @@
   z-index: 20;
   position: relative;
   max-width: 100%;
-  max-height: 90vh;
+  max-height: 80vh;
   overflow: auto;
-  background: var(--color-slate-800);
-  border-radius: 4px;
+  background: var(--color-slate-900);
+  border-radius: 8px;
+  border: 0.5px solid var(--color-slate-600);
   display: flex;
   flex-direction: column;
-}
-
-.divider {
-  border-bottom: 1px solid var(--color-slate-600);
 }
 
 .Modal.non-scrollable .Modal-content {
@@ -50,6 +47,7 @@
 
 .Modal-header-wrapper {
   margin: 1.5rem;
+  margin-bottom: 0;
 }
 
 .Modal-title-bar {

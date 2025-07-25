@@ -599,7 +599,9 @@ export function OrderEditor(p: Props) {
                 onInputValueChange={(e) => setSizeInputValue(e.target.value)}
                 bottomLeftValue={isTriggerDecreaseOrderType(p.order.orderType) ? formatUsd(sizeUsd) : undefined}
                 isBottomLeftValueMuted={sizeUsd === 0n}
-                bottomRightLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Max` : undefined}
+                bottomRightLabel={
+                  isTriggerDecreaseOrderType(p.order.orderType) && positionSize !== undefined ? t`Max` : undefined
+                }
                 bottomRightValue={
                   isTriggerDecreaseOrderType(p.order.orderType) ? formatUsdPrice(positionSize) : undefined
                 }

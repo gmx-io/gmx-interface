@@ -191,7 +191,6 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName,
             variant="secondary"
             imgSrc={calendarIcon}
             refName="buttonRef"
-            slim
           >
             {buttonText}
           </Popover.Button>
@@ -312,7 +311,6 @@ export function DateSelect({
           variant="secondary"
           imgSrc={calendarIcon}
           refName="buttonRef"
-          slim
         >
           {buttonText}
         </Popover.Button>

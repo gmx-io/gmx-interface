@@ -66,7 +66,7 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
           <Trans>Daily and Cumulative PnL</Trans>
         </div>
         <div className="flex flex-wrap items-stretch justify-end gap-8 py-8">
-          <Button variant="secondary" data-exclude slim imgSrc={downloadIcon} onClick={handleImageDownload}>
+          <Button variant="secondary" data-exclude imgSrc={downloadIcon} onClick={handleImageDownload}>
             PNG
           </Button>
           <DateSelect date={fromDate} onChange={setFromDate} buttonTextPrefix={t`From`} />

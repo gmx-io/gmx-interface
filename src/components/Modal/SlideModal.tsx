@@ -24,7 +24,6 @@ function MobileSlideModal({
   contentPadding = true,
   footerContent,
   className,
-  noDivider = false,
 }: PropsWithChildren<{
   label?: React.ReactNode;
   headerContent?: React.ReactNode;
@@ -35,7 +34,6 @@ function MobileSlideModal({
   contentPadding?: boolean;
   footerContent?: React.ReactNode;
   className?: string;
-  noDivider?: boolean;
 }>) {
   const curtainStyle = useMemo(
     () => ({
@@ -274,8 +272,6 @@ function MobileSlideModal({
             ) : headerContent ? (
               <div className="px-14 last:*:mb-14">{headerContent}</div>
             ) : null}
-
-            {!noDivider && <div className="divider" />}
           </div>
 
           <div
@@ -311,7 +307,6 @@ export function SlideModal({
   contentPadding = true,
   footerContent,
   className,
-  noDivider = false,
   desktopContentClassName,
 }: PropsWithChildren<{
   label?: React.ReactNode;
@@ -323,7 +318,6 @@ export function SlideModal({
   contentPadding?: boolean;
   footerContent?: React.ReactNode;
   className?: string;
-  noDivider?: boolean;
   desktopContentClassName?: string;
 }>) {
   const isMobile = useMedia("(max-width: 700px)", false);
@@ -339,7 +333,6 @@ export function SlideModal({
         setIsVisible={setIsVisible}
         contentPadding={contentPadding}
         footerContent={footerContent}
-        noDivider={noDivider}
         className={className}
       >
         {children}
@@ -356,7 +349,6 @@ export function SlideModal({
         label={label}
         headerContent={headerContent}
         contentPadding={contentPadding}
-        noDivider={noDivider}
         footerContent={footerContent}
         className={className}
         contentClassName={desktopContentClassName}

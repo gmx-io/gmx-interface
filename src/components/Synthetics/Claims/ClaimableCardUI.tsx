@@ -63,7 +63,7 @@ function Section({ buttonText, onButtonClick, tooltipText, title, usd }: Section
         <span className="text-body-small text-slate-100">{title}</span>
       </div>
       <div className="max-xl:w-full">
-        <Button slim variant="secondary" disabled={usd <= 0} onClick={onButtonClick} className="max-xl:w-full">
+        <Button variant="secondary" disabled={usd <= 0} onClick={onButtonClick} className="max-xl:w-full">
           {buttonText}
         </Button>
       </div>
