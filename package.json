@@ -10,7 +10,7 @@
     "build": "NODE_OPTIONS='--max-old-space-size=8192' VITE_APP_VERSION=$(git rev-parse HEAD) vite build",
     "build:analyze": "NODE_OPTIONS='--max-old-space-size=8192' VITE_APP_VERSION=$(git rev-parse HEAD) vite build --mode analyze",
     "build-home": "NODE_OPTIONS='--max-old-space-size=8192' VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-home vite build",
-    "build-app": "GENERATE_SOURCEMAP=false NODE_OPTIONS='--max-old-space-size=8192' VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-app vite build",
+    "build-app": "NODE_OPTIONS='--max-old-space-size=8192' VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-app vite build",
     "test": "vitest",
     "test:ci": "vitest run",
     "lint": "node node_modules/.bin/eslint src",
