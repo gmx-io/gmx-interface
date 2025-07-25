@@ -8,6 +8,7 @@ import type {
   FunctionFragment,
   Result,
   Interface,
+  EventFragment,
   AddressLike,
   ContractRunner,
   ContractMethod,
@@ -17,6 +18,7 @@ import type {
   TypedContractEvent,
   TypedDeferredTopicFilter,
   TypedEventLog,
+  TypedLogDescription,
   TypedListener,
   TypedContractMethod,
 } from "./common";
@@ -90,6 +92,7 @@ export declare namespace IBaseOrderUtils {
     shouldUnwrapNativeToken: boolean;
     autoCancel: boolean;
     referralCode: BytesLike;
+    dataList: BytesLike[];
   };
 
   export type CreateOrderParamsStructOutput = [
@@ -101,6 +104,7 @@ export declare namespace IBaseOrderUtils {
     shouldUnwrapNativeToken: boolean,
     autoCancel: boolean,
     referralCode: string,
+    dataList: string[],
   ] & {
     addresses: IBaseOrderUtils.CreateOrderParamsAddressesStructOutput;
     numbers: IBaseOrderUtils.CreateOrderParamsNumbersStructOutput;
@@ -110,6 +114,7 @@ export declare namespace IBaseOrderUtils {
     shouldUnwrapNativeToken: boolean;
     autoCancel: boolean;
     referralCode: string;
+    dataList: string[];
   };
 }
 
@@ -130,10 +135,14 @@ export interface SubaccountRouterInterface extends Interface {
       | "sendNativeToken"
       | "sendTokens"
       | "sendWnt"
+      | "setIntegrationId"
       | "setMaxAllowedSubaccountActionCount"
       | "setSubaccountAutoTopUpAmount"
+      | "setSubaccountExpiresAt"
       | "updateOrder"
   ): FunctionFragment;
+
+  getEvent(nameOrSignatureOrTopic: "TokenTransferReverted"): EventFragment;
 
   encodeFunctionData(functionFragment: "addSubaccount", values: [AddressLike]): string;
   encodeFunctionData(functionFragment: "cancelOrder", values: [BytesLike]): string;
@@ -152,11 +161,16 @@ export interface SubaccountRouterInterface extends Interface {
   encodeFunctionData(functionFragment: "sendNativeToken", values: [AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "sendTokens", values: [AddressLike, AddressLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "sendWnt", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "setIntegrationId", values: [AddressLike, BytesLike]): string;
   encodeFunctionData(
     functionFragment: "setMaxAllowedSubaccountActionCount",
     values: [AddressLike, BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "setSubaccountAutoTopUpAmount", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "setSubaccountExpiresAt",
+    values: [AddressLike, BytesLike, BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "updateOrder",
     values: [BytesLike, BigNumberish, BigNumberish, BigNumberish, BigNumberish, BigNumberish, boolean]
@@ -176,9 +190,24 @@ export interface SubaccountRouterInterface extends Interface {
   decodeFunctionResult(functionFragment: "sendNativeToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendTokens", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendWnt", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setIntegrationId", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setMaxAllowedSubaccountActionCount", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setSubaccountAutoTopUpAmount", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setSubaccountExpiresAt", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "updateOrder", data: BytesLike): Result;
+}
+
+export namespace TokenTransferRevertedEvent {
+  export type InputTuple = [reason: string, returndata: BytesLike];
+  export type OutputTuple = [reason: string, returndata: string];
+  export interface OutputObject {
+    reason: string;
+    returndata: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
 
 export interface SubaccountRouter extends BaseContract {
@@ -228,9 +257,6 @@ export interface SubaccountRouter extends BaseContract {
 
   eventEmitter: TypedContractMethod<[], [string], "view">;
 
-  /**
-   * Receives and executes a batch of function calls on this contract.
-   */
   multicall: TypedContractMethod<[data: BytesLike[]], [string[]], "payable">;
 
   orderHandler: TypedContractMethod<[], [string], "view">;
@@ -249,6 +275,8 @@ export interface SubaccountRouter extends BaseContract {
 
   sendWnt: TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
 
+  setIntegrationId: TypedContractMethod<[subaccount: AddressLike, integrationId: BytesLike], [void], "payable">;
+
   setMaxAllowedSubaccountActionCount: TypedContractMethod<
     [subaccount: AddressLike, actionType: BytesLike, maxAllowedCount: BigNumberish],
     [void],
@@ -256,6 +284,12 @@ export interface SubaccountRouter extends BaseContract {
   >;
 
   setSubaccountAutoTopUpAmount: TypedContractMethod<[subaccount: AddressLike, amount: BigNumberish], [void], "payable">;
+
+  setSubaccountExpiresAt: TypedContractMethod<
+    [subaccount: AddressLike, actionType: BytesLike, expiresAt: BigNumberish],
+    [void],
+    "payable"
+  >;
 
   updateOrder: TypedContractMethod<
     [
@@ -296,6 +330,9 @@ export interface SubaccountRouter extends BaseContract {
     nameOrSignature: "sendWnt"
   ): TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
   getFunction(
+    nameOrSignature: "setIntegrationId"
+  ): TypedContractMethod<[subaccount: AddressLike, integrationId: BytesLike], [void], "payable">;
+  getFunction(
     nameOrSignature: "setMaxAllowedSubaccountActionCount"
   ): TypedContractMethod<
     [subaccount: AddressLike, actionType: BytesLike, maxAllowedCount: BigNumberish],
@@ -305,6 +342,9 @@ export interface SubaccountRouter extends BaseContract {
   getFunction(
     nameOrSignature: "setSubaccountAutoTopUpAmount"
   ): TypedContractMethod<[subaccount: AddressLike, amount: BigNumberish], [void], "payable">;
+  getFunction(
+    nameOrSignature: "setSubaccountExpiresAt"
+  ): TypedContractMethod<[subaccount: AddressLike, actionType: BytesLike, expiresAt: BigNumberish], [void], "payable">;
   getFunction(
     nameOrSignature: "updateOrder"
   ): TypedContractMethod<
@@ -321,5 +361,24 @@ export interface SubaccountRouter extends BaseContract {
     "payable"
   >;
 
-  filters: {};
+  getEvent(
+    key: "TokenTransferReverted"
+  ): TypedContractEvent<
+    TokenTransferRevertedEvent.InputTuple,
+    TokenTransferRevertedEvent.OutputTuple,
+    TokenTransferRevertedEvent.OutputObject
+  >;
+
+  filters: {
+    "TokenTransferReverted(string,bytes)": TypedContractEvent<
+      TokenTransferRevertedEvent.InputTuple,
+      TokenTransferRevertedEvent.OutputTuple,
+      TokenTransferRevertedEvent.OutputObject
+    >;
+    TokenTransferReverted: TypedContractEvent<
+      TokenTransferRevertedEvent.InputTuple,
+      TokenTransferRevertedEvent.OutputTuple,
+      TokenTransferRevertedEvent.OutputObject
+    >;
+  };
 }

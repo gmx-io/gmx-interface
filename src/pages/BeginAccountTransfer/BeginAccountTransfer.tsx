@@ -276,7 +276,10 @@ export default function BeginAccountTransfer() {
     spenderAddress: parsedReceiver,
     tokenAddresses: [feeGmxTrackerAddress],
   });
-  const { balancesData } = useTokenBalances(chainId, undefined, [{ address: feeGmxTrackerAddress }], 1000);
+  const { balancesData } = useTokenBalances(chainId, {
+    overrideTokenList: [{ address: feeGmxTrackerAddress }],
+    refreshInterval: 1000,
+  });
 
   const feeGmxTrackerBalance = balancesData?.[feeGmxTrackerAddress];
   const needFeeGmxTrackerApproval = useMemo(

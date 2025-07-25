@@ -18,6 +18,8 @@ import {
   EditCollateralMetricData,
   ExpressOrderMetricData,
   IncreaseOrderMetricData,
+  MultichainDepositMetricData,
+  MultichainWithdrawalMetricData,
   OrderCancelledEvent,
   OrderCreatedEvent,
   OrderExecutedEvent,
@@ -97,6 +99,8 @@ export function initSwapMetricData({
   expressParams,
   asyncExpressParams,
   fastExpressParams,
+  chainId,
+  isCollateralFromMultichain,
 }: {
   fromToken: TokenData | undefined;
   toToken: TokenData | undefined;
@@ -117,6 +121,8 @@ export function initSwapMetricData({
   expressParams: ExpressTxnParams | undefined;
   asyncExpressParams: ExpressTxnParams | undefined;
   fastExpressParams: ExpressTxnParams | undefined;
+  chainId: number;
+  isCollateralFromMultichain: boolean;
 }) {
   let metricType: SwapMetricData["metricType"] = "swap";
   if (tradeMode === TradeMode.Twap) {
@@ -164,6 +170,8 @@ export function initSwapMetricData({
     partsCount,
     tradeMode,
     expressData,
+    chainId,
+    isCollateralFromMultichain,
   });
 }
 
@@ -199,6 +207,8 @@ export function initIncreaseOrderMetricData({
   expressParams,
   asyncExpressParams,
   fastExpressParams,
+  chainId,
+  isCollateralFromMultichain,
 }: {
   fromToken: TokenData | undefined;
   increaseAmounts: IncreasePositionAmounts | undefined;
@@ -232,6 +242,8 @@ export function initIncreaseOrderMetricData({
   expressParams: ExpressTxnParams | undefined;
   asyncExpressParams: ExpressTxnParams | undefined;
   fastExpressParams: ExpressTxnParams | undefined;
+  chainId: number;
+  isCollateralFromMultichain: boolean;
 }) {
   let metricType: IncreaseOrderMetricData["metricType"] = "increasePosition";
   if (orderType === OrderType.LimitIncrease) {
@@ -298,6 +310,8 @@ export function initIncreaseOrderMetricData({
     partsCount,
     tradeMode,
     expressData: getExpressMetricData({ expressParams, asyncExpressParams, fastExpressParams }),
+    chainId,
+    isCollateralFromMultichain,
   });
 }
 
@@ -327,6 +341,8 @@ export function initDecreaseOrderMetricData({
   expressParams,
   asyncExpressParams,
   fastExpressParams,
+  chainId,
+  isCollateralFromMultichain,
 }: {
   collateralToken: TokenData | undefined;
   decreaseAmounts: DecreasePositionAmounts | undefined;
@@ -354,6 +370,8 @@ export function initDecreaseOrderMetricData({
   expressParams: ExpressTxnParams | undefined;
   asyncExpressParams: ExpressTxnParams | undefined;
   fastExpressParams: ExpressTxnParams | undefined;
+  chainId: number;
+  isCollateralFromMultichain: boolean;
 }) {
   let metricType: DecreaseOrderMetricData["metricType"] = "decreasePosition";
   if (orderType === OrderType.LimitDecrease) {
@@ -411,6 +429,8 @@ export function initDecreaseOrderMetricData({
     partsCount,
     tradeMode,
     expressData: getExpressMetricData({ expressParams, asyncExpressParams, fastExpressParams }),
+    chainId,
+    isCollateralFromMultichain,
   });
 }
 
@@ -427,6 +447,8 @@ export function initEditCollateralMetricData({
   expressParams,
   asyncExpressParams,
   fastExpressParams,
+  chainId,
+  isCollateralFromMultichain,
 }: {
   collateralToken: TokenData | undefined;
   executionFee: ExecutionFee | undefined;
@@ -440,6 +462,8 @@ export function initEditCollateralMetricData({
   expressParams: ExpressTxnParams | undefined;
   asyncExpressParams: ExpressTxnParams | undefined;
   fastExpressParams: ExpressTxnParams | undefined;
+  chainId: number;
+  isCollateralFromMultichain: boolean;
 }) {
   return metrics.setCachedMetricData<EditCollateralMetricData>({
     metricId: getPositionOrderMetricId({
@@ -466,6 +490,8 @@ export function initEditCollateralMetricData({
     isExpress1CT: Boolean(subaccount),
     requestId: getRequestId(),
     expressData: getExpressMetricData({ expressParams, asyncExpressParams, fastExpressParams }),
+    chainId,
+    isCollateralFromMultichain,
   });
 }
 
@@ -617,6 +643,62 @@ export function initShiftGmMetricData({
   });
 }
 
+export function initMultichainDepositMetricData({
+  sourceChain,
+  settlementChain,
+  assetSymbol,
+  sizeInUsd,
+  isFirstDeposit,
+}: {
+  sourceChain: number;
+  settlementChain: number;
+  assetSymbol: string;
+  sizeInUsd: bigint;
+  isFirstDeposit: boolean;
+}) {
+  return metrics.setCachedMetricData<MultichainDepositMetricData>({
+    metricId: getMultichainDepositMetricId({
+      sourceChain,
+      settlementChain,
+      assetSymbol,
+    }),
+    metricType: "multichainDeposit",
+    sourceChain,
+    settlementChain,
+    assetSymbol,
+    sizeInUsd: formatAmountForMetrics(sizeInUsd)!,
+    isFirstDeposit,
+  });
+}
+
+export function initMultichainWithdrawalMetricData({
+  sourceChain,
+  settlementChain,
+  assetSymbol,
+  isFirstWithdrawal,
+  sizeInUsd,
+}: {
+  sourceChain: number;
+  settlementChain: number;
+  assetSymbol: string;
+  isFirstWithdrawal: boolean;
+  sizeInUsd: bigint;
+}) {
+  return metrics.setCachedMetricData<MultichainWithdrawalMetricData>({
+    metricId: getMultichainWithdrawalMetricId({
+      sourceChain,
+      settlementChain,
+      assetSymbol,
+    }),
+    metricType: "multichainWithdrawal",
+    sourceChain,
+    settlementChain,
+    assetSymbol,
+    sizeInUsd: formatAmountForMetrics(sizeInUsd)!,
+    isFirstWithdrawal,
+  });
+}
+
 export function getGMSwapMetricId(p: {
   marketAddress: string | undefined;
   executionFee: bigint | undefined;
@@ -669,6 +751,22 @@ export function getPositionOrderMetricId(p: {
     p.isLong || "isLong",
     p.orderType || "orderType",
   ].join(":")}`;
+}
+
+export function getMultichainDepositMetricId(p: {
+  sourceChain: number;
+  settlementChain: number;
+  assetSymbol: string;
+}): MultichainDepositMetricData["metricId"] {
+  return `multichainDeposit:${[p.sourceChain, p.settlementChain, p.assetSymbol].join(":")}`;
+}
+
+export function getMultichainWithdrawalMetricId(p: {
+  sourceChain: number;
+  settlementChain: number;
+  assetSymbol: string;
+}): MultichainWithdrawalMetricData["metricId"] {
+  return `multichainWithdrawal:${[p.sourceChain, p.settlementChain, p.assetSymbol].join(":")}`;
 }
 
 export function sendOrderSubmittedMetric(metricId: OrderMetricId) {

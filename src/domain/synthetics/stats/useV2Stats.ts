@@ -1,10 +1,13 @@
 // current v2
 import { useMemo } from "react";
 
+import type { ContractsChainId } from "sdk/configs/chains";
+
 import useV2FeesInfo from "./useV2FeesInfo";
 import { useMarketsInfoRequest } from "../markets";
 import useUsers from "../stats/useUsers";
 import useVolumeInfo from "../stats/useVolumeInfo";
+import { useTokensDataRequest } from "../tokens";
 
 export type DashboardOverview = {
   totalGMLiquidity: bigint;
@@ -19,10 +22,11 @@ export type DashboardOverview = {
   totalUsers: bigint;
 };
 
-export default function useV2Stats(chainId: number): DashboardOverview {
+export default function useV2Stats(chainId: ContractsChainId): DashboardOverview {
   const volumeInfo = useVolumeInfo(chainId);
   const feesInfo = useV2FeesInfo(chainId);
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const usersInfo = useUsers(chainId);
 
   const stats = useMemo(() => {

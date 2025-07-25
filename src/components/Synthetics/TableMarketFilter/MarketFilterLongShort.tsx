@@ -4,7 +4,11 @@ import { useCallback, useMemo } from "react";
 import type { Address } from "viem";
 
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectChainId, selectOrdersInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectChainId,
+  selectOrdersInfoData,
+  selectSrcChainId,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateContext/selectors/positionsSelectors";
 import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
@@ -46,10 +50,11 @@ const selectPositionsWithOrders = createSelector((q) => {
 
 export function MarketFilterLongShort({ value, onChange, withPositions, asButton }: MarketFilterLongShortProps) {
   const chainId = useSelector(selectChainId);
+  const srcChainId = useSelector(selectSrcChainId);
   const marketsInfoData = useMarketsInfoData();
   const allPositions = useSelector(selectPositionsInfoDataSortedByMarket);
   const filteredPositions = useSelector(selectPositionsWithOrders);
-  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, {
+  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, srcChainId, {
     isDeposit: true,
     withGlv: false,
   });
