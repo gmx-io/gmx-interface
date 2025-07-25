@@ -195,21 +195,9 @@ export function getTradeFees(p: {
     uiSwapFee,
   ]);
 
-  // TODO: this is the same as totalFees, we should remove this
-  const payTotalFees = getTotalFeeItem([
-    ...(swapFees || []),
-    swapProfitFee,
-    swapPriceImpact,
-    positionFeeAfterDiscount,
-    borrowFee,
-    fundingFee,
-    uiFee,
-    uiSwapFee,
-  ]);
-
   return {
     totalFees,
-    payTotalFees,
+    payTotalFees: totalFees,
     swapFees,
     swapProfitFee,
     swapPriceImpact,

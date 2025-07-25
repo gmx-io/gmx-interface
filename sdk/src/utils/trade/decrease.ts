@@ -170,8 +170,7 @@ export function getDecreasePositionAmounts(p: {
       0n +
       values.positionFeeUsd +
       values.uiFeeUsd +
-      (values.totalPendingImpactDeltaUsd < 0 ? values.totalPendingImpactDeltaUsd : 0n) -
-      values.priceImpactDiffUsd;
+      (values.totalPendingImpactDeltaUsd < 0 ? values.totalPendingImpactDeltaUsd : 0n);
 
     values.payedOutputUsd = totalFeesUsd;
 
@@ -297,7 +296,6 @@ export function getDecreasePositionAmounts(p: {
   const negativePnlUsd = values.realizedPnl < 0 ? bigMath.abs(values.realizedPnl) : 0n;
   const negativePriceImpactUsd =
     values.totalPendingImpactDeltaUsd < 0 ? bigMath.abs(values.totalPendingImpactDeltaUsd) : 0n;
-  const priceImpactDiffUsd = values.priceImpactDiffUsd > 0 ? values.priceImpactDiffUsd : 0n;
 
   const totalFeesUsd =
     values.positionFeeUsd +
@@ -307,8 +305,7 @@ export function getDecreasePositionAmounts(p: {
     values.swapUiFeeUsd +
     values.uiFeeUsd +
     negativePnlUsd +
-    negativePriceImpactUsd -
-    priceImpactDiffUsd;
+    negativePriceImpactUsd;
 
   const payedInfo = payForCollateralCost({
     initialCostUsd: totalFeesUsd,
