@@ -63,17 +63,13 @@ export async function buildAndSignRemoveSubaccountTxn({
 }): Promise<ExpressTxnData> {
   const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
 
-  const isMultichain = subaccount.signedApproval.subaccountRouterAddress
-    ? subaccount.signedApproval.subaccountRouterAddress === getContract(chainId, "MultichainSubaccountRouter")
-    : srcChainId !== undefined;
+  const isMultichain = srcChainId !== undefined;
 
-  const relayRouterAddress =
-    subaccount.signedApproval.subaccountRouterAddress ??
-    getExpressContractAddress(chainId, {
-      isSubaccount: true,
-      isMultichain,
-      scope: "subaccount",
-    });
+  const relayRouterAddress = getExpressContractAddress(chainId, {
+    isSubaccount: true,
+    isMultichain,
+    scope: "subaccount",
+  });
 
   let signature: string;
 
