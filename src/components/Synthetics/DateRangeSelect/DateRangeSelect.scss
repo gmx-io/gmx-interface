@@ -43,13 +43,13 @@
 
   &-month {
     padding: 0;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 
   &-days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    padding-left: 12px;
-    padding-right: 12px;
   }
 
   &-day {
