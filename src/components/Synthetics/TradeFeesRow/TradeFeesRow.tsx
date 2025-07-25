@@ -293,14 +293,12 @@ export function TradeFeesRow(p: Props) {
         }
       : undefined;
 
-    console.log("p.proportionalPendingImpact", p.proportionalPendingImpact);
-
     const proportionalPendingImpactDeltaUsdRow =
       showDebugValues &&
       (p.proportionalPendingImpact?.deltaUsd !== undefined && p.proportionalPendingImpact.deltaUsd !== 0n
         ? {
             id: "proportionalPendingImpactDeltaUsd",
-            label: <div className="text-white">{t`Proportional Pending Impact`}:</div>,
+            label: <div className="text-white">{`Proportional Pending Impact`}:</div>,
             value: formatDeltaUsd(p.proportionalPendingImpact.deltaUsd),
             className: getPositiveOrNegativeClass(p.proportionalPendingImpact.deltaUsd, "text-green-500"),
           }
@@ -311,7 +309,7 @@ export function TradeFeesRow(p: Props) {
       (p.closePriceImpact?.deltaUsd !== undefined && p.closePriceImpact.deltaUsd !== 0n
         ? {
             id: "closePriceImpactDeltaUsd",
-            label: <div className="text-white">{t`Close Price Impact`}:</div>,
+            label: <div className="text-white">{`Close Price Impact`}:</div>,
             value: formatDeltaUsd(p.closePriceImpact.deltaUsd),
             className: getPositiveOrNegativeClass(p.closePriceImpact.deltaUsd, "text-green-500"),
           }
