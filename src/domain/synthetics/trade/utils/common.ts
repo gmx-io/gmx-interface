@@ -188,6 +188,7 @@ export function getTradeFees(p: {
     externalSwapFee,
     swapProfitFee,
     swapPriceImpact,
+    positionPriceImpact,
     positionFeeAfterDiscount,
     borrowFee,
     fundingFee,
