@@ -282,7 +282,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
     let removeSubaccount: () => Promise<void>;
 
-    if (srcChainId) {
+    if (srcChainId !== undefined) {
       const globalExpressParams = calcSelector(selectExpressGlobalParams);
       const isSponsoredCallAvailable = calcSelector(selectIsSponsoredCallAvailable);
 
