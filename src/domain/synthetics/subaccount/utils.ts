@@ -10,6 +10,7 @@ import {
   zeroHash,
 } from "viem";
 
+import { isSourceChain } from "config/multichain";
 import type { AnyChainId, ContractsChainId } from "config/static/chains";
 import type {
   SignedSubacсountApproval,
@@ -174,13 +175,16 @@ export function getIsSubaccountNonceExpired({
   }
 
   let onChainNonce: bigint;
-  if (
-    signedApproval.subaccountRouterAddress === getContract(chainId, "SubaccountGelatoRelayRouter") ||
-    !signedApproval.subaccountRouterAddress
-  ) {
+  if (signedApproval.subaccountRouterAddress === getContract(chainId, "SubaccountGelatoRelayRouter")) {
     onChainNonce = onchainData.approvalNonce;
   } else if (signedApproval.subaccountRouterAddress === getContract(chainId, "MultichainSubaccountRouter")) {
     onChainNonce = onchainData.multichainApprovalNonce;
+  } else if (!signedApproval.subaccountRouterAddress) {
+    if (isSourceChain(signedApproval.signatureChainId)) {
+      onChainNonce = onchainData.multichainApprovalNonce;
+    } else {
+      onChainNonce = onchainData.approvalNonce;
+    }
   } else {
     // eslint-disable-next-line no-console
     console.error(
@@ -209,13 +213,21 @@ export function getIsSubaccountApprovalInvalid({
 }): boolean {
   const isSignedSubaccountFresh = !onchainData.active;
 
+  let relatedOnchainNonce: bigint | undefined;
+  if (signedApproval.subaccountRouterAddress === getContract(chainId, "MultichainSubaccountRouter")) {
+    relatedOnchainNonce = onchainData.multichainApprovalNonce;
+  } else if (
+    signedApproval.subaccountRouterAddress === getContract(chainId, "SubaccountGelatoRelayRouter") ||
+    !signedApproval.subaccountRouterAddress
+  ) {
+    relatedOnchainNonce = onchainData.approvalNonce;
+  } else {
+    return true;
+  }
+
   // Technically it is possible to create a new subaccount without deactivating the old one
   // For this we need to check approval signature even if currently there is a subaccount but our nonce
   // would be able to update it
-  const relatedOnchainNonce =
-    signedApproval.subaccountRouterAddress === getContract(chainId, "MultichainSubaccountRouter")
-      ? onchainData.multichainApprovalNonce
-      : onchainData.approvalNonce;
   const isSignedSubaccountPossibleUpdate = signedApproval.nonce === relatedOnchainNonce;
 
   return (

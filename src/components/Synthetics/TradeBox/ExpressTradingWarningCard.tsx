@@ -65,8 +65,10 @@ export function ExpressTradingWarningCard({
     updateSubaccountSettings({
       nextRemainigActions: BigInt(DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT),
       nextRemainingSeconds: BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION),
-    }).then(() => {
-      setIsVisible(false);
+    }).then((success) => {
+      if (success) {
+        setIsVisible(false);
+      }
     });
   }, [updateSubaccountSettings]);
 

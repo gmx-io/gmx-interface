@@ -152,13 +152,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         return;
       }
 
-      refreshSubaccountData();
-
       if (
         pendingExpressTxn?.subaccountApproval &&
         !getIsEmptySubaccountApproval(pendingExpressTxn.subaccountApproval)
       ) {
         resetSubaccountApproval();
+      } else {
+        refreshSubaccountData();
       }
 
       if (pendingExpressTxn?.tokenPermits?.length) {

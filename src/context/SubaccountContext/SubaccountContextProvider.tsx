@@ -52,7 +52,10 @@ export type SubaccountState = {
   subaccount: Subaccount | undefined;
   subaccountActivationState: SubaccountActivationState | undefined;
   subaccountDeactivationState: SubaccountDeactivationState | undefined;
-  updateSubaccountSettings: (params: { nextRemainigActions?: bigint; nextRemainingSeconds?: bigint }) => Promise<void>;
+  updateSubaccountSettings: (params: {
+    nextRemainigActions?: bigint;
+    nextRemainingSeconds?: bigint;
+  }) => Promise<boolean>;
   resetSubaccountApproval: () => void;
   tryEnableSubaccount: () => Promise<boolean>;
   tryDisableSubaccount: () => Promise<boolean>;
@@ -135,9 +138,9 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     }: {
       nextRemainigActions?: bigint;
       nextRemainingSeconds?: bigint;
-    }) {
+    }): Promise<boolean> {
       if (!signer || !subaccount?.address || !provider) {
-        return;
+        return false;
       }
 
       helperToast.success(
@@ -165,6 +168,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           </StatusNotification>
         );
         setSignedApproval(signedSubaccountApproval);
+        return true;
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
@@ -175,15 +179,16 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
             <TransactionStatus status="error" text={t`Failed to update settings`} />
           </StatusNotification>
         );
+        return false;
       }
     },
     [signer, subaccount, provider, calcSelector, chainId, setSignedApproval]
   );
 
   const resetSubaccountApproval = useCallback(() => {
-    setSignedApproval(undefined);
+    resetStoredApproval();
     refreshSubaccountData();
-  }, [refreshSubaccountData, setSignedApproval]);
+  }, [refreshSubaccountData, resetStoredApproval]);
 
   const tryEnableSubaccount = useCallback(async () => {
     if (!provider || !signer) {
@@ -559,15 +564,15 @@ function useStoredSubaccountData(chainId: number, account: string | undefined) {
     }
   );
 
+  const resetStoredApproval = useCallback(() => {
+    setSignedApproval(null as any);
+  }, [setSignedApproval]);
+
+  const resetStoredConfig = useCallback(() => {
+    setSubaccountConfig(null as any);
+  }, [setSubaccountConfig]);
+
   return useMemo(() => {
-    function resetStoredApproval() {
-      setSignedApproval(null as any);
-    }
-
-    function resetStoredConfig() {
-      setSubaccountConfig(null as any);
-    }
-
     return {
       subaccountConfig,
       signedApproval,
@@ -576,5 +581,12 @@ function useStoredSubaccountData(chainId: number, account: string | undefined) {
       resetStoredApproval,
       resetStoredConfig,
     };
-  }, [subaccountConfig, signedApproval, setSubaccountConfig, setSignedApproval]);
+  }, [
+    subaccountConfig,
+    signedApproval,
+    setSubaccountConfig,
+    setSignedApproval,
+    resetStoredApproval,
+    resetStoredConfig,
+  ]);
 }

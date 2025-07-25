@@ -6,8 +6,8 @@ import {
   selectIsExpressTransactionAvailable,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
-  selectSubaccountForSettlementChainAction,
   selectSubaccountForMultichainAction,
+  selectSubaccountForSettlementChainAction,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
