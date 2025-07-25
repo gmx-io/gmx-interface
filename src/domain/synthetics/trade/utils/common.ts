@@ -105,6 +105,7 @@ export function getTradeFees(p: {
   feeDiscountUsd: bigint;
   swapProfitFeeUsd: bigint;
   uiFeeFactor: bigint;
+  type: "increase" | "decrease" | "swap";
 }): TradeFees {
   const {
     initialCollateralUsd,
@@ -123,6 +124,7 @@ export function getTradeFees(p: {
     proportionalPendingImpactDeltaUsd,
     closePriceImpactDeltaUsd,
     uiFeeFactor,
+    type,
   } = p;
 
   const swapFees: SwapFeeItem[] | undefined =
@@ -188,7 +190,7 @@ export function getTradeFees(p: {
     externalSwapFee,
     swapProfitFee,
     swapPriceImpact,
-    positionPriceImpact,
+    type === "decrease" ? positionPriceImpact : undefined,
     positionFeeAfterDiscount,
     borrowFee,
     fundingFee,
