@@ -29,6 +29,7 @@ import RewardRouter from "./RewardRouter.json";
 import RewardTracker from "./RewardTracker.json";
 import RouterV2 from "./Router-v2.json";
 import Router from "./Router.json";
+import StBTC from "./StBTC.json";
 import SubaccountGelatoRelayRouter from "./SubaccountGelatoRelayRouter.json";
 import SubaccountRouter from "./SubaccountRouter.json";
 import SyntheticsReader from "./SyntheticsReader.json";
@@ -46,6 +47,7 @@ import Vester from "./Vester.json";
 import WETH from "./WETH.json";
 import YieldFarm from "./YieldFarm.json";
 import YieldToken from "./YieldToken.json";
+
 export type AbiId =
   | "CustomErrors"
   | "DataStore"
@@ -93,7 +95,8 @@ export type AbiId =
   | "SubaccountGelatoRelayRouter"
   | "ERC20PermitInterface"
   | "GelatoRelayRouter"
-  | "ArbitrumNodeInterface";
+  | "ArbitrumNodeInterface"
+  | "StBTC";
 
 /** Copied from ethers to enable compatibility with GMX UI */
 interface JsonFragmentType {
@@ -164,4 +167,5 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   SubaccountGelatoRelayRouter: SubaccountGelatoRelayRouter.abi,
   GelatoRelayRouter: GelatoRelayRouter.abi,
   ArbitrumNodeInterface: ArbitrumNodeInterface.abi,
+  StBTC: StBTC.abi,
 } as any;

@@ -466,6 +466,10 @@ msgstr "Swap {0} to {1} on 1inch"
 msgid "No pools matched."
 msgstr "No pools matched."
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+#~ msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}"
+#~ msgstr "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}"
+
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -1668,6 +1672,7 @@ msgstr "Receive (Approximate)"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
 msgstr "No swap path found"
 
@@ -2655,10 +2660,6 @@ msgstr "and"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GLV liquidity"
 msgstr "Insufficient GLV liquidity"
-
-#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No swap path available. <0>Swap STBTC to PBTC</0>, then to BTC"
-msgstr "No swap path available. <0>Swap STBTC to PBTC</0>, then to BTC"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/OrderEditor.jsx
@@ -4178,6 +4179,10 @@ msgstr "PnL Analysis"
 msgid "View Details"
 msgstr "View Details"
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
+msgstr "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
+
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Longs"
@@ -4759,6 +4764,10 @@ msgstr "Total Trades"
 msgid "Market Composition"
 msgstr "Market Composition"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Permit signature is invalid. Please try again.</0>"
+msgstr "<0>Permit signature is invalid. Please try again.</0>"
+
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here"
 msgstr "Enter your answer here"
@@ -5019,6 +5028,10 @@ msgstr "Order Type"
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
 msgstr "Sell order executed"
+
+#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
+msgid "Failed to {0}"
+msgstr "Failed to {0}"
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
@@ -7913,10 +7926,6 @@ msgstr "The PnL ($) compared to the capital used.<0/><1/>The capital used is cal
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Accrued"
 msgstr "Accrued"
-
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "<0>Swap {0} to STBTC</0> to trade with <1/> or <2/> as collateral."
-msgstr "<0>Swap {0} to STBTC</0> to trade with <1/> or <2/> as collateral."
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Liquidation price is influenced by fees and collateral value."

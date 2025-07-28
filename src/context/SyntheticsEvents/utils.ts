@@ -1,3 +1,4 @@
+import { extendError } from "lib/errors";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
 
 import type {
@@ -89,7 +90,9 @@ export async function sendGelatoTaskStatusMetric(metricId: OrderMetricId, gelato
 
   if (bytecodeMatch) {
     const bytecode = bytecodeMatch[0];
-    const error = new Error(`data="${bytecode}"`);
+    const error = extendError(new Error(`data="${bytecode}"`), {
+      data: { taskId: gelatoTaskStatus.taskId },
+    });
     sendTxnErrorMetric(metricId, error, "relayer");
     return;
   }

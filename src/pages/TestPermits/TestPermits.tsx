@@ -66,7 +66,7 @@ export function TestPermits() {
     try {
       const value = MaxUint256;
 
-      const permit = await createAndSignTokenPermit(chainId, signer, selectedToken.address, account, value);
+      const { permit } = await createAndSignTokenPermit(chainId, signer, selectedToken.address, account, value);
 
       setPermitData(permit);
       helperToast.success(`Permit signed successfully for ${selectedToken.symbol}`);

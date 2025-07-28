@@ -109,8 +109,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     DEFAULT_SLIPPAGE_AMOUNT
   );
 
-  const isBotanix = chainId === BOTANIX;
-
   const [savedAcceptablePriceImpactBuffer, setSavedAcceptablePriceImpactBuffer] = useLocalStorageSerializeKey(
     getSyntheticsAcceptablePriceImpactBufferKey(chainId),
     DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER
@@ -172,7 +170,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const [externalSwapsEnabled, setExternalSwapsEnabled] = useLocalStorageByChainId(
     chainId,
     EXTERNAL_SWAPS_ENABLED_KEY,
-    false
+    true
   );
   const [debugSwapMarketsConfig, setDebugSwapMarketsConfig] = useLocalStorageSerializeKey<
     undefined | { disabledSwapMarkets?: string[]; manualPath?: string[] }
@@ -273,7 +271,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       gasPaymentTokenAddress: gasPaymentTokenAddress!,
       setGasPaymentTokenAddress,
 
-      externalSwapsEnabled: isBotanix ? false : externalSwapsEnabled!,
+      // External swaps are enabled by default on Botanix
+      externalSwapsEnabled: chainId === BOTANIX || externalSwapsEnabled!,
       setExternalSwapsEnabled,
 
       debugSwapMarketsConfig: debugSwapMarketsConfig!,
@@ -322,7 +321,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setExpressOrdersEnabled,
     gasPaymentTokenAddress,
     setGasPaymentTokenAddress,
-    isBotanix,
     externalSwapsEnabled,
     setExternalSwapsEnabled,
     debugSwapMarketsConfig,
@@ -331,6 +329,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSettingsWarningDotVisible,
     savedTwapNumberOfParts,
     setSavedTWAPNumberOfParts,
+    chainId,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

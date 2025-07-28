@@ -650,6 +650,7 @@ export function getBatchSignatureParams({
     types,
     typedData,
     domain,
+    shouldUseSignerMethod: subaccountApproval !== undefined,
   };
 }
 

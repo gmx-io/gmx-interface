@@ -1,6 +1,8 @@
 import { ethers } from "ethers";
-import { decodeFunctionResult, encodeFunctionData } from "viem";
+import { decodeFunctionResult, encodeFunctionData, recoverTypedDataAddress } from "viem";
 
+import { getIsFlagEnabled } from "config/ab";
+import { parseError } from "lib/errors";
 import { defined } from "lib/guards";
 import { WalletSigner } from "lib/wallets";
 import { signTypedData, splitSignature } from "lib/wallets/signing";
@@ -18,10 +20,10 @@ export async function createAndSignTokenPermit(
   tokenAddress: string,
   spender: string,
   value: bigint
-): Promise<SignedTokenPermit> {
+) {
   const onchainParams = await getTokenPermitParams(chainId, signer.address, tokenAddress, signer.provider);
 
-  const owner = await signer.getAddress();
+  const owner = signer.address;
 
   const domain = {
     chainId,
@@ -52,7 +54,7 @@ export async function createAndSignTokenPermit(
 
   const { r, s, v } = splitSignature(signature);
 
-  return {
+  const permit: SignedTokenPermit = {
     token: tokenAddress,
     owner,
     spender,
@@ -61,6 +63,11 @@ export async function createAndSignTokenPermit(
     v,
     r,
     s,
+    onchainParams,
+  };
+
+  return {
+    permit,
   };
 }
 
@@ -150,4 +157,68 @@ export async function getTokenPermitParams(
     name,
     version,
   };
+}
+
+export async function validateTokenPermitSignature(chainId: number, permit: SignedTokenPermit) {
+  try {
+    const domain = {
+      chainId,
+      name: permit.onchainParams.name,
+      version: permit.onchainParams.version,
+      verifyingContract: permit.token as `0x${string}`,
+    };
+
+    const types = {
+      Permit: [
+        { name: "owner", type: "address" },
+        { name: "spender", type: "address" },
+        { name: "value", type: "uint256" },
+        { name: "nonce", type: "uint256" },
+        { name: "deadline", type: "uint256" },
+      ],
+    };
+
+    const permitData = {
+      owner: permit.owner,
+      spender: permit.spender,
+      value: permit.value,
+      nonce: permit.onchainParams.nonce,
+      deadline: permit.deadline,
+    };
+
+    // Reconstruct the signature from v, r, s components
+    let signature = ethers.Signature.from({
+      r: permit.r,
+      s: permit.s,
+      v: permit.v,
+    }).serialized;
+
+    if (getIsFlagEnabled("testPermitIssue")) {
+      signature = signature + 1;
+    }
+
+    // Recover the signer address from the signature
+    const recoveredAddress = await recoverTypedDataAddress({
+      domain,
+      types,
+      primaryType: "Permit",
+      message: permitData,
+      signature: signature as `0x${string}`,
+    });
+
+    // Check if the recovered address matches the expected owner
+    const isValid = recoveredAddress.toLowerCase() === permit.owner.toLowerCase();
+
+    return {
+      isValid,
+      recoveredAddress,
+      error: isValid ? undefined : parseError("Recovered address does not match permit owner"),
+    };
+  } catch (error) {
+    return {
+      isValid: false,
+      recoveredAddress: undefined,
+      error: parseError(error),
+    };
+  }
 }

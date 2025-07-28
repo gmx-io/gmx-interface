@@ -466,6 +466,10 @@ msgstr ""
 msgid "No pools matched."
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+#~ msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}"
+#~ msgstr ""
+
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -1668,6 +1672,7 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
 msgstr ""
 
@@ -2654,10 +2659,6 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GLV liquidity"
-msgstr ""
-
-#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No swap path available. <0>Swap STBTC to PBTC</0>, then to BTC"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
@@ -4175,6 +4176,10 @@ msgstr ""
 msgid "View Details"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
+msgstr ""
+
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Longs"
@@ -4756,6 +4761,10 @@ msgstr ""
 msgid "Market Composition"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Permit signature is invalid. Please try again.</0>"
+msgstr ""
+
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here"
 msgstr ""
@@ -5015,6 +5024,10 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
+msgstr ""
+
+#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
+msgid "Failed to {0}"
 msgstr ""
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
@@ -7906,10 +7919,6 @@ msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Accrued"
-msgstr ""
-
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "<0>Swap {0} to STBTC</0> to trade with <1/> or <2/> as collateral."
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx

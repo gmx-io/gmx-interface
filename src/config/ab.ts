@@ -14,6 +14,8 @@ const abFlagsConfig = {
   testSponsoredCall: 1,
   testExampleAb: 0,
   testOneClickPromo: 0.25,
+  testPermitIssue: 0,
+  testPermitIssueOnSimulation: 0,
 };
 
 export type AbFlag = keyof typeof abFlagsConfig;
