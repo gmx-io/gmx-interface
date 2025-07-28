@@ -1,24 +1,27 @@
 import noop from "lodash/noop";
-import { createContext, Dispatch, SetStateAction, useContext, useMemo, useState } from "react";
+import { createContext, Dispatch, SetStateAction, useCallback, useContext, useMemo, useState } from "react";
 import { useLocalStorage } from "react-use";
 
 import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/localStorage";
 
-import { LeaveHomepageRedirectModal } from "../sections/LeaveHomepageRedirectModal/LeaveHompageRedirectModal";
+import { LeaveHomepageRedirectModal } from "../LeaveHomepageRedirectModal/LeaveHompageRedirectModal";
 
 type HomePageContextType = {
-  showRedirectModal: (to: string) => void;
+  redirectWithWarning: (to: string) => void;
   redirectModalTo: string | null;
   redirectPopupTimestamp: number | undefined;
   setRedirectPopupTimestamp: Dispatch<SetStateAction<number | undefined>>;
+  shouldShowRedirectModal: () => boolean;
 };
 
 export const HomePageContext = createContext<HomePageContextType>({
-  showRedirectModal: noop,
+  redirectWithWarning: noop,
   redirectModalTo: null,
   redirectPopupTimestamp: undefined,
   setRedirectPopupTimestamp: noop,
+  shouldShowRedirectModal: () => false,
 });
+const THIRTY_DAYS = 1000 * 60 * 60 * 24 * 30;
 
 export function HomePageContextProvider({ children }: { children: React.ReactNode }) {
   const [redirectModalTo, setRedirectModalTo] = useState<string | null>(null);
@@ -43,14 +46,38 @@ export function HomePageContextProvider({ children }: { children: React.ReactNod
       serializer: (val) => (val ? val.toString() : ""),
     }
   );
+
+  const shouldShowRedirectModal = useCallback(() => {
+    if (!redirectPopupTimestamp) {
+      return false;
+    }
+
+    const expiryTime = redirectPopupTimestamp + THIRTY_DAYS;
+    const now = Date.now();
+    if (redirectPopupTimestamp < 0 || redirectPopupTimestamp > now) {
+      return true;
+    }
+    return now > expiryTime;
+  }, [redirectPopupTimestamp]);
+  const redirectWithWarning = useCallback(
+    (to: string) => {
+      if (shouldShowRedirectModal()) {
+        setRedirectModalTo(to);
+      } else {
+        window.location.href = to;
+      }
+    },
+    [shouldShowRedirectModal, setRedirectModalTo]
+  );
   const value = useMemo(
     () => ({
-      showRedirectModal: setRedirectModalTo,
+      redirectWithWarning,
       redirectModalTo,
       redirectPopupTimestamp,
       setRedirectPopupTimestamp,
+      shouldShowRedirectModal,
     }),
-    [setRedirectModalTo, redirectModalTo, redirectPopupTimestamp, setRedirectPopupTimestamp]
+    [redirectWithWarning, redirectModalTo, redirectPopupTimestamp, setRedirectPopupTimestamp, shouldShowRedirectModal]
   );
 
   return (

@@ -1,14 +1,10 @@
 import { Trans } from "@lingui/macro";
 
-import { useHomePageContext } from "pages/Home/contexts/HomePageContext";
-
-import { LaunchButtonContainer } from "./components/LaunchButtonContainer";
-import { REDIRECT_CHAIN_IDS, useGoToTrade } from "../../hooks/useGoToTrade";
+import { LaunchButtonContainer } from "./LaunchButtonContainer";
+import { REDIRECT_CHAIN_IDS, useGoToTrade } from "../hooks/useGoToTrade";
 
 export function LaunchSection() {
-  const { showRedirectModal } = useHomePageContext();
   const goToTradeArbitrum = useGoToTrade({
-    showRedirectModal,
     buttonPosition: "LaunchSection",
     chainId: REDIRECT_CHAIN_IDS.Arbitum,
   });

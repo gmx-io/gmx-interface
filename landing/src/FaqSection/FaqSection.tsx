@@ -1,6 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 
-import { FaqItem } from "./components/FaqItem";
+import { FaqItem } from "./FaqItem";
 
 export function FaqSection() {
   return (
