@@ -5,9 +5,9 @@ type Props = {
 
 export function Quarter({ title, children }: Props) {
   return (
-    <div className="flex w-[282px] cursor-pointer flex-col gap-16 border-y-[0.5px] border-fiord-500 py-28 hover:border-blue-600">
-      <h3 className="leading-body-sm text-16 font-normal -tracking-[0.512px] text-secondary">{title}</h3>
-      <div className="text-24 font-medium leading-heading-md -tracking-[0.768px]">{children}</div>
+    <div className="border-fiord-500 flex w-[160px] flex-shrink-0 cursor-pointer flex-col gap-16 border-y-[0.5px] py-28 pr-36 hover:border-blue-600 sm:w-[282px] sm:pr-0">
+      <h3 className="leading-body-sm text-secondary text-16 font-normal -tracking-[0.512px]">{title}</h3>
+      <div className="leading-heading-md text-24 font-medium -tracking-[0.768px]">{children}</div>
     </div>
   );
 }

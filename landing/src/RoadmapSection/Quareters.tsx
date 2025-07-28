@@ -4,7 +4,7 @@ import { Quarter } from "./Quarter";
 
 export function Quareters() {
   return (
-    <div className="flex flex-row gap-24 overflow-x-scroll">
+    <div className="flex flex-row gap-0 overflow-x-scroll sm:gap-24">
       <Quarter title="Q1 2025">
         <ul>
           <li>
