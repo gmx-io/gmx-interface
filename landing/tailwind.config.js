@@ -106,74 +106,46 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
       border: "0",
     },
   });
-
-  addVariant("desktop-hover", [`@media (hover: hover) {&:not(:active):hover}`]);
-  addVariant("gmx-hover", [`@media (hover: hover) {&:hover}`, `@media (hover: none) {&:active}`]);
-  addVariant("group-gmx-hover", [
-    `@media (hover: hover) {:merge(.group):hover &}`,
-    `@media (hover: none) {:merge(.group):active &}`,
-  ]);
-
-  addUtilities({
-    ".text-input-bg": {
-      background:
-        "linear-gradient(90deg, var(--color-cold-blue-900) 0%, color-mix(in srgb, var(--color-slate-500) 40%, transparent) 100%)",
-    },
-  });
 }
 
 /**
  * @type {import('tailwindcss/types/config').PluginCreator}
- * @See https://www.notion.so/gmxio/Fonts-Clean-Up-13303574745d8015b115e03426827f3c
  */
-function fontComponentsPlugin({ addComponents, addBase }) {
-  mode: 'jit',
-  addBase({
-    ":root": {
-      "--font-size-h1": "3.4rem",
-      "--font-size-h2": "2.4rem",
-      "--font-size-body-large": "1.6rem",
-      "--font-size-body-medium": "1.4rem",
-      "--font-size-body-small": "1.2rem",
-      "--font-size-caption": "1rem",
-
-      "--line-height-h1": "34px",
-      "--line-height-h2": "24px",
-      "--line-height-body-large": "2.1rem",
-      "--line-height-body-medium": "1.8rem",
-      "--line-height-body-small": "1.6rem",
-      "--line-height-caption": "1.4rem",
-    },
-  });
-
+function fontComponentsPlugin({ addComponents }) {
   addComponents({
-    ".text-h1": {
-      fontSize: "3.4rem",
-      lineHeight: "auto",
+    ".text-heading-1": {
+      "@apply text-50 font-medium leading-heading-lg -tracking-[2.6px] sm:text-100 sm:-tracking-[5.2px]": {},
     },
-    ".text-h2": {
-      fontSize: "2.4rem",
-      lineHeight: "auto",
+    ".text-heading-2": {
+      "@apply text-[40px] font-medium leading-heading-lg -tracking-[2.08px] sm:text-80 sm:-tracking-[4.16px]": {},
     },
-    ".text-body-large": {
-      fontSize: "1.6rem",
-      lineHeight: "2.1rem",
+    ".text-heading-3": {
+      "@apply text-32 font-medium leading-heading-md -tracking-[0.96px]": {},
     },
-    ".text-body-medium": {
-      fontSize: "1.4rem",
-      lineHeight: "1.8rem",
+    ".text-heading-4": {
+      "@apply text-24 font-medium leading-heading-md -tracking-[0.96px]": {},
     },
-    ".text-body-small": {
-      fontSize: "1.2rem",
-      lineHeight: "1.6rem",
+    ".text-subheadline": {
+      "@apply text-14 font-medium leading-body-sm text-secondary tracking-body": {},
     },
-    ".text-caption": {
-      fontSize: "1rem",
-      lineHeight: "1.4rem",
-    }
+    ".text-description": {
+      "@apply text-16 font-normal leading-body-sm text-secondary tracking-body": {},
+    },
+    ".btn-landing-bg": {
+      "@apply bg-blue-600 font-medium text-white": {},
+      "&:hover": {
+        "@media (hover: hover)": {
+          background: "linear-gradient(0deg, rgba(9, 10, 21, 0.1) 0%, rgba(9, 10, 21, 0.1) 100%), var(--color-blue-600)",
+        },
+      },
+      "&:active": {
+        "@media (hover: hover)": {
+          background: "linear-gradient(0deg, rgba(9, 10, 21, 0.2) 0%, rgba(9, 10, 21, 0.2) 100%), var(--color-blue-600)",
+        },
+      },
+    },
   });
 }
-
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -201,12 +173,10 @@ module.exports = {
       100: "10rem",
     },
     lineHeight: {
-      1: "1",
-      2: "2",
-      'body-sm': "136%",
-      'body-md': "144%",
-      'heading-lg': "98%",
-      'heading-md': "108%",
+      "body-sm": "136%",
+      "body-md": "144%",
+      "heading-lg": "98%",
+      "heading-md": "108%",
       // Normal is browser dependent. See https://developer.mozilla.org/en-US/docs/Web/CSS/line-height#normal
       base: "normal",
     },
@@ -214,16 +184,7 @@ module.exports = {
       ...defaultConfig.theme.letterSpacing,
       body: "0.028px",
     },
-    // @see https://tailwindcss.com/docs/customizing-colors
     colors: colors,
-    textDecorationColor: colors,
-    placeholderColor: {
-      ...colors,
-      gray: "rgb(117, 117, 117)",
-    },
-    // @see https://tailwindcss.com/blog/tailwindcss-v3-2#max-width-and-dynamic-breakpoints
-    // "these features will only be available if your project uses a simple screens configuration."
-    // So we just copy the default screens config
     screens: defaultConfig.theme.screens,
     extend: {
       fontFamily: {
