@@ -8,16 +8,24 @@ import { ARBITRUM, AVALANCHE, BOTANIX } from "sdk/configs/chainIds";
 import { useHomePageContext } from "../contexts/HomePageContext";
 
 export enum REDIRECT_CHAIN_IDS {
-  Arbitum = ARBITRUM,
-  Avalanche = AVALANCHE,
-  Botanix = BOTANIX,
-  Solana = "Solana",
-  Base = "Base",
+  Arbitum,
+  Avalanche,
+  Botanix,
+  Solana,
+  Base,
 }
 
 type Props = {
   chainId: REDIRECT_CHAIN_IDS;
   buttonPosition: LandingPageLaunchAppEvent["data"]["buttonPosition"];
+};
+
+const REDIRECT_MAP = {
+  [REDIRECT_CHAIN_IDS.Solana]: "https://gmxsol.io/",
+  [REDIRECT_CHAIN_IDS.Base]: makeLink(ARBITRUM),
+  [REDIRECT_CHAIN_IDS.Arbitum]: makeLink(ARBITRUM),
+  [REDIRECT_CHAIN_IDS.Avalanche]: makeLink(AVALANCHE),
+  [REDIRECT_CHAIN_IDS.Botanix]: makeLink(BOTANIX),
 };
 
 export function useGoToTrade({ buttonPosition, chainId }: Props) {
@@ -34,12 +42,10 @@ export function useGoToTrade({ buttonPosition, chainId }: Props) {
       },
       { instantSend: true }
     );
-    if (chainId === REDIRECT_CHAIN_IDS.Solana) {
-      redirectWithWarning("https://gmxsol.io/");
-    } else if (chainId === REDIRECT_CHAIN_IDS.Base) {
-      redirectWithWarning(makeLink(REDIRECT_CHAIN_IDS.Arbitum));
-    } else {
-      redirectWithWarning(makeLink(chainId));
+
+    const redirectUrl = REDIRECT_MAP[chainId];
+    if (redirectUrl) {
+      redirectWithWarning(redirectUrl);
     }
   }, [redirectWithWarning, shouldShowRedirectModal, buttonPosition, chainId]);
 }
