@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    @apply text-[10px];
+  }
+  html {
+    /* Restore native webkit behavior */
+    @apply leading-base;
+  }
+}
+
+
+
+
+@font-face {
+  font-family: "TTHoves";
+  font-style: normal;
+  font-weight: 400;
+  src: url("fonts/tthoves/tt-hoves-pro-trial-regular.ttf");
+}
+
+@font-face {
+  font-family: "TTHovesMono";
+  font-style: normal;
+  font-weight: 400;
+  src: url("fonts/tthoves/tt-hoves-pro-mono-trial-regular.ttf");
+}
+
+@font-face {
+  font-family: "TTHoves";
+  font-style: normal;
+  font-weight: 300;
+  src: url("fonts/tthoves/tt-hoves-pro-trial-light.ttf");
+}
+
+@font-face {
+  font-family: "TTHoves";
+  font-style: normal;
+  font-weight: 500;
+  src: url("fonts/tthoves/tt-hoves-pro-trial-medium.ttf");
+}
+
+@font-face {
+  font-family: "TTHoves";
+  font-style: normal;
+  font-weight: bold;
+  src: url("fonts/tthoves/tt-hoves-pro-trial-bold.ttf");
+}
+
+@font-face {
+  font-family: "TTHovesMono";
+  font-style: normal;
+  font-weight: 500;
+  src: url("fonts/tthoves/tt-hoves-pro-mono-trial-regular.ttf");
+}
+
+@font-face {
+  font-family: "TTHovesMono";
+  src: url("fonts/tthoves/tt-hoves-pro-mono-trial-medium.ttf");
+}
