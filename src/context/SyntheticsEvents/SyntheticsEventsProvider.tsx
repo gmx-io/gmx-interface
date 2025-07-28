@@ -1,6 +1,7 @@
 import { TaskState } from "@gelatonetwork/relay-sdk";
 import { t } from "@lingui/macro";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useLatest } from "react-use";
 
 import { isDevelopment } from "config/env";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
@@ -142,6 +143,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [pendingExpressTxnParams, setPendingExpressTxnParams] = useState<{
     [key: string]: Partial<PendingExpressTxnParams>;
   }>({});
+  const latestPendingExpressTxnParams = useLatest(pendingExpressTxnParams);
   const eventLogHandlers = useRef({});
 
   const handleExpressTxnSuccess = useCallback(
@@ -242,7 +244,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       );
 
       const pendingOrderKey = getPendingOrderKey(data);
-      const pendingExpressTxn = Object.values(pendingExpressTxnParams).find((p) =>
+      const pendingExpressTxn = Object.values(latestPendingExpressTxnParams.current).find((p) =>
         p.pendingOrdersKeys?.includes(pendingOrderKey)
       );
 

@@ -108,7 +108,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
     const subaccountSigner = getSubaccountSigner(subaccountConfig, signer?.address, signer?.provider);
 
-    const composedSubbacount: Subaccount = {
+    const composedSubacсount: Subaccount = {
       address: subaccountConfig.address,
       signer: subaccountSigner,
       onchainData: subaccountData,
@@ -122,11 +122,11 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       signerChainId: srcChainId ?? chainId,
     };
 
-    if (!getIsSubaccountActive(composedSubbacount)) {
+    if (!getIsSubaccountActive(composedSubacсount)) {
       return undefined;
     }
 
-    return composedSubbacount;
+    return composedSubacсount;
   }, [chainId, signedApproval, signer?.address, signer?.provider, srcChainId, subaccountConfig, subaccountData]);
 
   const calcSelector = useCalcSelector();
