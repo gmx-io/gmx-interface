@@ -52,6 +52,21 @@ function useEthereumChainId(): AnyChainId | undefined {
       window.ethereum?.removeListener("chainChanged", handler);
     };
   }, []);
+
+  useEffect(() => {
+    const connectHandler = (connectInfo: { chainId: string }) => {
+      const rawChainId = parseInt(connectInfo.chainId);
+      if (isContractsChain(rawChainId) || isSourceChain(rawChainId)) {
+        setChainId(rawChainId);
+      }
+    };
+
+    window.ethereum?.on("connect", connectHandler);
+    return () => {
+      window.ethereum?.removeListener("connect", connectHandler);
+    };
+  }, []);
+
   return chainId;
 }
 
