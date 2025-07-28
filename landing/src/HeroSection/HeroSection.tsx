@@ -26,7 +26,7 @@ export function HeroSection() {
   });
 
   return (
-    <section className="overflow-hidden bg-fiord-700">
+    <section className="bg-fiord-700 overflow-hidden">
       <div className="mx-auto px-16 sm:max-w-[1360px] sm:px-80">
         <div className="relative h-[640px] py-60 sm:h-[860px] sm:py-80 ">
           <HeroBackground />
@@ -54,19 +54,19 @@ export function HeroSection() {
               </div>
               <div className="flex flex-row gap-36 sm:gap-60">
                 <div className="flex flex-col gap-4">
-                  <span className="text-nowrap text-12 text-secondary sm:text-14">
+                  <span className="text-secondary text-nowrap text-12 sm:text-14">
                     <Trans>Traders</Trans>
                   </span>
                   <div className="text-[30px] font-medium tracking-tight sm:text-[40px]">701K</div>
                 </div>
                 <div className="flex flex-col gap-4">
-                  <span className="text-nowrap text-12 text-secondary sm:text-14">
+                  <span className="text-secondary text-nowrap text-12 sm:text-14">
                     <Trans>Open Interest</Trans>
                   </span>
                   <div className="text-[30px] font-medium tracking-tight sm:text-[40px]">$137M</div>
                 </div>
                 <div className="flex flex-col gap-4">
-                  <a href="/" className="inline-flex items-center text-nowrap text-12 text-secondary sm:text-14">
+                  <a href="/" className="text-secondary inline-flex items-center text-nowrap text-12 sm:text-14">
                     <Trans>Total Volume</Trans> <IcMidChevron className="size-16" />
                   </a>
                   <div className="text-[30px] font-medium tracking-tight sm:text-[40px]">$285B</div>
@@ -80,11 +80,11 @@ export function HeroSection() {
         <div className="relative flex flex-col gap-24 py-80 sm:grid sm:grid-cols-3 sm:grid-rows-3 sm:py-[120px]">
           <div className="flex flex-col gap-24 sm:col-start-1 sm:col-end-2 sm:row-start-1 sm:row-end-4">
             {/* Trade with confidence */}
-            <div className="flex-grow-0 rounded-20 bg-fiord-600 p-20">
-              <div className="mb-18 flex flex-row items-center gap-20 border-b border-fiord-500 pb-20">
+            <div className="bg-fiord-600 flex-grow-0 rounded-20 p-20">
+              <div className="border-fiord-500 mb-18 flex flex-row items-center gap-20 border-b pb-20">
                 <IconBox iconComponent={IcGears} />
                 <div className="flex flex-col gap-4">
-                  <p className="text-12 uppercase text-secondary">
+                  <p className="text-secondary text-12 uppercase">
                     <Trans>Trade with confidence</Trans>
                   </p>
                   <p className="text-heading-4">
@@ -116,7 +116,7 @@ export function HeroSection() {
           {/* Support for numerous assets */}
           <div
             style={assetsBgStyle}
-            className="h-[220px] overflow-hidden rounded-20 bg-fiord-600 sm:col-start-2  sm:col-end-3 sm:row-start-1 sm:row-end-3 sm:h-full sm:min-h-[180px]"
+            className="bg-fiord-600 h-[220px] overflow-hidden rounded-20 sm:col-start-2  sm:col-end-3 sm:row-start-1 sm:row-end-3 sm:h-full sm:min-h-[180px]"
           >
             <div className="h-full w-full overflow-hidden">
               <div className="relative flex flex-col p-20 pb-0 sm:p-28">
@@ -133,11 +133,11 @@ export function HeroSection() {
             </div>
           </div>
           {/* Keep more of what you earn */}
-          <div className="h-full rounded-20 bg-fiord-600 p-20 sm:col-start-3 sm:col-end-4 sm:row-start-1 sm:row-end-2 sm:min-h-[180px]">
-            <div className="mb-18 flex flex-row items-center gap-20 border-b border-fiord-500 pb-20">
+          <div className="bg-fiord-600 h-full rounded-20 p-20 sm:col-start-3 sm:col-end-4 sm:row-start-1 sm:row-end-2 sm:min-h-[180px]">
+            <div className="border-fiord-500 mb-18 flex flex-row items-center gap-20 border-b pb-20">
               <IconBox iconComponent={IcProtection} />
               <div className="flex flex-col gap-4">
-                <p className="text-12 uppercase text-secondary">
+                <p className="text-secondary text-12 uppercase">
                   <Trans>keep more of what you earn</Trans>
                 </p>
                 <p className="text-heading-4">
@@ -149,26 +149,26 @@ export function HeroSection() {
           </div>
           {/*Secure
 & Permissionless */}
-          <div className="h-full rounded-20 bg-fiord-600 p-20 sm:col-start-3 sm:col-end-4 sm:row-start-2 sm:row-end-3 sm:min-h-[180px]">
+          <div className="bg-fiord-600 h-full rounded-20 p-20 sm:col-start-3 sm:col-end-4 sm:row-start-2 sm:row-end-3 sm:min-h-[180px]">
             <div className="flex h-full w-full flex-col justify-between">
               <p className="text-heading-4 mb-20 sm:mb-0">
                 <Trans>Secure & Permissionless</Trans>
               </p>
               <div className="flex flex-row flex-wrap gap-12 text-[13px]">
                 <div className="flex flex-1 flex-col items-stretch gap-8 sm:flex-row sm:flex-wrap sm:items-start">
-                  <div className="flex flex-row items-center justify-center gap-2 rounded-8 bg-fiord-500/50 py-6 pl-3 pr-10 text-secondary">
+                  <div className="bg-fiord-500/50 text-secondary flex flex-row items-center justify-center gap-2 rounded-8 py-6 pl-3 pr-10">
                     <IcChecked className="text-blue-400" />
                     <p className="tracking-normal">
                       <Trans>No deposits required</Trans>
                     </p>
                   </div>
-                  <div className="flex flex-row items-center justify-center gap-2 rounded-8 bg-fiord-500/50 py-6 pl-3 pr-10 text-secondary">
+                  <div className="bg-fiord-500/50 text-secondary flex flex-row items-center justify-center gap-2 rounded-8 py-6 pl-3 pr-10">
                     <IcChecked className="text-blue-400" />
                     <p className="tracking-normal">
                       <Trans>Trade from your wallet</Trans>
                     </p>
                   </div>
-                  <div className="flex flex-row items-center justify-center gap-2 rounded-8 bg-fiord-500/50 py-6 pl-3 pr-10 text-secondary">
+                  <div className="bg-fiord-500/50 text-secondary flex flex-row items-center justify-center gap-2 rounded-8 py-6 pl-3 pr-10">
                     <IcChecked className="text-blue-400" />
                     <p className="tracking-normal">
                       <Trans>No loss of fund ownership</Trans>
@@ -179,7 +179,7 @@ export function HeroSection() {
             </div>
           </div>
 
-          <div className="relative h-full overflow-hidden rounded-20 bg-fiord-600 p-20 sm:col-start-2 sm:col-end-4 sm:row-start-3 sm:row-end-4 sm:min-h-[180px] sm:p-28">
+          <div className="bg-fiord-600 relative h-full overflow-hidden rounded-20 p-20 sm:col-start-2 sm:col-end-4 sm:row-start-3 sm:row-end-4 sm:min-h-[180px] sm:p-28">
             <SeamlessBackground />
             <div className="relative flex h-full flex-col items-stretch justify-between gap-20 sm:flex-row sm:items-end">
               <div className="w-[360px]">

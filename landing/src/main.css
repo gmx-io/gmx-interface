@@ -10,51 +10,9 @@
     /* Restore native webkit behavior */
     @apply leading-base;
   }
-
-  input,
-  textarea {
-    /* Restore native webkit behavior */
-    @apply placeholder-gray;
-  }
 }
 
-@layer components {
-  .text-heading-1 {
-    @apply text-50 font-medium leading-heading-lg -tracking-[2.6px] sm:text-100 sm:-tracking-[5.2px];
-  }
-  .text-heading-2 {
-    @apply text-[40px] font-medium leading-heading-lg -tracking-[2.08px] sm:text-80 sm:-tracking-[4.16px];
-  }
-  .text-heading-3 {
-    @apply text-32 font-medium leading-heading-md -tracking-[0.96px];
-  }
 
-  .text-heading-4 {
-    @apply text-24 font-medium leading-heading-md -tracking-[0.96px];
-  }
-
-  .text-subheadline {
-    @apply text-14 font-medium leading-body-sm text-secondary tracking-body;
-  }
-
-  .text-description {
-    @apply text-16 font-normal leading-body-sm text-secondary tracking-body;
-  }
-
-  .btn-landing-bg {
-    @apply bg-blue-600 font-medium text-white;
-    &:hover {
-      @media (hover: hover) {
-        background: linear-gradient(0deg, rgba(9, 10, 21, 0.1) 0%, rgba(9, 10, 21, 0.1) 100%), var(--color-blue-600);
-      }
-    }
-    &:active {
-      @media (hover: hover) {
-        background: linear-gradient(0deg, rgba(9, 10, 21, 0.2) 0%, rgba(9, 10, 21, 0.2) 100%), var(--color-blue-600);
-      }
-    }
-  }
-}
 
 
 @font-face {
