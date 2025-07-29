@@ -1,12 +1,11 @@
 import { watchAccount } from "@wagmi/core";
-import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+import { useEffect, useRef, useState } from "react";
+import { useAccount, useChainId as useWagmiChainId } from "wagmi";
 
 import {
   type ContractsChainId,
   type SettlementChainId,
   type SourceChainId,
-  AnyChainId,
   ARBITRUM,
   ARBITRUM_SEPOLIA,
   isSupportedChain,
@@ -25,51 +24,6 @@ if (IS_DEVELOPMENT) {
   INITIAL_CHAIN_ID = ARBITRUM;
 }
 
-function getEthereumChainId() {
-  if (!window.ethereum?.chainId) {
-    return undefined;
-  }
-
-  const chainId = parseInt(window.ethereum.chainId);
-  if (isContractsChain(chainId) || isSourceChain(chainId)) {
-    return chainId;
-  }
-
-  return undefined;
-}
-
-function useEthereumChainId(): AnyChainId | undefined {
-  const [chainId, setChainId] = useState<AnyChainId | undefined>(getEthereumChainId());
-  useEffect(() => {
-    const handler = (chainId: string) => {
-      const rawChainId = parseInt(chainId);
-      if (isContractsChain(rawChainId) || isSourceChain(rawChainId)) {
-        setChainId(rawChainId);
-      }
-    };
-    window.ethereum?.on("chainChanged", handler);
-    return () => {
-      window.ethereum?.removeListener("chainChanged", handler);
-    };
-  }, []);
-
-  useEffect(() => {
-    const connectHandler = (connectInfo: { chainId: string }) => {
-      const rawChainId = parseInt(connectInfo.chainId);
-      if (isContractsChain(rawChainId) || isSourceChain(rawChainId)) {
-        setChainId(rawChainId);
-      }
-    };
-
-    window.ethereum?.on("connect", connectHandler);
-    return () => {
-      window.ethereum?.removeListener("connect", connectHandler);
-    };
-  }, []);
-
-  return chainId;
-}
-
 /**
  * This returns default chainId if chainId is not supported or not found
  */
@@ -79,7 +33,8 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
   srcChainId?: SourceChainId;
 } {
   let { chainId: connectedChainId } = useAccount();
-  const unsanitizedChainId = useEthereumChainId();
+  const unsanitizedChainId = useWagmiChainId();
+
   const [displayedChainId, setDisplayedChainId] = useState(connectedChainId ?? unsanitizedChainId ?? INITIAL_CHAIN_ID);
 
   const rawChainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
@@ -99,6 +54,28 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
   const isLocalStorageChainSource = chainIdFromLocalStorage && isSourceChain(chainIdFromLocalStorage);
 
   const mustChangeChainId = !unsanitizedChainId || (!isCurrentChainSource && !isCurrentChainSupported);
+
+  const connectedRef = useRef(false);
+  useEffect(() => {
+    if (chainIdFromLocalStorage || connectedRef.current) {
+      return;
+    }
+
+    connectedRef.current = true;
+
+    const connectHandler = (connectInfo: { chainId: string }) => {
+      const rawChainId = parseInt(connectInfo.chainId);
+      if (isContractsChain(rawChainId) || isSourceChain(rawChainId)) {
+        setDisplayedChainId(rawChainId);
+        localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, rawChainId.toString());
+      }
+    };
+
+    window.ethereum?.on("connect", connectHandler);
+    return () => {
+      window.ethereum?.removeListener("connect", connectHandler);
+    };
+  }, [chainIdFromLocalStorage]);
 
   useEffect(() => {
     if (isCurrentChainSupported) {

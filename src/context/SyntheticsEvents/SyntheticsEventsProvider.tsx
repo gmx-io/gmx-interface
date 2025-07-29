@@ -25,7 +25,6 @@ import {
   OrderTxnType,
 } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
-import { getIsEmptySubaccountApproval } from "domain/synthetics/subaccount";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
@@ -102,7 +101,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { hasV2LostFocus, hasPageLostFocus } = useHasLostFocus();
 
   const { resetTokenPermits } = useTokenPermitsContext();
-  const { refreshSubaccountData, resetSubaccountApproval } = useSubaccountContext();
+  const { refreshSubaccountData } = useSubaccountContext();
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
 
@@ -154,20 +153,23 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         return;
       }
 
-      if (
-        pendingExpressTxn?.subaccountApproval &&
-        !getIsEmptySubaccountApproval(pendingExpressTxn.subaccountApproval)
-      ) {
-        resetSubaccountApproval();
-      } else {
-        refreshSubaccountData();
-      }
+      refreshSubaccountData();
+
+      // TODO MLTCH why was reset there if it does not work with working reset
+      // if (
+      //   pendingExpressTxn?.subaccountApproval &&
+      //   !getIsEmptySubaccountApproval(pendingExpressTxn.subaccountApproval)
+      // ) {
+      //   resetSubaccountApproval();
+      // } else {
+      // refreshSubaccountData();
+      // }
 
       if (pendingExpressTxn?.tokenPermits?.length) {
         resetTokenPermits();
       }
     },
-    [refreshSubaccountData, resetSubaccountApproval, resetTokenPermits]
+    [refreshSubaccountData, resetTokenPermits]
   );
 
   const updateNativeTokenBalance = useCallback(() => {
