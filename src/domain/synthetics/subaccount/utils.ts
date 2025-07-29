@@ -248,13 +248,15 @@ export function getIsSubaccountApprovalInvalid({
     "signedApproval.signatureChainId": signedApproval.signatureChainId,
     signerChainId: signerChainId,
     "signedApproval.subaccountRouterAddress": signedApproval.subaccountRouterAddress,
+    subaccountRouterAddress: subaccountRouterAddress,
   });
 
-  return (
+  const result =
     (isSignedSubaccountFresh || isSignedSubaccountPossibleUpdate) &&
     (signedApproval.signatureChainId !== signerChainId ||
-      signedApproval.subaccountRouterAddress !== subaccountRouterAddress)
-  );
+      signedApproval.subaccountRouterAddress !== subaccountRouterAddress);
+
+  return result;
 }
 
 export function getIsSubaccountExpired(subaccount: Subaccount): boolean {
