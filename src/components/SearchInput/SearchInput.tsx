@@ -70,8 +70,8 @@ export default function SearchInput({
   }, [inputRef]);
 
   return (
-    <div className="flex h-32 gap-12">
-      <div className={cx("relative flex grow cursor-pointer items-center p-0", className)} ref={containerRef}>
+    <div className="flex gap-12">
+      <div className={cx("relative flex h-32 grow cursor-pointer items-center p-0", className)} ref={containerRef}>
         <div className="absolute top-0 flex h-full items-center px-8">
           <SearchIconComponent
             height={18}

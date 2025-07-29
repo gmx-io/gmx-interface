@@ -64,39 +64,6 @@
 }
 
 @font-face {
-  font-family: "TTHovesNative";
-  font-style: normal;
-  font-weight: 400;
-  src: url("fonts/tthoves/tt-hoves-pro-trial-regular.ttf");
-  src:
-    local(""),
-    url("fonts/tthoves/tt-hoves-pro-trial-regular.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "TTHovesNative";
-  font-style: normal;
-  font-weight: 500;
-  src: url("fonts/tthoves/tt-hoves-pro-trial-medium.ttf");
-  src:
-    local(""),
-    url("fonts/tthoves/tt-hoves-pro-trial-medium.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "TTHoves";
-  font-style: normal;
-  font-weight: 400;
-  src: url("fonts/tthoves/tt-hoves-pro-mono-trial-regular.ttf");
-  src:
-    local(""),
-    url("fonts/tthoves/tt-hoves-pro-mono-trial-regular.ttf") format("truetype");
-  font-variant-numeric: tabular-nums lining-nums;
-  /* apply this font only for numbers */
-  unicode-range: U+31-39;
-}
-
-@font-face {
   font-family: "TTHoves";
   font-style: normal;
   font-weight: 300;
@@ -114,19 +81,6 @@
   src:
     local(""),
     url("fonts/tthoves/tt-hoves-pro-trial-medium.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "TTHoves";
-  font-style: normal;
-  font-weight: 500;
-  src: url("fonts/tthoves/tt-hoves-pro-mono-trial-medium.ttf");
-  src:
-    local(""),
-    url("fonts/tthoves/tt-hoves-pro-mono-trial-medium.ttf") format("truetype");
-  font-variant-numeric: tabular-nums lining-nums;
-  /* apply this font only for numbers */
-  unicode-range: U+31-39;
 }
 
 @font-face {

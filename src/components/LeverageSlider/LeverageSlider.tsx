@@ -67,13 +67,10 @@ export function LeverageSlider(p: Props) {
     return Object.fromEntries(
       Object.entries(marksLabel)
         .sort((a, b) => Number(a[0]) - Number(b[0]))
-        .map(([key, value], index) => [
+        .map(([key, value]) => [
           key,
           {
             label: value,
-            style: {
-              display: index % 2 === 1 ? "none" : "block",
-            },
           },
         ])
     );

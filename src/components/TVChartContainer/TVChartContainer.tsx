@@ -13,7 +13,7 @@ import { isChartAvailableForToken } from "sdk/configs/tokens";
 
 import Loader from "components/Common/Loader";
 
-import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
+import { chartOverrides, defaultChartProps, disabledFeaturesOnMobile } from "./constants";
 import { DynamicLines } from "./DynamicLines";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { StaticLines } from "./StaticLines";
@@ -67,11 +67,7 @@ export default function TVChartContainer({
 
   useEffect(() => {
     if (chartReady && tvWidgetRef.current && !wasChartOverridden) {
-      tvWidgetRef.current.applyOverrides({
-        "paneProperties.background": "#121421",
-        "paneProperties.backgroundGradientStartColor": "#121421",
-        "paneProperties.backgroundGradientEndColor": "#121421",
-      });
+      tvWidgetRef.current.applyOverrides(chartOverrides);
       tvWidgetRef.current.saveChartToServer();
       setWasChartOverridden(true);
     }

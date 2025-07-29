@@ -344,7 +344,7 @@ export function PositionItem(p: Props) {
         <TooltipWithPortal
           handle={
             (
-              <span className="font-medium text-slate-100">
+              <span className="font-medium">
                 {formatLiquidationPrice(p.position.liquidationPrice, {
                   displayDecimals: marketDecimals,
                   visualMultiplier: p.position.indexToken.visualMultiplier,

@@ -41,6 +41,7 @@ html.theme-dark [data-role="menuitem"] {
 
 html.theme-dark .chart-page {
   font-family: "TTHoves", sans-serif;
+  font-variant-numeric: tabular-nums lining-nums;
 }
 
 html.theme-dark .chart-controls-bar {

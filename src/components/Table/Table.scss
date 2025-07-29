@@ -1,0 +1,10 @@
+.TableTr_hoverable {
+  &:nth-child(even):hover {
+    background: linear-gradient(0deg, rgba(30, 32, 51, 0.5), rgba(30, 32, 51, 0.5)),
+      linear-gradient(0deg, rgba(160, 163, 196, 0.1), rgba(160, 163, 196, 0.1));
+  }
+
+  &:nth-child(odd):hover {
+    background: var(--color-fill-surfaceHover);
+  }
+}

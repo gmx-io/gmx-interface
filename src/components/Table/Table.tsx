@@ -1,6 +1,8 @@
 import cx from "classnames";
 import { PropsWithChildren, forwardRef } from "react";
 
+import "./Table.scss";
+
 type Padding = "all" | "compact" | "compact-one-column";
 
 interface TableTdThProps extends PropsWithChildren, React.HTMLProps<HTMLTableCellElement> {
@@ -53,7 +55,7 @@ export const TableTr = forwardRef<
       ref={ref}
       className={cx("odd:bg-fill-surfaceElevated50", className, {
         "border-b border-slate-700 last-of-type:border-b-0": bordered,
-        "hover:bg-fill-surfaceHover": hoverable,
+        TableTr_hoverable: hoverable,
         "cursor-pointer": !!props.onClick,
       })}
     />

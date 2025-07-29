@@ -28,14 +28,14 @@ const chartStyleOverrides: Partial<WidgetOverrides> = ["candleStyle", "hollowCan
   {}
 );
 
-const chartOverrides: Partial<WidgetOverrides> = {
+export const chartOverrides: Partial<WidgetOverrides> = {
   "paneProperties.background": "#121421",
   "paneProperties.backgroundGradientStartColor": "#121421",
   "paneProperties.backgroundGradientEndColor": "#121421",
   "paneProperties.backgroundType": "solid",
-  "paneProperties.vertGridProperties.color": "#363A59",
+  "paneProperties.vertGridProperties.color": "#363A59FF",
   "paneProperties.vertGridProperties.style": 2,
-  "paneProperties.horzGridProperties.color": "#363A59",
+  "paneProperties.horzGridProperties.color": "#363A59FF",
   "paneProperties.horzGridProperties.style": 2,
   "mainSeriesProperties.priceLineColor": "#8B94B6",
   "scalesProperties.textColor": "#fff",

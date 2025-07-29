@@ -81,25 +81,26 @@ interface NavItemProps {
 
 function NavItem({ icon, label, isActive = false, isCollapsed = false, onClick, to, external }: NavItemProps) {
   const button = (
-    <button
-      className={cx(
-        `flex cursor-pointer items-center gap-8
+    <button className={cx("group cursor-pointer py-4", { "w-full": !isCollapsed })} onClick={onClick}>
+      <div
+        className={cx(
+          `flex cursor-pointer items-center gap-8
         rounded-8 px-16 py-8 text-slate-100 transition-colors
-        hover:bg-slate-700 hover:text-white`,
-        {
-          "bg-slate-700 text-white": isActive,
-          "w-full": !isCollapsed,
-        }
-      )}
-      onClick={onClick}
-    >
-      <div className="flex h-24 w-24 shrink-0 items-center justify-center">{icon}</div>
-      <span className={cx("text-body-medium font-medium tracking-[-1.2%]", { hidden: isCollapsed })}>{label}</span>
+        group-hover:bg-slate-700 group-hover:text-white`,
+          {
+            "bg-slate-700 text-white": isActive,
+            "w-full": !isCollapsed,
+          }
+        )}
+      >
+        <div className="flex h-24 w-24 shrink-0 items-center justify-center">{icon}</div>
+        <span className={cx("text-body-medium font-medium tracking-[-1.2%]", { hidden: isCollapsed })}>{label}</span>
+      </div>
     </button>
   );
 
   return (
-    <li className="p-0">
+    <li className="p-0 first:-mt-4">
       {to ? (
         external ? (
           <a href={to} target="_blank" rel="noopener noreferrer">
@@ -139,7 +140,7 @@ export function MenuSection({ isCollapsed }: { isCollapsed: boolean | undefined 
   const { pathname } = useLocation();
 
   return (
-    <ul className={cx("flex list-none flex-col gap-8 px-0")}>
+    <ul className={cx("flex list-none flex-col px-0")}>
       {mainNavItems.map((item) => (
         <NavItem
           key={item.key}

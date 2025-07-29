@@ -8,13 +8,11 @@ import { FiChevronDown } from "react-icons/fi";
 
 import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
-import { useTradePageVersion } from "lib/useTradePageVersion";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 import type { ModalProps } from "components/Modal/Modal";
-import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 
 import language24Icon from "img/ic_language24.svg";
 import SettingsIcon24 from "img/ic_settings.svg?react";
@@ -92,15 +90,11 @@ export default function NetworkDropdown(props) {
 function NavIcons({ selectorLabel }) {
   const { chainId } = useChainId();
   const icon = getIcon(chainId, "network");
-  const [currentVersion] = useTradePageVersion();
 
   return (
     <>
-      <span className="text-body-small inline-block h-fit rounded-4 bg-slate-600 px-7 py-4 font-medium text-white max-md:text-[13px]">
-        V{currentVersion}
-      </span>
       <button>
-        <img className="network-dropdown-icon" src={icon} alt={selectorLabel} />
+        <img className="size-24" src={icon} alt={selectorLabel} />
       </button>
       <button className="max-md:hidden">
         <FiChevronDown className="text-slate-100" size={20} />
@@ -120,10 +114,7 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, openSe
         </Menu.Button>
         <Menu.Items as="div" className="menu-items network-dropdown-items" data-qa="networks-dropdown">
           <div className="dropdown-label">
-            <Trans>Version and Network</Trans>
-          </div>
-          <div className="px-8 pb-8">
-            <VersionSwitch />
+            <Trans>Network</Trans>
           </div>
           <div className="network-dropdown-list">
             <NetworkMenuItems networkOptions={networkOptions} selectorLabel={selectorLabel} />

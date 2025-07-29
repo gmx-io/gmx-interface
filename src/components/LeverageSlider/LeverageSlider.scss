@@ -10,7 +10,7 @@ $gray: var(--color-slate-600);
     margin-bottom: 0px;
   }
 
-  padding: 0 3px;
+  padding: 0 8px 0 12px;
 
   user-select: none;
 
@@ -77,16 +77,16 @@ $gray: var(--color-slate-600);
     text-align: left;
   }
 
-  .rc-slider-mark-text:first-child {
-    left: -2px !important;
-    transform: none !important;
-  }
+  // .rc-slider-mark-text:first-child {
+  //   left: -2px !important;
+  //   transform: none !important;
+  // }
 
-  .rc-slider-mark-text:last-child {
-    right: -2px !important;
-    left: unset !important;
-    transform: none !important;
-  }
+  // .rc-slider-mark-text:last-child {
+  //   right: -2px !important;
+  //   left: unset !important;
+  //   transform: none !important;
+  // }
 
   .rc-slider-mark-text:hover,
   .rc-slider-mark-text-active:hover {

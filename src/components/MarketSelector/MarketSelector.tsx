@@ -189,7 +189,7 @@ export function MarketSelector({
           </>
         }
       >
-        <div className="TokenSelector-tokens">
+        <div className="flex flex-col gap-8">
           {filteredOptions.map((option, marketIndex) => (
             <MarketListItem
               key={option.marketInfo.marketTokenAddress}
@@ -277,7 +277,10 @@ function MarketListItem(props: {
 
   return (
     <div
-      className={cx("TokenSelector-token-row", { disabled: state.disabled })}
+      className={cx(
+        "text-body-medium flex w-full items-center justify-between rounded-8 bg-slate-800 p-8 hover:bg-slate-700",
+        { disabled: state.disabled }
+      )}
       onClick={handleClick}
       data-qa={`market-selector-${indexName}`}
     >

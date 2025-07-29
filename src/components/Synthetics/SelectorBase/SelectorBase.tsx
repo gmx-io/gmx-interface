@@ -190,7 +190,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
         <>
           <Popover.Button
             as="div"
-            className={cx("SelectorBase-button group/selector-base gap-8", props.handleClassName)}
+            className={cx("SelectorBase-button group/selector-base group gap-8", props.handleClassName)}
             ref={refs.setReference}
             data-qa={props.qa ? props.qa + "-button" : undefined}
           >

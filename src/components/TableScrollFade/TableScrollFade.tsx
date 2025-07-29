@@ -203,7 +203,7 @@ function ScrollFadeControls({
   rightStyles,
   scrollToLeft,
   scrollToRight,
-  gradientColor = "slate-800",
+  gradientColor = "slate-900",
 }: {
   scrollLeft: number;
   scrollRight: number;

@@ -6,13 +6,10 @@ import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
 import { getAccountUrl } from "lib/legacy";
-import { useNotifyModalState } from "lib/useNotifyModalState";
 import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 
-import Button from "components/Button/Button";
-
-import BellIcon from "img/new-bell.svg?react";
+import { OneClickButton } from "components/OneClickButton/OneClickButton";
 
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
@@ -68,7 +65,7 @@ export function AppHeaderUser({ openSettings, disconnectAccountAndCloseSettings,
             >
               <Trans>Connect Wallet</Trans>
             </ConnectWalletButton>
-            <NotifyButton />
+            <OneClickButton openSettings={openSettings} />
             <NetworkDropdown
               networkOptions={NETWORK_OPTIONS}
               selectorLabel={selectorLabel}
@@ -92,19 +89,9 @@ export function AppHeaderUser({ openSettings, disconnectAccountAndCloseSettings,
           disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
         />
       </div>
-      <NotifyButton />
+      <OneClickButton openSettings={openSettings} />
       <NetworkDropdown networkOptions={NETWORK_OPTIONS} selectorLabel={selectorLabel} openSettings={openSettings} />
       {menuToggle ? menuToggle : null}
     </div>
   );
 }
-
-const NotifyButton = () => {
-  const { openNotifyModal } = useNotifyModalState();
-
-  return (
-    <Button variant="secondary" onClick={openNotifyModal}>
-      <BellIcon width={20} height={20} className="box-content p-2" />
-    </Button>
-  );
-};

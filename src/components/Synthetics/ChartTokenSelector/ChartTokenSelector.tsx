@@ -108,7 +108,7 @@ export default function ChartTokenSelector(props: Props) {
                     "ml-8": oneRowLabels,
                   })}
                 >
-                  <span>[{poolName}]</span>
+                  <span>{poolName}</span>
                 </span>
               )}
             </span>
