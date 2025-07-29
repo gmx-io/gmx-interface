@@ -1,7 +1,8 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import React from "react";
-import { Line, LineChart } from "recharts";
+import { HiDotsVertical } from "react-icons/hi";
+import { Area, AreaChart } from "recharts";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -122,7 +123,7 @@ export function GmListItem({
 
   if (isMobile) {
     return (
-      <div className="flex flex-col gap-4 rounded-8 bg-cold-blue-900 p-12">
+      <div className="flex flex-col gap-4 rounded-8 bg-fill-surfaceElevated50 p-12">
         <div className="flex flex-wrap items-center pb-14">
           <div className="flex items-center">
             <div className="mr-12 flex shrink-0 items-center">
@@ -158,12 +159,9 @@ export function GmListItem({
             </div>
 
             {onFavoriteClick && (
-              <div
-                className="cursor-pointer self-center rounded-4 bg-[#252B57] p-12 text-16"
-                onClick={handleFavoriteClick}
-              >
+              <Button variant="secondary" className="!p-8" onClick={handleFavoriteClick}>
                 <FavoriteStar isFavorite={isFavorite} activeClassName="!text-white" />
-              </div>
+              </Button>
             )}
           </div>
         </div>
@@ -204,7 +202,7 @@ export function GmListItem({
           />
         </div>
         <ButtonLink
-          className="mt-12 bg-[#252B57] p-8 text-center"
+          className="mt-12 bg-slate-800 p-8 text-center font-medium text-slate-100 hover:bg-slate-700 hover:text-white"
           to={`/pools/details?market=${marketOrGlvTokenAddress}`}
         >
           <Trans>View Details</Trans>
@@ -237,7 +235,7 @@ export function GmListItem({
               />
             </div>
             <div>
-              <div className="flex text-16">
+              <div className="flex items-center text-16">
                 {isGlv
                   ? getGlvDisplayName(marketOrGlv)
                   : getMarketIndexName({ indexToken, isSpotOnly: Boolean(marketOrGlv?.isSpotOnly) })}
@@ -261,6 +259,7 @@ export function GmListItem({
           decimals={token.decimals}
           usd={totalSupplyUsd}
           symbol={token.symbol}
+          className="font-medium"
           usdOnTop
         />
       </TableTd>
@@ -278,7 +277,7 @@ export function GmListItem({
         <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
       </TableTd>
 
-      <TableTd>{performance ? <div>{formatPerformanceBps(performance)}</div> : "..."}</TableTd>
+      <TableTd>{performance ? <div className="font-medium">{formatPerformanceBps(performance)}</div> : "..."}</TableTd>
 
       <TableTd>
         <SnapshotGraph performanceSnapshots={performanceSnapshots ?? EMPTY_ARRAY} performance={performance ?? 0} />
@@ -286,11 +285,12 @@ export function GmListItem({
 
       <TableTd className="pr-16">
         <Button
-          className="flex-grow !px-30 !py-12"
-          variant="secondary"
+          className="flex flex-grow items-center gap-4"
+          variant="ghost"
           to={`/pools/details?market=${marketOrGlvTokenAddress}`}
         >
           <Trans>Details</Trans>
+          <HiDotsVertical className="size-16" />
         </Button>
       </TableTd>
     </TableTr>
@@ -329,13 +329,25 @@ const SnapshotGraph = ({
         [DESKTOP_GRAPH_SIZE_CLASSNAME]: !isMobile,
       })}
     >
-      <LineChart width={size.width} height={size.height} data={performanceSnapshots}>
-        <Line
+      <AreaChart width={size.width} height={size.height} data={performanceSnapshots}>
+        <defs>
+          <linearGradient id={`snapshot-graph-gradient-green`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--color-green-500)" stopOpacity={0.4}></stop>
+            <stop offset="75%" stopColor="var(--color-green-500)" stopOpacity={0.05}></stop>
+          </linearGradient>
+          <linearGradient id={`snapshot-graph-gradient-red`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--color-red-500)" stopOpacity={0.4}></stop>
+            <stop offset="75%" stopColor="var(--color-red-500)" stopOpacity={0.05}></stop>
+          </linearGradient>
+        </defs>
+        <Area
           dataKey="performance"
           stroke={isNegative ? "var(--color-red-500)" : "var(--color-green-500)"}
           dot={false}
+          fill={isNegative ? "url(#snapshot-graph-gradient-red)" : "url(#snapshot-graph-gradient-green)"}
+          baseValue="dataMin"
         />
-      </LineChart>
+      </AreaChart>
     </div>
   );
 };

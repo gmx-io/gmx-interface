@@ -121,10 +121,10 @@ export function GmList({
           <Trans>
             Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options.
           </Trans>
-          <div className="flex flex-wrap items-center justify-between gap-8 py-8">
+          <div className="flex flex-wrap items-center justify-between gap-12 py-8">
             <SearchInput
               size="s"
-              className="w-[260px] *:!text-body-medium"
+              className="w-full *:!text-body-medium md:w-[260px]"
               value={searchText}
               setValue={setSearchText}
               placeholder="Search Pools"
@@ -162,7 +162,7 @@ export function GmList({
           </div>
         ) : (
           <TableScrollFadeContainer>
-            <table className="w-[max(100%,820px)]">
+            <table className="w-[max(100%,980px)]">
               <thead>
                 <TableTheadTr bordered>
                   <TableTh className="pl-16">

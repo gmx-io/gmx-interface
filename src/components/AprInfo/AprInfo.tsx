@@ -21,12 +21,14 @@ export function AprInfo({
   lidoApr,
   showTooltip = true,
   marketAddress,
+  className,
 }: {
   apy: bigint | undefined;
   incentiveApr: bigint | undefined;
   lidoApr: bigint | undefined;
   showTooltip?: boolean;
   marketAddress: string;
+  className?: string;
 }) {
   const { chainId } = useChainId();
 
@@ -72,7 +74,7 @@ export function AprInfo({
 
   const aprNode = useMemo(() => {
     const isIncentiveApr = incentiveApr !== undefined && incentiveApr > 0;
-    const node = <>{apy !== undefined ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>;
+    const node = <>{apy !== undefined ? <span className={className}>{formatAmount(totalApr, 28, 2)}%</span> : "..."}</>;
 
     if (isIncentiveApr) {
       return (
@@ -84,7 +86,7 @@ export function AprInfo({
     } else {
       return node;
     }
-  }, [apy, incentiveApr, totalApr]);
+  }, [apy, className, incentiveApr, totalApr]);
 
   return showTooltip && (isIncentiveActive || isLidoApr) ? (
     <TooltipWithPortal

@@ -1,5 +1,7 @@
 import cx from "classnames";
-import { FaRegStar, FaStar } from "react-icons/fa";
+
+import StarIcon from "img/ic_star.svg?react";
+import StarFilledIcon from "img/ic_star_filled.svg?react";
 
 export default function FavoriteStar({
   isFavorite,
@@ -10,11 +12,7 @@ export default function FavoriteStar({
 }) {
   return (
     <div className="flex h-16 w-16 items-center justify-center">
-      {isFavorite ? (
-        <FaStar className={cx("text-yellow-300", activeClassName)} />
-      ) : (
-        <FaRegStar className="text-slate-100" />
-      )}
+      {isFavorite ? <StarFilledIcon className={cx("text-yellow-300", activeClassName)} /> : <StarIcon />}
     </div>
   );
 }

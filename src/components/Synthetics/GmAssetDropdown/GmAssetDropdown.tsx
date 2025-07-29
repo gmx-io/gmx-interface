@@ -2,7 +2,7 @@ import { Placement, autoUpdate, flip, shift, useFloating } from "@floating-ui/re
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
 import React, { useCallback, type ReactNode } from "react";
-import { FiChevronDown } from "react-icons/fi";
+import { HiDotsVertical } from "react-icons/hi";
 import { createBreakpoint } from "react-use";
 
 import { getExplorerUrl } from "config/chains";
@@ -104,13 +104,13 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
           ref={refs.setReference}
           className="dropdown-arrow center-both"
         >
-          <FiChevronDown size={20} className="text-slate-100" />
+          <HiDotsVertical className="size-16" />
         </Menu.Button>
         <Menu.Items
           as="div"
           ref={refs.setFloating}
           style={floatingStyles}
-          className="z-30 rounded-4 border border-slate-600 bg-slate-800 outline-none"
+          className="z-30 rounded-8 border border-slate-600 bg-slate-800 outline-none"
           onClick={handleMenuItemsClick}
         >
           {market && (

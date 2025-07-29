@@ -81,7 +81,7 @@ const colors = {
     secondary: "#23263b",
   },
   fill: {
-    surfaceElevated50: "#1E20337f",
+    surfaceElevated50: "#1E203380",
     surfaceElevatedHover: "#18192a",
     surfaceHover: "#A0A3C41A",
   },
@@ -232,8 +232,7 @@ module.exports = {
         range(200, 501, 50).map((space) => [`auto-fill-${space}`, `repeat(auto-fill, minmax(${space}px, 1fr))`])
       ),
       fontFamily: {
-        'tthoves': ['TTHoves', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-        'tthoves-native': ['TTHovesNative', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        'tthoves': ['TTHoves', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
       },
     },
   },

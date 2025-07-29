@@ -10,6 +10,7 @@ export function AmountWithUsdHuman({
   symbol,
   multiline = false,
   usdOnTop = false,
+  className,
 }: {
   amount: bigint | undefined;
   decimals: number | undefined;
@@ -17,6 +18,7 @@ export function AmountWithUsdHuman({
   symbol?: string;
   multiline?: boolean;
   usdOnTop?: boolean;
+  className?: string;
 }) {
   if (amount === undefined || usd === undefined || decimals === undefined) {
     return "...";
@@ -34,7 +36,7 @@ export function AmountWithUsdHuman({
 
   return (
     <span>
-      <span>{topValue} </span>
+      <span className={className}>{topValue} </span>
       {multiline && <br />}
       <span className={cx("text-12 text-slate-100 group-hover/hoverable:text-[inherit]", { "ml-2": multiline })}>
         ({bottomValue})
