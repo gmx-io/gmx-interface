@@ -52,6 +52,7 @@ import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getOrderKeys } from "sdk/utils/orders";
 
 import { AppHeader } from "components/AppHeader/AppHeader";
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
 import { InterviewModal } from "components/InterviewModal/InterviewModal";
@@ -324,20 +325,22 @@ export function SyntheticsPage(p: Props) {
   );
 
   return (
-    <div className="flex flex-col gap-8">
-      <AppHeader
-        leftContent={
-          isTablet ? (
-            <Link to="/" className="flex items-center gap-5 p-8 max-md:p-[4.5px]">
-              <img src={logoIcon} alt="GMX Logo" />
-              <img src={logoText} className="max-md:hidden" alt="GMX Logo" />
-            </Link>
-          ) : (
-            <ChartHeader />
-          )
-        }
-      />
-
+    <AppPageLayout
+      header={
+        <AppHeader
+          leftContent={
+            isTablet ? (
+              <Link to="/" className="flex items-center gap-5 p-8 max-md:p-[4.5px]">
+                <img src={logoIcon} alt="GMX Logo" />
+                <img src={logoText} className="max-md:hidden" alt="GMX Logo" />
+              </Link>
+            ) : (
+              <ChartHeader />
+            )
+          }
+        />
+      }
+    >
       {isTablet ? <ChartHeader /> : null}
       <div className="grid grow grid-cols-[1fr_auto] gap-8 pt-0 max-[1024px]:grid-cols-1">
         {isTablet && <OneClickPromoBanner openSettings={openSettings} />}
@@ -463,7 +466,7 @@ export function SyntheticsPage(p: Props) {
       <PositionEditor />
       <InterviewModal type="trader" isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
       <NpsModal />
-    </div>
+    </AppPageLayout>
   );
 }
 

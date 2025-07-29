@@ -29,7 +29,7 @@ export function AppHeader({ leftContent }: Props) {
 
   return (
     <header data-qa="header" className="flex justify-between gap-16">
-      {leftContent}
+      <div className="overflow-hidden">{leftContent}</div>
 
       <div className="shrink-0">
         <AppHeaderUser

@@ -12,6 +12,7 @@ import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 
@@ -94,67 +95,69 @@ export default function CompleteAccountTransfer() {
   }
 
   return (
-    <div className="CompleteAccountTransfer Page page-layout">
-      <Modal
-        isVisible={isTransferSubmittedModalVisible}
-        setIsVisible={setIsTransferSubmittedModalVisible}
-        label="Transfer Completed"
-      >
-        <Trans>Your transfer has been completed.</Trans>
-        <br />
-        <br />
-        <Link className="App-cta" to="/earn">
-          <Trans>Continue</Trans>
-        </Link>
-      </Modal>
-      <div className="default-container !m-0 pb-16">
-        <div className="Page-title">
-          <Trans>Complete Account Transfer</Trans>
-        </div>
-        {!isCorrectAccount && (
-          <div className="Page-description">
-            <Trans>To complete the transfer, you must switch your connected account to {receiver}.</Trans>
-            <br />
-            <br />
-            <Trans>
-              You will need to be on this page to accept the transfer,{" "}
-              <span
-                onClick={() => {
-                  copyToClipboard(window.location.href);
-                  helperToast.success("Link copied to your clipboard");
-                }}
-              >
-                click here
-              </span>{" "}
-              to copy the link to this page if needed.
-            </Trans>
-            <br />
-            <br />
+    <AppPageLayout>
+      <div className="CompleteAccountTransfer Page page-layout">
+        <Modal
+          isVisible={isTransferSubmittedModalVisible}
+          setIsVisible={setIsTransferSubmittedModalVisible}
+          label="Transfer Completed"
+        >
+          <Trans>Your transfer has been completed.</Trans>
+          <br />
+          <br />
+          <Link className="App-cta" to="/earn">
+            <Trans>Continue</Trans>
+          </Link>
+        </Modal>
+        <div className="default-container !m-0 pb-16">
+          <div className="Page-title">
+            <Trans>Complete Account Transfer</Trans>
           </div>
-        )}
+          {!isCorrectAccount && (
+            <div className="Page-description">
+              <Trans>To complete the transfer, you must switch your connected account to {receiver}.</Trans>
+              <br />
+              <br />
+              <Trans>
+                You will need to be on this page to accept the transfer,{" "}
+                <span
+                  onClick={() => {
+                    copyToClipboard(window.location.href);
+                    helperToast.success("Link copied to your clipboard");
+                  }}
+                >
+                  click here
+                </span>{" "}
+                to copy the link to this page if needed.
+              </Trans>
+              <br />
+              <br />
+            </div>
+          )}
+          {isCorrectAccount && (
+            <div className="Page-description hyphens-auto">
+              <Trans>You have a pending transfer from {sender}.</Trans>
+              <br />
+            </div>
+          )}
+        </div>
         {isCorrectAccount && (
-          <div className="Page-description hyphens-auto">
-            <Trans>You have a pending transfer from {sender}.</Trans>
-            <br />
+          <div className="default-container !m-0">
+            <div className="input-form">
+              <div className="input-row">
+                <Button
+                  variant="primary-action"
+                  className="w-full"
+                  disabled={!isPrimaryEnabled()}
+                  onClick={onClickPrimary}
+                >
+                  {getPrimaryText()}
+                </Button>
+              </div>
+            </div>
           </div>
         )}
       </div>
-      {isCorrectAccount && (
-        <div className="default-container !m-0">
-          <div className="input-form">
-            <div className="input-row">
-              <Button
-                variant="primary-action"
-                className="w-full"
-                disabled={!isPrimaryEnabled()}
-                onClick={onClickPrimary}
-              >
-                {getPrimaryText()}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    </AppPageLayout>
   );
 }

@@ -111,7 +111,7 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
 
     &:not([disabled], .disabled):hover {
       color: var(--color-white);
-      background-color: var(--color-slate-800);
+      background-color: var(--color-fill-surfaceHover);
     }
 
     &:not([disabled], .disabled):active {

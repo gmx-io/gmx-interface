@@ -12,11 +12,13 @@ export default function PoolsCard({
   bottom?: ReactNode;
 }) {
   return (
-    <div className="rounded-6 bg-slate-800">
-      <div className="flex flex-col p-16">
-        <span className="text-body-large mb-8">{title}</span>
-        <span className="text-body-medium mb-16 text-slate-100">{description}</span>
-        <div>{children}</div>
+    <div className="rounded-6 bg-slate-900">
+      <div className="flex flex-col">
+        <div className="flex flex-col gap-8 border-b border-slate-600 p-16">
+          <span className="text-body-large">{title}</span>
+          <span className="text-body-medium text-slate-100">{description}</span>
+        </div>
+        <div className="">{children}</div>
       </div>
       {bottom && <div className="border-t border-slate-600 p-8">{bottom}</div>}
     </div>

@@ -3,6 +3,7 @@ import React from "react";
 
 import { getPageTitle } from "lib/legacy";
 
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Card from "components/Common/Card";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -12,22 +13,24 @@ import "./Jobs.css";
 function Jobs() {
   return (
     <SEO title={getPageTitle(t`Job Openings`)}>
-      <div className="default-container page-layout Referrals">
-        <div className="section-title-block">
-          <div className="section-title-icon" />
-          <div className="section-title-content">
-            <div className="Page-title">
-              <Trans>Jobs</Trans>
-            </div>
-            <div className="Page-description">
-              <Trans>Job openings at GMX.</Trans>
+      <AppPageLayout>
+        <div className="default-container page-layout Referrals">
+          <div className="section-title-block">
+            <div className="section-title-icon" />
+            <div className="section-title-content">
+              <div className="Page-title">
+                <Trans>Jobs</Trans>
+              </div>
+              <div className="Page-description">
+                <Trans>Job openings at GMX.</Trans>
+              </div>
             </div>
           </div>
+          <div className="jobs-page-body">
+            <NoJob />
+          </div>
         </div>
-        <div className="jobs-page-body">
-          <NoJob />
-        </div>
-      </div>
+      </AppPageLayout>
     </SEO>
   );
 }

@@ -16,6 +16,7 @@ import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
 
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { GlvList } from "components/Synthetics/GmList/GlvList";
 import { GmList } from "components/Synthetics/GmList/GmList";
 
@@ -63,9 +64,9 @@ export default function Pools() {
   const isBotanix = chainId === BOTANIX;
 
   return (
-    <div className="default-container page-layout">
+    <AppPageLayout>
       <div
-        className={cx("mb-24 grid", {
+        className={cx("grid w-full flex-col p-20", {
           "grid-cols-1": isMobile,
           "grid-cols-2": !isMobile,
         })}
@@ -73,7 +74,7 @@ export default function Pools() {
         <PoolsTvl />
 
         <div
-          className={cx("", {
+          className={cx("flex-end flex", {
             "ml-0 mt-28": isMobile,
             "ml-auto mt-auto": !isMobile,
           })}
@@ -111,7 +112,7 @@ export default function Pools() {
           isDeposit
         />
       </div>
-    </div>
+    </AppPageLayout>
   );
 }
 
@@ -122,9 +123,9 @@ function PoolsTvl() {
   const tvl = v2Stats?.totalGMLiquidity;
 
   return (
-    <div className="flex flex-col">
-      <span className="text-h1">{formatUsd(tvl, { displayDecimals: 0 })}</span>
-      <span className="text-body-medium text-slate-100">TVL in vaults and pools.</span>
+    <div className="flex flex-col gap-8">
+      <span className="text-h1 font-tthoves-native font-medium">{formatUsd(tvl, { displayDecimals: 0 })}</span>
+      <span className="text-body-medium font-medium text-slate-100">TVL in vaults and pools.</span>
     </div>
   );
 }

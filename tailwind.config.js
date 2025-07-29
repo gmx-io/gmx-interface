@@ -147,7 +147,7 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
 function fontComponentsPlugin({ addComponents, addBase }) {
   addBase({
     ":root": {
-      "--font-size-h1": "3.4rem",
+      "--font-size-h1": "3.2rem",
       "--font-size-h2": "2.4rem",
       "--font-size-body-large": "1.6rem",
       "--font-size-body-medium": "1.4rem",
@@ -165,7 +165,7 @@ function fontComponentsPlugin({ addComponents, addBase }) {
 
   addComponents({
     ".text-h1": {
-      fontSize: "3.4rem",
+      fontSize: "3.2rem",
       lineHeight: "auto",
     },
     ".text-h2": {
@@ -201,12 +201,14 @@ module.exports = {
       full: "9999px",
     }),
     fontSize: {
+      11: "1.1rem",
       12: "1.2rem",
+      13: "1.3rem",
       14: "1.4rem",
       15: "1.5rem",
       16: "1.6rem",
       24: "2.4rem",
-      34: "3.4rem",
+      32: "3.2rem",
     },
     lineHeight: {
       1: "1",

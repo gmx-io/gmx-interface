@@ -13,6 +13,7 @@ import { shortenAddressOrEns } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { bigMath } from "sdk/utils/bigmath";
 
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Checkbox from "components/Checkbox/Checkbox";
 import SpinningLoader from "components/Common/SpinningLoader";
 
@@ -31,35 +32,37 @@ export const PriceImpactRebatesStatsPage = memo(() => {
   }, [reviewed]);
 
   return (
-    <div className="default-container page-layout">
-      <div className="flex">
-        <Checkbox isChecked={reviewed} setIsChecked={setReviewed}>
-          Incl. reviewed
-        </Checkbox>
-        <div className="PriceImpactRebatesStats-loading">{loading && <SpinningLoader />}</div>
+    <AppPageLayout>
+      <div className="default-container page-layout">
+        <div className="flex">
+          <Checkbox isChecked={reviewed} setIsChecked={setReviewed}>
+            Incl. reviewed
+          </Checkbox>
+          <div className="PriceImpactRebatesStats-loading">{loading && <SpinningLoader />}</div>
+        </div>
+        <RebateStatsTable rebateGroups={rebateGroups} />
+        <div>
+          {pageIndex > 0 && (
+            <button
+              disabled={loading}
+              className="App-button-option App-card-option"
+              onClick={() => setPageIndex((page) => Math.max(0, page - 1))}
+            >
+              <Trans>Prev</Trans>
+            </button>
+          )}
+          {hasMore && (
+            <button
+              disabled={loading}
+              className="App-button-option App-card-option"
+              onClick={() => setPageIndex((page) => page + 1)}
+            >
+              <Trans>Next</Trans>
+            </button>
+          )}
+        </div>
       </div>
-      <RebateStatsTable rebateGroups={rebateGroups} />
-      <div>
-        {pageIndex > 0 && (
-          <button
-            disabled={loading}
-            className="App-button-option App-card-option"
-            onClick={() => setPageIndex((page) => Math.max(0, page - 1))}
-          >
-            <Trans>Prev</Trans>
-          </button>
-        )}
-        {hasMore && (
-          <button
-            disabled={loading}
-            className="App-button-option App-card-option"
-            onClick={() => setPageIndex((page) => page + 1)}
-          >
-            <Trans>Next</Trans>
-          </button>
-        )}
-      </div>
-    </div>
+    </AppPageLayout>
   );
 });
 

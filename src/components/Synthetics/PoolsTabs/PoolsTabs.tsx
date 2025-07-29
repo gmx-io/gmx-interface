@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { ReactNode } from "react";
 
-import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
+import Button from "components/Button/Button";
 
 type PoolTab<T> = {
   label: ReactNode;
@@ -21,26 +21,19 @@ export function PoolsTabs<T extends string | number>({
   itemClassName?: string;
   className?: string;
 }) {
-  const isMobile = usePoolsIsMobilePage();
-
   return (
-    <div className={cx("flex flex-wrap gap-8", className)}>
+    <div className={cx("flex flex-wrap gap-4", className)}>
       {tabs.map((tab) => (
-        <div
+        <Button
           key={tab.value as string}
-          className={cx(
-            "text-body-medium cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap rounded-4 py-8 hover:bg-cold-blue-700 hover:text-white",
-            itemClassName,
-            {
-              "!bg-cold-blue-500 !text-white": selected === tab.value,
-              "px-12": isMobile,
-              "px-16": !isMobile,
-            }
-          )}
+          variant="ghost"
+          className={cx(itemClassName, {
+            "!bg-slate-800 !text-white": selected === tab.value,
+          })}
           onClick={() => setSelected(tab.value)}
         >
           {tab.label}
-        </div>
+        </Button>
       ))}
     </div>
   );

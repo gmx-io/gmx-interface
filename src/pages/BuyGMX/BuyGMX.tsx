@@ -9,6 +9,7 @@ import { importImage } from "lib/legacy";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
 import Card from "components/Common/Card";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -66,128 +67,132 @@ export default function BuyGMX() {
   }, [chainId, onNetworkSelect]);
 
   return (
-    <div className="BuyGMXGLP default-container page-layout">
-      <div className="BuyGMXGLP-container">
-        <div className="section-title-block">
-          <div className="section-title-content">
-            <div className="Page-title">
-              <Trans>Buy GMX on {chainName}</Trans>
-              <img className="Page-title-icon ml-5 inline-block" src={icons?.network} alt={chainName} />
-            </div>
-            <div className="Page-description">
-              <Trans>Choose to buy from decentralized or centralized exchanges.</Trans>
-              <br />
-              <Trans>
-                To purchase GMX on the {isArbitrum ? "Avalanche" : "Arbitrum"} blockchain, please{" "}
-                <span onClick={() => onNetworkSelect(isArbitrum ? AVALANCHE : ARBITRUM)}>change your network</span>.
-              </Trans>
-            </div>
-          </div>
-        </div>
-        <div className="cards-row">
-          <DecentralisedExchanges chainId={chainId} externalLinks={externalLinks} />
-          <CentralisedExchanges chainId={chainId} />
-        </div>
-
-        {isArbitrum ? (
-          <div className="section-title-block mt-top" id="bridge">
+    <AppPageLayout>
+      <div className="BuyGMXGLP default-container page-layout">
+        <div className="BuyGMXGLP-container">
+          <div className="section-title-block">
             <div className="section-title-content">
               <div className="Page-title">
-                <Trans>Buy or Transfer ETH to Arbitrum</Trans>
+                <Trans>Buy GMX on {chainName}</Trans>
                 <img className="Page-title-icon ml-5 inline-block" src={icons?.network} alt={chainName} />
               </div>
               <div className="Page-description">
-                <Trans>Buy ETH directly on Arbitrum or transfer it there.</Trans>
+                <Trans>Choose to buy from decentralized or centralized exchanges.</Trans>
+                <br />
+                <Trans>
+                  To purchase GMX on the {isArbitrum ? "Avalanche" : "Arbitrum"} blockchain, please{" "}
+                  <span onClick={() => onNetworkSelect(isArbitrum ? AVALANCHE : ARBITRUM)}>change your network</span>.
+                </Trans>
               </div>
             </div>
           </div>
-        ) : (
-          <div className="section-title-block mt-top" id="bridge">
-            <div className="section-title-content">
-              <div className="Page-title">
-                <Trans>Buy or Transfer AVAX to Avalanche</Trans>
-                <img className="Page-title-icon ml-5 inline-block" src={icons?.network} alt={chainName} />
-              </div>
-              <div className="Page-description">
-                <Trans>Buy AVAX directly to Avalanche or transfer it there.</Trans>
-              </div>
-            </div>
+          <div className="cards-row">
+            <DecentralisedExchanges chainId={chainId} externalLinks={externalLinks} />
+            <CentralisedExchanges chainId={chainId} />
           </div>
-        )}
 
-        <div className="cards-row">
-          <Card title={t`Buy ${nativeTokenSymbol}`}>
-            <div className="App-card-content">
-              <div className="BuyGMXGLP-description">
+          {isArbitrum ? (
+            <div className="section-title-block mt-top" id="bridge">
+              <div className="section-title-content">
+                <div className="Page-title">
+                  <Trans>Buy or Transfer ETH to Arbitrum</Trans>
+                  <img className="Page-title-icon ml-5 inline-block" src={icons?.network} alt={chainName} />
+                </div>
+                <div className="Page-description">
+                  <Trans>Buy ETH directly on Arbitrum or transfer it there.</Trans>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="section-title-block mt-top" id="bridge">
+              <div className="section-title-content">
+                <div className="Page-title">
+                  <Trans>Buy or Transfer AVAX to Avalanche</Trans>
+                  <img className="Page-title-icon ml-5 inline-block" src={icons?.network} alt={chainName} />
+                </div>
+                <div className="Page-description">
+                  <Trans>Buy AVAX directly to Avalanche or transfer it there.</Trans>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="cards-row">
+            <Card title={t`Buy ${nativeTokenSymbol}`}>
+              <div className="App-card-content">
+                <div className="BuyGMXGLP-description">
+                  {isArbitrum ? (
+                    <Trans>
+                      You can buy ETH directly on{" "}
+                      <ExternalLink href={externalLinks.networkWebsite}>Arbitrum</ExternalLink> using these options:
+                    </Trans>
+                  ) : (
+                    <Trans>
+                      You can buy AVAX directly on{" "}
+                      <ExternalLink href={externalLinks.networkWebsite}>Avalanche</ExternalLink> using these options:
+                    </Trans>
+                  )}
+                </div>
+                <div className="buttons-group">
+                  {BUY_NATIVE_TOKENS.filter((e) => chainId in e.links).map((exchange) => {
+                    const icon = importImage(exchange.icon) || "";
+                    const link = exchange.links[chainId];
+                    return (
+                      <Button
+                        variant="secondary"
+                        textAlign="left"
+                        key={exchange.name}
+                        to={link}
+                        // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+                        imgSrc={icon}
+                        imgAlt={exchange.name}
+                        newTab
+                      >
+                        {exchange.name}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </div>
+            </Card>
+            <Card title={t`Transfer ${nativeTokenSymbol}`}>
+              <div className="App-card-content">
                 {isArbitrum ? (
-                  <Trans>
-                    You can buy ETH directly on{" "}
-                    <ExternalLink href={externalLinks.networkWebsite}>Arbitrum</ExternalLink> using these options:
-                  </Trans>
+                  <div className="BuyGMXGLP-description">
+                    <Trans>You can transfer ETH from other networks to Arbitrum using any of the below options:</Trans>
+                  </div>
                 ) : (
-                  <Trans>
-                    You can buy AVAX directly on{" "}
-                    <ExternalLink href={externalLinks.networkWebsite}>Avalanche</ExternalLink> using these options:
-                  </Trans>
+                  <div className="BuyGMXGLP-description">
+                    <Trans>
+                      You can transfer AVAX from other networks to Avalanche using any of the below options:
+                    </Trans>
+                  </div>
                 )}
-              </div>
-              <div className="buttons-group">
-                {BUY_NATIVE_TOKENS.filter((e) => chainId in e.links).map((exchange) => {
-                  const icon = importImage(exchange.icon) || "";
-                  const link = exchange.links[chainId];
-                  return (
-                    <Button
-                      variant="secondary"
-                      textAlign="left"
-                      key={exchange.name}
-                      to={link}
-                      // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                      imgSrc={icon}
-                      imgAlt={exchange.name}
-                      newTab
-                    >
-                      {exchange.name}
-                    </Button>
-                  );
-                })}
-              </div>
-            </div>
-          </Card>
-          <Card title={t`Transfer ${nativeTokenSymbol}`}>
-            <div className="App-card-content">
-              {isArbitrum ? (
-                <div className="BuyGMXGLP-description">
-                  <Trans>You can transfer ETH from other networks to Arbitrum using any of the below options:</Trans>
+                <div className="buttons-group">
+                  {TRANSFER_EXCHANGES.filter((e) => chainId in e.links).map((exchange) => {
+                    const icon = importImage(exchange.icon) || "";
+                    const link = exchange.links[chainId];
+                    return (
+                      <Button
+                        variant="secondary"
+                        textAlign="left"
+                        key={exchange.name}
+                        to={link}
+                        imgSrc={icon}
+                        imgAlt={exchange.name}
+                        newTab
+                      >
+                        {exchange.name}
+                      </Button>
+                    );
+                  })}
                 </div>
-              ) : (
-                <div className="BuyGMXGLP-description">
-                  <Trans>You can transfer AVAX from other networks to Avalanche using any of the below options:</Trans>
-                </div>
-              )}
-              <div className="buttons-group">
-                {TRANSFER_EXCHANGES.filter((e) => chainId in e.links).map((exchange) => {
-                  const icon = importImage(exchange.icon) || "";
-                  const link = exchange.links[chainId];
-                  return (
-                    <Button
-                      variant="secondary"
-                      textAlign="left"
-                      key={exchange.name}
-                      to={link}
-                      imgSrc={icon}
-                      imgAlt={exchange.name}
-                      newTab
-                    >
-                      {exchange.name}
-                    </Button>
-                  );
-                })}
               </div>
-            </div>
-          </Card>
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
+    </AppPageLayout>
   );
 }
 
