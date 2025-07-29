@@ -25,7 +25,6 @@ export const selectFeatures = (s: SyntheticsState) => s.features;
 export const selectIsSponsoredCallAvailable = (s: SyntheticsState) =>
   s.sponsoredCallBalanceData?.isSponsoredCallAllowed ?? false;
 export const selectSubaccountState = (s: SyntheticsState) => s.subaccountState;
-export const selectRawSubaccount = (s: SyntheticsState) => s.subaccountState.subaccount;
 export const selectGasPaymentTokenAllowance = (s: SyntheticsState) => s.gasPaymentTokenAllowance;
 
 export const selectUpdateSubaccountSettings = (s: SyntheticsState) => s.subaccountState.updateSubaccountSettings;
@@ -105,6 +104,11 @@ export const selectPositiveFeePositionsSortedByUsd = createSelector((q) => {
   );
 });
 
+/**
+ * This selector might return subaccount with approval signed for other chain and lead to errors
+ */
+const selectRawSubaccount = (s: SyntheticsState) => s.subaccountState.subaccount;
+
 export const selectSubaccountForSettlementChainAction = createSelector((q) => {
   const chainId = q(selectChainId);
   const rawSubaccount = q(selectRawSubaccount);
@@ -145,6 +149,11 @@ export const selectSubaccountForMultichainAction = createSelector((q) => {
   return rawSubaccount;
 });
 
+/**
+ * When action target contract is purely dependent on srcChainId
+ * aka its not possible to send multichain txn from settlement chain
+ * we can use this selector to get subaccount for current source or settlement chain
+ */
 export const selectSubaccountForChainAction = createSelector((q) => {
   const srcChainId = q(selectSrcChainId);
   if (srcChainId !== undefined) {

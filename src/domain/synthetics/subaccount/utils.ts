@@ -7,6 +7,7 @@ import {
   Hex,
   keccak256,
   maxUint256,
+  zeroAddress,
   zeroHash,
 } from "viem";
 
@@ -312,7 +313,7 @@ export function getEmptySubaccountApproval(
     signature: ZERO_DATA,
     signedAt: 0,
     integrationId: zeroHash,
-    subaccountRouterAddress: getContract(chainId, "SubaccountGelatoRelayRouter"),
+    subaccountRouterAddress: zeroAddress,
     signatureChainId: chainId,
   };
 }
