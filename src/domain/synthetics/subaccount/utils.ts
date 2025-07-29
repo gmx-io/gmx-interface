@@ -143,6 +143,9 @@ export function getRemainingSubaccountDays(subaccount: Subaccount): bigint {
   return BigInt(secondsToPeriod(Number(seconds), "1d"));
 }
 
+/**
+ * Returns false for empty subaccount approval
+ */
 export function getIsApprovalExpired(subaccount: Subaccount): boolean {
   const { signedApproval } = subaccount;
 
@@ -158,6 +161,9 @@ export function getIsApprovalExpired(subaccount: Subaccount): boolean {
   return now >= expiresAt || now >= deadline;
 }
 
+/**
+ * Returns false for empty subaccount approval
+ */
 export function getIsSubaccountNonceExpired({
   chainId,
   onchainData,
@@ -199,6 +205,9 @@ export function getIsSubaccountNonceExpired({
   return signedNonce !== onChainNonce;
 }
 
+/**
+ * Returns false for empty subaccount approval
+ */
 export function getIsSubaccountApprovalInvalid({
   chainId,
   signerChainId,
@@ -212,6 +221,10 @@ export function getIsSubaccountApprovalInvalid({
   onchainData: SubaccountOnchainData;
   subaccountRouterAddress: string;
 }): boolean {
+  if (getIsEmptySubaccountApproval(signedApproval)) {
+    return false;
+  }
+
   const isSignedSubaccountFresh = !onchainData.active;
 
   let relatedOnchainNonce: bigint | undefined;
@@ -223,16 +236,6 @@ export function getIsSubaccountApprovalInvalid({
   ) {
     relatedOnchainNonce = onchainData.approvalNonce;
   } else {
-    console.log(
-      "[subaccount] invalid subaccount router address",
-      signedApproval.subaccountRouterAddress,
-      "valid addresses",
-      getContract(chainId, "MultichainSubaccountRouter"),
-      "for multichain and ",
-      getContract(chainId, "SubaccountGelatoRelayRouter"),
-      "for regular"
-    );
-
     return true;
   }
 
@@ -240,17 +243,6 @@ export function getIsSubaccountApprovalInvalid({
   // For this we need to check approval signature even if currently there is a subaccount but our nonce
   // would be able to update it
   const isSignedSubaccountPossibleUpdate = signedApproval.nonce === relatedOnchainNonce;
-
-  console.log("[subaccount]", {
-    "signedApproval.nonce": signedApproval.nonce,
-    relatedOnchainNonce: relatedOnchainNonce,
-    isSignedSubaccountFresh: isSignedSubaccountFresh,
-    isSignedSubaccountPossibleUpdate: isSignedSubaccountPossibleUpdate,
-    "signedApproval.signatureChainId": signedApproval.signatureChainId,
-    signerChainId: signerChainId,
-    "signedApproval.subaccountRouterAddress": signedApproval.subaccountRouterAddress,
-    subaccountRouterAddress: subaccountRouterAddress,
-  });
 
   const result =
     (isSignedSubaccountFresh || isSignedSubaccountPossibleUpdate) &&
