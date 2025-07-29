@@ -215,7 +215,7 @@ export function GmListItem({
 
   return (
     <TableTr key={token.address} bordered={false} hoverable={false}>
-      <TableTd className="!pl-0">
+      <TableTd className="pl-16">
         <div className="w-[220px]">
           <div className="flex items-start">
             {onFavoriteClick && (
@@ -284,7 +284,7 @@ export function GmListItem({
         <SnapshotGraph performanceSnapshots={performanceSnapshots ?? EMPTY_ARRAY} performance={performance ?? 0} />
       </TableTd>
 
-      <TableTd className="!pr-0">
+      <TableTd className="pr-16">
         <Button
           className="flex-grow !px-30 !py-12"
           variant="secondary"

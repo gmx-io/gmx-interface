@@ -116,7 +116,32 @@ export function GmList({
   return (
     <PoolsCard
       title={t`GM Pools`}
-      description={t`Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options.`}
+      description={
+        <div className="flex flex-col gap-16">
+          <Trans>
+            Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options.
+          </Trans>
+          <div className="flex flex-wrap items-center justify-between gap-8 py-8">
+            <SearchInput
+              size="s"
+              className="w-[260px] *:!text-body-medium"
+              value={searchText}
+              setValue={setSearchText}
+              placeholder="Search Pools"
+              autoFocus={false}
+            />
+            <div className="max-w-full">
+              <ButtonRowScrollFadeContainer>
+                <FavoriteTabs
+                  favoritesKey="gm-list"
+                  className="!text-slate-100 hover:!text-white"
+                  activeClassName="!text-white"
+                />
+              </ButtonRowScrollFadeContainer>
+            </div>
+          </div>
+        </div>
+      }
       bottom={
         pageCount > 1 ? (
           <Pagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} topMargin={false} />
@@ -124,25 +149,6 @@ export function GmList({
       }
     >
       <div>
-        <div className="flex flex-wrap items-center justify-between gap-8 py-8">
-          <SearchInput
-            size="s"
-            className="*:!text-body-medium"
-            value={searchText}
-            setValue={setSearchText}
-            placeholder="Search Pools"
-            autoFocus={false}
-          />
-          <div className="max-w-full">
-            <ButtonRowScrollFadeContainer>
-              <FavoriteTabs
-                favoritesKey="gm-list"
-                className="!text-slate-100 hover:!text-white"
-                activeClassName="!text-white"
-              />
-            </ButtonRowScrollFadeContainer>
-          </div>
-        </div>
         {isMobile ? (
           <div className="flex flex-col gap-4">
             {rows}
@@ -159,7 +165,7 @@ export function GmList({
             <table className="w-[max(100%,820px)]">
               <thead>
                 <TableTheadTr bordered>
-                  <TableTh className="!pl-0">
+                  <TableTh className="pl-16">
                     <Trans>POOL</Trans>
                   </TableTh>
                   <TableTh>
@@ -195,7 +201,7 @@ export function GmList({
                       content={<Trans>Graph showing performance vs benchmark over the selected period.</Trans>}
                     />
                   </TableTh>
-                  <TableTh className="!pr-0" />
+                  <TableTh className="pr-16" />
                 </TableTheadTr>
               </thead>
               <tbody>
