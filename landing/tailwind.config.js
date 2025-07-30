@@ -19,6 +19,7 @@ const colors = {
     800: "#121421",
   },
   blue: {
+    100: "#A4C3F9",
     300: "#7885ff",
     400: "#4d5ffa",
     500: "#3d51ff",
@@ -93,6 +94,9 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
       "&::-webkit-scrollbar": {
         display: "none",
       },
+    },
+    ".animate-pause": {
+      "animation-play-state": "paused",
     },
     ".sr-only": {
       position: "absolute",
@@ -190,6 +194,15 @@ module.exports = {
       fontFamily: {
         sans: ["TTHoves", "sans-serif"],
         mono: ["TTHovesMono", "monospace"],
+      },
+      keyframes: {
+        scroll: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+      },
+      animation: {
+        scroll: "scroll 60s linear infinite",
       },
     },
   },

@@ -9,6 +9,7 @@ import { HeroSection } from "./HeroSection/HeroSection";
 import { LaunchSection } from "./LaunchSection/LaunchSection";
 import { LiqiuditySection } from "./LiqiuditySection/LiqiuditySection";
 import { RoadmapSection } from "./RoadmapSection/RoadmapSection";
+import { SocialSection } from "./SocialSection/SocialSection";
 import { SponsorsSection } from "./SponsorsSection/SponsorsSection";
 
 export default function Home(_) {
@@ -33,6 +34,7 @@ export default function Home(_) {
         <SponsorsSection />
         <FaqSection />
         <RoadmapSection />
+        <SocialSection />
       </div>
     </HomePageContextProvider>
   );
