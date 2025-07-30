@@ -1,12 +1,11 @@
 import cx from "classnames";
 import throttle from "lodash/throttle";
 import { CSSProperties, PropsWithChildren, useCallback, useEffect, useRef, useState } from "react";
+import { FaChevronDown } from "react-icons/fa6";
 import { RemoveScroll } from "react-remove-scroll";
 import { createGlobalState } from "react-use";
 
-import LeftArrowIcon from "img/ic_arrowleft16.svg?react";
-
-const HEADER_HEIGHT = 40;
+const HEADER_HEIGHT = 42;
 const DECELERATION = 0.01;
 const DIRECTION_THRESHOLD = 2;
 const MOVEMENT_THRESHOLD = 10;
@@ -253,9 +252,12 @@ export function Curtain({
             <div className="-mb-1 grow" onClick={headerClick}>
               {header}
             </div>
-            <button onClick={handleToggle} className="p-10">
-              <LeftArrowIcon
-                className={cx("transition-transform duration-500 ease-out", isOpen ? "rotate-[270deg]" : "rotate-90")}
+            <button onClick={handleToggle} className="group p-10">
+              <FaChevronDown
+                className={cx(
+                  "text-slate-100 transition-transform duration-500 ease-out group-hover:text-white",
+                  isOpen ? undefined : "rotate-180"
+                )}
               />
             </button>
           </div>

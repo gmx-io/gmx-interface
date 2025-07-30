@@ -20,7 +20,12 @@ export function PoolsDetailsMarketAmount({
   const isMobile = usePoolsIsMobilePage();
 
   const valueContent = (
-    <span className={cx("text-body-large flex items-center", { "gap-8": !isMobile, "gap-4": isMobile })}>
+    <span
+      className={cx("text-body-large flex items-center max-md:text-body-medium", {
+        "gap-8": !isMobile,
+        "gap-4": isMobile,
+      })}
+    >
       <span>{value}</span>
       {secondaryValue ? (
         <>

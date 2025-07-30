@@ -45,6 +45,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
         size="l"
         qa="trade-direction"
         regularOptionClassname="grow"
+        className="bg-slate-900"
       />
     );
   }

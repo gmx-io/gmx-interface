@@ -1,7 +1,7 @@
 import { Menu } from "@headlessui/react";
 import { Trans, t } from "@lingui/macro";
 import { Link } from "react-router-dom";
-import { createBreakpoint, useCopyToClipboard } from "react-use";
+import { useCopyToClipboard } from "react-use";
 import type { Address } from "viem";
 
 import { BOTANIX } from "config/chains";
@@ -32,14 +32,11 @@ type Props = {
   disconnectAccountAndCloseSettings: () => void;
 };
 
-const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
-
 function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSettings }: Props) {
-  const breakpoint = useBreakpoint();
   const [, copyToClipboard] = useCopyToClipboard();
   const { openNotifyModal } = useNotifyModalState();
   const { ensName } = useENS(account);
-  const displayAddressLength = breakpoint === "S" ? 9 : 13;
+  const displayAddressLength = 12;
 
   const { chainId } = useChainId();
   const isBotanix = chainId === BOTANIX;

@@ -334,6 +334,7 @@ export function SyntheticsPage(p: Props) {
           }
         />
       }
+      className="max-lg:pb-40"
     >
       {isTablet ? <ChartHeader /> : null}
       <div className="grid grow grid-cols-[1fr_auto] gap-8 pt-0 max-[1024px]:grid-cols-1">

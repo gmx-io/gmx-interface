@@ -100,13 +100,17 @@ export function ExpandableRow({
     }
   }, [hasError, previousHasError, open, onToggle, autoExpandOnError]);
 
-  const handleOnClick = useCallback(() => {
-    if (hasError && disableCollapseOnError) {
-      return;
-    }
+  const handleOnClick = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      e.preventDefault();
+      if (hasError && disableCollapseOnError) {
+        return;
+      }
 
-    onToggle(!open);
-  }, [onToggle, open, hasError, disableCollapseOnError]);
+      onToggle(!open);
+    },
+    [onToggle, open, hasError, disableCollapseOnError]
+  );
 
   const label = useMemo(() => {
     return hasError && disableCollapseOnError ? <TooltipWithPortal handle={title} content={errorMessage} /> : title;
@@ -136,7 +140,7 @@ export function ExpandableRow({
           value={value}
         />
       ) : (
-        <div
+        <button
           className={cx(
             `inline-flex w-fit cursor-pointer items-center gap-4 rounded-full
             border-[0.5px] border-slate-600 px-12 py-8 align-middle text-[13px]
@@ -149,7 +153,7 @@ export function ExpandableRow({
         >
           {label}
           {value}
-        </div>
+        </button>
       )}
 
       <AnimatePresence initial={false}>

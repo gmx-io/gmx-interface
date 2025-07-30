@@ -104,7 +104,7 @@ export function CompositionChart({ items, label }: CompositionChartProps) {
   const itemsWithStyles = useMemo(() => {
     return items.map((item) => ({
       ...item,
-      style: { background: item.color, width: `${Math.floor((item.value / total) * 100)}%` },
+      style: { background: item.color, width: `${(item.value / total) * 100}%` },
     }));
   }, [items, total]);
 

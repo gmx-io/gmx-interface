@@ -75,9 +75,12 @@ export function CompositionTable<T extends CompositionType>({ composition, compo
         </tbody>
       </table>
       {isMobile && composition.length > CLOSED_COUNT ? (
-        <div className="flex flex-row items-center justify-between px-16 pb-20" onClick={toggleOpen}>
-          <span className="text-slate-100">{isOpen ? <Trans>Show less</Trans> : <Trans>Show more</Trans>}</span>
-          {isOpen ? <FaChevronUp size={8} /> : <FaChevronDown size={8} />}
+        <div
+          className="flex flex-row items-center justify-center gap-6 px-16 py-10 text-slate-100"
+          onClick={toggleOpen}
+        >
+          <span>{isOpen ? <Trans>Show less</Trans> : <Trans>Show more</Trans>}</span>
+          {isOpen ? <FaChevronUp size={12} className="mt-2" /> : <FaChevronDown size={12} className="mt-2" />}
         </div>
       ) : null}
     </div>

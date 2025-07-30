@@ -17,7 +17,7 @@ import logoText from "img/logo-text.svg";
 import ReferralsIcon from "img/referrals.svg?react";
 import TradeIcon from "img/trade.svg?react";
 
-function SideNav() {
+function SideNav({ className }: { className?: string }) {
   const [isCollapsed, setIsCollapsed] = useLocalStorageSerializeKey("is-side-nav-collapsed", false);
 
   const handleCollapseToggle = useCallback(() => {
@@ -26,7 +26,7 @@ function SideNav() {
 
   return (
     <nav
-      className={cx("flex h-full shrink-0 flex-col bg-slate-950 pb-8", {
+      className={cx("flex h-full shrink-0 flex-col bg-slate-950 pb-8", className, {
         "w-[200px] max-xl:w-[156px]": !isCollapsed,
       })}
     >

@@ -205,9 +205,11 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
             marketGraphType={marketGraphType}
             aprSnapshots={aprSnapshotsByAddress}
           />
-          {isMobile ? <div className="flex justify-center">{poolsTabs}</div> : null}
         </div>
       </div>
+      {isMobile ? (
+        <div className="flex justify-center border-t-[0.5px] border-t-slate-600 px-16 py-12">{poolsTabs}</div>
+      ) : null}
     </div>
   );
 }
@@ -221,7 +223,7 @@ const DOT_PROPS = {
   r: 0,
 };
 
-const GRAPH_MARGIN = { top: 5, right: 0, bottom: 0, left: 10 };
+const GRAPH_MARGIN = { top: 5, right: 0, bottom: 0, left: 0 };
 
 type GraphData = {
   value: number;
@@ -333,6 +335,8 @@ const GraphChart = ({
               <stop offset="100%" stopColor="var(--color-blue-300)" stopOpacity={0} />
             </linearGradient>
           </defs>
+          <CartesianGrid vertical={false} strokeDasharray="5 3" strokeWidth={0.5} stroke="var(--color-slate-600)" />
+
           <Area
             key={marketGraphType}
             type="linear"
@@ -356,8 +360,14 @@ const GraphChart = ({
             tick={axisTick}
             minTickGap={isMobile ? 16 : 32}
           />
-          <YAxis dataKey="value" tickFormatter={formatAxisValue} tickLine={false} axisLine={false} tick={axisTick} />
-          <CartesianGrid vertical={false} strokeDasharray="5 3" strokeWidth={0.5} stroke="var(--color-slate-600)" />
+          <YAxis
+            dataKey="value"
+            tickFormatter={formatAxisValue}
+            tickLine={false}
+            axisLine={false}
+            tick={axisTick}
+            width={44}
+          />
         </AreaChart>
       </ResponsiveContainer>
     </div>

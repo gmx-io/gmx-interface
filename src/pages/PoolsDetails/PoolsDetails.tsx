@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
-import { useMedia } from "react-use";
 
 import { usePoolsDetailsContext } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import {
@@ -11,6 +10,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getTokenData } from "domain/synthetics/tokens";
+import { useBreakpoints } from "lib/breakpoints";
 import { getPageTitle } from "lib/legacy";
 import { getByKey } from "lib/objects";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
@@ -20,6 +20,7 @@ import Button from "components/Button/Button";
 import ButtonLink from "components/Button/ButtonLink";
 import Loader from "components/Common/Loader";
 import SEO from "components/Common/SEO";
+import SideNav from "components/SideNav/SideNav";
 import { GmSwapBox, GmSwapBoxProps } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
 import { GmSwapBoxHeader } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader";
 import { useCompositionData } from "components/Synthetics/MarketStats/hooks/useCompositionData";
@@ -53,12 +54,14 @@ export function PoolsDetails() {
 
   const isMobile = usePoolsIsMobilePage();
 
-  const isInCurtain = useMedia("(max-width: 1180px)");
+  const { isDesktop } = useBreakpoints();
+
+  const isInCurtain = isDesktop;
 
   return (
-    <AppPageLayout>
+    <AppPageLayout className="max-lg:pb-40" sideNav={<SideNav className="max-xl:pb-40" />}>
       <SEO title={getPageTitle("V2 Pools")}>
-        <div className={cx("flex flex-col", { "gap-12": isMobile, "gap-16": !isMobile })}>
+        <div className={cx("flex flex-col gap-8")}>
           <ButtonLink to="/pools">
             <Button variant="secondary" className="flex items-center gap-8">
               <FaArrowLeft size={14} />
@@ -69,8 +72,8 @@ export function PoolsDetails() {
             <>
               <PoolsDetailsHeader glvOrMarketInfo={glvOrMarketInfo} marketToken={marketToken} />
 
-              <div className={cx("flex justify-between gap-12", { "flex-wrap": isInCurtain })}>
-                <div className="flex grow flex-col gap-16">
+              <div className={cx("flex justify-between gap-8", { "flex-wrap": isInCurtain })}>
+                <div className="flex grow flex-col gap-8">
                   {glvOrMarketInfo && <MarketGraphs glvOrMarketInfo={glvOrMarketInfo} />}
 
                   <div className={cx("grid gap-8", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
