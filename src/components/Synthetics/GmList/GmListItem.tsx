@@ -1,7 +1,9 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import React from "react";
+import React, { useCallback } from "react";
+import { FaChevronRight } from "react-icons/fa6";
 import { HiDotsVertical } from "react-icons/hi";
+import { useHistory } from "react-router-dom";
 import { Area, AreaChart } from "recharts";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -30,7 +32,6 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import Button from "components/Button/Button";
-import ButtonLink from "components/Button/ButtonLink";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -98,6 +99,16 @@ export function GmListItem({
 
   const isMobile = usePoolsIsMobilePage();
 
+  const history = useHistory();
+
+  const handleMobileItemClick = useCallback(
+    (event: React.MouseEvent) => {
+      history.push(`/pools/details?market=${marketOrGlvTokenAddress}`);
+      event.stopPropagation();
+    },
+    [history, marketOrGlvTokenAddress]
+  );
+
   if (!token || !indexToken || !longToken || !shortToken || !marketOrGlv) {
     return null;
   }
@@ -124,7 +135,7 @@ export function GmListItem({
   if (isMobile) {
     return (
       <div className="flex flex-col gap-4 rounded-8 bg-fill-surfaceElevated50 p-12">
-        <div className="flex flex-wrap items-center pb-14">
+        <div className="flex flex-wrap items-center pb-14" onClick={handleMobileItemClick}>
           <div className="flex items-center">
             <div className="mr-12 flex shrink-0 items-center">
               <TokenIcon
@@ -158,9 +169,13 @@ export function GmListItem({
               />
             </div>
 
-            {onFavoriteClick && (
+            {onFavoriteClick ? (
               <Button variant="secondary" className="!p-8" onClick={handleFavoriteClick}>
                 <FavoriteStar isFavorite={isFavorite} activeClassName="!text-white" />
+              </Button>
+            ) : (
+              <Button variant="secondary" className="!p-10" onClick={handleMobileItemClick}>
+                <FaChevronRight className="size-12" />
               </Button>
             )}
           </div>
@@ -201,12 +216,6 @@ export function GmListItem({
             value={performance ? formatPerformanceBps(performance) : "..."}
           />
         </div>
-        <ButtonLink
-          className="mt-12 bg-slate-800 p-8 text-center font-medium text-slate-100 hover:bg-slate-700 hover:text-white"
-          to={`/pools/details?market=${marketOrGlvTokenAddress}`}
-        >
-          <Trans>View Details</Trans>
-        </ButtonLink>
       </div>
     );
   }
@@ -215,14 +224,11 @@ export function GmListItem({
     <TableTr key={token.address} bordered={false} hoverable={false}>
       <TableTd className="pl-16">
         <div className="w-[220px]">
-          <div className="flex items-start">
+          <div className="flex items-center gap-8">
             {onFavoriteClick && (
-              <div
-                className="mr-4 cursor-pointer self-center rounded-4 p-8 text-16 hover:bg-cold-blue-700 active:bg-cold-blue-500"
-                onClick={handleFavoriteClick}
-              >
+              <Button variant="ghost" className="!p-8" onClick={handleFavoriteClick}>
                 <FavoriteStar isFavorite={isFavorite} />
-              </div>
+              </Button>
             )}
 
             <div className="mr-12 flex shrink-0 items-center">

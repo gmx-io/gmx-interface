@@ -12,7 +12,7 @@ export default function FavoriteStar({
 }) {
   return (
     <div className="flex h-16 w-16 items-center justify-center">
-      {isFavorite ? <StarFilledIcon className={cx("text-yellow-300", activeClassName)} /> : <StarIcon />}
+      {isFavorite ? <StarFilledIcon className={cx("text-white", activeClassName)} /> : <StarIcon />}
     </div>
   );
 }
