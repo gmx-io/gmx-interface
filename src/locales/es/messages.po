@@ -1858,6 +1858,7 @@ msgid "Max {0} out"
 msgstr "Máx. {0} fuera"
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 msgid "No assets available for deposit"
 msgstr ""
 
@@ -7273,6 +7274,7 @@ msgstr ""
 msgid "Position close disabled, pending {0} upgrade"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No assets available for deposit on {0}"
