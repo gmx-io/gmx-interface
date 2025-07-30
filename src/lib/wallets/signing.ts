@@ -1,4 +1,7 @@
 import { Signer } from "ethers";
+import { withRetry } from "viem";
+
+import { parseError } from "lib/errors";
 
 export type SignatureDomain = {
   name: string;
@@ -75,7 +78,19 @@ export async function signTypedData({
     message: typedData,
   };
 
-  const signature = await (provider as any).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]);
+  const signature = await withRetry<string>(
+    () => {
+      return (provider as any).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]);
+    },
+    {
+      retryCount: 2,
+      delay: 100,
+      shouldRetry: ({ error }) => {
+        const errorData = parseError(error);
+        return errorData?.errorMessage?.toLowerCase().includes("an error has occurred") || false;
+      },
+    }
+  );
 
   return signature;
 }

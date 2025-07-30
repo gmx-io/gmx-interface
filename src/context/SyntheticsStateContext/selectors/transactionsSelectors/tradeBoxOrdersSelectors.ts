@@ -1,3 +1,4 @@
+import { getIsFlagEnabled } from "config/ab";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "sdk/types/orders";
@@ -62,7 +63,8 @@ export const selectCommonOrderParams = createSelector((q) => {
   return {
     receiver: signer.address,
     chainId,
-    executionFeeAmount: executionFee.feeTokenAmount,
+    executionFeeAmount:
+      executionFee.feeTokenAmount / (getIsFlagEnabled("testExpressInsufficientExecutionFee") ? 2n : 1n),
     executionGasLimit: executionFee.gasLimit,
     referralCode: referralInfo?.referralCodeForTxn,
     allowedSlippage: isMarket ? allowedSlippage : undefined,
