@@ -8,7 +8,6 @@ import { useOutsideClick } from "lib/useOutsideClick";
 
 import Button from "components/Button/Button";
 
-import CrossIconComponent from "img/cross.svg?react";
 import SearchIconComponent from "img/search.svg?react";
 
 type Props = {
@@ -97,30 +96,6 @@ export default function SearchInput({
             "py-[8.5px] pl-34 pr-30 text-14 ": size === "s",
           })}
         />
-        {value && (
-          <button
-            className={cx("group absolute bottom-0 right-0 top-0 flex items-center", {
-              "pr-8": size === "m",
-              "pr-4": size === "s",
-            })}
-            onClick={handleClear}
-          >
-            <div
-              className={cx(
-                "rounded-4 p-4 text-slate-100",
-                "group-hover:bg-[#50577e99] group-hover:text-slate-100 ",
-                "group-active:bg-[#50577eb3] group-active:text-slate-100"
-              )}
-            >
-              <CrossIconComponent
-                className={cx("w-16", {
-                  "text-slate-100": !isFocused,
-                  "text-white": isFocused,
-                })}
-              />
-            </div>
-          </button>
-        )}
       </div>
       {withClearButton ? (
         <Button variant="secondary" onClick={handleClear} className="!p-8">
