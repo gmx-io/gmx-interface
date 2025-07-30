@@ -16,6 +16,7 @@ import { getByKey } from "lib/objects";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+import Button from "components/Button/Button";
 import ButtonLink from "components/Button/ButtonLink";
 import Loader from "components/Common/Loader";
 import SEO from "components/Common/SEO";
@@ -57,40 +58,36 @@ export function PoolsDetails() {
   return (
     <AppPageLayout>
       <SEO title={getPageTitle("V2 Pools")}>
-        <div className={cx("default-container page-layout flex flex-col", { "gap-12": isMobile, "gap-16": !isMobile })}>
-          <ButtonLink
-            to="/pools"
-            className="inline-flex w-fit gap-4 rounded-4 bg-slate-700 px-16 py-12 hover:bg-cold-blue-700"
-          >
-            <FaArrowLeft size={16} />
-            Back to Pools
+        <div className={cx("flex flex-col", { "gap-12": isMobile, "gap-16": !isMobile })}>
+          <ButtonLink to="/pools">
+            <Button variant="secondary" className="flex items-center gap-8">
+              <FaArrowLeft size={14} />
+              Back to Pools
+            </Button>
           </ButtonLink>
           {glvOrMarketInfo ? (
             <>
               <PoolsDetailsHeader glvOrMarketInfo={glvOrMarketInfo} marketToken={marketToken} />
 
-              <div className={cx("mb-15 flex justify-between gap-12", { "flex-wrap": isInCurtain })}>
+              <div className={cx("flex justify-between gap-12", { "flex-wrap": isInCurtain })}>
                 <div className="flex grow flex-col gap-16">
                   {glvOrMarketInfo && <MarketGraphs glvOrMarketInfo={glvOrMarketInfo} />}
-                  <PoolsDetailsCard title={<Trans>Composition</Trans>} childrenContainerClassName="!p-0">
-                    <div className={cx("grid", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
-                      <div className={cx("border-slate-600", { "border-r": !isMobile, "border-b": isMobile })}>
-                        <MarketComposition
-                          type="backing"
-                          label={<Trans>Backing Composition</Trans>}
-                          title={<Trans>Exposure to Backing Tokens</Trans>}
-                          composition={backingComposition}
-                        />
-                      </div>
-                      <MarketComposition
-                        type="market"
-                        label={<Trans>Market Composition</Trans>}
-                        title={<Trans>Exposure to Market Traders’ PnL</Trans>}
-                        composition={marketComposition}
-                      />
-                    </div>
-                  </PoolsDetailsCard>
 
+                  <div className={cx("grid gap-8", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
+                    <MarketComposition
+                      type="backing"
+                      label={<Trans>Backing Composition</Trans>}
+                      title={<Trans>Exposure to Backing Tokens</Trans>}
+                      composition={backingComposition}
+                    />
+
+                    <MarketComposition
+                      type="market"
+                      label={<Trans>Market Composition</Trans>}
+                      title={<Trans>Exposure to Market Traders’ PnL</Trans>}
+                      composition={marketComposition}
+                    />
+                  </div>
                   <PoolsDetailsCard title={<Trans>About</Trans>}>
                     <PoolsDetailsAbout
                       glvOrMarketInfo={glvOrMarketInfo}

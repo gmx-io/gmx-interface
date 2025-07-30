@@ -1182,8 +1182,8 @@ msgid "1inch"
 msgstr "1inch"
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
-msgid "Composition"
-msgstr "组成"
+#~ msgid "Composition"
+#~ msgstr "组成"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copied"
@@ -3489,8 +3489,8 @@ msgstr "{longShortText} {0} 开仓利息"
 
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
-msgid "COMP."
-msgstr "竞赛"
+#~ msgid "COMP."
+#~ msgstr "竞赛"
 
 #: src/pages/Stake/Vesting.tsx
 msgid "You have no GMX tokens to claim."
@@ -4779,6 +4779,11 @@ msgstr "{typeString} 多头 TWAP：{0} 在指定时间内均匀分布的部分�
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated!"
 msgstr "推荐代码已更新！"
+
+#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
+#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
+msgid "COMPOSITION"
+msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favorites"

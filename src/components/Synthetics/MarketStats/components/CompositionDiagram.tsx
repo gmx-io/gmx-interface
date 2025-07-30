@@ -1,5 +1,4 @@
 import { ReactNode, useMemo } from "react";
-import { Cell, Pie, PieChart, Tooltip } from "recharts";
 
 import { getMarketIndexName } from "domain/synthetics/markets";
 import { bigintToNumber } from "lib/numbers";
@@ -7,6 +6,7 @@ import { USD_DECIMALS } from "sdk/configs/factors";
 import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import Tooltip from "components/Tooltip/Tooltip";
 
 import { CompositionItem, getCompositionPercentage } from "../hooks/useCompositionData";
 
@@ -96,43 +96,36 @@ type CompositionChartItem = {
   color: string;
 };
 
-const CompositionTooltip = ({ active, payload }: any) => {
-  if (active && payload && payload.length) {
-    const item = payload[0].payload as CompositionChartItem;
-
-    return <div className="rounded-4 bg-slate-600 p-10">{item.tooltipContent}</div>;
-  }
-
-  return null;
-};
-
-const CELL_STYLE = { cursor: "pointer" };
-
 export function CompositionChart({ items, label }: CompositionChartProps) {
-  return (
-    <div className="relative h-[160px] w-[160px]">
-      <div className="text-body-large absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] text-center">
-        {label}
-      </div>
-      <PieChart width={160} height={160}>
-        <Pie
-          data={items}
-          dataKey="value"
-          outerRadius={80}
-          innerRadius={70}
-          stroke="var(--color-slate-800)"
-          fill="#8884d8"
-          startAngle={270}
-          endAngle={-90}
-          strokeWidth={items.length <= 1 ? 0 : 1.5}
-        >
-          {items.map((entry) => (
-            <Cell key={entry.key} fill={entry.color} style={CELL_STYLE} />
-          ))}
-        </Pie>
+  const total = useMemo(() => {
+    return items.reduce((acc, item) => acc + item.value, 0);
+  }, [items]);
 
-        <Tooltip content={CompositionTooltip} />
-      </PieChart>
+  const itemsWithStyles = useMemo(() => {
+    return items.map((item) => ({
+      ...item,
+      style: { background: item.color, width: `${Math.floor((item.value / total) * 100)}%` },
+    }));
+  }, [items, total]);
+
+  return (
+    <div className="flex w-full flex-col gap-16">
+      <div className="flex w-full gap-2">
+        {itemsWithStyles.map((item) => (
+          <div key={item.key} className="h-12 rounded-2" style={item.style}>
+            <Tooltip
+              content={<div className="w-fit">{item.tooltipContent}</div>}
+              handle={<div></div>}
+              handleClassName="!block h-full w-full"
+              className="block h-full w-full"
+              tooltipClassName="!min-w-fit"
+              position="bottom"
+            />
+          </div>
+        ))}
+      </div>
+
+      <div className="text-body-small uppercase text-slate-100">{label}</div>
     </div>
   );
 }

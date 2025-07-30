@@ -1182,8 +1182,8 @@ msgid "1inch"
 msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
-msgid "Composition"
-msgstr ""
+#~ msgid "Composition"
+#~ msgstr ""
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copied"
@@ -3489,8 +3489,8 @@ msgstr ""
 
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
-msgid "COMP."
-msgstr ""
+#~ msgid "COMP."
+#~ msgstr ""
 
 #: src/pages/Stake/Vesting.tsx
 msgid "You have no GMX tokens to claim."
@@ -4775,6 +4775,11 @@ msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated!"
+msgstr ""
+
+#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
+#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
+msgid "COMPOSITION"
 msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx

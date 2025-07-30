@@ -32,7 +32,16 @@ export default function Tabs<V extends string | number>({
   rightContent,
 }: Props<V>) {
   return (
-    <div data-qa={qa} className={cx("flex items-center justify-between rounded-t-8", className)}>
+    <div
+      data-qa={qa}
+      className={cx(
+        "flex items-center justify-between rounded-t-8",
+        {
+          "border-b border-b-slate-600 bg-slate-900": type === "block",
+        },
+        className
+      )}
+    >
       <div
         className={cx("flex w-full", {
           "gap-8": type === "inline",

@@ -34,15 +34,15 @@ export const tradeTypeLabels = {
 export const tradeTypeClassNames = {
   [TradeType.Long]: {
     active: "!bg-[#192E38] border-b-2 border-b-green-500 pb-9",
-    regular: "border-b border-b-slate-600",
+    regular: "border-b border-b-[transparent]",
   },
   [TradeType.Short]: {
     active: "!bg-[#2D192D] border-b-2 border-b-red-500 pb-9",
-    regular: "border-b border-b-slate-600",
+    regular: "border-b border-b-[transparent]",
   },
   [TradeType.Swap]: {
     active: "!bg-[#22243A] border-b-2 border-b-blue-300 pb-9",
-    regular: "border-b border-b-slate-600",
+    regular: "border-b border-b-[transparent]",
   },
 };
 

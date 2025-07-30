@@ -222,7 +222,7 @@ export function GmListItem({
 
   return (
     <TableTr key={token.address} bordered={false} hoverable={false}>
-      <TableTd className="pl-16 !py-10">
+      <TableTd className="!py-10 pl-16">
         <div className="w-[220px]">
           <div className="flex items-center gap-8">
             {onFavoriteClick && (
@@ -242,9 +242,11 @@ export function GmListItem({
             </div>
             <div>
               <div className="flex items-center text-16">
-                <span className="font-medium">{isGlv
-                  ? getGlvDisplayName(marketOrGlv)
-                  : getMarketIndexName({ indexToken, isSpotOnly: Boolean(marketOrGlv?.isSpotOnly) })}</span>
+                <span className="font-medium">
+                  {isGlv
+                    ? getGlvDisplayName(marketOrGlv)
+                    : getMarketIndexName({ indexToken, isSpotOnly: Boolean(marketOrGlv?.isSpotOnly) })}
+                </span>
 
                 <div className="inline-block">
                   <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
@@ -338,12 +340,12 @@ const SnapshotGraph = ({
       <AreaChart width={size.width} height={size.height} data={performanceSnapshots}>
         <defs>
           <linearGradient id={`snapshot-graph-gradient-green`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--color-green-500)" stopOpacity={0.4}></stop>
-            <stop offset="75%" stopColor="var(--color-green-500)" stopOpacity={0.05}></stop>
+            <stop offset="-45%" stopColor="var(--color-green-500)" stopOpacity={0.5}></stop>
+            <stop offset="100%" stopColor="var(--color-green-500)" stopOpacity={0}></stop>
           </linearGradient>
           <linearGradient id={`snapshot-graph-gradient-red`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--color-red-500)" stopOpacity={0.4}></stop>
-            <stop offset="75%" stopColor="var(--color-red-500)" stopOpacity={0.05}></stop>
+            <stop offset="-45%" stopColor="var(--color-red-500)" stopOpacity={0.5}></stop>
+            <stop offset="100%" stopColor="var(--color-red-500)" stopOpacity={0}></stop>
           </linearGradient>
         </defs>
         <Area

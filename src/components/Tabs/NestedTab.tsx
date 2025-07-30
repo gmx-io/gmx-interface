@@ -37,7 +37,7 @@ export default function NestedTab<V extends string | number>({
         as="div"
         className={cx(
           `flex cursor-pointer items-center justify-center gap-2
-          rounded-8 px-12 py-8 font-medium text-slate-100 hover:text-white`,
+          rounded-8 px-12 py-8 font-medium text-slate-100 hover:bg-slate-700 hover:text-white`,
           commonOptionClassname,
           {
             "bg-cold-blue-900 text-white": !!selectedSubOption,

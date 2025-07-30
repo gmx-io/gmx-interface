@@ -1182,8 +1182,8 @@ msgid "1inch"
 msgstr "1inch"
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
-msgid "Composition"
-msgstr "Composición"
+#~ msgid "Composition"
+#~ msgstr "Composición"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copied"
@@ -3489,8 +3489,8 @@ msgstr "Interés Abierto {longShortText} {0}"
 
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
-msgid "COMP."
-msgstr "COMP."
+#~ msgid "COMP."
+#~ msgstr "COMP."
 
 #: src/pages/Stake/Vesting.tsx
 msgid "You have no GMX tokens to claim."
@@ -4779,6 +4779,11 @@ msgstr "{typeString} Largo TWAP: {0} una posición larga en partes distribuidas 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated!"
 msgstr "¡Código de referido actualizado!"
+
+#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
+#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
+msgid "COMPOSITION"
+msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favorites"

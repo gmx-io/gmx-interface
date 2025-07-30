@@ -1182,8 +1182,8 @@ msgid "1inch"
 msgstr "1inch"
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
-msgid "Composition"
-msgstr "構成"
+#~ msgid "Composition"
+#~ msgstr "構成"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copied"
@@ -3489,8 +3489,8 @@ msgstr "{longShortText} {0} 建玉"
 
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
-msgid "COMP."
-msgstr "COMP."
+#~ msgid "COMP."
+#~ msgstr "COMP."
 
 #: src/pages/Stake/Vesting.tsx
 msgid "You have no GMX tokens to claim."
@@ -4779,6 +4779,11 @@ msgstr "{typeString} ロング TWAP: 指定された時間に均等に分散さ�
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated!"
 msgstr "紹介コードの更新完了!"
+
+#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
+#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
+msgid "COMPOSITION"
+msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favorites"

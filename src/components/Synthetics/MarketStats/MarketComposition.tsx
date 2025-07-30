@@ -18,10 +18,12 @@ export function MarketComposition({ title, label, composition, type }: Props) {
   const isMobile = usePoolsIsMobilePage();
 
   return (
-    <div className="flex size-full grow flex-col items-center border-slate-600 pt-24">
-      <h5 className="text-body-medium text-slate-100">{title}</h5>
-      <div className="px-16 py-20">
-        <CompositionDiagram data={composition} label={label} />
+    <div className="flex size-full grow flex-col items-center rounded-8 bg-slate-900">
+      <div className="flex w-full flex-col gap-20 border-b border-slate-600 p-20">
+        <h5 className="text-[20px] font-medium">{title}</h5>
+        <div className="w-full">
+          <CompositionDiagram data={composition} label={label} />
+        </div>
       </div>
       <div
         className={cx("relative w-full flex-grow overflow-y-auto overflow-x-hidden", { "max-h-[160px]": !isMobile })}

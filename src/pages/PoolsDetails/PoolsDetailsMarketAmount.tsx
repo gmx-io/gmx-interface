@@ -20,12 +20,13 @@ export function PoolsDetailsMarketAmount({
   const isMobile = usePoolsIsMobilePage();
 
   const valueContent = (
-    <span className={cx("flex items-center", { "gap-8": !isMobile, "gap-4": isMobile })}>
-      <span className="text-body-medium">{value}</span>
+    <span className={cx("text-body-large flex items-center", { "gap-8": !isMobile, "gap-4": isMobile })}>
+      <span>{value}</span>
       {secondaryValue ? (
-        <span className={cx("text-slate-100", { "text-body-medium": !isMobile, "text-body-small": isMobile })}>
-          {`(${secondaryValue})`}
-        </span>
+        <>
+          <span className="text-slate-100">/</span>
+          <span className={cx("text-slate-100")}>{`${secondaryValue}`}</span>
+        </>
       ) : null}
     </span>
   );
@@ -41,8 +42,8 @@ export function PoolsDetailsMarketAmount({
   }
 
   return (
-    <div className="flex flex-col gap-8">
-      <div className="text-body-small text-slate-100">{label}</div>
+    <div className="flex flex-col gap-2">
+      <div className="text-body-medium font-medium text-slate-100">{label}</div>
       {valueContentWithTooltip}
     </div>
   );

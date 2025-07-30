@@ -32,9 +32,11 @@ export default function RegularTab<V extends string | number>({
         regularOptionClassname,
         {
           "text-white": isActive,
-          "rounded-8 px-12 py-8": type === "inline",
+          "rounded-8 px-12 py-8 hover:bg-slate-700": type === "inline",
           "px-20 py-10": type === "block",
           "bg-cold-blue-900": type === "inline" && isActive,
+          "border-b-2 border-b-[transparent]": type === "block",
+          "border-b-2 border-b-blue-300": type === "block" && isActive,
         }
       )}
       onClick={() => onOptionClick?.(option.value)}

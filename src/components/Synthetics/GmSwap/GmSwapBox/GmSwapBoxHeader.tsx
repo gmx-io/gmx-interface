@@ -1,5 +1,4 @@
 import { msg } from "@lingui/macro";
-import cx from "classnames";
 import { useMemo } from "react";
 
 import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -92,13 +91,12 @@ export function GmSwapBoxHeader(p: Props) {
   );
 
   return (
-    <div className={cx({ "bg-slate-800 p-[1.5rem] pb-0": !isInCurtain })}>
-      <Tabs
-        options={availableOperationsTabsOptions}
-        selectedValue={operation}
-        onChange={onSetOperation}
-        className={isInCurtain ? undefined : "Exchange-swap-option-tabs"}
-      />
-    </div>
+    <Tabs
+      options={availableOperationsTabsOptions}
+      selectedValue={operation}
+      onChange={onSetOperation}
+      className={isInCurtain ? undefined : "Exchange-swap-option-tabs"}
+      regularOptionClassname="grow"
+    />
   );
 }

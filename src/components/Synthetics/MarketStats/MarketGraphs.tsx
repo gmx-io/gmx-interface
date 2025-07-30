@@ -3,7 +3,7 @@ import { msg, t } from "@lingui/macro";
 import cx from "classnames";
 import format from "date-fns/format";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { USD_DECIMALS } from "config/factors";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -31,7 +31,8 @@ import { bigintToNumber, formatPercentage, formatUsdPrice, parseValue } from "li
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
-import { PoolsDetailsCard } from "pages/PoolsDetails/PoolsDetailsCard";
+
+import Tabs from "components/Tabs/Tabs";
 
 import { FeeApyLabel } from "../GmList/FeeApyLabel";
 import { PerformanceLabel } from "../GmList/PerformanceLabel";
@@ -166,17 +167,15 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
   );
 
   return (
-    <PoolsDetailsCard
-      title={
-        <PoolsTabs<MarketGraphType>
-          tabs={marketGraphsTabs}
-          selected={marketGraphType}
-          setSelected={setMarketGraphType}
-        />
-      }
-    >
-      <div className="flex">
-        <div className="flex grow flex-col gap-16">
+    <div className="flex flex-col rounded-8 bg-slate-900">
+      <Tabs<MarketGraphType>
+        type="block"
+        options={marketGraphsTabs}
+        selectedValue={marketGraphType}
+        onChange={setMarketGraphType}
+      />
+      <div className="flex p-20">
+        <div className="flex grow flex-col gap-20">
           <div className={cx("grid", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
             <GraphValue
               value={getGraphValue({
@@ -209,7 +208,7 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
           {isMobile ? <div className="flex justify-center">{poolsTabs}</div> : null}
         </div>
       </div>
-    </PoolsDetailsCard>
+    </div>
   );
 }
 
@@ -222,7 +221,7 @@ const DOT_PROPS = {
   r: 0,
 };
 
-const GRAPH_MARGIN = { top: 5, right: 20, bottom: 0, left: 0 };
+const GRAPH_MARGIN = { top: 5, right: 0, bottom: 0, left: 10 };
 
 type GraphData = {
   value: number;
@@ -306,7 +305,7 @@ const GraphChart = ({
 
   const isMobile = usePoolsIsMobilePage();
 
-  const axisTick = useMemo(() => ({ fill: "var(--color-slate-100)", fontSize: isMobile ? 12 : 14 }), [isMobile]);
+  const axisTick = useMemo(() => ({ fill: "var(--color-slate-100)", fontSize: 11 }), []);
 
   const [data, setData] = useState<GraphData[]>([]);
 
@@ -327,18 +326,26 @@ const GraphChart = ({
   return (
     <div>
       <ResponsiveContainer height={isMobile ? 260 : 300} width="100%">
-        <LineChart data={data} margin={GRAPH_MARGIN} key={marketGraphType}>
-          <Line
+        <AreaChart data={data} margin={GRAPH_MARGIN} key={marketGraphType}>
+          <defs>
+            <linearGradient id="market-graph-gradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="-45%" stopColor="var(--color-blue-300)" stopOpacity={0.5} />
+              <stop offset="100%" stopColor="var(--color-blue-300)" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <Area
             key={marketGraphType}
             type="linear"
             dataKey="value"
             stroke="var(--color-blue-300)"
+            fill="url(#market-graph-gradient)"
             strokeWidth={2}
             dot={DOT_PROPS}
             activeDot={ACTIVE_DOT_PROPS}
             animationEasing="ease-in-out"
             animationDuration={750}
             animateNewValues={true}
+            baseValue="dataMin"
           />
           <Tooltip cursor={false} content={<GraphTooltip formatValue={formatValue} />} />
           <XAxis
@@ -350,7 +357,8 @@ const GraphChart = ({
             minTickGap={isMobile ? 16 : 32}
           />
           <YAxis dataKey="value" tickFormatter={formatAxisValue} tickLine={false} axisLine={false} tick={axisTick} />
-        </LineChart>
+          <CartesianGrid vertical={false} strokeDasharray="5 3" strokeWidth={0.5} stroke="var(--color-slate-600)" />
+        </AreaChart>
       </ResponsiveContainer>
     </div>
   );
@@ -381,8 +389,8 @@ const GraphValue = ({
 }) => {
   return (
     <div className="flex items-center gap-8">
-      <span className={cx("text-[24px]", valueClassName)}>{value ?? "..."}</span>
-      <span className="text-body-medium text-slate-100">{label}</span>
+      <span className={cx("text-h2 font-medium", valueClassName)}>{value ?? "..."}</span>
+      <span className="text-body-small text-slate-100">{label}</span>
     </div>
   );
 };

@@ -87,11 +87,6 @@ enum ListSection {
   Claims = "Claims",
 }
 
-const TAB_CLASSNAME = {
-  active: "border-b-2 border-b-blue-300 mb-[-1.5px]",
-  regular: "border-b-2 border-b-[transparent] mb-[-1.5px]",
-};
-
 export function SyntheticsPage(p: Props) {
   const { openSettings } = p;
   const { chainId } = useChainId();
@@ -256,7 +251,6 @@ export function SyntheticsPage(p: Props) {
       Object.values(ListSection).map((value) => ({
         value,
         label: tabLabels[value],
-        className: TAB_CLASSNAME,
       })),
     [tabLabels]
   );
@@ -348,18 +342,15 @@ export function SyntheticsPage(p: Props) {
           <Chart />
           {!isTablet && (
             <div className="Exchange-lists large" data-qa="trade-table-large">
-              <div className="">
-                <Tabs
-                  options={tabsOptions}
-                  selectedValue={listSection}
-                  onChange={handleTabChange}
-                  type="block"
-                  className="border-b-[1.5px] border-slate-600 bg-slate-900"
-                  qa="exchange-list-tabs"
-                  rightContent={actions}
-                />
-                <div className="align-right Exchange-should-show-position-lines"></div>
-              </div>
+              <Tabs
+                options={tabsOptions}
+                selectedValue={listSection}
+                onChange={handleTabChange}
+                type="block"
+                className="bg-slate-900"
+                qa="exchange-list-tabs"
+                rightContent={actions}
+              />
 
               {listSection === ListSection.Positions && (
                 <PositionList
@@ -418,7 +409,7 @@ export function SyntheticsPage(p: Props) {
                 selectedValue={listSection}
                 onChange={handleTabChange}
                 type="block"
-                className={cx("w-[max(100%,600px)] rounded-t-8 border-b-[1.5px] border-slate-600 bg-slate-900", {
+                className={cx("w-[max(100%,600px)] rounded-t-8 bg-slate-900", {
                   "mb-8 rounded-b-8": [ListSection.Positions, ListSection.Orders].includes(listSection as ListSection),
                   "w-[max(100%,420px)]": isMobile,
                 })}

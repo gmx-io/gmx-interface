@@ -898,7 +898,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               onChange={onSelectTradeMode}
               qa="trade-mode"
               className="bg-slate-900"
-              regularOptionClassname="py-10 hover:bg-slate-700 grow"
+              regularOptionClassname="grow"
             />
             <div className="flex items-center gap-4">
               <TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradePlace="tradebox" />

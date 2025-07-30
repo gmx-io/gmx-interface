@@ -20,7 +20,7 @@ import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagina
 import SearchInput from "components/SearchInput/SearchInput";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
-import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableTh, TableTheadTr } from "components/Table/Table";
 import { ButtonRowScrollFadeContainer, TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
