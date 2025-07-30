@@ -90,7 +90,7 @@ export function GlvList({
             <table className="w-[max(100%,820px)]">
               <thead>
                 <TableTheadTr bordered>
-                  <TableTh className="!pl-0">
+                  <TableTh className="pl-16">
                     <Trans>VAULT</Trans>
                   </TableTh>
                   <TableTh>
@@ -113,7 +113,7 @@ export function GlvList({
                       content={<Trans>Graph showing performance vs benchmark over the selected period.</Trans>}
                     />
                   </TableTh>
-                  <TableTh className="!pr-0" />
+                  <TableTh className="pr-16" />
                 </TableTheadTr>
               </thead>
               <tbody>

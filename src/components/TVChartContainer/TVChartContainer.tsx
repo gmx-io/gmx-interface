@@ -1,7 +1,7 @@
 import { CSSProperties, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLatest, useLocalStorage, useMedia } from "react-use";
 
-import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
+import { TV_SAVE_LOAD_CHARTS_KEY, WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { TokenPrices } from "domain/tokens";
@@ -13,7 +13,7 @@ import { isChartAvailableForToken } from "sdk/configs/tokens";
 
 import Loader from "components/Common/Loader";
 
-import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
+import { chartOverrides, defaultChartProps, disabledFeaturesOnMobile } from "./constants";
 import { DynamicLines } from "./DynamicLines";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { StaticLines } from "./StaticLines";
@@ -57,12 +57,21 @@ export default function TVChartContainer({
   const [isChartChangingSymbol, setIsChartChangingSymbol] = useState(false);
   const [chartDataLoading, setChartDataLoading] = useState(true);
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
+  const [wasChartOverridden, setWasChartOverridden] = useLocalStorage<boolean>(WAS_TV_CHART_OVERRIDDEN_KEY, false);
 
   const [tradePageVersion] = useTradePageVersion();
 
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
   const [datafeed, setDatafeed] = useState<DataFeed | null>(null);
+
+  useEffect(() => {
+    if (chartReady && tvWidgetRef.current && !wasChartOverridden) {
+      tvWidgetRef.current.applyOverrides(chartOverrides);
+      tvWidgetRef.current.saveChartToServer();
+      setWasChartOverridden(true);
+    }
+  }, [chartReady, wasChartOverridden, setWasChartOverridden]);
 
   useEffect(() => {
     const newDatafeed = new DataFeed(chainId, oracleKeeperFetcher, tradePageVersion);

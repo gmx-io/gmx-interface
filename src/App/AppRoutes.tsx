@@ -139,16 +139,19 @@ export function AppRoutes() {
 
   return (
     <>
-      <div className="App">
-        <div className="App-content">
-          <Header
-            disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-            openSettings={openSettings}
-            showRedirectModal={showRedirectModal}
-          />
-          {isHome && <HomeRoutes showRedirectModal={showRedirectModal} />}
-          {!isHome && <MainRoutes openSettings={openSettings} />}
-        </div>
+      <div className="App w-full font-tthoves">
+        {isHome ? (
+          <div className="App-content">
+            <Header
+              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+              openSettings={openSettings}
+              showRedirectModal={showRedirectModal}
+            />
+            <HomeRoutes showRedirectModal={showRedirectModal} />
+          </div>
+        ) : (
+          <MainRoutes openSettings={openSettings} />
+        )}
       </div>
       <ToastContainer
         limit={1}

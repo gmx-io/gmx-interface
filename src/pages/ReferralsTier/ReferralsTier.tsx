@@ -5,6 +5,7 @@ import { useReferrerTier, setAffiliateTier as contractSetAffiliateTier } from "d
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
 import Select from "components/Select/Select";
 
@@ -67,10 +68,12 @@ export default function ReferralsTier() {
   }
 
   return (
-    <div className="page-layout default-container">
-      <h1>Referrals Tier</h1>
-      {!active && <div>Wallet is not connected</div>}
-      {renderForm()}
-    </div>
+    <AppPageLayout>
+      <div className="page-layout default-container">
+        <h1>Referrals Tier</h1>
+        {!active && <div>Wallet is not connected</div>}
+        {renderForm()}
+      </div>
+    </AppPageLayout>
   );
 }

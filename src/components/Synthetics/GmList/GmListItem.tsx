@@ -1,7 +1,10 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import React from "react";
-import { Line, LineChart } from "recharts";
+import React, { useCallback } from "react";
+import { FaChevronRight } from "react-icons/fa6";
+import { HiDotsVertical } from "react-icons/hi";
+import { useHistory } from "react-router-dom";
+import { Area, AreaChart } from "recharts";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -29,7 +32,6 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import Button from "components/Button/Button";
-import ButtonLink from "components/Button/ButtonLink";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -97,6 +99,16 @@ export function GmListItem({
 
   const isMobile = usePoolsIsMobilePage();
 
+  const history = useHistory();
+
+  const handleMobileItemClick = useCallback(
+    (event: React.MouseEvent) => {
+      history.push(`/pools/details?market=${marketOrGlvTokenAddress}`);
+      event.stopPropagation();
+    },
+    [history, marketOrGlvTokenAddress]
+  );
+
   if (!token || !indexToken || !longToken || !shortToken || !marketOrGlv) {
     return null;
   }
@@ -122,8 +134,8 @@ export function GmListItem({
 
   if (isMobile) {
     return (
-      <div className="flex flex-col gap-4 rounded-8 bg-cold-blue-900 p-12">
-        <div className="flex flex-wrap items-center pb-14">
+      <div className="flex flex-col gap-4 rounded-8 bg-fill-surfaceElevated50 p-12">
+        <div className="flex flex-wrap items-center pb-14" onClick={handleMobileItemClick}>
           <div className="flex items-center">
             <div className="mr-12 flex shrink-0 items-center">
               <TokenIcon
@@ -157,18 +169,19 @@ export function GmListItem({
               />
             </div>
 
-            {onFavoriteClick && (
-              <div
-                className="cursor-pointer self-center rounded-4 bg-[#252B57] p-12 text-16"
-                onClick={handleFavoriteClick}
-              >
+            {onFavoriteClick ? (
+              <Button variant="secondary" className="!p-8" onClick={handleFavoriteClick}>
                 <FavoriteStar isFavorite={isFavorite} activeClassName="!text-white" />
-              </div>
+              </Button>
+            ) : (
+              <Button variant="secondary" className="!p-10" onClick={handleMobileItemClick}>
+                <FaChevronRight className="size-12" />
+              </Button>
             )}
           </div>
         </div>
 
-        <div className="flex flex-col gap-10 border-t border-stroke-primary pt-8">
+        <div className="flex flex-col gap-10 border-t border-slate-600 pt-8">
           <SyntheticsInfoRow
             label={<Trans>TVL (Supply)</Trans>}
             value={
@@ -203,28 +216,19 @@ export function GmListItem({
             value={performance ? formatPerformanceBps(performance) : "..."}
           />
         </div>
-        <ButtonLink
-          className="mt-12 bg-[#252B57] p-8 text-center"
-          to={`/pools/details?market=${marketOrGlvTokenAddress}`}
-        >
-          <Trans>View Details</Trans>
-        </ButtonLink>
       </div>
     );
   }
 
   return (
     <TableTr key={token.address} bordered={false} hoverable={false}>
-      <TableTd className="!pl-0">
+      <TableTd className="!py-10 pl-16">
         <div className="w-[220px]">
-          <div className="flex items-start">
+          <div className="flex items-center gap-8">
             {onFavoriteClick && (
-              <div
-                className="mr-4 cursor-pointer self-center rounded-4 p-8 text-16 hover:bg-cold-blue-700 active:bg-cold-blue-500"
-                onClick={handleFavoriteClick}
-              >
+              <Button variant="ghost" className="!p-8" onClick={handleFavoriteClick}>
                 <FavoriteStar isFavorite={isFavorite} />
-              </div>
+              </Button>
             )}
 
             <div className="mr-12 flex shrink-0 items-center">
@@ -237,10 +241,12 @@ export function GmListItem({
               />
             </div>
             <div>
-              <div className="flex text-16">
-                {isGlv
-                  ? getGlvDisplayName(marketOrGlv)
-                  : getMarketIndexName({ indexToken, isSpotOnly: Boolean(marketOrGlv?.isSpotOnly) })}
+              <div className="flex items-center text-16">
+                <span className="font-medium">
+                  {isGlv
+                    ? getGlvDisplayName(marketOrGlv)
+                    : getMarketIndexName({ indexToken, isSpotOnly: Boolean(marketOrGlv?.isSpotOnly) })}
+                </span>
 
                 <div className="inline-block">
                   <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
@@ -261,6 +267,7 @@ export function GmListItem({
           decimals={token.decimals}
           usd={totalSupplyUsd}
           symbol={token.symbol}
+          className="font-medium"
           usdOnTop
         />
       </TableTd>
@@ -278,19 +285,20 @@ export function GmListItem({
         <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
       </TableTd>
 
-      <TableTd>{performance ? <div>{formatPerformanceBps(performance)}</div> : "..."}</TableTd>
+      <TableTd>{performance ? <div className="font-medium">{formatPerformanceBps(performance)}</div> : "..."}</TableTd>
 
       <TableTd>
         <SnapshotGraph performanceSnapshots={performanceSnapshots ?? EMPTY_ARRAY} performance={performance ?? 0} />
       </TableTd>
 
-      <TableTd className="!pr-0">
+      <TableTd className="pr-16">
         <Button
-          className="flex-grow !px-30 !py-12"
-          variant="secondary"
+          className="flex flex-grow items-center gap-4"
+          variant="ghost"
           to={`/pools/details?market=${marketOrGlvTokenAddress}`}
         >
           <Trans>Details</Trans>
+          <HiDotsVertical className="size-16" />
         </Button>
       </TableTd>
     </TableTr>
@@ -329,13 +337,25 @@ const SnapshotGraph = ({
         [DESKTOP_GRAPH_SIZE_CLASSNAME]: !isMobile,
       })}
     >
-      <LineChart width={size.width} height={size.height} data={performanceSnapshots}>
-        <Line
+      <AreaChart width={size.width} height={size.height} data={performanceSnapshots}>
+        <defs>
+          <linearGradient id={`snapshot-graph-gradient-green`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="-45%" stopColor="var(--color-green-500)" stopOpacity={0.5}></stop>
+            <stop offset="100%" stopColor="var(--color-green-500)" stopOpacity={0}></stop>
+          </linearGradient>
+          <linearGradient id={`snapshot-graph-gradient-red`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="-45%" stopColor="var(--color-red-500)" stopOpacity={0.5}></stop>
+            <stop offset="100%" stopColor="var(--color-red-500)" stopOpacity={0}></stop>
+          </linearGradient>
+        </defs>
+        <Area
           dataKey="performance"
           stroke={isNegative ? "var(--color-red-500)" : "var(--color-green-500)"}
           dot={false}
+          fill={isNegative ? "url(#snapshot-graph-gradient-red)" : "url(#snapshot-graph-gradient-green)"}
+          baseValue="dataMin"
         />
-      </LineChart>
+      </AreaChart>
     </div>
   );
 };

@@ -147,11 +147,11 @@ export default function BuyInputSection(props: Props) {
     <div data-qa={qa}>
       <div
         className={cx(
-          `flex cursor-text flex-col justify-between gap-8 rounded-4 bg-cold-blue-900
-          px-14 pb-16 pt-12 text-12 leading-[16px] shadow-[inset_0_0_0_1px] shadow-[transparent]`,
+          `flex cursor-text flex-col justify-between gap-8 rounded-8 border
+          border-slate-800 bg-slate-800 px-14 pb-16 pt-12 text-12 leading-[16px]`,
           {
-            "border-2 border-cold-blue-900 bg-slate-800": isDisabled,
-            "focus-within:shadow-cold-blue-500 hover:[&:not(:focus-within)]:shadow-[rgba(58,63,121,0.4)]": !isDisabled,
+            "bg-opacity-70": isDisabled,
+            "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300": !isDisabled,
           }
         )}
         onClick={handleBoxClick}
@@ -171,16 +171,7 @@ export default function BuyInputSection(props: Props) {
             >
               {topRightLabel && <span className="text-slate-100">{topRightLabel}:</span>}
               {topRightValue && <span>{topRightValue}</span>}
-              {onClickMax && maxButtonPosition === "top-right" && (
-                <button
-                  type="button"
-                  className="-my-4 rounded-4 bg-cold-blue-500 px-8 py-2 hover:bg-[#484e92] active:bg-[#505699]"
-                  onClick={handleMaxClick}
-                  data-qa="input-max"
-                >
-                  <Trans>MAX</Trans>
-                </button>
-              )}
+              {onClickMax && maxButtonPosition === "top-right" && <MaxButton onClick={handleMaxClick} />}
             </div>
           )}
         </div>
@@ -198,7 +189,6 @@ export default function BuyInputSection(props: Props) {
               qa={qa ? qa + "-input" : undefined}
               isDisabled={isDisabled}
             />
-            <div className="absolute right-0 top-0 h-full w-8 bg-gradient-to-r from-[rgba(0,0,0,0)] to-cold-blue-900" />
 
             {showPercentSelector && isPercentSelectorVisible && onPercentChange && (
               <ul className="PercentSelector">
@@ -242,16 +232,7 @@ export default function BuyInputSection(props: Props) {
               {bottomRightLabel && <span className="text-slate-100">{bottomRightLabel}:</span>}
               {bottomRightValue && <span>{bottomRightValue}</span>}
 
-              {onClickMax && maxButtonPosition === "bottom-right" && (
-                <button
-                  type="button"
-                  className="-my-4 rounded-4 bg-cold-blue-500 px-8 py-2 hover:bg-[#484e92] active:bg-[#505699]"
-                  onClick={handleMaxClick}
-                  data-qa="input-max"
-                >
-                  <Trans>MAX</Trans>
-                </button>
-              )}
+              {onClickMax && maxButtonPosition === "bottom-right" && <MaxButton onClick={handleMaxClick} />}
             </div>
           </div>
         )}
@@ -259,3 +240,16 @@ export default function BuyInputSection(props: Props) {
     </div>
   );
 }
+
+const MaxButton = ({ onClick }: { onClick: (e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>) => void }) => {
+  return (
+    <button
+      type="button"
+      className="-my-4 rounded-full bg-slate-600 px-8 py-2 font-medium hover:bg-slate-500"
+      onClick={onClick}
+      data-qa="input-max"
+    >
+      <Trans>Max</Trans>
+    </button>
+  );
+};

@@ -11,7 +11,7 @@ import { LandingPageFooterMenuEvent } from "lib/userAnalytics/types";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
-import logoImg from "img/logo_GMX.svg";
+import FeedbackIcon from "img/ic_feedback.svg?react";
 
 import { SOCIAL_LINKS, getFooterLinks } from "./constants";
 import { UserFeedbackModal } from "../UserFeedbackModal/UserFeedbackModal";
@@ -19,48 +19,28 @@ import { UserFeedbackModal } from "../UserFeedbackModal/UserFeedbackModal";
 type Props = {
   showRedirectModal?: (to: string) => void;
   redirectPopupTimestamp?: number;
-  isMobileTradePage?: boolean;
+  isMobileSideNav?: boolean;
 };
 
-export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMobileTradePage }: Props) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMobileSideNav }: Props) {
   const isHome = isHomeSite();
   const [isUserFeedbackModalVisible, setIsUserFeedbackModalVisible] = useState(false);
 
-  const isMobile = useMedia("(max-width: 1024px)");
   const isVerySmall = useMedia("(max-width: 580px)");
 
-  const linkClassName = cx("cursor-pointer !text-slate-100 !no-underline hover:!text-white ", {
-    "text-body-medium": !isVerySmall,
-    "text-body-small": isVerySmall,
-  });
+  const linkClassName = cx(
+    "flex cursor-pointer items-center gap-4 px-12 py-8 text-[13px] !text-slate-100 !no-underline hover:!text-white",
+    {
+      "text-body-medium": !isVerySmall,
+      "text-body-small": isVerySmall,
+    }
+  );
 
   return (
     <>
-      <div
-        className={cx(
-          "absolute bottom-0 left-0 w-full border-t border-t-stroke-primary px-32 pt-32",
-          isMobileTradePage ? "pb-92" : "pb-32",
-          {
-            "grid grid-cols-[1fr_2fr_1fr]": !isMobile,
-            "flex flex-col gap-20": isMobile,
-          }
-        )}
-      >
-        <div
-          className={cx("flex items-center", {
-            "justify-center": isMobile,
-            "justify-start": !isMobile,
-          })}
-        >
-          <img src={logoImg} alt="GMX Logo" />
-        </div>
-        <div
-          className={cx("flex flex-row items-center justify-center", {
-            "gap-32": !isMobile,
-            "gap-24": isMobile && !isVerySmall,
-            "gap-16": isVerySmall,
-          })}
-        >
+      <div className={cx("flex w-full justify-between", { "flex-col": isMobileSideNav })}>
+        <div className={cx("flex flex-row items-center justify-center", { "flex-wrap": isMobileSideNav })}>
           {getFooterLinks(isHome).map(({ external, label, link, isAppLink }) => {
             if (external) {
               return (
@@ -97,14 +77,15 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
           })}
           {!isHome && (
             <div className={linkClassName} onClick={() => setIsUserFeedbackModalVisible(true)}>
+              {isMobileSideNav ? null : <FeedbackIcon />}
               <Trans>Leave feedback</Trans>
             </div>
           )}
         </div>
         <div
-          className={cx("flex gap-24", {
-            "justify-center": isMobile,
-            "justify-end": !isMobile,
+          className={cx("flex", {
+            "justify-center": isMobileSideNav,
+            "justify-end": !isMobileSideNav,
           })}
         >
           {SOCIAL_LINKS.map((platform) => {
@@ -124,8 +105,8 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
                   );
                 }}
               >
-                <ExternalLink href={platform.link} className="h-24 w-24">
-                  <img src={platform.icon} alt={platform.name} width="100%" />
+                <ExternalLink href={platform.link} className="flex h-32 w-40 items-center justify-center">
+                  <div className="h-16 w-16">{platform.icon}</div>
                 </ExternalLink>
               </TrackingLink>
             );

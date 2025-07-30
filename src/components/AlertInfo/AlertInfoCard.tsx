@@ -33,7 +33,7 @@ export function AlertInfoCard({ children, type = "info", onClose, className }: P
   return (
     <div
       className={cx(
-        "text-body-small flex rounded-4 border-l-2 px-8 py-8",
+        "text-body-small flex rounded-8 border-l-2 px-8 py-8",
         {
           "border-blue-300 bg-cold-blue-900 text-white": type === "info",
           "border-yellow-500 bg-[#423727] text-yellow-500": type === "warning",

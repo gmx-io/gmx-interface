@@ -5,17 +5,18 @@ import { LeaderboardPageConfig } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
 
-import Footer from "components/Footer/Footer";
-
 import "./LeaderboardPage.scss";
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+
 import { LeaderboardContainer } from "./components/LeaderboardContainer";
 
 export function LeaderboardPage() {
   return (
-    <div className="page-layout">
-      <LeaderboardContainer />
-      <Footer />
-    </div>
+    <AppPageLayout>
+      <div className="page-layout">
+        <LeaderboardContainer />
+      </div>
+    </AppPageLayout>
   );
 }
 

@@ -25,7 +25,7 @@ export function getIsPermitSignatureErrorOnSimulation(error: ErrorLike) {
     data: parsedError.contractErrorArgs[0],
   });
 
-  const errorArg = decodedExternalCallFailed?.args[0];
+  const errorArg = decodedExternalCallFailed?.args?.[0];
 
   return typeof errorArg === "string" && errorArg.includes("invalid signature");
 }

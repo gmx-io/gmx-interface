@@ -25,10 +25,10 @@ export function CompositionTable<T extends CompositionType>({ composition, compo
 
   const columns = useMemo(() => {
     if (compositionType === "market") {
-      return [t`MARKET`, t`TVL/CAP`, t`COMP.`];
+      return [t`MARKET`, t`TVL/CAP`, t`COMPOSITION`];
     }
 
-    return [t`COLLATERAL`, t`COMP.`];
+    return [t`COLLATERAL`, t`COMPOSITION`];
   }, [compositionType]);
 
   const sum = useMemo(() => {
@@ -58,7 +58,7 @@ export function CompositionTable<T extends CompositionType>({ composition, compo
         <thead>
           <TableTheadTr bordered>
             {columns.map((column) => (
-              <TableTh key={column} className="sticky top-0 bg-slate-800">
+              <TableTh key={column} className="sticky top-0 bg-slate-900 first:!pl-20 last:!pr-20">
                 <Trans>{column}</Trans>
               </TableTh>
             ))}
@@ -75,9 +75,12 @@ export function CompositionTable<T extends CompositionType>({ composition, compo
         </tbody>
       </table>
       {isMobile && composition.length > CLOSED_COUNT ? (
-        <div className="flex flex-row items-center justify-between px-16 pb-20" onClick={toggleOpen}>
-          <span className="text-slate-100">{isOpen ? <Trans>Show less</Trans> : <Trans>Show more</Trans>}</span>
-          {isOpen ? <FaChevronUp size={8} /> : <FaChevronDown size={8} />}
+        <div
+          className="flex flex-row items-center justify-center gap-6 px-16 py-10 text-slate-100"
+          onClick={toggleOpen}
+        >
+          <span>{isOpen ? <Trans>Show less</Trans> : <Trans>Show more</Trans>}</span>
+          {isOpen ? <FaChevronUp size={12} className="mt-2" /> : <FaChevronDown size={12} className="mt-2" />}
         </div>
       ) : null}
     </div>
@@ -97,7 +100,7 @@ const CompositionTableRow = ({ item, sum }: { item: CompositionItem; sum: bigint
 
   return (
     <TableTr className="pointer-events-none !border-0">
-      <TableTd>
+      <TableTd className="!pl-20">
         <div className="flex flex-row items-center gap-4">
           <span className="mr-8 inline-block h-10 w-10 shrink-0 rounded-10" style={tokenCircleStyles} />
           <TokenIcon
@@ -116,7 +119,7 @@ const CompositionTableRow = ({ item, sum }: { item: CompositionItem; sum: bigint
           {formatAmountHuman(item.tvl[1], USD_DECIMALS, true, 1)}
         </TableTd>
       ) : null}
-      <TableTd>
+      <TableTd className="!pr-20">
         {item.type === "market"
           ? `${getCompositionPercentage(item.gmBalanceUsd, sum)}%`
           : `${getCompositionPercentage(item.amount, sum)}%`}

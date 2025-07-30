@@ -18,9 +18,9 @@ import { formatAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Footer from "components/Footer/Footer";
 import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import PageTitle from "components/PageTitle/PageTitle";
 import { BotanixBanner } from "components/Synthetics/BotanixBanner/BotanixBanner";
@@ -299,7 +299,6 @@ function StakeContent() {
       <UserIncentiveDistributionList />
 
       <InterviewModal type="lp" isVisible={isLpInterviewModalVisible} setIsVisible={setIsLpInterviewModalVisible} />
-      <Footer />
     </div>
   );
 }
@@ -308,16 +307,19 @@ export default function Stake() {
   const { chainId } = useChainId();
   const isBotanix = chainId === BOTANIX;
 
-  return isBotanix ? (
-    <div className="default-container page-layout">
-      <SEO title={getPageTitle(t`Stake`)} />
+  return (
+    <AppPageLayout>
+      {isBotanix ? (
+        <div className="default-container page-layout">
+          <SEO title={getPageTitle(t`Stake`)} />
 
-      <PageTitle isTop title={t`Stake`} qa="earn-page" />
+          <PageTitle isTop title={t`Stake`} qa="earn-page" />
 
-      <BotanixBanner />
-      <Footer />
-    </div>
-  ) : (
-    <StakeContent />
+          <BotanixBanner />
+        </div>
+      ) : (
+        <StakeContent />
+      )}
+    </AppPageLayout>
   );
 }

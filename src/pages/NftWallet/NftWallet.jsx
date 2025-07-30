@@ -6,6 +6,9 @@ import { useChainId } from "lib/chains";
 import { callContract } from "lib/contracts";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
+
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+
 import "./NftWallet.css";
 
 export default function NftWallet() {
@@ -65,43 +68,49 @@ export default function NftWallet() {
   }
 
   return (
-    <div className="NftWallet Page page-layout">
-      <div className="Page-title-section">
-        <div className="Page-title">
-          <Trans>NFT Wallet</Trans>
+    <AppPageLayout>
+      <div className="NftWallet Page page-layout">
+        <div className="Page-title-section">
+          <div className="Page-title">
+            <Trans>NFT Wallet</Trans>
+          </div>
+        </div>
+        <div className="NftWallet-content">
+          <div className="NftWallet-row">
+            <label>
+              <Trans>Receiver Address</Trans>
+            </label>
+            <div>
+              <input type="text" value={receiver} onChange={(e) => setReceiver(e.target.value)} />
+            </div>
+          </div>
+          <div className="NftWallet-row">
+            <label>
+              <Trans>NFT Address</Trans>
+            </label>
+            <div>
+              <input type="text" value={nftAddress} onChange={(e) => setNftAddress(e.target.value)} />
+            </div>
+          </div>
+          <div className="NftWallet-row">
+            <label>
+              <Trans>NFT ID</Trans>
+            </label>
+            <div>
+              <input type="number" value={nftId} onChange={(e) => setNftId(e.target.value)} />
+            </div>
+          </div>
+          <div className="NftWallet-row">
+            <button
+              className="App-cta Exchange-swap-button"
+              disabled={!isPrimaryEnabled()}
+              onClick={() => transferNft()}
+            >
+              {getPrimaryText()}
+            </button>
+          </div>
         </div>
       </div>
-      <div className="NftWallet-content">
-        <div className="NftWallet-row">
-          <label>
-            <Trans>Receiver Address</Trans>
-          </label>
-          <div>
-            <input type="text" value={receiver} onChange={(e) => setReceiver(e.target.value)} />
-          </div>
-        </div>
-        <div className="NftWallet-row">
-          <label>
-            <Trans>NFT Address</Trans>
-          </label>
-          <div>
-            <input type="text" value={nftAddress} onChange={(e) => setNftAddress(e.target.value)} />
-          </div>
-        </div>
-        <div className="NftWallet-row">
-          <label>
-            <Trans>NFT ID</Trans>
-          </label>
-          <div>
-            <input type="number" value={nftId} onChange={(e) => setNftId(e.target.value)} />
-          </div>
-        </div>
-        <div className="NftWallet-row">
-          <button className="App-cta Exchange-swap-button" disabled={!isPrimaryEnabled()} onClick={() => transferNft()}>
-            {getPrimaryText()}
-          </button>
-        </div>
-      </div>
-    </div>
+    </AppPageLayout>
   );
 }

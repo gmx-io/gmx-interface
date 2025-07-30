@@ -1,5 +1,5 @@
 import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
-import { Popover } from "@headlessui/react";
+import { Popover, Portal } from "@headlessui/react";
 import type { MessageDescriptor } from "@lingui/core";
 import { msg, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
@@ -40,6 +40,7 @@ export const LOCALE_DATE_LOCALE_MAP: Record<keyof typeof locales, DateLocale> = 
 };
 
 type Props = {
+  handle?: React.ReactNode;
   startDate?: Date;
   endDate?: Date;
   onChange: (date: [Date | undefined, Date | undefined]) => void;
@@ -73,14 +74,16 @@ const DATE_RANGE_CLASSNAMES: DateRangeClassNames = {
   dayEndOfMonth: "DateRangeSelect-dayEndOfMonth",
   selected: "DateRangeSelect-selected",
   dayDisabled: "DateRangeSelect-dayDisabled",
+  day: "DateRangeSelect-day",
+  monthAndYearWrapper: "DateRangeSelect-monthAndYearWrapper",
+  weekDay: "DateRangeSelect-weekDay",
+  days: "DateRangeSelect-days",
+  dayToday: "DateRangeSelect-dayToday",
 };
 
 const RANGE_COLORS = ["#262843", "#3ecf8e", "#fed14c"];
 
 const PRESETS = {
-  month: {
-    months: 1,
-  } satisfies Duration,
   days30: {
     days: 30,
   } satisfies Duration,
@@ -99,17 +102,16 @@ const PRESETS = {
 type PresetPeriod = keyof typeof PRESETS;
 
 const PRESET_LABELS: Record<PresetPeriod, MessageDescriptor> = {
-  month: msg`Last month`,
-  days30: msg`Last 30d`,
-  days7: msg`Last 7d`,
-  days90: msg`Last 90d`,
-  days365: msg`Last 365d`,
+  days30: msg`30d`,
+  days7: msg`7d`,
+  days90: msg`90d`,
+  days365: msg`Last year`,
   allTime: msg`All time`,
 };
 
 const DATE_RANGE_SELECT_PRESETS: PresetPeriod[] = ["days7", "days30", "days90", "days365", "allTime"];
 
-export function DateRangeSelect({ startDate, endDate, onChange, handleClassName }: Props) {
+export function DateRangeSelect({ startDate, endDate, onChange, handleClassName, handle }: Props) {
   const rangeState = useMemo<[Range]>(
     () => [{ key: "selection", startDate, endDate, color: endDate && startDate ? RANGE_COLORS[0] : "transparent" }],
     [endDate, startDate]
@@ -117,7 +119,7 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
 
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(10), flip(), shift()],
-    placement: "bottom-end",
+    placement: "top-start",
     whileElementsMounted: autoUpdate,
   });
 
@@ -179,44 +181,51 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
   return (
     <>
       <Popover as="div" className="DateRangeSelect-anchor" ref={refs.setReference}>
-        <Popover.Button
-          as={Button}
-          className={handleClassName}
-          variant="secondary"
-          imgSrc={calendarIcon}
-          refName="buttonRef"
-          slim
-        >
-          {buttonText}
-        </Popover.Button>
-        <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>
-          <div className="DateRangeSelect-common-items">
-            {DATE_RANGE_SELECT_PRESETS.map((preset) => (
-              <Button
-                key={preset}
-                variant="secondary"
-                className="!px-10 !py-6"
-                data-preset={preset}
-                onClick={handlePresetSelect}
-              >
-                {_(PRESET_LABELS[preset])}
-              </Button>
-            ))}
-          </div>
-          <DateRange
-            classNames={DATE_RANGE_CLASSNAMES}
-            editableDateInputs={true}
-            onChange={onDateRangeChange}
-            moveRangeOnFirstSelection={false}
-            ranges={rangeState}
-            showDateDisplay={false}
-            locale={locale}
-            minDate={MIN_DATE}
-            maxDate={MAX_DATE}
-            weekStartsOn={1}
-            rangeColors={RANGE_COLORS}
-          />
-        </Popover.Panel>
+        {handle ? (
+          <Popover.Button as="div" className={handleClassName} refName="buttonRef">
+            {handle}
+          </Popover.Button>
+        ) : (
+          <Popover.Button
+            as={Button}
+            className={handleClassName}
+            variant="secondary"
+            imgSrc={calendarIcon}
+            refName="buttonRef"
+          >
+            {buttonText}
+          </Popover.Button>
+        )}
+        <Portal>
+          <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>
+            <DateRange
+              classNames={DATE_RANGE_CLASSNAMES}
+              editableDateInputs={true}
+              onChange={onDateRangeChange}
+              moveRangeOnFirstSelection={false}
+              ranges={rangeState}
+              showDateDisplay={false}
+              locale={locale}
+              minDate={MIN_DATE}
+              maxDate={MAX_DATE}
+              weekStartsOn={1}
+              rangeColors={RANGE_COLORS}
+            />
+            <div className="flex justify-between gap-4 border-t border-slate-600 p-12">
+              {DATE_RANGE_SELECT_PRESETS.map((preset) => (
+                <Button
+                  key={preset}
+                  variant="secondary"
+                  className="!px-10 !py-6"
+                  data-preset={preset}
+                  onClick={handlePresetSelect}
+                >
+                  {_(PRESET_LABELS[preset])}
+                </Button>
+              ))}
+            </div>
+          </Popover.Panel>
+        </Portal>
       </Popover>
     </>
   );
@@ -305,36 +314,37 @@ export function DateSelect({
           variant="secondary"
           imgSrc={calendarIcon}
           refName="buttonRef"
-          slim
         >
           {buttonText}
         </Popover.Button>
-        <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>
-          <div className="DateRangeSelect-common-items">
-            {DATE_SELECT_PRESETS.map((preset) => (
-              <Button
-                key={preset}
-                variant="secondary"
-                className="!px-10 !py-6"
-                data-preset={preset}
-                onClick={handlePresetSelect}
-              >
-                {_(PRESET_LABELS[preset])}
-              </Button>
-            ))}
-          </div>
-          <Calendar
-            classNames={DATE_RANGE_CLASSNAMES}
-            editableDateInputs={true}
-            onChange={onDateChange}
-            date={date}
-            locale={locale}
-            minDate={MIN_DATE}
-            maxDate={MAX_DATE}
-            weekStartsOn={1}
-            rangeColors={RANGE_COLORS}
-          />
-        </Popover.Panel>
+        <Portal>
+          <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>
+            <div className="flex gap-4 border-t border-slate-600 p-12">
+              {DATE_SELECT_PRESETS.map((preset) => (
+                <Button
+                  key={preset}
+                  variant="secondary"
+                  className="!px-10 !py-6"
+                  data-preset={preset}
+                  onClick={handlePresetSelect}
+                >
+                  {_(PRESET_LABELS[preset])}
+                </Button>
+              ))}
+            </div>
+            <Calendar
+              classNames={DATE_RANGE_CLASSNAMES}
+              editableDateInputs={true}
+              onChange={onDateChange}
+              date={date}
+              locale={locale}
+              minDate={MIN_DATE}
+              maxDate={MAX_DATE}
+              weekStartsOn={1}
+              rangeColors={RANGE_COLORS}
+            />
+          </Popover.Panel>
+        </Portal>
       </Popover>
     </>
   );

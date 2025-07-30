@@ -862,7 +862,7 @@ export function PositionSeller() {
     tokensToApprove,
   ]);
 
-  const isMobile = useMedia("(max-width: 1100px)");
+  const isMobile = useMedia("(max-width: 1024px)");
 
   return (
     <div className="text-body-medium">
@@ -1003,8 +1003,6 @@ export function PositionSeller() {
                 payTokenAddress={undefined}
                 isWrapOrUnwrap={false}
               />
-
-              <div className="h-1 bg-stroke-primary" />
 
               {!isTwap && (
                 <>

@@ -26,8 +26,8 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import LongIcon from "img/long.svg?react";
-import ShortIcon from "img/short.svg?react";
+import LongIcon from "img/new-long.svg?react";
+import ShortIcon from "img/new-short.svg?react";
 
 import { AvailableLiquidityTooltip } from "./components/AvailableLiquidityTooltip";
 
@@ -148,7 +148,7 @@ export function useChartHeaderFormattedValues() {
 
     return (
       <TooltipWithPortal
-        disableHandleStyle
+        styleType="none"
         handle={
           <span className="flex items-center justify-center gap-4">
             <LongIcon width={12} className="relative top-1 opacity-70" />${formatAmountHuman(liquidity, USD_DECIMALS)}
@@ -169,7 +169,7 @@ export function useChartHeaderFormattedValues() {
 
     return (
       <TooltipWithPortal
-        disableHandleStyle
+        styleType="none"
         handle={
           <span className="flex items-center justify-center gap-4">
             <ShortIcon width={12} className="relative opacity-70" />${formatAmountHuman(liquidity, USD_DECIMALS)}
@@ -189,12 +189,7 @@ export function useChartHeaderFormattedValues() {
     }
 
     return (
-      <span
-        className={cx("flex flex-row items-center gap-4", {
-          positive: netRate >= 0n,
-          negative: netRate < 0n,
-        })}
-      >
+      <span className={cx("flex flex-row items-center gap-4")}>
         <LongIcon width={12} className="relative top-1" />
         {formatRatePercentage(netRate)}
       </span>
@@ -209,12 +204,7 @@ export function useChartHeaderFormattedValues() {
     }
 
     return (
-      <span
-        className={cx("flex flex-row items-center gap-4", {
-          positive: netRate >= 0n,
-          negative: netRate < 0n,
-        })}
-      >
+      <span className={cx("flex flex-row items-center gap-4")}>
         <ShortIcon width={12} />
         {formatRatePercentage(netRate)}
       </span>

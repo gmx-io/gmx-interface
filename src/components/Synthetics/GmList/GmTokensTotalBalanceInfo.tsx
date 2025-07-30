@@ -22,6 +22,7 @@ export const GmTokensBalanceInfo = ({
   daysConsidered,
   isGlv = false,
   singleLine = false,
+  className,
 }: {
   token: TokenData;
   earnedTotal?: bigint;
@@ -29,6 +30,7 @@ export const GmTokensBalanceInfo = ({
   daysConsidered: number;
   isGlv?: boolean;
   singleLine?: boolean;
+  className?: string;
 }) => {
   const content =
     token.balance !== undefined && token.balance !== 0n ? (
@@ -43,6 +45,7 @@ export const GmTokensBalanceInfo = ({
         }
         symbol={token.symbol}
         singleLine={singleLine}
+        className={className}
       />
     ) : (
       <span>-</span>

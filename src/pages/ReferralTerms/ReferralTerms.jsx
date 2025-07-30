@@ -4,7 +4,6 @@ import { getPageTitle } from "lib/legacy";
 
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Footer from "components/Footer/Footer";
 
 import "./ReferralTerms.css";
 
@@ -209,7 +208,6 @@ export default function ReferralTerms() {
             </div>
           </div>
         </div>
-        <Footer />
       </div>
     </SEO>
   );

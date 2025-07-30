@@ -602,7 +602,9 @@ export function OrderEditor(p: Props) {
                 onInputValueChange={(e) => setSizeInputValue(e.target.value)}
                 bottomLeftValue={isTriggerDecreaseOrderType(p.order.orderType) ? formatUsd(sizeUsd) : undefined}
                 isBottomLeftValueMuted={sizeUsd === 0n}
-                bottomRightLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Max` : undefined}
+                bottomRightLabel={
+                  isTriggerDecreaseOrderType(p.order.orderType) && positionSize !== undefined ? t`Max` : undefined
+                }
                 bottomRightValue={
                   isTriggerDecreaseOrderType(p.order.orderType) ? formatUsdPrice(positionSize) : undefined
                 }
@@ -758,7 +760,7 @@ export function OrderEditor(p: Props) {
                 recommendedAllowedSwapSlippageBps={defaultAllowedSwapSlippageBps}
                 setAllowedSwapSlippageBps={setSelectedAllowedSwapSlippageBps}
               />
-              <div className="h-1 bg-stroke-primary" />
+              <div className="h-1 bg-slate-600" />
               <SyntheticsInfoRow
                 label={t`Min. Receive`}
                 value={formatBalanceAmount(

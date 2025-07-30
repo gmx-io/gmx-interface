@@ -548,14 +548,14 @@ function SettingButton({
     <div
       className={cx(
         `flex select-none items-center rounded-4 border border-solid`,
-        active ? "border-gray-400" : "border-stroke-primary",
+        active ? "border-gray-400" : "border-slate-600",
         disabled ? "muted cursor-not-allowed" : "cursor-pointer"
       )}
       onClick={disabled ? undefined : onClick}
     >
       <div className={cx("px-16 py-6", disabled && "opacity-50")}>{icon}</div>
       <div className="flex py-6 ">
-        <div className="flex flex-col border-l border-solid border-stroke-primary pl-12">
+        <div className="flex flex-col border-l border-solid border-slate-600 pl-12">
           <div className="flex items-center gap-4">
             <div>{title}</div>
             {info && (
@@ -577,7 +577,7 @@ function SettingButton({
 function Chip({ children, color }: { children: ReactNode; color: "blue" | "gray" }) {
   const colorClass = {
     blue: "bg-blue-600",
-    gray: "bg-slate-500",
+    gray: "bg-slate-100",
   }[color];
 
   return <div className={cx(`rounded-full px-8 py-4 text-[10px]`, colorClass)}>{children}</div>;

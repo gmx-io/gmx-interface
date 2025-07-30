@@ -1,13 +1,12 @@
 import { t } from "@lingui/macro";
 import { useState } from "react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 import { ExecutionFee } from "domain/synthetics/fees";
 import { GmSwapFees } from "domain/synthetics/trade";
 
+import { ExpandableRow } from "components/Synthetics/ExpandableRow";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
-import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
 import { Operation } from "../types";
 
@@ -27,21 +26,24 @@ export function InfoRows({
   };
 
   return (
-    <div className="flex flex-col gap-14">
-      <div className="flex w-full flex-col gap-14">
-        <GmFees
-          operation={isDeposit ? Operation.Deposit : Operation.Withdrawal}
-          totalFees={fees?.totalFees}
-          swapFee={fees?.swapFee}
-          swapPriceImpact={fees?.swapPriceImpact}
-          uiFee={fees?.uiFee}
-        />
+    <div className="flex w-full flex-col gap-14 rounded-8 bg-slate-900 p-12">
+      <GmFees
+        operation={isDeposit ? Operation.Deposit : Operation.Withdrawal}
+        totalFees={fees?.totalFees}
+        swapFee={fees?.swapFee}
+        swapPriceImpact={fees?.swapPriceImpact}
+        uiFee={fees?.uiFee}
+      />
 
-        <SyntheticsInfoRow label={t`Execution Details`} onClick={toggleExecutionDetails}>
-          {isExecutionDetailsOpen ? <FaChevronUp size={10} /> : <FaChevronDown size={10} />}
-        </SyntheticsInfoRow>
-        {isExecutionDetailsOpen ? <NetworkFeeRow rowPadding executionFee={executionFee} /> : null}
-      </div>
+      <ExpandableRow
+        title={t`Execution Details`}
+        open={isExecutionDetailsOpen}
+        onToggle={toggleExecutionDetails}
+        contentClassName="flex flex-col gap-12 pt-14"
+        row={false}
+      >
+        <NetworkFeeRow rowPadding executionFee={executionFee} />
+      </ExpandableRow>
     </div>
   );
 }
