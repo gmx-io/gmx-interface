@@ -808,7 +808,7 @@ msgstr "Historial de Distribución de Incentivos"
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched"
-msgstr ""
+msgstr "No se encontraron mercados"
 
 #: src/components/InputSection/InputSection.jsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
@@ -1150,7 +1150,7 @@ msgstr "Dado que la garantía de tu posición está en {symbol}, con un valor in
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "CSV"
-msgstr ""
+msgstr "CSV"
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
@@ -1300,7 +1300,7 @@ msgstr "Liq. {longOrShortText} - {marketIndexName}"
 
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Actions"
-msgstr ""
+msgstr "Acciones"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Longing..."
@@ -1632,7 +1632,7 @@ msgstr "GMX (Chino)"
 
 #: src/components/SearchInput/SearchInput.tsx
 msgid "Search"
-msgstr ""
+msgstr "Buscar"
 
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Price is below Mark Price"
@@ -1674,7 +1674,7 @@ msgstr "No se encontró ruta de intercambio"
 
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "RPnL"
-msgstr ""
+msgstr "RPnL"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Combined stop losses are at maximum (100%). Decrease existing values to add more orders."
@@ -2445,7 +2445,7 @@ msgstr "Orden {actionDisplay}"
 
 #: src/components/Synthetics/TVChart/Chart.tsx
 msgid "Market Graph"
-msgstr ""
+msgstr "Gráfico de Mercado"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "There are more longs than shorts, borrow fees for shorting is currently zero"
@@ -2584,7 +2584,7 @@ msgstr "Gana premios participando en Competencias de Trading de GMX."
 
 #: src/components/SideNav/SideNav.tsx
 msgid "Collapse"
-msgstr ""
+msgstr "Contraer"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Confirm Long"
@@ -3558,7 +3558,7 @@ msgstr "GLV es el token de proveedor de liquidez para vaults de GMX V2. Consiste
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Network"
-msgstr ""
+msgstr "Red"
 
 #: src/components/Synthetics/TwapRows/TwapRows.tsx
 msgid "<0>every</0> {hours} hours{0}"
@@ -3818,7 +3818,7 @@ msgstr "Solicitar aumento {0} {longOrShortText}, +{1} USD, Precio Aceptable: {2}
 
 #: src/components/SideNav/SideNav.tsx
 msgid "Earn"
-msgstr ""
+msgstr "Ganar"
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -5314,7 +5314,7 @@ msgstr "Transacción"
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last year"
-msgstr ""
+msgstr "Último año"
 
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
@@ -5383,7 +5383,7 @@ msgstr "Máx. {0} dentro"
 
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
 msgid "No items yet"
-msgstr ""
+msgstr "No hay elementos aún"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop Loss Decrease"
@@ -5446,7 +5446,7 @@ msgstr "Valor Neto: Garantía Inicial + PnL - Comisión de Préstamo - Comisión
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "30d"
-msgstr ""
+msgstr "30d"
 
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
@@ -5638,7 +5638,7 @@ msgstr "{0} órdenes no se actualizaron ya que se alcanzó el límite máximo de
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "90d"
-msgstr ""
+msgstr "90d"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order created!"
@@ -6560,7 +6560,7 @@ msgstr "COMISIONES"
 #. Filter option for tokens favorites
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "All Markets"
-msgstr ""
+msgstr "Todos los Mercados"
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
@@ -7008,7 +7008,7 @@ msgstr "Capacidad de Vault"
 
 #: src/components/Synthetics/TVChart/Chart.tsx
 msgid "Depth"
-msgstr ""
+msgstr "Profundidad"
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
@@ -8202,7 +8202,7 @@ msgstr "Por favor <0>lee aquí</0> para más información."
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "7d"
-msgstr ""
+msgstr "7d"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
@@ -8505,7 +8505,7 @@ msgstr "La orden puede no ejecutarse ya que se excede el apal. máximo permitido
 
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "Open Interest ({longOIPercentage}/{shortOIPercentage})"
-msgstr ""
+msgstr "Interés Abierto ({longOIPercentage}/{shortOIPercentage})"
 
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionSeller.jsx
