@@ -95,6 +95,9 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
         display: "none",
       },
     },
+    ".animate-pause": {
+      "animation-play-state": "paused",
+    },
     ".sr-only": {
       position: "absolute",
       width: "1px",
@@ -191,6 +194,15 @@ module.exports = {
       fontFamily: {
         sans: ["TTHoves", "sans-serif"],
         mono: ["TTHovesMono", "monospace"],
+      },
+      keyframes: {
+        scroll: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+      },
+      animation: {
+        scroll: "scroll 30s linear infinite",
       },
     },
   },
