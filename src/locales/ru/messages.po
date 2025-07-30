@@ -466,10 +466,6 @@ msgstr "Обмен {0} на {1} на 1 дюйм"
 msgid "No pools matched."
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}"
-#~ msgstr ""
-
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -2102,10 +2098,6 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 msgstr ""
-
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
-#~ msgid "Last 365d"
-#~ msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "<0>Read more</0> about fees."
@@ -4176,10 +4168,6 @@ msgstr ""
 msgid "PnL Analysis"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmListItem.tsx
-msgid "View Details"
-msgstr ""
-
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
 msgstr ""
@@ -4348,10 +4336,6 @@ msgstr ""
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Address copied to your clipboard"
 msgstr ""
-
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-#~ msgid "Version and Network"
-#~ msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -7677,10 +7661,6 @@ msgstr ""
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "APY"
 msgstr ""
-
-#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
-#~ msgid "Last month"
-#~ msgstr "Последний месяц"
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
