@@ -97,7 +97,7 @@ function NavIcons({ selectorLabel }) {
         <img className="size-24" src={icon} alt={selectorLabel} />
       </button>
       <button className="max-md:hidden">
-        <FiChevronDown className="text-slate-100" size={20} />
+        <FiChevronDown size={20} />
       </button>
     </>
   );
