@@ -94,6 +94,9 @@ import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { toastCustomOrStargateError } from "./toastCustomOrStargateError";
 import { wrapChainAction } from "./wrapChainAction";
 
+const USD_GAS_TOKEN_BUFFER = 10n * 10n ** BigInt(USD_DECIMALS);
+const USD_GAS_TOKEN_WARNING_THRESHOLD = 5n * 10n ** BigInt(USD_DECIMALS);
+
 const useIsFirstWithdrawal = () => {
   const [enabled, setEnabled] = useState(true);
   const [isFirstWithdrawal, setIsFirstWithdrawal] = useState(false);
@@ -509,7 +512,7 @@ export const WithdrawalView = () => {
       amount = selectedToken.gmxAccountBalance;
     } else {
       const buffer = convertToTokenAmount(
-        10n * 10n ** BigInt(USD_DECIMALS),
+        USD_GAS_TOKEN_BUFFER,
         gasPaymentToken.decimals,
         getMidPrice(gasPaymentToken.prices)
       )!;
@@ -563,7 +566,7 @@ export const WithdrawalView = () => {
     }
 
     const buffer = convertToTokenAmount(
-      10n * 10n ** BigInt(USD_DECIMALS),
+      USD_GAS_TOKEN_WARNING_THRESHOLD,
       gasPaymentToken.decimals,
       getMidPrice(gasPaymentToken.prices)
     )!;
@@ -824,8 +827,9 @@ export const WithdrawalView = () => {
       {shouldShowMinRecommendedAmount && (
         <AlertInfoCard type="info" className="my-4">
           <Trans>
-            You're withdrawing {selectedToken?.symbol}, your gas token. It's recommended to keep $10 in{" "}
-            {selectedToken?.symbol} for transactions, or switch your gas token in settings.
+            You're withdrawing {selectedToken?.symbol}, your gas token. It's recommended to keep{" "}
+            {formatUsd(USD_GAS_TOKEN_BUFFER, { displayDecimals: 0 })} in {selectedToken?.symbol} for transactions, or
+            switch your gas token in settings.
           </Trans>
         </AlertInfoCard>
       )}

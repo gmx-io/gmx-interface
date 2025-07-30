@@ -35,9 +35,6 @@ function AddAffiliateCode({ handleCreateReferralCode, active, setRecentlyAddedCo
             handleCreateReferralCode={handleCreateReferralCode}
             recentlyAddedCodes={recentlyAddedCodes}
             setRecentlyAddedCodes={setRecentlyAddedCodes}
-            callAfterSuccess={function (): void {
-              throw new Error("Function not implemented.");
-            }}
           />
         ) : (
           <Button variant="primary-action" className="w-full" onClick={openConnectModal}>
@@ -58,7 +55,7 @@ export function AffiliateCodeForm({
   handleCreateReferralCode: (code: string) => Promise<unknown>;
   recentlyAddedCodes: ReferralCodeStats[] | undefined;
   setRecentlyAddedCodes: (code: ReferralCodeStats[]) => void;
-  callAfterSuccess: () => void;
+  callAfterSuccess?: () => void;
 }) {
   const [referralCode, setReferralCode] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -109,7 +106,6 @@ export function AffiliateCodeForm({
     }
 
     if (takenStatus === "none" || takenStatus === "other") {
-      // const ownerOnOtherNetwork = takenInfo[chainId];
       try {
         const tx = (await handleCreateReferralCode(trimmedCode)) as TransactionResponse;
 

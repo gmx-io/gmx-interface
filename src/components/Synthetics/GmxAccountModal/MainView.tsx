@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { IoArrowDown } from "react-icons/io5";
 import { TbLoader2 } from "react-icons/tb";
 import Skeleton from "react-loading-skeleton";
+import { useHistory } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 import { useAccount, useDisconnect } from "wagmi";
 
@@ -25,6 +26,7 @@ import { useNotifyModalState } from "lib/useNotifyModalState";
 import { userAnalytics } from "lib/userAnalytics";
 import { DisconnectWalletEvent } from "lib/userAnalytics/types";
 import { shortenAddressOrEns } from "lib/wallets";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { getToken } from "sdk/configs/tokens";
 import { Token } from "sdk/types/tokens";
 
@@ -39,6 +41,7 @@ import BellIcon from "img/bell.svg?react";
 import copy from "img/ic_copy_20.svg";
 import InfoIconComponent from "img/ic_info.svg?react";
 import externalLink from "img/ic_new_link_20.svg";
+import PnlAnalysisIcon from "img/ic_pnl_analysis_20.svg?react";
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 import disconnectIcon from "img/ic_sign_out_20.svg";
 
@@ -107,6 +110,7 @@ const Toolbar = ({ account }: { account: string }) => {
   const { disconnect } = useDisconnect();
   const [, setIsVisible] = useGmxAccountModalOpen();
   const { chainId: settlementChainId, srcChainId } = useChainId();
+  const history = useHistory();
 
   const chainId = srcChainId ?? settlementChainId;
 
@@ -147,6 +151,12 @@ const Toolbar = ({ account }: { account: string }) => {
     }, 200);
   };
 
+  const handlePnlAnalysisClick = () => {
+    if (!account || !chainId) return;
+    history.push(buildAccountDashboardUrl(account, chainId, 2));
+    setIsVisible(false);
+  };
+
   const handleSettingsClick = () => {
     setIsSettingsVisible(true);
     setTimeout(() => {
@@ -157,20 +167,28 @@ const Toolbar = ({ account }: { account: string }) => {
   const showNotify = settlementChainId !== BOTANIX;
 
   return (
-    <div className="flex items-stretch justify-between gap-8">
+    <div className="flex items-center justify-between gap-8">
       <button
-        className="text-body-medium inline-flex items-center justify-center rounded-4 border border-stroke-primary px-11 py-7 text-white hover:bg-slate-700 active:bg-[#808aff14]"
+        className="text-body-medium inline-flex items-center justify-center rounded-4 border border-stroke-primary px-[6.5px] py-5 text-white hover:bg-slate-700 active:bg-[#808aff14] min-[701px]:grow"
         onClick={handleCopyAddress}
       >
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-4">
           <div className="max-[410px]:hidden">
             <Avatar size={20} ensName={ensName} address={account} />
           </div>
-          <span className="mx-8 max-[410px]:mx-0">{shortenAddressOrEns(ensName || account, 13)}</span>
-          <img src={copy} alt="Copy" />
+          <span className="max-[410px]:mx-0">{shortenAddressOrEns(ensName || account, 13)}</span>
+          <img src={copy} className="max-[370px]:hidden" alt="Copy" />
         </div>
       </button>
       <div className="flex items-center gap-8">
+        <TooltipWithPortal content={t`PnL Analysis`} position="bottom" tooltipClassName="!min-w-max">
+          <button
+            className="flex size-32 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
+            onClick={handlePnlAnalysisClick}
+          >
+            <PnlAnalysisIcon width={20} height={20} className="text-slate-100" />
+          </button>
+        </TooltipWithPortal>
         <TooltipWithPortal
           shouldPreventDefault={false}
           content={t`View in Explorer`}
@@ -179,7 +197,7 @@ const Toolbar = ({ account }: { account: string }) => {
         >
           <ExternalLink
             href={accountUrl}
-            className="flex size-36 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
+            className="flex size-32 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
           >
             <img src={externalLink} alt="External Link" />
           </ExternalLink>
@@ -187,16 +205,17 @@ const Toolbar = ({ account }: { account: string }) => {
         {showNotify && (
           <TooltipWithPortal content={t`Notifications`} position="bottom" tooltipClassName="!min-w-max">
             <button
-              className="flex size-36 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
+              className="flex size-32 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
               onClick={handleNotificationsClick}
             >
               <BellIcon className="text-slate-100" />
             </button>
           </TooltipWithPortal>
         )}
+
         <TooltipWithPortal content={t`Settings`} position="bottom" tooltipClassName="!min-w-max">
           <button
-            className="flex size-36 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
+            className="flex size-32 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
             onClick={handleSettingsClick}
           >
             <SettingsIcon24 width={20} height={20} className="text-slate-100" />
@@ -204,7 +223,7 @@ const Toolbar = ({ account }: { account: string }) => {
         </TooltipWithPortal>
         <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max">
           <button
-            className="flex size-36 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
+            className="flex size-32 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
             onClick={handleDisconnect}
           >
             <img src={disconnectIcon} alt="Disconnect" className="rotate-180" />
