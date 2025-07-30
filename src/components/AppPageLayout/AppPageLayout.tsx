@@ -9,7 +9,7 @@ export default function AppPageLayout({ children, header }: { children: React.Re
         <SideNav />
       </div>
       <div className="flex h-full grow flex-col overflow-y-auto pr-8">
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-8 grow">
           {header ? header : <AppHeader />}
           {children}
           <div className="mt-auto hidden lg:block">

@@ -39,13 +39,13 @@ function TokenIcon({ className, symbol, displaySize, importSize = 24, badge }: P
   if (badge) {
     if (typeof badge === "string") {
       sub = (
-        <span className="pointer-events-none absolute -bottom-8 -right-8 z-10 rounded-20 bg-slate-700 px-6 py-2 text-12 font-medium !text-white">
+        <span className="pointer-events-none absolute bottom-0 z-10 right-[50%] translate-x-[50%] rounded-20 bg-slate-700 px-6 py-2 text-12 font-medium !text-slate-100">
           {badge}
         </span>
       );
     } else {
       sub = (
-        <span className="absolute -bottom-8 -right-8 flex flex-row items-center justify-center !text-white">
+        <span className="absolute bottom-0 right-[50%] translate-x-[50%] flex flex-row items-center justify-center !text-slate-100">
           <img
             className="z-20 -mr-10 rounded-[100%] border border-slate-800"
             src={importImage(getIconUrlPath(badge[0], 24))}

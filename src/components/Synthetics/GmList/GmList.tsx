@@ -13,6 +13,7 @@ import PoolsCard from "pages/Pools/PoolsCard";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
 import Loader from "components/Common/Loader";
+import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import Pagination from "components/Pagination/Pagination";
 import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
@@ -153,9 +154,7 @@ export function GmList({
           <div className="flex flex-col gap-4">
             {rows}
             {!currentData.length && !isLoading && (
-              <div className="text-body-medium text-slate-100">
-                <Trans>No pools matched.</Trans>
-              </div>
+              <EmptyTableContent emptyText={t`No pools matched.`} isLoading={isLoading} isEmpty={!currentData.length} />
             )}
 
             {isLoading && <Loader />}
@@ -207,25 +206,13 @@ export function GmList({
               <tbody>
                 {rows}
 
-                {!currentData.length && !isLoading && (
-                  <TableTr hoverable={false} bordered={false} className="h-[64.5px]">
-                    <TableTd colSpan={7} className="align-top">
-                      <div className="text-body-medium text-slate-100">
-                        <Trans>No pools matched.</Trans>
-                      </div>
-                    </TableTd>
-                  </TableTr>
-                )}
-
-                {!isLoading && currentData.length < DEFAULT_PAGE_SIZE && (
-                  <GMListSkeleton
-                    invisible
-                    count={currentData.length === 0 ? DEFAULT_PAGE_SIZE - 1 : DEFAULT_PAGE_SIZE - currentData.length}
-                  />
-                )}
                 {isLoading && <GMListSkeleton />}
               </tbody>
             </table>
+
+            {!currentData.length && !isLoading && (
+              <EmptyTableContent emptyText={t`No pools matched.`} isLoading={isLoading} isEmpty={!currentData.length} />
+            )}
           </TableScrollFadeContainer>
         )}
       </div>
