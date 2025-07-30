@@ -4301,6 +4301,7 @@ msgstr ""
 msgid "Read more."
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "PnL Analysis"
 msgstr ""
@@ -6443,10 +6444,6 @@ msgstr ""
 msgid "Buy GLP or GMX"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. It's recommended to keep $10 in {1} for transactions, or switch your gas token in settings."
-msgstr ""
-
 #: src/context/GmxAccountContext/GmxAccountContext.tsx
 msgid "Source Base is now available on GMX"
 msgstr ""
@@ -8035,6 +8032,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "365d estimate based on past {daysConsidered}d APY."
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. It's recommended to keep {1} in {2} for transactions, or switch your gas token in settings."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
