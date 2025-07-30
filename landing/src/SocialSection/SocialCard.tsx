@@ -19,7 +19,7 @@ export function SocialCard({ author, avatarUrl, date, postLink, username, childr
   return (
     <div
       onClick={onClick}
-      className="bg-fiord-600 group flex h-[320px] w-[280px] flex-shrink-0 cursor-pointer flex-col gap-16 overflow-hidden rounded-16 p-16 sm:h-[440px] sm:w-[420px] sm:p-20"
+      className="bg-fiord-600 group relative flex h-[320px] w-[280px] flex-shrink-0 cursor-pointer flex-col gap-16 rounded-16 p-16 transition-transform duration-300 hover:z-20 hover:-translate-y-4 sm:h-[440px] sm:w-[420px] sm:p-20"
     >
       <div className="flex flex-row items-start justify-between">
         <div className="flex flex-row items-center gap-12">
@@ -34,7 +34,7 @@ export function SocialCard({ author, avatarUrl, date, postLink, username, childr
             <span className="text-[11px] font-medium tracking-[0.024px] text-slate-100 sm:text-12">@{username}</span>
           </div>
         </div>
-        <div className="rounded-8 bg-[#1E2033] p-12 text-slate-100 group-hover:bg-blue-600 group-hover:text-white">
+        <div className="rounded-8 bg-[#1E2033] p-12 text-slate-100 transition-colors duration-300 group-hover:bg-blue-600 group-hover:text-white">
           <IcLinkArrow className="size-8" />
         </div>
       </div>
