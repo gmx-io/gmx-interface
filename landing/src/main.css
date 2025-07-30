@@ -12,28 +12,18 @@
   }
 }
 
-
-
+@font-face {
+  font-family: "TTHoves";
+  font-style: normal;
+  font-weight: 300;
+  src: url("fonts/tthoves/tt-hoves-pro-trial-light.ttf");
+}
 
 @font-face {
   font-family: "TTHoves";
   font-style: normal;
   font-weight: 400;
   src: url("fonts/tthoves/tt-hoves-pro-trial-regular.ttf");
-}
-
-@font-face {
-  font-family: "TTHovesMono";
-  font-style: normal;
-  font-weight: 400;
-  src: url("fonts/tthoves/tt-hoves-pro-mono-trial-regular.ttf");
-}
-
-@font-face {
-  font-family: "TTHoves";
-  font-style: normal;
-  font-weight: 300;
-  src: url("fonts/tthoves/tt-hoves-pro-trial-light.ttf");
 }
 
 @font-face {
@@ -50,14 +40,3 @@
   src: url("fonts/tthoves/tt-hoves-pro-trial-bold.ttf");
 }
 
-@font-face {
-  font-family: "TTHovesMono";
-  font-style: normal;
-  font-weight: 500;
-  src: url("fonts/tthoves/tt-hoves-pro-mono-trial-regular.ttf");
-}
-
-@font-face {
-  font-family: "TTHovesMono";
-  src: url("fonts/tthoves/tt-hoves-pro-mono-trial-medium.ttf");
-}
