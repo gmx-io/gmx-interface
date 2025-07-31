@@ -337,12 +337,12 @@ export function SyntheticsPage(p: Props) {
       className="max-lg:pb-40"
     >
       {isTablet ? <ChartHeader /> : null}
-      <div className="grid grow grid-cols-[1fr_auto] gap-8 pt-0 max-[1024px]:grid-cols-1">
+      <div className="flex grow gap-8 pt-0 max-lg:flex-col">
         {isTablet && <OneClickPromoBanner openSettings={openSettings} />}
-        <div className="Exchange-left flex flex-col gap-8">
+        <div className="Exchange-left flex grow flex-col gap-8">
           <Chart />
           {!isTablet && (
-            <div className="Exchange-lists large" data-qa="trade-table-large">
+            <div className="overflow-hidden rounded-8" data-qa="trade-table-large">
               <Tabs
                 options={tabsOptions}
                 selectedValue={listSection}
@@ -403,7 +403,7 @@ export function SyntheticsPage(p: Props) {
         )}
 
         {isTablet && (
-          <div className="flex w-full flex-col" data-qa="trade-table-small">
+          <div className="flex w-full flex-col overflow-hidden rounded-8" data-qa="trade-table-small">
             <div className="overflow-x-auto scrollbar-hide">
               <Tabs
                 options={tabsOptions}

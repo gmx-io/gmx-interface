@@ -236,58 +236,60 @@ export function TradeHistory(p: Props) {
     <div className="TradeHistorySynthetics">
       <div className="App-box">
         <TableScrollFadeContainer>
-          <table className="TradeHistorySynthetics-table">
-            <colgroup>
-              <col className="TradeHistorySynthetics-action-column" />
-              <col className="TradeHistorySynthetics-market-column" />
-              <col className="TradeHistorySynthetics-size-column" />
-              <col className="TradeHistorySynthetics-price-column" />
-              <col className="TradeHistorySynthetics-pnl-fees-column" />
-            </colgroup>
-            <thead>
-              <TableTheadTr bordered>
-                <TableTh>
-                  <ActionFilter value={actionFilter} onChange={setActionFilter} />
-                </TableTh>
-                <TableTh>
-                  <MarketFilterLongShort
-                    withPositions="all"
-                    value={marketsDirectionsFilter}
-                    onChange={setMarketsDirectionsFilter}
-                  />
-                </TableTh>
-                <TableTh>
-                  <Trans>Size</Trans>
-                </TableTh>
-                <TableTh>
-                  <Trans>Price</Trans>
-                </TableTh>
-                <TableTh className="TradeHistorySynthetics-pnl-fees-header">
-                  <TooltipWithPortal
-                    styleType="iconStroke"
-                    content={<Trans>Realized PnL after fees and price impact.</Trans>}
-                  >
-                    <Trans>RPnL</Trans>
-                  </TooltipWithPortal>
-                </TableTh>
-              </TableTheadTr>
-            </thead>
-            <tbody>
-              {isLoading ? (
-                <TradesHistorySkeleton withTimestamp={forAllAccounts} />
-              ) : (
-                currentPageData.map((tradeAction) => (
-                  <TradeHistoryRow
-                    key={tradeAction.id}
-                    tradeAction={tradeAction}
-                    minCollateralUsd={minCollateralUsd!}
-                    showDebugValues={showDebugValues}
-                    shouldDisplayAccount={forAllAccounts}
-                  />
-                ))
-              )}
-            </tbody>
-          </table>
+          {currentPageData.length > 0 || isLoading ? (
+            <table className="TradeHistorySynthetics-table">
+              <colgroup>
+                <col className="TradeHistorySynthetics-action-column" />
+                <col className="TradeHistorySynthetics-market-column" />
+                <col className="TradeHistorySynthetics-size-column" />
+                <col className="TradeHistorySynthetics-price-column" />
+                <col className="TradeHistorySynthetics-pnl-fees-column" />
+              </colgroup>
+              <thead>
+                <TableTheadTr bordered>
+                  <TableTh>
+                    <ActionFilter value={actionFilter} onChange={setActionFilter} />
+                  </TableTh>
+                  <TableTh>
+                    <MarketFilterLongShort
+                      withPositions="all"
+                      value={marketsDirectionsFilter}
+                      onChange={setMarketsDirectionsFilter}
+                    />
+                  </TableTh>
+                  <TableTh>
+                    <Trans>Size</Trans>
+                  </TableTh>
+                  <TableTh>
+                    <Trans>Price</Trans>
+                  </TableTh>
+                  <TableTh className="TradeHistorySynthetics-pnl-fees-header">
+                    <TooltipWithPortal
+                      styleType="iconStroke"
+                      content={<Trans>Realized PnL after fees and price impact.</Trans>}
+                    >
+                      <Trans>RPnL</Trans>
+                    </TooltipWithPortal>
+                  </TableTh>
+                </TableTheadTr>
+              </thead>
+              <tbody>
+                {isLoading ? (
+                  <TradesHistorySkeleton withTimestamp={forAllAccounts} />
+                ) : (
+                  currentPageData.map((tradeAction) => (
+                    <TradeHistoryRow
+                      key={tradeAction.id}
+                      tradeAction={tradeAction}
+                      minCollateralUsd={minCollateralUsd!}
+                      showDebugValues={showDebugValues}
+                      shouldDisplayAccount={forAllAccounts}
+                    />
+                  ))
+                )}
+              </tbody>
+            </table>
+          ) : null}
           {isEmpty && hasFilters && (
             <EmptyTableContent
               isLoading={false}

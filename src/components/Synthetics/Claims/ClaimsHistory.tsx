@@ -143,33 +143,35 @@ export function ClaimsHistory({
   return (
     <div className="App-box">
       <TableScrollFadeContainer>
-        <table className="ClaimsHistory-table">
-          <colgroup>
-            <col className="ClaimsHistory-action-column" />
-            <col className="ClaimsHistory-market-column" />
-            <col className="ClaimsHistory-size-column" />
-          </colgroup>
-          <thead>
-            <TableTheadTr bordered>
-              <TableTh>
-                <ActionFilter value={eventNameFilter} onChange={setEventNameFilter} />
-              </TableTh>
-              <TableTh>
-                <MarketFilter excludeSpotOnly value={marketAddressesFilter} onChange={setMarketAddressesFilter} />
-              </TableTh>
-              <TableTh className="ClaimsHistory-price-header">
-                <Trans>Size</Trans>
-              </TableTh>
-            </TableTheadTr>
-          </thead>
-          <tbody>
-            {isLoading ? (
-              <ClaimsHistorySkeleton />
-            ) : (
-              currentPageData.map((claimAction) => <ClaimHistoryRow key={claimAction.id} claimAction={claimAction} />)
-            )}
-          </tbody>
-        </table>
+        {!isEmpty && (
+          <table className="ClaimsHistory-table">
+            <colgroup>
+              <col className="ClaimsHistory-action-column" />
+              <col className="ClaimsHistory-market-column" />
+              <col className="ClaimsHistory-size-column" />
+            </colgroup>
+            <thead>
+              <TableTheadTr bordered>
+                <TableTh>
+                  <ActionFilter value={eventNameFilter} onChange={setEventNameFilter} />
+                </TableTh>
+                <TableTh>
+                  <MarketFilter excludeSpotOnly value={marketAddressesFilter} onChange={setMarketAddressesFilter} />
+                </TableTh>
+                <TableTh className="ClaimsHistory-price-header">
+                  <Trans>Size</Trans>
+                </TableTh>
+              </TableTheadTr>
+            </thead>
+            <tbody>
+              {isLoading ? (
+                <ClaimsHistorySkeleton />
+              ) : (
+                currentPageData.map((claimAction) => <ClaimHistoryRow key={claimAction.id} claimAction={claimAction} />)
+              )}
+            </tbody>
+          </table>
+        )}
 
         {isEmpty && !hasFilters && (
           <EmptyTableContent isLoading={false} isEmpty={isEmpty} emptyText={<Trans>No claims yet</Trans>} />
