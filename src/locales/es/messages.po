@@ -661,7 +661,7 @@ msgstr "Precio límite por encima del precio de referencia"
 
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
-msgstr ""
+msgstr "Interés Abierto (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Create or Import a Wallet"
@@ -702,8 +702,8 @@ msgstr "Garantía Mín. Requerida"
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
-msgstr "{0} tokens se han convertido a GMX desde el {1} esGMX depositado para adquisición."
+#~ msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
+#~ msgstr "{0} tokens se han convertido a GMX desde el {1} esGMX depositado para adquisición."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -2315,6 +2315,11 @@ msgstr "Liquidando comisiones {positionName}"
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {Tienes activa una orden de activación que podría impactar esta posición.} other {Tienes # órdenes de activación activas que podrían impactar esta posición.}}"
+
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+msgid "<0>{0}</0> GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
+msgstr "<0>{0}</0> tokens GMX pueden ser reclamados, usa las opciones en la sección de Recompensas Totales para reclamarlos."
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order executed"
@@ -4779,7 +4784,7 @@ msgstr "¡Código de referido actualizado!"
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 msgid "COMPOSITION"
-msgstr ""
+msgstr "COMPOSICIÓN"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favorites"
@@ -5242,8 +5247,8 @@ msgstr "Transfiriendo"
 
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
-msgstr "{0} tokens GMX pueden ser reclamados, usa las opciones en la sección de Recompensas Totales para reclamarlos."
+#~ msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
+#~ msgstr "{0} tokens GMX pueden ser reclamados, usa las opciones en la sección de Recompensas Totales para reclamarlos."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP autocompounding vaults"
@@ -8027,6 +8032,12 @@ msgstr "<0>Delega tu poder de voto {0} GMX DAO no delegado</0> antes de reclamar
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral. The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price."
 msgstr "Estarás largo en {indexSymbol} desde tu posición larga, así como desde tu garantía {collateralSymbol}. El precio de liquidación es más alto comparado con usar una stablecoin como garantía ya que el valor de la garantía cambiará con su precio."
+
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+msgid "<0>{0}</0> tokens have been converted to GMX from the <1>{1}</1> esGMX deposited for vesting."
+msgstr "<0>{0}</0> tokens se han convertido a GMX desde el <1>{1}</1> esGMX depositado para adquisición."
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled"

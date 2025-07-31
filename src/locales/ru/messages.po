@@ -661,7 +661,7 @@ msgstr "Лимитная цена выше рыночной цены"
 
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
-msgstr ""
+msgstr "Открытый Интерес (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Create or Import a Wallet"
@@ -702,8 +702,8 @@ msgstr "Минимальный требуемый залог"
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
-msgstr "{0} токенов конвертированы в GMX из {1} esGMX, внесенных для вестинга."
+#~ msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
+#~ msgstr "{0} токенов конвертированы в GMX из {1} esGMX, внесенных для вестинга."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -2315,6 +2315,11 @@ msgstr "{positionName} Расчет комиссий"
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {У вас есть активный триггерный ордер, который может повлиять на эту позицию.} other {У вас есть # активных триггерных ордеров, которые могут повлиять на эту позицию.}}"
+
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+msgid "<0>{0}</0> GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
+msgstr "<0>{0}</0> токенов GMX можно запросить, используйте опции в разделе Общих вознаграждений, чтобы их запросить."
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order executed"
@@ -4779,7 +4784,7 @@ msgstr "Реферальный код обновлен!"
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 msgid "COMPOSITION"
-msgstr ""
+msgstr "СОСТАВ"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favorites"
@@ -5242,8 +5247,8 @@ msgstr "Передача"
 
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
-msgstr "{0} токенов GMX можно запросить, используйте опции в разделе Общих вознаграждений, чтобы их запросить."
+#~ msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
+#~ msgstr "{0} токенов GMX можно запросить, используйте опции в разделе Общих вознаграждений, чтобы их запросить."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP autocompounding vaults"
@@ -8027,6 +8032,12 @@ msgstr "<0>Делегируйте вашу не делегированную {0}
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral. The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price."
 msgstr "Вы будете в лонге {indexSymbol} из вашей лонг позиции, а также из вашего залога {collateralSymbol}. Цена ликвидации выше по сравнению с использованием стейблкоина в качестве залога, поскольку стоимость залога изменяется с его ценой."
+
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+msgid "<0>{0}</0> tokens have been converted to GMX from the <1>{1}</1> esGMX deposited for vesting."
+msgstr "<0>{0}</0> токенов конвертированы в GMX из <1>{1}</1> esGMX, внесенных для вестинга."
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled"

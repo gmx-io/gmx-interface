@@ -661,7 +661,7 @@ msgstr "限价高于标记价格"
 
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
-msgstr ""
+msgstr "开仓利息 (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Create or Import a Wallet"
@@ -702,8 +702,8 @@ msgstr "最低所需抵押品"
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
-msgstr "{0} 代币已从 {1} esGMX 存款转换为 GMX 用于归属。"
+#~ msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
+#~ msgstr "{0} 代币已从 {1} esGMX 存款转换为 GMX 用于归属。"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -2315,6 +2315,11 @@ msgstr "{positionName} 费用结算"
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {您有一个活跃的触发订单可能会影响此仓位。} other {您有 # 个活跃的触发订单可能会影响此仓位。}}"
+
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+msgid "<0>{0}</0> GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
+msgstr "可以领取 <0>{0}</0> 个 GMX 代币，使用总奖励部分下的选项领取它们。"
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order executed"
@@ -4779,7 +4784,7 @@ msgstr "推荐代码已更新！"
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 msgid "COMPOSITION"
-msgstr ""
+msgstr "组成"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favorites"
@@ -5242,8 +5247,8 @@ msgstr "正在转移"
 
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
-msgstr "可以领取 {0} 个 GMX 代币，使用总奖励部分下的选项领取它们。"
+#~ msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
+#~ msgstr "可以领取 {0} 个 GMX 代币，使用总奖励部分下的选项领取它们。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP autocompounding vaults"
@@ -8027,6 +8032,12 @@ msgstr "<0>在领取前委托您未委托的 {0} GMX DAO</0> 投票权。"
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral. The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price."
 msgstr "您将从您的多头仓位以及 {collateralSymbol} 抵押品中做多 {indexSymbol}。与使用稳定币作为抵押品相比，清算价格更高，因为抵押品的价值会随其价格变化。"
+
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+msgid "<0>{0}</0> tokens have been converted to GMX from the <1>{1}</1> esGMX deposited for vesting."
+msgstr "<0>{0}</0> 代币已从 <1>{1}</1> esGMX 存款转换为 GMX 用于归属。"
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled"

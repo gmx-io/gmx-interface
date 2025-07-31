@@ -661,7 +661,7 @@ msgstr "Limitpreis über Markpreis"
 
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
-msgstr ""
+msgstr "Offenes Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Create or Import a Wallet"
@@ -702,8 +702,8 @@ msgstr "Min. Erforderliches Kollateral"
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
-msgstr "{0} Token wurden aus dem {1} esGMX, das für das Vesting eingezahlt wurde, in GMX umgewandelt."
+#~ msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
+#~ msgstr "{0} Token wurden aus dem {1} esGMX, das für das Vesting eingezahlt wurde, in GMX umgewandelt."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -2315,6 +2315,11 @@ msgstr "{positionName} Gebühren werden abgerechnet"
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {Du hast einen aktiven Triggerauftrag, der sich auf diese Position auswirken könnte.} other {Du hast # aktive Triggeraufträge, die sich auf diese Position auswirken könnten.}}"
+
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+msgid "<0>{0}</0> GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
+msgstr "<0>{0}</0> GMX-Token können beansprucht werden, verwende die Optionen im Abschnitt Gesamte Belohnungen, um sie zu beanspruchen."
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order executed"
@@ -4779,7 +4784,7 @@ msgstr "Referral Code aktualisiert!"
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 msgid "COMPOSITION"
-msgstr ""
+msgstr "ZUSAMMENSETZUNG"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favorites"
@@ -5242,8 +5247,8 @@ msgstr "Übertrage"
 
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
-msgstr "{0} GMX-Token können beansprucht werden, verwende die Optionen im Abschnitt Gesamte Belohnungen, um sie zu beanspruchen."
+#~ msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
+#~ msgstr "{0} GMX-Token können beansprucht werden, verwende die Optionen im Abschnitt Gesamte Belohnungen, um sie zu beanspruchen."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP autocompounding vaults"
@@ -8027,6 +8032,12 @@ msgstr "<0>Delegiere deine nicht delegierte {0} GMX DAO</0> Stimmkraft vor dem B
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral. The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price."
 msgstr "Du wirst long {indexSymbol} von deiner Long-Position sowie von deinem {collateralSymbol}-Kollateral. Der Liquidationspreis ist höher im Vergleich zur Verwendung eines Stablecoins als Kollateral, da der Wert des Kollaterals mit seinem Preis ändert."
+
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+#: src/pages/Stake/Vesting.tsx
+msgid "<0>{0}</0> tokens have been converted to GMX from the <1>{1}</1> esGMX deposited for vesting."
+msgstr "<0>{0}</0> Token wurden aus dem <1>{1}</1> esGMX, das für das Vesting eingezahlt wurde, in GMX umgewandelt."
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled"
