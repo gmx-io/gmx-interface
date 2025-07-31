@@ -14,6 +14,7 @@ export function useGasPrice(chainId: number) {
   const settings = useSettings();
 
   const { data: gasPrice } = useSWR<bigint | undefined>(["gasPrice", chainId, settings.executionFeeBufferBps], {
+    refreshInterval: 2000,
     fetcher: () => {
       return new Promise<bigint | undefined>(async (resolve, reject) => {
         const provider = getProvider(undefined, chainId);
