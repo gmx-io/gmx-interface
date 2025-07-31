@@ -83,7 +83,7 @@ export async function signTypedData({
       return (provider as any).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]);
     },
     {
-      retryCount: 2,
+      retryCount: 1,
       delay: 100,
       shouldRetry: ({ error }) => {
         const errorData = parseError(error);

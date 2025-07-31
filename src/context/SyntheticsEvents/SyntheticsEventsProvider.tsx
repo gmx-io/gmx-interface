@@ -1041,6 +1041,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                 });
 
                 helperToast.error(totastContent);
+                isViewed = true;
               }
 
               isRelayerMetricSent = true;
