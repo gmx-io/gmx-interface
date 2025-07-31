@@ -20,7 +20,10 @@ export function useSwitchGasPaymentTokenIfRequiredFromExpressParams({
   useSwitchGasPaymentTokenIfRequired({
     isOutGasTokenBalance: expressParams?.gasPaymentValidations.isOutGasTokenBalance,
     gasPaymentToken: expressParams?.gasPaymentParams.gasPaymentToken,
-    gasPaymentTokenAmount: expressParams?.gasPaymentParams.gasPaymentTokenAmount,
+    totalGasPaymentTokenAmount: expressParams
+      ? expressParams.gasPaymentParams.gasPaymentTokenAmount +
+        expressParams.gasPaymentParams.gasPaymentTokenAsCollateralAmount
+      : undefined,
     isGmxAccount,
   });
 }
@@ -28,12 +31,12 @@ export function useSwitchGasPaymentTokenIfRequiredFromExpressParams({
 export function useSwitchGasPaymentTokenIfRequired({
   isOutGasTokenBalance,
   gasPaymentToken,
-  gasPaymentTokenAmount,
+  totalGasPaymentTokenAmount,
   isGmxAccount,
 }: {
   isOutGasTokenBalance: boolean | undefined;
   gasPaymentToken: TokenData | undefined;
-  gasPaymentTokenAmount: bigint | undefined;
+  totalGasPaymentTokenAmount: bigint | undefined;
   isGmxAccount: boolean;
 }) {
   const { chainId } = useChainId();
@@ -42,8 +45,12 @@ export function useSwitchGasPaymentTokenIfRequired({
 
   useEffect(
     function switchGasPaymentToken() {
-      if (isOutGasTokenBalance && gasPaymentToken && gasPaymentTokenAmount !== undefined) {
-        const usdValue = convertToUsd(gasPaymentTokenAmount, gasPaymentToken.decimals, gasPaymentToken.prices.minPrice);
+      if (isOutGasTokenBalance && gasPaymentToken && totalGasPaymentTokenAmount !== undefined) {
+        const usdValue = convertToUsd(
+          totalGasPaymentTokenAmount,
+          gasPaymentToken.decimals,
+          gasPaymentToken.prices.minPrice
+        );
 
         const anotherGasToken = getGasPaymentTokens(chainId).find((tokenAddress) => {
           const tokenData = getByKey(tokensData, tokenAddress);
@@ -72,7 +79,7 @@ export function useSwitchGasPaymentTokenIfRequired({
     [
       chainId,
       gasPaymentToken,
-      gasPaymentTokenAmount,
+      totalGasPaymentTokenAmount,
       isGmxAccount,
       isOutGasTokenBalance,
       setGasPaymentTokenAddress,

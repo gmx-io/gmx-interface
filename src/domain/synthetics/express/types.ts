@@ -69,6 +69,7 @@ export type GasPaymentParams = {
   relayerFeeAmount: bigint;
   gasPaymentTokenAmount: bigint;
   totalRelayerFeeTokenAmount: bigint;
+  gasPaymentTokenAsCollateralAmount: bigint;
 };
 
 export type RelayParamsPayload = {

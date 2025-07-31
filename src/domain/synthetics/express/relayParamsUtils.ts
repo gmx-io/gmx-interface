@@ -88,6 +88,7 @@ export function getRelayerFeeParams({
   relayerFeeToken,
   relayerFeeAmount,
   totalRelayerFeeTokenAmount,
+  gasPaymentTokenAsCollateralAmount,
   transactionExternalCalls,
   feeExternalSwapQuote,
   findFeeSwapPath,
@@ -98,6 +99,7 @@ export function getRelayerFeeParams({
   totalRelayerFeeTokenAmount: bigint;
   relayerFeeToken: TokenData;
   gasPaymentToken: TokenData;
+  gasPaymentTokenAsCollateralAmount: bigint;
   findFeeSwapPath: FindSwapPath | undefined;
   feeExternalSwapQuote: ExternalSwapQuote | undefined;
   /**
@@ -114,6 +116,7 @@ export function getRelayerFeeParams({
     relayerFeeAmount,
     totalRelayerFeeTokenAmount,
     gasPaymentTokenAmount: 0n,
+    gasPaymentTokenAsCollateralAmount,
   };
 
   let feeParams: RelayFeePayload;

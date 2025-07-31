@@ -83,6 +83,7 @@ export function getRawBaseRelayerParams({
     relayerFeeToken,
     relayerFeeAmount: baseRelayerFeeAmount,
     totalRelayerFeeTokenAmount: baseRelayerFeeAmount,
+    gasPaymentTokenAsCollateralAmount: 0n,
     findFeeSwapPath: findFeeSwapPath,
 
     transactionExternalCalls: getEmptyExternalCallsPayload(),
@@ -229,6 +230,7 @@ export function getArbitraryRelayParamsAndPayload({
     relayerFeeToken: globalExpressParams.relayerFeeToken,
     relayerFeeAmount: relayerFeeAmount,
     totalRelayerFeeTokenAmount: relayerFeeAmount,
+    gasPaymentTokenAsCollateralAmount: 0n,
     findFeeSwapPath: globalExpressParams.findFeeSwapPath,
 
     transactionExternalCalls: getEmptyExternalCallsPayload(),

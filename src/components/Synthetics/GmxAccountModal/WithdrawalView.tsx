@@ -370,7 +370,7 @@ export const WithdrawalView = () => {
   useSwitchGasPaymentTokenIfRequired({
     gasPaymentToken: globalExpressParams?.gasPaymentToken,
     isOutGasTokenBalance: errors?.isOutOfTokenError?.isGasPaymentToken,
-    gasPaymentTokenAmount: errors?.isOutOfTokenError
+    totalGasPaymentTokenAmount: errors?.isOutOfTokenError
       ? errors.isOutOfTokenError.requiredAmount - errors.isOutOfTokenError.balance
       : undefined,
     isGmxAccount: true,
