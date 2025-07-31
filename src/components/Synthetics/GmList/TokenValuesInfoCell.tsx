@@ -16,9 +16,9 @@ export function TokenValuesInfoCell({
   const isNumber = !isNaN(Number(value.replace(/,/g, "")));
   const content = (
     <>
-      {usd && <div className={cx("whitespace-nowrap", className)}>{usd}</div>}
+      {usd && <div className={cx("whitespace-nowrap numbers", className)}>{usd}</div>}
       {value && (
-        <div className="whitespace-nowrap text-12 text-slate-100">
+        <div className="whitespace-nowrap text-12 text-slate-100 numbers">
           ({symbol && isNumber ? `${value} ${symbol}` : value})
         </div>
       )}

@@ -48,7 +48,7 @@ export function GmFees(p: Props) {
           handle={
             <span>
               <span
-                className={cx({
+                className={cx("numbers", {
                   "text-green-300": p.swapPriceImpact?.deltaUsd !== undefined && p.swapPriceImpact.deltaUsd > 0,
                 })}
               >
@@ -60,7 +60,9 @@ export function GmFees(p: Props) {
               </span>
               {" / "}
               <span
-                className={cx({ "text-green-300": p.totalFees?.deltaUsd !== undefined && p.totalFees.deltaUsd > 0 })}
+                className={cx("numbers", {
+                  "text-green-300": p.totalFees?.deltaUsd !== undefined && p.totalFees.deltaUsd > 0,
+                })}
               >
                 {p.totalFees?.deltaUsd !== undefined && p.totalFees.deltaUsd > 0 ? "+" : "-"}
                 {formatPercentage(p.totalFees?.precisePercentage, {
@@ -80,15 +82,17 @@ export function GmFees(p: Props) {
                       <div>{t`Price Impact`}:</div>
                       <div>
                         (
-                        {formatPercentage(p.swapPriceImpact?.precisePercentage, {
-                          bps: false,
-                          displayDecimals: 3,
-                        })}{" "}
+                        <span className="numbers">
+                          {formatPercentage(p.swapPriceImpact?.precisePercentage, {
+                            bps: false,
+                            displayDecimals: 3,
+                          })}
+                        </span>{" "}
                         of {operationText} amount)
                       </div>
                     </div>
                   }
-                  value={formatDeltaUsd(p.swapPriceImpact?.deltaUsd)!}
+                  value={<span className="numbers">{formatDeltaUsd(p.swapPriceImpact?.deltaUsd)!}</span>}
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(
                     p.swapPriceImpact === undefined ? undefined : p.swapPriceImpact.deltaUsd
@@ -104,15 +108,17 @@ export function GmFees(p: Props) {
                         <div>{p.operation === Operation.Deposit ? t`Buy Fee` : t`Sell Fee`}:</div>
                         <div>
                           (
-                          {formatPercentage(p.swapFee.precisePercentage, {
-                            bps: false,
-                            displayDecimals: 3,
-                          })}{" "}
+                          <span className="numbers">
+                            {formatPercentage(p.swapFee.precisePercentage, {
+                              bps: false,
+                              displayDecimals: 3,
+                            })}
+                          </span>{" "}
                           of {operationText} amount)
                         </div>
                       </div>
                     }
-                    value={formatDeltaUsd(p.swapFee.deltaUsd)!}
+                    value={<span className="numbers">{formatDeltaUsd(p.swapFee.deltaUsd)!}</span>}
                     showDollar={false}
                     textClassName={getPositiveOrNegativeClass(p.swapFee.deltaUsd)}
                   />
@@ -126,15 +132,17 @@ export function GmFees(p: Props) {
                       <div>{t`UI Fee`}:</div>
                       <div>
                         (
-                        {formatPercentage(p.uiFee?.precisePercentage, {
-                          bps: false,
-                          displayDecimals: 3,
-                        })}{" "}
+                        <span className="numbers">
+                          {formatPercentage(p.uiFee?.precisePercentage, {
+                            bps: false,
+                            displayDecimals: 3,
+                          })}
+                        </span>{" "}
                         of {operationText} amount)
                       </div>
                     </div>
                   }
-                  value={formatDeltaUsd(p.uiFee?.deltaUsd)!}
+                  value={<span className="numbers">{formatDeltaUsd(p.uiFee?.deltaUsd)!}</span>}
                   showDollar={false}
                   textClassName="text-red-500"
                 />
@@ -147,15 +155,17 @@ export function GmFees(p: Props) {
                       <div>{t`Shift Fee`}:</div>
                       <div>
                         (
-                        {formatPercentage(p.shiftFee.precisePercentage, {
-                          bps: false,
-                          displayDecimals: 3,
-                        })}{" "}
+                        <span className="numbers">
+                          {formatPercentage(p.shiftFee.precisePercentage, {
+                            bps: false,
+                            displayDecimals: 3,
+                          })}
+                        </span>{" "}
                         of {operationText} amount)
                       </div>
                     </div>
                   }
-                  value={formatDeltaUsd(p.shiftFee.deltaUsd)!}
+                  value={<span className="numbers">{formatDeltaUsd(p.shiftFee.deltaUsd)!}</span>}
                   showDollar={false}
                 />
               )}
@@ -165,7 +175,7 @@ export function GmFees(p: Props) {
       );
     }
     return (
-      <span className={cx({ positive: totalFeesUsd !== undefined && totalFeesUsd > 0 })}>
+      <span className={cx("numbers", { positive: totalFeesUsd !== undefined && totalFeesUsd > 0 })}>
         {formatPercentage(p.swapPriceImpact?.precisePercentage, {
           bps: false,
           displayDecimals: 3,

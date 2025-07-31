@@ -55,9 +55,13 @@ function Section({ buttonText, onButtonClick, tooltipText, title, usd }: Section
       <div className="flex flex-col gap-4">
         <span className="font-medium">
           {tooltipText ? (
-            <Tooltip handle={usdFormatted} position="bottom-start" renderContent={renderTooltipContent} />
+            <Tooltip
+              handle={<span className="numbers">{usdFormatted}</span>}
+              position="bottom-start"
+              renderContent={renderTooltipContent}
+            />
           ) : (
-            usdFormatted
+            <span className="numbers">{usdFormatted}</span>
           )}
         </span>
         <span className="text-body-small text-slate-100">{title}</span>

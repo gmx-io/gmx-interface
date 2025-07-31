@@ -117,7 +117,11 @@ export function GmxCard({
                 <TooltipComponent
                   position="bottom-end"
                   className="whitespace-nowrap"
-                  handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
+                  handle={
+                    <span className="numbers">
+                      {"$" + formatAmount(gmxPrice, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
+                    </span>
+                  }
                   content={
                     <>
                       <StatsTooltipRow
@@ -143,7 +147,7 @@ export function GmxCard({
             <div>
               <TooltipComponent
                 position="bottom-end"
-                handle={formatAmountHuman(totalGmxSupply, GMX_DECIMALS, false, 2)}
+                handle={<span className="numbers">{formatAmountHuman(totalGmxSupply, GMX_DECIMALS, false, 2)}</span>}
                 content={t`Total circulating supply of GMX tokens.`}
               />
             </div>
@@ -156,7 +160,7 @@ export function GmxCard({
               <TooltipComponent
                 position="bottom-end"
                 tooltipClassName="!max-w-[450px]"
-                handle={formattedTotalStakedGmxUsd}
+                handle={<span className="numbers">{formattedTotalStakedGmxUsd}</span>}
                 content={
                   <>
                     <StatsTooltipRow
@@ -205,7 +209,9 @@ export function GmxCard({
             <div className="label">
               <Trans>Market Cap</Trans>
             </div>
-            <div>{formatAmountHuman(gmxMarketCap, USD_DECIMALS, true, 2)}</div>
+            <div>
+              <span className="numbers">{formatAmountHuman(gmxMarketCap, USD_DECIMALS, true, 2)}</span>
+            </div>
           </div>
         </div>
       </div>

@@ -380,7 +380,8 @@ const GraphTooltip = ({ active, payload, formatValue }: any) => {
 
     return (
       <div className="rounded-4 bg-slate-600 p-10">
-        {formatDate(item.snapshotTimestamp.getTime() / 1000)}: {formatValue(item.value)}
+        {formatDate(item.snapshotTimestamp.getTime() / 1000)}:{" "}
+        <span className="numbers">{formatValue(item.value)}</span>
       </div>
     );
   }
@@ -399,7 +400,7 @@ const GraphValue = ({
 }) => {
   return (
     <div className="flex items-center gap-8">
-      <span className={cx("text-h2 font-medium", valueClassName)}>{value ?? "..."}</span>
+      <span className={cx("text-h2 font-medium numbers", valueClassName)}>{value ?? "..."}</span>
       <span className="text-body-small text-slate-100">{label}</span>
     </div>
   );

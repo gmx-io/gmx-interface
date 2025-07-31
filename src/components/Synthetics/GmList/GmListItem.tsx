@@ -213,7 +213,7 @@ export function GmListItem({
           />
           <SyntheticsInfoRow
             label={<PerformanceLabel />}
-            value={performance ? formatPerformanceBps(performance) : "..."}
+            value={performance ? <span className="numbers">{formatPerformanceBps(performance)}</span> : "..."}
           />
         </div>
       </div>
@@ -285,7 +285,9 @@ export function GmListItem({
         <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
       </TableTd>
 
-      <TableTd>{performance ? <div className="font-medium">{formatPerformanceBps(performance)}</div> : "..."}</TableTd>
+      <TableTd>
+        {performance ? <div className="font-medium numbers">{formatPerformanceBps(performance)}</div> : "..."}
+      </TableTd>
 
       <TableTd>
         <SnapshotGraph performanceSnapshots={performanceSnapshots ?? EMPTY_ARRAY} performance={performance ?? 0} />

@@ -316,20 +316,28 @@ const TableRow = memo(
         <>
           <StatsTooltipRow
             label={t`Mark Price`}
-            value={formatUsd(markPrice, {
-              displayDecimals: indexToken?.priceDecimals,
-              visualMultiplier: marketInfo?.indexToken.visualMultiplier,
-            })}
+            value={
+              <span className="numbers">
+                {formatUsd(markPrice, {
+                  displayDecimals: indexToken?.priceDecimals,
+                  visualMultiplier: marketInfo?.indexToken.visualMultiplier,
+                })}
+              </span>
+            }
             showDollar={false}
           />
           {shouldRenderPriceChangeToLiq && (
             <StatsTooltipRow
               label={t`Price change to Liq.`}
-              value={formatUsd(liquidationPrice - markPrice, {
-                maxThreshold: "1000000",
-                displayDecimals: indexToken?.priceDecimals,
-                visualMultiplier: marketInfo?.indexToken.visualMultiplier,
-              })}
+              value={
+                <span className="numbers">
+                  {formatUsd(liquidationPrice - markPrice, {
+                    maxThreshold: "1000000",
+                    displayDecimals: indexToken?.priceDecimals,
+                    visualMultiplier: marketInfo?.indexToken.visualMultiplier,
+                  })}
+                </span>
+              }
               showDollar={false}
             />
           )}
@@ -345,7 +353,7 @@ const TableRow = memo(
     return (
       <TableTr key={position.key} bordered={false}>
         <TableCell className="relative">
-          <span className={getWinnerRankClassname(rank)}>
+          <span className={cx("numbers", getWinnerRankClassname(rank))}>
             <RankInfo rank={rank} hasSomeCapital />
           </span>
         </TableCell>
@@ -355,7 +363,7 @@ const TableRow = memo(
         <TableCell>
           <TooltipWithPortal
             handle={
-              <span className={getSignedValueClassName(position.qualifyingPnl)}>
+              <span className={cx("numbers", getSignedValueClassName(position.qualifyingPnl))}>
                 {formatDelta(position.qualifyingPnl, { signed: true, prefix: "$" })}
               </span>
             }
@@ -390,7 +398,7 @@ const TableRow = memo(
             renderContent={renderPositionTooltip}
           />
         </TableCell>
-        <TableCell>
+        <TableCell className="numbers">
           {formatUsd(position.entryPrice, {
             displayDecimals: marketDecimals,
             visualMultiplier: marketInfo?.indexToken.visualMultiplier,
@@ -398,29 +406,33 @@ const TableRow = memo(
         </TableCell>
         <TableCell>
           <TooltipWithPortal
-            handle={formatUsd(position.sizeInUsd)}
+            handle={<span className="numbers">{formatUsd(position.sizeInUsd)}</span>}
             position={index > 9 ? "top-end" : "bottom-end"}
             renderContent={renderSizeTooltip}
             tooltipClassName="Table-SizeTooltip"
           />
         </TableCell>
-        <TableCell>{`${formatAmount(position.leverage, 4, 2)}x`}</TableCell>
+        <TableCell className="numbers">{`${formatAmount(position.leverage, 4, 2)}x`}</TableCell>
         <TableCell className="text-right">
           {liquidationPrice ? (
             <TooltipWithPortal
               position={index > 9 ? "top-end" : "bottom-end"}
               renderContent={renderLiquidationTooltip}
-              handle={formatUsd(liquidationPrice, {
-                maxThreshold: "1000000",
-                displayDecimals: marketDecimals,
-                visualMultiplier: marketInfo?.indexToken.visualMultiplier,
-              })}
+              handle={
+                <span className="numbers">
+                  {formatUsd(liquidationPrice, {
+                    maxThreshold: "1000000",
+                    displayDecimals: marketDecimals,
+                    visualMultiplier: marketInfo?.indexToken.visualMultiplier,
+                  })}
+                </span>
+              }
             />
           ) : (
             <TooltipWithPortal
               position={index > 9 ? "top-end" : "bottom-end"}
               renderContent={renderNaLiquidationTooltip}
-              handle={t`NA`}
+              handle={<span className="numbers">{t`NA`}</span>}
             />
           )}
         </TableCell>
@@ -462,7 +474,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   if (rank === null)
     return <TooltipWithPortal handleClassName="text-red-500" handle={t`NA`} renderContent={tooltipContent} />;
 
-  return <span>{rank}</span>;
+  return <span className="numbers">{rank}</span>;
 });
 
 const LeaderboardPnlTooltipContent = memo(({ position }: { position: LeaderboardPosition }) => {
@@ -485,7 +497,7 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
         label={t`Realized PnL`}
         showDollar={false}
         value={
-          <span className={getSignedValueClassName(realizedPnl)}>
+          <span className={cx("numbers", getSignedValueClassName(realizedPnl))}>
             {formatDelta(realizedPnl, { signed: true, prefix: "$" })}
           </span>
         }
@@ -494,7 +506,7 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
         label={t`Unrealized PnL`}
         showDollar={false}
         value={
-          <span className={getSignedValueClassName(unrealizedPnl)}>
+          <span className={cx("numbers", getSignedValueClassName(unrealizedPnl))}>
             {formatDelta(unrealizedPnl, { signed: true, prefix: "$" })}
           </span>
         }
@@ -507,7 +519,7 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
             label={t`Realized Fees`}
             showDollar={false}
             value={
-              <span className={getSignedValueClassName(realizedFees)}>
+              <span className={cx("numbers", getSignedValueClassName(realizedFees))}>
                 {formatDelta(realizedFees, { signed: true, prefix: "$" })}
               </span>
             }
@@ -516,7 +528,7 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
             label={t`Unrealized Fees`}
             showDollar={false}
             value={
-              <span className={getSignedValueClassName(unrealizedFees)}>
+              <span className={cx("numbers", getSignedValueClassName(unrealizedFees))}>
                 {formatDelta(unrealizedFees, { signed: true, prefix: "$" })}
               </span>
             }
@@ -526,7 +538,7 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
             label={t`Realized Price Impact`}
             showDollar={false}
             value={
-              <span className={getSignedValueClassName(position.realizedPriceImpact)}>
+              <span className={cx("numbers", getSignedValueClassName(position.realizedPriceImpact))}>
                 {formatDelta(position.realizedPriceImpact, { signed: true, prefix: "$" })}
               </span>
             }

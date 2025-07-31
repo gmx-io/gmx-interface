@@ -61,7 +61,7 @@ export function EscrowedGmxCard({
   }
 
   const gmxAvgAprText = useMemo(() => {
-    return `${formatAmount(processedData?.gmxAprTotal, 2, 2, true)}%`;
+    return <span className="numbers">{formatAmount(processedData?.gmxAprTotal, 2, 2, true)}%</span>;
   }, [processedData?.gmxAprTotal]);
 
   return (
@@ -80,7 +80,9 @@ export function EscrowedGmxCard({
           <div className="label">
             <Trans>Price</Trans>
           </div>
-          <div>${formatAmount(gmxPrice, USD_DECIMALS, 2, true)}</div>
+          <div>
+            <span className="numbers">${formatAmount(gmxPrice, USD_DECIMALS, 2, true)}</span>
+          </div>
         </div>
         <div className="App-card-row">
           <div className="label">

@@ -147,6 +147,12 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
       scrollbarGutter: "stable",
     },
   });
+
+  addUtilities({
+    ".numbers": {
+      letterSpacing: "0.06em",
+    },
+  });
 }
 
 /**

@@ -121,14 +121,16 @@ export default function Stats() {
         <Tooltip
           handle={
             <div className={className}>
-              ${formatAmountHuman(oi, 30)} / ${formatAmountHuman(maxGlobalSize, 30)}
+              <span className="numbers">${formatAmountHuman(oi, 30)}</span> /{" "}
+              <span className="numbers">${formatAmountHuman(maxGlobalSize, 30)}</span>
             </div>
           }
           renderContent={() => {
             return (
               <div>
                 <>
-                  Increase rate: ${formatAmountHuman(openInterestIncrement, 0)} / 30 minutes
+                  Increase rate: <span className="numbers">${formatAmountHuman(openInterestIncrement, 0)}</span> / 30
+                  minutes
                   <br />
                   Last increased at:{" "}
                   {caps?.globalSizeLastIncreasedAtLong
@@ -137,7 +139,7 @@ export default function Stats() {
                       })
                     : null}
                   <br />
-                  Max possible cap: ${formatAmountHuman(maxOpenInterest, 0)}
+                  Max possible cap: <span className="numbers">${formatAmountHuman(maxOpenInterest, 0)}</span>
                 </>
               </div>
             );
@@ -236,31 +238,36 @@ export default function Stats() {
                 <tr key={tokenInfo.address}>
                   <td>{tokenInfo.symbol}</td>
                   <td>
-                    <>${formatAmountHuman(tokenInfo.managedUsd, 30)}</>
+                    <span className="numbers">${formatAmountHuman(tokenInfo.managedUsd, 30)}</span>
                   </td>
                   <td className={maxPoolClassName}>
-                    ${formatAmountHuman(tokenInfo.usdgAmount, 18)} / ${formatAmountHuman(tokenInfo.maxUsdgAmount, 18)}
+                    <span className="numbers">${formatAmountHuman(tokenInfo.usdgAmount, 18)}</span> /{" "}
+                    <span className="numbers">${formatAmountHuman(tokenInfo.maxUsdgAmount, 18)}</span>
                     {shareBar(tokenInfo.usdgAmount, tokenInfo.maxUsdgAmount)}
                   </td>
                   <td>
-                    {formatAmountHuman(tokenInfo.bufferAmount, tokenInfo.decimals)} /{" "}
-                    {formatAmountHuman(tokenInfo.poolAmount, tokenInfo.decimals)}
+                    <span className="numbers">{formatAmountHuman(tokenInfo.bufferAmount, tokenInfo.decimals)}</span> /{" "}
+                    <span className="numbers">{formatAmountHuman(tokenInfo.poolAmount, tokenInfo.decimals)}</span>
                   </td>
                   <td>{renderOiCell(tokenInfo, true)}</td>
                   <td>{renderOiCell(tokenInfo, false)}</td>
                   <td className={weightClassName}>
-                    {formatAmountHuman(currentWeightBps, 2)} / {formatAmountHuman(targetWeightBps, 2)}%
+                    <span className="numbers">{formatAmountHuman(currentWeightBps, 2)}</span> /{" "}
+                    <span className="numbers">{formatAmountHuman(targetWeightBps, 2)}%</span>
                     {shareBar(weightDiffBps, targetWeightBps)}
                   </td>
                   <td>
-                    ${formatAmountHuman(tokenInfo.usdgAmount, 18)} / ${formatAmountHuman(targetUsdg, 18)}
+                    <span className="numbers">${formatAmountHuman(tokenInfo.usdgAmount, 18)}</span> /{" "}
+                    <span className="numbers">${formatAmountHuman(targetUsdg, 18)}</span>
                   </td>
                   <td>
-                    {formatAmount(
-                      tokenInfo.fundingRate === undefined ? undefined : tokenInfo.fundingRate * (24n * 365n),
-                      4,
-                      2
-                    ) + "%"}
+                    <span className="numbers">
+                      {formatAmount(
+                        tokenInfo.fundingRate === undefined ? undefined : tokenInfo.fundingRate * (24n * 365n),
+                        4,
+                        2
+                      ) + "%"}
+                    </span>
                   </td>
                 </tr>
               );

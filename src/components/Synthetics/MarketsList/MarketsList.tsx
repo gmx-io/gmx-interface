@@ -218,7 +218,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
           </div>
         </div>
       </TableTd>
-      <TableTd>
+      <TableTd className="numbers">
         {formatUsdPrice(stats.token.prices?.minPrice, {
           visualMultiplier: stats.token.visualMultiplier,
         })}
@@ -226,7 +226,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
       <TableTd>
         <TooltipWithPortal
           className="nowrap"
-          handle={formatAmountHuman(stats.totalPoolValue, USD_DECIMALS, true, 2)}
+          handle={<span className="numbers">{formatAmountHuman(stats.totalPoolValue, USD_DECIMALS, true, 2)}</span>}
           content={
             <>
               {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
@@ -240,7 +240,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                       <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>:
                     </div>
                   }
-                  value={formatAmountHuman(poolValueUsd, USD_DECIMALS, true, 2)}
+                  value={<span className="numbers">{formatAmountHuman(poolValueUsd, USD_DECIMALS, true, 2)}</span>}
                 />
               ))}
             </>
@@ -250,7 +250,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
       <TableTd>
         <TooltipWithPortal
           className="nowrap"
-          handle={formatAmountHuman(stats.totalMaxLiquidity, USD_DECIMALS, true, 2)}
+          handle={<span className="numbers">{formatAmountHuman(stats.totalMaxLiquidity, USD_DECIMALS, true, 2)}</span>}
           content={
             <>
               {stats.marketsStats.map(({ marketInfo, maxLiquidity }) => (
@@ -264,7 +264,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                       <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>:
                     </div>
                   }
-                  value={formatAmountHuman(maxLiquidity, USD_DECIMALS, true, 2)}
+                  value={<span className="numbers">{formatAmountHuman(maxLiquidity, USD_DECIMALS, true, 2)}</span>}
                 />
               ))}
             </>
@@ -274,13 +274,15 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
       <TableTd>
         <TooltipWithPortal
           tooltipClassName="MarketList-netfee-tooltip"
-          handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(netFeePerHourShort)}`}
+          handle={
+            <span className="numbers">{`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(netFeePerHourShort)}`}</span>
+          }
           maxAllowedWidth={510}
           position="bottom-end"
           renderContent={() => <NetFeeTooltip marketStats={stats.marketsStats} />}
         />
       </TableTd>
-      <TableTd>{formatAmount(stats.totalUtilization, 2, 2)}%</TableTd>
+      <TableTd className="numbers">{formatAmount(stats.totalUtilization, 2, 2)}%</TableTd>
     </TableTr>
   );
 }

@@ -336,9 +336,17 @@ const TableRow = memo(
       const winRate = `${((account.wins / (account.wins + account.losses)) * 100).toFixed(2)}%`;
       return (
         <div>
-          <StatsTooltipRow label={t`Total Trades`} showDollar={false} value={account.wins + account.losses} />
+          <StatsTooltipRow
+            label={t`Total Trades`}
+            showDollar={false}
+            value={<span className="numbers">{account.wins + account.losses}</span>}
+          />
           {account.wins + account.losses > 0 ? (
-            <StatsTooltipRow label={t`Win Rate`} showDollar={false} value={winRate} />
+            <StatsTooltipRow
+              label={t`Win Rate`}
+              showDollar={false}
+              value={<span className="numbers">{winRate}</span>}
+            />
           ) : null}
         </div>
       );
@@ -349,7 +357,7 @@ const TableRow = memo(
     return (
       <TableTr bordered={false} key={account.account} className={big ? "text-body-medium" : undefined}>
         <TableTd className={getCellClassname(rank, activeCompetition, pinned)}>
-          <span className={getWinnerRankClassname(rank, activeCompetition)}>
+          <span className={cx("numbers", getWinnerRankClassname(rank, activeCompetition))}>
             <RankInfo rank={rank} hasSomeCapital={account.totalQualifyingPnl !== 0n} />
           </span>
         </TableTd>
@@ -360,7 +368,7 @@ const TableRow = memo(
         <TableTd>
           <TooltipWithPortal
             handle={
-              <span className={getSignedValueClassName(account.totalQualifyingPnl)}>
+              <span className={cx("numbers", getSignedValueClassName(account.totalQualifyingPnl))}>
                 {formatDelta(account.totalQualifyingPnl, { signed: true, prefix: "$" })}
               </span>
             }
@@ -372,7 +380,7 @@ const TableRow = memo(
         <TableTd>
           <TooltipWithPortal
             handle={
-              <span className={getSignedValueClassName(account.pnlPercentage)}>
+              <span className={cx("numbers", getSignedValueClassName(account.pnlPercentage))}>
                 {formatDelta(account.pnlPercentage, { signed: true, postfix: "%", decimals: 2 })}
               </span>
             }
@@ -382,16 +390,16 @@ const TableRow = memo(
               <StatsTooltipRow
                 label={t`Capital Used`}
                 showDollar={false}
-                value={<span>{formatUsd(account.maxCapital)}</span>}
+                value={<span className="numbers">{formatUsd(account.maxCapital)}</span>}
               />
             )}
           />
         </TableTd>
-        <TableTd>{account.averageSize ? formatUsd(account.averageSize) : "$0.00"}</TableTd>
-        <TableTd>{`${formatAmount(account.averageLeverage ?? 0n, 4, 2)}x`}</TableTd>
-        <TableTd className="text-right">
+        <TableTd className="numbers">{account.averageSize ? formatUsd(account.averageSize) : "$0.00"}</TableTd>
+        <TableTd className="numbers">{`${formatAmount(account.averageLeverage ?? 0n, 4, 2)}x`}</TableTd>
+        <TableTd className="text-right numbers">
           <TooltipWithPortal
-            handle={`${account.wins}/${account.losses}`}
+            handle={<span className="numbers">{`${account.wins}/${account.losses}`}</span>}
             renderContent={renderWinsLossesTooltipContent}
           />
         </TableTd>
@@ -429,7 +437,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   if (rank === null)
     return <TooltipWithPortal handleClassName="text-red-500" handle={t`NA`} renderContent={tooltipContent} />;
 
-  return <span>{rank}</span>;
+  return <span className="numbers">{rank}</span>;
 });
 
 const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAccount }) => {
@@ -462,7 +470,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
         label={t`Realized PnL`}
         showDollar={false}
         value={
-          <span className={getSignedValueClassName(realizedPnl)}>
+          <span className={cx("numbers", getSignedValueClassName(realizedPnl))}>
             {formatDelta(realizedPnl, { signed: true, prefix: "$" })}
           </span>
         }
@@ -471,7 +479,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
         label={t`Unrealized PnL`}
         showDollar={false}
         value={
-          <span className={getSignedValueClassName(unrealizedPnl)}>
+          <span className={cx("numbers", getSignedValueClassName(unrealizedPnl))}>
             {formatDelta(unrealizedPnl, { signed: true, prefix: "$" })}
           </span>
         }
@@ -481,7 +489,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
           label={t`Start Unrealized PnL`}
           showDollar={false}
           value={
-            <span className={getSignedValueClassName(startUnrealizedPnl)}>
+            <span className={cx("numbers", getSignedValueClassName(startUnrealizedPnl))}>
               {formatDelta(startUnrealizedPnl, { signed: true, prefix: "$" })}
             </span>
           }
@@ -494,7 +502,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
             label={t`Realized Fees`}
             showDollar={false}
             value={
-              <span className={getSignedValueClassName(realizedFees)}>
+              <span className={cx("numbers", getSignedValueClassName(realizedFees))}>
                 {formatDelta(realizedFees, { signed: true, prefix: "$" })}
               </span>
             }
@@ -503,7 +511,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
             label={t`Unrealized Fees`}
             showDollar={false}
             value={
-              <span className={getSignedValueClassName(unrealizedFees)}>
+              <span className={cx("numbers", getSignedValueClassName(unrealizedFees))}>
                 {formatDelta(unrealizedFees, { signed: true, prefix: "$" })}
               </span>
             }
@@ -513,7 +521,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
               label={t`Start Unrealized Fees`}
               showDollar={false}
               value={
-                <span className={getSignedValueClassName(startUnrealizedFees)}>
+                <span className={cx("numbers", getSignedValueClassName(startUnrealizedFees))}>
                   {formatDelta(startUnrealizedFees, { signed: true, prefix: "$" })}
                 </span>
               }
@@ -524,7 +532,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
             label={t`Realized Price Impact`}
             showDollar={false}
             value={
-              <span className={getSignedValueClassName(account.realizedPriceImpact)}>
+              <span className={cx("numbers", getSignedValueClassName(account.realizedPriceImpact))}>
                 {formatDelta(account.realizedPriceImpact, { signed: true, prefix: "$" })}
               </span>
             }

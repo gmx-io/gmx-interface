@@ -557,7 +557,7 @@ function MarketListItem({
   const dayPriceDeltaComponent = useMemo(() => {
     return (
       <div
-        className={cx({
+        className={cx("numbers", {
           positive: dayPriceDelta?.deltaPercentage && dayPriceDelta?.deltaPercentage > 0,
           negative: dayPriceDelta?.deltaPercentage && dayPriceDelta?.deltaPercentage < 0,
         })}
@@ -590,7 +590,7 @@ function MarketListItem({
         </td>
         <td className={tdClassName}>
           <div className="flex flex-col gap-4">
-            <span>
+            <span className="numbers">
               {tokenData
                 ? formatUsdPrice(getMidPrice(tokenData.prices), { visualMultiplier: tokenData.visualMultiplier })
                 : "-"}
@@ -613,7 +613,7 @@ function MarketListItem({
           <TokenIcon className="ChartToken-list-icon mr-6" symbol={token.symbol} displaySize={16} importSize={24} />
           <span className={cx("flex flex-wrap items-center gap-6")}>
             <span className="-mt-2 leading-1">{getMarketIndexName({ indexToken: token, isSpotOnly: false })}</span>
-            <span className="rounded-4 bg-slate-700 px-4 pb-5 pt-3 leading-1">
+            <span className="rounded-4 bg-slate-700 px-4 pb-5 pt-3 leading-1 numbers">
               {maxLeverage ? `${maxLeverage}x` : "-"}
             </span>
           </span>
@@ -622,7 +622,7 @@ function MarketListItem({
 
       <td className={tdClassName}>
         <div className="flex flex-col gap-4">
-          <span>
+          <span className="numbers">
             {tokenData
               ? formatUsdPrice(getMidPrice(tokenData.prices), { visualMultiplier: tokenData.visualMultiplier })
               : "-"}
@@ -631,16 +631,18 @@ function MarketListItem({
         </div>
       </td>
       {!isMobile && <td className={tdClassName}>{dayPriceDeltaComponent}</td>}
-      <td className={tdClassName}>{dayVolume ? formatAmountHuman(dayVolume, USD_DECIMALS, true) : "-"}</td>
+      <td className={cx(tdClassName, "numbers")}>
+        {dayVolume ? formatAmountHuman(dayVolume, USD_DECIMALS, true) : "-"}
+      </td>
       {!isMobile && (
         <>
-          <td className={tdClassName}>
+          <td className={cx(tdClassName, "numbers")}>
             <span className="inline-flex items-center gap-6">
               <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
               {formatAmountHuman(openInterestLong ?? 0n, USD_DECIMALS, true)}
             </span>
           </td>
-          <td className={tdClassName}>
+          <td className={cx(tdClassName, "numbers")}>
             <span className="mb-2 inline-flex items-center gap-6">
               <ShortIcon width={12} className="relative top-1 opacity-70" />
               {formatAmountHuman(openInterestShort ?? 0n, USD_DECIMALS, true)}
@@ -651,13 +653,13 @@ function MarketListItem({
 
       {!isMobile ? (
         <>
-          <td className={cx(tdClassName, "group hover:bg-slate-800")} onClick={handleSelectLong}>
+          <td className={cx(tdClassName, "group numbers hover:bg-slate-800")} onClick={handleSelectLong}>
             <div className="inline-flex items-center justify-end gap-6">
               <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
               {formatAmountHuman(maxLongLiquidityPool?.maxLongLiquidity, USD_DECIMALS, true)}
             </div>
           </td>
-          <td className={cx(tdClassName, "group hover:bg-slate-800")} onClick={handleSelectShort}>
+          <td className={cx(tdClassName, "group numbers hover:bg-slate-800")} onClick={handleSelectShort}>
             <div className="inline-flex items-center justify-end gap-6">
               <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />
               {formatAmountHuman(maxShortLiquidityPool?.maxShortLiquidity, USD_DECIMALS, true)}

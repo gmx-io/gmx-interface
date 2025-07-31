@@ -43,12 +43,12 @@ function LineSpan({ span }: { span: TooltipString }) {
   }
 
   if (typeof span === "string") {
-    return <span>{span}</span>;
+    return <span className="numbers">{span}</span>;
   }
 
   return (
     <span
-      className={cx({
+      className={cx("numbers", {
         "text-red-500": span.state === "error",
         "text-green-500": span.state === "success",
         muted: span.state === "muted",
@@ -250,7 +250,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           />
         </TableTd>
         <TableTd>
-          <span className="font-medium">
+          <span className="font-medium numbers">
             {msg.swapFromTokenSymbol ? (
               <Trans>
                 {msg.swapFromTokenAmount}{" "}
@@ -267,13 +267,13 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           {msg.priceComment ? (
             <TooltipWithPortal
               tooltipClassName="TradeHistoryRow-price-tooltip-portal"
-              handle={<span className="font-medium">{msg.price}</span>}
+              handle={<span className="font-medium numbers">{msg.price}</span>}
               position="bottom-end"
               renderContent={renderPriceContent}
               maxAllowedWidth={PRICE_TOOLTIP_WIDTH}
             />
           ) : (
-            <span className="font-medium">{msg.price}</span>
+            <span className="font-medium numbers">{msg.price}</span>
           )}
         </TableTd>
         <TableTd className="TradeHistoryRow-pnl-fees">
@@ -281,7 +281,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             <span className="text-slate-100">-</span>
           ) : (
             <span
-              className={cx("font-medium", {
+              className={cx("font-medium numbers", {
                 "text-red-500": msg.pnlState === "error",
                 "text-green-500": msg.pnlState === "success",
               })}

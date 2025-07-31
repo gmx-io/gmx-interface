@@ -89,7 +89,7 @@ export function useChartHeaderFormattedValues() {
   const dayPriceDelta = useMemo(() => {
     return (
       <div
-        className={cx({
+        className={cx("numbers", {
           positive: dayPriceDeltaData?.deltaPercentage && dayPriceDeltaData?.deltaPercentage > 0,
           negative: dayPriceDeltaData?.deltaPercentage && dayPriceDeltaData?.deltaPercentage < 0,
         })}
@@ -112,7 +112,7 @@ export function useChartHeaderFormattedValues() {
       return [
         <>
           <LongIcon width={12} className="relative top-1 opacity-70" />
-          <span key="long-oi-value" className="whitespace-nowrap">
+          <span key="long-oi-value" className="whitespace-nowrap numbers">
             ${formatAmountHuman(info?.openInterestLong, USD_DECIMALS)}
           </span>
         </>,
@@ -128,7 +128,7 @@ export function useChartHeaderFormattedValues() {
       return [
         <>
           <ShortIcon width={12} className="relative opacity-70" />
-          <span key="short-oi-value" className="whitespace-nowrap">
+          <span key="short-oi-value" className="whitespace-nowrap numbers">
             ${formatAmountHuman(info?.openInterestShort, USD_DECIMALS)}
           </span>
         </>,
@@ -150,7 +150,7 @@ export function useChartHeaderFormattedValues() {
       <TooltipWithPortal
         styleType="none"
         handle={
-          <span className="flex items-center justify-center gap-4">
+          <span className="flex items-center justify-center gap-4 numbers">
             <LongIcon width={12} className="relative top-1 opacity-70" />${formatAmountHuman(liquidity, USD_DECIMALS)}
           </span>
         }
@@ -171,7 +171,7 @@ export function useChartHeaderFormattedValues() {
       <TooltipWithPortal
         styleType="none"
         handle={
-          <span className="flex items-center justify-center gap-4">
+          <span className="flex items-center justify-center gap-4 numbers">
             <ShortIcon width={12} className="relative opacity-70" />${formatAmountHuman(liquidity, USD_DECIMALS)}
           </span>
         }
@@ -189,7 +189,7 @@ export function useChartHeaderFormattedValues() {
     }
 
     return (
-      <span className={cx("flex flex-row items-center gap-4")}>
+      <span className={cx("flex flex-row items-center gap-4 numbers")}>
         <LongIcon width={12} className="relative top-1" />
         {formatRatePercentage(netRate)}
       </span>
@@ -204,7 +204,7 @@ export function useChartHeaderFormattedValues() {
     }
 
     return (
-      <span className={cx("flex flex-row items-center gap-4")}>
+      <span className={cx("flex flex-row items-center gap-4 numbers")}>
         <ShortIcon width={12} />
         {formatRatePercentage(netRate)}
       </span>
@@ -212,7 +212,11 @@ export function useChartHeaderFormattedValues() {
   }, [info]);
 
   const dailyVolume = useMemo(() => {
-    return dailyVolumesValue !== undefined ? `$${formatAmountHuman(dailyVolumesValue, USD_DECIMALS)}` : "...";
+    return dailyVolumesValue !== undefined ? (
+      <span className="numbers">${formatAmountHuman(dailyVolumesValue, USD_DECIMALS)}</span>
+    ) : (
+      "..."
+    );
   }, [dailyVolumesValue]);
 
   return {

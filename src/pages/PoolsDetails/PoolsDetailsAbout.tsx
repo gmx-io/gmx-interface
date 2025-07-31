@@ -213,7 +213,7 @@ const BuyableTooltipContent = ({
           decimals={marketInfo?.longToken?.decimals}
           usd={(mintableInfo?.longDepositCapacityUsd ?? 0n) + (mintableInfo?.shortDepositCapacityUsd ?? 0n)}
         />,
-        <span key="longTokenMaxValue-isSameCollaterals-ratio" className="text-body-small text-slate-100">
+        <span key="longTokenMaxValue-isSameCollaterals-ratio" className="text-body-small text-slate-100 numbers">
           ({poolUsd} / {maxPoolUsd})
         </span>,
       ];
@@ -230,7 +230,7 @@ const BuyableTooltipContent = ({
         usd={mintableInfo?.longDepositCapacityUsd}
         symbol={marketInfo?.longToken?.symbol}
       />,
-      <span key="longTokenMaxValue-ratio" className="text-body-small text-slate-100">
+      <span key="longTokenMaxValue-ratio" className="text-body-small text-slate-100 numbers">
         ({poolUsd} / {maxPoolUsd})
       </span>,
     ];
@@ -258,7 +258,7 @@ const BuyableTooltipContent = ({
         usd={mintableInfo?.shortDepositCapacityUsd}
         symbol={marketInfo?.shortToken?.symbol}
       />,
-      <span key="shortTokenMaxValue-ratio" className="text-body-small text-slate-100">
+      <span key="shortTokenMaxValue-ratio" className="text-body-small text-slate-100 numbers">
         ({poolUsd} / {maxPoolUsd})
       </span>,
     ];

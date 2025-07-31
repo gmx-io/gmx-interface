@@ -174,7 +174,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
         key={tokenInfo.id}
         showDollar={false}
         label={tokenInfo.symbol}
-        value={formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}
+        value={<span className="numbers">{formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}</span>}
       />
     ));
   }, [tokenIncentiveDetails]);
@@ -194,7 +194,11 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
       <TableTd data-label="Date">{formatDate(timestamp)}</TableTd>
       <TableTd data-label="Type">{type}</TableTd>
       <TableTd data-label="Amount">
-        <Tooltip handle={formatUsd(totalUsd)} className="whitespace-nowrap" renderContent={renderTotalTooltipContent} />
+        <Tooltip
+          handle={<span className="numbers">{formatUsd(totalUsd)}</span>}
+          className="whitespace-nowrap"
+          renderContent={renderTotalTooltipContent}
+        />
       </TableTd>
       <TableTd data-label="Transaction">
         <ExternalLink href={`${explorerURL}tx/${transactionHash}`}>

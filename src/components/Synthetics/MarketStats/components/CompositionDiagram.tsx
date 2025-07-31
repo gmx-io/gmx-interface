@@ -79,7 +79,7 @@ const TooltipContent = ({
       <div className="mr-2 h-8 w-8 shrink-0 grow rounded-full" style={dotStyle} />
       <TokenIcon symbol={symbol} displaySize={16} />
       <p className="text-body-medium">{name}:</p>
-      <p className="text-body-medium">{getCompositionPercentage(value, sum)}%</p>
+      <p className="text-body-medium numbers">{getCompositionPercentage(value, sum)}%</p>
     </div>
   );
 };

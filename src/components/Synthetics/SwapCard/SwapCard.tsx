@@ -51,19 +51,19 @@ export function SwapCard(p: Props) {
       <div className="flex flex-col gap-14">
         <SyntheticsInfoRow
           label={t`${fromToken?.symbol} Price`}
-          value={formatUsdPrice(fromToken?.prices?.minPrice) || "..."}
+          value={<span className="numbers">{formatUsdPrice(fromToken?.prices?.minPrice) || "..."}</span>}
         />
 
         <SyntheticsInfoRow
           label={t`${toToken?.symbol} Price`}
-          value={formatUsdPrice(toToken?.prices?.maxPrice) || "..."}
+          value={<span className="numbers">{formatUsdPrice(toToken?.prices?.maxPrice) || "..."}</span>}
         />
 
         <SyntheticsInfoRow
           label={t`Available Liquidity`}
           value={
             <Tooltip
-              handle={formatUsd(maxLiquidityUsd) || "..."}
+              handle={<span className="numbers">{formatUsd(maxLiquidityUsd) || "..."}</span>}
               position="left-start"
               content={
                 <StatsTooltipRow
@@ -86,7 +86,7 @@ export function SwapCard(p: Props) {
           }
         />
 
-        <SyntheticsInfoRow label={t`Price`} value={ratioStr} />
+        <SyntheticsInfoRow label={t`Price`} value={<span className="numbers">{ratioStr}</span>} />
       </div>
     </div>
   );

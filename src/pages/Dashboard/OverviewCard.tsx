@@ -336,13 +336,15 @@ export function OverviewCard({
           <span className="label">
             <Trans>Annualized:</Trans>
           </span>
-          <span className="amount">{formatAmountHuman(annualizedTotal, USD_DECIMALS, true, 2)}</span>
+          <span className="amount numbers">{formatAmountHuman(annualizedTotal, USD_DECIMALS, true, 2)}</span>
         </p>
         <p className="Tooltip-row">
           <span className="label">
             <Trans>Annualized Buy Pressure (BB&D):</Trans>
           </span>
-          <span className="amount">{formatAmountHuman(annualizedTotalBuyingPressure, USD_DECIMALS, true, 2)}</span>
+          <span className="amount numbers">
+            {formatAmountHuman(annualizedTotalBuyingPressure, USD_DECIMALS, true, 2)}
+          </span>
         </p>
         <p className="Tooltip-row !mt-16">
           <Trans>Annualized data based on the past 7 days.</Trans>
@@ -371,7 +373,7 @@ export function OverviewCard({
           </div>
           <div>
             <TooltipComponent
-              handle={formatAmountHuman(displayTvl, USD_DECIMALS, true, 2)}
+              handle={<span className="numbers">{formatAmountHuman(displayTvl, USD_DECIMALS, true, 2)}</span>}
               position="bottom-end"
               content={
                 <>
@@ -415,7 +417,7 @@ export function OverviewCard({
           </div>
           <div>
             <TooltipComponent
-              handle={formatAmountHuman(totalGlpTvl, USD_DECIMALS, true, 2)}
+              handle={<span className="numbers">{formatAmountHuman(totalGlpTvl, USD_DECIMALS, true, 2)}</span>}
               position="bottom-end"
               content={
                 <>
@@ -454,7 +456,7 @@ export function OverviewCard({
           </div>
           <div>
             <TooltipComponent
-              handle={formatAmountHuman(totalGmTvl, USD_DECIMALS, true, 2)}
+              handle={<span className="numbers">{formatAmountHuman(totalGmTvl, USD_DECIMALS, true, 2)}</span>}
               position="bottom-end"
               content={
                 <>
@@ -495,7 +497,7 @@ export function OverviewCard({
             <TooltipComponent
               position="bottom-end"
               className="whitespace-nowrap"
-              handle={formatAmountHuman(totalDailyVolume, USD_DECIMALS, true, 2)}
+              handle={<span className="numbers">{formatAmountHuman(totalDailyVolume, USD_DECIMALS, true, 2)}</span>}
               content={<ChainsStatsTooltipRow entries={dailyVolumeEntries} />}
             />
           </div>
@@ -508,7 +510,7 @@ export function OverviewCard({
             <TooltipComponent
               position="bottom-end"
               className="whitespace-nowrap"
-              handle={formatAmountHuman(totalOpenInterest, USD_DECIMALS, true, 2)}
+              handle={<span className="numbers">{formatAmountHuman(totalOpenInterest, USD_DECIMALS, true, 2)}</span>}
               content={<ChainsStatsTooltipRow entries={openInterestEntries} />}
             />
           </div>
@@ -521,7 +523,9 @@ export function OverviewCard({
             <TooltipComponent
               position="bottom-end"
               className="whitespace-nowrap"
-              handle={formatAmountHuman(totalLongPositionSizes, USD_DECIMALS, true, 2)}
+              handle={
+                <span className="numbers">{formatAmountHuman(totalLongPositionSizes, USD_DECIMALS, true, 2)}</span>
+              }
               content={<ChainsStatsTooltipRow entries={totalLongPositionSizesEntries} />}
             />
           </div>
@@ -534,7 +538,9 @@ export function OverviewCard({
             <TooltipComponent
               position="bottom-end"
               className="whitespace-nowrap"
-              handle={formatAmountHuman(totalShortPositionSizes, USD_DECIMALS, true, 2)}
+              handle={
+                <span className="numbers">{formatAmountHuman(totalShortPositionSizes, USD_DECIMALS, true, 2)}</span>
+              }
               content={<ChainsStatsTooltipRow entries={totalShortPositionSizesEntries} />}
             />
           </div>
@@ -547,7 +553,7 @@ export function OverviewCard({
             <TooltipComponent
               position="bottom-end"
               className="whitespace-nowrap"
-              handle={formatAmountHuman(totalEpochFeesUsd, USD_DECIMALS, true, 2)}
+              handle={<span className="numbers">{formatAmountHuman(totalEpochFeesUsd, USD_DECIMALS, true, 2)}</span>}
               content={<ChainsStatsTooltipRow entries={epochFeesEntries} subtotal={feesSubtotal} />}
             />
           </div>

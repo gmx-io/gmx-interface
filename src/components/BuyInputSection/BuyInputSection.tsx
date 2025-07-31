@@ -170,7 +170,7 @@ export default function BuyInputSection(props: Props) {
               onClick={handleTopRightClick}
             >
               {topRightLabel && <span className="text-slate-100">{topRightLabel}:</span>}
-              {topRightValue && <span>{topRightValue}</span>}
+              {topRightValue && <span className="numbers">{topRightValue}</span>}
               {onClickMax && maxButtonPosition === "top-right" && <MaxButton onClick={handleMaxClick} />}
             </div>
           )}
@@ -215,7 +215,7 @@ export default function BuyInputSection(props: Props) {
         {(bottomLeftValue || bottomRightValue || (onClickMax && maxButtonPosition === "bottom-right")) && (
           <div className="flex justify-between">
             <div
-              className={cx({
+              className={cx("numbers", {
                 "text-slate-100": isBottomLeftValueMuted,
                 "text-white": !isBottomLeftValueMuted,
               })}
@@ -230,7 +230,7 @@ export default function BuyInputSection(props: Props) {
               onClick={handleBottomRightClick}
             >
               {bottomRightLabel && <span className="text-slate-100">{bottomRightLabel}:</span>}
-              {bottomRightValue && <span>{bottomRightValue}</span>}
+              {bottomRightValue && <span className="numbers">{bottomRightValue}</span>}
 
               {onClickMax && maxButtonPosition === "bottom-right" && <MaxButton onClick={handleMaxClick} />}
             </div>

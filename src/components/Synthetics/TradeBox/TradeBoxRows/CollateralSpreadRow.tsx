@@ -29,7 +29,9 @@ export function CollateralSpreadRow() {
 
   return (
     <SyntheticsInfoRow label={t`Collateral Spread`} isWarning={collateralSpreadInfo?.isHigh}>
-      {collateralSpreadPercent !== undefined ? formatPercentage(collateralSpreadPercent) : "-"}
+      <span className="numbers">
+        {collateralSpreadPercent !== undefined ? formatPercentage(collateralSpreadPercent) : "-"}
+      </span>
     </SyntheticsInfoRow>
   );
 }

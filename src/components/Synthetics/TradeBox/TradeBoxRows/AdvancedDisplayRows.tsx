@@ -65,8 +65,8 @@ function LeverageInfoRows() {
         value={
           nextPositionValues?.nextLeverage && increaseAmounts?.sizeDeltaUsd && increaseAmounts?.sizeDeltaUsd > 0 ? (
             <ValueTransition
-              from={formatLeverage(selectedPosition?.leverage)}
-              to={formatLeverage(nextPositionValues?.nextLeverage) || "-"}
+              from={<span className="numbers">{formatLeverage(selectedPosition?.leverage)}</span>}
+              to={<span className="numbers">{formatLeverage(nextPositionValues?.nextLeverage) || "-"}</span>}
             />
           ) : (
             "-"
@@ -84,8 +84,8 @@ function LeverageInfoRows() {
     } else {
       leverageValue = (
         <ValueTransition
-          from={formatLeverage(selectedPosition.leverage)}
-          to={formatLeverage(nextPositionValues?.nextLeverage)}
+          from={<span className="numbers">{formatLeverage(selectedPosition.leverage)}</span>}
+          to={<span className="numbers">{formatLeverage(nextPositionValues?.nextLeverage)}</span>}
         />
       );
     }
@@ -116,8 +116,8 @@ function ExistingPositionInfoRows() {
           label={t`Size`}
           value={
             <ValueTransition
-              from={formatUsd(selectedPosition.sizeInUsd)!}
-              to={formatUsd(nextPositionValues?.nextSizeUsd)}
+              from={<span className="numbers">{formatUsd(selectedPosition.sizeInUsd)!}</span>}
+              to={<span className="numbers">{formatUsd(nextPositionValues?.nextSizeUsd)}</span>}
             />
           }
         />
@@ -126,8 +126,8 @@ function ExistingPositionInfoRows() {
         label={t`Collateral (${selectedPosition?.collateralToken?.symbol})`}
         value={
           <ValueTransition
-            from={formatUsd(selectedPosition?.collateralUsd)}
-            to={formatUsd(nextPositionValues?.nextCollateralUsd)}
+            from={<span className="numbers">{formatUsd(selectedPosition?.collateralUsd)}</span>}
+            to={<span className="numbers">{formatUsd(nextPositionValues?.nextCollateralUsd)}</span>}
           />
         }
       />

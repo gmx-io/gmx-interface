@@ -111,34 +111,49 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
             <>
               <StatsTooltipRow
                 label={t`V1 Arbitrum`}
-                value={getUSDValue(arbitrumData?.traderReferralTotalStats.v1Data.volume)}
+                value={
+                  <span className="numbers">{getUSDValue(arbitrumData?.traderReferralTotalStats.v1Data.volume)}</span>
+                }
               />
               <StatsTooltipRow
                 label={t`V1 Avalanche`}
-                value={getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.volume)}
+                value={
+                  <span className="numbers">{getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.volume)}</span>
+                }
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V1 Avalanche Fuji`}
-                  value={getUSDValue(fujiData?.traderReferralTotalStats.v1Data.volume)}
+                  value={
+                    <span className="numbers">{getUSDValue(fujiData?.traderReferralTotalStats.v1Data.volume)}</span>
+                  }
                 />
               )}
               <StatsTooltipRow
                 label={t`V2 Arbitrum`}
-                value={getUSDValue(arbitrumData?.traderReferralTotalStats.v2Data.volume)}
+                value={
+                  <span className="numbers">{getUSDValue(arbitrumData?.traderReferralTotalStats.v2Data.volume)}</span>
+                }
               />
               <StatsTooltipRow
                 label={t`V2 Avalanche`}
-                value={getUSDValue(avalancheData?.traderReferralTotalStats.v2Data.volume)}
+                value={
+                  <span className="numbers">{getUSDValue(avalancheData?.traderReferralTotalStats.v2Data.volume)}</span>
+                }
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V2 Avalanche Fuji`}
-                  value={getUSDValue(fujiData?.traderReferralTotalStats.v2Data.volume)}
+                  value={
+                    <span className="numbers">{getUSDValue(fujiData?.traderReferralTotalStats.v2Data.volume)}</span>
+                  }
                 />
               )}
               <div className="Tooltip-divider" />
-              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.traderVolume)} />
+              <StatsTooltipRow
+                label={t`Total`}
+                value={<span className="numbers">{getUSDValue(total?.traderVolume)}</span>}
+              />
             </>
           }
         />
@@ -150,34 +165,61 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
             <>
               <StatsTooltipRow
                 label={t`V1 Arbitrum`}
-                value={getUSDValue(arbitrumData?.traderReferralTotalStats.v1Data.discountUsd)}
+                value={
+                  <span className="numbers">
+                    {getUSDValue(arbitrumData?.traderReferralTotalStats.v1Data.discountUsd)}
+                  </span>
+                }
               />
               <StatsTooltipRow
                 label={t`V1 Avalanche`}
-                value={getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.discountUsd)}
+                value={
+                  <span className="numbers">
+                    {getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.discountUsd)}
+                  </span>
+                }
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V1 Avalanche Fuji`}
-                  value={getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.discountUsd)}
+                  value={
+                    <span className="numbers">
+                      {getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.discountUsd)}
+                    </span>
+                  }
                 />
               )}
               <StatsTooltipRow
                 label={t`V2 Arbitrum`}
-                value={getUSDValue(arbitrumData?.traderReferralTotalStats.v2Data.discountUsd)}
+                value={
+                  <span className="numbers">
+                    {getUSDValue(arbitrumData?.traderReferralTotalStats.v2Data.discountUsd)}
+                  </span>
+                }
               />
               <StatsTooltipRow
                 label={t`V2 Avalanche`}
-                value={getUSDValue(avalancheData?.traderReferralTotalStats.v2Data.discountUsd)}
+                value={
+                  <span className="numbers">
+                    {getUSDValue(avalancheData?.traderReferralTotalStats.v2Data.discountUsd)}
+                  </span>
+                }
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V2 Avalanche Fuji`}
-                  value={getUSDValue(fujiData?.traderReferralTotalStats.v2Data.discountUsd)}
+                  value={
+                    <span className="numbers">
+                      {getUSDValue(fujiData?.traderReferralTotalStats.v2Data.discountUsd)}
+                    </span>
+                  }
                 />
               )}
               <div className="Tooltip-divider" />
-              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.discountUsd)} />
+              <StatsTooltipRow
+                label={t`Total`}
+                value={<span className="numbers">{getUSDValue(total?.discountUsd)}</span>}
+              />
             </>
           }
         />
@@ -259,7 +301,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                             position="bottom"
                             className="whitespace-nowrap"
                             handle={
-                              <div className="Rebate-amount-value">
+                              <div className="Rebate-amount-value numbers">
                                 {tokensWithoutPrices.length > 0 && (
                                   <>
                                     <IoWarningOutline color="#ffba0e" size={16} />
@@ -291,12 +333,16 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                                       key={tokenAddress}
                                       showDollar={false}
                                       label={token.symbol}
-                                      value={formatBalanceAmount(
-                                        amountsByTokens[tokenAddress],
-                                        token.decimals,
-                                        undefined,
-                                        { isStable: token.isStable }
-                                      )}
+                                      value={
+                                        <span className="numbers">
+                                          {formatBalanceAmount(
+                                            amountsByTokens[tokenAddress],
+                                            token.decimals,
+                                            undefined,
+                                            { isStable: token.isStable }
+                                          )}
+                                        </span>
+                                      }
                                     />
                                   );
                                 })}

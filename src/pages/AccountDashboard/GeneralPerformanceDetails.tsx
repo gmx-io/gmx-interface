@@ -95,7 +95,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
   return (
     <TableTr key={row.bucketLabel} hoverable={false} bordered={false}>
       <TableTd>{_(bucketLabelMap[row.bucketLabel as keyof typeof bucketLabelMap])}</TableTd>
-      <TableTd>{formatUsd(row.volume, { maxThreshold: null })}</TableTd>
+      <TableTd className="numbers">{formatUsd(row.volume, { maxThreshold: null })}</TableTd>
       <TableTd>
         <TooltipWithPortal
           styleType="none"
@@ -114,25 +114,25 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
                   label={t`Realized PnL`}
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(row.realizedPnlUsd)}
-                  value={formatUsd(row.realizedPnlUsd)}
+                  value={<span className="numbers">{formatUsd(row.realizedPnlUsd)}</span>}
                 />
                 <StatsTooltipRow
                   label={t`Unrealized PnL`}
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(row.unrealizedPnlUsd)}
-                  value={formatUsd(row.unrealizedPnlUsd)}
+                  value={<span className="numbers">{formatUsd(row.unrealizedPnlUsd)}</span>}
                 />
                 <StatsTooltipRow
                   label={t`Start Unrealized PnL`}
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(row.startUnrealizedPnlUsd)}
-                  value={formatUsd(row.startUnrealizedPnlUsd)}
+                  value={<span className="numbers">{formatUsd(row.startUnrealizedPnlUsd)}</span>}
                 />
               </>
             )
           }
         >
-          {formatUsd(row.pnlUsd)}
+          <span className="numbers">{formatUsd(row.pnlUsd)}</span>
         </TooltipWithPortal>
       </TableTd>
       <TableTd>
@@ -144,22 +144,32 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
             "text-red-500 decoration-red-500/50": row.pnlBps < 0n,
             "decoration-gray-400": row.pnlBps === 0n,
           })}
-          content={<StatsTooltipRow label={t`Capital Used`} showDollar={false} value={formatUsd(row.usedCapitalUsd)} />}
+          content={
+            <StatsTooltipRow
+              label={t`Capital Used`}
+              showDollar={false}
+              value={<span className="numbers">{formatUsd(row.usedCapitalUsd)}</span>}
+            />
+          }
         >
-          {formatPercentage(row.pnlBps, { signed: true })}
+          <span className="numbers">{formatPercentage(row.pnlBps, { signed: true })}</span>
         </TooltipWithPortal>
       </TableTd>
       <TableTd>
         <TooltipWithPortal
-          handle={`${row.wins} / ${row.losses}`}
+          handle={<span className="numbers">{`${row.wins} / ${row.losses}`}</span>}
           content={
             <>
-              <StatsTooltipRow label={t`Total Trades`} showDollar={false} value={String(row.wins + row.losses)} />
+              <StatsTooltipRow
+                label={t`Total Trades`}
+                showDollar={false}
+                value={<span className="numbers">{String(row.wins + row.losses)}</span>}
+              />
               {row.winsLossesRatioBps !== undefined && (
                 <StatsTooltipRow
                   label={t`Win Rate`}
                   showDollar={false}
-                  value={formatPercentage(row.winsLossesRatioBps)}
+                  value={<span className="numbers">{formatPercentage(row.winsLossesRatioBps)}</span>}
                 />
               )}
             </>

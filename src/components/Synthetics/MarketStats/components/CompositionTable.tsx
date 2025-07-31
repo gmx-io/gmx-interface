@@ -115,14 +115,16 @@ const CompositionTableRow = ({ item, sum }: { item: CompositionItem; sum: bigint
       </TableTd>
       {item.type === "market" ? (
         <TableTd>
-          {formatAmountHuman(item.tvl[0], USD_DECIMALS, true, 1)}/
-          {formatAmountHuman(item.tvl[1], USD_DECIMALS, true, 1)}
+          <span className="numbers">{formatAmountHuman(item.tvl[0], USD_DECIMALS, true, 1)}</span>/
+          <span className="numbers">{formatAmountHuman(item.tvl[1], USD_DECIMALS, true, 1)}</span>
         </TableTd>
       ) : null}
       <TableTd className="!pr-20">
-        {item.type === "market"
-          ? `${getCompositionPercentage(item.gmBalanceUsd, sum)}%`
-          : `${getCompositionPercentage(item.amount, sum)}%`}
+        <span className="numbers">
+          {item.type === "market"
+            ? `${getCompositionPercentage(item.gmBalanceUsd, sum)}%`
+            : `${getCompositionPercentage(item.amount, sum)}%`}
+        </span>
       </TableTd>
     </TableTr>
   );

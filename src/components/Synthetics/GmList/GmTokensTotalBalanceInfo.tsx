@@ -60,7 +60,7 @@ export const GmTokensBalanceInfo = ({
             showDollar={false}
             label={t`Total Earned Fees`}
             textClassName={getPositiveOrNegativeClass(earnedTotal)}
-            value={formatDeltaUsd(earnedTotal, undefined)}
+            value={<span className="numbers">{formatDeltaUsd(earnedTotal, undefined)}</span>}
           />
         )}
         {earnedRecently !== undefined && (
@@ -68,7 +68,7 @@ export const GmTokensBalanceInfo = ({
             showDollar={false}
             textClassName={getPositiveOrNegativeClass(earnedRecently)}
             label={t`${daysConsidered}d Earned Fees`}
-            value={formatDeltaUsd(earnedRecently, undefined)}
+            value={<span className="numbers">{formatDeltaUsd(earnedRecently, undefined)}</span>}
           />
         )}
         <br />
@@ -122,13 +122,21 @@ export const GmTokensTotalBalanceInfo = ({
             <StatsTooltipRow
               label={t`Total Earned Fees`}
               textClassName={getPositiveOrNegativeClass(userEarnings.allMarkets.total)}
-              value={formatDeltaUsd(userEarnings.allMarkets.total, undefined, { showPlusForZero: true })}
+              value={
+                <span className="numbers">
+                  {formatDeltaUsd(userEarnings.allMarkets.total, undefined, { showPlusForZero: true })}
+                </span>
+              }
               showDollar={false}
             />
             <StatsTooltipRow
               label={t`${daysConsidered}d Earned Fees`}
               textClassName={getPositiveOrNegativeClass(userEarnings.allMarkets.recent)}
-              value={formatDeltaUsd(userEarnings.allMarkets.recent, undefined, { showPlusForZero: true })}
+              value={
+                <span className="numbers">
+                  {formatDeltaUsd(userEarnings.allMarkets.recent, undefined, { showPlusForZero: true })}
+                </span>
+              }
               showDollar={false}
             />
             {userEarnings.allMarkets.expected365d > 0 && (
@@ -136,7 +144,11 @@ export const GmTokensTotalBalanceInfo = ({
                 <StatsTooltipRow
                   label={t`365d Est. Fees`}
                   textClassName={getPositiveOrNegativeClass(userEarnings.allMarkets.expected365d)}
-                  value={formatDeltaUsd(userEarnings.allMarkets.expected365d, undefined, { showPlusForZero: true })}
+                  value={
+                    <span className="numbers">
+                      {formatDeltaUsd(userEarnings.allMarkets.expected365d, undefined, { showPlusForZero: true })}
+                    </span>
+                  }
                   showDollar={false}
                 />
                 <br />

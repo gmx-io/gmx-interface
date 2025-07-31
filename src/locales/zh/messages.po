@@ -659,6 +659,10 @@ msgstr "{typeString} 多头止损市场：当价格低于触发价格时 {0} 空
 msgid "Limit price above mark price"
 msgstr "限价高于标记价格"
 
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
+msgstr ""
+
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Create or Import a Wallet"
 msgstr "创建或导入钱包"
@@ -1181,10 +1185,6 @@ msgstr "请求提款"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "1inch"
 msgstr "1inch"
-
-#: src/pages/PoolsDetails/PoolsDetails.tsx
-#~ msgid "Composition"
-#~ msgstr "组成"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copied"
@@ -3487,11 +3487,6 @@ msgstr "社区主导的 Telegram 群组。"
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "{longShortText} {0} Open Interest"
 msgstr "{longShortText} {0} 开仓利息"
-
-#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
-#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
-#~ msgid "COMP."
-#~ msgstr "竞赛"
 
 #: src/pages/Stake/Vesting.tsx
 msgid "You have no GMX tokens to claim."
@@ -8511,10 +8506,6 @@ msgstr "出售中..."
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute as the max. allowed leverage is exceeded. Consider decreasing the order's leverage by editing and decreasing its size. <0>Read more</0>."
 msgstr "订单可能无法执行，因为超过最大允许杠杆。考虑通过编辑和减少其规模来降低订单杠杆。<0>阅读更多</0>。"
-
-#: src/components/Synthetics/TVChart/ChartHeader.tsx
-msgid "Open Interest ({longOIPercentage}/{shortOIPercentage})"
-msgstr "未平仓利息 ({longOIPercentage}/{shortOIPercentage})"
 
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionSeller.jsx

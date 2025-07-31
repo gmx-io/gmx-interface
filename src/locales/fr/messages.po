@@ -659,6 +659,10 @@ msgstr "{typeString} Long Stop Market : {0} une position short lorsque le prix e
 msgid "Limit price above mark price"
 msgstr "Prix limite au-dessus du prix mark"
 
+#: src/components/Synthetics/TVChart/ChartHeader.tsx
+msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
+msgstr ""
+
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Create or Import a Wallet"
 msgstr "Créer ou importer un portefeuille"
@@ -1181,10 +1185,6 @@ msgstr "Demander un retrait"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "1inch"
 msgstr "1inch"
-
-#: src/pages/PoolsDetails/PoolsDetails.tsx
-#~ msgid "Composition"
-#~ msgstr "Composition"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copied"
@@ -3487,11 +3487,6 @@ msgstr "Groupes Telegram gérés par la communauté."
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "{longShortText} {0} Open Interest"
 msgstr "Intérêt ouvert {longShortText} {0}"
-
-#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
-#: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
-#~ msgid "COMP."
-#~ msgstr "COMP."
 
 #: src/pages/Stake/Vesting.tsx
 msgid "You have no GMX tokens to claim."
@@ -8511,10 +8506,6 @@ msgstr "Vente en cours..."
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute as the max. allowed leverage is exceeded. Consider decreasing the order's leverage by editing and decreasing its size. <0>Read more</0>."
 msgstr "L'ordre pourrait ne pas s'exécuter car le levier max. autorisé est dépassé. Envisagez de diminuer le levier de l'ordre en modifiant et en réduisant sa taille. <0>En savoir plus</0>."
-
-#: src/components/Synthetics/TVChart/ChartHeader.tsx
-msgid "Open Interest ({longOIPercentage}/{shortOIPercentage})"
-msgstr "Intérêt ouvert ({longOIPercentage}/{shortOIPercentage})"
 
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionSeller.jsx

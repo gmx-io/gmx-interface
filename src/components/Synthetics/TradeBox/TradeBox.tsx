@@ -1038,12 +1038,16 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
                 <SyntheticsInfoRow
                   label={t`Receive`}
-                  value={formatTokenAmountWithUsd(
-                    decreaseAmounts.receiveTokenAmount,
-                    decreaseAmounts.receiveUsd,
-                    collateralToken?.symbol,
-                    collateralToken?.decimals
-                  )}
+                  value={
+                    <span className="numbers">
+                      {formatTokenAmountWithUsd(
+                        decreaseAmounts.receiveTokenAmount,
+                        decreaseAmounts.receiveUsd,
+                        collateralToken?.symbol,
+                        collateralToken?.decimals
+                      )}
+                    </span>
+                  }
                 />
               )}
 
@@ -1053,17 +1057,17 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   value={
                     <ValueTransition
                       from={
-                        <>
+                        <span className="numbers">
                           {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
                           {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
-                        </>
+                        </span>
                       }
                       to={
                         decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0 ? (
-                          <>
+                          <span className="numbers">
                             {formatDeltaUsd(nextPositionValues?.nextPnl)} (
                             {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
-                          </>
+                          </span>
                         ) : undefined
                       }
                     />
@@ -1076,13 +1080,15 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   value={
                     <ValueTransition
                       from={
-                        selectedPosition
-                          ? formatLiquidationPrice(selectedPosition?.liquidationPrice, {
+                        selectedPosition ? (
+                          <span className="numbers">
+                            {formatLiquidationPrice(selectedPosition?.liquidationPrice, {
                               visualMultiplier: toToken?.visualMultiplier,
-                            })
-                          : undefined
+                            })}
+                          </span>
+                        ) : undefined
                       }
-                      to={nextLiqPriceFormatted}
+                      to={<span className="numbers">{nextLiqPriceFormatted}</span>}
                     />
                   }
                 />

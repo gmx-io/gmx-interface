@@ -87,13 +87,17 @@ export function GmCard() {
             <div className="label">
               <Trans>Supply</Trans>
             </div>
-            <div>{formatAmountHuman(totalGMSupply?.amount, 18, false, 2)}</div>
+            <div>
+              <span className="numbers">{formatAmountHuman(totalGMSupply?.amount, 18, false, 2)}</span>
+            </div>
           </div>
           <div className="App-card-row">
             <div className="label">
               <Trans>Market Cap</Trans>
             </div>
-            <div>{formatAmountHuman(totalGMSupply?.usd, USD_DECIMALS, true, 2)}</div>
+            <div>
+              <span className="numbers">{formatAmountHuman(totalGMSupply?.usd, USD_DECIMALS, true, 2)}</span>
+            </div>
           </div>
         </div>
       </div>
