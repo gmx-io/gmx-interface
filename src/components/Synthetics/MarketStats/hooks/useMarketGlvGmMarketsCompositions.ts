@@ -12,8 +12,8 @@ import { useChainId } from "lib/chains";
 import { bigintToNumber } from "lib/numbers";
 
 export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: string) => {
-  const { chainId } = useChainId();
-  const { marketTokensData } = useMarketTokensData(chainId, {
+  const { chainId, srcChainId } = useChainId();
+  const { marketTokensData } = useMarketTokensData(chainId, srcChainId, {
     isDeposit,
   });
 

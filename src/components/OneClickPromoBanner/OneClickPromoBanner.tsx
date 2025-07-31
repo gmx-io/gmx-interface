@@ -44,7 +44,7 @@ export function OneClickPromoBanner({ openSettings, isShort }: { openSettings: (
       icon={<OneClickIcon className="-mt-6 ml-2" />}
       onClose={() => setIsOneClickPromoHidden(true)}
       onClick={onClickEnable}
-      className="min-w-[180px]"
+      className="min-w-max"
     >
       <div className="clickable ml-6 mr-8">
         {isShort ? <Trans>Try Express</Trans> : <Trans>Try Express Trading</Trans>}

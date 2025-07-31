@@ -1,8 +1,21 @@
 {
-  "_format": "hh-sol-artifact-1",
-  "contractName": "ReferralStorage",
-  "sourceName": "contracts/referrals/ReferralStorage.sol",
   "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "msgSender",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "role",
+          "type": "string"
+        }
+      ],
+      "name": "Unauthorized",
+      "type": "error"
+    },
     {
       "anonymous": false,
       "inputs": [
@@ -64,6 +77,25 @@
         }
       ],
       "name": "SetCodeOwner",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "prevGov",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "nextGov",
+          "type": "address"
+        }
+      ],
+      "name": "SetGov",
       "type": "event"
     },
     {
@@ -181,6 +213,13 @@
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "acceptOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "bytes32",
@@ -274,6 +313,19 @@
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "pendingGov",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "address",
@@ -338,19 +390,6 @@
         }
       ],
       "name": "setCodeOwner",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_gov",
-          "type": "address"
-        }
-      ],
-      "name": "setGov",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -500,8 +539,19 @@
       ],
       "stateMutability": "view",
       "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_newGov",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
     }
-  ],
-  "linkReferences": {},
-  "deployedLinkReferences": {}
+  ]
 }

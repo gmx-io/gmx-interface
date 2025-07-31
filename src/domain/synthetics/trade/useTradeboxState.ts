@@ -7,7 +7,9 @@ import set from "lodash/set";
 import values from "lodash/values";
 import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 
+import { ContractsChainId, SourceChainId } from "config/chains";
 import { getKeepLeverageKey, getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
+import { isSettlementChain } from "config/multichain";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { MarketInfo } from "domain/synthetics/markets";
@@ -68,6 +70,7 @@ type StoredTradeOptions = {
     };
   };
   advanced?: TradeboxAdvancedOptions;
+  isFromTokenGmxAccount: boolean;
 };
 
 const INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE: StoredTradeOptions = {
@@ -80,10 +83,11 @@ const INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE: StoredTradeOptions = {
     advancedDisplay: false,
     limitOrTPSL: false,
   },
+  isFromTokenGmxAccount: false,
 };
 
 export function useTradeboxState(
-  chainId: number,
+  chainId: ContractsChainId,
   enabled: boolean,
   p: {
     marketsData?: MarketsData;
@@ -91,11 +95,17 @@ export function useTradeboxState(
     positionsInfoData?: PositionsInfoData;
     ordersInfoData?: OrdersInfoData;
     tokensData?: TokensData;
+    srcChainId: SourceChainId | undefined;
   }
 ) {
-  const { marketsInfoData, marketsData, tokensData, positionsInfoData, ordersInfoData } = p;
+  const { marketsInfoData, marketsData, tokensData, positionsInfoData, ordersInfoData, srcChainId } = p;
 
-  const availableTokensOptions = useAvailableTokenOptions(chainId, { marketsInfoData, tokensData, marketsData });
+  const availableTokensOptions = useAvailableTokenOptions(chainId, {
+    marketsInfoData,
+    tokensData,
+    marketsData,
+    srcChainId,
+  });
 
   const availableSwapTokenAddresses = useMemo(
     () => availableTokensOptions.swapTokens.map((t) => t.address),
@@ -146,7 +156,7 @@ export function useTradeboxState(
     [chainId]
   );
 
-  const { savedAllowedSlippage, savedTwapNumberOfParts } = useSettings();
+  const { savedAllowedSlippage, savedTwapNumberOfParts, expressOrdersEnabled } = useSettings();
   const [syncedChainId, setSyncedChainId] = useState<number | undefined>(undefined);
   const [allowedSlippage, setAllowedSlippage] = useState<number>(savedAllowedSlippage);
 
@@ -211,13 +221,14 @@ export function useTradeboxState(
         let newState = typeof args === "function" ? args(oldState) : args;
 
         if (newState && (newState.tradeType === TradeType.Long || newState.tradeType === TradeType.Short)) {
-          newState = fallbackPositionTokens(
+          newState = fallbackPositionTokens({
             chainId,
-            oldState,
-            newState,
-            availableSwapTokenAddresses,
-            availableTokensOptions.sortedAllMarkets
-          );
+            srcChainId,
+            prevState: oldState,
+            nextState: newState,
+            allowedPayTokens: availableSwapTokenAddresses,
+            allowedMarkets: availableTokensOptions.sortedAllMarkets,
+          });
           newState = fallbackCollateralTokens(newState, marketsInfoData);
         }
 
@@ -225,11 +236,12 @@ export function useTradeboxState(
       });
     },
     [
-      chainId,
-      availableSwapTokenAddresses,
       setStoredOptionsOnChain,
-      marketsInfoData,
+      chainId,
+      srcChainId,
+      availableSwapTokenAddresses,
       availableTokensOptions.sortedAllMarkets,
+      marketsInfoData,
     ]
   );
 
@@ -265,6 +277,7 @@ export function useTradeboxState(
   const { isSwap } = tradeFlags;
 
   const fromTokenAddress = storedOptions?.tokens.fromTokenAddress;
+  const isFromTokenGmxAccount = Boolean(storedOptions?.isFromTokenGmxAccount);
 
   const toTokenAddress = tradeFlags.isSwap
     ? storedOptions?.tokens.swapToTokenAddress
@@ -363,6 +376,13 @@ export function useTradeboxState(
     [setStoredOptions]
   );
 
+  const setIsFromTokenGmxAccount = useCallback(
+    (isFromTokenGmxAccount: boolean) => {
+      setStoredOptions((oldState) => ({ ...oldState, isFromTokenGmxAccount }));
+    },
+    [setStoredOptions]
+  );
+
   const setToTokenAddress = useCallback(
     function setToTokenAddressCallback(tokenAddress: string, marketTokenAddress?: string, tradeType?: TradeType) {
       setStoredOptions(setToTokenAddressUpdaterBuilder(tradeType, tokenAddress, marketTokenAddress));
@@ -399,10 +419,11 @@ export function useTradeboxState(
     let swappedOptionsWithFallback;
 
     try {
-      swappedOptionsWithFallback = fallbackPositionTokens(
+      swappedOptionsWithFallback = fallbackPositionTokens({
         chainId,
-        storedOptions,
-        {
+        srcChainId,
+        prevState: storedOptions,
+        nextState: {
           ...storedOptions,
           tokens: {
             ...storedOptions.tokens,
@@ -410,9 +431,9 @@ export function useTradeboxState(
             indexTokenAddress: desirableToAddress,
           },
         },
-        availableSwapTokenAddresses,
-        availableTokensOptions.sortedAllMarkets
-      );
+        allowedPayTokens: availableSwapTokenAddresses,
+        allowedMarkets: availableTokensOptions.sortedAllMarkets,
+      });
     } catch (e) {
       /**
        * This fallback made in attempt to prevent crushes for those users who already have invalid stored options.
@@ -437,6 +458,7 @@ export function useTradeboxState(
     enabled,
     storedOptions,
     chainId,
+    srcChainId,
     availableSwapTokenAddresses,
     availableTokensOptions.sortedAllMarkets,
     setStoredOptionsOnChain,
@@ -634,10 +656,18 @@ export function useTradeboxState(
         return;
       }
 
-      const needFromUpdate = !swapTokens.find((t) => t.address === fromTokenAddress);
+      const needFromAddressUpdate = !swapTokens.find((t) => t.address === fromTokenAddress);
+      const canFromTokenBeGmxAccount = isSettlementChain(chainId);
+      const mustFromTokenBeGmxAccount = srcChainId !== undefined;
+      const needFromIsGmxAccountUpdate =
+        (!canFromTokenBeGmxAccount && isFromTokenGmxAccount) || (mustFromTokenBeGmxAccount && !isFromTokenGmxAccount);
 
-      if (needFromUpdate) {
+      if (needFromAddressUpdate) {
         setFromTokenAddress(swapTokens[0].address);
+      }
+
+      if (needFromIsGmxAccountUpdate) {
+        setIsFromTokenGmxAccount(srcChainId !== undefined);
       }
 
       const needToUpdate = !swapTokens.find((t) => t.address === toTokenAddress);
@@ -646,7 +676,19 @@ export function useTradeboxState(
         setToTokenAddress(swapTokens[0].address);
       }
     },
-    [enabled, fromTokenAddress, isSwap, setFromTokenAddress, setToTokenAddress, swapTokens, toTokenAddress]
+    [
+      chainId,
+      enabled,
+      fromTokenAddress,
+      isFromTokenGmxAccount,
+      isSwap,
+      setFromTokenAddress,
+      setIsFromTokenGmxAccount,
+      setToTokenAddress,
+      srcChainId,
+      swapTokens,
+      toTokenAddress,
+    ]
   );
 
   useEffect(() => {
@@ -665,6 +707,19 @@ export function useTradeboxState(
       };
     });
   }, [advancedOptions, setStoredOptionsOnChain, storedOptions.advanced]);
+
+  useEffect(
+    function fallbackIsFromTokenGmxAccount() {
+      if (expressOrdersEnabled) {
+        return;
+      }
+
+      if (isFromTokenGmxAccount && !expressOrdersEnabled) {
+        setIsFromTokenGmxAccount(false);
+      }
+    },
+    [expressOrdersEnabled, isFromTokenGmxAccount, setIsFromTokenGmxAccount]
+  );
 
   return {
     tradeType,
@@ -715,14 +770,14 @@ export function useTradeboxState(
     setLeverageInputValue: handleLeverageInputChange,
     leverageOption,
     setLeverageOption: handleLeverageSliderChange,
-    // isLeverageEnabled,
-    // setIsLeverageEnabled,
     keepLeverage,
     setKeepLeverage,
     advancedOptions,
     setAdvancedOptions,
     allowedSlippage,
     setAllowedSlippage,
+    isFromTokenGmxAccount,
+    setIsFromTokenGmxAccount,
     numberOfParts,
     setNumberOfParts,
     duration,
@@ -768,13 +823,21 @@ function setToTokenAddressUpdaterBuilder(
  * This function does not care about user's positions, fees, sizes, etc.
  * It must set any suitable token and market addresses combination in case it is not correct.
  */
-function fallbackPositionTokens(
-  chainId: number,
-  prevState: StoredTradeOptions,
-  nextState: StoredTradeOptions,
-  allowedPayTokens: string[],
-  allowedMarkets: MarketInfo[]
-) {
+function fallbackPositionTokens({
+  chainId,
+  srcChainId,
+  prevState,
+  nextState,
+  allowedPayTokens,
+  allowedMarkets,
+}: {
+  chainId: number;
+  srcChainId: SourceChainId | undefined;
+  prevState: StoredTradeOptions;
+  nextState: StoredTradeOptions;
+  allowedPayTokens: string[];
+  allowedMarkets: MarketInfo[];
+}) {
   const longOrShort = nextState.tradeType === TradeType.Long ? "long" : "short";
 
   const allowedPayTokensSet = new Set(allowedPayTokens);
@@ -790,6 +853,12 @@ function fallbackPositionTokens(
   const isNextIndexTokenValid = nextIndexTokenAddress && allowedIndexTokens.has(nextIndexTokenAddress);
   const isNextMarketTokenValid =
     nextMarketTokenAdress && marketsMap[nextMarketTokenAdress]?.marketTokenAddress === nextMarketTokenAdress;
+  const canFromTokenBeGmxAccount = isSettlementChain(chainId);
+  const mustFromTokenBeGmxAccount = srcChainId !== undefined;
+  const isNextPayTokenSourceValid = !(
+    (!canFromTokenBeGmxAccount && nextState.isFromTokenGmxAccount) ||
+    (mustFromTokenBeGmxAccount && !nextState.isFromTokenGmxAccount)
+  );
 
   const fallbackPayToken = (fallbackPayToken?: string) => {
     return produce(nextState, (draft) => {
@@ -818,7 +887,7 @@ function fallbackPositionTokens(
     return updater(nextState);
   };
 
-  if (isNextPayTokenValid && isNextIndexTokenValid && isNextMarketTokenValid) {
+  if (isNextPayTokenValid && isNextIndexTokenValid && isNextMarketTokenValid && isNextPayTokenSourceValid) {
     return nextState;
   }
 
@@ -868,6 +937,12 @@ function fallbackPositionTokens(
 
   if (!isNextMarketTokenValid) {
     nextState = fallbackIndexTokenAndMarket(nextState.tokens.indexTokenAddress);
+  }
+
+  if (!isNextPayTokenSourceValid) {
+    nextState = produce(nextState, (draft) => {
+      draft.isFromTokenGmxAccount = srcChainId !== undefined;
+    });
   }
 
   const isFallbackPayTokenValid =

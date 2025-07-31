@@ -14,7 +14,7 @@ import { debugLog, getIsMulticallBatchingDisabled } from "./debug";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import { executeMulticallWorker } from "./executeMulticallWorker";
 import type { ContractCallResult, MulticallError, MulticallRequestConfig, MulticallResult } from "./types";
-import { getCallId } from "./utils";
+import { getCallId, getContractAbiKey } from "./utils";
 
 type CallResultHandler = (
   destination: {
@@ -112,8 +112,9 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
 
   if (combinedResults) {
     for (const call of values(calls)) {
-      const callResult = combinedResults.data[call.callData.contractAddress]?.[call.callData.callId];
-      const callError = combinedResults.errors[call.callData.contractAddress]?.[call.callData.callId];
+      const contractAbiKey = getContractAbiKey(call.callData.contractAddress, call.callData.abiId);
+      const callResult = combinedResults.data[contractAbiKey]?.[call.callData.callId];
+      const callError = combinedResults.errors[contractAbiKey]?.[call.callData.callId];
 
       for (const handler of Object.values(call.handlers)) {
         for (const destination of handler.destinations) {
@@ -191,7 +192,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
       // There are two main reasons for this:
       // 1. Single token backed pools have many pairs with the same method signatures
       // 2. The majority of pools have USDC as the short token, which means they all have some common calls
-      const callId = getCallId(callGroup.contractAddress, call.methodName, call.params);
+      const callId = getCallId(callGroup.contractAddress, callGroup.abiId, call.methodName, call.params);
 
       if (!store.current[chainId]) {
         store.current[chainId] = {};
@@ -284,23 +285,23 @@ function combineCallResults(batchedResponsesOrFailures: (MulticallResult<any> | 
 
       acc.success = acc.success && result.success;
 
-      for (const [contractAddress, contractResult] of entries(result.errors)) {
-        if (acc.errors[contractAddress]) {
+      for (const [contractAbiKey, contractResult] of entries(result.errors)) {
+        if (acc.errors[contractAbiKey]) {
           for (const [callId, callResult] of entries(contractResult)) {
-            acc.errors[contractAddress][callId] = callResult;
+            acc.errors[contractAbiKey][callId] = callResult;
           }
         } else {
-          acc.errors[contractAddress] = contractResult;
+          acc.errors[contractAbiKey] = contractResult;
         }
       }
 
-      for (const [contractAddress, contractResult] of entries(result.data)) {
-        if (acc.data[contractAddress]) {
+      for (const [contractAbiKey, contractResult] of entries(result.data)) {
+        if (acc.data[contractAbiKey]) {
           for (const [callId, callResult] of entries(contractResult)) {
-            acc.data[contractAddress][callId] = callResult;
+            acc.data[contractAbiKey][callId] = callResult;
           }
         } else {
-          acc.data[contractAddress] = contractResult;
+          acc.data[contractAbiKey] = contractResult;
         }
       }
 
@@ -318,15 +319,16 @@ function getRequest(callEntries: [string, { callData: MulticallFetcherConfig[num
   const requests: MulticallRequestConfig<any> = {};
 
   for (const [callId, { callData }] of callEntries) {
-    if (!requests[callData.contractAddress]) {
-      requests[callData.contractAddress] = {
+    const contractAbiKey = getContractAbiKey(callData.contractAddress, callData.abiId);
+    if (!requests[contractAbiKey]) {
+      requests[contractAbiKey] = {
         abiId: callData.abiId,
         contractAddress: callData.contractAddress,
         calls: {},
       };
     }
 
-    requests[callData.contractAddress].calls[callId] = {
+    requests[contractAbiKey].calls[callId] = {
       methodName: callData.methodName,
       params: callData.params,
     };

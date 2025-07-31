@@ -1,11 +1,14 @@
 import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
+import { numberToHex } from "viem";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { callContract } from "lib/contracts";
 import { abis } from "sdk/abis";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
+import { IGlvDepositUtils } from "typechain-types/GlvRouter";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -18,9 +21,10 @@ interface CreateGlvDepositParams extends CreateDepositParams {
   glvAddress: string;
   marketTokenAmount: bigint;
   isMarketTokenDeposit: boolean;
+  isFirstDeposit: boolean;
 }
 
-export async function createGlvDepositTxn(chainId: number, signer: Signer, p: CreateGlvDepositParams) {
+export async function createGlvDepositTxn(chainId: ContractsChainId, signer: Signer, p: CreateGlvDepositParams) {
   const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), abis.GlvRouter, signer);
   const depositVaultAddress = getContract(chainId, "GlvVault");
 
@@ -71,21 +75,24 @@ export async function createGlvDepositTxn(chainId: number, signer: Signer, p: Cr
       method: "createGlvDeposit",
       params: [
         {
-          glv: p.glvAddress,
-          market: p.marketTokenAddress,
-          receiver: p.account,
-          callbackContract: ethers.ZeroAddress,
-          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
-          initialLongToken: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialLongTokenAddress,
-          initialShortToken: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialShortTokenAddress,
-          longTokenSwapPath: [],
-          shortTokenSwapPath: [],
+          addresses: {
+            glv: p.glvAddress,
+            market: p.marketTokenAddress,
+            receiver: p.isFirstDeposit ? numberToHex(1, { size: 20 }) : p.account,
+            callbackContract: ethers.ZeroAddress,
+            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
+            initialLongToken: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialLongTokenAddress,
+            initialShortToken: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialShortTokenAddress,
+            longTokenSwapPath: [],
+            shortTokenSwapPath: [],
+          },
           minGlvTokens: minGlvTokens,
           executionFee: p.executionFee,
           callbackGasLimit: 0n,
           shouldUnwrapNativeToken,
           isMarketTokenDeposit: p.isMarketTokenDeposit,
-        },
+          dataList: [],
+        } satisfies IGlvDepositUtils.CreateGlvDepositParamsStruct,
       ],
     },
   ];

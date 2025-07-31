@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useLatest } from "react-use";
 
 import { MarketInfo, useMarketsInfoRequest } from "domain/synthetics/markets";
-import { TokenData } from "domain/synthetics/tokens";
+import { TokenData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
@@ -48,8 +48,9 @@ export const usePriceImpactRebateGroups = (
   pageIndex: number,
   inclReviewed: boolean
 ): [hasMore: boolean, loadedPageIndex: number, data: RebateGroup[]] => {
-  const { chainId } = useChainId();
-  const { marketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
+  const { chainId, srcChainId } = useChainId();
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const marketsInfoDataLatest = useLatest(marketsInfoData);
   const tokensDataLatest = useLatest(tokensData);
   const [marketsReady, setMarketsReady] = useState(false);

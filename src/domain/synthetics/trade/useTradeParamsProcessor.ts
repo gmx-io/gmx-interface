@@ -2,7 +2,7 @@ import isMatch from "lodash/isMatch";
 import { useEffect, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, UiSupportedChain } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "config/chains";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxSetTradeConfig,
@@ -28,11 +28,12 @@ type TradeOptions = {
   collateralAddress?: string;
 };
 
-const validChainIds: Record<UiSupportedChain, true> = {
+const validChainIds: Record<ContractsChainId, true> = {
   [ARBITRUM]: true,
   [AVALANCHE]: true,
   [AVALANCHE_FUJI]: true,
   [BOTANIX]: true,
+  [ARBITRUM_SEPOLIA]: true,
 };
 
 export function useTradeParamsProcessor() {
@@ -142,7 +143,15 @@ export function useTradeParamsProcessor() {
       }
       setTimeout(() => {
         if (history.location.search) {
-          history.replace({ search: "" });
+          const query = new URLSearchParams(history.location.search);
+          query.delete("mode");
+          query.delete("from");
+          query.delete("to");
+          query.delete("market");
+          query.delete("pool");
+          query.delete("collateral");
+          query.delete("chainId");
+          history.replace({ search: query.toString() });
         }
       }, 2000);
     }
@@ -155,7 +164,15 @@ export function useTradeParamsProcessor() {
     if (history.location.search && !toToken && !pool) {
       setTimeout(() => {
         if (history.location.search) {
-          history.replace({ search: "" });
+          const query = new URLSearchParams(history.location.search);
+          query.delete("mode");
+          query.delete("from");
+          query.delete("to");
+          query.delete("market");
+          query.delete("pool");
+          query.delete("collateral");
+          query.delete("chainId");
+          history.replace({ search: query.toString() });
           prevTradeOptions.current = {};
         }
       }, 2000);
