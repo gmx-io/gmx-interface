@@ -19,6 +19,7 @@ import { abis } from "sdk/abis";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { CustomErrorName, ErrorData, TxErrorType, extendError, isContractError, parseError } from "sdk/utils/errors";
 import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import { isDevelopment } from "config/env";
 
 export type SimulateExecuteParams = {
   account: string;
@@ -50,6 +51,11 @@ export async function simulateExecution(chainId: number, p: SimulateExecuteParam
     provider = getFallbackProvider(chainId) ?? getProvider(undefined, chainId);
   } else {
     provider = getProvider(undefined, chainId);
+  }
+
+  if (isDevelopment()) {
+    // eslint-disable-next-line no-console
+    console.log("simulation rpc", provider._getConnection().url);
   }
 
   const multicallAddress = getContract(chainId, "Multicall");
