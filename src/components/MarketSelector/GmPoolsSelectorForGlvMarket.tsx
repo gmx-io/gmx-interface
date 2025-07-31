@@ -221,7 +221,7 @@ export function GmPoolsSelectorForGlvMarket({
           </div>
         }
       >
-        <div className="TokenSelector-tokens">
+        <div className="flex flex-col gap-8">
           {filteredOptions.map((option, marketIndex) => (
             <PoolListItem
               key={getGlvOrMarketAddress(option.glvOrMarketInfo)}

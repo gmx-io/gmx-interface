@@ -134,8 +134,17 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
 
   addUtilities({
     ".text-input-bg": {
-      background:
-        "linear-gradient(90deg, var(--color-slate-900) 0%, color-mix(in srgb, var(--color-slate-100) 40%, transparent) 100%)",
+      borderRadius: "8px",
+      background: "var(--color-slate-800)",
+    },
+    ".text-input-bg::placeholder": {
+      color: "var(--color-slate-100)",
+    },
+  });
+
+  addUtilities({
+    ".scrollbar-gutter-stable": {
+      scrollbarGutter: "stable",
     },
   });
 }

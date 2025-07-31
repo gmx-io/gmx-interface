@@ -220,7 +220,7 @@ export function PoolSelector({
           </div>
         }
       >
-        <div className="TokenSelector-tokens">
+        <div className="flex flex-col gap-8">
           {filteredOptions.map((option, marketIndex) => {
             return (
               <PoolListItem

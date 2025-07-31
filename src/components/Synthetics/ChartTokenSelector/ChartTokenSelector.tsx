@@ -75,40 +75,44 @@ export default function ChartTokenSelector(props: Props) {
       popoverPlacement="bottom-start"
       popoverYOffset={16}
       popoverXOffset={-8}
-      handleClassName={cx("rounded-8 bg-slate-800 py-10 pl-8 pr-12", { "mr-24": oneRowLabels === false })}
-      desktopPanelClassName="w-[880px] max-w-[100vw]"
-      chevronClassName={isMobile ? "-mt-24" : undefined}
+      handleClassName={cx("group rounded-8 bg-slate-800 py-10 pl-8 pr-12", { "mr-24": oneRowLabels === false })}
+      desktopPanelClassName={cx("max-w-[100vw]", { "w-[520px]": isSwap, "w-[880px]": !isSwap })}
+      chevronClassName={isMobile && !isSwap ? "-mt-20" : undefined}
       label={
         selectedToken ? (
           <span
-            className={cx("inline-flex whitespace-nowrap pl-0 text-[13px]", {
+            className={cx("inline-flex gap-6 whitespace-nowrap pl-0 text-[13px]", {
               "items-start": !oneRowLabels,
-              "items-center": oneRowLabels,
+              "items-center": oneRowLabels || isSwap,
             })}
           >
-            <TokenIcon
-              className="mr-6"
-              symbol={selectedToken.symbol}
-              displaySize={isMobile ? 32 : 20}
-              importSize={40}
-            />
+            {isSwap ? (
+              <div className="rounded-4 bg-blue-300 bg-opacity-[20%] px-7 py-4 text-blue-300">
+                <Trans>Swap</Trans>
+              </div>
+            ) : null}
+
+            <TokenIcon symbol={selectedToken.symbol} displaySize={isMobile ? 32 : 20} importSize={40} />
             <span
               className={cx("flex justify-start", {
-                "flex-col": !oneRowLabels,
-                "flex-row items-center": oneRowLabels,
+                "flex-col": !oneRowLabels && !isSwap,
+                "flex-row items-center": oneRowLabels || isSwap,
               })}
             >
-              <span className="text-[13px] font-medium">
+              <span className="text-[13px] font-medium group-hover:text-blue-300 group-active:text-blue-300">
                 {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
                 {selectedToken.symbol}/USD
               </span>
               {poolName && (
                 <span
-                  className={cx("text-body-small font-normal text-slate-100 group-hover:text-blue-300", {
-                    "ml-8": oneRowLabels,
-                  })}
+                  className={cx(
+                    "text-body-small mt-1 font-normal text-slate-100 group-hover:text-blue-300 group-active:text-blue-300",
+                    {
+                      "ml-8": oneRowLabels,
+                    }
+                  )}
                 >
-                  <span>{poolName}</span>
+                  <span>[{poolName}]</span>
                 </span>
               )}
             </span>
@@ -285,7 +289,6 @@ function MarketsList() {
               setValue={setSearchKeyword}
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
-              withClearButton
             />
             <ButtonRowScrollFadeContainer>
               <FavoriteTabs favoritesKey="chart-token-selector" />
@@ -305,7 +308,22 @@ function MarketsList() {
               <th className={cx(thClassName, isMobile ? "min-w-[18ch]" : "min-w-[28ch]")} colSpan={2}>
                 <Trans>Market</Trans>
               </th>
-              {!isSwap && (
+              {isSwap ? (
+                <>
+                  <th className={thClassName}>
+                    <Sorter {...getSorterProps("lastPrice")}>
+                      {isSmallMobile ? <Trans>PRICE</Trans> : <Trans>LAST PRICE</Trans>}
+                    </Sorter>
+                  </th>
+                  {!isMobile && (
+                    <th className={thClassName}>
+                      <Sorter {...getSorterProps("24hChange")}>
+                        <Trans>24H%</Trans>
+                      </Sorter>
+                    </th>
+                  )}
+                </>
+              ) : (
                 <>
                   <th className={thClassName}>
                     <Sorter {...getSorterProps("lastPrice")}>
@@ -552,31 +570,43 @@ function MarketListItem({
   if (isSwap) {
     return (
       <tr key={token.symbol} className="group/row cursor-pointer hover:bg-slate-800">
-        <td className={cx("pl-9 pr-9 text-center", rowVerticalPadding)} onClick={handleFavoriteClick}>
-          <FavoriteStar isFavorite={isFavorite} />
+        <td className={cx("pl-14 pr-6 text-center text-slate-100", rowVerticalPadding)} onClick={handleFavoriteClick}>
+          <FavoriteStar isFavorite={isFavorite} className="!h-12 !w-12" />
         </td>
         <td
           className={cx("text-body-medium w-full", rowVerticalPadding, rowHorizontalPadding)}
           onClick={handleSelectLargePosition}
         >
-          <span className="inline-flex items-center text-slate-100">
+          <span className="flex items-center gap-6">
             <TokenIcon
               className="ChartToken-list-icon -my-5 mr-8"
               symbol={token.symbol}
               displaySize={16}
               importSize={24}
             />
-            {token.symbol}
+            <span>{token.name}</span>
+            <span className="text-slate-100">{token.symbol}</span>
           </span>
         </td>
+        <td className={tdClassName}>
+          <div className="flex flex-col gap-4">
+            <span>
+              {tokenData
+                ? formatUsdPrice(getMidPrice(tokenData.prices), { visualMultiplier: tokenData.visualMultiplier })
+                : "-"}
+            </span>
+            {isMobile && <span>{dayPriceDeltaComponent}</span>}
+          </div>
+        </td>
+        {!isMobile && <td className={tdClassName}>{dayPriceDeltaComponent}</td>}
       </tr>
     );
   }
 
   return (
     <tr key={token.symbol} className="group/row cursor-pointer hover:bg-slate-800" onClick={handleSelectLargePosition}>
-      <td className={cx("w-16 px-12 text-center", rowVerticalPadding)} onClick={handleFavoriteClick}>
-        <FavoriteStar isFavorite={isFavorite} />
+      <td className={cx("px-12 text-center text-slate-100", rowVerticalPadding)} onClick={handleFavoriteClick}>
+        <FavoriteStar isFavorite={isFavorite} className="!h-12 !w-12" />
       </td>
       <td className={cx("pl-4 text-[13px] font-medium", rowVerticalPadding, isMobile ? "pr-2" : "pr-8")}>
         <div className={cx("flex", isMobile ? "items-start" : "items-center")}>

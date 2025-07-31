@@ -94,7 +94,7 @@ function NavIcons({ selectorLabel }) {
   return (
     <>
       <button>
-        <img className="size-24" src={icon} alt={selectorLabel} />
+        <img className="size-20" src={icon} alt={selectorLabel} />
       </button>
       <button className="max-md:hidden">
         <FiChevronDown size={20} />
@@ -108,7 +108,7 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, openSe
     <div className="relative flex items-center gap-8">
       <Menu>
         <Menu.Button as="div" data-qa="networks-dropdown-handle">
-          <Button variant="secondary" className="flex items-center gap-8 max-md:p-6">
+          <Button variant="secondary" className="flex h-40 items-center gap-8 max-md:h-32 max-md:p-6">
             <NavIcons selectorLabel={selectorLabel} />
           </Button>
         </Menu.Button>

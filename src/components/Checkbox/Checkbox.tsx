@@ -18,7 +18,7 @@ export default function Checkbox(props: Props) {
   const { isChecked, setIsChecked, disabled, className, asRow, isPartialChecked } = props;
 
   return (
-    <div
+    <button
       className={cx(
         "group flex items-center gap-8",
         { disabled, selected: isChecked, fullRow: asRow, noLabel: !props.children },
@@ -44,6 +44,6 @@ export default function Checkbox(props: Props) {
         {isPartialChecked && <TiMinus />}
       </span>
       {props.children && props.children}
-    </div>
+    </button>
   );
 }

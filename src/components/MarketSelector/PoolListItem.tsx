@@ -15,6 +15,7 @@ import { TokenData } from "domain/synthetics/tokens";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
+import Button from "components/Button/Button";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -85,7 +86,13 @@ export function PoolListItem(props: {
 
   return (
     <>
-      <div className={cx("TokenSelector-token-row", { disabled: state.disabled })} onClick={handleClick}>
+      <div
+        className={cx(
+          "text-body-medium flex w-full cursor-pointer items-center justify-between rounded-8 bg-slate-800  p-8 hover:bg-slate-700",
+          { disabled: state.disabled }
+        )}
+        onClick={handleClick}
+      >
         {state.disabled && state.message && (
           <TooltipWithPortal
             className="TokenSelector-tooltip"
@@ -138,7 +145,7 @@ export function PoolListItem(props: {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-8">
           <div className="Token-balance">
             {(showBalances && balance !== undefined && (
               <div className="Token-text">
@@ -155,12 +162,9 @@ export function PoolListItem(props: {
                 null}
             </span>
           </div>
-          <div
-            className="favorite-star flex cursor-pointer items-center rounded-4 p-9 text-16 hover:bg-cold-blue-700 active:bg-cold-blue-500"
-            onClick={handleFavoriteClick}
-          >
+          <Button variant="ghost" onClick={handleFavoriteClick}>
             <FavoriteStar isFavorite={isFavorite} />
-          </div>
+          </Button>
         </div>
       </div>
       {state.warning && <p className="mb-8 text-14 opacity-50 last:mb-0">{state.warning}</p>}

@@ -249,7 +249,6 @@ function MarketTokenSelectorInternal(props: Props) {
                 setValue={setSearchKeyword}
                 onKeyDown={handleKeyDown}
                 placeholder="Search Pool"
-                withClearButton
               />
               <FavoriteTabs favoritesKey="gm-token-selector" />
             </div>
@@ -506,7 +505,10 @@ function MarketTokenListItem({
 
   return (
     <tr key={market.address} className="group/row cursor-pointer hover:bg-slate-800">
-      <td className={cx("pr-4", rowVerticalPadding, isMobile ? "pl-8" : "pl-16")} onClick={handleFavoriteClick}>
+      <td
+        className={cx("pr-4 text-slate-100", rowVerticalPadding, isMobile ? "pl-8" : "pl-16")}
+        onClick={handleFavoriteClick}
+      >
         <FavoriteStar isFavorite={isFavorite} />
       </td>
       <td className={cx("pl-6", rowVerticalPadding, isMobile ? "pr-6" : "pr-16")} onClick={handleSelect}>

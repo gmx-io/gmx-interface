@@ -11,6 +11,7 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
   font-weight: 500;
   border: none;
   user-select: none;
+  min-height: 40px;
 
   &.center {
     justify-content: center;

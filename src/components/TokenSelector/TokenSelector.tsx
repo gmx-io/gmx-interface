@@ -251,7 +251,7 @@ export default function TokenSelector(props: Props) {
                 key={token.address}
                 data-qa={`${qa}-token-${token.symbol}`}
                 className={cx(
-                  "text-body-medium flex w-full items-center justify-between rounded-8 bg-slate-800 p-8  hover:bg-slate-700",
+                  "text-body-medium flex w-full cursor-pointer items-center justify-between rounded-8 bg-slate-800  p-8 hover:bg-slate-700",
                   { disabled: tokenState.disabled }
                 )}
                 onClick={() => !tokenState.disabled && onSelectToken(token)}

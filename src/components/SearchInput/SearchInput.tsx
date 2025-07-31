@@ -1,13 +1,13 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
 import React, { useCallback, useState } from "react";
-import { IoClose } from "react-icons/io5";
 import { useMedia } from "react-use";
 
 import { useOutsideClick } from "lib/useOutsideClick";
 
 import Button from "components/Button/Button";
 
+import CrossIconComponent from "img/cross.svg?react";
 import SearchIconComponent from "img/search.svg?react";
 
 type Props = {
@@ -22,7 +22,6 @@ type Props = {
    */
   autoFocus?: boolean;
   qa?: string;
-  withClearButton?: boolean;
 };
 
 export default function SearchInput({
@@ -34,7 +33,6 @@ export default function SearchInput({
   autoFocus,
   size = "m",
   qa = "token-search-input",
-  withClearButton = false,
 }: Props) {
   const isSmallerScreen = useMedia("(max-width: 700px)");
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -96,12 +94,21 @@ export default function SearchInput({
             "py-[8.5px] pl-34 pr-30 text-14 ": size === "s",
           })}
         />
+        {value && (
+          <Button
+            onClick={handleClear}
+            variant="ghost"
+            className="!absolute right-8 top-[50%] !h-24 !min-h-0 !w-24 -translate-y-1/2 !p-0"
+          >
+            <CrossIconComponent
+              className={cx("w-16", {
+                "text-slate-100": !isFocused,
+                "text-white": isFocused,
+              })}
+            />
+          </Button>
+        )}
       </div>
-      {withClearButton ? (
-        <Button variant="secondary" onClick={handleClear} className="!p-8">
-          <IoClose size={16} />
-        </Button>
-      ) : null}
     </div>
   );
 }
