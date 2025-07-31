@@ -76,6 +76,7 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
 
       if (!validationResult.isValid) {
         throw getInvalidPermitSignatureError({
+          isValid: validationResult.isValid,
           permit,
           recoveredAddress: validationResult.recoveredAddress,
           error: validationResult.error,

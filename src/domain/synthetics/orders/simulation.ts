@@ -1,7 +1,6 @@
-import { BaseContract } from "ethers";
+import { BaseContract, JsonRpcProvider } from "ethers";
 import { encodeFunctionData, withRetry } from "viem";
 
-import { getIsFlagEnabled } from "config/ab";
 import {
   getContract,
   getExchangeRouterContract,
@@ -13,21 +12,14 @@ import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { SignedTokenPermit } from "domain/tokens";
-import { getProvider } from "lib/rpc";
+import { getFallbackProvider, getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import {
-  CustomErrorName,
-  ErrorData,
-  extendError,
-  extractTxnError,
-  isContractError,
-  parseError,
-  TxErrorType,
-} from "sdk/utils/errors";
+import { CustomErrorName, ErrorData, TxErrorType, extendError, isContractError, parseError } from "sdk/utils/errors";
 import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import { isDevelopment } from "config/env";
 
 export type SimulateExecuteParams = {
   account: string;
@@ -52,7 +44,19 @@ export function isSimulationPassed(errorData: ErrorData) {
 }
 
 export async function simulateExecution(chainId: number, p: SimulateExecuteParams) {
-  const provider = getProvider(undefined, chainId);
+  let provider: JsonRpcProvider;
+
+  if (p.isExpress) {
+    // Use alchemy rpc for express transactions simulation to increase reliability
+    provider = getFallbackProvider(chainId) ?? getProvider(undefined, chainId);
+  } else {
+    provider = getProvider(undefined, chainId);
+  }
+
+  if (isDevelopment()) {
+    // eslint-disable-next-line no-console
+    console.log("simulation rpc", provider._getConnection().url);
+  }
 
   const multicallAddress = getContract(chainId, "Multicall");
 
@@ -103,18 +107,12 @@ export async function simulateExecution(chainId: number, p: SimulateExecuteParam
     };
 
     for (const permit of p.tokenPermits) {
-      let s = permit.s;
-
-      if (getIsFlagEnabled("testPermitIssueOnSimulation")) {
-        s = s.slice(0, -1) + "1";
-      }
-
       externalCalls.externalCallTargets.push(permit.token);
       externalCalls.externalCallDataList.push(
         encodeFunctionData({
           abi: abis.ERC20PermitInterface,
           functionName: "permit",
-          args: [permit.owner, permit.spender, permit.value, permit.deadline, permit.v, permit.r, s],
+          args: [permit.owner, permit.spender, permit.value, permit.deadline, permit.v, permit.r, permit.s],
         })
       );
     }
@@ -189,8 +187,14 @@ export async function simulateExecution(chainId: number, p: SimulateExecuteParam
         retryCount: 2,
         delay: 200,
         shouldRetry: ({ error }) => {
-          const [message] = extractTxnError(error);
-          return message?.includes("unsupported block number") ?? false;
+          const errorData = parseError(error);
+          return (
+            errorData?.errorMessage?.includes("unsupported block number") ||
+            errorData?.errorMessage?.toLowerCase().includes("failed to fetch") ||
+            errorData?.errorMessage?.toLowerCase().includes("load failed") ||
+            errorData?.errorMessage?.toLowerCase().includes("an error has occurred") ||
+            false
+          );
         },
       }
     );

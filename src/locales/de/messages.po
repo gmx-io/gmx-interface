@@ -366,6 +366,10 @@ msgstr ""
 msgid "Stop market price above mark price"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>{suggestText}"
+msgstr ""
+
 #: src/pages/Stake/StakeModal.tsx
 msgid "Pending {stakingTokenSymbol} approval"
 msgstr ""
@@ -7628,8 +7632,8 @@ msgid "Referral code submitted!"
 msgstr ""
 
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please <3>enable Express trading</3> under settings, which should offer a better experience.<4/><5/>Otherwise, try increasing the max network fee buffer to {0} in <6>settings</6>."
-msgstr ""
+#~ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please <3>enable Express trading</3> under settings, which should offer a better experience.<4/><5/>Otherwise, try increasing the max network fee buffer to {0} in <6>settings</6>."
+#~ msgstr ""
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "APY"
