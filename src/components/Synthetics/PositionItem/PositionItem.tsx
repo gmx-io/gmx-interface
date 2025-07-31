@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
-import { AiOutlineEdit } from "react-icons/ai";
 import { FaAngleRight } from "react-icons/fa";
 import { ImSpinner2 } from "react-icons/im";
 import { MdClose } from "react-icons/md";
@@ -47,6 +46,8 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import EditIcon from "img/ic_edit.svg?react";
 
 import { TwapOrderProgress } from "../OrderItem/OrderItem";
 
@@ -278,7 +279,7 @@ export function PositionItem(p: Props) {
 
           {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
             <span className="edit-icon" onClick={p.onEditCollateralClick} data-qa="position-edit-button">
-              <AiOutlineEdit className="text-slate-100" fontSize={16} />
+              <EditIcon className="text-slate-100" width={16} height={16} />
             </span>
           )}
         </div>
@@ -862,7 +863,7 @@ function PositionItemOrder({
             className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
             onClick={handleEditClick}
           >
-            <AiOutlineEdit fontSize={16} />
+            <EditIcon width={16} height={16} />
           </Button>
         )}
         {disabledCancelMarketOrderMessage ? (

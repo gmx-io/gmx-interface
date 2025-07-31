@@ -128,9 +128,9 @@
 .Tooltip-underline {
   text-decoration: underline;
   text-decoration-style: dashed;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
-  text-decoration-color: var(--color-gray-400);
+  text-decoration-thickness: 0.5px;
+  text-underline-offset: 1.75px;
+  text-decoration-color: var(--color-slate-100);
 }
 
 .Tooltip-divider {

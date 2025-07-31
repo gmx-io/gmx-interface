@@ -47,14 +47,14 @@ function TokenIcon({ className, symbol, displaySize, importSize = 24, badge }: P
       sub = (
         <span className="absolute -bottom-8 -right-8 flex flex-row items-center justify-center !text-white">
           <img
-            className="z-20 -mr-10 rounded-[100%] border border-slate-800"
+            className="z-20 -mr-10 rounded-[100%] border-2 border-slate-900"
             src={importImage(getIconUrlPath(badge[0], 24))}
             alt={badge[0]}
             width={20}
             height={20}
           />
           <img
-            className="z-10 rounded-[100%] border border-slate-800"
+            className="z-10 rounded-[100%] border-2 border-slate-900"
             src={importImage(getIconUrlPath(badge[1], 24))}
             alt={badge[0]}
             width={20}

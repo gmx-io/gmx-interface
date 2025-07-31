@@ -1,15 +1,16 @@
 import { autoUpdate, useFloating, flip, offset, shift, FloatingPortal } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
-import "./PositionDropdown.css";
-import { AiOutlineEdit } from "react-icons/ai";
 import { BiSelectMultiple } from "react-icons/bi";
 import { HiDotsVertical } from "react-icons/hi";
 import { RiShareBoxFill } from "react-icons/ri";
 
+import EditIcon from "img/ic_edit.svg?react";
 import increaseLimit from "img/ic_increaselimit_16.svg";
 import increaseMarket from "img/ic_increasemarket_16.svg";
 import triggerClose from "img/ic_triggerclose_16.svg";
+
+import "./PositionDropdown.css";
 
 type Props = {
   handleEditCollateral?: () => void;
@@ -63,7 +64,7 @@ export default function PositionDropdown({
           {handleEditCollateral && (
             <Menu.Item>
               <div className="menu-item" onClick={handleEditCollateral}>
-                <AiOutlineEdit fontSize={16} />
+                <EditIcon width={16} height={16} />
                 <p>
                   <Trans>Edit Collateral</Trans>
                 </p>
