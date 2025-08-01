@@ -120,7 +120,7 @@ describe("getPositionNetValue", () => {
       priceImpactDiffUsd: 50n,
     });
     // netValue = 1000n - (10n+15n) -5n -20n + 200n -100n + 50n = 1100n
-    expect(result).toBe(1100);
+    expect(result).toBe(1100n);
   });
 });
 
