@@ -22,6 +22,7 @@ import { useDepositWithdrawalTransactions } from "./useDepositWithdrawalTransact
 import { useTokensToApprove } from "./useTokensToApprove";
 import { getGmSwapBoxApproveTokenSymbol } from "../getGmSwapBoxApproveToken";
 import { Operation } from "../types";
+import type { GmOrGlvPaySource } from "./types";
 
 interface Props {
   amounts: ReturnType<typeof useDepositWithdrawalAmounts>;
@@ -48,6 +49,8 @@ interface Props {
   marketsInfoData?: MarketsInfoData;
   glvAndMarketsInfoData: GlvAndGmMarketsInfoData;
   selectedMarketInfoForGlv?: MarketInfo;
+  paySource: GmOrGlvPaySource;
+  isSendBackToSourceChain: boolean;
 }
 
 const processingTextMap = {
@@ -90,6 +93,8 @@ export const useGmSwapSubmitState = ({
   glvInfo,
   isMarketTokenDeposit,
   glvAndMarketsInfoData,
+  paySource,
+  isSendBackToSourceChain,
 }: Props): SubmitButtonState => {
   const chainId = useSelector(selectChainId);
   const hasOutdatedUi = useHasOutdatedUi();
@@ -129,6 +134,8 @@ export const useGmSwapSubmitState = ({
     selectedMarketInfoForGlv,
     marketTokenUsd,
     isFirstBuy,
+    paySource,
+    isSendBackToSourceChain,
   });
 
   const onConnectAccount = useCallback(() => {

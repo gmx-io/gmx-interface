@@ -48,7 +48,7 @@ export {
   usdcSgPoolSepolia,
 };
 
-type MultichainTokenMapping = Record<
+export type MultichainTokenMapping = Record<
   // settlement chain id
   SettlementChainId,
   Record<

@@ -284,9 +284,11 @@ export function getArbitraryRelayParamsAndPayload({
 export function useArbitraryRelayParamsAndPayload({
   expressTransactionBuilder,
   isGmxAccount,
+  enabled = true,
 }: {
   expressTransactionBuilder: ExpressTransactionBuilder | undefined;
   isGmxAccount: boolean;
+  enabled: boolean;
 }): AsyncResult<ExpressTxnParams | undefined> {
   const account = useSelector(selectAccount);
   const chainId = useSelector(selectChainId);
@@ -360,6 +362,7 @@ export function useArbitraryRelayParamsAndPayload({
       throttleMs: 2500,
       withLoading: true,
       params:
+        enabled &&
         account !== undefined &&
         provider !== undefined &&
         globalExpressParams !== undefined &&
