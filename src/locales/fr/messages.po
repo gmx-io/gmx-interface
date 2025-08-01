@@ -4172,6 +4172,10 @@ msgstr "Lire plus."
 msgid "PnL Analysis"
 msgstr "Analyse PnL"
 
+#: src/components/Synthetics/GmList/GmListItem.tsx
+msgid "View Details"
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
 msgstr "Aucun chemin d'échange disponible. <0>Échanger {0} contre {swapToTokenSymbol}</0>, puis contre {1}."

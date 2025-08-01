@@ -4172,6 +4172,10 @@ msgstr "더 읽기."
 msgid "PnL Analysis"
 msgstr "PnL 분석"
 
+#: src/components/Synthetics/GmList/GmListItem.tsx
+msgid "View Details"
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
 msgstr "스왑 경로 없음. <0>{0}을 {swapToTokenSymbol}로 스왑</0>, 그 다음 {1}로."

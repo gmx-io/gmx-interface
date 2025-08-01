@@ -38,7 +38,6 @@ import { useUpdateTokens } from "./useUpdateTokens";
 import { GmFees } from "../../GmFees/GmFees";
 import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
 import { SelectedPool } from "../SelectedPool";
-import { Swap } from "../Swap";
 
 export function GmShiftBox({
   selectedGlvOrMarketAddress,
@@ -269,7 +268,6 @@ export function GmShiftBox({
                 />
               </BuyInputSection>
               <div>
-                <Swap />
                 <BuyInputSection
                   topLeftLabel={t`Receive`}
                   bottomLeftValue={toTokenShowDollarAmount}

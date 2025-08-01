@@ -13,6 +13,10 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
   user-select: none;
   min-height: 40px;
 
+  @media (max-width: 768px) {
+    min-height: 32px;
+  }
+
   &.center {
     justify-content: center;
   }

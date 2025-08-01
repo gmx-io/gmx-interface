@@ -45,7 +45,6 @@ import { useGmSwapSubmitState } from "./useGmSwapSubmitState";
 import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
 import { useUpdateTokens } from "./useUpdateTokens";
 import type { GmSwapBoxProps } from "../GmSwapBox";
-import { Swap } from "../Swap";
 import { Mode, Operation } from "../types";
 import { InfoRows } from "./InfoRows";
 import { GmSwapBoxPoolRow } from "../GmSwapBoxPoolRow";
@@ -766,8 +765,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
               )}
 
               <div className={cx("flex", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
-                <Swap />
-
                 <BuyInputSection
                   topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
                   bottomLeftValue={formatUsd(receiveTokenUsd ?? 0n)}

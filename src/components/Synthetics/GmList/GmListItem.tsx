@@ -1,7 +1,6 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import React, { useCallback } from "react";
-import { FaChevronRight } from "react-icons/fa6";
 import { HiDotsVertical } from "react-icons/hi";
 import { useHistory } from "react-router-dom";
 import { Area, AreaChart } from "recharts";
@@ -32,6 +31,7 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import Button from "components/Button/Button";
+import ButtonLink from "components/Button/ButtonLink";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -135,7 +135,7 @@ export function GmListItem({
   if (isMobile) {
     return (
       <div className="flex flex-col gap-4 rounded-8 bg-fill-surfaceElevated50 p-12">
-        <div className="flex flex-wrap items-center pb-14" onClick={handleMobileItemClick}>
+        <div className="flex flex-wrap items-center pb-8" onClick={handleMobileItemClick}>
           <div className="flex items-center">
             <div className="mr-12 flex shrink-0 items-center">
               <TokenIcon
@@ -147,10 +147,12 @@ export function GmListItem({
               />
             </div>
             <div className="flex flex-col">
-              <div className="flex text-16">
-                {isGlv
-                  ? getGlvDisplayName(marketOrGlv)
-                  : getMarketIndexName({ indexToken, isSpotOnly: marketOrGlv.isSpotOnly })}
+              <div className="text-body-medium flex">
+                <span className="font-medium">
+                  {isGlv
+                    ? getGlvDisplayName(marketOrGlv)
+                    : getMarketIndexName({ indexToken, isSpotOnly: marketOrGlv.isSpotOnly })}
+                </span>
 
                 <div className="inline-block">
                   <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
@@ -162,22 +164,15 @@ export function GmListItem({
             </div>
           </div>
           <div className="ml-auto flex items-center gap-8">
-            <div className="py-12">
-              <SnapshotGraph
-                performanceSnapshots={performanceSnapshots ?? EMPTY_ARRAY}
-                performance={performance ?? 0}
-              />
-            </div>
+            <SnapshotGraph performanceSnapshots={performanceSnapshots ?? EMPTY_ARRAY} performance={performance ?? 0} />
 
             {onFavoriteClick ? (
-              <Button variant="secondary" className="!p-8" onClick={handleFavoriteClick}>
-                <FavoriteStar isFavorite={isFavorite} activeClassName="!text-white" />
-              </Button>
-            ) : (
-              <Button variant="secondary" className="!p-10" onClick={handleMobileItemClick}>
-                <FaChevronRight className="size-12" />
-              </Button>
-            )}
+              <div>
+                <Button variant="secondary" className="shrink-0" onClick={handleFavoriteClick}>
+                  <FavoriteStar isFavorite={isFavorite} activeClassName="!text-white" />
+                </Button>
+              </div>
+            ) : null}
           </div>
         </div>
 
@@ -216,6 +211,13 @@ export function GmListItem({
             value={performance ? <span className="numbers">{formatPerformanceBps(performance)}</span> : "..."}
           />
         </div>
+
+        <ButtonLink
+          className="mt-12 bg-slate-800 p-8 text-center font-medium text-slate-100 hover:bg-slate-700 hover:text-white active:bg-slate-700 active:text-white"
+          to={`/pools/details?market=${marketOrGlvTokenAddress}`}
+        >
+          <Trans>View Details</Trans>
+        </ButtonLink>
       </div>
     );
   }
@@ -308,13 +310,13 @@ export function GmListItem({
 }
 
 const MOBILE_SNAPSHOT_GRAPH_SIZE = {
-  width: 88,
-  height: 22,
+  width: 80,
+  height: 32,
 };
 
 const DESKTOP_SNAPSHOT_GRAPH_SIZE = {
   width: 160,
-  height: 30,
+  height: 32,
 };
 
 const MOBILE_GRAPH_SIZE_CLASSNAME = `h-[${MOBILE_SNAPSHOT_GRAPH_SIZE.height}px] w-[${MOBILE_SNAPSHOT_GRAPH_SIZE.width}px]`;

@@ -4172,6 +4172,10 @@ msgstr "詳細を読む。"
 msgid "PnL Analysis"
 msgstr "損益分析"
 
+#: src/components/Synthetics/GmList/GmListItem.tsx
+msgid "View Details"
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
 msgstr "スワップパスがありません。<0>{0}を{swapToTokenSymbol}にスワップ</0>してから{1}に。"
