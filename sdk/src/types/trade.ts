@@ -306,6 +306,8 @@ export type TradeFees = {
   positionCollateralPriceImpact?: FeeItem;
   collateralPriceImpactDiff?: FeeItem;
   proportionalPendingImpact?: FeeItem;
+  positionNetPriceImpact?: FeeItem;
+  collateralNetPriceImpact?: FeeItem;
   closePriceImpact?: FeeItem;
   positionFeeFactor?: bigint;
   borrowFee?: FeeItem;

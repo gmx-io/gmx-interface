@@ -221,8 +221,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const decreaseOrdersThatWillBeExecuted = useDecreaseOrdersThatWillBeExecuted();
 
   const priceImpactWarningState = usePriceImpactWarningState({
-    collateralImpact: fees?.positionCollateralPriceImpact,
-    positionImpact: fees?.positionPriceImpact,
+    collateralNetPriceImpact: fees?.collateralNetPriceImpact,
+    positionNetPriceImpact: fees?.positionNetPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,

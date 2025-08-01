@@ -166,11 +166,16 @@ export function getDecreasePositionAmounts(p: {
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
     values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
 
-    const totalFeesUsd =
-      0n +
-      values.positionFeeUsd +
-      values.uiFeeUsd +
-      (values.totalPendingImpactDeltaUsd < 0 ? values.totalPendingImpactDeltaUsd : 0n);
+    const totalFeesUsd = getTotalFeesUsdForDecrease({
+      positionFeeUsd: values.positionFeeUsd,
+      borrowingFeeUsd: 0n,
+      fundingFeeUsd: 0n,
+      swapProfitFeeUsd: 0n,
+      swapUiFeeUsd: 0n,
+      uiFeeUsd: values.uiFeeUsd,
+      pnlUsd: 0n,
+      totalPendingImpactDeltaUsd: values.totalPendingImpactDeltaUsd,
+    });
 
     values.payedOutputUsd = totalFeesUsd;
 
@@ -293,19 +298,16 @@ export function getDecreasePositionAmounts(p: {
     values.swapProfitFeeUsd = 0n;
   }
 
-  const negativePnlUsd = values.realizedPnl < 0 ? bigMath.abs(values.realizedPnl) : 0n;
-  const negativePriceImpactUsd =
-    values.totalPendingImpactDeltaUsd < 0 ? bigMath.abs(values.totalPendingImpactDeltaUsd) : 0n;
-
-  const totalFeesUsd =
-    values.positionFeeUsd +
-    values.borrowingFeeUsd +
-    values.fundingFeeUsd +
-    values.swapProfitFeeUsd +
-    values.swapUiFeeUsd +
-    values.uiFeeUsd +
-    negativePnlUsd +
-    negativePriceImpactUsd;
+  const totalFeesUsd = getTotalFeesUsdForDecrease({
+    positionFeeUsd: values.positionFeeUsd,
+    borrowingFeeUsd: 0n,
+    fundingFeeUsd: 0n,
+    swapProfitFeeUsd: 0n,
+    swapUiFeeUsd: 0n,
+    uiFeeUsd: values.uiFeeUsd,
+    pnlUsd: values.realizedPnl,
+    totalPendingImpactDeltaUsd: values.totalPendingImpactDeltaUsd,
+  });
 
   const payedInfo = payForCollateralCost({
     initialCostUsd: totalFeesUsd,
@@ -578,6 +580,41 @@ export function estimateCollateralCost(baseUsd: bigint, collateralToken: TokenDa
     amount,
     usd,
   };
+}
+
+export function getTotalFeesUsdForDecrease({
+  positionFeeUsd,
+  borrowingFeeUsd,
+  fundingFeeUsd,
+  swapProfitFeeUsd,
+  swapUiFeeUsd,
+  uiFeeUsd,
+  pnlUsd,
+  totalPendingImpactDeltaUsd,
+}: {
+  positionFeeUsd: bigint;
+  borrowingFeeUsd: bigint;
+  fundingFeeUsd: bigint;
+  swapProfitFeeUsd: bigint;
+  swapUiFeeUsd: bigint;
+  uiFeeUsd: bigint;
+  pnlUsd: bigint;
+  totalPendingImpactDeltaUsd: bigint;
+}) {
+  const negativePriceImpactUsd = totalPendingImpactDeltaUsd < 0 ? bigMath.abs(totalPendingImpactDeltaUsd) : 0n;
+  const negativePnlUsd = pnlUsd < 0 ? bigMath.abs(pnlUsd) : 0n;
+
+  const totalFeesUsd =
+    positionFeeUsd +
+    borrowingFeeUsd +
+    fundingFeeUsd +
+    swapProfitFeeUsd +
+    swapUiFeeUsd +
+    uiFeeUsd +
+    negativePnlUsd +
+    negativePriceImpactUsd;
+
+  return totalFeesUsd;
 }
 
 export function getNextPositionValuesForDecreaseTrade(p: {

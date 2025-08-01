@@ -106,21 +106,29 @@ export function getPositionNetValue(p: {
 
 export function getPositionPnlAfterFees({
   pnl,
-  totalPendingFeesUsd,
+  pendingBorrowingFeesUsd,
+  pendingFundingFeesUsd,
   closingFeeUsd,
   uiFeeUsd,
   totalPendingImpactDeltaUsd,
   priceImpactDiffUsd,
 }: {
   pnl: bigint;
-  totalPendingFeesUsd: bigint;
+  pendingBorrowingFeesUsd: bigint;
+  pendingFundingFeesUsd: bigint;
   closingFeeUsd: bigint;
   uiFeeUsd: bigint;
   totalPendingImpactDeltaUsd: bigint;
   priceImpactDiffUsd: bigint;
 }) {
   const pnlAfterFees =
-    pnl - totalPendingFeesUsd - closingFeeUsd - uiFeeUsd + totalPendingImpactDeltaUsd + priceImpactDiffUsd;
+    pnl -
+    pendingBorrowingFeesUsd -
+    pendingFundingFeesUsd -
+    closingFeeUsd -
+    uiFeeUsd +
+    totalPendingImpactDeltaUsd +
+    priceImpactDiffUsd;
 
   return pnlAfterFees;
 }

@@ -6,7 +6,12 @@ import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { getEntryPrice, getNetPriceImpactDeltaUsdForDecrease, getPositionPnlUsd } from "sdk/utils/positions";
+import {
+  getEntryPrice,
+  getNetPriceImpactDeltaUsdForDecrease,
+  getPositionPnlAfterFees,
+  getPositionPnlUsd,
+} from "sdk/utils/positions";
 
 import useUiFeeFactorRequest from "../fees/utils/useUiFeeFactor";
 import {
@@ -185,13 +190,15 @@ export function usePositionsInfoRequest(
         priceImpactDiffUsd: netPriceImapctValues?.priceImpactDiffUsd ?? 0n,
       });
 
-      const pnlAfterFees =
-        pnl -
-        totalPendingFeesUsd -
-        closingFeeUsd -
-        uiFeeUsd -
-        (netPriceImapctValues?.totalImpactDeltaUsd ?? 0n) +
-        (netPriceImapctValues?.priceImpactDiffUsd ?? 0n);
+      const pnlAfterFees = getPositionPnlAfterFees({
+        pnl,
+        pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+        pendingFundingFeesUsd: pendingFundingFeesUsd,
+        closingFeeUsd,
+        uiFeeUsd,
+        totalPendingImpactDeltaUsd: netPriceImapctValues?.totalImpactDeltaUsd ?? 0n,
+        priceImpactDiffUsd: netPriceImapctValues?.priceImpactDiffUsd ?? 0n,
+      });
 
       const pnlAfterFeesPercentage =
         collateralUsd != 0n ? getBasisPoints(pnlAfterFees, collateralUsd + closingFeeUsd) : 0n;

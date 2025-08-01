@@ -7,8 +7,7 @@ import {
 } from "domain/synthetics/fees";
 import { OrderInfo, isLimitOrderType, isMarketOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { PRECISION, applyFactor, getBasisPoints } from "lib/numbers";
-import { ExternalSwapQuote } from "sdk/types/trade";
-import { SwapStats, TradeFees, TradeFlags, TradeMode, TradeType } from "sdk/types/trade";
+import { ExternalSwapQuote, SwapStats, TradeFees, TradeFlags, TradeMode, TradeType } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { OrderOption } from "../usePositionSellerState";
@@ -178,9 +177,11 @@ export function getTradeFees(p: {
   const fundingFee = getFeeItem(fundingFeeUsd * -1n, initialCollateralUsd);
   const positionPriceImpact = getFeeItem(positionPriceImpactDeltaUsd, sizeDeltaUsd);
   const priceImpactDiff = getFeeItem(priceImpactDiffUsd, sizeDeltaUsd);
+  const positionNetPriceImpact = getTotalFeeItem([positionPriceImpact, priceImpactDiff]);
 
   const positionCollateralPriceImpact = getFeeItem(positionPriceImpactDeltaUsd, bigMath.abs(collateralDeltaUsd));
   const collateralPriceImpactDiff = getFeeItem(priceImpactDiffUsd, collateralDeltaUsd);
+  const collateralNetPriceImpact = getTotalFeeItem([positionCollateralPriceImpact, collateralPriceImpactDiff]);
 
   const proportionalPendingImpact = getFeeItem(proportionalPendingImpactDeltaUsd, sizeDeltaUsd);
   const closePriceImpact = getFeeItem(closePriceImpactDeltaUsd, sizeDeltaUsd);
@@ -191,6 +192,7 @@ export function getTradeFees(p: {
     swapProfitFee,
     swapPriceImpact,
     type === "decrease" ? positionPriceImpact : undefined,
+    type === "decrease" ? priceImpactDiff : undefined,
     positionFeeAfterDiscount,
     borrowFee,
     fundingFee,
@@ -211,6 +213,8 @@ export function getTradeFees(p: {
     proportionalPendingImpact,
     closePriceImpact,
     collateralPriceImpactDiff,
+    positionNetPriceImpact,
+    collateralNetPriceImpact,
     borrowFee,
     fundingFee,
     feeDiscountUsd,

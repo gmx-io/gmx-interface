@@ -612,7 +612,8 @@ export class Positions extends Module {
 
       const pnlAfterFees = getPositionPnlAfterFees({
         pnl,
-        totalPendingFeesUsd,
+        pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+        pendingFundingFeesUsd: pendingFundingFeesUsd,
         closingFeeUsd,
         uiFeeUsd,
         totalPendingImpactDeltaUsd: netPriceImapctValues?.totalImpactDeltaUsd ?? 0n,

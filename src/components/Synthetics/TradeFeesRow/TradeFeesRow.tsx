@@ -337,7 +337,7 @@ export function TradeFeesRow(p: Props) {
           }
         : undefined;
 
-    const priceImpactDiffRow =
+    const priceImpactRebatesRow =
       p.priceImpactDiff?.deltaUsd !== undefined && p.priceImpactDiff.deltaUsd !== 0n
         ? {
             id: "priceImpactDiff",
@@ -412,7 +412,7 @@ export function TradeFeesRow(p: Props) {
         closePriceImpactDeltaUsdRow,
         proportionalPendingImpactDeltaUsdRow,
         netPriceImpactRow,
-        priceImpactDiffRow,
+        priceImpactRebatesRow,
         borrowFeeRow,
         fundingFeeRow,
         positionFeeRow,
@@ -505,7 +505,10 @@ export function TradeFeesRow(p: Props) {
   }, [p.priceImpactDiff?.deltaUsd]);
 
   const swapRouteMsg = useMemo(() => {
-    if (p.swapFees && p.swapFees.length <= 2) return;
+    if (p.swapFees && p.swapFees.length <= 2) {
+      return null;
+    }
+
     return (
       <>
         <br />
@@ -549,11 +552,24 @@ export function TradeFeesRow(p: Props) {
                   showDollar={false}
                 />
               ))}
-              {incentivesBottomText && <br />}
-              {incentivesBottomText && <br />}
-              {priceImpactRebatesInfo && <br />}
-              {swapRouteMsg && <br />}
-              {swapRouteMsg}
+              {incentivesBottomText && (
+                <div>
+                  <br />
+                  {incentivesBottomText}
+                </div>
+              )}
+              {priceImpactRebatesInfo && (
+                <div>
+                  <br />
+                  {priceImpactRebatesInfo}
+                </div>
+              )}
+              {swapRouteMsg && (
+                <div>
+                  <br />
+                  {swapRouteMsg}
+                </div>
+              )}
             </div>
           }
         />
