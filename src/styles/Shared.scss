@@ -174,6 +174,10 @@ tr {
   margin-top: -0.31rem;
 }
 
+.label {
+  font-weight: 500;
+}
+
 .label,
 .label a {
   color: var(--color-slate-100);
@@ -235,15 +239,7 @@ s .default-btn:active {
 }
 
 .default-container {
-  max-width: var(--default-container-max-width);
-  padding-left: var(--default-container-padding);
-  padding-right: var(--default-container-padding);
-  margin: 0 auto;
-
-  @media (max-width: 600px) {
-    padding-left: var(--default-container-padding-mobile);
-    padding-right: var(--default-container-padding-mobile);
-  }
+  padding: 8px;
 }
 
 .default-container-mobile-one-sided {
@@ -375,13 +371,6 @@ button.btn-link:hover .logout-icon {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  padding-bottom: calc(4.7rem + 8rem);
-
-  @media (max-width: 1024px) {
-    padding-bottom: calc(4.7rem + 14rem);
-  }
-
-  padding-top: 4.7rem;
 }
 
 .default-cursor.App-cta {
