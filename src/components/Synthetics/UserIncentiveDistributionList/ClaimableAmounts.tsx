@@ -267,12 +267,12 @@ export default function ClaimableAmounts() {
         {Object.entries(claimableAmounts).map(([token, data]) => (
           <div key={token}>
             <div className="flex flex-col gap-5">
-              <div className="text-sm text-nowrap text-gray-500">{data?.title}</div>
+              <div className="text-sm text-nowrap text-slate-100">{data?.title}</div>
               <div className="flex flex-row gap-5">
                 {data?.amount !== undefined ? (
                   <>
                     <span>{formatAmount(data?.amount ?? 0n, 18)}</span>
-                    <span className="text-gray-500">({formatUsd(data?.usd ?? 0n)})</span>
+                    <span className="text-slate-100">({formatUsd(data?.usd ?? 0n)})</span>
                   </>
                 ) : (
                   <Skeleton width={84} height={18} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />

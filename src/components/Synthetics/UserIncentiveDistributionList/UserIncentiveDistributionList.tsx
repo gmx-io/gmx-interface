@@ -6,7 +6,7 @@ import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useMedia } from "react-use";
 
-import { AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
+import { ARBITRUM, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { selectGmMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { INCENTIVE_TOOLTIP_MAP, INCENTIVE_TYPE_MAP } from "domain/synthetics/common/incentivesAirdropMessages";
@@ -114,15 +114,17 @@ export default function UserIncentiveDistributionList() {
       })}
     >
       <div className="flex flex-grow flex-col gap-18">
-        <Card title={t`Claimable Balance`} bodyPadding={false} divider={false}>
-          {chainId !== AVALANCHE_FUJI ? (
-            <ClaimableAmounts />
-          ) : (
-            <p className="p-18 text-gray-500">
-              <Trans>Claims are not available on Avalanche Fuji</Trans>
-            </p>
-          )}
-        </Card>
+        {account ? (
+          <Card title={t`Claimable Balance`} bodyPadding={false} divider={false}>
+            {chainId !== AVALANCHE_FUJI ? (
+              <ClaimableAmounts />
+            ) : (
+              <p className="p-18 text-gray-500">
+                <Trans>Claims are not available on Avalanche Fuji</Trans>
+              </p>
+            )}
+          </Card>
+        ) : null}
         <Card title={t`Distribution History`} bodyPadding={false} divider={false}>
           {!userIncentiveData?.data?.length ? (
             <EmptyMessage
@@ -172,7 +174,7 @@ export default function UserIncentiveDistributionList() {
           <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
         </Card>
       </div>
-      <AboutGlpIncident />
+      {chainId === ARBITRUM ? <AboutGlpIncident /> : null}
     </div>
   );
 }
