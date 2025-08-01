@@ -1,0 +1,217 @@
+import { Trans } from "@lingui/macro";
+
+import { BOTANIX } from "config/chains";
+import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { getIsExpressSupported } from "config/features";
+import { DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/twap";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
+import { getIsSubaccountActive } from "domain/synthetics/subaccount";
+import { useChainId } from "lib/chains";
+import { EMPTY_ARRAY } from "lib/objects";
+
+import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
+import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
+import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import ExpressIcon from "img/ic_express.svg?react";
+import HourGlassIcon from "img/ic_hourglass.svg?react";
+import OneClickIcon from "img/ic_one_click.svg?react";
+
+import { SettingsSection, InputSetting, SettingButton, Chip, TradingMode } from "./shared";
+
+interface TradingSettingsProps {
+  tradingMode: TradingMode | undefined;
+  handleTradingModeChange: (mode: TradingMode) => void;
+  onChangeSlippage: (value: number) => void;
+  onChangeExecutionFeeBufferBps: (value: number) => void;
+  onChangeTwapNumberOfParts: (value: number) => void;
+  onBlurTwapNumberOfParts: () => void;
+  numberOfParts: number | undefined;
+  onClose: () => void;
+}
+
+export function TradingSettings({
+  tradingMode,
+  handleTradingModeChange,
+  onChangeSlippage,
+  onChangeExecutionFeeBufferBps,
+  onChangeTwapNumberOfParts,
+  onBlurTwapNumberOfParts,
+  numberOfParts,
+  onClose,
+}: TradingSettingsProps) {
+  const { chainId } = useChainId();
+  const settings = useSettings();
+  const subaccountState = useSubaccountContext();
+  const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
+
+  return (
+    <div className="mt-16">
+      {getIsExpressSupported(chainId) && (
+        <>
+          <SettingsSection>
+            <div className="text-14 font-medium">
+              <Trans>Trading Mode</Trans>
+            </div>
+
+            <SettingButton
+              title="Classic"
+              description="On-chain signing for every transaction"
+              info={
+                <Trans>
+                  Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided by
+                  your wallet. Gas payments in ETH.
+                </Trans>
+              }
+              icon={<HourGlassIcon className="size-28" />}
+              active={tradingMode === TradingMode.Classic}
+              onClick={() => handleTradingModeChange(TradingMode.Classic)}
+            />
+
+            <SettingButton
+              title="Express"
+              description="High execution reliability using premium RPCs"
+              info={
+                <Trans>
+                  Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for
+                  reliability, even during network congestion. Gas payments in USDC or WETH.
+                </Trans>
+              }
+              icon={<ExpressIcon className="size-28" />}
+              disabled={isOutOfGasPaymentBalance}
+              chip={
+                <Chip color="gray">
+                  <Trans>Optimal</Trans>
+                </Chip>
+              }
+              active={tradingMode === TradingMode.Express}
+              onClick={() => handleTradingModeChange(TradingMode.Express)}
+            />
+
+            <SettingButton
+              title="Express + One-Click"
+              description="CEX-like experience with Express reliability"
+              icon={<OneClickIcon className="size-28" />}
+              disabled={isOutOfGasPaymentBalance}
+              info={
+                <Trans>
+                  Your wallet, your keys. GMX executes transactions for you without individual signing, providing a
+                  seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during
+                  network congestion. Gas payments in USDC or WETH.
+                </Trans>
+              }
+              chip={
+                <Chip color="blue">
+                  <Trans>Fastest</Trans>
+                </Chip>
+              }
+              active={tradingMode === TradingMode.Express1CT}
+              onClick={() => handleTradingModeChange(TradingMode.Express1CT)}
+            />
+
+            {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
+
+            <OldSubaccountWithdraw />
+
+            {Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) && (
+              <OneClickAdvancedSettings />
+            )}
+
+            {settings.expressOrdersEnabled && (
+              <>
+                <div className="divider"></div>
+
+                <GasPaymentTokenSelector
+                  curentTokenAddress={settings.gasPaymentTokenAddress}
+                  onSelectToken={settings.setGasPaymentTokenAddress}
+                />
+              </>
+            )}
+          </SettingsSection>
+        </>
+      )}
+
+      <SettingsSection className="mt-2">
+        <InputSetting
+          title={<Trans>Default Allowed Slippage</Trans>}
+          description={
+            <Trans>
+              The maximum percentage difference between your specified price and execution price when placing orders.
+            </Trans>
+          }
+          defaultValue={DEFAULT_SLIPPAGE_AMOUNT}
+          value={parseFloat(String(settings.savedAllowedSlippage))}
+          onChange={onChangeSlippage}
+          suggestions={EMPTY_ARRAY}
+        />
+
+        <InputSetting
+          title={<Trans>TWAP Number of Parts</Trans>}
+          description={
+            <div>
+              <Trans>The default number of parts for Time-Weighted Average Price (TWAP) orders.</Trans>
+            </div>
+          }
+          defaultValue={DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS}
+          value={numberOfParts}
+          onChange={onChangeTwapNumberOfParts}
+          onBlur={onBlurTwapNumberOfParts}
+          type="number"
+        />
+
+        {settings.shouldUseExecutionFeeBuffer && (
+          <InputSetting
+            title={<Trans>Max Network Fee Buffer</Trans>}
+            description={
+              <div>
+                <Trans>
+                  The Max Network Fee is set to a higher value to handle potential increases in gas price during order
+                  execution. Any excess network fee will be refunded to your account when the order is executed. Only
+                  applicable to GMX V2.
+                </Trans>
+                <br />
+                <br />
+                <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#network-fee-buffer">Read more</ExternalLink>
+              </div>
+            }
+            defaultValue={30}
+            value={parseFloat(String(settings.executionFeeBufferBps))}
+            onChange={onChangeExecutionFeeBufferBps}
+            maxValue={1000 * 100}
+            suggestions={EMPTY_ARRAY}
+          />
+        )}
+
+        <ToggleSwitch isChecked={settings.isAutoCancelTPSL} setIsChecked={settings.setIsAutoCancelTPSL}>
+          <TooltipWithPortal
+            content={
+              <div onClick={(e) => e.stopPropagation()}>
+                <Trans>
+                  Take Profit and Stop Loss orders will be automatically cancelled when the associated position is
+                  completely closed. This will only affect newly created TP/SL orders.
+                </Trans>
+                <br />
+                <br />
+                <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">Read more</ExternalLink>
+              </div>
+            }
+            handle={<Trans>Auto-Cancel TP/SL</Trans>}
+          />
+        </ToggleSwitch>
+
+        {/* External swaps are enabled by default on Botanix */}
+        {chainId !== BOTANIX && (
+          <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
+            <Trans>Enable external swaps</Trans>
+          </ToggleSwitch>
+        )}
+      </SettingsSection>
+    </div>
+  );
+}

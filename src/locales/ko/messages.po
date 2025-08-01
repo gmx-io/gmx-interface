@@ -88,7 +88,7 @@ msgstr "평점을 9 또는 10으로 만들기 위해 무엇이 필요했을까�
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show debug values"
 msgstr "디버그 값 표시"
 
@@ -303,7 +303,7 @@ msgstr "상태 보기."
 msgid "Buyable"
 msgstr "구매 가능"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "TWAP Number of Parts"
 msgstr "TWAP 부분 수"
 
@@ -1345,7 +1345,7 @@ msgstr "오류 숨기기"
 msgid "The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of the standard {0}% for Tier {1}."
 msgstr "이 추천인 코드 소유자가 표준 {0}% 대신 {currentTierDiscount}% 사용자 지정 할인을 Tier {1}에 설정했습니다."
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
 msgstr "귀하의 지갑, 귀하의 키. 지갑에서 제공하는 자체 RPC를 사용해 온체인에서 각 트랜잭션에 서명. ETH로 가스 지불."
 
@@ -1919,7 +1919,7 @@ msgstr "계정에 대한 볼트 수용량:"
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {주문 취소} other {# 주문 취소}}"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Display PnL After Fees"
 msgstr "수수료 후 PnL 표시"
 
@@ -2129,7 +2129,7 @@ msgstr "{0} 승인중..."
 msgid "Deposited {0} into {positionText}"
 msgstr "{positionText}에 {0} 예치"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet, your keys. GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
 msgstr "귀하의 지갑, 귀하의 키. GMX가 개별 서명 없이 트랜잭션을 실행하여 원활한 CEX 같은 경험 제공. 거래는 네트워크 혼잡 시에도 신뢰성을 위해 GMX 후원 프리미엄 RPC 사용. USDC 또는 WETH로 가스 지불."
 
@@ -2205,7 +2205,7 @@ msgstr "{0} 업그레이드를 위해 GLP 구매가 비활성화되었습니다"
 msgid "<0>Error submitting order.</0><1/><2>Signer address does not match receiver address.</2><3/><4>Please reload the page and try again.</4>"
 msgstr "<0>주문 제출 오류.</0><1/><2>서명자 주소가 수신자 주소와 일치하지 않습니다.</2><3/><4>페이지를 새로고침하고 다시 시도하세요.</4>"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Trading Mode"
 msgstr "트레이딩 모드"
 
@@ -2359,7 +2359,7 @@ msgstr "{typeString} 숏 스탑 마켓: 가격이 트리거 가격 아래로 떨
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "시장 평균가가 변화되었습니다. 귀하의 주소 옆에 \"...\" 아이콘을 클릭해서 허용 가능한 슬리피지 증가를 고려해보세요."
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default Allowed Slippage"
 msgstr "기본 허용 슬리피지"
 
@@ -2677,7 +2677,7 @@ msgstr "승인 서명 중..."
 msgid "The current price impact is {0}. Consider using -0.30% acceptable price impact so the order is more likely to be processed."
 msgstr "현재 가격 영향은 {0}입니다. 주문이 처리될 가능성을 높이기 위해 -0.30% 허용 가격 영향을 고려하세요."
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-Cancel TP/SL"
 msgstr "TP/SL 자동 취소"
 
@@ -3328,7 +3328,7 @@ msgstr "인출 유효화 제출 완료"
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "수령 후 esGMX (IOU) 잔액이 수령액만큼 감소하며, 이는 예상된 행동입니다."
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr "최대 네트워크 수수료는 주문 실행 중 가스 가격 증가를 처리하기 위해 높게 설정됩니다. 초과 네트워크 수수료는 주문 실행 시 계정으로 환불됩니다. GMX V2에만 적용."
 
@@ -4250,7 +4250,7 @@ msgstr "토큰 선택"
 msgid "Exposure to Market Traders’ PnL"
 msgstr "시장 거래자 PnL 노출"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
 msgstr "최적"
 
@@ -4841,7 +4841,7 @@ msgstr "모든 시간"
 msgid "Select your vesting option below then click \"Claim\"."
 msgstr "베스팅 옵션을 선택한 후 \"수령하기\" 버튼을 클릭해주세요."
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 msgstr "시간 가중 평균 가격(TWAP) 주문의 기본 부분 수."
 
@@ -4937,7 +4937,7 @@ msgstr "담보 ({0})"
 msgid "You will earn {0}% more rewards with this action."
 msgstr "이 작업으로 {0}% 더 많은 보상을 받게 됩니다."
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Max Network Fee Buffer"
 msgstr "최대 네트워크 수수료 버퍼"
 
@@ -5082,7 +5082,7 @@ msgstr "스왑 주문 제출 완료!"
 msgid "Loading..."
 msgstr "로딩 중..."
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Include PnL In Leverage Display"
 msgstr "레버리지 표시에서 PnL 포함"
 
@@ -5115,7 +5115,7 @@ msgstr "텔레그램 그룹"
 msgid "Search Action"
 msgstr "액션 검색"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show Leverage Slider"
 msgstr "레버리지 슬라이더 표시"
 
@@ -5368,7 +5368,7 @@ msgstr "풀 GM: {1} [{2}]의 {0} 구매 가능 상한에 도달했습니다. 구
 msgid "Close {longOrShortText} {0}"
 msgstr "{longOrShortText} {0} 종료"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable validation for testing"
 msgstr "테스트를 위한 검증 비활성화"
 
@@ -5509,7 +5509,7 @@ msgstr "Perpie"
 msgid "Useful Links"
 msgstr "유용한 링크"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Enable external swaps"
 msgstr "외부 스왑 활성화"
 
@@ -6112,7 +6112,7 @@ msgstr "esGMX 수령"
 msgid "Buy or Transfer ETH to Arbitrum"
 msgstr "ETH 구매 또는 Arbitrum으로 전송"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "The maximum percentage difference between your specified price and execution price when placing orders."
 msgstr "주문 시 지정 가격과 실행 가격 간의 최대 백분율 차이."
 
@@ -7367,7 +7367,7 @@ msgstr "{title}"
 msgid "Increasing"
 msgstr "증가 중"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Fastest"
 msgstr "가장 빠름"
 
@@ -7711,7 +7711,7 @@ msgstr "이미지 생성 오류. 새로고침 후 다시 시도."
 msgid "Price Impact Rebates"
 msgstr "가격 영향 리베이트"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Take Profit and Stop Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
 msgstr "관련 포지션이 완전히 종료되면 테이크 프로핏 및 스탑 로스 주문이 자동 취소됩니다. 이는 새로 생성된 TP/SL 주문에만 적용."
 
@@ -8396,7 +8396,7 @@ msgstr "가격이 시장 평균가보다 높음"
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "자금 및 대출 수수료율로 인해 가격 움직임 제외 포지션 담보 감소로 청산될 수 있음."
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
 msgstr "지갑과 키는 본인 것. 오프체인 각 트랜잭션 서명. 거래는 네트워크 혼잡 시에도 GMX 후원 프리미엄 RPC 사용. 가스 비용 USDC 또는 WETH."
 

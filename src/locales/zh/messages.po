@@ -88,7 +88,7 @@ msgstr "什么能让您的评分达到 9 或 10？"
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {您有一个活跃的触发订单，可能在您开仓后立即执行。请取消订单或接受确认以继续。} other {您有 # 个活跃的触发订单，可能在您开仓后立即执行。请取消订单或接受确认以继续。}}"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show debug values"
 msgstr "显示调试值"
 
@@ -303,7 +303,7 @@ msgstr "查看状态"
 msgid "Buyable"
 msgstr "可购买"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "TWAP Number of Parts"
 msgstr "TWAP 部分数量"
 
@@ -1345,7 +1345,7 @@ msgstr "隐藏错误"
 msgid "The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of the standard {0}% for Tier {1}."
 msgstr "此推荐代码的所有者设置了自定义折扣 {currentTierDiscount}%，而非 Tier {1} 的标准 {0}%。"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
 msgstr "您的钱包，您的密钥。您使用自己的 RPC（通常由钱包提供）在链上签名每个交易。Gas 支付使用 ETH。"
 
@@ -1919,7 +1919,7 @@ msgstr "您账户的金库容量："
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {取消订单} other {取消 # 个订单}}"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Display PnL After Fees"
 msgstr "显示费用后盈亏"
 
@@ -2129,7 +2129,7 @@ msgstr "批准 {0}..."
 msgid "Deposited {0} into {positionText}"
 msgstr "存款 {0} 到 {positionText}"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet, your keys. GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
 msgstr "您的钱包，您的密钥。GMX 为您执行交易而无需单独签名，提供无缝的类似 CEX 体验。交易使用 GMX 赞助的优质 RPC 以确保可靠性，即使在网络拥堵时。Gas 支付使用 USDC 或 WETH。"
 
@@ -2205,7 +2205,7 @@ msgstr "GLP 购买已禁用，待 {0} 升级"
 msgid "<0>Error submitting order.</0><1/><2>Signer address does not match receiver address.</2><3/><4>Please reload the page and try again.</4>"
 msgstr "<0>提交订单错误。</0><1/><2>签名者地址与接收者地址不匹配。</2><3/><4>请重新加载页面并重试。</4>"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Trading Mode"
 msgstr "交易模式"
 
@@ -2359,7 +2359,7 @@ msgstr "{typeString} 做空止损市价：当价格低于触发价格时 {0} 一
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "标记价格已更改，请考虑通过点击您地址旁的 \"...\" 图标来增加您的允许滑点。"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default Allowed Slippage"
 msgstr "默认允许滑点"
 
@@ -2677,7 +2677,7 @@ msgstr "签署批准中..."
 msgid "The current price impact is {0}. Consider using -0.30% acceptable price impact so the order is more likely to be processed."
 msgstr "当前价格影响为 {0}。考虑使用 -0.30% 的可接受价格影响，以便订单更可能被处理。"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-Cancel TP/SL"
 msgstr "自动取消 TP/SL"
 
@@ -3328,7 +3328,7 @@ msgstr "启用提取已发送。"
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "您的 esGMX (IOU) 余额在领取后将减少您的领取金额，这是预期行为。"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr "最大网络费用设置为较高值，以处理订单执行期间 gas 价格的潜在增加。任何多余网络费用将在订单执行时退还到您的账户。仅适用于 GMX V2。"
 
@@ -4250,7 +4250,7 @@ msgstr "选择代币"
 msgid "Exposure to Market Traders’ PnL"
 msgstr "对市场交易者 PnL 的敞口"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
 msgstr "最佳"
 
@@ -4841,7 +4841,7 @@ msgstr "所有时间"
 msgid "Select your vesting option below then click \"Claim\"."
 msgstr "在下面选择您的归属选项，然后点击“领取”。"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 msgstr "时间加权平均价格 (TWAP) 订单的默认部分数量。"
 
@@ -4937,7 +4937,7 @@ msgstr "抵押品 ({0})"
 msgid "You will earn {0}% more rewards with this action."
 msgstr "通过此操作，您将赚取 {0}% 更多的奖励。"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Max Network Fee Buffer"
 msgstr "最大网络费用缓冲"
 
@@ -5082,7 +5082,7 @@ msgstr "交换订单已提交！"
 msgid "Loading..."
 msgstr "正在加载..."
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Include PnL In Leverage Display"
 msgstr "在杠杆显示中包含 PnL"
 
@@ -5115,7 +5115,7 @@ msgstr "Telegram 群组"
 msgid "Search Action"
 msgstr "搜索操作"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show Leverage Slider"
 msgstr "显示杠杆滑块"
 
@@ -5368,7 +5368,7 @@ msgstr "池 GM: {0} 在 {1} [{2}] 的可买入上限已达到。请减少买入�
 msgid "Close {longOrShortText} {0}"
 msgstr "关闭 {longOrShortText} {0}"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable validation for testing"
 msgstr "禁用验证以进行测试"
 
@@ -5509,7 +5509,7 @@ msgstr "Perpie"
 msgid "Useful Links"
 msgstr "实用链接"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Enable external swaps"
 msgstr "启用外部交换"
 
@@ -6112,7 +6112,7 @@ msgstr "领取 esGMX"
 msgid "Buy or Transfer ETH to Arbitrum"
 msgstr "购买或转移 ETH 到 Arbitrum"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "The maximum percentage difference between your specified price and execution price when placing orders."
 msgstr "下订单时您指定价格与执行价格之间的最大百分比差异。"
 
@@ -7367,7 +7367,7 @@ msgstr "{title}"
 msgid "Increasing"
 msgstr "增加中"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Fastest"
 msgstr "最快"
 
@@ -7711,7 +7711,7 @@ msgstr "图像生成错误，请刷新并重试。"
 msgid "Price Impact Rebates"
 msgstr "价格影响返利"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Take Profit and Stop Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
 msgstr "当相关仓位完全关闭时，止盈和止损订单将自动取消。这仅影响新创建的 TP/SL 订单。"
 
@@ -8396,7 +8396,7 @@ msgstr "价格高于标记价格"
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "此仓位可能被清算（不包括任何价格变动），因为资金和借款费用率会随着时间减少仓位的抵押品。"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
 msgstr "您的钱包，您的密钥。您在链下签名每个交易。交易使用 GMX 赞助的高级 RPC 以确保可靠性，即使在网络拥堵时。Gas 支付使用 USDC 或 WETH。"
 

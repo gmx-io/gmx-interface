@@ -1,0 +1,146 @@
+import cx from "classnames";
+import { ReactNode } from "react";
+
+import NumberInput from "components/NumberInput/NumberInput";
+import PercentageInput from "components/PercentageInput/PercentageInput";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import InfoIcon from "img/ic_info.svg?react";
+
+export enum TradingMode {
+  Classic = "classic",
+  Express = "express",
+  Express1CT = "express-1ct",
+}
+
+export function SettingsSection({ children, className }: { children?: React.ReactNode; className?: string }) {
+  return (
+    <div className={cx("flex flex-col gap-16 rounded-8 bg-fill-surfaceElevated50 p-12", className)}>{children}</div>
+  );
+}
+
+export function InputSetting({
+  title,
+  description,
+  defaultValue,
+  value,
+  maxValue,
+  onChange,
+  onBlur,
+  className,
+  suggestions,
+  type = "percentage",
+}: {
+  title: ReactNode;
+  description?: ReactNode;
+  defaultValue: number;
+  value?: number;
+  maxValue?: number;
+  onChange: (value: number) => void;
+  onBlur?: () => void;
+  className?: string;
+  suggestions?: number[];
+  type?: "percentage" | "number";
+}) {
+  const titleComponent = <span className="text-14 font-medium">{title}</span>;
+
+  const titleWithDescription = description ? (
+    <TooltipWithPortal position="bottom" content={description}>
+      {titleComponent}
+    </TooltipWithPortal>
+  ) : (
+    titleComponent
+  );
+
+  const Input =
+    type === "percentage" ? (
+      <PercentageInput
+        defaultValue={defaultValue}
+        value={value}
+        maxValue={maxValue}
+        onChange={onChange}
+        tooltipPosition="bottom"
+        suggestions={suggestions}
+      />
+    ) : (
+      <NumberInput
+        className="w-60 rounded-4 border border-solid border-slate-700 bg-slate-700 px-4 py-2 text-right hover:border-cold-blue-700"
+        value={value}
+        onValueChange={(e) => onChange(Number(e.target.value))}
+        onBlur={onBlur}
+      />
+    );
+
+  return (
+    <div className={cx("flex items-center justify-between", className)}>
+      <div className="mr-8">{titleWithDescription}</div>
+      {Input}
+    </div>
+  );
+}
+
+export function SettingButton({
+  title,
+  icon,
+  description,
+  onClick,
+  active,
+  chip,
+  info,
+  disabled,
+}: {
+  title: string;
+  icon: ReactNode;
+  description: string;
+  active?: boolean;
+  chip?: ReactNode;
+  onClick: () => void;
+  info?: ReactNode;
+  disabled?: boolean;
+}) {
+  return (
+    <div
+      className={cx(
+        `grid min-h-66 select-none grid-cols-[66px_auto] items-center rounded-8 border border-solid`,
+        active ? "border-slate-100" : "border-slate-600",
+        disabled ? "muted cursor-not-allowed" : "cursor-pointer"
+      )}
+      onClick={disabled ? undefined : onClick}
+    >
+      <div
+        className={cx(
+          "flex items-center justify-center text-slate-100",
+          disabled && "opacity-50",
+          active && "text-white"
+        )}
+      >
+        {icon}
+      </div>
+      <div className="flex gap-4 py-6">
+        <div className="flex flex-col border-l border-solid border-slate-600 pl-12">
+          <div className="flex items-center gap-4">
+            <div>{title}</div>
+            {info && (
+              <TooltipWithPortal
+                content={info}
+                handleClassName="-mb-6"
+                handle={<InfoIcon className="muted size-12" />}
+              />
+            )}
+          </div>
+          <div className="text-slate-100">{description}</div>
+        </div>
+        {chip ? <div className="mr-6 mt-4">{chip}</div> : null}
+      </div>
+    </div>
+  );
+}
+
+export function Chip({ children, color }: { children: ReactNode; color: "blue" | "gray" }) {
+  const colorClass = {
+    blue: "bg-blue-600",
+    gray: "bg-slate-100",
+  }[color];
+
+  return <div className={cx(`rounded-full px-8 py-4 text-[10px]`, colorClass)}>{children}</div>;
+}

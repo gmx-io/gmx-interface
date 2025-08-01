@@ -88,7 +88,7 @@ msgstr "評価を9または10にするためには何が必要でしたか？"
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {このポジションをオープンした後ただちに執行される可能性があるアクティブなトリガー注文があります。注文をキャンセルするか、または確認を押して続けてください。} other {このポジションをオープンした後ただちに執行される可能性があるアクティブなトリガー注文が#あります。注文をキャンセルするか、または確認を押して続けてください。}}"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show debug values"
 msgstr "デバッグ値を表示"
 
@@ -303,7 +303,7 @@ msgstr "状況を見る"
 msgid "Buyable"
 msgstr "購入可能"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "TWAP Number of Parts"
 msgstr "TWAP分割数"
 
@@ -1345,7 +1345,7 @@ msgstr "エラーを隠す"
 msgid "The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of the standard {0}% for Tier {1}."
 msgstr "この紹介コードの所有者は、ティア{1}の標準{0}%の代わりにカスタム割引{currentTierDiscount}%を設定しています。"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
 msgstr "あなたのウォレット、あなたの鍵。ウォレットが提供する独自のRPCを使用して各取引をオンチェーンで署名。ガス支払いはETH。"
 
@@ -1919,7 +1919,7 @@ msgstr "アカウントのボールト容量:"
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {注文をキャンセル} other {# 注文をキャンセル}}"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Display PnL After Fees"
 msgstr "手数料後PnLを表示"
 
@@ -2129,7 +2129,7 @@ msgstr "{0}を承認中"
 msgid "Deposited {0} into {positionText}"
 msgstr "{positionText}に{0}を入金"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet, your keys. GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
 msgstr "あなたのウォレット、あなたの鍵。GMXは個別署名なしで取引を実行し、シームレスなCEXのような体験を提供。トレードはネットワーク混雑時でも信頼性のためにGMXスポンサードのプレミアムRPCを使用。ガス支払いはUSDCまたはWETH。"
 
@@ -2205,7 +2205,7 @@ msgstr "{0}アップグレード未完了のためGLP購入は停止中です"
 msgid "<0>Error submitting order.</0><1/><2>Signer address does not match receiver address.</2><3/><4>Please reload the page and try again.</4>"
 msgstr "<0>注文提出エラー。</0><1/><2>署名者アドレスが受信者アドレスと一致しません。</2><3/><4>ページをリロードして再試行してください。</4>"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Trading Mode"
 msgstr "トレーディングモード"
 
@@ -2359,7 +2359,7 @@ msgstr "{typeString} ショートストップマーケット: 価格がトリガ
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "マーク価格が変化したため、アドレスの横に表示されている\"...\"アイコンをクリックして最大許容スリッページを増やすことを検討してください。"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default Allowed Slippage"
 msgstr "デフォルトの最大許容スリッページ"
 
@@ -2677,7 +2677,7 @@ msgstr "承認を署名中..."
 msgid "The current price impact is {0}. Consider using -0.30% acceptable price impact so the order is more likely to be processed."
 msgstr "現在の価格インパクトは{0}です。注文が処理されやすくなるよう-0.30%の許容価格インパクトを使用することを検討してください。"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-Cancel TP/SL"
 msgstr "TP/SLの自動キャンセル"
 
@@ -3328,7 +3328,7 @@ msgstr "出金有効化申し込み完了。"
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "あなたのesGMX (IOU)残高は請求後に請求額分だけ減少しますが、これは想定通りの挙動です。"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr "最大ネットワーク手数料は注文実行中のガス価格の上昇に対応するために高い値に設定されています。余剰ネットワーク手数料は注文実行時にアカウントに返金されます。GMX V2のみ適用。"
 
@@ -4250,7 +4250,7 @@ msgstr "トークンを選択"
 msgid "Exposure to Market Traders’ PnL"
 msgstr "マーケットトレーダーの損益へのエクスポージャー"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
 msgstr "最適"
 
@@ -4841,7 +4841,7 @@ msgstr "すべての時間"
 msgid "Select your vesting option below then click \"Claim\"."
 msgstr "べスティングオプションを選択して\"請求\"をクリック。"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 msgstr "時間加重平均価格 (TWAP) 注文のデフォルト部分数。"
 
@@ -4937,7 +4937,7 @@ msgstr "担保 ({0})"
 msgid "You will earn {0}% more rewards with this action."
 msgstr "このアクションで{0}%多くの報酬を獲得できます。"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Max Network Fee Buffer"
 msgstr "最大ネットワーク手数料バッファ"
 
@@ -5082,7 +5082,7 @@ msgstr "スワップ注文提出済!"
 msgid "Loading..."
 msgstr "ロード中..."
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Include PnL In Leverage Display"
 msgstr "レバレッジ表示にPnLを含める"
 
@@ -5115,7 +5115,7 @@ msgstr "Telegramグループ"
 msgid "Search Action"
 msgstr "アクションを検索"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show Leverage Slider"
 msgstr "レバレッジスライダーを表示"
 
@@ -5368,7 +5368,7 @@ msgstr "プールGM: {0} の{1} [{2}]での購入可能上限に達しました�
 msgid "Close {longOrShortText} {0}"
 msgstr "{longOrShortText} {0} をクローズ"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable validation for testing"
 msgstr "テストのため検証を無効化"
 
@@ -5509,7 +5509,7 @@ msgstr "Perpie"
 msgid "Useful Links"
 msgstr "有用なリンク"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Enable external swaps"
 msgstr "外部スワップを有効化"
 
@@ -6112,7 +6112,7 @@ msgstr "esGMXの請求"
 msgid "Buy or Transfer ETH to Arbitrum"
 msgstr "ETHを購入またはArbitrumへ移転"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "The maximum percentage difference between your specified price and execution price when placing orders."
 msgstr "注文時の指定価格と執行価格の最大パーセンテージ差。"
 
@@ -7367,7 +7367,7 @@ msgstr "{title}"
 msgid "Increasing"
 msgstr "増加中"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Fastest"
 msgstr "最速"
 
@@ -7711,7 +7711,7 @@ msgstr "画像生成エラー。更新して再度試してください。"
 msgid "Price Impact Rebates"
 msgstr "価格インパクトリベート"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Take Profit and Stop Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
 msgstr "関連ポジションが完全にクローズされた場合、テイクプロフィットとストップロス注文は自動的にキャンセルされます。これは新しく作成されたTP/SL注文にのみ影響します。"
 
@@ -8396,7 +8396,7 @@ msgstr "価格がマーク価格を上回っています"
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "価格変動を除き、ファンディングおよび借入手数料レートによりポジション担保が時間とともに減少するため、このポジションは清算される可能性があります。"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
 msgstr "あなたのウォレット、あなたのキー。各取引をオフチェーンで署名。取引はGMXスポンサーのプレミアムRPCを使用し、ネットワーク混雑時でも信頼性。ガス支払いはUSDCまたはWETH。"
 

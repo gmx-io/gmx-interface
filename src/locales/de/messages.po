@@ -88,7 +88,7 @@ msgstr "Was hätte deine Bewertung zu einer 9 oder 10 gemacht?"
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {Du hast eine aktiven Trigger-Order, die unmittelbar nach dem Öffnen dieser Position ausgeführt werden könnte. Bitte storniere den Auftrag oder akzeptiere die Bestätigung, um fortzufahren.} other {Du hast # aktive Trigger-Orders, die sofort ausgeführt werden könnten, nachdem du diese Position eröffnet hast. Bitte storniere die Aufträge oder akzeptieren die Bestätigung, um fortzufahren.}}"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show debug values"
 msgstr "Debug-Werte anzeigen"
 
@@ -303,7 +303,7 @@ msgstr "Siehe Status."
 msgid "Buyable"
 msgstr "Kaufbar"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "TWAP Number of Parts"
 msgstr "TWAP-Anzahl der Teile"
 
@@ -1345,7 +1345,7 @@ msgstr "Fehler verstecken"
 msgid "The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of the standard {0}% for Tier {1}."
 msgstr "Der Eigentümer dieses Referral-Codes hat einen benutzerdefinierten Rabatt von {currentTierDiscount} % anstelle des Standard-{0} % für Tier {1} festgelegt."
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
 msgstr "Deine Wallet, deine Keys. Du signierst jede Transaktion on-chain mit deinem eigenen RPC, typischerweise von deiner Wallet bereitgestellt. Gas-Zahlungen in ETH."
 
@@ -1919,7 +1919,7 @@ msgstr "Vault-Kapazität für dein Konto:"
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {Order abbrechen} other {# Orders abbrechen}}"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Display PnL After Fees"
 msgstr "Gewinn/Verlust nach Gebühren anzeigen"
 
@@ -2129,7 +2129,7 @@ msgstr "Genehmigung von {0}..."
 msgid "Deposited {0} into {positionText}"
 msgstr "Eingezahlt {0} in {positionText}"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet, your keys. GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
 msgstr "Deine Wallet, deine Keys. GMX führt Transaktionen für dich aus, ohne individuelle Signatur, und bietet eine nahtlose, CEX-ähnliche Erfahrung. Trades verwenden GMX-gesponserte Premium-RPCs für Zuverlässigkeit, sogar bei Netzwerküberlastung. Gas-Zahlungen in USDC oder WETH."
 
@@ -2205,7 +2205,7 @@ msgstr "GLP-Kauf deaktiviert, {0} Aktualisierung steht noch aus"
 msgid "<0>Error submitting order.</0><1/><2>Signer address does not match receiver address.</2><3/><4>Please reload the page and try again.</4>"
 msgstr "<0>Fehler beim Übermitteln der Order.</0><1/><2>Signer-Adresse stimmt nicht mit Empfängeradresse überein.</2><3/><4>Bitte lade die Seite neu und versuche es erneut.</4>"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Trading Mode"
 msgstr "Trading-Modus"
 
@@ -2359,7 +2359,7 @@ msgstr "{typeString} Short Stop Market: {0} eine Short-Position, wenn der Preis 
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "Der Mark-Preis hat sich geändert. Erhöhe dein zulässiges Slippage, indem du auf das Symbol \"...\" neben deiner Adresse klickst."
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default Allowed Slippage"
 msgstr "Standardmäßiges Zulässiges Slippage"
 
@@ -2677,7 +2677,7 @@ msgstr "Genehmigung unterschreiben..."
 msgid "The current price impact is {0}. Consider using -0.30% acceptable price impact so the order is more likely to be processed."
 msgstr "Der aktuelle Preisimpact beträgt {0}. Überlege, -0,30% akzeptablen Preisimpact zu verwenden, damit die Order wahrscheinlicher verarbeitet wird."
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-Cancel TP/SL"
 msgstr "TP/SL automatisch abbrechen"
 
@@ -3328,7 +3328,7 @@ msgstr "Abheben aktivieren gesendet."
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "Dein esGMX (IOU)-Guthaben wird nach dem Beanspruchen um deinen Beanspruchungsbetrag verringert, dies ist ein erwartetes Verhalten."
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "The Max Network Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess network fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr "Die maximale Netzwerkgebühr ist auf einen höheren Wert gesetzt, um potenzielle Erhöhungen des Gaspreises während der Orderausführung zu handhaben. Jede überschüssige Netzwerkgebühr wird bei der Ausführung der Order auf dein Konto zurückerstattet. Nur anwendbar für GMX V2."
 
@@ -4250,7 +4250,7 @@ msgstr "Token auswählen"
 msgid "Exposure to Market Traders’ PnL"
 msgstr "Exposition gegenüber PnL der Markthändler"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
 msgstr "Optimal"
 
@@ -4841,7 +4841,7 @@ msgstr "Gesamtzeit"
 msgid "Select your vesting option below then click \"Claim\"."
 msgstr "Wähle unten deine Vestingoption aus und klicke dann auf \"Beanspruchen\"."
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 msgstr "Die Standardanzahl von Teilen für Time-Weighted Average Price (TWAP)-Orders."
 
@@ -4937,7 +4937,7 @@ msgstr "Kollateral ({0})"
 msgid "You will earn {0}% more rewards with this action."
 msgstr "Du wirst {0}% mehr Belohnungen mit dieser Aktion verdienen."
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Max Network Fee Buffer"
 msgstr "Max. Netzwerkgebühr-Puffer"
 
@@ -5082,7 +5082,7 @@ msgstr "Swap-Order übermittelt!"
 msgid "Loading..."
 msgstr "Lädt..."
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Include PnL In Leverage Display"
 msgstr "PnL in Hebelwirkungsanzeige einbeziehen"
 
@@ -5115,7 +5115,7 @@ msgstr "Telegram Gruppen"
 msgid "Search Action"
 msgstr "Aktion suchen"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show Leverage Slider"
 msgstr "Hebelwirkungs-Slider anzeigen"
 
@@ -5368,7 +5368,7 @@ msgstr "Die kaufbaren Limit für den Pool GM: {0} in {1} [{2}] wurde erreicht. B
 msgid "Close {longOrShortText} {0}"
 msgstr "{longOrShortText} {0} schließen"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable validation for testing"
 msgstr "Validierung für Tests deaktivieren"
 
@@ -5509,7 +5509,7 @@ msgstr "Perpie"
 msgid "Useful Links"
 msgstr "Nützliche Links"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Enable external swaps"
 msgstr "Externe Swaps aktivieren"
 
@@ -6112,7 +6112,7 @@ msgstr "esGMX beanspruchen"
 msgid "Buy or Transfer ETH to Arbitrum"
 msgstr "Kaufe oder transferiere ETH zu Arbitrum"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "The maximum percentage difference between your specified price and execution price when placing orders."
 msgstr "Der maximale prozentuale Unterschied zwischen deinem angegebenen Preis und dem Ausführungspreis beim Platzieren von Orders."
 
@@ -7367,7 +7367,7 @@ msgstr "{title}"
 msgid "Increasing"
 msgstr "Erhöhen"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Fastest"
 msgstr "Schnellste"
 
@@ -7711,7 +7711,7 @@ msgstr "Fehler bei der Bilderzeugung, bitte aktualisieren und erneut versuchen."
 msgid "Price Impact Rebates"
 msgstr "Preiswirkungs-Rebates"
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Take Profit and Stop Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
 msgstr "Take-Profit- und Stop-Loss-Orders werden automatisch abgebrochen, wenn die zugehörige Position vollständig geschlossen ist. Dies betrifft nur neu erstellte TP/SL-Orders."
 
@@ -8396,7 +8396,7 @@ msgstr "Preis ist über Mark-Preis"
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "Diese Position könnte liquidiert werden, ausgenommen Preisbewegungen, aufgrund von Finanzierungs- und Leihgebührensätzen, die das Kollateral der Position im Laufe der Zeit reduzieren."
 
-#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
 msgstr "Dein Wallet, deine Keys. Du signierst jede Transaktion off-chain. Trades verwenden GMX-gesponserte Premium-RPCs für Zuverlässigkeit, sogar bei Netzwerküberlastung. Gas-Zahlungen in USDC oder WETH."
 
