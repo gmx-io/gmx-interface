@@ -150,7 +150,7 @@ export default function BuyInputSection(props: Props) {
           `flex cursor-text flex-col justify-between gap-8 rounded-8 border
           border-slate-800 bg-slate-800 px-14 pb-16 pt-12 text-12 leading-[16px]`,
           {
-            "bg-opacity-70": isDisabled,
+            "bg-slate-900": isDisabled,
             "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300": !isDisabled,
           }
         )}

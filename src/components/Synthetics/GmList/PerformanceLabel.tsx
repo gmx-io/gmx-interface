@@ -18,8 +18,7 @@ export function PerformanceLabel({
       handle={upperCase ? label.toUpperCase() : label}
       className="normal-case"
       position="bottom-end"
-      disableHandleStyle={disableHandleStyle}
-      styleType="none"
+      styleType={disableHandleStyle ? "none" : "underline"}
       content={
         <Trans>
           Annualized return of the pool or vault over the selected period, compared to a benchmark that follows Uniswap

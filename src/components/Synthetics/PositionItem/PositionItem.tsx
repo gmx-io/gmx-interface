@@ -579,7 +579,12 @@ export function PositionItem(p: Props) {
       <AppCard dataQa="position-item">
         <AppCardSection onClick={() => p.onSelectPositionClick?.()}>
           <div className="text-body-medium flex items-center gap-8">
-            <span className="text-body-medium flex items-center gap-4 font-medium">
+            <span
+              className={cx("text-body-medium relative flex items-center gap-4 font-medium", {
+                "after:absolute after:-left-10 after:top-[50%] after:h-16 after:w-2 after:-translate-y-[50%] after:bg-blue-300":
+                  isCurrentMarket,
+              })}
+            >
               <TokenIcon className="" symbol={p.position.indexToken?.symbol} displaySize={16} importSize={24} />
               {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
             </span>

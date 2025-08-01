@@ -46,7 +46,6 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
   renderContent?: () => ReactNode;
   content?: ReactNode | undefined | null;
   position?: TooltipPosition;
-  disableHandleStyle?: boolean;
   className?: string;
   style?: React.CSSProperties;
   handleClassName?: string;
@@ -88,7 +87,6 @@ export default function Tooltip<T extends ElementType>({
   position = DEFAULT_TOOLTIP_POSITION,
   className,
   style,
-  disableHandleStyle,
   handleClassName,
   handleStyle,
   tooltipClassName,
@@ -237,10 +235,7 @@ export default function Tooltip<T extends ElementType>({
     <span {...containerProps} className={cx("Tooltip", className)} style={style}>
       <span
         ref={refs.setReference}
-        className={cx(
-          { "Tooltip-handle": !disableHandleStyle, "Tooltip-underline": styleType === "underline" },
-          handleClassName
-        )}
+        className={cx("Tooltip-handle", { "Tooltip-underline": styleType === "underline" }, handleClassName)}
         style={handleStyle}
         {...getReferenceProps({
           onClick: (e: MouseEvent) => {

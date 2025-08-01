@@ -11,7 +11,7 @@ $suggestion-input-hover-background: var(--color-fill-surfaceElevatedHover);
     padding: 0;
     margin-top: 1.5px;
     top: 100%;
-    background-color: var(--color-slate-800);
+    background-color: var(--color-slate-900);
     z-index: 1002;
     overflow: hidden;
     font-size: 13px;
@@ -23,7 +23,7 @@ $suggestion-input-hover-background: var(--color-fill-surfaceElevatedHover);
       cursor: pointer;
       text-align: center;
       &:hover {
-        background: var(--color-slate-100);
+        background: var(--color-slate-800);
       }
     }
   }

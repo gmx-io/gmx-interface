@@ -139,16 +139,15 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
   &:disabled {
     box-shadow: none;
     cursor: not-allowed;
+    color: var(--color-slate-600);
 
     &.primary-action,
     &.primary {
       background-color: var(--color-slate-800);
-      color: var(--color-slate-500);
     }
 
     &.secondary {
       background-color: #1b1e32;
-      color: var(--color-slate-100);
     }
   }
 

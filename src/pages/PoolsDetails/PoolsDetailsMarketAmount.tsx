@@ -29,8 +29,7 @@ export function PoolsDetailsMarketAmount({
       <span className="numbers">{value}</span>
       {secondaryValue ? (
         <>
-          <span className="text-slate-100">/</span>
-          <span className={cx("text-slate-100 numbers")}>{`${secondaryValue}`}</span>
+          <span className={cx("text-slate-100 numbers")}>(${secondaryValue})</span>
         </>
       ) : null}
     </span>

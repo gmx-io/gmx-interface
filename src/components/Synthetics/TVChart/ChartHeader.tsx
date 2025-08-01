@@ -408,9 +408,8 @@ function ChartHeaderDesktop() {
         <div className="pointer-events-none absolute z-40 flex h-full w-full flex-row justify-between">
           <div
             className={cx("Chart-top-scrollable-fade-left", {
-              "!cursor-default": scrollLeft <= 0,
+              "!pointer-events-none opacity-0": scrollLeft <= 0,
               "opacity-100": scrollLeft > 0,
-              "opacity-0": scrollLeft <= 0,
             })}
             style={leftStyles}
             onClick={scrollToLeft}
@@ -419,9 +418,8 @@ function ChartHeaderDesktop() {
           </div>
           <div
             className={cx("Chart-top-scrollable-fade-right", {
-              "!cursor-default": scrollRight <= 0,
+              "!pointer-events-none opacity-0": scrollRight <= 0,
               "opacity-100": scrollRight > 0,
-              "opacity-0": scrollRight <= 0,
             })}
             style={rightStyles}
             onClick={scrollToRight}
