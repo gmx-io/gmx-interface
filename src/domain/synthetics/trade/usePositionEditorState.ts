@@ -1,4 +1,3 @@
-import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Address } from "viem";
 
@@ -7,11 +6,12 @@ import {
   getSyntheticsCollateralEditAddressMapKey,
   getSyntheticsCollateralEditTokenIsFromGmxAccountMapKey,
 } from "config/localStorage";
-import { isSettlementChain } from "config/multichain";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useIsGmxAccount } from "domain/multichain/useIsGmxAccount";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import { parsePositionKey } from "../positions";
+
 export type PositionEditorState = ReturnType<typeof usePositionEditorState>;
 
 export function usePositionEditorState(chainId: ContractsChainId, srcChainId: SourceChainId | undefined) {
@@ -22,28 +22,15 @@ export function usePositionEditorState(chainId: ContractsChainId, srcChainId: So
   const [selectedCollateralAddressMap, setSelectedCollateralAddressMap] = useLocalStorageSerializeKey<
     Partial<Record<Address, Address>>
   >(getSyntheticsCollateralEditAddressMapKey(chainId), {});
-  const [_isCollateralTokenFromGmxAccount, _setIsCollateralTokenFromGmxAccount] = useLocalStorageSerializeKey<boolean>(
-    getSyntheticsCollateralEditTokenIsFromGmxAccountMapKey(chainId),
-    false
-  );
+  const [storedIsCollateralTokenFromGmxAccount, setStoredIsCollateralTokenFromGmxAccount] =
+    useLocalStorageSerializeKey<boolean>(getSyntheticsCollateralEditTokenIsFromGmxAccountMapKey(chainId), false);
 
-  let isCollateralTokenFromGmxAccount = false;
-  if (srcChainId !== undefined) {
-    isCollateralTokenFromGmxAccount = true;
-  } else if (!isSettlementChain(chainId)) {
-    isCollateralTokenFromGmxAccount = false;
-  } else {
-    isCollateralTokenFromGmxAccount = Boolean(_isCollateralTokenFromGmxAccount);
-  }
-
-  let setIsCollateralTokenFromGmxAccount: (value: boolean) => void;
-  if (srcChainId !== undefined) {
-    setIsCollateralTokenFromGmxAccount = noop;
-  } else if (!isSettlementChain(chainId)) {
-    setIsCollateralTokenFromGmxAccount = noop;
-  } else {
-    setIsCollateralTokenFromGmxAccount = _setIsCollateralTokenFromGmxAccount;
-  }
+  const [isCollateralTokenFromGmxAccount, setIsCollateralTokenFromGmxAccount] = useIsGmxAccount({
+    chainId,
+    srcChainId,
+    storedIsGmxAccount: storedIsCollateralTokenFromGmxAccount,
+    setStoredIsGmxAccount: setStoredIsCollateralTokenFromGmxAccount,
+  });
 
   const setSelectedCollateralAddress = useCallback(
     (selectedCollateralAddress: Address) => {
@@ -61,8 +48,8 @@ export function usePositionEditorState(chainId: ContractsChainId, srcChainId: So
   useEffect(() => {
     setEditingPositionKey(undefined);
     setCollateralInputValue("");
-    _setIsCollateralTokenFromGmxAccount(srcChainId !== undefined);
-  }, [_setIsCollateralTokenFromGmxAccount, chainId, srcChainId]);
+    setStoredIsCollateralTokenFromGmxAccount(srcChainId !== undefined);
+  }, [setStoredIsCollateralTokenFromGmxAccount, srcChainId]);
 
   useEffect(
     function fallbackIsCollateralTokenFromGmxAccount() {

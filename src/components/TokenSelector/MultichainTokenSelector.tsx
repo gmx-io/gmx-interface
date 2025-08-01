@@ -3,10 +3,11 @@ import cx from "classnames";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 
-import type { ContractsChainId, SourceChainId } from "config/chains";
+import type { AnyChainId, ContractsChainId, SourceChainId } from "config/chains";
+import { isSourceChain } from "config/multichain";
 import type { TokenChainData } from "domain/multichain/types";
 import { convertToUsd } from "domain/synthetics/tokens";
-import type { Token, TokenData, TokensData } from "domain/tokens";
+import type { Token, TokensData } from "domain/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { formatAmount, formatBalanceAmount } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
@@ -30,17 +31,18 @@ type Props = {
   className?: string;
 
   tokenAddress: string;
-  isGmxAccount: boolean;
+  payChainId: AnyChainId | 0 | undefined;
 
   tokensData: TokensData | undefined;
   selectedTokenLabel?: ReactNode | string;
 
-  onSelectTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
+  onSelectTokenAddress: (tokenAddress: string, isGmxAccount: boolean, srcChainId: SourceChainId | undefined) => void;
   extendedSortSequence?: string[] | undefined;
 
   footerContent?: ReactNode;
   qa?: string;
   multichainTokens: TokenChainData[] | undefined;
+  includeMultichainTokensInPay?: boolean;
 
   onDepositTokenAddress: (tokenAddress: string, chainId: SourceChainId) => void;
 };
@@ -56,19 +58,25 @@ export function MultichainTokenSelector({
   qa,
   onSelectTokenAddress: propsOnSelectTokenAddress,
   tokenAddress,
-  isGmxAccount,
+  payChainId,
   className,
   label,
   multichainTokens,
+  includeMultichainTokensInPay,
   onDepositTokenAddress: propsOnDepositTokenAddress,
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
   let token: Token | undefined = getToken(chainId, tokenAddress);
 
-  const onSelectTokenAddress = (tokenAddress: string, isGmxAccount: boolean) => {
+  const onSelectTokenAddress = (tokenAddress: string, _chainId: AnyChainId | 0) => {
     setIsModalVisible(false);
-    propsOnSelectTokenAddress(tokenAddress, isGmxAccount);
+    // TODO MLTCH: bad readability
+    propsOnSelectTokenAddress(
+      tokenAddress,
+      _chainId === 0,
+      _chainId !== chainId && _chainId !== 0 && isSourceChain(_chainId) ? _chainId : undefined
+    );
   };
 
   const onDepositTokenAddress = (tokenAddress: string, chainId: SourceChainId) => {
@@ -197,6 +205,8 @@ export function MultichainTokenSelector({
             extendedSortSequence={extendedSortSequence}
             chainId={chainId}
             srcChainId={srcChainId}
+            multichainTokens={multichainTokens}
+            includeMultichainTokensInPay={includeMultichainTokensInPay}
           />
         )}
         {activeFilter === "deposit" && multichainTokens && (
@@ -222,7 +232,7 @@ export function MultichainTokenSelector({
               symbol={token.symbol}
               importSize={24}
               displaySize={20}
-              chainIdBadge={isGmxAccount ? 0 : undefined}
+              chainIdBadge={payChainId}
             />
             <span>{token.symbol}</span>
           </span>
@@ -240,8 +250,10 @@ function AvailableToTradeTokenList({
   setSearchKeyword,
   searchKeyword,
   tokensData,
+  multichainTokens,
   extendedSortSequence,
   onSelectTokenAddress,
+  includeMultichainTokensInPay,
 }: {
   chainId: ContractsChainId;
   srcChainId: SourceChainId | undefined;
@@ -249,8 +261,10 @@ function AvailableToTradeTokenList({
   setSearchKeyword: (searchKeyword: string) => void;
   searchKeyword: string;
   tokensData: TokensData | undefined;
+  multichainTokens: TokenChainData[] | undefined;
   extendedSortSequence?: string[];
-  onSelectTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
+  onSelectTokenAddress: (tokenAddress: string, chainId: AnyChainId | 0) => void;
+  includeMultichainTokensInPay?: boolean;
 }) {
   useEffect(() => {
     if (isModalVisible) {
@@ -259,16 +273,49 @@ function AvailableToTradeTokenList({
   }, [isModalVisible, setSearchKeyword]);
 
   const sortedFilteredTokens = useMemo(() => {
-    type DisplayToken = TokenData & { balance: bigint; balanceUsd: bigint; isGmxAccount: boolean };
+    type DisplayToken = Token & {
+      balance: bigint;
+      balanceUsd: bigint;
+      chainId: AnyChainId | 0;
+    };
 
     const concatenatedTokens: DisplayToken[] = [];
 
     for (const token of Object.values(tokensData ?? (EMPTY_OBJECT as TokensData))) {
       if (token.gmxAccountBalance !== undefined) {
-        concatenatedTokens.push({ ...token, isGmxAccount: true, balance: token.gmxAccountBalance, balanceUsd: 0n });
+        const balanceUsd = convertToUsd(token.gmxAccountBalance, token.decimals, token.prices.maxPrice) ?? 0n;
+        concatenatedTokens.push({
+          ...token,
+          balance: token.gmxAccountBalance,
+          balanceUsd,
+          chainId: 0,
+        });
       }
       if (token.walletBalance !== undefined && srcChainId === undefined) {
-        concatenatedTokens.push({ ...token, isGmxAccount: false, balance: token.walletBalance, balanceUsd: 0n });
+        const balanceUsd = convertToUsd(token.walletBalance, token.decimals, token.prices.maxPrice) ?? 0n;
+        concatenatedTokens.push({
+          ...token,
+          balance: token.walletBalance,
+          balanceUsd,
+          chainId,
+        });
+      }
+    }
+
+    if (includeMultichainTokensInPay && multichainTokens) {
+      for (const token of multichainTokens) {
+        if (token.sourceChainBalance === undefined) {
+          continue;
+        }
+
+        const balanceUsd =
+          convertToUsd(token.sourceChainBalance, token.sourceChainDecimals, token.sourceChainPrices?.maxPrice) ?? 0n;
+        concatenatedTokens.push({
+          ...token,
+          balance: token.sourceChainBalance,
+          balanceUsd,
+          chainId: token.sourceChainId,
+        });
       }
     }
 
@@ -294,13 +341,12 @@ function AvailableToTradeTokenList({
     const tokensWithoutBalance: DisplayToken[] = [];
 
     for (const token of filteredTokens) {
-      const balance = token.isGmxAccount ? token.gmxAccountBalance : token.walletBalance;
+      const balance = token.balance;
 
       if (balance !== undefined && balance > 0n) {
-        const balanceUsd = convertToUsd(balance, token.decimals, token.prices.maxPrice) ?? 0n;
-        tokensWithBalance.push({ ...token, balanceUsd });
+        tokensWithBalance.push(token);
       } else {
-        tokensWithoutBalance.push({ ...token, balanceUsd: 0n });
+        tokensWithoutBalance.push(token);
       }
     }
 
@@ -327,16 +373,24 @@ function AvailableToTradeTokenList({
     });
 
     return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
-  }, [searchKeyword, tokensData, srcChainId, extendedSortSequence]);
+  }, [
+    chainId,
+    extendedSortSequence,
+    includeMultichainTokensInPay,
+    multichainTokens,
+    searchKeyword,
+    srcChainId,
+    tokensData,
+  ]);
 
   return (
     <div>
       {sortedFilteredTokens.map((token) => {
         return (
           <div
-            key={token.address + "_" + (token.isGmxAccount ? "gmx" : "settlement")}
+            key={`${token.address}_${token.chainId}`}
             className="gmx-hover-gradient flex cursor-pointer items-center justify-between px-16 py-8"
-            onClick={() => onSelectTokenAddress(token.address, token.isGmxAccount)}
+            onClick={() => onSelectTokenAddress(token.address, token.chainId)}
           >
             <div className="flex items-center gap-8">
               <TokenIcon
@@ -344,7 +398,7 @@ function AvailableToTradeTokenList({
                 className="size-40"
                 displaySize={40}
                 importSize={40}
-                chainIdBadge={token.isGmxAccount ? 0 : chainId}
+                chainIdBadge={token.chainId}
               />
 
               <div>

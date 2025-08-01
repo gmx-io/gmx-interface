@@ -1,8 +1,11 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
+import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { getChainName } from "config/chains";
 import { getContract } from "config/contracts";
+import { isSourceChain } from "config/multichain";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
@@ -21,7 +24,6 @@ import {
   getTokenPoolType,
 } from "domain/synthetics/markets/utils";
 import { convertToUsd, getTokenData, TokenData } from "domain/synthetics/tokens";
-import { useAvailableTokenOptions } from "domain/synthetics/trade";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { Token } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
@@ -32,9 +34,12 @@ import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import Checkbox from "components/Checkbox/Checkbox";
+import { useSrcChainTokensData } from "components/Synthetics/GmxAccountModal/hooks";
 import { useBestGmPoolAddressForGlv } from "components/Synthetics/MarketStats/hooks/useBestGmPoolForGlv";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
-import TokenSelector from "components/TokenSelector/TokenSelector";
+import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import type { GmSwapBoxProps } from "../GmSwapBox";
@@ -85,17 +90,16 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   );
   const isDeposit = operation === Operation.Deposit;
   const tokensData = useTokensData();
-  const { infoTokens } = useAvailableTokenOptions(chainId, {
-    marketsInfoData: glvAndMarketsInfoData,
-    tokensData,
-    marketTokens: isDeposit ? depositMarketTokensData : withdrawalMarketTokensData,
-    srcChainId,
-  });
+  const { tokensSrcChainData } = useSrcChainTokensData();
 
   // #region State
   const {
     focusedInput,
     setFocusedInput,
+    paySource,
+    setPaySource,
+    isSendBackToSourceChain,
+    setIsSendBackToSourceChain,
     firstTokenAddress,
     setFirstTokenAddress,
     secondTokenAddress,
@@ -388,6 +392,8 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     isMarketTokenDeposit: isMarketTokenDeposit,
     marketsInfoData,
     glvAndMarketsInfoData,
+    paySource,
+    isSendBackToSourceChain,
   });
 
   const firstTokenMaxDetails = useMaxAvailableAmount({
@@ -430,30 +436,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
       ? formatBalanceAmount(usedMarketToken.balance, usedMarketToken.decimals)
       : undefined;
   }, [marketToken, glvInfo, glvToken]);
-
-  const { viewTokenInfo, showTokenName } = useMemo(() => {
-    const selectedToken = firstTokenAddress ? marketTokensData?.[firstTokenAddress] : undefined;
-    const isGm = selectedToken?.symbol === "GM";
-
-    const selectedMarket = selectedToken && marketsInfoData?.[selectedToken.address];
-
-    if (!selectedToken || !selectedMarket) {
-      return {
-        viewTokenInfo: undefined,
-        showTokenName: false,
-      };
-    }
-
-    return {
-      viewTokenInfo: isGm
-        ? {
-            ...selectedMarket.indexToken,
-            name: getMarketIndexName(selectedMarket),
-          }
-        : selectedToken,
-      showTokenName: isGm,
-    };
-  }, [firstTokenAddress, marketTokensData, marketsInfoData]);
   // #endregion
 
   // #region Callbacks
@@ -575,14 +557,14 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     [onFocusedCollateralInputChange, secondToken, setSecondTokenInputValue]
   );
 
-  const firstTokenSelectToken = useCallback(
-    (token: Token): void => {
-      setFirstTokenAddress(token.address);
+  const handleFirstTokenSelect = useCallback(
+    (tokenAddress: string): void => {
+      setFirstTokenAddress(tokenAddress);
 
-      const isGmMarketSelected = glvInfo && glvInfo.markets.find((m) => m.address === token.address);
+      const isGmMarketSelected = glvInfo && glvInfo.markets.find((m) => m.address === tokenAddress);
 
       if (isGmMarketSelected) {
-        onSelectedMarketForGlv?.(token.address);
+        onSelectedMarketForGlv?.(tokenAddress);
       }
     },
     [setFirstTokenAddress, glvInfo, onSelectedMarketForGlv]
@@ -704,6 +686,26 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     [submitState]
   );
 
+  const payTokenBalanceFormatted = useMemo(() => {
+    if (!firstToken) {
+      return undefined;
+    }
+
+    let balance = firstToken.balance;
+
+    if (paySource === "sourceChain") {
+      balance = tokensSrcChainData[firstToken.address]?.sourceChainBalance;
+    }
+
+    if (balance === undefined) {
+      return undefined;
+    }
+
+    return formatBalanceAmount(balance, firstToken.decimals, undefined, {
+      isStable: firstToken.isStable,
+    });
+  }, [firstToken, paySource, tokensSrcChainData]);
+
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -713,32 +715,28 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
             bottomLeftValue={formatUsd(firstTokenUsd ?? 0n)}
             isBottomLeftValueMuted={firstTokenUsd === undefined || firstTokenUsd === 0n}
             bottomRightLabel={t`Balance`}
-            bottomRightValue={
-              firstToken && firstToken.balance !== undefined
-                ? formatBalanceAmount(firstToken.balance, firstToken.decimals, undefined, {
-                    isStable: firstToken.isStable,
-                  })
-                : undefined
-            }
+            bottomRightValue={payTokenBalanceFormatted}
             onClickTopRightLabel={isDeposit ? onMaxClickFirstToken : undefined}
             inputValue={firstTokenInputValue}
             onInputValueChange={handleFirstTokenInputValueChange}
             onClickMax={firstTokenShowMaxButton ? onMaxClickFirstToken : undefined}
           >
             {firstTokenAddress && isSingle && isDeposit && tokenOptions.length > 1 ? (
-              <TokenSelector
-                label={isDeposit ? t`Pay` : t`Receive`}
+              <MultichainTokenSelector
                 chainId={chainId}
-                tokenInfo={viewTokenInfo}
-                showTokenName={showTokenName}
+                srcChainId={srcChainId}
                 tokenAddress={firstTokenAddress}
-                onSelectToken={firstTokenSelectToken}
-                tokens={tokenOptions}
-                infoTokens={infoTokens}
-                size="l"
-                showSymbolImage={true}
-                showTokenImgInDropdown={true}
-                marketsInfoData={marketsInfoData}
+                payChainId={paySource === "gmxAccount" ? 0 : paySource === "sourceChain" ? srcChainId : undefined}
+                tokensData={tokensData}
+                onSelectTokenAddress={(tokenAddress, isGmxAccount, srcChainId) => {
+                  setPaySource(
+                    isSourceChain(srcChainId) ? "sourceChain" : isGmxAccount ? "gmxAccount" : "settlementChain"
+                  );
+                  handleFirstTokenSelect(tokenAddress);
+                }}
+                multichainTokens={Object.values(tokensSrcChainData)}
+                includeMultichainTokensInPay
+                onDepositTokenAddress={noop}
               />
             ) : (
               firstTokenPlaceholder
@@ -792,6 +790,12 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
         </div>
 
         <div className="flex flex-col gap-14">
+          {srcChainId !== undefined && paySource === "sourceChain" && (
+            <SyntheticsInfoRow
+              label={<Trans>Send back to {getChainName(srcChainId)}</Trans>}
+              value={<Checkbox isChecked={isSendBackToSourceChain} setIsChecked={setIsSendBackToSourceChain} />}
+            />
+          )}
           <GmSwapBoxPoolRow
             indexName={indexName}
             marketAddress={selectedGlvOrMarketAddress}

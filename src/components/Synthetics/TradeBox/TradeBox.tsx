@@ -668,7 +668,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 srcChainId={srcChainId}
                 label={t`Pay`}
                 tokenAddress={fromTokenAddress}
-                isGmxAccount={isFromTokenGmxAccount}
+                payChainId={isFromTokenGmxAccount ? 0 : undefined}
                 onSelectTokenAddress={handleSelectFromTokenAddress}
                 size="l"
                 extendedSortSequence={sortedLongAndShortTokens}

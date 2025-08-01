@@ -1,109 +1,96 @@
 import { t } from "@lingui/macro";
-import { Signer, ethers } from "ethers";
+import { Contract, Signer } from "ethers";
 
 import { getContract } from "config/contracts";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { SetPendingDeposit } from "context/SyntheticsEvents";
+import type { SetPendingDeposit } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
-import { OrderMetricId } from "lib/metrics/types";
-import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import type { OrderMetricId } from "lib/metrics/types";
+import type { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
-import { IDepositUtils } from "typechain-types/ExchangeRouter";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
-import { TokensData } from "../tokens";
-import { applySlippageToMinOut } from "../trade";
+import type { TokensData } from "../tokens";
+import type { CreateDepositParamsStruct } from "./types";
 
 export type CreateDepositParams = {
-  account: string;
-  initialLongTokenAddress: string;
-  initialShortTokenAddress: string;
-  longTokenSwapPath: string[];
-  shortTokenSwapPath: string[];
-  marketTokenAddress: string;
+  chainId: ContractsChainId;
+  signer: Signer;
   longTokenAmount: bigint;
   shortTokenAmount: bigint;
-  minMarketTokens: bigint;
   executionFee: bigint;
   executionGasLimit: bigint;
-  allowedSlippage: number;
   tokensData: TokensData;
   skipSimulation?: boolean;
   metricId?: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
   setPendingTxns: (txns: any) => void;
   setPendingDeposit: SetPendingDeposit;
+  params: CreateDepositParamsStruct;
 };
 
-export async function createDepositTxn(chainId: ContractsChainId, signer: Signer, p: CreateDepositParams) {
-  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
+export async function createDepositTxn({
+  chainId,
+  signer,
+  params,
+  longTokenAmount,
+  shortTokenAmount,
+  executionFee,
+  executionGasLimit,
+  tokensData,
+  skipSimulation,
+  metricId,
+  blockTimestampData,
+  setPendingTxns,
+  setPendingDeposit,
+}: CreateDepositParams) {
+  const contract = new Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const depositVaultAddress = getContract(chainId, "DepositVault");
 
-  await validateSignerAddress(signer, p.account);
+  await validateSignerAddress(signer, params.addresses.receiver);
 
   const isNativeLongDeposit = Boolean(
-    p.initialLongTokenAddress === NATIVE_TOKEN_ADDRESS && p.longTokenAmount != undefined && p.longTokenAmount > 0
+    params.addresses.initialLongToken === NATIVE_TOKEN_ADDRESS && longTokenAmount != undefined && longTokenAmount > 0
   );
   const isNativeShortDeposit = Boolean(
-    p.initialShortTokenAddress === NATIVE_TOKEN_ADDRESS && p.shortTokenAmount != undefined && p.shortTokenAmount > 0
+    params.addresses.initialShortToken === NATIVE_TOKEN_ADDRESS && shortTokenAmount != undefined && shortTokenAmount > 0
   );
 
   let wntDeposit = 0n;
 
   if (isNativeLongDeposit) {
-    wntDeposit = wntDeposit + p.longTokenAmount!;
+    wntDeposit = wntDeposit + longTokenAmount!;
   }
 
   if (isNativeShortDeposit) {
-    wntDeposit = wntDeposit + p.shortTokenAmount!;
+    wntDeposit = wntDeposit + shortTokenAmount!;
   }
 
   const shouldUnwrapNativeToken = isNativeLongDeposit || isNativeShortDeposit;
 
-  const wntAmount = p.executionFee + wntDeposit;
-
-  const initialLongTokenAddress = convertTokenAddress(chainId, p.initialLongTokenAddress, "wrapped");
-  const initialShortTokenAddress = convertTokenAddress(chainId, p.initialShortTokenAddress, "wrapped");
-
-  const minMarketTokens = applySlippageToMinOut(p.allowedSlippage, p.minMarketTokens);
+  const wntAmount = executionFee + wntDeposit;
 
   const multicall = [
     { method: "sendWnt", params: [depositVaultAddress, wntAmount] },
 
-    !isNativeLongDeposit && p.longTokenAmount > 0
-      ? { method: "sendTokens", params: [p.initialLongTokenAddress, depositVaultAddress, p.longTokenAmount] }
+    !isNativeLongDeposit && longTokenAmount > 0
+      ? { method: "sendTokens", params: [params.addresses.initialLongToken, depositVaultAddress, longTokenAmount] }
       : undefined,
 
-    !isNativeShortDeposit && p.shortTokenAmount > 0
-      ? { method: "sendTokens", params: [p.initialShortTokenAddress, depositVaultAddress, p.shortTokenAmount] }
+    !isNativeShortDeposit && shortTokenAmount > 0
+      ? {
+          method: "sendTokens",
+          params: [params.addresses.initialShortToken, depositVaultAddress, shortTokenAmount],
+        }
       : undefined,
 
     {
       method: "createDeposit",
-      params: [
-        {
-          addresses: {
-            receiver: p.account,
-            callbackContract: ethers.ZeroAddress,
-            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
-            market: p.marketTokenAddress,
-            initialLongToken: initialLongTokenAddress,
-            initialShortToken: initialShortTokenAddress,
-            longTokenSwapPath: p.longTokenSwapPath,
-            shortTokenSwapPath: p.shortTokenSwapPath,
-          },
-          minMarketTokens: minMarketTokens,
-          shouldUnwrapNativeToken: shouldUnwrapNativeToken,
-          executionFee: p.executionFee,
-          callbackGasLimit: 0,
-          dataList: [],
-        } satisfies IDepositUtils.CreateDepositParamsStruct,
-      ],
+      params: [params],
     },
   ];
 
@@ -111,17 +98,17 @@ export async function createDepositTxn(chainId: ContractsChainId, signer: Signer
     .filter(Boolean)
     .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
 
-  const simulationPromise = !p.skipSimulation
+  const simulationPromise = !skipSimulation
     ? simulateExecuteTxn(chainId, {
-        account: p.account,
+        account: params.addresses.receiver,
         primaryPriceOverrides: {},
-        tokensData: p.tokensData,
+        tokensData,
         createMulticallPayload: encodedPayload,
         method: "simulateExecuteLatestDeposit",
         errorTitle: t`Deposit error.`,
         value: wntAmount,
-        metricId: p.metricId,
-        blockTimestampData: p.blockTimestampData,
+        metricId,
+        blockTimestampData,
       })
     : undefined;
 
@@ -132,32 +119,32 @@ export async function createDepositTxn(chainId: ContractsChainId, signer: Signer
     [encodedPayload],
     wntAmount,
     simulationPromise,
-    p.metricId
+    metricId
   );
 
   return callContract(chainId, contract, "multicall", [encodedPayload], {
     value: wntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
-    metricId: p.metricId,
+    metricId,
     gasLimit,
     gasPriceData,
-    setPendingTxns: p.setPendingTxns,
+    setPendingTxns,
     pendingTransactionData: {
-      estimatedExecutionFee: p.executionFee,
-      estimatedExecutionGasLimit: p.executionGasLimit,
+      estimatedExecutionFee: executionFee,
+      estimatedExecutionGasLimit: executionGasLimit,
     },
   }).then(() => {
-    p.setPendingDeposit({
-      account: p.account,
-      marketAddress: p.marketTokenAddress,
-      initialLongTokenAddress,
-      initialShortTokenAddress,
-      longTokenSwapPath: p.longTokenSwapPath,
-      shortTokenSwapPath: p.shortTokenSwapPath,
-      initialLongTokenAmount: p.longTokenAmount,
-      initialShortTokenAmount: p.shortTokenAmount,
-      minMarketTokens: minMarketTokens,
+    setPendingDeposit({
+      account: params.addresses.receiver,
+      marketAddress: params.addresses.market,
+      initialLongTokenAddress: params.addresses.initialLongToken,
+      initialShortTokenAddress: params.addresses.initialShortToken,
+      longTokenSwapPath: params.addresses.longTokenSwapPath,
+      shortTokenSwapPath: params.addresses.shortTokenSwapPath,
+      initialLongTokenAmount: longTokenAmount,
+      initialShortTokenAmount: shortTokenAmount,
+      minMarketTokens: params.minMarketTokens,
       shouldUnwrapNativeToken,
       isGlvDeposit: false,
     });

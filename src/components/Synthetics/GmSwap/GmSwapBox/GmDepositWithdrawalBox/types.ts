@@ -9,3 +9,5 @@ export type TokenInputState = {
   setValue: (val: string) => void;
   isMarketToken?: boolean;
 };
+
+export type GmOrGlvPaySource = "settlementChain" | "gmxAccount" | "sourceChain";
