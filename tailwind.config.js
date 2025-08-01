@@ -182,10 +182,12 @@ function fontComponentsPlugin({ addComponents, addBase }) {
     ".text-h1": {
       fontSize: "3.2rem",
       lineHeight: "auto",
+      fontWeight: "500",
     },
     ".text-h2": {
       fontSize: "2.4rem",
       lineHeight: "auto",
+      fontWeight: "500",
     },
     ".text-body-large": {
       fontSize: "1.6rem",

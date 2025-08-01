@@ -157,12 +157,17 @@ function Referrals() {
           {isBotanix ? (
             <BotanixBanner />
           ) : (
-            <>
-              <div className="referral-tab-container">
-                <Tabs options={tabsOptions} selectedValue={activeTab} onChange={setActiveTab} />
-              </div>
+            <div>
+              <Tabs
+                type="inline"
+                className="mb-16"
+                options={tabsOptions}
+                selectedValue={activeTab}
+                onChange={setActiveTab}
+              />
+
               {activeTab === AFFILIATES ? renderAffiliatesTab() : renderTradersTab()}
-            </>
+            </div>
           )}
         </div>
       </SEO>

@@ -18,10 +18,9 @@
 .referral-card {
   position: relative;
   padding: 2.4rem;
-  border-radius: 1.3rem;
-  max-width: 59.2rem;
-  background: var(--color-slate-800);
-  border-radius: 0.4rem;
+  max-width: 60rem;
+  background: var(--color-slate-900);
+  border-radius: 8px;
 }
 .referral-card .title {
   font-weight: 500;
@@ -255,10 +254,10 @@
   justify-content: center;
   align-items: center;
   padding: 3rem 1.5rem;
-  border: 1px solid var(--color-slate-700);
   border-radius: 0.4rem;
-  background: var(--color-slate-800);
+  background: var(--color-slate-900);
   font-size: var(--font-size-body-medium);
+  color: var(--color-slate-100);
   flex-direction: column;
 }
 

@@ -1,6 +1,6 @@
 .card {
-  border-radius: 0.4rem;
-  background: var(--color-slate-800);
+  border-radius: 8px;
+  background: var(--color-slate-900);
 }
 
 .card-header {
@@ -16,8 +16,8 @@
 
 .card-divider {
   height: 1px;
-  background: var(--color-slate-700);
+  background: var(--color-slate-600);
 }
 .card-body {
-  padding: 1.5rem;
+  padding: 16px;
 }

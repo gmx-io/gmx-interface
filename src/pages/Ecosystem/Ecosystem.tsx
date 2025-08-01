@@ -47,8 +47,8 @@ export default function Ecosystem() {
                     <div className="App-card-title">
                       {_(item.title)}
                       <div className="App-card-title-icon">
-                        {item.chainIds.map((network) => (
-                          <img width="16" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        {item.chainIds.toReversed().map((network) => (
+                          <img width="20" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                         ))}
                       </div>
                     </div>
@@ -93,8 +93,8 @@ export default function Ecosystem() {
                     <div className="App-card-title">
                       {_(item.title)}
                       <div className="App-card-title-icon">
-                        {item.chainIds.map((network) => (
-                          <img width="16" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        {item.chainIds.toReversed().map((network) => (
+                          <img width="20" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                         ))}
                       </div>
                     </div>
@@ -146,8 +146,8 @@ export default function Ecosystem() {
                     <div className="App-card-title">
                       {_(item.title)}
                       <div className="App-card-title-icon">
-                        {item.chainIds.map((network) => (
-                          <img width="16" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        {item.chainIds.toReversed().map((network) => (
+                          <img width="20" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                         ))}
                       </div>
                     </div>
@@ -194,8 +194,8 @@ export default function Ecosystem() {
                     <div className="App-card-title">
                       {_(item.title)}
                       <div className="App-card-title-icon">
-                        {item.chainIds.map((network) => (
-                          <img width="16" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        {item.chainIds.toReversed().map((network) => (
+                          <img width="20" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                         ))}
                       </div>
                     </div>

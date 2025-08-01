@@ -14,7 +14,7 @@ import { REFERRAL_CODE_REGEX } from "./referralsHelper";
 function JoinReferralCode({ active }: { active: boolean }) {
   const { openConnectModal } = useConnectModal();
   return (
-    <div className="referral-card section-center mt-medium">
+    <div className="referral-card section-center">
       <h2 className="title text-h2">
         <Trans>Enter Referral Code</Trans>
       </h2>

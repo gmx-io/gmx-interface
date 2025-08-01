@@ -15,7 +15,7 @@ import { getCodeError, getReferralCodeTakenStatus, getSampleReferrarStat } from 
 function AddAffiliateCode({ handleCreateReferralCode, active, setRecentlyAddedCodes, recentlyAddedCodes }) {
   const { openConnectModal } = useConnectModal();
   return (
-    <div className="referral-card section-center mt-medium">
+    <div className="referral-card section-center">
       <h2 className="title">
         <Trans>Generate Referral Code</Trans>
       </h2>

@@ -135,9 +135,9 @@ $app-card-padding: 1.5rem;
 }
 
 .App-card-divider-vertical {
-  width: 1px;
+  width: 0.5px;
   height: 8.8rem;
-  background: var(--color-slate-100);
+  background: var(--color-slate-600);
 }
 
 .App-card-title-block {
@@ -269,7 +269,7 @@ button.App-connect-wallet:hover {
 }
 
 .App-card-divider {
-  height: 1px;
+  height: 0.5px;
   background: var(--color-slate-600);
   margin: 1.05rem -1.5rem;
 
@@ -428,8 +428,8 @@ button.App-connect-wallet:hover {
 
 .App-card-title {
   font-size: var(--font-size-body-large);
-  font-weight: normal;
-  letter-spacing: 0px;
+  font-weight: 500;
+  letter-spacing: -0.012em;
   color: var(--color-white);
   margin-bottom: $app-card-padding;
   display: flex;
@@ -1166,12 +1166,6 @@ button.App-button {
       width: 20px;
       vertical-align: bottom;
     }
-  }
-}
-
-@media (max-width: 600px) {
-  .page-layout {
-    padding-top: 2.5rem;
   }
 }
 

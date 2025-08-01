@@ -53,7 +53,7 @@ export default function NestedTab<V extends string | number>({
       <FloatingPortal>
         <Menu.Items
           as="div"
-          className="z-[1000] mt-8 overflow-hidden rounded-8 border border-slate-600 bg-slate-800 outline-none"
+          className="z-[1000] mt-8 overflow-hidden rounded-8 border border-slate-600 bg-slate-900 outline-none"
           ref={refs.setFloating}
           style={floatingStyles}
         >
