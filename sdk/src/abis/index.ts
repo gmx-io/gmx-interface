@@ -1,6 +1,7 @@
 import { Abi, erc20Abi } from "viem";
 
 import ArbitrumNodeInterface from "./ArbitrumNodeInterface.json";
+import ClaimHandler from "./ClaimHandler.json";
 import CustomErrors from "./CustomErrors.json";
 import DataStore from "./DataStore.json";
 import ERC20PermitInterface from "./ERC20PermitInterface.json";
@@ -96,7 +97,8 @@ export type AbiId =
   | "ERC20PermitInterface"
   | "GelatoRelayRouter"
   | "ArbitrumNodeInterface"
-  | "StBTC";
+  | "StBTC"
+  | "ClaimHandler";
 
 /** Copied from ethers to enable compatibility with GMX UI */
 interface JsonFragmentType {
@@ -168,4 +170,5 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   GelatoRelayRouter: GelatoRelayRouter.abi,
   ArbitrumNodeInterface: ArbitrumNodeInterface.abi,
   StBTC: StBTC.abi,
+  ClaimHandler: ClaimHandler.abi,
 } as any;

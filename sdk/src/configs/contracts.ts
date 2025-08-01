@@ -73,6 +73,7 @@ export const CONTRACTS = {
 
     Multicall: "0x842ec2c7d803033edf55e478f461fc547bc54eb2",
     ArbitrumNodeInterface: "0x00000000000000000000000000000000000000C8",
+    ClaimHandler: "0x0e3e890994Ce78E215019463ABF9326B951A1392",
   },
   [AVALANCHE]: {
     // avalanche
@@ -145,6 +146,7 @@ export const CONTRACTS = {
 
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
     ArbitrumNodeInterface: zeroAddress,
+    ClaimHandler: "0x1A9a4641a10Dbf7E374B2F79eD3A4400453B67e8",
   },
   [BOTANIX]: {
     DataStore: "0xA23B81a89Ab9D7D89fF8fc1b5d8508fB75Cc094d",
