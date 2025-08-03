@@ -138,7 +138,7 @@ function Referrals() {
   return (
     <AppPageLayout>
       <SEO title={getPageTitle(t`Referrals`)}>
-        <div className="default-container page-layout Referrals">
+        <div className="default-container page-layout flex flex-col gap-20">
           <PageTitle
             isTop
             title={t`Referrals`}

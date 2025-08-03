@@ -11,11 +11,7 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
   font-weight: 500;
   border: none;
   user-select: none;
-  min-height: 40px;
-
-  @media (max-width: 768px) {
-    min-height: 32px;
-  }
+  min-height: 32px;
 
   &.center {
     justify-content: center;
@@ -47,6 +43,7 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
     background: var(--primary-btn-bg);
     color: var(--color-white);
     border-radius: 8px;
+    min-height: 40px;
 
     &:not([disabled], .disabled):hover {
       background: $button-primary-hover;

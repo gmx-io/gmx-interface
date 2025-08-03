@@ -21,7 +21,7 @@ import { locales } from "lib/i18n";
 
 import Button from "components/Button/Button";
 
-import calendarIcon from "img/ic_calendar.svg";
+import CalendarIcon from "img/ic_calendar.svg?react";
 
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
@@ -40,7 +40,6 @@ export const LOCALE_DATE_LOCALE_MAP: Record<keyof typeof locales, DateLocale> = 
 };
 
 type Props = {
-  handle?: React.ReactNode;
   startDate?: Date;
   endDate?: Date;
   onChange: (date: [Date | undefined, Date | undefined]) => void;
@@ -111,7 +110,7 @@ const PRESET_LABELS: Record<PresetPeriod, MessageDescriptor> = {
 
 const DATE_RANGE_SELECT_PRESETS: PresetPeriod[] = ["days7", "days30", "days90", "days365", "allTime"];
 
-export function DateRangeSelect({ startDate, endDate, onChange, handleClassName, handle }: Props) {
+export function DateRangeSelect({ startDate, endDate, onChange, handleClassName }: Props) {
   const rangeState = useMemo<[Range]>(
     () => [{ key: "selection", startDate, endDate, color: endDate && startDate ? RANGE_COLORS[0] : "transparent" }],
     [endDate, startDate]
@@ -181,21 +180,14 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName,
   return (
     <>
       <Popover as="div" className="DateRangeSelect-anchor" ref={refs.setReference}>
-        {handle ? (
-          <Popover.Button as="div" className={handleClassName} refName="buttonRef">
-            {handle}
-          </Popover.Button>
-        ) : (
-          <Popover.Button
-            as={Button}
-            className={handleClassName}
-            variant="secondary"
-            imgSrc={calendarIcon}
-            refName="buttonRef"
-          >
-            {buttonText}
-          </Popover.Button>
-        )}
+        <Popover.Button as="div" className={handleClassName} refName="buttonRef">
+          <Button variant="ghost" className="flex items-center gap-4">
+            <div className="size-16">
+              <CalendarIcon />
+            </div>
+            <span className="text-sm whitespace-nowrap font-medium">{buttonText}</span>
+          </Button>
+        </Popover.Button>
         <Portal>
           <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>
             <DateRange
@@ -308,14 +300,13 @@ export function DateSelect({
   return (
     <>
       <Popover as="div" className="DateRangeSelect-anchor" ref={refs.setReference}>
-        <Popover.Button
-          as={Button}
-          className={handleClassName}
-          variant="secondary"
-          imgSrc={calendarIcon}
-          refName="buttonRef"
-        >
-          {buttonText}
+        <Popover.Button as="div" className={handleClassName} refName="buttonRef">
+          <Button variant="ghost" className="flex items-center gap-4">
+            <div className="size-16">
+              <CalendarIcon />
+            </div>
+            <span className="text-sm whitespace-nowrap font-medium">{buttonText}</span>
+          </Button>
         </Popover.Button>
         <Portal>
           <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>

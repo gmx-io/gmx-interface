@@ -22,7 +22,7 @@ export function TableTh(props: TableTdThProps) {
         "text-left text-[11px] font-medium uppercase text-slate-100 last-of-type:text-right",
         props.className,
         {
-          "px-4 py-12 pb-8 first-of-type:pl-16 last-of-type:pr-16": padding === "all",
+          "px-4 py-12 pb-8 first-of-type:pl-20 last-of-type:pr-20": padding === "all",
           "px-4 py-8 first-of-type:pl-12 last-of-type:pr-12": padding === "compact",
           "px-8 py-8": padding === "compact-one-column",
         }

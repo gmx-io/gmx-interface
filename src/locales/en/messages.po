@@ -426,6 +426,7 @@ msgid "Please migrate your positions to GMX V2."
 msgstr "Please migrate your positions to GMX V2."
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
+#: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions"
@@ -469,6 +470,7 @@ msgstr "No pools matched."
 
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -2789,6 +2791,10 @@ msgstr "Select Market"
 msgid "Open positions: {0}<0/>Under risk: {1}"
 msgstr "Open positions: {0}<0/>Under risk: {1}"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Cumulative PnL <0>{0}</0>"
+msgstr "Cumulative PnL <0>{0}</0>"
+
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
 msgstr "Speed up page loading"
@@ -2899,6 +2905,7 @@ msgid "SL"
 msgstr "SL"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 #: src/pages/Stake/Stake.tsx
@@ -3185,8 +3192,8 @@ msgid "Claim failed."
 msgstr "Claim failed."
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
-msgid "Positions{0}"
-msgstr "Positions{0}"
+#~ msgid "Positions{0}"
+#~ msgstr "Positions{0}"
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Unknown Error"
@@ -3818,8 +3825,8 @@ msgid "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {
 msgstr "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {3} USD"
 
 #: src/components/SideNav/SideNav.tsx
-msgid "Earn"
-msgstr "Earn"
+#~ msgid "Earn"
+#~ msgstr "Earn"
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -4595,8 +4602,8 @@ msgid "GMX APR"
 msgstr "GMX APR"
 
 #: src/pages/AccountDashboard/VersionNetworkSwitcherRow.tsx
-msgid "Switch to:"
-msgstr "Switch to:"
+#~ msgid "Switch to:"
+#~ msgstr "Switch to:"
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
@@ -4833,11 +4840,9 @@ msgstr "Available Liquidity"
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 
-#: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "All time"
 msgstr "All time"
 
@@ -5399,6 +5404,10 @@ msgstr "No items yet"
 msgid "Stop Loss Decrease"
 msgstr "Stop Loss Decrease"
 
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "GMX information for account"
+msgstr "GMX information for account"
+
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Diff"
 msgstr "Diff"
@@ -5758,8 +5767,8 @@ msgid "Receiver Address"
 msgstr "Receiver Address"
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
-msgid "GMX {versionName} {networkName} information for account:"
-msgstr "GMX {versionName} {networkName} information for account:"
+#~ msgid "GMX {versionName} {networkName} information for account:"
+#~ msgstr "GMX {versionName} {networkName} information for account:"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "From"
@@ -7867,8 +7876,8 @@ msgid "Enter a valid coin names"
 msgstr "Enter a valid coin names"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-msgid "Cumulative PnL: <0>{0}</0>"
-msgstr "Cumulative PnL: <0>{0}</0>"
+#~ msgid "Cumulative PnL: <0>{0}</0>"
+#~ msgstr "Cumulative PnL: <0>{0}</0>"
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
@@ -8020,7 +8029,6 @@ msgstr "LAST PRICE"
 msgid "Re-sign"
 msgstr "Re-sign"
 
-#: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 msgid "Orders ({ordersCount})"
 msgstr "Orders ({ordersCount})"
@@ -8403,6 +8411,10 @@ msgstr "This position could be liquidated, excluding any price movement, due to 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
 msgstr "Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "PNG"
+msgstr "PNG"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts

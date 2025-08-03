@@ -4,7 +4,6 @@ import { Popover } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { Link } from "react-router-dom";
 import type { Address } from "viem";
 
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
@@ -18,8 +17,8 @@ import { useBreakpoints } from "lib/breakpoints";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
+import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
-import { HistoryControl } from "components/HistoryControl/HistoryControl";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Referrals/usePagination";
 import { TradesHistorySkeleton } from "components/Skeleton/Skeleton";
@@ -27,7 +26,6 @@ import { TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import CalendarIcon from "img/ic_calendar.svg?react";
 import DownloadIcon from "img/ic_download2.svg?react";
 import PnlAnalysisIcon from "img/ic_pnl_analysis.svg?react";
 
@@ -65,7 +63,9 @@ const ActionsPopover = ({ children }: { children: ReactNode }) => {
         </button>
       </Popover.Button>
       <Popover.Panel ref={refs.setFloating} style={floatingStyles}>
-        <div className="rounded-8 border border-slate-600 bg-slate-900 p-8">{children}</div>
+        <div className="rounded-8 border border-slate-600 bg-slate-900 p-8 [&_button]:w-full [&_button]:!justify-start">
+          {children}
+        </div>
       </Popover.Panel>
     </Popover>
   );
@@ -125,9 +125,14 @@ export function useTradeHistoryState(p: {
     const url = buildAccountDashboardUrl(account, chainId, 2);
 
     return (
-      <Link to={url}>
-        <HistoryControl icon={<PnlAnalysisIcon />} label={<Trans>PnL Analysis</Trans>} />
-      </Link>
+      <Button variant="ghost" to={url} className="flex items-center gap-4">
+        <div className="size-16">
+          <PnlAnalysisIcon />
+        </div>
+        <span className="text-sm font-medium">
+          <Trans>PnL Analysis</Trans>
+        </span>
+      </Button>
     );
   }, [account, chainId, hideDashboardLink]);
 
@@ -158,14 +163,16 @@ export function useTradeHistoryState(p: {
     <>
       {pnlAnalysisButton}
 
-      <DateRangeSelect
-        handle={<HistoryControl icon={<CalendarIcon />} label={<Trans>All time</Trans>} />}
-        startDate={startDate}
-        endDate={endDate}
-        onChange={setDateRange}
-      />
+      <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
 
-      <HistoryControl icon={<DownloadIcon />} label={<Trans>CSV</Trans>} onClick={handleCsvDownload} />
+      <Button variant="ghost" onClick={handleCsvDownload} className="flex items-center gap-4">
+        <div className="size-16">
+          <DownloadIcon />
+        </div>
+        <span className="text-sm font-medium">
+          <Trans>CSV</Trans>
+        </span>
+      </Button>
     </>
   );
 
@@ -175,7 +182,7 @@ export function useTradeHistoryState(p: {
         <div className="flex flex-col gap-2">{actions}</div>
       </ActionsPopover>
     ) : (
-      <div className="flex items-center">{actions}</div>
+      <div className="flex items-center gap-4">{actions}</div>
     );
 
   return {

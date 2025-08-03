@@ -4,10 +4,11 @@ import { lightFormat } from "date-fns";
 import { toPng } from "html-to-image";
 import { useCallback, useMemo, useRef, useState } from "react";
 import {
+  Area,
   Bar,
+  CartesianGrid,
   Cell,
   ComposedChart,
-  Line,
   Tooltip as RechartsTooltip,
   ResponsiveContainer,
   TooltipProps,
@@ -19,6 +20,7 @@ import type { Address } from "viem";
 import { USD_DECIMALS } from "config/factors";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import type { FromOldToNewArray } from "domain/tradingview/types";
+import { useBreakpoints } from "lib/breakpoints";
 import { SECONDS_IN_DAY, formatDate, formatDateTime, toUtcDayStart } from "lib/dates";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
@@ -32,7 +34,7 @@ import Loader from "components/Common/Loader";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { DateSelect } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
 
-import downloadIcon from "img/ic_download_simple.svg";
+import DownloadIcon from "img/ic_download2.svg?react";
 
 import {
   DEBUG_FIELDS,
@@ -49,7 +51,16 @@ const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };
 
 const getInitialDate = () => undefined;
 
-const CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = { fill: "var(--color-gray-400)" };
+const CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = {
+  fill: "var(--color-slate-100)",
+  fontSize: 11,
+  fontWeight: 500,
+};
+
+const X_AXIS_LINE_PROPS: React.SVGProps<SVGLineElement> = {
+  stroke: "var(--color-slate-600)",
+  strokeWidth: 0.5,
+};
 
 export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; account: Address }) {
   const [fromDate, setFromDate] = useState<Date | undefined>(getInitialDate);
@@ -59,31 +70,37 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
 
   const { cardRef, handleImageDownload } = useImageDownload();
 
+  const { isMobile } = useBreakpoints();
+
   return (
-    <div className="flex flex-col rounded-4 bg-slate-800" ref={cardRef}>
-      <div className="flex items-center justify-between border-b border-b-gray-950 px-16">
-        <div className="text-body-large py-8">
+    <div className="flex flex-col rounded-8 bg-slate-900" ref={cardRef}>
+      <div className="flex items-center justify-between px-20 py-15">
+        <div className="text-20 font-medium">
           <Trans>Daily and Cumulative PnL</Trans>
         </div>
         <div className="flex flex-wrap items-stretch justify-end gap-8 py-8">
-          <Button variant="secondary" data-exclude imgSrc={downloadIcon} onClick={handleImageDownload}>
-            PNG
+          <Button variant="ghost" className="gap-4" data-exclude onClick={handleImageDownload}>
+            <div className="size-16">
+              <DownloadIcon />
+            </div>
+
+            <Trans>PNG</Trans>
           </Button>
           <DateSelect date={fromDate} onChange={setFromDate} buttonTextPrefix={t`From`} />
         </div>
       </div>
 
       <div className="flex flex-wrap gap-24 px-16 pt-16 text-slate-100">
-        <div>
-          <div className="inline-block size-10 rounded-full bg-green-500" /> <Trans>Daily Profit</Trans>
+        <div className="flex items-center gap-8 text-13 font-medium">
+          <div className="inline-block size-4 rounded-full bg-green-500" /> <Trans>Daily Profit</Trans>
         </div>
-        <div>
-          <div className="inline-block size-10 rounded-full bg-red-500" /> <Trans>Daily Loss</Trans>
+        <div className="flex items-center gap-8 text-13 font-medium">
+          <div className="inline-block size-4 rounded-full bg-red-500" /> <Trans>Daily Loss</Trans>
         </div>
-        <div>
-          <div className="inline-block size-10 rounded-full bg-[#468AE3]" />{" "}
+        <div className="flex items-center gap-8 text-13 font-medium">
+          <div className="inline-block size-4 rounded-full bg-blue-300" />{" "}
           <Trans>
-            Cumulative PnL:{" "}
+            Cumulative PnL{" "}
             <span className={getPositiveOrNegativeClass(clusteredPnlData.at(-1)?.cumulativePnl)}>
               {formatUsd(clusteredPnlData.at(-1)?.cumulativePnl)}
             </span>
@@ -95,30 +112,40 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
       <div className="relative min-h-[250px] grow">
         <div className="DailyAndCumulativePnL-hide-last-tick absolute size-full">
           <ResponsiveContainer debounce={500}>
-            <ComposedChart width={500} height={300} data={clusteredPnlData} barGap={0}>
+            <ComposedChart width={500} height={300} data={clusteredPnlData} barCategoryGap="25%">
               <RechartsTooltip content={ChartTooltip} wrapperStyle={CHART_TOOLTIP_WRAPPER_STYLE} />
-              <Bar dataKey="pnlFloat" minPointSize={1}>
+              <CartesianGrid vertical={false} strokeDasharray="5 3" strokeWidth={0.5} stroke="var(--color-slate-600)" />
+              <Bar dataKey="pnlFloat" minPointSize={1} radius={2}>
                 {clusteredPnlData.map(renderPnlBar)}
               </Bar>
-              <Line type="monotone" dataKey="cumulativePnlFloat" stroke="#468AE3" strokeWidth={2} dot={false} />
+
+              <defs>
+                <linearGradient id="cumulative-pnl-gradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="-45%" stopColor="var(--color-blue-300)" stopOpacity={0.5} />
+                  <stop offset="100%" stopColor="var(--color-blue-300)" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <Area
+                type="monotone"
+                dataKey="cumulativePnlFloat"
+                stroke="var(--color-blue-300)"
+                fill="url(#cumulative-pnl-gradient)"
+                strokeWidth={2}
+                dot={false}
+                baseValue="dataMin"
+              />
               <XAxis
                 dataKey="dateCompact"
-                axisLine={false}
                 tickLine={false}
-                angle={-90}
-                fontSize={12}
-                tickMargin={25}
-                height={50}
-                dx={-4}
-                minTickGap={10}
+                axisLine={X_AXIS_LINE_PROPS}
+                minTickGap={isMobile ? 16 : 32}
                 tick={CHART_TICK_PROPS}
+                tickMargin={8}
               />
               <YAxis
-                mirror
                 type="number"
                 allowDecimals={false}
                 markerWidth={0}
-                tickMargin={-6}
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={yAxisTickFormatter}
@@ -161,7 +188,7 @@ function renderPnlBar(entry: AccountPnlHistoryPoint) {
 }
 
 function yAxisTickFormatter(value: number) {
-  if (value === 0 || !isFinite(value)) return "";
+  if (!isFinite(value)) return "0";
 
   return formatUsd(BigInt(value as number) * 10n ** 30n, { displayDecimals: 0 })!;
 }
@@ -174,7 +201,7 @@ function ChartTooltip({ active, payload }: TooltipProps<number | string, "pnl" |
   const stats = payload[0].payload as PnlHistoricalData[number];
 
   return (
-    <div className="z-50 rounded-4 border border-gray-950 bg-slate-800 p-8 text-14">
+    <div className="z-50 rounded-8 bg-slate-900 p-8 text-14">
       <StatsTooltipRow label={t`Date`} value={stats.date} showDollar={false} />
       <StatsTooltipRow
         label={t`PnL`}

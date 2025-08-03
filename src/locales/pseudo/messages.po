@@ -426,6 +426,7 @@ msgid "Please migrate your positions to GMX V2."
 msgstr ""
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
+#: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions"
@@ -469,6 +470,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
@@ -2789,6 +2791,10 @@ msgstr ""
 msgid "Open positions: {0}<0/>Under risk: {1}"
 msgstr ""
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Cumulative PnL <0>{0}</0>"
+msgstr ""
+
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
 msgstr ""
@@ -2899,6 +2905,7 @@ msgid "SL"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 #: src/pages/Stake/Stake.tsx
@@ -3185,8 +3192,8 @@ msgid "Claim failed."
 msgstr ""
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
-msgid "Positions{0}"
-msgstr ""
+#~ msgid "Positions{0}"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Unknown Error"
@@ -3818,8 +3825,8 @@ msgid "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {
 msgstr ""
 
 #: src/components/SideNav/SideNav.tsx
-msgid "Earn"
-msgstr ""
+#~ msgid "Earn"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -4592,8 +4599,8 @@ msgid "GMX APR"
 msgstr ""
 
 #: src/pages/AccountDashboard/VersionNetworkSwitcherRow.tsx
-msgid "Switch to:"
-msgstr ""
+#~ msgid "Switch to:"
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
@@ -4830,11 +4837,9 @@ msgstr ""
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr ""
 
-#: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "All time"
 msgstr ""
 
@@ -5396,6 +5401,10 @@ msgstr ""
 msgid "Stop Loss Decrease"
 msgstr ""
 
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "GMX information for account"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Diff"
 msgstr ""
@@ -5755,8 +5764,8 @@ msgid "Receiver Address"
 msgstr ""
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
-msgid "GMX {versionName} {networkName} information for account:"
-msgstr ""
+#~ msgid "GMX {versionName} {networkName} information for account:"
+#~ msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "From"
@@ -7861,8 +7870,8 @@ msgid "Enter a valid coin names"
 msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-msgid "Cumulative PnL: <0>{0}</0>"
-msgstr ""
+#~ msgid "Cumulative PnL: <0>{0}</0>"
+#~ msgstr ""
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
@@ -8014,7 +8023,6 @@ msgstr ""
 msgid "Re-sign"
 msgstr ""
 
-#: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 msgid "Orders ({ordersCount})"
 msgstr ""
@@ -8396,6 +8404,10 @@ msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
+msgstr ""
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "PNG"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts

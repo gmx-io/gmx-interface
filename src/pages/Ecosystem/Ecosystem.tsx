@@ -31,7 +31,7 @@ export default function Ecosystem() {
     <AppPageLayout>
       <SEO title={getPageTitle(t`Ecosystem Projects`)}>
         <div className="default-container page-layout">
-          <div>
+          <div className="flex flex-col gap-20">
             <PageTitle
               showNetworkIcon={false}
               isTop

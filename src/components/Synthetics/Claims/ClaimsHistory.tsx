@@ -14,8 +14,8 @@ import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { formatTokenAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 
+import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
-import { HistoryControl } from "components/HistoryControl/HistoryControl";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Referrals/usePagination";
 import { ClaimsHistorySkeleton } from "components/Skeleton/Skeleton";
@@ -24,7 +24,6 @@ import { MarketFilter } from "components/Synthetics/TableMarketFilter/MarketFilt
 import { TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
-import CalendarIcon from "img/ic_calendar.svg?react";
 import DownloadIcon from "img/ic_download2.svg?react";
 
 import { claimCollateralEventTitles } from "./ClaimHistoryRow/ClaimCollateralHistoryRow";
@@ -87,13 +86,15 @@ export const useClaimsHistoryState = (): ClaimsHistoryProps & { controls: ReactN
 
   const controls = (
     <div className="flex">
-      <DateRangeSelect
-        handle={<HistoryControl icon={<CalendarIcon />} label={<Trans>All time</Trans>} />}
-        startDate={startDate}
-        endDate={endDate}
-        onChange={setDateRange}
-      />
-      <HistoryControl icon={<DownloadIcon />} label={<Trans>CSV</Trans>} onClick={handleCsvDownload} />
+      <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
+      <Button variant="ghost" onClick={handleCsvDownload} className="flex items-center gap-4">
+        <div className="size-16">
+          <DownloadIcon />
+        </div>
+        <span className="text-sm font-medium">
+          <Trans>CSV</Trans>
+        </span>
+      </Button>
     </div>
   );
 

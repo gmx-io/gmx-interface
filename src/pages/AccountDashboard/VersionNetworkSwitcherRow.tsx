@@ -1,11 +1,11 @@
-import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { Link } from "react-router-dom";
 import { type Address } from "viem";
 
 import { CHAIN_NAMES_MAP, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { getIsV1Supported } from "config/features";
 import { getIcon } from "config/icons";
+
+import Button from "components/Button/Button";
 
 import { buildAccountDashboardUrl } from "./buildAccountDashboardUrl";
 
@@ -18,51 +18,52 @@ export function VersionNetworkSwitcherRow({
   chainId: number;
   version: number;
 }) {
-  return (
-    <div className="flex flex-wrap items-center gap-12">
-      <Trans>Switch to:</Trans>
-      <Options account={account} version={version} chainId={chainId} />
-    </div>
-  );
+  return <Options account={account} version={version} chainId={chainId} />;
 }
 
 function Options({ account, chainId, version }: { account?: Address; chainId: number; version: number }) {
   return (
-    <div className="flex flex-wrap items-center gap-12 *:cursor-pointer">
-      {SUPPORTED_CHAIN_IDS.map((supportedChainId) => (
-        <Link
-          to={buildAccountDashboardUrl(account, supportedChainId, 2)}
-          key={supportedChainId}
-          className={cx("flex items-center gap-4", {
-            "text-white": supportedChainId === chainId && version === 2,
-            "text-slate-100": supportedChainId !== chainId || version !== 2,
-          })}
-        >
-          V2
-          <img
-            className="inline-block h-16"
-            src={getIcon(supportedChainId, "network")}
-            alt={CHAIN_NAMES_MAP[supportedChainId]}
-          />
-        </Link>
-      ))}
-      {SUPPORTED_CHAIN_IDS.filter(getIsV1Supported).map((supportedChainId) => (
-        <Link
-          to={buildAccountDashboardUrl(account, supportedChainId, 1)}
-          key={supportedChainId}
-          className={cx("flex items-center gap-4", {
-            "text-white": supportedChainId === chainId && version === 1,
-            "text-slate-100": supportedChainId !== chainId || version !== 1,
-          })}
-        >
-          V1
-          <img
-            className="inline-block h-16"
-            src={getIcon(supportedChainId, "network")}
-            alt={CHAIN_NAMES_MAP[supportedChainId]}
-          />
-        </Link>
-      ))}
+    <div className="flex flex-wrap items-center gap-8">
+      {SUPPORTED_CHAIN_IDS.map((supportedChainId) => {
+        const isActive = supportedChainId === chainId && version === 2;
+        return (
+          <Button
+            variant="ghost"
+            to={buildAccountDashboardUrl(account, supportedChainId, 2)}
+            key={supportedChainId}
+            className={cx("flex !min-h-32 items-center gap-4", {
+              "!bg-slate-800 !text-white": isActive,
+            })}
+          >
+            <img
+              className="inline-block h-16"
+              src={getIcon(supportedChainId, "network")}
+              alt={CHAIN_NAMES_MAP[supportedChainId]}
+            />
+            V2 {CHAIN_NAMES_MAP[supportedChainId]}
+          </Button>
+        );
+      })}
+      {SUPPORTED_CHAIN_IDS.filter(getIsV1Supported).map((supportedChainId) => {
+        const isActive = supportedChainId === chainId && version === 1;
+        return (
+          <Button
+            variant="ghost"
+            to={buildAccountDashboardUrl(account, supportedChainId, 1)}
+            key={supportedChainId}
+            className={cx("flex !min-h-32 items-center gap-4", {
+              "!bg-slate-800 !text-white": isActive,
+            })}
+          >
+            <img
+              className="inline-block h-16"
+              src={getIcon(supportedChainId, "network")}
+              alt={CHAIN_NAMES_MAP[supportedChainId]}
+            />
+            V1 {CHAIN_NAMES_MAP[supportedChainId]}
+          </Button>
+        );
+      })}
     </div>
   );
 }

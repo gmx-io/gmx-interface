@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import { useMedia } from "react-use";
 import { isAddress } from "viem";
 
-import { getChainName } from "config/chains";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useChainId } from "lib/chains";
 
@@ -22,7 +21,6 @@ export function AccountDashboard() {
 
   const { chainId, version, account } = usePageParams(initialChainId);
 
-  const networkName = getChainName(chainId);
   const versionName = version === 2 ? "V2" : "V1";
 
   if (!isAddress(account!)) {
@@ -40,16 +38,14 @@ export function AccountDashboard() {
 
   return (
     <AppPageLayout>
-      <div className="default-container page-layout">
+      <div className="default-container page-layout flex flex-col gap-8">
         <PageTitle
           chainId={chainId}
           title={t`GMX ${versionName} Account`}
           subtitle={
             <>
-              <div className="flex flex-wrap items-center gap-4">
-                <Trans>
-                  GMX {versionName} {networkName} information for account:
-                </Trans>
+              <div className="text-body-medium mb-20 flex flex-wrap items-center gap-4 font-medium">
+                <Trans>GMX information for account</Trans>
                 <AddressView noLink address={account} size={20} breakpoint={isMobile ? "XL" : undefined} />
               </div>
               <VersionNetworkSwitcherRow account={account} chainId={chainId} version={version} />
@@ -59,8 +55,8 @@ export function AccountDashboard() {
 
         {version === 2 && (
           <SyntheticsStateContextProvider overrideChainId={chainId} pageType="accounts" skipLocalReferralCode={false}>
-            <div className="flex flex-col gap-20">
-              <div className="flex flex-row flex-wrap gap-20">
+            <div className="flex flex-col gap-8">
+              <div className="flex flex-row flex-wrap gap-8">
                 <div className="max-w-full grow-[2] *:size-full">
                   <GeneralPerformanceDetails chainId={chainId} account={account} />
                 </div>

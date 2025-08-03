@@ -29,8 +29,8 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
   const { data, error, loading } = usePnlSummaryData(chainId, account);
 
   return (
-    <div className="overflow-hidden rounded-4 bg-slate-800">
-      <div className="text-body-large p-16">
+    <div className="overflow-hidden rounded-8 bg-slate-900">
+      <div className="border-b-[0.5px] border-slate-600 p-20 text-20 font-medium">
         <Trans>General Performance Details</Trans>
       </div>
 
@@ -48,6 +48,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
                 <TooltipWithPortal
                   tooltipClassName="cursor-help *:cursor-auto"
                   content={t`The total realized and unrealized profit and loss for the period, including fees and price impact.`}
+                  styleType="iconStroke"
                 >
                   <Trans>PnL ($)</Trans>
                 </TooltipWithPortal>
@@ -55,6 +56,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
               <TableTh>
                 <TooltipWithPortal
                   tooltipClassName="cursor-help *:cursor-auto"
+                  styleType="iconStroke"
                   content={
                     <Trans>
                       The PnL ($) compared to the capital used.
@@ -79,7 +81,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
           </tbody>
         </table>
         {error && (
-          <div className="max-h-[200px] overflow-auto p-16">
+          <div className="max-h-[200px] overflow-auto p-20">
             <div className="whitespace-pre-wrap font-mono text-red-500">{JSON.stringify(error, null, 2)}</div>
           </div>
         )}
@@ -94,9 +96,9 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
 
   return (
     <TableTr key={row.bucketLabel} hoverable={false} bordered={false}>
-      <TableTd>{_(bucketLabelMap[row.bucketLabel as keyof typeof bucketLabelMap])}</TableTd>
-      <TableTd className="numbers">{formatUsd(row.volume, { maxThreshold: null })}</TableTd>
-      <TableTd>
+      <TableTd className="font-medium">{_(bucketLabelMap[row.bucketLabel as keyof typeof bucketLabelMap])}</TableTd>
+      <TableTd className="font-medium numbers">{formatUsd(row.volume, { maxThreshold: null })}</TableTd>
+      <TableTd className="font-medium">
         <TooltipWithPortal
           styleType="none"
           tooltipClassName="cursor-help *:cursor-auto"
@@ -135,7 +137,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
           <span className="numbers">{formatUsd(row.pnlUsd)}</span>
         </TooltipWithPortal>
       </TableTd>
-      <TableTd>
+      <TableTd className="font-medium">
         <TooltipWithPortal
           styleType="none"
           tooltipClassName="cursor-help *:cursor-auto"
@@ -155,7 +157,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
           <span className="numbers">{formatPercentage(row.pnlBps, { signed: true })}</span>
         </TooltipWithPortal>
       </TableTd>
-      <TableTd>
+      <TableTd className="font-medium">
         <TooltipWithPortal
           handle={<span className="numbers">{`${row.wins} / ${row.losses}`}</span>}
           content={
