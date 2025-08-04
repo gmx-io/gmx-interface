@@ -29,30 +29,30 @@ export function PoolCard({ name, apr, description, iconComponent, coinImage, onC
     <div
       onClick={onClick}
       style={style}
-      className="group relative h-[200px] w-full cursor-pointer overflow-hidden rounded-20 bg-fiord-600 bg-cover text-white transition-transform duration-300 hover:-translate-y-4 sm:h-[380px] sm:w-[384px]"
+      className="bg-fiord-600 duration-180 group relative h-[200px] w-full cursor-pointer overflow-hidden rounded-20 bg-cover text-white transition-transform hover:-translate-y-4 sm:h-[380px] sm:w-[384px]"
     >
-      <BgPoolsLines className="absolute left-0 top-0 h-full w-full transition-transform duration-300 group-hover:translate-y-4" />
+      <BgPoolsLines className="duration-180 absolute left-0 top-0 h-full w-full transition-transform group-hover:translate-y-4" />
       <img
         src={coinImage}
         alt={name}
-        className="absolute -bottom-85 -right-45 aspect-square size-[216px] transition-transform duration-300 group-hover:z-10 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:scale-[1.019] sm:-bottom-30 sm:-right-63"
+        className="duration-180 absolute -bottom-85 -right-45 aspect-square size-[216px] transition-transform group-hover:z-10 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:scale-[1.019] sm:-bottom-30 sm:-right-63"
       />
       <div style={style} className="relative z-20 flex h-full w-full flex-col justify-between p-20">
         <div className="flex flex-row items-center gap-20">
           <IconBox iconComponent={iconComponent} />
           <div>
-            <h4 className="text-[28px] font-medium leading-heading-md -tracking-[0.896px]">{name}</h4>
+            <h4 className="leading-heading-md text-[28px] font-medium -tracking-[0.896px]">{name}</h4>
             <h5 className="leading-body-sm text-14 font-normal tracking-[0.168px]">{description}</h5>
           </div>
         </div>
         <div className="flex flex-row items-end justify-between">
           <div className="flex flex-col gap-4">
-            <p className="leading-body-sm text-12 font-medium tracking-body text-secondary sm:text-14">
+            <p className="leading-body-sm tracking-body text-secondary text-12 font-medium sm:text-14">
               <Trans>Annually</Trans>
             </p>
             <p className="text-[28px] font-medium leading-[98%] sm:text-[50px] sm:-tracking-[2px]">
               {apr}%{" "}
-              <span className="leading-body-sm text-12 font-medium tracking-body text-secondary sm:text-14">
+              <span className="leading-body-sm tracking-body text-secondary text-12 font-medium sm:text-14">
                 <Trans>APR</Trans>
               </span>
             </p>
