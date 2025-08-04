@@ -31,14 +31,14 @@ export function HeroSection() {
         <div className="relative h-[640px] py-60 sm:h-[860px] sm:py-80 ">
           <HeroBackground />
           <div className="relative flex h-full flex-col justify-end">
-            <h1 className="text-heading-1 mb-64">
+            <h1 className="text-heading-1 border-b-fiord-500 mb-28 border-b-0 pb-28 sm:border-b-[0.5px] sm:pb-36">
               <Trans>Trade with</Trans> <Trans>100x leverage from your wallet</Trans>
             </h1>
             {/* Stats and description */}
-            <div className="flex flex-wrap items-end justify-between gap-56 ">
-              <div className="flex flex-1 flex-col-reverse items-stretch gap-36 sm:flex-row">
+            <div className="flex flex-wrap items-end justify-between gap-0 sm:gap-56">
+              <div className="flex flex-1 flex-col-reverse items-stretch sm:flex-row sm:gap-36">
                 <button
-                  className="btn-landing-bg flex w-full flex-col items-start gap-4 rounded-12 pb-12 pl-12 pr-8 pt-8 text-16 font-medium sm:w-[200px]"
+                  className="btn-landing-bg my-28 flex w-full flex-col items-start gap-4 rounded-12 pb-12 pl-12 pr-8 pt-8 text-16 font-medium sm:m-0 sm:w-[200px]"
                   onClick={goToTradeArbitrum}
                 >
                   <div className="self-end rounded-full bg-white p-4">
@@ -52,7 +52,7 @@ export function HeroSection() {
                   </Trans>
                 </div>
               </div>
-              <div className="flex flex-row gap-36 sm:gap-60">
+              <div className="border-t-fiord-500 flex w-full flex-row flex-wrap gap-36 border-t-[0.5px] pt-28 sm:w-auto sm:gap-60 sm:border-t-0 sm:pt-0">
                 <div className="flex flex-col gap-4">
                   <span className="text-secondary text-nowrap text-12 sm:text-14">
                     <Trans>Traders</Trans>
