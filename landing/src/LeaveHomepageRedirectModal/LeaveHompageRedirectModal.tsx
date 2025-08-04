@@ -62,8 +62,8 @@ export function LeaveHomepageRedirectModal({
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex h-screen w-screen bg-fiord-700/50 text-white" onClick={handleBackdropClick}>
-      <div className="m-auto flex w-[351px] flex-col rounded-8 border-[0.5px] border-[#363A59] bg-fiord-800 sm:w-[420px] ">
+    <div className="bg-fiord-700/50 fixed inset-0 z-50 flex h-screen w-screen text-white" onClick={handleBackdropClick}>
+      <div className="bg-fiord-800 m-auto flex w-[351px] flex-col rounded-8 border-[0.5px] border-[#363A59] sm:w-[420px] ">
         <div className="flex justify-between gap-20 border-b-[0.5px] border-[#363A59] p-20 pt-24">
           <h3 className="text-16 font-medium leading-[125%] tracking-[-0.192px]">
             <Trans>Launch App</Trans>
@@ -72,7 +72,7 @@ export function LeaveHomepageRedirectModal({
             <IcCross className="size-20 text-slate-100" />
           </button>
         </div>
-        <div className="flex flex-col gap-16 p-20 text-14 font-normal leading-[130%] tracking-body">
+        <div className="tracking-body flex flex-col gap-16 p-20 text-14 font-normal leading-[130%]">
           <div className="flex flex-col gap-12">
             <p>
               <Trans>You are leaving GMX.io and will be redirected to a third party, independent website.</Trans>
@@ -110,7 +110,7 @@ export function LeaveHomepageRedirectModal({
             </label>
           </div>
           <button
-            className="btn-landing-bg w-full rounded-8 py-18 text-center text-16 tracking-[-0.192px]"
+            className="btn-landing w-full rounded-8 py-18 text-center text-16 tracking-[-0.192px]"
             onClick={onClickAgree}
           >
             <Trans>Launch App</Trans>

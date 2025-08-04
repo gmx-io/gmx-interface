@@ -135,7 +135,7 @@ function fontComponentsPlugin({ addComponents }) {
     ".text-description": {
       "@apply text-16 font-normal leading-body-sm text-secondary tracking-body": {},
     },
-    ".btn-landing-bg": {
+    ".btn-landing": {
       "@apply bg-blue-600 font-medium text-white transition-colors duration-180": {},
       "&:hover": {
         "@media (hover: hover)": {

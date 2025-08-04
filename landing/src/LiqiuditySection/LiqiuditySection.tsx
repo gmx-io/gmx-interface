@@ -15,7 +15,7 @@ export function LiqiuditySection() {
           <h3 className="leading-heading-md text-[28px] font-medium -tracking-[0.896px]">
             <Trans>Deposited by 13 654 users.</Trans>
           </h3>
-          <button className="btn-landing-bg rounded-8 px-16 py-12 text-16 text-white">
+          <button className="btn-landing rounded-8 px-16 py-12 text-16 text-white">
             <Trans>Start Earning</Trans>
           </button>
         </div>
