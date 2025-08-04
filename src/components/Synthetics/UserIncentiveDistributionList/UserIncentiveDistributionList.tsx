@@ -60,7 +60,7 @@ function getNormalizedIncentive(
             marketTokensData[marketToken.marketTokenAddress].prices.maxPrice,
             expandDecimals(1, GM_DECIMALS)
           )
-        : BigInt(incentive.amountsInUsd[index]);
+        : BigInt(incentive.amountsInUsd?.[index] ?? 0);
 
     return {
       symbol: tokenInfo ? tokenInfo.symbol : marketToken?.name,

@@ -120,6 +120,10 @@ msgstr "Approval signed"
 msgid "Daily Loss"
 msgstr "Daily Loss"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "earns fees from providing liquidity to multiple GMX V2 markets"
+msgstr "earns fees from providing liquidity to multiple GMX V2 markets"
+
 #: src/pages/Home/Home.tsx
 msgid "GMX is currently live on Arbitrum and Avalanche."
 msgstr "GMX is currently live on Arbitrum and Avalanche."
@@ -259,8 +263,8 @@ msgid "Execute Market Swap"
 msgstr "Execute Market Swap"
 
 #: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
-msgid "Can I claim more than once?"
-msgstr "Can I claim more than once?"
+#~ msgid "Can I claim more than once?"
+#~ msgstr "Can I claim more than once?"
 
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Deposit submitted!"
@@ -284,8 +288,8 @@ msgid "{0} Required"
 msgstr "{0} Required"
 
 #: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
-msgid "GLV is similar in composition to GLP. Users can sell it, but holding it will earn them incentives"
-msgstr "GLV is similar in composition to GLP. Users can sell it, but holding it will earn them incentives"
+#~ msgid "GLV is similar in composition to GLP. Users can sell it, but holding it will earn them incentives"
+#~ msgstr "GLV is similar in composition to GLP. Users can sell it, but holding it will earn them incentives"
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "No incentives distribution history yet."
@@ -557,6 +561,10 @@ msgstr "Max Capacity"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr "Market Swap"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "A $500,000 GLV pool (funded by DAO funds) rewards long-term holders: If you keep your distributed GLV for at least 3 months (without selling or transferring), you'll receive a pro rata share."
+msgstr "A $500,000 GLV pool (funded by DAO funds) rewards long-term holders: If you keep your distributed GLV for at least 3 months (without selling or transferring), you'll receive a pro rata share."
 
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Trade History"
@@ -2238,6 +2246,10 @@ msgstr "Max {0} sellable amount exceeded"
 msgid "TOKEN"
 msgstr "TOKEN"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "What is the bonus incentive for holding your GLV?"
+msgstr "What is the bonus incentive for holding your GLV?"
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Transfer NFT"
 msgstr "Transfer NFT"
@@ -2952,6 +2964,10 @@ msgstr "Create Take Profit"
 msgid "Update Order"
 msgstr "Update Order"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Can I sell my GLV if I want, and where?"
+msgstr "Can I sell my GLV if I want, and where?"
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Cancel TWAP"
 msgstr "Cancel TWAP"
@@ -3362,8 +3378,8 @@ msgid "Sending settle request"
 msgstr "Sending settle request"
 
 #: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
-msgid "Some funds are still held in GLP. Users should expect future claims and check back periodically. most funds have already been distributed."
-msgstr "Some funds are still held in GLP. Users should expect future claims and check back periodically. most funds have already been distributed."
+#~ msgid "Some funds are still held in GLP. Users should expect future claims and check back periodically. most funds have already been distributed."
+#~ msgstr "Some funds are still held in GLP. Users should expect future claims and check back periodically. most funds have already been distributed."
 
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
@@ -3538,6 +3554,10 @@ msgstr "Please input a referral code to benefit from fee discounts."
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Deposit"
 msgstr "Failed Deposit"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Distribution happens in two GLV variants to mirror GLP's multi-asset exposure: one variant is optimized for ETH-based markets (50% ETH / 50% USDC) and the other for BTC-based markets (50% BTC / 50% USDC). This allocation reflects the composition of recovered funds and allows for dynamic shifting of GLV liquidity to all top GMX markets to enhance your yield."
+msgstr "Distribution happens in two GLV variants to mirror GLP's multi-asset exposure: one variant is optimized for ETH-based markets (50% ETH / 50% USDC) and the other for BTC-based markets (50% BTC / 50% USDC). This allocation reflects the composition of recovered funds and allows for dynamic shifting of GLV liquidity to all top GMX markets to enhance your yield."
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Swap"
@@ -3938,6 +3958,10 @@ msgstr "Unstake esGMX"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "The actual trigger price at which order gets filled will depend on fees and price impact at the time of execution to guarantee that you receive the minimum receive amount."
 msgstr "The actual trigger price at which order gets filled will depend on fees and price impact at the time of execution to guarantee that you receive the minimum receive amount."
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Why do I receive two different GLV tokens?"
+msgstr "Why do I receive two different GLV tokens?"
 
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Set TP/SL"
@@ -4634,6 +4658,10 @@ msgstr "Switch to:"
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "GLV (GMX Liquidity Vaults) should be seen as GMX V2’s improved version of GLP. It is a yield-optimizing crypto-index token that"
+msgstr "GLV (GMX Liquidity Vaults) should be seen as GMX V2’s improved version of GLP. It is a yield-optimizing crypto-index token that"
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing limit order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
@@ -6098,6 +6126,10 @@ msgstr "Min position size: {0}"
 msgid "Trigger price below mark price"
 msgstr "Trigger price below mark price"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "and automatically compounds its yield (unlike GLP, no manual claiming is needed)"
+msgstr "and automatically compounds its yield (unlike GLP, no manual claiming is needed)"
+
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "No delegate found"
 msgstr "No delegate found"
@@ -6299,6 +6331,10 @@ msgstr "Order execution price takes into account price impact."
 #: src/pages/Buy/Buy.tsx
 msgid "Buy GLP or GMX"
 msgstr "Buy GLP or GMX"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools, with auto-compounding for seamless growth (20-30% historical average annualized performance). View real-time earnings, performance, and portfolio value on the <0>Pools page</0>."
+msgstr "GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools, with auto-compounding for seamless growth (20-30% historical average annualized performance). View real-time earnings, performance, and portfolio value on the <0>Pools page</0>."
 
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Max Out"
@@ -6555,6 +6591,10 @@ msgstr "Open {0} in Explorer"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 msgstr "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "GLV tokens are similar in composition to GLP, and enable seamless integration into GMX V2's liquidity ecosystem. Users can either sell or hold the tokens to earn yield. To encourage long-term participation, a $500,000 GLV incentive pool will be distributed proportionally to those who hold their allocated GLV for at least 3 months."
+msgstr "GLV tokens are similar in composition to GLP, and enable seamless integration into GMX V2's liquidity ecosystem. Users can either sell or hold the tokens to earn yield. To encourage long-term participation, a $500,000 GLV incentive pool will be distributed proportionally to those who hold their allocated GLV for at least 3 months."
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/StatusNotification/StakeNotification.tsx
@@ -7025,6 +7065,10 @@ msgstr "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
 msgid "Available amount to deposit into GLP."
 msgstr "Available amount to deposit into GLP."
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "What is GLV exactly?"
+msgstr "What is GLV exactly?"
+
 #: src/components/Exchange/PositionShare.tsx
 msgid "Download"
 msgstr "Download"
@@ -7483,6 +7527,10 @@ msgstr "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of t
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 msgstr "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Yes, GLV is fully liquid and permissionless. You can sell via the GMX interface to redeem for underlying assets, with low fees. Note: Selling will forfeit the $500,000 holding incentive."
+msgstr "Yes, GLV is fully liquid and permissionless. You can sell via the GMX interface to redeem for underlying assets, with low fees. Note: Selling will forfeit the $500,000 holding incentive."
+
 #: src/pages/Stake/UnstakeModal.tsx
 msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
 msgstr "{0}<0>You will earn {1}% less rewards with this action.</0>"
@@ -7678,6 +7726,10 @@ msgstr "Failed Market Swap"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "HoudiniSwap"
 msgstr "HoudiniSwap"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "dynamically allocates its liquidity to the highest-utilised markets, maximising capital efficiency and annualized performance"
+msgstr "dynamically allocates its liquidity to the highest-utilised markets, maximising capital efficiency and annualized performance"
 
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
@@ -8631,6 +8683,10 @@ msgstr "Update TWAP Swap Part"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update TWAP Part"
 msgstr "Update TWAP Part"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "How does GLV earn yield, and where do I see my earnings?"
+msgstr "How does GLV earn yield, and where do I see my earnings?"
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
