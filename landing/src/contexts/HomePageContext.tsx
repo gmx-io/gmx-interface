@@ -61,11 +61,10 @@ export function HomePageContextProvider({ children }: { children: React.ReactNod
   }, [redirectPopupTimestamp]);
   const redirectWithWarning = useCallback(
     (to: string) => {
-      console.log("redirectWithWarning", to, shouldShowRedirectModal());
       if (shouldShowRedirectModal()) {
         setRedirectModalTo(to);
       } else {
-        // window.location.href = to;
+        window.location.href = to;
       }
     },
     [shouldShowRedirectModal, setRedirectModalTo]
