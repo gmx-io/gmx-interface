@@ -12,8 +12,8 @@ import { ChainIcons } from "./ChainIcons";
 import { HeroBackground } from "./HeroBackground";
 import { ProtectionBackground } from "./ProtectionBackground";
 import { SeamlessBackground } from "./SeamlessBackground";
-import { IconBox } from "../components/IconBox";
 import { REDIRECT_CHAIN_IDS, useGoToTrade } from "../hooks/useGoToTrade";
+import { IconBox } from "../IconBox/IconBox";
 
 const assetsBgStyle = {
   backgroundImage: `url(${AsssetsBg})`,

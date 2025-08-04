@@ -6,53 +6,31 @@ export function Quareters() {
   return (
     <div className="flex flex-row gap-0 overflow-x-scroll sm:gap-24">
       <Quarter title="Q1 2025">
-        <ul>
-          <li>
-            <Trans>Solana Support</Trans>
-          </li>
-        </ul>
+        <Trans>
+          <p>Solana Support</p>
+        </Trans>
       </Quarter>
       <Quarter title="Q2 2025">
-        <ul>
-          <li>
-            <Trans>Multichain</Trans>
-          </li>
-          <li>
-            <Trans>Botanix Support</Trans>
-          </li>
-          <li>
-            <Trans>GMX Express</Trans>
-          </li>
-        </ul>
+        <Trans>
+          <p>Multichain</p>
+          <p>Botanix Support</p>
+          <p>GMX Express</p>
+        </Trans>
       </Quarter>
       <Quarter title="Q3 2025">
-        <ul>
-          <li>
-            <Trans>Real World Assets</Trans>
-          </li>
-          <li>
-            <Trans>Staking and trading tiers</Trans>
-          </li>
-          <li>
-            <Trans>Net Open Interest</Trans>
-          </li>
-        </ul>
+        <Trans>
+          <p>Real World Assets</p>
+          <p>Staking and trading tiers</p>
+          <p>Net Open Interest</p>
+        </Trans>
       </Quarter>
       <Quarter title="Q4 2025">
-        <ul>
-          <li>
-            <Trans>Cross-Collateral</Trans>
-          </li>
-          <li>
-            <Trans>Cross-Margin</Trans>
-          </li>
-          <li>
-            <Trans>Market Groups</Trans>
-          </li>
-          <li>
-            <Trans>Just in Time Liquidity</Trans>
-          </li>
-        </ul>
+        <Trans>
+          <p>Cross-Collateral</p>
+          <p>Cross-Margin</p>
+          <p>Market Groups</p>
+          <p>Just in Time Liquidity</p>
+        </Trans>
       </Quarter>
     </div>
   );
