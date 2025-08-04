@@ -337,7 +337,7 @@ export function SyntheticsPage(p: Props) {
       className="max-lg:pb-40"
     >
       {isTablet ? <ChartHeader /> : null}
-      <div className="flex grow gap-8 pt-0 max-lg:flex-col">
+      <div className="flex lg:grow gap-8 pt-0 max-lg:flex-col">
         <div className="Exchange-left flex grow flex-col gap-8">
           <OneClickPromoBanner openSettings={openSettings} />
           <Chart />
