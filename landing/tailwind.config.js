@@ -136,7 +136,7 @@ function fontComponentsPlugin({ addComponents }) {
       "@apply text-16 font-normal leading-body-sm text-secondary tracking-body": {},
     },
     ".btn-landing-bg": {
-      "@apply bg-blue-600 font-medium text-white": {},
+      "@apply bg-blue-600 font-medium text-white transition-colors duration-180": {},
       "&:hover": {
         "@media (hover: hover)": {
           background: "linear-gradient(0deg, rgba(9, 10, 21, 0.1) 0%, rgba(9, 10, 21, 0.1) 100%), var(--color-blue-600)",
@@ -187,6 +187,10 @@ module.exports = {
     letterSpacing: {
       ...defaultConfig.theme.letterSpacing,
       body: "0.028px",
+    },
+    transitionDuration: {
+      ...defaultConfig.theme.transitionDuration,
+      "180": "180ms",
     },
     colors: colors,
     screens: defaultConfig.theme.screens,
