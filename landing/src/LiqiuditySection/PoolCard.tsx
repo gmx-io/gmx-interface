@@ -57,8 +57,8 @@ export function PoolCard({ name, apr, description, iconComponent, coinImage, onC
               </span>
             </p>
           </div>
-          <div className="rounded-8 bg-[#1E2033] p-10 text-slate-100 group-hover:bg-blue-600 group-hover:text-white">
-            <IcLinkArrow className="size-8 rotate-90" />
+          <div className="flex size-36 rounded-8 bg-[#1E2033] text-slate-100 group-hover:bg-blue-600 group-hover:text-white">
+            <IcLinkArrow className="m-auto size-8 rotate-90" />
           </div>
         </div>
       </div>
