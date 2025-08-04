@@ -22,6 +22,7 @@ type Props = {
 
 const style: React.CSSProperties = {
   backgroundImage: `url(${bgPoolsGradient})`,
+  backgroundSize: "cover",
 };
 
 export function PoolCard({ name, apr, description, iconComponent, coinImage, onClick }: Props) {

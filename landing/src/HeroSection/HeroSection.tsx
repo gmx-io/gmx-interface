@@ -17,6 +17,7 @@ import { REDIRECT_CHAIN_IDS, useGoToTrade } from "../hooks/useGoToTrade";
 
 const assetsBgStyle = {
   backgroundImage: `url(${AsssetsBg})`,
+  backgroundSize: "cover",
 };
 
 export function HeroSection() {
