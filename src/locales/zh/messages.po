@@ -1171,6 +1171,7 @@ msgid "Buy Fee"
 msgstr "购买费用"
 
 #: src/pages/Dashboard/DashboardPageTitle.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Tokens"
 msgstr "代币"
 
@@ -1851,6 +1852,7 @@ msgid "Forfeit profit not checked"
 msgstr "未选中没收利润"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
+#: src/pages/Dashboard/GmCard.tsx
 msgid "Buy GM"
 msgstr "购买 GM"
 
@@ -3422,6 +3424,10 @@ msgstr "Defi Llama"
 #: src/pages/Exchange/Exchange.tsx
 msgid "Orders cancelled."
 msgstr "订单已取消。"
+
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "GMX  Account"
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Last Rebalance"
@@ -6246,8 +6252,8 @@ msgstr "价格影响 / 费用"
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
-msgid "GMX {versionName} Account"
-msgstr "GMX {versionName} 账户"
+#~ msgid "GMX {versionName} Account"
+#~ msgstr "GMX {versionName} 账户"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6809,6 +6815,7 @@ msgstr "达到最大 GM 可买入金额"
 msgid "Session generated"
 msgstr "会话已生成"
 
+#: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
 msgstr "购买 GMX"
@@ -7541,6 +7548,10 @@ msgstr "所需最低抵押品"
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
 msgstr "尝试增加“允许滑点”，在右上角设置菜单下"
 
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "GMX Account"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX ecosystem pages."
 msgstr "GMX 生态系统页面"
@@ -8054,6 +8065,10 @@ msgstr "仓位中已累积的正资金费用尚未可领取。<0/><1/>通过增�
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values do not include incentives."
 msgstr "费用值不包括激励。"
+
+#: src/pages/Dashboard/DashboardV2.tsx
+msgid "For detailed stats"
+msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Generate Referral Code"
@@ -8601,8 +8616,8 @@ msgid "ORACLE PRICE"
 msgstr "预言机价格"
 
 #: src/pages/Dashboard/DashboardV2.tsx
-msgid "For detailed stats:"
-msgstr "详细统计："
+#~ msgid "For detailed stats:"
+#~ msgstr "详细统计："
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx

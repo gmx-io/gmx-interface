@@ -1171,6 +1171,7 @@ msgid "Buy Fee"
 msgstr "購入手数料"
 
 #: src/pages/Dashboard/DashboardPageTitle.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Tokens"
 msgstr "トークン"
 
@@ -1851,6 +1852,7 @@ msgid "Forfeit profit not checked"
 msgstr "利益喪失がチェックされていません"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
+#: src/pages/Dashboard/GmCard.tsx
 msgid "Buy GM"
 msgstr "GMを購入"
 
@@ -3422,6 +3424,10 @@ msgstr "DeFi Llama"
 #: src/pages/Exchange/Exchange.tsx
 msgid "Orders cancelled."
 msgstr "注文がキャンセルされました。"
+
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "GMX  Account"
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Last Rebalance"
@@ -6246,8 +6252,8 @@ msgstr "価格インパクト / 手数料"
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
-msgid "GMX {versionName} Account"
-msgstr "GMX {versionName} アカウント"
+#~ msgid "GMX {versionName} Account"
+#~ msgstr "GMX {versionName} アカウント"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6809,6 +6815,7 @@ msgstr "最大GM購入可能額に到達"
 msgid "Session generated"
 msgstr "セッション生成済"
 
+#: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
 msgstr "GMXを購入"
@@ -7541,6 +7548,10 @@ msgstr "最低必要担保"
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
 msgstr "右上の設定メニューで\"許容スリッページ\"を増加させてください"
 
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "GMX Account"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX ecosystem pages."
 msgstr "GMXエコシステムページ"
@@ -8054,6 +8065,10 @@ msgstr "ポジションの蓄積されたポジティブファンディング手
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values do not include incentives."
 msgstr "手数料値はインセンティブを含みません。"
+
+#: src/pages/Dashboard/DashboardV2.tsx
+msgid "For detailed stats"
+msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Generate Referral Code"
@@ -8601,8 +8616,8 @@ msgid "ORACLE PRICE"
 msgstr "オラクル価格"
 
 #: src/pages/Dashboard/DashboardV2.tsx
-msgid "For detailed stats:"
-msgstr "詳細統計:"
+#~ msgid "For detailed stats:"
+#~ msgstr "詳細統計:"
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx

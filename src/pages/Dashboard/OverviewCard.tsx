@@ -17,6 +17,7 @@ import { sumBigInts } from "lib/sumBigInts";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
+import { AppCard, AppCardSection, AppCardSplit } from "components/AppCard/AppCard";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
@@ -361,204 +362,217 @@ export function OverviewCard({
   ]);
 
   return (
-    <div className="App-card">
-      <div className="App-card-title">
+    <AppCard>
+      <AppCardSection className="text-body-large font-medium">
         <Trans>Overview</Trans>
-      </div>
-      <div className="App-card-divider"></div>
-      <div className="App-card-content">
-        <div className="App-card-row">
-          <div className="label">
-            <Trans>TVL</Trans>
-          </div>
-          <div>
-            <TooltipComponent
-              handle={<span className="numbers">{formatAmountHuman(displayTvl, USD_DECIMALS, true, 2)}</span>}
-              position="bottom-end"
-              content={
-                <>
-                  <Trans>Total value locked takes into account:</Trans>
-                  <br />
-                  <ul className="my-8 list-disc">
-                    <li className="p-2">GMX Staked</li>
-                    <li className="p-2">GLP Pool</li>
-                    <li className="p-2">GM Pools</li>
-                    <li className="p-2">Positions' Collateral</li>
-                  </ul>
-                  <StatsTooltipRow
-                    label="Arbitrum"
-                    showDollar={false}
-                    value={formatAmountHuman(displayTvlArbitrum, USD_DECIMALS, true, 2)}
-                  />
-                  <StatsTooltipRow
-                    label="Avalanche"
-                    showDollar={false}
-                    value={formatAmountHuman(displayTvlAvalanche, USD_DECIMALS, true, 2)}
-                  />
-                  <StatsTooltipRow
-                    label="Botanix"
-                    showDollar={false}
-                    value={formatAmountHuman(displayTvlBotanix, USD_DECIMALS, true, 2)}
-                  />
-                  <div className="!my-8 h-1 bg-gray-800" />
-                  <StatsTooltipRow
-                    label="Total"
-                    showDollar={false}
-                    value={formatAmountHuman(displayTvl, USD_DECIMALS, true, 2)}
-                  />
-                </>
-              }
-            />
-          </div>
-        </div>
-        <div className="App-card-row">
-          <div className="label">
-            <Trans>GLP Pool</Trans>
-          </div>
-          <div>
-            <TooltipComponent
-              handle={<span className="numbers">{formatAmountHuman(totalGlpTvl, USD_DECIMALS, true, 2)}</span>}
-              position="bottom-end"
-              content={
-                <>
-                  <Trans>Total value of tokens in the GLP pools.</Trans>
-                  <br />
-                  <br />
-                  <StatsTooltipRow
-                    label="Arbitrum"
-                    showDollar={false}
-                    value={formatAmountHuman(glpTvlArbitrum, USD_DECIMALS, true, 2)}
-                  />
-                  <StatsTooltipRow
-                    label="Avalanche"
-                    showDollar={false}
-                    value={formatAmountHuman(glpTvlAvalanche, USD_DECIMALS, true, 2)}
-                  />
-                  <div className="my-8 h-1 bg-gray-800" />
-                  <StatsTooltipRow
-                    label="Total"
-                    showDollar={false}
-                    value={formatAmountHuman(totalGlpTvl, USD_DECIMALS, true, 2)}
-                  />
-                  <br />
-                  <Trans>
-                    This value may be higher on other websites due to the collateral of positions being included in the
-                    calculation.
-                  </Trans>
-                </>
-              }
-            />
-          </div>
-        </div>
-        <div className="App-card-row">
-          <div className="label">
-            <Trans>GM Pools</Trans>
-          </div>
-          <div>
-            <TooltipComponent
-              handle={<span className="numbers">{formatAmountHuman(totalGmTvl, USD_DECIMALS, true, 2)}</span>}
-              position="bottom-end"
-              content={
-                <>
-                  <Trans>Total value of tokens in GM Pools.</Trans>
-                  <br />
-                  <br />
-                  <StatsTooltipRow
-                    label="Arbitrum"
-                    showDollar={false}
-                    value={formatAmountHuman(gmTvlArbitrum, USD_DECIMALS, true, 2)}
-                  />
-                  <StatsTooltipRow
-                    label="Avalanche"
-                    showDollar={false}
-                    value={formatAmountHuman(gmTvlAvalanche, USD_DECIMALS, true, 2)}
-                  />
-                  <StatsTooltipRow
-                    label="Botanix"
-                    showDollar={false}
-                    value={formatAmountHuman(gmTvlBotanix, USD_DECIMALS, true, 2)}
-                  />
-                  <div className="!my-8 h-1 bg-gray-800" />
-                  <StatsTooltipRow
-                    label="Total"
-                    showDollar={false}
-                    value={formatAmountHuman(totalGmTvl, USD_DECIMALS, true, 2)}
-                  />
-                </>
-              }
-            />
-          </div>
-        </div>
-        <div className="App-card-row">
-          <div className="label">
-            <Trans>24h Volume</Trans>
-          </div>
-          <div>
-            <TooltipComponent
-              position="bottom-end"
-              className="whitespace-nowrap"
-              handle={<span className="numbers">{formatAmountHuman(totalDailyVolume, USD_DECIMALS, true, 2)}</span>}
-              content={<ChainsStatsTooltipRow entries={dailyVolumeEntries} />}
-            />
-          </div>
-        </div>
-        <div className="App-card-row">
-          <div className="label">
-            <Trans>Open Interest</Trans>
-          </div>
-          <div>
-            <TooltipComponent
-              position="bottom-end"
-              className="whitespace-nowrap"
-              handle={<span className="numbers">{formatAmountHuman(totalOpenInterest, USD_DECIMALS, true, 2)}</span>}
-              content={<ChainsStatsTooltipRow entries={openInterestEntries} />}
-            />
-          </div>
-        </div>
-        <div className="App-card-row">
-          <div className="label">
-            <Trans>Long Positions</Trans>
-          </div>
-          <div>
-            <TooltipComponent
-              position="bottom-end"
-              className="whitespace-nowrap"
-              handle={
-                <span className="numbers">{formatAmountHuman(totalLongPositionSizes, USD_DECIMALS, true, 2)}</span>
-              }
-              content={<ChainsStatsTooltipRow entries={totalLongPositionSizesEntries} />}
-            />
-          </div>
-        </div>
-        <div className="App-card-row">
-          <div className="label">
-            <Trans>Short Positions</Trans>
-          </div>
-          <div>
-            <TooltipComponent
-              position="bottom-end"
-              className="whitespace-nowrap"
-              handle={
-                <span className="numbers">{formatAmountHuman(totalShortPositionSizes, USD_DECIMALS, true, 2)}</span>
-              }
-              content={<ChainsStatsTooltipRow entries={totalShortPositionSizesEntries} />}
-            />
-          </div>
-        </div>
-        <div className="App-card-row">
-          <div className="label">
-            <Trans>Fees for the past</Trans> {formattedDuration}
-          </div>
-          <div>
-            <TooltipComponent
-              position="bottom-end"
-              className="whitespace-nowrap"
-              handle={<span className="numbers">{formatAmountHuman(totalEpochFeesUsd, USD_DECIMALS, true, 2)}</span>}
-              content={<ChainsStatsTooltipRow entries={epochFeesEntries} subtotal={feesSubtotal} />}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+      </AppCardSection>
+      <AppCardSplit
+        className="max-lg:flex-col"
+        leftClassName="max-lg:border-r-0 max-lg:border-b"
+        right={
+          <AppCardSection className="pb-24">
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>TVL</Trans>
+              </div>
+              <div>
+                <TooltipComponent
+                  handle={<span className="numbers">{formatAmountHuman(displayTvl, USD_DECIMALS, true, 2)}</span>}
+                  position="bottom-end"
+                  content={
+                    <>
+                      <Trans>Total value locked takes into account:</Trans>
+                      <br />
+                      <ul className="my-8 list-disc">
+                        <li className="p-2">GMX Staked</li>
+                        <li className="p-2">GLP Pool</li>
+                        <li className="p-2">GM Pools</li>
+                        <li className="p-2">Positions' Collateral</li>
+                      </ul>
+                      <StatsTooltipRow
+                        label="Arbitrum"
+                        showDollar={false}
+                        value={formatAmountHuman(displayTvlArbitrum, USD_DECIMALS, true, 2)}
+                      />
+                      <StatsTooltipRow
+                        label="Avalanche"
+                        showDollar={false}
+                        value={formatAmountHuman(displayTvlAvalanche, USD_DECIMALS, true, 2)}
+                      />
+                      <StatsTooltipRow
+                        label="Botanix"
+                        showDollar={false}
+                        value={formatAmountHuman(displayTvlBotanix, USD_DECIMALS, true, 2)}
+                      />
+                      <div className="!my-8 h-1 bg-gray-800" />
+                      <StatsTooltipRow
+                        label="Total"
+                        showDollar={false}
+                        value={formatAmountHuman(displayTvl, USD_DECIMALS, true, 2)}
+                      />
+                    </>
+                  }
+                />
+              </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>GLP Pool</Trans>
+              </div>
+              <div>
+                <TooltipComponent
+                  handle={<span className="numbers">{formatAmountHuman(totalGlpTvl, USD_DECIMALS, true, 2)}</span>}
+                  position="bottom-end"
+                  content={
+                    <>
+                      <Trans>Total value of tokens in the GLP pools.</Trans>
+                      <br />
+                      <br />
+                      <StatsTooltipRow
+                        label="Arbitrum"
+                        showDollar={false}
+                        value={formatAmountHuman(glpTvlArbitrum, USD_DECIMALS, true, 2)}
+                      />
+                      <StatsTooltipRow
+                        label="Avalanche"
+                        showDollar={false}
+                        value={formatAmountHuman(glpTvlAvalanche, USD_DECIMALS, true, 2)}
+                      />
+                      <div className="my-8 h-1 bg-gray-800" />
+                      <StatsTooltipRow
+                        label="Total"
+                        showDollar={false}
+                        value={formatAmountHuman(totalGlpTvl, USD_DECIMALS, true, 2)}
+                      />
+                      <br />
+                      <Trans>
+                        This value may be higher on other websites due to the collateral of positions being included in
+                        the calculation.
+                      </Trans>
+                    </>
+                  }
+                />
+              </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>GM Pools</Trans>
+              </div>
+              <div>
+                <TooltipComponent
+                  handle={<span className="numbers">{formatAmountHuman(totalGmTvl, USD_DECIMALS, true, 2)}</span>}
+                  position="bottom-end"
+                  content={
+                    <>
+                      <Trans>Total value of tokens in GM Pools.</Trans>
+                      <br />
+                      <br />
+                      <StatsTooltipRow
+                        label="Arbitrum"
+                        showDollar={false}
+                        value={formatAmountHuman(gmTvlArbitrum, USD_DECIMALS, true, 2)}
+                      />
+                      <StatsTooltipRow
+                        label="Avalanche"
+                        showDollar={false}
+                        value={formatAmountHuman(gmTvlAvalanche, USD_DECIMALS, true, 2)}
+                      />
+                      <StatsTooltipRow
+                        label="Botanix"
+                        showDollar={false}
+                        value={formatAmountHuman(gmTvlBotanix, USD_DECIMALS, true, 2)}
+                      />
+                      <div className="!my-8 h-1 bg-gray-800" />
+                      <StatsTooltipRow
+                        label="Total"
+                        showDollar={false}
+                        value={formatAmountHuman(totalGmTvl, USD_DECIMALS, true, 2)}
+                      />
+                    </>
+                  }
+                />
+              </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>24h Volume</Trans>
+              </div>
+              <div>
+                <TooltipComponent
+                  position="bottom-end"
+                  className="whitespace-nowrap"
+                  handle={<span className="numbers">{formatAmountHuman(totalDailyVolume, USD_DECIMALS, true, 2)}</span>}
+                  content={<ChainsStatsTooltipRow entries={dailyVolumeEntries} />}
+                />
+              </div>
+            </div>
+          </AppCardSection>
+        }
+        left={
+          <AppCardSection className="pb-24">
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>Open Interest</Trans>
+              </div>
+              <div>
+                <TooltipComponent
+                  position="bottom-end"
+                  className="whitespace-nowrap"
+                  handle={
+                    <span className="numbers">{formatAmountHuman(totalOpenInterest, USD_DECIMALS, true, 2)}</span>
+                  }
+                  content={<ChainsStatsTooltipRow entries={openInterestEntries} />}
+                />
+              </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>Long Positions</Trans>
+              </div>
+              <div>
+                <TooltipComponent
+                  position="bottom-end"
+                  className="whitespace-nowrap"
+                  handle={
+                    <span className="numbers">{formatAmountHuman(totalLongPositionSizes, USD_DECIMALS, true, 2)}</span>
+                  }
+                  content={<ChainsStatsTooltipRow entries={totalLongPositionSizesEntries} />}
+                />
+              </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>Short Positions</Trans>
+              </div>
+              <div>
+                <TooltipComponent
+                  position="bottom-end"
+                  className="whitespace-nowrap"
+                  handle={
+                    <span className="numbers">{formatAmountHuman(totalShortPositionSizes, USD_DECIMALS, true, 2)}</span>
+                  }
+                  content={<ChainsStatsTooltipRow entries={totalShortPositionSizesEntries} />}
+                />
+              </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>Fees for the past</Trans> {formattedDuration}
+              </div>
+              <div>
+                <TooltipComponent
+                  position="bottom-end"
+                  className="whitespace-nowrap"
+                  handle={
+                    <span className="numbers">{formatAmountHuman(totalEpochFeesUsd, USD_DECIMALS, true, 2)}</span>
+                  }
+                  content={<ChainsStatsTooltipRow entries={epochFeesEntries} subtotal={feesSubtotal} />}
+                />
+              </div>
+            </div>
+          </AppCardSection>
+        }
+      ></AppCardSplit>
+    </AppCard>
   );
 }

@@ -15,9 +15,12 @@ import { getPageTitle } from "lib/legacy";
 import { getByKey } from "lib/objects";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
+import { AppHeader } from "components/AppHeader/AppHeader";
+import { AppHeaderLogo } from "components/AppHeader/AppHeaderLogo";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
 import ButtonLink from "components/Button/ButtonLink";
+import { ChainDataImage } from "components/ChainDataImage";
 import Loader from "components/Common/Loader";
 import SEO from "components/Common/SEO";
 import SideNav from "components/SideNav/SideNav";
@@ -59,7 +62,20 @@ export function PoolsDetails() {
   const isInCurtain = isDesktop;
 
   return (
-    <AppPageLayout className="max-lg:pb-40" sideNav={<SideNav className="max-xl:pb-40" />}>
+    <AppPageLayout
+      className="max-lg:pb-40"
+      sideNav={<SideNav className="max-xl:pb-40" />}
+      header={
+        <AppHeader
+          leftContent={
+            <div className="flex items-center gap-16">
+              <AppHeaderLogo />
+              <ChainDataImage />
+            </div>
+          }
+        />
+      }
+    >
       <SEO title={getPageTitle("V2 Pools")}>
         <div className={cx("flex flex-col gap-8")}>
           <ButtonLink to="/pools">

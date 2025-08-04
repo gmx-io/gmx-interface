@@ -1171,6 +1171,7 @@ msgid "Buy Fee"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardPageTitle.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Tokens"
 msgstr ""
 
@@ -1851,6 +1852,7 @@ msgid "Forfeit profit not checked"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
+#: src/pages/Dashboard/GmCard.tsx
 msgid "Buy GM"
 msgstr ""
 
@@ -3421,6 +3423,10 @@ msgstr ""
 
 #: src/pages/Exchange/Exchange.tsx
 msgid "Orders cancelled."
+msgstr ""
+
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "GMX  Account"
 msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
@@ -6243,8 +6249,8 @@ msgstr ""
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
-msgid "GMX {versionName} Account"
-msgstr ""
+#~ msgid "GMX {versionName} Account"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6803,6 +6809,7 @@ msgstr ""
 msgid "Session generated"
 msgstr ""
 
+#: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
 msgstr ""
@@ -7535,6 +7542,10 @@ msgstr ""
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
 msgstr ""
 
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "GMX Account"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX ecosystem pages."
 msgstr ""
@@ -8047,6 +8058,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values do not include incentives."
+msgstr ""
+
+#: src/pages/Dashboard/DashboardV2.tsx
+msgid "For detailed stats"
 msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
@@ -8595,8 +8610,8 @@ msgid "ORACLE PRICE"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
-msgid "For detailed stats:"
-msgstr ""
+#~ msgid "For detailed stats:"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx

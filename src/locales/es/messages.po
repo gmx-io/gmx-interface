@@ -1171,6 +1171,7 @@ msgid "Buy Fee"
 msgstr "Comisión de Compra"
 
 #: src/pages/Dashboard/DashboardPageTitle.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Tokens"
 msgstr "Tokens"
 
@@ -1851,6 +1852,7 @@ msgid "Forfeit profit not checked"
 msgstr "Renuncia de ganancias no marcada"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
+#: src/pages/Dashboard/GmCard.tsx
 msgid "Buy GM"
 msgstr "Comprar GM"
 
@@ -3422,6 +3424,10 @@ msgstr "Defi Llama"
 #: src/pages/Exchange/Exchange.tsx
 msgid "Orders cancelled."
 msgstr "Órdenes canceladas."
+
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "GMX  Account"
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Last Rebalance"
@@ -6246,8 +6252,8 @@ msgstr "Impacto de Precio / Comisiones"
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
-msgid "GMX {versionName} Account"
-msgstr "Cuenta GMX {versionName}"
+#~ msgid "GMX {versionName} Account"
+#~ msgstr "Cuenta GMX {versionName}"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6809,6 +6815,7 @@ msgstr "Cantidad máxima comprable de GM alcanzada"
 msgid "Session generated"
 msgstr "Sesión generada"
 
+#: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
 msgstr "Comprar GMX"
@@ -7541,6 +7548,10 @@ msgstr "Garantía mínima requerida"
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
 msgstr "Prueba a incrementar el \"Deslizamiento Permitido\", en el menú de Ajustes en la esquina superior derecha"
 
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "GMX Account"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX ecosystem pages."
 msgstr "Páginas del ecosistema GMX."
@@ -8054,6 +8065,10 @@ msgstr "Comisiones de financiación positivas acumuladas en posiciones no reclam
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values do not include incentives."
 msgstr "Los valores de comisiones no incluyen incentivos."
+
+#: src/pages/Dashboard/DashboardV2.tsx
+msgid "For detailed stats"
+msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Generate Referral Code"
@@ -8601,8 +8616,8 @@ msgid "ORACLE PRICE"
 msgstr "PRECIO DE ORÁCULO"
 
 #: src/pages/Dashboard/DashboardV2.tsx
-msgid "For detailed stats:"
-msgstr "Para estadísticas detalladas:"
+#~ msgid "For detailed stats:"
+#~ msgstr "Para estadísticas detalladas:"
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx

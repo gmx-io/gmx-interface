@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import { useMemo, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
-import { getIcon } from "config/icons";
 import { useMarketsInfoDataToIndexTokensStats } from "context/SyntheticsStateContext/hooks/statsHooks";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { IndexTokenStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
@@ -57,17 +56,21 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
 
   return (
     <div className="my-15 rounded-4 bg-slate-900 text-left">
-      <div className="flex items-center px-16 py-8 text-16">
-        <Trans>GM Pools</Trans>
-        <img className="ml-5 mr-10" src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
-        <SearchInput
-          size="s"
-          value={searchText}
-          setValue={setSearchText}
-          className="*:!text-body-medium"
-          placeholder="Search Market"
-          autoFocus={false}
-        />
+      <div className="flex flex-col gap-16 p-20 text-16">
+        <span className="text-h2">
+          <Trans>GM Pools</Trans>
+        </span>
+
+        <div className="max-w-[260px]">
+          <SearchInput
+            size="s"
+            value={searchText}
+            setValue={setSearchText}
+            className="*:!text-body-medium"
+            placeholder="Search Market"
+            autoFocus={false}
+          />
+        </div>
       </div>
       <TableScrollFadeContainer>
         <table className="w-[max(100%,900px)]">
@@ -210,7 +213,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
               />
             </div>
             <div>
-              <div className="text-body-large">{marketIndexName}</div>
+              <div className="text-body-large font-medium">{marketIndexName}</div>
             </div>
             <div>
               <AssetDropdown token={stats.token} marketsStats={stats.marketsStats} />
@@ -218,7 +221,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
           </div>
         </div>
       </TableTd>
-      <TableTd className="numbers">
+      <TableTd className="font-medium numbers">
         {formatUsdPrice(stats.token.prices?.minPrice, {
           visualMultiplier: stats.token.visualMultiplier,
         })}
@@ -226,7 +229,11 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
       <TableTd>
         <TooltipWithPortal
           className="nowrap"
-          handle={<span className="numbers">{formatAmountHuman(stats.totalPoolValue, USD_DECIMALS, true, 2)}</span>}
+          handle={
+            <span className="font-medium numbers">
+              {formatAmountHuman(stats.totalPoolValue, USD_DECIMALS, true, 2)}
+            </span>
+          }
           content={
             <>
               {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
@@ -250,7 +257,11 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
       <TableTd>
         <TooltipWithPortal
           className="nowrap"
-          handle={<span className="numbers">{formatAmountHuman(stats.totalMaxLiquidity, USD_DECIMALS, true, 2)}</span>}
+          handle={
+            <span className="font-medium numbers">
+              {formatAmountHuman(stats.totalMaxLiquidity, USD_DECIMALS, true, 2)}
+            </span>
+          }
           content={
             <>
               {stats.marketsStats.map(({ marketInfo, maxLiquidity }) => (
@@ -275,14 +286,14 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
         <TooltipWithPortal
           tooltipClassName="MarketList-netfee-tooltip"
           handle={
-            <span className="numbers">{`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(netFeePerHourShort)}`}</span>
+            <span className="font-medium numbers">{`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(netFeePerHourShort)}`}</span>
           }
           maxAllowedWidth={510}
           position="bottom-end"
           renderContent={() => <NetFeeTooltip marketStats={stats.marketsStats} />}
         />
       </TableTd>
-      <TableTd className="numbers">{formatAmount(stats.totalUtilization, 2, 2)}%</TableTd>
+      <TableTd className="font-medium numbers">{formatAmount(stats.totalUtilization, 2, 2)}%</TableTd>
     </TableTr>
   );
 }

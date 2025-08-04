@@ -3,7 +3,7 @@ import { Menu } from "@headlessui/react";
 import { Trans, t } from "@lingui/macro";
 import { ethers, isAddress } from "ethers";
 import { useCallback } from "react";
-import { FiChevronDown } from "react-icons/fi";
+import { HiDotsVertical } from "react-icons/hi";
 import { Link } from "react-router-dom";
 
 import { getTokenExplorerUrl } from "config/chains";
@@ -80,7 +80,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right", mar
           ref={refs.setReference}
           className="dropdown-arrow center-both"
         >
-          <FiChevronDown size={20} />
+          <HiDotsVertical size={16} />
         </Menu.Button>
         <FloatingPortal>
           <Menu.Items

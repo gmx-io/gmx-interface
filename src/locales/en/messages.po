@@ -1171,6 +1171,7 @@ msgid "Buy Fee"
 msgstr "Buy Fee"
 
 #: src/pages/Dashboard/DashboardPageTitle.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Tokens"
 msgstr "Tokens"
 
@@ -1851,6 +1852,7 @@ msgid "Forfeit profit not checked"
 msgstr "Forfeit profit not checked"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
+#: src/pages/Dashboard/GmCard.tsx
 msgid "Buy GM"
 msgstr "Buy GM"
 
@@ -3422,6 +3424,10 @@ msgstr "Defi Llama"
 #: src/pages/Exchange/Exchange.tsx
 msgid "Orders cancelled."
 msgstr "Orders cancelled."
+
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "GMX  Account"
+msgstr "GMX  Account"
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Last Rebalance"
@@ -6246,8 +6252,8 @@ msgstr "Price Impact / Fees"
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
-msgid "GMX {versionName} Account"
-msgstr "GMX {versionName} Account"
+#~ msgid "GMX {versionName} Account"
+#~ msgstr "GMX {versionName} Account"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6809,6 +6815,7 @@ msgstr "Max GM buyable amount reached"
 msgid "Session generated"
 msgstr "Session generated"
 
+#: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
 msgstr "Buy GMX"
@@ -7541,6 +7548,10 @@ msgstr "Min required collateral"
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
 msgstr "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
 
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "GMX Account"
+msgstr "GMX Account"
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX ecosystem pages."
 msgstr "GMX ecosystem pages."
@@ -8054,6 +8065,10 @@ msgstr "Accrued positive funding fees in positions not yet claimable.<0/><1/>The
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values do not include incentives."
 msgstr "Fee values do not include incentives."
+
+#: src/pages/Dashboard/DashboardV2.tsx
+msgid "For detailed stats"
+msgstr "For detailed stats"
 
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Generate Referral Code"
@@ -8601,8 +8616,8 @@ msgid "ORACLE PRICE"
 msgstr "ORACLE PRICE"
 
 #: src/pages/Dashboard/DashboardV2.tsx
-msgid "For detailed stats:"
-msgstr "For detailed stats:"
+#~ msgid "For detailed stats:"
+#~ msgstr "For detailed stats:"
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx

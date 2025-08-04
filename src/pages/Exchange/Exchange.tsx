@@ -37,7 +37,6 @@ import useWallet from "lib/wallets/useWallet";
 import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
-import { AppHeader } from "components/AppHeader/AppHeader";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Checkbox from "components/Checkbox/Checkbox";
 import ExchangeBanner from "components/Exchange/ExchangeBanner";
@@ -1072,7 +1071,6 @@ export const Exchange = forwardRef(
     return (
       <AppPageLayout>
         <div className="flex flex-col gap-8">
-          <AppHeader />
           {showBanner && <ExchangeBanner hideBanner={hideBanner} />}
           <div className="flex gap-8">
             <div className="grow">

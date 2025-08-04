@@ -32,13 +32,7 @@ export default function Ecosystem() {
       <SEO title={getPageTitle(t`Ecosystem Projects`)}>
         <div className="default-container page-layout">
           <div className="flex flex-col gap-20">
-            <PageTitle
-              showNetworkIcon={false}
-              isTop
-              title={t`GMX Pages`}
-              subtitle={t`GMX ecosystem pages.`}
-              qa="ecosystem-page"
-            />
+            <PageTitle isTop title={t`GMX Pages`} subtitle={t`GMX ecosystem pages.`} qa="ecosystem-page" />
             <div className="Ecosystem-projects">
               {gmxPages.map((item) => {
                 const linkLabel = item.linkLabel ? item.linkLabel : item.link;
@@ -75,7 +69,6 @@ export default function Ecosystem() {
             </div>
 
             <PageTitle
-              showNetworkIcon={false}
               title={t`Community Projects`}
               subtitle={
                 <Trans>
@@ -137,7 +130,7 @@ export default function Ecosystem() {
                 );
               })}
             </div>
-            <PageTitle showNetworkIcon={false} title={t`Dashboards`} subtitle={t`GMX dashboards and analytics.`} />
+            <PageTitle title={t`Dashboards`} subtitle={t`GMX dashboards and analytics.`} />
             <div className="Ecosystem-projects">
               {dashboardProjects.map((item) => {
                 const linkLabel = item.linkLabel ? item.linkLabel : item.link;
@@ -181,11 +174,7 @@ export default function Ecosystem() {
                 );
               })}
             </div>
-            <PageTitle
-              showNetworkIcon={false}
-              title={t`Partnerships and Integrations`}
-              subtitle={t`Projects integrated with GMX.`}
-            />
+            <PageTitle title={t`Partnerships and Integrations`} subtitle={t`Projects integrated with GMX.`} />
             <div className="Ecosystem-projects">
               {integrations.map((item) => {
                 const linkLabel = item.linkLabel ? item.linkLabel : item.link;
@@ -228,11 +217,7 @@ export default function Ecosystem() {
                 user-friendly interface for easier market analysis and decision-making.
               </Trans>
             </div>
-            <PageTitle
-              showNetworkIcon={false}
-              title={t`Telegram Groups`}
-              subtitle={t`Community-led Telegram groups.`}
-            />
+            <PageTitle title={t`Telegram Groups`} subtitle={t`Community-led Telegram groups.`} />
             <div className="Ecosystem-projects">
               {telegramGroups.map((item) => {
                 const linkLabel = item.linkLabel ? item.linkLabel : item.link;

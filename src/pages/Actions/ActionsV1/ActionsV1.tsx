@@ -67,7 +67,6 @@ function ActionsV1({
           <PageTitle
             isTop
             title={t`GMX V1 Actions`}
-            chainId={chainId}
             subtitle={
               <>
                 <Trans>

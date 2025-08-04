@@ -273,7 +273,7 @@ export function GmListItem({
           usdOnTop
         />
       </TableTd>
-      <TableTd>
+      <TableTd className="font-medium">
         <GmTokensBalanceInfo
           token={token}
           daysConsidered={daysConsidered}
@@ -283,7 +283,7 @@ export function GmListItem({
         />
       </TableTd>
 
-      <TableTd>
+      <TableTd className="font-medium">
         <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
       </TableTd>
 

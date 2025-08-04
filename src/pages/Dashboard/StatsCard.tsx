@@ -15,6 +15,7 @@ import useWallet from "lib/wallets/useWallet";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
+import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
 
@@ -129,12 +130,11 @@ export function StatsCard({
   );
 
   return (
-    <div className="App-card">
-      <div className="App-card-title">
+    <AppCard>
+      <AppCardSection className="text-body-large font-medium">
         <Trans>Stats</Trans>
-      </div>
-      <div className="App-card-divider"></div>
-      <div className="App-card-content">
+      </AppCardSection>
+      <AppCardSection>
         <div className="App-card-row">
           <div className="label">
             <Trans>Fees</Trans>
@@ -216,7 +216,7 @@ export function StatsCard({
             <span className="numbers">{formatAmountHuman(totalTreasuryFundUsd, USD_DECIMALS, true, 2)}</span>
           </div>
         </div>
-      </div>
-    </div>
+      </AppCardSection>
+    </AppCard>
   );
 }

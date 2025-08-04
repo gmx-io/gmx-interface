@@ -1171,6 +1171,7 @@ msgid "Buy Fee"
 msgstr "구매 수수료"
 
 #: src/pages/Dashboard/DashboardPageTitle.tsx
+#: src/pages/Dashboard/DashboardV2.tsx
 msgid "Tokens"
 msgstr "토큰"
 
@@ -1851,6 +1852,7 @@ msgid "Forfeit profit not checked"
 msgstr "상실 이익이 확인되지 않았습니다."
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
+#: src/pages/Dashboard/GmCard.tsx
 msgid "Buy GM"
 msgstr "GM 구매"
 
@@ -3422,6 +3424,10 @@ msgstr "Defi Llama"
 #: src/pages/Exchange/Exchange.tsx
 msgid "Orders cancelled."
 msgstr "주문 취소"
+
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "GMX  Account"
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Last Rebalance"
@@ -6246,8 +6252,8 @@ msgstr "가격 영향 / 수수료"
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
-msgid "GMX {versionName} Account"
-msgstr "GMX {versionName} 계정"
+#~ msgid "GMX {versionName} Account"
+#~ msgstr "GMX {versionName} 계정"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6809,6 +6815,7 @@ msgstr "최대 GM 구매 가능 금액 도달"
 msgid "Session generated"
 msgstr "세션 생성됨"
 
+#: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
 msgstr "GMX 구매"
@@ -7541,6 +7548,10 @@ msgstr "최소 필요 담보"
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
 msgstr "오른쪽 상단 설정에서 \"허용 슬리피지\" 증가 시도"
 
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "GMX Account"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX ecosystem pages."
 msgstr "GMX 생태계 페이지."
@@ -8054,6 +8065,10 @@ msgstr "포지션에서 아직 청구되지 않은 긍정 자금 수수료.<0/><
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values do not include incentives."
 msgstr "수수료 값은 인센티브 포함 안 함."
+
+#: src/pages/Dashboard/DashboardV2.tsx
+msgid "For detailed stats"
+msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Generate Referral Code"
@@ -8601,8 +8616,8 @@ msgid "ORACLE PRICE"
 msgstr "오라클 가격"
 
 #: src/pages/Dashboard/DashboardV2.tsx
-msgid "For detailed stats:"
-msgstr "상세 통계:"
+#~ msgid "For detailed stats:"
+#~ msgstr "상세 통계:"
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx

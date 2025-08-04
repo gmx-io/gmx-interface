@@ -28,7 +28,6 @@ export default function SyntheticsActions() {
           <PageTitle
             isTop
             title={t`GMX V2 Actions`}
-            chainId={chainId}
             subtitle={
               <>
                 <Trans>

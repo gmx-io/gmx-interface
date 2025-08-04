@@ -16,7 +16,10 @@ import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
 
+import { AppHeader } from "components/AppHeader/AppHeader";
+import { AppHeaderLogo } from "components/AppHeader/AppHeaderLogo";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+import { ChainDataImage } from "components/ChainDataImage";
 import { GlvList } from "components/Synthetics/GmList/GlvList";
 import { GmList } from "components/Synthetics/GmList/GmList";
 
@@ -64,7 +67,18 @@ export default function Pools() {
   const isBotanix = chainId === BOTANIX;
 
   return (
-    <AppPageLayout>
+    <AppPageLayout
+      header={
+        <AppHeader
+          leftContent={
+            <div className="flex items-center gap-16">
+              <AppHeaderLogo />
+              <ChainDataImage />
+            </div>
+          }
+        />
+      }
+    >
       <div
         className={cx("grid w-full flex-col p-20", {
           "grid-cols-1": isMobile,

@@ -6,7 +6,10 @@ import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/S
 import { useChainId } from "lib/chains";
 
 import AddressView from "components/AddressView/AddressView";
+import { AppHeader } from "components/AppHeader/AppHeader";
+import { AppHeaderLogo } from "components/AppHeader/AppHeaderLogo";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+import { ChainDataImage } from "components/ChainDataImage";
 import PageTitle from "components/PageTitle/PageTitle";
 
 import { DailyAndCumulativePnL } from "./DailyAndCumulativePnL";
@@ -21,13 +24,22 @@ export function AccountDashboard() {
 
   const { chainId, version, account } = usePageParams(initialChainId);
 
-  const versionName = version === 2 ? "V2" : "V1";
+  const header = (
+    <AppHeader
+      leftContent={
+        <div className="flex items-center gap-16">
+          <AppHeaderLogo />
+          <ChainDataImage />
+        </div>
+      }
+    />
+  );
 
   if (!isAddress(account!)) {
     return (
-      <AppPageLayout>
+      <AppPageLayout header={header}>
         <div className="default-container page-layout">
-          <PageTitle title={t`GMX ${versionName} Account`} chainId={chainId} />
+          <PageTitle title={t`GMX  Account`} className="p-12" />
           <div className="text-center text-red-500">
             <Trans>Invalid address. Please make sure you have entered a valid Ethereum address</Trans>
           </div>
@@ -37,11 +49,10 @@ export function AccountDashboard() {
   }
 
   return (
-    <AppPageLayout>
+    <AppPageLayout header={header}>
       <div className="default-container page-layout flex flex-col gap-8">
         <PageTitle
-          chainId={chainId}
-          title={t`GMX ${versionName} Account`}
+          title={t`GMX Account`}
           subtitle={
             <>
               <div className="text-body-medium mb-20 flex flex-wrap items-center gap-4 font-medium">

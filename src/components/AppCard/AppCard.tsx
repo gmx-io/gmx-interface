@@ -29,3 +29,22 @@ export function AppCardSection({
     </div>
   );
 }
+
+export const AppCardSplit = ({
+  right,
+  left,
+  className,
+  leftClassName,
+}: {
+  right: React.ReactNode;
+  left: React.ReactNode;
+  leftClassName?: string;
+  className?: string;
+}) => {
+  return (
+    <div className={cx("flex border-b border-slate-600 last:border-b-0", className)}>
+      <div className={cx("flex-1 border-r border-slate-600", leftClassName)}>{left}</div>
+      <div className="flex-1">{right}</div>
+    </div>
+  );
+};
