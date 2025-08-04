@@ -701,12 +701,6 @@ msgstr "分散型取引所アグリゲーターを使用してGMXを購入:"
 msgid "Min. Required Collateral"
 msgstr "最低必要担保"
 
-#: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
-#~ msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
-#~ msgstr "{1} esGMXのべスティング入金から{0}トークンがGMXに変換されました。"
-
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Rank"
@@ -3191,10 +3185,6 @@ msgstr "トリガー価格が清算価格を下回っています"
 msgid "Claim failed."
 msgstr "請求できませんでした。"
 
-#: src/pages/AccountDashboard/HistoricalLists.tsx
-#~ msgid "Positions{0}"
-#~ msgstr "ポジション{0}"
-
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Unknown Error"
 msgstr "不明なエラー"
@@ -3823,10 +3813,6 @@ msgstr "Compass Labs GMトークンダッシュボード"
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {3} USD"
 msgstr "{0} {longOrShortText}の増額をリクエスト +{1} USD 可能な価格: {2} {3} USD"
-
-#: src/components/SideNav/SideNav.tsx
-#~ msgid "Earn"
-#~ msgstr "報酬獲得"
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -4601,10 +4587,6 @@ msgstr "外部スワップは一時的に無効です。再試行してくださ
 msgid "GMX APR"
 msgstr "GMX APR"
 
-#: src/pages/AccountDashboard/VersionNetworkSwitcherRow.tsx
-#~ msgid "Switch to:"
-#~ msgstr "切り替え:"
-
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
@@ -5254,11 +5236,6 @@ msgstr "GMXはユーティリティおよびガバナンストークンです。
 msgid "Transferring"
 msgstr "移転中..."
 
-#: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
-#~ msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
-#~ msgstr "{0} GMXトークンを請求可能。総報酬セクションの下のオプションを使って請求してください。"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP autocompounding vaults"
 msgstr "GLP自動複利ボールト"
@@ -5765,10 +5742,6 @@ msgstr "今日"
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Receiver Address"
 msgstr "受け取り側アドレス"
-
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-#~ msgid "GMX {versionName} {networkName} information for account:"
-#~ msgstr "アカウントのGMX {versionName} {networkName} 情報:"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "From"
@@ -7874,10 +7847,6 @@ msgstr "Stabilizeプロトコル"
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Enter a valid coin names"
 msgstr "有効なコイン名を入力"
-
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#~ msgid "Cumulative PnL: <0>{0}</0>"
-#~ msgstr "累積PnL: <0>{0}</0>"
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx

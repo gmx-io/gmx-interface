@@ -701,12 +701,6 @@ msgstr "使用去中心化交易所聚合器购买 GMX："
 msgid "Min. Required Collateral"
 msgstr "最低所需抵押品"
 
-#: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
-#~ msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
-#~ msgstr "{0} 代币已从 {1} esGMX 存款转换为 GMX 用于归属。"
-
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Rank"
@@ -3191,10 +3185,6 @@ msgstr "触发价格低于清算价格"
 msgid "Claim failed."
 msgstr "领取失败。"
 
-#: src/pages/AccountDashboard/HistoricalLists.tsx
-#~ msgid "Positions{0}"
-#~ msgstr "仓位{0}"
-
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Unknown Error"
 msgstr "未知错误"
@@ -3823,10 +3813,6 @@ msgstr "Compass Labs GM 代币仪表板"
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {3} USD"
 msgstr "请求增加 {0} {longOrShortText}, +{1} USD，可接受价格：{2} {3} USD"
-
-#: src/components/SideNav/SideNav.tsx
-#~ msgid "Earn"
-#~ msgstr "赚取"
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -4601,10 +4587,6 @@ msgstr "外部交换暂时禁用。请重试。"
 msgid "GMX APR"
 msgstr "GMX 年化收益率"
 
-#: src/pages/AccountDashboard/VersionNetworkSwitcherRow.tsx
-#~ msgid "Switch to:"
-#~ msgstr "切换到："
-
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
@@ -5254,11 +5236,6 @@ msgstr "GMX 是实用和治理代币。分别累积 V1 和 V2 市场生成费用
 msgid "Transferring"
 msgstr "正在转移"
 
-#: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
-#~ msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
-#~ msgstr "可以领取 {0} 个 GMX 代币，使用总奖励部分下的选项领取它们。"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP autocompounding vaults"
 msgstr "GLP 自动复合金库"
@@ -5765,10 +5742,6 @@ msgstr "今天"
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Receiver Address"
 msgstr "接收方地址"
-
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-#~ msgid "GMX {versionName} {networkName} information for account:"
-#~ msgstr "账户的 GMX {versionName} {networkName} 信息："
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "From"
@@ -7874,10 +7847,6 @@ msgstr "稳定协议"
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Enter a valid coin names"
 msgstr "输入有效的币种名称"
-
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#~ msgid "Cumulative PnL: <0>{0}</0>"
-#~ msgstr "累计盈亏：<0>{0}</0>"
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx

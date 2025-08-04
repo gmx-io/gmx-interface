@@ -701,12 +701,6 @@ msgstr "Buy GMX using Decentralized Exchange Aggregators:"
 msgid "Min. Required Collateral"
 msgstr "Min. Required Collateral"
 
-#: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
-#~ msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
-#~ msgstr "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
-
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Rank"
@@ -3191,10 +3185,6 @@ msgstr "Trigger price below liq. price"
 msgid "Claim failed."
 msgstr "Claim failed."
 
-#: src/pages/AccountDashboard/HistoricalLists.tsx
-#~ msgid "Positions{0}"
-#~ msgstr "Positions{0}"
-
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Unknown Error"
 msgstr "Unknown Error"
@@ -3823,10 +3813,6 @@ msgstr "Compass Labs GM Token Dashboard"
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {3} USD"
 msgstr "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {3} USD"
-
-#: src/components/SideNav/SideNav.tsx
-#~ msgid "Earn"
-#~ msgstr "Earn"
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -4601,10 +4587,6 @@ msgstr "External swap is temporarily disabled. Please try again."
 msgid "GMX APR"
 msgstr "GMX APR"
 
-#: src/pages/AccountDashboard/VersionNetworkSwitcherRow.tsx
-#~ msgid "Switch to:"
-#~ msgstr "Switch to:"
-
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
@@ -5254,11 +5236,6 @@ msgstr "GMX is the utility and governance token. Accrues 30% and 27% of V1 and V
 msgid "Transferring"
 msgstr "Transferring"
 
-#: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
-#~ msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
-#~ msgstr "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP autocompounding vaults"
 msgstr "GLP autocompounding vaults"
@@ -5765,10 +5742,6 @@ msgstr "Today"
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Receiver Address"
 msgstr "Receiver Address"
-
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-#~ msgid "GMX {versionName} {networkName} information for account:"
-#~ msgstr "GMX {versionName} {networkName} information for account:"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "From"
@@ -7874,10 +7847,6 @@ msgstr "Stabilize Protocol"
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Enter a valid coin names"
 msgstr "Enter a valid coin names"
-
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#~ msgid "Cumulative PnL: <0>{0}</0>"
-#~ msgstr "Cumulative PnL: <0>{0}</0>"
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx

@@ -5,6 +5,7 @@ import { useCopyToClipboard } from "react-use";
 import type { Address } from "viem";
 
 import { BOTANIX } from "config/chains";
+import { useBreakpoints } from "lib/breakpoints";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useENS } from "lib/legacy";
@@ -41,12 +42,14 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
   const { chainId } = useChainId();
   const isBotanix = chainId === BOTANIX;
 
+  const { isMobile } = useBreakpoints();
+
   return (
     <div className="relative">
       <Menu>
         <Menu.Button as="div">
-          <Button variant="secondary" className="flex  items-center gap-8 max-md:p-6">
-            <Avatar size={24} ensName={ensName} address={account} />
+          <Button variant="secondary" className="flex  items-center gap-8">
+            <Avatar size={isMobile ? 16 : 24} ensName={ensName} address={account} />
 
             <span className="text-body-medium font-medium text-white">
               {shortenAddressOrEns(ensName || account, displayAddressLength)}

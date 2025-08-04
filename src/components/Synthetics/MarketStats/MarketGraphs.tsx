@@ -25,7 +25,6 @@ import { PoolsTimeRange, usePoolsTimeRange } from "domain/synthetics/markets/use
 import { TokensData, getMidPrice } from "domain/synthetics/tokens";
 import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
 import { useChainId } from "lib/chains";
-import { formatDate } from "lib/dates";
 import { useLocalizedMap } from "lib/i18n";
 import { bigintToNumber, formatPercentage, formatUsdPrice, parseValue } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
@@ -216,7 +215,9 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
 
 const ACTIVE_DOT_PROPS = {
   r: 4,
+  strokeWidth: 2,
   stroke: "var(--color-blue-300)",
+  fill: "var(--color-slate-900)",
 };
 
 const DOT_PROPS = {
@@ -256,6 +257,12 @@ const axisValueFormatter = (marketGraphType: MarketGraphType) => (value: number)
   };
 
   return valueMap[marketGraphType];
+};
+
+const CHART_CURSOR_PROPS = {
+  stroke: "var(--color-slate-500)",
+  strokeWidth: 1,
+  strokeDasharray: "2 2",
 };
 
 const GraphChart = ({
@@ -337,6 +344,7 @@ const GraphChart = ({
           </defs>
           <CartesianGrid vertical={false} strokeDasharray="5 3" strokeWidth={0.5} stroke="var(--color-slate-600)" />
 
+          <Tooltip cursor={CHART_CURSOR_PROPS} content={<GraphTooltip formatValue={formatValue} />} />
           <Area
             key={marketGraphType}
             type="linear"
@@ -351,7 +359,6 @@ const GraphChart = ({
             animateNewValues={true}
             baseValue="dataMin"
           />
-          <Tooltip cursor={false} content={<GraphTooltip formatValue={formatValue} />} />
           <XAxis
             dataKey="snapshotTimestamp"
             tickFormatter={(value) => format(value, "dd/MM")}
@@ -379,9 +386,12 @@ const GraphTooltip = ({ active, payload, formatValue }: any) => {
     const item = payload[0].payload as GraphData;
 
     return (
-      <div className="rounded-4 bg-slate-600 p-10">
-        {formatDate(item.snapshotTimestamp.getTime() / 1000)}:{" "}
-        <span className="numbers">{formatValue(item.value)}</span>
+      <div
+        className={`backdrop-blur-100 text-body-small flex flex-col rounded-4 bg-[rgba(160,163,196,0.1)]
+      bg-[linear-gradient(0deg,var(--color-slate-800),var(--color-slate-800))] px-12 py-8 bg-blend-overlay`}
+      >
+        <span className=" text-slate-100">{format(item.snapshotTimestamp.getTime(), "MMMM dd, yyyy")}</span>
+        <span className="font-medium numbers">{formatValue(item.value)}</span>
       </div>
     );
   }

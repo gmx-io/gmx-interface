@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
 import { ethers } from "ethers";
 import noop from "lodash/noop";
 import { useCallback, useMemo, useState } from "react";
@@ -10,6 +11,7 @@ import { selectPositionsInfoData } from "context/SyntheticsStateContext/selector
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
+import { useBreakpoints } from "lib/breakpoints";
 import { useAccountOrders } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
@@ -162,21 +164,33 @@ export function HistoricalLists({ chainId, account }: Props) {
 
   const { controls: claimsHistoryControls, ...claimsHistoryProps } = useClaimsHistoryState();
 
+  const actions = (
+    <>
+      {tabKey === TabKey.Trades ? tradeHistoryState.controls : undefined}
+      {tabKey === TabKey.Claims ? claimsHistoryControls : undefined}
+    </>
+  );
+
+  const { isMobile, isTablet } = useBreakpoints();
+
   return (
     <div>
-      <Tabs
-        options={tabsOptions}
-        selectedValue={tabKey}
-        onChange={setTabKey}
-        type="block"
-        className="bg-slate-900"
-        rightContent={
-          <>
-            {tabKey === TabKey.Trades ? tradeHistoryState.controls : undefined}
-            {tabKey === TabKey.Claims ? claimsHistoryControls : undefined}
-          </>
-        }
-      />
+      <div className="overflow-x-auto scrollbar-hide">
+        <Tabs
+          options={tabsOptions}
+          selectedValue={tabKey}
+          onChange={setTabKey}
+          type="block"
+          className={cx("w-[max(100%,600px)] bg-slate-900", {
+            "mb-8 rounded-b-8": [TabKey.Positions, TabKey.Orders].includes(tabKey as TabKey) && isTablet,
+            "w-[max(100%,420px)]": isMobile,
+          })}
+          regularOptionClassname={cx({
+            "first:rounded-l-8 last:rounded-r-8": [TabKey.Positions, TabKey.Orders].includes(tabKey as TabKey),
+          })}
+          rightContent={actions}
+        />
+      </div>
 
       {tabKey === TabKey.Positions && (
         <PositionList
