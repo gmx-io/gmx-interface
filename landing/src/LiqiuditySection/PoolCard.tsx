@@ -5,7 +5,7 @@ import bgPoolsGradient from "img/bg_pools_gradient.png";
 import BgPoolsLines from "img/bg_pools_lines.svg?react";
 import IcLinkArrow from "img/ic_link_arrow.svg?react";
 
-import { IconBox } from "../components/IconBox";
+import { IconBox } from "../IconBox/IconBox";
 
 type Props = {
   name: string;
