@@ -39,7 +39,7 @@ export function HeroSection() {
             <div className="flex flex-wrap items-end justify-between gap-0 sm:gap-56">
               <div className="flex flex-1 flex-col-reverse items-stretch sm:flex-row sm:gap-36">
                 <button
-                  className="btn-landing-bg my-28 flex w-full flex-col items-start gap-4 rounded-12 pb-12 pl-12 pr-8 pt-8 text-16 font-medium sm:m-0 sm:w-[200px]"
+                  className="btn-landing my-28 flex w-full flex-col items-start gap-4 rounded-12 pb-12 pl-12 pr-8 pt-8 text-16 font-medium sm:m-0 sm:w-[200px]"
                   onClick={goToTradeArbitrum}
                 >
                   <div className="self-end rounded-full bg-white p-4">
@@ -192,7 +192,7 @@ export function HeroSection() {
                   GMX Express
                 </p>
               </div>
-              <button className="btn-landing-bg rounded-6 px-16 py-10 text-16 font-medium" onClick={goToTradeArbitrum}>
+              <button className="btn-landing rounded-6 px-16 py-10 text-16 font-medium" onClick={goToTradeArbitrum}>
                 <Trans>Trade Now</Trans>
               </button>
             </div>

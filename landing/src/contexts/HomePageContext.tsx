@@ -49,7 +49,7 @@ export function HomePageContextProvider({ children }: { children: React.ReactNod
 
   const shouldShowRedirectModal = useCallback(() => {
     if (!redirectPopupTimestamp) {
-      return false;
+      return true;
     }
 
     const expiryTime = redirectPopupTimestamp + THIRTY_DAYS;
@@ -61,10 +61,11 @@ export function HomePageContextProvider({ children }: { children: React.ReactNod
   }, [redirectPopupTimestamp]);
   const redirectWithWarning = useCallback(
     (to: string) => {
+      console.log("redirectWithWarning", to, shouldShowRedirectModal());
       if (shouldShowRedirectModal()) {
         setRedirectModalTo(to);
       } else {
-        window.location.href = to;
+        // window.location.href = to;
       }
     },
     [shouldShowRedirectModal, setRedirectModalTo]
