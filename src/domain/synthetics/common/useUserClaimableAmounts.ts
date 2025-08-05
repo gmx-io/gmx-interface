@@ -2,10 +2,12 @@ import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
 import { claimsDisabledKey, claimTermsKey } from "config/dataStore";
-import { selectGlvInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectGlvInfo, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { TokenData } from "domain/tokens";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
-import { formatAmount } from "lib/numbers";
+import { getTokenBySymbol } from "sdk/configs/tokens";
 import { convertToUsd } from "sdk/utils/tokens";
 
 import { getMarketPoolName } from "../../../../sdk/src/utils/markets";
@@ -18,7 +20,7 @@ type ClaimableAmountsRequestConfig = MulticallRequestConfig<{
     calls: {
       getClaimableAmount: {
         methodName: string;
-        params: [string, string, number];
+        params: [string, string, [number]];
       };
     };
   };
@@ -26,7 +28,7 @@ type ClaimableAmountsRequestConfig = MulticallRequestConfig<{
     calls: {
       getClaimTerms: {
         methodName: string;
-        params: [string, number, number];
+        params: [string];
       };
     };
   };
@@ -34,7 +36,7 @@ type ClaimableAmountsRequestConfig = MulticallRequestConfig<{
     calls: {
       getClaimsDisabled: {
         methodName: string;
-        params: [string, number, number];
+        params: [string];
       };
     };
   };
@@ -44,21 +46,39 @@ export interface ClaimableAmountsResult {
   claimTerms: string;
   claimsDisabled;
   totalFundsToClaimUsd: bigint;
-  fundsToClaimTitles: Record<string, string>;
+  claimableTokenTitles: Record<string, string>;
   claimableAmounts: Record<
     string,
     | {
-        title: string;
-        amount?: bigint;
-        usd?: bigint;
+        amount: bigint;
+        usd: bigint;
       }
     | undefined
   >;
+  claimableAmountsLoaded: boolean;
 }
 
 export default function useUserClaimableAmounts(chainId: number, account?: string): ClaimableAmountsResult {
-  const glvs = useSelector(selectGlvInfo);
+  const glvsInfo = useSelector(selectGlvInfo);
+  const marketsInfo = useSelector(selectMarketsInfoData);
+
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+  const tokensData = useTokensData();
+
+  const tokens = useMemo(() => [getTokenBySymbol(chainId, "WETH"), getTokenBySymbol(chainId, "USDC")], [chainId]);
+  const markets = useMemo(
+    () => (marketsInfo ? [marketsInfo["0x70d95587d40A2caf56bd97485aB3Eec10Bee6336"]] : []),
+    [marketsInfo]
+  );
+
+  const allTokens = useMemo(
+    () => [
+      ...Object.keys(glvsInfo ?? {}),
+      ...tokens.map((token) => token.address),
+      ...markets.map((market) => market.marketTokenAddress),
+    ],
+    [tokens, markets, glvsInfo]
+  );
 
   const claimableAmountsRequests: ClaimableAmountsRequestConfig = {
     claimTerms: {
@@ -83,85 +103,107 @@ export default function useUserClaimableAmounts(chainId: number, account?: strin
     },
   };
 
-  Object.keys(glvs ?? {}).forEach((glv) => {
-    claimableAmountsRequests[glv] = {
+  allTokens.forEach((token) => {
+    claimableAmountsRequests[token] = {
       contractAddress: getContract(chainId, "ClaimHandler"),
       abiId: "ClaimHandler",
       calls: {
         getClaimableAmount: {
           methodName: "getClaimableAmount",
-          params: [account, glv, [GLP_DISTRIBUTION_ID]],
+          params: [account, token, [GLP_DISTRIBUTION_ID]],
         },
       },
     };
   });
 
-  const tokensWithTitles = useMemo(() => {
+  const claimableTokenTitles = useMemo(() => {
     const result: Record<string, string> = {};
 
-    Object.keys(glvs ?? {}).forEach((glv) => {
-      result[glv] = `GLV [${getMarketPoolName({
-        longToken: glvs![glv].longToken,
-        shortToken: glvs![glv].shortToken,
-      })}]`;
+    allTokens.forEach((token) => {
+      const glv = glvsInfo?.[token];
+      const market = marketsInfo?.[token];
+      const tokenData = tokensData?.[token];
+
+      if (glv) {
+        result[token] = `GLV [${getMarketPoolName({
+          longToken: glv.longToken,
+          shortToken: glv.shortToken,
+        })}]`;
+      }
+
+      if (market) {
+        result[token] = getMarketPoolName({
+          longToken: market.longToken,
+          shortToken: market.shortToken,
+        });
+      }
+
+      if (tokenData) {
+        result[token] = tokenData.symbol;
+      }
     });
-
     return result;
-  }, [glvs]);
+  }, [glvsInfo, tokensData, marketsInfo, allTokens]);
 
-  const { data: claimableAmountsData } = useMulticall<ClaimableAmountsRequestConfig, ClaimableAmountsResult>(
-    chainId,
-    "glp-distribution",
-    {
-      key: account ? [account] : undefined,
-      request: claimableAmountsRequests,
-      parseResponse: (result) => {
-        const claimTerms = result.data.claimTerms.getClaimTerms.returnValues.claimTerms;
-        const claimsDisabled = Boolean(result.data.claimsDisabled.getClaimsDisabled.returnValues.claimsDisabled);
-        const glvClaimableAmounts = Object.fromEntries(
-          Object.keys(glvs ?? {}).map((glv) => {
-            const glvClaimableAmount = result.data[glv].getClaimableAmount.returnValues[0] ?? 0n;
-            return [
-              glv,
-              {
-                title: tokensWithTitles[glv],
-                amount: glvClaimableAmount,
-                usd: convertToUsd(glvClaimableAmount, 18, marketTokensData?.[glv]?.prices.maxPrice ?? 0n) ?? 0n,
-              },
-            ];
-          })
-        );
+  const { data: claimableAmountsData } = useMulticall<
+    ClaimableAmountsRequestConfig,
+    Pick<ClaimableAmountsResult, "claimTerms" | "claimsDisabled" | "claimableAmounts">
+  >(chainId, "glp-distribution", {
+    key: account ? [account] : undefined,
+    request: claimableAmountsRequests,
+    parseResponse: (result) => {
+      const claimTerms = result.data.claimTerms.getClaimTerms.returnValues[0];
+      const claimsDisabled = Boolean(result.data.claimsDisabled.getClaimsDisabled.returnValues.claimsDisabled);
 
-        const claimableAmounts = glvClaimableAmounts;
+      const claimableAmounts: ClaimableAmountsResult["claimableAmounts"] = {};
+      for (const token of allTokens) {
+        const claimableAmount = result.data[token].getClaimableAmount.returnValues[0] ?? 0n;
 
-        return {
-          claimTerms,
-          claimsDisabled,
-          totalFundsToClaimUsd: Object.values(claimableAmounts).reduce((acc, curr) => acc + curr.usd, 0n),
-          fundsToClaimTitles: Object.values(claimableAmounts).reduce(
-            (acc, { amount, title }) => {
-              acc[title] = formatAmount(amount, 18);
+        const glv = glvsInfo?.[token];
+        const market = marketsInfo?.[token];
+        let tokenData: TokenData | undefined;
 
-              return acc;
-            },
-            {} as Record<string, string>
-          ),
-          claimableAmounts,
+        if (glv) {
+          tokenData = marketTokensData?.[token];
+        } else if (market) {
+          tokenData = marketTokensData?.[token];
+        } else {
+          tokenData = tokensData?.[token];
+        }
+
+        const usd = convertToUsd(claimableAmount, tokenData?.decimals ?? 18, tokenData?.prices.minPrice ?? 0n) ?? 0n;
+
+        claimableAmounts[token] = {
+          amount: claimableAmount,
+          usd,
         };
-      },
-    }
-  );
+      }
+
+      return {
+        claimableAmounts,
+        claimTerms,
+        claimsDisabled,
+      };
+    },
+  });
+
+  const totalFundsToClaimUsd = useMemo(() => {
+    return Object.values(claimableAmountsData?.claimableAmounts ?? {}).reduce(
+      (acc, curr) => acc + (curr?.usd ?? 0n),
+      0n
+    );
+  }, [claimableAmountsData]);
+
+  const claimableAmountsLoaded = useMemo(() => {
+    return allTokens.every((token) => claimableAmountsData?.claimableAmounts?.[token]?.amount !== undefined);
+  }, [claimableAmountsData?.claimableAmounts, allTokens]);
 
   return {
     claimTerms: claimableAmountsData?.claimTerms ?? "",
     claimsDisabled: claimableAmountsData?.claimsDisabled ?? false,
-    totalFundsToClaimUsd: claimableAmountsData?.totalFundsToClaimUsd ?? 0n,
-    fundsToClaimTitles: claimableAmountsData?.fundsToClaimTitles ?? {},
-    claimableAmounts: Object.fromEntries(
-      Object.entries(tokensWithTitles ?? {}).map(([token, title]) => [
-        token,
-        claimableAmountsData?.claimableAmounts?.[token] ?? { title },
-      ])
-    ),
+    claimableAmounts: claimableAmountsData?.claimableAmounts ?? {},
+    claimableAmountsLoaded,
+    totalFundsToClaimUsd,
+    claimableTokenTitles,
   };
 }
