@@ -81,9 +81,7 @@ export function PositionItem(p: Props) {
   function renderNetValue() {
     return (
       <TooltipWithPortal
-        handle={
-          <span className={cx("numbers", p.isLarge ? "font-medium" : undefined)}>{formatUsd(p.position.netValue)}</span>
-        }
+        handle={<span className="numbers">{formatUsd(p.position.netValue)}</span>}
         position={p.isLarge ? "bottom-start" : "bottom-end"}
         renderContent={() => (
           <div>
@@ -180,10 +178,7 @@ export function PositionItem(p: Props) {
         <div className={cx("position-list-collateral", { isSmall: !p.isLarge })}>
           <TooltipWithPortal
             handle={
-              <span
-                data-qa="position-collateral-value"
-                className={cx("numbers", p.isLarge ? "font-medium" : undefined)}
-              >
+              <span data-qa="position-collateral-value" className="numbers">
                 {formatUsd(p.position.remainingCollateralUsd)}
               </span>
             }
@@ -364,7 +359,7 @@ export function PositionItem(p: Props) {
         <TooltipWithPortal
           handle={
             (
-              <span className="font-medium numbers">
+              <span className="numbers">
                 {formatLiquidationPrice(p.position.liquidationPrice, {
                   displayDecimals: marketDecimals,
                   visualMultiplier: p.position.indexToken.visualMultiplier,
@@ -476,7 +471,7 @@ export function PositionItem(p: Props) {
           </div>
         </TableTd>
         <TableTd>
-          <span className="font-medium numbers">{formatUsd(p.position.sizeInUsd)}</span>
+          <span className="numbers">{formatUsd(p.position.sizeInUsd)}</span>
           <PositionItemOrdersLarge positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
         </TableTd>
         <TableTd>
@@ -510,7 +505,7 @@ export function PositionItem(p: Props) {
           {p.position.isOpening ? (
             t`Opening...`
           ) : (
-            <span className="font-medium numbers">
+            <span className="numbers">
               {formatUsd(p.position.entryPrice, {
                 displayDecimals: marketDecimals,
                 visualMultiplier: p.position.indexToken.visualMultiplier,
@@ -521,7 +516,7 @@ export function PositionItem(p: Props) {
         <TableTd>
           {/* markPrice */}
           {
-            <span className="font-medium numbers">
+            <span className="numbers">
               {formatUsd(p.position.markPrice, {
                 displayDecimals: marketDecimals,
                 visualMultiplier: p.position.indexToken.visualMultiplier,

@@ -125,7 +125,7 @@ function PoolsTvl() {
 
   return (
     <div className="flex flex-col gap-8">
-      <span className="text-h1 font-medium numbers">{formatUsd(tvl, { displayDecimals: 0 })}</span>
+      <span className="text-h1 numbers">{formatUsd(tvl, { displayDecimals: 0 })}</span>
       <span className="text-body-medium font-medium text-slate-100">TVL in vaults and pools.</span>
     </div>
   );

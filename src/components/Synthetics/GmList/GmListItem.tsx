@@ -268,11 +268,11 @@ export function GmListItem({
           decimals={token.decimals}
           usd={totalSupplyUsd}
           symbol={token.symbol}
-          className="font-medium"
+          className=""
           usdOnTop
         />
       </TableTd>
-      <TableTd className="w-[13%] font-medium">
+      <TableTd className="w-[13%]">
         <GmTokensBalanceInfo
           token={token}
           daysConsidered={daysConsidered}
@@ -282,12 +282,12 @@ export function GmListItem({
         />
       </TableTd>
 
-      <TableTd className="w-[13%] font-medium">
+      <TableTd className="w-[13%]">
         <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
       </TableTd>
 
       <TableTd className="w-[13%]">
-        {performance ? <div className="font-medium numbers">{formatPerformanceBps(performance)}</div> : "..."}
+        {performance ? <div className="numbers">{formatPerformanceBps(performance)}</div> : "..."}
       </TableTd>
 
       <TableTd className="w-[13%]">

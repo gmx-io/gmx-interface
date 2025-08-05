@@ -96,9 +96,9 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
 
   return (
     <TableTr key={row.bucketLabel} hoverable={false} bordered={false}>
-      <TableTd className="font-medium">{_(bucketLabelMap[row.bucketLabel as keyof typeof bucketLabelMap])}</TableTd>
-      <TableTd className="font-medium numbers">{formatUsd(row.volume, { maxThreshold: null })}</TableTd>
-      <TableTd className="font-medium">
+      <TableTd>{_(bucketLabelMap[row.bucketLabel as keyof typeof bucketLabelMap])}</TableTd>
+      <TableTd className="numbers">{formatUsd(row.volume, { maxThreshold: null })}</TableTd>
+      <TableTd>
         <TooltipWithPortal
           styleType="none"
           tooltipClassName="cursor-help *:cursor-auto"
@@ -137,7 +137,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
           <span className="numbers">{formatUsd(row.pnlUsd)}</span>
         </TooltipWithPortal>
       </TableTd>
-      <TableTd className="font-medium">
+      <TableTd>
         <TooltipWithPortal
           styleType="none"
           tooltipClassName="cursor-help *:cursor-auto"
@@ -157,7 +157,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
           <span className="numbers">{formatPercentage(row.pnlBps, { signed: true })}</span>
         </TooltipWithPortal>
       </TableTd>
-      <TableTd className="font-medium">
+      <TableTd>
         <TooltipWithPortal
           handle={<span className="numbers">{`${row.wins} / ${row.losses}`}</span>}
           content={

@@ -238,7 +238,7 @@ function MarketsList() {
   );
 
   const tdClassName = cx(
-    "text-body-small font-medium",
+    "text-body-small",
     isMobile ? "align-top" : "align-middle",
     rowVerticalPadding,
     rowHorizontalPadding
@@ -588,7 +588,7 @@ function MarketListItem({
               importSize={24}
             />
             <span>{token.name}</span>
-            <span className="text-slate-100">{token.symbol}</span>
+            <span className="font-medium text-slate-100">{token.symbol}</span>
           </span>
         </td>
         <td className={tdClassName}>
@@ -611,11 +611,13 @@ function MarketListItem({
       <td className={cx("px-12 text-center text-slate-100", rowVerticalPadding)} onClick={handleFavoriteClick}>
         <FavoriteStar isFavorite={isFavorite} className="!h-12 !w-12" />
       </td>
-      <td className={cx("pl-4 text-[13px] font-medium", rowVerticalPadding, isMobile ? "pr-2" : "pr-8")}>
+      <td className={cx("pl-4 text-[13px]", rowVerticalPadding, isMobile ? "pr-2" : "pr-8")}>
         <div className={cx("flex", isMobile ? "items-start" : "items-center")}>
           <TokenIcon className="ChartToken-list-icon mr-6" symbol={token.symbol} displaySize={16} importSize={24} />
           <span className={cx("flex flex-wrap items-center gap-6")}>
-            <span className="-mt-2 leading-1">{getMarketIndexName({ indexToken: token, isSpotOnly: false })}</span>
+            <span className="-mt-2 font-medium leading-1">
+              {getMarketIndexName({ indexToken: token, isSpotOnly: false })}
+            </span>
             <span className="rounded-4 bg-slate-700 px-4 pb-5 pt-3 leading-1 numbers">
               {maxLeverage ? `${maxLeverage}x` : "-"}
             </span>

@@ -220,10 +220,10 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
         />
       </TableTd>
       <TableTd>
-        <span className="font-medium">{marketContent}</span>
+        <span>{marketContent}</span>
       </TableTd>
       <TableTd>
-        <span className="font-medium">{sizeContent}</span>
+        <span>{sizeContent}</span>
       </TableTd>
     </TableTr>
   );

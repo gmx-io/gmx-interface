@@ -250,7 +250,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           />
         </TableTd>
         <TableTd>
-          <span className="font-medium numbers">
+          <span className="numbers">
             {msg.swapFromTokenSymbol ? (
               <Trans>
                 {msg.swapFromTokenAmount}{" "}
@@ -267,13 +267,13 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           {msg.priceComment ? (
             <TooltipWithPortal
               tooltipClassName="TradeHistoryRow-price-tooltip-portal"
-              handle={<span className="font-medium numbers">{msg.price}</span>}
+              handle={<span className="numbers">{msg.price}</span>}
               position="bottom-end"
               renderContent={renderPriceContent}
               maxAllowedWidth={PRICE_TOOLTIP_WIDTH}
             />
           ) : (
-            <span className="font-medium numbers">{msg.price}</span>
+            <span className="numbers">{msg.price}</span>
           )}
         </TableTd>
         <TableTd className="TradeHistoryRow-pnl-fees">
@@ -281,7 +281,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             <span className="text-slate-100">-</span>
           ) : (
             <span
-              className={cx("font-medium numbers", {
+              className={cx("numbers", {
                 "text-red-500": msg.pnlState === "error",
                 "text-green-500": msg.pnlState === "success",
               })}

@@ -93,10 +93,10 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
         />
       </TableTd>
       <TableTd>
-        <span className="font-medium">{marketNamesJoined}</span>
+        <span>{marketNamesJoined}</span>
       </TableTd>
       <TableTd>
-        <span className="font-medium">{sizeContent}</span>
+        <span>{sizeContent}</span>
       </TableTd>
     </TableTr>
   );

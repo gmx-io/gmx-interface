@@ -221,7 +221,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
           </div>
         </div>
       </TableTd>
-      <TableTd className="font-medium numbers">
+      <TableTd className="numbers">
         {formatUsdPrice(stats.token.prices?.minPrice, {
           visualMultiplier: stats.token.visualMultiplier,
         })}
@@ -229,11 +229,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
       <TableTd>
         <TooltipWithPortal
           className="nowrap"
-          handle={
-            <span className="font-medium numbers">
-              {formatAmountHuman(stats.totalPoolValue, USD_DECIMALS, true, 2)}
-            </span>
-          }
+          handle={<span className="numbers">{formatAmountHuman(stats.totalPoolValue, USD_DECIMALS, true, 2)}</span>}
           content={
             <>
               {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
@@ -257,11 +253,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
       <TableTd>
         <TooltipWithPortal
           className="nowrap"
-          handle={
-            <span className="font-medium numbers">
-              {formatAmountHuman(stats.totalMaxLiquidity, USD_DECIMALS, true, 2)}
-            </span>
-          }
+          handle={<span className="numbers">{formatAmountHuman(stats.totalMaxLiquidity, USD_DECIMALS, true, 2)}</span>}
           content={
             <>
               {stats.marketsStats.map(({ marketInfo, maxLiquidity }) => (
@@ -286,14 +278,14 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
         <TooltipWithPortal
           tooltipClassName="MarketList-netfee-tooltip"
           handle={
-            <span className="font-medium numbers">{`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(netFeePerHourShort)}`}</span>
+            <span className="numbers">{`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(netFeePerHourShort)}`}</span>
           }
           maxAllowedWidth={510}
           position="bottom-end"
           renderContent={() => <NetFeeTooltip marketStats={stats.marketsStats} />}
         />
       </TableTd>
-      <TableTd className="font-medium numbers">{formatAmount(stats.totalUtilization, 2, 2)}%</TableTd>
+      <TableTd className="numbers">{formatAmount(stats.totalUtilization, 2, 2)}%</TableTd>
     </TableTr>
   );
 }
