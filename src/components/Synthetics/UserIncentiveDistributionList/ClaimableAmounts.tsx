@@ -141,7 +141,7 @@ export default function ClaimableAmounts() {
     totalFundsToClaimUsd,
     claimableAmounts,
     claimableTokenTitles,
-    claimsDisabled,
+    claimsDisabled: claimsFeatureDisabled,
     claimableAmountsLoaded,
   } = useUserClaimableAmounts(chainId, account);
   const settings = useSettings();
@@ -235,7 +235,7 @@ export default function ClaimableAmounts() {
       isClaimDisabled = !hasAvailableFundsToCoverExecutionFee;
     }
 
-    if (claimsDisabled || isClaiming) {
+    if (claimsFeatureDisabled || isClaiming) {
       isClaimDisabled = true;
     }
 
@@ -258,7 +258,7 @@ export default function ClaimableAmounts() {
           </Checkbox>
         ) : null}
         <Button variant="primary" className="!py-10" disabled={isClaimDisabled} onClick={claimAmounts}>
-          {claimsDisabled ? (
+          {claimsFeatureDisabled ? (
             <Trans>Claims are disabled</Trans>
           ) : isClaiming ? (
             <Trans>Claiming...</Trans>
@@ -278,7 +278,7 @@ export default function ClaimableAmounts() {
     userNativeTokenBalance,
     settings.executionFeeBufferBps,
     chainId,
-    claimsDisabled,
+    claimsFeatureDisabled,
     isClaiming,
   ]);
 
