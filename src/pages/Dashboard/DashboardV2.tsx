@@ -14,13 +14,11 @@ import useWallet from "lib/wallets/useWallet";
 import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
-import { AppHeader } from "components/AppHeader/AppHeader";
-import { AppHeaderLogo } from "components/AppHeader/AppHeaderLogo";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
-import { ChainDataImage } from "components/ChainDataImage";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import PageTitle from "components/PageTitle/PageTitle";
+import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 import { MarketsList } from "components/Synthetics/MarketsList/MarketsList";
 
 import V1Icon from "img/ic_v1.svg?react";
@@ -114,18 +112,7 @@ export default function DashboardV2() {
 
   return (
     <SEO title={getPageTitle(t`Stats`)}>
-      <AppPageLayout
-        header={
-          <AppHeader
-            leftContent={
-              <div className="flex items-center gap-16">
-                <AppHeaderLogo />
-                <ChainDataImage />
-              </div>
-            }
-          />
-        }
-      >
+      <AppPageLayout header={<ChainContentHeader />}>
         <div className="default-container DashboardV2 page-layout flex flex-col gap-20">
           <PageTitle
             title={t`Total Stats`}

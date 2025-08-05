@@ -6,11 +6,9 @@ import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/S
 import { useChainId } from "lib/chains";
 
 import AddressView from "components/AddressView/AddressView";
-import { AppHeader } from "components/AppHeader/AppHeader";
-import { AppHeaderLogo } from "components/AppHeader/AppHeaderLogo";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
-import { ChainDataImage } from "components/ChainDataImage";
 import PageTitle from "components/PageTitle/PageTitle";
+import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 
 import { DailyAndCumulativePnL } from "./DailyAndCumulativePnL";
 import { GeneralPerformanceDetails } from "./GeneralPerformanceDetails";
@@ -24,16 +22,7 @@ export function AccountDashboard() {
 
   const { chainId, version, account } = usePageParams(initialChainId);
 
-  const header = (
-    <AppHeader
-      leftContent={
-        <div className="flex items-center gap-16">
-          <AppHeaderLogo />
-          <ChainDataImage />
-        </div>
-      }
-    />
-  );
+  const header = <ChainContentHeader />;
 
   if (!isAddress(account!)) {
     return (

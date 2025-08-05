@@ -24,6 +24,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import PageTitle from "components/PageTitle/PageTitle";
 import { BotanixBanner } from "components/Synthetics/BotanixBanner/BotanixBanner";
+import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
 
 import { EscrowedGmxCard } from "./EscrowedGmxCard";
@@ -189,23 +190,6 @@ function StakeContent() {
     <div className="default-container page-layout">
       <SEO title={getPageTitle(t`Stake`)} />
 
-      <PageTitle
-        isTop
-        title={t`Stake`}
-        qa="earn-page"
-        subtitle={
-          <div>
-            <Trans>
-              Deposit <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink> and{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/gmx-token">esGMX</ExternalLink> tokens to
-              earn rewards.
-            </Trans>
-            {earnMsg && <div className="Page-description">{earnMsg}</div>}
-            {incentivesMessage}
-          </div>
-        }
-      />
-
       <StakeModal
         isVisible={isStakeGmxModalVisible}
         setIsVisible={setIsStakeGmxModalVisible}
@@ -259,7 +243,23 @@ function StakeContent() {
         processedData={processedData}
       />
 
-      <div className="StakeV2-content">
+      <div className="flex flex-col gap-16">
+        <PageTitle
+          isTop
+          title={t`Stake`}
+          qa="earn-page"
+          subtitle={
+            <div>
+              <Trans>
+                Deposit <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink> and{" "}
+                <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/gmx-token">esGMX</ExternalLink> tokens
+                to earn rewards.
+              </Trans>
+              {earnMsg && <div className="Page-description">{earnMsg}</div>}
+              {incentivesMessage}
+            </div>
+          }
+        />
         <div className="StakeV2-cards">
           <GmxAndVotingPowerCard
             processedData={processedData}
@@ -280,23 +280,23 @@ function StakeContent() {
             showUnstakeEsGmxModal={showUnstakeEsGmxModal}
           />
         </div>
+        <div>
+          <Vesting processedData={processedData} />
+        </div>
+        <div>
+          <PageTitle
+            title={t`Incentives & Prizes`}
+            subtitle={
+              incentiveStats?.lp?.isActive || incentiveStats?.trading?.isActive ? (
+                <Trans>Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2.</Trans>
+              ) : (
+                <Trans>Earn prizes by participating in GMX Trading Competitions.</Trans>
+              )
+            }
+          />
+        </div>
+        <UserIncentiveDistributionList />
       </div>
-
-      <Vesting processedData={processedData} />
-
-      <div className="mt-10">
-        <PageTitle
-          title={t`Incentives & Prizes`}
-          subtitle={
-            incentiveStats?.lp?.isActive || incentiveStats?.trading?.isActive ? (
-              <Trans>Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2.</Trans>
-            ) : (
-              <Trans>Earn prizes by participating in GMX Trading Competitions.</Trans>
-            )
-          }
-        />
-      </div>
-      <UserIncentiveDistributionList />
 
       <InterviewModal type="lp" isVisible={isLpInterviewModalVisible} setIsVisible={setIsLpInterviewModalVisible} />
     </div>
@@ -308,7 +308,7 @@ export default function Stake() {
   const isBotanix = chainId === BOTANIX;
 
   return (
-    <AppPageLayout>
+    <AppPageLayout header={<ChainContentHeader />}>
       {isBotanix ? (
         <div className="default-container page-layout">
           <SEO title={getPageTitle(t`Stake`)} />
