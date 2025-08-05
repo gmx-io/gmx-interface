@@ -8,7 +8,7 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { GlvAndGmMarketsInfoData, GlvInfo, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
-import { TokenData, TokensData } from "domain/synthetics/tokens";
+import { getTokenData, TokenData, TokensData } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { approveTokens } from "domain/tokens";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -33,8 +33,8 @@ interface Props {
   glvInfo?: GlvInfo;
   marketToken: TokenData;
   operation: Operation;
-  longToken: TokenData | undefined;
-  shortToken: TokenData | undefined;
+  longTokenAddress: string | undefined;
+  shortTokenAddress: string | undefined;
   glvToken: TokenData | undefined;
   longTokenLiquidityUsd?: bigint | undefined;
   shortTokenLiquidityUsd?: bigint | undefined;
@@ -76,9 +76,9 @@ export const useGmSwapSubmitState = ({
   fees,
   marketInfo,
   marketToken,
-  longToken,
+  longTokenAddress,
+  shortTokenAddress,
   operation,
-  shortToken,
   glvToken,
   longTokenLiquidityUsd,
   shortTokenLiquidityUsd,
@@ -118,9 +118,9 @@ export const useGmSwapSubmitState = ({
     marketInfo,
     marketToken,
     operation,
-    longToken,
+    longTokenAddress,
     longTokenAmount,
-    shortToken,
+    shortTokenAddress,
     shortTokenAmount,
     marketTokenAmount,
     glvTokenAmount,
@@ -153,8 +153,8 @@ export const useGmSwapSubmitState = ({
     marketInfo,
     glvInfo,
     marketToken,
-    longToken,
-    shortToken,
+    longToken: getTokenData(tokensData, longTokenAddress),
+    shortToken: getTokenData(tokensData, shortTokenAddress),
     glvToken,
     glvTokenAmount,
     glvTokenUsd,
@@ -180,11 +180,11 @@ export const useGmSwapSubmitState = ({
     operation,
     marketToken,
     marketTokenAmount,
-    longToken,
+    longTokenAddress,
     longTokenAmount,
-    shortToken,
+    shortTokenAddress,
     shortTokenAmount,
-    glvToken,
+    glvTokenAddress: glvToken?.address,
     glvTokenAmount,
     isMarketTokenDeposit,
   });

@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useGmxAccountTokenBalances } from "domain/multichain/useGmxAccountTokenBalances";
 import { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokensMap, getV2Tokens } from "sdk/configs/tokens";
+import { TokenBalanceType } from "sdk/types/tokens";
 
 import { TokensData } from "./types";
 import { useOnchainTokenConfigs } from "./useOnchainTokenConfigs";
@@ -80,7 +81,7 @@ export function useTokensDataRequest(chainId: ContractsChainId, srcChainId?: Sou
           walletBalance,
           gmxAccountBalance,
           balance: srcChainId !== undefined ? gmxAccountBalance : walletBalance,
-          isGmxAccount: srcChainId !== undefined,
+          balanceType: getBalanceTypeFromSrcChainId(srcChainId),
         };
 
         return acc;
@@ -102,4 +103,12 @@ export function useTokensDataRequest(chainId: ContractsChainId, srcChainId?: Sou
     srcChainId,
     tokenConfigs,
   ]);
+}
+
+export function getBalanceTypeFromSrcChainId(srcChainId: SourceChainId | undefined) {
+  if (srcChainId !== undefined) {
+    return TokenBalanceType.GmxAccount;
+  }
+
+  return TokenBalanceType.Wallet;
 }

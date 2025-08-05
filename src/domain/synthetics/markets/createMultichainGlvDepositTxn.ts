@@ -9,13 +9,13 @@ import { abis } from "sdk/abis";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
-import type { IDepositUtils } from "typechain-types/ExchangeRouter";
-import type { IRelayUtils, MultichainGmRouter } from "typechain-types/MultichainGmRouter";
+import { MultichainGlvRouter } from "typechain-types/MultichainGlvRouter";
+import type { IRelayUtils } from "typechain-types/MultichainGmRouter";
 
-import { CreateDepositParamsStruct } from ".";
+import { CreateGlvDepositParamsStruct } from ".";
 import { ExpressTxnParams, RelayParamsPayload, getGelatoRelayRouterDomain, hashRelayParams } from "../express";
 
-export type CreateMultichainDepositParams = {
+export type CreateMultichainGlvDepositParams = {
   chainId: ContractsChainId;
   srcChainId: SourceChainId;
   signer: WalletSigner;
@@ -23,12 +23,12 @@ export type CreateMultichainDepositParams = {
   emptySignature?: boolean;
   account: string;
   transferRequests: IRelayUtils.TransferRequestsStruct;
-  params: CreateDepositParamsStruct;
+  params: CreateGlvDepositParamsStruct;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
 };
 
-export async function buildAndSignMultichainDepositTxn({
+export async function buildAndSignMultichainGlvDepositTxn({
   chainId,
   srcChainId,
   signer,
@@ -39,13 +39,13 @@ export async function buildAndSignMultichainDepositTxn({
   emptySignature,
   relayerFeeTokenAddress,
   relayerFeeAmount,
-}: CreateMultichainDepositParams): Promise<ExpressTxnData> {
+}: CreateMultichainGlvDepositParams): Promise<ExpressTxnData> {
   let signature: string;
 
   if (emptySignature) {
     signature = "0x";
   } else {
-    signature = await signMultichainDepositPayload({
+    signature = await signMultichainGlvDepositPayload({
       chainId,
       srcChainId,
       signer,
@@ -56,8 +56,8 @@ export async function buildAndSignMultichainDepositTxn({
   }
 
   const depositData = encodeFunctionData({
-    abi: abis.MultichainGmRouter,
-    functionName: "createDeposit",
+    abi: abis.MultichainGlvRouter,
+    functionName: "createGlvDeposit",
     args: [
       {
         ...relayParams,
@@ -67,18 +67,18 @@ export async function buildAndSignMultichainDepositTxn({
       srcChainId,
       transferRequests,
       params,
-    ] satisfies Parameters<MultichainGmRouter["createDeposit"]>,
+    ] satisfies Parameters<MultichainGlvRouter["createGlvDeposit"]>,
   });
 
   return {
     callData: depositData,
-    to: getContract(chainId, "MultichainGmRouter"),
+    to: getContract(chainId, "MultichainGlvRouter"),
     feeToken: relayerFeeTokenAddress,
     feeAmount: relayerFeeAmount,
   };
 }
 
-function signMultichainDepositPayload({
+function signMultichainGlvDepositPayload({
   chainId,
   srcChainId,
   signer,
@@ -91,26 +91,28 @@ function signMultichainDepositPayload({
   signer: WalletSigner;
   relayParams: RelayParamsPayload;
   transferRequests: IRelayUtils.TransferRequestsStruct;
-  params: IDepositUtils.CreateDepositParamsStruct;
+  params: CreateGlvDepositParamsStruct;
 }) {
   const types = {
-    CreateDeposit: [
+    CreateGlvDeposit: [
       { name: "transferTokens", type: "address[]" },
       { name: "transferReceivers", type: "address[]" },
       { name: "transferAmounts", type: "uint256[]" },
-      { name: "addresses", type: "CreateDepositAddresses" },
-      { name: "minMarketTokens", type: "uint256" },
-      { name: "shouldUnwrapNativeToken", type: "bool" },
+      { name: "addresses", type: "CreateGlvDepositAddresses" },
+      { name: "minGlvTokens", type: "uint256" },
       { name: "executionFee", type: "uint256" },
       { name: "callbackGasLimit", type: "uint256" },
+      { name: "shouldUnwrapNativeToken", type: "bool" },
+      { name: "isMarketTokenDeposit", type: "bool" },
       { name: "dataList", type: "bytes32[]" },
       { name: "relayParams", type: "bytes32" },
     ],
-    CreateDepositAddresses: [
+    CreateGlvDepositAddresses: [
+      { name: "glv", type: "address" },
+      { name: "market", type: "address" },
       { name: "receiver", type: "address" },
       { name: "callbackContract", type: "address" },
       { name: "uiFeeReceiver", type: "address" },
-      { name: "market", type: "address" },
       { name: "initialLongToken", type: "address" },
       { name: "initialShortToken", type: "address" },
       { name: "longTokenSwapPath", type: "address[]" },
@@ -118,23 +120,25 @@ function signMultichainDepositPayload({
     ],
   };
 
-  const domain = getGelatoRelayRouterDomain(srcChainId, getContract(chainId, "MultichainGmRouter"));
+  const domain = getGelatoRelayRouterDomain(srcChainId, getContract(chainId, "MultichainGlvRouter"));
   const typedData = {
     transferTokens: transferRequests.tokens,
     transferReceivers: transferRequests.receivers,
     transferAmounts: transferRequests.amounts,
     addresses: params.addresses,
-    minMarketTokens: params.minMarketTokens,
-    shouldUnwrapNativeToken: params.shouldUnwrapNativeToken,
+    minGlvTokens: params.minGlvTokens,
     executionFee: params.executionFee,
     callbackGasLimit: params.callbackGasLimit,
+    shouldUnwrapNativeToken: params.shouldUnwrapNativeToken,
+    isMarketTokenDeposit: params.isMarketTokenDeposit,
     dataList: params.dataList,
     relayParams: hashRelayParams(relayParams),
   };
 
   return signTypedData({ signer, domain, types, typedData });
 }
-export function createMultichainDepositTxn({
+
+export function createMultichainGlvDepositTxn({
   chainId,
   srcChainId,
   signer,
@@ -147,7 +151,7 @@ export function createMultichainDepositTxn({
   signer: WalletSigner;
   transferRequests: IRelayUtils.TransferRequestsStruct;
   asyncExpressTxnResult: AsyncResult<ExpressTxnParams | undefined>;
-  params: CreateDepositParamsStruct;
+  params: CreateGlvDepositParamsStruct;
   // TODO MLTCH: support pending txns
   // setPendingTxns,
   // setPendingDeposit,
@@ -156,7 +160,7 @@ export function createMultichainDepositTxn({
     throw new Error("Async result is not set");
   }
 
-  return buildAndSignMultichainDepositTxn({
+  return buildAndSignMultichainGlvDepositTxn({
     chainId,
     srcChainId,
     signer,

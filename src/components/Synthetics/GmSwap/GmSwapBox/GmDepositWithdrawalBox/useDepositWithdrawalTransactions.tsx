@@ -5,10 +5,10 @@ import chunk from "lodash/chunk";
 import { useCallback, useMemo, useState } from "react";
 import { bytesToHex, encodeFunctionData, Hex, hexToBytes, numberToHex, zeroAddress } from "viem";
 
-import { ContractsChainId } from "config/chains";
+import { ContractsChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
-import { CHAIN_ID_TO_ENDPOINT_ID, IStargateAbi } from "config/multichain";
+import { CHAIN_ID_TO_ENDPOINT_ID, getMultichainTokenId, IStargateAbi } from "config/multichain";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -30,7 +30,7 @@ import { getMultichainTransferSendParams } from "domain/multichain/getSendParams
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
 import { signCreateDeposit } from "domain/synthetics/express/expressOrderUtils";
 import { getRawRelayerParams } from "domain/synthetics/express/relayParamsUtils";
-import { RawRelayParamsPayload, RelayParamsPayload } from "domain/synthetics/express/types";
+import { GlobalExpressParams, RawRelayParamsPayload, RelayParamsPayload } from "domain/synthetics/express/types";
 import { ExecutionFee } from "domain/synthetics/fees";
 import {
   CreateDepositParamsStruct,
@@ -46,6 +46,10 @@ import {
   buildAndSignMultichainDepositTxn,
   createMultichainDepositTxn,
 } from "domain/synthetics/markets/createMultichainDepositTxn";
+import {
+  buildAndSignMultichainGlvDepositTxn,
+  createMultichainGlvDepositTxn,
+} from "domain/synthetics/markets/createMultichainGlvDepositTxn";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -60,6 +64,7 @@ import {
 import { EMPTY_ARRAY } from "lib/objects";
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { makeUserAnalyticsOrderFailResultHandler, sendUserAnalyticsOrderConfirmClickEvent } from "lib/userAnalytics";
+import { WalletSigner } from "lib/wallets";
 import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
@@ -70,6 +75,8 @@ import { applySlippageToMinOut } from "sdk/utils/trade";
 import { IRelayUtils } from "typechain-types/MultichainGmRouter";
 import { IStargate, SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
 
+import { toastCustomOrStargateError } from "components/Synthetics/GmxAccountModal/toastCustomOrStargateError";
+
 import { Operation } from "../types";
 import type { GmOrGlvPaySource } from "./types";
 
@@ -78,8 +85,8 @@ interface Props {
   glvInfo?: GlvInfo;
   marketToken: TokenData | undefined;
   operation: Operation;
-  longToken: TokenData | undefined;
-  shortToken: TokenData | undefined;
+  longTokenAddress: string | undefined;
+  shortTokenAddress: string | undefined;
 
   marketTokenAmount: bigint | undefined;
   marketTokenUsd: bigint | undefined;
@@ -108,6 +115,7 @@ function getTransferRequests({
   shortTokenAddress,
   shortTokenAmount,
   feeTokenAmount,
+  isGlv,
 }: {
   chainId: ContractsChainId;
   longTokenAddress: string | undefined;
@@ -115,6 +123,7 @@ function getTransferRequests({
   shortTokenAddress: string | undefined;
   shortTokenAmount: bigint | undefined;
   feeTokenAmount: bigint | undefined;
+  isGlv: boolean;
 }): IRelayUtils.TransferRequestsStruct {
   const requests: IRelayUtils.TransferRequestsStruct = {
     tokens: [],
@@ -122,21 +131,26 @@ function getTransferRequests({
     amounts: [],
   };
 
+  const vaultAddress = isGlv ? getContract(chainId, "GlvVault") : getContract(chainId, "DepositVault");
+  const routerAddress = isGlv
+    ? getContract(chainId, "MultichainGlvRouter")
+    : getContract(chainId, "MultichainGmRouter");
+
   if (longTokenAddress && longTokenAmount !== undefined && longTokenAmount > 0n) {
     requests.tokens.push(longTokenAddress);
-    requests.receivers.push(getContract(chainId, "DepositVault"));
+    requests.receivers.push(vaultAddress);
     requests.amounts.push(longTokenAmount);
   }
 
   if (shortTokenAddress && shortTokenAmount !== undefined && shortTokenAmount > 0n) {
     requests.tokens.push(shortTokenAddress);
-    requests.receivers.push(getContract(chainId, "DepositVault"));
+    requests.receivers.push(vaultAddress);
     requests.amounts.push(shortTokenAmount);
   }
 
   if (feeTokenAmount !== undefined) {
     requests.tokens.push(getWrappedToken(chainId).address);
-    requests.receivers.push(getContract(chainId, "MultichainGmRouter"));
+    requests.receivers.push(routerAddress);
     requests.amounts.push(feeTokenAmount);
   }
 
@@ -149,11 +163,6 @@ function useMultichainDepositExpressTxnParams({
   gmParams,
   glvParams,
 }: {
-  marketInfo: MarketInfo | undefined;
-  marketTokenAmount: bigint | undefined;
-  executionFee: ExecutionFee | undefined;
-  longToken: TokenData | undefined;
-  shortToken: TokenData | undefined;
   transferRequests: IRelayUtils.TransferRequestsStruct;
   paySource: GmOrGlvPaySource;
   gmParams: CreateDepositParamsStruct | undefined;
@@ -162,45 +171,49 @@ function useMultichainDepositExpressTxnParams({
   const { chainId, srcChainId } = useChainId();
   const { signer } = useWallet();
 
-  const asyncResult = useArbitraryRelayParamsAndPayload({
+  const multichainDepositExpressTxnParams = useArbitraryRelayParamsAndPayload({
     isGmxAccount: srcChainId !== undefined,
     enabled: paySource !== "settlementChain",
+    executionFeeAmount: glvParams ? glvParams.executionFee : gmParams?.executionFee,
     expressTransactionBuilder: async ({ relayParams, gasPaymentParams }) => {
-      // if (!account || !marketInfo || marketTokenAmount === undefined || !srcChainId || !signer || !executionFee) {
       if ((!gmParams && !glvParams) || !srcChainId || !signer) {
         throw new Error("Invalid params");
       }
 
       if (glvParams) {
-        throw new Error("Not implemented");
-      }
+        console.log({
+          executionFee: glvParams.executionFee,
+          total: gasPaymentParams.totalRelayerFeeTokenAmount,
+          relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
+          diff: gasPaymentParams.totalRelayerFeeTokenAmount - gasPaymentParams.relayerFeeAmount,
+          fee: relayParams.fee.feeAmount,
+        });
 
-      // const initialLongTokenAddress = longToken?.address || marketInfo.longTokenAddress;
-      // const initialShortTokenAddress = marketInfo.isSameCollaterals
-      //   ? initialLongTokenAddress
-      //   : shortToken?.address || marketInfo.shortTokenAddress;
+        const txnData = await buildAndSignMultichainGlvDepositTxn({
+          emptySignature: true,
+          account: glvParams!.addresses.receiver,
+          chainId,
+          params: glvParams!,
+          srcChainId,
+          relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
+          relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
+          relayParams: {
+            ...relayParams,
+            deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+          },
+          signer,
+          transferRequests,
+        });
+
+        return {
+          txnData,
+        };
+      }
 
       const txnData = await buildAndSignMultichainDepositTxn({
         emptySignature: true,
         account: gmParams!.addresses.receiver,
         chainId,
-        // params: {
-        //   addresses: {
-        //     receiver: account,
-        //     callbackContract: zeroAddress,
-        //     uiFeeReceiver: zeroAddress,
-        //     market: marketInfo.marketTokenAddress,
-        //     initialLongToken: initialLongTokenAddress,
-        //     initialShortToken: initialShortTokenAddress,
-        //     longTokenSwapPath: [],
-        //     shortTokenSwapPath: [],
-        //   },
-        //   callbackGasLimit: 0n,
-        //   dataList: [],
-        //   minMarketTokens: marketTokenAmount,
-        //   shouldUnwrapNativeToken: false,
-        //   executionFee: executionFee.feeTokenAmount,
-        // },
         params: gmParams!,
         srcChainId,
         relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
@@ -219,15 +232,15 @@ function useMultichainDepositExpressTxnParams({
     },
   });
 
-  return asyncResult;
+  return multichainDepositExpressTxnParams;
 }
 
 const useDepositTransactions = ({
   marketInfo,
   marketToken,
-  longToken,
+  longTokenAddress = marketInfo?.longTokenAddress,
   longTokenAmount,
-  shortToken,
+  shortTokenAddress = marketInfo?.shortTokenAddress,
   shortTokenAmount,
   glvTokenAmount,
   glvTokenUsd,
@@ -258,9 +271,6 @@ const useDepositTransactions = ({
   const marketTokenAddress = marketToken?.address || marketInfo?.marketTokenAddress;
   const executionFeeTokenAmount = executionFee?.feeTokenAmount;
 
-  const longTokenAddress = longToken?.address || marketInfo?.longTokenAddress;
-  const shortTokenAddress = shortToken?.address || marketInfo?.shortTokenAddress;
-
   const shouldUnwrapNativeToken =
     (longTokenAddress === zeroAddress && longTokenAmount !== undefined && longTokenAmount > 0n) ||
     (shortTokenAddress === zeroAddress && shortTokenAmount !== undefined && shortTokenAmount > 0n);
@@ -277,18 +287,19 @@ const useDepositTransactions = ({
         )
       : undefined;
 
+  const isGlv = glvInfo !== undefined && selectedMarketForGlv !== undefined;
+
   const transferRequests = useMemo((): IRelayUtils.TransferRequestsStruct => {
     return getTransferRequests({
       chainId,
-      longTokenAddress: longTokenAddress,
+      longTokenAddress: initialLongTokenAddress,
       longTokenAmount,
-      shortTokenAddress: shortTokenAddress,
+      shortTokenAddress: initialShortTokenAddress,
       shortTokenAmount,
-      feeTokenAmount: executionFeeTokenAmount,
+      feeTokenAmount: 0n, // executionFeeTokenAmount,
+      isGlv,
     });
-  }, [chainId, executionFeeTokenAmount, longTokenAddress, longTokenAmount, shortTokenAddress, shortTokenAmount]);
-
-  const isGlv = glvInfo !== undefined && selectedMarketForGlv !== undefined;
+  }, [chainId, initialLongTokenAddress, initialShortTokenAddress, isGlv, longTokenAmount, shortTokenAmount]);
 
   const gmParams = useMemo((): CreateDepositParamsStruct | undefined => {
     if (
@@ -392,6 +403,11 @@ const useDepositTransactions = ({
       dataList: [],
     };
 
+    // console.log({
+    //   params,
+    //   transferRequests,
+    // });
+
     return params;
   }, [
     account,
@@ -409,11 +425,6 @@ const useDepositTransactions = ({
   ]);
 
   const multichainDepositExpressTxnParams = useMultichainDepositExpressTxnParams({
-    marketInfo,
-    marketTokenAmount,
-    executionFee,
-    longToken,
-    shortToken,
     transferRequests,
     paySource,
     gmParams,
@@ -423,8 +434,9 @@ const useDepositTransactions = ({
   const getDepositMetricData = useCallback(() => {
     if (isGlv) {
       return initGLVSwapMetricData({
-        longToken,
-        shortToken,
+        chainId,
+        longTokenAddress,
+        shortTokenAddress,
         selectedMarketForGlv,
         isDeposit: true,
         executionFee,
@@ -441,8 +453,9 @@ const useDepositTransactions = ({
     }
 
     return initGMSwapMetricData({
-      longToken,
-      shortToken,
+      chainId,
+      longTokenAddress,
+      shortTokenAddress,
       marketToken,
       isDeposit: true,
       executionFee,
@@ -454,13 +467,14 @@ const useDepositTransactions = ({
       isFirstBuy,
     });
   }, [
+    chainId,
     executionFee,
     glvInfo,
     glvTokenAmount,
     glvTokenUsd,
     isFirstBuy,
     isGlv,
-    longToken,
+    longTokenAddress,
     longTokenAmount,
     marketInfo,
     marketToken,
@@ -468,7 +482,7 @@ const useDepositTransactions = ({
     marketTokenUsd,
     selectedMarketForGlv,
     selectedMarketInfoForGlv?.name,
-    shortToken,
+    shortTokenAddress,
     shortTokenAmount,
   ]);
 
@@ -489,90 +503,23 @@ const useDepositTransactions = ({
       let promise: Promise<void>;
 
       if (paySource === "sourceChain") {
-        promise = new Promise(async (resolve) => {
-          const rawRelayParamsPayload = getRawRelayerParams({
-            chainId: chainId,
-            gasPaymentTokenAddress: globalExpressParams!.gasPaymentTokenAddress,
-            relayerFeeTokenAddress: globalExpressParams!.relayerFeeTokenAddress,
-            feeParams: {
-              feeToken: globalExpressParams!.relayerFeeTokenAddress,
-              // TODO MLTCH this is going through the keeper to execute a depost
-              // so there 100% should be a fee
-              feeAmount: 0n,
-              feeSwapPath: [],
-            },
-            externalCalls: getEmptyExternalCallsPayload(),
-            tokenPermits: [],
-            marketsInfoData: globalExpressParams!.marketsInfoData,
-          }) as RawRelayParamsPayload;
+        if (longTokenAmount! > 0n && shortTokenAmount! > 0n) {
+          throw new Error("Pay source sourceChain does not support both long and short token deposits");
+        }
 
-          const relayParams: RelayParamsPayload = {
-            ...rawRelayParamsPayload,
-            deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
-          };
+        const tokenAddress = longTokenAmount! > 0n ? longTokenAddress! : shortTokenAddress!;
+        const tokenAmount = longTokenAmount! > 0n ? longTokenAmount! : shortTokenAmount!;
 
-          const signature = await signCreateDeposit({
-            chainId: chainId,
-            srcChainId: srcChainId,
-            signer: signer,
-            relayParams,
-            transferRequests,
-            params: gmParams,
-          });
-
-          const action: MultichainAction = {
-            actionType: MultichainActionType.Deposit,
-            actionData: {
-              relayParams: relayParams,
-              transferRequests,
-              params: gmParams,
-              signature,
-            },
-          };
-
-          const composeGas = await estimateMultichainDepositNetworkComposeGas({
-            action,
-            chainId: chainId,
-            account: account,
-            srcChainId: srcChainId!,
-            tokenAddress: shortTokenAddress!,
-            settlementChainPublicClient: getPublicClient(getRainbowKitConfig(), { chainId })!,
-          });
-
-          const sendParams: SendParamStruct = getMultichainTransferSendParams({
-            dstChainId: chainId,
-            account,
-            srcChainId,
-            inputAmount: shortTokenAmount!,
-            composeGas: composeGas,
-            isDeposit: true,
-            action,
-          });
-
-          const iStargateInstance = new Contract(
-            "0x4985b8fcEA3659FD801a5b857dA1D00e985863F0",
-            IStargateAbi,
-            signer
-          ) as unknown as IStargate;
-
-          const quoteSend = await iStargateInstance.quoteSend(sendParams, false);
-
-          const txnResult = await sendWalletTransaction({
-            chainId: srcChainId!,
-            to: "0x4985b8fcEA3659FD801a5b857dA1D00e985863F0",
-            signer: signer,
-            callData: encodeFunctionData({
-              abi: IStargateAbi,
-              functionName: "sendToken",
-              args: [sendParams, { nativeFee: quoteSend.nativeFee, lzTokenFee: 0n }, account],
-            }),
-            value: quoteSend.nativeFee as bigint,
-            msg: t`Sent deposit transaction`,
-          });
-
-          await txnResult.wait();
-
-          resolve();
+        promise = createSourceChainDepositTxn({
+          chainId,
+          globalExpressParams: globalExpressParams!,
+          srcChainId: srcChainId!,
+          signer,
+          transferRequests,
+          params: gmParams!,
+          account,
+          tokenAddress,
+          tokenAmount,
         });
       } else if (paySource === "gmxAccount" && srcChainId !== undefined) {
         promise = createMultichainDepositTxn({
@@ -582,7 +529,6 @@ const useDepositTransactions = ({
           transferRequests,
           asyncExpressTxnResult: multichainDepositExpressTxnParams,
           params: gmParams!,
-          isGlv: Boolean(glvInfo && selectedMarketForGlv),
         });
       } else if (paySource === "settlementChain") {
         promise = createDepositTxn({
@@ -616,12 +562,11 @@ const useDepositTransactions = ({
       executionFee,
       getDepositMetricData,
       globalExpressParams,
-      glvInfo,
       gmParams,
+      longTokenAddress,
       longTokenAmount,
       multichainDepositExpressTxnParams,
       paySource,
-      selectedMarketForGlv,
       setPendingDeposit,
       setPendingTxns,
       shortTokenAddress,
@@ -658,7 +603,14 @@ const useDepositTransactions = ({
       sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
       if (srcChainId !== undefined) {
-        throw new Error("Not implemented");
+        return createMultichainGlvDepositTxn({
+          chainId,
+          srcChainId,
+          signer,
+          transferRequests,
+          asyncExpressTxnResult: multichainDepositExpressTxnParams,
+          params: glvParams!,
+        });
       }
 
       return createGlvDepositTxn({
@@ -695,6 +647,7 @@ const useDepositTransactions = ({
       marketInfo,
       marketToken,
       marketTokenAmount,
+      multichainDepositExpressTxnParams,
       setPendingDeposit,
       setPendingTxns,
       shortTokenAddress,
@@ -703,6 +656,7 @@ const useDepositTransactions = ({
       signer,
       srcChainId,
       tokensData,
+      transferRequests,
     ]
   );
 
@@ -723,9 +677,9 @@ export const useDepositWithdrawalTransactions = (
     marketInfo,
     marketToken,
     operation,
-    longToken,
+    longTokenAddress,
     longTokenAmount,
-    shortToken,
+    shortTokenAddress,
     shortTokenAmount,
     glvTokenAmount,
     glvTokenUsd,
@@ -755,8 +709,9 @@ export const useDepositWithdrawalTransactions = (
       const metricData =
         glvInfo && selectedMarketForGlv
           ? initGLVSwapMetricData({
-              longToken,
-              shortToken,
+              chainId,
+              longTokenAddress,
+              shortTokenAddress,
               selectedMarketForGlv,
               isDeposit: false,
               executionFee,
@@ -771,8 +726,9 @@ export const useDepositWithdrawalTransactions = (
               isFirstBuy,
             })
           : initGMSwapMetricData({
-              longToken,
-              shortToken,
+              chainId,
+              longTokenAddress,
+              shortTokenAddress,
               marketToken,
               isDeposit: false,
               executionFee,
@@ -802,8 +758,8 @@ export const useDepositWithdrawalTransactions = (
       if (glvInfo && selectedMarketForGlv) {
         return createGlvWithdrawalTxn(chainId, signer, {
           account,
-          initialLongTokenAddress: longToken?.address || marketInfo.longTokenAddress,
-          initialShortTokenAddress: shortToken?.address || marketInfo.shortTokenAddress,
+          initialLongTokenAddress: longTokenAddress || marketInfo.longTokenAddress,
+          initialShortTokenAddress: shortTokenAddress || marketInfo.shortTokenAddress,
           longTokenSwapPath: [],
           shortTokenSwapPath: [],
           glvTokenAddress: glvInfo.glvTokenAddress,
@@ -827,8 +783,8 @@ export const useDepositWithdrawalTransactions = (
 
       return createWithdrawalTxn(chainId, signer, {
         account,
-        initialLongTokenAddress: longToken?.address || marketInfo.longTokenAddress,
-        initialShortTokenAddress: shortToken?.address || marketInfo.shortTokenAddress,
+        initialLongTokenAddress: longTokenAddress || marketInfo.longTokenAddress,
+        initialShortTokenAddress: shortTokenAddress || marketInfo.shortTokenAddress,
         longTokenSwapPath: [],
         shortTokenSwapPath: [],
         marketTokenAmount: marketTokenAmount!,
@@ -850,8 +806,8 @@ export const useDepositWithdrawalTransactions = (
     [
       glvInfo,
       selectedMarketForGlv,
-      longToken,
-      shortToken,
+      longTokenAddress,
+      shortTokenAddress,
       executionFee,
       longTokenAmount,
       shortTokenAmount,
@@ -901,3 +857,115 @@ export const useDepositWithdrawalTransactions = (
     isSubmitting,
   };
 };
+
+async function createSourceChainDepositTxn({
+  chainId,
+  globalExpressParams,
+  srcChainId,
+  signer,
+  transferRequests,
+  params,
+  account,
+  tokenAddress,
+  tokenAmount,
+}: {
+  chainId: ContractsChainId;
+  globalExpressParams: GlobalExpressParams;
+  srcChainId: SourceChainId;
+  signer: WalletSigner;
+  transferRequests: IRelayUtils.TransferRequestsStruct;
+  params: CreateDepositParamsStruct;
+  account: string;
+  tokenAddress: string;
+  tokenAmount: bigint;
+}) {
+  const rawRelayParamsPayload = getRawRelayerParams({
+    chainId: chainId,
+    gasPaymentTokenAddress: globalExpressParams!.gasPaymentTokenAddress,
+    relayerFeeTokenAddress: globalExpressParams!.relayerFeeTokenAddress,
+    feeParams: {
+      feeToken: globalExpressParams!.relayerFeeTokenAddress,
+      // TODO MLTCH this is going through the keeper to execute a depost
+      // so there 100% should be a fee
+      feeAmount: 0n,
+      feeSwapPath: [],
+    },
+    externalCalls: getEmptyExternalCallsPayload(),
+    tokenPermits: [],
+    marketsInfoData: globalExpressParams!.marketsInfoData,
+  }) as RawRelayParamsPayload;
+
+  const relayParams: RelayParamsPayload = {
+    ...rawRelayParamsPayload,
+    deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+  };
+
+  const signature = await signCreateDeposit({
+    chainId,
+    srcChainId,
+    signer,
+    relayParams,
+    transferRequests,
+    params,
+  });
+
+  const action: MultichainAction = {
+    actionType: MultichainActionType.Deposit,
+    actionData: {
+      relayParams: relayParams,
+      transferRequests,
+      params,
+      signature,
+    },
+  };
+
+  const composeGas = await estimateMultichainDepositNetworkComposeGas({
+    action,
+    chainId,
+    account,
+    srcChainId,
+    tokenAddress,
+    settlementChainPublicClient: getPublicClient(getRainbowKitConfig(), { chainId })!,
+  });
+
+  const sendParams: SendParamStruct = getMultichainTransferSendParams({
+    dstChainId: chainId,
+    account,
+    srcChainId,
+    inputAmount: tokenAmount,
+    composeGas: composeGas,
+    isDeposit: true,
+    action,
+  });
+
+  const sourceChainTokenId = getMultichainTokenId(srcChainId, tokenAddress);
+
+  if (!sourceChainTokenId) {
+    throw new Error("Token ID not found");
+  }
+
+  const iStargateInstance = new Contract(sourceChainTokenId.stargate, IStargateAbi, signer) as unknown as IStargate;
+
+  const quoteSend = await iStargateInstance.quoteSend(sendParams, false);
+
+  const value = quoteSend.nativeFee + (tokenAddress === zeroAddress ? tokenAmount : 0n);
+
+  try {
+    const txnResult = await sendWalletTransaction({
+      chainId: srcChainId!,
+      to: sourceChainTokenId.stargate,
+      signer,
+      callData: encodeFunctionData({
+        abi: IStargateAbi,
+        functionName: "sendToken",
+        args: [sendParams, { nativeFee: quoteSend.nativeFee, lzTokenFee: 0n }, account],
+      }),
+      value,
+      msg: t`Sent deposit transaction`,
+    });
+
+    await txnResult.wait();
+  } catch (error) {
+    toastCustomOrStargateError(chainId, error);
+  }
+}

@@ -95,7 +95,11 @@ export function getIsEquivalentTokens(token1: Token, token2: Token) {
   return false;
 }
 
-export function getTokenData(tokensData?: TokensData, address?: string, convertTo?: "wrapped" | "native") {
+export function getTokenData(
+  tokensData?: TokensData,
+  address?: string,
+  convertTo?: "wrapped" | "native"
+): TokenData | undefined {
   if (!address || !tokensData?.[address]) {
     return undefined;
   }

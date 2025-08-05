@@ -9,6 +9,7 @@ import { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts, TradeMode } from "domain/synthetics/trade";
 import { ErrorLike, extendError, OrderErrorContext, parseError } from "lib/errors";
 import { bigintToNumber, formatPercentage, formatRatePercentage, getBasisPoints, roundToOrder } from "lib/numbers";
+import { getToken } from "sdk/configs/tokens";
 import { TwapDuration } from "sdk/types/twap";
 import { CreateOrderPayload } from "sdk/utils/orderTransactions";
 
@@ -496,8 +497,8 @@ export function initEditCollateralMetricData({
 }
 
 export function initGMSwapMetricData({
-  longToken,
-  shortToken,
+  longTokenAddress,
+  shortTokenAddress,
   isDeposit,
   executionFee,
   marketInfo,
@@ -507,9 +508,10 @@ export function initGMSwapMetricData({
   marketTokenAmount,
   marketTokenUsd,
   isFirstBuy,
+  chainId,
 }: {
-  longToken: TokenData | undefined;
-  shortToken: TokenData | undefined;
+  longTokenAddress: string | undefined;
+  shortTokenAddress: string | undefined;
   marketToken: TokenData | undefined;
   isDeposit: boolean;
   executionFee: ExecutionFee | undefined;
@@ -519,6 +521,7 @@ export function initGMSwapMetricData({
   marketTokenAmount: bigint | undefined;
   marketTokenUsd: bigint | undefined;
   isFirstBuy: boolean | undefined;
+  chainId: number;
 }) {
   return metrics.setCachedMetricData<SwapGmMetricData>({
     metricId: getGMSwapMetricId({
@@ -527,13 +530,19 @@ export function initGMSwapMetricData({
     }),
     metricType: isDeposit ? "buyGM" : "sellGM",
     requestId: getRequestId(),
-    initialLongTokenAddress: longToken?.address,
-    initialShortTokenAddress: shortToken?.address,
+    initialLongTokenAddress: longTokenAddress,
+    initialShortTokenAddress: shortTokenAddress,
     marketAddress: marketInfo?.marketTokenAddress,
     marketName: marketInfo?.name,
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
-    longTokenAmount: formatAmountForMetrics(longTokenAmount, longToken?.decimals),
-    shortTokenAmount: formatAmountForMetrics(shortTokenAmount, shortToken?.decimals),
+    longTokenAmount: formatAmountForMetrics(
+      longTokenAmount,
+      longTokenAddress ? getToken(chainId, longTokenAddress)?.decimals : undefined
+    ),
+    shortTokenAmount: formatAmountForMetrics(
+      shortTokenAmount,
+      shortTokenAddress ? getToken(chainId, shortTokenAddress)?.decimals : undefined
+    ),
     marketTokenAmount: formatAmountForMetrics(marketTokenAmount, marketToken?.decimals),
     marketTokenUsd: formatAmountForMetrics(marketTokenUsd),
     isFirstBuy,
@@ -541,8 +550,9 @@ export function initGMSwapMetricData({
 }
 
 export function initGLVSwapMetricData({
-  longToken,
-  shortToken,
+  chainId,
+  longTokenAddress,
+  shortTokenAddress,
   isDeposit,
   executionFee,
   marketName,
@@ -555,8 +565,9 @@ export function initGLVSwapMetricData({
   glvTokenUsd,
   isFirstBuy,
 }: {
-  longToken: TokenData | undefined;
-  shortToken: TokenData | undefined;
+  chainId: number;
+  longTokenAddress: string | undefined;
+  shortTokenAddress: string | undefined;
   selectedMarketForGlv: string | undefined;
   isDeposit: boolean;
   executionFee: ExecutionFee | undefined;
@@ -577,14 +588,20 @@ export function initGLVSwapMetricData({
     }),
     metricType: isDeposit ? "buyGLV" : "sellGLV",
     requestId: getRequestId(),
-    initialLongTokenAddress: longToken?.address,
-    initialShortTokenAddress: shortToken?.address,
+    initialLongTokenAddress: longTokenAddress,
+    initialShortTokenAddress: shortTokenAddress,
     glvAddress,
     selectedMarketForGlv,
     marketName,
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
-    longTokenAmount: formatAmountForMetrics(longTokenAmount, longToken?.decimals),
-    shortTokenAmount: formatAmountForMetrics(shortTokenAmount, shortToken?.decimals),
+    longTokenAmount: formatAmountForMetrics(
+      longTokenAmount,
+      longTokenAddress ? getToken(chainId, longTokenAddress)?.decimals : undefined
+    ),
+    shortTokenAmount: formatAmountForMetrics(
+      shortTokenAmount,
+      shortTokenAddress ? getToken(chainId, shortTokenAddress)?.decimals : undefined
+    ),
     glvTokenAmount: formatAmountForMetrics(glvTokenAmount, glvToken?.decimals),
     glvTokenUsd: formatAmountForMetrics(glvTokenUsd),
     isFirstBuy,

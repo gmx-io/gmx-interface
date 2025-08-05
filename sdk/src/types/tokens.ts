@@ -120,14 +120,20 @@ export type TokenPrices = {
   maxPrice: bigint;
 };
 
+export enum TokenBalanceType {
+  Wallet = 0,
+  GmxAccount = 1,
+  SourceChain = 2,
+}
+
 export type TokenData = Token & {
   prices: TokenPrices;
-  isGmxAccount?: boolean;
   walletBalance?: bigint;
   gmxAccountBalance?: bigint;
+  sourceChainBalance?: bigint;
+  balanceType?: TokenBalanceType;
   /**
-   * If isGmxAccount is true, then this is the gmx account balance
-   * If isGmxAccount is false, then this is the wallet balance
+   * Balance according to the balanceType
    */
   balance?: bigint;
   totalSupply?: bigint;
