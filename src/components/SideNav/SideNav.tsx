@@ -5,6 +5,8 @@ import { Link, useLocation } from "react-router-dom";
 
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import CollapseIcon from "img/collapse.svg?react";
 import DashboardIcon from "img/dashboard.svg?react";
 import DatabaseIcon from "img/database.svg?react";
@@ -99,18 +101,24 @@ function NavItem({ icon, label, isActive = false, isCollapsed = false, onClick, 
     </button>
   );
 
+  const content = to ? (
+    external ? (
+      <a href={to} target="_blank" rel="noopener noreferrer">
+        {button}
+      </a>
+    ) : (
+      <Link to={to}>{button}</Link>
+    )
+  ) : (
+    button
+  );
+
   return (
     <li className="p-0 first:-mt-4">
-      {to ? (
-        external ? (
-          <a href={to} target="_blank" rel="noopener noreferrer">
-            {button}
-          </a>
-        ) : (
-          <Link to={to}>{button}</Link>
-        )
+      {isCollapsed ? (
+        <TooltipWithPortal handle={content} position="right" content={label} tooltipClassName="!min-w-fit" />
       ) : (
-        button
+        content
       )}
     </li>
   );
