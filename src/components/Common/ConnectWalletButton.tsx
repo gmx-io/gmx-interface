@@ -10,7 +10,12 @@ type Props = {
 
 export default function ConnectWalletButton({ children, onClick }: Props) {
   return (
-    <Button variant="secondary" data-qa="connect-wallet-button" className="flex items-center gap-6" onClick={onClick}>
+    <Button
+      variant="secondary"
+      data-qa="connect-wallet-button"
+      className="flex h-40 items-center gap-6 max-md:h-32"
+      onClick={onClick}
+    >
       <FaWallet size={20} className="box-content" />
       <span>{children}</span>
     </Button>

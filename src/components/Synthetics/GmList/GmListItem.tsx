@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/macro";
-import cx from "classnames";
 import React, { useCallback } from "react";
 import { HiDotsVertical } from "react-icons/hi";
 import { useHistory } from "react-router-dom";
@@ -224,7 +223,7 @@ export function GmListItem({
 
   return (
     <TableTr key={token.address} bordered={false} hoverable={false}>
-      <TableTd className="!py-10 pl-16">
+      <TableTd className="w-[22%] !py-10 pl-16">
         <div className="w-[220px]">
           <div className="flex items-center gap-8">
             {onFavoriteClick && (
@@ -262,7 +261,7 @@ export function GmListItem({
           {showDebugValues && <span style={tokenAddressStyle}>{marketOrGlvTokenAddress}</span>}
         </div>
       </TableTd>
-      <TableTd>
+      <TableTd className="w-[13%]">
         <AmountWithUsdHuman
           multiline
           amount={totalSupply}
@@ -273,7 +272,7 @@ export function GmListItem({
           usdOnTop
         />
       </TableTd>
-      <TableTd className="font-medium">
+      <TableTd className="w-[13%] font-medium">
         <GmTokensBalanceInfo
           token={token}
           daysConsidered={daysConsidered}
@@ -283,19 +282,19 @@ export function GmListItem({
         />
       </TableTd>
 
-      <TableTd className="font-medium">
+      <TableTd className="w-[13%] font-medium">
         <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
       </TableTd>
 
-      <TableTd>
+      <TableTd className="w-[13%]">
         {performance ? <div className="font-medium numbers">{formatPerformanceBps(performance)}</div> : "..."}
       </TableTd>
 
-      <TableTd>
+      <TableTd className="w-[13%]">
         <SnapshotGraph performanceSnapshots={performanceSnapshots ?? EMPTY_ARRAY} performance={performance ?? 0} />
       </TableTd>
 
-      <TableTd className="pr-16">
+      <TableTd className="w-[13%] pr-16">
         <Button
           className="flex flex-grow items-center gap-4"
           variant="ghost"
@@ -319,9 +318,6 @@ const DESKTOP_SNAPSHOT_GRAPH_SIZE = {
   height: 32,
 };
 
-const MOBILE_GRAPH_SIZE_CLASSNAME = `h-[${MOBILE_SNAPSHOT_GRAPH_SIZE.height}px] w-[${MOBILE_SNAPSHOT_GRAPH_SIZE.width}px]`;
-const DESKTOP_GRAPH_SIZE_CLASSNAME = `h-[${DESKTOP_SNAPSHOT_GRAPH_SIZE.height}px] w-[${DESKTOP_SNAPSHOT_GRAPH_SIZE.width}px]`;
-
 const SnapshotGraph = ({
   performanceSnapshots,
   performance,
@@ -335,12 +331,7 @@ const SnapshotGraph = ({
   const size = isMobile ? MOBILE_SNAPSHOT_GRAPH_SIZE : DESKTOP_SNAPSHOT_GRAPH_SIZE;
 
   return (
-    <div
-      className={cx({
-        [MOBILE_GRAPH_SIZE_CLASSNAME]: isMobile,
-        [DESKTOP_GRAPH_SIZE_CLASSNAME]: !isMobile,
-      })}
-    >
+    <div style={isMobile ? MOBILE_SNAPSHOT_GRAPH_SIZE : DESKTOP_SNAPSHOT_GRAPH_SIZE}>
       <AreaChart width={size.width} height={size.height} data={performanceSnapshots}>
         <defs>
           <linearGradient id={`snapshot-graph-gradient-green`} x1="0" y1="0" x2="0" y2="1">

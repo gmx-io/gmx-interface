@@ -81,6 +81,8 @@ export function PoolsDetailsAbout({
               ? `${formatAmountHuman(mintable?.mintableAmount, marketToken?.decimals, false, 2)} ${marketToken?.symbol}`
               : "..."
           }
+          valueClassName="text-13"
+          secondaryValueClassName="text-12"
           secondaryValue={mintable ? formatAmountHuman(mintable?.mintableUsd, USD_DECIMALS, true, 2) : undefined}
           tooltipContent={
             !isGlv ? <BuyableTooltipContent marketInfo={glvOrMarketInfo} mintableInfo={mintableInfo} /> : undefined
@@ -93,6 +95,8 @@ export function PoolsDetailsAbout({
               ? `${formatAmountHuman(sellable?.totalAmount, marketToken?.decimals, false, 2)} ${marketToken?.symbol}`
               : "..."
           }
+          valueClassName="text-13"
+          secondaryValueClassName="text-12"
           secondaryValue={sellable ? formatAmountHuman(sellable?.totalUsd, USD_DECIMALS, true, 2) : undefined}
           tooltipContent={
             !isGlv ? <SellableTooltipContent marketInfo={glvOrMarketInfo} sellableInfo={sellableInfo} /> : undefined
@@ -109,6 +113,8 @@ export function PoolsDetailsAbout({
                   : formatDateTime(bigintToNumber(glvOrMarketInfo.shiftLastExecutedAt, 0))
                 : "..."
             }
+            valueClassName="text-13"
+            secondaryValueClassName="text-12"
           />
         )}
       </div>

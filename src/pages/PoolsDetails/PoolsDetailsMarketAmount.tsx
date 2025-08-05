@@ -11,11 +11,15 @@ export function PoolsDetailsMarketAmount({
   secondaryValue,
   label,
   tooltipContent,
+  valueClassName,
+  secondaryValueClassName,
 }: {
   value: ReactNode;
   secondaryValue?: string;
   label?: ReactNode;
   tooltipContent?: ReactNode;
+  valueClassName?: string;
+  secondaryValueClassName?: string;
 }) {
   const isMobile = usePoolsIsMobilePage();
 
@@ -26,10 +30,10 @@ export function PoolsDetailsMarketAmount({
         "gap-4": isMobile,
       })}
     >
-      <span className="numbers">{value}</span>
+      <span className={cx("numbers", valueClassName)}>{value}</span>
       {secondaryValue ? (
         <>
-          <span className={cx("text-slate-100 numbers")}>(${secondaryValue})</span>
+          <span className={cx("text-slate-100 numbers", secondaryValueClassName)}>({secondaryValue})</span>
         </>
       ) : null}
     </span>
