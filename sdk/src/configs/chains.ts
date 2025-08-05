@@ -10,7 +10,7 @@ import {
   sepolia,
 } from "viem/chains";
 
-import { GasLimitsConfig } from "types/fees";
+import type { GasLimitsConfig } from "types/fees";
 
 export const AVALANCHE = 43114;
 export const AVALANCHE_FUJI = 43113;
