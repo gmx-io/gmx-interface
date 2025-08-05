@@ -540,16 +540,25 @@ export declare namespace ReaderPricingUtils {
     priceImpactUsd: BigNumberish;
     executionPrice: BigNumberish;
     balanceWasImproved: boolean;
+    proportionalPendingImpactUsd: BigNumberish;
+    totalImpactUsd: BigNumberish;
+    priceImpactDiffUsd: BigNumberish;
   };
 
   export type ExecutionPriceResultStructOutput = [
     priceImpactUsd: bigint,
     executionPrice: bigint,
     balanceWasImproved: boolean,
+    proportionalPendingImpactUsd: bigint,
+    totalImpactUsd: bigint,
+    priceImpactDiffUsd: bigint,
   ] & {
     priceImpactUsd: bigint;
     executionPrice: bigint;
     balanceWasImproved: boolean;
+    proportionalPendingImpactUsd: bigint;
+    totalImpactUsd: bigint;
+    priceImpactDiffUsd: bigint;
   };
 }
 
