@@ -85,66 +85,64 @@ export function PositionList(p: Props) {
       )}
 
       {!isMobile && (
-        <TableScrollFadeContainer>
-          {positions.length > 0 ? (
-            <Table className="!w-[max(100%,840px)]">
-              <thead className="text-body-medium">
-                <TableTheadTr>
-                  <TableTh>
-                    <Trans>Position</Trans>
-                  </TableTh>
-                  <TableTh>
-                    <Trans>Size</Trans>
-                  </TableTh>
-                  <TableTh>
-                    <Trans>Net Value</Trans>
-                  </TableTh>
-                  <TableTh>
-                    <Trans>Collateral</Trans>
-                  </TableTh>
-                  <TableTh>
-                    <Trans>Entry Price</Trans>
-                  </TableTh>
-                  <TableTh>
-                    <Trans>Mark Price</Trans>
-                  </TableTh>
-                  <TableTh>
-                    <Trans>Liq. Price</Trans>
-                  </TableTh>
-                  {!isLoading && !p.hideActions && (
-                    <>
-                      <TableTh></TableTh>
-                      <TableTh></TableTh>
-                    </>
-                  )}
-                </TableTheadTr>
-              </thead>
-              <tbody>
-                {!isLoading &&
-                  positions.map((position) => (
-                    <PositionItemWrapper
-                      key={position.key}
-                      position={position}
-                      onEditCollateralClick={setEditingPositionKey}
-                      onClosePositionClick={onClosePositionClick}
-                      onOrdersClick={onOrdersClick}
-                      onSelectPositionClick={onSelectPositionClick}
-                      isLarge
-                      onShareClick={handleSharePositionClick}
-                      openSettings={openSettings}
-                      hideActions={hideActions}
-                      onCancelOrder={onCancelOrder}
-                    />
-                  ))}
-              </tbody>
-            </Table>
-          ) : (
-            <EmptyTableContent
-              isLoading={isLoading}
-              isEmpty={positions.length === 0}
-              emptyText={<Trans>No open positions</Trans>}
-            />
-          )}
+        <TableScrollFadeContainer disableScrollFade={positions.length === 0}>
+          <Table className="!w-[max(100%,840px)]">
+            <thead className="text-body-medium">
+              <TableTheadTr>
+                <TableTh>
+                  <Trans>Position</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>Size</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>Net Value</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>Collateral</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>Entry Price</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>Mark Price</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>Liq. Price</Trans>
+                </TableTh>
+                {!isLoading && !p.hideActions && (
+                  <>
+                    <TableTh></TableTh>
+                    <TableTh></TableTh>
+                  </>
+                )}
+              </TableTheadTr>
+            </thead>
+            <tbody>
+              {!isLoading &&
+                positions.map((position) => (
+                  <PositionItemWrapper
+                    key={position.key}
+                    position={position}
+                    onEditCollateralClick={setEditingPositionKey}
+                    onClosePositionClick={onClosePositionClick}
+                    onOrdersClick={onOrdersClick}
+                    onSelectPositionClick={onSelectPositionClick}
+                    isLarge
+                    onShareClick={handleSharePositionClick}
+                    openSettings={openSettings}
+                    hideActions={hideActions}
+                    onCancelOrder={onCancelOrder}
+                  />
+                ))}
+            </tbody>
+          </Table>
+
+          <EmptyTableContent
+            isLoading={isLoading}
+            isEmpty={positions.length === 0}
+            emptyText={<Trans>No open positions</Trans>}
+          />
         </TableScrollFadeContainer>
       )}
       {positionToShare && (

@@ -143,7 +143,7 @@ export function ClaimsHistory({
 }: ClaimsHistoryProps) {
   return (
     <div className="App-box">
-      <TableScrollFadeContainer>
+      <TableScrollFadeContainer disableScrollFade={isEmpty}>
         {!isEmpty && (
           <table className="ClaimsHistory-table">
             <colgroup>

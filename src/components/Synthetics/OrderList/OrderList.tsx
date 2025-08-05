@@ -248,68 +248,66 @@ export function OrderList({
       )}
 
       {!isContainerSmall && (
-        <TableScrollFadeContainer>
-          {orders.length > 0 ? (
-            <Table className="!w-[max(100%,580px)]">
-              <thead>
-                <TableTheadTr bordered>
-                  {!hideActions && (
-                    <TableTh className="cursor-pointer" onClick={onSelectAllOrders}>
-                      <Checkbox
-                        isPartialChecked={onlySomeOrdersSelected}
-                        isChecked={areAllOrdersSelected}
-                        setIsChecked={onSelectAllOrders}
-                      />
-                    </TableTh>
-                  )}
-                  <TableTh>
-                    <MarketFilterLongShort
-                      withPositions="withOrders"
-                      value={marketsDirectionsFilter}
-                      onChange={setMarketsDirectionsFilter}
+        <TableScrollFadeContainer disableScrollFade={orders.length === 0}>
+          <Table className="!w-[max(100%,580px)]">
+            <thead>
+              <TableTheadTr bordered>
+                {!hideActions && (
+                  <TableTh className="cursor-pointer" onClick={onSelectAllOrders}>
+                    <Checkbox
+                      isPartialChecked={onlySomeOrdersSelected}
+                      isChecked={areAllOrdersSelected}
+                      setIsChecked={onSelectAllOrders}
                     />
                   </TableTh>
-                  <TableTh>
-                    <OrderTypeFilter value={orderTypesFilter} onChange={setOrderTypesFilter} />
-                  </TableTh>
-                  <TableTh>
-                    <Trans>Size</Trans>
-                  </TableTh>
-                  <TableTh>
-                    <Trans>Trigger Price</Trans>
-                  </TableTh>
-                  <TableTh>
-                    <Trans>Mark Price</Trans>
-                  </TableTh>
+                )}
+                <TableTh>
+                  <MarketFilterLongShort
+                    withPositions="withOrders"
+                    value={marketsDirectionsFilter}
+                    onChange={setMarketsDirectionsFilter}
+                  />
+                </TableTh>
+                <TableTh>
+                  <OrderTypeFilter value={orderTypesFilter} onChange={setOrderTypesFilter} />
+                </TableTh>
+                <TableTh>
+                  <Trans>Size</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>Trigger Price</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>Mark Price</Trans>
+                </TableTh>
 
-                  {!hideActions && <TableTh></TableTh>}
-                </TableTheadTr>
-              </thead>
-              <tbody>
-                {!isLoading &&
-                  orders.map((order) => (
-                    <OrderItem
-                      isLarge
-                      isSelected={selectedOrdersKeys?.includes(order.key)}
-                      key={order.key}
-                      order={order}
-                      onToggleOrder={() => onToggleOrder(order.key)}
-                      isCanceling={cancellingOrdersKeys.includes(order.key)}
-                      onCancelOrder={() => onCancelOrder(order)}
-                      hideActions={hideActions}
-                      positionsInfoData={positionsData}
-                      setRef={(el) => (orderRefs.current[order.key] = el)}
-                    />
-                  ))}
-              </tbody>
-            </Table>
-          ) : (
-            <EmptyTableContent
-              isLoading={isLoading}
-              isEmpty={orders.length === 0}
-              emptyText={<Trans>No open orders</Trans>}
-            />
-          )}
+                {!hideActions && <TableTh></TableTh>}
+              </TableTheadTr>
+            </thead>
+            <tbody>
+              {!isLoading &&
+                orders.map((order) => (
+                  <OrderItem
+                    isLarge
+                    isSelected={selectedOrdersKeys?.includes(order.key)}
+                    key={order.key}
+                    order={order}
+                    onToggleOrder={() => onToggleOrder(order.key)}
+                    isCanceling={cancellingOrdersKeys.includes(order.key)}
+                    onCancelOrder={() => onCancelOrder(order)}
+                    hideActions={hideActions}
+                    positionsInfoData={positionsData}
+                    setRef={(el) => (orderRefs.current[order.key] = el)}
+                  />
+                ))}
+            </tbody>
+          </Table>
+
+          <EmptyTableContent
+            isLoading={isLoading}
+            isEmpty={orders.length === 0}
+            emptyText={<Trans>No open orders</Trans>}
+          />
         </TableScrollFadeContainer>
       )}
 
