@@ -1,7 +1,13 @@
+import pickBy from "lodash/pickBy";
 import { zeroAddress } from "viem";
 
 import { SettlementChainId, SourceChainId, getChainName } from "config/chains";
-import { MULTICALLS_MAP, MULTI_CHAIN_TOKEN_MAPPING, MultichainTokenMapping } from "config/multichain";
+import {
+  MULTICALLS_MAP,
+  MULTI_CHAIN_TOKEN_MAPPING,
+  MULTI_CHAIN_TRADE_TOKENS,
+  MultichainTokenMapping,
+} from "config/multichain";
 import { executeMulticall } from "lib/multicall/executeMulticall";
 import type { MulticallRequestConfig } from "lib/multicall/types";
 
@@ -9,23 +15,34 @@ export async function fetchMultichainTokenBalances({
   settlementChainId,
   account,
   progressCallback,
+  tokens = MULTI_CHAIN_TRADE_TOKENS[settlementChainId],
 }: {
   settlementChainId: SettlementChainId;
   account: string;
   progressCallback?: (chainId: number, tokensChainData: Record<string, bigint>) => void;
+  tokens?: string[];
 }): Promise<Record<number, Record<string, bigint>>> {
   const requests: Promise<void>[] = [];
 
-  const sourceChainTokenIdMap = MULTI_CHAIN_TOKEN_MAPPING[settlementChainId];
+  const sourceChainsTokenIdMap = MULTI_CHAIN_TOKEN_MAPPING[settlementChainId];
 
   const result: Record<number, Record<string, bigint>> = {};
 
-  for (const sourceChainIdString in sourceChainTokenIdMap) {
+  for (const sourceChainIdString in sourceChainsTokenIdMap) {
     const sourceChainId = parseInt(sourceChainIdString) as SourceChainId;
+
+    const sourceChainTokenIdMap = tokens
+      ? pickBy(sourceChainsTokenIdMap[sourceChainId], (value) => tokens.includes(value.settlementChainTokenAddress))
+      : sourceChainsTokenIdMap[sourceChainId];
+
+    if (Object.keys(sourceChainTokenIdMap).length === 0) {
+      continue;
+    }
+
     const request = fetchSourceChainTokenBalances({
       sourceChainId,
       account,
-      sourceChainTokenIdMap: sourceChainTokenIdMap[sourceChainId],
+      sourceChainTokenIdMap,
     }).then((res) => {
       result[sourceChainId] = res;
       progressCallback?.(sourceChainId, res);

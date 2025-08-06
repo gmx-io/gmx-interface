@@ -2,7 +2,11 @@ import { useMemo } from "react";
 
 import { getExplorerUrl } from "config/chains";
 import { getContract } from "config/contracts";
-import { MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
+import {
+  MAX_PNL_FACTOR_FOR_DEPOSITS_KEY,
+  MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY,
+  multichainBalanceKey,
+} from "config/dataStore";
 // Warning: do not import through reexport, it will break jest
 import { USD_DECIMALS } from "config/factors";
 import { selectGlvInfo, selectGlvs } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -127,6 +131,19 @@ export function useMarketTokensDataRequest(
           },
         } satisfies ContractCallsConfig<any>;
 
+        if (account) {
+          requests[`${marketAddress}-gmxAccountData`] = {
+            contractAddress: getContract(chainId, "DataStore"),
+            abiId: "DataStore",
+            calls: {
+              balance: {
+                methodName: "getUint",
+                params: [multichainBalanceKey(account, marketAddress)],
+              },
+            },
+          } satisfies ContractCallsConfig<any>;
+        }
+
         return requests;
       }, {}),
     parseResponse: (res) =>
@@ -136,6 +153,7 @@ export function useMarketTokensDataRequest(
 
         const pricesData = res.data[`${marketAddress}-prices`];
         const tokenData = res.data[`${marketAddress}-tokenData`];
+        const gmxAccountData = res.data[`${marketAddress}-gmxAccountData`];
 
         if (pricesErrors || tokenDataErrors || !pricesData || !tokenData) {
           return marketTokensMap;
@@ -146,6 +164,14 @@ export function useMarketTokensDataRequest(
         const minPrice = BigInt(pricesData?.minPrice.returnValues[0]);
         const maxPrice = BigInt(pricesData?.maxPrice.returnValues[0]);
 
+        const walletBalance =
+          account && tokenData.balance?.returnValues ? BigInt(tokenData?.balance?.returnValues[0]) : undefined;
+        const gmxAccountBalance =
+          account && gmxAccountData?.balance?.returnValues
+            ? BigInt(gmxAccountData?.balance?.returnValues[0])
+            : undefined;
+        const balance = srcChainId !== undefined ? gmxAccountBalance : walletBalance;
+
         marketTokensMap[marketAddress] = {
           ...tokenConfig,
           address: marketAddress,
@@ -154,7 +180,9 @@ export function useMarketTokensDataRequest(
             maxPrice: maxPrice !== undefined && maxPrice > 0 ? maxPrice : expandDecimals(1, USD_DECIMALS),
           },
           totalSupply: BigInt(tokenData?.totalSupply.returnValues[0]),
-          balance: account && tokenData.balance?.returnValues ? BigInt(tokenData?.balance?.returnValues[0]) : undefined,
+          walletBalance,
+          gmxAccountBalance,
+          balance,
           explorerUrl: `${getExplorerUrl(chainId)}/token/${marketAddress}`,
         };
 

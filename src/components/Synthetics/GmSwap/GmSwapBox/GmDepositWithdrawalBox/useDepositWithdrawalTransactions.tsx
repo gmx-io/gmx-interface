@@ -1,14 +1,12 @@
 import { t } from "@lingui/macro";
-import { getPublicClient } from "@wagmi/core";
-import { Contract } from "ethers";
 import chunk from "lodash/chunk";
 import { useCallback, useMemo, useState } from "react";
-import { bytesToHex, encodeFunctionData, Hex, hexToBytes, numberToHex, zeroAddress } from "viem";
+import { bytesToHex, Hex, hexToBytes, numberToHex, zeroAddress } from "viem";
 
-import { ContractsChainId, SourceChainId } from "config/chains";
+import { ContractsChainId, SettlementChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
-import { CHAIN_ID_TO_ENDPOINT_ID, getMultichainTokenId, IStargateAbi } from "config/multichain";
+import { CHAIN_ID_TO_ENDPOINT_ID } from "config/multichain";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -20,17 +18,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
-import {
-  CodecUiHelper,
-  GMX_DATA_ACTION_HASH,
-  MultichainAction,
-  MultichainActionType,
-} from "domain/multichain/codecs/CodecUiHelper";
-import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
-import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
-import { signCreateDeposit } from "domain/synthetics/express/expressOrderUtils";
-import { getRawRelayerParams } from "domain/synthetics/express/relayParamsUtils";
-import { GlobalExpressParams, RawRelayParamsPayload, RelayParamsPayload } from "domain/synthetics/express/types";
+import { CodecUiHelper, GMX_DATA_ACTION_HASH, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { ExecutionFee } from "domain/synthetics/fees";
 import {
   CreateDepositParamsStruct,
@@ -62,21 +50,15 @@ import {
   sendTxnValidationErrorMetric,
 } from "lib/metrics";
 import { EMPTY_ARRAY } from "lib/objects";
-import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { makeUserAnalyticsOrderFailResultHandler, sendUserAnalyticsOrderConfirmClickEvent } from "lib/userAnalytics";
-import { WalletSigner } from "lib/wallets";
-import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
-import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 import { applySlippageToMinOut } from "sdk/utils/trade";
 import { IRelayUtils } from "typechain-types/MultichainGmRouter";
-import { IStargate, SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
 
-import { toastCustomOrStargateError } from "components/Synthetics/GmxAccountModal/toastCustomOrStargateError";
-
+import { createSourceChainDepositTxn } from "../../../../../domain/synthetics/markets/createSourceChainDepositTxn";
 import { Operation } from "../types";
 import type { GmOrGlvPaySource } from "./types";
 
@@ -148,7 +130,7 @@ function getTransferRequests({
     requests.amounts.push(shortTokenAmount);
   }
 
-  if (feeTokenAmount !== undefined) {
+  if (feeTokenAmount !== undefined && feeTokenAmount > 0n) {
     requests.tokens.push(getWrappedToken(chainId).address);
     requests.receivers.push(routerAddress);
     requests.amounts.push(feeTokenAmount);
@@ -181,14 +163,6 @@ function useMultichainDepositExpressTxnParams({
       }
 
       if (glvParams) {
-        console.log({
-          executionFee: glvParams.executionFee,
-          total: gasPaymentParams.totalRelayerFeeTokenAmount,
-          relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
-          diff: gasPaymentParams.totalRelayerFeeTokenAmount - gasPaymentParams.relayerFeeAmount,
-          fee: relayParams.fee.feeAmount,
-        });
-
         const txnData = await buildAndSignMultichainGlvDepositTxn({
           emptySignature: true,
           account: glvParams!.addresses.receiver,
@@ -511,7 +485,7 @@ const useDepositTransactions = ({
         const tokenAmount = longTokenAmount! > 0n ? longTokenAmount! : shortTokenAmount!;
 
         promise = createSourceChainDepositTxn({
-          chainId,
+          chainId: chainId as SettlementChainId,
           globalExpressParams: globalExpressParams!,
           srcChainId: srcChainId!,
           signer,
@@ -520,6 +494,7 @@ const useDepositTransactions = ({
           account,
           tokenAddress,
           tokenAmount,
+          executionFee: executionFee.feeTokenAmount,
         });
       } else if (paySource === "gmxAccount" && srcChainId !== undefined) {
         promise = createMultichainDepositTxn({
@@ -857,115 +832,3 @@ export const useDepositWithdrawalTransactions = (
     isSubmitting,
   };
 };
-
-async function createSourceChainDepositTxn({
-  chainId,
-  globalExpressParams,
-  srcChainId,
-  signer,
-  transferRequests,
-  params,
-  account,
-  tokenAddress,
-  tokenAmount,
-}: {
-  chainId: ContractsChainId;
-  globalExpressParams: GlobalExpressParams;
-  srcChainId: SourceChainId;
-  signer: WalletSigner;
-  transferRequests: IRelayUtils.TransferRequestsStruct;
-  params: CreateDepositParamsStruct;
-  account: string;
-  tokenAddress: string;
-  tokenAmount: bigint;
-}) {
-  const rawRelayParamsPayload = getRawRelayerParams({
-    chainId: chainId,
-    gasPaymentTokenAddress: globalExpressParams!.gasPaymentTokenAddress,
-    relayerFeeTokenAddress: globalExpressParams!.relayerFeeTokenAddress,
-    feeParams: {
-      feeToken: globalExpressParams!.relayerFeeTokenAddress,
-      // TODO MLTCH this is going through the keeper to execute a depost
-      // so there 100% should be a fee
-      feeAmount: 0n,
-      feeSwapPath: [],
-    },
-    externalCalls: getEmptyExternalCallsPayload(),
-    tokenPermits: [],
-    marketsInfoData: globalExpressParams!.marketsInfoData,
-  }) as RawRelayParamsPayload;
-
-  const relayParams: RelayParamsPayload = {
-    ...rawRelayParamsPayload,
-    deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
-  };
-
-  const signature = await signCreateDeposit({
-    chainId,
-    srcChainId,
-    signer,
-    relayParams,
-    transferRequests,
-    params,
-  });
-
-  const action: MultichainAction = {
-    actionType: MultichainActionType.Deposit,
-    actionData: {
-      relayParams: relayParams,
-      transferRequests,
-      params,
-      signature,
-    },
-  };
-
-  const composeGas = await estimateMultichainDepositNetworkComposeGas({
-    action,
-    chainId,
-    account,
-    srcChainId,
-    tokenAddress,
-    settlementChainPublicClient: getPublicClient(getRainbowKitConfig(), { chainId })!,
-  });
-
-  const sendParams: SendParamStruct = getMultichainTransferSendParams({
-    dstChainId: chainId,
-    account,
-    srcChainId,
-    inputAmount: tokenAmount,
-    composeGas: composeGas,
-    isDeposit: true,
-    action,
-  });
-
-  const sourceChainTokenId = getMultichainTokenId(srcChainId, tokenAddress);
-
-  if (!sourceChainTokenId) {
-    throw new Error("Token ID not found");
-  }
-
-  const iStargateInstance = new Contract(sourceChainTokenId.stargate, IStargateAbi, signer) as unknown as IStargate;
-
-  const quoteSend = await iStargateInstance.quoteSend(sendParams, false);
-
-  const value = quoteSend.nativeFee + (tokenAddress === zeroAddress ? tokenAmount : 0n);
-
-  try {
-    const txnResult = await sendWalletTransaction({
-      chainId: srcChainId!,
-      to: sourceChainTokenId.stargate,
-      signer,
-      callData: encodeFunctionData({
-        abi: IStargateAbi,
-        functionName: "sendToken",
-        args: [sendParams, { nativeFee: quoteSend.nativeFee, lzTokenFee: 0n }, account],
-      }),
-      value,
-      msg: t`Sent deposit transaction`,
-    });
-
-    await txnResult.wait();
-  } catch (error) {
-    toastCustomOrStargateError(chainId, error);
-  }
-}

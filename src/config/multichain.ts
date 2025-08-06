@@ -82,6 +82,7 @@ export type MultichainTokenId = {
   decimals: number;
   stargate: string;
   symbol: string;
+  isPlatformToken?: boolean;
 };
 
 export const TOKEN_GROUPS: Partial<
@@ -171,6 +172,25 @@ if (isDevelopment()) {
       symbol: "ETH",
     },
   };
+
+  TOKEN_GROUPS["<GM-ETH-WETH-UDSC.SG>"] = {
+    [ARBITRUM_SEPOLIA]: {
+      address: "0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc",
+      decimals: 18,
+      chainId: ARBITRUM_SEPOLIA,
+      stargate: "0xe4EBcAC4a2e6CBEE385eE407f7D5E278Bc07e11e",
+      symbol: "<GM-ETH-WETH-UDSC.SG>",
+      isPlatformToken: true,
+    },
+    [SOURCE_SEPOLIA]: {
+      address: "0xe4EBcAC4a2e6CBEE385eE407f7D5E278Bc07e11e",
+      decimals: 18,
+      chainId: SOURCE_SEPOLIA,
+      stargate: "0xe4EBcAC4a2e6CBEE385eE407f7D5E278Bc07e11e",
+      symbol: "<GM-ETH-WETH-UDSC.SG>",
+      isPlatformToken: true,
+    },
+  };
 }
 
 export const DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT = false;
@@ -221,6 +241,7 @@ export function isSourceChain(chainId: number | undefined): chainId is SourceCha
 }
 
 export const MULTI_CHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;
+export const MULTI_CHAIN_TRADE_TOKENS = {} as Record<SettlementChainId, string[]>;
 
 export const MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS = {} as MultichainWithdrawSupportedTokens;
 
@@ -236,13 +257,21 @@ for (const tokenSymbol in TOKEN_GROUPS) {
     const chainId = parseInt(chainIdString) as SettlementChainId | SourceChainId;
 
     const tokenId = TOKEN_GROUPS[tokenSymbol]?.[chainId];
-    if (tokenId) {
-      CHAIN_ID_TO_TOKEN_ID_MAP[chainId] = CHAIN_ID_TO_TOKEN_ID_MAP[chainId] || {};
-      CHAIN_ID_TO_TOKEN_ID_MAP[chainId][tokenId.address] = tokenId;
+
+    if (!tokenId) {
+      continue;
     }
+
+    CHAIN_ID_TO_TOKEN_ID_MAP[chainId] = CHAIN_ID_TO_TOKEN_ID_MAP[chainId] || {};
+    CHAIN_ID_TO_TOKEN_ID_MAP[chainId][tokenId.address] = tokenId;
 
     if (!isSettlementChain(chainId)) {
       continue;
+    }
+
+    if (!tokenId?.isPlatformToken) {
+      MULTI_CHAIN_TRADE_TOKENS[chainId] = MULTI_CHAIN_TRADE_TOKENS[chainId] || [];
+      MULTI_CHAIN_TRADE_TOKENS[chainId].push(tokenId.address);
     }
 
     const settlementChainId = chainId;
