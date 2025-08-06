@@ -78,7 +78,7 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
           {!isHome && (
             <div className={linkClassName} onClick={() => setIsUserFeedbackModalVisible(true)}>
               {isMobileSideNav ? null : <FeedbackIcon />}
-              <Trans>Leave feedback</Trans>
+              <Trans>Leave Feedback</Trans>
             </div>
           )}
         </div>

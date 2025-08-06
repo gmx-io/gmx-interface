@@ -1,6 +1,8 @@
 import cx from "classnames";
 import { ReactNode } from "react";
 
+import { useBreakpoints } from "lib/breakpoints";
+
 import NumberInput from "components/NumberInput/NumberInput";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -98,6 +100,15 @@ export function SettingButton({
   info?: ReactNode;
   disabled?: boolean;
 }) {
+  const { isMobile, isTablet } = useBreakpoints();
+
+  const handleInfoClick = (e: React.MouseEvent<SVGSVGElement>) => {
+    // to do: better identify mobile devices
+    if (!isMobile && !isTablet) {
+      e.stopPropagation();
+    }
+  };
+
   return (
     <div
       className={cx(
@@ -124,7 +135,7 @@ export function SettingButton({
               <TooltipWithPortal
                 content={info}
                 handleClassName="-mb-6"
-                handle={<InfoIcon className="muted size-12" />}
+                handle={<InfoIcon className="muted size-12" onClickCapture={handleInfoClick} />}
               />
             )}
           </div>

@@ -255,7 +255,7 @@ export function SettingsModal({
       label={t`Settings`}
       qa="settings-modal"
       className="text-body-medium"
-      desktopContentClassName={isDevelopment() ? "w-[448px]" : "w-[420px]"}
+      desktopContentClassName={isDevelopment() ? "w-[448px] h-[720px]" : "w-[420px] h-[720px]"}
     >
       <div className="flex flex-col">
         <Tabs options={tabOptions} selectedValue={activeTab} onChange={setActiveTab} type="inline" />

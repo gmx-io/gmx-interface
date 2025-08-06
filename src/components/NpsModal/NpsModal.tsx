@@ -84,7 +84,7 @@ export function NpsModal() {
         <div className="mb-15 flex flex-col">
           <TooltipWithPortal
             position="top-start"
-            content={<Trans>Leave your Telegram if you’re okay with being contacted for a quick follow-up</Trans>}
+            content={<Trans>Leave your Telegram if you’re okay with being contacted for a quick follow-up.</Trans>}
           >
             <Trans>Telegram contact (optional)</Trans>
           </TooltipWithPortal>

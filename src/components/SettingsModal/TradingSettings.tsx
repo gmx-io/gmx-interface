@@ -62,11 +62,14 @@ export function TradingSettings({
 
             <SettingButton
               title="Classic"
-              description="On-chain signing for every transaction"
+              description="On-chain signing for every transaction."
               info={
                 <Trans>
-                  Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided by
-                  your wallet. Gas payments in ETH.
+                  Your wallet, your keys.
+                  <br />
+                  <br />
+                  You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments
+                  in ETH.
                 </Trans>
               }
               icon={<HourGlassIcon className="size-28" />}
@@ -76,11 +79,14 @@ export function TradingSettings({
 
             <SettingButton
               title="Express"
-              description="High execution reliability using premium RPCs"
+              description="High execution reliability using premium RPCs."
               info={
                 <Trans>
-                  Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for
-                  reliability, even during network congestion. Gas payments in USDC or WETH.
+                  Your wallet, your keys.
+                  <br />
+                  <br />
+                  You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even
+                  during network congestion. Gas payments in USDC or WETH.
                 </Trans>
               }
               icon={<ExpressIcon className="size-28" />}
@@ -96,14 +102,17 @@ export function TradingSettings({
 
             <SettingButton
               title="Express + One-Click"
-              description="CEX-like experience with Express reliability"
+              description="CEX-like experience with Express reliability."
               icon={<OneClickIcon className="size-28" />}
               disabled={isOutOfGasPaymentBalance}
               info={
                 <Trans>
-                  Your wallet, your keys. GMX executes transactions for you without individual signing, providing a
-                  seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during
-                  network congestion. Gas payments in USDC or WETH.
+                  Your wallet, your keys.
+                  <br />
+                  <br />
+                  GMX executes transactions for you without individual signing, providing a seamless, CEX-like
+                  experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas
+                  payments in USDC or WETH.
                 </Trans>
               }
               chip={
@@ -208,7 +217,7 @@ export function TradingSettings({
         {/* External swaps are enabled by default on Botanix */}
         {chainId !== BOTANIX && (
           <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
-            <Trans>Enable external swaps</Trans>
+            <Trans>Enable External Swaps</Trans>
           </ToggleSwitch>
         )}
       </SettingsSection>
