@@ -90,7 +90,7 @@ export function ExpressTradingWarningCard({
   } else if (shouldShowWrapOrUnwrapWarning) {
     onCloseClick = handleCloseWrapOrUnwrapWarningClick;
     const nativeToken = getNativeToken(chainId);
-    icon = <ExpressIcon className="-mt-6 ml-2" />;
+    icon = <ExpressIcon className="size-20" />;
     content = (
       <Trans>Express Trading is not available for wrapping or unwrapping native token {nativeToken.symbol}.</Trans>
     );
@@ -98,7 +98,7 @@ export function ExpressTradingWarningCard({
     const wrappedToken = getWrappedToken(chainId);
     const nativeToken = getNativeToken(chainId);
     onCloseClick = handleCloseNativeTokenWarningClick;
-    icon = <ExpressIcon className="-mt-6 ml-2" />;
+    icon = <ExpressIcon className="size-20" />;
     content = (
       <Trans>
         Express Trading is not available using network's native token {nativeToken.symbol}. Consider using{" "}
@@ -107,21 +107,21 @@ export function ExpressTradingWarningCard({
     );
   } else if (shouldShowAllowedActionsWarning) {
     onClick = handleUpdateSubaccountSettings;
-    icon = <OneClickIcon className="-mt-4 ml-4" />;
+    icon = <OneClickIcon className="size-20" />;
     content = <Trans>One-Click Trading is disabled. Action limit exceeded.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowNonceExpiredWarning) {
     onClick = handleUpdateSubaccountSettings;
-    icon = <OneClickIcon className="ml- -mt-4" />;
+    icon = <OneClickIcon className="size-20" />;
     content = <Trans>One-Click Approval nonce expired. Please sign a new approval.</Trans>;
     buttonText = <Trans>Re-sign</Trans>;
   } else if (shouldShowExpiredSubaccountWarning) {
     onClick = handleUpdateSubaccountSettings;
-    icon = <OneClickIcon className="-mt-4 ml-4" />;
+    icon = <OneClickIcon className="size-20" />;
     content = <Trans>One-Click Trading is disabled. Time limit expired.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowOutOfGasPaymentBalanceWarning) {
-    icon = <ExpressIcon className="-mt-6 ml-2" />;
+    icon = <ExpressIcon className="size-20" />;
     content = <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance.</Trans>;
 
     buttonText = <Trans>Buy {gasPaymentTokensText}</Trans>;
@@ -134,7 +134,7 @@ export function ExpressTradingWarningCard({
 
   return (
     <ColorfulBanner color="blue" icon={icon} onClose={onCloseClick}>
-      <div className="ml-10 text-12">
+      <div className="text-12">
         {content}
         {onClick && (
           <>

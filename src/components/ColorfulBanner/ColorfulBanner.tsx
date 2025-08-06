@@ -62,14 +62,14 @@ export function ColorfulBanner({
     >
       <div className="flex items-center gap-8">
         {icon && (
-          <div className={cx("mr-6 w-16", colorSchemas[color].icon)}>
+          <div className={cx("mr-6 w-20 shrink-0", colorSchemas[color].icon)}>
             <div className="">{icon}</div>
           </div>
         )}
         <div>{children}</div>
       </div>
       {onClose && (
-        <button className={cx(" text-slate-100 hover:text-white")} onClick={handleClose}>
+        <button className={cx("text-slate-100 hover:text-white")} onClick={handleClose}>
           <IoMdClose size={20} />
         </button>
       )}

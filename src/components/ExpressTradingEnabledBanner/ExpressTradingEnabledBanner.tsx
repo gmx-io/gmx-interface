@@ -22,10 +22,10 @@ export function ExpressTradingEnabledBanner() {
   return (
     <ColorfulBanner
       color="green"
-      icon={<ExpressIcon className="-mt-6 ml-2" />}
+      icon={<ExpressIcon className="size-20" />}
       onClose={() => setIsExpressTradingBannerDismissed(true)}
     >
-      <div className="pl-8 text-12">
+      <div className="text-12">
         <Trans>Express Trading is enabled. Enjoy smoother, more reliable trades!</Trans>
       </div>
     </ColorfulBanner>
