@@ -996,7 +996,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "SPX6900",
-      symbol: "SPX",
+      symbol: "SPX6900",
       address: "0xb736be525A65326513351058427d1f47B0CfB045",
       decimals: 8,
       priceDecimals: 4,

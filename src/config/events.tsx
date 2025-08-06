@@ -34,7 +34,7 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
-    id: "mnt-spx-listing",
+    id: "mnt-spx6900-listing",
     isActive: true,
     startDate: "6 Aug 2025, 10:00",
     endDate: "13 Aug 2025, 12:00",

@@ -50,7 +50,7 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
     "0xC25cEf6061Cf5dE5eb761b50E4743c1F5D7E5407": {
       enabled: true,
     },
-    // SPX/USD [WETH-USDC]
+    // SPX6900/USD [WETH-USDC]
     "0x8263bC3766a09f6dD4Bab04b4bf8D45F2B0973FF": {
       enabled: true,
     },

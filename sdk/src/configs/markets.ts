@@ -635,7 +635,7 @@ export const MARKETS: Record<UiContractsChain, Record<string, MarketConfig>> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
-    // SPX/USD [WETH-USDC]
+    // SPX6900/USD [WETH-USDC]
     "0x8263bC3766a09f6dD4Bab04b4bf8D45F2B0973FF": {
       marketTokenAddress: "0x8263bC3766a09f6dD4Bab04b4bf8D45F2B0973FF",
       indexTokenAddress: "0xb736be525A65326513351058427d1f47B0CfB045",
