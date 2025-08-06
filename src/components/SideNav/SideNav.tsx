@@ -19,6 +19,8 @@ import logoText from "img/logo-text.svg";
 import ReferralsIcon from "img/referrals.svg?react";
 import TradeIcon from "img/trade.svg?react";
 
+import { LanguageNavItem } from "./LanguageNavItem";
+
 function SideNav({ className }: { className?: string }) {
   const [isCollapsed, setIsCollapsed] = useLocalStorageSerializeKey("is-side-nav-collapsed", false);
 
@@ -40,6 +42,7 @@ function SideNav({ className }: { className?: string }) {
         <MenuSection isCollapsed={isCollapsed} />
 
         <ul className={cx("flex list-none flex-col gap-8 px-0")}>
+          <LanguageNavItem isCollapsed={isCollapsed} NavItem={NavItem} />
           <DocsNavItem isCollapsed={isCollapsed} />
           <NavItem
             icon={<CollapseIcon />}
@@ -81,7 +84,7 @@ interface NavItemProps {
   external?: boolean;
 }
 
-function NavItem({ icon, label, isActive = false, isCollapsed = false, onClick, to, external }: NavItemProps) {
+export function NavItem({ icon, label, isActive = false, isCollapsed = false, onClick, to, external }: NavItemProps) {
   const button = (
     <button className={cx("group cursor-pointer py-4", { "w-full": !isCollapsed })} onClick={onClick}>
       <div

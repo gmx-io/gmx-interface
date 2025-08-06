@@ -112,6 +112,10 @@ msgstr "BonsaiDAO"
 msgid "Approval signed"
 msgstr "Одобрение подписано"
 
+#: src/components/Footer/Footer.tsx
+msgid "Leave Feedback"
+msgstr ""
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr "Ежедневный убыток"
@@ -860,7 +864,6 @@ msgstr "Скольжение должно быть менее -5%"
 msgid "Acceptable Swap Impact"
 msgstr "Допустимое влияние на обмен"
 
-#: src/components/NpsModal/NpsModal.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Leave your Telegram if you’re okay with being contacted for a quick follow-up"
 msgstr "Оставьте свой Telegram, если вы согласны на быстрый контакт для обратной связи"
@@ -1350,8 +1353,8 @@ msgid "The owner of this Referral Code has set a custom discount of {currentTier
 msgstr "Владелец этого реферального кода установил кастомную скидку {currentTierDiscount}% вместо стандартной {0}% для уровня {1}."
 
 #: src/components/SettingsModal/TradingSettings.tsx
-msgid "Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
-msgstr "Ваш кошелек, ваши ключи. Вы подписываете каждую транзакцию в цепи с помощью собственного RPC, обычно предоставляемого вашим кошельком. Оплата газа в ETH."
+#~ msgid "Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
+#~ msgstr "Ваш кошелек, ваши ключи. Вы подписываете каждую транзакцию в цепи с помощью собственного RPC, обычно предоставляемого вашим кошельком. Оплата газа в ETH."
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Leftover position below 10 USD"
@@ -2141,8 +2144,8 @@ msgid "Deposited {0} into {positionText}"
 msgstr "Внесено {0} в {positionText}"
 
 #: src/components/SettingsModal/TradingSettings.tsx
-msgid "Your wallet, your keys. GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
-msgstr "Ваш кошелек, ваши ключи. GMX исполняет транзакции за вас без индивидуальной подписи, предоставляя seamless опыт как на CEX. Торги используют премиум RPC, спонсируемые GMX, для надежности даже при перегрузке сети. Оплата газа в USDC или WETH."
+#~ msgid "Your wallet, your keys. GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
+#~ msgstr "Ваш кошелек, ваши ключи. GMX исполняет транзакции за вас без индивидуальной подписи, предоставляя seamless опыт как на CEX. Торги используют премиум RPC, спонсируемые GMX, для надежности даже при перегрузке сети. Оплата газа в USDC или WETH."
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -2459,6 +2462,10 @@ msgstr "Выполнение запроса на продажу"
 #: src/components/Exchange/TradeHistory.jsx
 msgid "{actionDisplay} Order"
 msgstr "{actionDisplay} Ордер"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Your wallet, your keys.<0/><1/>You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
+msgstr ""
 
 #: src/components/Synthetics/TVChart/Chart.tsx
 msgid "Market Graph"
@@ -3032,6 +3039,10 @@ msgstr "Выполнить Ордер: Обмен {fromAmountDisplay} {0} на {
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "Buy {swapTokenSymbol} on 1inch"
 msgstr "Купить {swapTokenSymbol} на 1inch"
+
+#: src/components/NpsModal/NpsModal.tsx
+msgid "Leave your Telegram if you’re okay with being contacted for a quick follow-up."
+msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -5467,6 +5478,10 @@ msgstr "Чистая стоимость: Начальный залог + PnL - �
 msgid "30d"
 msgstr "30д"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
+msgstr ""
+
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
 msgstr "Запросить вознаграждения аффилиатского хранилища"
@@ -5523,8 +5538,8 @@ msgid "Useful Links"
 msgstr "Полезные ссылки"
 
 #: src/components/SettingsModal/TradingSettings.tsx
-msgid "Enable external swaps"
-msgstr "Включить внешние обмены"
+#~ msgid "Enable external swaps"
+#~ msgstr "Включить внешние обмены"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Confirmations"
@@ -5551,6 +5566,10 @@ msgstr "Начать перевод"
 #: src/components/RatingToast/RatingToast.tsx
 msgid "How likely are you to recommend our service to a friend or colleague?"
 msgstr "Насколько вероятно, что вы порекомендуете наш сервис другу или коллеге?"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Enable External Swaps"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
@@ -5925,6 +5944,10 @@ msgstr "Выведено!"
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "3rd Place"
 msgstr "3-е место"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Your wallet, your keys.<0/><1/>GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
+msgstr ""
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
@@ -7517,8 +7540,8 @@ msgid "Staked"
 msgstr "В стейкинге"
 
 #: src/components/Footer/Footer.tsx
-msgid "Leave feedback"
-msgstr "Оставить отзыв"
+#~ msgid "Leave feedback"
+#~ msgstr "Оставить отзыв"
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
@@ -8420,8 +8443,8 @@ msgid "This position could be liquidated, excluding any price movement, due to f
 msgstr "Эта позиция может быть ликвидирована, исключая любое движение цены, из-за ставок комиссий за финансирование и заем, снижающих залог позиции со временем."
 
 #: src/components/SettingsModal/TradingSettings.tsx
-msgid "Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
-msgstr "Ваш кошелек, ваши ключи. Вы подписываете каждую транзакцию оффчейн. Торговля использует премиум RPC, спонсированные GMX, для надежности даже при перегрузке сети. Оплата газа в USDC или WETH."
+#~ msgid "Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
+#~ msgstr "Ваш кошелек, ваши ключи. Вы подписываете каждую транзакцию оффчейн. Торговля использует премиум RPC, спонсированные GMX, для надежности даже при перегрузке сети. Оплата газа в USDC или WETH."
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"

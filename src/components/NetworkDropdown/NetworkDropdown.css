@@ -24,7 +24,6 @@
 }
 
 .network-dropdown-divider {
-  margin-bottom: 0.8rem;
   border-bottom: 1px solid var(--color-slate-600);
 }
 .App-header-network:hover {
@@ -60,9 +59,6 @@
   justify-content: space-between;
 }
 
-.last-dropdown-menu {
-  margin-bottom: 0.8rem;
-}
 .network-popup .Modal-content {
   width: 100%;
   max-width: 29.6rem;
@@ -78,10 +74,6 @@
   align-items: center;
   position: relative;
   justify-content: space-between;
-  margin-bottom: 0.8rem;
-}
-.network-option:last-child {
-  margin-bottom: 0;
 }
 
 .network-option img {
@@ -151,11 +143,6 @@
   color: var(--color-gray-50);
 }
 
-.language-item {
-  margin-left: 0.8rem;
-  font-size: 1.5rem;
-}
-
 .active-dot {
   width: 0.8rem;
   height: 0.8rem;
@@ -174,10 +161,6 @@
   font-size: 1.25rem;
   margin-bottom: 0.8rem;
   opacity: 0.7;
-}
-
-.more-options {
-  margin-top: 1rem;
 }
 
 @media (max-width: 1033px) {

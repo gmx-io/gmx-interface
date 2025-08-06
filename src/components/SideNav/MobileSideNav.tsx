@@ -6,7 +6,8 @@ import Button from "components/Button/Button";
 import Portal from "components/Common/Portal";
 import Footer from "components/Footer/Footer";
 
-import { DocsNavItem, LogoSection, MenuSection } from "./SideNav";
+import { LanguageNavItem } from "./LanguageNavItem";
+import { DocsNavItem, LogoSection, MenuSection, NavItem } from "./SideNav";
 
 export function MobileSideNav() {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,6 +37,7 @@ export function MobileSideNav() {
             </div>
             <div className="border-b border-slate-600 p-8">
               <ul className="flex list-none flex-col gap-8 px-0">
+                <LanguageNavItem isCollapsed={false} NavItem={NavItem} />
                 <DocsNavItem isCollapsed={false} />
               </ul>
             </div>

@@ -112,6 +112,10 @@ msgstr "BonsaiDAO"
 msgid "Approval signed"
 msgstr "批准已签名"
 
+#: src/components/Footer/Footer.tsx
+msgid "Leave Feedback"
+msgstr ""
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr "每日损失"
@@ -860,7 +864,6 @@ msgstr "滑点应小于 -5%"
 msgid "Acceptable Swap Impact"
 msgstr "可接受交换影响"
 
-#: src/components/NpsModal/NpsModal.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Leave your Telegram if you’re okay with being contacted for a quick follow-up"
 msgstr "如果您同意被联系进行快速跟进，请留下您的 Telegram"
@@ -1350,8 +1353,8 @@ msgid "The owner of this Referral Code has set a custom discount of {currentTier
 msgstr "此推荐代码的所有者设置了自定义折扣 {currentTierDiscount}%，而非 Tier {1} 的标准 {0}%。"
 
 #: src/components/SettingsModal/TradingSettings.tsx
-msgid "Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
-msgstr "您的钱包，您的密钥。您使用自己的 RPC（通常由钱包提供）在链上签名每个交易。Gas 支付使用 ETH。"
+#~ msgid "Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
+#~ msgstr "您的钱包，您的密钥。您使用自己的 RPC（通常由钱包提供）在链上签名每个交易。Gas 支付使用 ETH。"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Leftover position below 10 USD"
@@ -2141,8 +2144,8 @@ msgid "Deposited {0} into {positionText}"
 msgstr "存款 {0} 到 {positionText}"
 
 #: src/components/SettingsModal/TradingSettings.tsx
-msgid "Your wallet, your keys. GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
-msgstr "您的钱包，您的密钥。GMX 为您执行交易而无需单独签名，提供无缝的类似 CEX 体验。交易使用 GMX 赞助的优质 RPC 以确保可靠性，即使在网络拥堵时。Gas 支付使用 USDC 或 WETH。"
+#~ msgid "Your wallet, your keys. GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
+#~ msgstr "您的钱包，您的密钥。GMX 为您执行交易而无需单独签名，提供无缝的类似 CEX 体验。交易使用 GMX 赞助的优质 RPC 以确保可靠性，即使在网络拥堵时。Gas 支付使用 USDC 或 WETH。"
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -2459,6 +2462,10 @@ msgstr "履行卖出请求"
 #: src/components/Exchange/TradeHistory.jsx
 msgid "{actionDisplay} Order"
 msgstr "{actionDisplay} 订单"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Your wallet, your keys.<0/><1/>You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
+msgstr ""
 
 #: src/components/Synthetics/TVChart/Chart.tsx
 msgid "Market Graph"
@@ -3032,6 +3039,10 @@ msgstr "执行订单：将 {fromAmountDisplay} {0} 交换为 {toAmountDisplay} {
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "Buy {swapTokenSymbol} on 1inch"
 msgstr "在 1inch 上购买 {swapTokenSymbol}"
+
+#: src/components/NpsModal/NpsModal.tsx
+msgid "Leave your Telegram if you’re okay with being contacted for a quick follow-up."
+msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -5467,6 +5478,10 @@ msgstr "净值：初始抵押品 + PnL - 借贷费 - 平仓费"
 msgid "30d"
 msgstr "30 天"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
+msgstr ""
+
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
 msgstr "领取附属金库奖励"
@@ -5523,8 +5538,8 @@ msgid "Useful Links"
 msgstr "实用链接"
 
 #: src/components/SettingsModal/TradingSettings.tsx
-msgid "Enable external swaps"
-msgstr "启用外部交换"
+#~ msgid "Enable external swaps"
+#~ msgstr "启用外部交换"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Confirmations"
@@ -5551,6 +5566,10 @@ msgstr "开始转移"
 #: src/components/RatingToast/RatingToast.tsx
 msgid "How likely are you to recommend our service to a friend or colleague?"
 msgstr "您有多大可能向朋友或同事推荐我们的服务？"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Enable External Swaps"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
@@ -5925,6 +5944,10 @@ msgstr "已提取！"
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "3rd Place"
 msgstr "第三名"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Your wallet, your keys.<0/><1/>GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
+msgstr ""
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
@@ -7517,8 +7540,8 @@ msgid "Staked"
 msgstr "已质押"
 
 #: src/components/Footer/Footer.tsx
-msgid "Leave feedback"
-msgstr "留下反馈"
+#~ msgid "Leave feedback"
+#~ msgstr "留下反馈"
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
@@ -8420,8 +8443,8 @@ msgid "This position could be liquidated, excluding any price movement, due to f
 msgstr "此仓位可能被清算（不包括任何价格变动），因为资金和借款费用率会随着时间减少仓位的抵押品。"
 
 #: src/components/SettingsModal/TradingSettings.tsx
-msgid "Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
-msgstr "您的钱包，您的密钥。您在链下签名每个交易。交易使用 GMX 赞助的高级 RPC 以确保可靠性，即使在网络拥堵时。Gas 支付使用 USDC 或 WETH。"
+#~ msgid "Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
+#~ msgstr "您的钱包，您的密钥。您在链下签名每个交易。交易使用 GMX 赞助的高级 RPC 以确保可靠性，即使在网络拥堵时。Gas 支付使用 USDC 或 WETH。"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"
