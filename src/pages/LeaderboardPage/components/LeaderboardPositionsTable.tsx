@@ -25,7 +25,6 @@ import { bigMath } from "sdk/utils/bigmath";
 import AddressView from "components/AddressView/AddressView";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
-import SearchInput from "components/SearchInput/SearchInput";
 import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -46,7 +45,13 @@ type LeaderboardPositionField = keyof LeaderboardPosition;
 
 const PER_PAGE = 20;
 
-export function LeaderboardPositionsTable({ positions }: { positions: RemoteData<LeaderboardPosition> }) {
+export function LeaderboardPositionsTable({
+  positions,
+  searchAddress,
+}: {
+  positions: RemoteData<LeaderboardPosition>;
+  searchAddress: string | undefined;
+}) {
   const { isLoading, data } = positions;
   const [page, setPage] = useState(1);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<LeaderboardPositionField>(
@@ -56,9 +61,7 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
       direction: "desc",
     }
   );
-  const [search, setSearch] = useState("");
-  const handleKeyDown = useCallback(() => null, []);
-  const term = useDebounce(search, 300);
+  const term = useDebounce(searchAddress, 300);
 
   useEffect(() => {
     setPage(1);
@@ -117,17 +120,7 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
   );
 
   return (
-    <div className="rounded-8 bg-slate-900">
-      <div className="TableBox__head">
-        <SearchInput
-          placeholder={t`Search Address`}
-          className="max-w-lg *:!text-14"
-          value={search}
-          setValue={setSearch}
-          onKeyDown={handleKeyDown}
-          size="s"
-        />
-      </div>
+    <div className="rounded-b-8 bg-slate-900">
       <TableScrollFadeContainer>
         <table className="w-full min-w-[1024px] table-fixed">
           <thead>

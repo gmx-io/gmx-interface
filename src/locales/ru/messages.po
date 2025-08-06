@@ -213,7 +213,6 @@ msgid "V2 Arbitrum"
 msgstr "V2 Arbitrum"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 13-20 Mar"
 msgstr "EIP-4844, 13-20 марта"
 
@@ -575,6 +574,10 @@ msgstr "скрыть"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "in liquidity"
 msgstr "используется для обеспечения ликвидности"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "Winner"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Exit Price"
@@ -1417,6 +1420,11 @@ msgstr "Телеграмм-бот для обновления позиции GMX
 msgid "account"
 msgstr "счёт"
 
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "EIP-4844"
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
 msgstr "Сохранить левередж на {0}"
@@ -1770,10 +1778,9 @@ msgstr "Близко к цене исполнения"
 msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
 msgstr "Экспресс и торговля в один клик недоступны из-за недостаточного баланса газа."
 
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-msgid "Global Leaderboard"
-msgstr "Глобальная таблица лидеров"
+#~ msgid "Global Leaderboard"
+#~ msgstr "Глобальная таблица лидеров"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min size per part: {0}"
@@ -2166,8 +2173,8 @@ msgid "Address"
 msgstr "Адрес"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "Winner:"
-msgstr "Победитель:"
+#~ msgid "Winner:"
+#~ msgstr "Победитель:"
 
 #: src/pages/Home/Home.tsx
 msgid "Total Trading Volume"
@@ -2499,6 +2506,10 @@ msgstr "У вас есть существующая позиция с {0} в к�
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Transfer Account"
 msgstr "Счет для Перевода"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "Winners"
+msgstr ""
 
 #: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx
@@ -4057,8 +4068,8 @@ msgstr "Неудачное Рыночное Увеличение"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "EIP-4844 Competition"
-msgstr "Соревнование EIP-4844"
+#~ msgid "EIP-4844 Competition"
+#~ msgstr "Соревнование EIP-4844"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/OrderEditor.jsx
@@ -4716,10 +4727,9 @@ msgstr "Всего активных: {openTotal}, выполненных: {execu
 msgid "24h Low"
 msgstr "Минимум за 24ч"
 
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-msgid "Chain Icon"
-msgstr "Иконка цепочки"
+#~ msgid "Chain Icon"
+#~ msgstr "Иконка цепочки"
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
@@ -5121,8 +5131,8 @@ msgid "Cancelling {orderText}."
 msgstr "Отмена {orderText}."
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-msgid "CONCLUDED"
-msgstr "ЗАВЕРШЕНО"
+#~ msgid "CONCLUDED"
+#~ msgstr "ЗАВЕРШЕНО"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Collateral Delta"
@@ -5268,8 +5278,8 @@ msgid "Target Weight"
 msgstr "Целевой вес"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "Winners:"
-msgstr "Победители:"
+#~ msgid "Winners:"
+#~ msgstr "Победители:"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "When closing the position, you can select which token you would like to receive the profits in."
@@ -5520,8 +5530,8 @@ msgid "Available"
 msgstr "Доступно"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Last 7 days"
-msgstr "Последние 7 дней"
+#~ msgid "Last 7 days"
+#~ msgstr "Последние 7 дней"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Solv Finance"
@@ -5953,8 +5963,8 @@ msgid "Perpetuals Aggregator"
 msgstr "Агрегатор перпетуалов"
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-msgid "LIVE"
-msgstr "ЖИВО"
+#~ msgid "LIVE"
+#~ msgstr "ЖИВО"
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "{formattedNetRate} / 1h"
@@ -6195,6 +6205,7 @@ msgid "Limit order submitted!"
 msgstr "Лимитный ордер подан!"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Last 7d"
 msgstr "Последние 7д"
 
@@ -6802,8 +6813,7 @@ msgstr "Макс в"
 msgid "Myself"
 msgstr "Себе"
 
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search Address"
 msgstr "Поиск адреса"
 
@@ -7090,8 +7100,8 @@ msgid "Telegram account"
 msgstr "Аккаунт в Telegram"
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-msgid "SOON"
-msgstr "СКОРО"
+#~ msgid "SOON"
+#~ msgstr "СКОРО"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
@@ -7895,6 +7905,7 @@ msgstr "Расчет..."
 #: src/components/Exchange/UsefulLinks.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Leaderboard"
 msgstr "Таблица лидеров"
 
@@ -8036,8 +8047,8 @@ msgid "Sell order cancelled"
 msgstr "Ордер на продажу отменен"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Last 30 days"
-msgstr "Последние 30 дней"
+#~ msgid "Last 30 days"
+#~ msgstr "Последние 30 дней"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
@@ -8187,6 +8198,7 @@ msgid "Execution prices for increasing longs and<0/>decreasing shorts."
 msgstr "Цены исполнения для увеличения лонгов и<0/>уменьшения шортов."
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 30d"
 msgstr "Последние 30д"
@@ -8233,7 +8245,6 @@ msgid "Enter Referral Code"
 msgstr "Введите реферальный код"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 20-27 Mar"
 msgstr "EIP-4844, 20-27 марта"
 

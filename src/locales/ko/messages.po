@@ -213,7 +213,6 @@ msgid "V2 Arbitrum"
 msgstr "V2 Arbitrum"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 13-20 Mar"
 msgstr "EIP-4844, 3월 13-20일"
 
@@ -575,6 +574,10 @@ msgstr "숨기기"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "in liquidity"
 msgstr "유동성 내"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "Winner"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Exit Price"
@@ -1417,6 +1420,11 @@ msgstr "GMX 포지션 업데이트를 위한 텔레그램 봇"
 msgid "account"
 msgstr "계정"
 
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "EIP-4844"
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
 msgstr "{0}으로 레버리지 유지"
@@ -1770,10 +1778,9 @@ msgstr "실행 가격에 종료"
 msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
 msgstr "가스 잔고 부족으로 익스프레스 및 원클릭 트레이딩 사용 불가."
 
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-msgid "Global Leaderboard"
-msgstr "글로벌 리더보드"
+#~ msgid "Global Leaderboard"
+#~ msgstr "글로벌 리더보드"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min size per part: {0}"
@@ -2166,8 +2173,8 @@ msgid "Address"
 msgstr "주소"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "Winner:"
-msgstr "승자:"
+#~ msgid "Winner:"
+#~ msgstr "승자:"
 
 #: src/pages/Home/Home.tsx
 msgid "Total Trading Volume"
@@ -2499,6 +2506,10 @@ msgstr "{0}을 담보로 한 기존 포지션이 있습니다."
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Transfer Account"
 msgstr "계정 이전"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "Winners"
+msgstr ""
 
 #: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx
@@ -4057,8 +4068,8 @@ msgstr "시장 증가 실패"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "EIP-4844 Competition"
-msgstr "EIP-4844 대회"
+#~ msgid "EIP-4844 Competition"
+#~ msgstr "EIP-4844 대회"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/OrderEditor.jsx
@@ -4716,10 +4727,9 @@ msgstr "전체 액티브: {openTotal}, 실행 완료: {executedTotal}, 취소 �
 msgid "24h Low"
 msgstr "24시간 최저가"
 
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-msgid "Chain Icon"
-msgstr "체인 아이콘"
+#~ msgid "Chain Icon"
+#~ msgstr "체인 아이콘"
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
@@ -5121,8 +5131,8 @@ msgid "Cancelling {orderText}."
 msgstr "{orderText} 취소 중."
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-msgid "CONCLUDED"
-msgstr "종료됨"
+#~ msgid "CONCLUDED"
+#~ msgstr "종료됨"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Collateral Delta"
@@ -5268,8 +5278,8 @@ msgid "Target Weight"
 msgstr "목표 가중치"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "Winners:"
-msgstr "승자:"
+#~ msgid "Winners:"
+#~ msgstr "승자:"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "When closing the position, you can select which token you would like to receive the profits in."
@@ -5520,8 +5530,8 @@ msgid "Available"
 msgstr "사용 가능"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Last 7 days"
-msgstr "최근 7일"
+#~ msgid "Last 7 days"
+#~ msgstr "최근 7일"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Solv Finance"
@@ -5953,8 +5963,8 @@ msgid "Perpetuals Aggregator"
 msgstr "퍼페추얼 애그리게이터"
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-msgid "LIVE"
-msgstr "라이브"
+#~ msgid "LIVE"
+#~ msgstr "라이브"
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "{formattedNetRate} / 1h"
@@ -6195,6 +6205,7 @@ msgid "Limit order submitted!"
 msgstr "지정가 주문 제출 완료!"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Last 7d"
 msgstr "최근 7일"
 
@@ -6802,8 +6813,7 @@ msgstr "최대 입력"
 msgid "Myself"
 msgstr "나 자신"
 
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search Address"
 msgstr "주소 검색"
 
@@ -7090,8 +7100,8 @@ msgid "Telegram account"
 msgstr "텔레그램 계정"
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-msgid "SOON"
-msgstr "곧"
+#~ msgid "SOON"
+#~ msgstr "곧"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
@@ -7895,6 +7905,7 @@ msgstr "정산 중..."
 #: src/components/Exchange/UsefulLinks.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Leaderboard"
 msgstr "리더보드"
 
@@ -8036,8 +8047,8 @@ msgid "Sell order cancelled"
 msgstr "판매 주문 취소"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Last 30 days"
-msgstr "최근 30일"
+#~ msgid "Last 30 days"
+#~ msgstr "최근 30일"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
@@ -8187,6 +8198,7 @@ msgid "Execution prices for increasing longs and<0/>decreasing shorts."
 msgstr "롱 증가 및<0/>숏 감소 실행 가격."
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 30d"
 msgstr "최근 30일"
@@ -8233,7 +8245,6 @@ msgid "Enter Referral Code"
 msgstr "추천 코드 입력"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 20-27 Mar"
 msgstr "EIP-4844, 3월 20-27일"
 

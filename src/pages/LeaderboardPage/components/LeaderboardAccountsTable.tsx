@@ -19,7 +19,6 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
-import SearchInput from "components/SearchInput/SearchInput";
 import { TopAccountsSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -49,9 +48,11 @@ const PER_PAGE = 20;
 export function LeaderboardAccountsTable({
   accounts,
   activeCompetition,
+  searchAddress,
 }: {
   accounts: RemoteData<LeaderboardAccount>;
   activeCompetition: CompetitionType | undefined;
+  searchAddress: string | undefined;
 }) {
   const currentAccount = useLeaderboardCurrentAccount();
   const { isLoading, data } = accounts;
@@ -79,10 +80,8 @@ export function LeaderboardAccountsTable({
     }
   }, [activeCompetition, isCompetitions, setDirection, setOrderBy]);
 
-  const [search, setSearch] = useState("");
-  const handleKeyDown = useCallback(() => null, []);
   const ranks = useLeaderboardAccountsRanks();
-  const term = useDebounce(search, 300);
+  const term = useDebounce(searchAddress, 300);
 
   useEffect(() => {
     setPage(1);
@@ -176,17 +175,7 @@ export function LeaderboardAccountsTable({
   );
 
   return (
-    <div className="rounded-8 bg-slate-900">
-      <div className="TableBox__head">
-        <SearchInput
-          placeholder={t`Search Address`}
-          className="max-w-lg *:!text-14"
-          value={search}
-          setValue={setSearch}
-          onKeyDown={handleKeyDown}
-          size="s"
-        />
-      </div>
+    <div className="rounded-b-8 bg-slate-900">
       <TableScrollFadeContainer>
         <table className="w-full min-w-[1000px]">
           <thead>

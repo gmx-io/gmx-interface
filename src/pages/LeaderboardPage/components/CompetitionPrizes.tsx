@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import { Link } from "react-router-dom";
@@ -142,7 +142,7 @@ export function CompetitionPrizes({
   }, [accounts, competitionType, hasEnded, leaderboardPageKey]);
 
   return (
-    <BodyScrollFadeContainer className="CompetitionPrizes default-container">
+    <BodyScrollFadeContainer className="flex border-b border-slate-600">
       {prizes.map((prize) => (
         <CompetitionPrize prize={prize} key={prize.key} />
       ))}
@@ -152,14 +152,13 @@ export function CompetitionPrizes({
 
 function CompetitionPrize({ prize }: { prize: Prize }) {
   return (
-    <div className="CompetitionPrizes__prize-container">
-      <div className="CompetitionPrizes__prize">
-        <div className="CompetitionPrizes__prize-icon-container">
-          <img className="CompetitionPrizes__prize-icon" src={iconByType[prize.imgType]} />
-        </div>
-        <div className="CompetitionPrizes__prize-text">
-          <div className="CompetitionPrizes__prize-title">{prize.title}</div>
-          <div className="CompetitionPrizes__prize-description">{prize.description}</div>
+    <div className="flex grow items-center justify-between gap-8 border-r border-slate-600 bg-slate-900 p-20 last:border-r-0">
+      <div className="flex items-center gap-12">
+        <img className="size-52" src={iconByType[prize.imgType]} />
+
+        <div>
+          <div className="text-body-medium font-medium text-slate-100">{prize.title}</div>
+          <div className="text-20 font-medium">{prize.description}</div>
         </div>
       </div>
       <CompetitionPrizeWinners winners={prize.winners} />
@@ -169,44 +168,24 @@ function CompetitionPrize({ prize }: { prize: Prize }) {
 
 function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] }) {
   const winner = winners[0];
-  const showCount = winners.length === 1 ? 1 : Math.min(4, winners.length);
-  const restCount = winners.length - showCount;
 
-  const oneWinner =
-    showCount === 1 && winner ? (
-      <div className="CompetitionPrizes__prize-winners">
-        <Link
-          target="_blank"
-          to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
-          className="CompetitionPrizes__prize-winner"
-        >
-          <Jazzicon diameter={20} seed={jsNumberForAddress(winner.account)} />
-          <div className="CompetitionPrizes__prize-rest">{shortenAddress(winner.account, 14)}</div>
-        </Link>
-      </div>
-    ) : null;
-  const manyWinnersContent =
-    winners.length > 1 ? (
-      <div className="CompetitionPrizes__prize-winners">
-        {winners.slice(0, showCount).map((winner) => (
-          <Link
-            target="_blank"
-            to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
-            className="CompetitionPrizes__prize-winner CompetitionPrizes__prize-winner_many "
-            key={winner.account}
-          >
-            <Jazzicon diameter={20} seed={jsNumberForAddress(winner.account)} />
-          </Link>
-        ))}
-        {restCount > 0 && <div className="CompetitionPrizes__prize-rest">{`+${restCount}`}</div>}
-      </div>
-    ) : null;
+  const handle = winner ? (
+    <Link
+      target="_blank"
+      to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
+      className="flex items-center gap-6 rounded-full bg-slate-700 px-12 py-8 hover:bg-slate-600"
+    >
+      <div className="text-13 font-medium">{winners.length > 1 ? <Trans>Winners</Trans> : <Trans>Winner</Trans>}</div>
+      <Jazzicon diameter={16} seed={jsNumberForAddress(winner.account)} />
+    </Link>
+  ) : null;
+
   const renderTooltipContent = useCallback(() => {
     return winners.map((winner) => (
       <Link
         target="_blank"
         to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
-        className="CompetitionPrizes__tooltip-winner"
+        className="flex items-center gap-4 px-12 py-8 !text-white !no-underline hover:bg-slate-600"
         key={winner.account}
       >
         <Jazzicon diameter={20} seed={jsNumberForAddress(winner.account)} />
@@ -214,26 +193,18 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
       </Link>
     ));
   }, [winners]);
-  const manyWinners =
-    restCount > 0 ? (
-      <TooltipWithPortal
-        className="CompetitionPrizes__prize-winner-tooltip"
-        tooltipClassName="CompetitionPrizes__prize-winner-tooltip"
-        position="bottom"
-        handle={manyWinnersContent}
-        renderContent={renderTooltipContent}
-      />
-    ) : (
-      manyWinnersContent
-    );
 
   if (winners.length === 0) return null;
 
-  return (
-    <div className="CompetitionPrizes__prize-winners-container">
-      <div className="CompetitionPrizes__prize-winners-text">{showCount === 1 ? t`Winner:` : t`Winners:`}</div>
-      {oneWinner}
-      {manyWinners}
-    </div>
+  return winners.length > 1 ? (
+    <TooltipWithPortal
+      tooltipClassName="!max-w-[130px]"
+      position="bottom"
+      handle={handle}
+      renderContent={renderTooltipContent}
+      styleType="none"
+    />
+  ) : (
+    handle
   );
 }

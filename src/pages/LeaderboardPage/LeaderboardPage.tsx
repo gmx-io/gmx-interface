@@ -7,12 +7,13 @@ import { useChainId } from "lib/chains";
 
 import "./LeaderboardPage.scss";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 
 import { LeaderboardContainer } from "./components/LeaderboardContainer";
 
 export function LeaderboardPage() {
   return (
-    <AppPageLayout>
+    <AppPageLayout header={<ChainContentHeader />}>
       <div className="page-layout">
         <LeaderboardContainer />
       </div>

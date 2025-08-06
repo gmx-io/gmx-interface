@@ -1,9 +1,8 @@
-import { Trans, t } from "@lingui/macro";
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 
-import { getIcon } from "config/icons";
 import { useLeaderboardPageKey } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { LeaderboardPageKey, LeaderboardTimeframe } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES, LEADERBOARD_PAGES_ORDER } from "domain/synthetics/leaderboard/constants";
@@ -44,17 +43,29 @@ function getChip(pageKey: LeaderboardPageKey): LeaderboardNavigationItem["chip"]
 function getLabel(pageKey: LeaderboardPageKey) {
   switch (pageKey) {
     case "leaderboard":
-      return t`Global Leaderboard`;
+      return t`Leaderboard`;
 
     case "march_13-20_2024":
-      return t`EIP-4844, 13-20 Mar`;
+      return t`EIP-4844`;
 
     case "march_20-27_2024":
-      return t`EIP-4844, 20-27 Mar`;
+      return t`EIP-4844`;
 
     default:
       throw mustNeverExist(pageKey);
   }
+}
+
+function getTimeframeLabel(timeframe: LeaderboardTimeframe): string | null {
+  if (!timeframe.to) return null;
+
+  const fmt = new Intl.DateTimeFormat("en", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+
+  return fmt.formatRange(new Date(timeframe.from * 1000), new Date(timeframe.to * 1000));
 }
 
 export function LeaderboardNavigation() {
@@ -70,7 +81,6 @@ export function LeaderboardNavigation() {
           isSelected: page.key === pageKey,
           isCompetition: page.key !== "leaderboard",
           href: page.href,
-          chainId: page.isCompetition ? page.chainId : undefined,
           timeframe: page.timeframe,
         };
       })
@@ -89,7 +99,7 @@ export function LeaderboardNavigation() {
   }, [pageKey]);
 
   return (
-    <BodyScrollFadeContainer className="default-container flex gap-8">
+    <BodyScrollFadeContainer className="flex gap-20">
       {navigationItems.map((item) => (
         <NavigationItem item={item} key={item.key} />
       ))}
@@ -98,51 +108,21 @@ export function LeaderboardNavigation() {
 }
 
 function NavigationItem({ item }: { item: LeaderboardNavigationItem }) {
-  const chip = useMemo(() => {
-    switch (item.chip) {
-      case "live":
-        return (
-          <div className="LeaderboardNavigation__chip LeaderboardNavigation__chip_live">
-            <span className="LeaderboardNavigation__chip-circle" />
-            <Trans>LIVE</Trans>
-          </div>
-        );
-
-      case "soon":
-        return (
-          <div className="LeaderboardNavigation__chip LeaderboardNavigation__chip_soon">
-            <Trans>SOON</Trans>
-          </div>
-        );
-
-      case "over":
-        return (
-          <div className="LeaderboardNavigation__chip LeaderboardNavigation__chip_over">
-            <Trans>CONCLUDED</Trans>
-          </div>
-        );
-
-      case "none":
-        return null;
-
-      default:
-        throw mustNeverExist(item.chip);
-    }
-  }, [item.chip]);
-
+  const timeframeLabel = getTimeframeLabel(item.timeframe);
   return (
     <Link
       to={item.href}
-      className={cx("LeaderboardHeader__item button secondary center", {
-        LeaderboardHeader__item_selected: item.isSelected,
+      className={cx("text-h1 inline-flex items-center gap-8 text-slate-100 hover:text-white", {
+        "text-white": item.isSelected,
       })}
     >
-      {chip} {item.label}
-      {item.chainId ? (
-        <>
-          <img className="LeaderboardHeader__network-icon" alt={t`Chain Icon`} src={getIcon(item.chainId, "network")} />
-        </>
-      ) : undefined}
+      {item.label}
+
+      {timeframeLabel && (
+        <div className="text-body-small inline-flex h-fit rounded-full bg-slate-700 px-8 py-6 text-slate-100">
+          {timeframeLabel}
+        </div>
+      )}
     </Link>
   );
 }

@@ -213,7 +213,6 @@ msgid "V2 Arbitrum"
 msgstr "V2 Arbitrum"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 13-20 Mar"
 msgstr "EIP-4844, 13-20 Mar"
 
@@ -575,6 +574,10 @@ msgstr "cacher"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "in liquidity"
 msgstr "en liquidité"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "Winner"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Exit Price"
@@ -1417,6 +1420,11 @@ msgstr "Bot Telegram pour les mises à jour de positions GMX"
 msgid "account"
 msgstr "compte"
 
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "EIP-4844"
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
 msgstr "Garder l'effet de levier à {0}"
@@ -1770,10 +1778,9 @@ msgstr "Proche du prix d'exécution"
 msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
 msgstr "Trading Express et en un clic indisponibles en raison d'un solde de gas insuffisant."
 
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-msgid "Global Leaderboard"
-msgstr "Classement mondial"
+#~ msgid "Global Leaderboard"
+#~ msgstr "Classement mondial"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min size per part: {0}"
@@ -2166,8 +2173,8 @@ msgid "Address"
 msgstr "Adresse"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "Winner:"
-msgstr "Gagnant :"
+#~ msgid "Winner:"
+#~ msgstr "Gagnant :"
 
 #: src/pages/Home/Home.tsx
 msgid "Total Trading Volume"
@@ -2499,6 +2506,10 @@ msgstr "Vous avez une position existante avec {0} comme collatéral."
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Transfer Account"
 msgstr "Compte de transfert"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "Winners"
+msgstr ""
 
 #: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx
@@ -4057,8 +4068,8 @@ msgstr "Augmentation de marché échouée"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "EIP-4844 Competition"
-msgstr "Compétition EIP-4844"
+#~ msgid "EIP-4844 Competition"
+#~ msgstr "Compétition EIP-4844"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/OrderEditor.jsx
@@ -4716,10 +4727,9 @@ msgstr "Total actif : {openTotal}, exécuté : {executedTotal}, annulé : {cance
 msgid "24h Low"
 msgstr "Bas 24h"
 
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-msgid "Chain Icon"
-msgstr "Icône de chaîne"
+#~ msgid "Chain Icon"
+#~ msgstr "Icône de chaîne"
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
@@ -5121,8 +5131,8 @@ msgid "Cancelling {orderText}."
 msgstr "Annulation de {orderText}."
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-msgid "CONCLUDED"
-msgstr "TERMINÉ"
+#~ msgid "CONCLUDED"
+#~ msgstr "TERMINÉ"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Collateral Delta"
@@ -5268,8 +5278,8 @@ msgid "Target Weight"
 msgstr "Poids cible"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "Winners:"
-msgstr "Gagnants :"
+#~ msgid "Winners:"
+#~ msgstr "Gagnants :"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "When closing the position, you can select which token you would like to receive the profits in."
@@ -5520,8 +5530,8 @@ msgid "Available"
 msgstr "Disponible"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Last 7 days"
-msgstr "Derniers 7 jours"
+#~ msgid "Last 7 days"
+#~ msgstr "Derniers 7 jours"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Solv Finance"
@@ -5953,8 +5963,8 @@ msgid "Perpetuals Aggregator"
 msgstr "Agrégateur de perpétuels"
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-msgid "LIVE"
-msgstr "EN DIRECT"
+#~ msgid "LIVE"
+#~ msgstr "EN DIRECT"
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "{formattedNetRate} / 1h"
@@ -6195,6 +6205,7 @@ msgid "Limit order submitted!"
 msgstr "Ordre limite soumis !"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Last 7d"
 msgstr "Derniers 7j"
 
@@ -6802,8 +6813,7 @@ msgstr "Max en"
 msgid "Myself"
 msgstr "Moi-même"
 
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search Address"
 msgstr "Rechercher une adresse"
 
@@ -7090,8 +7100,8 @@ msgid "Telegram account"
 msgstr "Compte Telegram"
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-msgid "SOON"
-msgstr "BIENTÔT"
+#~ msgid "SOON"
+#~ msgstr "BIENTÔT"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
@@ -7895,6 +7905,7 @@ msgstr "Règlement en cours..."
 #: src/components/Exchange/UsefulLinks.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Leaderboard"
 msgstr "Tableau des leaders"
 
@@ -8036,8 +8047,8 @@ msgid "Sell order cancelled"
 msgstr "Ordre de vente annulé"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Last 30 days"
-msgstr "Les 30 derniers jours"
+#~ msgid "Last 30 days"
+#~ msgstr "Les 30 derniers jours"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
@@ -8187,6 +8198,7 @@ msgid "Execution prices for increasing longs and<0/>decreasing shorts."
 msgstr "Prix d'exécution pour augmenter les longs et<0/>diminuer les shorts."
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 30d"
 msgstr "Les 30 derniers j"
@@ -8233,7 +8245,6 @@ msgid "Enter Referral Code"
 msgstr "Saisir le code de parrainage"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 20-27 Mar"
 msgstr "EIP-4844, 20-27 Mar"
 
