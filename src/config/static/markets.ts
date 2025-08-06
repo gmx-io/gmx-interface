@@ -50,6 +50,14 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
     "0xC25cEf6061Cf5dE5eb761b50E4743c1F5D7E5407": {
       enabled: true,
     },
+    // SPX/USD [WETH-USDC]
+    "0x8263bC3766a09f6dD4Bab04b4bf8D45F2B0973FF": {
+      enabled: true,
+    },
+    // MNT/USD [WETH-USDC]
+    "0x40dAEAc02dCf6b3c51F9151f532C21DCEF2F7E63": {
+      enabled: true,
+    },
     // SWAP-ONLY [USDC-USDC.e]
     "0x9C2433dFD71096C435Be9465220BB2B189375eA7": {
       enabled: true,

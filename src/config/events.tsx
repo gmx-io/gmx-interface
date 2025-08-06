@@ -34,6 +34,21 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "mnt-spx-listing",
+    isActive: true,
+    startDate: "6 Aug 2025, 10:00",
+    endDate: "13 Aug 2025, 12:00",
+    title: "MNT and SPX6900 markets added on Arbitrum",
+    bodyText: (
+      <>
+        <Link to="/trade/long?to=MNT">Start trading</Link> these markets on Arbitrum, or{" "}
+        <Link to="/pools">provide liquidity</Link> using <TokenSymbolWithIcon symbol="WETH" /> or{" "}
+        <TokenSymbolWithIcon symbol="USDC" /> to their respective GM pools or GLV.
+      </>
+    ),
+    chains: [ARBITRUM],
+  },
+  {
     id: "avax-pump-and-arb-listing",
     isActive: true,
     startDate: "17 Jul 2025, 10:00",
