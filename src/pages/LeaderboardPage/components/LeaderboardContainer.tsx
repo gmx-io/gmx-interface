@@ -214,6 +214,7 @@ export function LeaderboardContainer() {
               onChange={handleCompetitionTabChange}
               options={competitionsTabsOptions}
               className="max-md:w-full"
+              regularOptionClassname="grow"
             />
           )}
 
