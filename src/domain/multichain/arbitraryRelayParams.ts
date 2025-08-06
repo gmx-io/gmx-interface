@@ -365,15 +365,6 @@ export function useArbitraryRelayParamsAndPayload({
           },
         });
 
-        console.log({
-          executionFeeAmount: p.executionFeeAmount,
-          relayerFeeAmount: expressParams?.gasPaymentParams.relayerFeeAmount,
-          totalRelayerFeeTokenAmount: expressParams?.gasPaymentParams.totalRelayerFeeTokenAmount,
-          diff: expressParams?.gasPaymentParams.totalRelayerFeeTokenAmount
-            ? expressParams.gasPaymentParams.totalRelayerFeeTokenAmount -
-              expressParams.gasPaymentParams.relayerFeeAmount
-            : undefined,
-        });
         return expressParams;
       } catch (error) {
         throw new Error("no expressParams");

@@ -8676,10 +8676,6 @@ msgstr "Daily and Cumulative PnL"
 msgid "Edit {longOrShortText} {0}"
 msgstr "Edit {longOrShortText} {0}"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
-msgid "Send back to {0}"
-msgstr "Send back to {0}"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
 msgstr "short"

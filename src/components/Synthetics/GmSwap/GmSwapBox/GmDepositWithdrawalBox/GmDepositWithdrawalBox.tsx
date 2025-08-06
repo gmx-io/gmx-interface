@@ -1,10 +1,9 @@
-import { t, Trans } from "@lingui/macro";
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import mapValues from "lodash/mapValues";
 import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { getChainName } from "config/chains";
 import { getContract } from "config/contracts";
 import { isSourceChain } from "config/multichain";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -36,10 +35,8 @@ import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import Checkbox from "components/Checkbox/Checkbox";
 import { useMultichainTokensRequest } from "components/Synthetics/GmxAccountModal/hooks";
 import { useBestGmPoolAddressForGlv } from "components/Synthetics/MarketStats/hooks/useBestGmPoolForGlv";
-import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -100,8 +97,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     setFocusedInput,
     paySource,
     setPaySource,
-    isSendBackToSourceChain,
-    setIsSendBackToSourceChain,
     firstTokenAddress,
     setFirstTokenAddress,
     secondTokenAddress,
@@ -417,7 +412,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     marketsInfoData,
     glvAndMarketsInfoData,
     paySource,
-    isSendBackToSourceChain,
   });
 
   const firstTokenMaxDetails = useMaxAvailableAmount({
@@ -831,12 +825,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
         </div>
 
         <div className="flex flex-col gap-14">
-          {srcChainId !== undefined && paySource === "sourceChain" && (
-            <SyntheticsInfoRow
-              label={<Trans>Send back to {getChainName(srcChainId)}</Trans>}
-              value={<Checkbox isChecked={isSendBackToSourceChain} setIsChecked={setIsSendBackToSourceChain} />}
-            />
-          )}
           <GmSwapBoxPoolRow
             indexName={indexName}
             marketAddress={selectedGlvOrMarketAddress}

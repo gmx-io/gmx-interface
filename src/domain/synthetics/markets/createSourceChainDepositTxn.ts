@@ -38,7 +38,7 @@ export async function createSourceChainDepositTxn({
   account,
   tokenAddress,
   tokenAmount,
-  executionFee,
+  // executionFee,
 }: {
   chainId: SettlementChainId;
   globalExpressParams: GlobalExpressParams;

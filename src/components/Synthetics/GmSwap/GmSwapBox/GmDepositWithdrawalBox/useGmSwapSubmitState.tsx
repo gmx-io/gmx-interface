@@ -50,7 +50,6 @@ interface Props {
   glvAndMarketsInfoData: GlvAndGmMarketsInfoData;
   selectedMarketInfoForGlv?: MarketInfo;
   paySource: GmOrGlvPaySource;
-  isSendBackToSourceChain: boolean;
 }
 
 const processingTextMap = {
@@ -94,7 +93,6 @@ export const useGmSwapSubmitState = ({
   isMarketTokenDeposit,
   glvAndMarketsInfoData,
   paySource,
-  isSendBackToSourceChain,
 }: Props): SubmitButtonState => {
   const chainId = useSelector(selectChainId);
   const hasOutdatedUi = useHasOutdatedUi();
@@ -135,7 +133,6 @@ export const useGmSwapSubmitState = ({
     marketTokenUsd,
     isFirstBuy,
     paySource,
-    isSendBackToSourceChain,
   });
 
   const onConnectAccount = useCallback(() => {

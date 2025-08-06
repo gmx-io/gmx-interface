@@ -87,7 +87,6 @@ interface Props {
   isMarketTokenDeposit?: boolean;
   isFirstBuy: boolean;
   paySource: GmOrGlvPaySource;
-  isSendBackToSourceChain: boolean;
 }
 
 function getTransferRequests({
@@ -230,7 +229,6 @@ const useDepositTransactions = ({
   isMarketTokenDeposit,
   isFirstBuy,
   paySource,
-  isSendBackToSourceChain,
 }: Props): {
   onCreateDeposit: () => Promise<void>;
 } => {
@@ -292,7 +290,7 @@ const useDepositTransactions = ({
 
     let dataList: string[] = EMPTY_ARRAY;
 
-    if (isSendBackToSourceChain) {
+    if (paySource === "sourceChain") {
       const actionHash = CodecUiHelper.encodeMultichainActionData({
         actionType: MultichainActionType.BridgeOut,
         actionData: {
@@ -336,9 +334,9 @@ const useDepositTransactions = ({
     initialLongTokenAddress,
     initialShortTokenAddress,
     isGlv,
-    isSendBackToSourceChain,
     marketTokenAddress,
     marketTokenAmount,
+    paySource,
     srcChainId,
   ]);
 

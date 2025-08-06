@@ -1718,6 +1718,7 @@ export const TOKEN_COLOR_MAP = {
   PBTC: "#F7931A",
   USDC: "#2775CA",
   "USDC.E": "#2A5ADA",
+  "USDC.SG": "#2775CA",
   USDT: "#67B18A",
   MIM: "#9695F8",
   FRAX: "#000",

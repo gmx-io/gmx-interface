@@ -160,12 +160,13 @@ const subscribeMultichainTokenBalances: SWRSubscription<
   };
 };
 
-export function useMultichainTokensRequest(account: string | undefined): {
+export function useMultichainTokensRequest(): {
   tokenChainDataArray: TokenChainData[];
   isPriceDataLoading: boolean;
   isBalanceDataLoading: boolean;
 } {
   const { chainId } = useChainId();
+  const account = useSelector(selectAccount);
 
   const { pricesData, isPriceDataLoading } = useTokenRecentPricesRequest(chainId);
 
