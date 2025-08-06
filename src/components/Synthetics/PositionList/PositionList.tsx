@@ -31,7 +31,7 @@ type Props = {
 };
 
 export function PositionList(p: Props) {
-  const { onClosePositionClick, onOrdersClick, onSelectPositionClick, openSettings, onCancelOrder, hideActions } = p;
+  const { onClosePositionClick, onOrdersClick, onSelectPositionClick, onCancelOrder, hideActions } = p;
   const positionsInfoData = usePositionsInfoData();
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
@@ -75,7 +75,6 @@ export function PositionList(p: Props) {
                   onSelectPositionClick={onSelectPositionClick}
                   isLarge={false}
                   onShareClick={handleSharePositionClick}
-                  openSettings={openSettings}
                   hideActions={hideActions}
                   onCancelOrder={onCancelOrder}
                 />
@@ -130,7 +129,6 @@ export function PositionList(p: Props) {
                     onSelectPositionClick={onSelectPositionClick}
                     isLarge
                     onShareClick={handleSharePositionClick}
-                    openSettings={openSettings}
                     hideActions={hideActions}
                     onCancelOrder={onCancelOrder}
                   />
@@ -175,7 +173,6 @@ const PositionItemWrapper = memo(
     onOrdersClick,
     onSelectPositionClick,
     onShareClick,
-    openSettings,
     onCancelOrder,
   }: {
     position: PositionInfo;
@@ -185,7 +182,6 @@ const PositionItemWrapper = memo(
     onSelectPositionClick: (positionKey: string, tradeMode: TradeMode | undefined, showCurtain?: boolean) => void;
     isLarge: boolean;
     onShareClick: (positionKey: string) => void;
-    openSettings: () => void;
     hideActions: boolean | undefined;
     onCancelOrder: (orderKey: string) => void;
   }) => {
@@ -221,7 +217,6 @@ const PositionItemWrapper = memo(
         onSelectPositionClick={handleSelectPositionClick}
         showPnlAfterFees={showPnlAfterFees}
         isLarge={isLarge}
-        openSettings={openSettings}
         hideActions={hideActions}
         onShareClick={handleShareClick}
         onCancelOrder={handleCancelOrder}

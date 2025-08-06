@@ -62,7 +62,6 @@ export type Props = {
   onShareClick: () => void;
   onSelectPositionClick?: (tradeMode?: TradeMode, showCurtain?: boolean) => void;
   isLarge: boolean;
-  openSettings: () => void;
   onOrdersClick?: (key?: string) => void;
   onCancelOrder?: (orderKey: string) => void;
 };
@@ -358,14 +357,14 @@ export function PositionItem(p: Props) {
       return (
         <TooltipWithPortal
           handle={
-            (
+            p.position.liquidationPrice ? (
               <span className="numbers">
                 {formatLiquidationPrice(p.position.liquidationPrice, {
                   displayDecimals: marketDecimals,
                   visualMultiplier: p.position.indexToken.visualMultiplier,
                 })}
               </span>
-            ) || "..."
+            ) : "..."
           }
           position="bottom-end"
           handleClassName={cx({
@@ -483,8 +482,7 @@ export function PositionItem(p: Props) {
               {renderNetValue()}
               {displayedPnl !== undefined && (
                 <div
-                  onClick={p.openSettings}
-                  className={cx("Exchange-list-info-label Position-pnl cursor-pointer numbers", {
+                  className={cx("Exchange-list-info-label Position-pnl numbers", {
                     positive: displayedPnl > 0,
                     negative: displayedPnl < 0,
                     muted: displayedPnl == 0n,
@@ -631,12 +629,11 @@ export function PositionItem(p: Props) {
             <div className="font-medium text-slate-100">{savedShowPnlAfterFees ? t`PnL After Fees` : t`PnL`}</div>
             <div>
               <span
-                className={cx("Exchange-list-info-label Position-pnl cursor-pointer numbers", {
+                className={cx("Exchange-list-info-label Position-pnl numbers", {
                   positive: displayedPnl > 0,
                   negative: displayedPnl < 0,
                   muted: displayedPnl == 0n,
                 })}
-                onClick={p.openSettings}
               >
                 {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
               </span>

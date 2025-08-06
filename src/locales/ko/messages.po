@@ -3259,7 +3259,7 @@ msgid "Please switch to the <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5
 msgstr "해당 기능에 대해 <0><1/><2>Arbitrum</2></0> 또는 <3><4/><5>Avalanche</5></3> 배포로 전환하세요."
 
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
+#: src/components/SideNav/LanguageNavItem.tsx
 msgid "Select Language"
 msgstr "언어 선택"
 
@@ -8160,7 +8160,7 @@ msgstr "{0} USD를 {1} {longOrShortText}에 입금"
 msgid "Distribution"
 msgstr "분배"
 
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
+#: src/components/SideNav/LanguageNavItem.tsx
 msgid "Language"
 msgstr "언어"
 

@@ -3259,7 +3259,7 @@ msgid "Please switch to the <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5
 msgstr ""
 
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
+#: src/components/SideNav/LanguageNavItem.tsx
 msgid "Select Language"
 msgstr ""
 
@@ -8154,7 +8154,7 @@ msgstr ""
 msgid "Distribution"
 msgstr ""
 
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
+#: src/components/SideNav/LanguageNavItem.tsx
 msgid "Language"
 msgstr ""
 
