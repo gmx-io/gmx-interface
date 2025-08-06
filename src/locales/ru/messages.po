@@ -1641,6 +1641,7 @@ msgid "GMX (Chinese)"
 msgstr "GMX (Китайский)"
 
 #: src/components/SearchInput/SearchInput.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search"
 msgstr "Поиск"
 
