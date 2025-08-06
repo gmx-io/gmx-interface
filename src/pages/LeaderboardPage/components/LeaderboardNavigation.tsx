@@ -144,7 +144,7 @@ function NavigationItem({ item }: { item: LeaderboardNavigationItem }) {
   return (
     <Link
       to={item.href}
-      className={cx("text-h1 inline-flex items-center gap-8 leading-[1] text-slate-100 hover:text-white", {
+      className={cx("text-h1 inline-flex items-center gap-8 leading-[1] text-slate-100 whitespace-nowrap hover:text-white", {
         "text-white": item.isSelected,
         "border-l-[0.5px] border-l-slate-600 pl-18": item.key === "concluded",
       })}
@@ -152,7 +152,7 @@ function NavigationItem({ item }: { item: LeaderboardNavigationItem }) {
       {item.label}
 
       {timeframeLabel && (
-        <div className="text-body-small inline-flex h-fit rounded-full bg-slate-700 px-8 py-6 text-slate-100">
+        <div className="text-body-small inline-flex h-fit rounded-full bg-slate-700 px-8 py-6 text-slate-100 whitespace-nowrap">
           {timeframeLabel}
         </div>
       )}

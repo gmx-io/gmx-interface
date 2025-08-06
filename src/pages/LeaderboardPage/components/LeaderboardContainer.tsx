@@ -20,6 +20,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { CompetitionType } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
+import { useBreakpoints } from "lib/breakpoints";
 import { useChainId } from "lib/chains";
 import { mustNeverExist } from "lib/types";
 import { switchNetwork } from "lib/wallets";
@@ -182,37 +183,44 @@ export function LeaderboardContainer() {
     }));
   }, [competitionLabels]);
 
+  const { isMobile } = useBreakpoints();
+
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-12 p-12">
-        <LeaderboardNavigation />
+        <BodyScrollFadeContainer>
+          <div className="">
+            <LeaderboardNavigation />
+          </div>
+        </BodyScrollFadeContainer>
         <div className="text-body-medium font-medium text-slate-100">{description}</div>
       </div>
 
       <div>
-        <div className="flex items-center justify-between rounded-t-8 border-b border-slate-600 bg-slate-900 p-20">
+        <div className="flex items-center justify-between gap-16 rounded-t-8 border-b border-slate-600 bg-slate-900 p-20 max-md:flex-col">
           {!isCompetition ? (
             <Tabs
               type="inline"
               selectedValue={activeLeaderboardDataTypeIndex}
               onChange={handleLeaderboardDataTypeTabChange}
               options={leaderboardDataTypeTabsOptions}
+              className="max-md:w-full"
+              regularOptionClassname="grow"
             />
           ) : (
-            <div>
-              <Tabs
-                type="inline"
-                selectedValue={activeCompetitionIndex}
-                onChange={handleCompetitionTabChange}
-                options={competitionsTabsOptions}
-              />
-            </div>
+            <Tabs
+              type="inline"
+              selectedValue={activeCompetitionIndex}
+              onChange={handleCompetitionTabChange}
+              options={competitionsTabsOptions}
+              className="max-md:w-full"
+            />
           )}
 
-          <div className="flex gap-8">
+          <div className="flex gap-8 max-md:w-full max-md:justify-between">
             <SearchInput
-              placeholder={t`Search Address`}
-              className="w-full max-w-[260px]"
+              placeholder={isMobile ? t`Search` : t`Search Address`}
+              className="w-full max-w-[260px] max-md:min-w-[120px]"
               value={searchAddress}
               setValue={setSearchAddress}
               size="s"
@@ -222,6 +230,7 @@ export function LeaderboardContainer() {
                 selectedValue={activeLeaderboardTimeframeIndex}
                 onChange={handleLeaderboardTimeframeTabChange}
                 type="inline"
+                className="shrink-0"
                 options={leaderboardTimeframeTabsOptions}
               />
             )}
