@@ -551,6 +551,10 @@ msgstr "Plus"
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
 msgstr "Puisque le collatéral de votre position est en {symbol}, avec une valeur initiale supérieure à la taille de la position short {indexName}, la valeur du collatéral augmentera pour couvrir tout PnL négatif, donc il n'y a pas de prix de liquidation."
 
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "Global"
+msgstr ""
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{actionsCount, plural, one {Order} other {# Orders}}"
 msgstr "{actionsCount, plural, one {Ordre} other {# Ordres}}"
@@ -1988,6 +1992,7 @@ msgstr "Vérification du code..."
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GM Pools"
 msgstr "Pools GM"
 
@@ -4535,6 +4540,7 @@ msgid "Shorts Net Rate / 1h"
 msgstr "Taux net Shorts / 1h"
 
 #: src/components/Synthetics/GmList/GlvList.tsx
+#: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GLV Vaults"
 msgstr "Coffres-forts GLV"
 
@@ -6332,6 +6338,10 @@ msgstr "D2.Finance"
 msgid "Annualized:"
 msgstr "Annualisé :"
 
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
+msgid "Concluded Competitions"
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to sign approval"
 msgstr "Échec de la signature d'approbation"
@@ -6375,6 +6385,10 @@ msgstr "Prix de déclenchement supérieur au prix mark"
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Order size exceeds position"
 msgstr "Taille d'ordre dépasse la position"
+
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "Concluded"
+msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Order update submitted!"
@@ -6739,6 +6753,7 @@ msgstr "Positions supérieures"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "Pools"
 
@@ -7905,7 +7920,7 @@ msgstr "Règlement en cours..."
 #: src/components/Exchange/UsefulLinks.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "Tableau des leaders"
 

@@ -1,21 +1,31 @@
+import cx from "classnames";
+
 import { AppHeader } from "components/AppHeader/AppHeader";
 import { AppHeaderLogo } from "components/AppHeader/AppHeaderLogo";
 import { ChainDataImage } from "components/ChainDataImage";
 
-export function ChainContentHeader() {
+export function ChainContentHeader({
+  breadcrumbs,
+  leftContentClassName,
+}: {
+  breadcrumbs?: React.ReactNode;
+  leftContentClassName?: string;
+}) {
   return (
     <>
       <AppHeader
         leftContent={
-          <div className="flex items-center gap-16 pl-12">
+          <div className={cx("flex items-center gap-16 pl-12", leftContentClassName)}>
             <AppHeaderLogo />
-            <div className="max-md:hidden">
+            <div className="flex items-center gap-16 max-md:hidden">
+              {breadcrumbs}
               <ChainDataImage />
             </div>
           </div>
         }
       />
-      <div className="px-20 pt-8 md:hidden">
+      <div className={cx("flex items-center gap-16 px-20 pt-8 md:hidden", leftContentClassName)}>
+        {breadcrumbs}
         <ChainDataImage />
       </div>
     </>

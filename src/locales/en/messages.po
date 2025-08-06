@@ -551,6 +551,10 @@ msgstr "More"
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
 msgstr "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
 
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "Global"
+msgstr "Global"
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{actionsCount, plural, one {Order} other {# Orders}}"
 msgstr "{actionsCount, plural, one {Order} other {# Orders}}"
@@ -1988,6 +1992,7 @@ msgstr "Checking code..."
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GM Pools"
 msgstr "GM Pools"
 
@@ -4535,6 +4540,7 @@ msgid "Shorts Net Rate / 1h"
 msgstr "Shorts Net Rate / 1h"
 
 #: src/components/Synthetics/GmList/GlvList.tsx
+#: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GLV Vaults"
 msgstr "GLV Vaults"
 
@@ -6332,6 +6338,10 @@ msgstr "D2.Finance"
 msgid "Annualized:"
 msgstr "Annualized:"
 
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
+msgid "Concluded Competitions"
+msgstr "Concluded Competitions"
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to sign approval"
 msgstr "Failed to sign approval"
@@ -6375,6 +6385,10 @@ msgstr "Trigger price above mark price"
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Order size exceeds position"
 msgstr "Order size exceeds position"
+
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "Concluded"
+msgstr "Concluded"
 
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Order update submitted!"
@@ -6739,6 +6753,7 @@ msgstr "Top Positions"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "Pools"
 
@@ -7905,7 +7920,7 @@ msgstr "Settling..."
 #: src/components/Exchange/UsefulLinks.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "Leaderboard"
 

@@ -551,6 +551,10 @@ msgstr "更多"
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
 msgstr "由于您的仓位抵押品为 {symbol}，初始价值高于 {indexName} 空头仓位规模，抵押品价值将增加以覆盖任何负盈亏，因此没有清算价格。"
 
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "Global"
+msgstr ""
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{actionsCount, plural, one {Order} other {# Orders}}"
 msgstr "{actionsCount, plural, one {订单} other {# 个订单}}"
@@ -1988,6 +1992,7 @@ msgstr "检查代码中..."
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GM Pools"
 msgstr "GM 池"
 
@@ -4535,6 +4540,7 @@ msgid "Shorts Net Rate / 1h"
 msgstr "做空净率 / 1h"
 
 #: src/components/Synthetics/GmList/GlvList.tsx
+#: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GLV Vaults"
 msgstr "GLV 金库"
 
@@ -6332,6 +6338,10 @@ msgstr "D2.Finance"
 msgid "Annualized:"
 msgstr "年化："
 
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
+msgid "Concluded Competitions"
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to sign approval"
 msgstr "签名批准失败"
@@ -6375,6 +6385,10 @@ msgstr "触发价格高于标记价格"
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Order size exceeds position"
 msgstr "订单大小超过头寸"
+
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "Concluded"
+msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Order update submitted!"
@@ -6739,6 +6753,7 @@ msgstr "最高头寸"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "池"
 
@@ -7905,7 +7920,7 @@ msgstr "结算中..."
 #: src/components/Exchange/UsefulLinks.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "排行榜"
 

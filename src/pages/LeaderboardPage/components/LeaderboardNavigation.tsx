@@ -43,7 +43,7 @@ function getChip(pageKey: LeaderboardPageKey): LeaderboardNavigationItem["chip"]
 function getLabel(pageKey: LeaderboardPageKey) {
   switch (pageKey) {
     case "leaderboard":
-      return t`Leaderboard`;
+      return t`Global`;
 
     case "march_13-20_2024":
       return t`EIP-4844`;
@@ -71,7 +71,7 @@ function getTimeframeLabel(timeframe: LeaderboardTimeframe): string | null {
 export function LeaderboardNavigation() {
   const pageKey = useLeaderboardPageKey();
   const navigationItems = useMemo(() => {
-    const items: LeaderboardNavigationItem[] = LEADERBOARD_PAGES_ORDER.map((key) => LEADERBOARD_PAGES[key])
+    const allItems: LeaderboardNavigationItem[] = LEADERBOARD_PAGES_ORDER.map((key) => LEADERBOARD_PAGES[key])
       .filter((page) => !page.isCompetition || page.enabled)
       .map((page) => {
         return {
@@ -83,19 +83,51 @@ export function LeaderboardNavigation() {
           href: page.href,
           timeframe: page.timeframe,
         };
-      })
-      .sort((a, b) => {
-        const sortingPointA = sortingPoints[a.chip];
-        const sortingPointB = sortingPoints[b.chip];
-
-        if (sortingPointA === sortingPointB) {
-          return b.timeframe.from - a.timeframe.from;
-        }
-
-        return sortingPointA - sortingPointB;
       });
 
-    return items;
+    const isCurrentPageConcluded = pageKey !== "leaderboard" && getChip(pageKey) === "over";
+
+    let filteredItems = allItems;
+    if (isCurrentPageConcluded) {
+      filteredItems = allItems.filter((item) => item.chip === "over");
+    } else {
+      const nonConcludedItems = allItems.filter((item) => item.chip !== "over");
+      const concludedItems = allItems.filter((item) => item.chip === "over").toReversed();
+
+      const concludedTab: LeaderboardNavigationItem | null =
+        concludedItems.length > 0
+          ? {
+              key: "concluded",
+              label: t`Concluded`,
+              chip: "none",
+              isSelected: false,
+              isCompetition: false,
+              href: concludedItems[0].href,
+              timeframe: { from: 0, to: undefined },
+            }
+          : null;
+
+      filteredItems = [...nonConcludedItems];
+      if (concludedTab) {
+        filteredItems.push(concludedTab);
+      }
+    }
+
+    // Sort items
+    return filteredItems.sort((a, b) => {
+      // Special case for "Concluded" tab - always put it last
+      if (a.key === "concluded") return 1;
+      if (b.key === "concluded") return -1;
+
+      const sortingPointA = sortingPoints[a.chip];
+      const sortingPointB = sortingPoints[b.chip];
+
+      if (sortingPointA === sortingPointB) {
+        return b.timeframe.from - a.timeframe.from;
+      }
+
+      return sortingPointA - sortingPointB;
+    });
   }, [pageKey]);
 
   return (
@@ -112,8 +144,9 @@ function NavigationItem({ item }: { item: LeaderboardNavigationItem }) {
   return (
     <Link
       to={item.href}
-      className={cx("text-h1 inline-flex items-center gap-8 text-slate-100 hover:text-white", {
+      className={cx("text-h1 inline-flex items-center gap-8 leading-[1] text-slate-100 hover:text-white", {
         "text-white": item.isSelected,
+        "border-l-[0.5px] border-l-slate-600 pl-18": item.key === "concluded",
       })}
     >
       {item.label}

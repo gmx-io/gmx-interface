@@ -1,7 +1,6 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useState } from "react";
-import { FaArrowLeft } from "react-icons/fa";
 
 import { usePoolsDetailsContext } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import {
@@ -9,6 +8,7 @@ import {
   selectGlvAndMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { getTokenData } from "domain/synthetics/tokens";
 import { useBreakpoints } from "lib/breakpoints";
 import { getPageTitle } from "lib/legacy";
@@ -16,8 +16,7 @@ import { getByKey } from "lib/objects";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
-import Button from "components/Button/Button";
-import ButtonLink from "components/Button/ButtonLink";
+import { BreadcrumbItem, Breadcrumbs } from "components/Breadcrumbs/Breadcrumbs";
 import Loader from "components/Common/Loader";
 import SEO from "components/Common/SEO";
 import SideNav from "components/SideNav/SideNav";
@@ -59,20 +58,26 @@ export function PoolsDetails() {
 
   const isInCurtain = isDesktop;
 
+  const breadcrumbs = (
+    <Breadcrumbs>
+      <BreadcrumbItem to="/pools" back>
+        <Trans>Pools</Trans>
+      </BreadcrumbItem>
+
+      <BreadcrumbItem active>
+        {isGlvInfo(glvOrMarketInfo) ? <Trans>GLV Vaults</Trans> : <Trans>GM Pools</Trans>}
+      </BreadcrumbItem>
+    </Breadcrumbs>
+  );
+
   return (
     <AppPageLayout
       className="max-lg:pb-40"
       sideNav={<SideNav className="max-xl:pb-40" />}
-      header={<ChainContentHeader />}
+      header={<ChainContentHeader breadcrumbs={breadcrumbs} leftContentClassName="!pl-0 max-md:!pl-8" />}
     >
       <SEO title={getPageTitle("V2 Pools")}>
         <div className={cx("flex flex-col gap-8")}>
-          <ButtonLink to="/pools">
-            <Button variant="secondary" className="flex items-center gap-8">
-              <FaArrowLeft size={14} />
-              Back to Pools
-            </Button>
-          </ButtonLink>
           {glvOrMarketInfo ? (
             <>
               <PoolsDetailsHeader glvOrMarketInfo={glvOrMarketInfo} marketToken={marketToken} />

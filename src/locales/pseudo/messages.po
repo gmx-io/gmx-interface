@@ -551,6 +551,10 @@ msgstr ""
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "Global"
+msgstr ""
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{actionsCount, plural, one {Order} other {# Orders}}"
 msgstr ""
@@ -1988,6 +1992,7 @@ msgstr ""
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GM Pools"
 msgstr ""
 
@@ -4532,6 +4537,7 @@ msgid "Shorts Net Rate / 1h"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GlvList.tsx
+#: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GLV Vaults"
 msgstr ""
 
@@ -6329,6 +6335,10 @@ msgstr ""
 msgid "Annualized:"
 msgstr ""
 
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
+msgid "Concluded Competitions"
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to sign approval"
 msgstr ""
@@ -6371,6 +6381,10 @@ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Order size exceeds position"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "Concluded"
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx
@@ -6733,6 +6747,7 @@ msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr ""
 
@@ -7899,7 +7914,7 @@ msgstr ""
 #: src/components/Exchange/UsefulLinks.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr ""
 

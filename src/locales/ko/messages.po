@@ -551,6 +551,10 @@ msgstr "더 보기"
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
 msgstr "포지션 담보가 {symbol}이고 초기 가치가 {indexName} 숏 포지션 크기보다 높으므로, 담보 가치가 음의 PnL을 커버하기 위해 증가하여 청산 가격이 없습니다."
 
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "Global"
+msgstr ""
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{actionsCount, plural, one {Order} other {# Orders}}"
 msgstr "{actionsCount, plural, one {주문} other {# 주문}}"
@@ -1988,6 +1992,7 @@ msgstr "코드 확인중..."
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GM Pools"
 msgstr "GM 풀"
 
@@ -4535,6 +4540,7 @@ msgid "Shorts Net Rate / 1h"
 msgstr "숏 순율 / 1시간"
 
 #: src/components/Synthetics/GmList/GlvList.tsx
+#: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GLV Vaults"
 msgstr "GLV 볼트"
 
@@ -6332,6 +6338,10 @@ msgstr "D2.Finance"
 msgid "Annualized:"
 msgstr "연간화:"
 
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
+msgid "Concluded Competitions"
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to sign approval"
 msgstr "승인 서명 실패"
@@ -6375,6 +6385,10 @@ msgstr "트리거 가격이 마크 가격 초과"
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Order size exceeds position"
 msgstr "주문 크기가 포지션 초과"
+
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "Concluded"
+msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Order update submitted!"
@@ -6739,6 +6753,7 @@ msgstr "상위 포지션"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "풀"
 
@@ -7905,7 +7920,7 @@ msgstr "정산 중..."
 #: src/components/Exchange/UsefulLinks.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "리더보드"
 

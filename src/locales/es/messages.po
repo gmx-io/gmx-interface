@@ -551,6 +551,10 @@ msgstr "Más"
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
 msgstr "Dado que la garantía de tu posición está en {symbol}, con un valor inicial superior al tamaño de la posición corta {indexName}, el valor de la garantía aumentará para cubrir cualquier PnL negativo, por lo que no hay precio de liquidación."
 
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "Global"
+msgstr ""
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{actionsCount, plural, one {Order} other {# Orders}}"
 msgstr "{actionsCount, plural, one {Orden} other {# Órdenes}}"
@@ -1988,6 +1992,7 @@ msgstr "Comprobando código..."
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GM Pools"
 msgstr "Reservas GM"
 
@@ -4535,6 +4540,7 @@ msgid "Shorts Net Rate / 1h"
 msgstr "Tasa Neta de Cortos / 1h"
 
 #: src/components/Synthetics/GmList/GlvList.tsx
+#: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GLV Vaults"
 msgstr "Vaults GLV"
 
@@ -6332,6 +6338,10 @@ msgstr "D2.Finance"
 msgid "Annualized:"
 msgstr "Anualizado:"
 
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
+msgid "Concluded Competitions"
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to sign approval"
 msgstr "Falló la firma de aprobación"
@@ -6375,6 +6385,10 @@ msgstr "Precio de activación por encima del precio de referencia"
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Order size exceeds position"
 msgstr "El tamaño de la orden supera la posición"
+
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "Concluded"
+msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Order update submitted!"
@@ -6739,6 +6753,7 @@ msgstr "Posiciones Principales"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "Reservas"
 
@@ -7905,7 +7920,7 @@ msgstr "Liquidando..."
 #: src/components/Exchange/UsefulLinks.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "Tabla de Clasificación"
 

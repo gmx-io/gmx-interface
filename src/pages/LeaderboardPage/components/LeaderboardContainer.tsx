@@ -183,8 +183,8 @@ export function LeaderboardContainer() {
   }, [competitionLabels]);
 
   return (
-    <div>
-      <div className="mb-20 flex flex-col gap-8 px-12">
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-12 p-12">
         <LeaderboardNavigation />
         <div className="text-body-medium font-medium text-slate-100">{description}</div>
       </div>

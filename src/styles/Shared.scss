@@ -46,7 +46,7 @@ code {
 
 @supports (scrollbar-width: auto) {
   :root {
-    scrollbar-color: #a0a3c4 #16182e;
+    scrollbar-color: #a0a3c4 #121421;
   }
 }
 
@@ -58,7 +58,7 @@ code {
 
   /* Track */
   ::-webkit-scrollbar-track {
-    background-color: #16182e;
+    background-color: #121421;
   }
 
   /* Handle */
