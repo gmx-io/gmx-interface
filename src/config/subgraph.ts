@@ -26,7 +26,7 @@ const SUBGRAPH_URLS = {
   },
 
   [ARBITRUM_SEPOLIA]: {
-    subsquid: "https://gmx-test.squids.live/multichain-arbitrum-sepolia@bf9a0f/api/graphql",
+    subsquid: "https://gmx-test.squids.live/v22-sepolia@1kvhuz/api/graphql",
   },
 
   common: {
