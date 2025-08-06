@@ -16,7 +16,7 @@ import { useTokenBalances } from "domain/synthetics/tokens";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { getGasPrice } from "lib/gas/gasPrice";
 import { helperToast } from "lib/helperToast";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { sendWalletTransaction, TxnEventName } from "lib/transactions";
 import { WalletSigner } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
@@ -26,6 +26,7 @@ import { getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
+import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
 function getCallData(tokens: string[], account: string, signature: string, distributionId: bigint) {
   const params = tokens.map((token) => ({
@@ -81,7 +82,7 @@ function createClaimAmountsTransaction(data: {
               <div className="text-body-medium font-bold">
                 <Trans>Failed to claim funds</Trans>
               </div>
-              <div className="text-body-small text-white">{event.data.error.message}</div>
+              <ToastifyDebug error={event.data.error.message ?? "Unknown error"} />
             </div>
           );
 
@@ -143,6 +144,7 @@ export default function ClaimableAmounts() {
     claimableTokenTitles,
     claimsDisabled: claimsFeatureDisabled,
     claimableAmountsLoaded,
+    mutateClaimableAmounts,
   } = useUserClaimableAmounts(chainId, account);
   const settings = useSettings();
   const [isClaiming, setIsClaiming] = useState(false);
@@ -191,6 +193,7 @@ export default function ClaimableAmounts() {
         distributionId: GLP_DISTRIBUTION_ID,
         claimableTokenTitles,
       });
+      mutateClaimableAmounts(true);
       setClaimTermsAcceptedSignature("");
     } finally {
       setIsClaiming(false);
@@ -203,6 +206,7 @@ export default function ClaimableAmounts() {
     chainId,
     claimableTokenTitles,
     setClaimTermsAcceptedSignature,
+    mutateClaimableAmounts,
   ]);
 
   const { balancesData } = useTokenBalances(chainId);
@@ -292,9 +296,11 @@ export default function ClaimableAmounts() {
               <div key={token}>
                 <div className="flex flex-col gap-5">
                   <div className="text-sm text-nowrap text-slate-100">{claimableTokenTitles[token]}</div>
-                  <div className="flex flex-row gap-5">
-                    <span>{formatAmount(data?.amount ?? 0n, 18)}</span>
-                    <span className="text-slate-100">({formatUsd(data?.usd ?? 0n)})</span>
+                  <div className="flex flex-col gap-2">
+                    <span>{formatBalanceAmount(data?.amount ?? 0n, data?.decimals ?? 18)}</span>
+                    <span className="text-body-small whitespace-nowrap text-slate-100">
+                      ({formatUsd(data?.usd ?? 0n)})
+                    </span>
                   </div>
                 </div>
               </div>

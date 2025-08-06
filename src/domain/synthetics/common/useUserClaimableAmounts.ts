@@ -52,10 +52,12 @@ export interface ClaimableAmountsResult {
     | {
         amount: bigint;
         usd: bigint;
+        decimals?: number;
       }
     | undefined
   >;
   claimableAmountsLoaded: boolean;
+  mutateClaimableAmounts: (shouldRevalidate?: boolean) => void;
 }
 
 export default function useUserClaimableAmounts(chainId: number, account?: string): ClaimableAmountsResult {
@@ -145,7 +147,7 @@ export default function useUserClaimableAmounts(chainId: number, account?: strin
     return result;
   }, [glvsInfo, tokensData, marketsInfo, allTokens]);
 
-  const { data: claimableAmountsData } = useMulticall<
+  const { data: claimableAmountsData, mutate: mutateClaimableAmounts } = useMulticall<
     ClaimableAmountsRequestConfig,
     Pick<ClaimableAmountsResult, "claimTerms" | "claimsDisabled" | "claimableAmounts">
   >(chainId, "glp-distribution", {
@@ -171,11 +173,16 @@ export default function useUserClaimableAmounts(chainId: number, account?: strin
           tokenData = tokensData?.[token];
         }
 
-        const usd = convertToUsd(claimableAmount, tokenData?.decimals ?? 18, tokenData?.prices.minPrice ?? 0n) ?? 0n;
+        if (!tokenData) {
+          continue;
+        }
+
+        const usd = convertToUsd(claimableAmount, tokenData.decimals, tokenData.prices.minPrice ?? 0n) ?? 0n;
 
         claimableAmounts[token] = {
           amount: claimableAmount,
           usd,
+          decimals: tokenData.decimals,
         };
       }
 
@@ -199,6 +206,7 @@ export default function useUserClaimableAmounts(chainId: number, account?: strin
   }, [claimableAmountsData?.claimableAmounts, allTokens]);
 
   return {
+    mutateClaimableAmounts,
     claimTerms: claimableAmountsData?.claimTerms ?? "",
     claimsDisabled: claimableAmountsData?.claimsDisabled ?? false,
     claimableAmounts: claimableAmountsData?.claimableAmounts ?? {},
