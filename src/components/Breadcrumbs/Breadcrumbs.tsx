@@ -24,9 +24,9 @@ export type BreadcrumbItemProps = {
 };
 
 export function BreadcrumbItem({ to: href, children, back, active, onClick, className }: BreadcrumbItemProps) {
-  const { isMobile } = useBreakpoints();
+  const { isMobile, isTablet } = useBreakpoints();
 
-  if (!back && isMobile) {
+  if (!back && isTablet) {
     return null;
   }
 

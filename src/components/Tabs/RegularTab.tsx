@@ -28,12 +28,12 @@ export default function RegularTab<V extends string | number>({
   if (type === "inline") {
     return (
       <Button
-        variant="ghost"
+        variant={isActive ? "secondary" : "ghost"}
         onClick={() => onOptionClick?.(option.value)}
         key={option.value}
         data-qa={qa ? `${qa}-tab-${option.value}` : undefined}
         className={cx(optionClassName, regularOptionClassname, {
-          "!bg-cold-blue-900 !text-white": isActive,
+          "!text-white": isActive,
         })}
       >
         {option.icon && <span className="mt-2 scale-75 opacity-70">{option.icon}</span>}

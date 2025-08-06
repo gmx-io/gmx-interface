@@ -1,5 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
+import { FaChevronRight } from "react-icons/fa6";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import { Link } from "react-router-dom";
 import type { Address } from "viem";
@@ -11,6 +12,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/leaderboardSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { CompetitionType, LeaderboardAccount, LeaderboardPageKey } from "domain/synthetics/leaderboard";
+import { useBreakpoints } from "lib/breakpoints";
 import { shortenAddress } from "lib/legacy";
 import { mustNeverExist } from "lib/types";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
@@ -169,7 +171,9 @@ function CompetitionPrize({ prize }: { prize: Prize }) {
 function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] }) {
   const winner = winners[0];
 
-  const handle = winner ? (
+  const { isSmallDesktop } = useBreakpoints();
+
+  let handle = winner ? (
     <Link
       target="_blank"
       to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
@@ -179,6 +183,19 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
       <Jazzicon diameter={16} seed={jsNumberForAddress(winner.account)} />
     </Link>
   ) : null;
+
+  if (isSmallDesktop) {
+    handle = winner ? (
+      <Link
+        target="_blank"
+        to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
+        className={`flex items-center gap-6 rounded-full bg-slate-600 p-10 text-slate-100
+        hover:bg-slate-500 hover:text-white active:bg-slate-500 active:text-white`}
+      >
+        <FaChevronRight size={12} />
+      </Link>
+    ) : null;
+  }
 
   const renderTooltipContent = useCallback(() => {
     return winners.map((winner) => (

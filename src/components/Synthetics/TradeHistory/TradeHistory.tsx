@@ -157,7 +157,7 @@ export function useTradeHistoryState(p: {
     minCollateralUsd: minCollateralUsd,
   });
 
-  const { isTablet, isDesktop } = useBreakpoints();
+  const { isTablet, isSmallDesktop: isDesktop } = useBreakpoints();
 
   const actions = (
     <>

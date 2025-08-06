@@ -159,7 +159,7 @@ export function LeaderboardContainer() {
       label: leaderboardDataTypeLabels[value],
       className: {
         active: "text-white !bg-blue-400",
-        regular: "hover:text-white",
+        regular: "hover:text-white !bg-slate-800",
       },
     }));
   }, [leaderboardDataTypeLabels]);
@@ -177,7 +177,7 @@ export function LeaderboardContainer() {
       label: competitionLabels[value],
       className: {
         active: "text-white !bg-blue-400",
-        regular: "hover:text-white",
+        regular: "hover:text-white !bg-slate-800",
       },
     }));
   }, [competitionLabels]);
@@ -189,55 +189,55 @@ export function LeaderboardContainer() {
         <div className="text-body-medium font-medium text-slate-100">{description}</div>
       </div>
 
-      <div className="flex items-center justify-between rounded-t-8 border-b border-slate-600 bg-slate-900 p-20">
-        {!isCompetition ? (
-          <Tabs
-            type="inline"
-            selectedValue={activeLeaderboardDataTypeIndex}
-            onChange={handleLeaderboardDataTypeTabChange}
-            options={leaderboardDataTypeTabsOptions}
-            regularOptionClassname="!bg-slate-800"
-          />
-        ) : (
-          <div>
+      <div>
+        <div className="flex items-center justify-between rounded-t-8 border-b border-slate-600 bg-slate-900 p-20">
+          {!isCompetition ? (
             <Tabs
               type="inline"
-              selectedValue={activeCompetitionIndex}
-              onChange={handleCompetitionTabChange}
-              options={competitionsTabsOptions}
-              regularOptionClassname="!bg-slate-800"
+              selectedValue={activeLeaderboardDataTypeIndex}
+              onChange={handleLeaderboardDataTypeTabChange}
+              options={leaderboardDataTypeTabsOptions}
             />
+          ) : (
+            <div>
+              <Tabs
+                type="inline"
+                selectedValue={activeCompetitionIndex}
+                onChange={handleCompetitionTabChange}
+                options={competitionsTabsOptions}
+              />
+            </div>
+          )}
+
+          <div className="flex gap-8">
+            <SearchInput
+              placeholder={t`Search Address`}
+              className="w-full max-w-[260px]"
+              value={searchAddress}
+              setValue={setSearchAddress}
+              size="s"
+            />
+            {!isCompetition && (
+              <Tabs
+                selectedValue={activeLeaderboardTimeframeIndex}
+                onChange={handleLeaderboardTimeframeTabChange}
+                type="inline"
+                options={leaderboardTimeframeTabsOptions}
+              />
+            )}
           </div>
+        </div>
+
+        {isCompetition && activeCompetition && (
+          <BodyScrollFadeContainer>
+            <div className="min-w-[1000px]">
+              <CompetitionPrizes leaderboardPageKey={leaderboardPageKey} competitionType={activeCompetition} />
+            </div>
+          </BodyScrollFadeContainer>
         )}
 
-        <div className="flex gap-8">
-          <SearchInput
-            placeholder={t`Search Address`}
-            className="w-full max-w-[260px]"
-            value={searchAddress}
-            setValue={setSearchAddress}
-            size="s"
-          />
-          {!isCompetition && (
-            <Tabs
-              selectedValue={activeLeaderboardTimeframeIndex}
-              onChange={handleLeaderboardTimeframeTabChange}
-              type="inline"
-              options={leaderboardTimeframeTabsOptions}
-            />
-          )}
-        </div>
+        <Table activeCompetition={activeCompetition} />
       </div>
-
-      {isCompetition && activeCompetition && (
-        <BodyScrollFadeContainer>
-          <div className="min-w-[1200px]">
-            <CompetitionPrizes leaderboardPageKey={leaderboardPageKey} competitionType={activeCompetition} />
-          </div>
-        </BodyScrollFadeContainer>
-      )}
-
-      <Table activeCompetition={activeCompetition} />
     </div>
   );
 }

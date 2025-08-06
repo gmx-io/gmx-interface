@@ -151,7 +151,6 @@ export function LeaderboardAccountsTable({
           pinned
           rank={pinnedRowData.rank}
           activeCompetition={activeCompetition}
-          big
         />
       )}
       {rowsData.length ? (
@@ -312,14 +311,12 @@ const TableRow = memo(
     rank,
     activeCompetition,
     index,
-    big,
   }: {
     account: LeaderboardAccount;
     index: number;
     pinned: boolean;
     rank: number | null;
     activeCompetition: CompetitionType | undefined;
-    big?: boolean;
   }) => {
     const renderWinsLossesTooltipContent = useCallback(() => {
       const winRate = `${((account.wins / (account.wins + account.losses)) * 100).toFixed(2)}%`;
@@ -344,7 +341,7 @@ const TableRow = memo(
     const renderPnlTooltipContent = useCallback(() => <LeaderboardPnlTooltipContent account={account} />, [account]);
 
     return (
-      <TableTr bordered={false} key={account.account} className={big ? "text-body-medium" : undefined}>
+      <TableTr bordered={false} key={account.account}>
         <TableTd className={getCellClassname(rank, activeCompetition, pinned)}>
           <span className={cx("numbers", getWinnerRankClassname(rank, activeCompetition))}>
             <RankInfo rank={rank} hasSomeCapital={account.totalQualifyingPnl !== 0n} />
@@ -352,7 +349,7 @@ const TableRow = memo(
         </TableTd>
 
         <TableTd>
-          <AddressView big={big} size={20} address={account.account} breakpoint="XL" />
+          <AddressView size={20} address={account.account} breakpoint="XL" />
         </TableTd>
         <TableTd>
           <TooltipWithPortal
@@ -426,7 +423,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   if (rank === null)
     return <TooltipWithPortal handleClassName="text-red-500" handle={t`NA`} renderContent={tooltipContent} />;
 
-  return <span className="numbers">{rank}</span>;
+  return <span className="font-medium text-slate-100 numbers">{rank}</span>;
 });
 
 const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAccount }) => {
