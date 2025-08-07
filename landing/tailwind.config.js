@@ -110,6 +110,7 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
       border: "0",
     },
   });
+  addVariant('filled', '&:not(:placeholder-shown)')
 }
 
 /**

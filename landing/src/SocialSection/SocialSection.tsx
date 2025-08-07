@@ -72,10 +72,12 @@ export function SocialSection() {
               method="GET"
             >
               <input
-                type="text"
+                type="email"
                 name="email"
-                className="bg-fiord-600 min-w-0 rounded-8 px-16 py-10 text-16 font-medium -tracking-[0.512px] placeholder:text-slate-100"
-                placeholder="Enter your email"
+                id="email"
+                required
+                className="bg-fiord-600 filled:border-fiord-500 filled:bg-[#252635] border-fiord-500/0 min-w-0 rounded-8 border-[0.5px] px-16 py-10 text-16 font-medium -tracking-[0.512px] outline-none placeholder:text-slate-100 focus:bg-[#252635]"
+                placeholder="Your e-mail"
               />
               <button
                 type="submit"
