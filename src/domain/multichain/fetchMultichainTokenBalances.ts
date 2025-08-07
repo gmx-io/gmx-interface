@@ -5,7 +5,7 @@ import { SettlementChainId, SourceChainId, getChainName } from "config/chains";
 import {
   MULTICALLS_MAP,
   MULTI_CHAIN_TOKEN_MAPPING,
-  MULTI_CHAIN_TRADE_TOKENS,
+  MULTI_CHAIN_DEPOSIT_TRADE_TOKENS,
   MultichainTokenMapping,
 } from "config/multichain";
 import { executeMulticall } from "lib/multicall/executeMulticall";
@@ -15,7 +15,7 @@ export async function fetchMultichainTokenBalances({
   settlementChainId,
   account,
   progressCallback,
-  tokens = MULTI_CHAIN_TRADE_TOKENS[settlementChainId],
+  tokens = MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[settlementChainId],
 }: {
   settlementChainId: SettlementChainId;
   account: string;

@@ -261,7 +261,8 @@ export function isSourceChain(chainId: number | undefined): chainId is SourceCha
 }
 
 export const MULTI_CHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;
-export const MULTI_CHAIN_TRADE_TOKENS = {} as Record<SettlementChainId, string[]>;
+export const MULTI_CHAIN_DEPOSIT_TRADE_TOKENS = {} as Record<SettlementChainId, string[]>;
+export const MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS = {} as Record<SettlementChainId, string[]>;
 
 export const MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS = {} as MultichainWithdrawSupportedTokens;
 
@@ -290,8 +291,10 @@ for (const tokenSymbol in TOKEN_GROUPS) {
     }
 
     if (!tokenId?.isPlatformToken) {
-      MULTI_CHAIN_TRADE_TOKENS[chainId] = MULTI_CHAIN_TRADE_TOKENS[chainId] || [];
-      MULTI_CHAIN_TRADE_TOKENS[chainId].push(tokenId.address);
+      MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[chainId] = MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[chainId] || [];
+      MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[chainId].push(tokenId.address);
+      MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId] = MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId] || [];
+      MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId].push(convertTokenAddress(chainId, tokenId.address, "wrapped"));
     }
 
     const settlementChainId = chainId;

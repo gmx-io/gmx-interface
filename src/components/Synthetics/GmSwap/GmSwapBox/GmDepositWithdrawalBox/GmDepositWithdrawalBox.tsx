@@ -35,7 +35,7 @@ import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { useMultichainTokensRequest } from "components/Synthetics/GmxAccountModal/hooks";
+import { useMultichainTokens } from "components/Synthetics/GmxAccountModal/hooks";
 import { useBestGmPoolAddressForGlv } from "components/Synthetics/MarketStats/hooks/useBestGmPoolForGlv";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
@@ -77,7 +77,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
-  const { tokenChainDataArray } = useMultichainTokensRequest();
+  const { tokenChainDataArray } = useMultichainTokens();
   // #endregion
 
   // #region Selectors
@@ -468,7 +468,14 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
       return undefined;
     }
 
-    let balance = firstToken.balance;
+    let balance;
+    if (paySource === "gmxAccount") {
+      balance = firstToken.gmxAccountBalance;
+    } else if (paySource === "sourceChain") {
+      balance = firstToken.sourceChainBalance;
+    } else {
+      balance = firstToken.walletBalance;
+    }
 
     if (balance === undefined) {
       return undefined;
@@ -477,7 +484,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     return formatBalanceAmount(balance, firstToken.decimals, undefined, {
       isStable: firstToken.isStable,
     });
-  }, [firstToken]);
+  }, [firstToken, paySource]);
   // #endregion
 
   // #region Callbacks
@@ -685,11 +692,13 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
   useEffect(
     function fallbackSourceChainPaySource() {
-      if (paySource === "sourceChain" && isPair) {
-        setPaySource("gmxAccount");
+      if (paySource === "sourceChain" && srcChainId === undefined) {
+        setPaySource("settlementChain");
+      } else if (paySource === "settlementChain" && srcChainId !== undefined) {
+        setPaySource("sourceChain");
       }
     },
-    [isPair, paySource, setPaySource]
+    [paySource, setPaySource, srcChainId]
   );
   // #endregion
 

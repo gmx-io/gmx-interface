@@ -16,7 +16,7 @@ import {
   getMultichainTokenId,
   getStargatePoolAddress,
   isSettlementChain,
-  MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS,
+  MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS,
   MULTICHAIN_FUNDING_SLIPPAGE_BPS,
 } from "config/multichain";
 import {
@@ -169,9 +169,8 @@ export const WithdrawalView = () => {
       return EMPTY_ARRAY;
     }
 
-    return MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[chainId as SettlementChainId]
+    return MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId as SettlementChainId]
       ?.map((tokenAddress) => tokensData[tokenAddress])
-      .filter((token) => token.address !== zeroAddress)
       .sort((a, b) => {
         const aFloat = bigintToNumber(a.gmxAccountBalance ?? 0n, a.decimals);
         const bFloat = bigintToNumber(b.gmxAccountBalance ?? 0n, b.decimals);
@@ -654,7 +653,7 @@ export const WithdrawalView = () => {
         return;
       }
 
-      const settlementChainWrappedTokenAddresses = MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[chainId];
+      const settlementChainWrappedTokenAddresses = MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId];
       if (!settlementChainWrappedTokenAddresses) {
         return;
       }

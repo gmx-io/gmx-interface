@@ -16,7 +16,7 @@ import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
   DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT,
   MULTICHAIN_FUNDING_SLIPPAGE_BPS,
-  MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS,
+  MULTI_CHAIN_DEPOSIT_TRADE_TOKENS,
   StargateErrorsAbi,
   getMappedTokenId,
 } from "config/multichain";
@@ -114,7 +114,7 @@ export const DepositView = () => {
     tokenChainDataArray: multichainTokens,
     isPriceDataLoading,
     isBalanceDataLoading,
-  } = useMultichainTokensRequest();
+  } = useMultichainTokensRequest(settlementChainId, account);
   const [isApproving, setIsApproving] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -530,7 +530,7 @@ export const DepositView = () => {
 
       const isInvalidTokenAddress =
         depositViewTokenAddress === undefined ||
-        !MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId as SettlementChainId]
+        !MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[settlementChainId as SettlementChainId]
           .map((token) => convertTokenAddress(settlementChainId, token, "native"))
           .includes(depositViewTokenAddress as NativeTokenSupportedAddress);
 

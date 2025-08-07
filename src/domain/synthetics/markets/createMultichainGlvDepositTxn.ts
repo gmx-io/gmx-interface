@@ -2,7 +2,6 @@ import { encodeFunctionData } from "viem";
 
 import { getContract } from "config/contracts";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions";
-import { AsyncResult } from "lib/useThrottledAsync";
 import type { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
@@ -83,32 +82,28 @@ export function createMultichainGlvDepositTxn({
   srcChainId,
   signer,
   transferRequests,
-  asyncExpressTxnResult,
+  expressTxnParams,
   params,
 }: {
   chainId: ContractsChainId;
   srcChainId: SourceChainId | undefined;
   signer: WalletSigner;
   transferRequests: IRelayUtils.TransferRequestsStruct;
-  asyncExpressTxnResult: AsyncResult<ExpressTxnParams | undefined>;
+  expressTxnParams: ExpressTxnParams;
   params: CreateGlvDepositParamsStruct;
   // TODO MLTCH: support pending txns
   // setPendingTxns,
   // setPendingDeposit,
 }) {
-  if (!asyncExpressTxnResult.data) {
-    throw new Error("Async result is not set");
-  }
-
   return buildAndSignMultichainGlvDepositTxn({
     chainId,
     srcChainId,
     signer,
     account: params.addresses.receiver,
-    relayerFeeAmount: asyncExpressTxnResult.data.gasPaymentParams.relayerFeeAmount,
-    relayerFeeTokenAddress: asyncExpressTxnResult.data.gasPaymentParams.relayerFeeTokenAddress,
+    relayerFeeAmount: expressTxnParams.gasPaymentParams.relayerFeeAmount,
+    relayerFeeTokenAddress: expressTxnParams.gasPaymentParams.relayerFeeTokenAddress,
     relayParams: {
-      ...asyncExpressTxnResult.data.relayParamsPayload,
+      ...expressTxnParams.relayParamsPayload,
       deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
     },
     transferRequests,

@@ -240,7 +240,7 @@ function ReferralCodeFormMultichain({
   const [referralCodeExists, setReferralCodeExists] = useState(true);
   const debouncedReferralCode = useDebounce(referralCode, 300);
   const settlementChainPublicClient = usePublicClient({ chainId });
-  const { tokenChainDataArray: multichainTokens } = useMultichainTokensRequest();
+  const { tokenChainDataArray: multichainTokens } = useMultichainTokensRequest(chainId, account);
 
   const simulationSigner = useMemo(() => {
     if (!signer?.provider) {

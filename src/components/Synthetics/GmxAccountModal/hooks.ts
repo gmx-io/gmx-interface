@@ -160,14 +160,14 @@ const subscribeMultichainTokenBalances: SWRSubscription<
   };
 };
 
-export function useMultichainTokensRequest(): {
+export function useMultichainTokensRequest(
+  chainId: ContractsChainId,
+  account: string | undefined
+): {
   tokenChainDataArray: TokenChainData[];
   isPriceDataLoading: boolean;
   isBalanceDataLoading: boolean;
 } {
-  const { chainId } = useChainId();
-  const account = useSelector(selectAccount);
-
   const { pricesData, isPriceDataLoading } = useTokenRecentPricesRequest(chainId);
 
   const { data: balanceData } = useSWRSubscription(
@@ -217,14 +217,23 @@ export function useMultichainTokensRequest(): {
   };
 }
 
-export function useMultichainMarketTokenBalancesRequest(tokenAddress: string | undefined): {
+export function useMultichainTokens() {
+  const { chainId } = useChainId();
+  const account = useSelector(selectAccount);
+
+  return useMultichainTokensRequest(chainId, account);
+}
+
+export function useMultichainMarketTokenBalancesRequest(
+  chainId: ContractsChainId,
+  srcChainId: SourceChainId | undefined,
+  account: string | undefined,
+  tokenAddress: string | undefined
+): {
   tokenBalancesData: Partial<Record<AnyChainId | 0, bigint>>;
   totalBalance: bigint | undefined;
   isBalanceDataLoading: boolean;
 } {
-  const { chainId, srcChainId } = useChainId();
-  const account = useSelector(selectAccount);
-
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, {
     isDeposit: true,
     withGlv: true,

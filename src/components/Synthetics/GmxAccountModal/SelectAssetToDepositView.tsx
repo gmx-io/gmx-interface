@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
+import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
 import { getChainIcon } from "config/icons";
@@ -72,6 +73,8 @@ type DisplayTokenChainData = TokenChainData & {
 
 export const SelectAssetToDepositView = () => {
   const { chainId } = useChainId();
+  const { address: account } = useAccount();
+
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [, setDepositViewChain] = useGmxAccountDepositViewChain();
   const [, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
@@ -79,7 +82,7 @@ export const SelectAssetToDepositView = () => {
   const [selectedNetwork, setSelectedNetwork] = useState<number | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { tokenChainDataArray } = useMultichainTokensRequest();
+  const { tokenChainDataArray } = useMultichainTokensRequest(chainId, account);
 
   const NETWORKS_FILTER = useMemo(() => {
     const wildCard = { id: "all" as const, name: "All Networks" };

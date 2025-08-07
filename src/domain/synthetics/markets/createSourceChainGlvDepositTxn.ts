@@ -116,7 +116,7 @@ export async function createSourceChainGlvDepositTxn({
 
   const quoteSend = await iStargateInstance.quoteSend(sendParams, false);
 
-  const value = quoteSend.nativeFee + (tokenAddress === zeroAddress ? tokenAmount : 0n);
+  const value = quoteSend.nativeFee + (tokenAddress === zeroAddress ? tokenAmount + relayFeePayload.feeAmount : 0n);
 
   try {
     const txnResult = await sendWalletTransaction({

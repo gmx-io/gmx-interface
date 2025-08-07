@@ -155,11 +155,11 @@ function useMultichainDepositExpressTxnParams({
   const { signer } = useWallet();
 
   const multichainDepositExpressTxnParams = useArbitraryRelayParamsAndPayload({
-    isGmxAccount: srcChainId !== undefined,
-    enabled: paySource !== "settlementChain",
+    isGmxAccount: paySource === "gmxAccount",
+    enabled: paySource === "gmxAccount",
     executionFeeAmount: glvParams ? glvParams.executionFee : gmParams?.executionFee,
     expressTransactionBuilder: async ({ relayParams, gasPaymentParams }) => {
-      if ((!gmParams && !glvParams) || !srcChainId || !signer) {
+      if ((!gmParams && !glvParams) || !signer) {
         throw new Error("Invalid params");
       }
 
@@ -293,6 +293,10 @@ const useDepositTransactions = ({
     let dataList: string[] = EMPTY_ARRAY;
 
     if (paySource === "sourceChain") {
+      if (!srcChainId) {
+        return undefined;
+      }
+
       const actionHash = CodecUiHelper.encodeMultichainActionData({
         actionType: MultichainActionType.BridgeOut,
         actionData: {
@@ -300,7 +304,7 @@ const useDepositTransactions = ({
           desChainId: chainId,
           minAmountOut: minMarketTokens / 2n,
           provider: getMultichainTokenId(chainId, marketTokenAddress)!.stargate,
-          providerData: numberToHex(CHAIN_ID_TO_ENDPOINT_ID[srcChainId!], { size: 32 }),
+          providerData: numberToHex(CHAIN_ID_TO_ENDPOINT_ID[srcChainId], { size: 32 }),
         },
       });
       const bytes = hexToBytes(actionHash as Hex);
@@ -359,6 +363,10 @@ const useDepositTransactions = ({
 
     let dataList: string[] = EMPTY_ARRAY;
     if (paySource === "sourceChain") {
+      if (!srcChainId) {
+        return undefined;
+      }
+
       const actionHash = CodecUiHelper.encodeMultichainActionData({
         actionType: MultichainActionType.BridgeOut,
         actionData: {
@@ -366,7 +374,7 @@ const useDepositTransactions = ({
           desChainId: chainId,
           minAmountOut: minGlvTokens / 2n,
           provider: getMultichainTokenId(chainId, glvInfo!.glvTokenAddress)!.stargate,
-          providerData: numberToHex(CHAIN_ID_TO_ENDPOINT_ID[srcChainId!], { size: 32 }),
+          providerData: numberToHex(CHAIN_ID_TO_ENDPOINT_ID[srcChainId], { size: 32 }),
         },
       });
       const bytes = hexToBytes(actionHash as Hex);
@@ -478,7 +486,7 @@ const useDepositTransactions = ({
   ]);
 
   const onCreateGmDeposit = useCallback(
-    function onCreateGmDeposit() {
+    async function onCreateGmDeposit() {
       const metricData = getDepositMetricData();
 
       sendOrderSubmittedMetric(metricData.metricId);
@@ -542,7 +550,7 @@ const useDepositTransactions = ({
         throw new Error(`Invalid pay source: ${paySource}`);
       }
 
-      return promise
+      return await promise
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
         .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
@@ -573,18 +581,25 @@ const useDepositTransactions = ({
 
   // TODO MLTCH make it pretty
   const tokenAddress = longTokenAmount! > 0n ? longTokenAddress! : shortTokenAddress!;
+  const wrappedTokenAddress = longTokenAmount! > 0n ? initialLongTokenAddress! : initialShortTokenAddress!;
   const tokenAmount = longTokenAmount! > 0n ? longTokenAmount! : shortTokenAmount!;
 
   const tokenData = getTokenData(tokensData, tokenAddress);
 
   const selectFindSwapPath = useMemo(
-    () => makeSelectFindSwapPath(tokenAddress, executionFee?.feeToken.address),
-    [executionFee?.feeToken.address, tokenAddress]
+    () =>
+      makeSelectFindSwapPath(
+        wrappedTokenAddress,
+        executionFee?.feeToken.address
+          ? convertTokenAddress(chainId, executionFee.feeToken.address, "wrapped")
+          : undefined
+      ),
+    [chainId, executionFee?.feeToken.address, wrappedTokenAddress]
   );
   const findSwapPath = useSelector(selectFindSwapPath);
 
   const onCreateGlvDeposit = useCallback(
-    function onCreateGlvDeposit() {
+    async function onCreateGlvDeposit() {
       const metricData = getDepositMetricData();
 
       sendOrderSubmittedMetric(metricData.metricId);
@@ -633,18 +648,23 @@ const useDepositTransactions = ({
           tokenAmount,
           globalExpressParams: globalExpressParams!,
           relayFeePayload: {
-            feeToken: tokenAddress,
+            feeToken: wrappedTokenAddress,
             feeAmount,
             feeSwapPath,
           },
         });
       } else if (paySource === "gmxAccount") {
+        const expressTxnParams = await multichainDepositExpressTxnParams.promise;
+        if (!expressTxnParams) {
+          throw new Error("Express txn params are not set");
+        }
+
         promise = createMultichainGlvDepositTxn({
           chainId,
           srcChainId,
           signer,
           transferRequests,
-          asyncExpressTxnResult: multichainDepositExpressTxnParams,
+          expressTxnParams,
           params: glvParams!,
         });
       } else if (paySource === "settlementChain") {
@@ -669,7 +689,7 @@ const useDepositTransactions = ({
         throw new Error(`Invalid pay source: ${paySource}`);
       }
 
-      return promise
+      return await promise
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
         .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
@@ -689,7 +709,7 @@ const useDepositTransactions = ({
       marketInfo,
       marketToken,
       marketTokenAmount,
-      multichainDepositExpressTxnParams,
+      multichainDepositExpressTxnParams.promise,
       paySource,
       setPendingDeposit,
       setPendingTxns,
@@ -703,6 +723,7 @@ const useDepositTransactions = ({
       tokenData,
       tokensData,
       transferRequests,
+      wrappedTokenAddress,
     ]
   );
 

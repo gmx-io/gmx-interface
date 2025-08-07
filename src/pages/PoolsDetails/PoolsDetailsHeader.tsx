@@ -4,6 +4,8 @@ import { useMemo } from "react";
 import { ImSpinner2 } from "react-icons/im";
 
 import { USD_DECIMALS } from "config/factors";
+import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   getGlvMarketShortening,
   getGlvOrMarketAddress,
@@ -34,6 +36,7 @@ type Props = {
 
 export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
   const { chainId, srcChainId } = useChainId();
+  const account = useSelector(selectAccount);
   const isGlv = glvOrMarketInfo && isGlvInfo(glvOrMarketInfo);
   const iconName = glvOrMarketInfo?.isSpotOnly
     ? getNormalizedTokenSymbol(glvOrMarketInfo.longToken.symbol) +
@@ -53,6 +56,9 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
   const isMobile = usePoolsIsMobilePage();
 
   const { totalBalance, tokenBalancesData, isBalanceDataLoading } = useMultichainMarketTokenBalancesRequest(
+    chainId,
+    srcChainId,
+    account,
     marketToken?.address
   );
 

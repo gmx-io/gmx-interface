@@ -263,8 +263,9 @@ export function useGlvMarketsInfo(
 
           const tokenConfig = getTokenBySymbol(chainId, "GLV");
 
-          const walletBalance = data[glv.glvToken + "-tokenData"].balance?.returnValues[0] ?? 0n;
-          const gmxAccountBalance = data[glv.glvToken + "-gmxAccountData"].balance?.returnValues[0] ?? 0n;
+          const walletBalance: bigint | undefined = data[glv.glvToken + "-tokenData"].balance?.returnValues[0];
+          const gmxAccountBalance: bigint | undefined =
+            data[glv.glvToken + "-gmxAccountData"]?.balance?.returnValues[0];
           const balance = srcChainId !== undefined ? gmxAccountBalance : walletBalance;
 
           const contractSymbol = data[glv.glvToken + "-tokenData"].symbol.returnValues[0];
