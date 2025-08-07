@@ -27,7 +27,7 @@ export function HeroSection() {
   });
 
   return (
-    <section className="bg-fiord-700 overflow-hidden">
+    <section className="bg-fiord-700 overflow-hidden pt-60">
       <div className="mx-auto px-16 sm:max-w-[1360px] sm:px-80">
         <div className="relative h-[640px] py-60 sm:h-[860px] sm:py-80 ">
           <HeroBackground />
