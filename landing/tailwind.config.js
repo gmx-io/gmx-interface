@@ -19,6 +19,7 @@ const colors = {
     800: "#121421",
   },
   blue: {
+    100: "#A4C3F9",
     300: "#7885ff",
     400: "#4d5ffa",
     500: "#3d51ff",
@@ -94,6 +95,9 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
         display: "none",
       },
     },
+    ".animate-pause": {
+      "animation-play-state": "paused",
+    },
     ".sr-only": {
       position: "absolute",
       width: "1px",
@@ -106,6 +110,7 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
       border: "0",
     },
   });
+  addVariant('filled', '&:not(:placeholder-shown)')
 }
 
 /**
@@ -131,8 +136,8 @@ function fontComponentsPlugin({ addComponents }) {
     ".text-description": {
       "@apply text-16 font-normal leading-body-sm text-secondary tracking-body": {},
     },
-    ".btn-landing-bg": {
-      "@apply bg-blue-600 font-medium text-white": {},
+    ".btn-landing": {
+      "@apply bg-blue-600 font-medium text-white transition-colors duration-180": {},
       "&:hover": {
         "@media (hover: hover)": {
           background: "linear-gradient(0deg, rgba(9, 10, 21, 0.1) 0%, rgba(9, 10, 21, 0.1) 100%), var(--color-blue-600)",
@@ -184,12 +189,25 @@ module.exports = {
       ...defaultConfig.theme.letterSpacing,
       body: "0.028px",
     },
+    transitionDuration: {
+      ...defaultConfig.theme.transitionDuration,
+      "180": "180ms",
+    },
     colors: colors,
     screens: defaultConfig.theme.screens,
     extend: {
       fontFamily: {
         sans: ["TTHoves", "sans-serif"],
         mono: ["TTHovesMono", "monospace"],
+      },
+      keyframes: {
+        scroll: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+      },
+      animation: {
+        scroll: "scroll 60s linear infinite",
       },
     },
   },

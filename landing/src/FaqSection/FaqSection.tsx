@@ -4,13 +4,11 @@ import { FaqItem } from "./FaqItem";
 
 export function FaqSection() {
   return (
-    <section className="flex w-full bg-fiord-700 px-16 py-[120px] text-white sm:px-80">
-      <div className="mx-auto flex w-[1200px] flex-col gap-36 overflow-hidden sm:flex-row sm:gap-[120px]">
-        <div>
-          <h2 className="text-heading-2 mb-20">
-            <Trans>FAQ</Trans>
-          </h2>
-        </div>
+    <section className="bg-fiord-700 flex w-full px-16 py-[120px] text-white sm:px-80">
+      <div className="mx-auto flex w-[1200px] flex-col justify-between gap-36 overflow-hidden sm:flex-row sm:gap-[120px]">
+        <h2 className="text-heading-2">
+          <Trans>FAQ</Trans>
+        </h2>
         <div className="flex w-full flex-col gap-12 sm:w-[800px]">
           <FaqItem title="What makes GMX more efficient and reliable for trades compared with other perpetual platforms?">
             <Trans>

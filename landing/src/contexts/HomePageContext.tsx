@@ -49,7 +49,7 @@ export function HomePageContextProvider({ children }: { children: React.ReactNod
 
   const shouldShowRedirectModal = useCallback(() => {
     if (!redirectPopupTimestamp) {
-      return false;
+      return true;
     }
 
     const expiryTime = redirectPopupTimestamp + THIRTY_DAYS;

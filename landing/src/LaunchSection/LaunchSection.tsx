@@ -9,20 +9,20 @@ export function LaunchSection() {
     chainId: REDIRECT_CHAIN_IDS.Arbitum,
   });
   return (
-    <section className="flex w-full items-center justify-center px-16 py-80 text-fiord-700 sm:px-80 sm:py-[120px]">
+    <section className="text-fiord-700 flex w-full items-center justify-center px-16 py-80 sm:px-80 sm:py-[120px]">
       <div className="flex max-w-[1200px] flex-col items-stretch justify-center gap-24 sm:items-center lg:flex-row">
         <div className="flex flex-1 flex-col items-stretch sm:items-start">
           <h2 className="text-heading-2 mb-20 sm:mb-24">
             <Trans>Runs entirely on public chains</Trans>
           </h2>
-          <p className="leading-body-md mb-36 text-18 font-normal -tracking-[0.036px] sm:mb-24">
+          <p className="leading-body-md text-18 mb-36 font-normal -tracking-[0.036px] sm:mb-24">
             <Trans>
               Operates on open, permissionless networks to ensure transparency, decentralisation, and unrestricted
               access
             </Trans>
           </p>
           <button
-            className="btn-landing-bg mb-36 rounded-8 px-16 py-12 text-16 text-white sm:mb-0"
+            className="btn-landing mb-36 rounded-8 px-16 py-12 text-16 text-white sm:mb-0"
             onClick={goToTradeArbitrum}
           >
             <Trans>Open App</Trans>
