@@ -395,6 +395,10 @@ msgstr ""
 msgid "This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps from the included markets. Backed by {0} and {1}."
 msgstr ""
 
+#: landing/src/SocialSection/SocialSection.tsx
+msgid "Join"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max pool USD exceeded"
@@ -744,10 +748,6 @@ msgstr ""
 msgid "MARKET"
 msgstr "MARKT"
 
-#: landing/src/RoadmapSection/Quareters.tsx
-msgid "Multichain"
-msgstr ""
-
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What did you like the most about our service?"
 msgstr ""
@@ -762,6 +762,10 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
+msgstr ""
+
+#: landing/src/SocialSection/SocialSection.tsx
+msgid "Driven by <0/> our community"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -1092,6 +1096,7 @@ msgstr ""
 msgid "Deactivating..."
 msgstr ""
 
+#: landing/src/HeaderMenu/HeaderMenu.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Protocol"
 msgstr ""
@@ -1875,6 +1880,10 @@ msgstr ""
 msgid "To reduce fees, select a different asset to pay with."
 msgstr "Um die Gebühren zu senken, wähle ein anderes Zahlungsmittel."
 
+#: landing/src/HeaderMenu/HeaderMenu.tsx
+msgid "Driven by our community"
+msgstr ""
+
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Once the mark price hits the limit price, the order will attempt to execute, guaranteeing the acceptable price, which includes the set acceptable price impact. Note that if there is a negative price impact, the mark price may need to be lower than the limit price."
 msgstr ""
@@ -2220,10 +2229,6 @@ msgstr ""
 msgid "TOKEN"
 msgstr "TOKEN"
 
-#: landing/src/RoadmapSection/Quareters.tsx
-msgid "Cross-Collateral"
-msgstr ""
-
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Transfer NFT"
 msgstr "Transferiere NFT"
@@ -2319,7 +2324,7 @@ msgid "Trade with"
 msgstr ""
 
 #: landing/src/RoadmapSection/Quareters.tsx
-msgid "Just in Time Liquidity"
+msgid "<0>Multichain</0><1>Botanix Support</1><2>GMX Express</2>"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
@@ -4357,6 +4362,7 @@ msgstr "Beanspruchbar"
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "Außerdem handelt es sich bei Trigger-Order um Markt-Orders, bei denen nicht garantiert wird, dass sie zum Trigger-Kurs abgerechnet werden."
 
+#: landing/src/HeaderMenu/HeaderMenu.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"
@@ -4375,6 +4381,10 @@ msgstr "Erstellen der Order..."
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Deposit disabled, pending {0} upgrade"
+msgstr ""
+
+#: landing/src/RoadmapSection/Quareters.tsx
+msgid "<0>Solana Support</0>"
 msgstr ""
 
 #: src/pages/Jobs/Jobs.jsx
@@ -4572,6 +4582,10 @@ msgstr ""
 msgid "Failed to generate session"
 msgstr ""
 
+#: landing/src/RoadmapSection/Quareters.tsx
+msgid "<0>Real World Assets</0><1>Staking and trading tiers</1><2>Net Open Interest</2>"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "This competition has ended."
 msgstr ""
@@ -4693,6 +4707,7 @@ msgstr ""
 msgid "POOL"
 msgstr "POOL"
 
+#: landing/src/HeaderMenu/HeaderMenu.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Voting"
 msgstr ""
@@ -5024,10 +5039,6 @@ msgstr ""
 msgid "Yield Farming"
 msgstr ""
 
-#: landing/src/RoadmapSection/Quareters.tsx
-msgid "GMX Express"
-msgstr ""
-
 #: src/lib/contracts/callContract.tsx
 msgid "Transaction completed!"
 msgstr "Transaktion abgeschlossen!"
@@ -5141,10 +5152,6 @@ msgstr "Swap Order übermittelt!"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
 msgstr "Lädt..."
-
-#: landing/src/RoadmapSection/Quareters.tsx
-msgid "Solana Support"
-msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Include PnL In Leverage Display"
@@ -5623,6 +5630,7 @@ msgstr ""
 msgid "Swap {0} {1} for{2} USDG"
 msgstr ""
 
+#: landing/src/HeaderMenu/HeaderMenu.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
 msgstr "Governance"
@@ -5708,10 +5716,6 @@ msgstr "Aktuell {0} long"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
-msgstr ""
-
-#: landing/src/RoadmapSection/Quareters.tsx
-msgid "Cross-Margin"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
@@ -6289,10 +6293,6 @@ msgstr "Limit-Order übermittelt!"
 msgid "Last 7d"
 msgstr ""
 
-#: landing/src/RoadmapSection/Quareters.tsx
-msgid "Botanix Support"
-msgstr ""
-
 #: src/components/Synthetics/StatusNotification/StakeNotification.tsx
 msgid "Swap {fromAmount} for {toAmount}"
 msgstr ""
@@ -6362,6 +6362,10 @@ msgstr "Der Ausführungspreis der Order berücksichtigt den Preisimpact."
 
 #: src/pages/Buy/Buy.tsx
 msgid "Buy GLP or GMX"
+msgstr ""
+
+#: landing/src/RoadmapSection/Quareters.tsx
+msgid "<0>Cross-Collateral</0><1>Cross-Margin</1><2>Market Groups</2><3>Just in Time Liquidity</3>"
 msgstr ""
 
 #: src/components/Exchange/ChartTokenSelector.tsx
@@ -6607,10 +6611,6 @@ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
-msgstr ""
-
-#: landing/src/RoadmapSection/Quareters.tsx
-msgid "Net Open Interest"
 msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
@@ -7432,10 +7432,6 @@ msgstr ""
 msgid "Position"
 msgstr "Position"
 
-#: landing/src/RoadmapSection/Quareters.tsx
-msgid "Real World Assets"
-msgstr ""
-
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Bonus Rebate"
 msgstr ""
@@ -7593,10 +7589,6 @@ msgstr "{0} Pool-Kapazität erreicht"
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Staked"
 msgstr "Staked"
-
-#: landing/src/RoadmapSection/Quareters.tsx
-msgid "Staking and trading tiers"
-msgstr ""
 
 #: src/components/Footer/Footer.tsx
 msgid "Leave feedback"
@@ -8332,6 +8324,8 @@ msgstr ""
 msgid "Please <0>read here</0> for more information."
 msgstr ""
 
+#: landing/src/HeaderMenu/HeaderMenu.tsx
+#: landing/src/HeaderMenu/HeaderMenu.tsx
 #: landing/src/LaunchSection/LaunchSection.tsx
 msgid "Open App"
 msgstr ""
@@ -8423,10 +8417,6 @@ msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing longs for<0/>this size. Max long size: {0}<1/><2/>Execution prices for decreasing shorts."
-msgstr ""
-
-#: landing/src/RoadmapSection/Quareters.tsx
-msgid "Market Groups"
 msgstr ""
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
