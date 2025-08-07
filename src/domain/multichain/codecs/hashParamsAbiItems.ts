@@ -85,3 +85,31 @@ export const CREATE_DEPOSIT_PARAMS_TYPE = {
     { type: "bytes32[]", name: "dataList" },
   ],
 };
+
+export const CREATE_GLV_DEPOSIT_PARAMS_TYPE = {
+  type: "tuple",
+  name: "",
+  components: [
+    {
+      type: "tuple",
+      name: "addresses",
+      components: [
+        { type: "address", name: "glv" },
+        { type: "address", name: "market" },
+        { type: "address", name: "receiver" },
+        { type: "address", name: "callbackContract" },
+        { type: "address", name: "uiFeeReceiver" },
+        { type: "address", name: "initialLongToken" },
+        { type: "address", name: "initialShortToken" },
+        { type: "address[]", name: "longTokenSwapPath" },
+        { type: "address[]", name: "shortTokenSwapPath" },
+      ],
+    },
+    { type: "uint256", name: "minGlvTokens" },
+    { type: "uint256", name: "executionFee" },
+    { type: "uint256", name: "callbackGasLimit" },
+    { type: "bool", name: "shouldUnwrapNativeToken" },
+    { type: "bool", name: "isMarketTokenDeposit" },
+    { type: "bytes32[]", name: "dataList" },
+  ],
+};

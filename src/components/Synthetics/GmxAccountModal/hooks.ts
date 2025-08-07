@@ -236,7 +236,7 @@ export function useMultichainMarketTokenBalancesRequest(tokenAddress: string | u
     subscribeMultichainTokenBalances
   );
 
-  const tokenBalancesData: Partial<Record<AnyChainId | 0, bigint>> = useMemo(() => {
+  const tokenBalancesData: Partial<Record<AnyChainId | 0, bigint | undefined>> = useMemo(() => {
     if (!marketTokensData || !tokenAddress) {
       return EMPTY_OBJECT;
     }
@@ -275,6 +275,9 @@ export function useMultichainMarketTokenBalancesRequest(tokenAddress: string | u
     }
     let totalBalance = 0n;
     for (const balance of Object.values(tokenBalancesData)) {
+      if (balance === undefined) {
+        continue;
+      }
       totalBalance += balance;
     }
     return totalBalance;

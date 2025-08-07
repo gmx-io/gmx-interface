@@ -7091,6 +7091,7 @@ msgid "Insufficient {0} balance"
 msgstr "Unzureichende {0} Balance"
 
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
+#: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Sent deposit transaction"
 msgstr ""
 

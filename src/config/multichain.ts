@@ -173,6 +173,7 @@ if (isDevelopment()) {
     },
   };
 
+  // TODO MLTCH wrap it in a factory
   TOKEN_GROUPS["<GM-ETH-WETH-UDSC.SG>"] = {
     [ARBITRUM_SEPOLIA]: {
       address: "0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc",
@@ -188,6 +189,25 @@ if (isDevelopment()) {
       chainId: SOURCE_SEPOLIA,
       stargate: "0xe4EBcAC4a2e6CBEE385eE407f7D5E278Bc07e11e",
       symbol: "<GM-ETH-WETH-UDSC.SG>",
+      isPlatformToken: true,
+    },
+  };
+
+  TOKEN_GROUPS["<GLV-HIGH_CAPS-WETH-UDSC.SG>"] = {
+    [ARBITRUM_SEPOLIA]: {
+      address: "0xAb3567e55c205c62B141967145F37b7695a9F854",
+      decimals: 18,
+      chainId: ARBITRUM_SEPOLIA,
+      stargate: "0xD5BdEa6dC8E4B7429b72675386fC903DEf06599d",
+      symbol: "<GLV-HIGH_CAPS-WETH-UDSC.SG>",
+      isPlatformToken: true,
+    },
+    [SOURCE_SEPOLIA]: {
+      address: "0xD5BdEa6dC8E4B7429b72675386fC903DEf06599d",
+      decimals: 18,
+      chainId: SOURCE_SEPOLIA,
+      stargate: "0xD5BdEa6dC8E4B7429b72675386fC903DEf06599d",
+      symbol: "<GLV-HIGH_CAPS-WETH-UDSC.SG>",
       isPlatformToken: true,
     },
   };

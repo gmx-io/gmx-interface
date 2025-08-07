@@ -286,7 +286,7 @@ export const DepositView = () => {
 
     return getMultichainTransferSendParams({
       account,
-      inputAmount,
+      amount: inputAmount,
       srcChainId: depositViewChain,
       composeGas,
       dstChainId: settlementChainId,

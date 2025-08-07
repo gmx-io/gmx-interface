@@ -4,20 +4,19 @@ import { getContract } from "config/contracts";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions";
 import { AsyncResult } from "lib/useThrottledAsync";
 import type { WalletSigner } from "lib/wallets";
-import { signTypedData } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
-import type { IDepositUtils } from "typechain-types/ExchangeRouter";
 import type { IRelayUtils, MultichainGmRouter } from "typechain-types/MultichainGmRouter";
 
 import { CreateDepositParamsStruct } from ".";
-import { ExpressTxnParams, RelayParamsPayload, getGelatoRelayRouterDomain, hashRelayParams } from "../express";
+import { ExpressTxnParams, RelayParamsPayload } from "../express";
+import { signCreateDeposit } from "./signCreateDeposit";
 
 export type CreateMultichainDepositParams = {
   chainId: ContractsChainId;
-  srcChainId: SourceChainId;
+  srcChainId: SourceChainId | undefined;
   signer: WalletSigner;
   relayParams: RelayParamsPayload;
   emptySignature?: boolean;
@@ -45,7 +44,7 @@ export async function buildAndSignMultichainDepositTxn({
   if (emptySignature) {
     signature = "0x";
   } else {
-    signature = await signMultichainDepositPayload({
+    signature = await signCreateDeposit({
       chainId,
       srcChainId,
       signer,
@@ -64,7 +63,7 @@ export async function buildAndSignMultichainDepositTxn({
         signature,
       },
       account,
-      srcChainId,
+      srcChainId ?? chainId,
       transferRequests,
       params,
     ] satisfies Parameters<MultichainGmRouter["createDeposit"]>,
@@ -78,62 +77,6 @@ export async function buildAndSignMultichainDepositTxn({
   };
 }
 
-function signMultichainDepositPayload({
-  chainId,
-  srcChainId,
-  signer,
-  relayParams,
-  transferRequests,
-  params,
-}: {
-  chainId: ContractsChainId;
-  srcChainId: SourceChainId;
-  signer: WalletSigner;
-  relayParams: RelayParamsPayload;
-  transferRequests: IRelayUtils.TransferRequestsStruct;
-  params: IDepositUtils.CreateDepositParamsStruct;
-}) {
-  const types = {
-    CreateDeposit: [
-      { name: "transferTokens", type: "address[]" },
-      { name: "transferReceivers", type: "address[]" },
-      { name: "transferAmounts", type: "uint256[]" },
-      { name: "addresses", type: "CreateDepositAddresses" },
-      { name: "minMarketTokens", type: "uint256" },
-      { name: "shouldUnwrapNativeToken", type: "bool" },
-      { name: "executionFee", type: "uint256" },
-      { name: "callbackGasLimit", type: "uint256" },
-      { name: "dataList", type: "bytes32[]" },
-      { name: "relayParams", type: "bytes32" },
-    ],
-    CreateDepositAddresses: [
-      { name: "receiver", type: "address" },
-      { name: "callbackContract", type: "address" },
-      { name: "uiFeeReceiver", type: "address" },
-      { name: "market", type: "address" },
-      { name: "initialLongToken", type: "address" },
-      { name: "initialShortToken", type: "address" },
-      { name: "longTokenSwapPath", type: "address[]" },
-      { name: "shortTokenSwapPath", type: "address[]" },
-    ],
-  };
-
-  const domain = getGelatoRelayRouterDomain(srcChainId, getContract(chainId, "MultichainGmRouter"));
-  const typedData = {
-    transferTokens: transferRequests.tokens,
-    transferReceivers: transferRequests.receivers,
-    transferAmounts: transferRequests.amounts,
-    addresses: params.addresses,
-    minMarketTokens: params.minMarketTokens,
-    shouldUnwrapNativeToken: params.shouldUnwrapNativeToken,
-    executionFee: params.executionFee,
-    callbackGasLimit: params.callbackGasLimit,
-    dataList: params.dataList,
-    relayParams: hashRelayParams(relayParams),
-  };
-
-  return signTypedData({ signer, domain, types, typedData });
-}
 export function createMultichainDepositTxn({
   chainId,
   srcChainId,
@@ -143,7 +86,7 @@ export function createMultichainDepositTxn({
   params,
 }: {
   chainId: ContractsChainId;
-  srcChainId: SourceChainId;
+  srcChainId: SourceChainId | undefined;
   signer: WalletSigner;
   transferRequests: IRelayUtils.TransferRequestsStruct;
   asyncExpressTxnResult: AsyncResult<ExpressTxnParams | undefined>;

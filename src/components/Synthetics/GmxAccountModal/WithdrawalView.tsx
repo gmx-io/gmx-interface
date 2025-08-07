@@ -201,7 +201,7 @@ export const WithdrawalView = () => {
     return getMultichainTransferSendParams({
       dstChainId: withdrawalViewChain,
       account,
-      inputAmount,
+      amount: inputAmount,
       isDeposit: false,
     });
   }, [account, inputAmount, withdrawalViewChain]);
@@ -260,7 +260,7 @@ export const WithdrawalView = () => {
     return getMultichainTransferSendParams({
       dstChainId: withdrawalViewChain,
       account,
-      inputAmount: fakeInputAmount,
+      amount: fakeInputAmount,
       isDeposit: false,
       srcChainId: chainId,
     });

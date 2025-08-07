@@ -22,7 +22,6 @@ import {
   RelayParamsPayload,
   RelayParamsPayloadWithSignature,
 } from "domain/synthetics/express";
-import type { CreateDepositParamsStruct } from "domain/synthetics/markets/types";
 import {
   getSubaccountValidations,
   hashSubaccountApproval,
@@ -58,7 +57,6 @@ import {
 import { nowInSeconds } from "sdk/utils/time";
 import { setUiFeeReceiverIsExpress } from "sdk/utils/twap/uiFeeReceiver";
 import { GelatoRelayRouter, MultichainSubaccountRouter, SubaccountGelatoRelayRouter } from "typechain-types";
-import type { IRelayUtils } from "typechain-types/MultichainGmRouter";
 import { MultichainOrderRouter } from "typechain-types/MultichainOrderRouter";
 
 import { approximateL1GasBuffer, estimateBatchGasLimit, estimateRelayerGasLimit, GasLimitsConfig } from "../fees";
@@ -978,63 +976,6 @@ export async function signSetTraderReferralCode({
   const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainOrderRouter"));
   const typedData = {
     referralCode: referralCode,
-    relayParams: hashRelayParams(relayParams),
-  };
-
-  return signTypedData({ signer, domain, types, typedData });
-}
-
-export async function signCreateDeposit({
-  signer,
-  chainId,
-  srcChainId,
-  relayParams,
-  transferRequests,
-  params,
-}: {
-  signer: WalletSigner | Wallet;
-  relayParams: RelayParamsPayload;
-  transferRequests: IRelayUtils.TransferRequestsStruct;
-  params: CreateDepositParamsStruct;
-  chainId: ContractsChainId;
-  srcChainId: SourceChainId | undefined;
-}) {
-  const types = {
-    CreateDeposit: [
-      { name: "transferTokens", type: "address[]" },
-      { name: "transferReceivers", type: "address[]" },
-      { name: "transferAmounts", type: "uint256[]" },
-      { name: "addresses", type: "CreateDepositAddresses" },
-      { name: "minMarketTokens", type: "uint256" },
-      { name: "shouldUnwrapNativeToken", type: "bool" },
-      { name: "executionFee", type: "uint256" },
-      { name: "callbackGasLimit", type: "uint256" },
-      { name: "dataList", type: "bytes32[]" },
-      { name: "relayParams", type: "bytes32" },
-    ],
-    CreateDepositAddresses: [
-      { name: "receiver", type: "address" },
-      { name: "callbackContract", type: "address" },
-      { name: "uiFeeReceiver", type: "address" },
-      { name: "market", type: "address" },
-      { name: "initialLongToken", type: "address" },
-      { name: "initialShortToken", type: "address" },
-      { name: "longTokenSwapPath", type: "address[]" },
-      { name: "shortTokenSwapPath", type: "address[]" },
-    ],
-  };
-
-  const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainGmRouter"));
-  const typedData = {
-    transferTokens: transferRequests.tokens,
-    transferReceivers: transferRequests.receivers,
-    transferAmounts: transferRequests.amounts,
-    addresses: params.addresses,
-    minMarketTokens: params.minMarketTokens,
-    shouldUnwrapNativeToken: params.shouldUnwrapNativeToken,
-    executionFee: params.executionFee,
-    callbackGasLimit: params.callbackGasLimit,
-    dataList: params.dataList,
     relayParams: hashRelayParams(relayParams),
   };
 

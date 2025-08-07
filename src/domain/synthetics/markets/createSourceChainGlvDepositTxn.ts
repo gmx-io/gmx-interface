@@ -3,7 +3,7 @@ import { getPublicClient } from "@wagmi/core";
 import { Contract } from "ethers";
 import { encodeFunctionData, zeroAddress } from "viem";
 
-import { SettlementChainId, SourceChainId } from "config/chains";
+import type { SettlementChainId, SourceChainId } from "config/chains";
 import { getMappedTokenId, IStargateAbi } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
@@ -11,25 +11,25 @@ import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/us
 import {
   getRawRelayerParams,
   GlobalExpressParams,
-  RawRelayParamsPayload,
+  RelayFeePayload,
   RelayParamsPayload,
 } from "domain/synthetics/express";
-import { CreateDepositParamsStruct } from "domain/synthetics/markets";
+import type { CreateGlvDepositParamsStruct } from "domain/synthetics/markets";
 import { sendWalletTransaction } from "lib/transactions";
-import { WalletSigner } from "lib/wallets";
+import type { WalletSigner } from "lib/wallets";
 import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
-import { IRelayUtils } from "typechain-types/MultichainGmRouter";
-import { IStargate } from "typechain-types-stargate";
-import { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
+import type { IRelayUtils } from "typechain-types/MultichainGmRouter";
+import type { IStargate } from "typechain-types-stargate";
+import type { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
 
 import { toastCustomOrStargateError } from "components/Synthetics/GmxAccountModal/toastCustomOrStargateError";
 
-import { signCreateDeposit } from "./signCreateDeposit";
+import { signCreateGlvDeposit } from "./signCreateGlvDeposit";
 
-export async function createSourceChainDepositTxn({
+export async function createSourceChainGlvDepositTxn({
   chainId,
   globalExpressParams,
   srcChainId,
@@ -40,41 +40,35 @@ export async function createSourceChainDepositTxn({
   tokenAddress,
   tokenAmount,
   // executionFee,
+  relayFeePayload,
 }: {
   chainId: SettlementChainId;
   globalExpressParams: GlobalExpressParams;
   srcChainId: SourceChainId;
   signer: WalletSigner;
   transferRequests: IRelayUtils.TransferRequestsStruct;
-  params: CreateDepositParamsStruct;
+  params: CreateGlvDepositParamsStruct;
   account: string;
   tokenAddress: string;
   tokenAmount: bigint;
-  executionFee: bigint;
+  relayFeePayload: RelayFeePayload;
 }) {
   const rawRelayParamsPayload = getRawRelayerParams({
     chainId: chainId,
     gasPaymentTokenAddress: globalExpressParams!.gasPaymentTokenAddress,
     relayerFeeTokenAddress: globalExpressParams!.relayerFeeTokenAddress,
-    feeParams: {
-      // feeToken: globalExpressParams!.relayerFeeTokenAddress,
-      feeToken: tokenAddress,
-      // TODO MLTCH this is going through the keeper to execute a depost
-      // so there 100% should be a fee
-      feeAmount: 2n * 10n ** 6n,
-      feeSwapPath: ["0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc"],
-    },
+    feeParams: relayFeePayload,
     externalCalls: getEmptyExternalCallsPayload(),
     tokenPermits: [],
     marketsInfoData: globalExpressParams!.marketsInfoData,
-  }) as RawRelayParamsPayload;
+  });
 
   const relayParams: RelayParamsPayload = {
     ...rawRelayParamsPayload,
     deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
   };
 
-  const signature = await signCreateDeposit({
+  const signature = await signCreateGlvDeposit({
     chainId,
     srcChainId,
     signer,
@@ -84,7 +78,7 @@ export async function createSourceChainDepositTxn({
   });
 
   const action: MultichainAction = {
-    actionType: MultichainActionType.Deposit,
+    actionType: MultichainActionType.GlvDeposit,
     actionData: {
       relayParams: relayParams,
       transferRequests,
@@ -106,7 +100,7 @@ export async function createSourceChainDepositTxn({
     dstChainId: chainId,
     account,
     srcChainId,
-    amount: tokenAmount,
+    amount: tokenAmount + relayFeePayload.feeAmount,
     composeGas: composeGas,
     isDeposit: true,
     action,

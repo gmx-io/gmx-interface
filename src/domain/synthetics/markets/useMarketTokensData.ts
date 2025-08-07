@@ -15,7 +15,7 @@ import {
   useTokensBalancesUpdates,
   useUpdatedTokensBalances,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
-import { TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
+import { getBalanceTypeFromSrcChainId, TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { ContractCallsConfig, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -182,6 +182,7 @@ export function useMarketTokensDataRequest(
           totalSupply: BigInt(tokenData?.totalSupply.returnValues[0]),
           walletBalance,
           gmxAccountBalance,
+          balanceType: getBalanceTypeFromSrcChainId(srcChainId),
           balance,
           explorerUrl: `${getExplorerUrl(chainId)}/token/${marketAddress}`,
         };

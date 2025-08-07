@@ -16,7 +16,7 @@ export function getMultichainTransferSendParams({
   dstChainId,
   account,
   srcChainId,
-  inputAmount,
+  amount,
   composeGas,
   isDeposit,
   action,
@@ -24,7 +24,7 @@ export function getMultichainTransferSendParams({
   dstChainId: AnyChainId;
   account: string;
   srcChainId?: AnyChainId;
-  inputAmount: bigint;
+  amount: bigint;
   composeGas?: bigint;
   isDeposit: boolean;
   action?: MultichainAction;
@@ -73,7 +73,7 @@ export function getMultichainTransferSendParams({
   const sendParams: SendParamStruct = {
     dstEid,
     to,
-    amountLD: inputAmount,
+    amountLD: amount,
     minAmountLD: 0n,
     extraOptions,
     composeMsg,
