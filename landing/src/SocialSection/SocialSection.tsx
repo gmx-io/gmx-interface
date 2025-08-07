@@ -66,16 +66,24 @@ export function SocialSection() {
               ))}
             </div>
 
-            <div className="flex w-full flex-row items-stretch gap-8 py-28 sm:w-auto">
+            <form
+              action="https://gmxio.substack.com/subscribe"
+              className="flex w-full flex-row items-stretch gap-8 py-28 sm:w-auto"
+              method="GET"
+            >
               <input
                 type="text"
+                name="email"
                 className="bg-fiord-600 min-w-0 rounded-8 px-16 py-10 text-16 font-medium -tracking-[0.512px] placeholder:text-slate-100"
                 placeholder="Enter your email"
               />
-              <button className="btn-landing rounded-8 px-16 py-10 text-16 font-medium -tracking-[0.512px] text-white">
+              <button
+                type="submit"
+                className="btn-landing rounded-8 px-16 py-10 text-16 font-medium -tracking-[0.512px] text-white"
+              >
                 <Trans>Subscribe</Trans>
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </div>
