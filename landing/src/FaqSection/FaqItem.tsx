@@ -17,15 +17,18 @@ export function FaqItem({ title, children }: Props) {
 
   return (
     <div className="border-fiord-500 flex flex-col border-b-[0.5px] py-28">
-      <div className="duration-180 mb-12 flex cursor-pointer items-center justify-between gap-[44px] transition-colors hover:text-blue-600">
-        <h3 className="text-heading-4" onClick={handleClick}>
-          {title}
-        </h3>
-        <span className="text-heading-4">
+      <div
+        onClick={handleClick}
+        className="duration-180 mb-12 flex cursor-pointer items-center justify-between gap-[44px] transition-colors hover:text-blue-600"
+      >
+        <h3 className="text-heading-4">{title}</h3>
+        <div className="flex size-24">
           <IcCross
-            className={cx("duration-180 size-24 origin-center transition-transform", { "rotate-45": !isOpen })}
+            className={cx("duration-180 margin-auto size-12 origin-center transition-transform", {
+              "rotate-45": !isOpen,
+            })}
           />
-        </span>
+        </div>
       </div>
       <div
         className={cx(
