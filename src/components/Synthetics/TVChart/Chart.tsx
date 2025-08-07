@@ -98,13 +98,5 @@ function DepthChartContainer() {
 }
 
 const ChartTabs = ({ tab, setTab }: { tab: string | undefined; setTab: (tab: string) => void }) => {
-  return (
-    <Tabs
-      options={TABS_OPTIONS}
-      selectedValue={tab}
-      onChange={setTab}
-      regularOptionClassname="grow-0 -mb-[0.5px]"
-      className="border-b border-slate-600"
-    />
-  );
+  return <Tabs options={TABS_OPTIONS} selectedValue={tab} onChange={setTab} />;
 };

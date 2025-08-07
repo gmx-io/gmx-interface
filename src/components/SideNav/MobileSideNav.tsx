@@ -24,8 +24,8 @@ export function MobileSideNav() {
       {isOpen ? (
         <Portal>
           <div className="fixed inset-0 z-[99] bg-[#090A1480]" onClick={handleToggle} />
-          <div className="fixed right-0 top-0 z-[100] flex h-full w-[36rem] flex-col border-l border-slate-600 bg-slate-900 max-lg:pb-40">
-            <div className="grow border-b border-slate-600 p-8">
+          <div className="fixed right-0 top-0 z-[100] flex h-full w-[36rem] flex-col border-l-[0.5px] border-slate-600 bg-slate-900 max-lg:pb-40">
+            <div className="grow border-b-[0.5px] border-slate-600 p-8">
               <div className="flex items-center justify-between">
                 <LogoSection isCollapsed={false} />
 
@@ -35,7 +35,7 @@ export function MobileSideNav() {
               </div>
               <MenuSection isCollapsed={false} />
             </div>
-            <div className="border-b border-slate-600 p-8">
+            <div className="border-b-[0.5px] border-slate-600 p-8">
               <ul className="flex list-none flex-col gap-8 px-0">
                 <LanguageNavItem isCollapsed={false} NavItem={NavItem} />
                 <DocsNavItem isCollapsed={false} />

@@ -137,7 +137,7 @@ export function TestPermits() {
               return (
                 <div
                   key={token.address}
-                  className="flex cursor-pointer items-center space-x-6 border-b border-slate-700 p-2 pb-4"
+                  className="flex cursor-pointer items-center space-x-6 border-b-[0.5px] border-slate-600 p-2 pb-4"
                 >
                   <TokenIcon symbol={token.symbol} displaySize={32} importSize={40} />
                   <div className="flex min-w-0 flex-1 flex-col">

@@ -45,8 +45,8 @@ export default function RegularTab<V extends string | number>({
   return (
     <button
       className={cx(
-        `flex items-center justify-center gap-8 border-b-2 border-b-[transparent] px-20 py-10 font-medium
-        text-slate-100 first:rounded-tl-8 last:rounded-tr-8 hover:text-white`,
+        `-mb-[0.5px] flex items-center justify-center gap-8 border-b-2 border-b-[transparent] px-20 py-10
+        font-medium text-slate-100 first:rounded-tl-8 last:rounded-tr-8 hover:text-white`,
         optionClassName,
         regularOptionClassname,
         {

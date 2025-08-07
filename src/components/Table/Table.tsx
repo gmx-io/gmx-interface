@@ -39,7 +39,7 @@ export function TableTheadTr({
     <tr
       {...props}
       className={cx(props.className, {
-        "border-b border-slate-700": bordered,
+        "border-b-[0.5px] border-slate-600": bordered,
       })}
     />
   );
@@ -54,7 +54,7 @@ export const TableTr = forwardRef<
       {...props}
       ref={ref}
       className={cx("odd:bg-fill-surfaceElevated50", className, {
-        "border-b border-slate-700 last-of-type:border-b-0": bordered,
+        "border-b-[0.5px] border-slate-600 last-of-type:border-b-0": bordered,
         TableTr_hoverable: hoverable,
         "cursor-pointer": !!props.onClick,
       })}

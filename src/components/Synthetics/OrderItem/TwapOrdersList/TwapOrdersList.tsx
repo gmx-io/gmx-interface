@@ -81,7 +81,7 @@ function TwapOrderItem({
     const toTokenIcon = <TokenIcon symbol={order.targetCollateralToken.symbol} displaySize={18} importSize={24} />;
 
     return (
-      <tr key={order.key} className="gap-x-8 border-b border-gray-700 last:border-b-0">
+      <tr key={order.key} className="gap-x-8 border-b-[0.5px] border-slate-600 last:border-b-0">
         <td className="py-8 pr-8 text-slate-100">{formatDateTime(Number(order.validFromTime))}</td>
         <td className="py-8 pr-8">
           <div className={cx("inline-flex flex-wrap gap-y-8 whitespace-pre-wrap")}>
@@ -102,7 +102,7 @@ function TwapOrderItem({
   }
 
   return (
-    <tr key={order.key} className="gap-x-8 border-b border-gray-700 last:border-b-0">
+    <tr key={order.key} className="gap-x-8 border-b-[0.5px] border-slate-600 last:border-b-0">
       <td className="py-8 pr-8 text-slate-100">{formatDateTime(Number(order.validFromTime))}</td>
       <td className="py-8 pr-8">{sizeText}</td>
       <td className="py-8 text-right">
