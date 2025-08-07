@@ -10,7 +10,7 @@ import { ARBITRUM, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { selectGmMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { INCENTIVE_TOOLTIP_MAP, INCENTIVE_TYPE_MAP } from "domain/synthetics/common/incentivesAirdropMessages";
-import { GLP_DISTRIBUTION_ID } from "domain/synthetics/common/useUserClaimableAmounts";
+import { GLP_DISTRIBUTION_ID, GLP_DISTRIBUTION_TEST_ID } from "domain/synthetics/common/useUserClaimableAmounts";
 import useUserIncentiveData from "domain/synthetics/common/useUserIncentiveData";
 import { MarketsData, useMarketTokensData } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
@@ -77,7 +77,7 @@ function getNormalizedIncentive(
     ...incentive,
     tokenIncentiveDetails,
     totalUsd,
-    typeId: Number(incentive.typeId),
+    typeId: BigInt(incentive.typeId),
   };
 }
 
@@ -179,15 +179,19 @@ export default function UserIncentiveDistributionList() {
   );
 }
 
-function getTypeStr(_: ReturnType<typeof useLingui>["_"], typeId: number) {
-  const isGlpIncident = typeId === Number(GLP_DISTRIBUTION_ID);
+function getTypeStr(_: ReturnType<typeof useLingui>["_"], typeId: bigint) {
+  const isTestGlpIncident = typeId === GLP_DISTRIBUTION_TEST_ID;
 
-  if (isGlpIncident) {
+  if (isTestGlpIncident) {
+    return t`GLP Distribution (test)`;
+  }
+
+  if (typeId === GLP_DISTRIBUTION_ID) {
     return t`GLP Distribution`;
   }
 
   const isCompetition = typeId >= 2000 && typeId < 3000;
-  return isCompetition ? t`COMPETITION Airdrop` : _(INCENTIVE_TYPE_MAP[typeId] ?? t`Airdrop`);
+  return isCompetition ? t`COMPETITION Airdrop` : _(INCENTIVE_TYPE_MAP[String(typeId)] ?? t`Airdrop`);
 }
 
 function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
@@ -196,7 +200,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const explorerURL = getExplorerUrl(chainId);
   const { _ } = useLingui();
   const typeStr = getTypeStr(_, typeId);
-  const tooltipData = INCENTIVE_TOOLTIP_MAP[typeId];
+  const tooltipData = INCENTIVE_TOOLTIP_MAP[String(typeId)];
 
   const renderTotalTooltipContent = useCallback(() => {
     return tokenIncentiveDetails.map((tokenInfo) => (

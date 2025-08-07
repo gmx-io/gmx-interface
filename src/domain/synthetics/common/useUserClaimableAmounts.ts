@@ -13,7 +13,8 @@ import { convertToUsd } from "sdk/utils/tokens";
 import { getMarketPoolName } from "../../../../sdk/src/utils/markets";
 import { useMarketTokensData } from "../markets";
 
-export const GLP_DISTRIBUTION_ID = 4672592n;
+export const GLP_DISTRIBUTION_TEST_ID = 4672592n;
+export const GLP_DISTRIBUTION_ID = 11802763389053472339483616176459046875189472617101418668457790595837638713068n;
 
 type ClaimableAmountsRequestConfig = MulticallRequestConfig<{
   [token: `0x${string}`]: {
