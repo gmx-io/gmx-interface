@@ -285,7 +285,7 @@ function MarketsList() {
 
       {!isMobile && (
         <>
-          <div className="flex flex-col justify-between gap-16 border-b-[0.5px] border-slate-600 p-12">
+          <div className="flex flex-col justify-between gap-16 border-b-stroke border-slate-600 p-12">
             <SearchInput
               className="w-full"
               value={searchKeyword}

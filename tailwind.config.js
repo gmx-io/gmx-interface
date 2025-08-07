@@ -254,6 +254,9 @@ module.exports = {
       fontFamily: {
         'tthoves': ['TTHoves', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
       },
+      borderWidth: {
+        'stroke': '0.5px',
+      },
     },
   },
   plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin],

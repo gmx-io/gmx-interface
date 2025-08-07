@@ -143,7 +143,7 @@ export function ExpandableRow({
         <button
           className={cx(
             `inline-flex w-fit cursor-pointer items-center gap-4 rounded-full
-            border-[0.5px] border-slate-600 px-12 py-8 align-middle text-[13px]
+            border-stroke border-slate-600 px-12 py-8 align-middle text-[13px]
             font-medium hover:bg-slate-800`,
             {
               "cursor-not-allowed": disabled,

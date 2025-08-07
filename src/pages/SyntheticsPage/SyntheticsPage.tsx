@@ -424,7 +424,7 @@ export function SyntheticsPage(p: Props) {
             </div>
 
             {isMobile && [ListSection.Trades, ListSection.Claims].includes(listSection as ListSection) ? (
-              <div className="border-b-[0.5px] border-slate-600 bg-slate-900 py-4">{actions}</div>
+              <div className="border-b-stroke border-slate-600 bg-slate-900 py-4">{actions}</div>
             ) : null}
 
             {listSection === ListSection.Positions && (

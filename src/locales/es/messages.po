@@ -865,8 +865,8 @@ msgid "Acceptable Swap Impact"
 msgstr "Impacto de Intercambio Aceptable"
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
-msgid "Leave your Telegram if you’re okay with being contacted for a quick follow-up"
-msgstr "Deja tu Telegram si estás de acuerdo con ser contactado para un seguimiento rápido"
+#~ msgid "Leave your Telegram if you’re okay with being contacted for a quick follow-up"
+#~ msgstr "Deja tu Telegram si estás de acuerdo con ser contactado para un seguimiento rápido"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -3041,6 +3041,7 @@ msgid "Buy {swapTokenSymbol} on 1inch"
 msgstr "Comprar {swapTokenSymbol} en 1inch"
 
 #: src/components/NpsModal/NpsModal.tsx
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Leave your Telegram if you’re okay with being contacted for a quick follow-up."
 msgstr ""
 
