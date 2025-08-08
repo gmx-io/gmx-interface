@@ -150,7 +150,6 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
 
   addUtilities({
     ".numbers": {
-      letterSpacing: "0.06em",
     },
   });
 }
