@@ -6,7 +6,11 @@ import { BOTANIX } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { getIsExpressSupported } from "config/features";
+import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
+import { MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "config/multichain";
+import { getChainName } from "config/static/chains";
 import { DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/twap";
+import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
@@ -20,6 +24,7 @@ import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
+import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
@@ -50,7 +55,9 @@ export function SettingsModal({
   isSettingsVisible: boolean;
   setIsSettingsVisible: (value: boolean) => void;
 }) {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
+
+  const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
 
@@ -151,6 +158,13 @@ export function SettingsModal({
 
       switch (mode) {
         case TradingMode.Classic: {
+          if (srcChainId) {
+            // eslint-disable-next-line no-console
+            console.error("Express trading can not be disabled for multichain");
+            setTradingMode(prevMode);
+            setIsTradningModeChanging(false);
+            return;
+          }
           if (subaccountState.subaccount) {
             const isSubaccountDeactivated = await subaccountState.tryDisableSubaccount();
 
@@ -199,7 +213,7 @@ export function SettingsModal({
         }
       }
     },
-    [settings, subaccountState, tradingMode]
+    [settings, srcChainId, subaccountState, tradingMode]
   );
 
   useEffect(
@@ -247,20 +261,21 @@ export function SettingsModal({
                 <div className="text-14 font-medium">
                   <Trans>Trading Mode</Trans>
                 </div>
-
-                <SettingButton
-                  title="Classic"
-                  description="On-chain signing for every transaction"
-                  info={
-                    <Trans>
-                      Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided
-                      by your wallet. Gas payments in ETH.
-                    </Trans>
-                  }
-                  icon={<HourGlassIcon className="opacity-50" />}
-                  active={tradingMode === TradingMode.Classic}
-                  onClick={() => handleTradingModeChange(TradingMode.Classic)}
-                />
+                {!srcChainId && (
+                  <SettingButton
+                    title="Classic"
+                    description="On-chain signing for every transaction"
+                    info={
+                      <Trans>
+                        Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically
+                        provided by your wallet. Gas payments in ETH.
+                      </Trans>
+                    }
+                    icon={<HourGlassIcon className="opacity-50" />}
+                    active={tradingMode === TradingMode.Classic}
+                    onClick={() => handleTradingModeChange(TradingMode.Classic)}
+                  />
+                )}
 
                 <SettingButton
                   title="Express"
@@ -316,13 +331,49 @@ export function SettingsModal({
                     <div className="divider"></div>
 
                     <GasPaymentTokenSelector
-                      curentTokenAddress={settings.gasPaymentTokenAddress}
+                      currentTokenAddress={settings.gasPaymentTokenAddress}
                       onSelectToken={settings.setGasPaymentTokenAddress}
                     />
                   </>
                 )}
               </SettingsSection>
             </>
+          )}
+
+          {srcChainId && (
+            <SettingsSection className="mt-2">
+              <div className="flex items-center justify-between">
+                <TooltipWithPortal
+                  content={<Trans>Network for Cross-Chain Deposits and positions.</Trans>}
+                  handle={<Trans>Settlement Chain</Trans>}
+                />
+                <div>
+                  <DropdownSelector
+                    slim
+                    elevated
+                    value={settlementChainId}
+                    onChange={setSettlementChainId}
+                    options={MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[srcChainId]}
+                    item={({ option }) => (
+                      <div className="flex items-center gap-8">
+                        <img src={CHAIN_ID_TO_NETWORK_ICON[option]} alt={getChainName(option)} className="size-16" />
+                        <span>{getChainName(option)}</span>
+                      </div>
+                    )}
+                    button={
+                      <div className="flex items-center gap-4">
+                        <img
+                          src={CHAIN_ID_TO_NETWORK_ICON[settlementChainId]}
+                          alt={getChainName(settlementChainId)}
+                          className="size-16"
+                        />
+                        <span>{getChainName(settlementChainId)}</span>
+                      </div>
+                    }
+                  />
+                </div>
+              </div>
+            </SettingsSection>
           )}
 
           <SettingsSection className="mt-2">

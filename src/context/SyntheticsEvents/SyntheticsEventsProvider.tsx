@@ -1,9 +1,9 @@
 import { TaskState } from "@gelatonetwork/relay-sdk";
 import { t } from "@lingui/macro";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useLatest } from "react-use";
 
 import { isDevelopment } from "config/env";
-import { useExpressNonces } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
@@ -25,7 +25,6 @@ import {
   OrderTxnType,
 } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
-import { getIsEmptySubaccountApproval } from "domain/synthetics/subaccount";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
@@ -85,6 +84,7 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
+import { useMultichainEvents } from "./useMultichainEvents";
 import { getPendingOrderKey, sendGelatoTaskStatusMetric } from "./utils";
 
 export const SyntheticsEventsContext = createContext({});
@@ -94,16 +94,16 @@ export function useSyntheticsEvents(): SyntheticsEventsContextType {
 }
 
 export function SyntheticsEventsProvider({ children }: { children: ReactNode }) {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { account: currentAccount } = useWallet();
   const provider = getProvider(undefined, chainId);
   const { wsProvider } = useWebsocketProvider();
   const { hasV2LostFocus, hasPageLostFocus } = useHasLostFocus();
 
   const { resetTokenPermits } = useTokenPermitsContext();
-  const { refreshSubaccountData, resetSubaccountApproval } = useSubaccountContext();
-  const { tokensData } = useTokensDataRequest(chainId);
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { refreshSubaccountData } = useSubaccountContext();
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
 
   const { glvData } = useGlvMarketsInfo(isGlvEnabled(chainId), {
     marketsInfoData,
@@ -142,7 +142,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [pendingExpressTxnParams, setPendingExpressTxnParams] = useState<{
     [key: string]: Partial<PendingExpressTxnParams>;
   }>({});
-  const { refreshNonces, updateLocalAction } = useExpressNonces();
+  const latestPendingExpressTxnParams = useLatest(pendingExpressTxnParams);
   const eventLogHandlers = useRef({});
 
   const handleExpressTxnSuccess = useCallback(
@@ -154,21 +154,22 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       }
 
       refreshSubaccountData();
-      refreshNonces();
-      updateLocalAction(pendingExpressTxn.subaccountApproval ? "subaccountRelayRouter" : "relayRouter", 1n);
 
-      if (
-        pendingExpressTxn?.subaccountApproval &&
-        !getIsEmptySubaccountApproval(pendingExpressTxn.subaccountApproval)
-      ) {
-        resetSubaccountApproval();
-      }
+      // TODO MLTCH why was reset there if it does not work with working reset
+      // if (
+      //   pendingExpressTxn?.subaccountApproval &&
+      //   !getIsEmptySubaccountApproval(pendingExpressTxn.subaccountApproval)
+      // ) {
+      //   resetSubaccountApproval();
+      // } else {
+      // refreshSubaccountData();
+      // }
 
       if (pendingExpressTxn?.tokenPermits?.length) {
         resetTokenPermits();
       }
     },
-    [refreshNonces, refreshSubaccountData, resetSubaccountApproval, resetTokenPermits, updateLocalAction]
+    [refreshSubaccountData, resetTokenPermits]
   );
 
   const updateNativeTokenBalance = useCallback(() => {
@@ -245,7 +246,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       );
 
       const pendingOrderKey = getPendingOrderKey(data);
-      const pendingExpressTxn = Object.values(pendingExpressTxnParams).find((p) =>
+      const pendingExpressTxn = Object.values(latestPendingExpressTxnParams.current).find((p) =>
         p.pendingOrdersKeys?.includes(pendingOrderKey)
       );
 
@@ -1043,6 +1044,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     [gelatoTaskStatuses, pendingExpressTxnParams, provider, setOptimisticTokensBalancesUpdates]
   );
 
+  const multichainEventsState = useMultichainEvents({
+    hasPageLostFocus,
+  });
+
   const contextState: SyntheticsEventsContextType = useMemo(() => {
     return {
       orderStatuses,
@@ -1190,6 +1195,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       setShiftStatusViewed(key: string) {
         setShiftStatuses((old) => updateByKey(old, key, { isViewed: true }));
       },
+
+      ...multichainEventsState,
     };
   }, [
     orderStatuses,
@@ -1203,6 +1210,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     positionDecreaseEvents,
     pendingExpressTxnParams,
     gelatoTaskStatuses,
+    multichainEventsState,
     marketsInfoData,
     tokensData,
     glvAndGmMarketsData,

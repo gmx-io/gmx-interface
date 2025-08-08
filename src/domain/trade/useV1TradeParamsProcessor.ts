@@ -104,7 +104,13 @@ export default function useV1TradeParamsProcessor({ updateTradeOptions, swapOpti
       prevTradeOptions.current = options;
 
       if (history.location.search) {
-        history.replace({ search: "" });
+        const query = new URLSearchParams(history.location.search);
+        query.delete("from");
+        query.delete("to");
+        query.delete("market");
+        query.delete("collateral");
+        query.delete("mode");
+        history.replace({ search: query.toString() });
         prevTradeOptions.current = {};
       }
     }
