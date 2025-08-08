@@ -24,7 +24,7 @@ const AvailableToTradeAssetsTitle = () => {
   return (
     <div className="flex items-center gap-8">
       <IoArrowBack
-        className="size-20 text-slate-100"
+        className="size-20 text-slate-100 outline-none"
         tabIndex={0}
         role="button"
         onClick={() => setIsVisibleOrView("main")}
@@ -39,7 +39,7 @@ const TransferDetailsTitle = () => {
   return (
     <div className="flex items-center gap-8">
       <IoArrowBack
-        className="size-20 text-slate-100"
+        className="size-20 text-slate-100 outline-none"
         tabIndex={0}
         role="button"
         onClick={() => setIsVisibleOrView("main")}
@@ -54,7 +54,7 @@ const DepositTitle = () => {
   return (
     <div className="flex items-center gap-8">
       <IoArrowBack
-        className="size-20 text-slate-100"
+        className="size-20 text-slate-100 outline-none"
         tabIndex={0}
         role="button"
         onClick={() => setIsVisibleOrView("main")}
@@ -69,7 +69,7 @@ const SelectAssetToDepositTitle = () => {
   return (
     <div className="flex items-center gap-8">
       <IoArrowBack
-        className="size-20 text-slate-100"
+        className="size-20 text-slate-100 outline-none"
         tabIndex={0}
         role="button"
         onClick={() => setIsVisibleOrView("deposit")}
@@ -84,7 +84,7 @@ const WithdrawTitle = () => {
   return (
     <div className="flex items-center gap-8">
       <IoArrowBack
-        className="size-20 text-slate-100"
+        className="size-20 text-slate-100 outline-none"
         tabIndex={0}
         role="button"
         onClick={() => setIsVisibleOrView("main")}
