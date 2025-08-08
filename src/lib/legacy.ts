@@ -984,7 +984,7 @@ export function useAccountOrders(
   return [orders, updateOrders, ordersError];
 }
 
-export function getAccountUrl(chainId, account) {
+export function getAccountUrl(chainId: number, account: string) {
   if (!account) {
     return getExplorerUrl(chainId);
   }

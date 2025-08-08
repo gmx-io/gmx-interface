@@ -6,15 +6,15 @@ import { TbLoader2 } from "react-icons/tb";
 import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
-import { useAccount, useDisconnect } from "wagmi";
+import { useAccount } from "wagmi";
 
 import { BOTANIX, getExplorerUrl } from "config/chains";
-import { CURRENT_PROVIDER_LOCALSTORAGE_KEY, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY } from "config/localStorage";
 import { isSettlementChain } from "config/multichain";
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFundingItemLoading";
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
+import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
 import { formatRelativeDateWithComma } from "lib/dates";
@@ -23,8 +23,6 @@ import { useLocalizedMap } from "lib/i18n";
 import { useENS } from "lib/legacy";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { useNotifyModalState } from "lib/useNotifyModalState";
-import { userAnalytics } from "lib/userAnalytics";
-import { DisconnectWalletEvent } from "lib/userAnalytics/types";
 import { shortenAddressOrEns } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { getToken } from "sdk/configs/tokens";
@@ -107,7 +105,6 @@ function FundingHistoryItemLabel({
 }
 
 const Toolbar = ({ account }: { account: string }) => {
-  const { disconnect } = useDisconnect();
   const [, setIsVisible] = useGmxAccountModalOpen();
   const { chainId: settlementChainId, srcChainId } = useChainId();
   const history = useHistory();
@@ -118,6 +115,7 @@ const Toolbar = ({ account }: { account: string }) => {
   const { setIsSettingsVisible } = useSettings();
   const { ensName } = useENS(account);
   const [, copyToClipboard] = useCopyToClipboard();
+  const handleDisconnect = useDisconnectAndClose();
 
   const handleCopyAddress = () => {
     if (account) {
@@ -130,19 +128,6 @@ const Toolbar = ({ account }: { account: string }) => {
     if (!account || !chainId) return "";
     return `${getExplorerUrl(chainId)}address/${account}`;
   }, [account, chainId]);
-
-  const handleDisconnect = () => {
-    userAnalytics.pushEvent<DisconnectWalletEvent>({
-      event: "ConnectWalletAction",
-      data: {
-        action: "Disconnect",
-      },
-    });
-    disconnect();
-    localStorage.removeItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY);
-    localStorage.removeItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY);
-    setIsVisible(false);
-  };
 
   const handleNotificationsClick = () => {
     openNotifyModal();
