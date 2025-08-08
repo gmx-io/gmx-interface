@@ -47,14 +47,12 @@ export function ExpressTradingOutOfGasBanner({ onClose }: { onClose: () => void 
   }, [history, onClose, gasPaymentTokenSymbols]);
 
   return (
-    <ColorfulBanner color="slate" icon={<ExpressIcon className="size-16" />}>
-      <div className="text-12">
-        <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance.</Trans>
-        <br />
-        <Button variant="link" className="mt-2 !text-12" onClick={onClick}>
-          <Trans>Buy {gasPaymentTokensText}</Trans>
-        </Button>
-      </div>
+    <ColorfulBanner color="blue" icon={ExpressIcon}>
+      <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance.</Trans>
+      <br />
+      <Button variant="link" className="mt-2 !text-12" onClick={onClick}>
+        <Trans>Buy {gasPaymentTokensText}</Trans>
+      </Button>
     </ColorfulBanner>
   );
 }

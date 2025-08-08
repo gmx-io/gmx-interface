@@ -41,7 +41,7 @@ export function OneClickPromoBanner({ openSettings, isShort }: { openSettings: (
   return (
     <ColorfulBanner
       color="blue"
-      icon={<OneClickIcon className="size-20" />}
+      icon={OneClickIcon}
       onClose={() => setIsOneClickPromoHidden(true)}
       onClick={onClickEnable}
       className="min-w-[180px] cursor-pointer"

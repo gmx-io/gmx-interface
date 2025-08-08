@@ -580,9 +580,9 @@ function MarketListItem({
           className={cx("text-body-medium w-full", rowVerticalPadding, rowHorizontalPadding)}
           onClick={handleSelectLargePosition}
         >
-          <span className="flex items-center gap-6">
+          <span className="flex items-center gap-4">
             <TokenIcon
-              className="ChartToken-list-icon -my-5 mr-8"
+              className="ChartToken-list-icon -my-5 mr-6"
               symbol={token.symbol}
               displaySize={16}
               importSize={24}

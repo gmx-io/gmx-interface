@@ -492,8 +492,8 @@ msgid "Funding Fee"
 msgstr "Frais de financement"
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market. Choosing a different pool would open a new position different from the existing one.<0><1>Switch to {1} market pool</1>.</0>"
-msgstr "Liquidité insuffisante dans le pool de marché {0}. Sélectionnez un pool différent pour ce marché. Choisir un pool différent ouvrirait une nouvelle position différente de l'existante.<0><1>Passer au pool de marché {1}</1>.</0>"
+#~ msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market. Choosing a different pool would open a new position different from the existing one.<0><1>Switch to {1} market pool</1>.</0>"
+#~ msgstr "Liquidité insuffisante dans le pool de marché {0}. Sélectionnez un pool différent pour ce marché. Choisir un pool différent ouvrirait une nouvelle position différente de l'existante.<0><1>Passer au pool de marché {1}</1>.</0>"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Confirm Limit Order"
@@ -4238,8 +4238,8 @@ msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1
 msgstr "{0} est requis pour le collatéral.<0/><1/>Aucun chemin d'échange trouvé pour {1} vers {2} dans GMX.<2/><3/><4>Vous pouvez acheter {3} sur 1inch.</4>"
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You have an existing position in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
-msgstr "Vous avez une position existante dans le pool de marché {0}.<0><1>Passer au pool de marché {1}</1>.</0>"
+#~ msgid "You have an existing position in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
+#~ msgstr "Vous avez une position existante dans le pool de marché {0}.<0><1>Passer au pool de marché {1}</1>.</0>"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4515,6 +4515,10 @@ msgstr "Prix inférieur au prix de liq."
 msgid "Take Profit / Stop Loss"
 msgstr "Take Profit / Stop Loss"
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Save {0} in price impact and fees by <0>switching to the {1} pool</0>"
+msgstr ""
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr "Il n'y a pas assez de {0} dans votre compte sur {networkName} pour envoyer cette transaction.<0/><1/><2>Acheter ou transférer {1} vers {networkName}</2>"
@@ -4628,8 +4632,8 @@ msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText} : {sign}{1}"
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You have an existing limit order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
-msgstr "Vous avez un ordre limite existant dans le pool de marché {0}.<0><1>Passer au pool de marché {1}</1>.</0>"
+#~ msgid "You have an existing limit order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
+#~ msgstr "Vous avez un ordre limite existant dans le pool de marché {0}.<0><1>Passer au pool de marché {1}</1>.</0>"
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing"
@@ -5646,6 +5650,10 @@ msgstr "Acheter ou transférer AVAX vers Avalanche"
 msgid "TokenTerminal"
 msgstr "TokenTerminal"
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market. Choosing a different pool would open a new position different from the existing one.<0>Switch to {1} market pool</0>"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram bot for Open Interest on GMX"
 msgstr "Bot Telegram pour l'intérêt ouvert sur GMX"
@@ -5877,6 +5885,10 @@ msgstr "Vous pouvez également sélectionner un autre token \"Collatéral en\"."
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more."
 msgstr "Recevez des alertes et annonces de GMX pour rester au courant de vos trades, risque de liquidation, et plus."
+
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You have an existing limit order in the {0} market pool.<0>Switch to {1} market pool</0>"
+msgstr ""
 
 #: src/pages/PageNotFound/PageNotFound.jsx
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
@@ -6556,8 +6568,8 @@ msgid "Win Rate"
 msgstr "Taux de gain"
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Save {0} in price impact and fees by <0><1>switching to the {1} pool</1>.</0>"
-msgstr "Économisez {0} en impact sur le prix et frais en <0><1>passant au pool {1}</1>.</0>"
+#~ msgid "Save {0} in price impact and fees by <0><1>switching to the {1} pool</1>.</0>"
+#~ msgstr "Économisez {0} en impact sur le prix et frais en <0><1>passant au pool {1}</1>.</0>"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
@@ -7929,6 +7941,10 @@ msgstr "Il y a actuellement un impact élevé sur le prix d'échange pour le che
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Increase Size (Stop Market)"
 msgstr "Augmenter la taille (Stop Marché)"
+
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You have an existing position in the {0} market pool.<0>Switch to {1} market pool</0>"
+msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Stop Loss PnL"

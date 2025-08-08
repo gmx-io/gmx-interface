@@ -492,8 +492,8 @@ msgid "Funding Fee"
 msgstr "펀딩 수수료"
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market. Choosing a different pool would open a new position different from the existing one.<0><1>Switch to {1} market pool</1>.</0>"
-msgstr "{0} 마켓 풀에 유동성 부족. 이 마켓에 대해 다른 풀을 선택하세요. 다른 풀을 선택하면 기존 포지션과 다른 새 포지션이 열립니다.<0><1>{1} 마켓 풀로 전환</1>.</0>"
+#~ msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market. Choosing a different pool would open a new position different from the existing one.<0><1>Switch to {1} market pool</1>.</0>"
+#~ msgstr "{0} 마켓 풀에 유동성 부족. 이 마켓에 대해 다른 풀을 선택하세요. 다른 풀을 선택하면 기존 포지션과 다른 새 포지션이 열립니다.<0><1>{1} 마켓 풀로 전환</1>.</0>"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Confirm Limit Order"
@@ -4238,8 +4238,8 @@ msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1
 msgstr "담보에 {0}이 필요합니다.<0/><1/>GMX 내에서 {1}에서 {2}로 스왑 경로가 없습니다.<2/><3/><4>1inch에서 {3} 구매 가능.</4>"
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You have an existing position in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
-msgstr "{0} 시장 풀에 기존 포지션이 있습니다.<0><1>{1} 시장 풀로 전환</1>.</0>"
+#~ msgid "You have an existing position in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
+#~ msgstr "{0} 시장 풀에 기존 포지션이 있습니다.<0><1>{1} 시장 풀로 전환</1>.</0>"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4515,6 +4515,10 @@ msgstr "청산가 미만 가격"
 msgid "Take Profit / Stop Loss"
 msgstr "이익 실현 / 손절"
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Save {0} in price impact and fees by <0>switching to the {1} pool</0>"
+msgstr ""
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr "{networkName} 계정에 트랜잭션을 보낼 {0}이 부족합니다.<0/><1/><2>{1} 구매 또는 {networkName}로 이전</2>"
@@ -4628,8 +4632,8 @@ msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "You have an existing limit order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
-msgstr "{0} 시장 풀에 기존 지정가 주문이 있습니다.<0><1>{1} 시장 풀로 전환</1>.</0>"
+#~ msgid "You have an existing limit order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
+#~ msgstr "{0} 시장 풀에 기존 지정가 주문이 있습니다.<0><1>{1} 시장 풀로 전환</1>.</0>"
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing"
@@ -5646,6 +5650,10 @@ msgstr "AVAX 구매 또는 Avalanche로 전송"
 msgid "TokenTerminal"
 msgstr "TokenTerminal"
 
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market. Choosing a different pool would open a new position different from the existing one.<0>Switch to {1} market pool</0>"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram bot for Open Interest on GMX"
 msgstr "GMX 미결제약정을 위한 텔레그램 봇"
@@ -5877,6 +5885,10 @@ msgstr "대안으로 다른 \"담보 입력\" 토큰을 선택할 수 있습니�
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more."
 msgstr "GMX의 알림과 발표를 받아 거래, 청산 위험 등을 최신 상태로 유지하세요."
+
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You have an existing limit order in the {0} market pool.<0>Switch to {1} market pool</0>"
+msgstr ""
 
 #: src/pages/PageNotFound/PageNotFound.jsx
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
@@ -6556,8 +6568,8 @@ msgid "Win Rate"
 msgstr "승률"
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Save {0} in price impact and fees by <0><1>switching to the {1} pool</1>.</0>"
-msgstr "<0><1>{1} 풀로 전환</1>하여 가격 영향 및 수수료에서 {0} 절약.</0>"
+#~ msgid "Save {0} in price impact and fees by <0><1>switching to the {1} pool</1>.</0>"
+#~ msgstr "<0><1>{1} 풀로 전환</1>하여 가격 영향 및 수수료에서 {0} 절약.</0>"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
@@ -7929,6 +7941,10 @@ msgstr "현재 주문 스왑 경로에 높은 스왑 가격 영향 있음."
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Increase Size (Stop Market)"
 msgstr "크기 증가 (스탑 마켓)"
+
+#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "You have an existing position in the {0} market pool.<0>Switch to {1} market pool</0>"
+msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Stop Loss PnL"

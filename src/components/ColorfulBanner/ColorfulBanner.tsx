@@ -2,6 +2,8 @@ import cx from "classnames";
 import { useCallback } from "react";
 import { IoMdClose } from "react-icons/io";
 
+import ButtonLink from "components/Button/ButtonLink";
+
 const colorSchemas = {
   green: {
     border: "border-l-green-700",
@@ -18,24 +20,24 @@ const colorSchemas = {
     icon: "text-blue-300",
     bg: "bg-blue-300 bg-opacity-20",
   },
-  slate: {
-    border: "border-l-slate-100",
-    icon: "text-slate-100",
-    bg: "bg-slate-600",
+  yellow: {
+    border: "border-l-yellow-300",
+    icon: "text-yellow-300",
+    bg: "bg-yellow-300 bg-opacity-20",
   },
 };
 
 export function ColorfulBanner({
   children,
-  icon,
+  icon: Icon,
   onClose,
   onClick,
   withBorder = true,
   className,
-  color = "slate",
+  color = "blue",
 }: {
   children: React.ReactNode;
-  icon?: React.ReactNode;
+  icon?: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
   withBorder?: boolean;
   color?: keyof typeof colorSchemas;
   onClose?: () => void;
@@ -53,26 +55,38 @@ export function ColorfulBanner({
   return (
     <div
       className={cx(
-        "flex items-center justify-between gap-8 rounded-8 border-l-2 p-12 text-13 leading-[1.3]",
+        "flex justify-between gap-8 rounded-8 border-l-2 p-12 text-13 leading-[1.3]",
         withBorder && colorSchemas[color].border,
         colorSchemas[color].bg,
         className
       )}
       onClick={onClick}
     >
-      <div className="flex items-center gap-8">
-        {icon && (
-          <div className={cx("mr-6 w-20 shrink-0", colorSchemas[color].icon)}>
-            <div className="">{icon}</div>
+      <div className="flex gap-8">
+        {Icon && (
+          <div className={cx("shrink-0 text-20", colorSchemas[color].icon)}>
+            <Icon className="size-20 p-[1.25px]" />
           </div>
         )}
         <div>{children}</div>
       </div>
       {onClose && (
-        <button className={cx("text-slate-100 hover:text-white")} onClick={handleClose}>
-          <IoMdClose size={20} />
-        </button>
+        <div>
+          <button className={cx("text-slate-100 hover:text-white")} onClick={handleClose}>
+            <IoMdClose size={20} />
+          </button>
+        </div>
       )}
     </div>
   );
 }
+
+export const ColorfulButtonLink = ({ children, to, onClick, color = "blue" }: { children: React.ReactNode; to?: string; onClick?: () => void; color?: keyof typeof colorSchemas }) => {
+  const className = cx("text-slate-100 hover:text-white", colorSchemas[color].icon);
+
+  if (to) {
+    return <ButtonLink className={className} to={to} onClick={onClick}>{children}</ButtonLink>;
+  }
+
+  return <button className={className} onClick={onClick}>{children}</button>;
+};

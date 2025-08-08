@@ -38,7 +38,7 @@ export const chartOverrides: Partial<WidgetOverrides> = {
   "paneProperties.horzGridProperties.color": "#363A59FF",
   "paneProperties.horzGridProperties.style": 2,
   "mainSeriesProperties.priceLineColor": "#8B94B6",
-  "scalesProperties.textColor": "#fff",
+  "scalesProperties.textColor": "#A0A3C4",
   "mainSeriesProperties.statusViewStyle.showExchange": false,
   ...chartStyleOverrides,
 };
