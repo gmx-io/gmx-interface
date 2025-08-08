@@ -4,10 +4,13 @@ import { GlvInfo, MarketInfo } from "domain/synthetics/markets/types";
 import { TokenData } from "domain/synthetics/tokens";
 import type { DepositAmounts, WithdrawalAmounts } from "domain/synthetics/trade";
 import { formatAmountFree } from "lib/numbers";
+import { ContractsChainId } from "sdk/configs/chains";
+import { getToken } from "sdk/configs/tokens";
 
 import { TokenInputState } from "./types";
 
 export function useUpdateInputAmounts({
+  chainId,
   marketToken,
   marketInfo,
   longTokenInputState,
@@ -25,6 +28,7 @@ export function useUpdateInputAmounts({
   setFirstTokenInputValue,
   setSecondTokenInputValue,
 }: {
+  chainId: ContractsChainId;
   marketToken: TokenData | undefined;
   glvToken: TokenData | undefined;
   marketInfo: MarketInfo | undefined;
@@ -48,9 +52,9 @@ export function useUpdateInputAmounts({
         return;
       }
 
-      const longToken = longTokenInputState?.token;
-      const shortToken = shortTokenInputState?.token;
-      const fromMarketToken = fromMarketTokenInputState?.token;
+      const longToken = longTokenInputState ? getToken(chainId, longTokenInputState.address) : undefined;
+      const shortToken = shortTokenInputState ? getToken(chainId, shortTokenInputState.address) : undefined;
+      const fromMarketToken = marketToken;
 
       if (isDeposit) {
         if (["longCollateral", "shortCollateral"].includes(focusedInput)) {
@@ -185,6 +189,7 @@ export function useUpdateInputAmounts({
       glvInfo,
       glvToken,
       glvTokenAmount,
+      chainId,
     ]
   );
 }
