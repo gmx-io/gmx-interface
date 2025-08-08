@@ -4,6 +4,7 @@ import { IoArrowDown } from "react-icons/io5";
 import { useKey, useLatest, usePrevious } from "react-use";
 
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
+import { isSettlementChain } from "config/multichain";
 import { useOpenMultichainDepositModal } from "context/GmxAccountContext/useOpenMultichainDepositModal";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -643,22 +644,40 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           onClickMax={showClickMax ? onMaxClick : undefined}
           qa="pay"
         >
-          {fromTokenAddress && (
-            <MultichainTokenSelector
-              chainId={chainId}
-              srcChainId={srcChainId}
-              label={t`Pay`}
-              tokenAddress={fromTokenAddress}
-              isGmxAccount={isFromTokenGmxAccount}
-              onSelectTokenAddress={handleSelectFromTokenAddress}
-              size="l"
-              extendedSortSequence={sortedLongAndShortTokens}
-              qa="collateral-selector"
-              tokensData={tokensData}
-              multichainTokens={multichainTokens}
-              onDepositTokenAddress={onDepositTokenAddress}
-            />
-          )}
+          {fromTokenAddress &&
+            (!isSettlementChain(chainId) ? (
+              <TokenSelector
+                label={t`Pay`}
+                chainId={chainId}
+                tokenAddress={fromTokenAddress}
+                onSelectToken={(token) => {
+                  handleSelectFromTokenAddress(token.address, false);
+                }}
+                tokens={swapTokens}
+                infoTokens={infoTokens}
+                size="l"
+                showSymbolImage={true}
+                showTokenImgInDropdown={true}
+                missedCoinsPlace={MissedCoinsPlace.payToken}
+                extendedSortSequence={sortedLongAndShortTokens}
+                qa="collateral-selector"
+              />
+            ) : (
+              <MultichainTokenSelector
+                chainId={chainId}
+                srcChainId={srcChainId}
+                label={t`Pay`}
+                tokenAddress={fromTokenAddress}
+                isGmxAccount={isFromTokenGmxAccount}
+                onSelectTokenAddress={handleSelectFromTokenAddress}
+                size="l"
+                extendedSortSequence={sortedLongAndShortTokens}
+                qa="collateral-selector"
+                tokensData={tokensData}
+                multichainTokens={multichainTokens}
+                onDepositTokenAddress={onDepositTokenAddress}
+              />
+            ))}
         </BuyInputSection>
 
         {isSwap && (
