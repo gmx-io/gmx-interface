@@ -49,6 +49,7 @@ import { Swap } from "../Swap";
 import { Mode, Operation } from "../types";
 import { useGmWarningState } from "../useGmWarningState";
 import { InfoRows } from "./InfoRows";
+import { TokenInputState } from "./types";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 import { useGmDepositWithdrawalBoxState } from "./useGmDepositWithdrawalBoxState";
@@ -195,7 +196,11 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     shortTokenInputState,
     // undefined when not paying with GM
     fromMarketTokenInputState,
-  } = useMemo(() => {
+  } = useMemo((): Partial<{
+    longTokenInputState: TokenInputState;
+    shortTokenInputState: TokenInputState;
+    fromMarketTokenInputState: TokenInputState;
+  }> => {
     if (!marketInfo) {
       return {};
     }
@@ -203,9 +208,9 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     const inputs: {
       address: string;
       value: string;
-      amount?: bigint;
-      isMarketToken?: boolean;
-      usd?: bigint;
+      amount: bigint | undefined;
+      isMarketToken: boolean;
+      usd: bigint | undefined;
       setValue: (val: string) => void;
     }[] = [];
 
@@ -560,12 +565,12 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
   const handleFirstTokenInputValueChange = useCallback(
     (e) => {
-      if (firstToken) {
+      if (firstTokenAddress) {
         setFirstTokenInputValue(e.target.value);
-        onFocusedCollateralInputChange(firstToken.address);
+        onFocusedCollateralInputChange(firstTokenAddress);
       }
     },
-    [firstToken, onFocusedCollateralInputChange, setFirstTokenInputValue]
+    [firstTokenAddress, onFocusedCollateralInputChange, setFirstTokenInputValue]
   );
 
   const marketTokenInputClickMax = useCallback(() => {
@@ -630,6 +635,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
   // #region Effects
   useUpdateInputAmounts({
+    chainId,
     marketToken,
     marketInfo,
     fromMarketTokenInputState,
@@ -851,11 +857,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
             shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
           />
         </div>
-        {/* <SwitchToSettlementChainWarning topic="liquidity" /> */}
-        <div className="Exchange-swap-button-container mb-14 border-b border-stroke-primary pb-14">
-          {/* <SwitchToSettlementChainButtons>{}</SwitchToSettlementChainButtons> */}
-          {submitButton}
-        </div>
+        <div className="Exchange-swap-button-container mb-14 border-b border-stroke-primary pb-14">{submitButton}</div>
         <InfoRows fees={fees} executionFee={executionFee} isDeposit={isDeposit} />
       </form>
     </>

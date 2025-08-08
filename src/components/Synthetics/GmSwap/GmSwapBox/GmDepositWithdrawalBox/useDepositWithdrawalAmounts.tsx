@@ -100,11 +100,12 @@ export function useDepositWithdrawalAmounts({
       }
 
       const longTokenAmount = marketInfo.isSameCollaterals ? halfOfLong ?? 0n : longTokenInputState?.amount ?? 0n;
-      const shortTokenAmount = marketInfo.isSameCollaterals
-        ? longTokenInputState?.amount !== undefined
-          ? longTokenInputState?.amount - longTokenAmount
-          : undefined ?? 0n
-        : shortTokenInputState?.amount ?? 0n;
+      const shortTokenAmount =
+        (marketInfo.isSameCollaterals
+          ? longTokenInputState?.amount !== undefined
+            ? longTokenInputState?.amount - longTokenAmount
+            : 0n
+          : shortTokenInputState?.amount) ?? 0n;
 
       return getWithdrawalAmounts({
         marketInfo,
