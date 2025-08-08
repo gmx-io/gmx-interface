@@ -47,6 +47,7 @@ msgstr "You can transfer {nativeTokenSymbol} from other networks to {chainName} 
 msgid "Claim submitted!"
 msgstr "Claim submitted!"
 
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
 msgstr "Disconnect"
@@ -3773,6 +3774,7 @@ msgstr "Vested Claimable GMX"
 msgid "Buy {nativeTokenSymbol}"
 msgstr "Buy {nativeTokenSymbol}"
 
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "View in Explorer"
 msgstr "View in Explorer"
@@ -4305,6 +4307,7 @@ msgstr "Accrued Borrow Fee"
 msgid "Read more."
 msgstr "Read more."
 
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "PnL Analysis"
@@ -4474,6 +4477,7 @@ msgstr "GMX Technical Announcements"
 msgid "Failed Stop Market"
 msgstr "Failed Stop Market"
 
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Address copied to your clipboard"
 msgstr "Address copied to your clipboard"
@@ -6834,7 +6838,7 @@ msgstr "Deactivate 1CT (One-Click Trading)"
 msgid "Could not execute deposit into {0} {longOrShortText}"
 msgstr "Could not execute deposit into {0} {longOrShortText}"
 
-#: src/components/AddressDropdown/AddressDropdown.tsx
+#: src/components/AddressDropdown/AddressDropdownWithMultichain.tsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
@@ -8022,6 +8026,7 @@ msgstr "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgid "Withdraw Fee"
 msgstr "Withdraw Fee"
 
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Alerts"
 msgstr "Alerts"
@@ -8928,6 +8933,10 @@ msgstr "Complete Account Transfer"
 #: src/pages/Stake/ClaimModal.tsx
 msgid "Claim Rewards"
 msgstr "Claim Rewards"
+
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
+msgid "Copy Address"
+msgstr "Copy Address"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Pending Transfer Approval"

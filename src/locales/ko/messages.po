@@ -47,6 +47,7 @@ msgstr ""
 msgid "Claim submitted!"
 msgstr "수령 제출 완료!"
 
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
 msgstr "연결 끊기"
@@ -3773,6 +3774,7 @@ msgstr ""
 msgid "Buy {nativeTokenSymbol}"
 msgstr ""
 
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "View in Explorer"
 msgstr "Explorer에서 보기"
@@ -4302,6 +4304,7 @@ msgstr ""
 msgid "Read more."
 msgstr ""
 
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "PnL Analysis"
@@ -4471,6 +4474,7 @@ msgstr ""
 msgid "Failed Stop Market"
 msgstr ""
 
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Address copied to your clipboard"
 msgstr ""
@@ -6828,7 +6832,7 @@ msgstr ""
 msgid "Could not execute deposit into {0} {longOrShortText}"
 msgstr "{0} {longOrShortText}의 입글을 실행시키지 못했습니다"
 
-#: src/components/AddressDropdown/AddressDropdown.tsx
+#: src/components/AddressDropdown/AddressDropdownWithMultichain.tsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
@@ -8016,6 +8020,7 @@ msgstr "유요하지 않은 indexToken: \"{0}\" collateralToken\" \"{1}\""
 msgid "Withdraw Fee"
 msgstr ""
 
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Alerts"
 msgstr ""
@@ -8921,6 +8926,10 @@ msgstr "계정 전송 완료"
 
 #: src/pages/Stake/ClaimModal.tsx
 msgid "Claim Rewards"
+msgstr ""
+
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
+msgid "Copy Address"
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx

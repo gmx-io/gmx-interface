@@ -47,6 +47,7 @@ msgstr ""
 msgid "Claim submitted!"
 msgstr ""
 
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
 msgstr ""
@@ -3773,6 +3774,7 @@ msgstr ""
 msgid "Buy {nativeTokenSymbol}"
 msgstr ""
 
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "View in Explorer"
 msgstr ""
@@ -4302,6 +4304,7 @@ msgstr ""
 msgid "Read more."
 msgstr ""
 
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "PnL Analysis"
@@ -4471,6 +4474,7 @@ msgstr ""
 msgid "Failed Stop Market"
 msgstr ""
 
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Address copied to your clipboard"
 msgstr ""
@@ -6828,7 +6832,7 @@ msgstr ""
 msgid "Could not execute deposit into {0} {longOrShortText}"
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.tsx
+#: src/components/AddressDropdown/AddressDropdownWithMultichain.tsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
@@ -8016,6 +8020,7 @@ msgstr ""
 msgid "Withdraw Fee"
 msgstr ""
 
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Alerts"
 msgstr ""
@@ -8921,6 +8926,10 @@ msgstr ""
 
 #: src/pages/Stake/ClaimModal.tsx
 msgid "Claim Rewards"
+msgstr ""
+
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
+msgid "Copy Address"
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
