@@ -139,7 +139,7 @@ export function AppRoutes() {
 
   return (
     <>
-      <div className="App w-full font-tthoves">
+      <div className="App w-full font-relative">
         {isHome ? (
           <div className="App-content">
             <Header
