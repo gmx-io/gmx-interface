@@ -252,7 +252,7 @@ export function TradeHistory(p: Props) {
               <col className="TradeHistorySynthetics-pnl-fees-column" />
             </colgroup>
             <thead>
-              <TableTheadTr bordered>
+              <TableTheadTr>
                 <TableTh>
                   <ActionFilter value={actionFilter} onChange={setActionFilter} />
                 </TableTh>

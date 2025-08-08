@@ -4,7 +4,7 @@ import { TableTd, TableTr } from "components/Table/Table";
 
 export default function MarketListSkeletonStructure() {
   return (
-    <TableTr bordered={false} hoverable={false}>
+    <TableTr hoverable={false}>
       <TableTd>
         <div className="flex items-center">
           <Skeleton className="mr-10 !block" height={40} width={40} circle inline />

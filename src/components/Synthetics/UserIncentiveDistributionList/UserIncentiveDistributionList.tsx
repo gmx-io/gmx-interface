@@ -126,7 +126,7 @@ export default function UserIncentiveDistributionList() {
         <TableScrollFadeContainer>
           <table className="w-full min-w-max">
             <thead>
-              <TableTheadTr bordered>
+              <TableTheadTr>
                 <TableTh>
                   <Trans>Date</Trans>
                 </TableTh>
@@ -190,7 +190,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const type = tooltipData ? <Tooltip handle={typeStr} renderContent={renderTooltipTypeContent} /> : typeStr;
 
   return (
-    <TableTr bordered={false} hoverable={false}>
+    <TableTr hoverable={false}>
       <TableTd data-label="Date">{formatDate(timestamp)}</TableTd>
       <TableTd data-label="Type">{type}</TableTd>
       <TableTd data-label="Amount">

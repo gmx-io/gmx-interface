@@ -355,7 +355,7 @@ function AffiliatesStats({
           <TableScrollFadeContainer>
             <table className="w-full">
               <thead>
-                <TableTheadTr bordered>
+                <TableTheadTr>
                   <TableTh scope="col">
                     <Trans>Referral Code</Trans>
                   </TableTh>
@@ -373,7 +373,7 @@ function AffiliatesStats({
               <tbody>
                 {currentAffiliatesData.map((stat, index) => {
                   return (
-                    <TableTr key={index} hoverable={false} bordered={false}>
+                    <TableTr key={index} hoverable={false}>
                       <TableTd data-label="Referral Code">
                         <div className="table-referral-code">
                           <span className="referral-text ">{stat.referralCode}</span>
@@ -473,7 +473,7 @@ function AffiliatesStats({
             <TableScrollFadeContainer>
               <table className="w-full min-w-max">
                 <thead>
-                  <TableTheadTr bordered>
+                  <TableTheadTr>
                     <TableTh scope="col">
                       <Trans>Date</Trans>
                     </TableTh>
@@ -529,7 +529,7 @@ function AffiliatesStats({
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (
-                      <TableTr key={index} hoverable={false} bordered={false}>
+                      <TableTr key={index} hoverable={false}>
                         <TableTd data-label="Date">{formatDate(rebate.timestamp)}</TableTd>
                         <TableTd data-label="Type">{rebateType}</TableTd>
                         <TableTd data-label="Amount">

@@ -163,7 +163,7 @@ export function GmList({
           <TableScrollFadeContainer>
             <table className="w-[max(100%,920px)]">
               <thead>
-                <TableTheadTr bordered>
+                <TableTheadTr>
                   <TableTh className="pl-16">
                     <Trans>POOL</Trans>
                   </TableTh>

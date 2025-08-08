@@ -250,7 +250,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
             <TableScrollFadeContainer>
               <table className="w-full min-w-max">
                 <thead>
-                  <TableTheadTr bordered>
+                  <TableTheadTr>
                     <TableTh scope="col">
                       <Trans>Date</Trans>
                     </TableTh>
@@ -293,7 +293,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (
-                      <TableTr key={rebate.id} hoverable={false} bordered={false}>
+                      <TableTr key={rebate.id} hoverable={false}>
                         <TableTd data-label="Date">{formatDate(rebate.timestamp)}</TableTd>
                         <TableTd data-label="Type">V1 Airdrop</TableTd>
                         <TableTd data-label="Amount" className="Rebate-amount">

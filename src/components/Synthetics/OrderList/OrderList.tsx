@@ -251,7 +251,7 @@ export function OrderList({
         <TableScrollFadeContainer disableScrollFade={orders.length === 0}>
           <Table className="!w-[max(100%,580px)]">
             <thead>
-              <TableTheadTr bordered>
+              <TableTheadTr>
                 {!hideActions && (
                   <TableTh className="cursor-pointer" onClick={onSelectAllOrders}>
                     <Checkbox
