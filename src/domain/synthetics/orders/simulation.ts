@@ -8,6 +8,7 @@ import {
   getMulticallContract,
   getZeroAddressContract,
 } from "config/contracts";
+import { isDevelopment } from "config/env";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
@@ -19,7 +20,6 @@ import { abis } from "sdk/abis";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { CustomErrorName, ErrorData, TxErrorType, extendError, isContractError, parseError } from "sdk/utils/errors";
 import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
-import { isDevelopment } from "config/env";
 
 export type SimulateExecuteParams = {
   account: string;
