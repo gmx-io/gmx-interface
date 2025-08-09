@@ -53,7 +53,7 @@ export function buildSwapStrategy({
     externalSwapQuote: undefined,
     swapPathStats: undefined,
     amountIn,
-    amountOut: amountIn,
+    amountOut: convertToTokenAmount(usdIn, tokenOut.decimals, tokenOut.prices.maxPrice)!,
     usdIn,
     usdOut: usdIn,
     priceIn,
@@ -101,7 +101,7 @@ export function buildSwapStrategy({
       isExpressFeeSwap: false,
     });
 
-    const swapPathStats = findSwapPath(1n);
+    const swapPathStats = findSwapPath(usdIn);
 
     return Boolean(swapPathStats);
   });
@@ -163,7 +163,6 @@ export function buildReverseSwapStrategy({
 }): SwapStrategyForSwapOrders {
   const priceIn = getMidPrice(tokenIn.prices);
   const priceOut = getMidPrice(tokenOut.prices);
-  // const usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
 
   const preferredUsdOut = convertToUsd(amountOut, tokenOut.decimals, getMidPrice(tokenOut.prices))!;
   const approximateAmountIn = convertToTokenAmount(preferredUsdOut, tokenIn.decimals, getMidPrice(tokenIn.prices))!;
