@@ -38,7 +38,7 @@ export function ClaimablePositionPriceImpactRebateModal({
   const claimablePositionPriceImpactFees = useSelector(selectClaimablePositionPriceImpactFees);
 
   const [buttonText, buttonDisabled] = useMemo(() => {
-    if (isSubmitting) return [t`Claiming...`, true];
+    if (isSubmitting) return [t`Claiming`, true];
     return [t`Claim`, false];
   }, [isSubmitting]);
 

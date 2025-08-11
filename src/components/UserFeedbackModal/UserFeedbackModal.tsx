@@ -119,7 +119,7 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
     <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`We Value Your Feedback`}>
       <div className="mb-15 max-w-xl">
         {feedbackQuestion}
-        <Textarea value={feedback} onChange={onChangeFeedback} placeholder={t`Enter your feedback here`} />
+        <Textarea value={feedback} onChange={onChangeFeedback} placeholder={t`Enter your feedback here.`} />
       </div>
       <div className="mb-15 flex flex-col">
         <TooltipWithPortal
