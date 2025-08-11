@@ -2161,6 +2161,10 @@ msgstr "<0>Provide liquidity</0> and earn {gmxMarketApyDataText} APY"
 msgid "Address"
 msgstr "Address"
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>"
+msgstr "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>"
+
 #: src/pages/Home/Home.tsx
 msgid "Total Trading Volume"
 msgstr "Total Trading Volume"
@@ -2171,8 +2175,8 @@ msgid "Collateral Spread"
 msgstr "Collateral Spread"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
-msgid "You have an existing limit order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
-msgstr "You have an existing limit order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
+#~ msgid "You have an existing limit order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
+#~ msgstr "You have an existing limit order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
 
 #: src/components/Header/Header.tsx
 msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
@@ -5790,8 +5794,8 @@ msgid "Parts of this order will be executed once there is sufficient liquidity."
 msgstr "Parts of this order will be executed once there is sufficient liquidity."
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
-msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>."
-msgstr "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>."
+#~ msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>."
+#~ msgstr "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
@@ -8351,6 +8355,10 @@ msgstr "Very likely"
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "I am aware of the trigger orders"
 msgstr "I am aware of the trigger orders"
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+msgid "You have an existing limit order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>"
+msgstr "You have an existing limit order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"

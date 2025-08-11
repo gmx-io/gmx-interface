@@ -2161,6 +2161,10 @@ msgstr "<0>Fournir de la liquidité</0> et gagner {gmxMarketApyDataText} APY"
 msgid "Address"
 msgstr "Adresse"
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>"
+msgstr ""
+
 #: src/pages/Home/Home.tsx
 msgid "Total Trading Volume"
 msgstr "Volume total de trading"
@@ -2171,8 +2175,8 @@ msgid "Collateral Spread"
 msgstr "Spread de collatéral"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
-msgid "You have an existing limit order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
-msgstr "Vous avez un ordre limite existant avec {symbol} comme collatéral. <0>Passer au collatéral {symbol}</0>."
+#~ msgid "You have an existing limit order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
+#~ msgstr "Vous avez un ordre limite existant avec {symbol} comme collatéral. <0>Passer au collatéral {symbol}</0>."
 
 #: src/components/Header/Header.tsx
 msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
@@ -5790,8 +5794,8 @@ msgid "Parts of this order will be executed once there is sufficient liquidity."
 msgstr "Des parties de cet ordre seront exécutées une fois qu'il y aura suffisamment de liquidité."
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
-msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>."
-msgstr "Vous avez une position existante avec {0} comme collatéral. Cet ordre ne sera pas valide pour cette position. <0>Passer au collatéral {1}</0>."
+#~ msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>."
+#~ msgstr "Vous avez une position existante avec {0} comme collatéral. Cet ordre ne sera pas valide pour cette position. <0>Passer au collatéral {1}</0>."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
@@ -8351,6 +8355,10 @@ msgstr "Très probable"
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "I am aware of the trigger orders"
 msgstr "Je suis conscient des ordres de déclenchement"
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+msgid "You have an existing limit order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>"
+msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
