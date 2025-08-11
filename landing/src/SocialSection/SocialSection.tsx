@@ -4,6 +4,9 @@ import { useMemo } from "react";
 import { SOCIAL_MAP } from "landing/constants/SociaLinks";
 import { shortFormat } from "landing/utils/shortFormat";
 
+import TradingViewIcon from "img/ic_trading_view.svg?react";
+
+import { SocialBackground } from "./SocialBackground";
 import { SocialSlider } from "./SocialSlider";
 
 export function SocialSection() {
@@ -38,12 +41,13 @@ export function SocialSection() {
     []
   );
   return (
-    <section className="bg-fiord-700 border-fiord-500 flex w-full flex-col gap-[120px] border-t-0 pt-0 text-white sm:border-t-[0.5px] sm:pt-[120px]">
+    <section className="bg-fiord-700 border-fiord-500 flex w-full flex-col border-t-0 pt-0 text-white sm:border-t-[0.5px] sm:pt-[120px]">
       <div className="mx-auto flex flex-col gap-28 overflow-x-clip sm:gap-44">
         <SocialSlider />
       </div>
-      <div className="flex w-full">
-        <div className="mx-auto flex w-full flex-col gap-36 px-16 sm:w-[1200px] sm:px-80">
+      <div className="relative flex w-full overflow-clip pt-[120px]">
+        <SocialBackground />
+        <div className="relative mx-auto flex w-full flex-col gap-36 px-16 sm:w-[1200px] sm:px-80">
           <h2 className="text-heading-1">
             <Trans>
               Driven by <br /> our community
@@ -86,6 +90,24 @@ export function SocialSection() {
                 <Trans>Subscribe</Trans>
               </button>
             </form>
+          </div>
+          <div className="flex w-full flex-row flex-wrap items-center gap-12 py-20 text-12 font-medium tracking-[0.024px] text-slate-100">
+            <a href="/referral-terms" target="_blank" rel="noopener noreferrer">
+              <Trans>Referral Terms</Trans>
+            </a>
+            <a href="https://docs.gmx.io/docs/community/media-kit/" target="_blank" rel="noopener noreferrer">
+              <Trans>Media Kit</Trans>
+            </a>
+            <a className="inline sm:hidden" href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">
+              <Trans>Terms and Conditions</Trans>
+            </a>
+            <div className="mx-0 flex flex-row items-center gap-8 text-white sm:mx-auto">
+              <TradingViewIcon className="size-20" />
+              <span>Charts by TradingView</span>
+            </div>
+            <a className="hidden sm:inline" href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">
+              <Trans>Terms and Conditions</Trans>
+            </a>
           </div>
         </div>
       </div>
