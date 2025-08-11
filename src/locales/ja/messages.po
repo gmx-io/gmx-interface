@@ -491,10 +491,6 @@ msgstr "{positionText}を増加、+{0}"
 msgid "Funding Fee"
 msgstr "ファンディング手数料"
 
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market. Choosing a different pool would open a new position different from the existing one.<0><1>Switch to {1} market pool</1>.</0>"
-#~ msgstr "{0}市場プールの流動性が不足しています。この市場で別のプールを選択してください。別のプールを選択すると、既存のものとは異なる新しいポジションが開かれます。<0><1>{1}市場プールに切り替え</1>。</0>"
-
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Confirm Limit Order"
 msgstr "指値注文を確認"
@@ -863,10 +859,6 @@ msgstr "スリッページは-5%未満であるべきです"
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Acceptable Swap Impact"
 msgstr "許容スワップ影響"
-
-#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
-#~ msgid "Leave your Telegram if you’re okay with being contacted for a quick follow-up"
-#~ msgstr "簡単なフォローアップ連絡で問題ない場合、Telegramを残してください"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -1352,10 +1344,6 @@ msgstr "エラーを隠す"
 msgid "The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of the standard {0}% for Tier {1}."
 msgstr "この紹介コードの所有者は、ティア{1}の標準{0}%の代わりにカスタム割引{currentTierDiscount}%を設定しています。"
 
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
-#~ msgstr "あなたのウォレット、あなたの鍵。ウォレットが提供する独自のRPCを使用して各取引をオンチェーンで署名。ガス支払いはETH。"
-
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Leftover position below 10 USD"
 msgstr "10 USD未満の残りポジション"
@@ -1786,10 +1774,6 @@ msgstr "執行価格に近すぎます"
 msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
 msgstr "ガス残高不足のためエクスプレスおよびワンクリックトレーディングが利用できません。"
 
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-#~ msgid "Global Leaderboard"
-#~ msgstr "グローバルリーダーボード"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min size per part: {0}"
 msgstr "部分あたり最小サイズ: {0}"
@@ -2143,10 +2127,6 @@ msgstr "{0}を承認中"
 msgid "Deposited {0} into {positionText}"
 msgstr "{positionText}に{0}を入金"
 
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "Your wallet, your keys. GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
-#~ msgstr "あなたのウォレット、あなたの鍵。GMXは個別署名なしで取引を実行し、シームレスなCEXのような体験を提供。トレードはネットワーク混雑時でも信頼性のためにGMXスポンサードのプレミアムRPCを使用。ガス支払いはUSDCまたはWETH。"
-
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Claim Funding Fees"
@@ -2180,10 +2160,6 @@ msgstr "<0>流動性を提供</0>して{gmxMarketApyDataText} APYを獲得"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Address"
 msgstr "アドレス"
-
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-#~ msgid "Winner:"
-#~ msgstr "勝者:"
 
 #: src/pages/Home/Home.tsx
 msgid "Total Trading Volume"
@@ -4084,11 +4060,6 @@ msgstr "更新中..."
 msgid "Failed Market Increase"
 msgstr "マーケット増額失敗"
 
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-#~ msgid "EIP-4844 Competition"
-#~ msgstr "EIP-4844コンペティション"
-
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
@@ -4236,10 +4207,6 @@ msgstr "{typeString} ロングリミット: 価格がトリガー価格を下回
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
 msgstr "担保に{0}が必要です。<0/><1/>GMX内で{1}から{2}へのスワップパスが見つかりません。<2/><3/><4>1inchで{3}を購入できます。</4>"
-
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "You have an existing position in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
-#~ msgstr "{0}マーケットプールに既存のポジションがあります。<0><1>{1}マーケットプールに切り替える</1>。</0>"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4631,10 +4598,6 @@ msgstr "GMX APR"
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "You have an existing limit order in the {0} market pool.<0><1>Switch to {1} market pool</1>.</0>"
-#~ msgstr "{0}マーケットプールに既存のリミット注文があります。<0><1>{1}マーケットプールに切り替える</1>。</0>"
-
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing"
 msgstr "減少中"
@@ -4749,10 +4712,6 @@ msgstr "合計 アクティブ: {openTotal}、執行済: {executedTotal}、キ�
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "24h Low"
 msgstr "24時間安値"
-
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-#~ msgid "Chain Icon"
-#~ msgstr "チェーンアイコン"
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
@@ -5153,10 +5112,6 @@ msgstr "レバレッジスライダーを表示"
 msgid "Cancelling {orderText}."
 msgstr "{orderText} をキャンセル中。"
 
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-#~ msgid "CONCLUDED"
-#~ msgstr "終了"
-
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Collateral Delta"
 msgstr "担保デルタ"
@@ -5299,10 +5254,6 @@ msgstr "GMXトークンの総循環供給量。"
 #: src/pages/Dashboard/WeightText.tsx
 msgid "Target Weight"
 msgstr "ターゲットウェイト"
-
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-#~ msgid "Winners:"
-#~ msgstr "勝者:"
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "When closing the position, you can select which token you would like to receive the profits in."
@@ -5542,10 +5493,6 @@ msgstr "Perpie"
 msgid "Useful Links"
 msgstr "有用なリンク"
 
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "Enable external swaps"
-#~ msgstr "外部スワップを有効化"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Confirmations"
 msgstr "取引確認"
@@ -5555,10 +5502,6 @@ msgstr "取引確認"
 #: src/components/Glp/GlpSwap.jsx
 msgid "Available"
 msgstr "利用可能"
-
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-#~ msgid "Last 7 days"
-#~ msgstr "過去7日"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Solv Finance"
@@ -6005,10 +5948,6 @@ msgstr "額はゼロより大きくなければなりません"
 msgid "Perpetuals Aggregator"
 msgstr "パーペチュアルアグリゲーター"
 
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-#~ msgid "LIVE"
-#~ msgstr "ライブ"
-
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "{formattedNetRate} / 1h"
 msgstr "{formattedNetRate} / 1 時間"
@@ -6304,11 +6243,6 @@ msgstr "請求"
 msgid "Price Impact / Fees"
 msgstr "価格インパクト / 手数料"
 
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-#~ msgid "GMX {versionName} Account"
-#~ msgstr "GMX {versionName} アカウント"
-
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6566,10 +6500,6 @@ msgstr "{0}はターゲットウェイトより低くなっています。<0/><1
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win Rate"
 msgstr "勝率"
-
-#: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "Save {0} in price impact and fees by <0><1>switching to the {1} pool</1>.</0>"
-#~ msgstr "<0><1>{1}プールに切り替え</1>て価格インパクトと手数料で{0}を節約。</0>"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
@@ -7151,10 +7081,6 @@ msgstr "ArbitrumでGLPを使ってベストする"
 msgid "Telegram account"
 msgstr "Telegramアカウント"
 
-#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
-#~ msgid "SOON"
-#~ msgstr "近日公開"
-
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "{operationTokenSymbol}を売却"
@@ -7551,10 +7477,6 @@ msgstr "{0}プール容量に達しました"
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Staked"
 msgstr "ステーク済"
-
-#: src/components/Footer/Footer.tsx
-#~ msgid "Leave feedback"
-#~ msgstr "フィードバックを残す"
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
@@ -8102,10 +8024,6 @@ msgstr "<1>{1}</1> esGMXのべスティング入金から<0>{0}</0>トークン�
 msgid "Sell order cancelled"
 msgstr "売却注文キャンセル"
 
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-#~ msgid "Last 30 days"
-#~ msgstr "過去30日"
-
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
@@ -8459,10 +8377,6 @@ msgstr "価格がマーク価格を上回っています"
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "価格変動を除き、ファンディングおよび借入手数料レートによりポジション担保が時間とともに減少するため、このポジションは清算される可能性があります。"
 
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
-#~ msgstr "あなたのウォレット、あなたのキー。各取引をオフチェーンで署名。取引はGMXスポンサーのプレミアムRPCを使用し、ネットワーク混雑時でも信頼性。ガス支払いはUSDCまたはWETH。"
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"
 msgstr ""
@@ -8681,10 +8595,6 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> から </1>{0}{toTokenIcon}{1}
 #: src/components/DepthChart/DepthChart.tsx
 msgid "ORACLE PRICE"
 msgstr "オラクル価格"
-
-#: src/pages/Dashboard/DashboardV2.tsx
-#~ msgid "For detailed stats:"
-#~ msgstr "詳細統計:"
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
