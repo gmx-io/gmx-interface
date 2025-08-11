@@ -23,7 +23,7 @@ import {
   useTokensFavorites,
 } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
-import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
+import { getMarketBaseName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { IndexTokensStats } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { PriceDelta, PriceDeltaMap, TokenData, TokensData, use24hPriceDeltaMap } from "domain/synthetics/tokens";
 import { use24hVolumes } from "domain/synthetics/tokens/use24Volumes";
@@ -73,8 +73,8 @@ export default function ChartTokenSelector(props: Props) {
   return (
     <SelectorBase
       popoverPlacement="bottom-start"
-      popoverYOffset={16}
-      popoverXOffset={-8}
+      popoverYOffset={8}
+      popoverXOffset={0}
       handleClassName={cx("group rounded-8 bg-slate-800 py-10 pl-8 pr-12", {
         "mr-24": oneRowLabels === false,
         "h-40 py-0": isSwap,
@@ -488,6 +488,15 @@ function useFilterSortTokens({
   return sortedTokens;
 }
 
+const MarketLabel = ({ token }: { token: Token }) => {
+  return (
+    <span className="text-slate-100">
+      <span className="text-white">{getMarketBaseName({ indexToken: token, isSpotOnly: false })}</span>
+      /USD
+    </span>
+  );
+};
+
 function MarketListItem({
   token,
   tokenData,
@@ -615,10 +624,10 @@ function MarketListItem({
         <div className={cx("flex", isMobile ? "items-start" : "items-center")}>
           <TokenIcon className="ChartToken-list-icon mr-6" symbol={token.symbol} displaySize={16} importSize={24} />
           <span className={cx("flex flex-wrap items-center gap-6")}>
-            <span className="-mt-2 font-medium leading-1">
-              {getMarketIndexName({ indexToken: token, isSpotOnly: false })}
+            <span className="font-medium leading-1">
+              <MarketLabel token={token} />
             </span>
-            <span className="rounded-4 bg-slate-700 px-4 pb-5 pt-3 leading-1 numbers">
+            <span className="rounded-full bg-slate-700 px-6 py-[1.5px] text-12 font-medium leading-[1.25] text-slate-100 numbers">
               {maxLeverage ? `${maxLeverage}x` : "-"}
             </span>
           </span>
@@ -641,13 +650,13 @@ function MarketListItem({
       </td>
       {!isMobile && (
         <>
-          <td className={cx(tdClassName, "numbers")}>
+          <td className={cx(tdClassName, "pr-4 numbers")}>
             <span className="inline-flex items-center gap-6">
               <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
               {formatAmountHuman(openInterestLong ?? 0n, USD_DECIMALS, true)}
             </span>
           </td>
-          <td className={cx(tdClassName, "numbers")}>
+          <td className={cx(tdClassName, "pl-4 numbers")}>
             <span className="mb-2 inline-flex items-center gap-6">
               <ShortIcon width={12} className="relative top-1 opacity-70" />
               {formatAmountHuman(openInterestShort ?? 0n, USD_DECIMALS, true)}
@@ -658,13 +667,13 @@ function MarketListItem({
 
       {!isMobile ? (
         <>
-          <td className={cx(tdClassName, "group numbers hover:bg-slate-800")} onClick={handleSelectLong}>
+          <td className={cx(tdClassName, "group pr-4 numbers hover:bg-slate-800")} onClick={handleSelectLong}>
             <div className="inline-flex items-center justify-end gap-6">
               <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
               {formatAmountHuman(maxLongLiquidityPool?.maxLongLiquidity, USD_DECIMALS, true)}
             </div>
           </td>
-          <td className={cx(tdClassName, "group numbers hover:bg-slate-800")} onClick={handleSelectShort}>
+          <td className={cx(tdClassName, "group pl-4 numbers hover:bg-slate-800")} onClick={handleSelectShort}>
             <div className="inline-flex items-center justify-end gap-6">
               <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />
               {formatAmountHuman(maxShortLiquidityPool?.maxShortLiquidity, USD_DECIMALS, true)}
