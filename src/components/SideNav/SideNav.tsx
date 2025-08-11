@@ -5,8 +5,6 @@ import { Link, useLocation } from "react-router-dom";
 
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-
 import CollapseIcon from "img/collapse.svg?react";
 import DashboardIcon from "img/dashboard.svg?react";
 import DatabaseIcon from "img/database.svg?react";
@@ -89,7 +87,7 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
     <button className={cx("group cursor-pointer py-4", { "w-full": !isCollapsed })} onClick={onClick}>
       <div
         className={cx(
-          `flex cursor-pointer items-center gap-8
+          `relative flex cursor-pointer items-center gap-8
         rounded-8 px-16 py-8 text-slate-100 transition-colors
         group-hover:bg-slate-700 group-hover:text-white`,
           {
@@ -100,6 +98,17 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
       >
         <div className="flex h-24 w-24 shrink-0 items-center justify-center">{icon}</div>
         <span className={cx("text-body-medium font-medium tracking-[-1.2%]", { hidden: isCollapsed })}>{label}</span>
+
+        <div
+          className={cx(
+            `absolute left-0 top-0 z-30 hidden items-center gap-8 rounded-8
+            bg-slate-700 px-16 py-8 text-white`,
+            { "group-hover:flex": isCollapsed }
+          )}
+        >
+          <div className="flex h-24 w-24 shrink-0 items-center justify-center">{icon}</div>
+          <span className={cx("text-body-medium font-medium tracking-[-1.2%]")}>{label}</span>
+        </div>
       </div>
     </button>
   );
@@ -116,15 +125,7 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
     button
   );
 
-  return (
-    <li className="p-0 first:-mt-4">
-      {isCollapsed ? (
-        <TooltipWithPortal handle={content} position="right" content={label} tooltipClassName="!min-w-fit" />
-      ) : (
-        content
-      )}
-    </li>
-  );
+  return <li className="p-0 first:-mt-4">{content}</li>;
 }
 
 type NavItemType = {
