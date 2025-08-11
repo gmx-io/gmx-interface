@@ -3962,8 +3962,8 @@ msgid "NA"
 msgstr "N/A"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
-msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>."
-msgstr "Du hast eine bestehende Position mit {0} als Kollateral. Diese Aktion gilt nicht für diese Position. <0>Wechsle zu {1}-Kollateral</0>."
+#~ msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>."
+#~ msgstr "Du hast eine bestehende Position mit {0} als Kollateral. Diese Aktion gilt nicht für diese Position. <0>Wechsle zu {1}-Kollateral</0>."
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4326,6 +4326,10 @@ msgstr "Jobs"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Options Strategies"
 msgstr "Dezentrale Optionsstrategien"
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx

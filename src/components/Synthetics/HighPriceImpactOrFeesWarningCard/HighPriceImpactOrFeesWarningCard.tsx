@@ -106,12 +106,12 @@ export function HighPriceImpactOrFeesWarningCard({
   }
 
   return (
-    <AlertInfoCard type="warning" onClose={() => priceImpactWarningState.setIsDismissed(true)}>
+    <AlertInfoCard className="h-fit" type="warning" onClose={() => priceImpactWarningState.setIsDismissed(true)}>
       <div className="flex flex-col gap-4">
         {warnings.map((warning) => (
-          <div key={warning.id} className="flex justify-between">
+          <div key={warning.id} className="flex justify-between gap-4">
             <div>{warning.key}</div>
-            <div>{warning.value}</div>
+            <div className="font-medium text-yellow-300">{warning.value}</div>
           </div>
         ))}
       </div>

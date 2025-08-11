@@ -3962,8 +3962,8 @@ msgid "NA"
 msgstr "Н/Д"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
-msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>."
-msgstr "У вас есть существующая позиция с {0} в качестве залога. Это действие не применится к той позиции. <0>Переключиться на залог {1}</0>."
+#~ msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>."
+#~ msgstr "У вас есть существующая позиция с {0} в качестве залога. Это действие не применится к той позиции. <0>Переключиться на залог {1}</0>."
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4326,6 +4326,10 @@ msgstr "Вакансии"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Options Strategies"
 msgstr "Децентрализованные Опционные Стратегии"
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx

@@ -35,9 +35,7 @@ import { AlertInfoButtonLink, AlertInfoCard } from "components/AlertInfo/AlertIn
 
 const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // +0.01%
 
-const SPACE = " ";
-
-export const useTradeboxPoolWarnings = (withActions = true) => {
+export const useTradeboxPoolWarnings = () => {
   const { chainId } = useChainId();
   const marketsInfoData = useMarketsInfoData();
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);

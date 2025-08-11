@@ -1,5 +1,6 @@
 import cx from "classnames";
 import { useCallback } from "react";
+import { FaChevronRight } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 
 import ButtonLink from "components/Button/ButtonLink";
@@ -71,22 +72,42 @@ export function ColorfulBanner({
         <div>{children}</div>
       </div>
       {onClose && (
-        <div>
-          <button className={cx("text-slate-100 hover:text-white")} onClick={handleClose}>
-            <IoMdClose size={20} />
-          </button>
-        </div>
+        <button className={cx("h-fit text-slate-100 hover:text-white")} onClick={handleClose}>
+          <IoMdClose size={20} />
+        </button>
       )}
     </div>
   );
 }
 
-export const ColorfulButtonLink = ({ children, to, onClick, color = "blue" }: { children: React.ReactNode; to?: string; onClick?: () => void; color?: keyof typeof colorSchemas }) => {
-  const className = cx("text-slate-100 hover:text-white", colorSchemas[color].icon);
+export const ColorfulButtonLink = ({
+  children,
+  to,
+  onClick,
+  color = "blue",
+}: {
+  children: React.ReactNode;
+  to?: string;
+  onClick?: () => void;
+  color?: keyof typeof colorSchemas;
+}) => {
+  const className = cx("mt-4 flex items-center gap-4 font-medium", colorSchemas[color].icon);
 
   if (to) {
-    return <ButtonLink className={className} to={to} onClick={onClick}>{children}</ButtonLink>;
+    return (
+      <ButtonLink className={className} to={to} onClick={onClick}>
+        {children}
+
+        <FaChevronRight size={11} />
+      </ButtonLink>
+    );
   }
 
-  return <button className={className} onClick={onClick}>{children}</button>;
+  return (
+    <button className={className} onClick={onClick}>
+      {children}
+
+      <FaChevronRight size={11} />
+    </button>
+  );
 };
