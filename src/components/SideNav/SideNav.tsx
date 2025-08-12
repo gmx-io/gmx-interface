@@ -39,7 +39,7 @@ function SideNav({ className }: { className?: string }) {
       <div className="flex flex-1 flex-col justify-between">
         <MenuSection isCollapsed={isCollapsed} />
 
-        <ul className={cx("flex list-none flex-col gap-8 px-0")}>
+        <ul className={cx("flex list-none flex-col px-0")}>
           <LanguageNavItem isCollapsed={isCollapsed} NavItem={NavItem} />
           <DocsNavItem isCollapsed={isCollapsed} />
           <NavItem

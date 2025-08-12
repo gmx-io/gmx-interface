@@ -36,7 +36,7 @@ export function MobileSideNav() {
               <MenuSection isCollapsed={false} />
             </div>
             <div className="border-b-stroke border-slate-600 p-8">
-              <ul className="flex list-none flex-col gap-8 px-0">
+              <ul className="flex list-none flex-col px-0">
                 <LanguageNavItem isCollapsed={false} NavItem={NavItem} />
                 <DocsNavItem isCollapsed={false} />
               </ul>
