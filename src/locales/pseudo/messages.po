@@ -466,10 +466,6 @@ msgstr ""
 msgid "No pools matched."
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}"
-#~ msgstr ""
-
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -8436,6 +8432,10 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Selecting high leverage increases the risk of liquidation"
 msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx

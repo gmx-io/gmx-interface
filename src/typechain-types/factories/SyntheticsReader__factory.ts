@@ -279,6 +279,11 @@ const _abi = [
       {
         components: [
           {
+            internalType: "bytes32",
+            name: "positionKey",
+            type: "bytes32",
+          },
+          {
             components: [
               {
                 components: [
@@ -800,6 +805,108 @@ const _abi = [
         internalType: "struct Position.Props[]",
         name: "",
         type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract DataStore",
+        name: "dataStore",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "market",
+        type: "address",
+      },
+      {
+        internalType: "bool",
+        name: "isLong",
+        type: "bool",
+      },
+      {
+        components: [
+          {
+            components: [
+              {
+                internalType: "uint256",
+                name: "min",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "max",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct Price.Props",
+            name: "indexTokenPrice",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "uint256",
+                name: "min",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "max",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct Price.Props",
+            name: "longTokenPrice",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "uint256",
+                name: "min",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "max",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct Price.Props",
+            name: "shortTokenPrice",
+            type: "tuple",
+          },
+        ],
+        internalType: "struct MarketUtils.MarketPrices",
+        name: "prices",
+        type: "tuple",
+      },
+    ],
+    name: "getAdlState",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+      {
+        internalType: "int256",
+        name: "",
+        type: "int256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -2449,6 +2556,35 @@ const _abi = [
         type: "address",
       },
       {
+        internalType: "address",
+        name: "market",
+        type: "address",
+      },
+    ],
+    name: "getPendingPositionImpactPoolDistributionAmount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract DataStore",
+        name: "dataStore",
+        type: "address",
+      },
+      {
         components: [
           {
             internalType: "address",
@@ -2813,6 +2949,11 @@ const _abi = [
     outputs: [
       {
         components: [
+          {
+            internalType: "bytes32",
+            name: "positionKey",
+            type: "bytes32",
+          },
           {
             components: [
               {
@@ -3303,6 +3444,11 @@ const _abi = [
     outputs: [
       {
         components: [
+          {
+            internalType: "bytes32",
+            name: "positionKey",
+            type: "bytes32",
+          },
           {
             components: [
               {
