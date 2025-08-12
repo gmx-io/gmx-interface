@@ -386,10 +386,10 @@ export function gaslessFeatureDisabledKey(module: string) {
   return hashData(["bytes32", "address"], [GASLESS_FEATURE_DISABLED_KEY, module]);
 }
 
-export function claimTermsKey(distributionId: number) {
+export function claimTermsKey(distributionId: bigint) {
   return hashData(["bytes32", "uint256"], [CLAIM_TERMS_KEY, distributionId]);
 }
 
-export function claimsDisabledKey(distributionId: number) {
+export function claimsDisabledKey(distributionId: bigint) {
   return hashData(["bytes32", "uint256"], [GENERAL_CLAIM_FEATURE_DISABLED, distributionId]);
 }

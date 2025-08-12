@@ -178,7 +178,11 @@ export default function ClaimableAmounts() {
   }, [setClaimTermsAcceptedSignature, signer, claimTerms, chainId]);
 
   const claimAmounts = useCallback(async () => {
-    if (!claimTermsAcceptedSignature || !signer || !account) {
+    if (claimTerms && !claimTermsAcceptedSignature) {
+      return;
+    }
+
+    if (!signer || !account) {
       return;
     }
 
@@ -189,7 +193,7 @@ export default function ClaimableAmounts() {
         chainId,
         signer,
         account,
-        signature: claimTermsAcceptedSignature,
+        signature: claimTermsAcceptedSignature ?? "",
         distributionId: GLP_DISTRIBUTION_ID,
         claimableTokenTitles,
       });
@@ -207,6 +211,7 @@ export default function ClaimableAmounts() {
     claimableTokenTitles,
     setClaimTermsAcceptedSignature,
     mutateClaimableAmounts,
+    claimTerms,
   ]);
 
   const { balancesData } = useTokenBalances(chainId);
@@ -239,7 +244,7 @@ export default function ClaimableAmounts() {
       isClaimDisabled = !hasAvailableFundsToCoverExecutionFee;
     }
 
-    if (claimsFeatureDisabled || isClaiming) {
+    if (claimsFeatureDisabled || isClaiming || !claimableAmountsLoaded) {
       isClaimDisabled = true;
     }
 
@@ -250,7 +255,7 @@ export default function ClaimableAmounts() {
             <Trans>Insufficient gas for network fees</Trans>
           </AlertInfoCard>
         ) : null}
-        {claimTerms && hasAvailableFundsToCoverExecutionFee ? (
+        {claimTerms && hasAvailableFundsToCoverExecutionFee && !claimsFeatureDisabled ? (
           <Checkbox
             isChecked={Boolean(claimTermsAcceptedSignature)}
             setIsChecked={signClaimTerms}
@@ -284,6 +289,7 @@ export default function ClaimableAmounts() {
     chainId,
     claimsFeatureDisabled,
     isClaiming,
+    claimableAmountsLoaded,
   ]);
 
   return (

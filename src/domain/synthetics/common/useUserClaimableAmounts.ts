@@ -90,7 +90,7 @@ export default function useUserClaimableAmounts(chainId: number, account?: strin
       calls: {
         getClaimTerms: {
           methodName: "getString",
-          params: [claimTermsKey(Number(GLP_DISTRIBUTION_ID))],
+          params: [claimTermsKey(GLP_DISTRIBUTION_ID)],
         },
       },
     },
@@ -100,7 +100,7 @@ export default function useUserClaimableAmounts(chainId: number, account?: strin
       calls: {
         getClaimsDisabled: {
           methodName: "getBool",
-          params: [claimsDisabledKey(Number(GLP_DISTRIBUTION_ID))],
+          params: [claimsDisabledKey(GLP_DISTRIBUTION_ID)],
         },
       },
     },
@@ -156,7 +156,7 @@ export default function useUserClaimableAmounts(chainId: number, account?: strin
     request: claimableAmountsRequests,
     parseResponse: (result) => {
       const claimTerms = result.data.claimTerms.getClaimTerms.returnValues[0];
-      const claimsDisabled = Boolean(result.data.claimsDisabled.getClaimsDisabled.returnValues.claimsDisabled);
+      const claimsDisabled = Boolean(result.data.claimsDisabled.getClaimsDisabled.returnValues[0]);
 
       const claimableAmounts: ClaimableAmountsResult["claimableAmounts"] = {};
       for (const token of allTokens) {
