@@ -466,10 +466,6 @@ msgstr "交易{0} 成 {1}在1inch"
 msgid "No pools matched."
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}"
-#~ msgstr ""
-
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -8437,6 +8433,10 @@ msgstr ""
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr "限制"
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Selecting high leverage increases the risk of liquidation"
+msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact."
