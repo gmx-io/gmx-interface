@@ -98,3 +98,8 @@ export function getAbFlagUrlParams(): string {
     .map(([flag, { enabled }]) => `${flag}=${enabled ? 1 : 0}`)
     .join("&");
 }
+
+// Config for deterministic ab flags based on address
+
+export const AB_HIGH_LEVERAGE_WARNING_GROUP = "alert-high-leverage";
+export const AB_HIGH_LEVERAGE_WARNING_PROBABILITY = 50n;

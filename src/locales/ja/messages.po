@@ -8602,6 +8602,10 @@ msgstr ""
 msgid "Limit"
 msgstr "指値"
 
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Selecting high leverage increases the risk of liquidation"
+msgstr ""
+
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact."
 msgstr ""
