@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useCallback, useMemo, useState } from "react";
-import { BiChevronDown } from "react-icons/bi";
+import { FaChevronDown } from "react-icons/fa6";
 
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
@@ -40,7 +40,6 @@ type Props = {
   footerContent?: ReactNode;
   getMarketState?: (market: MarketInfo) => MarketState | undefined;
   onSelectMarket: (indexName: string, market: MarketInfo) => void;
-  size?: "l" | "m";
 };
 
 type MarketState = {
@@ -68,7 +67,6 @@ export function MarketSelector({
   showBalances,
   footerContent,
   missedCoinsPlace,
-  size = "m",
   onSelectMarket,
   getMarketState,
 }: Props) {
@@ -211,14 +209,14 @@ export function MarketSelector({
         )}
       </SlideModal>
       <div
-        className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300", {
-          "text-h2 -mr-5": size === "l",
-        })}
+        className={cx(
+          "group/hoverable group text-body-medium flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-300"
+        )}
         onClick={handleClick}
         data-qa="market-selector"
       >
         {selectedMarketLabel ? selectedMarketLabel : marketInfo ? getMarketIndexName(marketInfo) : "..."}
-        <BiChevronDown className={cx({ "text-body-large": size === "l", "-my-5 text-24": size === "m" })} />
+        <FaChevronDown className="w-12 text-slate-100 group-hover:text-blue-300" />
       </div>
     </div>
   );

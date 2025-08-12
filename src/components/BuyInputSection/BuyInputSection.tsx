@@ -147,8 +147,8 @@ export default function BuyInputSection(props: Props) {
     <div data-qa={qa}>
       <div
         className={cx(
-          `flex cursor-text flex-col justify-between gap-8 rounded-8 border
-          border-slate-800 bg-slate-800 px-14 pb-16 pt-12 text-12 leading-[16px]`,
+          `flex cursor-text flex-col justify-between gap-2 rounded-8 border
+          border-slate-800 bg-slate-800 p-12 text-12 leading-[16px]`,
           {
             "bg-slate-900": isDisabled,
             "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300": !isDisabled,
@@ -180,7 +180,7 @@ export default function BuyInputSection(props: Props) {
           <div className="relative grow">
             <NumberInput
               value={inputValue}
-              className="h-28 w-full min-w-0 p-0 text-24 !leading-[24px] outline-none"
+              className="h-28 w-full min-w-0 p-0 text-16 leading-[20px] outline-none"
               inputRef={inputRef}
               onValueChange={onUserInput}
               onFocus={handleOnFocus}
@@ -209,7 +209,7 @@ export default function BuyInputSection(props: Props) {
             )}
           </div>
 
-          <div className="shrink-0 text-24 leading-[24px]">{children}</div>
+          <div className="shrink-0">{children}</div>
         </div>
 
         {(bottomLeftValue || bottomRightValue || (onClickMax && maxButtonPosition === "bottom-right")) && (

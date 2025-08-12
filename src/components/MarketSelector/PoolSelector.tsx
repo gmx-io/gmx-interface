@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
-import { BiChevronDown } from "react-icons/bi";
+import { FaChevronDown } from "react-icons/fa6";
 
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import {
@@ -33,13 +33,11 @@ function PoolLabel({
   marketInfo,
   showAllPools,
   marketsOptions,
-  size,
   onClick,
 }: {
   marketInfo: GlvOrMarketInfo | undefined;
   showAllPools: boolean;
   marketsOptions: MarketOption[];
-  size: "l" | "m";
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
 }) {
   if (!marketInfo) return "...";
@@ -53,14 +51,9 @@ function PoolLabel({
 
   if (marketsOptions?.length > 1) {
     return (
-      <div
-        className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300", {
-          "text-h2 -mr-5": size === "l",
-        })}
-        onClick={onClick}
-      >
+      <div className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300")} onClick={onClick}>
         {name ? name : "..."}
-        <BiChevronDown className="text-body-large" />
+        <FaChevronDown className="w-12 text-slate-100 group-hover:text-blue-300" />
       </div>
     );
   }
@@ -84,7 +77,6 @@ export function PoolSelector({
   showIndexIcon = false,
   withFilters = true,
   favoriteKey,
-  size = "m",
 }: CommonPoolSelectorProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -262,7 +254,6 @@ export function PoolSelector({
             />
           )}
           <PoolLabel
-            size={size}
             marketInfo={marketInfo}
             showAllPools={showAllPools}
             marketsOptions={marketsOptions}

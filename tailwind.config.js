@@ -251,9 +251,6 @@ module.exports = {
       gridTemplateColumns: fromPairs(
         range(200, 501, 50).map((space) => [`auto-fill-${space}`, `repeat(auto-fill, minmax(${space}px, 1fr))`])
       ),
-      fontFamily: {
-        'tthoves': ['TTHoves', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
-      },
       borderWidth: {
         'stroke': '0.5px',
       },

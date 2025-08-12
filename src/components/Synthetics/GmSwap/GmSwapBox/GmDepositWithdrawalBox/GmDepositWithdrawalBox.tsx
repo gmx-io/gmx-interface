@@ -730,7 +730,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                     onSelectToken={firstTokenSelectToken}
                     tokens={tokenOptions}
                     infoTokens={infoTokens}
-                    size="l"
                     showSymbolImage={true}
                     showTokenImgInDropdown={true}
                     marketsInfoData={marketsInfoData}

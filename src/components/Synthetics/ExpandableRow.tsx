@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
-import { BiChevronDown, BiChevronUp } from "react-icons/bi";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { useMedia } from "react-use";
 
 import { usePrevious } from "lib/usePrevious";
@@ -121,9 +121,9 @@ export function ExpandableRow({
   const value = withToggleSwitch ? (
     <ToggleSwitch isChecked={open} setIsChecked={onToggle} disabled={disabled} />
   ) : open ? (
-    <BiChevronUp className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
+    <FaChevronUp className="w-12 text-slate-100 group-gmx-hover:text-blue-300" />
   ) : (
-    <BiChevronDown className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
+    <FaChevronDown className="w-12 text-slate-100 group-gmx-hover:text-blue-300" />
   );
 
   return (
@@ -140,20 +140,16 @@ export function ExpandableRow({
           value={value}
         />
       ) : (
-        <button
-          className={cx(
-            `inline-flex w-fit cursor-pointer items-center gap-4 rounded-full
-            border-stroke border-slate-600 px-12 py-8 align-middle text-[13px]
-            font-medium hover:bg-slate-800`,
-            {
-              "cursor-not-allowed": disabled,
-            }
-          )}
+        <SyntheticsInfoRow
+          className={cx("group relative -my-14 !items-center py-14 gmx-hover:text-blue-300", {
+            "cursor-not-allowed": disabled,
+          })}
           onClick={disabled ? undefined : handleOnClick}
-        >
-          {label}
-          {value}
-        </button>
+          label={
+            <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">{label}</span>
+          }
+          value={value}
+        />
       )}
 
       <AnimatePresence initial={false}>
