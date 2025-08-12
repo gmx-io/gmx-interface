@@ -142,7 +142,7 @@ export function ClaimsHistory({
   currentPageData,
 }: ClaimsHistoryProps) {
   return (
-    <div className="App-box">
+    <div className="bg-slate-900">
       <TableScrollFadeContainer disableScrollFade={isEmpty}>
         {!isEmpty && (
           <table className="ClaimsHistory-table">

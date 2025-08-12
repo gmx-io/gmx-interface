@@ -27,7 +27,7 @@
 .menu-items {
   position: absolute;
   right: 0;
-  top: 4.3rem;
+  top: calc(100% + 8px);
   min-width: 17rem;
   width: 100%;
   transform-origin: top right;
@@ -46,7 +46,7 @@
     color: var(--color-slate-100);
     padding-bottom: 1.5rem;
     font-size: 13px;
-    padding: 0.85rem 0.8rem;
+    padding: 7px 12px;
     border-radius: 0.4rem;
     font-weight: 500;
 

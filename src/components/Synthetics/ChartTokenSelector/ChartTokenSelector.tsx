@@ -73,8 +73,6 @@ export default function ChartTokenSelector(props: Props) {
   return (
     <SelectorBase
       popoverPlacement="bottom-start"
-      popoverYOffset={8}
-      popoverXOffset={0}
       handleClassName={cx("group rounded-8 bg-slate-800 py-10 pl-8 pr-12", {
         "mr-24": oneRowLabels === false,
         "h-40 py-0": isSwap,

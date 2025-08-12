@@ -156,7 +156,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
   const { refs, floatingStyles } = useFloating({
     middleware: [
       offset({
-        mainAxis: props.popoverYOffset ?? 4,
+        mainAxis: props.popoverYOffset ?? 8,
         crossAxis: props.popoverXOffset ?? 0,
       }),
       flip(),

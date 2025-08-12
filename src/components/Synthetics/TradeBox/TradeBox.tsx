@@ -1,6 +1,7 @@
 import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
 import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useMemo, useRef } from "react";
-import { IoArrowDown } from "react-icons/io5";
+import { HiOutlineArrowDown } from "react-icons/hi";
 import { useKey, useLatest, usePrevious } from "react-use";
 
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
@@ -107,6 +108,7 @@ import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
+
 import "./TradeBox.scss";
 
 export function TradeBox({ isMobile }: { isMobile: boolean }) {
@@ -630,12 +632,18 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 <button
                   type="button"
                   disabled={!isSwitchTokensAllowed}
-                  className="absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full bg-cold-blue-500 active:bg-[#505699]
-                           desktop-hover:bg-[#484e92]"
+                  className={cx(
+                    `absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer
+                    items-center justify-center rounded-full bg-slate-600 text-slate-100`,
+                    {
+                      "hover:bg-[var(--color-fill-surfaceHover)] hover:bg-[linear-gradient(0deg,var(--color-slate-600),var(--color-slate-600))] hover:bg-blend-overlay":
+                        isSwitchTokensAllowed,
+                    }
+                  )}
                   onClick={onSwitchTokens}
                   data-qa="swap-ball"
                 >
-                  <IoArrowDown size={24} className="block" />
+                  <HiOutlineArrowDown size={16} className="block" />
                 </button>
               )}
               <BuyInputSection
@@ -903,7 +911,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
               <div className="relative">
                 <SettingsIcon
-                  className="cursor-pointer text-slate-100 gmx-hover:text-white"
+                  className="size-16 cursor-pointer text-slate-100 gmx-hover:text-white"
                   onClick={() => setIsSettingsVisible(true)}
                 />
                 {settingsWarningDotVisible && (

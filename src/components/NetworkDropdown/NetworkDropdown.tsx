@@ -13,8 +13,7 @@ import useWallet from "lib/wallets/useWallet";
 import Button from "components/Button/Button";
 import type { ModalProps } from "components/Modal/Modal";
 
-import SettingsIcon24 from "img/ic_settings.svg?react";
-import SettingsIcon16 from "img/ic_settings_16.svg?react";
+import SettingsIcon from "img/ic_settings.svg?react";
 
 import ModalWithPortal from "../Modal/ModalWithPortal";
 
@@ -64,18 +63,15 @@ export default function NetworkDropdown(props) {
     </>
   );
 }
-function NavIcons({ selectorLabel }) {
+function NavIcons({ selectorLabel, open }) {
   const { chainId } = useChainId();
   const icon = getIcon(chainId, "network");
 
   return (
     <>
-      <button>
-        <img className="size-20" src={icon} alt={selectorLabel} />
-      </button>
-      <button className="max-md:hidden">
-        <FiChevronDown size={20} />
-      </button>
+      <img className="size-20" src={icon} alt={selectorLabel} />
+
+      <FiChevronDown size={20} className={cx({ "rotate-180": open })} />
     </>
   );
 }
@@ -84,36 +80,40 @@ function DesktopDropdown({ selectorLabel, networkOptions, openSettings }) {
   return (
     <div className="relative flex items-center gap-8">
       <Menu>
-        <Menu.Button as="div" data-qa="networks-dropdown-handle">
-          <Button variant="secondary" className="flex h-40 items-center gap-8 max-md:h-32 max-md:p-6">
-            <NavIcons selectorLabel={selectorLabel} />
-          </Button>
-        </Menu.Button>
-        <Menu.Items as="div" className="menu-items network-dropdown-items" data-qa="networks-dropdown">
-          <div className="dropdown-label">
-            <Trans>Network</Trans>
-          </div>
-          <div className="network-dropdown-list">
-            <NetworkMenuItems networkOptions={networkOptions} selectorLabel={selectorLabel} />
-          </div>
-          <div className="network-dropdown-divider" />
-          <Menu.Item>
-            <div
-              className="network-dropdown-menu-item menu-item last-dropdown-menu"
-              onClick={openSettings}
-              data-qa="networks-dropdown-settings"
-            >
-              <div className="menu-item-group">
-                <div className="menu-item-icon">
-                  <SettingsIcon16 className="network-dropdown-icon text-slate-100" />
-                </div>
-                <span className="network-dropdown-item-label">
-                  <Trans>Settings</Trans>
-                </span>
+        {({ open }) => (
+          <>
+            <Menu.Button as="div" data-qa="networks-dropdown-handle">
+              <Button variant="secondary" className="flex h-40 items-center gap-8 px-15 pr-12 max-md:h-32 max-md:p-6">
+                <NavIcons selectorLabel={selectorLabel} open={open} />
+              </Button>
+            </Menu.Button>
+            <Menu.Items as="div" className="menu-items network-dropdown-items" data-qa="networks-dropdown">
+              <div className="p-12 pb-8 text-13 font-medium text-slate-100">
+                <Trans>Network</Trans>
               </div>
-            </div>
-          </Menu.Item>
-        </Menu.Items>
+              <div className="network-dropdown-list">
+                <NetworkMenuItems networkOptions={networkOptions} selectorLabel={selectorLabel} />
+              </div>
+              <div className="network-dropdown-divider mb-6 pt-6" />
+              <Menu.Item>
+                <div
+                  className="network-dropdown-menu-item menu-item last-dropdown-menu"
+                  onClick={openSettings}
+                  data-qa="networks-dropdown-settings"
+                >
+                  <div className="menu-item-group">
+                    <div className="menu-item-icon">
+                      <SettingsIcon className="network-dropdown-icon" />
+                    </div>
+                    <span className="network-dropdown-item-label">
+                      <Trans>Settings</Trans>
+                    </span>
+                  </div>
+                </div>
+              </Menu.Item>
+            </Menu.Items>
+          </>
+        )}
       </Menu>
     </div>
   );
@@ -133,10 +133,14 @@ function NetworkMenuItems({ networkOptions, selectorLabel }) {
             <div className="menu-item-icon">
               <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
             </div>
-            <span className="network-dropdown-item-label">{network.label}</span>
+            <span className={cx("network-dropdown-item-label", { "text-white": selectorLabel === network.label })}>
+              {network.label}
+            </span>
           </div>
           <div className="network-dropdown-menu-item-img">
-            <div className={cx("active-dot", { [selectorLabel]: selectorLabel === network.label })} />
+            {selectorLabel === network.label && (
+              <div className={"h-10 w-10 rounded-full border-[2.5px] border-green-600 bg-green-500"} />
+            )}
           </div>
         </div>
       </Menu.Item>
@@ -175,7 +179,7 @@ function NetworkModalContent({ networkOptions, selectorLabel, setActiveModal, op
           }}
         >
           <div className="menu-item-group">
-            <SettingsIcon24 className="mr-16 text-slate-100" />
+            <SettingsIcon className="mr-16 text-slate-100" />
             <span className="network-option-img-label">
               <Trans>Settings</Trans>
             </span>
