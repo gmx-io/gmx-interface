@@ -1,14 +1,12 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { useMedia } from "react-use";
 
 import { getAppBaseUrl, isHomeSite, shouldShowRedirectModal } from "lib/legacy";
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageFooterMenuEvent } from "lib/userAnalytics/types";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
+import Button from "components/Button/Button";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
 import FeedbackIcon from "img/ic_feedback.svg?react";
@@ -27,59 +25,45 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
   const isHome = isHomeSite();
   const [isUserFeedbackModalVisible, setIsUserFeedbackModalVisible] = useState(false);
 
-  const isVerySmall = useMedia("(max-width: 580px)");
-
-  const linkClassName = cx(
-    "flex cursor-pointer items-center gap-4 px-12 py-8 text-[13px] !text-slate-100 !no-underline hover:!text-white",
-    {
-      "text-body-medium": !isVerySmall,
-      "text-body-small": isVerySmall,
-    }
-  );
-
   return (
     <>
-      <div className={cx("flex w-full justify-between", { "flex-col": isMobileSideNav })}>
+      <div className={cx("flex w-full justify-between pb-4", { "flex-col": isMobileSideNav })}>
         <div className={cx("flex flex-row items-center justify-center", { "flex-wrap": isMobileSideNav })}>
           {getFooterLinks(isHome).map(({ external, label, link, isAppLink }) => {
             if (external) {
               return (
-                <ExternalLink key={label} href={link} className={linkClassName}>
+                <Button variant="ghost" key={label} href={link} newTab>
                   {label}
-                </ExternalLink>
+                </Button>
               );
             }
             if (isAppLink) {
               if (shouldShowRedirectModal(redirectPopupTimestamp)) {
                 return (
-                  <div
-                    key={label}
-                    className={linkClassName}
-                    onClick={() => showRedirectModal && showRedirectModal(link)}
-                  >
+                  <Button variant="ghost" key={label} onClick={() => showRedirectModal && showRedirectModal(link)}>
                     {label}
-                  </div>
+                  </Button>
                 );
               } else {
                 const baseUrl = getAppBaseUrl();
                 return (
-                  <a key={label} href={baseUrl + link} className={linkClassName}>
+                  <Button variant="ghost" key={label} href={baseUrl + link} newTab>
                     {label}
-                  </a>
+                  </Button>
                 );
               }
             }
             return (
-              <NavLink key={link} to={link} className={linkClassName} activeClassName="active">
+              <Button variant="ghost" key={link} to={link}>
                 {label}
-              </NavLink>
+              </Button>
             );
           })}
           {!isHome && (
-            <div className={linkClassName} onClick={() => setIsUserFeedbackModalVisible(true)}>
+            <Button variant="ghost" onClick={() => setIsUserFeedbackModalVisible(true)}>
               {isMobileSideNav ? null : <FeedbackIcon />}
               <Trans>Leave Feedback</Trans>
-            </div>
+            </Button>
           )}
         </div>
         <div
@@ -105,9 +89,9 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
                   );
                 }}
               >
-                <ExternalLink href={platform.link} className="flex h-32 w-40 items-center justify-center">
+                <Button variant="ghost" href={platform.link} newTab>
                   <div className="h-16 w-16">{platform.icon}</div>
-                </ExternalLink>
+                </Button>
               </TrackingLink>
             );
           })}
