@@ -1,22 +1,21 @@
 import { useMemo } from "react";
 
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { OracleFetcher, OracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 
+const oracleKeeperFetchersCached: Record<number, OracleFetcher> = {};
+
 export function useOracleKeeperFetcher(chainId: number): OracleFetcher {
-  const { oracleKeeperInstancesConfig, setOracleKeeperInstancesConfig } = useSettings();
-  const oracleKeeperIndex = oracleKeeperInstancesConfig?.[chainId] ?? 0;
   const [forceIncentivesActive] = useLocalStorageSerializeKey([chainId, "forceIncentivesActive"], false);
 
   return useMemo(() => {
-    const instance = new OracleKeeperFetcher({
-      chainId,
-      oracleKeeperIndex,
-      forceIncentivesActive: Boolean(forceIncentivesActive),
-      setOracleKeeperInstancesConfig,
-    });
+    if (!oracleKeeperFetchersCached[chainId]) {
+      oracleKeeperFetchersCached[chainId] = new OracleKeeperFetcher({
+        chainId,
+        forceIncentivesActive: Boolean(forceIncentivesActive),
+      });
+    }
 
-    return instance;
-  }, [chainId, forceIncentivesActive, oracleKeeperIndex, setOracleKeeperInstancesConfig]);
+    return oracleKeeperFetchersCached[chainId];
+  }, [chainId, forceIncentivesActive]);
 }

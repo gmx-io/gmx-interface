@@ -13,7 +13,7 @@ type KeeperToken = {
 };
 
 const getKeeperTokens = async (chainId: number): Promise<{ tokens: KeeperToken[] }> => {
-  const res = await fetch(`${getOracleKeeperUrl(chainId, 0)}/tokens`);
+  const res = await fetch(`${getOracleKeeperUrl(chainId)}/tokens`);
   const data = (await res.json()) as {
     tokens: KeeperToken[];
   };
