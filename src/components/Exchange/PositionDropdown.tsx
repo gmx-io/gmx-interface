@@ -5,6 +5,8 @@ import { BiSelectMultiple } from "react-icons/bi";
 import { HiDotsVertical } from "react-icons/hi";
 import { RiShareBoxFill } from "react-icons/ri";
 
+import Button from "components/Button/Button";
+
 import EditIcon from "img/ic_edit.svg?react";
 import increaseLimit from "img/ic_increaselimit_16.svg";
 import increaseMarket from "img/ic_increasemarket_16.svg";
@@ -40,9 +42,9 @@ export default function PositionDropdown({
   return (
     <Menu>
       <Menu.Button as="div" ref={refs.setReference}>
-        <button>
+        <Button variant="ghost">
           <HiDotsVertical fontSize={13} fontWeight={500} className="text-slate-100 hover:text-white" />
-        </button>
+        </Button>
       </Menu.Button>
       <FloatingPortal>
         <Menu.Items

@@ -173,7 +173,7 @@ export function PositionItem(p: Props) {
 
   function renderCollateral() {
     return (
-      <>
+      <div className="flex flex-col gap-4">
         <div className={cx("position-list-collateral", { isSmall: !p.isLarge })}>
           <TooltipWithPortal
             handle={
@@ -288,7 +288,7 @@ export function PositionItem(p: Props) {
           )}
           )
         </div>
-      </>
+      </div>
     );
   }
 
@@ -364,7 +364,9 @@ export function PositionItem(p: Props) {
                   visualMultiplier: p.position.indexToken.visualMultiplier,
                 })}
               </span>
-            ) : "..."
+            ) : (
+              "..."
+            )
           }
           position="bottom-end"
           handleClassName={cx({
@@ -470,19 +472,21 @@ export function PositionItem(p: Props) {
           </div>
         </TableTd>
         <TableTd>
-          <span className="numbers">{formatUsd(p.position.sizeInUsd)}</span>
-          <PositionItemOrdersLarge positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
+          <div className="flex flex-col gap-2">
+            <span className="numbers">{formatUsd(p.position.sizeInUsd)}</span>
+            <PositionItemOrdersLarge positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
+          </div>
         </TableTd>
         <TableTd>
           {/* netValue */}
           {p.position.isOpening ? (
             t`Opening...`
           ) : (
-            <>
+            <div className="flex flex-col gap-4">
               {renderNetValue()}
               {displayedPnl !== undefined && (
                 <div
-                  className={cx("Exchange-list-info-label Position-pnl numbers", {
+                  className={cx("Exchange-list-info-label Position-pnl text-body-small numbers", {
                     positive: displayedPnl > 0,
                     negative: displayedPnl < 0,
                     muted: displayedPnl == 0n,
@@ -491,7 +495,7 @@ export function PositionItem(p: Props) {
                   {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
                 </div>
               )}
-            </>
+            </div>
           )}
         </TableTd>
         <TableTd>
@@ -532,14 +536,14 @@ export function PositionItem(p: Props) {
             {!p.position.isOpening ? (
               <>
                 <TableTd>
-                  <button
-                    className="font-medium text-slate-100 hover:text-white"
+                  <Button
+                    variant="ghost"
                     onClick={p.onClosePositionClick}
                     disabled={p.position.sizeInUsd == 0n}
                     data-qa="position-close-button"
                   >
                     <Trans>Close</Trans>
-                  </button>
+                  </Button>
                 </TableTd>
                 <TableTd>
                   <PositionDropdown
