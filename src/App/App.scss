@@ -189,7 +189,7 @@ $app-card-padding: 1.5rem;
   background: var(--dark-blue);
   height: 5.1rem;
   width: 26.35rem;
-  border: 1px solid var(--color-slate-600);
+  border: 0.5px solid var(--color-slate-600);
   border-radius: 0.3rem;
   position: relative;
   color: var(--color-white);
@@ -254,7 +254,7 @@ button.App-connect-wallet:hover {
 }
 
 .App-header-user-address {
-  border: 1px solid var(--color-slate-600);
+  border: 0.5px solid var(--color-slate-600);
   height: 3.6rem;
   border-radius: 0.4rem;
   display: inline-flex;

@@ -30,14 +30,14 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
 
   return (
     <div className="overflow-hidden rounded-8 bg-slate-900">
-      <div className="border-b-[0.5px] border-slate-600 p-20 text-20 font-medium">
+      <div className="border-b-stroke border-slate-600 p-20 text-20 font-medium">
         <Trans>General Performance Details</Trans>
       </div>
 
       <TableScrollFadeContainer>
         <table className="w-full min-w-max">
           <thead>
-            <TableTheadTr bordered>
+            <TableTheadTr>
               <TableTh>
                 <Trans>Date</Trans>
               </TableTh>
@@ -95,7 +95,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
   const showDebugValues = useShowDebugValues();
 
   return (
-    <TableTr key={row.bucketLabel} hoverable={false} bordered={false}>
+    <TableTr key={row.bucketLabel} hoverable={false}>
       <TableTd>{_(bucketLabelMap[row.bucketLabel as keyof typeof bucketLabelMap])}</TableTd>
       <TableTd className="numbers">{formatUsd(row.volume, { maxThreshold: null })}</TableTd>
       <TableTd>

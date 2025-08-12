@@ -5,6 +5,12 @@
   top: 0;
   bottom: 0;
   right: 0;
+  border-radius: 0;
+  padding: 0;
+}
+
+.TokenSelector-modal .Modal-header-wrapper {
+  padding: 20px;
 }
 
 .TokenSelector-token-name {
@@ -67,6 +73,7 @@
   top: 0;
   bottom: 0;
   border: none;
+  padding: 0;
 }
 
 @media (max-width: 1024px) {

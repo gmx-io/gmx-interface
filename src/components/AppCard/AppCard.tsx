@@ -22,7 +22,7 @@ export function AppCardSection({
 }) {
   return (
     <div
-      className={cx("flex flex-col gap-12 border-b border-slate-600 px-20 py-13 last:border-b-0", className)}
+      className={cx("flex flex-col gap-12 border-b-stroke border-slate-600 px-20 py-13 last:border-b-0", className)}
       onClick={onClick}
     >
       {children}
@@ -42,8 +42,8 @@ export const AppCardSplit = ({
   className?: string;
 }) => {
   return (
-    <div className={cx("flex border-b border-slate-600 last:border-b-0", className)}>
-      <div className={cx("flex-1 border-r border-slate-600", leftClassName)}>{left}</div>
+    <div className={cx("flex border-b-stroke border-slate-600 last:border-b-0", className)}>
+      <div className={cx("flex-1 border-r-stroke border-slate-600", leftClassName)}>{left}</div>
       <div className="flex-1">{right}</div>
     </div>
   );

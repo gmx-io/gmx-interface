@@ -202,7 +202,7 @@ function MarketTokenSelectorInternal(props: Props) {
   const rowVerticalPadding = isMobile ? "py-8" : cx("h-50 group-last-of-type/row:pb-8");
   const rowHorizontalPadding = isMobile ? cx("px-6 first-of-type:pl-8 last-of-type:pr-8") : "px-16";
   const thClassName = cx(
-    "text-body-medium sticky top-0 z-10 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-slate-100 last-of-type:text-right",
+    "text-body-medium sticky top-0 z-10 border-b-stroke border-slate-600 bg-slate-800 text-left font-normal uppercase text-slate-100 last-of-type:text-right",
     isMobile ? "first-of-type:!pl-32" : "first-of-type:!pl-40",
     rowVerticalPadding,
     rowHorizontalPadding
@@ -299,7 +299,7 @@ function MarketTokenSelectorInternal(props: Props) {
                 />
               ))}
               {sortedMarketsByIndexToken.length > 0 && !sortedTokensInfo?.length && (
-                <TableTr hoverable={false} bordered={false}>
+                <TableTr hoverable={false}>
                   <TableTd colSpan={6} className="text-body-medium text-slate-100">
                     <Trans>No pools matched.</Trans>
                   </TableTd>

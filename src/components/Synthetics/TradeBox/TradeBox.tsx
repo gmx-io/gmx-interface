@@ -614,7 +614,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               onSelectToken={handleSelectFromTokenAddress}
               tokens={swapTokens}
               infoTokens={infoTokens}
-              size="l"
               showSymbolImage={true}
               showTokenImgInDropdown={true}
               missedCoinsPlace={MissedCoinsPlace.payToken}
@@ -713,7 +712,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 isSideMenu
                 missedCoinsPlace={MissedCoinsPlace.marketDropdown}
                 onSelectMarket={(_indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
-                size="l"
               />
             )}
           </BuyInputSection>
@@ -971,7 +969,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                             markets={sortedAllMarkets ?? EMPTY_ARRAY}
                             isSideMenu
                             onSelectMarket={handleSelectMarket}
-                            size="m"
                           />
                         }
                       />

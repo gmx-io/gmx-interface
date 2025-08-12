@@ -68,7 +68,7 @@ export function GmCard() {
     <AppCard>
       <AppCardSplit
         className="grid h-full grid-cols-[1fr_minmax(250px,auto)] max-md:grid-cols-1"
-        leftClassName="max-md:border-b max-md:border-r-0"
+        leftClassName="max-md:border-b-stroke max-md:border-r-0"
         left={
           <>
             <AppCardSection>

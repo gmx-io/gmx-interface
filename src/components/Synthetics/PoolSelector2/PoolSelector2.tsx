@@ -54,7 +54,7 @@ function PoolSelector2Desktop(props: Props) {
   return (
     <table className="PoolSelector2-table">
       <thead>
-        <TableTheadTr bordered>
+        <TableTheadTr>
           <TableTh padding="compact">
             <Trans>Pool</Trans>
           </TableTh>

@@ -31,30 +31,19 @@ export function TableTh(props: TableTdThProps) {
   );
 }
 
-export function TableTheadTr({
-  bordered,
-  ...props
-}: PropsWithChildren<{ bordered?: boolean }> & React.HTMLProps<HTMLTableRowElement>) {
-  return (
-    <tr
-      {...props}
-      className={cx(props.className, {
-        "border-b border-slate-700": bordered,
-      })}
-    />
-  );
+export function TableTheadTr({ ...props }: PropsWithChildren & React.HTMLProps<HTMLTableRowElement>) {
+  return <tr {...props} className={props.className} />;
 }
 
 export const TableTr = forwardRef<
   HTMLTableRowElement,
-  PropsWithChildren<{ hoverable?: boolean; bordered?: boolean }> & React.HTMLProps<HTMLTableRowElement>
->(function TableTrInternal({ hoverable = true, bordered = true, className, ...props }, ref) {
+  PropsWithChildren<{ hoverable?: boolean }> & React.HTMLProps<HTMLTableRowElement>
+>(function TableTrInternal({ hoverable = true, className, ...props }, ref) {
   return (
     <tr
       {...props}
       ref={ref}
       className={cx("odd:bg-fill-surfaceElevated50", className, {
-        "border-b border-slate-700 last-of-type:border-b-0": bordered,
         TableTr_hoverable: hoverable,
         "cursor-pointer": !!props.onClick,
       })}

@@ -152,7 +152,7 @@ export function ClaimsHistory({
               <col className="ClaimsHistory-size-column" />
             </colgroup>
             <thead>
-              <TableTheadTr bordered>
+              <TableTheadTr>
                 <TableTh>
                   <ActionFilter value={eventNameFilter} onChange={setEventNameFilter} />
                 </TableTh>

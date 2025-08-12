@@ -1,35 +1,39 @@
 .theme-dark:root {
   --dark-blue-bg: #121421;
   --color-blue-600: #2d42fc;
+  --color-fill-surfaceHover: #A0A3C41A;
+  --color-slate-100: #A0A3C4;
+  --color-slate-800: #178969;
+
   --tv-color-pane-background: var(--dark-blue-bg);
   --tv-color-platform-background: var(--dark-blue-bg);
   --tv-color-pane-background-secondary: var(--dark-blue-bg);
-  --tv-color-toolbar-button-text-hover: #b2b5be;
-  --tv-color-toolbar-button-background-hover: #272942;
+  --tv-color-toolbar-button-text-hover: #ffffff;
+  --tv-color-toolbar-button-background-hover: var(--color-fill-surfaceHover);
   --tv-color-toolbar-button-text-active: #ffffff;
-  --tv-color-toolbar-toggle-button-background-active: var(--color-blue-600);
-  --tv-color-toolbar-toggle-button-background-active-hover: var(--color-blue-600);
-  --tv-color-toolbar-button-background-expanded: var(--color-blue-600);
+  --tv-color-toolbar-toggle-button-background-active: var(--color-fill-surfaceHover);
+  --tv-color-toolbar-toggle-button-background-active-hover: var(--color-fill-surfaceHover);
+  --tv-color-toolbar-button-background-expanded: var(--color-fill-surfaceHover);
 
-  --tv-color-popup-background: #20243f;
-  --themed-color-bg-primary: #20243f;
+  --tv-color-popup-background: var(--color-slate-800);
+  --themed-color-bg-primary: var(--color-slate-800);
   --themed-color-properties-dialog-tab-bg: #2962ff;
 
-  --themed-color-properties-dialog-defaults-text: #b2b5be;
+  --themed-color-properties-dialog-defaults-text: var(--color-slate-100);
   --tv-color-popup-element-background-hover: var(--dark-blue-bg);
   --themed-color-item-row-bg-hover: var(--dark-blue-bg);
   --themed-color-background-hover: var(--dark-blue-bg);
-  --tv-color-popup-element-text: #b2b5be;
-  --tv-color-toolbar-button-text: #b2b5be;
+  --tv-color-popup-element-text: var(--color-slate-100);
+  --tv-color-toolbar-button-text: var(--color-slate-100);
   --tv-color-toolbar-button-text-active-hover: #ffffff;
   --tv-toolbar-explicit-hover-margin: 0px;
-  --themed-color-common-tooltip-bg: #20243f;
+  --themed-color-common-tooltip-bg: var(--color-slate-800);
 
-  --themed-color-container-fill-primary-accent: var(--color-blue-600);
-  --priceScaleModeButtons-background-activated: var(--color-blue-600);
-  --themed-color-background-selected: var(--color-blue-600);
+  --themed-color-container-fill-primary-accent: var(--color-fill-surfaceHover);
+  --priceScaleModeButtons-background-activated: var(--color-fill-surfaceHover);
+  --themed-color-background-selected: var(--color-fill-surfaceHover);
 
-  --themed-color-background-special-secondary: var(--color-blue-600);
+  --themed-color-background-special-secondary: var(--color-fill-surfaceHover);
 }
 
 html.theme-dark button:not(:disabled),
@@ -59,8 +63,8 @@ html.theme-dark .chart-controls-bar {
   margin-left: 8px;
 }
 #header-toolbar-intervals button[aria-checked="true"] {
-  background-color: #393e5e;
-  --tv-color-toolbar-button-background-hover: #393e5e;
+  background-color: var(--color-fill-surfaceHover);
+  --tv-color-toolbar-button-background-hover: var(--color-fill-surfaceHover);
 }
 
 [data-name="toolbar-drawing-toggle-button"][data-value="collapsed"] {

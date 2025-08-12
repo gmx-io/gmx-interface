@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { BiChevronDown } from "react-icons/bi";
+import { FaChevronDown } from "react-icons/fa6";
 
 import { getMarketUiConfig } from "config/markets";
 import { getMarketBadge, getMarketIndexName, getMarketPoolName, MarketsInfoData } from "domain/synthetics/markets";
@@ -33,7 +33,6 @@ type ExtendedToken = Token & { isMarketToken?: boolean };
 type Props = {
   chainId: number;
   label?: string;
-  size?: "m" | "l";
   className?: string;
   tokenAddress: string;
   tokens: ExtendedToken[];
@@ -80,7 +79,6 @@ export default function TokenSelector(props: Props) {
     missedCoinsPlace,
     marketsInfoData,
     chainId,
-    size = "m",
     qa,
   } = props;
 
@@ -194,17 +192,7 @@ export default function TokenSelector(props: Props) {
   }
 
   return (
-    <div
-      className={cx(
-        "TokenSelector",
-        {
-          "-mr-2": size === "m",
-          "text-h2 -mr-5": size === "l",
-        },
-        props.className
-      )}
-      onClick={(event) => event.stopPropagation()}
-    >
+    <div className={cx("TokenSelector text-body-medium", props.className)} onClick={(event) => event.stopPropagation()}>
       <SlideModal
         qa={qa + "-modal"}
         className="TokenSelector-modal text-white"
@@ -214,7 +202,7 @@ export default function TokenSelector(props: Props) {
         footerContent={footerContent}
         headerContent={
           <SearchInput
-            className="*:!text-body-medium min-[700px]:mt-15"
+            className="*:!text-body-medium"
             value={searchKeyword}
             setValue={setSearchKeyword}
             onKeyDown={_handleKeyDown}
@@ -251,7 +239,7 @@ export default function TokenSelector(props: Props) {
                 key={token.address}
                 data-qa={`${qa}-token-${token.symbol}`}
                 className={cx(
-                  "text-body-medium flex w-full cursor-pointer items-center justify-between rounded-8 bg-slate-800  p-8 hover:bg-slate-700",
+                  "text-body-medium flex w-full cursor-pointer items-center justify-between px-20 py-8 hover:bg-slate-800",
                   { disabled: tokenState.disabled }
                 )}
                 onClick={() => !tokenState.disabled && onSelectToken(token)}
@@ -271,7 +259,7 @@ export default function TokenSelector(props: Props) {
                   {showTokenImgInDropdown && (
                     <TokenIcon symbol={token.symbol} className="" displaySize={40} importSize={40} badge={tokenBadge} />
                   )}
-                  <div className="text-body-large ml-8 flex items-center gap-4">
+                  <div className="items text-body-large ml-16 flex gap-4">
                     <div>
                       {token.isMarketToken && marketToken ? `GM: ${getMarketIndexName(marketToken)}` : token.symbol}
                     </div>
@@ -298,25 +286,25 @@ export default function TokenSelector(props: Props) {
           })}
         </div>
         {sortedFilteredTokens.length === 0 && (
-          <div className="text-16 text-slate-100">
+          <div className="p-20 text-16 text-slate-100">
             <Trans>No tokens matched.</Trans>
           </div>
         )}
       </SlideModal>
       <div
         data-qa={qa}
-        className="group/hoverable flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
+        className="group/hoverable group flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-300"
         onClick={() => setIsModalVisible(true)}
       >
         {selectedTokenLabel || (
           <span className="inline-flex items-center">
             {showSymbolImage && (
-              <TokenIcon className="mr-5" symbol={tokenInfo.symbol} importSize={24} displaySize={20} />
+              <TokenIcon className="mr-4" symbol={tokenInfo.symbol} importSize={24} displaySize={20} />
             )}
             <span>{showTokenName ? tokenInfo.name : tokenInfo.symbol}</span>
           </span>
         )}
-        <BiChevronDown className="text-body-large" />
+        <FaChevronDown className="w-12 text-slate-100 group-hover:text-blue-300" />
       </div>
     </div>
   );

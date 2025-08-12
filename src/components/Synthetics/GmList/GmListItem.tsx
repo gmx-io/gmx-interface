@@ -222,7 +222,7 @@ export function GmListItem({
   }
 
   return (
-    <TableTr key={token.address} bordered={false} hoverable={false}>
+    <TableTr key={token.address} hoverable={false}>
       <TableTd className="w-[22%] !py-10 pl-16">
         <div className="w-[220px]">
           <div className="flex items-center gap-8">

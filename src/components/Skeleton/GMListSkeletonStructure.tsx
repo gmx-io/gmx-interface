@@ -4,7 +4,7 @@ import { TableTd, TableTr } from "components/Table/Table";
 
 export default function GMListSkeletonStructure({ withFavorite = true }: { withFavorite?: boolean }) {
   return (
-    <TableTr hoverable={false} bordered={false}>
+    <TableTr hoverable={false}>
       <TableTd>
         <div className="flex items-center">
           {withFavorite && <Skeleton width={32} height={32} borderRadius={4} className="-ml-8 mr-4" />}

@@ -428,7 +428,7 @@ function ChartHeaderDesktop() {
           </div>
         </div>
         <div className={cx("flex gap-20 overflow-x-auto scrollbar-hide")} ref={scrollableRef}>
-          <div className="Chart-price">
+          <div className="flex flex-col justify-center gap-2">
             <div className="mb-2 text-[13px] numbers">{avgPrice}</div>
             <div className="text-body-small numbers">{dayPriceDelta}</div>
           </div>
@@ -441,7 +441,7 @@ function ChartHeaderDesktop() {
 
 const ChartHeaderItem = ({ label, value }: { label: ReactNode; value: ReactNode }) => {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col justify-center gap-2">
       <div className="whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.08em] text-slate-100">
         {label}
       </div>

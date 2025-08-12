@@ -337,7 +337,7 @@ export function SyntheticsPage(p: Props) {
       className="max-lg:pb-40"
     >
       {isTablet ? <ChartHeader /> : null}
-      <div className="flex lg:grow gap-8 pt-0 max-lg:flex-col">
+      <div className="flex gap-8 pt-0 max-lg:flex-col lg:grow">
         <div className="Exchange-left flex grow flex-col gap-8">
           <OneClickPromoBanner openSettings={openSettings} />
           <Chart />
@@ -424,7 +424,7 @@ export function SyntheticsPage(p: Props) {
             </div>
 
             {isMobile && [ListSection.Trades, ListSection.Claims].includes(listSection as ListSection) ? (
-              <div className="border-b border-slate-600 bg-slate-900 py-4">{actions}</div>
+              <div className="border-b-stroke border-slate-600 bg-slate-900 py-4">{actions}</div>
             ) : null}
 
             {listSection === ListSection.Positions && (

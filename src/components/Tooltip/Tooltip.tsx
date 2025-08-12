@@ -135,7 +135,7 @@ export default function Tooltip<T extends ElementType>({
           }
         },
       }),
-      arrow({ element: arrowRef, padding: 4 }),
+      arrow({ element: arrowRef, padding: 6 }),
     ],
     placement: position,
     whileElementsMounted: autoUpdate,
@@ -205,7 +205,7 @@ export default function Tooltip<T extends ElementType>({
       {...getFloatingProps()}
       className={cx("Tooltip-popup", tooltipClassName)}
     >
-      <FloatingArrow ref={arrowRef} context={context} className="fill-[#2b2d41]" />
+      <FloatingArrow ref={arrowRef} context={context} className="scale-3 fill-[#2b2d41]" />
       {finalContent}
     </div>
   ) : undefined;

@@ -46,16 +46,11 @@ const TAB_CONTENTS = {
   ),
 };
 
-const TABS_CLASSNAME = {
-  active: "border-b-2 border-b-blue-500",
-  regular: "border-b-2 border-b-[transparent]",
-};
 const TABS = isDevelopment() ? ["PRICE", "DEPTH", "MARKET_GRAPH"] : ["PRICE", "DEPTH"];
 
 const TABS_OPTIONS = TABS.map((tab) => ({
   value: tab,
-  label: TAB_LABELS[tab],
-  className: TABS_CLASSNAME,
+  label: TAB_LABELS[tab]
 }));
 
 export function Chart() {
@@ -98,13 +93,5 @@ function DepthChartContainer() {
 }
 
 const ChartTabs = ({ tab, setTab }: { tab: string | undefined; setTab: (tab: string) => void }) => {
-  return (
-    <Tabs
-      options={TABS_OPTIONS}
-      selectedValue={tab}
-      onChange={setTab}
-      regularOptionClassname="grow-0 -mb-[0.5px]"
-      className="border-b border-slate-600"
-    />
-  );
+  return <Tabs options={TABS_OPTIONS} selectedValue={tab} onChange={setTab} />;
 };

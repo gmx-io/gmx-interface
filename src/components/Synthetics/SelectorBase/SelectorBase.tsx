@@ -99,7 +99,6 @@ export function SelectorBaseDesktopRow(
         className={cx("SelectorBaseUtils-row SelectorBaseUtils-row-disabled", props.className)}
         content={props.disabledMessage}
         position="left-start"
-        bordered={false}
         hoverable={false}
       >
         {props.children}
@@ -117,7 +116,6 @@ export function SelectorBaseDesktopRow(
         )}
         content={props.message}
         position="bottom-end"
-        bordered={false}
         hoverable={!!props.onClick}
         onClick={props.disabled ? undefined : props.onClick}
       >
@@ -135,7 +133,6 @@ export function SelectorBaseDesktopRow(
         },
         props.className
       )}
-      bordered={false}
       hoverable={!!props.onClick}
       onClick={props.disabled ? undefined : props.onClick}
     >
@@ -190,7 +187,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
         <>
           <Popover.Button
             as="div"
-            className={cx("SelectorBase-button group/selector-base gap-8", props.handleClassName)}
+            className={cx("SelectorBase-button group/selector-base group gap-8", props.handleClassName)}
             ref={refs.setReference}
             data-qa={props.qa ? props.qa + "-button" : undefined}
           >

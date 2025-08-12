@@ -207,7 +207,7 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
         </div>
       </div>
       {isMobile ? (
-        <div className="flex justify-center border-t-[0.5px] border-t-slate-600 px-16 py-12">{poolsTabs}</div>
+        <div className="flex justify-center border-t-stroke border-t-slate-600 px-16 py-12">{poolsTabs}</div>
       ) : null}
     </div>
   );

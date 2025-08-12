@@ -30,7 +30,8 @@ export function FavoriteTabs({
           key={option}
           type="button"
           variant={"ghost"}
-          className={cx("!text-body-medium", className, {
+          size="small"
+          className={cx(className, {
             "!bg-slate-800 !text-white": tab === option,
             [activeClassName]: activeClassName && tab === option,
           })}

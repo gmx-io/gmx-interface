@@ -47,7 +47,7 @@ export function MarketsListV1({
         </div>
         <table className="w-full">
           <thead>
-            <TableTheadTr bordered>
+            <TableTheadTr>
               <TableTh>
                 <Trans>TOKEN</Trans>
               </TableTh>
@@ -87,7 +87,7 @@ export function MarketsListV1({
               }
 
               return (
-                <TableTr key={token.address} bordered={false} hoverable={false}>
+                <TableTr key={token.address} hoverable={false}>
                   <TableTd>
                     <div className="token-symbol-wrapper">
                       <div className="App-card-title-info">

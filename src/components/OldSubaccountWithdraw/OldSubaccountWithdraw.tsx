@@ -98,14 +98,12 @@ export function OldSubaccountWithdraw() {
   }
 
   return (
-    <ColorfulBanner color="slate" icon={<IconInfo />}>
-      <div className="text-12">
-        <Trans>You have {balanceFormatted} remaining in your old version 1CT subaccount.</Trans>
-        <br />
-        <Button variant="link" className="mt-8 !text-12" onClick={withdrawWeth} disabled={isWithdrawing}>
-          {isWithdrawing ? <Trans>Withdrawing</Trans> : <Trans>Withdraw</Trans>}
-        </Button>
-      </div>
+    <ColorfulBanner color="blue" icon={IconInfo}>
+      <Trans>You have {balanceFormatted} remaining in your old version 1CT subaccount.</Trans>
+      <br />
+      <Button variant="link" className="mt-8 !text-12" onClick={withdrawWeth} disabled={isWithdrawing}>
+        {isWithdrawing ? <Trans>Withdrawing</Trans> : <Trans>Withdraw</Trans>}
+      </Button>
     </ColorfulBanner>
   );
 }

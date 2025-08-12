@@ -17,7 +17,7 @@ export default function AppPageLayout({
 }) {
   return (
     <div className={cx("flex h-full w-full gap-8 pr-0 md:p-8 lg:pb-0", className)}>
-      <div className="hidden lg:block">{sideNav ? sideNav : <SideNav />}</div>
+      <div className="z-30 hidden lg:block">{sideNav ? sideNav : <SideNav />}</div>
       <div className="flex h-full grow flex-col overflow-y-auto scrollbar-gutter-stable md:pr-8">
         <div className="flex grow flex-col md:gap-8">
           {header ? header : <AppHeader />}

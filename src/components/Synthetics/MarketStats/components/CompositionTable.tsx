@@ -56,7 +56,7 @@ export function CompositionTable<T extends CompositionType>({ composition, compo
     <div className="w-full">
       <table className="w-full">
         <thead>
-          <TableTheadTr bordered>
+          <TableTheadTr>
             {columns.map((column) => (
               <TableTh key={column} className="sticky top-0 bg-slate-900 first:!pl-20 last:!pr-20">
                 <Trans>{column}</Trans>

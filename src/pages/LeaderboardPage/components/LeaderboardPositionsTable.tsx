@@ -124,7 +124,7 @@ export function LeaderboardPositionsTable({
       <TableScrollFadeContainer>
         <table className="w-full min-w-[1024px] table-fixed">
           <thead>
-            <TableTheadTr bordered className="text-body-medium">
+            <TableTheadTr className="text-body-medium">
               <TableHeaderCell
                 title={t`Rank`}
                 width={6}
@@ -344,7 +344,7 @@ const TableRow = memo(
     ]);
 
     return (
-      <TableTr key={position.key} bordered={false}>
+      <TableTr key={position.key}>
         <TableCell className="relative">
           <span className={cx("numbers", getWinnerRankClassname(rank))}>
             <RankInfo rank={rank} hasSomeCapital />
@@ -440,7 +440,7 @@ const TableCell = memo(({ children, className }: { children: ReactNode; classNam
 
 const EmptyRow = memo(() => {
   return (
-    <TableTr hoverable={false} bordered={false} className="h-47">
+    <TableTr hoverable={false} className="h-47">
       <TableTd colSpan={7} className="align-top text-slate-100">
         <Trans>No results found</Trans>
       </TableTd>
