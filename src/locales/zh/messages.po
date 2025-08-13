@@ -2174,6 +2174,10 @@ msgstr "回扣将在每周空投一次"
 msgid "Display Settings"
 msgstr ""
 
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
+msgstr ""
+
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr "总数:"
@@ -4266,8 +4270,8 @@ msgid "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}
 msgstr ""
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-msgid "Claimed {0} successfully"
-msgstr ""
+#~ msgid "Claimed {0} successfully"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
@@ -8394,6 +8398,10 @@ msgstr "24小时数量"
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
+msgstr ""
+
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "Claimed {0} successfully."
 msgstr ""
 
 #: src/components/Synthetics/TwapRows/TwapRows.tsx

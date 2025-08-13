@@ -4,16 +4,14 @@ import { ImSpinner2 } from "react-icons/im";
 
 import { helperToast } from "lib/helperToast";
 import { TxnEvent, TxnEventName, WalletTxnCtx } from "lib/transactions";
-import { getToken } from "sdk/configs/tokens";
 
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
 export function useClaimFundsTransactionCallback(data: {
   tokens: string[];
-  chainId: number;
   claimableTokenTitles: Record<string, string>;
 }) {
-  const { tokens, chainId, claimableTokenTitles } = data;
+  const { tokens, claimableTokenTitles } = data;
 
   return useCallback(
     async (event: TxnEvent<WalletTxnCtx>) => {
@@ -49,17 +47,18 @@ export function useClaimFundsTransactionCallback(data: {
               <div className="text-body-medium font-bold">
                 <Trans>Funds claimed</Trans>
               </div>
-              <Trans>
-                Claimed{" "}
-                {tokens.map((token) => `${claimableTokenTitles[token]} ${getToken(chainId, token).symbol}`).join(", ")}{" "}
-                successfully
-              </Trans>
+              <div>
+                <Trans>Claimed {tokens.map((token) => claimableTokenTitles[token]).join(", ")} successfully.</Trans>
+              </div>
+              <div>
+                <Trans>Hold the GLV tokens for three months to be eligible for the $500,000 incentive program.</Trans>
+              </div>
             </div>
           );
 
           return;
       }
     },
-    [tokens, chainId, claimableTokenTitles]
+    [tokens, claimableTokenTitles]
   );
 }

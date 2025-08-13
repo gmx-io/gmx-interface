@@ -72,7 +72,6 @@ export default function ClaimableAmounts() {
 
   const claimFundsTransactionCallback = useClaimFundsTransactionCallback({
     tokens: claimableTokens,
-    chainId,
     claimableTokenTitles,
   });
 

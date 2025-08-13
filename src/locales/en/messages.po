@@ -2174,6 +2174,10 @@ msgstr "Rebates are airdropped weekly."
 msgid "Display Settings"
 msgstr "Display Settings"
 
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
+msgstr "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
+
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr "Total:"
@@ -4269,8 +4273,8 @@ msgid "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}
 msgstr "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-msgid "Claimed {0} successfully"
-msgstr "Claimed {0} successfully"
+#~ msgid "Claimed {0} successfully"
+#~ msgstr "Claimed {0} successfully"
 
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
@@ -8401,6 +8405,10 @@ msgstr "24h Volume"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
 msgstr "Total Stats"
+
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "Claimed {0} successfully."
+msgstr "Claimed {0} successfully."
 
 #: src/components/Synthetics/TwapRows/TwapRows.tsx
 msgid "Frequency"
