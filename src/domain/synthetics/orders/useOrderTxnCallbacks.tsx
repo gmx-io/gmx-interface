@@ -194,6 +194,8 @@ export function useOrderTxnCallbacks() {
             payTokenAddresses: Object.keys(optimisticBatchPayAmounts),
             pendingOrdersKeys: pendingOrders.map(getPendingOrderKey),
             pendingPositionsKeys: pendingPositions.map((p) => p.positionKey),
+            estimatedExecutionFee: expressParams.executionFeeAmount,
+            estimatedExecutionGasLimit: expressParams.executionGasLimit,
             metricId: ctx.metricId,
             createdAt: Date.now(),
             taskId: undefined,
@@ -318,16 +320,15 @@ export function useOrderTxnCallbacks() {
           if (isPermitIssue) {
             expressParams?.relayParamsPayload.tokenPermits.forEach((permit) => {
               validateTokenPermitSignature(chainId, permit).then((validationResult) => {
-                if (!validationResult.isValid) {
-                  metrics.pushError(
-                    getInvalidPermitSignatureError({
-                      permit,
-                      recoveredAddress: validationResult.recoveredAddress,
-                      error: validationResult.error,
-                    }),
-                    "simulation.permitError"
-                  );
-                }
+                metrics.pushError(
+                  getInvalidPermitSignatureError({
+                    isValid: validationResult.isValid,
+                    permit,
+                    recoveredAddress: validationResult.recoveredAddress,
+                    error: validationResult.error,
+                  }),
+                  "simulation.permitError"
+                );
               });
             });
 

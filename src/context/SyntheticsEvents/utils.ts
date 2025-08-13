@@ -1,4 +1,4 @@
-import { extendError } from "lib/errors";
+import { ErrorLike, extendError } from "lib/errors";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
 
 import type {
@@ -85,21 +85,41 @@ export function getPendingShiftKey(data: PendingShiftData) {
 
 const BYTECODE_REGEXP = /0x[a-fA-F0-9]+/;
 
-export async function sendGelatoTaskStatusMetric(metricId: OrderMetricId, gelatoTaskStatus: GelatoTaskStatus) {
+export function extractGelatoError(gelatoTaskStatus: GelatoTaskStatus) {
   const bytecodeMatch = gelatoTaskStatus.lastCheckMessage?.match(BYTECODE_REGEXP);
 
   if (bytecodeMatch) {
     const bytecode = bytecodeMatch[0];
     const error = extendError(new Error(`data="${bytecode}"`), {
-      data: { taskId: gelatoTaskStatus.taskId },
+      data: { taskId: gelatoTaskStatus.taskId, lastCheckMessage: gelatoTaskStatus.lastCheckMessage },
     });
-    sendTxnErrorMetric(metricId, error, "relayer");
-    return;
+    return error;
   }
 
-  sendTxnErrorMetric(
-    metricId,
-    new Error(`Gelato task cancelled, unknown reason ${gelatoTaskStatus.taskId}`),
-    "relayer"
-  );
+  return extendError(new Error(`Gelato task cancelled, unknown reason`), {
+    data: { taskId: gelatoTaskStatus.taskId, lastCheckMessage: gelatoTaskStatus.lastCheckMessage },
+  });
+}
+
+export async function sendGelatoTaskStatusMetric(metricId: OrderMetricId, error: ErrorLike) {
+  sendTxnErrorMetric(metricId, error, "relayer");
+}
+
+export function getGelatoTaskUrl({
+  taskId,
+  isDebug,
+  tenderlyAccountSlug,
+  tenderlyProjectSlug,
+}: {
+  taskId: string;
+  isDebug: boolean;
+  tenderlyAccountSlug?: string;
+  tenderlyProjectSlug?: string;
+}) {
+  const tenderlySlugs =
+    tenderlyAccountSlug && tenderlyProjectSlug
+      ? `tenderlyUsername=${tenderlyAccountSlug}&tenderlyProjectName=${tenderlyProjectSlug}`
+      : "";
+
+  return `https://api.gelato.digital/tasks/status/${taskId}/${isDebug ? "debug" : ""}?${tenderlySlugs}`;
 }

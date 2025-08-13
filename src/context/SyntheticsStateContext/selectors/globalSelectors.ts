@@ -118,3 +118,5 @@ export const selectSubaccountForAction = createSelector((q) => {
 });
 
 export const selectOracleSettings = (s: SyntheticsState) => s.globals.oracleSettings;
+
+export const selectIsAutoCancelTPSLEnabled = (s: SyntheticsState) => s.settings.isAutoCancelTPSL;

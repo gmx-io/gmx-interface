@@ -1,3 +1,4 @@
+import { getIsFlagEnabled } from "config/ab";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "sdk/types/orders";
@@ -12,7 +13,13 @@ import {
 } from "sdk/utils/orderTransactions";
 import { getIsValidTwapParams } from "sdk/utils/twap";
 
-import { selectChainId, selectMaxAutoCancelOrders, selectSigner, selectUserReferralInfo } from "../globalSelectors";
+import {
+  selectChainId,
+  selectIsAutoCancelTPSLEnabled,
+  selectMaxAutoCancelOrders,
+  selectSigner,
+  selectUserReferralInfo,
+} from "../globalSelectors";
 import { makeSelectOrdersByPositionKey } from "../orderSelectors";
 import {
   selectTradeboxAllowedSlippage,
@@ -62,7 +69,8 @@ export const selectCommonOrderParams = createSelector((q) => {
   return {
     receiver: signer.address,
     chainId,
-    executionFeeAmount: executionFee.feeTokenAmount,
+    executionFeeAmount:
+      executionFee.feeTokenAmount / (getIsFlagEnabled("testExpressInsufficientExecutionFee") ? 2n : 1n),
     executionGasLimit: executionFee.gasLimit,
     referralCode: referralInfo?.referralCodeForTxn,
     allowedSlippage: isMarket ? allowedSlippage : undefined,
@@ -189,6 +197,7 @@ export const selectTradeboxDecreaseOrderParams = createSelector((q) => {
   const maxAutoCancelOrders = q(selectMaxAutoCancelOrders);
   const positionOrders = q(makeSelectOrdersByPositionKey(selectedPositionKey));
   const { isLong, isTwap } = q(selectTradeboxTradeFlags);
+  const isAutoCancelTPSLEnabled = q(selectIsAutoCancelTPSLEnabled);
 
   if (
     !commonParams ||
@@ -201,7 +210,7 @@ export const selectTradeboxDecreaseOrderParams = createSelector((q) => {
   }
 
   const existingAutoCancelOrders = positionOrders.filter((order) => order.autoCancel);
-  const allowedAutoCancelOrdersNumber = Number(maxAutoCancelOrders);
+  const allowedAutoCancelOrdersNumber = isAutoCancelTPSLEnabled ? Number(maxAutoCancelOrders) : 0;
   const autoCancelOrdersLimit = allowedAutoCancelOrdersNumber - existingAutoCancelOrders.length;
 
   const decreaseOrderParams: DecreasePositionOrderParams = {

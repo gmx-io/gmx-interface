@@ -19,6 +19,8 @@ const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
     { msg: "User denied transaction signature" },
     { msg: "User rejected" },
     { msg: "User cancelled" },
+    { msg: "Cancelled" },
+    { msg: "Cancelled by user" },
     { msg: "user rejected action" },
     { msg: "ethers-user-denied" },
     { msg: "Action cancelled by user" },
