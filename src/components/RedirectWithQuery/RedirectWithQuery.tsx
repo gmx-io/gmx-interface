@@ -1,4 +1,4 @@
-import { Redirect } from "react-router-dom";
+import { Redirect, useLocation } from "react-router-dom";
 
 type Props = {
   to: string;
@@ -7,5 +7,9 @@ type Props = {
 };
 
 export function RedirectWithQuery({ to, exact, from }: Props) {
-  return <Redirect exact={exact} from={from} to={`${to}${window.location.search}`} />;
+  const { search: reactSearch } = useLocation();
+
+  const queryParams = reactSearch || window.location.search;
+
+  return <Redirect exact={exact} from={from} to={`${to}${queryParams}`} />;
 }
