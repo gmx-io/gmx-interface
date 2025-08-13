@@ -19,7 +19,7 @@ export function LiqiuditySection() {
             <Trans>Start Earning</Trans>
           </button>
         </div>
-        <div className="flex w-full flex-col justify-between gap-16 sm:flex-row">
+        <div className="flex w-full flex-col justify-between gap-16 md:flex-row">
           <PoolCards />
         </div>
       </div>
