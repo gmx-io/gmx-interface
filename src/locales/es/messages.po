@@ -486,10 +486,6 @@ msgstr "Intercambiar {0} a {1} en 1inch"
 msgid "No pools matched."
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}"
-#~ msgstr ""
-
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -8514,6 +8510,10 @@ msgstr "El precio se encuentra por encima del precio de referencia"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Gemini Wallet is not supported for Express or One-Click trading."
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
