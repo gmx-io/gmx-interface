@@ -117,6 +117,7 @@ export function GmList({
   return (
     <PoolsCard
       title={t`GM Pools`}
+      className="grow"
       description={
         <div className="flex flex-col gap-16">
           <Trans>
@@ -163,7 +164,7 @@ export function GmList({
           <TableScrollFadeContainer>
             <table className="w-[max(100%,1000px)]">
               <thead>
-                <TableTheadTr>
+                <TableTheadTr className="sticky">
                   <TableTh className="pl-16">
                     <Trans>POOL</Trans>
                   </TableTh>

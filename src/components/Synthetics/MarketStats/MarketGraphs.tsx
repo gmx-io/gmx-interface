@@ -139,9 +139,9 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
   );
 
   const graphTitleLabelMap = {
-    performance: <PerformanceLabel short={false} disableHandleStyle />,
+    performance: <PerformanceLabel short={false} styleType="none" />,
     price: t`Current Price`,
-    feeApr: <FeeApyLabel disableHandleStyle />,
+    feeApr: <FeeApyLabel styleType="none" />,
   };
 
   const poolsTabs = (

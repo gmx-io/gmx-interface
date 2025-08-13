@@ -24,5 +24,5 @@ export function TokenValuesInfoCell({
       )}
     </>
   );
-  return singleLine ? <div className="flex gap-4">{content}</div> : content;
+  return singleLine ? <div className="flex gap-4">{content}</div> : <div>{content}</div>;
 }

@@ -65,7 +65,7 @@ export default function Pools() {
   const isBotanix = chainId === BOTANIX;
 
   return (
-    <AppPageLayout header={<ChainContentHeader />}>
+    <AppPageLayout header={<ChainContentHeader />} contentClassName="lg:overflow-hidden">
       <div
         className={cx("grid w-full flex-col", {
           "grid-cols-1": isMobile,
@@ -84,7 +84,7 @@ export default function Pools() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-16">
+      <div className="flex grow flex-col gap-16 lg:overflow-hidden">
         {!isBotanix && (
           <GlvList
             marketsTokensApyData={marketsTokensApyData}
@@ -125,7 +125,7 @@ function PoolsTvl() {
 
   return (
     <div className="flex flex-col gap-8">
-      <span className="text-h1 numbers normal-nums">{formatUsd(tvl, { displayDecimals: 0 })}</span>
+      <span className="text-h1 normal-nums numbers">{formatUsd(tvl, { displayDecimals: 0 })}</span>
       <span className="text-body-medium font-medium text-slate-100">TVL in vaults and pools.</span>
     </div>
   );

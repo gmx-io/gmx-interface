@@ -30,7 +30,6 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import Button from "components/Button/Button";
-import ButtonLink from "components/Button/ButtonLink";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -212,11 +211,7 @@ export function GmListItem({
           />
         </div>
 
-        <Button
-          variant="secondary"
-          className="mt-12"
-          to={`/pools/details?market=${marketOrGlvTokenAddress}`}
-        >
+        <Button variant="secondary" className="mt-12" to={`/pools/details?market=${marketOrGlvTokenAddress}`}>
           <Trans>View Details</Trans>
         </Button>
       </div>
