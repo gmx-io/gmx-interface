@@ -1,11 +1,10 @@
 import { AbFlag, getAbFlagUrlParams } from "config/ab";
-import { getRefCodeParamString } from "domain/referrals";
 import { getStoredUtmParams } from "domain/utm";
 import { UserAnalyticsEventItem } from "lib/oracleKeeperFetcher";
 import { sleep } from "lib/sleep";
 
-import { getOrSetSessionId, SESSION_ID_KEY, setLastEventTime } from "./sessionId";
 import { metrics } from "../metrics/Metrics";
+import { getOrSetSessionId, SESSION_ID_KEY, setLastEventTime } from "./sessionId";
 
 type CommonEventParams = {
   platform?: string;
