@@ -300,7 +300,7 @@ function AffiliatesStats({
         />
         <ReferralInfoCard
           label={t`Claimable Rebates`}
-          labelTooltipText={t`Claim V2 rebates from your referred traders.`}
+          labelTooltipText={t`Claimable rebates from your referred traders.`}
           className="AffiliateStats-claimable-rewards-card"
         >
           <div className="AffiliateStats-claimable-rewards-container">
