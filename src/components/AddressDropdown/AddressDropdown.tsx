@@ -39,12 +39,13 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
   const [, copyToClipboard] = useCopyToClipboard();
   const { openNotifyModal } = useNotifyModalState();
   const { ensName } = useENS(account);
-  const displayAddressLength = 12;
+  const { isMobile } = useBreakpoints();
+
+  const displayAddressLength = isMobile ? 9 : 13;
 
   const { chainId } = useChainId();
   const isBotanix = chainId === BOTANIX;
 
-  const { isMobile } = useBreakpoints();
 
   return (
     <div className="relative">

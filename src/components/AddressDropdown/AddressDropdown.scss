@@ -51,9 +51,7 @@
     font-weight: 500;
 
     &:hover {
-      background: #808aff14 !important;
-      border-radius: 0.4rem;
-      opacity: 1;
+      background: var(--color-slate-800);
       color: var(--color-white);
     }
 

@@ -232,6 +232,10 @@ msgstr "Versuche Express-Trading"
 msgid "Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if there is not enough available liquidity."
 msgstr "Beachte, dass es seltene Fälle geben kann, in denen der Auftrag nicht ausgeführt werden kann, z. B. wenn die Chain down ist und keine Oracle-Berichte produziert werden oder wenn nicht genügend Liquidität verfügbar ist."
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Pools providing liquidity to specific GMX markets, supporting <0/> single-asset and native asset options."
+msgstr ""
+
 #: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Buy {gasPaymentTokensText}"
@@ -3157,8 +3161,8 @@ msgid "App"
 msgstr "App"
 
 #: src/components/Synthetics/GmList/GlvList.tsx
-msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets."
-msgstr "Yield-optimierte Vaults, die Liquidität über mehrere GMX-Märkte bereitstellen."
+#~ msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets."
+#~ msgstr "Yield-optimierte Vaults, die Liquidität über mehrere GMX-Märkte bereitstellen."
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to Wallet"
@@ -5544,6 +5548,10 @@ msgstr "Governance-Alarme"
 msgid "Swap {0} {1} for{2} USDG"
 msgstr "Swap {0} {1} für{2} USDG"
 
+#: src/components/Synthetics/GmList/GlvList.tsx
+msgid "Yield-optimized vaults supplying liquidity across multiple GMX<0/> markets."
+msgstr ""
+
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
 msgstr "Governance"
@@ -6607,8 +6615,8 @@ msgid "You"
 msgstr "Du"
 
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options."
-msgstr "Pools, die Liquidität für spezifische GMX-Märkte bereitstellen, mit Unterstützung für Single-Asset- und Native-Asset-Optionen."
+#~ msgid "Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options."
+#~ msgstr "Pools, die Liquidität für spezifische GMX-Märkte bereitstellen, mit Unterstützung für Single-Asset- und Native-Asset-Optionen."
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivate 1CT (One-Click Trading)"

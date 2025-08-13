@@ -232,6 +232,10 @@ msgstr "익스프레스 트레이딩 시도"
 msgid "Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if there is not enough available liquidity."
 msgstr "주문이 실행되지 않을 수 있는 드문 경우가 있을 수 있습니다. 예를 들어 체인이 다운되어 오라클 보고서가 생성되지 않거나 사용 가능한 유동성이 충분하지 않은 경우입니다."
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Pools providing liquidity to specific GMX markets, supporting <0/> single-asset and native asset options."
+msgstr ""
+
 #: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Buy {gasPaymentTokensText}"
@@ -3157,8 +3161,8 @@ msgid "App"
 msgstr "앱"
 
 #: src/components/Synthetics/GmList/GlvList.tsx
-msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets."
-msgstr "여러 GMX 시장에 유동성을 공급하는 수익 최적화 볼트."
+#~ msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets."
+#~ msgstr "여러 GMX 시장에 유동성을 공급하는 수익 최적화 볼트."
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to Wallet"
@@ -5544,6 +5548,10 @@ msgstr "거버넌스 알림"
 msgid "Swap {0} {1} for{2} USDG"
 msgstr "{0} {1}을 {2} USDG로 스왑"
 
+#: src/components/Synthetics/GmList/GlvList.tsx
+msgid "Yield-optimized vaults supplying liquidity across multiple GMX<0/> markets."
+msgstr ""
+
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
 msgstr "거버넌스"
@@ -6607,8 +6615,8 @@ msgid "You"
 msgstr "당신"
 
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options."
-msgstr "단일 자산 및 네이티브 자산 옵션을 지원하는 특정 GMX 시장에 유동성을 제공하는 풀."
+#~ msgid "Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options."
+#~ msgstr "단일 자산 및 네이티브 자산 옵션을 지원하는 특정 GMX 시장에 유동성을 제공하는 풀."
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivate 1CT (One-Click Trading)"

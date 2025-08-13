@@ -27,7 +27,7 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
 
   return (
     <>
-      <div className={cx("flex w-full justify-between pb-4", { "flex-col": isMobileSideNav })}>
+      <div className={cx("flex w-full justify-between", { "flex-col": isMobileSideNav })}>
         <div className={cx("flex flex-row items-center justify-center", { "flex-wrap": isMobileSideNav })}>
           {getFooterLinks(isHome).map(({ external, label, link, isAppLink }) => {
             if (external) {

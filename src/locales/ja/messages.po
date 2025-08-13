@@ -232,6 +232,10 @@ msgstr "エクスプレストレーディングを試す"
 msgid "Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if there is not enough available liquidity."
 msgstr "注文が執行されない稀なケースがある可能性があります。例えば、チェーンがダウンしてオラクルレポートが生成されない場合や、十分な流動性が利用できない場合などです。"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Pools providing liquidity to specific GMX markets, supporting <0/> single-asset and native asset options."
+msgstr ""
+
 #: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Buy {gasPaymentTokensText}"
@@ -3157,8 +3161,8 @@ msgid "App"
 msgstr "アプリ"
 
 #: src/components/Synthetics/GmList/GlvList.tsx
-msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets."
-msgstr "複数のGMXマーケットに流動性を供給する利回り最適化ボールト。"
+#~ msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets."
+#~ msgstr "複数のGMXマーケットに流動性を供給する利回り最適化ボールト。"
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to Wallet"
@@ -5544,6 +5548,10 @@ msgstr "ガバナンスアラート"
 msgid "Swap {0} {1} for{2} USDG"
 msgstr "{0} {1} を{2} USDGにスワップ"
 
+#: src/components/Synthetics/GmList/GlvList.tsx
+msgid "Yield-optimized vaults supplying liquidity across multiple GMX<0/> markets."
+msgstr ""
+
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
 msgstr "ガバナンス"
@@ -6607,8 +6615,8 @@ msgid "You"
 msgstr "あなた"
 
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options."
-msgstr "特定のGMX市場に流動性を提供するプールで、単一アセットおよびネイティブアセットオプションをサポート。"
+#~ msgid "Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options."
+#~ msgstr "特定のGMX市場に流動性を提供するプールで、単一アセットおよびネイティブアセットオプションをサポート。"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivate 1CT (One-Click Trading)"

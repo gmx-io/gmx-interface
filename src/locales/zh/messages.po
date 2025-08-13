@@ -232,6 +232,10 @@ msgstr "尝试快速交易"
 msgid "Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if there is not enough available liquidity."
 msgstr "请注意，在极少数情况下，订单可能无法执行，例如，如果链条中断且没有预言机报告生成，或者如果没有足够的可用流动性。"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Pools providing liquidity to specific GMX markets, supporting <0/> single-asset and native asset options."
+msgstr ""
+
 #: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Buy {gasPaymentTokensText}"
@@ -3157,8 +3161,8 @@ msgid "App"
 msgstr "应用程序"
 
 #: src/components/Synthetics/GmList/GlvList.tsx
-msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets."
-msgstr "跨多个 GMX 市场提供流动性的收益优化金库。"
+#~ msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets."
+#~ msgstr "跨多个 GMX 市场提供流动性的收益优化金库。"
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to Wallet"
@@ -5544,6 +5548,10 @@ msgstr "治理警报"
 msgid "Swap {0} {1} for{2} USDG"
 msgstr "将 {0} {1} 交换为{2} USDG"
 
+#: src/components/Synthetics/GmList/GlvList.tsx
+msgid "Yield-optimized vaults supplying liquidity across multiple GMX<0/> markets."
+msgstr ""
+
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
 msgstr "治理"
@@ -6607,8 +6615,8 @@ msgid "You"
 msgstr "您"
 
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options."
-msgstr "为特定 GMX 市场提供流动性的池，支持单资产和原生资产选项。"
+#~ msgid "Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options."
+#~ msgstr "为特定 GMX 市场提供流动性的池，支持单资产和原生资产选项。"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivate 1CT (One-Click Trading)"

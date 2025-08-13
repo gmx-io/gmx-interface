@@ -143,6 +143,7 @@ export function GmListItem({
                 importSize={40}
                 badge={tokenIconBadge}
                 className="min-h-40 min-w-40"
+                badgeClassName={isGlv ? "left-[50%] -translate-x-1/2 right-[unset] bottom-0" : undefined}
               />
             </div>
             <div className="flex flex-col">
@@ -211,12 +212,13 @@ export function GmListItem({
           />
         </div>
 
-        <ButtonLink
-          className="mt-12 bg-slate-800 p-8 text-center font-medium text-slate-100 hover:bg-slate-700 hover:text-white active:bg-slate-700 active:text-white"
+        <Button
+          variant="secondary"
+          className="mt-12"
           to={`/pools/details?market=${marketOrGlvTokenAddress}`}
         >
           <Trans>View Details</Trans>
-        </ButtonLink>
+        </Button>
       </div>
     );
   }
@@ -239,6 +241,7 @@ export function GmListItem({
                 importSize={40}
                 badge={tokenIconBadge}
                 className="min-h-40 min-w-40"
+                badgeClassName={isGlv ? "left-[50%] -translate-x-1/2 right-[unset] bottom-0" : undefined}
               />
             </div>
             <div>
@@ -272,7 +275,7 @@ export function GmListItem({
           usdOnTop
         />
       </TableTd>
-      <TableTd className="w-[13%]">
+      <TableTd className="w-[11%]">
         <GmTokensBalanceInfo
           token={token}
           daysConsidered={daysConsidered}
@@ -282,19 +285,19 @@ export function GmListItem({
         />
       </TableTd>
 
-      <TableTd className="w-[13%]">
+      <TableTd className="w-[11%]">
         <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
       </TableTd>
 
-      <TableTd className="w-[13%]">
+      <TableTd className="w-[18%]">
         {performance ? <div className="numbers">{formatPerformanceBps(performance)}</div> : "..."}
       </TableTd>
 
-      <TableTd className="w-[13%]">
+      <TableTd className="w-[14%]">
         <SnapshotGraph performanceSnapshots={performanceSnapshots ?? EMPTY_ARRAY} performance={performance ?? 0} />
       </TableTd>
 
-      <TableTd className="w-[13%] pr-16">
+      <TableTd className="w-[10%] pr-16">
         <Button
           className="flex flex-grow items-center gap-4"
           variant="ghost"
