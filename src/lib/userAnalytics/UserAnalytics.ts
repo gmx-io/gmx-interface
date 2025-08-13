@@ -142,9 +142,8 @@ export class UserAnalytics {
     const sessionIdParam = `${SESSION_ID_KEY}=${getOrSetSessionId()}`;
     const abFlagsParams = getAbFlagUrlParams();
     const utmParams = getStoredUtmParams();
-    const refParam = getRefCodeParamString();
 
-    return [sessionIdParam, abFlagsParams, utmParams, refParam].filter(Boolean).join("&");
+    return [sessionIdParam, abFlagsParams, utmParams?.utmString].filter(Boolean).join("&");
   }
 
   pushEvent = async <T extends AnalyticsEventParams = never>(
