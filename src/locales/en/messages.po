@@ -2584,7 +2584,7 @@ msgstr "There may not be sufficient liquidity to execute the pay token to collat
 msgid "User Quests"
 msgstr "User Quests"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Funds claimed"
 msgstr "Funds claimed"
 
@@ -4213,7 +4213,7 @@ msgstr "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th
 msgid "tBTC LP incentives"
 msgstr "tBTC LP incentives"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Failed to claim funds"
 msgstr "Failed to claim funds"
 
@@ -4264,7 +4264,7 @@ msgstr "<0>Notifications are provided by Notifi and not affiliated with GMX. By
 msgid "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 msgstr "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Claimed {0} successfully"
 msgstr "Claimed {0} successfully"
 
@@ -8173,7 +8173,7 @@ msgstr "Claims History"
 msgid "About"
 msgstr "About"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "This may take a few minutes."
 msgstr "This may take a few minutes."
 
@@ -8300,7 +8300,7 @@ msgstr "You do not have any eligible trade during the competition window."
 msgid "Execution prices for increasing longs and<0/>decreasing shorts."
 msgstr "Execution prices for increasing longs and<0/>decreasing shorts."
 
-#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Processing your claim…"
 msgstr "Processing your claim…"
 

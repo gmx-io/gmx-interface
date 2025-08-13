@@ -2584,7 +2584,7 @@ msgstr ""
 msgid "User Quests"
 msgstr ""
 
-#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Funds claimed"
 msgstr ""
 
@@ -4210,7 +4210,7 @@ msgstr "Opere en GMX y gane <0>$250.000</0> en premios! Activo hasta el 30 de No
 msgid "tBTC LP incentives"
 msgstr ""
 
-#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Failed to claim funds"
 msgstr ""
 
@@ -4261,7 +4261,7 @@ msgstr ""
 msgid "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 msgstr ""
 
-#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Claimed {0} successfully"
 msgstr ""
 
@@ -8167,7 +8167,7 @@ msgstr ""
 msgid "About"
 msgstr "Sobre"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "This may take a few minutes."
 msgstr ""
 
@@ -8294,7 +8294,7 @@ msgstr ""
 msgid "Execution prices for increasing longs and<0/>decreasing shorts."
 msgstr ""
 
-#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Processing your claim…"
 msgstr ""
 
