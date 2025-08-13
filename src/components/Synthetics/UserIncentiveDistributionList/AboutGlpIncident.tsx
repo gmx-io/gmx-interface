@@ -112,7 +112,7 @@ export function AboutGlpIncident() {
           <div className="text-slate-100">
             <Trans>
               Yes, GLV is fully liquid and permissionless. You can sell via the GMX interface to redeem for underlying
-              assets, with low fees. Selling will reduce your incentive eligibility proportionally.
+              assets, with low fees.
             </Trans>
           </div>
         </ExpandableRow>
