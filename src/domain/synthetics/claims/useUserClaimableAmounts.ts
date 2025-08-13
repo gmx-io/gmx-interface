@@ -7,7 +7,7 @@ import { selectGlvInfo, selectMarketsInfoData } from "context/SyntheticsStateCon
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { TokenData } from "domain/tokens";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
-import { getTokenBySymbol } from "sdk/configs/tokens";
+import { getTokenBySymbolSafe } from "sdk/configs/tokens";
 import { convertToUsd } from "sdk/utils/tokens";
 
 import { getMarketPoolName } from "../../../../sdk/src/utils/markets";
@@ -68,9 +68,15 @@ export default function useUserClaimableAmounts(chainId: number, account?: strin
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const tokensData = useTokensData();
 
-  const tokens = useMemo(() => [getTokenBySymbol(chainId, "WETH"), getTokenBySymbol(chainId, "USDC")], [chainId]);
+  const tokens = useMemo(
+    () =>
+      [getTokenBySymbolSafe(chainId, "WETH"), getTokenBySymbolSafe(chainId, "USDC")].filter(
+        Boolean as unknown as FilterOutFalsy
+      ),
+    [chainId]
+  );
   const markets = useMemo(
-    () => (marketsInfo ? [marketsInfo["0x70d95587d40A2caf56bd97485aB3Eec10Bee6336"]] : []),
+    () => (marketsInfo ? [marketsInfo["0x70d95587d40A2caf56bd97485aB3Eec10Bee6336"]].filter(Boolean) : []),
     [marketsInfo]
   );
 
