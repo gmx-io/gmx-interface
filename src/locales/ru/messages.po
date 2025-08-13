@@ -1375,6 +1375,10 @@ msgstr ""
 msgid "Leftover position below 10 USD"
 msgstr ""
 
+#: src/pages/Stake/Stake.tsx
+msgid "Distributions"
+msgstr ""
+
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>."
 msgstr ""
@@ -8207,7 +8211,6 @@ msgid "Deposit {0} USD into {1} {longOrShortText}"
 msgstr "Внести {0} USD на {1} {longOrShortText}"
 
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Stake/Stake.tsx
 msgid "Distribution"
 msgstr ""
 

@@ -284,7 +284,7 @@ function StakeContent() {
 
       <div className="mt-10">
         <PageTitle
-          title={t`Distribution`}
+          title={t`Distributions`}
           subtitle={<Trans>Claim and view your incentives, airdrops, and prizes</Trans>}
         />
       </div>

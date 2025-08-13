@@ -1375,6 +1375,10 @@ msgstr "Your wallet, your keys. You sign each transaction on-chain using your ow
 msgid "Leftover position below 10 USD"
 msgstr "Leftover position below 10 USD"
 
+#: src/pages/Stake/Stake.tsx
+msgid "Distributions"
+msgstr "Distributions"
+
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>."
 msgstr "Mint tBTC using BTC with <0>Threshold</0>."
@@ -8213,7 +8217,6 @@ msgid "Deposit {0} USD into {1} {longOrShortText}"
 msgstr "Deposit {0} USD into {1} {longOrShortText}"
 
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Stake/Stake.tsx
 msgid "Distribution"
 msgstr "Distribution"
 
