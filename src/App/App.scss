@@ -541,7 +541,25 @@ button.App-connect-wallet:hover {
   color: var(--color-white);
 }
 
+.Toastify__toast-container--top-right {
+  right: 3rem !important;
+  top: 3rem !important;
+}
+
+.Toastify__toast-container--bottom-right {
+  bottom: 3rem !important;
+  right: 3rem !important;
+}
+
+@media (max-width: 768px) {
+  .Toastify__toast-container--bottom-right,
+  .Toastify__toast-container--bottom-left {
+    bottom: 4rem !important;
+  }
+}
+
 .Toastify {
+  font-family: "TTHoves", sans-serif;
   font-size: var(--font-size-body-small);
 }
 
@@ -831,35 +849,20 @@ button.App-button {
 
 .Toastify__toast--error {
   background: var(--color-red-900);
-  color: var(--color-red-100);
   border-bottom: 2px solid var(--color-red-500);
 
   .link-underline {
     color: var(--color-white) !important;
   }
-
-  & .Toastify__close-button {
-    color: var(--color-red-500);
-  }
 }
 
 .Toastify__toast--success {
   background: var(--color-green-900);
-  color: var(--color-green-100);
   border-bottom: 2px solid var(--color-green-500);
-
-  & .Toastify__close-button {
-    color: var(--color-green-500);
-  }
 }
 
 .Toastify__toast--default {
   background: var(--color-cold-blue-900);
-  color: var(--color-blue-100);
-
-  & .Toastify__close-button {
-    color: var(--color-blue-300);
-  }
 }
 
 .Toastify__toast .Toastify__close-button:hover {
@@ -882,7 +885,7 @@ button.App-button {
   background: var(--color-gray-700) 0% 0% no-repeat padding-box;
 }
 .Toastify__toast-body {
-  font: normal normal normal 1.4rem/1.6rem Relative;
+  font: normal normal normal 1.4rem/1.6rem "TTHoves";
   line-height: 2rem;
 }
 

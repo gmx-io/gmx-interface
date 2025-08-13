@@ -33,15 +33,16 @@ export default function Pagination({ page, pageCount, topMargin = true, onPageCh
 
   const middleButtons = getPageNumbers(page, pageCount).map((pageNumber) => {
     return (
-      <button
+      <Button
+        variant="secondary"
         key={pageNumber}
-        className={cx("flex h-40 w-40 items-center justify-center rounded-8 p-8 font-medium max-md:h-32 max-md:w-32", {
-          "bg-blue-400": pageNumber === page,
+        className={cx("flex h-32 w-32 items-center justify-center rounded-8 p-8 font-medium", {
+          "!bg-blue-400 !text-white": pageNumber === page,
         })}
         onClick={() => onPageChange(pageNumber)}
       >
         {pageNumber}
-      </button>
+      </Button>
     );
   });
 
@@ -52,29 +53,19 @@ export default function Pagination({ page, pageCount, topMargin = true, onPageCh
       })}
     >
       <div className="text-body-medium flex gap-8 max-md:text-[13px]">
-        <Button
-          variant="secondary"
-          onClick={() => onPageChange(1)}
-          className="h-40 w-40 max-md:h-32 max-md:w-32"
-          disabled={page <= 1}
-        >
+        <Button variant="secondary" onClick={() => onPageChange(1)} className="h-32 w-32 !p-0" disabled={page <= 1}>
           <div className="size-14">
             <ChevronEdgeLeft />
           </div>
         </Button>
-        <Button
-          variant="secondary"
-          onClick={() => onPageChange(page - 1)}
-          className="h-40 w-40 max-md:h-32 max-md:w-32"
-          disabled={page <= 1}
-        >
+        <Button variant="secondary" onClick={() => onPageChange(page - 1)} className="h-32 w-32" disabled={page <= 1}>
           <FaChevronLeft size={12} />
         </Button>
         <div className="flex gap-8">{middleButtons}</div>
         <Button
           variant="secondary"
           onClick={() => onPageChange(page + 1)}
-          className="h-40 w-40 max-md:h-32 max-md:w-32"
+          className="h-32 w-32"
           disabled={page >= pageCount}
         >
           <FaChevronRight size={12} />
@@ -82,7 +73,7 @@ export default function Pagination({ page, pageCount, topMargin = true, onPageCh
         <Button
           variant="secondary"
           onClick={() => onPageChange(pageCount)}
-          className="h-40 w-40 max-md:h-32 max-md:w-32"
+          className="h-32 w-32 !p-0"
           disabled={page >= pageCount}
         >
           <div className="size-14">

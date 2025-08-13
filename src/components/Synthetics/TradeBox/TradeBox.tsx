@@ -903,7 +903,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               selectedValue={tradeMode}
               onChange={onSelectTradeMode}
               qa="trade-mode"
-              className="bg-slate-900"
+              className="bg-slate-900 text-13"
               regularOptionClassname="grow"
             />
             <div className="flex items-center gap-4">

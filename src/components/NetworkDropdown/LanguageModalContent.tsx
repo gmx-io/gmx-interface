@@ -17,14 +17,14 @@ export default function LanguageModalContent({ currentLanguage, onClose }: Props
         return (
           <div
             key={item}
-            className={cx("network-dropdown-menu-item  menu-item language-modal-item", {
+            className={cx("flex rounded-8 bg-slate-800 px-12 py-8 hover:bg-slate-700", {
               active: currentLanguage === item,
             })}
             onClick={() => {
               dynamicActivate(item).then(onClose);
             }}
           >
-            <div className="menu-item-group">
+            <div className="flex items-center gap-8">
               <div className="menu-item-icon">
                 {isTestLanguage(item) ? (
                   "🫐"
@@ -32,9 +32,9 @@ export default function LanguageModalContent({ currentLanguage, onClose }: Props
                   <img className="network-dropdown-icon" src={importImage(`flag_${item}.svg`)} alt={locales[item]} />
                 )}
               </div>
-              <span className="language-item">{locales[item]}</span>
+              <span className="text-body-medium font-medium">{locales[item]}</span>
             </div>
-            <div className="network-dropdown-menu-item-img">
+            <div className="network-dropdown-menu-item-img ml-auto py-4">
               {currentLanguage === item && <img src={checkedIcon} alt={locales[item]} />}
             </div>
           </div>

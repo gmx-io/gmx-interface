@@ -396,7 +396,7 @@ export function PositionItem(p: Props) {
       <TableTr data-qa={qaAttr}>
         <TableTd
           data-qa="position-handle"
-          className={cx("flex", {
+          className={cx("flex w-[20%]", {
             "shadow-[inset_2px_0_0] shadow-cold-blue-500": isCurrentMarket,
           })}
           onClick={() => p.onSelectPositionClick?.()}
@@ -471,13 +471,13 @@ export function PositionItem(p: Props) {
             </div>
           </div>
         </TableTd>
-        <TableTd>
+        <TableTd className="w-[10%]">
           <div className="flex flex-col gap-2">
             <span className="numbers">{formatUsd(p.position.sizeInUsd)}</span>
             <PositionItemOrdersLarge positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
           </div>
         </TableTd>
-        <TableTd>
+        <TableTd className="w-[12%]">
           {/* netValue */}
           {p.position.isOpening ? (
             t`Opening...`
@@ -498,11 +498,11 @@ export function PositionItem(p: Props) {
             </div>
           )}
         </TableTd>
-        <TableTd>
+        <TableTd className="w-[12%]">
           {/* collateral */}
           <div>{renderCollateral()}</div>
         </TableTd>
-        <TableTd>
+        <TableTd className="w-[10%]">
           {/* entryPrice */}
           {p.position.isOpening ? (
             t`Opening...`
@@ -515,7 +515,7 @@ export function PositionItem(p: Props) {
             </span>
           )}
         </TableTd>
-        <TableTd>
+        <TableTd className="w-[10%]">
           {/* markPrice */}
           {
             <span className="numbers">
@@ -526,7 +526,7 @@ export function PositionItem(p: Props) {
             </span>
           }
         </TableTd>
-        <TableTd>
+        <TableTd className="w-[10%]">
           {/* liqPrice */}
           {renderLiquidationPrice()}
         </TableTd>

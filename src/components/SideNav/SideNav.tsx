@@ -11,6 +11,7 @@ import DatabaseIcon from "img/database.svg?react";
 import DocsIcon from "img/docs.svg?react";
 import EarnIcon from "img/earn.svg?react";
 import EcosystemIcon from "img/ecosystem.svg?react";
+import BuyIcon from "img/ic_buy.svg?react";
 import LeaderboardIcon from "img/leaderboard.svg?react";
 import logoIcon from "img/logo-icon.svg";
 import logoText from "img/logo-text.svg";
@@ -96,7 +97,7 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
           }
         )}
       >
-        <div className="flex h-24 w-24 shrink-0 items-center justify-center">{icon}</div>
+        <div className="flex size-24 h-24 w-24 shrink-0 items-center justify-center [&>svg]:w-full">{icon}</div>
         <span className={cx("text-body-medium font-medium tracking-[-1.2%]", { hidden: isCollapsed })}>{label}</span>
 
         <div
@@ -142,6 +143,7 @@ export function MenuSection({ isCollapsed }: { isCollapsed: boolean | undefined 
       { icon: <DatabaseIcon />, label: t`Pools`, key: "pools", to: "/pools" },
       { icon: <EarnIcon />, label: t`Stake`, key: "stake", to: "/stake" },
       { icon: <DashboardIcon />, label: t`Stats`, key: "stats", to: "/stats" },
+      { icon: <BuyIcon />, label: t`Buy`, key: "buy", to: "/buy" },
       { icon: <ReferralsIcon />, label: t`Referrals`, key: "referrals", to: "/referrals" },
       { icon: <LeaderboardIcon />, label: t`Leaderboard`, key: "leaderboard", to: "/leaderboard" },
       { icon: <EcosystemIcon />, label: t`Ecosystem`, key: "ecosystem", to: "/ecosystem" },

@@ -268,9 +268,9 @@ function MobileSlideModal({
               <MdClose fontSize={20} className="cursor-pointer text-slate-100 hover:opacity-90" onClick={handleClose} />
             </div>
             {headerRef ? (
-              <div className="px-14 last:*:mb-14" ref={headerRef} />
+              <div className="px-14" ref={headerRef} />
             ) : headerContent ? (
-              <div className="px-14 last:*:mb-14">{headerContent}</div>
+              <div className="px-14">{headerContent}</div>
             ) : null}
           </div>
 

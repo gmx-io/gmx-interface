@@ -702,7 +702,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
       <form className="flex flex-col gap-8">
         <div className="flex flex-col rounded-b-8 bg-slate-900">
           <div className="flex flex-col gap-12 p-12">
-            <div className={cx("flex gap-2", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
+            <div className={cx("flex gap-4", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
               <BuyInputSection
                 topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
                 bottomLeftValue={formatUsd(firstTokenUsd ?? 0n)}

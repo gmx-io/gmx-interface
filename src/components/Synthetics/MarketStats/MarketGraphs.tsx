@@ -187,7 +187,7 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
                 marketTokensData,
               })}
               label={graphTitleLabelMap[marketGraphType]}
-              valueClassName={cx({
+              valueClassName={cx("normal-nums", {
                 "text-green-300":
                   marketGraphType === "performance" && (glvPerformance[address] > 0 || gmPerformance[address] > 0),
               })}
@@ -335,7 +335,7 @@ const GraphChart = ({
   return (
     <div>
       <ResponsiveContainer height={isMobile ? 260 : 300} width="100%">
-        <AreaChart data={data} margin={GRAPH_MARGIN} key={marketGraphType}>
+        <AreaChart data={data} margin={GRAPH_MARGIN} key={marketGraphType} {...{ overflow: "visible" }}>
           <defs>
             <linearGradient id="market-graph-gradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="-45%" stopColor="var(--color-blue-300)" stopOpacity={0.5} />
@@ -366,6 +366,7 @@ const GraphChart = ({
             axisLine={false}
             tick={axisTick}
             minTickGap={isMobile ? 16 : 32}
+            tickMargin={8}
           />
           <YAxis
             dataKey="value"
@@ -410,7 +411,7 @@ const GraphValue = ({
 }) => {
   return (
     <div className="flex items-center gap-8">
-      <span className={cx("text-h2 numbers", valueClassName)}>{value ?? "..."}</span>
+      <span className={cx("text-h2", valueClassName)}>{value ?? "..."}</span>
       <span className="text-body-small text-slate-100">{label}</span>
     </div>
   );

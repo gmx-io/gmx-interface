@@ -47,11 +47,10 @@
     padding-bottom: 1.5rem;
     font-size: 13px;
     padding: 7px 12px;
-    border-radius: 0.4rem;
     font-weight: 500;
 
     &:hover {
-      background: var(--color-slate-800);
+      background: var(--color-fill-surfaceHover);
       color: var(--color-white);
     }
 

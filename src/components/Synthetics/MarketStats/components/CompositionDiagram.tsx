@@ -125,7 +125,7 @@ export function CompositionChart({ items, label }: CompositionChartProps) {
         ))}
       </div>
 
-      <div className="text-body-small uppercase text-slate-100">{label}</div>
+      <div className="text-body-small font-medium  uppercase tracking-[0.08em] text-slate-100">{label}</div>
     </div>
   );
 }

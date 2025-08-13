@@ -13,7 +13,7 @@ export default function FavoriteStar({
   className?: string;
 }) {
   return (
-    <div className={cx("flex h-16 w-16 items-center justify-center", className)}>
+    <div className={cx("flex h-16 w-16 items-center justify-center [&>svg]:w-full", className)}>
       {isFavorite ? <StarFilledIcon className={activeClassName} /> : <StarIcon />}
     </div>
   );

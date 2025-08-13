@@ -335,6 +335,7 @@ export function SyntheticsPage(p: Props) {
         />
       }
       className="max-lg:pb-40"
+      contentClassName="max-w-[none]"
     >
       {isTablet ? <ChartHeader /> : null}
       <div className="flex gap-8 pt-0 max-lg:flex-col lg:grow">
@@ -410,9 +411,8 @@ export function SyntheticsPage(p: Props) {
                 selectedValue={listSection}
                 onChange={handleTabChange}
                 type="block"
-                className={cx("w-[max(100%,600px)] rounded-t-8 bg-slate-900", {
+                className={cx("rounded-t-8 bg-slate-900  max-md:w-[max(100%,372px)] md:w-[max(100%,600px)]", {
                   "mb-8 rounded-b-8": [ListSection.Positions, ListSection.Orders].includes(listSection as ListSection),
-                  "w-[max(100%,420px)]": isMobile,
                 })}
                 regularOptionClassname={cx({
                   "first:rounded-l-8 last:rounded-r-8": [ListSection.Positions, ListSection.Orders].includes(
