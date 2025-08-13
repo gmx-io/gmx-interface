@@ -21,14 +21,14 @@ export function useHashQueryParams() {
       });
 
       // Create new hash with merged params
-      const newHash = hash.split("?")[0] + (hashParams.toString() ? `?${hashParams.toString()}` : "");
+      const newHash = hash.split("?")[0].replace("#", "") + (hashParams.toString() ? `?${hashParams.toString()}` : "");
 
       // Update the URL without triggering a navigation
-      const newUrl = window.location.pathname + newHash;
+      const newUrl = window.location.pathname + "#" + newHash;
       window.history.replaceState({}, "", newUrl);
 
       // Update React Router's location to reflect the change
-      history.replace(newUrl);
+      history.replace(newHash);
     }
   }, [location.pathname, location.search, location.hash, history]);
 }
