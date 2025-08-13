@@ -252,23 +252,23 @@ export function TradeHistory(p: Props) {
           </colgroup>
           <thead>
             <TableTheadTr>
-              <TableTh>
+              <TableTh className="w-[22%]">
                 <ActionFilter value={actionFilter} onChange={setActionFilter} />
               </TableTh>
-              <TableTh>
+              <TableTh className="w-[22%]">
                 <MarketFilterLongShort
                   withPositions="all"
                   value={marketsDirectionsFilter}
                   onChange={setMarketsDirectionsFilter}
                 />
               </TableTh>
-              <TableTh>
+              <TableTh className="w-[22%]">
                 <Trans>Size</Trans>
               </TableTh>
-              <TableTh>
+              <TableTh className="w-[22%]">
                 <Trans>Price</Trans>
               </TableTh>
-              <TableTh className="TradeHistorySynthetics-pnl-fees-header">
+              <TableTh className="TradeHistorySynthetics-pnl-fees-header w-[12%]">
                 <TooltipWithPortal
                   styleType="iconStroke"
                   content={<Trans>Realized PnL after fees and price impact.</Trans>}

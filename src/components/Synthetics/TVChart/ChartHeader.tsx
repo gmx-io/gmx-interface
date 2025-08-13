@@ -66,7 +66,7 @@ function ChartHeaderMobile() {
 
     if (isSwap) {
       return (
-        <div className="grid grid-cols-[auto_auto] grid-rows-2 gap-14">
+        <div className="grid grid-cols-[1fr_1fr] gap-14">
           <div>
             <div className="mb-4 text-[11px] font-medium uppercase text-slate-100">
               <Trans>24h High</Trans>
@@ -84,7 +84,7 @@ function ChartHeaderMobile() {
     }
 
     return (
-      <div className="grid grid-cols-[auto_auto] grid-rows-2 gap-16">
+      <div className="grid grid-cols-[1fr_1fr] grid-rows-2 gap-16">
         <div>
           <div className="mb-4 text-[11px] font-medium uppercase text-slate-100">
             <Trans>24h Volume</Trans>

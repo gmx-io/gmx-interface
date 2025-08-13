@@ -153,13 +153,13 @@ export function ClaimsHistory({
             </colgroup>
             <thead>
               <TableTheadTr>
-                <TableTh>
+                <TableTh className="w-[40%]">
                   <ActionFilter value={eventNameFilter} onChange={setEventNameFilter} />
                 </TableTh>
-                <TableTh>
+                <TableTh className="w-[40%]">
                   <MarketFilter excludeSpotOnly value={marketAddressesFilter} onChange={setMarketAddressesFilter} />
                 </TableTh>
-                <TableTh className="ClaimsHistory-price-header">
+                <TableTh className="ClaimsHistory-price-header w-[20%]">
                   <Trans>Size</Trans>
                 </TableTh>
               </TableTheadTr>

@@ -9,11 +9,15 @@ export function ChainDataImage() {
 
   return (
     <div
-      className={`inline-flex items-center gap-12 rounded-full border-l-2 border-blue-300
-        bg-blue-300 bg-opacity-20 px-8 py-6 pr-16 text-13 text-white`}
+      className={`relative  inline-flex items-center gap-8 rounded-full
+         bg-blue-300 px-8 py-6 pr-16 text-13 text-white`}
     >
-      {chainIcon && <img src={chainIcon} alt={chainName} className="h-20 w-20" />}
-      <span className="font-medium">{chainName} Data</span>
+      <div className="absolute left-[2px] top-0 inline-flex h-full w-full items-center gap-8 rounded-full bg-slate-950 bg-opacity-80 px-8 py-6 pr-16">
+        {chainIcon && <img src={chainIcon} alt={chainName} className="h-20 w-20" />}
+        <span className="font-medium">{chainName} Data</span>
+      </div>
+      {chainIcon && <img src={chainIcon} alt={chainName} className="h-20 w-20 opacity-0" />}
+      <span className="font-medium opacity-0">{chainName} Data</span>
     </div>
   );
 }

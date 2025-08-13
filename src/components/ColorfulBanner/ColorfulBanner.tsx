@@ -69,7 +69,7 @@ export function ColorfulBanner({
             <Icon className="size-20 p-[1.25px]" />
           </div>
         )}
-        <div>{children}</div>
+        <div className="flex flex-col justify-center">{children}</div>
       </div>
       {onClose && (
         <button className={cx("h-fit p-2 text-slate-100 hover:text-white")} onClick={handleClose}>

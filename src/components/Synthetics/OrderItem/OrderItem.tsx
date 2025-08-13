@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
 import { FaPen } from "react-icons/fa6";
-import { MdClose } from "react-icons/md";
+import { RxCross2 } from "react-icons/rx";
 
 import { USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -558,7 +558,7 @@ function OrderItemLarge({
       disabled={isCanceling || Boolean(disabledCancelMarketOrderMessage)}
       onClick={onCancelOrder}
     >
-      <MdClose fontSize={20} />
+      <RxCross2 fontSize={20} />
     </button>
   );
 
@@ -569,7 +569,7 @@ function OrderItemLarge({
           <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder} />
         </TableTd>
       )}
-      <TableTd>
+      <TableTd className="w-[20%]">
         {isSwap ? (
           <TooltipWithPortal
             handle={
@@ -618,17 +618,17 @@ function OrderItemLarge({
           />
         )}
       </TableTd>
-      <TableTd>
+      <TableTd className="w-[10%]">
         <OrderItemTypeLabel order={order} />
       </TableTd>
-      <TableTd>
+      <TableTd className="w-[15%]">
         <OrderSize order={order} showDebugValues={showDebugValues} />
       </TableTd>
 
-      <TableTd>
+      <TableTd className="w-[15%]">
         <TriggerPrice order={order} hideActions={hideActions} />
       </TableTd>
-      <TableTd>
+      <TableTd className="w-[15%]">
         <MarkPrice order={order} />
       </TableTd>
       {!hideActions && (

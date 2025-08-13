@@ -300,6 +300,7 @@ msgstr "인센티브 분배 내역 없음."
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
+#: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/pages/Dashboard/StatsCard.tsx
@@ -4196,8 +4197,8 @@ msgid "Error preparing transaction. Provider is not defined"
 msgstr "트랜잭션 준비 오류. 제공자가 정의되지 않음"
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
-msgid "Funding fees"
-msgstr "자금 수수료"
+#~ msgid "Funding fees"
+#~ msgstr "자금 수수료"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity in GM Pool"

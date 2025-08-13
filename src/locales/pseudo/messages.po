@@ -300,6 +300,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
+#: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/pages/Dashboard/StatsCard.tsx
@@ -4193,8 +4194,8 @@ msgid "Error preparing transaction. Provider is not defined"
 msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
-msgid "Funding fees"
-msgstr ""
+#~ msgid "Funding fees"
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity in GM Pool"

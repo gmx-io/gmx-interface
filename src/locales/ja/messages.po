@@ -300,6 +300,7 @@ msgstr "インセンティブ分配履歴がまだありません。"
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
+#: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/pages/Dashboard/StatsCard.tsx
@@ -4196,8 +4197,8 @@ msgid "Error preparing transaction. Provider is not defined"
 msgstr "取引準備エラー。プロバイダーが定義されていません"
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
-msgid "Funding fees"
-msgstr "ファンディング手数料"
+#~ msgid "Funding fees"
+#~ msgstr "ファンディング手数料"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity in GM Pool"
