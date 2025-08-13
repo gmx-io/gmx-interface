@@ -1,4 +1,6 @@
 import { AbFlag, getAbFlagUrlParams } from "config/ab";
+import { getRefCodeParamString } from "domain/referrals";
+import { getStoredUtmParams } from "domain/utm";
 import { UserAnalyticsEventItem } from "lib/oracleKeeperFetcher";
 import { sleep } from "lib/sleep";
 
@@ -16,7 +18,7 @@ type CommonEventParams = {
   [key in AbFlag]: boolean;
 };
 
-type ProfileProps = {
+export type ProfileProps = {
   last30DVolume?: number;
   totalVolume?: number;
   languageCode: string;
@@ -136,11 +138,13 @@ export class UserAnalytics {
     return interactionId;
   };
 
-  getSessionIdUrlParams() {
+  getSessionForwardParams() {
     const sessionIdParam = `${SESSION_ID_KEY}=${getOrSetSessionId()}`;
     const abFlagsParams = getAbFlagUrlParams();
+    const utmParams = getStoredUtmParams();
+    const refParam = getRefCodeParamString();
 
-    return [sessionIdParam, abFlagsParams].filter(Boolean).join("&");
+    return [sessionIdParam, abFlagsParams, utmParams, refParam].filter(Boolean).join("&");
   }
 
   pushEvent = async <T extends AnalyticsEventParams = never>(
