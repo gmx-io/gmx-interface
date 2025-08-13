@@ -314,7 +314,7 @@ const GraphChart = ({
 
   const isMobile = usePoolsIsMobilePage();
 
-  const axisTick = useMemo(() => ({ fill: "var(--color-slate-100)", fontSize: 11 }), []);
+  const axisTick = useMemo(() => ({ fill: "var(--color-slate-100)", fontSize: 12, fontWeight: 500 }), []);
 
   const [data, setData] = useState<GraphData[]>([]);
 

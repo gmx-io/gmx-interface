@@ -26,7 +26,7 @@ export function MarketComposition({ title, label, composition, type }: Props) {
         </div>
       </div>
       <div
-        className={cx("relative w-full flex-grow overflow-y-auto overflow-x-hidden", { "max-h-[160px]": !isMobile })}
+        className={cx("relative w-full flex-grow overflow-y-auto overflow-x-hidden", { "max-h-[246px]": !isMobile })}
       >
         <CompositionTable composition={composition} compositionType={type} />
       </div>
