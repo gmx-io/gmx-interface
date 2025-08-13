@@ -182,7 +182,7 @@ export function getOrderErrors(p: {
 
       if (getIsHighPriceImpact(undefined, swapImpactFeeItem)) {
         errors.push({
-          msg: t`There is currently a high swap price impact for the order swap path.`,
+          msg: t`There is currently a high swap price impact for this swap.`,
           level: "warning",
           key: "highPriceImpact",
         });

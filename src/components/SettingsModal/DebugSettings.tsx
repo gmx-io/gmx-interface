@@ -20,14 +20,14 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
     <div className="mt-16">
       <SettingsSection className="gap-16">
         <ToggleSwitch isChecked={settings.showDebugValues} setIsChecked={settings.setShowDebugValues}>
-          <Trans>Show debug values</Trans>
+          <Trans>Show Debug Values</Trans>
         </ToggleSwitch>
 
         <ToggleSwitch
           isChecked={settings.shouldDisableValidationForTesting}
           setIsChecked={settings.setShouldDisableValidationForTesting}
         >
-          <Trans>Disable validation for testing</Trans>
+          <Trans>Disable Validation for Testing</Trans>
         </ToggleSwitch>
 
         <AbFlagSettings />

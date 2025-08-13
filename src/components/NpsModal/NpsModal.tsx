@@ -17,14 +17,14 @@ export function NpsModal() {
   const submitButtonState = useMemo(() => {
     if (isSubmitting) {
       return {
-        text: t`Submitting...`,
+        text: t`Submitting`,
         disabled: true,
       };
     }
 
     if (error) {
       return {
-        text: t`Error occurred. Please try again`,
+        text: t`Error occurred. Please try again.`,
         disabled: true,
       };
     }
@@ -76,7 +76,7 @@ export function NpsModal() {
             <Textarea
               value={question.answer}
               onChange={(val) => onChangeAnswer(index, val)}
-              placeholder={t`Enter your answer here`}
+              placeholder={t`Enter your answer here.`}
             />
           </div>
         ))}
