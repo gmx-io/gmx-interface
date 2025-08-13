@@ -106,10 +106,6 @@ export function useConfigureUserAnalyticsProfile() {
   }, [active, ordersCount, bowser]);
 
   useEffect(() => {
-    if (last30DVolume === undefined || totalVolume === undefined) {
-      return;
-    }
-
     userAnalytics.pushProfileProps({
       last30DVolume: formatAmountForMetrics(last30DVolume, USD_DECIMALS, "toSecondOrderInt"),
       totalVolume: formatAmountForMetrics(totalVolume, USD_DECIMALS, "toSecondOrderInt"),
