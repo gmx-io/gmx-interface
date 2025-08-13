@@ -19,6 +19,7 @@ import { helperToast } from "lib/helperToast";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { sendWalletTransaction, TxnEventName } from "lib/transactions";
 import { WalletSigner } from "lib/wallets";
+import { useIsSafeAccount } from "lib/wallets/useIsSmartAccount";
 import useWallet from "lib/wallets/useWallet";
 import ClaimHandlerAbi from "sdk/abis/ClaimHandler.json";
 import { getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -27,6 +28,7 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 function getCallData(tokens: string[], account: string, signature: string, distributionId: bigint) {
   const params = tokens.map((token) => ({
@@ -136,6 +138,7 @@ const useClaimExecutionFee = (
 
 export default function ClaimableAmounts() {
   const { account, signer } = useWallet();
+  const isSmartAccount = useIsSafeAccount();
   const chainId = useSelector(selectChainId);
   const {
     claimTerms,
@@ -217,14 +220,8 @@ export default function ClaimableAmounts() {
   const { balancesData } = useTokenBalances(chainId);
   const userNativeTokenBalance = balancesData?.[NATIVE_TOKEN_ADDRESS];
 
-  const controls = useMemo(() => {
-    if (totalFundsToClaimUsd === 0n) {
-      return (
-        <Button variant="secondary" disabled>
-          <Trans>No funds to claim</Trans>
-        </Button>
-      );
-    }
+  const { isButtonDisabled, buttonText, buttonTooltipText, hasAvailableFundsToCoverExecutionFee } = useMemo(() => {
+    let isButtonDisabled = false;
 
     const requiredExecutionFee = estimateExecutionGasPrice({
       rawGasPrice: executionFee,
@@ -236,17 +233,75 @@ export default function ClaimableAmounts() {
     const hasAvailableFundsToCoverExecutionFee =
       userNativeTokenBalance !== undefined && userNativeTokenBalance >= requiredExecutionFee;
 
-    let isClaimDisabled = false;
-
     if (claimTerms) {
-      isClaimDisabled = !claimTermsAcceptedSignature || !hasAvailableFundsToCoverExecutionFee;
+      isButtonDisabled = !claimTermsAcceptedSignature || !hasAvailableFundsToCoverExecutionFee;
     } else {
-      isClaimDisabled = !hasAvailableFundsToCoverExecutionFee;
+      isButtonDisabled = !hasAvailableFundsToCoverExecutionFee;
     }
 
-    if (claimsFeatureDisabled || isClaiming || !claimableAmountsLoaded) {
-      isClaimDisabled = true;
+    if (claimsFeatureDisabled || isClaiming || !claimableAmountsLoaded || isSmartAccount) {
+      isButtonDisabled = true;
     }
+
+    let buttonText = <Trans>Claim funds</Trans>;
+
+    if (isSmartAccount || claimsFeatureDisabled) {
+      buttonText = <Trans>Claims are disabled</Trans>;
+    }
+
+    if (isClaiming) {
+      buttonText = <Trans>Claiming...</Trans>;
+    }
+
+    let buttonTooltipText: React.ReactNode | null = null;
+
+    if (isSmartAccount) {
+      buttonTooltipText = (
+        <Trans>
+          Claiming with a smart account requires specific instructions. Contributors will post these in the coming days.
+        </Trans>
+      );
+    }
+
+    return {
+      isButtonDisabled,
+      buttonText,
+      buttonTooltipText,
+      hasAvailableFundsToCoverExecutionFee,
+    };
+  }, [
+    claimTerms,
+    claimTermsAcceptedSignature,
+    chainId,
+    settings.executionFeeBufferBps,
+    claimableAmountsLoaded,
+    userNativeTokenBalance,
+    claimsFeatureDisabled,
+    isClaiming,
+    isSmartAccount,
+    executionFee,
+  ]);
+
+  const controls = useMemo(() => {
+    if (totalFundsToClaimUsd === 0n) {
+      return (
+        <Button variant="secondary" disabled>
+          <Trans>No funds to claim</Trans>
+        </Button>
+      );
+    }
+
+    const buttonContent = (
+      <Button variant="primary" className="!py-10" disabled={isButtonDisabled} onClick={claimAmounts}>
+        {buttonText}
+      </Button>
+    );
+
+    const buttonElement = buttonTooltipText ? (
+      <TooltipWithPortal content={buttonTooltipText}>{buttonContent}</TooltipWithPortal>
+    ) : (
+      buttonContent
+    );
 
     return (
       <>
@@ -266,15 +321,7 @@ export default function ClaimableAmounts() {
             </span>
           </Checkbox>
         ) : null}
-        <Button variant="primary" className="!py-10" disabled={isClaimDisabled} onClick={claimAmounts}>
-          {claimsFeatureDisabled ? (
-            <Trans>Claims are disabled</Trans>
-          ) : isClaiming ? (
-            <Trans>Claiming...</Trans>
-          ) : (
-            <Trans>Claim funds</Trans>
-          )}
-        </Button>
+        {buttonElement}
       </>
     );
   }, [
@@ -283,13 +330,11 @@ export default function ClaimableAmounts() {
     signClaimTerms,
     claimTerms,
     claimAmounts,
-    executionFee,
-    userNativeTokenBalance,
-    settings.executionFeeBufferBps,
-    chainId,
     claimsFeatureDisabled,
-    isClaiming,
-    claimableAmountsLoaded,
+    buttonText,
+    buttonTooltipText,
+    hasAvailableFundsToCoverExecutionFee,
+    isButtonDisabled,
   ]);
 
   return (

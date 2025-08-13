@@ -2356,6 +2356,10 @@ msgstr ""
 msgid "{0} will be swapped to {1} on order execution."
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Claiming with a smart account requires specific instructions. Contributors will post these in the coming days."
+msgstr ""
+
 #. Button to clear the filter selection
 #: src/components/Synthetics/TableOptionsFilter/TableOptionsFilter.tsx
 msgid "Clear selection"
@@ -7527,8 +7531,8 @@ msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
-msgid "Yes, GLV is fully liquid and permissionless. You can sell via the GMX interface to redeem for underlying assets, with low fees. Note: Selling will forfeit the $500,000 holding incentive."
-msgstr ""
+#~ msgid "Yes, GLV is fully liquid and permissionless. You can sell via the GMX interface to redeem for underlying assets, with low fees. Note: Selling will forfeit the $500,000 holding incentive."
+#~ msgstr ""
 
 #: src/pages/Stake/UnstakeModal.tsx
 msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
@@ -7691,6 +7695,10 @@ msgstr "Termes de parrainage"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Enter unique coins"
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Yes, GLV is fully liquid and permissionless. You can sell via the GMX interface to redeem for underlying assets, with low fees. Selling will reduce your incentive eligibility proportionally."
 msgstr ""
 
 #: src/components/Synthetics/GmList/FeeApyLabel.tsx
