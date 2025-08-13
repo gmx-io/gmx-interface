@@ -814,11 +814,11 @@ export default function SwapBox(props) {
 
     const contract = new ethers.Contract(nativeTokenAddress, abis.WETH, signer);
     callContract(chainId, contract, "withdraw", [fromAmount], {
-      sentMsg: t`Swap submitted!`,
+      sentMsg: t`Swap submitted.`,
       failMsg: t`Swap failed.`,
       successMsg: t`Swapped ${formatAmount(fromAmount, fromToken.decimals, 4, true)} ${
         fromToken.symbol
-      } for ${formatAmount(toAmount, toToken.decimals, 4, true)} ${toToken.symbol}!`,
+      } for ${formatAmount(toAmount, toToken.decimals, 4, true)} ${toToken.symbol}.`,
       setPendingTxns,
     }).finally(() => {
       setIsSubmitting(false);
@@ -881,7 +881,7 @@ export default function SwapBox(props) {
       setIsSubmitting(false);
       setIsPendingConfirmation(true);
       helperToast.error(
-        t`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "nativeTokenSymbol")} for gas`
+        t`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "nativeTokenSymbol")} for gas.`
       );
       return;
     }
@@ -889,9 +889,9 @@ export default function SwapBox(props) {
     if (!isMarketOrder) {
       minOut = toAmount;
       Api.createSwapOrder(chainId, signer, path, fromAmount, minOut, triggerRatio, nativeTokenAddress, {
-        sentMsg: t`Swap Order submitted!`,
-        successMsg: t`Swap Order created!`,
-        failMsg: t`Swap Order creation failed.`,
+        sentMsg: t`Swap order submitted.`,
+        successMsg: t`Swap order created.`,
+        failMsg: t`Swap order creation failed.`,
         pendingTxns,
         setPendingTxns,
       })
@@ -927,7 +927,7 @@ export default function SwapBox(props) {
 
     callContract(chainId, contract, method, params, {
       value,
-      sentMsg: t`Swap ${!isMarketOrder ? " order " : ""} submitted!`,
+      sentMsg: t`Swap ${!isMarketOrder ? " order " : ""} submitted.`,
       successMsg: t`Swapped ${formatAmount(fromAmount, fromToken.decimals, 4, true)} ${
         fromToken.symbol
       } for ${formatAmount(toAmount, toToken.decimals, 4, true)} ${toToken.symbol}!`,
@@ -979,7 +979,7 @@ export default function SwapBox(props) {
       {
         pendingTxns,
         setPendingTxns,
-        sentMsg: t`Limit order submitted!`,
+        sentMsg: t`Limit order submitted.`,
         successMsg,
         failMsg: t`Limit order creation failed.`,
       }
@@ -1042,7 +1042,7 @@ export default function SwapBox(props) {
         isSwap
       );
       if (nextToAmount == 0n) {
-        helperToast.error(t`Insufficient Liquidity`);
+        helperToast.error(t`Insufficient Liquidity.`);
         return;
       }
       if (multiPath) {
@@ -1085,7 +1085,7 @@ export default function SwapBox(props) {
       setIsSubmitting(false);
       setIsPendingConfirmation(false);
       helperToast.error(
-        t`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "nativeTokenSymbol")} for gas`
+        t`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "nativeTokenSymbol")} for gas.`
       );
       return;
     }
@@ -1866,8 +1866,9 @@ export default function SwapBox(props) {
                       <div>
                         {hasZeroBorrowFee && (
                           <div>
-                            {isLong && t`There are more shorts than longs, borrow fees for longing is currently zero`}
-                            {isShort && t`There are more longs than shorts, borrow fees for shorting is currently zero`}
+                            {isLong && t`There are more shorts than longs, borrow fees for longing is currently zero.`}
+                            {isShort &&
+                              t`There are more longs than shorts, borrow fees for shorting is currently zero.`}
                           </div>
                         )}
                         {!hasZeroBorrowFee && (
@@ -1878,7 +1879,7 @@ export default function SwapBox(props) {
                             </Trans>
                             <br />
                             <br />
-                            {isShort && t`You can change the "Collateral In" token above to find lower fees`}
+                            {isShort && t`You can change the "Collateral In" token above to find lower fees.`}
                           </div>
                         )}
                         <br />
@@ -1908,11 +1909,11 @@ export default function SwapBox(props) {
                       return (
                         <>
                           <StatsTooltipRow
-                            label={t`Max ${toTokenInfo.symbol} short capacity`}
+                            label={t`Max ${toTokenInfo.symbol} short capacity.`}
                             value={formatAmount(toTokenInfo.maxGlobalShortSize, USD_DECIMALS, 0, true)}
                           />
                           <StatsTooltipRow
-                            label={t`Current ${toTokenInfo.symbol} shorts`}
+                            label={t`Current ${toTokenInfo.symbol} shorts.`}
                             value={formatAmount(toTokenInfo.globalShortSize, USD_DECIMALS, 0, true)}
                           />
                         </>

@@ -49,7 +49,7 @@ const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => 
     .map((order) => {
       order.error = getOrderError(account, order, undefined, position);
       if (order.type === DECREASE && order.sizeDelta > position.size) {
-        order.error = t`Order size is bigger than position, will only be executable if position increases`;
+        order.error = t`Order size is bigger than the position, so it'll only be executable if the position increases.`;
       }
       return order;
     });

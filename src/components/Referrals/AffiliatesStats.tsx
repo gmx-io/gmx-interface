@@ -300,7 +300,7 @@ function AffiliatesStats({
         />
         <ReferralInfoCard
           label={t`Claimable Rebates`}
-          labelTooltipText={t`Claim V2 Rebates from your referred Traders.`}
+          labelTooltipText={t`Claim V2 rebates from your referred traders.`}
           className="AffiliateStats-claimable-rewards-card"
         >
           <div className="AffiliateStats-claimable-rewards-container">
@@ -466,7 +466,7 @@ function AffiliatesStats({
                 <Trans>Rebates Distribution History</Trans>
               </span>
             }
-            tooltipText={t`V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually.`}
+            tooltipText={t`Rebates are claimed manually.`}
             bodyPadding={false}
             divider={false}
           >
@@ -611,7 +611,7 @@ function AffiliatesStats({
         </div>
       ) : (
         <EmptyMessage
-          tooltipText={t`Rebates are airdropped weekly.`}
+          tooltipText={t`Rebates are claimed manually.`}
           message={t`No rebates distribution history yet.`}
         />
       )}

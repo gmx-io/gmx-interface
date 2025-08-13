@@ -30,9 +30,9 @@ export async function cancelOrdersTxn(chainId: number, signer: Signer, p: Cancel
   });
 
   return callContract(chainId, router, "multicall", [multicall], {
-    sentMsg: t`Cancelling ${ordersText}`,
-    successMsg: t`${ordersText} cancelled`,
-    failMsg: t`Failed to cancel ${ordersText}`,
+    sentMsg: t`Cancelling ${ordersText}.`,
+    successMsg: t`${ordersText} cancelled.`,
+    failMsg: t`Failed to cancel ${ordersText}.`,
     setPendingTxns: p.setPendingTxns,
     detailsMsg: p.detailsMsg,
   });

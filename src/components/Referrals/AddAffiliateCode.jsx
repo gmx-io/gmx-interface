@@ -91,7 +91,7 @@ export function AffiliateCodeForm({
       return t`Code already taken`;
     }
     if (referralCodeCheckStatus === "checking") {
-      return t`Checking code...`;
+      return t`Checking code`;
     }
 
     return false;
@@ -105,7 +105,7 @@ export function AffiliateCodeForm({
     }
 
     if (isProcessing) {
-      return t`Creating...`;
+      return t`Creating`;
     }
 
     return t`Create`;
@@ -140,7 +140,7 @@ export function AffiliateCodeForm({
         if (receipt.status === 1) {
           recentlyAddedCodes.push(getSampleReferrarStat(trimmedCode, ownerOnOtherNetwork, account));
 
-          helperToast.success(t`Referral code created!`);
+          helperToast.success(t`Referral code created.`);
           setRecentlyAddedCodes(recentlyAddedCodes);
           setReferralCode("");
         }

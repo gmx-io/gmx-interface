@@ -243,7 +243,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
         <div className="reward-history">
           <Card
             title={t`Rebates Distribution History`}
-            tooltipText={t`V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table.`}
+            tooltipText={t`GMX V2 Rebates are automatically applied as fee discounts on each trade and are not displayed on this table.`}
             bodyPadding={false}
             divider={false}
           >
@@ -371,7 +371,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
         </div>
       ) : (
         <EmptyMessage
-          tooltipText={t`V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table.`}
+          tooltipText={t`GMX V2 Rebates are automatically applied as fee discounts on each trade and are not displayed on this table.`}
           message={t`No rebates distribution history yet.`}
         />
       )}

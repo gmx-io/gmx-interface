@@ -46,7 +46,6 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
   const { chainId } = useChainId();
   const isBotanix = chainId === BOTANIX;
 
-
   return (
     <div className="relative">
       <Menu>
@@ -70,7 +69,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
                     className="menu-item"
                     onClick={() => {
                       copyToClipboard(account);
-                      helperToast.success(t`Address copied to your clipboard`);
+                      helperToast.success(t`Address copied to your clipboard.`);
                     }}
                   >
                     <CopyIcon width={20} className="size-20" />

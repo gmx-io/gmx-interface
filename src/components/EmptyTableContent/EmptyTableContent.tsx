@@ -14,7 +14,7 @@ export function EmptyTableContent({
 
   return (
     <div className="flex min-h-[164px] w-full items-center justify-center bg-slate-900 text-[13px] text-slate-100">
-      {isLoading ? <Trans>Loading...</Trans> : isEmpty ? emptyText : null}
+      {isLoading ? <Trans>Loading</Trans> : isEmpty ? emptyText : null}
     </div>
   );
 }
