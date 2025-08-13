@@ -16,9 +16,11 @@ import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { mustNeverExist } from "lib/types";
+import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
+import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
 import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -55,7 +57,7 @@ export function SettingsModal({
   const subaccountState = useSubaccountContext();
 
   const [tradingMode, setTradingMode] = useState<TradingMode | undefined>(undefined);
-  const [isTradningModeChanging, setIsTradningModeChanging] = useState(false);
+  const [isTradingModeChanging, setIsTradingModeChanging] = useState(false);
 
   const [numberOfParts, setNumberOfParts] = useState<number>();
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
@@ -143,10 +145,12 @@ export function SettingsModal({
     setIsSettingsVisible(false);
   }, [setIsSettingsVisible]);
 
+  const isGeminiWallet = useIsGeminiWallet();
+
   const handleTradingModeChange = useCallback(
     async (mode: TradingMode) => {
       const prevMode = tradingMode;
-      setIsTradningModeChanging(true);
+      setIsTradingModeChanging(true);
       setTradingMode(mode);
 
       switch (mode) {
@@ -156,13 +160,13 @@ export function SettingsModal({
 
             if (!isSubaccountDeactivated) {
               setTradingMode(prevMode);
-              setIsTradningModeChanging(false);
+              setIsTradingModeChanging(false);
               return;
             }
           }
 
           settings.setExpressOrdersEnabled(false);
-          setIsTradningModeChanging(false);
+          setIsTradingModeChanging(false);
           break;
         }
         case TradingMode.Express: {
@@ -171,13 +175,13 @@ export function SettingsModal({
 
             if (!isSubaccountDeactivated) {
               setTradingMode(prevMode);
-              setIsTradningModeChanging(false);
+              setIsTradingModeChanging(false);
               return;
             }
           }
 
           settings.setExpressOrdersEnabled(true);
-          setIsTradningModeChanging(false);
+          setIsTradingModeChanging(false);
           break;
         }
         case TradingMode.Express1CT: {
@@ -185,12 +189,12 @@ export function SettingsModal({
 
           if (!isSubaccountActivated) {
             setTradingMode(prevMode);
-            setIsTradningModeChanging(false);
+            setIsTradingModeChanging(false);
             return;
           }
 
           settings.setExpressOrdersEnabled(true);
-          setIsTradningModeChanging(false);
+          setIsTradingModeChanging(false);
           break;
         }
         default: {
@@ -204,7 +208,7 @@ export function SettingsModal({
 
   useEffect(
     function defineTradingMode() {
-      if (isTradningModeChanging) {
+      if (isTradingModeChanging) {
         return;
       }
 
@@ -222,8 +226,10 @@ export function SettingsModal({
         setTradingMode(nextTradingMode);
       }
     },
-    [isTradningModeChanging, settings.expressOrdersEnabled, subaccountState.subaccount, tradingMode]
+    [isTradingModeChanging, settings.expressOrdersEnabled, subaccountState.subaccount, tradingMode]
   );
+
+  const isExpressTradingDisabled = isOutOfGasPaymentBalance || isGeminiWallet;
 
   return (
     <SlideModal
@@ -270,7 +276,7 @@ export function SettingsModal({
                     </Trans>
                   }
                   icon={<ExpressIcon />}
-                  disabled={isOutOfGasPaymentBalance}
+                  disabled={isExpressTradingDisabled}
                   chip={
                     <Chip color="gray">
                       <Trans>Optimal</Trans>
@@ -284,7 +290,7 @@ export function SettingsModal({
                   title="Express + One-Click"
                   description="CEX-like experience with Express reliability"
                   icon={<OneClickIcon />}
-                  disabled={isOutOfGasPaymentBalance}
+                  disabled={isExpressTradingDisabled}
                   info={
                     <Trans>
                       Your wallet, your keys. GMX executes transactions for you without individual signing, providing a
@@ -302,6 +308,14 @@ export function SettingsModal({
                 />
 
                 {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
+
+                {isGeminiWallet && (
+                  <ColorfulBanner color="slate" icon={<ExpressIcon className="-mt-6" />}>
+                    <div className="text-body-small mr-8 pl-8">
+                      <Trans>Gemini Wallet is not supported for Express or One-Click trading.</Trans>
+                    </div>
+                  </ColorfulBanner>
+                )}
 
                 <OldSubaccountWithdraw />
 

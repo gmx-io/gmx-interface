@@ -325,6 +325,13 @@ export interface AccountStatsConnection {
   totalCount: Scalars["Int"]["output"];
 }
 
+export interface AnnualizedPerformanceObject {
+  __typename?: "AnnualizedPerformanceObject";
+  address: Scalars["String"]["output"];
+  entity: Scalars["String"]["output"];
+  performance: Scalars["BigInt"]["output"];
+}
+
 export interface AprSnapshot {
   __typename?: "AprSnapshot";
   address: Scalars["String"]["output"];
@@ -1542,7 +1549,7 @@ export interface Distribution {
   receiver: Scalars["String"]["output"];
   tokens: Array<Scalars["String"]["output"]>;
   transaction: Transaction;
-  typeId: Scalars["Int"]["output"];
+  typeId: Scalars["BigInt"]["output"];
 }
 
 export interface DistributionEdge {
@@ -1665,15 +1672,15 @@ export interface DistributionWhereInput {
   tokens_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
   transaction?: InputMaybe<TransactionWhereInput>;
   transaction_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  typeId_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  typeId_gt?: InputMaybe<Scalars["Int"]["input"]>;
-  typeId_gte?: InputMaybe<Scalars["Int"]["input"]>;
-  typeId_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  typeId_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  typeId_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  typeId_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  typeId_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   typeId_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  typeId_lt?: InputMaybe<Scalars["Int"]["input"]>;
-  typeId_lte?: InputMaybe<Scalars["Int"]["input"]>;
-  typeId_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  typeId_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  typeId_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  typeId_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  typeId_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  typeId_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
 }
 
 export interface DistributionsConnection {
@@ -4301,6 +4308,24 @@ export interface PageInfo {
   startCursor: Scalars["String"]["output"];
 }
 
+export interface PerformanceSnapshotObject {
+  __typename?: "PerformanceSnapshotObject";
+  performance: Scalars["String"]["output"];
+  snapshotTimestamp: Scalars["String"]["output"];
+}
+
+export interface PerformanceSnapshots {
+  __typename?: "PerformanceSnapshots";
+  address: Scalars["String"]["output"];
+  entity: Scalars["String"]["output"];
+  snapshots: Array<PerformanceSnapshotObject>;
+}
+
+export interface PerformanceWhereInput {
+  addresses?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  period: Scalars["String"]["input"];
+}
+
 export interface PeriodAccountStatObject {
   __typename?: "PeriodAccountStatObject";
   closedCount: Scalars["Float"]["output"];
@@ -6000,6 +6025,7 @@ export interface Query {
   accountStatById?: Maybe<AccountStat>;
   accountStats: Array<AccountStat>;
   accountStatsConnection: AccountStatsConnection;
+  annualizedPerformance: Array<AnnualizedPerformanceObject>;
   aprSnapshotById?: Maybe<AprSnapshot>;
   aprSnapshots: Array<AprSnapshot>;
   aprSnapshotsConnection: AprSnapshotsConnection;
@@ -6046,6 +6072,7 @@ export interface Query {
   orderById?: Maybe<Order>;
   orders: Array<Order>;
   ordersConnection: OrdersConnection;
+  performanceSnapshots: Array<PerformanceSnapshots>;
   periodAccountStats: Array<PeriodAccountStatObject>;
   pnlAprSnapshotById?: Maybe<PnlAprSnapshot>;
   pnlAprSnapshots: Array<PnlAprSnapshot>;
@@ -6106,6 +6133,10 @@ export interface QueryaccountStatsConnectionArgs {
   first?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy: Array<AccountStatOrderByInput>;
   where?: InputMaybe<AccountStatWhereInput>;
+}
+
+export interface QueryannualizedPerformanceArgs {
+  where?: InputMaybe<PerformanceWhereInput>;
 }
 
 export interface QueryaprSnapshotByIdArgs {
@@ -6374,6 +6405,10 @@ export interface QueryordersConnectionArgs {
   first?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy: Array<OrderOrderByInput>;
   where?: InputMaybe<OrderWhereInput>;
+}
+
+export interface QueryperformanceSnapshotsArgs {
+  where?: InputMaybe<PerformanceWhereInput>;
 }
 
 export interface QueryperiodAccountStatsArgs {
