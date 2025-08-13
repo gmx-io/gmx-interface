@@ -38,6 +38,7 @@
 }
 
 .network-dropdown-icon {
+  object-fit: cover;
   width: 20px;
   height: 20px;
   border-radius: 50%;
