@@ -543,14 +543,12 @@ export default function PositionsList(props) {
                           return (
                             <div>
                               <Trans>
-                                Click on the Position to select its market, then use the trade box to increase your
-                                Position Size if needed.
+                                Click on the position to select it, then use the trade box to increase it.
                               </Trans>
                               <br />
                               <br />
                               <Trans>
-                                Use the "Close" button to reduce your Position Size, or to set Take Profit / Stop Loss
-                                Orders.
+                                Use the "Close" button to reduce your position, or to set TP/SL orders.
                               </Trans>
                             </div>
                           );
