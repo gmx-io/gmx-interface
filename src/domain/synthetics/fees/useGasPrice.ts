@@ -27,10 +27,12 @@ export function useGasPrice(chainId: number) {
         try {
           const feeData = await provider.getFeeData();
 
+          const bufferBps = (settings.executionFeeBufferBps ?? 0) + (settings.expressOrdersEnabled ? 1000 : 0);
+
           const gasPrice = estimateExecutionGasPrice({
             rawGasPrice: feeData.gasPrice ?? 0n,
             maxPriorityFeePerGas: getMaxPriorityFeePerGas(chainId, feeData?.maxPriorityFeePerGas),
-            bufferBps: getExecutionFeeBufferBps(chainId, settings.executionFeeBufferBps),
+            bufferBps: getExecutionFeeBufferBps(chainId, bufferBps),
             premium: getGasPremium(chainId),
           });
 
