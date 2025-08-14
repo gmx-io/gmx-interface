@@ -947,8 +947,8 @@ msgstr "Liq. {0} {longOrShortText}"
 msgid "Pay"
 msgstr "Pay"
 
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Solana"
 msgstr "Solana"
 
@@ -3977,6 +3977,10 @@ msgstr "TRADING Airdrop"
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. This can be useful for delta-neutral strategies to earn funding fees."
 msgstr "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. This can be useful for delta-neutral strategies to earn funding fees."
 
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "Open GMX Solana"
+msgstr "Open GMX Solana"
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr "Rebates earned by this account as a trader."
@@ -5107,6 +5111,10 @@ msgstr "Short Liquidity"
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Order Type"
 msgstr "Order Type"
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMX Solana"
+msgstr "GMX Solana"
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
@@ -8015,6 +8023,10 @@ msgstr "Accrued"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Liquidation price is influenced by fees and collateral value."
 msgstr "Liquidation price is influenced by fees and collateral value."
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMX Solana is hosted on a different website by a different DAO team.<0/><1/>The experience may vary slightly."
+msgstr "GMX Solana is hosted on a different website by a different DAO team.<0/><1/>The experience may vary slightly."
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "No data available"

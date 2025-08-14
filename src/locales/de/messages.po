@@ -947,8 +947,8 @@ msgstr "Liq. {0} {longOrShortText}"
 msgid "Pay"
 msgstr "Bezahlen"
 
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Solana"
 msgstr ""
 
@@ -3977,6 +3977,10 @@ msgstr "TRADING Airdrop"
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. This can be useful for delta-neutral strategies to earn funding fees."
 msgstr "Du wirst {indexSymbol} aus deiner Short-Position short sein, während du {collateralSymbol} aus deinem {collateralSymbol}-Kollateral long bist. Das kann für delta-neutrale Strategien nützlich sein, um Finanzierungsgebühren zu verdienen."
 
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "Open GMX Solana"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr "Rabatte, die von diesem Konto als Trader verdient wurden."
@@ -5107,6 +5111,10 @@ msgstr "Short-Liquidität"
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Order Type"
 msgstr "Order-Typ"
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMX Solana"
+msgstr ""
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
@@ -8015,6 +8023,10 @@ msgstr "Angesammelt"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Liquidation price is influenced by fees and collateral value."
 msgstr "Liquidationspreis wird durch Gebühren und Kollateralwert beeinflusst."
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMX Solana is hosted on a different website by a different DAO team.<0/><1/>The experience may vary slightly."
+msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "No data available"
