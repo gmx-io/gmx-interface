@@ -1,9 +1,10 @@
 import { AbFlag, getAbFlagUrlParams } from "config/ab";
+import { getStoredUtmParams } from "domain/utm";
 import { UserAnalyticsEventItem } from "lib/oracleKeeperFetcher";
 import { sleep } from "lib/sleep";
 
-import { getOrSetSessionId, SESSION_ID_KEY, setLastEventTime } from "./sessionId";
 import { metrics } from "../metrics/Metrics";
+import { getOrSetSessionId, SESSION_ID_KEY, setLastEventTime } from "./sessionId";
 
 type CommonEventParams = {
   platform?: string;
@@ -16,14 +17,18 @@ type CommonEventParams = {
   [key in AbFlag]: boolean;
 };
 
-type ProfileProps = {
+export type ProfileProps = {
   last30DVolume?: number;
   totalVolume?: number;
   languageCode: string;
   ExpressEnabled: boolean;
   Express1CTEnabled: boolean;
   ref?: string;
-  utm?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_term?: string;
+  utm_content?: string;
   isChartPositionsEnabled?: boolean;
   showLeverageSlider?: boolean;
   displayPnLAfterFees?: boolean;
@@ -132,11 +137,12 @@ export class UserAnalytics {
     return interactionId;
   };
 
-  getSessionIdUrlParams() {
+  getSessionForwardParams() {
     const sessionIdParam = `${SESSION_ID_KEY}=${getOrSetSessionId()}`;
     const abFlagsParams = getAbFlagUrlParams();
+    const utmParams = getStoredUtmParams();
 
-    return [sessionIdParam, abFlagsParams].filter(Boolean).join("&");
+    return [sessionIdParam, abFlagsParams, utmParams?.utmString].filter(Boolean).join("&");
   }
 
   pushEvent = async <T extends AnalyticsEventParams = never>(
