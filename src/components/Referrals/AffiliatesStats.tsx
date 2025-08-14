@@ -466,7 +466,7 @@ function AffiliatesStats({
                 <Trans>Rebates Distribution History</Trans>
               </span>
             }
-            tooltipText={t`Rebates are claimed manually.`}
+            tooltipText={t`Distribution history for claimed rebates and airdrops.`}
             bodyPadding={false}
             divider={false}
           >
@@ -611,7 +611,7 @@ function AffiliatesStats({
         </div>
       ) : (
         <EmptyMessage
-          tooltipText={t`Rebates are claimed manually.`}
+          tooltipText={t`Distribution history for claimed rebates and airdrops.`}
           message={t`No rebates distribution history yet.`}
         />
       )}
