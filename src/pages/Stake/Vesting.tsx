@@ -369,7 +369,7 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                 <div className="App-card-buttons m-0">
                   {!active && (
                     <Button variant="secondary" onClick={openConnectModal}>
-                      <Trans>Connect Wallet</Trans>
+                      <Trans>Connect wallet</Trans>
                     </Button>
                   )}
                   {active && (
@@ -471,7 +471,7 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                 <div className="App-card-buttons m-0">
                   {!active && (
                     <Button variant="secondary" onClick={openConnectModal}>
-                      <Trans>Connect Wallet</Trans>
+                      <Trans>Connect wallet</Trans>
                     </Button>
                   )}
                   {active && (
@@ -544,7 +544,7 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                   <div className="App-card-buttons m-0">
                     {!active && (
                       <Button variant="secondary" onClick={openConnectModal}>
-                        <Trans>Connect Wallet</Trans>
+                        <Trans>Connect wallet</Trans>
                       </Button>
                     )}
                     {active && (
