@@ -633,10 +633,6 @@ msgstr "隠す"
 msgid "in liquidity"
 msgstr "流動性で"
 
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-#~ msgid "Winner"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.jsx
 msgid "Exit Price"
 msgstr "手仕舞い価格"
@@ -2589,10 +2585,6 @@ msgstr "担保として{0}を使用した既存のポジションがあります
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Transfer Account"
 msgstr "アカウント移転"
-
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-#~ msgid "Winners"
-#~ msgstr ""
 
 #: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx

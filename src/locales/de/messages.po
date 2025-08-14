@@ -633,10 +633,6 @@ msgstr "Verstecken"
 msgid "in liquidity"
 msgstr "In Liquidität"
 
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-#~ msgid "Winner"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.jsx
 msgid "Exit Price"
 msgstr "Exit-Preis"
@@ -2589,10 +2585,6 @@ msgstr "Du hast eine bestehende Position mit {0} als Kollateral."
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Transfer Account"
 msgstr "Konto transferieren"
-
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-#~ msgid "Winners"
-#~ msgstr ""
 
 #: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx

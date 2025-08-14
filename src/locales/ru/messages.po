@@ -633,10 +633,6 @@ msgstr "скрыть"
 msgid "in liquidity"
 msgstr "используется для обеспечения ликвидности"
 
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-#~ msgid "Winner"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.jsx
 msgid "Exit Price"
 msgstr "Цена выхода"
@@ -2589,10 +2585,6 @@ msgstr "У вас есть существующая позиция с {0} в к�
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Transfer Account"
 msgstr "Счет для Перевода"
-
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-#~ msgid "Winners"
-#~ msgstr ""
 
 #: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx

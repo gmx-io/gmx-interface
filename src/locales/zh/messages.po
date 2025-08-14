@@ -633,10 +633,6 @@ msgstr "隐藏"
 msgid "in liquidity"
 msgstr "流动性中"
 
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-#~ msgid "Winner"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.jsx
 msgid "Exit Price"
 msgstr "退出价格"
@@ -2589,10 +2585,6 @@ msgstr "您有一个现有仓位，抵押品为 {0}。"
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Transfer Account"
 msgstr "转移账户"
-
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-#~ msgid "Winners"
-#~ msgstr ""
 
 #: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx
