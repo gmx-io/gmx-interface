@@ -4196,10 +4196,6 @@ msgstr "Unique"
 msgid "Error preparing transaction. Provider is not defined"
 msgstr "Erreur lors de la préparation de la transaction. Fournisseur non défini"
 
-#: src/components/Synthetics/Claims/ClaimableCardUI.tsx
-#~ msgid "Funding fees"
-#~ msgstr "Frais de financement"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity in GM Pool"
 msgstr "Liquidité insuffisante dans le pool GM"

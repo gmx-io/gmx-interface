@@ -4196,10 +4196,6 @@ msgstr "单一"
 msgid "Error preparing transaction. Provider is not defined"
 msgstr "准备交易错误。提供者未定义"
 
-#: src/components/Synthetics/Claims/ClaimableCardUI.tsx
-#~ msgid "Funding fees"
-#~ msgstr "资金费用"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity in GM Pool"
 msgstr "GM 池流动性不足"

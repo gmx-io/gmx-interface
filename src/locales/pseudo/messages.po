@@ -4193,10 +4193,6 @@ msgstr ""
 msgid "Error preparing transaction. Provider is not defined"
 msgstr ""
 
-#: src/components/Synthetics/Claims/ClaimableCardUI.tsx
-#~ msgid "Funding fees"
-#~ msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity in GM Pool"
 msgstr ""
