@@ -1,4 +1,4 @@
-import { t, Trans } from "@lingui/macro";
+import { t } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 import { FaChevronRight } from "react-icons/fa6";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
@@ -179,7 +179,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
       to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
       className="flex items-center gap-6 rounded-full bg-slate-700 px-12 py-8 hover:bg-slate-600"
     >
-      <div className="text-13 font-medium">{winners.length > 1 ? <Trans>Winners</Trans> : <Trans>Winner</Trans>}</div>
+      <div className="text-13 font-medium">{shortenAddress(winner.account, 8)}</div>
       <Jazzicon diameter={16} seed={jsNumberForAddress(winner.account)} />
     </Link>
   ) : null;

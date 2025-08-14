@@ -634,8 +634,8 @@ msgid "in liquidity"
 msgstr "유동성 내"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "Winner"
-msgstr ""
+#~ msgid "Winner"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Exit Price"
@@ -2591,8 +2591,8 @@ msgid "Transfer Account"
 msgstr "계정 이전"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "Winners"
-msgstr ""
+#~ msgid "Winners"
+#~ msgstr ""
 
 #: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx
