@@ -1,5 +1,5 @@
 import { Menu } from "@headlessui/react";
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import noop from "lodash/noop";
 import { useState } from "react";
@@ -11,12 +11,11 @@ import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import type { ModalProps } from "components/Modal/Modal";
 
 import SettingsIcon from "img/ic_settings.svg?react";
-import solanaIcon from "img/ic_sol_24.svg";
 
+import SolanaNetworkItem from "./SolanaNetworkItem";
 import ModalWithPortal from "../Modal/ModalWithPortal";
 
 import "./NetworkDropdown.css";
@@ -151,20 +150,7 @@ function NetworkMenuItems({ networkOptions, selectorLabel }) {
     })
     .concat(
       <Menu.Item key="solana">
-        <ExternalLink
-          className="network-dropdown-menu-item menu-item !no-underline"
-          data-qa={`networks-dropdown-solana`}
-          href="https://gmxsol.io/trade"
-        >
-          <div className="menu-item-group">
-            <div className="menu-item-icon">
-              <img className="network-dropdown-icon" src={solanaIcon} alt={t`Solana`} />
-            </div>
-            <span className="network-dropdown-item-label">
-              <Trans>Solana</Trans>
-            </span>
-          </div>
-        </ExternalLink>
+        <SolanaNetworkItem />
       </Menu.Item>
     );
 }
@@ -192,6 +178,7 @@ function NetworkModalContent({ networkOptions, selectorLabel, setActiveModal, op
         <span className="network-dropdown-label more-options">
           <Trans>More Options</Trans>
         </span>
+        <SolanaNetworkItem />
         <div
           className="network-option"
           onClick={() => {

@@ -579,7 +579,7 @@ function MarketListItem({
 
   if (isSwap) {
     return (
-      <tr key={token.symbol} className="group/row cursor-pointer hover:bg-slate-800">
+      <tr key={token.symbol} className="group/row cursor-pointer hover:bg-fill-surfaceHover">
         <td className={cx("pl-14 pr-6 text-center text-slate-100", rowVerticalPadding)} onClick={handleFavoriteClick}>
           <FavoriteStar isFavorite={isFavorite} className="!h-12 !w-12" />
         </td>
@@ -614,7 +614,11 @@ function MarketListItem({
   }
 
   return (
-    <tr key={token.symbol} className="group/row cursor-pointer hover:bg-slate-800" onClick={handleSelectLargePosition}>
+    <tr
+      key={token.symbol}
+      className="group/row cursor-pointer hover:bg-fill-surfaceHover"
+      onClick={handleSelectLargePosition}
+    >
       <td className={cx("px-12 text-center text-slate-100", rowVerticalPadding)} onClick={handleFavoriteClick}>
         <FavoriteStar isFavorite={isFavorite} className="!h-12 !w-12" />
       </td>
