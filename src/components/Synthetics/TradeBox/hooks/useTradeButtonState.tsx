@@ -7,7 +7,7 @@ import { getBridgingOptionsForToken } from "config/bridging";
 import { BOTANIX, SettlementChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { get1InchSwapUrlFromAddresses } from "config/links";
-import { MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS } from "config/multichain";
+import { MULTI_CHAIN_DEPOSIT_TRADE_TOKENS } from "config/multichain";
 import {
   useGmxAccountDepositViewTokenAddress,
   useGmxAccountDepositViewTokenInputValue,
@@ -308,7 +308,7 @@ export function useTradeboxButtonState({
       if (fromToken) {
         const wrappedAddress = convertTokenAddress(chainId, fromToken.address, "wrapped");
         const isSupportedToDeposit =
-          MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[chainId as SettlementChainId].includes(wrappedAddress);
+          MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[chainId as SettlementChainId].includes(wrappedAddress);
 
         if (isSupportedToDeposit) {
           setGmxAccountDepositViewTokenAddress(fromToken.address);

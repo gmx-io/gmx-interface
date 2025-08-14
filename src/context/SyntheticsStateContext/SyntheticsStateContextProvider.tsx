@@ -191,8 +191,9 @@ export function SyntheticsStateContextProvider({
   const glvInfo = useGlvMarketsInfo(shouldFetchGlvMarkets, {
     marketsInfoData: marketsInfo.marketsInfoData,
     tokensData: tokensDataResult.tokensData,
-    chainId: chainId,
-    account: account,
+    chainId,
+    account,
+    srcChainId,
   });
 
   const { marketTokensData: depositMarketTokensData } = useMarketTokensDataRequest(chainId, srcChainId, {

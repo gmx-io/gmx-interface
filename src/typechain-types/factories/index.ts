@@ -24,7 +24,6 @@ export { MultichainGmRouter__factory } from "./MultichainGmRouter__factory";
 export { MultichainOrderRouter__factory } from "./MultichainOrderRouter__factory";
 export { MultichainSubaccountRouter__factory } from "./MultichainSubaccountRouter__factory";
 export { MultichainTransferRouter__factory } from "./MultichainTransferRouter__factory";
-export { MultichainUtils__factory } from "./MultichainUtils__factory";
 export { MultichainVault__factory } from "./MultichainVault__factory";
 export { OrderBook__factory } from "./OrderBook__factory";
 export { OrderBookReader__factory } from "./OrderBookReader__factory";
