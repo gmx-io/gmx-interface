@@ -24,7 +24,6 @@ export type { MultichainGmRouter } from "./MultichainGmRouter";
 export type { MultichainOrderRouter } from "./MultichainOrderRouter";
 export type { MultichainSubaccountRouter } from "./MultichainSubaccountRouter";
 export type { MultichainTransferRouter } from "./MultichainTransferRouter";
-export type { MultichainUtils } from "./MultichainUtils";
 export type { MultichainVault } from "./MultichainVault";
 export type { OrderBook } from "./OrderBook";
 export type { OrderBookReader } from "./OrderBookReader";
@@ -83,7 +82,6 @@ export { MultichainGmRouter__factory } from "./factories/MultichainGmRouter__fac
 export { MultichainOrderRouter__factory } from "./factories/MultichainOrderRouter__factory";
 export { MultichainSubaccountRouter__factory } from "./factories/MultichainSubaccountRouter__factory";
 export { MultichainTransferRouter__factory } from "./factories/MultichainTransferRouter__factory";
-export { MultichainUtils__factory } from "./factories/MultichainUtils__factory";
 export { MultichainVault__factory } from "./factories/MultichainVault__factory";
 export { OrderBook__factory } from "./factories/OrderBook__factory";
 export { OrderBookReader__factory } from "./factories/OrderBookReader__factory";
