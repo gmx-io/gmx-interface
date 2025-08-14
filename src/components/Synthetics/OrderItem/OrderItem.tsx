@@ -569,7 +569,7 @@ function OrderItemLarge({
           <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder} />
         </TableTd>
       )}
-      <TableTd className="w-[20%]">
+      <TableTd>
         {isSwap ? (
           <TooltipWithPortal
             handle={
@@ -618,17 +618,17 @@ function OrderItemLarge({
           />
         )}
       </TableTd>
-      <TableTd className="w-[10%]">
+      <TableTd>
         <OrderItemTypeLabel order={order} />
       </TableTd>
-      <TableTd className="w-[15%]">
+      <TableTd>
         <OrderSize order={order} showDebugValues={showDebugValues} />
       </TableTd>
 
-      <TableTd className="w-[15%]">
+      <TableTd>
         <TriggerPrice order={order} hideActions={hideActions} />
       </TableTd>
-      <TableTd className="w-[15%]">
+      <TableTd>
         <MarkPrice order={order} />
       </TableTd>
       {!hideActions && (
