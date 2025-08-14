@@ -345,6 +345,7 @@ body.dragging .ExchangeChart iframe {
 
 .PositionEditor .Modal-content {
   max-width: 38rem;
+  width: 100%;
   position: absolute;
   max-height: 80vh;
   overflow: hidden;

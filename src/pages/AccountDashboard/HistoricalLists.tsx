@@ -11,7 +11,6 @@ import { selectPositionsInfoData } from "context/SyntheticsStateContext/selector
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
-import { useBreakpoints } from "lib/breakpoints";
 import { useAccountOrders } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
@@ -171,8 +170,6 @@ export function HistoricalLists({ chainId, account }: Props) {
     </>
   );
 
-  const { isMobile, isTablet } = useBreakpoints();
-
   return (
     <div>
       <div className="overflow-x-auto scrollbar-hide">
@@ -181,12 +178,13 @@ export function HistoricalLists({ chainId, account }: Props) {
           selectedValue={tabKey}
           onChange={setTabKey}
           type="block"
-          className={cx("w-[max(100%,600px)] bg-slate-900", {
-            "mb-8 rounded-b-8": [TabKey.Positions, TabKey.Orders].includes(tabKey as TabKey) && isTablet,
-            "w-[max(100%,420px)]": isMobile,
+          className={cx("w-[max(100%,600px)] bg-slate-900 max-md:w-[max(100%,420px)]", {
+            "max-lg:mb-8 max-lg:rounded-b-8": [TabKey.Positions, TabKey.Orders].includes(tabKey as TabKey),
           })}
           regularOptionClassname={cx({
-            "first:rounded-l-8 last:rounded-r-8": [TabKey.Positions, TabKey.Orders].includes(tabKey as TabKey),
+            "max-lg:first:rounded-l-8 max-lg:last:rounded-r-8": [TabKey.Positions, TabKey.Orders].includes(
+              tabKey as TabKey
+            ),
           })}
           rightContent={actions}
         />

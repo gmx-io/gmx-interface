@@ -75,7 +75,7 @@ export default function ChartTokenSelector(props: Props) {
       popoverPlacement="bottom-start"
       handleClassName={cx("group rounded-8 bg-slate-800 py-10 pl-8 pr-12", {
         "mr-24": oneRowLabels === false,
-        "py-0": isSwap,
+        "py-0 md:h-40": isSwap,
       })}
       desktopPanelClassName={cx("max-w-[100vw]", { "w-[520px]": isSwap, "w-[880px]": !isSwap })}
       chevronClassName={isMobile && !isSwap ? "-mt-20" : undefined}

@@ -303,12 +303,12 @@ function AffiliatesStats({
           labelTooltipText={t`Claim V2 rebates from your referred traders.`}
           className="AffiliateStats-claimable-rewards-card"
         >
-          <div className="AffiliateStats-claimable-rewards-container">
+          <div className="AffiliateStats-claimable-rewards-container flex flex-col gap-6">
             <span className="numbers">${getUSDValue(totalClaimableRewardsUsd, 4)}</span>
             {(totalClaimableRewardsUsd > 0 && (
-              <div onClick={() => setIsClaiming(true)} className="AffiliateStats-claim-button">
+              <Button variant="secondary" onClick={() => setIsClaiming(true)}>
                 Claim
-              </div>
+              </Button>
             )) ||
               null}
           </div>
