@@ -656,6 +656,27 @@ export const MARKETS: Record<UiContractsChain, Record<string, MarketConfig>> = {
       longTokenAddress: "0x912CE59144191C1204E64559FE8253a0e49E6548",
       shortTokenAddress: "0x912CE59144191C1204E64559FE8253a0e49E6548",
     },
+    // ALGO/USD [WBTC-USDC]
+    "0x3B7f4e4Cf2fa43df013d2B32673e6A01d29ab2Ac": {
+      marketTokenAddress: "0x3B7f4e4Cf2fa43df013d2B32673e6A01d29ab2Ac",
+      indexTokenAddress: "0x72Cd3a21aA7A898028d9501868Fbe6dED0020434",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // CRO/USD [WBTC-USDC]
+    "0xa29FfE4152B65A0347512Ae5c6A4Bbc7a3d6d51B": {
+      marketTokenAddress: "0xa29FfE4152B65A0347512Ae5c6A4Bbc7a3d6d51B",
+      indexTokenAddress: "0xB7EfE7c7f059E84Ab87A83A169c583Fb4A54fAc3",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // HBAR/USD [WBTC-USDC]
+    "0x9f0849FB830679829d1FB759b11236D375D15C78": {
+      marketTokenAddress: "0x9f0849FB830679829d1FB759b11236D375D15C78",
+      indexTokenAddress: "0xEb2A83b973f4dbB9511D92dd40d2ba4C683f0971",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

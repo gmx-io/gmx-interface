@@ -34,6 +34,21 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "algo-cro-hbar-listing",
+    isActive: true,
+    startDate: "14 Aug 2025, 10:00",
+    endDate: "21 Aug 2025, 12:00",
+    title: "ALGO, CRO, and HBAR markets added on Arbitrum",
+    bodyText: (
+      <>
+        <Link to="/trade/long?to=ALGO">Start trading</Link> these markets on Arbitrum, or{" "}
+        <Link to="/pools">provide liquidity</Link> using <TokenSymbolWithIcon symbol="WBTC" /> or{" "}
+        <TokenSymbolWithIcon symbol="USDC" /> to their respective GM pools or GLV.
+      </>
+    ),
+    chains: [ARBITRUM],
+  },
+  {
     id: "mnt-spx6900-listing",
     isActive: true,
     startDate: "6 Aug 2025, 10:00",
