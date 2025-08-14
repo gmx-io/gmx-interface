@@ -1020,6 +1020,7 @@ export interface SyntheticsReaderInterface extends Interface {
       BigNumberish,
       BigNumberish,
       BigNumberish,
+      BigNumberish,
       boolean,
     ]
   ): string;
@@ -1221,6 +1222,7 @@ export interface SyntheticsReader extends BaseContract {
       positionSizeInUsd: BigNumberish,
       positionSizeInTokens: BigNumberish,
       sizeDeltaUsd: BigNumberish,
+      pendingImpactAmount: BigNumberish,
       isLong: boolean,
     ],
     [ReaderPricingUtils.ExecutionPriceResultStructOutput],
@@ -1488,6 +1490,7 @@ export interface SyntheticsReader extends BaseContract {
       positionSizeInUsd: BigNumberish,
       positionSizeInTokens: BigNumberish,
       sizeDeltaUsd: BigNumberish,
+      pendingImpactAmount: BigNumberish,
       isLong: boolean,
     ],
     [ReaderPricingUtils.ExecutionPriceResultStructOutput],
