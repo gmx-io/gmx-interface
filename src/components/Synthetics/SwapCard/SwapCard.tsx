@@ -42,28 +42,28 @@ export function SwapCard(p: Props) {
   }, [fromToken, toToken]);
 
   return (
-    <div className="text-body-medium relative rounded-4 bg-slate-800 p-15 max-[1100px]:mt-0">
+    <div className="text-body-medium relative rounded-4 bg-slate-900 p-15 max-[1024px]:mt-0">
       <div className="text-[15px]">
         <Trans>Swap</Trans>
       </div>
-      <div className="my-15 h-1 bg-stroke-primary" />
+      <div className="my-15 h-1 bg-slate-600" />
 
       <div className="flex flex-col gap-14">
         <SyntheticsInfoRow
           label={t`${fromToken?.symbol} Price`}
-          value={formatUsdPrice(fromToken?.prices?.minPrice) || "..."}
+          value={<span className="numbers">{formatUsdPrice(fromToken?.prices?.minPrice) || "..."}</span>}
         />
 
         <SyntheticsInfoRow
           label={t`${toToken?.symbol} Price`}
-          value={formatUsdPrice(toToken?.prices?.maxPrice) || "..."}
+          value={<span className="numbers">{formatUsdPrice(toToken?.prices?.maxPrice) || "..."}</span>}
         />
 
         <SyntheticsInfoRow
           label={t`Available Liquidity`}
           value={
             <Tooltip
-              handle={formatUsd(maxLiquidityUsd) || "..."}
+              handle={<span className="numbers">{formatUsd(maxLiquidityUsd) || "..."}</span>}
               position="left-start"
               content={
                 <StatsTooltipRow
@@ -86,7 +86,7 @@ export function SwapCard(p: Props) {
           }
         />
 
-        <SyntheticsInfoRow label={t`Price`} value={ratioStr} />
+        <SyntheticsInfoRow label={t`Price`} value={<span className="numbers">{ratioStr}</span>} />
       </div>
     </div>
   );

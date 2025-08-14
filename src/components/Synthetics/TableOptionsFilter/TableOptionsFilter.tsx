@@ -153,18 +153,14 @@ export function TableOptionsFilter<T>({
 
   return (
     <TableFilterBase label={label} isActive={isActive} popupPlacement={popupPlacement} asButton={asButton}>
-      <SearchInput
-        className="TableOptionsFilter-search *:!text-body-medium"
-        placeholder={placeholder}
-        value={search}
-        setValue={setSearch}
-        onKeyDown={handleSearchEnterKey}
-      />
+      <div className="p-12">
+        <SearchInput placeholder={placeholder} value={search} setValue={setSearch} onKeyDown={handleSearchEnterKey} />
+      </div>
 
       {beforeContent}
 
       <div className="TableOptionsFilter-options">
-        <div className="TableOptionsFilter-clear" onClick={handleClear}>
+        <div className="TableOptionsFilter-clear text-[11px] font-medium uppercase text-white" onClick={handleClear}>
           <Trans comment="Button to clear the filter selection">Clear selection</Trans>
         </div>
         {isGrouped && defined(filteredGroups) && (

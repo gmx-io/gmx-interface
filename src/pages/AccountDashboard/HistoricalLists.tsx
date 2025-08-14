@@ -22,11 +22,12 @@ import {
   usePositionsV1,
 } from "pages/Actions/ActionsV1/ActionsV1";
 
-import { ClaimsHistory } from "components/Synthetics/Claims/ClaimsHistory";
+import Badge, { BadgeIndicator } from "components/Badge/Badge";
+import { ClaimsHistory, useClaimsHistoryState } from "components/Synthetics/Claims/ClaimsHistory";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
-import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
+import { TradeHistory, useTradeHistoryState } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tabs from "components/Tabs/Tabs";
 
 enum TabKey {
@@ -64,15 +65,17 @@ function OrdersTabTitle({
     );
   }
 
+  let indicator: BadgeIndicator | undefined;
+  if (ordersWarningsCount > 0 && !ordersErrorsCount) {
+    indicator = "warning";
+  } else if (ordersErrorsCount > 0) {
+    indicator = "error";
+  }
+
   return (
-    <div className="flex">
-      <Trans>Orders ({ordersCount})</Trans>
-      <div
-        className={cx("relative top-3 size-6 rounded-full", {
-          "bg-yellow-500": ordersWarningsCount > 0 && !ordersErrorsCount,
-          "bg-red-500": ordersErrorsCount > 0,
-        })}
-      />
+    <div className="flex items-center gap-8">
+      <Trans>Orders</Trans>
+      <Badge value={ordersCount} indicator={indicator} />
     </div>
   );
 }
@@ -84,7 +87,11 @@ function useTabLabels(): Record<TabKey, React.ReactNode> {
 
   const tabLabels = useMemo(
     () => ({
-      [TabKey.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
+      [TabKey.Positions]: (
+        <div className="flex items-center gap-8">
+          <Trans>Positions</Trans> <Badge value={positionsCount} />
+        </div>
+      ),
       [TabKey.Orders]: (
         <OrdersTabTitle
           ordersCount={ordersCount}
@@ -149,10 +156,38 @@ export function HistoricalLists({ chainId, account }: Props) {
     [tabLabels]
   );
 
+  const tradeHistoryState = useTradeHistoryState({
+    account,
+    hideDashboardLink: true,
+  });
+
+  const { controls: claimsHistoryControls, ...claimsHistoryProps } = useClaimsHistoryState();
+
+  const actions = (
+    <>
+      {tabKey === TabKey.Trades ? tradeHistoryState.controls : undefined}
+      {tabKey === TabKey.Claims ? claimsHistoryControls : undefined}
+    </>
+  );
+
   return (
     <div>
-      <div className="py-10">
-        <Tabs options={tabsOptions} selectedValue={tabKey} onChange={setTabKey} type="inline" />
+      <div className="overflow-x-auto scrollbar-hide">
+        <Tabs
+          options={tabsOptions}
+          selectedValue={tabKey}
+          onChange={setTabKey}
+          type="block"
+          className={cx("w-[max(100%,600px)] bg-slate-900 max-md:w-[max(100%,420px)]", {
+            "max-lg:mb-8 max-lg:rounded-b-8": [TabKey.Positions, TabKey.Orders].includes(tabKey as TabKey),
+          })}
+          regularOptionClassname={cx({
+            "max-lg:first:rounded-l-8 max-lg:last:rounded-r-8": [TabKey.Positions, TabKey.Orders].includes(
+              tabKey as TabKey
+            ),
+          })}
+          rightContent={actions}
+        />
       </div>
 
       {tabKey === TabKey.Positions && (
@@ -178,8 +213,8 @@ export function HistoricalLists({ chainId, account }: Props) {
           setOrderTypesFilter={setOrderTypesFilter}
         />
       )}
-      {tabKey === TabKey.Trades && <TradeHistory account={account} hideDashboardLink />}
-      {tabKey === TabKey.Claims && <ClaimsHistory />}
+      {tabKey === TabKey.Trades && <TradeHistory {...tradeHistoryState} />}
+      {tabKey === TabKey.Claims && <ClaimsHistory {...claimsHistoryProps} />}
     </div>
   );
 }

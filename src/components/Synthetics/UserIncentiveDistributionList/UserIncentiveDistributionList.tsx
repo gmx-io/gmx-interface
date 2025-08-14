@@ -144,7 +144,7 @@ export default function UserIncentiveDistributionList() {
             <TableScrollFadeContainer>
               <table className="w-full min-w-max">
                 <thead>
-                  <TableTheadTr bordered>
+                  <TableTheadTr>
                     <TableTh>
                       <Trans>Date</Trans>
                     </TableTh>
@@ -208,7 +208,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
         key={tokenInfo.id}
         showDollar={false}
         label={tokenInfo.symbol}
-        value={formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}
+        value={<span className="numbers">{formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}</span>}
       />
     ));
   }, [tokenIncentiveDetails]);
@@ -224,11 +224,17 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const type = tooltipData ? <Tooltip handle={typeStr} renderContent={renderTooltipTypeContent} /> : typeStr;
 
   return (
-    <TableTr bordered={false} hoverable={false}>
+    <TableTr hoverable={false}>
       <TableTd data-label="Date">{formatDate(transaction.timestamp)}</TableTd>
-      <TableTd data-label="Type">{type}</TableTd>
+      <TableTd data-label="Type" className="font-medium">
+        {type}
+      </TableTd>
       <TableTd data-label="Amount">
-        <Tooltip handle={formatUsd(totalUsd)} className="whitespace-nowrap" renderContent={renderTotalTooltipContent} />
+        <Tooltip
+          handle={<span className="numbers">{formatUsd(totalUsd)}</span>}
+          className="whitespace-nowrap"
+          renderContent={renderTotalTooltipContent}
+        />
       </TableTd>
       <TableTd data-label="Transaction">
         <ExternalLink href={`${explorerURL}tx/${transaction.hash}`}>

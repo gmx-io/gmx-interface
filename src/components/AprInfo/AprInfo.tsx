@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
 import { useCallback, useMemo } from "react";
 
 import { getIncentivesV2Url } from "config/links";
@@ -21,12 +22,14 @@ export function AprInfo({
   lidoApr,
   showTooltip = true,
   marketAddress,
+  className,
 }: {
   apy: bigint | undefined;
   incentiveApr: bigint | undefined;
   lidoApr: bigint | undefined;
   showTooltip?: boolean;
   marketAddress: string;
+  className?: string;
 }) {
   const { chainId } = useChainId();
 
@@ -43,15 +46,23 @@ export function AprInfo({
     return (
       <div className="flex flex-col gap-y-14">
         <div>
-          <StatsTooltipRow showDollar={false} label={t`Base APY`} value={`${formatAmount(apy, 28, 2)}%`} />
+          <StatsTooltipRow
+            showDollar={false}
+            label={t`Base APY`}
+            value={<span className="numbers">{`${formatAmount(apy, 28, 2)}%`}</span>}
+          />
           {isIncentiveActive && (
-            <StatsTooltipRow showDollar={false} label={t`Bonus APR`} value={`${formatAmount(incentiveApr, 28, 2)}%`} />
+            <StatsTooltipRow
+              showDollar={false}
+              label={t`Bonus APR`}
+              value={<span className="numbers">{`${formatAmount(incentiveApr, 28, 2)}%`}</span>}
+            />
           )}
           {isLidoApr && (
             <StatsTooltipRow
               showDollar={false}
               label={t`wstETH APR`}
-              value={`${formatAmount(lidoApr, LIDO_APR_DECIMALS, 2)}%`}
+              value={<span className="numbers">{`${formatAmount(lidoApr, LIDO_APR_DECIMALS, 2)}%`}</span>}
             />
           )}
         </div>
@@ -72,7 +83,11 @@ export function AprInfo({
 
   const aprNode = useMemo(() => {
     const isIncentiveApr = incentiveApr !== undefined && incentiveApr > 0;
-    const node = <>{apy !== undefined ? `${formatAmount(totalApr, 28, 2)}%` : "..."}</>;
+    const node = (
+      <>
+        {apy !== undefined ? <span className={cx("numbers", className)}>{formatAmount(totalApr, 28, 2)}%</span> : "..."}
+      </>
+    );
 
     if (isIncentiveApr) {
       return (
@@ -84,7 +99,7 @@ export function AprInfo({
     } else {
       return node;
     }
-  }, [apy, incentiveApr, totalApr]);
+  }, [apy, className, incentiveApr, totalApr]);
 
   return showTooltip && (isIncentiveActive || isLidoApr) ? (
     <TooltipWithPortal

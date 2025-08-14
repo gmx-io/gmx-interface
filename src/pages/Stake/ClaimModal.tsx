@@ -212,7 +212,7 @@ export function ClaimModal(props: {
 
   return (
     <ModalWithPortal className="StakeModal" isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Rewards`}>
-      <div className="CompoundModal-menu">
+      <div className="flex flex-col gap-8 pb-8">
         <div>
           <Checkbox isChecked={shouldClaimGmx} setIsChecked={setShouldClaimGmx} disabled={shouldStakeGmx}>
             <Trans>Claim GMX Rewards</Trans>

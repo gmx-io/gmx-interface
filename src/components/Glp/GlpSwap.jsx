@@ -139,7 +139,7 @@ export default function GlpSwap(props) {
     () => ({
       [tabOptions[0]]: {
         regular:
-          "border-b border-b-[transparent] !cursor-not-allowed !bg-[#1b1e32] text-slate-500 !hover:bg-[#1b1e32] hover:!text-slate-500",
+          "border-b border-b-[transparent] !cursor-not-allowed !bg-[#1b1e32] text-slate-100 !hover:bg-[#1b1e32] hover:!text-slate-100",
       },
       [tabOptions[1]]: {
         active: "!bg-[#392A46] border-b border-b-red-500",
@@ -978,7 +978,6 @@ export default function GlpSwap(props) {
                       onSelectToken={onSelectSwapToken}
                       tokens={whitelistedTokens}
                       infoTokens={infoTokens}
-                      size="l"
                       showSymbolImage={true}
                       showTokenImgInDropdown={true}
                     />
@@ -1070,7 +1069,6 @@ export default function GlpSwap(props) {
                         onSelectToken={onSelectSwapToken}
                         tokens={whitelistedTokens}
                         infoTokens={infoTokens}
-                        size="l"
                         showSymbolImage={true}
                         showTokenImgInDropdown={true}
                       />

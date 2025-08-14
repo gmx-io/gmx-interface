@@ -178,7 +178,11 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
         position="left-start"
         content={
           <>
-            <StatsTooltipRow label={t`Max Network Fee`} showDollar={false} value={maxNetworkFeeText} />
+            <StatsTooltipRow
+              label={t`Max Network Fee`}
+              showDollar={false}
+              value={<span className="numbers">{maxNetworkFeeText}</span>}
+            />
             <div className="h-8" />
             <p>
               <Trans>
@@ -194,7 +198,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
             <StatsTooltipRow
               label={t`Estimated Fee Refund`}
               showDollar={false}
-              value={estimatedRefundText}
+              value={<span className="numbers">{estimatedRefundText}</span>}
               textClassName="text-green-500"
             />
             {warning && <p className="text-yellow-500">{warning}</p>}
@@ -202,7 +206,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
           </>
         }
       >
-        {formatUsd(-feeUsdAfterRefund)}
+        <span className="numbers">{formatUsd(-feeUsdAfterRefund)}</span>
       </TooltipWithPortal>
     );
   }, [
@@ -221,6 +225,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
         label={
           <TooltipWithPortal
             position="left-start"
+            styleType="icon"
             content={
               <Trans>
                 Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does
@@ -241,6 +246,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
       label={
         <TooltipWithPortal
           position="left-start"
+          styleType="icon"
           content={
             <Trans>
               Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does

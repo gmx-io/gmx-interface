@@ -203,7 +203,7 @@ function ScrollFadeControls({
   rightStyles,
   scrollToLeft,
   scrollToRight,
-  gradientColor = "slate-800",
+  gradientColor = "slate-900",
 }: {
   scrollLeft: number;
   scrollRight: number;
@@ -271,13 +271,28 @@ function ScrollFadeControls({
   );
 }
 
-export function TableScrollFadeContainer({ children }: PropsWithChildren<{}>) {
+export function TableScrollFadeContainer({
+  children,
+  disableScrollFade,
+}: PropsWithChildren<{ disableScrollFade?: boolean }>) {
   const tableScrollFade = useTableScrollFade();
+
+  useEffect(() => {
+    if (disableScrollFade) {
+      tableScrollFade.scrollToLeft();
+    }
+  }, [tableScrollFade, disableScrollFade]);
 
   return (
     <div className="relative">
-      <ScrollFadeControls {...tableScrollFade} />
-      <div className="overflow-x-auto scrollbar-hide" ref={tableScrollFade.setScrollableRef}>
+      {!disableScrollFade && <ScrollFadeControls {...tableScrollFade} />}
+      <div
+        className={cx(" scrollbar-hide", {
+          "overflow-hidden": disableScrollFade,
+          "overflow-x-auto": !disableScrollFade,
+        })}
+        ref={tableScrollFade.setScrollableRef}
+      >
         {children}
       </div>
     </div>

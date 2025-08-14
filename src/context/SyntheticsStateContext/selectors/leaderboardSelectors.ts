@@ -28,6 +28,10 @@ export const selectLeaderboardIsStartInFuture = (s: SyntheticsState) => s.leader
 
 export const selectLeaderboardIsLoading = (s: SyntheticsState) => s.leaderboard.isLoading;
 
+export const selectLeaderboardSearchAddress = (s: SyntheticsState) => s.leaderboard.searchAddress;
+
+export const selectLeaderboardSetSearchAddress = (s: SyntheticsState) => s.leaderboard.setSearchAddress;
+
 export const selectLeaderboardIsCompetition = createSelector(function selectLeaderboardIsCompetition(q) {
   const pageKey = q((s) => s.leaderboard.leaderboardPageKey);
   return LEADERBOARD_PAGES[pageKey].isCompetition;

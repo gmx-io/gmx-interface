@@ -2,6 +2,7 @@ import { Trans } from "@lingui/macro";
 
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
+import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolWithIcon";
 
 type Props = {
@@ -18,9 +19,9 @@ export function InterviewToast({ type, onButtonClick }: Props) {
         </Trans>
         <br />
         <br />
-        <div onClick={onButtonClick} className="text-xl cursor-pointer text-slate-100 underline">
-          <Trans>Give us your feedback on GMX.</Trans>
-        </div>
+        <ColorfulButtonLink color="blue" onClick={onButtonClick}>
+          <Trans>Give us your feedback on GMX</Trans>
+        </ColorfulButtonLink>
         <br />
         <Trans>
           As a token of our appreciation, you'll receive a reward of{" "}
@@ -51,9 +52,9 @@ export function InterviewToast({ type, onButtonClick }: Props) {
         </Trans>
         <br />
         <br />
-        <div onClick={onButtonClick} className="text-xl cursor-pointer text-slate-100 underline">
-          <Trans>Click here to give us your feedback on GMX.</Trans>
-        </div>
+        <ColorfulButtonLink color="blue" onClick={onButtonClick}>
+          <Trans>Click here to give us your feedback on GMX</Trans>
+        </ColorfulButtonLink>
       </div>
     );
   }

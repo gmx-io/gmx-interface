@@ -272,20 +272,28 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                   </div>
                   <div>
                     <Tooltip
-                      handle={formatAmount(totalRewardTokens, 18, 2, true)}
+                      handle={<span className="numbers">{formatAmount(totalRewardTokens, 18, 2, true)}</span>}
                       position="bottom-end"
                       content={
                         <>
                           <StatsTooltipRow
                             showDollar={false}
                             label="GMX"
-                            value={formatAmount(processedData?.gmxInStakedGmx, 18, 2, true)}
+                            value={
+                              <span className="numbers">
+                                {formatAmount(processedData?.gmxInStakedGmx, 18, 2, true)}
+                              </span>
+                            }
                           />
 
                           <StatsTooltipRow
                             showDollar={false}
                             label="esGMX"
-                            value={formatAmount(processedData?.esGmxInStakedGmx, 18, 2, true)}
+                            value={
+                              <span className="numbers">
+                                {formatAmount(processedData?.esGmxInStakedGmx, 18, 2, true)}
+                              </span>
+                            }
                           />
                         </>
                       }
@@ -297,7 +305,8 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                     <Trans>Reserved for Vesting</Trans>
                   </div>
                   <div>
-                    {formatAmount(reservedAmount, 18, 2, true)} / {formatAmount(totalRewardTokens, 18, 2, true)}
+                    <span className="numbers">{formatAmount(reservedAmount, 18, 2, true)}</span> /{" "}
+                    <span className="numbers">{formatAmount(totalRewardTokens, 18, 2, true)}</span>
                   </div>
                 </div>
                 <div className="App-card-row">
@@ -306,20 +315,27 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                   </div>
                   <div>
                     <Tooltip
-                      handle={`${formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} / ${formatKeyAmount(
-                        vestingData,
-                        "gmxVesterVestedAmount",
-                        18,
-                        4,
-                        true
-                      )}`}
+                      handle={
+                        <span className="numbers">{`${formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} / ${formatKeyAmount(
+                          vestingData,
+                          "gmxVesterVestedAmount",
+                          18,
+                          4,
+                          true
+                        )}`}</span>
+                      }
                       position="bottom-end"
                       content={
                         <div>
                           <Trans>
-                            {formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} tokens have been converted
-                            to GMX from the {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)} esGMX
-                            deposited for vesting.
+                            <span className="numbers">
+                              {formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)}
+                            </span>{" "}
+                            tokens have been converted to GMX from the{" "}
+                            <span className="numbers">
+                              {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)}
+                            </span>{" "}
+                            esGMX deposited for vesting.
                           </Trans>
                         </div>
                       }
@@ -332,12 +348,18 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                   </div>
                   <div>
                     <Tooltip
-                      handle={formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)}
+                      handle={
+                        <span className="numbers">
+                          {formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)}
+                        </span>
+                      }
                       position="bottom-end"
                       content={
                         <Trans>
-                          {formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)} GMX tokens can be claimed,
-                          use the options under the Total Rewards section to claim them.
+                          <span className="numbers">
+                            {formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)}
+                          </span>{" "}
+                          GMX tokens can be claimed, use the options under the Total Rewards section to claim them.
                         </Trans>
                       }
                     />
@@ -376,15 +398,17 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                   <div className="label">
                     <Trans>Staked Tokens</Trans>
                   </div>
-                  <div>{formatAmount(processedData?.glpBalance, 18, 2, true)} GLP</div>
+                  <div>
+                    <span className="numbers">{formatAmount(processedData?.glpBalance, 18, 2, true)}</span> GLP
+                  </div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">
                     <Trans>Reserved for Vesting</Trans>
                   </div>
                   <div>
-                    {formatKeyAmount(vestingData, "glpVesterPairAmount", 18, 2, true)} /{" "}
-                    {formatAmount(processedData?.glpBalance, 18, 2, true)}
+                    <span className="numbers">{formatKeyAmount(vestingData, "glpVesterPairAmount", 18, 2, true)}</span>{" "}
+                    / <span className="numbers">{formatAmount(processedData?.glpBalance, 18, 2, true)}</span>
                   </div>
                 </div>
                 <div className="App-card-row">
@@ -393,20 +417,27 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                   </div>
                   <div>
                     <Tooltip
-                      handle={`${formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} / ${formatKeyAmount(
-                        vestingData,
-                        "glpVesterVestedAmount",
-                        18,
-                        4,
-                        true
-                      )}`}
+                      handle={
+                        <span className="numbers">{`${formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} / ${formatKeyAmount(
+                          vestingData,
+                          "glpVesterVestedAmount",
+                          18,
+                          4,
+                          true
+                        )}`}</span>
+                      }
                       position="bottom-end"
                       content={
                         <div>
                           <Trans>
-                            {formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} tokens have been converted
-                            to GMX from the {formatKeyAmount(vestingData, "glpVesterVestedAmount", 18, 4, true)} esGMX
-                            deposited for vesting.
+                            <span className="numbers">
+                              {formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)}
+                            </span>{" "}
+                            tokens have been converted to GMX from the{" "}
+                            <span className="numbers">
+                              {formatKeyAmount(vestingData, "glpVesterVestedAmount", 18, 4, true)}
+                            </span>{" "}
+                            esGMX deposited for vesting.
                           </Trans>
                         </div>
                       }
@@ -419,12 +450,18 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                   </div>
                   <div>
                     <Tooltip
-                      handle={formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)}
+                      handle={
+                        <span className="numbers">
+                          {formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)}
+                        </span>
+                      }
                       position="bottom-end"
                       content={
                         <Trans>
-                          {formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)} GMX tokens can be claimed,
-                          use the options under the Total Rewards section to claim them.
+                          <span className="numbers">
+                            {formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)}
+                          </span>{" "}
+                          GMX tokens can be claimed, use the options under the Total Rewards section to claim them.
                         </Trans>
                       }
                     />
@@ -466,21 +503,27 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                     </div>
                     <div>
                       <Tooltip
-                        handle={`${formatKeyAmount(
-                          vestingData,
-                          "affiliateVesterClaimSum",
-                          18,
-                          4,
-                          true
-                        )} / ${formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)}`}
+                        handle={
+                          <span className="numbers">{`${formatKeyAmount(
+                            vestingData,
+                            "affiliateVesterClaimSum",
+                            18,
+                            4,
+                            true
+                          )} / ${formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)}`}</span>
+                        }
                         position="bottom-end"
                         content={
                           <div>
                             <Trans>
-                              {formatKeyAmount(vestingData, "affiliateVesterClaimSum", 18, 4, true)} tokens have been
-                              converted to GMX from the{" "}
-                              {formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)} esGMX deposited
-                              for vesting.
+                              <span className="numbers">
+                                {formatKeyAmount(vestingData, "affiliateVesterClaimSum", 18, 4, true)}
+                              </span>{" "}
+                              tokens have been converted to GMX from the{" "}
+                              <span className="numbers">
+                                {formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)}
+                              </span>{" "}
+                              esGMX deposited for vesting.
                             </Trans>
                           </div>
                         }
@@ -491,7 +534,11 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                     <div className="label">
                       <Trans>Claimable</Trans>
                     </div>
-                    <div>{formatKeyAmount(vestingData, "affiliateVesterClaimable", 18, 4, true)}</div>
+                    <div>
+                      <span className="numbers">
+                        {formatKeyAmount(vestingData, "affiliateVesterClaimable", 18, 4, true)}
+                      </span>
+                    </div>
                   </div>
                   <div className="App-card-divider" />
                   <div className="App-card-buttons m-0">

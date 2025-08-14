@@ -5,9 +5,8 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { VersionNetworkSwitcherRow } from "pages/AccountDashboard/VersionNetworkSwitcherRow";
 
-import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
-import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
+import { TradeHistory, useTradeHistoryState } from "components/Synthetics/TradeHistory/TradeHistory";
 
 import "./SyntheticsActions.scss";
 
@@ -17,6 +16,11 @@ export default function SyntheticsActions() {
   const chainId = useSelector(selectChainId);
   const networkName = getChainName(chainId);
 
+  const tradeHistoryState = useTradeHistoryState({
+    account: undefined,
+    forAllAccounts: true,
+  });
+
   return (
     <div className="default-container page-layout">
       <div className="Actions-section">
@@ -24,7 +28,6 @@ export default function SyntheticsActions() {
           <PageTitle
             isTop
             title={t`GMX V2 Actions`}
-            chainId={chainId}
             subtitle={
               <>
                 <Trans>
@@ -35,9 +38,10 @@ export default function SyntheticsActions() {
             }
           />
         </div>
-        <TradeHistory account={undefined} forAllAccounts />
+        {/* TODO: check where to put this */}
+        {tradeHistoryState.controls}
+        <TradeHistory {...tradeHistoryState} />
       </div>
-      <Footer />
     </div>
   );
 }

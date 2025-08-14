@@ -109,7 +109,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
     if (withPositions) {
       return [
         {
-          groupName: withPositions === "all" ? t`Open Positions` : t`Open Positions with Orders`,
+          groupName: withPositions === "all" ? t`Open positions` : t`Open positions with orders`,
           items: strippedOpenPositions!,
         },
         anyMarketDirectedGroup,

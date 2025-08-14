@@ -15,6 +15,7 @@ import { TokenData } from "domain/synthetics/tokens";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
+import Button from "components/Button/Button";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -85,13 +86,19 @@ export function PoolListItem(props: {
 
   return (
     <>
-      <div className={cx("TokenSelector-token-row", { disabled: state.disabled })} onClick={handleClick}>
+      <div
+        className={cx(
+          "text-body-medium flex w-full cursor-pointer items-center justify-between px-20 py-12 hover:bg-fill-surfaceHover",
+          { disabled: state.disabled }
+        )}
+        onClick={handleClick}
+      >
         {state.disabled && state.message && (
           <TooltipWithPortal
             className="TokenSelector-tooltip"
             handle={<div className="TokenSelector-tooltip-backing" />}
             position={isInFirstHalf ? "bottom" : "top"}
-            disableHandleStyle
+            styleType="none"
             closeOnDoubleClick
             fitHandleWidth
             content={state.message}
@@ -138,10 +145,10 @@ export function PoolListItem(props: {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-8">
           <div className="Token-balance">
             {(showBalances && balance !== undefined && (
-              <div className="Token-text">
+              <div className="Token-text numbers">
                 {balance > 0
                   ? formatTokenAmount(balance, marketToken?.decimals, "GM", {
                       useCommas: true,
@@ -151,19 +158,18 @@ export function PoolListItem(props: {
             )) ||
               null}
             <span className="text-accent">
-              {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && <div>{formatUsd(balanceUsd)}</div>) ||
+              {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
+                <div className="numbers">{formatUsd(balanceUsd)}</div>
+              )) ||
                 null}
             </span>
           </div>
-          <div
-            className="favorite-star flex cursor-pointer items-center rounded-4 p-9 text-16 hover:bg-cold-blue-700 active:bg-cold-blue-500"
-            onClick={handleFavoriteClick}
-          >
+          <Button variant="ghost" onClick={handleFavoriteClick}>
             <FavoriteStar isFavorite={isFavorite} />
-          </div>
+          </Button>
         </div>
       </div>
-      {state.warning && <p className="mb-8 text-14 opacity-50 last:mb-0">{state.warning}</p>}
+      {state.warning && <p className="mb-8 px-20 py-8 text-14 text-slate-100 last:mb-0">{state.warning}</p>}
     </>
   );
 }

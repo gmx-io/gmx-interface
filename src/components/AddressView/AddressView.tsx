@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo } from "react";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
@@ -40,14 +40,18 @@ export default function AddressView({
   const trader = useMemo(() => {
     let trader;
 
-    if (account === address) {
-      return t`You`;
-    }
-
     if (strLength) {
       trader = (ensName ? "" : "0x") + shortenAddress(ensName || address.replace(/^0x/, ""), strLength, 0);
     } else {
       trader = ensName || address;
+    }
+
+    if (account === address) {
+      return (
+        <span className="flex items-center gap-4">
+          <Trans>You</Trans> <span className="text-slate-100">{trader}</span>
+        </span>
+      );
     }
 
     return trader;

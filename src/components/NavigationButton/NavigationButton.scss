@@ -16,11 +16,11 @@
 
     background-color: var(--color-slate-600);
     .clickable &:not([disabled]):hover {
-      background: var(--color-slate-500);
+      background: var(--color-slate-100);
     }
 
     .clickable &:not([disabled]):active {
-      background: color-mix(in srgb, var(--color-slate-500) 97%, var(--color-white));
+      background: color-mix(in srgb, var(--color-slate-100) 97%, var(--color-white));
     }
   }
 
@@ -47,11 +47,11 @@
 
     background-color: var(--color-slate-600);
     &:not([disabled]):hover {
-      background: var(--color-slate-500);
+      background: var(--color-slate-100);
     }
 
     &:not([disabled]):active {
-      background: color-mix(in srgb, var(--color-slate-500) 97%, var(--color-white));
+      background: color-mix(in srgb, var(--color-slate-100) 97%, var(--color-white));
     }
   }
 }
