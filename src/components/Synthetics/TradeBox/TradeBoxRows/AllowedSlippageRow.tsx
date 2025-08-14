@@ -39,7 +39,7 @@ export function AllowedSlippageRow({ slippageInputId }: { slippageInputId: strin
           content={
             <div className="text-white">
               <Trans>
-                You can edit the default allowed slippage in the settings menu on the top right of the page.
+                The maximum allowed percentage difference between the mark price and the execution price for market orders. You can edit the default value in the settings menu on the top right of the page.
                 <br />
                 <br />
                 Note that a low allowed slippage, e.g. less than -

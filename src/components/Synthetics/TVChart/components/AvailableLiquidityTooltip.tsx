@@ -54,6 +54,7 @@ export function AvailableLiquidityTooltip({ isLong }) {
         <>
           <Trans>The long reserve accounts for the PnL of open positions, while the open interest does not.</Trans>{" "}
           <br />
+          <br />
         </>
       )}
       <Trans>

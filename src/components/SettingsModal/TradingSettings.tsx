@@ -151,7 +151,7 @@ export function TradingSettings({
           title={<Trans>Default Allowed Slippage</Trans>}
           description={
             <Trans>
-              The maximum percentage difference between your specified price and execution price when placing orders.
+              The maximum allowed percentage difference between the mark price and the execution price for market orders.
             </Trans>
           }
           defaultValue={DEFAULT_SLIPPAGE_AMOUNT}
