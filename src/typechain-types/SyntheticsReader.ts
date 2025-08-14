@@ -477,6 +477,7 @@ export declare namespace ReaderPricingUtils {
 
 export declare namespace ReaderPositionUtils {
   export type PositionInfoStruct = {
+    positionKey: BytesLike;
     position: Position.PropsStruct;
     fees: PositionPricingUtils.PositionFeesStruct;
     executionPriceResult: ReaderPricingUtils.ExecutionPriceResultStruct;
@@ -486,6 +487,7 @@ export declare namespace ReaderPositionUtils {
   };
 
   export type PositionInfoStructOutput = [
+    positionKey: string,
     position: Position.PropsStructOutput,
     fees: PositionPricingUtils.PositionFeesStructOutput,
     executionPriceResult: ReaderPricingUtils.ExecutionPriceResultStructOutput,
@@ -493,6 +495,7 @@ export declare namespace ReaderPositionUtils {
     uncappedBasePnlUsd: bigint,
     pnlAfterPriceImpactUsd: bigint,
   ] & {
+    positionKey: string;
     position: Position.PropsStructOutput;
     fees: PositionPricingUtils.PositionFeesStructOutput;
     executionPriceResult: ReaderPricingUtils.ExecutionPriceResultStructOutput;
@@ -889,6 +892,7 @@ export interface SyntheticsReaderInterface extends Interface {
       | "getAccountOrders"
       | "getAccountPositionInfoList"
       | "getAccountPositions"
+      | "getAdlState"
       | "getDeposit"
       | "getDepositAmountOut"
       | "getExecutionPrice"
@@ -901,6 +905,7 @@ export interface SyntheticsReaderInterface extends Interface {
       | "getNetPnl"
       | "getOpenInterestWithPnl"
       | "getOrder"
+      | "getPendingPositionImpactPoolDistributionAmount"
       | "getPnl"
       | "getPnlToPoolFactor"
       | "getPosition"
@@ -935,6 +940,10 @@ export interface SyntheticsReaderInterface extends Interface {
   encodeFunctionData(
     functionFragment: "getAccountPositions",
     values: [AddressLike, AddressLike, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAdlState",
+    values: [AddressLike, AddressLike, boolean, MarketUtils.MarketPricesStruct]
   ): string;
   encodeFunctionData(functionFragment: "getDeposit", values: [AddressLike, BytesLike]): string;
   encodeFunctionData(
@@ -987,6 +996,10 @@ export interface SyntheticsReaderInterface extends Interface {
   ): string;
   encodeFunctionData(functionFragment: "getOrder", values: [AddressLike, BytesLike]): string;
   encodeFunctionData(
+    functionFragment: "getPendingPositionImpactPoolDistributionAmount",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getPnl",
     values: [AddressLike, Market.PropsStruct, Price.PropsStruct, boolean, boolean]
   ): string;
@@ -1029,6 +1042,7 @@ export interface SyntheticsReaderInterface extends Interface {
   decodeFunctionResult(functionFragment: "getAccountOrders", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getAccountPositionInfoList", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getAccountPositions", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getAdlState", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getDeposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getDepositAmountOut", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getExecutionPrice", data: BytesLike): Result;
@@ -1041,6 +1055,7 @@ export interface SyntheticsReaderInterface extends Interface {
   decodeFunctionResult(functionFragment: "getNetPnl", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getOpenInterestWithPnl", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getOrder", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getPendingPositionImpactPoolDistributionAmount", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getPnl", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getPnlToPoolFactor", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getPosition", data: BytesLike): Result;
@@ -1112,6 +1127,12 @@ export interface SyntheticsReader extends BaseContract {
   getAccountPositions: TypedContractMethod<
     [dataStore: AddressLike, account: AddressLike, start: BigNumberish, end: BigNumberish],
     [Position.PropsStructOutput[]],
+    "view"
+  >;
+
+  getAdlState: TypedContractMethod<
+    [dataStore: AddressLike, market: AddressLike, isLong: boolean, prices: MarketUtils.MarketPricesStruct],
+    [[bigint, boolean, bigint, bigint]],
     "view"
   >;
 
@@ -1206,6 +1227,12 @@ export interface SyntheticsReader extends BaseContract {
   >;
 
   getOrder: TypedContractMethod<[dataStore: AddressLike, key: BytesLike], [Order.PropsStructOutput], "view">;
+
+  getPendingPositionImpactPoolDistributionAmount: TypedContractMethod<
+    [dataStore: AddressLike, market: AddressLike],
+    [[bigint, bigint]],
+    "view"
+  >;
 
   getPnl: TypedContractMethod<
     [
@@ -1365,6 +1392,13 @@ export interface SyntheticsReader extends BaseContract {
     "view"
   >;
   getFunction(
+    nameOrSignature: "getAdlState"
+  ): TypedContractMethod<
+    [dataStore: AddressLike, market: AddressLike, isLong: boolean, prices: MarketUtils.MarketPricesStruct],
+    [[bigint, boolean, bigint, bigint]],
+    "view"
+  >;
+  getFunction(
     nameOrSignature: "getDeposit"
   ): TypedContractMethod<[dataStore: AddressLike, key: BytesLike], [Deposit.PropsStructOutput], "view">;
   getFunction(
@@ -1468,6 +1502,9 @@ export interface SyntheticsReader extends BaseContract {
   getFunction(
     nameOrSignature: "getOrder"
   ): TypedContractMethod<[dataStore: AddressLike, key: BytesLike], [Order.PropsStructOutput], "view">;
+  getFunction(
+    nameOrSignature: "getPendingPositionImpactPoolDistributionAmount"
+  ): TypedContractMethod<[dataStore: AddressLike, market: AddressLike], [[bigint, bigint]], "view">;
   getFunction(
     nameOrSignature: "getPnl"
   ): TypedContractMethod<
