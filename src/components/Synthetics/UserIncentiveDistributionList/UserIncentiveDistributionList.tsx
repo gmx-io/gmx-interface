@@ -1,14 +1,17 @@
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import cn from "classnames";
 import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { useMedia } from "react-use";
 
-import { getExplorerUrl } from "config/chains";
+import { ARBITRUM, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { selectGmMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { GLP_DISTRIBUTION_ID, GLP_DISTRIBUTION_TEST_ID } from "domain/synthetics/claims/useUserClaimableAmounts";
 import { INCENTIVE_TOOLTIP_MAP, INCENTIVE_TYPE_MAP } from "domain/synthetics/common/incentivesAirdropMessages";
-import useUserIncentiveData, { UserIncentiveData } from "domain/synthetics/common/useUserIncentiveData";
+import useUserIncentiveData from "domain/synthetics/common/useUserIncentiveData";
 import { MarketsData, useMarketTokensData } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
@@ -19,6 +22,7 @@ import { expandDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { getTokens } from "sdk/configs/tokens";
+import { Distribution } from "sdk/types/subsquid";
 import { bigMath } from "sdk/utils/bigmath";
 
 import Button from "components/Button/Button";
@@ -32,10 +36,13 @@ import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table"
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tooltip from "components/Tooltip/Tooltip";
 
+import { AboutGlpIncident } from "./AboutGlpIncident";
+import ClaimableAmounts from "./ClaimableAmounts";
+
 type NormalizedIncentiveData = ReturnType<typeof getNormalizedIncentive>;
 
 function getNormalizedIncentive(
-  incentive: UserIncentiveData,
+  incentive: Distribution,
   tokens: Token[],
   gmMarkets: MarketsData | undefined,
   marketTokensData: TokensData | undefined
@@ -53,7 +60,7 @@ function getNormalizedIncentive(
             marketTokensData[marketToken.marketTokenAddress].prices.maxPrice,
             expandDecimals(1, GM_DECIMALS)
           )
-        : BigInt(incentive.amountsInUsd[index]);
+        : BigInt(incentive.amountsInUsd?.[index] ?? 0);
 
     return {
       symbol: tokenInfo ? tokenInfo.symbol : marketToken?.name,
@@ -70,7 +77,7 @@ function getNormalizedIncentive(
     ...incentive,
     tokenIncentiveDetails,
     totalUsd,
-    typeId: Number(incentive.typeId),
+    typeId: BigInt(incentive.typeId),
   };
 }
 
@@ -97,76 +104,103 @@ export default function UserIncentiveDistributionList() {
   );
   const currentIncentiveData = getCurrentData();
 
-  if (!userIncentiveData?.data?.length) {
-    return (
-      <EmptyMessage
-        tooltipText={t`Incentives are airdropped weekly.`}
-        message={t`No incentives distribution history yet.`}
-        className="!mt-10"
-      >
-        {!active && (
-          <div className="mt-15">
-            <Button variant="secondary" onClick={openConnectModal}>
-              <Trans>Connect Wallet</Trans>
-            </Button>
-          </div>
-        )}
-      </EmptyMessage>
-    );
-  }
+  const isSmallResolution = useMedia("(max-width: 1024px)");
 
   return (
-    <div>
-      <Card
-        title={t`Incentives Distribution History`}
-        tooltipText={t`Incentives are airdropped weekly.`}
-        bodyPadding={false}
-        divider={false}
-      >
-        <TableScrollFadeContainer>
-          <table className="w-full min-w-max">
-            <thead>
-              <TableTheadTr>
-                <TableTh>
-                  <Trans>Date</Trans>
-                </TableTh>
-                <TableTh>
-                  <Trans>Type</Trans>
-                </TableTh>
-                <TableTh>
-                  <Trans>Amount</Trans>
-                </TableTh>
-                <TableTh>
-                  <Trans>Transaction</Trans>
-                </TableTh>
-              </TableTheadTr>
-            </thead>
-            <tbody>
-              {currentIncentiveData?.map((incentive) => <IncentiveItem incentive={incentive} key={incentive.id} />)}
-              {currentIncentiveData &&
-                currentIncentiveData.length > 0 &&
-                currentIncentiveData.length < DEFAULT_PAGE_SIZE && (
-                  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                  <tr style={{ height: 42.5 * (DEFAULT_PAGE_SIZE - currentIncentiveData.length) }} />
-                )}
-            </tbody>
-          </table>
-        </TableScrollFadeContainer>
-        <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
-      </Card>
+    <div
+      className={cn("flex gap-18", {
+        "flex-row": !isSmallResolution,
+        "flex-col-reverse": isSmallResolution,
+      })}
+    >
+      <div className="flex flex-grow flex-col gap-18">
+        {account ? (
+          <Card title={t`Claimable Balance`} bodyPadding={false} divider={false}>
+            {chainId !== AVALANCHE_FUJI ? (
+              <ClaimableAmounts />
+            ) : (
+              <p className="p-18 text-gray-500">
+                <Trans>Claims are not available on Avalanche Fuji</Trans>
+              </p>
+            )}
+          </Card>
+        ) : null}
+        <Card title={t`Distribution History`} bodyPadding={false} divider={false}>
+          {!userIncentiveData?.data?.length ? (
+            <EmptyMessage
+              tooltipText={t`Incentives are airdropped weekly.`}
+              message={t`No incentives distribution history yet.`}
+              className="!mt-10"
+            >
+              {!active && (
+                <div className="mt-15">
+                  <Button variant="secondary" onClick={openConnectModal}>
+                    <Trans>Connect Wallet</Trans>
+                  </Button>
+                </div>
+              )}
+            </EmptyMessage>
+          ) : (
+            <TableScrollFadeContainer>
+              <table className="w-full min-w-max">
+                <thead>
+                  <TableTheadTr>
+                    <TableTh>
+                      <Trans>Date</Trans>
+                    </TableTh>
+                    <TableTh>
+                      <Trans>Type</Trans>
+                    </TableTh>
+                    <TableTh>
+                      <Trans>Amount</Trans>
+                    </TableTh>
+                    <TableTh>
+                      <Trans>Transaction</Trans>
+                    </TableTh>
+                  </TableTheadTr>
+                </thead>
+                <tbody>
+                  {currentIncentiveData?.map((incentive) => <IncentiveItem incentive={incentive} key={incentive.id} />)}
+                  {currentIncentiveData &&
+                    currentIncentiveData.length > 0 &&
+                    currentIncentiveData.length < DEFAULT_PAGE_SIZE && (
+                      // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+                      <tr style={{ height: 42.5 * (DEFAULT_PAGE_SIZE - currentIncentiveData.length) }} />
+                    )}
+                </tbody>
+              </table>
+            </TableScrollFadeContainer>
+          )}
+          <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
+        </Card>
+      </div>
+      {chainId === ARBITRUM ? <AboutGlpIncident /> : null}
     </div>
   );
 }
 
+function getTypeStr(_: ReturnType<typeof useLingui>["_"], typeId: bigint) {
+  const isTestGlpIncident = typeId === GLP_DISTRIBUTION_TEST_ID;
+
+  if (isTestGlpIncident) {
+    return t`GLP Distribution (test)`;
+  }
+
+  if (typeId === GLP_DISTRIBUTION_ID) {
+    return t`GLP Distribution`;
+  }
+
+  const isCompetition = typeId >= 2000 && typeId < 3000;
+  return isCompetition ? t`COMPETITION Airdrop` : _(INCENTIVE_TYPE_MAP[String(typeId)] ?? t`Airdrop`);
+}
+
 function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
-  const { tokenIncentiveDetails, totalUsd, timestamp, typeId, transactionHash } = incentive;
+  const { tokenIncentiveDetails, totalUsd, transaction, typeId } = incentive;
   const { chainId } = useChainId();
   const explorerURL = getExplorerUrl(chainId);
   const { _ } = useLingui();
-
-  const isCompetition = typeId >= 2000 && typeId < 3000;
-  const typeStr = isCompetition ? t`COMPETITION Airdrop` : _(INCENTIVE_TYPE_MAP[typeId] ?? t`Airdrop`);
-  const tooltipData = INCENTIVE_TOOLTIP_MAP[typeId];
+  const typeStr = getTypeStr(_, typeId);
+  const tooltipData = INCENTIVE_TOOLTIP_MAP[String(typeId)];
 
   const renderTotalTooltipContent = useCallback(() => {
     return tokenIncentiveDetails.map((tokenInfo) => (
@@ -191,8 +225,10 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
 
   return (
     <TableTr hoverable={false}>
-      <TableTd data-label="Date">{formatDate(timestamp)}</TableTd>
-      <TableTd data-label="Type">{type}</TableTd>
+      <TableTd data-label="Date">{formatDate(transaction.timestamp)}</TableTd>
+      <TableTd data-label="Type" className="font-medium">
+        {type}
+      </TableTd>
       <TableTd data-label="Amount">
         <Tooltip
           handle={<span className="numbers">{formatUsd(totalUsd)}</span>}
@@ -201,8 +237,8 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
         />
       </TableTd>
       <TableTd data-label="Transaction">
-        <ExternalLink href={`${explorerURL}tx/${transactionHash}`}>
-          {shortenAddressOrEns(transactionHash, 13)}
+        <ExternalLink href={`${explorerURL}tx/${transaction.hash}`}>
+          {shortenAddressOrEns(transaction.hash, 13)}
         </ExternalLink>
       </TableTd>
     </TableTr>

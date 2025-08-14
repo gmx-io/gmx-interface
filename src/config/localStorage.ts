@@ -88,6 +88,7 @@ export const EXPRESS_TRADING_BANNER_DISMISSED_KEY = "express-trading-banner-dism
 
 export const SUBACCOUNT_APPROVAL_KEY = "subaccount-approval";
 export const TOKEN_PERMITS_KEY = "token-permits";
+export const CLAIM_TERMS_ACCEPTED_KEY = "claim-terms-accepted";
 
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
@@ -209,4 +210,13 @@ export function getOneClickTradingPromoHiddenKey(chainId: number) {
 
 export function getExpressTradingPromoHiddenKey(chainId: number) {
   return `${chainId}-${EXPRESS_TRADING_PROMO_HIDDEN_KEY}`;
+}
+
+export function getClaimTermsAcceptedKey(
+  chainId: number,
+  account: string | undefined,
+  distributionId: bigint,
+  claimTerms: string
+) {
+  return `${chainId}:${account}:${distributionId}:${claimTerms}-${CLAIM_TERMS_ACCEPTED_KEY}`;
 }

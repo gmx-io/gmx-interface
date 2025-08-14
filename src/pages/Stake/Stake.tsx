@@ -9,7 +9,6 @@ import { getIncentivesV2Url } from "config/links";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
-import { useAnyAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { useLpInterviewNotification } from "domain/synthetics/userFeedback/useLpInterviewNotification";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
@@ -70,7 +69,6 @@ function StakeContent() {
       );
     }
   }, [incentiveStats?.lp?.isActive, incentiveStats?.trading?.isActive]);
-  const incentivesToken = useAnyAirdroppedTokenTitle();
 
   const { setPendingTxns } = usePendingTxns();
 
@@ -285,14 +283,8 @@ function StakeContent() {
         </div>
         <div>
           <PageTitle
-            title={t`Incentives & Prizes`}
-            subtitle={
-              incentiveStats?.lp?.isActive || incentiveStats?.trading?.isActive ? (
-                <Trans>Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2.</Trans>
-              ) : (
-                <Trans>Earn prizes by participating in GMX Trading Competitions.</Trans>
-              )
-            }
+            title={t`Distributions`}
+            subtitle={<Trans>Claim and view your incentives, airdrops, and prizes</Trans>}
           />
         </div>
         <UserIncentiveDistributionList />

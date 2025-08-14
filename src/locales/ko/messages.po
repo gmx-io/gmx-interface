@@ -51,6 +51,10 @@ msgstr "수령 제출 완료!"
 msgid "Buy order executed."
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Claims are disabled"
+msgstr ""
+
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Disconnect"
 msgstr "연결 끊기"
@@ -123,6 +127,10 @@ msgstr ""
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr "일일 손실"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "earns fees from providing liquidity to multiple GMX V2 markets"
+msgstr ""
 
 #: src/pages/Home/Home.tsx
 msgid "GMX is currently live on Arbitrum and Avalanche."
@@ -395,6 +403,10 @@ msgstr "{updateOrdersCount} TP/SL 주문 업데이트 완료"
 msgid "Stop market price above mark price"
 msgstr "스탑 마켓 가격이 마크 가격 초과"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>{suggestText}"
+msgstr ""
+
 #: src/pages/Stake/StakeModal.tsx
 msgid "Pending {stakingTokenSymbol} approval"
 msgstr "{stakingTokenSymbol} 승인 대기 중"
@@ -504,6 +516,10 @@ msgstr "주문"
 msgid "Increased {positionText}, +{0}"
 msgstr "{positionText} 증가, +{0}"
 
+#: src/pages/Stake/Stake.tsx
+msgid "Claim and view your incentives, airdrops, and prizes"
+msgstr ""
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Funding Fee"
@@ -576,6 +592,10 @@ msgstr "최대 수용량"
 msgid "Market Swap"
 msgstr "마켓 스왑"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "A $500,000 GLV pool (funded by DAO funds) rewards long-term holders: If you keep your distributed GLV for at least 3 months (without selling or transferring), you'll receive a pro rata share."
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Tabs/NestedTab.tsx
 msgid "More"
@@ -626,7 +646,6 @@ msgid "Rebates on V2"
 msgstr "V2 리베이트"
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Incentives are airdropped weekly."
 msgstr "인센티브가 매주 에어드랍됩니다."
 
@@ -651,6 +670,10 @@ msgstr "텔레그램 연락처 (선택)"
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Market order will be cancellable in {minutesText}{seconds}s."
 msgstr "마켓 주문은 {minutesText}{seconds}초 후 취소 가능."
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "About GLP Incident"
+msgstr ""
 
 #: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
 msgid "providing liquidity"
@@ -848,10 +871,6 @@ msgstr "GM으로 크로스체인 원클릭 예치"
 #: src/pages/Home/Home.tsx
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
 msgstr "간단한 스왑 인터페이스를 통해 포지션을 열어보세요. 지원되는 자산내에서 원하는 포지션으로 편리하게 스왑할 수 있습니다."
-
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
-msgid "Incentives Distribution History"
-msgstr "인센티브 분배 내역"
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched"
@@ -1391,6 +1410,10 @@ msgstr "이 추천인 코드 소유자가 표준 {0}% 대신 {currentTierDiscoun
 msgid "Leftover position below 10 USD"
 msgstr "10 USD 미만 잔여 포지션"
 
+#: src/pages/Stake/Stake.tsx
+msgid "Distributions"
+msgstr ""
+
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>."
 msgstr "<0>Threshold</0>로 BTC를 사용해 tBTC 민트."
@@ -1824,6 +1847,10 @@ msgstr "실행 가격에 종료"
 msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
 msgstr "가스 잔고 부족으로 익스프레스 및 원클릭 트레이딩 사용 불가."
 
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "No funds to claim"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min size per part: {0}"
 msgstr "부분당 최소 크기: {0}"
@@ -2001,10 +2028,6 @@ msgstr "차용 수수료"
 #: src/components/Glp/GlpSwap.jsx
 msgid "Buy submitted."
 msgstr "구매 제출 완료"
-
-#: src/pages/Stake/Stake.tsx
-msgid "Incentives & Prizes"
-msgstr "인센티브 및 상금"
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Fees may vary depending on which asset you sell GLP for. <0/>Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
@@ -2195,6 +2218,10 @@ msgstr "펀딩 수수료 수령"
 msgid "Display Settings"
 msgstr "표시 설정"
 
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
+msgstr ""
+
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr "총계:"
@@ -2290,6 +2317,10 @@ msgstr "최대 {0} 판매 가능 금액 초과"
 #: src/pages/Dashboard/MarketsListV1.tsx
 msgid "TOKEN"
 msgstr "토큰"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "What is the bonus incentive for holding your GLV?"
+msgstr ""
 
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Transfer NFT"
@@ -2393,6 +2424,10 @@ msgstr "{0} USDG를 {1} {2}로 스왑"
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "{0} will be swapped to {1} on order execution."
 msgstr "{0}이 주문 실행 시 {1}로 스왑됩니다."
+
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Claiming with a smart account requires specific instructions. Contributors will post these in the coming days."
+msgstr ""
 
 #. Button to clear the filter selection
 #: src/components/Synthetics/TableOptionsFilter/TableOptionsFilter.tsx
@@ -2605,6 +2640,10 @@ msgstr "가격 조건이 충족될 때 지불 토큰을 담보 토큰으로 스�
 msgid "User Quests"
 msgstr "사용자 퀘스트"
 
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "Funds claimed"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.jsx
 msgid "{0} pool exceeded, try different token"
 msgstr "{0} 풀이 초과되었습니다. 다른 자산으로 시도해보세요"
@@ -2627,10 +2666,6 @@ msgstr "언스테이킹 실패"
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Order cancelled"
 msgstr "주문 최소됨"
-
-#: src/pages/Stake/Stake.tsx
-msgid "Earn prizes by participating in GMX Trading Competitions."
-msgstr "GMX 거래 대회에 참여하여 상금을 획득하세요."
 
 #: src/components/SideNav/SideNav.tsx
 msgid "Collapse"
@@ -2680,6 +2715,10 @@ msgstr "GLP로부터 인출가능한 수량. 현재 포지션에 의해 활용�
 #: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
 msgid "and"
 msgstr "그리고"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "Distribution History"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GLV liquidity"
@@ -2798,6 +2837,10 @@ msgstr "정산"
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short TWAP: {0} a short position in evenly distributed parts over a specified time."
 msgstr "{typeString} 숏 TWAP: 지정된 시간 동안 균등하게 분배된 부분으로 숏 포지션 {0}."
+
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Insufficient gas for network fees"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the swap when the min. receive conditions are met."
@@ -2962,6 +3005,10 @@ msgstr "고품질의 여러 가격 피드를 통해 청산 발생 시기를 결�
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Create Take Profit"
 msgstr "이익 실현 생성"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Can I sell my GLV if I want, and where?"
+msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Cancel TWAP"
@@ -3154,10 +3201,6 @@ msgstr "{0}에서 {1}로 스왑 금액이 {2} 허용 금액을 초과합니다. 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Enter referral code"
 msgstr ""
-
-#: src/pages/Stake/Stake.tsx
-msgid "Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2."
-msgstr "GM 토큰 구매 또는 GMX V2에서 거래하여 {incentivesToken} 토큰 인센티브를 획득하세요."
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Withdraw disabled, pending {0} upgrade"
@@ -3402,6 +3445,7 @@ msgstr "포지션의 금액이 $5.00 이하로 남게되면 주문은 실행될 
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/AffiliateClaimModal.tsx
 #: src/pages/Stake/ClaimModal.tsx
@@ -3571,6 +3615,10 @@ msgstr "수수료 할인의 혜택을 받으려면 추천인 코드를 입력해
 msgid "Failed Deposit"
 msgstr "입금 실패"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Distribution happens in two GLV variants to mirror GLP's multi-asset exposure: one variant is optimized for ETH-based markets (50% ETH / 50% USDC) and the other for BTC-based markets (50% BTC / 50% USDC). This allocation reflects the composition of recovered funds and allows for dynamic shifting of GLV liquidity to all top GMX markets to enhance your yield."
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "마켓 스왑 요청"
@@ -3613,6 +3661,10 @@ msgstr "더 많은 설정"
 #: src/components/TokenCard/TokenCard.tsx
 msgid "GLV is the liquidity provider token for GMX V2 vaults. Consist of several GM tokens and accrues fees generated by them."
 msgstr "GLV는 GMX V2 볼트의 유동성 제공자 토큰입니다. 여러 GM 토큰으로 구성되며 그들이 생성한 수수료를 누적합니다."
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Yes, GLV is fully liquid and permissionless. You can sell via the GMX interface to redeem for underlying assets, with low fees."
+msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Network"
@@ -3996,6 +4048,10 @@ msgstr "esGMX 언스테이킹"
 msgid "The actual trigger price at which order gets filled will depend on fees and price impact at the time of execution to guarantee that you receive the minimum receive amount."
 msgstr "주문이 체결되는 실제 트리거 가격은 실행 시 수수료와 가격 영향에 따라 최소 수령액을 보장합니다."
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Why do I receive two different GLV tokens?"
+msgstr ""
+
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Set TP/SL"
 msgstr "TP/SL 설정"
@@ -4203,6 +4259,10 @@ msgstr "GM 풀의 유동성 부족"
 #: src/components/Exchange/ExchangeBanner.jsx
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "GMX에서 트레이드하고 <0>$250.000</0> 상금을 획득하세요! 11월 30일까지 진행되며, <1>여기를 클릭해</1> 더 많은 정보를 확인하세요."
+
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "Failed to claim funds"
+msgstr ""
 
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
@@ -4657,6 +4717,10 @@ msgstr "GMX APR"
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "GLV (GMX Liquidity Vaults) should be seen as GMX V2’s improved version of GLP. It is a yield-optimizing crypto-index token that"
+msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing"
@@ -5309,6 +5373,10 @@ msgstr "코인 제출 오류"
 #: src/components/Glp/GlpSwap.jsx
 msgid "WARNING: High Fees"
 msgstr "경고: 높은 수수료"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "Claims are not available on Avalanche Fuji"
+msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Cancel TWAP Swap"
@@ -6107,6 +6175,10 @@ msgstr "최소 포지션 크기: {0}"
 msgid "Trigger price below mark price"
 msgstr "트리거 가격이 마크 가격 미만"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "and automatically compounds its yield (unlike GLP, no manual claiming is needed)"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell request sent."
 msgstr ""
@@ -6311,6 +6383,10 @@ msgstr "주문 실행 가격은 가격 영향을 고려합니다."
 #: src/pages/Buy/Buy.tsx
 msgid "Buy GLP or GMX"
 msgstr "GLP 또는 GMX 구매"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools, with auto-compounding for seamless growth (20-30% historical average annualized performance). View real-time earnings, performance, and portfolio value on the <0>Pools page</0>."
+msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Referral code created."
@@ -6580,6 +6656,10 @@ msgstr "탐색기에서 {0} 열기"
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 msgstr "{0} 및 {1}은 지정된 구매 상한까지 이 시장의 GM 구매에 사용될 수 있습니다."
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "GLV tokens are similar in composition to GLP, and enable seamless integration into GMX V2's liquidity ecosystem. Users can either sell or hold the tokens to earn yield. To encourage long-term participation, a $500,000 GLV incentive pool will be distributed proportionally to those who hold their allocated GLV for at least 3 months."
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/StatusNotification/StakeNotification.tsx
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
@@ -6706,6 +6786,10 @@ msgstr "허용 가격"
 msgid "DeFi Margin Protocol"
 msgstr "DeFi 마진 프로토콜"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "Claimable Balance"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the swap to the receive token when the price conditions are met."
 msgstr "가격 조건 충족 시 수령 토큰으로의 스왑 실행을 위한 유동성이 부족할 수 있습니다."
@@ -6798,6 +6882,10 @@ msgstr "손절"
 #: src/pages/Stake/Stake.tsx
 msgid "Liquidity incentives program is live on {avalancheLink}."
 msgstr "{avalancheLink}에서 유동성 인센티브 프로그램이 라이브 중입니다."
+
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "GLP Distribution (test)"
+msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "This position could still be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
@@ -7027,6 +7115,10 @@ msgstr "{wrappedTokenSymbol}을 {nativeTokenSymbol}로 변환"
 msgid "Available amount to deposit into GLP."
 msgstr "GLP에 예치 가능한 금액."
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "What is GLV exactly?"
+msgstr ""
+
 #: src/components/Exchange/PositionShare.tsx
 msgid "Download"
 msgstr "다운로드"
@@ -7232,6 +7324,14 @@ msgstr "사용 가능한 유동성은 예비금과 미결제약정의 최대값�
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "시프트"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "GLP Distribution"
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Why is the claim in GLV tokens?"
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM Airdrop"
@@ -7674,6 +7774,10 @@ msgstr "시장 스왑 실패"
 msgid "HoudiniSwap"
 msgstr "후디니스왑"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "dynamically allocates its liquidity to the highest-utilised markets, maximising capital efficiency and annualized performance"
+msgstr ""
+
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Error occurred. Please try again"
 msgstr "오류 발생. 다시 시도하세요"
@@ -7689,10 +7793,6 @@ msgstr ""
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code submitted!"
 msgstr "추천 코드 제출 완료!"
-
-#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please <3>enable Express trading</3> under settings, which should offer a better experience.<4/><5/>Otherwise, try increasing the max network fee buffer to {0} in <6>settings</6>."
-msgstr "실행 수수료 검증으로 트랜잭션 실패. <0>보기</0>.<1/><2/>설정에서 <3>익스프레스 거래 활성화</3>를 시도하세요. 더 나은 경험 제공.<4/><5/>또는 <6>설정</6>에서 최대 네트워크 수수료 버퍼를 {0}으로 증가."
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "APY"
@@ -8034,6 +8134,10 @@ msgstr "지정가 - 롱 증가"
 msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming."
 msgstr "<0>청구 전 위임되지 않은 {0} GMX DAO</0> 투표권 위임."
 
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Claim funds"
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral. The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price."
 msgstr "롱 포지션과 {collateralSymbol} 담보로부터 {indexSymbol} 롱이 됩니다. 담보 가치가 가격 변화로 스테이블코인 담보 대비 청산 가격이 높아집니다."
@@ -8066,6 +8170,10 @@ msgstr "주문 실행 가격은 차트 가격과 약간 다를 수 있습니다.
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "About"
 msgstr "소개"
+
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "This may take a few minutes."
+msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Accrued positive funding fees in positions not yet claimable.<0/><1/>They become available after modifying the position by increasing or decreasing it, depositing or withdrawing collateral, or settling the fees using the \"Settle\" button."
@@ -8195,6 +8303,10 @@ msgstr "대회 기간 동안 적격 거래 없음."
 msgid "Execution prices for increasing longs and<0/>decreasing shorts."
 msgstr "롱 증가 및<0/>숏 감소 실행 가격."
 
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "Processing your claim…"
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
@@ -8312,6 +8424,10 @@ msgstr ""
 msgid "Total Stats"
 msgstr "총 통계"
 
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "Claimed {0} successfully."
+msgstr ""
+
 #: src/components/Synthetics/TwapRows/TwapRows.tsx
 msgid "Frequency"
 msgstr "빈도"
@@ -8344,6 +8460,10 @@ msgstr "이 크기 롱 증가를 위한 유동성 없음. 최대 롱 크기: {0}
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H VOL."
 msgstr "24시간 거래량"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Accept Claim Terms"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
@@ -8610,6 +8730,10 @@ msgstr "TWAP 스왑 파트 업데이트"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update TWAP Part"
 msgstr "TWAP 파트 업데이트"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "How does GLV earn yield, and where do I see my earnings?"
+msgstr ""
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
