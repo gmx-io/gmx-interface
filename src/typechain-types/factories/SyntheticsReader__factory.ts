@@ -1311,6 +1311,11 @@ const _abi = [
         type: "int256",
       },
       {
+        internalType: "int256",
+        name: "pendingImpactAmount",
+        type: "int256",
+      },
+      {
         internalType: "bool",
         name: "isLong",
         type: "bool",
