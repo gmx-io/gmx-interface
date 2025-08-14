@@ -117,10 +117,11 @@ export function GmList({
   return (
     <PoolsCard
       title={t`GM Pools`}
+      className="grow"
       description={
         <div className="flex flex-col gap-16">
           <Trans>
-            Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options.
+            Pools providing liquidity to specific GMX markets, supporting <br /> single-asset and native asset options.
           </Trans>
           <div className="flex flex-wrap items-center justify-between gap-12 py-8">
             <SearchInput
@@ -161,7 +162,7 @@ export function GmList({
           </div>
         ) : (
           <TableScrollFadeContainer>
-            <table className="w-[max(100%,920px)]">
+            <table className="w-[max(100%,1000px)]">
               <thead>
                 <TableTheadTr>
                   <TableTh className="pl-16">
@@ -184,12 +185,12 @@ export function GmList({
                   </TableTh>
                   <TableTh>
                     <Sorter {...getSorterProps("apy")}>
-                      <FeeApyLabel upperCase />
+                      <FeeApyLabel upperCase styleType="iconStroke" />
                     </Sorter>
                   </TableTh>
                   <TableTh>
                     <Sorter {...getSorterProps("performance")}>
-                      <PerformanceLabel upperCase />
+                      <PerformanceLabel upperCase styleType="iconStroke" />
                     </Sorter>
                   </TableTh>
                   <TableTh>
@@ -198,6 +199,7 @@ export function GmList({
                       className="normal-case"
                       position="bottom-end"
                       content={<Trans>Graph showing performance vs benchmark over the selected period.</Trans>}
+                      styleType="iconStroke"
                     />
                   </TableTh>
                   <TableTh className="pr-16" />

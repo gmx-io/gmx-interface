@@ -37,6 +37,8 @@ export type ExpressTxnParams = {
   gasLimit: bigint;
   l1GasLimit: bigint;
   gasPrice: bigint;
+  executionFeeAmount: bigint;
+  executionGasLimit: bigint;
   estimationMethod: ExpressParamsEstimationMethod;
   gasPaymentValidations: GasPaymentValidations;
   subaccountValidations: SubaccountValidations | undefined;
@@ -59,6 +61,7 @@ export type ExpressTransactionEstimatorParams = {
   account: string;
   gasPaymentTokenAsCollateralAmount: bigint;
   executionFeeAmount: bigint;
+  executionGasLimit: bigint;
   transactionPayloadGasLimit: bigint;
   transactionExternalCalls: ExternalCallsPayload | undefined;
   subaccountActions: number;

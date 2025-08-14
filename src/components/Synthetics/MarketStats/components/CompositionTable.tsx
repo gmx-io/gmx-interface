@@ -58,7 +58,7 @@ export function CompositionTable<T extends CompositionType>({ composition, compo
         <thead>
           <TableTheadTr>
             {columns.map((column) => (
-              <TableTh key={column} className="sticky top-0 bg-slate-900 first:!pl-20 last:!pr-20">
+              <TableTh key={column} className="sticky -top-1 bg-slate-900 first:!pl-20 last:!pr-20">
                 <Trans>{column}</Trans>
               </TableTh>
             ))}

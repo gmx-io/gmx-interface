@@ -34,6 +34,7 @@ import JoinReferralCode from "components/Referrals/JoinReferralCode";
 import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "components/Referrals/referralsHelper";
 import TradersStats from "components/Referrals/TradersStats";
 import { BotanixBanner } from "components/Synthetics/BotanixBanner/BotanixBanner";
+import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 import Tabs from "components/Tabs/Tabs";
 
 import "./Referrals.css";
@@ -136,7 +137,7 @@ function Referrals() {
   }
 
   return (
-    <AppPageLayout>
+    <AppPageLayout header={<ChainContentHeader />}>
       <SEO title={getPageTitle(t`Referrals`)}>
         <div className="default-container page-layout flex flex-col gap-20">
           <PageTitle

@@ -90,7 +90,7 @@ export function Claims({
 
       <div>
         {account && isLoading && (
-          <div className="Claims-loading App-box">
+          <div className="Claims-loading">
             <Trans>Loading...</Trans>
           </div>
         )}

@@ -1867,7 +1867,8 @@ export default function SwapBox(props) {
                         {hasZeroBorrowFee && (
                           <div>
                             {isLong && t`There are more shorts than longs, borrow fees for longing is currently zero.`}
-                            {isShort && t`There are more longs than shorts, borrow fees for shorting is currently zero.`}
+                            {isShort &&
+                              t`There are more longs than shorts, borrow fees for shorting is currently zero.`}
                           </div>
                         )}
                         {!hasZeroBorrowFee && (

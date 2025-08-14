@@ -43,7 +43,9 @@ export default function NoLiquidityErrorModal({
   const swapTokenSymbol = isLong ? toToken.symbol : shortCollateralToken.symbol;
   const oneInchSwapUrl = get1InchSwapUrl(chainId, inputCurrency, outputCurrency);
   const label =
-    modalError === "BUFFER" ? t`${shortCollateralToken.symbol} required` : t`${fromToken.symbol} pool capacity reached.`;
+    modalError === "BUFFER"
+      ? t`${shortCollateralToken.symbol} required`
+      : t`${fromToken.symbol} pool capacity reached.`;
 
   return (
     <Modal

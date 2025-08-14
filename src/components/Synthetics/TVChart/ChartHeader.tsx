@@ -66,7 +66,7 @@ function ChartHeaderMobile() {
 
     if (isSwap) {
       return (
-        <div className="grid grid-cols-[auto_auto] grid-rows-2 gap-14">
+        <div className="grid grid-cols-[1fr_1fr] gap-14">
           <div>
             <div className="mb-4 text-[11px] font-medium uppercase text-slate-100">
               <Trans>24h High</Trans>
@@ -84,7 +84,7 @@ function ChartHeaderMobile() {
     }
 
     return (
-      <div className="grid grid-cols-[auto_auto] grid-rows-2 gap-16">
+      <div className="grid grid-cols-[1fr_1fr] grid-rows-2 gap-16">
         <div>
           <div className="mb-4 text-[11px] font-medium uppercase text-slate-100">
             <Trans>24h Volume</Trans>
@@ -167,7 +167,7 @@ function ChartHeaderMobile() {
           onClick={toggleDetailsVisible}
         >
           <div className="flex flex-col items-end">
-            <div className="mr-4 numbers">{avgPrice}</div>
+            <div className="text-body-medium mr-4 numbers">{avgPrice}</div>
             <div className="ExchangeChart-daily-change text-body-small numbers">{dayPriceDelta}</div>
           </div>
           <span className={cx("inline-flex cursor-pointer items-center justify-center rounded-4 pt-6 text-slate-100")}>
@@ -429,7 +429,7 @@ function ChartHeaderDesktop() {
         </div>
         <div className={cx("flex gap-20 overflow-x-auto scrollbar-hide")} ref={scrollableRef}>
           <div className="flex flex-col justify-center gap-2">
-            <div className="mb-2 text-[13px] numbers">{avgPrice}</div>
+            <div className="text-body-medium numbers">{avgPrice}</div>
             <div className="text-body-small numbers">{dayPriceDelta}</div>
           </div>
           {additionalInfo}

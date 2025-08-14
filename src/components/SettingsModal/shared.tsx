@@ -47,7 +47,7 @@ export function InputSetting({
   const titleComponent = <span className="text-14 font-medium">{title}</span>;
 
   const titleWithDescription = description ? (
-    <TooltipWithPortal position="bottom" content={description}>
+    <TooltipWithPortal position="bottom" content={description} styleType="icon">
       {titleComponent}
     </TooltipWithPortal>
   ) : (

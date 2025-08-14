@@ -10,7 +10,7 @@ export function DisplaySettings() {
   const settings = useSettings();
 
   return (
-    <div className="mt-16">
+    <div className="mt-16 font-medium">
       <SettingsSection className="gap-16">
         <ToggleSwitch isChecked={settings.isLeverageSliderEnabled} setIsChecked={settings.setIsLeverageSliderEnabled}>
           <Trans>Show Leverage Slider</Trans>

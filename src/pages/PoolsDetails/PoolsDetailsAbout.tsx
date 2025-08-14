@@ -73,7 +73,7 @@ export function PoolsDetailsAbout({
         <BridgingInfo chainId={chainId} tokenSymbol={glvOrMarketInfo?.shortToken?.symbol} />
       )}
 
-      <div className={cx("grid pt-8", { "grid-cols-1 gap-12": isMobile, "grid-cols-3": !isMobile })}>
+      <div className={cx("flex pt-8", { "flex-col gap-12": isMobile, "flex-row gap-20": !isMobile })}>
         <PoolsDetailsMarketAmount
           label={<Trans>Buyable</Trans>}
           value={

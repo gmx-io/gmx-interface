@@ -51,7 +51,10 @@ function PoolLabel({
 
   if (marketsOptions?.length > 1) {
     return (
-      <div className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300")} onClick={onClick}>
+      <div
+        className={cx("group flex cursor-pointer items-center gap-4 whitespace-nowrap hover:text-blue-300")}
+        onClick={onClick}
+      >
         {name ? name : "..."}
         <FaChevronDown className="w-12 text-slate-100 group-hover:text-blue-300" />
       </div>
@@ -212,7 +215,7 @@ export function PoolSelector({
           </div>
         }
       >
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col">
           {filteredOptions.map((option, marketIndex) => {
             return (
               <PoolListItem

@@ -10,7 +10,7 @@ interface TableTdThProps extends PropsWithChildren, React.HTMLProps<HTMLTableCel
 }
 
 export function Table(props: PropsWithChildren & React.HTMLProps<HTMLTableElement>) {
-  return <table {...props} className={cx("w-full rounded-4 bg-slate-900", props.className)} />;
+  return <table {...props} className={cx("w-full bg-slate-900", props.className)} />;
 }
 export function TableTh(props: TableTdThProps) {
   const { padding = "all", ...rest } = props;
@@ -57,7 +57,7 @@ export function TableTd(props: TableTdThProps) {
     <td
       {...rest}
       className={cx("text-[13px] last-of-type:[&:not(:first-of-type)]:text-right", props.className, {
-        "px-4 py-8 first-of-type:pl-16 last-of-type:pr-16": padding === "all",
+        "px-4 py-8 first-of-type:pl-20 last-of-type:pr-20": padding === "all",
         "px-4 py-8 first-of-type:pl-12 last-of-type:pr-12": padding === "compact",
         "px-8 py-8": padding === "compact-one-column",
       })}

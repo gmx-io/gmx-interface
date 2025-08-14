@@ -23,7 +23,7 @@ import useWallet, { WalletClient } from "lib/wallets/useWallet";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-import walletIcon from "img/ic_wallet_24.svg";
+import WalletIcon from "img/ic_wallet_24.svg?react";
 
 import "./GmAssetDropdown.scss";
 
@@ -110,7 +110,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
           as="div"
           ref={refs.setFloating}
           style={floatingStyles}
-          className="z-30 rounded-8 border border-slate-600 bg-slate-800 outline-none"
+          className="z-30 rounded-8 border-stroke border-slate-600 bg-slate-900 outline-none"
           onClick={handleMenuItemsClick}
         >
           {market && (
@@ -185,9 +185,9 @@ function AddToWalletButton({
             },
           });
         }}
-        className="asset-item"
+        className="asset-item group"
       >
-        <img src={walletIcon} className="wallet-icon" alt="Add to wallet" />
+        <WalletIcon className="text-slate-100 group-hover:text-white" />
         <p>
           <Trans>Add {marketName} to Wallet</Trans>
         </p>

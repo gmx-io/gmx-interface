@@ -85,34 +85,34 @@ export function PositionList(p: Props) {
 
       {!isMobile && (
         <TableScrollFadeContainer disableScrollFade={positions.length === 0}>
-          <Table className="!w-[max(100%,840px)]">
+          <Table className="!w-[max(100%,840px)] table-fixed">
             <thead className="text-body-medium">
               <TableTheadTr>
-                <TableTh>
+                <TableTh className="w-[18%]">
                   <Trans>Position</Trans>
                 </TableTh>
-                <TableTh>
+                <TableTh className="w-[10%]">
                   <Trans>Size</Trans>
                 </TableTh>
-                <TableTh>
+                <TableTh className="w-[14%]">
                   <Trans>Net Value</Trans>
                 </TableTh>
-                <TableTh>
+                <TableTh className="w-[14%]">
                   <Trans>Collateral</Trans>
                 </TableTh>
-                <TableTh>
+                <TableTh className="w-[10%]">
                   <Trans>Entry Price</Trans>
                 </TableTh>
-                <TableTh>
+                <TableTh className="w-[10%]">
                   <Trans>Mark Price</Trans>
                 </TableTh>
-                <TableTh>
+                <TableTh className="w-[10%]">
                   <Trans>Liq. Price</Trans>
                 </TableTh>
                 {!isLoading && !p.hideActions && (
                   <>
-                    <TableTh></TableTh>
-                    <TableTh></TableTh>
+                    <TableTh className="w-[5%]"></TableTh>
+                    <TableTh className="w-[5%]"></TableTh>
                   </>
                 )}
               </TableTheadTr>

@@ -211,12 +211,18 @@ export function TradingSettings({
               </div>
             }
             handle={<Trans>Auto-Cancel TP/SL</Trans>}
+            styleType="icon"
+            className="font-medium"
           />
         </ToggleSwitch>
 
         {/* External swaps are enabled by default on Botanix */}
         {chainId !== BOTANIX && (
-          <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
+          <ToggleSwitch
+            isChecked={settings.externalSwapsEnabled}
+            setIsChecked={settings.setExternalSwapsEnabled}
+            className="font-medium"
+          >
             <Trans>Enable External Swaps</Trans>
           </ToggleSwitch>
         )}

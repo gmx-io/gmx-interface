@@ -17,7 +17,7 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
   const settings = useSettings();
 
   return (
-    <div className="mt-16">
+    <div className="mt-16 font-medium">
       <SettingsSection className="gap-16">
         <ToggleSwitch isChecked={settings.showDebugValues} setIsChecked={settings.setShowDebugValues}>
           <Trans>Show Debug Values</Trans>

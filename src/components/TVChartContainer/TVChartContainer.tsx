@@ -66,7 +66,7 @@ export default function TVChartContainer({
   const [datafeed, setDatafeed] = useState<DataFeed | null>(null);
 
   useEffect(() => {
-    if (chartReady && tvWidgetRef.current && !wasChartOverridden) {
+    if (chartReady && tvWidgetRef.current && true) {
       tvWidgetRef.current.applyOverrides(chartOverrides);
       tvWidgetRef.current.saveChartToServer();
       setWasChartOverridden(true);

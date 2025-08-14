@@ -179,6 +179,7 @@ export const GmTokensTotalBalanceInfo = ({
       maxAllowedWidth={340}
       position={tooltipPosition ?? "bottom-end"}
       renderContent={renderTooltipContent}
+      styleType="iconStroke"
     />
   ) : (
     <>{label}</>

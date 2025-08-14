@@ -26,6 +26,7 @@ import useSearchParams from "lib/useSearchParams";
 import { switchNetwork } from "lib/wallets";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
+import { CloseToastButton } from "components/CloseToastButton/CloseToastButton";
 import EventToastContainer from "components/EventToast/EventToastContainer";
 import useEventToast from "components/EventToast/useEventToast";
 import { Header } from "components/Header/Header";
@@ -165,6 +166,7 @@ export function AppRoutes() {
         pauseOnHover
         theme="dark"
         icon={false}
+        closeButton={CloseToastButton}
       />
       <EventToastContainer />
       <RedirectPopupModal

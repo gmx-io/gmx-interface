@@ -87,8 +87,6 @@ export default function MarketTokenSelector(props: Props) {
   return (
     <SelectorBase
       handleClassName="inline-block"
-      popoverYOffset={18}
-      popoverXOffset={-8}
       popoverPlacement="bottom-start"
       chevronClassName="!-mt-1 self-start"
       label={

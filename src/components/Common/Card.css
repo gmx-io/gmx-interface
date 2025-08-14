@@ -12,10 +12,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  font-weight: 500;
 }
 
 .card-divider {
-  height: 1px;
+  height: 0.5px;
   background: var(--color-slate-600);
 }
 .card-body {

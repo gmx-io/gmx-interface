@@ -13,7 +13,7 @@ export default function Badge({ value, indicator }: Props) {
       {value}
       {indicator ? (
         <div
-          className={cx("absolute -right-2 -top-2 h-6 w-6 rounded-full", {
+          className={cx("absolute -right-1 -top-1 h-6 w-6 rounded-full", {
             "bg-red-500": indicator === "error",
             "bg-yellow-500": indicator === "warning",
           })}

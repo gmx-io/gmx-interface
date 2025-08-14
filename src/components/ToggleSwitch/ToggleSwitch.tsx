@@ -29,7 +29,7 @@ export default function ToggleSwitch({
   }, [disabled, isChecked, setIsChecked]);
 
   return (
-    <div className={cx("inline-flex w-full items-center justify-between gap-8", className)}>
+    <div className={cx("inline-flex w-[99%] items-center justify-between gap-8", className)}>
       <span className={textClassName}>{children}</span>
       <div className="flex items-center gap-8">
         {beforeSwitchContent}

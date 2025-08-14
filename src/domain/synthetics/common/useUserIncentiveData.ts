@@ -1,51 +1,44 @@
 import { gql } from "@apollo/client";
 import useSWR from "swr";
 
-import { getSyntheticsGraphClient } from "lib/subgraph";
-
-export type UserIncentiveData = {
-  id: string;
-  typeId: string;
-  amounts: string[];
-  amountsInUsd: string[];
-  timestamp: number;
-  tokens: string[];
-  transactionHash: string;
-};
+import { getSubsquidGraphClient } from "lib/subgraph";
+import { Distribution } from "sdk/types/subsquid";
 
 const USER_INCENTIVE_QUERY = gql`
   query userIncentiveData($account: String!) {
-    distributions(orderBy: timestamp, orderDirection: desc, where: { receiver: $account }, first: 1000) {
+    distributions(orderBy: transaction_timestamp_DESC, where: { receiver_eq: $account }, limit: 1000) {
+      id
       typeId
       amounts
       amountsInUsd
-      id
-      timestamp
       tokens
-      transactionHash
+      transaction {
+        timestamp
+        hash
+      }
     }
   }
 `;
 
 export default function useUserIncentiveData(chainId: number, account?: string) {
-  const graphClient = getSyntheticsGraphClient(chainId);
+  const squidClient = getSubsquidGraphClient(chainId);
   const userIncentiveDataCacheKey =
-    chainId && graphClient && account ? [chainId, "useUserIncentiveData", account] : null;
+    chainId && squidClient && account ? [chainId, "useUserIncentiveData", account] : null;
 
-  async function fetchUserIncentiveData(): Promise<UserIncentiveData[] | undefined> {
+  async function fetchUserIncentiveData(): Promise<Distribution[] | undefined> {
     if (!account) {
       return [];
     }
 
-    const response = await graphClient!.query({
+    const response = await squidClient!.query({
       query: USER_INCENTIVE_QUERY,
-      variables: { account: account.toLowerCase() },
+      variables: { account: account },
     });
 
-    return response.data?.distributions as UserIncentiveData[] | undefined;
+    return response.data?.distributions as Distribution[] | undefined;
   }
 
-  const { data, error } = useSWR<UserIncentiveData[] | undefined>(userIncentiveDataCacheKey, {
+  const { data, error } = useSWR<Distribution[] | undefined>(userIncentiveDataCacheKey, {
     fetcher: fetchUserIncentiveData,
   });
 

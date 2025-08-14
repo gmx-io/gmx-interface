@@ -131,7 +131,14 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
       <div className="relative min-h-[250px] grow">
         <div className="DailyAndCumulativePnL-hide-last-tick absolute size-full">
           <ResponsiveContainer debounce={500}>
-            <ComposedChart width={500} height={300} data={clusteredPnlData} barCategoryGap="25%" margin={CHART_MARGIN}>
+            <ComposedChart
+              width={500}
+              height={300}
+              data={clusteredPnlData}
+              barCategoryGap="25%"
+              margin={CHART_MARGIN}
+              {...{ overflow: "visible" }}
+            >
               <RechartsTooltip
                 cursor={CHART_CURSOR_PROPS}
                 content={ChartTooltip}

@@ -87,7 +87,7 @@ export default function SearchInput({
           onKeyDown={onKeyDown}
           onFocus={handleFocus}
           autoFocus={autoFocus ?? !isSmallerScreen}
-          className={cx("block w-full rounded-8 border bg-slate-800 leading-1 placeholder-slate-100", {
+          className={cx("block w-full rounded-8 border bg-slate-800 hover:bg-fill-surfaceElevatedHover leading-1 placeholder-slate-100", {
             "border-blue-300": isFocused,
             "border-slate-800": !isFocused,
             "p-8 pl-32 text-[13px]": size === "m",

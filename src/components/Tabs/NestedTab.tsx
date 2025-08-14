@@ -4,6 +4,8 @@ import { t } from "@lingui/macro";
 import cx from "classnames";
 import { FiChevronDown } from "react-icons/fi";
 
+import Button from "components/Button/Button";
+
 import { NestedOption } from "./types";
 
 type Props<V extends string | number> = {
@@ -33,22 +35,12 @@ export default function NestedTab<V extends string | number>({
 
   return (
     <Menu as="div" className="flex items-center justify-center gap-8">
-      <Menu.Button
-        as="div"
-        className={cx(
-          `flex cursor-pointer items-center justify-center gap-2
-          rounded-8 px-12 py-8 font-medium text-slate-100 hover:bg-slate-700 hover:text-white`,
-          commonOptionClassname,
-          {
-            "bg-cold-blue-900 text-white": !!selectedSubOption,
-          }
-        )}
-        ref={refs.setReference}
-        data-qa={qa ? `${qa}-tab-${option.label}` : undefined}
-      >
-        <span>{label}</span>
+      <Menu.Button as="div" ref={refs.setReference} data-qa={qa ? `${qa}-tab-${option.label}` : undefined}>
+        <Button variant="ghost" className={cx({ "!bg-slate-800 !text-white": selectedSubOption })}>
+          <span>{label}</span>
 
-        <FiChevronDown size={16} className="mt-1" />
+          <FiChevronDown size={16} className="mt-1" />
+        </Button>
       </Menu.Button>
       <FloatingPortal>
         <Menu.Items
@@ -63,8 +55,9 @@ export default function NestedTab<V extends string | number>({
                 as="div"
                 key={subOpt.value}
                 className={cx(
-                  "text-body-medium cursor-pointer p-8 font-medium text-slate-100 hover:bg-cold-blue-900 hover:text-white",
-                  { "text-white": subOpt.value === selectedValue }
+                  "text-body-medium cursor-pointer p-8 font-medium text-slate-100 hover:bg-fill-surfaceHover hover:text-white",
+                  { "text-white": subOpt.value === selectedValue },
+                  commonOptionClassname
                 )}
                 onClick={() => onOptionClick?.(subOpt.value)}
               >

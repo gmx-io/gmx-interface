@@ -171,6 +171,7 @@ function fontComponentsPlugin({ addComponents, addBase }) {
 
       "--line-height-h1": "34px",
       "--line-height-h2": "24px",
+      "--line-height-h3": "20px",
       "--line-height-body-large": "2.1rem",
       "--line-height-body-medium": "1.8rem",
       "--line-height-body-small": "1.6rem",

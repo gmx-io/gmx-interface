@@ -249,11 +249,11 @@ export function OrderList({
 
       {!isContainerSmall && (
         <TableScrollFadeContainer disableScrollFade={orders.length === 0}>
-          <Table className="!w-[max(100%,580px)]">
+          <Table className="!w-[max(100%,580px)] table-fixed">
             <thead>
               <TableTheadTr>
                 {!hideActions && (
-                  <TableTh className="cursor-pointer" onClick={onSelectAllOrders}>
+                  <TableTh className="w-[48px] cursor-pointer" onClick={onSelectAllOrders}>
                     <Checkbox
                       isPartialChecked={onlySomeOrdersSelected}
                       isChecked={areAllOrdersSelected}
@@ -261,27 +261,27 @@ export function OrderList({
                     />
                   </TableTh>
                 )}
-                <TableTh>
+                <TableTh className="w-[28%]">
                   <MarketFilterLongShort
                     withPositions="withOrders"
                     value={marketsDirectionsFilter}
                     onChange={setMarketsDirectionsFilter}
                   />
                 </TableTh>
-                <TableTh>
+                <TableTh className="w-[10%]">
                   <OrderTypeFilter value={orderTypesFilter} onChange={setOrderTypesFilter} />
                 </TableTh>
-                <TableTh>
+                <TableTh className="w-[15%]">
                   <Trans>Size</Trans>
                 </TableTh>
-                <TableTh>
+                <TableTh className="w-[16%]">
                   <Trans>Trigger Price</Trans>
                 </TableTh>
-                <TableTh>
+                <TableTh className="w-[16%]">
                   <Trans>Mark Price</Trans>
                 </TableTh>
 
-                {!hideActions && <TableTh></TableTh>}
+                {!hideActions && <TableTh className="w-[10%]"></TableTh>}
               </TableTheadTr>
             </thead>
             <tbody>

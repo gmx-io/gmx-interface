@@ -142,10 +142,10 @@ export function ClaimsHistory({
   currentPageData,
 }: ClaimsHistoryProps) {
   return (
-    <div className="App-box">
+    <div className="bg-slate-900">
       <TableScrollFadeContainer disableScrollFade={isEmpty}>
         {!isEmpty && (
-          <table className="ClaimsHistory-table">
+          <table className="ClaimsHistory-table table-fixed">
             <colgroup>
               <col className="ClaimsHistory-action-column" />
               <col className="ClaimsHistory-market-column" />
@@ -153,13 +153,13 @@ export function ClaimsHistory({
             </colgroup>
             <thead>
               <TableTheadTr>
-                <TableTh>
+                <TableTh className="w-[40%]">
                   <ActionFilter value={eventNameFilter} onChange={setEventNameFilter} />
                 </TableTh>
-                <TableTh>
+                <TableTh className="w-[40%]">
                   <MarketFilter excludeSpotOnly value={marketAddressesFilter} onChange={setMarketAddressesFilter} />
                 </TableTh>
-                <TableTh className="ClaimsHistory-price-header">
+                <TableTh className="ClaimsHistory-price-header w-[20%]">
                   <Trans>Size</Trans>
                 </TableTh>
               </TableTheadTr>

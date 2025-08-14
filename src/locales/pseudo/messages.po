@@ -38,9 +38,21 @@ msgstr ""
 msgid "Decentralized Trading Protocol"
 msgstr ""
 
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "STIP.b Trading Incentives"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/ClaimModal.tsx
 msgid "Claim submitted!"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Buy order executed."
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Claims are disabled"
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
@@ -88,10 +100,6 @@ msgstr ""
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr ""
 
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Show debug values"
-msgstr ""
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Stop Loss"
 msgstr ""
@@ -120,6 +128,10 @@ msgstr ""
 msgid "Daily Loss"
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "earns fees from providing liquidity to multiple GMX V2 markets"
+msgstr ""
+
 #: src/pages/Home/Home.tsx
 msgid "GMX is currently live on Arbitrum and Avalanche."
 msgstr ""
@@ -134,6 +146,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Optimizer on Avalanche"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.jsx
+msgid "Swap order submitted."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
@@ -159,6 +175,10 @@ msgstr ""
 msgid "stop loss"
 msgstr ""
 
+#: src/components/Exchange/PositionSeller.jsx
+msgid "Keep leverage is not possible."
+msgstr ""
+
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -168,12 +188,12 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.jsx
-msgid "Order submitted!"
-msgstr ""
-
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL order(s)"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.jsx
+msgid "Current {0} shorts."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -232,9 +252,17 @@ msgstr ""
 msgid "Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if there is not enough available liquidity."
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Pools providing liquidity to specific GMX markets, supporting <0/> single-asset and native asset options."
+msgstr ""
+
 #: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Buy {gasPaymentTokensText}"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.jsx
+msgid "Insufficient Liquidity."
 msgstr ""
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
@@ -249,16 +277,8 @@ msgstr ""
 msgid "{0} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
-#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High TWAP Network Fee"
-msgstr ""
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Market Swap"
-msgstr ""
-
-#: src/pages/Stake/VesterDepositModal.tsx
-msgid "Deposit submitted!"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -272,10 +292,6 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "{seconds}s"
-msgstr ""
-
-#: src/components/Exchange/NoLiquidityErrorModal.tsx
-msgid "{0} Required"
 msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
@@ -292,6 +308,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
+#: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/pages/Dashboard/StatsCard.tsx
@@ -308,6 +325,14 @@ msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TWAP Number of Parts"
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.jsx
+msgid "Max leverage without PnL: 100x"
+msgstr ""
+
+#: src/components/Errors/errorToasts.tsx
+msgid "The mark price has changed, consider increasing your allowed slippage by clicking on the \"...\" icon next to your address."
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -340,12 +365,21 @@ msgstr ""
 msgid "@username"
 msgstr ""
 
+#: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
+msgid "Claiming price impact rebates."
+msgstr ""
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Stop Market - Short Inc."
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Take Profit"
+msgstr ""
+
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
+msgid "Swapped {0} for {1}."
 msgstr ""
 
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -369,24 +403,20 @@ msgstr ""
 msgid "Stop market price above mark price"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>{suggestText}"
+msgstr ""
+
 #: src/pages/Stake/StakeModal.tsx
 msgid "Pending {stakingTokenSymbol} approval"
 msgstr ""
 
-#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
-msgid "Open Positions"
-msgstr ""
-
-#: src/pages/Stake/UnstakeModal.tsx
-msgid "Unstaking..."
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
-msgid "You can change the \"Collateral In\" token above to find lower fees"
-msgstr ""
-
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
+msgid "You can change the \"Collateral In\" token above to find lower fees."
 msgstr ""
 
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
@@ -447,10 +477,6 @@ msgstr ""
 msgid "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trading</2> under settings, which should offer a better experience."
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.tsx
-msgid "Referral code added!"
-msgstr ""
-
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "SELLABLE"
 msgstr ""
@@ -471,6 +497,10 @@ msgstr ""
 msgid "No pools matched."
 msgstr ""
 
+#: src/pages/Stake/UnstakeModal.tsx
+msgid "Unstaking"
+msgstr ""
+
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -484,6 +514,10 @@ msgstr ""
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Increased {positionText}, +{0}"
+msgstr ""
+
+#: src/pages/Stake/Stake.tsx
+msgid "Claim and view your incentives, airdrops, and prizes"
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -510,12 +544,28 @@ msgstr ""
 msgid "GMX V2 Data Analytics within Telegram"
 msgstr ""
 
+#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High external swap impact"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr ""
 
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "Adding"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Created limit order for {0} {1}: {2} USD!"
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.jsx
+msgid "Closing"
+msgstr ""
+
+#: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
+msgid "Failed to claim price impact rebates."
 msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
@@ -540,6 +590,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "A $500,000 GLV pool (funded by DAO funds) rewards long-term holders: If you keep your distributed GLV for at least 3 months (without selling or transferring), you'll receive a pro rata share."
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -579,24 +633,14 @@ msgstr ""
 msgid "in liquidity"
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "Winner"
-msgstr ""
-
 #: src/components/Exchange/SwapBox.jsx
 msgid "Exit Price"
-msgstr ""
-
-#: src/components/Exchange/OrderEditor.jsx
-#: src/components/Exchange/PositionSeller.jsx
-msgid "Enter Price"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V2"
 msgstr ""
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Incentives are airdropped weekly."
 msgstr ""
@@ -621,6 +665,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Market order will be cancellable in {minutesText}{seconds}s."
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "About GLP Incident"
 msgstr ""
 
 #: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
@@ -649,6 +697,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Please uncheck \"Keep Leverage\", or close a larger position amount."
+msgstr ""
+
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Settling"
 msgstr ""
 
 #: src/components/Exchange/PositionDropdown.tsx
@@ -713,6 +765,10 @@ msgstr ""
 msgid "Rank"
 msgstr ""
 
+#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High swap price impact"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average position size."
 msgstr ""
@@ -769,16 +825,18 @@ msgstr ""
 msgid "Market Orders"
 msgstr ""
 
+#: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Creating order"
+msgstr ""
+
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "How can we address your concerns and improve your experience?"
 msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value locked takes into account:"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Sending buy request"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
@@ -810,10 +868,6 @@ msgstr ""
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
 msgstr ""
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
-msgid "Incentives Distribution History"
-msgstr ""
-
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched"
 msgstr ""
@@ -838,10 +892,6 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Sell submitted!"
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.jsx
-msgid "Closing..."
 msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
@@ -895,6 +945,11 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Pay"
+msgstr ""
+
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Solana"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -951,10 +1006,6 @@ msgstr ""
 msgid "Asset Management"
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.tsx
-msgid "Adding..."
-msgstr ""
-
 #: src/pages/Actions/SyntheticsActions.tsx
 msgid "GMX {VERSION_NAME} {networkName} actions for all accounts."
 msgstr ""
@@ -965,6 +1016,11 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX uses TradingView to provide real-time cryptocurrency charts, so you can easily follow <0>BTCUSD</0> price in real-time, along with other currency pair rates. The interactive charts offer advanced tools and a user-friendly interface for easier market analysis and decision-making."
+msgstr ""
+
+#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+msgid "GMX V2 Rebates are automatically applied as fee discounts on each trade and are not displayed on this table."
 msgstr ""
 
 #: src/components/Glp/SwapErrorModal.tsx
@@ -989,10 +1045,6 @@ msgstr ""
 msgid "Market Cap"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-msgid "{positionName} Fees settled"
-msgstr ""
-
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average leverage used."
 msgstr ""
@@ -1004,12 +1056,6 @@ msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We want your insights to help improve GMX for Liquidity Providers. For security reasons, we won't contact you first. Please send the message \"I’m a Liquidity Provider\" to our official telegram account:"
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.jsx
-#: src/components/Exchange/PositionSeller.jsx
-#: src/components/Exchange/SwapBox.jsx
-msgid "Insufficient Liquidity"
 msgstr ""
 
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -1089,6 +1135,10 @@ msgstr ""
 msgid "Protocol"
 msgstr ""
 
+#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High network fees"
+msgstr ""
+
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Overview"
 msgstr ""
@@ -1126,6 +1176,10 @@ msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Base APY"
+msgstr ""
+
+#: src/components/Exchange/OrderEditor.jsx
+msgid "Order updated."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
@@ -1243,6 +1297,10 @@ msgstr ""
 msgid "Total value of tokens in the GLP pools."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough available liquidity to fill the order. The order will get filled when the condition is met and there is enough available liquidity."
+msgstr ""
+
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 msgid "Select pool"
 msgstr ""
@@ -1348,6 +1406,10 @@ msgstr ""
 msgid "Leftover position below 10 USD"
 msgstr ""
 
+#: src/pages/Stake/Stake.tsx
+msgid "Distributions"
+msgstr ""
+
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>."
 msgstr ""
@@ -1375,10 +1437,6 @@ msgstr ""
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Set Max Leverage"
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.jsx
-msgid "Insufficient Available Liquidity to swap to {0}:"
 msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
@@ -1428,6 +1486,10 @@ msgstr ""
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Sending buy request."
+msgstr ""
+
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAIL. LIQ."
 msgstr ""
@@ -1454,11 +1516,6 @@ msgstr ""
 msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 msgstr ""
 
-#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
-#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
-msgid "Swapped {0} for {1}"
-msgstr ""
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Tier {0} ({currentRebatePercentage}% rebate)"
 msgstr ""
@@ -1470,10 +1527,6 @@ msgstr ""
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Price on Avalanche"
-msgstr ""
-
-#: src/components/Exchange/SwapBox.jsx
-msgid "Swap Order creation failed."
 msgstr ""
 
 #: src/pages/Exchange/Exchange.tsx
@@ -1501,8 +1554,20 @@ msgstr ""
 msgid "Insufficient receive token liquidity"
 msgstr ""
 
+#: src/components/Exchange/SwapBox.jsx
+msgid "Swap order created."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Announcements and Updates"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "{positionName} Settling fees."
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "There is currently a high swap price impact for this swap."
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
@@ -1520,16 +1585,16 @@ msgstr ""
 msgid "V2 Avalanche Fuji"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Shift order cancelled"
-msgstr ""
-
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Order executed"
 msgstr ""
 
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Select Positions"
+msgstr ""
+
+#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High impact on collateral"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
@@ -1598,6 +1663,10 @@ msgstr ""
 msgid "Net Value"
 msgstr ""
 
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
+msgid "Withdrawn {balanceFormatted} to main account."
+msgstr ""
+
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
@@ -1636,10 +1705,6 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: src/components/Exchange/OrderEditor.jsx
-msgid "Price is below Mark Price"
-msgstr ""
-
 #: src/pages/Stake/Vesting.tsx
 msgid "Withdraw from GMX Vault"
 msgstr ""
@@ -1658,6 +1723,10 @@ msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Fees for the past"
+msgstr ""
+
+#: src/components/Exchange/TradeHistory.jsx
+msgid "Could not execute withdrawal from {0} {longOrShortText}."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -1700,6 +1769,10 @@ msgstr ""
 msgid "This token automatically accrues fees from leverage trading and swaps for the {marketName} market. It is also exposed to {exposedToLabel} as per the composition displayed."
 msgstr ""
 
+#: src/components/Exchange/OrdersToa.jsx
+msgid "Enabling orders"
+msgstr ""
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Withdrew {0} from {positionText}"
 msgstr ""
@@ -1718,10 +1791,6 @@ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from GLP Vesting Vault"
-msgstr ""
-
-#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High Swap Profit Fee"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -1772,6 +1841,10 @@ msgstr ""
 #: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "No funds to claim"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -1871,6 +1944,10 @@ msgstr ""
 msgid "GMX Alerts"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "Settling position fees"
+msgstr ""
+
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Show details"
 msgstr ""
@@ -1920,6 +1997,10 @@ msgstr ""
 msgid "Display PnL After Fees"
 msgstr ""
 
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "Referral code added."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol risk explorer and stats"
 msgstr ""
@@ -1942,10 +2023,6 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Buy submitted."
-msgstr ""
-
-#: src/pages/Stake/Stake.tsx
-msgid "Incentives & Prizes"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
@@ -1972,11 +2049,6 @@ msgstr ""
 msgid "Max"
 msgstr ""
 
-#: src/components/Referrals/AddAffiliateCode.jsx
-#: src/components/Referrals/JoinReferralCode.tsx
-msgid "Checking code..."
-msgstr ""
-
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -1994,6 +2066,10 @@ msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Buy request sent."
 msgstr ""
 
 #: src/pages/Stake/Vesting.tsx
@@ -2061,17 +2137,12 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/TotalRewardsCard.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Connect Wallet"
-msgstr ""
-
-#: src/components/Exchange/OrdersToa.jsx
-msgid "Enabling Orders..."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
@@ -2090,12 +2161,8 @@ msgstr ""
 msgid "Enter and exit positions with minimal spread and low price impact. Get the optimal price without incurring additional costs."
 msgstr ""
 
-#: src/domain/synthetics/common/incentivesAirdropMessages.ts
-msgid "STIP.b trading incentives"
-msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.jsx
-msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
+msgid "Open positions"
 msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
@@ -2104,6 +2171,14 @@ msgstr ""
 
 #: src/components/Exchange/OrdersList.jsx
 msgid "You will receive at least {0} {1} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Sell order cancelled."
+msgstr ""
+
+#: src/components/NpsModal/NpsModal.tsx
+msgid "Error occurred. Please try again."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
@@ -2118,7 +2193,6 @@ msgstr ""
 msgid "There isn't enough GM: {0} [{1}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
 msgstr ""
 
-#: src/components/Exchange/PositionEditor.jsx
 #: src/components/Glp/GlpSwap.jsx
 msgid "Approving {0}..."
 msgstr ""
@@ -2127,17 +2201,21 @@ msgstr ""
 msgid "Deposited {0} into {positionText}"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "The execution price didn't meet the acceptable price condition."
+msgstr ""
+
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Claim Funding Fees"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "Rebates are airdropped weekly."
-msgstr ""
-
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Display Settings"
+msgstr ""
+
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
 msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
@@ -2146,6 +2224,10 @@ msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Sending sell request."
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
@@ -2161,22 +2243,34 @@ msgstr ""
 msgid "Address"
 msgstr ""
 
+#: src/components/Exchange/PositionsList.jsx
+msgid "Order size is bigger than the position, so it'll only be executable if the position increases."
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Fulfilling sell request."
+msgstr ""
+
+#: src/components/Referrals/AddAffiliateCode.jsx
+msgid "Creating"
 msgstr ""
 
 #: src/pages/Home/Home.tsx
 msgid "Total Trading Volume"
 msgstr ""
 
+#: src/components/Exchange/PositionSeller.jsx
+msgid "Order created."
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSpreadRow.tsx
 msgid "Collateral Spread"
 msgstr ""
-
-#: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
-#~ msgid "You have an existing limit order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
-#~ msgstr ""
 
 #: src/components/Header/Header.tsx
 msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
@@ -2220,6 +2314,10 @@ msgstr ""
 msgid "TOKEN"
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "What is the bonus incentive for holding your GLV?"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Transfer NFT"
 msgstr ""
@@ -2255,10 +2353,6 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Allow {0} to be spent"
-msgstr ""
-
-#: src/components/Exchange/SwapBox.jsx
-msgid "Swap Order created!"
 msgstr ""
 
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -2302,8 +2396,8 @@ msgstr ""
 msgid "Liquidation Risk Alerts"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-msgid "{positionName} Fees settling"
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough available liquidity to fill the order."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
@@ -2314,10 +2408,6 @@ msgstr ""
 #: src/pages/Stake/Vesting.tsx
 msgid "<0>{0}</0> GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
 msgstr "<0>{0}</0> GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Shift order executed"
-msgstr ""
 
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
@@ -2331,6 +2421,10 @@ msgstr ""
 msgid "{0} will be swapped to {1} on order execution."
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Claiming with a smart account requires specific instructions. Contributors will post these in the coming days."
+msgstr ""
+
 #. Button to clear the filter selection
 #: src/components/Synthetics/TableOptionsFilter/TableOptionsFilter.tsx
 msgid "Clear selection"
@@ -2340,17 +2434,8 @@ msgstr ""
 msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
 msgstr ""
 
-#: src/domain/synthetics/orders/cancelOrdersTxn.ts
-msgid "Failed to cancel {ordersText}"
-msgstr ""
-
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
-msgstr ""
-
-#: src/components/Errors/errorToasts.tsx
-#: src/components/Errors/errorToasts.tsx
-msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -2370,6 +2455,11 @@ msgstr ""
 #: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "GLP Pool"
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.jsx
+#: src/components/Exchange/PositionSeller.jsx
+msgid "Insufficient liquidity."
 msgstr ""
 
 #: src/domain/legacy.ts
@@ -2435,10 +2525,6 @@ msgstr ""
 msgid "Receiver has staked GMX/GLP before"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Fulfilling sell request"
-msgstr ""
-
 #: src/components/Exchange/TradeHistory.jsx
 msgid "{actionDisplay} Order"
 msgstr ""
@@ -2451,8 +2537,8 @@ msgstr ""
 msgid "Market Graph"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.jsx
-msgid "There are more longs than shorts, borrow fees for shorting is currently zero"
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Buy order cancelled."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
@@ -2500,10 +2586,6 @@ msgstr ""
 msgid "Transfer Account"
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "Winners"
-msgstr ""
-
 #: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/ActionsV1/ActionsV1.tsx
 msgid "GMX V1 Actions"
@@ -2525,10 +2607,6 @@ msgstr ""
 msgid "Job openings at GMX."
 msgstr ""
 
-#: src/components/Exchange/OrderEditor.jsx
-msgid "Price below Mark Price"
-msgstr ""
-
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
 msgstr ""
@@ -2546,17 +2624,16 @@ msgstr ""
 msgid "Otherwise, try changing the RPC url in your wallet settings with the help of <0>chainlist.org</0>."
 msgstr ""
 
-#: src/components/Exchange/OrderEditor.jsx
-#: src/components/Exchange/PositionSeller.jsx
-msgid "Price above Liq. Price"
-msgstr ""
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the pay token to collateral token swap when the price conditions are met."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "User Quests"
+msgstr ""
+
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "Funds claimed"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
@@ -2582,14 +2659,6 @@ msgstr ""
 msgid "Order cancelled"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
-msgid "Not enough Available Swap Liquidity to fill the Order."
-msgstr ""
-
-#: src/pages/Stake/Stake.tsx
-msgid "Earn prizes by participating in GMX Trading Competitions."
-msgstr ""
-
 #: src/components/SideNav/SideNav.tsx
 msgid "Collapse"
 msgstr ""
@@ -2600,6 +2669,10 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Arbitrum"
+msgstr ""
+
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "Avalanche LP Incentives"
 msgstr ""
 
 #: src/components/Exchange/NetValueTooltip.tsx
@@ -2622,20 +2695,6 @@ msgstr ""
 msgid "Exposure to Backing Tokens"
 msgstr ""
 
-#: src/components/Referrals/AddAffiliateCode.jsx
-msgid "Creating..."
-msgstr ""
-
-#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
-#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
-#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
-msgid "Withdrawing from Subaccount"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-msgid "Settling Position Fees"
-msgstr ""
-
 #: src/components/Exchange/OrderEditor.jsx
 msgid "Minimum received"
 msgstr ""
@@ -2645,16 +2704,12 @@ msgstr ""
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr ""
 
-#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
-msgid "Enter your feedback here"
-msgstr ""
-
-#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High Impact on Collateral"
-msgstr ""
-
 #: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
 msgid "and"
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "Distribution History"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2715,8 +2770,8 @@ msgstr ""
 msgid "Stop Market - Long Inc."
 msgstr ""
 
-#: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
-msgid "Failed to Claim Price Impact Rebate"
+#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
+msgid "Enter your feedback here."
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -2775,6 +2830,10 @@ msgstr ""
 msgid "{typeString} Short TWAP: {0} a short position in evenly distributed parts over a specified time."
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Insufficient gas for network fees"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the swap when the min. receive conditions are met."
 msgstr ""
@@ -2823,12 +2882,12 @@ msgstr ""
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr ""
 
-#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
-msgid "Open Positions with Orders"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Copin"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Fulfilling buy request."
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
@@ -2844,15 +2903,14 @@ msgstr ""
 msgid "{0}"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
-msgid "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Show Debug Values"
 msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days."
 msgstr ""
 
-#: src/components/Exchange/OrdersToa.jsx
 #: src/components/Exchange/OrdersToa.jsx
 msgid "Enable Orders"
 msgstr ""
@@ -2872,6 +2930,10 @@ msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Adding referral code failed."
+msgstr ""
+
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "Updating"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
@@ -2928,25 +2990,16 @@ msgstr ""
 msgid "Help us improve"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.jsx
-#: src/components/Exchange/PositionSeller.jsx
-msgid "Invalid Liquidation Price"
-msgstr ""
-
 #: src/pages/Home/Home.tsx
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.jsx
-msgid "Swap amount from {0} to {1} exceeds {2} available liquidity. Choose a different \"Receive\" token."
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Create Take Profit"
 msgstr ""
 
-#: src/components/Exchange/OrderEditor.jsx
-msgid "Update Order"
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Can I sell my GLV if I want, and where?"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
@@ -3066,6 +3119,10 @@ msgstr ""
 msgid "Total Staked"
 msgstr ""
 
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "Claim V2 rebates from your referred traders."
+msgstr ""
+
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -3095,13 +3152,20 @@ msgstr ""
 msgid "Enable orders sent."
 msgstr ""
 
-#: src/components/Exchange/PositionEditor.jsx
-#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
-msgid "Withdrawing..."
+#: src/components/Exchange/OrderEditor.jsx
+msgid "Price below mark price"
 msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 msgid "No claims match the selected filters"
+msgstr ""
+
+#: src/pages/Stake/StakeModal.tsx
+msgid "Staking"
+msgstr ""
+
+#: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+msgid "Claiming"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
@@ -3126,8 +3190,8 @@ msgstr ""
 msgid "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only receive {3}."
 msgstr ""
 
-#: src/pages/Stake/Stake.tsx
-msgid "Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2."
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "Enter referral code"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
@@ -3146,7 +3210,10 @@ msgstr ""
 msgid "Stake failed."
 msgstr ""
 
-#: src/components/NpsModal/NpsModal.tsx
+#: src/components/Exchange/ConfirmationBox.jsx
+msgid "You can edit the default allowed slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submitting..."
@@ -3154,10 +3221,6 @@ msgstr ""
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
-msgstr ""
-
-#: src/components/Synthetics/GmList/GlvList.tsx
-msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets."
 msgstr ""
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
@@ -3302,10 +3365,15 @@ msgstr ""
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
+#: src/components/Exchange/TradeHistory.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Initial Collateral"
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.jsx
+msgid "Approving {0}"
 msgstr ""
 
 #: src/pages/Stake/StakeModal.tsx
@@ -3358,13 +3426,18 @@ msgstr ""
 msgid "Sending settle request"
 msgstr ""
 
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Express params loading"
+msgstr ""
+
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
 msgstr ""
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/AffiliateClaimModal.tsx
 #: src/pages/Stake/ClaimModal.tsx
@@ -3377,6 +3450,10 @@ msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Edit {0}"
+msgstr ""
+
+#: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
+msgid "Price impact rebates claimed."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
@@ -3400,11 +3477,6 @@ msgstr ""
 msgid "TWAP"
 msgstr ""
 
-#: src/components/Exchange/OrderEditor.jsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "Updating Order..."
-msgstr ""
-
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Close failed."
 msgstr ""
@@ -3418,12 +3490,17 @@ msgid "The website is a community deployed and maintained instance of the open s
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Deposit failed."
 msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "<0>Set Recommended Impact: {0}</0>."
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.jsx
+msgid "Fees are higher than collateral."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -3454,17 +3531,21 @@ msgstr ""
 msgid "Accept that orders are not guaranteed to execute and trigger orders may not settle at the trigger price"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "{positionName} Failed to settle."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a market"
 msgstr ""
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
+#: src/components/Exchange/OrderEditor.jsx
+msgid "Price is above mark price"
 msgstr ""
 
-#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High External Swap Impact"
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
@@ -3526,6 +3607,10 @@ msgstr ""
 msgid "Failed Deposit"
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Distribution happens in two GLV variants to mirror GLP's multi-asset exposure: one variant is optimized for ETH-based markets (50% ETH / 50% USDC) and the other for BTC-based markets (50% BTC / 50% USDC). This allocation reflects the composition of recovered funds and allows for dynamic shifting of GLV liquidity to all top GMX markets to enhance your yield."
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr ""
@@ -3569,6 +3654,10 @@ msgstr ""
 msgid "GLV is the liquidity provider token for GMX V2 vaults. Consist of several GM tokens and accrues fees generated by them."
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Yes, GLV is fully liquid and permissionless. You can sell via the GMX interface to redeem for underlying assets, with low fees."
+msgstr ""
+
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Network"
 msgstr ""
@@ -3586,10 +3675,19 @@ msgstr ""
 msgid "Fail External Swaps"
 msgstr ""
 
+#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High swap profit fee"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr ""
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Disable Validation for Testing"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
@@ -3659,10 +3757,6 @@ msgstr ""
 msgid "Bonus APR"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Shift request sent"
-msgstr ""
-
 #: src/pages/Jobs/Jobs.jsx
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr ""
@@ -3699,10 +3793,6 @@ msgstr ""
 
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Funding Fees"
-msgstr ""
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "Approval failed"
 msgstr ""
 
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
@@ -3743,8 +3833,8 @@ msgstr ""
 msgid "Create TWAP"
 msgstr ""
 
-#: src/components/Exchange/PositionEditor.jsx
-msgid "Enabling Leverage"
+#: src/pages/Stake/StakeModal.tsx
+msgid "Stake submitted."
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -3752,13 +3842,17 @@ msgstr ""
 msgid "Invalid Receiver Address"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.jsx
-msgid "Collateral is not enough to cover pending Fees. Please uncheck \"Keep Leverage\" to pay the Fees with the realized PnL."
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Shift order executed."
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
+msgstr ""
+
+#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "Existing executable trigger orders"
 msgstr ""
 
 #: src/components/InterviewToast/InterviewToast.tsx
@@ -3772,6 +3866,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease the leverage to match the max. allowed leverage."
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.jsx
+msgid "Swap amount from {0} to {1} exceeds {2} available liquidity. Choose a different receive token."
 msgstr ""
 
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
@@ -3792,8 +3890,16 @@ msgid "Unknown buy GM order"
 msgstr ""
 
 #: src/components/Synthetics/PositionSeller/rows/AllowedSlippageRow.tsx
-#: src/components/Synthetics/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than -{0}, may result in failed orders if prices are volatile."
+msgstr ""
+
+#: src/components/Exchange/OrderEditor.jsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "Updating order"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough available swap liquidity to fill the order. The order will get filled when the condition is met and there is enough available swap liquidity."
 msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
@@ -3802,6 +3908,10 @@ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.jsx
+msgid "Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x."
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -3844,6 +3954,11 @@ msgstr ""
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Your opinions and experiences matter to us. Your feedback helps us understand what we are doing well and where we can make enhancements."
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.jsx
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
+msgid "Withdrawing"
 msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
@@ -3902,12 +4017,12 @@ msgstr ""
 msgid "Vesting Status"
 msgstr ""
 
-#: src/components/Exchange/ConfirmationBox.jsx
-msgid "You have an active Limit Order to Increase {longOrShortText} {sizeInToken} {0} (${1}) at price ${2}"
+#: src/components/Exchange/OrderEditor.jsx
+msgid "Price above mark price"
 msgstr ""
 
-#: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
-msgid "Claiming Price Impact Rebate..."
+#: src/components/Exchange/ConfirmationBox.jsx
+msgid "You have an active Limit Order to Increase {longOrShortText} {sizeInToken} {0} (${1}) at price ${2}"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3922,12 +4037,12 @@ msgstr ""
 msgid "The actual trigger price at which order gets filled will depend on fees and price impact at the time of execution to guarantee that you receive the minimum receive amount."
 msgstr ""
 
-#: src/components/Exchange/PositionDropdown.tsx
-msgid "Set TP/SL"
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Why do I receive two different GLV tokens?"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
-msgid "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."
+#: src/components/Exchange/PositionDropdown.tsx
+msgid "Set TP/SL"
 msgstr ""
 
 #: src/components/Synthetics/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -3948,10 +4063,6 @@ msgstr ""
 msgid "Trading incentives program is live on {avalancheLink}."
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Sending sell request"
-msgstr ""
-
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -3961,10 +4072,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "NA"
 msgstr ""
-
-#: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
-#~ msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>."
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4053,10 +4160,6 @@ msgstr ""
 msgid "Enter a price"
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.tsx
-msgid "Updating..."
-msgstr ""
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Market Increase"
 msgstr ""
@@ -4138,10 +4241,6 @@ msgstr ""
 msgid "Error preparing transaction. Provider is not defined"
 msgstr ""
 
-#: src/components/Synthetics/Claims/ClaimableCardUI.tsx
-msgid "Funding fees"
-msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity in GM Pool"
 msgstr ""
@@ -4150,8 +4249,8 @@ msgstr ""
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr ""
 
-#: src/domain/synthetics/common/incentivesAirdropMessages.ts
-msgid "tBTC LP incentives"
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "Failed to claim funds"
 msgstr ""
 
 #: src/components/ModalViews/RedirectModal.tsx
@@ -4186,6 +4285,7 @@ msgid "Longs"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
+#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Deposit submitted."
 msgstr ""
 
@@ -4244,6 +4344,10 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a token"
+msgstr ""
+
+#: src/components/InterviewToast/InterviewToast.tsx
+msgid "Click here to give us your feedback on GMX"
 msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -4310,9 +4414,6 @@ msgid "GMX Trading Stats"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
-#: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Creating Order..."
 msgstr ""
 
@@ -4341,10 +4442,6 @@ msgstr ""
 msgid "Failed Stop Market"
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.tsx
-msgid "Address copied to your clipboard"
-msgstr ""
-
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -4368,10 +4465,6 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take Profit"
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.jsx
-msgid "Close submitted!"
 msgstr ""
 
 #: src/components/Synthetics/TwapRows/TwapRows.tsx
@@ -4432,6 +4525,10 @@ msgstr ""
 msgid "Media Kit"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
+msgid "You can edit the default allowed slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than -{0}, may result in failed orders if prices are volatile."
+msgstr ""
+
 #: src/pages/Home/Home.tsx
 msgid "Reduce Liquidation Risks"
 msgstr ""
@@ -4461,10 +4558,6 @@ msgstr ""
 msgid "Traders Referred on Avalanche Fuji"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "Claim V2 Rebates from your referred Traders."
-msgstr ""
-
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in GM Pools."
 msgstr ""
@@ -4476,11 +4569,6 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Botanix"
-msgstr ""
-
-#: src/components/Exchange/OrderEditor.jsx
-#: src/components/Exchange/PositionSeller.jsx
-msgid "Price below Liq. Price"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
@@ -4515,6 +4603,10 @@ msgstr ""
 msgid "Create Stop Loss"
 msgstr ""
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Connect wallet"
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to generate session"
 msgstr ""
@@ -4528,6 +4620,10 @@ msgstr ""
 msgid "Shorts Net Rate / 1h"
 msgstr ""
 
+#: src/components/Exchange/PositionSeller.jsx
+msgid "Realized PnL insufficient for fees."
+msgstr ""
+
 #: src/components/Synthetics/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GLV Vaults"
@@ -4535,6 +4631,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
+msgstr ""
+
+#: src/components/Exchange/NoLiquidityErrorModal.tsx
+msgid "{0} pool capacity reached."
 msgstr ""
 
 #: src/pages/Stake/TotalRewardsCard.tsx
@@ -4560,6 +4660,10 @@ msgstr ""
 
 #: src/pages/Stake/ClaimModal.tsx
 msgid "Pending GMX approval"
+msgstr ""
+
+#: src/components/Exchange/OrdersToa.jsx
+msgid "Enable orders"
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
@@ -4603,6 +4707,10 @@ msgstr ""
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "GLV (GMX Liquidity Vaults) should be seen as GMX V2’s improved version of GLP. It is a yield-optimizing crypto-index token that"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing"
 msgstr ""
@@ -4613,6 +4721,10 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
+msgstr ""
+
+#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High price impact"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
@@ -4639,6 +4751,10 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.jsx
+msgid "Enable leverage"
 msgstr ""
 
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
@@ -4681,10 +4797,6 @@ msgstr ""
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
 msgstr ""
 
-#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "Existing Executable Trigger Orders"
-msgstr ""
-
 #: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Weight"
 msgstr ""
@@ -4718,6 +4830,10 @@ msgstr ""
 msgid "24h Low"
 msgstr ""
 
+#: src/components/Exchange/PositionSeller.jsx
+msgid "Insufficient available liquidity to swap to {0}:"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
 msgstr ""
@@ -4736,8 +4852,8 @@ msgstr ""
 msgid "REBATE"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-msgid "There may not be sufficient liquidity to execute your order when the Min. Receive are met."
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Sending shift request."
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -4751,10 +4867,6 @@ msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Permit signature is invalid. Please try again.</0>"
-msgstr ""
-
-#: src/components/NpsModal/NpsModal.tsx
-msgid "Enter your answer here"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -4773,10 +4885,6 @@ msgstr ""
 msgid "{typeString} Long TWAP: {0} a long position in evenly distributed parts over a specified time."
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.tsx
-msgid "Referral code updated!"
-msgstr ""
-
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 #: src/components/Synthetics/MarketStats/components/CompositionTable.tsx
 msgid "COMPOSITION"
@@ -4786,20 +4894,8 @@ msgstr "COMPOSITION"
 msgid "Favorites"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.jsx
-msgid "Max {0} short capacity"
-msgstr ""
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
-msgid "The Execution Price didn't meet the Acceptable Price condition."
-msgstr ""
-
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Reserve Amount"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Fulfilling buy request"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -4839,12 +4935,16 @@ msgstr ""
 msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Shift request sent."
+msgstr ""
+
 #: src/pages/Home/Home.tsx
 msgid "Save on Costs"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Buy order cancelled"
+#: src/domain/synthetics/orders/cancelOrdersTxn.ts
+msgid "Failed to cancel {ordersText}."
 msgstr ""
 
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
@@ -4904,10 +5004,6 @@ msgid "Create Stop Market"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
-msgid "Swap submitted!"
-msgstr ""
-
-#: src/components/Exchange/SwapBox.jsx
 msgid "V1 trading disabled. Switch to V2"
 msgstr ""
 
@@ -4935,12 +5031,12 @@ msgstr ""
 msgid "Max Network Fee Buffer"
 msgstr ""
 
-#: src/components/Exchange/OrderEditor.jsx
-msgid "Order updated!"
-msgstr ""
-
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
+msgstr ""
+
+#: src/components/Glp/SwapErrorModal.tsx
+msgid "{0} capacity reached"
 msgstr ""
 
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
@@ -4960,6 +5056,10 @@ msgstr ""
 msgid "Trading Simulations on GMX using DOJO"
 msgstr ""
 
+#: src/components/Exchange/SwapBox.jsx
+msgid "Swap {0} submitted."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Farming"
 msgstr ""
@@ -4970,10 +5070,6 @@ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.jsx
-msgid "Neither Collateral nor realized PnL is enough to cover pending Fees. Please close a larger position amount."
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
@@ -4997,10 +5093,6 @@ msgstr ""
 msgid "Referrals"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.jsx
-msgid "Max Leverage without PnL: 100x"
-msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Confirm Short"
 msgstr ""
@@ -5011,14 +5103,6 @@ msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Order Type"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Sell order executed"
-msgstr ""
-
-#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
-msgid "Failed to {0}"
 msgstr ""
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
@@ -5053,12 +5137,11 @@ msgstr ""
 msgid "Swap {0}"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.jsx
-msgid "Swap Order submitted!"
+#: src/domain/synthetics/orders/cancelOrdersTxn.ts
+msgid "Cancelling {ordersText}."
 msgstr ""
 
 #: src/App/MainRoutes.tsx
-#: src/components/EmptyTableContent/EmptyTableContent.tsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/TradeHistory.jsx
@@ -5066,7 +5149,6 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5094,6 +5176,10 @@ msgstr ""
 #: src/pages/Exchange/Exchange.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.jsx
+msgid "Swapped {0} {1} for {2} {3}."
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
@@ -5201,14 +5287,6 @@ msgstr ""
 msgid "Permit signing was cancelled"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.jsx
-msgid "Realized PnL insufficient for Fees"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Sending shift request"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Optimizer"
 msgstr ""
@@ -5285,8 +5363,8 @@ msgstr ""
 msgid "WARNING: High Fees"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
-msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "Claims are not available on Avalanche Fuji"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
@@ -5349,12 +5427,12 @@ msgstr ""
 msgid "Close {longOrShortText} {0}"
 msgstr ""
 
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Disable validation for testing"
+#: src/components/Exchange/OrderEditor.jsx
+msgid "Update order"
 msgstr ""
 
-#: src/pages/Stake/VesterDepositModal.tsx
-msgid "Deposited!"
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Fulfilling shift request."
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -5368,8 +5446,17 @@ msgstr ""
 msgid "Max {0} in"
 msgstr ""
 
+#: src/components/Referrals/AddAffiliateCode.jsx
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "Checking code"
+msgstr ""
+
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
 msgid "No items yet"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough available swap liquidity to fill the order."
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
@@ -5423,8 +5510,8 @@ msgstr ""
 msgid "STIP.b Retroactive Bonus"
 msgstr ""
 
-#: src/components/Exchange/TradeHistory.jsx
-msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right."
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "Referral code updated."
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -5452,16 +5539,11 @@ msgid "Select different tokens"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
-#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High Network Fees"
 msgstr ""
 
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are very high currently, which may be due to a temporary increase in transactions on the {chainName} network."
-msgstr ""
-
-#: src/components/Exchange/SwapBox.jsx
-msgid "There are more shorts than longs, borrow fees for longing is currently zero"
 msgstr ""
 
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
@@ -5472,6 +5554,10 @@ msgstr ""
 msgid "There is no liquidation price, as the position's collateral value will increase to cover any negative PnL."
 msgstr ""
 
+#: src/components/InterviewToast/InterviewToast.tsx
+msgid "Give us your feedback on GMX"
+msgstr ""
+
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Edit Order"
 msgstr ""
@@ -5479,6 +5565,10 @@ msgstr ""
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
 msgid "Search Pool"
+msgstr ""
+
+#: src/domain/tokens/approveTokens.tsx
+msgid "Approval was cancelled."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -5541,6 +5631,10 @@ msgstr ""
 msgid "Swap {0} {1} for{2} USDG"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GlvList.tsx
+msgid "Yield-optimized vaults supplying liquidity across multiple GMX<0/> markets."
+msgstr ""
+
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
 msgstr ""
@@ -5580,6 +5674,10 @@ msgstr ""
 
 #: src/domain/legacy.ts
 msgid "Order cancelled."
+msgstr ""
+
+#: src/components/Exchange/SwapBox.jsx
+msgid "Swap order creation failed."
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
@@ -5636,10 +5734,6 @@ msgstr ""
 msgid "90d"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.jsx
-msgid "Order created!"
-msgstr ""
-
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Liquidation"
@@ -5673,14 +5767,14 @@ msgstr ""
 msgid "Open Binance app"
 msgstr ""
 
+#: src/components/NpsModal/NpsModal.tsx
+msgid "Enter your answer here."
+msgstr ""
+
 #: src/pages/Stake/StakeModal.tsx
 #: src/pages/Stake/UnstakeModal.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Max amount exceeded"
-msgstr ""
-
-#: src/components/Exchange/SwapBox.jsx
-msgid "Current {0} shorts"
 msgstr ""
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
@@ -5697,6 +5791,11 @@ msgstr ""
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Edit"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "Rebates are claimed manually."
 msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -5764,6 +5863,10 @@ msgstr ""
 msgid "Limit Increase"
 msgstr ""
 
+#: src/components/NpsModal/NpsModal.tsx
+msgid "Submitting"
+msgstr ""
+
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -5789,10 +5892,6 @@ msgstr ""
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order will be executed once there is sufficient liquidity."
 msgstr ""
-
-#: src/components/Synthetics/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
-#~ msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>."
-#~ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
@@ -5826,10 +5925,6 @@ msgstr ""
 msgid "Express Trading is enabled. Enjoy smoother, more reliable trades!"
 msgstr ""
 
-#: src/components/Exchange/NoLiquidityErrorModal.tsx
-msgid "Alternatively, you can select a different \"Collateral In\" token."
-msgstr ""
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more."
 msgstr ""
@@ -5856,7 +5951,6 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
 msgid "Swapped {0} {1} for {2} {3}!"
 msgstr ""
 
@@ -5878,10 +5972,6 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred"
-msgstr ""
-
-#: src/pages/Stake/StakeModal.tsx
-msgid "Stake submitted!"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
@@ -5924,6 +6014,10 @@ msgstr ""
 msgid "Approve {0}"
 msgstr ""
 
+#: src/components/Exchange/NoLiquidityErrorModal.tsx
+msgid "Alternatively, you can select a different collateral in token."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} long exceeded"
 msgstr ""
@@ -5951,6 +6045,17 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perpetuals Aggregator"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.jsx
+msgid "There are more shorts than longs, borrow fees for longing is currently zero."
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.jsx
+#: src/components/Exchange/PositionEditor.jsx
+#: src/components/Exchange/PositionSeller.jsx
+#: src/components/Exchange/PositionSeller.jsx
+msgid "Enabling leverage"
 msgstr ""
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
@@ -5987,6 +6092,10 @@ msgstr ""
 msgid "I do not want to transfer the Affiliate esGMX tokens"
 msgstr ""
 
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
+msgid "Withdrawing {balanceFormatted} to main account"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Forfeit profit and {action}"
 msgstr ""
@@ -6005,10 +6114,6 @@ msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Powered by"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Buy order executed"
 msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
@@ -6047,11 +6152,6 @@ msgstr ""
 msgid "Win / Loss"
 msgstr ""
 
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table."
-msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min position size: {0}"
 msgstr ""
@@ -6062,6 +6162,14 @@ msgstr ""
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below mark price"
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "and automatically compounds its yield (unlike GLP, no manual claiming is needed)"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Sell request sent."
 msgstr ""
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -6085,7 +6193,6 @@ msgid "Acknowledge epoch is ending in {minutes} minutes"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
-#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High Price Impact"
 msgstr ""
 
@@ -6109,6 +6216,10 @@ msgstr ""
 msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
 msgstr ""
 
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "tBTC LP Incentives"
+msgstr ""
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "of open fee"
 msgstr ""
@@ -6122,10 +6233,6 @@ msgstr ""
 msgid "Approve GMX"
 msgstr ""
 
-#: src/components/Glp/SwapErrorModal.tsx
-msgid "{0} Capacity Reached"
-msgstr ""
-
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -6135,7 +6242,6 @@ msgid "{fromText} to {toExecutionText}"
 msgstr ""
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Create {0} Order"
 msgstr ""
 
@@ -6145,6 +6251,10 @@ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
+msgstr ""
+
+#: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
+msgid "Open positions with orders"
 msgstr ""
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
@@ -6180,15 +6290,15 @@ msgid "Next"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
+msgid "Could not execute deposit into {0} {longOrShortText}."
+msgstr ""
+
+#: src/components/Exchange/TradeHistory.jsx
 #: src/components/Referrals/AddAffiliateCode.jsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Create"
-msgstr ""
-
-#: src/components/Exchange/SwapBox.jsx
-msgid "Limit order submitted!"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -6210,6 +6320,7 @@ msgstr ""
 msgid "Amount"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Create {0} order"
 msgstr ""
@@ -6262,8 +6373,28 @@ msgstr ""
 msgid "Buy GLP or GMX"
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools, with auto-compounding for seamless growth (20-30% historical average annualized performance). View real-time earnings, performance, and portfolio value on the <0>Pools page</0>."
+msgstr ""
+
+#: src/components/Referrals/AddAffiliateCode.jsx
+msgid "Referral code created."
+msgstr ""
+
+#: src/components/Exchange/OrderEditor.jsx
+msgid "Price is below mark price"
+msgstr ""
+
+#: src/pages/Stake/VesterDepositModal.tsx
+msgid "Deposited."
+msgstr ""
+
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Max Out"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+msgid "There may not be sufficient liquidity to execute your order when the min. receive is met."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
@@ -6286,12 +6417,12 @@ msgstr ""
 msgid "Enter an amount"
 msgstr ""
 
-#: src/components/Header/AppHeaderUser.tsx
-msgid "Connect"
+#: src/components/Exchange/OrderEditor.jsx
+msgid "Order update submitted."
 msgstr ""
 
-#: src/components/InterviewToast/InterviewToast.tsx
-msgid "Click here to give us your feedback on GMX."
+#: src/components/Header/AppHeaderUser.tsx
+msgid "Connect"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -6346,10 +6477,6 @@ msgstr ""
 msgid "Shifting {symbol}..."
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
-msgid "Not enough Available Liquidity to fill the Order."
-msgstr ""
-
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/sidecarOrders/utils.ts
@@ -6366,8 +6493,8 @@ msgstr ""
 msgid "Concluded"
 msgstr ""
 
-#: src/components/Exchange/OrderEditor.jsx
-msgid "Order update submitted!"
+#: src/components/Exchange/SwapBox.jsx
+msgid "Max {0} short capacity."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
@@ -6515,6 +6642,10 @@ msgstr ""
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "GLV tokens are similar in composition to GLP, and enable seamless integration into GMX V2's liquidity ecosystem. Users can either sell or hold the tokens to earn yield. To encourage long-term participation, a $500,000 GLV incentive pool will be distributed proportionally to those who hold their allocated GLV for at least 3 months."
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/StatusNotification/StakeNotification.tsx
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
@@ -6561,6 +6692,10 @@ msgstr ""
 msgid "Open Fee"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Sell order executed."
+msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 msgstr ""
@@ -6600,16 +6735,8 @@ msgstr ""
 msgid "You"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
-msgid "Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options."
-msgstr ""
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivate 1CT (One-Click Trading)"
-msgstr ""
-
-#: src/components/Exchange/TradeHistory.jsx
-msgid "Could not execute deposit into {0} {longOrShortText}"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
@@ -6641,26 +6768,16 @@ msgstr ""
 msgid "Acceptable Price"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Sell request sent"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeFi Margin Protocol"
 msgstr ""
 
-#: src/components/Exchange/PositionEditor.jsx
-#: src/components/Exchange/PositionSeller.jsx
-#: src/components/Exchange/PositionSeller.jsx
-msgid "Enabling Leverage..."
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "Claimable Balance"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the swap to the receive token when the price conditions are met."
-msgstr ""
-
-#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
-msgid "Withdrawn {balanceFormatted} to Main Account"
 msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
@@ -6726,10 +6843,6 @@ msgstr ""
 msgid "Pools"
 msgstr ""
 
-#: src/components/Exchange/TradeHistory.jsx
-msgid "Could not execute withdrawal from {0} {longOrShortText}"
-msgstr ""
-
 #: src/components/Synthetics/GmList/GlvList.tsx
 msgid "VAULT"
 msgstr ""
@@ -6756,6 +6869,10 @@ msgstr ""
 msgid "Liquidity incentives program is live on {avalancheLink}."
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "GLP Distribution (test)"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "This position could still be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr ""
@@ -6775,10 +6892,6 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeboxTransactions.tsx
 msgid "Error submitting order"
-msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually."
 msgstr ""
 
 #: src/components/Synthetics/TwapRows/TwapRows.tsx
@@ -6860,12 +6973,20 @@ msgstr ""
 msgid "limit price"
 msgstr ""
 
+#: src/components/Exchange/PositionSeller.jsx
+msgid "Initial collateral (collateral excluding borrow fee)."
+msgstr ""
+
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>."
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Sending order request"
+msgstr ""
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Transaction failed."
 msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
@@ -6876,16 +6997,8 @@ msgstr ""
 msgid "Decentralized Yield Products"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.jsx
-msgid "Keep Leverage is not possible"
-msgstr ""
-
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Network Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-msgid "{positionName} Failed to settle"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -6921,6 +7034,10 @@ msgstr ""
 msgid "Claims"
 msgstr ""
 
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
+msgid "Failed to withdraw {balanceFormatted} to main account."
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
@@ -6935,12 +7052,8 @@ msgstr ""
 msgid "Buy GMX using FIAT gateways:"
 msgstr ""
 
-#: src/components/Referrals/AddAffiliateCode.jsx
-msgid "Referral code created!"
-msgstr ""
-
-#: src/components/Exchange/OrderEditor.jsx
-msgid "Price above Mark Price"
+#: src/domain/tokens/approveTokens.tsx
+msgid "Approval failed."
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
@@ -6957,8 +7070,8 @@ msgstr ""
 msgid "Sellable"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.jsx
-msgid "Initial Collateral (Collateral excluding Borrow Fee)."
+#: src/domain/synthetics/common/incentivesAirdropMessages.ts
+msgid "Avalanche Trading Incentives"
 msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
@@ -6988,6 +7101,10 @@ msgstr ""
 msgid "Available amount to deposit into GLP."
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "What is GLV exactly?"
+msgstr ""
+
 #: src/components/Exchange/PositionShare.tsx
 msgid "Download"
 msgstr ""
@@ -7012,20 +7129,21 @@ msgstr ""
 msgid "Layer 1"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.jsx
+#: src/pages/Stake/VesterDepositModal.tsx
+msgid "Depositing"
+msgstr ""
+
+#: src/components/Exchange/TradeHistory.jsx
+msgid "Min Required Collateral"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.jsx
 msgid "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Keep leverage at {0}x"
-msgstr ""
-
-#: src/pages/Stake/StakeModal.tsx
-msgid "Staking..."
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Buy request sent"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7053,10 +7171,6 @@ msgstr ""
 msgid "Swap failed."
 msgstr ""
 
-#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
-msgid "Failed to withdraw {balanceFormatted} to Main Account"
-msgstr ""
-
 #: src/components/Synthetics/MarketStats/components/MarketDescription.tsx
 msgid "This token automatically accrues fees from swaps for the {0}/{1} market. It is also exposed to {2} and {3} as per the composition displayed."
 msgstr ""
@@ -7064,6 +7178,15 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.jsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Page outdated, please refresh"
+msgstr ""
+
+#: src/components/Exchange/OrderEditor.jsx
+#: src/components/Exchange/PositionSeller.jsx
+msgid "Price below liq. price"
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.jsx
+msgid "Order submitted."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -7112,8 +7235,6 @@ msgid "Freeze"
 msgstr ""
 
 #: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Express params loading..."
 msgstr ""
 
@@ -7155,6 +7276,11 @@ msgstr ""
 msgid "Partnerships and Integrations"
 msgstr ""
 
+#: src/components/Exchange/OrderEditor.jsx
+#: src/components/Exchange/PositionSeller.jsx
+msgid "Price above liq. price"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Leftover Collateral not enough to cover fees"
 msgstr ""
@@ -7169,24 +7295,28 @@ msgstr ""
 msgid "Trigger price above limit price"
 msgstr ""
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Select a Pay token"
+#: src/domain/synthetics/orders/cancelOrdersTxn.ts
+msgid "{ordersText} cancelled."
 msgstr ""
 
-#: src/components/Exchange/SwapBox.jsx
-msgid "Swap {0} submitted!"
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Select a Pay token"
 msgstr ""
 
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.tsx
-msgid "Referral Code does not exist"
-msgstr ""
-
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "GLP Distribution"
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Why is the claim in GLV tokens?"
 msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
@@ -7334,10 +7464,6 @@ msgstr ""
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
 msgstr ""
 
-#: src/components/Exchange/PositionEditor.jsx
-msgid "Enable Leverage"
-msgstr ""
-
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Close without profit"
 msgstr ""
@@ -7362,8 +7488,8 @@ msgstr ""
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>There is no price impact. There is a single<3/>execution price for decreasing longs for<4/>this size."
 msgstr ""
 
-#: src/domain/synthetics/common/incentivesAirdropMessages.ts
-msgid "Avalanche LP incentives"
+#: src/components/Exchange/PositionSeller.jsx
+msgid "Close submitted."
 msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
@@ -7395,6 +7521,11 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Liquidation Price"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.jsx
+#: src/components/Exchange/SwapBox.jsx
+msgid "Leave at least {0} {1} for gas."
 msgstr ""
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -7438,6 +7569,10 @@ msgstr ""
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 msgstr ""
 
+#: src/components/Exchange/PositionSeller.jsx
+msgid "Neither collateral nor realized PnL is enough to cover pending fees. Please close a larger position amount."
+msgstr ""
+
 #: src/pages/Stake/UnstakeModal.tsx
 msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
 msgstr ""
@@ -7469,10 +7604,6 @@ msgstr ""
 msgid "Total Supply"
 msgstr ""
 
-#: src/components/Exchange/NoLiquidityErrorModal.tsx
-msgid "{0} Pool Capacity Reached"
-msgstr ""
-
 #: src/components/Glp/GlpSwap.jsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GlpCard.tsx
@@ -7482,10 +7613,6 @@ msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
-msgstr ""
-
-#: src/domain/synthetics/orders/cancelOrdersTxn.ts
-msgid "{ordersText} cancelled"
 msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
@@ -7526,14 +7653,6 @@ msgstr ""
 msgid "Choose to buy from decentralized or centralized exchanges."
 msgstr ""
 
-#: src/components/Exchange/TradeHistory.jsx
-msgid "Min required collateral"
-msgstr ""
-
-#: src/components/Exchange/TradeHistory.jsx
-msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
-msgstr ""
-
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
 msgstr ""
@@ -7546,12 +7665,16 @@ msgstr ""
 msgid "{avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Shift order cancelled."
+msgstr ""
+
 #: src/lib/legacy.ts
 msgid "Order size is bigger than position, will only be executable if position increases"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Buy"
 msgstr ""
 
@@ -7601,6 +7724,10 @@ msgstr ""
 msgid "Enter unique coins"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "The execution price didn't meet the acceptable price condition. The order will get filled when the condition is met."
+msgstr ""
+
 #: src/components/Synthetics/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr ""
@@ -7633,7 +7760,10 @@ msgstr ""
 msgid "HoudiniSwap"
 msgstr ""
 
-#: src/components/NpsModal/NpsModal.tsx
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "dynamically allocates its liquidity to the highest-utilised markets, maximising capital efficiency and annualized performance"
+msgstr ""
+
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Error occurred. Please try again"
 msgstr ""
@@ -7642,25 +7772,16 @@ msgstr ""
 msgid "Only letters, numbers and underscores are allowed."
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Fulfilling shift request"
+#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High TWAP network fee"
 msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code submitted!"
 msgstr ""
 
-#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please <3>enable Express trading</3> under settings, which should offer a better experience.<4/><5/>Otherwise, try increasing the max network fee buffer to {0} in <6>settings</6>."
-msgstr ""
-
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "APY"
-msgstr ""
-
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
-msgid "Leave at least {0} {1} for gas"
 msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
@@ -7674,11 +7795,6 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Volume"
-msgstr ""
-
-#: src/components/Exchange/OrderEditor.jsx
-#: src/components/Exchange/OrderEditor.jsx
-msgid "Enter new Price"
 msgstr ""
 
 #: src/pages/Stake/Vesting.tsx
@@ -7706,8 +7822,8 @@ msgstr ""
 msgid "Open {0} {longOrShortText}"
 msgstr ""
 
-#: src/components/InterviewToast/InterviewToast.tsx
-msgid "Give us your feedback on GMX."
+#: src/components/Errors/errorToasts.tsx
+msgid "The mark price has changed, consider increasing your allowed slippage."
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -7757,10 +7873,6 @@ msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Escrowed GMX APR"
-msgstr ""
-
-#: src/components/Exchange/TradeHistory.jsx
-msgid "Initial collateral"
 msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
@@ -7858,10 +7970,6 @@ msgstr ""
 msgid "You have {0} esGMX (IOU) tokens."
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "There is currently a high swap price impact for the order swap path."
-msgstr ""
-
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Increase Size (Stop Market)"
 msgstr ""
@@ -7872,14 +7980,6 @@ msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Stop Loss PnL"
-msgstr ""
-
-#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
-msgid "Withdrawing {balanceFormatted}  to Main Account"
-msgstr ""
-
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "Settling..."
 msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
@@ -7896,6 +7996,10 @@ msgstr ""
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "The PnL ($) compared to the capital used.<0/><1/>The capital used is calculated as the highest value of [<2>sum of collateral of open positions - realized PnL + period start pending PnL</2>]."
+msgstr ""
+
+#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
+msgid "Failed to {0}."
 msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
@@ -7942,6 +8046,11 @@ msgstr ""
 msgid "Add {0} to Metamask"
 msgstr ""
 
+#: src/components/Exchange/PositionSeller.jsx
+#: src/components/Exchange/PositionSeller.jsx
+msgid "Invalid liquidation price"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
 msgstr ""
@@ -7958,11 +8067,15 @@ msgstr ""
 msgid "Buy ETH directly on Arbitrum or transfer it there."
 msgstr ""
 
+#: src/components/Exchange/OrderEditor.jsx
+#: src/components/Exchange/OrderEditor.jsx
+msgid "Enter new price"
+msgstr ""
+
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 msgid "Max 110 symbols exceeded"
 msgstr ""
 
-#: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed"
 msgstr ""
@@ -7973,11 +8086,6 @@ msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
-msgstr ""
-
-#: src/components/Exchange/PositionEditor.jsx
-#: src/pages/Stake/VesterDepositModal.tsx
-msgid "Depositing..."
 msgstr ""
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
@@ -8012,6 +8120,10 @@ msgstr ""
 msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming."
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Claim funds"
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral. The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price."
 msgstr ""
@@ -8022,8 +8134,8 @@ msgstr ""
 msgid "<0>{0}</0> tokens have been converted to GMX from the <1>{1}</1> esGMX deposited for vesting."
 msgstr "<0>{0}</0> tokens have been converted to GMX from the <1>{1}</1> esGMX deposited for vesting."
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Sell order cancelled"
+#: src/components/Exchange/NoLiquidityErrorModal.tsx
+msgid "{0} required"
 msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
@@ -8045,6 +8157,10 @@ msgstr ""
 msgid "About"
 msgstr ""
 
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "This may take a few minutes."
+msgstr ""
+
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Accrued positive funding fees in positions not yet claimable.<0/><1/>They become available after modifying the position by increasing or decreasing it, depositing or withdrawing collateral, or settling the fees using the \"Settle\" button."
 msgstr ""
@@ -8059,10 +8175,6 @@ msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Generate Referral Code"
-msgstr ""
-
-#: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High Swap Price Impact"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.jsx
@@ -8095,6 +8207,10 @@ msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Distribution"
+msgstr ""
+
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "Referral code does not exist"
 msgstr ""
 
 #: src/components/SideNav/LanguageNavItem.tsx
@@ -8173,6 +8289,10 @@ msgstr ""
 msgid "Execution prices for increasing longs and<0/>decreasing shorts."
 msgstr ""
 
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "Processing your claim…"
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
@@ -8187,6 +8307,10 @@ msgstr ""
 msgid "Create TWAP {0} order"
 msgstr ""
 
+#: src/components/AddressDropdown/AddressDropdown.tsx
+msgid "Address copied to your clipboard."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"
 msgstr ""
@@ -8197,6 +8321,11 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Please <0>read here</0> for more information."
+msgstr ""
+
+#: src/components/Exchange/TradeHistory.jsx
+#: src/components/Exchange/TradeHistory.jsx
+msgid "Try increasing the \"Allowed Slippage\", under the settings menu on the top right."
 msgstr ""
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
@@ -8216,7 +8345,6 @@ msgid "Claim GMX Rewards"
 msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Enter Referral Code"
 msgstr ""
 
@@ -8224,14 +8352,14 @@ msgstr ""
 msgid "EIP-4844, 20-27 Mar"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "{positionName} Fees settled."
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Transfer failed."
-msgstr ""
-
-#: src/components/Exchange/PositionEditor.jsx
-msgid "Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
@@ -8267,8 +8395,23 @@ msgstr ""
 msgid "24h Volume"
 msgstr ""
 
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
+msgid "Withdrawing from subaccount"
+msgstr ""
+
+#: src/components/Exchange/OrderEditor.jsx
+#: src/components/Exchange/PositionSeller.jsx
+msgid "Enter price"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
+msgstr ""
+
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "Claimed {0} successfully."
 msgstr ""
 
 #: src/components/Synthetics/TwapRows/TwapRows.tsx
@@ -8277,6 +8420,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Enable deposit sent."
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.jsx
+msgid "Collateral is not enough to cover pending fees. Please uncheck \"Keep Leverage\" to pay the fees with the realized PnL."
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
@@ -8300,13 +8447,13 @@ msgstr ""
 msgid "24H VOL."
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Accept Claim Terms"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 msgid "Sell for {0}"
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.jsx
-msgid "Fees are higher than Collateral"
 msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
@@ -8362,10 +8509,6 @@ msgstr ""
 msgid "Volume on V1"
 msgstr ""
 
-#: src/domain/synthetics/common/incentivesAirdropMessages.ts
-msgid "Avalanche trading incentives"
-msgstr ""
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Decrease"
 msgstr ""
@@ -8373,10 +8516,6 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max. Leverage exceeded"
-msgstr ""
-
-#: src/components/Exchange/OrderEditor.jsx
-msgid "Price is above Mark Price"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -8433,10 +8572,6 @@ msgstr ""
 msgid "Number of Parts"
 msgstr ""
 
-#: src/domain/synthetics/orders/cancelOrdersTxn.ts
-msgid "Cancelling {ordersText}"
-msgstr ""
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivated"
 msgstr ""
@@ -8449,12 +8584,13 @@ msgstr ""
 msgid "Market order will be cancellable in ..."
 msgstr ""
 
-#: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
-msgid "Price Impact Rebate Claimed"
-msgstr ""
-
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"
+msgstr ""
+
+#: src/components/EmptyTableContent/EmptyTableContent.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Loading"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.jsx
@@ -8479,6 +8615,10 @@ msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We'll then schedule a chat or interview with you. As a thank you, you'll receive <0>100 <1/></0> for providing your feedback."
+msgstr ""
+
+#: src/components/Exchange/SwapBox.jsx
+msgid "There are more longs than shorts, borrow fees for shorting is currently zero."
 msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
@@ -8540,8 +8680,8 @@ msgstr ""
 msgid "Max Network Fee"
 msgstr ""
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "Approval was cancelled"
+#: src/components/Exchange/SwapBox.jsx
+msgid "Limit order submitted."
 msgstr ""
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
@@ -8575,6 +8715,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update TWAP Part"
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "How does GLV earn yield, and where do I see my earnings?"
 msgstr ""
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
@@ -8642,8 +8786,4 @@ msgstr ""
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Unstake GMX"
-msgstr ""
-
-#: src/pages/Stake/VesterDepositModal.tsx
-msgid "Deposit failed!"
 msgstr ""

@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
 import { FaPen } from "react-icons/fa6";
-import { MdClose } from "react-icons/md";
+import { RxCross2 } from "react-icons/rx";
 
 import { USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -558,7 +558,7 @@ function OrderItemLarge({
       disabled={isCanceling || Boolean(disabledCancelMarketOrderMessage)}
       onClick={onCancelOrder}
     >
-      <MdClose fontSize={20} />
+      <RxCross2 fontSize={20} />
     </button>
   );
 

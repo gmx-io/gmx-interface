@@ -16,9 +16,10 @@ type Props = {
   importSize?: 24 | 40;
   className?: string;
   badge?: string | readonly [topSymbol: string, bottomSymbol: string];
+  badgeClassName?: string;
 };
 
-function TokenIcon({ className, symbol, displaySize, importSize = 24, badge }: Props) {
+function TokenIcon({ className, symbol, displaySize, importSize = 24, badge, badgeClassName }: Props) {
   const iconPath = getIconUrlPath(symbol, importSize);
   const classNames = cx("Token-icon inline rounded-full", className);
 
@@ -39,22 +40,32 @@ function TokenIcon({ className, symbol, displaySize, importSize = 24, badge }: P
   if (badge) {
     if (typeof badge === "string") {
       sub = (
-        <span className="pointer-events-none absolute -bottom-8 -right-8 z-10 rounded-20 bg-slate-700 px-6 py-2 text-12 font-medium !text-white">
+        <span
+          className={cx(
+            "pointer-events-none absolute -bottom-8 -right-8 z-10 rounded-20 bg-slate-700 px-6 py-2 text-12 font-medium text-slate-100",
+            badgeClassName
+          )}
+        >
           {badge}
         </span>
       );
     } else {
       sub = (
-        <span className="absolute -bottom-8 -right-8 flex flex-row items-center justify-center !text-white">
+        <span
+          className={cx(
+            "absolute -bottom-8 -right-8 flex flex-row items-center justify-center text-slate-100",
+            badgeClassName
+          )}
+        >
           <img
-            className="z-20 -mr-10 rounded-[100%] border-2 border-slate-900"
+            className="z-20 -mr-10 rounded-[100%] border-2 border-slate-900 bg-slate-900"
             src={importImage(getIconUrlPath(badge[0], 24))}
             alt={badge[0]}
             width={20}
             height={20}
           />
           <img
-            className="z-10 rounded-[100%] border-2 border-slate-900"
+            className="z-10 rounded-[100%] border-2 border-slate-900 bg-slate-900"
             src={importImage(getIconUrlPath(badge[1], 24))}
             alt={badge[0]}
             width={20}

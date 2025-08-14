@@ -34,8 +34,8 @@ export default function PositionDropdown({
   handleTriggerClose,
 }: Props) {
   const { refs, floatingStyles } = useFloating({
-    middleware: [offset({ mainAxis: 10 }), flip(), shift()],
-    placement: "bottom-end",
+    middleware: [offset({ mainAxis: 8 }), flip(), shift()],
+    placement: "bottom-start",
     whileElementsMounted: autoUpdate,
   });
 

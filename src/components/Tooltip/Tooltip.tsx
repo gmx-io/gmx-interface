@@ -235,7 +235,7 @@ export default function Tooltip<T extends ElementType>({
     <span {...containerProps} className={cx("Tooltip", className)} style={style}>
       <span
         ref={refs.setReference}
-        className={cx("Tooltip-handle", { "Tooltip-underline": styleType === "underline" }, handleClassName)}
+        className={cx("Tooltip-handle group", { "Tooltip-underline": styleType === "underline" }, handleClassName)}
         style={handleStyle}
         {...getReferenceProps({
           onClick: (e: MouseEvent) => {
@@ -251,8 +251,8 @@ export default function Tooltip<T extends ElementType>({
           ) : (
             <>{handle ?? children}</>
           )}
-          {styleType === "icon" && <InfoIcon className="h-16 w-16" />}
-          {styleType === "iconStroke" && <InfoIconStroke className="h-16 w-16" />}
+          {styleType === "icon" && <InfoIcon className="mb-1 h-16 w-16" />}
+          {styleType === "iconStroke" && <InfoIconStroke className="mb-1 h-16 w-16" />}
         </div>
       </span>
       {visible && withPortal && <FloatingPortal>{tooltipContent}</FloatingPortal>}

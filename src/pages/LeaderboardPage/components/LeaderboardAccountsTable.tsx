@@ -279,6 +279,7 @@ const TableHeaderCell = memo(
                 handle={<span className="whitespace-nowrap">{title}</span>}
                 position={tooltipPosition || "bottom"}
                 content={<div onClick={stopPropagation}>{tooltip}</div>}
+                styleType="iconStroke"
               />
             ) : (
               <span className="whitespace-nowrap">{title}</span>
@@ -295,6 +296,7 @@ const TableHeaderCell = memo(
             handle={<span className="whitespace-nowrap">{title}</span>}
             position={tooltipPosition || "bottom"}
             content={<div onClick={stopPropagation}>{tooltip}</div>}
+            styleType="iconStroke"
           />
         ) : (
           <span className="whitespace-nowrap">{title}</span>
