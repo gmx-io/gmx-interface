@@ -35,6 +35,7 @@ import { SettingsModal } from "components/SettingsModal/SettingsModal";
 
 import { HomeRoutes } from "./HomeRoutes";
 import { MainRoutes } from "./MainRoutes";
+import { useHashQueryParams } from "lib/useHashQueryParams";
 
 const Zoom = cssTransition({
   enter: "zoomIn",
@@ -56,6 +57,7 @@ export function AppRoutes() {
   useOpenAppMetric();
   useAccountInitedMetric();
   useWalletConnectedUserAnalyticsEvent();
+  useHashQueryParams();
 
   const query = useRouteQuery();
 

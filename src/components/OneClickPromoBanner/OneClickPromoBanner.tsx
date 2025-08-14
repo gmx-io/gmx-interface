@@ -7,6 +7,7 @@ import { getOneClickTradingPromoHiddenKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { useChainId } from "lib/chains";
+import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 
@@ -20,19 +21,24 @@ export function OneClickPromoBanner({ openSettings, isShort }: { openSettings: (
     false
   );
 
+  const isGeminiWallet = useIsGeminiWallet();
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
 
-  const shouldShow = getIsFlagEnabled("testOneClickPromo") && !isOneClickPromoHidden && !expressOrdersEnabled;
+  const shouldShow =
+    getIsFlagEnabled("testOneClickPromo") && !isOneClickPromoHidden && !expressOrdersEnabled && !isGeminiWallet;
 
   const onClickEnable = useCallback(() => {
     openSettings();
-    if (!isOutOfGasPaymentBalance) {
-      setTimeout(() => {
-        setExpressOrdersEnabled(true);
-        setIsOneClickPromoHidden(true);
-      }, 500);
+
+    if (isOutOfGasPaymentBalance || isGeminiWallet) {
+      return;
     }
-  }, [isOutOfGasPaymentBalance, openSettings, setExpressOrdersEnabled, setIsOneClickPromoHidden]);
+
+    setTimeout(() => {
+      setExpressOrdersEnabled(true);
+      setIsOneClickPromoHidden(true);
+    }, 500);
+  }, [isGeminiWallet, isOutOfGasPaymentBalance, openSettings, setExpressOrdersEnabled, setIsOneClickPromoHidden]);
 
   if (!shouldShow) {
     return null;

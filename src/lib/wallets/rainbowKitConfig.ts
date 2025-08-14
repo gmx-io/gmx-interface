@@ -1,3 +1,4 @@
+import { geminiRainbowKitConnector } from "@gemini-wallet/rainbow";
 import { getDefaultConfig, WalletList } from "@rainbow-me/rainbowkit";
 import {
   coinbaseWallet,
@@ -34,6 +35,7 @@ const popularWalletList: WalletList = [
       injectedWallet,
       // The Safe option will only appear in the Safe Wallet browser environment.
       safeWallet,
+      geminiRainbowKitConnector,
     ],
   },
 ];
