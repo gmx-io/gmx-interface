@@ -307,8 +307,7 @@ export default function TokenCard({ showRedirectModal, showGlp = true }: Props) 
           <div className="Home-token-card-option-info">
             <div className="Home-token-card-option-title">
               <Trans>
-                GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees,
-                respectively.
+                GMX is the utility and governance token. It also accrues 30% of the protocol fees via a buyback and distribution mechanism.
               </Trans>
             </div>
             <div className="Home-token-card-option-apr">
