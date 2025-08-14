@@ -22,7 +22,7 @@ export function AccountDashboard() {
 
   const { chainId, version, account } = usePageParams(initialChainId);
 
-  const header = <ChainContentHeader />;
+  const header = <ChainContentHeader chainId={chainId} />;
 
   if (!isAddress(account!)) {
     return (
