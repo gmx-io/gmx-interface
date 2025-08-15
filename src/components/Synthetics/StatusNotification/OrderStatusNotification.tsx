@@ -76,8 +76,12 @@ export function OrderStatusNotification({
   const isGelatoTaskFailed = useMemo(() => {
     const gelatoTaskStatus = getByKey(gelatoTaskStatuses, pendingExpressTxn?.taskId);
 
-    return gelatoTaskStatus && [TaskState.Cancelled, TaskState.ExecReverted].includes(gelatoTaskStatus.taskState);
-  }, [gelatoTaskStatuses, pendingExpressTxn?.taskId]);
+    return (
+      gelatoTaskStatus &&
+      !pendingExpressTxn?.isViewed &&
+      [TaskState.Cancelled, TaskState.ExecReverted].includes(gelatoTaskStatus.taskState)
+    );
+  }, [gelatoTaskStatuses, pendingExpressTxn?.isViewed, pendingExpressTxn?.taskId]);
 
   const hasError =
     isGelatoTaskFailed || (Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel");
