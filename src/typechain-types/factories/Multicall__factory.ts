@@ -21,7 +21,7 @@ const _abi = [
             type: "bytes",
           },
         ],
-        internalType: "struct Multicall2.Call[]",
+        internalType: "struct Multicall3.Call[]",
         name: "calls",
         type: "tuple[]",
       },
@@ -39,7 +39,108 @@ const _abi = [
         type: "bytes[]",
       },
     ],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "target",
+            type: "address",
+          },
+          {
+            internalType: "bool",
+            name: "allowFailure",
+            type: "bool",
+          },
+          {
+            internalType: "bytes",
+            name: "callData",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct Multicall3.Call3[]",
+        name: "calls",
+        type: "tuple[]",
+      },
+    ],
+    name: "aggregate3",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "bool",
+            name: "success",
+            type: "bool",
+          },
+          {
+            internalType: "bytes",
+            name: "returnData",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct Multicall3.Result[]",
+        name: "returnData",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "target",
+            type: "address",
+          },
+          {
+            internalType: "bool",
+            name: "allowFailure",
+            type: "bool",
+          },
+          {
+            internalType: "uint256",
+            name: "value",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "callData",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct Multicall3.Call3Value[]",
+        name: "calls",
+        type: "tuple[]",
+      },
+    ],
+    name: "aggregate3Value",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "bool",
+            name: "success",
+            type: "bool",
+          },
+          {
+            internalType: "bytes",
+            name: "returnData",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct Multicall3.Result[]",
+        name: "returnData",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "payable",
     type: "function",
   },
   {
@@ -57,7 +158,7 @@ const _abi = [
             type: "bytes",
           },
         ],
-        internalType: "struct Multicall2.Call[]",
+        internalType: "struct Multicall3.Call[]",
         name: "calls",
         type: "tuple[]",
       },
@@ -87,12 +188,25 @@ const _abi = [
             type: "bytes",
           },
         ],
-        internalType: "struct Multicall2.Result[]",
+        internalType: "struct Multicall3.Result[]",
         name: "returnData",
         type: "tuple[]",
       },
     ],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getBasefee",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "basefee",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -129,12 +243,12 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "getCurrentBlockCoinbase",
+    name: "getChainId",
     outputs: [
       {
-        internalType: "address",
-        name: "coinbase",
-        type: "address",
+        internalType: "uint256",
+        name: "chainid",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -142,12 +256,12 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "getCurrentBlockDifficulty",
+    name: "getCurrentBlockCoinbase",
     outputs: [
       {
-        internalType: "uint256",
-        name: "difficulty",
-        type: "uint256",
+        internalType: "address",
+        name: "coinbase",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -200,19 +314,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "getL1BlockNumber",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "l1BlockNumber",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "getLastBlockHash",
     outputs: [
       {
@@ -244,7 +345,7 @@ const _abi = [
             type: "bytes",
           },
         ],
-        internalType: "struct Multicall2.Call[]",
+        internalType: "struct Multicall3.Call[]",
         name: "calls",
         type: "tuple[]",
       },
@@ -264,12 +365,12 @@ const _abi = [
             type: "bytes",
           },
         ],
-        internalType: "struct Multicall2.Result[]",
+        internalType: "struct Multicall3.Result[]",
         name: "returnData",
         type: "tuple[]",
       },
     ],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
     type: "function",
   },
   {
@@ -292,7 +393,7 @@ const _abi = [
             type: "bytes",
           },
         ],
-        internalType: "struct Multicall2.Call[]",
+        internalType: "struct Multicall3.Call[]",
         name: "calls",
         type: "tuple[]",
       },
@@ -322,12 +423,12 @@ const _abi = [
             type: "bytes",
           },
         ],
-        internalType: "struct Multicall2.Result[]",
+        internalType: "struct Multicall3.Result[]",
         name: "returnData",
         type: "tuple[]",
       },
     ],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
     type: "function",
   },
 ] as const;

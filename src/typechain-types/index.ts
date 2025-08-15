@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { ArbitrumNodeInterface } from "./ArbitrumNodeInterface";
+export type { ClaimHandler } from "./ClaimHandler";
 export type { CustomErrors } from "./CustomErrors";
 export type { DataStore } from "./DataStore";
 export type { ERC20PermitInterface } from "./ERC20PermitInterface";
@@ -61,6 +62,7 @@ export type { YieldFarm } from "./YieldFarm";
 export type { YieldToken } from "./YieldToken";
 export * as factories from "./factories";
 export { ArbitrumNodeInterface__factory } from "./factories/ArbitrumNodeInterface__factory";
+export { ClaimHandler__factory } from "./factories/ClaimHandler__factory";
 export { CustomErrors__factory } from "./factories/CustomErrors__factory";
 export { DataStore__factory } from "./factories/DataStore__factory";
 export { ERC20PermitInterface__factory } from "./factories/ERC20PermitInterface__factory";

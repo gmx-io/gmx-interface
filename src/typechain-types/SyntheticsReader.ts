@@ -540,16 +540,25 @@ export declare namespace ReaderPricingUtils {
     priceImpactUsd: BigNumberish;
     executionPrice: BigNumberish;
     balanceWasImproved: boolean;
+    proportionalPendingImpactUsd: BigNumberish;
+    totalImpactUsd: BigNumberish;
+    priceImpactDiffUsd: BigNumberish;
   };
 
   export type ExecutionPriceResultStructOutput = [
     priceImpactUsd: bigint,
     executionPrice: bigint,
     balanceWasImproved: boolean,
+    proportionalPendingImpactUsd: bigint,
+    totalImpactUsd: bigint,
+    priceImpactDiffUsd: bigint,
   ] & {
     priceImpactUsd: bigint;
     executionPrice: bigint;
     balanceWasImproved: boolean;
+    proportionalPendingImpactUsd: bigint;
+    totalImpactUsd: bigint;
+    priceImpactDiffUsd: bigint;
   };
 }
 
@@ -1011,6 +1020,7 @@ export interface SyntheticsReaderInterface extends Interface {
       BigNumberish,
       BigNumberish,
       BigNumberish,
+      BigNumberish,
       boolean,
     ]
   ): string;
@@ -1212,6 +1222,7 @@ export interface SyntheticsReader extends BaseContract {
       positionSizeInUsd: BigNumberish,
       positionSizeInTokens: BigNumberish,
       sizeDeltaUsd: BigNumberish,
+      pendingImpactAmount: BigNumberish,
       isLong: boolean,
     ],
     [ReaderPricingUtils.ExecutionPriceResultStructOutput],
@@ -1479,6 +1490,7 @@ export interface SyntheticsReader extends BaseContract {
       positionSizeInUsd: BigNumberish,
       positionSizeInTokens: BigNumberish,
       sizeDeltaUsd: BigNumberish,
+      pendingImpactAmount: BigNumberish,
       isLong: boolean,
     ],
     [ReaderPricingUtils.ExecutionPriceResultStructOutput],

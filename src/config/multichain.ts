@@ -194,10 +194,10 @@ export const SETTLEMENT_CHAINS: SettlementChainId[] = ensureExhaustive<Settlemen
 });
 
 // TODO MLTCH remove this
-// @ts-ignore
 export const SOURCE_CHAINS: SourceChainId[] = ensureExhaustive<SourceChainId>({
   [SOURCE_OPTIMISM_SEPOLIA]: true,
   [SOURCE_SEPOLIA]: true,
+  [SOURCE_BASE_MAINNET]: true,
 });
 
 if (IS_SOURCE_BASE_ALLOWED) {
@@ -205,7 +205,7 @@ if (IS_SOURCE_BASE_ALLOWED) {
 }
 
 if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
-  SOURCE_CHAINS.push(ARBITRUM_SEPOLIA as SourceChainId);
+  SOURCE_CHAINS.push(ARBITRUM_SEPOLIA as SourceChainId, ARBITRUM as SourceChainId);
 }
 
 export function isContractsChain(chainId: number): chainId is ContractsChainId {
@@ -357,6 +357,7 @@ export const MULTICALLS_MAP: Record<SourceChainId, string> = {
 
 if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
   MULTICALLS_MAP[ARBITRUM_SEPOLIA as SourceChainId] = "0xca11bde05977b3631167028862be2a173976ca11";
+  MULTICALLS_MAP[ARBITRUM as SourceChainId] = "0xca11bde05977b3631167028862be2a173976ca11";
 }
 
 /**
