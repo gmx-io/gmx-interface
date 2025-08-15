@@ -18,7 +18,7 @@ export const DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION = periodToSeconds(1, "1h");
 export const MIN_GELATO_USD_BALANCE_FOR_SPONSORED_CALL = expandDecimals(100, USD_DECIMALS); // 100$
 export const MIN_RELAYER_FEE_USD = 5n ** BigInt(USD_DECIMALS - 1); // 0.5$
 
-export const EXPRESS_EXTRA_EXECUTION_FEE_BUFFER = 1000;
+export const EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS = 1000;
 
 const GAS_PAYMENT_TOKENS: Record<UiContractsChain, string[]> = {
   [ARBITRUM]: [getTokenBySymbol(ARBITRUM, "USDC").address, getTokenBySymbol(ARBITRUM, "WETH").address],

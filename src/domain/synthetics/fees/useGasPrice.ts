@@ -3,7 +3,7 @@ import useSWR from "swr";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getProvider } from "lib/rpc";
 
-import { EXPRESS_EXTRA_EXECUTION_FEE_BUFFER } from "sdk/configs/express";
+import { EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS } from "sdk/configs/express";
 import {
   estimateExecutionGasPrice,
   getExecutionFeeBufferBps,
@@ -30,7 +30,7 @@ export function useGasPrice(chainId: number) {
 
           const bufferBps =
             (settings.executionFeeBufferBps ?? 0) +
-            (settings.expressOrdersEnabled ? EXPRESS_EXTRA_EXECUTION_FEE_BUFFER : 0);
+            (settings.expressOrdersEnabled ? EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS : 0);
 
           const gasPrice = estimateExecutionGasPrice({
             rawGasPrice: feeData.gasPrice ?? 0n,
