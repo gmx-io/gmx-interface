@@ -72,6 +72,7 @@ export const CONTRACTS = {
     MultichainSubaccountRouter: "0x99CD306B777C5aAb842bA65e4f7FF0554ECDe808",
     MultichainTransferRouter: "0xC1D1354A948bf717d6d873e5c0bE614359AF954D",
     MultichainVault: "0xCeaadFAf6A8C489B250e407987877c5fDfcDBE6E",
+    LayerZeroProvider: "0x7129Ea01F0826c705d6F7ab01Cf3C06bb83E9397",
 
     ChainlinkPriceFeedProvider: "0x38B8dB61b724b51e42A88Cb8eC564CD685a0f53B",
     ClaimHandler: "0x28f1F4AA95F49FAB62464536A269437B13d48976",
@@ -153,6 +154,7 @@ export const CONTRACTS = {
     MultichainSubaccountRouter: "0xB36a4c6cDeDea3f31b3d16F33553F93b96b178F4",
     MultichainTransferRouter: "0x8c6e20A2211D1b70cD7c0789EcE44fDB19567621",
     MultichainVault: "0x6D5F3c723002847B009D07Fe8e17d6958F153E4e",
+    LayerZeroProvider: "0xA1D94802EcD642051B677dBF37c8E78ce6dd3784",
 
     ChainlinkPriceFeedProvider: "0x05d97cee050bfb81FB3EaD4A9368584F8e72C88e",
 
