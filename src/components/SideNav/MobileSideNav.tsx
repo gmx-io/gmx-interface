@@ -1,16 +1,23 @@
+import { t } from "@lingui/macro";
 import { useState } from "react";
 import { HiMenu } from "react-icons/hi";
 import { IoCloseOutline } from "react-icons/io5";
 
+import { useTheme } from "context/ThemeContext/ThemeContext";
+
 import Button from "components/Button/Button";
 import Portal from "components/Common/Portal";
 import Footer from "components/Footer/Footer";
+
+import MoonIcon from "img/moon.svg?react";
+import SunIcon from "img/theme.svg?react";
 
 import { LanguageNavItem } from "./LanguageNavItem";
 import { DocsNavItem, LogoSection, MenuSection, NavItem } from "./SideNav";
 
 export function MobileSideNav() {
   const [isOpen, setIsOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -38,6 +45,12 @@ export function MobileSideNav() {
             <div className="border-b-stroke border-slate-600 p-8">
               <ul className="flex list-none flex-col px-0">
                 <LanguageNavItem isCollapsed={false} NavItem={NavItem} />
+                <NavItem
+                  icon={theme === "dark" ? <SunIcon /> : <MoonIcon />}
+                  label={theme === "dark" ? t`Light Mode` : t`Dark Mode`}
+                  isCollapsed={false}
+                  onClick={toggleTheme}
+                />
                 <DocsNavItem isCollapsed={false} />
               </ul>
             </div>

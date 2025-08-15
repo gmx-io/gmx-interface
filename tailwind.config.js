@@ -4,12 +4,13 @@ const range = require("lodash/range");
 const fromPairs = require("lodash/fromPairs");
 const merge = require("lodash/merge");
 const defaultConfig = require("tailwindcss/defaultConfig");
-const flattenColorPalette = require("tailwindcss/lib/util/flattenColorPalette");
 
 /**
  * @See https://www.notion.so/gmxio/Colors-Clean-Up-13303574745d80deb5dcebb6f15e41ad#13303574745d8066aad0cbd650848ca6
  */
-const colors = {
+
+// Dark theme colors
+const darkColors = {
   blue: {
     100: "#A4C3F9",
     300: "#7885FF",
@@ -69,7 +70,6 @@ const colors = {
     300: "#56dba8",
     400: "#8CF3CB",
     500: "#0FDE8D",
-    700: "#178969",
     600: "#1F3445",
     700: "#0FDE8D",
     800: "#178969",
@@ -87,34 +87,220 @@ const colors = {
   },
 };
 
+// Light theme colors
+const lightColors = {
+  blue: {
+    100: "#A4C3F9",
+    300: "#7885FF",
+    400: "#2D42FC",
+    500: "#3d51ff",
+    600: "#2d42fc",
+    700: "#2e3dcd",
+  },
+  "cold-blue": {
+    500: "#3a3f79",
+    700: "#282b54",
+    900: "#E2E5FD", // Light theme override
+  },
+  "pale-blue": {
+    100: "rgba(180,187,255, 0.1)",
+    600: "rgba(180,187,255, 0.6)",
+  },
+  slate: {
+    100: "#696D96", // Light theme
+    400: "#9FA3BC", // Light theme
+    500: "#C4C6D5", // Light theme
+    600: "#CCCCE0", // Light theme
+    650: "#D4D6E27f",
+    700: "#DADAE7", // Light theme
+    750: "#D4D6E2", // Light theme
+    800: "#EDEDF2", // Light theme
+    900: "#FCFCFC", // Light theme
+    950: "#EEEEF4", // Light theme
+  },
+  gray: {
+    50: "rgba(0, 0, 0, 0.95)",
+    100: "#333333",
+    200: "#555555",
+    300: "#777777",
+    400: "#999999",
+    500: "#BBBBBB",
+    600: "#DDDDDD",
+    700: "#F0F0F0",
+    800: "rgba(0, 0, 0, 0.2)",
+    900: "rgba(0, 0, 0, 0.1)",
+    950: "rgba(0, 0, 0, 0.05)",
+  },
+  yellow: {
+    300: "#FF9400", // Light theme
+    500: "#f3b50c",
+    900: "#FFF9D0", // Light theme
+  },
+  red: {
+    100: "#F9A4A5",
+    400: "#ff637a",
+    500: "#EA2A46", // Light theme
+    700: "#B33055",
+    900: "#F9E2E5", // Light theme
+  },
+  green: {
+    100: "#A4F9D9",
+    300: "#56dba8",
+    400: "#8CF3CB",
+    500: "#10937B", // Light theme
+    600: "#1F3445",
+    700: "#0FDE8D",
+    800: "#178969",
+    900: "#DFFFEB", // Light theme
+  },
+  white: "#000000", // Inverted for light theme
+  black: "#ffffff", // Inverted for light theme
+  button: {
+    secondary: "#F5F5F7", // Light theme
+  },
+  fill: {
+    surfaceElevated50: "#F5F5F780",
+    surfaceElevatedHover: "#EFEFEF",
+    surfaceHover: "#696D961A",
+  },
+};
+
+// Convert hex to RGB
+function hexToRgb(hex) {
+  if (hex.startsWith('rgba(')) {
+    // Extract RGB values from rgba string
+    const match = hex.match(/rgba?\((\d+),?\s*(\d+),?\s*(\d+)/);
+    if (match) {
+      return `${match[1]} ${match[2]} ${match[3]}`;
+    }
+    return hex;
+  }
+  
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result 
+    ? `${parseInt(result[1], 16)} ${parseInt(result[2], 16)} ${parseInt(result[3], 16)}`
+    : hex;
+}
+
+// Main colors object using CSS variables with alpha support
+const colors = {
+  blue: {
+    100: "rgb(var(--color-blue-100) / <alpha-value>)",
+    300: "rgb(var(--color-blue-300) / <alpha-value>)",
+    400: "rgb(var(--color-blue-400) / <alpha-value>)",
+    500: "rgb(var(--color-blue-500) / <alpha-value>)",
+    600: "rgb(var(--color-blue-600) / <alpha-value>)",
+    700: "rgb(var(--color-blue-700) / <alpha-value>)",
+  },
+  "cold-blue": {
+    500: "rgb(var(--color-cold-blue-500) / <alpha-value>)",
+    700: "rgb(var(--color-cold-blue-700) / <alpha-value>)",
+    900: "rgb(var(--color-cold-blue-900) / <alpha-value>)",
+  },
+  "pale-blue": {
+    100: "var(--color-pale-blue-100-hex)",
+    600: "var(--color-pale-blue-600-hex)",
+  },
+  slate: {
+    100: "rgb(var(--color-slate-100) / <alpha-value>)",
+    400: "rgb(var(--color-slate-400) / <alpha-value>)",
+    500: "rgb(var(--color-slate-500) / <alpha-value>)",
+    600: "rgb(var(--color-slate-600) / <alpha-value>)",
+    650: "var(--color-slate-650-hex)",
+    700: "rgb(var(--color-slate-700) / <alpha-value>)",
+    750: "rgb(var(--color-slate-750) / <alpha-value>)",
+    800: "rgb(var(--color-slate-800) / <alpha-value>)",
+    900: "rgb(var(--color-slate-900) / <alpha-value>)",
+    950: "rgb(var(--color-slate-950) / <alpha-value>)",
+  },
+  gray: {
+    50: "var(--color-gray-50-hex)",
+    100: "rgb(var(--color-gray-100) / <alpha-value>)",
+    200: "rgb(var(--color-gray-200) / <alpha-value>)",
+    300: "rgb(var(--color-gray-300) / <alpha-value>)",
+    400: "rgb(var(--color-gray-400) / <alpha-value>)",
+    500: "rgb(var(--color-gray-500) / <alpha-value>)",
+    600: "rgb(var(--color-gray-600) / <alpha-value>)",
+    700: "rgb(var(--color-gray-700) / <alpha-value>)",
+    800: "var(--color-gray-800-hex)",
+    900: "var(--color-gray-900-hex)",
+    950: "var(--color-gray-950-hex)",
+  },
+  yellow: {
+    300: "rgb(var(--color-yellow-300) / <alpha-value>)",
+    500: "rgb(var(--color-yellow-500) / <alpha-value>)",
+    900: "rgb(var(--color-yellow-900) / <alpha-value>)",
+  },
+  red: {
+    100: "rgb(var(--color-red-100) / <alpha-value>)",
+    400: "rgb(var(--color-red-400) / <alpha-value>)",
+    500: "rgb(var(--color-red-500) / <alpha-value>)",
+    700: "rgb(var(--color-red-700) / <alpha-value>)",
+    900: "rgb(var(--color-red-900) / <alpha-value>)",
+  },
+  green: {
+    100: "rgb(var(--color-green-100) / <alpha-value>)",
+    300: "rgb(var(--color-green-300) / <alpha-value>)",
+    400: "rgb(var(--color-green-400) / <alpha-value>)",
+    500: "rgb(var(--color-green-500) / <alpha-value>)",
+    600: "rgb(var(--color-green-600) / <alpha-value>)",
+    700: "rgb(var(--color-green-700) / <alpha-value>)",
+    800: "rgb(var(--color-green-800) / <alpha-value>)",
+    900: "rgb(var(--color-green-900) / <alpha-value>)",
+  },
+  white: "rgb(var(--color-white) / <alpha-value>)",
+  black: "rgb(var(--color-black) / <alpha-value>)",
+  button: {
+    secondary: "rgb(var(--color-button-secondary) / <alpha-value>)",
+  },
+  fill: {
+    surfaceElevated50: "var(--color-fill-surfaceElevated50-hex)",
+    surfaceElevatedHover: "rgb(var(--color-fill-surfaceElevatedHover) / <alpha-value>)",
+    surfaceHover: "var(--color-fill-surfaceHover-hex)",
+  },
+};
+
 /**
  * @type {import('tailwindcss/types/config').PluginCreator}
  */
-function injectColorsPlugin({ addBase, theme }) {
+function injectColorsPlugin({ addBase }) {
   function extractColorVars(colorObj, colorGroup = "") {
     return Object.keys(colorObj).reduce((vars, colorKey) => {
       const value = colorObj[colorKey];
 
       const visualColorKey = colorKey === "DEFAULT" ? "" : `-${colorKey}`;
 
-      const newVars =
-        typeof value === "string"
-          ? { [`--color${colorGroup}${visualColorKey}`]: value }
-          : extractColorVars(value, `-${colorKey}`);
-
-      return { ...vars, ...newVars };
+      if (typeof value === "string") {
+        const varName = `--color${colorGroup}${visualColorKey}`;
+        const hexVarName = `--color${colorGroup}${visualColorKey}-hex`;
+        
+        // Generate both RGB and hex versions
+        return {
+          ...vars,
+          [varName]: hexToRgb(value), // RGB for opacity support
+          [hexVarName]: value, // Hex for direct usage
+        };
+      } else {
+        return { ...vars, ...extractColorVars(value, `-${colorKey}`) };
+      }
     }, {});
   }
 
+  // Dark theme (default) - uses darkColors
   addBase({
-    ":root": extractColorVars(theme("colors")),
+    ":root": extractColorVars(darkColors),
+  });
+
+  // Light theme - uses lightColors
+  addBase({
+    ":root:not(.dark)": extractColorVars(lightColors),
   });
 }
 
 /**
  * @type {import('tailwindcss/types/config').PluginCreator}
  */
-function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVariant, theme }) {
+function customUtilsPlugin({ addUtilities, addVariant }) {
   addUtilities({
     ".scrollbar-hide": {
       "scrollbar-width": "none",
@@ -214,6 +400,7 @@ function fontComponentsPlugin({ addComponents, addBase }) {
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
+  darkMode: "class",
   theme: {
     // @see https://tailwindcss.com/docs/customizing-spacing
     spacing: fromPairs(range(0, 96 + 1).map((spacing) => [spacing, `${spacing}px`])),

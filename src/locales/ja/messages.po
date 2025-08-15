@@ -5541,6 +5541,11 @@ msgstr "30日"
 msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
 msgstr ""
 
+#: src/components/SideNav/MobileSideNav.tsx
+#: src/components/SideNav/SideNav.tsx
+msgid "Light Mode"
+msgstr ""
+
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
 msgstr "アフィリエイトボールト報酬を請求"
@@ -7320,6 +7325,11 @@ msgstr "支払いトークンを選択"
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr "利用可能な流動性は、リザーブとオープンインタレストの両方について最大値と現在値の差分の小さい方になります。"
+
+#: src/components/SideNav/MobileSideNav.tsx
+#: src/components/SideNav/SideNav.tsx
+msgid "Dark Mode"
+msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "shift"

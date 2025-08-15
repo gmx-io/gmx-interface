@@ -3,11 +3,14 @@ body,
 #root {
   margin: 0;
   padding: 0;
-  color: var(--color-white);
   font-size: 10px;
-  background-color: var(--main-bg-color);
   height: 100%;
   width: 100%;
+}
+
+#root {
+  color: var(--color-white);
+  background-color: var(--main-bg-color);
 }
 
 #root > div {

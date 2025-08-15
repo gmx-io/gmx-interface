@@ -3,6 +3,7 @@ import cx from "classnames";
 import { ReactNode, useCallback, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 
+import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import CollapseIcon from "img/collapse.svg?react";
@@ -15,13 +16,16 @@ import BuyIcon from "img/ic_buy.svg?react";
 import LeaderboardIcon from "img/leaderboard.svg?react";
 import logoIcon from "img/logo-icon.svg";
 import logoText from "img/logo-text.svg";
+import MoonIcon from "img/moon.svg?react";
 import ReferralsIcon from "img/referrals.svg?react";
+import SunIcon from "img/theme.svg?react";
 import TradeIcon from "img/trade.svg?react";
 
 import { LanguageNavItem } from "./LanguageNavItem";
 
 function SideNav({ className }: { className?: string }) {
   const [isCollapsed, setIsCollapsed] = useLocalStorageSerializeKey("is-side-nav-collapsed", false);
+  const { theme, toggleTheme } = useTheme();
 
   const handleCollapseToggle = useCallback(() => {
     setIsCollapsed(!isCollapsed);
@@ -42,6 +46,12 @@ function SideNav({ className }: { className?: string }) {
 
         <ul className={cx("flex list-none flex-col px-0")}>
           <LanguageNavItem isCollapsed={isCollapsed} NavItem={NavItem} />
+          <NavItem
+            icon={theme === "dark" ? <SunIcon /> : <MoonIcon />}
+            label={theme === "dark" ? t`Light Mode` : t`Dark Mode`}
+            isCollapsed={isCollapsed}
+            onClick={toggleTheme}
+          />
           <DocsNavItem isCollapsed={isCollapsed} />
           <NavItem
             icon={<CollapseIcon />}
