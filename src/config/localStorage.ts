@@ -29,6 +29,7 @@ export const ORACLE_KEEPER_INSTANCES_CONFIG_KEY = "oracle-keeper-instances-confi
 export const SORTED_MARKETS_KEY = "sorted-markets-key";
 export const TWAP_NUMBER_OF_PARTS_KEY = "twap-number-of-parts";
 export const TWAP_INFO_CARD_CLOSED_KEY = "twap-info-card-closed";
+export const UTM_PARAMS_KEY = "utm_params";
 
 export const SYNTHETICS_TRADE_OPTIONS = "synthetics-trade-options";
 export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY = "synthetics-acceptable-price-impact-buffer";
@@ -86,6 +87,7 @@ export const EXPRESS_TRADING_BANNER_DISMISSED_KEY = "express-trading-banner-dism
 
 export const SUBACCOUNT_APPROVAL_KEY = "subaccount-approval";
 export const TOKEN_PERMITS_KEY = "token-permits";
+export const CLAIM_TERMS_ACCEPTED_KEY = "claim-terms-accepted";
 
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
@@ -207,4 +209,13 @@ export function getOneClickTradingPromoHiddenKey(chainId: number) {
 
 export function getExpressTradingPromoHiddenKey(chainId: number) {
   return `${chainId}-${EXPRESS_TRADING_PROMO_HIDDEN_KEY}`;
+}
+
+export function getClaimTermsAcceptedKey(
+  chainId: number,
+  account: string | undefined,
+  distributionId: bigint,
+  claimTerms: string
+) {
+  return `${chainId}:${account}:${distributionId}:${claimTerms}-${CLAIM_TERMS_ACCEPTED_KEY}`;
 }

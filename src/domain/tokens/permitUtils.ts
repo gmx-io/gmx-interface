@@ -1,7 +1,6 @@
 import { ethers } from "ethers";
 import { decodeFunctionResult, encodeFunctionData, recoverTypedDataAddress } from "viem";
 
-import { getIsFlagEnabled } from "config/ab";
 import { parseError } from "lib/errors";
 import { defined } from "lib/guards";
 import { WalletSigner } from "lib/wallets";
@@ -187,15 +186,11 @@ export async function validateTokenPermitSignature(chainId: number, permit: Sign
     };
 
     // Reconstruct the signature from v, r, s components
-    let signature = ethers.Signature.from({
+    const signature = ethers.Signature.from({
       r: permit.r,
       s: permit.s,
       v: permit.v,
     }).serialized;
-
-    if (getIsFlagEnabled("testPermitIssue")) {
-      signature = signature + 1;
-    }
 
     // Recover the signer address from the signature
     const recoveredAddress = await recoverTypedDataAddress({

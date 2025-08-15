@@ -12,7 +12,13 @@ import {
 } from "sdk/utils/orderTransactions";
 import { getIsValidTwapParams } from "sdk/utils/twap";
 
-import { selectChainId, selectMaxAutoCancelOrders, selectSigner, selectUserReferralInfo } from "../globalSelectors";
+import {
+  selectChainId,
+  selectIsAutoCancelTPSLEnabled,
+  selectMaxAutoCancelOrders,
+  selectSigner,
+  selectUserReferralInfo,
+} from "../globalSelectors";
 import { makeSelectOrdersByPositionKey } from "../orderSelectors";
 import {
   selectTradeboxAllowedSlippage,
@@ -189,6 +195,7 @@ export const selectTradeboxDecreaseOrderParams = createSelector((q) => {
   const maxAutoCancelOrders = q(selectMaxAutoCancelOrders);
   const positionOrders = q(makeSelectOrdersByPositionKey(selectedPositionKey));
   const { isLong, isTwap } = q(selectTradeboxTradeFlags);
+  const isAutoCancelTPSLEnabled = q(selectIsAutoCancelTPSLEnabled);
 
   if (
     !commonParams ||
@@ -201,7 +208,7 @@ export const selectTradeboxDecreaseOrderParams = createSelector((q) => {
   }
 
   const existingAutoCancelOrders = positionOrders.filter((order) => order.autoCancel);
-  const allowedAutoCancelOrdersNumber = Number(maxAutoCancelOrders);
+  const allowedAutoCancelOrdersNumber = isAutoCancelTPSLEnabled ? Number(maxAutoCancelOrders) : 0;
   const autoCancelOrdersLimit = allowedAutoCancelOrdersNumber - existingAutoCancelOrders.length;
 
   const decreaseOrderParams: DecreasePositionOrderParams = {

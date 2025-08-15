@@ -50,6 +50,14 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
     "0xC25cEf6061Cf5dE5eb761b50E4743c1F5D7E5407": {
       enabled: true,
     },
+    // SPX6900/USD [WETH-USDC]
+    "0x8263bC3766a09f6dD4Bab04b4bf8D45F2B0973FF": {
+      enabled: true,
+    },
+    // MNT/USD [WETH-USDC]
+    "0x40dAEAc02dCf6b3c51F9151f532C21DCEF2F7E63": {
+      enabled: true,
+    },
     // SWAP-ONLY [USDC-USDC.e]
     "0x9C2433dFD71096C435Be9465220BB2B189375eA7": {
       enabled: true,
@@ -372,6 +380,18 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
     },
     // ARB/USD [ARB-ARB]
     "0x672fEA44f4583DdaD620d60C1Ac31021F47558Cb": {
+      enabled: true,
+    },
+    // ALGO/USD [WBTC-USDC]
+    "0x3B7f4e4Cf2fa43df013d2B32673e6A01d29ab2Ac": {
+      enabled: true,
+    },
+    // CRO/USD [WBTC-USDC]
+    "0xa29FfE4152B65A0347512Ae5c6A4Bbc7a3d6d51B": {
+      enabled: true,
+    },
+    // HBAR/USD [WBTC-USDC]
+    "0x9f0849FB830679829d1FB759b11236D375D15C78": {
       enabled: true,
     },
   },
