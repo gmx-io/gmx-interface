@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useMemo } from "react";
 
-import { getTokenPermitsKey, PERMITS_DISABLED_KEY } from "config/localStorage";
+import { getTokenPermitsKey } from "config/localStorage";
 import { createAndSignTokenPermit, getIsPermitExpired, validateTokenPermitSignature } from "domain/tokens/permitUtils";
 import { useChainId } from "lib/chains";
 import { getInvalidPermitSignatureError } from "lib/errors/customErrors";
@@ -31,7 +31,9 @@ export function useTokenPermitsContext() {
 export function TokenPermitsContextProvider({ children }: { children: React.ReactNode }) {
   const { chainId } = useChainId();
   const { signer } = useWallet();
-  const [isPermitsDisabled, setIsPermitsDisabled] = useLocalStorageSerializeKey(PERMITS_DISABLED_KEY, false);
+
+  // Test hypothesis: disable permits can improve express success rate
+  const isPermitsDisabled = true;
 
   const [tokenPermits, setTokenPermits] = useLocalStorageSerializeKey<SignedTokenPermit[]>(
     getTokenPermitsKey(chainId, signer?.address),
@@ -95,12 +97,12 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
   const state = useMemo(
     () => ({
       isPermitsDisabled: Boolean(isPermitsDisabled),
-      setIsPermitsDisabled,
+      setIsPermitsDisabled: () => null,
       tokenPermits: tokenPermits?.filter((permit) => !getIsPermitExpired(permit)) ?? [],
       addTokenPermit,
       resetTokenPermits,
     }),
-    [isPermitsDisabled, setIsPermitsDisabled, tokenPermits, addTokenPermit, resetTokenPermits]
+    [isPermitsDisabled, tokenPermits, addTokenPermit, resetTokenPermits]
   );
 
   return <TokenPermitsContext.Provider value={state}>{children}</TokenPermitsContext.Provider>;
