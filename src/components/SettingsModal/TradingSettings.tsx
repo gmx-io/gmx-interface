@@ -202,12 +202,12 @@ export function TradingSettings({
             content={
               <div onClick={(e) => e.stopPropagation()}>
                 <Trans>
-                  Take Profit and Stop Loss orders will be automatically cancelled when the associated position is
-                  completely closed. This will only affect newly created TP/SL orders.
+                  TP/SL orders will be automatically cancelled when the associated position is
+                  completely closed. This will only affect newly created TP/SL orders since the setting was enabled.
                 </Trans>
                 <br />
                 <br />
-                <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">Read more</ExternalLink>
+                <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">Read more</ExternalLink>.
               </div>
             }
             handle={<Trans>Auto-Cancel TP/SL</Trans>}
