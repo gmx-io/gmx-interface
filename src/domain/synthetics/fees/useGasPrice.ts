@@ -27,11 +27,7 @@ export function useGasPrice(chainId: number) {
         try {
           const feeData = await provider.getFeeData();
 
-          let bufferBps = settings.executionFeeBufferBps ?? 0;
-
-          if (settings.expressOrdersEnabled) {
-            bufferBps *= 11 / 10; // 10% additional buffer for express
-          }
+          const bufferBps = (settings.executionFeeBufferBps ?? 0) + (settings.expressOrdersEnabled ? 1000 : 0);
 
           const gasPrice = estimateExecutionGasPrice({
             rawGasPrice: feeData.gasPrice ?? 0n,
