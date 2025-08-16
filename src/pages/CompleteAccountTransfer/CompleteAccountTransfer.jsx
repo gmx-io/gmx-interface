@@ -67,7 +67,7 @@ export default function CompleteAccountTransfer() {
     const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
 
     callContract(chainId, contract, "acceptTransfer", [sender], {
-      sentMsg: t`Transfer submitted!`,
+      sentMsg: t`Transfer submitted.`,
       failMsg: t`Transfer failed.`,
       setPendingTxns,
     })

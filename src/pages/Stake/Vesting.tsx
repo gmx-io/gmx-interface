@@ -359,7 +359,7 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                           <span className="numbers">
                             {formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)}
                           </span>{" "}
-                          GMX tokens can be claimed, use the options under the Total Rewards section to claim them.
+                          GMX tokens can be claimed, use the options under the total rewards section to claim them.
                         </Trans>
                       }
                     />
@@ -461,7 +461,7 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                           <span className="numbers">
                             {formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)}
                           </span>{" "}
-                          GMX tokens can be claimed, use the options under the Total Rewards section to claim them.
+                          GMX tokens can be claimed, use the options under the total rewards section to claim them.
                         </Trans>
                       }
                     />
