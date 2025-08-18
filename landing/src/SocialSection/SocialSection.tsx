@@ -45,9 +45,9 @@ export function SocialSection() {
       <div className="mx-auto flex flex-col gap-28 overflow-x-clip sm:gap-44">
         <SocialSlider />
       </div>
-      <div className="relative flex w-full overflow-clip pt-[120px]">
+      <div className="relative flex w-full overflow-clip px-16 pt-[120px] sm:px-40">
         <SocialBackground />
-        <div className="relative flex w-full flex-col gap-36 px-16 sm:w-[1200px] sm:px-40">
+        <div className="relative mx-auto flex w-full flex-col gap-36 sm:w-[1200px]">
           <h2 className="text-heading-1">
             <Trans>
               Driven by <br /> our community
