@@ -168,7 +168,7 @@ export function GmListItem({
             {onFavoriteClick ? (
               <div>
                 <Button variant="secondary" className="shrink-0" onClick={handleFavoriteClick}>
-                  <FavoriteStar isFavorite={isFavorite} activeClassName="!text-white" />
+                  <FavoriteStar isFavorite={isFavorite} activeClassName="!text-textIcon-strong" />
                 </Button>
               </div>
             ) : null}
@@ -333,17 +333,17 @@ const SnapshotGraph = ({
       <AreaChart width={size.width} height={size.height} data={performanceSnapshots}>
         <defs>
           <linearGradient id={`snapshot-graph-gradient-green`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="-45%" stopColor="var(--color-green-500)" stopOpacity={0.5}></stop>
-            <stop offset="100%" stopColor="var(--color-green-500)" stopOpacity={0}></stop>
+            <stop offset="-45%" stopColor="rgba(var(--color-green-500))" stopOpacity={0.5}></stop>
+            <stop offset="100%" stopColor="rgba(var(--color-green-500))" stopOpacity={0}></stop>
           </linearGradient>
           <linearGradient id={`snapshot-graph-gradient-red`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="-45%" stopColor="var(--color-red-500)" stopOpacity={0.5}></stop>
-            <stop offset="100%" stopColor="var(--color-red-500)" stopOpacity={0}></stop>
+            <stop offset="-45%" stopColor="rgba(var(--color-red-500))" stopOpacity={0.5}></stop>
+            <stop offset="100%" stopColor="rgba(var(--color-red-500))" stopOpacity={0}></stop>
           </linearGradient>
         </defs>
         <Area
           dataKey="performance"
-          stroke={isNegative ? "var(--color-red-500)" : "var(--color-green-500)"}
+          stroke={isNegative ? "rgba(var(--color-red-500))" : "rgba(var(--color-green-500))"}
           dot={false}
           fill={isNegative ? "url(#snapshot-graph-gradient-red)" : "url(#snapshot-graph-gradient-green)"}
           baseValue="dataMin"

@@ -168,7 +168,7 @@ export function ClaimModal(p: Props) {
             handle={t`FUNDING FEE`}
             renderContent={() => (
               <Trans>
-                <span className="text-white">Claimable Funding Fee.</span>
+                <span className="text-textIcon-strong">Claimable Funding Fee.</span>
               </Trans>
             )}
           />

@@ -73,7 +73,7 @@ export default function ChartTokenSelector(props: Props) {
   return (
     <SelectorBase
       popoverPlacement="bottom-start"
-      handleClassName={cx("group rounded-8 bg-slate-800 py-10 pl-8 pr-12", {
+      handleClassName={cx("group rounded-8 bg-button-secondary py-10 pl-8 pr-12", {
         "mr-24": oneRowLabels === false,
         "py-0 md:h-40": isSwap,
       })}
@@ -489,7 +489,7 @@ function useFilterSortTokens({
 const MarketLabel = ({ token }: { token: Token }) => {
   return (
     <span className="text-slate-100">
-      <span className="text-white">{getMarketBaseName({ indexToken: token, isSpotOnly: false })}</span>
+      <span className="text-textIcon-strong">{getMarketBaseName({ indexToken: token, isSpotOnly: false })}</span>
       /USD
     </span>
   );

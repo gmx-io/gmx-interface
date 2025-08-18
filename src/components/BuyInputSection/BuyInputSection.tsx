@@ -217,7 +217,7 @@ export default function BuyInputSection(props: Props) {
             <div
               className={cx("numbers", {
                 "text-slate-100": isBottomLeftValueMuted,
-                "text-white": !isBottomLeftValueMuted,
+                "text-textIcon-strong": !isBottomLeftValueMuted,
               })}
             >
               {bottomLeftValue || ""}

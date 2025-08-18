@@ -168,7 +168,7 @@ export function VesterDepositModal(props: {
                 position="top-end"
                 content={
                   <div>
-                    <p className="text-white">
+                    <p className="text-textIcon-strong">
                       <Trans>Vault Capacity for your Account:</Trans>
                     </p>
                     <br />

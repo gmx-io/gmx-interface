@@ -229,7 +229,7 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
           <div
             className={cx(
               "relative z-10 flex grow items-center justify-center gap-8 px-15 pb-11 pt-11 text-center font-medium transition-colors",
-              isActive ? "text-white" : ""
+              isActive ? "text-textIcon-strong" : ""
             )}
             onClick={() => onClick(opt)}
             key={opt}

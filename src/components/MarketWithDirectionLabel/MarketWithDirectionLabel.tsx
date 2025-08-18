@@ -23,7 +23,7 @@ export function MarketWithDirectionLabel({
       })}
     >
       <TokenIcon className="size-20 !align-[-3px]" displaySize={20} symbol={tokenSymbol} importSize={iconImportSize} />
-      <span className="font-medium text-white">{indexName}</span>
+      <span className="font-medium text-textIcon-strong">{indexName}</span>
       <span className={cx(isLong ? "text-green-500" : "text-red-500")}>{isLong ? t`Long` : t`Short`}</span>
     </div>
   );

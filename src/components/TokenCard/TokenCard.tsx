@@ -112,7 +112,7 @@ const BuyLink = ({
   );
 
   const Icon = networkIcons[network];
-  const className = `flex cursor-pointer justify-center gap-8 rounded-3 text-white bg-slate-700
+  const className = `flex cursor-pointer justify-center gap-8 rounded-3 text-textIcon-strong bg-slate-700
         px-16 py-10 leading-[1.4em] hover:bg-cold-blue-700 active:bg-cold-blue-500`;
 
   const isHome = isHomeSite();

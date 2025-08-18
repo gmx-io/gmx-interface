@@ -191,7 +191,7 @@ export function TestPermits() {
               <div className="mb-6 flex flex-col space-x-4">
                 <TokenIcon symbol={selectedToken.symbol} displaySize={40} importSize={40} />
                 <div>
-                  <h2 className="text-2xl font-semibold text-white">{selectedToken.symbol}</h2>
+                  <h2 className="text-2xl font-semibold text-textIcon-strong">{selectedToken.symbol}</h2>
                   <div>
                     <div className="text-xs text-slate-400">{selectedToken.address}</div>
                   </div>

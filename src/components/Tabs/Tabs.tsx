@@ -35,9 +35,9 @@ export default function Tabs<V extends string | number>({
     <div
       data-qa={qa}
       className={cx(
-        "flex items-center justify-between rounded-t-8",
+        "flex items-center justify-between",
         {
-          "border-b-stroke border-b-slate-600": type === "block",
+          "rounded-t-8 border-b-stroke border-b-slate-600": type === "block",
         },
         className
       )}

@@ -285,7 +285,7 @@ const BuyableTooltipContent = ({
 
   return (
     <>
-      <p className="text-white">
+      <p className="text-textIcon-strong">
         {marketInfo?.isSameCollaterals ? (
           <Trans>
             {marketInfo?.longToken?.symbol} can be used to buy GM for this market up to the specified buying caps.

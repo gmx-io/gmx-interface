@@ -216,8 +216,8 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
 const ACTIVE_DOT_PROPS = {
   r: 4,
   strokeWidth: 2,
-  stroke: "var(--color-blue-300)",
-  fill: "var(--color-slate-900)",
+  stroke: "rgba(var(--color-blue-300))",
+  fill: "rgba(var(--color-slate-900))",
 };
 
 const DOT_PROPS = {
@@ -260,7 +260,7 @@ const axisValueFormatter = (marketGraphType: MarketGraphType) => (value: number)
 };
 
 const CHART_CURSOR_PROPS = {
-  stroke: "var(--color-slate-500)",
+  stroke: "rgba(var(--color-slate-500))",
   strokeWidth: 1,
   strokeDasharray: "2 2",
 };
@@ -314,7 +314,7 @@ const GraphChart = ({
 
   const isMobile = usePoolsIsMobilePage();
 
-  const axisTick = useMemo(() => ({ fill: "var(--color-slate-100)", fontSize: 12, fontWeight: 500 }), []);
+  const axisTick = useMemo(() => ({ fill: "rgba(var(--color-slate-100))", fontSize: 12, fontWeight: 500 }), []);
 
   const [data, setData] = useState<GraphData[]>([]);
 
@@ -338,18 +338,23 @@ const GraphChart = ({
         <AreaChart data={data} margin={GRAPH_MARGIN} key={marketGraphType} {...{ overflow: "visible" }}>
           <defs>
             <linearGradient id="market-graph-gradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="-45%" stopColor="var(--color-blue-300)" stopOpacity={0.5} />
-              <stop offset="100%" stopColor="var(--color-blue-300)" stopOpacity={0} />
+              <stop offset="-45%" stopColor="rgba(var(--color-blue-300))" stopOpacity={0.5} />
+              <stop offset="100%" stopColor="rgba(var(--color-blue-300))" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid vertical={false} strokeDasharray="5 3" strokeWidth={0.5} stroke="var(--color-slate-600)" />
+          <CartesianGrid
+            vertical={false}
+            strokeDasharray="5 3"
+            strokeWidth={0.5}
+            stroke="rgba(var(--color-slate-600))"
+          />
 
           <Tooltip cursor={CHART_CURSOR_PROPS} content={<GraphTooltip formatValue={formatValue} />} />
           <Area
             key={marketGraphType}
             type="linear"
             dataKey="value"
-            stroke="var(--color-blue-300)"
+            stroke="rgba(var(--color-blue-300))"
             fill="url(#market-graph-gradient)"
             strokeWidth={2}
             dot={DOT_PROPS}
@@ -389,7 +394,7 @@ const GraphTooltip = ({ active, payload, formatValue }: any) => {
     return (
       <div
         className={`backdrop-blur-100 text-body-small flex flex-col rounded-4 bg-[rgba(160,163,196,0.1)]
-      bg-[linear-gradient(0deg,var(--color-slate-800),var(--color-slate-800))] px-12 py-8 bg-blend-overlay`}
+      bg-[linear-gradient(0deg,rgba(var(--color-slate-800)),rgba(var(--color-slate-800)))] px-12 py-8 bg-blend-overlay`}
       >
         <span className=" text-slate-100">{format(item.snapshotTimestamp.getTime(), "MMMM dd, yyyy")}</span>
         <span className="numbers">{formatValue(item.value)}</span>

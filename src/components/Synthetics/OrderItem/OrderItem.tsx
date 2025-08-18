@@ -553,7 +553,7 @@ function OrderItemLarge({
   const cancelButton = (
     <button
       className={cx("cursor-pointer p-6 text-slate-100 disabled:cursor-wait", {
-        "hover:text-white": !isCanceling && !disabledCancelMarketOrderMessage,
+        "hover:text-textIcon-strong": !isCanceling && !disabledCancelMarketOrderMessage,
       })}
       disabled={isCanceling || Boolean(disabledCancelMarketOrderMessage)}
       onClick={onCancelOrder}
@@ -635,7 +635,10 @@ function OrderItemLarge({
         <TableTd>
           <div className="inline-flex items-center">
             {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
-              <button className="cursor-pointer p-6 text-slate-100 hover:text-white" onClick={setEditingOrderKey}>
+              <button
+                className="cursor-pointer p-6 text-slate-100 hover:text-textIcon-strong"
+                onClick={setEditingOrderKey}
+              >
                 <FaPen title={t`Edit order`} fontSize={12} />
               </button>
             )}

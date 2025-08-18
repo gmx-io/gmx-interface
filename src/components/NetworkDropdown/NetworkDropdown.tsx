@@ -135,7 +135,11 @@ function NetworkMenuItems({ networkOptions, selectorLabel }) {
               <div className="menu-item-icon">
                 <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
               </div>
-              <span className={cx("network-dropdown-item-label", { "text-white": selectorLabel === network.label })}>
+              <span
+                className={cx("network-dropdown-item-label", {
+                  "text-textIcon-strong": selectorLabel === network.label,
+                })}
+              >
                 {network.label}
               </span>
             </div>

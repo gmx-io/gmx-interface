@@ -514,7 +514,7 @@ function MarketTokenListItem({
           <div className="inline-flex items-center">
             <TokenIcon className="-my-5 mr-8" symbol={iconName} displaySize={16} importSize={40} />
             <div className="inline-flex flex-wrap items-center gap-x-3 whitespace-nowrap">
-              <span className="text-body-medium text-white">{indexName && indexName}</span>
+              <span className="text-body-medium text-textIcon-strong">{indexName && indexName}</span>
               <span className="text-body-small leading-1 text-slate-100">{poolName && `[${poolName}]`}</span>
             </div>
           </div>

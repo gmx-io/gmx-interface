@@ -1,5 +1,5 @@
 .ClaimEsGmx input {
-  border: 1px solid var(--color-gray-800);
+  border: 1px solid rgba(var(--color-gray-800));
   font-size: var(--font-size-body-medium);
   width: 100%;
   box-sizing: border-box;
@@ -73,7 +73,7 @@
   place-items: normal;
   background: transparent;
   padding: 1.25rem;
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
   font-size: var(--font-size-body-small);
   border: 1px solid var(--dark-blue-border);
   border-radius: var(--border-radius-sm);
@@ -102,17 +102,17 @@
 .ClaimEsGmx-max-button {
   position: absolute;
   padding: 0.465rem 0.8rem;
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, var(--color-blue-700) 100%);
+  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(var(--color-blue-700)) 100%);
   left: 29.75rem;
   top: 0.93rem;
   font-size: var(--font-size-body-small);
   border-radius: 3px;
   z-index: 1;
   cursor: pointer;
-  color: var(--color-gray-400);
+  color: rgba(var(--color-gray-400));
 }
 
 .ClaimEsGmx-max-button:hover {
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
   background: linear-gradient(90deg, rgba(58, 78, 252, 1) 0%, rgba(51, 68, 222, 1) 100%);
 }

@@ -36,7 +36,7 @@ export default function NestedTab<V extends string | number>({
   return (
     <Menu as="div" className="flex items-center justify-center gap-8">
       <Menu.Button as="div" ref={refs.setReference} data-qa={qa ? `${qa}-tab-${option.label}` : undefined}>
-        <Button variant="ghost" className={cx({ "!bg-slate-800 !text-white": selectedSubOption })}>
+        <Button variant="ghost" className={cx({ "!bg-slate-800 !text-textIcon-strong": selectedSubOption })}>
           <span>{label}</span>
 
           <FiChevronDown size={16} className="mt-1" />
@@ -55,8 +55,8 @@ export default function NestedTab<V extends string | number>({
                 as="div"
                 key={subOpt.value}
                 className={cx(
-                  "text-body-medium cursor-pointer p-8 font-medium text-slate-100 hover:bg-fill-surfaceHover hover:text-white",
-                  { "text-white": subOpt.value === selectedValue },
+                  "text-body-medium cursor-pointer p-8 font-medium text-slate-100 hover:bg-fill-surfaceHover hover:text-textIcon-strong",
+                  { "text-textIcon-strong": subOpt.value === selectedValue },
                   commonOptionClassname
                 )}
                 onClick={() => onOptionClick?.(subOpt.value)}

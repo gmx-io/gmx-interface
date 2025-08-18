@@ -31,7 +31,7 @@ export function TransactionStatus({ status, text, txnHash, txnLink }: Props) {
         {text}
       </div>
       <div className="flex flex-shrink-0 items-center justify-center">
-        {status === "loading" && <ImSpinner2 width={60} height={60} className="spin size-15 text-white" />}
+        {status === "loading" && <ImSpinner2 width={60} height={60} className="spin size-15 text-textIcon-strong" />}
         {status !== "loading" && _txnLink && <ExternalLink href={_txnLink}>View</ExternalLink>}
       </div>
     </div>

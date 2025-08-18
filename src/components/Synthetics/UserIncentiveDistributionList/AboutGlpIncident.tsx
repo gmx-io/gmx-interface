@@ -39,7 +39,7 @@ export function AboutGlpIncident() {
           title={t`Why is the claim in GLV tokens?`}
           open={rowStates[0]}
           onToggle={toggleRow(0)}
-          handleClassName="text-left !text-white"
+          handleClassName="text-left !text-textIcon-strong"
         >
           <div className="text-slate-100">
             <Trans>
@@ -57,7 +57,7 @@ export function AboutGlpIncident() {
           title={t`What is GLV exactly?`}
           open={rowStates[1]}
           onToggle={toggleRow(1)}
-          handleClassName="text-left !text-white"
+          handleClassName="text-left !text-textIcon-strong"
         >
           <div className="text-slate-100">
             <p className="mb-8">
@@ -89,7 +89,7 @@ export function AboutGlpIncident() {
           title={t`Why do I receive two different GLV tokens?`}
           open={rowStates[2]}
           onToggle={toggleRow(2)}
-          handleClassName="text-left !text-white"
+          handleClassName="text-left !text-textIcon-strong"
         >
           <div className="text-slate-100">
             <Trans>
@@ -107,7 +107,7 @@ export function AboutGlpIncident() {
           title={t`Can I sell my GLV if I want, and where?`}
           open={rowStates[3]}
           onToggle={toggleRow(3)}
-          handleClassName="text-left !text-white"
+          handleClassName="text-left !text-textIcon-strong"
         >
           <div className="text-slate-100">
             <Trans>
@@ -123,7 +123,7 @@ export function AboutGlpIncident() {
           title={t`How does GLV earn yield, and where do I see my earnings?`}
           open={rowStates[4]}
           onToggle={toggleRow(4)}
-          handleClassName="text-left !text-white"
+          handleClassName="text-left !text-textIcon-strong"
         >
           <div className="text-slate-100">
             <Trans>
@@ -140,7 +140,7 @@ export function AboutGlpIncident() {
           title={t`What is the bonus incentive for holding your GLV?`}
           open={rowStates[5]}
           onToggle={toggleRow(5)}
-          handleClassName="text-left !text-white"
+          handleClassName="text-left !text-textIcon-strong"
         >
           <div className="text-slate-100">
             <Trans>

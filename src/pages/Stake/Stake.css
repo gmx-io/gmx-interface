@@ -54,7 +54,7 @@
   border-radius: 2px;
   width: 1.5rem;
   height: 0.8rem;
-  border: 0.5px solid var(--color-slate-600);
+  border: 0.5px solid rgba(var(--color-slate-600));
   display: inline-block;
   position: relative;
 }
@@ -70,7 +70,7 @@
   left: 0;
   top: 0;
   bottom: 0;
-  background: var(--color-gray-300);
+  background: rgba(var(--color-gray-300));
 }
 
 .StakeV2-cards {

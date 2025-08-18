@@ -16,7 +16,7 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
           const { marketInfo: market, netFeeLong, netFeeShort } = stat;
           return (
             <div key={market.marketTokenAddress} className="flex flex-col gap-4">
-              <div className="flex flex-wrap items-start text-white">
+              <div className="flex flex-wrap items-start text-textIcon-strong">
                 <span>{getMarketIndexName(market)}</span>
                 <span className="subtext leading-1">[{getMarketPoolName(market)}]</span>
               </div>
@@ -75,7 +75,7 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
           return (
             <tr key={market.marketTokenAddress}>
               <td>
-                <div className="inline-flex flex-wrap items-start text-white">
+                <div className="inline-flex flex-wrap items-start text-textIcon-strong">
                   <span>{getMarketIndexName(market)}</span>
                   <span className="subtext leading-1">[{getMarketPoolName(market)}]</span>
                 </div>

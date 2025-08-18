@@ -5541,8 +5541,7 @@ msgstr "30j"
 msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
 msgstr ""
 
-#: src/components/SideNav/MobileSideNav.tsx
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/ThemeNavItem.tsx
 msgid "Light Mode"
 msgstr ""
 
@@ -7326,8 +7325,7 @@ msgstr "Sélectionner un token de paiement"
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr "La liquidité disponible sera la moindre de la différence entre la valeur maximale et la valeur actuelle pour la réserve et l'intérêt ouvert."
 
-#: src/components/SideNav/MobileSideNav.tsx
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/ThemeNavItem.tsx
 msgid "Dark Mode"
 msgstr ""
 

@@ -13,10 +13,10 @@
   max-width: 225px;
 }
 .go-back span {
-  color: var(--color-slate-100);
+  color: rgba(var(--color-slate-100));
 }
 .go-back a {
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
 }
 
 @media (max-width: 500px) {

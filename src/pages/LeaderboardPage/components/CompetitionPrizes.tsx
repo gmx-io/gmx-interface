@@ -190,7 +190,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
         target="_blank"
         to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
         className={`flex items-center gap-6 rounded-full bg-slate-600 p-10 text-slate-100
-        hover:bg-slate-500 hover:text-white active:bg-slate-500 active:text-white`}
+        hover:bg-slate-500 hover:text-textIcon-strong active:bg-slate-500 active:text-textIcon-strong`}
       >
         <FaChevronRight size={12} />
       </Link>
@@ -202,7 +202,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
       <Link
         target="_blank"
         to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
-        className="flex items-center gap-4 px-12 py-8 !text-white !no-underline hover:bg-slate-600"
+        className="flex items-center gap-4 px-12 py-8 !text-textIcon-strong !no-underline hover:bg-slate-600"
         key={winner.account}
       >
         <Jazzicon diameter={20} seed={jsNumberForAddress(winner.account)} />

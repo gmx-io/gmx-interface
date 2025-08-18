@@ -3,7 +3,6 @@ import cx from "classnames";
 import { ReactNode, useCallback, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import CollapseIcon from "img/collapse.svg?react";
@@ -14,18 +13,16 @@ import EarnIcon from "img/earn.svg?react";
 import EcosystemIcon from "img/ecosystem.svg?react";
 import BuyIcon from "img/ic_buy.svg?react";
 import LeaderboardIcon from "img/leaderboard.svg?react";
-import logoIcon from "img/logo-icon.svg";
-import logoText from "img/logo-text.svg";
-import MoonIcon from "img/moon.svg?react";
+import LogoIcon from "img/logo-icon.svg?react";
+import LogoText from "img/logo-text.svg?react";
 import ReferralsIcon from "img/referrals.svg?react";
-import SunIcon from "img/theme.svg?react";
 import TradeIcon from "img/trade.svg?react";
 
 import { LanguageNavItem } from "./LanguageNavItem";
+import { ThemeNavItem } from "./ThemeNavItem";
 
 function SideNav({ className }: { className?: string }) {
   const [isCollapsed, setIsCollapsed] = useLocalStorageSerializeKey("is-side-nav-collapsed", false);
-  const { theme, toggleTheme } = useTheme();
 
   const handleCollapseToggle = useCallback(() => {
     setIsCollapsed(!isCollapsed);
@@ -46,12 +43,7 @@ function SideNav({ className }: { className?: string }) {
 
         <ul className={cx("flex list-none flex-col px-0")}>
           <LanguageNavItem isCollapsed={isCollapsed} NavItem={NavItem} />
-          <NavItem
-            icon={theme === "dark" ? <SunIcon /> : <MoonIcon />}
-            label={theme === "dark" ? t`Light Mode` : t`Dark Mode`}
-            isCollapsed={isCollapsed}
-            onClick={toggleTheme}
-          />
+          <ThemeNavItem isCollapsed={isCollapsed} />
           <DocsNavItem isCollapsed={isCollapsed} />
           <NavItem
             icon={<CollapseIcon />}
@@ -77,13 +69,13 @@ export function LogoSection({ isCollapsed }: { isCollapsed: boolean | undefined 
         "pl-12 pr-20": !isCollapsed,
       })}
     >
-      <img src={logoIcon} alt="GMX Logo" className="h-22" />
-      {!isCollapsed && <img src={logoText} alt="GMX" className="h-18" />}
+      <LogoIcon className="h-22" />
+      {!isCollapsed && <LogoText className="h-18" />}
     </Link>
   );
 }
 
-interface NavItemProps {
+export interface NavItemProps {
   icon: ReactNode;
   label: ReactNode;
   isActive?: boolean;
@@ -100,9 +92,9 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
         className={cx(
           `relative flex cursor-pointer items-center gap-8
         rounded-8 px-16 py-8 text-slate-100 transition-colors
-        group-hover:bg-slate-700 group-hover:text-white`,
+        group-hover:bg-slate-700 group-hover:text-textIcon-strong`,
           {
-            "bg-slate-700 text-white": isActive,
+            "bg-slate-700 text-textIcon-strong": isActive,
             "w-full": !isCollapsed,
           }
         )}
@@ -113,7 +105,7 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
         <div
           className={cx(
             `absolute left-0 top-0 z-30 hidden items-center gap-8 rounded-8
-            bg-slate-700 px-16 py-8 text-white`,
+            bg-slate-700 px-16 py-8 text-textIcon-strong`,
             { "group-hover:flex": isCollapsed }
           )}
         >

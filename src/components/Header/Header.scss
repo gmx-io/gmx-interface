@@ -17,7 +17,7 @@
   padding-left: 3.2rem;
   padding-right: 3.2rem;
   background: transparent 0% 0% no-repeat padding-box;
-  border-bottom: 1px solid var(--color-slate-700);
+  border-bottom: 1px solid rgba(var(--color-slate-700));
 }
 
 .App-header.large::after {
@@ -40,7 +40,7 @@
 }
 
 .App-header-drawer {
-  background: var(--color-slate-750) 0% 0% no-repeat padding-box;
+  background: rgba(var(--color-slate-750)) 0% 0% no-repeat padding-box;
   opacity: 1;
   position: fixed;
   z-index: 1001;
@@ -63,7 +63,7 @@
   line-height: var(--line-height-body-large);
   font-weight: normal;
   letter-spacing: 0.1px;
-  color: var(--color-slate-100);
+  color: rgba(var(--color-slate-100));
   padding: 1.5rem 1.6rem;
   text-decoration: none;
   display: block;
@@ -76,7 +76,7 @@
 .App-header-drawer .App-header-link-container a:focus,
 .App-header-drawer .App-header-link-container a.active {
   background: #303fd024;
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
 }
 
 .App-header.large .App-header-link-container {
@@ -107,13 +107,13 @@
 .App-header-menu-icon-block {
   display: flex;
   align-items: center;
-  border: solid 1px var(--color-gray-800);
+  border: solid 1px rgba(var(--color-gray-800));
   border-radius: 4px;
   height: 3.6rem;
 }
 
 .App-header-menu-icon {
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
   font-size: 2rem;
   cursor: pointer;
   opacity: 0.7;
@@ -155,20 +155,20 @@
 .App-header a.active {
   pointer-events: all;
   opacity: 1;
-  color: var(--color-gray-50);
+  color: rgba(var(--color-gray-50));
 }
 
 .App-header .a:hover,
 .App-header a:hover {
   opacity: 1;
-  color: var(--color-gray-50);
+  color: rgba(var(--color-gray-50));
 }
 
 .App-header-container-left .a,
 .App-header-container-left a {
   padding: 1.8rem 1.7rem;
   display: block;
-  color: var(--color-slate-100);
+  color: rgba(var(--color-slate-100));
   font-size: var(--font-size-body-large);
   line-height: var(--line-height-body-large);
   font-weight: normal;
@@ -180,7 +180,7 @@
 }
 
 .App-header-container-left a.active {
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
 }
 
 .App-header-container-right {
@@ -198,12 +198,12 @@
 }
 
 .App-header-user-address {
-  border: 0.5px solid var(--color-slate-600);
+  border: 0.5px solid rgba(var(--color-slate-600));
   height: 3.6rem;
   border-radius: 0.4rem;
   display: inline-flex;
   align-items: center;
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
   position: relative;
 }
 
@@ -250,7 +250,7 @@
     padding-left: 1.6rem;
     padding-right: 1.6rem;
     background: transparent 0% 0% no-repeat padding-box;
-    border-bottom: 1px solid var(--color-slate-700);
+    border-bottom: 1px solid rgba(var(--color-slate-700));
   }
 
   .App-header.small::after {
@@ -305,6 +305,6 @@
 
 @supports not ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
   .App-header-drawer {
-    background: var(--color-slate-950);
+    background: rgba(var(--color-slate-950));
   }
 }

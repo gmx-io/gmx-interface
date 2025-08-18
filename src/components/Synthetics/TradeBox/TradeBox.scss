@@ -66,8 +66,8 @@
   position: relative;
 
   .Tooltip-handle {
-    color: var(--color-yellow-500);
-    text-decoration-color: var(--color-yellow-500);
+    color: rgba(var(--color-yellow-500));
+    text-decoration-color: rgba(var(--color-yellow-500));
   }
 
   &.error {
@@ -78,7 +78,7 @@
   }
 
   .MarketSelector-tooltip-content {
-    color: var(--color-white);
+    color: rgba(var(--color-textIcon-strong));
   }
 
   .MarketSelector-tooltip-row-action {
@@ -95,8 +95,8 @@
 }
 
 .LiqPrice-soft-warning {
-  color: var(--color-yellow-500);
-  text-decoration-color: var(--color-yellow-500);
+  color: rgba(var(--color-yellow-500));
+  text-decoration-color: rgba(var(--color-yellow-500));
 }
 
 .LiqPrice-hard-warning {
@@ -134,13 +134,13 @@
   text-decoration-style: solid;
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
-  text-decoration-color: var(--color-gray-400);
+  text-decoration-color: rgba(var(--color-gray-400));
   user-select: none;
-  color: var(--color-gray-400);
+  color: rgba(var(--color-gray-400));
 
   &:hover {
-    text-decoration-color: var(--color-white);
-    color: var(--color-white);
+    text-decoration-color: rgba(var(--color-textIcon-strong));
+    color: rgba(var(--color-textIcon-strong));
   }
 }
 

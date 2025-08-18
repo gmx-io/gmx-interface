@@ -84,6 +84,12 @@ const darkColors = {
     surfaceElevated50: "#1E203380",
     surfaceElevatedHover: "#18192a",
     surfaceHover: "#A0A3C41A",
+    active: "#7885FF33",
+  },
+  textIcon: {
+    default: "#a0a3c4",
+    active: "#ffffff",
+    strong: "#000000",
   },
 };
 
@@ -153,15 +159,21 @@ const lightColors = {
     800: "#178969",
     900: "#DFFFEB", // Light theme
   },
-  white: "#000000", // Inverted for light theme
-  black: "#ffffff", // Inverted for light theme
+  white: "#ffffff",
+  black: "#000000",
   button: {
-    secondary: "#F5F5F7", // Light theme
+    secondary: "#E0E0EB", // Light theme
   },
   fill: {
     surfaceElevated50: "#F5F5F780",
     surfaceElevatedHover: "#EFEFEF",
     surfaceHover: "#696D961A",
+    active: "#7885FF33",
+  },
+  textIcon: {
+    default: "#696D96",
+    strong: "#000000",
+    active: "#2D42FC",
   },
 };
 
@@ -257,6 +269,11 @@ const colors = {
     surfaceElevated50: "var(--color-fill-surfaceElevated50-hex)",
     surfaceElevatedHover: "rgb(var(--color-fill-surfaceElevatedHover) / <alpha-value>)",
     surfaceHover: "var(--color-fill-surfaceHover-hex)",
+  },
+  textIcon: {
+    default: "rgb(var(--color-textIcon-default) / <alpha-value>)",
+    strong: "rgb(var(--color-textIcon-strong) / <alpha-value>)",
+    active: "rgb(var(--color-textIcon-active) / <alpha-value>)",
   },
 };
 

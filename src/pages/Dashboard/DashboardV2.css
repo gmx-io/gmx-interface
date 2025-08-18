@@ -15,7 +15,7 @@
 
 .token-table-wrapper {
   border-radius: 0.4rem;
-  background: var(--color-slate-800);
+  background: rgba(var(--color-slate-800));
   margin-bottom: 1.5rem;
   text-align: left;
 }
@@ -70,7 +70,7 @@
   letter-spacing: 0.4px;
   text-align: left;
   z-index: 1;
-  background: var(--color-slate-600);
+  background: rgba(var(--color-slate-600));
   box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.25);
   cursor: pointer;
 }

@@ -1,7 +1,7 @@
 $button-primary-hover: linear-gradient(0deg, #090a141a, #090a141a),
-  linear-gradient(0deg, var(--color-blue-400), var(--color-blue-400));
+  linear-gradient(0deg, rgba(var(--color-blue-400)), rgba(var(--color-blue-400)));
 $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
-  linear-gradient(0deg, var(--color-blue-400), var(--color-blue-400));
+  linear-gradient(0deg, rgba(var(--color-blue-400)), rgba(var(--color-blue-400)));
 
 .button {
   cursor: pointer;
@@ -27,7 +27,7 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
 
   &.primary {
     background: var(--primary-btn-bg);
-    color: var(--color-white);
+    color: rgba(var(--color-white));
     border-radius: 8px;
 
     &:not([disabled]):hover {
@@ -41,7 +41,7 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
 
   &.primary-action {
     background: var(--primary-btn-bg);
-    color: var(--color-white);
+    color: rgba(var(--color-textIcon-strong));
     border-radius: 8px;
     min-height: 40px;
 
@@ -55,9 +55,9 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
   }
 
   &.secondary {
-    background-color: var(--color-slate-800);
+    background-color: rgba(var(--color-button-secondary));
     border-radius: 8px;
-    color: var(--color-slate-100);
+    color: rgba(var(--color-textIcon-default));
     position: relative;
     letter-spacing: 0;
 
@@ -78,20 +78,20 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
     }
 
     &:not([disabled], .disabled):hover {
-      background-color: var(--color-fill-surfaceHover);
-      color: var(--color-white);
+      background-color: rgba(var(--color-fill-active));
+      color: rgba(var(--color-textIcon-strong));
     }
 
     &:not([disabled], .disabled):active {
-      background: var(--color-slate-800);
-      color: var(--color-white);
+      background: rgba(var(--color-slate-800));
+      color: rgba(var(--color-textIcon-strong));
     }
   }
 
   &.ghost {
     background-color: transparent;
     border-radius: 8px;
-    color: var(--color-slate-100);
+    color: rgba(var(--color-slate-100));
     position: relative;
     letter-spacing: 0;
 
@@ -112,18 +112,18 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
     }
 
     &:not([disabled], .disabled):hover {
-      color: var(--color-white);
-      background-color: var(--color-fill-surfaceHover);
+      color: rgba(var(--color-textIcon-strong));
+      background-color: rgba(var(--color-fill-surfaceHover));
     }
 
     &:not([disabled], .disabled):active {
-      color: var(--color-white);
-      background: var(--color-slate-800);
+      color: rgba(var(--color-textIcon-strong));
+      background: rgba(var(--color-slate-800));
     }
   }
 
   &.link {
-    color: var(--color-slate-100);
+    color: rgba(var(--color-slate-100));
     text-decoration: underline;
     padding: 0;
 
@@ -132,7 +132,7 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
     }
 
     &:not([disabled], .disabled):hover {
-      color: var(--color-white);
+      color: rgba(var(--color-textIcon-strong));
     }
   }
 
@@ -140,11 +140,11 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
   &:disabled {
     box-shadow: none;
     cursor: not-allowed;
-    color: var(--color-slate-600);
+    color: rgba(var(--color-slate-600));
 
     &.primary-action,
     &.primary {
-      background-color: var(--color-slate-800);
+      background-color: rgba(var(--color-slate-800));
     }
 
     &.secondary {

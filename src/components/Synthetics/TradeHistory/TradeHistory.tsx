@@ -57,7 +57,7 @@ const ActionsPopover = ({ children }: { children: ReactNode }) => {
   return (
     <Popover as="div" ref={refs.setReference}>
       <Popover.Button as="div" refName="buttonRef">
-        <button className="flex items-center gap-4 px-4 py-8 font-medium text-slate-100 hover:text-white">
+        <button className="flex items-center gap-4 px-4 py-8 font-medium text-slate-100 hover:text-textIcon-strong">
           <Trans>Actions</Trans>
           <BsThreeDotsVertical />
         </button>

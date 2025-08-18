@@ -488,9 +488,12 @@ function CopyButton({ value }: { value: string }) {
   return (
     <BiCopy
       size={16}
-      className={cx("hidden cursor-pointer text-slate-100 transition-transform hover:text-white group-hover:block", {
-        "scale-110 text-white": isCopied,
-      })}
+      className={cx(
+        "hidden cursor-pointer text-slate-100 transition-transform hover:text-textIcon-strong group-hover:block",
+        {
+          "scale-110 text-textIcon-strong": isCopied,
+        }
+      )}
       onClick={onClick}
     />
   );

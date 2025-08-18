@@ -33,8 +33,8 @@
   transform-origin: top right;
   border-radius: 8px;
   overflow: hidden;
-  background: var(--color-slate-900);
-  border: 0.5px solid var(--color-slate-600);
+  background: rgba(var(--color-slate-900));
+  border: 0.5px solid rgba(var(--color-slate-600));
   list-style: none;
   cursor: pointer;
   outline: none;
@@ -43,15 +43,15 @@
   .menu-item {
     display: flex !important;
     align-items: center;
-    color: var(--color-slate-100);
+    color: rgba(var(--color-slate-100));
     padding-bottom: 1.5rem;
     font-size: 13px;
     padding: 7px 12px;
     font-weight: 500;
 
     &:hover {
-      background: var(--color-fill-surfaceHover);
-      color: var(--color-white);
+      background: rgba(var(--color-fill-surfaceHover));
+      color: rgba(var(--color-textIcon-strong));
     }
 
     > p {

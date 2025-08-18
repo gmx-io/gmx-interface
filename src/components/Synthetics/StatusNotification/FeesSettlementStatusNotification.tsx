@@ -146,7 +146,7 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
               <span>{order.isLong ? t`Long` : t`Short`}</span>{" "}
               <div className="inline-flex">
                 <span>{indexName}</span>
-                <span className="subtext gm-toast !text-white">[{poolName}]</span>
+                <span className="subtext gm-toast !text-textIcon-strong">[{poolName}]</span>
               </div>
             </Trans>
           );

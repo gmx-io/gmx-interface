@@ -10,12 +10,12 @@
 
 .TradeFeesRow-warning-tooltip {
   .Tooltip-handle {
-    color: var(--color-yellow-500);
-    text-decoration-color: var(--color-yellow-500);
+    color: rgba(var(--color-yellow-500));
+    text-decoration-color: rgba(var(--color-yellow-500));
   }
 
   .Tooltip-popup {
-    color: var(--color-white);
+    color: rgba(var(--color-textIcon-strong));
   }
 }
 

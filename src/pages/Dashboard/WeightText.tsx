@@ -57,7 +57,7 @@ export function WeightText({
           />
           <br />
           {currentWeightBps < targetWeightBps && (
-            <div className="text-white">
+            <div className="text-textIcon-strong">
               <Trans>
                 {tokenInfo.symbol} is below its target weight.
                 <br />
@@ -75,7 +75,7 @@ export function WeightText({
             </div>
           )}
           {currentWeightBps > targetWeightBps && (
-            <div className="text-white">
+            <div className="text-textIcon-strong">
               <Trans>
                 {tokenInfo.symbol} is above its target weight.
                 <br />

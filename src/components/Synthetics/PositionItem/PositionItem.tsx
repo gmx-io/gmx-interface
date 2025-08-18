@@ -841,7 +841,7 @@ function PositionItemOrder({
       disabled={isDisabled}
       onClick={cancel}
     >
-      <MdClose fontSize={16} className={cx({ "text-slate-100": isDisabled, "text-white": !isDisabled })} />
+      <MdClose fontSize={16} className={cx({ "text-slate-100": isDisabled, "text-textIcon-strong": !isDisabled })} />
     </Button>
   );
 

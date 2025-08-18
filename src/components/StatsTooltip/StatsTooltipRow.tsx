@@ -15,7 +15,7 @@ export type StatsTooltipRowProps = {
 export default function StatsTooltipRow({
   label,
   value,
-  textClassName = "text-white",
+  textClassName = "text-textIcon-strong",
   labelClassName = "text-slate-100",
   showDollar = true,
   unit,
@@ -24,7 +24,7 @@ export default function StatsTooltipRow({
   function renderValue() {
     if (Array.isArray(value)) {
       return (
-        <ul className="Tooltip-row-values text-white">
+        <ul className="Tooltip-row-values text-textIcon-strong">
           {value.map((v, i) => (
             <li className={textClassName} key={i}>
               {v}

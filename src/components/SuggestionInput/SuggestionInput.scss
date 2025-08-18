@@ -1,4 +1,4 @@
-$suggestion-input-hover-background: var(--color-fill-surfaceElevatedHover);
+$suggestion-input-hover-background: rgba(var(--color-fill-surfaceElevatedHover));
 
 .Suggestion-input-wrapper {
   position: relative;
@@ -11,28 +11,28 @@ $suggestion-input-hover-background: var(--color-fill-surfaceElevatedHover);
     padding: 0;
     margin-top: 1.5px;
     top: 100%;
-    background-color: var(--color-slate-900);
+    background-color: rgba(var(--color-slate-900));
     z-index: 1002;
     overflow: hidden;
     font-size: 13px;
     font-weight: 500;
-    border: 0.5px solid var(--color-slate-600);
+    border: 0.5px solid rgba(var(--color-slate-600));
 
     li {
       padding: 0.5rem 0.75rem;
       cursor: pointer;
       text-align: center;
       &:hover {
-        background: var(--color-slate-800);
+        background: rgba(var(--color-slate-800));
       }
     }
   }
   .Suggestion-input {
-    border: 1px solid var(--color-slate-800);
+    border: 1px solid rgba(var(--color-slate-800));
     border-radius: var(--border-radius-sm);
     line-height: 1.3;
-    color: var(--color-gray-400);
-    background: var(--color-slate-800);
+    color: rgba(var(--color-gray-400));
+    background: rgba(var(--color-slate-800));
     font-size: 13px;
 
     label {
@@ -45,14 +45,14 @@ $suggestion-input-hover-background: var(--color-fill-surfaceElevatedHover);
       border: 1px solid #19192b;
     }
     &:focus {
-      border-color: var(--color-blue-300);
+      border-color: rgba(var(--color-blue-300));
     }
     &:focus-within {
-      border-color: var(--color-blue-300);
+      border-color: rgba(var(--color-blue-300));
     }
 
     &.input-error {
-      border-color: var(--color-red-500);
+      border-color: rgba(var(--color-red-500));
     }
 
     input {
@@ -60,9 +60,9 @@ $suggestion-input-hover-background: var(--color-fill-surfaceElevatedHover);
       font-size: 13px;
       line-height: 1.3;
       border-radius: 4px;
-      color: var(--color-white);
+      color: rgba(var(--color-textIcon-strong));
       &::placeholder {
-        color: var(--color-slate-100);
+        color: rgba(var(--color-slate-100));
       }
     }
   }

@@ -255,7 +255,7 @@ export function Curtain({
             <button onClick={handleToggle} className="group p-10">
               <FaChevronDown
                 className={cx(
-                  "text-slate-100 transition-transform duration-500 ease-out group-hover:text-white",
+                  "text-slate-100 transition-transform duration-500 ease-out group-hover:text-textIcon-strong",
                   isOpen ? undefined : "rotate-180"
                 )}
               />

@@ -1111,7 +1111,7 @@ export default function PositionSeller(props) {
                       position="top-start"
                       renderContent={() => {
                         return (
-                          <div className="text-white">
+                          <div className="text-textIcon-strong">
                             <Trans>
                               You can change this in the settings menu on the top right of the page.
                               <br />

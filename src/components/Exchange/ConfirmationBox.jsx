@@ -73,7 +73,7 @@ function renderAllowedSlippage(setAllowedSlippage, defaultSlippage, allowedSlipp
           position="top-start"
           renderContent={() => {
             return (
-              <div className="text-white">
+              <div className="text-textIcon-strong">
                 <Trans>
                   You can edit the default allowed slippage in the settings menu on the top right of the page.
                   <br />

@@ -136,7 +136,10 @@ export default function DashboardV2() {
                 >
                   <V2Icon className="size-15" /> Analytics
                 </ExternalLink>
-                <Link className="flex items-center gap-4 text-slate-100 !no-underline hover:text-white" to="/monitor">
+                <Link
+                  className="flex items-center gap-4 text-slate-100 !no-underline hover:text-textIcon-strong"
+                  to="/monitor"
+                >
                   <V2Icon className="size-15" /> Pools Stats
                 </Link>
               </div>

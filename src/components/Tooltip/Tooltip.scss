@@ -14,14 +14,14 @@
   text-align: left;
   white-space: normal;
   background: linear-gradient(0deg, #a0a3c41a, #a0a3c41a),
-    linear-gradient(0deg, var(--color-slate-800), var(--color-slate-800));
+    linear-gradient(0deg, rgba(var(--color-slate-800)), rgba(var(--color-slate-800)));
   backdrop-filter: blur(14px);
   box-shadow: 0px 4px 14px 0px #00000040;
   z-index: 10000;
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
 
   a {
-    color: var(--color-gray-300);
+    color: rgba(var(--color-gray-300));
     text-decoration: underline;
   }
 }
@@ -129,12 +129,12 @@
   text-decoration-style: dashed;
   text-decoration-thickness: 0.5px;
   text-underline-offset: 1.75px;
-  text-decoration-color: var(--color-slate-100);
+  text-decoration-color: rgba(var(--color-slate-100));
 }
 
 .Tooltip-divider {
   height: 1px;
-  background-color: var(--color-gray-500);
+  background-color: rgba(var(--color-gray-500));
   margin: 0.5rem 0;
 }
 
@@ -160,7 +160,7 @@
 }
 
 .Tooltip-number {
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
 }
 
 .Tooltip-flex {

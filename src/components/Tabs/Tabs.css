@@ -4,8 +4,8 @@
   font-size: var(--font-size-body-medium);
   border-radius: 3px;
   overflow: hidden;
-  color: var(--color-slate-100);
-  background: var(--color-cold-blue-900);
+  color: rgba(var(--color-slate-100));
+  background: rgba(var(--color-cold-blue-900));
   box-shadow: inset 0px 0px 30px 5px rgba(255, 255, 255, 0.01);
 }
 
@@ -26,15 +26,15 @@
 }
 
 .Tab.Tab__block .Tab-option:not(.disabled):not(.active):hover {
-  color: var(--color-white);
-  background: var(--color-cold-blue-700);
+  color: rgba(var(--color-textIcon-strong));
+  background: rgba(var(--color-cold-blue-700));
 }
 
 .Tab.Tab__block .Tab-option.active {
   opacity: 1;
   pointer-events: none;
-  background: var(--color-cold-blue-500);
-  color: var(--color-white);
+  background: rgba(var(--color-cold-blue-500));
+  color: rgba(var(--color-textIcon-strong));
 }
 
 .Tab.Tab__block .Tab-option.active .Tab-option-icon {
@@ -56,15 +56,15 @@
   display: inline-block;
   margin-right: 1.5rem;
   font-size: var(--font-size-body-medium);
-  color: var(--color-slate-100);
+  color: rgba(var(--color-slate-100));
 }
 
 .Tab.Tab__inline .Tab-option:not(.disabled):not(.active):hover {
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
 }
 
 .Tab.Tab__inline .Tab-option.active {
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
   pointer-events: none;
 }
 

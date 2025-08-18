@@ -8,7 +8,7 @@
 }
 
 .ExchangeBanner-text {
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
   font-size: 1.8rem;
   line-height: 2.3rem;
   margin: 0;
@@ -19,7 +19,7 @@
 }
 
 .ExchangeBanner-link {
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
 }
 
 .ExchangeBanner-close {

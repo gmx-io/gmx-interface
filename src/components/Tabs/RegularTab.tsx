@@ -33,7 +33,7 @@ export default function RegularTab<V extends string | number>({
         key={option.value}
         data-qa={qa ? `${qa}-tab-${option.value}` : undefined}
         className={cx(optionClassName, regularOptionClassname, {
-          "!text-white": isActive,
+          "!text-textIcon-strong": isActive,
         })}
       >
         {option.icon && <span className="mt-2 scale-75 opacity-70">{option.icon}</span>}
@@ -46,11 +46,11 @@ export default function RegularTab<V extends string | number>({
     <button
       className={cx(
         `-mb-[1px] flex items-center justify-center gap-8 border-b-2 border-b-[transparent] px-20 py-10
-        font-medium text-slate-100 first:rounded-tl-8 last:rounded-tr-8 hover:text-white`,
+        font-medium text-slate-100 first:rounded-tl-8 last:rounded-tr-8 hover:text-textIcon-strong`,
         optionClassName,
         regularOptionClassname,
         {
-          "text-white": isActive,
+          "text-textIcon-strong": isActive,
           "border-b-2 border-b-blue-300": isActive,
         }
       )}

@@ -1,11 +1,11 @@
 .App-header-network {
   position: relative;
-  border: 0.5px solid var(--color-slate-600);
+  border: 0.5px solid rgba(var(--color-slate-600));
   border-radius: var(--border-radius-sm);
   height: 3.6rem;
   display: inline-flex;
   align-items: center;
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
 }
 
 .App-header-language {
@@ -24,7 +24,7 @@
 }
 
 .network-dropdown-divider {
-  border-bottom: 1px solid var(--color-slate-600);
+  border-bottom: 1px solid rgba(var(--color-slate-600));
 }
 .App-header-network:hover {
   background: var(--dark-blue-hover);
@@ -68,7 +68,7 @@
 .network-option {
   cursor: pointer;
   background: var(--dark-blue);
-  border: 0.5px solid var(--color-slate-600);
+  border: 0.5px solid rgba(var(--color-slate-600));
   border-radius: 0.4rem;
   padding: 0.8rem 1.5rem;
   display: flex;
@@ -86,18 +86,18 @@
   font-size: var(--font-size-body-medium);
   line-height: var(--line-height-body-medium);
   letter-spacing: 0.29px;
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
 }
 
 .network-option-img-label {
   font-size: var(--font-size-body-medium);
   line-height: var(--line-height-body-medium);
   letter-spacing: 0.29px;
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
 }
 
 .dropdown-label {
-  color: var(--color-slate-100);
+  color: rgba(var(--color-slate-100));
   padding: 0.8rem;
   font-size: var(--font-size-body-small);
   line-height: var(--line-height-body-small);
@@ -141,7 +141,7 @@
 }
 
 .menu-item:hover .menu-item-label {
-  color: var(--color-gray-50);
+  color: rgba(var(--color-gray-50));
 }
 
 .active-dot {

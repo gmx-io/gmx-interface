@@ -26,7 +26,7 @@ $app-card-padding: 1.5rem;
   padding-left: 3.2rem;
   padding-right: 3.2rem;
   background: transparent 0% 0% no-repeat padding-box;
-  border-bottom: 1px solid var(--color-slate-700);
+  border-bottom: 1px solid rgba(var(--color-slate-700));
   z-index: 1;
 }
 
@@ -76,7 +76,7 @@ $app-card-padding: 1.5rem;
 }
 
 .App-header-menu-icon {
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
   font-size: 2rem;
   cursor: pointer;
   opacity: 0.7;
@@ -106,7 +106,7 @@ $app-card-padding: 1.5rem;
 .App-box-solid {
   position: relative;
   border-radius: 8px;
-  background: var(--color-slate-900);
+  background: rgba(var(--color-slate-900));
   font-size: var(--font-size-body-medium);
 }
 
@@ -137,7 +137,7 @@ $app-card-padding: 1.5rem;
 .App-card-divider-vertical {
   width: 0.5px;
   height: 8.8rem;
-  background: var(--color-slate-600);
+  background: rgba(var(--color-slate-600));
 }
 
 .App-card-title-block {
@@ -159,13 +159,13 @@ $app-card-padding: 1.5rem;
 .App-card-info-title {
   font-weight: normal;
   letter-spacing: 0px;
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
 }
 
 .App-card-info-subtitle {
   font-weight: normal;
   letter-spacing: 0px;
-  color: var(--color-gray-400);
+  color: rgba(var(--color-gray-400));
 }
 
 .App-card-title-iconlist {
@@ -189,10 +189,10 @@ $app-card-padding: 1.5rem;
   background: var(--dark-blue);
   height: 5.1rem;
   width: 26.35rem;
-  border: 0.5px solid var(--color-slate-600);
+  border: 0.5px solid rgba(var(--color-slate-600));
   border-radius: 0.3rem;
   position: relative;
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
   font-size: 2rem;
   display: grid;
   grid-template-columns: auto 1fr;
@@ -240,7 +240,7 @@ button.App-connect-wallet {
   font-weight: 500;
   padding: 0.9rem 2.4rem;
   height: 3.6rem;
-  color: var(--color-slate-800);
+  color: rgba(var(--color-slate-800));
   background: #03cfcd 0% 0% no-repeat padding-box;
   border-radius: 0.4rem;
 }
@@ -254,23 +254,23 @@ button.App-connect-wallet:hover {
 }
 
 .App-header-user-address {
-  border: 0.5px solid var(--color-slate-600);
+  border: 0.5px solid rgba(var(--color-slate-600));
   height: 3.6rem;
   border-radius: 0.4rem;
   display: inline-flex;
   align-items: center;
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
   position: relative;
 }
 
 .mobile-menu-divider {
   height: 1px;
-  background: var(--color-slate-100);
+  background: rgba(var(--color-slate-100));
 }
 
 .App-card-divider {
   height: 0.5px;
-  background: var(--color-slate-600);
+  background: rgba(var(--color-slate-600));
   margin: 1.05rem -1.5rem;
 
   &:last-child {
@@ -284,7 +284,7 @@ button.App-connect-wallet:hover {
 
 .line-divider {
   height: 1px;
-  background: var(--color-slate-700);
+  background: rgba(var(--color-slate-700));
   margin: 1.5rem 0;
 }
 
@@ -334,7 +334,7 @@ button.App-connect-wallet:hover {
 .section-title-content .section-title-content__title {
   font-size: var(--font-size-body-large);
   line-height: 3.1rem;
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
   letter-spacing: 0px;
 }
 
@@ -342,14 +342,14 @@ button.App-connect-wallet:hover {
   font-size: 1.8rem;
   line-height: 2.3rem;
   letter-spacing: 0px;
-  color: var(--color-slate-100);
+  color: rgba(var(--color-slate-100));
   margin-top: 0.4rem;
   max-width: 62rem;
 }
 
 .section-title-content .section-title-content__description span {
   cursor: pointer;
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
 }
 
 .Page-title-section {
@@ -377,7 +377,7 @@ button.App-connect-wallet:hover {
 }
 
 .Page-description {
-  color: var(--color-slate-100);
+  color: rgba(var(--color-slate-100));
   font-size: var(--font-size-body-medium);
   line-height: var(--line-height-body-medium);
 }
@@ -391,7 +391,7 @@ button.App-connect-wallet:hover {
 }
 
 .Page-description span:hover {
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
   opacity: 0.9;
 }
 
@@ -430,7 +430,7 @@ button.App-connect-wallet:hover {
   font-size: var(--font-size-body-large);
   font-weight: 500;
   letter-spacing: -0.012em;
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
   margin-bottom: $app-card-padding;
   display: flex;
   align-items: center;
@@ -517,20 +517,20 @@ button.App-connect-wallet:hover {
 .App-header a.active {
   pointer-events: none;
   opacity: 1;
-  color: var(--color-gray-50);
+  color: rgba(var(--color-gray-50));
 }
 
 .App-header .a:hover,
 .App-header a:hover {
   opacity: 1;
-  color: var(--color-gray-50);
+  color: rgba(var(--color-gray-50));
 }
 
 .App-header-container-left .a,
 .App-header-container-left a {
   padding: 1.8rem 1.7rem;
   display: block;
-  color: var(--color-slate-100);
+  color: rgba(var(--color-slate-100));
   font-size: var(--font-size-body-medium);
   line-height: 1.8rem;
   font-weight: normal;
@@ -538,7 +538,7 @@ button.App-connect-wallet:hover {
 
 .App-header-container-left .a.active,
 .App-header-container-left a.active {
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
 }
 
 .Toastify__toast-container--top-right {
@@ -681,9 +681,9 @@ button.App-connect-wallet:hover {
 
 a.App-cta,
 button.App-cta {
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
   text-decoration: none;
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, var(--color-blue-700) 100%);
+  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(var(--color-blue-700)) 100%);
 }
 
 .App-cta.small {
@@ -694,13 +694,13 @@ a.App-cta.transparent,
 button.App-cta.transparent {
   box-shadow: none;
   background: none;
-  color: var(--color-gray-400);
+  color: rgba(var(--color-gray-400));
   opacity: 1;
 }
 
 a.App-cta.transparent:hover,
 button.App-cta.transparent:hover:enabled {
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
   box-shadow: none;
   background: none;
 }
@@ -719,7 +719,7 @@ button.App-button-option {
   line-height: 2rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
   padding-left: 16px;
   padding-right: 16px;
   text-decoration: none;
@@ -779,7 +779,7 @@ a.App-social-link {
   margin-left: 1.1rem;
   margin-right: 1.1rem;
   font-size: 2.635rem;
-  color: var(--color-white);
+  color: rgba(var(--color-textIcon-strong));
   opacity: 0.8;
 }
 
@@ -848,21 +848,21 @@ button.App-button {
 }
 
 .Toastify__toast--error {
-  background: var(--color-red-900);
-  border-bottom: 2px solid var(--color-red-500);
+  background: rgba(var(--color-red-900));
+  border-bottom: 2px solid rgba(var(--color-red-500));
 
   .link-underline {
-    color: var(--color-white) !important;
+    color: rgba(var(--color-white)) !important;
   }
 }
 
 .Toastify__toast--success {
-  background: var(--color-green-900);
-  border-bottom: 2px solid var(--color-green-500);
+  background: rgba(var(--color-green-900));
+  border-bottom: 2px solid rgba(var(--color-green-500));
 }
 
 .Toastify__toast--default {
-  background: var(--color-cold-blue-900);
+  background: rgba(var(--color-cold-blue-900));
 }
 
 .Toastify__toast .Toastify__close-button:hover {
@@ -882,7 +882,7 @@ button.App-button {
   z-index: 2;
 }
 .Toastify__close-button:hover {
-  background: var(--color-gray-700) 0% 0% no-repeat padding-box;
+  background: rgba(var(--color-gray-700)) 0% 0% no-repeat padding-box;
 }
 .Toastify__toast-body {
   font: normal normal normal 1.4rem/1.6rem "TTHoves";
@@ -934,7 +934,7 @@ button.App-button {
 }
 
 .positive {
-  color: var(--color-green-500);
+  color: rgba(var(--color-green-500));
 }
 
 .positive-background {
@@ -950,11 +950,11 @@ button.App-button {
 }
 
 .warning {
-  color: var(--color-yellow-500);
+  color: rgba(var(--color-yellow-500));
 }
 
 .warning-decoration {
-  text-decoration-color: var(--color-yellow-500);
+  text-decoration-color: rgba(var(--color-yellow-500));
 }
 
 .App-warning,
@@ -971,7 +971,7 @@ button.App-button {
 }
 
 .App-slider .rc-slider-track {
-  background: linear-gradient(90deg, #2e3dcd, var(--color-blue-600));
+  background: linear-gradient(90deg, #2e3dcd, rgba(var(--color-blue-600)));
 }
 
 .App-slider .rc-slider-dot {
@@ -983,12 +983,12 @@ button.App-button {
 }
 
 .App-slider .rc-slider-dot-active {
-  background: var(--color-blue-500);
+  background: rgba(var(--color-blue-500));
 }
 
 .App-slider .rc-slider-handle {
-  background: var(--color-slate-600);
-  border: 2px solid var(--color-blue-600);
+  background: rgba(var(--color-slate-600));
+  border: 2px solid rgba(var(--color-blue-600));
 }
 
 .App-slider .rc-slider-handle:active {
@@ -997,7 +997,7 @@ button.App-button {
 
 .App-slider .rc-slider-mark-text,
 .App-slider .rc-slider-mark-text-active {
-  color: var(--color-slate-100);
+  color: rgba(var(--color-slate-100));
   opacity: 0.5;
 }
 
@@ -1023,7 +1023,7 @@ button.App-button {
 }
 
 .header-connect-btn {
-  background: var(--color-blue-600);
+  background: rgba(var(--color-blue-600));
 }
 
 .header-connect-btn:hover {
@@ -1032,7 +1032,7 @@ button.App-button {
 
 .header-connect-btn:focus {
   background: #7a7fec;
-  border: 1px solid var(--color-blue-600);
+  border: 1px solid rgba(var(--color-blue-600));
   box-sizing: border-box;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
@@ -1136,7 +1136,7 @@ button.App-button {
     padding-left: 1.6rem;
     padding-right: 1.6rem;
     background: transparent 0% 0% no-repeat padding-box;
-    border-bottom: 1px solid var(--color-slate-700);
+    border-bottom: 1px solid rgba(var(--color-slate-700));
   }
 
   .App-header.small::after {
@@ -1230,7 +1230,7 @@ button.App-button {
 }
 
 .walletconnect-modal__mobile__toggle a {
-  color: var(--color-black);
+  color: rgba(var(--color-black));
 }
 .walletconnect-modal__base {
   max-height: 100%;

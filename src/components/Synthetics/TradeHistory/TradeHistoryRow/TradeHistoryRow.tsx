@@ -219,7 +219,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
               {showDebugValues && (
                 <Link
                   to={`/parsetx/${NETWORKS_BY_CHAIN_IDS[chainId]}/${tradeAction.transaction.hash}`}
-                  className="text-body-small ml-5 text-slate-100 hover:text-white"
+                  className="text-body-small ml-5 text-slate-100 hover:text-textIcon-strong"
                 >
                   Events
                 </Link>

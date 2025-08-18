@@ -25,7 +25,7 @@
 
     border-radius: 8px;
     background-color: var(--dark-blue-bg);
-    border: 0.5px solid var(--color-slate-600);
+    border: 0.5px solid rgba(var(--color-slate-600));
     overflow: hidden;
   }
 }
@@ -34,7 +34,7 @@
   &-row {
     &-disabled {
       cursor: not-allowed;
-      color: var(--color-slate-600);
+      color: rgba(var(--color-slate-600));
     }
   }
 
@@ -53,20 +53,20 @@
 
     color: inherit;
     font-size: var(--font-size-body-medium);
-    background-color: var(--color-slate-800);
+    background-color: rgba(var(--color-slate-800));
     border-radius: var(--border-radius-sm);
     padding: 8px 16px;
     font-weight: 500;
 
     &:hover,
     &:active {
-      background: var(--color-slate-700);
+      background: rgba(var(--color-slate-700));
       box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
     }
 
     &-disabled {
       cursor: not-allowed;
-      color: var(--color-slate-100);
+      color: rgba(var(--color-slate-100));
 
       .Token-icon {
         opacity: 0.5;

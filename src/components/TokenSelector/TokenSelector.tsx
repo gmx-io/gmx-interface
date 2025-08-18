@@ -195,7 +195,7 @@ export default function TokenSelector(props: Props) {
     <div className={cx("TokenSelector text-body-medium", props.className)} onClick={(event) => event.stopPropagation()}>
       <SlideModal
         qa={qa + "-modal"}
-        className="TokenSelector-modal text-white"
+        className="TokenSelector-modal text-textIcon-strong"
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={props.label}

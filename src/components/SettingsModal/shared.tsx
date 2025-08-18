@@ -122,7 +122,7 @@ export function SettingButton({
         className={cx(
           "flex items-center justify-center text-slate-100",
           disabled && "opacity-50",
-          active && "text-white"
+          active && "text-textIcon-strong"
         )}
       >
         {icon}

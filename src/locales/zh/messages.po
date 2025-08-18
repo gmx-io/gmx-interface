@@ -5541,8 +5541,7 @@ msgstr "30 天"
 msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
 msgstr ""
 
-#: src/components/SideNav/MobileSideNav.tsx
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/ThemeNavItem.tsx
 msgid "Light Mode"
 msgstr ""
 
@@ -7326,8 +7325,7 @@ msgstr "选择支付代币"
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr "可用流动性将是储备和未平仓利息的最大值与当前值之间差额的较小值。"
 
-#: src/components/SideNav/MobileSideNav.tsx
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/ThemeNavItem.tsx
 msgid "Dark Mode"
 msgstr ""
 
