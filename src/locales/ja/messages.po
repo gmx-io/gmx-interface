@@ -908,6 +908,10 @@ msgstr ""
 msgid "Pay"
 msgstr "支払い"
 
+#: landing/src/HeroSection/AnimatedTitle.tsx
+msgid "from 6+ blockchains"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Governance Page"
 msgstr "GMXのガバナンスページ"
@@ -2328,10 +2332,6 @@ msgstr ""
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {このポジションに影響する可能性のあるアクティブなトリガー注文があります。} other {このポジションに影響する可能性のあるアクティブなトリガー注文が#あります。}}"
 
-#: landing/src/HeroSection/HeroSection.tsx
-msgid "Trade with"
-msgstr ""
-
 #: landing/src/RoadmapSection/Quareters.tsx
 msgid "<0>Multichain</0><1>Botanix Support</1><2>GMX Express</2>"
 msgstr ""
@@ -2535,7 +2535,7 @@ msgstr "請求額"
 msgid "Job openings at GMX."
 msgstr "GMXの求人"
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "Trade from your wallet"
 msgstr ""
 
@@ -2883,11 +2883,12 @@ msgstr "{0}の最大プールキャパシティ到達。別のトークンを使
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr ""
 
+#: landing/src/HeroSection/HeroSection.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Trade"
 msgstr "トレード"
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "No deposits required"
 msgstr ""
 
@@ -2901,10 +2902,6 @@ msgstr ""
 
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
 msgid "V2 doesn't currently support this network"
-msgstr ""
-
-#: landing/src/HeroSection/HeroSection.tsx
-msgid "100x leverage from your wallet"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -3052,6 +3049,10 @@ msgstr ""
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
 msgstr "esGMX (IOU)は移転可能です。自分のウォレットに加えてから別のアドレスに移してトークンを請求することもできます。"
+
+#: landing/src/LiqiuditySection/LiqiuditySection.tsx
+msgid "Join 14000 users earning real yield."
+msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Self-transfer not supported"
@@ -3728,7 +3729,7 @@ msgstr ""
 msgid "Opening..."
 msgstr "オープン中..."
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "Secure & Permissionless"
 msgstr ""
 
@@ -3952,7 +3953,7 @@ msgstr ""
 msgid "Vesting Status"
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "Guaranteed Liquidity"
 msgstr ""
 
@@ -3993,6 +3994,10 @@ msgstr ""
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "Net Rate / 1h"
 msgstr "ネットレート / 1時間"
+
+#: landing/src/HeroSection/HeroSection.tsx
+msgid "from your wallet"
+msgstr ""
 
 #: src/pages/Stake/ClaimModal.tsx
 msgid "Claim esGMX Rewards"
@@ -4335,7 +4340,7 @@ msgstr ""
 msgid "Execute order simulation failed."
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "Support for"
 msgstr ""
 
@@ -4513,7 +4518,7 @@ msgstr "メディアキット"
 msgid "UniDex Leverage"
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "Numerous Assets"
 msgstr ""
 
@@ -4928,7 +4933,7 @@ msgstr "べスティングオプションを選択して\"請求\"をクリッ�
 msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "Save on Costs"
 msgstr "コスト削減"
 
@@ -5479,7 +5484,7 @@ msgstr "最大 {0} in"
 msgid "Stop Loss Decrease"
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "Trade with confidence"
 msgstr ""
 
@@ -5913,7 +5918,7 @@ msgstr ""
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 #: landing/src/HeroSection/HeroSection.tsx
 msgid "Trade Now"
 msgstr ""
@@ -6698,6 +6703,10 @@ msgstr ""
 msgid "Current Price"
 msgstr ""
 
+#: landing/src/HeroSection/AnimatedTitle.tsx
+msgid "70+ crypto tokens"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Enter NFT ID"
 msgstr "NFT IDを入力"
@@ -6717,6 +6726,10 @@ msgstr "指値"
 
 #: src/components/AddressView/AddressView.tsx
 msgid "You"
+msgstr ""
+
+#: landing/src/HeroSection/AnimatedTitle.tsx
+msgid "with 100x leverage"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -6877,7 +6890,7 @@ msgstr ""
 msgid "Liquidity incentives program is live on {avalancheLink}."
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "keep more of what you earn"
 msgstr ""
 
@@ -7233,6 +7246,10 @@ msgstr "出金失敗"
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr ""
 
+#: landing/src/HeroSection/AnimatedTitle.tsx
+msgid "deep liquid market"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Freeze"
 msgstr ""
@@ -7488,7 +7505,7 @@ msgstr ""
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>There is no price impact. There is a single<3/>execution price for decreasing longs for<4/>this size."
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "Seamless Trading"
 msgstr ""
 
@@ -7707,7 +7724,7 @@ msgstr ""
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "No loss of fund ownership"
 msgstr ""
 
@@ -8298,7 +8315,7 @@ msgstr ""
 msgid "{column}"
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "Stay Safe from <0/> Liquidations"
 msgstr ""
 
@@ -8605,10 +8622,6 @@ msgstr ""
 msgid "Limit"
 msgstr "指値"
 
-#: landing/src/LiqiuditySection/LiqiuditySection.tsx
-msgid "Deposited by 13 654 users."
-msgstr ""
-
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact."
 msgstr ""
@@ -8643,6 +8656,10 @@ msgstr "売却中..."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute as the max. allowed leverage is exceeded. Consider decreasing the order's leverage by editing and decreasing its size. <0>Read more</0>."
+msgstr ""
+
+#: landing/src/HeroSection/AnimatedTitle.tsx
+msgid "multiple asset classes"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx

@@ -908,6 +908,10 @@ msgstr "Liq. {0} {longOrShortText}"
 msgid "Pay"
 msgstr "Pay"
 
+#: landing/src/HeroSection/AnimatedTitle.tsx
+msgid "from 6+ blockchains"
+msgstr "from 6+ blockchains"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Governance Page"
 msgstr "GMX Governance Page"
@@ -2328,10 +2332,6 @@ msgstr "{positionName} Fees settling"
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 
-#: landing/src/HeroSection/HeroSection.tsx
-msgid "Trade with"
-msgstr "Trade with"
-
 #: landing/src/RoadmapSection/Quareters.tsx
 msgid "<0>Multichain</0><1>Botanix Support</1><2>GMX Express</2>"
 msgstr "<0>Multichain</0><1>Botanix Support</1><2>GMX Express</2>"
@@ -2535,7 +2535,7 @@ msgstr "Amount to claim"
 msgid "Job openings at GMX."
 msgstr "Job openings at GMX."
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "Trade from your wallet"
 msgstr "Trade from your wallet"
 
@@ -2883,11 +2883,12 @@ msgstr "Max pool capacity reached for {0}. Please mint GLP using another token"
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 
+#: landing/src/HeroSection/HeroSection.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Trade"
 msgstr "Trade"
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "No deposits required"
 msgstr "No deposits required"
 
@@ -2902,10 +2903,6 @@ msgstr "Max leverage without PnL: {0}x"
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
 msgid "V2 doesn't currently support this network"
 msgstr "V2 doesn't currently support this network"
-
-#: landing/src/HeroSection/HeroSection.tsx
-msgid "100x leverage from your wallet"
-msgstr "100x leverage from your wallet"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -3052,6 +3049,10 @@ msgstr "How can we continue to meet your expectations?"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
 msgstr "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
+
+#: landing/src/LiqiuditySection/LiqiuditySection.tsx
+msgid "Join 14000 users earning real yield."
+msgstr "Join 14000 users earning real yield."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Self-transfer not supported"
@@ -3728,7 +3729,7 @@ msgstr "Unsupported network"
 msgid "Opening..."
 msgstr "Opening..."
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "Secure & Permissionless"
 msgstr "Secure & Permissionless"
 
@@ -3955,7 +3956,7 @@ msgstr ""
 msgid "Vesting Status"
 msgstr "Vesting Status"
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "Guaranteed Liquidity"
 msgstr "Guaranteed Liquidity"
 
@@ -3996,6 +3997,10 @@ msgstr "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "Net Rate / 1h"
 msgstr "Net Rate / 1h"
+
+#: landing/src/HeroSection/HeroSection.tsx
+msgid "from your wallet"
+msgstr "from your wallet"
 
 #: src/pages/Stake/ClaimModal.tsx
 msgid "Claim esGMX Rewards"
@@ -4338,7 +4343,7 @@ msgstr "UI Fee"
 msgid "Execute order simulation failed."
 msgstr "Execute order simulation failed."
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "Support for"
 msgstr "Support for"
 
@@ -4516,7 +4521,7 @@ msgstr "Media Kit"
 msgid "UniDex Leverage"
 msgstr "UniDex Leverage"
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "Numerous Assets"
 msgstr "Numerous Assets"
 
@@ -4931,7 +4936,7 @@ msgstr "Select your vesting option below then click \"Claim\"."
 msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 msgstr "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "Save on Costs"
 msgstr "Save on Costs"
 
@@ -5482,7 +5487,7 @@ msgstr "Max {0} in"
 msgid "Stop Loss Decrease"
 msgstr "Stop Loss Decrease"
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "Trade with confidence"
 msgstr "Trade with confidence"
 
@@ -5916,7 +5921,7 @@ msgstr "Tier {0} ({currentTierDiscount}% discount)"
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
 msgstr "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 #: landing/src/HeroSection/HeroSection.tsx
 msgid "Trade Now"
 msgstr "Trade Now"
@@ -6704,6 +6709,10 @@ msgstr "Kudai AI Agent"
 msgid "Current Price"
 msgstr "Current Price"
 
+#: landing/src/HeroSection/AnimatedTitle.tsx
+msgid "70+ crypto tokens"
+msgstr "70+ crypto tokens"
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Enter NFT ID"
 msgstr "Enter NFT ID"
@@ -6724,6 +6733,10 @@ msgstr "Limit Price"
 #: src/components/AddressView/AddressView.tsx
 msgid "You"
 msgstr "You"
+
+#: landing/src/HeroSection/AnimatedTitle.tsx
+msgid "with 100x leverage"
+msgstr "with 100x leverage"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options."
@@ -6883,7 +6896,7 @@ msgstr "Stop Loss"
 msgid "Liquidity incentives program is live on {avalancheLink}."
 msgstr "Liquidity incentives program is live on {avalancheLink}."
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "keep more of what you earn"
 msgstr "keep more of what you earn"
 
@@ -7239,6 +7252,10 @@ msgstr "Failed Withdraw"
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 
+#: landing/src/HeroSection/AnimatedTitle.tsx
+msgid "deep liquid market"
+msgstr "deep liquid market"
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Freeze"
 msgstr "Freeze"
@@ -7494,7 +7511,7 @@ msgstr "Avg. Lev."
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>There is no price impact. There is a single<3/>execution price for decreasing longs for<4/>this size."
 msgstr "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>There is no price impact. There is a single<3/>execution price for decreasing longs for<4/>this size."
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "Seamless Trading"
 msgstr "Seamless Trading"
 
@@ -7713,7 +7730,7 @@ msgstr "Success claimings"
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr "Decentralized Perpetual Exchange | GMX"
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "No loss of fund ownership"
 msgstr "No loss of fund ownership"
 
@@ -8304,7 +8321,7 @@ msgstr "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay}
 msgid "{column}"
 msgstr "{column}"
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/HeroSection/Features.tsx
 msgid "Stay Safe from <0/> Liquidations"
 msgstr "Stay Safe from <0/> Liquidations"
 
@@ -8611,10 +8628,6 @@ msgstr "Anonymous chat with GMX"
 msgid "Limit"
 msgstr "Limit"
 
-#: landing/src/LiqiuditySection/LiqiuditySection.tsx
-msgid "Deposited by 13 654 users."
-msgstr "Deposited by 13 654 users."
-
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact."
 msgstr "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact."
@@ -8650,6 +8663,10 @@ msgstr "Selling..."
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute as the max. allowed leverage is exceeded. Consider decreasing the order's leverage by editing and decreasing its size. <0>Read more</0>."
 msgstr "The order may not execute as the max. allowed leverage is exceeded. Consider decreasing the order's leverage by editing and decreasing its size. <0>Read more</0>."
+
+#: landing/src/HeroSection/AnimatedTitle.tsx
+msgid "multiple asset classes"
+msgstr "multiple asset classes"
 
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionSeller.jsx
