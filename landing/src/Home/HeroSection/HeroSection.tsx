@@ -1,9 +1,9 @@
 import { Trans } from "@lingui/macro";
 
-import { useHomePageContext } from "landing/contexts/HomePageContext";
-import { useTotalVolume } from "landing/hooks/useTotalVolume";
-import { useTraders } from "landing/hooks/useTraders";
-import { shortFormat, shortFormatUsd } from "landing/utils/formatters";
+import { useHomePageContext } from "landing/Home/contexts/HomePageContext";
+import { useTotalVolume } from "landing/Home/hooks/useTotalVolume";
+import { useTraders } from "landing/Home/hooks/useTraders";
+import { shortFormat, shortFormatUsd } from "landing/Home/utils/formatters";
 
 import IcLinkArrow from "img/ic_link_arrow.svg?react";
 import IcMidChevron from "img/ic_mid_chevron.svg?react";

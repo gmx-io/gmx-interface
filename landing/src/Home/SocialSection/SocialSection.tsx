@@ -1,8 +1,8 @@
 import { Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
-import { SOCIAL_MAP } from "landing/constants/SociaLinks";
-import { shortFormat } from "landing/utils/formatters";
+import { SOCIAL_MAP } from "landing/Home/constants/SociaLinks";
+import { shortFormat } from "landing/Home/utils/formatters";
 
 import TradingViewIcon from "img/ic_trading_view.svg?react";
 

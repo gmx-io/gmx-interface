@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import React from "react";
 
-import { percentFormat } from "landing/utils/formatters";
+import { percentFormat } from "landing/Home/utils/formatters";
 
 import bgPoolsGradient from "img/bg_pools_gradient.png";
 import BgPoolsLines from "img/bg_pools_lines.svg?react";

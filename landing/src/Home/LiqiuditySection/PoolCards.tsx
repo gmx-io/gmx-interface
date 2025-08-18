@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
-import { useHomePageContext } from "landing/contexts/HomePageContext";
 
+import { useHomePageContext } from "landing/Home/contexts/HomePageContext";
 import { useProcessedData } from "pages/Stake/useProcessedData";
 
 import glvCoin from "img/bg_coin_glv.png";

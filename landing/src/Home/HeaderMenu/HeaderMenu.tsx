@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 
-import { SOCIAL_LINKS } from "landing/constants/SociaLinks";
+import { SOCIAL_LINKS } from "landing/Home/constants/SociaLinks";
 
 import IcBurger from "img/ic_burger.svg?react";
 import IcCross from "img/ic_cross.svg?react";

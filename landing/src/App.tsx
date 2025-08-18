@@ -12,7 +12,7 @@ import { ARBITRUM } from "sdk/configs/chainIds";
 
 import SEO from "components/Common/SEO";
 
-import Home from "./Home";
+import Home from "./Home/Home";
 
 export default function App() {
   const fetcher = useOracleKeeperFetcher(ARBITRUM);
