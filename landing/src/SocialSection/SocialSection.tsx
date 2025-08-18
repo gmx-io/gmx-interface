@@ -47,7 +47,7 @@ export function SocialSection() {
       </div>
       <div className="relative flex w-full overflow-clip pt-[120px]">
         <SocialBackground />
-        <div className="relative mx-auto flex w-full flex-col gap-36 px-16 sm:w-[1200px] sm:px-80">
+        <div className="relative flex w-full flex-col gap-36 px-16 sm:w-[1200px] sm:px-40">
           <h2 className="text-heading-1">
             <Trans>
               Driven by <br /> our community

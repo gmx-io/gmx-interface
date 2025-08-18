@@ -4,7 +4,7 @@ import { FaqItem } from "./FaqItem";
 
 export function FaqSection() {
   return (
-    <section className="bg-fiord-700 flex w-full px-16 py-[120px] text-white sm:px-80">
+    <section className="bg-fiord-700 flex w-full px-16 py-[120px] text-white sm:px-40">
       <div className="mx-auto flex w-[1200px] flex-col justify-between gap-36 overflow-hidden sm:flex-row sm:gap-[120px]">
         <h2 className="text-heading-2">
           <Trans>FAQ</Trans>

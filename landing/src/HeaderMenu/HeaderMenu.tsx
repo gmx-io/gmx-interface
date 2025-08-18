@@ -28,7 +28,7 @@ export function HeaderMenu() {
         sticky: !isMenuOpen,
       })}
     >
-      <div className="flex w-full items-center justify-center px-16 py-12 sm:px-80 sm:py-16">
+      <div className="flex w-full items-center justify-center px-16 py-12 sm:px-40 sm:py-16">
         <div className="flex w-[1200px] items-center justify-between">
           <IcGmxHeader className="h-20 sm:h-24" />
           <div className="flex items-center gap-8 sm:gap-12">
