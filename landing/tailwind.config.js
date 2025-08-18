@@ -136,6 +136,15 @@ function fontComponentsPlugin({ addComponents }) {
     ".text-description": {
       "@apply text-16 font-normal leading-body-sm text-secondary tracking-body": {},
     },
+    ".text-terms-heading": {
+      "@apply text-18 font-medium": {},
+    },
+    ".text-terms-body": {
+      "@apply text-16 font-normal leading-[24px] text-gray-300": {},
+    },
+    ".text-terms-subtitle": {
+      "@apply text-18 font-medium": {},
+    },
     ".btn-landing": {
       "@apply bg-blue-600 font-medium text-white transition-colors duration-180": {},
       "&:hover": {

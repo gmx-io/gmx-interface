@@ -28,16 +28,14 @@ export default function Home(_) {
 
   return (
     <HomePageContextProvider>
-      <div className="overflow-hidden proportional-nums text-white">
-        <HeaderMenu />
-        <HeroSection />
-        <LaunchSection />
-        <LiqiuditySection />
-        <SponsorsSection />
-        <FaqSection />
-        <RoadmapSection />
-        <SocialSection />
-      </div>
+      <HeaderMenu />
+      <HeroSection />
+      <LaunchSection />
+      <LiqiuditySection />
+      <SponsorsSection />
+      <FaqSection />
+      <RoadmapSection />
+      <SocialSection />
     </HomePageContextProvider>
   );
 }

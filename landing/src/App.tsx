@@ -12,7 +12,7 @@ import { ARBITRUM } from "sdk/configs/chainIds";
 
 import SEO from "components/Common/SEO";
 
-import Home from "./Home/Home";
+import { LandingRoutes } from "./LandingRoutes";
 
 export default function App() {
   const fetcher = useOracleKeeperFetcher(ARBITRUM);
@@ -34,7 +34,9 @@ export default function App() {
         <I18nProvider i18n={i18n as any}>
           <WalletProvider>
             <SEO>
-              <Home />
+              <div className="overflow-hidden proportional-nums text-white">
+                <LandingRoutes />
+              </div>
             </SEO>
           </WalletProvider>
         </I18nProvider>
