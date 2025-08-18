@@ -89,7 +89,7 @@ const darkColors = {
   textIcon: {
     default: "#a0a3c4",
     active: "#ffffff",
-    strong: "#000000",
+    strong: "#ffffff",
   },
 };
 

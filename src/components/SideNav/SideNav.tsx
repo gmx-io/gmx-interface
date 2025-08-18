@@ -92,9 +92,10 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
         className={cx(
           `relative flex cursor-pointer items-center gap-8
         rounded-8 px-16 py-8 text-slate-100 transition-colors
-        group-hover:bg-slate-700 group-hover:text-textIcon-strong`,
+        group-hover:bg-blue-400/20 group-hover:text-blue-400
+        dark:group-hover:bg-slate-700 dark:group-hover:text-textIcon-strong`,
           {
-            "bg-slate-700 text-textIcon-strong": isActive,
+            "bg-blue-400/20 text-blue-400 dark:bg-slate-700 dark:text-textIcon-strong": isActive,
             "w-full": !isCollapsed,
           }
         )}

@@ -205,7 +205,7 @@ export default function Tooltip<T extends ElementType>({
       {...getFloatingProps()}
       className={cx("Tooltip-popup", tooltipClassName)}
     >
-      <FloatingArrow ref={arrowRef} context={context} className="scale-3 fill-[#2b2d41]" />
+      <FloatingArrow ref={arrowRef} context={context} className="scale-3 fill-slate-700 dark:fill-[#2b2d41]" />
       {finalContent}
     </div>
   ) : undefined;
