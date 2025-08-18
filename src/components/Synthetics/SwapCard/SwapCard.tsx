@@ -43,10 +43,9 @@ export function SwapCard(p: Props) {
 
   return (
     <div className="text-body-medium relative rounded-4 bg-slate-900 p-15 max-[1024px]:mt-0">
-      <div className="text-[15px]">
+      <div className="text-body-medium mb-14 font-medium">
         <Trans>Swap</Trans>
       </div>
-      <div className="my-15 h-1 bg-slate-600" />
 
       <div className="flex flex-col gap-14">
         <SyntheticsInfoRow
