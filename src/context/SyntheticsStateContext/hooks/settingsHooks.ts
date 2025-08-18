@@ -1,10 +1,12 @@
 import {
   selectDebugSwapMarketsConfig,
   selectExecutionFeeBufferBps,
+  selectOracleKeeperInstancesConfig,
   selectSavedAcceptablePriceImpactBuffer,
   selectSavedAllowedSlippage,
   selectSetDebugSwapMarketsConfig,
   selectSetExecutionFeeBufferBps,
+  selectSetOracleKeeperInstancesConfig,
   selectSetSavedAcceptablePriceImpactBuffer,
   selectSetSavedAllowedSlippage,
   selectSetShowDebugValues,
@@ -22,5 +24,7 @@ export const useSetExecutionFeeBufferBps = () => useSelector(selectSetExecutionF
 export const useSavedAcceptablePriceImpactBuffer = () => useSelector(selectSavedAcceptablePriceImpactBuffer);
 export const useSetSavedAcceptablePriceImpactBuffer = () => useSelector(selectSetSavedAcceptablePriceImpactBuffer);
 export const useShouldUseExecutionFeeBuffer = () => useSelector(selectShouldUseExecutionFeeBuffer);
+export const useOracleKeeperInstancesConfig = () => useSelector(selectOracleKeeperInstancesConfig);
+export const useSetOracleKeeperInstancesConfig = () => useSelector(selectSetOracleKeeperInstancesConfig);
 export const useDebugSwapMarketsConfig = () => useSelector(selectDebugSwapMarketsConfig);
 export const useSetDebugSwapMarketsConfig = () => useSelector(selectSetDebugSwapMarketsConfig);

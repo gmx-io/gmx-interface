@@ -13,7 +13,7 @@ type KeeperMarket = {
 };
 
 const getKeeperMarkets = async (chainId: number): Promise<{ markets: KeeperMarket[] }> => {
-  const res = await fetch(`${getOracleKeeperUrl(chainId)}/markets`);
+  const res = await fetch(`${getOracleKeeperUrl(chainId, 0)}/markets`);
   const data = (await res.json()) as {
     markets: KeeperMarket[];
   };

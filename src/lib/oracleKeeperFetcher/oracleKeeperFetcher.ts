@@ -1,8 +1,6 @@
-import random from "lodash/random";
-
 import { isLocal } from "config/env";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
-import { getOracleKeeperFallbackUrls, getOracleKeeperUrl } from "sdk/configs/oracleKeeper";
+import { getOracleKeeperNextIndex, getOracleKeeperUrl } from "sdk/configs/oracleKeeper";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { buildUrl } from "sdk/utils/buildUrl";
 
@@ -29,54 +27,58 @@ function parseOracleCandle(rawCandle: number[]): Bar {
   };
 }
 
-const failsPerMinuteToFallback = 5;
+let fallbackThrottleTimerId: any;
 
 export class OracleKeeperFetcher implements OracleFetcher {
   private readonly chainId: number;
-
+  private readonly oracleKeeperIndex: number;
+  private readonly setOracleKeeperInstancesConfig?: (
+    setter: (old: { [chainId: number]: number } | undefined) => {
+      [chainId: number]: number;
+    }
+  ) => void;
+  public readonly url: string;
   private readonly forceIncentivesActive: boolean;
-  private isFallback: boolean;
-  private fallbackUrls: string[];
-  private fallbackThrottleTimerId: number | undefined;
-  private fallbackIndex: number;
-  private failTimes: number[];
-  private mainUrl: string;
 
-  constructor(p: { chainId: number; forceIncentivesActive: boolean }) {
+  constructor(p: {
+    chainId: number;
+    oracleKeeperIndex: number;
+    setOracleKeeperInstancesConfig?: (
+      setter: (old: { [chainId: number]: number } | undefined) => {
+        [chainId: number]: number;
+      }
+    ) => void;
+    forceIncentivesActive: boolean;
+  }) {
     this.chainId = p.chainId;
-    this.fallbackUrls = getOracleKeeperFallbackUrls(this.chainId);
-    this.mainUrl = getOracleKeeperUrl(this.chainId);
+    this.oracleKeeperIndex = p.oracleKeeperIndex;
+    this.setOracleKeeperInstancesConfig = p.setOracleKeeperInstancesConfig;
+    this.url = getOracleKeeperUrl(this.chainId, this.oracleKeeperIndex);
     this.forceIncentivesActive = p.forceIncentivesActive;
-    this.isFallback = false;
-    this.failTimes = [];
   }
 
-  get url() {
-    return this.isFallback ? this.fallbackUrls[this.fallbackIndex] : this.mainUrl;
-  }
-
-  handleFailure() {
-    if (this.fallbackThrottleTimerId) {
+  switchOracleKeeper() {
+    if (fallbackThrottleTimerId || !this.setOracleKeeperInstancesConfig) {
       return;
     }
 
-    this.failTimes.push(Date.now());
+    const nextIndex = getOracleKeeperNextIndex(this.chainId, this.oracleKeeperIndex);
 
-    this.failTimes = this.failTimes.filter((time) => time > Date.now() - 60000);
-
-    if (this.failTimes.length >= failsPerMinuteToFallback) {
-      if (this.isFallback) {
-        this.fallbackIndex = (this.fallbackIndex + 1) % this.fallbackUrls.length;
-      } else {
-        this.fallbackIndex = random(0, this.fallbackUrls.length - 1);
-      }
-
-      this.isFallback = true;
-      this.failTimes = [];
+    if (nextIndex === this.oracleKeeperIndex) {
+      // eslint-disable-next-line no-console
+      console.error(`no available oracle keeper for chain ${this.chainId}`);
+      return;
     }
 
-    this.fallbackThrottleTimerId = window.setTimeout(() => {
-      this.fallbackThrottleTimerId = undefined;
+    // eslint-disable-next-line no-console
+    console.log(`switch oracle keeper to ${getOracleKeeperUrl(this.chainId, nextIndex)}`);
+
+    this.setOracleKeeperInstancesConfig((old) => {
+      return { ...old, [this.chainId]: nextIndex };
+    });
+
+    fallbackThrottleTimerId = setTimeout(() => {
+      fallbackThrottleTimerId = undefined;
     }, 5000);
   }
 
@@ -93,7 +95,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
       .catch((e) => {
         // eslint-disable-next-line no-console
         console.error(e);
-        this.handleFailure();
+        this.switchOracleKeeper();
 
         throw e;
       });
@@ -112,7 +114,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
       .catch((e) => {
         // eslint-disable-next-line no-console
         console.error(e);
-        this.handleFailure();
+        this.switchOracleKeeper();
         throw e;
       });
   }
@@ -162,7 +164,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
       .catch((e) => {
         // eslint-disable-next-line no-console
         console.error(e);
-        this.handleFailure();
+        this.switchOracleKeeper();
         throw e;
       });
   }
@@ -182,7 +184,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
       .catch((e) => {
         // eslint-disable-next-line no-console
         console.error(e);
-        this.handleFailure();
+        this.switchOracleKeeper();
         throw e;
       });
   }
@@ -197,7 +199,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
       .catch((e) => {
         // eslint-disable-next-line no-console
         console.error(e);
-        this.handleFailure();
+        this.switchOracleKeeper();
         return null;
       });
   }
