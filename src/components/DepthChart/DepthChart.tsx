@@ -48,7 +48,7 @@ const getYAxisLabel = (): LabelProps => ({
   value: t`Size, $`,
   position: "top",
   offset: 0,
-  fill: "#ffffff",
+  fill: "rgb(var(--color-textIcon-strong))",
   opacity: 0.7,
   dx: -3,
   fontSize: 12,
@@ -62,7 +62,7 @@ const getOraclePriceLabel = (): ImplicitLabelType => ({
   position: "bottom",
   offset: 28,
   value: t`ORACLE PRICE`,
-  fill: "#ffffff",
+  fill: "rgb(var(--color-textIcon-strong))",
   opacity: 0.7,
   fontSize: 10,
 });
@@ -71,7 +71,11 @@ const DOLLAR: bigint = expandDecimals(1n, USD_DECIMALS);
 
 const CHART_MARGIN: Margin = { bottom: 10, top: 20, right: 0 };
 const TOOLTIP_WRAPPER_POSITION = { x: 0, y: 0 };
-const Y_AXIS_TICK = { fill: "#ffffff", opacity: 0.7, fontSize: 12 } satisfies SVGProps<SVGTextElement>;
+const Y_AXIS_TICK = {
+  fill: "rgb(var(--color-textIcon-strong))",
+  opacity: 0.7,
+  fontSize: 12,
+} satisfies SVGProps<SVGTextElement>;
 const TICKS_SPACING = 120;
 const DEFAULT_TICK_COUNT_BIGINT = 9n;
 const LINE_PATH_ELLIPSIS = "3px 3px 3px 3px 3px 3px 1000%";
@@ -328,7 +332,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           </linearGradient>
         </defs>
 
-        <CartesianGrid strokeDasharray="2 2" stroke="#ffffff" opacity={0.07} />
+        <CartesianGrid strokeDasharray="2 2" stroke="rgb(var(--color-textIcon-strong))" opacity={0.07} />
 
         {drawLeftTransparent && (
           <>
@@ -468,7 +472,13 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           tickMargin={7}
           tick={<Tick marketPriceIndex={marketPriceIndex} />}
         />
-        <ReferenceLine x={oraclePrice} label={oraclePriceLabel} stroke="#ffffff" opacity={0.6} strokeDasharray="2 2" />
+        <ReferenceLine
+          x={oraclePrice}
+          label={oraclePriceLabel}
+          stroke="rgb(var(--color-textIcon-strong))"
+          opacity={0.6}
+          strokeDasharray="2 2"
+        />
       </ComposedChart>
     </ResponsiveContainer>
   );
@@ -655,7 +665,7 @@ function Tick(
       y={y}
       height={height}
       textAnchor={textAnchor}
-      fill="#ffffff"
+      fill="rgb(var(--color-textIcon-strong))"
       opacity={index === marketPriceIndex ? 1 : 0.7}
       fontWeight={index === marketPriceIndex ? "bold" : "normal"}
       verticalAnchor={verticalAnchor}

@@ -11,9 +11,9 @@
   --tv-color-toolbar-button-text-hover: #ffffff;
   --tv-color-toolbar-button-background-hover: var(--color-fill-surfaceHover);
   --tv-color-toolbar-button-text-active: #ffffff;
-  --tv-color-toolbar-toggle-button-background-active: var(--color-fill-surfaceHover);
-  --tv-color-toolbar-toggle-button-background-active-hover: var(--color-fill-surfaceHover);
-  --tv-color-toolbar-button-background-expanded: var(--color-fill-surfaceHover);
+  --tv-color-toolbar-toggle-button-background-active: var(--color-blue-600);
+  --tv-color-toolbar-toggle-button-background-active-hover: var(--color-blue-600);
+  --tv-color-toolbar-button-background-expanded: var(--color-blue-600);
 
   --tv-color-popup-background: var(--color-slate-800);
   --themed-color-bg-primary: var(--color-slate-800);
@@ -36,6 +36,51 @@
   --themed-color-background-special-secondary: var(--color-fill-surfaceHover);
 }
 
+.theme-light:root {
+  --light-bg: #FFFFFF;
+  --light-gray-bg: #F9FAFB;
+  --color-blue-600: #2d42fc;
+  --color-fill-surfaceHover: #0000000D;
+  --color-slate-700: #4B5563;
+  --color-slate-200: #F3F4F6;
+
+  --tv-color-pane-background: var(--light-bg);
+  --tv-color-platform-background: var(--light-bg);
+  --tv-color-pane-background-secondary: var(--light-bg);
+  --tv-color-toolbar-button-text-hover: #111827;
+  --tv-color-toolbar-button-background-hover: var(--color-fill-surfaceHover);
+  --tv-color-toolbar-button-text-active: #111827;
+  --tv-color-toolbar-toggle-button-background-active: var(--color-blue-600);
+  --tv-color-toolbar-toggle-button-background-active-hover: var(--color-blue-600);
+  --tv-color-toolbar-button-background-expanded: var(--color-blue-600);
+
+  --tv-color-popup-background: var(--light-gray-bg);
+  --themed-color-bg-primary: var(--light-gray-bg);
+  --themed-color-properties-dialog-tab-bg: #2962ff;
+
+  --themed-color-properties-dialog-defaults-text: var(--color-slate-700);
+  --tv-color-popup-element-background-hover: var(--color-slate-200);
+  --themed-color-item-row-bg-hover: var(--color-slate-200);
+  --themed-color-background-hover: var(--color-slate-200);
+  --tv-color-popup-element-text: var(--color-slate-700);
+  --tv-color-toolbar-button-text: var(--color-slate-700);
+  --tv-color-toolbar-button-text-active-hover: #111827;
+  --tv-toolbar-explicit-hover-margin: 0px;
+  --themed-color-common-tooltip-bg: var(--light-gray-bg);
+
+  --themed-color-container-fill-primary-accent: var(--color-fill-surfaceHover);
+  --priceScaleModeButtons-background-activated: var(--color-fill-surfaceHover);
+  --themed-color-background-selected: var(--color-fill-surfaceHover);
+  --themed-color-active-tab-text-color: #ffffff;
+  --themed-color-hover-tab-text-color: #ffffff;
+
+  --themed-color-background-special-secondary: var(--color-fill-surfaceHover);
+
+  div[data-role="dialog-sidebar"] > button:hover {
+    color: #ffffff !important;
+  }
+}
+
 html.theme-dark button:not(:disabled),
 html.theme-dark [data-role="button"],
 html.theme-dark [data-role="list-item"],
@@ -49,6 +94,23 @@ html.theme-dark .chart-page {
 }
 
 html.theme-dark .chart-controls-bar {
+  display: none;
+  height: 0;
+}
+
+html.theme-light button:not(:disabled),
+html.theme-light [data-role="button"],
+html.theme-light [data-role="list-item"],
+html.theme-light [data-role="menuitem"] {
+  cursor: pointer;
+}
+
+html.theme-light .chart-page {
+  font-family: "TTHoves", sans-serif;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+html.theme-light .chart-controls-bar {
   display: none;
   height: 0;
 }
@@ -71,12 +133,22 @@ html.theme-dark .chart-controls-bar {
   --tv-color-platform-background: var(--tv-color-toolbar-toggle-button-background-active);
 }
 
-[data-name="toolbar-drawing-toggle-button"][data-value="visible"] {
+html.theme-dark [data-name="toolbar-drawing-toggle-button"][data-value="visible"] {
   --tv-color-platform-background: var(--tv-color-toolbar-toggle-button-background-active);
   --tv-color-pane-background: var(--tv-color-toolbar-toggle-button-background-active);
   --themed-color-arrow-stroke: var(--dark-blue-bg);
 }
+
+html.theme-light [data-name="toolbar-drawing-toggle-button"][data-value="visible"] {
+  --tv-color-platform-background: var(--tv-color-toolbar-toggle-button-background-active);
+  --tv-color-pane-background: var(--tv-color-toolbar-toggle-button-background-active);
+  --themed-color-arrow-stroke: var(--light-bg);
+}
 /* Hide tooltip tail */
 html.theme-dark .common-tooltip__ear-holder-EJBD96zX:after {
+  display: none;
+}
+
+html.theme-light .common-tooltip__ear-holder-EJBD96zX:after {
   display: none;
 }

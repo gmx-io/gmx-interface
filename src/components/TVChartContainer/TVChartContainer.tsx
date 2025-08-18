@@ -4,6 +4,7 @@ import { useLatest, useLocalStorage, useMedia } from "react-use";
 import { TV_SAVE_LOAD_CHARTS_KEY, WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
 import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useTheme } from "context/ThemeContext/ThemeContext";
 import { TokenPrices } from "domain/tokens";
 import { DataFeed } from "domain/tradingview/DataFeed";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
@@ -13,7 +14,7 @@ import { isChartAvailableForToken } from "sdk/configs/tokens";
 
 import Loader from "components/Common/Loader";
 
-import { chartOverrides, defaultChartProps, disabledFeaturesOnMobile } from "./constants";
+import { chartOverridesDark, chartOverridesLight, defaultChartProps, disabledFeaturesOnMobile } from "./constants";
 import { DynamicLines } from "./DynamicLines";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { StaticLines } from "./StaticLines";
@@ -59,6 +60,8 @@ export default function TVChartContainer({
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
   const [wasChartOverridden, setWasChartOverridden] = useLocalStorage<boolean>(WAS_TV_CHART_OVERRIDDEN_KEY, false);
 
+  const { theme } = useTheme();
+
   const [tradePageVersion] = useTradePageVersion();
 
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
@@ -67,11 +70,12 @@ export default function TVChartContainer({
 
   useEffect(() => {
     if (chartReady && tvWidgetRef.current && true) {
-      tvWidgetRef.current.applyOverrides(chartOverrides);
+      const overrides = theme === "light" ? chartOverridesLight : chartOverridesDark;
+      tvWidgetRef.current.applyOverrides(overrides);
       tvWidgetRef.current.saveChartToServer();
       setWasChartOverridden(true);
     }
-  }, [chartReady, wasChartOverridden, setWasChartOverridden]);
+  }, [chartReady, wasChartOverridden, setWasChartOverridden, theme]);
 
   useEffect(() => {
     const newDatafeed = new DataFeed(chainId, oracleKeeperFetcher, tradePageVersion);
@@ -145,11 +149,14 @@ export default function TVChartContainer({
       debug: false,
       symbol: symbolRef.current && getSymbolName(symbolRef.current, visualMultiplier), // Using ref to avoid unnecessary re-renders on symbol change and still have access to the latest symbol
       datafeed,
-      theme: defaultChartProps.theme,
+      theme: theme,
       container: chartContainerRef.current!,
       library_path: defaultChartProps.library_path,
       locale: defaultChartProps.locale,
-      loading_screen: defaultChartProps.loading_screen,
+      loading_screen:
+        theme === "light"
+          ? { backgroundColor: "#FFFFFF", foregroundColor: "#2962ff" }
+          : defaultChartProps.loading_screen,
       enabled_features: defaultChartProps.enabled_features,
       disabled_features: isMobile
         ? defaultChartProps.disabled_features.concat(disabledFeaturesOnMobile)
@@ -159,7 +166,7 @@ export default function TVChartContainer({
       fullscreen: defaultChartProps.fullscreen,
       autosize: defaultChartProps.autosize,
       custom_css_url: defaultChartProps.custom_css_url,
-      overrides: defaultChartProps.overrides,
+      overrides: theme === "light" ? chartOverridesLight : chartOverridesDark,
       interval: getObjectKeyFromValue(period, supportedResolutions) as ResolutionString,
       favorites: { ...defaultChartProps.favorites, intervals: Object.keys(supportedResolutions) as ResolutionString[] },
       custom_formatters: defaultChartProps.custom_formatters,
@@ -218,7 +225,7 @@ export default function TVChartContainer({
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, datafeed]);
+  }, [chainId, datafeed, theme]);
 
   const style = useMemo<CSSProperties>(
     () => ({ visibility: !chartDataLoading ? "visible" : "hidden" }),

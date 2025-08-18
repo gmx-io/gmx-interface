@@ -13,22 +13,20 @@ export const RED = "#fa3c58";
 export const GREEN = "#0ecc83";
 export const DEFAULT_PERIOD = "4h";
 
-const chartStyleOverrides: Partial<WidgetOverrides> = ["candleStyle", "hollowCandleStyle", "haStyle"].reduce(
-  (acc, cv) => {
+const createChartStyleOverrides = (upColor: string, downColor: string): Partial<WidgetOverrides> =>
+  ["candleStyle", "hollowCandleStyle", "haStyle"].reduce((acc, cv) => {
     acc[`mainSeriesProperties.${cv}.drawWick`] = true;
     acc[`mainSeriesProperties.${cv}.drawBorder`] = false;
-    acc[`mainSeriesProperties.${cv}.upColor`] = GREEN;
-    acc[`mainSeriesProperties.${cv}.downColor`] = RED;
-    acc[`mainSeriesProperties.${cv}.wickUpColor`] = GREEN;
-    acc[`mainSeriesProperties.${cv}.wickDownColor`] = RED;
-    acc[`mainSeriesProperties.${cv}.borderUpColor`] = GREEN;
-    acc[`mainSeriesProperties.${cv}.borderDownColor`] = RED;
+    acc[`mainSeriesProperties.${cv}.upColor`] = upColor;
+    acc[`mainSeriesProperties.${cv}.downColor`] = downColor;
+    acc[`mainSeriesProperties.${cv}.wickUpColor`] = upColor;
+    acc[`mainSeriesProperties.${cv}.wickDownColor`] = downColor;
+    acc[`mainSeriesProperties.${cv}.borderUpColor`] = upColor;
+    acc[`mainSeriesProperties.${cv}.borderDownColor`] = downColor;
     return acc;
-  },
-  {}
-);
+  }, {});
 
-export const chartOverrides: Partial<WidgetOverrides> = {
+export const chartOverridesDark: Partial<WidgetOverrides> = {
   "paneProperties.background": "#121421",
   "paneProperties.backgroundGradientStartColor": "#121421",
   "paneProperties.backgroundGradientEndColor": "#121421",
@@ -40,7 +38,22 @@ export const chartOverrides: Partial<WidgetOverrides> = {
   "mainSeriesProperties.priceLineColor": "#8B94B6",
   "scalesProperties.textColor": "#A0A3C4",
   "mainSeriesProperties.statusViewStyle.showExchange": false,
-  ...chartStyleOverrides,
+  ...createChartStyleOverrides(GREEN, RED),
+};
+
+export const chartOverridesLight: Partial<WidgetOverrides> = {
+  "paneProperties.background": "#FFFFFF",
+  "paneProperties.backgroundGradientStartColor": "#FFFFFF",
+  "paneProperties.backgroundGradientEndColor": "#FFFFFF",
+  "paneProperties.backgroundType": "solid",
+  "paneProperties.vertGridProperties.color": "#E0E0E0",
+  "paneProperties.vertGridProperties.style": 2,
+  "paneProperties.horzGridProperties.color": "#E0E0E0",
+  "paneProperties.horzGridProperties.style": 2,
+  "mainSeriesProperties.priceLineColor": "#6B7280",
+  "scalesProperties.textColor": "#4B5563",
+  "mainSeriesProperties.statusViewStyle.showExchange": false,
+  ...createChartStyleOverrides(GREEN, RED),
 };
 
 export const disabledFeaturesOnMobile: ChartingLibraryFeatureset[] = ["header_saveload", "header_fullscreen_button"];
@@ -81,7 +94,7 @@ export const defaultChartProps = {
   user_id: "public_user_id",
   fullscreen: false,
   autosize: true,
-  overrides: chartOverrides,
+  overrides: chartOverridesDark,
   enabled_features: enabledFeatures,
   disabled_features: disabledFeatures,
   custom_css_url: "/tradingview-chart.css",
