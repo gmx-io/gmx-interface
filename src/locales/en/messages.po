@@ -7119,8 +7119,8 @@ msgstr "Additional reserve required"
 
 #: landing/src/Home/SocialSection/SocialSection.tsx
 #: landing/src/Home/SocialSection/SocialSection.tsx
+#: landing/src/TermsAndConditions/TermsAndConditions.tsx
 #: src/components/Footer/constants.ts
-#: src/pages/TermsAndConditions/TermsAndConditions.jsx
 msgid "Terms and Conditions"
 msgstr "Terms and Conditions"
 
@@ -7751,8 +7751,8 @@ msgid "GLP Vault"
 msgstr "GLP Vault"
 
 #: landing/src/Home/SocialSection/SocialSection.tsx
+#: landing/src/ReferralTerms/ReferralTerms.tsx
 #: src/components/Footer/constants.ts
-#: src/pages/ReferralTerms/ReferralTerms.tsx
 msgid "Referral Terms"
 msgstr "Referral Terms"
 

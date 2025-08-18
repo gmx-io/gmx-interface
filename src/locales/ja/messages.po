@@ -7113,8 +7113,8 @@ msgstr ""
 
 #: landing/src/Home/SocialSection/SocialSection.tsx
 #: landing/src/Home/SocialSection/SocialSection.tsx
+#: landing/src/TermsAndConditions/TermsAndConditions.tsx
 #: src/components/Footer/constants.ts
-#: src/pages/TermsAndConditions/TermsAndConditions.jsx
 msgid "Terms and Conditions"
 msgstr "規約"
 
@@ -7745,8 +7745,8 @@ msgid "GLP Vault"
 msgstr ""
 
 #: landing/src/Home/SocialSection/SocialSection.tsx
+#: landing/src/ReferralTerms/ReferralTerms.tsx
 #: src/components/Footer/constants.ts
-#: src/pages/ReferralTerms/ReferralTerms.tsx
 msgid "Referral Terms"
 msgstr "紹介の規約"
 
