@@ -1,6 +1,8 @@
 import { Trans } from "@lingui/macro";
 import React from "react";
 
+import { percentFormat } from "landing/utils/formatters";
+
 import bgPoolsGradient from "img/bg_pools_gradient.png";
 import BgPoolsLines from "img/bg_pools_lines.svg?react";
 import IcLinkArrow from "img/ic_link_arrow.svg?react";
@@ -10,7 +12,7 @@ import { IconBox } from "../IconBox/IconBox";
 type Props = {
   name: string;
   description: string;
-  apr: number;
+  apr: number | undefined;
   onClick: () => void;
   coinImage: string;
   iconComponent: React.FunctionComponent<
@@ -26,6 +28,7 @@ const style: React.CSSProperties = {
 };
 
 export function PoolCard({ name, apr, description, iconComponent, coinImage, onClick }: Props) {
+  const aprText = apr ? percentFormat(apr) : "-";
   return (
     <div
       onClick={onClick}
@@ -52,7 +55,7 @@ export function PoolCard({ name, apr, description, iconComponent, coinImage, onC
               <Trans>Annually</Trans>
             </p>
             <p className="text-[28px] font-medium leading-[98%] sm:text-[50px] sm:-tracking-[2px]">
-              {apr}%{" "}
+              {aprText}{" "}
               <span className="leading-body-sm tracking-body text-secondary text-12 font-medium sm:text-14">
                 <Trans>APR</Trans>
               </span>

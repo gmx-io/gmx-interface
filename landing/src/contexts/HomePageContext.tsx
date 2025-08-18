@@ -1,3 +1,4 @@
+import { PoolsData, usePoolsData } from "landing/hooks/usePoolsData";
 import noop from "lodash/noop";
 import { createContext, Dispatch, SetStateAction, useCallback, useContext, useMemo, useState } from "react";
 import { useLocalStorage } from "react-use";
@@ -12,6 +13,7 @@ type HomePageContextType = {
   redirectPopupTimestamp: number | undefined;
   setRedirectPopupTimestamp: Dispatch<SetStateAction<number | undefined>>;
   shouldShowRedirectModal: () => boolean;
+  poolsData: Partial<PoolsData>;
 };
 
 export const HomePageContext = createContext<HomePageContextType>({
@@ -20,10 +22,12 @@ export const HomePageContext = createContext<HomePageContextType>({
   redirectPopupTimestamp: undefined,
   setRedirectPopupTimestamp: noop,
   shouldShowRedirectModal: () => false,
+  poolsData: {},
 });
 const THIRTY_DAYS = 1000 * 60 * 60 * 24 * 30;
 
 export function HomePageContextProvider({ children }: { children: React.ReactNode }) {
+  const poolsData = usePoolsData();
   const [redirectModalTo, setRedirectModalTo] = useState<string | null>(null);
   // TODO: After App redesign remove the same from GlobalContext, needed only here
   const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage<number | undefined>(
@@ -76,8 +80,16 @@ export function HomePageContextProvider({ children }: { children: React.ReactNod
       redirectPopupTimestamp,
       setRedirectPopupTimestamp,
       shouldShowRedirectModal,
+      poolsData,
     }),
-    [redirectWithWarning, redirectModalTo, redirectPopupTimestamp, setRedirectPopupTimestamp, shouldShowRedirectModal]
+    [
+      redirectWithWarning,
+      redirectModalTo,
+      redirectPopupTimestamp,
+      setRedirectPopupTimestamp,
+      shouldShowRedirectModal,
+      poolsData,
+    ]
   );
 
   return (

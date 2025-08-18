@@ -1,8 +1,13 @@
 import { Trans } from "@lingui/macro";
+import { useHomePageContext } from "landing/contexts/HomePageContext";
+import { useTotalVolume } from "landing/hooks/useTotalVolume";
+import { useTraders } from "landing/hooks/useTraders";
+import { shortFormat, shortFormatUsd } from "landing/utils/formatters";
 
 import IcLinkArrow from "img/ic_link_arrow.svg?react";
 import IcMidChevron from "img/ic_mid_chevron.svg?react";
 
+import { AnimatedTitle } from "./AnimatedTitle";
 import { Features } from "./Features";
 import { HeroBackground } from "./HeroBackground";
 import { REDIRECT_CHAIN_IDS, useGoToTrade } from "../hooks/useGoToTrade";
@@ -12,16 +17,26 @@ export function HeroSection() {
     buttonPosition: "HeroSection",
     chainId: REDIRECT_CHAIN_IDS.Arbitum,
   });
+  const tradersRaw = useTraders();
+  const { poolsData } = useHomePageContext();
+  const traders = tradersRaw ? shortFormat(tradersRaw) : "-";
+  const openInterest = poolsData?.openInterest ? shortFormatUsd(poolsData.openInterest) : "-";
+  const { data: totalVolume } = useTotalVolume();
+  const totalVolumeText = totalVolume ? shortFormatUsd(totalVolume) : "-";
 
   return (
     <section className="bg-fiord-700 overflow-hidden pt-60">
       <div className="mx-auto px-16 sm:max-w-[1360px] sm:px-80">
         <div className="relative h-[640px] py-60 sm:h-[860px] sm:py-80 ">
           <HeroBackground />
-          <div className="relative flex h-full flex-col justify-end">
-            <h1 className="text-heading-1 border-b-fiord-500 mb-28 border-b-0 pb-28 sm:border-b-[0.5px] sm:pb-36">
-              <Trans>Trade with</Trans> <Trans>100x leverage from your wallet</Trans>
-            </h1>
+          <div className="relative flex h-full w-full flex-col justify-end">
+            <div className="text-heading-1 border-b-fiord-500 mb-28 w-full border-b-0 pb-28 sm:border-b-[0.5px] sm:pb-36">
+              <div className="float-left">
+                <Trans>Trade</Trans>
+              </div>{" "}
+              <AnimatedTitle />
+              <Trans>from your wallet</Trans>
+            </div>
             {/* Stats and description */}
             <div className="flex flex-wrap items-end justify-between gap-0 sm:gap-56">
               <div className="flex flex-1 flex-col-reverse items-stretch sm:flex-row sm:gap-36">
@@ -45,19 +60,19 @@ export function HeroSection() {
                   <span className="text-secondary text-nowrap text-12 sm:text-14">
                     <Trans>Traders</Trans>
                   </span>
-                  <div className="text-[30px] font-medium tracking-tight sm:text-[40px]">701K</div>
+                  <div className="text-[30px] font-medium tracking-tight sm:text-[40px]">{traders}</div>
                 </div>
                 <div className="flex flex-col gap-4">
                   <span className="text-secondary text-nowrap text-12 sm:text-14">
                     <Trans>Open Interest</Trans>
                   </span>
-                  <div className="text-[30px] font-medium tracking-tight sm:text-[40px]">$137M</div>
+                  <div className="text-[30px] font-medium tracking-tight sm:text-[40px]">{openInterest}</div>
                 </div>
                 <div className="flex flex-col gap-4">
                   <a href="/" className="text-secondary inline-flex items-center text-nowrap text-12 sm:text-14">
                     <Trans>Total Volume</Trans> <IcMidChevron className="size-16" />
                   </a>
-                  <div className="text-[30px] font-medium tracking-tight sm:text-[40px]">$285B</div>
+                  <div className="text-[30px] font-medium tracking-tight sm:text-[40px]">{totalVolumeText}</div>
                 </div>
               </div>
             </div>

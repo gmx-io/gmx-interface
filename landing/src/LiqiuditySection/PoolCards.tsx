@@ -1,4 +1,7 @@
 import { t } from "@lingui/macro";
+import { useHomePageContext } from "landing/contexts/HomePageContext";
+
+import { useProcessedData } from "pages/Stake/useProcessedData";
 
 import glvCoin from "img/bg_coin_glv.png";
 import gmCoin from "img/bg_coin_gm.png";
@@ -10,16 +13,20 @@ import IcGmxPool from "img/ic_gmx_pool.svg?react";
 import { PoolCard } from "./PoolCard";
 import { useGoToPools } from "../hooks/useGoToPools";
 
+const DECIMALS = 4;
+
 export function PoolCards() {
   const onClickGmx = useGoToPools("GMX");
   const onClickGlv = useGoToPools("GLV");
   const onClickGm = useGoToPools("GM");
-  //TODO: get apr from api
+  const { poolsData } = useHomePageContext();
+  const processedData = useProcessedData();
+  const gmxAprForGmxPercentage = Number(processedData?.gmxAprForGmx) / 10 ** DECIMALS;
   return (
     <>
       <PoolCard
         name="GMX"
-        apr={10}
+        apr={gmxAprForGmxPercentage}
         description={t`Stake for rewards and governance rights`}
         iconComponent={IcGmxPool}
         coinImage={gmxCoin}
@@ -27,7 +34,7 @@ export function PoolCards() {
       />
       <PoolCard
         name="GLV"
-        apr={10}
+        apr={poolsData?.glvApy}
         description={t`Steady returns without management`}
         iconComponent={IcGlvPool}
         coinImage={glvCoin}
@@ -35,7 +42,7 @@ export function PoolCards() {
       />
       <PoolCard
         name="GM"
-        apr={10}
+        apr={poolsData?.gmApy}
         description={t`Invest with control over risk and reward`}
         iconComponent={IcGmPool}
         coinImage={gmCoin}

@@ -1,10 +1,13 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { useEffect } from "react";
+import { HashRouter as Router } from "react-router-dom";
+import { SWRConfig } from "swr";
 
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import WalletProvider from "lib/wallets/WalletProvider";
 import { ARBITRUM } from "sdk/configs/chainIds";
 
 import SEO from "components/Common/SEO";
@@ -26,10 +29,16 @@ export default function App() {
   }, [fetcher]);
 
   return (
-    <I18nProvider i18n={i18n as any}>
-      <SEO>
-        <Home />
-      </SEO>
-    </I18nProvider>
+    <Router>
+      <SWRConfig>
+        <I18nProvider i18n={i18n as any}>
+          <WalletProvider>
+            <SEO>
+              <Home />
+            </SEO>
+          </WalletProvider>
+        </I18nProvider>
+      </SWRConfig>
+    </Router>
   );
 }
