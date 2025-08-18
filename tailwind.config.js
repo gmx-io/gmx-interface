@@ -205,8 +205,12 @@ function fontComponentsPlugin({ addComponents, addBase }) {
       lineHeight: "1.6rem",
     },
     ".text-caption": {
-      fontSize: "1rem",
+      fontSize: "1.1rem",
       lineHeight: "1.4rem",
+      fontWeight: 500,
+      letterSpacing: "0.08em",
+      color: "var(--color-slate-100)",
+      textTransform: "uppercase",
     }
   });
 }

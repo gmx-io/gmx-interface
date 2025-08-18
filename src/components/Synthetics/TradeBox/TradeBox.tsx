@@ -784,10 +784,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         qa="trigger-price"
       >
         {markRatio && (
-          <>
+          <div className="text-14">
             <TokenWithIcon symbol={markRatio.smallestToken.symbol} displaySize={20} /> per{" "}
             <TokenWithIcon symbol={markRatio.largestToken.symbol} displaySize={20} />
-          </>
+          </div>
         )}
       </BuyInputSection>
     );

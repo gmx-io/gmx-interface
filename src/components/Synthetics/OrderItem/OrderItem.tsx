@@ -633,7 +633,7 @@ function OrderItemLarge({
       </TableTd>
       {!hideActions && (
         <TableTd>
-          <div className="inline-flex items-center">
+          <div className="inline-flex w-full items-center justify-end">
             {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
               <button className="cursor-pointer p-6 text-slate-100 hover:text-white" onClick={setEditingOrderKey}>
                 <FaPen title={t`Edit order`} fontSize={12} />

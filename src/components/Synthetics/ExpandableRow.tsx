@@ -138,6 +138,7 @@ export function ExpandableRow({
         <SyntheticsInfoRow
           className={cx("group relative -my-14 !items-center py-14 gmx-hover:text-blue-300", {
             "cursor-not-allowed": disabled,
+            "pb-0": !open,
           })}
           onClick={disabled ? undefined : handleOnClick}
           label={
@@ -149,6 +150,7 @@ export function ExpandableRow({
         <SyntheticsInfoRow
           className={cx("group relative -my-14 !items-center py-14 gmx-hover:text-blue-300", {
             "cursor-not-allowed": disabled,
+            "pb-0": !open,
           })}
           onClick={disabled ? undefined : handleOnClick}
           label={
