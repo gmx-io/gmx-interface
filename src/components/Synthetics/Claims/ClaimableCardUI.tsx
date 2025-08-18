@@ -36,7 +36,7 @@ export function ClaimableCardUI({ title, style, sections }: Props) {
           "grid-cols-1": !isHorizontal,
         })}
       >
-        <Section title={t`Fees`} {...section1} />
+        <Section title={t`Positive Funding Fees`} {...section1} />
         <Section title={t`Price Impact Rebates`} {...section2} />
       </div>
     </div>
