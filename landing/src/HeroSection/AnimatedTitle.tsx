@@ -9,10 +9,12 @@ const VARIANTS: Variants = {
 };
 const TRANSITION = {
   opacity: {
-    duration: 0.18,
+    duration: 0.25,
+    ease: "easeInOut",
   },
   y: {
-    duration: 0.18,
+    duration: 0.25,
+    ease: "easeInOut",
   },
 };
 
@@ -59,7 +61,7 @@ export function AnimatedTitle() {
   return (
     <div className="relative">
       {/* I have no idea if there is a better way to do this */}
-      <span className="opacity-0"> {currentText}</span>
+      <span className="opacity-0">&nbsp;{currentText}</span>
       <AnimatePresence mode="popLayout">
         <motion.div
           className="will-change-opacity absolute inset-0 transform-gpu will-change-transform
@@ -71,7 +73,8 @@ export function AnimatedTitle() {
           animate="enter"
           exit="exit"
         >
-          <span className="opacity-0">Trade </span> {currentText}
+          <span className="opacity-0">Trade </span>
+          {currentText}
         </motion.div>
       </AnimatePresence>
     </div>
