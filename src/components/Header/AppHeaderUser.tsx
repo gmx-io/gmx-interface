@@ -101,7 +101,7 @@ export function AppHeaderUser({
             <HeaderLink
               className="default-btn"
               onClick={trackLaunchApp}
-              to={`${tradeLink}?${userAnalytics.getSessionIdUrlParams()}`}
+              to={`${tradeLink}?${userAnalytics.getSessionForwardParams()}`}
               showRedirectModal={showRedirectModal}
             >
               <Trans>Launch App</Trans>
@@ -144,7 +144,7 @@ export function AppHeaderUser({
           <HeaderLink
             className="default-btn"
             onClick={trackLaunchApp}
-            to={`${tradeLink}?${userAnalytics.getSessionIdUrlParams()}`}
+            to={`${tradeLink}?${userAnalytics.getSessionForwardParams()}`}
             showRedirectModal={showRedirectModal}
           >
             <Trans>Launch App</Trans>

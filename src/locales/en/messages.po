@@ -8540,6 +8540,10 @@ msgstr "Max. Leverage exceeded"
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Gemini Wallet is not supported for Express or One-Click trading."
+msgstr "Gemini Wallet is not supported for Express or One-Click trading."
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"
 msgstr "PNG"

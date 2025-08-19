@@ -30,7 +30,7 @@ export function HomeHeaderLinks({ small, clickCloseIcon, showRedirectModal }: Pr
     {
       label: t`App`,
       isHomeLink: true,
-      link: `/trade?${userAnalytics.getSessionIdUrlParams()}`,
+      link: `/trade?${userAnalytics.getSessionForwardParams()}`,
       onClick: async () => {
         await userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
           {

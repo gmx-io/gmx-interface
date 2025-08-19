@@ -382,6 +382,18 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
     "0x672fEA44f4583DdaD620d60C1Ac31021F47558Cb": {
       enabled: true,
     },
+    // ALGO/USD [WBTC-USDC]
+    "0x3B7f4e4Cf2fa43df013d2B32673e6A01d29ab2Ac": {
+      enabled: true,
+    },
+    // CRO/USD [WBTC-USDC]
+    "0xa29FfE4152B65A0347512Ae5c6A4Bbc7a3d6d51B": {
+      enabled: true,
+    },
+    // HBAR/USD [WBTC-USDC]
+    "0x9f0849FB830679829d1FB759b11236D375D15C78": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

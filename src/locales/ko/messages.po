@@ -8540,6 +8540,10 @@ msgstr "최대 레버리지 초과"
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "자금 및 대출 수수료율로 인해 가격 움직임 제외 포지션 담보 감소로 청산될 수 있음."
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Gemini Wallet is not supported for Express or One-Click trading."
+msgstr ""
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"
 msgstr ""
