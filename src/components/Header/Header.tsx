@@ -115,9 +115,9 @@ export function Header({ openSettings, showRedirectModal }: Props) {
                 <AppHeaderLinks showRedirectModal={showRedirectModal} />
               )}
             </div>
-            <div className="App-header-container-right">
+            <div className="flex items-center gap-16">
               {!isHomeSite() ? (
-                <div className="mr-22">
+                <div className="mr-6">
                   <OneClickPromoBanner isShort={shouldShorten1CTBanner} openSettings={openSettings} />
                 </div>
               ) : null}
