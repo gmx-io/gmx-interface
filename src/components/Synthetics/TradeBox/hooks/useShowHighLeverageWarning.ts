@@ -1,3 +1,5 @@
+import { useCallback, useState } from "react";
+
 import { AB_HIGH_LEVERAGE_WARNING_GROUP, AB_HIGH_LEVERAGE_WARNING_PROBABILITY } from "config/ab";
 import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
@@ -18,7 +20,10 @@ const IS_MAJOR_TOKEN_MAP: Record<number, string[]> = {
 const MAX_MAJOR_TOKEN_LEVERAGE = 15n * BASIS_POINTS_DIVISOR_BIGINT;
 const MAX_ALTCOIN_LEVERAGE = 10n * BASIS_POINTS_DIVISOR_BIGINT;
 
-export function useShowHighLeverageWarning() {
+export function useShowHighLeverageWarning(): {
+  showHighLeverageWarning: boolean;
+  dismissHighLeverageWarning: () => void;
+} {
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
   const isFreshAccount = useIsFreshAccountForHighLeverageTrading();
@@ -34,7 +39,16 @@ export function useShowHighLeverageWarning() {
   const isMajorToken = toTokenSymbol ? IS_MAJOR_TOKEN_MAP[chainId].includes(toTokenSymbol) : false;
   const leverage = useSelector(selectTradeboxLeverage);
 
-  const isHighLeverage = isMajorToken ? leverage > MAX_MAJOR_TOKEN_LEVERAGE : leverage > MAX_ALTCOIN_LEVERAGE;
+  const [isDismissed, setIsDismissed] = useState(false);
 
-  return isFreshAccount && isInGroup && isHighLeverage;
+  const isHighLeverage = isMajorToken ? leverage > MAX_MAJOR_TOKEN_LEVERAGE : leverage >= MAX_ALTCOIN_LEVERAGE;
+
+  const dismissHighLeverageWarning = useCallback(() => {
+    setIsDismissed(true);
+  }, []);
+
+  return {
+    showHighLeverageWarning: isFreshAccount && isInGroup && isHighLeverage && !isDismissed,
+    dismissHighLeverageWarning,
+  };
 }
