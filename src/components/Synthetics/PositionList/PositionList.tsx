@@ -55,7 +55,7 @@ export function PositionList(p: Props) {
   const isMobile = useMedia("(max-width: 1024px)");
 
   return (
-    <div>
+    <div className="flex grow flex-col">
       {isMobile && (
         <>
           <EmptyTableContent
@@ -84,7 +84,10 @@ export function PositionList(p: Props) {
       )}
 
       {!isMobile && (
-        <TableScrollFadeContainer disableScrollFade={positions.length === 0}>
+        <TableScrollFadeContainer
+          disableScrollFade={positions.length === 0}
+          className="flex grow flex-col bg-slate-900"
+        >
           <Table className="!w-[max(100%,840px)] table-fixed">
             <thead className="text-body-medium">
               <TableTheadTr>

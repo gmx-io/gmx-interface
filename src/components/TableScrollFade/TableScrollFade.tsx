@@ -274,7 +274,8 @@ function ScrollFadeControls({
 export function TableScrollFadeContainer({
   children,
   disableScrollFade,
-}: PropsWithChildren<{ disableScrollFade?: boolean }>) {
+  className,
+}: PropsWithChildren<{ disableScrollFade?: boolean; className?: string }>) {
   const tableScrollFade = useTableScrollFade();
 
   useEffect(() => {
@@ -284,10 +285,10 @@ export function TableScrollFadeContainer({
   }, [tableScrollFade, disableScrollFade]);
 
   return (
-    <div className="relative">
+    <div className={cx("relative", className)}>
       {!disableScrollFade && <ScrollFadeControls {...tableScrollFade} />}
       <div
-        className={cx(" scrollbar-hide", {
+        className={cx("flex grow flex-col scrollbar-hide", {
           "overflow-hidden": disableScrollFade,
           "overflow-x-auto": !disableScrollFade,
         })}

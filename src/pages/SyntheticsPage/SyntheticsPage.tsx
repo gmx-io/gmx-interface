@@ -344,7 +344,7 @@ export function SyntheticsPage(p: Props) {
           <OneClickPromoBanner openSettings={openSettings} />
           <Chart />
           {!isTablet && (
-            <div className="overflow-hidden rounded-8" data-qa="trade-table-large">
+            <div className="flex grow flex-col overflow-hidden rounded-8" data-qa="trade-table-large">
               <Tabs
                 options={tabsOptions}
                 selectedValue={listSection}
