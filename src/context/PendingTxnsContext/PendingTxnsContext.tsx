@@ -3,22 +3,16 @@ import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffe
 
 import { getExplorerUrl } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import {
-  getExecutionFeeBufferBps,
-  getGasPremium,
-  getMinimumExecutionFeeBufferBps,
-} from "domain/synthetics/fees/utils/executionFee";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
 import { getCallStaticError } from "lib/errors/additionalValidation";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
-import { formatPercentage } from "lib/numbers";
+import { useJsonRpcProvider } from "lib/rpc";
 import { sendUserAnalyticsOrderResultEvent } from "lib/userAnalytics";
-import { useEthersSigner } from "lib/wallets/useEthersSigner";
 
+import { getInsufficientExecutionFeeToastContent } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
 export type PendingTransactionData = {
   estimatedExecutionFee: bigint;
@@ -50,77 +44,49 @@ export function usePendingTxns() {
 }
 
 export function PendingTxnsContextProvider({ children }: { children: ReactNode }) {
-  const signer = useEthersSigner();
   const { chainId } = useChainId();
+  const { provider } = useJsonRpcProvider(chainId);
   const { setIsSettingsVisible, executionFeeBufferBps } = useSettings();
 
   const [pendingTxns, setPendingTxns] = useState<PendingTransaction[]>([]);
 
   useEffect(() => {
     const checkPendingTxns = async () => {
-      if (!signer) {
+      if (!provider) {
         return;
       }
 
       const updatedPendingTxns: any[] = [];
       for (let i = 0; i < pendingTxns.length; i++) {
         const pendingTxn = pendingTxns[i];
-        const receipt = await signer.provider.getTransactionReceipt(pendingTxn.hash);
+        const receipt = await provider.getTransactionReceipt(pendingTxn.hash);
         if (receipt) {
           if (receipt.status === 0) {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             const { error: onchainError, txnData } = await getCallStaticError(
               chainId,
-              signer.provider,
+              provider,
               undefined,
               pendingTxn.hash
             );
-            const errorData = onchainError ? parseError(onchainError) : undefined;
+            const errorData = onchainError ? parseError(onchainError as any) : undefined;
 
             let toastMsg: ReactNode;
 
             if (errorData?.contractError === "InsufficientExecutionFee" && txnData) {
               const [minExecutionFee, executionFee]: bigint[] = errorData.contractErrorArgs;
 
-              const requiredBufferBps = getMinimumExecutionFeeBufferBps({
-                minExecutionFee: minExecutionFee,
-                estimatedExecutionFee: executionFee,
-                currentBufferBps: getExecutionFeeBufferBps(chainId, executionFeeBufferBps),
-                premium: getGasPremium(chainId),
-                gasLimit: pendingTxn.data?.estimatedExecutionGasLimit ?? 1n,
+              toastMsg = getInsufficientExecutionFeeToastContent({
+                minExecutionFee,
+                executionFee,
+                chainId,
+                executionFeeBufferBps,
+                txUrl,
+                errorMessage: errorData?.errorMessage,
+                shouldOfferExpress: true,
+                setIsSettingsVisible,
+                estimatedExecutionGasLimit: pendingTxn.data?.estimatedExecutionGasLimit ?? 1n,
               });
-
-              toastMsg = (
-                <div>
-                  <Trans>
-                    Transaction failed due to execution fee validation. <ExternalLink href={txUrl}>View</ExternalLink>.
-                    <br />
-                    <br />
-                    Please{" "}
-                    <div
-                      className=" muted inline-block cursor-pointer underline"
-                      onClick={() => setIsSettingsVisible(true)}
-                    >
-                      enable Express trading
-                    </div>{" "}
-                    under settings, which should offer a better experience.
-                    <br />
-                    <br />
-                    Otherwise, try increasing the max network fee buffer to{" "}
-                    {formatPercentage(requiredBufferBps, { displayDecimals: 0 })} in{" "}
-                    <div
-                      className=" muted inline-block cursor-pointer underline"
-                      onClick={() => setIsSettingsVisible(true)}
-                    >
-                      settings
-                    </div>
-                    .
-                  </Trans>
-                  <br />
-                  <br />
-                  {errorData?.errorMessage && <ToastifyDebug error={errorData.errorMessage} />}
-                </div>
-              );
             } else {
               toastMsg = (
                 <div>
@@ -173,7 +139,7 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
       checkPendingTxns();
     }, 2 * 1000);
     return () => clearInterval(interval);
-  }, [signer, pendingTxns, chainId, setIsSettingsVisible, executionFeeBufferBps]);
+  }, [provider, pendingTxns, chainId, setIsSettingsVisible, executionFeeBufferBps]);
 
   const state = useMemo(() => ({ pendingTxns, setPendingTxns }), [pendingTxns, setPendingTxns]);
 

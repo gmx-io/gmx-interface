@@ -5,7 +5,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { getExplorerUrl } from "config/chains";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { OrderStatus, PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
+import {
+  OrderStatus,
+  PendingOrderData,
+  getGelatoTaskUrl,
+  getPendingOrderKey,
+  useSyntheticsEvents,
+} from "context/SyntheticsEvents";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import {
   isIncreaseOrderType,
@@ -244,12 +250,13 @@ export function OrderStatusNotification({
     if (isGelatoTaskFailed) {
       status = "error";
       text = t`Relayer request failed`;
-      const tenderlySlugs =
-        tenderlyAccountSlug && tenderlyProjectSlug
-          ? `tenderlyUsername=${tenderlyAccountSlug}&tenderlyProjectName=${tenderlyProjectSlug}`
-          : "";
       txnLink = pendingExpressTxn?.taskId
-        ? `https://api.gelato.digital/tasks/status/${pendingExpressTxn.taskId}/debug?${tenderlySlugs}`
+        ? getGelatoTaskUrl({
+            taskId: pendingExpressTxn.taskId,
+            isDebug: true,
+            tenderlyAccountSlug,
+            tenderlyProjectSlug,
+          })
         : undefined;
     } else if (isCompleted) {
       status = "success";

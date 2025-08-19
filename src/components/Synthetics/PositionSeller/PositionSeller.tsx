@@ -22,7 +22,6 @@ import {
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import {
   selectBlockTimestampData,
-  selectExpressNoncesData,
   selectGasPaymentTokenAllowance,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -42,10 +41,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
-import {
-  selectAddTokenPermit,
-  selectTokenPermits,
-} from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
+import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
@@ -62,8 +58,10 @@ import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoC
 import { ORDER_OPTION_TO_TRADE_MODE, OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError, getExpressError } from "domain/synthetics/trade/utils/validation";
-import { approveTokens, Token } from "domain/tokens";
+import { Token } from "domain/tokens";
+import { useApproveToken } from "domain/tokens/useApproveTokens";
 import { useChainId } from "lib/chains";
+import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
@@ -76,12 +74,9 @@ import {
   formatUsd,
   parseValue,
 } from "lib/numbers";
-import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
+import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { userAnalytics } from "lib/userAnalytics";
-import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
-import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import {
@@ -104,12 +99,13 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
+
 import "./PositionSeller.scss";
 
 export type Props = {
@@ -132,8 +128,9 @@ export function PositionSeller() {
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const availableReceiveTokens = useSelector(selectPositionSellerAvailableReceiveTokens);
   const tokensData = useTokensData();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { signer, account } = useWallet();
+  const { provider } = useJsonRpcProvider(chainId);
   const { openConnectModal } = useConnectModal();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
@@ -147,8 +144,7 @@ export function PositionSeller() {
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const tokenPermits = useSelector(selectTokenPermits);
-  const addTokenPermit = useSelector(selectAddTokenPermit);
-  const noncesData = useSelector(selectExpressNoncesData);
+  const { approveToken } = useApproveToken();
   const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
 
   const isVisible = Boolean(position);
@@ -274,7 +270,7 @@ export function PositionSeller() {
     const swapPath =
       decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken
         ? []
-        : swapAmounts?.swapPathStats?.swapPath || [];
+        : swapAmounts?.swapStrategy.swapPathStats?.swapPath || [];
 
     if (
       !account ||
@@ -354,7 +350,7 @@ export function PositionSeller() {
     receiveToken?.address,
     receiveUsd,
     signer,
-    swapAmounts?.swapPathStats?.swapPath,
+    swapAmounts?.swapStrategy.swapPathStats?.swapPath,
     tokensData,
     triggerPrice,
     userReferralInfo?.referralCodeForTxn,
@@ -367,10 +363,16 @@ export function PositionSeller() {
     fastExpressParams,
     asyncExpressParams,
   } = useExpressOrdersParams({
+    label: "Position Seller",
     orderParams: batchParams,
+    isGmxAccount: srcChainId !== undefined,
   });
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
+    if (srcChainId) {
+      return { tokensToApprove: [], isAllowanceLoaded: true };
+    }
+
     if (!batchParams) {
       return { tokensToApprove: [], isAllowanceLoaded: false };
     }
@@ -396,6 +398,7 @@ export function PositionSeller() {
     expressParams,
     gasPaymentTokenAllowance?.isLoaded,
     gasPaymentTokenAllowance?.tokensAllowanceData,
+    srcChainId,
     tokenPermits,
   ]);
 
@@ -466,7 +469,7 @@ export function PositionSeller() {
   ]);
 
   async function onSubmit() {
-    if (!account) {
+    if (!account || !signer) {
       openConnectModal?.();
       return;
     }
@@ -474,36 +477,12 @@ export function PositionSeller() {
     if (isAllowanceLoaded && tokensToApprove.length) {
       if (!chainId || isApproving) return;
 
-      userAnalytics.pushEvent<TokenApproveClickEvent>({
-        event: "TokenApproveAction",
-        data: {
-          action: "ApproveClick",
-        },
-      });
-
-      approveTokens({
-        setIsApproving,
+      approveToken({
         signer,
         tokenAddress: tokensToApprove[0].tokenAddress,
-        spender: getContract(chainId, "SyntheticsRouter"),
-        pendingTxns: [],
-        setPendingTxns: () => null,
-        infoTokens: {},
         chainId,
-        permitParams: expressParams
-          ? {
-              addTokenPermit,
-            }
-          : undefined,
-        approveAmount: undefined,
-        onApproveFail: () => {
-          userAnalytics.pushEvent<TokenApproveResultEvent>({
-            event: "TokenApproveAction",
-            data: {
-              action: "ApproveFail",
-            },
-          });
-        },
+        allowPermit: Boolean(expressParams),
+        setIsApproving,
       });
 
       return;
@@ -538,6 +517,8 @@ export function PositionSeller() {
       fastExpressParams,
       asyncExpressParams,
       expressParams,
+      chainId: srcChainId ?? chainId,
+      isCollateralFromMultichain: srcChainId !== undefined,
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
@@ -551,7 +532,8 @@ export function PositionSeller() {
       !receiveToken?.address ||
       receiveUsd === undefined ||
       decreaseAmounts?.acceptablePrice === undefined ||
-      !signer
+      !signer ||
+      !provider
     ) {
       helperToast.error(t`Error submitting order`);
       sendTxnValidationErrorMetric(metricData.metricId);
@@ -565,8 +547,9 @@ export function PositionSeller() {
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
+      provider,
       batchParams,
-      noncesData,
+      isGmxAccount: srcChainId !== undefined,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       simulationParams: shouldDisableValidationForTesting
@@ -849,7 +832,7 @@ export function PositionSeller() {
       };
     }
 
-    if (isApproving) {
+    if (isApproving && tokensToApprove.length) {
       const tokenToApprove = tokensToApprove[0];
       return {
         text: (

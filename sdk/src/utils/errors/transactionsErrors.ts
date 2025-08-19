@@ -19,6 +19,8 @@ const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
     { msg: "User denied transaction signature" },
     { msg: "User rejected" },
     { msg: "User cancelled" },
+    { msg: "Cancelled" },
+    { msg: "Cancelled by user" },
     { msg: "user rejected action" },
     { msg: "ethers-user-denied" },
     { msg: "Action cancelled by user" },
@@ -28,7 +30,11 @@ const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
     { msg: "Router: mark price lower than limit" },
     { msg: "Router: mark price higher than limit" },
   ],
-  [TxErrorType.NetworkChanged]: [{ msg: "network changed" }, { msg: "Invalid network" }],
+  [TxErrorType.NetworkChanged]: [
+    { msg: "network changed" },
+    { msg: "Invalid network" },
+    { msg: "chainId should be same" },
+  ],
   [TxErrorType.Expired]: [{ msg: "Request expired" }],
   [TxErrorType.RpcError]: [
     // @see https://eips.ethereum.org/EIPS/eip-1474#error-codes

@@ -8,10 +8,6 @@ import {
 } from "domain/synthetics/fees";
 import { getMaxAllowedLeverageByMinCollateralFactor } from "domain/synthetics/markets";
 import {
-  OrderInfo,
-  OrderType,
-  PositionOrderInfo,
-  SwapOrderInfo,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
@@ -20,28 +16,32 @@ import {
   isSwapOrder,
   isSwapOrderType,
   isTriggerDecreaseOrderType,
+  OrderInfo,
+  OrderType,
+  PositionOrderInfo,
   sortPositionOrders,
   sortSwapOrders,
+  SwapOrderInfo,
 } from "domain/synthetics/orders";
 import { getPositionOrderError } from "domain/synthetics/orders/getPositionOrderError";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import {
-  TokensRatio,
   convertToTokenAmount,
   convertToUsd,
   getAmountByRatio,
   getTokenData,
   getTokensRatioByPrice,
+  TokensRatio,
 } from "domain/synthetics/tokens";
 import {
-  TradeMode,
-  TradeType,
   getAcceptablePriceInfo,
   getDecreasePositionAmounts,
   getIncreasePositionAmounts,
   getSwapPathOutputAddresses,
   getTradeFees,
   getTradeFlagsForOrder,
+  TradeMode,
+  TradeType,
 } from "domain/synthetics/trade";
 import { getPositionKey } from "lib/legacy";
 import { BN_ZERO, parseValue } from "lib/numbers";
@@ -66,8 +66,7 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectIsPnlInLeverage, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
-import { selectExternalSwapQuote } from "./tradeboxSelectors";
-import { selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
+import { selectExternalSwapQuote, selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
 import { makeSelectFindSwapPath, makeSelectNextPositionValuesForIncrease } from "./tradeSelectors";
 
 export const selectCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.cancellingOrdersKeys;
@@ -666,6 +665,8 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
   const sizeDeltaUsd = q(selectOrderEditorSizeDeltaUsd);
   const userReferralInfo = q(selectUserReferralInfo);
   const uiFeeFactor = q(selectUiFeeFactor);
+  const marketsInfoData = q(selectMarketsInfoData);
+  const chainId = q(selectChainId);
 
   const positionOrder = order as PositionOrderInfo;
   const indexTokenAmount = convertToTokenAmount(sizeDeltaUsd, positionOrder.indexToken.decimals, triggerPrice);
@@ -687,6 +688,9 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
     userReferralInfo,
     uiFeeFactor,
     strategy: "independent",
+    marketsInfoData,
+    chainId,
+    externalSwapQuoteParams: undefined,
   });
 });
 

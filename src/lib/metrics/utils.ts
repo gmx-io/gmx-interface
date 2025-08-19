@@ -18,6 +18,8 @@ import {
   EditCollateralMetricData,
   ExpressOrderMetricData,
   IncreaseOrderMetricData,
+  MultichainDepositMetricData,
+  MultichainWithdrawalMetricData,
   OrderCancelledEvent,
   OrderCreatedEvent,
   OrderExecutedEvent,
@@ -97,6 +99,8 @@ export function initSwapMetricData({
   expressParams,
   asyncExpressParams,
   fastExpressParams,
+  chainId,
+  isCollateralFromMultichain,
 }: {
   fromToken: TokenData | undefined;
   toToken: TokenData | undefined;
@@ -117,6 +121,8 @@ export function initSwapMetricData({
   expressParams: ExpressTxnParams | undefined;
   asyncExpressParams: ExpressTxnParams | undefined;
   fastExpressParams: ExpressTxnParams | undefined;
+  chainId: number;
+  isCollateralFromMultichain: boolean;
 }) {
   let metricType: SwapMetricData["metricType"] = "swap";
   if (tradeMode === TradeMode.Twap) {
@@ -134,7 +140,7 @@ export function initSwapMetricData({
   return metrics.setCachedMetricData<SwapMetricData>({
     metricId: getSwapOrderMetricId({
       initialCollateralTokenAddress: fromToken?.wrappedAddress || fromToken?.address,
-      swapPath: swapAmounts?.swapPathStats?.swapPath,
+      swapPath: swapAmounts?.swapStrategy.swapPathStats?.swapPath,
       orderType,
       initialCollateralDeltaAmount: swapAmounts?.amountIn,
       executionFee: executionFee?.feeTokenAmount,
@@ -150,7 +156,7 @@ export function initSwapMetricData({
     initialCollateralDeltaAmount: formatAmountForMetrics(swapAmounts?.amountIn, fromToken?.decimals),
     minOutputAmount: formatAmountForMetrics(swapAmounts?.minOutputAmount, toToken?.decimals),
     amountUsd: formatAmountForMetrics(swapAmounts?.usdOut),
-    swapPath: swapAmounts?.swapPathStats?.swapPath,
+    swapPath: swapAmounts?.swapStrategy.swapPathStats?.swapPath,
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
     allowedSlippage,
     orderType,
@@ -164,6 +170,8 @@ export function initSwapMetricData({
     partsCount,
     tradeMode,
     expressData,
+    chainId,
+    isCollateralFromMultichain,
   });
 }
 
@@ -199,6 +207,8 @@ export function initIncreaseOrderMetricData({
   expressParams,
   asyncExpressParams,
   fastExpressParams,
+  chainId,
+  isCollateralFromMultichain,
 }: {
   fromToken: TokenData | undefined;
   increaseAmounts: IncreasePositionAmounts | undefined;
@@ -232,6 +242,8 @@ export function initIncreaseOrderMetricData({
   expressParams: ExpressTxnParams | undefined;
   asyncExpressParams: ExpressTxnParams | undefined;
   fastExpressParams: ExpressTxnParams | undefined;
+  chainId: number;
+  isCollateralFromMultichain: boolean;
 }) {
   let metricType: IncreaseOrderMetricData["metricType"] = "increasePosition";
   if (orderType === OrderType.LimitIncrease) {
@@ -268,7 +280,7 @@ export function initIncreaseOrderMetricData({
     initialCollateralBalance: fromToken?.balance?.toString(),
     initialCollateralSymbol: fromToken?.symbol,
     initialCollateralDeltaAmount: formatAmountForMetrics(increaseAmounts?.initialCollateralAmount, fromToken?.decimals),
-    swapPath: increaseAmounts?.swapPathStats?.swapPath || [],
+    swapPath: increaseAmounts?.swapStrategy.swapPathStats?.swapPath || [],
     sizeDeltaUsd: formatAmountForMetrics(increaseAmounts?.sizeDeltaUsd),
     sizeDeltaInTokens: formatAmountForMetrics(increaseAmounts?.sizeDeltaInTokens, marketInfo?.indexToken.decimals),
     triggerPrice: formatAmountForMetrics(triggerPrice, USD_DECIMALS, false),
@@ -284,20 +296,29 @@ export function initIncreaseOrderMetricData({
     priceImpactPercentage: formatPercentageForMetrics(priceImpactPercentage) ?? 0,
     netRate1h: parseFloat(formatRatePercentage(netRate1h)),
     internalSwapTotalFeesBps:
-      increaseAmounts?.swapPathStats && increaseAmounts.initialCollateralAmount > 0
-        ? Number(getBasisPoints(increaseAmounts.swapPathStats.totalFeesDeltaUsd, increaseAmounts.initialCollateralUsd))
+      increaseAmounts?.swapStrategy.swapPathStats && increaseAmounts.initialCollateralAmount > 0
+        ? Number(
+            getBasisPoints(
+              increaseAmounts.swapStrategy.swapPathStats.totalFeesDeltaUsd,
+              increaseAmounts.initialCollateralUsd
+            )
+          )
         : undefined,
-    internalSwapTotalFeesDeltaUsd: formatAmountForMetrics(increaseAmounts?.swapPathStats?.totalFeesDeltaUsd),
-    externalSwapUsdIn: formatAmountForMetrics(increaseAmounts?.externalSwapQuote?.usdIn),
-    externalSwapUsdOut: formatAmountForMetrics(increaseAmounts?.externalSwapQuote?.usdOut),
-    externalSwapFeesUsd: formatAmountForMetrics(increaseAmounts?.externalSwapQuote?.feesUsd),
-    externalSwapInTokenAddress: increaseAmounts?.externalSwapQuote?.inTokenAddress,
-    externalSwapOutTokenAddress: increaseAmounts?.externalSwapQuote?.outTokenAddress,
+    internalSwapTotalFeesDeltaUsd: formatAmountForMetrics(
+      increaseAmounts?.swapStrategy.swapPathStats?.totalFeesDeltaUsd
+    ),
+    externalSwapUsdIn: formatAmountForMetrics(increaseAmounts?.swapStrategy.externalSwapQuote?.usdIn),
+    externalSwapUsdOut: formatAmountForMetrics(increaseAmounts?.swapStrategy.externalSwapQuote?.usdOut),
+    externalSwapFeesUsd: formatAmountForMetrics(increaseAmounts?.swapStrategy.externalSwapQuote?.feesUsd),
+    externalSwapInTokenAddress: increaseAmounts?.swapStrategy.externalSwapQuote?.inTokenAddress,
+    externalSwapOutTokenAddress: increaseAmounts?.swapStrategy.externalSwapQuote?.outTokenAddress,
     interactionId,
     duration,
     partsCount,
     tradeMode,
     expressData: getExpressMetricData({ expressParams, asyncExpressParams, fastExpressParams }),
+    chainId,
+    isCollateralFromMultichain,
   });
 }
 
@@ -327,6 +348,8 @@ export function initDecreaseOrderMetricData({
   expressParams,
   asyncExpressParams,
   fastExpressParams,
+  chainId,
+  isCollateralFromMultichain,
 }: {
   collateralToken: TokenData | undefined;
   decreaseAmounts: DecreasePositionAmounts | undefined;
@@ -354,6 +377,8 @@ export function initDecreaseOrderMetricData({
   expressParams: ExpressTxnParams | undefined;
   asyncExpressParams: ExpressTxnParams | undefined;
   fastExpressParams: ExpressTxnParams | undefined;
+  chainId: number;
+  isCollateralFromMultichain: boolean;
 }) {
   let metricType: DecreaseOrderMetricData["metricType"] = "decreasePosition";
   if (orderType === OrderType.LimitDecrease) {
@@ -411,6 +436,8 @@ export function initDecreaseOrderMetricData({
     partsCount,
     tradeMode,
     expressData: getExpressMetricData({ expressParams, asyncExpressParams, fastExpressParams }),
+    chainId,
+    isCollateralFromMultichain,
   });
 }
 
@@ -427,6 +454,8 @@ export function initEditCollateralMetricData({
   expressParams,
   asyncExpressParams,
   fastExpressParams,
+  chainId,
+  isCollateralFromMultichain,
 }: {
   collateralToken: TokenData | undefined;
   executionFee: ExecutionFee | undefined;
@@ -440,6 +469,8 @@ export function initEditCollateralMetricData({
   expressParams: ExpressTxnParams | undefined;
   asyncExpressParams: ExpressTxnParams | undefined;
   fastExpressParams: ExpressTxnParams | undefined;
+  chainId: number;
+  isCollateralFromMultichain: boolean;
 }) {
   return metrics.setCachedMetricData<EditCollateralMetricData>({
     metricId: getPositionOrderMetricId({
@@ -466,6 +497,8 @@ export function initEditCollateralMetricData({
     isExpress1CT: Boolean(subaccount),
     requestId: getRequestId(),
     expressData: getExpressMetricData({ expressParams, asyncExpressParams, fastExpressParams }),
+    chainId,
+    isCollateralFromMultichain,
   });
 }
 
@@ -579,6 +612,13 @@ function getExpressMetricData({
   }
 
   const expressData: ExpressOrderMetricData = {
+    isExpressValid: expressParams.gasPaymentValidations.isValid,
+    isOutGasTokenBalance: expressParams.gasPaymentValidations.isOutGasTokenBalance,
+    needGasTokenApproval: expressParams.gasPaymentValidations.needGasPaymentTokenApproval,
+    isSubaccountValid: expressParams.subaccountValidations?.isValid,
+    isSubbaccountExpired: expressParams.subaccountValidations?.isExpired,
+    isSubaccountActionsExceeded: expressParams.subaccountValidations?.isActionsExceeded,
+    isSubaccountNonceExpired: expressParams.subaccountValidations?.isNonceExpired,
     isSponsoredCall: Boolean(expressParams?.isSponsoredCall),
     approximateGasLimit: fastExpressParams ? Number(fastExpressParams.gasLimit) : 0,
     approximateL1GasLimit: fastExpressParams ? Number(fastExpressParams.l1GasLimit) : 0,
@@ -614,6 +654,62 @@ export function initShiftGmMetricData({
     toMarketAddress: toMarketToken?.address,
     minToMarketTokenAmount: formatAmountForMetrics(minMarketTokenAmount, toMarketToken?.decimals),
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
+  });
+}
+
+export function initMultichainDepositMetricData({
+  sourceChain,
+  settlementChain,
+  assetSymbol,
+  sizeInUsd,
+  isFirstDeposit,
+}: {
+  sourceChain: number;
+  settlementChain: number;
+  assetSymbol: string;
+  sizeInUsd: bigint;
+  isFirstDeposit: boolean;
+}) {
+  return metrics.setCachedMetricData<MultichainDepositMetricData>({
+    metricId: getMultichainDepositMetricId({
+      sourceChain,
+      settlementChain,
+      assetSymbol,
+    }),
+    metricType: "multichainDeposit",
+    sourceChain,
+    settlementChain,
+    assetSymbol,
+    sizeInUsd: formatAmountForMetrics(sizeInUsd)!,
+    isFirstDeposit,
+  });
+}
+
+export function initMultichainWithdrawalMetricData({
+  sourceChain,
+  settlementChain,
+  assetSymbol,
+  isFirstWithdrawal,
+  sizeInUsd,
+}: {
+  sourceChain: number;
+  settlementChain: number;
+  assetSymbol: string;
+  isFirstWithdrawal: boolean;
+  sizeInUsd: bigint;
+}) {
+  return metrics.setCachedMetricData<MultichainWithdrawalMetricData>({
+    metricId: getMultichainWithdrawalMetricId({
+      sourceChain,
+      settlementChain,
+      assetSymbol,
+    }),
+    metricType: "multichainWithdrawal",
+    sourceChain,
+    settlementChain,
+    assetSymbol,
+    sizeInUsd: formatAmountForMetrics(sizeInUsd)!,
+    isFirstWithdrawal,
   });
 }
 
@@ -669,6 +765,22 @@ export function getPositionOrderMetricId(p: {
     p.isLong || "isLong",
     p.orderType || "orderType",
   ].join(":")}`;
+}
+
+export function getMultichainDepositMetricId(p: {
+  sourceChain: number;
+  settlementChain: number;
+  assetSymbol: string;
+}): MultichainDepositMetricData["metricId"] {
+  return `multichainDeposit:${[p.sourceChain, p.settlementChain, p.assetSymbol].join(":")}`;
+}
+
+export function getMultichainWithdrawalMetricId(p: {
+  sourceChain: number;
+  settlementChain: number;
+  assetSymbol: string;
+}): MultichainWithdrawalMetricData["metricId"] {
+  return `multichainWithdrawal:${[p.sourceChain, p.settlementChain, p.assetSymbol].join(":")}`;
 }
 
 export function sendOrderSubmittedMetric(metricId: OrderMetricId) {

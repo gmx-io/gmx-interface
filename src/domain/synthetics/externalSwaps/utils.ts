@@ -1,8 +1,7 @@
 import { getSwapDebugSettings } from "config/externalSwaps";
 import { UserReferralInfo } from "domain/referrals";
-import { ErrorLike, parseError } from "lib/errors";
 import { applyFactor } from "lib/numbers";
-import { MarketInfo } from "sdk/types/markets";
+import { MarketInfo, MarketsInfoData } from "sdk/types/markets";
 import { PositionInfo } from "sdk/types/positions";
 import { TokenData } from "sdk/types/tokens";
 import { ExternalSwapInputs, ExternalSwapQuote, SwapAmounts } from "sdk/types/trade";
@@ -23,12 +22,16 @@ export function getExternalSwapInputsByFromValue({
   amountIn,
   findSwapPath,
   uiFeeFactor,
+  marketsInfoData,
+  chainId,
 }: {
   tokenIn: TokenData;
   tokenOut: TokenData;
   amountIn: bigint;
   findSwapPath: FindSwapPath;
   uiFeeFactor: bigint;
+  marketsInfoData: MarketsInfoData | undefined;
+  chainId: number;
 }): ExternalSwapInputs {
   const swapAmounts = getSwapAmountsByFromValue({
     tokenIn,
@@ -37,10 +40,13 @@ export function getExternalSwapInputsByFromValue({
     isLimit: false,
     findSwapPath,
     uiFeeFactor,
+    marketsInfoData,
+    chainId,
+    externalSwapQuoteParams: undefined,
   });
 
-  const internalSwapTotalFeesDeltaUsd = swapAmounts.swapPathStats
-    ? swapAmounts.swapPathStats.totalFeesDeltaUsd
+  const internalSwapTotalFeesDeltaUsd = swapAmounts.swapStrategy.swapPathStats
+    ? swapAmounts.swapStrategy.swapPathStats.totalFeesDeltaUsd
     : undefined;
 
   const internalSwapTotalFeeItem = getFeeItem(internalSwapTotalFeesDeltaUsd, swapAmounts.usdIn);
@@ -70,6 +76,8 @@ export function getExternalSwapInputsByLeverageSize({
   leverage,
   isLong,
   userReferralInfo,
+  marketsInfoData,
+  chainId,
 }: {
   tokenIn: TokenData;
   collateralToken: TokenData;
@@ -82,6 +90,8 @@ export function getExternalSwapInputsByLeverageSize({
   isLong: boolean;
   findSwapPath: FindSwapPath;
   userReferralInfo: UserReferralInfo | undefined;
+  marketsInfoData: MarketsInfoData | undefined;
+  chainId: number;
 }): ExternalSwapInputs {
   const prices = getIncreasePositionPrices({
     triggerPrice,
@@ -122,10 +132,13 @@ export function getExternalSwapInputsByLeverageSize({
     isLimit: false,
     findSwapPath,
     uiFeeFactor,
+    marketsInfoData,
+    chainId,
+    externalSwapQuoteParams: undefined,
   });
 
-  const internalSwapTotalFeesDeltaUsd = swapAmounts.swapPathStats
-    ? swapAmounts.swapPathStats.totalFeesDeltaUsd
+  const internalSwapTotalFeesDeltaUsd = swapAmounts.swapStrategy.swapPathStats
+    ? swapAmounts.swapStrategy.swapPathStats.totalFeesDeltaUsd
     : undefined;
 
   const internalSwapTotalFeeItem = getFeeItem(internalSwapTotalFeesDeltaUsd, swapAmounts.usdIn);
@@ -141,16 +154,6 @@ export function getExternalSwapInputsByLeverageSize({
     internalSwapTotalFeesDeltaUsd,
     internalSwapAmounts: swapAmounts,
   };
-}
-
-export function getIsPossibleExternalSwapError(error: ErrorLike) {
-  const parsedError = parseError(error);
-
-  const isExternalCallError = parsedError?.contractError === "ExternalCallFailed";
-
-  const isPayloadRelatedError = parsedError?.errorMessage?.includes("execution reverted");
-
-  return isExternalCallError || isPayloadRelatedError;
 }
 
 export function getBestSwapStrategy({
@@ -169,7 +172,7 @@ export function getBestSwapStrategy({
 
   if (
     externalSwapQuote &&
-    (externalSwapQuote.usdOut > (internalSwapAmounts?.swapPathStats?.usdOut ?? 0n) || forceExternalSwaps)
+    (externalSwapQuote.usdOut > (internalSwapAmounts?.swapStrategy.swapPathStats?.usdOut ?? 0n) || forceExternalSwaps)
   ) {
     amountIn = externalSwapQuote.amountIn;
     amountOut = externalSwapQuote.amountOut;
@@ -183,7 +186,7 @@ export function getBestSwapStrategy({
       usdOut,
       externalSwapQuote,
     };
-  } else if (internalSwapAmounts?.swapPathStats) {
+  } else if (internalSwapAmounts?.swapStrategy.swapPathStats) {
     amountIn = internalSwapAmounts.amountIn;
     amountOut = internalSwapAmounts.amountOut;
     usdIn = internalSwapAmounts.usdIn;
@@ -194,7 +197,7 @@ export function getBestSwapStrategy({
       amountOut,
       usdIn,
       usdOut,
-      swapPath: internalSwapAmounts.swapPathStats.swapPath,
+      swapPath: internalSwapAmounts.swapStrategy.swapPathStats.swapPath,
     };
   } else {
     return undefined;
@@ -219,7 +222,7 @@ export function getIsInternalSwapBetter({
   }
 
   return (
-    internalSwapAmounts?.swapPathStats?.usdOut !== undefined &&
-    internalSwapAmounts!.swapPathStats!.usdOut! > (externalSwapQuote?.usdOut ?? 0n)
+    internalSwapAmounts?.swapStrategy.swapPathStats?.usdOut !== undefined &&
+    internalSwapAmounts!.swapStrategy!.swapPathStats!.usdOut! > (externalSwapQuote?.usdOut ?? 0n)
   );
 }

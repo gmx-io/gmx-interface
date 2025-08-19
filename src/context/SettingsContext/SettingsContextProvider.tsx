@@ -100,16 +100,15 @@ export function useSettings() {
 }
 
 export function SettingsContextProvider({ children }: { children: ReactNode }) {
+  const { chainId, srcChainId } = useChainId();
   const { account } = useWallet();
-  const { chainId } = useChainId();
+
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const [savedAllowedSlippage, setSavedAllowedSlippage] = useLocalStorageSerializeKey(
     getAllowedSlippageKey(chainId),
     DEFAULT_SLIPPAGE_AMOUNT
   );
-
-  const isBotanix = chainId === BOTANIX;
 
   const [savedAcceptablePriceImpactBuffer, setSavedAcceptablePriceImpactBuffer] = useLocalStorageSerializeKey(
     getSyntheticsAcceptablePriceImpactBufferKey(chainId),
@@ -128,6 +127,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     getExecutionFeeBufferBpsKey(chainId),
     EXECUTION_FEE_CONFIG_V2[chainId]?.defaultBufferBps
   );
+
   const shouldUseExecutionFeeBuffer = Boolean(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps);
 
   const [oracleKeeperInstancesConfig, setOracleKeeperInstancesConfig] = useLocalStorageSerializeKey(
@@ -172,7 +172,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const [externalSwapsEnabled, setExternalSwapsEnabled] = useLocalStorageByChainId(
     chainId,
     EXTERNAL_SWAPS_ENABLED_KEY,
-    false
+    true
   );
   const [debugSwapMarketsConfig, setDebugSwapMarketsConfig] = useLocalStorageSerializeKey<
     undefined | { disabledSwapMarkets?: string[]; manualPath?: string[] }
@@ -230,6 +230,15 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   ]);
 
+  useEffect(
+    function fallbackMultichain() {
+      if (srcChainId && !expressOrdersEnabled) {
+        setExpressOrdersEnabled(true);
+      }
+    },
+    [expressOrdersEnabled, setExpressOrdersEnabled, srcChainId]
+  );
+
   const contextState: SettingsContextType = useMemo(() => {
     return {
       showDebugValues: isDevelopment() ? showDebugValues! : false,
@@ -273,7 +282,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       gasPaymentTokenAddress: gasPaymentTokenAddress!,
       setGasPaymentTokenAddress,
 
-      externalSwapsEnabled: isBotanix ? false : externalSwapsEnabled!,
+      // External swaps are enabled by default on Botanix
+      externalSwapsEnabled: chainId === BOTANIX || externalSwapsEnabled!,
       setExternalSwapsEnabled,
 
       debugSwapMarketsConfig: debugSwapMarketsConfig!,
@@ -322,7 +332,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setExpressOrdersEnabled,
     gasPaymentTokenAddress,
     setGasPaymentTokenAddress,
-    isBotanix,
     externalSwapsEnabled,
     setExternalSwapsEnabled,
     debugSwapMarketsConfig,
@@ -331,6 +340,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSettingsWarningDotVisible,
     savedTwapNumberOfParts,
     setSavedTWAPNumberOfParts,
+    chainId,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

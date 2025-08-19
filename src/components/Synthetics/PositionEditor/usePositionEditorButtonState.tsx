@@ -19,20 +19,17 @@ import {
 import { useSavedAllowedSlippage } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import {
   selectBlockTimestampData,
-  selectExpressNoncesData,
   selectGasPaymentTokenAllowance,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectPositionEditorCollateralInputAmountAndUsd,
+  selectPositionEditorIsCollateralTokenFromGmxAccount,
   selectPositionEditorSelectedCollateralAddress,
   selectPositionEditorSelectedCollateralToken,
   selectPositionEditorSetCollateralInputValue,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
-import {
-  selectAddTokenPermit,
-  selectTokenPermits,
-} from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
+import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
@@ -48,7 +45,7 @@ import {
 import { convertToTokenAmount, getApprovalRequirements, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
 import { getCommonError, getEditCollateralError, getExpressError } from "domain/synthetics/trade/utils/validation";
-import { approveTokens } from "domain/tokens";
+import { useApproveToken } from "domain/tokens/useApproveTokens";
 import { bigNumberBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -59,9 +56,8 @@ import {
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
 import { expandDecimals, formatAmountFree } from "lib/numbers";
+import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { userAnalytics } from "lib/userAnalytics";
-import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import {
@@ -89,10 +85,11 @@ export function usePositionEditorButtonState(operation: Operation): {
 } {
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const allowedSlippage = useSavedAllowedSlippage();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { shouldDisableValidationForTesting } = useSettings();
   const tokensData = useTokensData();
   const { account, signer } = useWallet();
+  const { provider } = useJsonRpcProvider(chainId);
   const { openConnectModal } = useConnectModal();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
   const { minCollateralUsd } = usePositionsConstants();
@@ -102,12 +99,12 @@ export function usePositionEditorButtonState(operation: Operation): {
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const selectedCollateralAddress = useSelector(selectPositionEditorSelectedCollateralAddress);
+  const isCollateralTokenFromGmxAccount = useSelector(selectPositionEditorIsCollateralTokenFromGmxAccount);
   const selectedCollateralToken = useSelector(selectPositionEditorSelectedCollateralToken);
   const setCollateralInputValue = useSelector(selectPositionEditorSetCollateralInputValue);
   const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const marketsInfoData = useSelector(selectMarketsInfoData);
-  const noncesData = useSelector(selectExpressNoncesData);
 
   const collateralTokenAllowance = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
@@ -245,10 +242,16 @@ export function usePositionEditorButtonState(operation: Operation): {
     asyncExpressParams,
     expressParamsPromise,
   } = useExpressOrdersParams({
+    label: "Position Editor",
     orderParams: batchParams,
+    isGmxAccount: isCollateralTokenFromGmxAccount,
   });
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
+    if (isCollateralTokenFromGmxAccount) {
+      return { tokensToApprove: [], isAllowanceLoaded: true };
+    }
+
     if (!selectedCollateralAddress || collateralDeltaAmount === undefined) {
       return { tokensToApprove: [], isAllowanceLoaded: false };
     }
@@ -276,6 +279,7 @@ export function usePositionEditorButtonState(operation: Operation): {
 
     return approvalRequirements;
   }, [
+    isCollateralTokenFromGmxAccount,
     selectedCollateralAddress,
     collateralDeltaAmount,
     chainId,
@@ -416,10 +420,10 @@ export function usePositionEditorButtonState(operation: Operation): {
     );
   }, [detectAndSetMaxSize, tooltipName]);
 
-  const addTokenPermit = useSelector(selectAddTokenPermit);
+  const { approveToken } = useApproveToken();
 
   async function onSubmit() {
-    if (!account) {
+    if (!account || !signer) {
       openConnectModal?.();
       return;
     }
@@ -427,36 +431,12 @@ export function usePositionEditorButtonState(operation: Operation): {
     if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
       if (!chainId || isApproving) return;
 
-      userAnalytics.pushEvent<TokenApproveClickEvent>({
-        event: "TokenApproveAction",
-        data: {
-          action: "ApproveClick",
-        },
-      });
-
-      approveTokens({
+      approveToken({
         setIsApproving,
-        signer,
         tokenAddress: tokensToApprove[0].tokenAddress,
-        spender: getContract(chainId, "SyntheticsRouter"),
-        pendingTxns: [],
-        setPendingTxns: () => null,
-        infoTokens: {},
         chainId,
-        permitParams: expressParams
-          ? {
-              addTokenPermit,
-            }
-          : undefined,
-        approveAmount: undefined,
-        onApproveFail: () => {
-          userAnalytics.pushEvent<TokenApproveResultEvent>({
-            event: "TokenApproveAction",
-            data: {
-              action: "ApproveFail",
-            },
-          });
-        },
+        signer,
+        allowPermit: Boolean(expressParams),
       });
 
       return;
@@ -477,11 +457,13 @@ export function usePositionEditorButtonState(operation: Operation): {
       expressParams,
       asyncExpressParams,
       fastExpressParams,
+      chainId: srcChainId ?? chainId,
+      isCollateralFromMultichain: isCollateralTokenFromGmxAccount,
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
 
-    if (!batchParams || !tokensData || !signer) {
+    if (!batchParams || !tokensData || !signer || !provider) {
       helperToast.error(t`Error submitting order`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
@@ -492,10 +474,11 @@ export function usePositionEditorButtonState(operation: Operation): {
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
+      provider,
       batchParams,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
-      noncesData,
+      isGmxAccount: isCollateralTokenFromGmxAccount,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {
@@ -525,7 +508,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     onSubmit,
   };
 
-  if (isApproving) {
+  if (isApproving && tokensToApprove.length) {
     const tokenToApprove = tokensToApprove[0];
     return {
       text: (

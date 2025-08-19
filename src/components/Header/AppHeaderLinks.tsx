@@ -119,7 +119,14 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
       {small && !isHomeSite() && (
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}
-          <a href="#" data-qa="settings" onClick={openSettings}>
+          <a
+            href="#"
+            data-qa="settings"
+            onClick={(e) => {
+              e.preventDefault();
+              openSettings?.();
+            }}
+          >
             <Trans>Settings</Trans>
           </a>
         </div>

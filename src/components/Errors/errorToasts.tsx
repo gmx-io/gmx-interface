@@ -5,8 +5,14 @@ import { Link } from "react-router-dom";
 
 import { getChainName } from "config/chains";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
+import {
+  getExecutionFeeBufferBps,
+  getGasPremium,
+  getMinimumExecutionFeeBufferBps,
+} from "domain/synthetics/fees/utils/executionFee";
 import { ErrorData } from "lib/errors";
 import { helperToast } from "lib/helperToast";
+import { formatPercentage } from "lib/numbers";
 import { switchNetwork } from "lib/wallets";
 import { getNativeToken } from "sdk/configs/tokens";
 import { CustomErrorName, extractTxnError, TxError, TxErrorType } from "sdk/utils/errors/transactionsErrors";
@@ -20,7 +26,8 @@ export type AdditionalErrorParams = {
   slippageInputId?: string;
   defaultMessage?: ReactNode;
   isInternalSwapFallback?: boolean;
-  setIsSettingsVisible: (isVisible: boolean) => void;
+  isPermitIssue?: boolean;
+  setIsSettingsVisible?: (isVisible: boolean) => void;
 };
 
 export function getTxnErrorToast(
@@ -31,6 +38,7 @@ export function getTxnErrorToast(
     slippageInputId,
     defaultMessage = getDefaultErrorMessage(errorData),
     isInternalSwapFallback,
+    isPermitIssue,
     setIsSettingsVisible,
   }: AdditionalErrorParams
 ) {
@@ -86,6 +94,10 @@ export function getTxnErrorToast(
     );
 
     return toastParams;
+  }
+
+  if (isPermitIssue) {
+    toastParams.errorContent = getInvalidPermitSignatureToastContent();
   }
 
   if (
@@ -144,7 +156,7 @@ export function getTxnErrorToast(
             <br />
             <br />
             Please enable{" "}
-            <Button variant="link" className="link-underline" onClick={() => setIsSettingsVisible(true)}>
+            <Button variant="link" className="link-underline" onClick={() => setIsSettingsVisible?.(true)}>
               Express trading
             </Button>{" "}
             under settings, which should offer a better experience.
@@ -277,7 +289,86 @@ export function getInvalidNetworkToastContent(chainId: number) {
   );
 }
 
+export function getInsufficientExecutionFeeToastContent({
+  minExecutionFee,
+  executionFee,
+  chainId,
+  executionFeeBufferBps,
+  estimatedExecutionGasLimit,
+  txUrl,
+  errorMessage,
+  shouldOfferExpress,
+  setIsSettingsVisible,
+}: {
+  minExecutionFee: bigint;
+  executionFee: bigint;
+  chainId: number;
+  executionFeeBufferBps: number | undefined;
+  estimatedExecutionGasLimit: bigint;
+  txUrl: string;
+  errorMessage: string | undefined;
+  shouldOfferExpress: boolean;
+  setIsSettingsVisible: (isVisible: boolean) => void;
+}) {
+  const requiredBufferBps = getMinimumExecutionFeeBufferBps({
+    minExecutionFee: minExecutionFee,
+    estimatedExecutionFee: executionFee,
+    currentBufferBps: getExecutionFeeBufferBps(chainId, executionFeeBufferBps),
+    premium: getGasPremium(chainId),
+    gasLimit: estimatedExecutionGasLimit,
+  });
+
+  const suggestText = shouldOfferExpress ? (
+    <>
+      Please{" "}
+      <div className=" muted inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
+        enable Express trading
+      </div>{" "}
+      under settings, which should offer a better experience.
+      <br />
+      <br />
+      Otherwise, try increasing the max network fee buffer to{" "}
+      {formatPercentage(requiredBufferBps, { displayDecimals: 0 })} in{" "}
+      <div className=" muted inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
+        settings
+      </div>
+      .
+    </>
+  ) : (
+    <>
+      Please try increasing the max network fee buffer to {formatPercentage(requiredBufferBps, { displayDecimals: 0 })}{" "}
+      in{" "}
+      <div className=" muted inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
+        settings
+      </div>
+      .
+    </>
+  );
+
+  return (
+    <div>
+      <Trans>
+        Transaction failed due to execution fee validation. <ExternalLink href={txUrl}>View</ExternalLink>.
+        <br />
+        <br />
+        {suggestText}
+      </Trans>
+      <br />
+      <br />
+      {errorMessage && <ToastifyDebug error={errorMessage} />}
+    </div>
+  );
+}
+
 export const signerAddressError = "Signer address does not match account address";
+
+export function getInvalidPermitSignatureToastContent() {
+  return (
+    <Trans>
+      <div>Permit signature is invalid. Please try again.</div>
+    </Trans>
+  );
+}
 
 /**
  * @deprecated

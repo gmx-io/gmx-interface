@@ -81,6 +81,7 @@ export const SUBACCOUNT_LIST_KEY = hashString("SUBACCOUNT_LIST");
 export const MAX_ALLOWED_SUBACCOUNT_ACTION_COUNT = hashString("MAX_ALLOWED_SUBACCOUNT_ACTION_COUNT");
 export const SUBACCOUNT_ACTION_COUNT = hashString("SUBACCOUNT_ACTION_COUNT");
 export const SUBACCOUNT_ORDER_ACTION = hashString("SUBACCOUNT_ORDER_ACTION");
+export const SUBACCOUNT_INTEGRATION_ID = hashString("SUBACCOUNT_INTEGRATION_ID");
 export const SUBACCOUNT_AUTO_TOP_UP_AMOUNT = hashString("SUBACCOUNT_AUTO_TOP_UP_AMOUNT");
 export const GLV_MAX_MARKET_TOKEN_BALANCE_USD = hashString("GLV_MAX_MARKET_TOKEN_BALANCE_USD");
 export const GLV_MAX_MARKET_TOKEN_BALANCE_AMOUNT = hashString("GLV_MAX_MARKET_TOKEN_BALANCE_AMOUNT");
@@ -95,12 +96,15 @@ export const OPTIMAL_USAGE_FACTOR = hashString("OPTIMAL_USAGE_FACTOR");
 export const BASE_BORROWING_FACTOR = hashString("BASE_BORROWING_FACTOR");
 export const ABOVE_OPTIMAL_USAGE_BORROWING_FACTOR = hashString("ABOVE_OPTIMAL_USAGE_BORROWING_FACTOR");
 export const SUBACCOUNT_EXPIRES_AT = hashString("SUBACCOUNT_EXPIRES_AT");
+export const MULTICHAIN_BALANCE = hashString("MULTICHAIN_BALANCE");
 export const PRICE_FEED_KEY = hashString("PRICE_FEED");
 export const GASLESS_FEATURE_DISABLED_KEY = hashString("GASLESS_FEATURE_DISABLED");
 export const GELATO_RELAY_FEE_MULTIPLIER_FACTOR_KEY = hashString("GELATO_RELAY_FEE_MULTIPLIER_FACTOR");
 export const REQUEST_EXPIRATION_TIME_KEY = hashString("REQUEST_EXPIRATION_TIME");
 
 export const GMX_SIMULATION_ORIGIN = "0x" + keccakString("GMX SIMULATION ORIGIN").slice(-40);
+export const CLAIM_TERMS_KEY = hashString("CLAIM_TERMS");
+export const GENERAL_CLAIM_FEATURE_DISABLED = hashString("GENERAL_CLAIM_FEATURE_DISABLED");
 
 export function subaccountExpiresAtKey(account: string, subaccount: string, actionType: string) {
   return hashData(
@@ -269,7 +273,7 @@ export function depositGasLimitKey() {
 }
 
 export function withdrawalGasLimitKey() {
-  return hashData(["bytes32"], [WITHDRAWAL_GAS_LIMIT_KEY]);
+  return WITHDRAWAL_GAS_LIMIT_KEY;
 }
 
 export function shiftGasLimitKey() {
@@ -372,8 +376,16 @@ export function subaccountActionCountKey(account: string, subaccount: string, ac
   );
 }
 
+export function subaccountIntegrationIdKey(account: string, subaccount: string) {
+  return hashData(["bytes32", "address", "address"], [SUBACCOUNT_INTEGRATION_ID, account, subaccount]);
+}
+
 export function subaccountAutoTopUpAmountKey(account: string, subaccount: string) {
   return hashData(["bytes32", "address", "address"], [SUBACCOUNT_AUTO_TOP_UP_AMOUNT, account, subaccount]);
+}
+
+export function multichainBalanceKey(account: string, token: string) {
+  return hashData(["bytes32", "address", "address"], [MULTICHAIN_BALANCE, account, token]);
 }
 
 export function priceFeedKey(token: string) {
@@ -382,4 +394,12 @@ export function priceFeedKey(token: string) {
 
 export function gaslessFeatureDisabledKey(module: string) {
   return hashData(["bytes32", "address"], [GASLESS_FEATURE_DISABLED_KEY, module]);
+}
+
+export function claimTermsKey(distributionId: bigint) {
+  return hashData(["bytes32", "uint256"], [CLAIM_TERMS_KEY, distributionId]);
+}
+
+export function claimsDisabledKey(distributionId: bigint) {
+  return hashData(["bytes32", "uint256"], [GENERAL_CLAIM_FEATURE_DISABLED, distributionId]);
 }

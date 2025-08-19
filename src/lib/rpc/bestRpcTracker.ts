@@ -7,23 +7,24 @@ import { useEffect, useState } from "react";
 import { Address } from "viem";
 
 import {
-  RPC_PROVIDERS,
-  FALLBACK_PROVIDERS,
-  SUPPORTED_CHAIN_IDS,
   ARBITRUM,
+  ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  getFallbackRpcUrl,
-  UiContractsChain,
   BOTANIX,
+  ContractsChainId,
+  FALLBACK_PROVIDERS,
+  RPC_PROVIDERS,
+  SUPPORTED_CHAIN_IDS,
+  getFallbackRpcUrl,
 } from "config/chains";
-import { getMulticallContract, getDataStoreContract } from "config/contracts";
-import { getContract } from "config/contracts";
+import { getContract, getDataStoreContract, getMulticallContract } from "config/contracts";
 import { getRpcProviderKey } from "config/localStorage";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { isDebugMode } from "lib/localStorage";
 import { RpcTrackerRankingCounter } from "lib/metrics";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
+import { EMPTY_OBJECT } from "lib/objects";
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { sleep } from "lib/sleep";
 import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
@@ -36,16 +37,17 @@ const DISABLE_UNUSED_TRACKING_TIMEOUT = 1 * 60 * 1000; // 1 minute / Pause probi
 const BLOCK_FROM_FUTURE_THRESHOLD = 1000; // Omit RPC if block number is higher than average on this value
 const BLOCK_LAGGING_THRESHOLD = 50; // Omit RPC if block number is lower than highest valid on this value
 
-const RPC_TRACKER_UPDATE_EVENT = "rpc-tracker-update-event";
+export const RPC_TRACKER_UPDATE_EVENT = "rpc-tracker-update-event";
 
 // DataStore field used for probing
 const PROBE_SAMPLE_FIELD = "minCollateralFactor";
 // Markets used for `PROBE_SAMPLE_FIELD` reading
-const PROBE_SAMPLE_MARKET: Record<UiContractsChain, Address> = {
+const PROBE_SAMPLE_MARKET: Record<ContractsChainId, Address> = {
   [ARBITRUM]: "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336", // ETH/USD
   [AVALANCHE]: "0xB7e69749E3d2EDd90ea59A4932EFEa2D41E245d7", // ETH/USD
   [AVALANCHE_FUJI]: "0xbf338a6C595f06B7Cfff2FA8c958d49201466374", // ETH/USD
   [BOTANIX]: "0x6682BB60590a045A956541B1433f016Ed22E361d", // STBTC-STBTC
+  [ARBITRUM_SEPOLIA]: "0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc", // ETH/USD
 };
 
 type ProbeData = {
@@ -64,8 +66,8 @@ type ProviderData = {
 };
 
 type RpcTrackerState = {
-  [chainId in UiContractsChain]: {
-    chainId: UiContractsChain;
+  [chainId in ContractsChainId]: {
+    chainId: ContractsChainId;
     lastUsage: Date | null;
     currentPrimaryUrl: string;
     currentSecondaryUrl: string;
@@ -121,7 +123,7 @@ function trackRpcProviders({ warmUp = false } = {}) {
   });
 }
 
-async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerState[UiContractsChain]) {
+async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerState[ContractsChainId]) {
   const providersList = Object.values(providers);
 
   const providersToProbe = getIsLargeAccount() ? providersList : providersList.filter(({ isPublic }) => isPublic);
@@ -249,7 +251,7 @@ function setCurrentProviders(chainId: number, { primaryUrl, secondaryUrl, bestBe
 }
 
 async function probeRpc(
-  chainId: UiContractsChain,
+  chainId: ContractsChainId,
   provider: Provider,
   providerUrl: string,
   isPublic: boolean
@@ -412,7 +414,7 @@ function initTrackerState() {
   }, {} as RpcTrackerState);
 }
 
-export function getCurrentRpcUrls(chainId: number) {
+export function getCurrentRpcUrls(chainId: number): { primary: string; secondary: string } {
   if (!RPC_PROVIDERS[chainId]?.length) {
     throw new Error(`No RPC providers found for chainId: ${chainId}`);
   }
@@ -427,20 +429,27 @@ export function getCurrentRpcUrls(chainId: number) {
   return { primary, secondary };
 }
 
-export function useCurrentRpcUrls(chainId: number) {
+export function useCurrentRpcUrls(chainId: number | undefined): { primary?: string; secondary?: string } {
   const [bestRpcUrls, setBestRpcUrls] = useState<{
-    primary: string;
+    primary?: string;
     secondary?: string;
-  }>(() => getCurrentRpcUrls(chainId));
+  }>(chainId ? () => getCurrentRpcUrls(chainId) : EMPTY_OBJECT);
 
   useEffect(() => {
+    if (!chainId) {
+      setBestRpcUrls(EMPTY_OBJECT);
+      return;
+    }
+
+    const closureChainId = chainId;
+
     let isMounted = true;
 
-    setBestRpcUrls(getCurrentRpcUrls(chainId));
+    setBestRpcUrls(getCurrentRpcUrls(closureChainId));
 
     function handleRpcUpdate() {
       if (isMounted) {
-        setBestRpcUrls(getCurrentRpcUrls(chainId));
+        setBestRpcUrls(getCurrentRpcUrls(closureChainId));
       }
     }
 

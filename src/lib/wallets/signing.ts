@@ -1,4 +1,9 @@
-import { Signer } from "ethers";
+import type { Wallet } from "ethers";
+import { withRetry } from "viem";
+
+import { parseError } from "lib/errors";
+
+import type { WalletSigner } from ".";
 
 export type SignatureDomain = {
   name: string;
@@ -10,13 +15,20 @@ export type SignatureDomain = {
 export type SignatureTypes = Record<string, { name: string; type: string }[]>;
 
 export type SignTypedDataParams = {
-  signer: Signer;
+  signer: WalletSigner | Wallet;
   types: SignatureTypes;
   typedData: Record<string, any>;
   domain: SignatureDomain;
+  shouldUseSignerMethod?: boolean;
 };
 
-export async function signTypedData({ signer, domain, types, typedData }: SignTypedDataParams) {
+export async function signTypedData({
+  signer,
+  domain,
+  types,
+  typedData,
+  shouldUseSignerMethod = false,
+}: SignTypedDataParams) {
   // filter inputs
   for (const [key, value] of Object.entries(domain)) {
     if (value === undefined) {
@@ -36,9 +48,7 @@ export async function signTypedData({ signer, domain, types, typedData }: SignTy
     }
   }
 
-  const primaryType = Object.keys(types).filter((t) => t !== "EIP712Domain")[0];
-
-  if (signer.signTypedData) {
+  if (shouldUseSignerMethod && signer.signTypedData) {
     try {
       return await signer.signTypedData(domain, types, typedData);
     } catch (e) {
@@ -49,6 +59,8 @@ export async function signTypedData({ signer, domain, types, typedData }: SignTy
       }
     }
   }
+
+  const primaryType = Object.keys(types).filter((t) => t !== "EIP712Domain")[0];
 
   const provider = signer.provider;
   const from = await signer.getAddress();
@@ -68,7 +80,19 @@ export async function signTypedData({ signer, domain, types, typedData }: SignTy
     message: typedData,
   };
 
-  const signature = await (provider as any).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]);
+  const signature = await withRetry<string>(
+    () => {
+      return (provider as any).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]);
+    },
+    {
+      retryCount: 1,
+      delay: 100,
+      shouldRetry: ({ error }) => {
+        const errorData = parseError(error);
+        return errorData?.errorMessage?.toLowerCase().includes("an error has occurred") || false;
+      },
+    }
+  );
 
   return signature;
 }
