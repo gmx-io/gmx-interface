@@ -23,9 +23,8 @@ export function HeaderMenu() {
 
   return (
     <div
-      className={cx("bg-fiord-700 left-0 top-0 z-10 flex w-full flex-col text-white", {
-        "fixed h-screen": isMenuOpen,
-        sticky: !isMenuOpen,
+      className={cx("bg-fiord-700 fixed left-0 top-0 z-10 flex w-full flex-col text-white", {
+        "h-screen": isMenuOpen,
       })}
     >
       <div className="flex w-full items-center justify-center px-16 py-12 sm:px-40 sm:py-16">
