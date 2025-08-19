@@ -328,7 +328,7 @@ export function GmShiftBox({
             title={t`Execution Details`}
             open={isExecutionDetailsOpen}
             onToggle={toggleExecutionDetails}
-            contentClassName="flex flex-col gap-12 pt-14"
+            contentClassName="flex flex-col gap-12"
             row={false}
           >
             <NetworkFeeRow rowPadding executionFee={executionFee} />

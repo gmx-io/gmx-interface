@@ -776,7 +776,7 @@ function PositionItemOrdersLarge({
             <Trans>Orders ({ordersWithErrors.length})</Trans>
             <div
               className={cx("relative top-3 size-6 rounded-full", {
-                "bg-yellow-500": ordersWarningsList.length > 0 && !ordersErrorList.length,
+                "bg-yellow-300": ordersWarningsList.length > 0 && !ordersErrorList.length,
                 "bg-red-500": ordersErrorList.length > 0,
               })}
             />
@@ -881,7 +881,7 @@ function PositionItemOrder({
               key={err.key}
               className={cx("hyphens-auto [overflow-wrap:anywhere]", {
                 "text-red-500": err.level === "error",
-                "text-yellow-500": err.level === "warning",
+                "text-yellow-300": err.level === "warning",
               })}
             >
               {err.msg}

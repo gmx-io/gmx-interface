@@ -54,7 +54,6 @@ const colors = {
   },
   yellow: {
     300: "#ffe166",
-    500: "#f3b50c",
     900: "#2E2D29",
   },
   red: {

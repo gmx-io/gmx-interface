@@ -31,7 +31,7 @@ export function AccountsRouter() {
             title={t`GMX V1 Actions`}
             subtitle={<VersionNetworkSwitcherRow chainId={chainId} version={1} />}
           />
-          <div className="text-center text-yellow-500">
+          <div className="text-center text-yellow-300">
             <Trans>V1 is not supported on {chainName}. Please switch to Arbitrum to use V1.</Trans>
           </div>
         </div>

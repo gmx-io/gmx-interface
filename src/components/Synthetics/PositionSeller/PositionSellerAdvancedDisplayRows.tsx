@@ -129,7 +129,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
       title={t`Execution Details`}
       open={open}
       onToggle={setOpen}
-      contentClassName="flex flex-col gap-14 pt-14"
+      contentClassName="flex flex-col gap-14"
       row={false}
     >
       {!isTwap && (

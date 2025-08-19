@@ -698,7 +698,7 @@ export function PositionSeller() {
           <TokenSelector
             label={t`Receive`}
             className={cx({
-              "*:!text-yellow-500 hover:!text-yellow-500": isNotEnoughReceiveTokenLiquidity,
+              "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
             })}
             chainId={chainId}
             showBalances={false}
@@ -711,7 +711,7 @@ export function PositionSeller() {
               <span className="PositionSelector-selected-receive-token">
                 <AmountWithUsdBalance
                   className={cx({
-                    "*:!text-yellow-500 hover:!text-yellow-500": isNotEnoughReceiveTokenLiquidity,
+                    "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
                   })}
                   amount={receiveTokenAmount}
                   decimals={receiveToken.decimals}
