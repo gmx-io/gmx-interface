@@ -8140,6 +8140,10 @@ msgstr ""
 msgid "You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral. The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price."
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Using high leverage increases the risk of <0>losing funds</0>."
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled"
 msgstr ""
@@ -8601,10 +8605,6 @@ msgstr ""
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr "지정가"
-
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Selecting high leverage increases the risk of liquidation"
-msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact."

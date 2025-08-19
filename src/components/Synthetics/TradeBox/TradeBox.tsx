@@ -217,7 +217,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     payUsd: fromUsd,
   });
 
-  const showHighLeverageWarning = useShowHighLeverageWarning();
+  const { showHighLeverageWarning, dismissHighLeverageWarning } = useShowHighLeverageWarning();
 
   const setIsDismissedRef = useLatest(priceImpactWarningState.setIsDismissed);
 
@@ -954,6 +954,13 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                     />
                   </div>
                 )}
+                {showHighLeverageWarning && (
+                  <AlertInfoCard type="warning" onClose={dismissHighLeverageWarning}>
+                    <Trans>
+                      Using high leverage increases the risk of <span className="underline">losing funds</span>.
+                    </Trans>
+                  </AlertInfoCard>
+                )}
                 {isTrigger && (
                   <SyntheticsInfoRow
                     label={t`Market`}
@@ -1020,11 +1027,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 executionFeeUsd={executionFee?.feeUsd}
                 externalSwapFeeItem={fees?.externalSwapFee}
               />
-            )}
-            {showHighLeverageWarning && (
-              <AlertInfoCard type="info">
-                <Trans>Selecting high leverage increases the risk of liquidation</Trans>
-              </AlertInfoCard>
             )}
           </div>
         )}
