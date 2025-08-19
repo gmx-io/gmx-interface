@@ -108,12 +108,11 @@ export function usePoolsData(): Partial<PoolsData> {
     }
     return {};
   }, [sortedAggregatedMarketInfos, aggregatedPerformance, arbitrumApys, avalancheApys]);
-
   const result: Partial<PoolsData> = {
     ...gmApy,
     ...glvApy,
     totalLiquidity: totalLiquidity,
-    openInterest: positionStats && openInterest ? positionStats?.openInterest + openInterest : undefined,
+    openInterest: positionStats && openInterest ? positionStats.openInterest + openInterest : undefined,
   };
   return result;
 }
@@ -155,19 +154,23 @@ function useMarketInfos() {
     let arbIndex = 0;
     let avaxIndex = 0;
     while (arbIndex < arbitrumMarketInfos.length || avaxIndex < avalancheMarketInfos.length) {
-      const arbPoolValue = BigInt(arbitrumMarketInfos[arbIndex]?.poolValue ?? 0n);
-      const avaxPoolValue = BigInt(avalancheMarketInfos[avaxIndex]?.poolValue ?? 0n);
-      if (arbPoolValue > avaxPoolValue) {
-        sortedAggregatedMarketInfos.push({ ...arbitrumMarketInfos[arbIndex], chainId: ARBITRUM });
+      const arbMarketInfo = arbitrumMarketInfos[arbIndex];
+      const avaxMarketInfo = avalancheMarketInfos[avaxIndex];
+      const arbPoolValue = arbMarketInfo ? BigInt(arbMarketInfo.poolValue) : null;
+      const avaxPoolValue = avaxMarketInfo ? BigInt(avaxMarketInfo.poolValue) : null;
+      if ((arbPoolValue ?? -1n) > (avaxPoolValue ?? -1n)) {
+        sortedAggregatedMarketInfos.push({ ...arbMarketInfo, chainId: ARBITRUM });
+        openInterest +=
+          BigInt(arbMarketInfo.longOpenInterestUsd ?? 0n) + BigInt(arbMarketInfo.shortOpenInterestUsd ?? 0n);
+        totalLiquidity += BigInt(arbMarketInfo.poolValue);
         arbIndex++;
       } else {
-        sortedAggregatedMarketInfos.push({ ...avalancheMarketInfos[avaxIndex], chainId: AVALANCHE });
+        sortedAggregatedMarketInfos.push({ ...avaxMarketInfo, chainId: AVALANCHE });
+        openInterest +=
+          BigInt(avaxMarketInfo.longOpenInterestUsd ?? 0n) + BigInt(avaxMarketInfo.shortOpenInterestUsd ?? 0n);
+        totalLiquidity += BigInt(avaxMarketInfo.poolValue);
         avaxIndex++;
       }
-      totalLiquidity += arbPoolValue + avaxPoolValue;
-      openInterest +=
-        BigInt(arbitrumMarketInfos[arbIndex]?.longOpenInterestUsd ?? 0n) +
-        BigInt(avalancheMarketInfos[avaxIndex]?.shortOpenInterestUsd ?? 0n);
     }
     return { sortedAggregatedMarketInfos, totalLiquidity, openInterest };
   });
