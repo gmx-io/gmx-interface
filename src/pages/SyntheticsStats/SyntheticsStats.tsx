@@ -125,7 +125,7 @@ export function SyntheticsStats() {
                   position="bottom-end"
                   renderContent={() => (
                     <>
-                      <p>Virtual inventory for positons</p>
+                      <p>Virtual inventory for positions</p>
                       <p>
                         Virtual Inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC,
                         ETH/USDT.
