@@ -435,7 +435,7 @@ export function TradeFeesRow(p: Props) {
         <span
           className={cx({
             "text-green-500": totalFeeUsd > 0 && !shouldShowWarning,
-            "text-yellow-500": shouldShowWarning,
+            "text-yellow-300": shouldShowWarning,
           })}
         >
           {formatDeltaUsd(totalFeeUsd)}
@@ -447,7 +447,7 @@ export function TradeFeesRow(p: Props) {
           tooltipClassName="TradeFeesRow-tooltip"
           handleClassName={cx({
             "text-green-500": totalFeeUsd > 0 && !shouldShowWarning,
-            "text-yellow-500 !decoration-yellow-500/50": shouldShowWarning,
+            "text-yellow-300 !decoration-yellow-300/50": shouldShowWarning,
           })}
           handle={formatDeltaUsd(totalFeeUsd)}
           position="left-start"

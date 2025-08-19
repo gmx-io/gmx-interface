@@ -240,8 +240,8 @@ export function TradeHistory(p: Props) {
   } = p;
 
   return (
-    <div className="TradeHistorySynthetics bg-slate-900">
-      <TableScrollFadeContainer disableScrollFade={currentPageData.length === 0}>
+    <div className="TradeHistorySynthetics flex grow flex-col bg-slate-900">
+      <TableScrollFadeContainer disableScrollFade={currentPageData.length === 0} className="flex grow flex-col">
         <table className="TradeHistorySynthetics-table table-fixed">
           <colgroup>
             <col className="TradeHistorySynthetics-action-column" />

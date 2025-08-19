@@ -14,7 +14,7 @@ type Props = {
   /**
    * @default "text-slate-100"
    */
-  textColor?: "text-slate-100" | "text-yellow-500";
+  textColor?: "text-slate-100" | "text-yellow-300";
 };
 
 export function AlertInfo({

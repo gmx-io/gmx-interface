@@ -5,7 +5,7 @@ import { FaChevronDown } from "react-icons/fa6";
 import { RemoveScroll } from "react-remove-scroll";
 import { createGlobalState } from "react-use";
 
-const HEADER_HEIGHT = 38;
+const HEADER_HEIGHT = 40;
 const DECELERATION = 0.01;
 const DIRECTION_THRESHOLD = 2;
 const MOVEMENT_THRESHOLD = 10;

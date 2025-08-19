@@ -150,7 +150,7 @@ export function GmList({
         ) : undefined
       }
     >
-      <div>
+      <div className="flex grow flex-col">
         {isMobile ? (
           <div className="flex flex-col gap-4">
             {rows}
@@ -161,7 +161,7 @@ export function GmList({
             {isLoading && <Loader />}
           </div>
         ) : (
-          <TableScrollFadeContainer>
+          <TableScrollFadeContainer className="flex grow flex-col">
             <table className="w-[max(100%,1000px)]">
               <thead>
                 <TableTheadTr>

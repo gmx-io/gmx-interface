@@ -633,7 +633,7 @@ function OrderItemLarge({
       </TableTd>
       {!hideActions && (
         <TableTd>
-          <div className="inline-flex items-center">
+          <div className="inline-flex w-full items-center justify-end">
             {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
               <button
                 className="cursor-pointer p-6 text-slate-100 hover:text-textIcon-strong"
@@ -848,7 +848,7 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
         <span
           className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
             "text-red-500 decoration-red-500/50": level === "error",
-            "text-yellow-500 decoration-yellow-500/50": level === "warning",
+            "text-yellow-300 decoration-yellow-300/50": level === "warning",
           })}
         >
           {handle}
@@ -862,7 +862,7 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
                 <span
                   className={cx({
                     "text-red-500": error!.level === "error",
-                    "text-yellow-500": error!.level === "warning",
+                    "text-yellow-300": error!.level === "warning",
                   })}
                 >
                   {error.msg}

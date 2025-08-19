@@ -335,7 +335,8 @@ export function SyntheticsPage(p: Props) {
         />
       }
       className="max-lg:pb-40"
-      contentClassName="max-w-[none]"
+      contentClassName="max-w-[none] pb-0 pt-0"
+      pageWrapperClassName="!pl-0"
     >
       {isTablet ? <ChartHeader /> : null}
       <div className="flex gap-8 pt-0 max-lg:flex-col lg:grow">
@@ -343,7 +344,7 @@ export function SyntheticsPage(p: Props) {
           <OneClickPromoBanner openSettings={openSettings} />
           <Chart />
           {!isTablet && (
-            <div className="overflow-hidden rounded-8" data-qa="trade-table-large">
+            <div className="flex grow flex-col overflow-hidden rounded-8" data-qa="trade-table-large">
               <Tabs
                 options={tabsOptions}
                 selectedValue={listSection}
@@ -395,7 +396,7 @@ export function SyntheticsPage(p: Props) {
           <div className="w-[40rem] shrink-0 max-xl:w-[36rem]">
             <TradeBoxResponsiveContainer />
 
-            <div className="mt-12 flex flex-col gap-12">
+            <div className="mt-8 flex flex-col gap-12">
               {isSwap && !isTwap && (
                 <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
               )}

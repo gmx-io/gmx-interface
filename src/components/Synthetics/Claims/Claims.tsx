@@ -88,7 +88,7 @@ export function Claims({
         onClose={handleClaimablePositionPriceImpactFeesCloseClick}
       />
 
-      <div>
+      <div className="flex grow flex-col">
         {account && isLoading && (
           <div className="Claims-loading">
             <Trans>Loading...</Trans>

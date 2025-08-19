@@ -142,8 +142,8 @@ export function ClaimsHistory({
   currentPageData,
 }: ClaimsHistoryProps) {
   return (
-    <div className="bg-slate-900">
-      <TableScrollFadeContainer disableScrollFade={isEmpty}>
+    <div className="flex grow flex-col bg-slate-900">
+      <TableScrollFadeContainer disableScrollFade={isEmpty} className="flex grow flex-col">
         {!isEmpty && (
           <table className="ClaimsHistory-table table-fixed">
             <colgroup>

@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { ArbitrumNodeInterface } from "./ArbitrumNodeInterface";
+export type { ClaimHandler } from "./ClaimHandler";
 export type { CustomErrors } from "./CustomErrors";
 export type { DataStore } from "./DataStore";
 export type { ERC20PermitInterface } from "./ERC20PermitInterface";
@@ -31,6 +32,7 @@ export type { RewardRouter } from "./RewardRouter";
 export type { RewardTracker } from "./RewardTracker";
 export type { Router } from "./Router";
 export type { RouterV2 } from "./RouterV2";
+export type { StBTC } from "./StBTC";
 export type { SubaccountApproval } from "./SubaccountApproval";
 export type { SubaccountGelatoRelayRouter } from "./SubaccountGelatoRelayRouter";
 export type { SubaccountRouter } from "./SubaccountRouter";
@@ -51,6 +53,7 @@ export type { YieldFarm } from "./YieldFarm";
 export type { YieldToken } from "./YieldToken";
 export * as factories from "./factories";
 export { ArbitrumNodeInterface__factory } from "./factories/ArbitrumNodeInterface__factory";
+export { ClaimHandler__factory } from "./factories/ClaimHandler__factory";
 export { CustomErrors__factory } from "./factories/CustomErrors__factory";
 export { DataStore__factory } from "./factories/DataStore__factory";
 export { ERC20PermitInterface__factory } from "./factories/ERC20PermitInterface__factory";
@@ -80,6 +83,7 @@ export { RewardRouter__factory } from "./factories/RewardRouter__factory";
 export { RewardTracker__factory } from "./factories/RewardTracker__factory";
 export { RouterV2__factory } from "./factories/RouterV2__factory";
 export { Router__factory } from "./factories/Router__factory";
+export { StBTC__factory } from "./factories/StBTC__factory";
 export { SubaccountApproval__factory } from "./factories/SubaccountApproval__factory";
 export { SubaccountGelatoRelayRouter__factory } from "./factories/SubaccountGelatoRelayRouter__factory";
 export { SubaccountRouter__factory } from "./factories/SubaccountRouter__factory";

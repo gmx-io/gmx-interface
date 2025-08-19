@@ -102,7 +102,7 @@ const colors = {
   },
   yellow: {
     "300": "bg-yellow-300",
-    "500": "bg-yellow-500",
+    "500": "bg-yellow-300",
   },
   red: {
     "400": "bg-red-400",
@@ -165,7 +165,7 @@ export default function UiPage() {
         <div className="flex gap-16">
           <p className="text-blue-500">Blue text is blue</p>
           <p className="text-gray-300">Gray text is gray</p>
-          <p className="text-yellow-500">Yellow text is yellow</p>
+          <p className="text-yellow-300">Yellow text is yellow</p>
           <p className="text-red-500">Red text is red</p>
           <p className="text-green-500">Green text is green</p>
           <p className="text-textIcon-strong">White text is white</p>

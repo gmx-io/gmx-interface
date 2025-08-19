@@ -266,7 +266,6 @@ export function PositionEditor() {
             <BuyInputSection
               topLeftLabel={localizedOperationLabels[operation]}
               bottomLeftValue={formatUsd(collateralDeltaUsd)}
-              isBottomLeftValueMuted={collateralDeltaUsd === 0n}
               bottomRightLabel={t`Max`}
               bottomRightValue={
                 isDeposit

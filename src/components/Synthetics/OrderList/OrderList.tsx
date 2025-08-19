@@ -187,9 +187,9 @@ export function OrderList({
   }, []);
 
   return (
-    <div>
+    <div className="flex grow flex-col">
       {(isContainerSmall || isScreenSmall) && !isLoading && (
-        <div className="flex flex-col gap-8">
+        <div className="flex grow flex-col gap-8">
           <div className="flex flex-wrap items-center justify-between gap-8">
             {isContainerSmall ? (
               <div className="flex gap-8">
@@ -248,7 +248,7 @@ export function OrderList({
       )}
 
       {!isContainerSmall && (
-        <TableScrollFadeContainer disableScrollFade={orders.length === 0}>
+        <TableScrollFadeContainer disableScrollFade={orders.length === 0} className="flex grow flex-col bg-slate-900">
           <Table className="!w-[max(100%,580px)] table-fixed">
             <thead>
               <TableTheadTr>

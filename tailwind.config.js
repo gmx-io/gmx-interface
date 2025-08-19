@@ -55,7 +55,6 @@ const darkColors = {
   },
   yellow: {
     300: "#ffe166",
-    500: "#f3b50c",
     900: "#2E2D29",
   },
   red: {
@@ -387,13 +386,19 @@ function fontComponentsPlugin({ addComponents, addBase }) {
       fontSize: "3.2rem",
       lineHeight: "auto",
       fontWeight: 500,
-      letterSpacing: "-0.02em",
+      letterSpacing: "-0.016em",
     },
     ".text-h2": {
       fontSize: "2.4rem",
       lineHeight: "auto",
       fontWeight: 500,
-      letterSpacing: "-0.02em",
+      letterSpacing: "-0.016em",
+    },
+    ".text-h3": {
+      fontSize: "2rem",
+      lineHeight: "auto",
+      fontWeight: 500,
+      letterSpacing: "-0.016em",
     },
     ".text-body-large": {
       fontSize: "1.6rem",
@@ -408,8 +413,12 @@ function fontComponentsPlugin({ addComponents, addBase }) {
       lineHeight: "1.6rem",
     },
     ".text-caption": {
-      fontSize: "1rem",
+      fontSize: "1.1rem",
       lineHeight: "1.4rem",
+      fontWeight: 500,
+      letterSpacing: "0.08em",
+      color: "var(--color-slate-100)",
+      textTransform: "uppercase",
     }
   });
 }

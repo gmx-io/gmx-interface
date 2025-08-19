@@ -1049,7 +1049,6 @@ export default function PositionSeller(props) {
               bottomLeftValue={
                 convertedAmountFormatted ? `${convertedAmountFormatted} ${position.collateralToken.symbol}` : ""
               }
-              isBottomLeftValueMuted={convertedAmount === 0n}
               topRightLabel={t`Max`}
               topRightValue={maxAmount && maxAmountFormatted}
               onClickMax={fromValue !== maxAmountFormattedFree ? () => setFromValue(maxAmountFormattedFree) : undefined}
@@ -1305,7 +1304,7 @@ export default function PositionSeller(props) {
                 <div className="align-right">
                   <TokenSelector
                     className={cx({
-                      "*:!text-yellow-500 hover:!text-yellow-500":
+                      "*:!text-yellow-300 hover:!text-yellow-300":
                         isNotEnoughReceiveTokenLiquidity || isCollateralPoolCapacityExceeded,
                     })}
                     label={t`Receive`}

@@ -114,7 +114,7 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
     }
 
     if (getIsHighPositionImpact(fees?.positionPriceImpact)) {
-      return "text-yellow-500 !decoration-yellow-500/50";
+      return "text-yellow-300 !decoration-yellow-300/50";
     }
 
     return "";

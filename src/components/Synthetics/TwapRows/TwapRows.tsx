@@ -80,11 +80,11 @@ const TwapRows = ({
   }, [tradeboxChanges.direction, tradeboxChanges.toTokenAddress, savedTwapNumberOfParts, setNumberOfParts]);
 
   return (
-    <div className="flex flex-col">
-      <SyntheticsInfoRow label={t`Duration`} className="mb-11">
+    <div className="flex flex-col gap-14">
+      <SyntheticsInfoRow label={t`Duration`} className="h-20">
         <DurationField duration={duration} setDuration={setDuration} />
       </SyntheticsInfoRow>
-      <SyntheticsInfoRow label={t`Number of Parts`} className="mb-14">
+      <SyntheticsInfoRow label={t`Number of Parts`}>
         <div className="flex">
           <ValueInput
             value={numberOfParts}
@@ -93,10 +93,10 @@ const TwapRows = ({
           />
         </div>
       </SyntheticsInfoRow>
-      <SyntheticsInfoRow label={t`Frequency`} className="mb-14">
+      <SyntheticsInfoRow label={t`Frequency`}>
         <FrequencyField duration={duration} numberOfParts={numberOfParts} />
       </SyntheticsInfoRow>
-      <SyntheticsInfoRow label={t`Size per part`} className="mb-14">
+      <SyntheticsInfoRow label={t`Size per part`}>
         <span className="numbers">
           {formatUsd(typeof sizeUsd === "bigint" && numberOfParts ? sizeUsd / BigInt(numberOfParts) : 0n)}
         </span>
