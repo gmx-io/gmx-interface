@@ -894,8 +894,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   return (
     <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef}>
-      <div className="flex flex-col rounded-b-8 bg-slate-900 pb-16">
-        <div className="flex flex-col gap-12 p-12">
+      <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 py-12 pb-16">
+        <div className="flex flex-col gap-12 px-12">
           <div className="flex items-center justify-between">
             <Tabs
               options={tabsOptions}
@@ -920,7 +920,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               </div>
             </div>
           </div>
-          <div className="text-body-medium flex grow flex-col">
+          <div className="text-body-medium flex grow flex-col gap-14">
             <div className="flex flex-col gap-4">
               {(isSwap || isIncrease) && renderTokenInputs()}
               {isTrigger && renderDecreaseSizeInput()}
@@ -929,7 +929,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             </div>
 
             {showSectionBetweenInputsAndButton && (
-              <div className="flex flex-col gap-14 pt-12">
+              <div className="flex flex-col gap-14">
                 {maxAutoCancelOrdersWarning}
                 {isSwap && isLimit && !isTwap && (
                   <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
@@ -1018,7 +1018,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 )}
               </div>
             )}
-            <div className="flex flex-col gap-14 pt-14">
+            <div className="flex flex-col gap-14">
               {isPosition && isTrigger && selectedPosition && selectedPosition?.leverage !== undefined && (
                 <ToggleSwitch
                   isChecked={keepLeverageChecked}
