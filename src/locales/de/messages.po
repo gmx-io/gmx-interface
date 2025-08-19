@@ -3979,7 +3979,7 @@ msgstr "Du wirst {indexSymbol} aus deiner Short-Position short sein, während du
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Open GMX Solana"
-msgstr ""
+msgstr "GMX Solana öffnen"
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
@@ -5114,7 +5114,7 @@ msgstr "Order-Typ"
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana"
-msgstr ""
+msgstr "GMX Solana"
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
@@ -8026,7 +8026,7 @@ msgstr "Liquidationspreis wird durch Gebühren und Kollateralwert beeinflusst."
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana is hosted on a different website by a different DAO team.<0/><1/>The experience may vary slightly."
-msgstr ""
+msgstr "GMX Solana wird auf einer anderen Website von einem anderen DAO-Team gehostet.<0/><1/>Die Erfahrung kann sich leicht unterscheiden."
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "No data available"

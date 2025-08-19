@@ -3979,7 +3979,7 @@ msgstr "您将从您的做空仓位做空 {indexSymbol}，同时从您的 {colla
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Open GMX Solana"
-msgstr ""
+msgstr "打开 GMX Solana"
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
@@ -5114,7 +5114,7 @@ msgstr "订单类型"
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana"
-msgstr ""
+msgstr "GMX Solana"
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
@@ -8026,7 +8026,7 @@ msgstr "清算价格受费用和抵押品价值影响。"
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana is hosted on a different website by a different DAO team.<0/><1/>The experience may vary slightly."
-msgstr ""
+msgstr "GMX Solana 由不同的 DAO 团队托管在不同的网站上。<0/><1/>体验可能会略有不同。"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "No data available"

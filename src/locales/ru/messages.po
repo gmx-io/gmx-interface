@@ -3979,7 +3979,7 @@ msgstr "Вы будете в шорте {indexSymbol} от вашей шорт �
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Open GMX Solana"
-msgstr ""
+msgstr "Открыть GMX Solana"
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
@@ -5114,7 +5114,7 @@ msgstr "Тип ордера"
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana"
-msgstr ""
+msgstr "GMX Solana"
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
@@ -8026,7 +8026,7 @@ msgstr "Цена ликвидации зависит от комиссий и с
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana is hosted on a different website by a different DAO team.<0/><1/>The experience may vary slightly."
-msgstr ""
+msgstr "GMX Solana размещен на другом веб-сайте другой командой DAO.<0/><1/>Опыт может немного отличаться."
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "No data available"

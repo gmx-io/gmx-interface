@@ -3979,7 +3979,7 @@ msgstr "숏 포지션에서 {indexSymbol}을 숏하면서 {collateralSymbol} 담
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Open GMX Solana"
-msgstr ""
+msgstr "GMX Solana 열기"
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
@@ -5114,7 +5114,7 @@ msgstr "주문 유형"
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana"
-msgstr ""
+msgstr "GMX Solana"
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
@@ -8026,7 +8026,7 @@ msgstr "청산 가격은 수수료와 담보 가치에 영향 받음."
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana is hosted on a different website by a different DAO team.<0/><1/>The experience may vary slightly."
-msgstr ""
+msgstr "GMX Solana는 다른 DAO 팀에 의해 다른 웹사이트에서 호스팅됩니다.<0/><1/>경험이 약간 다를 수 있습니다."
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "No data available"
