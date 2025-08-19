@@ -4,6 +4,7 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, 
 import { useLatest } from "react-use";
 
 import { isDevelopment } from "config/env";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
@@ -29,6 +30,7 @@ import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
+import { getIsInsufficientExecutionFeeError } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import {
   getGLVSwapMetricId,
@@ -39,6 +41,7 @@ import {
   sendOrderCancelledMetric,
   sendOrderCreatedMetric,
   sendOrderExecutedMetric,
+  sendTxnErrorMetric,
 } from "lib/metrics/utils";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { deleteByKey, getByKey, setByKey, updateByKey } from "lib/objects";
@@ -53,6 +56,7 @@ import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tok
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
+import { getInsufficientExecutionFeeToastContent } from "components/Errors/errorToasts";
 import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
 import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
@@ -85,7 +89,7 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { useMultichainEvents } from "./useMultichainEvents";
-import { getPendingOrderKey, sendGelatoTaskStatusMetric } from "./utils";
+import { extractGelatoError, getGelatoTaskUrl, getPendingOrderKey } from "./utils";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -99,6 +103,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const provider = getProvider(undefined, chainId);
   const { wsProvider } = useWebsocketProvider();
   const { hasV2LostFocus, hasPageLostFocus } = useHasLostFocus();
+  const { executionFeeBufferBps, setIsSettingsVisible } = useSettings();
 
   const { resetTokenPermits } = useTokenPermitsContext();
   const { refreshSubaccountData } = useSubaccountContext();
@@ -1015,7 +1020,31 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             let isViewed = false;
 
             if (pendingExpressTxn.metricId && !pendingExpressTxn.isRelayerMetricSent) {
-              sendGelatoTaskStatusMetric(pendingExpressTxn.metricId, gelatoTaskStatuses[pendingExpressTxn.taskId]);
+              const gelatoError = extractGelatoError(gelatoTaskStatuses[pendingExpressTxn.taskId]);
+              sendTxnErrorMetric(pendingExpressTxn.metricId, gelatoError, "relayer");
+
+              const executionFeeErrorParams = getIsInsufficientExecutionFeeError(gelatoError);
+
+              if (executionFeeErrorParams.isErrorMatched) {
+                const totastContent = getInsufficientExecutionFeeToastContent({
+                  minExecutionFee: executionFeeErrorParams.args.minExecutionFee,
+                  executionFee: executionFeeErrorParams.args.executionFee,
+                  chainId,
+                  executionFeeBufferBps,
+                  estimatedExecutionGasLimit: pendingExpressTxn.estimatedExecutionGasLimit ?? 0n,
+                  txUrl: getGelatoTaskUrl({
+                    taskId: pendingExpressTxn.taskId,
+                    isDebug: false,
+                  }),
+                  errorMessage: executionFeeErrorParams.errorData.errorMessage,
+                  shouldOfferExpress: false,
+                  setIsSettingsVisible,
+                });
+
+                helperToast.error(totastContent);
+                isViewed = true;
+              }
+
               isRelayerMetricSent = true;
             }
 
@@ -1041,7 +1070,15 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         }
       });
     },
-    [gelatoTaskStatuses, pendingExpressTxnParams, provider, setOptimisticTokensBalancesUpdates]
+    [
+      chainId,
+      executionFeeBufferBps,
+      gelatoTaskStatuses,
+      pendingExpressTxnParams,
+      provider,
+      setIsSettingsVisible,
+      setOptimisticTokensBalancesUpdates,
+    ]
   );
 
   const multichainEventsState = useMultichainEvents({

@@ -1503,6 +1503,10 @@ export function importImage(name) {
     return imageStaticMap[name] as string;
   }
 
+  const pngName = name.replace(/_\d+\.svg$/, ".png");
+  if (pngName in imageStaticMap) {
+    return imageStaticMap[pngName] as string;
+  }
   throw new Error(`Image ${name} not found`);
 }
 

@@ -406,7 +406,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           priceImpactPercentage = fees?.positionPriceImpact?.precisePercentage ?? 0n;
         } else if (isSwap && swapAmounts) {
           amountUsd = swapAmounts.usdOut;
-          priceImpactDeltaUsd = swapAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd ?? 0n;
+          priceImpactDeltaUsd = swapAmounts.swapStrategy.swapPathStats?.totalSwapPriceImpactDeltaUsd ?? 0n;
           priceImpactPercentage = fees?.swapPriceImpact?.precisePercentage ?? 0n;
         } else if (isTrigger && decreaseAmounts) {
           sizeDeltaUsd = decreaseAmounts.sizeDeltaUsd;
@@ -480,7 +480,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const onSelectToTokenAddress = useSelector(selectTradeboxChooseSuitableMarket);
 
   if (showDebugValues) {
-    const swapPathStats = swapAmounts?.swapPathStats || increaseAmounts?.swapPathStats;
+    const swapPathStats = swapAmounts?.swapStrategy.swapPathStats || increaseAmounts?.swapStrategy.swapPathStats;
 
     if (swapPathStats) {
       // eslint-disable-next-line no-console

@@ -174,7 +174,7 @@ function getTrackingLink(link: string) {
 
   const paramsPrefix = link.includes("?") ? "&" : "?";
 
-  return `${link}${paramsPrefix}${userAnalytics.getSessionIdUrlParams()}`;
+  return `${link}${paramsPrefix}${userAnalytics.getSessionForwardParams()}`;
 }
 
 async function sendUserAnalyticsProtocolReadMoreEvent() {

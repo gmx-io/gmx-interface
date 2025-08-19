@@ -347,6 +347,7 @@ export function useArbitraryRelayParamsAndPayload({
             subaccountActions: 0,
             transactionPayloadGasLimit: gasLimit,
             expressTransactionBuilder: p.expressTransactionBuilder,
+            executionGasLimit: 0n,
           },
         });
         return expressParams;

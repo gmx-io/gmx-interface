@@ -24,13 +24,11 @@ import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/
 import {
   selectChainId,
   selectGasPaymentTokenAllowance,
+  selectMarketsInfoData,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
-import {
-  selectAddTokenPermit,
-  selectTokenPermits,
-} from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
+import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import {
   selectExternalSwapQuote,
   selectTradeboxDecreasePositionAmounts,
@@ -52,6 +50,7 @@ import {
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
+import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
@@ -64,7 +63,7 @@ import {
   getNextPositionValuesForIncreaseTrade,
 } from "domain/synthetics/trade/utils/increase";
 import { getCommonError, getExpressError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
-import { approveTokens } from "domain/tokens/approveTokens";
+import { useApproveToken } from "domain/tokens/useApproveTokens";
 import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
@@ -72,10 +71,8 @@ import { formatAmountFree } from "lib/numbers";
 import { sleep } from "lib/sleep";
 import { mustNeverExist } from "lib/types";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
-import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
+import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
-import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getToken, getTokenBySymbol, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/types/fees";
 import { TokenData } from "sdk/types/tokens";
@@ -142,7 +139,7 @@ export function useTradeboxButtonState({
   const { setPendingTxns } = usePendingTxns();
   const { openConnectModal } = useConnectModal();
 
-  const addTokenPermit = useSelector(selectAddTokenPermit);
+  const { approveToken } = useApproveToken();
 
   const {
     onSubmitWrapOrUnwrap,
@@ -294,7 +291,7 @@ export function useTradeboxButtonState({
   ]);
 
   const onSubmit = useCallback(async () => {
-    if (!account) {
+    if (!account || !signer) {
       sendUserAnalyticsConnectWalletClickEvent("ActionButton");
       openConnectModal?.();
       return;
@@ -328,36 +325,12 @@ export function useTradeboxButtonState({
 
       if (!chainId || isApproving || !tokenToApprove) return;
 
-      userAnalytics.pushEvent<TokenApproveClickEvent>({
-        event: "TokenApproveAction",
-        data: {
-          action: "ApproveClick",
-        },
-      });
-
-      approveTokens({
-        setIsApproving,
-        signer,
+      approveToken({
         tokenAddress: tokenToApprove.tokenAddress,
-        spender: getContract(chainId, "SyntheticsRouter"),
-        pendingTxns: [],
-        setPendingTxns,
-        infoTokens: {},
         chainId,
-        approveAmount: undefined,
-        permitParams: expressParams
-          ? {
-              addTokenPermit,
-            }
-          : undefined,
-        onApproveFail: () => {
-          userAnalytics.pushEvent<TokenApproveResultEvent>({
-            event: "TokenApproveAction",
-            data: {
-              action: "ApproveFail",
-            },
-          });
-        },
+        signer,
+        allowPermit: Boolean(expressParams),
+        setIsApproving,
       });
 
       return;
@@ -395,7 +368,7 @@ export function useTradeboxButtonState({
     });
   }, [
     account,
-    addTokenPermit,
+    approveToken,
     chainId,
     expressParams,
     fromToken,
@@ -416,7 +389,6 @@ export function useTradeboxButtonState({
     setGmxAccountDepositViewTokenAddress,
     setGmxAccountDepositViewTokenInputValue,
     setGmxAccountModalOpen,
-    setPendingTxns,
     setStage,
     shouldShowDepositButton,
     signer,
@@ -624,6 +596,10 @@ export function useDetectAndSetAvailableMaxLeverage({
   const userReferralInfo = useUserReferralInfo();
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
+  const externalSwapQuoteParams = useSelector(selectExternalSwapQuoteParams);
+  const chainId = useSelector(selectChainId);
+  const marketsInfoData = useSelector(selectMarketsInfoData);
+
   return useCallback(() => {
     if (!collateralToken || !toToken || !fromToken || !marketInfo || minCollateralUsd === undefined) return;
 
@@ -651,6 +627,9 @@ export function useDetectAndSetAvailableMaxLeverage({
           fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
           leverage,
           triggerPrice,
+          marketsInfoData,
+          chainId,
+          externalSwapQuoteParams,
         });
 
         const nextPositionValues = getNextPositionValuesForIncreaseTrade({
@@ -712,6 +691,9 @@ export function useDetectAndSetAvailableMaxLeverage({
     findSwapPath,
     fromToken,
     externalSwapQuote,
+    externalSwapQuoteParams,
+    chainId,
+    marketsInfoData,
     fromTokenAmount,
     isLeverageSliderEnabled,
     isLong,
@@ -742,44 +724,42 @@ function NoSwapPathTooltipContent({
   toToken: TokenData | undefined;
 }) {
   const { setFromTokenAddress, setToTokenAddress, setTradeType, setTradeMode } = useSelector(selectTradeboxState);
-  const handleBotanixClick = useCallback(() => {
-    setTradeType(TradeType.Swap);
-    setTradeMode(TradeMode.Market);
-    setFromTokenAddress(fromToken?.address);
-    setToTokenAddress(getTokenBySymbol(chainId, "STBTC")?.address);
-  }, [chainId, fromToken?.address, setFromTokenAddress, setToTokenAddress, setTradeMode, setTradeType]);
 
-  const handleBotanixStBtcToPBtcClick = useCallback(() => {
-    setTradeType(TradeType.Swap);
-    setTradeMode(TradeMode.Market);
-    setFromTokenAddress(getTokenBySymbol(chainId, "STBTC")?.address);
-    setToTokenAddress(getTokenBySymbol(chainId, "PBTC")?.address);
-  }, [chainId, setFromTokenAddress, setToTokenAddress, setTradeMode, setTradeType]);
+  const makeHandleSwapClick = useCallback(
+    (fromTokenSymbol: string, toTokenSymbol: string) => () => {
+      setTradeType(TradeType.Swap);
+      setTradeMode(TradeMode.Market);
+      setFromTokenAddress(getTokenBySymbol(chainId, fromTokenSymbol)?.address);
+      setToTokenAddress(getTokenBySymbol(chainId, toTokenSymbol)?.address);
+    },
+    [chainId, setFromTokenAddress, setToTokenAddress, setTradeMode, setTradeType]
+  );
 
-  if (!fromToken || !collateralToken) {
+  if (!fromToken) {
     return <Trans>No swap path available.</Trans>;
   }
 
   if (chainId === BOTANIX) {
-    if (fromToken?.symbol === "STBTC" && toToken?.symbol === "BTC") {
+    if (collateralToken) {
       return (
         <Trans>
           No swap path available.{" "}
-          <span onClick={handleBotanixStBtcToPBtcClick} className="Tradebox-handle">
-            Swap STBTC to PBTC
-          </span>
-          , then to BTC
+          <span onClick={makeHandleSwapClick(fromToken.symbol, "STBTC")} className="Tradebox-handle">
+            Swap {fromToken.symbol} to STBTC
+          </span>{" "}
+          to use {collateralToken.symbol} as collateral.
         </Trans>
       );
     }
 
+    const swapToTokenSymbol = fromToken.symbol === "STBTC" ? "PBTC" : "STBTC";
     return (
       <Trans>
         No swap path available.{" "}
-        <span onClick={handleBotanixClick} className="Tradebox-handle">
-          Swap {fromToken.symbol} to STBTC
-        </span>{" "}
-        to use {collateralToken.symbol} as collateral.
+        <span onClick={makeHandleSwapClick(fromToken.symbol, swapToTokenSymbol)} className="Tradebox-handle">
+          Swap {fromToken.symbol} to {swapToTokenSymbol}
+        </span>
+        , then to {toToken?.symbol}.
       </Trans>
     );
   }

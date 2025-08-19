@@ -19,6 +19,7 @@ import { OracleSettingsData, useOracleSettingsData } from "domain/synthetics/com
 import { SponsoredCallBalanceData, useIsSponsoredCallBalanceAvailable } from "domain/synthetics/express";
 import { useL1ExpressOrderGasReference } from "domain/synthetics/express/useL1ExpressGasReference";
 import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
+import { useBotanixStakingAssetsPerShare } from "domain/synthetics/externalSwaps/useBotanixStakingAssetsPerShare";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
 import { FeaturesSettings, useEnabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
 import { L1ExpressOrderGasReference, useGasLimits, useGasPrice } from "domain/synthetics/fees";
@@ -98,6 +99,7 @@ export type SyntheticsState = {
     userReferralInfo: UserReferralInfo | undefined;
     depositMarketTokensData: TokensData | undefined;
     glvInfo: ReturnType<typeof useGlvMarketsInfo>;
+    botanixStakingAssetsPerShare: bigint | undefined;
 
     closingPositionKey: string | undefined;
     setClosingPositionKey: (key: string | undefined) => void;
@@ -308,6 +310,8 @@ export function SyntheticsStateContextProvider({
     tokenAddresses: [convertTokenAddress(chainId, settings.gasPaymentTokenAddress, "wrapped")],
   });
 
+  const botanixStakingAssetsPerShare = useBotanixStakingAssetsPerShare({ chainId });
+
   const state = useMemo(() => {
     const s: SyntheticsState = {
       pageType,
@@ -321,6 +325,7 @@ export function SyntheticsStateContextProvider({
         ordersInfo,
         positionsConstants,
         glvInfo,
+        botanixStakingAssetsPerShare,
         positionsInfo: {
           isLoading,
           positionsInfoData,
@@ -371,52 +376,53 @@ export function SyntheticsStateContextProvider({
 
     return s;
   }, [
-    pageType,
-    chainId,
-    srcChainId,
     account,
-    signer,
+    accountStats,
+    accruedPositionPriceImpactFees,
+    blockTimestampData,
+    botanixStakingAssetsPerShare,
+    chainId,
+    claimablePositionPriceImpactFees,
+    closingPositionKey,
+    confirmationBoxState,
+    depositMarketTokensData,
+    externalSwapState,
+    features,
+    gasLimits,
+    gasPaymentTokenAllowance,
+    gasPrice,
+    glvInfo,
+    isCandlesLoaded,
+    isFirstOrder,
+    isLargeAccount,
+    isLoading,
+    keepLeverage,
+    l1ExpressOrderGasReference,
+    lastMonthAccountStats,
+    lastWeekAccountStats,
+    leaderboard,
     markets,
     marketsInfo,
+    missedCoinsModalPlace,
+    oracleSettings,
+    orderEditor,
     ordersInfo,
+    pageType,
+    positionEditorState,
+    positionSellerState,
     positionsConstants,
-    glvInfo,
-    isLoading,
     positionsInfoData,
+    setKeepLeverage,
+    settings,
+    signer,
+    sponsoredCallBalanceData,
+    srcChainId,
+    subaccountState,
+    tokenPermitsState,
     tokensDataResult,
+    tradeboxState,
     uiFeeFactor,
     userReferralInfo,
-    depositMarketTokensData,
-    closingPositionKey,
-    missedCoinsModalPlace,
-    gasLimits,
-    gasPrice,
-    keepLeverage,
-    setKeepLeverage,
-    lastWeekAccountStats,
-    lastMonthAccountStats,
-    accountStats,
-    isCandlesLoaded,
-    isLargeAccount,
-    isFirstOrder,
-    blockTimestampData,
-    oracleSettings,
-    accruedPositionPriceImpactFees,
-    claimablePositionPriceImpactFees,
-    leaderboard,
-    settings,
-    subaccountState,
-    tradeboxState,
-    externalSwapState,
-    tokenPermitsState,
-    orderEditor,
-    positionSellerState,
-    positionEditorState,
-    confirmationBoxState,
-    features,
-    sponsoredCallBalanceData,
-    gasPaymentTokenAllowance,
-    l1ExpressOrderGasReference,
   ]);
 
   latestStateRef.current = state;

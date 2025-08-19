@@ -140,7 +140,7 @@ export function initSwapMetricData({
   return metrics.setCachedMetricData<SwapMetricData>({
     metricId: getSwapOrderMetricId({
       initialCollateralTokenAddress: fromToken?.wrappedAddress || fromToken?.address,
-      swapPath: swapAmounts?.swapPathStats?.swapPath,
+      swapPath: swapAmounts?.swapStrategy.swapPathStats?.swapPath,
       orderType,
       initialCollateralDeltaAmount: swapAmounts?.amountIn,
       executionFee: executionFee?.feeTokenAmount,
@@ -156,7 +156,7 @@ export function initSwapMetricData({
     initialCollateralDeltaAmount: formatAmountForMetrics(swapAmounts?.amountIn, fromToken?.decimals),
     minOutputAmount: formatAmountForMetrics(swapAmounts?.minOutputAmount, toToken?.decimals),
     amountUsd: formatAmountForMetrics(swapAmounts?.usdOut),
-    swapPath: swapAmounts?.swapPathStats?.swapPath,
+    swapPath: swapAmounts?.swapStrategy.swapPathStats?.swapPath,
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
     allowedSlippage,
     orderType,
@@ -280,7 +280,7 @@ export function initIncreaseOrderMetricData({
     initialCollateralBalance: fromToken?.balance?.toString(),
     initialCollateralSymbol: fromToken?.symbol,
     initialCollateralDeltaAmount: formatAmountForMetrics(increaseAmounts?.initialCollateralAmount, fromToken?.decimals),
-    swapPath: increaseAmounts?.swapPathStats?.swapPath || [],
+    swapPath: increaseAmounts?.swapStrategy.swapPathStats?.swapPath || [],
     sizeDeltaUsd: formatAmountForMetrics(increaseAmounts?.sizeDeltaUsd),
     sizeDeltaInTokens: formatAmountForMetrics(increaseAmounts?.sizeDeltaInTokens, marketInfo?.indexToken.decimals),
     triggerPrice: formatAmountForMetrics(triggerPrice, USD_DECIMALS, false),
@@ -296,15 +296,22 @@ export function initIncreaseOrderMetricData({
     priceImpactPercentage: formatPercentageForMetrics(priceImpactPercentage) ?? 0,
     netRate1h: parseFloat(formatRatePercentage(netRate1h)),
     internalSwapTotalFeesBps:
-      increaseAmounts?.swapPathStats && increaseAmounts.initialCollateralAmount > 0
-        ? Number(getBasisPoints(increaseAmounts.swapPathStats.totalFeesDeltaUsd, increaseAmounts.initialCollateralUsd))
+      increaseAmounts?.swapStrategy.swapPathStats && increaseAmounts.initialCollateralAmount > 0
+        ? Number(
+            getBasisPoints(
+              increaseAmounts.swapStrategy.swapPathStats.totalFeesDeltaUsd,
+              increaseAmounts.initialCollateralUsd
+            )
+          )
         : undefined,
-    internalSwapTotalFeesDeltaUsd: formatAmountForMetrics(increaseAmounts?.swapPathStats?.totalFeesDeltaUsd),
-    externalSwapUsdIn: formatAmountForMetrics(increaseAmounts?.externalSwapQuote?.usdIn),
-    externalSwapUsdOut: formatAmountForMetrics(increaseAmounts?.externalSwapQuote?.usdOut),
-    externalSwapFeesUsd: formatAmountForMetrics(increaseAmounts?.externalSwapQuote?.feesUsd),
-    externalSwapInTokenAddress: increaseAmounts?.externalSwapQuote?.inTokenAddress,
-    externalSwapOutTokenAddress: increaseAmounts?.externalSwapQuote?.outTokenAddress,
+    internalSwapTotalFeesDeltaUsd: formatAmountForMetrics(
+      increaseAmounts?.swapStrategy.swapPathStats?.totalFeesDeltaUsd
+    ),
+    externalSwapUsdIn: formatAmountForMetrics(increaseAmounts?.swapStrategy.externalSwapQuote?.usdIn),
+    externalSwapUsdOut: formatAmountForMetrics(increaseAmounts?.swapStrategy.externalSwapQuote?.usdOut),
+    externalSwapFeesUsd: formatAmountForMetrics(increaseAmounts?.swapStrategy.externalSwapQuote?.feesUsd),
+    externalSwapInTokenAddress: increaseAmounts?.swapStrategy.externalSwapQuote?.inTokenAddress,
+    externalSwapOutTokenAddress: increaseAmounts?.swapStrategy.externalSwapQuote?.outTokenAddress,
     interactionId,
     duration,
     partsCount,
@@ -605,6 +612,13 @@ function getExpressMetricData({
   }
 
   const expressData: ExpressOrderMetricData = {
+    isExpressValid: expressParams.gasPaymentValidations.isValid,
+    isOutGasTokenBalance: expressParams.gasPaymentValidations.isOutGasTokenBalance,
+    needGasTokenApproval: expressParams.gasPaymentValidations.needGasPaymentTokenApproval,
+    isSubaccountValid: expressParams.subaccountValidations?.isValid,
+    isSubbaccountExpired: expressParams.subaccountValidations?.isExpired,
+    isSubaccountActionsExceeded: expressParams.subaccountValidations?.isActionsExceeded,
+    isSubaccountNonceExpired: expressParams.subaccountValidations?.isNonceExpired,
     isSponsoredCall: Boolean(expressParams?.isSponsoredCall),
     approximateGasLimit: fastExpressParams ? Number(fastExpressParams.gasLimit) : 0,
     approximateL1GasLimit: fastExpressParams ? Number(fastExpressParams.l1GasLimit) : 0,

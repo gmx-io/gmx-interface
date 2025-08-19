@@ -85,6 +85,8 @@ export type PendingExpressTxnParams = {
   payTokenAddresses?: string[];
   pendingOrdersKeys?: string[];
   pendingPositionsKeys?: string[];
+  estimatedExecutionFee?: bigint;
+  estimatedExecutionGasLimit?: bigint;
   createdAt: number;
   metricId?: OrderMetricId;
   successMessage?: ReactNode;

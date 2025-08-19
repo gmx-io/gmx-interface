@@ -174,6 +174,7 @@ function getBatchExpressEstimatorParams({
     account: signer.address,
     gasPaymentTokenAsCollateralAmount,
     executionFeeAmount: executionFeeAmount.feeTokenAmount,
+    executionGasLimit: executionFeeAmount.gasLimit,
     transactionPayloadGasLimit,
     transactionExternalCalls,
     subaccountActions,
@@ -223,6 +224,7 @@ export async function estimateExpressParams({
     expressTransactionBuilder,
     gasPaymentTokenAsCollateralAmount,
     executionFeeAmount,
+    executionGasLimit,
     transactionPayloadGasLimit,
     transactionExternalCalls,
     subaccountActions,
@@ -404,6 +406,8 @@ export async function estimateExpressParams({
     relayParamsPayload: finalRelayParams,
     isSponsoredCall,
     gasPaymentParams: finalRelayFeeParams.gasPaymentParams,
+    executionFeeAmount,
+    executionGasLimit,
     estimationMethod,
     gasLimit,
     l1GasLimit,
@@ -717,6 +721,7 @@ export async function getBatchSignatureParams({
     types,
     typedData,
     domain,
+    shouldUseSignerMethod: subaccountApproval !== undefined,
   };
 }
 

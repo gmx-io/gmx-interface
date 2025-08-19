@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { LEADERBOARD_PRICES_UPDATE_INTERVAL, PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import type { Token } from "sdk/types/tokens";
 
 import { TokenPricesData } from "./types";
 import { useSequentialTimedSWR } from "./useSequentialTimedSWR";
@@ -34,7 +35,7 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
         const result: TokenPricesData = {};
 
         priceItems.forEach((priceItem) => {
-          let tokenConfig: any;
+          let tokenConfig: Token;
 
           try {
             tokenConfig = getToken(chainId, priceItem.tokenAddress);

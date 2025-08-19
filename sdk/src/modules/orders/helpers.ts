@@ -186,6 +186,9 @@ export async function increaseOrderHelper(
     acceptablePriceImpactBuffer: params.acceptablePriceImpactBuffer,
     fixedAcceptablePriceImpactBps: params.fixedAcceptablePriceImpactBps,
     externalSwapQuote: undefined,
+    marketsInfoData,
+    chainId: sdk.chainId,
+    externalSwapQuoteParams: undefined,
   });
 
   const createIncreaseOrderParams: Parameters<typeof sdk.orders.createIncreaseOrder>[0] = {
@@ -337,6 +340,9 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
       uiFeeFactor,
       swapOptimizationOrder,
       allowedSwapSlippageBps: isLimit ? BigInt(params.allowedSlippageBps ?? 100) : undefined,
+      marketsInfoData,
+      chainId: sdk.chainId,
+      externalSwapQuoteParams: undefined,
     });
   } else {
     swapAmounts = getSwapAmountsByToValue({
@@ -349,6 +355,9 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
       uiFeeFactor,
       swapOptimizationOrder,
       allowedSwapSlippageBps: isLimit ? BigInt(params.allowedSlippageBps ?? 100) : undefined,
+      marketsInfoData,
+      chainId: sdk.chainId,
+      externalSwapQuoteParams: undefined,
     });
   }
 

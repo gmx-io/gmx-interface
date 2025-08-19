@@ -325,6 +325,15 @@ export interface AccountStatsConnection {
   totalCount: Scalars["Int"]["output"];
 }
 
+export interface AnnualizedPerformanceObject {
+  __typename?: "AnnualizedPerformanceObject";
+  address: Scalars["String"]["output"];
+  entity: Scalars["String"]["output"];
+  longTokenPerformance: Scalars["BigInt"]["output"];
+  shortTokenPerformance: Scalars["BigInt"]["output"];
+  uniswapV2Performance: Scalars["BigInt"]["output"];
+}
+
 export interface AprSnapshot {
   __typename?: "AprSnapshot";
   address: Scalars["String"]["output"];
@@ -1530,6 +1539,155 @@ export interface CumulativePoolValueWhereInput {
 export interface CumulativePoolValuesConnection {
   __typename?: "CumulativePoolValuesConnection";
   edges: Array<CumulativePoolValueEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
+}
+
+export interface Distribution {
+  __typename?: "Distribution";
+  amounts: Array<Scalars["String"]["output"]>;
+  amountsInUsd: Array<Scalars["String"]["output"]>;
+  id: Scalars["String"]["output"];
+  receiver: Scalars["String"]["output"];
+  tokens: Array<Scalars["String"]["output"]>;
+  transaction: Transaction;
+  typeId: Scalars["BigInt"]["output"];
+}
+
+export interface DistributionEdge {
+  __typename?: "DistributionEdge";
+  cursor: Scalars["String"]["output"];
+  node: Distribution;
+}
+
+export enum DistributionOrderByInput {
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  receiver_ASC = "receiver_ASC",
+  receiver_ASC_NULLS_FIRST = "receiver_ASC_NULLS_FIRST",
+  receiver_ASC_NULLS_LAST = "receiver_ASC_NULLS_LAST",
+  receiver_DESC = "receiver_DESC",
+  receiver_DESC_NULLS_FIRST = "receiver_DESC_NULLS_FIRST",
+  receiver_DESC_NULLS_LAST = "receiver_DESC_NULLS_LAST",
+  transaction_blockNumber_ASC = "transaction_blockNumber_ASC",
+  transaction_blockNumber_ASC_NULLS_FIRST = "transaction_blockNumber_ASC_NULLS_FIRST",
+  transaction_blockNumber_ASC_NULLS_LAST = "transaction_blockNumber_ASC_NULLS_LAST",
+  transaction_blockNumber_DESC = "transaction_blockNumber_DESC",
+  transaction_blockNumber_DESC_NULLS_FIRST = "transaction_blockNumber_DESC_NULLS_FIRST",
+  transaction_blockNumber_DESC_NULLS_LAST = "transaction_blockNumber_DESC_NULLS_LAST",
+  transaction_from_ASC = "transaction_from_ASC",
+  transaction_from_ASC_NULLS_FIRST = "transaction_from_ASC_NULLS_FIRST",
+  transaction_from_ASC_NULLS_LAST = "transaction_from_ASC_NULLS_LAST",
+  transaction_from_DESC = "transaction_from_DESC",
+  transaction_from_DESC_NULLS_FIRST = "transaction_from_DESC_NULLS_FIRST",
+  transaction_from_DESC_NULLS_LAST = "transaction_from_DESC_NULLS_LAST",
+  transaction_hash_ASC = "transaction_hash_ASC",
+  transaction_hash_ASC_NULLS_FIRST = "transaction_hash_ASC_NULLS_FIRST",
+  transaction_hash_ASC_NULLS_LAST = "transaction_hash_ASC_NULLS_LAST",
+  transaction_hash_DESC = "transaction_hash_DESC",
+  transaction_hash_DESC_NULLS_FIRST = "transaction_hash_DESC_NULLS_FIRST",
+  transaction_hash_DESC_NULLS_LAST = "transaction_hash_DESC_NULLS_LAST",
+  transaction_id_ASC = "transaction_id_ASC",
+  transaction_id_ASC_NULLS_FIRST = "transaction_id_ASC_NULLS_FIRST",
+  transaction_id_ASC_NULLS_LAST = "transaction_id_ASC_NULLS_LAST",
+  transaction_id_DESC = "transaction_id_DESC",
+  transaction_id_DESC_NULLS_FIRST = "transaction_id_DESC_NULLS_FIRST",
+  transaction_id_DESC_NULLS_LAST = "transaction_id_DESC_NULLS_LAST",
+  transaction_timestamp_ASC = "transaction_timestamp_ASC",
+  transaction_timestamp_ASC_NULLS_FIRST = "transaction_timestamp_ASC_NULLS_FIRST",
+  transaction_timestamp_ASC_NULLS_LAST = "transaction_timestamp_ASC_NULLS_LAST",
+  transaction_timestamp_DESC = "transaction_timestamp_DESC",
+  transaction_timestamp_DESC_NULLS_FIRST = "transaction_timestamp_DESC_NULLS_FIRST",
+  transaction_timestamp_DESC_NULLS_LAST = "transaction_timestamp_DESC_NULLS_LAST",
+  transaction_to_ASC = "transaction_to_ASC",
+  transaction_to_ASC_NULLS_FIRST = "transaction_to_ASC_NULLS_FIRST",
+  transaction_to_ASC_NULLS_LAST = "transaction_to_ASC_NULLS_LAST",
+  transaction_to_DESC = "transaction_to_DESC",
+  transaction_to_DESC_NULLS_FIRST = "transaction_to_DESC_NULLS_FIRST",
+  transaction_to_DESC_NULLS_LAST = "transaction_to_DESC_NULLS_LAST",
+  transaction_transactionIndex_ASC = "transaction_transactionIndex_ASC",
+  transaction_transactionIndex_ASC_NULLS_FIRST = "transaction_transactionIndex_ASC_NULLS_FIRST",
+  transaction_transactionIndex_ASC_NULLS_LAST = "transaction_transactionIndex_ASC_NULLS_LAST",
+  transaction_transactionIndex_DESC = "transaction_transactionIndex_DESC",
+  transaction_transactionIndex_DESC_NULLS_FIRST = "transaction_transactionIndex_DESC_NULLS_FIRST",
+  transaction_transactionIndex_DESC_NULLS_LAST = "transaction_transactionIndex_DESC_NULLS_LAST",
+  typeId_ASC = "typeId_ASC",
+  typeId_ASC_NULLS_FIRST = "typeId_ASC_NULLS_FIRST",
+  typeId_ASC_NULLS_LAST = "typeId_ASC_NULLS_LAST",
+  typeId_DESC = "typeId_DESC",
+  typeId_DESC_NULLS_FIRST = "typeId_DESC_NULLS_FIRST",
+  typeId_DESC_NULLS_LAST = "typeId_DESC_NULLS_LAST",
+}
+
+export interface DistributionWhereInput {
+  AND?: InputMaybe<Array<DistributionWhereInput>>;
+  OR?: InputMaybe<Array<DistributionWhereInput>>;
+  amountsInUsd_containsAll?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  amountsInUsd_containsAny?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  amountsInUsd_containsNone?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  amountsInUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  amounts_containsAll?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  amounts_containsAny?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  amounts_containsNone?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  amounts_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  receiver_contains?: InputMaybe<Scalars["String"]["input"]>;
+  receiver_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  receiver_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  receiver_eq?: InputMaybe<Scalars["String"]["input"]>;
+  receiver_gt?: InputMaybe<Scalars["String"]["input"]>;
+  receiver_gte?: InputMaybe<Scalars["String"]["input"]>;
+  receiver_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  receiver_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  receiver_lt?: InputMaybe<Scalars["String"]["input"]>;
+  receiver_lte?: InputMaybe<Scalars["String"]["input"]>;
+  receiver_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  receiver_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  receiver_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  receiver_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  receiver_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  receiver_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  receiver_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  tokens_containsAll?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  tokens_containsAny?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  tokens_containsNone?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  tokens_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  transaction?: InputMaybe<TransactionWhereInput>;
+  transaction_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  typeId_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  typeId_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  typeId_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  typeId_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  typeId_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  typeId_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  typeId_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  typeId_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  typeId_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+}
+
+export interface DistributionsConnection {
+  __typename?: "DistributionsConnection";
+  edges: Array<DistributionEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars["Int"]["output"];
 }
@@ -4152,6 +4310,24 @@ export interface PageInfo {
   startCursor: Scalars["String"]["output"];
 }
 
+export interface PerformanceSnapshotObject {
+  __typename?: "PerformanceSnapshotObject";
+  snapshotTimestamp: Scalars["String"]["output"];
+  uniswapV2Performance: Scalars["String"]["output"];
+}
+
+export interface PerformanceSnapshots {
+  __typename?: "PerformanceSnapshots";
+  address: Scalars["String"]["output"];
+  entity: Scalars["String"]["output"];
+  snapshots: Array<PerformanceSnapshotObject>;
+}
+
+export interface PerformanceWhereInput {
+  addresses?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  period: Scalars["String"]["input"];
+}
+
 export interface PeriodAccountStatObject {
   __typename?: "PeriodAccountStatObject";
   closedCount: Scalars["Float"]["output"];
@@ -5851,6 +6027,7 @@ export interface Query {
   accountStatById?: Maybe<AccountStat>;
   accountStats: Array<AccountStat>;
   accountStatsConnection: AccountStatsConnection;
+  annualizedPerformance: Array<AnnualizedPerformanceObject>;
   aprSnapshotById?: Maybe<AprSnapshot>;
   aprSnapshots: Array<AprSnapshot>;
   aprSnapshotsConnection: AprSnapshotsConnection;
@@ -5875,6 +6052,9 @@ export interface Query {
   cumulativePoolValueById?: Maybe<CumulativePoolValue>;
   cumulativePoolValues: Array<CumulativePoolValue>;
   cumulativePoolValuesConnection: CumulativePoolValuesConnection;
+  distributionById?: Maybe<Distribution>;
+  distributions: Array<Distribution>;
+  distributionsConnection: DistributionsConnection;
   glvById?: Maybe<Glv>;
   glvs: Array<Glv>;
   glvsAprByPeriod: Array<GlvApr>;
@@ -5894,6 +6074,7 @@ export interface Query {
   orderById?: Maybe<Order>;
   orders: Array<Order>;
   ordersConnection: OrdersConnection;
+  performanceSnapshots: Array<PerformanceSnapshots>;
   periodAccountStats: Array<PeriodAccountStatObject>;
   pnlAprSnapshotById?: Maybe<PnlAprSnapshot>;
   pnlAprSnapshots: Array<PnlAprSnapshot>;
@@ -5954,6 +6135,10 @@ export interface QueryaccountStatsConnectionArgs {
   first?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy: Array<AccountStatOrderByInput>;
   where?: InputMaybe<AccountStatWhereInput>;
+}
+
+export interface QueryannualizedPerformanceArgs {
+  where?: InputMaybe<PerformanceWhereInput>;
 }
 
 export interface QueryaprSnapshotByIdArgs {
@@ -6100,6 +6285,24 @@ export interface QuerycumulativePoolValuesConnectionArgs {
   where?: InputMaybe<CumulativePoolValueWhereInput>;
 }
 
+export interface QuerydistributionByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QuerydistributionsArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<DistributionOrderByInput>>;
+  where?: InputMaybe<DistributionWhereInput>;
+}
+
+export interface QuerydistributionsConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<DistributionOrderByInput>;
+  where?: InputMaybe<DistributionWhereInput>;
+}
+
 export interface QueryglvByIdArgs {
   id: Scalars["String"]["input"];
 }
@@ -6204,6 +6407,10 @@ export interface QueryordersConnectionArgs {
   first?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy: Array<OrderOrderByInput>;
   where?: InputMaybe<OrderWhereInput>;
+}
+
+export interface QueryperformanceSnapshotsArgs {
+  where?: InputMaybe<PerformanceWhereInput>;
 }
 
 export interface QueryperiodAccountStatsArgs {
