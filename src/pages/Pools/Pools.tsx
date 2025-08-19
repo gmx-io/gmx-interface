@@ -65,7 +65,7 @@ export default function Pools() {
   const isBotanix = chainId === BOTANIX;
 
   return (
-    <AppPageLayout header={<ChainContentHeader />} contentClassName="lg:overflow-hidden">
+    <AppPageLayout header={<ChainContentHeader />}>
       <div
         className={cx("grid w-full flex-col", {
           "grid-cols-1": isMobile,
