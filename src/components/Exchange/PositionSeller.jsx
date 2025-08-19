@@ -1049,7 +1049,6 @@ export default function PositionSeller(props) {
               bottomLeftValue={
                 convertedAmountFormatted ? `${convertedAmountFormatted} ${position.collateralToken.symbol}` : ""
               }
-              isBottomLeftValueMuted={convertedAmount === 0n}
               topRightLabel={t`Max`}
               topRightValue={maxAmount && maxAmountFormatted}
               onClickMax={fromValue !== maxAmountFormattedFree ? () => setFromValue(maxAmountFormattedFree) : undefined}

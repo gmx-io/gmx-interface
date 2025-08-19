@@ -595,7 +595,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         <BuyInputSection
           topLeftLabel={t`Pay`}
           bottomLeftValue={payUsd !== undefined ? formatUsd(payUsd) : ""}
-          isBottomLeftValueMuted={payUsd === undefined || payUsd === 0n}
           bottomRightValue={
             fromToken && fromToken.balance !== undefined && fromToken.balance > 0n
               ? formatBalanceAmount(fromToken.balance, fromToken.decimals, fromToken.symbol, {
@@ -658,7 +657,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                       })
                     : undefined
                 }
-                isBottomLeftValueMuted={swapAmounts?.usdOut === undefined || swapAmounts.usdOut === 0n}
                 inputValue={toTokenInputValue}
                 onInputValueChange={handleToInputTokenChange}
                 qa="swap-receive"
@@ -692,7 +690,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 ? formatUsd(increaseAmounts?.sizeDeltaUsd, { fallbackToZero: true })
                 : ""
             }
-            isBottomLeftValueMuted={increaseAmounts?.sizeDeltaUsd === undefined || increaseAmounts?.sizeDeltaUsd === 0n}
             bottomRightLabel={t`Leverage`}
             bottomRightValue={
               formatLeverage(isLeverageSliderEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"
@@ -737,7 +734,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       <BuyInputSection
         topLeftLabel={t`Close`}
         bottomRightValue={selectedPosition?.sizeInUsd ? formatUsd(selectedPosition.sizeInUsd) : undefined}
-        isBottomLeftValueMuted={closeSizeUsd === 0n}
         bottomLeftValue={formatUsd(closeSizeUsd)}
         inputValue={closeSizeInputValue}
         onInputValueChange={handleCloseInputChange}
@@ -872,7 +868,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     priceImpactWarningState.shouldShowWarning ||
     (!isTrigger && !isSwap) ||
     (isSwap && isLimit) ||
-    (isSwap && isTwap) ||
     maxAutoCancelOrdersWarning ||
     shouldShowOneClickTradingWarning;
 

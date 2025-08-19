@@ -58,7 +58,7 @@ export default function BuyInputSection(props: Props) {
   const {
     topLeftLabel,
     bottomLeftValue,
-    isBottomLeftValueMuted = false,
+    isBottomLeftValueMuted = true,
     bottomRightLabel,
     bottomRightValue,
     onClickBottomRightLabel,

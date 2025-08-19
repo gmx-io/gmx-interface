@@ -904,7 +904,6 @@ export function PositionSeller() {
                   inputValue={closeUsdInputValue}
                   onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
                   bottomLeftValue={formatUsd(closeSizeUsd)}
-                  isBottomLeftValueMuted={closeSizeUsd === 0n}
                   bottomRightLabel={t`Max`}
                   bottomRightValue={formatUsd(maxCloseSize)}
                   onClickMax={

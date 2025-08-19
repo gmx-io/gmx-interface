@@ -255,7 +255,6 @@ export function GmShiftBox({
                     ? formatBalanceAmount(selectedToken.balance, selectedToken.decimals)
                     : undefined
                 }
-                isBottomLeftValueMuted={amounts?.fromTokenUsd === undefined || amounts.fromTokenUsd === 0n}
                 onClickBottomRightLabel={handleSelectedTokenClickMax}
                 onClickMax={selectedTokenShowMaxButton ? handleSelectedTokenClickMax : undefined}
                 inputValue={selectedMarketText}
@@ -280,7 +279,6 @@ export function GmShiftBox({
                   inputValue={toMarketText}
                   onInputValueChange={handleToTokenInputValueChange}
                   onFocus={handleToTokenFocus}
-                  isBottomLeftValueMuted={amounts?.toTokenUsd === undefined || amounts.toTokenUsd === 0n}
                 >
                   <PoolSelector
                     chainId={chainId}
