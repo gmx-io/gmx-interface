@@ -183,13 +183,19 @@ function fontComponentsPlugin({ addComponents, addBase }) {
       fontSize: "3.2rem",
       lineHeight: "auto",
       fontWeight: 500,
-      letterSpacing: "-0.02em",
+      letterSpacing: "-0.016em",
     },
     ".text-h2": {
       fontSize: "2.4rem",
       lineHeight: "auto",
       fontWeight: 500,
-      letterSpacing: "-0.02em",
+      letterSpacing: "-0.016em",
+    },
+    ".text-h3": {
+      fontSize: "2rem",
+      lineHeight: "auto",
+      fontWeight: 500,
+      letterSpacing: "-0.016em",
     },
     ".text-body-large": {
       fontSize: "1.6rem",
