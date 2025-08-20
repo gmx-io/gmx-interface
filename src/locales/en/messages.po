@@ -1757,6 +1757,10 @@ msgstr "Enter a  price"
 msgid "Account"
 msgstr "Account"
 
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Using high leverage increases the risk of liquidation."
+msgstr "Using high leverage increases the risk of liquidation."
+
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading is not available for wrapping or unwrapping native token {0}."
 msgstr "Express Trading is not available for wrapping or unwrapping native token {0}."
@@ -8145,10 +8149,6 @@ msgstr "Claim funds"
 #: src/components/Synthetics/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral. The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price."
 msgstr "You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral. The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price."
-
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Using high leverage increases the risk of <0>losing funds</0>."
-msgstr "Using high leverage increases the risk of <0>losing funds</0>."
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled"
