@@ -187,13 +187,42 @@ export function buildGetOrdersMulticall(chainId: ContractsChainId, account: stri
 export function parseGetOrdersResponse(res: MulticallResult<ReturnType<typeof buildGetOrdersMulticall>>) {
   const count = Number(res.data.dataStore.count.returnValues[0]);
   const orderKeys = res.data.dataStore.keys.returnValues;
-  const orders = res.data.reader.orders.returnValues as any[];
+  const orders = res.data.reader.orders.returnValues as {
+    orderKey: string;
+    order: {
+      addresses: {
+        account: string;
+        receiver: string;
+        cancellationReceiver: string;
+        callbackContract: string;
+        uiFeeReceiver: string;
+        market: string;
+        initialCollateralToken: string;
+        swapPath: string[];
+      };
+      numbers: {
+        orderType: bigint;
+        decreasePositionSwapType: bigint;
+        sizeDeltaUsd: bigint;
+        initialCollateralDeltaAmount: bigint;
+        triggerPrice: bigint;
+        acceptablePrice: bigint;
+        executionFee: bigint;
+        callbackGasLimit: bigint;
+        minOutputAmount: bigint;
+        updatedAtTime: bigint;
+        validFromTime: bigint;
+        srcChainId: bigint;
+      };
+      flags: { isLong: boolean; shouldUnwrapNativeToken: boolean; isFrozen: boolean; autoCancel: boolean };
+      _dataList: string[];
+    };
+  }[];
 
   return {
     count,
-    orders: orders.map((order, i) => {
+    orders: orders.map(({ order }, i) => {
       const key = orderKeys[i];
-      const { data } = order;
 
       const orderData: Order = {
         key,
@@ -214,12 +243,12 @@ export function parseGetOrdersResponse(res: MulticallResult<ReturnType<typeof bu
         isLong: order.flags.isLong as boolean,
         shouldUnwrapNativeToken: order.flags.shouldUnwrapNativeToken as boolean,
         isFrozen: order.flags.isFrozen as boolean,
-        orderType: order.numbers.orderType as OrderType,
-        decreasePositionSwapType: order.numbers.decreasePositionSwapType as DecreasePositionSwapType,
+        orderType: Number(order.numbers.orderType) as OrderType,
+        decreasePositionSwapType: Number(order.numbers.decreasePositionSwapType) as DecreasePositionSwapType,
         autoCancel: order.flags.autoCancel as boolean,
         uiFeeReceiver: order.addresses.uiFeeReceiver as Address,
         validFromTime: BigInt(order.numbers.validFromTime),
-        data,
+        data: order._dataList,
       };
 
       return orderData;

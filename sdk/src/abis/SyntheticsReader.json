@@ -679,6 +679,21 @@
                   "internalType": "bool",
                   "name": "balanceWasImproved",
                   "type": "bool"
+                },
+                {
+                  "internalType": "int256",
+                  "name": "proportionalPendingImpactUsd",
+                  "type": "int256"
+                },
+                {
+                  "internalType": "int256",
+                  "name": "totalImpactUsd",
+                  "type": "int256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "priceImpactDiffUsd",
+                  "type": "uint256"
                 }
               ],
               "internalType": "struct ReaderPricingUtils.ExecutionPriceResult",
@@ -1290,6 +1305,11 @@
           "type": "int256"
         },
         {
+          "internalType": "int256",
+          "name": "pendingImpactAmount",
+          "type": "int256"
+        },
+        {
           "internalType": "bool",
           "name": "isLong",
           "type": "bool"
@@ -1313,6 +1333,21 @@
               "internalType": "bool",
               "name": "balanceWasImproved",
               "type": "bool"
+            },
+            {
+              "internalType": "int256",
+              "name": "proportionalPendingImpactUsd",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "totalImpactUsd",
+              "type": "int256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "priceImpactDiffUsd",
+              "type": "uint256"
             }
           ],
           "internalType": "struct ReaderPricingUtils.ExecutionPriceResult",
@@ -3431,6 +3466,21 @@
                   "internalType": "bool",
                   "name": "balanceWasImproved",
                   "type": "bool"
+                },
+                {
+                  "internalType": "int256",
+                  "name": "proportionalPendingImpactUsd",
+                  "type": "int256"
+                },
+                {
+                  "internalType": "int256",
+                  "name": "totalImpactUsd",
+                  "type": "int256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "priceImpactDiffUsd",
+                  "type": "uint256"
                 }
               ],
               "internalType": "struct ReaderPricingUtils.ExecutionPriceResult",
@@ -3931,6 +3981,21 @@
                   "internalType": "bool",
                   "name": "balanceWasImproved",
                   "type": "bool"
+                },
+                {
+                  "internalType": "int256",
+                  "name": "proportionalPendingImpactUsd",
+                  "type": "int256"
+                },
+                {
+                  "internalType": "int256",
+                  "name": "totalImpactUsd",
+                  "type": "int256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "priceImpactDiffUsd",
+                  "type": "uint256"
                 }
               ],
               "internalType": "struct ReaderPricingUtils.ExecutionPriceResult",
