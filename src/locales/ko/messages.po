@@ -304,6 +304,8 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Fees"
@@ -2276,8 +2278,8 @@ msgid "Winner:"
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Price impact rebates for closing trades are claimable inder this claims tab. <0>Read more</0>"
-msgstr ""
+#~ msgid "Price impact rebates for closing trades are claimable inder this claims tab. <0>Read more</0>"
+#~ msgstr ""
 
 #: src/pages/Home/Home.tsx
 msgid "Total Trading Volume"
@@ -6525,7 +6527,6 @@ msgid "Claim"
 msgstr "수령하기"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price Impact / Fees"
 msgstr ""
 
@@ -7766,6 +7767,10 @@ msgstr ""
 msgid "Avalanche LP incentives"
 msgstr ""
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is only settled on position decrease.<0>Read more</0>"
+msgstr ""
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
 msgstr ""
@@ -8358,8 +8363,8 @@ msgid "Failed to update settings"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
-msgid "Positive Price Impact / Fees"
-msgstr ""
+#~ msgid "Positive Price Impact / Fees"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Tweet"
@@ -9154,4 +9159,8 @@ msgstr ""
 
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Deposit failed!"
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>"
 msgstr ""

@@ -29,15 +29,6 @@ export function PriceImpactFeesRow() {
 
   const isPriceImpactPositive = priceImpactPercentage !== undefined && priceImpactPercentage > 0;
 
-  const formattedPriceImpactPercentage =
-    priceImpactPercentage === undefined
-      ? "..."
-      : formatPercentage(priceImpactPercentage, {
-          bps: false,
-          signed: true,
-          displayDecimals: 3,
-        });
-
   const rebateIsApplicable =
     fees?.positionFee?.deltaUsd !== undefined && fees.positionFee.deltaUsd <= 0 && feesType !== "swap";
 
@@ -86,17 +77,9 @@ export function PriceImpactFeesRow() {
 
   return (
     <SyntheticsInfoRow
-      label={isPriceImpactPositive ? t`Positive Price Impact / Fees` : t`Price Impact / Fees`}
+      label={isPriceImpactPositive ? t`Fees` : t`Fees`}
       value={
         <>
-          <span
-            className={cx({
-              "text-green-500": isPriceImpactPositive,
-            })}
-          >
-            {formattedPriceImpactPercentage}
-          </span>{" "}
-          /{" "}
           <span
             className={cx({
               "text-green-500": isTotalFeePositive,

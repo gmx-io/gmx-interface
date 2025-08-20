@@ -3,11 +3,9 @@ import { ReactNode, useCallback, useMemo } from "react";
 
 import {
   selectTradeboxAdvancedOptions,
-  selectTradeboxAllowedSlippage,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxDefaultAllowedSwapSlippageBps,
   selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
-  selectTradeboxExecutionPrice,
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxNextPositionValues,
@@ -18,7 +16,6 @@ import {
   selectTradeboxSetSelectedAcceptablePriceImpactBps,
   selectTradeboxSetSelectedAllowedSwapSlippageBps,
   selectTradeboxTotalSwapImpactBps,
-  selectTradeboxToToken,
   selectTradeboxTradeFeesType,
   selectTradeboxTradeFlags,
   selectTradeboxTriggerPrice,
@@ -33,11 +30,9 @@ import { formatLeverage } from "domain/synthetics/positions";
 import { formatUsd } from "lib/numbers";
 import { ExecutionFee } from "sdk/types/fees";
 import { isStopIncreaseOrderType } from "sdk/utils/orders";
-import { applySlippageToPrice } from "sdk/utils/trade";
 
 import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { AllowedSwapSlippageInputRow } from "components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
-import { ExecutionPriceRow } from "components/Synthetics/ExecutionPriceRow";
 import { ExpandableRow } from "components/Synthetics/ExpandableRow";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
@@ -132,32 +127,6 @@ function ExistingPositionInfoRows() {
         }
       />
     </>
-  );
-}
-
-function DecreaseOrderRow() {
-  const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isMarket, isLong } = tradeFlags;
-  const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
-  const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
-  const fees = useSelector(selectTradeboxFees);
-  const executionPrice = useSelector(selectTradeboxExecutionPrice);
-  const toToken = useSelector(selectTradeboxToToken);
-
-  const acceptablePrice =
-    isMarket && decreaseAmounts?.acceptablePrice
-      ? applySlippageToPrice(allowedSlippage, decreaseAmounts.acceptablePrice, true, isLong)
-      : decreaseAmounts?.acceptablePrice;
-
-  return (
-    <ExecutionPriceRow
-      tradeFlags={tradeFlags}
-      fees={fees}
-      acceptablePrice={acceptablePrice}
-      executionPrice={executionPrice ?? undefined}
-      visualMultiplier={toToken?.visualMultiplier}
-      triggerOrderType={decreaseAmounts?.triggerOrderType}
-    />
   );
 }
 
@@ -262,7 +231,6 @@ export function TradeBoxAdvancedGroups({
         </>
       )}
 
-      {isTrigger && <DecreaseOrderRow />}
       <TradeFeesRow {...fees} feesType={feesType} />
       <NetworkFeeRow executionFee={totalExecutionFee} gasPaymentParams={gasPaymentParams} />
 

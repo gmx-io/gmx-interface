@@ -304,6 +304,8 @@ msgstr "No incentives distribution history yet."
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Fees"
@@ -2276,8 +2278,8 @@ msgid "Winner:"
 msgstr "Winner:"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Price impact rebates for closing trades are claimable inder this claims tab. <0>Read more</0>"
-msgstr "Price impact rebates for closing trades are claimable inder this claims tab. <0>Read more</0>"
+#~ msgid "Price impact rebates for closing trades are claimable inder this claims tab. <0>Read more</0>"
+#~ msgstr "Price impact rebates for closing trades are claimable inder this claims tab. <0>Read more</0>"
 
 #: src/pages/Home/Home.tsx
 msgid "Total Trading Volume"
@@ -6528,7 +6530,6 @@ msgid "Claim"
 msgstr "Claim"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price Impact / Fees"
 msgstr "Price Impact / Fees"
 
@@ -7772,6 +7773,10 @@ msgstr "No liquidity is available for increasing shorts for<0/>this size. Max sh
 msgid "Avalanche LP incentives"
 msgstr "Avalanche LP incentives"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is only settled on position decrease.<0>Read more</0>"
+msgstr "Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is only settled on position decrease.<0>Read more</0>"
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
 msgstr "{nativeTokenSymbol} APR"
@@ -8364,8 +8369,8 @@ msgid "Failed to update settings"
 msgstr "Failed to update settings"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
-msgid "Positive Price Impact / Fees"
-msgstr "Positive Price Impact / Fees"
+#~ msgid "Positive Price Impact / Fees"
+#~ msgstr "Positive Price Impact / Fees"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Tweet"
@@ -9161,3 +9166,7 @@ msgstr "Unstake GMX"
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Deposit failed!"
 msgstr "Deposit failed!"
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>"
+msgstr "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>"
