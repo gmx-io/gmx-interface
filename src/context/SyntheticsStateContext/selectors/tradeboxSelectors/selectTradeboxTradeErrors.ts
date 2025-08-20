@@ -1,4 +1,4 @@
-import { selectPositionConstants } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId, selectPositionConstants } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxCloseSizeUsd,
   selectTradeboxCollateralToken,
@@ -23,6 +23,7 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
+  selectTradeboxIsStakeOrUnstake,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import {
@@ -41,9 +42,11 @@ export const selectTradeboxSwapTradeError = createSelector((q) => {
   const { maxLiquidity: swapOutLiquidity } = q(selectTradeboxMaxLiquidityPath);
   const { isLimit, isTwap } = q(selectTradeboxTradeFlags);
   const isWrapOrUnwrap = q(selectTradeboxIsWrapOrUnwrap);
+  const isStakeOrUnstake = q(selectTradeboxIsStakeOrUnstake);
   const { triggerRatio, markRatio } = q(selectTradeboxTradeRatios);
   const fees = q(selectTradeboxFees);
   const numberOfParts = q(selectTradeboxTwapNumberOfParts);
+  const chainId = q(selectChainId);
 
   return getSwapError({
     fromToken,
@@ -52,16 +55,18 @@ export const selectTradeboxSwapTradeError = createSelector((q) => {
     fromUsd: swapAmounts?.usdIn,
     toTokenAmount,
     toUsd: swapAmounts?.usdOut,
-    swapPathStats: swapAmounts?.swapPathStats,
+    swapPathStats: swapAmounts?.swapStrategy.swapPathStats,
     swapLiquidity: swapOutLiquidity,
-    externalSwapQuote: undefined,
+    externalSwapQuote: swapAmounts?.swapStrategy.externalSwapQuote,
     isLimit,
     isWrapOrUnwrap,
+    isStakeOrUnstake,
     triggerRatio,
     markRatio,
     fees,
     isTwap,
     numberOfParts,
+    chainId,
   });
 });
 
@@ -83,6 +88,7 @@ export const selectTradeboxIncreaseTradeError = createSelector((q) => {
   const nextPositionValues = q(selectTradeboxNextPositionValues);
   const nextLeverageWithoutPnl = q(selectTradeboxNextLeverageWithoutPnl);
   const numberOfParts = q(selectTradeboxTwapNumberOfParts);
+  const chainId = q(selectChainId);
 
   return getIncreaseError({
     marketInfo,
@@ -94,9 +100,9 @@ export const selectTradeboxIncreaseTradeError = createSelector((q) => {
     collateralUsd: increaseAmounts?.collateralDeltaUsd,
     sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
     existingPosition: selectedPosition,
-    externalSwapQuote: increaseAmounts?.externalSwapQuote,
+    externalSwapQuote: increaseAmounts?.swapStrategy.externalSwapQuote,
     fees,
-    swapPathStats: increaseAmounts?.swapPathStats,
+    swapPathStats: increaseAmounts?.swapStrategy.swapPathStats,
     collateralLiquidity: swapOutLiquidity,
     minCollateralUsd,
     longLiquidity,
@@ -111,6 +117,7 @@ export const selectTradeboxIncreaseTradeError = createSelector((q) => {
     numberOfParts,
     isTwap,
     minPositionSizeUsd,
+    chainId,
   });
 });
 

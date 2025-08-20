@@ -186,6 +186,9 @@ export async function increaseOrderHelper(
     acceptablePriceImpactBuffer: params.acceptablePriceImpactBuffer,
     fixedAcceptablePriceImpactBps: params.fixedAcceptablePriceImpactBps,
     externalSwapQuote: undefined,
+    marketsInfoData,
+    chainId: sdk.chainId,
+    externalSwapQuoteParams: undefined,
   });
 
   const createIncreaseOrderParams: Parameters<typeof sdk.orders.createIncreaseOrder>[0] = {
@@ -296,25 +299,13 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
     fromToken && toToken && (getIsWrap(fromToken, toToken) || getIsUnwrap(fromToken, toToken))
   );
 
-  const swapOptimizationOrder: SwapOptimizationOrderArray | undefined = isLimit ? ["length", "liquidity"] : undefined;
-
-  let swapAmounts: SwapAmounts | undefined;
-
-  const fromTokenPrice = fromToken.prices.minPrice;
-  const triggerRatio = params.triggerPrice
-    ? getTriggerRatio({
-        fromToken,
-        toToken,
-        triggerPrice: params.triggerPrice,
-      })
-    : undefined;
-
   if (isWrapOrUnwrap) {
+    const fromTokenPrice = fromToken.prices.minPrice;
     const tokenAmount = "fromAmount" in params ? params.fromAmount : params.toAmount;
     const usdAmount = convertToUsd(tokenAmount, fromToken.decimals, fromTokenPrice)!;
     const price = fromTokenPrice;
 
-    swapAmounts = {
+    return {
       amountIn: tokenAmount,
       usdIn: usdAmount!,
       amountOut: tokenAmount,
@@ -324,9 +315,21 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
       priceOut: price,
       minOutputAmount: tokenAmount,
     };
+  }
 
-    return swapAmounts;
-  } else if ("fromAmount" in params) {
+  const swapOptimizationOrder: SwapOptimizationOrderArray | undefined = isLimit ? ["length", "liquidity"] : undefined;
+
+  let swapAmounts: SwapAmounts | undefined;
+
+  const triggerRatio = params.triggerPrice
+    ? getTriggerRatio({
+        fromToken,
+        toToken,
+        triggerPrice: params.triggerPrice,
+      })
+    : undefined;
+
+  if ("fromAmount" in params) {
     swapAmounts = getSwapAmountsByFromValue({
       tokenIn: fromToken,
       tokenOut: toToken,
@@ -337,6 +340,9 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
       uiFeeFactor,
       swapOptimizationOrder,
       allowedSwapSlippageBps: isLimit ? BigInt(params.allowedSlippageBps ?? 100) : undefined,
+      marketsInfoData,
+      chainId: sdk.chainId,
+      externalSwapQuoteParams: undefined,
     });
   } else {
     swapAmounts = getSwapAmountsByToValue({
@@ -349,6 +355,9 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
       uiFeeFactor,
       swapOptimizationOrder,
       allowedSwapSlippageBps: isLimit ? BigInt(params.allowedSlippageBps ?? 100) : undefined,
+      marketsInfoData,
+      chainId: sdk.chainId,
+      externalSwapQuoteParams: undefined,
     });
   }
 

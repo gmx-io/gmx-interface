@@ -1,3 +1,4 @@
+import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
 import type { FeaturesSettings } from "domain/synthetics/features/useDisabledFeatures";
 import { getIsInvalidSubaccount } from "domain/synthetics/subaccount/utils";
 
@@ -24,7 +25,6 @@ export const selectFeatures = (s: SyntheticsState) => s.features;
 export const selectIsSponsoredCallAvailable = (s: SyntheticsState) =>
   s.sponsoredCallBalanceData?.isSponsoredCallAllowed ?? false;
 export const selectSubaccountState = (s: SyntheticsState) => s.subaccountState;
-export const selectRawSubaccount = (s: SyntheticsState) => s.subaccountState.subaccount;
 export const selectGasPaymentTokenAllowance = (s: SyntheticsState) => s.gasPaymentTokenAllowance;
 
 export const selectUpdateSubaccountSettings = (s: SyntheticsState) => s.subaccountState.updateSubaccountSettings;
@@ -79,6 +79,8 @@ export const selectLastWeekAccountStats = (s: SyntheticsState) => s.globals.last
 export const selectLastMonthAccountStats = (s: SyntheticsState) => s.globals.lastMonthAccountStats;
 export const selectAccountStats = (s: SyntheticsState) => s.globals.accountStats;
 
+export const selectBotanixStakingAssetsPerShare = (s: SyntheticsState) => s.globals.botanixStakingAssetsPerShare;
+
 export const selectPositionConstants = createSelectorDeprecated(
   [selectMinCollateralUsd, selectMinPositionSizeUsd],
   (minCollateralUsd, minPositionSizeUsd) => ({
@@ -104,15 +106,65 @@ export const selectPositiveFeePositionsSortedByUsd = createSelector((q) => {
   );
 });
 
-export const selectSubaccountForAction = createSelector((q) => {
+/**
+ * This selector might return subaccount with approval signed for other chain and lead to errors
+ */
+const selectRawSubaccount = (s: SyntheticsState) => s.subaccountState.subaccount;
+
+export const selectSubaccountForSettlementChainAction = createSelector((q) => {
+  const chainId = q(selectChainId);
   const rawSubaccount = q(selectRawSubaccount);
   const isEnabled = q(selectIsSubaccountRelayRouterEnabled);
 
-  if (!isEnabled || !rawSubaccount || getIsInvalidSubaccount(rawSubaccount, 1)) {
+  if (
+    !isEnabled ||
+    !rawSubaccount ||
+    getIsInvalidSubaccount({
+      subaccount: rawSubaccount,
+      requiredActions: 1,
+      subaccountRouterAddress: getOrderRelayRouterAddress(chainId, true, false),
+    })
+  ) {
     return undefined;
   }
 
   return rawSubaccount;
 });
 
+export const selectSubaccountForMultichainAction = createSelector((q) => {
+  const chainId = q(selectChainId);
+  const rawSubaccount = q(selectRawSubaccount);
+  const isEnabled = q(selectIsSubaccountRelayRouterEnabled);
+
+  if (
+    !isEnabled ||
+    !rawSubaccount ||
+    getIsInvalidSubaccount({
+      subaccount: rawSubaccount,
+      requiredActions: 1,
+      subaccountRouterAddress: getOrderRelayRouterAddress(chainId, true, true),
+    })
+  ) {
+    return undefined;
+  }
+
+  return rawSubaccount;
+});
+
+/**
+ * When action target contract is purely dependent on srcChainId
+ * aka its not possible to send multichain txn from settlement chain
+ * we can use this selector to get subaccount for current source or settlement chain
+ */
+export const selectSubaccountForChainAction = createSelector((q) => {
+  const srcChainId = q(selectSrcChainId);
+  if (srcChainId !== undefined) {
+    return q(selectSubaccountForMultichainAction);
+  }
+
+  return q(selectSubaccountForSettlementChainAction);
+});
+
 export const selectOracleSettings = (s: SyntheticsState) => s.globals.oracleSettings;
+
+export const selectIsAutoCancelTPSLEnabled = (s: SyntheticsState) => s.settings.isAutoCancelTPSL;

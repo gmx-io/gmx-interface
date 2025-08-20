@@ -373,6 +373,7 @@ describe("Swap Order Payloads", () => {
         expect(decoded).toEqual({
           twapId: "8000",
           numberOfParts: twapParams.numberOfParts,
+          isExpress: false,
         });
 
         return {

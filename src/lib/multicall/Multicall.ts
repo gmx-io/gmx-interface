@@ -1,5 +1,4 @@
 import { Chain, ClientConfig, HttpTransportConfig, createPublicClient, http } from "viem";
-import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, optimismSepolia, sepolia } from "viem/chains";
 
 import {
   ARBITRUM,
@@ -7,8 +6,11 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   AnyChainId,
+  BOTANIX,
+  SOURCE_BASE_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
+  getViemChain,
 } from "config/chains";
 import { isWebWorker } from "config/env";
 import type {
@@ -27,18 +29,6 @@ import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher
 import { AbiId, abis as allAbis } from "sdk/abis";
 
 export const MAX_TIMEOUT = 20000;
-
-const CHAIN_BY_CHAIN_ID: Record<AnyChainId, Chain> = {
-  [ARBITRUM]: arbitrum,
-  [AVALANCHE]: avalanche,
-  // [SONIC_MAINNET]: sonic,
-  // [BASE_MAINNET]: base,
-
-  [AVALANCHE_FUJI]: avalancheFuji,
-  [ARBITRUM_SEPOLIA]: arbitrumSepolia,
-  [SOURCE_OPTIMISM_SEPOLIA]: optimismSepolia,
-  [SOURCE_SEPOLIA]: sepolia,
-};
 
 export type MulticallProviderUrls = {
   primary: string;
@@ -76,34 +66,35 @@ const BATCH_CONFIGS: Record<
       },
     },
   },
-  // [SONIC_MAINNET]: {
-  //   http: {
-  //     batchSize: 0,
-  //     wait: 0,
-  //   },
-  //   client: {
-  //     multicall: {
-  //       batchSize: 1024 * 1024,
-  //       wait: 0,
-  //     },
-  //   },
-  // },
-  // [BASE_MAINNET]: {
-  //   http: {
-  //     batchSize: 0,
-  //     wait: 0,
-  //   },
-  //   client: {
-  //     multicall: {
-  //       batchSize: 1024 * 1024,
-  //       wait: 0,
-  //     },
-  //   },
-  // },
+
+  [SOURCE_BASE_MAINNET]: {
+    http: {
+      batchSize: 0,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
+  },
 
   [AVALANCHE_FUJI]: {
     http: {
       batchSize: 40,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
+  },
+  [BOTANIX]: {
+    http: {
+      batchSize: 0,
       wait: 0,
     },
     client: {
@@ -179,7 +170,7 @@ export class Multicall {
       }),
       pollingInterval: undefined,
       batch: BATCH_CONFIGS[chainId].client,
-      chain: CHAIN_BY_CHAIN_ID[chainId],
+      chain: getViemChain(chainId) as Chain,
     });
   }
 

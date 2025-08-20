@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef } from "react";
+import { zeroAddress } from "viem";
 
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX } from "config/chains";
 import { getSortedMarketsAddressesKey } from "config/localStorage";
 import { SORTED_MARKETS } from "config/static/sortedMarkets";
 import { GlvAndGmMarketsInfoData, Market, MarketInfo, MarketsData, isMarketInfo } from "domain/synthetics/markets";
 import { InfoTokens, Token, getMidPrice } from "domain/tokens";
 import { getByKey } from "lib/objects";
-import type { SourceChainId } from "sdk/configs/chains";
+import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, getTokensMap } from "sdk/configs/tokens";
 
 import { isGlvInfo } from "../markets/glv";
@@ -57,6 +59,20 @@ function getSortedMarketsConfigs(marketsData?: MarketsData, sortedAddresses?: st
 
   return resultSortedAddresses.map((address) => getByKey(marketsData, address)).filter(Boolean) as Market[];
 }
+
+const FORCE_ALLOWED_COLLATERAL_TOKENS: Record<ContractsChainId, string[]> = {
+  // handled by wrapOrUnwrap or by stakeOrUnstake
+  [BOTANIX]: [
+    // bBTC
+    zeroAddress,
+    // pBTC
+    "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
+  ],
+  [AVALANCHE]: [],
+  [ARBITRUM]: [],
+  [AVALANCHE_FUJI]: [],
+  [ARBITRUM_SEPOLIA]: [],
+};
 
 export function useAvailableTokenOptions(
   chainId: number,
@@ -190,6 +206,19 @@ export function useAvailableTokenOptions(
     });
 
     const sortedLongAndShortTokens = sortedLongTokens.concat(sortedShortTokens);
+
+    const collateralAddresses = new Set(Array.from(collaterals).map((c) => c.address));
+
+    FORCE_ALLOWED_COLLATERAL_TOKENS[chainId].forEach((tokenAddress) => {
+      if (!collateralAddresses.has(tokenAddress)) {
+        collateralAddresses.add(tokenAddress);
+        const tokenData = tokensData?.[tokenAddress];
+
+        if (tokenData) {
+          collaterals.add(tokenData);
+        }
+      }
+    });
 
     return {
       tokensMap,

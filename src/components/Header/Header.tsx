@@ -116,8 +116,13 @@ export function Header({ openSettings, showRedirectModal }: Props) {
               )}
             </div>
             <div className="flex items-center gap-16">
+              {!isHomeSite() ? (
+                <div className="mr-6">
+                  <OneClickPromoBanner isShort={shouldShorten1CTBanner} openSettings={openSettings} />
+                </div>
+              ) : null}
+
               <AppHeaderChainAndSettings openSettings={openSettings} showRedirectModal={showRedirectModal} />
-              <OneClickPromoBanner isShort={shouldShorten1CTBanner} openSettings={openSettings} />
             </div>
           </div>
         )}

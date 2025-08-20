@@ -110,7 +110,11 @@ export const DepositView = () => {
 
   const [depositViewTokenAddress, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const [inputValue, setInputValue] = useGmxAccountDepositViewTokenInputValue();
-  const { tokenChainDataArray: multichainTokens, isPriceDataLoading } = useMultichainTokensRequest();
+  const {
+    tokenChainDataArray: multichainTokens,
+    isPriceDataLoading,
+    isBalanceDataLoading,
+  } = useMultichainTokensRequest();
   const [isApproving, setIsApproving] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -593,6 +597,8 @@ export const DepositView = () => {
     ]
   );
 
+  const tokenSelectorDisabled = !isBalanceDataLoading && multichainTokens.length === 0;
+
   let buttonState: {
     text: React.ReactNode;
     disabled?: boolean;
@@ -610,6 +616,14 @@ export const DepositView = () => {
           <ImSpinner2 className="ml-4 animate-spin" />
         </>
       ),
+      disabled: true,
+    };
+  } else if (tokenSelectorDisabled) {
+    buttonState = {
+      text:
+        depositViewChain !== undefined
+          ? t`No assets available for deposit on ${getChainName(depositViewChain)}`
+          : t`No assets available for deposit`,
       disabled: true,
     };
   } else if (needTokenApprove) {
@@ -650,8 +664,6 @@ export const DepositView = () => {
     }
   }
 
-  // console.log({ nativeTokenSourceChainBalance });
-
   let placeholder = "";
   if ((inputValue === undefined || inputValue === "") && selectedToken?.symbol) {
     placeholder = `0.0 ${selectedToken.symbol}`;
@@ -666,31 +678,53 @@ export const DepositView = () => {
           <div className="text-body-small text-slate-100">
             <Trans>Asset</Trans>
           </div>
-          <div
-            tabIndex={0}
-            role="button"
-            onClick={() => setIsVisibleOrView("selectAssetToDeposit")}
-            className="flex items-center justify-between rounded-4 bg-cold-blue-900 px-14 py-12 active:bg-cold-blue-500 gmx-hover:bg-cold-blue-700"
-          >
-            <div className="flex items-center gap-8">
-              {selectedToken ? (
-                <>
-                  <TokenIcon symbol={selectedToken.symbol} displaySize={20} importSize={40} />
-                  <span className="text-body-large">{selectedToken.symbol}</span>
-                </>
-              ) : depositViewChain !== undefined ? (
-                <>
-                  <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={20} height={20} borderRadius={10} />
-                  <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={40} height={16} />
-                </>
-              ) : (
-                <span className="text-slate-100">
-                  <Trans>Pick an asset to deposit</Trans>
-                </span>
-              )}
+          {!tokenSelectorDisabled ? (
+            <div
+              tabIndex={0}
+              role="button"
+              onClick={() => {
+                setIsVisibleOrView("selectAssetToDeposit");
+              }}
+              className="flex items-center justify-between rounded-4 bg-cold-blue-900 px-14 py-12 active:bg-cold-blue-500 gmx-hover:bg-cold-blue-700"
+            >
+              <div className="flex items-center gap-8">
+                {selectedToken ? (
+                  <>
+                    <TokenIcon symbol={selectedToken.symbol} displaySize={20} importSize={40} />
+                    <span className="text-body-large">{selectedToken.symbol}</span>
+                  </>
+                ) : depositViewChain !== undefined ? (
+                  <>
+                    <Skeleton
+                      baseColor="#B4BBFF1A"
+                      highlightColor="#B4BBFF1A"
+                      width={20}
+                      height={20}
+                      borderRadius={10}
+                    />
+                    <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={40} height={16} />
+                  </>
+                ) : (
+                  <span className="text-slate-100">
+                    <Trans>Pick an asset to deposit</Trans>
+                  </span>
+                )}
+              </div>
+              <BiChevronRight className="size-20 text-slate-100" />
             </div>
-            <BiChevronRight className="size-20 text-slate-100" />
-          </div>
+          ) : (
+            <div className="flex items-center justify-between rounded-4 bg-cold-blue-900 px-14 py-12">
+              <div className="flex items-center gap-8">
+                <span className="text-slate-100">
+                  {depositViewChain !== undefined ? (
+                    <Trans>No assets available for deposit on {getChainName(depositViewChain)}</Trans>
+                  ) : (
+                    <Trans>No assets available for deposit</Trans>
+                  )}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
         {depositViewChain !== undefined && (
           <div className="flex flex-col gap-4">

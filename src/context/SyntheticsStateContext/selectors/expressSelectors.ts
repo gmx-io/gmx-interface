@@ -16,7 +16,6 @@ import {
   selectIsSponsoredCallAvailable,
   selectL1ExpressOrderGasReference,
   selectMarketsInfoData,
-  selectSubaccountForAction,
   selectTokensData,
 } from "./globalSelectors";
 import {
@@ -61,7 +60,6 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
   const gasPaymentTokenAddress = q(selectGasPaymentTokenAddress);
   const l1Reference = q(selectL1ExpressOrderGasReference);
   const tokensData = q(selectTokensData);
-  const subaccount = q(selectSubaccountForAction);
   const gasLimits = q(selectGasLimits);
   const gasPrice = q(selectGasPrice);
   const gasPaymentAllowance = q(selectGasPaymentTokenAllowance);
@@ -95,7 +93,6 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
     tokensData,
     marketsInfoData,
     isSponsoredCall: isSponsoredCallAvailable,
-    subaccount,
     findFeeSwapPath,
     tokenPermits,
     gasPaymentAllowanceData: gasPaymentAllowance?.tokensAllowanceData,

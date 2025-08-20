@@ -25,7 +25,6 @@ type Props = {
 
 export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedirectModal }: Props) {
   const { openNotifyModal } = useNotifyModalState();
-
   const isLeaderboardActive = useCallback(
     (match, location) => Boolean(match) || location.pathname.startsWith("/competitions"),
     []
@@ -71,6 +70,7 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
           <Trans>Buy</Trans>
         </HeaderLink>
       </div>
+
       <div className="App-header-link-container">
         <HeaderLink
           onClick={() => {
@@ -88,6 +88,7 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
           <Trans>Referrals</Trans>
         </HeaderLink>
       </div>
+
       <div className="App-header-link-container">
         <HeaderLink
           qa="leaderboard"
@@ -118,7 +119,14 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
       {small && !isHomeSite() && (
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}
-          <a href="#" data-qa="settings" onClick={openSettings}>
+          <a
+            href="#"
+            data-qa="settings"
+            onClick={(e) => {
+              e.preventDefault();
+              openSettings?.();
+            }}
+          >
             <Trans>Settings</Trans>
           </a>
         </div>

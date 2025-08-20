@@ -7,6 +7,7 @@ import { callContract } from "lib/contracts";
 import { isAddressZero } from "lib/legacy";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
+import { IGlvWithdrawalUtils } from "typechain-types/GlvRouter";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -43,19 +44,22 @@ export async function createGlvWithdrawalTxn(chainId: ContractsChainId, signer: 
       method: "createGlvWithdrawal",
       params: [
         {
-          receiver: p.account,
-          callbackContract: ethers.ZeroAddress,
-          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
-          market: p.selectedGmMarket,
-          glv: p.glv,
-          longTokenSwapPath: p.longTokenSwapPath,
-          shortTokenSwapPath: p.shortTokenSwapPath,
+          addresses: {
+            receiver: p.account,
+            callbackContract: ethers.ZeroAddress,
+            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
+            market: p.selectedGmMarket,
+            glv: p.glv,
+            longTokenSwapPath: p.longTokenSwapPath,
+            shortTokenSwapPath: p.shortTokenSwapPath,
+          },
           minLongTokenAmount,
           minShortTokenAmount,
           shouldUnwrapNativeToken: isNativeWithdrawal,
           executionFee: p.executionFee,
           callbackGasLimit: 0n,
-        },
+          dataList: [],
+        } satisfies IGlvWithdrawalUtils.CreateGlvWithdrawalParamsStruct,
       ],
     },
   ];

@@ -1,9 +1,11 @@
 import type { SourceChainId } from "config/chains";
 import type { Token, TokenPrices } from "domain/tokens";
+import type { IRelayUtils } from "typechain-types/LayerZeroProvider";
 import type {
   OFTFeeDetailStruct,
   OFTLimitStruct,
   OFTReceiptStruct,
+  MessagingFeeStructOutput,
 } from "typechain-types-stargate/interfaces/IStargate";
 
 export type TokenChainData = Token & {
@@ -35,14 +37,11 @@ export type MultichainFundingHistoryItem = {
   isFromWs?: boolean;
 };
 
-export type BridgeOutParams = {
-  token: string;
-  amount: bigint;
-  provider: string;
-  data: string;
-};
+export type StrippedGeneratedType<T> = Omit<T, keyof [] | `${number}`>;
 
-export type LayerZeroEndpointId = 40161 | 40231 | 40232;
+export type BridgeOutParams = StrippedGeneratedType<IRelayUtils.BridgeOutParamsStructOutput>;
+
+export type LayerZeroEndpointId = 40161 | 40231 | 40232 | 30184 | 30110;
 
 export type QuoteOft = {
   limit: OFTLimitStruct;
@@ -50,7 +49,4 @@ export type QuoteOft = {
   receipt: OFTReceiptStruct;
 };
 
-export type QuoteSend = {
-  nativeFee: bigint;
-  lzTokenFee: bigint;
-};
+export type QuoteSend = StrippedGeneratedType<MessagingFeeStructOutput>;

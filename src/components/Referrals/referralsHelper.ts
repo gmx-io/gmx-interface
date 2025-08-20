@@ -33,7 +33,7 @@ type TakenInfo = Partial<
 > & {
   all: boolean;
 };
-// TODO: SUPPORTED_CHAIN_IDS make it work with many chains
+
 export async function getReferralCodeTakenStatus(
   account: string | undefined,
   referralCode: string,
@@ -43,18 +43,13 @@ export async function getReferralCodeTakenStatus(
   info: TakenInfo;
 }> {
   const referralCodeBytes32 = encodeReferralCode(referralCode);
-  // const [ownerArbitrum, ownerAvax] = await Promise.all([
-  //   getReferralCodeOwner(ARBITRUM, referralCodeBytes32),
-  //   getReferralCodeOwner(AVALANCHE, referralCodeBytes32),
-  // ]);
 
   const ownerMap: Partial<Record<ContractsChainId, string>> = {};
 
   await Promise.all(
-    SUPPORTED_CHAIN_IDS.map((otherChainId) => {
-      return getReferralCodeOwner(otherChainId, referralCodeBytes32).then((res) => {
-        ownerMap[otherChainId] = res;
-      });
+    SUPPORTED_CHAIN_IDS.map(async (otherChainId) => {
+      const res = await getReferralCodeOwner(otherChainId, referralCodeBytes32);
+      ownerMap[otherChainId] = res;
     })
   );
 

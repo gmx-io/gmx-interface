@@ -34,6 +34,7 @@ import {
   selectGasLimits,
   selectGasPrice,
   selectChainId,
+  selectMarketsInfoData,
 } from "./globalSelectors";
 import { selectIsPnlInLeverage } from "./settingsSelectors";
 import {
@@ -221,7 +222,7 @@ export const selectPositionSellerFees = createSelector((q) => {
     return {};
   }
 
-  const swapPathLength = swapAmounts?.swapPathStats?.swapPath?.length || 0;
+  const swapPathLength = swapAmounts?.swapStrategy.swapPathStats?.swapPath?.length || 0;
 
   const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
     swapsCount: swapPathLength,
@@ -242,10 +243,10 @@ export const selectPositionSellerFees = createSelector((q) => {
       initialCollateralUsd: position.collateralUsd,
       collateralDeltaUsd,
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-      swapSteps: swapAmounts?.swapPathStats?.swapSteps || [],
-      externalSwapQuote: undefined,
+      swapSteps: swapAmounts?.swapStrategy.swapPathStats?.swapSteps || [],
+      externalSwapQuote: swapAmounts?.swapStrategy.externalSwapQuote,
       positionFeeUsd: decreaseAmounts.positionFeeUsd,
-      swapPriceImpactDeltaUsd: swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd || 0n,
+      swapPriceImpactDeltaUsd: swapAmounts?.swapStrategy.swapPathStats?.totalSwapPriceImpactDeltaUsd || 0n,
       positionPriceImpactDeltaUsd: decreaseAmounts.totalPendingImpactDeltaUsd,
       priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
       proportionalPendingImpactDeltaUsd: decreaseAmounts.proportionalPendingImpactDeltaUsd,
@@ -363,6 +364,8 @@ export const selectPositionSellerAvailableReceiveTokens = createSelector((q) => 
 
 export const selectPositionSellerSwapAmounts = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
+  const chainId = q(selectChainId);
+  const marketsInfoData = q(selectMarketsInfoData);
 
   if (!position) {
     return undefined;
@@ -386,6 +389,9 @@ export const selectPositionSellerSwapAmounts = createSelector((q) => {
     isLimit: false,
     findSwapPath,
     uiFeeFactor,
+    marketsInfoData,
+    chainId,
+    externalSwapQuoteParams: undefined,
   });
 });
 

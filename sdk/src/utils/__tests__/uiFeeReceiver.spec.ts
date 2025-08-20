@@ -1,7 +1,7 @@
 import { isAddress } from "viem";
 import { describe, it, expect } from "vitest";
 
-import { createTwapUiFeeReceiver, decodeTwapUiFeeReceiver } from "utils/twap/uiFeeReceiver";
+import { createTwapUiFeeReceiver, decodeTwapUiFeeReceiver, setUiFeeReceiverIsExpress } from "utils/twap/uiFeeReceiver";
 
 describe("uiFeeReceiver", () => {
   describe("decodeTwapUiFeeReceiver", () => {
@@ -15,13 +15,23 @@ describe("uiFeeReceiver", () => {
       expect(decodeTwapUiFeeReceiver("0xff00000000000000000000000000000000000001")).toBeUndefined();
     });
 
+    it("should correctly decode isExpress", () => {
+      expect(decodeTwapUiFeeReceiver("0xff0000000000000000000000000000010a123401")).toEqual({
+        isExpress: true,
+        twapId: "1234",
+        numberOfParts: 10,
+      });
+    });
+
     it("should return the twapId and numberOfParts if the uiFeeReceiver is valid twap", () => {
       expect(decodeTwapUiFeeReceiver("0xff0000000000000000000000000000000a123401")).toEqual({
+        isExpress: false,
         twapId: "1234",
         numberOfParts: 10,
       });
 
       expect(decodeTwapUiFeeReceiver("0xff000000000000000000000000000000153a4f01")).toEqual({
+        isExpress: false,
         twapId: "3a4f",
         numberOfParts: 21,
       });
@@ -52,5 +62,25 @@ describe("uiFeeReceiver", () => {
         parseInt(decodeTwapUiFeeReceiver(createTwapUiFeeReceiver({ numberOfParts: 21 }))?.twapId ?? "", 16)
       ).not.toBeNaN();
     });
+  });
+});
+
+describe("setUiFeeReceiverIsExpress", () => {
+  it("should correctly set isExpress for simple uiFeeReceiver", () => {
+    expect(setUiFeeReceiverIsExpress("0xff00000000000000000000000000000000000001", true)).toEqual(
+      "0xff00000000000000000000000000000100000001"
+    );
+    expect(setUiFeeReceiverIsExpress("0xff00000000000000000000000000000000000001", false)).toEqual(
+      "0xff00000000000000000000000000000000000001"
+    );
+  });
+
+  it("should correctly set isExpress for twap uiFeeReceiver", () => {
+    expect(setUiFeeReceiverIsExpress("0xff0000000000000000000000000000000a123401", true)).toEqual(
+      "0xff0000000000000000000000000000010a123401"
+    );
+    expect(setUiFeeReceiverIsExpress("0xff0000000000000000000000000000000a123401", false)).toEqual(
+      "0xff0000000000000000000000000000000a123401"
+    );
   });
 });

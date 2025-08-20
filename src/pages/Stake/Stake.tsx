@@ -3,13 +3,12 @@ import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 import { zeroAddress } from "viem";
 
-import { AVALANCHE, getChainName } from "config/chains";
+import { AVALANCHE, BOTANIX, getChainName } from "config/chains";
 import { getContract } from "config/contracts";
 import { getIncentivesV2Url } from "config/links";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
-import { useAnyAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
 import { useLpInterviewNotification } from "domain/synthetics/userFeedback/useLpInterviewNotification";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
@@ -23,6 +22,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
 import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import PageTitle from "components/PageTitle/PageTitle";
+import { BotanixBanner } from "components/Synthetics/BotanixBanner/BotanixBanner";
 import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
 
 import { EscrowedGmxCard } from "./EscrowedGmxCard";
@@ -36,7 +36,7 @@ import { Vesting } from "./Vesting";
 
 import "./Stake.css";
 
-export default function Stake() {
+function StakeContent() {
   const { active, signer, account } = useWallet();
   const { chainId, srcChainId } = useChainId();
   const incentiveStats = useIncentiveStats(chainId);
@@ -68,7 +68,6 @@ export default function Stake() {
       );
     }
   }, [incentiveStats?.lp?.isActive, incentiveStats?.trading?.isActive]);
-  const incentivesToken = useAnyAirdroppedTokenTitle();
 
   const { setPendingTxns } = usePendingTxns();
 
@@ -194,6 +193,23 @@ export default function Stake() {
     <div className="default-container page-layout">
       <SEO title={getPageTitle(t`Stake`)} />
 
+      <PageTitle
+        isTop
+        title={t`Stake`}
+        qa="earn-page"
+        subtitle={
+          <div>
+            <Trans>
+              Deposit <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink> and{" "}
+              <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/gmx-token">esGMX</ExternalLink> tokens to
+              earn rewards.
+            </Trans>
+            {earnMsg && <div className="Page-description">{earnMsg}</div>}
+            {incentivesMessage}
+          </div>
+        }
+      />
+
       <StakeModal
         isVisible={isStakeGmxModalVisible}
         setIsVisible={setIsStakeGmxModalVisible}
@@ -247,23 +263,6 @@ export default function Stake() {
         processedData={processedData}
       />
 
-      <PageTitle
-        isTop
-        title={t`Stake`}
-        qa="earn-page"
-        subtitle={
-          <div>
-            <Trans>
-              Deposit <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink> and{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/gmx-token">esGMX</ExternalLink> tokens to
-              earn rewards.
-            </Trans>
-            {earnMsg && <div className="Page-description">{earnMsg}</div>}
-            {incentivesMessage}
-          </div>
-        }
-      />
-
       <div className="StakeV2-content">
         <div className="StakeV2-cards">
           <GmxAndVotingPowerCard
@@ -285,27 +284,39 @@ export default function Stake() {
             showUnstakeEsGmxModal={showUnstakeEsGmxModal}
           />
         </div>
-
-        <Vesting processedData={processedData} />
-
-        <div className="mt-10">
-          <PageTitle
-            title={t`Incentives & Prizes`}
-            subtitle={
-              incentiveStats?.lp?.isActive || incentiveStats?.trading?.isActive ? (
-                <Trans>Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2.</Trans>
-              ) : (
-                <Trans>Earn prizes by participating in GMX Trading Competitions.</Trans>
-              )
-            }
-          />
-        </div>
-        <UserIncentiveDistributionList />
       </div>
 
-      <Footer />
+      <Vesting processedData={processedData} />
+
+      <div className="mt-10">
+        <PageTitle
+          title={t`Distributions`}
+          subtitle={<Trans>Claim and view your incentives, airdrops, and prizes</Trans>}
+        />
+      </div>
+
+      <UserIncentiveDistributionList />
 
       <InterviewModal type="lp" isVisible={isLpInterviewModalVisible} setIsVisible={setIsLpInterviewModalVisible} />
+      <Footer />
     </div>
+  );
+}
+
+export default function Stake() {
+  const { chainId } = useChainId();
+  const isBotanix = chainId === BOTANIX;
+
+  return isBotanix ? (
+    <div className="default-container page-layout">
+      <SEO title={getPageTitle(t`Stake`)} />
+
+      <PageTitle isTop title={t`Stake`} qa="earn-page" />
+
+      <BotanixBanner />
+      <Footer />
+    </div>
+  ) : (
+    <StakeContent />
   );
 }

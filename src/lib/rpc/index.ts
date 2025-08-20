@@ -7,9 +7,16 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
+  BOTANIX,
   FALLBACK_PROVIDERS,
+  getAlchemyArbitrumSepoliaWsUrl,
   getAlchemyArbitrumWsUrl,
+  getAlchemyBaseMainnetWsUrl,
+  getAlchemyBotanixWsUrl,
+  getAlchemyOptimismSepoliaWsUrl,
+  getAlchemySepoliaWsUrl,
   getFallbackRpcUrl,
+  SOURCE_BASE_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
 } from "config/chains";
@@ -33,20 +40,11 @@ export function getProvider(signer: Signer | undefined, chainId: number): ethers
   return new ethers.JsonRpcProvider(url, chainId, { staticNetwork: network });
 }
 
-const WS_PROVIDER_CACHE: Partial<Record<AnyChainId, WebSocketProvider | JsonRpcProvider>> = {};
-
 export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcProvider {
   const network = Network.from(chainId);
 
-  const cachedProvider = WS_PROVIDER_CACHE[chainId];
-
-  if (cachedProvider) {
-    return cachedProvider;
-  }
-
   if (chainId === ARBITRUM) {
     const provider = new ethers.WebSocketProvider(getAlchemyArbitrumWsUrl(), network, { staticNetwork: network });
-    WS_PROVIDER_CACHE[chainId] = provider;
     return provider;
   }
 
@@ -54,7 +52,6 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
     const provider = new ethers.WebSocketProvider("wss://api.avax.network/ext/bc/C/ws", network, {
       staticNetwork: network,
     });
-    WS_PROVIDER_CACHE[chainId] = provider;
     return provider;
   }
 
@@ -63,34 +60,38 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
       staticNetwork: network,
     });
     provider.pollingInterval = 2000;
-    WS_PROVIDER_CACHE[chainId] = provider;
     return provider;
   }
 
   if (chainId === ARBITRUM_SEPOLIA) {
-    const provider = new ethers.WebSocketProvider("wss://arbitrum-sepolia-rpc.publicnode.com", network, {
+    const provider = new ethers.WebSocketProvider(getAlchemyArbitrumSepoliaWsUrl(), network, {
       staticNetwork: network,
     });
-    WS_PROVIDER_CACHE[chainId] = provider;
     return provider;
   }
 
   if (chainId === SOURCE_SEPOLIA) {
-    const provider = new ethers.JsonRpcProvider("https://ethereum-sepolia-rpc.publicnode.com", network, {
+    const provider = new ethers.WebSocketProvider(getAlchemySepoliaWsUrl(), network, {
       staticNetwork: network,
     });
-    provider.pollingInterval = 1000;
-    WS_PROVIDER_CACHE[chainId] = provider;
     return provider;
   }
 
   if (chainId === SOURCE_OPTIMISM_SEPOLIA) {
-    const provider = new ethers.JsonRpcProvider("https://sepolia.optimism.io", network, {
+    const provider = new ethers.WebSocketProvider(getAlchemyOptimismSepoliaWsUrl(), network, {
       staticNetwork: network,
     });
-    provider.pollingInterval = 1000;
-    WS_PROVIDER_CACHE[chainId] = provider;
     return provider;
+  }
+
+  if (chainId === BOTANIX) {
+    return new ethers.WebSocketProvider(getAlchemyBotanixWsUrl(), network, { staticNetwork: network });
+  }
+
+  if (chainId === SOURCE_BASE_MAINNET) {
+    return new ethers.WebSocketProvider(getAlchemyBaseMainnetWsUrl(), network, {
+      staticNetwork: network,
+    });
   }
 
   throw new Error(`Unsupported websocket provider for chain id: ${chainId}`);

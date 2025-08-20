@@ -10,6 +10,7 @@ import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
+import { IDepositUtils } from "typechain-types/ExchangeRouter";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -101,7 +102,7 @@ export async function createDepositTxn(chainId: ContractsChainId, signer: Signer
           executionFee: p.executionFee,
           callbackGasLimit: 0,
           dataList: [],
-        },
+        } satisfies IDepositUtils.CreateDepositParamsStruct,
       ],
     },
   ];

@@ -2,7 +2,7 @@ import { useEffect, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { checksumAddress, isAddress, type Address } from "viem";
 
-import { SUPPORTED_CHAIN_IDS, ContractsChainId } from "config/chains";
+import { ContractsChainId, SUPPORTED_CHAIN_IDS } from "config/chains";
 import useSearchParams from "lib/useSearchParams";
 
 import { buildAccountDashboardUrl } from "./buildAccountDashboardUrl";
@@ -28,7 +28,7 @@ export function usePageParams(initialChainId: ContractsChainId) {
 
   useEffect(() => {
     let patch = undefined as any;
-    if (!chainIdFromParams || !SUPPORTED_CHAIN_IDS.includes(chainIdFromParams)) {
+    if (!chainIdFromParams || !SUPPORTED_CHAIN_IDS.includes(chainIdFromParams as ContractsChainId)) {
       patch = { chainId: initialChainId };
     }
 

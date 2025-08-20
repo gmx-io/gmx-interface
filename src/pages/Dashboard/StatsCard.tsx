@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useTotalVolume, useV1FeesInfo } from "domain/stats";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
@@ -37,6 +37,7 @@ export function StatsCard({
 
   const v2ArbitrumOverview = useV2Stats(ARBITRUM);
   const v2AvalancheOverview = useV2Stats(AVALANCHE);
+  const v2BotanixOverview = useV2Stats(BOTANIX);
 
   const uniqueUsers = useUniqueUsers();
 
@@ -54,7 +55,8 @@ export function StatsCard({
     v1ArbitrumTotalFees?.totalFees,
     v1AvalancheTotalFees?.totalFees,
     v2ArbitrumOverview.totalFees,
-    v2AvalancheOverview.totalFees
+    v2AvalancheOverview.totalFees,
+    v2BotanixOverview.totalFees
   );
 
   // #endregion Fees
@@ -93,12 +95,14 @@ export function StatsCard({
       "V2 Arbitrum": v2ArbitrumOverview?.totalFees,
       "V1 Avalanche": v1AvalancheTotalFees?.totalFees,
       "V2 Avalanche": v2AvalancheOverview?.totalFees,
+      "V2 Botanix": v2BotanixOverview?.totalFees,
     }),
     [
       v1AvalancheTotalFees?.totalFees,
       v1ArbitrumTotalFees?.totalFees,
       v2ArbitrumOverview?.totalFees,
       v2AvalancheOverview?.totalFees,
+      v2BotanixOverview?.totalFees,
     ]
   );
 
@@ -108,18 +112,20 @@ export function StatsCard({
       "V2 Arbitrum": v2ArbitrumOverview?.totalVolume,
       "V1 Avalanche": v1TotalVolume?.[AVALANCHE],
       "V2 Avalanche": v2AvalancheOverview?.totalVolume,
+      "V2 Botanix": v2BotanixOverview?.totalVolume,
     }),
-    [v1TotalVolume, v2ArbitrumOverview?.totalVolume, v2AvalancheOverview?.totalVolume]
+    [v1TotalVolume, v2ArbitrumOverview?.totalVolume, v2AvalancheOverview?.totalVolume, v2BotanixOverview?.totalVolume]
   );
 
-  const uniqueUsersEnttries = useMemo(
+  const uniqueUsersEntries = useMemo(
     () => ({
       "V1 Arbitrum": uniqueUsers?.[ARBITRUM],
       "V2 Arbitrum": v2ArbitrumOverview?.totalUsers,
       "V1 Avalanche": uniqueUsers?.[AVALANCHE],
       "V2 Avalanche": v2AvalancheOverview?.totalUsers,
+      "V2 Botanix": v2BotanixOverview?.totalUsers,
     }),
-    [uniqueUsers, v2ArbitrumOverview?.totalUsers, v2AvalancheOverview?.totalUsers]
+    [uniqueUsers, v2ArbitrumOverview?.totalUsers, v2AvalancheOverview?.totalUsers, v2BotanixOverview?.totalUsers]
   );
 
   return (
@@ -154,8 +160,10 @@ export function StatsCard({
                 sumBigInts(
                   v1TotalVolume?.[ARBITRUM],
                   v1TotalVolume?.[AVALANCHE],
+                  v1TotalVolume?.[BOTANIX],
                   v2ArbitrumOverview?.totalVolume,
-                  v2AvalancheOverview?.totalVolume
+                  v2AvalancheOverview?.totalVolume,
+                  v2BotanixOverview?.totalVolume
                 ),
                 USD_DECIMALS,
                 true,
@@ -177,15 +185,17 @@ export function StatsCard({
                 sumBigInts(
                   uniqueUsers?.[ARBITRUM],
                   uniqueUsers?.[AVALANCHE],
+                  uniqueUsers?.[BOTANIX],
                   v2ArbitrumOverview?.totalUsers,
-                  v2AvalancheOverview?.totalUsers
+                  v2AvalancheOverview?.totalUsers,
+                  v2BotanixOverview?.totalUsers
                 ),
                 0,
                 false,
                 2
               )}
               content={
-                <ChainsStatsTooltipRow showDollar={false} entries={uniqueUsersEnttries} decimalsForConversion={0} />
+                <ChainsStatsTooltipRow showDollar={false} entries={uniqueUsersEntries} decimalsForConversion={0} />
               }
             />
           </div>

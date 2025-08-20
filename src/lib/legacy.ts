@@ -984,7 +984,7 @@ export function useAccountOrders(
   return [orders, updateOrders, ordersError];
 }
 
-export function getAccountUrl(chainId, account) {
+export function getAccountUrl(chainId: number, account: string) {
   if (!account) {
     return getExplorerUrl(chainId);
   }
@@ -1503,6 +1503,10 @@ export function importImage(name) {
     return imageStaticMap[name] as string;
   }
 
+  const pngName = name.replace(/_\d+\.svg$/, ".png");
+  if (pngName in imageStaticMap) {
+    return imageStaticMap[pngName] as string;
+  }
   throw new Error(`Image ${name} not found`);
 }
 

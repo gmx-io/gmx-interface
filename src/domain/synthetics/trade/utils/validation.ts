@@ -84,6 +84,7 @@ export function getExpressError(p: {
 }
 
 export function getSwapError(p: {
+  chainId: number;
   fromToken: TokenData | undefined;
   toToken: TokenData | undefined;
   fromTokenAmount: bigint | undefined;
@@ -97,6 +98,7 @@ export function getSwapError(p: {
   swapPathStats: SwapPathStats | undefined;
   externalSwapQuote: ExternalSwapQuote | undefined;
   isWrapOrUnwrap: boolean;
+  isStakeOrUnstake: boolean;
   swapLiquidity: bigint | undefined;
   isTwap: boolean;
   numberOfParts: number;
@@ -112,6 +114,7 @@ export function getSwapError(p: {
     markRatio,
     fees,
     isWrapOrUnwrap,
+    isStakeOrUnstake,
     swapLiquidity,
     swapPathStats,
     externalSwapQuote,
@@ -139,8 +142,16 @@ export function getSwapError(p: {
     return [t`Insufficient ${fromToken?.symbol} balance`];
   }
 
-  if (isWrapOrUnwrap) {
+  if (isWrapOrUnwrap || isStakeOrUnstake) {
     return [undefined];
+  }
+
+  if (fromToken.symbol === "USDC.E" && (toToken.symbol === "BTC" || toToken.symbol === "PBTC")) {
+    return [t`No swap path found`, "noSwapPath"];
+  }
+
+  if (fromToken.symbol === "STBTC" && toToken.symbol === "BTC") {
+    return [t`No swap path found`, "noSwapPath"];
   }
 
   if (!isLimit && (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)) {
@@ -158,7 +169,7 @@ export function getSwapError(p: {
 
   if (
     !fees?.payTotalFees ||
-    (fees.payTotalFees.deltaUsd < 0 && bigMath.abs(fees.payTotalFees.deltaUsd) > (fromUsd ?? 0))
+    (fees?.payTotalFees && fees.payTotalFees.deltaUsd < 0 && bigMath.abs(fees.payTotalFees.deltaUsd) > (fromUsd ?? 0))
   ) {
     return [t`Fees exceed Pay amount`];
   }
@@ -221,6 +232,7 @@ export function getIncreaseError(p: {
   thresholdType: TriggerThresholdType | undefined;
   numberOfParts: number;
   minPositionSizeUsd: bigint | undefined;
+  chainId: number;
 }): ValidationResult {
   const {
     marketInfo,

@@ -2,8 +2,9 @@ import { gql } from "@apollo/client";
 import { BigNumberish, ethers, isAddress, Signer } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
-import { Hash } from "viem";
+import { Hash, zeroAddress } from "viem";
 
+import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { callContract, contractFetcher } from "lib/contracts";
@@ -98,7 +99,7 @@ export function useAffiliateTier(signer, chainId, account) {
   } = useSWR<bigint>(
     account && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", account],
     {
-      fetcher: contractFetcher(signer, "ReferralStorage") as any,
+      fetcher: chainId !== BOTANIX ? (contractFetcher(signer, "ReferralStorage") as any) : undefined,
       refreshInterval: CONFIG_UPDATE_INTERVAL,
     }
   );
@@ -117,7 +118,7 @@ export function useTiers(signer: Signer | undefined, chainId: ContractsChainId, 
       ? [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "tiers", tierLevel.toString()]
       : null,
     {
-      fetcher: contractFetcher(signer, "ReferralStorage") as any,
+      fetcher: chainId !== BOTANIX ? (contractFetcher(signer, "ReferralStorage") as any) : undefined,
       refreshInterval: CONFIG_UPDATE_INTERVAL,
     }
   );
@@ -159,6 +160,9 @@ export async function setTraderReferralCodeByUser(chainId, referralCode, signer,
 
 export async function getReferralCodeOwner(chainId: ContractsChainId, referralCode: string): Promise<string> {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  if (referralStorageAddress === zeroAddress) {
+    return zeroAddress;
+  }
   const provider = getProvider(undefined, chainId);
   const contract = new ethers.Contract(referralStorageAddress, abis.ReferralStorage, provider);
   const codeOwner = await contract.codeOwners(referralCode);
@@ -170,14 +174,20 @@ export function useUserReferralCode(signer, chainId, account, skipLocalReferralC
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const { data: onChainCode, error: onChainCodeError } = useSWR<string>(
     account && ["ReferralStorage", chainId, referralStorageAddress, "traderReferralCodes", account],
-    { fetcher: contractFetcher(signer, "ReferralStorage") as any, refreshInterval: CONFIG_UPDATE_INTERVAL }
+    {
+      fetcher: chainId !== BOTANIX ? (contractFetcher(signer, "ReferralStorage") as any) : undefined,
+      refreshInterval: CONFIG_UPDATE_INTERVAL,
+    }
   );
 
   const { data: localStorageCodeOwner, error: localStorageCodeOwnerError } = useSWR<string>(
     localStorageCode && REGEX_VERIFY_BYTES32.test(localStorageCode)
       ? ["ReferralStorage", chainId, referralStorageAddress, "codeOwners", localStorageCode]
       : null,
-    { fetcher: contractFetcher(signer, "ReferralStorage") as any, refreshInterval: CONFIG_UPDATE_INTERVAL }
+    {
+      fetcher: chainId !== BOTANIX ? (contractFetcher(signer, "ReferralStorage") as any) : undefined,
+      refreshInterval: CONFIG_UPDATE_INTERVAL,
+    }
   );
 
   const { attachedOnChain, userReferralCode, userReferralCodeString, referralCodeForTxn } = useMemo(() => {
@@ -221,13 +231,42 @@ export function useUserReferralCode(signer, chainId, account, skipLocalReferralC
   };
 }
 
+export function useLocalReferralCode() {
+  const userReferralCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
+
+  return useMemo(() => {
+    if (!userReferralCode) {
+      return undefined;
+    }
+
+    const userReferralCodeString = decodeReferralCode(userReferralCode as Hash);
+
+    return {
+      userReferralCode,
+      userReferralCodeString,
+    };
+  }, [userReferralCode]);
+}
+
+export function getRefCodeParamString() {
+  const userReferralCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
+
+  if (!userReferralCode) {
+    return undefined;
+  }
+
+  const userReferralCodeString = decodeReferralCode(userReferralCode as Hash);
+
+  return `ref=${userReferralCodeString}`;
+}
+
 export function useReferrerTier(signer, chainId, account) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const validAccount = useMemo(() => (isAddress(account) ? account : null), [account]);
   const { data: referrerTier, mutate: mutateReferrerTier } = useSWR<bigint>(
     validAccount && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", validAccount],
     {
-      fetcher: contractFetcher(signer, "ReferralStorage") as any,
+      fetcher: chainId !== BOTANIX ? (contractFetcher(signer, "ReferralStorage") as any) : undefined,
     }
   );
   return {
@@ -245,7 +284,7 @@ export function useCodeOwner(signer, chainId, account, code) {
   } = useSWR<string>(
     account && code && [`ReferralStorage:codeOwners`, chainId, referralStorageAddress, "codeOwners", code],
     {
-      fetcher: contractFetcher(signer, "ReferralStorage") as any,
+      fetcher: chainId !== BOTANIX ? (contractFetcher(signer, "ReferralStorage") as any) : undefined,
       refreshInterval: CONFIG_UPDATE_INTERVAL,
     }
   );
@@ -282,7 +321,7 @@ export function useReferrerDiscountShare(library, chainId, owner) {
   };
 }
 
-export async function validateReferralCodeExists(referralCode, chainId) {
+export async function validateReferralCodeExists(referralCode: string, chainId: ContractsChainId) {
   const referralCodeBytes32 = encodeReferralCode(referralCode);
   const referralCodeOwner = await getReferralCodeOwner(chainId, referralCodeBytes32);
   return !isAddressZero(referralCodeOwner);
@@ -305,7 +344,7 @@ export function useAffiliateCodes(chainId, account) {
   useEffect(() => {
     if (!chainId) return;
     getReferralsGraphClient(chainId)
-      .query({ query, variables: { account: account?.toLowerCase() } })
+      ?.query({ query, variables: { account: account?.toLowerCase() } })
       .then((res) => {
         const parsedAffiliateCodes = res?.data?.affiliateStats.map((c) => decodeReferralCode(c?.referralCode));
         setAffiliateCodes({ code: parsedAffiliateCodes[0], success: true });

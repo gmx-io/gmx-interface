@@ -1,17 +1,28 @@
 import { watchAccount } from "@wagmi/core";
-import { useState, useEffect } from "react";
-import { useAccount } from "wagmi";
+import { useEffect, useRef, useState } from "react";
+import { useAccount, useChainId as useWagmiChainId } from "wagmi";
 
 import {
-  type SettlementChainId,
   type ContractsChainId,
+  type SettlementChainId,
   type SourceChainId,
-  DEFAULT_CHAIN_ID,
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
   isSupportedChain,
 } from "config/chains";
+import { isDevelopment } from "config/env";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
-import { isSourceChain, isSettlementChain } from "config/multichain";
+import { isContractsChain, isSettlementChain, isSourceChain } from "config/multichain";
 import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
+
+const IS_DEVELOPMENT = isDevelopment();
+
+let INITIAL_CHAIN_ID: ContractsChainId;
+if (IS_DEVELOPMENT) {
+  INITIAL_CHAIN_ID = ARBITRUM_SEPOLIA;
+} else {
+  INITIAL_CHAIN_ID = ARBITRUM;
+}
 
 /**
  * This returns default chainId if chainId is not supported or not found
@@ -21,29 +32,53 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
   isConnectedToChainId?: boolean;
   srcChainId?: SourceChainId;
 } {
-  let { chainId: unsanitizedChainId } = useAccount();
-  const srcChainId =
-    unsanitizedChainId && isSourceChain(unsanitizedChainId) && !isSettlementChain(unsanitizedChainId)
-      ? unsanitizedChainId
-      : undefined;
+  let { chainId: connectedChainId } = useAccount();
+  const unsanitizedChainId = useWagmiChainId();
 
-  const [displayedChainId, setDisplayedChainId] = useState(unsanitizedChainId ?? DEFAULT_CHAIN_ID);
+  const [displayedChainId, setDisplayedChainId] = useState(connectedChainId ?? unsanitizedChainId ?? INITIAL_CHAIN_ID);
 
-  const chainIdFromLocalStorage = parseInt(localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || "");
+  const rawChainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
+  const chainIdFromLocalStorage = rawChainIdFromLocalStorage ? parseInt(rawChainIdFromLocalStorage) : undefined;
 
-  const isCurrentChainSupported = unsanitizedChainId && isSupportedChain(unsanitizedChainId);
-  const isCurrentChainSettlement = unsanitizedChainId && isSettlementChain(unsanitizedChainId);
+  const possibleSrcChainId = connectedChainId ?? chainIdFromLocalStorage ?? unsanitizedChainId;
+  let srcChainId: SourceChainId | undefined = undefined;
+  if (possibleSrcChainId && isSourceChain(possibleSrcChainId) && !isSettlementChain(possibleSrcChainId)) {
+    srcChainId = possibleSrcChainId;
+  }
+
+  const isCurrentChainSupported = unsanitizedChainId && isSupportedChain(unsanitizedChainId, IS_DEVELOPMENT);
   const isCurrentChainSource = unsanitizedChainId && isSourceChain(unsanitizedChainId);
 
-  const isLocalStorageChainSupported = chainIdFromLocalStorage && isSupportedChain(chainIdFromLocalStorage);
-  const isLocalStorageChainSettlement = chainIdFromLocalStorage && isSettlementChain(chainIdFromLocalStorage);
+  const isLocalStorageChainSupported =
+    chainIdFromLocalStorage && isSupportedChain(chainIdFromLocalStorage, IS_DEVELOPMENT);
   const isLocalStorageChainSource = chainIdFromLocalStorage && isSourceChain(chainIdFromLocalStorage);
 
-  const mustChangeChainId =
-    !unsanitizedChainId || (!isCurrentChainSource && !isCurrentChainSettlement && !isCurrentChainSupported);
+  const mustChangeChainId = !unsanitizedChainId || (!isCurrentChainSource && !isCurrentChainSupported);
+
+  const connectedRef = useRef(false);
+  useEffect(() => {
+    if (chainIdFromLocalStorage || connectedRef.current) {
+      return;
+    }
+
+    connectedRef.current = true;
+
+    const connectHandler = (connectInfo: { chainId: string }) => {
+      const rawChainId = parseInt(connectInfo.chainId);
+      if (isContractsChain(rawChainId) || isSourceChain(rawChainId)) {
+        setDisplayedChainId(rawChainId);
+        localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, rawChainId.toString());
+      }
+    };
+
+    window.ethereum?.on("connect", connectHandler);
+    return () => {
+      window.ethereum?.removeListener("connect", connectHandler);
+    };
+  }, [chainIdFromLocalStorage]);
 
   useEffect(() => {
-    if (isCurrentChainSettlement || isCurrentChainSupported) {
+    if (isCurrentChainSupported) {
       setDisplayedChainId(unsanitizedChainId);
       return;
     }
@@ -53,7 +88,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
       return;
     }
 
-    if (isLocalStorageChainSettlement || isLocalStorageChainSupported) {
+    if (isLocalStorageChainSupported) {
       setDisplayedChainId(chainIdFromLocalStorage);
       return;
     }
@@ -63,24 +98,22 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
       return;
     }
 
-    setDisplayedChainId(DEFAULT_CHAIN_ID);
+    setDisplayedChainId(INITIAL_CHAIN_ID);
   }, [
-    unsanitizedChainId,
     chainIdFromLocalStorage,
-    isCurrentChainSettlement,
-    isLocalStorageChainSettlement,
     isCurrentChainSource,
-    isLocalStorageChainSource,
-    settlementChainId,
     isCurrentChainSupported,
+    isLocalStorageChainSource,
     isLocalStorageChainSupported,
+    settlementChainId,
+    unsanitizedChainId,
   ]);
 
   useEffect(() => {
     if (!mustChangeChainId) {
       return;
     }
-    if (isLocalStorageChainSettlement || isLocalStorageChainSupported) {
+    if (isLocalStorageChainSupported) {
       setDisplayedChainId(chainIdFromLocalStorage);
       return;
     }
@@ -90,12 +123,11 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
       return;
     }
 
-    setDisplayedChainId(DEFAULT_CHAIN_ID);
+    setDisplayedChainId(INITIAL_CHAIN_ID);
     localStorage.removeItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
   }, [
     chainIdFromLocalStorage,
     settlementChainId,
-    isLocalStorageChainSettlement,
     isLocalStorageChainSource,
     isLocalStorageChainSupported,
     mustChangeChainId,
@@ -109,7 +141,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
         }
         if (
           !isSourceChain(account.chainId) &&
-          !isSupportedChain(account.chainId) &&
+          !isSupportedChain(account.chainId, IS_DEVELOPMENT) &&
           !isSettlementChain(account.chainId)
         ) {
           return;
@@ -124,7 +156,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
   }, []);
 
   if (mustChangeChainId) {
-    if (isLocalStorageChainSettlement || isLocalStorageChainSupported) {
+    if (isLocalStorageChainSupported) {
       return { chainId: chainIdFromLocalStorage as SettlementChainId, srcChainId };
     }
 
@@ -132,20 +164,24 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
       return { chainId: settlementChainId, srcChainId };
     }
 
-    return { chainId: DEFAULT_CHAIN_ID, srcChainId };
+    return { chainId: INITIAL_CHAIN_ID, srcChainId };
   }
 
-  if (isCurrentChainSettlement || isCurrentChainSupported) {
+  if (isCurrentChainSupported) {
     return {
       chainId: unsanitizedChainId as ContractsChainId,
-      isConnectedToChainId: displayedChainId === unsanitizedChainId,
+      isConnectedToChainId: displayedChainId === unsanitizedChainId && unsanitizedChainId === connectedChainId,
       srcChainId,
     };
   }
 
   if (isCurrentChainSource) {
-    return { chainId: settlementChainId as SettlementChainId, isConnectedToChainId: true, srcChainId };
+    return {
+      chainId: settlementChainId as SettlementChainId,
+      isConnectedToChainId: unsanitizedChainId === connectedChainId,
+      srcChainId,
+    };
   }
 
-  return { chainId: DEFAULT_CHAIN_ID, isConnectedToChainId: false, srcChainId };
+  return { chainId: INITIAL_CHAIN_ID, isConnectedToChainId: false, srcChainId };
 }

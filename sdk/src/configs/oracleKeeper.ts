@@ -1,9 +1,9 @@
 import random from "lodash/random";
 import sample from "lodash/sample";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "./chains";
 
-const ORACLE_KEEPER_URLS: Record<number, string[]> = {
+const ORACLE_KEEPER_URLS: Record<ContractsChainId, string[]> = {
   [ARBITRUM]: ["https://arbitrum-api.gmxinfra.io", "https://arbitrum-api.gmxinfra2.io"],
 
   [AVALANCHE]: ["https://avalanche-api.gmxinfra.io", "https://avalanche-api.gmxinfra2.io"],
@@ -11,6 +11,7 @@ const ORACLE_KEEPER_URLS: Record<number, string[]> = {
   [AVALANCHE_FUJI]: ["https://synthetics-api-avax-fuji-upovm.ondigitalocean.app"],
 
   [ARBITRUM_SEPOLIA]: ["https://dolphin-app-a2dup.ondigitalocean.app"],
+  [BOTANIX]: ["https://botanix-api.gmxinfra.io", "https://botanix-api.gmxinfra2.io"],
 };
 
 export function getOracleKeeperUrl(chainId: number, index: number) {

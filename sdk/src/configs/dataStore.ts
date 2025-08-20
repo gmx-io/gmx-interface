@@ -110,6 +110,8 @@ export const GELATO_RELAY_FEE_MULTIPLIER_FACTOR_KEY = hashString("GELATO_RELAY_F
 export const REQUEST_EXPIRATION_TIME_KEY = hashString("REQUEST_EXPIRATION_TIME");
 
 export const GMX_SIMULATION_ORIGIN = "0x" + keccakString("GMX SIMULATION ORIGIN").slice(-40);
+export const CLAIM_TERMS_KEY = hashString("CLAIM_TERMS");
+export const GENERAL_CLAIM_FEATURE_DISABLED = hashString("GENERAL_CLAIM_FEATURE_DISABLED");
 
 export function subaccountExpiresAtKey(account: string, subaccount: string, actionType: string) {
   return hashData(
@@ -278,7 +280,7 @@ export function depositGasLimitKey() {
 }
 
 export function withdrawalGasLimitKey() {
-  return hashData(["bytes32"], [WITHDRAWAL_GAS_LIMIT_KEY]);
+  return WITHDRAWAL_GAS_LIMIT_KEY;
 }
 
 export function shiftGasLimitKey() {
@@ -415,4 +417,12 @@ export function priceFeedKey(token: string) {
 
 export function gaslessFeatureDisabledKey(module: string) {
   return hashData(["bytes32", "address"], [GASLESS_FEATURE_DISABLED_KEY, module]);
+}
+
+export function claimTermsKey(distributionId: bigint) {
+  return hashData(["bytes32", "uint256"], [CLAIM_TERMS_KEY, distributionId]);
+}
+
+export function claimsDisabledKey(distributionId: bigint) {
+  return hashData(["bytes32", "uint256"], [GENERAL_CLAIM_FEATURE_DISABLED, distributionId]);
 }

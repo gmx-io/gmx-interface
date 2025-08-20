@@ -247,16 +247,6 @@ button.App-connect-wallet:hover {
   margin-right: 0.8rem;
 }
 
-.App-header-user-address {
-  border: 1px solid var(--color-stroke-primary);
-  height: 3.6rem;
-  border-radius: 0.4rem;
-  display: inline-flex;
-  align-items: center;
-  color: var(--color-white);
-  position: relative;
-}
-
 .mobile-menu-divider {
   height: 1px;
   background: var(--color-slate-500);
@@ -1069,9 +1059,6 @@ button.App-button {
 @media (max-width: 1335px) {
   .long-connect-btn {
     display: none !important;
-  }
-  .App-header-user-address {
-    padding: 0 0px;
   }
 
   .short-connect-btn {

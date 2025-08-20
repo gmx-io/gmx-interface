@@ -4,6 +4,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import { cssTransition, ToastContainer } from "react-toastify";
 import { Hash } from "viem";
 
+import { ContractsChainId, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -12,11 +13,14 @@ import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
+import { useHashQueryParams } from "lib/useHashQueryParams";
 import { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
 import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigureUserAnalyticsProfile";
 import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
 import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalletConnectedEvent";
 import useRouteQuery from "lib/useRouteQuery";
+import useSearchParams from "lib/useSearchParams";
+import { switchNetwork } from "lib/wallets";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
 import EventToastContainer from "components/EventToast/EventToastContainer";
@@ -50,6 +54,7 @@ export function AppRoutes() {
   useAccountInitedMetric();
   useWalletConnectedUserAnalyticsEvent();
   useMultichainFundingToast();
+  useHashQueryParams();
 
   const query = useRouteQuery();
 
@@ -105,6 +110,22 @@ export function AppRoutes() {
     setRedirectModalVisible(true);
     setSelectedToPage(to);
   }, []);
+
+  const urlParams = useSearchParams<{ chainId: string }>();
+
+  useEffect(() => {
+    const chainId = urlParams.chainId;
+    if (chainId && SUPPORTED_CHAIN_IDS.includes(Number(chainId) as ContractsChainId)) {
+      switchNetwork(Number(chainId), true).then(() => {
+        const searchParams = new URLSearchParams(history.location.search);
+        searchParams.delete("chainId");
+        history.replace({
+          pathname: history.location.pathname,
+          search: searchParams.toString(),
+        });
+      });
+    }
+  }, [urlParams, history]);
 
   useRealChainIdWarning();
 

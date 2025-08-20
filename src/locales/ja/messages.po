@@ -47,6 +47,11 @@ msgstr ""
 msgid "Claim submitted!"
 msgstr "請求申し込み完了!"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Claims are disabled"
+msgstr ""
+
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
 msgstr "接続停止"
@@ -120,6 +125,10 @@ msgstr ""
 msgid "Daily Loss"
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "earns fees from providing liquidity to multiple GMX V2 markets"
+msgstr ""
+
 #: src/pages/Home/Home.tsx
 msgid "GMX is currently live on Arbitrum and Avalanche."
 msgstr "GMXは現在ArbitrumとAvalancheで稼働中です。"
@@ -135,6 +144,13 @@ msgstr "最大プールキャパシティ"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Optimizer on Avalanche"
 msgstr "Avalanche上のイールドオプティマイザー"
+
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -232,13 +248,12 @@ msgstr ""
 msgid "Buy {gasPaymentTokensText}"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.jsx
-#: src/components/Exchange/SwapBox.jsx
-msgid "Enable leverage sent."
-msgstr "レバレッジ有効化申し込み完了。"
-
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Show error"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.jsx
+msgid "Trigger orders, increasing positions (market or limit), adding collateral, and swapping on GMX V1 are now disabled. You can still close existing positions using market orders."
 msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
@@ -300,10 +315,6 @@ msgstr "状況を見る"
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buyable"
-msgstr ""
-
-#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>Please try increasing execution fee buffer to {0} in <3>Settings</3>."
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -378,6 +389,10 @@ msgstr ""
 msgid "Stop market price above mark price"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>{suggestText}"
+msgstr ""
+
 #: src/pages/Stake/StakeModal.tsx
 msgid "Pending {stakingTokenSymbol} approval"
 msgstr ""
@@ -402,7 +417,6 @@ msgstr ""
 msgid "Swap TWAP: Swap tokens in evenly distributed parts over a specified time."
 msgstr ""
 
-#: src/components/Exchange/SwapBox.jsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
 msgstr "{0}の最大ショート値を超過しています"
@@ -438,6 +452,11 @@ msgstr ""
 msgid "Switch to {0}"
 msgstr ""
 
+#: src/components/Exchange/SwapBox.jsx
+#: src/config/events.tsx
+msgid "Please migrate your positions to GMX V2."
+msgstr ""
+
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/Exchange/Exchange.tsx
 msgid "Positions"
@@ -451,6 +470,11 @@ msgstr ""
 msgid "Funding Claimed"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trading</2> under settings, which should offer a better experience."
+msgstr ""
+
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code added!"
 msgstr "紹介コードが追加されました!"
@@ -488,12 +512,12 @@ msgstr ""
 msgid "Orders"
 msgstr "注文"
 
-#: src/components/Exchange/SwapBox.jsx
-msgid "Swaps disabled, pending {0} upgrade"
-msgstr "{0}の更新が未完了のためスワップが停止中です"
-
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Increased {positionText}, +{0}"
+msgstr ""
+
+#: src/pages/Stake/Stake.tsx
+msgid "Claim and view your incentives, airdrops, and prizes"
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -559,6 +583,10 @@ msgstr "市場スワップ"
 msgid "The amount you are trying to deposit exceeds the limit. Please try an amount smaller than {upperLimitFormatted}."
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "A $500,000 GLV pool (funded by DAO funds) rewards long-term holders: If you keep your distributed GLV for at least 3 months (without selling or transferring), you'll receive a pro rata share."
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Trade History"
 msgstr "取引履歴"
@@ -614,7 +642,6 @@ msgid "Rebates on V2"
 msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Incentives are airdropped weekly."
 msgstr ""
 
@@ -638,6 +665,14 @@ msgstr ""
 
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Market order will be cancellable in {minutesText}{seconds}s."
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "About GLP Incident"
+msgstr ""
+
+#: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
+msgid "providing liquidity"
 msgstr ""
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
@@ -665,7 +700,6 @@ msgid "Please uncheck \"Keep Leverage\", or close a larger position amount."
 msgstr ""
 
 #: src/components/Exchange/PositionDropdown.tsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Edit Collateral"
 msgstr "担保編集"
@@ -681,11 +715,6 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Limit price above mark price"
 msgstr ""
-
-#: src/components/Exchange/PositionSeller.jsx
-#: src/components/Exchange/SwapBox.jsx
-msgid "Enable leverage failed."
-msgstr "レバレッジ有効化できませんでした。"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Create or Import a Wallet"
@@ -741,6 +770,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{0} <0/><1> to </1>{1} <2/>"
+msgstr ""
+
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "Sent referral code transaction"
 msgstr ""
 
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
@@ -832,10 +865,6 @@ msgstr ""
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
 msgstr "シンプルなスワップインターフェースでポジションを開けます。サポート対象のどの資産も好みの資産に簡単に交換可能。"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
-msgid "Incentives Distribution History"
-msgstr ""
-
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/InputSection/InputSection.jsx
@@ -925,6 +954,7 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Pay"
 msgstr "支払い"
 
@@ -939,6 +969,10 @@ msgstr ""
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Stop Price"
+msgstr ""
+
+#: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
+msgid "using GLV and GM tokens. Buying or staking GMX, or using referrals, is not supported at this time."
 msgstr ""
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -986,10 +1020,6 @@ msgstr "追加中"
 #: src/pages/Actions/SyntheticsActions.tsx
 msgid "GMX {VERSION_NAME} {networkName} actions for all accounts."
 msgstr ""
-
-#: src/components/Exchange/SwapBox.jsx
-msgid "Short {0}"
-msgstr "{0}をショート"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met"
@@ -1040,15 +1070,6 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionSeller.jsx
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 msgid "Insufficient Liquidity"
 msgstr ""
@@ -1173,6 +1194,10 @@ msgstr ""
 msgid "Base APY"
 msgstr ""
 
+#: src/components/TokenCard/TokenCard.tsx
+msgid "GMX V1 markets are disabled. GLP is being phased out and no longer supports GMX V1 markets."
+msgstr ""
+
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
 msgid "WARNING: This position has a low amount of collateral after deducting borrowing fees, deposit more collateral to reduce the position's liquidation risk."
@@ -1182,6 +1207,7 @@ msgstr "警告: このポジションは借入手数料差引後の担保額が�
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
+#: src/pages/BuyGlp/BuyGlp.jsx
 #: src/pages/Stake/GlpCard.tsx
 msgid "Sell GLP"
 msgstr "GLP売却"
@@ -1293,9 +1319,7 @@ msgstr "プールを選択"
 msgid "WEIGHT"
 msgstr "ウェイト"
 
-#: src/components/Glp/GlpSwap.jsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GlpCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "APR"
 msgstr "APR(実質年利)"
@@ -1321,6 +1345,16 @@ msgstr "総計"
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "スワップ アクティブ: {0} 執行済: {1}  キャンセル済: {2}"
 
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Buy token on:"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Please sign a new approval to continue."
+msgstr ""
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -1334,6 +1368,10 @@ msgstr "指値スワップ失敗"
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
+msgstr ""
+
+#: src/components/TVChartContainer/constants.ts
+msgid "Market - Long Inc."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
@@ -1391,6 +1429,10 @@ msgstr ""
 msgid "Leftover position below 10 USD"
 msgstr ""
 
+#: src/pages/Stake/Stake.tsx
+msgid "Distributions"
+msgstr ""
+
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>."
 msgstr ""
@@ -1402,10 +1444,6 @@ msgstr ""
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What issues did you encounter that led to your rating?"
 msgstr ""
-
-#: src/components/Exchange/SwapBox.jsx
-msgid "Leverage disabled, pending {0} upgrade"
-msgstr "{0}の更新が未完了のためレバレッジが無効化されています"
 
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "NFT Address"
@@ -1706,6 +1744,8 @@ msgid "Receive (Approximate)"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
 msgstr ""
 
@@ -1736,7 +1776,6 @@ msgid "Withdrew {0} from {positionText}"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
-#: src/components/Exchange/PositionSeller.jsx
 msgid "Create Order"
 msgstr "注文の作成"
 
@@ -1810,6 +1849,10 @@ msgstr "執行価格に近すぎます"
 msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "No funds to claim"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Global Leaderboard"
@@ -1843,6 +1886,11 @@ msgstr ""
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 msgid "Max {0} out"
 msgstr "最大 {0} out"
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "No assets available for deposit"
+msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "There is no price impact. There is a single<0/>execution price for increasing shorts or<1/>decreasing longs for this size."
@@ -1992,10 +2040,6 @@ msgstr "借入手数料"
 msgid "Buy submitted."
 msgstr "購入申し込み完了"
 
-#: src/pages/Stake/Stake.tsx
-msgid "Incentives & Prizes"
-msgstr ""
-
 #: src/components/Glp/GlpSwap.jsx
 msgid "Fees may vary depending on which asset you sell GLP for. <0/>Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
 msgstr "GLPを売却してどのアセットに交換するかにより手数料は異なります。<0/>売却を希望するGLP額を注文フォームに入力し、ここをクリックして手数料を比較してください。"
@@ -2029,6 +2073,10 @@ msgstr "コード確認中..."
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "GM Pools"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.jsx
+msgid "There is a \"Close\" button on each position row, clicking it will display the option to close positions via market orders."
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
@@ -2096,7 +2144,10 @@ msgstr "サイズ"
 msgid "We value your experience and insights and invite you to participate in an anonymous one-on-one chat."
 msgstr ""
 
-#: src/components/Exchange/SwapBox.jsx
+#: src/components/TVChartContainer/constants.ts
+msgid "Market - Short Inc."
+msgstr ""
+
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Header/AppHeaderChainAndSettings.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
@@ -2114,10 +2165,6 @@ msgid "Connect Wallet"
 msgstr "ウォレット接続"
 
 #: src/components/Exchange/OrdersToa.jsx
-#: src/components/Exchange/PositionSeller.jsx
-#: src/components/Exchange/PositionSeller.jsx
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
 msgid "Enabling Orders..."
 msgstr "注文有効化中..."
 
@@ -2128,10 +2175,6 @@ msgstr "AvalancheでGLPを使ってべスティングする"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "No esGMX to claim"
 msgstr "請求できるesGMXはありません"
-
-#: src/components/Exchange/SwapBox.jsx
-msgid "<0>{0} is required for collateral.</0><1>Short amount for {1} with {2} exceeds potential profits liquidity. Reduce the \"Short Position\" size, or change the \"Collateral In\" token.</1>"
-msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
@@ -2178,7 +2221,6 @@ msgid "There isn't enough GM: {0} [{1}] liquidity in GLV to fulfill your sell re
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
-#: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
 msgid "Approving {0}..."
 msgstr "{0}を承認中"
@@ -2190,10 +2232,6 @@ msgstr ""
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Your wallet, your keys. GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
 msgstr ""
-
-#: src/components/Glp/GlpSwap.jsx
-msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
-msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR(実質年利)"
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -2208,6 +2246,10 @@ msgstr "リベートと紹介報酬は毎週エアドロップされます。"
 msgid "Display Settings"
 msgstr ""
 
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
+msgstr ""
+
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr "合計:"
@@ -2216,13 +2258,13 @@ msgstr "合計:"
 msgid "{0} Approved!"
 msgstr "{0}が承認されました!"
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral."
+msgstr ""
+
 #: src/pages/Stake/TotalRewardsCard.tsx
 msgid "<0>Provide liquidity</0> and earn {gmxMarketApyDataText} APY"
 msgstr ""
-
-#: src/components/Exchange/SwapBox.jsx
-msgid "Long {0}"
-msgstr "ロング {0}"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -2232,11 +2274,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "Winner:"
 msgstr ""
-
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
-msgid "Liquidity data not loaded"
-msgstr "流動性データがロードされていません"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates for closing trades are claimable inder this claims tab. <0>Read more</0>"
@@ -2285,7 +2322,6 @@ msgid "Trading Mode"
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
-#: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr ""
 
@@ -2301,6 +2337,10 @@ msgstr ""
 #: src/pages/Dashboard/MarketsListV1.tsx
 msgid "TOKEN"
 msgstr "トークン"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "What is the bonus incentive for holding your GLV?"
+msgstr ""
 
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Transfer NFT"
@@ -2408,6 +2448,10 @@ msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "{0} will be swapped to {1} on order execution."
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Claiming with a smart account requires specific instructions. Contributors will post these in the coming days."
 msgstr ""
 
 #. Button to clear the filter selection
@@ -2536,7 +2580,6 @@ msgid "There are more longs than shorts, borrow fees for shorting is currently z
 msgstr "ショートよりロングが多いため、ショートの借入手数料は現在ゼロです"
 
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche APR:"
 msgstr "AvalancheでのAPR(実質年利)"
 
@@ -2603,8 +2646,6 @@ msgid "Job openings at GMX."
 msgstr "GMXの求人"
 
 #: src/components/Exchange/OrderEditor.jsx
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
 msgid "Price below Mark Price"
 msgstr "マーク価格を下回る価格"
 
@@ -2621,6 +2662,10 @@ msgstr ""
 msgid "{fromText} to {toMinText}"
 msgstr "{fromText}から{toMinText}へ"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Otherwise, try changing the RPC url in your wallet settings with the help of <0>chainlist.org</0>."
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Price above Liq. Price"
@@ -2634,12 +2679,15 @@ msgstr ""
 msgid "User Quests"
 msgstr ""
 
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "Funds claimed"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.jsx
 msgid "{0} pool exceeded, try different token"
 msgstr "{0}プールは超過しています。別のトークンを試してください。"
 
 #: src/components/Exchange/OrdersList.jsx
-#: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
@@ -2661,10 +2709,6 @@ msgstr "注文はキャンセルされました"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Not enough Available Swap Liquidity to fill the Order."
 msgstr "注文を執行するための利用可能なスワップ流動性が不足しています。"
-
-#: src/pages/Stake/Stake.tsx
-msgid "Earn prizes by participating in GMX Trading Competitions."
-msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Confirm Long"
@@ -2723,6 +2767,14 @@ msgstr ""
 
 #: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High Impact on Collateral"
+msgstr ""
+
+#: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
+msgid "and"
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "Distribution History"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2843,6 +2895,10 @@ msgstr ""
 msgid "{typeString} Short TWAP: {0} a short position in evenly distributed parts over a specified time."
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Insufficient gas for network fees"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the swap when the min. receive conditions are met."
 msgstr ""
@@ -2899,10 +2955,6 @@ msgstr ""
 msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
 msgstr ""
 
-#: src/components/Exchange/SwapBox.jsx
-msgid "Fetching token info..."
-msgstr "トークン情報入手中..."
-
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "This swap is routed through several GM pools for the lowest possible fees and price impact."
 msgstr ""
@@ -2922,8 +2974,6 @@ msgstr ""
 
 #: src/components/Exchange/OrdersToa.jsx
 #: src/components/Exchange/OrdersToa.jsx
-#: src/components/Exchange/PositionSeller.jsx
-#: src/components/Exchange/SwapBox.jsx
 msgid "Enable Orders"
 msgstr "注文有効化"
 
@@ -2958,6 +3008,13 @@ msgstr ""
 msgid "V1 Arbitrum"
 msgstr ""
 
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Avalanche"
+msgstr ""
+
 #: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 msgid "Fee APR"
 msgstr ""
@@ -2969,6 +3026,8 @@ msgstr ""
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/Stake.tsx
+#: src/pages/Stake/Stake.tsx
 #: src/pages/Stake/Stake.tsx
 #: src/pages/Stake/Stake.tsx
 #: src/pages/Stake/StakeModal.tsx
@@ -3012,6 +3071,10 @@ msgstr ""
 msgid "Update Order"
 msgstr "注文の更新"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Can I sell my GLV if I want, and where?"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Cancel TWAP"
 msgstr ""
@@ -3031,7 +3094,6 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
-#: src/components/Exchange/SwapBox.jsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3060,9 +3122,9 @@ msgstr ""
 msgid "Order creation failed."
 msgstr ""
 
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee - Net Price Impact + Price Impact Rebates"
-#~ msgstr ""
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Sell token on:"
+msgstr ""
 
 #: src/components/Synthetics/MissedCoinsHint/MissedCoinsHint.tsx
 msgid "Can’t find the coin you need? Let us know"
@@ -3166,7 +3228,6 @@ msgstr ""
 msgid "No claims match the selected filters"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
@@ -3187,10 +3248,6 @@ msgstr "マーケット"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only receive {3}."
-msgstr ""
-
-#: src/pages/Stake/Stake.tsx
-msgid "Earn {incentivesToken} token incentives by purchasing GM tokens or trading in GMX V2."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
@@ -3239,10 +3296,6 @@ msgstr ""
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to Wallet"
 msgstr ""
-
-#: src/components/Exchange/SwapBox.jsx
-msgid "High Slippage, Swap Anyway"
-msgstr "スリッページが大きいです。ともかく交換する"
 
 #: src/components/Synthetics/GmList/PerformanceLabel.tsx
 msgid "Annualized Performance"
@@ -3324,6 +3377,10 @@ msgstr "清算済"
 msgid "Blueberry Pulse"
 msgstr ""
 
+#: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
+msgid "Please switch to the <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5></3> deployment for those features."
+msgstr ""
+
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Select Language"
@@ -3335,6 +3392,10 @@ msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open positions."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.jsx
+msgid "Due to the recent incident on GMX V1 Arbitrum, GLP on Arbitrum is not sellable."
 msgstr ""
 
 #: src/components/Synthetics/GmList/GlvList.tsx
@@ -3448,6 +3509,7 @@ msgstr "ポジション金額が$5未満になるため注文を執行できま�
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/AffiliateClaimModal.tsx
 #: src/pages/Stake/ClaimModal.tsx
@@ -3514,10 +3576,6 @@ msgstr ""
 msgid "Enter withdrawal amount"
 msgstr ""
 
-#: src/pages/BuyGlp/BuyGlp.jsx
-msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
-msgstr ""
-
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "<0>Set Recommended Impact: {0}</0>."
@@ -3578,7 +3636,6 @@ msgstr "最大スリッページ"
 msgid "Order update failed."
 msgstr "注文更新に失敗しました。"
 
-#: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
 msgid "Waiting for Approval"
 msgstr "許可待機中"
@@ -3625,6 +3682,10 @@ msgstr "紹介コードを入力すると手数料割引を受けられます。
 msgid "Failed Deposit"
 msgstr "入金失敗"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Distribution happens in two GLV variants to mirror GLP's multi-asset exposure: one variant is optimized for ETH-based markets (50% ETH / 50% USDC) and the other for BTC-based markets (50% BTC / 50% USDC). This allocation reflects the composition of recovered funds and allows for dynamic shifting of GLV liquidity to all top GMX markets to enhance your yield."
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "市場スワップリクエスト"
@@ -3670,6 +3731,10 @@ msgstr "別の選択肢"
 
 #: src/components/TokenCard/TokenCard.tsx
 msgid "GLV is the liquidity provider token for GMX V2 vaults. Consist of several GM tokens and accrues fees generated by them."
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Yes, GLV is fully liquid and permissionless. You can sell via the GMX interface to redeem for underlying assets, with low fees."
 msgstr ""
 
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
@@ -3771,13 +3836,7 @@ msgstr ""
 msgid "Buy {nativeTokenSymbol}"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-msgid "View on Avalanche"
-msgstr ""
-
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "View in Explorer"
 msgstr "Explorerで見る"
@@ -3889,10 +3948,6 @@ msgstr ""
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 msgstr ""
 
-#: src/components/Exchange/SwapBox.jsx
-msgid "Swap amount exceeds Available Liquidity."
-msgstr ""
-
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "We value your experience as GMX Liquidity Provider and invite you to participate in an anonymous one-on-one chat."
 msgstr ""
@@ -3914,6 +3969,10 @@ msgstr ""
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "Prev"
 msgstr "前へ"
+
+#: src/pages/Pools/PoolsTimeRangeFilter.tsx
+msgid "Last 180d"
+msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown buy GM order"
@@ -4059,6 +4118,10 @@ msgstr ""
 msgid "The actual trigger price at which order gets filled will depend on fees and price impact at the time of execution to guarantee that you receive the minimum receive amount."
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Why do I receive two different GLV tokens?"
+msgstr ""
+
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Set TP/SL"
 msgstr ""
@@ -4185,8 +4248,6 @@ msgstr ""
 msgid "Affiliate Vault"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a price"
@@ -4232,6 +4293,10 @@ msgstr "この注文が執行された場合、少なくとも{0} {1}を受け�
 msgid "GMX | Decentralized Perpetual Exchange"
 msgstr ""
 
+#: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
+msgid "<0>Botanix</0> currently only supports"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "No position"
 msgstr "ポジションなし"
@@ -4239,7 +4304,6 @@ msgstr "ポジションなし"
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
-#: src/pages/Stake/GlpCard.tsx
 msgid "Buy GLP"
 msgstr "GLPを購入"
 
@@ -4293,6 +4357,10 @@ msgstr "GMXでトレードして賞金<0>250ドル</0>を獲得しよう! 11月3
 msgid "tBTC LP incentives"
 msgstr ""
 
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "Failed to claim funds"
+msgstr ""
+
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "あなたはGMX.ioを離れ、第三者の別のウェブサイトへ転送されます。"
@@ -4306,12 +4374,18 @@ msgstr ""
 msgid "Read more."
 msgstr ""
 
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "PnL Analysis"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmListItem.tsx
 msgid "View Details"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
 msgstr ""
 
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
@@ -4321,10 +4395,6 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Deposit submitted."
-msgstr ""
-
-#: src/components/Exchange/SwapBox.jsx
-msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or change the \"Collateral In\" token.</1>"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
@@ -4451,7 +4521,6 @@ msgid "GMX Trading Stats"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
-#: src/components/Exchange/PositionSeller.jsx
 #: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
@@ -4479,6 +4548,7 @@ msgstr ""
 msgid "Failed Stop Market"
 msgstr ""
 
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Address copied to your clipboard"
 msgstr ""
@@ -4502,6 +4572,10 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Amount of traders you referred."
 msgstr "あなたが紹介したトレーダー数"
+
+#: src/components/Exchange/PositionSeller.jsx
+msgid "GMX V1 only supports closing positions using market orders. For advanced trading features, use GMX V2."
+msgstr ""
 
 #: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
@@ -4556,6 +4630,10 @@ msgstr "コードを入力"
 
 #: src/components/Synthetics/GmList/GmListItem.tsx
 msgid "Details"
+msgstr ""
+
+#: src/components/TVChartContainer/constants.ts
+msgid "Market - Short Dec."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -4616,6 +4694,11 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 msgid "Reserved"
 msgstr "リザーブ済"
+
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Botanix"
+msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -4739,6 +4822,10 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "GLV (GMX Liquidity Vaults) should be seen as GMX V2’s improved version of GLP. It is a yield-optimizing crypto-index token that"
 msgstr ""
 
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
@@ -4900,6 +4987,10 @@ msgstr ""
 msgid "Market Composition"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Permit signature is invalid. Please try again.</0>"
+msgstr ""
+
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here"
 msgstr ""
@@ -5053,6 +5144,10 @@ msgstr ""
 msgid "Swap submitted!"
 msgstr "スワップ申し込み完了!"
 
+#: src/components/Exchange/SwapBox.jsx
+msgid "V1 trading disabled. Switch to V2"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5158,6 +5253,10 @@ msgstr ""
 msgid "Sell order executed"
 msgstr ""
 
+#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
+msgid "Failed to {0}"
+msgstr ""
+
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
 msgstr ""
@@ -5241,6 +5340,10 @@ msgstr "トレード"
 msgid "Vesting is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No swap path available."
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram Groups"
 msgstr "Telegramグループ"
@@ -5298,10 +5401,6 @@ msgstr ""
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.jsx
-msgid "Open a position"
-msgstr "ポジションを開く"
-
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in any {0}/USD market pools for your order."
 msgstr "あなたの注文に対して、どの{0}/USDマーケットプールにも十分な流動性がありません。"
@@ -5357,10 +5456,6 @@ msgstr ""
 msgid "Sending shift request"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.jsx
-msgid "Incorrect Network"
-msgstr "誤ったネットワーク"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Optimizer"
 msgstr ""
@@ -5375,10 +5470,6 @@ msgstr ""
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "GMX & Voting Power"
-msgstr ""
-
-#: src/components/Exchange/SwapBox.jsx
-msgid "Take profit and stop loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
@@ -5458,6 +5549,10 @@ msgstr "警告: 高い手数料"
 msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
 msgstr "注文を執行するための利用可能なスワップ流動性が不足しています。条件が満たされ、利用可能なスワップ流動性がある場合に注文が執行されます。"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "Claims are not available on Avalanche Fuji"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Cancel TWAP Swap"
 msgstr ""
@@ -5492,6 +5587,10 @@ msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized pnl"
+msgstr ""
+
+#: src/config/events.tsx
+msgid "Increasing positions (market or limit), adding collateral, and swapping on GMX V1 are now disabled. You can still close existing positions."
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
@@ -5600,10 +5699,6 @@ msgstr ""
 msgid "Claim Affiliate Vault Rewards"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select different tokens"
 msgstr "別のトークンを選択"
@@ -5730,7 +5825,6 @@ msgstr ""
 msgid "Redemption time not yet reached"
 msgstr "売却までの規定時間に達していません"
 
-#: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity"
@@ -5866,10 +5960,6 @@ msgstr "ショート中..."
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}."
 msgstr "{pendingReceiver}への<0>未完了の移転</0> があります。"
 
-#: src/components/Exchange/SwapBox.jsx
-msgid "{0} {1} not supported"
-msgstr ""
-
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Limit size is required"
 msgstr ""
@@ -6002,11 +6092,6 @@ msgstr "または、別の\"担保\"トークンを選択することもでき�
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more."
 msgstr ""
 
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
-msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} acceptable amount. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
-msgstr ""
-
 #: src/pages/PageNotFound/PageNotFound.jsx
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgstr "<0>戻る </0><1>ホームページへ</1> <2>or </2> <3>トレードへ</3>"
@@ -6089,12 +6174,10 @@ msgid "Update Stop Loss"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
-#: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
 msgid "Approve {0}"
 msgstr "{0}を承認する"
 
-#: src/components/Exchange/SwapBox.jsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} long exceeded"
 msgstr "{0}の最大ロング値を超過しています"
@@ -6205,10 +6288,6 @@ msgstr ""
 msgid "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} market."
 msgstr ""
 
-#: src/components/Exchange/SwapBox.jsx
-msgid "Min order: 10 USD"
-msgstr "最小注文金額: 10 USD"
-
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim submitted."
 msgstr ""
@@ -6253,6 +6332,10 @@ msgstr ""
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below mark price"
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "and automatically compounds its yield (unlike GLP, no manual claiming is needed)"
 msgstr ""
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -6329,11 +6412,10 @@ msgstr "{0}のキャパシティに到達しました"
 msgid "{fromText} to {toExecutionText}"
 msgstr "{fromText}から{toExecutionText}へ"
 
-#: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Create {0} Order"
-msgstr "{0}の注文を作成する<<<<<<< HEAD"
+msgstr "{0}の注文を作成する"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Limit Swap"
@@ -6371,10 +6453,6 @@ msgstr ""
 msgid "Ecosystem"
 msgstr "エコシステム"
 
-#: src/components/Exchange/SwapBox.jsx
-msgid "High USDG Slippage, Long Anyway"
-msgstr "USDGスリッページが大きいです。ともかくロングする"
-
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "Next"
 msgstr "次へ"
@@ -6393,8 +6471,11 @@ msgstr "指値注文提出済!"
 
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-#: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 7d"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/StakeNotification.tsx
+msgid "Swap {fromAmount} for {toAmount}"
 msgstr ""
 
 #: src/components/Exchange/PositionShare.tsx
@@ -6407,10 +6488,6 @@ msgstr "コピー"
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Amount"
 msgstr "額"
-
-#: src/components/Exchange/SwapBox.jsx
-msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} Available Liquidity. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
-msgstr ""
 
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Create {0} order"
@@ -6471,8 +6548,12 @@ msgstr "注文執行価格は価格インパクトを考慮しています。"
 msgid "Buy GLP or GMX"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. It's recommended to keep $10 in {1} for transactions, or switch your gas token in settings."
+#: src/context/GmxAccountContext/GmxAccountContext.tsx
+msgid "Source Base is now available on GMX"
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools, with auto-compounding for seamless growth (20-30% historical average annualized performance). View real-time earnings, performance, and portfolio value on the <0>Pools page</0>."
 msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
@@ -6501,10 +6582,6 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionSeller.jsx
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -6656,7 +6733,7 @@ msgstr ""
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Active Orders"
-msgstr "アクティブな注文<<<<<<< HEAD"
+msgstr "アクティブな注文"
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "You have set a high acceptable price impact. The current price impact is {0}."
@@ -6694,6 +6771,10 @@ msgstr ""
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Unrealized Fees"
+msgstr ""
+
+#: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
+msgid "V2 trading"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
@@ -6754,10 +6835,6 @@ msgstr ""
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr ""
 
-#: src/pages/BuyGlp/BuyGlp.jsx
-msgid "Buy / Sell GLP"
-msgstr "GLPの購入/売却"
-
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Explorer"
 msgstr ""
@@ -6766,7 +6843,12 @@ msgstr ""
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "GLV tokens are similar in composition to GLP, and enable seamless integration into GMX V2's liquidity ecosystem. Users can either sell or hold the tokens to earn yield. To encourage long-term participation, a $500,000 GLV incentive pool will be distributed proportionally to those who hold their allocated GLV for at least 3 months."
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/StakeNotification.tsx
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/lib/contracts/notifications.tsx
@@ -6853,15 +6935,11 @@ msgstr ""
 msgid "Deactivate 1CT (One-Click Trading)"
 msgstr ""
 
-#: src/pages/Stake/GlpCard.tsx
-msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
-msgstr ""
-
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Could not execute deposit into {0} {longOrShortText}"
 msgstr "{0} {longOrShortText}への入金を実行できませんでした"
 
-#: src/components/AddressDropdown/AddressDropdown.tsx
+#: src/components/AddressDropdown/AddressDropdownWithMultichain.tsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
@@ -6908,11 +6986,13 @@ msgstr ""
 msgid "DeFi Margin Protocol"
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "Claimable Balance"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
 #: src/components/Exchange/PositionSeller.jsx
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
 msgid "Enabling Leverage..."
 msgstr "レバレッジ有効化中..."
 
@@ -7015,6 +7095,10 @@ msgstr ""
 msgid "Liquidity incentives program is live on {avalancheLink}."
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "GLP Distribution (test)"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "This position could still be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr ""
@@ -7090,10 +7174,6 @@ msgstr ""
 msgid "What areas can we improve to make your experience better?"
 msgstr ""
 
-#: src/domain/multichain/toastEnableExpress.tsx
-msgid "You can only use collateral from your balance through <0>GMX Express</0>. Proceeding to open this order will activate <1>GMX Express</1>."
-msgstr ""
-
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Market: {0} a long position at the current price."
 msgstr ""
@@ -7106,8 +7186,6 @@ msgstr ""
 msgid "Size per part"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7160,6 +7238,14 @@ msgid "Rebates"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
+msgid "GLP is not sellable"
+msgstr ""
+
+#: src/pages/BuyGlp/BuyGlp.jsx
+msgid "GMX V1 markets are disabled and only allow for position closing. GLP is being phased out and no longer supports GMX V1 markets."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.jsx
 msgid "Sell failed."
 msgstr "売却できませんでした。"
 
@@ -7201,13 +7287,15 @@ msgstr "日付"
 msgid "Buy GMX using FIAT gateways:"
 msgstr ""
 
+#: src/domain/multichain/toastEnableExpress.tsx
+msgid "Express trading was enabled to allow the use of collateral from your GMX account balance. You can disable it in the <0>settings</0>."
+msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Referral code created!"
 msgstr "紹介コードが作成されました!"
 
 #: src/components/Exchange/OrderEditor.jsx
-#: src/components/Exchange/SwapBox.jsx
-#: src/components/Exchange/SwapBox.jsx
 msgid "Price above Mark Price"
 msgstr "マーク価格を上回る価格"
 
@@ -7255,6 +7343,10 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 msgid "Available amount to deposit into GLP."
 msgstr "GLPに入金可能な金額"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "What is GLV exactly?"
+msgstr ""
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Download"
@@ -7305,6 +7397,8 @@ msgstr ""
 msgid "Position close disabled, pending {0} upgrade"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No assets available for deposit on {0}"
 msgstr ""
@@ -7334,7 +7428,6 @@ msgid "This token automatically accrues fees from swaps for the {0}/{1} market. 
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
-#: src/components/Exchange/SwapBox.jsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Page outdated, please refresh"
 msgstr "ページの内容が期限切れです。更新してください。"
@@ -7475,6 +7568,14 @@ msgstr "紹介コードが存在しません"
 msgid "shift"
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "GLP Distribution"
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "Why is the claim in GLV tokens?"
+msgstr ""
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM Airdrop"
 msgstr ""
@@ -7519,13 +7620,6 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GM"
-msgstr ""
-
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-msgid "View on Arbitrum"
 msgstr ""
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -7636,17 +7730,11 @@ msgstr "ポジション"
 msgid "Bonus Rebate"
 msgstr ""
 
-#: src/pages/Stake/GlpCard.tsx
-msgid "Purchase Insurance"
-msgstr ""
-
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
-#: src/components/Exchange/PositionSeller.jsx
-#: src/components/Exchange/SwapBox.jsx
 msgid "Enable Leverage"
 msgstr "レバレッジ有効化"
 
@@ -7725,10 +7813,6 @@ msgstr ""
 msgid "Top PnL ($)"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/AvailableToTradeAssetsView.tsx
-msgid "Gmx Balance"
-msgstr ""
-
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Invalid address. Please make sure you have entered a valid Ethereum address"
 msgstr ""
@@ -7736,10 +7820,6 @@ msgstr ""
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "送信側はGMXのべスティングボールトからすべてのトークンを引き出しました。"
-
-#: src/components/Exchange/SwapBox.jsx
-msgid "Incorrect network"
-msgstr "誤ったネットワーク"
 
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Claiming position price impact fees"
@@ -7754,7 +7834,6 @@ msgstr ""
 msgid "Pay Amount"
 msgstr "支払い額"
 
-#: src/components/TokenCard/TokenCard.tsx
 #: src/pages/Dashboard/DashboardPageTitle.tsx
 msgid "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
 msgstr ""
@@ -7971,6 +8050,10 @@ msgstr "マーケットスワップ失敗"
 msgid "HoudiniSwap"
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "dynamically allocates its liquidity to the highest-utilised markets, maximising capital efficiency and annualized performance"
+msgstr ""
+
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Error occurred. Please try again"
@@ -8066,6 +8149,7 @@ msgstr "無効なトークン indexToken: \"{0}\" collateralToken: \"{1}\""
 msgid "Withdraw Fee"
 msgstr ""
 
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Alerts"
 msgstr ""
@@ -8086,7 +8170,10 @@ msgstr ""
 msgid "365d estimate based on past {daysConsidered}d APY."
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. It's recommended to keep {1} in {2} for transactions, or switch your gas token in settings."
+msgstr ""
+
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum APR:"
 msgstr "ArbitrumのAPR(実質年利)"
@@ -8099,7 +8186,6 @@ msgstr ""
 msgid "Projects integrated with GMX."
 msgstr "GMXと統合されているプロジェクト"
 
-#: src/components/Glp/GlpSwap.jsx
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Escrowed GMX APR"
 msgstr "esGMXのAPR(実質年利)"
@@ -8225,6 +8311,10 @@ msgstr ""
 msgid "Stop Loss PnL"
 msgstr ""
 
+#: src/components/TVChartContainer/constants.ts
+msgid "Market - Long Dec."
+msgstr ""
+
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing {balanceFormatted}  to Main Account"
 msgstr ""
@@ -8345,6 +8435,7 @@ msgid "LAST PRICE"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
 msgstr ""
 
@@ -8360,6 +8451,10 @@ msgstr ""
 
 #: src/pages/Stake/ClaimModal.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming."
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Claim funds"
 msgstr ""
 
 #: src/components/Synthetics/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
@@ -8401,6 +8496,10 @@ msgstr ""
 msgid "About"
 msgstr "内容"
 
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "This may take a few minutes."
+msgstr ""
+
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Accrued positive funding fees in positions not yet claimable.<0/><1/>They become available after modifying the position by increasing or decreasing it, depositing or withdrawing collateral, or settling the fees using the \"Settle\" button."
 msgstr ""
@@ -8418,7 +8517,6 @@ msgid "High Swap Price Impact"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.jsx
-#: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
@@ -8476,7 +8574,6 @@ msgstr "ポジションをシェアする"
 
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
-#: src/components/Exchange/SwapBox.jsx
 msgid "Min leverage: 1.1x"
 msgstr "最小レバレッジ: 1.1倍"
 
@@ -8527,6 +8624,14 @@ msgstr ""
 msgid "Execution prices for increasing longs and<0/>decreasing shorts."
 msgstr ""
 
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "It will take a couple of minutes to be reflected. Please check back later."
+msgstr ""
+
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "Processing your claim…"
+msgstr ""
+
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
@@ -8547,6 +8652,10 @@ msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.jsx
+msgid "Please <0>read here</0> for more information."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -8609,6 +8718,10 @@ msgstr ""
 msgid "Partial Liquidation"
 msgstr "部分的清算"
 
+#: src/components/Synthetics/GmxAccountModal/AvailableToTradeAssetsView.tsx
+msgid "Gmx Account"
+msgstr ""
+
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "24h Volume"
@@ -8616,6 +8729,10 @@ msgstr "24時間取引高"
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
+msgstr ""
+
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "Claimed {0} successfully."
 msgstr ""
 
 #: src/components/Synthetics/TwapRows/TwapRows.tsx
@@ -8649,6 +8766,10 @@ msgstr ""
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H VOL."
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Accept Claim Terms"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
@@ -8731,6 +8852,10 @@ msgid "This position could be liquidated, excluding any price movement, due to f
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
+msgid "Gemini Wallet is not supported for Express or One-Click trading."
+msgstr ""
+
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
 msgstr ""
 
@@ -8803,6 +8928,11 @@ msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"
+msgstr ""
+
+#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "Loading"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.jsx
@@ -8938,6 +9068,10 @@ msgstr ""
 msgid "Update TWAP Part"
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
+msgid "How does GLV earn yield, and where do I see my earnings?"
+msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Please switch to {0} to create your referral code. It will work across all other networks."
 msgstr ""
@@ -8949,6 +9083,10 @@ msgstr "アカウント移転を完了させる"
 
 #: src/pages/Stake/ClaimModal.tsx
 msgid "Claim Rewards"
+msgstr ""
+
+#: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
+msgid "Copy Address"
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -8965,10 +9103,6 @@ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "For detailed stats:"
-msgstr ""
-
-#: src/pages/BuyGlp/BuyGlp.jsx
-msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverage trading."
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx

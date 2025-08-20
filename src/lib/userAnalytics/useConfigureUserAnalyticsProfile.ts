@@ -8,7 +8,7 @@ import { USD_DECIMALS } from "config/factors";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
-import { useReferralCodeFromUrl } from "domain/referrals";
+import { useLocalReferralCode } from "domain/referrals";
 import { useAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats";
 import { useUtmParams } from "domain/utm";
 import { useChainId } from "lib/chains";
@@ -19,13 +19,14 @@ import { useBowser } from "lib/useBowser";
 import useRouteQuery from "lib/useRouteQuery";
 import useWallet from "lib/wallets/useWallet";
 
-import { SESSION_ID_KEY, userAnalytics } from "./UserAnalytics";
+import { SESSION_ID_KEY, setSessionId } from "./sessionId";
+import { userAnalytics } from "./UserAnalytics";
 
 export function useConfigureUserAnalyticsProfile() {
   const history = useHistory();
   const query = useRouteQuery();
   const currentLanguage = useLingui().i18n.locale;
-  const referralCode = useReferralCodeFromUrl();
+  const localReferralCode = useLocalReferralCode();
   const utmParams = useUtmParams();
   const [showDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const { chainId } = useChainId();
@@ -67,7 +68,7 @@ export function useConfigureUserAnalyticsProfile() {
       const sessionIdParam = query.get(SESSION_ID_KEY);
 
       if (sessionIdParam) {
-        userAnalytics.setSessionId(sessionIdParam);
+        setSessionId(sessionIdParam);
         query.delete(SESSION_ID_KEY);
         isUrlParamsChanged = true;
       }
@@ -105,17 +106,16 @@ export function useConfigureUserAnalyticsProfile() {
   }, [active, ordersCount, bowser]);
 
   useEffect(() => {
-    if (last30DVolume === undefined || totalVolume === undefined) {
-      return;
-    }
-
     userAnalytics.pushProfileProps({
       last30DVolume: formatAmountForMetrics(last30DVolume, USD_DECIMALS, "toSecondOrderInt"),
       totalVolume: formatAmountForMetrics(totalVolume, USD_DECIMALS, "toSecondOrderInt"),
       languageCode: currentLanguage,
       isChartPositionsEnabled: shouldShowPositionLines,
-      ref: referralCode,
-      utm: utmParams?.utmString,
+      ref: localReferralCode?.userReferralCodeString,
+      utm_source: utmParams?.source,
+      utm_campaign: utmParams?.campaign,
+      utm_term: utmParams?.term,
+      utm_content: utmParams?.content,
       ExpressEnabled: expressOrdersEnabled,
       Express1CTEnabled: Boolean(subaccount),
       showLeverageSlider: isLeverageSliderEnabled,
@@ -128,8 +128,6 @@ export function useConfigureUserAnalyticsProfile() {
     currentLanguage,
     last30DVolume,
     totalVolume,
-    referralCode,
-    utmParams?.utmString,
     shouldShowPositionLines,
     expressOrdersEnabled,
     subaccount,
@@ -138,6 +136,11 @@ export function useConfigureUserAnalyticsProfile() {
     isPnlInLeverage,
     isAutoCancelTPSL,
     externalSwapsEnabled,
+    localReferralCode?.userReferralCodeString,
+    utmParams?.source,
+    utmParams?.campaign,
+    utmParams?.term,
+    utmParams?.content,
   ]);
 
   useEffect(() => {

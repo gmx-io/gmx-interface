@@ -1,5 +1,7 @@
 import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "./fees";
 import { DecreasePositionSwapType, OrderType } from "./orders";
+import { SwapStrategyForIncreaseOrders } from "./swapStrategy";
+import { TokensData } from "./tokens";
 
 export enum TradeType {
   Long = "Long",
@@ -44,7 +46,7 @@ export type SwapAmounts = {
   usdOut: bigint;
   priceIn: bigint;
   priceOut: bigint;
-  swapPathStats: SwapPathStats | undefined;
+  swapStrategy: SwapStrategyForIncreaseOrders;
   minOutputAmount: bigint;
   uiFeeUsd?: bigint;
 };
@@ -56,8 +58,7 @@ export type IncreasePositionAmounts = {
   collateralDeltaAmount: bigint;
   collateralDeltaUsd: bigint;
 
-  swapPathStats: SwapPathStats | undefined;
-  externalSwapQuote: ExternalSwapQuote | undefined;
+  swapStrategy: SwapStrategyForIncreaseOrders;
   indexTokenAmount: bigint;
 
   sizeDeltaUsd: bigint;
@@ -257,6 +258,7 @@ export type TradeFeesType = "swap" | "increase" | "decrease" | "edit";
 
 export enum ExternalSwapAggregator {
   OpenOcean = "openOcean",
+  BotanixStaking = "botanixStaking",
 }
 
 export type ExternalSwapQuote = {
@@ -279,6 +281,20 @@ export type ExternalSwapQuote = {
     estimatedGas: bigint;
     estimatedExecutionFee: bigint;
   };
+};
+
+export type ExternalSwapPath = {
+  aggregator: ExternalSwapAggregator;
+  inTokenAddress: string;
+  outTokenAddress: string;
+};
+
+export type ExternalSwapQuoteParams = {
+  chainId: number;
+  receiverAddress: string;
+  gasPrice: bigint | undefined;
+  tokensData: TokensData | undefined;
+  botanixStakingAssetsPerShare: bigint | undefined;
 };
 
 export type ExternalSwapCalculationStrategy = "byFromValue" | "leverageBySize";
@@ -334,4 +350,5 @@ export type TradeSearchParams = {
   pool?: string;
   collateral?: string;
   market?: string;
+  chainId?: string;
 };

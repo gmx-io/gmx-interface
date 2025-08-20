@@ -10,7 +10,7 @@ import { OrderMetricId } from "lib/metrics/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
-import { convertTokenAddress } from "sdk/configs/tokens";
+import type { IWithdrawalUtils } from "typechain-types/ExchangeRouter";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -51,9 +51,6 @@ export async function createWithdrawalTxn(chainId: ContractsChainId, signer: Sig
 
   const wntAmount = p.executionFee;
 
-  const initialLongTokenAddress = convertTokenAddress(chainId, p.initialLongTokenAddress, "wrapped");
-  const initialShortTokenAddress = convertTokenAddress(chainId, p.initialShortTokenAddress, "wrapped");
-
   const minLongTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minLongTokenAmount);
   const minShortTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minShortTokenAmount);
 
@@ -64,21 +61,21 @@ export async function createWithdrawalTxn(chainId: ContractsChainId, signer: Sig
       method: "createWithdrawal",
       params: [
         {
-          receiver: p.account,
-          callbackContract: ethers.ZeroAddress,
-          market: p.marketTokenAddress,
-          initialLongToken: initialLongTokenAddress,
-          initialShortToken: initialShortTokenAddress,
-          longTokenSwapPath: p.longTokenSwapPath,
-          shortTokenSwapPath: p.shortTokenSwapPath,
-          marketTokenAmount: p.marketTokenAmount,
+          addresses: {
+            receiver: p.account,
+            callbackContract: ethers.ZeroAddress,
+            market: p.marketTokenAddress,
+            longTokenSwapPath: p.longTokenSwapPath,
+            shortTokenSwapPath: p.shortTokenSwapPath,
+            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
+          },
           minLongTokenAmount,
           minShortTokenAmount,
           shouldUnwrapNativeToken: isNativeWithdrawal,
           executionFee: p.executionFee,
           callbackGasLimit: 0n,
-          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
-        },
+          dataList: [],
+        } satisfies IWithdrawalUtils.CreateWithdrawalParamsStruct,
       ],
     },
   ];

@@ -10,7 +10,7 @@ import { OrderInfo } from "sdk/types/orders";
 import { getOrderKeys } from "sdk/utils/orders";
 
 import { selectExpressGlobalParams } from "../selectors/expressSelectors";
-import { selectChainId, selectSrcChainId } from "../selectors/globalSelectors";
+import { selectChainId, selectSrcChainId, selectSubaccountForChainAction } from "../selectors/globalSelectors";
 import {
   makeSelectOrderErrorByOrderKey,
   makeSelectOrdersWithErrorsByPositionKey,
@@ -42,6 +42,7 @@ export function useCancelOrder(order: OrderInfo) {
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const subaccount = useSelector(selectSubaccountForChainAction);
 
   const isCancelOrderProcessing = cancellingOrdersKeys.includes(order.key);
 
@@ -69,6 +70,7 @@ export function useCancelOrder(order: OrderInfo) {
             estimationMethod: "approximate",
             provider,
             isGmxAccount: srcChainId !== undefined,
+            subaccount,
           })
         : undefined;
 
@@ -85,7 +87,17 @@ export function useCancelOrder(order: OrderInfo) {
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== order.key));
       });
     },
-    [chainId, globalExpressParams, makeOrderTxnCallback, order, provider, setCancellingOrdersKeys, signer, srcChainId]
+    [
+      chainId,
+      globalExpressParams,
+      makeOrderTxnCallback,
+      order,
+      provider,
+      setCancellingOrdersKeys,
+      signer,
+      srcChainId,
+      subaccount,
+    ]
   );
 
   return [isCancelOrderProcessing, onCancelOrder] as const;

@@ -7,6 +7,7 @@ import "./TokenIcon.scss";
 
 function getIconUrlPath(symbol, size: 24 | 40) {
   if (!symbol || !size) return;
+
   return `ic_${symbol.toLowerCase()}_${size}.svg`;
 }
 
@@ -21,7 +22,7 @@ type Props = {
 
 function TokenIcon({ className, symbol, displaySize, importSize = 24, badge, chainIdBadge }: Props) {
   const iconPath = getIconUrlPath(symbol, importSize);
-  const classNames = cx("Token-icon inline", className);
+  const classNames = cx("Token-icon inline rounded-full", className);
 
   if (!iconPath) return <></>;
 

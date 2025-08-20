@@ -18,6 +18,7 @@ import {
   selectOrdersInfoData,
   selectPositionsInfoData,
   selectSrcChainId,
+  selectSubaccountForChainAction,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import {
@@ -415,6 +416,7 @@ function useOrdersControl() {
   const [orderTypesFilter, setOrderTypesFilter] = useState<OrderTypeFilterValue[]>([]);
   const ordersInfoData = useSelector(selectOrdersInfoData);
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const subaccount = useSelector(selectSubaccountForChainAction);
 
   const onCancelSelectedOrders = useCallback(
     async function cancelSelectedOrders() {
@@ -438,6 +440,7 @@ function useOrdersControl() {
         estimationMethod: "approximate",
         provider,
         isGmxAccount: srcChainId !== undefined,
+        subaccount,
       });
 
       sendBatchOrderTxn({
@@ -470,6 +473,7 @@ function useOrdersControl() {
       setCanellingOrdersKeys,
       signer,
       srcChainId,
+      subaccount,
     ]
   );
 
@@ -498,6 +502,7 @@ function useOrdersControl() {
         estimationMethod: "approximate",
         provider,
         isGmxAccount: srcChainId !== undefined,
+        subaccount,
       });
 
       sendBatchOrderTxn({
@@ -523,6 +528,7 @@ function useOrdersControl() {
       setCanellingOrdersKeys,
       signer,
       srcChainId,
+      subaccount,
     ]
   );
 

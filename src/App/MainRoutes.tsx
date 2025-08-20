@@ -45,6 +45,8 @@ import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { TestPermits } from "pages/TestPermits/TestPermits";
 import { abis } from "sdk/abis";
 
+import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
+
 const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
 export const UiPage = () => (
   <Suspense fallback={<Trans>Loading...</Trans>}>
@@ -98,7 +100,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
   return (
     <Switch>
       <Route exact path="/">
-        <Redirect to="/trade" />
+        <RedirectWithQuery to="/trade" />
       </Route>
       <Route exact path="/price_impact_rebates_stats">
         <PriceImpactRebatesStatsPage />
@@ -112,11 +114,11 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </SyntheticsStateContextProvider>
       </Route>
       {/* redirect from previous dashboard url */}
-      <Redirect exact from="/dashboard" to="/stats" />
+      <RedirectWithQuery exact from="/dashboard" to="/stats" />
       <Route exact path="/monitor/v1">
         <Stats />
       </Route>
-      <Redirect exact from="/monitor/v2" to="/monitor" />
+      <RedirectWithQuery exact from="/monitor/v2" to="/monitor" />
       <Route exact path="/monitor">
         <SyntheticsStats />
       </Route>
@@ -126,7 +128,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </SyntheticsStateContextProvider>
       </Route>
       {/* redirect from previous stake(earn) url */}
-      <Redirect exact from="/earn" to="/stake" />
+      <RedirectWithQuery exact from="/earn" to="/stake" />
       <Route exact path="/buy">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="buy">
           <Buy />
@@ -150,7 +152,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
           <SyntheticsPage openSettings={openSettings} />
         </SyntheticsStateContextProvider>
       </Route>
-      <Redirect from="/v2" to="/trade" />
+      <RedirectWithQuery from="/v2" to="/trade" />
       <Route exact path="/buy_glp">
         <BuyGlp />
       </Route>

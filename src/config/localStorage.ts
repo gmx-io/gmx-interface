@@ -29,6 +29,7 @@ export const ORACLE_KEEPER_INSTANCES_CONFIG_KEY = "oracle-keeper-instances-confi
 export const SORTED_MARKETS_KEY = "sorted-markets-key";
 export const TWAP_NUMBER_OF_PARTS_KEY = "twap-number-of-parts";
 export const TWAP_INFO_CARD_CLOSED_KEY = "twap-info-card-closed";
+export const UTM_PARAMS_KEY = "utm_params";
 
 export const SYNTHETICS_TRADE_OPTIONS = "synthetics-trade-options";
 export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY = "synthetics-acceptable-price-impact-buffer";
@@ -45,6 +46,7 @@ export const PRODUCTION_PREVIEW_KEY = "production-preview";
 export const REQUIRED_UI_VERSION_KEY = "required-ui-version";
 export const DEBUG_SWAP_SETTINGS_KEY = "debug-swap-settings";
 export const EXTERNAL_SWAPS_ENABLED_KEY = "external-swaps-enabled";
+export const EXTERNAL_SWAPS_WAS_FORCE_ENABLED_KEY = "external-swaps-was-force-enabled";
 export const DEBUG_SWAP_MARKETS_CONFIG_KEY = "debug-swap-markets-config";
 
 export const ONE_CLICK_TRADING_PROMO_HIDDEN_KEY = "one-click-trading-promo-hidden";
@@ -62,11 +64,15 @@ export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";
 
 export const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
+export const PERMITS_DISABLED_KEY = "permits-disabled";
 
 export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
 export const RPC_PROVIDER_KEY = "rpc-provider";
 export const IS_LARGE_ACCOUNT_KEY = "is-large-account";
+
+export const IS_SOURCE_BASE_ALLOWED_KEY = "is-source-base-allowed";
+export const IS_SOURCE_BASE_ALLOWED_NOTIFICATION_SHOWN_KEY = "is-source-base-allowed-notification-shown";
 
 /**
  * @deprecated
@@ -80,6 +86,7 @@ export const EXPRESS_TRADING_BANNER_DISMISSED_KEY = "express-trading-banner-dism
 
 export const SUBACCOUNT_APPROVAL_KEY = "subaccount-approval";
 export const TOKEN_PERMITS_KEY = "token-permits";
+export const CLAIM_TERMS_ACCEPTED_KEY = "claim-terms-accepted";
 
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
@@ -202,4 +209,13 @@ export function getExpressTradingPromoHiddenKey(chainId: number) {
 
 export function getFromTokenIsGmxAccountKey(chainId: number) {
   return [chainId, "from-token-is-gmx-account"];
+}
+
+export function getClaimTermsAcceptedKey(
+  chainId: number,
+  account: string | undefined,
+  distributionId: bigint,
+  claimTerms: string
+) {
+  return `${chainId}:${account}:${distributionId}:${claimTerms}-${CLAIM_TERMS_ACCEPTED_KEY}`;
 }

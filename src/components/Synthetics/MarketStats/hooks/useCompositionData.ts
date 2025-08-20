@@ -196,7 +196,7 @@ const getMarketBackingCompositionData = (marketInfo: MarketInfo): BackingComposi
 };
 
 export const getCompositionPercentage = <T extends bigint | number>(value: T, sum: T) => {
-  if (sum === 0 || sum === 0n) {
+  if (Number(sum) === 0 || Number(value) === 0) {
     return 0;
   }
 

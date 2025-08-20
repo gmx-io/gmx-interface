@@ -5,10 +5,15 @@ import { toast } from "react-toastify";
 import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localStorage";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { selectIsSponsoredCallAvailable } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectTradeboxIsFromTokenGmxAccount } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/utils";
 import { removeSubaccountExpressTxn, removeSubaccountWalletTxn } from "domain/synthetics/subaccount";
 import { generateSubaccount } from "domain/synthetics/subaccount/generateSubaccount";
-import { SignedSubbacountApproval, Subaccount, SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
+import type {
+  SignedSubacсountApproval,
+  Subaccount,
+  SubaccountSerializedConfig,
+} from "domain/synthetics/subaccount/types";
 import { useSubaccountOnchainData } from "domain/synthetics/subaccount/useSubaccountOnchainData";
 import {
   getActualApproval,
@@ -47,7 +52,10 @@ export type SubaccountState = {
   subaccount: Subaccount | undefined;
   subaccountActivationState: SubaccountActivationState | undefined;
   subaccountDeactivationState: SubaccountDeactivationState | undefined;
-  updateSubaccountSettings: (params: { nextRemainigActions?: bigint; nextRemainingSeconds?: bigint }) => Promise<void>;
+  updateSubaccountSettings: (params: {
+    nextRemainigActions?: bigint;
+    nextRemainingSeconds?: bigint;
+  }) => Promise<boolean>;
   resetSubaccountApproval: () => void;
   tryEnableSubaccount: () => Promise<boolean>;
   tryDisableSubaccount: () => Promise<boolean>;
@@ -100,23 +108,28 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
     const subaccountSigner = getSubaccountSigner(subaccountConfig, signer?.address, signer?.provider);
 
-    const composedSubbacount: Subaccount = {
+    const composedSubacсount: Subaccount = {
       address: subaccountConfig.address,
       signer: subaccountSigner,
       onchainData: subaccountData,
       signedApproval: getActualApproval({
+        chainId,
         address: subaccountConfig.address,
         onchainData: subaccountData,
         signedApproval,
       }),
+      chainId,
+      signerChainId: srcChainId ?? chainId,
     };
 
-    if (!getIsSubaccountActive(composedSubbacount)) {
+    if (!getIsSubaccountActive(composedSubacсount)) {
       return undefined;
     }
 
-    return composedSubbacount;
-  }, [signedApproval, signer?.address, signer?.provider, subaccountConfig, subaccountData]);
+    return composedSubacсount;
+  }, [chainId, signedApproval, signer?.address, signer?.provider, srcChainId, subaccountConfig, subaccountData]);
+
+  const calcSelector = useCalcSelector();
 
   const updateSubaccountSettings = useCallback(
     async function updateSubaccountSettings({
@@ -125,9 +138,9 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     }: {
       nextRemainigActions?: bigint;
       nextRemainingSeconds?: bigint;
-    }) {
+    }): Promise<boolean> {
       if (!signer || !subaccount?.address || !provider) {
-        return;
+        return false;
       }
 
       helperToast.success(
@@ -135,6 +148,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           <TransactionStatus status="loading" text={t`Updating settings...`} />
         </StatusNotification>
       );
+
+      const isGmxAccount = calcSelector(selectTradeboxIsFromTokenGmxAccount);
 
       try {
         const signedSubaccountApproval = await signUpdatedSubaccountSettings({
@@ -144,6 +159,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           subaccount,
           nextRemainigActions,
           nextRemainingSeconds,
+          isGmxAccount,
         });
 
         helperToast.success(
@@ -152,6 +168,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           </StatusNotification>
         );
         setSignedApproval(signedSubaccountApproval);
+        return true;
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
@@ -162,15 +179,16 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
             <TransactionStatus status="error" text={t`Failed to update settings`} />
           </StatusNotification>
         );
+        return false;
       }
     },
-    [signer, subaccount, provider, chainId, setSignedApproval]
+    [signer, subaccount, provider, calcSelector, chainId, setSignedApproval]
   );
 
   const resetSubaccountApproval = useCallback(() => {
-    setSignedApproval(undefined);
+    resetStoredApproval();
     refreshSubaccountData();
-  }, [refreshSubaccountData, setSignedApproval]);
+  }, [refreshSubaccountData, resetStoredApproval]);
 
   const tryEnableSubaccount = useCallback(async () => {
     if (!provider || !signer) {
@@ -213,6 +231,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       return false;
     }
 
+    const isGmxAccount = calcSelector(selectTradeboxIsFromTokenGmxAccount);
+
     try {
       setSubaccountActivationState(SubaccountActivationState.ApprovalSigning);
 
@@ -221,6 +241,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         signer,
         provider,
         subaccountAddress: config!.address,
+        isGmxAccount,
       });
 
       setSubaccountActivationState(SubaccountActivationState.Success);
@@ -239,9 +260,16 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       metrics.pushError(error, "subaccount.signDefaultApproval");
       return false;
     }
-  }, [provider, signer, subaccountConfig, setSubaccountConfig, resetStoredConfig, chainId, setSignedApproval]);
-
-  const calcSelector = useCalcSelector();
+  }, [
+    provider,
+    signer,
+    subaccountConfig,
+    calcSelector,
+    setSubaccountConfig,
+    resetStoredConfig,
+    chainId,
+    setSignedApproval,
+  ]);
 
   const tryDisableSubaccount = useCallback(async (): Promise<boolean> => {
     if (!signer || !subaccount?.address || !account) {
@@ -259,7 +287,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
     let removeSubaccount: () => Promise<void>;
 
-    if (srcChainId) {
+    if (srcChainId !== undefined) {
       const globalExpressParams = calcSelector(selectExpressGlobalParams);
       const isSponsoredCallAvailable = calcSelector(selectIsSponsoredCallAvailable);
 
@@ -503,7 +531,7 @@ function useStoredSubaccountData(chainId: number, account: string | undefined) {
     }
   );
 
-  const [signedApproval, setSignedApproval] = useLocalStorageSerializeKey<SignedSubbacountApproval | undefined>(
+  const [signedApproval, setSignedApproval] = useLocalStorageSerializeKey<SignedSubacсountApproval | undefined>(
     getSubaccountApprovalKey(chainId, account),
     undefined,
     {
@@ -536,15 +564,15 @@ function useStoredSubaccountData(chainId: number, account: string | undefined) {
     }
   );
 
+  const resetStoredApproval = useCallback(() => {
+    setSignedApproval(null as any);
+  }, [setSignedApproval]);
+
+  const resetStoredConfig = useCallback(() => {
+    setSubaccountConfig(null as any);
+  }, [setSubaccountConfig]);
+
   return useMemo(() => {
-    function resetStoredApproval() {
-      setSignedApproval(null as any);
-    }
-
-    function resetStoredConfig() {
-      setSubaccountConfig(null as any);
-    }
-
     return {
       subaccountConfig,
       signedApproval,
@@ -553,5 +581,12 @@ function useStoredSubaccountData(chainId: number, account: string | undefined) {
       resetStoredApproval,
       resetStoredConfig,
     };
-  }, [subaccountConfig, signedApproval, setSubaccountConfig, setSignedApproval]);
+  }, [
+    subaccountConfig,
+    signedApproval,
+    setSubaccountConfig,
+    setSignedApproval,
+    resetStoredApproval,
+    resetStoredConfig,
+  ]);
 }

@@ -1,6 +1,7 @@
 import { Abi, erc20Abi } from "viem";
 
 import ArbitrumNodeInterface from "./ArbitrumNodeInterface.json";
+import ClaimHandler from "./ClaimHandler.json";
 import CustomErrors from "./CustomErrors.json";
 import DataStore from "./DataStore.json";
 import ERC20PermitInterface from "./ERC20PermitInterface.json";
@@ -39,6 +40,7 @@ import RewardRouter from "./RewardRouter.json";
 import RewardTracker from "./RewardTracker.json";
 import RouterV2 from "./Router-v2.json";
 import Router from "./Router.json";
+import StBTC from "./StBTC.json";
 import SubaccountGelatoRelayRouter from "./SubaccountGelatoRelayRouter.json";
 import SubaccountRouter from "./SubaccountRouter.json";
 import SyntheticsReader from "./SyntheticsReader.json";
@@ -115,7 +117,13 @@ export type AbiId =
   | "WETH"
   | "YieldFarm"
   | "YieldToken"
-  | "AbstractSubaccountApprovalNonceable";
+  | "AbstractSubaccountApprovalNonceable"
+  | "SubaccountGelatoRelayRouter"
+  | "ERC20PermitInterface"
+  | "GelatoRelayRouter"
+  | "ArbitrumNodeInterface"
+  | "StBTC"
+  | "ClaimHandler";
 
 /** Copied from ethers to enable compatibility with GMX UI */
 interface JsonFragmentType {
@@ -217,4 +225,6 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
       type: "function",
     },
   ],
+  StBTC: StBTC.abi,
+  ClaimHandler: ClaimHandler.abi,
 } satisfies Record<AbiId, any> as any;

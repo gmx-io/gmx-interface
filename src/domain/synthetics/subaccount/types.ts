@@ -1,5 +1,7 @@
 import type { Wallet } from "ethers";
 
+import type { AnyChainId, ContractsChainId } from "config/chains";
+
 import type { SubaccountOnchainData } from "./useSubaccountOnchainData";
 
 export type SubaccountSerializedConfig = {
@@ -10,8 +12,10 @@ export type SubaccountSerializedConfig = {
 
 export type Subaccount = {
   address: string;
+  chainId: ContractsChainId;
+  signerChainId: AnyChainId;
   signer: Wallet;
-  signedApproval: SignedSubbacountApproval;
+  signedApproval: SignedSubacсountApproval;
   onchainData: SubaccountOnchainData;
 };
 
@@ -22,18 +26,22 @@ export type SubaccountApproval = {
   expiresAt: bigint;
   maxAllowedCount: bigint;
   actionType: string;
+  desChainId: ContractsChainId;
   deadline: bigint;
-  integrationId: string | undefined;
+  integrationId: string;
 };
 
-export type SignedSubbacountApproval = SubaccountApproval & {
+export type SignedSubacсountApproval = SubaccountApproval & {
   signature: string;
   signedAt: number;
+  signatureChainId: AnyChainId;
+  subaccountRouterAddress: string;
 };
 
 export type SubaccountValidations = {
   isExpired: boolean;
   isActionsExceeded: boolean;
   isNonceExpired: boolean;
+  isApprovalInvalid: boolean;
   isValid: boolean;
 };

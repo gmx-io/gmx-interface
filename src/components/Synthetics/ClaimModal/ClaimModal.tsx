@@ -275,13 +275,24 @@ export function ClaimModalMultichain(p: Props) {
         disabled: true,
       };
     }
-    {
+
+    if (!expressTxnParamsAsyncResult.data) {
       return {
-        text: t`Claim`,
-        onClick: onSubmit,
+        text: (
+          <>
+            <Trans>Loading</Trans>
+            <ImSpinner2 className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
       };
     }
-  }, [isSubmitting, onSubmit]);
+
+    return {
+      text: t`Claim`,
+      onClick: onSubmit,
+    };
+  }, [expressTxnParamsAsyncResult.data, isSubmitting, onSubmit]);
 
   return <ClaimModalComponent isVisible={isVisible} onClose={onClose} buttonState={buttonState} />;
 }
@@ -289,7 +300,7 @@ export function ClaimModalMultichain(p: Props) {
 function ClaimModalComponent(p: {
   isVisible: boolean;
   onClose: () => void;
-  buttonState: { text: string; onClick?: () => void; disabled?: boolean };
+  buttonState: { text: React.ReactNode; onClick?: () => void; disabled?: boolean };
 }) {
   const { isVisible, onClose, buttonState } = p;
 

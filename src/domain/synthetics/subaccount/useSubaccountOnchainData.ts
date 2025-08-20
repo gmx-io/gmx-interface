@@ -20,6 +20,7 @@ export type SubaccountOnchainData = {
   currentActionsCount: bigint;
   expiresAt: bigint;
   approvalNonce: bigint;
+  multichainApprovalNonce: bigint;
   integrationId: string | undefined;
 };
 
@@ -52,10 +53,18 @@ export function useSubaccountOnchainData(
 
       return {
         subaccountRelayRouter: {
-          contractAddress: srcChainId
-            ? getContract(chainId, "MultichainSubaccountRouter")
-            : getContract(chainId, "SubaccountGelatoRelayRouter"),
-          abiId: "SubaccountGelatoRelayRouter",
+          contractAddress: getContract(chainId, "SubaccountGelatoRelayRouter"),
+          abiId: "AbstractSubaccountApprovalNonceable",
+          calls: {
+            subaccountApproval: {
+              methodName: "subaccountApprovalNonces",
+              params: [account],
+            },
+          },
+        },
+        multichainSubaccountRelayRouter: {
+          contractAddress: getContract(chainId, "MultichainSubaccountRouter"),
+          abiId: "AbstractSubaccountApprovalNonceable",
           calls: {
             subaccountApproval: {
               methodName: "subaccountApprovalNonces",
@@ -97,6 +106,10 @@ export function useSubaccountOnchainData(
       const currentActionsCount = BigInt(res.data.dataStore.currentActionsCount.returnValues[0]);
       const expiresAt = BigInt(res.data.dataStore.expiresAt.returnValues[0]);
       const approvalNonce = BigInt(res.data.subaccountRelayRouter.subaccountApproval.returnValues[0]);
+      const multichainApprovalNonce = BigInt(
+        res.data.multichainSubaccountRelayRouter.subaccountApproval.returnValues[0]
+      );
+
       const integrationId = res.data.dataStore.integrationId.returnValues[0];
 
       return {
@@ -105,6 +118,7 @@ export function useSubaccountOnchainData(
         currentActionsCount,
         expiresAt,
         approvalNonce,
+        multichainApprovalNonce,
         integrationId,
       };
     },

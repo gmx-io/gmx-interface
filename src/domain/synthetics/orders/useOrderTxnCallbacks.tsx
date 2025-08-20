@@ -11,13 +11,21 @@ import {
 } from "context/SyntheticsEvents";
 import { selectOrdersInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getIsPossibleExternalSwapError } from "domain/synthetics/externalSwaps/utils";
+import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
+import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { getPositionKey } from "domain/synthetics/positions/utils";
 import { getRemainingSubaccountActions, Subaccount } from "domain/synthetics/subaccount";
+import { validateTokenPermitSignature } from "domain/tokens/permitUtils";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
+import {
+  getInvalidPermitSignatureError,
+  getIsPermitSignatureErrorOnSimulation,
+  getIsPossibleExternalSwapError,
+} from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import {
+  metrics,
   OrderMetricId,
   sendOrderSimulatedMetric,
   sendOrderTxnSubmittedMetric,
@@ -36,6 +44,7 @@ import {
   DecreasePositionOrderParams,
   getBatchRequiredActions,
   getBatchTotalExecutionFee,
+  getBatchTotalPayCollateralAmount,
   getIsTwapOrderPayload,
   IncreasePositionOrderParams,
   SwapOrderParams,
@@ -62,11 +71,14 @@ export function useOrderTxnCallbacks() {
     setPendingPosition,
     setPendingOrderUpdate,
     updatePendingExpressTxn,
+    setPendingExpressTxn,
     setPendingFundingFeeSettlement,
   } = useSyntheticsEvents();
   const { chainId } = useChainId();
   const { showDebugValues, setIsSettingsVisible } = useSettings();
   const ordersInfoData = useSelector(selectOrdersInfoData);
+  const { setOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
+  const { setIsPermitsDisabled, resetTokenPermits } = useTokenPermitsContext();
   const tokensData = useSelector(selectTokensData);
   const blockNumber = useBlockNumber(chainId);
 
@@ -99,6 +111,16 @@ export function useOrderTxnCallbacks() {
         const createdAt = Date.now();
 
         const pendingOrders = getBatchPendingOrders(e.data.batchParams, ordersInfoData);
+
+        const optimisticBatchPayAmounts = getOptimisticBatchPayAmounts(e.data);
+
+        setOptimisticTokensBalancesUpdates((old) => {
+          const newState = { ...old };
+          Object.entries(optimisticBatchPayAmounts).forEach(([tokenAddress, amount]) => {
+            newState[tokenAddress] = { diff: -amount, isPending: true };
+          });
+          return newState;
+        });
 
         if (mainActionType === "update" && batchParams.updateOrderParams[0]) {
           const updateOrderParams = batchParams.updateOrderParams[0];
@@ -164,15 +186,21 @@ export function useOrderTxnCallbacks() {
         );
 
         if (expressParams) {
-          updatePendingExpressTxn({
+          setPendingExpressTxn({
             key: getExpressParamsKey(expressParams),
             subaccountApproval: expressParams.subaccount?.signedApproval,
             isSponsoredCall: expressParams.isSponsoredCall,
             tokenPermits: expressParams.relayParamsPayload.tokenPermits,
+            payTokenAddresses: Object.keys(optimisticBatchPayAmounts),
             pendingOrdersKeys: pendingOrders.map(getPendingOrderKey),
             pendingPositionsKeys: pendingPositions.map((p) => p.positionKey),
+            estimatedExecutionFee: expressParams.executionFeeAmount,
+            estimatedExecutionGasLimit: expressParams.executionGasLimit,
             metricId: ctx.metricId,
             createdAt: Date.now(),
+            taskId: undefined,
+            isViewed: false,
+            isRelayerMetricSent: false,
             successMessage,
             errorMessage,
           });
@@ -268,11 +296,17 @@ export function useOrderTxnCallbacks() {
               ? ctx.onInternalSwapFallback
               : undefined;
 
+          const isPermitIssue =
+            Boolean(expressParams?.relayParamsPayload.tokenPermits?.length) &&
+            getIsPermitSignatureErrorOnSimulation(error);
+
           const toastParams = getTxnErrorToast(chainId, errorData, {
             defaultMessage: operationMessage,
             slippageInputId: ctx.slippageInputId,
             additionalContent: ctx.additionalErrorContent,
             isInternalSwapFallback: Boolean(fallbackToInternalSwap),
+            isPermitIssue: isPermitIssue,
+            setIsSettingsVisible,
           });
 
           helperToast.error(toastParams.errorContent, {
@@ -281,6 +315,25 @@ export function useOrderTxnCallbacks() {
 
           if (fallbackToInternalSwap) {
             fallbackToInternalSwap();
+          }
+
+          if (isPermitIssue) {
+            expressParams?.relayParamsPayload.tokenPermits.forEach((permit) => {
+              validateTokenPermitSignature(chainId, permit).then((validationResult) => {
+                metrics.pushError(
+                  getInvalidPermitSignatureError({
+                    isValid: validationResult.isValid,
+                    permit,
+                    recoveredAddress: validationResult.recoveredAddress,
+                    error: validationResult.error,
+                  }),
+                  "simulation.permitError"
+                );
+              });
+            });
+
+            setIsPermitsDisabled(true);
+            resetTokenPermits();
           }
 
           if (pendingOrderUpdate) {
@@ -295,7 +348,11 @@ export function useOrderTxnCallbacks() {
       blockNumber,
       chainId,
       ordersInfoData,
+      resetTokenPermits,
+      setIsPermitsDisabled,
       setIsSettingsVisible,
+      setOptimisticTokensBalancesUpdates,
+      setPendingExpressTxn,
       setPendingFundingFeeSettlement,
       setPendingOrder,
       setPendingOrderUpdate,
@@ -432,6 +489,27 @@ export function getPendingUpdateOrder(updateOrderParams: UpdateOrderTxnParams, o
   };
 }
 
+export function getOptimisticBatchPayAmounts({
+  expressParams,
+  batchParams,
+}: {
+  expressParams: ExpressTxnParams | undefined;
+  batchParams: BatchOrderTxnParams;
+}) {
+  const batchPayAmounts = getBatchTotalPayCollateralAmount(batchParams);
+
+  if (expressParams) {
+    const { gasPaymentTokenAddress, gasPaymentTokenAmount } = expressParams.gasPaymentParams;
+    if (gasPaymentTokenAddress in batchPayAmounts) {
+      batchPayAmounts[gasPaymentTokenAddress] += gasPaymentTokenAmount;
+    } else {
+      batchPayAmounts[gasPaymentTokenAddress] = gasPaymentTokenAmount;
+    }
+  }
+
+  return batchPayAmounts;
+}
+
 export function getPendingCreateOrder(
   createOrderPayload: CreateOrderTxnParams<IncreasePositionOrderParams | DecreasePositionOrderParams | SwapOrderParams>,
   isTwap = false
@@ -444,6 +522,11 @@ export function getPendingCreateOrder(
     swapPath: createOrderPayload.orderPayload.addresses.swapPath,
     sizeDeltaUsd: createOrderPayload.orderPayload.numbers.sizeDeltaUsd,
     minOutputAmount: createOrderPayload.orderPayload.numbers.minOutputAmount,
+    expectedOutputAmount:
+      "expectedOutputAmount" in createOrderPayload.params &&
+      createOrderPayload.params.expectedOutputAmount !== undefined
+        ? createOrderPayload.params.expectedOutputAmount
+        : 0n,
     triggerPrice: createOrderPayload.orderPayload.numbers.triggerPrice,
     acceptablePrice: createOrderPayload.orderPayload.numbers.acceptablePrice,
     autoCancel: createOrderPayload.orderPayload.autoCancel,
@@ -571,5 +654,5 @@ function hasExternalSwap(expressParams: ExpressTxnParams | undefined, batchParam
 }
 
 function getExpressParamsKey(expressParams: ExpressTxnParams) {
-  return `${expressParams.gasPaymentParams.totalRelayerFeeTokenAmount}`;
+  return `${expressParams.gasPaymentParams.gasPaymentTokenAmount}${expressParams.gasLimit}`;
 }

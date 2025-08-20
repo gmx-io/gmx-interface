@@ -44,6 +44,7 @@ export type Token = {
   isV1Available?: boolean;
   isPlatformToken?: boolean;
   isPlatformTradingToken?: boolean;
+  isStaking?: boolean;
   shouldResetAllowance?: boolean;
 };
 
@@ -108,6 +109,11 @@ export type SignedTokenPermit = {
   s: string;
   // token address
   token: string;
+  onchainParams: {
+    name: string;
+    version: string;
+    nonce: bigint;
+  };
 };
 
 export type InfoTokens = {

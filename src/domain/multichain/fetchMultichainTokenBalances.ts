@@ -35,7 +35,6 @@ export async function fetchMultichainTokenBalances(
     for (const tokenAddress of tokenAddresses) {
       if (tokenAddress === zeroAddress) {
         requestConfig[tokenAddress] = {
-          // TODO MLTCH there might not be a multicall contract on the source chain
           contractAddress: MULTICALLS_MAP[sourceChainId as SourceChainId],
           abiId: "Multicall",
           calls: {

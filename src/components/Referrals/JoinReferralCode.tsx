@@ -2,6 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { Contract, Wallet } from "ethers";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { ImSpinner2 } from "react-icons/im";
 import { encodeFunctionData, zeroAddress } from "viem";
 import { usePublicClient } from "wagmi";
 
@@ -14,16 +15,12 @@ import { type MultichainAction, MultichainActionType } from "domain/multichain/c
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals/hooks";
-import {
-  getRawRelayerParams,
-  getRelayerFeeParams,
-  RawRelayParamsPayload,
-  RelayParamsPayload,
-} from "domain/synthetics/express";
+import { getRawRelayerParams, RawRelayParamsPayload, RelayParamsPayload } from "domain/synthetics/express";
 import { signSetTraderReferralCode } from "domain/synthetics/express/expressOrderUtils";
 import { convertToUsd, getMidPrice } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
+import { helperToast } from "lib/helperToast";
 import { formatUsd, numberToBigint } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendWalletTransaction } from "lib/transactions";
@@ -290,28 +287,15 @@ function ReferralCodeFormMultichain({
         throw new Error("sourceChainTokenId is undefined");
       }
 
-      const relayFeeParams = getRelayerFeeParams({
-        chainId: p.chainId,
-        account: p.simulationSigner.address,
-        gasPaymentToken: p.globalExpressParams.gasPaymentToken,
-        relayerFeeToken: p.globalExpressParams.relayerFeeToken,
-        relayerFeeAmount: 0n,
-        totalRelayerFeeTokenAmount: 0n,
-        findFeeSwapPath: p.globalExpressParams.findFeeSwapPath,
-
-        transactionExternalCalls: getEmptyExternalCallsPayload(),
-        feeExternalSwapQuote: undefined,
-      });
-
-      if (relayFeeParams === undefined) {
-        return;
-      }
-
       const rawRelayParamsPayload = getRawRelayerParams({
         chainId: p.chainId,
-        gasPaymentTokenAddress: relayFeeParams.gasPaymentParams.gasPaymentTokenAddress,
-        relayerFeeTokenAddress: relayFeeParams.gasPaymentParams.relayerFeeTokenAddress,
-        feeParams: relayFeeParams.feeParams,
+        gasPaymentTokenAddress: p.globalExpressParams.gasPaymentTokenAddress,
+        relayerFeeTokenAddress: p.globalExpressParams.relayerFeeTokenAddress,
+        feeParams: {
+          feeToken: p.globalExpressParams.relayerFeeTokenAddress,
+          feeAmount: 0n,
+          feeSwapPath: [],
+        },
         externalCalls: getEmptyExternalCallsPayload(),
         tokenPermits: [],
         marketsInfoData: p.globalExpressParams.marketsInfoData,
@@ -447,28 +431,15 @@ function ReferralCodeFormMultichain({
         throw new Error("Missing required parameters");
       }
 
-      const relayFeeParams = getRelayerFeeParams({
-        chainId: chainId,
-        account: account,
-        gasPaymentToken: globalExpressParams.gasPaymentToken,
-        relayerFeeToken: globalExpressParams.relayerFeeToken,
-        relayerFeeAmount: 0n,
-        totalRelayerFeeTokenAmount: 0n,
-        findFeeSwapPath: globalExpressParams.findFeeSwapPath,
-
-        transactionExternalCalls: getEmptyExternalCallsPayload(),
-        feeExternalSwapQuote: undefined,
-      });
-
-      if (relayFeeParams === undefined) {
-        return;
-      }
-
       const rawRelayParamsPayload = getRawRelayerParams({
         chainId: chainId,
-        gasPaymentTokenAddress: relayFeeParams.gasPaymentParams.gasPaymentTokenAddress,
-        relayerFeeTokenAddress: relayFeeParams.gasPaymentParams.relayerFeeTokenAddress,
-        feeParams: relayFeeParams.feeParams,
+        gasPaymentTokenAddress: globalExpressParams.gasPaymentTokenAddress,
+        relayerFeeTokenAddress: globalExpressParams.relayerFeeTokenAddress,
+        feeParams: {
+          feeToken: globalExpressParams.relayerFeeTokenAddress,
+          feeAmount: 0n,
+          feeSwapPath: [],
+        },
         externalCalls: getEmptyExternalCallsPayload(),
         tokenPermits: [],
         marketsInfoData: globalExpressParams.marketsInfoData,
@@ -518,7 +489,7 @@ function ReferralCodeFormMultichain({
           args: [sendParams, { nativeFee: result.data.nativeFee, lzTokenFee: 0n }, account],
         }),
         value: result.data.nativeFee as bigint,
-        msg: "Sent",
+        msg: t`Sent referral code transaction`,
       });
 
       const receipt = await txnResult.wait();
@@ -530,6 +501,15 @@ function ReferralCodeFormMultichain({
       if (receipt.status === "success") {
         setReferralCode("");
       }
+
+      helperToast.success(
+        <>
+          <Trans>Referral code added!</Trans>
+          <br />
+          <br />
+          <Trans>It will take a couple of minutes to be reflected. Please check back later.</Trans>
+        </>
+      );
     } catch (error) {
       toastCustomOrStargateError(chainId, error);
     } finally {
@@ -539,7 +519,7 @@ function ReferralCodeFormMultichain({
   }
 
   let buttonState: {
-    text: string;
+    text: React.ReactNode;
     disabled?: boolean;
     onSubmit?: (event: React.FormEvent) => void;
   } = {
@@ -575,6 +555,16 @@ function ReferralCodeFormMultichain({
   } else if (!referralCodeExists) {
     buttonState = {
       text: t`Referral Code does not exist`,
+      disabled: true,
+    };
+  } else if (result.isLoading || !result.data) {
+    buttonState = {
+      text: (
+        <>
+          <Trans>Loading</Trans>
+          <ImSpinner2 className="ml-4 animate-spin" />
+        </>
+      ),
       disabled: true,
     };
   } else if (isEdit) {
@@ -635,12 +625,7 @@ function ReferralCodeFormMultichain({
         <SyntheticsInfoRow label="Network Fee" value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."} />
       )}
 
-      <Button
-        variant="primary-action"
-        type="submit"
-        className="App-cta Exchange-swap-button"
-        disabled={buttonState.disabled}
-      >
+      <Button variant="primary-action" type="submit" disabled={buttonState.disabled}>
         {buttonState.text}
       </Button>
     </form>

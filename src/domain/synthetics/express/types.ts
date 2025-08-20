@@ -10,7 +10,6 @@ import type { FindSwapPath } from "../trade";
 export type GlobalExpressParams = {
   tokensData: TokensData;
   marketsInfoData: MarketsInfoData;
-  subaccount: Subaccount | undefined;
   tokenPermits: SignedTokenPermit[];
   gasPaymentTokenAddress: string;
   relayerFeeTokenAddress: string;
@@ -28,12 +27,15 @@ export type GlobalExpressParams = {
 export type ExpressParamsEstimationMethod = "approximate" | "estimateGas";
 
 export type ExpressTxnParams = {
+  chainId: number;
   subaccount: Subaccount | undefined;
   relayParamsPayload: RawRelayParamsPayload;
   gasPaymentParams: GasPaymentParams;
   gasLimit: bigint;
   l1GasLimit: bigint;
   gasPrice: bigint;
+  executionFeeAmount: bigint;
+  executionGasLimit: bigint;
   estimationMethod: ExpressParamsEstimationMethod;
   gasPaymentValidations: GasPaymentValidations;
   subaccountValidations: SubaccountValidations | undefined;
@@ -45,7 +47,7 @@ export type ExpressTransactionBuilder = ({
   gasPaymentParams,
   subaccount,
 }: {
-  relayParams: RawRelayParamsPayload | RawRelayParamsPayload;
+  relayParams: RawRelayParamsPayload;
   gasPaymentParams: GasPaymentParams;
   subaccount: Subaccount | undefined;
 }) => Promise<{ txnData: ExpressTxnData }>;
@@ -54,6 +56,7 @@ export type ExpressTransactionEstimatorParams = {
   account: string;
   gasPaymentTokenAsCollateralAmount: bigint;
   executionFeeAmount: bigint;
+  executionGasLimit: bigint;
   transactionPayloadGasLimit: bigint;
   transactionExternalCalls: ExternalCallsPayload | undefined;
   subaccountActions: number;
@@ -69,6 +72,7 @@ export type GasPaymentParams = {
   relayerFeeAmount: bigint;
   gasPaymentTokenAmount: bigint;
   totalRelayerFeeTokenAmount: bigint;
+  gasPaymentTokenAsCollateralAmount: bigint;
 };
 
 export type RelayParamsPayload = {

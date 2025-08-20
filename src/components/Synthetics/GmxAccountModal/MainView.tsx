@@ -4,16 +4,17 @@ import { useMemo, useState } from "react";
 import { IoArrowDown } from "react-icons/io5";
 import { TbLoader2 } from "react-icons/tb";
 import Skeleton from "react-loading-skeleton";
+import { useHistory } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
-import { useAccount, useDisconnect } from "wagmi";
+import { useAccount } from "wagmi";
 
-import { getExplorerUrl } from "config/chains";
-import { CURRENT_PROVIDER_LOCALSTORAGE_KEY, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY } from "config/localStorage";
+import { BOTANIX, getExplorerUrl } from "config/chains";
 import { isSettlementChain } from "config/multichain";
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFundingItemLoading";
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
+import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
 import { formatRelativeDateWithComma } from "lib/dates";
@@ -22,9 +23,8 @@ import { useLocalizedMap } from "lib/i18n";
 import { useENS } from "lib/legacy";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { useNotifyModalState } from "lib/useNotifyModalState";
-import { userAnalytics } from "lib/userAnalytics";
-import { DisconnectWalletEvent } from "lib/userAnalytics/types";
 import { shortenAddressOrEns } from "lib/wallets";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { getToken } from "sdk/configs/tokens";
 import { Token } from "sdk/types/tokens";
 
@@ -39,6 +39,7 @@ import BellIcon from "img/bell.svg?react";
 import copy from "img/ic_copy_20.svg";
 import InfoIconComponent from "img/ic_info.svg?react";
 import externalLink from "img/ic_new_link_20.svg";
+import PnlAnalysisIcon from "img/ic_pnl_analysis_20.svg?react";
 import SettingsIcon24 from "img/ic_settings_24.svg?react";
 import disconnectIcon from "img/ic_sign_out_20.svg";
 
@@ -104,9 +105,9 @@ function FundingHistoryItemLabel({
 }
 
 const Toolbar = ({ account }: { account: string }) => {
-  const { disconnect } = useDisconnect();
   const [, setIsVisible] = useGmxAccountModalOpen();
   const { chainId: settlementChainId, srcChainId } = useChainId();
+  const history = useHistory();
 
   const chainId = srcChainId ?? settlementChainId;
 
@@ -114,6 +115,7 @@ const Toolbar = ({ account }: { account: string }) => {
   const { setIsSettingsVisible } = useSettings();
   const { ensName } = useENS(account);
   const [, copyToClipboard] = useCopyToClipboard();
+  const handleDisconnect = useDisconnectAndClose();
 
   const handleCopyAddress = () => {
     if (account) {
@@ -127,24 +129,17 @@ const Toolbar = ({ account }: { account: string }) => {
     return `${getExplorerUrl(chainId)}address/${account}`;
   }, [account, chainId]);
 
-  const handleDisconnect = () => {
-    userAnalytics.pushEvent<DisconnectWalletEvent>({
-      event: "ConnectWalletAction",
-      data: {
-        action: "Disconnect",
-      },
-    });
-    disconnect();
-    localStorage.removeItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY);
-    localStorage.removeItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY);
-    setIsVisible(false);
-  };
-
   const handleNotificationsClick = () => {
     openNotifyModal();
     setTimeout(() => {
       setIsVisible(false);
     }, 200);
+  };
+
+  const handlePnlAnalysisClick = () => {
+    if (!account || !chainId) return;
+    history.push(buildAccountDashboardUrl(account, chainId, 2));
+    setIsVisible(false);
   };
 
   const handleSettingsClick = () => {
@@ -154,21 +149,31 @@ const Toolbar = ({ account }: { account: string }) => {
     }, 200);
   };
 
+  const showNotify = settlementChainId !== BOTANIX;
+
   return (
-    <div className="flex items-stretch justify-between gap-8">
+    <div className="flex items-center justify-between gap-8">
       <button
-        className="text-body-medium inline-flex items-center justify-center rounded-4 border border-stroke-primary px-11 py-7 text-white hover:bg-slate-700 active:bg-[#808aff14]"
+        className="text-body-medium inline-flex items-center justify-center rounded-4 border border-stroke-primary px-[6.5px] py-5 text-white hover:bg-slate-700 active:bg-[#808aff14] min-[701px]:grow"
         onClick={handleCopyAddress}
       >
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-4">
           <div className="max-[410px]:hidden">
             <Avatar size={20} ensName={ensName} address={account} />
           </div>
-          <span className="mx-8 max-[410px]:mx-0">{shortenAddressOrEns(ensName || account, 13)}</span>
-          <img src={copy} alt="Copy" />
+          <span className="max-[410px]:mx-0">{shortenAddressOrEns(ensName || account, 13)}</span>
+          <img src={copy} className="max-[370px]:hidden" alt="Copy" />
         </div>
       </button>
       <div className="flex items-center gap-8">
+        <TooltipWithPortal content={t`PnL Analysis`} position="bottom" tooltipClassName="!min-w-max">
+          <button
+            className="flex size-32 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
+            onClick={handlePnlAnalysisClick}
+          >
+            <PnlAnalysisIcon width={20} height={20} className="text-slate-100" />
+          </button>
+        </TooltipWithPortal>
         <TooltipWithPortal
           shouldPreventDefault={false}
           content={t`View in Explorer`}
@@ -177,22 +182,25 @@ const Toolbar = ({ account }: { account: string }) => {
         >
           <ExternalLink
             href={accountUrl}
-            className="flex size-36 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
+            className="flex size-32 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
           >
             <img src={externalLink} alt="External Link" />
           </ExternalLink>
         </TooltipWithPortal>
-        <TooltipWithPortal content={t`Notifications`} position="bottom" tooltipClassName="!min-w-max">
-          <button
-            className="flex size-36 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
-            onClick={handleNotificationsClick}
-          >
-            <BellIcon className="text-slate-100" />
-          </button>
-        </TooltipWithPortal>
+        {showNotify && (
+          <TooltipWithPortal content={t`Notifications`} position="bottom" tooltipClassName="!min-w-max">
+            <button
+              className="flex size-32 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
+              onClick={handleNotificationsClick}
+            >
+              <BellIcon className="text-slate-100" />
+            </button>
+          </TooltipWithPortal>
+        )}
+
         <TooltipWithPortal content={t`Settings`} position="bottom" tooltipClassName="!min-w-max">
           <button
-            className="flex size-36 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
+            className="flex size-32 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
             onClick={handleSettingsClick}
           >
             <SettingsIcon24 width={20} height={20} className="text-slate-100" />
@@ -200,7 +208,7 @@ const Toolbar = ({ account }: { account: string }) => {
         </TooltipWithPortal>
         <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max">
           <button
-            className="flex size-36 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
+            className="flex size-32 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
             onClick={handleDisconnect}
           >
             <img src={disconnectIcon} alt="Disconnect" className="rotate-180" />
@@ -305,14 +313,26 @@ function Balance({
           inline={true}
         />
       )}
-      <button
-        className="flex items-center gap-4 rounded-4 bg-cold-blue-700 py-4 pl-8 pr-4 gmx-hover:bg-cold-blue-500"
-        onClick={handleAvailableToTradeClick}
-      >
-        <Trans>All assets</Trans>
-        <TokenIcons tokens={availableToTradeAssetSymbols} />
-        <IoArrowDown className="block size-16 -rotate-90 text-slate-100" />
-      </button>
+      {usd !== undefined && usd !== 0n && (
+        <button
+          className="flex items-center gap-4 rounded-4 bg-cold-blue-700 py-4 pl-8 pr-4 gmx-hover:bg-cold-blue-500"
+          onClick={handleAvailableToTradeClick}
+        >
+          <Trans>All assets</Trans>
+          <TokenIcons tokens={availableToTradeAssetSymbols} />
+          <IoArrowDown className="block size-16 -rotate-90 text-slate-100" />
+        </button>
+      )}
+      {usd === undefined && (
+        <Skeleton
+          baseColor="#B4BBFF1A"
+          highlightColor="#B4BBFF1A"
+          width={134}
+          height={28}
+          className="!block"
+          inline={true}
+        />
+      )}
     </div>
   );
 }
@@ -388,15 +408,17 @@ const FundingHistorySection = () => {
           <Trans>Funding Activity</Trans>
         </div>
       </div>
-      <div className="px-16">
-        <input
-          type="text"
-          placeholder="Search"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full rounded-4 bg-slate-700 px-12 py-8 text-white placeholder:text-slate-100"
-        />
-      </div>
+      {Boolean(fundingHistory?.length) && (
+        <div className="px-16">
+          <input
+            type="text"
+            placeholder="Search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-4 bg-slate-700 px-12 py-8 text-white placeholder:text-slate-100"
+          />
+        </div>
+      )}
       <VerticalScrollFadeContainer className="flex grow flex-col">
         {filteredFundingHistory?.map((transfer) => (
           <div

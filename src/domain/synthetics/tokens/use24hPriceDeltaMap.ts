@@ -3,7 +3,7 @@ import useSWR from "swr";
 import { Address } from "viem";
 
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
-import { getToken } from "sdk/configs/tokens";
+import { getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
 
 export type PriceDelta = {
   close: number;
@@ -43,7 +43,10 @@ export function use24hPriceDeltaMap(
         .map((tokenAddress) => {
           const token = getToken(chainId, tokenAddress);
 
-          const tokenDelta = data?.find((candle) => candle.tokenSymbol === token.symbol);
+          const tokenDelta = data?.find(
+            (candle) =>
+              candle.tokenSymbol === token.symbol || candle.tokenSymbol === getNormalizedTokenSymbol(token.symbol)
+          );
 
           if (!tokenDelta) {
             return [tokenAddress, undefined];

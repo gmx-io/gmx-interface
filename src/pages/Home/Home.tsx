@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useUserStat } from "domain/legacy";
@@ -20,6 +20,7 @@ import TokenCard from "components/TokenCard/TokenCard";
 
 import arbitrumIcon from "img/ic_arbitrum_96.svg";
 import avaxIcon from "img/ic_avalanche_96.svg";
+import botanixIcon from "img/ic_botanix_96.svg";
 import costIcon from "img/ic_cost.svg";
 import liquidityIcon from "img/ic_liquidity.svg";
 import simpleSwapIcon from "img/ic_simpleswaps.svg";
@@ -32,9 +33,11 @@ import "./Home.css";
 function LaunchExchangeButton({
   showRedirectModal,
   position,
+  chainId,
 }: {
   showRedirectModal: (to: string) => void;
   position: "Title" | "Chains";
+  chainId: number;
 }) {
   const [redirectPopupTimestamp] = useRedirectPopupTimestamp();
 
@@ -54,7 +57,7 @@ function LaunchExchangeButton({
         );
       }}
       className="default-btn"
-      to={`/trade?${userAnalytics.getSessionIdUrlParams()}`}
+      to={`/trade?${userAnalytics.getSessionForwardParams()}&chainId=${chainId}`}
       showRedirectModal={showRedirectModal}
     >
       <Trans>Launch App</Trans>
@@ -175,7 +178,7 @@ export default function Home({ showRedirectModal }) {
                 Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet
               </Trans>
             </div>
-            <LaunchExchangeButton showRedirectModal={showRedirectModal} position="Title" />
+            <LaunchExchangeButton showRedirectModal={showRedirectModal} position="Title" chainId={ARBITRUM} />
           </div>
         </div>
         <div className="Home-latest-info-container default-container">
@@ -272,7 +275,7 @@ export default function Home({ showRedirectModal }) {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Arbitrum</div>
                 <div className="Home-cta-option-action">
-                  <LaunchExchangeButton showRedirectModal={showRedirectModal} position="Chains" />
+                  <LaunchExchangeButton showRedirectModal={showRedirectModal} position="Chains" chainId={ARBITRUM} />
                 </div>
               </div>
             </div>
@@ -283,7 +286,19 @@ export default function Home({ showRedirectModal }) {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Avalanche</div>
                 <div className="Home-cta-option-action">
-                  <LaunchExchangeButton showRedirectModal={showRedirectModal} position="Chains" />
+                  <LaunchExchangeButton showRedirectModal={showRedirectModal} position="Chains" chainId={AVALANCHE} />
+                </div>
+              </div>
+            </div>
+
+            <div className="Home-cta-option Home-cta-option-botanix">
+              <div className="Home-cta-option-icon">
+                <img src={botanixIcon} width="96" alt="Botanix Icon" />
+              </div>
+              <div className="Home-cta-option-info">
+                <div className="Home-cta-option-title">Botanix</div>
+                <div className="Home-cta-option-action">
+                  <LaunchExchangeButton showRedirectModal={showRedirectModal} position="Chains" chainId={BOTANIX} />
                 </div>
               </div>
             </div>
@@ -298,7 +313,7 @@ export default function Home({ showRedirectModal }) {
             </div>
           </div>
           <SyntheticsStateContextProvider pageType="home" skipLocalReferralCode={false}>
-            <TokenCard showRedirectModal={showRedirectModal} />
+            <TokenCard showRedirectModal={showRedirectModal} showGlp={false} />
           </SyntheticsStateContextProvider>
         </div>
       </div>

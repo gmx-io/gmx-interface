@@ -60,6 +60,7 @@ interface Props {
   className?: string;
   contentClassName?: string;
   scrollIntoViewOnMobile?: boolean;
+  handleClassName?: string;
 }
 
 export function ExpandableRow({
@@ -74,6 +75,7 @@ export function ExpandableRow({
   className,
   contentClassName,
   scrollIntoViewOnMobile = false,
+  handleClassName = "text-slate-100",
 }: Props) {
   const previousHasError = usePrevious(hasError);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -104,8 +106,12 @@ export function ExpandableRow({
   }, [onToggle, open, hasError, disableCollapseOnError]);
 
   const label = useMemo(() => {
-    return hasError && disableCollapseOnError ? <TooltipWithPortal handle={title} content={errorMessage} /> : title;
-  }, [hasError, disableCollapseOnError, title, errorMessage]);
+    return hasError && disableCollapseOnError ? (
+      <TooltipWithPortal handle={title} handleClassName={handleClassName} content={errorMessage} />
+    ) : (
+      <span className={handleClassName}>{title}</span>
+    );
+  }, [hasError, disableCollapseOnError, title, errorMessage, handleClassName]);
 
   const disabled = disableCollapseOnError && hasError;
 

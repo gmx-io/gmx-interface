@@ -24,7 +24,6 @@ import {
   getGelatoRelayRouterDomain,
   GlobalExpressParams,
   hashRelayParams,
-  RawRelayParamsPayload,
   RelayParamsPayload,
 } from "../express";
 import { getMultichainInfoFromSigner, getOrderRelayRouterAddress } from "../express/expressOrderUtils";
@@ -64,9 +63,11 @@ export async function buildAndSignRemoveSubaccountTxn({
 }): Promise<ExpressTxnData> {
   const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
 
+  const isMultichain = srcChainId !== undefined;
+
   const relayRouterAddress = getExpressContractAddress(chainId, {
     isSubaccount: true,
-    isMultichain: srcChainId !== undefined,
+    isMultichain,
     scope: "subaccount",
   });
 
@@ -84,21 +85,18 @@ export async function buildAndSignRemoveSubaccountTxn({
   }
 
   const removeSubaccountCallData = encodeFunctionData({
-    abi: abis.SubaccountGelatoRelayRouter,
+    abi: isMultichain ? abis.MultichainSubaccountRouter : abis.SubaccountGelatoRelayRouter,
     functionName: "removeSubaccount",
-    args:
-      srcChainId !== undefined
-        ? ([
-            { ...relayParamsPayload, signature, userNonce: nowInSeconds() },
-            signer.address,
-            srcChainId,
-            subaccount.address,
-          ] satisfies Parameters<MultichainSubaccountRouter["removeSubaccount"]>)
-        : ([
-            { ...relayParamsPayload, signature, userNonce: nowInSeconds() },
-            signer.address,
-            subaccount.address,
-          ] satisfies Parameters<SubaccountGelatoRelayRouter["removeSubaccount"]>),
+    args: isMultichain
+      ? ([
+          { ...relayParamsPayload, signature },
+          signer.address,
+          srcChainId ?? chainId,
+          subaccount.address,
+        ] satisfies Parameters<MultichainSubaccountRouter["removeSubaccount"]>)
+      : ([{ ...relayParamsPayload, signature }, signer.address, subaccount.address] satisfies Parameters<
+          SubaccountGelatoRelayRouter["removeSubaccount"]
+        >),
   });
 
   return {
@@ -159,7 +157,7 @@ export async function removeSubaccountExpressTxn({
   chainId: ContractsChainId;
   provider: Provider;
   account: string;
-  srcChainId: SourceChainId;
+  srcChainId: SourceChainId | undefined;
   signer: WalletSigner;
   subaccount: Subaccount;
   globalExpressParams: GlobalExpressParams;
@@ -189,7 +187,7 @@ export async function removeSubaccountExpressTxn({
       signer,
       subaccount,
       relayParamsPayload: {
-        ...(relayParams as RawRelayParamsPayload),
+        ...relayParams,
         deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
       },
       relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
@@ -221,6 +219,7 @@ export async function removeSubaccountExpressTxn({
     isGmxAccount: srcChainId !== undefined,
     relayerFeeAmount,
     globalExpressParams: globalExpressParams,
+    subaccount,
   });
 
   if (!relayFeeParams || !relayParamsPayload) {
@@ -230,7 +229,7 @@ export async function removeSubaccountExpressTxn({
   const txnData = await buildAndSignRemoveSubaccountTxn({
     chainId,
     signer,
-    subaccount: subaccount!,
+    subaccount,
     relayParamsPayload: {
       ...relayParamsPayload,
       deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),

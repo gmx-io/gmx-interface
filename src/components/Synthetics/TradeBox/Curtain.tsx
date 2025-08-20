@@ -219,6 +219,9 @@ export function Curtain({
     if (externalIsCurtainOpen && !isOpen) {
       setIsOpen(true);
       handleAnimate(true);
+    } else if (!externalIsCurtainOpen && isOpen) {
+      setIsOpen(false);
+      handleAnimate(false);
     }
   }, [externalIsCurtainOpen, isOpen, handleAnimate]);
 

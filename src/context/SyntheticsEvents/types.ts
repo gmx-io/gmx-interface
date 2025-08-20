@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import type { OrderTxnType, OrderType } from "domain/synthetics/orders";
-import type { SignedSubbacountApproval } from "domain/synthetics/subaccount";
+import type { SignedSubacсountApproval } from "domain/synthetics/subaccount";
 import type { OrderMetricId } from "lib/metrics/types";
 import type { SignedTokenPermit } from "sdk/types/tokens";
 import type { ExternalSwapQuote } from "sdk/types/trade";
@@ -80,16 +80,26 @@ export type PendingExpressTxnParams = {
   key: string;
   taskId: string | undefined;
   isSponsoredCall: boolean;
-  subaccountApproval?: SignedSubbacountApproval;
+  subaccountApproval?: SignedSubacсountApproval;
   tokenPermits?: SignedTokenPermit[];
+  payTokenAddresses?: string[];
   pendingOrdersKeys?: string[];
   pendingPositionsKeys?: string[];
+  estimatedExecutionFee?: bigint;
+  estimatedExecutionGasLimit?: bigint;
   createdAt: number;
   metricId?: OrderMetricId;
   successMessage?: ReactNode;
   errorMessage?: ReactNode;
   isViewed?: boolean;
   isRelayerMetricSent?: boolean;
+};
+
+export type GelatoTaskStatus = {
+  taskId: string;
+  taskState: TaskState;
+  lastCheckMessage?: string;
+  transactionHash?: string;
 };
 
 export type ExpressHandlers = {
@@ -120,19 +130,7 @@ export type SubmittedMultichainWithdrawal = {
   tokenAddress: string;
 };
 
-export type PendingMultichainFunding = {
-  deposits: {
-    submitted: MultichainFundingHistoryItem[];
-    sent: Record<string, MultichainFundingHistoryItem>;
-    received: Record<string, MultichainFundingHistoryItem>;
-    executed: Record<string, MultichainFundingHistoryItem>;
-  };
-  withdrawals: {
-    submitted: Record<string, MultichainFundingHistoryItem>;
-    sent: Record<string, MultichainFundingHistoryItem>;
-    received: Record<string, MultichainFundingHistoryItem>;
-  };
-};
+export type PendingMultichainFunding = MultichainFundingHistoryItem[];
 
 export type EventLogItems<T> = {
   [key: string]: T;
@@ -177,7 +175,7 @@ export type SyntheticsEventsContextType = MultichainEventsState & {
   positionIncreaseEvents: PositionIncreaseEvent[] | undefined;
   positionDecreaseEvents: PositionDecreaseEvent[] | undefined;
   pendingExpressTxns: PendingExpressTxns;
-  gelatoTaskStatuses: { [taskId: string]: TaskState };
+  gelatoTaskStatuses: { [taskId: string]: GelatoTaskStatus };
   setPendingExpressTxn: (params: PendingExpressTxnParams) => void;
   updatePendingExpressTxn: (params: Partial<PendingExpressTxnParams>) => void;
   setPendingOrder: SetPendingOrder;
@@ -244,6 +242,7 @@ export type PendingOrderData = {
   acceptablePrice: bigint;
   autoCancel: boolean;
   minOutputAmount: bigint;
+  expectedOutputAmount?: bigint;
   sizeDeltaUsd: bigint;
   isLong: boolean;
   shouldUnwrapNativeToken: boolean;

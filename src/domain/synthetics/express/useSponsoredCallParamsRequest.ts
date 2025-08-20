@@ -2,10 +2,11 @@ import { useMemo } from "react";
 import useSWR from "swr";
 
 import { getIsFlagEnabled } from "config/ab";
+import { ARBITRUM_SEPOLIA, BOTANIX } from "config/chains";
 import { convertToUsd, TokensData } from "domain/tokens";
+import { metrics } from "lib/metrics";
 import { getByKey } from "lib/objects";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import { GELATO_API_KEYS } from "lib/transactions";
 import { MIN_GELATO_USD_BALANCE_FOR_SPONSORED_CALL } from "sdk/configs/express";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
@@ -17,11 +18,14 @@ export function useIsSponsoredCallBalanceAvailable(
   chainId: number,
   { tokensData }: { tokensData: TokensData | undefined }
 ): SponsoredCallBalanceData {
-  const { data: isSponsoredCallAllowed } = useSWR<boolean>(
-    tokensData !== undefined && GELATO_API_KEYS[chainId] !== undefined ? ["isSponsoredCallAllowed"] : null,
-    {
-      refreshInterval: FREQUENT_UPDATE_INTERVAL,
-      fetcher: async () => {
+  const { data: isSponsoredCallAllowed } = useSWR<boolean>(tokensData ? [chainId, "isSponsoredCallAllowed"] : null, {
+    refreshInterval: FREQUENT_UPDATE_INTERVAL,
+    fetcher: async () => {
+      if (chainId === ARBITRUM_SEPOLIA) {
+        return false;
+      }
+
+      try {
         if (!getIsFlagEnabled("testSponsoredCall")) {
           return false;
         }
@@ -35,19 +39,22 @@ export function useIsSponsoredCallBalanceAvailable(
         const mainBalance = gelatoBalanceData.sponsor.mainBalance;
         const mainBalanceToken = mainBalance.token;
         const remainingBalance = BigInt(mainBalance.remainingBalance);
+        const amountInExecution = BigInt(mainBalance.amountInExecution);
 
-        const mainBalanceTokenData = getByKey(tokensData, getTokenBySymbol(chainId, mainBalanceToken.symbol).address);
+        const balanceLeft = remainingBalance - amountInExecution;
+        const mainTokenSymbol = chainId === BOTANIX ? "USDC.E" : mainBalanceToken.symbol;
 
-        const usdBalance = convertToUsd(
-          remainingBalance,
-          mainBalanceToken.decimals,
-          mainBalanceTokenData?.prices.minPrice
-        );
+        const mainBalanceTokenData = getByKey(tokensData, getTokenBySymbol(chainId, mainTokenSymbol).address);
+
+        const usdBalance = convertToUsd(balanceLeft, mainBalanceToken.decimals, mainBalanceTokenData?.prices.minPrice);
 
         return usdBalance !== undefined && usdBalance > MIN_GELATO_USD_BALANCE_FOR_SPONSORED_CALL;
-      },
-    }
-  );
+      } catch (error) {
+        metrics.pushError(error, "expressOrders.useIsSponsoredCallBalanceAvailable");
+        return false;
+      }
+    },
+  });
 
   return useMemo(() => {
     return {

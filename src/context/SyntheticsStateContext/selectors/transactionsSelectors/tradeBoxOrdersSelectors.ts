@@ -12,7 +12,13 @@ import {
 } from "sdk/utils/orderTransactions";
 import { getIsValidTwapParams } from "sdk/utils/twap";
 
-import { selectChainId, selectMaxAutoCancelOrders, selectSigner, selectUserReferralInfo } from "../globalSelectors";
+import {
+  selectChainId,
+  selectIsAutoCancelTPSLEnabled,
+  selectMaxAutoCancelOrders,
+  selectSigner,
+  selectUserReferralInfo,
+} from "../globalSelectors";
 import { makeSelectOrdersByPositionKey } from "../orderSelectors";
 import {
   selectTradeboxAllowedSlippage,
@@ -73,8 +79,8 @@ export const selectCommonOrderParams = createSelector((q) => {
 
 export const selectTradeboxSwapOrderPayload = createSelector((q) => {
   const commonParams = q(selectCommonOrderParams);
-
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
+
   const toTokenAddress = q(selectTradeboxToTokenAddress);
   const swapAmounts = q(selectTradeboxSwapAmounts);
   const { triggerRatio } = q(selectTradeboxTradeRatios);
@@ -95,9 +101,10 @@ export const selectTradeboxSwapOrderPayload = createSelector((q) => {
     payTokenAmount: swapAmounts.amountIn,
     receiveTokenAddress: toTokenAddress,
     minOutputAmount: swapAmounts.minOutputAmount,
-    swapPath: swapAmounts.swapPathStats?.swapPath ?? [],
+    expectedOutputAmount: swapAmounts.amountOut,
+    swapPath: swapAmounts.swapStrategy.swapPathStats?.swapPath ?? [],
     triggerRatio: triggerRatio?.ratio ?? undefined,
-    externalSwapQuote: undefined,
+    externalSwapQuote: swapAmounts.swapStrategy.externalSwapQuote,
     allowedSlippage: isMarket ? allowedSlippage : 0,
     orderType,
     validFromTime: 0n,
@@ -157,8 +164,8 @@ export const selectTradeboxIncreaseOrderParams = createSelector((q) => {
     payTokenAddress: fromTokenAddress,
     payTokenAmount: increaseAmounts.initialCollateralAmount,
     collateralTokenAddress: collateralTokenAddress,
-    swapPath: increaseAmounts.swapPathStats?.swapPath ?? [],
-    externalSwapQuote: increaseAmounts.externalSwapQuote,
+    swapPath: increaseAmounts.swapStrategy.swapPathStats?.swapPath ?? [],
+    externalSwapQuote: increaseAmounts.swapStrategy.externalSwapQuote,
     sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
     sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
     collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
@@ -196,6 +203,7 @@ export const selectTradeboxDecreaseOrderParams = createSelector((q) => {
   const maxAutoCancelOrders = q(selectMaxAutoCancelOrders);
   const positionOrders = q(makeSelectOrdersByPositionKey(selectedPositionKey));
   const { isLong, isTwap } = q(selectTradeboxTradeFlags);
+  const isAutoCancelTPSLEnabled = q(selectIsAutoCancelTPSLEnabled);
 
   if (
     !commonParams ||
@@ -208,7 +216,7 @@ export const selectTradeboxDecreaseOrderParams = createSelector((q) => {
   }
 
   const existingAutoCancelOrders = positionOrders.filter((order) => order.autoCancel);
-  const allowedAutoCancelOrdersNumber = Number(maxAutoCancelOrders);
+  const allowedAutoCancelOrdersNumber = isAutoCancelTPSLEnabled ? Number(maxAutoCancelOrders) : 0;
   const autoCancelOrdersLimit = allowedAutoCancelOrdersNumber - existingAutoCancelOrders.length;
 
   const decreaseOrderParams: DecreasePositionOrderParams = {

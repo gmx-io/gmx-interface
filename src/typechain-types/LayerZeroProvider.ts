@@ -27,13 +27,21 @@ export declare namespace IRelayUtils {
   export type BridgeOutParamsStruct = {
     token: AddressLike;
     amount: BigNumberish;
+    minAmountOut: BigNumberish;
     provider: AddressLike;
     data: BytesLike;
   };
 
-  export type BridgeOutParamsStructOutput = [token: string, amount: bigint, provider: string, data: string] & {
+  export type BridgeOutParamsStructOutput = [
+    token: string,
+    amount: bigint,
+    minAmountOut: bigint,
+    provider: string,
+    data: string,
+  ] & {
     token: string;
     amount: bigint;
+    minAmountOut: bigint;
     provider: string;
     data: string;
   };

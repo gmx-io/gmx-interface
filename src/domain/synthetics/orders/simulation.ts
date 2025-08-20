@@ -1,4 +1,4 @@
-import { BaseContract } from "ethers";
+import { BaseContract, JsonRpcProvider } from "ethers";
 import { encodeFunctionData, withRetry } from "viem";
 
 import {
@@ -8,25 +8,18 @@ import {
   getMulticallContract,
   getZeroAddressContract,
 } from "config/contracts";
+import { isDevelopment } from "config/env";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { SignedTokenPermit } from "domain/tokens";
-import { getProvider } from "lib/rpc";
+import { getFallbackProvider, getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import {
-  CustomErrorName,
-  ErrorData,
-  TxErrorType,
-  extendError,
-  extractTxnError,
-  isContractError,
-  parseError,
-} from "sdk/utils/errors";
+import { CustomErrorName, ErrorData, TxErrorType, extendError, isContractError, parseError } from "sdk/utils/errors";
 import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 export type SimulateExecuteParams = {
@@ -52,7 +45,19 @@ export function isSimulationPassed(errorData: ErrorData) {
 }
 
 export async function simulateExecution(chainId: ContractsChainId, p: SimulateExecuteParams) {
-  const provider = getProvider(undefined, chainId);
+  let provider: JsonRpcProvider;
+
+  if (p.isExpress) {
+    // Use alchemy rpc for express transactions simulation to increase reliability
+    provider = getFallbackProvider(chainId) ?? getProvider(undefined, chainId);
+  } else {
+    provider = getProvider(undefined, chainId);
+  }
+
+  if (isDevelopment()) {
+    // eslint-disable-next-line no-console
+    console.log("simulation rpc", provider._getConnection().url);
+  }
 
   const multicallAddress = getContract(chainId, "Multicall");
 
@@ -78,7 +83,7 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
     blockTag = Number(result.blockNumber);
   }
 
-  const priceTimestamp = blockTimestamp + 30n;
+  const priceTimestamp = blockTimestamp + 120n;
   const method = p.method || "simulateExecuteLatestOrder";
 
   const isGlv = method === "simulateExecuteLatestGlvDeposit" || method === "simulateExecuteLatestGlvWithdrawal";
@@ -183,8 +188,14 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
         retryCount: 2,
         delay: 200,
         shouldRetry: ({ error }) => {
-          const [message] = extractTxnError(error);
-          return message?.includes("unsupported block number") ?? false;
+          const errorData = parseError(error);
+          return (
+            errorData?.errorMessage?.includes("unsupported block number") ||
+            errorData?.errorMessage?.toLowerCase().includes("failed to fetch") ||
+            errorData?.errorMessage?.toLowerCase().includes("load failed") ||
+            errorData?.errorMessage?.toLowerCase().includes("an error has occurred") ||
+            false
+          );
         },
       }
     );

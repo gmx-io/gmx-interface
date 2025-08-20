@@ -325,6 +325,7 @@ describe("Increase Order Payloads", () => {
     it("Market Increase with External Swap, Pay With Native Token", () => {
       const params = {
         ...commonParams,
+        swapPath: [],
         payTokenAddress: NATIVE_TOKEN_ADDRESS,
         payTokenAmount: parseValue("1", WETH.decimals)!, // 1 ETH
         collateralTokenAddress: USDC.address,
@@ -408,6 +409,7 @@ describe("Increase Order Payloads", () => {
     it("Market Increase with External Swap, Pay With ERC20", () => {
       const params = {
         ...commonParams,
+        swapPath: [],
         payTokenAddress: USDC.address,
         payTokenAmount: parseValue("1000", USDC.decimals)!, // 1000 USDC
         collateralTokenAddress: WETH.address,
@@ -582,6 +584,7 @@ describe("Increase Order Payloads", () => {
         const decoded = decodeTwapUiFeeReceiver(uiFeeReceiver);
 
         expect(decoded).toEqual({
+          isExpress: false,
           twapId: "8000",
           numberOfParts: twapParams.numberOfParts,
         });
@@ -685,6 +688,7 @@ describe("Increase Order Payloads", () => {
 
         const decoded = decodeTwapUiFeeReceiver(uiFeeReceiver);
         expect(decoded).toEqual({
+          isExpress: false,
           twapId: "8000",
           numberOfParts: twapParams.numberOfParts,
         });

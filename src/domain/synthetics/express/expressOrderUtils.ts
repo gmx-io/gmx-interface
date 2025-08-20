@@ -1,6 +1,7 @@
 import { Provider, Signer, Wallet } from "ethers";
 import { encodeFunctionData, size, zeroAddress, zeroHash } from "viem";
 
+import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
@@ -24,7 +25,7 @@ import {
 import {
   getSubaccountValidations,
   hashSubaccountApproval,
-  SignedSubbacountApproval,
+  SignedSubacсountApproval,
   Subaccount,
   SubaccountValidations,
 } from "domain/synthetics/subaccount";
@@ -45,6 +46,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import {
   BatchOrderTxnParams,
+  CreateOrderPayload,
   getBatchExternalCalls,
   getBatchExternalSwapGasLimit,
   getBatchRequiredActions,
@@ -53,6 +55,8 @@ import {
   getIsEmptyBatch,
 } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
+import { setUiFeeReceiverIsExpress } from "sdk/utils/twap/uiFeeReceiver";
+import { GelatoRelayRouter, MultichainSubaccountRouter, SubaccountGelatoRelayRouter } from "typechain-types";
 import { MultichainOrderRouter } from "typechain-types/MultichainOrderRouter";
 
 import { approximateL1GasBuffer, estimateBatchGasLimit, estimateRelayerGasLimit, GasLimitsConfig } from "../fees";
@@ -67,6 +71,7 @@ export async function estimateBatchExpressParams({
   globalExpressParams,
   requireValidations,
   estimationMethod = "approximate",
+  subaccount,
 }: {
   chainId: ContractsChainId;
   isGmxAccount: boolean;
@@ -76,6 +81,7 @@ export async function estimateBatchExpressParams({
   globalExpressParams: GlobalExpressParams | undefined;
   estimationMethod: ExpressParamsEstimationMethod;
   requireValidations: boolean;
+  subaccount: Subaccount | undefined;
 }): Promise<ExpressTxnParams | undefined> {
   if (!globalExpressParams) {
     return undefined;
@@ -103,6 +109,7 @@ export async function estimateBatchExpressParams({
     estimationMethod,
     requireValidations,
     isGmxAccount,
+    subaccount,
   });
 
   return expressParams;
@@ -167,6 +174,7 @@ function getBatchExpressEstimatorParams({
     account: signer.address,
     gasPaymentTokenAsCollateralAmount,
     executionFeeAmount: executionFeeAmount.feeTokenAmount,
+    executionGasLimit: executionFeeAmount.gasLimit,
     transactionPayloadGasLimit,
     transactionExternalCalls,
     subaccountActions,
@@ -183,6 +191,7 @@ export async function estimateExpressParams({
   globalExpressParams,
   estimationMethod = "approximate",
   requireValidations = true,
+  subaccount: rawSubaccount,
 }: {
   chainId: ContractsChainId;
   isGmxAccount: boolean;
@@ -191,6 +200,7 @@ export async function estimateExpressParams({
   transactionParams: ExpressTransactionEstimatorParams;
   estimationMethod: "approximate" | "estimateGas";
   requireValidations: boolean;
+  subaccount: Subaccount | undefined;
 }): Promise<ExpressTxnParams | undefined> {
   if (requireValidations && !transactionParams.isValid) {
     return undefined;
@@ -214,20 +224,22 @@ export async function estimateExpressParams({
     expressTransactionBuilder,
     gasPaymentTokenAsCollateralAmount,
     executionFeeAmount,
+    executionGasLimit,
     transactionPayloadGasLimit,
     transactionExternalCalls,
     subaccountActions,
     account,
   } = transactionParams;
 
-  const subaccountValidations = globalExpressParams.subaccount
+  const subaccountValidations = rawSubaccount
     ? getSubaccountValidations({
         requiredActions: subaccountActions,
-        subaccount: globalExpressParams.subaccount,
+        subaccount: rawSubaccount,
+        subaccountRouterAddress: getOrderRelayRouterAddress(chainId, true, isGmxAccount),
       })
     : undefined;
 
-  const subaccount = subaccountValidations?.isValid ? globalExpressParams.subaccount : undefined;
+  const subaccount = subaccountValidations?.isValid ? rawSubaccount : undefined;
 
   const baseRelayerGasLimit = estimateRelayerGasLimit({
     gasLimits,
@@ -250,6 +262,7 @@ export async function estimateExpressParams({
     relayerFeeToken,
     relayerFeeAmount: baseRelayerFeeAmount,
     totalRelayerFeeTokenAmount: baseTotalRelayerFeeTokenAmount,
+    gasPaymentTokenAsCollateralAmount,
     transactionExternalCalls,
     feeExternalSwapQuote: undefined,
     findFeeSwapPath,
@@ -351,6 +364,7 @@ export async function estimateExpressParams({
     relayerFeeToken,
     relayerFeeAmount,
     totalRelayerFeeTokenAmount,
+    gasPaymentTokenAsCollateralAmount,
     transactionExternalCalls,
     feeExternalSwapQuote: undefined,
     findFeeSwapPath,
@@ -379,15 +393,21 @@ export async function estimateExpressParams({
     tokenPermits,
   });
 
-  if (requireValidations && !getIsValidExpressParams({ gasPaymentValidations, subaccountValidations })) {
+  if (
+    requireValidations &&
+    !getIsValidExpressParams({ chainId, gasPaymentValidations, subaccountValidations, isSponsoredCall })
+  ) {
     return undefined;
   }
 
   return {
+    chainId,
     subaccount,
     relayParamsPayload: finalRelayParams,
     isSponsoredCall,
     gasPaymentParams: finalRelayFeeParams.gasPaymentParams,
+    executionFeeAmount,
+    executionGasLimit,
     estimationMethod,
     gasLimit,
     l1GasLimit,
@@ -398,12 +418,20 @@ export async function estimateExpressParams({
 }
 
 export function getIsValidExpressParams({
+  chainId,
   gasPaymentValidations,
   subaccountValidations,
+  isSponsoredCall,
 }: {
+  chainId: number;
+  isSponsoredCall: boolean;
   gasPaymentValidations: GasPaymentValidations;
   subaccountValidations: SubaccountValidations | undefined;
 }): boolean {
+  if (chainId === BOTANIX && !isSponsoredCall) {
+    return false;
+  }
+
   return gasPaymentValidations.isValid && (!subaccountValidations || subaccountValidations.isValid);
 }
 
@@ -549,7 +577,7 @@ export async function buildAndSignExpressBatchOrderTxn({
           BigInt(srcChainId),
           subaccount.signedApproval?.subaccount,
           params.paramsLists,
-        ],
+        ] satisfies Parameters<MultichainSubaccountRouter["batch"]>,
       });
     } else {
       batchCalldata = encodeFunctionData({
@@ -580,7 +608,7 @@ export async function buildAndSignExpressBatchOrderTxn({
           params.account,
           subaccount.signedApproval?.subaccount,
           params.paramsLists,
-        ],
+        ] satisfies Parameters<SubaccountGelatoRelayRouter["batch"]>,
       });
     } else {
       batchCalldata = encodeFunctionData({
@@ -593,7 +621,7 @@ export async function buildAndSignExpressBatchOrderTxn({
           },
           params.account,
           params.paramsLists,
-        ],
+        ] satisfies Parameters<GelatoRelayRouter["batch"]>,
       });
     }
   }
@@ -616,7 +644,7 @@ export async function getBatchSignatureParams({
   relayRouterAddress,
 }: {
   account: string;
-  subaccountApproval: SignedSubbacountApproval | undefined;
+  subaccountApproval: SignedSubacсountApproval | undefined;
   signer: WalletSigner | Wallet;
   relayParams: RelayParamsPayload | RelayParamsPayload;
   batchParams: BatchOrderTxnParams;
@@ -642,7 +670,7 @@ export async function getBatchSignatureParams({
       { name: "autoCancel", type: "bool" },
       { name: "referralCode", type: "bytes32" },
       { name: "dataList", type: "bytes32[]" },
-    ].filter<{ name: string; type: string }>(Boolean as any),
+    ],
     CreateOrderAddresses: [
       { name: "receiver", type: "address" },
       { name: "cancellationReceiver", type: "address" },
@@ -693,13 +721,14 @@ export async function getBatchSignatureParams({
     types,
     typedData,
     domain,
+    shouldUseSignerMethod: subaccountApproval !== undefined,
   };
 }
 
 function getBatchParamsLists(batchParams: BatchOrderTxnParams) {
   return {
     createOrderParamsList: batchParams.createOrderParams.map((p) => ({
-      addresses: p.orderPayload.addresses,
+      addresses: updateExpressOrdersAddresses(p.orderPayload.addresses),
       numbers: p.orderPayload.numbers,
       orderType: p.orderPayload.orderType,
       decreasePositionSwapType: p.orderPayload.decreasePositionSwapType,
@@ -848,6 +877,7 @@ async function signBridgeOutPayload({
     BridgeOut: [
       { name: "token", type: "address" },
       { name: "amount", type: "uint256" },
+      { name: "minAmountOut", type: "uint256" },
       { name: "provider", type: "address" },
       { name: "data", type: "bytes" },
       { name: "relayParams", type: "bytes32" },
@@ -857,6 +887,7 @@ async function signBridgeOutPayload({
   const typedData = {
     token: params.token,
     amount: params.amount,
+    minAmountOut: params.minAmountOut,
     provider: params.provider,
     data: params.data,
     relayParams: hashRelayParams(relayParams),
@@ -954,4 +985,11 @@ export async function signSetTraderReferralCode({
   };
 
   return signTypedData({ signer, domain, types, typedData });
+}
+
+function updateExpressOrdersAddresses(addressess: CreateOrderPayload["addresses"]): CreateOrderPayload["addresses"] {
+  return {
+    ...addressess,
+    uiFeeReceiver: setUiFeeReceiverIsExpress(addressess.uiFeeReceiver, true),
+  };
 }
