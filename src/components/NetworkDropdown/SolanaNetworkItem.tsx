@@ -37,10 +37,10 @@ export default function SolanaNetworkItem() {
         <div className="flex flex-col gap-16">
           <p className="mb-8 text-15 text-slate-100">
             <Trans>
-              GMX Solana is hosted on a different website by a different DAO team.
+              GMX Solana is hosted on another website and run by a different team, so the experience may vary slightly.
               <br />
               <br />
-              The experience may vary slightly.
+              Clicking on the button below will open the GMX Solana frontend in a new tab.
             </Trans>
           </p>
 
