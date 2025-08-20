@@ -62,7 +62,7 @@ export function PoolsDetails() {
           className="inline-flex w-fit gap-4 rounded-4 bg-slate-700 px-16 py-12 hover:bg-cold-blue-700"
         >
           <FaArrowLeft size={16} />
-          Back to Pools
+          <Trans>Back to Pools</Trans>
         </ButtonLink>
         {glvOrMarketInfo ? (
           <>

@@ -114,6 +114,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     marketsInfoData,
     tokensData,
     chainId,
+    srcChainId,
     account: currentAccount,
   });
 

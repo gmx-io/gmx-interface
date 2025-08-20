@@ -14,9 +14,9 @@ interface Props {
   operation: Operation;
 
   marketToken: TokenData | undefined;
-  longToken: TokenData | undefined;
-  shortToken: TokenData | undefined;
-  glvToken: TokenData | undefined;
+  longTokenAddress: string | undefined;
+  shortTokenAddress: string | undefined;
+  glvTokenAddress: string | undefined;
 
   marketTokenAmount: bigint | undefined;
   longTokenAmount: bigint | undefined;
@@ -32,11 +32,11 @@ export const useTokensToApprove = ({
   operation,
   marketToken,
   marketTokenAmount,
-  longToken,
+  longTokenAddress,
   longTokenAmount,
-  shortToken,
+  shortTokenAddress,
   shortTokenAmount,
-  glvToken,
+  glvTokenAddress,
   glvTokenAmount,
   isMarketTokenDeposit,
 }: Props) => {
@@ -50,11 +50,11 @@ export const useTokensToApprove = ({
       const addresses: string[] = [];
 
       if (operation === Operation.Deposit) {
-        if (longTokenAmount !== undefined && longTokenAmount > 0 && longToken) {
-          addresses.push(longToken.address);
+        if (longTokenAmount !== undefined && longTokenAmount > 0 && longTokenAddress) {
+          addresses.push(longTokenAddress);
         }
-        if (shortTokenAmount !== undefined && shortTokenAmount > 0 && shortToken) {
-          addresses.push(shortToken.address);
+        if (shortTokenAmount !== undefined && shortTokenAmount > 0 && shortTokenAddress) {
+          addresses.push(shortTokenAddress);
         }
         if (glvInfo && isMarketTokenDeposit) {
           if (marketTokenAmount !== undefined && marketTokenAmount > 0) {
@@ -62,7 +62,7 @@ export const useTokensToApprove = ({
           }
         }
       } else if (operation === Operation.Withdrawal) {
-        addresses.push(glvToken ? glvToken.address : marketToken.address);
+        addresses.push(glvTokenAddress ? glvTokenAddress : marketToken.address);
       }
 
       return uniq(addresses);
@@ -71,11 +71,11 @@ export const useTokensToApprove = ({
       operation,
       marketToken,
       longTokenAmount,
-      longToken,
+      longTokenAddress,
       shortTokenAmount,
-      shortToken,
+      shortTokenAddress,
       glvInfo,
-      glvToken,
+      glvTokenAddress,
       isMarketTokenDeposit,
       marketTokenAmount,
     ]
@@ -101,32 +101,27 @@ export const useTokensToApprove = ({
         []
       );
 
-      const shouldApproveGlvToken = getNeedTokenApprove(tokensAllowanceData, glvToken?.address, glvTokenAmount, []);
+      const shouldApproveGlvToken = getNeedTokenApprove(tokensAllowanceData, glvTokenAddress, glvTokenAmount, []);
 
-      const shouldApproveLongToken = getNeedTokenApprove(tokensAllowanceData, longToken?.address, longTokenAmount, []);
+      const shouldApproveLongToken = getNeedTokenApprove(tokensAllowanceData, longTokenAddress, longTokenAmount, []);
 
-      const shouldApproveShortToken = getNeedTokenApprove(
-        tokensAllowanceData,
-        shortToken?.address,
-        shortTokenAmount,
-        []
-      );
+      const shouldApproveShortToken = getNeedTokenApprove(tokensAllowanceData, shortTokenAddress, shortTokenAmount, []);
 
       if (operation === Operation.Deposit) {
-        if (shouldApproveLongToken && longToken?.address) {
-          addresses.push(longToken?.address);
+        if (shouldApproveLongToken && longTokenAddress) {
+          addresses.push(longTokenAddress);
         }
 
-        if (shouldApproveShortToken && shortToken?.address) {
-          addresses.push(shortToken.address);
+        if (shouldApproveShortToken && shortTokenAddress) {
+          addresses.push(shortTokenAddress);
         }
 
         if (glvInfo && isMarketTokenDeposit && shouldApproveMarketToken && marketToken) {
           addresses.push(marketToken.address);
         }
       } else if (operation === Operation.Withdrawal) {
-        if (glvInfo && shouldApproveGlvToken && glvToken?.address) {
-          addresses.push(glvToken.address);
+        if (glvInfo && shouldApproveGlvToken && glvTokenAddress) {
+          addresses.push(glvTokenAddress);
         } else if (!glvInfo && shouldApproveMarketToken && marketToken?.address) {
           addresses.push(marketToken.address);
         }
@@ -135,18 +130,18 @@ export const useTokensToApprove = ({
       return uniq(addresses);
     },
     [
-      longToken,
+      glvInfo,
+      glvTokenAddress,
+      glvTokenAmount,
+      isMarketTokenDeposit,
+      longTokenAddress,
       longTokenAmount,
       marketToken,
       marketTokenAmount,
       operation,
-      shortToken,
+      shortTokenAddress,
       shortTokenAmount,
-      glvToken,
-      glvTokenAmount,
-      glvInfo,
       tokensAllowanceData,
-      isMarketTokenDeposit,
     ]
   );
 

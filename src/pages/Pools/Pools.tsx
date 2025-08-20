@@ -50,6 +50,7 @@ export default function Pools() {
     tokensData,
     chainId,
     account,
+    srcChainId,
   });
 
   const { glvPerformance, gmPerformance, glvPerformanceSnapshots, gmPerformanceSnapshots } = useGmGlvPerformance({

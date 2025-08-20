@@ -186,17 +186,48 @@ export function buildGetOrdersMulticall(chainId: ContractsChainId, account: stri
 
 export function parseGetOrdersResponse(res: MulticallResult<ReturnType<typeof buildGetOrdersMulticall>>) {
   const count = Number(res.data.dataStore.count.returnValues[0]);
-  const orderKeys = res.data.dataStore.keys.returnValues;
-  const orders = res.data.reader.orders.returnValues as any[];
+  const orders = res.data.reader.orders.returnValues as {
+    order: {
+      addresses: {
+        account: string;
+        receiver: string;
+        cancellationReceiver: string;
+        callbackContract: string;
+        uiFeeReceiver: string;
+        market: string;
+        initialCollateralToken: string;
+        swapPath: string[];
+      };
+      numbers: {
+        orderType: number;
+        decreasePositionSwapType: number;
+        sizeDeltaUsd: bigint;
+        initialCollateralDeltaAmount: bigint;
+        triggerPrice: bigint;
+        acceptablePrice: bigint;
+        executionFee: bigint;
+        callbackGasLimit: bigint;
+        minOutputAmount: bigint;
+        updatedAtTime: bigint;
+        validFromTime: bigint;
+        srcChainId: bigint;
+      };
+      flags: {
+        isLong: boolean;
+        shouldUnwrapNativeToken: boolean;
+        isFrozen: boolean;
+        autoCancel: boolean;
+      };
+      _dataList: string[];
+    };
+    orderKey: string;
+  }[];
 
   return {
     count,
-    orders: orders.map((order, i) => {
-      const key = orderKeys[i];
-      const { data } = order;
-
+    orders: orders.map(({ order, orderKey }) => {
       const orderData: Order = {
-        key,
+        key: orderKey,
         account: order.addresses.account as Address,
         receiver: order.addresses.receiver as Address,
         callbackContract: order.addresses.callbackContract as Address,
@@ -219,7 +250,7 @@ export function parseGetOrdersResponse(res: MulticallResult<ReturnType<typeof bu
         autoCancel: order.flags.autoCancel as boolean,
         uiFeeReceiver: order.addresses.uiFeeReceiver as Address,
         validFromTime: BigInt(order.numbers.validFromTime),
-        data,
+        data: order._dataList,
       };
 
       return orderData;

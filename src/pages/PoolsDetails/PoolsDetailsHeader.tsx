@@ -1,7 +1,11 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
+import { useMemo } from "react";
+import { ImSpinner2 } from "react-icons/im";
 
 import { USD_DECIMALS } from "config/factors";
+import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   getGlvMarketShortening,
   getGlvOrMarketAddress,
@@ -16,8 +20,11 @@ import { useChainId } from "lib/chains";
 import { formatAmountHuman, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
+import { AnyChainId, getChainName } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
+import { useMultichainMarketTokenBalancesRequest } from "components/Synthetics/GmxAccountModal/hooks";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import { PoolsDetailsMarketAmount } from "./PoolsDetailsMarketAmount";
@@ -29,6 +36,7 @@ type Props = {
 
 export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
   const { chainId, srcChainId } = useChainId();
+  const account = useSelector(selectAccount);
   const isGlv = glvOrMarketInfo && isGlvInfo(glvOrMarketInfo);
   const iconName = glvOrMarketInfo?.isSpotOnly
     ? getNormalizedTokenSymbol(glvOrMarketInfo.longToken.symbol) +
@@ -38,8 +46,6 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
       : glvOrMarketInfo?.indexToken.symbol;
 
   const marketPrice = marketToken?.prices?.maxPrice;
-  const marketBalance = marketToken?.balance;
-  const marketBalanceUsd = convertToUsd(marketBalance, marketToken?.decimals, marketPrice);
 
   const marketTotalSupply = marketToken?.totalSupply;
   const marketTotalSupplyUsd = convertToUsd(marketTotalSupply, marketToken?.decimals, marketPrice);
@@ -48,6 +54,29 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
   const marketEarnings = getByKey(userEarnings?.byMarketAddress, marketToken?.address);
 
   const isMobile = usePoolsIsMobilePage();
+
+  const { totalBalance, tokenBalancesData, isBalanceDataLoading } = useMultichainMarketTokenBalancesRequest(
+    chainId,
+    srcChainId,
+    account,
+    marketToken?.address
+  );
+
+  const sortedTokenBalancesDataArray = useMemo(() => {
+    return Object.entries(tokenBalancesData)
+      .sort((a, b) => {
+        const aBalance = a[1];
+        const bBalance = b[1];
+
+        return aBalance > bBalance ? -1 : 1;
+      })
+      .map(([chainId, balance]) => ({
+        chainId: parseInt(chainId) as AnyChainId | 0,
+        balance,
+      }));
+  }, [tokenBalancesData]);
+
+  const marketBalanceUsd = convertToUsd(totalBalance, marketToken?.decimals, marketPrice);
 
   return (
     <div
@@ -92,13 +121,36 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
             }
           />
 
-          {typeof marketBalance === "bigint" && typeof marketToken?.decimals === "number" ? (
+          {typeof totalBalance === "bigint" && typeof marketToken?.decimals === "number" ? (
             <PoolsDetailsMarketAmount
-              label={<Trans>Wallet</Trans>}
-              value={formatUsd(marketBalanceUsd)}
-              secondaryValue={`${formatBalanceAmount(marketBalance, marketToken?.decimals, undefined, {
+              label={<Trans>Balance</Trans>}
+              value={
+                <>
+                  {isBalanceDataLoading ? <ImSpinner2 className="mr-4 inline-block animate-spin" /> : null}
+                  {formatUsd(marketBalanceUsd)}
+                </>
+              }
+              secondaryValue={`${formatBalanceAmount(totalBalance, marketToken?.decimals, undefined, {
                 showZero: true,
               })} ${isGlv ? "GLV" : "GM"}`}
+              tooltipContent={
+                <div>
+                  {sortedTokenBalancesDataArray.map(({ chainId, balance }) => {
+                    const chainName = chainId === 0 ? t`GMX Account` : getChainName(chainId);
+
+                    return (
+                      <SyntheticsInfoRow
+                        key={chainId}
+                        label={chainName}
+                        value={formatBalanceAmount(balance, marketToken?.decimals, undefined, {
+                          showZero: true,
+                        })}
+                      />
+                    );
+                  })}
+                  {isBalanceDataLoading ? <ImSpinner2 className="animate-spin" /> : null}
+                </div>
+              }
             />
           ) : null}
 

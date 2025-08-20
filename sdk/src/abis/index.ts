@@ -24,7 +24,6 @@ import MultichainGmRouter from "./MultichainGmRouter.json";
 import MultichainOrderRouter from "./MultichainOrderRouter.json";
 import MultichainSubaccountRouter from "./MultichainSubaccountRouter.json";
 import MultichainTransferRouter from "./MultichainTransferRouter.json";
-import MultichainUtils from "./MultichainUtils.json";
 import MultichainVault from "./MultichainVault.json";
 import OrderBook from "./OrderBook.json";
 import OrderBookReader from "./OrderBookReader.json";
@@ -84,7 +83,6 @@ export type AbiId =
   | "MultichainOrderRouter"
   | "MultichainSubaccountRouter"
   | "MultichainTransferRouter"
-  | "MultichainUtils"
   | "MultichainVault"
   | "OrderBook"
   | "OrderBookReader"
@@ -171,7 +169,6 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   MultichainOrderRouter: MultichainOrderRouter.abi,
   MultichainSubaccountRouter: MultichainSubaccountRouter.abi,
   MultichainTransferRouter: MultichainTransferRouter.abi,
-  MultichainUtils: MultichainUtils.abi,
   MultichainVault: MultichainVault.abi,
   OrderBook: OrderBook.abi,
   OrderBookReader: OrderBookReader.abi,
