@@ -10,7 +10,9 @@ import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutO
 import { getIsSubaccountActive } from "domain/synthetics/subaccount";
 import { useChainId } from "lib/chains";
 import { EMPTY_ARRAY } from "lib/objects";
+import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 
+import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
@@ -50,6 +52,8 @@ export function TradingSettings({
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
+  const isGeminiWallet = useIsGeminiWallet();
+  const isExpressTradingDisabled = isOutOfGasPaymentBalance || isGeminiWallet;
 
   return (
     <div className="mt-16">
@@ -90,7 +94,7 @@ export function TradingSettings({
                 </Trans>
               }
               icon={<ExpressIcon className="size-28" />}
-              disabled={isOutOfGasPaymentBalance}
+              disabled={isExpressTradingDisabled}
               chip={
                 <Chip color="gray">
                   <Trans>Optimal</Trans>
@@ -104,7 +108,7 @@ export function TradingSettings({
               title="Express + One-Click"
               description="CEX-like experience with Express reliability."
               icon={<OneClickIcon className="size-28" />}
-              disabled={isOutOfGasPaymentBalance}
+              disabled={isExpressTradingDisabled}
               info={
                 <Trans>
                   Your wallet, your keys.
@@ -125,6 +129,14 @@ export function TradingSettings({
             />
 
             {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
+
+            {isGeminiWallet && (
+              <ColorfulBanner color="blue" icon={ExpressIcon}>
+                <div className="text-body-small mr-8 pl-8">
+                  <Trans>Gemini Wallet is not supported for Express or One-Click trading.</Trans>
+                </div>
+              </ColorfulBanner>
+            )}
 
             <OldSubaccountWithdraw />
 

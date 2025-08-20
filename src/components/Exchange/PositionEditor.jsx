@@ -595,7 +595,6 @@ export default function PositionEditor(props) {
                     inputValue={fromValue}
                     onInputValueChange={(e) => setFromValue(e.target.value)}
                     topLeftLabel={isDeposit ? t`Deposit` : t`Withdraw`}
-                    isBottomLeftValueMuted={convertedAmount === 0n}
                     bottomLeftValue={
                       convertedAmountFormatted
                         ? `${convertedAmountFormatted} ${isDeposit ? "USD" : position.collateralToken.symbol}`

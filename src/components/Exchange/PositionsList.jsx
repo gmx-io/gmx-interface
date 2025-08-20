@@ -591,9 +591,9 @@ export default function PositionsList(props) {
                         renderContent={() => {
                           return (
                             <>
-                              <strong>
+                              <span className="font-medium">
                                 <Trans>Active Orders</Trans>
-                              </strong>
+                              </span>
                               {positionOrders.map((order) => {
                                 const priceDecimal = getPriceDecimals(chainId, order.indexToken.symbol);
                                 return (

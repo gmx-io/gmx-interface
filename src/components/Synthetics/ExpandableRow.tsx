@@ -133,32 +133,37 @@ export function ExpandableRow({
   );
 
   return (
-    <div className={className}>
-      {row ? (
-        <SyntheticsInfoRow
-          className={cx("group relative -my-14 !items-center py-14 gmx-hover:text-blue-300", {
-            "cursor-not-allowed": disabled,
-          })}
-          onClick={disabled ? undefined : handleOnClick}
-          label={
-            <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">{label}</span>
-          }
-          value={value}
-        />
-      ) : (
-        <SyntheticsInfoRow
-          className={cx("group relative -my-14 !items-center py-14 gmx-hover:text-blue-300", {
-            "cursor-not-allowed": disabled,
-          })}
-          onClick={disabled ? undefined : handleOnClick}
-          label={
-            <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">{label}</span>
-          }
-          value={value}
-        />
-      )}
-
+    <div className={cx("min-h-16", className)}>
       <AnimatePresence initial={false}>
+        <div className={cx({ "mb-14": open })}>
+          {row ? (
+            <SyntheticsInfoRow
+              className={cx("group relative !items-center gmx-hover:text-blue-300", {
+                "cursor-not-allowed": disabled,
+              })}
+              onClick={disabled ? undefined : handleOnClick}
+              label={
+                <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">
+                  {label}
+                </span>
+              }
+              value={value}
+            />
+          ) : (
+            <SyntheticsInfoRow
+              className={cx("group relative !items-center gmx-hover:text-blue-300", {
+                "cursor-not-allowed": disabled,
+              })}
+              onClick={disabled ? undefined : handleOnClick}
+              label={
+                <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">
+                  {label}
+                </span>
+              }
+              value={value}
+            />
+          )}
+        </div>
         {open && (
           <motion.div
             ref={contentRef}

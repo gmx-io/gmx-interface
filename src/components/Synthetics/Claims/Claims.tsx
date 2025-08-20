@@ -6,7 +6,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useClaimCollateralHistory } from "domain/synthetics/claimHistory";
 
 import { ClaimableCard } from "./ClaimableCard";
-import { ClaimsHistory, ClaimsHistoryProps } from "./ClaimsHistory";
+import { ClaimsHistory } from "./ClaimsHistory";
 import { SettleAccruedCard } from "./SettleAccruedCard";
 import { AccruedPositionPriceImpactRebateModal } from "../AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal";
 import { ClaimablePositionPriceImpactRebateModal } from "../ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal";
@@ -22,13 +22,11 @@ export function Claims({
   setIsSettling,
   setPendingTxns,
   allowedSlippage,
-  claimsHistoryProps,
 }: {
   isSettling: boolean;
   setIsSettling: (v: boolean) => void;
   setPendingTxns: (txns: any) => void;
   allowedSlippage: number;
-  claimsHistoryProps: ClaimsHistoryProps;
 }) {
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
@@ -88,9 +86,9 @@ export function Claims({
         onClose={handleClaimablePositionPriceImpactFeesCloseClick}
       />
 
-      <div>
+      <div className="flex grow flex-col">
         {account && isLoading && (
-          <div className="Claims-loading">
+          <div className="Claims-loading bg-slate-900">
             <Trans>Loading...</Trans>
           </div>
         )}
@@ -109,7 +107,7 @@ export function Claims({
           )}
         </div>
 
-        <ClaimsHistory {...claimsHistoryProps} />
+        <ClaimsHistory />
       </div>
     </>
   );

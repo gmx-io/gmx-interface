@@ -947,8 +947,8 @@ msgstr "清算 {0} {longOrShortText}"
 msgid "Pay"
 msgstr "支付"
 
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Solana"
 msgstr ""
 
@@ -1341,6 +1341,10 @@ msgstr "交换活跃：{0}，执行：{1}，取消：{2}"
 msgid "Buy token on:"
 msgstr "购买代币于："
 
+#: src/components/Synthetics/Claims/ClaimsHistory.tsx
+msgid "Claims history"
+msgstr ""
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -1357,8 +1361,8 @@ msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "清算 {longOrShortText} - {marketIndexName}"
 
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-msgid "Actions"
-msgstr "操作"
+#~ msgid "Actions"
+#~ msgstr "操作"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Longing..."
@@ -3977,6 +3981,10 @@ msgstr "交易空投"
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. This can be useful for delta-neutral strategies to earn funding fees."
 msgstr "您将从您的做空仓位做空 {indexSymbol}，同时从您的 {collateralSymbol} 抵押品做多 {collateralSymbol}。这对于赚取资金费用的 delta 中性策略很有用。"
 
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "Open GMX Solana"
+msgstr "打开 GMX Solana"
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr "该账户作为交易者赚取的回扣。"
@@ -5107,6 +5115,10 @@ msgstr "空头流动性"
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Order Type"
 msgstr "订单类型"
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMX Solana"
+msgstr "GMX Solana"
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
@@ -7269,6 +7281,10 @@ msgstr "最小部分数量：{MIN_TWAP_NUMBER_OF_PARTS}"
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 msgstr "您可以在页面右上角的设置菜单中更改此项。<0/><1/>请注意，如果允许的滑点较低，例如小于 {0}，在价格波动时可能导致订单失败。"
 
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "Trade history"
+msgstr ""
+
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
@@ -8016,6 +8032,10 @@ msgstr "已累积"
 msgid "Liquidation price is influenced by fees and collateral value."
 msgstr "清算价格受费用和抵押品价值影响。"
 
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMX Solana is hosted on a different website by a different DAO team.<0/><1/>The experience may vary slightly."
+msgstr "GMX Solana 由不同的 DAO 团队托管在不同的网站上。<0/><1/>体验可能会略有不同。"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "No data available"
 msgstr "无可用数据"
@@ -8527,6 +8547,10 @@ msgstr "超过最大杠杆"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "此仓位可能被清算（不包括任何价格变动），因为资金和借款费用率会随着时间减少仓位的抵押品。"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Gemini Wallet is not supported for Express or One-Click trading."
+msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"

@@ -39,7 +39,7 @@ export function SettingsModal({
 
   const [activeTab, setActiveTab] = useState<SettingsTab>("trading");
   const [tradingMode, setTradingMode] = useState<TradingMode | undefined>(undefined);
-  const [isTradningModeChanging, setIsTradningModeChanging] = useState(false);
+  const [isTradingModeChanging, setIsTradingModeChanging] = useState(false);
 
   const [numberOfParts, setNumberOfParts] = useState<number>();
 
@@ -129,7 +129,7 @@ export function SettingsModal({
   const handleTradingModeChange = useCallback(
     async (mode: TradingMode) => {
       const prevMode = tradingMode;
-      setIsTradningModeChanging(true);
+      setIsTradingModeChanging(true);
       setTradingMode(mode);
 
       switch (mode) {
@@ -139,13 +139,13 @@ export function SettingsModal({
 
             if (!isSubaccountDeactivated) {
               setTradingMode(prevMode);
-              setIsTradningModeChanging(false);
+              setIsTradingModeChanging(false);
               return;
             }
           }
 
           settings.setExpressOrdersEnabled(false);
-          setIsTradningModeChanging(false);
+          setIsTradingModeChanging(false);
           break;
         }
         case TradingMode.Express: {
@@ -154,13 +154,13 @@ export function SettingsModal({
 
             if (!isSubaccountDeactivated) {
               setTradingMode(prevMode);
-              setIsTradningModeChanging(false);
+              setIsTradingModeChanging(false);
               return;
             }
           }
 
           settings.setExpressOrdersEnabled(true);
-          setIsTradningModeChanging(false);
+          setIsTradingModeChanging(false);
           break;
         }
         case TradingMode.Express1CT: {
@@ -168,12 +168,12 @@ export function SettingsModal({
 
           if (!isSubaccountActivated) {
             setTradingMode(prevMode);
-            setIsTradningModeChanging(false);
+            setIsTradingModeChanging(false);
             return;
           }
 
           settings.setExpressOrdersEnabled(true);
-          setIsTradningModeChanging(false);
+          setIsTradingModeChanging(false);
           break;
         }
         default: {
@@ -187,7 +187,7 @@ export function SettingsModal({
 
   useEffect(
     function defineTradingMode() {
-      if (isTradningModeChanging) {
+      if (isTradingModeChanging) {
         return;
       }
 
@@ -205,7 +205,7 @@ export function SettingsModal({
         setTradingMode(nextTradingMode);
       }
     },
-    [isTradningModeChanging, settings.expressOrdersEnabled, subaccountState.subaccount, tradingMode]
+    [isTradingModeChanging, settings.expressOrdersEnabled, subaccountState.subaccount, tradingMode]
   );
 
   const tabLabels = useLocalizedMap(TAB_LABELS);

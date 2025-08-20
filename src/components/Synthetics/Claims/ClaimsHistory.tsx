@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import formatDate from "date-fns/format";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { getExplorerUrl } from "config/chains";
 import { CLAIMS_HISTORY_PER_PAGE } from "config/ui";
@@ -9,6 +9,7 @@ import { useAccount } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ClaimAction, ClaimType, useClaimCollateralHistory } from "domain/synthetics/claimHistory";
+import { useBreakpoints } from "lib/breakpoints";
 import { downloadAsCsv } from "lib/csv";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { formatTokenAmount } from "lib/numbers";
@@ -36,10 +37,24 @@ import "./ClaimsHistory.scss";
 
 const CLAIMS_HISTORY_PREFETCH_SIZE = 100;
 
-export const useClaimsHistoryState = (): ClaimsHistoryProps & { controls: ReactNode } => {
+export type ClaimsHistoryProps = {
+  isLoading: boolean;
+  isEmpty: boolean;
+  hasFilters: boolean;
+  eventNameFilter: string[];
+  setEventNameFilter: (eventNameFilter: string[]) => void;
+  marketAddressesFilter: string[];
+  setMarketAddressesFilter: (marketAddressesFilter: string[]) => void;
+  currentPage: number;
+  setCurrentPage: (currentPage: number) => void;
+  pageCount: number;
+  currentPageData: ClaimAction[];
+};
+
+export function ClaimsHistory() {
   const chainId = useSelector(selectChainId);
   const account = useAccount();
-
+  const { isMobile } = useBreakpoints();
   const [startDate, endDate, setDateRange] = useDateRange();
   const [eventNameFilter, setEventNameFilter] = useState<string[]>([]);
   const [marketAddressesFilter, setMarketAddressesFilter] = useState<string[]>([]);
@@ -98,52 +113,18 @@ export const useClaimsHistoryState = (): ClaimsHistoryProps & { controls: ReactN
     </div>
   );
 
-  return {
-    isLoading,
-    isEmpty,
-    hasFilters,
-    eventNameFilter,
-    setEventNameFilter,
-    marketAddressesFilter,
-    setMarketAddressesFilter,
-    currentPage,
-    setCurrentPage,
-    pageCount,
-    currentPageData,
-    controls,
-  };
-};
-
-export type ClaimsHistoryProps = {
-  isLoading: boolean;
-  isEmpty: boolean;
-  hasFilters: boolean;
-  eventNameFilter: string[];
-  setEventNameFilter: (eventNameFilter: string[]) => void;
-  marketAddressesFilter: string[];
-  setMarketAddressesFilter: (marketAddressesFilter: string[]) => void;
-  currentPage: number;
-  setCurrentPage: (currentPage: number) => void;
-  pageCount: number;
-  currentPageData: ClaimAction[];
-};
-
-export function ClaimsHistory({
-  isLoading,
-  isEmpty,
-  hasFilters,
-  eventNameFilter,
-  setEventNameFilter,
-  marketAddressesFilter,
-  setMarketAddressesFilter,
-  currentPage,
-  setCurrentPage,
-  pageCount,
-  currentPageData,
-}: ClaimsHistoryProps) {
   return (
-    <div className="bg-slate-900">
-      <TableScrollFadeContainer disableScrollFade={isEmpty}>
+    <div className="flex grow flex-col bg-slate-900">
+      <div className="flex items-center justify-between gap-8 pl-20 pr-8 pt-8">
+        {!isMobile ? (
+          <span className="text-body-medium font-medium">
+            <Trans>Claims history</Trans>
+          </span>
+        ) : null}
+
+        {controls}
+      </div>
+      <TableScrollFadeContainer disableScrollFade={isEmpty} className="flex grow flex-col">
         {!isEmpty && (
           <table className="ClaimsHistory-table table-fixed">
             <colgroup>

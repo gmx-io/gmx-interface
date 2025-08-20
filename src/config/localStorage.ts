@@ -25,12 +25,12 @@ export const LEVERAGE_ENABLED_KEY = "leverage-enabled";
 export const KEEP_LEVERAGE_FOR_DECREASE_KEY = "Exchange-keep-leverage";
 export const TRADE_LINK_KEY = "trade-link";
 export const SHOW_DEBUG_VALUES_KEY = "show-debug-values";
-export const ORACLE_KEEPER_INSTANCES_CONFIG_KEY = "oracle-keeper-instances-config";
 export const SORTED_MARKETS_KEY = "sorted-markets-key";
 export const TWAP_NUMBER_OF_PARTS_KEY = "twap-number-of-parts";
 export const TWAP_INFO_CARD_CLOSED_KEY = "twap-info-card-closed";
 // key updated with chart overrides, to update tv chart with new release
 export const WAS_TV_CHART_OVERRIDDEN_KEY = "was-tv-chart-overridden-1";
+export const UTM_PARAMS_KEY = "utm_params";
 
 export const SYNTHETICS_TRADE_OPTIONS = "synthetics-trade-options";
 export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY = "synthetics-acceptable-price-impact-buffer";

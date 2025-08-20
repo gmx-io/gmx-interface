@@ -266,7 +266,7 @@ export function TradeBoxAdvancedGroups({
       onToggle={toggleAdvancedDisplay}
       disableCollapseOnError={false}
       hasError={hasError}
-      className="flex flex-col gap-14"
+      className=""
       contentClassName="flex flex-col gap-14"
       scrollIntoViewOnMobile
       row={false}
@@ -284,7 +284,6 @@ export function TradeBoxAdvancedGroups({
             priceImpactFeeBps={fees?.positionPriceImpact?.bps}
             setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
           />
-          {!isTwap && <div className="h-1 shrink-0 bg-slate-600" />}
         </>
       )}
 

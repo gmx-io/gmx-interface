@@ -21,7 +21,6 @@
   color: var(--color-white);
 
   a {
-    color: var(--color-gray-300);
     text-decoration: underline;
   }
 }
@@ -129,7 +128,7 @@
   text-decoration-style: dashed;
   text-decoration-thickness: 0.5px;
   text-underline-offset: 1.75px;
-  text-decoration-color: var(--color-slate-100);
+  text-decoration-color: inherit;
 }
 
 .Tooltip-divider {

@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import { ReactNode, useCallback, useMemo } from "react";
+import { ReactNode, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -30,7 +30,7 @@ function SideNav({ className }: { className?: string }) {
   return (
     <nav
       className={cx("flex h-full shrink-0 flex-col bg-slate-950 pb-8", className, {
-        "w-[200px] max-xl:w-[156px]": !isCollapsed,
+        "w-[184px] max-xl:w-[144px]": !isCollapsed,
       })}
     >
       <div className={cx("flex w-full", { "justify-center": isCollapsed })}>
@@ -129,27 +129,17 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
   return <li className="p-0 first:-mt-4">{content}</li>;
 }
 
-type NavItemType = {
-  icon: ReactNode;
-  label: string;
-  key: string;
-  to?: string;
-};
-
 export function MenuSection({ isCollapsed }: { isCollapsed: boolean | undefined }) {
-  const mainNavItems = useMemo(
-    (): NavItemType[] => [
-      { icon: <TradeIcon />, label: t`Trade`, key: "trade", to: "/trade" },
-      { icon: <DatabaseIcon />, label: t`Pools`, key: "pools", to: "/pools" },
-      { icon: <EarnIcon />, label: t`Stake`, key: "stake", to: "/stake" },
-      { icon: <DashboardIcon />, label: t`Stats`, key: "stats", to: "/stats" },
-      { icon: <BuyIcon />, label: t`Buy`, key: "buy", to: "/buy" },
-      { icon: <ReferralsIcon />, label: t`Referrals`, key: "referrals", to: "/referrals" },
-      { icon: <LeaderboardIcon />, label: t`Leaderboard`, key: "leaderboard", to: "/leaderboard" },
-      { icon: <EcosystemIcon />, label: t`Ecosystem`, key: "ecosystem", to: "/ecosystem" },
-    ],
-    []
-  );
+  const mainNavItems = [
+    { icon: <TradeIcon />, label: t`Trade`, key: "trade", to: "/trade" },
+    { icon: <DatabaseIcon />, label: t`Pools`, key: "pools", to: "/pools" },
+    { icon: <EarnIcon />, label: t`Stake`, key: "stake", to: "/stake" },
+    { icon: <DashboardIcon />, label: t`Stats`, key: "stats", to: "/stats" },
+    { icon: <BuyIcon />, label: t`Buy`, key: "buy", to: "/buy" },
+    { icon: <ReferralsIcon />, label: t`Referrals`, key: "referrals", to: "/referrals" },
+    { icon: <LeaderboardIcon />, label: t`Leaderboard`, key: "leaderboard", to: "/leaderboard" },
+    { icon: <EcosystemIcon />, label: t`Ecosystem`, key: "ecosystem", to: "/ecosystem" },
+  ];
 
   const { pathname } = useLocation();
 

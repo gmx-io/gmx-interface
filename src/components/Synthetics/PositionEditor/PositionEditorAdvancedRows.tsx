@@ -43,7 +43,7 @@ export function PositionEditorAdvancedRows({ operation, gasPaymentParams }: Opti
       title={t`Execution Details`}
       open={open}
       onToggle={setOpen}
-      contentClassName="flex flex-col gap-14 pt-14"
+      contentClassName="flex flex-col gap-14"
       row={false}
     >
       <TradeFeesRow {...fees} feesType="edit" shouldShowRebate={false} />

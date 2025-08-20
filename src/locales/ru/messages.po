@@ -947,8 +947,8 @@ msgstr "Ликв. {0} {longOrShortText}"
 msgid "Pay"
 msgstr "Оплатить"
 
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Solana"
 msgstr ""
 
@@ -1341,6 +1341,10 @@ msgstr "Обмен активен: {0}, выполнен: {1}, отменен: {
 msgid "Buy token on:"
 msgstr "Купить токен на:"
 
+#: src/components/Synthetics/Claims/ClaimsHistory.tsx
+msgid "Claims history"
+msgstr ""
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -1357,8 +1361,8 @@ msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "Ликв. {longOrShortText} - {marketIndexName}"
 
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-msgid "Actions"
-msgstr "Действия"
+#~ msgid "Actions"
+#~ msgstr "Действия"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Longing..."
@@ -3977,6 +3981,10 @@ msgstr "Аирдроп ТОРГОВЛИ"
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. This can be useful for delta-neutral strategies to earn funding fees."
 msgstr "Вы будете в шорте {indexSymbol} от вашей шорт позиции, в то время как в лонге {collateralSymbol} от вашего залога {collateralSymbol}. Это может быть полезно для дельта-нейтральных стратегий для заработка комиссий за финансирование."
 
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "Open GMX Solana"
+msgstr "Открыть GMX Solana"
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr "Рибейты, заработанные этим аккаунтом в качестве трейдера."
@@ -5107,6 +5115,10 @@ msgstr "Ликвидность шорта"
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Order Type"
 msgstr "Тип ордера"
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMX Solana"
+msgstr "GMX Solana"
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
@@ -7269,6 +7281,10 @@ msgstr "Минимальное количество частей: {MIN_TWAP_NUMB
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 msgstr "Вы можете изменить это в меню настроек в правом верхнем углу страницы.<0/><1/>Обратите внимание, что низкое допустимое проскальзывание, например, менее {0}, может привести к неудачным ордерам при волатильности цен."
 
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "Trade history"
+msgstr ""
+
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
@@ -8016,6 +8032,10 @@ msgstr "Начислено"
 msgid "Liquidation price is influenced by fees and collateral value."
 msgstr "Цена ликвидации зависит от комиссий и стоимости залога."
 
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMX Solana is hosted on a different website by a different DAO team.<0/><1/>The experience may vary slightly."
+msgstr "GMX Solana размещен на другом веб-сайте другой командой DAO.<0/><1/>Опыт может немного отличаться."
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "No data available"
 msgstr "Данные недоступны"
@@ -8527,6 +8547,10 @@ msgstr "Превышено макс. плечо"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "Эта позиция может быть ликвидирована, исключая любое движение цены, из-за ставок комиссий за финансирование и заем, снижающих залог позиции со временем."
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Gemini Wallet is not supported for Express or One-Click trading."
+msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"

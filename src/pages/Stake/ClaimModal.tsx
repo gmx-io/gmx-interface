@@ -261,7 +261,7 @@ export function ClaimModal(props: {
         </div>
       )}
       {isUndelegatedGovToken ? (
-        <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-500">
+        <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-300">
           <Trans>
             <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
               Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO

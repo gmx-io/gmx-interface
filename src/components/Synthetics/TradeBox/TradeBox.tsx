@@ -595,7 +595,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         <BuyInputSection
           topLeftLabel={t`Pay`}
           bottomLeftValue={payUsd !== undefined ? formatUsd(payUsd) : ""}
-          isBottomLeftValueMuted={payUsd === undefined || payUsd === 0n}
           bottomRightValue={
             fromToken && fromToken.balance !== undefined && fromToken.balance > 0n
               ? formatBalanceAmount(fromToken.balance, fromToken.decimals, fromToken.symbol, {
@@ -658,7 +657,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                       })
                     : undefined
                 }
-                isBottomLeftValueMuted={swapAmounts?.usdOut === undefined || swapAmounts.usdOut === 0n}
                 inputValue={toTokenInputValue}
                 onInputValueChange={handleToInputTokenChange}
                 qa="swap-receive"
@@ -692,7 +690,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 ? formatUsd(increaseAmounts?.sizeDeltaUsd, { fallbackToZero: true })
                 : ""
             }
-            isBottomLeftValueMuted={increaseAmounts?.sizeDeltaUsd === undefined || increaseAmounts?.sizeDeltaUsd === 0n}
             bottomRightLabel={t`Leverage`}
             bottomRightValue={
               formatLeverage(isLeverageSliderEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"
@@ -737,7 +734,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       <BuyInputSection
         topLeftLabel={t`Close`}
         bottomRightValue={selectedPosition?.sizeInUsd ? formatUsd(selectedPosition.sizeInUsd) : undefined}
-        isBottomLeftValueMuted={closeSizeUsd === 0n}
         bottomLeftValue={formatUsd(closeSizeUsd)}
         inputValue={closeSizeInputValue}
         onInputValueChange={handleCloseInputChange}
@@ -784,10 +780,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         qa="trigger-price"
       >
         {markRatio && (
-          <>
+          <div className="text-14">
             <TokenWithIcon symbol={markRatio.smallestToken.symbol} displaySize={20} /> per{" "}
             <TokenWithIcon symbol={markRatio.largestToken.symbol} displaySize={20} />
-          </>
+          </div>
         )}
       </BuyInputSection>
     );
@@ -872,7 +868,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     priceImpactWarningState.shouldShowWarning ||
     (!isTrigger && !isSwap) ||
     (isSwap && isLimit) ||
-    (isSwap && isTwap) ||
     maxAutoCancelOrdersWarning ||
     shouldShowOneClickTradingWarning;
 
@@ -894,8 +889,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   return (
     <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef}>
-      <div className="flex flex-col rounded-b-8 bg-slate-900 pb-16">
-        <div className="flex flex-col gap-12 p-12">
+      <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 py-12 pb-16">
+        <div className="flex flex-col gap-12 px-12">
           <div className="flex items-center justify-between">
             <Tabs
               options={tabsOptions}
@@ -920,7 +915,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               </div>
             </div>
           </div>
-          <div className="text-body-medium flex grow flex-col">
+          <div className="text-body-medium flex grow flex-col gap-14">
             <div className="flex flex-col gap-4">
               {(isSwap || isIncrease) && renderTokenInputs()}
               {isTrigger && renderDecreaseSizeInput()}
@@ -929,7 +924,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             </div>
 
             {showSectionBetweenInputsAndButton && (
-              <div className="flex flex-col gap-14 pt-12">
+              <div className="flex flex-col gap-14">
                 {maxAutoCancelOrdersWarning}
                 {isSwap && isLimit && !isTwap && (
                   <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
@@ -989,18 +984,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                       onSelectCollateralAddress={onSelectCollateralAddress}
                       isMarket={isMarket}
                     />
-
-                    {isTrigger && selectedPosition && selectedPosition?.leverage !== undefined && (
-                      <ToggleSwitch
-                        isChecked={keepLeverageChecked}
-                        setIsChecked={setKeepLeverage}
-                        disabled={decreaseAmounts?.isFullClose}
-                      >
-                        <span className="text-14 text-slate-100">
-                          <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
-                        </span>
-                      </ToggleSwitch>
-                    )}
                   </>
                 )}
 
@@ -1017,7 +1000,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   />
                 )}
 
-                {!isTrigger && !isSwap && !isTwap && <LimitAndTPSLGroup />}
                 {priceImpactWarningState.shouldShowWarning && (
                   <HighPriceImpactOrFeesWarningCard
                     priceImpactWarningState={priceImpactWarningState}
@@ -1031,78 +1013,93 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 )}
               </div>
             )}
-            <div className="flex flex-col gap-14 pt-14">
+            <div className="flex flex-col gap-14">
+              {isPosition && isTrigger && selectedPosition && selectedPosition?.leverage !== undefined && (
+                <ToggleSwitch
+                  isChecked={keepLeverageChecked}
+                  setIsChecked={setKeepLeverage}
+                  disabled={decreaseAmounts?.isFullClose}
+                >
+                  <span className="text-14 text-slate-100">
+                    <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
+                  </span>
+                </ToggleSwitch>
+              )}
+
+              {!isTrigger && !isSwap && !isTwap && <LimitAndTPSLGroup />}
               <div>{button}</div>
               <ExpressTradingWarningCard
                 expressParams={submitButtonState.expressParams}
                 payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}
                 isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
               />
-              <div className="h-1 bg-slate-600" />
-              {isSwap && !isTwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
-              {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
-                <SyntheticsInfoRow
-                  label={t`Receive`}
-                  value={
-                    <span className="numbers">
-                      {formatTokenAmountWithUsd(
-                        decreaseAmounts.receiveTokenAmount,
-                        decreaseAmounts.receiveUsd,
-                        collateralToken?.symbol,
-                        collateralToken?.decimals
-                      )}
-                    </span>
-                  }
-                />
-              )}
-
-              {isTrigger && (
-                <SyntheticsInfoRow
-                  label={t`PnL`}
-                  value={
-                    <ValueTransition
-                      from={
-                        <span className="numbers">
-                          {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
-                          {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
-                        </span>
-                      }
-                      to={
-                        decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0 ? (
-                          <span className="numbers">
-                            {formatDeltaUsd(nextPositionValues?.nextPnl)} (
-                            {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
-                          </span>
-                        ) : undefined
-                      }
-                    />
-                  }
-                />
-              )}
-              {!(isTrigger && !selectedPosition) && !isSwap && !isTwap && (
-                <SyntheticsInfoRow
-                  label={t`Liquidation Price`}
-                  value={
-                    <ValueTransition
-                      from={
-                        selectedPosition ? (
-                          <span className="numbers">
-                            {formatLiquidationPrice(selectedPosition?.liquidationPrice, {
-                              visualMultiplier: toToken?.visualMultiplier,
-                            })}
-                          </span>
-                        ) : undefined
-                      }
-                      to={<span className="numbers">{nextLiqPriceFormatted}</span>}
-                    />
-                  }
-                />
-              )}
-              {!isTwap && <PriceImpactFeesRow />}
-              <TradeBoxAdvancedGroups slippageInputId={submitButtonState.slippageInputId} />
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="flex flex-col gap-14 rounded-8 bg-slate-900 p-12 pb-16">
+        {isSwap && !isTwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
+        {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
+          <SyntheticsInfoRow
+            label={t`Receive`}
+            value={
+              <span className="numbers">
+                {formatTokenAmountWithUsd(
+                  decreaseAmounts.receiveTokenAmount,
+                  decreaseAmounts.receiveUsd,
+                  collateralToken?.symbol,
+                  collateralToken?.decimals
+                )}
+              </span>
+            }
+          />
+        )}
+
+        {isTrigger && (
+          <SyntheticsInfoRow
+            label={t`PnL`}
+            value={
+              <ValueTransition
+                from={
+                  <span className="numbers">
+                    {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
+                    {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
+                  </span>
+                }
+                to={
+                  decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0 ? (
+                    <span className="numbers">
+                      {formatDeltaUsd(nextPositionValues?.nextPnl)} (
+                      {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
+                    </span>
+                  ) : undefined
+                }
+              />
+            }
+          />
+        )}
+        {!(isTrigger && !selectedPosition) && !isSwap && !isTwap && (
+          <SyntheticsInfoRow
+            label={t`Liquidation Price`}
+            value={
+              <ValueTransition
+                from={
+                  selectedPosition ? (
+                    <span className="numbers">
+                      {formatLiquidationPrice(selectedPosition?.liquidationPrice, {
+                        visualMultiplier: toToken?.visualMultiplier,
+                      })}
+                    </span>
+                  ) : undefined
+                }
+                to={<span className="numbers">{nextLiqPriceFormatted}</span>}
+              />
+            }
+          />
+        )}
+        {!isTwap && <PriceImpactFeesRow />}
+        <TradeBoxAdvancedGroups slippageInputId={submitButtonState.slippageInputId} />
       </div>
     </form>
   );

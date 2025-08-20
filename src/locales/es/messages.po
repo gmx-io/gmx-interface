@@ -947,8 +947,8 @@ msgstr "Liq. {0} {longOrShortText}"
 msgid "Pay"
 msgstr "Pagar"
 
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Solana"
 msgstr ""
 
@@ -1341,6 +1341,10 @@ msgstr "Intercambio activo: {0}, ejecutado: {1}, cancelado: {2}"
 msgid "Buy token on:"
 msgstr "Comprar token en:"
 
+#: src/components/Synthetics/Claims/ClaimsHistory.tsx
+msgid "Claims history"
+msgstr ""
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -1357,8 +1361,8 @@ msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "Liq. {longOrShortText} - {marketIndexName}"
 
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-msgid "Actions"
-msgstr "Acciones"
+#~ msgid "Actions"
+#~ msgstr "Acciones"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Longing..."
@@ -3977,6 +3981,10 @@ msgstr "Airdrop de TRADING"
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. This can be useful for delta-neutral strategies to earn funding fees."
 msgstr "Estarás corto en {indexSymbol} desde tu posición corta, mientras estás largo en {collateralSymbol} desde tu garantía {collateralSymbol}. Esto puede ser útil para estrategias delta-neutral para ganar comisiones de financiación."
 
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "Open GMX Solana"
+msgstr "Abrir GMX Solana"
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr "Reembolsos ganados por esta cuenta como trader."
@@ -5107,6 +5115,10 @@ msgstr "Liquidez Corta"
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Order Type"
 msgstr "Tipo de Orden"
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMX Solana"
+msgstr "GMX Solana"
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
@@ -7269,6 +7281,10 @@ msgstr "Número mínimo de partes: {MIN_TWAP_NUMBER_OF_PARTS}"
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 msgstr "Puedes cambiar esto en el menú de ajustes en la esquina superior derecha de la página.<0/><1/>Nota que un deslizamiento permitido bajo, por ejemplo, menos de {0}, puede resultar en órdenes fallidas si los precios son volátiles."
 
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "Trade history"
+msgstr ""
+
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
@@ -8016,6 +8032,10 @@ msgstr "Acumulado"
 msgid "Liquidation price is influenced by fees and collateral value."
 msgstr "El precio de liquidación está influido por comisiones y valor de garantía."
 
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMX Solana is hosted on a different website by a different DAO team.<0/><1/>The experience may vary slightly."
+msgstr "GMX Solana está alojado en un sitio web diferente por un equipo DAO diferente.<0/><1/>La experiencia puede variar ligeramente."
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "No data available"
 msgstr "No hay datos disponibles"
@@ -8527,6 +8547,10 @@ msgstr "Apal. Máximo excedido"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "Esta posición podría liquidarse, excluyendo cualquier movimiento de precio, debido a tasas de financiación y préstamo que reducen la garantía de la posición con el tiempo."
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Gemini Wallet is not supported for Express or One-Click trading."
+msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"

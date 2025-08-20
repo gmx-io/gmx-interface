@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
-import { FaPen } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 
 import { USD_DECIMALS } from "config/factors";
@@ -47,6 +46,8 @@ import { SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import EditIcon from "img/ic_edit.svg?react";
 
 import TwapOrdersList from "./TwapOrdersList/TwapOrdersList";
 import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
@@ -551,15 +552,9 @@ function OrderItemLarge({
   const disabledCancelMarketOrderMessage = useDisabledCancelMarketOrderMessage(order, oracleSettings);
 
   const cancelButton = (
-    <button
-      className={cx("cursor-pointer p-6 text-slate-100 disabled:cursor-wait", {
-        "hover:text-white": !isCanceling && !disabledCancelMarketOrderMessage,
-      })}
-      disabled={isCanceling || Boolean(disabledCancelMarketOrderMessage)}
-      onClick={onCancelOrder}
-    >
-      <RxCross2 fontSize={20} />
-    </button>
+    <Button variant="ghost" disabled={isCanceling || Boolean(disabledCancelMarketOrderMessage)} onClick={onCancelOrder}>
+      <RxCross2 size={14} />
+    </Button>
   );
 
   return (
@@ -633,11 +628,11 @@ function OrderItemLarge({
       </TableTd>
       {!hideActions && (
         <TableTd>
-          <div className="inline-flex items-center">
+          <div className="inline-flex w-full items-center justify-end">
             {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
-              <button className="cursor-pointer p-6 text-slate-100 hover:text-white" onClick={setEditingOrderKey}>
-                <FaPen title={t`Edit order`} fontSize={12} />
-              </button>
+              <Button variant="ghost" onClick={setEditingOrderKey}>
+                <EditIcon title={t`Edit order`} className="size-16" />
+              </Button>
             )}
             {onCancelOrder ? (
               disabledCancelMarketOrderMessage ? (
@@ -845,7 +840,7 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
         <span
           className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
             "text-red-500 decoration-red-500/50": level === "error",
-            "text-yellow-500 decoration-yellow-500/50": level === "warning",
+            "text-yellow-300 decoration-yellow-300/50": level === "warning",
           })}
         >
           {handle}
@@ -859,7 +854,7 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
                 <span
                   className={cx({
                     "text-red-500": error!.level === "error",
-                    "text-yellow-500": error!.level === "warning",
+                    "text-yellow-300": error!.level === "warning",
                   })}
                 >
                   {error.msg}

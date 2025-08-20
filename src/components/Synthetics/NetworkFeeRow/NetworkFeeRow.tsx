@@ -201,7 +201,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
               value={<span className="numbers">{estimatedRefundText}</span>}
               textClassName="text-green-500"
             />
-            {warning && <p className="text-yellow-500">{warning}</p>}
+            {warning && <p className="text-yellow-300">{warning}</p>}
             {additionalOrdersMsg && <p>{additionalOrdersMsg}</p>}
           </>
         }

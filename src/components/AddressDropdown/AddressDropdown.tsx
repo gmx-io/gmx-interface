@@ -87,7 +87,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
                   </Link>
                 </Menu.Item>
                 <Menu.Item>
-                  <ExternalLink href={accountUrl} className="menu-item">
+                  <ExternalLink href={accountUrl} className="menu-item !no-underline">
                     <ExternalLinkIcon width={20} className="size-20" />
                     <p>
                       <Trans>View in Explorer</Trans>
