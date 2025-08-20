@@ -52,7 +52,7 @@ export function useShowHighLeverageWarning(): {
   const isMajorToken = toTokenSymbol ? IS_MAJOR_TOKEN_MAP[chainId].includes(toTokenSymbol) : false;
   const leverage = useSelector(selectTradeboxLeverage);
 
-  const isHighLeverage = isMajorToken ? leverage > MAX_MAJOR_TOKEN_LEVERAGE : leverage >= MAX_ALTCOIN_LEVERAGE;
+  const isHighLeverage = isMajorToken ? leverage >= MAX_MAJOR_TOKEN_LEVERAGE : leverage >= MAX_ALTCOIN_LEVERAGE;
 
   const [dismissedTimestamp, setDismissedTimestamp] = useState(() => {
     if (!account) {
