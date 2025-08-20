@@ -1,11 +1,11 @@
 import { errors as _StargateErrorsAbi } from "@stargatefinance/stg-evm-sdk-v2";
 import { abi as IStargateAbi } from "@stargatefinance/stg-evm-sdk-v2/artifacts/src/interfaces/IStargate.sol/IStargate.json";
 import { address as ethPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbitrum-mainnet/StargatePoolNative.json";
-import { address as usdcSgPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbitrum-mainnet/StargatePoolUSDC.json";
+import { address as usdcPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbitrum-mainnet/StargatePoolUSDC.json";
 import { address as ethPoolArbitrumSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolArbitrumSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/StargatePoolUSDC.json";
 import { address as ethPoolBase } from "@stargatefinance/stg-evm-sdk-v2/deployments/base-mainnet/StargatePoolNative.json";
-import { address as usdcSgPoolBase } from "@stargatefinance/stg-evm-sdk-v2/deployments/base-mainnet/StargatePoolUSDC.json";
+import { address as usdcPoolBase } from "@stargatefinance/stg-evm-sdk-v2/deployments/base-mainnet/StargatePoolUSDC.json";
 import { address as ethPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolUSDC.json";
 import { address as ethPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolNative.json";
@@ -35,8 +35,6 @@ import { isDevelopment } from "config/env";
 import { LayerZeroEndpointId } from "domain/multichain/types";
 import { numberToBigint } from "lib/numbers";
 import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
-
-import { IS_SOURCE_BASE_ALLOWED_KEY } from "./localStorage";
 
 export {
   ethPoolArbitrumSepolia,
@@ -82,24 +80,23 @@ export type MultichainTokenId = {
   decimals: number;
   stargate: string;
   symbol: string;
+  isTestnet?: boolean;
 };
 
-export const TOKEN_GROUPS: Partial<
-  Record<string, Partial<Record<SourceChainId | SettlementChainId, MultichainTokenId>>>
-> = {
+const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | SettlementChainId, MultichainTokenId>>>> = {
   ["USDC"]: {
     [ARBITRUM]: {
       address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       decimals: 6,
       chainId: ARBITRUM,
-      stargate: usdcSgPoolArbitrum,
+      stargate: usdcPoolArbitrum,
       symbol: "USDC",
     },
     [SOURCE_BASE_MAINNET]: {
       address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
       decimals: 6,
       chainId: SOURCE_BASE_MAINNET,
-      stargate: usdcSgPoolBase,
+      stargate: usdcPoolBase,
       symbol: "USDC",
     },
   },
@@ -130,6 +127,7 @@ if (isDevelopment()) {
       chainId: ARBITRUM_SEPOLIA,
       stargate: usdcSgPoolArbitrumSepolia,
       symbol: "USDC.SG",
+      isTestnet: true,
     },
     [SOURCE_OPTIMISM_SEPOLIA]: {
       address: "0x488327236B65C61A6c083e8d811a4E0D3d1D4268",
@@ -137,6 +135,7 @@ if (isDevelopment()) {
       chainId: SOURCE_OPTIMISM_SEPOLIA,
       stargate: usdcSgPoolOptimismSepolia,
       symbol: "USDC.SG",
+      isTestnet: true,
     },
     [SOURCE_SEPOLIA]: {
       address: "0x2F6F07CDcf3588944Bf4C42aC74ff24bF56e7590",
@@ -144,6 +143,7 @@ if (isDevelopment()) {
       chainId: SOURCE_SEPOLIA,
       stargate: usdcSgPoolSepolia,
       symbol: "USDC.SG",
+      isTestnet: true,
     },
   };
 
@@ -155,6 +155,7 @@ if (isDevelopment()) {
       chainId: ARBITRUM_SEPOLIA,
       stargate: ethPoolArbitrumSepolia,
       symbol: "ETH",
+      isTestnet: true,
     },
     [SOURCE_OPTIMISM_SEPOLIA]: {
       address: zeroAddress,
@@ -162,6 +163,7 @@ if (isDevelopment()) {
       chainId: SOURCE_OPTIMISM_SEPOLIA,
       stargate: ethPoolOptimismSepolia,
       symbol: "ETH",
+      isTestnet: true,
     },
     [SOURCE_SEPOLIA]: {
       address: zeroAddress,
@@ -169,12 +171,13 @@ if (isDevelopment()) {
       chainId: SOURCE_SEPOLIA,
       stargate: ethPoolSepolia,
       symbol: "ETH",
+      isTestnet: true,
     },
   };
 }
 
 export const DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT = false;
-export const IS_SOURCE_BASE_ALLOWED = localStorage.getItem(IS_SOURCE_BASE_ALLOWED_KEY) === "1";
+export const IS_SOURCE_BASE_ALLOWED = true; // localStorage.getItem(IS_SOURCE_BASE_ALLOWED_KEY) === "1";
 
 function ensureExhaustive<T extends number>(value: Record<T, true>): T[] {
   return Object.keys(value).map(Number) as T[];
@@ -191,13 +194,15 @@ export const CONTRACTS_CHAINS: ContractsChainId[] = ensureExhaustive<ContractsCh
 export const SETTLEMENT_CHAINS: SettlementChainId[] = ensureExhaustive<SettlementChainId>({
   [ARBITRUM_SEPOLIA]: true,
   [ARBITRUM]: true,
+  [AVALANCHE]: true,
 });
 
 // TODO MLTCH remove this
+// @ts-ignore
 export const SOURCE_CHAINS: SourceChainId[] = ensureExhaustive<SourceChainId>({
   [SOURCE_OPTIMISM_SEPOLIA]: true,
   [SOURCE_SEPOLIA]: true,
-  [SOURCE_BASE_MAINNET]: true,
+  // [SOURCE_BASE_MAINNET]: true,
 });
 
 if (IS_SOURCE_BASE_ALLOWED) {
@@ -205,7 +210,7 @@ if (IS_SOURCE_BASE_ALLOWED) {
 }
 
 if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
-  SOURCE_CHAINS.push(ARBITRUM_SEPOLIA as SourceChainId, ARBITRUM as SourceChainId);
+  SOURCE_CHAINS.push(ARBITRUM_SEPOLIA as SourceChainId, ARBITRUM as SourceChainId, AVALANCHE as SourceChainId);
 }
 
 export function isContractsChain(chainId: number): chainId is ContractsChainId {
@@ -233,19 +238,19 @@ export const MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING: MultichainSourceToSettle
 
 for (const tokenSymbol in TOKEN_GROUPS) {
   for (const chainIdString in TOKEN_GROUPS[tokenSymbol]) {
-    const chainId = parseInt(chainIdString) as SettlementChainId | SourceChainId;
+    const firstChainId = parseInt(chainIdString) as SettlementChainId | SourceChainId;
 
-    const tokenId = TOKEN_GROUPS[tokenSymbol]?.[chainId];
+    const tokenId = TOKEN_GROUPS[tokenSymbol]![firstChainId]!;
     if (tokenId) {
-      CHAIN_ID_TO_TOKEN_ID_MAP[chainId] = CHAIN_ID_TO_TOKEN_ID_MAP[chainId] || {};
-      CHAIN_ID_TO_TOKEN_ID_MAP[chainId][tokenId.address] = tokenId;
+      CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId] = CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId] || {};
+      CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId][tokenId.address] = tokenId;
     }
 
-    if (!isSettlementChain(chainId)) {
+    if (!isSettlementChain(firstChainId)) {
       continue;
     }
 
-    const settlementChainId = chainId;
+    const settlementChainId = firstChainId;
 
     let empty = true;
     for (const sourceChainIdString in TOKEN_GROUPS[tokenSymbol]) {
@@ -257,6 +262,13 @@ for (const tokenSymbol in TOKEN_GROUPS) {
       if (!isDevelopment() && (settlementChainId as number) === (sourceChainId as number)) {
         continue;
       }
+
+      const sourceChainToken = TOKEN_GROUPS[tokenSymbol]![sourceChainId]!;
+
+      if (Boolean(tokenId?.isTestnet) !== Boolean(sourceChainToken?.isTestnet)) {
+        continue;
+      }
+
       empty = false;
 
       MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId] =
@@ -269,36 +281,18 @@ for (const tokenSymbol in TOKEN_GROUPS) {
       MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] =
         MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] || {};
 
-      const settlementToken = TOKEN_GROUPS[tokenSymbol]?.[settlementChainId];
-
-      if (!settlementToken) {
-        continue;
-      }
-
-      const sourceChainToken = TOKEN_GROUPS[tokenSymbol]?.[sourceChainId];
-
-      if (!sourceChainToken) {
-        continue;
-      }
-
       MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString][sourceChainToken.address] = {
-        settlementChainTokenAddress: settlementToken.address,
+        settlementChainTokenAddress: tokenId.address,
         sourceChainTokenAddress: sourceChainToken.address,
         sourceChainTokenDecimals: sourceChainToken.decimals,
       };
     }
 
     if (!empty) {
-      const settlementToken = TOKEN_GROUPS[tokenSymbol]?.[settlementChainId];
-
-      if (!settlementToken) {
-        continue;
-      }
-
       MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId] =
         MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId] || [];
       MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId].push(
-        convertTokenAddress(settlementChainId, settlementToken.address, "wrapped")
+        convertTokenAddress(settlementChainId, tokenId.address, "wrapped")
       );
     }
   }
@@ -368,8 +362,9 @@ export const OVERRIDE_ERC20_BYTECODE: Hex =
   "0x608060405234801561001057600080fd5b50600436106100835760003560e01c806306fdde0314610088578063095ea7b3146100ca57806318160ddd146100ed57806323b872dd14610103578063313ce5671461011657806370a082311461012557806395d89b4114610138578063a9059cbb14610157578063dd62ed3e1461016a575b600080fd5b60408051808201909152601481527326b7b1b5902ab73634b6b4ba32b2102a37b5b2b760611b60208201525b6040516100c191906103ae565b60405180910390f35b6100dd6100d8366004610418565b61017d565b60405190151581526020016100c1565b6100f56101ea565b6040519081526020016100c1565b6100dd610111366004610442565b6101fe565b604051601281526020016100c1565b6100f561013336600461047e565b6102c6565b60408051808201909152600381526213555560ea1b60208201526100b4565b6100dd610165366004610418565b6102fa565b6100f5610178366004610499565b610374565b3360008181526001602090815260408083206001600160a01b038716808552925280832085905551919290917f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925906101d89086815260200190565b60405180910390a35060015b92915050565b60006101f960026000196104e2565b905090565b60008161020b8533610374565b6102159190610504565b6001600160a01b038516600090815260016020908152604080832033845290915290205581610243856102c6565b61024d9190610504565b6001600160a01b03851660009081526020819052604090205581610270846102c6565b61027a9190610517565b6001600160a01b0384811660008181526020818152604091829020949094555185815290929187169160008051602061052b833981519152910160405180910390a35060019392505050565b6001600160a01b0381166000908152602081905260408120548082036101e4576102f360026000196104e2565b9392505050565b600081610306336102c6565b6103109190610504565b33600081815260208190526040902091909155829061032e906102c6565b6103389190610517565b6001600160a01b0384166000818152602081815260409182902093909355518481529091339160008051602061052b83398151915291016101d8565b6001600160a01b0380831660009081526001602090815260408083209385168352929052908120548082036102f3576000199150506101e4565b600060208083528351808285015260005b818110156103db578581018301518582016040015282016103bf565b506000604082860101526040601f19601f8301168501019250505092915050565b80356001600160a01b038116811461041357600080fd5b919050565b6000806040838503121561042b57600080fd5b610434836103fc565b946020939093013593505050565b60008060006060848603121561045757600080fd5b610460846103fc565b925061046e602085016103fc565b9150604084013590509250925092565b60006020828403121561049057600080fd5b6102f3826103fc565b600080604083850312156104ac57600080fd5b6104b5836103fc565b91506104c3602084016103fc565b90509250929050565b634e487b7160e01b600052601160045260246000fd5b6000826104ff57634e487b7160e01b600052601260045260246000fd5b500490565b818103818111156101e4576101e46104cc565b808201808211156101e4576101e46104cc56feddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3efa26469706673582212207e80951b693900018ccbef67c898d93845d4dd2e0d8bee24a96e72ecb4b5a8bd64736f6c63430008140033";
 
 export const CHAIN_ID_PREFERRED_DEPOSIT_TOKEN: Record<SettlementChainId, string> = {
-  [ARBITRUM_SEPOLIA]: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
-  [ARBITRUM]: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+  [ARBITRUM_SEPOLIA]: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773", // USDC.SG
+  [ARBITRUM]: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831", // USDC
+  [AVALANCHE]: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E", // USDC
 };
 
 export const MULTICHAIN_FUNDING_SLIPPAGE_BPS = 50;
@@ -382,6 +377,7 @@ export const CHAIN_ID_TO_ENDPOINT_ID: Record<SettlementChainId | SourceChainId, 
   [SOURCE_OPTIMISM_SEPOLIA]: 40232,
   [ARBITRUM]: 30110,
   [SOURCE_BASE_MAINNET]: 30184,
+  [AVALANCHE]: 30106,
 };
 
 export const ENDPOINT_ID_TO_CHAIN_ID: Partial<Record<LayerZeroEndpointId, SettlementChainId | SourceChainId>> =

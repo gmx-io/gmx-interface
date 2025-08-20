@@ -35,7 +35,7 @@ export type ContractsChainId =
   | typeof BOTANIX
   | typeof ARBITRUM_SEPOLIA;
 
-export type SettlementChainId = typeof ARBITRUM_SEPOLIA | typeof ARBITRUM;
+export type SettlementChainId = typeof ARBITRUM_SEPOLIA | typeof ARBITRUM | typeof AVALANCHE;
 export type SourceChainId = typeof SOURCE_OPTIMISM_SEPOLIA | typeof SOURCE_SEPOLIA | typeof SOURCE_BASE_MAINNET;
 export type AnyChainId = ContractsChainId | SettlementChainId | SourceChainId;
 
