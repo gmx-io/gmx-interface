@@ -59,7 +59,6 @@ import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import { NpsModal } from "components/NpsModal/NpsModal";
 import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
 import { Claims } from "components/Synthetics/Claims/Claims";
-import { useClaimsHistoryState } from "components/Synthetics/Claims/ClaimsHistory";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
@@ -68,7 +67,7 @@ import { SwapCard } from "components/Synthetics/SwapCard/SwapCard";
 import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
 import { useIsCurtainOpen } from "components/Synthetics/TradeBox/Curtain";
 import { TradeBoxResponsiveContainer } from "components/Synthetics/TradeBox/TradeBoxResponsiveContainer";
-import { TradeHistory, useTradeHistoryState } from "components/Synthetics/TradeHistory/TradeHistory";
+import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { Chart } from "components/Synthetics/TVChart/Chart";
 import ChartHeader from "components/Synthetics/TVChart/ChartHeader";
 import Tabs from "components/Tabs/Tabs";
@@ -255,20 +254,6 @@ export function SyntheticsPage(p: Props) {
     [tabLabels]
   );
 
-  const { controls: claimsHistoryControls, ...claimsHistoryProps } = useClaimsHistoryState();
-
-  function renderClaims() {
-    return (
-      <Claims
-        setIsSettling={setIsSettling}
-        isSettling={isSettling}
-        setPendingTxns={setPendingTxns}
-        allowedSlippage={savedAllowedSlippage}
-        claimsHistoryProps={claimsHistoryProps}
-      />
-    );
-  }
-
   const handleTabChange = useCallback(
     (section: ListSection) => {
       setListSection(section);
@@ -283,10 +268,6 @@ export function SyntheticsPage(p: Props) {
   );
 
   useMeasureComponentMountTime({ metricType: "syntheticsPage", onlyForLocation: "#/trade" });
-
-  const tradeHistoryState = useTradeHistoryState({
-    account,
-  });
 
   const { isTablet, isMobile } = useBreakpoints();
 
@@ -313,8 +294,6 @@ export function SyntheticsPage(p: Props) {
           </span>
         </Checkbox>
       )}
-      {listSection === ListSection.Trades && tradeHistoryState.controls}
-      {listSection === ListSection.Claims && claimsHistoryControls}
     </div>
   );
 
@@ -335,7 +314,7 @@ export function SyntheticsPage(p: Props) {
         />
       }
       className="max-lg:pb-40"
-      contentClassName="max-w-[none] pb-0 pt-0"
+      contentClassName="max-w-[none] md:pb-0 md:pt-0"
       pageWrapperClassName="!pl-0"
     >
       {isTablet ? <ChartHeader /> : null}
@@ -377,8 +356,15 @@ export function SyntheticsPage(p: Props) {
                   onCancelSelectedOrders={onCancelSelectedOrders}
                 />
               )}
-              {listSection === ListSection.Trades && <TradeHistory {...tradeHistoryState} />}
-              {listSection === ListSection.Claims && renderClaims()}
+              {listSection === ListSection.Trades && <TradeHistory account={account} />}
+              {listSection === ListSection.Claims && (
+                <Claims
+                  setIsSettling={setIsSettling}
+                  isSettling={isSettling}
+                  setPendingTxns={setPendingTxns}
+                  allowedSlippage={savedAllowedSlippage}
+                />
+              )}
             </div>
           )}
         </div>
@@ -412,7 +398,7 @@ export function SyntheticsPage(p: Props) {
                 selectedValue={listSection}
                 onChange={handleTabChange}
                 type="block"
-                className={cx("rounded-t-8 bg-slate-900  max-md:w-[max(100%,372px)] md:w-[max(100%,600px)]", {
+                className={cx("w-[max(100%,372px)] rounded-t-8 bg-slate-900", {
                   "mb-8 rounded-b-8": [ListSection.Positions, ListSection.Orders].includes(listSection as ListSection),
                 })}
                 regularOptionClassname={cx({
@@ -423,10 +409,6 @@ export function SyntheticsPage(p: Props) {
                 rightContent={!isMobile ? actions : undefined}
               />
             </div>
-
-            {isMobile && [ListSection.Trades, ListSection.Claims].includes(listSection as ListSection) ? (
-              <div className="border-b-stroke border-slate-600 bg-slate-900 py-4">{actions}</div>
-            ) : null}
 
             {listSection === ListSection.Positions && (
               <PositionList
@@ -450,8 +432,15 @@ export function SyntheticsPage(p: Props) {
                 onCancelSelectedOrders={onCancelSelectedOrders}
               />
             )}
-            {listSection === ListSection.Trades && <TradeHistory {...tradeHistoryState} />}
-            {listSection === ListSection.Claims && renderClaims()}
+            {listSection === ListSection.Trades && <TradeHistory account={account} />}
+            {listSection === ListSection.Claims && (
+              <Claims
+                setIsSettling={setIsSettling}
+                isSettling={isSettling}
+                setPendingTxns={setPendingTxns}
+                allowedSlippage={savedAllowedSlippage}
+              />
+            )}
           </div>
         )}
       </div>

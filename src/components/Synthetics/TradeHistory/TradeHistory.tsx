@@ -1,9 +1,5 @@
-import { offset, flip, autoUpdate, shift } from "@floating-ui/dom";
-import { useFloating } from "@floating-ui/react";
-import { Popover } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
-import { ReactNode, useEffect, useMemo, useState } from "react";
-import { BsThreeDotsVertical } from "react-icons/bs";
+import { useEffect, useMemo, useState } from "react";
 import type { Address } from "viem";
 
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
@@ -12,7 +8,7 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
-import { TradeAction, TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
+import { TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
 import { useBreakpoints } from "lib/breakpoints";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
@@ -47,35 +43,13 @@ type ActionFilter = {
   isTwap: boolean;
 };
 
-const ActionsPopover = ({ children }: { children: ReactNode }) => {
-  const { refs, floatingStyles } = useFloating({
-    middleware: [offset(10), flip(), shift()],
-    placement: "top-end",
-    whileElementsMounted: autoUpdate,
-  });
-
-  return (
-    <Popover as="div" ref={refs.setReference}>
-      <Popover.Button as="div" refName="buttonRef">
-        <button className="flex items-center gap-4 px-4 py-8 font-medium text-slate-100 hover:text-white">
-          <Trans>Actions</Trans>
-          <BsThreeDotsVertical />
-        </button>
-      </Popover.Button>
-      <Popover.Panel ref={refs.setFloating} style={floatingStyles}>
-        <div className="rounded-8 border border-slate-600 bg-slate-900 p-8 [&_button]:w-full [&_button]:!justify-start">
-          {children}
-        </div>
-      </Popover.Panel>
-    </Popover>
-  );
-};
-
-export function useTradeHistoryState(p: {
+type Props = {
   account: Address | null | undefined;
   forAllAccounts?: boolean;
   hideDashboardLink?: boolean;
-}): Props & { controls: ReactNode } {
+};
+
+export function TradeHistory(p: Props) {
   const { forAllAccounts, account, hideDashboardLink = false } = p;
   const chainId = useSelector(selectChainId);
   const showDebugValues = useShowDebugValues();
@@ -157,9 +131,9 @@ export function useTradeHistoryState(p: {
     minCollateralUsd: minCollateralUsd,
   });
 
-  const { isTablet, isSmallDesktop: isDesktop } = useBreakpoints();
+  const { isMobile } = useBreakpoints();
 
-  const actions = (
+  let actions = (
     <>
       {pnlAnalysisButton}
 
@@ -176,71 +150,19 @@ export function useTradeHistoryState(p: {
     </>
   );
 
-  const controls =
-    !isTablet && isDesktop ? (
-      <ActionsPopover>
-        <div className="flex flex-col gap-2">{actions}</div>
-      </ActionsPopover>
-    ) : (
-      <div className="flex items-center gap-4">{actions}</div>
-    );
-
-  return {
-    isLoading,
-    isEmpty,
-    hasFilters,
-    currentPage,
-    setCurrentPage,
-    currentPageData,
-    pageCount,
-    actionFilter,
-    setActionFilter,
-    marketsDirectionsFilter,
-    setMarketsDirectionsFilter,
-    forAllAccounts,
-    showDebugValues,
-    minCollateralUsd,
-    controls,
-  };
-}
-
-type Props = {
-  forAllAccounts: boolean | undefined;
-  actionFilter: ActionFilter[];
-  setActionFilter: (actionFilter: ActionFilter[]) => void;
-  marketsDirectionsFilter: MarketFilterLongShortItemData[];
-  setMarketsDirectionsFilter: (marketsDirectionsFilter: MarketFilterLongShortItemData[]) => void;
-  currentPage: number;
-  setCurrentPage: (currentPage: number) => void;
-  currentPageData: TradeAction[];
-  isLoading: boolean;
-  isEmpty: boolean;
-  hasFilters: boolean;
-  showDebugValues: boolean;
-  minCollateralUsd: bigint | undefined;
-  pageCount: number;
-};
-
-export function TradeHistory(p: Props) {
-  const {
-    forAllAccounts,
-    actionFilter,
-    setActionFilter,
-    marketsDirectionsFilter,
-    setMarketsDirectionsFilter,
-    currentPage,
-    setCurrentPage,
-    currentPageData,
-    isLoading,
-    isEmpty,
-    hasFilters,
-    showDebugValues,
-    minCollateralUsd,
-    pageCount,
-  } = p;
+  const controls = <div className="flex items-center gap-4">{actions}</div>;
 
   return (
     <div className="TradeHistorySynthetics flex grow flex-col bg-slate-900">
+      <div className="flex items-center justify-between gap-8 pl-20 pr-8 pt-8">
+        {!isMobile ? (
+          <span className="text-body-medium font-medium">
+            <Trans>Trade history</Trans>
+          </span>
+        ) : null}
+
+        {controls}
+      </div>
       <TableScrollFadeContainer disableScrollFade={currentPageData.length === 0} className="flex grow flex-col">
         <table className="TradeHistorySynthetics-table table-fixed">
           <colgroup>

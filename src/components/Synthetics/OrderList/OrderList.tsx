@@ -261,7 +261,7 @@ export function OrderList({
                     />
                   </TableTh>
                 )}
-                <TableTh className="w-[28%]">
+                <TableTh>
                   <MarketFilterLongShort
                     withPositions="withOrders"
                     value={marketsDirectionsFilter}

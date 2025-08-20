@@ -1341,6 +1341,10 @@ msgstr "スワップ アクティブ: {0} 執行済: {1}  キャンセル済: {2
 msgid "Buy token on:"
 msgstr "トークンを購入:"
 
+#: src/components/Synthetics/Claims/ClaimsHistory.tsx
+msgid "Claims history"
+msgstr ""
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -1357,8 +1361,8 @@ msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "清算 {longOrShortText} - {marketIndexName}"
 
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-msgid "Actions"
-msgstr "アクション"
+#~ msgid "Actions"
+#~ msgstr "アクション"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Longing..."
@@ -7276,6 +7280,10 @@ msgstr "最小パート数: {MIN_TWAP_NUMBER_OF_PARTS}"
 #: src/components/Exchange/PositionSeller.jsx
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 msgstr "ページ右上の設定メニューで変更できます。<0/><1/>スリッページ許容値が低い場合（例: {0}未満）、価格変動が激しいと注文が失敗する可能性があります。"
+
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "Trade history"
+msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx

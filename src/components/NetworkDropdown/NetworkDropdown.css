@@ -19,12 +19,9 @@
   min-width: 17rem;
   padding-bottom: 0.8rem;
 }
-.network-dropdown-items:last-child {
-  padding-bottom: 0;
-}
 
 .network-dropdown-divider {
-  border-bottom: 1px solid var(--color-slate-600);
+  border-bottom: 0.5px solid var(--color-slate-600);
 }
 .App-header-network:hover {
   background: var(--dark-blue-hover);
