@@ -55,7 +55,7 @@ export const CONTRACTS = {
     WithdrawalVault: "0x0628D46b5D145f183AdB6Ef1f2c97eD1C4701C55",
     OrderVault: "0x31eF83a530Fde1B38EE9A18093A333D8Bbbc40D5",
     ShiftVault: "0xfe99609C4AA83ff6816b64563Bdffd7fa68753Ab",
-    SyntheticsReader: "0xd42986AFC0660dd1f1C8C76F248262Ffcb37db79",
+    SyntheticsReader: "0x65A6CC451BAfF7e7B4FDAb4157763aB4b6b44D0E",
     SyntheticsRouter: "0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6",
 
     GlvReader: "0xb51e34dc3A7c80E4ABbC3800aD0e487b7b878339",
@@ -82,7 +82,7 @@ export const CONTRACTS = {
 
     Multicall: "0xe79118d6D92a4b23369ba356C90b9A7ABf1CB961",
     ArbitrumNodeInterface: "0x00000000000000000000000000000000000000C8",
-    ClaimHandler: "0xCF2b097517EEBD6c36756A82844D2ec21Ee4C025",
+    LayerZeroEndpoint: "0x1a44076050125825900e736c501f859c50fE728c",
   },
   [AVALANCHE]: {
     Vault: "0x9ab2De34A33fB459b538c43f251eB825645e8595",
@@ -137,7 +137,7 @@ export const CONTRACTS = {
     WithdrawalVault: "0xf5F30B10141E1F63FC11eD772931A8294a591996",
     OrderVault: "0xD3D60D22d415aD43b7e64b510D86A30f19B1B12C",
     ShiftVault: "0x7fC46CCb386e9bbBFB49A2639002734C3Ec52b39",
-    SyntheticsReader: "0x07F8Aba575B987a7165bDAcA727C74C1ccDEC258",
+    SyntheticsReader: "0x1EC018d2b6ACCA20a0bEDb86450b7E27D1D8355B",
     SyntheticsRouter: "0x820F5FfC5b525cD4d88Cd91aCf2c28F16530Cc68",
 
     GlvReader: "0x12Ac77003B3D11b0853d1FD12E5AF22a9060eC4b",
@@ -157,13 +157,14 @@ export const CONTRACTS = {
     LayerZeroProvider: "0xA1D94802EcD642051B677dBF37c8E78ce6dd3784",
 
     ChainlinkPriceFeedProvider: "0x05d97cee050bfb81FB3EaD4A9368584F8e72C88e",
+    ClaimHandler: "0x7FfedCAC2eCb2C29dDc027B60D6F8107295Ff2eA",
 
     ExternalHandler: "0xD149573a098223a9185433290a5A5CDbFa54a8A9",
     OpenOceanRouter: "0x6352a56caadC4F1E25CD6c75970Fa768A3304e64",
 
     Multicall: "0x50474CAe810B316c294111807F94F9f48527e7F8",
     ArbitrumNodeInterface: zeroAddress,
-    ClaimHandler: "0xF73CE08A22c67f19d75892457817e917cB3f9493",
+    LayerZeroEndpoint: "0x1a44076050125825900e736c501f859c50fE728c",
   },
   [BOTANIX]: {
     DataStore: "0xA23B81a89Ab9D7D89fF8fc1b5d8508fB75Cc094d",
@@ -175,7 +176,7 @@ export const CONTRACTS = {
     OrderVault: "0xe52B3700D17B45dE9de7205DEe4685B4B9EC612D",
     ShiftVault: "0xa7EE2737249e0099906cB079BCEe85f0bbd837d4",
 
-    SyntheticsReader: "0x7d92ef68096318fbDA4a0ea79aF12B4ba17bE208",
+    SyntheticsReader: "0xa254B60cbB85a92F6151B10E1233639F601f2F0F",
     SyntheticsRouter: "0x3d472afcd66F954Fe4909EEcDd5c940e9a99290c",
 
     GlvReader: "0x490d660A21fB75701b7781E191cB888D1FE38315",
@@ -199,6 +200,7 @@ export const CONTRACTS = {
     ChainlinkPriceFeedProvider: "0xDc613305e9267f0770072dEaB8c03162e0554b2d",
 
     Multicall: "0x4BaA24f93a657f0c1b4A0Ffc72B91011E35cA46b",
+    LayerZeroEndpoint: "0x6F475642a6e85809B1c36Fa62763669b1b48DD5B",
 
     Timelock: "0xca3e30b51A7c3bd40bFc52a61AB0cE57B3Ab3ad8",
 
@@ -322,6 +324,7 @@ export const CONTRACTS = {
 
     Multicall: "0x966D1F5c54a714C6443205F0Ec49eEF81F10fdfD",
     ArbitrumNodeInterface: zeroAddress,
+    LayerZeroEndpoint: "0x6EDCE65403992e310A62460808c4b910D972f10f",
   },
 
   [ARBITRUM_SEPOLIA]: {
