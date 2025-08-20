@@ -955,10 +955,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   </div>
                 )}
                 {showHighLeverageWarning && (
-                  <AlertInfoCard type="warning" onClose={dismissHighLeverageWarning}>
-                    <Trans>
-                      Using high leverage increases the risk of <span className="underline">losing funds</span>.
-                    </Trans>
+                  <AlertInfoCard type="info" onClose={dismissHighLeverageWarning}>
+                    <Trans>Using high leverage increases the risk of liquidation.</Trans>
                   </AlertInfoCard>
                 )}
                 {isTrigger && (

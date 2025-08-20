@@ -89,6 +89,8 @@ export const SUBACCOUNT_APPROVAL_KEY = "subaccount-approval";
 export const TOKEN_PERMITS_KEY = "token-permits";
 export const CLAIM_TERMS_ACCEPTED_KEY = "claim-terms-accepted";
 
+export const HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY = "high-leverage-warning-dismissed-timestamp";
+
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
 export function getSubaccountApprovalKey(chainId: number, account: string | undefined) {
@@ -218,4 +220,8 @@ export function getClaimTermsAcceptedKey(
   claimTerms: string
 ) {
   return `${chainId}:${account}:${distributionId}:${claimTerms}-${CLAIM_TERMS_ACCEPTED_KEY}`;
+}
+
+export function getHighLeverageWarningDismissedTimestampKey(account: string) {
+  return `${account}-${HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY}`;
 }
