@@ -497,7 +497,7 @@ export function TradeFeesRow(p: Props) {
     return (
       <Trans>
         Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is only
-        settled on position decrease.
+        settled on position decrease.{" "}
         <ExternalLink href={"https://docs.gmx.io/docs/trading/v2#price-impact"} newTab>
           Read more
         </ExternalLink>
