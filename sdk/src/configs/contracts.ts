@@ -4,6 +4,7 @@ import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, Contrac
 
 export const CONTRACTS = {
   [ARBITRUM]: {
+    // V1
     Vault: "0x489ee077994B6658eAfA855C308275EAd8097C4A",
     Router: "0xaBBc5F99639c9B6bCb58544ddf04EFA6802F4064",
     VaultReader: "0xfebB9f4CAC4cD523598fE1C5771181440143F24A",
@@ -77,15 +78,16 @@ export const CONTRACTS = {
     ChainlinkPriceFeedProvider: "0x38B8dB61b724b51e42A88Cb8eC564CD685a0f53B",
     ClaimHandler: "0x28f1F4AA95F49FAB62464536A269437B13d48976",
 
+    // External
     ExternalHandler: "0x389CEf541397e872dC04421f166B5Bc2E0b374a5",
     OpenOceanRouter: "0x6352a56caadC4F1E25CD6c75970Fa768A3304e64",
-
     Multicall: "0xe79118d6D92a4b23369ba356C90b9A7ABf1CB961",
     ArbitrumNodeInterface: "0x00000000000000000000000000000000000000C8",
     LayerZeroEndpoint: "0x1a44076050125825900e736c501f859c50fE728c",
     GelatoRelayAddress: "0xaBcC9b596420A9E9172FD5938620E265a0f9Df92",
   },
   [AVALANCHE]: {
+    // V1
     Vault: "0x9ab2De34A33fB459b538c43f251eB825645e8595",
     Router: "0x5F719c2F1095F7B9fc68a68e35B51194f4b6abe8",
     VaultReader: "0x66eC8fc33A26feAEAe156afA3Cb46923651F6f0D",
@@ -158,16 +160,18 @@ export const CONTRACTS = {
     LayerZeroProvider: "0xA1D94802EcD642051B677dBF37c8E78ce6dd3784",
 
     ChainlinkPriceFeedProvider: "0x05d97cee050bfb81FB3EaD4A9368584F8e72C88e",
-    ClaimHandler: "0x7FfedCAC2eCb2C29dDc027B60D6F8107295Ff2eA",
+    ClaimHandler: zeroAddress,
 
+    // External
     ExternalHandler: "0xD149573a098223a9185433290a5A5CDbFa54a8A9",
     OpenOceanRouter: "0x6352a56caadC4F1E25CD6c75970Fa768A3304e64",
-
     Multicall: "0x50474CAe810B316c294111807F94F9f48527e7F8",
     ArbitrumNodeInterface: zeroAddress,
     LayerZeroEndpoint: "0x1a44076050125825900e736c501f859c50fE728c",
+    GelatoRelayAddress: "0xaBcC9b596420A9E9172FD5938620E265a0f9Df92",
   },
   [BOTANIX]: {
+    // Synthetics
     DataStore: "0xA23B81a89Ab9D7D89fF8fc1b5d8508fB75Cc094d",
     EventEmitter: "0xAf2E131d483cedE068e21a9228aD91E623a989C2",
     SubaccountRouter: "0x11E590f6092D557bF71BaDEd50D81521674F8275",
@@ -194,18 +198,18 @@ export const CONTRACTS = {
     MultichainSubaccountRouter: "0xd3B6E962f135634C43415d57A28E688Fb4f15A58",
     MultichainTransferRouter: "0x901f26a57edCe65Ef3FBcCD260433De9B2279852",
     MultichainVault: "0x9a535f9343434D96c4a39fF1d90cC685A4F6Fb20",
-
-    ExternalHandler: "0x36b906eA6AE7c74aeEE8cDE66D01B3f1f8843872",
-    OpenOceanRouter: zeroAddress,
+    LayerZeroProvider: "0x61af99b07995cb7Ee8c2FACF6D8fb6042FeAA0d9",
 
     ChainlinkPriceFeedProvider: "0xDc613305e9267f0770072dEaB8c03162e0554b2d",
+    ClaimHandler: "0x3ca0f3ad78a9d0b2a0c060fe86d1141118a285c4",
 
+    // External
+    ExternalHandler: "0x36b906eA6AE7c74aeEE8cDE66D01B3f1f8843872",
+    OpenOceanRouter: zeroAddress,
     Multicall: "0x4BaA24f93a657f0c1b4A0Ffc72B91011E35cA46b",
     LayerZeroEndpoint: "0x6F475642a6e85809B1c36Fa62763669b1b48DD5B",
-
-    Timelock: "0xca3e30b51A7c3bd40bFc52a61AB0cE57B3Ab3ad8",
-
     ArbitrumNodeInterface: zeroAddress,
+    GelatoRelayAddress: "0x61aCe8fBA7B80AEf8ED67f37CB60bE00180872aD",
 
     Vault: zeroAddress,
     Reader: zeroAddress,
@@ -249,6 +253,7 @@ export const CONTRACTS = {
   },
 
   [AVALANCHE_FUJI]: {
+    // V1
     Vault: zeroAddress,
     Router: zeroAddress,
     VaultReader: zeroAddress,
@@ -317,18 +322,21 @@ export const CONTRACTS = {
     MultichainSubaccountRouter: "0xa51181CC37D23d3a4b4B263D2B54e1F34B834432",
     MultichainTransferRouter: "0x0bD6966B894D9704Ce540babcd425C93d2BD549C",
     MultichainVault: "0xFd86A5d9D6dF6f0cB6B0e6A18Bea7CB07Ada4F79",
+    LayerZeroProvider: "0xdaa9194bFD143Af71A8d2cFc8F2c0643094a77C5",
 
     ChainlinkPriceFeedProvider: "0x2e149AbC99cDC98FB0207d6F184DC323CEBB955B",
+    ClaimHandler: "0x01D68cf13B8f67b041b8D565931e1370774cCeBd",
 
+    // External
     OpenOceanRouter: zeroAddress,
     ExternalHandler: "0x0d9F90c66C392c4d0e70EE0d399c43729B942512",
-
     Multicall: "0x966D1F5c54a714C6443205F0Ec49eEF81F10fdfD",
     ArbitrumNodeInterface: zeroAddress,
     LayerZeroEndpoint: "0x6EDCE65403992e310A62460808c4b910D972f10f",
   },
 
   [ARBITRUM_SEPOLIA]: {
+    // Synthetics
     DataStore: "0xCF4c2C4c53157BcC01A596e3788fFF69cBBCD201",
     EventEmitter: "0xa973c2692C1556E1a3d478e745e9a75624AEDc73",
     ExchangeRouter: "0x657F9215FA1e839FbA15cF44B1C00D95cF71ed10",
@@ -354,16 +362,18 @@ export const CONTRACTS = {
     MultichainSubaccountRouter: "0xf8fbE9411f90618B3c68A8826555Ab54dE090ED7",
     MultichainTransferRouter: "0xeCfcA6af46B9d20793f82b28bc749dfFC6DEE535",
     MultichainVault: "0xCd46EF5ed7d08B345c47b5a193A719861Aa2CD91",
+    LayerZeroProvider: "0x3f85e237E950A7FB7cfb6DD4C262353A82588d51",
 
     ChainlinkPriceFeedProvider: "0xa76BF7f977E80ac0bff49BDC98a27b7b070a937d",
     ReferralStorage: "0xBbCdA58c228Bb29B5769778181c81Ac8aC546c11",
+    ClaimHandler: "0x96FE82b9C6FE46af537cE465B3befBD7b076C982",
 
+    // External
     Multicall: "0xD84793ae65842fFac5C20Ab8eaBD699ea1FC79F3",
     NATIVE_TOKEN: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
     LayerZeroEndpoint: "0x6EDCE65403992e310A62460808c4b910D972f10f",
     ArbitrumNodeInterface: "0x00000000000000000000000000000000000000C8",
-    // TODO: it seems its also 0xaBcC9b596420A9E9172FD5938620E265a0f9Df92
-    GelatoRelayAddress: "0xcd565435e0d2109feFde337a66491541Df0D1420",
+    GelatoRelayAddress: "0xaBcC9b596420A9E9172FD5938620E265a0f9Df92",
     ExternalHandler: zeroAddress,
 
     GLP: zeroAddress,
