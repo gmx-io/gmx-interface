@@ -121,17 +121,23 @@ export default function DashboardV2() {
               <div className="flex items-center gap-6 font-medium text-slate-100">
                 <Trans>For detailed stats</Trans>{" "}
                 {chainId === ARBITRUM && (
-                  <ExternalLink className="flex items-center gap-4 !no-underline" href="https://stats.gmx.io">
+                  <ExternalLink
+                    className="flex items-center gap-4 !no-underline hover:text-white"
+                    href="https://stats.gmx.io"
+                  >
                     <V1Icon className="size-15" /> Analytics
                   </ExternalLink>
                 )}
                 {chainId === AVALANCHE && (
-                  <ExternalLink className="flex items-center gap-4 !no-underline" href="https://stats.gmx.io/avalanche">
+                  <ExternalLink
+                    className="flex items-center gap-4 !no-underline hover:text-white"
+                    href="https://stats.gmx.io/avalanche"
+                  >
                     <V1Icon className="size-15" /> Analytics
                   </ExternalLink>
                 )}
                 <ExternalLink
-                  className="flex items-center gap-4 !no-underline"
+                  className="flex items-center gap-4 !no-underline hover:text-white"
                   href="https://dune.com/gmx-io/gmx-analytics"
                 >
                   <V2Icon className="size-15" /> Analytics
