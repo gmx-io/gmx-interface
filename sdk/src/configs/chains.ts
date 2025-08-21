@@ -18,9 +18,6 @@ export const ARBITRUM = 42161;
 export const ETH_MAINNET = 1;
 export const BOTANIX = 3637;
 export const SOURCE_BASE_MAINNET = 8453;
-// export const BASE_SEPOLIA = 84532;
-export const SOURCE_SONIC_MAINNET = 146;
-// export const SONIC_BLAZE = 57054;
 export const ARBITRUM_SEPOLIA = 421614;
 export const SOURCE_OPTIMISM_SEPOLIA = 11155420;
 export const SOURCE_SEPOLIA = 11155111;
@@ -35,7 +32,7 @@ export type ContractsChainId =
   | typeof BOTANIX
   | typeof ARBITRUM_SEPOLIA;
 
-export type SettlementChainId = typeof ARBITRUM_SEPOLIA | typeof ARBITRUM;
+export type SettlementChainId = typeof ARBITRUM_SEPOLIA | typeof ARBITRUM | typeof AVALANCHE;
 export type SourceChainId = typeof SOURCE_OPTIMISM_SEPOLIA | typeof SOURCE_SEPOLIA | typeof SOURCE_BASE_MAINNET;
 export type AnyChainId = ContractsChainId | SettlementChainId | SourceChainId;
 
