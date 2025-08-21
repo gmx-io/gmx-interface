@@ -848,7 +848,7 @@ button.App-button {
 }
 
 .Toastify__toast--error {
-  background: var(--color-red-900);
+  background: var(--color-red-900) !important;
   border-bottom: 2px solid var(--color-red-500);
 
   .link-underline {

@@ -1,5 +1,6 @@
 import { Trans, plural, t } from "@lingui/macro";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
 
 import {
   OrderStatus,
@@ -179,8 +180,14 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
 
   useToastAutoClose(isCompleted, toastTimestamp);
 
+  useEffect(() => {
+    if (hasError) {
+      toast.update(toastTimestamp, { type: "error" });
+    }
+  }, [hasError, toastTimestamp]);
+
   return (
-    <StatusNotification title={t`Settling position fees`} hasError={hasError}>
+    <StatusNotification title={t`Settling position fees`}>
       {creationStatus}
       {executionStatuses}
     </StatusNotification>

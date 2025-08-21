@@ -53,15 +53,15 @@ function Section({ buttonText, onButtonClick, tooltipText, title, usd }: Section
         first:pl-0 last:border-r-0 last:pr-0 max-xl:flex-col max-xl:items-start`}
     >
       <div className="flex flex-col gap-4">
-        <span className="font-medium">
+        <span className={cx("font-medium", { positive: usd > 0n })}>
           {tooltipText ? (
             <Tooltip
-              handle={<span className={cx("numbers", { positive: usd > 0n })}>{usdFormatted}</span>}
+              handle={<span className="numbers">{usdFormatted}</span>}
               position="bottom-start"
               renderContent={renderTooltipContent}
             />
           ) : (
-            <span className={cx("numbers", { positive: usd > 0n })}>{usdFormatted}</span>
+            <span className="numbers">{usdFormatted}</span>
           )}
         </span>
         <span className="text-body-small text-slate-100">{title}</span>

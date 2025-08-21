@@ -195,10 +195,10 @@ export function StakeModal(props: {
             inputValue={value}
             onInputValueChange={(e) => setValue(e.target.value)}
           >
-            <div className="Stake-modal-icons">
+            <div className="flex items-center gap-4 py-8">
               <img
-                className="icon mr-5 h-22"
-                height="22"
+                className="icon h-24"
+                height="24"
                 src={icons?.[stakingTokenSymbol.toLowerCase()]}
                 alt={stakingTokenSymbol}
               />

@@ -1,4 +1,3 @@
-import cx from "classnames";
 import { ReactNode } from "react";
 import { ImSpinner2 } from "react-icons/im";
 
@@ -23,13 +22,7 @@ export function TransactionStatus({ status, text, txnHash, txnLink }: Props) {
 
   return (
     <div className="text-sm flex w-full items-center justify-between gap-8 py-2 text-14">
-      <div
-        className={cx({
-          "opacity-50": status === "muted",
-        })}
-      >
-        {text}
-      </div>
+      <div>{text}</div>
       <div className="flex flex-shrink-0 items-center justify-center">
         {status === "loading" && <ImSpinner2 width={60} height={60} className="spin size-15 text-white" />}
         {status !== "loading" && _txnLink && <ExternalLink href={_txnLink}>View</ExternalLink>}
