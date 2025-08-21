@@ -4454,6 +4454,7 @@ msgstr ""
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
 msgstr ""
 
