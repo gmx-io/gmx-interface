@@ -394,6 +394,22 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
     "0x9f0849FB830679829d1FB759b11236D375D15C78": {
       enabled: true,
     },
+    // CVX/USD [WETH-USDC]
+    "0x41E3bC5B72384C8B26b559B7d16C2B81Fd36fbA2": {
+      enabled: true,
+    },
+    // KAS/USD [WBTC-USDC]
+    "0x4024418592450E4d62faB15e2f833FC03A3447dc": {
+      enabled: true,
+    },
+    // OKB/USD [WETH-USDC]
+    "0x2a331e51a3D17211852d8625a1029898450e539B": {
+      enabled: true,
+    },
+    // WIF/USD [WBTC-USDC]
+    "0x3f649eab7f4CE4945F125939C64429Be2C5d0cB4": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
