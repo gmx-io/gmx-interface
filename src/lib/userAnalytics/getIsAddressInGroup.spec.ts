@@ -4,22 +4,22 @@ import { getIsAddressInGroup } from "./getIsAddressInGroup";
 
 describe("getIsAddressInGroup", () => {
   it("it should be roughly in expected probability", () => {
-    const prefferedProbabilities = [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+    const prefferedProbabilities = [0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0];
     for (const probability of prefferedProbabilities) {
       const count = 50_000;
-      let yesses = 0;
+      let positiveCount = 0;
       for (let i = 0; i < count; i++) {
         const isInGroup = getIsAddressInGroup({
           address: i.toString(),
-          experimentGroupProbability: BigInt(probability),
+          experimentGroupProbability: probability,
           grouping: "test",
         });
         if (isInGroup) {
-          yesses++;
+          positiveCount++;
         }
       }
 
-      expect(yesses / count).toBeCloseTo(probability / 100);
+      expect(positiveCount / count).toBeCloseTo(probability);
     }
   });
 });
