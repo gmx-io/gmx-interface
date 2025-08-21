@@ -36,8 +36,8 @@ export const appEventsData: EventData[] = [
   {
     id: "cvx-kas-okb-wif-listing",
     isActive: true,
-    startDate: "21 Aug 2025, 8:00",
-    endDate: "28 Aug 2025, 8:00",
+    startDate: "21 Aug 2025, 12:00",
+    endDate: "28 Aug 2025, 12:00",
     title: "CVX, KAS, OKB and WIF markets added on Arbitrum",
     bodyText: (
       <>
@@ -53,7 +53,7 @@ export const appEventsData: EventData[] = [
     id: "algo-cro-hbar-listing",
     isActive: true,
     startDate: "14 Aug 2025, 10:00",
-    endDate: "21 Aug 2025, 8:00",
+    endDate: "21 Aug 2025, 10:00",
     title: "ALGO, CRO, and HBAR markets added on Arbitrum",
     bodyText: (
       <>
