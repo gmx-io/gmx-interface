@@ -78,6 +78,7 @@ const darkColors = {
   black: "#000000",
   button: {
     secondary: "#23263b",
+    secondaryDisabled: "#1e2033",
   },
   fill: {
     surfaceElevated50: "#1E203380",
@@ -162,6 +163,7 @@ const lightColors = {
   black: "#000000",
   button: {
     secondary: "#E0E0E8", // Light theme
+    secondaryDisabled: "#E0E0E8", // Light theme
   },
   fill: {
     surfaceElevated50: "#F5F5F780",
