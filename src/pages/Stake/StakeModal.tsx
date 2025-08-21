@@ -128,7 +128,7 @@ export function StakeModal(props: {
       return t`Pending ${stakingTokenSymbol} approval`;
     }
     if (isStaking) {
-      return t`Staking...`;
+      return t`Staking`;
     }
     return t`Stake`;
   }, [error, isApproving, needApproval, isStaking, stakingTokenSymbol]);
@@ -151,7 +151,7 @@ export function StakeModal(props: {
     const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
 
     callContract(chainId, contract, stakeMethodName, [amount], {
-      sentMsg: t`Stake submitted!`,
+      sentMsg: t`Stake submitted.`,
       failMsg: t`Stake failed.`,
       setPendingTxns,
     })
@@ -229,7 +229,7 @@ export function StakeModal(props: {
           )}
 
         {isUndelegatedGovToken ? (
-          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-500">
+          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-300">
             <Trans>
               <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                 Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO

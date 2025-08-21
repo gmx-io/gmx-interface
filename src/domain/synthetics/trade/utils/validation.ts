@@ -52,7 +52,7 @@ export function getCommonError(p: { chainId: number; isConnected: boolean; hasOu
   }
 
   if (!isConnected) {
-    return [t`Connect Wallet`];
+    return [t`Connect wallet`];
   }
 
   return [undefined];

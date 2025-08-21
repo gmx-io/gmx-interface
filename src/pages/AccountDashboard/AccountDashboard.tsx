@@ -2,13 +2,13 @@ import { Trans, t } from "@lingui/macro";
 import { useMedia } from "react-use";
 import { isAddress } from "viem";
 
-import { getChainName } from "config/chains";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useChainId } from "lib/chains";
 
 import AddressView from "components/AddressView/AddressView";
-import Footer from "components/Footer/Footer";
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import PageTitle from "components/PageTitle/PageTitle";
+import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 
 import { DailyAndCumulativePnL } from "./DailyAndCumulativePnL";
 import { GeneralPerformanceDetails } from "./GeneralPerformanceDetails";
@@ -22,57 +22,55 @@ export function AccountDashboard() {
 
   const { chainId, version, account } = usePageParams(initialChainId);
 
-  const networkName = getChainName(chainId);
-  const versionName = version === 2 ? "V2" : "V1";
+  const header = <ChainContentHeader chainId={chainId} />;
 
   if (!isAddress(account!)) {
     return (
-      <div className="default-container page-layout">
-        <PageTitle title={t`GMX ${versionName} Account`} chainId={chainId} />
-        <div className="text-center text-red-500">
-          <Trans>Invalid address. Please make sure you have entered a valid Ethereum address</Trans>
+      <AppPageLayout header={header}>
+        <div className="default-container page-layout">
+          <PageTitle title={t`GMX  Account`} className="p-12" />
+          <div className="text-center text-red-500">
+            <Trans>Invalid address. Please make sure you have entered a valid Ethereum address</Trans>
+          </div>
         </div>
-      </div>
+      </AppPageLayout>
     );
   }
 
   return (
-    <div className="default-container page-layout">
-      <PageTitle
-        chainId={chainId}
-        title={t`GMX ${versionName} Account`}
-        subtitle={
-          <>
-            <div className="flex flex-wrap items-center gap-4">
-              <Trans>
-                GMX {versionName} {networkName} information for account:
-              </Trans>
-              <AddressView noLink address={account} size={20} breakpoint={isMobile ? "XL" : undefined} />
-            </div>
-            <VersionNetworkSwitcherRow account={account} chainId={chainId} version={version} />
-          </>
-        }
-      />
-
-      {version === 2 && (
-        <SyntheticsStateContextProvider overrideChainId={chainId} pageType="accounts" skipLocalReferralCode={false}>
-          <div className="flex flex-col gap-20">
-            <div className="flex flex-row flex-wrap gap-20">
-              <div className="max-w-full grow-[2] *:size-full">
-                <GeneralPerformanceDetails chainId={chainId} account={account} />
+    <AppPageLayout header={header}>
+      <div className="default-container page-layout flex flex-col gap-8">
+        <PageTitle
+          title={t`GMX Account`}
+          subtitle={
+            <>
+              <div className="text-body-medium mb-20 flex flex-wrap items-center gap-4 font-medium">
+                <Trans>GMX information for account</Trans>
+                <AddressView noLink address={account} size={20} breakpoint={isMobile ? "XL" : undefined} />
               </div>
-              <div className="grow *:size-full">
-                <DailyAndCumulativePnL chainId={chainId} account={account} />
+              <VersionNetworkSwitcherRow account={account} chainId={chainId} version={version} />
+            </>
+          }
+        />
+
+        {version === 2 && (
+          <SyntheticsStateContextProvider overrideChainId={chainId} pageType="accounts" skipLocalReferralCode={false}>
+            <div className="flex flex-col gap-8">
+              <div className="flex flex-row flex-wrap gap-8">
+                <div className="max-w-full grow-[2] *:size-full">
+                  <GeneralPerformanceDetails chainId={chainId} account={account} />
+                </div>
+                <div className="grow *:size-full">
+                  <DailyAndCumulativePnL chainId={chainId} account={account} />
+                </div>
               </div>
+              <HistoricalLists chainId={chainId} account={account} />
             </div>
-            <HistoricalLists chainId={chainId} account={account} />
-          </div>
-        </SyntheticsStateContextProvider>
-      )}
+          </SyntheticsStateContextProvider>
+        )}
 
-      {version === 1 && <HistoricalListsV1 account={account} chainId={chainId} />}
-
-      <Footer />
-    </div>
+        {version === 1 && <HistoricalListsV1 account={account} chainId={chainId} />}
+      </div>
+    </AppPageLayout>
   );
 }

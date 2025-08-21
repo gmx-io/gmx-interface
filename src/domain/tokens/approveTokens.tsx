@@ -163,11 +163,11 @@ export async function approveTokens({
           </div>
         );
       } else if (e.message?.includes("User denied transaction signature")) {
-        failMsg = t`Approval was cancelled`;
+        failMsg = t`Approval was cancelled.`;
       } else {
         failMsg = (
           <>
-            <Trans>Approval failed</Trans>
+            <Trans>Approval failed.</Trans>
             <br />
             <br />
             <ToastifyDebug error={String(e)} />

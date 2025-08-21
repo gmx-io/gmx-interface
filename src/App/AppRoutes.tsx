@@ -17,6 +17,7 @@ import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl, isHomeSite } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
+import { useHashQueryParams } from "lib/useHashQueryParams";
 import { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
 import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigureUserAnalyticsProfile";
 import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
@@ -26,6 +27,7 @@ import useSearchParams from "lib/useSearchParams";
 import { switchNetwork } from "lib/wallets";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
+import { CloseToastButton } from "components/CloseToastButton/CloseToastButton";
 import EventToastContainer from "components/EventToast/EventToastContainer";
 import useEventToast from "components/EventToast/useEventToast";
 import { Header } from "components/Header/Header";
@@ -35,7 +37,6 @@ import { SettingsModal } from "components/SettingsModal/SettingsModal";
 
 import { HomeRoutes } from "./HomeRoutes";
 import { MainRoutes } from "./MainRoutes";
-import { useHashQueryParams } from "lib/useHashQueryParams";
 
 const Zoom = cssTransition({
   enter: "zoomIn",
@@ -141,16 +142,19 @@ export function AppRoutes() {
 
   return (
     <>
-      <div className="App">
-        <div className="App-content">
-          <Header
-            disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-            openSettings={openSettings}
-            showRedirectModal={showRedirectModal}
-          />
-          {isHome && <HomeRoutes showRedirectModal={showRedirectModal} />}
-          {!isHome && <MainRoutes openSettings={openSettings} />}
-        </div>
+      <div className="App w-full">
+        {isHome ? (
+          <div className="App-content">
+            <Header
+              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+              openSettings={openSettings}
+              showRedirectModal={showRedirectModal}
+            />
+            <HomeRoutes showRedirectModal={showRedirectModal} />
+          </div>
+        ) : (
+          <MainRoutes openSettings={openSettings} />
+        )}
       </div>
       <ToastContainer
         limit={1}
@@ -164,6 +168,7 @@ export function AppRoutes() {
         pauseOnHover
         theme="dark"
         icon={false}
+        closeButton={CloseToastButton}
       />
       <EventToastContainer />
       <RedirectPopupModal

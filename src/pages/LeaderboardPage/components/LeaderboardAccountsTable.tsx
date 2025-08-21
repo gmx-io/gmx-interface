@@ -19,7 +19,6 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
-import SearchInput from "components/SearchInput/SearchInput";
 import { TopAccountsSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -49,9 +48,11 @@ const PER_PAGE = 20;
 export function LeaderboardAccountsTable({
   accounts,
   activeCompetition,
+  searchAddress,
 }: {
   accounts: RemoteData<LeaderboardAccount>;
   activeCompetition: CompetitionType | undefined;
+  searchAddress: string | undefined;
 }) {
   const currentAccount = useLeaderboardCurrentAccount();
   const { isLoading, data } = accounts;
@@ -79,10 +80,8 @@ export function LeaderboardAccountsTable({
     }
   }, [activeCompetition, isCompetitions, setDirection, setOrderBy]);
 
-  const [search, setSearch] = useState("");
-  const handleKeyDown = useCallback(() => null, []);
   const ranks = useLeaderboardAccountsRanks();
-  const term = useDebounce(search, 300);
+  const term = useDebounce(searchAddress, 300);
 
   useEffect(() => {
     setPage(1);
@@ -152,7 +151,6 @@ export function LeaderboardAccountsTable({
           pinned
           rank={pinnedRowData.rank}
           activeCompetition={activeCompetition}
-          big
         />
       )}
       {rowsData.length ? (
@@ -176,21 +174,11 @@ export function LeaderboardAccountsTable({
   );
 
   return (
-    <div className="rounded-4 bg-slate-800">
-      <div className="TableBox__head">
-        <SearchInput
-          placeholder={t`Search Address`}
-          className="max-w-lg *:!text-14"
-          value={search}
-          setValue={setSearch}
-          onKeyDown={handleKeyDown}
-          size="s"
-        />
-      </div>
+    <div className="rounded-b-8 bg-slate-900">
       <TableScrollFadeContainer>
         <table className="w-full min-w-[1000px]">
           <thead>
-            <TableTheadTr bordered className="text-body-medium">
+            <TableTheadTr className="text-body-medium">
               <TableHeaderCell
                 title={t`Rank`}
                 width={6}
@@ -291,6 +279,7 @@ const TableHeaderCell = memo(
                 handle={<span className="whitespace-nowrap">{title}</span>}
                 position={tooltipPosition || "bottom"}
                 content={<div onClick={stopPropagation}>{tooltip}</div>}
+                styleType="iconStroke"
               />
             ) : (
               <span className="whitespace-nowrap">{title}</span>
@@ -307,6 +296,7 @@ const TableHeaderCell = memo(
             handle={<span className="whitespace-nowrap">{title}</span>}
             position={tooltipPosition || "bottom"}
             content={<div onClick={stopPropagation}>{tooltip}</div>}
+            styleType="iconStroke"
           />
         ) : (
           <span className="whitespace-nowrap">{title}</span>
@@ -323,22 +313,28 @@ const TableRow = memo(
     rank,
     activeCompetition,
     index,
-    big,
   }: {
     account: LeaderboardAccount;
     index: number;
     pinned: boolean;
     rank: number | null;
     activeCompetition: CompetitionType | undefined;
-    big?: boolean;
   }) => {
     const renderWinsLossesTooltipContent = useCallback(() => {
       const winRate = `${((account.wins / (account.wins + account.losses)) * 100).toFixed(2)}%`;
       return (
         <div>
-          <StatsTooltipRow label={t`Total Trades`} showDollar={false} value={account.wins + account.losses} />
+          <StatsTooltipRow
+            label={t`Total Trades`}
+            showDollar={false}
+            value={<span className="numbers">{account.wins + account.losses}</span>}
+          />
           {account.wins + account.losses > 0 ? (
-            <StatsTooltipRow label={t`Win Rate`} showDollar={false} value={winRate} />
+            <StatsTooltipRow
+              label={t`Win Rate`}
+              showDollar={false}
+              value={<span className="numbers">{winRate}</span>}
+            />
           ) : null}
         </div>
       );
@@ -347,20 +343,20 @@ const TableRow = memo(
     const renderPnlTooltipContent = useCallback(() => <LeaderboardPnlTooltipContent account={account} />, [account]);
 
     return (
-      <TableTr bordered={false} key={account.account} className={big ? "text-body-medium" : undefined}>
+      <TableTr key={account.account}>
         <TableTd className={getCellClassname(rank, activeCompetition, pinned)}>
-          <span className={getWinnerRankClassname(rank, activeCompetition)}>
+          <span className={cx("numbers", getWinnerRankClassname(rank, activeCompetition))}>
             <RankInfo rank={rank} hasSomeCapital={account.totalQualifyingPnl !== 0n} />
           </span>
         </TableTd>
 
         <TableTd>
-          <AddressView big={big} size={20} address={account.account} breakpoint="XL" />
+          <AddressView size={20} address={account.account} breakpoint="XL" />
         </TableTd>
         <TableTd>
           <TooltipWithPortal
             handle={
-              <span className={getSignedValueClassName(account.totalQualifyingPnl)}>
+              <span className={cx("numbers", getSignedValueClassName(account.totalQualifyingPnl))}>
                 {formatDelta(account.totalQualifyingPnl, { signed: true, prefix: "$" })}
               </span>
             }
@@ -372,7 +368,7 @@ const TableRow = memo(
         <TableTd>
           <TooltipWithPortal
             handle={
-              <span className={getSignedValueClassName(account.pnlPercentage)}>
+              <span className={cx("numbers", getSignedValueClassName(account.pnlPercentage))}>
                 {formatDelta(account.pnlPercentage, { signed: true, postfix: "%", decimals: 2 })}
               </span>
             }
@@ -382,16 +378,16 @@ const TableRow = memo(
               <StatsTooltipRow
                 label={t`Capital Used`}
                 showDollar={false}
-                value={<span>{formatUsd(account.maxCapital)}</span>}
+                value={<span className="numbers">{formatUsd(account.maxCapital)}</span>}
               />
             )}
           />
         </TableTd>
-        <TableTd>{account.averageSize ? formatUsd(account.averageSize) : "$0.00"}</TableTd>
-        <TableTd>{`${formatAmount(account.averageLeverage ?? 0n, 4, 2)}x`}</TableTd>
-        <TableTd className="text-right">
+        <TableTd className="numbers">{account.averageSize ? formatUsd(account.averageSize) : "$0.00"}</TableTd>
+        <TableTd className="numbers">{`${formatAmount(account.averageLeverage ?? 0n, 4, 2)}x`}</TableTd>
+        <TableTd className="text-right numbers">
           <TooltipWithPortal
-            handle={`${account.wins}/${account.losses}`}
+            handle={<span className="numbers">{`${account.wins}/${account.losses}`}</span>}
             renderContent={renderWinsLossesTooltipContent}
           />
         </TableTd>
@@ -402,7 +398,7 @@ const TableRow = memo(
 
 const EmptyRow = memo(() => {
   return (
-    <TableTr hoverable={false} bordered={false} className="h-47">
+    <TableTr hoverable={false} className="h-47">
       <TableTd colSpan={7} className="align-top text-slate-100">
         <Trans>No results found</Trans>
       </TableTd>
@@ -429,7 +425,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   if (rank === null)
     return <TooltipWithPortal handleClassName="text-red-500" handle={t`NA`} renderContent={tooltipContent} />;
 
-  return <span>{rank}</span>;
+  return <span className="font-medium text-slate-100 numbers">{rank}</span>;
 });
 
 const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAccount }) => {
@@ -462,7 +458,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
         label={t`Realized PnL`}
         showDollar={false}
         value={
-          <span className={getSignedValueClassName(realizedPnl)}>
+          <span className={cx("numbers", getSignedValueClassName(realizedPnl))}>
             {formatDelta(realizedPnl, { signed: true, prefix: "$" })}
           </span>
         }
@@ -471,7 +467,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
         label={t`Unrealized PnL`}
         showDollar={false}
         value={
-          <span className={getSignedValueClassName(unrealizedPnl)}>
+          <span className={cx("numbers", getSignedValueClassName(unrealizedPnl))}>
             {formatDelta(unrealizedPnl, { signed: true, prefix: "$" })}
           </span>
         }
@@ -481,7 +477,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
           label={t`Start Unrealized PnL`}
           showDollar={false}
           value={
-            <span className={getSignedValueClassName(startUnrealizedPnl)}>
+            <span className={cx("numbers", getSignedValueClassName(startUnrealizedPnl))}>
               {formatDelta(startUnrealizedPnl, { signed: true, prefix: "$" })}
             </span>
           }
@@ -494,7 +490,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
             label={t`Realized Fees`}
             showDollar={false}
             value={
-              <span className={getSignedValueClassName(realizedFees)}>
+              <span className={cx("numbers", getSignedValueClassName(realizedFees))}>
                 {formatDelta(realizedFees, { signed: true, prefix: "$" })}
               </span>
             }
@@ -503,7 +499,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
             label={t`Unrealized Fees`}
             showDollar={false}
             value={
-              <span className={getSignedValueClassName(unrealizedFees)}>
+              <span className={cx("numbers", getSignedValueClassName(unrealizedFees))}>
                 {formatDelta(unrealizedFees, { signed: true, prefix: "$" })}
               </span>
             }
@@ -513,7 +509,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
               label={t`Start Unrealized Fees`}
               showDollar={false}
               value={
-                <span className={getSignedValueClassName(startUnrealizedFees)}>
+                <span className={cx("numbers", getSignedValueClassName(startUnrealizedFees))}>
                   {formatDelta(startUnrealizedFees, { signed: true, prefix: "$" })}
                 </span>
               }
@@ -524,7 +520,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
             label={t`Realized Price Impact`}
             showDollar={false}
             value={
-              <span className={getSignedValueClassName(account.realizedPriceImpact)}>
+              <span className={cx("numbers", getSignedValueClassName(account.realizedPriceImpact))}>
                 {formatDelta(account.realizedPriceImpact, { signed: true, prefix: "$" })}
               </span>
             }

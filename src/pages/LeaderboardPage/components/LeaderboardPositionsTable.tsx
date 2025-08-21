@@ -25,7 +25,6 @@ import { bigMath } from "sdk/utils/bigmath";
 import AddressView from "components/AddressView/AddressView";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
-import SearchInput from "components/SearchInput/SearchInput";
 import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -46,7 +45,13 @@ type LeaderboardPositionField = keyof LeaderboardPosition;
 
 const PER_PAGE = 20;
 
-export function LeaderboardPositionsTable({ positions }: { positions: RemoteData<LeaderboardPosition> }) {
+export function LeaderboardPositionsTable({
+  positions,
+  searchAddress,
+}: {
+  positions: RemoteData<LeaderboardPosition>;
+  searchAddress: string | undefined;
+}) {
   const { isLoading, data } = positions;
   const [page, setPage] = useState(1);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<LeaderboardPositionField>(
@@ -56,9 +61,7 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
       direction: "desc",
     }
   );
-  const [search, setSearch] = useState("");
-  const handleKeyDown = useCallback(() => null, []);
-  const term = useDebounce(search, 300);
+  const term = useDebounce(searchAddress, 300);
 
   useEffect(() => {
     setPage(1);
@@ -117,21 +120,11 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
   );
 
   return (
-    <div className="rounded-4 bg-slate-800">
-      <div className="TableBox__head">
-        <SearchInput
-          placeholder={t`Search Address`}
-          className="max-w-lg *:!text-14"
-          value={search}
-          setValue={setSearch}
-          onKeyDown={handleKeyDown}
-          size="s"
-        />
-      </div>
+    <div className="rounded-b-8 bg-slate-900">
       <TableScrollFadeContainer>
-        <table className="w-full min-w-[1100px] table-fixed">
+        <table className="w-full min-w-[1024px] table-fixed">
           <thead>
-            <TableTheadTr bordered className="text-body-medium">
+            <TableTheadTr className="text-body-medium">
               <TableHeaderCell
                 title={t`Rank`}
                 width={6}
@@ -201,6 +194,7 @@ const TableHeaderCell = memo(
                 handle={<span className="whitespace-nowrap">{title}</span>}
                 position={tooltipPosition || "bottom"}
                 content={<div onClick={stopPropagation}>{tooltip}</div>}
+                styleType="iconStroke"
               />
             ) : (
               <span className="whitespace-nowrap">{title}</span>
@@ -217,6 +211,7 @@ const TableHeaderCell = memo(
             handle={<span className="whitespace-nowrap">{title}</span>}
             position={tooltipPosition || "bottom"}
             content={<div onClick={stopPropagation}>{tooltip}</div>}
+            styleType="iconStroke"
           />
         ) : (
           <span className="whitespace-nowrap">{title}</span>
@@ -316,20 +311,28 @@ const TableRow = memo(
         <>
           <StatsTooltipRow
             label={t`Mark Price`}
-            value={formatUsd(markPrice, {
-              displayDecimals: indexToken?.priceDecimals,
-              visualMultiplier: marketInfo?.indexToken.visualMultiplier,
-            })}
+            value={
+              <span className="numbers">
+                {formatUsd(markPrice, {
+                  displayDecimals: indexToken?.priceDecimals,
+                  visualMultiplier: marketInfo?.indexToken.visualMultiplier,
+                })}
+              </span>
+            }
             showDollar={false}
           />
           {shouldRenderPriceChangeToLiq && (
             <StatsTooltipRow
               label={t`Price change to Liq.`}
-              value={formatUsd(liquidationPrice - markPrice, {
-                maxThreshold: "1000000",
-                displayDecimals: indexToken?.priceDecimals,
-                visualMultiplier: marketInfo?.indexToken.visualMultiplier,
-              })}
+              value={
+                <span className="numbers">
+                  {formatUsd(liquidationPrice - markPrice, {
+                    maxThreshold: "1000000",
+                    displayDecimals: indexToken?.priceDecimals,
+                    visualMultiplier: marketInfo?.indexToken.visualMultiplier,
+                  })}
+                </span>
+              }
               showDollar={false}
             />
           )}
@@ -343,9 +346,9 @@ const TableRow = memo(
     ]);
 
     return (
-      <TableTr key={position.key} bordered={false}>
+      <TableTr key={position.key}>
         <TableCell className="relative">
-          <span className={getWinnerRankClassname(rank)}>
+          <span className={cx("numbers", getWinnerRankClassname(rank))}>
             <RankInfo rank={rank} hasSomeCapital />
           </span>
         </TableCell>
@@ -355,7 +358,7 @@ const TableRow = memo(
         <TableCell>
           <TooltipWithPortal
             handle={
-              <span className={getSignedValueClassName(position.qualifyingPnl)}>
+              <span className={cx("numbers", getSignedValueClassName(position.qualifyingPnl))}>
                 {formatDelta(position.qualifyingPnl, { signed: true, prefix: "$" })}
               </span>
             }
@@ -390,7 +393,7 @@ const TableRow = memo(
             renderContent={renderPositionTooltip}
           />
         </TableCell>
-        <TableCell>
+        <TableCell className="numbers">
           {formatUsd(position.entryPrice, {
             displayDecimals: marketDecimals,
             visualMultiplier: marketInfo?.indexToken.visualMultiplier,
@@ -398,29 +401,33 @@ const TableRow = memo(
         </TableCell>
         <TableCell>
           <TooltipWithPortal
-            handle={formatUsd(position.sizeInUsd)}
+            handle={<span className="numbers">{formatUsd(position.sizeInUsd)}</span>}
             position={index > 9 ? "top-end" : "bottom-end"}
             renderContent={renderSizeTooltip}
             tooltipClassName="Table-SizeTooltip"
           />
         </TableCell>
-        <TableCell>{`${formatAmount(position.leverage, 4, 2)}x`}</TableCell>
+        <TableCell className="numbers">{`${formatAmount(position.leverage, 4, 2)}x`}</TableCell>
         <TableCell className="text-right">
           {liquidationPrice ? (
             <TooltipWithPortal
               position={index > 9 ? "top-end" : "bottom-end"}
               renderContent={renderLiquidationTooltip}
-              handle={formatUsd(liquidationPrice, {
-                maxThreshold: "1000000",
-                displayDecimals: marketDecimals,
-                visualMultiplier: marketInfo?.indexToken.visualMultiplier,
-              })}
+              handle={
+                <span className="numbers">
+                  {formatUsd(liquidationPrice, {
+                    maxThreshold: "1000000",
+                    displayDecimals: marketDecimals,
+                    visualMultiplier: marketInfo?.indexToken.visualMultiplier,
+                  })}
+                </span>
+              }
             />
           ) : (
             <TooltipWithPortal
               position={index > 9 ? "top-end" : "bottom-end"}
               renderContent={renderNaLiquidationTooltip}
-              handle={t`NA`}
+              handle={<span className="numbers">{t`NA`}</span>}
             />
           )}
         </TableCell>
@@ -435,7 +442,7 @@ const TableCell = memo(({ children, className }: { children: ReactNode; classNam
 
 const EmptyRow = memo(() => {
   return (
-    <TableTr hoverable={false} bordered={false} className="h-47">
+    <TableTr hoverable={false} className="h-47">
       <TableTd colSpan={7} className="align-top text-slate-100">
         <Trans>No results found</Trans>
       </TableTd>
@@ -462,7 +469,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   if (rank === null)
     return <TooltipWithPortal handleClassName="text-red-500" handle={t`NA`} renderContent={tooltipContent} />;
 
-  return <span>{rank}</span>;
+  return <span className="numbers">{rank}</span>;
 });
 
 const LeaderboardPnlTooltipContent = memo(({ position }: { position: LeaderboardPosition }) => {
@@ -485,7 +492,7 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
         label={t`Realized PnL`}
         showDollar={false}
         value={
-          <span className={getSignedValueClassName(realizedPnl)}>
+          <span className={cx("numbers", getSignedValueClassName(realizedPnl))}>
             {formatDelta(realizedPnl, { signed: true, prefix: "$" })}
           </span>
         }
@@ -494,7 +501,7 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
         label={t`Unrealized PnL`}
         showDollar={false}
         value={
-          <span className={getSignedValueClassName(unrealizedPnl)}>
+          <span className={cx("numbers", getSignedValueClassName(unrealizedPnl))}>
             {formatDelta(unrealizedPnl, { signed: true, prefix: "$" })}
           </span>
         }
@@ -507,7 +514,7 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
             label={t`Realized Fees`}
             showDollar={false}
             value={
-              <span className={getSignedValueClassName(realizedFees)}>
+              <span className={cx("numbers", getSignedValueClassName(realizedFees))}>
                 {formatDelta(realizedFees, { signed: true, prefix: "$" })}
               </span>
             }
@@ -516,7 +523,7 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
             label={t`Unrealized Fees`}
             showDollar={false}
             value={
-              <span className={getSignedValueClassName(unrealizedFees)}>
+              <span className={cx("numbers", getSignedValueClassName(unrealizedFees))}>
                 {formatDelta(unrealizedFees, { signed: true, prefix: "$" })}
               </span>
             }
@@ -526,7 +533,7 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
             label={t`Realized Price Impact`}
             showDollar={false}
             value={
-              <span className={getSignedValueClassName(position.realizedPriceImpact)}>
+              <span className={cx("numbers", getSignedValueClassName(position.realizedPriceImpact))}>
                 {formatDelta(position.realizedPriceImpact, { signed: true, prefix: "$" })}
               </span>
             }

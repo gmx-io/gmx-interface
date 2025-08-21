@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export { ArbitrumNodeInterface__factory } from "./ArbitrumNodeInterface__factory";
+export { ClaimHandler__factory } from "./ClaimHandler__factory";
 export { CustomErrors__factory } from "./CustomErrors__factory";
 export { DataStore__factory } from "./DataStore__factory";
 export { ERC20PermitInterface__factory } from "./ERC20PermitInterface__factory";
@@ -31,6 +32,7 @@ export { RewardRouter__factory } from "./RewardRouter__factory";
 export { RewardTracker__factory } from "./RewardTracker__factory";
 export { Router__factory } from "./Router__factory";
 export { RouterV2__factory } from "./RouterV2__factory";
+export { StBTC__factory } from "./StBTC__factory";
 export { SubaccountApproval__factory } from "./SubaccountApproval__factory";
 export { SubaccountGelatoRelayRouter__factory } from "./SubaccountGelatoRelayRouter__factory";
 export { SubaccountRouter__factory } from "./SubaccountRouter__factory";

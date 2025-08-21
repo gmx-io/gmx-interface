@@ -173,7 +173,7 @@ export const tokensFavoritesTabOptions: TokenFavoritesTabOption[] = [
 
 export const tokensFavoritesTabOptionLabels: Record<TokenFavoritesTabOption, MessageDescriptor> = {
   all: msg({
-    message: "All",
+    message: "All Markets",
     comment: "Filter option for tokens favorites",
   }),
   favorites: msg`Favorites`,

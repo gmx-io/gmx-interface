@@ -4,7 +4,7 @@ import { TableTd, TableTr } from "components/Table/Table";
 
 export function LeaderboardTopAccountsStructure() {
   return (
-    <TableTr bordered={false} hoverable={false}>
+    <TableTr hoverable={false}>
       <TableTd>
         <Skeleton width={40} inline />
       </TableTd>

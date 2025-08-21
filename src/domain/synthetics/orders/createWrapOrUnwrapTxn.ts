@@ -26,7 +26,7 @@ export function createWrapOrUnwrapTxn(chainId: number, signer: Signer, p: WrapOr
         p.amount,
         nativeToken.decimals,
         nativeToken.symbol
-      )} for ${formatTokenAmount(p.amount, wrappedToken.decimals, wrappedToken.symbol)}`,
+      )} for ${formatTokenAmount(p.amount, wrappedToken.decimals, wrappedToken.symbol)}.`,
       failMsg: t`Swap failed.`,
       setPendingTxns: p.setPendingTxns,
     });
@@ -37,7 +37,7 @@ export function createWrapOrUnwrapTxn(chainId: number, signer: Signer, p: WrapOr
         p.amount,
         wrappedToken.decimals,
         wrappedToken.symbol
-      )} for ${formatTokenAmount(p.amount, nativeToken.decimals, nativeToken.symbol)}`,
+      )} for ${formatTokenAmount(p.amount, nativeToken.decimals, nativeToken.symbol)}.`,
       failMsg: t`Swap failed.`,
       setPendingTxns: p.setPendingTxns,
     });

@@ -212,7 +212,7 @@ export function ClaimModal(props: {
 
   return (
     <ModalWithPortal className="StakeModal" isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Rewards`}>
-      <div className="CompoundModal-menu">
+      <div className="flex flex-col gap-8 pb-8">
         <div>
           <Checkbox isChecked={shouldClaimGmx} setIsChecked={setShouldClaimGmx} disabled={shouldStakeGmx}>
             <Trans>Claim GMX Rewards</Trans>
@@ -261,7 +261,7 @@ export function ClaimModal(props: {
         </div>
       )}
       {isUndelegatedGovToken ? (
-        <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-500">
+        <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-300">
           <Trans>
             <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
               Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO

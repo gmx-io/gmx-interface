@@ -60,12 +60,12 @@ export function GmSwapBox(p: GmSwapBoxProps) {
   );
 
   return (
-    <div className="App-box GmSwapBox">
+    <div className="flex flex-col">
       <Tabs
         options={availableModesTabsOptions}
         selectedValue={mode}
         onChange={onSetMode}
-        className="GmSwapBox-asset-options-tabs"
+        className="bg-slate-900 p-12 pb-0"
         type="inline"
       />
 

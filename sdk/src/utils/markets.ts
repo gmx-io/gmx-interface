@@ -27,6 +27,20 @@ export function getMarketIndexName(p: ({ indexToken: Token } | { glvToken: Token
   return `${prefix}${firstToken.baseSymbol || firstToken.symbol}/USD`;
 }
 
+export function getMarketBaseName(p: ({ indexToken: Token } | { glvToken: Token }) & { isSpotOnly: boolean }) {
+  const { isSpotOnly } = p;
+
+  const firstToken = "indexToken" in p ? p.indexToken : p.glvToken;
+
+  if (isSpotOnly) {
+    return `SWAP-ONLY`;
+  }
+
+  const prefix = getTokenVisualMultiplier(firstToken);
+
+  return `${prefix}${firstToken.baseSymbol || firstToken.symbol}`;
+}
+
 export function getMarketPoolName(p: { longToken: Token; shortToken: Token }, separator = "-") {
   const { longToken, shortToken } = p;
 

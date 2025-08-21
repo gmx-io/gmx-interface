@@ -25,7 +25,7 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
                   <Trans>Longs Net Rate / 1h</Trans>
                 </span>
                 <span
-                  className={cx({
+                  className={cx("numbers", {
                     "text-green-500": netFeeLong > 0,
                     "text-red-500": netFeeLong < 0,
                   })}
@@ -38,7 +38,7 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
                   <Trans>Shorts Net Rate / 1h</Trans>
                 </span>
                 <span
-                  className={cx({
+                  className={cx("numbers", {
                     "text-green-500": netFeeShort > 0,
                     "text-red-500": netFeeShort < 0,
                   })}
@@ -81,7 +81,7 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
                 </div>
               </td>
               <td
-                className={cx("pr-10 text-right", {
+                className={cx("pr-10 text-right numbers", {
                   "text-green-500": netFeeLong > 0,
                   "text-red-500": netFeeLong < 0,
                 })}
@@ -89,7 +89,7 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
                 {formatRatePercentage(netFeeLong)}
               </td>
               <td
-                className={cx("text-right", {
+                className={cx("text-right numbers", {
                   "text-green-500": netFeeShort > 0,
                   "text-red-500": netFeeShort < 0,
                 })}

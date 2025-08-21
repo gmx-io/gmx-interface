@@ -22,6 +22,7 @@ export function AllowedSlippageRow({
         <TooltipWithPortal
           handle={t`Allowed Slippage`}
           position="top-start"
+          styleType="icon"
           renderContent={() => {
             return (
               <div className="text-white">

@@ -68,7 +68,7 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
       <TooltipWithPortal
         tooltipClassName="ClaimHistoryRow-size-tooltip-portal"
         content={<SizeTooltip claimAction={claimAction} />}
-        handle={formattedTotalUsd}
+        handle={<span className="numbers">{formattedTotalUsd}</span>}
       />
     );
   }, [claimAction]);
@@ -77,7 +77,7 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
     <TableTr>
       <TableTd>
         <div className="flex">
-          <div className="ClaimHistoryRow-action-handle">{eventTitle}</div>
+          <div className="ClaimHistoryRow-action-handle font-medium">{eventTitle}</div>
           <ExternalLink
             className="ClaimHistoryRow-external-link ml-5"
             href={`${getExplorerUrl(chainId)}tx/${claimAction.transaction.hash}`}
@@ -86,14 +86,18 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
           </ExternalLink>
         </div>
         <TooltipWithPortal
-          disableHandleStyle
+          styleType="none"
           handle={<span className="ClaimHistoryRow-time muted cursor-help">{formattedTimestamp}</span>}
           tooltipClassName="ClaimHistoryRow-tooltip-portal cursor-help *:cursor-auto"
           renderContent={renderIsoTimestamp}
         />
       </TableTd>
-      <TableTd>{marketNamesJoined}</TableTd>
-      <TableTd>{sizeContent}</TableTd>
+      <TableTd>
+        <span>{marketNamesJoined}</span>
+      </TableTd>
+      <TableTd>
+        <span>{sizeContent}</span>
+      </TableTd>
     </TableTr>
   );
 }

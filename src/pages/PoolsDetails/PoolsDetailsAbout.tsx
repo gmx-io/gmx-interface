@@ -73,7 +73,7 @@ export function PoolsDetailsAbout({
         <BridgingInfo chainId={chainId} tokenSymbol={glvOrMarketInfo?.shortToken?.symbol} />
       )}
 
-      <div className={cx("grid pt-8", { "grid-cols-1 gap-12": isMobile, "grid-cols-3": !isMobile })}>
+      <div className={cx("flex pt-8", { "flex-col gap-12": isMobile, "flex-row gap-20": !isMobile })}>
         <PoolsDetailsMarketAmount
           label={<Trans>Buyable</Trans>}
           value={
@@ -81,6 +81,8 @@ export function PoolsDetailsAbout({
               ? `${formatAmountHuman(mintable?.mintableAmount, marketToken?.decimals, false, 2)} ${marketToken?.symbol}`
               : "..."
           }
+          valueClassName="text-13"
+          secondaryValueClassName="text-12"
           secondaryValue={mintable ? formatAmountHuman(mintable?.mintableUsd, USD_DECIMALS, true, 2) : undefined}
           tooltipContent={
             !isGlv ? <BuyableTooltipContent marketInfo={glvOrMarketInfo} mintableInfo={mintableInfo} /> : undefined
@@ -93,6 +95,8 @@ export function PoolsDetailsAbout({
               ? `${formatAmountHuman(sellable?.totalAmount, marketToken?.decimals, false, 2)} ${marketToken?.symbol}`
               : "..."
           }
+          valueClassName="text-13"
+          secondaryValueClassName="text-12"
           secondaryValue={sellable ? formatAmountHuman(sellable?.totalUsd, USD_DECIMALS, true, 2) : undefined}
           tooltipContent={
             !isGlv ? <SellableTooltipContent marketInfo={glvOrMarketInfo} sellableInfo={sellableInfo} /> : undefined
@@ -109,6 +113,8 @@ export function PoolsDetailsAbout({
                   : formatDateTime(bigintToNumber(glvOrMarketInfo.shiftLastExecutedAt, 0))
                 : "..."
             }
+            valueClassName="text-13"
+            secondaryValueClassName="text-12"
           />
         )}
       </div>
@@ -213,7 +219,7 @@ const BuyableTooltipContent = ({
           decimals={marketInfo?.longToken?.decimals}
           usd={(mintableInfo?.longDepositCapacityUsd ?? 0n) + (mintableInfo?.shortDepositCapacityUsd ?? 0n)}
         />,
-        <span key="longTokenMaxValue-isSameCollaterals-ratio" className="text-body-small text-slate-100">
+        <span key="longTokenMaxValue-isSameCollaterals-ratio" className="text-body-small text-slate-100 numbers">
           ({poolUsd} / {maxPoolUsd})
         </span>,
       ];
@@ -230,7 +236,7 @@ const BuyableTooltipContent = ({
         usd={mintableInfo?.longDepositCapacityUsd}
         symbol={marketInfo?.longToken?.symbol}
       />,
-      <span key="longTokenMaxValue-ratio" className="text-body-small text-slate-100">
+      <span key="longTokenMaxValue-ratio" className="text-body-small text-slate-100 numbers">
         ({poolUsd} / {maxPoolUsd})
       </span>,
     ];
@@ -258,7 +264,7 @@ const BuyableTooltipContent = ({
         usd={mintableInfo?.shortDepositCapacityUsd}
         symbol={marketInfo?.shortToken?.symbol}
       />,
-      <span key="shortTokenMaxValue-ratio" className="text-body-small text-slate-100">
+      <span key="shortTokenMaxValue-ratio" className="text-body-small text-slate-100 numbers">
         ({poolUsd} / {maxPoolUsd})
       </span>,
     ];

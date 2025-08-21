@@ -3,7 +3,6 @@ import { t } from "@lingui/macro";
 import { getPageTitle } from "lib/legacy";
 
 import SEO from "components/Common/SEO";
-import Footer from "components/Footer/Footer";
 
 import "./TermsAndConditions.css";
 
@@ -586,7 +585,6 @@ export default function TermsAndConditions() {
             </div>
           </div>
         </div>
-        <Footer />
       </div>
     </SEO>
   );

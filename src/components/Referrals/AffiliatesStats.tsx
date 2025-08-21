@@ -198,34 +198,37 @@ function AffiliatesStats({
             <>
               <StatsTooltipRow
                 label={t`V1 Arbitrum`}
-                value={getUSDValue(arbitrumData?.affiliateTotalStats.v1Data.volume)}
+                value={<span className="numbers">{getUSDValue(arbitrumData?.affiliateTotalStats.v1Data.volume)}</span>}
               />
               <StatsTooltipRow
                 label={t`V1 Avalanche`}
-                value={getUSDValue(avalancheData?.affiliateTotalStats.v1Data.volume)}
+                value={<span className="numbers">{getUSDValue(avalancheData?.affiliateTotalStats.v1Data.volume)}</span>}
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V1 Avalanche Fuji`}
-                  value={getUSDValue(fujiData?.affiliateTotalStats.v1Data.volume)}
+                  value={<span className="numbers">{getUSDValue(fujiData?.affiliateTotalStats.v1Data.volume)}</span>}
                 />
               )}
               <StatsTooltipRow
                 label={t`V2 Arbitrum`}
-                value={getUSDValue(arbitrumData?.affiliateTotalStats.v2Data.volume)}
+                value={<span className="numbers">{getUSDValue(arbitrumData?.affiliateTotalStats.v2Data.volume)}</span>}
               />
               <StatsTooltipRow
                 label={t`V2 Avalanche`}
-                value={getUSDValue(avalancheData?.affiliateTotalStats.v2Data.volume)}
+                value={<span className="numbers">{getUSDValue(avalancheData?.affiliateTotalStats.v2Data.volume)}</span>}
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V2 Avalanche Fuji`}
-                  value={getUSDValue(fujiData?.affiliateTotalStats.v2Data.volume)}
+                  value={<span className="numbers">{getUSDValue(fujiData?.affiliateTotalStats.v2Data.volume)}</span>}
                 />
               )}
               <div className="Tooltip-divider" />
-              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.affiliateVolume)} />
+              <StatsTooltipRow
+                label={t`Total`}
+                value={<span className="numbers">{getUSDValue(total?.affiliateVolume)}</span>}
+              />
             </>
           }
         />
@@ -237,48 +240,75 @@ function AffiliatesStats({
             <>
               <StatsTooltipRow
                 label={t`V1 Arbitrum`}
-                value={getUSDValue(arbitrumData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
+                value={
+                  <span className="numbers">
+                    {getUSDValue(arbitrumData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
+                  </span>
+                }
               />
               <StatsTooltipRow
                 label={t`V1 Avalanche`}
-                value={getUSDValue(avalancheData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
+                value={
+                  <span className="numbers">
+                    {getUSDValue(avalancheData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
+                  </span>
+                }
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V1 Avalanche Fuji`}
-                  value={getUSDValue(fujiData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
+                  value={
+                    <span className="numbers">
+                      {getUSDValue(fujiData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
+                    </span>
+                  }
                 />
               )}
               <StatsTooltipRow
                 label={t`V2 Arbitrum`}
-                value={getUSDValue(arbitrumData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
+                value={
+                  <span className="numbers">
+                    {getUSDValue(arbitrumData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
+                  </span>
+                }
               />
               <StatsTooltipRow
                 label={t`V2 Avalanche`}
-                value={getUSDValue(avalancheData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
+                value={
+                  <span className="numbers">
+                    {getUSDValue(avalancheData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
+                  </span>
+                }
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V2 Avalanche Fuji`}
-                  value={getUSDValue(fujiData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
+                  value={
+                    <span className="numbers">
+                      {getUSDValue(fujiData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
+                    </span>
+                  }
                 />
               )}
               <div className="Tooltip-divider" />
-              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.affiliateRebateUsd)} />
+              <StatsTooltipRow
+                label={t`Total`}
+                value={<span className="numbers">{getUSDValue(total?.affiliateRebateUsd)}</span>}
+              />
             </>
           }
         />
         <ReferralInfoCard
           label={t`Claimable Rebates`}
-          labelTooltipText={t`Claim V2 Rebates from your referred Traders.`}
+          labelTooltipText={t`Claim V2 rebates from your referred traders.`}
           className="AffiliateStats-claimable-rewards-card"
         >
-          <div className="AffiliateStats-claimable-rewards-container">
-            ${getUSDValue(totalClaimableRewardsUsd, 4)}
+          <div className="AffiliateStats-claimable-rewards-container flex flex-col gap-6">
+            <span className="numbers">${getUSDValue(totalClaimableRewardsUsd, 4)}</span>
             {(totalClaimableRewardsUsd > 0 && (
-              <div onClick={() => setIsClaiming(true)} className="AffiliateStats-claim-button">
+              <Button variant="secondary" onClick={() => setIsClaiming(true)}>
                 Claim
-              </div>
+              </Button>
             )) ||
               null}
           </div>
@@ -325,7 +355,7 @@ function AffiliatesStats({
           <TableScrollFadeContainer>
             <table className="w-full">
               <thead>
-                <TableTheadTr bordered>
+                <TableTheadTr>
                   <TableTh scope="col">
                     <Trans>Referral Code</Trans>
                   </TableTh>
@@ -343,7 +373,7 @@ function AffiliatesStats({
               <tbody>
                 {currentAffiliatesData.map((stat, index) => {
                   return (
-                    <TableTr key={index} hoverable={false} bordered={false}>
+                    <TableTr key={index} hoverable={false}>
                       <TableTd data-label="Referral Code">
                         <div className="table-referral-code">
                           <span className="referral-text ">{stat.referralCode}</span>
@@ -372,32 +402,40 @@ function AffiliatesStats({
                       </TableTd>
                       <TableTd data-label="Total Volume">
                         <Tooltip
-                          handle={`$${getUSDValue(stat.volume)}`}
+                          handle={<span className="numbers">{`$${getUSDValue(stat.volume)}`}</span>}
                           position="bottom-start"
                           className="whitespace-nowrap"
                           renderContent={() => (
                             <>
-                              <StatsTooltipRow label={t`Volume on V1`} value={getUSDValue(stat?.v1Data.volume)} />
-                              <StatsTooltipRow label={t`Volume on V2`} value={getUSDValue(stat?.v2Data.volume)} />
+                              <StatsTooltipRow
+                                label={t`Volume on V1`}
+                                value={<span className="numbers">{getUSDValue(stat?.v1Data.volume)}</span>}
+                              />
+                              <StatsTooltipRow
+                                label={t`Volume on V2`}
+                                value={<span className="numbers">{getUSDValue(stat?.v2Data.volume)}</span>}
+                              />
                             </>
                           )}
                         />
                       </TableTd>
-                      <TableTd data-label="Traders Referred">{stat.registeredReferralsCount}</TableTd>
+                      <TableTd data-label="Traders Referred" className="numbers">
+                        {stat.registeredReferralsCount}
+                      </TableTd>
                       <TableTd data-label="Total Rebates">
                         <Tooltip
-                          handle={`$${getUSDValue(stat.affiliateRebateUsd)}`}
+                          handle={<span className="numbers">{`$${getUSDValue(stat.affiliateRebateUsd)}`}</span>}
                           position="bottom-start"
                           className="whitespace-nowrap"
                           renderContent={() => (
                             <>
                               <StatsTooltipRow
                                 label={t`Rebates on V1`}
-                                value={getUSDValue(stat.v1Data.affiliateRebateUsd)}
+                                value={<span className="numbers">{getUSDValue(stat.v1Data.affiliateRebateUsd)}</span>}
                               />
                               <StatsTooltipRow
                                 label={t`Rebates on V2`}
-                                value={getUSDValue(stat.v2Data.affiliateRebateUsd)}
+                                value={<span className="numbers">{getUSDValue(stat.v2Data.affiliateRebateUsd)}</span>}
                               />
                             </>
                           )}
@@ -428,14 +466,14 @@ function AffiliatesStats({
                 <Trans>Rebates Distribution History</Trans>
               </span>
             }
-            tooltipText={t`V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually.`}
+            tooltipText={t`Rebates are claimed manually.`}
             bodyPadding={false}
             divider={false}
           >
             <TableScrollFadeContainer>
               <table className="w-full min-w-max">
                 <thead>
-                  <TableTheadTr bordered>
+                  <TableTheadTr>
                     <TableTh scope="col">
                       <Trans>Date</Trans>
                     </TableTh>
@@ -491,14 +529,14 @@ function AffiliatesStats({
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (
-                      <TableTr key={index} hoverable={false} bordered={false}>
+                      <TableTr key={index} hoverable={false}>
                         <TableTd data-label="Date">{formatDate(rebate.timestamp)}</TableTd>
                         <TableTd data-label="Type">{rebateType}</TableTd>
                         <TableTd data-label="Amount">
                           <Tooltip
                             className="whitespace-nowrap"
                             handle={
-                              <div className="Rebate-amount-value">
+                              <div className="Rebate-amount-value numbers">
                                 {tokensWithoutPrices.length > 0 && (
                                   <>
                                     <IoWarningOutline color="#ffba0e" size={16} />
@@ -531,12 +569,16 @@ function AffiliatesStats({
                                         key={tokenAddress}
                                         showDollar={false}
                                         label={token.symbol}
-                                        value={formatBalanceAmount(
-                                          amountsByTokens[tokenAddress],
-                                          token.decimals,
-                                          undefined,
-                                          { isStable: token.isStable }
-                                        )}
+                                        value={
+                                          <span className="numbers">
+                                            {formatBalanceAmount(
+                                              amountsByTokens[tokenAddress],
+                                              token.decimals,
+                                              undefined,
+                                              { isStable: token.isStable }
+                                            )}
+                                          </span>
+                                        }
                                       />
                                     </>
                                   );
@@ -569,7 +611,7 @@ function AffiliatesStats({
         </div>
       ) : (
         <EmptyMessage
-          tooltipText={t`Rebates are airdropped weekly.`}
+          tooltipText={t`Rebates are claimed manually.`}
           message={t`No rebates distribution history yet.`}
         />
       )}

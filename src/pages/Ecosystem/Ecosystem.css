@@ -4,6 +4,32 @@
   grid-gap: 1.5rem;
 }
 
+.Ecosystem-projects .App-card-title-icon {
+  position: relative;
+}
+
+.Ecosystem-projects .App-card-title-icon img {
+  position: absolute;
+  max-width: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.Ecosystem-projects .App-card-title-icon img:nth-child(1) {
+  right: 0px;
+  z-index: 1;
+}
+
+.Ecosystem-projects .App-card-title-icon img:nth-child(2) {
+  right: 16px;
+  z-index: 2;
+}
+
+.Ecosystem-projects .App-card-title-icon img:nth-child(3) {
+  right: 32px;
+  z-index: 3;
+}
+
 @media (max-width: 1000px) {
   .Ecosystem-projects {
     grid-template-columns: 1fr 1fr;

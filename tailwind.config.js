@@ -11,8 +11,9 @@ const flattenColorPalette = require("tailwindcss/lib/util/flattenColorPalette");
  */
 const colors = {
   blue: {
-    300: "#7885ff",
-    400: "#4d5ffa",
+    100: "#A4C3F9",
+    300: "#7885FF",
+    400: "#2D42FC",
     500: "#3d51ff",
     600: "#2d42fc",
     700: "#2e3dcd",
@@ -20,7 +21,7 @@ const colors = {
   "cold-blue": {
     500: "#3a3f79",
     700: "#282b54",
-    900: "#1e203e",
+    900: "#1E223C",
   },
   "pale-blue": {
     100: "rgba(180,187,255, 0.1)",
@@ -28,13 +29,15 @@ const colors = {
   },
   slate: {
     100: "#a0a3c4",
-    500: "#3e4361",
-    600: "#373c58",
-    700: "#23263b",
+    400: "#BEC0DA",
+    500: "#646a8f",
+    600: "#363a59",
+    650: "#3C40677f",
+    700: "#22243a",
     750: "#17182c",
-    800: "#16182e",
-    900: "#101124",
-    950: "#08091b",
+    800: "#1e2033",
+    900: "#121421",
+    950: "#090A14",
   },
   gray: {
     50: "rgba(255, 255, 255, 0.95)",
@@ -51,28 +54,35 @@ const colors = {
   },
   yellow: {
     300: "#ffe166",
-    500: "#f3b50c",
+    900: "#2E2D29",
   },
   red: {
+    100: "#F9A4A5",
     400: "#ff637a",
     500: "#FF506A",
     700: "#B33055",
+    900: "#2D192D",
   },
   green: {
+    100: "#A4F9D9",
     300: "#56dba8",
     400: "#8CF3CB",
     500: "#0FDE8D",
+    700: "#178969",
     600: "#1F3445",
     700: "#0FDE8D",
     800: "#178969",
+    900: "#192E38",
   },
   white: "#ffffff",
   black: "#000000",
-  stroke: {
-    primary: "#252A47",
+  button: {
+    secondary: "#23263b",
   },
   fill: {
-    tertiary: "#B4BBFF1A",
+    surfaceElevated50: "#1E203380",
+    surfaceElevatedHover: "#18192a",
+    surfaceHover: "#A0A3C41A",
   },
 };
 
@@ -123,8 +133,23 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
 
   addUtilities({
     ".text-input-bg": {
-      background:
-        "linear-gradient(90deg, var(--color-cold-blue-900) 0%, color-mix(in srgb, var(--color-slate-500) 40%, transparent) 100%)",
+      borderRadius: "8px",
+      background: "var(--color-slate-800)",
+    },
+    ".text-input-bg::placeholder": {
+      color: "var(--color-slate-100)",
+    },
+  });
+
+  addUtilities({
+    ".scrollbar-gutter-stable": {
+      scrollbarGutter: "stable",
+    },
+  });
+
+  addUtilities({
+    ".numbers": {
+      letterSpacing: "0.06em",
     },
   });
 }
@@ -136,7 +161,7 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
 function fontComponentsPlugin({ addComponents, addBase }) {
   addBase({
     ":root": {
-      "--font-size-h1": "3.4rem",
+      "--font-size-h1": "3.2rem",
       "--font-size-h2": "2.4rem",
       "--font-size-body-large": "1.6rem",
       "--font-size-body-medium": "1.4rem",
@@ -145,6 +170,7 @@ function fontComponentsPlugin({ addComponents, addBase }) {
 
       "--line-height-h1": "34px",
       "--line-height-h2": "24px",
+      "--line-height-h3": "20px",
       "--line-height-body-large": "2.1rem",
       "--line-height-body-medium": "1.8rem",
       "--line-height-body-small": "1.6rem",
@@ -154,12 +180,22 @@ function fontComponentsPlugin({ addComponents, addBase }) {
 
   addComponents({
     ".text-h1": {
-      fontSize: "3.4rem",
+      fontSize: "3.2rem",
       lineHeight: "auto",
+      fontWeight: 500,
+      letterSpacing: "-0.016em",
     },
     ".text-h2": {
       fontSize: "2.4rem",
       lineHeight: "auto",
+      fontWeight: 500,
+      letterSpacing: "-0.016em",
+    },
+    ".text-h3": {
+      fontSize: "2rem",
+      lineHeight: "auto",
+      fontWeight: 500,
+      letterSpacing: "-0.016em",
     },
     ".text-body-large": {
       fontSize: "1.6rem",
@@ -167,15 +203,19 @@ function fontComponentsPlugin({ addComponents, addBase }) {
     },
     ".text-body-medium": {
       fontSize: "1.4rem",
-      lineHeight: "1.8rem",
+      lineHeight: "1.75rem",
     },
     ".text-body-small": {
       fontSize: "1.2rem",
       lineHeight: "1.6rem",
     },
     ".text-caption": {
-      fontSize: "1rem",
+      fontSize: "1.1rem",
       lineHeight: "1.4rem",
+      fontWeight: 500,
+      letterSpacing: "0.08em",
+      color: "var(--color-slate-100)",
+      textTransform: "uppercase",
     }
   });
 }
@@ -190,12 +230,15 @@ module.exports = {
       full: "9999px",
     }),
     fontSize: {
+      11: "1.1rem",
       12: "1.2rem",
+      13: "1.3rem",
       14: "1.4rem",
       15: "1.5rem",
       16: "1.6rem",
+      20: "2rem",
       24: "2.4rem",
-      34: "3.4rem",
+      32: "3.2rem",
     },
     lineHeight: {
       1: "1",
@@ -213,11 +256,14 @@ module.exports = {
     // @see https://tailwindcss.com/blog/tailwindcss-v3-2#max-width-and-dynamic-breakpoints
     // "these features will only be available if your project uses a simple screens configuration."
     // So we just copy the default screens config
-    screens: defaultConfig.theme.screens,
+    screens: { ...defaultConfig.theme.screens, sm: "400px" },
     extend: {
       gridTemplateColumns: fromPairs(
         range(200, 501, 50).map((space) => [`auto-fill-${space}`, `repeat(auto-fill, minmax(${space}px, 1fr))`])
       ),
+      borderWidth: {
+        'stroke': '0.5px',
+      },
     },
   },
   plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin],

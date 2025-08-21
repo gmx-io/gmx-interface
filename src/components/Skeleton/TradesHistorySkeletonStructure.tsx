@@ -8,7 +8,7 @@ type Props = {
 
 export default function TradesHistorySkeletonStructure(props: Props) {
   return (
-    <TableTr hoverable={false} bordered={false}>
+    <TableTr hoverable={false}>
       <TableTd>
         <Skeleton width={150} count={1} />
         <Skeleton width={120} count={1} />

@@ -68,12 +68,12 @@ function renderLiquidationTooltip(liquidationData, label) {
           <br />
           <br />
           <StatsTooltipRow
-            label={t`Initial collateral`}
+            label={t`Initial Collateral`}
             showDollar
             value={formatAmount(liquidationData.collateral, USD_DECIMALS, 2, true)}
           />
           <StatsTooltipRow
-            label={t`Min required collateral`}
+            label={t`Min Required Collateral`}
             showDollar
             value={formatAmount(minCollateral, USD_DECIMALS, 2, true)}
           />
@@ -249,7 +249,7 @@ export default function TradeHistory(props) {
         if (bigNumberify(params.sizeDelta) == 0n) {
           return (
             <Trans>
-              Could not execute deposit into {indexToken.symbol} {longOrShortText}
+              Could not execute deposit into {indexToken.symbol} {longOrShortText}.
             </Trans>
           );
         }
@@ -265,7 +265,7 @@ export default function TradeHistory(props) {
               position="top"
               handle={`${formatAmount(params.acceptablePrice, USD_DECIMALS, indexTokenPriceDecimal, true)} USD`}
               renderContent={() => (
-                <Trans>Try increasing the "Allowed Slippage", under the Settings menu on the top right.</Trans>
+                <Trans>Try increasing the "Allowed Slippage", under the settings menu on the top right.</Trans>
               )}
             />
           </>
@@ -282,7 +282,7 @@ export default function TradeHistory(props) {
         if (bigNumberify(params.sizeDelta) == 0n) {
           return (
             <Trans>
-              Could not execute withdrawal from {indexToken.symbol} {longOrShortText}
+              Could not execute withdrawal from {indexToken.symbol} {longOrShortText}.
             </Trans>
           );
         }
@@ -299,7 +299,7 @@ export default function TradeHistory(props) {
               position="top-end"
               handle={`${formatAmount(params.acceptablePrice, USD_DECIMALS, indexTokenPriceDecimal, true)} USD`}
               renderContent={() => (
-                <Trans>Try increasing the "Allowed Slippage", under the Settings menu on the top right</Trans>
+                <Trans>Try increasing the "Allowed Slippage", under the settings menu on the top right.</Trans>
               )}
             />
           </>

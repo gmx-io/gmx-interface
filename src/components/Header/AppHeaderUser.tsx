@@ -15,8 +15,6 @@ import useWallet from "lib/wallets/useWallet";
 
 import { OneClickButton } from "components/OneClickButton/OneClickButton";
 
-import connectWalletImg from "img/ic_wallet_24.svg";
-
 import { HeaderLink } from "./HeaderLink";
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
@@ -118,7 +116,6 @@ export function AppHeaderUser({
                 sendUserAnalyticsConnectWalletClickEvent("Header");
                 openConnectModal();
               }}
-              imgSrc={connectWalletImg}
             >
               {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
             </ConnectWalletButton>

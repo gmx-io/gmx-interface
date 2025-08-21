@@ -5,7 +5,6 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { VersionNetworkSwitcherRow } from "pages/AccountDashboard/VersionNetworkSwitcherRow";
 
-import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 
@@ -24,7 +23,6 @@ export default function SyntheticsActions() {
           <PageTitle
             isTop
             title={t`GMX V2 Actions`}
-            chainId={chainId}
             subtitle={
               <>
                 <Trans>
@@ -37,7 +35,6 @@ export default function SyntheticsActions() {
         </div>
         <TradeHistory account={undefined} forAllAccounts />
       </div>
-      <Footer />
     </div>
   );
 }
