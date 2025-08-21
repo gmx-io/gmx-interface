@@ -160,7 +160,7 @@ export function LeaderboardContainer() {
       label: leaderboardDataTypeLabels[value],
       className: {
         active: "!text-white !bg-blue-400",
-        regular: "hover:!text-textIcon-strong !bg-slate-800",
+        regular: "hover:!text-textIcon-strong !bg-button-secondary",
       },
     }));
   }, [leaderboardDataTypeLabels]);
@@ -178,7 +178,7 @@ export function LeaderboardContainer() {
       label: competitionLabels[value],
       className: {
         active: "!text-white !bg-blue-400",
-        regular: "hover:!text-textIcon-strong !bg-slate-800",
+        regular: "hover:!text-textIcon-strong !bg-button-secondary",
       },
     }));
   }, [competitionLabels]);

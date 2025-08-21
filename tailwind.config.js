@@ -161,7 +161,7 @@ const lightColors = {
   white: "#ffffff",
   black: "#000000",
   button: {
-    secondary: "#E0E0EB", // Light theme
+    secondary: "#E0E0E8", // Light theme
   },
   fill: {
     surfaceElevated50: "#F5F5F780",
@@ -187,6 +187,17 @@ function hexToRgb(hex) {
     return hex;
   }
   
+  // Handle 8-character hex with opacity (e.g., #696D961A)
+  const resultWithOpacity = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (resultWithOpacity) {
+    const r = parseInt(resultWithOpacity[1], 16);
+    const g = parseInt(resultWithOpacity[2], 16);
+    const b = parseInt(resultWithOpacity[3], 16);
+    const alpha = parseInt(resultWithOpacity[4], 16) / 255;
+    return `${r} ${g} ${b} / ${alpha.toFixed(3)}`;
+  }
+  
+  // Handle standard 6-character hex (e.g., #696D96)
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result 
     ? `${parseInt(result[1], 16)} ${parseInt(result[2], 16)} ${parseInt(result[3], 16)}`

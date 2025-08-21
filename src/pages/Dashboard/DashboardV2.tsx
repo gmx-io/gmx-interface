@@ -122,7 +122,7 @@ export default function DashboardV2() {
                 <Trans>For detailed stats</Trans>{" "}
                 {chainId === ARBITRUM && (
                   <ExternalLink
-                    className="flex items-center gap-4 !no-underline hover:text-white"
+                    className="flex items-center gap-4 !no-underline hover:text-textIcon-strong"
                     href="https://stats.gmx.io"
                   >
                     <V1Icon className="size-15" /> Analytics
@@ -130,14 +130,14 @@ export default function DashboardV2() {
                 )}
                 {chainId === AVALANCHE && (
                   <ExternalLink
-                    className="flex items-center gap-4 !no-underline hover:text-white"
+                    className="flex items-center gap-4 !no-underline hover:text-textIcon-strong"
                     href="https://stats.gmx.io/avalanche"
                   >
                     <V1Icon className="size-15" /> Analytics
                   </ExternalLink>
                 )}
                 <ExternalLink
-                  className="flex items-center gap-4 !no-underline hover:text-white"
+                  className="flex items-center gap-4 !no-underline hover:text-textIcon-strong"
                   href="https://dune.com/gmx-io/gmx-analytics"
                 >
                   <V2Icon className="size-15" /> Analytics

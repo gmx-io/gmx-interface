@@ -3,6 +3,9 @@ $button-primary-hover: linear-gradient(0deg, #090a141a, #090a141a),
 $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
   linear-gradient(0deg, rgba(var(--color-blue-400)), rgba(var(--color-blue-400)));
 
+$button-secondary-hover: linear-gradient(0deg, rgba(var(--color-slate-800)), rgba(var(--color-slate-800))),
+  linear-gradient(0deg, rgb(var(--color-slate-100) / 0.1), rgb(var(--color-slate-100) / 0.1));
+
 .button {
   cursor: pointer;
   line-height: 1.25;
@@ -41,7 +44,7 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
 
   &.primary-action {
     background: var(--primary-btn-bg);
-    color: rgba(var(--color-textIcon-strong));
+    color: rgba(var(--color-white));
     border-radius: 8px;
     min-height: 40px;
 
@@ -55,7 +58,7 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
   }
 
   &.secondary {
-    background-color: rgba(var(--color-button-secondary));
+    background: rgba(var(--color-button-secondary));
     border-radius: 8px;
     color: rgba(var(--color-textIcon-default));
     position: relative;
@@ -78,7 +81,9 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
     }
 
     &:not([disabled], .disabled):hover {
-      background-color: rgba(var(--color-fill-active));
+      background: linear-gradient(0deg, rgba(var(--color-slate-800)), rgba(var(--color-slate-800)));
+      background: linear-gradient(0deg, rgb(var(--color-slate-100) / 0.2), rgb(var(--color-slate-100) / 0.2));
+      background-blend-mode: overlay;
       color: rgba(var(--color-textIcon-strong));
     }
 

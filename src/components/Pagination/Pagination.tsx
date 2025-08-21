@@ -37,7 +37,7 @@ export default function Pagination({ page, pageCount, topMargin = true, onPageCh
         variant="secondary"
         key={pageNumber}
         className={cx("flex h-32 w-32 items-center justify-center rounded-8 p-8 font-medium", {
-          "!bg-blue-400 !text-textIcon-strong": pageNumber === page,
+          "!bg-blue-400 !text-white": pageNumber === page,
         })}
         onClick={() => onPageChange(pageNumber)}
       >
