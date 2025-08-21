@@ -3284,8 +3284,8 @@ msgid "GM can be sold for {0} and {1} for this market up to the specified sellin
 msgstr "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open positions."
 
 #: src/components/Glp/GlpSwap.jsx
-msgid "Due to the recent incident on GMX V1 Arbitrum, GLP on Arbitrum is not sellable."
-msgstr "Due to the recent incident on GMX V1 Arbitrum, GLP on Arbitrum is not sellable."
+#~ msgid "Due to the recent incident on GMX V1 Arbitrum, GLP on Arbitrum is not sellable."
+#~ msgstr "Due to the recent incident on GMX V1 Arbitrum, GLP on Arbitrum is not sellable."
 
 #: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -6993,8 +6993,8 @@ msgid "Rebates"
 msgstr "Rebates"
 
 #: src/components/Glp/GlpSwap.jsx
-msgid "GLP is not sellable"
-msgstr "GLP is not sellable"
+#~ msgid "GLP is not sellable"
+#~ msgstr "GLP is not sellable"
 
 #: src/pages/BuyGlp/BuyGlp.jsx
 msgid "GMX V1 markets are disabled and only allow for position closing. GLP is being phased out and no longer supports GMX V1 markets."
@@ -8331,8 +8331,8 @@ msgid "trigger"
 msgstr "trigger"
 
 #: src/components/Glp/GlpSwap.jsx
-msgid "Please <0>read here</0> for more information."
-msgstr "Please <0>read here</0> for more information."
+#~ msgid "Please <0>read here</0> for more information."
+#~ msgstr "Please <0>read here</0> for more information."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"

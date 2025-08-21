@@ -8,7 +8,7 @@ import { IoChevronDownOutline } from "react-icons/io5";
 import { useHistory } from "react-router-dom";
 import useSWR from "swr";
 
-import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
+import { FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
 import { getContract } from "config/contracts";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getIcon } from "config/icons";
@@ -1138,33 +1138,9 @@ export default function GlpSwap(props) {
             </div>
             {minutesToNextEpoch && renderEpochEndingCheckbox(minutesToNextEpoch)}
             <div className="GlpSwap-cta Exchange-swap-button-container">
-              {chainId === ARBITRUM ? (
-                <Tooltip
-                  handleClassName="w-full"
-                  content={
-                    <>
-                      <Trans>Due to the recent incident on GMX V1 Arbitrum, GLP on Arbitrum is not sellable.</Trans>
-                      <br />
-                      <br />
-                      <Trans>
-                        Please{" "}
-                        <ExternalLink href="https://x.com/GMX_IO/status/1943336664102756471" newTab>
-                          read here
-                        </ExternalLink>{" "}
-                        for more information.
-                      </Trans>
-                    </>
-                  }
-                >
-                  <Button type="submit" variant="primary-action" className="w-full" disabled>
-                    <Trans>GLP is not sellable</Trans>
-                  </Button>
-                </Tooltip>
-              ) : (
-                <Button type="submit" variant="primary-action" className="w-full" disabled={!isPrimaryEnabled()}>
-                  {getPrimaryText()}
-                </Button>
-              )}
+              <Button type="submit" variant="primary-action" className="w-full" disabled={!isPrimaryEnabled()}>
+                {getPrimaryText()}
+              </Button>
             </div>
           </form>
         </div>
