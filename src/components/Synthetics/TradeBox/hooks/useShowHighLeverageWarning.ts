@@ -1,12 +1,20 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { AB_HIGH_LEVERAGE_WARNING_GROUP, AB_HIGH_LEVERAGE_WARNING_PROBABILITY } from "config/ab";
+import {
+  AB_HIGH_LEVERAGE_WARNING_ALTCOIN_LEVERAGE,
+  AB_HIGH_LEVERAGE_WARNING_GROUP,
+  AB_HIGH_LEVERAGE_WARNING_MAJOR_TOKEN_LEVERAGE,
+  AB_HIGH_LEVERAGE_WARNING_PROBABILITY,
+} from "config/ab";
 import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getHighLeverageWarningDismissedTimestampKey } from "config/localStorage";
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectTradeboxToTokenAddress } from "context/SyntheticsStateContext/selectors/shared/baseSelectors";
-import { selectTradeboxLeverage } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import {
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxLeverage,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useIsFreshAccountForHighLeverageTrading } from "domain/synthetics/accountStats/useIsFreshAccountForHighLeverageTrading";
 import { useIsAddressInGroup } from "lib/userAnalytics/getIsAddressInGroup";
@@ -18,8 +26,6 @@ const IS_MAJOR_TOKEN_MAP: Record<number, string[]> = {
   [BOTANIX]: ["BTC"],
 };
 
-const MAX_MAJOR_TOKEN_LEVERAGE = 15n * BASIS_POINTS_DIVISOR_BIGINT;
-const MAX_ALTCOIN_LEVERAGE = 10n * BASIS_POINTS_DIVISOR_BIGINT;
 const WAIVE_DISMISSAL_PERIOD_MS = 24 * 60 * 60 * 1000; // 24 hours
 const DISMISSAL_POLL_INTERVAL_MS = 5000;
 
@@ -50,9 +56,14 @@ export function useShowHighLeverageWarning(): {
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
   const toTokenSymbol = toTokenAddress ? getToken(chainId, toTokenAddress).symbol : undefined;
   const isMajorToken = toTokenSymbol ? IS_MAJOR_TOKEN_MAP[chainId].includes(toTokenSymbol) : false;
-  const leverage = useSelector(selectTradeboxLeverage);
+  const isLeverageSliderEnabled = useSelector(selectIsLeverageSliderEnabled);
+  const leverageSliderLeverage = useSelector(selectTradeboxLeverage);
+  const amounts = useSelector(selectTradeboxIncreasePositionAmounts);
+  const leverage = isLeverageSliderEnabled ? leverageSliderLeverage : amounts?.estimatedLeverage ?? 0n;
 
-  const isHighLeverage = isMajorToken ? leverage >= MAX_MAJOR_TOKEN_LEVERAGE : leverage >= MAX_ALTCOIN_LEVERAGE;
+  const isHighLeverage = isMajorToken
+    ? leverage >= AB_HIGH_LEVERAGE_WARNING_MAJOR_TOKEN_LEVERAGE
+    : leverage >= AB_HIGH_LEVERAGE_WARNING_ALTCOIN_LEVERAGE;
 
   const [dismissedTimestamp, setDismissedTimestamp] = useState(() => {
     if (!account) {

@@ -8,14 +8,14 @@ export function getIsAddressInGroup({
 }: {
   address: string;
   /**
-   * 0n-100n meaning 0% - 100%
+   * 0-1 meaning 0% - 100%
    */
-  experimentGroupProbability: bigint;
+  experimentGroupProbability: number;
   grouping: string;
 }): boolean {
   const hash = keccak256(stringToHex(address.toLowerCase() + (salt || "")));
   const twoDigits = BigInt(hash) % 100n;
-  const isInGroup = twoDigits < probability;
+  const isInGroup = twoDigits < BigInt(Math.trunc(probability * 100));
   return isInGroup;
 }
 
@@ -25,7 +25,7 @@ export function useIsAddressInGroup({
   grouping: salt,
 }: {
   address: string | undefined;
-  experimentGroupProbability: bigint;
+  experimentGroupProbability: number;
   grouping: string;
 }) {
   const isInGroup = useMemo(
