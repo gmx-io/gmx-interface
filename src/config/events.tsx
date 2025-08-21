@@ -34,6 +34,22 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "cvx-kas-okb-wif-listing",
+    isActive: true,
+    startDate: "21 Aug 2025, 8:00",
+    endDate: "28 Aug 2025, 8:00",
+    title: "CVX, KAS, OKB and WIF markets added on Arbitrum",
+    bodyText: (
+      <>
+        <Link to="/trade/long?to=CVX">Start trading</Link> these markets on Arbitrum, or{" "}
+        <Link to="/pools">provide liquidity</Link> using <TokenSymbolWithIcon symbol="WBTC" />,{" "}
+        <TokenSymbolWithIcon symbol="WETH" /> or <TokenSymbolWithIcon symbol="USDC" /> to their respective GM pools or
+        GLV.
+      </>
+    ),
+    chains: [ARBITRUM],
+  },
+  {
     id: "algo-cro-hbar-listing",
     isActive: true,
     startDate: "14 Aug 2025, 10:00",
