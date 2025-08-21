@@ -88,7 +88,7 @@ export function PositionList(p: Props) {
           disableScrollFade={positions.length === 0}
           className="flex grow flex-col bg-slate-900"
         >
-          <Table className="!w-[max(100%,840px)] table-fixed">
+          <Table className="!w-[max(100%,900px)] table-fixed">
             <thead className="text-body-medium">
               <TableTheadTr>
                 <TableTh className="w-[18%]">
@@ -114,8 +114,7 @@ export function PositionList(p: Props) {
                 </TableTh>
                 {!isLoading && !p.hideActions && (
                   <>
-                    <TableTh className="w-[5%]"></TableTh>
-                    <TableTh className="w-[5%]"></TableTh>
+                    <TableTh className="w-[124px]"></TableTh>
                   </>
                 )}
               </TableTheadTr>

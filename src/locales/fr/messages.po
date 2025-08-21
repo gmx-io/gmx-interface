@@ -1341,6 +1341,10 @@ msgstr "Swap actif : {0}, exécuté : {1}, annulé : {2}"
 msgid "Buy token on:"
 msgstr "Acheter token sur :"
 
+#: src/components/Synthetics/Claims/ClaimsHistory.tsx
+msgid "Claims history"
+msgstr ""
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -1355,10 +1359,6 @@ msgstr "Swap limité échoué"
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "Liq. {longOrShortText} - {marketIndexName}"
-
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-msgid "Actions"
-msgstr "Actions"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Longing..."
@@ -4453,6 +4453,7 @@ msgstr "Stop Market échoué"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
 msgstr "Paramètres"
 
@@ -7280,6 +7281,10 @@ msgstr "Nombre min. de parties : {MIN_TWAP_NUMBER_OF_PARTS}"
 #: src/components/Exchange/PositionSeller.jsx
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 msgstr "Vous pouvez modifier cela dans le menu des paramètres en haut à droite de la page.<0/><1/>Notez qu'un glissement autorisé faible, par ex. moins de {0}, peut entraîner des ordres échoués si les prix sont volatils."
+
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "Trade history"
+msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx

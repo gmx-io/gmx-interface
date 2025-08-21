@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
-import { FaAngleRight } from "react-icons/fa";
+import { FaChevronRight } from "react-icons/fa6";
 import { ImSpinner2 } from "react-icons/im";
 import { MdClose } from "react-icons/md";
 import Skeleton from "react-loading-skeleton";
@@ -535,7 +535,7 @@ export function PositionItem(p: Props) {
           <>
             {!p.position.isOpening ? (
               <>
-                <TableTd>
+                <TableTd className="flex items-center justify-end gap-4">
                   <Button
                     variant="ghost"
                     onClick={p.onClosePositionClick}
@@ -544,8 +544,7 @@ export function PositionItem(p: Props) {
                   >
                     <Trans>Close</Trans>
                   </Button>
-                </TableTd>
-                <TableTd>
+
                   <PositionDropdown
                     handleEditCollateral={p.onEditCollateralClick}
                     handleMarketSelect={() => p.onSelectPositionClick?.()}
@@ -558,10 +557,7 @@ export function PositionItem(p: Props) {
                 </TableTd>
               </>
             ) : (
-              <>
-                <TableTd />
-                <TableTd />
-              </>
+              <TableTd />
             )}
           </>
         )}
@@ -782,7 +778,7 @@ function PositionItemOrdersLarge({
             />
           </>
         }
-        position="bottom-start"
+        position="bottom"
         handleClassName={cx([
           "Exchange-list-info-label",
           "Exchange-position-list-orders",
@@ -793,7 +789,7 @@ function PositionItemOrdersLarge({
         tooltipClassName="!z-10 w-[370px]"
         content={
           <div className="flex max-h-[350px] cursor-auto flex-col gap-8 overflow-y-auto leading-base">
-            <div className="font-bold">
+            <div className="font-medium">
               <Trans>Active Orders</Trans>
             </div>
             {ordersWithErrors.map((params) => (
@@ -833,38 +829,23 @@ function PositionItemOrder({
   const isDisabled = isCancelling || Boolean(disabledCancelMarketOrderMessage);
 
   const cancelButton = (
-    <Button
-      variant="secondary"
-      className={cx("!bg-slate-100 !bg-opacity-15 !p-6", {
-        "hover:!bg-opacity-20 active:!bg-opacity-25": !isDisabled,
-      })}
-      disabled={isDisabled}
-      onClick={cancel}
-    >
-      <MdClose fontSize={16} className={cx({ "text-slate-100": isDisabled, "text-textIcon-strong": !isDisabled })} />
+    <Button variant="secondary" disabled={isDisabled} onClick={cancel} className="px-8">
+      <MdClose fontSize={16} />
     </Button>
   );
 
   return (
     <div key={order.key}>
       <div className="flex items-start justify-between gap-6">
-        <Button
-          variant="secondary"
-          className="!block w-full !bg-slate-100 !bg-opacity-15 !p-5 hover:!bg-opacity-20 active:!bg-opacity-25"
-          onClick={handleOrdersClick}
-        >
+        <Button variant="secondary" className="w-full" onClick={handleOrdersClick}>
           <div className="flex items-center justify-between">
             <PositionItemOrderText order={order} />
-            <FaAngleRight fontSize={16} className="ml-5" />
+            <FaChevronRight fontSize={14} className="ml-4" />
           </div>
         </Button>
         {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
-          <Button
-            variant="secondary"
-            className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
-            onClick={handleEditClick}
-          >
-            <EditIcon width={16} height={16} />
+          <Button variant="secondary" onClick={handleEditClick} className="px-8">
+            <EditIcon className="size-16" />
           </Button>
         )}
         {disabledCancelMarketOrderMessage ? (

@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
 
 import {
   PendingDepositData,
@@ -415,8 +416,14 @@ export function GmStatusNotification({
 
   useToastAutoClose(isCompleted, toastTimestamp);
 
+  useEffect(() => {
+    if (hasError) {
+      toast.update(toastTimestamp, { type: "error" });
+    }
+  }, [hasError, toastTimestamp]);
+
   return (
-    <StatusNotification title={title} hasError={hasError}>
+    <StatusNotification title={title}>
       {creationStatus}
       {executionStatus}
     </StatusNotification>

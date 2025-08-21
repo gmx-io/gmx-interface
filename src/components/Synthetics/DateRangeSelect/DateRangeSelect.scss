@@ -182,9 +182,16 @@
   }
 
   &-dayHovered {
-    ::after {
+    &::after {
       border-radius: 4px !important;
     }
+  }
+
+  &-dayInPreview,
+  &-dayStartPreview,
+  &-dayEndPreview {
+    border: none !important;
+    outline: none !important;
   }
 
   &-dayToday &-dayNumber span::after {

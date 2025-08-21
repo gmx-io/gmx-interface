@@ -1341,6 +1341,10 @@ msgstr "交换活跃：{0}，执行：{1}，取消：{2}"
 msgid "Buy token on:"
 msgstr "购买代币于："
 
+#: src/components/Synthetics/Claims/ClaimsHistory.tsx
+msgid "Claims history"
+msgstr ""
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -1355,10 +1359,6 @@ msgstr "限价交换失败"
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "清算 {longOrShortText} - {marketIndexName}"
-
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-msgid "Actions"
-msgstr "操作"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Longing..."
@@ -4453,6 +4453,7 @@ msgstr "止损市价失败"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
 msgstr "设置"
 
@@ -7280,6 +7281,10 @@ msgstr "最小部分数量：{MIN_TWAP_NUMBER_OF_PARTS}"
 #: src/components/Exchange/PositionSeller.jsx
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 msgstr "您可以在页面右上角的设置菜单中更改此项。<0/><1/>请注意，如果允许的滑点较低，例如小于 {0}，在价格波动时可能导致订单失败。"
+
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "Trade history"
+msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx

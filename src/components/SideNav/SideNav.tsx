@@ -31,7 +31,7 @@ function SideNav({ className }: { className?: string }) {
   return (
     <nav
       className={cx("flex h-full shrink-0 flex-col bg-slate-950 pb-8", className, {
-        "w-[200px] max-xl:w-[156px]": !isCollapsed,
+        "w-[184px] max-xl:w-[144px]": !isCollapsed,
       })}
     >
       <div className={cx("flex w-full", { "justify-center": isCollapsed })}>

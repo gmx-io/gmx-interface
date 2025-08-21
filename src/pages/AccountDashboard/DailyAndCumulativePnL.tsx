@@ -100,6 +100,12 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
     </>
   );
 
+  const chartMargin = useMemo(() => {
+    const maxValue = Math.max(...clusteredPnlData.map((point) => Math.max(point.cumulativePnlFloat, point.pnlFloat)));
+    const stringValue = Math.ceil(maxValue).toString();
+    return { ...CHART_MARGIN, left: stringValue.length * 4 };
+  }, [clusteredPnlData]);
+
   return (
     <div className="flex flex-col rounded-8 bg-slate-900" ref={cardRef}>
       <div className="flex items-center justify-between px-20 py-15">
@@ -136,7 +142,7 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
               height={300}
               data={clusteredPnlData}
               barCategoryGap="25%"
-              margin={CHART_MARGIN}
+              margin={chartMargin}
               {...{ overflow: "visible" }}
             >
               <RechartsTooltip

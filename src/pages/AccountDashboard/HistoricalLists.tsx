@@ -23,11 +23,11 @@ import {
 } from "pages/Actions/ActionsV1/ActionsV1";
 
 import Badge, { BadgeIndicator } from "components/Badge/Badge";
-import { ClaimsHistory, useClaimsHistoryState } from "components/Synthetics/Claims/ClaimsHistory";
+import { ClaimsHistory } from "components/Synthetics/Claims/ClaimsHistory";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
-import { TradeHistory, useTradeHistoryState } from "components/Synthetics/TradeHistory/TradeHistory";
+import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tabs from "components/Tabs/Tabs";
 
 enum TabKey {
@@ -156,20 +156,6 @@ export function HistoricalLists({ chainId, account }: Props) {
     [tabLabels]
   );
 
-  const tradeHistoryState = useTradeHistoryState({
-    account,
-    hideDashboardLink: true,
-  });
-
-  const { controls: claimsHistoryControls, ...claimsHistoryProps } = useClaimsHistoryState();
-
-  const actions = (
-    <>
-      {tabKey === TabKey.Trades ? tradeHistoryState.controls : undefined}
-      {tabKey === TabKey.Claims ? claimsHistoryControls : undefined}
-    </>
-  );
-
   return (
     <div>
       <div className="overflow-x-auto scrollbar-hide">
@@ -186,7 +172,6 @@ export function HistoricalLists({ chainId, account }: Props) {
               tabKey as TabKey
             ),
           })}
-          rightContent={actions}
         />
       </div>
 
@@ -213,8 +198,8 @@ export function HistoricalLists({ chainId, account }: Props) {
           setOrderTypesFilter={setOrderTypesFilter}
         />
       )}
-      {tabKey === TabKey.Trades && <TradeHistory {...tradeHistoryState} />}
-      {tabKey === TabKey.Claims && <ClaimsHistory {...claimsHistoryProps} />}
+      {tabKey === TabKey.Trades && <TradeHistory account={account} />}
+      {tabKey === TabKey.Claims && <ClaimsHistory />}
     </div>
   );
 }

@@ -209,7 +209,7 @@ export default function BuyInputSection(props: Props) {
             )}
           </div>
 
-          <div className="shrink-0">{children}</div>
+          <div className="text-body-large shrink-0">{children}</div>
         </div>
 
         {(bottomLeftValue || bottomRightValue || (onClickMax && maxButtonPosition === "bottom-right")) && (
