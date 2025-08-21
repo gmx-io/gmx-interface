@@ -53,7 +53,7 @@ export const appEventsData: EventData[] = [
     id: "algo-cro-hbar-listing",
     isActive: true,
     startDate: "14 Aug 2025, 10:00",
-    endDate: "21 Aug 2025, 12:00",
+    endDate: "21 Aug 2025, 8:00",
     title: "ALGO, CRO, and HBAR markets added on Arbitrum",
     bodyText: (
       <>
