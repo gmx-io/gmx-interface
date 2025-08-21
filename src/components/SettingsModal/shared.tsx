@@ -153,5 +153,5 @@ export function Chip({ children, color }: { children: ReactNode; color: "blue" |
     gray: "bg-slate-500",
   }[color];
 
-  return <div className={cx(`rounded-full px-8 py-4 pb-3 text-[10px] font-medium`, colorClass)}>{children}</div>;
+  return <div className={cx(`rounded-full px-8 py-4 pb-3 text-[10px] font-medium text-white`, colorClass)}>{children}</div>;
 }
