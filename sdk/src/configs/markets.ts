@@ -677,6 +677,34 @@ export const MARKETS: Record<UiContractsChain, Record<string, MarketConfig>> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // CVX/USD [WETH-USDC]
+    "0x41E3bC5B72384C8B26b559B7d16C2B81Fd36fbA2": {
+      marketTokenAddress: "0x41E3bC5B72384C8B26b559B7d16C2B81Fd36fbA2",
+      indexTokenAddress: "0x3B6f801C0052Dfe0Ac80287D611F31B7c47B9A6b",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // KAS/USD [WBTC-USDC]
+    "0x4024418592450E4d62faB15e2f833FC03A3447dc": {
+      marketTokenAddress: "0x4024418592450E4d62faB15e2f833FC03A3447dc",
+      indexTokenAddress: "0x91c6a8F6aFAC036F4ABf1bA55f4E76892E865E4a",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // OKB/USD [WETH-USDC]
+    "0x2a331e51a3D17211852d8625a1029898450e539B": {
+      marketTokenAddress: "0x2a331e51a3D17211852d8625a1029898450e539B",
+      indexTokenAddress: "0xd37F01A3379f052FEF70F63c0Be27931891aa2B9",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // WIF/USD [WBTC-USDC]
+    "0x3f649eab7f4CE4945F125939C64429Be2C5d0cB4": {
+      marketTokenAddress: "0x3f649eab7f4CE4945F125939C64429Be2C5d0cB4",
+      indexTokenAddress: "0xA1b91fe9FD52141Ff8cac388Ce3F10BFDc1dE79d",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

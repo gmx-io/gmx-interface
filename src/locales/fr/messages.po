@@ -1360,10 +1360,6 @@ msgstr "Swap limité échoué"
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "Liq. {longOrShortText} - {marketIndexName}"
 
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-#~ msgid "Actions"
-#~ msgstr "Actions"
-
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Longing..."
 msgstr "Long en cours..."

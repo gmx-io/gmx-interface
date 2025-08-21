@@ -1360,10 +1360,6 @@ msgstr "지정가 스왑 실패"
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "청산 {longOrShortText} - {marketIndexName}"
 
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-#~ msgid "Actions"
-#~ msgstr "액션"
-
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Longing..."
 msgstr "롱 실행중..."

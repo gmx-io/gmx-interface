@@ -202,7 +202,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
       <Link
         target="_blank"
         to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
-        className="flex items-center gap-4 px-12 py-8 !text-white !no-underline hover:bg-slate-600"
+        className="flex items-center gap-4 px-12 py-8 !text-white !no-underline hover:bg-fill-surfaceHover"
         key={winner.account}
       >
         <Jazzicon diameter={20} seed={jsNumberForAddress(winner.account)} />
@@ -215,7 +215,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
 
   return winners.length > 1 ? (
     <TooltipWithPortal
-      tooltipClassName="!max-w-[130px]"
+      tooltipClassName=""
       position="bottom"
       handle={handle}
       renderContent={renderTooltipContent}
