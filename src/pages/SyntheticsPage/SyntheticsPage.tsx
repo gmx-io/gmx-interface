@@ -398,7 +398,7 @@ export function SyntheticsPage(p: Props) {
                 selectedValue={listSection}
                 onChange={handleTabChange}
                 type="block"
-                className={cx("w-[max(100%,372px)] rounded-t-8 bg-slate-900", {
+                className={cx("w-[max(100%,420px)] rounded-t-8 bg-slate-900", {
                   "mb-8 rounded-b-8": [ListSection.Positions, ListSection.Orders].includes(listSection as ListSection),
                 })}
                 regularOptionClassname={cx({

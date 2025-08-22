@@ -103,7 +103,7 @@ export default function ChartTokenSelector(props: Props) {
                   "flex-row items-center": oneRowLabels || isSwap,
                 })}
               >
-                <span className="text-[13px] font-medium">
+                <span className="text-start text-[13px] font-medium">
                   {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
                   {selectedToken.symbol}/USD
                 </span>

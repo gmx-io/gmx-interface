@@ -68,7 +68,7 @@ export function LogoSection({ isCollapsed }: { isCollapsed: boolean | undefined 
       })}
     >
       <img src={logoIcon} alt="GMX Logo" />
-      {!isCollapsed ? <LogoText className="max-md:hidden" /> : null}
+      {!isCollapsed ? <LogoText /> : null}
     </Link>
   );
 }
