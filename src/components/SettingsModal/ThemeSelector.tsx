@@ -1,4 +1,5 @@
 import { t, Trans } from "@lingui/macro";
+import cx from "classnames";
 import { useCallback } from "react";
 import { FaChevronDown } from "react-icons/fa6";
 
@@ -22,9 +23,9 @@ function ThemeOption({
 
   return (
     <div
-      className={`flex cursor-pointer items-center justify-between px-14 py-8 hover:bg-fill-surfaceHover ${
-        isSelected ? "bg-slate-700" : ""
-      }`}
+      className={cx("flex cursor-pointer items-center justify-between px-14 py-8 hover:bg-fill-surfaceHover", {
+        "bg-slate-700": isSelected,
+      })}
       onClick={() => {
         onClick();
         close();
