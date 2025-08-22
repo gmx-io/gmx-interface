@@ -22,17 +22,14 @@ export const useTheme = () => {
   return context;
 };
 
+const DEFAULT_THEME_MODE = "dark";
+
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [themeMode, setThemeModeState] = useLocalStorageSerializeKey<ThemeMode>("app-theme-mode", "dark");
+  const [themeMode, setThemeModeState] = useLocalStorageSerializeKey<ThemeMode>("app-theme-mode", DEFAULT_THEME_MODE);
   const prefersDarkMode = useMedia("(prefers-color-scheme: dark)");
   const systemTheme: ResolvedTheme = prefersDarkMode ? "dark" : "light";
 
-  const theme = useMemo(() => {
-    if (themeMode === "system") {
-      return systemTheme;
-    }
-    return themeMode as ResolvedTheme;
-  }, [themeMode, systemTheme]);
+  const theme = themeMode === "system" ? systemTheme : themeMode || DEFAULT_THEME_MODE;
 
   useEffect(() => {
     const root = document.documentElement;
@@ -46,7 +43,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const value = useMemo(
     () => ({
       theme,
-      themeMode: themeMode || "dark",
+      themeMode: themeMode || DEFAULT_THEME_MODE,
       setThemeMode: setThemeModeState,
     }),
     [theme, themeMode, setThemeModeState]
