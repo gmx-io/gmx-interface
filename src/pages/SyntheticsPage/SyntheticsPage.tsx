@@ -73,7 +73,7 @@ import ChartHeader from "components/Synthetics/TVChart/ChartHeader";
 import Tabs from "components/Tabs/Tabs";
 
 import logoIcon from "img/logo-icon.svg";
-import logoText from "img/logo-text.svg";
+import LogoText from "img/logo-text.svg?react";
 
 export type Props = {
   openSettings: () => void;
@@ -305,7 +305,7 @@ export function SyntheticsPage(p: Props) {
             isTablet ? (
               <Link to="/" className="flex items-center gap-5 p-8 max-md:p-[4.5px]">
                 <img src={logoIcon} alt="GMX Logo" />
-                <img src={logoText} className="max-md:hidden" alt="GMX Logo" />
+                <LogoText className="max-md:hidden" />
               </Link>
             ) : (
               <ChartHeader />

@@ -13,8 +13,8 @@ import EarnIcon from "img/earn.svg?react";
 import EcosystemIcon from "img/ecosystem.svg?react";
 import BuyIcon from "img/ic_buy.svg?react";
 import LeaderboardIcon from "img/leaderboard.svg?react";
-import LogoIcon from "img/logo-icon.svg?react";
-import LogoText from "img/logo-text.svg?react";
+import logoIcon from "img/logo_GMX.svg";
+import LogoSmallIcon from "img/logo_GMX_small.svg?react";
 import ReferralsIcon from "img/referrals.svg?react";
 import TradeIcon from "img/trade.svg?react";
 
@@ -65,12 +65,12 @@ export function LogoSection({ isCollapsed }: { isCollapsed: boolean | undefined 
   return (
     <Link
       to="/"
-      className={cx("flex cursor-pointer items-center justify-center gap-5 pb-16 pt-10", {
+      className={cx("flex cursor-pointer items-center justify-center gap-5 pb-16 pt-10 text-textIcon-strong", {
         "pl-12 pr-20": !isCollapsed,
       })}
     >
-      <LogoIcon className="h-22" />
-      {!isCollapsed && <LogoText className="h-18" />}
+      <LogoSmallIcon className="block md:hidden" />
+      <img src={logoIcon} alt="GMX Logo" className="hidden md:block" />
     </Link>
   );
 }
@@ -95,7 +95,7 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
         group-hover:bg-blue-400/20 group-hover:text-blue-400
         dark:group-hover:bg-slate-700 dark:group-hover:text-textIcon-strong`,
           {
-            "bg-blue-400/20 text-blue-400 dark:bg-slate-700 dark:text-textIcon-strong": isActive,
+            "bg-blue-400/20 !text-blue-400 dark:bg-slate-700 dark:!text-textIcon-strong": isActive,
             "w-full": !isCollapsed,
           }
         )}
