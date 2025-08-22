@@ -8,6 +8,7 @@ import { createPortal } from "react-dom";
 import { FaChevronDown } from "react-icons/fa6";
 import { useMedia } from "react-use";
 
+import Button from "components/Button/Button";
 import { SlideModal } from "components/Modal/SlideModal";
 import { TableTr } from "components/Table/Table";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -186,8 +187,9 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
       {(popoverProps) => (
         <>
           <Popover.Button
-            as="div"
-            className={cx("SelectorBase-button group/selector-base gap-8", props.handleClassName)}
+            as={Button}
+            variant="secondary"
+            className={cx("", props.handleClassName)}
             ref={refs.setReference}
             data-qa={props.qa ? props.qa + "-button" : undefined}
           >

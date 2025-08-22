@@ -23,7 +23,7 @@ import useWallet, { WalletClient } from "lib/wallets/useWallet";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-import WalletIcon from "img/ic_wallet_24.svg?react";
+import WalletIcon from "img/ic_wallet.svg?react";
 
 import "./GmAssetDropdown.scss";
 
