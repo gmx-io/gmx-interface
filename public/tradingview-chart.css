@@ -17,7 +17,7 @@
 
   --tv-color-popup-background: var(--color-slate-800);
   --themed-color-bg-primary: var(--color-slate-800);
-  --themed-color-properties-dialog-tab-bg: #2962ff;
+  --themed-color-properties-dialog-tab-bg: var(--color-blue-600);
 
   --themed-color-properties-dialog-defaults-text: var(--color-slate-100);
   --tv-color-popup-element-background-hover: var(--dark-blue-bg);
@@ -56,7 +56,7 @@
 
   --tv-color-popup-background: var(--light-gray-bg);
   --themed-color-bg-primary: var(--light-gray-bg);
-  --themed-color-properties-dialog-tab-bg: #2962ff;
+  --themed-color-properties-dialog-tab-bg: var(--color-blue-600);
 
   --themed-color-properties-dialog-defaults-text: var(--color-slate-700);
   --tv-color-popup-element-background-hover: var(--color-slate-200);

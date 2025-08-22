@@ -6,10 +6,10 @@ body,
   font-size: 10px;
   height: 100%;
   width: 100%;
+  color: rgba(var(--color-textIcon-strong));
 }
 
 #root {
-  color: rgba(var(--color-textIcon-strong));
   background-color: var(--main-bg-color);
 }
 
