@@ -147,7 +147,7 @@ function NavigationItem({ item }: { item: LeaderboardNavigationItem }) {
       className={cx(
         "text-h1 inline-flex items-center gap-8 whitespace-nowrap leading-[1] text-typography-secondary hover:text-typography-primary",
         {
-          "text-typography-primary": item.isSelected,
+          "!text-typography-primary": item.isSelected,
           "border-l-stroke border-l-slate-600 pl-18": item.key === "concluded",
         }
       )}
