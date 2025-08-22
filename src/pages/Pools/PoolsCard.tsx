@@ -19,7 +19,7 @@ export default function PoolsCard({
       <div className="flex h-full flex-col">
         <div className="flex flex-col gap-8 border-b-stroke border-slate-600 p-16">
           <span className="text-h3 font-medium max-md:text-body-medium">{title}</span>
-          <span className="text-body-medium text-slate-100 max-md:text-body-small">{description}</span>
+          <span className="text-body-medium text-typography-secondary max-md:text-body-small">{description}</span>
         </div>
         <div className="flex grow flex-col overflow-y-auto max-md:p-12">{children}</div>
         {bottom && <div className="border-t-stroke border-slate-600 p-16">{bottom}</div>}

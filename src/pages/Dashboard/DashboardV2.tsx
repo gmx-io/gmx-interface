@@ -118,11 +118,11 @@ export default function DashboardV2() {
             title={t`Total Stats`}
             qa="dashboard-page"
             subtitle={
-              <div className="flex items-center gap-6 font-medium text-slate-100">
+              <div className="flex items-center gap-6 font-medium text-typography-secondary">
                 <Trans>For detailed stats</Trans>{" "}
                 {chainId === ARBITRUM && (
                   <ExternalLink
-                    className="flex items-center gap-4 !no-underline hover:text-white"
+                    className="flex items-center gap-4 !no-underline hover:text-typography-primary"
                     href="https://stats.gmx.io"
                   >
                     <V1Icon className="size-15" /> Analytics
@@ -130,19 +130,22 @@ export default function DashboardV2() {
                 )}
                 {chainId === AVALANCHE && (
                   <ExternalLink
-                    className="flex items-center gap-4 !no-underline hover:text-white"
+                    className="flex items-center gap-4 !no-underline hover:text-typography-primary"
                     href="https://stats.gmx.io/avalanche"
                   >
                     <V1Icon className="size-15" /> Analytics
                   </ExternalLink>
                 )}
                 <ExternalLink
-                  className="flex items-center gap-4 !no-underline hover:text-white"
+                  className="flex items-center gap-4 !no-underline hover:text-typography-primary"
                   href="https://dune.com/gmx-io/gmx-analytics"
                 >
                   <V2Icon className="size-15" /> Analytics
                 </ExternalLink>
-                <Link className="flex items-center gap-4 text-slate-100 !no-underline hover:text-white" to="/monitor">
+                <Link
+                  className="flex items-center gap-4 text-typography-secondary !no-underline hover:text-typography-primary"
+                  to="/monitor"
+                >
                   <V2Icon className="size-15" /> Pools Stats
                 </Link>
               </div>

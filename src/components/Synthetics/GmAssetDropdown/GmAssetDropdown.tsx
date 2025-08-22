@@ -187,7 +187,7 @@ function AddToWalletButton({
         }}
         className="asset-item group"
       >
-        <WalletIcon className="text-slate-100 group-hover:text-white" />
+        <WalletIcon className="text-typography-secondary group-hover:text-typography-primary" />
         <p>
           <Trans>Add {marketName} to Wallet</Trans>
         </p>

@@ -67,10 +67,10 @@ export default function InteractivePieChart({ data, label }: Props) {
           <text
             x={"50%"}
             y={"51%"}
-            fill="white"
+            fill="currentColor"
             textAnchor="middle"
             dominantBaseline="middle"
-            className="text-body-medium"
+            className="text-body-medium text-typography-primary"
           >
             {label}
           </text>

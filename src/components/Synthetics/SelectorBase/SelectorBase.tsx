@@ -192,7 +192,9 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
             data-qa={props.qa ? props.qa + "-button" : undefined}
           >
             {props.label}
-            <FaChevronDown className={cx("inline-block text-[12px] text-slate-100", props.chevronClassName)} />
+            <FaChevronDown
+              className={cx("inline-block text-[12px] text-typography-secondary", props.chevronClassName)}
+            />
           </Popover.Button>
           {popoverProps.open && (
             <FloatingPortal>
@@ -242,7 +244,7 @@ function SelectorBaseMobile(props: Props) {
     <>
       <div className={cx("SelectorBase-button group/selector-base", props.handleClassName)} onClick={toggleVisibility}>
         {props.label}
-        {!props.disabled && <FaChevronDown className={cx("inline-block text-slate-100", props.chevronClassName)} />}
+        {!props.disabled && <FaChevronDown className={cx("text-s inline-block", props.chevronClassName)} />}
       </div>
 
       <SlideModal

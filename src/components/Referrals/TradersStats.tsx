@@ -77,7 +77,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                   position="bottom"
                   className={(discountShare ?? 0) > 0 ? "tier-discount-warning" : ""}
                   renderContent={() => (
-                    <p className="text-white">
+                    <p className="text-typography-primary">
                       <Trans>You will receive a {currentTierDiscount}% discount on opening and closing fees.</Trans>
                       <br />
                       <br />

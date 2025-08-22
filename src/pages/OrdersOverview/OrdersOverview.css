@@ -27,12 +27,12 @@
   background: none;
   border: none;
   text-decoration: underline;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .Orders-overview-action {
   background: none;
   border: none;
   text-decoration: underline;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }

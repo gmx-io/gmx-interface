@@ -68,13 +68,13 @@ function ChartHeaderMobile() {
       return (
         <div className="grid grid-cols-[1fr_1fr] gap-14">
           <div>
-            <div className="mb-4 text-[11px] font-medium uppercase text-slate-100">
+            <div className="mb-4 text-[11px] font-medium uppercase text-typography-secondary">
               <Trans>24h High</Trans>
             </div>
             <div className="numbers">${high24}</div>
           </div>
           <div>
-            <div className="mb-4 text-[11px] font-medium uppercase text-slate-100">
+            <div className="mb-4 text-[11px] font-medium uppercase text-typography-secondary">
               <Trans>24h Low</Trans>
             </div>
             <div className="numbers">${low24}</div>
@@ -86,15 +86,15 @@ function ChartHeaderMobile() {
     return (
       <div className="grid grid-cols-[1fr_1fr] grid-rows-2 gap-16">
         <div>
-          <div className="mb-4 text-[11px] font-medium uppercase text-slate-100">
+          <div className="mb-4 text-[11px] font-medium uppercase text-typography-secondary">
             <Trans>24h Volume</Trans>
           </div>
           <div className="numbers">{dailyVolume}</div>
         </div>
 
         <div>
-          <div className="mb-4 whitespace-nowrap text-[11px] font-medium text-slate-100">
-            <span className="whitespace-nowrap text-[11px] font-medium uppercase text-slate-100">
+          <div className="mb-4 whitespace-nowrap text-[11px] font-medium text-typography-secondary">
+            <span className="whitespace-nowrap text-[11px] font-medium uppercase text-typography-secondary">
               <Trans>Open Interest</Trans>
             </span>
             <span>{" ("}</span>
@@ -110,7 +110,7 @@ function ChartHeaderMobile() {
         </div>
 
         <div>
-          <div className="mb-4 text-[11px] font-medium uppercase text-slate-100">
+          <div className="mb-4 text-[11px] font-medium uppercase text-typography-secondary">
             <Trans>Available Liquidity</Trans>
           </div>
           <div className="flex flex-row items-center gap-8">
@@ -120,7 +120,7 @@ function ChartHeaderMobile() {
         </div>
 
         <div>
-          <div className="mb-4 text-[11px] font-medium uppercase text-slate-100">
+          <div className="mb-4 text-[11px] font-medium uppercase text-typography-secondary">
             <TooltipWithPortal styleType="none" renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net Rate / 1h</Trans>
             </TooltipWithPortal>
@@ -170,7 +170,11 @@ function ChartHeaderMobile() {
             <div className="text-body-medium mr-4 numbers">{avgPrice}</div>
             <div className="ExchangeChart-daily-change text-body-small numbers">{dayPriceDelta}</div>
           </div>
-          <span className={cx("inline-flex cursor-pointer items-center justify-center rounded-4 pt-6 text-slate-100")}>
+          <span
+            className={cx(
+              "inline-flex cursor-pointer items-center justify-center rounded-4 pt-6 text-typography-secondary"
+            )}
+          >
             {detailsVisible ? (
               <FaChevronUp className="-ml-6 -mt-2" size={12} />
             ) : (
@@ -288,7 +292,7 @@ function ChartHeaderDesktop() {
           value={
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-4 numbers">{longOIValue}</div>
-              <span className="text-slate-100">/</span>
+              <span className="text-typography-secondary">/</span>
               <div className="flex items-center gap-4 numbers">{shortOIValue}</div>
             </div>
           }
@@ -299,7 +303,7 @@ function ChartHeaderDesktop() {
           value={
             <div className="flex items-center gap-4">
               <span className="numbers">{liquidityLong}</span>
-              <span className="text-slate-100">/</span>
+              <span className="text-typography-secondary">/</span>
               <span className="numbers">{liquidityShort}</span>
             </div>
           }
@@ -321,7 +325,7 @@ function ChartHeaderDesktop() {
             >
               <div className="flex items-center gap-4">
                 <div className="numbers">{netRateLong}</div>
-                <span className="text-slate-100">/</span>
+                <span className="text-typography-secondary">/</span>
                 <div className="numbers">{netRateShort}</div>
               </div>
             </TooltipWithPortal>
@@ -414,7 +418,7 @@ function ChartHeaderDesktop() {
             style={leftStyles}
             onClick={scrollToLeft}
           >
-            {scrollLeft > 0 && <BiChevronLeft className="text-slate-100" size={24} />}
+            {scrollLeft > 0 && <BiChevronLeft className="text-typography-secondary" size={24} />}
           </div>
           <div
             className={cx("Chart-top-scrollable-fade-right", {
@@ -424,7 +428,7 @@ function ChartHeaderDesktop() {
             style={rightStyles}
             onClick={scrollToRight}
           >
-            {scrollRight > 0 && <BiChevronRight className="text-slate-100" size={24} />}
+            {scrollRight > 0 && <BiChevronRight className="text-typography-secondary" size={24} />}
           </div>
         </div>
         <div className={cx("flex gap-20 overflow-x-auto scrollbar-hide")} ref={scrollableRef}>
@@ -442,7 +446,7 @@ function ChartHeaderDesktop() {
 const ChartHeaderItem = ({ label, value }: { label: ReactNode; value: ReactNode }) => {
   return (
     <div className="flex flex-col justify-center gap-2">
-      <div className="whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.08em] text-slate-100">
+      <div className="whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.08em] text-typography-secondary">
         {label}
       </div>
       <div className="text-body-medium numbers">{value}</div>

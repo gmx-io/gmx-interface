@@ -29,13 +29,13 @@ const OPERATIONS = [Operation.Deposit, Operation.Withdrawal, Operation.Shift];
 
 const operationClassNames = {
   [Operation.Deposit]: {
-    active: "!bg-[#1F3445] border-b-2 border-b-green-500",
+    active: "!bg-green-500/20 border-b-2 border-b-green-500",
   },
   [Operation.Withdrawal]: {
-    active: "!bg-[#392A46] border-b-2 border-b-red-500",
+    active: "!bg-red-500/20 border-b-2 border-b-red-500",
   },
   [Operation.Shift]: {
-    active: "!bg-[#252B57] border-b-2 border-b-blue-300",
+    active: "!bg-blue-300/20 border-b-2 border-b-blue-300",
   },
 };
 

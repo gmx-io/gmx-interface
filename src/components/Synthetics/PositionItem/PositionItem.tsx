@@ -273,7 +273,7 @@ export function PositionItem(p: Props) {
 
           {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
             <span className="edit-icon" onClick={p.onEditCollateralClick} data-qa="position-edit-button">
-              <EditIcon className="text-slate-100" width={16} height={16} />
+              <EditIcon className="text-typography-secondary" width={16} height={16} />
             </span>
           )}
         </div>
@@ -535,7 +535,7 @@ export function PositionItem(p: Props) {
           <>
             {!p.position.isOpening ? (
               <>
-                <TableTd className="flex items-center gap-4 justify-end">
+                <TableTd className="flex items-center justify-end gap-4">
                   <Button
                     variant="ghost"
                     onClick={p.onClosePositionClick}
@@ -598,12 +598,12 @@ export function PositionItem(p: Props) {
         <AppCardSection>
           {showDebugValues && (
             <div className="App-card-row">
-              <div className="font-medium text-slate-100">Key</div>
+              <div className="font-medium text-typography-secondary">Key</div>
               <div className="debug-key muted">{p.position.contractKey}</div>
             </div>
           )}
           <div className="App-card-row">
-            <div className="font-medium text-slate-100">
+            <div className="font-medium text-typography-secondary">
               <Trans>Pool</Trans>
             </div>
             <div>
@@ -614,19 +614,21 @@ export function PositionItem(p: Props) {
             </div>
           </div>
           <div className="App-card-row">
-            <div className="font-medium text-slate-100">
+            <div className="font-medium text-typography-secondary">
               <Trans>Size</Trans>
             </div>
             <div className="numbers">{formatUsd(p.position.sizeInUsd)}</div>
           </div>
           <div className="App-card-row">
-            <div className="font-medium text-slate-100">
+            <div className="font-medium text-typography-secondary">
               <Trans>Net Value</Trans>
             </div>
             <div>{renderNetValue()}</div>
           </div>
           <div className="App-card-row">
-            <div className="font-medium text-slate-100">{savedShowPnlAfterFees ? t`PnL After Fees` : t`PnL`}</div>
+            <div className="font-medium text-typography-secondary">
+              {savedShowPnlAfterFees ? t`PnL After Fees` : t`PnL`}
+            </div>
             <div>
               <span
                 className={cx("Exchange-list-info-label Position-pnl numbers", {
@@ -640,7 +642,7 @@ export function PositionItem(p: Props) {
             </div>
           </div>
           <div className="App-card-row">
-            <div className="font-medium text-slate-100">
+            <div className="font-medium text-typography-secondary">
               <Trans>Collateral</Trans>
             </div>
             <div>{renderCollateral()}</div>
@@ -648,7 +650,7 @@ export function PositionItem(p: Props) {
         </AppCardSection>
         <AppCardSection>
           <div className="App-card-row">
-            <div className="font-medium text-slate-100">
+            <div className="font-medium text-typography-secondary">
               <Trans>Entry Price</Trans>
             </div>
             <div className="numbers">
@@ -659,7 +661,7 @@ export function PositionItem(p: Props) {
             </div>
           </div>
           <div className="App-card-row">
-            <div className="font-medium text-slate-100">
+            <div className="font-medium text-typography-secondary">
               <Trans>Mark Price</Trans>
             </div>
             <div className="numbers">
@@ -670,14 +672,14 @@ export function PositionItem(p: Props) {
             </div>
           </div>
           <div className="App-card-row">
-            <div className="font-medium text-slate-100">
+            <div className="font-medium text-typography-secondary">
               <Trans>Liq. Price</Trans>
             </div>
             <div>{renderLiquidationPrice()}</div>
           </div>
         </AppCardSection>
         <AppCardSection>
-          <div className="font-medium text-slate-100">
+          <div className="font-medium text-typography-secondary">
             <Trans>Orders</Trans>
           </div>
 
@@ -783,7 +785,7 @@ function PositionItemOrdersLarge({
           "Exchange-list-info-label",
           "Exchange-position-list-orders",
           "clickable",
-          "text-slate-100",
+          "text-typography-secondary",
         ])}
         maxAllowedWidth={370}
         tooltipClassName="!z-10 w-[370px]"

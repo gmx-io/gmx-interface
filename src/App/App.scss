@@ -76,7 +76,7 @@ $app-card-padding: 1.5rem;
 }
 
 .App-header-menu-icon {
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   font-size: 2rem;
   cursor: pointer;
   opacity: 0.7;
@@ -159,7 +159,7 @@ $app-card-padding: 1.5rem;
 .App-card-info-title {
   font-weight: normal;
   letter-spacing: 0px;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .App-card-info-subtitle {
@@ -183,72 +183,6 @@ $app-card-padding: 1.5rem;
   filter: unset;
 }
 
-.Wallet-btn {
-  display: block;
-  box-shadow: inset 0px 0px 1rem 0.5rem rgba(27, 30, 46, 0.2);
-  background: var(--dark-blue);
-  height: 5.1rem;
-  width: 26.35rem;
-  border: 0.5px solid var(--color-slate-600);
-  border-radius: 0.3rem;
-  position: relative;
-  color: var(--color-white);
-  font-size: 2rem;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  text-align: left;
-  padding-left: 1.85rem;
-  padding-top: 1.05rem;
-}
-.Wallet-btn:hover {
-  background: var(--dark-blue-hover);
-  border-color: var(--dark-blue-border);
-}
-.Wallet-btn:active {
-  background: var(--dark-blue-active);
-}
-
-.Wallet-btn:not(:last-child) {
-  margin-bottom: 1.05rem;
-}
-
-.MetaMask-btn img {
-  display: inline-block;
-  height: 2.325rem;
-  margin-right: 1.7rem;
-  margin-left: 0.15rem;
-}
-
-.CoinbaseWallet-btn img {
-  display: inline-block;
-  height: 2.8rem;
-  margin-right: 1.7rem;
-}
-
-.WalletConnect-btn img {
-  display: inline-block;
-  height: 2.8rem;
-  margin-right: 1.8rem;
-}
-
-button.App-connect-wallet {
-  cursor: pointer;
-  display: inline-block;
-  border: none;
-  font-size: var(--font-size-body-small);
-  line-height: 2rem;
-  font-weight: 500;
-  padding: 0.9rem 2.4rem;
-  height: 3.6rem;
-  color: var(--color-slate-800);
-  background: #03cfcd 0% 0% no-repeat padding-box;
-  border-radius: 0.4rem;
-}
-
-button.App-connect-wallet:hover {
-  opacity: 1;
-}
-
 .App-header-trade-link {
   margin-right: 0.8rem;
 }
@@ -259,7 +193,7 @@ button.App-connect-wallet:hover {
   border-radius: 0.4rem;
   display: inline-flex;
   align-items: center;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   position: relative;
 }
 
@@ -334,7 +268,7 @@ button.App-connect-wallet:hover {
 .section-title-content .section-title-content__title {
   font-size: var(--font-size-body-large);
   line-height: 3.1rem;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   letter-spacing: 0px;
 }
 
@@ -349,7 +283,7 @@ button.App-connect-wallet:hover {
 
 .section-title-content .section-title-content__description span {
   cursor: pointer;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .Page-title-section {
@@ -391,7 +325,7 @@ button.App-connect-wallet:hover {
 }
 
 .Page-description span:hover {
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   opacity: 0.9;
 }
 
@@ -430,7 +364,7 @@ button.App-connect-wallet:hover {
   font-size: var(--font-size-body-large);
   font-weight: 500;
   letter-spacing: -0.012em;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   margin-bottom: $app-card-padding;
   display: flex;
   align-items: center;
@@ -538,7 +472,7 @@ button.App-connect-wallet:hover {
 
 .App-header-container-left .a.active,
 .App-header-container-left a.active {
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .Toastify__toast-container--top-right {
@@ -681,7 +615,7 @@ button.App-connect-wallet:hover {
 
 a.App-cta,
 button.App-cta {
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   text-decoration: none;
   background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, var(--color-blue-700) 100%);
 }
@@ -700,7 +634,7 @@ button.App-cta.transparent {
 
 a.App-cta.transparent:hover,
 button.App-cta.transparent:hover:enabled {
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   box-shadow: none;
   background: none;
 }
@@ -719,7 +653,7 @@ button.App-button-option {
   line-height: 2rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   padding-left: 16px;
   padding-right: 16px;
   text-decoration: none;
@@ -779,7 +713,7 @@ a.App-social-link {
   margin-left: 1.1rem;
   margin-right: 1.1rem;
   font-size: 2.635rem;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   opacity: 0.8;
 }
 

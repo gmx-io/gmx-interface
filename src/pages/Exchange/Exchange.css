@@ -153,7 +153,7 @@
   padding: 0 0.8rem;
   border-radius: 3px;
   background: #5b2ab0;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   opacity: 0.7;
   cursor: pointer;
 }
@@ -470,7 +470,7 @@ button.Exchange-list-action {
 }
 
 button.Exchange-list-action:hover {
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 table.Exchange-list {
@@ -712,7 +712,7 @@ table.Position-list .Exchange-list-item-active {
   right: 1.25rem;
   top: 0;
   padding: 0.465rem 0.8rem;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   outline: 1rem solid rgba(33, 37, 64, 1);
   border-radius: 3px;
   z-index: 1;
@@ -723,7 +723,7 @@ table.Position-list .Exchange-list-item-active {
 }
 
 .Exchange-swap-max:hover {
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   background: #484e92;
 }
 
@@ -778,7 +778,7 @@ input.Exchange-swap-input.small {
   justify-content: center;
   align-items: center;
   border: none;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .Exchange-swap-ball:hover {
@@ -887,7 +887,7 @@ table.Exchange-list-small td {
   margin-right: 1.5rem;
   background: none;
   border: none;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   padding: 0;
 }
 .cancel-order-btn:hover {

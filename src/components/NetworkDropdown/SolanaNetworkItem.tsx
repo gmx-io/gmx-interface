@@ -35,7 +35,7 @@ export default function SolanaNetworkItem() {
 
       <Modal isVisible={isModalOpen} setIsVisible={setIsModalOpen} label={t`GMX Solana`}>
         <div className="flex flex-col gap-16">
-          <p className="mb-8 text-15 text-slate-100">
+          <p className="mb-8 text-15 text-typography-secondary">
             <Trans>
               GMX Solana is hosted on a different website by a different DAO team.
               <br />

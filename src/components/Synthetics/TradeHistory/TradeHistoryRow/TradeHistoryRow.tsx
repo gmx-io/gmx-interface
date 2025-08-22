@@ -219,7 +219,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
               {showDebugValues && (
                 <Link
                   to={`/parsetx/${NETWORKS_BY_CHAIN_IDS[chainId]}/${tradeAction.transaction.hash}`}
-                  className="text-body-small ml-5 text-slate-100 hover:text-white"
+                  className="text-body-small ml-5 text-typography-secondary hover:text-typography-primary"
                 >
                   Events
                 </Link>
@@ -278,7 +278,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
         </TableTd>
         <TableTd className="TradeHistoryRow-pnl-fees">
           {!msg.pnl ? (
-            <span className="text-slate-100">-</span>
+            <span className="text-typography-secondary">-</span>
           ) : (
             <span
               className={cx("numbers", {

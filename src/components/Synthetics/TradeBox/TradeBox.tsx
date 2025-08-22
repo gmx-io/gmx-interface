@@ -633,7 +633,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   disabled={!isSwitchTokensAllowed}
                   className={cx(
                     `absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer
-                    items-center justify-center rounded-full bg-slate-600 text-slate-100`,
+                    items-center justify-center rounded-full bg-slate-600 text-typography-secondary`,
                     {
                       "hover:bg-[var(--color-fill-surfaceHover)] hover:bg-[linear-gradient(0deg,var(--color-slate-600),var(--color-slate-600))] hover:bg-blend-overlay":
                         isSwitchTokensAllowed,
@@ -906,7 +906,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
               <div className="relative">
                 <SettingsIcon
-                  className="size-16 cursor-pointer text-slate-100 gmx-hover:text-white"
+                  className="size-16 cursor-pointer text-typography-secondary gmx-hover:text-typography-primary"
                   onClick={() => setIsSettingsVisible(true)}
                 />
                 {settingsWarningDotVisible && (
@@ -1020,7 +1020,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   setIsChecked={setKeepLeverage}
                   disabled={decreaseAmounts?.isFullClose}
                 >
-                  <span className="text-14 text-slate-100">
+                  <span className="text-14 text-typography-secondary">
                     <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
                   </span>
                 </ToggleSwitch>

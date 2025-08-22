@@ -168,9 +168,9 @@ export default function UiPage() {
           <p className="text-yellow-300">Yellow text is yellow</p>
           <p className="text-red-500">Red text is red</p>
           <p className="text-green-500">Green text is green</p>
-          <p className="text-white">White text is white</p>
+          <p className="text-typography-primary">White text is white</p>
         </div>
-        <p className="mt-8 text-white underline decoration-gray-400 decoration-dashed decoration-8">
+        <p className="mt-8 text-typography-primary underline decoration-gray-400 decoration-dashed decoration-8">
           Decoration is gray-400
         </p>
 

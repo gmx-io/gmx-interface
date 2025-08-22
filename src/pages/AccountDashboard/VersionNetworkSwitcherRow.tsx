@@ -32,7 +32,7 @@ function Options({ account, chainId, version }: { account?: Address; chainId: nu
             to={buildAccountDashboardUrl(account, supportedChainId, 2)}
             key={supportedChainId}
             className={cx("flex !min-h-32 items-center gap-4", {
-              "!bg-slate-800 !text-white": isActive,
+              "!bg-button-secondary !text-typography-primary": isActive,
             })}
           >
             <img
@@ -52,7 +52,7 @@ function Options({ account, chainId, version }: { account?: Address; chainId: nu
             to={buildAccountDashboardUrl(account, supportedChainId, 1)}
             key={supportedChainId}
             className={cx("flex !min-h-32 items-center gap-4", {
-              "!bg-slate-800 !text-white": isActive,
+              "!bg-button-secondary !text-typography-primary": isActive,
             })}
           >
             <img

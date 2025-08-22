@@ -263,7 +263,9 @@ export function SizeWithIcon({ order, className }: { order: OrderInfo; className
           <span> to </span>
           {isTwapOrder(order) ? null : <span>{toTokenText} </span>}
           {toTokenIcon}
-          {isTwapOrder(order) ? <TwapOrderProgress order={order} className="font-normal text-slate-100" /> : null}
+          {isTwapOrder(order) ? (
+            <TwapOrderProgress order={order} className="font-normal text-typography-secondary" />
+          ) : null}
         </Trans>
       </span>
     );
@@ -293,7 +295,7 @@ export function SizeWithIcon({ order, className }: { order: OrderInfo; className
 
   return (
     <span className={className}>
-      {sizeText} {isTwapOrder(order) && <TwapOrderProgress order={order} className="text-slate-100" />}
+      {sizeText} {isTwapOrder(order) && <TwapOrderProgress order={order} className="text-typography-secondary" />}
     </span>
   );
 }
@@ -731,12 +733,12 @@ function OrderItemSmall({
       <AppCardSection>
         {showDebugValues && (
           <div className="App-card-row">
-            <div className="font-medium text-slate-100">Key</div>
+            <div className="font-medium text-typography-secondary">Key</div>
             <div className="debug-key muted">{order.key}</div>
           </div>
         )}
         <div className="App-card-row">
-          <div className="font-medium text-slate-100">
+          <div className="font-medium text-typography-secondary">
             <Trans>Order Type</Trans>
           </div>
           <div>
@@ -744,13 +746,13 @@ function OrderItemSmall({
           </div>
         </div>
         <div className="App-card-row">
-          <div className="font-medium text-slate-100">
+          <div className="font-medium text-typography-secondary">
             <Trans>Size</Trans>
           </div>
           <OrderSize order={order} showDebugValues={showDebugValues} />
         </div>
         <div className="App-card-row">
-          <div className="font-medium text-slate-100">
+          <div className="font-medium text-typography-secondary">
             <Trans>Trigger Price</Trans>
           </div>
           <div>
@@ -759,7 +761,7 @@ function OrderItemSmall({
         </div>
 
         <div className="App-card-row">
-          <div className="font-medium text-slate-100">
+          <div className="font-medium text-typography-secondary">
             <Trans>Mark Price</Trans>
           </div>
           <div>

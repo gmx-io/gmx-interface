@@ -37,7 +37,7 @@ export function AllowedSlippageRow({ slippageInputId }: { slippageInputId: strin
           position="left-start"
           styleType="icon"
           content={
-            <div className="text-white">
+            <div className="text-typography-primary">
               <Trans>
                 You can edit the default allowed slippage in the settings menu on the top right of the page.
                 <br />

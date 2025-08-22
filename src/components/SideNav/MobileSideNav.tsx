@@ -30,7 +30,10 @@ export function MobileSideNav() {
               <div className="flex items-center justify-between">
                 <LogoSection isCollapsed={false} />
 
-                <button onClick={handleToggle} className="p-8 text-slate-100 hover:text-white active:text-white">
+                <button
+                  onClick={handleToggle}
+                  className="p-8 text-typography-secondary hover:text-typography-primary active:text-typography-primary"
+                >
                   <IoCloseOutline size={24} />
                 </button>
               </div>

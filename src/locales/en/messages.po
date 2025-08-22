@@ -525,6 +525,10 @@ msgstr "Claim and view your incentives, airdrops, and prizes"
 msgid "Funding Fee"
 msgstr "Funding Fee"
 
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Light"
+msgstr "Light"
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Confirm Limit Order"
 msgstr "Confirm Limit Order"
@@ -2153,6 +2157,10 @@ msgstr "Vest with GLP on Avalanche"
 msgid "No esGMX to claim"
 msgstr "No esGMX to claim"
 
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "System"
+msgstr "System"
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
 msgstr "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
@@ -2437,6 +2445,11 @@ msgstr "The order will not be executed as its trigger price is beyond the positi
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
 msgstr "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
+
+#: src/components/SettingsModal/ThemeSelector.tsx
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Theme"
+msgstr "Theme"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default Allowed Slippage"
@@ -5542,6 +5555,10 @@ msgstr "30d"
 msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
 msgstr "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
 
+#: src/components/SideNav/ThemeNavItem.tsx
+#~ msgid "Light Mode"
+#~ msgstr "Light Mode"
+
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
 msgstr "Claim Affiliate Vault Rewards"
@@ -7326,6 +7343,10 @@ msgstr "Select a Pay token"
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 
+#: src/components/SideNav/ThemeNavItem.tsx
+#~ msgid "Dark Mode"
+#~ msgstr "Dark Mode"
+
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "shift"
@@ -7591,6 +7612,10 @@ msgstr "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Neither collateral nor realized PnL is enough to cover pending fees. Please close a larger position amount."
 msgstr "Neither collateral nor realized PnL is enough to cover pending fees. Please close a larger position amount."
+
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Dark"
+msgstr "Dark"
 
 #: src/pages/Stake/UnstakeModal.tsx
 msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"

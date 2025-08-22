@@ -18,7 +18,7 @@ export function TokenValuesInfoCell({
     <>
       {usd && <div className={cx("whitespace-nowrap numbers", className)}>{usd}</div>}
       {value && (
-        <div className="whitespace-nowrap text-12 text-slate-100 numbers">
+        <div className="whitespace-nowrap text-12 text-typography-secondary numbers">
           ({symbol && isNumber ? `${value} ${symbol}` : value})
         </div>
       )}

@@ -74,7 +74,7 @@ export default function SearchInput({
             height={18}
             width={18}
             onClick={handleClick}
-            className={cx("relative p-2 text-slate-100")}
+            className={cx("relative p-2 text-typography-secondary")}
           />
         </div>
         <input
@@ -87,12 +87,15 @@ export default function SearchInput({
           onKeyDown={onKeyDown}
           onFocus={handleFocus}
           autoFocus={autoFocus ?? !isSmallerScreen}
-          className={cx("block w-full rounded-8 border bg-slate-800 hover:bg-fill-surfaceElevatedHover leading-1 placeholder-slate-100", {
-            "border-blue-300": isFocused,
-            "border-slate-800": !isFocused,
-            "p-8 pl-32 text-[13px]": size === "m",
-            "py-[8.5px] pl-34 pr-30 text-14 ": size === "s",
-          })}
+          className={cx(
+            "block w-full rounded-8 border bg-slate-800 leading-1 placeholder-slate-100 hover:bg-fill-surfaceElevatedHover",
+            {
+              "border-blue-300": isFocused,
+              "border-slate-800": !isFocused,
+              "p-8 pl-32 text-[13px]": size === "m",
+              "py-[8.5px] pl-34 pr-30 text-14 ": size === "s",
+            }
+          )}
         />
         {value && (
           <Button
@@ -102,8 +105,8 @@ export default function SearchInput({
           >
             <CrossIconComponent
               className={cx("w-16", {
-                "text-slate-100": !isFocused,
-                "text-white": isFocused,
+                "text-typography-secondary": !isFocused,
+                "text-typography-primary": isFocused,
               })}
             />
           </Button>

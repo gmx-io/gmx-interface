@@ -206,7 +206,7 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
     <motion.div
       ref={containerRef}
       data-qa={qa}
-      className="text-body-medium relative flex touch-none select-none overflow-hidden text-slate-100"
+      className="text-body-medium relative flex touch-none select-none overflow-hidden text-typography-secondary"
       onPanStart={handlePanStart}
       onPan={handlePan}
       onPanEnd={handlePanEnd}
@@ -229,7 +229,7 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
           <div
             className={cx(
               "relative z-10 flex grow items-center justify-center gap-8 px-15 pb-11 pt-11 text-center font-medium transition-colors",
-              isActive ? "text-white" : ""
+              isActive ? "text-typography-primary" : ""
             )}
             onClick={() => onClick(opt)}
             key={opt}

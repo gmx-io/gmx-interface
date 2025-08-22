@@ -33,7 +33,7 @@ export function PoolsDetailsMarketAmount({
       <span className={cx("numbers", valueClassName)}>{value}</span>
       {secondaryValue ? (
         <>
-          <span className={cx("text-slate-100 numbers", secondaryValueClassName)}>({secondaryValue})</span>
+          <span className={cx("text-typography-secondary numbers", secondaryValueClassName)}>({secondaryValue})</span>
         </>
       ) : null}
     </span>
@@ -51,7 +51,7 @@ export function PoolsDetailsMarketAmount({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="text-body-medium font-medium text-slate-100">{label}</div>
+      <div className="text-body-medium font-medium text-typography-secondary">{label}</div>
       {valueContentWithTooltip}
     </div>
   );

@@ -134,7 +134,7 @@ $tabs-threshold: 990px;
   position: absolute;
   left: 0;
   top: 0;
-  background-color: var(--color-cold-blue-500);
+  background-color: var(--color-blue-300);
 }
 
 .LeaderboardRank-1::after,
@@ -236,7 +236,7 @@ $tabs-threshold: 990px;
     }
 
     &-description {
-      color: var(--color-white);
+      color: var(--color-typography-primary);
       margin-bottom: 1rem;
       white-space: nowrap;
       font-size: 2rem;
@@ -328,7 +328,7 @@ $tabs-threshold: 990px;
 
 .CompetitionCountdown {
   &__time {
-    color: var(--color-white);
+    color: var(--color-typography-primary);
   }
   &_desktop &__time {
     white-space: nowrap;
@@ -426,11 +426,11 @@ $tabs-threshold: 990px;
 
   &_live {
     background-color: #b42941;
-    color: var(--color-white);
+    color: var(--color-typography-primary);
   }
 
   &-circle {
-    background-color: var(--color-white);
+    background-color: var(--color-typography-primary);
     border-radius: 9999rem;
     width: 1.1rem;
     height: 1.1rem;

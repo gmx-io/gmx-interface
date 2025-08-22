@@ -14,7 +14,7 @@ import EcosystemIcon from "img/ecosystem.svg?react";
 import BuyIcon from "img/ic_buy.svg?react";
 import LeaderboardIcon from "img/leaderboard.svg?react";
 import logoIcon from "img/logo-icon.svg";
-import logoText from "img/logo-text.svg";
+import LogoText from "img/logo-text.svg?react";
 import ReferralsIcon from "img/referrals.svg?react";
 import TradeIcon from "img/trade.svg?react";
 
@@ -63,17 +63,17 @@ export function LogoSection({ isCollapsed }: { isCollapsed: boolean | undefined 
   return (
     <Link
       to="/"
-      className={cx("flex cursor-pointer items-center justify-center gap-5 pb-16 pt-10", {
+      className={cx("flex cursor-pointer items-center justify-center gap-5 pb-16 pt-10 text-typography-primary", {
         "pl-12 pr-20": !isCollapsed,
       })}
     >
-      <img src={logoIcon} alt="GMX Logo" className="h-22" />
-      {!isCollapsed && <img src={logoText} alt="GMX" className="h-18" />}
+      <img src={logoIcon} alt="GMX Logo" />
+      {!isCollapsed ? <LogoText className="max-md:hidden" /> : null}
     </Link>
   );
 }
 
-interface NavItemProps {
+export interface NavItemProps {
   icon: ReactNode;
   label: ReactNode;
   isActive?: boolean;
@@ -89,10 +89,11 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
       <div
         className={cx(
           `relative flex cursor-pointer items-center gap-8
-        rounded-8 px-16 py-8 text-slate-100 transition-colors
-        group-hover:bg-slate-700 group-hover:text-white`,
+        rounded-8 px-16 py-8 text-typography-secondary transition-colors
+        group-hover:bg-blue-400/20 group-hover:text-blue-400
+        dark:group-hover:bg-slate-700 dark:group-hover:text-typography-primary`,
           {
-            "bg-slate-700 text-white": isActive,
+            "bg-blue-400/20 !text-blue-400 dark:bg-slate-700 dark:!text-typography-primary": isActive,
             "w-full": !isCollapsed,
           }
         )}
@@ -103,7 +104,7 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
         <div
           className={cx(
             `absolute left-0 top-0 z-30 hidden items-center gap-8 rounded-8
-            bg-slate-700 px-16 py-8 text-white`,
+            bg-slate-700 px-16 py-8 text-typography-primary`,
             { "group-hover:flex": isCollapsed }
           )}
         >

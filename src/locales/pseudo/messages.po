@@ -525,6 +525,10 @@ msgstr ""
 msgid "Funding Fee"
 msgstr ""
 
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Light"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Confirm Limit Order"
 msgstr ""
@@ -2153,6 +2157,10 @@ msgstr ""
 msgid "No esGMX to claim"
 msgstr ""
 
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "System"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
 msgstr ""
@@ -2436,6 +2444,11 @@ msgstr ""
 
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
+msgstr ""
+
+#: src/components/SettingsModal/ThemeSelector.tsx
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Theme"
 msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -5539,6 +5552,10 @@ msgstr ""
 msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
 msgstr ""
 
+#: src/components/SideNav/ThemeNavItem.tsx
+#~ msgid "Light Mode"
+#~ msgstr ""
+
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
 msgstr ""
@@ -7320,6 +7337,10 @@ msgstr ""
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr ""
 
+#: src/components/SideNav/ThemeNavItem.tsx
+#~ msgid "Dark Mode"
+#~ msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr ""
@@ -7584,6 +7605,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Neither collateral nor realized PnL is enough to cover pending fees. Please close a larger position amount."
+msgstr ""
+
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Dark"
 msgstr ""
 
 #: src/pages/Stake/UnstakeModal.tsx

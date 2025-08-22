@@ -525,6 +525,10 @@ msgstr ""
 msgid "Funding Fee"
 msgstr "Finanzierungsgebühr"
 
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Light"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Confirm Limit Order"
 msgstr "Limit-Order bestätigen"
@@ -2153,6 +2157,10 @@ msgstr "Vesting mit GLP auf Avalanche"
 msgid "No esGMX to claim"
 msgstr "Kein esGMX zu beanspruchen"
 
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "System"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
 msgstr "Angeforderte Erhöhung von {tokenSymbol} {longOrShortText} um {0} USD."
@@ -2437,6 +2445,11 @@ msgstr "Die Order wird nicht ausgeführt, da ihr Trigger-Preis jenseits des Liqu
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
 msgstr "{typeString} Short Stop Market: {0} eine Short-Position, wenn der Preis unter dem Trigger-Preis liegt."
+
+#: src/components/SettingsModal/ThemeSelector.tsx
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Theme"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default Allowed Slippage"
@@ -5542,6 +5555,10 @@ msgstr "30T"
 msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
 msgstr ""
 
+#: src/components/SideNav/ThemeNavItem.tsx
+#~ msgid "Light Mode"
+#~ msgstr ""
+
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
 msgstr "Affiliate-Vault-Belohnungen beanspruchen"
@@ -7326,6 +7343,10 @@ msgstr "Wähle einen Zahlungstoken"
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr "Die verfügbare Liquidität ist der geringere Wert der Differenz zwischen dem Maximalwert und dem aktuellen Wert sowohl für die Reserve als auch für das offene Interesse."
 
+#: src/components/SideNav/ThemeNavItem.tsx
+#~ msgid "Dark Mode"
+#~ msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "Verschieben"
@@ -7590,6 +7611,10 @@ msgstr "{increaseOrDecreaseText} {tokenText} um {sizeText}"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Neither collateral nor realized PnL is enough to cover pending fees. Please close a larger position amount."
+msgstr ""
+
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Dark"
 msgstr ""
 
 #: src/pages/Stake/UnstakeModal.tsx

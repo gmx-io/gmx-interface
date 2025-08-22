@@ -5,7 +5,7 @@
   height: 3.6rem;
   display: inline-flex;
   align-items: center;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .App-header-language {
@@ -83,14 +83,14 @@
   font-size: var(--font-size-body-medium);
   line-height: var(--line-height-body-medium);
   letter-spacing: 0.29px;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .network-option-img-label {
   font-size: var(--font-size-body-medium);
   line-height: var(--line-height-body-medium);
   letter-spacing: 0.29px;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .dropdown-label {
@@ -104,15 +104,6 @@
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(2, 1fr);
-}
-
-.language-modal-item {
-  border: 1px solid var(--dark-blue-border);
-  cursor: pointer;
-}
-
-.language-modal-item.active {
-  border: 1px solid #a1a3c4;
 }
 
 .menu-item-icon {

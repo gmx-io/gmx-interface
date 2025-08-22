@@ -18,7 +18,7 @@
   backdrop-filter: blur(14px);
   box-shadow: 0px 4px 14px 0px #00000040;
   z-index: 10000;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 
   a {
     text-decoration: underline;
@@ -159,7 +159,7 @@
 }
 
 .Tooltip-number {
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .Tooltip-flex {

@@ -56,7 +56,7 @@ export function ColorfulBanner({
   return (
     <div
       className={cx(
-        "flex justify-between gap-8 rounded-8 border-l-2 p-12 text-13 leading-[1.3]",
+        "flex justify-between gap-8 rounded-8 border-l-2 p-12 text-13 leading-[1.3] text-typography-primary",
         withBorder && colorSchemas[color].border,
         colorSchemas[color].bg,
         className
@@ -72,7 +72,10 @@ export function ColorfulBanner({
         <div className="flex flex-col justify-center">{children}</div>
       </div>
       {onClose && (
-        <button className={cx("h-fit p-2 text-slate-100 hover:text-white")} onClick={handleClose}>
+        <button
+          className={cx("h-fit p-2 text-typography-secondary hover:text-typography-primary")}
+          onClick={handleClose}
+        >
           <RxCross2 size={16} />
         </button>
       )}
