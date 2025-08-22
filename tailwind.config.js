@@ -9,7 +9,6 @@ const defaultConfig = require("tailwindcss/defaultConfig");
  * @See https://www.notion.so/gmxio/Colors-Clean-Up-13303574745d80deb5dcebb6f15e41ad#13303574745d8066aad0cbd650848ca6
  */
 
-// Dark theme colors
 const darkColors = {
   blue: {
     300: "#7885FF",
@@ -28,7 +27,6 @@ const darkColors = {
     400: "#BEC0DA",
     500: "#646a8f",
     600: "#363a59",
-    650: "#3C40677f",
     700: "#22243a",
     750: "#17182c",
     800: "#1e2033",
@@ -88,7 +86,6 @@ const darkColors = {
   },
 };
 
-// Light theme colors
 const lightColors = {
   blue: {
     100: "#A4C3F9",
@@ -101,19 +98,18 @@ const lightColors = {
   "cold-blue": {
     500: "#3a3f79",
     700: "#282b54",
-    900: "#E2E5FD", // Light theme override
+    900: "#E2E5FD", 
   },
   slate: {
-    100: "#696D96", // Light theme
-    400: "#9FA3BC", // Light theme
-    500: "#C4C6D5", // Light theme
-    600: "#CCCCE0", // Light theme
-    650: "#D4D6E27f",
-    700: "#DADAE7", // Light theme
-    750: "#D4D6E2", // Light theme
-    800: "#EDEDF2", // Light theme
-    900: "#FCFCFC", // Light theme
-    950: "#EEEEF4", // Light theme
+    100: "#696D96", 
+    400: "#9FA3BC", 
+    500: "#C4C6D5", 
+    600: "#CCCCE0", 
+    700: "#DADAE7", 
+    750: "#D4D6E2", 
+    800: "#EDEDF2", 
+    900: "#FCFCFC", 
+    950: "#EEEEF4", 
   },
   gray: {
     50: "rgba(0, 0, 0, 0.95)",
@@ -129,32 +125,32 @@ const lightColors = {
     950: "rgba(0, 0, 0, 0.05)",
   },
   yellow: {
-    300: "#FF9400", // Light theme
+    300: "#FF9400", 
     500: "#f3b50c",
-    900: "#FFF9D0", // Light theme
+    900: "#FFF9D0", 
   },
   red: {
     100: "#F9A4A5",
     400: "#ff637a",
-    500: "#EA2A46", // Light theme
+    500: "#EA2A46", 
     700: "#B33055",
-    900: "#F9E2E5", // Light theme
+    900: "#F9E2E5", 
   },
   green: {
     100: "#A4F9D9",
     300: "#56dba8",
     400: "#8CF3CB",
-    500: "#10937B", // Light theme
+    500: "#10937B", 
     600: "#1F3445",
     700: "#0FDE8D",
     800: "#178969",
-    900: "#DFFFEB", // Light theme
+    900: "#DFFFEB", 
   },
   white: "#ffffff",
   black: "#000000",
   button: {
-    secondary: "#E0E0E8", // Light theme
-    secondaryDisabled: "#E0E0E8", // Light theme
+    secondary: "#E0E0E8", 
+    secondaryDisabled: "#E0E0E8", 
   },
   fill: {
     surfaceElevated50: "#F5F5F780",
@@ -169,7 +165,6 @@ const lightColors = {
   },
 };
 
-// Convert hex to RGB
 function hexToRgb(hex) {
   if (hex.startsWith('rgba(')) {
     // Extract RGB values from rgba string
@@ -197,7 +192,6 @@ function hexToRgb(hex) {
     : hex;
 }
 
-// Main colors object using CSS variables with alpha support
 const colors = {
   blue: {
     300: "rgb(var(--color-blue-300) / <alpha-value>)",
@@ -216,7 +210,6 @@ const colors = {
     400: "rgb(var(--color-slate-400) / <alpha-value>)",
     500: "rgb(var(--color-slate-500) / <alpha-value>)",
     600: "rgb(var(--color-slate-600) / <alpha-value>)",
-    650: "var(--color-slate-650-hex)",
     700: "rgb(var(--color-slate-700) / <alpha-value>)",
     750: "rgb(var(--color-slate-750) / <alpha-value>)",
     800: "rgb(var(--color-slate-800) / <alpha-value>)",
@@ -289,7 +282,6 @@ function injectColorsPlugin({ addBase }) {
         const varName = `--color${colorGroup}${visualColorKey}`;
         const hexVarName = `--color${colorGroup}${visualColorKey}-hex`;
         
-        // Generate both RGB and hex versions
         return {
           ...vars,
           [varName]: hexToRgb(value), // RGB for opacity support
@@ -301,12 +293,10 @@ function injectColorsPlugin({ addBase }) {
     }, {});
   }
 
-  // Dark theme (default) - uses darkColors
   addBase({
     ":root": extractColorVars(darkColors),
   });
 
-  // Light theme - uses lightColors
   addBase({
     ":root:not(.dark)": extractColorVars(lightColors),
   });
@@ -416,7 +406,7 @@ function fontComponentsPlugin({ addComponents, addBase }) {
       lineHeight: "1.4rem",
       fontWeight: 500,
       letterSpacing: "0.08em",
-      color: "var(--color-slate-100)",
+      color: "rgb(var(--color-slate-100))",
       textTransform: "uppercase",
     }
   });

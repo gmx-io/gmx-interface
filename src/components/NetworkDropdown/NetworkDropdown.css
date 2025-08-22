@@ -106,15 +106,6 @@
   grid-template-columns: repeat(2, 1fr);
 }
 
-.language-modal-item {
-  border: 1px solid var(--dark-blue-border);
-  cursor: pointer;
-}
-
-.language-modal-item.active {
-  border: 1px solid #a1a3c4;
-}
-
 .menu-item-icon {
   display: inline-flex;
   justify-content: center;
