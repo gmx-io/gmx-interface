@@ -12,7 +12,6 @@ const defaultConfig = require("tailwindcss/defaultConfig");
 // Dark theme colors
 const darkColors = {
   blue: {
-    100: "#A4C3F9",
     300: "#7885FF",
     400: "#2D42FC",
     500: "#3d51ff",
@@ -23,10 +22,6 @@ const darkColors = {
     500: "#3a3f79",
     700: "#282b54",
     900: "#1E223C",
-  },
-  "pale-blue": {
-    100: "rgba(180,187,255, 0.1)",
-    600: "rgba(180,187,255, 0.6)",
   },
   slate: {
     100: "#a0a3c4",
@@ -107,10 +102,6 @@ const lightColors = {
     500: "#3a3f79",
     700: "#282b54",
     900: "#E2E5FD", // Light theme override
-  },
-  "pale-blue": {
-    100: "rgba(180,187,255, 0.1)",
-    600: "rgba(180,187,255, 0.6)",
   },
   slate: {
     100: "#696D96", // Light theme
@@ -209,7 +200,6 @@ function hexToRgb(hex) {
 // Main colors object using CSS variables with alpha support
 const colors = {
   blue: {
-    100: "rgb(var(--color-blue-100) / <alpha-value>)",
     300: "rgb(var(--color-blue-300) / <alpha-value>)",
     400: "rgb(var(--color-blue-400) / <alpha-value>)",
     500: "rgb(var(--color-blue-500) / <alpha-value>)",
@@ -220,10 +210,6 @@ const colors = {
     500: "rgb(var(--color-cold-blue-500) / <alpha-value>)",
     700: "rgb(var(--color-cold-blue-700) / <alpha-value>)",
     900: "rgb(var(--color-cold-blue-900) / <alpha-value>)",
-  },
-  "pale-blue": {
-    100: "var(--color-pale-blue-100-hex)",
-    600: "var(--color-pale-blue-600-hex)",
   },
   slate: {
     100: "rgb(var(--color-slate-100) / <alpha-value>)",
