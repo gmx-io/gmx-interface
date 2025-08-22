@@ -1,10 +1,7 @@
 $button-primary-hover: linear-gradient(0deg, #090a141a, #090a141a),
-  linear-gradient(0deg, rgba(var(--color-blue-400)), rgba(var(--color-blue-400)));
+  linear-gradient(0deg, var(--color-blue-400), var(--color-blue-400));
 $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
-  linear-gradient(0deg, rgba(var(--color-blue-400)), rgba(var(--color-blue-400)));
-
-$button-secondary-hover: linear-gradient(0deg, rgba(var(--color-slate-800)), rgba(var(--color-slate-800))),
-  linear-gradient(0deg, rgb(var(--color-slate-100) / 0.1), rgb(var(--color-slate-100) / 0.1));
+  linear-gradient(0deg, var(--color-blue-400), var(--color-blue-400));
 
 .button {
   cursor: pointer;
@@ -30,7 +27,7 @@ $button-secondary-hover: linear-gradient(0deg, rgba(var(--color-slate-800)), rgb
 
   &.primary {
     background: var(--primary-btn-bg);
-    color: rgba(var(--color-white));
+    color: var(--color-white);
     border-radius: 8px;
 
     &:not([disabled]):hover {
@@ -44,7 +41,7 @@ $button-secondary-hover: linear-gradient(0deg, rgba(var(--color-slate-800)), rgb
 
   &.primary-action {
     background: var(--primary-btn-bg);
-    color: rgba(var(--color-white));
+    color: var(--color-white);
     border-radius: 8px;
     min-height: 40px;
 
@@ -58,9 +55,9 @@ $button-secondary-hover: linear-gradient(0deg, rgba(var(--color-slate-800)), rgb
   }
 
   &.secondary {
-    background: rgba(var(--color-button-secondary));
+    background: var(--color-button-secondary);
     border-radius: 8px;
-    color: rgba(var(--color-typography-secondary));
+    color: var(--color-typography-secondary);
     position: relative;
     letter-spacing: 0;
 
@@ -81,22 +78,22 @@ $button-secondary-hover: linear-gradient(0deg, rgba(var(--color-slate-800)), rgb
     }
 
     &:not([disabled], .disabled):hover {
-      background: linear-gradient(0deg, rgba(var(--color-button-secondary)), rgba(var(--color-button-secondary))),
-        linear-gradient(0deg, rgb(var(--color-slate-100) / 0.1), rgb(var(--color-slate-100) / 0.1));
+      background: linear-gradient(0deg, var(--color-button-secondary), var(--color-button-secondary)),
+        linear-gradient(0deg, rgb(var(--color-slate-100-raw) / 0.1), rgb(var(--color-slate-100-raw) / 0.1));
       background-blend-mode: overlay;
-      color: rgba(var(--color-typography-primary));
+      color: var(--color-typography-primary);
     }
 
     &:not([disabled], .disabled):active {
-      background: rgba(var(--color-button-secondary));
-      color: rgba(var(--color-typography-primary));
+      background: var(--color-button-secondary);
+      color: var(--color-typography-primary);
     }
   }
 
   &.ghost {
     background-color: transparent;
     border-radius: 8px;
-    color: rgba(var(--color-slate-100));
+    color: var(--color-slate-100);
     position: relative;
     letter-spacing: 0;
 
@@ -117,18 +114,18 @@ $button-secondary-hover: linear-gradient(0deg, rgba(var(--color-slate-800)), rgb
     }
 
     &:not([disabled], .disabled):hover {
-      color: rgba(var(--color-typography-primary));
-      background-color: rgba(var(--color-fill-surfaceHover));
+      color: var(--color-typography-primary);
+      background-color: var(--color-fill-surfaceHover);
     }
 
     &:not([disabled], .disabled):active {
-      color: rgba(var(--color-typography-primary));
-      background: rgba(var(--color-slate-800));
+      color: var(--color-typography-primary);
+      background: var(--color-slate-800);
     }
   }
 
   &.link {
-    color: rgba(var(--color-slate-100));
+    color: var(--color-slate-100);
     text-decoration: underline;
     padding: 0;
 
@@ -137,7 +134,7 @@ $button-secondary-hover: linear-gradient(0deg, rgba(var(--color-slate-800)), rgb
     }
 
     &:not([disabled], .disabled):hover {
-      color: rgba(var(--color-typography-primary));
+      color: var(--color-typography-primary);
     }
   }
 
@@ -145,15 +142,15 @@ $button-secondary-hover: linear-gradient(0deg, rgba(var(--color-slate-800)), rgb
   &:disabled {
     box-shadow: none;
     cursor: not-allowed;
-    color: rgba(var(--color-slate-500));
+    color: var(--color-slate-500);
 
     &.primary-action,
     &.primary {
-      background-color: rgba(var(--color-slate-800));
+      background-color: var(--color-slate-800);
     }
 
     &.secondary {
-      background-color: rgba(var(--color-button-secondaryDisabled));
+      background-color: var(--color-button-secondaryDisabled);
     }
   }
 

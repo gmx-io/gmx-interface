@@ -12,9 +12,9 @@ import { getRainbowKitConfig } from "./rainbowKitConfig";
 
 const darkWalletTheme = merge(darkTheme(), {
   colors: {
-    modalBackground: "rgb(var(--color-slate-800))",
-    accentColor: "rgb(var(--color-blue-500))",
-    menuItemBackground: "rgb(var(--color-fill-surfaceHover))",
+    modalBackground: "var(--color-slate-800)",
+    accentColor: "var(--color-blue-500)",
+    menuItemBackground: "var(--color-fill-surfaceHover)",
   },
   radii: {
     modal: "8px",
@@ -24,9 +24,9 @@ const darkWalletTheme = merge(darkTheme(), {
 
 const lightWalletTheme = merge(lightTheme(), {
   colors: {
-    modalBackground: "rgb(var(--color-slate-900))",
-    accentColor: "rgb(var(--color-blue-500))",
-    menuItemBackground: "rgb(var(--color-fill-surfaceHover))",
+    modalBackground: "var(--color-slate-900)",
+    accentColor: "var(--color-blue-500)",
+    menuItemBackground: "var(--color-fill-surfaceHover)",
   },
   radii: {
     modal: "8px",

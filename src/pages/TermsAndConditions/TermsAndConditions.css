@@ -18,7 +18,7 @@
   font-size: var(--font-size-body-medium);
   line-height: 2.4rem;
   margin-bottom: 1.5rem;
-  color: rgba(var(--color-gray-300));
+  color: var(--color-gray-300);
 }
 
 .body-title {

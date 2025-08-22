@@ -7,14 +7,14 @@
 
 .Tab-title {
   letter-spacing: 0px;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   font-size: 3.41rem;
   font-weight: 500;
 }
 
 .Tab-description {
   letter-spacing: 0px;
-  color: rgba(var(--color-gray-400));
+  color: var(--color-gray-400);
   margin-top: 0.8rem;
 }
 
@@ -33,7 +33,7 @@
 }
 
 .GlpSwap-stats-card .App-card-row .label {
-  color: rgba(var(--color-gray-400));
+  color: var(--color-gray-400);
   opacity: 1;
 }
 
@@ -70,19 +70,19 @@
   font-size: var(--font-size-body-large);
   line-height: 2.1rem;
   letter-spacing: 0px;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
 }
 
 .App-card-title-mark .App-card-title-mark-subtitle {
   font-size: 1.2rem;
   line-height: 1.5rem;
   letter-spacing: 0px;
-  color: rgba(var(--color-slate-100));
+  color: var(--color-slate-100);
 }
 
 .GlpSwap-token-list {
   border-radius: 4px;
-  background: rgba(var(--color-slate-800));
+  background: var(--color-slate-800);
   padding: 1.5rem;
   padding-top: 0;
   text-align: left;
@@ -109,7 +109,7 @@
 
 .GlpSwap-box .Exchange-info-row .Exchange-info-label {
   margin-right: 0.8rem;
-  color: rgba(var(--color-gray-400));
+  color: var(--color-gray-400);
   opacity: 1;
 }
 
@@ -184,7 +184,7 @@
 .token-table th {
   font-weight: normal;
   letter-spacing: 0.25px;
-  color: rgba(var(--color-gray-400));
+  color: var(--color-gray-400);
   text-transform: uppercase;
 }
 
@@ -225,12 +225,12 @@
   border-radius: 3.1rem;
   cursor: pointer;
   user-select: none;
-  background: rgba(var(--color-cold-blue-500));
+  background: var(--color-cold-blue-500);
   display: flex;
   justify-content: center;
   align-items: center;
   border: none;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
 }
 
 .AppOrder-ball:hover {

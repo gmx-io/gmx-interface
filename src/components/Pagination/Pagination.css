@@ -20,7 +20,7 @@
   align-items: center;
   background: transparent;
   padding: 1rem 1.5rem;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   font-size: 1.2rem;
   cursor: pointer;
   border: none;
@@ -42,11 +42,11 @@
 }
 
 .pagination-btn:hover {
-  border-color: rgba(var(--color-gray-800));
+  border-color: var(--color-gray-800);
 }
 
 .pagination-btn.active {
-  border-color: rgba(var(--color-typography-primary));
+  border-color: var(--color-typography-primary);
 }
 
 @media screen and (max-width: 450px) {

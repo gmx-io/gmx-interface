@@ -5,6 +5,6 @@
   }
 
   &:nth-child(odd):hover {
-    background: rgba(var(--color-fill-surfaceHover));
+    background: var(--color-fill-surfaceHover);
   }
 }

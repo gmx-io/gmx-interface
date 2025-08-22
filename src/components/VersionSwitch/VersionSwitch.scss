@@ -1,6 +1,6 @@
 .VersionSwitch {
   display: grid;
-  background: rgba(var(--color-cold-blue-900));
+  background: var(--color-cold-blue-900);
   border-radius: 3px;
   width: 100%;
   grid-template-columns: 50% 50%;
@@ -12,7 +12,7 @@
   text-decoration: none;
   font-size: var(--font-size-body-medium);
   line-height: var(--line-height-body-medium);
-  color: rgba(var(--color-slate-100));
+  color: var(--color-slate-100);
   line-height: 1;
 
   &.v1 {
@@ -26,8 +26,8 @@
   }
 
   &.active {
-    background: rgba(var(--color-cold-blue-500));
-    color: rgba(var(--color-typography-primary));
+    background: var(--color-cold-blue-500);
+    color: var(--color-typography-primary);
   }
 }
 

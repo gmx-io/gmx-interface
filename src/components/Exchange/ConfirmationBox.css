@@ -26,7 +26,7 @@
   font-size: var(--font-size-body-small);
   background: none;
   border: none;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   opacity: 0.8;
   display: inline-flex;
   padding: 0;

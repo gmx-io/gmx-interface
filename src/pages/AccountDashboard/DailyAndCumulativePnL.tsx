@@ -52,18 +52,18 @@ const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };
 const getInitialDate = () => undefined;
 
 const CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = {
-  fill: "rgba(var(--color-slate-100))",
+  fill: "var(--color-slate-100)",
   fontSize: 11,
   fontWeight: 500,
 };
 
 const X_AXIS_LINE_PROPS: React.SVGProps<SVGLineElement> = {
-  stroke: "rgba(var(--color-slate-600))",
+  stroke: "var(--color-slate-600)",
   strokeWidth: 0.5,
 };
 
 const CHART_CURSOR_PROPS = {
-  stroke: "rgba(var(--color-slate-500))",
+  stroke: "var(--color-slate-500)",
   strokeWidth: 1,
   strokeDasharray: "2 2",
 };
@@ -71,8 +71,8 @@ const CHART_CURSOR_PROPS = {
 const ACTIVE_DOT_PROPS = {
   r: 4,
   strokeWidth: 2,
-  stroke: "rgba(var(--color-blue-300))",
-  fill: "rgba(var(--color-slate-900))",
+  stroke: "var(--color-blue-300)",
+  fill: "var(--color-slate-900)",
 };
 
 const CHART_MARGIN = { top: 16, right: 16, bottom: 16, left: 0 };
@@ -150,26 +150,21 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
                 content={ChartTooltip}
                 wrapperStyle={CHART_TOOLTIP_WRAPPER_STYLE}
               />
-              <CartesianGrid
-                vertical={false}
-                strokeDasharray="5 3"
-                strokeWidth={0.5}
-                stroke="rgba(var(--color-slate-600))"
-              />
+              <CartesianGrid vertical={false} strokeDasharray="5 3" strokeWidth={0.5} stroke="var(--color-slate-600)" />
               <Bar dataKey="pnlFloat" minPointSize={1} radius={2}>
                 {clusteredPnlData.map(renderPnlBar)}
               </Bar>
 
               <defs>
                 <linearGradient id="cumulative-pnl-gradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="-45%" stopColor="rgba(var(--color-blue-300))" stopOpacity={0.5} />
-                  <stop offset="100%" stopColor="rgba(var(--color-blue-300))" stopOpacity={0} />
+                  <stop offset="-45%" stopColor="var(--color-blue-300)" stopOpacity={0.5} />
+                  <stop offset="100%" stopColor="var(--color-blue-300)" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <Area
                 type="monotone"
                 dataKey="cumulativePnlFloat"
-                stroke="rgba(var(--color-blue-300))"
+                stroke="var(--color-blue-300)"
                 fill="url(#cumulative-pnl-gradient)"
                 strokeWidth={2}
                 dot={false}
@@ -223,11 +218,11 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
 function renderPnlBar(entry: AccountPnlHistoryPoint) {
   let fill: string;
   if (entry.pnl > 0n) {
-    fill = "rgba(var(--color-green-500))";
+    fill = "var(--color-green-500)";
   } else if (entry.pnl < 0n) {
-    fill = "rgba(var(--color-red-500))";
+    fill = "var(--color-red-500)";
   } else {
-    fill = "rgba(var(--color-gray-900))";
+    fill = "var(--color-gray-900)";
   }
   return <Cell key={entry.date} fill={fill} />;
 }
@@ -248,7 +243,7 @@ function ChartTooltip({ active, payload }: TooltipProps<number | string, "pnl" |
   return (
     <div
       className={`backdrop-blur-100 text-body-small z-50 flex flex-col rounded-4 bg-[rgba(160,163,196,0.1)]
-      bg-[linear-gradient(0deg,rgba(var(--color-slate-800)),rgba(var(--color-slate-800)))] px-12 pt-8 bg-blend-overlay`}
+      bg-[linear-gradient(0deg,var(--color-slate-800),var(--color-slate-800))] px-12 pt-8 bg-blend-overlay`}
     >
       <StatsTooltipRow label={t`Date`} value={stats.date} showDollar={false} />
       <StatsTooltipRow

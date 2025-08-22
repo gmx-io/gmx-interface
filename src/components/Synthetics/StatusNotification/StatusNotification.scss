@@ -9,11 +9,11 @@
       background: transparent;
       border: none;
       padding: 0;
-      color: rgba(var(--color-gray-300));
+      color: var(--color-gray-300);
       text-decoration: underline;
 
       &:hover {
-        color: rgba(var(--color-typography-primary));
+        color: var(--color-typography-primary);
       }
     }
   }
@@ -57,28 +57,28 @@
 
 .Toastify__toast--error {
   & .StatusNotification-title {
-    color: rgb(var(--color-red-500));
+    color: var(--color-red-500);
   }
 
   & .StatusNotification {
-    color: rgb(var(--color-red-100));
+    color: var(--color-red-100);
   }
 
   & .close-toast-button > svg {
-    color: rgb(var(--color-red-500)) !important;
+    color: var(--color-red-500) !important;
   }
 }
 
 .Toastify__toast--success {
   & .StatusNotification-title {
-    color: rgb(var(--color-green-500));
+    color: var(--color-green-500);
   }
 
   & .StatusNotification {
-    color: rgb(var(--color-green-100));
+    color: var(--color-green-100);
   }
 
   & .close-toast-button > svg {
-    color: rgb(var(--color-green-500)) !important;
+    color: var(--color-green-500) !important;
   }
 }

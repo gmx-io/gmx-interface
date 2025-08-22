@@ -25,5 +25,5 @@
 }
 
 .Tooltip-number {
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
 }

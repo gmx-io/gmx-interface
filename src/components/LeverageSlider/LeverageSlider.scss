@@ -1,5 +1,5 @@
-$blue: rgba(var(--color-blue-300));
-$gray: rgba(var(--color-slate-600));
+$blue: var(--color-blue-300);
+$gray: var(--color-slate-600);
 
 .LeverageSlider {
   margin-top: 1.5rem;
@@ -27,35 +27,35 @@ $gray: rgba(var(--color-slate-600));
   }
 
   .rc-slider-tooltip-placement-top .rc-slider-tooltip-arrow {
-    border-top-color: rgba(var(--color-slate-600));
+    border-top-color: var(--color-slate-600);
   }
 
   .rc-slider-rail {
     border-radius: 0;
     height: 4px;
-    background: rgba(var(--color-slate-800));
+    background: var(--color-slate-800);
   }
 
   .rc-slider-track {
     border-radius: 0;
     height: 4px;
-    background-color: rgba(var(--color-blue-300));
+    background-color: var(--color-blue-300);
   }
 
   .rc-slider-dot {
-    border: 1.5px solid rgba(var(--color-slate-800));
+    border: 1.5px solid var(--color-slate-800);
     border-radius: 50%;
     width: 4px;
     height: 4px;
-    background: rgba(var(--color-slate-900));
+    background: var(--color-slate-900);
     box-sizing: content-box;
     top: -1px;
   }
   .rc-slider-dot-active {
-    border-color: rgba(var(--color-blue-300));
+    border-color: var(--color-blue-300);
   }
   .rc-slider-handle {
-    background-color: rgba(var(--color-slate-800));
+    background-color: var(--color-slate-800);
     border: solid 2px $blue;
     width: 8px;
     height: 8px;
@@ -69,7 +69,7 @@ $gray: rgba(var(--color-slate-600));
 
   .rc-slider-mark-text,
   .rc-slider-mark-text-active {
-    color: rgba(var(--color-slate-100));
+    color: var(--color-slate-100);
     opacity: 0.7;
     font-size: 11px;
     font-weight: 500;
@@ -95,11 +95,11 @@ $gray: rgba(var(--color-slate-600));
 }
 
 // dotStyle={{
-//   border: "1.5px solid rgba(var(--color-blue-300))",
+//   border: "1.5px solid var(--color-blue-300)",
 //   width: "4px",
 //   height: "4px",
 //   borderRadius: "50%",
-//   backgroundColor: "rgba(var(--color-slate-900))",
+//   backgroundColor: "var(--color-slate-900)",
 //   boxSizing: "content-box",
 //   top: "-1px",
 // }}

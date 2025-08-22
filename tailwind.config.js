@@ -151,7 +151,7 @@ const lightColors = {
     secondaryDisabled: "#E0E0E8", 
   },
   fill: {
-    surfaceElevated50: "#F5F5F780",
+    surfaceElevated50: "#EDEDF280",
     surfaceElevatedHover: "#EFEFEF",
     surfaceHover: "#696D961A",
   },
@@ -190,76 +190,76 @@ function hexToRgb(hex) {
 
 const colors = {
   blue: {
-    300: "rgb(var(--color-blue-300) / <alpha-value>)",
-    400: "rgb(var(--color-blue-400) / <alpha-value>)",
-    500: "rgb(var(--color-blue-500) / <alpha-value>)",
-    600: "rgb(var(--color-blue-600) / <alpha-value>)",
-    700: "rgb(var(--color-blue-700) / <alpha-value>)",
+    300: "rgb(var(--color-blue-300-raw) / <alpha-value>)",
+    400: "rgb(var(--color-blue-400-raw) / <alpha-value>)",
+    500: "rgb(var(--color-blue-500-raw) / <alpha-value>)",
+    600: "rgb(var(--color-blue-600-raw) / <alpha-value>)",
+    700: "rgb(var(--color-blue-700-raw) / <alpha-value>)",
   },
   "cold-blue": {
-    500: "rgb(var(--color-cold-blue-500) / <alpha-value>)",
-    700: "rgb(var(--color-cold-blue-700) / <alpha-value>)",
-    900: "rgb(var(--color-cold-blue-900) / <alpha-value>)",
+    500: "rgb(var(--color-cold-blue-500-raw) / <alpha-value>)",
+    700: "rgb(var(--color-cold-blue-700-raw) / <alpha-value>)",
+    900: "rgb(var(--color-cold-blue-900-raw) / <alpha-value>)",
   },
   slate: {
-    100: "rgb(var(--color-slate-100) / <alpha-value>)",
-    400: "rgb(var(--color-slate-400) / <alpha-value>)",
-    500: "rgb(var(--color-slate-500) / <alpha-value>)",
-    600: "rgb(var(--color-slate-600) / <alpha-value>)",
-    700: "rgb(var(--color-slate-700) / <alpha-value>)",
-    750: "rgb(var(--color-slate-750) / <alpha-value>)",
-    800: "rgb(var(--color-slate-800) / <alpha-value>)",
-    900: "rgb(var(--color-slate-900) / <alpha-value>)",
-    950: "rgb(var(--color-slate-950) / <alpha-value>)",
+    100: "rgb(var(--color-slate-100-raw) / <alpha-value>)",
+    400: "rgb(var(--color-slate-400-raw) / <alpha-value>)",
+    500: "rgb(var(--color-slate-500-raw) / <alpha-value>)",
+    600: "rgb(var(--color-slate-600-raw) / <alpha-value>)",
+    700: "rgb(var(--color-slate-700-raw) / <alpha-value>)",
+    750: "rgb(var(--color-slate-750-raw) / <alpha-value>)",
+    800: "rgb(var(--color-slate-800-raw) / <alpha-value>)",
+    900: "rgb(var(--color-slate-900-raw) / <alpha-value>)",
+    950: "rgb(var(--color-slate-950-raw) / <alpha-value>)",
   },
   gray: {
-    50: "var(--color-gray-50-hex)",
-    100: "rgb(var(--color-gray-100) / <alpha-value>)",
-    200: "rgb(var(--color-gray-200) / <alpha-value>)",
-    300: "rgb(var(--color-gray-300) / <alpha-value>)",
-    400: "rgb(var(--color-gray-400) / <alpha-value>)",
-    500: "rgb(var(--color-gray-500) / <alpha-value>)",
-    600: "rgb(var(--color-gray-600) / <alpha-value>)",
-    700: "rgb(var(--color-gray-700) / <alpha-value>)",
-    800: "var(--color-gray-800-hex)",
-    900: "var(--color-gray-900-hex)",
-    950: "var(--color-gray-950-hex)",
+    50: "var(--color-gray-50)",
+    100: "rgb(var(--color-gray-100-raw) / <alpha-value>)",
+    200: "rgb(var(--color-gray-200-raw) / <alpha-value>)",
+    300: "rgb(var(--color-gray-300-raw) / <alpha-value>)",
+    400: "rgb(var(--color-gray-400-raw) / <alpha-value>)",
+    500: "rgb(var(--color-gray-500-raw) / <alpha-value>)",
+    600: "rgb(var(--color-gray-600-raw) / <alpha-value>)",
+    700: "rgb(var(--color-gray-700-raw) / <alpha-value>)",
+    800: "var(--color-gray-800)",
+    900: "var(--color-gray-900)",
+    950: "var(--color-gray-950)",
   },
   yellow: {
-    300: "rgb(var(--color-yellow-300) / <alpha-value>)",
-    500: "rgb(var(--color-yellow-500) / <alpha-value>)",
-    900: "rgb(var(--color-yellow-900) / <alpha-value>)",
+    300: "rgb(var(--color-yellow-300-raw) / <alpha-value>)",
+    500: "rgb(var(--color-yellow-500-raw) / <alpha-value>)",
+    900: "rgb(var(--color-yellow-900-raw) / <alpha-value>)",
   },
   red: {
-    100: "rgb(var(--color-red-100) / <alpha-value>)",
-    400: "rgb(var(--color-red-400) / <alpha-value>)",
-    500: "rgb(var(--color-red-500) / <alpha-value>)",
-    700: "rgb(var(--color-red-700) / <alpha-value>)",
-    900: "rgb(var(--color-red-900) / <alpha-value>)",
+    100: "rgb(var(--color-red-100-raw) / <alpha-value>)",
+    400: "rgb(var(--color-red-400-raw) / <alpha-value>)",
+    500: "rgb(var(--color-red-500-raw) / <alpha-value>)",
+    700: "rgb(var(--color-red-700-raw) / <alpha-value>)",
+    900: "rgb(var(--color-red-900-raw) / <alpha-value>)",
   },
   green: {
-    100: "rgb(var(--color-green-100) / <alpha-value>)",
-    300: "rgb(var(--color-green-300) / <alpha-value>)",
-    400: "rgb(var(--color-green-400) / <alpha-value>)",
-    500: "rgb(var(--color-green-500) / <alpha-value>)",
-    600: "rgb(var(--color-green-600) / <alpha-value>)",
-    700: "rgb(var(--color-green-700) / <alpha-value>)",
-    800: "rgb(var(--color-green-800) / <alpha-value>)",
-    900: "rgb(var(--color-green-900) / <alpha-value>)",
+    100: "rgb(var(--color-green-100-raw) / <alpha-value>)",
+    300: "rgb(var(--color-green-300-raw) / <alpha-value>)",
+    400: "rgb(var(--color-green-400-raw) / <alpha-value>)",
+    500: "rgb(var(--color-green-500-raw) / <alpha-value>)",
+    600: "rgb(var(--color-green-600-raw) / <alpha-value>)",
+    700: "rgb(var(--color-green-700-raw) / <alpha-value>)",
+    800: "rgb(var(--color-green-800-raw) / <alpha-value>)",
+    900: "rgb(var(--color-green-900-raw) / <alpha-value>)",
   },
-  white: "rgb(var(--color-white) / <alpha-value>)",
-  black: "rgb(var(--color-black) / <alpha-value>)",
+  white: "rgb(var(--color-white-raw) / <alpha-value>)",
+  black: "rgb(var(--color-black-raw) / <alpha-value>)",
   button: {
-    secondary: "rgb(var(--color-button-secondary) / <alpha-value>)",
+    secondary: "rgb(var(--color-button-secondary-raw) / <alpha-value>)",
   },
   fill: {
-    surfaceElevated50: "var(--color-fill-surfaceElevated50-hex)",
-    surfaceElevatedHover: "rgb(var(--color-fill-surfaceElevatedHover) / <alpha-value>)",
-    surfaceHover: "var(--color-fill-surfaceHover-hex)",
+    surfaceElevated50: "var(--color-fill-surfaceElevated50)",
+    surfaceElevatedHover: "rgb(var(--color-fill-surfaceElevatedHover-raw) / <alpha-value>)",
+    surfaceHover: "var(--color-fill-surfaceHover)",
   },
   typography: {
-    primary: "rgb(var(--color-typography-primary) / <alpha-value>)",
-    secondary: "rgb(var(--color-typography-secondary) / <alpha-value>)",
+    primary: "rgb(var(--color-typography-primary-raw) / <alpha-value>)",
+    secondary: "rgb(var(--color-typography-secondary-raw) / <alpha-value>)",
   },
 };
 
@@ -275,12 +275,12 @@ function injectColorsPlugin({ addBase }) {
 
       if (typeof value === "string") {
         const varName = `--color${colorGroup}${visualColorKey}`;
-        const hexVarName = `--color${colorGroup}${visualColorKey}-hex`;
+        const rawVarName = `--color${colorGroup}${visualColorKey}-raw`;
         
         return {
           ...vars,
-          [varName]: hexToRgb(value), // RGB for opacity support
-          [hexVarName]: value, // Hex for direct usage
+          [varName]: value, // Original value without changes
+          [rawVarName]: hexToRgb(value), // RGB for opacity support in Tailwind
         };
       } else {
         return { ...vars, ...extractColorVars(value, `-${colorKey}`) };
@@ -401,7 +401,7 @@ function fontComponentsPlugin({ addComponents, addBase }) {
       lineHeight: "1.4rem",
       fontWeight: 500,
       letterSpacing: "0.08em",
-      color: "rgb(var(--color-slate-100))",
+      color: "var(--color-slate-100)",
       textTransform: "uppercase",
     }
   });

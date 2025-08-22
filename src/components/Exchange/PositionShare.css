@@ -30,7 +30,7 @@
 }
 .position-share .info {
   list-style: none;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   font-size: 1.25rem;
   display: flex;
   padding-left: 0;
@@ -72,7 +72,7 @@
 }
 .position-share .referral-code {
   display: flex;
-  background: rgba(var(--color-gray-950));
+  background: var(--color-gray-950);
   max-width: 18rem;
   border-radius: 5px;
   align-items: center;
@@ -130,7 +130,7 @@ a.App-button-option.tweet-link.disabled {
   bottom: 0;
   right: 0;
   background: #00000055;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   display: inline-flex;
   justify-content: flex-end;
   align-items: center;

@@ -56,7 +56,7 @@ export function TradingSettings({
   const isExpressTradingDisabled = isOutOfGasPaymentBalance || isGeminiWallet;
 
   return (
-    <div className="mt-16">
+    <div>
       {getIsExpressSupported(chainId) && (
         <>
           <SettingsSection>

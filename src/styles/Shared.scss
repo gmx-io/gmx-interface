@@ -6,7 +6,7 @@ body,
   font-size: 10px;
   height: 100%;
   width: 100%;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
 }
 
 #root {
@@ -88,23 +88,23 @@ code {
 }
 
 :root {
-  --main-bg-color: rgba(var(--color-slate-950));
-  --dark-blue: rgba(var(--color-slate-900));
-  --dark-blue-bg: rgba(var(--color-slate-900));
-  --dark-blue-accent: rgba(var(--color-slate-100));
-  --primary-btn-bg: rgba(var(--color-blue-600));
-  --primary-btn-hover: rgba(var(--color-blue-400));
-  --primary-btn-active: color-mix(in srgb, rgba(var(--color-blue-300)), rgba(var(--color-blue-400)) 90%);
-  --dark-blue-hover: rgba(var(--color-cold-blue-900));
-  --dark-blue-border: rgba(var(--color-gray-800));
-  --dark-blue-active: rgba(var(--color-cold-blue-700));
-  --warning-yellow: rgba(var(--color-yellow-300));
+  --main-bg-color: var(--color-slate-950);
+  --dark-blue: var(--color-slate-900);
+  --dark-blue-bg: var(--color-slate-900);
+  --dark-blue-accent: var(--color-slate-100);
+  --primary-btn-bg: var(--color-blue-600);
+  --primary-btn-hover: var(--color-blue-400);
+  --primary-btn-active: color-mix(in srgb, var(--color-blue-300), var(--color-blue-400) 90%);
+  --dark-blue-hover: var(--color-cold-blue-900);
+  --dark-blue-border: var(--color-gray-800);
+  --dark-blue-active: var(--color-cold-blue-700);
+  --warning-yellow: var(--color-yellow-300);
   --avax-red: #e84143;
   --arbitrum-blue: #28a0f0;
   --border-radius-sm: 8px;
-  --error-red: rgba(var(--color-red-500));
-  --error-red-hover: rgba(var(--color-red-400));
-  --green: rgba(var(--color-green-500));
+  --error-red: var(--color-red-500);
+  --error-red-hover: var(--color-red-400);
+  --green: var(--color-green-500);
 
   --default-container-padding: 3.2rem;
   --default-container-padding-mobile: 1rem;
@@ -128,7 +128,7 @@ input[type="number"] {
 // TODO: remove this
 input {
   font-size: var(--font-size-body-medium);
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   outline: none;
   background: none;
   padding: 1.25rem;
@@ -166,7 +166,7 @@ tr {
 }
 
 .muted {
-  color: rgba(var(--color-slate-100));
+  color: var(--color-slate-100);
 }
 
 .strong {
@@ -188,7 +188,7 @@ tr {
 
 .label,
 .label a {
-  color: rgba(var(--color-slate-100));
+  color: var(--color-slate-100);
 }
 
 ul {
@@ -209,13 +209,13 @@ a.plain {
 }
 
 .default-btn {
-  background: rgba(var(--color-blue-600));
+  background: var(--color-blue-600);
   border-radius: 4px;
   font-size: var(--font-size-body-medium);
   line-height: 2rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: rgba(var(--color-white)) !important;
+  color: var(--color-white) !important;
   padding-left: 1.6rem;
   padding-right: 1.6rem;
   /* padding: 9px 16px!important; */
@@ -338,7 +338,7 @@ s .default-btn:active {
 button.btn-link {
   margin-top: 1.5rem;
   background: none;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   border: none;
   padding: 0;
   font-size: var(--font-size-body-medium);
@@ -392,7 +392,7 @@ button.btn-link:hover .logout-icon {
 
 .subtext {
   font-size: 1.2rem;
-  color: rgba(var(--color-slate-100));
+  color: var(--color-slate-100);
   margin-left: 0.25rem;
 }
 

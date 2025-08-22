@@ -56,7 +56,7 @@ export function ColorfulBanner({
   return (
     <div
       className={cx(
-        "flex justify-between gap-8 rounded-8 border-l-2 p-12 text-13 leading-[1.3]",
+        "flex justify-between gap-8 rounded-8 border-l-2 p-12 text-13 leading-[1.3] text-typography-primary",
         withBorder && colorSchemas[color].border,
         colorSchemas[color].bg,
         className

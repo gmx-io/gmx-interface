@@ -26,7 +26,7 @@ $app-card-padding: 1.5rem;
   padding-left: 3.2rem;
   padding-right: 3.2rem;
   background: transparent 0% 0% no-repeat padding-box;
-  border-bottom: 1px solid rgba(var(--color-slate-700));
+  border-bottom: 1px solid var(--color-slate-700);
   z-index: 1;
 }
 
@@ -76,7 +76,7 @@ $app-card-padding: 1.5rem;
 }
 
 .App-header-menu-icon {
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   font-size: 2rem;
   cursor: pointer;
   opacity: 0.7;
@@ -106,7 +106,7 @@ $app-card-padding: 1.5rem;
 .App-box-solid {
   position: relative;
   border-radius: 8px;
-  background: rgba(var(--color-slate-900));
+  background: var(--color-slate-900);
   font-size: var(--font-size-body-medium);
 }
 
@@ -137,7 +137,7 @@ $app-card-padding: 1.5rem;
 .App-card-divider-vertical {
   width: 0.5px;
   height: 8.8rem;
-  background: rgba(var(--color-slate-600));
+  background: var(--color-slate-600);
 }
 
 .App-card-title-block {
@@ -159,13 +159,13 @@ $app-card-padding: 1.5rem;
 .App-card-info-title {
   font-weight: normal;
   letter-spacing: 0px;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
 }
 
 .App-card-info-subtitle {
   font-weight: normal;
   letter-spacing: 0px;
-  color: rgba(var(--color-gray-400));
+  color: var(--color-gray-400);
 }
 
 .App-card-title-iconlist {
@@ -188,23 +188,23 @@ $app-card-padding: 1.5rem;
 }
 
 .App-header-user-address {
-  border: 0.5px solid rgba(var(--color-slate-600));
+  border: 0.5px solid var(--color-slate-600);
   height: 3.6rem;
   border-radius: 0.4rem;
   display: inline-flex;
   align-items: center;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   position: relative;
 }
 
 .mobile-menu-divider {
   height: 1px;
-  background: rgba(var(--color-slate-100));
+  background: var(--color-slate-100);
 }
 
 .App-card-divider {
   height: 0.5px;
-  background: rgba(var(--color-slate-600));
+  background: var(--color-slate-600);
   margin: 1.05rem -1.5rem;
 
   &:last-child {
@@ -218,7 +218,7 @@ $app-card-padding: 1.5rem;
 
 .line-divider {
   height: 1px;
-  background: rgba(var(--color-slate-700));
+  background: var(--color-slate-700);
   margin: 1.5rem 0;
 }
 
@@ -268,7 +268,7 @@ $app-card-padding: 1.5rem;
 .section-title-content .section-title-content__title {
   font-size: var(--font-size-body-large);
   line-height: 3.1rem;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   letter-spacing: 0px;
 }
 
@@ -276,14 +276,14 @@ $app-card-padding: 1.5rem;
   font-size: 1.8rem;
   line-height: 2.3rem;
   letter-spacing: 0px;
-  color: rgba(var(--color-slate-100));
+  color: var(--color-slate-100);
   margin-top: 0.4rem;
   max-width: 62rem;
 }
 
 .section-title-content .section-title-content__description span {
   cursor: pointer;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
 }
 
 .Page-title-section {
@@ -311,7 +311,7 @@ $app-card-padding: 1.5rem;
 }
 
 .Page-description {
-  color: rgba(var(--color-slate-100));
+  color: var(--color-slate-100);
   font-size: var(--font-size-body-medium);
   line-height: var(--line-height-body-medium);
 }
@@ -325,7 +325,7 @@ $app-card-padding: 1.5rem;
 }
 
 .Page-description span:hover {
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   opacity: 0.9;
 }
 
@@ -364,7 +364,7 @@ $app-card-padding: 1.5rem;
   font-size: var(--font-size-body-large);
   font-weight: 500;
   letter-spacing: -0.012em;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   margin-bottom: $app-card-padding;
   display: flex;
   align-items: center;
@@ -451,20 +451,20 @@ $app-card-padding: 1.5rem;
 .App-header a.active {
   pointer-events: none;
   opacity: 1;
-  color: rgba(var(--color-gray-50));
+  color: var(--color-gray-50);
 }
 
 .App-header .a:hover,
 .App-header a:hover {
   opacity: 1;
-  color: rgba(var(--color-gray-50));
+  color: var(--color-gray-50);
 }
 
 .App-header-container-left .a,
 .App-header-container-left a {
   padding: 1.8rem 1.7rem;
   display: block;
-  color: rgba(var(--color-slate-100));
+  color: var(--color-slate-100);
   font-size: var(--font-size-body-medium);
   line-height: 1.8rem;
   font-weight: normal;
@@ -472,7 +472,7 @@ $app-card-padding: 1.5rem;
 
 .App-header-container-left .a.active,
 .App-header-container-left a.active {
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
 }
 
 .Toastify__toast-container--top-right {
@@ -615,9 +615,9 @@ $app-card-padding: 1.5rem;
 
 a.App-cta,
 button.App-cta {
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   text-decoration: none;
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(var(--color-blue-700)) 100%);
+  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, var(--color-blue-700) 100%);
 }
 
 .App-cta.small {
@@ -628,13 +628,13 @@ a.App-cta.transparent,
 button.App-cta.transparent {
   box-shadow: none;
   background: none;
-  color: rgba(var(--color-gray-400));
+  color: var(--color-gray-400);
   opacity: 1;
 }
 
 a.App-cta.transparent:hover,
 button.App-cta.transparent:hover:enabled {
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   box-shadow: none;
   background: none;
 }
@@ -653,7 +653,7 @@ button.App-button-option {
   line-height: 2rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   padding-left: 16px;
   padding-right: 16px;
   text-decoration: none;
@@ -713,7 +713,7 @@ a.App-social-link {
   margin-left: 1.1rem;
   margin-right: 1.1rem;
   font-size: 2.635rem;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   opacity: 0.8;
 }
 
@@ -782,21 +782,21 @@ button.App-button {
 }
 
 .Toastify__toast--error {
-  background: rgba(var(--color-red-900)) !important;
-  border-bottom: 2px solid rgba(var(--color-red-500));
+  background: var(--color-red-900) !important;
+  border-bottom: 2px solid var(--color-red-500);
 
   .link-underline {
-    color: rgba(var(--color-white)) !important;
+    color: var(--color-white) !important;
   }
 }
 
 .Toastify__toast--success {
-  background: rgba(var(--color-green-900));
-  border-bottom: 2px solid rgba(var(--color-green-500));
+  background: var(--color-green-900);
+  border-bottom: 2px solid var(--color-green-500);
 }
 
 .Toastify__toast--default {
-  background: rgba(var(--color-cold-blue-900));
+  background: var(--color-cold-blue-900);
 }
 
 .Toastify__toast .Toastify__close-button:hover {
@@ -816,7 +816,7 @@ button.App-button {
   z-index: 2;
 }
 .Toastify__close-button:hover {
-  background: rgba(var(--color-gray-700)) 0% 0% no-repeat padding-box;
+  background: var(--color-gray-700) 0% 0% no-repeat padding-box;
 }
 .Toastify__toast-body {
   font: normal normal normal 1.4rem/1.6rem "TTHoves";
@@ -868,7 +868,7 @@ button.App-button {
 }
 
 .positive {
-  color: rgba(var(--color-green-500));
+  color: var(--color-green-500);
 }
 
 .positive-background {
@@ -884,11 +884,11 @@ button.App-button {
 }
 
 .warning {
-  color: rgba(var(--color-yellow-300));
+  color: var(--color-yellow-300);
 }
 
 .warning-decoration {
-  text-decoration-color: rgba(var(--color-yellow-300));
+  text-decoration-color: var(--color-yellow-300);
 }
 
 .App-warning,
@@ -905,7 +905,7 @@ button.App-button {
 }
 
 .App-slider .rc-slider-track {
-  background: linear-gradient(90deg, #2e3dcd, rgba(var(--color-blue-600)));
+  background: linear-gradient(90deg, #2e3dcd, var(--color-blue-600));
 }
 
 .App-slider .rc-slider-dot {
@@ -917,12 +917,12 @@ button.App-button {
 }
 
 .App-slider .rc-slider-dot-active {
-  background: rgba(var(--color-blue-500));
+  background: var(--color-blue-500);
 }
 
 .App-slider .rc-slider-handle {
-  background: rgba(var(--color-slate-600));
-  border: 2px solid rgba(var(--color-blue-600));
+  background: var(--color-slate-600);
+  border: 2px solid var(--color-blue-600);
 }
 
 .App-slider .rc-slider-handle:active {
@@ -931,7 +931,7 @@ button.App-button {
 
 .App-slider .rc-slider-mark-text,
 .App-slider .rc-slider-mark-text-active {
-  color: rgba(var(--color-slate-100));
+  color: var(--color-slate-100);
   opacity: 0.5;
 }
 
@@ -957,7 +957,7 @@ button.App-button {
 }
 
 .header-connect-btn {
-  background: rgba(var(--color-blue-600));
+  background: var(--color-blue-600);
 }
 
 .header-connect-btn:hover {
@@ -966,7 +966,7 @@ button.App-button {
 
 .header-connect-btn:focus {
   background: #7a7fec;
-  border: 1px solid rgba(var(--color-blue-600));
+  border: 1px solid var(--color-blue-600);
   box-sizing: border-box;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
@@ -1070,7 +1070,7 @@ button.App-button {
     padding-left: 1.6rem;
     padding-right: 1.6rem;
     background: transparent 0% 0% no-repeat padding-box;
-    border-bottom: 1px solid rgba(var(--color-slate-700));
+    border-bottom: 1px solid var(--color-slate-700);
   }
 
   .App-header.small::after {
@@ -1164,7 +1164,7 @@ button.App-button {
 }
 
 .walletconnect-modal__mobile__toggle a {
-  color: rgba(var(--color-black));
+  color: var(--color-black);
 }
 .walletconnect-modal__base {
   max-height: 100%;

@@ -635,7 +635,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                     `absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer
                     items-center justify-center rounded-full bg-slate-600 text-typography-secondary`,
                     {
-                      "hover:bg-[rgba(var(--color-fill-surfaceHover))] hover:bg-[linear-gradient(0deg,rgba(var(--color-slate-600)),rgba(var(--color-slate-600)))] hover:bg-blend-overlay":
+                      "hover:bg-[var(--color-fill-surfaceHover)] hover:bg-[linear-gradient(0deg,var(--color-slate-600),var(--color-slate-600))] hover:bg-blend-overlay":
                         isSwitchTokensAllowed,
                     }
                   )}

@@ -4,7 +4,7 @@
 
     &:hover {
       .subtext {
-        color: rgba(var(--color-typography-primary));
+        color: var(--color-typography-primary);
       }
     }
   }
@@ -12,7 +12,7 @@
     width: 1.6rem;
   }
   .subtext {
-    color: rgba(var(--color-slate-100));
+    color: var(--color-slate-100);
   }
 }
 

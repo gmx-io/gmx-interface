@@ -8,13 +8,13 @@
   text-decoration-style: solid;
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
-  text-decoration-color: rgba(var(--color-gray-300));
+  text-decoration-color: var(--color-gray-300);
   user-select: none;
-  color: rgba(var(--color-gray-300));
+  color: var(--color-gray-300);
 
   &:hover {
-    text-decoration-color: rgba(var(--color-typography-primary));
-    color: rgba(var(--color-typography-primary));
+    text-decoration-color: var(--color-typography-primary);
+    color: var(--color-typography-primary);
   }
 }
 

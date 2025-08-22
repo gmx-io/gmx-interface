@@ -48,7 +48,7 @@ const getYAxisLabel = (): LabelProps => ({
   value: t`Size, $`,
   position: "top",
   offset: 0,
-  fill: "rgb(var(--color-typography-primary))",
+  fill: "var(--color-typography-primary)",
   opacity: 0.7,
   dx: -3,
   fontSize: 12,
@@ -62,7 +62,7 @@ const getOraclePriceLabel = (): ImplicitLabelType => ({
   position: "bottom",
   offset: 28,
   value: t`ORACLE PRICE`,
-  fill: "rgb(var(--color-typography-primary))",
+  fill: "var(--color-typography-primary)",
   opacity: 0.7,
   fontSize: 10,
 });
@@ -72,7 +72,7 @@ const DOLLAR: bigint = expandDecimals(1n, USD_DECIMALS);
 const CHART_MARGIN: Margin = { bottom: 10, top: 20, right: 0 };
 const TOOLTIP_WRAPPER_POSITION = { x: 0, y: 0 };
 const Y_AXIS_TICK = {
-  fill: "rgb(var(--color-typography-primary))",
+  fill: "var(--color-typography-primary)",
   opacity: 0.7,
   fontSize: 12,
 } satisfies SVGProps<SVGTextElement>;
@@ -332,7 +332,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           </linearGradient>
         </defs>
 
-        <CartesianGrid strokeDasharray="2 2" stroke="rgb(var(--color-typography-primary))" opacity={0.07} />
+        <CartesianGrid strokeDasharray="2 2" stroke="var(--color-typography-primary)" opacity={0.07} />
 
         {drawLeftTransparent && (
           <>
@@ -475,7 +475,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
         <ReferenceLine
           x={oraclePrice}
           label={oraclePriceLabel}
-          stroke="rgb(var(--color-typography-primary))"
+          stroke="var(--color-typography-primary)"
           opacity={0.6}
           strokeDasharray="2 2"
         />
@@ -665,7 +665,7 @@ function Tick(
       y={y}
       height={height}
       textAnchor={textAnchor}
-      fill="rgb(var(--color-typography-primary))"
+      fill="var(--color-typography-primary)"
       opacity={index === marketPriceIndex ? 1 : 0.7}
       fontWeight={index === marketPriceIndex ? "bold" : "normal"}
       verticalAnchor={verticalAnchor}

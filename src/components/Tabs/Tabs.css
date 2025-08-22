@@ -4,8 +4,8 @@
   font-size: var(--font-size-body-medium);
   border-radius: 3px;
   overflow: hidden;
-  color: rgba(var(--color-slate-100));
-  background: rgba(var(--color-cold-blue-900));
+  color: var(--color-slate-100);
+  background: var(--color-cold-blue-900);
   box-shadow: inset 0px 0px 30px 5px rgba(255, 255, 255, 0.01);
 }
 
@@ -26,15 +26,15 @@
 }
 
 .Tab.Tab__block .Tab-option:not(.disabled):not(.active):hover {
-  color: rgba(var(--color-typography-primary));
-  background: rgba(var(--color-cold-blue-700));
+  color: var(--color-typography-primary);
+  background: var(--color-cold-blue-700);
 }
 
 .Tab.Tab__block .Tab-option.active {
   opacity: 1;
   pointer-events: none;
-  background: rgba(var(--color-cold-blue-500));
-  color: rgba(var(--color-typography-primary));
+  background: var(--color-cold-blue-500);
+  color: var(--color-typography-primary);
 }
 
 .Tab.Tab__block .Tab-option.active .Tab-option-icon {
@@ -56,15 +56,15 @@
   display: inline-block;
   margin-right: 1.5rem;
   font-size: var(--font-size-body-medium);
-  color: rgba(var(--color-slate-100));
+  color: var(--color-slate-100);
 }
 
 .Tab.Tab__inline .Tab-option:not(.disabled):not(.active):hover {
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
 }
 
 .Tab.Tab__inline .Tab-option.active {
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   pointer-events: none;
 }
 

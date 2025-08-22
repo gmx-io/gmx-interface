@@ -5,12 +5,12 @@
   .Dropdown-current {
     font-size: 2.1rem;
     font-weight: 700;
-    color: rgba(var(--color-typography-primary));
+    color: var(--color-typography-primary);
   }
 
   .Dropdown-current-arrow {
     font-size: var(--font-size-body-small);
-    color: rgba(var(--color-slate-100));
+    color: var(--color-slate-100);
     margin-left: 1rem;
     margin-top: -2px;
   }
@@ -37,7 +37,7 @@
 .Chart-header {
   display: grid;
   grid-template-columns: minmax(auto, max-content) auto;
-  background-color: rgba(var(--color-slate-900));
+  background-color: var(--color-slate-900);
 }
 
 .Chart-top-scrollable {
@@ -72,12 +72,12 @@
 
 .Chart-top-scrollable-fade-left {
   justify-content: flex-start;
-  background: linear-gradient(to left, transparent, rgba(var(--color-slate-950)) 50%, rgba(var(--color-slate-950)));
+  background: linear-gradient(to left, transparent, var(--color-slate-950) 50%, var(--color-slate-950));
 }
 
 .Chart-top-scrollable-fade-right {
   justify-content: flex-end;
-  background: linear-gradient(to right, transparent, rgba(var(--color-slate-950)) 50%, rgba(var(--color-slate-950)));
+  background: linear-gradient(to right, transparent, var(--color-slate-950) 50%, var(--color-slate-950));
 }
 
 .Chart-header-value {

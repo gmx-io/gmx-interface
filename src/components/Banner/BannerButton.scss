@@ -24,7 +24,7 @@
   }
 
   .Banner-action {
-    background: rgba(var(--color-cold-blue-900));
+    background: var(--color-cold-blue-900);
     padding: 0.65rem 1.5rem;
     border-radius: var(--border-radius-sm);
     display: grid;
@@ -37,8 +37,8 @@
     line-height: 1.5;
 
     &:hover {
-      background: rgba(var(--color-slate-600));
-      color: rgba(var(--color-typography-primary));
+      background: var(--color-slate-600);
+      color: var(--color-typography-primary);
     }
 
     .Banner-right-icon {

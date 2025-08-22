@@ -9,7 +9,7 @@
 
 .BuyGMXGLP-description {
   letter-spacing: 0px;
-  color: rgba(var(--color-slate-100));
+  color: var(--color-slate-100);
 }
 
 .bridge-options {
@@ -52,7 +52,7 @@
 }
 
 .GMX-btn:hover {
-  background: rgba(var(--color-gray-900));
+  background: var(--color-gray-900);
 }
 
 .GMX-btn:focus,
@@ -83,7 +83,7 @@
 
 .GMX-btn-label {
   letter-spacing: 0px;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   font-size: 1.85rem;
   line-height: 2.325rem;
 }

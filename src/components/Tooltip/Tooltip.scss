@@ -14,11 +14,11 @@
   text-align: left;
   white-space: normal;
   background: linear-gradient(0deg, #a0a3c41a, #a0a3c41a),
-    linear-gradient(0deg, rgba(var(--color-slate-800)), rgba(var(--color-slate-800)));
+    linear-gradient(0deg, var(--color-slate-800), var(--color-slate-800));
   backdrop-filter: blur(14px);
   box-shadow: 0px 4px 14px 0px #00000040;
   z-index: 10000;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
 
   a {
     text-decoration: underline;
@@ -133,7 +133,7 @@
 
 .Tooltip-divider {
   height: 1px;
-  background-color: rgba(var(--color-gray-500));
+  background-color: var(--color-gray-500);
   margin: 0.5rem 0;
 }
 
@@ -159,7 +159,7 @@
 }
 
 .Tooltip-number {
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
 }
 
 .Tooltip-flex {

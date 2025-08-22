@@ -8,8 +8,8 @@
 }
 
 .Exchange-trigger-order-info {
-  color: rgba(var(--color-gray-300));
-  border: 1px solid rgba(var(--color-slate-700));
+  color: var(--color-gray-300);
+  border: 1px solid var(--color-slate-700);
 }
 
 .Exchange-list-tab-container {
@@ -30,7 +30,7 @@
 
 .Exchange-empty-positions-list-note {
   padding-bottom: 0.5rem;
-  color: rgba(var(--color-slate-100));
+  color: var(--color-slate-100);
 }
 
 .Exchange-empty-positions-list-note.small {
@@ -41,7 +41,7 @@
   display: inline-block;
   font-size: 1.25rem;
   margin-left: 0.8rem;
-  color: rgba(var(--color-blue-600));
+  color: var(--color-blue-600);
   vertical-align: middle;
   margin-top: -0.31rem;
 }
@@ -153,7 +153,7 @@
   padding: 0 0.8rem;
   border-radius: 3px;
   background: #5b2ab0;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   opacity: 0.7;
   cursor: pointer;
 }
@@ -272,7 +272,7 @@
 }
 
 .ExchangeChart-info-label {
-  color: rgba(var(--color-slate-100));
+  color: var(--color-slate-100);
   font-size: var(--font-size-body-small);
   line-height: var(--line-height-body-small);
   white-space: nowrap;
@@ -404,14 +404,14 @@ body.dragging .ExchangeChart iframe {
 }
 
 .active-order-tooltip {
-  background-color: color-mix(in srgb, rgba(var(--color-slate-100)) 15%, transparent);
+  background-color: color-mix(in srgb, var(--color-slate-100) 15%, transparent);
   padding: 1rem;
   border-radius: var(--border-radius-sm);
   white-space: normal;
 }
 
 .active-order-tooltip:hover {
-  background-color: color-mix(in srgb, rgba(var(--color-slate-100)) 25%, transparent);
+  background-color: color-mix(in srgb, var(--color-slate-100) 25%, transparent);
 }
 
 .active-order-tooltip > .active-order-error {
@@ -465,12 +465,12 @@ button.Exchange-list-action {
   border-radius: 3px;
   background: none;
   border: none;
-  color: rgba(var(--color-gray-300));
+  color: var(--color-gray-300);
   margin: 0 0.3rem;
 }
 
 button.Exchange-list-action:hover {
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
 }
 
 table.Exchange-list {
@@ -496,7 +496,7 @@ table.Exchange-list.Orders td {
 }
 
 table.Exchange-list tr {
-  border-bottom: 1px solid rgba(var(--color-slate-700));
+  border-bottom: 1px solid var(--color-slate-700);
 }
 
 table.Exchange-list tbody tr:last-child {
@@ -504,7 +504,7 @@ table.Exchange-list tbody tr:last-child {
 }
 
 table.Exchange-list tr:hover {
-  background: rgba(var(--color-cold-blue-900));
+  background: var(--color-cold-blue-900);
   box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
   cursor: pointer;
 }
@@ -532,7 +532,7 @@ table.Exchange-list .Exchange-list-item td:first-child {
 }
 
 table.Position-list .Exchange-list-item-active {
-  border-left: 2px solid rgba(var(--color-cold-blue-500));
+  border-left: 2px solid var(--color-cold-blue-500);
 }
 
 .Position-card-title {
@@ -541,7 +541,7 @@ table.Position-list .Exchange-list-item-active {
 
 .Position-active-card::before {
   content: "";
-  border-left: 2px solid rgba(var(--color-cold-blue-500));
+  border-left: 2px solid var(--color-cold-blue-500);
   position: absolute;
   left: -8px;
   bottom: -1px;
@@ -570,13 +570,13 @@ table.Position-list .Exchange-list-item-active {
 }
 
 .Exchange-info-row.top-line {
-  border-top: 1px solid rgba(var(--color-slate-700));
+  border-top: 1px solid var(--color-slate-700);
   margin-top: 1.5rem;
   padding-top: 1.5rem;
 }
 
 .Exchange-info-label {
-  color: rgba(var(--color-slate-100));
+  color: var(--color-slate-100);
   margin-right: 0.8rem;
 }
 .Exchange-info-value-warning {
@@ -665,8 +665,8 @@ table.Position-list .Exchange-list-item-active {
   border-radius: 0.3rem;
   background: linear-gradient(
     90deg,
-    rgba(var(--color-cold-blue-900)) 0%,
-    color-mix(in srgb, rgba(var(--color-slate-100)) 40%, transparent) 100%
+    var(--color-cold-blue-900) 0%,
+    color-mix(in srgb, var(--color-slate-100) 40%, transparent) 100%
   );
   outline: 0.05rem solid transparent;
   outline-offset: -0.1rem;
@@ -677,7 +677,7 @@ table.Position-list .Exchange-list-item-active {
 }
 
 .Exchange-swap-section:focus-within {
-  outline-color: rgba(var(--color-cold-blue-500));
+  outline-color: var(--color-cold-blue-500);
 }
 
 .Exchange-swap-option-tabs.Tab.Tab__block .Tab-option {
@@ -712,18 +712,18 @@ table.Position-list .Exchange-list-item-active {
   right: 1.25rem;
   top: 0;
   padding: 0.465rem 0.8rem;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   outline: 1rem solid rgba(33, 37, 64, 1);
   border-radius: 3px;
   z-index: 1;
   cursor: pointer;
   font-size: var(--font-size-body-medium);
-  background: rgba(var(--color-cold-blue-500));
+  background: var(--color-cold-blue-500);
   border: none;
 }
 
 .Exchange-swap-max:hover {
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   background: #484e92;
 }
 
@@ -773,12 +773,12 @@ input.Exchange-swap-input.small {
   border-radius: 3.1rem;
   cursor: pointer;
   user-select: none;
-  background: rgba(var(--color-cold-blue-500));
+  background: var(--color-cold-blue-500);
   display: flex;
   justify-content: center;
   align-items: center;
   border: none;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
 }
 
 .Exchange-swap-ball:hover {
@@ -790,7 +790,7 @@ input.Exchange-swap-input.small {
 }
 
 .Exchange-swap-ball[disabled] {
-  background-color: rgba(var(--color-slate-700));
+  background-color: var(--color-slate-700);
   cursor: not-allowed;
 }
 
@@ -887,7 +887,7 @@ table.Exchange-list-small td {
   margin-right: 1.5rem;
   background: none;
   border: none;
-  color: rgba(var(--color-typography-primary));
+  color: var(--color-typography-primary);
   padding: 0;
 }
 .cancel-order-btn:hover {
@@ -930,11 +930,11 @@ table.Exchange-list-small td {
 }
 
 .Position-pnl.negative:hover {
-  color: rgba(var(--color-red-400));
+  color: var(--color-red-400);
 }
 
 .Position-pnl.positive:hover {
-  color: rgba(var(--color-green-300));
+  color: var(--color-green-300);
 }
 
 .VersionSwitch-wrapper {
