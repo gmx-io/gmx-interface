@@ -525,6 +525,10 @@ msgstr ""
 msgid "Funding Fee"
 msgstr "Comisión de Financiación"
 
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Light"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Confirm Limit Order"
 msgstr "Confirmar Orden Límite"
@@ -2153,6 +2157,10 @@ msgstr "Adquirir con GLP en Avalanche"
 msgid "No esGMX to claim"
 msgstr "No hay esGMX para reclamar"
 
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "System"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
 msgstr "Incremento solicitado de {tokenSymbol} {longOrShortText} en {0} USD."
@@ -2437,6 +2445,11 @@ msgstr "La orden no se ejecutará ya que su precio de activación está más all
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
 msgstr "{typeString} Corto Stop Mercado: {0} una posición corta cuando el precio está por debajo del precio de activación."
+
+#: src/components/SettingsModal/ThemeSelector.tsx
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Theme"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default Allowed Slippage"
@@ -5543,8 +5556,8 @@ msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using y
 msgstr ""
 
 #: src/components/SideNav/ThemeNavItem.tsx
-msgid "Light Mode"
-msgstr ""
+#~ msgid "Light Mode"
+#~ msgstr ""
 
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
@@ -7331,8 +7344,8 @@ msgid "The available liquidity will be the lesser of the difference between the 
 msgstr "La liquidez disponible será la menor de la diferencia entre el valor máximo y el valor actual tanto para la reserva como para el interés abierto."
 
 #: src/components/SideNav/ThemeNavItem.tsx
-msgid "Dark Mode"
-msgstr ""
+#~ msgid "Dark Mode"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
@@ -7598,6 +7611,10 @@ msgstr "{increaseOrDecreaseText} {tokenText} por {sizeText}"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Neither collateral nor realized PnL is enough to cover pending fees. Please close a larger position amount."
+msgstr ""
+
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Dark"
 msgstr ""
 
 #: src/pages/Stake/UnstakeModal.tsx

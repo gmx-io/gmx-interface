@@ -2,14 +2,8 @@
   &-button {
     display: flex;
     align-items: center;
-    gap: 4px;
 
     cursor: pointer;
-
-    &:not(&-disabled),
-    &:not(&-disabled) * {
-      @apply gmx-hover:text-blue-300;
-    }
 
     &-disabled {
       cursor: text;

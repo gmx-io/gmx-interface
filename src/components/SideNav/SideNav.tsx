@@ -14,12 +14,10 @@ import EcosystemIcon from "img/ecosystem.svg?react";
 import BuyIcon from "img/ic_buy.svg?react";
 import LeaderboardIcon from "img/leaderboard.svg?react";
 import logoIcon from "img/logo_GMX.svg";
-import LogoSmallIcon from "img/logo_GMX_small.svg?react";
 import ReferralsIcon from "img/referrals.svg?react";
 import TradeIcon from "img/trade.svg?react";
 
 import { LanguageNavItem } from "./LanguageNavItem";
-import { ThemeNavItem } from "./ThemeNavItem";
 
 function SideNav({ className }: { className?: string }) {
   const [isCollapsed, setIsCollapsed] = useLocalStorageSerializeKey("is-side-nav-collapsed", false);
@@ -43,7 +41,6 @@ function SideNav({ className }: { className?: string }) {
 
         <ul className={cx("flex list-none flex-col px-0")}>
           <LanguageNavItem isCollapsed={isCollapsed} NavItem={NavItem} />
-          <ThemeNavItem isCollapsed={isCollapsed} />
           <DocsNavItem isCollapsed={isCollapsed} />
           <NavItem
             icon={<CollapseIcon />}
@@ -69,8 +66,7 @@ export function LogoSection({ isCollapsed }: { isCollapsed: boolean | undefined 
         "pl-12 pr-20": !isCollapsed,
       })}
     >
-      <LogoSmallIcon className="block md:hidden" />
-      <img src={logoIcon} alt="GMX Logo" className="hidden md:block" />
+      <img src={logoIcon} alt="GMX Logo" />
     </Link>
   );
 }

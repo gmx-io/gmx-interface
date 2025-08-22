@@ -525,6 +525,10 @@ msgstr ""
 msgid "Funding Fee"
 msgstr "펀딩 수수료"
 
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Light"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Confirm Limit Order"
 msgstr "지정가 주문 확인"
@@ -2153,6 +2157,10 @@ msgstr "Avalanche에서 GMX로 베스팅하기"
 msgid "No esGMX to claim"
 msgstr "수령할 수 있는 esGMX가 없습니다"
 
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "System"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
 msgstr "{tokenSymbol} {longOrShortText} {0} USD의 증가 요청됨."
@@ -2437,6 +2445,11 @@ msgstr "트리거 가격이 포지션의 청산 가격을 초과하므로 주문
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
 msgstr "{typeString} 숏 스탑 마켓: 가격이 트리거 가격 아래로 떨어질 때 숏 포지션 {0}."
+
+#: src/components/SettingsModal/ThemeSelector.tsx
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Theme"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default Allowed Slippage"
@@ -5543,8 +5556,8 @@ msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using y
 msgstr ""
 
 #: src/components/SideNav/ThemeNavItem.tsx
-msgid "Light Mode"
-msgstr ""
+#~ msgid "Light Mode"
+#~ msgstr ""
 
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
@@ -7331,8 +7344,8 @@ msgid "The available liquidity will be the lesser of the difference between the 
 msgstr "사용 가능한 유동성은 예비금과 미결제약정의 최대값과 현재값 차이 중 작은 값입니다."
 
 #: src/components/SideNav/ThemeNavItem.tsx
-msgid "Dark Mode"
-msgstr ""
+#~ msgid "Dark Mode"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
@@ -7598,6 +7611,10 @@ msgstr "{increaseOrDecreaseText} {tokenText}를 {sizeText}만큼"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Neither collateral nor realized PnL is enough to cover pending fees. Please close a larger position amount."
+msgstr ""
+
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Dark"
 msgstr ""
 
 #: src/pages/Stake/UnstakeModal.tsx

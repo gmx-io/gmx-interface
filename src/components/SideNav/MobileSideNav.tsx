@@ -9,7 +9,6 @@ import Footer from "components/Footer/Footer";
 import { LanguageNavItem } from "./LanguageNavItem";
 import { SettingsNavItem } from "./SettingsNavItem";
 import { DocsNavItem, LogoSection, MenuSection, NavItem } from "./SideNav";
-import { ThemeNavItem } from "./ThemeNavItem";
 
 export function MobileSideNav() {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,7 +43,6 @@ export function MobileSideNav() {
               <ul className="flex list-none flex-col px-0">
                 <SettingsNavItem isCollapsed={false} NavItem={NavItem} />
                 <LanguageNavItem isCollapsed={false} NavItem={NavItem} />
-                <ThemeNavItem isCollapsed={false} />
                 <DocsNavItem isCollapsed={false} />
               </ul>
             </div>

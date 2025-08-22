@@ -525,6 +525,10 @@ msgstr ""
 msgid "Funding Fee"
 msgstr "资金费用"
 
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Light"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Confirm Limit Order"
 msgstr "确认限价订单"
@@ -2153,6 +2157,10 @@ msgstr "在 Avalanche 上归属 GLP"
 msgid "No esGMX to claim"
 msgstr "没有 esGMX 可领取"
 
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "System"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
 msgstr "请求增加 {tokenSymbol} {longOrShortText} {0} USD。"
@@ -2437,6 +2445,11 @@ msgstr "该订单将不会执行，因为其触发价格超出仓位的清算价
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
 msgstr "{typeString} 做空止损市价：当价格低于触发价格时 {0} 一个做空仓位。"
+
+#: src/components/SettingsModal/ThemeSelector.tsx
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Theme"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default Allowed Slippage"
@@ -5543,8 +5556,8 @@ msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using y
 msgstr ""
 
 #: src/components/SideNav/ThemeNavItem.tsx
-msgid "Light Mode"
-msgstr ""
+#~ msgid "Light Mode"
+#~ msgstr ""
 
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
@@ -7331,8 +7344,8 @@ msgid "The available liquidity will be the lesser of the difference between the 
 msgstr "可用流动性将是储备和未平仓利息的最大值与当前值之间差额的较小值。"
 
 #: src/components/SideNav/ThemeNavItem.tsx
-msgid "Dark Mode"
-msgstr ""
+#~ msgid "Dark Mode"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
@@ -7598,6 +7611,10 @@ msgstr "{increaseOrDecreaseText} {tokenText} 按 {sizeText}"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Neither collateral nor realized PnL is enough to cover pending fees. Please close a larger position amount."
+msgstr ""
+
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Dark"
 msgstr ""
 
 #: src/pages/Stake/UnstakeModal.tsx
