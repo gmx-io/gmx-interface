@@ -26,7 +26,7 @@ export default function EventToast({
           <PlainIcon className="announcement-icon" />
           <p>{event.title}</p>
         </div>
-        <MdOutlineClose onClick={onClick} className="cross-icon" color="white" data-qa="close-toast" />
+        <MdOutlineClose onClick={onClick} className="cross-icon" data-qa="close-toast" />
       </header>
       {Array.isArray(event.bodyText) ? (
         event.bodyText.map((text, i) =>

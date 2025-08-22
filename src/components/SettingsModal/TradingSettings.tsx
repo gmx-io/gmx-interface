@@ -60,7 +60,7 @@ export function TradingSettings({
       {getIsExpressSupported(chainId) && (
         <>
           <SettingsSection>
-            <div className="text-14 font-medium">
+            <div className="text-14 font-medium text-textIcon-strong">
               <Trans>Trading Mode</Trans>
             </div>
 

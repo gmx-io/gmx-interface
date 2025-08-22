@@ -263,7 +263,7 @@ function MobileSlideModal({
         >
           <div onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
             <div className="flex touch-none select-none items-stretch justify-between gap-4 px-14 pb-14 pt-14">
-              <div className="text-body-medium grow pl-4 font-medium">{label}</div>
+              <div className="text-body-medium grow pl-4 font-medium text-textIcon-strong">{label}</div>
 
               <MdClose fontSize={20} className="cursor-pointer text-slate-100 hover:opacity-90" onClick={handleClose} />
             </div>

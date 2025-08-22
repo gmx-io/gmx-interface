@@ -57,28 +57,28 @@
 
 .Toastify__toast--error {
   & .StatusNotification-title {
-    color: var(--color-red-500);
+    color: rgb(var(--color-red-500));
   }
 
   & .StatusNotification {
-    color: var(--color-red-100);
+    color: rgb(var(--color-red-100));
   }
 
   & .close-toast-button > svg {
-    color: var(--color-red-500) !important;
+    color: rgb(var(--color-red-500)) !important;
   }
 }
 
 .Toastify__toast--success {
   & .StatusNotification-title {
-    color: var(--color-green-500);
+    color: rgb(var(--color-green-500));
   }
 
   & .StatusNotification {
-    color: var(--color-green-100);
+    color: rgb(var(--color-green-100));
   }
 
   & .close-toast-button > svg {
-    color: var(--color-green-500) !important;
+    color: rgb(var(--color-green-500)) !important;
   }
 }

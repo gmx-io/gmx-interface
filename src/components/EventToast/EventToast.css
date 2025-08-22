@@ -22,7 +22,8 @@
 }
 
 .single-toast {
-  background: rgba(var(--color-slate-700));
+  background: linear-gradient(180deg, rgba(var(--color-blue-300) / 0.2), rgba(var(--color-blue-300) / 0.2)),
+    linear-gradient(180deg, rgba(var(--color-slate-900)), rgba(var(--color-slate-900)));
   backdrop-filter: blur(4px);
   color: rgba(var(--color-textIcon-strong));
   border: none;
@@ -38,6 +39,7 @@
   padding: 0.8rem 1.5rem;
   border-bottom: 1px solid rgba(var(--color-slate-600));
   font-weight: 500;
+  color: rgba(var(--color-textIcon-strong));
 }
 .single-toast header .toast-title {
   display: flex;
@@ -83,7 +85,6 @@
 
 .single-toast .toast-body a {
   text-decoration: underline;
-  color: rgba(var(--color-gray-300));
 }
 
 .single-toast .toast-body a:hover {

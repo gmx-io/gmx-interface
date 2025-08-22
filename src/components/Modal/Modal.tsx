@@ -115,7 +115,7 @@ export default function Modal({
             >
               <div className="Modal-header-wrapper flex flex-col gap-8">
                 <div className="Modal-title-bar">
-                  <div className="Modal-title font-medium">{label}</div>
+                  <div className="Modal-title font-medium text-textIcon-strong">{label}</div>
                   <div className="Modal-close-button pb-5" onClick={() => setIsVisible(false)}>
                     <RxCross2 fontSize={20} className="Modal-close-icon" />
                   </div>
