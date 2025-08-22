@@ -13,7 +13,8 @@ import EarnIcon from "img/earn.svg?react";
 import EcosystemIcon from "img/ecosystem.svg?react";
 import BuyIcon from "img/ic_buy.svg?react";
 import LeaderboardIcon from "img/leaderboard.svg?react";
-import logoIcon from "img/logo_GMX.svg";
+import logoIcon from "img/logo-icon.svg";
+import LogoText from "img/logo-text.svg?react";
 import ReferralsIcon from "img/referrals.svg?react";
 import TradeIcon from "img/trade.svg?react";
 
@@ -67,6 +68,7 @@ export function LogoSection({ isCollapsed }: { isCollapsed: boolean | undefined 
       })}
     >
       <img src={logoIcon} alt="GMX Logo" />
+      {!isCollapsed ? <LogoText className="max-md:hidden" /> : null}
     </Link>
   );
 }
