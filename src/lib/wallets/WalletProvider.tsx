@@ -1,22 +1,36 @@
 import { useLingui } from "@lingui/react";
-import { darkTheme, RainbowKitProvider, type Theme, type Locale } from "@rainbow-me/rainbowkit";
+import { darkTheme, lightTheme, RainbowKitProvider, type Theme, type Locale } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import merge from "lodash/merge";
 import { useMemo } from "react";
 import { WagmiProvider } from "wagmi";
 
+import { useTheme } from "context/ThemeContext/ThemeContext";
+
 import { getRainbowKitConfig } from "./rainbowKitConfig";
 
-const walletTheme = merge(darkTheme(), {
+const darkWalletTheme = merge(darkTheme(), {
   colors: {
-    modalBackground: "#16182e",
-    accentColor: "#9da5f2",
-    menuItemBackground: "#808aff14",
+    modalBackground: "rgb(var(--color-slate-800))",
+    accentColor: "rgb(var(--color-blue-500))",
+    menuItemBackground: "rgb(var(--color-fill-surfaceHover))",
   },
   radii: {
-    modal: "4px",
-    menuButton: "4px",
+    modal: "8px",
+    menuButton: "8px",
+  },
+} as Theme);
+
+const lightWalletTheme = merge(lightTheme(), {
+  colors: {
+    modalBackground: "rgb(var(--color-slate-900))",
+    accentColor: "rgb(var(--color-blue-500))",
+    menuItemBackground: "rgb(var(--color-fill-surfaceHover))",
+  },
+  radii: {
+    modal: "8px",
+    menuButton: "8px",
   },
 } as Theme);
 
@@ -44,7 +58,9 @@ export default function WalletProvider({ children }) {
 
 export function RainbowKitProviderWrapper({ children }) {
   const { i18n } = useLingui();
+  const { theme } = useTheme();
   const locale = useMemo(() => appLocale2RainbowLocaleMap[i18n.locale] ?? "en", [i18n.locale]);
+  const walletTheme = theme === "light" ? lightWalletTheme : darkWalletTheme;
 
   return (
     <RainbowKitProvider theme={walletTheme} locale={locale} modalSize="compact">
