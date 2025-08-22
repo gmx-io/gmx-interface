@@ -157,7 +157,7 @@ export default function BuyInputSection(props: Props) {
         onClick={handleBoxClick}
       >
         <div className="flex justify-between">
-          <div data-label="left" className="text-slate-100">
+          <div data-label="left" className="text-typography-secondary">
             {topLeftLabel}
           </div>
           {(topRightLabel || topRightValue || (onClickMax && maxButtonPosition === "top-right")) && (
@@ -169,7 +169,7 @@ export default function BuyInputSection(props: Props) {
               )}
               onClick={handleTopRightClick}
             >
-              {topRightLabel && <span className="text-slate-100">{topRightLabel}:</span>}
+              {topRightLabel && <span className="text-typography-secondary">{topRightLabel}:</span>}
               {topRightValue && <span className="numbers">{topRightValue}</span>}
               {onClickMax && maxButtonPosition === "top-right" && <MaxButton onClick={handleMaxClick} />}
             </div>
@@ -216,8 +216,8 @@ export default function BuyInputSection(props: Props) {
           <div className="flex justify-between">
             <div
               className={cx("numbers", {
-                "text-slate-100": isBottomLeftValueMuted,
-                "text-textIcon-strong": !isBottomLeftValueMuted,
+                "text-typography-secondary": isBottomLeftValueMuted,
+                "text-typography-primary": !isBottomLeftValueMuted,
               })}
             >
               {bottomLeftValue || ""}
@@ -229,7 +229,7 @@ export default function BuyInputSection(props: Props) {
               )}
               onClick={handleBottomRightClick}
             >
-              {bottomRightLabel && <span className="text-slate-100">{bottomRightLabel}:</span>}
+              {bottomRightLabel && <span className="text-typography-secondary">{bottomRightLabel}:</span>}
               {bottomRightValue && <span className="numbers">{bottomRightValue}</span>}
 
               {onClickMax && maxButtonPosition === "bottom-right" && <MaxButton onClick={handleMaxClick} />}

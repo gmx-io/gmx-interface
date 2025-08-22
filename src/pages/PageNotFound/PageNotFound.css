@@ -16,7 +16,7 @@
   color: rgba(var(--color-slate-100));
 }
 .go-back a {
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
 }
 
 @media (max-width: 500px) {

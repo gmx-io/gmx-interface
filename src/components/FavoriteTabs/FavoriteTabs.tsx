@@ -32,7 +32,7 @@ export function FavoriteTabs({
           variant={"ghost"}
           size="small"
           className={cx(className, {
-            "!bg-button-secondary !text-textIcon-strong": tab === option,
+            "!bg-button-secondary !text-typography-primary": tab === option,
             [activeClassName]: activeClassName && tab === option,
           })}
           onClick={() => setTab(option)}

@@ -113,16 +113,16 @@ export function SettingButton({
     <div
       className={cx(
         `grid min-h-66 select-none grid-cols-[66px_auto] items-center rounded-8 border border-solid hover:border-slate-100`,
-        active ? "border-slate-100 text-textIcon-strong" : "border-slate-600",
+        active ? "border-slate-100 text-typography-primary" : "border-slate-600",
         disabled ? "muted cursor-not-allowed" : "cursor-pointer"
       )}
       onClick={disabled ? undefined : onClick}
     >
       <div
         className={cx(
-          "flex items-center justify-center text-slate-100",
+          "flex items-center justify-center text-typography-secondary",
           disabled && "opacity-50",
-          active && "text-textIcon-strong"
+          active && "text-typography-primary"
         )}
       >
         {icon}

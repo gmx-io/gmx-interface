@@ -45,7 +45,7 @@ export function SyntheticsInfoRow({
       onKeyDown={handleKeyDown}
       data-qa={qa ? `info-row-${qa}` : undefined}
     >
-      <div className="font-medium text-slate-100">{label}</div>
+      <div className="font-medium text-typography-secondary">{label}</div>
       <div className={cx("text-right", { "text-red-500": isWarning }, valueClassName)}>{children || value}</div>
     </Component>
   );

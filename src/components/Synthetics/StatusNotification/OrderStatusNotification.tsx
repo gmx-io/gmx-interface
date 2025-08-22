@@ -551,7 +551,7 @@ export function OrdersStatusNotificiation({
             {createdTxnHashList?.map((txnHash) => (
               <ExternalLink
                 key={txnHash}
-                className="ml-10 !text-textIcon-strong"
+                className="ml-10 !text-typography-primary"
                 href={`${getExplorerUrl(chainId)}tx/${txnHash}`}
               >
                 {t`View`}

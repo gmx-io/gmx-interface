@@ -6,7 +6,7 @@ body,
   font-size: 10px;
   height: 100%;
   width: 100%;
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
 }
 
 #root {
@@ -128,7 +128,7 @@ input[type="number"] {
 // TODO: remove this
 input {
   font-size: var(--font-size-body-medium);
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
   outline: none;
   background: none;
   padding: 1.25rem;
@@ -338,7 +338,7 @@ s .default-btn:active {
 button.btn-link {
   margin-top: 1.5rem;
   background: none;
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
   border: none;
   padding: 0;
   font-size: var(--font-size-body-medium);

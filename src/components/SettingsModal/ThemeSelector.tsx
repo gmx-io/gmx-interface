@@ -65,7 +65,7 @@ export function ThemeSelector() {
       chevronClassName="hidden"
       label={
         <div className="flex w-full items-center justify-between">
-          <div className="text-textIcon-default">
+          <div className="text-typography-secondary">
             <Trans>Theme</Trans>
           </div>
           <Button variant="secondary">

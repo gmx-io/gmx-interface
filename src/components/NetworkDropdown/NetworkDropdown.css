@@ -5,7 +5,7 @@
   height: 3.6rem;
   display: inline-flex;
   align-items: center;
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
 }
 
 .App-header-language {
@@ -83,14 +83,14 @@
   font-size: var(--font-size-body-medium);
   line-height: var(--line-height-body-medium);
   letter-spacing: 0.29px;
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
 }
 
 .network-option-img-label {
   font-size: var(--font-size-body-medium);
   line-height: var(--line-height-body-medium);
   letter-spacing: 0.29px;
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
 }
 
 .dropdown-label {

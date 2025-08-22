@@ -32,7 +32,7 @@ export function MobileSideNav() {
 
                 <button
                   onClick={handleToggle}
-                  className="p-8 text-slate-100 hover:text-textIcon-strong active:text-textIcon-strong"
+                  className="p-8 text-typography-secondary hover:text-typography-primary active:text-typography-primary"
                 >
                   <IoCloseOutline size={24} />
                 </button>

@@ -53,7 +53,7 @@ export function PoolsDetailsAbout({
 
   return (
     <div className="flex flex-col gap-16">
-      <div className="text-body-medium text-slate-100">
+      <div className="text-body-medium text-typography-secondary">
         {isGlv ? (
           <Trans>
             This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps
@@ -219,7 +219,10 @@ const BuyableTooltipContent = ({
           decimals={marketInfo?.longToken?.decimals}
           usd={(mintableInfo?.longDepositCapacityUsd ?? 0n) + (mintableInfo?.shortDepositCapacityUsd ?? 0n)}
         />,
-        <span key="longTokenMaxValue-isSameCollaterals-ratio" className="text-body-small text-slate-100 numbers">
+        <span
+          key="longTokenMaxValue-isSameCollaterals-ratio"
+          className="text-body-small text-typography-secondary numbers"
+        >
           ({poolUsd} / {maxPoolUsd})
         </span>,
       ];
@@ -236,7 +239,7 @@ const BuyableTooltipContent = ({
         usd={mintableInfo?.longDepositCapacityUsd}
         symbol={marketInfo?.longToken?.symbol}
       />,
-      <span key="longTokenMaxValue-ratio" className="text-body-small text-slate-100 numbers">
+      <span key="longTokenMaxValue-ratio" className="text-body-small text-typography-secondary numbers">
         ({poolUsd} / {maxPoolUsd})
       </span>,
     ];
@@ -264,7 +267,7 @@ const BuyableTooltipContent = ({
         usd={mintableInfo?.shortDepositCapacityUsd}
         symbol={marketInfo?.shortToken?.symbol}
       />,
-      <span key="shortTokenMaxValue-ratio" className="text-body-small text-slate-100 numbers">
+      <span key="shortTokenMaxValue-ratio" className="text-body-small text-typography-secondary numbers">
         ({poolUsd} / {maxPoolUsd})
       </span>,
     ];
@@ -285,7 +288,7 @@ const BuyableTooltipContent = ({
 
   return (
     <>
-      <p className="text-textIcon-strong">
+      <p className="text-typography-primary">
         {marketInfo?.isSameCollaterals ? (
           <Trans>
             {marketInfo?.longToken?.symbol} can be used to buy GM for this market up to the specified buying caps.

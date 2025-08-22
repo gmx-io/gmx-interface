@@ -22,7 +22,7 @@
   font-weight: 500;
   font-size: var(--font-size-h2);
   line-height: auto;
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
   padding: 0.775rem 0;
   margin: 0;
 }
@@ -30,7 +30,7 @@
   font-size: var(--font-size-body-large);
   line-height: var(--line-height-body-large);
   letter-spacing: 0px;
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
   margin-top: 1.1625rem;
 }
 .referral-card .card-action {
@@ -110,7 +110,7 @@
   align-items: center;
   background: transparent;
   padding: 0.75rem 1.25rem;
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
   font-size: var(--font-size-body-small);
   border: 1px solid var(--dark-blue-border);
   border-radius: var(--border-radius-sm);
@@ -181,7 +181,7 @@
   line-height: 2.1rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
   margin-top: 16px;
   margin-bottom: 1.5rem;
   text-align: center;

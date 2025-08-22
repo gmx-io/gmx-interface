@@ -10,7 +10,7 @@
 
   &-group-name {
     font-size: 13px;
-    color: rgba(var(--color-textIcon-strong));
+    color: rgba(var(--color-typography-primary));
     display: flex;
     align-items: center;
     padding: 0.5rem 1rem;
@@ -47,7 +47,7 @@
     cursor: pointer;
 
     &:hover {
-      color: rgba(var(--color-textIcon-strong));
+      color: rgba(var(--color-typography-primary));
     }
 
     &:last-child {

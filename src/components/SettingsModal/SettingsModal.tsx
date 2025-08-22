@@ -254,7 +254,7 @@ export function SettingsModal({
       setIsVisible={setIsSettingsVisible}
       label={t`Settings`}
       qa="settings-modal"
-      className="text-body-medium text-textIcon-default"
+      className="text-body-medium text-typography-secondary"
       desktopContentClassName={isDevelopment() ? "w-[448px] h-[720px]" : "w-[420px] h-[720px]"}
     >
       <div className="flex flex-col">

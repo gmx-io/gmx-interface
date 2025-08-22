@@ -396,7 +396,7 @@ const GraphTooltip = ({ active, payload, formatValue }: any) => {
         className={`backdrop-blur-100 text-body-small flex flex-col rounded-4 bg-[rgba(160,163,196,0.1)]
       bg-[linear-gradient(0deg,rgba(var(--color-slate-800)),rgba(var(--color-slate-800)))] px-12 py-8 bg-blend-overlay`}
       >
-        <span className=" text-slate-100">{format(item.snapshotTimestamp.getTime(), "MMMM dd, yyyy")}</span>
+        <span className=" text-typography-secondary">{format(item.snapshotTimestamp.getTime(), "MMMM dd, yyyy")}</span>
         <span className="numbers">{formatValue(item.value)}</span>
       </div>
     );
@@ -417,7 +417,7 @@ const GraphValue = ({
   return (
     <div className="flex items-center gap-8">
       <span className={cx("text-h2", valueClassName)}>{value ?? "..."}</span>
-      <span className="text-body-small text-slate-100">{label}</span>
+      <span className="text-body-small text-typography-secondary">{label}</span>
     </div>
   );
 };

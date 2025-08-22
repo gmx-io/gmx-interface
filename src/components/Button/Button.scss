@@ -60,7 +60,7 @@ $button-secondary-hover: linear-gradient(0deg, rgba(var(--color-slate-800)), rgb
   &.secondary {
     background: rgba(var(--color-button-secondary));
     border-radius: 8px;
-    color: rgba(var(--color-textIcon-default));
+    color: rgba(var(--color-typography-secondary));
     position: relative;
     letter-spacing: 0;
 
@@ -84,12 +84,12 @@ $button-secondary-hover: linear-gradient(0deg, rgba(var(--color-slate-800)), rgb
       background: linear-gradient(0deg, rgba(var(--color-button-secondary)), rgba(var(--color-button-secondary))),
         linear-gradient(0deg, rgb(var(--color-slate-100) / 0.1), rgb(var(--color-slate-100) / 0.1));
       background-blend-mode: overlay;
-      color: rgba(var(--color-textIcon-strong));
+      color: rgba(var(--color-typography-primary));
     }
 
     &:not([disabled], .disabled):active {
       background: rgba(var(--color-button-secondary));
-      color: rgba(var(--color-textIcon-strong));
+      color: rgba(var(--color-typography-primary));
     }
   }
 
@@ -117,12 +117,12 @@ $button-secondary-hover: linear-gradient(0deg, rgba(var(--color-slate-800)), rgb
     }
 
     &:not([disabled], .disabled):hover {
-      color: rgba(var(--color-textIcon-strong));
+      color: rgba(var(--color-typography-primary));
       background-color: rgba(var(--color-fill-surfaceHover));
     }
 
     &:not([disabled], .disabled):active {
-      color: rgba(var(--color-textIcon-strong));
+      color: rgba(var(--color-typography-primary));
       background: rgba(var(--color-slate-800));
     }
   }
@@ -137,7 +137,7 @@ $button-secondary-hover: linear-gradient(0deg, rgba(var(--color-slate-800)), rgb
     }
 
     &:not([disabled], .disabled):hover {
-      color: rgba(var(--color-textIcon-strong));
+      color: rgba(var(--color-typography-primary));
     }
   }
 

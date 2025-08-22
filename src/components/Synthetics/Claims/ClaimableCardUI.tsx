@@ -30,7 +30,7 @@ export function ClaimableCardUI({ title, style, sections }: Props) {
       className="flex w-full flex-col gap-12 border-b-[1.5px] border-slate-600 bg-slate-900 px-20 py-12 last:border-r-0 lg:border-r-[1.5px]"
       style={style}
     >
-      <div className="text-[11px] font-medium uppercase text-slate-100">{title}</div>
+      <div className="text-[11px] font-medium uppercase text-typography-secondary">{title}</div>
       <div
         className={cx("grid grid-cols-2", {
           "grid-cols-1": !isHorizontal,
@@ -64,7 +64,7 @@ function Section({ buttonText, onButtonClick, tooltipText, title, usd }: Section
             <span className="numbers">{usdFormatted}</span>
           )}
         </span>
-        <span className="text-body-small text-slate-100">{title}</span>
+        <span className="text-body-small text-typography-secondary">{title}</span>
       </div>
       <div className="max-xl:w-full">
         <Button variant="secondary" disabled={usd <= 0} onClick={onButtonClick} className="max-xl:w-full">

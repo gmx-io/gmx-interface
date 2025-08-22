@@ -73,7 +73,7 @@
   place-items: normal;
   background: transparent;
   padding: 1.25rem;
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
   font-size: var(--font-size-body-small);
   border: 1px solid var(--dark-blue-border);
   border-radius: var(--border-radius-sm);
@@ -113,6 +113,6 @@
 }
 
 .ClaimEsGmx-max-button:hover {
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
   background: linear-gradient(90deg, rgba(58, 78, 252, 1) 0%, rgba(51, 68, 222, 1) 100%);
 }

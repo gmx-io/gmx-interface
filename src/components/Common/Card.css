@@ -8,7 +8,7 @@
   line-height: var(--line-height-body-large);
   font-weight: normal;
   letter-spacing: 0px;
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
   display: flex;
   align-items: center;
   justify-content: space-between;

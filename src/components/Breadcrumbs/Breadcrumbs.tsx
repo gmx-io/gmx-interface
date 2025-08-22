@@ -39,8 +39,8 @@ export function BreadcrumbItem({ to: href, children, back, active, onClick, clas
         after:translate-y-[-50%] after:text-11 after:text-slate-600 after:content-['/']
         first:after:content-none max-md:px-8`,
         {
-          "text-slate-100 hover:bg-slate-800 hover:text-textIcon-strong": !active,
-          "cursor-default text-textIcon-strong": active,
+          "text-typography-secondary hover:bg-slate-800 hover:text-typography-primary": !active,
+          "cursor-default text-typography-primary": active,
         },
         className
       )}

@@ -78,7 +78,7 @@
   }
 
   .MarketSelector-tooltip-content {
-    color: rgba(var(--color-textIcon-strong));
+    color: rgba(var(--color-typography-primary));
   }
 
   .MarketSelector-tooltip-row-action {
@@ -139,8 +139,8 @@
   color: rgba(var(--color-gray-400));
 
   &:hover {
-    text-decoration-color: rgba(var(--color-textIcon-strong));
-    color: rgba(var(--color-textIcon-strong));
+    text-decoration-color: rgba(var(--color-typography-primary));
+    color: rgba(var(--color-typography-primary));
   }
 }
 

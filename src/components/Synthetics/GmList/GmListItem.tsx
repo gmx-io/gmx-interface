@@ -157,7 +157,7 @@ export function GmListItem({
                   <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
                 </div>
               </div>
-              <div className="text-12 tracking-normal text-slate-100">
+              <div className="text-12 tracking-normal text-typography-secondary">
                 [{getMarketPoolName({ longToken, shortToken })}]
               </div>
             </div>
@@ -168,7 +168,7 @@ export function GmListItem({
             {onFavoriteClick ? (
               <div>
                 <Button variant="secondary" className="shrink-0" onClick={handleFavoriteClick}>
-                  <FavoriteStar isFavorite={isFavorite} activeClassName="!text-textIcon-strong" />
+                  <FavoriteStar isFavorite={isFavorite} activeClassName="!text-typography-primary" />
                 </Button>
               </div>
             ) : null}
@@ -251,7 +251,7 @@ export function GmListItem({
                   <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
                 </div>
               </div>
-              <div className="text-12 tracking-normal text-slate-100">
+              <div className="text-12 tracking-normal text-typography-secondary">
                 [{getMarketPoolName({ longToken, shortToken })}]
               </div>
             </div>

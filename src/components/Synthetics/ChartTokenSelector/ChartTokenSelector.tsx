@@ -85,7 +85,7 @@ export default function ChartTokenSelector(props: Props) {
         <Button variant="secondary">
           {selectedToken ? (
             <span
-              className={cx("inline-flex gap-6 whitespace-nowrap pl-0 text-[13px] text-textIcon-strong", {
+              className={cx("inline-flex gap-6 whitespace-nowrap pl-0 text-[13px] text-typography-primary", {
                 "items-start": !oneRowLabels,
                 "items-center": oneRowLabels || isSwap,
               })}
@@ -109,7 +109,7 @@ export default function ChartTokenSelector(props: Props) {
                 </span>
                 {poolName && (
                   <span
-                    className={cx("text-body-small mt-1 font-normal text-slate-100", {
+                    className={cx("text-body-small mt-1 font-normal text-typography-secondary", {
                       "ml-8": oneRowLabels,
                     })}
                   >
@@ -230,7 +230,7 @@ function MarketsList() {
   });
   const rowHorizontalPadding = cx("pr-8");
   const thClassName = cx(
-    "sticky top-0 z-10 whitespace-nowrap bg-slate-900 text-left text-[11px] font-medium uppercase text-slate-100",
+    "sticky top-0 z-10 whitespace-nowrap bg-slate-900 text-left text-[11px] font-medium uppercase text-typography-secondary",
     "first-of-type:text-left",
     "first-of-type:!pl-44",
     rowVerticalPadding,
@@ -490,8 +490,8 @@ function useFilterSortTokens({
 
 const MarketLabel = ({ token }: { token: Token }) => {
   return (
-    <span className="text-slate-100">
-      <span className="text-textIcon-strong">{getMarketBaseName({ indexToken: token, isSpotOnly: false })}</span>
+    <span className="text-typography-secondary">
+      <span className="text-typography-primary">{getMarketBaseName({ indexToken: token, isSpotOnly: false })}</span>
       /USD
     </span>
   );
@@ -582,7 +582,10 @@ function MarketListItem({
   if (isSwap) {
     return (
       <tr key={token.symbol} className="group/row cursor-pointer hover:bg-fill-surfaceHover">
-        <td className={cx("pl-14 pr-6 text-center text-slate-100", rowVerticalPadding)} onClick={handleFavoriteClick}>
+        <td
+          className={cx("pl-14 pr-6 text-center text-typography-secondary", rowVerticalPadding)}
+          onClick={handleFavoriteClick}
+        >
           <FavoriteStar isFavorite={isFavorite} className="!h-12 !w-12" />
         </td>
         <td
@@ -597,7 +600,7 @@ function MarketListItem({
               importSize={24}
             />
             <span>{token.name}</span>
-            <span className="font-medium text-slate-100">{token.symbol}</span>
+            <span className="font-medium text-typography-secondary">{token.symbol}</span>
           </span>
         </td>
         <td className={tdClassName}>
@@ -621,7 +624,10 @@ function MarketListItem({
       className="group/row cursor-pointer hover:bg-fill-surfaceHover"
       onClick={handleSelectLargePosition}
     >
-      <td className={cx("px-12 text-center text-slate-100", rowVerticalPadding)} onClick={handleFavoriteClick}>
+      <td
+        className={cx("px-12 text-center text-typography-secondary", rowVerticalPadding)}
+        onClick={handleFavoriteClick}
+      >
         <FavoriteStar isFavorite={isFavorite} className="!h-12 !w-12" />
       </td>
       <td className={cx("pl-4 text-[13px]", rowVerticalPadding, isMobile ? "pr-2" : "pr-8")}>
@@ -631,7 +637,7 @@ function MarketListItem({
             <span className="font-medium leading-1">
               <MarketLabel token={token} />
             </span>
-            <span className="rounded-full bg-slate-700 px-6 py-[1.5px] text-12 font-medium leading-[1.25] text-slate-100 numbers">
+            <span className="rounded-full bg-slate-700 px-6 py-[1.5px] text-12 font-medium leading-[1.25] text-typography-secondary numbers">
               {maxLeverage ? `${maxLeverage}x` : "-"}
             </span>
           </span>

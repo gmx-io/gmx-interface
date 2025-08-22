@@ -443,7 +443,7 @@ const TableCell = memo(({ children, className }: { children: ReactNode; classNam
 const EmptyRow = memo(() => {
   return (
     <TableTr hoverable={false} className="h-47">
-      <TableTd colSpan={7} className="align-top text-slate-100">
+      <TableTd colSpan={7} className="align-top text-typography-secondary">
         <Trans>No results found</Trans>
       </TableTd>
     </TableTr>

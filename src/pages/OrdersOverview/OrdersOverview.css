@@ -27,12 +27,12 @@
   background: none;
   border: none;
   text-decoration: underline;
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
 }
 
 .Orders-overview-action {
   background: none;
   border: none;
   text-decoration: underline;
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
 }

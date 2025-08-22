@@ -74,7 +74,7 @@ export default function SearchInput({
             height={18}
             width={18}
             onClick={handleClick}
-            className={cx("relative p-2 text-slate-100")}
+            className={cx("relative p-2 text-typography-secondary")}
           />
         </div>
         <input
@@ -105,8 +105,8 @@ export default function SearchInput({
           >
             <CrossIconComponent
               className={cx("w-16", {
-                "text-slate-100": !isFocused,
-                "text-textIcon-strong": isFocused,
+                "text-typography-secondary": !isFocused,
+                "text-typography-primary": isFocused,
               })}
             />
           </Button>

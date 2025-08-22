@@ -80,7 +80,7 @@ export function ExpandableRow({
   scrollIntoViewOnMobile = false,
   withToggleSwitch = false,
   row = true,
-  handleClassName = "text-slate-100",
+  handleClassName = "text-typography-secondary",
 }: Props) {
   const previousHasError = usePrevious(hasError);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -127,9 +127,9 @@ export function ExpandableRow({
   const value = withToggleSwitch ? (
     <ToggleSwitch isChecked={open} setIsChecked={onToggle} disabled={disabled} />
   ) : open ? (
-    <FaChevronUp className="w-12 text-slate-100 group-gmx-hover:text-blue-300" />
+    <FaChevronUp className="w-12 text-typography-secondary group-gmx-hover:text-blue-300" />
   ) : (
-    <FaChevronDown className="w-12 text-slate-100 group-gmx-hover:text-blue-300" />
+    <FaChevronDown className="w-12 text-typography-secondary group-gmx-hover:text-blue-300" />
   );
 
   return (

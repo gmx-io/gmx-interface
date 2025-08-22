@@ -236,7 +236,7 @@ $tabs-threshold: 990px;
     }
 
     &-description {
-      color: rgba(var(--color-textIcon-strong));
+      color: rgba(var(--color-typography-primary));
       margin-bottom: 1rem;
       white-space: nowrap;
       font-size: 2rem;
@@ -328,7 +328,7 @@ $tabs-threshold: 990px;
 
 .CompetitionCountdown {
   &__time {
-    color: rgba(var(--color-textIcon-strong));
+    color: rgba(var(--color-typography-primary));
   }
   &_desktop &__time {
     white-space: nowrap;
@@ -426,11 +426,11 @@ $tabs-threshold: 990px;
 
   &_live {
     background-color: #b42941;
-    color: rgba(var(--color-textIcon-strong));
+    color: rgba(var(--color-typography-primary));
   }
 
   &-circle {
-    background-color: rgba(var(--color-textIcon-strong));
+    background-color: rgba(var(--color-typography-primary));
     border-radius: 9999rem;
     width: 1.1rem;
     height: 1.1rem;

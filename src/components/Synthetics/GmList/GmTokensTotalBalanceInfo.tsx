@@ -72,7 +72,7 @@ export const GmTokensBalanceInfo = ({
           />
         )}
         <br />
-        <div className="text-textIcon-strong">
+        <div className="text-typography-primary">
           <Trans>The fees' USD value is calculated at the time they are earned and does not include incentives.</Trans>
         </div>
       </>
@@ -152,13 +152,13 @@ export const GmTokensTotalBalanceInfo = ({
                   showDollar={false}
                 />
                 <br />
-                <div className="text-textIcon-strong">
+                <div className="text-typography-primary">
                   <Trans>365d estimate based on past {daysConsidered}d APY.</Trans>
                 </div>
                 {shouldShowIncentivesNote && (
                   <>
                     <br />
-                    <div className="text-textIcon-strong">
+                    <div className="text-typography-primary">
                       <Trans>Fee values do not include incentives.</Trans>
                     </div>
                   </>

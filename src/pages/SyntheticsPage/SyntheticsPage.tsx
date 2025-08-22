@@ -275,7 +275,7 @@ export function SyntheticsPage(p: Props) {
     <div className="flex shrink-0 items-center gap-16 px-12">
       {listSection === ListSection.Orders && selectedOrderKeys.length > 0 && (
         <button
-          className="text-[13px] font-medium text-slate-100 hover:text-slate-400"
+          className="text-[13px] font-medium text-typography-secondary hover:text-slate-400"
           disabled={isCancelOrdersProcessing}
           type="button"
           onClick={onCancelSelectedOrders}

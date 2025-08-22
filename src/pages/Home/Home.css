@@ -253,7 +253,7 @@
   font-size: var(--font-size-h2);
   line-height: var(--line-height-h2);
   letter-spacing: 0px;
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
   height: 3.1rem;
 }
 
@@ -265,7 +265,7 @@
   font-size: var(--font-size-body-large);
   line-height: var(--line-height-body-large);
   letter-spacing: 0px;
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
   margin-top: 2.325rem;
 }
 
@@ -318,7 +318,7 @@
 
 .Home-latest-info__value {
   font-family: "RelativeNumber";
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
   font-size: 2.9rem;
   line-height: 3.9rem;
   letter-spacing: 0px;
@@ -364,7 +364,7 @@
 
 .Home-faqs-introduction__title {
   letter-spacing: 0px;
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
   font-size: 3.8rem;
   line-height: 4.8rem;
 }
@@ -418,7 +418,7 @@
   font-size: 1.7rem;
   line-height: 2.2rem;
   letter-spacing: 0px;
-  color: rgba(var(--color-textIcon-strong));
+  color: rgba(var(--color-typography-primary));
 }
 
 .Home-faqs-content-main {

@@ -431,5 +431,5 @@ export function GmStatusNotification({
 }
 
 function PoolName({ children }: { children: ReactNode }) {
-  return children ? <span className="ml-2 text-12 font-normal text-textIcon-strong">[{children}]</span> : null;
+  return children ? <span className="ml-2 text-12 font-normal text-typography-primary">[{children}]</span> : null;
 }

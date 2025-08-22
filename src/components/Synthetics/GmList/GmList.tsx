@@ -136,8 +136,8 @@ export function GmList({
               <ButtonRowScrollFadeContainer>
                 <FavoriteTabs
                   favoritesKey="gm-list"
-                  className="!text-slate-100 hover:!text-textIcon-strong"
-                  activeClassName="!text-textIcon-strong"
+                  className="!text-typography-secondary hover:!text-typography-primary"
+                  activeClassName="!text-typography-primary"
                 />
               </ButtonRowScrollFadeContainer>
             </div>

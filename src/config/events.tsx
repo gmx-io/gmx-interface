@@ -93,8 +93,8 @@ export const appEventsData: EventData[] = [
         <TokenSymbolWithIcon symbol="WAVAX" />.
         <br />
         <br />
-        <Link to="/pools">Provide liquidity</Link> to GM: ARB/USD <span className="text-slate-100">[ARB-ARB]</span>{" "}
-        using <TokenSymbolWithIcon symbol="ARB" />.
+        <Link to="/pools">Provide liquidity</Link> to GM: ARB/USD{" "}
+        <span className="text-typography-secondary">[ARB-ARB]</span> using <TokenSymbolWithIcon symbol="ARB" />.
       </>
     ),
   },

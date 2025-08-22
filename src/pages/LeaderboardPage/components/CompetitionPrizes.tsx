@@ -159,7 +159,7 @@ function CompetitionPrize({ prize }: { prize: Prize }) {
         <img className="size-52" src={iconByType[prize.imgType]} />
 
         <div>
-          <div className="text-body-medium font-medium text-slate-100">{prize.title}</div>
+          <div className="text-body-medium font-medium text-typography-secondary">{prize.title}</div>
           <div className="text-20 font-medium">{prize.description}</div>
         </div>
       </div>
@@ -189,8 +189,8 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
       <Link
         target="_blank"
         to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
-        className={`flex items-center gap-6 rounded-full bg-slate-600 p-10 text-slate-100
-        hover:bg-slate-500 hover:text-textIcon-strong active:bg-slate-500 active:text-textIcon-strong`}
+        className={`flex items-center gap-6 rounded-full bg-slate-600 p-10 text-typography-secondary
+        hover:bg-slate-500 hover:text-typography-primary active:bg-slate-500 active:text-typography-primary`}
       >
         <FaChevronRight size={12} />
       </Link>
@@ -202,7 +202,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
       <Link
         target="_blank"
         to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
-        className="flex items-center gap-4 px-12 py-8 !text-textIcon-strong !no-underline hover:bg-fill-surfaceHover"
+        className="flex items-center gap-4 px-12 py-8 !text-typography-primary !no-underline hover:bg-fill-surfaceHover"
         key={winner.account}
       >
         <Jazzicon diameter={20} seed={jsNumberForAddress(winner.account)} />

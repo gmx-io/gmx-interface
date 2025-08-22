@@ -20,7 +20,7 @@ export default function PageTitle({ title, subtitle, className, isTop = false, a
         <h2 className="Page-title__text text-h1">{title}</h2>
         {afterTitle}
       </div>
-      <div className="text-body-medium font-medium text-slate-100">{subtitle}</div>
+      <div className="text-body-medium font-medium text-typography-secondary">{subtitle}</div>
     </div>
   );
 }

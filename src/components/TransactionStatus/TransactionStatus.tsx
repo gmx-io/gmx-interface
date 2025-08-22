@@ -24,7 +24,7 @@ export function TransactionStatus({ status, text, txnHash, txnLink }: Props) {
     <div className="text-sm flex w-full items-center justify-between gap-8 py-2 text-14">
       <div>{text}</div>
       <div className="flex flex-shrink-0 items-center justify-center">
-        {status === "loading" && <ImSpinner2 width={60} height={60} className="spin size-15 text-textIcon-strong" />}
+        {status === "loading" && <ImSpinner2 width={60} height={60} className="spin size-15 text-typography-primary" />}
         {status !== "loading" && _txnLink && <ExternalLink href={_txnLink}>View</ExternalLink>}
       </div>
     </div>

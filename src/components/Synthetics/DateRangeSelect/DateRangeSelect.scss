@@ -22,13 +22,13 @@
   }
 
   &-calendarWrapper {
-    color: rgba(var(--color-textIcon-strong));
+    color: rgba(var(--color-typography-primary));
     background-color: inherit;
     display: block;
   }
 
   &-monthAndYearPickers select {
-    color: rgba(var(--color-textIcon-strong));
+    color: rgba(var(--color-typography-primary));
 
     background-image: none;
     padding: 10px;
@@ -36,7 +36,7 @@
     font-size: 16px;
 
     option {
-      color: rgba(var(--color-textIcon-strong));
+      color: rgba(var(--color-typography-primary));
       background-color: var(--dark-blue-bg);
     }
   }
@@ -78,7 +78,7 @@
   }
 
   &-dayNumber span {
-    color: rgba(var(--color-textIcon-strong));
+    color: rgba(var(--color-typography-primary));
   }
 
   &-weekDay {

@@ -63,7 +63,7 @@ export function LogoSection({ isCollapsed }: { isCollapsed: boolean | undefined 
   return (
     <Link
       to="/"
-      className={cx("flex cursor-pointer items-center justify-center gap-5 pb-16 pt-10 text-textIcon-strong", {
+      className={cx("flex cursor-pointer items-center justify-center gap-5 pb-16 pt-10 text-typography-primary", {
         "pl-12 pr-20": !isCollapsed,
       })}
     >
@@ -89,11 +89,11 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
       <div
         className={cx(
           `relative flex cursor-pointer items-center gap-8
-        rounded-8 px-16 py-8 text-slate-100 transition-colors
+        rounded-8 px-16 py-8 text-typography-secondary transition-colors
         group-hover:bg-blue-400/20 group-hover:text-blue-400
-        dark:group-hover:bg-slate-700 dark:group-hover:text-textIcon-strong`,
+        dark:group-hover:bg-slate-700 dark:group-hover:text-typography-primary`,
           {
-            "bg-blue-400/20 !text-blue-400 dark:bg-slate-700 dark:!text-textIcon-strong": isActive,
+            "bg-blue-400/20 !text-blue-400 dark:bg-slate-700 dark:!text-typography-primary": isActive,
             "w-full": !isCollapsed,
           }
         )}
@@ -104,7 +104,7 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
         <div
           className={cx(
             `absolute left-0 top-0 z-30 hidden items-center gap-8 rounded-8
-            bg-slate-700 px-16 py-8 text-textIcon-strong`,
+            bg-slate-700 px-16 py-8 text-typography-primary`,
             { "group-hover:flex": isCollapsed }
           )}
         >
