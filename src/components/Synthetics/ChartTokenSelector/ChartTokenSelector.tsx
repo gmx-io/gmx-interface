@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import partition from "lodash/partition";
 import React, { useCallback, useMemo, useState } from "react";
+import { FaChevronDown } from "react-icons/fa6";
 import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
@@ -43,6 +44,7 @@ import {
   isChartAvailableForToken,
 } from "sdk/configs/tokens";
 
+import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
@@ -78,49 +80,49 @@ export default function ChartTokenSelector(props: Props) {
         "py-0 md:h-40": isSwap,
       })}
       desktopPanelClassName={cx("max-w-[100vw]", { "w-[520px]": isSwap, "w-[880px]": !isSwap })}
-      chevronClassName={isMobile && !isSwap ? "-mt-20" : undefined}
+      chevronClassName="hidden"
       label={
-        selectedToken ? (
-          <span
-            className={cx("inline-flex gap-6 whitespace-nowrap pl-0 text-[13px]", {
-              "items-start": !oneRowLabels,
-              "items-center": oneRowLabels || isSwap,
-            })}
-          >
-            {isSwap ? (
-              <div className="rounded-4 bg-blue-300 bg-opacity-[20%] px-7 py-4 text-blue-300">
-                <Trans>Swap</Trans>
-              </div>
-            ) : null}
-
-            <TokenIcon symbol={selectedToken.symbol} displaySize={isMobile ? 32 : 20} importSize={40} />
+        <Button variant="secondary">
+          {selectedToken ? (
             <span
-              className={cx("flex justify-start", {
-                "flex-col": !oneRowLabels && !isSwap,
-                "flex-row items-center": oneRowLabels || isSwap,
+              className={cx("inline-flex gap-6 whitespace-nowrap pl-0 text-[13px] text-textIcon-strong", {
+                "items-start": !oneRowLabels,
+                "items-center": oneRowLabels || isSwap,
               })}
             >
-              <span className="text-[13px] font-medium group-hover:text-blue-300 group-active:text-blue-300">
-                {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
-                {selectedToken.symbol}/USD
-              </span>
-              {poolName && (
-                <span
-                  className={cx(
-                    "text-body-small mt-1 font-normal text-slate-100 group-hover:text-blue-300 group-active:text-blue-300",
-                    {
-                      "ml-8": oneRowLabels,
-                    }
-                  )}
-                >
-                  <span>[{poolName}]</span>
+              {isSwap ? (
+                <div className="rounded-4 bg-blue-300 bg-opacity-[20%] px-7 py-4 text-blue-300">
+                  <Trans>Swap</Trans>
+                </div>
+              ) : null}
+
+              <TokenIcon symbol={selectedToken.symbol} displaySize={isMobile ? 32 : 20} importSize={40} />
+              <span
+                className={cx("flex justify-start", {
+                  "flex-col": !oneRowLabels && !isSwap,
+                  "flex-row items-center": oneRowLabels || isSwap,
+                })}
+              >
+                <span className="text-[13px] font-medium">
+                  {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
+                  {selectedToken.symbol}/USD
                 </span>
-              )}
+                {poolName && (
+                  <span
+                    className={cx("text-body-small mt-1 font-normal text-slate-100", {
+                      "ml-8": oneRowLabels,
+                    })}
+                  >
+                    <span>[{poolName}]</span>
+                  </span>
+                )}
+              </span>
+              <FaChevronDown className="inline-block text-[12px]" />
             </span>
-          </span>
-        ) : (
-          "..."
-        )
+          ) : (
+            "..."
+          )}
+        </Button>
       }
       modalLabel={t`Market`}
       mobileModalContentPadding={false}
