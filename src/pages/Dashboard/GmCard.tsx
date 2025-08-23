@@ -89,7 +89,7 @@ export function GmCard() {
                   </Button>
                 </div>
               </div>
-              <div className="text-13 text-slate-100">
+              <div className="text-13 text-typography-secondary">
                 GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees.
               </div>
             </AppCardSection>

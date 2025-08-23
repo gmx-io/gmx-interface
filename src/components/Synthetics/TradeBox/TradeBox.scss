@@ -78,7 +78,7 @@
   }
 
   .MarketSelector-tooltip-content {
-    color: var(--color-white);
+    color: var(--color-typography-primary);
   }
 
   .MarketSelector-tooltip-row-action {
@@ -139,8 +139,8 @@
   color: var(--color-gray-400);
 
   &:hover {
-    text-decoration-color: var(--color-white);
-    color: var(--color-white);
+    text-decoration-color: var(--color-typography-primary);
+    color: var(--color-typography-primary);
   }
 }
 

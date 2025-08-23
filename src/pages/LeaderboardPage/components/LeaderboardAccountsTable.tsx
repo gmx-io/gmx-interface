@@ -356,24 +356,24 @@ const TableRow = memo(
         <TableTd>
           <TooltipWithPortal
             handle={
-              <span className={cx("numbers", getSignedValueClassName(account.totalQualifyingPnl))}>
-                {formatDelta(account.totalQualifyingPnl, { signed: true, prefix: "$" })}
-              </span>
+              <span className="numbers">{formatDelta(account.totalQualifyingPnl, { signed: true, prefix: "$" })}</span>
             }
             position={index > 7 ? "top" : "bottom"}
             className="whitespace-nowrap"
             renderContent={renderPnlTooltipContent}
+            handleClassName={getSignedValueClassName(account.totalQualifyingPnl)}
           />
         </TableTd>
         <TableTd>
           <TooltipWithPortal
             handle={
-              <span className={cx("numbers", getSignedValueClassName(account.pnlPercentage))}>
+              <span className="numbers">
                 {formatDelta(account.pnlPercentage, { signed: true, postfix: "%", decimals: 2 })}
               </span>
             }
             position={index > 7 ? "top" : "bottom"}
             className="whitespace-nowrap"
+            handleClassName={getSignedValueClassName(account.totalQualifyingPnl)}
             renderContent={() => (
               <StatsTooltipRow
                 label={t`Capital Used`}
@@ -399,7 +399,7 @@ const TableRow = memo(
 const EmptyRow = memo(() => {
   return (
     <TableTr hoverable={false} className="h-47">
-      <TableTd colSpan={7} className="align-top text-slate-100">
+      <TableTd colSpan={7} className="align-top text-typography-secondary">
         <Trans>No results found</Trans>
       </TableTd>
     </TableTr>
@@ -425,7 +425,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   if (rank === null)
     return <TooltipWithPortal handleClassName="text-red-500" handle={t`NA`} renderContent={tooltipContent} />;
 
-  return <span className="font-medium text-slate-100 numbers">{rank}</span>;
+  return <span className="font-medium text-typography-secondary numbers">{rank}</span>;
 });
 
 const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAccount }) => {

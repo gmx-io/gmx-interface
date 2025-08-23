@@ -25,7 +25,7 @@ export function AllowedSlippageRow({
           styleType="icon"
           renderContent={() => {
             return (
-              <div className="text-white">
+              <div className="text-typography-primary">
                 <Trans>
                   The maximum allowed percentage difference between the mark price and the execution price for market orders. You can edit the default value in the settings menu on the top right of the page.
                   <br />

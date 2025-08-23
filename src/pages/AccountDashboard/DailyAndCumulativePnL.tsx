@@ -100,6 +100,12 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
     </>
   );
 
+  const chartMargin = useMemo(() => {
+    const maxValue = Math.max(...clusteredPnlData.map((point) => Math.max(point.cumulativePnlFloat, point.pnlFloat)));
+    const stringValue = Math.ceil(maxValue).toString();
+    return { ...CHART_MARGIN, left: stringValue.length * 4 };
+  }, [clusteredPnlData]);
+
   return (
     <div className="flex flex-col rounded-8 bg-slate-900" ref={cardRef}>
       <div className="flex items-center justify-between px-20 py-15">
@@ -109,7 +115,7 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
         {isMobile ? null : <div className="flex flex-wrap items-stretch justify-end gap-8 py-8">{buttons}</div>}
       </div>
 
-      <div className="flex flex-wrap gap-24 px-16 pt-16 text-slate-100">
+      <div className="flex flex-wrap gap-24 px-16 pt-16 text-typography-secondary">
         <div className="flex items-center gap-8 text-13 font-medium">
           <div className="inline-block size-4 rounded-full bg-green-500" /> <Trans>Daily Profit</Trans>
         </div>
@@ -136,7 +142,7 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
               height={300}
               data={clusteredPnlData}
               barCategoryGap="25%"
-              margin={CHART_MARGIN}
+              margin={chartMargin}
               {...{ overflow: "visible" }}
             >
               <RechartsTooltip
@@ -198,7 +204,7 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
           </div>
         )}
         {!loading && !error && clusteredPnlData.length === 0 && (
-          <div className="absolute grid size-full place-items-center text-slate-100">
+          <div className="absolute grid size-full place-items-center text-typography-secondary">
             <Trans>No data available</Trans>
           </div>
         )}

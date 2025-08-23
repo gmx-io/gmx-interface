@@ -191,7 +191,7 @@ export function TestPermits() {
               <div className="mb-6 flex flex-col space-x-4">
                 <TokenIcon symbol={selectedToken.symbol} displaySize={40} importSize={40} />
                 <div>
-                  <h2 className="text-2xl font-semibold text-white">{selectedToken.symbol}</h2>
+                  <h2 className="text-2xl font-semibold text-typography-primary">{selectedToken.symbol}</h2>
                   <div>
                     <div className="text-xs text-slate-400">{selectedToken.address}</div>
                   </div>
@@ -233,7 +233,7 @@ export function TestPermits() {
 
               {permitData && (
                 <div className="rounded-xl text-slate-200 text-base bg-slate-800 p-6 shadow-inner">
-                  <h2 className="text-lg mb-4 font-bold tracking-wide text-slate-100">Permit Details</h2>
+                  <h2 className="text-lg mb-4 font-bold tracking-wide text-typography-secondary">Permit Details</h2>
                   <div className="space-y-2">
                     <div>
                       <span className="font-semibold">Deadline:</span>{" "}

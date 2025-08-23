@@ -135,7 +135,7 @@ function CollateralSelectorMobile(props: Props) {
               }}
               tokenData={option}
             />
-            <p className="text-body-small text-slate-100 last:mb-0">{description}</p>
+            <p className="text-body-small text-typography-secondary last:mb-0">{description}</p>
           </>
         );
       })}

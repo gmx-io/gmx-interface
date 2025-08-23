@@ -159,8 +159,8 @@ export function LeaderboardContainer() {
       value,
       label: leaderboardDataTypeLabels[value],
       className: {
-        active: "text-white !bg-blue-400",
-        regular: "hover:text-white !bg-slate-800",
+        active: "!text-white !bg-blue-400",
+        regular: "hover:!text-typography-primary !bg-button-secondary",
       },
     }));
   }, [leaderboardDataTypeLabels]);
@@ -177,8 +177,8 @@ export function LeaderboardContainer() {
       value,
       label: competitionLabels[value],
       className: {
-        active: "text-white !bg-blue-400",
-        regular: "hover:text-white !bg-slate-800",
+        active: "!text-white !bg-blue-400",
+        regular: "hover:!text-typography-primary !bg-button-secondary",
       },
     }));
   }, [competitionLabels]);
@@ -193,7 +193,7 @@ export function LeaderboardContainer() {
             <LeaderboardNavigation />
           </div>
         </BodyScrollFadeContainer>
-        <div className="text-body-medium font-medium text-slate-100">{description}</div>
+        <div className="text-body-medium font-medium text-typography-secondary">{description}</div>
       </div>
 
       <div>

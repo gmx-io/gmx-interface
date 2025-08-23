@@ -525,6 +525,10 @@ msgstr ""
 msgid "Funding Fee"
 msgstr "Комиссия за финансирование"
 
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Light"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Confirm Limit Order"
 msgstr "Подтвердить лимитный ордер"
@@ -1360,10 +1364,6 @@ msgstr "Лимитный обмен не удался"
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "Ликв. {longOrShortText} - {marketIndexName}"
 
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-#~ msgid "Actions"
-#~ msgstr "Действия"
-
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Longing..."
 msgstr "Открытие лонга..."
@@ -2157,6 +2157,10 @@ msgstr "Вестинг GLP на Avalanche"
 msgid "No esGMX to claim"
 msgstr "Нет esGMX для получения компенсации"
 
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "System"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
 msgstr "Запрошено увеличение {tokenSymbol} {longOrShortText} на {0} USD."
@@ -2441,6 +2445,11 @@ msgstr "Ордер не будет выполнен, поскольку его �
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
 msgstr "{typeString} Шорт Стоп-Маркет: {0} шорт позицию, когда цена ниже триггерной цены."
+
+#: src/components/SettingsModal/ThemeSelector.tsx
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Theme"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default Allowed Slippage"
@@ -4457,6 +4466,7 @@ msgstr "Неудачный Стоп-Маркет"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
 msgstr "Настройки"
 
@@ -5544,6 +5554,10 @@ msgstr "30д"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
 msgstr ""
+
+#: src/components/SideNav/ThemeNavItem.tsx
+#~ msgid "Light Mode"
+#~ msgstr ""
 
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
@@ -7329,6 +7343,10 @@ msgstr "Выберите токен для оплаты"
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr "Доступная ликвидность будет меньшей из разниц между максимальным значением и текущим значением как для резерва, так и для открытого интереса."
 
+#: src/components/SideNav/ThemeNavItem.tsx
+#~ msgid "Dark Mode"
+#~ msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "сдвиг"
@@ -7593,6 +7611,10 @@ msgstr "{increaseOrDecreaseText} {tokenText} на {sizeText}"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Neither collateral nor realized PnL is enough to cover pending fees. Please close a larger position amount."
+msgstr ""
+
+#: src/components/SettingsModal/ThemeSelector.tsx
+msgid "Dark"
 msgstr ""
 
 #: src/pages/Stake/UnstakeModal.tsx

@@ -56,7 +56,7 @@ function PoolLabel({
         onClick={onClick}
       >
         {name ? name : "..."}
-        <FaChevronDown className="w-12 text-slate-100 group-hover:text-blue-300" />
+        <FaChevronDown className="w-12 text-typography-secondary group-hover:text-blue-300" />
       </div>
     );
   }
@@ -233,7 +233,7 @@ export function PoolSelector({
           })}
         </div>
         {filteredOptions.length === 0 && (
-          <div className="text-body-medium text-slate-100">
+          <div className="text-body-medium text-typography-secondary">
             <Trans>No pools matched.</Trans>
           </div>
         )}

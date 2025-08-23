@@ -56,11 +56,11 @@ export function TradingSettings({
   const isExpressTradingDisabled = isOutOfGasPaymentBalance || isGeminiWallet;
 
   return (
-    <div className="mt-16">
+    <div>
       {getIsExpressSupported(chainId) && (
         <>
           <SettingsSection>
-            <div className="text-14 font-medium">
+            <div className="text-14 font-medium text-typography-primary">
               <Trans>Trading Mode</Trans>
             </div>
 

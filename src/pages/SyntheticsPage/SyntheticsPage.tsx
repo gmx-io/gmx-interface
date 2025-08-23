@@ -73,7 +73,7 @@ import ChartHeader from "components/Synthetics/TVChart/ChartHeader";
 import Tabs from "components/Tabs/Tabs";
 
 import logoIcon from "img/logo-icon.svg";
-import logoText from "img/logo-text.svg";
+import LogoText from "img/logo-text.svg?react";
 
 export type Props = {
   openSettings: () => void;
@@ -275,7 +275,7 @@ export function SyntheticsPage(p: Props) {
     <div className="flex shrink-0 items-center gap-16 px-12">
       {listSection === ListSection.Orders && selectedOrderKeys.length > 0 && (
         <button
-          className="text-[13px] font-medium text-slate-100 hover:text-slate-400"
+          className="text-[13px] font-medium text-typography-secondary hover:text-slate-400"
           disabled={isCancelOrdersProcessing}
           type="button"
           onClick={onCancelSelectedOrders}
@@ -305,7 +305,7 @@ export function SyntheticsPage(p: Props) {
             isTablet ? (
               <Link to="/" className="flex items-center gap-5 p-8 max-md:p-[4.5px]">
                 <img src={logoIcon} alt="GMX Logo" />
-                <img src={logoText} className="max-md:hidden" alt="GMX Logo" />
+                <LogoText className="max-md:hidden" />
               </Link>
             ) : (
               <ChartHeader />
@@ -315,7 +315,7 @@ export function SyntheticsPage(p: Props) {
       }
       className="max-lg:pb-40"
       contentClassName="max-w-[none] md:pb-0 md:pt-0"
-      pageWrapperClassName="!pl-0"
+      pageWrapperClassName="!pl-0 max-lg:!pl-8 max-md:!pl-0"
     >
       {isTablet ? <ChartHeader /> : null}
       <div className="flex gap-8 pt-0 max-lg:flex-col lg:grow">
@@ -398,7 +398,7 @@ export function SyntheticsPage(p: Props) {
                 selectedValue={listSection}
                 onChange={handleTabChange}
                 type="block"
-                className={cx("w-[max(100%,372px)] rounded-t-8 bg-slate-900", {
+                className={cx("w-[max(100%,420px)] rounded-t-8 bg-slate-900", {
                   "mb-8 rounded-b-8": [ListSection.Positions, ListSection.Orders].includes(listSection as ListSection),
                 })}
                 regularOptionClassname={cx({

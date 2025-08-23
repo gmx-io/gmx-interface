@@ -23,7 +23,7 @@ import useWallet, { WalletClient } from "lib/wallets/useWallet";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-import WalletIcon from "img/ic_wallet_24.svg?react";
+import WalletIcon from "img/ic_wallet.svg?react";
 
 import "./GmAssetDropdown.scss";
 
@@ -187,7 +187,7 @@ function AddToWalletButton({
         }}
         className="asset-item group"
       >
-        <WalletIcon className="text-slate-100 group-hover:text-white" />
+        <WalletIcon className="text-typography-secondary group-hover:text-typography-primary" />
         <p>
           <Trans>Add {marketName} to Wallet</Trans>
         </p>

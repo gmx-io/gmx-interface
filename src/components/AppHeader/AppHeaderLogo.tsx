@@ -1,13 +1,13 @@
 import ButtonLink from "components/Button/ButtonLink";
 
-import logoImg from "img/logo_GMX.svg";
-import logoSmallImg from "img/logo_GMX_small.svg";
+import logoIcon from "img/logo-icon.svg";
+import LogoText from "img/logo-text.svg?react";
 
 export function AppHeaderLogo() {
   return (
-    <ButtonLink to="/" className="flex items-center gap-16 px-6 py-4 lg:hidden">
-      <img src={logoSmallImg} alt="GMX Logo" className="block md:hidden" />
-      <img src={logoImg} alt="GMX Logo" className="hidden md:block" />
+    <ButtonLink to="/" className="flex items-center gap-8 px-6 py-4 text-typography-primary lg:hidden">
+      <img src={logoIcon} alt="GMX Logo" className="block" />
+      <LogoText className="hidden md:block" />
     </ButtonLink>
   );
 }

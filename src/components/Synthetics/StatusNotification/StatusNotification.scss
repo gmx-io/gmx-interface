@@ -13,7 +13,7 @@
       text-decoration: underline;
 
       &:hover {
-        color: var(--color-white);
+        color: var(--color-typography-primary);
       }
     }
   }
@@ -26,10 +26,6 @@
   left: -100px;
   right: 0;
   bottom: -100px;
-
-  &.error {
-    background-color: rgba(174, 43, 63, 1);
-  }
 }
 
 .Toastify__toast.OrdersStatusNotificiation {
@@ -49,14 +45,40 @@
       .StatusNotification-list {
         .StatusNotification {
           padding: 0.8rem 1rem;
-          &.error {
-            background-color: rgba(174, 43, 63, 1);
-          }
+
           &:not(:last-child) {
             border-bottom: 1.5px #0f463d solid;
           }
         }
       }
     }
+  }
+}
+
+.Toastify__toast--error {
+  & .StatusNotification-title {
+    color: var(--color-red-500);
+  }
+
+  & .StatusNotification {
+    color: var(--color-red-100);
+  }
+
+  & .close-toast-button > svg {
+    color: var(--color-red-500) !important;
+  }
+}
+
+.Toastify__toast--success {
+  & .StatusNotification-title {
+    color: var(--color-green-500);
+  }
+
+  & .StatusNotification {
+    color: var(--color-green-100);
+  }
+
+  & .close-toast-button > svg {
+    color: var(--color-green-500) !important;
   }
 }

@@ -5,7 +5,7 @@ import { FaChevronDown } from "react-icons/fa6";
 import { RemoveScroll } from "react-remove-scroll";
 import { createGlobalState } from "react-use";
 
-const HEADER_HEIGHT = 40;
+const HEADER_HEIGHT = 39;
 const DECELERATION = 0.01;
 const DIRECTION_THRESHOLD = 2;
 const MOVEMENT_THRESHOLD = 10;
@@ -249,13 +249,13 @@ export function Curtain({
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
           >
-            <div className="-mb-1 grow" onClick={headerClick}>
+            <div className="grow" onClick={headerClick}>
               {header}
             </div>
             <button onClick={handleToggle} className="group p-10">
               <FaChevronDown
                 className={cx(
-                  "text-slate-100 transition-transform duration-500 ease-out group-hover:text-white",
+                  "text-typography-secondary transition-transform duration-500 ease-out group-hover:text-typography-primary",
                   isOpen ? undefined : "rotate-180"
                 )}
               />
@@ -263,7 +263,7 @@ export function Curtain({
           </div>
 
           <div
-            className="flex grow flex-col overflow-y-auto bg-slate-900"
+            className="mt-1 flex grow flex-col overflow-y-auto bg-slate-900"
             ref={scrollableContainerRef}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}

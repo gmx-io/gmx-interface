@@ -28,7 +28,7 @@ export function PoolsTabs<T extends string | number>({
           key={tab.value as string}
           variant="ghost"
           className={cx(itemClassName, {
-            "!bg-slate-800 !text-white": selected === tab.value,
+            "!bg-button-secondary !text-typography-primary": selected === tab.value,
           })}
           onClick={() => setSelected(tab.value)}
         >

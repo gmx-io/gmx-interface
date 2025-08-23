@@ -193,10 +193,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
           >
             {props.label}
             <FaChevronDown
-              className={cx(
-                "-my-5 -mr-4 inline-block text-[12px] text-slate-100 group-hover:text-blue-300 group-active:text-blue-300",
-                props.chevronClassName
-              )}
+              className={cx("inline-block text-[12px] text-typography-secondary", props.chevronClassName)}
             />
           </Popover.Button>
           {popoverProps.open && (
@@ -247,14 +244,7 @@ function SelectorBaseMobile(props: Props) {
     <>
       <div className={cx("SelectorBase-button group/selector-base", props.handleClassName)} onClick={toggleVisibility}>
         {props.label}
-        {!props.disabled && (
-          <FaChevronDown
-            className={cx(
-              "inline-block text-slate-100 group-hover:text-blue-300 group-active:text-blue-300",
-              props.chevronClassName
-            )}
-          />
-        )}
+        {!props.disabled && <FaChevronDown className={cx("text-s inline-block", props.chevronClassName)} />}
       </div>
 
       <SlideModal

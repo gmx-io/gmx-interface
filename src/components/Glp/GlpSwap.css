@@ -7,7 +7,7 @@
 
 .Tab-title {
   letter-spacing: 0px;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   font-size: 3.41rem;
   font-weight: 500;
 }
@@ -70,7 +70,7 @@
   font-size: var(--font-size-body-large);
   line-height: 2.1rem;
   letter-spacing: 0px;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .App-card-title-mark .App-card-title-mark-subtitle {
@@ -230,7 +230,7 @@
   justify-content: center;
   align-items: center;
   border: none;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .AppOrder-ball:hover {

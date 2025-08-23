@@ -169,7 +169,7 @@ export function PoolListItem(props: {
           </Button>
         </div>
       </div>
-      {state.warning && <p className="mb-8 px-20 py-8 text-14 text-slate-100 last:mb-0">{state.warning}</p>}
+      {state.warning && <p className="mb-8 px-20 py-8 text-14 text-typography-secondary last:mb-0">{state.warning}</p>}
     </>
   );
 }

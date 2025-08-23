@@ -112,17 +112,17 @@ export function SettingButton({
   return (
     <div
       className={cx(
-        `grid min-h-66 select-none grid-cols-[66px_auto] items-center rounded-8 border border-solid`,
-        active ? "border-slate-100" : "border-slate-600",
+        `grid min-h-66 select-none grid-cols-[66px_auto] items-center rounded-8 border border-solid hover:border-slate-100`,
+        active ? "border-slate-100 text-typography-primary" : "border-slate-600",
         disabled ? "muted cursor-not-allowed" : "cursor-pointer"
       )}
       onClick={disabled ? undefined : onClick}
     >
       <div
         className={cx(
-          "flex items-center justify-center text-slate-100",
+          "flex items-center justify-center text-typography-secondary",
           disabled && "opacity-50",
-          active && "text-white"
+          active && "text-typography-primary"
         )}
       >
         {icon}
@@ -135,11 +135,11 @@ export function SettingButton({
               <TooltipWithPortal
                 content={info}
                 handleClassName="-mb-6"
-                handle={<InfoIcon className="muted size-12" onClickCapture={handleInfoClick} />}
+                handle={<InfoIcon className="size-12" onClickCapture={handleInfoClick} />}
               />
             )}
           </div>
-          <div className="text-slate-100">{description}</div>
+          <div>{description}</div>
         </div>
         {chip ? <div className="mr-6 mt-4">{chip}</div> : null}
       </div>
@@ -150,8 +150,10 @@ export function SettingButton({
 export function Chip({ children, color }: { children: ReactNode; color: "blue" | "gray" }) {
   const colorClass = {
     blue: "bg-blue-600",
-    gray: "bg-slate-100",
+    gray: "bg-slate-500",
   }[color];
 
-  return <div className={cx(`rounded-full px-8 py-4 text-[10px]`, colorClass)}>{children}</div>;
+  return (
+    <div className={cx(`rounded-full px-8 py-4 pb-3 text-[10px] font-medium text-white`, colorClass)}>{children}</div>
+  );
 }
