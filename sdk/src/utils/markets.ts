@@ -14,6 +14,10 @@ export function getMarketFullName(p: { longToken: Token; shortToken: Token; inde
 }
 
 export function getMarketIndexName(p: ({ indexToken: Token } | { glvToken: Token }) & { isSpotOnly: boolean }) {
+  if (p.isSpotOnly) {
+    return `SWAP-ONLY`;
+  }
+
   return `${getMarketBaseName(p)}/USD`;
 }
 
