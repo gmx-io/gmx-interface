@@ -64,7 +64,7 @@
     color: var(--color-red-100);
   }
 
-  & .close-toast-button > svg {
+  & .StatusNotification .close-toast-button > svg {
     color: var(--color-red-500) !important;
   }
 }
@@ -78,7 +78,7 @@
     color: var(--color-green-100);
   }
 
-  & .close-toast-button > svg {
+  & .StatusNotification .close-toast-button > svg {
     color: var(--color-green-500) !important;
   }
 }
