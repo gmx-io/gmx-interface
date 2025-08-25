@@ -144,11 +144,7 @@ html.theme-light [data-name="toolbar-drawing-toggle-button"][data-value="visible
   --tv-color-pane-background: var(--tv-color-toolbar-toggle-button-background-active);
   --themed-color-arrow-stroke: var(--light-bg);
 }
-/* Hide tooltip tail */
-html.theme-dark .common-tooltip__ear-holder-EJBD96zX:after {
-  display: none;
-}
 
-html.theme-light .common-tooltip__ear-holder-EJBD96zX:after {
+.common-tooltip__ear-holder-EJBD96zX:after {
   display: none;
 }

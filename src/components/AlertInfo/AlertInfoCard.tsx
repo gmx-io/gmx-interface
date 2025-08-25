@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useState } from "react";
 
-import { ColorfulBanner, ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
+import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 
 import InfoIconComponent from "img/ic_info.svg?react";
 import WarnIconComponent from "img/ic_warn.svg?react";
@@ -34,23 +34,5 @@ export function AlertInfoCard({ children, type = "info", onClose, className }: P
     <ColorfulBanner className={className} color={type === "info" ? "blue" : "yellow"} icon={Icon} onClose={handleClose}>
       {children}
     </ColorfulBanner>
-  );
-}
-
-export function AlertInfoButtonLink({
-  children,
-  to,
-  onClick,
-  type = "info",
-}: {
-  children: React.ReactNode;
-  to?: string;
-  onClick?: () => void;
-  type?: "info" | "warning";
-}) {
-  return (
-    <ColorfulButtonLink to={to} onClick={onClick} color={type === "info" ? "blue" : "yellow"}>
-      {children}
-    </ColorfulButtonLink>
   );
 }
