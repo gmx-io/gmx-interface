@@ -252,7 +252,7 @@ describe("TradeHistoryRow helpers", () => {
           },
           undefined,
         ],
-        "priceImpact": "-$9,488.99",
+        "priceImpact": undefined,
         "size": "+$1,348.83",
         "timestamp": "18 Sep 2023, 15:14",
         "timestampISO": "2023-09-18T15:14:09+04:00",
