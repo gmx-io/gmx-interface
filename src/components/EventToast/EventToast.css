@@ -22,7 +22,7 @@
 }
 
 .single-toast {
-  background: linear-gradient(180deg, var(--color-blue-300), var(--color-blue-300)),
+  background: linear-gradient(180deg, rgba(var(--color-blue-300-raw) / 0.2), rgba(var(--color-blue-300-raw) / 0.2)),
     linear-gradient(180deg, var(--color-slate-900), var(--color-slate-900));
   backdrop-filter: blur(4px);
   color: var(--color-typography-primary);

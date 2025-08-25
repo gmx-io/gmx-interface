@@ -243,7 +243,7 @@ function ChartTooltip({ active, payload }: TooltipProps<number | string, "pnl" |
   return (
     <div
       className={`backdrop-blur-100 text-body-small z-50 flex flex-col rounded-4 bg-[rgba(160,163,196,0.1)]
-      bg-[linear-gradient(0deg,var(--color-slate-800),var(--color-slate-800))] px-12 pt-8 bg-blend-overlay`}
+      bg-[linear-gradient(0deg,var(--color-slate-800),var(--color-slate-800))] px-12 pt-8 bg-blend-overlay shadow-lg`}
     >
       <StatsTooltipRow label={t`Date`} value={stats.date} showDollar={false} />
       <StatsTooltipRow
