@@ -160,7 +160,7 @@ export const CONTRACTS = {
     LayerZeroProvider: "0xA1D94802EcD642051B677dBF37c8E78ce6dd3784",
 
     ChainlinkPriceFeedProvider: "0x05d97cee050bfb81FB3EaD4A9368584F8e72C88e",
-    ClaimHandler: zeroAddress,
+    ClaimHandler: "0x7FfedCAC2eCb2C29dDc027B60D6F8107295Ff2eA",
 
     // External
     ExternalHandler: "0xD149573a098223a9185433290a5A5CDbFa54a8A9",
