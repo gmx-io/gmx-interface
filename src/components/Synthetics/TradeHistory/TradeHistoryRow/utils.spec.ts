@@ -215,7 +215,8 @@ describe("TradeHistoryRow helpers", () => {
           {
             "key": "Order Execution Price",
             "value": "$0.83711",
-          },,
+          },
+        ],
         "priceImpact": undefined,
         "size": "+$2,070.19",
         "timestamp": "18 Sep 2023, 16:43",
