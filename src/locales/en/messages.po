@@ -5555,10 +5555,6 @@ msgstr "30d"
 msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
 msgstr "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
 
-#: src/components/SideNav/ThemeNavItem.tsx
-#~ msgid "Light Mode"
-#~ msgstr "Light Mode"
-
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
 msgstr "Claim Affiliate Vault Rewards"
@@ -7342,10 +7338,6 @@ msgstr "Select a Pay token"
 #: src/components/Synthetics/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
-
-#: src/components/SideNav/ThemeNavItem.tsx
-#~ msgid "Dark Mode"
-#~ msgstr "Dark Mode"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
