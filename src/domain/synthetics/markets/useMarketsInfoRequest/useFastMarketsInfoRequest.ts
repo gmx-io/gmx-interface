@@ -87,6 +87,11 @@ export function useFastMarketsInfoRequest(chainId: number) {
                 positionImpactFactorNegative
                 maxPositionImpactFactorPositive
                 maxPositionImpactFactorNegative
+                maxLendableImpactFactor
+                maxLendableImpactFactorForWithdrawals
+                maxLendableImpactUsd
+                lentPositionImpactPoolAmount
+                atomicSwapFeeFactor
                 maxPositionImpactFactorForLiquidations
                 positionImpactExponentFactor
 
@@ -181,7 +186,7 @@ export function useFastMarketsInfoRequest(chainId: number) {
             swapImpactPoolAmountLong: BigInt(mInfo.swapImpactPoolAmountLong),
             swapImpactPoolAmountShort: BigInt(mInfo.swapImpactPoolAmountShort),
 
-            atomicSwapFeeFactor: 0n,
+            atomicSwapFeeFactor: BigInt(mInfo.atomicSwapFeeFactor),
 
             maxPnlFactorForTradersLong: BigInt(mInfo.maxPnlFactorForTradersLong),
             maxPnlFactorForTradersShort: BigInt(mInfo.maxPnlFactorForTradersShort),
@@ -198,9 +203,10 @@ export function useFastMarketsInfoRequest(chainId: number) {
             maxPositionImpactFactorPositive: BigInt(mInfo.maxPositionImpactFactorPositive),
             maxPositionImpactFactorNegative: BigInt(mInfo.maxPositionImpactFactorNegative),
             maxPositionImpactFactorForLiquidations: BigInt(mInfo.maxPositionImpactFactorForLiquidations),
-            maxLendableImpactFactor: 0n,
-            maxLendableImpactFactorForWithdrawals: 0n,
-            maxLendableImpactUsd: 0n,
+            maxLendableImpactFactor: BigInt(mInfo.maxLendableImpactFactor),
+            maxLendableImpactFactorForWithdrawals: BigInt(mInfo.maxLendableImpactFactorForWithdrawals),
+            maxLendableImpactUsd: BigInt(mInfo.maxLendableImpactUsd),
+            lentPositionImpactPoolAmount: BigInt(mInfo.lentPositionImpactPoolAmount),
             positionImpactExponentFactor: BigInt(mInfo.positionImpactExponentFactor),
 
             swapFeeFactorForBalanceWasImproved: BigInt(mInfo.swapFeeFactorForPositiveImpact),

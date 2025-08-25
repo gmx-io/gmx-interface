@@ -46,6 +46,7 @@ export function createRawTradeActionTransformer(
 
       const tradeAction: SwapTradeAction = {
         id: rawAction.id,
+        srcChainId: rawAction.srcChainId ?? null,
         eventName: rawAction.eventName as TradeActionType,
         account: rawAction.account,
         swapPath,
@@ -99,6 +100,7 @@ export function createRawTradeActionTransformer(
         account: rawAction.account,
         marketAddress,
         marketInfo,
+        srcChainId: rawAction.srcChainId ?? null,
         indexToken,
         swapPath,
         initialCollateralTokenAddress,
@@ -138,6 +140,7 @@ export function createRawTradeActionTransformer(
 
         priceImpactDiffUsd: rawAction.priceImpactDiffUsd ? BigInt(rawAction.priceImpactDiffUsd) : undefined,
         priceImpactUsd: rawAction.priceImpactUsd ? BigInt(rawAction.priceImpactUsd) : undefined,
+        totalImpactUsd: rawAction.totalImpactUsd ? BigInt(rawAction.totalImpactUsd) : null,
         positionFeeAmount: rawAction.positionFeeAmount ? BigInt(rawAction.positionFeeAmount) : undefined,
         borrowingFeeAmount: rawAction.borrowingFeeAmount ? BigInt(rawAction.borrowingFeeAmount) : undefined,
         fundingFeeAmount: rawAction.fundingFeeAmount ? BigInt(rawAction.fundingFeeAmount) : undefined,

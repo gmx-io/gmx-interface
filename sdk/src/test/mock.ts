@@ -226,6 +226,7 @@ export function mockMarketsInfoData(
       maxLendableImpactFactor: expandDecimals(1, 23),
       maxLendableImpactFactorForWithdrawals: expandDecimals(1, 23),
       maxLendableImpactUsd: expandDecimals(1, 23),
+      lentPositionImpactPoolAmount: expandDecimals(1, 23),
       positionImpactExponentFactor: expandDecimals(2, 30),
 
       swapFeeFactorForBalanceWasImproved: expandDecimals(2, 27),

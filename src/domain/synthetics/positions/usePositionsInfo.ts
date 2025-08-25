@@ -58,10 +58,8 @@ export function usePositionsInfoRequest(
   } = p;
 
   const { signer } = useWallet();
-  const {
-    positionsConstants: { minCollateralUsd },
-    error: positionsConstantsError,
-  } = usePositionsConstantsRequest(chainId);
+  const { positionsConstants, error: positionsConstantsError } = usePositionsConstantsRequest(chainId);
+  const { minCollateralUsd } = positionsConstants || {};
   const { error: uiFeeFactorError } = useUiFeeFactorRequest(chainId);
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
 
@@ -162,6 +160,7 @@ export function usePositionsInfoRequest(
         ? getAcceptablePriceInfo({
             marketInfo,
             isIncrease: false,
+            isLimit: false,
             isLong: position.isLong,
             indexPrice: getMarkPrice({ prices: indexToken.prices, isLong: position.isLong, isIncrease: false }),
             sizeDeltaUsd: position.sizeInUsd,

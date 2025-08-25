@@ -375,6 +375,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
   const acceptablePriceInfo = getAcceptablePriceInfo({
     marketInfo,
     isIncrease: true,
+    isLimit,
     isLong,
     indexPrice: values.indexPrice,
     sizeDeltaUsd: values.sizeDeltaUsd,
@@ -408,6 +409,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       const limitAcceptablePriceInfo = getAcceptablePriceInfo({
         marketInfo,
         isIncrease: true,
+        isLimit,
         isLong,
         indexPrice: values.indexPrice,
         sizeDeltaUsd: values.sizeDeltaUsd,

@@ -4,6 +4,7 @@ import { getContract } from "config/contracts";
 import {
   CLAIMABLE_COLLATERAL_DELAY_KEY,
   CLAIMABLE_COLLATERAL_REDUCTION_FACTOR_KEY,
+  CLAIMABLE_COLLATERAL_TIME_DIVISOR_KEY,
   MAX_AUTO_CANCEL_ORDERS_KEY,
   MIN_COLLATERAL_USD_KEY,
   MIN_POSITION_SIZE_USD_KEY,
@@ -11,14 +12,18 @@ import {
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import type { ContractsChainId } from "sdk/configs/chains";
+
+export type PositionsConstants = {
+  minCollateralUsd: bigint;
+  minPositionSizeUsd: bigint;
+  maxAutoCancelOrders: bigint;
+  claimableCollateralDelay: bigint;
+  claimableCollateralReductionFactor: bigint;
+  claimableCollateralTimeDivisor: bigint;
+};
+
 export type PositionsConstantsResult = {
-  positionsConstants: {
-    minCollateralUsd?: bigint;
-    minPositionSizeUsd?: bigint;
-    maxAutoCancelOrders?: bigint;
-    claimableCollateralDelay?: bigint;
-    claimableCollateralReductionFactor?: bigint;
-  };
+  positionsConstants: PositionsConstants | undefined;
   error?: Error;
 };
 
@@ -53,6 +58,10 @@ export function usePositionsConstantsRequest(chainId: ContractsChainId): Positio
             methodName: "getUint",
             params: [CLAIMABLE_COLLATERAL_REDUCTION_FACTOR_KEY],
           },
+          claimableCollateralTimeDivisor: {
+            methodName: "getUint",
+            params: [CLAIMABLE_COLLATERAL_TIME_DIVISOR_KEY],
+          },
         },
       },
     },
@@ -63,13 +72,14 @@ export function usePositionsConstantsRequest(chainId: ContractsChainId): Positio
         maxAutoCancelOrders: res.data.dataStore.maxAutoCancelOrders.returnValues[0],
         claimableCollateralDelay: res.data.dataStore.claimableCollateralDelay.returnValues[0],
         claimableCollateralReductionFactor: res.data.dataStore.claimableCollateralReductionFactor.returnValues[0],
+        claimableCollateralTimeDivisor: res.data.dataStore.claimableCollateralTimeDivisor.returnValues[0],
       };
     },
   });
 
   return useMemo(
     () => ({
-      positionsConstants: data || {},
+      positionsConstants: data || undefined,
       error,
     }),
     [data, error]

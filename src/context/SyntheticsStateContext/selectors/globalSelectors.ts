@@ -56,9 +56,9 @@ export const selectGlvAndMarketsInfoData = createSelector((q) => {
   };
 });
 
-export const selectMinCollateralUsd = (s: SyntheticsState) => s.globals.positionsConstants.minCollateralUsd;
-export const selectMinPositionSizeUsd = (s: SyntheticsState) => s.globals.positionsConstants.minPositionSizeUsd;
-export const selectMaxAutoCancelOrders = (s: SyntheticsState) => s.globals.positionsConstants.maxAutoCancelOrders;
+export const selectMinCollateralUsd = (s: SyntheticsState) => s.globals.positionsConstants?.minCollateralUsd;
+export const selectMinPositionSizeUsd = (s: SyntheticsState) => s.globals.positionsConstants?.minPositionSizeUsd;
+export const selectMaxAutoCancelOrders = (s: SyntheticsState) => s.globals.positionsConstants?.maxAutoCancelOrders;
 
 export const selectClosingPositionKey = (s: SyntheticsState) => s.globals.closingPositionKey;
 export const selectSetClosingPositionKey = (s: SyntheticsState) => s.globals.setClosingPositionKey;

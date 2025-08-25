@@ -560,6 +560,7 @@ export class Positions extends Module {
         ? getAcceptablePriceInfo({
             marketInfo,
             isIncrease: false,
+            isLimit: false,
             isLong: position.isLong,
             indexPrice: getMarkPrice({ prices: indexToken.prices, isLong: position.isLong, isIncrease: false }),
             sizeDeltaUsd: position.sizeInUsd,

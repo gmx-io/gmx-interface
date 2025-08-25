@@ -300,10 +300,10 @@ export function getDecreasePositionAmounts(p: {
 
   const totalFeesUsd = getTotalFeesUsdForDecrease({
     positionFeeUsd: values.positionFeeUsd,
-    borrowingFeeUsd: 0n,
-    fundingFeeUsd: 0n,
-    swapProfitFeeUsd: 0n,
-    swapUiFeeUsd: 0n,
+    borrowingFeeUsd: values.borrowingFeeUsd,
+    fundingFeeUsd: values.fundingFeeUsd,
+    swapProfitFeeUsd: values.swapProfitFeeUsd,
+    swapUiFeeUsd: values.swapUiFeeUsd,
     uiFeeUsd: values.uiFeeUsd,
     pnlUsd: values.realizedPnl,
     totalPendingImpactDeltaUsd: values.totalPendingImpactDeltaUsd,
@@ -324,8 +324,6 @@ export function getDecreasePositionAmounts(p: {
     collateralToken.decimals,
     values.collateralPrice
   )!;
-
-  values.receiveTokenAmount = payedInfo.outputAmount;
 
   // Collateral delta
   if (values.isFullClose) {
@@ -511,6 +509,7 @@ function applyAcceptablePrice(p: {
   const acceptablePriceInfo = getAcceptablePriceInfo({
     marketInfo,
     isIncrease: false,
+    isLimit: false,
     isLong,
     indexPrice: values.indexPrice,
     sizeDeltaUsd: values.sizeDeltaUsd,
@@ -558,6 +557,7 @@ function applyAcceptablePrice(p: {
       const triggerAcceptablePriceInfo = getAcceptablePriceInfo({
         marketInfo,
         isIncrease: false,
+        isLimit: false,
         isLong,
         indexPrice: values.indexPrice,
         sizeDeltaUsd: values.sizeDeltaUsd,

@@ -589,6 +589,7 @@ export const selectOrderEditorPriceImpactFeeBps = createSelector((q) => {
       getAcceptablePriceInfo({
         indexPrice: markPrice!,
         isIncrease: isIncreaseOrderType(order.orderType),
+        isLimit: isLimitOrderType(order.orderType),
         isLong: order.isLong,
         marketInfo: market,
         sizeDeltaUsd: sizeDeltaUsd!,

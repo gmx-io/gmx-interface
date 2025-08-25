@@ -415,6 +415,10 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.maxLendableImpactUsd],
         },
+        lentPositionImpactPoolAmount: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.lentPositionImpactPoolAmount],
+        },
         minCollateralFactor: {
           methodName: "getUint",
           params: [prebuiltHashedKeys.minCollateralFactor],

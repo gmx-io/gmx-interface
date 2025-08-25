@@ -50,12 +50,13 @@ export function getOrderThresholdType(orderType: OrderType, isLong: boolean) {
 export function getAcceptablePriceInfo(p: {
   marketInfo: MarketInfo;
   isIncrease: boolean;
+  isLimit: boolean;
   isLong: boolean;
   indexPrice: bigint;
   sizeDeltaUsd: bigint;
   maxNegativePriceImpactBps?: bigint;
 }) {
-  const { marketInfo, isIncrease, isLong, indexPrice, sizeDeltaUsd, maxNegativePriceImpactBps } = p;
+  const { marketInfo, isIncrease, isLong, isLimit, indexPrice, sizeDeltaUsd, maxNegativePriceImpactBps } = p;
   const { indexToken } = marketInfo;
 
   const values = {
@@ -104,7 +105,7 @@ export function getAcceptablePriceInfo(p: {
     isIncrease,
     {
       fallbackToZero: !isIncrease,
-      shouldCapNegativeImpact: isIncrease,
+      shouldCapNegativeImpact: isIncrease && !isLimit,
     }
   );
 

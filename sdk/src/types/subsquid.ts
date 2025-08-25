@@ -6917,6 +6917,8 @@ export interface SwapInfosConnection {
 
 export interface TradeAction {
   __typename?: "TradeAction";
+  srcChainId?: Maybe<Scalars["Int"]["output"]>;
+  totalImpactUsd?: Maybe<Scalars["BigInt"]["output"]>;
   acceptablePrice?: Maybe<Scalars["BigInt"]["output"]>;
   account: Scalars["String"]["output"];
   basePnlUsd?: Maybe<Scalars["BigInt"]["output"]>;

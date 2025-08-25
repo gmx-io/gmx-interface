@@ -60,14 +60,9 @@ export function SyntheticsStats() {
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { kinkMarketsBorrowingRatesData } = useKinkModelMarketsRates(chainId);
-  const {
-    positionsConstants: {
-      minCollateralUsd,
-      minPositionSizeUsd,
-      claimableCollateralDelay,
-      claimableCollateralReductionFactor,
-    },
-  } = usePositionsConstantsRequest(chainId);
+  const { positionsConstants } = usePositionsConstantsRequest(chainId);
+  const { minCollateralUsd, minPositionSizeUsd, claimableCollateralDelay, claimableCollateralReductionFactor } =
+    positionsConstants || {};
 
   const markets = Object.values(marketsInfoData || {});
   markets.sort((a, b) => {
@@ -1063,6 +1058,11 @@ export function SyntheticsStats() {
                             <StatsTooltipRow
                               label="Max Lendable Impact USD"
                               value={formatUsd(market.maxLendableImpactUsd)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Lent Position Impact Pool Amount"
+                              value={formatUsd(market.lentPositionImpactPoolAmount)}
                               showDollar={false}
                             />
                             <br />

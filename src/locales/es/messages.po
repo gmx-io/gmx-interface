@@ -4447,11 +4447,6 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Price Impact"
 msgstr "Impacto de Precio"
@@ -4622,6 +4617,7 @@ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Net Price Impact"
 msgstr ""
 
@@ -5227,6 +5223,10 @@ msgstr ""
 #: src/components/NotifyModal/NotifyModal.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Announcements"
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is only settled on position decrease. <0>Read more</0>"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
@@ -6537,11 +6537,6 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price takes into account price impact."
 msgstr "El precio de ejecución de la orden tiene en cuenta el impacto del precio."
 
@@ -7768,8 +7763,8 @@ msgid "Avalanche LP incentives"
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is only settled on position decrease.<0>Read more</0>"
-msgstr ""
+#~ msgid "Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is only settled on position decrease.<0>Read more</0>"
+#~ msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
