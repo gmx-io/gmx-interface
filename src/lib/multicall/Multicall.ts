@@ -1,6 +1,6 @@
-import { Chain, ClientConfig, createPublicClient, http } from "viem";
+import { Chain, createPublicClient, http } from "viem";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, UiContractsChain, getViemChain } from "config/chains";
+import { getViemChain } from "config/chains";
 import { isWebWorker } from "config/env";
 import {
   MulticallErrorEvent,
@@ -14,6 +14,7 @@ import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { sleep } from "lib/sleep";
 import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
 import { abis as allAbis } from "sdk/abis";
+import { BATCH_CONFIGS } from "sdk/configs/batch";
 
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 import { serializeMulticallErrors } from "./utils";
@@ -23,66 +24,6 @@ export const MAX_TIMEOUT = 20000;
 export type MulticallProviderUrls = {
   primary: string;
   secondary: string;
-};
-
-const BATCH_CONFIGS: Record<
-  UiContractsChain,
-  {
-    http: {
-      batchSize: number;
-      wait: number;
-    };
-    client: ClientConfig["batch"];
-  }
-> = {
-  [ARBITRUM]: {
-    http: {
-      batchSize: 0, // disable batches, here batchSize is the number of eth_calls in a batch
-      wait: 0, // keep this setting in case batches are enabled in future
-    },
-    client: {
-      multicall: {
-        batchSize: 1024 * 1024, // here batchSize is the number of bytes in a multicall
-        wait: 0, // zero delay means formation of a batch in the current macro-task, like setTimeout(fn, 0)
-      },
-    },
-  },
-  [AVALANCHE]: {
-    http: {
-      batchSize: 0,
-      wait: 0,
-    },
-    client: {
-      multicall: {
-        batchSize: 1024 * 1024,
-        wait: 0,
-      },
-    },
-  },
-  [AVALANCHE_FUJI]: {
-    http: {
-      batchSize: 40,
-      wait: 0,
-    },
-    client: {
-      multicall: {
-        batchSize: 1024 * 1024,
-        wait: 0,
-      },
-    },
-  },
-  [BOTANIX]: {
-    http: {
-      batchSize: 0,
-      wait: 0,
-    },
-    client: {
-      multicall: {
-        batchSize: 1024 * 1024,
-        wait: 0,
-      },
-    },
-  },
 };
 
 export class Multicall {
