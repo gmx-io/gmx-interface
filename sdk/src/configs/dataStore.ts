@@ -271,7 +271,7 @@ export function depositGasLimitKey() {
 }
 
 export function withdrawalGasLimitKey() {
-  return hashData(["bytes32"], [WITHDRAWAL_GAS_LIMIT_KEY]);
+  return WITHDRAWAL_GAS_LIMIT_KEY;
 }
 
 export function shiftGasLimitKey() {
