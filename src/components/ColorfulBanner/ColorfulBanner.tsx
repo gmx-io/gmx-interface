@@ -61,7 +61,7 @@ export function ColorfulBanner({
           <div className="absolute top-13">{icon}</div>
         </div>
       )}
-      <div className="pr-14">{children}</div>
+      <div className={cx({ "pr-14": Boolean(onClose) })}>{children}</div>
       {onClose && (
         <div className="absolute right-8 top-1/2 -translate-y-7">
           <button className=" text-gray-400 hover:text-white" onClick={handleClose}>

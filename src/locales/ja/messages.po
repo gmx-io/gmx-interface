@@ -3514,6 +3514,10 @@ msgstr ""
 msgid "Request Market Increase"
 msgstr "市場増加リクエスト"
 
+#: src/domain/multichain/SettlementChainWarningContainer.tsx
+msgid "You switched your settlement network to {0}, but you still have {1} remaining in your {2} Deposit"
+msgstr ""
+
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Edit {0}"
 msgstr ""

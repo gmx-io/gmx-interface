@@ -105,10 +105,12 @@ function getTotalGmxAccountUsdFromTokensData(tokensData: TokensData) {
   return totalUsd;
 }
 
-export function useAvailableToTradeAssetMultichain(): {
+export function useAvailableToTradeAssetMultichainRequest(
+  chainId: ContractsChainId,
+  srcChainId: SourceChainId | undefined
+): {
   gmxAccountUsd: bigint | undefined;
 } {
-  const { chainId, srcChainId } = useChainId();
   const { tokensData, isGmxAccountBalancesLoaded } = useTokensDataRequest(chainId, srcChainId);
 
   if (!tokensData || !isGmxAccountBalancesLoaded) {
@@ -120,8 +122,15 @@ export function useAvailableToTradeAssetMultichain(): {
   return { gmxAccountUsd };
 }
 
+export function useAvailableToTradeAssetMultichain(): {
+  gmxAccountUsd: bigint | undefined;
+} {
+  const { chainId, srcChainId } = useChainId();
+  return useAvailableToTradeAssetMultichainRequest(chainId, srcChainId);
+}
+
 const subscribeMultichainTokenBalances: SWRSubscription<
-  [string, ContractsChainId, Address],
+  [name: string, chainId: ContractsChainId, account: Address],
   {
     tokenBalances: Record<number, Record<string, bigint>>;
     isLoading: boolean;

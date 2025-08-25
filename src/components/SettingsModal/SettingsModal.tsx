@@ -13,6 +13,7 @@ import { DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/twap";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { SettlementChainWarningContainer } from "domain/multichain/SettlementChainWarningContainer";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { getIsSubaccountActive } from "domain/synthetics/subaccount";
 import { useChainId } from "lib/chains";
@@ -359,32 +360,31 @@ export function SettingsModal({
                   content={<Trans>Network for Cross-Chain Deposits and positions.</Trans>}
                   handle={<Trans>Settlement Chain</Trans>}
                 />
-                <div>
-                  <DropdownSelector
-                    slim
-                    elevated
-                    value={settlementChainId}
-                    onChange={setSettlementChainId}
-                    options={MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[srcChainId]}
-                    item={({ option }) => (
-                      <div className="flex items-center gap-8">
-                        <img src={CHAIN_ID_TO_NETWORK_ICON[option]} alt={getChainName(option)} className="size-16" />
-                        <span>{getChainName(option)}</span>
-                      </div>
-                    )}
-                    button={
-                      <div className="flex items-center gap-4">
-                        <img
-                          src={CHAIN_ID_TO_NETWORK_ICON[settlementChainId]}
-                          alt={getChainName(settlementChainId)}
-                          className="size-16"
-                        />
-                        <span>{getChainName(settlementChainId)}</span>
-                      </div>
-                    }
-                  />
-                </div>
+                <DropdownSelector
+                  slim
+                  elevated
+                  value={settlementChainId}
+                  onChange={setSettlementChainId}
+                  options={MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[srcChainId]}
+                  item={({ option }) => (
+                    <div className="flex items-center gap-8">
+                      <img src={CHAIN_ID_TO_NETWORK_ICON[option]} alt={getChainName(option)} className="size-16" />
+                      <span>{getChainName(option)}</span>
+                    </div>
+                  )}
+                  button={
+                    <div className="flex items-center gap-4">
+                      <img
+                        src={CHAIN_ID_TO_NETWORK_ICON[settlementChainId]}
+                        alt={getChainName(settlementChainId)}
+                        className="size-16"
+                      />
+                      <span>{getChainName(settlementChainId)}</span>
+                    </div>
+                  }
+                />
               </div>
+              <SettlementChainWarningContainer />
             </SettingsSection>
           )}
 
