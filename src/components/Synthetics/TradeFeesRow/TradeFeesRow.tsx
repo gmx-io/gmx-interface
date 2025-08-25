@@ -489,22 +489,6 @@ export function TradeFeesRow(p: Props) {
     );
   }, [chainId, incentivesTokenTitle, rebateIsApplicable, tradingIncentives?.maxRebatePercent]);
 
-  const netPriceImpactInfo = useMemo(() => {
-    if (p.positionPriceImpact?.deltaUsd === undefined || p.positionPriceImpact.deltaUsd === 0n) {
-      return null;
-    }
-
-    return (
-      <Trans>
-        Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is only
-        settled on position decrease.{" "}
-        <ExternalLink href={"https://docs.gmx.io/docs/trading/v2#price-impact"} newTab>
-          Read more
-        </ExternalLink>
-      </Trans>
-    );
-  }, [p.positionPriceImpact?.deltaUsd]);
-
   const priceImpactRebatesInfo = useMemo(() => {
     if (p.priceImpactDiff?.deltaUsd === undefined || p.priceImpactDiff.deltaUsd === 0n) {
       return null;
@@ -574,12 +558,6 @@ export function TradeFeesRow(p: Props) {
                   {incentivesBottomText}
                 </div>
               )}
-              {netPriceImpactInfo && (
-                <div>
-                  <br />
-                  {netPriceImpactInfo}
-                </div>
-              )}
               {priceImpactRebatesInfo && (
                 <div>
                   <br />
@@ -597,15 +575,7 @@ export function TradeFeesRow(p: Props) {
         />
       );
     }
-  }, [
-    totalFeeUsd,
-    feeRows,
-    incentivesBottomText,
-    shouldShowWarning,
-    netPriceImpactInfo,
-    priceImpactRebatesInfo,
-    swapRouteMsg,
-  ]);
+  }, [totalFeeUsd, feeRows, incentivesBottomText, shouldShowWarning, priceImpactRebatesInfo, swapRouteMsg]);
 
   return <SyntheticsInfoRow label={title} value={value} />;
 }

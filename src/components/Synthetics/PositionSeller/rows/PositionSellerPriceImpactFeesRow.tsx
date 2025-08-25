@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo } from "react";
 
@@ -6,7 +6,9 @@ import { selectPositionSellerFees } from "context/SyntheticsStateContext/selecto
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatPercentage } from "lib/numbers";
 
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
+import Tooltip from "components/Tooltip/Tooltip";
 
 export function PositionSellerPriceImpactFeesRow() {
   const { fees } = useSelector(selectPositionSellerFees);
@@ -49,7 +51,20 @@ export function PositionSellerPriceImpactFeesRow() {
 
   return (
     <SyntheticsInfoRow
-      label={t`Net Price Impact / Fees`}
+      label={
+        <Tooltip
+          handle={t`Net Price Impact / Fees`}
+          content={
+            <Trans>
+              Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is
+              only settled on position decrease.{" "}
+              <ExternalLink href={"https://docs.gmx.io/docs/trading/v2#price-impact"} newTab>
+                Read more
+              </ExternalLink>
+            </Trans>
+          }
+        />
+      }
       value={
         <>
           <span
