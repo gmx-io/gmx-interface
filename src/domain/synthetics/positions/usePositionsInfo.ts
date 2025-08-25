@@ -13,6 +13,7 @@ import {
   getPositionPnlUsd,
 } from "sdk/utils/positions";
 
+import { bigMath } from "sdk/utils/bigmath";
 import useUiFeeFactorRequest from "../fees/utils/useUiFeeFactor";
 import {
   MarketsData,
@@ -26,7 +27,6 @@ import { getAcceptablePriceInfo, getMarkPrice } from "../trade";
 import { PositionsData, PositionsInfoData } from "./types";
 import { usePositionsConstantsRequest } from "./usePositionsConstants";
 import { getLeverage, getLiquidationPrice, getPositionNetValue, getPositionPendingFeesUsd } from "./utils";
-import { bigMath } from "sdk/utils/bigmath";
 
 export type PositionsInfoResult = {
   positionsInfoData?: PositionsInfoData;
