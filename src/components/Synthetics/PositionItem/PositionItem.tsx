@@ -534,8 +534,8 @@ export function PositionItem(p: Props) {
         {!p.hideActions && (
           <>
             {!p.position.isOpening ? (
-              <>
-                <TableTd className="flex items-center justify-end gap-4">
+              <TableTd>
+                <div className="flex items-center justify-end gap-4">
                   <Button
                     variant="ghost"
                     onClick={p.onClosePositionClick}
@@ -554,8 +554,8 @@ export function PositionItem(p: Props) {
                     handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket)}
                     handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger)}
                   />
-                </TableTd>
-              </>
+                </div>
+              </TableTd>
             ) : (
               <TableTd />
             )}
