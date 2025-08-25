@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { useUserReferralInfoRequest } from "domain/referrals";
-import { getBasisPoints } from "lib/numbers";
+import { BASIS_POINTS_DIVISOR_BIGINT, getBasisPoints } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
@@ -26,6 +26,7 @@ import { getAcceptablePriceInfo, getMarkPrice } from "../trade";
 import { PositionsData, PositionsInfoData } from "./types";
 import { usePositionsConstantsRequest } from "./usePositionsConstants";
 import { getLeverage, getLiquidationPrice, getPositionNetValue, getPositionPendingFeesUsd } from "./utils";
+import { bigMath } from "sdk/utils/bigmath";
 
 export type PositionsInfoResult = {
   positionsInfoData?: PositionsInfoData;
@@ -210,13 +211,10 @@ export function usePositionsInfoRequest(
         pendingFundingFeesUsd: pendingFundingFeesUsd,
       });
 
-      const leverageWithPnl = getLeverage({
-        sizeInUsd: position.sizeInUsd,
-        collateralUsd: collateralUsd,
-        pnl,
-        pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
-        pendingFundingFeesUsd: pendingFundingFeesUsd,
-      });
+      const leverageWithPnl =
+        netValue !== undefined && netValue !== 0n
+          ? bigMath.mulDiv(position.sizeInUsd, BASIS_POINTS_DIVISOR_BIGINT, netValue)
+          : leverage;
 
       const maxAllowedLeverage = marketInfo
         ? getMaxAllowedLeverageByMinCollateralFactor(marketInfo.minCollateralFactor)
