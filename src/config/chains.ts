@@ -97,7 +97,7 @@ const constants = {
   },
 };
 
-const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io", "gmx-interface.pages.dev"];
+const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io", "hotfix-split-alchemy-rpc.gmx-interface.pages.dev"];
 
 export const RPC_PROVIDERS: Record<UiContractsChain | typeof ETH_MAINNET, string[]> = {
   [ETH_MAINNET]: ["https://rpc.ankr.com/eth"],
