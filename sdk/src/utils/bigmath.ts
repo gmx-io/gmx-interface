@@ -2,8 +2,14 @@ export const bigMath = {
   abs(x: bigint) {
     return x < 0n ? -x : x;
   },
-  mulDiv(x: bigint, y: bigint, z: bigint) {
-    return (x * y) / z;
+  mulDiv(x: bigint, y: bigint, z: bigint, roundUpMagnitude = false) {
+    const result = (x * y) / z;
+
+    if (roundUpMagnitude && this.mullmod(x, y, z) > 0n) {
+      return result + 1n;
+    }
+
+    return result;
   },
   max(max: bigint, ...rest: bigint[]) {
     return rest.reduce((currentMax, val) => (currentMax < val ? val : currentMax), max);
@@ -32,5 +38,8 @@ export const bigMath = {
   },
   divRoundUp(x: bigint, y: bigint) {
     return (x + y - 1n) / y;
+  },
+  mullmod(x: bigint, y: bigint, m: bigint): bigint {
+    return (x * y) % m;
   },
 };

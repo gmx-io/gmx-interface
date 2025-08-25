@@ -214,9 +214,10 @@ export function getProportionalPendingImpactValues({
   sizeDeltaUsd: bigint;
   indexToken: TokenData;
 }) {
-  // TODO: round up magnitude division
   const proportionalPendingImpactDeltaAmount =
-    sizeDeltaUsd !== 0n && sizeInUsd !== 0n ? bigMath.mulDiv(pendingImpactAmount, sizeDeltaUsd, sizeInUsd) : 0n;
+    sizeDeltaUsd !== 0n && sizeInUsd !== 0n
+      ? bigMath.mulDiv(pendingImpactAmount, sizeDeltaUsd, sizeInUsd, pendingImpactAmount < 0n)
+      : 0n;
 
   const proportionalPendingImpactDeltaUsd = convertToUsd(
     proportionalPendingImpactDeltaAmount,
