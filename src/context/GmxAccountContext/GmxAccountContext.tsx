@@ -9,6 +9,7 @@ import {
   IS_SOURCE_BASE_ALLOWED_KEY,
   IS_SOURCE_BASE_ALLOWED_NOTIFICATION_SHOWN_KEY,
   SELECTED_NETWORK_LOCAL_STORAGE_KEY,
+  SELECTED_SETTLEMENT_CHAIN_ID_KEY,
 } from "config/localStorage";
 import {
   DEFAULT_SETTLEMENT_CHAIN_ID_MAP,
@@ -69,6 +70,15 @@ export const context = createContext<GmxAccountContext | null>(null);
 const DEFAULT_SETTLEMENT_CHAIN_ID: SettlementChainId = isDevelopment() ? ARBITRUM_SEPOLIA : ARBITRUM;
 
 const getSettlementChainIdFromLocalStorage = () => {
+  const settlementChainIdFromLocalStorage = localStorage.getItem(SELECTED_SETTLEMENT_CHAIN_ID_KEY);
+
+  if (settlementChainIdFromLocalStorage) {
+    const settlementChainId = parseInt(settlementChainIdFromLocalStorage);
+    if (isSettlementChain(settlementChainId)) {
+      return settlementChainId;
+    }
+  }
+
   const unsanitizedChainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
 
   if (!unsanitizedChainId) {
@@ -93,6 +103,11 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
   const [settlementChainId, setSettlementChainId] = useState<GmxAccountContext["settlementChainId"]>(
     getSettlementChainIdFromLocalStorage()
   );
+
+  const handleSetSettlementChainId = useCallback((chainId: SettlementChainId) => {
+    setSettlementChainId(chainId);
+    localStorage.setItem(SELECTED_SETTLEMENT_CHAIN_ID_KEY, chainId.toString());
+  }, []);
 
   const [depositViewChain, setDepositViewChain] = useState<GmxAccountContext["depositViewChain"]>(undefined);
   const [depositViewTokenAddress, setDepositViewTokenAddress] =
@@ -149,9 +164,9 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
       Object.keys(MULTI_CHAIN_TOKEN_MAPPING[settlementChainId]?.[probableSourceChain] || {}).length > 0;
 
     if (settlementChainId === undefined || !areChainsRelated) {
-      setSettlementChainId(DEFAULT_SETTLEMENT_CHAIN_ID_MAP[probableSourceChain] ?? DEFAULT_SETTLEMENT_CHAIN_ID);
+      handleSetSettlementChainId(DEFAULT_SETTLEMENT_CHAIN_ID_MAP[probableSourceChain] ?? DEFAULT_SETTLEMENT_CHAIN_ID);
     }
-  }, [settlementChainId, walletChainId]);
+  }, [handleSetSettlementChainId, settlementChainId, walletChainId]);
 
   const value = useMemo(
     () => ({
@@ -159,7 +174,7 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
       setModalOpen: handleSetModalOpen,
 
       settlementChainId,
-      setSettlementChainId,
+      setSettlementChainId: handleSetSettlementChainId,
 
       // deposit view
 
@@ -188,6 +203,7 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
       modalOpen,
       handleSetModalOpen,
       settlementChainId,
+      handleSetSettlementChainId,
       depositViewChain,
       depositViewTokenAddress,
       depositViewTokenInputValue,
