@@ -787,7 +787,9 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
     }
   }
 
-  lines.push("", t`Order execution price takes into account price impact.`);
+  if (lines.length > 0) {
+    lines.push("", t`Order execution price takes into account price impact.`);
+  }
 
   return lines;
 }

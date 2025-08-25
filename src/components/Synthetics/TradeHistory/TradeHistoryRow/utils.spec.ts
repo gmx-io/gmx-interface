@@ -348,13 +348,6 @@ describe("TradeHistoryRow helpers", () => {
           },
           "",
           {
-            "key": "Price Impact",
-            "value": {
-              "state": "error",
-              "text": "-$16.82",
-            },
-          },
-          {
             "key": "Liquidation Fee",
             "value": {
               "state": "error",
@@ -367,7 +360,7 @@ describe("TradeHistoryRow helpers", () => {
             "value": "$66.08",
           },
         ],
-        "priceImpact": "-$16.82",
+        "priceImpact": undefined,
         "size": "-$6,441.90",
         "timestamp": "04 Sep 2023, 06:38",
         "timestampISO": "2023-09-04T06:38:49+04:00",
@@ -398,17 +391,8 @@ describe("TradeHistoryRow helpers", () => {
             "key": "Order Execution Price",
             "value": "$1,584.74",
           },
-          {
-            "key": "Price Impact",
-            "value": {
-              "state": "error",
-              "text": "-$0.09",
-            },
-          },
-          "",
-          "Order execution price takes into account price impact.",
         ],
-        "priceImpact": "-$0.09",
+        "priceImpact": undefined,
         "size": "+$49.83",
         "timestamp": "21 Sep 2023, 19:32",
         "timestampISO": "2023-09-21T19:32:40+04:00",
@@ -464,17 +448,8 @@ describe("TradeHistoryRow helpers", () => {
             "key": "Order Execution Price",
             "value": "$95,754.58",
           },
-          {
-            "key": "Price Impact",
-            "value": {
-              "state": "success",
-              "text": "< +$0.01",
-            },
-          },
-          "",
-          "Order execution price takes into account price impact.",
         ],
-        "priceImpact": "< +$0.01",
+        "priceImpact": undefined,
         "size": "+$3.62",
         "timestamp": "18 Sep 2023, 16:43",
         "timestampISO": "2023-09-18T16:43:18+04:00",
