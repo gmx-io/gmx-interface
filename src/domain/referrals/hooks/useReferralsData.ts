@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { ContractsChainId, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { BN_ZERO } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
-import { getReferralsGraphClient } from "lib/subgraph";
+import { getReferralsGraphClient, REFERRAL_SUPPORTED_CHAIN_IDS } from "lib/subgraph";
 import { decodeReferralCode } from "sdk/utils/referrals";
 
 import {
@@ -292,7 +292,7 @@ export function useReferralsData(account?: string | null) {
     }
 
     Promise.allSettled(
-      SUPPORTED_CHAIN_IDS.map(async (chainId) => {
+      REFERRAL_SUPPORTED_CHAIN_IDS.map(async (chainId) => {
         try {
           const data = await getChainReferralData(chainId);
           return data;

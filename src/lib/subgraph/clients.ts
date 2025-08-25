@@ -1,4 +1,5 @@
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ETH_MAINNET } from "config/chains";
+import { isDevelopment } from "config/env";
 
 import { createClient } from "./utils";
 
@@ -22,6 +23,10 @@ export const avalancheSubsquidClient = createClient(AVALANCHE, "subsquid");
 export const avalancheFujiSubsquidClient = createClient(AVALANCHE_FUJI, "subsquid");
 export const arbitrumSepoliaSubsquidClient = createClient(ARBITRUM_SEPOLIA, "subsquid");
 export const botanixSubsquidClient = createClient(BOTANIX, "subsquid");
+
+export const REFERRAL_SUPPORTED_CHAIN_IDS = isDevelopment()
+  ? [ARBITRUM, AVALANCHE, AVALANCHE_FUJI]
+  : [ARBITRUM, AVALANCHE];
 
 export function getSyntheticsGraphClient(chainId: number) {
   if (chainId === ARBITRUM) {
