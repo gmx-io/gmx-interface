@@ -264,7 +264,7 @@ function AvailableToTradeTokenList({
     const concatenatedTokens: DisplayToken[] = [];
 
     for (const token of Object.values(tokensData ?? (EMPTY_OBJECT as TokensData))) {
-      if (token.gmxAccountBalance !== undefined) {
+      if (token.gmxAccountBalance !== undefined && (srcChainId !== undefined || token.gmxAccountBalance > 0n)) {
         concatenatedTokens.push({ ...token, isGmxAccount: true, balance: token.gmxAccountBalance, balanceUsd: 0n });
       }
       if (token.walletBalance !== undefined && srcChainId === undefined) {

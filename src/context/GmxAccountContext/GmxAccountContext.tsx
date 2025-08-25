@@ -5,11 +5,17 @@ import { createContext } from "use-context-selector";
 import { useAccount } from "wagmi";
 
 import { isDevelopment } from "config/env";
-import { IS_SOURCE_BASE_ALLOWED_KEY, IS_SOURCE_BASE_ALLOWED_NOTIFICATION_SHOWN_KEY } from "config/localStorage";
+import {
+  IS_SOURCE_BASE_ALLOWED_KEY,
+  IS_SOURCE_BASE_ALLOWED_NOTIFICATION_SHOWN_KEY,
+  SELECTED_NETWORK_LOCAL_STORAGE_KEY,
+  SELECTED_SETTLEMENT_CHAIN_ID_KEY,
+} from "config/localStorage";
 import {
   DEFAULT_SETTLEMENT_CHAIN_ID_MAP,
   IS_SOURCE_BASE_ALLOWED,
   MULTI_CHAIN_TOKEN_MAPPING,
+  isSettlementChain,
   isSourceChain,
 } from "config/multichain";
 import { helperToast } from "lib/helperToast";
@@ -63,14 +69,45 @@ export const context = createContext<GmxAccountContext | null>(null);
 
 const DEFAULT_SETTLEMENT_CHAIN_ID: SettlementChainId = isDevelopment() ? ARBITRUM_SEPOLIA : ARBITRUM;
 
+const getSettlementChainIdFromLocalStorage = () => {
+  const settlementChainIdFromLocalStorage = localStorage.getItem(SELECTED_SETTLEMENT_CHAIN_ID_KEY);
+
+  if (settlementChainIdFromLocalStorage) {
+    const settlementChainId = parseInt(settlementChainIdFromLocalStorage);
+    if (isSettlementChain(settlementChainId)) {
+      return settlementChainId;
+    }
+  }
+
+  const unsanitizedChainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
+
+  if (!unsanitizedChainId) {
+    return DEFAULT_SETTLEMENT_CHAIN_ID;
+  }
+
+  const chainIdFromLocalStorage = parseInt(unsanitizedChainId);
+
+  if (!isSettlementChain(chainIdFromLocalStorage)) {
+    return DEFAULT_SETTLEMENT_CHAIN_ID;
+  }
+
+  return chainIdFromLocalStorage;
+};
+
 export function GmxAccountContextProvider({ children }: PropsWithChildren) {
   const { chainId: walletChainId } = useAccount();
   useMultichainUrlEnabled();
 
   const [modalOpen, setModalOpen] = useState<GmxAccountContext["modalOpen"]>(false);
 
-  const [settlementChainId, setSettlementChainId] =
-    useState<GmxAccountContext["settlementChainId"]>(DEFAULT_SETTLEMENT_CHAIN_ID);
+  const [settlementChainId, setSettlementChainId] = useState<GmxAccountContext["settlementChainId"]>(
+    getSettlementChainIdFromLocalStorage()
+  );
+
+  const handleSetSettlementChainId = useCallback((chainId: SettlementChainId) => {
+    setSettlementChainId(chainId);
+    localStorage.setItem(SELECTED_SETTLEMENT_CHAIN_ID_KEY, chainId.toString());
+  }, []);
 
   const [depositViewChain, setDepositViewChain] = useState<GmxAccountContext["depositViewChain"]>(undefined);
   const [depositViewTokenAddress, setDepositViewTokenAddress] =
@@ -103,17 +140,33 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
   }, []);
 
   useEffect(() => {
+    let probableSourceChain: SourceChainId | undefined = walletChainId as SourceChainId | undefined;
     if (walletChainId === undefined) {
+      const unsanitizedChainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
+      if (!unsanitizedChainId) {
+        return;
+      }
+
+      const chainIdFromLocalStorage = parseInt(unsanitizedChainId);
+
+      if (!isSourceChain(chainIdFromLocalStorage)) {
+        return;
+      }
+
+      probableSourceChain = chainIdFromLocalStorage;
+    }
+
+    if (!isSourceChain(probableSourceChain)) {
       return;
     }
 
     const areChainsRelated =
-      Object.keys(MULTI_CHAIN_TOKEN_MAPPING[settlementChainId]?.[walletChainId] || {}).length > 0;
+      Object.keys(MULTI_CHAIN_TOKEN_MAPPING[settlementChainId]?.[probableSourceChain] || {}).length > 0;
 
-    if ((settlementChainId === undefined || !areChainsRelated) && isSourceChain(walletChainId)) {
-      setSettlementChainId(DEFAULT_SETTLEMENT_CHAIN_ID_MAP[walletChainId] ?? ARBITRUM_SEPOLIA);
+    if (settlementChainId === undefined || !areChainsRelated) {
+      handleSetSettlementChainId(DEFAULT_SETTLEMENT_CHAIN_ID_MAP[probableSourceChain] ?? DEFAULT_SETTLEMENT_CHAIN_ID);
     }
-  }, [settlementChainId, walletChainId]);
+  }, [handleSetSettlementChainId, settlementChainId, walletChainId]);
 
   const value = useMemo(
     () => ({
@@ -121,7 +174,7 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
       setModalOpen: handleSetModalOpen,
 
       settlementChainId,
-      setSettlementChainId,
+      setSettlementChainId: handleSetSettlementChainId,
 
       // deposit view
 
@@ -150,6 +203,7 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
       modalOpen,
       handleSetModalOpen,
       settlementChainId,
+      handleSetSettlementChainId,
       depositViewChain,
       depositViewTokenAddress,
       depositViewTokenInputValue,
