@@ -154,7 +154,7 @@ describe("getLeverage", () => {
 describe("getLiquidationPrice", () => {
   beforeEach(() => {
     (getPositionFee as Mock).mockReturnValue({ positionFeeUsd: 50n });
-    (getPriceImpactForPosition as Mock).mockReturnValue(-100n);
+    (getPriceImpactForPosition as Mock).mockReturnValue({ priceImpactDeltaUsd: -100n, balanceWasImproved: false });
     (getIsEquivalentTokens as Mock).mockReturnValue(false);
   });
 
@@ -201,6 +201,7 @@ describe("getLiquidationPrice", () => {
 
   it("computes liquidation price for non-equivalent tokens and isLong=true", () => {
     (getIsEquivalentTokens as Mock).mockReturnValue(false);
+    (convertToUsd as Mock).mockReturnValue(1000n);
     const marketInfo = {
       indexToken: {
         decimals: 8,
