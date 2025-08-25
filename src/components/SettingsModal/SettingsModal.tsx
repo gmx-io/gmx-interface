@@ -244,7 +244,7 @@ export function SettingsModal({
     [isTradingModeChanging, settings.expressOrdersEnabled, subaccountState.subaccount, tradingMode]
   );
 
-  const isExpressTradingDisabled = isOutOfGasPaymentBalance || isGeminiWallet;
+  const isExpressTradingDisabled = (isOutOfGasPaymentBalance && srcChainId === undefined) || isGeminiWallet;
 
   return (
     <SlideModal
@@ -323,7 +323,9 @@ export function SettingsModal({
                   onClick={() => handleTradingModeChange(TradingMode.Express1CT)}
                 />
 
-                {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
+                {isOutOfGasPaymentBalance && srcChainId === undefined && (
+                  <ExpressTradingOutOfGasBanner onClose={onClose} />
+                )}
 
                 {isGeminiWallet && (
                   <ColorfulBanner color="slate" icon={<ExpressIcon className="-mt-6" />}>
