@@ -336,7 +336,7 @@ function customUtilsPlugin({ addUtilities, addVariant }) {
 
   addUtilities({
     ".numbers": {
-      letterSpacing: "0.06em",
+      letterSpacing: "0.03em",
     },
   });
 }

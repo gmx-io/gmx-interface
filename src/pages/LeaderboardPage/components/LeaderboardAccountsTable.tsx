@@ -362,7 +362,7 @@ const TableRow = memo(
             className="whitespace-nowrap"
             renderContent={renderPnlTooltipContent}
             handleClassName={getSignedValueClassName(account.totalQualifyingPnl)}
-            styleType="svgUnderline"
+            styleType="underline"
           />
         </TableTd>
         <TableTd>
@@ -383,7 +383,7 @@ const TableRow = memo(
                 value={<span className="numbers">{formatUsd(account.maxCapital)}</span>}
               />
             )}
-            styleType="svgUnderline"
+            styleType="underline"
           />
         </TableTd>
         <TableTd
@@ -415,7 +415,7 @@ const TableRow = memo(
               </span>
             }
             renderContent={renderWinsLossesTooltipContent}
-            styleType="svgUnderline"
+            styleType="underline"
           />
         </TableTd>
       </TableTr>
@@ -455,7 +455,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
         handleClassName="text-typography-secondary"
         handle={t`NA`}
         renderContent={tooltipContent}
-        styleType="svgUnderline"
+        styleType="underline"
       />
     );
 

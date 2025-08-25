@@ -366,7 +366,7 @@ const TableRow = memo(
             position={index > 9 ? "top" : "bottom"}
             className="nowrap"
             renderContent={renderPnlTooltipContent}
-            styleType="svgUnderline"
+            styleType="underline"
           />
         </TableTd>
         <TableTd>
@@ -393,7 +393,7 @@ const TableRow = memo(
             position={index > 9 ? "top" : "bottom"}
             className="nowrap"
             renderContent={renderPositionTooltip}
-            styleType="svgUnderline"
+            styleType="underline"
           />
         </TableTd>
         <TableTd className="numbers first-letter:mr-1 first-letter:text-typography-secondary">
@@ -412,7 +412,7 @@ const TableRow = memo(
             position={index > 9 ? "top-end" : "bottom-end"}
             renderContent={renderSizeTooltip}
             tooltipClassName="Table-SizeTooltip"
-            styleType="svgUnderline"
+            styleType="underline"
           />
         </TableTd>
         <TableTd className="numbers">
@@ -433,14 +433,14 @@ const TableRow = memo(
                   })}
                 </span>
               }
-              styleType="svgUnderline"
+              styleType="underline"
             />
           ) : (
             <TooltipWithPortal
               position={index > 9 ? "top-end" : "bottom-end"}
               renderContent={renderNaLiquidationTooltip}
               handle={<span className="numbers">{t`NA`}</span>}
-              styleType="svgUnderline"
+              styleType="underline"
             />
           )}
         </TableTd>
@@ -481,7 +481,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
         handleClassName="text-typography-secondary"
         handle={t`NA`}
         renderContent={tooltipContent}
-        styleType="svgUnderline"
+        styleType="underline"
       />
     );
 

@@ -123,14 +123,6 @@
   display: inline-flex;
 }
 
-.Tooltip-underline {
-  text-decoration: underline;
-  text-decoration-style: dashed;
-  text-decoration-thickness: 0.5px;
-  text-underline-offset: 2px;
-  text-decoration-color: inherit;
-}
-
 .Tooltip-divider {
   height: 1px;
   background-color: var(--color-gray-500);
