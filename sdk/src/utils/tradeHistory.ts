@@ -46,7 +46,7 @@ export function createRawTradeActionTransformer(
 
       const tradeAction: SwapTradeAction = {
         id: rawAction.id,
-        srcChainId: rawAction.srcChainId ?? null,
+        srcChainId: rawAction.srcChainId ? Number(rawAction.srcChainId) : null,
         eventName: rawAction.eventName as TradeActionType,
         account: rawAction.account,
         swapPath,
@@ -100,7 +100,7 @@ export function createRawTradeActionTransformer(
         account: rawAction.account,
         marketAddress,
         marketInfo,
-        srcChainId: rawAction.srcChainId ?? null,
+        srcChainId: rawAction.srcChainId ? Number(rawAction.srcChainId) : null,
         indexToken,
         swapPath,
         initialCollateralTokenAddress,

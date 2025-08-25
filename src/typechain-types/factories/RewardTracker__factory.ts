@@ -922,7 +922,10 @@ export class RewardTracker__factory {
   static createInterface(): RewardTrackerInterface {
     return new Interface(_abi) as RewardTrackerInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): RewardTracker {
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): RewardTracker {
     return new Contract(address, _abi, runner) as unknown as RewardTracker;
   }
 }

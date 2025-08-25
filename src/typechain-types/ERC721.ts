@@ -46,16 +46,36 @@ export interface ERC721Interface extends Interface {
       | "transferFrom"
   ): FunctionFragment;
 
-  getEvent(nameOrSignatureOrTopic: "Approval" | "ApprovalForAll" | "Transfer"): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: "Approval" | "ApprovalForAll" | "Transfer"
+  ): EventFragment;
 
-  encodeFunctionData(functionFragment: "approve", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "balanceOf", values: [AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "approve",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "balanceOf",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(functionFragment: "baseURI", values?: undefined): string;
-  encodeFunctionData(functionFragment: "getApproved", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "isApprovedForAll", values: [AddressLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "mint", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "getApproved",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isApprovedForAll",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "mint",
+    values: [AddressLike, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
-  encodeFunctionData(functionFragment: "ownerOf", values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "ownerOf",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom(address,address,uint256)",
     values: [AddressLike, AddressLike, BigNumberish]
@@ -64,37 +84,92 @@ export interface ERC721Interface extends Interface {
     functionFragment: "safeTransferFrom(address,address,uint256,bytes)",
     values: [AddressLike, AddressLike, BigNumberish, BytesLike]
   ): string;
-  encodeFunctionData(functionFragment: "setApprovalForAll", values: [AddressLike, boolean]): string;
-  encodeFunctionData(functionFragment: "supportsInterface", values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: "setApprovalForAll",
+    values: [AddressLike, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "supportsInterface",
+    values: [BytesLike]
+  ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
-  encodeFunctionData(functionFragment: "tokenByIndex", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "tokenOfOwnerByIndex", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "tokenURI", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "totalSupply", values?: undefined): string;
-  encodeFunctionData(functionFragment: "transferFrom", values: [AddressLike, AddressLike, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "tokenByIndex",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tokenOfOwnerByIndex",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tokenURI",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "totalSupply",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferFrom",
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "baseURI", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getApproved", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "isApprovedForAll", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getApproved",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isApprovedForAll",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "safeTransferFrom(address,address,uint256)", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "safeTransferFrom(address,address,uint256,bytes)", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setApprovalForAll", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "supportsInterface", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "safeTransferFrom(address,address,uint256)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "safeTransferFrom(address,address,uint256,bytes)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setApprovalForAll",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "supportsInterface",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "tokenByIndex", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "tokenOfOwnerByIndex", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenByIndex",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenOfOwnerByIndex",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "totalSupply", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "transferFrom", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "totalSupply",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferFrom",
+    data: BytesLike
+  ): Result;
 }
 
 export namespace ApprovalEvent {
-  export type InputTuple = [owner: AddressLike, approved: AddressLike, tokenId: BigNumberish];
+  export type InputTuple = [
+    owner: AddressLike,
+    approved: AddressLike,
+    tokenId: BigNumberish
+  ];
   export type OutputTuple = [owner: string, approved: string, tokenId: bigint];
   export interface OutputObject {
     owner: string;
@@ -108,8 +183,16 @@ export namespace ApprovalEvent {
 }
 
 export namespace ApprovalForAllEvent {
-  export type InputTuple = [owner: AddressLike, operator: AddressLike, approved: boolean];
-  export type OutputTuple = [owner: string, operator: string, approved: boolean];
+  export type InputTuple = [
+    owner: AddressLike,
+    operator: AddressLike,
+    approved: boolean
+  ];
+  export type OutputTuple = [
+    owner: string,
+    operator: string,
+    approved: boolean
+  ];
   export interface OutputObject {
     owner: string;
     operator: string;
@@ -122,7 +205,11 @@ export namespace ApprovalForAllEvent {
 }
 
 export namespace TransferEvent {
-  export type InputTuple = [from: AddressLike, to: AddressLike, tokenId: BigNumberish];
+  export type InputTuple = [
+    from: AddressLike,
+    to: AddressLike,
+    tokenId: BigNumberish
+  ];
   export type OutputTuple = [from: string, to: string, tokenId: bigint];
   export interface OutputObject {
     from: string;
@@ -152,23 +239,37 @@ export interface ERC721 extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-  approve: TypedContractMethod<[to: AddressLike, tokenId: BigNumberish], [void], "nonpayable">;
+  approve: TypedContractMethod<
+    [to: AddressLike, tokenId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   balanceOf: TypedContractMethod<[owner: AddressLike], [bigint], "view">;
 
@@ -176,9 +277,17 @@ export interface ERC721 extends BaseContract {
 
   getApproved: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
 
-  isApprovedForAll: TypedContractMethod<[owner: AddressLike, operator: AddressLike], [boolean], "view">;
+  isApprovedForAll: TypedContractMethod<
+    [owner: AddressLike, operator: AddressLike],
+    [boolean],
+    "view"
+  >;
 
-  mint: TypedContractMethod<[to: AddressLike, tokenId: BigNumberish], [void], "nonpayable">;
+  mint: TypedContractMethod<
+    [to: AddressLike, tokenId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   name: TypedContractMethod<[], [string], "view">;
 
@@ -191,71 +300,151 @@ export interface ERC721 extends BaseContract {
   >;
 
   "safeTransferFrom(address,address,uint256,bytes)": TypedContractMethod<
-    [from: AddressLike, to: AddressLike, tokenId: BigNumberish, _data: BytesLike],
+    [
+      from: AddressLike,
+      to: AddressLike,
+      tokenId: BigNumberish,
+      _data: BytesLike
+    ],
     [void],
     "nonpayable"
   >;
 
-  setApprovalForAll: TypedContractMethod<[operator: AddressLike, approved: boolean], [void], "nonpayable">;
+  setApprovalForAll: TypedContractMethod<
+    [operator: AddressLike, approved: boolean],
+    [void],
+    "nonpayable"
+  >;
 
-  supportsInterface: TypedContractMethod<[interfaceId: BytesLike], [boolean], "view">;
+  supportsInterface: TypedContractMethod<
+    [interfaceId: BytesLike],
+    [boolean],
+    "view"
+  >;
 
   symbol: TypedContractMethod<[], [string], "view">;
 
   tokenByIndex: TypedContractMethod<[index: BigNumberish], [bigint], "view">;
 
-  tokenOfOwnerByIndex: TypedContractMethod<[owner: AddressLike, index: BigNumberish], [bigint], "view">;
+  tokenOfOwnerByIndex: TypedContractMethod<
+    [owner: AddressLike, index: BigNumberish],
+    [bigint],
+    "view"
+  >;
 
   tokenURI: TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
 
   totalSupply: TypedContractMethod<[], [bigint], "view">;
 
-  transferFrom: TypedContractMethod<[from: AddressLike, to: AddressLike, tokenId: BigNumberish], [void], "nonpayable">;
+  transferFrom: TypedContractMethod<
+    [from: AddressLike, to: AddressLike, tokenId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
-  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
   getFunction(
     nameOrSignature: "approve"
-  ): TypedContractMethod<[to: AddressLike, tokenId: BigNumberish], [void], "nonpayable">;
-  getFunction(nameOrSignature: "balanceOf"): TypedContractMethod<[owner: AddressLike], [bigint], "view">;
-  getFunction(nameOrSignature: "baseURI"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "getApproved"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+  ): TypedContractMethod<
+    [to: AddressLike, tokenId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "balanceOf"
+  ): TypedContractMethod<[owner: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "baseURI"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "getApproved"
+  ): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
   getFunction(
     nameOrSignature: "isApprovedForAll"
-  ): TypedContractMethod<[owner: AddressLike, operator: AddressLike], [boolean], "view">;
+  ): TypedContractMethod<
+    [owner: AddressLike, operator: AddressLike],
+    [boolean],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "mint"
-  ): TypedContractMethod<[to: AddressLike, tokenId: BigNumberish], [void], "nonpayable">;
-  getFunction(nameOrSignature: "name"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "ownerOf"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+  ): TypedContractMethod<
+    [to: AddressLike, tokenId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "name"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "ownerOf"
+  ): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
   getFunction(
     nameOrSignature: "safeTransferFrom(address,address,uint256)"
-  ): TypedContractMethod<[from: AddressLike, to: AddressLike, tokenId: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [from: AddressLike, to: AddressLike, tokenId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "safeTransferFrom(address,address,uint256,bytes)"
   ): TypedContractMethod<
-    [from: AddressLike, to: AddressLike, tokenId: BigNumberish, _data: BytesLike],
+    [
+      from: AddressLike,
+      to: AddressLike,
+      tokenId: BigNumberish,
+      _data: BytesLike
+    ],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "setApprovalForAll"
-  ): TypedContractMethod<[operator: AddressLike, approved: boolean], [void], "nonpayable">;
-  getFunction(nameOrSignature: "supportsInterface"): TypedContractMethod<[interfaceId: BytesLike], [boolean], "view">;
-  getFunction(nameOrSignature: "symbol"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "tokenByIndex"): TypedContractMethod<[index: BigNumberish], [bigint], "view">;
+  ): TypedContractMethod<
+    [operator: AddressLike, approved: boolean],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "supportsInterface"
+  ): TypedContractMethod<[interfaceId: BytesLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "symbol"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "tokenByIndex"
+  ): TypedContractMethod<[index: BigNumberish], [bigint], "view">;
   getFunction(
     nameOrSignature: "tokenOfOwnerByIndex"
-  ): TypedContractMethod<[owner: AddressLike, index: BigNumberish], [bigint], "view">;
-  getFunction(nameOrSignature: "tokenURI"): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
-  getFunction(nameOrSignature: "totalSupply"): TypedContractMethod<[], [bigint], "view">;
+  ): TypedContractMethod<
+    [owner: AddressLike, index: BigNumberish],
+    [bigint],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "tokenURI"
+  ): TypedContractMethod<[tokenId: BigNumberish], [string], "view">;
+  getFunction(
+    nameOrSignature: "totalSupply"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "transferFrom"
-  ): TypedContractMethod<[from: AddressLike, to: AddressLike, tokenId: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [from: AddressLike, to: AddressLike, tokenId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   getEvent(
     key: "Approval"
-  ): TypedContractEvent<ApprovalEvent.InputTuple, ApprovalEvent.OutputTuple, ApprovalEvent.OutputObject>;
+  ): TypedContractEvent<
+    ApprovalEvent.InputTuple,
+    ApprovalEvent.OutputTuple,
+    ApprovalEvent.OutputObject
+  >;
   getEvent(
     key: "ApprovalForAll"
   ): TypedContractEvent<
@@ -265,7 +454,11 @@ export interface ERC721 extends BaseContract {
   >;
   getEvent(
     key: "Transfer"
-  ): TypedContractEvent<TransferEvent.InputTuple, TransferEvent.OutputTuple, TransferEvent.OutputObject>;
+  ): TypedContractEvent<
+    TransferEvent.InputTuple,
+    TransferEvent.OutputTuple,
+    TransferEvent.OutputObject
+  >;
 
   filters: {
     "Approval(address,address,uint256)": TypedContractEvent<
@@ -273,7 +466,11 @@ export interface ERC721 extends BaseContract {
       ApprovalEvent.OutputTuple,
       ApprovalEvent.OutputObject
     >;
-    Approval: TypedContractEvent<ApprovalEvent.InputTuple, ApprovalEvent.OutputTuple, ApprovalEvent.OutputObject>;
+    Approval: TypedContractEvent<
+      ApprovalEvent.InputTuple,
+      ApprovalEvent.OutputTuple,
+      ApprovalEvent.OutputObject
+    >;
 
     "ApprovalForAll(address,address,bool)": TypedContractEvent<
       ApprovalForAllEvent.InputTuple,
@@ -291,6 +488,10 @@ export interface ERC721 extends BaseContract {
       TransferEvent.OutputTuple,
       TransferEvent.OutputObject
     >;
-    Transfer: TypedContractEvent<TransferEvent.InputTuple, TransferEvent.OutputTuple, TransferEvent.OutputObject>;
+    Transfer: TypedContractEvent<
+      TransferEvent.InputTuple,
+      TransferEvent.OutputTuple,
+      TransferEvent.OutputObject
+    >;
   };
 }

@@ -223,7 +223,8 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct IGlvDepositUtils.CreateGlvDepositParamsAddresses",
+            internalType:
+              "struct IGlvDepositUtils.CreateGlvDepositParamsAddresses",
             name: "addresses",
             type: "tuple",
           },
@@ -316,7 +317,8 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType: "struct IGlvWithdrawalUtils.CreateGlvWithdrawalParamsAddresses",
+            internalType:
+              "struct IGlvWithdrawalUtils.CreateGlvWithdrawalParamsAddresses",
             name: "addresses",
             type: "tuple",
           },
