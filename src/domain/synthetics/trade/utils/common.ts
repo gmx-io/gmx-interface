@@ -95,9 +95,10 @@ export function getTradeFees(p: {
   externalSwapQuote: ExternalSwapQuote | undefined;
   positionFeeUsd: bigint;
   swapPriceImpactDeltaUsd: bigint;
-  positionPriceImpactDeltaUsd: bigint;
-  proportionalPendingImpactDeltaUsd?: bigint;
-  closePriceImpactDeltaUsd?: bigint;
+  increasePositionPriceImpactDeltaUsd: bigint;
+  totalPendingImpactDeltaUsd: bigint;
+  proportionalPendingImpactDeltaUsd: bigint;
+  decreasePositionPriceImpactDeltaUsd: bigint;
   priceImpactDiffUsd: bigint;
   borrowingFeeUsd: bigint;
   fundingFeeUsd: bigint;
@@ -113,7 +114,8 @@ export function getTradeFees(p: {
     swapSteps,
     positionFeeUsd,
     swapPriceImpactDeltaUsd,
-    positionPriceImpactDeltaUsd,
+    increasePositionPriceImpactDeltaUsd,
+    totalPendingImpactDeltaUsd,
     externalSwapQuote,
     priceImpactDiffUsd,
     borrowingFeeUsd,
@@ -121,7 +123,7 @@ export function getTradeFees(p: {
     feeDiscountUsd,
     swapProfitFeeUsd,
     proportionalPendingImpactDeltaUsd,
-    closePriceImpactDeltaUsd,
+    decreasePositionPriceImpactDeltaUsd,
     uiFeeFactor,
     type,
   } = p;
@@ -175,23 +177,26 @@ export function getTradeFees(p: {
   const borrowFee = getFeeItem(borrowingFeeUsd * -1n, initialCollateralUsd);
 
   const fundingFee = getFeeItem(fundingFeeUsd * -1n, initialCollateralUsd);
-  const positionPriceImpact = getFeeItem(positionPriceImpactDeltaUsd, sizeDeltaUsd);
+  const increasePositionPriceImpact = getFeeItem(increasePositionPriceImpactDeltaUsd, sizeDeltaUsd);
+  const decreasePositionPriceImpact = getFeeItem(decreasePositionPriceImpactDeltaUsd, sizeDeltaUsd);
+  const proportionalPendingImpact = getFeeItem(proportionalPendingImpactDeltaUsd, sizeDeltaUsd);
+  const totalPendingImpact = getFeeItem(totalPendingImpactDeltaUsd, sizeDeltaUsd);
   const priceImpactDiff = getFeeItem(priceImpactDiffUsd, sizeDeltaUsd);
-  const positionNetPriceImpact = getTotalFeeItem([positionPriceImpact, priceImpactDiff]);
+  const positionNetPriceImpact = getTotalFeeItem([totalPendingImpact, priceImpactDiff]);
 
-  const positionCollateralPriceImpact = getFeeItem(positionPriceImpactDeltaUsd, bigMath.abs(collateralDeltaUsd));
+  const positionCollateralPriceImpact = getFeeItem(
+    type === "increase" ? increasePositionPriceImpactDeltaUsd : totalPendingImpactDeltaUsd,
+    bigMath.abs(collateralDeltaUsd)
+  );
   const collateralPriceImpactDiff = getFeeItem(priceImpactDiffUsd, collateralDeltaUsd);
   const collateralNetPriceImpact = getTotalFeeItem([positionCollateralPriceImpact, collateralPriceImpactDiff]);
-
-  const proportionalPendingImpact = getFeeItem(proportionalPendingImpactDeltaUsd, sizeDeltaUsd);
-  const closePriceImpact = getFeeItem(closePriceImpactDeltaUsd, sizeDeltaUsd);
 
   const totalFees = getTotalFeeItem([
     ...(swapFees || []),
     externalSwapFee,
     swapProfitFee,
     swapPriceImpact,
-    type === "decrease" ? positionPriceImpact : undefined,
+    type === "decrease" ? totalPendingImpact : undefined,
     type === "decrease" ? priceImpactDiff : undefined,
     positionFeeAfterDiscount,
     borrowFee,
@@ -207,11 +212,12 @@ export function getTradeFees(p: {
     swapProfitFee,
     swapPriceImpact,
     positionFee: positionFeeBeforeDiscount,
-    positionPriceImpact,
     priceImpactDiff,
     positionCollateralPriceImpact,
     proportionalPendingImpact,
-    closePriceImpact,
+    increasePositionPriceImpact,
+    decreasePositionPriceImpact,
+    totalPendingImpact,
     collateralPriceImpactDiff,
     positionNetPriceImpact,
     collateralNetPriceImpact,

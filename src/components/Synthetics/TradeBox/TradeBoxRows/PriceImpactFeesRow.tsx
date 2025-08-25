@@ -31,7 +31,7 @@ export function PriceImpactFeesRow() {
   const estimatedRebatesPercentage = tradingIncentives?.estimatedRebatePercent ?? 0n;
 
   const totalPriceImpactPercentage =
-    (fees?.positionPriceImpact?.precisePercentage ?? 0n) + (fees?.priceImpactDiff?.precisePercentage ?? 0n);
+    (fees?.totalPendingImpact?.precisePercentage ?? 0n) + (fees?.priceImpactDiff?.precisePercentage ?? 0n);
 
   const formattedPriceImpactPercentage =
     totalPriceImpactPercentage === undefined

@@ -1687,12 +1687,12 @@ msgid "Search Market"
 msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
-msgid "The order's acceptable price includes the current price impact and set allowed slippage. The execution price must meet this condition for the order to be executed."
-msgstr ""
+#~ msgid "The order's acceptable price includes the current price impact and set allowed slippage. The execution price must meet this condition for the order to be executed."
+#~ msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
-msgid "Once the mark price hits the limit price, the order will attempt to execute, guaranteeing the acceptable price, which includes the set acceptable price impact. Note that if there is a negative price impact, the mark price may need to be higher than the limit price."
-msgstr ""
+#~ msgid "Once the mark price hits the limit price, the order will attempt to execute, guaranteeing the acceptable price, which includes the set acceptable price impact. Note that if there is a negative price impact, the mark price may need to be higher than the limit price."
+#~ msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
@@ -1974,8 +1974,8 @@ msgid "To reduce fees, select a different asset to pay with."
 msgstr "为了减少费用，请选择不同的资产来支付"
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
-msgid "Once the mark price hits the limit price, the order will attempt to execute, guaranteeing the acceptable price, which includes the set acceptable price impact. Note that if there is a negative price impact, the mark price may need to be lower than the limit price."
-msgstr ""
+#~ msgid "Once the mark price hits the limit price, the order will attempt to execute, guaranteeing the acceptable price, which includes the set acceptable price impact. Note that if there is a negative price impact, the mark price may need to be lower than the limit price."
+#~ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Settlement Chain"
@@ -3198,8 +3198,8 @@ msgid "Network Fee"
 msgstr "网络费"
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
-msgid "Expected execution price for the order, including the current price impact."
-msgstr ""
+#~ msgid "Expected execution price for the order, including the current price impact."
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/PositionEditor.jsx
@@ -3404,7 +3404,6 @@ msgstr ""
 msgid "Graph showing performance vs benchmark over the selected period."
 msgstr ""
 
-#: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4064,7 +4063,6 @@ msgid "Rebates earned by this account as a trader."
 msgstr "该账户作为交易商所赚取的回扣"
 
 #: src/components/Exchange/SwapBox.jsx
-#: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
@@ -4442,7 +4440,6 @@ msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
-#: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6283,8 +6280,8 @@ msgid "No options available to transfer {nativeTokenSymbol} to {chainName}."
 msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
-msgid "The order's acceptable price includes the set acceptable price impact. The execution price must meet this condition for the order to be executed."
-msgstr ""
+#~ msgid "The order's acceptable price includes the set acceptable price impact. The execution price must meet this condition for the order to be executed."
+#~ msgstr ""
 
 #: src/components/Synthetics/TwapRows/TwapRows.tsx
 msgid "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} market."
@@ -6353,8 +6350,8 @@ msgid "Liquidation Confirmations"
 msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
-msgid "Expected execution price for the order, including the current price impact, once the stop market order executes."
-msgstr ""
+#~ msgid "Expected execution price for the order, including the current price impact, once the stop market order executes."
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Acknowledge epoch is ending in {minutes} minutes"
@@ -6386,8 +6383,8 @@ msgid "The maximum percentage difference between your specified price and execut
 msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
-msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
-msgstr ""
+#~ msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "of open fee"
@@ -7201,8 +7198,8 @@ msgid "limit price"
 msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
-msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>."
-msgstr ""
+#~ msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>."
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Sending order request"
@@ -8111,7 +8108,6 @@ msgid "Image generation error, please refresh and try again."
 msgstr "图片生成错误，请刷新并重试"
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
-#: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price Impact Rebates"
@@ -8221,8 +8217,8 @@ msgid "You have a pending transfer from {sender}."
 msgstr "您有一个来自{sender}的待处理转账"
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
-msgid "Once the mark price hits the stop price, the order will attempt to execute."
-msgstr ""
+#~ msgid "Once the mark price hits the stop price, the order will attempt to execute."
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a trigger price"
@@ -8475,7 +8471,6 @@ msgid "Last 30 days"
 msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
-#: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Execution Price"
 msgstr "执行价格"
@@ -8953,8 +8948,8 @@ msgid "You will receive at least {toAmountText} if this order is executed. This 
 msgstr ""
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
-msgid "Acceptable price does not apply to stop loss orders, as they will be executed regardless of any price impact."
-msgstr ""
+#~ msgid "Acceptable price does not apply to stop loss orders, as they will be executed regardless of any price impact."
+#~ msgstr ""
 
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing and Withdrawing Funds to/from GMX"

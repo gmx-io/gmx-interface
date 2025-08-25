@@ -984,7 +984,7 @@ export function PositionSeller() {
               <HighPriceImpactOrFeesWarningCard
                 priceImpactWarningState={priceImpactWarningState}
                 collateralImpact={fees?.positionCollateralPriceImpact}
-                positionImpact={fees?.positionPriceImpact}
+                positionImpact={fees?.totalPendingImpact}
                 swapPriceImpact={fees?.swapPriceImpact}
                 swapProfitFee={fees?.swapProfitFee}
                 executionFeeUsd={executionFee?.feeUsd}

@@ -9,7 +9,7 @@ const SUBGRAPH_URLS = {
     nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
     // subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum:prod/api/graphql",
-    subsquid: "https://gmx-test.squids.live/v22-arbitrum2@kd7hzy/api/graphql",
+    subsquid: "https://gmx-test.squids.live/v22-arbitrum2@59r1yd/api/graphql",
   },
 
   [AVALANCHE]: {
@@ -27,7 +27,7 @@ const SUBGRAPH_URLS = {
   },
 
   [ARBITRUM_SEPOLIA]: {
-    subsquid: "https://gmx-test.squids.live/v22-arbitrum-sepolia@eysngo/api/graphql",
+    subsquid: "https://gmx-test.squids.live/v22-arbitrum-sepolia@q6ndld/api/graphql",
   },
 
   [BOTANIX]: {

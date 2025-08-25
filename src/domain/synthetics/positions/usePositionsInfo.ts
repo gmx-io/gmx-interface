@@ -6,6 +6,7 @@ import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 import {
   getEntryPrice,
   getNetPriceImpactDeltaUsdForDecrease,
@@ -13,7 +14,6 @@ import {
   getPositionPnlUsd,
 } from "sdk/utils/positions";
 
-import { bigMath } from "sdk/utils/bigmath";
 import useUiFeeFactorRequest from "../fees/utils/useUiFeeFactor";
 import {
   MarketsData,

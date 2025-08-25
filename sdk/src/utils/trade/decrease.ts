@@ -546,7 +546,7 @@ function applyAcceptablePrice(p: {
         isLong,
         indexPrice: values.indexPrice,
         sizeDeltaUsd: values.sizeDeltaUsd,
-        priceImpactDeltaUsd: acceptablePriceInfo.priceImpactDeltaUsd,
+        priceImpactDeltaUsd: values.closePriceImpactDeltaUsd,
         acceptablePriceImapctBuffer: acceptablePriceImpactBuffer || DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER,
       });
 

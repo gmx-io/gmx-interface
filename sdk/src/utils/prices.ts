@@ -109,6 +109,11 @@ export function getAcceptablePriceInfo(p: {
     }
   );
 
+  /**
+   * We display this value as price impact on action (increase or decrease)
+   * But for acceptable price calculation uncapped price impact is used
+   * Also on decrease action we calculate totalImpactUsd which will be deducted from the collateral
+   */
   values.priceImpactDeltaUsd = priceImpactDeltaUsd;
   values.balanceWasImproved = balanceWasImproved;
 

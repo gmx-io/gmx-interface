@@ -62,7 +62,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
         notAvailable={!triggerPriceInputValue || isStopLoss || !decreaseAmounts}
         acceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
         recommendedAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
-        priceImpactFeeBps={fees?.positionPriceImpact?.bps}
+        priceImpactFeeBps={fees?.decreasePositionPriceImpact?.bps}
         setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
       />
     );

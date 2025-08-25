@@ -224,7 +224,9 @@ export function TradeBoxAdvancedGroups({
             }
             acceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
             recommendedAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
-            priceImpactFeeBps={fees?.positionPriceImpact?.bps}
+            priceImpactFeeBps={
+              isTrigger ? fees?.decreasePositionPriceImpact?.bps : fees?.increasePositionPriceImpact?.bps
+            }
             setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
           />
           {!isTwap && <div className="h-1 shrink-0 bg-stroke-primary" />}

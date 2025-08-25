@@ -398,8 +398,7 @@ export function PositionEditor() {
             <div className="flex flex-col gap-14 pt-14">
               <HighPriceImpactOrFeesWarningCard
                 priceImpactWarningState={priceImpactWarningState}
-                collateralImpact={fees?.positionCollateralPriceImpact}
-                positionImpact={fees?.positionPriceImpact}
+                collateralImpact={fees?.collateralNetPriceImpact}
                 swapPriceImpact={fees?.swapPriceImpact}
                 swapProfitFee={fees?.swapProfitFee}
                 executionFeeUsd={executionFee?.feeUsd}

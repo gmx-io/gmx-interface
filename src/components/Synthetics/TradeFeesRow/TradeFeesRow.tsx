@@ -33,7 +33,7 @@ type Props = {
   swapProfitFee?: FeeItem;
   swapPriceImpact?: FeeItem;
   positionFee?: FeeItem;
-  positionPriceImpact?: FeeItem;
+  totalPendingImpact?: FeeItem;
   proportionalPendingImpact?: FeeItem;
   closePriceImpact?: FeeItem;
   priceImpactDiff?: FeeItem;
@@ -316,7 +316,7 @@ export function TradeFeesRow(p: Props) {
         : undefined);
 
     const netPriceImpactRow =
-      p.positionPriceImpact?.deltaUsd !== undefined && p.positionPriceImpact.deltaUsd !== 0n
+      p.totalPendingImpact?.deltaUsd !== undefined && p.totalPendingImpact.deltaUsd !== 0n
         ? {
             id: "netPriceImpact",
             label: (
@@ -324,7 +324,7 @@ export function TradeFeesRow(p: Props) {
                 <div className="text-white">{t`Net Price Impact`}:</div>
                 <div>
                   (
-                  {formatPercentage(bigMath.abs(p.positionPriceImpact.precisePercentage), {
+                  {formatPercentage(bigMath.abs(p.totalPendingImpact.precisePercentage), {
                     displayDecimals: 3,
                     bps: false,
                   })}{" "}
@@ -332,8 +332,8 @@ export function TradeFeesRow(p: Props) {
                 </div>
               </>
             ),
-            value: formatDeltaUsd(p.positionPriceImpact.deltaUsd),
-            className: getPositiveOrNegativeClass(p.positionPriceImpact.deltaUsd, "text-green-500"),
+            value: formatDeltaUsd(p.totalPendingImpact.deltaUsd),
+            className: getPositiveOrNegativeClass(p.totalPendingImpact.deltaUsd, "text-green-500"),
           }
         : undefined;
 
