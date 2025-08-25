@@ -42,7 +42,6 @@ import {
   TradeMode,
   TradeType,
   getMarkPrice,
-  getNextPositionExecutionPrice,
   getSwapAmountsByFromValue,
   getSwapAmountsByToValue,
   getTradeFees,
@@ -467,7 +466,6 @@ export const selectTradeboxLeverageStrategy = createSelector((q) => {
 });
 
 export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
-  // const tokensData = q(selectTokensData);
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeType = q(selectTradeboxTradeType);
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
@@ -481,7 +479,7 @@ export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
   const triggerPrice = q(selectTradeboxTriggerPrice);
   const externalSwapQuote = q(selectExternalSwapQuote);
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
-  // const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
+
   const fromToken = q(selectTradeboxFromToken);
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
   const positionKey = q(selectTradeboxSelectedPositionKey);
@@ -776,13 +774,17 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         externalSwapQuote: swapAmounts.swapStrategy.externalSwapQuote,
         positionFeeUsd: 0n,
         swapPriceImpactDeltaUsd: swapAmounts.swapStrategy.swapPathStats.totalSwapPriceImpactDeltaUsd,
-        positionPriceImpactDeltaUsd: 0n,
+        increasePositionPriceImpactDeltaUsd: 0n,
+        decreasePositionPriceImpactDeltaUsd: 0n,
         priceImpactDiffUsd: 0n,
+        totalPendingImpactDeltaUsd: 0n,
+        proportionalPendingImpactDeltaUsd: 0n,
         borrowingFeeUsd: 0n,
         fundingFeeUsd: 0n,
         feeDiscountUsd: 0n,
         swapProfitFeeUsd: 0n,
         uiFeeFactor,
+        type: "swap",
       });
     }
     case "increase": {
@@ -800,13 +802,17 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         externalSwapQuote: increaseAmounts.swapStrategy.externalSwapQuote,
         positionFeeUsd: increaseAmounts.positionFeeUsd,
         swapPriceImpactDeltaUsd: increaseAmounts.swapStrategy.swapPathStats?.totalSwapPriceImpactDeltaUsd || 0n,
-        positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
+        increasePositionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
+        decreasePositionPriceImpactDeltaUsd: 0n,
         priceImpactDiffUsd: 0n,
+        totalPendingImpactDeltaUsd: 0n,
+        proportionalPendingImpactDeltaUsd: 0n,
         borrowingFeeUsd: selectedPosition?.pendingBorrowingFeesUsd || 0n,
         fundingFeeUsd: selectedPosition?.pendingFundingFeesUsd || 0n,
         feeDiscountUsd: increaseAmounts.feeDiscountUsd,
         swapProfitFeeUsd: 0n,
         uiFeeFactor,
+        type: "increase",
       });
     }
     case "decrease": {
@@ -832,13 +838,17 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         externalSwapQuote: undefined,
         positionFeeUsd: decreaseAmounts.positionFeeUsd,
         swapPriceImpactDeltaUsd: 0n,
-        positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
+        increasePositionPriceImpactDeltaUsd: 0n,
+        decreasePositionPriceImpactDeltaUsd: decreaseAmounts.closePriceImpactDeltaUsd,
+        proportionalPendingImpactDeltaUsd: decreaseAmounts.proportionalPendingImpactDeltaUsd,
+        totalPendingImpactDeltaUsd: decreaseAmounts.totalPendingImpactDeltaUsd,
         priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
         borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
         fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
         feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
         swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
         uiFeeFactor,
+        type: "decrease",
       });
     }
     case "edit":
@@ -1175,34 +1185,6 @@ export const selectTradeboxLiquidity = createSelector(function selectTradeboxLiq
   };
 });
 
-export const selectTradeboxExecutionPrice = createSelector(function selectTradeboxExecutionPrice(q) {
-  const marketInfo = q(selectTradeboxMarketInfo);
-  const fees = q(selectTradeboxFees);
-  const decreaseAmounts = q(selectTradeboxDecreasePositionAmounts);
-  const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
-  const triggerPrice = q(selectTradeboxTriggerPrice);
-  const markPrice = q(selectTradeboxMarkPrice);
-
-  const { isLong, isIncrease, isMarket } = q(selectTradeboxTradeFlags);
-
-  if (!marketInfo) return null;
-  if (fees?.positionPriceImpact?.deltaUsd === undefined) return null;
-
-  const nextTriggerPrice = isMarket ? markPrice : triggerPrice;
-  const sizeDeltaUsd = isIncrease ? increaseAmounts?.sizeDeltaUsd : decreaseAmounts?.sizeDeltaUsd;
-
-  if (nextTriggerPrice === undefined) return null;
-  if (sizeDeltaUsd === undefined) return null;
-
-  return getNextPositionExecutionPrice({
-    triggerPrice: nextTriggerPrice,
-    priceImpactUsd: fees.positionPriceImpact.deltaUsd,
-    sizeDeltaUsd,
-    isLong,
-    isIncrease,
-  });
-});
-
 export const selectTradeboxSelectedCollateralTokenSymbol = createSelector((q) => {
   const selectedCollateralAddress = q(selectTradeboxCollateralTokenAddress);
   const tokensData = q(selectTokensData);
@@ -1316,21 +1298,6 @@ export const selectTradeboxSwapFeesPercentage = createSelector((q) => {
   }
 
   return bigMath.mulDiv(swapAmounts.swapStrategy.swapPathStats?.totalSwapFeeUsd * -1n, PRECISION, swapAmounts.usdIn);
-});
-
-export const selectTradeboxPriceImpactPercentage = createSelector((q) => {
-  const fees = q(selectTradeboxFees);
-  const { isSwap } = q(selectTradeboxTradeFlags);
-
-  if (isSwap) {
-    return fees?.swapPriceImpact?.precisePercentage ?? 0n;
-  }
-
-  if (fees?.positionPriceImpact?.precisePercentage === undefined) {
-    return 0n;
-  }
-
-  return fees.positionPriceImpact.precisePercentage;
 });
 
 export const selectTradeboxFeesPercentage = createSelector((q) => {

@@ -302,8 +302,8 @@ function getCloseFee(
   referralInfo: { totalRebateFactor: bigint; discountFactor: bigint } | undefined
 ) {
   const factor = forPositiveImpact
-    ? marketInfo.positionFeeFactorForPositiveImpact
-    : marketInfo.positionFeeFactorForNegativeImpact;
+    ? marketInfo.positionFeeFactorForBalanceWasImproved
+    : marketInfo.positionFeeFactorForBalanceWasNotImproved;
 
   let positionFeeUsd = applyFactor(sizeDeltaUsd, factor);
 

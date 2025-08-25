@@ -141,13 +141,13 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.maxPnlFactorForTradersShort],
         },
-        positionFeeFactorForPositiveImpact: {
+        positionFeeFactorForBalanceWasImproved: {
           methodName: "getUint",
-          params: [prebuiltHashedKeys.positionFeeFactorForPositiveImpact],
+          params: [prebuiltHashedKeys.positionFeeFactorForBalanceWasImproved],
         },
-        positionFeeFactorForNegativeImpact: {
+        positionFeeFactorForBalanceWasNotImproved: {
           methodName: "getUint",
-          params: [prebuiltHashedKeys.positionFeeFactorForNegativeImpact],
+          params: [prebuiltHashedKeys.positionFeeFactorForBalanceWasNotImproved],
         },
         positionImpactFactorPositive: {
           methodName: "getUint",
@@ -169,9 +169,29 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.maxPositionImpactFactorForLiquidations],
         },
+        maxLendableImpactFactor: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxLendableImpactFactor],
+        },
+        maxLendableImpactFactorForWithdrawals: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxLendableImpactFactorForWithdrawals],
+        },
+        maxLendableImpactUsd: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxLendableImpactUsd],
+        },
+        lentPositionImpactPoolAmount: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.lentPositionImpactPoolAmount],
+        },
         minCollateralFactor: {
           methodName: "getUint",
           params: [prebuiltHashedKeys.minCollateralFactor],
+        },
+        minCollateralFactorForLiquidation: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.minCollateralFactorForLiquidation],
         },
         minCollateralFactorForOpenInterestLong: {
           methodName: "getUint",
@@ -185,13 +205,13 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.positionImpactExponentFactor],
         },
-        swapFeeFactorForPositiveImpact: {
+        swapFeeFactorForBalanceWasImproved: {
           methodName: "getUint",
-          params: [prebuiltHashedKeys.swapFeeFactorForPositiveImpact],
+          params: [prebuiltHashedKeys.swapFeeFactorForBalanceWasImproved],
         },
-        swapFeeFactorForNegativeImpact: {
+        swapFeeFactorForBalanceWasNotImproved: {
           methodName: "getUint",
-          params: [prebuiltHashedKeys.swapFeeFactorForNegativeImpact],
+          params: [prebuiltHashedKeys.swapFeeFactorForBalanceWasNotImproved],
         },
         atomicSwapFeeFactor: {
           methodName: "getUint",

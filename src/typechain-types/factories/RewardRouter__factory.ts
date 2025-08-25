@@ -1028,7 +1028,10 @@ export class RewardRouter__factory {
   static createInterface(): RewardRouterInterface {
     return new Interface(_abi) as RewardRouterInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): RewardRouter {
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): RewardRouter {
     return new Contract(address, _abi, runner) as unknown as RewardRouter;
   }
 }

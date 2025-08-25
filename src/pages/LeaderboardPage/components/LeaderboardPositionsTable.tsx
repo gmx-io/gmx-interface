@@ -247,6 +247,7 @@ const TableRow = memo(
         collateralUsd: position.collateralUsd,
         collateralAmount: position.collateralAmount,
         minCollateralUsd,
+        pendingImpactAmount: 0n,
         pendingBorrowingFeesUsd: position.unrealizedFees - position.closingFeeUsd,
         pendingFundingFeesUsd: 0n,
         isLong: position.isLong,

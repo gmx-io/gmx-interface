@@ -36,7 +36,7 @@ export function usePositionEditorData({ operation }: Options) {
 
   return useMemo(() => {
     if (
-      !position ||
+      !position?.marketInfo ||
       collateralDeltaUsd === undefined ||
       collateralDeltaUsd < 0 ||
       minCollateralUsd === undefined ||
@@ -71,6 +71,7 @@ export function usePositionEditorData({ operation }: Options) {
       collateralAmount: nextCollateralAmount,
       collateralToken: position.collateralToken,
       marketInfo: position.marketInfo,
+      pendingImpactAmount: position.pendingImpactAmount,
       userReferralInfo,
       pendingFundingFeesUsd: 0n,
       pendingBorrowingFeesUsd: 0n,

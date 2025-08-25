@@ -4,21 +4,25 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import type { FeeItem } from "../../fees";
 
-export function getIsHighCollateralImpact(collateralImpact?: FeeItem) {
+export function getIsHighCollateralImpact(collateralNetPriceImpact?: FeeItem) {
   return Boolean(
-    collateralImpact && collateralImpact.deltaUsd < 0 && bigMath.abs(collateralImpact.bps) >= HIGH_COLLATERAL_IMPACT_BPS
+    collateralNetPriceImpact &&
+      collateralNetPriceImpact.deltaUsd < 0 &&
+      bigMath.abs(collateralNetPriceImpact.bps) > HIGH_COLLATERAL_IMPACT_BPS
   );
 }
 
 export function getIsHighSwapImpact(swapPriceImpact?: FeeItem) {
   return Boolean(
-    swapPriceImpact && swapPriceImpact.deltaUsd < 0 && bigMath.abs(swapPriceImpact.bps) >= HIGH_SWAP_IMPACT_BPS
+    swapPriceImpact && swapPriceImpact.deltaUsd < 0 && bigMath.abs(swapPriceImpact.bps) > HIGH_SWAP_IMPACT_BPS
   );
 }
 
-export function getIsHighPositionImpact(positionImpact?: FeeItem) {
+export function getIsHighPositionImpact(positionNetPriceImpact?: FeeItem) {
   return Boolean(
-    positionImpact && positionImpact.deltaUsd < 0 && bigMath.abs(positionImpact.bps) >= HIGH_POSITION_IMPACT_BPS
+    positionNetPriceImpact &&
+      positionNetPriceImpact.deltaUsd < 0 &&
+      bigMath.abs(positionNetPriceImpact.bps) > HIGH_POSITION_IMPACT_BPS
   );
 }
 

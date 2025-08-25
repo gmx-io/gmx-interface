@@ -28,11 +28,11 @@ export declare namespace ClaimHandler {
     termsSignature: BytesLike;
   };
 
-  export type ClaimParamStructOutput = [token: string, distributionId: bigint, termsSignature: string] & {
-    token: string;
-    distributionId: bigint;
-    termsSignature: string;
-  };
+  export type ClaimParamStructOutput = [
+    token: string,
+    distributionId: bigint,
+    termsSignature: string
+  ] & { token: string; distributionId: bigint; termsSignature: string };
 
   export type DepositParamStruct = {
     account: AddressLike;
@@ -55,7 +55,7 @@ export declare namespace ClaimHandler {
     token: string,
     distributionId: bigint,
     fromAccount: string,
-    toAccount: string,
+    toAccount: string
   ] & {
     token: string;
     distributionId: bigint;
@@ -68,10 +68,10 @@ export declare namespace ClaimHandler {
     distributionId: BigNumberish;
   };
 
-  export type WithdrawParamStructOutput = [account: string, distributionId: bigint] & {
-    account: string;
-    distributionId: bigint;
-  };
+  export type WithdrawParamStructOutput = [
+    account: string,
+    distributionId: bigint
+  ] & { account: string; distributionId: bigint };
 }
 
 export interface ClaimHandlerInterface extends Interface {
@@ -91,22 +91,40 @@ export interface ClaimHandlerInterface extends Interface {
       | "withdrawFunds"
   ): FunctionFragment;
 
-  encodeFunctionData(functionFragment: "claimFunds", values: [ClaimHandler.ClaimParamStruct[], AddressLike]): string;
-  encodeFunctionData(functionFragment: "claimVault", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "claimFunds",
+    values: [ClaimHandler.ClaimParamStruct[], AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "claimVault",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "depositFunds",
     values: [AddressLike, BigNumberish, ClaimHandler.DepositParamStruct[]]
   ): string;
-  encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "eventEmitter",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "getClaimableAmount",
     values: [AddressLike, AddressLike, BigNumberish[]]
   ): string;
-  encodeFunctionData(functionFragment: "getTotalClaimableAmount", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "removeTerms", values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "getTotalClaimableAmount",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeTerms",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "roleStore", values?: undefined): string;
-  encodeFunctionData(functionFragment: "setTerms", values: [BigNumberish, string]): string;
+  encodeFunctionData(
+    functionFragment: "setTerms",
+    values: [BigNumberish, string]
+  ): string;
   encodeFunctionData(
     functionFragment: "transferClaim",
     values: [AddressLike, ClaimHandler.TransferClaimParamStruct[]]
@@ -119,15 +137,36 @@ export interface ClaimHandlerInterface extends Interface {
   decodeFunctionResult(functionFragment: "claimFunds", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "claimVault", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "depositFunds", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getClaimableAmount", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getTotalClaimableAmount", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeTerms", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "depositFunds",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "eventEmitter",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getClaimableAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTotalClaimableAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeTerms",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "roleStore", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setTerms", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "transferClaim", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "withdrawFunds", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "transferClaim",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawFunds",
+    data: BytesLike
+  ): Result;
 }
 
 export interface ClaimHandler extends BaseContract {
@@ -147,21 +186,31 @@ export interface ClaimHandler extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
   claimFunds: TypedContractMethod<
     [params: ClaimHandler.ClaimParamStruct[], receiver: AddressLike],
@@ -174,7 +223,11 @@ export interface ClaimHandler extends BaseContract {
   dataStore: TypedContractMethod<[], [string], "view">;
 
   depositFunds: TypedContractMethod<
-    [token: AddressLike, distributionId: BigNumberish, params: ClaimHandler.DepositParamStruct[]],
+    [
+      token: AddressLike,
+      distributionId: BigNumberish,
+      params: ClaimHandler.DepositParamStruct[]
+    ],
     [void],
     "nonpayable"
   >;
@@ -187,13 +240,25 @@ export interface ClaimHandler extends BaseContract {
     "view"
   >;
 
-  getTotalClaimableAmount: TypedContractMethod<[token: AddressLike], [bigint], "view">;
+  getTotalClaimableAmount: TypedContractMethod<
+    [token: AddressLike],
+    [bigint],
+    "view"
+  >;
 
-  removeTerms: TypedContractMethod<[distributionId: BigNumberish], [void], "nonpayable">;
+  removeTerms: TypedContractMethod<
+    [distributionId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   roleStore: TypedContractMethod<[], [string], "view">;
 
-  setTerms: TypedContractMethod<[distributionId: BigNumberish, terms: string], [void], "nonpayable">;
+  setTerms: TypedContractMethod<
+    [distributionId: BigNumberish, terms: string],
+    [void],
+    "nonpayable"
+  >;
 
   transferClaim: TypedContractMethod<
     [token: AddressLike, params: ClaimHandler.TransferClaimParamStruct[]],
@@ -202,44 +267,84 @@ export interface ClaimHandler extends BaseContract {
   >;
 
   withdrawFunds: TypedContractMethod<
-    [token: AddressLike, params: ClaimHandler.WithdrawParamStruct[], receiver: AddressLike],
+    [
+      token: AddressLike,
+      params: ClaimHandler.WithdrawParamStruct[],
+      receiver: AddressLike
+    ],
     [void],
     "nonpayable"
   >;
 
-  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
   getFunction(
     nameOrSignature: "claimFunds"
-  ): TypedContractMethod<[params: ClaimHandler.ClaimParamStruct[], receiver: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "claimVault"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "depositFunds"
   ): TypedContractMethod<
-    [token: AddressLike, distributionId: BigNumberish, params: ClaimHandler.DepositParamStruct[]],
+    [params: ClaimHandler.ClaimParamStruct[], receiver: AddressLike],
     [void],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "claimVault"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "dataStore"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "depositFunds"
+  ): TypedContractMethod<
+    [
+      token: AddressLike,
+      distributionId: BigNumberish,
+      params: ClaimHandler.DepositParamStruct[]
+    ],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "eventEmitter"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "getClaimableAmount"
-  ): TypedContractMethod<[account: AddressLike, token: AddressLike, distributionIds: BigNumberish[]], [bigint], "view">;
-  getFunction(nameOrSignature: "getTotalClaimableAmount"): TypedContractMethod<[token: AddressLike], [bigint], "view">;
+  ): TypedContractMethod<
+    [account: AddressLike, token: AddressLike, distributionIds: BigNumberish[]],
+    [bigint],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getTotalClaimableAmount"
+  ): TypedContractMethod<[token: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "removeTerms"
   ): TypedContractMethod<[distributionId: BigNumberish], [void], "nonpayable">;
-  getFunction(nameOrSignature: "roleStore"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "roleStore"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "setTerms"
-  ): TypedContractMethod<[distributionId: BigNumberish, terms: string], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [distributionId: BigNumberish, terms: string],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "transferClaim"
-  ): TypedContractMethod<[token: AddressLike, params: ClaimHandler.TransferClaimParamStruct[]], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [token: AddressLike, params: ClaimHandler.TransferClaimParamStruct[]],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "withdrawFunds"
   ): TypedContractMethod<
-    [token: AddressLike, params: ClaimHandler.WithdrawParamStruct[], receiver: AddressLike],
+    [
+      token: AddressLike,
+      params: ClaimHandler.WithdrawParamStruct[],
+      receiver: AddressLike
+    ],
     [void],
     "nonpayable"
   >;

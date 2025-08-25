@@ -12,13 +12,14 @@ import {
   ExternalSwapQuoteParams,
   FindSwapPath,
   IncreasePositionAmounts,
+  NextPositionValues,
   SwapOptimizationOrderArray,
   TriggerThresholdType,
 } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { getPositionFee, getPriceImpactForPosition, getTotalSwapVolumeFromSwapStats } from "utils/fees";
 import { applyFactor } from "utils/numbers";
-import { getLeverage } from "utils/positions";
+import { getEntryPrice, getLeverage, getLiquidationPrice, getPositionPnlUsd } from "utils/positions";
 import {
   getAcceptablePriceInfo,
   getDefaultAcceptablePriceImpactBps,
@@ -196,13 +197,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     const swapAmountOut = values.swapStrategy.amountOut;
     const baseCollateralUsd = convertToUsd(swapAmountOut, collateralToken.decimals, values.collateralPrice)!;
     const baseSizeDeltaUsd = bigMath.mulDiv(baseCollateralUsd, leverage, BASIS_POINTS_DIVISOR_BIGINT);
-    const basePriceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, baseSizeDeltaUsd, isLong);
-    const basePositionFeeInfo = getPositionFee(
-      marketInfo,
-      baseSizeDeltaUsd,
-      basePriceImpactDeltaUsd > 0,
-      userReferralInfo
-    );
+    const { balanceWasImproved } = getPriceImpactForPosition(marketInfo, baseSizeDeltaUsd, isLong);
+    const basePositionFeeInfo = getPositionFee(marketInfo, baseSizeDeltaUsd, balanceWasImproved, userReferralInfo);
     const baseUiFeeUsd = applyFactor(baseSizeDeltaUsd, uiFeeFactor);
     const totalSwapVolumeUsd = getTotalSwapVolumeFromSwapStats(values.swapStrategy.swapPathStats?.swapSteps);
     values.swapUiFeeUsd = applyFactor(totalSwapVolumeUsd, uiFeeFactor);
@@ -215,12 +211,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
 
     values.indexTokenAmount = convertToTokenAmount(values.sizeDeltaUsd, indexToken.decimals, values.indexPrice)!;
 
-    const positionFeeInfo = getPositionFee(
-      marketInfo,
-      values.sizeDeltaUsd,
-      basePriceImpactDeltaUsd > 0,
-      userReferralInfo
-    );
+    const positionFeeInfo = getPositionFee(marketInfo, values.sizeDeltaUsd, balanceWasImproved, userReferralInfo);
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
     values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
@@ -248,14 +239,9 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     values.indexTokenAmount = indexTokenAmount;
     values.sizeDeltaUsd = convertToUsd(indexTokenAmount, indexToken.decimals, values.indexPrice)!;
 
-    const basePriceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, values.sizeDeltaUsd, isLong);
+    const { balanceWasImproved } = getPriceImpactForPosition(marketInfo, values.sizeDeltaUsd, isLong);
 
-    const positionFeeInfo = getPositionFee(
-      marketInfo,
-      values.sizeDeltaUsd,
-      basePriceImpactDeltaUsd > 0,
-      userReferralInfo
-    );
+    const positionFeeInfo = getPositionFee(marketInfo, values.sizeDeltaUsd, balanceWasImproved, userReferralInfo);
 
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
@@ -314,14 +300,9 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       values.indexTokenAmount = indexTokenAmount;
       values.sizeDeltaUsd = convertToUsd(indexTokenAmount, indexToken.decimals, values.indexPrice)!;
 
-      const basePriceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, values.sizeDeltaUsd, isLong);
+      const { balanceWasImproved } = getPriceImpactForPosition(marketInfo, values.sizeDeltaUsd, isLong);
 
-      const positionFeeInfo = getPositionFee(
-        marketInfo,
-        values.sizeDeltaUsd,
-        basePriceImpactDeltaUsd > 0,
-        userReferralInfo
-      );
+      const positionFeeInfo = getPositionFee(marketInfo, values.sizeDeltaUsd, balanceWasImproved, userReferralInfo);
       values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
       values.feeDiscountUsd = positionFeeInfo.discountUsd;
       values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
@@ -394,12 +375,14 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
   const acceptablePriceInfo = getAcceptablePriceInfo({
     marketInfo,
     isIncrease: true,
+    isLimit,
     isLong,
     indexPrice: values.indexPrice,
     sizeDeltaUsd: values.sizeDeltaUsd,
   });
 
   values.positionPriceImpactDeltaUsd = acceptablePriceInfo.priceImpactDeltaUsd;
+
   values.acceptablePrice = acceptablePriceInfo.acceptablePrice;
   values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
 
@@ -426,6 +409,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       const limitAcceptablePriceInfo = getAcceptablePriceInfo({
         marketInfo,
         isIncrease: true,
+        isLimit,
         isLong,
         indexPrice: values.indexPrice,
         sizeDeltaUsd: values.sizeDeltaUsd,
@@ -577,5 +561,92 @@ export function getIncreasePositionPrices({
     collateralPrice,
     triggerThresholdType,
     triggerPrice,
+  };
+}
+
+export function getNextPositionValuesForIncreaseTrade(p: {
+  existingPosition?: PositionInfo;
+  marketInfo: MarketInfo;
+  collateralToken: TokenData;
+  sizeDeltaUsd: bigint;
+  sizeDeltaInTokens: bigint;
+  collateralDeltaUsd: bigint;
+  collateralDeltaAmount: bigint;
+  indexPrice: bigint;
+  isLong: boolean;
+  showPnlInLeverage: boolean;
+  minCollateralUsd: bigint;
+  userReferralInfo: UserReferralInfo | undefined;
+}): NextPositionValues {
+  const {
+    existingPosition,
+    marketInfo,
+    collateralToken,
+    sizeDeltaUsd,
+    sizeDeltaInTokens,
+    collateralDeltaUsd,
+    collateralDeltaAmount,
+    indexPrice,
+    isLong,
+    showPnlInLeverage,
+    minCollateralUsd,
+    userReferralInfo,
+  } = p;
+
+  const nextCollateralUsd = existingPosition ? existingPosition.collateralUsd + collateralDeltaUsd : collateralDeltaUsd;
+
+  const nextCollateralAmount = existingPosition
+    ? existingPosition.collateralAmount + collateralDeltaAmount
+    : collateralDeltaAmount;
+
+  const nextSizeUsd = existingPosition ? existingPosition.sizeInUsd + sizeDeltaUsd : sizeDeltaUsd;
+  const nextSizeInTokens = existingPosition ? existingPosition.sizeInTokens + sizeDeltaInTokens : sizeDeltaInTokens;
+
+  const nextEntryPrice =
+    getEntryPrice({
+      sizeInUsd: nextSizeUsd,
+      sizeInTokens: nextSizeInTokens,
+      indexToken: marketInfo.indexToken,
+    }) ?? indexPrice;
+
+  const nextPnl = existingPosition
+    ? getPositionPnlUsd({
+        marketInfo,
+        sizeInUsd: nextSizeUsd,
+        sizeInTokens: nextSizeInTokens,
+        markPrice: indexPrice,
+        isLong,
+      })
+    : undefined;
+
+  const nextLeverage = getLeverage({
+    sizeInUsd: nextSizeUsd,
+    collateralUsd: nextCollateralUsd,
+    pnl: showPnlInLeverage ? nextPnl : undefined,
+    pendingBorrowingFeesUsd: 0n, // deducted on order
+    pendingFundingFeesUsd: 0n, // deducted on order
+  });
+
+  const nextLiqPrice = getLiquidationPrice({
+    marketInfo,
+    collateralToken,
+    sizeInUsd: nextSizeUsd,
+    sizeInTokens: nextSizeInTokens,
+    collateralUsd: nextCollateralUsd,
+    collateralAmount: nextCollateralAmount,
+    minCollateralUsd,
+    pendingBorrowingFeesUsd: 0n, // deducted on order
+    pendingFundingFeesUsd: 0n, // deducted on order
+    pendingImpactAmount: existingPosition?.pendingImpactAmount ?? 0n,
+    isLong: isLong,
+    userReferralInfo,
+  });
+
+  return {
+    nextSizeUsd,
+    nextCollateralUsd,
+    nextEntryPrice,
+    nextLeverage,
+    nextLiqPrice,
   };
 }

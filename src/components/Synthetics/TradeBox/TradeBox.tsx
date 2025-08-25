@@ -225,8 +225,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const decreaseOrdersThatWillBeExecuted = useDecreaseOrdersThatWillBeExecuted();
 
   const priceImpactWarningState = usePriceImpactWarningState({
-    collateralImpact: fees?.positionCollateralPriceImpact,
-    positionImpact: fees?.positionPriceImpact,
+    collateralNetPriceImpact: fees?.collateralNetPriceImpact,
+    positionNetPriceImpact: fees?.positionNetPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
@@ -403,15 +403,15 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         if (isIncrease && increaseAmounts) {
           sizeDeltaUsd = increaseAmounts.sizeDeltaUsd;
           priceImpactDeltaUsd = increaseAmounts.positionPriceImpactDeltaUsd;
-          priceImpactPercentage = fees?.positionPriceImpact?.precisePercentage ?? 0n;
+          priceImpactPercentage = fees?.increasePositionPriceImpact?.precisePercentage ?? 0n;
         } else if (isSwap && swapAmounts) {
           amountUsd = swapAmounts.usdOut;
           priceImpactDeltaUsd = swapAmounts.swapStrategy.swapPathStats?.totalSwapPriceImpactDeltaUsd ?? 0n;
           priceImpactPercentage = fees?.swapPriceImpact?.precisePercentage ?? 0n;
         } else if (isTrigger && decreaseAmounts) {
           sizeDeltaUsd = decreaseAmounts.sizeDeltaUsd;
-          priceImpactDeltaUsd = decreaseAmounts.positionPriceImpactDeltaUsd;
-          priceImpactPercentage = fees?.positionPriceImpact?.precisePercentage ?? 0n;
+          priceImpactDeltaUsd = decreaseAmounts.totalPendingImpactDeltaUsd;
+          priceImpactPercentage = fees?.totalPendingImpact?.precisePercentage ?? 0n;
         }
 
         const openInterestPercent = isLong
@@ -445,7 +445,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       chartHeaderInfo?.shortOpenInterestPercentage,
       decreaseAmounts,
       expressOrdersEnabled,
-      fees?.positionPriceImpact?.precisePercentage,
+      fees?.increasePositionPriceImpact?.precisePercentage,
+      fees?.totalPendingImpact?.precisePercentage,
       fees?.swapPriceImpact?.precisePercentage,
       fromToken?.symbol,
       fromTokenInputValue.length,
@@ -1065,7 +1066,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               <HighPriceImpactOrFeesWarningCard
                 priceImpactWarningState={priceImpactWarningState}
                 collateralImpact={fees?.positionCollateralPriceImpact}
-                positionImpact={fees?.positionPriceImpact}
+                positionImpact={isIncrease ? fees?.increasePositionPriceImpact : fees?.totalPendingImpact}
                 swapPriceImpact={fees?.swapPriceImpact}
                 swapProfitFee={fees?.swapProfitFee}
                 executionFeeUsd={executionFee?.feeUsd}

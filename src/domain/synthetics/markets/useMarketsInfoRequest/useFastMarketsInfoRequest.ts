@@ -87,6 +87,11 @@ export function useFastMarketsInfoRequest(chainId: number) {
                 positionImpactFactorNegative
                 maxPositionImpactFactorPositive
                 maxPositionImpactFactorNegative
+                maxLendableImpactFactor
+                maxLendableImpactFactorForWithdrawals
+                maxLendableImpactUsd
+                lentPositionImpactPoolAmount
+                atomicSwapFeeFactor
                 maxPositionImpactFactorForLiquidations
                 positionImpactExponentFactor
 
@@ -174,13 +179,14 @@ export function useFastMarketsInfoRequest(chainId: number) {
             positionImpactPoolDistributionRate: BigInt(mInfo.positionImpactPoolDistributionRate),
 
             minCollateralFactor: BigInt(mInfo.minCollateralFactor),
+            minCollateralFactorForLiquidation: BigInt(mInfo.minCollateralFactor),
             minCollateralFactorForOpenInterestLong: BigInt(mInfo.minCollateralFactorForOpenInterestLong),
             minCollateralFactorForOpenInterestShort: BigInt(mInfo.minCollateralFactorForOpenInterestShort),
 
             swapImpactPoolAmountLong: BigInt(mInfo.swapImpactPoolAmountLong),
             swapImpactPoolAmountShort: BigInt(mInfo.swapImpactPoolAmountShort),
 
-            atomicSwapFeeFactor: 0n,
+            atomicSwapFeeFactor: BigInt(mInfo.atomicSwapFeeFactor),
 
             maxPnlFactorForTradersLong: BigInt(mInfo.maxPnlFactorForTradersLong),
             maxPnlFactorForTradersShort: BigInt(mInfo.maxPnlFactorForTradersShort),
@@ -190,17 +196,21 @@ export function useFastMarketsInfoRequest(chainId: number) {
             longInterestInTokens: BigInt(mInfo.longOpenInterestInTokens),
             shortInterestInTokens: BigInt(mInfo.shortOpenInterestInTokens),
 
-            positionFeeFactorForPositiveImpact: BigInt(mInfo.positionFeeFactorForPositiveImpact),
-            positionFeeFactorForNegativeImpact: BigInt(mInfo.positionFeeFactorForNegativeImpact),
+            positionFeeFactorForBalanceWasImproved: BigInt(mInfo.positionFeeFactorForPositiveImpact),
+            positionFeeFactorForBalanceWasNotImproved: BigInt(mInfo.positionFeeFactorForNegativeImpact),
             positionImpactFactorPositive: BigInt(mInfo.positionImpactFactorPositive),
             positionImpactFactorNegative: BigInt(mInfo.positionImpactFactorNegative),
             maxPositionImpactFactorPositive: BigInt(mInfo.maxPositionImpactFactorPositive),
             maxPositionImpactFactorNegative: BigInt(mInfo.maxPositionImpactFactorNegative),
             maxPositionImpactFactorForLiquidations: BigInt(mInfo.maxPositionImpactFactorForLiquidations),
+            maxLendableImpactFactor: BigInt(mInfo.maxLendableImpactFactor),
+            maxLendableImpactFactorForWithdrawals: BigInt(mInfo.maxLendableImpactFactorForWithdrawals),
+            maxLendableImpactUsd: BigInt(mInfo.maxLendableImpactUsd),
+            lentPositionImpactPoolAmount: BigInt(mInfo.lentPositionImpactPoolAmount),
             positionImpactExponentFactor: BigInt(mInfo.positionImpactExponentFactor),
 
-            swapFeeFactorForPositiveImpact: BigInt(mInfo.swapFeeFactorForPositiveImpact),
-            swapFeeFactorForNegativeImpact: BigInt(mInfo.swapFeeFactorForNegativeImpact),
+            swapFeeFactorForBalanceWasImproved: BigInt(mInfo.swapFeeFactorForPositiveImpact),
+            swapFeeFactorForBalanceWasNotImproved: BigInt(mInfo.swapFeeFactorForNegativeImpact),
             swapImpactFactorPositive: BigInt(mInfo.swapImpactFactorPositive),
             swapImpactFactorNegative: BigInt(mInfo.swapImpactFactorNegative),
             swapImpactExponentFactor: BigInt(mInfo.swapImpactExponentFactor),

@@ -3,7 +3,10 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { SubaccountApproval, SubaccountApprovalInterface } from "../SubaccountApproval";
+import type {
+  SubaccountApproval,
+  SubaccountApprovalInterface,
+} from "../SubaccountApproval";
 
 const _abi = [
   {
@@ -50,7 +53,10 @@ export class SubaccountApproval__factory {
   static createInterface(): SubaccountApprovalInterface {
     return new Interface(_abi) as SubaccountApprovalInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): SubaccountApproval {
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): SubaccountApproval {
     return new Contract(address, _abi, runner) as unknown as SubaccountApproval;
   }
 }
