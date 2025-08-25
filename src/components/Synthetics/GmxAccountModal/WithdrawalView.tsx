@@ -527,6 +527,8 @@ export const WithdrawalView = () => {
       amount = amount - (nativeFee * 11n) / 10n;
     }
 
+    amount = bigMath.max(amount, 0n);
+
     setInputValue(formatAmountFree(amount, selectedToken.decimals));
   }, [
     account,
