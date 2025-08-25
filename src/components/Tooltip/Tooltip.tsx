@@ -73,7 +73,7 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
   fitHandleWidth?: boolean;
   closeOnDoubleClick?: boolean;
 
-  styleType?: "icon" | "iconStroke" | "underline" | "none";
+  styleType?: "icon" | "iconStroke" | "underline" | "none" | "svgUnderline";
 };
 
 export type TooltipProps<T extends ElementType | undefined> = InnerTooltipProps<T> &
@@ -253,6 +253,19 @@ export default function Tooltip<T extends ElementType>({
           )}
           {styleType === "icon" && <InfoIcon className="mb-1 h-16 w-16" />}
           {styleType === "iconStroke" && <InfoIconStroke className="mb-1 h-16 w-16" />}
+          {styleType === "svgUnderline" && (
+            <svg className="absolute -bottom-0 left-0 h-1 w-full overflow-hidden">
+              <line
+                stroke="currentColor"
+                x1="0"
+                y1="0"
+                x2="100%"
+                y2="0"
+                strokeWidth="0.75"
+                strokeDasharray="1.25,2.25"
+              />
+            </svg>
+          )}
         </div>
       </span>
       {visible && withPortal && <FloatingPortal>{tooltipContent}</FloatingPortal>}
