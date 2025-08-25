@@ -4,6 +4,7 @@ import { address as ethPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/depl
 import { address as usdcPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbitrum-mainnet/StargatePoolUSDC.json";
 import { address as ethPoolArbitrumSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolArbitrumSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/StargatePoolUSDC.json";
+import { address as usdcPoolAvalanche } from "@stargatefinance/stg-evm-sdk-v2/deployments/avalanche-mainnet/StargatePoolUSDC.json";
 import { address as ethPoolBase } from "@stargatefinance/stg-evm-sdk-v2/deployments/base-mainnet/StargatePoolNative.json";
 import { address as usdcPoolBase } from "@stargatefinance/stg-evm-sdk-v2/deployments/base-mainnet/StargatePoolUSDC.json";
 import { address as ethPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolNative.json";
@@ -90,6 +91,13 @@ const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | Settle
       decimals: 6,
       chainId: ARBITRUM,
       stargate: usdcPoolArbitrum,
+      symbol: "USDC",
+    },
+    [AVALANCHE]: {
+      address: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+      decimals: 6,
+      chainId: AVALANCHE,
+      stargate: usdcPoolAvalanche,
       symbol: "USDC",
     },
     [SOURCE_BASE_MAINNET]: {
