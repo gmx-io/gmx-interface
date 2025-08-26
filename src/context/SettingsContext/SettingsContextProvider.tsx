@@ -28,6 +28,7 @@ import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/local
 import { tenderlyLsKeys } from "lib/tenderly";
 import useWallet from "lib/wallets/useWallet";
 import { getDefaultGasPaymentToken } from "sdk/configs/express";
+import { isValidTokenSafe } from "sdk/configs/tokens";
 import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 
 export type SettingsContextType = {
@@ -168,10 +169,14 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     false
   );
 
-  const [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useLocalStorageSerializeKey(
+  let [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useLocalStorageSerializeKey(
     getGasPaymentTokenAddressKey(chainId, account),
     getDefaultGasPaymentToken(chainId)
   );
+  // Reason: useLocalStorageSerializeKey leaks previous value to the next render even if key is changed
+  if (gasPaymentTokenAddress && !isValidTokenSafe(chainId, gasPaymentTokenAddress)) {
+    gasPaymentTokenAddress = getDefaultGasPaymentToken(chainId);
+  }
 
   let savedShouldDisableValidationForTesting: boolean | undefined;
   let setSavedShouldDisableValidationForTesting: (val: boolean) => void;

@@ -1957,6 +1957,10 @@ export function isValidToken(chainId: number, address: string) {
   return address in TOKENS_MAP[chainId];
 }
 
+export function isValidTokenSafe(chainId: number, address: string) {
+  return address in TOKENS_MAP[chainId];
+}
+
 export function getToken(chainId: number, address: string) {
   // FIXME APE_deprecated token which is not in use but can be displayed
   if (chainId === ARBITRUM && address === "0x74885b4D524d497261259B38900f54e6dbAd2210") {
