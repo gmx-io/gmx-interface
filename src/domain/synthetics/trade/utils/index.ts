@@ -1,9 +1,9 @@
 export * from "sdk/utils/swap/swapRouting";
 export * from "sdk/utils/swap/swapStats";
-export * from "./swap";
-export * from "./increase";
-export * from "../../../../../sdk/src/utils/trade/decrease";
-export * from "./prices";
+export * from "sdk/utils/trade/decrease";
 export * from "./common";
+export * from "./increase";
+export * from "./prices";
+export * from "./swap";
 
 export * from "sdk/utils/trade";

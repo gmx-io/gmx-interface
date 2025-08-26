@@ -8,6 +8,7 @@ import { Address, encodeAbiParameters, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import { ContractsChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
+import { isDevelopment } from "config/env";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
@@ -34,6 +35,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
+import { fallbackCustomError } from "domain/multichain/fallbackCustomError";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { BridgeOutParams } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
@@ -61,6 +63,7 @@ import {
 } from "lib/metrics";
 import {
   bigintToNumber,
+  expandDecimals,
   formatAmountFree,
   formatBalanceAmount,
   formatUsd,
@@ -89,13 +92,14 @@ import {
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import { fallbackCustomError } from "../../../domain/multichain/fallbackCustomError";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { toastCustomOrStargateError } from "./toastCustomOrStargateError";
 import { wrapChainAction } from "./wrapChainAction";
 
-const USD_GAS_TOKEN_BUFFER = 10n * 10n ** BigInt(USD_DECIMALS);
-const USD_GAS_TOKEN_WARNING_THRESHOLD = 5n * 10n ** BigInt(USD_DECIMALS);
+const USD_GAS_TOKEN_BUFFER = isDevelopment() ? expandDecimals(10, USD_DECIMALS) : expandDecimals(2, USD_DECIMALS);
+const USD_GAS_TOKEN_WARNING_THRESHOLD = isDevelopment()
+  ? expandDecimals(5, USD_DECIMALS)
+  : expandDecimals(1, USD_DECIMALS);
 
 const useIsFirstWithdrawal = () => {
   const [enabled, setEnabled] = useState(true);

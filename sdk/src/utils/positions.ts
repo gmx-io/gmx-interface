@@ -214,12 +214,6 @@ export function getLiquidationPrice(p: {
       pendingImpactAmount > 0 ? marketInfo.indexToken.prices.minPrice : marketInfo.indexToken.prices.maxPrice
     )!;
 
-    console.log("sizeInUsd", sizeInUsd);
-    console.log("pendingImpactAmount", pendingImpactAmount);
-    console.log(" marketInfo.indexToken", marketInfo.indexToken);
-    console.log("priceImpactDeltaUsd", priceImpactDeltaUsd);
-    console.log("pendingImpactUsd", pendingImpactUsd);
-
     priceImpactDeltaUsd = priceImpactDeltaUsd + pendingImpactUsd;
 
     if (priceImpactDeltaUsd > 0) {
@@ -262,11 +256,6 @@ export function getLiquidationPrice(p: {
     if (sizeInTokens == 0n) {
       return undefined;
     }
-
-    console.log("collateralUsd", collateralUsd);
-    console.log("priceImpactDeltaUsd", priceImpactDeltaUsd);
-    console.log("totalPendingFeesUsd", totalPendingFeesUsd);
-    console.log("closingFeeUsd", closingFeeUsd);
 
     const remainingCollateralUsd = collateralUsd + priceImpactDeltaUsd - totalPendingFeesUsd - closingFeeUsd;
 

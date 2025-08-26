@@ -9,9 +9,9 @@ import { TokenData } from "domain/tokens";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getTokenBySymbolSafe } from "sdk/configs/tokens";
+import { getMarketPoolName } from "sdk/utils/markets";
 import { convertToUsd } from "sdk/utils/tokens";
 
-import { getMarketPoolName } from "../../../../sdk/src/utils/markets";
 import { useMarketTokensData } from "../markets";
 
 export const GLP_DISTRIBUTION_TEST_ID = 4672592n;
