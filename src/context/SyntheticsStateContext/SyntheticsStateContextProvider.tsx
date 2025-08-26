@@ -208,10 +208,10 @@ export function SyntheticsStateContextProvider({
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
   const [isCandlesLoaded, setIsCandlesLoaded] = useState(false);
-  const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useRebatesInfoRequest(
-    chainId,
-    isTradePage
-  );
+  const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useRebatesInfoRequest(chainId, {
+    enabled: isTradePage,
+    positionsConstants,
+  });
 
   const oracleSettings = useOracleSettingsData();
 

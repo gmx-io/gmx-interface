@@ -32,8 +32,8 @@ export type WarningState = {
 };
 
 export function usePriceImpactWarningState({
-  collateralImpact,
-  positionImpact,
+  collateralNetPriceImpact,
+  positionNetPriceImpact,
   swapPriceImpact,
   swapProfitFee,
   executionFeeUsd,
@@ -42,8 +42,8 @@ export function usePriceImpactWarningState({
   tradeFlags,
   payUsd,
 }: {
-  collateralImpact?: FeeItem;
-  positionImpact?: FeeItem;
+  collateralNetPriceImpact?: FeeItem;
+  positionNetPriceImpact?: FeeItem;
   swapPriceImpact?: FeeItem;
   swapProfitFee?: FeeItem;
   executionFeeUsd?: bigint;
@@ -77,10 +77,10 @@ export function usePriceImpactWarningState({
     }
   }, [prevFlags, tradeFlags]);
 
-  const isHighPositionImpact = getIsHighPositionImpact(positionImpact);
+  const isHighPositionImpact = getIsHighPositionImpact(positionNetPriceImpact);
   const prevIsHighPositionImpact = usePrevious(isHighPositionImpact);
 
-  const isHighCollateralImpact = getIsHighCollateralImpact(collateralImpact);
+  const isHighCollateralImpact = getIsHighCollateralImpact(collateralNetPriceImpact);
   const prevIsHighCollateralImpact = usePrevious(isHighCollateralImpact);
 
   const isHighSwapImpact = getIsHighSwapImpact(swapPriceImpact);
