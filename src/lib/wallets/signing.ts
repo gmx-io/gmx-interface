@@ -1,4 +1,4 @@
-import type { Wallet } from "ethers";
+import { TypedDataEncoder, type Wallet } from "ethers";
 import { withRetry } from "viem";
 
 import { parseError } from "lib/errors";
@@ -20,6 +20,7 @@ export type SignTypedDataParams = {
   typedData: Record<string, any>;
   domain: SignatureDomain;
   shouldUseSignerMethod?: boolean;
+  minified?: boolean;
 };
 
 export async function signTypedData({
@@ -28,6 +29,7 @@ export async function signTypedData({
   types,
   typedData,
   shouldUseSignerMethod = false,
+  minified = true,
 }: SignTypedDataParams) {
   // filter inputs
   for (const [key, value] of Object.entries(domain)) {
@@ -48,9 +50,23 @@ export async function signTypedData({
     }
   }
 
+  let typesToSign = types;
+  let messageToSign = typedData;
+
+  if (minified) {
+    const digest = TypedDataEncoder.hash(domain, types, typedData);
+    const minifiedTypes = {
+      Minified: [{ name: "digest", type: "bytes32" }],
+    };
+    typesToSign = minifiedTypes;
+    messageToSign = {
+      digest,
+    };
+  }
+
   if (shouldUseSignerMethod && signer.signTypedData) {
     try {
-      return await signer.signTypedData(domain, types, typedData);
+      return await signer.signTypedData(domain, typesToSign, messageToSign);
     } catch (e) {
       if (e.message.includes("requires a provider")) {
         // ignore and try to send request directly to provider
@@ -60,7 +76,7 @@ export async function signTypedData({
     }
   }
 
-  const primaryType = Object.keys(types).filter((t) => t !== "EIP712Domain")[0];
+  const primaryType = Object.keys(typesToSign).filter((t) => t !== "EIP712Domain")[0];
 
   const provider = signer.provider;
   const from = await signer.getAddress();
@@ -73,11 +89,11 @@ export async function signTypedData({
         { name: "chainId", type: "uint256" },
         { name: "verifyingContract", type: "address" },
       ],
-      ...types,
+      ...typesToSign,
     },
     primaryType,
     domain,
-    message: typedData,
+    message: messageToSign,
   };
 
   const signature = await withRetry<string>(
