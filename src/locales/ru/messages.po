@@ -2970,6 +2970,7 @@ msgstr "Торговля"
 msgid "Adding referral code failed."
 msgstr "Добавить реферальный код не удалось."
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Deposit USDC"
 msgstr ""
@@ -6520,6 +6521,7 @@ msgstr ""
 msgid "Deposit failed"
 msgstr ""
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Deposit USDC or ETH"
 msgstr ""
@@ -8517,6 +8519,7 @@ msgstr "Позиция Акции"
 msgid "Min leverage: 1.1x"
 msgstr "Минимальное кредитное плечо: 1.1x"
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Insufficient gas balance, please deposit more USDC."
 msgstr ""
@@ -8996,6 +8999,7 @@ msgstr "{0} требуется для обеспечения залога."
 msgid "Decentralized Options Protocol"
 msgstr "Децентрализованный Протокол Опционов"
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Insufficient gas balance, please deposit more ETH or USDC."
 msgstr ""

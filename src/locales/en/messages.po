@@ -2970,6 +2970,7 @@ msgstr "Trade"
 msgid "Adding referral code failed."
 msgstr "Adding referral code failed."
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Deposit USDC"
 msgstr "Deposit USDC"
@@ -6523,6 +6524,7 @@ msgstr "GLV earns from trading fees (open, close, borrow, liquidations, swaps) a
 msgid "Deposit failed"
 msgstr "Deposit failed"
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Deposit USDC or ETH"
 msgstr "Deposit USDC or ETH"
@@ -8523,6 +8525,7 @@ msgstr "Share Position"
 msgid "Min leverage: 1.1x"
 msgstr "Min leverage: 1.1x"
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Insufficient gas balance, please deposit more USDC."
 msgstr "Insufficient gas balance, please deposit more USDC."
@@ -9002,6 +9005,7 @@ msgstr "{0} is required for collateral."
 msgid "Decentralized Options Protocol"
 msgstr "Decentralized Options Protocol"
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Insufficient gas balance, please deposit more ETH or USDC."
 msgstr "Insufficient gas balance, please deposit more ETH or USDC."

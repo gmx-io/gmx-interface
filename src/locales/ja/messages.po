@@ -2970,6 +2970,7 @@ msgstr "トレード"
 msgid "Adding referral code failed."
 msgstr "紹介コードが追加できませんでした"
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Deposit USDC"
 msgstr ""
@@ -6520,6 +6521,7 @@ msgstr ""
 msgid "Deposit failed"
 msgstr ""
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Deposit USDC or ETH"
 msgstr ""
@@ -8517,6 +8519,7 @@ msgstr "ポジションをシェアする"
 msgid "Min leverage: 1.1x"
 msgstr "最小レバレッジ: 1.1倍"
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Insufficient gas balance, please deposit more USDC."
 msgstr ""
@@ -8996,6 +8999,7 @@ msgstr "担保に{0}が必要です。"
 msgid "Decentralized Options Protocol"
 msgstr "分散型オプションプロトコル"
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Insufficient gas balance, please deposit more ETH or USDC."
 msgstr ""

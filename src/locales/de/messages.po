@@ -2970,6 +2970,7 @@ msgstr "Handeln"
 msgid "Adding referral code failed."
 msgstr "Hinzufügen des Empfehlungscodes fehlgeschlagen."
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Deposit USDC"
 msgstr ""
@@ -6520,6 +6521,7 @@ msgstr ""
 msgid "Deposit failed"
 msgstr ""
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Deposit USDC or ETH"
 msgstr ""
@@ -8517,6 +8519,7 @@ msgstr "Position teilen"
 msgid "Min leverage: 1.1x"
 msgstr "Min.-Hebelwirkung: 1.1x"
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Insufficient gas balance, please deposit more USDC."
 msgstr ""
@@ -8996,6 +8999,7 @@ msgstr "{0} ist für das Kollateral erforderlich."
 msgid "Decentralized Options Protocol"
 msgstr "Dezentrales Optionsprotokoll"
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Insufficient gas balance, please deposit more ETH or USDC."
 msgstr ""

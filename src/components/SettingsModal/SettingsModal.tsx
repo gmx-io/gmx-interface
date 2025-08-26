@@ -323,9 +323,7 @@ export function SettingsModal({
                   onClick={() => handleTradingModeChange(TradingMode.Express1CT)}
                 />
 
-                {isOutOfGasPaymentBalance && srcChainId === undefined && (
-                  <ExpressTradingOutOfGasBanner onClose={onClose} />
-                )}
+                {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
 
                 {isGeminiWallet && (
                   <ColorfulBanner color="slate" icon={<ExpressIcon className="-mt-6" />}>
