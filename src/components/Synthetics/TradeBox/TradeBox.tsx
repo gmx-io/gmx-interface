@@ -914,6 +914,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     expressParams: submitButtonState.expressParams,
     payTokenAddress: fromTokenAddress,
     isWrapOrUnwrap,
+    isGmxAccount: isFromTokenGmxAccount,
   });
 
   const showSectionBetweenInputsAndButton =

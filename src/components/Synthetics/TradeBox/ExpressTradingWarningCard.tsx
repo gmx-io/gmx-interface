@@ -84,7 +84,7 @@ export function ExpressTradingWarningCard({
     shouldShowNonceExpiredWarning,
     shouldShowOutOfGasPaymentBalanceWarning,
     shouldShowSubaccountApprovalInvalidWarning,
-  } = useExpressTradingWarnings({ expressParams, payTokenAddress, isWrapOrUnwrap });
+  } = useExpressTradingWarnings({ expressParams, payTokenAddress, isWrapOrUnwrap, isGmxAccount });
 
   const prevShouldShowSubaccountApprovalInvalidWarning = usePrevious(shouldShowSubaccountApprovalInvalidWarning);
   useEffect(() => {
