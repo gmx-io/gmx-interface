@@ -4,7 +4,7 @@ import { Address } from "viem";
 import { useAccount } from "wagmi";
 
 import { ContractsChainId, SettlementChainId, SourceChainId, getChainName } from "config/chains";
-import { MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
+import { MULTICHAIN_TOKEN_MAPPING } from "config/multichain";
 import { fetchMultichainTokenBalances } from "domain/multichain/fetchMultichainTokenBalances";
 import type { TokenChainData } from "domain/multichain/types";
 import { convertToUsd, getMidPrice, useTokenRecentPricesRequest, useTokensDataRequest } from "domain/synthetics/tokens";
@@ -186,7 +186,7 @@ export function useMultichainTokensRequest(): {
       const tokensChainBalanceData = tokenBalances[sourceChainId];
 
       for (const sourceChainTokenAddress in tokensChainBalanceData) {
-        const mapping = MULTI_CHAIN_TOKEN_MAPPING[chainId]?.[sourceChainId]?.[sourceChainTokenAddress];
+        const mapping = MULTICHAIN_TOKEN_MAPPING[chainId]?.[sourceChainId]?.[sourceChainTokenAddress];
 
         if (!mapping) {
           continue;
@@ -257,7 +257,7 @@ export function useMultichainTokensRequest(): {
 export function useGmxAccountWithdrawNetworks() {
   const { chainId } = useChainId();
 
-  const sourceChains = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId] || {}).map(Number);
+  const sourceChains = Object.keys(MULTICHAIN_TOKEN_MAPPING[chainId] || {}).map(Number);
 
   const networks = useMemo(() => {
     return sourceChains.map((sourceChainId) => {

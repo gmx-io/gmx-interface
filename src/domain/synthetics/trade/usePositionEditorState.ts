@@ -2,7 +2,7 @@ import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Address } from "viem";
 
-import { ContractsChainId, SourceChainId } from "config/chains";
+import type { ContractsChainId, SourceChainId } from "config/chains";
 import {
   getSyntheticsCollateralEditAddressMapKey,
   getSyntheticsCollateralEditTokenIsFromGmxAccountMapKey,

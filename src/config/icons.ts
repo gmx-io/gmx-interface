@@ -100,6 +100,9 @@ export const CHAIN_ID_TO_NETWORK_ICON: Record<AnyChainId | 0, string> = {
   [BOTANIX]: botanix,
 };
 
+/**
+ * For chain icons use `getChainIcon`
+ */
 export function getIcon(chainId: number | "common", label: keyof ChainIcons) {
   if (!chainId || !(chainId in ICONS)) {
     throw new Error(`No icons found for chain: ${chainId}`);

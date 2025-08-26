@@ -1,7 +1,7 @@
 import { zeroAddress } from "viem";
 
 import { SettlementChainId, SourceChainId, getChainName } from "config/chains";
-import { MULTICALLS_MAP, MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
+import { MULTICALLS_MAP, MULTICHAIN_TOKEN_MAPPING } from "config/multichain";
 import { executeMulticall } from "lib/multicall/executeMulticall";
 import type { MulticallRequestConfig } from "lib/multicall/types";
 
@@ -15,7 +15,7 @@ export async function fetchMultichainTokenBalances(
     tokensChainData: Record<string, bigint>;
   }>[] = [];
 
-  const sourceChainTokenIdMap = MULTI_CHAIN_TOKEN_MAPPING[currentSettlementChainId];
+  const sourceChainTokenIdMap = MULTICHAIN_TOKEN_MAPPING[currentSettlementChainId];
 
   const result: Record<number, Record<string, bigint>> = {};
 

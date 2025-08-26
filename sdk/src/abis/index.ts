@@ -62,7 +62,6 @@ import YieldToken from "./YieldToken.json";
 export type AbiId =
   | "AbstractSubaccountApprovalNonceable"
   | "ArbitrumNodeInterface"
-  | "ArbitrumNodeInterface"
   | "ClaimHandler"
   | "CustomErrors"
   | "DataStore"

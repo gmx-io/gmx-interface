@@ -16,7 +16,7 @@ import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
   DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT,
   MULTICHAIN_FUNDING_SLIPPAGE_BPS,
-  MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS,
+  MULTICHAIN_TRANSFER_SUPPORTED_TOKENS,
   StargateErrorsAbi,
   getMappedTokenId,
 } from "config/multichain";
@@ -554,7 +554,7 @@ export const DepositView = () => {
 
       const isInvalidTokenAddress =
         depositViewTokenAddress === undefined ||
-        !MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId as SettlementChainId]
+        !MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId as SettlementChainId]
           .map((token) => convertTokenAddress(settlementChainId, token, "native"))
           .includes(depositViewTokenAddress as NativeTokenSupportedAddress);
 

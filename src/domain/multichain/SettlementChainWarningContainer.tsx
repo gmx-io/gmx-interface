@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { useCallback } from "react";
 
-import { MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "config/multichain";
+import { MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "config/multichain";
 import { getChainName, SettlementChainId } from "config/static/chains";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
@@ -20,7 +20,7 @@ export function SettlementChainWarningContainer() {
 
   const [settlementChainId, setGmxAccountSettlementChainId] = useGmxAccountSettlementChainId();
 
-  const settlementChains = srcChainId ? MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[srcChainId] : undefined;
+  const settlementChains = srcChainId ? MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[srcChainId] : undefined;
 
   const { emptyGmxAccounts } = useEmptyGmxAccounts(settlementChains);
 
