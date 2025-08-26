@@ -141,7 +141,7 @@ export function formatUsd(
   const sign = usd < 0n ? "-" : maybePlus;
   const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
   const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, displayDecimals, true);
-  return `${symbol}${sign}$${displayUsd}`;
+  return `${symbol}${sign}$ ${displayUsd}`;
 }
 
 export function formatDeltaUsd(
@@ -151,7 +151,7 @@ export function formatDeltaUsd(
 ) {
   if (typeof deltaUsd !== "bigint") {
     if (opts.fallbackToZero) {
-      return `${formatUsd(0n)} (${formatAmount(0n, 2, 2)}%)`;
+      return `${formatUsd(0n)} (${formatAmount(0n, 2, 2)} %)`;
     }
 
     return undefined;
@@ -164,7 +164,7 @@ export function formatDeltaUsd(
   const deltaUsdStr = formatAmount(exceedingInfo.value, USD_DECIMALS, 2, true);
   const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
 
-  return `${symbol}${sign}$${deltaUsdStr}${percentageStr}`;
+  return `${symbol}${sign}$ ${deltaUsdStr}${percentageStr}`;
 }
 
 export function formatPercentage(
@@ -175,15 +175,15 @@ export function formatPercentage(
 
   if (percentage === undefined) {
     if (fallbackToZero) {
-      return `${formatAmount(0n, PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
+      return `${formatAmount(0n, PERCENT_PRECISION_DECIMALS, displayDecimals)} %`;
     }
 
     return undefined;
   }
 
-  const sign = signed ? getPlusOrMinusSymbol(percentage) : "";
+  const sign = signed ? `${getPlusOrMinusSymbol(percentage)} ` : "";
 
-  return `${sign}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
+  return `${sign}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)} %`;
 }
 
 export function formatTokenAmount(
@@ -283,7 +283,7 @@ export function formatRatePercentage(rate?: bigint, opts?: { displayDecimals?: n
   const plurOrMinus = signed ? getPlusOrMinusSymbol(rate) : "";
 
   const amount = bigMath.abs(rate * 100n);
-  return `${plurOrMinus}${formatAmount(amount, 30, opts?.displayDecimals ?? 4)}%`;
+  return `${plurOrMinus} ${formatAmount(amount, 30, opts?.displayDecimals ?? 4)}%`;
 }
 
 export function formatUsdPrice(price?: bigint, opts: Parameters<typeof formatUsd>[1] = {}) {
@@ -328,7 +328,7 @@ export function formatAmountHuman(
   }
   const isNegative = n < 0;
   const absN = Math.abs(n);
-  const sign = showDollar ? "$" : "";
+  const sign = showDollar ? "$ " : "";
 
   if (absN >= 1_000_000_000) {
     return `${isNegative ? "-" : ""}${sign}${(absN / 1_000_000_000).toFixed(displayDecimals)}b`;

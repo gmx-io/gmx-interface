@@ -113,7 +113,8 @@ export function useChartHeaderFormattedValues() {
         <>
           <LongIcon width={12} className="relative top-1 opacity-70" />
           <span key="long-oi-value" className="whitespace-nowrap numbers">
-            ${formatAmountHuman(info?.openInterestLong, USD_DECIMALS)}
+            ${" "}
+            {formatAmountHuman(info?.openInterestLong, USD_DECIMALS)}
           </span>
         </>,
         formatPercentageDisplay(info.longOpenInterestPercentage),
@@ -129,7 +130,8 @@ export function useChartHeaderFormattedValues() {
         <>
           <ShortIcon width={12} className="relative opacity-70" />
           <span key="short-oi-value" className="whitespace-nowrap numbers">
-            ${formatAmountHuman(info?.openInterestShort, USD_DECIMALS)}
+            ${" "}
+            {formatAmountHuman(info?.openInterestShort, USD_DECIMALS)}
           </span>
         </>,
         formatPercentageDisplay(info.shortOpenInterestPercentage),
@@ -151,7 +153,8 @@ export function useChartHeaderFormattedValues() {
         styleType="none"
         handle={
           <span className="flex items-center justify-center gap-4 numbers">
-            <LongIcon width={12} className="relative top-1 opacity-70" />${formatAmountHuman(liquidity, USD_DECIMALS)}
+            <LongIcon width={12} className="relative top-1 opacity-70" />${" "}
+            {formatAmountHuman(liquidity, USD_DECIMALS)}
           </span>
         }
         position="bottom-end"
@@ -172,7 +175,8 @@ export function useChartHeaderFormattedValues() {
         styleType="none"
         handle={
           <span className="flex items-center justify-center gap-4 numbers">
-            <ShortIcon width={12} className="relative opacity-70" />${formatAmountHuman(liquidity, USD_DECIMALS)}
+            <ShortIcon width={12} className="relative opacity-70" />${" "}
+            {formatAmountHuman(liquidity, USD_DECIMALS)}
           </span>
         }
         position="bottom-end"
@@ -213,7 +217,10 @@ export function useChartHeaderFormattedValues() {
 
   const dailyVolume = useMemo(() => {
     return dailyVolumesValue !== undefined ? (
-      <span className="numbers">${formatAmountHuman(dailyVolumesValue, USD_DECIMALS)}</span>
+      <span className="numbers">
+        ${" "}
+        {formatAmountHuman(dailyVolumesValue, USD_DECIMALS)}
+      </span>
     ) : (
       "..."
     );

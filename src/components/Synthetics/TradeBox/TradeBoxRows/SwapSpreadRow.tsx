@@ -57,7 +57,8 @@ export function SwapSpreadRow() {
 
   return (
     <SyntheticsInfoRow label={t`Spread`} isWarning={swapSpreadInfo.isHigh}>
-      {formatAmount(swapSpreadInfo.spread * 100n, USD_DECIMALS, 2, true)}%
+      {formatAmount(swapSpreadInfo.spread * 100n, USD_DECIMALS, 2, true)}
+      {" "}%
     </SyntheticsInfoRow>
   );
 }

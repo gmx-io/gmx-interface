@@ -1062,17 +1062,17 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             value={
               <ValueTransition
                 from={
-                  <span className="numbers">
+                  <>
                     {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
                     {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
-                  </span>
+                  </>
                 }
                 to={
                   decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0 ? (
-                    <span className="numbers">
+                    <>
                       {formatDeltaUsd(nextPositionValues?.nextPnl)} (
                       {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
-                    </span>
+                    </>
                   ) : undefined
                 }
               />
@@ -1085,15 +1085,13 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             value={
               <ValueTransition
                 from={
-                  selectedPosition ? (
-                    <span className="numbers">
-                      {formatLiquidationPrice(selectedPosition?.liquidationPrice, {
+                  selectedPosition
+                    ? formatLiquidationPrice(selectedPosition?.liquidationPrice, {
                         visualMultiplier: toToken?.visualMultiplier,
-                      })}
-                    </span>
-                  ) : undefined
+                      })
+                    : undefined
                 }
-                to={<span className="numbers">{nextLiqPriceFormatted}</span>}
+                to={nextLiqPriceFormatted}
               />
             }
           />

@@ -44,7 +44,7 @@ export function AvailableLiquidityRow() {
     <SyntheticsInfoRow label={t`Available Liquidity`}>
       <Tooltip
         position="bottom-end"
-        handleClassName={isLiquidityRisk ? "negative" : ""}
+        handleClassName={isLiquidityRisk ? "negative numbers" : "numbers"}
         handle={
           isSwap
             ? formatTokenAmount(availableLiquidityAmount, toToken?.decimals, toToken?.symbol, {

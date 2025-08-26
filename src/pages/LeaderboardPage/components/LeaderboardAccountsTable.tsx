@@ -370,7 +370,7 @@ const TableRow = memo(
             handle={
               <span className="numbers">
                 {formatDelta(account.pnlPercentage, { signed: true, decimals: 2 })}
-                <span className="ml-1">%</span>
+                {" "}%
               </span>
             }
             position={index > 7 ? "top" : "bottom"}
@@ -391,7 +391,7 @@ const TableRow = memo(
             "text-typography-secondary": account.averageSize === 0n,
           })}
         >
-          {account.averageSize ? formatUsd(account.averageSize) : "$0.00"}
+          {account.averageSize ? formatUsd(account.averageSize) : "$ 0.00"}
         </TableTd>
         <TableTd
           className={cx("numbers", {
@@ -410,7 +410,9 @@ const TableRow = memo(
                 })}
               >
                 {account.wins}
-                <span className="mx-1 text-typography-secondary">/</span>
+                {" "}
+                <span className="text-typography-secondary">/</span>
+                {" "}
                 {account.losses}
               </span>
             }
@@ -584,7 +586,7 @@ function formatDelta(
 ) {
   return `${p.prefixoid ? `${p.prefixoid} ` : ""}${p.signed ? (delta === 0n ? "" : delta > 0 ? "+" : "-") : ""}${
     p.prefix || ""
-  }${formatAmount(p.signed ? bigMath.abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
+  } ${formatAmount(p.signed ? bigMath.abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
 }
 
 function getSignedValueClassName(num: bigint) {
