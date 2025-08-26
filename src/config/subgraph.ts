@@ -47,7 +47,7 @@ export function getSubgraphUrl(
     const url = localStorage.getItem(localStorageKey);
     if (url) {
       // eslint-disable-next-line no-console
-      console.warn("%s subgraph on chain %s url is overriden: %s", subgraph, chainId, url);
+      console.warn("%s subgraph on chain %s url is overridden: %s", subgraph, chainId, url);
       return url;
     }
   }

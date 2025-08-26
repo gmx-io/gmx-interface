@@ -14453,7 +14453,7 @@ export interface LeverageInfo {
 	 */
 	max: number;
 	/**
-	 * The mimimum change between leverage values.
+	 * The minimum change between leverage values.
 	 */
 	step: number;
 }

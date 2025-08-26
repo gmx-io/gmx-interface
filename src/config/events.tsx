@@ -1,4 +1,4 @@
-// date format: d MMM yyyy, H:mm, time should be specifed based on UTC time
+// date format: d MMM yyyy, H:mm, time should be specified based on UTC time
 
 import { Trans } from "@lingui/macro";
 import { type JSX } from "react";
