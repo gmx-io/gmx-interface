@@ -132,8 +132,6 @@ export function useRebatesInfoRequest(
         return;
       }
 
-      console.log("rebateInfo", rebateInfo, positionsConstants);
-
       if (rebateInfo.factor == 0n) {
         res.accruedPositionPriceImpactFees.push(rebateInfo);
       } else {
