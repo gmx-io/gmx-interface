@@ -3,7 +3,7 @@ import cx from "classnames";
 import { Link } from "react-router-dom";
 import { type Address } from "viem";
 
-import { CHAIN_NAMES_MAP, SUPPORTED_CHAIN_IDS } from "config/chains";
+import { CHAIN_NAMES_MAP, CONTRACTS_CHAIN_IDS } from "config/chains";
 import { getIsV1Supported } from "config/features";
 import { getIcon } from "config/icons";
 
@@ -29,7 +29,7 @@ export function VersionNetworkSwitcherRow({
 function Options({ account, chainId, version }: { account?: Address; chainId: number; version: number }) {
   return (
     <div className="flex flex-wrap items-center gap-12 *:cursor-pointer">
-      {SUPPORTED_CHAIN_IDS.map((supportedChainId) => (
+      {CONTRACTS_CHAIN_IDS.map((supportedChainId) => (
         <Link
           to={buildAccountDashboardUrl(account, supportedChainId, 2)}
           key={supportedChainId}
@@ -46,7 +46,7 @@ function Options({ account, chainId, version }: { account?: Address; chainId: nu
           />
         </Link>
       ))}
-      {SUPPORTED_CHAIN_IDS.filter(getIsV1Supported).map((supportedChainId) => (
+      {CONTRACTS_CHAIN_IDS.filter(getIsV1Supported).map((supportedChainId) => (
         <Link
           to={buildAccountDashboardUrl(account, supportedChainId, 1)}
           key={supportedChainId}

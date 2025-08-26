@@ -433,10 +433,7 @@ export class ClaimHandler__factory {
   static createInterface(): ClaimHandlerInterface {
     return new Interface(_abi) as ClaimHandlerInterface;
   }
-  static connect(
-    address: string,
-    runner?: ContractRunner | null
-  ): ClaimHandler {
+  static connect(address: string, runner?: ContractRunner | null): ClaimHandler {
     return new Contract(address, _abi, runner) as unknown as ClaimHandler;
   }
 }

@@ -47,7 +47,7 @@ export declare namespace MultichainRouter {
     orderHandler: string,
     swapHandler: string,
     externalHandler: string,
-    multichainVault: string
+    multichainVault: string,
   ] & {
     router: string;
     roleStore: string;
@@ -69,11 +69,11 @@ export declare namespace OracleUtils {
     data: BytesLike[];
   };
 
-  export type SetPricesParamsStructOutput = [
-    tokens: string[],
-    providers: string[],
-    data: string[]
-  ] & { tokens: string[]; providers: string[]; data: string[] };
+  export type SetPricesParamsStructOutput = [tokens: string[], providers: string[], data: string[]] & {
+    tokens: string[];
+    providers: string[];
+    data: string[];
+  };
 }
 
 export declare namespace IRelayUtils {
@@ -92,7 +92,7 @@ export declare namespace IRelayUtils {
     externalCallTargets: string[],
     externalCallDataList: string[],
     refundTokens: string[],
-    refundReceivers: string[]
+    refundReceivers: string[],
   ] & {
     sendTokens: string[];
     sendAmounts: bigint[];
@@ -121,7 +121,7 @@ export declare namespace IRelayUtils {
     v: bigint,
     r: string,
     s: string,
-    token: string
+    token: string,
   ] & {
     owner: string;
     spender: string;
@@ -139,11 +139,11 @@ export declare namespace IRelayUtils {
     feeSwapPath: AddressLike[];
   };
 
-  export type FeeParamsStructOutput = [
-    feeToken: string,
-    feeAmount: bigint,
-    feeSwapPath: string[]
-  ] & { feeToken: string; feeAmount: bigint; feeSwapPath: string[] };
+  export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
+    feeToken: string;
+    feeAmount: bigint;
+    feeSwapPath: string[];
+  };
 
   export type RelayParamsStruct = {
     oracleParams: OracleUtils.SetPricesParamsStruct;
@@ -164,7 +164,7 @@ export declare namespace IRelayUtils {
     userNonce: bigint,
     deadline: bigint,
     signature: string,
-    desChainId: bigint
+    desChainId: bigint,
   ] & {
     oracleParams: OracleUtils.SetPricesParamsStructOutput;
     externalCalls: IRelayUtils.ExternalCallsStructOutput;
@@ -182,11 +182,11 @@ export declare namespace IRelayUtils {
     amounts: BigNumberish[];
   };
 
-  export type TransferRequestsStructOutput = [
-    tokens: string[],
-    receivers: string[],
-    amounts: bigint[]
-  ] & { tokens: string[]; receivers: string[]; amounts: bigint[] };
+  export type TransferRequestsStructOutput = [tokens: string[], receivers: string[], amounts: bigint[]] & {
+    tokens: string[];
+    receivers: string[];
+    amounts: bigint[];
+  };
 }
 
 export declare namespace IDepositUtils {
@@ -209,7 +209,7 @@ export declare namespace IDepositUtils {
     initialLongToken: string,
     initialShortToken: string,
     longTokenSwapPath: string[],
-    shortTokenSwapPath: string[]
+    shortTokenSwapPath: string[],
   ] & {
     receiver: string;
     callbackContract: string;
@@ -236,7 +236,7 @@ export declare namespace IDepositUtils {
     shouldUnwrapNativeToken: boolean,
     executionFee: bigint,
     callbackGasLimit: bigint,
-    dataList: string[]
+    dataList: string[],
   ] & {
     addresses: IDepositUtils.CreateDepositParamsAddressesStructOutput;
     minMarketTokens: bigint;
@@ -261,7 +261,7 @@ export declare namespace IShiftUtils {
     callbackContract: string,
     uiFeeReceiver: string,
     fromMarket: string,
-    toMarket: string
+    toMarket: string,
   ] & {
     receiver: string;
     callbackContract: string;
@@ -283,7 +283,7 @@ export declare namespace IShiftUtils {
     minMarketTokens: bigint,
     executionFee: bigint,
     callbackGasLimit: bigint,
-    dataList: string[]
+    dataList: string[],
   ] & {
     addresses: IShiftUtils.CreateShiftParamsAddressesStructOutput;
     minMarketTokens: bigint;
@@ -309,7 +309,7 @@ export declare namespace IWithdrawalUtils {
     uiFeeReceiver: string,
     market: string,
     longTokenSwapPath: string[],
-    shortTokenSwapPath: string[]
+    shortTokenSwapPath: string[],
   ] & {
     receiver: string;
     callbackContract: string;
@@ -336,7 +336,7 @@ export declare namespace IWithdrawalUtils {
     shouldUnwrapNativeToken: boolean,
     executionFee: bigint,
     callbackGasLimit: bigint,
-    dataList: string[]
+    dataList: string[],
   ] & {
     addresses: IWithdrawalUtils.CreateWithdrawalParamsAddressesStructOutput;
     minLongTokenAmount: bigint;
@@ -386,7 +386,7 @@ export interface MultichainGmRouterInterface extends Interface {
       AddressLike,
       BigNumberish,
       IRelayUtils.TransferRequestsStruct,
-      IDepositUtils.CreateDepositParamsStruct
+      IDepositUtils.CreateDepositParamsStruct,
     ]
   ): string;
   encodeFunctionData(
@@ -396,7 +396,7 @@ export interface MultichainGmRouterInterface extends Interface {
       AddressLike,
       BigNumberish,
       IRelayUtils.TransferRequestsStruct,
-      IShiftUtils.CreateShiftParamsStruct
+      IShiftUtils.CreateShiftParamsStruct,
     ]
   ): string;
   encodeFunctionData(
@@ -406,145 +406,55 @@ export interface MultichainGmRouterInterface extends Interface {
       AddressLike,
       BigNumberish,
       IRelayUtils.TransferRequestsStruct,
-      IWithdrawalUtils.CreateWithdrawalParamsStruct
+      IWithdrawalUtils.CreateWithdrawalParamsStruct,
     ]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "depositHandler",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "depositVault",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "depositHandler", values?: undefined): string;
+  encodeFunctionData(functionFragment: "depositVault", values?: undefined): string;
   encodeFunctionData(functionFragment: "digests", values: [BytesLike]): string;
-  encodeFunctionData(
-    functionFragment: "eventEmitter",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "externalHandler",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "multicall",
-    values: [BytesLike[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "multichainVault",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
+  encodeFunctionData(functionFragment: "externalHandler", values?: undefined): string;
+  encodeFunctionData(functionFragment: "multicall", values: [BytesLike[]]): string;
+  encodeFunctionData(functionFragment: "multichainVault", values?: undefined): string;
   encodeFunctionData(functionFragment: "oracle", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "orderHandler",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "orderVault",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "orderHandler", values?: undefined): string;
+  encodeFunctionData(functionFragment: "orderVault", values?: undefined): string;
   encodeFunctionData(functionFragment: "roleStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "router", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "sendNativeToken",
-    values: [AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "sendTokens",
-    values: [AddressLike, AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "sendWnt",
-    values: [AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "shiftHandler",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "shiftVault",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "swapHandler",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "withdrawalHandler",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "withdrawalVault",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "sendNativeToken", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "sendTokens", values: [AddressLike, AddressLike, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "sendWnt", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "shiftHandler", values?: undefined): string;
+  encodeFunctionData(functionFragment: "shiftVault", values?: undefined): string;
+  encodeFunctionData(functionFragment: "swapHandler", values?: undefined): string;
+  encodeFunctionData(functionFragment: "withdrawalHandler", values?: undefined): string;
+  encodeFunctionData(functionFragment: "withdrawalVault", values?: undefined): string;
 
-  decodeFunctionResult(
-    functionFragment: "createDeposit",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "createShift",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "createWithdrawal",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "createDeposit", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "createShift", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "createWithdrawal", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "depositHandler",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "depositVault",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "depositHandler", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "depositVault", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "digests", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "eventEmitter",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "externalHandler",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "externalHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "multicall", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "multichainVault",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "multichainVault", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "oracle", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "orderHandler",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "orderHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "orderVault", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "roleStore", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "router", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "sendNativeToken",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "sendNativeToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendTokens", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendWnt", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "shiftHandler",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "shiftHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "shiftVault", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "swapHandler",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "withdrawalHandler",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "withdrawalVault",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "swapHandler", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "withdrawalHandler", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "withdrawalVault", data: BytesLike): Result;
 }
 
 export namespace TokenTransferRevertedEvent {
@@ -577,31 +487,21 @@ export interface MultichainGmRouter extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent
-  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent
-  ): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
   createDeposit: TypedContractMethod<
     [
@@ -609,7 +509,7 @@ export interface MultichainGmRouter extends BaseContract {
       account: AddressLike,
       srcChainId: BigNumberish,
       transferRequests: IRelayUtils.TransferRequestsStruct,
-      params: IDepositUtils.CreateDepositParamsStruct
+      params: IDepositUtils.CreateDepositParamsStruct,
     ],
     [string],
     "nonpayable"
@@ -621,7 +521,7 @@ export interface MultichainGmRouter extends BaseContract {
       account: AddressLike,
       srcChainId: BigNumberish,
       transferRequests: IRelayUtils.TransferRequestsStruct,
-      params: IShiftUtils.CreateShiftParamsStruct
+      params: IShiftUtils.CreateShiftParamsStruct,
     ],
     [string],
     "nonpayable"
@@ -633,7 +533,7 @@ export interface MultichainGmRouter extends BaseContract {
       account: AddressLike,
       srcChainId: BigNumberish,
       transferRequests: IRelayUtils.TransferRequestsStruct,
-      params: IWithdrawalUtils.CreateWithdrawalParamsStruct
+      params: IWithdrawalUtils.CreateWithdrawalParamsStruct,
     ],
     [string],
     "nonpayable"
@@ -665,23 +565,11 @@ export interface MultichainGmRouter extends BaseContract {
 
   router: TypedContractMethod<[], [string], "view">;
 
-  sendNativeToken: TypedContractMethod<
-    [receiver: AddressLike, amount: BigNumberish],
-    [void],
-    "payable"
-  >;
+  sendNativeToken: TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
 
-  sendTokens: TypedContractMethod<
-    [token: AddressLike, receiver: AddressLike, amount: BigNumberish],
-    [void],
-    "payable"
-  >;
+  sendTokens: TypedContractMethod<[token: AddressLike, receiver: AddressLike, amount: BigNumberish], [void], "payable">;
 
-  sendWnt: TypedContractMethod<
-    [receiver: AddressLike, amount: BigNumberish],
-    [void],
-    "payable"
-  >;
+  sendWnt: TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
 
   shiftHandler: TypedContractMethod<[], [string], "view">;
 
@@ -693,9 +581,7 @@ export interface MultichainGmRouter extends BaseContract {
 
   withdrawalVault: TypedContractMethod<[], [string], "view">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment
-  ): T;
+  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
   getFunction(
     nameOrSignature: "createDeposit"
@@ -705,7 +591,7 @@ export interface MultichainGmRouter extends BaseContract {
       account: AddressLike,
       srcChainId: BigNumberish,
       transferRequests: IRelayUtils.TransferRequestsStruct,
-      params: IDepositUtils.CreateDepositParamsStruct
+      params: IDepositUtils.CreateDepositParamsStruct,
     ],
     [string],
     "nonpayable"
@@ -718,7 +604,7 @@ export interface MultichainGmRouter extends BaseContract {
       account: AddressLike,
       srcChainId: BigNumberish,
       transferRequests: IRelayUtils.TransferRequestsStruct,
-      params: IShiftUtils.CreateShiftParamsStruct
+      params: IShiftUtils.CreateShiftParamsStruct,
     ],
     [string],
     "nonpayable"
@@ -731,86 +617,38 @@ export interface MultichainGmRouter extends BaseContract {
       account: AddressLike,
       srcChainId: BigNumberish,
       transferRequests: IRelayUtils.TransferRequestsStruct,
-      params: IWithdrawalUtils.CreateWithdrawalParamsStruct
+      params: IWithdrawalUtils.CreateWithdrawalParamsStruct,
     ],
     [string],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "dataStore"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "depositHandler"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "depositVault"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "digests"
-  ): TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
-  getFunction(
-    nameOrSignature: "eventEmitter"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "externalHandler"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "multicall"
-  ): TypedContractMethod<[data: BytesLike[]], [string[]], "payable">;
-  getFunction(
-    nameOrSignature: "multichainVault"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "oracle"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "orderHandler"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "orderVault"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "roleStore"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "router"
-  ): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "depositHandler"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "depositVault"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "digests"): TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
+  getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "externalHandler"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "multicall"): TypedContractMethod<[data: BytesLike[]], [string[]], "payable">;
+  getFunction(nameOrSignature: "multichainVault"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "oracle"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "orderHandler"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "orderVault"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "roleStore"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "router"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "sendNativeToken"
-  ): TypedContractMethod<
-    [receiver: AddressLike, amount: BigNumberish],
-    [void],
-    "payable"
-  >;
+  ): TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
   getFunction(
     nameOrSignature: "sendTokens"
-  ): TypedContractMethod<
-    [token: AddressLike, receiver: AddressLike, amount: BigNumberish],
-    [void],
-    "payable"
-  >;
+  ): TypedContractMethod<[token: AddressLike, receiver: AddressLike, amount: BigNumberish], [void], "payable">;
   getFunction(
     nameOrSignature: "sendWnt"
-  ): TypedContractMethod<
-    [receiver: AddressLike, amount: BigNumberish],
-    [void],
-    "payable"
-  >;
-  getFunction(
-    nameOrSignature: "shiftHandler"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "shiftVault"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "swapHandler"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "withdrawalHandler"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "withdrawalVault"
-  ): TypedContractMethod<[], [string], "view">;
+  ): TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
+  getFunction(nameOrSignature: "shiftHandler"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "shiftVault"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "swapHandler"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "withdrawalHandler"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "withdrawalVault"): TypedContractMethod<[], [string], "view">;
 
   getEvent(
     key: "TokenTransferReverted"

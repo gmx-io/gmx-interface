@@ -8,7 +8,7 @@ import * as swapPath from "utils/swap/swapPath";
 import { arbitrumSdk } from "utils/testUtil";
 import * as tradeAmounts from "utils/trade/increase";
 
-describe.skip("increaseOrderHelper", () => {
+describe("increaseOrderHelper", () => {
   let marketsInfoData: MarketsInfoData;
   let tokensData: TokensData;
   let mockParams: any;

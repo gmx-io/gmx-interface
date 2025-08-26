@@ -15,7 +15,7 @@ import {
   ContractsChainId,
   FALLBACK_PROVIDERS,
   RPC_PROVIDERS,
-  SUPPORTED_CHAIN_IDS,
+  CONTRACTS_CHAIN_IDS,
   getFallbackRpcUrl,
 } from "config/chains";
 import { getContract, getDataStoreContract, getMulticallContract } from "config/contracts";
@@ -359,7 +359,7 @@ async function probeRpc(
 function initTrackerState() {
   const now = Date.now();
 
-  return SUPPORTED_CHAIN_IDS.reduce<RpcTrackerState>((acc, chainId) => {
+  return CONTRACTS_CHAIN_IDS.reduce<RpcTrackerState>((acc, chainId) => {
     const prepareProviders = (urls: string[], { isPublic }: { isPublic: boolean }) => {
       return urls.reduce<Record<string, ProviderData>>((acc, rpcUrl) => {
         acc[rpcUrl] = {

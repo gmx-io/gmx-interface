@@ -37,7 +37,7 @@ export declare namespace IRelayUtils {
     amount: bigint,
     minAmountOut: bigint,
     provider: string,
-    data: string
+    data: string,
   ] & {
     token: string;
     amount: bigint;
@@ -69,64 +69,28 @@ export interface LayerZeroProviderInterface extends Interface {
     values: [AddressLike, BigNumberish, IRelayUtils.BridgeOutParamsStruct]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "eventEmitter",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "lzCompose",
     values: [AddressLike, BytesLike, BytesLike, AddressLike, BytesLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "multichainGlvRouter",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "multichainGmRouter",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "multichainOrderRouter",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "multichainVault",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "multichainGlvRouter", values?: undefined): string;
+  encodeFunctionData(functionFragment: "multichainGmRouter", values?: undefined): string;
+  encodeFunctionData(functionFragment: "multichainOrderRouter", values?: undefined): string;
+  encodeFunctionData(functionFragment: "multichainVault", values?: undefined): string;
   encodeFunctionData(functionFragment: "roleStore", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "withdrawTokens",
-    values: [AddressLike, AddressLike, BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "withdrawTokens", values: [AddressLike, AddressLike, BigNumberish]): string;
 
   decodeFunctionResult(functionFragment: "bridgeOut", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "eventEmitter",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "lzCompose", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "multichainGlvRouter",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "multichainGmRouter",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "multichainOrderRouter",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "multichainVault",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "multichainGlvRouter", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "multichainGmRouter", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "multichainOrderRouter", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "multichainVault", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "roleStore", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "withdrawTokens",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "withdrawTokens", data: BytesLike): Result;
 }
 
 export namespace TokenTransferRevertedEvent {
@@ -159,38 +123,24 @@ export interface LayerZeroProvider extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent
-  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent
-  ): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
   bridgeOut: TypedContractMethod<
-    [
-      account: AddressLike,
-      srcChainId: BigNumberish,
-      params: IRelayUtils.BridgeOutParamsStruct
-    ],
+    [account: AddressLike, srcChainId: BigNumberish, params: IRelayUtils.BridgeOutParamsStruct],
     [bigint],
     "nonpayable"
   >;
@@ -200,13 +150,7 @@ export interface LayerZeroProvider extends BaseContract {
   eventEmitter: TypedContractMethod<[], [string], "view">;
 
   lzCompose: TypedContractMethod<
-    [
-      from: AddressLike,
-      arg1: BytesLike,
-      message: BytesLike,
-      arg3: AddressLike,
-      arg4: BytesLike
-    ],
+    [from: AddressLike, arg1: BytesLike, message: BytesLike, arg3: AddressLike, arg4: BytesLike],
     [void],
     "payable"
   >;
@@ -227,62 +171,32 @@ export interface LayerZeroProvider extends BaseContract {
     "nonpayable"
   >;
 
-  getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment
-  ): T;
+  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
   getFunction(
     nameOrSignature: "bridgeOut"
   ): TypedContractMethod<
-    [
-      account: AddressLike,
-      srcChainId: BigNumberish,
-      params: IRelayUtils.BridgeOutParamsStruct
-    ],
+    [account: AddressLike, srcChainId: BigNumberish, params: IRelayUtils.BridgeOutParamsStruct],
     [bigint],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "dataStore"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "eventEmitter"
-  ): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "lzCompose"
   ): TypedContractMethod<
-    [
-      from: AddressLike,
-      arg1: BytesLike,
-      message: BytesLike,
-      arg3: AddressLike,
-      arg4: BytesLike
-    ],
+    [from: AddressLike, arg1: BytesLike, message: BytesLike, arg3: AddressLike, arg4: BytesLike],
     [void],
     "payable"
   >;
-  getFunction(
-    nameOrSignature: "multichainGlvRouter"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "multichainGmRouter"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "multichainOrderRouter"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "multichainVault"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "roleStore"
-  ): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "multichainGlvRouter"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "multichainGmRouter"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "multichainOrderRouter"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "multichainVault"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "roleStore"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "withdrawTokens"
-  ): TypedContractMethod<
-    [token: AddressLike, receiver: AddressLike, amount: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
+  ): TypedContractMethod<[token: AddressLike, receiver: AddressLike, amount: BigNumberish], [void], "nonpayable">;
 
   getEvent(
     key: "TokenTransferReverted"

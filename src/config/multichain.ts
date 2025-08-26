@@ -25,7 +25,6 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
-  ContractsChainId,
   SettlementChainId,
   SOURCE_BASE_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
@@ -191,14 +190,6 @@ function ensureExhaustive<T extends number>(value: Record<T, true>): T[] {
   return Object.keys(value).map(Number) as T[];
 }
 
-export const CONTRACTS_CHAINS: ContractsChainId[] = ensureExhaustive<ContractsChainId>({
-  [ARBITRUM_SEPOLIA]: true,
-  [ARBITRUM]: true,
-  [AVALANCHE]: true,
-  [AVALANCHE_FUJI]: true,
-  [BOTANIX]: true,
-});
-
 export const SETTLEMENT_CHAINS: SettlementChainId[] = ensureExhaustive<SettlementChainId>({
   [ARBITRUM_SEPOLIA]: true,
   [ARBITRUM]: true,
@@ -219,10 +210,6 @@ if (IS_SOURCE_BASE_ALLOWED) {
 
 if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
   SOURCE_CHAINS.push(ARBITRUM_SEPOLIA as SourceChainId, ARBITRUM as SourceChainId, AVALANCHE as SourceChainId);
-}
-
-export function isContractsChain(chainId: number): chainId is ContractsChainId {
-  return CONTRACTS_CHAINS.includes(chainId as ContractsChainId);
 }
 
 export function isSettlementChain(chainId: number): chainId is SettlementChainId {

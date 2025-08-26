@@ -597,8 +597,7 @@ const _abi = [
                     type: "address[]",
                   },
                 ],
-                internalType:
-                  "struct IBaseOrderUtils.CreateOrderParamsAddresses",
+                internalType: "struct IBaseOrderUtils.CreateOrderParamsAddresses",
                 name: "addresses",
                 type: "tuple",
               },
@@ -2083,14 +2082,7 @@ export class MultichainSubaccountRouter__factory {
   static createInterface(): MultichainSubaccountRouterInterface {
     return new Interface(_abi) as MultichainSubaccountRouterInterface;
   }
-  static connect(
-    address: string,
-    runner?: ContractRunner | null
-  ): MultichainSubaccountRouter {
-    return new Contract(
-      address,
-      _abi,
-      runner
-    ) as unknown as MultichainSubaccountRouter;
+  static connect(address: string, runner?: ContractRunner | null): MultichainSubaccountRouter {
+    return new Contract(address, _abi, runner) as unknown as MultichainSubaccountRouter;
   }
 }

@@ -8,11 +8,11 @@ import {
   type SourceChainId,
   ARBITRUM,
   ARBITRUM_SEPOLIA,
-  isSupportedChain,
+  isContractsChain,
 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
-import { isContractsChain, isSettlementChain, isSourceChain } from "config/multichain";
+import { isSettlementChain, isSourceChain } from "config/multichain";
 import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 
 const IS_DEVELOPMENT = isDevelopment();
@@ -44,11 +44,11 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
     srcChainId = possibleSrcChainId;
   }
 
-  const isCurrentChainSupported = connectedChainId && isSupportedChain(connectedChainId, IS_DEVELOPMENT);
+  const isCurrentChainSupported = connectedChainId && isContractsChain(connectedChainId, IS_DEVELOPMENT);
   const isCurrentChainSource = connectedChainId && isSourceChain(connectedChainId);
 
   const isLocalStorageChainSupported =
-    chainIdFromLocalStorage && isSupportedChain(chainIdFromLocalStorage, IS_DEVELOPMENT);
+    chainIdFromLocalStorage && isContractsChain(chainIdFromLocalStorage, IS_DEVELOPMENT);
   const isLocalStorageChainSource = chainIdFromLocalStorage && isSourceChain(chainIdFromLocalStorage);
 
   const mustChangeChainId = !connectedChainId || (!isCurrentChainSource && !isCurrentChainSupported);
@@ -63,7 +63,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
 
     const connectHandler = (connectInfo: { chainId: string }) => {
       const rawChainId = parseInt(connectInfo.chainId);
-      if (isContractsChain(rawChainId) || isSourceChain(rawChainId)) {
+      if (isContractsChain(rawChainId, IS_DEVELOPMENT) || isSourceChain(rawChainId)) {
         setDisplayedChainId(rawChainId);
         localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, rawChainId.toString());
       }
@@ -139,7 +139,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
         }
         if (
           !isSourceChain(account.chainId) &&
-          !isSupportedChain(account.chainId, IS_DEVELOPMENT) &&
+          !isContractsChain(account.chainId, IS_DEVELOPMENT) &&
           !isSettlementChain(account.chainId)
         ) {
           return;

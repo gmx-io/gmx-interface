@@ -46,7 +46,7 @@ export type SubaccountApprovalStructOutput = [
   desChainId: bigint,
   deadline: bigint,
   integrationId: string,
-  signature: string
+  signature: string,
 ] & {
   subaccount: string;
   shouldAdd: boolean;
@@ -67,11 +67,11 @@ export declare namespace OracleUtils {
     data: BytesLike[];
   };
 
-  export type SetPricesParamsStructOutput = [
-    tokens: string[],
-    providers: string[],
-    data: string[]
-  ] & { tokens: string[]; providers: string[]; data: string[] };
+  export type SetPricesParamsStructOutput = [tokens: string[], providers: string[], data: string[]] & {
+    tokens: string[];
+    providers: string[];
+    data: string[];
+  };
 }
 
 export declare namespace IRelayUtils {
@@ -90,7 +90,7 @@ export declare namespace IRelayUtils {
     externalCallTargets: string[],
     externalCallDataList: string[],
     refundTokens: string[],
-    refundReceivers: string[]
+    refundReceivers: string[],
   ] & {
     sendTokens: string[];
     sendAmounts: bigint[];
@@ -119,7 +119,7 @@ export declare namespace IRelayUtils {
     v: bigint,
     r: string,
     s: string,
-    token: string
+    token: string,
   ] & {
     owner: string;
     spender: string;
@@ -137,11 +137,11 @@ export declare namespace IRelayUtils {
     feeSwapPath: AddressLike[];
   };
 
-  export type FeeParamsStructOutput = [
-    feeToken: string,
-    feeAmount: bigint,
-    feeSwapPath: string[]
-  ] & { feeToken: string; feeAmount: bigint; feeSwapPath: string[] };
+  export type FeeParamsStructOutput = [feeToken: string, feeAmount: bigint, feeSwapPath: string[]] & {
+    feeToken: string;
+    feeAmount: bigint;
+    feeSwapPath: string[];
+  };
 
   export type RelayParamsStruct = {
     oracleParams: OracleUtils.SetPricesParamsStruct;
@@ -162,7 +162,7 @@ export declare namespace IRelayUtils {
     userNonce: bigint,
     deadline: bigint,
     signature: string,
-    desChainId: bigint
+    desChainId: bigint,
   ] & {
     oracleParams: OracleUtils.SetPricesParamsStructOutput;
     externalCalls: IRelayUtils.ExternalCallsStructOutput;
@@ -193,7 +193,7 @@ export declare namespace IRelayUtils {
     minOutputAmount: bigint,
     validFromTime: bigint,
     autoCancel: boolean,
-    executionFeeIncrease: bigint
+    executionFeeIncrease: bigint,
   ] & {
     key: string;
     sizeDeltaUsd: bigint;
@@ -214,7 +214,7 @@ export declare namespace IRelayUtils {
   export type BatchParamsStructOutput = [
     createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[],
     updateOrderParamsList: IRelayUtils.UpdateOrderParamsStructOutput[],
-    cancelOrderKeys: string[]
+    cancelOrderKeys: string[],
   ] & {
     createOrderParamsList: IBaseOrderUtils.CreateOrderParamsStructOutput[];
     updateOrderParamsList: IRelayUtils.UpdateOrderParamsStructOutput[];
@@ -240,7 +240,7 @@ export declare namespace IBaseOrderUtils {
     uiFeeReceiver: string,
     market: string,
     initialCollateralToken: string,
-    swapPath: string[]
+    swapPath: string[],
   ] & {
     receiver: string;
     cancellationReceiver: string;
@@ -270,7 +270,7 @@ export declare namespace IBaseOrderUtils {
     executionFee: bigint,
     callbackGasLimit: bigint,
     minOutputAmount: bigint,
-    validFromTime: bigint
+    validFromTime: bigint,
   ] & {
     sizeDeltaUsd: bigint;
     initialCollateralDeltaAmount: bigint;
@@ -303,7 +303,7 @@ export declare namespace IBaseOrderUtils {
     shouldUnwrapNativeToken: boolean,
     autoCancel: boolean,
     referralCode: string,
-    dataList: string[]
+    dataList: string[],
   ] & {
     addresses: IBaseOrderUtils.CreateOrderParamsAddressesStructOutput;
     numbers: IBaseOrderUtils.CreateOrderParamsNumbersStructOutput;
@@ -351,18 +351,12 @@ export interface SubaccountGelatoRelayRouterInterface extends Interface {
       SubaccountApprovalStruct,
       AddressLike,
       AddressLike,
-      IRelayUtils.BatchParamsStruct
+      IRelayUtils.BatchParamsStruct,
     ]
   ): string;
   encodeFunctionData(
     functionFragment: "cancelOrder",
-    values: [
-      IRelayUtils.RelayParamsStruct,
-      SubaccountApprovalStruct,
-      AddressLike,
-      AddressLike,
-      BytesLike
-    ]
+    values: [IRelayUtils.RelayParamsStruct, SubaccountApprovalStruct, AddressLike, AddressLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "createOrder",
@@ -371,58 +365,28 @@ export interface SubaccountGelatoRelayRouterInterface extends Interface {
       SubaccountApprovalStruct,
       AddressLike,
       AddressLike,
-      IBaseOrderUtils.CreateOrderParamsStruct
+      IBaseOrderUtils.CreateOrderParamsStruct,
     ]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "digests", values: [BytesLike]): string;
-  encodeFunctionData(
-    functionFragment: "eventEmitter",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "externalHandler",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "multicall",
-    values: [BytesLike[]]
-  ): string;
+  encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
+  encodeFunctionData(functionFragment: "externalHandler", values?: undefined): string;
+  encodeFunctionData(functionFragment: "multicall", values: [BytesLike[]]): string;
   encodeFunctionData(functionFragment: "oracle", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "orderHandler",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "orderVault",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "orderHandler", values?: undefined): string;
+  encodeFunctionData(functionFragment: "orderVault", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "removeSubaccount",
     values: [IRelayUtils.RelayParamsStruct, AddressLike, AddressLike]
   ): string;
   encodeFunctionData(functionFragment: "roleStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "router", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "sendNativeToken",
-    values: [AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "sendTokens",
-    values: [AddressLike, AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "sendWnt",
-    values: [AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "subaccountApprovalNonces",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "swapHandler",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "sendNativeToken", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "sendTokens", values: [AddressLike, AddressLike, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "sendWnt", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(functionFragment: "subaccountApprovalNonces", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "swapHandler", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "updateOrder",
     values: [
@@ -430,60 +394,30 @@ export interface SubaccountGelatoRelayRouterInterface extends Interface {
       SubaccountApprovalStruct,
       AddressLike,
       AddressLike,
-      IRelayUtils.UpdateOrderParamsStruct
+      IRelayUtils.UpdateOrderParamsStruct,
     ]
   ): string;
 
   decodeFunctionResult(functionFragment: "batch", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "cancelOrder",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "createOrder",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "cancelOrder", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "createOrder", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "digests", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "eventEmitter",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "externalHandler",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "eventEmitter", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "externalHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "multicall", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "oracle", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "orderHandler",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "orderHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "orderVault", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "removeSubaccount",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "removeSubaccount", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "roleStore", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "router", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "sendNativeToken",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "sendNativeToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendTokens", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sendWnt", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "subaccountApprovalNonces",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "swapHandler",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "updateOrder",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "subaccountApprovalNonces", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "swapHandler", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "updateOrder", data: BytesLike): Result;
 }
 
 export namespace TokenTransferRevertedEvent {
@@ -516,31 +450,21 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent
-  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent
-  ): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
   batch: TypedContractMethod<
     [
@@ -548,7 +472,7 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
-      params: IRelayUtils.BatchParamsStruct
+      params: IRelayUtils.BatchParamsStruct,
     ],
     [string[]],
     "nonpayable"
@@ -560,7 +484,7 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
-      key: BytesLike
+      key: BytesLike,
     ],
     [void],
     "nonpayable"
@@ -572,7 +496,7 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
-      params: IBaseOrderUtils.CreateOrderParamsStruct
+      params: IBaseOrderUtils.CreateOrderParamsStruct,
     ],
     [string],
     "nonpayable"
@@ -595,11 +519,7 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
   orderVault: TypedContractMethod<[], [string], "view">;
 
   removeSubaccount: TypedContractMethod<
-    [
-      relayParams: IRelayUtils.RelayParamsStruct,
-      account: AddressLike,
-      subaccount: AddressLike
-    ],
+    [relayParams: IRelayUtils.RelayParamsStruct, account: AddressLike, subaccount: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -608,29 +528,13 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
 
   router: TypedContractMethod<[], [string], "view">;
 
-  sendNativeToken: TypedContractMethod<
-    [receiver: AddressLike, amount: BigNumberish],
-    [void],
-    "payable"
-  >;
+  sendNativeToken: TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
 
-  sendTokens: TypedContractMethod<
-    [token: AddressLike, receiver: AddressLike, amount: BigNumberish],
-    [void],
-    "payable"
-  >;
+  sendTokens: TypedContractMethod<[token: AddressLike, receiver: AddressLike, amount: BigNumberish], [void], "payable">;
 
-  sendWnt: TypedContractMethod<
-    [receiver: AddressLike, amount: BigNumberish],
-    [void],
-    "payable"
-  >;
+  sendWnt: TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
 
-  subaccountApprovalNonces: TypedContractMethod<
-    [arg0: AddressLike],
-    [bigint],
-    "view"
-  >;
+  subaccountApprovalNonces: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   swapHandler: TypedContractMethod<[], [string], "view">;
 
@@ -640,15 +544,13 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
-      params: IRelayUtils.UpdateOrderParamsStruct
+      params: IRelayUtils.UpdateOrderParamsStruct,
     ],
     [void],
     "nonpayable"
   >;
 
-  getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment
-  ): T;
+  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
   getFunction(
     nameOrSignature: "batch"
@@ -658,7 +560,7 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
-      params: IRelayUtils.BatchParamsStruct
+      params: IRelayUtils.BatchParamsStruct,
     ],
     [string[]],
     "nonpayable"
@@ -671,7 +573,7 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
-      key: BytesLike
+      key: BytesLike,
     ],
     [void],
     "nonpayable"
@@ -684,79 +586,39 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
-      params: IBaseOrderUtils.CreateOrderParamsStruct
+      params: IBaseOrderUtils.CreateOrderParamsStruct,
     ],
     [string],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "dataStore"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "digests"
-  ): TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
-  getFunction(
-    nameOrSignature: "eventEmitter"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "externalHandler"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "multicall"
-  ): TypedContractMethod<[data: BytesLike[]], [string[]], "payable">;
-  getFunction(
-    nameOrSignature: "oracle"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "orderHandler"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "orderVault"
-  ): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "digests"): TypedContractMethod<[arg0: BytesLike], [boolean], "view">;
+  getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "externalHandler"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "multicall"): TypedContractMethod<[data: BytesLike[]], [string[]], "payable">;
+  getFunction(nameOrSignature: "oracle"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "orderHandler"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "orderVault"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "removeSubaccount"
   ): TypedContractMethod<
-    [
-      relayParams: IRelayUtils.RelayParamsStruct,
-      account: AddressLike,
-      subaccount: AddressLike
-    ],
+    [relayParams: IRelayUtils.RelayParamsStruct, account: AddressLike, subaccount: AddressLike],
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "roleStore"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "router"
-  ): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "roleStore"): TypedContractMethod<[], [string], "view">;
+  getFunction(nameOrSignature: "router"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "sendNativeToken"
-  ): TypedContractMethod<
-    [receiver: AddressLike, amount: BigNumberish],
-    [void],
-    "payable"
-  >;
+  ): TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
   getFunction(
     nameOrSignature: "sendTokens"
-  ): TypedContractMethod<
-    [token: AddressLike, receiver: AddressLike, amount: BigNumberish],
-    [void],
-    "payable"
-  >;
+  ): TypedContractMethod<[token: AddressLike, receiver: AddressLike, amount: BigNumberish], [void], "payable">;
   getFunction(
     nameOrSignature: "sendWnt"
-  ): TypedContractMethod<
-    [receiver: AddressLike, amount: BigNumberish],
-    [void],
-    "payable"
-  >;
-  getFunction(
-    nameOrSignature: "subaccountApprovalNonces"
-  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "swapHandler"
-  ): TypedContractMethod<[], [string], "view">;
+  ): TypedContractMethod<[receiver: AddressLike, amount: BigNumberish], [void], "payable">;
+  getFunction(nameOrSignature: "subaccountApprovalNonces"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(nameOrSignature: "swapHandler"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "updateOrder"
   ): TypedContractMethod<
@@ -765,7 +627,7 @@ export interface SubaccountGelatoRelayRouter extends BaseContract {
       subaccountApproval: SubaccountApprovalStruct,
       account: AddressLike,
       subaccount: AddressLike,
-      params: IRelayUtils.UpdateOrderParamsStruct
+      params: IRelayUtils.UpdateOrderParamsStruct,
     ],
     [void],
     "nonpayable"

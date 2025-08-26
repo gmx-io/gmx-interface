@@ -60,14 +60,19 @@ import YieldFarm from "./YieldFarm.json";
 import YieldToken from "./YieldToken.json";
 
 export type AbiId =
+  | "AbstractSubaccountApprovalNonceable"
   | "ArbitrumNodeInterface"
+  | "ArbitrumNodeInterface"
+  | "ClaimHandler"
   | "CustomErrors"
   | "DataStore"
   | "ERC20"
   | "ERC20PermitInterface"
+  | "ERC20PermitInterface"
   | "ERC721"
   | "EventEmitter"
   | "ExchangeRouter"
+  | "GelatoRelayRouter"
   | "GelatoRelayRouter"
   | "GlpManager"
   | "GlvReader"
@@ -100,6 +105,8 @@ export type AbiId =
   | "RewardTracker"
   | "Router"
   | "RouterV2"
+  | "StBTC"
+  | "SubaccountGelatoRelayRouter"
   | "SubaccountGelatoRelayRouter"
   | "SubaccountRouter"
   | "SyntheticsReader"
@@ -116,14 +123,7 @@ export type AbiId =
   | "Vester"
   | "WETH"
   | "YieldFarm"
-  | "YieldToken"
-  | "AbstractSubaccountApprovalNonceable"
-  | "SubaccountGelatoRelayRouter"
-  | "ERC20PermitInterface"
-  | "GelatoRelayRouter"
-  | "ArbitrumNodeInterface"
-  | "StBTC"
-  | "ClaimHandler";
+  | "YieldToken";
 
 /** Copied from ethers to enable compatibility with GMX UI */
 interface JsonFragmentType {
@@ -146,8 +146,32 @@ interface JsonFragment {
   readonly gas?: string;
 }
 
+const AbstractSubaccountApprovalNonceable = [
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "subaccountApprovalNonces",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+] as const;
+
 export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
+  AbstractSubaccountApprovalNonceable,
   ArbitrumNodeInterface: ArbitrumNodeInterface.abi,
+  ClaimHandler: ClaimHandler.abi,
   CustomErrors: CustomErrors.abi,
   DataStore: DataStore.abi,
   ERC20: erc20Abi,
@@ -187,6 +211,7 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   RewardTracker: RewardTracker.abi,
   Router: Router.abi,
   RouterV2: RouterV2.abi,
+  StBTC: StBTC.abi,
   SubaccountGelatoRelayRouter: SubaccountGelatoRelayRouter.abi,
   SubaccountRouter: SubaccountRouter.abi,
   SyntheticsReader: SyntheticsReader.abi,
@@ -204,27 +229,4 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   WETH: WETH.abi,
   YieldFarm: YieldFarm.abi,
   YieldToken: YieldToken.abi,
-  AbstractSubaccountApprovalNonceable: [
-    {
-      inputs: [
-        {
-          internalType: "address",
-          name: "",
-          type: "address",
-        },
-      ],
-      name: "subaccountApprovalNonces",
-      outputs: [
-        {
-          internalType: "uint256",
-          name: "",
-          type: "uint256",
-        },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-  ],
-  StBTC: StBTC.abi,
-  ClaimHandler: ClaimHandler.abi,
 } satisfies Record<AbiId, any> as any;
