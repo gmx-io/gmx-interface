@@ -2576,6 +2576,10 @@ msgstr "ЧИСТАЯ СТАВКА / 1 Ч"
 msgid "Vest with GMX on Avalanche"
 msgstr "Вестинг GMX на Avalanche"
 
+#: src/domain/multichain/SettlementChainWarningContainer.tsx
+msgid "Change to {0}"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take Profit / Stop Loss Orders."
 msgstr ""

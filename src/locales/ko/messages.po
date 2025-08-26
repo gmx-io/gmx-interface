@@ -2576,6 +2576,10 @@ msgstr "1시간 당 순 수수료율"
 msgid "Vest with GMX on Avalanche"
 msgstr "Avalanche에서 GMX로 베스팅하기"
 
+#: src/domain/multichain/SettlementChainWarningContainer.tsx
+msgid "Change to {0}"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take Profit / Stop Loss Orders."
 msgstr ""

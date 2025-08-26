@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import { useCallback } from "react";
 
 import { MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "config/multichain";
 import { getChainName, SettlementChainId } from "config/static/chains";
@@ -8,6 +9,7 @@ import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
 
+import Button from "components/Button/Button";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { useAvailableToTradeAssetMultichainRequest } from "components/Synthetics/GmxAccountModal/hooks";
 
@@ -16,7 +18,7 @@ import InfoIcon from "img/ic_info.svg?react";
 export function SettlementChainWarningContainer() {
   const { chainId: fallbackChainId, srcChainId } = useChainId();
 
-  const [settlementChainId] = useGmxAccountSettlementChainId();
+  const [settlementChainId, setGmxAccountSettlementChainId] = useGmxAccountSettlementChainId();
 
   const settlementChains = srcChainId ? MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[srcChainId] : undefined;
 
@@ -24,15 +26,23 @@ export function SettlementChainWarningContainer() {
 
   const isCurrentSettlementChainEmpty = emptyGmxAccounts?.[settlementChainId] === true;
 
-  const anyNonEmptyGmxAccountChainId = Object.entries(emptyGmxAccounts ?? EMPTY_OBJECT).find(
-    ([chainId, isEmpty]) => !isEmpty && chainId !== settlementChainId.toString()
-  )?.[0];
+  const anyNonEmptyGmxAccountChainId = Object.entries(emptyGmxAccounts ?? EMPTY_OBJECT)
+    .filter(([chainId, isEmpty]) => !isEmpty && chainId !== settlementChainId.toString())
+    .map(([chainId]) => Number(chainId) as SettlementChainId)
+    .at(0);
 
-  const nonEmptyGmxAccountChainId = anyNonEmptyGmxAccountChainId
-    ? (parseInt(anyNonEmptyGmxAccountChainId) as SettlementChainId)
-    : fallbackChainId;
+  const { gmxAccountUsd } = useAvailableToTradeAssetMultichainRequest(
+    anyNonEmptyGmxAccountChainId ?? fallbackChainId,
+    srcChainId
+  );
 
-  const { gmxAccountUsd } = useAvailableToTradeAssetMultichainRequest(nonEmptyGmxAccountChainId, srcChainId);
+  const handleNetworkSwitch = useCallback(() => {
+    if (!anyNonEmptyGmxAccountChainId) {
+      return;
+    }
+
+    setGmxAccountSettlementChainId(anyNonEmptyGmxAccountChainId);
+  }, [setGmxAccountSettlementChainId, anyNonEmptyGmxAccountChainId]);
 
   if (!anyNonEmptyGmxAccountChainId || !isCurrentSettlementChainEmpty) {
     return null;
@@ -43,8 +53,12 @@ export function SettlementChainWarningContainer() {
       <div className="pl-5">
         <Trans>
           You switched your settlement network to {getChainName(settlementChainId)}, but you still have{" "}
-          {formatUsd(gmxAccountUsd)} remaining in your {getChainName(nonEmptyGmxAccountChainId)} Deposit
+          {formatUsd(gmxAccountUsd)} remaining in your {getChainName(anyNonEmptyGmxAccountChainId)} Deposit
         </Trans>
+        <br />
+        <Button variant="link" className="mt-2 !text-12" onClick={handleNetworkSwitch}>
+          <Trans>Change to {getChainName(anyNonEmptyGmxAccountChainId)}</Trans>
+        </Button>
       </div>
     </ColorfulBanner>
   );
