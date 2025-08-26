@@ -1082,6 +1082,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}
             isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
             disabled={shouldShowDepositButton}
+            isGmxAccount={isFromTokenGmxAccount}
           />
           <div className="h-1 bg-stroke-primary" />
           {isSwap && !isTwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}

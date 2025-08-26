@@ -6,6 +6,7 @@ import {
   EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY,
   EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY,
 } from "config/localStorage";
+import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { selectUpdateSubaccountSettings } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpressTxnParams } from "domain/synthetics/express";
@@ -29,15 +30,18 @@ export function ExpressTradingWarningCard({
   payTokenAddress,
   isWrapOrUnwrap,
   disabled,
+  isGmxAccount,
 }: {
   expressParams: ExpressTxnParams | undefined;
   payTokenAddress: string | undefined;
   isWrapOrUnwrap: boolean;
   disabled?: boolean;
+  isGmxAccount: boolean;
 }) {
   const [isVisible, setIsVisible] = useState(true);
   const updateSubaccountSettings = useSelector(selectUpdateSubaccountSettings);
   const history = useHistory();
+  const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
 
   const { chainId } = useChainId();
 
@@ -134,13 +138,28 @@ export function ExpressTradingWarningCard({
     content = <Trans>One-Click Trading is disabled. Time limit expired.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowOutOfGasPaymentBalanceWarning) {
-    icon = <ExpressIcon className="-mt-6 ml-2" />;
-    content = <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance.</Trans>;
+    if (isGmxAccount) {
+      icon = <ExpressIcon className="-mt-6 ml-2" />;
+      const hasEth = getNativeToken(chainId).symbol === "ETH";
+      content = hasEth ? (
+        <Trans>Insufficient gas balance, please deposit more ETH or USDC.</Trans>
+      ) : (
+        <Trans>Insufficient gas balance, please deposit more USDC.</Trans>
+      );
 
-    buttonText = <Trans>Buy {gasPaymentTokensText}</Trans>;
-    onClick = () => {
-      history.push(`/trade/swap?to=${gasPaymentTokenSymbols[0]}`);
-    };
+      buttonText = hasEth ? <Trans>Deposit USDC or ETH</Trans> : <Trans>Deposit USDC</Trans>;
+      onClick = () => {
+        setGmxAccountModalOpen("deposit");
+      };
+    } else {
+      icon = <ExpressIcon className="-mt-6 ml-2" />;
+      content = <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance.</Trans>;
+
+      buttonText = <Trans>Buy {gasPaymentTokensText}</Trans>;
+      onClick = () => {
+        history.push(`/trade/swap?to=${gasPaymentTokenSymbols[0]}`);
+      };
+    }
   } else if (shouldShowSubaccountApprovalInvalidWarning) {
     icon = <OneClickIcon className="-mt-4" />;
     content = (

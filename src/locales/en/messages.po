@@ -322,10 +322,6 @@ msgstr "Buyable"
 msgid "TWAP Number of Parts"
 msgstr "TWAP Number of Parts"
 
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
-#~ msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
-
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
 msgstr "The spread is > 1%, please ensure the trade details are acceptable before confirming"
@@ -1686,14 +1682,6 @@ msgstr "Net Value"
 msgid "Search Market"
 msgstr "Search Market"
 
-#: src/components/Synthetics/ExecutionPriceRow.tsx
-#~ msgid "The order's acceptable price includes the current price impact and set allowed slippage. The execution price must meet this condition for the order to be executed."
-#~ msgstr "The order's acceptable price includes the current price impact and set allowed slippage. The execution price must meet this condition for the order to be executed."
-
-#: src/components/Synthetics/ExecutionPriceRow.tsx
-#~ msgid "Once the mark price hits the limit price, the order will attempt to execute, guaranteeing the acceptable price, which includes the set acceptable price impact. Note that if there is a negative price impact, the mark price may need to be higher than the limit price."
-#~ msgstr "Once the mark price hits the limit price, the order will attempt to execute, guaranteeing the acceptable price, which includes the set acceptable price impact. Note that if there is a negative price impact, the mark price may need to be higher than the limit price."
-
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Transaction ID"
@@ -1960,10 +1948,6 @@ msgstr "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgid "GMX Alerts"
 msgstr "GMX Alerts"
 
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - Net Price Impact + Price Impact Rebates"
-#~ msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - Net Price Impact + Price Impact Rebates"
-
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 msgid "Show details"
 msgstr "Show details"
@@ -1972,10 +1956,6 @@ msgstr "Show details"
 #: src/components/Glp/GlpSwap.jsx
 msgid "To reduce fees, select a different asset to pay with."
 msgstr "To reduce fees, select a different asset to pay with."
-
-#: src/components/Synthetics/ExecutionPriceRow.tsx
-#~ msgid "Once the mark price hits the limit price, the order will attempt to execute, guaranteeing the acceptable price, which includes the set acceptable price impact. Note that if there is a negative price impact, the mark price may need to be lower than the limit price."
-#~ msgstr "Once the mark price hits the limit price, the order will attempt to execute, guaranteeing the acceptable price, which includes the set acceptable price impact. Note that if there is a negative price impact, the mark price may need to be lower than the limit price."
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Settlement Chain"
@@ -2275,10 +2255,6 @@ msgstr "Address"
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "Winner:"
 msgstr "Winner:"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Price impact rebates for closing trades are claimable inder this claims tab. <0>Read more</0>"
-#~ msgstr "Price impact rebates for closing trades are claimable inder this claims tab. <0>Read more</0>"
 
 #: src/pages/Home/Home.tsx
 msgid "Total Trading Volume"
@@ -2994,6 +2970,10 @@ msgstr "Trade"
 msgid "Adding referral code failed."
 msgstr "Adding referral code failed."
 
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Deposit USDC"
+msgstr "Deposit USDC"
+
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Max leverage without PnL: {0}x"
 msgstr "Max leverage without PnL: {0}x"
@@ -3197,10 +3177,6 @@ msgstr "Total Staked"
 msgid "Network Fee"
 msgstr "Network Fee"
 
-#: src/components/Synthetics/ExecutionPriceRow.tsx
-#~ msgid "Expected execution price for the order, including the current price impact."
-#~ msgstr "Expected execution price for the order, including the current price impact."
-
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionSeller.jsx
@@ -3394,10 +3370,6 @@ msgstr "Direction"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open positions."
 msgstr "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open positions."
-
-#: src/components/Glp/GlpSwap.jsx
-#~ msgid "Due to the recent incident on GMX V1 Arbitrum, GLP on Arbitrum is not sellable."
-#~ msgstr "Due to the recent incident on GMX V1 Arbitrum, GLP on Arbitrum is not sellable."
 
 #: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -6286,10 +6258,6 @@ msgstr "Asset Balance"
 msgid "No options available to transfer {nativeTokenSymbol} to {chainName}."
 msgstr "No options available to transfer {nativeTokenSymbol} to {chainName}."
 
-#: src/components/Synthetics/ExecutionPriceRow.tsx
-#~ msgid "The order's acceptable price includes the set acceptable price impact. The execution price must meet this condition for the order to be executed."
-#~ msgstr "The order's acceptable price includes the set acceptable price impact. The execution price must meet this condition for the order to be executed."
-
 #: src/components/Synthetics/TwapRows/TwapRows.tsx
 msgid "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} market."
 msgstr "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} market."
@@ -6356,10 +6324,6 @@ msgstr "GMX Community with NFTs, Trading and Education initiatives"
 msgid "Liquidation Confirmations"
 msgstr "Liquidation Confirmations"
 
-#: src/components/Synthetics/ExecutionPriceRow.tsx
-#~ msgid "Expected execution price for the order, including the current price impact, once the stop market order executes."
-#~ msgstr "Expected execution price for the order, including the current price impact, once the stop market order executes."
-
 #: src/components/Glp/GlpSwap.jsx
 msgid "Acknowledge epoch is ending in {minutes} minutes"
 msgstr "Acknowledge epoch is ending in {minutes} minutes"
@@ -6388,10 +6352,6 @@ msgstr "Vesting is only available on {chainNames} and {lastChainName}. Please sw
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "The maximum percentage difference between your specified price and execution price when placing orders."
 msgstr "The maximum percentage difference between your specified price and execution price when placing orders."
-
-#: src/components/Synthetics/ExecutionPriceRow.tsx
-#~ msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
-#~ msgstr "Expected execution price for the order, including the current price impact, once the limit order executes."
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "of open fee"
@@ -6562,6 +6522,10 @@ msgstr "GLV earns from trading fees (open, close, borrow, liquidations, swaps) a
 #: src/components/Synthetics/GmxAccountModal/keys.ts
 msgid "Deposit failed"
 msgstr "Deposit failed"
+
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Deposit USDC or ETH"
+msgstr "Deposit USDC or ETH"
 
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing Funds from GMX"
@@ -7207,10 +7171,6 @@ msgstr "Insufficient {0} balance"
 msgid "limit price"
 msgstr "limit price"
 
-#: src/components/Synthetics/ExecutionPriceRow.tsx
-#~ msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>."
-#~ msgstr "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>."
-
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Sending order request"
 msgstr "Sending order request"
@@ -7239,10 +7199,6 @@ msgstr "{positionName} Failed to settle"
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates"
 msgstr "Rebates"
-
-#: src/components/Glp/GlpSwap.jsx
-#~ msgid "GLP is not sellable"
-#~ msgstr "GLP is not sellable"
 
 #: src/pages/BuyGlp/BuyGlp.jsx
 msgid "GMX V1 markets are disabled and only allow for position closing. GLP is being phased out and no longer supports GMX V1 markets."
@@ -7769,10 +7725,6 @@ msgstr "No liquidity is available for increasing shorts for<0/>this size. Max sh
 msgid "Avalanche LP incentives"
 msgstr "Avalanche LP incentives"
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is only settled on position decrease.<0>Read more</0>"
-#~ msgstr "Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is only settled on position decrease.<0>Read more</0>"
-
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
 msgstr "{nativeTokenSymbol} APR"
@@ -8226,10 +8178,6 @@ msgstr "Wallet"
 msgid "You have a pending transfer from {sender}."
 msgstr "You have a pending transfer from {sender}."
 
-#: src/components/Synthetics/ExecutionPriceRow.tsx
-#~ msgid "Once the mark price hits the stop price, the order will attempt to execute."
-#~ msgstr "Once the mark price hits the stop price, the order will attempt to execute."
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a trigger price"
 msgstr "Enter a trigger price"
@@ -8362,10 +8310,6 @@ msgstr "{prefix} <0>{text}</0>"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to update settings"
 msgstr "Failed to update settings"
-
-#: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
-#~ msgid "Positive Price Impact / Fees"
-#~ msgstr "Positive Price Impact / Fees"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Tweet"
@@ -8565,10 +8509,6 @@ msgstr "Complete Transfer"
 msgid "Total Users"
 msgstr "Total Users"
 
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee"
-#~ msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee"
-
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Trigger price below lowest limit price"
 msgstr "Trigger price below lowest limit price"
@@ -8582,6 +8522,10 @@ msgstr "Share Position"
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Min leverage: 1.1x"
 msgstr "Min leverage: 1.1x"
+
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Insufficient gas balance, please deposit more USDC."
+msgstr "Insufficient gas balance, please deposit more USDC."
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
@@ -8659,10 +8603,6 @@ msgstr "Leftover collateral below {0} USD"
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
 msgstr "trigger"
-
-#: src/components/Glp/GlpSwap.jsx
-#~ msgid "Please <0>read here</0> for more information."
-#~ msgstr "Please <0>read here</0> for more information."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
@@ -8957,10 +8897,6 @@ msgstr "Limit"
 msgid "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact."
 msgstr "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact."
 
-#: src/components/Synthetics/ExecutionPriceRow.tsx
-#~ msgid "Acceptable price does not apply to stop loss orders, as they will be executed regardless of any price impact."
-#~ msgstr "Acceptable price does not apply to stop loss orders, as they will be executed regardless of any price impact."
-
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing and Withdrawing Funds to/from GMX"
 msgstr "Depositing and Withdrawing Funds to/from GMX"
@@ -9065,6 +9001,10 @@ msgstr "{0} is required for collateral."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Options Protocol"
 msgstr "Decentralized Options Protocol"
+
+#: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Insufficient gas balance, please deposit more ETH or USDC."
+msgstr "Insufficient gas balance, please deposit more ETH or USDC."
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update TWAP Swap Part"
