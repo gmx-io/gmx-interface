@@ -56,7 +56,7 @@ export function useRebatesInfoRequest(
     fetcher: async () => {
       const query = gql(`{
         claimableCollaterals(
-          where: { account_eq: "${account}", claimed: false }
+          where: { account_eq: "${account}", claimed_eq: false }
         ) {
           id
           marketAddress
@@ -131,6 +131,8 @@ export function useRebatesInfoRequest(
         // skipping to avoid CollateralAlreadyClaimed error
         return;
       }
+
+      console.log("rebateInfo", rebateInfo, positionsConstants);
 
       if (rebateInfo.factor == 0n) {
         res.accruedPositionPriceImpactFees.push(rebateInfo);
