@@ -144,7 +144,7 @@ export function AffiliateCodeForm({
 
   if (srcChainId !== undefined) {
     buttonState = {
-      text: t`Switch to ${getChainName(srcChainId)}`,
+      text: t`Switch to ${getChainName(chainId)}`,
       disabled: false,
       onSubmit: (event: React.FormEvent) => {
         event.preventDefault();
