@@ -582,7 +582,7 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
     },
     // BTC/USD [PBTC-PBTC]
     "0x6bFDD025827F7CE130BcfC446927AEF34ae2a98d": {
-      enabled: true,
+      enabled: false,
     },
   },
 };
