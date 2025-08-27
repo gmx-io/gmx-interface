@@ -77,7 +77,9 @@ export function HeroSection() {
                     <Trans>Total Volume</Trans>{" "}
                     <IcMidChevron className="duration-180 size-16 transition-transform group-hover:translate-x-4" />
                   </span>
-                  <div className="text-[30px] font-medium tracking-tight sm:text-[40px]">{totalVolumeText}</div>
+                  <div className="duration-180 text-[30px] font-medium tracking-tight transition-opacity group-active:opacity-80 sm:text-[40px]">
+                    {totalVolumeText}
+                  </div>
                 </div>
               </div>
             </div>
