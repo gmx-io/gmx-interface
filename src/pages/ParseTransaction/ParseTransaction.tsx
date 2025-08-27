@@ -363,7 +363,10 @@ function LogEntryComponent(props: LogEntryComponentProps) {
         value = (
           <span className="flex flex-row items-center gap-8">
             <TokenSymbolWithIcon symbol={token.symbol} /> ({props.value})
-            <ExternalLink className="text-slate-100 underline" href={`${explorerUrl}address/${props.value.toString()}`}>
+            <ExternalLink
+              className="text-typography-secondary underline"
+              href={`${explorerUrl}address/${props.value.toString()}`}
+            >
               <img src={explorerIconSrc} className="h-18 w-18" />
             </ExternalLink>
           </span>
@@ -372,7 +375,10 @@ function LogEntryComponent(props: LogEntryComponentProps) {
         value = (
           <span className="flex flex-row items-center gap-8">
             {isGlvInfo(marketOrGlv) ? getGlvDisplayName(marketOrGlv) : getMarketFullName(marketOrGlv)} ({props.value})
-            <ExternalLink className="text-slate-100 underline" href={`${explorerUrl}address/${props.value.toString()}`}>
+            <ExternalLink
+              className="text-typography-secondary underline"
+              href={`${explorerUrl}address/${props.value.toString()}`}
+            >
               <img src={explorerIconSrc} className="h-18 w-18" />
             </ExternalLink>
           </span>
@@ -389,10 +395,16 @@ function LogEntryComponent(props: LogEntryComponentProps) {
 
     value = (
       <span className="flex flex-row items-center gap-8">
-        <Link className="text-slate-100 underline" to={`/accounts/${props.value.toString()}?network=${network}&v=2`}>
+        <Link
+          className="text-typography-secondary underline"
+          to={`/accounts/${props.value.toString()}?network=${network}&v=2`}
+        >
           {props.value.toString()}
         </Link>
-        <ExternalLink className="text-slate-100 underline" href={`${explorerUrl}address/${props.value.toString()}`}>
+        <ExternalLink
+          className="text-typography-secondary underline"
+          href={`${explorerUrl}address/${props.value.toString()}`}
+        >
           <img src={explorerIconSrc} className="h-18 w-18" />
         </ExternalLink>
       </span>
@@ -488,9 +500,12 @@ function CopyButton({ value }: { value: string }) {
   return (
     <BiCopy
       size={16}
-      className={cx("hidden cursor-pointer text-slate-100 transition-transform hover:text-white group-hover:block", {
-        "scale-110 text-white": isCopied,
-      })}
+      className={cx(
+        "hidden cursor-pointer text-typography-secondary transition-transform hover:text-typography-primary group-hover:block",
+        {
+          "scale-110 text-typography-primary": isCopied,
+        }
+      )}
       onClick={onClick}
     />
   );

@@ -131,7 +131,7 @@ export default function OrdersList(props) {
 
     return (
       <tr>
-        <td colSpan="5" className="text-slate-100">
+        <td colSpan="5" className="text-typography-secondary">
           <Trans>No open orders</Trans>
         </td>
       </tr>
@@ -518,7 +518,8 @@ export default function OrdersList(props) {
               </div>
               <div>
                 <Tooltip
-                  handle={<span className="numbers">{formatAmount(markPrice, USD_DECIMALS, 2, true)}</span>}
+                  handle={formatAmount(markPrice, USD_DECIMALS, 2, true)}
+                  handleClassName="numbers"
                   position="bottom-end"
                   renderContent={() => {
                     return (
@@ -576,7 +577,7 @@ export default function OrdersList(props) {
         </tbody>
       </table>
       {(!orders || orders.length === 0) && (
-        <div className="Exchange-empty-positions-list-note small App-card text-slate-100">
+        <div className="Exchange-empty-positions-list-note small App-card text-typography-secondary">
           <Trans>No open orders</Trans>
         </div>
       )}

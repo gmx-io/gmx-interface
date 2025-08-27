@@ -96,11 +96,11 @@ const TwapRows = ({
       <SyntheticsInfoRow label={t`Frequency`}>
         <FrequencyField duration={duration} numberOfParts={numberOfParts} />
       </SyntheticsInfoRow>
-      <SyntheticsInfoRow label={t`Size per part`}>
-        <span className="numbers">
-          {formatUsd(typeof sizeUsd === "bigint" && numberOfParts ? sizeUsd / BigInt(numberOfParts) : 0n)}
-        </span>
-      </SyntheticsInfoRow>
+      <SyntheticsInfoRow
+        label={t`Size per part`}
+        value={formatUsd(typeof sizeUsd === "bigint" && numberOfParts ? sizeUsd / BigInt(numberOfParts) : 0n)}
+        valueClassName="numbers"
+      />
 
       {!isTwapInfoCardClosed && marketInfo && typeof sizeUsd === "bigint" && sizeUsd > 0n && (
         <AlertInfoCard onClose={handleCloseTwapInfoCard}>
@@ -124,7 +124,7 @@ const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; n
     const remainMinutes = Math.floor((seconds % 3600) / 60);
     return (
       <Trans>
-        <span className="text-slate-100">every</span> {hours} hours
+        <span className="text-typography-secondary">every</span> {hours} hours
         {remainMinutes > 0 ? <> and {remainMinutes} minutes</> : undefined}
       </Trans>
     );
@@ -134,7 +134,7 @@ const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; n
     const remainSeconds = Math.floor(seconds % 60);
     return (
       <Trans>
-        <span className="text-slate-100">every</span> {minutes} minutes
+        <span className="text-typography-secondary">every</span> {minutes} minutes
         {remainSeconds > 0 ? <> and {remainSeconds} seconds</> : undefined}
       </Trans>
     );
@@ -142,7 +142,7 @@ const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; n
 
   return (
     <Trans>
-      <span className="text-slate-100">every</span> {seconds} seconds
+      <span className="text-typography-secondary">every</span> {seconds} seconds
     </Trans>
   );
 };

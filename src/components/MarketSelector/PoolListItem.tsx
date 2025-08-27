@@ -98,7 +98,7 @@ export function PoolListItem(props: {
             className="TokenSelector-tooltip"
             handle={<div className="TokenSelector-tooltip-backing" />}
             position={isInFirstHalf ? "bottom" : "top"}
-            styleType="none"
+            variant="none"
             closeOnDoubleClick
             fitHandleWidth
             content={state.message}
@@ -146,9 +146,9 @@ export function PoolListItem(props: {
           </div>
         </div>
         <div className="flex items-center gap-8">
-          <div className="Token-balance">
+          <div className="Token-balance numbers">
             {(showBalances && balance !== undefined && (
-              <div className="Token-text numbers">
+              <div className="Token-text">
                 {balance > 0
                   ? formatTokenAmount(balance, marketToken?.decimals, "GM", {
                       useCommas: true,
@@ -158,9 +158,7 @@ export function PoolListItem(props: {
             )) ||
               null}
             <span className="text-accent">
-              {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
-                <div className="numbers">{formatUsd(balanceUsd)}</div>
-              )) ||
+              {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && <div>{formatUsd(balanceUsd)}</div>) ||
                 null}
             </span>
           </div>
@@ -169,7 +167,7 @@ export function PoolListItem(props: {
           </Button>
         </div>
       </div>
-      {state.warning && <p className="mb-8 px-20 py-8 text-14 text-slate-100 last:mb-0">{state.warning}</p>}
+      {state.warning && <p className="mb-8 px-20 py-8 text-14 text-typography-secondary last:mb-0">{state.warning}</p>}
     </>
   );
 }

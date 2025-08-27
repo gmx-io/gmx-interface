@@ -150,7 +150,7 @@ export function ReferralCodeForm({
         ref={inputRef}
         disabled={isSubmitting}
         type="text"
-        placeholder="Enter referral code"
+        placeholder={t`Enter referral code`}
         className="text-input mb-15"
         value={referralCode}
         onChange={({ target }) => {

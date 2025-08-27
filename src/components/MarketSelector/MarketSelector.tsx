@@ -203,20 +203,20 @@ export function MarketSelector({
           ))}
         </div>
         {filteredOptions.length === 0 && (
-          <div className="px-20 text-14 text-slate-100">
+          <div className="px-20 text-14 text-typography-secondary">
             <Trans>No markets matched.</Trans>
           </div>
         )}
       </SlideModal>
       <div
         className={cx(
-          "group/hoverable group text-body-medium flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-300"
+          "group/hoverable group text-body-large flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-300"
         )}
         onClick={handleClick}
         data-qa="market-selector"
       >
         {selectedMarketLabel ? selectedMarketLabel : marketInfo ? getMarketIndexName(marketInfo) : "..."}
-        <FaChevronDown className="w-12 text-slate-100 group-hover:text-blue-300" />
+        <FaChevronDown className="w-12 text-typography-secondary group-hover:text-blue-300" />
       </div>
     </div>
   );
@@ -288,7 +288,7 @@ function MarketListItem(props: {
           className="TokenSelector-tooltip"
           handle={<div className="TokenSelector-tooltip-backing" />}
           position={isInFirstHalf ? "bottom" : "top"}
-          styleType="none"
+          variant="none"
           closeOnDoubleClick
           fitHandleWidth
           renderContent={() => state.message}

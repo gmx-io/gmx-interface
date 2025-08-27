@@ -20,8 +20,8 @@ export default function LanguageModalContent({ currentLanguage, onClose }: Props
           <Button
             variant="secondary"
             key={item}
-            className={cx("", {
-              "!bg-slate-800 !text-white": currentLanguage === item,
+            className={cx({
+              "!bg-button-secondary !text-typography-primary": currentLanguage === item,
             })}
             onClick={() => {
               dynamicActivate(item).then(onClose);

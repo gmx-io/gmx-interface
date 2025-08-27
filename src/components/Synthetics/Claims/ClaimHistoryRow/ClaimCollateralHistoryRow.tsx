@@ -68,7 +68,8 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
       <TooltipWithPortal
         tooltipClassName="ClaimHistoryRow-size-tooltip-portal"
         content={<SizeTooltip claimAction={claimAction} />}
-        handle={<span className="numbers">{formattedTotalUsd}</span>}
+        handle={formattedTotalUsd}
+        handleClassName="numbers"
       />
     );
   }, [claimAction]);
@@ -86,18 +87,14 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
           </ExternalLink>
         </div>
         <TooltipWithPortal
-          styleType="none"
+          variant="none"
           handle={<span className="ClaimHistoryRow-time muted cursor-help">{formattedTimestamp}</span>}
           tooltipClassName="ClaimHistoryRow-tooltip-portal cursor-help *:cursor-auto"
           renderContent={renderIsoTimestamp}
         />
       </TableTd>
-      <TableTd>
-        <span>{marketNamesJoined}</span>
-      </TableTd>
-      <TableTd>
-        <span>{sizeContent}</span>
-      </TableTd>
+      <TableTd>{marketNamesJoined}</TableTd>
+      <TableTd>{sizeContent}</TableTd>
     </TableTr>
   );
 }
@@ -111,7 +108,7 @@ function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
           const poolName = getMarketPoolName(market);
           return (
             <div key={market.indexTokenAddress} className="flex flex-col gap-4">
-              <div className="flex items-baseline text-white">
+              <div className="flex items-baseline text-typography-primary">
                 <span>{indexName}</span>
                 <span className="subtext">[{poolName}]</span>
               </div>

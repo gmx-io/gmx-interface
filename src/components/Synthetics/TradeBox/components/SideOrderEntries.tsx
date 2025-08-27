@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import { useCallback, useMemo, useRef } from "react";
 import { FaPlus } from "react-icons/fa6";
 
@@ -105,7 +106,7 @@ function SideOrderEntry({
         content={priceError}
         tooltipClassName="!min-w-[25rem]"
         position="top-end"
-        styleType="none"
+        variant="none"
       >
         <SuggestionInput
           label="$"
@@ -113,7 +114,7 @@ function SideOrderEntry({
           className="w-88"
           value={entry.price.input}
           setValue={onPriceValueChange}
-          placeholder="Price"
+          placeholder={t`Price`}
         />
       </TooltipWithPortal>
       {displayMode === "percentage" && (
@@ -123,7 +124,7 @@ function SideOrderEntry({
             content={sizeTooltipMsg}
             tooltipClassName="!min-w-[25rem]"
             position="top-end"
-            styleType="none"
+            variant="none"
           >
             <SuggestionInput
               isError={!!percentageError}
@@ -131,7 +132,7 @@ function SideOrderEntry({
               value={entry.percentage?.input ?? ""}
               setValue={onPercentageSetValue}
               suggestionList={SUGGESTION_PERCENTAGE_LIST}
-              placeholder="Size"
+              placeholder={t`Size`}
               symbol="%"
             />
           </TooltipWithPortal>
@@ -143,14 +144,14 @@ function SideOrderEntry({
           content={sizeTooltipMsg}
           tooltipClassName="!min-w-[25rem]"
           position="top-end"
-          styleType="none"
+          variant="none"
         >
           <SuggestionInput
             isError={!!sizeError}
             className="w-81"
             value={entry.sizeUsd.input ?? ""}
             setValue={onSizeUsdValueChange}
-            placeholder="Size"
+            placeholder={t`Size`}
             label="$"
           />
         </TooltipWithPortal>

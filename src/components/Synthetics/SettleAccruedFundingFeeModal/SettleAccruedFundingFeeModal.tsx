@@ -200,7 +200,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
   const renderTooltipContent = useCallback(
     () => (
-      <span className="text-white">
+      <span className="text-typography-primary">
         <Trans>Accrued Funding Fee.</Trans>
       </span>
     ),

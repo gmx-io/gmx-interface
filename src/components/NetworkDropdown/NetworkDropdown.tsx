@@ -89,7 +89,7 @@ function DesktopDropdown({ selectorLabel, networkOptions, openSettings }) {
               </Button>
             </Menu.Button>
             <Menu.Items as="div" className="menu-items network-dropdown-items" data-qa="networks-dropdown">
-              <div className="p-12 pb-8 text-13 font-medium text-slate-100">
+              <div className="p-12 pb-8 text-13 font-medium text-typography-secondary">
                 <Trans>Network</Trans>
               </div>
               <div className="network-dropdown-list">
@@ -135,7 +135,11 @@ function NetworkMenuItems({ networkOptions, selectorLabel }) {
               <div className="menu-item-icon">
                 <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
               </div>
-              <span className={cx("network-dropdown-item-label", { "text-white": selectorLabel === network.label })}>
+              <span
+                className={cx("network-dropdown-item-label", {
+                  "text-typography-primary": selectorLabel === network.label,
+                })}
+              >
                 {network.label}
               </span>
             </div>
@@ -187,7 +191,7 @@ function NetworkModalContent({ networkOptions, selectorLabel, setActiveModal, op
           }}
         >
           <div className="menu-item-group">
-            <SettingsIcon className="mr-16 text-slate-100" />
+            <SettingsIcon className="mr-16 text-typography-secondary" />
             <span className="network-option-img-label">
               <Trans>Settings</Trans>
             </span>

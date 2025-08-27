@@ -65,7 +65,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
 
       return (
         <TooltipWithPortal
-          styleType="none"
+          variant="none"
           handleClassName="cursor-help"
           handle={formattedMarketNames}
           renderContent={() => {
@@ -75,7 +75,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
               const isLong = claimAction.isLongOrders[index];
               return (
                 <div
-                  className="ClaimHistoryRow-tooltip-row inline-flex items-start text-white"
+                  className="ClaimHistoryRow-tooltip-row inline-flex items-start text-typography-primary"
                   key={`${market.name}/${isLong}`}
                 >
                   {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
@@ -91,7 +91,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
       const indexName = getMarketIndexName(claimAction.markets[0]);
       return (
         <TooltipWithPortal
-          styleType="none"
+          variant="none"
           handleClassName="cursor-help *:cursor-auto"
           handle={
             <MarketWithDirectionLabel
@@ -108,7 +108,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
               const isLong = claimAction.isLongOrders[index];
               return (
                 <div
-                  className="ClaimHistoryRow-tooltip-row inline-flex items-start text-white"
+                  className="ClaimHistoryRow-tooltip-row inline-flex items-start text-typography-primary"
                   key={`${market.name}/${isLong}`}
                 >
                   {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
@@ -154,7 +154,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
 
             return (
               <div key={market.indexTokenAddress} className="flex flex-col gap-4">
-                <div className="flex items-baseline text-white">
+                <div className="flex items-baseline text-typography-primary">
                   <span>{indexName}</span>
                   <span className="subtext">[{poolName}]</span>
                 </div>
@@ -195,7 +195,8 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
       <TooltipWithPortal
         tooltipClassName="ClaimHistoryRow-size-tooltip-portal"
         content={amounts}
-        handle={<span className="numbers">{formattedTotalUsd}</span>}
+        handle={formattedTotalUsd}
+        handleClassName="numbers"
       />
     );
   }, [claimAction]);
@@ -213,7 +214,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
           </ExternalLink>
         </div>
         <TooltipWithPortal
-          styleType="none"
+          variant="none"
           handle={<span className="ClaimHistoryRow-time muted">{formattedTimestamp}</span>}
           tooltipClassName="ClaimHistoryRow-tooltip-portal"
           renderContent={renderIsoTimestamp}

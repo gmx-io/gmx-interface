@@ -31,23 +31,22 @@ export function BreadcrumbItem({ to: href, children, back, active, onClick, clas
   }
 
   const content = (
-    <button
+    <div
       className={cx(
-        `text-slate-300 text-body-medium relative inline-flex items-center gap-6
-        rounded-full border-stroke border-slate-600 px-12 py-8 text-13
-        font-medium leading-[1.15] transition-colors after:absolute after:-left-13 after:top-[50%]
+        `text-slate-300 relative inline-flex items-center gap-6 rounded-full border-1/2 border-slate-600
+        px-12 py-8 text-13 font-medium leading-[1.15] transition-colors after:absolute after:-left-13 after:top-[50%]
         after:translate-y-[-50%] after:text-11 after:text-slate-600 after:content-['/']
         first:after:content-none max-md:px-8`,
         {
-          "text-slate-100 hover:bg-slate-800 hover:text-white": !active,
-          "cursor-default text-white": active,
+          "cursor-pointer text-typography-secondary hover:bg-slate-800 hover:text-typography-primary": !active,
+          "cursor-default text-typography-primary": active,
         },
         className
       )}
     >
       {back && <FaChevronLeft className="text-12" />}
       {!isMobile ? children : null}
-    </button>
+    </div>
   );
 
   if (!active && href) {

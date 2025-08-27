@@ -50,7 +50,7 @@ const TABS = isDevelopment() ? ["PRICE", "DEPTH", "MARKET_GRAPH"] : ["PRICE", "D
 
 const TABS_OPTIONS = TABS.map((tab) => ({
   value: tab,
-  label: TAB_LABELS[tab]
+  label: TAB_LABELS[tab],
 }));
 
 export function Chart() {
@@ -59,7 +59,7 @@ export function Chart() {
 
   return (
     <div className="ExchangeChart tv flex h-[60rem] flex-col [@media(min-width:2560px)]:min-h-[780px] [@media(min-width:3840px)]:min-h-[1140px]">
-      <div className="flex grow flex-col overflow-hidden rounded-8 bg-slate-900 [@media(max-width:1920px)]:h-[53.6rem]">
+      <div className="flex grow flex-col overflow-hidden rounded-8 bg-slate-900 max-[1920px]:h-[53.6rem]">
         {isSwap ? (
           tab === "MARKET_GRAPH" ? (
             TAB_CONTENTS.MARKET_GRAPH

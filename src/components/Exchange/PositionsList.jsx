@@ -326,25 +326,20 @@ export default function PositionsList(props) {
                                   )}
                                   <StatsTooltipRow
                                     label={t`Initial Collateral`}
-                                    value={
-                                      <span className="numbers">
-                                        {formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-                                      </span>
-                                    }
+                                    value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                                    valueClassName="numbers"
                                   />
                                   <StatsTooltipRow
                                     label={t`Borrow Fee`}
-                                    value={
-                                      <span className="numbers">
-                                        {formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
-                                      </span>
-                                    }
+                                    value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
+                                    valueClassName="numbers"
                                     textClassName="text-red-500"
                                   />
                                   <StatsTooltipRow
                                     showDollar={false}
                                     label={t`Borrow Fee / Day`}
-                                    value={<span className="numbers">-${borrowFeeUSD}</span>}
+                                    value={`-$${borrowFeeUSD}`}
+                                    valueClassName="numbers"
                                     textClassName="text-red-500"
                                   />
 
@@ -542,14 +537,10 @@ export default function PositionsList(props) {
                         renderContent={() => {
                           return (
                             <div>
-                              <Trans>
-                                Click on the position to select it, then use the trade box to increase it.
-                              </Trans>
+                              <Trans>Click on the position to select it, then use the trade box to increase it.</Trans>
                               <br />
                               <br />
-                              <Trans>
-                                Use the "Close" button to reduce your position, or to set TP/SL orders.
-                              </Trans>
+                              <Trans>Use the "Close" button to reduce your position, or to set TP/SL orders.</Trans>
                             </div>
                           );
                         }}
@@ -670,11 +661,8 @@ export default function PositionsList(props) {
                             <StatsTooltipRow
                               label={t`Borrow Fee`}
                               showDollar={false}
-                              value={
-                                <span className="numbers">
-                                  -${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
-                                </span>
-                              }
+                              value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
+                              valueClassName="numbers"
                               textClassName="text-red-500"
                             />
                             <StatsTooltipRow

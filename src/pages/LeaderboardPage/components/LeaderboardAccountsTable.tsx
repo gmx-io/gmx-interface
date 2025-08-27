@@ -279,7 +279,7 @@ const TableHeaderCell = memo(
                 handle={<span className="whitespace-nowrap">{title}</span>}
                 position={tooltipPosition || "bottom"}
                 content={<div onClick={stopPropagation}>{tooltip}</div>}
-                styleType="iconStroke"
+                variant="iconStroke"
               />
             ) : (
               <span className="whitespace-nowrap">{title}</span>
@@ -296,7 +296,7 @@ const TableHeaderCell = memo(
             handle={<span className="whitespace-nowrap">{title}</span>}
             position={tooltipPosition || "bottom"}
             content={<div onClick={stopPropagation}>{tooltip}</div>}
-            styleType="iconStroke"
+            variant="iconStroke"
           />
         ) : (
           <span className="whitespace-nowrap">{title}</span>
@@ -327,14 +327,11 @@ const TableRow = memo(
           <StatsTooltipRow
             label={t`Total Trades`}
             showDollar={false}
-            value={<span className="numbers">{account.wins + account.losses}</span>}
+            value={account.wins + account.losses}
+            valueClassName="numbers"
           />
           {account.wins + account.losses > 0 ? (
-            <StatsTooltipRow
-              label={t`Win Rate`}
-              showDollar={false}
-              value={<span className="numbers">{winRate}</span>}
-            />
+            <StatsTooltipRow label={t`Win Rate`} showDollar={false} value={winRate} valueClassName="numbers" />
           ) : null}
         </div>
       );
@@ -343,7 +340,7 @@ const TableRow = memo(
     const renderPnlTooltipContent = useCallback(() => <LeaderboardPnlTooltipContent account={account} />, [account]);
 
     return (
-      <TableTr key={account.account}>
+      <TableTr hoverable={true} key={account.account}>
         <TableTd className={getCellClassname(rank, activeCompetition, pinned)}>
           <span className={cx("numbers", getWinnerRankClassname(rank, activeCompetition))}>
             <RankInfo rank={rank} hasSomeCapital={account.totalQualifyingPnl !== 0n} />
@@ -355,40 +352,64 @@ const TableRow = memo(
         </TableTd>
         <TableTd>
           <TooltipWithPortal
-            handle={
-              <span className={cx("numbers", getSignedValueClassName(account.totalQualifyingPnl))}>
-                {formatDelta(account.totalQualifyingPnl, { signed: true, prefix: "$" })}
-              </span>
-            }
+            handle={formatDelta(account.totalQualifyingPnl, { signed: true, prefix: "$" })}
             position={index > 7 ? "top" : "bottom"}
             className="whitespace-nowrap"
             renderContent={renderPnlTooltipContent}
+            handleClassName={cx("numbers", getSignedValueClassName(account.totalQualifyingPnl))}
+            variant="underline"
           />
         </TableTd>
         <TableTd>
           <TooltipWithPortal
             handle={
-              <span className={cx("numbers", getSignedValueClassName(account.pnlPercentage))}>
-                {formatDelta(account.pnlPercentage, { signed: true, postfix: "%", decimals: 2 })}
-              </span>
+              <span className="numbers">{formatDelta(account.pnlPercentage, { signed: true, decimals: 2 })} %</span>
             }
             position={index > 7 ? "top" : "bottom"}
             className="whitespace-nowrap"
+            handleClassName={cx("numbers", getSignedValueClassName(account.totalQualifyingPnl))}
             renderContent={() => (
               <StatsTooltipRow
                 label={t`Capital Used`}
                 showDollar={false}
-                value={<span className="numbers">{formatUsd(account.maxCapital)}</span>}
+                value={formatUsd(account.maxCapital)}
+                valueClassName="numbers"
               />
             )}
+            variant="underline"
           />
         </TableTd>
-        <TableTd className="numbers">{account.averageSize ? formatUsd(account.averageSize) : "$0.00"}</TableTd>
-        <TableTd className="numbers">{`${formatAmount(account.averageLeverage ?? 0n, 4, 2)}x`}</TableTd>
-        <TableTd className="text-right numbers">
+        <TableTd
+          className={cx("numbers first-letter:text-typography-secondary", {
+            "text-typography-secondary": account.averageSize === 0n,
+          })}
+        >
+          {account.averageSize ? formatUsd(account.averageSize) : "$ 0.00"}
+        </TableTd>
+        <TableTd
+          className={cx("numbers", {
+            "text-typography-secondary": account.averageLeverage === 0n,
+          })}
+        >
+          {`${formatAmount(account.averageLeverage ?? 0n, 4, 2)}`}
+          <span className="ml-1 text-typography-secondary">x</span>
+        </TableTd>
+        <TableTd className="text-right text-typography-secondary numbers">
           <TooltipWithPortal
-            handle={<span className="numbers">{`${account.wins}/${account.losses}`}</span>}
+            handle={
+              <span
+                className={cx("text-typography-primary numbers", {
+                  "text-typography-secondary": account.wins === 0 && account.losses === 0,
+                })}
+              >
+                {account.wins} <span className="text-typography-secondary">/</span> {account.losses}
+              </span>
+            }
             renderContent={renderWinsLossesTooltipContent}
+            handleClassName={cx("text-typography-primary numbers", {
+              "text-typography-secondary": account.wins === 0 && account.losses === 0,
+            })}
+            variant="underline"
           />
         </TableTd>
       </TableTr>
@@ -398,8 +419,8 @@ const TableRow = memo(
 
 const EmptyRow = memo(() => {
   return (
-    <TableTr hoverable={false} className="h-47">
-      <TableTd colSpan={7} className="align-top text-slate-100">
+    <TableTr className="h-47">
+      <TableTd colSpan={7} className="align-top text-typography-secondary">
         <Trans>No results found</Trans>
       </TableTd>
     </TableTr>
@@ -423,9 +444,16 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   const tooltipContent = useCallback(() => message, [message]);
 
   if (rank === null)
-    return <TooltipWithPortal handleClassName="text-red-500" handle={t`NA`} renderContent={tooltipContent} />;
+    return (
+      <TooltipWithPortal
+        handleClassName="text-typography-secondary"
+        handle={t`NA`}
+        renderContent={tooltipContent}
+        variant="underline"
+      />
+    );
 
-  return <span className="font-medium text-slate-100 numbers">{rank}</span>;
+  return <span className="font-medium text-typography-secondary numbers">{rank}</span>;
 });
 
 const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAccount }) => {
@@ -550,9 +578,9 @@ function formatDelta(
 ) {
   return `${p.prefixoid ? `${p.prefixoid} ` : ""}${p.signed ? (delta === 0n ? "" : delta > 0 ? "+" : "-") : ""}${
     p.prefix || ""
-  }${formatAmount(p.signed ? bigMath.abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
+  } ${formatAmount(p.signed ? bigMath.abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
 }
 
 function getSignedValueClassName(num: bigint) {
-  return num === 0n ? "" : num < 0 ? "negative" : "positive";
+  return num === 0n ? "text-typography-secondary" : num < 0 ? "negative" : "positive";
 }

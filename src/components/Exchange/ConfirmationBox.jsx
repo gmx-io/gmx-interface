@@ -73,7 +73,7 @@ function renderAllowedSlippage(setAllowedSlippage, defaultSlippage, allowedSlipp
           position="top-start"
           renderContent={() => {
             return (
-              <div className="text-white">
+              <div className="text-typography-primary">
                 <Trans>
                   You can edit the default allowed slippage in the settings menu on the top right of the page.
                   <br />
@@ -755,7 +755,7 @@ export default function ConfirmationBox(props) {
           {decreaseOrdersThatWillBeExecuted.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
-                <span className="muted text-sm">
+                <span className="muted text-body-small">
                   <Trans>I am aware of the trigger orders</Trans>
                 </span>
               </Checkbox>

@@ -3,11 +3,14 @@ body,
 #root {
   margin: 0;
   padding: 0;
-  color: var(--color-white);
   font-size: 10px;
-  background-color: var(--main-bg-color);
   height: 100%;
   width: 100%;
+  color: var(--color-typography-primary);
+}
+
+#root {
+  background-color: var(--main-bg-color);
 }
 
 #root > div {
@@ -95,7 +98,6 @@ code {
   --dark-blue-hover: var(--color-cold-blue-900);
   --dark-blue-border: var(--color-gray-800);
   --dark-blue-active: var(--color-cold-blue-700);
-  --text-gray: var(--color-gray-300);
   --warning-yellow: var(--color-yellow-300);
   --avax-red: #e84143;
   --arbitrum-blue: #28a0f0;
@@ -104,7 +106,6 @@ code {
   --error-red-hover: var(--color-red-400);
   --green: var(--color-green-500);
 
-  --default-container-max-width: 126.4rem;
   --default-container-padding: 3.2rem;
   --default-container-padding-mobile: 1rem;
 }
@@ -127,7 +128,7 @@ input[type="number"] {
 // TODO: remove this
 input {
   font-size: var(--font-size-body-medium);
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   outline: none;
   background: none;
   padding: 1.25rem;
@@ -179,15 +180,6 @@ tr {
 .transition-arrow {
   vertical-align: middle;
   margin-top: -0.31rem;
-}
-
-.label {
-  font-weight: 500;
-}
-
-.label,
-.label a {
-  color: var(--color-slate-100);
 }
 
 ul {
@@ -337,7 +329,7 @@ s .default-btn:active {
 button.btn-link {
   margin-top: 1.5rem;
   background: none;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   border: none;
   padding: 0;
   font-size: var(--font-size-body-medium);

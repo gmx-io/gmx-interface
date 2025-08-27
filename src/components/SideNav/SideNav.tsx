@@ -5,6 +5,8 @@ import { Link, useLocation } from "react-router-dom";
 
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
+import ExternalLink from "components/ExternalLink/ExternalLink";
+
 import CollapseIcon from "img/collapse.svg?react";
 import DashboardIcon from "img/dashboard.svg?react";
 import DatabaseIcon from "img/database.svg?react";
@@ -14,7 +16,7 @@ import EcosystemIcon from "img/ecosystem.svg?react";
 import BuyIcon from "img/ic_buy.svg?react";
 import LeaderboardIcon from "img/leaderboard.svg?react";
 import logoIcon from "img/logo-icon.svg";
-import logoText from "img/logo-text.svg";
+import LogoText from "img/logo-text.svg?react";
 import ReferralsIcon from "img/referrals.svg?react";
 import TradeIcon from "img/trade.svg?react";
 
@@ -40,7 +42,7 @@ function SideNav({ className }: { className?: string }) {
       <div className="flex flex-1 flex-col justify-between">
         <MenuSection isCollapsed={isCollapsed} />
 
-        <ul className={cx("flex list-none flex-col px-0")}>
+        <ul className="flex list-none flex-col px-0">
           <LanguageNavItem isCollapsed={isCollapsed} NavItem={NavItem} />
           <DocsNavItem isCollapsed={isCollapsed} />
           <NavItem
@@ -63,17 +65,17 @@ export function LogoSection({ isCollapsed }: { isCollapsed: boolean | undefined 
   return (
     <Link
       to="/"
-      className={cx("flex cursor-pointer items-center justify-center gap-5 pb-16 pt-10", {
+      className={cx("flex cursor-pointer items-center justify-center gap-5 pb-16 pt-10 text-typography-primary", {
         "pl-12 pr-20": !isCollapsed,
       })}
     >
-      <img src={logoIcon} alt="GMX Logo" className="h-22" />
-      {!isCollapsed && <img src={logoText} alt="GMX" className="h-18" />}
+      <img src={logoIcon} alt="GMX Logo" />
+      {!isCollapsed ? <LogoText /> : null}
     </Link>
   );
 }
 
-interface NavItemProps {
+export interface NavItemProps {
   icon: ReactNode;
   label: ReactNode;
   isActive?: boolean;
@@ -85,14 +87,14 @@ interface NavItemProps {
 
 export function NavItem({ icon, label, isActive = false, isCollapsed = false, onClick, to, external }: NavItemProps) {
   const button = (
-    <button className={cx("group cursor-pointer py-4", { "w-full": !isCollapsed })} onClick={onClick}>
+    <button className={cx("group cursor-pointer select-none py-4", { "w-full": !isCollapsed })} onClick={onClick}>
       <div
         className={cx(
           `relative flex cursor-pointer items-center gap-8
-        rounded-8 px-16 py-8 text-slate-100 transition-colors
-        group-hover:bg-slate-700 group-hover:text-white`,
+          rounded-8 px-16 py-8 text-typography-secondary transition-colors group-hover:bg-blue-400/20 group-hover:text-blue-400
+          dark:group-hover:bg-slate-700 dark:group-hover:text-typography-primary`,
           {
-            "bg-slate-700 text-white": isActive,
+            "bg-blue-400/20 !text-blue-400 dark:bg-slate-700 dark:!text-typography-primary": isActive,
             "w-full": !isCollapsed,
           }
         )}
@@ -103,12 +105,14 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
         <div
           className={cx(
             `absolute left-0 top-0 z-30 hidden items-center gap-8 rounded-8
-            bg-slate-700 px-16 py-8 text-white`,
+            bg-slate-800 text-blue-400 dark:text-typography-primary`,
             { "group-hover:flex": isCollapsed }
           )}
         >
-          <div className="flex h-24 w-24 shrink-0 items-center justify-center">{icon}</div>
-          <span className={cx("text-body-medium font-medium tracking-[-1.2%]")}>{label}</span>
+          <div className="flex items-center gap-8 rounded-8 bg-blue-400/20 px-16 py-8 dark:bg-slate-700">
+            <div className="flex h-24 w-24 shrink-0 items-center justify-center">{icon}</div>
+            <span className={cx("text-body-medium font-medium tracking-[-1.2%]")}>{label}</span>
+          </div>
         </div>
       </div>
     </button>
@@ -116,9 +120,9 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
 
   const content = to ? (
     external ? (
-      <a href={to} target="_blank" rel="noopener noreferrer">
+      <ExternalLink className="w-full !no-underline" href={to}>
         {button}
-      </a>
+      </ExternalLink>
     ) : (
       <Link to={to}>{button}</Link>
     )
@@ -144,7 +148,7 @@ export function MenuSection({ isCollapsed }: { isCollapsed: boolean | undefined 
   const { pathname } = useLocation();
 
   return (
-    <ul className={cx("flex list-none flex-col px-0")}>
+    <ul className="flex list-none flex-col px-0">
       {mainNavItems.map((item) => (
         <NavItem
           key={item.key}

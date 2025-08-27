@@ -5,7 +5,7 @@ import { FaChevronDown } from "react-icons/fa6";
 import { RemoveScroll } from "react-remove-scroll";
 import { createGlobalState } from "react-use";
 
-const HEADER_HEIGHT = 40;
+const HEADER_HEIGHT = 39;
 const DECELERATION = 0.01;
 const DIRECTION_THRESHOLD = 2;
 const MOVEMENT_THRESHOLD = 10;
@@ -242,20 +242,20 @@ export function Curtain({
             className={cx(
               "flex touch-none select-none items-stretch justify-between gap-4 border-slate-600 bg-slate-800 pr-8 shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]",
               {
-                "border-b-stroke border-t-stroke bg-slate-900": isOpen,
+                "border-b-1/2 border-t-1/2 bg-slate-900": isOpen,
               }
             )}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
           >
-            <div className="-mb-1 grow" onClick={headerClick}>
+            <div className="grow" onClick={headerClick}>
               {header}
             </div>
             <button onClick={handleToggle} className="group p-10">
               <FaChevronDown
                 className={cx(
-                  "text-slate-100 transition-transform duration-500 ease-out group-hover:text-white",
+                  "text-typography-secondary transition-transform duration-500 ease-out group-hover:text-typography-primary",
                   isOpen ? undefined : "rotate-180"
                 )}
               />
@@ -263,7 +263,7 @@ export function Curtain({
           </div>
 
           <div
-            className="flex grow flex-col overflow-y-auto bg-slate-900"
+            className="mt-1 flex grow flex-col overflow-y-auto bg-slate-900"
             ref={scrollableContainerRef}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}

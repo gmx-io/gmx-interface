@@ -263,9 +263,13 @@ function MobileSlideModal({
         >
           <div onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
             <div className="flex touch-none select-none items-stretch justify-between gap-4 px-14 pb-14 pt-14">
-              <div className="text-body-medium grow pl-4 font-medium">{label}</div>
+              <div className="text-body-medium grow pl-4 font-medium text-typography-primary">{label}</div>
 
-              <MdClose fontSize={20} className="cursor-pointer text-slate-100 hover:opacity-90" onClick={handleClose} />
+              <MdClose
+                fontSize={20}
+                className="cursor-pointer text-typography-secondary hover:opacity-90"
+                onClick={handleClose}
+              />
             </div>
             {headerRef ? (
               <div className="px-14" ref={headerRef} />
@@ -286,7 +290,7 @@ function MobileSlideModal({
           </div>
           {footerContent && (
             <>
-              <div className="border-b-stroke border-slate-600" />
+              <div className="border-b-1/2 border-slate-600" />
               <div>{footerContent}</div>
             </>
           )}

@@ -176,12 +176,14 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
       <TooltipWithPortal
         tooltipClassName="NetworkFeeRow-tooltip"
         position="left-start"
+        handleClassName="numbers"
         content={
           <>
             <StatsTooltipRow
               label={t`Max Network Fee`}
               showDollar={false}
-              value={<span className="numbers">{maxNetworkFeeText}</span>}
+              value={maxNetworkFeeText}
+              valueClassName="numbers"
             />
             <div className="h-8" />
             <p>
@@ -198,7 +200,8 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
             <StatsTooltipRow
               label={t`Estimated Fee Refund`}
               showDollar={false}
-              value={<span className="numbers">{estimatedRefundText}</span>}
+              value={estimatedRefundText}
+              valueClassName="numbers"
               textClassName="text-green-500"
             />
             {warning && <p className="text-yellow-300">{warning}</p>}
@@ -206,7 +209,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
           </>
         }
       >
-        <span className="numbers">{formatUsd(-feeUsdAfterRefund)}</span>
+        {formatUsd(-feeUsdAfterRefund)}
       </TooltipWithPortal>
     );
   }, [
@@ -225,7 +228,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
         label={
           <TooltipWithPortal
             position="left-start"
-            styleType="icon"
+            variant="icon"
             content={
               <Trans>
                 Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does
@@ -246,7 +249,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
       label={
         <TooltipWithPortal
           position="left-start"
-          styleType="icon"
+          variant="icon"
           content={
             <Trans>
               Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does

@@ -116,7 +116,7 @@ function OrderSize({
     if (showDebugValues) {
       return (
         <TooltipWithPortal
-          styleType="none"
+          variant="none"
           handle={<SizeWithIcon order={order} className={className} />}
           position="bottom-start"
           content={
@@ -187,7 +187,7 @@ function OrderSize({
       position="bottom-start"
       tooltipClassName={isTwapOrder(order) ? "!p-0" : undefined}
       maxAllowedWidth={400}
-      styleType="none"
+      variant="none"
       content={
         isTwapOrder(order) ? (
           <TwapOrdersList order={order} />
@@ -263,7 +263,9 @@ export function SizeWithIcon({ order, className }: { order: OrderInfo; className
           <span> to </span>
           {isTwapOrder(order) ? null : <span>{toTokenText} </span>}
           {toTokenIcon}
-          {isTwapOrder(order) ? <TwapOrderProgress order={order} className="font-normal text-slate-100" /> : null}
+          {isTwapOrder(order) ? (
+            <TwapOrderProgress order={order} className="font-normal text-typography-secondary" />
+          ) : null}
         </Trans>
       </span>
     );
@@ -277,7 +279,7 @@ export function SizeWithIcon({ order, className }: { order: OrderInfo; className
             content={<TwapOrdersList order={order} />}
             tooltipClassName="!p-0"
             maxAllowedWidth={450}
-            styleType="none"
+            variant="none"
           />
         ) : (
           handle
@@ -293,7 +295,7 @@ export function SizeWithIcon({ order, className }: { order: OrderInfo; className
 
   return (
     <span className={className}>
-      {sizeText} {isTwapOrder(order) && <TwapOrderProgress order={order} className="text-slate-100" />}
+      {sizeText} {isTwapOrder(order) && <TwapOrderProgress order={order} className="text-typography-secondary" />}
     </span>
   );
 }
@@ -355,8 +357,9 @@ function MarkPrice({ order, className }: { order: OrderInfo; className?: string 
 
     return (
       <TooltipWithPortal
-        handle={<span>{markPriceFormatted}</span>}
+        handle={markPriceFormatted}
         position="bottom-end"
+        handleClassName="numbers"
         renderContent={() => {
           return (
             <Trans>
@@ -442,7 +445,8 @@ function TriggerPrice({
         {!hideActions ? (
           <TooltipWithPortal
             position="bottom-end"
-            handle={<span>{swapRatioText}</span>}
+            handle={swapRatioText}
+            handleClassName="numbers"
             renderContent={() => (
               <>
                 <div className="pb-8">
@@ -468,10 +472,11 @@ function TriggerPrice({
       <TooltipWithPortal
         handle={
           <span>
-            {`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {
+            {positionOrder.triggerThresholdType}{" "}
+            {formatUsd(positionOrder.triggerPrice, {
               displayDecimals: priceDecimals,
               visualMultiplier: positionOrder.indexToken?.visualMultiplier,
-            })}`}
+            })}
           </span>
         }
         position="bottom-end"
@@ -558,7 +563,7 @@ function OrderItemLarge({
   );
 
   return (
-    <TableTr ref={handleSetRef}>
+    <TableTr hoverable={true} ref={handleSetRef}>
       {!hideActions && onToggleOrder && (
         <TableTd className="cursor-pointer" onClick={onToggleOrder}>
           <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder} />
@@ -585,7 +590,7 @@ function OrderItemLarge({
                 ))}
               </>
             }
-            styleType="none"
+            variant="none"
           />
         ) : (
           <TooltipWithPortal
@@ -609,7 +614,7 @@ function OrderItemLarge({
                 showDollar={false}
               />
             }
-            styleType="none"
+            variant="none"
           />
         )}
       </TableTd>
@@ -731,12 +736,12 @@ function OrderItemSmall({
       <AppCardSection>
         {showDebugValues && (
           <div className="App-card-row">
-            <div className="font-medium text-slate-100">Key</div>
+            <div className="font-medium text-typography-secondary">Key</div>
             <div className="debug-key muted">{order.key}</div>
           </div>
         )}
         <div className="App-card-row">
-          <div className="font-medium text-slate-100">
+          <div className="font-medium text-typography-secondary">
             <Trans>Order Type</Trans>
           </div>
           <div>
@@ -744,13 +749,13 @@ function OrderItemSmall({
           </div>
         </div>
         <div className="App-card-row">
-          <div className="font-medium text-slate-100">
+          <div className="font-medium text-typography-secondary">
             <Trans>Size</Trans>
           </div>
           <OrderSize order={order} showDebugValues={showDebugValues} />
         </div>
         <div className="App-card-row">
-          <div className="font-medium text-slate-100">
+          <div className="font-medium text-typography-secondary">
             <Trans>Trigger Price</Trans>
           </div>
           <div>
@@ -759,7 +764,7 @@ function OrderItemSmall({
         </div>
 
         <div className="App-card-row">
-          <div className="font-medium text-slate-100">
+          <div className="font-medium text-typography-secondary">
             <Trans>Mark Price</Trans>
           </div>
           <div>
@@ -835,7 +840,7 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
 
   return (
     <TooltipWithPortal
-      styleType="none"
+      variant="none"
       handle={
         <span
           className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {

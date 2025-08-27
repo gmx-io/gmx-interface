@@ -47,9 +47,9 @@ export function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boo
             value={accessKey}
             onChange={setTenderlyAccessKey}
           />
-          <div className="">
+          <div>
             <ToggleSwitch isChecked={Boolean(tenderlySimulationEnabled)} setIsChecked={setTenderlySimulationEnabled}>
-              <span className="">Simulate TXs</span>
+              <span>Simulate TXs</span>
             </ToggleSwitch>
           </div>
           <br />

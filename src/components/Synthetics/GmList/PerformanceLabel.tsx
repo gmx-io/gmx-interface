@@ -7,11 +7,11 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 export function PerformanceLabel({
   upperCase = false,
   short = true,
-  styleType = "underline",
+  variant = "underline",
 }: {
   upperCase?: boolean;
   short?: boolean;
-  styleType?: ComponentProps<typeof TooltipWithPortal>["styleType"];
+  variant?: ComponentProps<typeof TooltipWithPortal>["variant"];
 }) {
   const label = short ? t`Ann. Performance` : t`Annualized Performance`;
   return (
@@ -19,7 +19,7 @@ export function PerformanceLabel({
       handle={upperCase ? label.toUpperCase() : label}
       className="normal-case"
       position="bottom-end"
-      styleType={styleType}
+      variant={variant}
       content={
         <Trans>
           Annualized return of the pool or vault over the selected period, compared to a benchmark that follows Uniswap

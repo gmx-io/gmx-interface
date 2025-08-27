@@ -377,7 +377,8 @@ export function OverviewCard({
               </div>
               <div>
                 <TooltipComponent
-                  handle={<span className="numbers">{formatAmountHuman(displayTvl, USD_DECIMALS, true, 2)}</span>}
+                  handle={formatAmountHuman(displayTvl, USD_DECIMALS, true, 2)}
+                  handleClassName="numbers"
                   position="bottom-end"
                   content={
                     <>
@@ -421,7 +422,8 @@ export function OverviewCard({
               </div>
               <div>
                 <TooltipComponent
-                  handle={<span className="numbers">{formatAmountHuman(totalGlpTvl, USD_DECIMALS, true, 2)}</span>}
+                  handle={formatAmountHuman(totalGlpTvl, USD_DECIMALS, true, 2)}
+                  handleClassName="numbers"
                   position="bottom-end"
                   content={
                     <>
@@ -460,7 +462,8 @@ export function OverviewCard({
               </div>
               <div>
                 <TooltipComponent
-                  handle={<span className="numbers">{formatAmountHuman(totalGmTvl, USD_DECIMALS, true, 2)}</span>}
+                  handle={formatAmountHuman(totalGmTvl, USD_DECIMALS, true, 2)}
+                  handleClassName="numbers"
                   position="bottom-end"
                   content={
                     <>
@@ -501,7 +504,8 @@ export function OverviewCard({
                 <TooltipComponent
                   position="bottom-end"
                   className="whitespace-nowrap"
-                  handle={<span className="numbers">{formatAmountHuman(totalDailyVolume, USD_DECIMALS, true, 2)}</span>}
+                  handle={formatAmountHuman(totalDailyVolume, USD_DECIMALS, true, 2)}
+                  handleClassName="numbers"
                   content={<ChainsStatsTooltipRow entries={dailyVolumeEntries} />}
                 />
               </div>
@@ -518,9 +522,8 @@ export function OverviewCard({
                 <TooltipComponent
                   position="bottom-end"
                   className="whitespace-nowrap"
-                  handle={
-                    <span className="numbers">{formatAmountHuman(totalOpenInterest, USD_DECIMALS, true, 2)}</span>
-                  }
+                  handle={formatAmountHuman(totalOpenInterest, USD_DECIMALS, true, 2)}
+                  handleClassName="numbers"
                   content={<ChainsStatsTooltipRow entries={openInterestEntries} />}
                 />
               </div>
@@ -533,9 +536,8 @@ export function OverviewCard({
                 <TooltipComponent
                   position="bottom-end"
                   className="whitespace-nowrap"
-                  handle={
-                    <span className="numbers">{formatAmountHuman(totalLongPositionSizes, USD_DECIMALS, true, 2)}</span>
-                  }
+                  handle={formatAmountHuman(totalLongPositionSizes, USD_DECIMALS, true, 2)}
+                  handleClassName="numbers"
                   content={<ChainsStatsTooltipRow entries={totalLongPositionSizesEntries} />}
                 />
               </div>
@@ -548,9 +550,8 @@ export function OverviewCard({
                 <TooltipComponent
                   position="bottom-end"
                   className="whitespace-nowrap"
-                  handle={
-                    <span className="numbers">{formatAmountHuman(totalShortPositionSizes, USD_DECIMALS, true, 2)}</span>
-                  }
+                  handle={formatAmountHuman(totalShortPositionSizes, USD_DECIMALS, true, 2)}
+                  handleClassName="numbers"
                   content={<ChainsStatsTooltipRow entries={totalShortPositionSizesEntries} />}
                 />
               </div>
@@ -563,9 +564,8 @@ export function OverviewCard({
                 <TooltipComponent
                   position="bottom-end"
                   className="whitespace-nowrap"
-                  handle={
-                    <span className="numbers">{formatAmountHuman(totalEpochFeesUsd, USD_DECIMALS, true, 2)}</span>
-                  }
+                  handle={formatAmountHuman(totalEpochFeesUsd, USD_DECIMALS, true, 2)}
+                  handleClassName="numbers"
                   content={<ChainsStatsTooltipRow entries={epochFeesEntries} subtotal={feesSubtotal} />}
                 />
               </div>

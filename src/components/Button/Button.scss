@@ -55,9 +55,9 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
   }
 
   &.secondary {
-    background-color: var(--color-slate-800);
+    background: var(--color-button-secondary);
     border-radius: 8px;
-    color: var(--color-slate-100);
+    color: var(--color-typography-secondary);
     position: relative;
     letter-spacing: 0;
 
@@ -78,13 +78,15 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
     }
 
     &:not([disabled], .disabled):hover {
-      background-color: var(--color-fill-surfaceHover);
-      color: var(--color-white);
+      background: linear-gradient(0deg, var(--color-button-secondary), var(--color-button-secondary)),
+        linear-gradient(0deg, rgb(var(--color-slate-100-raw) / 0.1), rgb(var(--color-slate-100-raw) / 0.1));
+      background-blend-mode: overlay;
+      color: var(--color-typography-primary);
     }
 
     &:not([disabled], .disabled):active {
-      background: var(--color-slate-800);
-      color: var(--color-white);
+      background: var(--color-button-secondary);
+      color: var(--color-typography-primary);
     }
   }
 
@@ -112,12 +114,12 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
     }
 
     &:not([disabled], .disabled):hover {
-      color: var(--color-white);
+      color: var(--color-typography-primary);
       background-color: var(--color-fill-surfaceHover);
     }
 
     &:not([disabled], .disabled):active {
-      color: var(--color-white);
+      color: var(--color-typography-primary);
       background: var(--color-slate-800);
     }
   }
@@ -132,7 +134,7 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
     }
 
     &:not([disabled], .disabled):hover {
-      color: var(--color-white);
+      color: var(--color-typography-primary);
     }
   }
 
@@ -148,11 +150,7 @@ $button-primary-pressed: linear-gradient(0deg, #090a1433, #090a1433),
     }
 
     &.secondary {
-      background-color: #1b1e32;
+      background-color: var(--color-button-secondaryDisabled);
     }
-  }
-
-  &.slim {
-    padding: 8px 12px;
   }
 }

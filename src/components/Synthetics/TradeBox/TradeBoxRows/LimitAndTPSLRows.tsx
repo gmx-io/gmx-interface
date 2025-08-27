@@ -216,7 +216,6 @@ export function LimitAndTPSLGroup() {
       autoExpandOnError
       errorMessage={<Trans>There are issues in the TP/SL orders.</Trans>}
       onToggle={toggleLimitOrTPSL}
-      contentClassName=""
       withToggleSwitch
     >
       <LimitAndTPSLRows hasExistingLimitOrder={hasExistingLimitOrder} />

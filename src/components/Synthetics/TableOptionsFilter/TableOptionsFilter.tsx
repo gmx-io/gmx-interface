@@ -160,7 +160,7 @@ export function TableOptionsFilter<T>({
       {beforeContent}
 
       <div className="TableOptionsFilter-options">
-        <div className="text-caption p-12 pb-8 cursor-pointer" onClick={handleClear}>
+        <div className="text-caption cursor-pointer p-12 pb-8" onClick={handleClear}>
           <Trans comment="Button to clear the filter selection">Clear selection</Trans>
         </div>
         {isGrouped && defined(filteredGroups) && (

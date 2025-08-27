@@ -24,7 +24,7 @@ export function useClaimFundsTransactionCallback(data: {
               </div>
               <div className="flex flex-row gap-10 text-gray-200">
                 <Trans>This may take a few minutes.</Trans>
-                <ImSpinner2 width={60} height={60} className="spin size-15 text-white" />
+                <ImSpinner2 width={60} height={60} className="spin size-15 text-typography-primary" />
               </div>
             </div>
           );

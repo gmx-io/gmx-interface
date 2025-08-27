@@ -100,6 +100,12 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
     </>
   );
 
+  const chartMargin = useMemo(() => {
+    const maxValue = Math.max(...clusteredPnlData.map((point) => Math.max(point.cumulativePnlFloat, point.pnlFloat)));
+    const stringValue = Math.ceil(maxValue).toString();
+    return { ...CHART_MARGIN, left: stringValue.length * 4 };
+  }, [clusteredPnlData]);
+
   return (
     <div className="flex flex-col rounded-8 bg-slate-900" ref={cardRef}>
       <div className="flex items-center justify-between px-20 py-15">
@@ -109,7 +115,7 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
         {isMobile ? null : <div className="flex flex-wrap items-stretch justify-end gap-8 py-8">{buttons}</div>}
       </div>
 
-      <div className="flex flex-wrap gap-24 px-16 pt-16 text-slate-100">
+      <div className="flex flex-wrap gap-24 px-16 pt-16 text-typography-secondary">
         <div className="flex items-center gap-8 text-13 font-medium">
           <div className="inline-block size-4 rounded-full bg-green-500" /> <Trans>Daily Profit</Trans>
         </div>
@@ -136,8 +142,9 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
               height={300}
               data={clusteredPnlData}
               barCategoryGap="25%"
-              margin={CHART_MARGIN}
-              {...{ overflow: "visible" }}
+              margin={chartMargin}
+              // @ts-expect-error
+              overflow="visible"
             >
               <RechartsTooltip
                 cursor={CHART_CURSOR_PROPS}
@@ -198,13 +205,13 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
           </div>
         )}
         {!loading && !error && clusteredPnlData.length === 0 && (
-          <div className="absolute grid size-full place-items-center text-slate-100">
+          <div className="absolute grid size-full place-items-center text-typography-secondary">
             <Trans>No data available</Trans>
           </div>
         )}
       </div>
 
-      {isMobile && <div className="flex justify-around border-t-stroke border-slate-600 px-16 py-12">{buttons}</div>}
+      {isMobile && <div className="flex justify-around border-t-1/2 border-slate-600 px-16 py-12">{buttons}</div>}
     </div>
   );
 }
@@ -237,7 +244,7 @@ function ChartTooltip({ active, payload }: TooltipProps<number | string, "pnl" |
   return (
     <div
       className={`backdrop-blur-100 text-body-small z-50 flex flex-col rounded-4 bg-[rgba(160,163,196,0.1)]
-      bg-[linear-gradient(0deg,var(--color-slate-800),var(--color-slate-800))] px-12 pt-8 bg-blend-overlay`}
+      bg-[linear-gradient(0deg,var(--color-slate-800),var(--color-slate-800))] px-12 pt-8 bg-blend-overlay shadow-lg`}
     >
       <StatsTooltipRow label={t`Date`} value={stats.date} showDollar={false} />
       <StatsTooltipRow

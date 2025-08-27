@@ -157,7 +157,7 @@ export function GmListItem({
                   <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
                 </div>
               </div>
-              <div className="text-12 tracking-normal text-slate-100">
+              <div className="text-12 tracking-normal text-typography-secondary">
                 [{getMarketPoolName({ longToken, shortToken })}]
               </div>
             </div>
@@ -168,7 +168,7 @@ export function GmListItem({
             {onFavoriteClick ? (
               <div>
                 <Button variant="secondary" className="shrink-0" onClick={handleFavoriteClick}>
-                  <FavoriteStar isFavorite={isFavorite} activeClassName="!text-white" />
+                  <FavoriteStar isFavorite={isFavorite} activeClassName="!text-typography-primary" />
                 </Button>
               </div>
             ) : null}
@@ -207,7 +207,8 @@ export function GmListItem({
           />
           <SyntheticsInfoRow
             label={<PerformanceLabel />}
-            value={performance ? <span className="numbers">{formatPerformanceBps(performance)}</span> : "..."}
+            value={performance ? formatPerformanceBps(performance) : "..."}
+            valueClassName={performance ? "numbers" : undefined}
           />
         </div>
 
@@ -219,7 +220,7 @@ export function GmListItem({
   }
 
   return (
-    <TableTr key={token.address} hoverable={false}>
+    <TableTr key={token.address}>
       <TableTd className="w-[22%] !py-10 pl-16">
         <div className="w-[220px]">
           <div className="flex items-center gap-8">
@@ -251,7 +252,7 @@ export function GmListItem({
                   <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
                 </div>
               </div>
-              <div className="text-12 tracking-normal text-slate-100">
+              <div className="text-12 tracking-normal text-typography-secondary">
                 [{getMarketPoolName({ longToken, shortToken })}]
               </div>
             </div>
@@ -266,7 +267,6 @@ export function GmListItem({
           decimals={token.decimals}
           usd={totalSupplyUsd}
           symbol={token.symbol}
-          className=""
           usdOnTop
         />
       </TableTd>

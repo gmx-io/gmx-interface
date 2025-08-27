@@ -1090,13 +1090,13 @@ export default function PositionSeller(props) {
             {hasPendingProfit && orderOption !== STOP && (
               <div className="PositionEditor-accept-profit-warning">
                 <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
-                  <span className="text-slate-100">Forfeit profit</span>
+                  <span className="text-typography-secondary">Forfeit profit</span>
                 </Checkbox>
               </div>
             )}
             <div className="PositionEditor-keep-leverage-settings">
               <ToggleSwitch isChecked={keepLeverage} setIsChecked={setKeepLeverage} className="mb-10">
-                <span className="text-slate-100">
+                <span className="text-typography-secondary">
                   <Trans>Keep leverage at {formatAmount(position.leverage, 4, 2)}x</Trans>
                 </span>
               </ToggleSwitch>
@@ -1110,7 +1110,7 @@ export default function PositionSeller(props) {
                       position="top-start"
                       renderContent={() => {
                         return (
-                          <div className="text-white">
+                          <div className="text-typography-primary">
                             <Trans>
                               You can change this in the settings menu on the top right of the page.
                               <br />

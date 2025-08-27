@@ -144,7 +144,7 @@ export function CompetitionPrizes({
   }, [accounts, competitionType, hasEnded, leaderboardPageKey]);
 
   return (
-    <BodyScrollFadeContainer className="flex border-b-stroke border-slate-600">
+    <BodyScrollFadeContainer className="flex border-b-1/2 border-slate-600">
       {prizes.map((prize) => (
         <CompetitionPrize prize={prize} key={prize.key} />
       ))}
@@ -154,12 +154,12 @@ export function CompetitionPrizes({
 
 function CompetitionPrize({ prize }: { prize: Prize }) {
   return (
-    <div className="flex grow items-center justify-between gap-8 border-r-stroke border-slate-600 bg-slate-900 p-20 last:border-r-0">
+    <div className="flex grow items-center justify-between gap-8 border-r-1/2 border-slate-600 bg-slate-900 p-20 last:border-r-0">
       <div className="flex items-center gap-12">
         <img className="size-52" src={iconByType[prize.imgType]} />
 
         <div>
-          <div className="text-body-medium font-medium text-slate-100">{prize.title}</div>
+          <div className="text-body-medium font-medium text-typography-secondary">{prize.title}</div>
           <div className="text-20 font-medium">{prize.description}</div>
         </div>
       </div>
@@ -189,8 +189,8 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
       <Link
         target="_blank"
         to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
-        className={`flex items-center gap-6 rounded-full bg-slate-600 p-10 text-slate-100
-        hover:bg-slate-500 hover:text-white active:bg-slate-500 active:text-white`}
+        className={`flex items-center gap-6 rounded-full bg-slate-600 p-10 text-typography-secondary
+        hover:bg-slate-500 hover:text-typography-primary active:bg-slate-500 active:text-typography-primary`}
       >
         <FaChevronRight size={12} />
       </Link>
@@ -202,7 +202,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
       <Link
         target="_blank"
         to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
-        className="flex items-center gap-4 px-12 py-8 !text-white !no-underline hover:bg-slate-600"
+        className="flex items-center gap-4 px-12 py-8 !text-typography-primary !no-underline hover:bg-fill-surfaceHover"
         key={winner.account}
       >
         <Jazzicon diameter={20} seed={jsNumberForAddress(winner.account)} />
@@ -214,13 +214,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
   if (winners.length === 0) return null;
 
   return winners.length > 1 ? (
-    <TooltipWithPortal
-      tooltipClassName="!max-w-[130px]"
-      position="bottom"
-      handle={handle}
-      renderContent={renderTooltipContent}
-      styleType="none"
-    />
+    <TooltipWithPortal position="bottom" handle={handle} renderContent={renderTooltipContent} variant="none" />
   ) : (
     handle
   );

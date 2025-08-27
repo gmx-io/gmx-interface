@@ -76,7 +76,7 @@ export function CompositionTable<T extends CompositionType>({ composition, compo
       </table>
       {isMobile && composition.length > CLOSED_COUNT ? (
         <div
-          className="flex flex-row items-center justify-center gap-6 px-16 py-10 text-slate-100"
+          className="flex flex-row items-center justify-center gap-6 px-16 py-10 text-typography-secondary"
           onClick={toggleOpen}
         >
           <span>{isOpen ? <Trans>Show less</Trans> : <Trans>Show more</Trans>}</span>
@@ -107,7 +107,7 @@ const CompositionTableRow = ({ item, sum }: { item: CompositionItem; sum: bigint
             symbol={item.type === "market" ? item.market.indexToken.symbol : item.token.symbol}
             displaySize={24}
           />
-          {item.type === "backing" ? <span className="capitalize text-slate-100">{item.side}:</span> : null}
+          {item.type === "backing" ? <span className="capitalize text-typography-secondary">{item.side}:</span> : null}
           <span className="overflow-hidden text-ellipsis whitespace-nowrap">
             {item.type === "market" ? <>{getMarketIndexName(item.market)}</> : item.token.symbol}
           </span>

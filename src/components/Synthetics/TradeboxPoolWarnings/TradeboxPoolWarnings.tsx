@@ -31,7 +31,8 @@ import {
   TradeBoxWarningSwitchPoolClickEvent,
 } from "lib/userAnalytics/types";
 
-import { AlertInfoButtonLink, AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 
 const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // +0.01%
 
@@ -242,14 +243,15 @@ export const useTradeboxPoolWarnings = () => {
       <AlertInfoCard key="showHasExistingPositionWarning">
         <Trans>
           You have an existing position in the {getMarketPoolName(marketWithPosition)} market pool.
-          <AlertInfoButtonLink
+          <ColorfulButtonLink
+            color="blue"
             onClick={() => {
               setMarketAddress(marketWithPosition.marketTokenAddress);
               setCollateralAddress(marketsOptions.collateralWithPosition?.address);
             }}
           >
             Switch to {getMarketPoolName(marketWithPosition)} market pool
-          </AlertInfoButtonLink>
+          </ColorfulButtonLink>
         </Trans>
       </AlertInfoCard>
     );
@@ -281,9 +283,9 @@ export const useTradeboxPoolWarnings = () => {
           Insufficient liquidity in the {marketInfo ? getMarketPoolName(marketInfo) : "..."} market pool. Select a
           different pool for this market.
           {hasEnoughLiquidity(minOpenFeesMarket) && (
-            <AlertInfoButtonLink onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}>
+            <ColorfulButtonLink color="blue" onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}>
               Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
-            </AlertInfoButtonLink>
+            </ColorfulButtonLink>
           )}
         </Trans>
       </AlertInfoCard>
@@ -297,9 +299,12 @@ export const useTradeboxPoolWarnings = () => {
           Insufficient liquidity in the {marketInfo ? getMarketPoolName(marketInfo) : "..."} market pool. Select a
           different pool for this market. Choosing a different pool would open a new position different from the
           existing one.
-          <AlertInfoButtonLink onClick={() => setMarketAddress(marketsOptions.minOpenFeesMarket?.marketAddress)}>
+          <ColorfulButtonLink
+            color="blue"
+            onClick={() => setMarketAddress(marketsOptions.minOpenFeesMarket?.marketAddress)}
+          >
             Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
-          </AlertInfoButtonLink>
+          </ColorfulButtonLink>
         </Trans>
       </AlertInfoCard>
     );
@@ -312,14 +317,14 @@ export const useTradeboxPoolWarnings = () => {
       <AlertInfoCard key="showHasExistingOrderWarning">
         <Trans>
           You have an existing limit order in the {getMarketPoolName(marketWithOrder)} market pool.
-          <AlertInfoButtonLink
+          <ColorfulButtonLink
             onClick={() => {
               setMarketAddress(marketWithOrder.marketTokenAddress);
               setCollateralAddress(address);
             }}
           >
             Switch to {getMarketPoolName(marketWithOrder)} market pool
-          </AlertInfoButtonLink>
+          </ColorfulButtonLink>
         </Trans>
       </AlertInfoCard>
     );
@@ -355,9 +360,9 @@ export const useTradeboxPoolWarnings = () => {
       <AlertInfoCard key="showHasBetterOpenFeesWarning">
         <Trans>
           Save {formatPercentage(improvedOpenFeesDeltaBps)} in price impact and fees by{" "}
-          <AlertInfoButtonLink onClick={onSwitchPoolClick}>
+          <ColorfulButtonLink color="blue" onClick={onSwitchPoolClick}>
             switching to the {getMarketPoolName(minOpenFeesMarket)} pool
-          </AlertInfoButtonLink>
+          </ColorfulButtonLink>
         </Trans>
       </AlertInfoCard>
     );

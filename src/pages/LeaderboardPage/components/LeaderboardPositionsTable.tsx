@@ -194,7 +194,7 @@ const TableHeaderCell = memo(
                 handle={<span className="whitespace-nowrap">{title}</span>}
                 position={tooltipPosition || "bottom"}
                 content={<div onClick={stopPropagation}>{tooltip}</div>}
-                styleType="iconStroke"
+                variant="iconStroke"
               />
             ) : (
               <span className="whitespace-nowrap">{title}</span>
@@ -211,7 +211,7 @@ const TableHeaderCell = memo(
             handle={<span className="whitespace-nowrap">{title}</span>}
             position={tooltipPosition || "bottom"}
             content={<div onClick={stopPropagation}>{tooltip}</div>}
-            styleType="iconStroke"
+            variant="iconStroke"
           />
         ) : (
           <span className="whitespace-nowrap">{title}</span>
@@ -346,28 +346,30 @@ const TableRow = memo(
     ]);
 
     return (
-      <TableTr key={position.key}>
-        <TableCell className="relative">
+      <TableTr hoverable={true} key={position.key}>
+        <TableTd className="relative">
           <span className={cx("numbers", getWinnerRankClassname(rank))}>
             <RankInfo rank={rank} hasSomeCapital />
           </span>
-        </TableCell>
-        <TableCell>
+        </TableTd>
+        <TableTd>
           <AddressView size={20} address={position.account} breakpoint="XL" />
-        </TableCell>
-        <TableCell>
+        </TableTd>
+        <TableTd>
           <TooltipWithPortal
             handle={
-              <span className={cx("numbers", getSignedValueClassName(position.qualifyingPnl))}>
+              <span className={cx("numbers")}>
                 {formatDelta(position.qualifyingPnl, { signed: true, prefix: "$" })}
               </span>
             }
+            handleClassName={getSignedValueClassName(position.qualifyingPnl)}
             position={index > 9 ? "top" : "bottom"}
             className="nowrap"
             renderContent={renderPnlTooltipContent}
+            variant="underline"
           />
-        </TableCell>
-        <TableCell>
+        </TableTd>
+        <TableTd>
           <TooltipWithPortal
             handle={
               <span>
@@ -391,30 +393,37 @@ const TableRow = memo(
             position={index > 9 ? "top" : "bottom"}
             className="nowrap"
             renderContent={renderPositionTooltip}
+            variant="underline"
           />
-        </TableCell>
-        <TableCell className="numbers">
+        </TableTd>
+        <TableTd className="numbers first-letter:text-typography-secondary">
           {formatUsd(position.entryPrice, {
             displayDecimals: marketDecimals,
             visualMultiplier: marketInfo?.indexToken.visualMultiplier,
           })}
-        </TableCell>
-        <TableCell>
+        </TableTd>
+        <TableTd>
           <TooltipWithPortal
-            handle={<span className="numbers">{formatUsd(position.sizeInUsd)}</span>}
+            handle={
+              <span className="numbers first-letter:text-typography-secondary">{formatUsd(position.sizeInUsd)}</span>
+            }
             position={index > 9 ? "top-end" : "bottom-end"}
             renderContent={renderSizeTooltip}
             tooltipClassName="Table-SizeTooltip"
+            variant="underline"
           />
-        </TableCell>
-        <TableCell className="numbers">{`${formatAmount(position.leverage, 4, 2)}x`}</TableCell>
-        <TableCell className="text-right">
+        </TableTd>
+        <TableTd className="numbers">
+          {formatAmount(position.leverage, 4, 2)}
+          <span className="ml-1 text-typography-secondary">x</span>
+        </TableTd>
+        <TableTd className="text-right">
           {liquidationPrice ? (
             <TooltipWithPortal
               position={index > 9 ? "top-end" : "bottom-end"}
               renderContent={renderLiquidationTooltip}
               handle={
-                <span className="numbers">
+                <span className="numbers first-letter:text-typography-secondary">
                   {formatUsd(liquidationPrice, {
                     maxThreshold: "1000000",
                     displayDecimals: marketDecimals,
@@ -422,28 +431,27 @@ const TableRow = memo(
                   })}
                 </span>
               }
+              variant="underline"
             />
           ) : (
             <TooltipWithPortal
               position={index > 9 ? "top-end" : "bottom-end"}
               renderContent={renderNaLiquidationTooltip}
-              handle={<span className="numbers">{t`NA`}</span>}
+              handle={t`NA`}
+              handleClassName="numbers"
+              variant="underline"
             />
           )}
-        </TableCell>
+        </TableTd>
       </TableTr>
     );
   }
 );
 
-const TableCell = memo(({ children, className }: { children: ReactNode; className?: string }) => {
-  return <TableTd className={className}>{children}</TableTd>;
-});
-
 const EmptyRow = memo(() => {
   return (
-    <TableTr hoverable={false} className="h-47">
-      <TableTd colSpan={7} className="align-top text-slate-100">
+    <TableTr className="h-47">
+      <TableTd colSpan={7} className="align-top text-typography-secondary">
         <Trans>No results found</Trans>
       </TableTd>
     </TableTr>
@@ -467,7 +475,14 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   const tooltipContent = useCallback(() => message, [message]);
 
   if (rank === null)
-    return <TooltipWithPortal handleClassName="text-red-500" handle={t`NA`} renderContent={tooltipContent} />;
+    return (
+      <TooltipWithPortal
+        handleClassName="text-typography-secondary"
+        handle={t`NA`}
+        renderContent={tooltipContent}
+        variant="underline"
+      />
+    );
 
   return <span className="numbers">{rank}</span>;
 });
@@ -563,7 +578,7 @@ function formatDelta(
 ) {
   return `${p.prefixoid ? `${p.prefixoid} ` : ""}${p.signed ? (delta === 0n ? "" : delta > 0 ? "+" : "-") : ""}${
     p.prefix || ""
-  }${formatAmount(p.signed ? bigMath.abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
+  } ${formatAmount(p.signed ? bigMath.abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
 }
 
 function getSignedValueClassName(num: bigint) {

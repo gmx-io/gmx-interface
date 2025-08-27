@@ -20,7 +20,6 @@ type Props = {
   isMobileSideNav?: boolean;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMobileSideNav }: Props) {
   const isHome = isHomeSite();
   const [isUserFeedbackModalVisible, setIsUserFeedbackModalVisible] = useState(false);

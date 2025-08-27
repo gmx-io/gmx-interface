@@ -39,11 +39,7 @@ export function LeverageSlider(p: Props) {
   const { onChange, value, marks } = p;
   const finalMarks = marks ?? defaultMarks;
 
-  const { marksLabel, keyValueMap, valueKeyMap } = useMemo(() => {
-    const marksLabel = getMarksWithLabel(finalMarks);
-    const { keyValueMap, valueKeyMap } = generateKeyValueMap(finalMarks);
-    return { marksLabel, keyValueMap, valueKeyMap };
-  }, [finalMarks]);
+  const { keyValueMap, valueKeyMap } = useMemo(() => generateKeyValueMap(finalMarks), [finalMarks]);
 
   const firstValue = finalMarks[0];
   const firstKey = valueKeyMap[firstValue];
@@ -65,7 +61,7 @@ export function LeverageSlider(p: Props) {
 
   const leverageSliderMarks = useMemo(() => {
     return Object.fromEntries(
-      Object.entries(marksLabel)
+      Object.entries(getMarksWithLabel(finalMarks))
         .sort((a, b) => Number(a[0]) - Number(b[0]))
         .map(([key, value]) => [
           key,
@@ -74,7 +70,7 @@ export function LeverageSlider(p: Props) {
           },
         ])
     );
-  }, [marksLabel]);
+  }, [finalMarks]);
 
   return (
     <div

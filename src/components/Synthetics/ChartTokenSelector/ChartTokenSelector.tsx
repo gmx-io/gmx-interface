@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import partition from "lodash/partition";
 import React, { useCallback, useMemo, useState } from "react";
+import { FaChevronDown } from "react-icons/fa6";
 import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
@@ -43,6 +44,7 @@ import {
   isChartAvailableForToken,
 } from "sdk/configs/tokens";
 
+import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
@@ -73,54 +75,54 @@ export default function ChartTokenSelector(props: Props) {
   return (
     <SelectorBase
       popoverPlacement="bottom-start"
-      handleClassName={cx("group rounded-8 bg-slate-800 py-10 pl-8 pr-12", {
+      handleClassName={cx({
         "mr-24": oneRowLabels === false,
         "py-0 md:h-40": isSwap,
       })}
       desktopPanelClassName={cx("max-w-[100vw]", { "w-[520px]": isSwap, "w-[880px]": !isSwap })}
-      chevronClassName={isMobile && !isSwap ? "-mt-20" : undefined}
+      chevronClassName="hidden"
       label={
-        selectedToken ? (
-          <span
-            className={cx("inline-flex gap-6 whitespace-nowrap pl-0 text-[13px]", {
-              "items-start": !oneRowLabels,
-              "items-center": oneRowLabels || isSwap,
-            })}
-          >
-            {isSwap ? (
-              <div className="rounded-4 bg-blue-300 bg-opacity-[20%] px-7 py-4 text-blue-300">
-                <Trans>Swap</Trans>
-              </div>
-            ) : null}
-
-            <TokenIcon symbol={selectedToken.symbol} displaySize={isMobile ? 32 : 20} importSize={40} />
+        <Button variant="secondary">
+          {selectedToken ? (
             <span
-              className={cx("flex justify-start", {
-                "flex-col": !oneRowLabels && !isSwap,
-                "flex-row items-center": oneRowLabels || isSwap,
+              className={cx("inline-flex gap-6 whitespace-nowrap pl-0 text-[13px] text-typography-primary", {
+                "items-start": !oneRowLabels,
+                "items-center": oneRowLabels || isSwap,
               })}
             >
-              <span className="text-[13px] font-medium group-hover:text-blue-300 group-active:text-blue-300">
-                {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
-                {selectedToken.symbol}/USD
-              </span>
-              {poolName && (
-                <span
-                  className={cx(
-                    "text-body-small mt-1 font-normal text-slate-100 group-hover:text-blue-300 group-active:text-blue-300",
-                    {
-                      "ml-8": oneRowLabels,
-                    }
-                  )}
-                >
-                  <span>[{poolName}]</span>
+              {isSwap ? (
+                <div className="rounded-4 bg-blue-300 bg-opacity-[20%] px-7 py-4 text-blue-300">
+                  <Trans>Swap</Trans>
+                </div>
+              ) : null}
+
+              <TokenIcon symbol={selectedToken.symbol} displaySize={isMobile ? 32 : 20} importSize={40} />
+              <span
+                className={cx("flex justify-start", {
+                  "flex-col": !oneRowLabels && !isSwap,
+                  "flex-row items-center": oneRowLabels || isSwap,
+                })}
+              >
+                <span className="text-start text-[13px] font-medium">
+                  {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
+                  {selectedToken.symbol}/USD
                 </span>
-              )}
+                {poolName && (
+                  <span
+                    className={cx("text-body-small mt-1 font-normal text-typography-secondary", {
+                      "ml-8": oneRowLabels,
+                    })}
+                  >
+                    <span>[{poolName}]</span>
+                  </span>
+                )}
+              </span>
+              <FaChevronDown className="inline-block text-[12px]" />
             </span>
-          </span>
-        ) : (
-          "..."
-        )
+          ) : (
+            "..."
+          )}
+        </Button>
       }
       modalLabel={t`Market`}
       mobileModalContentPadding={false}
@@ -228,7 +230,7 @@ function MarketsList() {
   });
   const rowHorizontalPadding = cx("pr-8");
   const thClassName = cx(
-    "sticky top-0 z-10 whitespace-nowrap bg-slate-900 text-left text-[11px] font-medium uppercase text-slate-100",
+    "sticky top-0 z-10 whitespace-nowrap bg-slate-900 text-left text-[11px] font-medium uppercase text-typography-secondary",
     "first-of-type:text-left",
     "first-of-type:!pl-44",
     rowVerticalPadding,
@@ -283,7 +285,7 @@ function MarketsList() {
 
       {!isMobile && (
         <>
-          <div className="flex flex-col justify-between gap-12 border-b-stroke border-slate-600 p-12">
+          <div className="flex flex-col justify-between gap-12 border-b-1/2 border-slate-600 p-12">
             <SearchInput
               className="w-full"
               value={searchKeyword}
@@ -303,7 +305,7 @@ function MarketsList() {
           "max-h-[444px] overflow-x-auto": !isMobile,
         })}
       >
-        <table className="text-sm w-full border-separate border-spacing-0">
+        <table className="text-body-small w-full border-separate border-spacing-0">
           <thead>
             <tr>
               <th className={cx(thClassName, isMobile ? "min-w-[18ch]" : "min-w-[28ch]")} colSpan={2}>
@@ -488,8 +490,8 @@ function useFilterSortTokens({
 
 const MarketLabel = ({ token }: { token: Token }) => {
   return (
-    <span className="text-slate-100">
-      <span className="text-white">{getMarketBaseName({ indexToken: token, isSpotOnly: false })}</span>
+    <span className="text-typography-secondary">
+      <span className="text-typography-primary">{getMarketBaseName({ indexToken: token, isSpotOnly: false })}</span>
       /USD
     </span>
   );
@@ -580,8 +582,11 @@ function MarketListItem({
   if (isSwap) {
     return (
       <tr key={token.symbol} className="group/row cursor-pointer hover:bg-fill-surfaceHover">
-        <td className={cx("pl-14 pr-6 text-center text-slate-100", rowVerticalPadding)} onClick={handleFavoriteClick}>
-          <FavoriteStar isFavorite={isFavorite} className="!h-12 !w-12" />
+        <td
+          className={cx("pl-14 pr-6 text-center text-typography-secondary", rowVerticalPadding)}
+          onClick={handleFavoriteClick}
+        >
+          <FavoriteStar isFavorite={isFavorite} className="!size-12" />
         </td>
         <td
           className={cx("text-body-medium w-full", rowVerticalPadding, rowHorizontalPadding)}
@@ -595,7 +600,7 @@ function MarketListItem({
               importSize={24}
             />
             <span>{token.name}</span>
-            <span className="font-medium text-slate-100">{token.symbol}</span>
+            <span className="font-medium text-typography-secondary">{token.symbol}</span>
           </span>
         </td>
         <td className={tdClassName}>
@@ -619,8 +624,11 @@ function MarketListItem({
       className="group/row cursor-pointer hover:bg-fill-surfaceHover"
       onClick={handleSelectLargePosition}
     >
-      <td className={cx("px-12 text-center text-slate-100", rowVerticalPadding)} onClick={handleFavoriteClick}>
-        <FavoriteStar isFavorite={isFavorite} className="!h-12 !w-12" />
+      <td
+        className={cx("px-12 text-center text-typography-secondary", rowVerticalPadding)}
+        onClick={handleFavoriteClick}
+      >
+        <FavoriteStar isFavorite={isFavorite} className="!size-12" />
       </td>
       <td className={cx("pl-4 text-[13px]", rowVerticalPadding, isMobile ? "pr-2" : "pr-8")}>
         <div className={cx("flex", isMobile ? "items-start" : "items-center")}>
@@ -629,7 +637,7 @@ function MarketListItem({
             <span className="font-medium leading-1">
               <MarketLabel token={token} />
             </span>
-            <span className="rounded-full bg-slate-700 px-6 py-[1.5px] text-12 font-medium leading-[1.25] text-slate-100 numbers">
+            <span className="rounded-full bg-slate-700 px-6 py-[1.5px] text-12 font-medium leading-[1.25] text-typography-secondary numbers">
               {maxLeverage ? `${maxLeverage}x` : "-"}
             </span>
           </span>
@@ -659,8 +667,8 @@ function MarketListItem({
             </span>
           </td>
           <td className={cx(tdClassName, "pl-4 numbers")}>
-            <span className="mb-2 inline-flex items-center gap-6">
-              <ShortIcon width={12} className="relative top-1 opacity-70" />
+            <span className="inline-flex items-center gap-6">
+              <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />
               {formatAmountHuman(openInterestShort ?? 0n, USD_DECIMALS, true)}
             </span>
           </td>

@@ -62,7 +62,6 @@ interface Props {
   contentClassName?: string;
   scrollIntoViewOnMobile?: boolean;
   withToggleSwitch?: boolean;
-  row?: boolean;
   handleClassName?: string;
 }
 
@@ -79,8 +78,7 @@ export function ExpandableRow({
   contentClassName,
   scrollIntoViewOnMobile = false,
   withToggleSwitch = false,
-  row = true,
-  handleClassName = "text-slate-100",
+  handleClassName = "text-typography-secondary",
 }: Props) {
   const previousHasError = usePrevious(hasError);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -127,42 +125,25 @@ export function ExpandableRow({
   const value = withToggleSwitch ? (
     <ToggleSwitch isChecked={open} setIsChecked={onToggle} disabled={disabled} />
   ) : open ? (
-    <FaChevronUp className="w-12 text-slate-100 group-gmx-hover:text-blue-300" />
+    <FaChevronUp className="w-12 text-typography-secondary group-gmx-hover:text-blue-300" />
   ) : (
-    <FaChevronDown className="w-12 text-slate-100 group-gmx-hover:text-blue-300" />
+    <FaChevronDown className="w-12 text-typography-secondary group-gmx-hover:text-blue-300" />
   );
 
   return (
     <div className={cx("min-h-16", className)}>
       <AnimatePresence initial={false}>
-        <div className={cx({ "mb-14": open })}>
-          {row ? (
-            <SyntheticsInfoRow
-              className={cx("group relative !items-center gmx-hover:text-blue-300", {
-                "cursor-not-allowed": disabled,
-              })}
-              onClick={disabled ? undefined : handleOnClick}
-              label={
-                <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">
-                  {label}
-                </span>
-              }
-              value={value}
-            />
-          ) : (
-            <SyntheticsInfoRow
-              className={cx("group relative !items-center gmx-hover:text-blue-300", {
-                "cursor-not-allowed": disabled,
-              })}
-              onClick={disabled ? undefined : handleOnClick}
-              label={
-                <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">
-                  {label}
-                </span>
-              }
-              value={value}
-            />
-          )}
+        <div key="handle" className={cx({ "mb-14": open })}>
+          <SyntheticsInfoRow
+            className={cx("group relative !items-center gmx-hover:text-blue-300", {
+              "cursor-not-allowed": disabled,
+            })}
+            onClick={disabled ? undefined : handleOnClick}
+            label={
+              <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">{label}</span>
+            }
+            value={value}
+          />
         </div>
         {open && (
           <motion.div

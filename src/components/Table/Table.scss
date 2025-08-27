@@ -1,7 +1,7 @@
 .TableTr_hoverable {
   &:nth-child(even):hover {
-    background: linear-gradient(0deg, rgba(30, 32, 51, 0.5), rgba(30, 32, 51, 0.5)),
-      linear-gradient(0deg, rgba(160, 163, 196, 0.1), rgba(160, 163, 196, 0.1));
+    background: linear-gradient(0deg, var(--color-fill-surfaceElevated50), var(--color-fill-surfaceElevated50)),
+      linear-gradient(0deg, var(--color-fill-surfaceHover), var(--color-fill-surfaceHover));
   }
 
   &:nth-child(odd):hover {

@@ -8,17 +8,14 @@ type Props = {
 };
 
 export function ValueTransition(p: Props) {
-  if (!p.to || p.to === p.from) return <>{p.from}</>;
-  if (!p.from) return <>{p.to}</>;
+  if (!p.to || p.to === p.from) return <span className="numbers">{p.from}</span>;
+  if (!p.from) return <span className="numbers">{p.to}</span>;
 
   return (
-    <div className="ValueTransition">
+    <div className="ValueTransition numbers">
       <div className="muted inline-block">
-        {p.from}
-        {" "}
-        <BsArrowRight className="transition-arrow inline-block" />
-      </div>
-      {" "}
+        {p.from} <BsArrowRight className="transition-arrow inline-block" />
+      </div>{" "}
       {p.to}
     </div>
   );

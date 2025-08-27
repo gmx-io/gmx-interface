@@ -16,12 +16,12 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
           const { marketInfo: market, netFeeLong, netFeeShort } = stat;
           return (
             <div key={market.marketTokenAddress} className="flex flex-col gap-4">
-              <div className="flex flex-wrap items-start text-white">
+              <div className="flex flex-wrap items-start text-typography-primary">
                 <span>{getMarketIndexName(market)}</span>
                 <span className="subtext leading-1">[{getMarketPoolName(market)}]</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-100">
+                <span className="text-typography-secondary">
                   <Trans>Longs Net Rate / 1h</Trans>
                 </span>
                 <span
@@ -34,7 +34,7 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-100">
+                <span className="text-typography-secondary">
                   <Trans>Shorts Net Rate / 1h</Trans>
                 </span>
                 <span
@@ -57,13 +57,13 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
     <table className="w-full">
       <thead>
         <tr>
-          <th className="pb-10 font-normal uppercase text-slate-100">
+          <th className="pb-10 font-normal uppercase text-typography-secondary">
             <Trans>Pool</Trans>
           </th>
-          <th className="pb-10 pr-10 text-right font-normal uppercase text-slate-100">
+          <th className="pb-10 pr-10 text-right font-normal uppercase text-typography-secondary">
             <Trans>Longs Net Rate / 1h</Trans>
           </th>
-          <th className="pb-10  text-right font-normal uppercase text-slate-100">
+          <th className="pb-10  text-right font-normal uppercase text-typography-secondary">
             <Trans>Shorts Net Rate / 1h</Trans>
           </th>
         </tr>
@@ -75,7 +75,7 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
           return (
             <tr key={market.marketTokenAddress}>
               <td>
-                <div className="inline-flex flex-wrap items-start text-white">
+                <div className="inline-flex flex-wrap items-start text-typography-primary">
                   <span>{getMarketIndexName(market)}</span>
                   <span className="subtext leading-1">[{getMarketPoolName(market)}]</span>
                 </div>

@@ -33,7 +33,7 @@ export default function RegularTab<V extends string | number>({
         key={option.value}
         data-qa={qa ? `${qa}-tab-${option.value}` : undefined}
         className={cx(optionClassName, regularOptionClassname, {
-          "!text-white": isActive,
+          "!text-typography-primary": isActive,
         })}
       >
         {option.icon && <span className="mt-2 scale-75 opacity-70">{option.icon}</span>}
@@ -45,13 +45,13 @@ export default function RegularTab<V extends string | number>({
   return (
     <button
       className={cx(
-        `-mb-[1px] flex items-center justify-center gap-8 border-b-2 border-b-[transparent] px-20 py-10
-        font-medium text-slate-100 first:rounded-tl-8 last:rounded-tr-8 hover:text-white`,
+        `-mb-[0.5px] flex items-baseline justify-center gap-8 border-b-[2.5px] border-b-[transparent] px-20 pb-9 pt-11
+        font-medium text-typography-secondary first:rounded-tl-8 last:rounded-tr-8 hover:text-typography-primary`,
         optionClassName,
         regularOptionClassname,
         {
-          "text-white": isActive,
-          "border-b-2 border-b-blue-300": isActive,
+          "!text-typography-primary": isActive,
+          "border-b-blue-300": isActive,
         }
       )}
       onClick={() => onOptionClick?.(option.value)}

@@ -192,10 +192,10 @@ export default function TokenSelector(props: Props) {
   }
 
   return (
-    <div className={cx("TokenSelector text-body-medium", props.className)} onClick={(event) => event.stopPropagation()}>
+    <div className={cx("TokenSelector text-body-large", props.className)} onClick={(event) => event.stopPropagation()}>
       <SlideModal
         qa={qa + "-modal"}
-        className="TokenSelector-modal text-white"
+        className="TokenSelector-modal text-typography-primary"
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={props.label}
@@ -249,7 +249,7 @@ export default function TokenSelector(props: Props) {
                     className="TokenSelector-tooltip"
                     handle={<div className="TokenSelector-tooltip-backing" />}
                     position={tokenIndex < filteredTokens.length / 2 ? "bottom" : "top"}
-                    styleType="none"
+                    variant="none"
                     closeOnDoubleClick
                     fitHandleWidth
                     renderContent={() => tokenState.message}
@@ -257,7 +257,7 @@ export default function TokenSelector(props: Props) {
                 )}
                 <div className="Token-info">
                   {showTokenImgInDropdown && (
-                    <TokenIcon symbol={token.symbol} className="" displaySize={40} importSize={40} badge={tokenBadge} />
+                    <TokenIcon symbol={token.symbol} displaySize={40} importSize={40} badge={tokenBadge} />
                   )}
                   <div className="items text-body-large ml-16 flex gap-4">
                     <div>
@@ -275,7 +275,7 @@ export default function TokenSelector(props: Props) {
                     </div>
                   )) ||
                     null}
-                  <span className="text-body-small text-slate-100">
+                  <span className="text-body-small text-typography-secondary">
                     {showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
                       <div>${formatAmount(balanceUsd, 30, 2, true)}</div>
                     )}
@@ -286,7 +286,7 @@ export default function TokenSelector(props: Props) {
           })}
         </div>
         {sortedFilteredTokens.length === 0 && (
-          <div className="p-20 text-16 text-slate-100">
+          <div className="p-20 text-16 text-typography-secondary">
             <Trans>No tokens matched.</Trans>
           </div>
         )}
@@ -304,7 +304,7 @@ export default function TokenSelector(props: Props) {
             <span>{showTokenName ? tokenInfo.name : tokenInfo.symbol}</span>
           </span>
         )}
-        <FaChevronDown className="w-12 text-slate-100 group-hover:text-blue-300" />
+        <FaChevronDown className="w-12 text-typography-secondary group-hover:text-blue-300" />
       </div>
     </div>
   );

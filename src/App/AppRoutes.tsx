@@ -13,6 +13,7 @@ import {
 } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl, isHomeSite } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
@@ -48,6 +49,7 @@ const Zoom = cssTransition({
 
 export function AppRoutes() {
   const { disconnect } = useDisconnect();
+  const { theme } = useTheme();
   const isHome = isHomeSite();
   const location = useLocation();
   const history = useHistory();
@@ -166,7 +168,7 @@ export function AppRoutes() {
         closeOnClick={false}
         draggable={false}
         pauseOnHover
-        theme="dark"
+        theme={theme}
         icon={false}
         closeButton={CloseToastButton}
       />

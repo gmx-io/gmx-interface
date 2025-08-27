@@ -18,7 +18,13 @@ import { DisplaySettings } from "./DisplaySettings";
 import { TradingMode } from "./shared";
 import { TradingSettings } from "./TradingSettings";
 
-const SETTINGS_TABS = ["trading", "display", "debug"] as const;
+let SETTINGS_TABS: ("trading" | "display" | "debug")[] = [];
+if (isDevelopment()) {
+  SETTINGS_TABS = ["trading", "display", "debug"];
+} else {
+  SETTINGS_TABS = ["trading", "display"];
+}
+
 type SettingsTab = (typeof SETTINGS_TABS)[number];
 
 const TAB_LABELS = {
@@ -212,12 +218,7 @@ export function SettingsModal({
 
   const tabOptions = useMemo(
     () =>
-      SETTINGS_TABS.filter((tab) => {
-        if (tab === "debug") {
-          return isDevelopment();
-        }
-        return true;
-      }).map((tab) => ({
+      SETTINGS_TABS.map((tab) => ({
         value: tab,
         label: tabLabels[tab],
       })),
@@ -254,10 +255,10 @@ export function SettingsModal({
       setIsVisible={setIsSettingsVisible}
       label={t`Settings`}
       qa="settings-modal"
-      className="text-body-medium"
+      className="text-body-medium text-typography-secondary"
       desktopContentClassName={isDevelopment() ? "w-[448px] h-[720px]" : "w-[420px] h-[720px]"}
     >
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-8">
         <Tabs options={tabOptions} selectedValue={activeTab} onChange={setActiveTab} type="inline" />
         {renderTabContent()}
       </div>

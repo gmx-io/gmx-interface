@@ -42,7 +42,7 @@ function TokenIcon({ className, symbol, displaySize, importSize = 24, badge, bad
       sub = (
         <span
           className={cx(
-            "pointer-events-none absolute -bottom-8 -right-8 z-10 rounded-20 bg-slate-700 px-6 py-2 text-12 font-medium text-slate-100",
+            "pointer-events-none absolute -bottom-8 -right-8 z-10 rounded-20 bg-slate-700 px-6 py-2 text-12 font-medium text-typography-secondary",
             badgeClassName
           )}
         >
@@ -53,7 +53,7 @@ function TokenIcon({ className, symbol, displaySize, importSize = 24, badge, bad
       sub = (
         <span
           className={cx(
-            "absolute -bottom-8 -right-8 flex flex-row items-center justify-center text-slate-100",
+            "absolute -bottom-8 -right-8 flex flex-row items-center justify-center text-typography-secondary",
             badgeClassName
           )}
         >

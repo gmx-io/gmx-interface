@@ -37,7 +37,7 @@ function Card({
           handle={<div className={cx("card-header pr-4", slimHeader ? "px-16 py-8" : "p-16")}>{title}</div>}
           position="bottom-start"
           content={tooltipText}
-          styleType="icon"
+          variant="icon"
         />
       ) : (
         <div className={cx("card-header", slimHeader ? "px-16 py-8" : "p-16")}>{title}</div>
