@@ -1,11 +1,16 @@
 import isMatch from "lodash/isMatch";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import { useLatest } from "react-use";
 
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "config/chains";
 import {
   selectTradeboxAvailableTokensOptions,
+  selectTradeboxCollateralTokenAddress,
+  selectTradeboxFromTokenAddress,
+  selectTradeboxMarketAddress,
   selectTradeboxSetTradeConfig,
+  selectTradeboxToTokenAddress,
   selectTradeboxTradeMode,
   selectTradeboxTradeType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -40,22 +45,19 @@ export function useTradeParamsProcessor() {
   const setTradeConfig = useSelector(selectTradeboxSetTradeConfig);
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const markets = availableTokensOptions.sortedAllMarkets;
-  const tradeMode = useSelector(selectTradeboxTradeMode);
-  const tradeType = useSelector(selectTradeboxTradeType);
-
   const { chainId } = useChainId();
   const history = useHistory();
   const params = useParams<{ tradeType?: string }>();
   const searchParams = useSearchParams<TradeSearchParams>();
   const { indexTokens, swapTokens } = availableTokensOptions;
 
-  const prevTradeOptions = useRef<TradeOptions>({
-    fromTokenAddress: undefined,
-    toTokenAddress: undefined,
-    marketAddress: undefined,
-    tradeType: tradeType,
-    tradeMode: tradeMode,
-    collateralAddress: undefined,
+  const latestTradeOptions = useLatest({
+    fromTokenAddress: useSelector(selectTradeboxFromTokenAddress),
+    toTokenAddress: useSelector(selectTradeboxToTokenAddress),
+    marketAddress: useSelector(selectTradeboxMarketAddress),
+    tradeType: useSelector(selectTradeboxTradeType),
+    tradeMode: useSelector(selectTradeboxTradeMode),
+    collateralAddress: useSelector(selectTradeboxCollateralTokenAddress),
   });
 
   useEffect(() => {
@@ -156,8 +158,7 @@ export function useTradeParamsProcessor() {
       }, 2000);
     }
 
-    if (!isMatch(prevTradeOptions.current, tradeOptions)) {
-      prevTradeOptions.current = tradeOptions;
+    if (!isMatch(latestTradeOptions.current, tradeOptions)) {
       setTradeConfig(tradeOptions);
     }
 
@@ -173,7 +174,6 @@ export function useTradeParamsProcessor() {
           query.delete("collateral");
           query.delete("chainId");
           history.replace({ search: query.toString() });
-          prevTradeOptions.current = {};
         }
       }, 2000);
     }
@@ -187,5 +187,6 @@ export function useTradeParamsProcessor() {
     swapTokens,
     indexTokens,
     availableTokensOptions,
+    latestTradeOptions,
   ]);
 }
