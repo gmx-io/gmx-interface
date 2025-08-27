@@ -152,18 +152,34 @@ export const RPC_PROVIDERS: Record<AnyChainId | typeof ETH_MAINNET, string[]> = 
 };
 
 export const FALLBACK_PROVIDERS: Record<AnyChainId, string[]> = {
-  [ARBITRUM]: ENV_ARBITRUM_RPC_URLS ? JSON.parse(ENV_ARBITRUM_RPC_URLS) : [getAlchemyArbitrumHttpUrl()],
-  [AVALANCHE]: ENV_AVALANCHE_RPC_URLS ? JSON.parse(ENV_AVALANCHE_RPC_URLS) : [getAlchemyAvalancheHttpUrl()],
+  [ARBITRUM]: ENV_ARBITRUM_RPC_URLS ? JSON.parse(ENV_ARBITRUM_RPC_URLS) : [getAlchemyArbitrumHttpUrl("fallback")],
+  [AVALANCHE]: ENV_AVALANCHE_RPC_URLS ? JSON.parse(ENV_AVALANCHE_RPC_URLS) : [getAlchemyAvalancheHttpUrl("fallback")],
   [AVALANCHE_FUJI]: [
     "https://endpoints.omniatech.io/v1/avax/fuji/public",
     "https://api.avax-test.network/ext/bc/C/rpc",
     "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
   ],
-  [ARBITRUM_SEPOLIA]: [getAlchemyArbitrumSepoliaHttpUrl()],
-  [SOURCE_BASE_MAINNET]: [getAlchemyBaseMainnetHttpUrl()],
-  [SOURCE_OPTIMISM_SEPOLIA]: [getAlchemyOptimismSepoliaHttpUrl()],
-  [SOURCE_SEPOLIA]: [getAlchemyBaseSepoliaHttpUrl()],
-  [BOTANIX]: ENV_BOTANIX_RPC_URLS ? JSON.parse(ENV_BOTANIX_RPC_URLS) : [getAlchemyBotanixHttpUrl()],
+  [BOTANIX]: ENV_BOTANIX_RPC_URLS ? JSON.parse(ENV_BOTANIX_RPC_URLS) : [getAlchemyBotanixHttpUrl("fallback")],
+  [ARBITRUM_SEPOLIA]: [getAlchemyArbitrumSepoliaHttpUrl("fallback")],
+  [SOURCE_BASE_MAINNET]: [getAlchemyBaseMainnetHttpUrl("fallback")],
+  [SOURCE_OPTIMISM_SEPOLIA]: [getAlchemyOptimismSepoliaHttpUrl("fallback")],
+  [SOURCE_SEPOLIA]: [getAlchemyBaseSepoliaHttpUrl("fallback")],
+};
+
+export const PRIVATE_RPC_PROVIDERS: Record<ContractsChainId, string[]> = {
+  [ARBITRUM]: [getAlchemyArbitrumHttpUrl("largeAccount")],
+  [AVALANCHE]: [getAlchemyAvalancheHttpUrl("largeAccount")],
+  [AVALANCHE_FUJI]: [],
+  [BOTANIX]: [getAlchemyBotanixHttpUrl("largeAccount")],
+  [ARBITRUM_SEPOLIA]: [],
+};
+
+export const EXPRESS_RPC_PROVIDERS: Record<ContractsChainId, string[]> = {
+  [ARBITRUM]: [getAlchemyArbitrumHttpUrl("express")],
+  [AVALANCHE]: [getAlchemyAvalancheHttpUrl("express")],
+  [AVALANCHE_FUJI]: [],
+  [BOTANIX]: [getAlchemyBotanixHttpUrl("express")],
+  [ARBITRUM_SEPOLIA]: [],
 };
 
 type ConstantName = keyof (typeof constants)[ContractsChainId];
@@ -183,71 +199,84 @@ export const getConstant = <T extends ContractsChainId, K extends ConstantName>(
   return constants[chainId][key];
 };
 
-export function getFallbackRpcUrl(chainId: number): string {
-  return sample(FALLBACK_PROVIDERS[chainId]);
+export function getFallbackRpcUrl(chainId: number, isLargeAccount: boolean): string {
+  return sample(isLargeAccount ? PRIVATE_RPC_PROVIDERS[chainId] : FALLBACK_PROVIDERS[chainId]);
 }
 
-function getAlchemyKey() {
+export function getExpressRpcUrl(chainId: number): string {
+  return sample(EXPRESS_RPC_PROVIDERS[chainId]);
+}
+
+type AlchemyKeyPurpose = "fallback" | "largeAccount" | "express";
+
+function getAlchemyKey(purpose: AlchemyKeyPurpose) {
   if (ALCHEMY_WHITELISTED_DOMAINS.includes(self.location.host)) {
-    return "RcaXYTizJs51m-w9SnRyDrxSZhE5H9Mf";
+    if (purpose === "fallback") {
+      return "NnWkTZJp8dNKXlCIfJwej";
+    } else if (purpose === "largeAccount") {
+      return "UnfP5Io4K9X8UZnUnFy2a";
+    } else if (purpose === "express") {
+      return "vZoYuLP1GVpvE0wpgPKwC";
+    }
   }
+
   return "EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
 }
 
-export function getAlchemyArbitrumHttpUrl() {
-  return `https://arb-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
+export function getAlchemyArbitrumHttpUrl(purpose: AlchemyKeyPurpose) {
+  return `https://arb-mainnet.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
 }
 
-export function getAlchemyAvalancheHttpUrl() {
-  return `https://avax-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
+export function getAlchemyAvalancheHttpUrl(purpose: AlchemyKeyPurpose) {
+  return `https://avax-mainnet.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
 }
 
-export function getAlchemyArbitrumWsUrl() {
-  return `wss://arb-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
+export function getAlchemyArbitrumWsUrl(purpose: AlchemyKeyPurpose) {
+  return `wss://arb-mainnet.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
 }
 
-export function getAlchemyBotanixHttpUrl() {
-  return `https://botanix-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
+export function getAlchemyBotanixHttpUrl(purpose: AlchemyKeyPurpose) {
+  return `https://botanix-mainnet.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
 }
 
-export function getAlchemyBotanixWsUrl() {
-  return `wss://botanix-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
+export function getAlchemyBotanixWsUrl(purpose: AlchemyKeyPurpose) {
+  return `wss://botanix-mainnet.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
 }
 
-export function getAlchemyOptimismSepoliaHttpUrl() {
-  return `https://opt-sepolia.g.alchemy.com/v2/${getAlchemyKey()}`;
+export function getAlchemyOptimismSepoliaHttpUrl(purpose: AlchemyKeyPurpose) {
+  return `https://opt-sepolia.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
 }
 
-export function getAlchemyOptimismSepoliaWsUrl() {
-  return `wss://opt-sepolia.g.alchemy.com/v2/${getAlchemyKey()}`;
+export function getAlchemyOptimismSepoliaWsUrl(purpose: AlchemyKeyPurpose) {
+  return `wss://opt-sepolia.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
 }
 
-export function getAlchemyArbitrumSepoliaHttpUrl() {
-  return `https://arb-sepolia.g.alchemy.com/v2/${getAlchemyKey()}`;
+export function getAlchemyArbitrumSepoliaHttpUrl(purpose: AlchemyKeyPurpose) {
+  return `https://arb-sepolia.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
 }
 
-export function getAlchemyArbitrumSepoliaWsUrl() {
-  return `wss://arb-sepolia.g.alchemy.com/v2/${getAlchemyKey()}`;
+export function getAlchemyArbitrumSepoliaWsUrl(purpose: AlchemyKeyPurpose) {
+  return `wss://arb-sepolia.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
 }
 
-export function getAlchemyBaseMainnetHttpUrl() {
-  return `https://base-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
+export function getAlchemyBaseMainnetHttpUrl(purpose: AlchemyKeyPurpose) {
+  return `https://base-mainnet.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
 }
 
-export function getAlchemyBaseMainnetWsUrl() {
-  return `wss://base-mainnet.g.alchemy.com/v2/${getAlchemyKey()}`;
+export function getAlchemyBaseMainnetWsUrl(purpose: AlchemyKeyPurpose) {
+  return `wss://base-mainnet.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
 }
 
-export function getAlchemyBaseSepoliaHttpUrl() {
-  return `https://base-sepolia.g.alchemy.com/v2/${getAlchemyKey()}`;
+export function getAlchemyBaseSepoliaHttpUrl(purpose: AlchemyKeyPurpose) {
+  return `https://base-sepolia.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
 }
 
-export function getAlchemySepoliaHttpUrl() {
-  return `https://eth-sepolia.g.alchemy.com/v2/${getAlchemyKey()}`;
+export function getAlchemySepoliaHttpUrl(purpose: AlchemyKeyPurpose) {
+  return `https://eth-sepolia.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
 }
 
-export function getAlchemySepoliaWsUrl() {
-  return `wss://eth-sepolia.g.alchemy.com/v2/${getAlchemyKey()}`;
+export function getAlchemySepoliaWsUrl(purpose: AlchemyKeyPurpose) {
+  return `wss://eth-sepolia.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
 }
 
 export function getExplorerUrl(chainId: number): string {

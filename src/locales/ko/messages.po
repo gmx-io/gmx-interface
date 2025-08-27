@@ -1804,6 +1804,10 @@ msgstr ""
 msgid "Account"
 msgstr "계정"
 
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Using high leverage increases the risk of liquidation."
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading is not available for wrapping or unwrapping native token {0}."
 msgstr ""

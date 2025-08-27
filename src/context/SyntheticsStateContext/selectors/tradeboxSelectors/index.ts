@@ -256,7 +256,7 @@ export const selectExternalSwapInputsByLeverageSize = createSelector((q) => {
 
   const toTokenAmount = q(selectTradeboxToTokenAmount);
   const marketInfo = q(selectTradeboxMarketInfo);
-  const leverage = q(selectTradeBoxLeverage);
+  const leverage = q(selectTradeboxLeverage);
   const uiFeeFactor = q(selectUiFeeFactor);
 
   const existingPosition = q(selectTradeboxExistingPosition);
@@ -448,7 +448,7 @@ export const selectTradeboxFromTokenAmount = createSelector((q) => {
   return parsedValue;
 });
 
-export const selectTradeBoxLeverage = createSelector((q) => {
+export const selectTradeboxLeverage = createSelector((q) => {
   const leverageOption = q(selectTradeboxLeverageOption);
   return BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
 });
@@ -473,7 +473,7 @@ export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
   const toTokenAddress = q(selectTradeboxToTokenAddress);
   const toTokenAmount = q(selectTradeboxToTokenAmount);
   const marketAddress = q(selectTradeboxMarketAddress);
-  const leverage = q(selectTradeBoxLeverage);
+  const leverage = q(selectTradeboxLeverage);
   const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
   const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
   const triggerPrice = q(selectTradeboxTriggerPrice);
@@ -609,10 +609,6 @@ export const selectTradeboxTradeFlags = createSelector((q) => {
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
   return tradeFlags;
 });
-
-export const selectTradeboxLeverage = createSelectorDeprecated([selectTradeboxLeverageOption], (leverageOption) =>
-  BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)))
-);
 
 export const selectTradeboxTradeFeesType = createSelector(
   function selectTradeboxTradeFeesType(q): TradeFeesType | null {
