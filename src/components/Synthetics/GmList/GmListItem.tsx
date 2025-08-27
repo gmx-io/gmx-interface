@@ -207,7 +207,8 @@ export function GmListItem({
           />
           <SyntheticsInfoRow
             label={<PerformanceLabel />}
-            value={performance ? <span className="numbers">{formatPerformanceBps(performance)}</span> : "..."}
+            value={performance ? formatPerformanceBps(performance) : "..."}
+            valueClassName={performance ? "numbers" : undefined}
           />
         </div>
 

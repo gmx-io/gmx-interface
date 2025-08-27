@@ -22,19 +22,17 @@ export function MinReceiveRow({ allowedSlippage }: { allowedSlippage: number }) 
   }
 
   return (
-    <SyntheticsInfoRow label={<Trans>Min. Receive</Trans>}>
-      <span className="numbers">
-        {isMarket
-          ? formatBalanceAmount(
-              applySlippageToMinOut(allowedSlippage, swapAmounts.minOutputAmount),
-              toToken.decimals,
-              toToken.symbol,
-              { isStable: toToken.isStable }
-            )
-          : formatBalanceAmount(swapAmounts.minOutputAmount, toToken.decimals, toToken.symbol, {
-              isStable: toToken.isStable,
-            })}
-      </span>
+    <SyntheticsInfoRow label={<Trans>Min. Receive</Trans>} valueClassName="numbers">
+      {isMarket
+        ? formatBalanceAmount(
+            applySlippageToMinOut(allowedSlippage, swapAmounts.minOutputAmount),
+            toToken.decimals,
+            toToken.symbol,
+            { isStable: toToken.isStable }
+          )
+        : formatBalanceAmount(swapAmounts.minOutputAmount, toToken.decimals, toToken.symbol, {
+            isStable: toToken.isStable,
+          })}
     </SyntheticsInfoRow>
   );
 }

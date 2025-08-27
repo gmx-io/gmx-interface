@@ -96,11 +96,11 @@ const TwapRows = ({
       <SyntheticsInfoRow label={t`Frequency`}>
         <FrequencyField duration={duration} numberOfParts={numberOfParts} />
       </SyntheticsInfoRow>
-      <SyntheticsInfoRow label={t`Size per part`}>
-        <span className="numbers">
-          {formatUsd(typeof sizeUsd === "bigint" && numberOfParts ? sizeUsd / BigInt(numberOfParts) : 0n)}
-        </span>
-      </SyntheticsInfoRow>
+      <SyntheticsInfoRow
+        label={t`Size per part`}
+        value={formatUsd(typeof sizeUsd === "bigint" && numberOfParts ? sizeUsd / BigInt(numberOfParts) : 0n)}
+        valueClassName="numbers"
+      />
 
       {!isTwapInfoCardClosed && marketInfo && typeof sizeUsd === "bigint" && sizeUsd > 0n && (
         <AlertInfoCard onClose={handleCloseTwapInfoCard}>

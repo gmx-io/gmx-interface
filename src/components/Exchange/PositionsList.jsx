@@ -326,25 +326,20 @@ export default function PositionsList(props) {
                                   )}
                                   <StatsTooltipRow
                                     label={t`Initial Collateral`}
-                                    value={
-                                      <span className="numbers">
-                                        {formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-                                      </span>
-                                    }
+                                    value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                                    valueClassName="numbers"
                                   />
                                   <StatsTooltipRow
                                     label={t`Borrow Fee`}
-                                    value={
-                                      <span className="numbers">
-                                        {formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
-                                      </span>
-                                    }
+                                    value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
+                                    valueClassName="numbers"
                                     textClassName="text-red-500"
                                   />
                                   <StatsTooltipRow
                                     showDollar={false}
                                     label={t`Borrow Fee / Day`}
-                                    value={<span className="numbers">-${borrowFeeUSD}</span>}
+                                    value={`-$${borrowFeeUSD}`}
+                                    valueClassName="numbers"
                                     textClassName="text-red-500"
                                   />
 
@@ -672,11 +667,8 @@ export default function PositionsList(props) {
                             <StatsTooltipRow
                               label={t`Borrow Fee`}
                               showDollar={false}
-                              value={
-                                <span className="numbers">
-                                  -${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
-                                </span>
-                              }
+                              value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
+                              valueClassName="numbers"
                               textClassName="text-red-500"
                             />
                             <StatsTooltipRow

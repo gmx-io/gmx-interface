@@ -327,14 +327,11 @@ const TableRow = memo(
           <StatsTooltipRow
             label={t`Total Trades`}
             showDollar={false}
-            value={<span className="numbers">{account.wins + account.losses}</span>}
+            value={account.wins + account.losses}
+            valueClassName="numbers"
           />
           {account.wins + account.losses > 0 ? (
-            <StatsTooltipRow
-              label={t`Win Rate`}
-              showDollar={false}
-              value={<span className="numbers">{winRate}</span>}
-            />
+            <StatsTooltipRow label={t`Win Rate`} showDollar={false} value={winRate} valueClassName="numbers" />
           ) : null}
         </div>
       );
@@ -380,7 +377,8 @@ const TableRow = memo(
               <StatsTooltipRow
                 label={t`Capital Used`}
                 showDollar={false}
-                value={<span className="numbers">{formatUsd(account.maxCapital)}</span>}
+                value={formatUsd(account.maxCapital)}
+                valueClassName="numbers"
               />
             )}
             styleType="underline"

@@ -50,12 +50,14 @@ export function SwapCard(p: Props) {
       <div className="flex flex-col gap-14">
         <SyntheticsInfoRow
           label={t`${fromToken?.symbol} Price`}
-          value={<span className="numbers">{formatUsdPrice(fromToken?.prices?.minPrice) || "..."}</span>}
+          value={formatUsdPrice(fromToken?.prices?.minPrice) || "..."}
+          valueClassName="numbers"
         />
 
         <SyntheticsInfoRow
           label={t`${toToken?.symbol} Price`}
-          value={<span className="numbers">{formatUsdPrice(toToken?.prices?.maxPrice) || "..."}</span>}
+          value={formatUsdPrice(toToken?.prices?.maxPrice) || "..."}
+          valueClassName="numbers"
         />
 
         <SyntheticsInfoRow
@@ -85,7 +87,7 @@ export function SwapCard(p: Props) {
           }
         />
 
-        <SyntheticsInfoRow label={t`Price`} value={<span className="numbers">{ratioStr}</span>} />
+        <SyntheticsInfoRow label={t`Price`} value={ratioStr} valueClassName="numbers" />
       </div>
     </div>
   );

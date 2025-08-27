@@ -243,7 +243,8 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                       <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>:
                     </div>
                   }
-                  value={<span className="numbers">{formatAmountHuman(poolValueUsd, USD_DECIMALS, true, 2)}</span>}
+                  value={formatAmountHuman(poolValueUsd, USD_DECIMALS, true, 2)}
+                  valueClassName="numbers"
                 />
               ))}
             </>
@@ -267,7 +268,8 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                       <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>:
                     </div>
                   }
-                  value={<span className="numbers">{formatAmountHuman(maxLiquidity, USD_DECIMALS, true, 2)}</span>}
+                  value={formatAmountHuman(maxLiquidity, USD_DECIMALS, true, 2)}
+                  valueClassName="numbers"
                 />
               ))}
             </>

@@ -91,18 +91,21 @@ export function PositionItem(p: Props) {
             <br />
             <StatsTooltipRow
               label={t`Initial Collateral`}
-              value={<span className="numbers">{formatUsd(p.position.collateralUsd) || "..."}</span>}
+              value={formatUsd(p.position.collateralUsd) || "..."}
+              valueClassName="numbers"
               showDollar={false}
             />
             <StatsTooltipRow
               label={t`PnL`}
-              value={<span className="numbers">{formatDeltaUsd(p.position?.pnl) || "..."}</span>}
+              value={formatDeltaUsd(p.position?.pnl) || "..."}
+              valueClassName="numbers"
               showDollar={false}
               textClassName={getPositiveOrNegativeClass(p.position.pnl)}
             />
             <StatsTooltipRow
               label={t`Accrued Borrow Fee`}
-              value={<span className="numbers">{formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}</span>}
+              value={formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}
+              valueClassName="numbers"
               showDollar={false}
               textClassName={cx({
                 "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
@@ -110,7 +113,8 @@ export function PositionItem(p: Props) {
             />
             <StatsTooltipRow
               label={t`Accrued Negative Funding Fee`}
-              value={<span className="numbers">{formatUsd(-p.position.pendingFundingFeesUsd) || "..."}</span>}
+              value={formatUsd(-p.position.pendingFundingFeesUsd) || "..."}
+              valueClassName="numbers"
               showDollar={false}
               textClassName={cx({
                 "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
@@ -119,25 +123,24 @@ export function PositionItem(p: Props) {
             <StatsTooltipRow
               label={t`Close Fee`}
               showDollar={false}
-              value={<span className="numbers">{formatUsd(-p.position.closingFeeUsd) || "..."}</span>}
+              value={formatUsd(-p.position.closingFeeUsd) || "..."}
+              valueClassName="numbers"
               textClassName="text-red-500"
             />
             {p.position.uiFeeUsd > 0 && (
               <StatsTooltipRow
                 label={t`UI Fee`}
                 showDollar={false}
-                value={<span className="numbers">{formatUsd(-p.position.uiFeeUsd)}</span>}
+                value={formatUsd(-p.position.uiFeeUsd)}
+                valueClassName="numbers"
                 textClassName="text-red-500"
               />
             )}
             <br />
             <StatsTooltipRow
               label={t`PnL After Fees`}
-              value={
-                <span className="numbers">
-                  {formatDeltaUsd(p.position.pnlAfterFees, p.position.pnlAfterFeesPercentage)}
-                </span>
-              }
+              value={formatDeltaUsd(p.position.pnlAfterFees, p.position.pnlAfterFeesPercentage)}
+              valueClassName="numbers"
               showDollar={false}
               textClassName={getPositiveOrNegativeClass(p.position.pnlAfterFees)}
             />
@@ -213,7 +216,8 @@ export function PositionItem(p: Props) {
                 <StatsTooltipRow
                   label={t`Accrued Borrow Fee`}
                   showDollar={false}
-                  value={<span className="numbers">{formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}</span>}
+                  value={formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}
+                  valueClassName="numbers"
                   textClassName={cx({
                     "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
                   })}
@@ -221,7 +225,8 @@ export function PositionItem(p: Props) {
                 <StatsTooltipRow
                   label={t`Accrued Negative Funding Fee`}
                   showDollar={false}
-                  value={<span className="numbers">{formatDeltaUsd(-p.position.pendingFundingFeesUsd) || "..."}</span>}
+                  value={formatDeltaUsd(-p.position.pendingFundingFeesUsd) || "..."}
+                  valueClassName="numbers"
                   textClassName={cx({
                     "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
                   })}
@@ -229,11 +234,8 @@ export function PositionItem(p: Props) {
                 <StatsTooltipRow
                   label={t`Accrued Positive Funding Fee`}
                   showDollar={false}
-                  value={
-                    <span className="numbers">
-                      {formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
-                    </span>
-                  }
+                  value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
+                  valueClassName="numbers"
                   textClassName={cx({
                     "text-green-500": p.position.pendingClaimableFundingFeesUsd > 0,
                   })}
@@ -242,13 +244,8 @@ export function PositionItem(p: Props) {
                 <StatsTooltipRow
                   showDollar={false}
                   label={t`Current Borrow Fee / Day`}
-                  value={
-                    borrowingFeeRateUsd !== undefined ? (
-                      <span className="numbers">{formatUsd(-borrowingFeeRateUsd)}</span>
-                    ) : (
-                      "..."
-                    )
-                  }
+                  value={borrowingFeeRateUsd !== undefined ? formatUsd(-borrowingFeeRateUsd) : "..."}
+                  valueClassName="numbers"
                   textClassName={cx({
                     "text-red-500": borrowingFeeRateUsd !== undefined && borrowingFeeRateUsd > 0,
                   })}
@@ -256,7 +253,8 @@ export function PositionItem(p: Props) {
                 <StatsTooltipRow
                   showDollar={false}
                   label={t`Current Funding Fee / Day`}
-                  value={<span className="numbers">{formatDeltaUsd(fundingFeeRateUsd)}</span>}
+                  value={formatDeltaUsd(fundingFeeRateUsd)}
+                  valueClassName="numbers"
                   textClassName={getPositiveOrNegativeClass(fundingFeeRateUsd)}
                 />
                 <br />
@@ -343,7 +341,8 @@ export function PositionItem(p: Props) {
             <br />
             <StatsTooltipRow
               label={"Estimated Time to Liquidation"}
-              value={<span className="numbers">{formatEstimatedLiquidationTime(estimatedLiquidationHours)}</span>}
+              value={formatEstimatedLiquidationTime(estimatedLiquidationHours)}
+              valueClassName="numbers"
               showDollar={false}
             />
           </div>

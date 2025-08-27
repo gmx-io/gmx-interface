@@ -272,15 +272,15 @@ function ChartHeaderDesktop() {
     if (isSwap) {
       return (
         <>
-          <ChartHeaderItem label={<Trans>24h High</Trans>} value={<span className="numbers">${high24}</span>} />
-          <ChartHeaderItem label={<Trans>24h Low</Trans>} value={<span className="numbers">${low24}</span>} />
+          <ChartHeaderItem label={<Trans>24h High</Trans>} value={high24} />
+          <ChartHeaderItem label={<Trans>24h Low</Trans>} value={low24} />
         </>
       );
     }
 
     return (
       <>
-        <ChartHeaderItem label={<Trans>24h Volume</Trans>} value={<span className="numbers">{dailyVolume}</span>} />
+        <ChartHeaderItem label={<Trans>24h Volume</Trans>} value={dailyVolume} />
 
         <ChartHeaderItem
           label={

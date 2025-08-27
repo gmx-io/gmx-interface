@@ -1043,16 +1043,13 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
           <SyntheticsInfoRow
             label={t`Receive`}
-            value={
-              <span className="numbers">
-                {formatTokenAmountWithUsd(
-                  decreaseAmounts.receiveTokenAmount,
-                  decreaseAmounts.receiveUsd,
-                  collateralToken?.symbol,
-                  collateralToken?.decimals
-                )}
-              </span>
-            }
+            value={formatTokenAmountWithUsd(
+              decreaseAmounts.receiveTokenAmount,
+              decreaseAmounts.receiveUsd,
+              collateralToken?.symbol,
+              collateralToken?.decimals
+            )}
+            valueClassName="numbers"
           />
         )}
 

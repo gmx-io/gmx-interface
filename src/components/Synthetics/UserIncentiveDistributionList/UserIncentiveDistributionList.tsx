@@ -208,7 +208,8 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
         key={tokenInfo.id}
         showDollar={false}
         label={tokenInfo.symbol}
-        value={<span className="numbers">{formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}</span>}
+        value={formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}
+        valueClassName="numbers"
       />
     ));
   }, [tokenIncentiveDetails]);

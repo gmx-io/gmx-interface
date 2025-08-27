@@ -181,7 +181,8 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
             <StatsTooltipRow
               label={t`Max Network Fee`}
               showDollar={false}
-              value={<span className="numbers">{maxNetworkFeeText}</span>}
+              value={maxNetworkFeeText}
+              valueClassName="numbers"
             />
             <div className="h-8" />
             <p>
@@ -198,7 +199,8 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
             <StatsTooltipRow
               label={t`Estimated Fee Refund`}
               showDollar={false}
-              value={<span className="numbers">{estimatedRefundText}</span>}
+              value={estimatedRefundText}
+              valueClassName="numbers"
               textClassName="text-green-500"
             />
             {warning && <p className="text-yellow-300">{warning}</p>}

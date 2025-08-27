@@ -116,19 +116,22 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
                   label={t`Realized PnL`}
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(row.realizedPnlUsd)}
-                  value={<span className="numbers">{formatUsd(row.realizedPnlUsd)}</span>}
+                  value={formatUsd(row.realizedPnlUsd)}
+                  valueClassName="numbers"
                 />
                 <StatsTooltipRow
                   label={t`Unrealized PnL`}
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(row.unrealizedPnlUsd)}
-                  value={<span className="numbers">{formatUsd(row.unrealizedPnlUsd)}</span>}
+                  value={formatUsd(row.unrealizedPnlUsd)}
+                  valueClassName="numbers"
                 />
                 <StatsTooltipRow
                   label={t`Start Unrealized PnL`}
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(row.startUnrealizedPnlUsd)}
-                  value={<span className="numbers">{formatUsd(row.startUnrealizedPnlUsd)}</span>}
+                  value={formatUsd(row.startUnrealizedPnlUsd)}
+                  valueClassName="numbers"
                 />
               </>
             )
@@ -150,7 +153,8 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
             <StatsTooltipRow
               label={t`Capital Used`}
               showDollar={false}
-              value={<span className="numbers">{formatUsd(row.usedCapitalUsd)}</span>}
+              value={formatUsd(row.usedCapitalUsd)}
+              valueClassName="numbers"
             />
           }
         >
@@ -165,13 +169,15 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
               <StatsTooltipRow
                 label={t`Total Trades`}
                 showDollar={false}
-                value={<span className="numbers">{String(row.wins + row.losses)}</span>}
+                value={String(row.wins + row.losses)}
+                valueClassName="numbers"
               />
               {row.winsLossesRatioBps !== undefined && (
                 <StatsTooltipRow
                   label={t`Win Rate`}
                   showDollar={false}
-                  value={<span className="numbers">{formatPercentage(row.winsLossesRatioBps)}</span>}
+                  value={formatPercentage(row.winsLossesRatioBps)}
+                  valueClassName="numbers"
                 />
               )}
             </>
