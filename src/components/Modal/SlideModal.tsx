@@ -290,7 +290,7 @@ function MobileSlideModal({
           </div>
           {footerContent && (
             <>
-              <div className="border-b-stroke border-slate-600" />
+              <div className="border-b-1/2 border-slate-600" />
               <div>{footerContent}</div>
             </>
           )}

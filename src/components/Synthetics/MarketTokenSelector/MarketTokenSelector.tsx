@@ -200,7 +200,7 @@ function MarketTokenSelectorInternal(props: Props) {
   const rowVerticalPadding = isMobile ? "py-8" : cx("h-50 group-last-of-type/row:pb-8");
   const rowHorizontalPadding = isMobile ? cx("px-6 first-of-type:pl-8 last-of-type:pr-8") : "px-16";
   const thClassName = cx(
-    "text-body-medium sticky top-0 z-10 border-b-stroke border-slate-600 bg-slate-800 text-left font-normal uppercase text-typography-secondary last-of-type:text-right",
+    "text-body-medium sticky top-0 z-10 border-b-1/2 border-slate-600 bg-slate-800 text-left font-normal uppercase text-typography-secondary last-of-type:text-right",
     isMobile ? "first-of-type:!pl-32" : "first-of-type:!pl-40",
     rowVerticalPadding,
     rowHorizontalPadding
@@ -225,7 +225,7 @@ function MarketTokenSelectorInternal(props: Props) {
             value={searchKeyword}
             setValue={setSearchKeyword}
             onKeyDown={handleKeyDown}
-            placeholder="Search Pool"
+            placeholder={t`Search Pool`}
           />
 
           <ButtonRowScrollFadeContainer>
@@ -246,7 +246,7 @@ function MarketTokenSelectorInternal(props: Props) {
                 value={searchKeyword}
                 setValue={setSearchKeyword}
                 onKeyDown={handleKeyDown}
-                placeholder="Search Pool"
+                placeholder={t`Search Pool`}
               />
               <FavoriteTabs favoritesKey="gm-token-selector" />
             </div>
@@ -297,7 +297,7 @@ function MarketTokenSelectorInternal(props: Props) {
                 />
               ))}
               {sortedMarketsByIndexToken.length > 0 && !sortedTokensInfo?.length && (
-                <TableTr hoverable={false}>
+                <TableTr>
                   <TableTd colSpan={6} className="text-body-medium text-typography-secondary">
                     <Trans>No pools matched</Trans>
                   </TableTd>

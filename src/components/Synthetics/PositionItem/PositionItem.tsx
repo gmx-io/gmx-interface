@@ -80,7 +80,8 @@ export function PositionItem(p: Props) {
   function renderNetValue() {
     return (
       <TooltipWithPortal
-        handle={<span className="numbers">{formatUsd(p.position.netValue)}</span>}
+        handle={formatUsd(p.position.netValue)}
+        handleClassName="numbers"
         position={p.isLarge ? "bottom-start" : "bottom-end"}
         renderContent={() => (
           <div>
@@ -91,18 +92,21 @@ export function PositionItem(p: Props) {
             <br />
             <StatsTooltipRow
               label={t`Initial Collateral`}
-              value={<span className="numbers">{formatUsd(p.position.collateralUsd) || "..."}</span>}
+              value={formatUsd(p.position.collateralUsd) || "..."}
+              valueClassName="numbers"
               showDollar={false}
             />
             <StatsTooltipRow
               label={t`PnL`}
-              value={<span className="numbers">{formatDeltaUsd(p.position?.pnl) || "..."}</span>}
+              value={formatDeltaUsd(p.position?.pnl) || "..."}
+              valueClassName="numbers"
               showDollar={false}
               textClassName={getPositiveOrNegativeClass(p.position.pnl)}
             />
             <StatsTooltipRow
               label={t`Accrued Borrow Fee`}
-              value={<span className="numbers">{formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}</span>}
+              value={formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}
+              valueClassName="numbers"
               showDollar={false}
               textClassName={cx({
                 "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
@@ -110,7 +114,8 @@ export function PositionItem(p: Props) {
             />
             <StatsTooltipRow
               label={t`Accrued Negative Funding Fee`}
-              value={<span className="numbers">{formatUsd(-p.position.pendingFundingFeesUsd) || "..."}</span>}
+              value={formatUsd(-p.position.pendingFundingFeesUsd) || "..."}
+              valueClassName="numbers"
               showDollar={false}
               textClassName={cx({
                 "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
@@ -119,25 +124,24 @@ export function PositionItem(p: Props) {
             <StatsTooltipRow
               label={t`Close Fee`}
               showDollar={false}
-              value={<span className="numbers">{formatUsd(-p.position.closingFeeUsd) || "..."}</span>}
+              value={formatUsd(-p.position.closingFeeUsd) || "..."}
+              valueClassName="numbers"
               textClassName="text-red-500"
             />
             {p.position.uiFeeUsd > 0 && (
               <StatsTooltipRow
                 label={t`UI Fee`}
                 showDollar={false}
-                value={<span className="numbers">{formatUsd(-p.position.uiFeeUsd)}</span>}
+                value={formatUsd(-p.position.uiFeeUsd)}
+                valueClassName="numbers"
                 textClassName="text-red-500"
               />
             )}
             <br />
             <StatsTooltipRow
               label={t`PnL After Fees`}
-              value={
-                <span className="numbers">
-                  {formatDeltaUsd(p.position.pnlAfterFees, p.position.pnlAfterFeesPercentage)}
-                </span>
-              }
+              value={formatDeltaUsd(p.position.pnlAfterFees, p.position.pnlAfterFeesPercentage)}
+              valueClassName="numbers"
               showDollar={false}
               textClassName={getPositiveOrNegativeClass(p.position.pnlAfterFees)}
             />
@@ -176,14 +180,10 @@ export function PositionItem(p: Props) {
       <div className="flex flex-col gap-4">
         <div className={cx("position-list-collateral", { isSmall: !p.isLarge })}>
           <TooltipWithPortal
-            handle={
-              <span data-qa="position-collateral-value" className="numbers">
-                {formatUsd(p.position.remainingCollateralUsd)}
-              </span>
-            }
+            handle={formatUsd(p.position.remainingCollateralUsd)}
+            handleClassName={cx("numbers", { negative: p.position.hasLowCollateral })}
             position={p.isLarge ? "bottom-start" : "bottom-end"}
             className="PositionItem-collateral-tooltip"
-            handleClassName={cx({ negative: p.position.hasLowCollateral })}
             content={
               <>
                 {p.position.hasLowCollateral && (
@@ -213,7 +213,8 @@ export function PositionItem(p: Props) {
                 <StatsTooltipRow
                   label={t`Accrued Borrow Fee`}
                   showDollar={false}
-                  value={<span className="numbers">{formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}</span>}
+                  value={formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}
+                  valueClassName="numbers"
                   textClassName={cx({
                     "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
                   })}
@@ -221,7 +222,8 @@ export function PositionItem(p: Props) {
                 <StatsTooltipRow
                   label={t`Accrued Negative Funding Fee`}
                   showDollar={false}
-                  value={<span className="numbers">{formatDeltaUsd(-p.position.pendingFundingFeesUsd) || "..."}</span>}
+                  value={formatDeltaUsd(-p.position.pendingFundingFeesUsd) || "..."}
+                  valueClassName="numbers"
                   textClassName={cx({
                     "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
                   })}
@@ -229,11 +231,8 @@ export function PositionItem(p: Props) {
                 <StatsTooltipRow
                   label={t`Accrued Positive Funding Fee`}
                   showDollar={false}
-                  value={
-                    <span className="numbers">
-                      {formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
-                    </span>
-                  }
+                  value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
+                  valueClassName="numbers"
                   textClassName={cx({
                     "text-green-500": p.position.pendingClaimableFundingFeesUsd > 0,
                   })}
@@ -242,13 +241,8 @@ export function PositionItem(p: Props) {
                 <StatsTooltipRow
                   showDollar={false}
                   label={t`Current Borrow Fee / Day`}
-                  value={
-                    borrowingFeeRateUsd !== undefined ? (
-                      <span className="numbers">{formatUsd(-borrowingFeeRateUsd)}</span>
-                    ) : (
-                      "..."
-                    )
-                  }
+                  value={borrowingFeeRateUsd !== undefined ? formatUsd(-borrowingFeeRateUsd) : "..."}
+                  valueClassName="numbers"
                   textClassName={cx({
                     "text-red-500": borrowingFeeRateUsd !== undefined && borrowingFeeRateUsd > 0,
                   })}
@@ -256,7 +250,8 @@ export function PositionItem(p: Props) {
                 <StatsTooltipRow
                   showDollar={false}
                   label={t`Current Funding Fee / Day`}
-                  value={<span className="numbers">{formatDeltaUsd(fundingFeeRateUsd)}</span>}
+                  value={formatDeltaUsd(fundingFeeRateUsd)}
+                  valueClassName="numbers"
                   textClassName={getPositiveOrNegativeClass(fundingFeeRateUsd)}
                 />
                 <br />
@@ -343,7 +338,8 @@ export function PositionItem(p: Props) {
             <br />
             <StatsTooltipRow
               label={"Estimated Time to Liquidation"}
-              value={<span className="numbers">{formatEstimatedLiquidationTime(estimatedLiquidationHours)}</span>}
+              value={formatEstimatedLiquidationTime(estimatedLiquidationHours)}
+              valueClassName="numbers"
               showDollar={false}
             />
           </div>
@@ -357,22 +353,18 @@ export function PositionItem(p: Props) {
       return (
         <TooltipWithPortal
           handle={
-            p.position.liquidationPrice ? (
-              <span className="numbers">
-                {formatLiquidationPrice(p.position.liquidationPrice, {
+            p.position.liquidationPrice
+              ? formatLiquidationPrice(p.position.liquidationPrice, {
                   displayDecimals: marketDecimals,
                   visualMultiplier: p.position.indexToken.visualMultiplier,
-                })}
-              </span>
-            ) : (
-              "..."
-            )
+                })
+              : "..."
           }
-          position="bottom-end"
-          handleClassName={cx({
+          handleClassName={cx("numbers", {
             "LiqPrice-soft-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
             "LiqPrice-hard-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24,
           })}
+          position="bottom-end"
           renderContent={getLiqPriceTooltipContent}
         />
       );
@@ -393,7 +385,7 @@ export function PositionItem(p: Props) {
     const qaAttr = `position-item-${indexName}-${poolName}-${p.position.isLong ? "Long" : "Short"}`;
 
     return (
-      <TableTr data-qa={qaAttr}>
+      <TableTr hoverable={true} data-qa={qaAttr}>
         <TableTd
           data-qa="position-handle"
           className={cx("flex", {
@@ -436,7 +428,8 @@ export function PositionItem(p: Props) {
 
                     <div>
                       <Trans>
-                        Click on the position to select it, then use the trade box to increase it or to set TP/SL orders.
+                        Click on the position to select it, then use the trade box to increase it or to set TP/SL
+                        orders.
                       </Trans>
                       <br />
                       <br />
@@ -516,14 +509,12 @@ export function PositionItem(p: Props) {
         </TableTd>
         <TableTd>
           {/* markPrice */}
-          {
-            <span className="numbers">
-              {formatUsd(p.position.markPrice, {
-                displayDecimals: marketDecimals,
-                visualMultiplier: p.position.indexToken.visualMultiplier,
-              })}
-            </span>
-          }
+          <span className="numbers">
+            {formatUsd(p.position.markPrice, {
+              displayDecimals: marketDecimals,
+              visualMultiplier: p.position.indexToken.visualMultiplier,
+            })}
+          </span>
         </TableTd>
         <TableTd>
           {/* liqPrice */}
@@ -569,7 +560,7 @@ export function PositionItem(p: Props) {
 
     return (
       <AppCard dataQa="position-item">
-        <AppCardSection onClick={() => p.onSelectPositionClick?.()}>
+        <AppCardSection onClick={p.onSelectPositionClick}>
           <div className="text-body-medium flex items-center gap-8">
             <span
               className={cx("text-body-medium relative flex items-center gap-4 font-medium", {
@@ -577,11 +568,11 @@ export function PositionItem(p: Props) {
                   isCurrentMarket,
               })}
             >
-              <TokenIcon className="" symbol={p.position.indexToken?.symbol} displaySize={16} importSize={24} />
+              <TokenIcon symbol={p.position.indexToken?.symbol} displaySize={16} importSize={24} />
               {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
             </span>
             <div className="text-body-small flex items-center gap-4">
-              <span className={cx("rounded-4 leading-1")}>{formatLeverage(p.position.leverage) || "..."}</span>
+              <span className="rounded-4 leading-1">{formatLeverage(p.position.leverage) || "..."}</span>
               <span
                 className={cx("Exchange-list-side", {
                   positive: p.position.isLong,

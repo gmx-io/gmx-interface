@@ -32,7 +32,7 @@ export const AccruedPositionPriceImpactRebateModal = memo(
         <div className="ConfirmationBox-main">
           <div className="text-center">Total {formatDeltaUsd(totalUsd)}</div>
         </div>
-        <div className="">
+        <div>
           <div className="App-card-content">
             <div className="App-card-divider" />
             <div className="ClaimSettleModal-header">

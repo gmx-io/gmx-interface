@@ -1,6 +1,5 @@
 import { Plural, Trans } from "@lingui/macro";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef } from "react";
-import { useMedia } from "react-use";
 
 import {
   useIsOrdersLoading,
@@ -32,6 +31,7 @@ import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
+import { useBreakpoints } from "lib/breakpoints";
 import { EMPTY_ARRAY } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 
@@ -74,8 +74,7 @@ export function OrderList({
   const positionsData = usePositionsInfoData();
   const isLoading = useIsOrdersLoading();
 
-  const isScreenSmall = useMedia("(max-width: 1024px)");
-  const isContainerSmall = isScreenSmall;
+  const { isTablet: isContainerSmall } = useBreakpoints();
 
   const chainId = useSelector(selectChainId);
   const { signer } = useWallet();
@@ -188,7 +187,7 @@ export function OrderList({
 
   return (
     <div className="flex grow flex-col">
-      {(isContainerSmall || isScreenSmall) && !isLoading && (
+      {isContainerSmall && !isLoading && (
         <div className="flex grow flex-col gap-8">
           <div className="flex flex-wrap items-center justify-between gap-8">
             {isContainerSmall ? (
@@ -211,7 +210,7 @@ export function OrderList({
             ) : (
               <div />
             )}
-            {isScreenSmall && selectedOrdersKeys && selectedOrdersKeys.length > 0 && (
+            {isContainerSmall && selectedOrdersKeys && selectedOrdersKeys.length > 0 && (
               <Button variant="secondary" onClick={onCancelSelectedOrders}>
                 <Plural value={selectedOrdersKeys.length} one="Cancel order" other="Cancel # orders" />
               </Button>

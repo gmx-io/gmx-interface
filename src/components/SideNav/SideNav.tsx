@@ -5,6 +5,8 @@ import { Link, useLocation } from "react-router-dom";
 
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
+import ExternalLink from "components/ExternalLink/ExternalLink";
+
 import CollapseIcon from "img/collapse.svg?react";
 import DashboardIcon from "img/dashboard.svg?react";
 import DatabaseIcon from "img/database.svg?react";
@@ -40,7 +42,7 @@ function SideNav({ className }: { className?: string }) {
       <div className="flex flex-1 flex-col justify-between">
         <MenuSection isCollapsed={isCollapsed} />
 
-        <ul className={cx("flex list-none flex-col px-0")}>
+        <ul className="flex list-none flex-col px-0">
           <LanguageNavItem isCollapsed={isCollapsed} NavItem={NavItem} />
           <DocsNavItem isCollapsed={isCollapsed} />
           <NavItem
@@ -85,7 +87,7 @@ export interface NavItemProps {
 
 export function NavItem({ icon, label, isActive = false, isCollapsed = false, onClick, to, external }: NavItemProps) {
   const button = (
-    <button className={cx("group cursor-pointer py-4", { "w-full": !isCollapsed })} onClick={onClick}>
+    <button className={cx("group cursor-pointer select-none py-4", { "w-full": !isCollapsed })} onClick={onClick}>
       <div
         className={cx(
           `relative flex cursor-pointer items-center gap-8
@@ -118,9 +120,9 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
 
   const content = to ? (
     external ? (
-      <a href={to} target="_blank" rel="noopener noreferrer">
+      <ExternalLink className="w-full !no-underline" href={to}>
         {button}
-      </a>
+      </ExternalLink>
     ) : (
       <Link to={to}>{button}</Link>
     )
@@ -146,7 +148,7 @@ export function MenuSection({ isCollapsed }: { isCollapsed: boolean | undefined 
   const { pathname } = useLocation();
 
   return (
-    <ul className={cx("flex list-none flex-col px-0")}>
+    <ul className="flex list-none flex-col px-0">
       {mainNavItems.map((item) => (
         <NavItem
           key={item.key}

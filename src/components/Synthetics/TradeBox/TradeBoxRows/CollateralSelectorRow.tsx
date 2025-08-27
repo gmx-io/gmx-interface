@@ -16,7 +16,8 @@ import {
 import { selectTradeboxAvailableAndDisabledTokensForCollateral } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxAvailableAndDisabledTokensForCollateral";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
-import { AlertInfoButtonLink, AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -47,7 +48,7 @@ export function CollateralSelectorRow(p: Props) {
           <TooltipWithPortal
             position="left-start"
             content={collateralInTooltipContent}
-            styleType="icon"
+            variant="icon"
             closeDelay={1000000}
           >
             <Trans>Collateral In</Trans>
@@ -105,13 +106,14 @@ function useCollateralWarnings() {
             <Trans>
               You have an existing position with {collateralWithPosition.symbol} as collateral. This action will not
               apply for that position.{" "}
-              <AlertInfoButtonLink
+              <ColorfulButtonLink
+                color="blue"
                 onClick={() => {
                   onSelectCollateralAddress(collateralWithPosition.address);
                 }}
               >
                 Switch to {collateralWithPosition.symbol} collateral
-              </AlertInfoButtonLink>
+              </ColorfulButtonLink>
             </Trans>
           </AlertInfoCard>
         );
@@ -121,13 +123,14 @@ function useCollateralWarnings() {
             <Trans>
               You have an existing position with {collateralWithPosition.symbol} as collateral. This Order will not be
               valid for that Position.{" "}
-              <AlertInfoButtonLink
+              <ColorfulButtonLink
+                color="blue"
                 onClick={() => {
                   onSelectCollateralAddress(collateralWithPosition.address);
                 }}
               >
                 Switch to {collateralWithPosition.symbol} collateral
-              </AlertInfoButtonLink>
+              </ColorfulButtonLink>
             </Trans>
           </AlertInfoCard>
         );
@@ -142,13 +145,14 @@ function useCollateralWarnings() {
         <AlertInfoCard key="showHasExistingOrderWithDifferentCollateral">
           <Trans>
             You have an existing limit order with {symbol} as collateral.{" "}
-            <AlertInfoButtonLink
+            <ColorfulButtonLink
+              color="blue"
               onClick={() => {
                 onSelectCollateralAddress(address);
               }}
             >
               Switch to {symbol} collateral
-            </AlertInfoButtonLink>
+            </ColorfulButtonLink>
           </Trans>
         </AlertInfoCard>
       );

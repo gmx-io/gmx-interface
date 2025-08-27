@@ -143,7 +143,8 @@ export function StatsCard({
             <TooltipComponent
               position="bottom-end"
               className="whitespace-nowrap"
-              handle={<span className="numbers">{formatAmountHuman(totalFeesUsd, USD_DECIMALS, true, 2)}</span>}
+              handle={formatAmountHuman(totalFeesUsd, USD_DECIMALS, true, 2)}
+              handleClassName="numbers"
               content={<ChainsStatsTooltipRow entries={totalFeesEntries} />}
             />
           </div>
@@ -156,23 +157,20 @@ export function StatsCard({
             <TooltipComponent
               position="bottom-end"
               className="whitespace-nowrap"
-              handle={
-                <span className="numbers">
-                  {formatAmountHuman(
-                    sumBigInts(
-                      v1TotalVolume?.[ARBITRUM],
-                      v1TotalVolume?.[AVALANCHE],
-                      v1TotalVolume?.[BOTANIX],
-                      v2ArbitrumOverview?.totalVolume,
-                      v2AvalancheOverview?.totalVolume,
-                      v2BotanixOverview?.totalVolume
-                    ),
-                    USD_DECIMALS,
-                    true,
-                    2
-                  )}
-                </span>
-              }
+              handle={formatAmountHuman(
+                sumBigInts(
+                  v1TotalVolume?.[ARBITRUM],
+                  v1TotalVolume?.[AVALANCHE],
+                  v1TotalVolume?.[BOTANIX],
+                  v2ArbitrumOverview?.totalVolume,
+                  v2AvalancheOverview?.totalVolume,
+                  v2BotanixOverview?.totalVolume
+                ),
+                USD_DECIMALS,
+                true,
+                2
+              )}
+              handleClassName="numbers"
               content={<ChainsStatsTooltipRow entries={totalVolumeEntries} />}
             />
           </div>
@@ -185,23 +183,20 @@ export function StatsCard({
             <TooltipComponent
               position="bottom-end"
               className="whitespace-nowrap"
-              handle={
-                <span className="numbers">
-                  {formatAmountHuman(
-                    sumBigInts(
-                      uniqueUsers?.[ARBITRUM],
-                      uniqueUsers?.[AVALANCHE],
-                      uniqueUsers?.[BOTANIX],
-                      v2ArbitrumOverview?.totalUsers,
-                      v2AvalancheOverview?.totalUsers,
-                      v2BotanixOverview?.totalUsers
-                    ),
-                    0,
-                    false,
-                    2
-                  )}
-                </span>
-              }
+              handle={formatAmountHuman(
+                sumBigInts(
+                  uniqueUsers?.[ARBITRUM],
+                  uniqueUsers?.[AVALANCHE],
+                  uniqueUsers?.[BOTANIX],
+                  v2ArbitrumOverview?.totalUsers,
+                  v2AvalancheOverview?.totalUsers,
+                  v2BotanixOverview?.totalUsers
+                ),
+                0,
+                false,
+                2
+              )}
+              handleClassName="numbers"
               content={
                 <ChainsStatsTooltipRow showDollar={false} entries={uniqueUsersEntries} decimalsForConversion={0} />
               }

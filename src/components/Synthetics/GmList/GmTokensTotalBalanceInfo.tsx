@@ -60,7 +60,8 @@ export const GmTokensBalanceInfo = ({
             showDollar={false}
             label={t`Total Earned Fees`}
             textClassName={getPositiveOrNegativeClass(earnedTotal)}
-            value={<span className="numbers">{formatDeltaUsd(earnedTotal, undefined)}</span>}
+            value={formatDeltaUsd(earnedTotal, undefined)}
+            valueClassName="numbers"
           />
         )}
         {earnedRecently !== undefined && (
@@ -68,7 +69,8 @@ export const GmTokensBalanceInfo = ({
             showDollar={false}
             textClassName={getPositiveOrNegativeClass(earnedRecently)}
             label={t`${daysConsidered}d Earned Fees`}
-            value={<span className="numbers">{formatDeltaUsd(earnedRecently, undefined)}</span>}
+            value={formatDeltaUsd(earnedRecently, undefined)}
+            valueClassName="numbers"
           />
         )}
         <br />
@@ -122,21 +124,15 @@ export const GmTokensTotalBalanceInfo = ({
             <StatsTooltipRow
               label={t`Total Earned Fees`}
               textClassName={getPositiveOrNegativeClass(userEarnings.allMarkets.total)}
-              value={
-                <span className="numbers">
-                  {formatDeltaUsd(userEarnings.allMarkets.total, undefined, { showPlusForZero: true })}
-                </span>
-              }
+              value={formatDeltaUsd(userEarnings.allMarkets.total, undefined, { showPlusForZero: true })}
+              valueClassName="numbers"
               showDollar={false}
             />
             <StatsTooltipRow
               label={t`${daysConsidered}d Earned Fees`}
               textClassName={getPositiveOrNegativeClass(userEarnings.allMarkets.recent)}
-              value={
-                <span className="numbers">
-                  {formatDeltaUsd(userEarnings.allMarkets.recent, undefined, { showPlusForZero: true })}
-                </span>
-              }
+              value={formatDeltaUsd(userEarnings.allMarkets.recent, undefined, { showPlusForZero: true })}
+              valueClassName="numbers"
               showDollar={false}
             />
             {userEarnings.allMarkets.expected365d > 0 && (
@@ -144,11 +140,8 @@ export const GmTokensTotalBalanceInfo = ({
                 <StatsTooltipRow
                   label={t`365d Est. Fees`}
                   textClassName={getPositiveOrNegativeClass(userEarnings.allMarkets.expected365d)}
-                  value={
-                    <span className="numbers">
-                      {formatDeltaUsd(userEarnings.allMarkets.expected365d, undefined, { showPlusForZero: true })}
-                    </span>
-                  }
+                  value={formatDeltaUsd(userEarnings.allMarkets.expected365d, undefined, { showPlusForZero: true })}
+                  valueClassName="numbers"
                   showDollar={false}
                 />
                 <br />
@@ -179,7 +172,7 @@ export const GmTokensTotalBalanceInfo = ({
       maxAllowedWidth={340}
       position={tooltipPosition ?? "bottom-end"}
       renderContent={renderTooltipContent}
-      styleType="iconStroke"
+      variant="iconStroke"
     />
   ) : (
     <>{label}</>

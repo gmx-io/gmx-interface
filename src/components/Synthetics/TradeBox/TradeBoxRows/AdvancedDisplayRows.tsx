@@ -65,8 +65,8 @@ function LeverageInfoRows() {
         value={
           nextPositionValues?.nextLeverage && increaseAmounts?.sizeDeltaUsd && increaseAmounts?.sizeDeltaUsd > 0 ? (
             <ValueTransition
-              from={<span className="numbers">{formatLeverage(selectedPosition?.leverage)}</span>}
-              to={<span className="numbers">{formatLeverage(nextPositionValues?.nextLeverage) || "-"}</span>}
+              from={formatLeverage(selectedPosition?.leverage)}
+              to={formatLeverage(nextPositionValues?.nextLeverage) || "-"}
             />
           ) : (
             "-"
@@ -84,15 +84,15 @@ function LeverageInfoRows() {
     } else {
       leverageValue = (
         <ValueTransition
-          from={<span className="numbers">{formatLeverage(selectedPosition.leverage)}</span>}
-          to={<span className="numbers">{formatLeverage(nextPositionValues?.nextLeverage)}</span>}
+          from={formatLeverage(selectedPosition.leverage)}
+          to={formatLeverage(nextPositionValues?.nextLeverage)}
         />
       );
     }
 
     return (
       <>
-        <SyntheticsInfoRow label={t`Leverage`} value={leverageValue} />
+        <SyntheticsInfoRow label={t`Leverage`} value={leverageValue} valueClassName="numbers" />
       </>
     );
   }
@@ -116,8 +116,8 @@ function ExistingPositionInfoRows() {
           label={t`Size`}
           value={
             <ValueTransition
-              from={<span className="numbers">{formatUsd(selectedPosition.sizeInUsd)!}</span>}
-              to={<span className="numbers">{formatUsd(nextPositionValues?.nextSizeUsd)}</span>}
+              from={formatUsd(selectedPosition.sizeInUsd)!}
+              to={formatUsd(nextPositionValues?.nextSizeUsd)}
             />
           }
         />
@@ -126,8 +126,8 @@ function ExistingPositionInfoRows() {
         label={t`Collateral (${selectedPosition?.collateralToken?.symbol})`}
         value={
           <ValueTransition
-            from={<span className="numbers">{formatUsd(selectedPosition?.collateralUsd)}</span>}
-            to={<span className="numbers">{formatUsd(nextPositionValues?.nextCollateralUsd)}</span>}
+            from={formatUsd(selectedPosition?.collateralUsd)}
+            to={formatUsd(nextPositionValues?.nextCollateralUsd)}
           />
         }
       />
@@ -266,10 +266,8 @@ export function TradeBoxAdvancedGroups({
       onToggle={toggleAdvancedDisplay}
       disableCollapseOnError={false}
       hasError={hasError}
-      className=""
       contentClassName="flex flex-col gap-14"
       scrollIntoViewOnMobile
-      row={false}
     >
       {(isLimit || isTrigger || isTwap) && !isSwap && (
         <>

@@ -272,7 +272,8 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                   </div>
                   <div>
                     <Tooltip
-                      handle={<span className="numbers">{formatAmount(totalRewardTokens, 18, 2, true)}</span>}
+                      handle={formatAmount(totalRewardTokens, 18, 2, true)}
+                      handleClassName="numbers"
                       position="bottom-end"
                       content={
                         <>
@@ -315,15 +316,14 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                   </div>
                   <div>
                     <Tooltip
-                      handle={
-                        <span className="numbers">{`${formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} / ${formatKeyAmount(
-                          vestingData,
-                          "gmxVesterVestedAmount",
-                          18,
-                          4,
-                          true
-                        )}`}</span>
-                      }
+                      handle={`${formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} / ${formatKeyAmount(
+                        vestingData,
+                        "gmxVesterVestedAmount",
+                        18,
+                        4,
+                        true
+                      )}`}
+                      handleClassName="numbers"
                       position="bottom-end"
                       content={
                         <div>
@@ -348,11 +348,8 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                   </div>
                   <div>
                     <Tooltip
-                      handle={
-                        <span className="numbers">
-                          {formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)}
-                        </span>
-                      }
+                      handle={formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)}
+                      handleClassName="numbers"
                       position="bottom-end"
                       content={
                         <Trans>
@@ -417,15 +414,14 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                   </div>
                   <div>
                     <Tooltip
-                      handle={
-                        <span className="numbers">{`${formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} / ${formatKeyAmount(
-                          vestingData,
-                          "glpVesterVestedAmount",
-                          18,
-                          4,
-                          true
-                        )}`}</span>
-                      }
+                      handle={`${formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} / ${formatKeyAmount(
+                        vestingData,
+                        "glpVesterVestedAmount",
+                        18,
+                        4,
+                        true
+                      )}`}
+                      handleClassName="numbers"
                       position="bottom-end"
                       content={
                         <div>
@@ -450,11 +446,8 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                   </div>
                   <div>
                     <Tooltip
-                      handle={
-                        <span className="numbers">
-                          {formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)}
-                        </span>
-                      }
+                      handle={formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)}
+                      handleClassName="numbers"
                       position="bottom-end"
                       content={
                         <Trans>
@@ -503,15 +496,14 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                     </div>
                     <div>
                       <Tooltip
-                        handle={
-                          <span className="numbers">{`${formatKeyAmount(
-                            vestingData,
-                            "affiliateVesterClaimSum",
-                            18,
-                            4,
-                            true
-                          )} / ${formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)}`}</span>
-                        }
+                        handle={`${formatKeyAmount(
+                          vestingData,
+                          "affiliateVesterClaimSum",
+                          18,
+                          4,
+                          true
+                        )} / ${formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)}`}
+                        handleClassName="numbers"
                         position="bottom-end"
                         content={
                           <div>

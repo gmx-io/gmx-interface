@@ -1,5 +1,3 @@
-$suggestion-input-hover-background: var(--color-fill-surfaceElevatedHover);
-
 .Suggestion-input-wrapper {
   position: relative;
   .Suggestion-list {
@@ -41,8 +39,7 @@ $suggestion-input-hover-background: var(--color-fill-surfaceElevatedHover);
     }
 
     &:hover {
-      background: $suggestion-input-hover-background;
-      border: 1px solid #19192b;
+      background: var(--color-fill-surfaceElevatedHover);
     }
     &:focus {
       border-color: var(--color-blue-300);

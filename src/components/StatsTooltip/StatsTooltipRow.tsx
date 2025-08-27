@@ -5,6 +5,7 @@ import "./StatsTooltip.css";
 export type StatsTooltipRowProps = {
   textClassName?: string;
   labelClassName?: string;
+  valueClassName?: string;
   label: string | ReactNode;
   value: number | string | string[] | number[] | ReactNode;
   showDollar?: boolean;
@@ -17,6 +18,7 @@ export default function StatsTooltipRow({
   value,
   textClassName = "text-typography-primary",
   labelClassName = "text-typography-secondary",
+  valueClassName,
   showDollar = true,
   unit,
   showColon = true,
@@ -26,7 +28,7 @@ export default function StatsTooltipRow({
       return (
         <ul className="Tooltip-row-values text-typography-primary">
           {value.map((v, i) => (
-            <li className={textClassName} key={i}>
+            <li className={cx(textClassName, valueClassName)} key={i}>
               {v}
             </li>
           ))}
@@ -35,8 +37,8 @@ export default function StatsTooltipRow({
     }
 
     return (
-      <span className={cx("Tooltip-row-value", textClassName)}>
-        {showDollar && "$"}
+      <span className={cx("Tooltip-row-value", textClassName, valueClassName)}>
+        {showDollar && "$ "}
         {value}
         {unit || ""}
       </span>

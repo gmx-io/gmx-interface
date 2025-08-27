@@ -121,12 +121,12 @@ function ChartHeaderMobile() {
 
         <div>
           <div className="mb-4 text-[11px] font-medium uppercase text-typography-secondary">
-            <TooltipWithPortal styleType="none" renderContent={renderNetFeeHeaderTooltipContent}>
+            <TooltipWithPortal variant="none" renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net Rate / 1h</Trans>
             </TooltipWithPortal>
           </div>
           <TooltipWithPortal
-            styleType="none"
+            variant="none"
             as="div"
             className="inline-flex flex-row items-center gap-8"
             position="bottom-end"
@@ -170,11 +170,7 @@ function ChartHeaderMobile() {
             <div className="text-body-medium mr-4 numbers">{avgPrice}</div>
             <div className="ExchangeChart-daily-change text-body-small numbers">{dayPriceDelta}</div>
           </div>
-          <span
-            className={cx(
-              "inline-flex cursor-pointer items-center justify-center rounded-4 pt-6 text-typography-secondary"
-            )}
-          >
+          <span className="inline-flex cursor-pointer items-center justify-center rounded-4 pt-6 text-typography-secondary">
             {detailsVisible ? (
               <FaChevronUp className="-ml-6 -mt-2" size={12} />
             ) : (
@@ -272,15 +268,15 @@ function ChartHeaderDesktop() {
     if (isSwap) {
       return (
         <>
-          <ChartHeaderItem label={<Trans>24h High</Trans>} value={<span className="numbers">${high24}</span>} />
-          <ChartHeaderItem label={<Trans>24h Low</Trans>} value={<span className="numbers">${low24}</span>} />
+          <ChartHeaderItem label={<Trans>24h High</Trans>} value={high24} />
+          <ChartHeaderItem label={<Trans>24h Low</Trans>} value={low24} />
         </>
       );
     }
 
     return (
       <>
-        <ChartHeaderItem label={<Trans>24h Volume</Trans>} value={<span className="numbers">{dailyVolume}</span>} />
+        <ChartHeaderItem label={<Trans>24h Volume</Trans>} value={dailyVolume} />
 
         <ChartHeaderItem
           label={
@@ -311,13 +307,13 @@ function ChartHeaderDesktop() {
 
         <ChartHeaderItem
           label={
-            <TooltipWithPortal styleType="none" renderContent={renderNetFeeHeaderTooltipContent}>
+            <TooltipWithPortal variant="none" renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net Rate / 1h</Trans>
             </TooltipWithPortal>
           }
           value={
             <TooltipWithPortal
-              styleType="none"
+              variant="none"
               as="div"
               className="Chart-header-value flex flex-row items-center gap-8"
               position="bottom-end"

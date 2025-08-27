@@ -208,7 +208,8 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
         key={tokenInfo.id}
         showDollar={false}
         label={tokenInfo.symbol}
-        value={<span className="numbers">{formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}</span>}
+        value={formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}
+        valueClassName="numbers"
       />
     ));
   }, [tokenIncentiveDetails]);
@@ -224,14 +225,15 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const type = tooltipData ? <Tooltip handle={typeStr} renderContent={renderTooltipTypeContent} /> : typeStr;
 
   return (
-    <TableTr hoverable={false}>
+    <TableTr>
       <TableTd data-label="Date">{formatDate(transaction.timestamp)}</TableTd>
       <TableTd data-label="Type" className="font-medium">
         {type}
       </TableTd>
       <TableTd data-label="Amount">
         <Tooltip
-          handle={<span className="numbers">{formatUsd(totalUsd)}</span>}
+          handle={formatUsd(totalUsd)}
+          handleClassName="numbers"
           className="whitespace-nowrap"
           renderContent={renderTotalTooltipContent}
         />

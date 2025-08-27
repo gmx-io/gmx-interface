@@ -139,9 +139,9 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
   );
 
   const graphTitleLabelMap = {
-    performance: <PerformanceLabel short={false} styleType="none" />,
+    performance: <PerformanceLabel short={false} variant="none" />,
     price: t`Current Price`,
-    feeApr: <FeeApyLabel styleType="none" />,
+    feeApr: <FeeApyLabel variant="none" />,
   };
 
   const poolsTabs = (
@@ -207,7 +207,7 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
         </div>
       </div>
       {isMobile ? (
-        <div className="flex justify-center border-t-stroke border-t-slate-600 px-16 py-12">{poolsTabs}</div>
+        <div className="flex justify-center border-t-1/2 border-t-slate-600 px-16 py-12">{poolsTabs}</div>
       ) : null}
     </div>
   );
@@ -265,6 +265,8 @@ const CHART_CURSOR_PROPS = {
   strokeDasharray: "2 2",
 };
 
+const AXIS_TICK_PROPS = { fill: "var(--color-slate-100)", fontSize: 12, fontWeight: 500 };
+
 const GraphChart = ({
   performanceSnapshots,
   priceSnapshots,
@@ -314,8 +316,6 @@ const GraphChart = ({
 
   const isMobile = usePoolsIsMobilePage();
 
-  const axisTick = useMemo(() => ({ fill: "var(--color-slate-100)", fontSize: 12, fontWeight: 500 }), []);
-
   const [data, setData] = useState<GraphData[]>([]);
 
   const prevMarketGraphType = usePrevious(marketGraphType);
@@ -335,7 +335,8 @@ const GraphChart = ({
   return (
     <div>
       <ResponsiveContainer height={isMobile ? 260 : 300} width="100%">
-        <AreaChart data={data} margin={GRAPH_MARGIN} key={marketGraphType} {...{ overflow: "visible" }}>
+        {/* @ts-expect-error */}
+        <AreaChart data={data} margin={GRAPH_MARGIN} key={marketGraphType} overflow="visible">
           <defs>
             <linearGradient id="market-graph-gradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="-45%" stopColor="var(--color-blue-300)" stopOpacity={0.5} />
@@ -364,7 +365,7 @@ const GraphChart = ({
             tickFormatter={(value) => format(value, "dd/MM")}
             tickLine={false}
             axisLine={false}
-            tick={axisTick}
+            tick={AXIS_TICK_PROPS}
             minTickGap={isMobile ? 16 : 32}
             tickMargin={8}
           />
@@ -373,7 +374,7 @@ const GraphChart = ({
             tickFormatter={formatAxisValue}
             tickLine={false}
             axisLine={false}
-            tick={axisTick}
+            tick={AXIS_TICK_PROPS}
             width={44}
           />
         </AreaChart>

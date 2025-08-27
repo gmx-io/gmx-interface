@@ -73,9 +73,8 @@ export function GlpCard({ processedData }: { processedData: ProcessedData | unde
             </div>
             <div>
               <Tooltip
-                handle={
-                  <span className="numbers">{`$${formatKeyAmount(processedData, "totalGlpRewardsUsd", USD_DECIMALS, 2, true)}`}</span>
-                }
+                handle={`$ ${formatKeyAmount(processedData, "totalGlpRewardsUsd", USD_DECIMALS, 2, true)}`}
+                handleClassName="numbers"
                 position="bottom-end"
                 content={
                   <>

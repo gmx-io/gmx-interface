@@ -249,7 +249,7 @@ export default function TokenSelector(props: Props) {
                     className="TokenSelector-tooltip"
                     handle={<div className="TokenSelector-tooltip-backing" />}
                     position={tokenIndex < filteredTokens.length / 2 ? "bottom" : "top"}
-                    styleType="none"
+                    variant="none"
                     closeOnDoubleClick
                     fitHandleWidth
                     renderContent={() => tokenState.message}
@@ -257,7 +257,7 @@ export default function TokenSelector(props: Props) {
                 )}
                 <div className="Token-info">
                   {showTokenImgInDropdown && (
-                    <TokenIcon symbol={token.symbol} className="" displaySize={40} importSize={40} badge={tokenBadge} />
+                    <TokenIcon symbol={token.symbol} displaySize={40} importSize={40} badge={tokenBadge} />
                   )}
                   <div className="items text-body-large ml-16 flex gap-4">
                     <div>

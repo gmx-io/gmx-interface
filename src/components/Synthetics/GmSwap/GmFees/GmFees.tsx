@@ -92,7 +92,8 @@ export function GmFees(p: Props) {
                       </div>
                     </div>
                   }
-                  value={<span className="numbers">{formatDeltaUsd(p.swapPriceImpact?.deltaUsd)!}</span>}
+                  value={formatDeltaUsd(p.swapPriceImpact?.deltaUsd)!}
+                  valueClassName="numbers"
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(
                     p.swapPriceImpact === undefined ? undefined : p.swapPriceImpact.deltaUsd
@@ -118,7 +119,8 @@ export function GmFees(p: Props) {
                         </div>
                       </div>
                     }
-                    value={<span className="numbers">{formatDeltaUsd(p.swapFee.deltaUsd)!}</span>}
+                    value={formatDeltaUsd(p.swapFee.deltaUsd)!}
+                    valueClassName="numbers"
                     showDollar={false}
                     textClassName={getPositiveOrNegativeClass(p.swapFee.deltaUsd)}
                   />
@@ -142,7 +144,8 @@ export function GmFees(p: Props) {
                       </div>
                     </div>
                   }
-                  value={<span className="numbers">{formatDeltaUsd(p.uiFee?.deltaUsd)!}</span>}
+                  value={formatDeltaUsd(p.uiFee?.deltaUsd)!}
+                  valueClassName="numbers"
                   showDollar={false}
                   textClassName="text-red-500"
                 />
@@ -165,7 +168,8 @@ export function GmFees(p: Props) {
                       </div>
                     </div>
                   }
-                  value={<span className="numbers">{formatDeltaUsd(p.shiftFee.deltaUsd)!}</span>}
+                  value={formatDeltaUsd(p.shiftFee.deltaUsd)!}
+                  valueClassName="numbers"
                   showDollar={false}
                 />
               )}

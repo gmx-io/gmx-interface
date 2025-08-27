@@ -129,7 +129,7 @@ export function GmList({
               className="w-full *:!text-body-medium md:w-[260px]"
               value={searchText}
               setValue={setSearchText}
-              placeholder="Search Pools"
+              placeholder={t`Search Pools`}
               autoFocus={false}
             />
             <div className="max-w-full">
@@ -185,12 +185,12 @@ export function GmList({
                   </TableTh>
                   <TableTh>
                     <Sorter {...getSorterProps("apy")}>
-                      <FeeApyLabel upperCase styleType="iconStroke" />
+                      <FeeApyLabel upperCase variant="iconStroke" />
                     </Sorter>
                   </TableTh>
                   <TableTh>
                     <Sorter {...getSorterProps("performance")}>
-                      <PerformanceLabel upperCase styleType="iconStroke" />
+                      <PerformanceLabel upperCase variant="iconStroke" />
                     </Sorter>
                   </TableTh>
                   <TableTh>
@@ -199,7 +199,7 @@ export function GmList({
                       className="normal-case"
                       position="bottom-end"
                       content={<Trans>Graph showing performance vs benchmark over the selected period.</Trans>}
-                      styleType="iconStroke"
+                      variant="iconStroke"
                     />
                   </TableTh>
                   <TableTh className="pr-16" />

@@ -47,7 +47,7 @@ export function InputSetting({
   const titleComponent = <span className="text-14 font-medium">{title}</span>;
 
   const titleWithDescription = description ? (
-    <TooltipWithPortal position="bottom" content={description} styleType="icon">
+    <TooltipWithPortal position="bottom" content={description} variant="icon">
       {titleComponent}
     </TooltipWithPortal>
   ) : (
@@ -91,9 +91,9 @@ export function SettingButton({
   info,
   disabled,
 }: {
-  title: string;
+  title: ReactNode;
   icon: ReactNode;
-  description: string;
+  description: ReactNode;
   active?: boolean;
   chip?: ReactNode;
   onClick: () => void;

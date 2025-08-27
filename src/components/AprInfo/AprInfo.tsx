@@ -49,20 +49,23 @@ export function AprInfo({
           <StatsTooltipRow
             showDollar={false}
             label={t`Base APY`}
-            value={<span className="numbers">{`${formatAmount(apy, 28, 2)}%`}</span>}
+            value={`${formatAmount(apy, 28, 2)}%`}
+            valueClassName="numbers"
           />
           {isIncentiveActive && (
             <StatsTooltipRow
               showDollar={false}
               label={t`Bonus APR`}
-              value={<span className="numbers">{`${formatAmount(incentiveApr, 28, 2)}%`}</span>}
+              value={`${formatAmount(incentiveApr, 28, 2)}%`}
+              valueClassName="numbers"
             />
           )}
           {isLidoApr && (
             <StatsTooltipRow
               showDollar={false}
               label={t`wstETH APR`}
-              value={<span className="numbers">{`${formatAmount(lidoApr, LIDO_APR_DECIMALS, 2)}%`}</span>}
+              value={`${formatAmount(lidoApr, LIDO_APR_DECIMALS, 2)}%`}
+              valueClassName="numbers"
             />
           )}
         </div>

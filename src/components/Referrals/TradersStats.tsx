@@ -105,49 +105,40 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
             <>
               <StatsTooltipRow
                 label={t`V1 Arbitrum`}
-                value={
-                  <span className="numbers">{getUSDValue(arbitrumData?.traderReferralTotalStats.v1Data.volume)}</span>
-                }
+                value={getUSDValue(arbitrumData?.traderReferralTotalStats.v1Data.volume)}
+                valueClassName="numbers"
               />
               <StatsTooltipRow
                 label={t`V1 Avalanche`}
-                value={
-                  <span className="numbers">{getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.volume)}</span>
-                }
+                value={getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.volume)}
+                valueClassName="numbers"
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V1 Avalanche Fuji`}
-                  value={
-                    <span className="numbers">{getUSDValue(fujiData?.traderReferralTotalStats.v1Data.volume)}</span>
-                  }
+                  value={getUSDValue(fujiData?.traderReferralTotalStats.v1Data.volume)}
+                  valueClassName="numbers"
                 />
               )}
               <StatsTooltipRow
                 label={t`V2 Arbitrum`}
-                value={
-                  <span className="numbers">{getUSDValue(arbitrumData?.traderReferralTotalStats.v2Data.volume)}</span>
-                }
+                value={getUSDValue(arbitrumData?.traderReferralTotalStats.v2Data.volume)}
+                valueClassName="numbers"
               />
               <StatsTooltipRow
                 label={t`V2 Avalanche`}
-                value={
-                  <span className="numbers">{getUSDValue(avalancheData?.traderReferralTotalStats.v2Data.volume)}</span>
-                }
+                value={getUSDValue(avalancheData?.traderReferralTotalStats.v2Data.volume)}
+                valueClassName="numbers"
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V2 Avalanche Fuji`}
-                  value={
-                    <span className="numbers">{getUSDValue(fujiData?.traderReferralTotalStats.v2Data.volume)}</span>
-                  }
+                  value={getUSDValue(fujiData?.traderReferralTotalStats.v2Data.volume)}
+                  valueClassName="numbers"
                 />
               )}
               <div className="Tooltip-divider" />
-              <StatsTooltipRow
-                label={t`Total`}
-                value={<span className="numbers">{getUSDValue(total?.traderVolume)}</span>}
-              />
+              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.traderVolume)} valueClassName="numbers" />
             </>
           }
         />
@@ -159,61 +150,40 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
             <>
               <StatsTooltipRow
                 label={t`V1 Arbitrum`}
-                value={
-                  <span className="numbers">
-                    {getUSDValue(arbitrumData?.traderReferralTotalStats.v1Data.discountUsd)}
-                  </span>
-                }
+                value={getUSDValue(arbitrumData?.traderReferralTotalStats.v1Data.discountUsd)}
+                valueClassName="numbers"
               />
               <StatsTooltipRow
                 label={t`V1 Avalanche`}
-                value={
-                  <span className="numbers">
-                    {getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.discountUsd)}
-                  </span>
-                }
+                value={getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.discountUsd)}
+                valueClassName="numbers"
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V1 Avalanche Fuji`}
-                  value={
-                    <span className="numbers">
-                      {getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.discountUsd)}
-                    </span>
-                  }
+                  value={getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.discountUsd)}
+                  valueClassName="numbers"
                 />
               )}
               <StatsTooltipRow
                 label={t`V2 Arbitrum`}
-                value={
-                  <span className="numbers">
-                    {getUSDValue(arbitrumData?.traderReferralTotalStats.v2Data.discountUsd)}
-                  </span>
-                }
+                value={getUSDValue(arbitrumData?.traderReferralTotalStats.v2Data.discountUsd)}
+                valueClassName="numbers"
               />
               <StatsTooltipRow
                 label={t`V2 Avalanche`}
-                value={
-                  <span className="numbers">
-                    {getUSDValue(avalancheData?.traderReferralTotalStats.v2Data.discountUsd)}
-                  </span>
-                }
+                value={getUSDValue(avalancheData?.traderReferralTotalStats.v2Data.discountUsd)}
+                valueClassName="numbers"
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V2 Avalanche Fuji`}
-                  value={
-                    <span className="numbers">
-                      {getUSDValue(fujiData?.traderReferralTotalStats.v2Data.discountUsd)}
-                    </span>
-                  }
+                  value={getUSDValue(fujiData?.traderReferralTotalStats.v2Data.discountUsd)}
+                  valueClassName="numbers"
                 />
               )}
               <div className="Tooltip-divider" />
-              <StatsTooltipRow
-                label={t`Total`}
-                value={<span className="numbers">{getUSDValue(total?.discountUsd)}</span>}
-              />
+              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.discountUsd)} valueClassName="numbers" />
             </>
           }
         />
@@ -287,7 +257,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (
-                      <TableTr key={rebate.id} hoverable={false}>
+                      <TableTr key={rebate.id}>
                         <TableTd data-label="Date">{formatDate(rebate.timestamp)}</TableTd>
                         <TableTd data-label="Type">V1 Airdrop</TableTd>
                         <TableTd data-label="Amount" className="Rebate-amount">
@@ -327,16 +297,13 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                                       key={tokenAddress}
                                       showDollar={false}
                                       label={token.symbol}
-                                      value={
-                                        <span className="numbers">
-                                          {formatBalanceAmount(
-                                            amountsByTokens[tokenAddress],
-                                            token.decimals,
-                                            undefined,
-                                            { isStable: token.isStable }
-                                          )}
-                                        </span>
-                                      }
+                                      value={formatBalanceAmount(
+                                        amountsByTokens[tokenAddress],
+                                        token.decimals,
+                                        undefined,
+                                        { isStable: token.isStable }
+                                      )}
+                                      valueClassName="numbers"
                                     />
                                   );
                                 })}

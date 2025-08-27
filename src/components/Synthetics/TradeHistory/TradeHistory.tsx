@@ -103,7 +103,7 @@ export function TradeHistory(p: Props) {
         <div className="size-16">
           <PnlAnalysisIcon />
         </div>
-        <span className="text-sm font-medium">
+        <span className="text-body-small font-medium">
           <Trans>PnL Analysis</Trans>
         </span>
       </Button>
@@ -143,9 +143,7 @@ export function TradeHistory(p: Props) {
         <div className="size-16">
           <DownloadIcon />
         </div>
-        <span className="text-sm font-medium">
-          <Trans>CSV</Trans>
-        </span>
+        <span className="text-body-small font-medium">CSV</span>
       </Button>
     </>
   );
@@ -192,7 +190,7 @@ export function TradeHistory(p: Props) {
               </TableTh>
               <TableTh className="TradeHistorySynthetics-pnl-fees-header w-[12%]">
                 <TooltipWithPortal
-                  styleType="iconStroke"
+                  variant="iconStroke"
                   content={<Trans>Realized PnL after fees and price impact.</Trans>}
                 >
                   <Trans>RPnL</Trans>

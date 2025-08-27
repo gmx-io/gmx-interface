@@ -31,11 +31,7 @@ export function ClaimableCardUI({ title, style, sections }: Props) {
       style={style}
     >
       <div className="text-[11px] font-medium uppercase text-typography-secondary">{title}</div>
-      <div
-        className={cx("grid grid-cols-2", {
-          "grid-cols-1": !isHorizontal,
-        })}
-      >
+      <div className={cx("grid", isHorizontal ? "grid-cols-2" : "grid-cols-1")}>
         <Section title={t`Positive Funding Fees`} {...section1} />
         <Section title={t`Price Impact Rebates`} {...section2} />
       </div>
@@ -56,7 +52,8 @@ function Section({ buttonText, onButtonClick, tooltipText, title, usd }: Section
         <span className={cx("font-medium", { positive: usd > 0n })}>
           {tooltipText ? (
             <Tooltip
-              handle={<span className="numbers">{usdFormatted}</span>}
+              handle={usdFormatted}
+              handleClassName="numbers"
               position="bottom-start"
               renderContent={renderTooltipContent}
             />

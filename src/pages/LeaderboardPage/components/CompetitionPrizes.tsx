@@ -144,7 +144,7 @@ export function CompetitionPrizes({
   }, [accounts, competitionType, hasEnded, leaderboardPageKey]);
 
   return (
-    <BodyScrollFadeContainer className="flex border-b-stroke border-slate-600">
+    <BodyScrollFadeContainer className="flex border-b-1/2 border-slate-600">
       {prizes.map((prize) => (
         <CompetitionPrize prize={prize} key={prize.key} />
       ))}
@@ -154,7 +154,7 @@ export function CompetitionPrizes({
 
 function CompetitionPrize({ prize }: { prize: Prize }) {
   return (
-    <div className="flex grow items-center justify-between gap-8 border-r-stroke border-slate-600 bg-slate-900 p-20 last:border-r-0">
+    <div className="flex grow items-center justify-between gap-8 border-r-1/2 border-slate-600 bg-slate-900 p-20 last:border-r-0">
       <div className="flex items-center gap-12">
         <img className="size-52" src={iconByType[prize.imgType]} />
 
@@ -214,13 +214,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
   if (winners.length === 0) return null;
 
   return winners.length > 1 ? (
-    <TooltipWithPortal
-      tooltipClassName=""
-      position="bottom"
-      handle={handle}
-      renderContent={renderTooltipContent}
-      styleType="none"
-    />
+    <TooltipWithPortal position="bottom" handle={handle} renderContent={renderTooltipContent} variant="none" />
   ) : (
     handle
   );

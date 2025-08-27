@@ -62,7 +62,6 @@ interface Props {
   contentClassName?: string;
   scrollIntoViewOnMobile?: boolean;
   withToggleSwitch?: boolean;
-  row?: boolean;
   handleClassName?: string;
 }
 
@@ -79,7 +78,6 @@ export function ExpandableRow({
   contentClassName,
   scrollIntoViewOnMobile = false,
   withToggleSwitch = false,
-  row = true,
   handleClassName = "text-typography-secondary",
 }: Props) {
   const previousHasError = usePrevious(hasError);
@@ -136,33 +134,16 @@ export function ExpandableRow({
     <div className={cx("min-h-16", className)}>
       <AnimatePresence initial={false}>
         <div key="handle" className={cx({ "mb-14": open })}>
-          {row ? (
-            <SyntheticsInfoRow
-              className={cx("group relative !items-center gmx-hover:text-blue-300", {
-                "cursor-not-allowed": disabled,
-              })}
-              onClick={disabled ? undefined : handleOnClick}
-              label={
-                <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">
-                  {label}
-                </span>
-              }
-              value={value}
-            />
-          ) : (
-            <SyntheticsInfoRow
-              className={cx("group relative !items-center gmx-hover:text-blue-300", {
-                "cursor-not-allowed": disabled,
-              })}
-              onClick={disabled ? undefined : handleOnClick}
-              label={
-                <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">
-                  {label}
-                </span>
-              }
-              value={value}
-            />
-          )}
+          <SyntheticsInfoRow
+            className={cx("group relative !items-center gmx-hover:text-blue-300", {
+              "cursor-not-allowed": disabled,
+            })}
+            onClick={disabled ? undefined : handleOnClick}
+            label={
+              <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">{label}</span>
+            }
+            value={value}
+          />
         </div>
         {open && (
           <motion.div

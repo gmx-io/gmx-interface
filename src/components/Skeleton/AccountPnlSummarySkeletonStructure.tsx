@@ -4,7 +4,7 @@ import { TableTd, TableTr } from "components/Table/Table";
 
 export default function AccountPnlSummarySkeletonStructure() {
   return (
-    <TableTr hoverable={false}>
+    <TableTr>
       <TableTd>
         <Skeleton width={60} />
       </TableTd>

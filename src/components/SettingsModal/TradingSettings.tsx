@@ -65,8 +65,8 @@ export function TradingSettings({
             </div>
 
             <SettingButton
-              title="Classic"
-              description="On-chain signing for every transaction."
+              title={<Trans>Classic</Trans>}
+              description={<Trans>On-chain signing for every transaction.</Trans>}
               info={
                 <Trans>
                   Your wallet, your keys.
@@ -82,8 +82,8 @@ export function TradingSettings({
             />
 
             <SettingButton
-              title="Express"
-              description="High execution reliability using premium RPCs."
+              title={<Trans>Express</Trans>}
+              description={<Trans>High execution reliability using premium RPCs.</Trans>}
               info={
                 <Trans>
                   Your wallet, your keys.
@@ -105,8 +105,8 @@ export function TradingSettings({
             />
 
             <SettingButton
-              title="Express + One-Click"
-              description="CEX-like experience with Express reliability."
+              title={<Trans>Express + One-Click</Trans>}
+              description={<Trans>CEX-like experience with Express reliability.</Trans>}
               icon={<OneClickIcon className="size-28" />}
               disabled={isExpressTradingDisabled}
               info={
@@ -163,7 +163,8 @@ export function TradingSettings({
           title={<Trans>Default Allowed Slippage</Trans>}
           description={
             <Trans>
-              The maximum allowed percentage difference between the mark price and the execution price for market orders.
+              The maximum allowed percentage difference between the mark price and the execution price for market
+              orders.
             </Trans>
           }
           defaultValue={DEFAULT_SLIPPAGE_AMOUNT}
@@ -198,7 +199,9 @@ export function TradingSettings({
                 </Trans>
                 <br />
                 <br />
-                <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#network-fee-buffer">Read more</ExternalLink>
+                <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#network-fee-buffer">
+                  <Trans>Read more</Trans>
+                </ExternalLink>
               </div>
             }
             defaultValue={30}
@@ -212,18 +215,21 @@ export function TradingSettings({
         <ToggleSwitch isChecked={settings.isAutoCancelTPSL} setIsChecked={settings.setIsAutoCancelTPSL}>
           <TooltipWithPortal
             content={
-              <div onClick={(e) => e.stopPropagation()}>
+              <div>
                 <Trans>
-                  TP/SL orders will be automatically cancelled when the associated position is
-                  completely closed. This will only affect newly created TP/SL orders since the setting was enabled.
+                  TP/SL orders will be automatically cancelled when the associated position is completely closed. This
+                  will only affect newly created TP/SL orders since the setting was enabled.
                 </Trans>
                 <br />
                 <br />
-                <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">Read more</ExternalLink>.
+                <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">
+                  <Trans>Read more</Trans>
+                </ExternalLink>
+                .
               </div>
             }
             handle={<Trans>Auto-Cancel TP/SL</Trans>}
-            styleType="icon"
+            variant="icon"
             className="font-medium"
           />
         </ToggleSwitch>

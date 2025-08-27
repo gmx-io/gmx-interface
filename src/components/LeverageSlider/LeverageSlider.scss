@@ -77,35 +77,8 @@ $gray: var(--color-slate-600);
     text-align: left;
   }
 
-  // .rc-slider-mark-text:first-child {
-  //   left: -2px !important;
-  //   transform: none !important;
-  // }
-
-  // .rc-slider-mark-text:last-child {
-  //   right: -2px !important;
-  //   left: unset !important;
-  //   transform: none !important;
-  // }
-
   .rc-slider-mark-text:hover,
   .rc-slider-mark-text-active:hover {
     opacity: 1;
   }
 }
-
-// dotStyle={{
-//   border: "1.5px solid var(--color-blue-300)",
-//   width: "4px",
-//   height: "4px",
-//   borderRadius: "50%",
-//   backgroundColor: "var(--color-slate-900)",
-//   boxSizing: "content-box",
-//   top: "-1px",
-// }}
-// trackStyle={{
-//   height: "4px",
-// }}
-// railStyle={{
-//   height: "4px",
-// }}

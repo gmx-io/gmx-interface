@@ -91,7 +91,7 @@ export function GmxCard({
     <AppCard>
       <AppCardSplit
         className="grid h-full grid-cols-[1fr_minmax(250px,auto)] max-md:grid-cols-1"
-        leftClassName="max-md:border-b-stroke max-md:border-r-0"
+        leftClassName="max-md:border-b-1/2 max-md:border-r-0"
         left={
           <>
             <AppCardSection>
@@ -130,11 +130,8 @@ export function GmxCard({
                     <TooltipComponent
                       position="bottom-end"
                       className="whitespace-nowrap"
-                      handle={
-                        <span className="numbers">
-                          {"$" + formatAmount(gmxPrice, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
-                        </span>
-                      }
+                      handle={"$ " + formatAmount(gmxPrice, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
+                      handleClassName="numbers"
                       content={
                         <>
                           <StatsTooltipRow
@@ -160,9 +157,8 @@ export function GmxCard({
                 <div>
                   <TooltipComponent
                     position="bottom-end"
-                    handle={
-                      <span className="numbers">{formatAmountHuman(totalGmxSupply, GMX_DECIMALS, false, 2)}</span>
-                    }
+                    handle={formatAmountHuman(totalGmxSupply, GMX_DECIMALS, false, 2)}
+                    handleClassName="numbers"
                     content={t`Total circulating supply of GMX tokens.`}
                   />
                 </div>
@@ -175,7 +171,8 @@ export function GmxCard({
                   <TooltipComponent
                     position="bottom-end"
                     tooltipClassName="!max-w-[450px]"
-                    handle={<span className="numbers">{formattedTotalStakedGmxUsd}</span>}
+                    handle={formattedTotalStakedGmxUsd}
+                    handleClassName="numbers"
                     content={
                       <>
                         <StatsTooltipRow

@@ -73,7 +73,7 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
   fitHandleWidth?: boolean;
   closeOnDoubleClick?: boolean;
 
-  styleType?: "icon" | "iconStroke" | "underline" | "none" | "svgUnderline";
+  variant?: "icon" | "iconStroke" | "underline" | "none";
 };
 
 export type TooltipProps<T extends ElementType | undefined> = InnerTooltipProps<T> &
@@ -100,7 +100,7 @@ export default function Tooltip<T extends ElementType>({
   shouldStopPropagation,
   fitHandleWidth,
   closeOnDoubleClick,
-  styleType = "underline",
+  variant = "underline",
   ...containerProps
 }: TooltipProps<T>) {
   const [visible, setVisible] = useState(false);
@@ -235,7 +235,7 @@ export default function Tooltip<T extends ElementType>({
     <span {...containerProps} className={cx("Tooltip", className)} style={style}>
       <span
         ref={refs.setReference}
-        className={cx("Tooltip-handle group", { "Tooltip-underline": styleType === "underline" }, handleClassName)}
+        className={cx("Tooltip-handle group", handleClassName)}
         style={handleStyle}
         {...getReferenceProps({
           onClick: (e: MouseEvent) => {
@@ -251,9 +251,9 @@ export default function Tooltip<T extends ElementType>({
           ) : (
             <>{handle ?? children}</>
           )}
-          {styleType === "icon" && <InfoIcon className="mb-1 h-16 w-16" />}
-          {styleType === "iconStroke" && <InfoIconStroke className="mb-1 h-16 w-16" />}
-          {styleType === "svgUnderline" && (
+          {variant === "icon" && <InfoIcon className="mb-1 h-16 w-16" />}
+          {variant === "iconStroke" && <InfoIconStroke className="mb-1 h-16 w-16" />}
+          {variant === "underline" && (
             <svg className="absolute -bottom-0 left-0 h-1 w-full overflow-hidden">
               <line
                 stroke="currentColor"

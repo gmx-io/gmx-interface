@@ -28,29 +28,20 @@ export function EntryPriceRow() {
       value={
         nextPositionValues?.nextEntryPrice || selectedPosition?.entryPrice ? (
           <ValueTransition
-            from={
-              <span className="numbers">
-                {formatUsdPrice(selectedPosition?.entryPrice, {
-                  visualMultiplier: toToken?.visualMultiplier,
-                })}
-              </span>
-            }
-            to={
-              <span className="numbers">
-                {formatUsdPrice(nextPositionValues?.nextEntryPrice, {
-                  visualMultiplier: toToken?.visualMultiplier,
-                })}
-              </span>
-            }
-          />
-        ) : (
-          <span className="numbers">
-            {formatUsdPrice(markPrice, {
+            from={formatUsdPrice(selectedPosition?.entryPrice, {
               visualMultiplier: toToken?.visualMultiplier,
             })}
-          </span>
+            to={formatUsdPrice(nextPositionValues?.nextEntryPrice, {
+              visualMultiplier: toToken?.visualMultiplier,
+            })}
+          />
+        ) : (
+          formatUsdPrice(markPrice, {
+            visualMultiplier: toToken?.visualMultiplier,
+          })
         )
       }
+      valueClassName="numbers"
     />
   );
 }

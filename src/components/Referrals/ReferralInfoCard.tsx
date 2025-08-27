@@ -37,7 +37,8 @@ function ReferralInfoCard({
             <Tooltip
               position="bottom"
               className="whitespace-nowrap"
-              handle={<span className="numbers">{value}</span>}
+              handle={value}
+              handleClassName="numbers"
               renderContent={() => tooltipContent}
             />
           )}

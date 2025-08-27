@@ -75,7 +75,7 @@ export default function ChartTokenSelector(props: Props) {
   return (
     <SelectorBase
       popoverPlacement="bottom-start"
-      handleClassName={cx("", {
+      handleClassName={cx({
         "mr-24": oneRowLabels === false,
         "py-0 md:h-40": isSwap,
       })}
@@ -285,7 +285,7 @@ function MarketsList() {
 
       {!isMobile && (
         <>
-          <div className="flex flex-col justify-between gap-12 border-b-stroke border-slate-600 p-12">
+          <div className="flex flex-col justify-between gap-12 border-b-1/2 border-slate-600 p-12">
             <SearchInput
               className="w-full"
               value={searchKeyword}
@@ -305,7 +305,7 @@ function MarketsList() {
           "max-h-[444px] overflow-x-auto": !isMobile,
         })}
       >
-        <table className="text-sm w-full border-separate border-spacing-0">
+        <table className="text-body-small w-full border-separate border-spacing-0">
           <thead>
             <tr>
               <th className={cx(thClassName, isMobile ? "min-w-[18ch]" : "min-w-[28ch]")} colSpan={2}>
@@ -586,7 +586,7 @@ function MarketListItem({
           className={cx("pl-14 pr-6 text-center text-typography-secondary", rowVerticalPadding)}
           onClick={handleFavoriteClick}
         >
-          <FavoriteStar isFavorite={isFavorite} className="!h-12 !w-12" />
+          <FavoriteStar isFavorite={isFavorite} className="!size-12" />
         </td>
         <td
           className={cx("text-body-medium w-full", rowVerticalPadding, rowHorizontalPadding)}
@@ -628,7 +628,7 @@ function MarketListItem({
         className={cx("px-12 text-center text-typography-secondary", rowVerticalPadding)}
         onClick={handleFavoriteClick}
       >
-        <FavoriteStar isFavorite={isFavorite} className="!h-12 !w-12" />
+        <FavoriteStar isFavorite={isFavorite} className="!size-12" />
       </td>
       <td className={cx("pl-4 text-[13px]", rowVerticalPadding, isMobile ? "pr-2" : "pr-8")}>
         <div className={cx("flex", isMobile ? "items-start" : "items-center")}>
@@ -667,8 +667,8 @@ function MarketListItem({
             </span>
           </td>
           <td className={cx(tdClassName, "pl-4 numbers")}>
-            <span className="mb-2 inline-flex items-center gap-6">
-              <ShortIcon width={12} className="relative top-1 opacity-70" />
+            <span className="inline-flex items-center gap-6">
+              <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />
               {formatAmountHuman(openInterestShort ?? 0n, USD_DECIMALS, true)}
             </span>
           </td>
