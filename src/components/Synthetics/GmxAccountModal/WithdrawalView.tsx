@@ -914,9 +914,9 @@ export const WithdrawalView = () => {
       {shouldShowMinRecommendedAmount && (
         <AlertInfoCard type="info" className="my-4">
           <Trans>
-            You're withdrawing {selectedToken?.symbol}, your gas token. It's recommended to keep{" "}
-            {formatUsd(gasTokenBuffer, { displayDecimals: 0 })} in {selectedToken?.symbol} for transactions, or switch
-            your gas token in settings.
+            You're withdrawing {selectedToken?.symbol}, your gas token. Gas is required for this withdrawal, so please
+            keep at least {formatUsd(gasTokenBuffer, { displayDecimals: 0 })} in {selectedToken?.symbol} or switch your
+            gas token in settings.
           </Trans>
         </AlertInfoCard>
       )}
