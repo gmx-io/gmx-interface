@@ -214,13 +214,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
   if (winners.length === 0) return null;
 
   return winners.length > 1 ? (
-    <TooltipWithPortal
-      tooltipClassName=""
-      position="bottom"
-      handle={handle}
-      renderContent={renderTooltipContent}
-      styleType="none"
-    />
+    <TooltipWithPortal position="bottom" handle={handle} renderContent={renderTooltipContent} variant="none" />
   ) : (
     handle
   );

@@ -48,7 +48,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
                 <TooltipWithPortal
                   tooltipClassName="cursor-help *:cursor-auto"
                   content={t`The total realized and unrealized profit and loss for the period, including fees and price impact.`}
-                  styleType="iconStroke"
+                  variant="iconStroke"
                 >
                   <Trans>PnL ($)</Trans>
                 </TooltipWithPortal>
@@ -56,7 +56,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
               <TableTh>
                 <TooltipWithPortal
                   tooltipClassName="cursor-help *:cursor-auto"
-                  styleType="iconStroke"
+                  variant="iconStroke"
                   content={
                     <Trans>
                       The PnL ($) compared to the capital used.
@@ -100,7 +100,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
       <TableTd className="numbers">{formatUsd(row.volume, { maxThreshold: null })}</TableTd>
       <TableTd>
         <TooltipWithPortal
-          styleType="none"
+          variant="none"
           tooltipClassName="cursor-help *:cursor-auto"
           className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
             "text-green-500 decoration-green-500/50": row.pnlUsd > 0,
@@ -142,7 +142,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
       </TableTd>
       <TableTd>
         <TooltipWithPortal
-          styleType="none"
+          variant="none"
           tooltipClassName="cursor-help *:cursor-auto"
           className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
             "text-green-500 decoration-green-500/50": row.pnlBps > 0n,

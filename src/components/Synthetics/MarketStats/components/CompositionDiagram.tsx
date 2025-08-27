@@ -120,7 +120,7 @@ export function CompositionChart({ items, label }: CompositionChartProps) {
               className="block h-full w-full"
               tooltipClassName="!min-w-fit"
               position="bottom"
-              styleType="none"
+              variant="none"
             />
           </div>
         ))}

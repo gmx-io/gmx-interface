@@ -143,7 +143,8 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
               data={clusteredPnlData}
               barCategoryGap="25%"
               margin={chartMargin}
-              {...{ overflow: "visible" }}
+              // @ts-expect-error
+              overflow="visible"
             >
               <RechartsTooltip
                 cursor={CHART_CURSOR_PROPS}

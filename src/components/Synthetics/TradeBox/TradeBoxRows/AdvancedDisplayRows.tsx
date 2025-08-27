@@ -266,10 +266,8 @@ export function TradeBoxAdvancedGroups({
       onToggle={toggleAdvancedDisplay}
       disableCollapseOnError={false}
       hasError={hasError}
-      className=""
       contentClassName="flex flex-col gap-14"
       scrollIntoViewOnMobile
-      row={false}
     >
       {(isLimit || isTrigger || isTwap) && !isSwap && (
         <>

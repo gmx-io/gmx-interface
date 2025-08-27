@@ -194,7 +194,7 @@ const TableHeaderCell = memo(
                 handle={<span className="whitespace-nowrap">{title}</span>}
                 position={tooltipPosition || "bottom"}
                 content={<div onClick={stopPropagation}>{tooltip}</div>}
-                styleType="iconStroke"
+                variant="iconStroke"
               />
             ) : (
               <span className="whitespace-nowrap">{title}</span>
@@ -211,7 +211,7 @@ const TableHeaderCell = memo(
             handle={<span className="whitespace-nowrap">{title}</span>}
             position={tooltipPosition || "bottom"}
             content={<div onClick={stopPropagation}>{tooltip}</div>}
-            styleType="iconStroke"
+            variant="iconStroke"
           />
         ) : (
           <span className="whitespace-nowrap">{title}</span>
@@ -366,7 +366,7 @@ const TableRow = memo(
             position={index > 9 ? "top" : "bottom"}
             className="nowrap"
             renderContent={renderPnlTooltipContent}
-            styleType="underline"
+            variant="underline"
           />
         </TableTd>
         <TableTd>
@@ -393,7 +393,7 @@ const TableRow = memo(
             position={index > 9 ? "top" : "bottom"}
             className="nowrap"
             renderContent={renderPositionTooltip}
-            styleType="underline"
+            variant="underline"
           />
         </TableTd>
         <TableTd className="numbers first-letter:text-typography-secondary">
@@ -410,7 +410,7 @@ const TableRow = memo(
             position={index > 9 ? "top-end" : "bottom-end"}
             renderContent={renderSizeTooltip}
             tooltipClassName="Table-SizeTooltip"
-            styleType="underline"
+            variant="underline"
           />
         </TableTd>
         <TableTd className="numbers">
@@ -431,7 +431,7 @@ const TableRow = memo(
                   })}
                 </span>
               }
-              styleType="underline"
+              variant="underline"
             />
           ) : (
             <TooltipWithPortal
@@ -439,7 +439,7 @@ const TableRow = memo(
               renderContent={renderNaLiquidationTooltip}
               handle={t`NA`}
               handleClassName="numbers"
-              styleType="underline"
+              variant="underline"
             />
           )}
         </TableTd>
@@ -480,7 +480,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
         handleClassName="text-typography-secondary"
         handle={t`NA`}
         renderContent={tooltipContent}
-        styleType="underline"
+        variant="underline"
       />
     );
 

@@ -227,7 +227,7 @@ export function TradingSettings({
               </div>
             }
             handle={<Trans>Auto-Cancel TP/SL</Trans>}
-            styleType="icon"
+            variant="icon"
             className="font-medium"
           />
         </ToggleSwitch>

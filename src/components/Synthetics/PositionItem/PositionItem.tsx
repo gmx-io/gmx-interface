@@ -509,14 +509,12 @@ export function PositionItem(p: Props) {
         </TableTd>
         <TableTd>
           {/* markPrice */}
-          {
-            <span className="numbers">
-              {formatUsd(p.position.markPrice, {
-                displayDecimals: marketDecimals,
-                visualMultiplier: p.position.indexToken.visualMultiplier,
-              })}
-            </span>
-          }
+          <span className="numbers">
+            {formatUsd(p.position.markPrice, {
+              displayDecimals: marketDecimals,
+              visualMultiplier: p.position.indexToken.visualMultiplier,
+            })}
+          </span>
         </TableTd>
         <TableTd>
           {/* liqPrice */}
@@ -562,7 +560,7 @@ export function PositionItem(p: Props) {
 
     return (
       <AppCard dataQa="position-item">
-        <AppCardSection onClick={() => p.onSelectPositionClick?.()}>
+        <AppCardSection onClick={p.onSelectPositionClick}>
           <div className="text-body-medium flex items-center gap-8">
             <span
               className={cx("text-body-medium relative flex items-center gap-4 font-medium", {
@@ -570,11 +568,11 @@ export function PositionItem(p: Props) {
                   isCurrentMarket,
               })}
             >
-              <TokenIcon className="" symbol={p.position.indexToken?.symbol} displaySize={16} importSize={24} />
+              <TokenIcon symbol={p.position.indexToken?.symbol} displaySize={16} importSize={24} />
               {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
             </span>
             <div className="text-body-small flex items-center gap-4">
-              <span className={cx("rounded-4 leading-1")}>{formatLeverage(p.position.leverage) || "..."}</span>
+              <span className="rounded-4 leading-1">{formatLeverage(p.position.leverage) || "..."}</span>
               <span
                 className={cx("Exchange-list-side", {
                   positive: p.position.isLong,

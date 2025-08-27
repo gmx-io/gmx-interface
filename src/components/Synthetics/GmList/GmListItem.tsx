@@ -267,7 +267,6 @@ export function GmListItem({
           decimals={token.decimals}
           usd={totalSupplyUsd}
           symbol={token.symbol}
-          className=""
           usdOnTop
         />
       </TableTd>

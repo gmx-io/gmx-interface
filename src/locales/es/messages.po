@@ -1218,8 +1218,8 @@ msgstr "Dado que la garantía de tu posición está en {symbol}, con un valor in
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-msgid "CSV"
-msgstr "CSV"
+#~ msgid "CSV"
+#~ msgstr "CSV"
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
@@ -1681,6 +1681,7 @@ msgstr ""
 
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterBase.tsx
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Search Market"
@@ -2130,6 +2131,8 @@ msgstr "Comprar GMX en {chainName}"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
+#: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
@@ -3216,6 +3219,7 @@ msgid "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only recei
 msgstr "Cantidad de intercambio de {0} a {1} excede {2} cantidad aceptable. Solo se puede recibir {3}."
 
 #: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Enter referral code"
 msgstr ""
 
@@ -3326,6 +3330,10 @@ msgstr "Blueberry Pulse"
 #: src/components/Synthetics/BotanixBanner/BotanixBanner.tsx
 msgid "Please switch to the <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5></3> deployment for those features."
 msgstr "Por favor, cambia al despliegue de <0><1/><2>Arbitrum</2></0> o <3><4/><5>Avalanche</5></3> para esas características."
+
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Search Pools"
+msgstr ""
 
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/SideNav/LanguageNavItem.tsx
@@ -5310,6 +5318,7 @@ msgstr "Falló la actualización del código de referido."
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
+#: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TVChart/Chart.tsx
 #: src/pages/Dashboard/GlpCard.tsx
@@ -5603,6 +5612,8 @@ msgstr "Editar Orden"
 
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "Search Pool"
 msgstr "Buscar Reserva"
 

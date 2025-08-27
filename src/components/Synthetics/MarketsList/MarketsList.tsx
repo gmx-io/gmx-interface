@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useMemo, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
@@ -67,7 +67,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
             value={searchText}
             setValue={setSearchText}
             className="*:!text-body-medium"
-            placeholder="Search Market"
+            placeholder={t`Search Market`}
             autoFocus={false}
           />
         </div>

@@ -405,6 +405,10 @@ function fontComponentsPlugin({ addComponents, addBase }) {
     },
     ".label": {
       fontWeight: 500,
+      color: "var(--color-slate-100)",
+      "& a": {
+        color: "var(--color-slate-100)",
+      },
     },
   });
 }

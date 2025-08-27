@@ -279,7 +279,7 @@ const TableHeaderCell = memo(
                 handle={<span className="whitespace-nowrap">{title}</span>}
                 position={tooltipPosition || "bottom"}
                 content={<div onClick={stopPropagation}>{tooltip}</div>}
-                styleType="iconStroke"
+                variant="iconStroke"
               />
             ) : (
               <span className="whitespace-nowrap">{title}</span>
@@ -296,7 +296,7 @@ const TableHeaderCell = memo(
             handle={<span className="whitespace-nowrap">{title}</span>}
             position={tooltipPosition || "bottom"}
             content={<div onClick={stopPropagation}>{tooltip}</div>}
-            styleType="iconStroke"
+            variant="iconStroke"
           />
         ) : (
           <span className="whitespace-nowrap">{title}</span>
@@ -357,7 +357,7 @@ const TableRow = memo(
             className="whitespace-nowrap"
             renderContent={renderPnlTooltipContent}
             handleClassName={cx("numbers", getSignedValueClassName(account.totalQualifyingPnl))}
-            styleType="underline"
+            variant="underline"
           />
         </TableTd>
         <TableTd>
@@ -379,7 +379,7 @@ const TableRow = memo(
                 valueClassName="numbers"
               />
             )}
-            styleType="underline"
+            variant="underline"
           />
         </TableTd>
         <TableTd
@@ -416,7 +416,7 @@ const TableRow = memo(
             handleClassName={cx("text-typography-primary numbers", {
               "text-typography-secondary": account.wins === 0 && account.losses === 0,
             })}
-            styleType="underline"
+            variant="underline"
           />
         </TableTd>
       </TableTr>
@@ -456,7 +456,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
         handleClassName="text-typography-secondary"
         handle={t`NA`}
         renderContent={tooltipContent}
-        styleType="underline"
+        variant="underline"
       />
     );
 

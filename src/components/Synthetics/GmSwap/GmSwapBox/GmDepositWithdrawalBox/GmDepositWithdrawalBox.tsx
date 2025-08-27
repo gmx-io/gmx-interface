@@ -663,7 +663,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
     if (submitState.errorDescription) {
       return (
-        <TooltipWithPortal content={submitState.errorDescription} styleType="none">
+        <TooltipWithPortal content={submitState.errorDescription} variant="none">
           {btn}
         </TooltipWithPortal>
       );

@@ -288,7 +288,7 @@ function MarketListItem(props: {
           className="TokenSelector-tooltip"
           handle={<div className="TokenSelector-tooltip-backing" />}
           position={isInFirstHalf ? "bottom" : "top"}
-          styleType="none"
+          variant="none"
           closeOnDoubleClick
           fitHandleWidth
           renderContent={() => state.message}

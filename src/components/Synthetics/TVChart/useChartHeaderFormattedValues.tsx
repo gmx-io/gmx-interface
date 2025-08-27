@@ -26,8 +26,8 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import LongIcon from "img/new-long.svg?react";
-import ShortIcon from "img/new-short.svg?react";
+import LongIcon from "img/long.svg?react";
+import ShortIcon from "img/short.svg?react";
 
 import { AvailableLiquidityTooltip } from "./components/AvailableLiquidityTooltip";
 
@@ -150,7 +150,7 @@ export function useChartHeaderFormattedValues() {
 
     return (
       <TooltipWithPortal
-        styleType="none"
+        variant="none"
         handle={
           <span className="flex items-center justify-center gap-4 numbers">
             <LongIcon width={12} className="relative top-1 opacity-70" />${" "}
@@ -172,7 +172,7 @@ export function useChartHeaderFormattedValues() {
 
     return (
       <TooltipWithPortal
-        styleType="none"
+        variant="none"
         handle={
           <span className="flex items-center justify-center gap-4 numbers">
             <ShortIcon width={12} className="relative opacity-70" />${" "}

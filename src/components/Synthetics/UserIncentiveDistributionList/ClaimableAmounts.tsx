@@ -243,7 +243,9 @@ export default function ClaimableAmounts() {
             .map(([token, data]) => (
               <div key={token}>
                 <div className="flex flex-col gap-5">
-                  <div className="text-sm text-nowrap text-typography-secondary">{claimableTokenTitles[token]}</div>
+                  <div className="text-body-small text-nowrap text-typography-secondary">
+                    {claimableTokenTitles[token]}
+                  </div>
                   <div className="flex flex-col gap-2">
                     <span>{formatBalanceAmount(data?.amount ?? 0n, data?.decimals ?? 18)}</span>
                     <span className="text-body-small whitespace-nowrap text-typography-secondary">

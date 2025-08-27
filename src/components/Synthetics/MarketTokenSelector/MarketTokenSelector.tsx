@@ -225,7 +225,7 @@ function MarketTokenSelectorInternal(props: Props) {
             value={searchKeyword}
             setValue={setSearchKeyword}
             onKeyDown={handleKeyDown}
-            placeholder="Search Pool"
+            placeholder={t`Search Pool`}
           />
 
           <ButtonRowScrollFadeContainer>
@@ -246,7 +246,7 @@ function MarketTokenSelectorInternal(props: Props) {
                 value={searchKeyword}
                 setValue={setSearchKeyword}
                 onKeyDown={handleKeyDown}
-                placeholder="Search Pool"
+                placeholder={t`Search Pool`}
               />
               <FavoriteTabs favoritesKey="gm-token-selector" />
             </div>

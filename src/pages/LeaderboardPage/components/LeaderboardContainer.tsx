@@ -189,7 +189,7 @@ export function LeaderboardContainer() {
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-12 p-12">
         <BodyScrollFadeContainer>
-          <div className="">
+          <div>
             <LeaderboardNavigation />
           </div>
         </BodyScrollFadeContainer>

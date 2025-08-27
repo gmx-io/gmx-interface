@@ -176,6 +176,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
       <TooltipWithPortal
         tooltipClassName="NetworkFeeRow-tooltip"
         position="left-start"
+        handleClassName="numbers"
         content={
           <>
             <StatsTooltipRow
@@ -208,7 +209,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
           </>
         }
       >
-        <span className="numbers">{formatUsd(-feeUsdAfterRefund)}</span>
+        {formatUsd(-feeUsdAfterRefund)}
       </TooltipWithPortal>
     );
   }, [
@@ -227,7 +228,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
         label={
           <TooltipWithPortal
             position="left-start"
-            styleType="icon"
+            variant="icon"
             content={
               <Trans>
                 Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does
@@ -248,7 +249,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
       label={
         <TooltipWithPortal
           position="left-start"
-          styleType="icon"
+          variant="icon"
           content={
             <Trans>
               Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does

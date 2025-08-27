@@ -692,7 +692,6 @@ export function PositionSeller() {
   ) : (
     <SyntheticsInfoRow
       label={t`Receive`}
-      className=""
       value={
         receiveToken && (
           <TokenSelector
@@ -879,7 +878,7 @@ export function PositionSeller() {
         qa="position-close-modal"
         contentClassName="w-[380px]"
       >
-        <div className="mb-[10.5px] flex items-center justify-between">
+        <div className="mb-[10.5px] flex w-full items-center justify-between">
           <Tabs
             options={tabsOptions}
             selectedValue={orderOption}
@@ -895,7 +894,7 @@ export function PositionSeller() {
           />
         </div>
 
-        <div className="pb-14">
+        <div className="w-full pb-14">
           {position && (
             <>
               <div className="flex flex-col gap-2">
@@ -970,7 +969,7 @@ export function PositionSeller() {
                 </div>
               )}
 
-              <div className="flex flex-col gap-14 pt-14">
+              <div className="flex w-full flex-col gap-14 pt-14">
                 {isTrigger && maxAutoCancelOrdersWarning}
                 <HighPriceImpactOrFeesWarningCard
                   priceImpactWarningState={priceImpactWarningState}
@@ -980,18 +979,17 @@ export function PositionSeller() {
                   swapProfitFee={fees?.swapProfitFee}
                   executionFeeUsd={executionFee?.feeUsd}
                 />
-                <div>
-                  {!isTwap && (
-                    <ToggleSwitch
-                      textClassName="text-typography-secondary"
-                      isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
-                      setIsChecked={setKeepLeverage}
-                      disabled={leverageCheckboxDisabledByCollateral || decreaseAmounts?.isFullClose}
-                    >
-                      {keepLeverageTextElem}
-                    </ToggleSwitch>
-                  )}
-                </div>
+
+                {!isTwap && (
+                  <ToggleSwitch
+                    textClassName="text-typography-secondary"
+                    isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
+                    setIsChecked={setKeepLeverage}
+                    disabled={leverageCheckboxDisabledByCollateral || decreaseAmounts?.isFullClose}
+                  >
+                    {keepLeverageTextElem}
+                  </ToggleSwitch>
+                )}
 
                 <Button
                   className="w-full"

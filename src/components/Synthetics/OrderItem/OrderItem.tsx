@@ -116,7 +116,7 @@ function OrderSize({
     if (showDebugValues) {
       return (
         <TooltipWithPortal
-          styleType="none"
+          variant="none"
           handle={<SizeWithIcon order={order} className={className} />}
           position="bottom-start"
           content={
@@ -187,7 +187,7 @@ function OrderSize({
       position="bottom-start"
       tooltipClassName={isTwapOrder(order) ? "!p-0" : undefined}
       maxAllowedWidth={400}
-      styleType="none"
+      variant="none"
       content={
         isTwapOrder(order) ? (
           <TwapOrdersList order={order} />
@@ -279,7 +279,7 @@ export function SizeWithIcon({ order, className }: { order: OrderInfo; className
             content={<TwapOrdersList order={order} />}
             tooltipClassName="!p-0"
             maxAllowedWidth={450}
-            styleType="none"
+            variant="none"
           />
         ) : (
           handle
@@ -357,8 +357,9 @@ function MarkPrice({ order, className }: { order: OrderInfo; className?: string 
 
     return (
       <TooltipWithPortal
-        handle={<span>{markPriceFormatted}</span>}
+        handle={markPriceFormatted}
         position="bottom-end"
+        handleClassName="numbers"
         renderContent={() => {
           return (
             <Trans>
@@ -444,7 +445,8 @@ function TriggerPrice({
         {!hideActions ? (
           <TooltipWithPortal
             position="bottom-end"
-            handle={<span>{swapRatioText}</span>}
+            handle={swapRatioText}
+            handleClassName="numbers"
             renderContent={() => (
               <>
                 <div className="pb-8">
@@ -470,10 +472,11 @@ function TriggerPrice({
       <TooltipWithPortal
         handle={
           <span>
-            {`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {
+            {positionOrder.triggerThresholdType}{" "}
+            {formatUsd(positionOrder.triggerPrice, {
               displayDecimals: priceDecimals,
               visualMultiplier: positionOrder.indexToken?.visualMultiplier,
-            })}`}
+            })}
           </span>
         }
         position="bottom-end"
@@ -587,7 +590,7 @@ function OrderItemLarge({
                 ))}
               </>
             }
-            styleType="none"
+            variant="none"
           />
         ) : (
           <TooltipWithPortal
@@ -611,7 +614,7 @@ function OrderItemLarge({
                 showDollar={false}
               />
             }
-            styleType="none"
+            variant="none"
           />
         )}
       </TableTd>
@@ -837,7 +840,7 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
 
   return (
     <TooltipWithPortal
-      styleType="none"
+      variant="none"
       handle={
         <span
           className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {

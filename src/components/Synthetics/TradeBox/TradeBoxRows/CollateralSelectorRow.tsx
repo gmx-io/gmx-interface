@@ -48,7 +48,7 @@ export function CollateralSelectorRow(p: Props) {
           <TooltipWithPortal
             position="left-start"
             content={collateralInTooltipContent}
-            styleType="icon"
+            variant="icon"
             closeDelay={1000000}
           >
             <Trans>Collateral In</Trans>

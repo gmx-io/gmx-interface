@@ -185,7 +185,7 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
             <div className="size-16">
               <CalendarIcon />
             </div>
-            <span className="text-sm whitespace-nowrap font-medium">{buttonText}</span>
+            <span className="text-body-small whitespace-nowrap font-medium">{buttonText}</span>
           </Button>
         </Popover.Button>
         <Portal>
@@ -205,13 +205,7 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
             />
             <div className="flex justify-between gap-4 border-t border-slate-600 p-12">
               {DATE_RANGE_SELECT_PRESETS.map((preset) => (
-                <Button
-                  key={preset}
-                  variant="secondary"
-                  className="!px-10 !py-6"
-                  data-preset={preset}
-                  onClick={handlePresetSelect}
-                >
+                <Button key={preset} variant="secondary" size="small" data-preset={preset} onClick={handlePresetSelect}>
                   {_(PRESET_LABELS[preset])}
                 </Button>
               ))}
@@ -305,20 +299,14 @@ export function DateSelect({
             <div className="size-16">
               <CalendarIcon />
             </div>
-            <span className="text-sm whitespace-nowrap font-medium">{buttonText}</span>
+            <span className="text-body-small whitespace-nowrap font-medium">{buttonText}</span>
           </Button>
         </Popover.Button>
         <Portal>
           <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>
             <div className="flex gap-4 border-t border-slate-600 p-12">
               {DATE_SELECT_PRESETS.map((preset) => (
-                <Button
-                  key={preset}
-                  variant="secondary"
-                  className="!px-10 !py-6"
-                  data-preset={preset}
-                  onClick={handlePresetSelect}
-                >
+                <Button key={preset} variant="secondary" size="small" data-preset={preset} onClick={handlePresetSelect}>
                   {_(PRESET_LABELS[preset])}
                 </Button>
               ))}

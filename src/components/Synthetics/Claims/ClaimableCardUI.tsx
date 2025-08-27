@@ -31,11 +31,7 @@ export function ClaimableCardUI({ title, style, sections }: Props) {
       style={style}
     >
       <div className="text-[11px] font-medium uppercase text-typography-secondary">{title}</div>
-      <div
-        className={cx("grid grid-cols-2", {
-          "grid-cols-1": !isHorizontal,
-        })}
-      >
+      <div className={cx("grid", isHorizontal ? "grid-cols-2" : "grid-cols-1")}>
         <Section title={t`Fees`} {...section1} />
         <Section title={t`Price Impact Rebates`} {...section2} />
       </div>

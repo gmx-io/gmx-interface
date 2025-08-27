@@ -106,10 +106,10 @@ export function GlvList({
                     <Trans>WALLET</Trans>
                   </TableTh>
                   <TableTh>
-                    <FeeApyLabel upperCase styleType="iconStroke" />
+                    <FeeApyLabel upperCase variant="iconStroke" />
                   </TableTh>
                   <TableTh>
-                    <PerformanceLabel upperCase styleType="iconStroke" />
+                    <PerformanceLabel upperCase variant="iconStroke" />
                   </TableTh>
                   <TableTh>
                     <TooltipWithPortal
@@ -117,7 +117,7 @@ export function GlvList({
                       className="normal-case"
                       position="bottom-end"
                       content={<Trans>Graph showing performance vs benchmark over the selected period.</Trans>}
-                      styleType="iconStroke"
+                      variant="iconStroke"
                     />
                   </TableTh>
                   <TableTh className="pr-16" />

@@ -183,7 +183,7 @@ export function formatPercentage(
 
   const sign = signed ? `${getPlusOrMinusSymbol(percentage)} ` : "";
 
-  return `${sign}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)} %`;
+  return `${sign}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
 }
 
 export function formatTokenAmount(
