@@ -7,8 +7,7 @@ import { useHistory } from "react-router-dom";
 import { Address, encodeAbiParameters, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { ContractsChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
-import { isDevelopment } from "config/env";
+import { ContractsChainId, getChainName, isContractsChain, SettlementChainId, SourceChainId } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
@@ -17,8 +16,8 @@ import {
   getMultichainTokenId,
   getStargatePoolAddress,
   isSettlementChain,
-  MULTICHAIN_TRANSFER_SUPPORTED_TOKENS,
   MULTICHAIN_FUNDING_SLIPPAGE_BPS,
+  MULTICHAIN_TRANSFER_SUPPORTED_TOKENS,
 } from "config/multichain";
 import {
   useGmxAccountDepositViewTokenAddress,
@@ -96,10 +95,30 @@ import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { toastCustomOrStargateError } from "./toastCustomOrStargateError";
 import { wrapChainAction } from "./wrapChainAction";
 
-const USD_GAS_TOKEN_BUFFER = isDevelopment() ? expandDecimals(10, USD_DECIMALS) : expandDecimals(2, USD_DECIMALS);
-const USD_GAS_TOKEN_WARNING_THRESHOLD = isDevelopment()
-  ? expandDecimals(5, USD_DECIMALS)
-  : expandDecimals(1, USD_DECIMALS);
+const USD_GAS_TOKEN_BUFFER_MAINNET = expandDecimals(4, USD_DECIMALS);
+const USD_GAS_TOKEN_WARNING_THRESHOLD_MAINNET = expandDecimals(3, USD_DECIMALS);
+const USD_GAS_TOKEN_BUFFER_TESTNET = expandDecimals(10, USD_DECIMALS);
+const USD_GAS_TOKEN_WARNING_THRESHOLD_TESTNET = expandDecimals(9, USD_DECIMALS);
+
+function useUsdGasTokenBuffer(): {
+  gasTokenBuffer: bigint;
+  gasTokenBufferWarningThreshold: bigint;
+} {
+  const { chainId } = useChainId();
+  const isMainnet = isContractsChain(chainId, false);
+
+  if (!isMainnet) {
+    return {
+      gasTokenBuffer: USD_GAS_TOKEN_BUFFER_TESTNET,
+      gasTokenBufferWarningThreshold: USD_GAS_TOKEN_WARNING_THRESHOLD_TESTNET,
+    };
+  }
+
+  return {
+    gasTokenBuffer: USD_GAS_TOKEN_BUFFER_MAINNET,
+    gasTokenBufferWarningThreshold: USD_GAS_TOKEN_WARNING_THRESHOLD_MAINNET,
+  };
+}
 
 const useIsFirstWithdrawal = () => {
   const [enabled, setEnabled] = useState(true);
@@ -144,6 +163,7 @@ export const WithdrawalView = () => {
   const networks = useGmxAccountWithdrawNetworks();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
   const relayerFeeToken = getByKey(tokensData, globalExpressParams?.relayerFeeTokenAddress);
+  const { gasTokenBuffer, gasTokenBufferWarningThreshold } = useUsdGasTokenBuffer();
 
   const { provider } = useJsonRpcProvider(chainId);
 
@@ -516,7 +536,7 @@ export const WithdrawalView = () => {
       amount = selectedToken.gmxAccountBalance;
     } else {
       const buffer = convertToTokenAmount(
-        USD_GAS_TOKEN_BUFFER,
+        gasTokenBuffer,
         gasPaymentToken.decimals,
         getMidPrice(gasPaymentToken.prices)
       )!;
@@ -542,6 +562,7 @@ export const WithdrawalView = () => {
     gasPaymentToken?.address,
     gasPaymentToken?.decimals,
     gasPaymentToken?.prices,
+    gasTokenBuffer,
     selectedToken,
     setInputValue,
     unwrappedSelectedTokenAddress,
@@ -572,7 +593,7 @@ export const WithdrawalView = () => {
     }
 
     const buffer = convertToTokenAmount(
-      USD_GAS_TOKEN_WARNING_THRESHOLD,
+      gasTokenBufferWarningThreshold,
       gasPaymentToken.decimals,
       getMidPrice(gasPaymentToken.prices)
     )!;
@@ -586,6 +607,7 @@ export const WithdrawalView = () => {
     gasPaymentToken?.address,
     gasPaymentToken?.decimals,
     gasPaymentToken?.prices,
+    gasTokenBufferWarningThreshold,
     inputAmount,
     selectedToken,
     withdrawalViewChain,
@@ -834,8 +856,8 @@ export const WithdrawalView = () => {
         <AlertInfoCard type="info" className="my-4">
           <Trans>
             You're withdrawing {selectedToken?.symbol}, your gas token. It's recommended to keep{" "}
-            {formatUsd(USD_GAS_TOKEN_BUFFER, { displayDecimals: 0 })} in {selectedToken?.symbol} for transactions, or
-            switch your gas token in settings.
+            {formatUsd(gasTokenBuffer, { displayDecimals: 0 })} in {selectedToken?.symbol} for transactions, or switch
+            your gas token in settings.
           </Trans>
         </AlertInfoCard>
       )}
