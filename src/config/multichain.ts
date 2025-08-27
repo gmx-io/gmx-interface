@@ -36,6 +36,8 @@ import { LayerZeroEndpointId } from "domain/multichain/types";
 import { numberToBigint } from "lib/numbers";
 import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
 
+import { IS_SOURCE_BASE_ALLOWED_KEY } from "./localStorage";
+
 export {
   ethPoolArbitrumSepolia,
   ethPoolOptimismSepolia,
@@ -184,7 +186,7 @@ if (isDevelopment()) {
 }
 
 export const DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT = false;
-export const IS_SOURCE_BASE_ALLOWED = true; // localStorage.getItem(IS_SOURCE_BASE_ALLOWED_KEY) === "1";
+export const IS_SOURCE_BASE_ALLOWED = localStorage.getItem(IS_SOURCE_BASE_ALLOWED_KEY) === "1";
 
 function ensureExhaustive<T extends number>(value: Record<T, true>): T[] {
   return Object.keys(value).map(Number) as T[];
