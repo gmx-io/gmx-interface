@@ -80,7 +80,8 @@ export function PositionItem(p: Props) {
   function renderNetValue() {
     return (
       <TooltipWithPortal
-        handle={<span className="numbers">{formatUsd(p.position.netValue)}</span>}
+        handle={formatUsd(p.position.netValue)}
+        handleClassName="numbers"
         position={p.isLarge ? "bottom-start" : "bottom-end"}
         renderContent={() => (
           <div>
@@ -179,14 +180,10 @@ export function PositionItem(p: Props) {
       <div className="flex flex-col gap-4">
         <div className={cx("position-list-collateral", { isSmall: !p.isLarge })}>
           <TooltipWithPortal
-            handle={
-              <span data-qa="position-collateral-value" className="numbers">
-                {formatUsd(p.position.remainingCollateralUsd)}
-              </span>
-            }
+            handle={formatUsd(p.position.remainingCollateralUsd)}
+            handleClassName={cx("numbers", { negative: p.position.hasLowCollateral })}
             position={p.isLarge ? "bottom-start" : "bottom-end"}
             className="PositionItem-collateral-tooltip"
-            handleClassName={cx({ negative: p.position.hasLowCollateral })}
             content={
               <>
                 {p.position.hasLowCollateral && (
@@ -356,22 +353,18 @@ export function PositionItem(p: Props) {
       return (
         <TooltipWithPortal
           handle={
-            p.position.liquidationPrice ? (
-              <span className="numbers">
-                {formatLiquidationPrice(p.position.liquidationPrice, {
+            p.position.liquidationPrice
+              ? formatLiquidationPrice(p.position.liquidationPrice, {
                   displayDecimals: marketDecimals,
                   visualMultiplier: p.position.indexToken.visualMultiplier,
-                })}
-              </span>
-            ) : (
-              "..."
-            )
+                })
+              : "..."
           }
-          position="bottom-end"
-          handleClassName={cx({
+          handleClassName={cx("numbers", {
             "LiqPrice-soft-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
             "LiqPrice-hard-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24,
           })}
+          position="bottom-end"
           renderContent={getLiqPriceTooltipContent}
         />
       );

@@ -388,7 +388,8 @@ function AffiliatesStats({
                       </TableTd>
                       <TableTd data-label="Total Volume">
                         <Tooltip
-                          handle={<span className="numbers">{`$${getUSDValue(stat.volume)}`}</span>}
+                          handle={`$ ${getUSDValue(stat.volume)}`}
+                          handleClassName="numbers"
                           position="bottom-start"
                           className="whitespace-nowrap"
                           renderContent={() => (
@@ -412,7 +413,8 @@ function AffiliatesStats({
                       </TableTd>
                       <TableTd data-label="Total Rebates">
                         <Tooltip
-                          handle={<span className="numbers">{`$${getUSDValue(stat.affiliateRebateUsd)}`}</span>}
+                          handle={`$${getUSDValue(stat.affiliateRebateUsd)}`}
+                          handleClassName="numbers"
                           position="bottom-start"
                           className="whitespace-nowrap"
                           renderContent={() => (

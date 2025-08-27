@@ -129,7 +129,8 @@ export function GmxAndVotingPowerCard({
               <Tooltip
                 position="bottom-end"
                 className="whitespace-nowrap"
-                handle={<span className="numbers">{"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}</span>}
+                handle={"$ " + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
+                handleClassName="numbers"
                 renderContent={() => (
                   <>
                     <StatsTooltipRow
@@ -186,11 +187,8 @@ export function GmxAndVotingPowerCard({
                 <Tooltip
                   position="bottom-end"
                   className="nowrap"
-                  handle={
-                    <span className="numbers">
-                      {formatBalanceAmount(govTokenAmount, 18, "GMX DAO", { showZero: true })}
-                    </span>
-                  }
+                  handle={formatBalanceAmount(govTokenAmount, 18, "GMX DAO", { showZero: true })}
+                  handleClassName="numbers"
                   content={
                     <>
                       {govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount > 0 ? (
@@ -252,9 +250,8 @@ export function GmxAndVotingPowerCard({
           </div>
           <div>
             <Tooltip
-              handle={
-                <span className="numbers">{`$${formatKeyAmount(processedData, "totalStakingRewardsUsd", USD_DECIMALS, 2, true)}`}</span>
-              }
+              handle={`$${formatKeyAmount(processedData, "totalStakingRewardsUsd", USD_DECIMALS, 2, true)}`}
+              handleClassName="numbers"
               position="bottom-end"
               content={
                 <>

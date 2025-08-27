@@ -68,7 +68,8 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
       <TooltipWithPortal
         tooltipClassName="ClaimHistoryRow-size-tooltip-portal"
         content={<SizeTooltip claimAction={claimAction} />}
-        handle={<span className="numbers">{formattedTotalUsd}</span>}
+        handle={formattedTotalUsd}
+        handleClassName="numbers"
       />
     );
   }, [claimAction]);

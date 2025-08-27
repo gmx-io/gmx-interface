@@ -437,7 +437,8 @@ const TableRow = memo(
             <TooltipWithPortal
               position={index > 9 ? "top-end" : "bottom-end"}
               renderContent={renderNaLiquidationTooltip}
-              handle={<span className="numbers">{t`NA`}</span>}
+              handle={t`NA`}
+              handleClassName="numbers"
               styleType="underline"
             />
           )}

@@ -56,7 +56,8 @@ function Section({ buttonText, onButtonClick, tooltipText, title, usd }: Section
         <span className={cx("font-medium", { positive: usd > 0n })}>
           {tooltipText ? (
             <Tooltip
-              handle={<span className="numbers">{usdFormatted}</span>}
+              handle={usdFormatted}
+              handleClassName="numbers"
               position="bottom-start"
               renderContent={renderTooltipContent}
             />

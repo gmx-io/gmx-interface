@@ -195,7 +195,8 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
       <TooltipWithPortal
         tooltipClassName="ClaimHistoryRow-size-tooltip-portal"
         content={amounts}
-        handle={<span className="numbers">{formattedTotalUsd}</span>}
+        handle={formattedTotalUsd}
+        handleClassName="numbers"
       />
     );
   }, [claimAction]);

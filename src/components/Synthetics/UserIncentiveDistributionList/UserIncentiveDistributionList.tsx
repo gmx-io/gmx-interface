@@ -232,7 +232,8 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
       </TableTd>
       <TableTd data-label="Amount">
         <Tooltip
-          handle={<span className="numbers">{formatUsd(totalUsd)}</span>}
+          handle={formatUsd(totalUsd)}
+          handleClassName="numbers"
           className="whitespace-nowrap"
           renderContent={renderTotalTooltipContent}
         />

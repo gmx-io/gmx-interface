@@ -229,7 +229,8 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
       <TableTd>
         <TooltipWithPortal
           className="nowrap"
-          handle={<span className="numbers">{formatAmountHuman(stats.totalPoolValue, USD_DECIMALS, true, 2)}</span>}
+          handle={formatAmountHuman(stats.totalPoolValue, USD_DECIMALS, true, 2)}
+          handleClassName="numbers"
           content={
             <>
               {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
@@ -254,7 +255,8 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
       <TableTd>
         <TooltipWithPortal
           className="nowrap"
-          handle={<span className="numbers">{formatAmountHuman(stats.totalMaxLiquidity, USD_DECIMALS, true, 2)}</span>}
+          handle={formatAmountHuman(stats.totalMaxLiquidity, USD_DECIMALS, true, 2)}
+          handleClassName="numbers"
           content={
             <>
               {stats.marketsStats.map(({ marketInfo, maxLiquidity }) => (
@@ -279,9 +281,8 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
       <TableTd>
         <TooltipWithPortal
           tooltipClassName="MarketList-netfee-tooltip"
-          handle={
-            <span className="numbers">{`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(netFeePerHourShort)}`}</span>
-          }
+          handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(netFeePerHourShort)}`}
+          handleClassName="numbers"
           maxAllowedWidth={510}
           position="bottom-end"
           renderContent={() => <NetFeeTooltip marketStats={stats.marketsStats} />}

@@ -267,7 +267,8 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           {msg.priceComment ? (
             <TooltipWithPortal
               tooltipClassName="TradeHistoryRow-price-tooltip-portal"
-              handle={<span className="numbers">{msg.price}</span>}
+              handle={msg.price}
+              handleClassName="numbers"
               position="bottom-end"
               renderContent={renderPriceContent}
               maxAllowedWidth={PRICE_TOOLTIP_WIDTH}

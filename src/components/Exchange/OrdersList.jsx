@@ -518,7 +518,8 @@ export default function OrdersList(props) {
               </div>
               <div>
                 <Tooltip
-                  handle={<span className="numbers">{formatAmount(markPrice, USD_DECIMALS, 2, true)}</span>}
+                  handle={formatAmount(markPrice, USD_DECIMALS, 2, true)}
+                  handleClassName="numbers"
                   position="bottom-end"
                   renderContent={() => {
                     return (

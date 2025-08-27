@@ -352,13 +352,11 @@ const TableRow = memo(
         </TableTd>
         <TableTd>
           <TooltipWithPortal
-            handle={
-              <span className="numbers">{formatDelta(account.totalQualifyingPnl, { signed: true, prefix: "$" })}</span>
-            }
+            handle={formatDelta(account.totalQualifyingPnl, { signed: true, prefix: "$" })}
             position={index > 7 ? "top" : "bottom"}
             className="whitespace-nowrap"
             renderContent={renderPnlTooltipContent}
-            handleClassName={getSignedValueClassName(account.totalQualifyingPnl)}
+            handleClassName={cx("numbers", getSignedValueClassName(account.totalQualifyingPnl))}
             styleType="underline"
           />
         </TableTd>
@@ -372,7 +370,7 @@ const TableRow = memo(
             }
             position={index > 7 ? "top" : "bottom"}
             className="whitespace-nowrap"
-            handleClassName={getSignedValueClassName(account.totalQualifyingPnl)}
+            handleClassName={cx("numbers", getSignedValueClassName(account.totalQualifyingPnl))}
             renderContent={() => (
               <StatsTooltipRow
                 label={t`Capital Used`}
@@ -415,6 +413,9 @@ const TableRow = memo(
               </span>
             }
             renderContent={renderWinsLossesTooltipContent}
+            handleClassName={cx("text-typography-primary numbers", {
+              "text-typography-secondary": account.wins === 0 && account.losses === 0,
+            })}
             styleType="underline"
           />
         </TableTd>

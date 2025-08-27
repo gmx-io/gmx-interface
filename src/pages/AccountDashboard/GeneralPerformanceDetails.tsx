@@ -136,9 +136,9 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
               </>
             )
           }
-        >
-          <span className="numbers">{formatUsd(row.pnlUsd)}</span>
-        </TooltipWithPortal>
+          handle={formatUsd(row.pnlUsd)}
+          handleClassName="numbers"
+        ></TooltipWithPortal>
       </TableTd>
       <TableTd>
         <TooltipWithPortal
@@ -157,13 +157,14 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
               valueClassName="numbers"
             />
           }
-        >
-          <span className="numbers">{formatPercentage(row.pnlBps, { signed: true })}</span>
-        </TooltipWithPortal>
+          handle={formatPercentage(row.pnlBps, { signed: true })}
+          handleClassName="numbers"
+        ></TooltipWithPortal>
       </TableTd>
       <TableTd>
         <TooltipWithPortal
-          handle={<span className="numbers">{`${row.wins} / ${row.losses}`}</span>}
+          handle={`${row.wins} / ${row.losses}`}
+          handleClassName="numbers"
           content={
             <>
               <StatsTooltipRow

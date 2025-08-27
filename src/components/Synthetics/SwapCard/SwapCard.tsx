@@ -64,7 +64,8 @@ export function SwapCard(p: Props) {
           label={t`Available Liquidity`}
           value={
             <Tooltip
-              handle={<span className="numbers">{formatUsd(maxLiquidityUsd) || "..."}</span>}
+              handle={formatUsd(maxLiquidityUsd) || "..."}
+              handleClassName="numbers"
               position="left-start"
               content={
                 <StatsTooltipRow
