@@ -130,7 +130,7 @@ export function GmxCard({
                     <TooltipComponent
                       position="bottom-end"
                       className="whitespace-nowrap"
-                      handle={"$ " + formatAmount(gmxPrice, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
+                      handle={"$ " + formatAmount(gmxPrice, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
                       handleClassName="numbers"
                       content={
                         <>
