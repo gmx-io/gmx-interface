@@ -4341,6 +4341,10 @@ msgstr "Finanzierungsgebühren"
 msgid "Insufficient liquidity in GM Pool"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least {1} in {2} or switch your gas token in settings."
+msgstr ""
+
 #: src/components/Exchange/ExchangeBanner.jsx
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "Handle auf GMX und gewinne <0>$250.000</0> in Preisen! Live bis zum 30. November, <1>Klicke hier</1> um mehr zu erfahren."
@@ -8147,10 +8151,6 @@ msgstr ""
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "365d estimate based on past {daysConsidered}d APY."
-msgstr ""
-
-#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. It's recommended to keep {1} in {2} for transactions, or switch your gas token in settings."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
