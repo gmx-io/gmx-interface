@@ -186,7 +186,8 @@ if (isDevelopment()) {
 }
 
 export const DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT = false;
-export const IS_SOURCE_BASE_ALLOWED = localStorage.getItem(IS_SOURCE_BASE_ALLOWED_KEY) === "1";
+export const IS_SOURCE_BASE_ALLOWED =
+  import.meta.env.NODE_ENV === "test" ? true : localStorage.getItem(IS_SOURCE_BASE_ALLOWED_KEY) === "1";
 
 function ensureExhaustive<T extends number>(value: Record<T, true>): T[] {
   return Object.keys(value).map(Number) as T[];
