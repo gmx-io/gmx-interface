@@ -410,6 +410,14 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
     "0x3f649eab7f4CE4945F125939C64429Be2C5d0cB4": {
       enabled: true,
     },
+    // AERO/USD [WETH-USDC]
+    "0xfaEaE570B07618D3F10360608E43c241181c4614": {
+      enabled: true,
+    },
+    // BRETT/USD [WETH-USDC]
+    "0x6EeE8098dBC106aEde99763FA5F955A5bBc42C50": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
@@ -571,6 +579,10 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
     // BTC/USD [stBTC-USDC.E]
     "0x2f95a2529328E427d3204555F164B1102086690E": {
       enabled: true,
+    },
+    // BTC/USD [PBTC-PBTC]
+    "0x6bFDD025827F7CE130BcfC446927AEF34ae2a98d": {
+      enabled: false,
     },
   },
 };

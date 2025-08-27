@@ -44,6 +44,7 @@ import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { TestPermits } from "pages/TestPermits/TestPermits";
 import { abis } from "sdk/abis";
+
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 
 const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
