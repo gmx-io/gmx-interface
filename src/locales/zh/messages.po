@@ -497,6 +497,10 @@ msgstr "在 1inch 上交换 {0} 为 {1}"
 msgid "No pools matched."
 msgstr "没有匹配的池。"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Classic"
+msgstr ""
+
 #: src/pages/Stake/UnstakeModal.tsx
 msgid "Unstaking"
 msgstr ""
@@ -1189,6 +1193,10 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 msgid "GMX V1 markets are disabled. GLP is being phased out and no longer supports GMX V1 markets."
 msgstr "GMX V1 市场已禁用。GLP 正在逐步淘汰，不再支持 GMX V1 市场。"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Express"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
@@ -2265,6 +2273,10 @@ msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Creating"
+msgstr ""
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "On-chain signing for every transaction."
 msgstr ""
 
 #: src/pages/Home/Home.tsx
@@ -3999,6 +4011,8 @@ msgid "Rebates earned by this account as a trader."
 msgstr "该账户作为交易者赚取的回扣。"
 
 #: src/components/Exchange/SwapBox.jsx
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
@@ -6153,6 +6167,10 @@ msgstr "此 TWAP 订单将在接下来的 {2} 内为 {3} 市场执行 {numberOfP
 msgid "Claim submitted."
 msgstr "领取已提交。"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "CEX-like experience with Express reliability."
+msgstr ""
+
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "OPEN INTEREST"
 msgstr "未平仓合约"
@@ -7351,6 +7369,10 @@ msgstr ""
 msgid "Why is the claim in GLV tokens?"
 msgstr ""
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Express + One-Click"
+msgstr ""
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM Airdrop"
 msgstr "GLP 到 GM 空投"
@@ -7964,6 +7986,10 @@ msgstr "<0>每</0> {minutes} 分钟{0}"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Entry Price"
 msgstr "入场价格"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "High execution reliability using premium RPCs."
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Price change to Liq."

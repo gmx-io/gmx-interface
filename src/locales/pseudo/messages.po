@@ -497,6 +497,10 @@ msgstr ""
 msgid "No pools matched."
 msgstr ""
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Classic"
+msgstr ""
+
 #: src/pages/Stake/UnstakeModal.tsx
 msgid "Unstaking"
 msgstr ""
@@ -1188,6 +1192,10 @@ msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
 msgid "GMX V1 markets are disabled. GLP is being phased out and no longer supports GMX V1 markets."
+msgstr ""
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Express"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
@@ -2265,6 +2273,10 @@ msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Creating"
+msgstr ""
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "On-chain signing for every transaction."
 msgstr ""
 
 #: src/pages/Home/Home.tsx
@@ -3999,6 +4011,8 @@ msgid "Rebates earned by this account as a trader."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
@@ -6150,6 +6164,10 @@ msgstr ""
 msgid "Claim submitted."
 msgstr ""
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "CEX-like experience with Express reliability."
+msgstr ""
+
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "OPEN INTEREST"
 msgstr ""
@@ -7345,6 +7363,10 @@ msgstr ""
 msgid "Why is the claim in GLV tokens?"
 msgstr ""
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Express + One-Click"
+msgstr ""
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM Airdrop"
 msgstr ""
@@ -7957,6 +7979,10 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBoxRows/EntryPriceRow.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Entry Price"
+msgstr ""
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "High execution reliability using premium RPCs."
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx

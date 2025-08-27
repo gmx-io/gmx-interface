@@ -225,7 +225,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const type = tooltipData ? <Tooltip handle={typeStr} renderContent={renderTooltipTypeContent} /> : typeStr;
 
   return (
-    <TableTr hoverable={false}>
+    <TableTr>
       <TableTd data-label="Date">{formatDate(transaction.timestamp)}</TableTd>
       <TableTd data-label="Type" className="font-medium">
         {type}

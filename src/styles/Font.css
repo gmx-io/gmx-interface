@@ -66,29 +66,9 @@
 @font-face {
   font-family: "TTHoves";
   font-style: normal;
-  font-weight: 300;
-  src: url("fonts/tthoves/tt-hoves-pro-trial-light.ttf");
-  src:
-    local(""),
-    url("fonts/tthoves/tt-hoves-pro-trial-light.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "TTHoves";
-  font-style: normal;
   font-weight: 500;
   src: url("fonts/tthoves/tt-hoves-pro-trial-medium.ttf");
   src:
     local(""),
     url("fonts/tthoves/tt-hoves-pro-trial-medium.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "TTHoves";
-  font-style: normal;
-  font-weight: bold;
-  src: url("fonts/tthoves/tt-hoves-pro-trial-bold.ttf");
-  src:
-    local(""),
-    url("fonts/tthoves/tt-hoves-pro-trial-bold.ttf") format("truetype");
 }

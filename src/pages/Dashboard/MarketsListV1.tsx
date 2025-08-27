@@ -87,7 +87,7 @@ export function MarketsListV1({
               }
 
               return (
-                <TableTr key={token.address} hoverable={false}>
+                <TableTr key={token.address}>
                   <TableTd>
                     <div className="token-symbol-wrapper">
                       <div className="App-card-title-info">

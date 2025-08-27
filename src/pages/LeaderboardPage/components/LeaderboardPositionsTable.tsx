@@ -346,7 +346,7 @@ const TableRow = memo(
     ]);
 
     return (
-      <TableTr key={position.key}>
+      <TableTr hoverable={true} key={position.key}>
         <TableTd className="relative">
           <span className={cx("numbers", getWinnerRankClassname(rank))}>
             <RankInfo rank={rank} hasSomeCapital />
@@ -450,7 +450,7 @@ const TableRow = memo(
 
 const EmptyRow = memo(() => {
   return (
-    <TableTr hoverable={false} className="h-47">
+    <TableTr className="h-47">
       <TableTd colSpan={7} className="align-top text-typography-secondary">
         <Trans>No results found</Trans>
       </TableTd>

@@ -95,7 +95,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
   const showDebugValues = useShowDebugValues();
 
   return (
-    <TableTr key={row.bucketLabel} hoverable={false}>
+    <TableTr key={row.bucketLabel}>
       <TableTd>{_(bucketLabelMap[row.bucketLabel as keyof typeof bucketLabelMap])}</TableTd>
       <TableTd className="numbers">{formatUsd(row.volume, { maxThreshold: null })}</TableTd>
       <TableTd>

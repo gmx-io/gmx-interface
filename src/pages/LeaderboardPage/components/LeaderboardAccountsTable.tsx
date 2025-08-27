@@ -340,7 +340,7 @@ const TableRow = memo(
     const renderPnlTooltipContent = useCallback(() => <LeaderboardPnlTooltipContent account={account} />, [account]);
 
     return (
-      <TableTr key={account.account}>
+      <TableTr hoverable={true} key={account.account}>
         <TableTd className={getCellClassname(rank, activeCompetition, pinned)}>
           <span className={cx("numbers", getWinnerRankClassname(rank, activeCompetition))}>
             <RankInfo rank={rank} hasSomeCapital={account.totalQualifyingPnl !== 0n} />
@@ -426,7 +426,7 @@ const TableRow = memo(
 
 const EmptyRow = memo(() => {
   return (
-    <TableTr hoverable={false} className="h-47">
+    <TableTr className="h-47">
       <TableTd colSpan={7} className="align-top text-typography-secondary">
         <Trans>No results found</Trans>
       </TableTd>

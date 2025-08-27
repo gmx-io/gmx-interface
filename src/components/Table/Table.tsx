@@ -34,7 +34,7 @@ export function TableTheadTr({ ...props }: PropsWithChildren & React.HTMLProps<H
 export const TableTr = forwardRef<
   HTMLTableRowElement,
   PropsWithChildren<{ hoverable?: boolean }> & React.HTMLProps<HTMLTableRowElement>
->(function TableTrInternal({ hoverable = true, className, ...props }, ref) {
+>(function TableTrInternal({ hoverable = false, className, ...props }, ref) {
   return (
     <tr
       {...props}

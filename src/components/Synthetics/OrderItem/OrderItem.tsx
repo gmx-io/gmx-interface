@@ -560,7 +560,7 @@ function OrderItemLarge({
   );
 
   return (
-    <TableTr ref={handleSetRef}>
+    <TableTr hoverable={true} ref={handleSetRef}>
       {!hideActions && onToggleOrder && (
         <TableTd className="cursor-pointer" onClick={onToggleOrder}>
           <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder} />

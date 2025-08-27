@@ -263,7 +263,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (
-                      <TableTr key={rebate.id} hoverable={false}>
+                      <TableTr key={rebate.id}>
                         <TableTd data-label="Date">{formatDate(rebate.timestamp)}</TableTd>
                         <TableTd data-label="Type">V1 Airdrop</TableTd>
                         <TableTd data-label="Amount" className="Rebate-amount">

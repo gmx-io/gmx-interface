@@ -497,6 +497,10 @@ msgstr "Swap {0} to {1} on 1inch"
 msgid "No pools matched."
 msgstr "No pools matched."
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Classic"
+msgstr "Classic"
+
 #: src/pages/Stake/UnstakeModal.tsx
 msgid "Unstaking"
 msgstr "Unstaking"
@@ -1189,6 +1193,10 @@ msgstr "Order updated."
 #: src/components/TokenCard/TokenCard.tsx
 msgid "GMX V1 markets are disabled. GLP is being phased out and no longer supports GMX V1 markets."
 msgstr "GMX V1 markets are disabled. GLP is being phased out and no longer supports GMX V1 markets."
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Express"
+msgstr "Express"
 
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
@@ -2266,6 +2274,10 @@ msgstr "Fulfilling sell request."
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Creating"
 msgstr "Creating"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "On-chain signing for every transaction."
+msgstr "On-chain signing for every transaction."
 
 #: src/pages/Home/Home.tsx
 msgid "Total Trading Volume"
@@ -3999,6 +4011,8 @@ msgid "Rebates earned by this account as a trader."
 msgstr "Rebates earned by this account as a trader."
 
 #: src/components/Exchange/SwapBox.jsx
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
@@ -6153,6 +6167,10 @@ msgstr "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} ea
 msgid "Claim submitted."
 msgstr "Claim submitted."
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "CEX-like experience with Express reliability."
+msgstr "CEX-like experience with Express reliability."
+
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "OPEN INTEREST"
 msgstr "OPEN INTEREST"
@@ -7351,6 +7369,10 @@ msgstr "GLP Distribution"
 msgid "Why is the claim in GLV tokens?"
 msgstr "Why is the claim in GLV tokens?"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Express + One-Click"
+msgstr "Express + One-Click"
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM Airdrop"
 msgstr "GLP to GM Airdrop"
@@ -7964,6 +7986,10 @@ msgstr "<0>every</0> {minutes} minutes{0}"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Entry Price"
 msgstr "Entry Price"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "High execution reliability using premium RPCs."
+msgstr "High execution reliability using premium RPCs."
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Price change to Liq."

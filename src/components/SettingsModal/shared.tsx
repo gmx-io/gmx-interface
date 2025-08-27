@@ -91,9 +91,9 @@ export function SettingButton({
   info,
   disabled,
 }: {
-  title: string;
+  title: ReactNode;
   icon: ReactNode;
-  description: string;
+  description: ReactNode;
   active?: boolean;
   chip?: ReactNode;
   onClick: () => void;

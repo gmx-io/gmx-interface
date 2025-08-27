@@ -359,7 +359,7 @@ function AffiliatesStats({
               <tbody>
                 {currentAffiliatesData.map((stat, index) => {
                   return (
-                    <TableTr key={index} hoverable={false}>
+                    <TableTr key={index}>
                       <TableTd data-label="Referral Code">
                         <div className="table-referral-code">
                           <span className="referral-text ">{stat.referralCode}</span>
@@ -521,7 +521,7 @@ function AffiliatesStats({
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (
-                      <TableTr key={index} hoverable={false}>
+                      <TableTr key={index}>
                         <TableTd data-label="Date">{formatDate(rebate.timestamp)}</TableTd>
                         <TableTd data-label="Type">{rebateType}</TableTd>
                         <TableTd data-label="Amount">

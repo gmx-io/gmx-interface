@@ -183,6 +183,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
   return (
     <>
       <TableTr
+        hoverable={true}
         className={cx("TradeHistoryRow", {
           debug: showDebugValues,
         })}

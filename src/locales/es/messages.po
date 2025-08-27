@@ -497,6 +497,10 @@ msgstr "Intercambiar {0} a {1} en 1inch"
 msgid "No pools matched."
 msgstr "No se encontraron reservas coincidentes."
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Classic"
+msgstr ""
+
 #: src/pages/Stake/UnstakeModal.tsx
 msgid "Unstaking"
 msgstr ""
@@ -1189,6 +1193,10 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 msgid "GMX V1 markets are disabled. GLP is being phased out and no longer supports GMX V1 markets."
 msgstr "Los mercados GMX V1 están desactivados. GLP se está eliminando gradualmente y ya no soporta mercados GMX V1."
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Express"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
@@ -2265,6 +2273,10 @@ msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.jsx
 msgid "Creating"
+msgstr ""
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "On-chain signing for every transaction."
 msgstr ""
 
 #: src/pages/Home/Home.tsx
@@ -3999,6 +4011,8 @@ msgid "Rebates earned by this account as a trader."
 msgstr "Reembolsos ganados por esta cuenta como trader."
 
 #: src/components/Exchange/SwapBox.jsx
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
@@ -6153,6 +6167,10 @@ msgstr "Esta orden TWAP ejecutará {numberOfParts} {0} {type} órdenes de {1} ca
 msgid "Claim submitted."
 msgstr "Reclamación enviada."
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "CEX-like experience with Express reliability."
+msgstr ""
+
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "OPEN INTEREST"
 msgstr "INTERÉS ABIERTO"
@@ -7351,6 +7369,10 @@ msgstr ""
 msgid "Why is the claim in GLV tokens?"
 msgstr ""
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Express + One-Click"
+msgstr ""
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM Airdrop"
 msgstr "Airdrop de GLP a GM"
@@ -7964,6 +7986,10 @@ msgstr "<0>cada</0> {minutes} minutos{0}"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Entry Price"
 msgstr "Precio de Entrada"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "High execution reliability using premium RPCs."
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Price change to Liq."

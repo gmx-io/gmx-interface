@@ -113,7 +113,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
               currentData.map((stats) => <MarketsListDesktopItem key={stats.token.address} stats={stats} />)}
 
             {indexTokensStats.length > 0 && !currentData.length && (
-              <TableTr hoverable={false} className="h-[64.5px]">
+              <TableTr className="h-[64.5px]">
                 <TableTd colSpan={6} className="text-body-medium align-top text-typography-secondary">
                   <Trans>No markets found.</Trans>
                 </TableTd>
@@ -201,7 +201,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
   const marketIndexName = getMarketIndexName(anyPool.marketInfo);
 
   return (
-    <TableTr key={stats.token.symbol} hoverable={false}>
+    <TableTr key={stats.token.symbol}>
       <TableTd>
         <div className="token-symbol-wrapper">
           <div className="flex items-center">
