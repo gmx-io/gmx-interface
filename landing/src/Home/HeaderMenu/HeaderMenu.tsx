@@ -33,7 +33,11 @@ export function HeaderMenu() {
           <div className="flex items-center gap-8 sm:gap-12">
             <div className="leading-body-sm mr-36 hidden flex-row gap-28 text-14 font-medium -tracking-[0.448px] sm:flex">
               {headerLinks.map((link) => (
-                <a href={link.href} key={link.label}>
+                <a
+                  href={link.href}
+                  className="duration-180 transition-opacity hover:opacity-80 active:opacity-60"
+                  key={link.label}
+                >
                   {link.label}
                 </a>
               ))}
