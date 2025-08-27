@@ -705,6 +705,20 @@ export const MARKETS: Record<UiContractsChain, Record<string, MarketConfig>> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // AERO/USD [WETH-USDC]
+    "0xfaEaE570B07618D3F10360608E43c241181c4614": {
+      marketTokenAddress: "0xfaEaE570B07618D3F10360608E43c241181c4614",
+      indexTokenAddress: "0xEcc5eb985Ddbb8335b175b0A2A1144E4c978F1f6",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // BRETT/USD [WETH-USDC]
+    "0x6EeE8098dBC106aEde99763FA5F955A5bBc42C50": {
+      marketTokenAddress: "0x6EeE8098dBC106aEde99763FA5F955A5bBc42C50",
+      indexTokenAddress: "0x4249F6e0808bEfF7368AaAD3F7A3Fd511F61Ee60",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
@@ -983,6 +997,13 @@ export const MARKETS: Record<UiContractsChain, Record<string, MarketConfig>> = {
       indexTokenAddress: "0x1B9e25f54225bcdCf347569E38C41Ade9BB686e5",
       longTokenAddress: "0xF4586028FFdA7Eca636864F80f8a3f2589E33795",
       shortTokenAddress: "0x29eE6138DD4C9815f46D34a4A1ed48F46758A402",
+    },
+    // BTC/USD [PBTC-PBTC]
+    "0x6bFDD025827F7CE130BcfC446927AEF34ae2a98d": {
+      marketTokenAddress: "0x6bFDD025827F7CE130BcfC446927AEF34ae2a98d",
+      indexTokenAddress: "0x1B9e25f54225bcdCf347569E38C41Ade9BB686e5",
+      longTokenAddress: "0xF4586028FFdA7Eca636864F80f8a3f2589E33795",
+      shortTokenAddress: "0xF4586028FFdA7Eca636864F80f8a3f2589E33795",
     },
   },
 };
