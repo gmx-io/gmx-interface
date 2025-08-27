@@ -73,6 +73,7 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
 import { WalletSigner } from "lib/wallets";
+import { getContract } from "sdk/configs/contracts";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
@@ -92,6 +93,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { InsufficientWntBanner } from "./InsufficientWntBanner";
 import { toastCustomOrStargateError } from "./toastCustomOrStargateError";
 import { wrapChainAction } from "./wrapChainAction";
 
@@ -176,6 +178,8 @@ export const WithdrawalView = () => {
   const unwrappedSelectedTokenSymbol = unwrappedSelectedTokenAddress
     ? getToken(chainId, unwrappedSelectedTokenAddress).symbol
     : undefined;
+  const wrappedNativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
+  const wrappedNativeToken = getByKey(tokensData, wrappedNativeTokenAddress);
 
   const selectedTokenSettlementChainTokenId = unwrappedSelectedTokenAddress
     ? getMultichainTokenId(chainId, unwrappedSelectedTokenAddress)
@@ -403,19 +407,69 @@ export const WithdrawalView = () => {
   const relayFeeAmount = expressTxnParamsAsyncResult?.data?.gasPaymentParams.relayerFeeAmount;
   const gasPaymentParams = expressTxnParamsAsyncResult?.data?.gasPaymentParams;
 
-  const networkFeeUsd = useMemo(() => {
+  const { networkFeeUsd, networkFee } = useMemo(() => {
     if (relayFeeAmount === undefined || relayerFeeToken === undefined) {
-      return;
+      return { networkFeeUsd: undefined, networkFee: undefined };
     }
 
     const relayFeeUsd = convertToUsd(relayFeeAmount, relayerFeeToken.decimals, getMidPrice(relayerFeeToken.prices));
 
-    if (relayFeeUsd === undefined || bridgeNetworkFeeUsd === undefined) {
+    if (relayFeeUsd === undefined || bridgeNetworkFeeUsd === undefined || bridgeNetworkFee === undefined) {
+      return { networkFeeUsd: undefined, networkFee: undefined };
+    }
+
+    return {
+      networkFeeUsd: relayFeeUsd + bridgeNetworkFeeUsd,
+      networkFee:
+        // We assume it is all in WNT
+        relayFeeAmount + bridgeNetworkFee,
+    };
+  }, [bridgeNetworkFee, bridgeNetworkFeeUsd, relayFeeAmount, relayerFeeToken]);
+
+  const [showWntWarning, setShowWntWarning] = useState(false);
+  const [lastValidNetworkFees, setLastValidNetworkFees] = useState({
+    networkFee: networkFee,
+    networkFeeUsd: networkFeeUsd,
+  });
+  useEffect(() => {
+    if (networkFee !== undefined && networkFeeUsd !== undefined) {
+      setLastValidNetworkFees({
+        networkFee,
+        networkFeeUsd,
+      });
+    }
+  }, [networkFee, networkFeeUsd]);
+  useEffect(() => {
+    if (wrappedNativeTokenAddress === zeroAddress) {
+      setShowWntWarning(false);
       return;
     }
 
-    return relayFeeUsd + bridgeNetworkFeeUsd;
-  }, [bridgeNetworkFeeUsd, relayFeeAmount, relayerFeeToken]);
+    if (!wrappedNativeToken || wrappedNativeToken.gmxAccountBalance === undefined) {
+      return;
+    }
+
+    if (wrappedNativeToken.gmxAccountBalance === 0n) {
+      setShowWntWarning(true);
+      return;
+    }
+
+    const someNetworkFee = networkFee ?? lastValidNetworkFees.networkFee;
+    if (someNetworkFee === undefined) {
+      return;
+    }
+
+    const value = (unwrappedSelectedTokenAddress === zeroAddress ? inputAmount : 0n) ?? 0n;
+
+    setShowWntWarning(wrappedNativeToken.gmxAccountBalance - value < someNetworkFee);
+  }, [
+    wrappedNativeToken,
+    networkFee,
+    unwrappedSelectedTokenAddress,
+    inputAmount,
+    lastValidNetworkFees.networkFee,
+    wrappedNativeTokenAddress,
+  ]);
 
   const handleWithdraw = async () => {
     if (withdrawalViewChain === undefined || selectedToken === undefined || account === undefined) {
@@ -656,6 +710,11 @@ export const WithdrawalView = () => {
   } else if (errors?.isOutOfTokenError && !expressTxnParamsAsyncResult.isLoading) {
     buttonState = {
       text: t`Insufficient ${isOutOfTokenErrorToken?.symbol} balance`,
+      disabled: true,
+    };
+  } else if (showWntWarning) {
+    buttonState = {
+      text: t`Insufficient ${wrappedNativeToken?.symbol} balance`,
       disabled: true,
     };
   } else if (expressTxnParamsAsyncResult.error && !expressTxnParamsAsyncResult.isLoading) {
@@ -914,6 +973,13 @@ export const WithdrawalView = () => {
             </Trans>
           </AlertInfoCard>
         )}
+
+      {showWntWarning && (
+        <InsufficientWntBanner
+          neededAmount={networkFee ?? lastValidNetworkFees.networkFee}
+          neededAmountUsd={networkFeeUsd ?? lastValidNetworkFees.networkFeeUsd}
+        />
+      )}
 
       <div className="h-32 shrink-0 grow" />
 

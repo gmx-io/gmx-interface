@@ -549,6 +549,10 @@ msgstr ""
 msgid "Network for Cross-Chain Deposits and positions."
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "Please <0>deposit</0> or <1>swap</1> to get {nativeTokenSymbol}."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr ""
@@ -3353,6 +3357,10 @@ msgstr ""
 msgid "Sender has withdrawn all tokens from Affiliate Vesting Vault"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "You’ll need some {nativeTokenSymbol} in your account to withdraw funds."
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -5962,6 +5970,10 @@ msgstr ""
 msgid "Collateral at Liquidation"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "You’ll need {formattedAmount} ({formattedUsd}) {nativeTokenSymbol} in your account to withdraw funds."
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr ""
@@ -7159,6 +7171,7 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7982,6 +7995,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "Please <0>swap</0> to get {nativeTokenSymbol}."
 msgstr ""
 
 #: src/components/MarketSelector/MarketSelector.tsx

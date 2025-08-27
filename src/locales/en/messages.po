@@ -549,6 +549,10 @@ msgstr "GMX V2 Data Analytics within Telegram"
 msgid "Network for Cross-Chain Deposits and positions."
 msgstr "Network for Cross-Chain Deposits and positions."
 
+#: src/components/Synthetics/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "Please <0>deposit</0> or <1>swap</1> to get {nativeTokenSymbol}."
+msgstr "Please <0>deposit</0> or <1>swap</1> to get {nativeTokenSymbol}."
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr "Created limit order for {0} {1}: {2} USD!"
@@ -3353,6 +3357,10 @@ msgstr "Accrued Positive Funding Fee"
 msgid "Sender has withdrawn all tokens from Affiliate Vesting Vault"
 msgstr "Sender has withdrawn all tokens from Affiliate Vesting Vault"
 
+#: src/components/Synthetics/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "You’ll need some {nativeTokenSymbol} in your account to withdraw funds."
+msgstr "You’ll need some {nativeTokenSymbol} in your account to withdraw funds."
+
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -5965,6 +5973,10 @@ msgstr "Protocol Tokens"
 msgid "Collateral at Liquidation"
 msgstr "Collateral at Liquidation"
 
+#: src/components/Synthetics/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "You’ll need {formattedAmount} ({formattedUsd}) {nativeTokenSymbol} in your account to withdraw funds."
+msgstr "You’ll need {formattedAmount} ({formattedUsd}) {nativeTokenSymbol} in your account to withdraw funds."
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -7165,6 +7177,7 @@ msgstr "Size per part"
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7989,6 +8002,10 @@ msgstr "Enter unique coins"
 #: src/components/Synthetics/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "Fee APY"
+
+#: src/components/Synthetics/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "Please <0>swap</0> to get {nativeTokenSymbol}."
+msgstr "Please <0>swap</0> to get {nativeTokenSymbol}."
 
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
