@@ -284,7 +284,7 @@ function StakeContent() {
         <div>
           <PageTitle
             title={t`Distributions`}
-            subtitle={<Trans>Claim and view your incentives, airdrops, and prizes</Trans>}
+            subtitle={<Trans>Claim and view your incentives, airdrops, and prizes.</Trans>}
           />
         </div>
         <UserIncentiveDistributionList />

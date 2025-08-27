@@ -128,14 +128,14 @@ export default function UserIncentiveDistributionList() {
         <Card title={t`Distribution History`} bodyPadding={false} divider={false}>
           {!userIncentiveData?.data?.length ? (
             <EmptyMessage
-              tooltipText={t`Incentives are airdropped weekly.`}
-              message={t`No incentives distribution history yet.`}
+              tooltipText={t`The distribution history for your incentives, airdrops, and prizes will be displayed here.`}
+              message={t`No distribution history yet.`}
               className="!mt-10"
             >
               {!active && (
                 <div className="mt-15">
                   <Button variant="secondary" onClick={openConnectModal}>
-                    <Trans>Connect Wallet</Trans>
+                    <Trans>Connect wallet</Trans>
                   </Button>
                 </div>
               )}

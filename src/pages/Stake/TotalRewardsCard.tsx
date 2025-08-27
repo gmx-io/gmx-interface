@@ -255,7 +255,7 @@ export function TotalRewardsCard({
               )}
               {!active && (
                 <Button variant="secondary" onClick={openConnectModal}>
-                  <Trans>Connect Wallet</Trans>
+                  <Trans>Connect wallet</Trans>
                 </Button>
               )}
             </div>

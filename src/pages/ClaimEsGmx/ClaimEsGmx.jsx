@@ -318,9 +318,9 @@ export default function ClaimEsGmx() {
 
     const contract = new ethers.Contract(esGmxIouAddress, abis.Token, signer);
     callContract(chainId, contract, "transfer", [receiver, amount], {
-      sentMsg: t`Claim submitted!`,
+      sentMsg: t`Claim submitted.`,
       failMsg: t`Claim failed.`,
-      successMsg: t`Claim completed!`,
+      successMsg: t`Claim completed.`,
       setPendingTxns,
     }).finally(() => {
       setIsClaiming(false);

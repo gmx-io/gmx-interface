@@ -163,7 +163,8 @@ export function TradingSettings({
           title={<Trans>Default Allowed Slippage</Trans>}
           description={
             <Trans>
-              The maximum percentage difference between your specified price and execution price when placing orders.
+              The maximum allowed percentage difference between the mark price and the execution price for market
+              orders.
             </Trans>
           }
           defaultValue={DEFAULT_SLIPPAGE_AMOUNT}
@@ -216,14 +217,15 @@ export function TradingSettings({
             content={
               <div>
                 <Trans>
-                  Take Profit and Stop Loss orders will be automatically cancelled when the associated position is
-                  completely closed. This will only affect newly created TP/SL orders.
+                  TP/SL orders will be automatically cancelled when the associated position is completely closed. This
+                  will only affect newly created TP/SL orders since the setting was enabled.
                 </Trans>
                 <br />
                 <br />
                 <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">
                   <Trans>Read more</Trans>
                 </ExternalLink>
+                .
               </div>
             }
             handle={<Trans>Auto-Cancel TP/SL</Trans>}

@@ -165,7 +165,7 @@ export async function callContract(
     }
 
     if (opts.setPendingTxns) {
-      const message = opts.hideSuccessMsg ? "" : opts.successMsg || t`Transaction completed!`;
+      const message = opts.hideSuccessMsg ? "" : opts.successMsg || t`Transaction completed.`;
       const pendingTxn: PendingTransaction = {
         hash: res.hash,
         message,

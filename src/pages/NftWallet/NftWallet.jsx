@@ -60,7 +60,7 @@ export default function NftWallet() {
     setIsSubmitting(true);
     const contract = new ethers.Contract(nftAddress, abis.ERC721, signer);
     callContract(chainId, contract, "transferFrom", [account, receiver, nftId], {
-      sentMsg: t`Transfer submitted!`,
+      sentMsg: t`Transfer submitted.`,
       failMsg: t`Transfer failed.`,
     }).finally(() => {
       setIsSubmitting(false);

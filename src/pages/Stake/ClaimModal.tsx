@@ -146,9 +146,9 @@ export function ClaimModal(props: {
         isNativeTokenToClaim ? shouldConvertWeth : false,
       ],
       {
-        sentMsg: t`Claim submitted!`,
+        sentMsg: t`Claim submitted.`,
         failMsg: t`Claim failed.`,
-        successMsg: t`Claim completed!`,
+        successMsg: t`Claim completed.`,
         successDetailsMsg: !shouldStakeGmx ? gmxUsageOptionsMsg : undefined,
         setPendingTxns,
       }

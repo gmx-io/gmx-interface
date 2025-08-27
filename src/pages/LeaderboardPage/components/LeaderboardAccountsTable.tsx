@@ -363,10 +363,7 @@ const TableRow = memo(
         <TableTd>
           <TooltipWithPortal
             handle={
-              <span className="numbers">
-                {formatDelta(account.pnlPercentage, { signed: true, decimals: 2 })}
-                {" "}%
-              </span>
+              <span className="numbers">{formatDelta(account.pnlPercentage, { signed: true, decimals: 2 })} %</span>
             }
             position={index > 7 ? "top" : "bottom"}
             className="whitespace-nowrap"
@@ -405,11 +402,7 @@ const TableRow = memo(
                   "text-typography-secondary": account.wins === 0 && account.losses === 0,
                 })}
               >
-                {account.wins}
-                {" "}
-                <span className="text-typography-secondary">/</span>
-                {" "}
-                {account.losses}
+                {account.wins} <span className="text-typography-secondary">/</span> {account.losses}
               </span>
             }
             renderContent={renderWinsLossesTooltipContent}

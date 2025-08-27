@@ -79,18 +79,12 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                   renderContent={() => (
                     <p className="text-typography-primary">
                       <Trans>You will receive a {currentTierDiscount}% discount on opening and closing fees.</Trans>
-                      <br />
-                      <br />
-                      <Trans>
-                        For trades on V1, this discount will be airdropped to your account every Wednesday. On V2,
-                        discounts are applied automatically and will reduce your fees when you make a trade.
-                      </Trans>
                       {((discountShare ?? 0) > 0 && (
                         <>
                           <br />
                           <br />
                           <Trans>
-                            The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead
+                            The owner of this referral code has set a custom discount of {currentTierDiscount}% instead
                             of the standard {tierDiscountInfo[traderTier]}% for Tier {getTierIdDisplay(traderTier)}.
                           </Trans>
                         </>
@@ -213,7 +207,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
         <div className="reward-history">
           <Card
             title={t`Rebates Distribution History`}
-            tooltipText={t`GMX V2 Rebates are automatically applied as fee discounts on each trade and are not displayed on this table.`}
+            tooltipText={t`GMX V2 discounts are automatically applied on each trade and are not displayed on this table.`}
             bodyPadding={false}
             divider={false}
           >

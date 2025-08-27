@@ -146,7 +146,7 @@ export const GmTokensTotalBalanceInfo = ({
                 />
                 <br />
                 <div className="text-typography-primary">
-                  <Trans>365d estimate based on past {daysConsidered}d APY.</Trans>
+                  <Trans>The 365d estimate is based on the past {daysConsidered}d APY.</Trans>
                 </div>
                 {shouldShowIncentivesNote && (
                   <>
