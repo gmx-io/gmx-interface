@@ -387,7 +387,7 @@ const TableRow = memo(
           />
         </TableTd>
         <TableTd
-          className={cx("numbers first-letter:mr-1 first-letter:text-typography-secondary", {
+          className={cx("numbers first-letter:text-typography-secondary", {
             "text-typography-secondary": account.averageSize === 0n,
           })}
         >

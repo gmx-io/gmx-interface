@@ -396,7 +396,7 @@ const TableRow = memo(
             styleType="underline"
           />
         </TableTd>
-        <TableTd className="numbers first-letter:mr-1 first-letter:text-typography-secondary">
+        <TableTd className="numbers first-letter:text-typography-secondary">
           {formatUsd(position.entryPrice, {
             displayDecimals: marketDecimals,
             visualMultiplier: marketInfo?.indexToken.visualMultiplier,
@@ -405,9 +405,7 @@ const TableRow = memo(
         <TableTd>
           <TooltipWithPortal
             handle={
-              <span className="numbers first-letter:mr-1 first-letter:text-typography-secondary">
-                {formatUsd(position.sizeInUsd)}
-              </span>
+              <span className="numbers first-letter:text-typography-secondary">{formatUsd(position.sizeInUsd)}</span>
             }
             position={index > 9 ? "top-end" : "bottom-end"}
             renderContent={renderSizeTooltip}
@@ -425,7 +423,7 @@ const TableRow = memo(
               position={index > 9 ? "top-end" : "bottom-end"}
               renderContent={renderLiquidationTooltip}
               handle={
-                <span className="numbers first-letter:mr-1 first-letter:text-typography-secondary">
+                <span className="numbers first-letter:text-typography-secondary">
                   {formatUsd(liquidationPrice, {
                     maxThreshold: "1000000",
                     displayDecimals: marketDecimals,
