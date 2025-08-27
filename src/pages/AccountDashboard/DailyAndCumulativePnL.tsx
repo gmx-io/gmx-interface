@@ -210,7 +210,7 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
         )}
       </div>
 
-      {isMobile && <div className="flex justify-around border-t-stroke border-slate-600 px-16 py-12">{buttons}</div>}
+      {isMobile && <div className="flex justify-around border-t-1/2 border-slate-600 px-16 py-12">{buttons}</div>}
     </div>
   );
 }

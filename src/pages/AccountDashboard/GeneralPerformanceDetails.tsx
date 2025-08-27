@@ -30,7 +30,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
 
   return (
     <div className="overflow-hidden rounded-8 bg-slate-900">
-      <div className="border-b-stroke border-slate-600 p-20 text-20 font-medium">
+      <div className="border-b-1/2 border-slate-600 p-20 text-20 font-medium">
         <Trans>General Performance Details</Trans>
       </div>
 

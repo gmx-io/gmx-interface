@@ -242,7 +242,7 @@ export function Curtain({
             className={cx(
               "flex touch-none select-none items-stretch justify-between gap-4 border-slate-600 bg-slate-800 pr-8 shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]",
               {
-                "border-b-stroke border-t-stroke bg-slate-900": isOpen,
+                "border-b-1/2 border-t-1/2 bg-slate-900": isOpen,
               }
             )}
             onPointerDown={handlePointerDown}

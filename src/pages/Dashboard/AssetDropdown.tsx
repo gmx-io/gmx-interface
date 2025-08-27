@@ -87,7 +87,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right", mar
             as="div"
             ref={refs.setFloating}
             style={floatingStyles}
-            className="z-10 rounded-8 border-stroke border-slate-600 bg-slate-900 outline-none"
+            className="z-10 rounded-8 border-1/2 border-slate-600 bg-slate-900 outline-none"
           >
             <Menu.Item as="div">
               {token.isPlatformToken && (

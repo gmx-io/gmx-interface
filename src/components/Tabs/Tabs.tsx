@@ -37,7 +37,7 @@ export default function Tabs<V extends string | number>({
       className={cx(
         "flex items-center justify-between",
         {
-          "rounded-t-8 border-b-stroke border-b-slate-600": type === "block",
+          "rounded-t-8 border-b-1/2 border-b-slate-600": type === "block",
         },
         className
       )}

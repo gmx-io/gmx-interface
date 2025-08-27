@@ -451,7 +451,7 @@ module.exports = {
         range(200, 501, 50).map((space) => [`auto-fill-${space}`, `repeat(auto-fill, minmax(${space}px, 1fr))`])
       ),
       borderWidth: {
-        'stroke': '0.5px',
+        '1/2': '0.5px',
       },
     },
   },

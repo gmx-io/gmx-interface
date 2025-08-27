@@ -69,7 +69,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
         <>
           <div
             className={cx("flex items-center justify-between ", {
-              "border-b-stroke border-slate-600 pb-18": isOpen && isMobile,
+              "border-b-1/2 border-slate-600 pb-18": isOpen && isMobile,
             })}
           >
             <div className="flex items-center gap-20">

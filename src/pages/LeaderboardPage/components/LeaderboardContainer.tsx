@@ -197,7 +197,7 @@ export function LeaderboardContainer() {
       </div>
 
       <div>
-        <div className="flex items-center justify-between gap-16 rounded-t-8 border-b-stroke border-slate-600 bg-slate-900 p-20 max-md:flex-col">
+        <div className="flex items-center justify-between gap-16 rounded-t-8 border-b-1/2 border-slate-600 bg-slate-900 p-20 max-md:flex-col">
           {!isCompetition ? (
             <Tabs
               type="inline"

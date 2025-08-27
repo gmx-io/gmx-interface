@@ -34,7 +34,7 @@ export function BreadcrumbItem({ to: href, children, back, active, onClick, clas
     <button
       className={cx(
         `text-slate-300 text-body-medium relative inline-flex items-center gap-6
-        rounded-full border-stroke border-slate-600 px-12 py-8 text-13
+        rounded-full border-1/2 border-slate-600 px-12 py-8 text-13
         font-medium leading-[1.15] transition-colors after:absolute after:-left-13 after:top-[50%]
         after:translate-y-[-50%] after:text-11 after:text-slate-600 after:content-['/']
         first:after:content-none max-md:px-8`,

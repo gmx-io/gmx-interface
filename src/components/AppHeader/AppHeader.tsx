@@ -31,7 +31,7 @@ export function AppHeader({ leftContent }: Props) {
   return (
     <header
       data-qa="header"
-      className="flex justify-between gap-16 max-md:border-b-stroke max-md:border-slate-600 max-md:p-8"
+      className="flex justify-between gap-16 max-md:border-b-1/2 max-md:border-slate-600 max-md:p-8"
     >
       <div className="flex items-center overflow-hidden">{leftContent ? leftContent : <AppHeaderLogo />}</div>
 
