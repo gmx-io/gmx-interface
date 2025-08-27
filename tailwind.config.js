@@ -96,18 +96,18 @@ const lightColors = {
   "cold-blue": {
     500: "#3a3f79",
     700: "#282b54",
-    900: "#E2E5FD", 
+    900: "#E2E5FD",
   },
   slate: {
-    100: "#696D96", 
-    400: "#9FA3BC", 
-    500: "#C4C6D5", 
-    600: "#CCCCE0", 
-    700: "#DADAE7", 
-    750: "#D4D6E2", 
-    800: "#EDEDF2", 
-    900: "#FCFCFC", 
-    950: "#EEEEF4", 
+    100: "#696D96",
+    400: "#9FA3BC",
+    500: "#C4C6D5",
+    600: "#CCCCE0",
+    700: "#DADAE7",
+    750: "#D4D6E2",
+    800: "#EDEDF2",
+    900: "#FCFCFC",
+    950: "#EEEEF4",
   },
   gray: {
     50: "rgba(0, 0, 0, 0.95)",
@@ -123,32 +123,32 @@ const lightColors = {
     950: "rgba(0, 0, 0, 0.05)",
   },
   yellow: {
-    300: "#FF9400", 
+    300: "#FF9400",
     500: "#f3b50c",
-    900: "#FFF9D0", 
+    900: "#FFF9D0",
   },
   red: {
     100: "#EA2A46",
     400: "#ff637a",
-    500: "#EA2A46", 
+    500: "#EA2A46",
     700: "#B33055",
-    900: "#F9E2E5", 
+    900: "#F9E2E5",
   },
   green: {
     100: "#109375",
     300: "#56dba8",
     400: "#8CF3CB",
-    500: "#10937B", 
+    500: "#10937B",
     600: "#1F3445",
     700: "#0FDE8D",
     800: "#178969",
-    900: "#DFFFEB", 
+    900: "#DFFFEB",
   },
   white: "#ffffff",
   black: "#000000",
   button: {
-    secondary: "#E0E0E8", 
-    secondaryDisabled: "#E0E0E8", 
+    secondary: "#E0E0E8",
+    secondaryDisabled: "#E0E0E8",
   },
   fill: {
     surfaceElevated50: "#EDEDF280",
@@ -162,7 +162,7 @@ const lightColors = {
 };
 
 function hexToRgb(hex) {
-  if (hex.startsWith('rgba(')) {
+  if (hex.startsWith("rgba(")) {
     // Extract RGB values from rgba string
     const match = hex.match(/rgba?\((\d+),?\s*(\d+),?\s*(\d+)/);
     if (match) {
@@ -170,7 +170,7 @@ function hexToRgb(hex) {
     }
     return hex;
   }
-  
+
   // Handle 8-character hex with opacity (e.g., #696D961A)
   const resultWithOpacity = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   if (resultWithOpacity) {
@@ -180,12 +180,10 @@ function hexToRgb(hex) {
     const alpha = parseInt(resultWithOpacity[4], 16) / 255;
     return `${r} ${g} ${b} / ${alpha.toFixed(3)}`;
   }
-  
+
   // Handle standard 6-character hex (e.g., #696D96)
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result 
-    ? `${parseInt(result[1], 16)} ${parseInt(result[2], 16)} ${parseInt(result[3], 16)}`
-    : hex;
+  return result ? `${parseInt(result[1], 16)} ${parseInt(result[2], 16)} ${parseInt(result[3], 16)}` : hex;
 }
 
 const colors = {
@@ -276,7 +274,7 @@ function injectColorsPlugin({ addBase }) {
       if (typeof value === "string") {
         const varName = `--color${colorGroup}${visualColorKey}`;
         const rawVarName = `--color${colorGroup}${visualColorKey}-raw`;
-        
+
         return {
           ...vars,
           [varName]: value, // Original value without changes
@@ -404,7 +402,10 @@ function fontComponentsPlugin({ addComponents, addBase }) {
       letterSpacing: "0.08em",
       color: "var(--color-slate-100)",
       textTransform: "uppercase",
-    }
+    },
+    ".label": {
+      fontWeight: 500,
+    },
   });
 }
 
@@ -451,7 +452,7 @@ module.exports = {
         range(200, 501, 50).map((space) => [`auto-fill-${space}`, `repeat(auto-fill, minmax(${space}px, 1fr))`])
       ),
       borderWidth: {
-        '1/2': '0.5px',
+        "1/2": "0.5px",
       },
     },
   },
