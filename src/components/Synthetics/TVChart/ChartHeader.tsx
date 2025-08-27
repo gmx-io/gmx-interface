@@ -156,7 +156,7 @@ function ChartHeaderMobile() {
 
   return (
     <div className="rounded-8 bg-button-secondary">
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between max-md:items-center">
         <div className="inline-flex">
           <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={false} />
         </div>

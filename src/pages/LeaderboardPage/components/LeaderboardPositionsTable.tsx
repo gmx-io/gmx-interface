@@ -347,27 +347,29 @@ const TableRow = memo(
 
     return (
       <TableTr key={position.key}>
-        <TableCell className="relative">
+        <TableTd className="relative">
           <span className={cx("numbers", getWinnerRankClassname(rank))}>
             <RankInfo rank={rank} hasSomeCapital />
           </span>
-        </TableCell>
-        <TableCell>
+        </TableTd>
+        <TableTd>
           <AddressView size={20} address={position.account} breakpoint="XL" />
-        </TableCell>
-        <TableCell>
+        </TableTd>
+        <TableTd>
           <TooltipWithPortal
             handle={
-              <span className={cx("numbers", getSignedValueClassName(position.qualifyingPnl))}>
+              <span className={cx("numbers")}>
                 {formatDelta(position.qualifyingPnl, { signed: true, prefix: "$" })}
               </span>
             }
+            handleClassName={getSignedValueClassName(position.qualifyingPnl)}
             position={index > 9 ? "top" : "bottom"}
             className="nowrap"
             renderContent={renderPnlTooltipContent}
+            styleType="svgUnderline"
           />
-        </TableCell>
-        <TableCell>
+        </TableTd>
+        <TableTd>
           <TooltipWithPortal
             handle={
               <span>
@@ -391,30 +393,39 @@ const TableRow = memo(
             position={index > 9 ? "top" : "bottom"}
             className="nowrap"
             renderContent={renderPositionTooltip}
+            styleType="svgUnderline"
           />
-        </TableCell>
-        <TableCell className="numbers">
+        </TableTd>
+        <TableTd className="numbers first-letter:mr-1 first-letter:text-typography-secondary">
           {formatUsd(position.entryPrice, {
             displayDecimals: marketDecimals,
             visualMultiplier: marketInfo?.indexToken.visualMultiplier,
           })}
-        </TableCell>
-        <TableCell>
+        </TableTd>
+        <TableTd>
           <TooltipWithPortal
-            handle={<span className="numbers">{formatUsd(position.sizeInUsd)}</span>}
+            handle={
+              <span className="numbers first-letter:mr-1 first-letter:text-typography-secondary">
+                {formatUsd(position.sizeInUsd)}
+              </span>
+            }
             position={index > 9 ? "top-end" : "bottom-end"}
             renderContent={renderSizeTooltip}
             tooltipClassName="Table-SizeTooltip"
+            styleType="svgUnderline"
           />
-        </TableCell>
-        <TableCell className="numbers">{`${formatAmount(position.leverage, 4, 2)}x`}</TableCell>
-        <TableCell className="text-right">
+        </TableTd>
+        <TableTd className="numbers">
+          {formatAmount(position.leverage, 4, 2)}
+          <span className="ml-1 text-typography-secondary">x</span>
+        </TableTd>
+        <TableTd className="text-right">
           {liquidationPrice ? (
             <TooltipWithPortal
               position={index > 9 ? "top-end" : "bottom-end"}
               renderContent={renderLiquidationTooltip}
               handle={
-                <span className="numbers">
+                <span className="numbers first-letter:mr-1 first-letter:text-typography-secondary">
                   {formatUsd(liquidationPrice, {
                     maxThreshold: "1000000",
                     displayDecimals: marketDecimals,
@@ -422,23 +433,21 @@ const TableRow = memo(
                   })}
                 </span>
               }
+              styleType="svgUnderline"
             />
           ) : (
             <TooltipWithPortal
               position={index > 9 ? "top-end" : "bottom-end"}
               renderContent={renderNaLiquidationTooltip}
               handle={<span className="numbers">{t`NA`}</span>}
+              styleType="svgUnderline"
             />
           )}
-        </TableCell>
+        </TableTd>
       </TableTr>
     );
   }
 );
-
-const TableCell = memo(({ children, className }: { children: ReactNode; className?: string }) => {
-  return <TableTd className={className}>{children}</TableTd>;
-});
 
 const EmptyRow = memo(() => {
   return (
@@ -467,7 +476,14 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   const tooltipContent = useCallback(() => message, [message]);
 
   if (rank === null)
-    return <TooltipWithPortal handleClassName="text-red-500" handle={t`NA`} renderContent={tooltipContent} />;
+    return (
+      <TooltipWithPortal
+        handleClassName="text-typography-secondary"
+        handle={t`NA`}
+        renderContent={tooltipContent}
+        styleType="svgUnderline"
+      />
+    );
 
   return <span className="numbers">{rank}</span>;
 });

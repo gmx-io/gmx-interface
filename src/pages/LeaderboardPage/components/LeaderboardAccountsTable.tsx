@@ -362,13 +362,15 @@ const TableRow = memo(
             className="whitespace-nowrap"
             renderContent={renderPnlTooltipContent}
             handleClassName={getSignedValueClassName(account.totalQualifyingPnl)}
+            styleType="svgUnderline"
           />
         </TableTd>
         <TableTd>
           <TooltipWithPortal
             handle={
               <span className="numbers">
-                {formatDelta(account.pnlPercentage, { signed: true, postfix: "%", decimals: 2 })}
+                {formatDelta(account.pnlPercentage, { signed: true, decimals: 2 })}
+                <span className="ml-1">%</span>
               </span>
             }
             position={index > 7 ? "top" : "bottom"}
@@ -381,14 +383,39 @@ const TableRow = memo(
                 value={<span className="numbers">{formatUsd(account.maxCapital)}</span>}
               />
             )}
+            styleType="svgUnderline"
           />
         </TableTd>
-        <TableTd className="numbers">{account.averageSize ? formatUsd(account.averageSize) : "$0.00"}</TableTd>
-        <TableTd className="numbers">{`${formatAmount(account.averageLeverage ?? 0n, 4, 2)}x`}</TableTd>
-        <TableTd className="text-right numbers">
+        <TableTd
+          className={cx("numbers first-letter:mr-1 first-letter:text-typography-secondary", {
+            "text-typography-secondary": account.averageSize === 0n,
+          })}
+        >
+          {account.averageSize ? formatUsd(account.averageSize) : "$0.00"}
+        </TableTd>
+        <TableTd
+          className={cx("numbers", {
+            "text-typography-secondary": account.averageLeverage === 0n,
+          })}
+        >
+          {`${formatAmount(account.averageLeverage ?? 0n, 4, 2)}`}
+          <span className="ml-1 text-typography-secondary">x</span>
+        </TableTd>
+        <TableTd className="text-right text-typography-secondary numbers">
           <TooltipWithPortal
-            handle={<span className="numbers">{`${account.wins}/${account.losses}`}</span>}
+            handle={
+              <span
+                className={cx("text-typography-primary numbers", {
+                  "text-typography-secondary": account.wins === 0 && account.losses === 0,
+                })}
+              >
+                {account.wins}
+                <span className="mx-1 text-typography-secondary">/</span>
+                {account.losses}
+              </span>
+            }
             renderContent={renderWinsLossesTooltipContent}
+            styleType="svgUnderline"
           />
         </TableTd>
       </TableTr>
@@ -423,7 +450,14 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   const tooltipContent = useCallback(() => message, [message]);
 
   if (rank === null)
-    return <TooltipWithPortal handleClassName="text-red-500" handle={t`NA`} renderContent={tooltipContent} />;
+    return (
+      <TooltipWithPortal
+        handleClassName="text-typography-secondary"
+        handle={t`NA`}
+        renderContent={tooltipContent}
+        styleType="svgUnderline"
+      />
+    );
 
   return <span className="font-medium text-typography-secondary numbers">{rank}</span>;
 });
@@ -554,5 +588,5 @@ function formatDelta(
 }
 
 function getSignedValueClassName(num: bigint) {
-  return num === 0n ? "" : num < 0 ? "negative" : "positive";
+  return num === 0n ? "text-typography-secondary" : num < 0 ? "negative" : "positive";
 }
