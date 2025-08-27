@@ -16,6 +16,7 @@ import {
   getFallbackRpcUrl,
   UiContractsChain,
   BOTANIX,
+  PRIVATE_RPC_PROVIDERS,
 } from "config/chains";
 import { getMulticallContract, getDataStoreContract } from "config/contracts";
 import { getContract } from "config/contracts";
@@ -102,7 +103,7 @@ function trackRpcProviders({ warmUp = false } = {}) {
           }
 
           // Use fallback provider both as primary and secondary if no successful probes received
-          const fallbackRpcUrl = getFallbackRpcUrl(chainId);
+          const fallbackRpcUrl = getFallbackRpcUrl(chainId, getIsLargeAccount());
 
           return {
             primaryUrl: fallbackRpcUrl,
@@ -179,7 +180,7 @@ async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerSta
 
   let nextPrimaryRpc = bestResponseTimeValidProbe;
   let nextSecondaryRpc = {
-    url: getFallbackRpcUrl(chainId),
+    url: getFallbackRpcUrl(chainId, getIsLargeAccount()),
   };
 
   if (getIsLargeAccount()) {
@@ -370,13 +371,15 @@ function initTrackerState() {
       }, {});
     };
 
+    const privateRpcProviders = getIsLargeAccount() ? PRIVATE_RPC_PROVIDERS[chainId] : FALLBACK_PROVIDERS[chainId];
+
     const providers = {
       ...prepareProviders(RPC_PROVIDERS[chainId], { isPublic: true }),
-      ...prepareProviders(FALLBACK_PROVIDERS[chainId], { isPublic: false }),
+      ...prepareProviders(privateRpcProviders, { isPublic: false }),
     };
 
-    let currentPrimaryUrl: string = getIsLargeAccount() ? FALLBACK_PROVIDERS[chainId][0] : RPC_PROVIDERS[chainId][0];
-    let currentSecondaryUrl: string = getIsLargeAccount() ? RPC_PROVIDERS[chainId][0] : FALLBACK_PROVIDERS[chainId][0];
+    let currentPrimaryUrl: string = getIsLargeAccount() ? privateRpcProviders[0] : RPC_PROVIDERS[chainId][0];
+    let currentSecondaryUrl: string = getIsLargeAccount() ? RPC_PROVIDERS[chainId][0] : privateRpcProviders[0];
 
     const storageKey = JSON.stringify(getRpcProviderKey(chainId));
     const storedProviderData = localStorage.getItem(storageKey);
@@ -421,8 +424,10 @@ export function getCurrentRpcUrls(chainId: number) {
     trackerState[chainId].lastUsage = new Date();
   }
 
+  const privateRpcProviders = getIsLargeAccount() ? PRIVATE_RPC_PROVIDERS[chainId] : FALLBACK_PROVIDERS[chainId];
+
   const primary = trackerState?.[chainId]?.currentPrimaryUrl ?? RPC_PROVIDERS[chainId][0];
-  const secondary = trackerState?.[chainId]?.currentSecondaryUrl ?? FALLBACK_PROVIDERS?.[chainId]?.[0] ?? primary;
+  const secondary = trackerState?.[chainId]?.currentSecondaryUrl ?? privateRpcProviders[0] ?? primary;
 
   return { primary, secondary };
 }
