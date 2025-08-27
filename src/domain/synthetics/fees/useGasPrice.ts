@@ -2,8 +2,8 @@ import useSWR from "swr";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getProvider } from "lib/rpc";
-
 import { EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS } from "sdk/configs/express";
+
 import {
   estimateExecutionGasPrice,
   getExecutionFeeBufferBps,

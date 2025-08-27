@@ -104,12 +104,12 @@
     },
     "0x6bFDD025827F7CE130BcfC446927AEF34ae2a98d": {
       "isDisabled": "0x8e24e1778db0501560129a065bfc40411bbf47fb2ba51b7e8f7c3d5318dc0f48",
-      "maxLongPoolAmount": "0x1d0942ec40bcdaa7d6bddfd4e33fdedafeec04d67708328e6aceb90b99642cf4",
-      "maxShortPoolAmount": "0x1d0942ec40bcdaa7d6bddfd4e33fdedafeec04d67708328e6aceb90b99642cf4",
-      "maxLongPoolUsdForDeposit": "0xd89ee2df4e7237953e680648319ed943a78936d581bf01bfab035d5cdaa390da",
-      "maxShortPoolUsdForDeposit": "0xd89ee2df4e7237953e680648319ed943a78936d581bf01bfab035d5cdaa390da",
-      "longPoolAmountAdjustment": "0x71c8d1263dd7fd29ab2332e3ce185cbf14adbe0ba21dbad0f8c03fa2ab6c1c86",
-      "shortPoolAmountAdjustment": "0x71c8d1263dd7fd29ab2332e3ce185cbf14adbe0ba21dbad0f8c03fa2ab6c1c86",
+      "maxLongPoolAmount": "0xeb9c4d6e6bc4ff040d5c6bebb881b52ed810f95c7bd1a4b1363f630d7f077474",
+      "maxShortPoolAmount": "0xeb9c4d6e6bc4ff040d5c6bebb881b52ed810f95c7bd1a4b1363f630d7f077474",
+      "maxLongPoolUsdForDeposit": "0xb1999c69ae4c9c835bf4f561503b6fb611e2891fe5a8d6b07c24be0dcbfbfd90",
+      "maxShortPoolUsdForDeposit": "0xb1999c69ae4c9c835bf4f561503b6fb611e2891fe5a8d6b07c24be0dcbfbfd90",
+      "longPoolAmountAdjustment": "0x698b22439d75a4a4a632f465c8e8acf37fc4052fd4b5726e631c1d3ed61c8107",
+      "shortPoolAmountAdjustment": "0x698b22439d75a4a4a632f465c8e8acf37fc4052fd4b5726e631c1d3ed61c8107",
       "reserveFactorLong": "0x0d708f32e50b1b8f86c6162d0c66137e969740b638eae5bc2b613f569e798e37",
       "reserveFactorShort": "0x0910db514f13e6b1b5c53c5536c1f8986d7a1548ce6c3aedf3786ab38ccb9b30",
       "openInterestReserveFactorLong": "0x9a6ededc474e2f41c503979285269cc1fea055963819e9cfdfee91076cf14116",
@@ -150,8 +150,8 @@
       "swapImpactFactorNegative": "0x225da45bd850b96bbe246e4f7f53ed51dccb165b1d1a16d2c4495d2bf1c01cbc",
       "swapImpactExponentFactor": "0xeb7228e9a1df1390c683ceb4a31577ee3381b679d41d04220e18364c641c24f2",
       "virtualMarketId": "0xb2c10f2870b97107ac5c5ab983e9238eb8cd9447c1aee87550b62df0406414ce",
-      "virtualLongTokenId": "0xe47cf033d5b118f5fcbd7eac09913b24cfc4b2782f90e71a8dd0fe7aa4f92e7d",
-      "virtualShortTokenId": "0xe47cf033d5b118f5fcbd7eac09913b24cfc4b2782f90e71a8dd0fe7aa4f92e7d"
+      "virtualLongTokenId": "0xad11454a7b68db8683667df39c97a96eeae88909e5fb849428193697b0dc2492",
+      "virtualShortTokenId": "0xad11454a7b68db8683667df39c97a96eeae88909e5fb849428193697b0dc2492"
     }
   },
   "42161": {
