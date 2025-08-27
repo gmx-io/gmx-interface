@@ -1,10 +1,10 @@
 import { Options, addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { toHex } from "viem";
 
-import type { ContractsChainId, AnyChainId } from "config/chains";
+import type { AnyChainId, ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { getLayerZeroEndpointId, isSettlementChain, isSourceChain } from "config/multichain";
-import type { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
+import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import { CodecUiHelper, MultichainAction } from "./codecs/CodecUiHelper";
 import { OftCmd, SEND_MODE_TAXI } from "./codecs/OftCmd";

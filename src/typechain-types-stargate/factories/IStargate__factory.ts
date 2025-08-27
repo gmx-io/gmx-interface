@@ -3,7 +3,7 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { IStargate, IStargateInterface } from "../../interfaces/IStargate";
+import type { IStargate, IStargateInterface } from "../IStargate";
 
 const _abi = [
   {

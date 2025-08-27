@@ -79,7 +79,7 @@ import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
-import type { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
+import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";

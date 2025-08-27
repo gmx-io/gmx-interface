@@ -10,7 +10,7 @@ import type {
   OFTLimitStruct,
   OFTReceiptStruct,
   SendParamStruct,
-} from "typechain-types-stargate/interfaces/IStargate";
+} from "typechain-types-stargate/IStargate";
 
 import type { QuoteOft } from "./types";
 
