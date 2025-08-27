@@ -129,7 +129,7 @@ export default function UserIncentiveDistributionList() {
           {!userIncentiveData?.data?.length ? (
             <EmptyMessage
               tooltipText={t`The distribution history for your incentives, airdrops, and prizes will be displayed here.`}
-              message={t`No distribution history yet.`}
+              message={t`No distribution history yet`}
               className="!mt-10"
             >
               {!active && (

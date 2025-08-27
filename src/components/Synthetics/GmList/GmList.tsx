@@ -155,7 +155,7 @@ export function GmList({
           <div className="flex flex-col gap-4">
             {rows}
             {!currentData.length && !isLoading && (
-              <EmptyTableContent emptyText={t`No pools matched.`} isLoading={isLoading} isEmpty={!currentData.length} />
+              <EmptyTableContent emptyText={t`No pools matched`} isLoading={isLoading} isEmpty={!currentData.length} />
             )}
 
             {isLoading && <Loader />}
@@ -213,7 +213,7 @@ export function GmList({
             </table>
 
             {!currentData.length && !isLoading && (
-              <EmptyTableContent emptyText={t`No pools matched.`} isLoading={isLoading} isEmpty={!currentData.length} />
+              <EmptyTableContent emptyText={t`No pools matched`} isLoading={isLoading} isEmpty={!currentData.length} />
             )}
           </TableScrollFadeContainer>
         )}

@@ -63,7 +63,7 @@ export function AppHeaderUser({ openSettings, disconnectAccountAndCloseSettings,
                 openConnectModal();
               }}
             >
-              <Trans>Connect Wallet</Trans>
+              <Trans>Connect wallet</Trans>
             </ConnectWalletButton>
             <OneClickButton openSettings={openSettings} />
             <NetworkDropdown
