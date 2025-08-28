@@ -34,15 +34,16 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
-    id: "aero-brett-listing",
+    id: "aero-brett-pbtc-listing",
     isActive: true,
-    startDate: "27 Aug 2025, 10:00",
-    endDate: "03 Sep 2025, 12:00",
-    title: "AERO and BRETT markets added on Arbitrum",
+    startDate: "28 Aug 2025, 10:00",
+    endDate: "04 Sep 2025, 12:00",
+    title: "AERO and BRETT markets added on Arbitrum, BTC market added on Botanix",
     bodyText: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
-        <span className="text-slate-100">[WETH-USDC]</span> for AERO and BRETT.
+        <span className="text-slate-100">[WETH-USDC]</span> for AERO and BRETT, or GM{" "}
+        <span className="text-slate-100">[PBTC]</span> for BTC.
       </>
     ),
   },
