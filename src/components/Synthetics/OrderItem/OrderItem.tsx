@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
-import { RxCross2 } from "react-icons/rx";
+import { FaCross } from "react-icons/fa";
 
 import { USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -558,7 +558,7 @@ function OrderItemLarge({
 
   const cancelButton = (
     <Button variant="ghost" disabled={isCanceling || Boolean(disabledCancelMarketOrderMessage)} onClick={onCancelOrder}>
-      <RxCross2 size={14} />
+      <FaCross size={14} />
     </Button>
   );
 

@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
-import { FaChevronRight } from "react-icons/fa6";
+import { FaChevronRight } from "react-icons/fa";
 import { ImSpinner2 } from "react-icons/im";
 import { MdClose } from "react-icons/md";
 import Skeleton from "react-loading-skeleton";

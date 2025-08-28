@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useCallback, useMemo, useState } from "react";
-import { FaChevronDown } from "react-icons/fa6";
+import { FaChevronDown } from "react-icons/fa";
 
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";

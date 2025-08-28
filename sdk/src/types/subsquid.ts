@@ -6097,7 +6097,7 @@ export interface Query {
   processorStatusById?: Maybe<ProcessorStatus>;
   processorStatuses: Array<ProcessorStatus>;
   processorStatusesConnection: ProcessorStatusesConnection;
-  squidStatus?: Maybe<SquidStatus>;
+  squidStatus: SquidStatus;
   swapInfoById?: Maybe<SwapInfo>;
   swapInfos: Array<SwapInfo>;
   swapInfosConnection: SwapInfosConnection;
@@ -6595,14 +6595,8 @@ export interface QuerytransactionsConnectionArgs {
 
 export interface SquidStatus {
   __typename?: "SquidStatus";
-  /** The hash of the last processed finalized block */
-  finalizedHash?: Maybe<Scalars["String"]["output"]>;
-  /** The height of the last processed finalized block */
-  finalizedHeight?: Maybe<Scalars["Int"]["output"]>;
-  /** The hash of the last processed block */
-  hash?: Maybe<Scalars["String"]["output"]>;
-  /** The height of the last processed block */
-  height?: Maybe<Scalars["Int"]["output"]>;
+  finalizedHeight: Scalars["Float"]["output"];
+  height: Scalars["Float"]["output"];
 }
 
 export interface SwapInfo {

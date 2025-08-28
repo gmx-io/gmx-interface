@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { FaChevronDown } from "react-icons/fa6";
+import { FaChevronDown } from "react-icons/fa";
 
 import { getMarketUiConfig } from "config/markets";
 import { getMarketBadge, getMarketIndexName, getMarketPoolName, MarketsInfoData } from "domain/synthetics/markets";

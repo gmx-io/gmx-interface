@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback } from "react";
-import { FaChevronDown } from "react-icons/fa6";
+import { FaChevronDown } from "react-icons/fa";
 
 import { useTheme } from "context/ThemeContext/ThemeContext";
 

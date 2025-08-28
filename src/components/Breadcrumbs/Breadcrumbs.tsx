@@ -1,6 +1,6 @@
 import cx from "classnames";
 import { ReactNode } from "react";
-import { FaChevronLeft } from "react-icons/fa6";
+import { FaChevronLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 import { useBreakpoints } from "lib/breakpoints";

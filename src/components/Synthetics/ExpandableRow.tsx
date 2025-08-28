@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useMedia } from "react-use";
 
 import { usePrevious } from "lib/usePrevious";

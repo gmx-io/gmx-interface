@@ -1,7 +1,7 @@
 import cx from "classnames";
 import throttle from "lodash/throttle";
 import { CSSProperties, PropsWithChildren, useCallback, useEffect, useRef, useState } from "react";
-import { FaChevronDown } from "react-icons/fa6";
+import { FaChevronDown } from "react-icons/fa";
 import { RemoveScroll } from "react-remove-scroll";
 import { createGlobalState } from "react-use";
 

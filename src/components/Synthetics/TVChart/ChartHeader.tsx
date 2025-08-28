@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useEffectOnce } from "react-use";
 
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";

@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
-import { FaChevronRight } from "react-icons/fa6";
+import { FaChevronRight } from "react-icons/fa";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import { Link } from "react-router-dom";
 import type { Address } from "viem";

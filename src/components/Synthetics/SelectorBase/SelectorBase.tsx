@@ -5,7 +5,7 @@ import cx from "classnames";
 import noop from "lodash/noop";
 import React, { PropsWithChildren, ReactNode, useCallback, useContext, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { FaChevronDown } from "react-icons/fa6";
+import { FaChevronDown } from "react-icons/fa";
 import { useMedia } from "react-use";
 
 import { SlideModal } from "components/Modal/SlideModal";

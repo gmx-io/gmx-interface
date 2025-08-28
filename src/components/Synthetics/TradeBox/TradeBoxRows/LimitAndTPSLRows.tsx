@@ -1,6 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { useCallback, useMemo, useRef } from "react";
-import { FaPlus } from "react-icons/fa6";
+import { FaPlus } from "react-icons/fa";
 
 import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {

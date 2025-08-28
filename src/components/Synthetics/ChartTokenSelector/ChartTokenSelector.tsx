@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import partition from "lodash/partition";
 import React, { useCallback, useMemo, useState } from "react";
-import { FaChevronDown } from "react-icons/fa6";
+import { FaChevronDown } from "react-icons/fa";
 import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";

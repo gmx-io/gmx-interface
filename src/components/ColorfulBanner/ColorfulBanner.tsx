@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { useCallback } from "react";
-import { FaChevronRight } from "react-icons/fa6";
-import { RxCross2 } from "react-icons/rx";
+import { FaChevronRight } from "react-icons/fa";
+import { FaCross } from "react-icons/fa";
 
 import ButtonLink from "components/Button/ButtonLink";
 
@@ -76,7 +76,7 @@ export function ColorfulBanner({
           className={cx("h-fit p-2 text-typography-secondary hover:text-typography-primary")}
           onClick={handleClose}
         >
-          <RxCross2 size={16} />
+          <FaCross size={16} />
         </button>
       )}
     </div>
