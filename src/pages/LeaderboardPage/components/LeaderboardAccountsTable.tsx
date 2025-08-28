@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, memo, useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 
-import { USD_DECIMALS } from "config/factors";
 import type { SortDirection } from "context/SorterContext/types";
 import {
   useLeaderboardAccountsRanks,
@@ -15,7 +14,6 @@ import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
-import { bigMath } from "sdk/utils/bigmath";
 
 import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
@@ -26,6 +24,8 @@ import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table"
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import { formatDelta, getSignedValueClassName } from "./shared";
 
 function getCellClassname(rank: number | null, competition: CompetitionType | undefined, pinned: boolean) {
   if (pinned) return cx("LeaderboardRankCell-Pinned relative");
@@ -384,7 +384,7 @@ const TableRow = memo(
             "text-typography-secondary": account.averageSize === 0n,
           })}
         >
-          {account.averageSize ? formatUsd(account.averageSize) : "$ 0.00"}
+          {account.averageSize ? formatUsd(account.averageSize) : "$\u200a0.00"}
         </TableTd>
         <TableTd
           className={cx("numbers", {
@@ -558,29 +558,3 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
     </div>
   );
 });
-
-function formatDelta(
-  delta: bigint,
-  {
-    decimals = USD_DECIMALS,
-    displayDecimals = 2,
-    useCommas = true,
-    ...p
-  }: {
-    decimals?: number;
-    displayDecimals?: number;
-    useCommas?: boolean;
-    prefixoid?: string;
-    signed?: boolean;
-    prefix?: string;
-    postfix?: string;
-  } = {}
-) {
-  return `${p.prefixoid ? `${p.prefixoid} ` : ""}${p.signed ? (delta === 0n ? "" : delta > 0 ? "+" : "-") : ""}${
-    p.prefix || ""
-  } ${formatAmount(p.signed ? bigMath.abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
-}
-
-function getSignedValueClassName(num: bigint) {
-  return num === 0n ? "text-typography-secondary" : num < 0 ? "negative" : "positive";
-}

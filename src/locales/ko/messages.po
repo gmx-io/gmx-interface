@@ -46,11 +46,6 @@ msgstr "탈중앙화 트레이딩 프로토콜"
 msgid "STIP.b Trading Incentives"
 msgstr ""
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#: src/pages/Stake/ClaimModal.tsx
-#~ msgid "Claim submitted!"
-#~ msgstr "수령 제출 완료!"
-
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order executed."
 msgstr ""
@@ -298,10 +293,6 @@ msgstr "지정가 스왑 취소"
 msgid "{seconds}s"
 msgstr "{seconds}초"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
-#~ msgid "No incentives distribution history yet."
-#~ msgstr "인센티브 분배 내역 없음."
-
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/ConfirmationBox.jsx
@@ -472,10 +463,6 @@ msgstr "포지션"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0}은 스마트 컨트랙트 주소로 보낼 수 없습니다. 다른 토큰을 선택하세요."
 
-#: src/domain/synthetics/markets/claimFundingFeesTxn.ts
-#~ msgid "Funding Claimed"
-#~ msgstr "펀딩 수령 완료"
-
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trading</2> under settings, which should offer a better experience."
 msgstr "RPC 오류로 트랜잭션 실패.<0/><1/>설정에서 <2>익스프레스 트레이딩</2>을 활성화하세요. 더 나은 경험을 제공할 것입니다."
@@ -522,10 +509,6 @@ msgstr "주문"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Increased {positionText}, +{0}"
 msgstr "{positionText} 증가, +{0}"
-
-#: src/pages/Stake/Stake.tsx
-#~ msgid "Claim and view your incentives, airdrops, and prizes"
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -651,10 +634,6 @@ msgstr "종료 가격"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V2"
 msgstr "V2 리베이트"
-
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
-#~ msgid "Incentives are airdropped weekly."
-#~ msgstr "인센티브가 매주 에어드랍됩니다."
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
@@ -1124,10 +1103,6 @@ msgstr "스테이킹된 토큰"
 msgid "Beefy"
 msgstr "Beefy"
 
-#: src/pages/Stake/UnstakeModal.tsx
-#~ msgid "Unstake completed!"
-#~ msgstr "언스테이킹 완료!"
-
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/MinReceiveRow.tsx
@@ -1222,11 +1197,6 @@ msgstr "GLP 판매"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
 msgstr "포지션 담보가 {symbol}이고 초기 가치가 {indexName} 롱 포지션 크기보다 높으므로, 담보 가치가 음의 PnL을 커버하여 청산 가격이 없습니다."
-
-#: src/components/Synthetics/Claims/ClaimsHistory.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-#~ msgid "CSV"
-#~ msgstr "CSV"
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
@@ -1416,10 +1386,6 @@ msgstr "현재 가격 영향은 {0}입니다. 주문이 처리될 가능성을 �
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Hide error"
 msgstr "오류 숨기기"
-
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of the standard {0}% for Tier {1}."
-#~ msgstr "이 추천인 코드 소유자가 표준 {0}% 대신 {currentTierDiscount}% 사용자 지정 할인을 Tier {1}에 설정했습니다."
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Leftover position below 10 USD"
@@ -2447,11 +2413,6 @@ msgstr ""
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {이 포지션에 영향을 미칠 수 있는 활성 트리거 주문이 있습니다.} other {#개의 활성 트리거 주문이 이 포지션에 영향을 미칠 수 있습니다.}}"
 
-#: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
-#~ msgid "<0>{0}</0> GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
-#~ msgstr "<0>{0}</0> GMX 토큰을 수령할 수 있습니다. 총 보상 섹션의 옵션을 사용하여 수령하세요."
-
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
 msgstr "최소 {0} {stakeTokenLabel}이 {1} esGMX를 베스팅하기 위해 필요합니다."
@@ -2616,10 +2577,6 @@ msgstr "1시간 당 순 수수료율"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Vest with GMX on Avalanche"
 msgstr "Avalanche에서 GMX로 베스팅하기"
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take Profit / Stop Loss Orders."
-#~ msgstr "포지션을 클릭하여 시장을 선택한 후, 거래 박스를 사용하여 포지션 크기를 증가시키거나 이익 실현 / 손절 주문을 설정하세요."
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Relayer request failed"
@@ -2863,10 +2820,6 @@ msgstr "충분한 유동성이 있고 실행 가격이 최소 수령액을 보�
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
 msgstr "디페그된 스테이블 코인 거래는 현재 시장 가격 또는 $1.00 중 더 나쁜 스프레드에 따르며, 여러 스테이블 코인을 포함한 거래는 여러 스프레드를 가질 수 있습니다."
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Use the \"Close\" button to reduce your Position Size."
-#~ msgstr "포지션 크기를 줄이기 위해 \"닫기\" 버튼을 사용하세요."
 
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Increase Size (Limit)"
@@ -3182,10 +3135,6 @@ msgstr "주문 유효화 실패"
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Total Staked"
 msgstr "총 스테이킹"
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#~ msgid "Claim V2 rebates from your referred traders."
-#~ msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -3743,10 +3692,6 @@ msgstr "네트워크"
 msgid "<0>every</0> {hours} hours{0}"
 msgstr "<0>매</0> {hours} 시간{0}"
 
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
-#~ msgstr "V1 거래의 경우 이 할인이 매주 수요일 계정으로 에어드랍됩니다. V2에서는 할인이 자동 적용되어 거래 시 수수료를 줄입니다."
-
 #: src/components/DebugExpressSettings/DebugSwapsSettings.tsx
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Fail External Swaps"
@@ -3974,10 +3919,6 @@ msgstr "최근 180일"
 msgid "Unknown buy GM order"
 msgstr "알 수 없는 GM 구매 주문"
 
-#: src/components/Synthetics/PositionSeller/rows/AllowedSlippageRow.tsx
-#~ msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than -{0}, may result in failed orders if prices are volatile."
-#~ msgstr "페이지 오른쪽 상단 설정 메뉴에서 기본 허용 슬리피지를 편집할 수 있습니다.<0/><1/>낮은 허용 슬리피지(예: -{0} 미만)는 가격 변동 시 주문 실패를 초래할 수 있습니다."
-
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Updating order"
@@ -4148,11 +4089,6 @@ msgstr ""
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Set TP/SL"
 msgstr "TP/SL 설정"
-
-#: src/components/Synthetics/PositionEditor/PositionEditorAdvancedRows.tsx
-#: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
-#~ msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
-#~ msgstr "최초 담보 (차입 및 자금 수수료 제외 담보)."
 
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
@@ -4639,10 +4575,6 @@ msgstr "Avalanche에서 스테이킹됨"
 msgid "Media Kit"
 msgstr "미디어 키트"
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
-#~ msgid "You can edit the default allowed slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than -{0}, may result in failed orders if prices are volatile."
-#~ msgstr ""
-
 #: src/pages/Home/Home.tsx
 msgid "Reduce Liquidation Risks"
 msgstr "청산 위험 감소하기"
@@ -4704,10 +4636,6 @@ msgstr "SL - 롱 감소"
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Airdrop"
 msgstr "에어드랍"
-
-#: src/pages/Stake/UnstakeModal.tsx
-#~ msgid "Unstake submitted!"
-#~ msgstr "언스테이킹 제출됨!"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "This competition is held on the {0} network. <0>Change your network</0> to participate."
@@ -5188,10 +5116,6 @@ msgstr ""
 msgid "Yield Farming"
 msgstr "수익 농사"
 
-#: src/lib/contracts/callContract.tsx
-#~ msgid "Transaction completed!"
-#~ msgstr "트랜잭션 완료!"
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "승인 중..."
@@ -5232,10 +5156,6 @@ msgstr "주문 유형"
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana"
 msgstr "GMX Solana"
-
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
-#~ msgid "Affiliate Rewards Claimed"
-#~ msgstr "제휴 보상 수령됨"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
@@ -5927,11 +5847,6 @@ msgstr "롱 순 수수료율 / 1시간"
 msgid "Edit"
 msgstr "수정"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#~ msgid "Rebates are claimed manually."
-#~ msgstr ""
-
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No available leverage found"
@@ -6108,10 +6023,6 @@ msgstr "미실현 수수료"
 msgid "Traders Referred"
 msgstr "추천한 트레이더"
 
-#: src/components/Exchange/PositionsList.jsx
-#~ msgid "Use the \"Close\" button to reduce your Position Size, or to set Take Profit / Stop Loss Orders."
-#~ msgstr "\"종료\" 버튼을 사용하여 포지션 크기를 줄이거나 이익 실현 / 손절 주문을 설정하세요."
-
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Increase Size (Market)"
 msgstr "크기 증가 (시장)"
@@ -6132,11 +6043,6 @@ msgstr "3위"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet, your keys.<0/><1/>GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
 msgstr ""
-
-#: src/domain/synthetics/markets/claimFundingFeesTxn.ts
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
-#~ msgid "Claiming failed"
-#~ msgstr "수령 실패"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Stop Loss"
@@ -6354,10 +6260,6 @@ msgstr "esGMX 수령"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer ETH to Arbitrum"
 msgstr "ETH 구매 또는 Arbitrum으로 전송"
-
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "The maximum percentage difference between your specified price and execution price when placing orders."
-#~ msgstr "주문 시 지정 가격과 실행 가격 간의 최대 백분율 차이."
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
@@ -6746,12 +6648,6 @@ msgstr "주문 활성화를 위한 약관 수락"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr "프로토콜 분석"
-
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
-#: src/pages/NftWallet/NftWallet.jsx
-#~ msgid "Transfer submitted!"
-#~ msgstr "전송 제출 완료!"
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid ""
@@ -7862,11 +7758,6 @@ msgstr "총 보상"
 msgid "NFT ID"
 msgstr "NFT ID"
 
-#: src/domain/synthetics/markets/claimFundingFeesTxn.ts
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
-#~ msgid "Success claimings"
-#~ msgstr "성공 청구"
-
 #: src/lib/legacy.ts
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr "탈중앙화 퍼페추얼 거래소 | GMX"
@@ -7953,10 +7844,6 @@ msgstr "문자, 숫자 및 언더스코어만 허용됩니다."
 msgid "High TWAP network fee"
 msgstr ""
 
-#: src/pages/Referrals/Referrals.tsx
-#~ msgid "Referral code submitted!"
-#~ msgstr "추천 코드 제출 완료!"
-
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "APY"
 msgstr "APY"
@@ -7986,10 +7873,6 @@ msgstr "이미지 생성 오류. 새로고침 후 다시 시도."
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Price Impact Rebates"
 msgstr "가격 영향 리베이트"
-
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "Take Profit and Stop Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
-#~ msgstr "관련 포지션이 완전히 종료되면 테이크 프로핏 및 스탑 로스 주문이 자동 취소됩니다. 이는 새로 생성된 TP/SL 주문에만 적용."
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "The 365d estimate is based on the past {daysConsidered}d APY."
@@ -8035,10 +7918,6 @@ msgstr "DeFi 포트폴리오 트래커"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Current Funding Fee / Day"
 msgstr "현재 자금 수수료 / 일"
-
-#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-#~ msgid "365d estimate based on past {daysConsidered}d APY."
-#~ msgstr "과거 {daysConsidered}일 APY 기반 365일 추정."
 
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum APR:"
@@ -8126,10 +8005,6 @@ msgstr "STIP.b LP 인센티브"
 msgid "Cancel Stop Loss"
 msgstr "스탑 로스 취소"
 
-#: src/components/Exchange/PositionsList.jsx
-#~ msgid "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."
-#~ msgstr "포지션을 클릭하여 시장 선택 후, 필요 시 거래 박스에서 포지션 크기 증가."
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Decrease"
 msgstr "지정가 감소"
@@ -8194,10 +8069,6 @@ msgstr "적립됨"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Liquidation price is influenced by fees and collateral value."
 msgstr "청산 가격은 수수료와 담보 가치에 영향 받음."
-
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-#~ msgid "GMX Solana is hosted on a different website by a different DAO team.<0/><1/>The experience may vary slightly."
-#~ msgstr "GMX Solana는 다른 DAO 팀에 의해 다른 웹사이트에서 호스팅됩니다.<0/><1/>경험이 약간 다를 수 있습니다."
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "No data available"

@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
 
-import { USD_DECIMALS } from "config/factors";
 import type { SortDirection } from "context/SorterContext/types";
 import { useTokenInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useLeaderboardIsCompetition } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
@@ -20,7 +19,6 @@ import { getLiquidationPrice } from "domain/synthetics/positions";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
-import { bigMath } from "sdk/utils/bigmath";
 
 import AddressView from "components/AddressView/AddressView";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
@@ -33,6 +31,8 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import { formatDelta, getSignedValueClassName } from "./shared";
 
 function getWinnerRankClassname(rank: number | null) {
   if (rank === null) return undefined;
@@ -558,29 +558,3 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
     </div>
   );
 });
-
-function formatDelta(
-  delta: bigint,
-  {
-    decimals = USD_DECIMALS,
-    displayDecimals = 2,
-    useCommas = true,
-    ...p
-  }: {
-    decimals?: number;
-    displayDecimals?: number;
-    useCommas?: boolean;
-    prefixoid?: string;
-    signed?: boolean;
-    prefix?: string;
-    postfix?: string;
-  } = {}
-) {
-  return `${p.prefixoid ? `${p.prefixoid} ` : ""}${p.signed ? (delta === 0n ? "" : delta > 0 ? "+" : "-") : ""}${
-    p.prefix || ""
-  } ${formatAmount(p.signed ? bigMath.abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
-}
-
-function getSignedValueClassName(num: bigint) {
-  return num === 0n ? "" : num < 0 ? "negative" : "positive";
-}
