@@ -50,8 +50,7 @@ export default defineConfig(({ mode }) => {
     build: {
       assetsInlineLimit: 0,
       outDir: "build",
-      // TODO: remove this after sourcemap is fixed
-      sourcemap: false,
+      sourcemap: true,
       rollupOptions: {
         maxParallelFileOps: 2,
         output: {
