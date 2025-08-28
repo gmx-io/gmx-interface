@@ -393,8 +393,8 @@ describe("formatPercentage", () => {
   });
 
   it("should display signed percentage", () => {
-    expect(formatPercentage(100n, { signed: true })).toBe("+ 1.00%");
-    expect(formatPercentage(-100n, { signed: true })).toBe("- 1.00%");
+    expect(formatPercentage(100n, { signed: true })).toBe("+\u200a1.00%");
+    expect(formatPercentage(-100n, { signed: true })).toBe("-\u200a1.00%");
   });
 
   it("should format with different displayDecimals", () => {
