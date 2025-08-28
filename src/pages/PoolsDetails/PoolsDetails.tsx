@@ -54,9 +54,7 @@ export function PoolsDetails() {
 
   const isMobile = usePoolsIsMobilePage();
 
-  const { isSmallDesktop } = useBreakpoints();
-
-  const isInCurtain = isSmallDesktop;
+  const { isDesktop: isInCurtain } = useBreakpoints();
 
   const breadcrumbs = (
     <Breadcrumbs>

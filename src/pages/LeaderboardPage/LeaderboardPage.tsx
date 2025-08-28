@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
 import { useLeaderboardPageKey } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
@@ -14,32 +14,31 @@ import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/Cha
 import { LeaderboardContainer } from "./components/LeaderboardContainer";
 import "./LeaderboardPage.scss";
 
-export function LeaderboardPage() {
+const LeaderboardBreadcrumbs = () => {
   const pageKey = useLeaderboardPageKey();
+  const currentPage = LEADERBOARD_PAGES[pageKey];
+  const isCompetition = currentPage.isCompetition;
+  const isConcluded = currentPage.timeframe.to && currentPage.timeframe.to < Date.now() / 1000;
 
-  const breadcrumbs = useMemo(() => {
-    const currentPage = LEADERBOARD_PAGES[pageKey];
-    const isCompetition = currentPage.isCompetition;
-    const isConcluded = currentPage.timeframe.to && currentPage.timeframe.to < Date.now() / 1000;
-
-    if (!isCompetition && !isConcluded) {
-      return null;
-    }
-
-    return (
-      <Breadcrumbs>
-        <BreadcrumbItem to="/leaderboard" back>
-          <Trans>Leaderboard</Trans>
-        </BreadcrumbItem>
-        <BreadcrumbItem active>
-          <Trans>Concluded Competitions</Trans>
-        </BreadcrumbItem>
-      </Breadcrumbs>
-    );
-  }, [pageKey]);
+  if (!isCompetition && !isConcluded) {
+    return null;
+  }
 
   return (
-    <AppPageLayout header={<ChainContentHeader breadcrumbs={breadcrumbs} />}>
+    <Breadcrumbs>
+      <BreadcrumbItem to="/leaderboard" back>
+        <Trans>Leaderboard</Trans>
+      </BreadcrumbItem>
+      <BreadcrumbItem active>
+        <Trans>Concluded Competitions</Trans>
+      </BreadcrumbItem>
+    </Breadcrumbs>
+  );
+};
+
+export function LeaderboardPage() {
+  return (
+    <AppPageLayout header={<ChainContentHeader breadcrumbs={<LeaderboardBreadcrumbs />} />}>
       <div className="page-layout">
         <LeaderboardContainer />
       </div>

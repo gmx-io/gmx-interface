@@ -337,15 +337,13 @@ export function OverviewCard({
           <span className="label">
             <Trans>Annualized:</Trans>
           </span>
-          <span className="amount numbers">{formatAmountHuman(annualizedTotal, USD_DECIMALS, true, 2)}</span>
+          <span className="numbers">{formatAmountHuman(annualizedTotal, USD_DECIMALS, true, 2)}</span>
         </p>
         <p className="Tooltip-row">
           <span className="label">
             <Trans>Annualized Buy Pressure (BB&D):</Trans>
           </span>
-          <span className="amount numbers">
-            {formatAmountHuman(annualizedTotalBuyingPressure, USD_DECIMALS, true, 2)}
-          </span>
+          <span className="numbers">{formatAmountHuman(annualizedTotalBuyingPressure, USD_DECIMALS, true, 2)}</span>
         </p>
         <p className="Tooltip-row !mt-16">
           <Trans>Annualized data based on the past 7 days.</Trans>
