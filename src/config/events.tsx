@@ -42,7 +42,7 @@ export const appEventsData: EventData[] = [
     bodyText: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
-        <span className="text-slate-100">[WETH-USDC]</span> for AERO and BRETT, or GM or GM{" "}
+        <span className="text-slate-100">[WETH-USDC]</span> for AERO and BRETT, or GM{" "}
         <span className="text-slate-100">[PBTC]</span> for BTC.
       </>
     ),
