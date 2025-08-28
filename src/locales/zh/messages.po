@@ -1801,6 +1801,10 @@ msgstr "输入价格"
 msgid "Account"
 msgstr "账户"
 
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Using high leverage increases the risk of liquidation."
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading is not available for wrapping or unwrapping native token {0}."
 msgstr "快速交易不可用于包装或解包原生代币 {0}。"
@@ -3340,10 +3344,6 @@ msgstr "方向"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open positions."
 msgstr "GM 可以为此市场出售 {0} 和 {1}，上限为指定的出售上限。池中剩余代币保留用于当前开仓。"
-
-#: src/components/Glp/GlpSwap.jsx
-msgid "Due to the recent incident on GMX V1 Arbitrum, GLP on Arbitrum is not sellable."
-msgstr "由于 GMX V1 Arbitrum 最近的事件，Arbitrum 上的 GLP 不可出售。"
 
 #: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -7060,10 +7060,6 @@ msgstr "最大网络费用包括额外订单的费用。如果它们未触发并
 msgid "Rebates"
 msgstr "回扣"
 
-#: src/components/Glp/GlpSwap.jsx
-msgid "GLP is not sellable"
-msgstr "GLP 不可出售"
-
 #: src/pages/BuyGlp/BuyGlp.jsx
 msgid "GMX V1 markets are disabled and only allow for position closing. GLP is being phased out and no longer supports GMX V1 markets."
 msgstr "GMX V1 市场已禁用，仅允许平仓。GLP 正在逐步淘汰，不再支持 GMX V1 市场。"
@@ -8394,10 +8390,6 @@ msgstr "剩余抵押品低于 {0} USD"
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
 msgstr "触发"
-
-#: src/components/Glp/GlpSwap.jsx
-msgid "Please <0>read here</0> for more information."
-msgstr "请 <0>在此阅读</0> 更多信息。"
 
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Exchange/TradeHistory.jsx

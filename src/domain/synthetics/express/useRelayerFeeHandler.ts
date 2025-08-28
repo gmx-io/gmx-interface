@@ -52,7 +52,7 @@ export function useExpressOrdersParams({
   const isAvailable = isExpressAvailable && orderParams && !getBatchIsNativePayment(orderParams);
 
   const { signer } = useWallet();
-  const { provider } = useJsonRpcProvider(chainId);
+  const { provider } = useJsonRpcProvider(chainId, { isExpress: isExpressAvailable });
 
   const requiredActions = orderParams ? getBatchRequiredActions(orderParams) : undefined;
   const executionFee =

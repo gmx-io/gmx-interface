@@ -1801,6 +1801,10 @@ msgstr "Введите цену"
 msgid "Account"
 msgstr "Учётная запись"
 
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Using high leverage increases the risk of liquidation."
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading is not available for wrapping or unwrapping native token {0}."
 msgstr "Экспресс-трейдинг недоступен для упаковки или распаковки нативного токена {0}."
@@ -3340,10 +3344,6 @@ msgstr "Направление"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open positions."
 msgstr "GM можно продать за {0} и {1} на этом рынке до указанных лимитов продажи. Остальные токены в пуле зарезервированы для текущих открытых позиций."
-
-#: src/components/Glp/GlpSwap.jsx
-msgid "Due to the recent incident on GMX V1 Arbitrum, GLP on Arbitrum is not sellable."
-msgstr "Из-за недавнего инцидента на GMX V1 Arbitrum, GLP на Arbitrum не продаётся."
 
 #: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -7060,10 +7060,6 @@ msgstr "Максимальная комиссия сети включает ко
 msgid "Rebates"
 msgstr "Возвраты"
 
-#: src/components/Glp/GlpSwap.jsx
-msgid "GLP is not sellable"
-msgstr "GLP не продаваем"
-
 #: src/pages/BuyGlp/BuyGlp.jsx
 msgid "GMX V1 markets are disabled and only allow for position closing. GLP is being phased out and no longer supports GMX V1 markets."
 msgstr "Рынки GMX V1 отключены и позволяют только закрытие позиций. GLP постепенно выводится и больше не поддерживает рынки GMX V1."
@@ -8394,10 +8390,6 @@ msgstr "Оставшийся залог ниже {0} USD"
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
 msgstr "триггер"
-
-#: src/components/Glp/GlpSwap.jsx
-msgid "Please <0>read here</0> for more information."
-msgstr "Пожалуйста, <0>прочитайте здесь</0> для дополнительной информации."
 
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Exchange/TradeHistory.jsx
