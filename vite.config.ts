@@ -59,6 +59,14 @@ export default defineConfig(({ mode }) => {
             charts: ["recharts"],
             ui: ["@headlessui/react", "framer-motion", "react-select", "react-icons"],
           },
+          sourcemapExcludeSources: true,
+          sourcemapPathTransform: (relativeSourcePath: string) => {
+            // Exclude react-icons from sourcemap
+            if (relativeSourcePath.includes("node_modules/react-icons")) {
+              return "";
+            }
+            return relativeSourcePath;
+          },
         },
       },
     },
