@@ -8,7 +8,9 @@ import { callContract } from "lib/contracts";
 import { OrderMetricId } from "lib/metrics/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
+import { IDepositUtils } from "typechain-types/ExchangeRouter";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -38,7 +40,7 @@ export type CreateDepositParams = {
   setPendingDeposit: SetPendingDeposit;
 };
 
-export async function createDepositTxn(chainId: number, signer: Signer, p: CreateDepositParams) {
+export async function createDepositTxn(chainId: ContractsChainId, signer: Signer, p: CreateDepositParams) {
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const depositVaultAddress = getContract(chainId, "DepositVault");
 
@@ -85,19 +87,22 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Creat
       method: "createDeposit",
       params: [
         {
-          receiver: p.account,
-          callbackContract: ethers.ZeroAddress,
-          market: p.marketTokenAddress,
-          initialLongToken: initialLongTokenAddress,
-          initialShortToken: initialShortTokenAddress,
-          longTokenSwapPath: p.longTokenSwapPath,
-          shortTokenSwapPath: p.shortTokenSwapPath,
+          addresses: {
+            receiver: p.account,
+            callbackContract: ethers.ZeroAddress,
+            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
+            market: p.marketTokenAddress,
+            initialLongToken: initialLongTokenAddress,
+            initialShortToken: initialShortTokenAddress,
+            longTokenSwapPath: p.longTokenSwapPath,
+            shortTokenSwapPath: p.shortTokenSwapPath,
+          },
           minMarketTokens: minMarketTokens,
           shouldUnwrapNativeToken: shouldUnwrapNativeToken,
           executionFee: p.executionFee,
-          callbackGasLimit: 0n,
-          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
-        },
+          callbackGasLimit: 0,
+          dataList: [],
+        } satisfies IDepositUtils.CreateDepositParamsStruct,
       ],
     },
   ];

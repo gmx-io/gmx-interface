@@ -86,7 +86,7 @@ export function getDepositAmounts(p: {
       return values;
     }
 
-    values.swapPriceImpactDeltaUsd = getPriceImpactForSwap(
+    const priceImpactValues = getPriceImpactForSwap(
       marketInfo,
       longToken,
       shortToken,
@@ -94,12 +94,14 @@ export function getDepositAmounts(p: {
       values.shortTokenUsd
     );
 
+    values.swapPriceImpactDeltaUsd = priceImpactValues.priceImpactDeltaUsd;
+
     const totalDepositUsd = values.longTokenUsd + values.shortTokenUsd;
 
     if (values.longTokenUsd > 0) {
       const swapFeeUsd = p.forShift
         ? 0n
-        : getSwapFee(marketInfo, values.longTokenUsd, values.swapPriceImpactDeltaUsd > 0, false);
+        : getSwapFee(marketInfo, values.longTokenUsd, priceImpactValues.balanceWasImproved, false);
       values.swapFeeUsd = values.swapFeeUsd + swapFeeUsd;
 
       const uiFeeUsd = applyFactor(values.longTokenUsd, uiFeeFactor);
@@ -120,7 +122,7 @@ export function getDepositAmounts(p: {
     if (values.shortTokenUsd > 0) {
       const swapFeeUsd = p.forShift
         ? 0n
-        : getSwapFee(marketInfo, values.shortTokenUsd, values.swapPriceImpactDeltaUsd > 0, false);
+        : getSwapFee(marketInfo, values.shortTokenUsd, priceImpactValues.balanceWasImproved, false);
       values.swapFeeUsd = values.swapFeeUsd + swapFeeUsd;
 
       const uiFeeUsd = applyFactor(values.shortTokenUsd, uiFeeFactor);
@@ -196,7 +198,7 @@ export function getDepositAmounts(p: {
       values.shortTokenUsd = values.marketTokenUsd;
     }
 
-    values.swapPriceImpactDeltaUsd = getPriceImpactForSwap(
+    const priceImpactValues = getPriceImpactForSwap(
       marketInfo,
       longToken,
       shortToken,
@@ -205,7 +207,7 @@ export function getDepositAmounts(p: {
     );
 
     if (!p.forShift) {
-      const swapFeeUsd = getSwapFee(marketInfo, values.marketTokenUsd, values.swapPriceImpactDeltaUsd > 0, false);
+      const swapFeeUsd = getSwapFee(marketInfo, values.marketTokenUsd, priceImpactValues.balanceWasImproved, false);
       values.swapFeeUsd = values.swapFeeUsd + swapFeeUsd;
     }
 

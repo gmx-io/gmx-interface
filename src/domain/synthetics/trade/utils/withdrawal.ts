@@ -78,10 +78,10 @@ export function getWithdrawalAmounts(p: {
 
     const longSwapFeeUsd = p.forShift
       ? 0n
-      : applyFactor(values.longTokenUsd, p.marketInfo.swapFeeFactorForNegativeImpact);
+      : applyFactor(values.longTokenUsd, p.marketInfo.swapFeeFactorForBalanceWasNotImproved);
     const shortSwapFeeUsd = p.forShift
       ? 0n
-      : applyFactor(values.shortTokenUsd, p.marketInfo.swapFeeFactorForNegativeImpact);
+      : applyFactor(values.shortTokenUsd, p.marketInfo.swapFeeFactorForBalanceWasNotImproved);
 
     const longUiFeeUsd = applyFactor(values.marketTokenUsd, uiFeeFactor);
     const shortUiFeeUsd = applyFactor(values.shortTokenUsd, uiFeeFactor);
@@ -131,7 +131,7 @@ export function getWithdrawalAmounts(p: {
     if (!p.forShift) {
       values.swapFeeUsd = applyFactor(
         values.longTokenUsd + values.shortTokenUsd,
-        p.marketInfo.swapFeeFactorForNegativeImpact
+        p.marketInfo.swapFeeFactorForBalanceWasNotImproved
       );
     }
 

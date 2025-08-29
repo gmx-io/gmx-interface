@@ -6,6 +6,7 @@ import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import {
   isDecreaseOrderType,
   isIncreaseOrderType,
+  isLimitOrderType,
   isMarketOrderType,
   isOrderForPosition,
   isSwapOrder,
@@ -197,6 +198,7 @@ export function getOrderErrors(p: {
       const { acceptablePriceDeltaBps: currentAcceptablePriceDeltaBps } = getAcceptablePriceInfo({
         marketInfo: positionOrder.marketInfo,
         isIncrease: isIncreaseOrderType(positionOrder.orderType),
+        isLimit: isLimitOrderType(positionOrder.orderType),
         isLong: positionOrder.isLong,
         indexPrice: positionOrder.triggerPrice,
         sizeDeltaUsd: positionOrder.sizeDeltaUsd,

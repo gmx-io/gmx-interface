@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { type Address } from "viem";
 
-import { CHAIN_NAMES_MAP, SUPPORTED_CHAIN_IDS } from "config/chains";
+import { CHAIN_NAMES_MAP, CONTRACTS_CHAIN_IDS } from "config/chains";
 import { getIsV1Supported } from "config/features";
 import { getIcon } from "config/icons";
 
@@ -24,7 +24,7 @@ export function VersionNetworkSwitcherRow({
 function Options({ account, chainId, version }: { account?: Address; chainId: number; version: number }) {
   return (
     <div className="flex flex-wrap items-center gap-8">
-      {SUPPORTED_CHAIN_IDS.map((supportedChainId) => {
+      {CONTRACTS_CHAIN_IDS.map((supportedChainId) => {
         const isActive = supportedChainId === chainId && version === 2;
         return (
           <Button
@@ -44,7 +44,7 @@ function Options({ account, chainId, version }: { account?: Address; chainId: nu
           </Button>
         );
       })}
-      {SUPPORTED_CHAIN_IDS.filter(getIsV1Supported).map((supportedChainId) => {
+      {CONTRACTS_CHAIN_IDS.filter(getIsV1Supported).map((supportedChainId) => {
         const isActive = supportedChainId === chainId && version === 1;
         return (
           <Button

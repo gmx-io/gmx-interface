@@ -35,6 +35,7 @@ export type ModalProps = PropsWithChildren<{
   contentPadding?: boolean;
   qa?: string;
   contentClassName?: string;
+  disableOverflowHandling?: boolean;
 }>;
 
 export default function Modal({
@@ -50,6 +51,7 @@ export default function Modal({
   setIsVisible,
   qa,
   contentClassName,
+  disableOverflowHandling = false,
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement | null>(null);
 
@@ -122,9 +124,13 @@ export default function Modal({
                 </div>
                 {headerContent}
               </div>
-              <div className="overflow-auto">
-                <div className={cx("Modal-body", { "no-content-padding": !contentPadding })}>{children}</div>
-              </div>
+              {disableOverflowHandling ? (
+                children
+              ) : (
+                <div className="overflow-auto">
+                  <div className={cx("Modal-body", { "no-content-padding": !contentPadding })}>{children}</div>
+                </div>
+              )}
               {footerContent && (
                 <>
                   <div>{footerContent}</div>

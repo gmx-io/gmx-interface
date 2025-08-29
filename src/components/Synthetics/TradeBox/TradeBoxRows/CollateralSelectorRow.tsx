@@ -7,11 +7,9 @@ import {
   selectTradeboxHasExistingLimitOrder,
   selectTradeboxHasExistingPosition,
   selectTradeboxMarketAddress,
-  selectTradeboxMarketInfo,
   selectTradeboxSelectedCollateralTokenSymbol,
   selectTradeboxSetCollateralAddress,
   selectTradeboxTradeFlags,
-  selectTradeboxTradeType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxAvailableAndDisabledTokensForCollateral } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxAvailableAndDisabledTokensForCollateral";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -38,8 +36,6 @@ export function CollateralSelectorRow(p: Props) {
 
   const warnings = useCollateralWarnings();
   const collateralInTooltipContent = useCollateralInTooltipContent();
-  const marketInfo = useSelector(selectTradeboxMarketInfo);
-  const tradeType = useSelector(selectTradeboxTradeType);
 
   return (
     <>
@@ -60,8 +56,6 @@ export function CollateralSelectorRow(p: Props) {
             options={availableTokens}
             disabledOptions={disabledTokens}
             selectedTokenSymbol={selectedTokenName}
-            marketInfo={marketInfo}
-            tradeType={tradeType}
           />
         }
       />

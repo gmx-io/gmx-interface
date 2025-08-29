@@ -6,15 +6,16 @@ import { BOTANIX } from "config/chains";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectBotanixStakingAssetsPerShare } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useDebounce } from "lib/debounce/useDebounce";
 import { metrics, OpenOceanQuoteTiming } from "lib/metrics";
-import { useDebounce } from "lib/useDebounce";
+import { ContractsChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/types/trade";
+import { getBotanixStakingExternalSwapQuote } from "sdk/utils/swap/botanixStaking";
 
-import { getOpenOceanTxnData, OpenOceanQuote } from "./openOcean";
-import { getBotanixStakingExternalSwapQuote } from "../../../../sdk/src/utils/swap/botanixStaking";
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
+import { getOpenOceanTxnData, OpenOceanQuote } from "./openOcean";
 
 export function useExternalSwapOutputRequest({
   chainId,
@@ -26,7 +27,7 @@ export function useExternalSwapOutputRequest({
   gasPrice,
   enabled = true,
 }: {
-  chainId: number;
+  chainId: ContractsChainId;
   tokenInAddress: string | undefined;
   tokenOutAddress: string | undefined;
   receiverAddress: string | undefined;

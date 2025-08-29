@@ -28,6 +28,7 @@ import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/local
 import { tenderlyLsKeys } from "lib/tenderly";
 import useWallet from "lib/wallets/useWallet";
 import { getDefaultGasPaymentToken } from "sdk/configs/express";
+import { isValidTokenSafe } from "sdk/configs/tokens";
 import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 
 export type SettingsContextType = {
@@ -96,8 +97,9 @@ export function useSettings() {
 }
 
 export function SettingsContextProvider({ children }: { children: ReactNode }) {
+  const { chainId, srcChainId } = useChainId();
   const { account } = useWallet();
-  const { chainId } = useChainId();
+
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const [savedAllowedSlippage, setSavedAllowedSlippage] = useLocalStorageSerializeKey(
@@ -122,6 +124,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     getExecutionFeeBufferBpsKey(chainId),
     EXECUTION_FEE_CONFIG_V2[chainId]?.defaultBufferBps
   );
+
   const shouldUseExecutionFeeBuffer = Boolean(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps);
 
   const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
@@ -166,10 +169,14 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     false
   );
 
-  const [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useLocalStorageSerializeKey(
+  let [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useLocalStorageSerializeKey(
     getGasPaymentTokenAddressKey(chainId, account),
     getDefaultGasPaymentToken(chainId)
   );
+  // Reason: useLocalStorageSerializeKey leaks previous value to the next render even if key is changed
+  if (gasPaymentTokenAddress && !isValidTokenSafe(chainId, gasPaymentTokenAddress)) {
+    gasPaymentTokenAddress = getDefaultGasPaymentToken(chainId);
+  }
 
   let savedShouldDisableValidationForTesting: boolean | undefined;
   let setSavedShouldDisableValidationForTesting: (val: boolean) => void;
@@ -212,6 +219,15 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setExecutionFeeBufferBps,
     setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   ]);
+
+  useEffect(
+    function fallbackMultichain() {
+      if (srcChainId && !expressOrdersEnabled) {
+        setExpressOrdersEnabled(true);
+      }
+    },
+    [expressOrdersEnabled, setExpressOrdersEnabled, srcChainId]
+  );
 
   const contextState: SettingsContextType = useMemo(() => {
     return {

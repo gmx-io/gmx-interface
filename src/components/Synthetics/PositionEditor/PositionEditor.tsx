@@ -1,21 +1,29 @@
 import { Trans, t } from "@lingui/macro";
+import pickBy from "lodash/pickBy";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey } from "react-use";
 import { Address } from "viem";
 
+import { isSettlementChain } from "config/multichain";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   usePositionEditorCollateralInputValue,
+  usePositionEditorIsCollateralTokenFromGmxAccount,
   usePositionEditorPosition,
   usePositionEditorPositionState,
   usePositionEditorSelectedCollateralAddress,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
-import { selectPositionEditorCollateralInputAmountAndUsd } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
+import {
+  selectPositionEditorCollateralInputAmountAndUsd,
+  selectPositionEditorSelectedCollateralToken,
+} from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/expressOrderUtils";
 import { formatLiquidationPrice, getIsPositionInfoLoaded } from "domain/synthetics/positions";
-import { adaptToV1InfoTokens, convertToTokenAmount } from "domain/synthetics/tokens";
+import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { getMinCollateralUsdForLeverage, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
@@ -24,28 +32,35 @@ import { useLocalizedMap } from "lib/i18n";
 import { absDiffBps, formatAmountFree, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
-import { NATIVE_TOKEN_ADDRESS, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
+import {
+  NATIVE_TOKEN_ADDRESS,
+  convertTokenAddress,
+  getTokenVisualMultiplier,
+  getWrappedToken,
+} from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Modal from "components/Modal/Modal";
 import Tabs from "components/Tabs/Tabs";
-import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import { PositionEditorCollateralSelector } from "../CollateralSelector/PositionEditorCollateralSelector";
+import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
+import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 import { PositionEditorAdvancedRows } from "./PositionEditorAdvancedRows";
 import { OPERATION_LABELS, Operation } from "./types";
 import { usePositionEditorButtonState } from "./usePositionEditorButtonState";
-import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
-import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+
 import "./PositionEditor.scss";
-import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 
 export function PositionEditor() {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
+  const { expressOrdersEnabled, setExpressOrdersEnabled, setIsSettingsVisible } = useSettings();
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const tokensData = useTokensData();
   const { minCollateralUsd } = usePositionsConstants();
@@ -59,25 +74,100 @@ export function PositionEditor() {
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
 
-  const infoTokens = useMemo(() => {
-    if (!tokensData) {
-      return undefined;
-    }
-    return adaptToV1InfoTokens(tokensData);
-  }, [tokensData]);
-
   const [operation, setOperation] = useState(Operation.Deposit);
   const isDeposit = operation === Operation.Deposit;
 
   const [selectedCollateralAddress, setSelectedCollateralAddress] = usePositionEditorSelectedCollateralAddress();
+  const [isCollateralTokenFromGmxAccount, setIsCollateralTokenFromGmxAccount] =
+    usePositionEditorIsCollateralTokenFromGmxAccount();
 
-  const collateralToken = getByKey(tokensData, selectedCollateralAddress);
+  const handleSetCollateralAddress = useCallback(
+    (tokenAddress: string, isGmxAccount?: boolean) => {
+      if (isGmxAccount && !expressOrdersEnabled) {
+        setExpressOrdersEnabled(true);
+        toastEnableExpress(() => setIsSettingsVisible(true));
+      }
 
-  const availableSwapTokens = useMemo(() => {
-    return position?.collateralToken.isWrapped
-      ? [getToken(chainId, position.collateralTokenAddress), getToken(chainId, NATIVE_TOKEN_ADDRESS)]
-      : undefined;
-  }, [chainId, position?.collateralToken.isWrapped, position?.collateralTokenAddress]);
+      setSelectedCollateralAddress(tokenAddress as Address);
+      if (isGmxAccount !== undefined) {
+        setIsCollateralTokenFromGmxAccount(isGmxAccount);
+      }
+    },
+    [
+      expressOrdersEnabled,
+      setSelectedCollateralAddress,
+      setExpressOrdersEnabled,
+      setIsSettingsVisible,
+      setIsCollateralTokenFromGmxAccount,
+    ]
+  );
+
+  const collateralToken = useSelector(selectPositionEditorSelectedCollateralToken);
+
+  const filteredTokensData = useMemo(() => {
+    return pickBy(
+      tokensData,
+      (token) =>
+        token.address === selectedCollateralAddress ||
+        token.wrappedAddress === selectedCollateralAddress ||
+        convertTokenAddress(chainId, token.address, "native") === selectedCollateralAddress
+    );
+  }, [chainId, selectedCollateralAddress, tokensData]);
+
+  const options = useMemo(() => {
+    return Object.values(filteredTokensData)
+      .flatMap((tokenData) => {
+        if (tokenData.isNative) {
+          return [
+            {
+              ...tokenData,
+              isGmxAccount: false,
+              balance: tokenData.walletBalance,
+            },
+          ];
+        }
+
+        return [
+          {
+            ...tokenData,
+            isGmxAccount: true,
+            balance: tokenData.gmxAccountBalance,
+          },
+          {
+            ...tokenData,
+            isGmxAccount: false,
+            balance: tokenData.balance,
+          },
+        ];
+      })
+      .sort((a, b) => {
+        if (a.balance !== undefined && b.balance === undefined) {
+          return -1;
+        }
+
+        if (a.balance === undefined && b.balance !== undefined) {
+          return 1;
+        }
+
+        if (a.balance !== undefined && b.balance !== undefined) {
+          return b.balance - a.balance > 0n ? 1 : -1;
+        }
+
+        return 0;
+      });
+  }, [filteredTokensData]);
+
+  const hasMultipleTokens = useMemo(() => {
+    if (srcChainId === undefined) {
+      if (selectedCollateralAddress === getWrappedToken(chainId)?.address) {
+        return true;
+      }
+
+      return isSettlementChain(chainId);
+    }
+
+    return false;
+  }, [chainId, selectedCollateralAddress, srcChainId]);
 
   const onClose = useCallback(() => {
     setEditingPositionKey(undefined);
@@ -118,8 +208,8 @@ export function PositionEditor() {
   });
 
   const priceImpactWarningState = usePriceImpactWarningState({
-    collateralImpact: fees?.positionCollateralPriceImpact,
-    positionImpact: fees?.positionPriceImpact,
+    collateralNetPriceImpact: fees?.collateralNetPriceImpact,
+    positionNetPriceImpact: fees?.positionNetPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
@@ -152,14 +242,11 @@ export function PositionEditor() {
         return;
       }
 
-      if (
-        !selectedCollateralAddress ||
-        !availableSwapTokens?.find((token) => token.address === selectedCollateralAddress)
-      ) {
-        setSelectedCollateralAddress(position.collateralTokenAddress as Address);
+      if (!selectedCollateralAddress || !filteredTokensData[selectedCollateralAddress]) {
+        handleSetCollateralAddress(position.collateralTokenAddress as Address);
       }
     },
-    [availableSwapTokens, position, selectedCollateralAddress, setSelectedCollateralAddress]
+    [filteredTokensData, handleSetCollateralAddress, position, selectedCollateralAddress, setSelectedCollateralAddress]
   );
 
   useEffect(
@@ -294,18 +381,14 @@ export function PositionEditor() {
               onClickMax={showMaxButton ? handleMaxButtonClick : undefined}
               qa="amount-input"
             >
-              {availableSwapTokens ? (
-                <TokenSelector
-                  label={localizedOperationLabels[operation]}
+              {hasMultipleTokens ? (
+                <PositionEditorCollateralSelector
                   chainId={chainId}
-                  tokenAddress={selectedCollateralAddress!}
-                  onSelectToken={(token) => setSelectedCollateralAddress(token.address as Address)}
-                  tokens={availableSwapTokens}
-                  infoTokens={infoTokens}
-                  className="Edit-collateral-token-selector"
-                  showSymbolImage={true}
-                  showTokenImgInDropdown={true}
-                  showBalances={false}
+                  selectedTokenSymbol={collateralToken?.symbol}
+                  isCollateralTokenFromGmxAccount={isCollateralTokenFromGmxAccount}
+                  options={options}
+                  onSelect={handleSetCollateralAddress}
+                  variant={isDeposit ? "balance" : "destination"}
                 />
               ) : (
                 collateralToken?.symbol
@@ -314,8 +397,7 @@ export function PositionEditor() {
             <div className="flex flex-col gap-14">
               <HighPriceImpactOrFeesWarningCard
                 priceImpactWarningState={priceImpactWarningState}
-                collateralImpact={fees?.positionCollateralPriceImpact}
-                positionImpact={fees?.positionPriceImpact}
+                collateralImpact={fees?.collateralNetPriceImpact}
                 swapPriceImpact={fees?.swapPriceImpact}
                 swapProfitFee={fees?.swapProfitFee}
                 executionFeeUsd={executionFee?.feeUsd}
@@ -327,6 +409,7 @@ export function PositionEditor() {
                 expressParams={expressParams}
                 payTokenAddress={undefined}
                 isWrapOrUnwrap={false}
+                isGmxAccount={isCollateralTokenFromGmxAccount}
               />
 
               {!isDeposit && (

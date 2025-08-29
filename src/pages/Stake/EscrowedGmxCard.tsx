@@ -2,6 +2,7 @@ import { Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useMemo } from "react";
 import useSWR from "swr";
+import { zeroAddress } from "viem";
 
 import { ARBITRUM, getConstant } from "config/chains";
 import { getContract } from "config/contracts";
@@ -47,7 +48,13 @@ export function EscrowedGmxCard({
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
 
   const { data: esGmxSupply } = useSWR<bigint>(
-    [`StakeV2:esGmxSupply:${active}`, chainId, readerAddress, "getTokenSupply", esGmxAddress],
+    readerAddress !== zeroAddress && [
+      `StakeV2:esGmxSupply:${active}`,
+      chainId,
+      readerAddress,
+      "getTokenSupply",
+      esGmxAddress,
+    ],
     {
       fetcher: contractFetcher<bigint>(signer, "ReaderV2", [excludedEsGmxAccounts]),
     }

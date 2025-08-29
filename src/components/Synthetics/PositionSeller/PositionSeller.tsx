@@ -22,7 +22,6 @@ import {
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import {
   selectBlockTimestampData,
-  selectExpressNoncesData,
   selectGasPaymentTokenAllowance,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -62,6 +61,7 @@ import { getCommonError, getDecreaseError, getExpressError } from "domain/synthe
 import { Token } from "domain/tokens";
 import { useApproveToken } from "domain/tokens/useApproveTokens";
 import { useChainId } from "lib/chains";
+import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
@@ -74,7 +74,7 @@ import {
   formatUsd,
   parseValue,
 } from "lib/numbers";
-import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
+import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { convertTokenAddress, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
@@ -99,12 +99,14 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
+import { PositionSellerPriceImpactFeesRow } from "./rows/PositionSellerPriceImpactFeesRow";
+
 import "./PositionSeller.scss";
 
 export type Props = {
@@ -127,8 +129,9 @@ export function PositionSeller() {
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const availableReceiveTokens = useSelector(selectPositionSellerAvailableReceiveTokens);
   const tokensData = useTokensData();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { signer, account } = useWallet();
+  const { provider } = useJsonRpcProvider(chainId);
   const { openConnectModal } = useConnectModal();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
@@ -143,7 +146,6 @@ export function PositionSeller() {
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const tokenPermits = useSelector(selectTokenPermits);
   const { approveToken } = useApproveToken();
-  const noncesData = useSelector(selectExpressNoncesData);
   const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
 
   const isVisible = Boolean(position);
@@ -239,8 +241,8 @@ export function PositionSeller() {
   const { fees, executionFee } = useSelector(selectPositionSellerFees);
 
   const priceImpactWarningState = usePriceImpactWarningState({
-    collateralImpact: fees?.positionCollateralPriceImpact,
-    positionImpact: fees?.positionPriceImpact,
+    collateralNetPriceImpact: fees?.collateralNetPriceImpact,
+    positionNetPriceImpact: fees?.positionNetPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
@@ -362,10 +364,16 @@ export function PositionSeller() {
     fastExpressParams,
     asyncExpressParams,
   } = useExpressOrdersParams({
+    label: "Position Seller",
     orderParams: batchParams,
+    isGmxAccount: srcChainId !== undefined,
   });
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
+    if (srcChainId) {
+      return { tokensToApprove: [], isAllowanceLoaded: true };
+    }
+
     if (!batchParams) {
       return { tokensToApprove: [], isAllowanceLoaded: false };
     }
@@ -391,6 +399,7 @@ export function PositionSeller() {
     expressParams,
     gasPaymentTokenAllowance?.isLoaded,
     gasPaymentTokenAllowance?.tokensAllowanceData,
+    srcChainId,
     tokenPermits,
   ]);
 
@@ -509,6 +518,8 @@ export function PositionSeller() {
       fastExpressParams,
       asyncExpressParams,
       expressParams,
+      chainId: srcChainId ?? chainId,
+      isCollateralFromMultichain: srcChainId !== undefined,
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
@@ -522,7 +533,8 @@ export function PositionSeller() {
       !receiveToken?.address ||
       receiveUsd === undefined ||
       decreaseAmounts?.acceptablePrice === undefined ||
-      !signer
+      !signer ||
+      !provider
     ) {
       helperToast.error(t`Error submitting order`);
       sendTxnValidationErrorMetric(metricData.metricId);
@@ -536,8 +548,9 @@ export function PositionSeller() {
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
+      provider,
       batchParams,
-      noncesData,
+      isGmxAccount: srcChainId !== undefined,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       simulationParams: shouldDisableValidationForTesting
@@ -974,7 +987,7 @@ export function PositionSeller() {
                 <HighPriceImpactOrFeesWarningCard
                   priceImpactWarningState={priceImpactWarningState}
                   collateralImpact={fees?.positionCollateralPriceImpact}
-                  positionImpact={fees?.positionPriceImpact}
+                  positionImpact={fees?.totalPendingImpact}
                   swapPriceImpact={fees?.swapPriceImpact}
                   swapProfitFee={fees?.swapProfitFee}
                   executionFeeUsd={executionFee?.feeUsd}
@@ -1006,6 +1019,7 @@ export function PositionSeller() {
                   expressParams={expressParams}
                   payTokenAddress={undefined}
                   isWrapOrUnwrap={false}
+                  isGmxAccount={srcChainId !== undefined}
                 />
 
                 {!isTwap && (
@@ -1015,6 +1029,8 @@ export function PositionSeller() {
                     {pnlRow}
                   </>
                 )}
+
+                <PositionSellerPriceImpactFeesRow />
 
                 <PositionSellerAdvancedRows
                   triggerPriceInputValue={triggerPriceInputValue}

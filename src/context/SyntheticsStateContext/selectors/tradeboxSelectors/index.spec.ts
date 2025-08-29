@@ -13,16 +13,10 @@ describe("tradeboxSelectors", () => {
     expect(getTradeboxLeverageSliderMarks(180 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 50, 90]);
     expect(getTradeboxLeverageSliderMarks(200 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 25, 50, 100]);
 
-    expect(getTradeboxLeverageSliderMarks(220 * BASIS_POINTS_DIVISOR)).toEqual([
-      0.1, 1, 2, 5, 10, 25, 50, 100, 110,
-    ]);
+    expect(getTradeboxLeverageSliderMarks(220 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 25, 50, 100, 110]);
     expect(getTradeboxLeverageSliderMarks(240 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 30, 60, 120]);
-    expect(getTradeboxLeverageSliderMarks(250 * BASIS_POINTS_DIVISOR)).toEqual([
-      0.1, 1, 2, 5, 10, 50, 100, 125,
-    ]);
+    expect(getTradeboxLeverageSliderMarks(250 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 50, 100, 125]);
 
-    expect(getTradeboxLeverageSliderMarks(300 * BASIS_POINTS_DIVISOR)).toEqual([
-      0.1, 1, 2, 5, 10, 50, 100, 150,
-    ]);
+    expect(getTradeboxLeverageSliderMarks(300 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 50, 100, 150]);
   });
 });

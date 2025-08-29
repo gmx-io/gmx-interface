@@ -84,10 +84,10 @@ function getNormalizedIncentive(
 export default function UserIncentiveDistributionList() {
   const { account, active } = useWallet();
   const { openConnectModal } = useConnectModal();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const tokens = getTokens(chainId);
   const gmMarkets = useSelector(selectGmMarkets);
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+  const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false });
   const userIncentiveData = useUserIncentiveData(chainId, account);
 
   const normalizedIncentiveData: NormalizedIncentiveData[] = useMemo(

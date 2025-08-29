@@ -9,7 +9,12 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
-import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectAccount,
+  selectChainId,
+  selectSrcChainId,
+  selectSubaccountForChainAction,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
@@ -33,7 +38,9 @@ import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useBreakpoints } from "lib/breakpoints";
 import { EMPTY_ARRAY } from "lib/objects";
+import { useJsonRpcProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
+import { ContractsChainId } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
@@ -77,12 +84,15 @@ export function OrderList({
   const { isTablet: isContainerSmall } = useBreakpoints();
 
   const chainId = useSelector(selectChainId);
+  const srcChainId = useSelector(selectSrcChainId);
   const { signer } = useWallet();
+  const { provider } = useJsonRpcProvider(chainId);
+
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
 
   const account = useSelector(selectAccount);
   const globalExpressParams = useSelector(selectExpressGlobalParams);
-
+  const subaccount = useSelector(selectSubaccountForChainAction);
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
 
   const orders = useFilteredOrders({
@@ -142,7 +152,7 @@ export function OrderList({
   }
 
   async function onCancelOrder(order: OrderInfo) {
-    if (!signer) return;
+    if (!signer || !provider) return;
 
     const orderKeys = isTwapOrder(order) ? order.orders.map((o) => o.key) : [order.key];
     setCancellingOrdersKeys((prev) => [...prev, ...orderKeys]);
@@ -160,7 +170,9 @@ export function OrderList({
       requireValidations: true,
       globalExpressParams,
       estimationMethod: "approximate",
-      provider: undefined,
+      provider,
+      isGmxAccount: srcChainId !== undefined,
+      subaccount,
     });
 
     sendBatchOrderTxn({
@@ -168,9 +180,10 @@ export function OrderList({
       signer,
       batchParams,
       expressParams,
-      noncesData: globalExpressParams?.noncesData,
       simulationParams: undefined,
       callback: makeOrderTxnCallback({}),
+      provider,
+      isGmxAccount: srcChainId !== undefined,
     }).finally(() => {
       setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
       setSelectedOrderKeys?.(EMPTY_ARRAY);
@@ -321,7 +334,7 @@ function useFilteredOrders({
   marketsDirectionsFilter,
   orderTypesFilter,
 }: {
-  chainId: number;
+  chainId: ContractsChainId;
   account: string | undefined;
   marketsDirectionsFilter: MarketFilterLongShortItemData[];
   orderTypesFilter: OrderTypeFilterValue[];

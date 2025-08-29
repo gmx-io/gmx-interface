@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach, Mock } from "vitest";
 
 import { MarketInfo } from "types/markets";
 import { Token } from "types/tokens";
+import { expandDecimals, USD_DECIMALS } from "utils/numbers";
 
 import { bigMath } from "../bigmath";
 import { getPositionFee, getPriceImpactForPosition } from "../fees";
@@ -115,9 +116,11 @@ describe("getPositionNetValue", () => {
       closingFeeUsd: 5n,
       uiFeeUsd: 20n,
       pnl: 200n,
+      totalPendingImpactDeltaUsd: -100n,
+      priceImpactDiffUsd: 50n,
     });
-    // netValue = 1000n - (10n+15n) -5n -20n + 200n = 1000n -25n -5n -20n +200n=1150n
-    expect(result).toBe(1150n);
+    // netValue = 1000n - (10n+15n) -5n -20n + 200n -100n + 50n = 1100n
+    expect(result).toBe(1100n);
   });
 });
 
@@ -151,12 +154,17 @@ describe("getLeverage", () => {
 describe("getLiquidationPrice", () => {
   beforeEach(() => {
     (getPositionFee as Mock).mockReturnValue({ positionFeeUsd: 50n });
-    (getPriceImpactForPosition as Mock).mockReturnValue(-100n);
+    (getPriceImpactForPosition as Mock).mockReturnValue({ priceImpactDeltaUsd: -100n, balanceWasImproved: false });
     (getIsEquivalentTokens as Mock).mockReturnValue(false);
   });
 
   it("returns undefined if sizeInUsd <= 0 or sizeInTokens <= 0", () => {
-    const marketInfo = { indexToken: { decimals: 18 } } as unknown as MarketInfo;
+    const marketInfo = {
+      indexToken: {
+        decimals: 18,
+        prices: { minPrice: expandDecimals(1, USD_DECIMALS), maxPrice: expandDecimals(1, USD_DECIMALS) },
+      },
+    } as unknown as MarketInfo;
     expect(
       getLiquidationPrice({
         sizeInUsd: 0n,
@@ -167,6 +175,7 @@ describe("getLiquidationPrice", () => {
         marketInfo,
         pendingFundingFeesUsd: 0n,
         pendingBorrowingFeesUsd: 0n,
+        pendingImpactAmount: 0n,
         minCollateralUsd: 100n,
         isLong: true,
         userReferralInfo: undefined,
@@ -182,6 +191,7 @@ describe("getLiquidationPrice", () => {
         marketInfo,
         pendingFundingFeesUsd: 0n,
         pendingBorrowingFeesUsd: 0n,
+        pendingImpactAmount: 0n,
         minCollateralUsd: 100n,
         isLong: true,
         userReferralInfo: undefined,
@@ -191,10 +201,16 @@ describe("getLiquidationPrice", () => {
 
   it("computes liquidation price for non-equivalent tokens and isLong=true", () => {
     (getIsEquivalentTokens as Mock).mockReturnValue(false);
+    (convertToUsd as Mock).mockReturnValue(1000n);
     const marketInfo = {
-      indexToken: { decimals: 8 },
-      minCollateralFactor: 1000n, // 0.001
+      indexToken: {
+        decimals: 8,
+        prices: { minPrice: expandDecimals(1, USD_DECIMALS), maxPrice: expandDecimals(1, USD_DECIMALS) },
+      },
+      minCollateralFactorForLiquidation: 1000n, // 0.001
       maxPositionImpactFactorForLiquidations: 500n, // 0.005
+      maxPositionImpactFactorPositive: 1000n, // 0.01
+      maxPositionImpactFactorNegative: 1000n, // 0.01
     } as unknown as MarketInfo;
 
     const result = getLiquidationPrice({
@@ -206,6 +222,7 @@ describe("getLiquidationPrice", () => {
       marketInfo,
       pendingFundingFeesUsd: 0n,
       pendingBorrowingFeesUsd: 0n,
+      pendingImpactAmount: 0n,
       minCollateralUsd: 200n,
       isLong: true,
       userReferralInfo: undefined,

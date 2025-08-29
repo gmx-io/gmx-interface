@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { isDevelopment } from "config/env";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { roundToTwoDecimals } from "lib/numbers";
@@ -40,6 +41,8 @@ export function SettingsModal({
   isSettingsVisible: boolean;
   setIsSettingsVisible: (value: boolean) => void;
 }) {
+  const { srcChainId } = useChainId();
+
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
 
@@ -140,6 +143,13 @@ export function SettingsModal({
 
       switch (mode) {
         case TradingMode.Classic: {
+          if (srcChainId) {
+            // eslint-disable-next-line no-console
+            console.error("Express trading can not be disabled for multichain");
+            setTradingMode(prevMode);
+            setIsTradingModeChanging(false);
+            return;
+          }
           if (subaccountState.subaccount) {
             const isSubaccountDeactivated = await subaccountState.tryDisableSubaccount();
 
@@ -188,7 +198,7 @@ export function SettingsModal({
         }
       }
     },
-    [settings, subaccountState, tradingMode]
+    [settings, srcChainId, subaccountState, tradingMode]
   );
 
   useEffect(

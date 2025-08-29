@@ -39,7 +39,7 @@ import "./Stake.css";
 
 function StakeContent() {
   const { active, signer, account } = useWallet();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const incentiveStats = useIncentiveStats(chainId);
   const { isLpInterviewModalVisible, setIsLpInterviewModalVisible } = useLpInterviewNotification();
 
@@ -92,10 +92,16 @@ function StakeContent() {
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
   const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
 
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+  const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false });
 
   const { data: sbfGmxBalance } = useSWR(
-    [`StakeV2:sbfGmxBalance:${active}`, chainId, feeGmxTrackerAddress, "balanceOf", account ?? PLACEHOLDER_ACCOUNT],
+    feeGmxTrackerAddress !== zeroAddress && [
+      `StakeV2:sbfGmxBalance:${active}`,
+      chainId,
+      feeGmxTrackerAddress,
+      "balanceOf",
+      account ?? PLACEHOLDER_ACCOUNT,
+    ],
     {
       fetcher: contractFetcher(undefined, "Token"),
     }

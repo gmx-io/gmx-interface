@@ -795,7 +795,9 @@ function useDepthChartPricesData(
       const leftInc = (leftMax - DOLLAR) / SIDE_POINTS_COUNT;
       // from left to center
       for (let positionSize = leftMax; positionSize >= DOLLAR; positionSize -= leftInc) {
-        const priceImpactUsd = getPriceImpactForPosition(marketInfo, positionSize, false, { fallbackToZero: true });
+        const { priceImpactDeltaUsd: priceImpactUsd } = getPriceImpactForPosition(marketInfo, positionSize, false, {
+          fallbackToZero: true,
+        });
 
         const executionPrice = getDepthChartExecutionPrice({
           isIncrease: true,
@@ -824,9 +826,10 @@ function useDepthChartPricesData(
         });
 
         if (positionSize - leftInc < leftMin && positionSize > leftMin && leftMin > DOLLAR) {
-          const priceImpactUsd = getPriceImpactForPosition(marketInfo, leftMin, false, {
+          const { priceImpactDeltaUsd: priceImpactUsd } = getPriceImpactForPosition(marketInfo, leftMin, false, {
             fallbackToZero: true,
           });
+
           const executionPrice = getDepthChartExecutionPrice({
             isIncrease: true,
             isLong: false,
@@ -858,7 +861,9 @@ function useDepthChartPricesData(
         }
 
         if (positionSize - leftInc < DOLLAR && positionSize > DOLLAR) {
-          const priceImpactUsd = getPriceImpactForPosition(marketInfo, DOLLAR, false, { fallbackToZero: true });
+          const { priceImpactDeltaUsd: priceImpactUsd } = getPriceImpactForPosition(marketInfo, DOLLAR, false, {
+            fallbackToZero: true,
+          });
 
           const executionPrice = getDepthChartExecutionPrice({
             isIncrease: true,
@@ -895,7 +900,9 @@ function useDepthChartPricesData(
 
       // from right max to center
       for (let positionSize = rightMax; positionSize >= DOLLAR; positionSize -= rightInc) {
-        const priceImpactUsd = getPriceImpactForPosition(marketInfo, positionSize, true, { fallbackToZero: true });
+        const { priceImpactDeltaUsd: priceImpactUsd } = getPriceImpactForPosition(marketInfo, positionSize, true, {
+          fallbackToZero: true,
+        });
 
         const executionPrice = getDepthChartExecutionPrice({
           isIncrease: true,
@@ -924,7 +931,7 @@ function useDepthChartPricesData(
         });
 
         if (positionSize - rightInc < rightMin && positionSize > rightMin && rightMin > DOLLAR) {
-          const priceImpactUsd = getPriceImpactForPosition(marketInfo, rightMin, true, {
+          const { priceImpactDeltaUsd: priceImpactUsd } = getPriceImpactForPosition(marketInfo, rightMin, true, {
             fallbackToZero: true,
           });
 
@@ -959,7 +966,9 @@ function useDepthChartPricesData(
         }
 
         if (positionSize - rightInc < DOLLAR && positionSize > DOLLAR) {
-          const priceImpactUsd = getPriceImpactForPosition(marketInfo, DOLLAR, true, { fallbackToZero: true });
+          const { priceImpactDeltaUsd: priceImpactUsd } = getPriceImpactForPosition(marketInfo, DOLLAR, true, {
+            fallbackToZero: true,
+          });
 
           const executionPrice = getDepthChartExecutionPrice({
             isIncrease: true,
@@ -1131,7 +1140,9 @@ function useEdgePoints(
   let rightMaxExecutionPrice = 0n;
 
   {
-    const priceImpactUsd = getPriceImpactForPosition(marketInfo, rightMax, true, { fallbackToZero: true });
+    const { priceImpactDeltaUsd: priceImpactUsd } = getPriceImpactForPosition(marketInfo, rightMax, true, {
+      fallbackToZero: true,
+    });
 
     const executionPrice = getDepthChartExecutionPrice({
       isIncrease: true,
@@ -1146,7 +1157,9 @@ function useEdgePoints(
   }
 
   {
-    const priceImpactUsd = getPriceImpactForPosition(marketInfo, leftMax, false, { fallbackToZero: true });
+    const { priceImpactDeltaUsd: priceImpactUsd } = getPriceImpactForPosition(marketInfo, leftMax, false, {
+      fallbackToZero: true,
+    });
 
     const executionPrice = getDepthChartExecutionPrice({
       isIncrease: true,

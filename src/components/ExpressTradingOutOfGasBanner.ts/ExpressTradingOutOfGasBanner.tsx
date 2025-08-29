@@ -2,9 +2,10 @@ import { Trans } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
+import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { useChainId } from "lib/chains";
 import { getGasPaymentTokens } from "sdk/configs/express";
-import { getToken } from "sdk/configs/tokens";
+import { getNativeToken, getToken } from "sdk/configs/tokens";
 
 import { ColorfulBanner, ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 
@@ -35,23 +36,45 @@ export function useGasPaymentTokensText(chainId: number) {
 }
 
 export function ExpressTradingOutOfGasBanner({ onClose }: { onClose: () => void }) {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const history = useHistory();
-
+  const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
   const { gasPaymentTokensText, gasPaymentTokenSymbols } = useGasPaymentTokensText(chainId);
 
-  const onClick = useCallback(() => {
+  const onBuyClick = useCallback(() => {
     history.push(`/trade/swap?to=${gasPaymentTokenSymbols[0]}`);
     onClose();
   }, [history, onClose, gasPaymentTokenSymbols]);
+  const onDepositClick = useCallback(() => {
+    setGmxAccountModalOpen("deposit");
+    onClose();
+  }, [onClose, setGmxAccountModalOpen]);
+
+  const hasEth = getNativeToken(chainId).symbol === "ETH";
 
   return (
     <ColorfulBanner color="blue" icon={ExpressIcon}>
-      <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance.</Trans>
-      <br />
-      <ColorfulButtonLink color="blue" onClick={onClick}>
-        <Trans>Buy {gasPaymentTokensText}</Trans>
-      </ColorfulButtonLink>
+      {srcChainId !== undefined ? (
+        <>
+          {hasEth ? (
+            <Trans>Insufficient gas balance, please deposit more ETH or USDC.</Trans>
+          ) : (
+            <Trans>Insufficient gas balance, please deposit more USDC.</Trans>
+          )}
+          <br />
+          <ColorfulButtonLink color="blue" onClick={onDepositClick}>
+            {hasEth ? <Trans>Deposit USDC or ETH</Trans> : <Trans>Deposit USDC</Trans>}
+          </ColorfulButtonLink>
+        </>
+      ) : (
+        <>
+          <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance.</Trans>
+          <br />
+          <ColorfulButtonLink color="blue" onClick={onBuyClick}>
+            <Trans>Buy {gasPaymentTokensText}</Trans>
+          </ColorfulButtonLink>
+        </>
+      )}
     </ColorfulBanner>
   );
 }

@@ -20,11 +20,7 @@ export function ExpressTradingEnabledBanner() {
   }
 
   return (
-    <ColorfulBanner
-      color="green"
-      icon={ExpressIcon}
-      onClose={() => setIsExpressTradingBannerDismissed(true)}
-    >
+    <ColorfulBanner color="green" icon={ExpressIcon} onClose={() => setIsExpressTradingBannerDismissed(true)}>
       <Trans>Express Trading is enabled. Enjoy smoother, more reliable trades!</Trans>
     </ColorfulBanner>
   );

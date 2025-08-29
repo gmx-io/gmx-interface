@@ -14,6 +14,7 @@ import {
   selectTradeboxCollateralTokenAddress,
   selectTradeboxExistingOrder,
   selectTradeboxFocusedInput,
+  selectTradeboxFromToken,
   selectTradeboxFromTokenAddress,
   selectTradeboxFromTokenInputValue,
   selectTradeboxIncreasePositionAmounts,
@@ -32,13 +33,13 @@ import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateC
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getCappedPositionImpactUsd, getFeeItem } from "domain/synthetics/fees";
 import {
-  MarketInfo,
   getAvailableUsdLiquidityForPosition,
   getMinPriceImpactMarket,
   getMostLiquidMarketForPosition,
+  MarketInfo,
 } from "domain/synthetics/markets";
 import { getLargestRelatedExistingPositionOrOrder } from "domain/synthetics/markets/chooseSuitableMarket";
-import { PositionOrderInfo, isIncreaseOrderType } from "domain/synthetics/orders";
+import { isIncreaseOrderType, PositionOrderInfo } from "domain/synthetics/orders";
 import {
   IndexTokenStat,
   marketsInfoData2IndexTokenStatsMap,
@@ -50,10 +51,10 @@ import { getByKey } from "lib/objects";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { createTradeFlags } from "sdk/utils/trade";
 
-import { selectTradeboxAvailableMarkets } from "./selectTradeboxAvailableMarkets";
 import { selectIsExpressTransactionAvailable } from "../expressSelectors";
 import { selectIsLeverageSliderEnabled } from "../settingsSelectors";
 import { makeSelectIncreasePositionAmounts } from "../tradeSelectors";
+import { selectTradeboxAvailableMarkets } from "./selectTradeboxAvailableMarkets";
 
 export type AvailableMarketsOptions = {
   allMarkets?: MarketInfo[];
@@ -211,10 +212,12 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
         marketIncreasePositionAmounts.sizeDeltaUsd
       );
 
-      const priceImpactDeltaUsd = getCappedPositionImpactUsd(
+      const { priceImpactDeltaUsd } = getCappedPositionImpactUsd(
         liquidMarket,
         marketIncreasePositionAmounts.sizeDeltaUsd,
-        isLong
+        isLong,
+        true,
+        { shouldCapNegativeImpact: true }
       );
 
       const { acceptablePriceDeltaBps } = getAcceptablePriceByPriceImpact({
@@ -244,7 +247,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
 });
 
 export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsState>, marketAddress: string) {
-  const tokensData = q(selectTokensData);
+  // const tokensData = q(selectTokensData);
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeType = q(selectTradeboxTradeType);
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
@@ -258,7 +261,8 @@ export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsStat
   const triggerPrice = q(selectTradeboxTriggerPrice);
 
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
-  const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
+  // const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
+  const fromToken = q(selectTradeboxFromToken);
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
   const toTokenAmount = q(selectTradeboxToTokenAmount);
   const leverage = BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));

@@ -1,6 +1,7 @@
+import { Provider } from "ethers";
 import { withRetry } from "viem";
 
-import { NoncesData } from "context/ExpressNoncesContext/ExpressNoncesContextProvider";
+import { ContractsChainId } from "config/chains";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { buildAndSignExpressBatchOrderTxn } from "domain/synthetics/express/expressOrderUtils";
 import { isLimitSwapOrderType } from "domain/synthetics/orders";
@@ -22,6 +23,7 @@ import {
 import { signerAddressError } from "components/Errors/errorToasts";
 
 import { getOrdersTriggerPriceOverrides, getSimulationPrices, simulateExecution } from "./simulation";
+import { callRelayTransaction } from "../express/callRelayTransaction";
 
 export type BatchSimulationParams = {
   tokensData: TokensData;
@@ -34,52 +36,67 @@ export type BatchOrderTxnCtx = {
   signer: WalletSigner;
 };
 
+const DEFAULT_RUN_SIMULATION = () => Promise.resolve(undefined);
+
 export async function sendBatchOrderTxn({
   chainId,
   signer,
+  isGmxAccount,
+  provider,
   batchParams,
-  noncesData,
   expressParams,
   simulationParams,
   callback,
 }: {
-  chainId: number;
+  chainId: ContractsChainId;
   signer: WalletSigner;
+  isGmxAccount: boolean;
+  provider: Provider;
   batchParams: BatchOrderTxnParams;
   expressParams: ExpressTxnParams | undefined;
-  noncesData?: NoncesData;
   simulationParams: BatchSimulationParams | undefined;
   callback: TxnCallback<BatchOrderTxnCtx> | undefined;
 }) {
   const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({ expressParams, batchParams, signer });
 
   try {
+    if (isGmxAccount && !expressParams) {
+      throw new Error("Multichain orders are only supported with express params");
+    }
+
+    if (isGmxAccount && !provider) {
+      throw new Error("provider is required for multichain txns");
+    }
     callback?.(eventBuilder.Submitted());
 
-    const runSimulation = async () =>
-      simulationParams
-        ? makeBatchOrderSimulation({
-            chainId,
-            signer,
-            batchParams,
-            blockTimestampData: simulationParams.blockTimestampData,
-            tokensData: simulationParams.tokensData,
-            expressParams,
-          })
-        : Promise.resolve(undefined);
+    let runSimulation: () => Promise<void> = DEFAULT_RUN_SIMULATION;
+
+    if (simulationParams) {
+      runSimulation = () => {
+        return makeBatchOrderSimulation({
+          chainId,
+          signer,
+          batchParams,
+          blockTimestampData: simulationParams.blockTimestampData,
+          tokensData: simulationParams.tokensData,
+          expressParams,
+          provider,
+          isGmxAccount,
+        });
+      };
+    }
 
     if (expressParams) {
       await runSimulation().then(() => callback?.(eventBuilder.Simulated()));
-
       const txnData = await buildAndSignExpressBatchOrderTxn({
-        chainId,
+        chainId: chainId as ContractsChainId,
         signer,
         batchParams,
         relayParamsPayload: expressParams.relayParamsPayload,
         relayerFeeTokenAddress: expressParams.gasPaymentParams.relayerFeeTokenAddress,
         relayerFeeAmount: expressParams.gasPaymentParams.relayerFeeAmount,
         subaccount: expressParams.subaccount,
-        noncesData,
+        isGmxAccount,
       });
 
       callback?.(eventBuilder.Sending());
@@ -138,18 +155,22 @@ export async function sendBatchOrderTxn({
 export const makeBatchOrderSimulation = async ({
   chainId,
   signer,
+  isGmxAccount,
+  provider,
   batchParams,
   blockTimestampData,
   tokensData,
   expressParams,
 }: {
-  chainId: number;
+  chainId: ContractsChainId;
   signer: WalletSigner;
+  isGmxAccount: boolean;
+  provider: Provider;
   batchParams: BatchOrderTxnParams;
   blockTimestampData: BlockTimestampData | undefined;
   tokensData: TokensData;
   expressParams: ExpressTxnParams | undefined;
-}) => {
+}): Promise<void> => {
   try {
     if (getIsInvalidBatchReceiver(batchParams, signer.address)) {
       throw extendError(new Error(signerAddressError), {
@@ -175,12 +196,15 @@ export const makeBatchOrderSimulation = async ({
             expiresAt: onchainData.expiresAt,
             isActive: onchainData.active,
             nonce: onchainData.approvalNonce,
+            multichainNonce: onchainData.multichainApprovalNonce,
+            integrationId: onchainData.integrationId,
           },
           signedData: {
             maxAllowedCount: signedApproval.maxAllowedCount,
             expiresAt: signedApproval.expiresAt,
             shouldAdd: signedApproval.shouldAdd,
             nonce: signedApproval.nonce,
+            integrationId: signedApproval.integrationId,
           },
         },
       });
@@ -213,26 +237,53 @@ export const makeBatchOrderSimulation = async ({
       return Promise.resolve();
     }
 
-    const { encodedMulticall, value } = getBatchOrderMulticallPayload({
-      params: {
-        ...batchParams,
-        createOrderParams: [batchParams.createOrderParams[0]],
-      },
-    });
+    if (isGmxAccount) {
+      if (!expressParams) {
+        throw new Error("Multichain orders are only supported with express params");
+      }
 
-    return simulateExecution(chainId, {
-      account: signer.address,
-      prices: getSimulationPrices(
+      const { callData, feeAmount, feeToken, to } = await buildAndSignExpressBatchOrderTxn({
+        signer,
         chainId,
-        tokensData,
-        getOrdersTriggerPriceOverrides([batchParams.createOrderParams[0]])
-      ),
-      tokenPermits: expressParams?.relayParamsPayload.tokenPermits ?? [],
-      createMulticallPayload: encodedMulticall,
-      value,
-      blockTimestampData,
-      isExpress: Boolean(expressParams),
-    });
+        relayParamsPayload: expressParams.relayParamsPayload,
+        batchParams: batchParams,
+        subaccount: expressParams.subaccount,
+        emptySignature: true,
+        relayerFeeTokenAddress: expressParams.gasPaymentParams.relayerFeeTokenAddress,
+        relayerFeeAmount: expressParams.gasPaymentParams.relayerFeeAmount,
+        isGmxAccount,
+      });
+
+      await callRelayTransaction({
+        chainId,
+        relayRouterAddress: to,
+        gelatoRelayFeeToken: feeToken,
+        gelatoRelayFeeAmount: feeAmount,
+        provider,
+        calldata: callData,
+      });
+    } else {
+      const { encodedMulticall, value } = getBatchOrderMulticallPayload({
+        params: {
+          ...batchParams,
+          createOrderParams: [batchParams.createOrderParams[0]],
+        },
+      });
+
+      await simulateExecution(chainId, {
+        account: signer.address,
+        prices: getSimulationPrices(
+          chainId,
+          tokensData,
+          getOrdersTriggerPriceOverrides([batchParams.createOrderParams[0]])
+        ),
+        tokenPermits: expressParams?.relayParamsPayload.tokenPermits ?? [],
+        createMulticallPayload: encodedMulticall,
+        value,
+        blockTimestampData,
+        isExpress: Boolean(expressParams),
+      });
+    }
   } catch (error) {
     throw extendError(error, {
       errorContext: "simulation",

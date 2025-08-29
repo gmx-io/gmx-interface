@@ -7,8 +7,7 @@ import {
 } from "domain/synthetics/fees";
 import { OrderInfo, isLimitOrderType, isMarketOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { PRECISION, applyFactor, getBasisPoints } from "lib/numbers";
-import { ExternalSwapQuote } from "sdk/types/trade";
-import { SwapStats, TradeFees, TradeFlags, TradeMode, TradeType } from "sdk/types/trade";
+import { ExternalSwapQuote, SwapStats, TradeFees, TradeFlags, TradeMode, TradeType } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { OrderOption } from "../usePositionSellerState";
@@ -96,13 +95,17 @@ export function getTradeFees(p: {
   externalSwapQuote: ExternalSwapQuote | undefined;
   positionFeeUsd: bigint;
   swapPriceImpactDeltaUsd: bigint;
-  positionPriceImpactDeltaUsd: bigint;
+  increasePositionPriceImpactDeltaUsd: bigint;
+  totalPendingImpactDeltaUsd: bigint;
+  proportionalPendingImpactDeltaUsd: bigint;
+  decreasePositionPriceImpactDeltaUsd: bigint;
   priceImpactDiffUsd: bigint;
   borrowingFeeUsd: bigint;
   fundingFeeUsd: bigint;
   feeDiscountUsd: bigint;
   swapProfitFeeUsd: bigint;
   uiFeeFactor: bigint;
+  type: "increase" | "decrease" | "swap";
 }): TradeFees {
   const {
     initialCollateralUsd,
@@ -111,14 +114,18 @@ export function getTradeFees(p: {
     swapSteps,
     positionFeeUsd,
     swapPriceImpactDeltaUsd,
-    positionPriceImpactDeltaUsd,
+    increasePositionPriceImpactDeltaUsd,
+    totalPendingImpactDeltaUsd,
     externalSwapQuote,
     priceImpactDiffUsd,
     borrowingFeeUsd,
     fundingFeeUsd,
     feeDiscountUsd,
     swapProfitFeeUsd,
+    proportionalPendingImpactDeltaUsd,
+    decreasePositionPriceImpactDeltaUsd,
     uiFeeFactor,
+    type,
   } = p;
 
   const swapFees: SwapFeeItem[] | undefined =
@@ -170,29 +177,27 @@ export function getTradeFees(p: {
   const borrowFee = getFeeItem(borrowingFeeUsd * -1n, initialCollateralUsd);
 
   const fundingFee = getFeeItem(fundingFeeUsd * -1n, initialCollateralUsd);
-  const positionPriceImpact = getFeeItem(positionPriceImpactDeltaUsd, sizeDeltaUsd);
+  const increasePositionPriceImpact = getFeeItem(increasePositionPriceImpactDeltaUsd, sizeDeltaUsd);
+  const decreasePositionPriceImpact = getFeeItem(decreasePositionPriceImpactDeltaUsd, sizeDeltaUsd);
+  const proportionalPendingImpact = getFeeItem(proportionalPendingImpactDeltaUsd, sizeDeltaUsd);
+  const totalPendingImpact = getFeeItem(totalPendingImpactDeltaUsd, sizeDeltaUsd);
   const priceImpactDiff = getFeeItem(priceImpactDiffUsd, sizeDeltaUsd);
+  const positionNetPriceImpact = getTotalFeeItem([totalPendingImpact, priceImpactDiff]);
 
-  const positionCollateralPriceImpact = getFeeItem(positionPriceImpactDeltaUsd, bigMath.abs(collateralDeltaUsd));
+  const positionCollateralPriceImpact = getFeeItem(
+    type === "increase" ? increasePositionPriceImpactDeltaUsd : totalPendingImpactDeltaUsd,
+    bigMath.abs(collateralDeltaUsd)
+  );
   const collateralPriceImpactDiff = getFeeItem(priceImpactDiffUsd, collateralDeltaUsd);
+  const collateralNetPriceImpact = getTotalFeeItem([positionCollateralPriceImpact, collateralPriceImpactDiff]);
 
   const totalFees = getTotalFeeItem([
     ...(swapFees || []),
     externalSwapFee,
     swapProfitFee,
     swapPriceImpact,
-    positionFeeAfterDiscount,
-    borrowFee,
-    fundingFee,
-    uiFee,
-    uiSwapFee,
-  ]);
-
-  // TODO: this is the same as totalFees, we should remove this
-  const payTotalFees = getTotalFeeItem([
-    ...(swapFees || []),
-    swapProfitFee,
-    swapPriceImpact,
+    type === "decrease" ? totalPendingImpact : undefined,
+    type === "decrease" ? priceImpactDiff : undefined,
     positionFeeAfterDiscount,
     borrowFee,
     fundingFee,
@@ -202,15 +207,20 @@ export function getTradeFees(p: {
 
   return {
     totalFees,
-    payTotalFees,
+    payTotalFees: totalFees,
     swapFees,
     swapProfitFee,
     swapPriceImpact,
     positionFee: positionFeeBeforeDiscount,
-    positionPriceImpact,
     priceImpactDiff,
     positionCollateralPriceImpact,
+    proportionalPendingImpact,
+    increasePositionPriceImpact,
+    decreasePositionPriceImpact,
+    totalPendingImpact,
     collateralPriceImpactDiff,
+    positionNetPriceImpact,
+    collateralNetPriceImpact,
     borrowFee,
     fundingFee,
     feeDiscountUsd,

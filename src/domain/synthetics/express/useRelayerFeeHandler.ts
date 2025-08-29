@@ -5,6 +5,10 @@ import {
   selectExpressGlobalParams,
   selectIsExpressTransactionAvailable,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectSubaccountForMultichainAction,
+  selectSubaccountForSettlementChainAction,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
@@ -24,7 +28,7 @@ import {
 
 import { ExpressTxnParams } from ".";
 import { estimateBatchExpressParams } from "./expressOrderUtils";
-import { useSwitchGasPaymentTokenIfRequired } from "./useSwitchGasPaymentTokenIfRequired";
+import { useSwitchGasPaymentTokenIfRequiredFromExpressParams } from "./useSwitchGasPaymentTokenIfRequired";
 
 export type ExpressOrdersParamsResult = {
   expressParams: ExpressTxnParams | undefined;
@@ -36,17 +40,21 @@ export type ExpressOrdersParamsResult = {
 
 export function useExpressOrdersParams({
   orderParams,
-
   label,
+  isGmxAccount,
 }: {
   orderParams: BatchOrderTxnParams | undefined;
   totalExecutionFee?: bigint;
   label?: string;
+  isGmxAccount: boolean;
 }): ExpressOrdersParamsResult {
   const { chainId } = useChainId();
 
   const showDebugValues = useShowDebugValues();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const subaccount = useSelector(
+    isGmxAccount ? selectSubaccountForMultichainAction : selectSubaccountForSettlementChainAction
+  );
   const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
 
   const isAvailable = isExpressAvailable && orderParams && !getBatchIsNativePayment(orderParams);
@@ -75,23 +83,27 @@ export function useExpressOrdersParams({
         chainId: p.chainId,
         batchParams: p.orderParams,
         signer: p.signer,
-        provider: undefined,
+        provider: p.provider,
         globalExpressParams: p.globalExpressParams,
         requireValidations: false,
         estimationMethod: "approximate",
+        isGmxAccount: p.isGmxAccount,
+        subaccount: p.subaccount,
       });
 
       return nextApproximateParams;
     },
     {
       params:
-        isAvailable && globalExpressParams && signer && orderParams
+        isAvailable && globalExpressParams && signer && orderParams && provider
           ? {
               chainId,
               signer,
               provider,
               orderParams,
               globalExpressParams,
+              isGmxAccount,
+              subaccount,
             }
           : undefined,
       forceRecalculate,
@@ -112,6 +124,8 @@ export function useExpressOrdersParams({
         globalExpressParams: p.globalExpressParams,
         requireValidations: false,
         estimationMethod: "estimateGas",
+        isGmxAccount: p.isGmxAccount,
+        subaccount: p.subaccount,
       });
 
       return expressParams;
@@ -125,6 +139,8 @@ export function useExpressOrdersParams({
               provider,
               orderParams,
               globalExpressParams,
+              isGmxAccount,
+              subaccount,
             }
           : undefined,
       forceRecalculate,
@@ -165,7 +181,10 @@ export function useExpressOrdersParams({
     };
   }, [isAvailable, asyncExpressParams, fastExpressParams, fastExpressPromise, asyncExpressPromise]);
 
-  useSwitchGasPaymentTokenIfRequired({ expressParams: result.expressParams });
+  useSwitchGasPaymentTokenIfRequiredFromExpressParams({
+    expressParams: result.expressParams,
+    isGmxAccount,
+  });
 
   if (showDebugValues && label && result.expressParams) {
     throttleLog(`${label} express params`, {

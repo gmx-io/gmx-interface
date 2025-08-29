@@ -2,8 +2,9 @@ import { useCallback } from "react";
 
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { userAnalytics } from "lib/userAnalytics";
-import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
-import { WalletSigner } from "lib/wallets";
+import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
+import type { WalletSigner } from "lib/wallets";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 
 import { approveTokens as approveTokensFn } from "./approveTokens";
@@ -19,7 +20,7 @@ export function useApproveToken() {
       signer,
       allowPermit,
     }: {
-      chainId: number;
+      chainId: ContractsChainId;
       tokenAddress: string;
       signer: WalletSigner;
       allowPermit: boolean;

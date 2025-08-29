@@ -1,7 +1,11 @@
 import { Trans, t } from "@lingui/macro";
 import { useMemo, useState } from "react";
 
-import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectChainId,
+  selectMarketsInfoData,
+  selectSrcChainId,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MarketTokensAPRData, getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
@@ -56,11 +60,12 @@ export function GmList({
   gmPerformanceSnapshots,
 }: Props) {
   const chainId = useSelector(selectChainId);
+  const srcChainId = useSelector(selectSrcChainId);
   const marketsInfo = useSelector(selectMarketsInfoData);
 
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit, withGlv: false });
+  const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit, withGlv: false });
   const { active } = useWallet();
-  const userEarnings = useUserEarnings(chainId);
+  const userEarnings = useUserEarnings(chainId, srcChainId);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-list");
   const [searchText, setSearchText] = useState("");
   const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("gm-list");

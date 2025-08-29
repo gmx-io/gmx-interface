@@ -320,11 +320,6 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [],
-    name: "EmptyChainlinkPaymentToken",
-    type: "error",
-  },
-  {
     inputs: [
       {
         internalType: "address",

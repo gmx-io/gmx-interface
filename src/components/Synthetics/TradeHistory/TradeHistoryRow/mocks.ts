@@ -1,5 +1,16 @@
 import { PositionTradeAction, SwapTradeAction } from "domain/synthetics/tradeHistory";
 import { deserializeBigIntsInObject } from "lib/numbers";
+import { MarketInfo } from "sdk/types/markets";
+
+type ToMock<T> = {
+  [K in keyof T]: T[K] extends bigint | undefined
+    ? { type: "bigint"; hex: string } | { type: "bigint"; value: string }
+    : T[K] extends object
+      ? ToMock<T[K]>
+      : undefined extends T[K]
+        ? undefined | null | T[K]
+        : T[K];
+};
 
 const prepare = (action: any): PositionTradeAction => {
   return deserializeBigIntsInObject(action) as PositionTradeAction;
@@ -120,14 +131,6 @@ export const requestIncreasePosition = prepare({
     shortPoolAmount: {
       type: "bigint",
       hex: "0x8dea649b",
-    },
-    maxLongPoolAmountForDeposit: {
-      type: "bigint",
-      hex: "0x033b2e3c9fd0803ce8000000",
-    },
-    maxShortPoolAmountForDeposit: {
-      type: "bigint",
-      hex: "0x033b2e3c9fd0803ce8000000",
     },
     maxLongPoolAmount: {
       type: "bigint",
@@ -278,11 +281,11 @@ export const requestIncreasePosition = prepare({
       type: "bigint",
       hex: "0x01d670",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -310,11 +313,11 @@ export const requestIncreasePosition = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -358,7 +361,39 @@ export const requestIncreasePosition = prepare({
     virtualMarketId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualLongTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
-  },
+    maxLongPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxShortPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minCollateralFactorForLiquidation: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactorForWithdrawals: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactUsd: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    lentPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    atomicSwapFeeFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+  } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Avalanche",
     symbol: "AVAX",
@@ -578,14 +613,6 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x8dea649b",
     },
-    maxLongPoolAmountForDeposit: {
-      type: "bigint",
-      hex: "0x033b2e3c9fd0803ce8000000",
-    },
-    maxShortPoolAmountForDeposit: {
-      type: "bigint",
-      hex: "0x033b2e3c9fd0803ce8000000",
-    },
     maxLongPoolAmount: {
       type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
@@ -734,11 +761,11 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x01d670",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -766,11 +793,11 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -814,7 +841,39 @@ export const withdraw1Usd = prepare({
     virtualMarketId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualLongTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
-  },
+    maxLongPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxShortPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minCollateralFactorForLiquidation: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactorForWithdrawals: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactUsd: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    lentPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    atomicSwapFeeFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+  } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Avalanche",
     symbol: "AVAX",
@@ -1030,14 +1089,6 @@ export const deposit1Usd = prepare({
       type: "bigint",
       hex: "0x01dc2a3c6d",
     },
-    maxLongPoolAmountForDeposit: {
-      type: "bigint",
-      hex: "0x033b2e3c9fd0803ce8000000",
-    },
-    maxShortPoolAmountForDeposit: {
-      type: "bigint",
-      hex: "0x033b2e3c9fd0803ce8000000",
-    },
     maxLongPoolAmount: {
       type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
@@ -1186,11 +1237,11 @@ export const deposit1Usd = prepare({
       type: "bigint",
       hex: "0xa3aa",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -1218,11 +1269,11 @@ export const deposit1Usd = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -1266,7 +1317,39 @@ export const deposit1Usd = prepare({
     virtualMarketId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualLongTokenId: "0x275d2a6e341e6a078d4eee59b08907d1e50825031c5481f9551284f4b7ee2fb9",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
-  },
+    maxLongPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxShortPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minCollateralFactorForLiquidation: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactorForWithdrawals: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactUsd: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    lentPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    atomicSwapFeeFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+  } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Dogecoin",
     symbol: "DOGE",
@@ -1596,11 +1679,11 @@ export const createOrderDecreaseLong = prepare({
       type: "bigint",
       hex: "0x0bbc20",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -1628,11 +1711,11 @@ export const createOrderDecreaseLong = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -1676,7 +1759,72 @@ export const createOrderDecreaseLong = prepare({
     virtualMarketId: "0x11111137e2e8ae1c70c421e7a0dd36e023e0d6217198f889f9eb9c2a6727481f",
     virtualLongTokenId: "0x04533137e2e8ae1c11111111a0dd36e023e0d6217198f889f9eb9c2a6727481d",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
-  },
+
+    maxLongPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxShortPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minCollateralFactorForLiquidation: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactorForWithdrawals: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactUsd: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    lentPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    atomicSwapFeeFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    fundingIncreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    fundingDecreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    thresholdForStableFunding: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    thresholdForDecreaseFunding: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minFundingFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    positionImpactPoolDistributionRate: {
+      type: "bigint",
+      hex: "0x00",
+    },
+  } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Bitcoin",
     symbol: "BTC",
@@ -1998,11 +2146,11 @@ export const cancelOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -2030,11 +2178,11 @@ export const cancelOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -2078,7 +2226,71 @@ export const cancelOrderIncreaseLong = prepare({
     virtualMarketId: "0x04533437e2e8ae1c70c421e7a0dd36e023e0d6217198f889f9eb9c2a6727481d",
     virtualLongTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
-  },
+    maxLongPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxShortPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    fundingIncreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    fundingDecreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    thresholdForStableFunding: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    thresholdForDecreaseFunding: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minFundingFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    positionImpactPoolDistributionRate: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minCollateralFactorForLiquidation: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactorForWithdrawals: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactUsd: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    lentPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    atomicSwapFeeFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+  } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Ethereum",
     symbol: "ETH",
@@ -2408,11 +2620,11 @@ export const createOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x0bbc20",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -2440,11 +2652,11 @@ export const createOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -2488,7 +2700,71 @@ export const createOrderIncreaseLong = prepare({
     virtualMarketId: "0x11111137e2e8ae1c70c421e7a0dd36e023e0d6217198f889f9eb9c2a6727481f",
     virtualLongTokenId: "0x04533137e2e8ae1c11111111a0dd36e023e0d6217198f889f9eb9c2a6727481d",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
-  },
+    maxLongPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxShortPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    fundingIncreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    fundingDecreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    thresholdForStableFunding: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    thresholdForDecreaseFunding: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minFundingFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    positionImpactPoolDistributionRate: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minCollateralFactorForLiquidation: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactorForWithdrawals: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactUsd: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    lentPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    atomicSwapFeeFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+  } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Bitcoin",
     symbol: "BTC",
@@ -2829,11 +3105,11 @@ export const executeOrderDecreaseShort = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -2861,11 +3137,11 @@ export const executeOrderDecreaseShort = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -2909,7 +3185,71 @@ export const executeOrderDecreaseShort = prepare({
     virtualMarketId: "0xac74a8ce840f9f11faaa15bd01a21a95ded2d6d1e2f3de883ef04c6f7e604ef4",
     virtualLongTokenId: "0xd6f594c665cfd695fe0f7241434c3e44f7d3b0e20145e97654d944d26203ddb8",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
-  },
+    maxLongPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxShortPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    fundingIncreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    fundingDecreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    thresholdForStableFunding: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    thresholdForDecreaseFunding: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minFundingFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    positionImpactPoolDistributionRate: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minCollateralFactorForLiquidation: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactorForWithdrawals: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactUsd: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    lentPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    atomicSwapFeeFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+  } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Uniswap",
     symbol: "UNI",
@@ -3232,10 +3572,6 @@ export const executeOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
-    netPnlMin: {
-      type: "bigint",
-      hex: "0x05fc29ee41bb6ad1f713b0bb7da692",
-    },
     maxPnlFactorForTradersLong: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
@@ -3264,11 +3600,11 @@ export const executeOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -3296,11 +3632,11 @@ export const executeOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -3344,7 +3680,71 @@ export const executeOrderIncreaseLong = prepare({
     virtualMarketId: "0x85248fe8b259d5a671c8ca8540127a7b9cb2534b1175b95d1df6391360841c7b",
     virtualLongTokenId: "0xab14694c1d031aa28aedaf394a1c4f0054ad43be42448259b8bc064efa1af97c",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
-  },
+    maxLongPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxShortPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    fundingIncreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    fundingDecreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    thresholdForStableFunding: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    thresholdForDecreaseFunding: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minFundingFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    positionImpactPoolDistributionRate: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minCollateralFactorForLiquidation: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactorForWithdrawals: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactUsd: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    lentPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    atomicSwapFeeFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+  } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Arbitrum",
     symbol: "ARB",
@@ -3553,10 +3953,6 @@ export const frozenOrderIncreaseShort = prepare({
         },
       },
     },
-    priceImpactUsd: {
-      type: "bigint",
-      hex: "-0xd44fc1b1b9374c28a82ccd8f80",
-    },
     longInterestUsd: {
       type: "bigint",
       hex: "0x0274ee6de80ffd23e60ec80022fd4000",
@@ -3697,11 +4093,11 @@ export const frozenOrderIncreaseShort = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -3729,11 +4125,11 @@ export const frozenOrderIncreaseShort = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -3777,7 +4173,71 @@ export const frozenOrderIncreaseShort = prepare({
     virtualMarketId: "0xba1ff14bf93fbb00b6f43d3ad403cc4c6496c1bb88489075c8b1bc709bde9ebb",
     virtualLongTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
-  },
+    maxLongPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxShortPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    fundingIncreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    fundingDecreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    thresholdForStableFunding: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    thresholdForDecreaseFunding: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minFundingFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    positionImpactPoolDistributionRate: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minCollateralFactorForLiquidation: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactorForWithdrawals: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactUsd: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    lentPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    atomicSwapFeeFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+  } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Bitcoin",
     symbol: "BTC",
@@ -4102,11 +4562,11 @@ export const undefinedOrder = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -4134,11 +4594,11 @@ export const undefinedOrder = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -4182,7 +4642,79 @@ export const undefinedOrder = prepare({
     virtualMarketId: "0x4cdf047af6bcf090983ce57032e6e50a0ce1adc3cc5c3a51621361a4591267e5",
     virtualLongTokenId: "0x3c48977e4fc47fa4616e13af7ceb68b0d545dce7b1fb9ec7b85bb6e00870a051",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
-  },
+    maxLongPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxShortPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxOpenInterestLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxOpenInterestShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    fundingIncreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    fundingDecreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    thresholdForStableFunding: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    thresholdForDecreaseFunding: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minFundingFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    positionImpactPoolDistributionRate: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minCollateralFactorForLiquidation: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactorForWithdrawals: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactUsd: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    lentPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    atomicSwapFeeFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+  } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "XRP",
     symbol: "XRP",
@@ -4520,11 +5052,11 @@ export const liquidated = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -4552,11 +5084,11 @@ export const liquidated = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -4600,7 +5132,71 @@ export const liquidated = prepare({
     virtualMarketId: "0xeed81816403077d40644cf5d67e0684a662b9e79f29112103f52bebee3ca78e2",
     virtualLongTokenId: "0xc31eff1feab296b571fe8131f0a4addc859c36445b90ea23edd116081d5eb0e8",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
-  },
+    maxLongPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxShortPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    fundingIncreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    fundingDecreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    thresholdForStableFunding: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    thresholdForDecreaseFunding: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minFundingFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    positionImpactPoolDistributionRate: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minCollateralFactorForLiquidation: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactorForWithdrawals: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactUsd: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    lentPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    atomicSwapFeeFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+  } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Chainlink",
     symbol: "LINK",
@@ -5000,11 +5596,11 @@ export const increaseLongETH = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -5032,11 +5628,11 @@ export const increaseLongETH = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -5080,7 +5676,71 @@ export const increaseLongETH = prepare({
     virtualMarketId: "0x04533437e2e8ae1c70c421e7a0dd36e023e0d6217198f889f9eb9c2a6727481d",
     virtualLongTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
-  },
+    maxLongPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxShortPoolUsdForDeposit: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    fundingIncreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    fundingDecreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    thresholdForStableFunding: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    thresholdForDecreaseFunding: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minFundingFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    positionImpactPoolDistributionRate: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minCollateralFactorForLiquidation: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactorForWithdrawals: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactUsd: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    lentPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    atomicSwapFeeFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+  } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Ethereum",
     symbol: "ETH",
@@ -5555,16 +6215,16 @@ export const createOrderStopMarketLong = prepare({
     minCollateralFactor: { type: "bigint", value: "5000000000000000000000000000" },
     minCollateralFactorForOpenInterestLong: { type: "bigint", value: "60000000000000000000" },
     minCollateralFactorForOpenInterestShort: { type: "bigint", value: "60000000000000000000" },
-    positionFeeFactorForPositiveImpact: { type: "bigint", value: "400000000000000000000000000" },
-    positionFeeFactorForNegativeImpact: { type: "bigint", value: "600000000000000000000000000" },
+    positionFeeFactorForBalanceWasImproved: { type: "bigint", value: "400000000000000000000000000" },
+    positionFeeFactorForBalanceWasNotImproved: { type: "bigint", value: "600000000000000000000000000" },
     positionImpactFactorPositive: { type: "bigint", value: "3360664378949365000000" },
     positionImpactFactorNegative: { type: "bigint", value: "4032797254739238000000" },
     maxPositionImpactFactorPositive: { type: "bigint", value: "5000000000000000000000000000" },
     maxPositionImpactFactorNegative: { type: "bigint", value: "5000000000000000000000000000" },
     maxPositionImpactFactorForLiquidations: { type: "bigint", value: "0" },
     positionImpactExponentFactor: { type: "bigint", value: "1739944843614544000000000000000" },
-    swapFeeFactorForPositiveImpact: { type: "bigint", value: "500000000000000000000000000" },
-    swapFeeFactorForNegativeImpact: { type: "bigint", value: "700000000000000000000000000" },
+    swapFeeFactorForBalanceWasImproved: { type: "bigint", value: "500000000000000000000000000" },
+    swapFeeFactorForBalanceWasNotImproved: { type: "bigint", value: "700000000000000000000000000" },
     swapImpactFactorPositive: { type: "bigint", value: "200000000000000000000" },
     swapImpactFactorNegative: { type: "bigint", value: "400000000000000000000" },
     swapImpactExponentFactor: { type: "bigint", value: "2000000000000000000000000000000" },
@@ -5577,7 +6237,6 @@ export const createOrderStopMarketLong = prepare({
     indexTokenAddress: "0x47904963fc8b2340414262125aF798B9655E58Cd",
     longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
     shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-    enabled: true,
     isSameCollaterals: false,
     isSpotOnly: false,
     name: "BTC/USD [BTC-USDC]",
@@ -5631,7 +6290,31 @@ export const createOrderStopMarketLong = prepare({
         maxPrice: { type: "bigint", value: "95699884797904795000000000000000000" },
       },
     },
-  },
+    minCollateralFactorForLiquidation: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactorForWithdrawals: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactUsd: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    lentPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    atomicSwapFeeFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+  } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Bitcoin",
     symbol: "BTC",
@@ -5697,7 +6380,6 @@ export const createOrderStopMarketLong = prepare({
   timestamp: 1695040998,
   transaction: {
     hash: "0xdbbc158a679f0ead3ef31c84f348ebf86534d2de4deed255de0ee98f997d7bf3",
-    __typename: "Transaction",
   },
   shouldUnwrapNativeToken: false,
 });
@@ -5759,16 +6441,16 @@ export const executeOrderStopMarketLong = prepare({
     minCollateralFactor: { type: "bigint", value: "5000000000000000000000000000" },
     minCollateralFactorForOpenInterestLong: { type: "bigint", value: "60000000000000000000" },
     minCollateralFactorForOpenInterestShort: { type: "bigint", value: "60000000000000000000" },
-    positionFeeFactorForPositiveImpact: { type: "bigint", value: "400000000000000000000000000" },
-    positionFeeFactorForNegativeImpact: { type: "bigint", value: "600000000000000000000000000" },
+    positionFeeFactorForBalanceWasImproved: { type: "bigint", value: "400000000000000000000000000" },
+    positionFeeFactorForBalanceWasNotImproved: { type: "bigint", value: "600000000000000000000000000" },
     positionImpactFactorPositive: { type: "bigint", value: "3360664378949365000000" },
     positionImpactFactorNegative: { type: "bigint", value: "4032797254739238000000" },
     maxPositionImpactFactorPositive: { type: "bigint", value: "5000000000000000000000000000" },
     maxPositionImpactFactorNegative: { type: "bigint", value: "5000000000000000000000000000" },
     maxPositionImpactFactorForLiquidations: { type: "bigint", value: "0" },
     positionImpactExponentFactor: { type: "bigint", value: "1739944843614544000000000000000" },
-    swapFeeFactorForPositiveImpact: { type: "bigint", value: "500000000000000000000000000" },
-    swapFeeFactorForNegativeImpact: { type: "bigint", value: "700000000000000000000000000" },
+    swapFeeFactorForBalanceWasImproved: { type: "bigint", value: "500000000000000000000000000" },
+    swapFeeFactorForBalanceWasNotImproved: { type: "bigint", value: "700000000000000000000000000" },
     swapImpactFactorPositive: { type: "bigint", value: "200000000000000000000" },
     swapImpactFactorNegative: { type: "bigint", value: "400000000000000000000" },
     swapImpactExponentFactor: { type: "bigint", value: "2000000000000000000000000000000" },
@@ -5781,7 +6463,6 @@ export const executeOrderStopMarketLong = prepare({
     indexTokenAddress: "0x47904963fc8b2340414262125aF798B9655E58Cd",
     longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
     shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-    enabled: true,
     isSameCollaterals: false,
     isSpotOnly: false,
     name: "BTC/USD [BTC-USDC]",
@@ -5835,7 +6516,31 @@ export const executeOrderStopMarketLong = prepare({
         maxPrice: { type: "bigint", value: "95424505866460967500000000000000000" },
       },
     },
-  },
+    minCollateralFactorForLiquidation: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactFactorForWithdrawals: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxLendableImpactUsd: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    lentPositionImpactPoolAmount: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    atomicSwapFeeFactor: {
+      type: "bigint",
+      hex: "0x00",
+    },
+  } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Bitcoin",
     symbol: "BTC",

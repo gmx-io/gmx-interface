@@ -6,7 +6,7 @@ import {
   AB_HIGH_LEVERAGE_WARNING_MAJOR_TOKEN_LEVERAGE,
   AB_HIGH_LEVERAGE_WARNING_PROBABILITY,
 } from "config/ab";
-import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "config/chains";
 import { getHighLeverageWarningDismissedTimestampKey } from "config/localStorage";
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -20,10 +20,13 @@ import { useIsFreshAccountForHighLeverageTrading } from "domain/synthetics/accou
 import { useIsAddressInGroup } from "lib/userAnalytics/getIsAddressInGroup";
 import { getToken } from "sdk/configs/tokens";
 
-const IS_MAJOR_TOKEN_MAP: Record<number, string[]> = {
+const IS_MAJOR_TOKEN_MAP: Record<ContractsChainId, string[]> = {
   [ARBITRUM]: ["BTC", "ETH", "SOL"],
   [AVALANCHE]: ["AVAX", "ETH", "BTC"],
   [BOTANIX]: ["BTC"],
+
+  [ARBITRUM_SEPOLIA]: ["ETH"],
+  [AVALANCHE_FUJI]: [],
 };
 
 const WAIVE_DISMISSAL_PERIOD_MS = 24 * 60 * 60 * 1000; // 24 hours

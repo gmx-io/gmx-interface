@@ -7,8 +7,6 @@ import {
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectExpressNoncesData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -22,6 +20,7 @@ import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatUsd } from "lib/numbers";
+import { useJsonRpcProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { buildDecreaseOrderPayload } from "sdk/utils/orderTransactions";
@@ -45,13 +44,13 @@ type Props = {
 export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClose }: Props) {
   const tokensData = useTokensData();
   const { account, signer } = useWallet();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
+  const { provider } = useJsonRpcProvider(chainId);
   const userReferralInfo = useUserReferralInfo();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
   const [isUntouched, setIsUntouched] = useState(true);
-  const noncesData = useSelector(selectExpressNoncesData);
 
   const { executionFee, gasLimit, feeUsd } = useMemo(() => {
     if (!gasLimits || !tokensData || gasPrice === undefined) return {};
@@ -142,6 +141,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const { expressParams } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Settle Funding Fee",
+    isGmxAccount: srcChainId !== undefined,
   });
 
   const handleOnClose = useCallback(() => {
@@ -173,7 +173,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   );
 
   const onSubmit = useCallback(() => {
-    if (!account || !signer?.provider || !chainId || !batchParams) {
+    if (!account || !signer?.provider || !chainId || !batchParams || !provider) {
       return;
     }
 
@@ -184,19 +184,20 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
       signer,
       batchParams,
       expressParams,
-      noncesData,
       simulationParams: undefined,
       callback: makeOrderTxnCallback({
         metricId: undefined,
         slippageInputId: undefined,
         isFundingFeeSettlement: true,
       }),
+      provider,
+      isGmxAccount: srcChainId !== undefined,
     })
       .then(handleOnClose)
       .finally(() => {
         setIsSubmitting(false);
       });
-  }, [account, batchParams, chainId, expressParams, handleOnClose, makeOrderTxnCallback, noncesData, signer]);
+  }, [account, batchParams, chainId, expressParams, handleOnClose, makeOrderTxnCallback, provider, signer, srcChainId]);
 
   const renderTooltipContent = useCallback(
     () => (

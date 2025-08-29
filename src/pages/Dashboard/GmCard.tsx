@@ -10,7 +10,7 @@ import {
   useMarketTokensData,
   useMarketsInfoRequest,
 } from "domain/synthetics/markets";
-import { convertToUsd } from "domain/synthetics/tokens";
+import { convertToUsd, useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { BN_ZERO, formatAmountHuman } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
@@ -22,10 +22,11 @@ import Button from "components/Button/Button";
 import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
 
 export function GmCard() {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const currentIcons = getIcons(chainId)!;
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true, withGlv: false });
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: true, withGlv: false });
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
 
   const totalGMSupply = useMemo(
     () =>

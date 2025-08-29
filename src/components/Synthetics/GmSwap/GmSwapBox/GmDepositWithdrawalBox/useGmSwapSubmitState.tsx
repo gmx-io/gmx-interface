@@ -56,6 +56,16 @@ const processingTextMap = {
   [Operation.Shift]: (symbol: string) => t`Shifting ${symbol}...`,
 };
 
+type SubmitButtonState = {
+  text: React.ReactNode;
+  disabled?: boolean;
+  onSubmit?: () => void;
+  tokensToApprove?: string[];
+  isAllowanceLoaded?: boolean;
+  isAllowanceLoading?: boolean;
+  errorDescription?: string;
+};
+
 export const useGmSwapSubmitState = ({
   isDeposit,
   routerAddress,
@@ -80,7 +90,7 @@ export const useGmSwapSubmitState = ({
   glvInfo,
   isMarketTokenDeposit,
   glvAndMarketsInfoData,
-}: Props) => {
+}: Props): SubmitButtonState => {
   const chainId = useSelector(selectChainId);
   const hasOutdatedUi = useHasOutdatedUi();
   const { openConnectModal } = useConnectModal();
@@ -180,7 +190,7 @@ export const useGmSwapSubmitState = ({
     }
   }, [isApproving, tokensToApprove]);
 
-  return useMemo(() => {
+  return useMemo((): SubmitButtonState => {
     if (!account) {
       return {
         text: t`Connect Wallet`,
@@ -199,7 +209,10 @@ export const useGmSwapSubmitState = ({
       return {
         text: error,
         disabled: !shouldDisableValidation,
-        onClick: onSubmit,
+        onSubmit: onSubmit,
+        tokensToApprove,
+        isAllowanceLoaded,
+        isAllowanceLoading,
         errorDescription: swapErrorDescription,
       };
     }
