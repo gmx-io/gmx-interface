@@ -23,7 +23,7 @@ export function HeaderMenu() {
 
   return (
     <div
-      className={cx("bg-fiord-700 fixed left-0 top-0 z-10 flex w-full flex-col text-white", {
+      className={cx("bg-fiord-700 fixed left-0 top-0 z-30 flex w-full flex-col text-white", {
         "h-screen": isMenuOpen,
       })}
     >
@@ -35,7 +35,7 @@ export function HeaderMenu() {
               {headerLinks.map((link) => (
                 <a
                   href={link.href}
-                  className="duration-180 transition-opacity hover:opacity-80 active:opacity-60"
+                  className="duration-180 transition-colors hover:text-[#CFCED0] active:text-[#9D9CA0]"
                   key={link.label}
                 >
                   {link.label}

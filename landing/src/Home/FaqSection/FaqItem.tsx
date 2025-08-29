@@ -22,9 +22,9 @@ export function FaqItem({ title, children }: Props) {
         className="duration-180 mb-12 flex cursor-pointer items-center justify-between gap-[44px] transition-colors hover:text-blue-600"
       >
         <h3 className="text-heading-4">{title}</h3>
-        <div className="flex size-24">
+        <div className="flex size-23 flex-shrink-0 items-center justify-center">
           <IcCross
-            className={cx("duration-180 margin-auto size-12 origin-center transition-transform", {
+            className={cx("duration-180 margin-auto size-16 origin-center transition-transform", {
               "rotate-45": !isOpen,
             })}
           />

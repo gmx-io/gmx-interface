@@ -29,7 +29,7 @@ export function Features({ goToTradeArbitrum }: Props) {
           <div className="border-fiord-500 mb-18 flex flex-row items-center gap-20 border-b pb-20">
             <IconBox iconComponent={IcGears} />
             <div className="flex flex-col gap-4">
-              <p className="text-secondary text-12 uppercase">
+              <p className="text-secondary text-12 uppercase tracking-[0.864px]">
                 <Trans>Trade with confidence</Trans>
               </p>
               <p className="text-heading-4">
@@ -81,7 +81,7 @@ export function Features({ goToTradeArbitrum }: Props) {
         <div className="border-fiord-500 mb-18 flex flex-row items-center gap-20 border-b pb-20">
           <IconBox iconComponent={IcProtection} />
           <div className="flex flex-col gap-4">
-            <p className="text-secondary text-12 uppercase">
+            <p className="text-secondary text-12 uppercase tracking-[0.864px]">
               <Trans>keep more of what you earn</Trans>
             </p>
             <p className="text-heading-4">

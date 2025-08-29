@@ -8,7 +8,7 @@ import IcLayerZero from "img/ic_layer_zero.svg?react";
 export function SponsorsSection() {
   return (
     <div className="text-fiord-700 flex gap-24 border-t-[0.5px] border-[#D8DBE9] bg-[#F4F5F9] px-16 py-80 sm:px-40 sm:py-60">
-      <div className="mx-auto flex flex-col justify-between gap-28 sm:w-[1200px] sm:flex-row sm:items-center">
+      <div className="flex w-full flex-col justify-between gap-28 sm:w-[1200px] sm:flex-row sm:items-center">
         <div className="flex flex-col gap-16 sm:w-[380px]">
           <h3 className="leading-heading-md text-[40px] font-medium -tracking-[1.28]">
             <Trans>Supported by</Trans>
@@ -17,7 +17,7 @@ export function SponsorsSection() {
             <Trans>over 100 protocols</Trans>
           </h4>
         </div>
-        <div className="grid flex-1 grid-cols-2 grid-rows-2 flex-row flex-wrap items-center gap-16 sm:flex">
+        <div className="grid w-full flex-1 grid-cols-2 grid-rows-2 flex-row flex-wrap items-center gap-16 sm:flex">
           <div className="flex h-80 flex-1 flex-row items-center justify-center rounded-12 bg-white p-8">
             <IcChainlink className="h-28" />
           </div>

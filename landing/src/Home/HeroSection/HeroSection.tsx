@@ -29,8 +29,8 @@ export function HeroSection() {
   };
 
   return (
-    <section className="bg-fiord-700 overflow-hidden pt-60">
-      <div className="mx-auto px-16 sm:max-w-[1360px] sm:px-40">
+    <section className="bg-fiord-700 overflow-hidden px-16 sm:px-40">
+      <div className="mx-auto sm:max-w-[1200px]">
         <div className="relative h-[640px] py-60 sm:h-[860px] sm:py-80 ">
           <HeroBackground />
           <div className="relative flex h-full w-full flex-col justify-end">
@@ -77,7 +77,7 @@ export function HeroSection() {
                     <Trans>Total Volume</Trans>{" "}
                     <IcMidChevron className="duration-180 size-16 transition-transform group-hover:translate-x-4" />
                   </span>
-                  <div className="duration-180 text-[30px] font-medium tracking-tight transition-opacity group-active:opacity-80 sm:text-[40px]">
+                  <div className="duration-180 text-[30px] font-medium tracking-tight transition-colors group-active:text-[#CFCED0] sm:text-[40px]">
                     {totalVolumeText}
                   </div>
                 </div>

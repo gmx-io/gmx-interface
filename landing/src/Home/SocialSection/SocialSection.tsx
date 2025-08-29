@@ -80,7 +80,7 @@ export function SocialSection() {
                 name="email"
                 id="email"
                 required
-                className="bg-fiord-600 filled:border-fiord-500 filled:bg-[#252635] border-fiord-500/0 min-w-0 rounded-8 border-[0.5px] px-16 py-10 text-16 font-medium -tracking-[0.512px] outline-none placeholder:text-slate-100 focus:bg-[#252635]"
+                className="bg-fiord-600 filled:border-fiord-500 filled:bg-[#252635] border-fiord-500/0 w-full min-w-0 rounded-8 border-[0.5px] px-16 py-10 text-16 font-medium -tracking-[0.512px] outline-none placeholder:text-slate-100 hover:bg-[#252635] focus:bg-[#252635] sm:min-w-[350px] lg:w-auto"
                 placeholder="Your e-mail"
               />
               <button
@@ -92,10 +92,20 @@ export function SocialSection() {
             </form>
           </div>
           <div className="flex w-full flex-row flex-wrap items-center gap-12 py-20 text-12 font-medium tracking-[0.024px] text-slate-100">
-            <a href="/#/referral-terms" target="_blank" rel="noopener noreferrer">
+            <a
+              href="/#/referral-terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="duration-180 transition-colors hover:text-white active:text-[#CFCED0]"
+            >
               <Trans>Referral Terms</Trans>
             </a>
-            <a href="https://docs.gmx.io/docs/community/media-kit/" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://docs.gmx.io/docs/community/media-kit/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="duration-180 transition-colors hover:text-white active:text-[#CFCED0]"
+            >
               <Trans>Media Kit</Trans>
             </a>
             <a className="inline sm:hidden" href="/#/terms-and-conditions" target="_blank" rel="noopener noreferrer">
@@ -105,7 +115,12 @@ export function SocialSection() {
               <TradingViewIcon className="size-20" />
               <span>Charts by TradingView</span>
             </div>
-            <a className="hidden sm:inline" href="/#/terms-and-conditions" target="_blank" rel="noopener noreferrer">
+            <a
+              className="duration-180 hidden transition-colors hover:text-white active:text-[#CFCED0] sm:inline"
+              href="/#/terms-and-conditions"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Trans>Terms and Conditions</Trans>
             </a>
           </div>
