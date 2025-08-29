@@ -11,6 +11,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { createClaimAmountsTransaction } from "domain/synthetics/claims/createClaimTransaction";
 import { useClaimExecutionFee } from "domain/synthetics/claims/useClaimExecutionFee";
 import { useClaimFundsTransactionCallback } from "domain/synthetics/claims/useClaimFundsTransactionCallback";
+import { useIsSmartAccountSignedClaimTerms } from "domain/synthetics/claims/useIsSmartAccountSigned";
 import useUserClaimableAmounts, { GLP_DISTRIBUTION_ID } from "domain/synthetics/claims/useUserClaimableAmounts";
 import { estimateExecutionGasPrice, getExecutionFeeBufferBps } from "domain/synthetics/fees/utils/executionFee";
 import { useTokenBalances } from "domain/synthetics/tokens";
@@ -45,6 +46,8 @@ export default function ClaimableAmounts() {
     getClaimTermsAcceptedKey(chainId, account, GLP_DISTRIBUTION_ID, claimTerms),
     ""
   );
+
+  const isSmartAccountSignedClaimTerms = useIsSmartAccountSignedClaimTerms({ account, signer });
 
   const claimableTokens = useMemo(() => {
     return Object.keys(claimableAmounts).filter(
@@ -91,7 +94,7 @@ export default function ClaimableAmounts() {
         chainId,
         signer,
         account,
-        signature: claimTermsAcceptedSignature ?? "",
+        signature: claimTermsAcceptedSignature,
         distributionId: GLP_DISTRIBUTION_ID,
         claimableTokenTitles,
         callback: claimFundsTransactionCallback,
@@ -130,19 +133,23 @@ export default function ClaimableAmounts() {
     const hasAvailableFundsToCoverExecutionFee =
       userNativeTokenBalance !== undefined && userNativeTokenBalance >= requiredExecutionFee;
 
+    isButtonDisabled = !hasAvailableFundsToCoverExecutionFee;
+
     if (claimTerms) {
-      isButtonDisabled = !claimTermsAcceptedSignature || !hasAvailableFundsToCoverExecutionFee;
-    } else {
-      isButtonDisabled = !hasAvailableFundsToCoverExecutionFee;
+      if (isSmartAccount) {
+        isButtonDisabled = isButtonDisabled || !isSmartAccountSignedClaimTerms;
+      } else {
+        isButtonDisabled = isButtonDisabled || !claimTermsAcceptedSignature;
+      }
     }
 
-    if (claimsFeatureDisabled || isClaiming || !claimableAmountsLoaded || isSmartAccount) {
+    if (claimsFeatureDisabled || isClaiming || !claimableAmountsLoaded) {
       isButtonDisabled = true;
     }
 
     let buttonText = <Trans>Claim funds</Trans>;
 
-    if (isSmartAccount || claimsFeatureDisabled) {
+    if (claimsFeatureDisabled) {
       buttonText = <Trans>Claims are disabled</Trans>;
     }
 
@@ -152,10 +159,14 @@ export default function ClaimableAmounts() {
 
     let buttonTooltipText: React.ReactNode | null = null;
 
-    if (isSmartAccount) {
+    if (isSmartAccount && !isSmartAccountSignedClaimTerms) {
       buttonTooltipText = (
         <Trans>
-          Claiming with a smart account requires specific instructions. Contributors will post these in the coming days.
+          To sign the terms using a Safe account in order to claim, please{" "}
+          <a href="https://docs.gmx.io/docs/providing-liquidity/v1/#safe-account" target="_blank" rel="noreferrer">
+            follow these steps
+          </a>
+          .
         </Trans>
       );
     }
@@ -177,6 +188,7 @@ export default function ClaimableAmounts() {
     isClaiming,
     isSmartAccount,
     executionFee,
+    isSmartAccountSignedClaimTerms,
   ]);
 
   const controls = useMemo(() => {
@@ -211,7 +223,7 @@ export default function ClaimableAmounts() {
           <Checkbox
             isChecked={Boolean(claimTermsAcceptedSignature)}
             setIsChecked={signClaimTerms}
-            disabled={Boolean(claimTermsAcceptedSignature)}
+            disabled={Boolean(claimTermsAcceptedSignature || isSmartAccount)}
           >
             <span className="muted">
               <Trans>Accept Claim Terms</Trans>
@@ -232,6 +244,7 @@ export default function ClaimableAmounts() {
     buttonTooltipText,
     hasAvailableFundsToCoverExecutionFee,
     isButtonDisabled,
+    isSmartAccount,
   ]);
 
   return (
