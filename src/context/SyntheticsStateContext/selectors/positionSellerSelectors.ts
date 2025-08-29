@@ -1,7 +1,5 @@
-import { USD_DECIMALS } from "config/factors";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { estimateExecuteDecreaseOrderGasLimit } from "domain/synthetics/fees";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
+import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { estimateExecuteDecreaseOrderGasLimit, estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import {
   getIsPositionInfoLoaded,
   getMinCollateralFactorForPosition,
@@ -9,11 +7,11 @@ import {
 } from "domain/synthetics/positions";
 import {
   applySlippageToPrice,
-  getSwapAmountsByFromValue,
-  getNextPositionExecutionPrice,
   findAllReachableTokens,
+  getMarkPrice,
+  getSwapAmountsByFromValue,
+  getTradeFees,
 } from "domain/synthetics/trade";
-import { getMarkPrice, getTradeFees } from "domain/synthetics/trade";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { parseValue } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
@@ -27,14 +25,14 @@ import { getIsEquivalentTokens } from "sdk/utils/tokens";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
 import {
+  selectChainId,
   selectClosingPositionKey,
+  selectGasLimits,
+  selectGasPrice,
+  selectMarketsInfoData,
   selectPositionsInfoData,
   selectTokensData,
   selectUiFeeFactor,
-  selectGasLimits,
-  selectGasPrice,
-  selectChainId,
-  selectMarketsInfoData,
 } from "./globalSelectors";
 import { selectIsPnlInLeverage } from "./settingsSelectors";
 import {
@@ -237,6 +235,7 @@ export const selectPositionSellerFees = createSelector((q) => {
   const collateralDeltaUsd = bigMath.mulDiv(position.collateralUsd, sizeReductionBps, BASIS_POINTS_DIVISOR_BIGINT);
 
   const oraclePriceCount = estimateOrderOraclePriceCount(swapPathLength);
+
   return {
     fees: getTradeFees({
       initialCollateralUsd: position.collateralUsd,
@@ -246,13 +245,17 @@ export const selectPositionSellerFees = createSelector((q) => {
       externalSwapQuote: swapAmounts?.swapStrategy.externalSwapQuote,
       positionFeeUsd: decreaseAmounts.positionFeeUsd,
       swapPriceImpactDeltaUsd: swapAmounts?.swapStrategy.swapPathStats?.totalSwapPriceImpactDeltaUsd || 0n,
-      positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
+      totalPendingImpactDeltaUsd: decreaseAmounts.totalPendingImpactDeltaUsd,
+      increasePositionPriceImpactDeltaUsd: 0n,
       priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
+      proportionalPendingImpactDeltaUsd: decreaseAmounts.proportionalPendingImpactDeltaUsd,
+      decreasePositionPriceImpactDeltaUsd: decreaseAmounts.closePriceImpactDeltaUsd,
       borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
       fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
       feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
       swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
       uiFeeFactor,
+      type: "decrease",
     }),
     executionFee: getExecutionFee(
       chainId,
@@ -264,30 +267,6 @@ export const selectPositionSellerFees = createSelector((q) => {
       orderOption === OrderOption.Twap ? numberOfParts : undefined
     ),
   };
-});
-
-export const selectPositionSellerExecutionPrice = createSelector(function selectPositionSellerExecutionPrice(q) {
-  const position = q(selectPositionSellerPosition);
-  const markPrice = q(selectPositionSellerMarkPrice);
-  const orderOption = q(selectPositionSellerOrderOption);
-  const { fees } = q(selectPositionSellerFees);
-
-  const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
-
-  if (!position || fees?.positionPriceImpact?.deltaUsd === undefined) return null;
-
-  const nextTriggerPrice = orderOption === OrderOption.Market ? markPrice : decreaseAmounts?.triggerPrice;
-  const sizeDeltaUsd = decreaseAmounts?.sizeDeltaUsd;
-
-  if (nextTriggerPrice === undefined || sizeDeltaUsd === undefined) return null;
-
-  return getNextPositionExecutionPrice({
-    triggerPrice: nextTriggerPrice,
-    priceImpactUsd: fees.positionPriceImpact.deltaUsd,
-    sizeDeltaUsd,
-    isLong: position.isLong,
-    isIncrease: false,
-  });
 });
 
 export const selectPositionSellerReceiveToken = createSelector((q) => {

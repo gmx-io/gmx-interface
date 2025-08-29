@@ -230,7 +230,10 @@ export const selectTradeboxMockPosition = createSelector((q) => {
     uiFeeUsd: 0n,
     pendingFundingFeesUsd: 0n,
     pendingClaimableFundingFeesUsd: 0n,
+    pendingImpactAmount: 0n,
     positionFeeAmount: 0n,
+    netPriceImapctDeltaUsd: 0n,
+    priceImpactDiffUsd: 0n,
     traderDiscountAmount: 0n,
     uiFeeAmount: 0n,
   };

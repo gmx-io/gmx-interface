@@ -60,9 +60,9 @@ export function SyntheticsStats() {
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { kinkMarketsBorrowingRatesData } = useKinkModelMarketsRates(chainId);
-  const {
-    positionsConstants: { minCollateralUsd, minPositionSizeUsd },
-  } = usePositionsConstantsRequest(chainId);
+  const { positionsConstants } = usePositionsConstantsRequest(chainId);
+  const { minCollateralUsd, minPositionSizeUsd, claimableCollateralDelay, claimableCollateralReductionFactor } =
+    positionsConstants || {};
 
   const markets = Object.values(marketsInfoData || {});
   markets.sort((a, b) => {
@@ -758,7 +758,7 @@ export function SyntheticsStats() {
               }
 
               function renderPositionImpactCell() {
-                const summaryPoolUsd = (longPoolUsd ?? 0n) + (shortPoolUsd ?? 0n);
+                const summaryPoolUsd = market.poolValueMax;
 
                 const bonusApr =
                   summaryPoolUsd > 0n
@@ -769,7 +769,7 @@ export function SyntheticsStats() {
                       ) * 100n
                     : undefined;
 
-                const reservedPositivePriceImpactUsd = getPriceImpactUsd({
+                const { priceImpactDeltaUsd: reservedPositivePriceImpactUsd } = getPriceImpactUsd({
                   currentLongUsd: market.longInterestUsd - market.shortInterestUsd,
                   currentShortUsd: 0n,
                   nextLongUsd: 0n,
@@ -1045,6 +1045,26 @@ export function SyntheticsStats() {
                               value={formatFactor(market.maxPositionImpactFactorForLiquidations)}
                               showDollar={false}
                             />
+                            <StatsTooltipRow
+                              label="Max Lendable Impact Factor"
+                              value={formatFactor(market.maxLendableImpactFactor)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Max Lendable Impact Factor for Withdrawals"
+                              value={formatFactor(market.maxLendableImpactFactorForWithdrawals)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Max Lendable Impact USD"
+                              value={formatUsd(market.maxLendableImpactUsd)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Lent Position Impact Pool Amount"
+                              value={formatUsd(market.lentPositionImpactPoolAmount)}
+                              showDollar={false}
+                            />
                             <br />
                             <div className="Tooltip-divider" />
                             <br />
@@ -1072,22 +1092,22 @@ export function SyntheticsStats() {
                             <br />
                             <StatsTooltipRow
                               label="Swap Fee Factor (Positive PI)"
-                              value={formatFactor(market.swapFeeFactorForPositiveImpact)}
+                              value={formatFactor(market.swapFeeFactorForBalanceWasImproved)}
                               showDollar={false}
                             />
                             <StatsTooltipRow
                               label="Swap Fee Factor (Negative PI)"
-                              value={formatFactor(market.swapFeeFactorForNegativeImpact)}
+                              value={formatFactor(market.swapFeeFactorForBalanceWasNotImproved)}
                               showDollar={false}
                             />
                             <StatsTooltipRow
                               label="Position Fee Factor (Positive PI)"
-                              value={formatFactor(market.positionFeeFactorForPositiveImpact)}
+                              value={formatFactor(market.positionFeeFactorForBalanceWasImproved)}
                               showDollar={false}
                             />
                             <StatsTooltipRow
                               label="Position Fee Factor (Negative PI)"
-                              value={formatFactor(market.positionFeeFactorForNegativeImpact)}
+                              value={formatFactor(market.positionFeeFactorForBalanceWasNotImproved)}
                               showDollar={false}
                             />
                             <StatsTooltipRow
@@ -1141,6 +1161,11 @@ export function SyntheticsStats() {
                               showDollar={false}
                             />
                             <StatsTooltipRow
+                              label="Min Collateral Factor for Liquidation"
+                              value={formatFactor(market.minCollateralFactorForLiquidation)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
                               label="Min Collateral Factor OI Long"
                               value={formatFactor(market.minCollateralFactorForOpenInterestLong)}
                               showDollar={false}
@@ -1180,6 +1205,16 @@ export function SyntheticsStats() {
                               showDollar={false}
                             />
                             <br />
+                            <StatsTooltipRow
+                              label="Claimable Collateral Delay"
+                              value={claimableCollateralDelay?.toString() || "..."}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Claimable Collateral Reduction Factor"
+                              value={formatFactor(claimableCollateralReductionFactor ?? 0n)}
+                              showDollar={false}
+                            />
                           </>
                         )}
                       />

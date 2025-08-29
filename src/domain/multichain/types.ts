@@ -41,7 +41,7 @@ export type StrippedGeneratedType<T> = Omit<T, keyof [] | `${number}`>;
 
 export type BridgeOutParams = StrippedGeneratedType<IRelayUtils.BridgeOutParamsStructOutput>;
 
-export type LayerZeroEndpointId = 40161 | 40231 | 40232 | 30184 | 30110;
+export type LayerZeroEndpointId = 40161 | 40231 | 40232 | 30184 | 30110 | 30106;
 
 export type QuoteOft = {
   limit: OFTLimitStruct;

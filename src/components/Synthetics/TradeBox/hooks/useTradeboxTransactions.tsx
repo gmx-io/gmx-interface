@@ -204,7 +204,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           (entry) => entry.orderPayload.orderType === OrderType.LimitDecrease
         ).length,
         priceImpactDeltaUsd: increaseAmounts?.positionPriceImpactDeltaUsd,
-        priceImpactPercentage: fees?.positionPriceImpact?.precisePercentage,
+        priceImpactPercentage: fees?.increasePositionPriceImpact?.precisePercentage,
         netRate1h: isLong ? chartHeaderInfo?.fundingRateLong : chartHeaderInfo?.fundingRateShort,
         interactionId: marketInfo?.name
           ? userAnalytics.getInteractionId(getTradeInteractionKey(marketInfo.name))
@@ -238,8 +238,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       isExpress: Boolean(expressParams),
       isTwap: tradeMode === TradeMode.Twap,
       interactionId: marketInfo?.name ? userAnalytics.getInteractionId(getTradeInteractionKey(marketInfo.name)) : "",
-      priceImpactDeltaUsd: decreaseAmounts?.positionPriceImpactDeltaUsd,
-      priceImpactPercentage: fees?.positionPriceImpact?.precisePercentage,
+      priceImpactDeltaUsd: decreaseAmounts?.totalPendingImpactDeltaUsd,
+      priceImpactPercentage: fees?.decreasePositionPriceImpact?.precisePercentage,
       netRate1h: isLong ? chartHeaderInfo?.fundingRateLong : chartHeaderInfo?.fundingRateShort,
       tradeMode,
       duration,
@@ -263,7 +263,8 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     executionFeeBufferBps,
     expressParams,
     fastExpressParams,
-    fees?.positionPriceImpact?.precisePercentage,
+    fees?.decreasePositionPriceImpact?.precisePercentage,
+    fees?.increasePositionPriceImpact?.precisePercentage,
     fromToken,
     increaseAmounts,
     initialCollateralAllowance,

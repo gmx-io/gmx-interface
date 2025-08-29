@@ -3,7 +3,10 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { ArbitrumNodeInterface, ArbitrumNodeInterfaceInterface } from "../ArbitrumNodeInterface";
+import type {
+  ArbitrumNodeInterface,
+  ArbitrumNodeInterfaceInterface,
+} from "../ArbitrumNodeInterface";
 
 const _abi = [
   {
@@ -288,7 +291,14 @@ export class ArbitrumNodeInterface__factory {
   static createInterface(): ArbitrumNodeInterfaceInterface {
     return new Interface(_abi) as ArbitrumNodeInterfaceInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): ArbitrumNodeInterface {
-    return new Contract(address, _abi, runner) as unknown as ArbitrumNodeInterface;
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): ArbitrumNodeInterface {
+    return new Contract(
+      address,
+      _abi,
+      runner
+    ) as unknown as ArbitrumNodeInterface;
   }
 }

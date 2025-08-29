@@ -278,11 +278,11 @@ export const requestIncreasePosition = prepare({
       type: "bigint",
       hex: "0x01d670",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -310,11 +310,11 @@ export const requestIncreasePosition = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -734,11 +734,11 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x01d670",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -766,11 +766,11 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -1186,11 +1186,11 @@ export const deposit1Usd = prepare({
       type: "bigint",
       hex: "0xa3aa",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -1218,11 +1218,11 @@ export const deposit1Usd = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -1596,11 +1596,11 @@ export const createOrderDecreaseLong = prepare({
       type: "bigint",
       hex: "0x0bbc20",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -1628,11 +1628,11 @@ export const createOrderDecreaseLong = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -1998,11 +1998,11 @@ export const cancelOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -2030,11 +2030,11 @@ export const cancelOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -2408,11 +2408,11 @@ export const createOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x0bbc20",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -2440,11 +2440,11 @@ export const createOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -2829,11 +2829,11 @@ export const executeOrderDecreaseShort = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -2861,11 +2861,11 @@ export const executeOrderDecreaseShort = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -3264,11 +3264,11 @@ export const executeOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -3296,11 +3296,11 @@ export const executeOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -3697,11 +3697,11 @@ export const frozenOrderIncreaseShort = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -3729,11 +3729,11 @@ export const frozenOrderIncreaseShort = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -4102,11 +4102,11 @@ export const undefinedOrder = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -4134,11 +4134,11 @@ export const undefinedOrder = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -4520,11 +4520,11 @@ export const liquidated = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -4552,11 +4552,11 @@ export const liquidated = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -5000,11 +5000,11 @@ export const increaseLongETH = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    positionFeeFactorForPositiveImpact: {
+    positionFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    positionFeeFactorForNegativeImpact: {
+    positionFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -5032,11 +5032,11 @@ export const increaseLongETH = prepare({
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
-    swapFeeFactorForPositiveImpact: {
+    swapFeeFactorForBalanceWasImproved: {
       type: "bigint",
       hex: "0x019d971e4fe8401e74000000",
     },
-    swapFeeFactorForNegativeImpact: {
+    swapFeeFactorForBalanceWasNotImproved: {
       type: "bigint",
       hex: "0x024306c4097859c43c000000",
     },
@@ -5555,16 +5555,16 @@ export const createOrderStopMarketLong = prepare({
     minCollateralFactor: { type: "bigint", value: "5000000000000000000000000000" },
     minCollateralFactorForOpenInterestLong: { type: "bigint", value: "60000000000000000000" },
     minCollateralFactorForOpenInterestShort: { type: "bigint", value: "60000000000000000000" },
-    positionFeeFactorForPositiveImpact: { type: "bigint", value: "400000000000000000000000000" },
-    positionFeeFactorForNegativeImpact: { type: "bigint", value: "600000000000000000000000000" },
+    positionFeeFactorForBalanceWasImproved: { type: "bigint", value: "400000000000000000000000000" },
+    positionFeeFactorForBalanceWasNotImproved: { type: "bigint", value: "600000000000000000000000000" },
     positionImpactFactorPositive: { type: "bigint", value: "3360664378949365000000" },
     positionImpactFactorNegative: { type: "bigint", value: "4032797254739238000000" },
     maxPositionImpactFactorPositive: { type: "bigint", value: "5000000000000000000000000000" },
     maxPositionImpactFactorNegative: { type: "bigint", value: "5000000000000000000000000000" },
     maxPositionImpactFactorForLiquidations: { type: "bigint", value: "0" },
     positionImpactExponentFactor: { type: "bigint", value: "1739944843614544000000000000000" },
-    swapFeeFactorForPositiveImpact: { type: "bigint", value: "500000000000000000000000000" },
-    swapFeeFactorForNegativeImpact: { type: "bigint", value: "700000000000000000000000000" },
+    swapFeeFactorForBalanceWasImproved: { type: "bigint", value: "500000000000000000000000000" },
+    swapFeeFactorForBalanceWasNotImproved: { type: "bigint", value: "700000000000000000000000000" },
     swapImpactFactorPositive: { type: "bigint", value: "200000000000000000000" },
     swapImpactFactorNegative: { type: "bigint", value: "400000000000000000000" },
     swapImpactExponentFactor: { type: "bigint", value: "2000000000000000000000000000000" },
@@ -5759,16 +5759,16 @@ export const executeOrderStopMarketLong = prepare({
     minCollateralFactor: { type: "bigint", value: "5000000000000000000000000000" },
     minCollateralFactorForOpenInterestLong: { type: "bigint", value: "60000000000000000000" },
     minCollateralFactorForOpenInterestShort: { type: "bigint", value: "60000000000000000000" },
-    positionFeeFactorForPositiveImpact: { type: "bigint", value: "400000000000000000000000000" },
-    positionFeeFactorForNegativeImpact: { type: "bigint", value: "600000000000000000000000000" },
+    positionFeeFactorForBalanceWasImproved: { type: "bigint", value: "400000000000000000000000000" },
+    positionFeeFactorForBalanceWasNotImproved: { type: "bigint", value: "600000000000000000000000000" },
     positionImpactFactorPositive: { type: "bigint", value: "3360664378949365000000" },
     positionImpactFactorNegative: { type: "bigint", value: "4032797254739238000000" },
     maxPositionImpactFactorPositive: { type: "bigint", value: "5000000000000000000000000000" },
     maxPositionImpactFactorNegative: { type: "bigint", value: "5000000000000000000000000000" },
     maxPositionImpactFactorForLiquidations: { type: "bigint", value: "0" },
     positionImpactExponentFactor: { type: "bigint", value: "1739944843614544000000000000000" },
-    swapFeeFactorForPositiveImpact: { type: "bigint", value: "500000000000000000000000000" },
-    swapFeeFactorForNegativeImpact: { type: "bigint", value: "700000000000000000000000000" },
+    swapFeeFactorForBalanceWasImproved: { type: "bigint", value: "500000000000000000000000000" },
+    swapFeeFactorForBalanceWasNotImproved: { type: "bigint", value: "700000000000000000000000000" },
     swapImpactFactorPositive: { type: "bigint", value: "200000000000000000000" },
     swapImpactFactorNegative: { type: "bigint", value: "400000000000000000000" },
     swapImpactExponentFactor: { type: "bigint", value: "2000000000000000000000000000000" },

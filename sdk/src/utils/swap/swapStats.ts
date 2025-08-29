@@ -230,9 +230,12 @@ export function getSwapStats(p: {
   const amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
 
   let priceImpactDeltaUsd: bigint;
+  let balanceWasImproved: boolean;
 
   try {
-    priceImpactDeltaUsd = getPriceImpactForSwap(marketInfo, tokenIn, tokenOut, usdIn, usdIn * -1n);
+    const priceImpactValues = getPriceImpactForSwap(marketInfo, tokenIn, tokenOut, usdIn, usdIn * -1n);
+    priceImpactDeltaUsd = priceImpactValues.priceImpactDeltaUsd;
+    balanceWasImproved = priceImpactValues.balanceWasImproved;
   } catch (e) {
     // Approximate if the market would be out of capacity
     const capacityUsd = getSwapCapacityUsd(marketInfo, getTokenPoolType(marketInfo, tokenInAddress) === "long");
@@ -259,8 +262,8 @@ export function getSwapStats(p: {
     };
   }
 
-  const swapFeeAmount = getSwapFee(marketInfo, amountIn, priceImpactDeltaUsd > 0, isAtomicSwap);
-  const swapFeeUsd = getSwapFee(marketInfo, usdIn, priceImpactDeltaUsd > 0, isAtomicSwap);
+  const swapFeeAmount = getSwapFee(marketInfo, amountIn, balanceWasImproved, isAtomicSwap);
+  const swapFeeUsd = getSwapFee(marketInfo, usdIn, balanceWasImproved, isAtomicSwap);
 
   const amountInAfterFees = amountIn - swapFeeAmount;
   const usdInAfterFees = usdIn - swapFeeUsd;
