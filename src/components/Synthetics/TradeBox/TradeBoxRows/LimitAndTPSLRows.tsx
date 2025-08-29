@@ -1,6 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { useCallback, useMemo, useRef } from "react";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa6";
 
 import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
@@ -60,7 +60,7 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
       <SyntheticsInfoRow
         className="whitespace-nowrap leading-[16px]"
         label={
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             {label}
             {entriesInfo.canAddEntry && (
               <TooltipWithPortal
@@ -156,11 +156,11 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
 
 export function LimitAndTPSLRows({ hasExistingLimitOrder }: { hasExistingLimitOrder: boolean }) {
   return (
-    <div className="flex flex-col gap-14 py-14">
+    <div className="flex flex-col gap-14 pt-12">
       <SideOrders type="limit" />
-      {hasExistingLimitOrder && <div className="h-1 bg-stroke-primary" />}
+      {hasExistingLimitOrder && <div className="h-[0.5px] bg-slate-600" />}
       <SideOrders type="takeProfit" />
-      <div className="h-1 bg-stroke-primary" />
+      <div className="h-[0.5px] bg-slate-600" />
       <SideOrders type="stopLoss" />
     </div>
   );
@@ -216,7 +216,7 @@ export function LimitAndTPSLGroup() {
       autoExpandOnError
       errorMessage={<Trans>There are issues in the TP/SL orders.</Trans>}
       onToggle={toggleLimitOrTPSL}
-      contentClassName=""
+      withToggleSwitch
     >
       <LimitAndTPSLRows hasExistingLimitOrder={hasExistingLimitOrder} />
     </ExpandableRow>

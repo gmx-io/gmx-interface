@@ -144,7 +144,7 @@ export function getTxnErrorToast(
       toastParams.errorContent = t`Transaction was cancelled.`;
       break;
     case TxErrorType.Slippage:
-      toastParams.errorContent = t`The mark price has changed, consider increasing your Allowed Slippage by clicking on the "..." icon next to your address.`;
+      toastParams.errorContent = t`The mark price has changed, consider increasing your allowed slippage by clicking on the "..." icon next to your address.`;
       break;
     case TxErrorType.RpcError: {
       toastParams.autoCloseToast = false;
@@ -232,7 +232,7 @@ export function getErrorMessage(
       failMsg = t`Transaction was cancelled.`;
       break;
     case TxErrorType.Slippage:
-      failMsg = t`The mark price has changed, consider increasing your Allowed Slippage by clicking on the "..." icon next to your address.`;
+      failMsg = t`The mark price has changed, consider increasing your allowed slippage.`;
       break;
     case TxErrorType.RpcError: {
       autoCloseToast = false;
@@ -263,7 +263,7 @@ export function getErrorMessage(
 
       failMsg = (
         <div>
-          {txnMessage || t`Transaction failed`}
+          {txnMessage || t`Transaction failed.`}
           {additionalContent}
           <br />
           <br />

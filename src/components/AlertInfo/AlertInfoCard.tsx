@@ -1,6 +1,6 @@
-import cx from "classnames";
 import { ReactNode, useCallback, useState } from "react";
-import { MdClose } from "react-icons/md";
+
+import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 
 import InfoIconComponent from "img/ic_info.svg?react";
 import WarnIconComponent from "img/ic_warn.svg?react";
@@ -31,27 +31,13 @@ export function AlertInfoCard({ children, type = "info", onClose, className }: P
   }
 
   return (
-    <div
-      className={cx(
-        "text-body-small flex rounded-4 border-l-2 px-8 py-8",
-        {
-          "border-blue-300 bg-cold-blue-900 text-white": type === "info",
-          "border-yellow-500 bg-[#423727] text-yellow-500": type === "warning",
-          "border-red-500 bg-[#392A46]": type === "error",
-        },
-        className
-      )}
+    <ColorfulBanner
+      className={className}
+      color={type === "info" ? "blue" : type === "warning" ? "yellow" : "red"}
+      icon={Icon}
+      onClose={handleClose}
     >
-      <div className="pr-5 pt-2">
-        <Icon
-          aria-label="Alert Icon"
-          className={cx("block size-12 ", { "text-red-500": type === "error", "text-blue-300": type === "info" })}
-          fontSize={12}
-        />
-      </div>
-      <div className="grow">{children}</div>
-
-      {onClose && <MdClose fontSize={16} className="ml-4 shrink-0 cursor-pointer text-white" onClick={handleClose} />}
-    </div>
+      {children}
+    </ColorfulBanner>
   );
 }

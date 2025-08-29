@@ -29,15 +29,15 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
   const { data, error, loading } = usePnlSummaryData(chainId, account);
 
   return (
-    <div className="overflow-hidden rounded-4 bg-slate-800">
-      <div className="text-body-large p-16">
+    <div className="overflow-hidden rounded-8 bg-slate-900">
+      <div className="border-b-1/2 border-slate-600 p-20 text-20 font-medium">
         <Trans>General Performance Details</Trans>
       </div>
 
       <TableScrollFadeContainer>
         <table className="w-full min-w-max">
           <thead>
-            <TableTheadTr bordered>
+            <TableTheadTr>
               <TableTh>
                 <Trans>Date</Trans>
               </TableTh>
@@ -48,6 +48,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
                 <TooltipWithPortal
                   tooltipClassName="cursor-help *:cursor-auto"
                   content={t`The total realized and unrealized profit and loss for the period, including fees and price impact.`}
+                  variant="iconStroke"
                 >
                   <Trans>PnL ($)</Trans>
                 </TooltipWithPortal>
@@ -55,6 +56,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
               <TableTh>
                 <TooltipWithPortal
                   tooltipClassName="cursor-help *:cursor-auto"
+                  variant="iconStroke"
                   content={
                     <Trans>
                       The PnL ($) compared to the capital used.
@@ -79,7 +81,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
           </tbody>
         </table>
         {error && (
-          <div className="max-h-[200px] overflow-auto p-16">
+          <div className="max-h-[200px] overflow-auto p-20">
             <div className="whitespace-pre-wrap font-mono text-red-500">{JSON.stringify(error, null, 2)}</div>
           </div>
         )}
@@ -93,12 +95,12 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
   const showDebugValues = useShowDebugValues();
 
   return (
-    <TableTr key={row.bucketLabel} hoverable={false} bordered={false}>
+    <TableTr key={row.bucketLabel}>
       <TableTd>{_(bucketLabelMap[row.bucketLabel as keyof typeof bucketLabelMap])}</TableTd>
-      <TableTd>{formatUsd(row.volume, { maxThreshold: null })}</TableTd>
+      <TableTd className="numbers">{formatUsd(row.volume, { maxThreshold: null })}</TableTd>
       <TableTd>
         <TooltipWithPortal
-          disableHandleStyle
+          variant="none"
           tooltipClassName="cursor-help *:cursor-auto"
           className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
             "text-green-500 decoration-green-500/50": row.pnlUsd > 0,
@@ -115,51 +117,68 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(row.realizedPnlUsd)}
                   value={formatUsd(row.realizedPnlUsd)}
+                  valueClassName="numbers"
                 />
                 <StatsTooltipRow
                   label={t`Unrealized PnL`}
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(row.unrealizedPnlUsd)}
                   value={formatUsd(row.unrealizedPnlUsd)}
+                  valueClassName="numbers"
                 />
                 <StatsTooltipRow
                   label={t`Start Unrealized PnL`}
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(row.startUnrealizedPnlUsd)}
                   value={formatUsd(row.startUnrealizedPnlUsd)}
+                  valueClassName="numbers"
                 />
               </>
             )
           }
-        >
-          {formatUsd(row.pnlUsd)}
-        </TooltipWithPortal>
+          handle={formatUsd(row.pnlUsd)}
+          handleClassName="numbers"
+        ></TooltipWithPortal>
       </TableTd>
       <TableTd>
         <TooltipWithPortal
-          disableHandleStyle
+          variant="none"
           tooltipClassName="cursor-help *:cursor-auto"
           className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
             "text-green-500 decoration-green-500/50": row.pnlBps > 0n,
             "text-red-500 decoration-red-500/50": row.pnlBps < 0n,
             "decoration-gray-400": row.pnlBps === 0n,
           })}
-          content={<StatsTooltipRow label={t`Capital Used`} showDollar={false} value={formatUsd(row.usedCapitalUsd)} />}
-        >
-          {formatPercentage(row.pnlBps, { signed: true })}
-        </TooltipWithPortal>
+          content={
+            <StatsTooltipRow
+              label={t`Capital Used`}
+              showDollar={false}
+              value={formatUsd(row.usedCapitalUsd)}
+              valueClassName="numbers"
+            />
+          }
+          handle={formatPercentage(row.pnlBps, { signed: true })}
+          handleClassName="numbers"
+        ></TooltipWithPortal>
       </TableTd>
       <TableTd>
         <TooltipWithPortal
           handle={`${row.wins} / ${row.losses}`}
+          handleClassName="numbers"
           content={
             <>
-              <StatsTooltipRow label={t`Total Trades`} showDollar={false} value={String(row.wins + row.losses)} />
+              <StatsTooltipRow
+                label={t`Total Trades`}
+                showDollar={false}
+                value={String(row.wins + row.losses)}
+                valueClassName="numbers"
+              />
               {row.winsLossesRatioBps !== undefined && (
                 <StatsTooltipRow
                   label={t`Win Rate`}
                   showDollar={false}
                   value={formatPercentage(row.winsLossesRatioBps)}
+                  valueClassName="numbers"
                 />
               )}
             </>

@@ -46,7 +46,7 @@ type Props = {
 export function Header({ openSettings, showRedirectModal }: Props) {
   const isMobile = useMedia("(max-width: 1335px)");
 
-  const shouldHide1CTBanner = useMedia("(max-width: 1100px)");
+  const shouldHide1CTBanner = useMedia("(max-width: 1024px)");
   const shouldShorten1CTBanner = useMedia("(max-width: 1590px)");
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
@@ -143,7 +143,6 @@ export function Header({ openSettings, showRedirectModal }: Props) {
                 {!shouldHide1CTBanner && <OneClickPromoBanner openSettings={openSettings} />}
                 <AppHeaderChainAndSettings
                   openSettings={openSettings}
-                  small
                   showRedirectModal={showRedirectModal}
                   menuToggle={
                     <div className="App-header-menu-icon-block" onClick={toggleDrawer}>

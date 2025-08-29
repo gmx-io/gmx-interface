@@ -8,6 +8,7 @@ import { ContractsChainId, CONTRACTS_CHAIN_IDS } from "config/chains";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
@@ -23,6 +24,7 @@ import useSearchParams from "lib/useSearchParams";
 import { switchNetwork } from "lib/wallets";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
+import { CloseToastButton } from "components/CloseToastButton/CloseToastButton";
 import EventToastContainer from "components/EventToast/EventToastContainer";
 import useEventToast from "components/EventToast/useEventToast";
 import { Header } from "components/Header/Header";
@@ -43,6 +45,7 @@ const Zoom = cssTransition({
 });
 
 export function AppRoutes() {
+  const { theme } = useTheme();
   const isHome = isHomeSite();
   const location = useLocation();
   const history = useHistory();
@@ -131,12 +134,15 @@ export function AppRoutes() {
 
   return (
     <>
-      <div className="App">
-        <div className="App-content">
-          <Header openSettings={openSettings} showRedirectModal={showRedirectModal} />
-          {isHome && <HomeRoutes showRedirectModal={showRedirectModal} />}
-          {!isHome && <MainRoutes openSettings={openSettings} />}
-        </div>
+      <div className="App w-full">
+        {isHome ? (
+          <div className="App-content">
+            <Header openSettings={openSettings} showRedirectModal={showRedirectModal} />
+            <HomeRoutes showRedirectModal={showRedirectModal} />
+          </div>
+        ) : (
+          <MainRoutes openSettings={openSettings} />
+        )}
       </div>
       <ToastContainer
         limit={1}
@@ -148,8 +154,9 @@ export function AppRoutes() {
         closeOnClick={false}
         draggable={false}
         pauseOnHover
-        theme="dark"
+        theme={theme}
         icon={false}
+        closeButton={CloseToastButton}
       />
       <EventToastContainer />
       <RedirectPopupModal

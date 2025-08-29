@@ -146,7 +146,7 @@ export const SelectAssetToDepositView = () => {
                 key={network.id}
                 type="button"
                 variant="secondary"
-                slim
+                size="small"
                 className={cx("whitespace-nowrap", {
                   "!bg-cold-blue-500": selectedNetwork === network.id,
                   "!text-slate-100": selectedNetwork !== network.id,

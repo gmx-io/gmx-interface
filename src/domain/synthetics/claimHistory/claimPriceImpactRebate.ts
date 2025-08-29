@@ -36,9 +36,9 @@ export async function createClaimCollateralTxn(
   });
 
   const txn = await callContract(chainId, exchangeRouter, "claimCollateral", args, {
-    sentMsg: t`Claiming Price Impact Rebate...`,
-    successMsg: t`Price Impact Rebate Claimed`,
-    failMsg: t`Failed to Claim Price Impact Rebate`,
+    sentMsg: t`Claiming price impact rebates.`,
+    successMsg: t`Price impact rebates claimed.`,
+    failMsg: t`Failed to claim price impact rebates.`,
   });
 
   return txn;

@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -23,18 +22,16 @@ import { getByKey } from "lib/objects";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { MarketState } from "components/MarketSelector/types";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
+import { ExpandableRow } from "components/Synthetics/ExpandableRow";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
-import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 
 import { GmFees } from "../../GmFees/GmFees";
 import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
 import { SelectedPool } from "../SelectedPool";
-import { Swap } from "../Swap";
 import { Operation } from "../types";
 import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
 import { useGmWarningState } from "../useGmWarningState";
@@ -249,95 +246,99 @@ export function GmShiftBox({
 
   return (
     <>
-      <form className="flex flex-col" onSubmit={handleFormSubmit}>
-        <div className="mb-12 flex flex-col gap-2">
-          <BuyInputSection
-            topLeftLabel={t`Pay`}
-            bottomLeftValue={selectedTokenDollarAmount}
-            bottomRightLabel={t`Balance`}
-            bottomRightValue={
-              selectedToken && selectedToken.balance !== undefined
-                ? formatBalanceAmount(selectedToken.balance, selectedToken.decimals)
-                : undefined
-            }
-            isBottomLeftValueMuted={amounts?.fromTokenUsd === undefined || amounts.fromTokenUsd === 0n}
-            onClickBottomRightLabel={handleSelectedTokenClickMax}
-            onClickMax={selectedTokenShowMaxButton ? handleSelectedTokenClickMax : undefined}
-            inputValue={selectedMarketText}
-            onInputValueChange={handleSelectedTokenInputValueChange}
-            onFocus={handleSelectedTokenFocus}
+      <form className="flex flex-col gap-12" onSubmit={handleFormSubmit}>
+        <div>
+          <div className="bg-slate-900 p-12">
+            <div className="flex flex-col gap-4">
+              <BuyInputSection
+                topLeftLabel={t`Pay`}
+                bottomLeftValue={selectedTokenDollarAmount}
+                bottomRightLabel={t`Balance`}
+                bottomRightValue={
+                  selectedToken && selectedToken.balance !== undefined
+                    ? formatBalanceAmount(selectedToken.balance, selectedToken.decimals)
+                    : undefined
+                }
+                onClickBottomRightLabel={handleSelectedTokenClickMax}
+                onClickMax={selectedTokenShowMaxButton ? handleSelectedTokenClickMax : undefined}
+                inputValue={selectedMarketText}
+                onInputValueChange={handleSelectedTokenInputValueChange}
+                onFocus={handleSelectedTokenFocus}
+              >
+                <SelectedPool
+                  selectedGlvOrMarketAddress={selectedGlvOrMarketAddress}
+                  glvAndMarketsInfoData={glvAndMarketsInfoData}
+                />
+              </BuyInputSection>
+              <div>
+                <BuyInputSection
+                  topLeftLabel={t`Receive`}
+                  bottomLeftValue={toTokenShowDollarAmount}
+                  bottomRightLabel={t`Balance`}
+                  bottomRightValue={
+                    toToken && toToken.balance !== undefined
+                      ? formatBalanceAmount(toToken.balance, toToken.decimals)
+                      : undefined
+                  }
+                  inputValue={toMarketText}
+                  onInputValueChange={handleToTokenInputValueChange}
+                  onFocus={handleToTokenFocus}
+                >
+                  <PoolSelector
+                    chainId={chainId}
+                    size="l"
+                    selectedMarketAddress={toMarketAddress}
+                    markets={shiftAvailableRelatedMarkets}
+                    onSelectMarket={handleToTokenSelectMarket}
+                    selectedIndexName={toIndexName}
+                    getMarketState={getShiftReceiveMarketState}
+                    showAllPools
+                    isSideMenu
+                    showIndexIcon
+                    showBalances
+                    marketTokensData={depositMarketTokensData}
+                    favoriteKey="gm-token-selector"
+                  />
+                </BuyInputSection>
+              </div>
+            </div>
+
+            <GmSwapWarningsRow
+              shouldShowWarning={shouldShowWarning}
+              shouldShowWarningForPosition={shouldShowWarningForPosition}
+              shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
+            />
+
+            <SwitchToSettlementChainWarning topic="liquidity" />
+          </div>
+
+          <div className="rounded-b-8 border-t border-slate-600 bg-slate-900 p-12">
+            <SwitchToSettlementChainButtons>
+              <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
+                {submitState.text}
+              </Button>
+            </SwitchToSettlementChainButtons>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-14 rounded-8 bg-slate-900 p-12">
+          <GmFees
+            operation={Operation.Shift}
+            totalFees={fees?.totalFees}
+            swapPriceImpact={fees?.swapPriceImpact}
+            uiFee={fees?.uiFee}
+            shiftFee={fees?.shiftFee}
+          />
+
+          <ExpandableRow
+            title={t`Execution Details`}
+            open={isExecutionDetailsOpen}
+            onToggle={toggleExecutionDetails}
+            contentClassName="flex flex-col gap-12"
           >
-            <SelectedPool
-              selectedGlvOrMarketAddress={selectedGlvOrMarketAddress}
-              glvAndMarketsInfoData={glvAndMarketsInfoData}
-            />
-          </BuyInputSection>
-          <div>
-            <Swap />
-            <BuyInputSection
-              topLeftLabel={t`Receive`}
-              bottomLeftValue={toTokenShowDollarAmount}
-              bottomRightLabel={t`Balance`}
-              bottomRightValue={
-                toToken && toToken.balance !== undefined
-                  ? formatBalanceAmount(toToken.balance, toToken.decimals)
-                  : undefined
-              }
-              inputValue={toMarketText}
-              onInputValueChange={handleToTokenInputValueChange}
-              onFocus={handleToTokenFocus}
-              isBottomLeftValueMuted={amounts?.toTokenUsd === undefined || amounts.toTokenUsd === 0n}
-            >
-              <PoolSelector
-                chainId={chainId}
-                size="l"
-                selectedMarketAddress={toMarketAddress}
-                markets={shiftAvailableRelatedMarkets}
-                onSelectMarket={handleToTokenSelectMarket}
-                selectedIndexName={toIndexName}
-                getMarketState={getShiftReceiveMarketState}
-                showAllPools
-                isSideMenu
-                showIndexIcon
-                showBalances
-                marketTokensData={depositMarketTokensData}
-                favoriteKey="gm-token-selector"
-              />
-            </BuyInputSection>
-          </div>
+            <NetworkFeeRow rowPadding executionFee={executionFee} />
+          </ExpandableRow>
         </div>
-
-        <GmSwapWarningsRow
-          shouldShowWarning={shouldShowWarning}
-          shouldShowWarningForPosition={shouldShowWarningForPosition}
-          shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
-        />
-
-        <SwitchToSettlementChainWarning topic="liquidity" />
-
-        <div className="w-full border-b border-stroke-primary pb-14">
-          <SwitchToSettlementChainButtons>
-            <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
-              {submitState.text}
-            </Button>
-          </SwitchToSettlementChainButtons>
-        </div>
-
-        <ExchangeInfo className={shouldShowWarning ? undefined : "mt-14"} dividerClassName="App-card-divider">
-          <div className="flex flex-col gap-14">
-            <GmFees
-              operation={Operation.Shift}
-              totalFees={fees?.totalFees}
-              swapPriceImpact={fees?.swapPriceImpact}
-              uiFee={fees?.uiFee}
-              shiftFee={fees?.shiftFee}
-            />
-            <SyntheticsInfoRow label={t`Execution Details`} onClick={toggleExecutionDetails}>
-              {isExecutionDetailsOpen ? <FaChevronUp size={10} /> : <FaChevronDown size={10} />}
-            </SyntheticsInfoRow>
-            {isExecutionDetailsOpen && <NetworkFeeRow rowPadding executionFee={executionFee} />}
-          </div>
-        </ExchangeInfo>
       </form>
     </>
   );

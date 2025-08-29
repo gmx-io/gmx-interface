@@ -1,12 +1,13 @@
-import { Trans, t } from "@lingui/macro";
+import { t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import cx from "classnames";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 
-import { getIcon } from "config/icons";
 import { useLeaderboardPageKey } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { LeaderboardPageKey, LeaderboardTimeframe } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES, LEADERBOARD_PAGES_ORDER } from "domain/synthetics/leaderboard/constants";
+import { getTimeframeLabel } from "lib/dates";
 import { mustNeverExist } from "lib/types";
 
 import { BodyScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
@@ -44,13 +45,13 @@ function getChip(pageKey: LeaderboardPageKey): LeaderboardNavigationItem["chip"]
 function getLabel(pageKey: LeaderboardPageKey) {
   switch (pageKey) {
     case "leaderboard":
-      return t`Global Leaderboard`;
+      return t`Global`;
 
     case "march_13-20_2024":
-      return t`EIP-4844, 13-20 Mar`;
+      return t`EIP-4844`;
 
     case "march_20-27_2024":
-      return t`EIP-4844, 20-27 Mar`;
+      return t`EIP-4844`;
 
     default:
       throw mustNeverExist(pageKey);
@@ -60,7 +61,7 @@ function getLabel(pageKey: LeaderboardPageKey) {
 export function LeaderboardNavigation() {
   const pageKey = useLeaderboardPageKey();
   const navigationItems = useMemo(() => {
-    const items: LeaderboardNavigationItem[] = LEADERBOARD_PAGES_ORDER.map((key) => LEADERBOARD_PAGES[key])
+    const allItems: LeaderboardNavigationItem[] = LEADERBOARD_PAGES_ORDER.map((key) => LEADERBOARD_PAGES[key])
       .filter((page) => !page.isCompetition || page.enabled)
       .map((page) => {
         return {
@@ -70,26 +71,57 @@ export function LeaderboardNavigation() {
           isSelected: page.key === pageKey,
           isCompetition: page.key !== "leaderboard",
           href: page.href,
-          chainId: page.isCompetition ? page.chainId : undefined,
           timeframe: page.timeframe,
         };
-      })
-      .sort((a, b) => {
-        const sortingPointA = sortingPoints[a.chip];
-        const sortingPointB = sortingPoints[b.chip];
-
-        if (sortingPointA === sortingPointB) {
-          return b.timeframe.from - a.timeframe.from;
-        }
-
-        return sortingPointA - sortingPointB;
       });
 
-    return items;
+    const isCurrentPageConcluded = pageKey !== "leaderboard" && getChip(pageKey) === "over";
+
+    let filteredItems = allItems;
+    if (isCurrentPageConcluded) {
+      filteredItems = allItems.filter((item) => item.chip === "over");
+    } else {
+      const nonConcludedItems = allItems.filter((item) => item.chip !== "over");
+      const concludedItems = allItems.filter((item) => item.chip === "over").toReversed();
+
+      const concludedTab: LeaderboardNavigationItem | null =
+        concludedItems.length > 0
+          ? {
+              key: "concluded",
+              label: t`Concluded`,
+              chip: "none",
+              isSelected: false,
+              isCompetition: false,
+              href: concludedItems[0].href,
+              timeframe: { from: 0, to: undefined },
+            }
+          : null;
+
+      filteredItems = [...nonConcludedItems];
+      if (concludedTab) {
+        filteredItems.push(concludedTab);
+      }
+    }
+
+    // Sort items
+    return filteredItems.sort((a, b) => {
+      // Special case for "Concluded" tab - always put it last
+      if (a.key === "concluded") return 1;
+      if (b.key === "concluded") return -1;
+
+      const sortingPointA = sortingPoints[a.chip];
+      const sortingPointB = sortingPoints[b.chip];
+
+      if (sortingPointA === sortingPointB) {
+        return b.timeframe.from - a.timeframe.from;
+      }
+
+      return sortingPointA - sortingPointB;
+    });
   }, [pageKey]);
 
   return (
-    <BodyScrollFadeContainer className="default-container flex gap-8">
+    <BodyScrollFadeContainer className="flex gap-20">
       {navigationItems.map((item) => (
         <NavigationItem item={item} key={item.key} />
       ))}
@@ -98,51 +130,26 @@ export function LeaderboardNavigation() {
 }
 
 function NavigationItem({ item }: { item: LeaderboardNavigationItem }) {
-  const chip = useMemo(() => {
-    switch (item.chip) {
-      case "live":
-        return (
-          <div className="LeaderboardNavigation__chip LeaderboardNavigation__chip_live">
-            <span className="LeaderboardNavigation__chip-circle" />
-            <Trans>LIVE</Trans>
-          </div>
-        );
-
-      case "soon":
-        return (
-          <div className="LeaderboardNavigation__chip LeaderboardNavigation__chip_soon">
-            <Trans>SOON</Trans>
-          </div>
-        );
-
-      case "over":
-        return (
-          <div className="LeaderboardNavigation__chip LeaderboardNavigation__chip_over">
-            <Trans>CONCLUDED</Trans>
-          </div>
-        );
-
-      case "none":
-        return null;
-
-      default:
-        throw mustNeverExist(item.chip);
-    }
-  }, [item.chip]);
-
+  const { i18n } = useLingui();
+  const timeframeLabel = getTimeframeLabel(item.timeframe, i18n.locale);
   return (
     <Link
       to={item.href}
-      className={cx("LeaderboardHeader__item button secondary center", {
-        LeaderboardHeader__item_selected: item.isSelected,
-      })}
+      className={cx(
+        "text-h1 inline-flex items-center gap-8 whitespace-nowrap leading-1 text-typography-secondary hover:text-typography-primary",
+        {
+          "!text-typography-primary": item.isSelected,
+          "border-l-1/2 border-l-slate-600 pl-18": item.key === "concluded",
+        }
+      )}
     >
-      {chip} {item.label}
-      {item.chainId ? (
-        <>
-          <img className="LeaderboardHeader__network-icon" alt={t`Chain Icon`} src={getIcon(item.chainId, "network")} />
-        </>
-      ) : undefined}
+      {item.label}
+
+      {timeframeLabel && (
+        <div className="text-body-small inline-flex h-fit whitespace-nowrap rounded-full bg-slate-700 px-8 py-6 text-typography-secondary">
+          {timeframeLabel}
+        </div>
+      )}
     </Link>
   );
 }

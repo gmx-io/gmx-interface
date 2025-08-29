@@ -383,7 +383,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     }
 
     if (isSubmitting) {
-      return [t`Creating Order...`];
+      return [t`Creating order`];
     }
 
     return [];

@@ -17,13 +17,14 @@ import PoolsCard from "pages/Pools/PoolsCard";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
 import Loader from "components/Common/Loader";
+import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import Pagination from "components/Pagination/Pagination";
 import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
-import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableTh, TableTheadTr } from "components/Table/Table";
 import { ButtonRowScrollFadeContainer, TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -121,50 +122,55 @@ export function GmList({
   return (
     <PoolsCard
       title={t`GM Pools`}
-      description={t`Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options.`}
+      className="grow"
+      description={
+        <div className="flex flex-col gap-16">
+          <Trans>
+            Pools providing liquidity to specific GMX markets, supporting <br /> single-asset and native asset options.
+          </Trans>
+          <div className="flex flex-wrap items-center justify-between gap-12 py-8">
+            <SearchInput
+              size="s"
+              className="w-full *:!text-body-medium md:w-[260px]"
+              value={searchText}
+              setValue={setSearchText}
+              placeholder={t`Search Pools`}
+              autoFocus={false}
+            />
+            <div className="max-w-full">
+              <ButtonRowScrollFadeContainer>
+                <FavoriteTabs
+                  favoritesKey="gm-list"
+                  className="!text-typography-secondary hover:!text-typography-primary"
+                  activeClassName="!text-typography-primary"
+                />
+              </ButtonRowScrollFadeContainer>
+            </div>
+          </div>
+        </div>
+      }
       bottom={
         pageCount > 1 ? (
           <Pagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} topMargin={false} />
         ) : undefined
       }
     >
-      <div>
-        <div className="flex flex-wrap items-center justify-between gap-8 py-8">
-          <SearchInput
-            size="s"
-            className="*:!text-body-medium"
-            value={searchText}
-            setValue={setSearchText}
-            placeholder="Search Pools"
-            autoFocus={false}
-          />
-          <div className="max-w-full">
-            <ButtonRowScrollFadeContainer>
-              <FavoriteTabs
-                favoritesKey="gm-list"
-                className="!text-slate-100 hover:!text-white"
-                activeClassName="!text-white"
-              />
-            </ButtonRowScrollFadeContainer>
-          </div>
-        </div>
+      <div className="flex grow flex-col">
         {isMobile ? (
           <div className="flex flex-col gap-4">
             {rows}
             {!currentData.length && !isLoading && (
-              <div className="text-body-medium text-slate-100">
-                <Trans>No pools matched.</Trans>
-              </div>
+              <EmptyTableContent emptyText={t`No pools matched.`} isLoading={isLoading} isEmpty={!currentData.length} />
             )}
 
             {isLoading && <Loader />}
           </div>
         ) : (
-          <TableScrollFadeContainer>
-            <table className="w-[max(100%,820px)]">
+          <TableScrollFadeContainer className="flex grow flex-col">
+            <table className="w-[max(100%,1000px)]">
               <thead>
-                <TableTheadTr bordered>
-                  <TableTh className="!pl-0">
+                <TableTheadTr>
+                  <TableTh className="pl-16">
                     <Trans>POOL</Trans>
                   </TableTh>
                   <TableTh>
@@ -184,12 +190,12 @@ export function GmList({
                   </TableTh>
                   <TableTh>
                     <Sorter {...getSorterProps("apy")}>
-                      <FeeApyLabel upperCase />
+                      <FeeApyLabel upperCase variant="iconStroke" />
                     </Sorter>
                   </TableTh>
                   <TableTh>
                     <Sorter {...getSorterProps("performance")}>
-                      <PerformanceLabel upperCase />
+                      <PerformanceLabel upperCase variant="iconStroke" />
                     </Sorter>
                   </TableTh>
                   <TableTh>
@@ -198,33 +204,22 @@ export function GmList({
                       className="normal-case"
                       position="bottom-end"
                       content={<Trans>Graph showing performance vs benchmark over the selected period.</Trans>}
+                      variant="iconStroke"
                     />
                   </TableTh>
-                  <TableTh className="!pr-0" />
+                  <TableTh className="pr-16" />
                 </TableTheadTr>
               </thead>
               <tbody>
                 {rows}
 
-                {!currentData.length && !isLoading && (
-                  <TableTr hoverable={false} bordered={false} className="h-[64.5px]">
-                    <TableTd colSpan={7} className="align-top">
-                      <div className="text-body-medium text-slate-100">
-                        <Trans>No pools matched.</Trans>
-                      </div>
-                    </TableTd>
-                  </TableTr>
-                )}
-
-                {!isLoading && currentData.length < DEFAULT_PAGE_SIZE && (
-                  <GMListSkeleton
-                    invisible
-                    count={currentData.length === 0 ? DEFAULT_PAGE_SIZE - 1 : DEFAULT_PAGE_SIZE - currentData.length}
-                  />
-                )}
                 {isLoading && <GMListSkeleton />}
               </tbody>
             </table>
+
+            {!currentData.length && !isLoading && (
+              <EmptyTableContent emptyText={t`No pools matched.`} isLoading={isLoading} isEmpty={!currentData.length} />
+            )}
           </TableScrollFadeContainer>
         )}
       </div>

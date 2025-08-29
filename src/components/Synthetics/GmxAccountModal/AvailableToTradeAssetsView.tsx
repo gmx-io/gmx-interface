@@ -81,7 +81,7 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
               key={filter}
               type="button"
               variant="ghost"
-              slim
+              size="small"
               className={cx({
                 "!bg-cold-blue-500": activeFilter === filter,
               })}

@@ -161,7 +161,7 @@ export function MultichainTokenSelector({
                 <Button
                   type="button"
                   variant="ghost"
-                  slim
+                  size="small"
                   className={cx({
                     "!bg-cold-blue-500": activeFilter === "pay",
                   })}
@@ -172,7 +172,7 @@ export function MultichainTokenSelector({
                 <Button
                   type="button"
                   variant="ghost"
-                  slim
+                  size="small"
                   className={cx({
                     "!bg-cold-blue-500": activeFilter === "deposit",
                   })}
@@ -185,7 +185,6 @@ export function MultichainTokenSelector({
           </>
         }
         contentPadding={false}
-        noDivider
       >
         {activeFilter === "pay" && (
           <AvailableToTradeTokenList

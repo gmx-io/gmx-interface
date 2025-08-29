@@ -49,7 +49,7 @@ export function SettlementChainWarningContainer() {
   }
 
   return (
-    <ColorfulBanner color="slate" icon={<InfoIcon className="-mt-4" />} className="text-body-small">
+    <ColorfulBanner color="blue" icon={InfoIcon} className="text-body-small">
       <div className="pl-5">
         <Trans>
           You switched your settlement network to {getChainName(settlementChainId)}, but you still have{" "}

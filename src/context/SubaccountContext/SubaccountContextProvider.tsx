@@ -436,12 +436,14 @@ function SubaccountActivateNotification({ toastId }: { toastId: number }) {
     [isCompleted, subaccountActivationState, toastId]
   );
 
+  useEffect(() => {
+    if (hasError) {
+      toast.update(toastId, { type: "error" });
+    }
+  }, [hasError, toastId]);
+
   return (
-    <StatusNotification
-      key="updateSubaccountSettingsSuccess"
-      title={t`Activate 1CT (One-Click Trading)`}
-      hasError={hasError}
-    >
+    <StatusNotification key="updateSubaccountSettingsSuccess" title={t`Activate 1CT (One-Click Trading)`}>
       {generatingStatus}
       {approvalSigningStatus}
     </StatusNotification>
@@ -473,6 +475,12 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
     return <TransactionStatus status={status} text={text} />;
   }, [subaccountDeactivationState]);
 
+  useEffect(() => {
+    if (hasError) {
+      toast.update(toastId, { type: "error" });
+    }
+  }, [hasError, toastId]);
+
   useEffect(
     function cleanup() {
       if (isCompleted && !dismissTimerId.current) {
@@ -491,11 +499,7 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
     [isCompleted, subaccountDeactivationState, toastId]
   );
 
-  return (
-    <StatusNotification title={t`Deactivate 1CT (One-Click Trading)`} hasError={hasError}>
-      {deactivatingStatus}
-    </StatusNotification>
-  );
+  return <StatusNotification title={t`Deactivate 1CT (One-Click Trading)`}>{deactivatingStatus}</StatusNotification>;
 }
 
 function useStoredSubaccountData(chainId: number, account: string | undefined) {

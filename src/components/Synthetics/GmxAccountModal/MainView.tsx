@@ -40,7 +40,7 @@ import copy from "img/ic_copy_20.svg";
 import InfoIconComponent from "img/ic_info.svg?react";
 import externalLink from "img/ic_new_link_20.svg";
 import PnlAnalysisIcon from "img/ic_pnl_analysis_20.svg?react";
-import SettingsIcon24 from "img/ic_settings_24.svg?react";
+import SettingsIcon from "img/ic_settings.svg?react";
 import disconnectIcon from "img/ic_sign_out_20.svg";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
@@ -154,7 +154,7 @@ const Toolbar = ({ account }: { account: string }) => {
   return (
     <div className="flex items-center justify-between gap-8">
       <button
-        className="text-body-medium inline-flex items-center justify-center rounded-4 border border-stroke-primary px-[6.5px] py-5 text-white hover:bg-slate-700 active:bg-[#808aff14] min-[701px]:grow"
+        className="border-stroke-primary text-body-medium inline-flex items-center justify-center rounded-4 border px-[6.5px] py-5 text-white hover:bg-slate-700 active:bg-[#808aff14] min-[701px]:grow"
         onClick={handleCopyAddress}
       >
         <div className="flex items-center gap-4">
@@ -168,7 +168,7 @@ const Toolbar = ({ account }: { account: string }) => {
       <div className="flex items-center gap-8">
         <TooltipWithPortal content={t`PnL Analysis`} position="bottom" tooltipClassName="!min-w-max">
           <button
-            className="flex size-32 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
+            className="border-stroke-primary flex size-32 items-center justify-center rounded-4 border hover:bg-slate-700"
             onClick={handlePnlAnalysisClick}
           >
             <PnlAnalysisIcon width={20} height={20} className="text-slate-100" />
@@ -182,7 +182,7 @@ const Toolbar = ({ account }: { account: string }) => {
         >
           <ExternalLink
             href={accountUrl}
-            className="flex size-32 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
+            className="border-stroke-primary flex size-32 items-center justify-center rounded-4 border hover:bg-slate-700"
           >
             <img src={externalLink} alt="External Link" />
           </ExternalLink>
@@ -190,7 +190,7 @@ const Toolbar = ({ account }: { account: string }) => {
         {showNotify && (
           <TooltipWithPortal content={t`Notifications`} position="bottom" tooltipClassName="!min-w-max">
             <button
-              className="flex size-32 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
+              className="border-stroke-primary flex size-32 items-center justify-center rounded-4 border hover:bg-slate-700"
               onClick={handleNotificationsClick}
             >
               <BellIcon className="text-slate-100" />
@@ -200,15 +200,15 @@ const Toolbar = ({ account }: { account: string }) => {
 
         <TooltipWithPortal content={t`Settings`} position="bottom" tooltipClassName="!min-w-max">
           <button
-            className="flex size-32 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
+            className="border-stroke-primary flex size-32 items-center justify-center rounded-4 border hover:bg-slate-700"
             onClick={handleSettingsClick}
           >
-            <SettingsIcon24 width={20} height={20} className="text-slate-100" />
+            <SettingsIcon width={20} height={20} className="text-slate-100" />
           </button>
         </TooltipWithPortal>
         <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max">
           <button
-            className="flex size-32 items-center justify-center rounded-4 border border-stroke-primary hover:bg-slate-700"
+            className="border-stroke-primary flex size-32 items-center justify-center rounded-4 border hover:bg-slate-700"
             onClick={handleDisconnect}
           >
             <img src={disconnectIcon} alt="Disconnect" className="rotate-180" />
@@ -229,7 +229,7 @@ function SettlementChainBalance() {
         <Trans>Available to Trade</Trans>
       </div>
       <Balance usd={totalUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
-      <div className="my-4 h-1 bg-stroke-primary" />
+      <div className="bg-stroke-primary my-4 h-1" />
       <SyntheticsInfoRow
         label="Wallet"
         className="h-23 !items-start"

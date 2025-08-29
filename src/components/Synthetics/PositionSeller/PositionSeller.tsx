@@ -445,7 +445,7 @@ export function PositionSeller() {
     }
 
     if (isSubmitting) {
-      return t`Creating Order...`;
+      return t`Creating order`;
     }
   }, [
     account,
@@ -705,13 +705,12 @@ export function PositionSeller() {
   ) : (
     <SyntheticsInfoRow
       label={t`Receive`}
-      className=""
       value={
         receiveToken && (
           <TokenSelector
             label={t`Receive`}
             className={cx({
-              "*:!text-yellow-500 hover:!text-yellow-500": isNotEnoughReceiveTokenLiquidity,
+              "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
             })}
             chainId={chainId}
             showBalances={false}
@@ -724,7 +723,7 @@ export function PositionSeller() {
               <span className="PositionSelector-selected-receive-token">
                 <AmountWithUsdBalance
                   className={cx({
-                    "*:!text-yellow-500 hover:!text-yellow-500": isNotEnoughReceiveTokenLiquidity,
+                    "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
                   })}
                   amount={receiveTokenAmount}
                   decimals={receiveToken.decimals}
@@ -816,7 +815,7 @@ export function PositionSeller() {
   const buttonState = useMemo(() => {
     if (!isAllowanceLoaded) {
       return {
-        text: t`Loading...`,
+        text: t`Loading`,
         disabled: true,
       };
     }
@@ -825,7 +824,7 @@ export function PositionSeller() {
       return {
         text: (
           <>
-            {t`Express params loading...`}
+            {t`Express params loading`}
             <ImSpinner2 className="ml-4 animate-spin" />
           </>
         ),
@@ -875,7 +874,7 @@ export function PositionSeller() {
     tokensToApprove,
   ]);
 
-  const isMobile = useMedia("(max-width: 1100px)");
+  const isMobile = useMedia("(max-width: 1024px)");
 
   return (
     <div className="text-body-medium">
@@ -892,7 +891,7 @@ export function PositionSeller() {
         qa="position-close-modal"
         contentClassName="w-[380px]"
       >
-        <div className="mb-[10.5px] flex items-center justify-between">
+        <div className="mb-[10.5px] flex w-full items-center justify-between">
           <Tabs
             options={tabsOptions}
             selectedValue={orderOption}
@@ -908,136 +907,140 @@ export function PositionSeller() {
           />
         </div>
 
-        {position && (
-          <>
-            <div className="flex flex-col gap-2">
-              <BuyInputSection
-                topLeftLabel={t`Close`}
-                inputValue={closeUsdInputValue}
-                onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
-                bottomLeftValue={formatUsd(closeSizeUsd)}
-                isBottomLeftValueMuted={closeSizeUsd === 0n}
-                bottomRightLabel={t`Max`}
-                bottomRightValue={formatUsd(maxCloseSize)}
-                onClickMax={
-                  maxCloseSize > 0 && closeSizeUsd !== maxCloseSize
-                    ? () => setCloseUsdInputValueRaw(formatAmountFree(maxCloseSize, USD_DECIMALS))
-                    : undefined
-                }
-                showPercentSelector
-                onPercentChange={(percentage) => {
-                  const formattedAmount = formatAmountFree((maxCloseSize * BigInt(percentage)) / 100n, USD_DECIMALS, 2);
-                  setCloseUsdInputValueRaw(formattedAmount);
-                }}
-                qa="amount-input"
-              >
-                USD
-              </BuyInputSection>
-              {isTrigger && (
+        <div className="w-full pb-14">
+          {position && (
+            <>
+              <div className="flex flex-col gap-2">
                 <BuyInputSection
-                  topLeftLabel={t`Trigger Price`}
-                  topRightLabel={t`Mark`}
-                  topRightValue={formatUsd(markPrice, {
-                    displayDecimals: marketDecimals,
-                    visualMultiplier: toToken?.visualMultiplier,
-                  })}
-                  onClickTopRightLabel={() => {
-                    setTriggerPriceInputValueRaw(
-                      formatAmount(
-                        markPrice,
-                        USD_DECIMALS,
-                        calculateDisplayDecimals(markPrice, USD_DECIMALS, toToken?.visualMultiplier),
-                        undefined,
-                        undefined,
-                        toToken?.visualMultiplier
-                      )
+                  topLeftLabel={t`Close`}
+                  inputValue={closeUsdInputValue}
+                  onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
+                  bottomLeftValue={formatUsd(closeSizeUsd)}
+                  bottomRightLabel={t`Max`}
+                  bottomRightValue={formatUsd(maxCloseSize)}
+                  onClickMax={
+                    maxCloseSize > 0 && closeSizeUsd !== maxCloseSize
+                      ? () => setCloseUsdInputValueRaw(formatAmountFree(maxCloseSize, USD_DECIMALS))
+                      : undefined
+                  }
+                  showPercentSelector
+                  onPercentChange={(percentage) => {
+                    const formattedAmount = formatAmountFree(
+                      (maxCloseSize * BigInt(percentage)) / 100n,
+                      USD_DECIMALS,
+                      2
                     );
+                    setCloseUsdInputValueRaw(formattedAmount);
                   }}
-                  inputValue={triggerPriceInputValue}
-                  onInputValueChange={(e) => {
-                    setTriggerPriceInputValue(e.target.value);
-                  }}
-                  qa="trigger-input"
+                  qa="amount-input"
                 >
                   USD
                 </BuyInputSection>
-              )}
-            </div>
+                {isTrigger && (
+                  <BuyInputSection
+                    topLeftLabel={t`Trigger Price`}
+                    topRightLabel={t`Mark`}
+                    topRightValue={formatUsd(markPrice, {
+                      displayDecimals: marketDecimals,
+                      visualMultiplier: toToken?.visualMultiplier,
+                    })}
+                    onClickTopRightLabel={() => {
+                      setTriggerPriceInputValueRaw(
+                        formatAmount(
+                          markPrice,
+                          USD_DECIMALS,
+                          calculateDisplayDecimals(markPrice, USD_DECIMALS, toToken?.visualMultiplier),
+                          undefined,
+                          undefined,
+                          toToken?.visualMultiplier
+                        )
+                      );
+                    }}
+                    inputValue={triggerPriceInputValue}
+                    onInputValueChange={(e) => {
+                      setTriggerPriceInputValue(e.target.value);
+                    }}
+                    qa="trigger-input"
+                  >
+                    USD
+                  </BuyInputSection>
+                )}
+              </div>
 
-            {isTwap && (
-              <div className="pt-14">
-                <TwapRows
-                  duration={duration}
-                  numberOfParts={numberOfParts}
-                  setNumberOfParts={setNumberOfParts}
-                  setDuration={setDuration}
-                  isLong={position.isLong}
-                  sizeUsd={decreaseAmounts?.sizeDeltaUsd}
-                  marketInfo={position.marketInfo}
-                  type="decrease"
+              {isTwap && (
+                <div className="pt-14">
+                  <TwapRows
+                    duration={duration}
+                    numberOfParts={numberOfParts}
+                    setNumberOfParts={setNumberOfParts}
+                    setDuration={setDuration}
+                    isLong={position.isLong}
+                    sizeUsd={decreaseAmounts?.sizeDeltaUsd}
+                    marketInfo={position.marketInfo}
+                    type="decrease"
+                  />
+                </div>
+              )}
+
+              <div className="flex w-full flex-col gap-14 pt-14">
+                {isTrigger && maxAutoCancelOrdersWarning}
+                <HighPriceImpactOrFeesWarningCard
+                  priceImpactWarningState={priceImpactWarningState}
+                  collateralImpact={fees?.positionCollateralPriceImpact}
+                  positionImpact={fees?.totalPendingImpact}
+                  swapPriceImpact={fees?.swapPriceImpact}
+                  swapProfitFee={fees?.swapProfitFee}
+                  executionFeeUsd={executionFee?.feeUsd}
+                />
+
+                {!isTwap && (
+                  <ToggleSwitch
+                    textClassName="text-typography-secondary"
+                    isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
+                    setIsChecked={setKeepLeverage}
+                    disabled={leverageCheckboxDisabledByCollateral || decreaseAmounts?.isFullClose}
+                  >
+                    {keepLeverageTextElem}
+                  </ToggleSwitch>
+                )}
+
+                <Button
+                  className="w-full"
+                  variant="primary-action"
+                  disabled={buttonState.disabled}
+                  onClick={onSubmit}
+                  buttonRef={submitButtonRef}
+                  qa="confirm-button"
+                >
+                  {buttonState.text}
+                </Button>
+
+                <ExpressTradingWarningCard
+                  expressParams={expressParams}
+                  payTokenAddress={undefined}
+                  isWrapOrUnwrap={false}
+                  isGmxAccount={srcChainId !== undefined}
+                />
+
+                {!isTwap && (
+                  <>
+                    {receiveTokenRow}
+                    {liqPriceRow}
+                    {pnlRow}
+                  </>
+                )}
+
+                <PositionSellerPriceImpactFeesRow />
+
+                <PositionSellerAdvancedRows
+                  triggerPriceInputValue={triggerPriceInputValue}
+                  slippageInputId={slippageInputId}
+                  gasPaymentParams={expressParams?.gasPaymentParams}
                 />
               </div>
-            )}
-
-            <div className="flex flex-col gap-14 pt-14">
-              {isTrigger && maxAutoCancelOrdersWarning}
-              <HighPriceImpactOrFeesWarningCard
-                priceImpactWarningState={priceImpactWarningState}
-                collateralImpact={fees?.positionCollateralPriceImpact}
-                positionImpact={fees?.totalPendingImpact}
-                swapPriceImpact={fees?.swapPriceImpact}
-                swapProfitFee={fees?.swapProfitFee}
-                executionFeeUsd={executionFee?.feeUsd}
-              />
-              {!isTwap && (
-                <ToggleSwitch
-                  textClassName="text-slate-100"
-                  isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
-                  setIsChecked={setKeepLeverage}
-                  disabled={leverageCheckboxDisabledByCollateral || decreaseAmounts?.isFullClose}
-                >
-                  {keepLeverageTextElem}
-                </ToggleSwitch>
-              )}
-
-              <Button
-                className="w-full"
-                variant="primary-action"
-                disabled={buttonState.disabled}
-                onClick={onSubmit}
-                buttonRef={submitButtonRef}
-                qa="confirm-button"
-              >
-                {buttonState.text}
-              </Button>
-
-              <ExpressTradingWarningCard
-                expressParams={expressParams}
-                payTokenAddress={undefined}
-                isWrapOrUnwrap={false}
-                isGmxAccount={srcChainId !== undefined}
-              />
-
-              <div className="h-1 bg-stroke-primary" />
-
-              {!isTwap && (
-                <>
-                  {receiveTokenRow}
-                  {liqPriceRow}
-                  {pnlRow}
-                </>
-              )}
-
-              <PositionSellerPriceImpactFeesRow />
-
-              <PositionSellerAdvancedRows
-                triggerPriceInputValue={triggerPriceInputValue}
-                slippageInputId={slippageInputId}
-                gasPaymentParams={expressParams?.gasPaymentParams}
-              />
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
       </Modal>
     </div>
   );

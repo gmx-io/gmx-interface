@@ -26,8 +26,6 @@ import useWallet from "lib/wallets/useWallet";
 
 import { OneClickButton } from "components/OneClickButton/OneClickButton";
 
-import connectWalletImg from "img/ic_wallet_24.svg";
-
 import { HeaderLink } from "./HeaderLink";
 import { AddressDropdown } from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
@@ -38,7 +36,6 @@ import "./Header.scss";
 
 type Props = {
   openSettings: () => void;
-  small?: boolean;
   showRedirectModal: (to: string) => void;
   menuToggle?: React.ReactNode;
 };
@@ -50,7 +47,7 @@ export type NetworkOption = {
   color: string;
 };
 
-const NETWORK_OPTIONS: NetworkOption[] = [
+export const NETWORK_OPTIONS: NetworkOption[] = [
   {
     label: getChainName(ARBITRUM),
     value: ARBITRUM,
@@ -109,7 +106,7 @@ if (isDevelopment()) {
   );
 }
 
-export function AppHeaderChainAndSettings({ small, menuToggle, openSettings, showRedirectModal }: Props) {
+export function AppHeaderChainAndSettings({ menuToggle, openSettings, showRedirectModal }: Props) {
   const { chainId: settlementChainId, srcChainId } = useChainId();
 
   const { active, account } = useWallet();
@@ -159,17 +156,11 @@ export function AppHeaderChainAndSettings({ small, menuToggle, openSettings, sho
                 sendUserAnalyticsConnectWalletClickEvent("Header");
                 openConnectModal();
               }}
-              imgSrc={connectWalletImg}
             >
-              {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
+              <Trans>Connect Wallet</Trans>
             </ConnectWalletButton>
-            {!small && <OneClickButton openSettings={openSettings} />}
-            <NetworkDropdown
-              chainId={visualChainId}
-              small={small}
-              networkOptions={NETWORK_OPTIONS}
-              openSettings={openSettings}
-            />
+            <OneClickButton openSettings={openSettings} />
+            <NetworkDropdown chainId={visualChainId} networkOptions={NETWORK_OPTIONS} openSettings={openSettings} />
           </>
         ) : (
           <LanguagePopupHome />
@@ -197,13 +188,8 @@ export function AppHeaderChainAndSettings({ small, menuToggle, openSettings, sho
       {showConnectionOptions ? (
         <>
           <AddressDropdown account={account} />
-          {!small && <OneClickButton openSettings={openSettings} />}
-          <NetworkDropdown
-            chainId={visualChainId}
-            small={small}
-            networkOptions={NETWORK_OPTIONS}
-            openSettings={openSettings}
-          />
+          <OneClickButton openSettings={openSettings} />
+          <NetworkDropdown chainId={visualChainId} networkOptions={NETWORK_OPTIONS} openSettings={openSettings} />
         </>
       ) : (
         <LanguagePopupHome />

@@ -87,8 +87,6 @@ export default function MarketTokenSelector(props: Props) {
   return (
     <SelectorBase
       handleClassName="inline-block"
-      popoverYOffset={18}
-      popoverXOffset={-8}
       popoverPlacement="bottom-start"
       chevronClassName="!-mt-1 self-start"
       label={
@@ -112,11 +110,11 @@ export default function MarketTokenSelector(props: Props) {
                   ) : (
                     <span>GM{indexName && `: ${indexName}`}</span>
                   )}
-                  <span className="ml-3 text-12 text-slate-100 group-hover/selector-base:text-[color:inherit]">
+                  <span className="ml-3 text-12 text-typography-secondary group-hover/selector-base:text-[color:inherit]">
                     {poolName && `[${poolName}]`}
                   </span>
                 </div>
-                <div className="text-12 text-slate-100 group-hover/selector-base:text-[color:inherit]">
+                <div className="text-12 text-typography-secondary group-hover/selector-base:text-[color:inherit]">
                   {isGlv
                     ? getGlvMarketSubtitle(chainId, getGlvOrMarketAddress(currentMarketInfo))
                     : "GMX Market Tokens"}
@@ -202,7 +200,7 @@ function MarketTokenSelectorInternal(props: Props) {
   const rowVerticalPadding = isMobile ? "py-8" : cx("h-50 group-last-of-type/row:pb-8");
   const rowHorizontalPadding = isMobile ? cx("px-6 first-of-type:pl-8 last-of-type:pr-8") : "px-16";
   const thClassName = cx(
-    "text-body-medium sticky top-0 z-10 border-b border-slate-700 bg-slate-800 text-left font-normal uppercase text-slate-100 last-of-type:text-right",
+    "text-body-medium sticky top-0 z-10 border-b-1/2 border-slate-600 bg-slate-800 text-left font-normal uppercase text-typography-secondary last-of-type:text-right",
     isMobile ? "first-of-type:!pl-32" : "first-of-type:!pl-40",
     rowVerticalPadding,
     rowHorizontalPadding
@@ -227,7 +225,7 @@ function MarketTokenSelectorInternal(props: Props) {
             value={searchKeyword}
             setValue={setSearchKeyword}
             onKeyDown={handleKeyDown}
-            placeholder="Search Pool"
+            placeholder={t`Search Pool`}
           />
 
           <ButtonRowScrollFadeContainer>
@@ -248,7 +246,7 @@ function MarketTokenSelectorInternal(props: Props) {
                 value={searchKeyword}
                 setValue={setSearchKeyword}
                 onKeyDown={handleKeyDown}
-                placeholder="Search Pool"
+                placeholder={t`Search Pool`}
               />
               <FavoriteTabs favoritesKey="gm-token-selector" />
             </div>
@@ -299,8 +297,8 @@ function MarketTokenSelectorInternal(props: Props) {
                 />
               ))}
               {sortedMarketsByIndexToken.length > 0 && !sortedTokensInfo?.length && (
-                <TableTr hoverable={false} bordered={false}>
-                  <TableTd colSpan={6} className="text-body-medium text-slate-100">
+                <TableTr>
+                  <TableTd colSpan={6} className="text-body-medium text-typography-secondary">
                     <Trans>No pools matched.</Trans>
                   </TableTd>
                 </TableTr>
@@ -504,8 +502,11 @@ function MarketTokenListItem({
       });
 
   return (
-    <tr key={market.address} className="group/row cursor-pointer hover:bg-cold-blue-900">
-      <td className={cx("pr-4", rowVerticalPadding, isMobile ? "pl-8" : "pl-16")} onClick={handleFavoriteClick}>
+    <tr key={market.address} className="group/row cursor-pointer hover:bg-slate-800">
+      <td
+        className={cx("pr-4 text-typography-secondary", rowVerticalPadding, isMobile ? "pl-8" : "pl-16")}
+        onClick={handleFavoriteClick}
+      >
         <FavoriteStar isFavorite={isFavorite} />
       </td>
       <td className={cx("pl-6", rowVerticalPadding, isMobile ? "pr-6" : "pr-16")} onClick={handleSelect}>
@@ -513,8 +514,8 @@ function MarketTokenListItem({
           <div className="inline-flex items-center">
             <TokenIcon className="-my-5 mr-8" symbol={iconName} displaySize={16} importSize={40} />
             <div className="inline-flex flex-wrap items-center gap-x-3 whitespace-nowrap">
-              <span className="text-body-medium text-white">{indexName && indexName}</span>
-              <span className="text-body-small leading-1 text-slate-100">{poolName && `[${poolName}]`}</span>
+              <span className="text-body-medium text-typography-primary">{indexName && indexName}</span>
+              <span className="text-body-small leading-1 text-typography-secondary">{poolName && `[${poolName}]`}</span>
             </div>
           </div>
         )}

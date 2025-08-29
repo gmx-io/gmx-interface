@@ -141,3 +141,15 @@ export function getTimePeriodsInSeconds() {
     year: [yearStart, todayEnd],
   };
 }
+
+export function getTimeframeLabel(timeframe: { from: number; to: number | undefined }, locale: string): string | null {
+  if (!timeframe.to) return null;
+
+  const fmt = new Intl.DateTimeFormat(locale, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+
+  return fmt.formatRange(new Date(timeframe.from * 1000), new Date(timeframe.to * 1000));
+}

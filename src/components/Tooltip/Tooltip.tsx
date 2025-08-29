@@ -30,6 +30,9 @@ import {
 import { DEFAULT_TOOLTIP_POSITION, TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
 import { usePrevious } from "lib/usePrevious";
 
+import InfoIcon from "img/ic_info_circle.svg?react";
+import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
+
 import "./Tooltip.scss";
 
 export type TooltipPosition = Placement;
@@ -43,7 +46,6 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
   renderContent?: () => ReactNode;
   content?: ReactNode | undefined | null;
   position?: TooltipPosition;
-  disableHandleStyle?: boolean;
   className?: string;
   style?: React.CSSProperties;
   handleClassName?: string;
@@ -71,6 +73,8 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
   shouldPreventDefault?: boolean;
   fitHandleWidth?: boolean;
   closeOnDoubleClick?: boolean;
+
+  variant?: "icon" | "iconStroke" | "underline" | "none";
 };
 
 export type TooltipProps<T extends ElementType | undefined> = InnerTooltipProps<T> &
@@ -84,7 +88,6 @@ export default function Tooltip<T extends ElementType>({
   position = DEFAULT_TOOLTIP_POSITION,
   className,
   style,
-  disableHandleStyle,
   handleClassName,
   handleStyle,
   tooltipClassName,
@@ -99,6 +102,7 @@ export default function Tooltip<T extends ElementType>({
   shouldPreventDefault = true,
   fitHandleWidth,
   closeOnDoubleClick,
+  variant = "underline",
   ...containerProps
 }: TooltipProps<T>) {
   const [visible, setVisible] = useState(false);
@@ -133,7 +137,7 @@ export default function Tooltip<T extends ElementType>({
           }
         },
       }),
-      arrow({ element: arrowRef, padding: 4 }),
+      arrow({ element: arrowRef, padding: 6 }),
     ],
     placement: position,
     whileElementsMounted: autoUpdate,
@@ -205,7 +209,7 @@ export default function Tooltip<T extends ElementType>({
       {...getFloatingProps()}
       className={cx("Tooltip-popup", tooltipClassName)}
     >
-      <FloatingArrow ref={arrowRef} context={context} className="fill-slate-600" />
+      <FloatingArrow ref={arrowRef} context={context} className="scale-3 fill-slate-700 dark:fill-[#2b2d41]" />
       {finalContent}
     </div>
   ) : undefined;
@@ -235,7 +239,7 @@ export default function Tooltip<T extends ElementType>({
     <span {...containerProps} className={cx("Tooltip", className)} style={style}>
       <span
         ref={refs.setReference}
-        className={cx({ "Tooltip-handle": !disableHandleStyle }, handleClassName)}
+        className={cx("Tooltip-handle group", handleClassName)}
         style={handleStyle}
         {...getReferenceProps({
           onClick: (e: MouseEvent) => {
@@ -244,12 +248,29 @@ export default function Tooltip<T extends ElementType>({
           },
         })}
       >
-        {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
-        {isHandlerDisabled ? (
-          <div className="pointer-events-none w-full flex-none [text-decoration:inherit]">{handle ?? children}</div>
-        ) : (
-          <>{handle ?? children}</>
-        )}
+        <div className="flex items-center gap-2">
+          {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
+          {isHandlerDisabled ? (
+            <div className="pointer-events-none w-full flex-none [text-decoration:inherit]">{handle ?? children}</div>
+          ) : (
+            <>{handle ?? children}</>
+          )}
+          {variant === "icon" && <InfoIcon className="mb-1 h-16 w-16" />}
+          {variant === "iconStroke" && <InfoIconStroke className="mb-1 h-16 w-16" />}
+          {variant === "underline" && (
+            <svg className="absolute -bottom-0 left-0 h-1 w-full overflow-hidden">
+              <line
+                stroke="currentColor"
+                x1="0"
+                y1="0"
+                x2="100%"
+                y2="0"
+                strokeWidth="0.75"
+                strokeDasharray="1.25,2.25"
+              />
+            </svg>
+          )}
+        </div>
       </span>
       {visible && withPortal && <FloatingPortal>{tooltipContent}</FloatingPortal>}
       {visible && !withPortal && tooltipContent}

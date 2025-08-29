@@ -76,7 +76,7 @@ export function TradeFeesRow(p: Props) {
           id: "swapPriceImpact",
           label: (
             <>
-              <div className="text-white">{t`Swap Price Impact`}:</div>
+              <div className="text-typography-primary">{t`Swap Price Impact`}:</div>
               <div>
                 (
                 {formatPercentage(bigMath.abs(p.swapPriceImpact!.precisePercentage), {
@@ -98,7 +98,7 @@ export function TradeFeesRow(p: Props) {
             id: `external-swap-${p.externalSwapFee.tokenInAddress}-${p.externalSwapFee.tokenOutAddress}`,
             label: (
               <>
-                <div className="text-white">
+                <div className="text-typography-primary">
                   {t`External Swap ${getToken(chainId, p.externalSwapFee.tokenInAddress).symbol} to ${
                     getToken(chainId, p.externalSwapFee.tokenOutAddress).symbol
                   }`}
@@ -124,12 +124,12 @@ export function TradeFeesRow(p: Props) {
         id: `swap-${swap.tokenInAddress}-${swap.tokenOutAddress}`,
         label: (
           <>
-            <div className="text-white">
+            <div className="text-typography-primary">
               <Trans>
                 Swap {getToken(chainId, swap.tokenInAddress).symbol} to {getToken(chainId, swap.tokenOutAddress).symbol}
               </Trans>
               {showDebugValues && (
-                <span className="text-slate-100">
+                <span className="text-typography-secondary">
                   {" "}
                   in {getToken(chainId, MARKETS[chainId][swap.marketAddress].indexTokenAddress).symbol}
                 </span>
@@ -156,7 +156,7 @@ export function TradeFeesRow(p: Props) {
             id: "swapProfitFee",
             label: (
               <>
-                <div className="text-white">{t`Swap Profit Fee`}:</div>
+                <div className="text-typography-primary">{t`Swap Profit Fee`}:</div>
                 <div>
                   (
                   {formatPercentage(
@@ -183,7 +183,7 @@ export function TradeFeesRow(p: Props) {
           id: "positionFee",
           label: (
             <>
-              <div className="text-white">{feesTypeName}:</div>
+              <div className="text-typography-primary">{feesTypeName}:</div>
               <div>
                 (
                 {formatPercentage(bigMath.abs(p.positionFee!.precisePercentage), {
@@ -204,7 +204,7 @@ export function TradeFeesRow(p: Props) {
           id: "uiFee",
           label: (
             <>
-              <div className="text-white">{t`UI Fee`}:</div>
+              <div className="text-typography-primary">{t`UI Fee`}:</div>
               <div>
                 (
                 {formatPercentage(bigMath.abs(p!.uiFee!.precisePercentage), {
@@ -226,7 +226,7 @@ export function TradeFeesRow(p: Props) {
             id: "swapUiFee",
             label: (
               <>
-                <div className="text-white">{p.feesType === "swap" ? t`UI Fee` : t`Swap UI Fee`}:</div>
+                <div className="text-typography-primary">{p.feesType === "swap" ? t`UI Fee` : t`Swap UI Fee`}:</div>
                 <div>
                   (
                   {formatPercentage(bigMath.abs(p.uiSwapFee.precisePercentage), {
@@ -246,7 +246,7 @@ export function TradeFeesRow(p: Props) {
       ? {
           id: "feeDiscount",
           label: (
-            <div className="text-white">
+            <div className="text-typography-primary">
               <Trans>Referral Discount</Trans>:
             </div>
           ),
@@ -259,7 +259,7 @@ export function TradeFeesRow(p: Props) {
       p.borrowFee && (p.borrowFee?.deltaUsd === undefined ? undefined : p.borrowFee.deltaUsd !== 0n)
         ? {
             id: "borrowFee",
-            label: <div className="text-white">{t`Borrow Fee`}:</div>,
+            label: <div>{t`Borrow Fee`}:</div>,
             value: formatDeltaUsd(p.borrowFee.deltaUsd),
             className: getPositiveOrNegativeClass(p.borrowFee.deltaUsd, "text-green-500"),
           }
@@ -269,7 +269,7 @@ export function TradeFeesRow(p: Props) {
       p.fundingFee && (p.fundingFee?.deltaUsd === undefined ? undefined : bigMath.abs(p.fundingFee.deltaUsd) > 0)
         ? {
             id: "fundingFee",
-            label: <div className="text-white">{t`Funding Fee`}:</div>,
+            label: <div>{t`Funding Fee`}:</div>,
             value: formatDeltaUsd(p.fundingFee.deltaUsd),
             className: getPositiveOrNegativeClass(p.fundingFee.deltaUsd, "text-green-500"),
           }
@@ -278,7 +278,7 @@ export function TradeFeesRow(p: Props) {
     const borrowFeeRateRow = p.borrowFeeRateStr
       ? {
           id: "borrowFeeRate",
-          label: <div className="text-white">{t`Borrow Fee Rate`}:</div>,
+          label: <div className="text-typography-primary">{t`Borrow Fee Rate`}:</div>,
           value: p.borrowFeeRateStr,
           className: p.borrowFeeRateStr?.startsWith("-") ? "text-red-500" : "text-green-500",
         }
@@ -287,7 +287,7 @@ export function TradeFeesRow(p: Props) {
     const fundingFeeRateRow = p.fundingFeeRateStr
       ? {
           id: "fundingFeeRate",
-          label: <div className="text-white">{t`Funding Fee Rate`}:</div>,
+          label: <div className="text-typography-primary">{t`Funding Fee Rate`}:</div>,
           value: p.fundingFeeRateStr,
           className: p.fundingFeeRateStr?.startsWith("-") ? "text-red-500" : "text-green-500",
         }
@@ -364,7 +364,7 @@ export function TradeFeesRow(p: Props) {
         ? {
             label: (
               <>
-                <div className="text-white">
+                <div className="text-typography-primary">
                   <span className="relative">
                     <Trans>Bonus Rebate</Trans>
                     <img className="absolute -right-11 -top-1 h-7" src={sparkleIcon} alt="sparkle" />
@@ -525,7 +525,7 @@ export function TradeFeesRow(p: Props) {
         <span
           className={cx({
             "text-green-500": totalFeeUsd > 0 && !shouldShowWarning,
-            "text-yellow-500": shouldShowWarning,
+            "text-yellow-300": shouldShowWarning,
           })}
         >
           {formatDeltaUsd(totalFeeUsd)}
@@ -537,7 +537,7 @@ export function TradeFeesRow(p: Props) {
           tooltipClassName="TradeFeesRow-tooltip"
           handleClassName={cx({
             "text-green-500": totalFeeUsd > 0 && !shouldShowWarning,
-            "text-yellow-500 !decoration-yellow-500/50": shouldShowWarning,
+            "text-yellow-300 !decoration-yellow-300/50": shouldShowWarning,
           })}
           handle={formatDeltaUsd(totalFeeUsd)}
           position="left-start"

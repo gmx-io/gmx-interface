@@ -43,9 +43,9 @@ import { REFERRAL_CODE_REGEX } from "./referralsHelper";
 function JoinReferralCode({ active }: { active: boolean }) {
   const { openConnectModal } = useConnectModal();
   return (
-    <div className="referral-card section-center mt-medium">
+    <div className="referral-card section-center">
       <h2 className="title text-h2">
-        <Trans>Enter Referral Code</Trans>
+        <Trans>Enter referral code</Trans>
       </h2>
       <p className="sub-title">
         <Trans>Please input a referral code to benefit from fee discounts.</Trans>
@@ -95,7 +95,7 @@ function ReferralCodeForm({
     try {
       const tx = await setTraderReferralCodeByUser(chainId, referralCode, signer, {
         account,
-        successMsg: isEdit ? t`Referral code updated!` : t`Referral code added!`,
+        successMsg: isEdit ? t`Referral code updated.` : t`Referral code added.`,
         failMsg: isEdit ? t`Referral code updated failed.` : t`Adding referral code failed.`,
         setPendingTxns,
         pendingTxns,
@@ -131,27 +131,27 @@ function ReferralCodeForm({
     };
   } else if (isEdit && isSubmitting) {
     buttonState = {
-      text: t`Updating...`,
+      text: t`Updating`,
       disabled: true,
     };
   } else if (isSubmitting) {
     buttonState = {
-      text: t`Adding...`,
+      text: t`Adding`,
       disabled: true,
     };
   } else if (debouncedReferralCode === "") {
     buttonState = {
-      text: t`Enter Referral Code`,
+      text: t`Enter referral code`,
       disabled: true,
     };
   } else if (isValidating) {
     buttonState = {
-      text: t`Checking code...`,
+      text: t`Checking code`,
       disabled: true,
     };
   } else if (!referralCodeExists) {
     buttonState = {
-      text: t`Referral Code does not exist`,
+      text: t`Referral code does not exist`,
       disabled: true,
     };
   } else if (isEdit) {
@@ -200,7 +200,7 @@ function ReferralCodeForm({
         ref={inputRef}
         disabled={isSubmitting}
         type="text"
-        placeholder="Enter referral code"
+        placeholder={t`Enter referral code`}
         className="text-input"
         value={referralCode}
         onChange={({ target }) => {
@@ -534,27 +534,27 @@ function ReferralCodeFormMultichain({
     };
   } else if (isEdit && isSubmitting) {
     buttonState = {
-      text: t`Updating...`,
+      text: t`Updating`,
       disabled: true,
     };
   } else if (isSubmitting) {
     buttonState = {
-      text: t`Adding...`,
+      text: t`Adding`,
       disabled: true,
     };
   } else if (debouncedReferralCode === "") {
     buttonState = {
-      text: t`Enter Referral Code`,
+      text: t`Enter referral code`,
       disabled: true,
     };
   } else if (isValidating) {
     buttonState = {
-      text: t`Checking code...`,
+      text: t`Checking code`,
       disabled: true,
     };
   } else if (!referralCodeExists) {
     buttonState = {
-      text: t`Referral Code does not exist`,
+      text: t`Referral code does not exist`,
       disabled: true,
     };
   } else if (result.isLoading || !result.data) {
@@ -613,7 +613,7 @@ function ReferralCodeFormMultichain({
         ref={inputRef}
         disabled={isSubmitting}
         type="text"
-        placeholder="Enter referral code"
+        placeholder={t`Enter referral code`}
         className="text-input"
         value={referralCode}
         onChange={({ target }) => {

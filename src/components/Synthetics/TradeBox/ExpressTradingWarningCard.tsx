@@ -98,7 +98,7 @@ export function ExpressTradingWarningCard({
   let content: ReactNode | undefined = undefined;
   let onCloseClick: undefined | (() => void) = undefined;
   let buttonText: ReactNode | undefined = undefined;
-  let icon: ReactNode | undefined = undefined;
+  let icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>> | undefined = undefined;
 
   let onClick: undefined | (() => void) = undefined;
 
@@ -107,7 +107,7 @@ export function ExpressTradingWarningCard({
   } else if (shouldShowWrapOrUnwrapWarning) {
     onCloseClick = handleCloseWrapOrUnwrapWarningClick;
     const nativeToken = getNativeToken(chainId);
-    icon = <ExpressIcon className="-mt-6 ml-2" />;
+    icon = ExpressIcon;
     content = (
       <Trans>Express Trading is not available for wrapping or unwrapping native token {nativeToken.symbol}.</Trans>
     );
@@ -115,7 +115,7 @@ export function ExpressTradingWarningCard({
     const wrappedToken = getWrappedToken(chainId);
     const nativeToken = getNativeToken(chainId);
     onCloseClick = handleCloseNativeTokenWarningClick;
-    icon = <ExpressIcon className="-mt-6 ml-2" />;
+    icon = ExpressIcon;
     content = (
       <Trans>
         Express Trading is not available using network's native token {nativeToken.symbol}. Consider using{" "}
@@ -124,22 +124,23 @@ export function ExpressTradingWarningCard({
     );
   } else if (shouldShowAllowedActionsWarning) {
     onClick = handleUpdateSubaccountSettings;
-    icon = <OneClickIcon className="-mt-4 ml-4" />;
+    icon = OneClickIcon;
     content = <Trans>One-Click Trading is disabled. Action limit exceeded.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowNonceExpiredWarning) {
     onClick = handleUpdateSubaccountSettings;
-    icon = <OneClickIcon className="ml- -mt-4" />;
+    icon = OneClickIcon;
     content = <Trans>One-Click Approval nonce expired. Please sign a new approval.</Trans>;
     buttonText = <Trans>Re-sign</Trans>;
   } else if (shouldShowExpiredSubaccountWarning) {
     onClick = handleUpdateSubaccountSettings;
-    icon = <OneClickIcon className="-mt-4 ml-4" />;
+    icon = OneClickIcon;
     content = <Trans>One-Click Trading is disabled. Time limit expired.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowOutOfGasPaymentBalanceWarning) {
     if (isGmxAccount) {
-      icon = <ExpressIcon className="-mt-6 ml-2" />;
+      icon = ExpressIcon;
+
       const hasEth = getNativeToken(chainId).symbol === "ETH";
       content = hasEth ? (
         <Trans>Insufficient gas balance, please deposit more ETH or USDC.</Trans>
@@ -152,16 +153,15 @@ export function ExpressTradingWarningCard({
         setGmxAccountModalOpen("deposit");
       };
     } else {
-      icon = <ExpressIcon className="-mt-6 ml-2" />;
+      icon = ExpressIcon;
       content = <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance.</Trans>;
-
       buttonText = <Trans>Buy {gasPaymentTokensText}</Trans>;
       onClick = () => {
         history.push(`/trade/swap?to=${gasPaymentTokenSymbols[0]}`);
       };
     }
   } else if (shouldShowSubaccountApprovalInvalidWarning) {
-    icon = <OneClickIcon className="-mt-4" />;
+    icon = OneClickIcon;
     content = (
       <Trans>
         One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Please
@@ -176,17 +176,15 @@ export function ExpressTradingWarningCard({
 
   return (
     <ColorfulBanner color="blue" icon={icon} onClose={onCloseClick}>
-      <div className="ml-10 text-12">
-        {content}
-        {onClick && (
-          <>
-            <br />
-            <Button variant="link" className="mt-2 !text-12" onClick={onClick}>
-              {buttonText}
-            </Button>
-          </>
-        )}
-      </div>
+      {content}
+      {onClick && (
+        <>
+          <br />
+          <Button variant="link" className="mt-2 !text-12" onClick={onClick}>
+            {buttonText}
+          </Button>
+        </>
+      )}
     </ColorfulBanner>
   );
 }
