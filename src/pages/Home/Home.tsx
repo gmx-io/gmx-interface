@@ -14,7 +14,6 @@ import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageLaunchAppEvent, LandingPageViewEvent } from "lib/userAnalytics/types";
 import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 
-import Footer from "components/Footer/Footer";
 import { HeaderLink } from "components/Header/HeaderLink";
 import TokenCard from "components/TokenCard/TokenCard";
 
@@ -358,7 +357,6 @@ export default function Home({ showRedirectModal }) {
           </div>
         </div>
       </div> */}
-      <Footer showRedirectModal={showRedirectModal} />
     </div>
   );
 }

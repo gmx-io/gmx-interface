@@ -2,7 +2,7 @@ import { getTimestampByDaysAgo, normalizeDateRange } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { ApyPeriod } from "lib/oracleKeeperFetcher";
 
-export const POOLS_TIME_RANGE_OPTIONS = ["total", "180d", "90d", "30d"] as const;
+export const POOLS_TIME_RANGE_OPTIONS = ["30d", "90d", "180d", "total"] as const;
 
 export type PoolsTimeRange = (typeof POOLS_TIME_RANGE_OPTIONS)[number];
 

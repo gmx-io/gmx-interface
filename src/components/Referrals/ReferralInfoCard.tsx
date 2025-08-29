@@ -38,6 +38,7 @@ function ReferralInfoCard({
               position="bottom"
               className="whitespace-nowrap"
               handle={value}
+              handleClassName="numbers"
               renderContent={() => tooltipContent}
             />
           )}

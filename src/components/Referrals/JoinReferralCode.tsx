@@ -14,7 +14,7 @@ import { REFERRAL_CODE_REGEX } from "./referralsHelper";
 function JoinReferralCode({ active }: { active: boolean }) {
   const { openConnectModal } = useConnectModal();
   return (
-    <div className="referral-card section-center mt-medium">
+    <div className="referral-card section-center">
       <h2 className="title text-h2">
         <Trans>Enter Referral Code</Trans>
       </h2>
@@ -58,20 +58,20 @@ export function ReferralCodeForm({
       return t`Same as current active code`;
     }
     if (isEdit && isSubmitting) {
-      return t`Updating...`;
+      return t`Updating`;
     }
 
     if (isSubmitting) {
-      return t`Adding...`;
+      return t`Adding`;
     }
     if (debouncedReferralCode === "") {
-      return t`Enter Referral Code`;
+      return t`Enter referral code`;
     }
     if (isValidating) {
-      return t`Checking code...`;
+      return t`Checking code`;
     }
     if (!referralCodeExists) {
-      return t`Referral Code does not exist`;
+      return t`Referral code does not exist`;
     }
 
     return isEdit ? t`Update` : t`Submit`;
@@ -97,7 +97,7 @@ export function ReferralCodeForm({
     try {
       const tx = await setTraderReferralCodeByUser(chainId, referralCode, signer, {
         account,
-        successMsg: isEdit ? t`Referral code updated!` : t`Referral code added!`,
+        successMsg: isEdit ? t`Referral code updated.` : t`Referral code added.`,
         failMsg: isEdit ? t`Referral code updated failed.` : t`Adding referral code failed.`,
         setPendingTxns,
         pendingTxns,
@@ -150,7 +150,7 @@ export function ReferralCodeForm({
         ref={inputRef}
         disabled={isSubmitting}
         type="text"
-        placeholder="Enter referral code"
+        placeholder={t`Enter referral code`}
         className="text-input mb-15"
         value={referralCode}
         onChange={({ target }) => {

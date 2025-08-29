@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import React, { PropsWithChildren, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
-import { MdClose } from "react-icons/md";
+import { RxCross2 } from "react-icons/rx";
 import { RemoveScroll } from "react-remove-scroll";
 
 import "./Modal.css";
@@ -34,7 +34,6 @@ export type ModalProps = PropsWithChildren<{
   onAfterOpen?: () => void;
   contentPadding?: boolean;
   qa?: string;
-  noDivider?: boolean;
   contentClassName?: string;
 }>;
 
@@ -47,7 +46,6 @@ export default function Modal({
   headerContent,
   footerContent,
   contentPadding = true,
-  noDivider = false,
   onAfterOpen,
   setIsVisible,
   qa,
@@ -109,23 +107,26 @@ export default function Modal({
               style={isVisible ? VISIBLE_STYLES : HIDDEN_STYLES}
               onClick={() => setIsVisible(false)}
             />
-            <div className={cx("Modal-content flex flex-col", contentClassName)} onClick={stopPropagation} data-qa={qa}>
-              <div className="Modal-header-wrapper">
+
+            <div
+              className={cx("Modal-content flex flex-col gap-16 p-20", contentClassName)}
+              onClick={stopPropagation}
+              data-qa={qa}
+            >
+              <div className="Modal-header-wrapper flex flex-col gap-8">
                 <div className="Modal-title-bar">
-                  <div className="Modal-title">{label}</div>
+                  <div className="Modal-title font-medium text-typography-primary">{label}</div>
                   <div className="Modal-close-button pb-5" onClick={() => setIsVisible(false)}>
-                    <MdClose fontSize={20} className="Modal-close-icon" />
+                    <RxCross2 fontSize={20} className="Modal-close-icon" />
                   </div>
                 </div>
                 {headerContent}
               </div>
-              {!noDivider && <div className="divider" />}
               <div className="overflow-auto">
                 <div className={cx("Modal-body", { "no-content-padding": !contentPadding })}>{children}</div>
               </div>
               {footerContent && (
                 <>
-                  <div className="divider" />
                   <div>{footerContent}</div>
                 </>
               )}

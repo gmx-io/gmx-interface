@@ -1,10 +1,7 @@
 import cx from "classnames";
-import React, { ReactNode } from "react";
-import { ImCheckboxUnchecked, ImCheckboxChecked } from "react-icons/im";
-
-import PartialCheckedIcon from "img/ic_partial_checked.svg?react";
-
-import "./Checkbox.css";
+import { ReactNode } from "react";
+import { BsCheck } from "react-icons/bs";
+import { TiMinus } from "react-icons/ti";
 
 type Props = {
   isChecked?: boolean;
@@ -21,20 +18,32 @@ export default function Checkbox(props: Props) {
   const { isChecked, setIsChecked, disabled, className, asRow, isPartialChecked } = props;
 
   return (
-    <div
-      className={cx("Checkbox", { disabled, selected: isChecked, fullRow: asRow, noLabel: !props.children }, className)}
+    <button
+      className={cx(
+        "group flex items-center gap-8",
+        { disabled, selected: isChecked, fullRow: asRow, noLabel: !props.children },
+        className
+      )}
       onClick={(event) => {
         setIsChecked?.(!isChecked);
         event.stopPropagation();
       }}
       data-qa={props.qa}
     >
-      <span className="Checkbox-icon-wrapper">
-        {isPartialChecked && <PartialCheckedIcon className="App-icon Checkbox-icon" />}
-        {isChecked && !isPartialChecked && <ImCheckboxChecked className="App-icon Checkbox-icon active" />}
-        {!isChecked && !isPartialChecked && <ImCheckboxUnchecked className="App-icon Checkbox-icon inactive" />}
+      <span
+        className={cx(
+          `flex h-14  w-14
+       items-center justify-center rounded-4 border border-slate-100 group-hover:border-slate-400`,
+          {
+            "opacity-50": disabled,
+            "border-none bg-blue-400 text-white": isChecked || isPartialChecked,
+          }
+        )}
+      >
+        {isChecked && !isPartialChecked && <BsCheck />}
+        {isPartialChecked && <TiMinus />}
       </span>
-      {props.children && <span className="Checkbox-label">{props.children}</span>}
-    </div>
+      {props.children && props.children}
+    </button>
   );
 }

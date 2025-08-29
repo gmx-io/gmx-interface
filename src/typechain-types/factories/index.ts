@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export { ArbitrumNodeInterface__factory } from "./ArbitrumNodeInterface__factory";
+export { ClaimHandler__factory } from "./ClaimHandler__factory";
 export { CustomErrors__factory } from "./CustomErrors__factory";
 export { DataStore__factory } from "./DataStore__factory";
 export { ERC20PermitInterface__factory } from "./ERC20PermitInterface__factory";

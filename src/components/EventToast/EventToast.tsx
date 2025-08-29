@@ -6,7 +6,7 @@ import { EventData } from "config/events";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-import Icon from "./AnnouncementIcon";
+import PlainIcon from "img/ic_plain.svg?react";
 
 export default function EventToast({
   event,
@@ -23,10 +23,10 @@ export default function EventToast({
     <div data-qa="toast" className={`single-toast ${toast.visible ? "zoomIn" : "zoomOut"}`} key={id}>
       <header>
         <div className="toast-title">
-          <Icon className="announcement-icon" />
+          <PlainIcon className="announcement-icon" />
           <p>{event.title}</p>
         </div>
-        <MdOutlineClose onClick={onClick} className="cross-icon" color="white" data-qa="close-toast" />
+        <MdOutlineClose onClick={onClick} className="cross-icon" data-qa="close-toast" />
       </header>
       {Array.isArray(event.bodyText) ? (
         event.bodyText.map((text, i) =>

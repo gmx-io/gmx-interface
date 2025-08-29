@@ -23,19 +23,16 @@ type Props = {
 
 export function ClaimableCardUI({ title, style, sections }: Props) {
   const [section1, section2] = sections;
-  const isHorizontal = useMedia("(min-width: 600px) and (max-width: 1100px)");
+  const isHorizontal = useMedia("(min-width: 600px)");
 
   return (
-    <div className="Claims-card w-full" style={style}>
-      <div className="Claims-title">{title}</div>
-      <div
-        className={cx("Claims-rows", {
-          "Claims-rows-horizontal": isHorizontal,
-        })}
-      >
-        <Section title={t`Funding fees`} {...section1} />
-        {!isHorizontal && <div className="Claims-hr" />}
-        {isHorizontal && <div className="Claims-hr-horizontal" />}
+    <div
+      className="flex w-full flex-col gap-12 border-b-[1.5px] border-slate-600 bg-slate-900 px-20 py-12 last:border-r-0 lg:border-r-[1.5px]"
+      style={style}
+    >
+      <div className="text-[11px] font-medium uppercase text-typography-secondary">{title}</div>
+      <div className={cx("grid", isHorizontal ? "grid-cols-2" : "grid-cols-1")}>
+        <Section title={t`Positive Funding Fees`} {...section1} />
         <Section title={t`Price Impact Rebates`} {...section2} />
       </div>
     </div>
@@ -47,20 +44,30 @@ function Section({ buttonText, onButtonClick, tooltipText, title, usd }: Section
   const usdFormatted = useMemo(() => formatDeltaUsd(usd), [usd]);
 
   return (
-    <div className="Claims-row">
-      <div className="Claims-col">
-        <span className="muted">{title}</span>
-        <span>
+    <div
+      className={`flex grow items-end justify-between gap-8 border-r border-r-slate-600 px-20
+        first:pl-0 last:border-r-0 last:pr-0 max-xl:flex-col max-xl:items-start`}
+    >
+      <div className="flex flex-col gap-4">
+        <span className={cx("font-medium", { positive: usd > 0n })}>
           {tooltipText ? (
-            <Tooltip handle={usdFormatted} position="bottom-start" renderContent={renderTooltipContent} />
+            <Tooltip
+              handle={usdFormatted}
+              handleClassName="numbers"
+              position="bottom-start"
+              renderContent={renderTooltipContent}
+            />
           ) : (
-            usdFormatted
+            <span className="numbers">{usdFormatted}</span>
           )}
         </span>
+        <span className="text-body-small text-typography-secondary">{title}</span>
       </div>
-      <Button variant="secondary" disabled={usd <= 0} onClick={onButtonClick}>
-        {buttonText}
-      </Button>
+      <div className="max-xl:w-full">
+        <Button variant="secondary" disabled={usd <= 0} onClick={onButtonClick} className="max-xl:w-full">
+          {buttonText}
+        </Button>
+      </div>
     </div>
   );
 }

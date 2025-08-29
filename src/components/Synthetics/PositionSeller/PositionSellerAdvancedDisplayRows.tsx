@@ -125,12 +125,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
       : decreaseAmounts?.acceptablePrice;
 
   return (
-    <ExpandableRow
-      title={t`Execution Details`}
-      open={open}
-      onToggle={setOpen}
-      contentClassName="flex flex-col gap-14 pt-14"
-    >
+    <ExpandableRow title={t`Execution Details`} open={open} onToggle={setOpen} contentClassName="flex flex-col gap-14">
       {!isTwap && (
         <ExecutionPriceRow
           tradeFlags={executionPriceFlags}
@@ -157,8 +152,6 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
 
       {!isTwap && (
         <>
-          <div className="h-1 bg-stroke-primary" />
-
           <SyntheticsInfoRow label={t`Leverage`} value={leverageValue} />
           {sizeRow}
           <SyntheticsInfoRow
@@ -166,7 +159,8 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
               <Tooltip
                 handle={<Trans>Collateral ({position?.collateralToken?.symbol})</Trans>}
                 position="top-start"
-                content={<Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>}
+                content={<Trans>Initial collateral (collateral excluding borrow and funding Fee).</Trans>}
+                variant="icon"
               />
             }
             value={

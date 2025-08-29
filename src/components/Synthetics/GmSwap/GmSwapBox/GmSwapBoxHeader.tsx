@@ -1,5 +1,4 @@
 import { msg } from "@lingui/macro";
-import cx from "classnames";
 import { useMemo } from "react";
 
 import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -30,16 +29,13 @@ const OPERATIONS = [Operation.Deposit, Operation.Withdrawal, Operation.Shift];
 
 const operationClassNames = {
   [Operation.Deposit]: {
-    active: "!bg-[#1F3445] border-b border-b-green-500",
-    regular: "border-b border-b-[transparent]",
+    active: "!bg-green-500/20 border-b-2 border-b-green-500",
   },
   [Operation.Withdrawal]: {
-    active: "!bg-[#392A46] border-b border-b-red-500",
-    regular: "border-b border-b-[transparent]",
+    active: "!bg-red-500/20 border-b-2 border-b-red-500",
   },
   [Operation.Shift]: {
-    active: "!bg-[#252B57] border-b border-b-blue-300",
-    regular: "border-b border-b-[transparent]",
+    active: "!bg-blue-300/20 border-b-2 border-b-blue-300",
   },
 };
 
@@ -92,13 +88,12 @@ export function GmSwapBoxHeader(p: Props) {
   );
 
   return (
-    <div className={cx({ "bg-slate-800 p-[1.5rem] pb-0": !isInCurtain })}>
-      <Tabs
-        options={availableOperationsTabsOptions}
-        selectedValue={operation}
-        onChange={onSetOperation}
-        className={isInCurtain ? undefined : "Exchange-swap-option-tabs"}
-      />
-    </div>
+    <Tabs
+      options={availableOperationsTabsOptions}
+      selectedValue={operation}
+      onChange={onSetOperation}
+      regularOptionClassname="grow"
+      className={!isInCurtain ? "bg-slate-900" : undefined}
+    />
   );
 }

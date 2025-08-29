@@ -90,7 +90,7 @@ export function PriceImpactFeesRow() {
       value={
         <>
           <span
-            className={cx({
+            className={cx("numbers", {
               "text-green-500": isPriceImpactPositive,
             })}
           >
@@ -98,7 +98,7 @@ export function PriceImpactFeesRow() {
           </span>{" "}
           /{" "}
           <span
-            className={cx({
+            className={cx("numbers", {
               "text-green-500": isTotalFeePositive,
             })}
           >

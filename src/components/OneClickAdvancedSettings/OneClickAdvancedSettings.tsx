@@ -121,7 +121,7 @@ export function OneClickAdvancedSettings() {
           <Button
             onClick={handleSave}
             variant="primary-action"
-            className="mt-6 h-36 w-full bg-blue-600 py-3 text-white"
+            className="mt-6 h-36 w-full bg-blue-600 py-3 text-typography-primary"
             disabled={disabled}
           >
             <Trans>Save One-Click Trading settings</Trans>

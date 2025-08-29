@@ -114,7 +114,7 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
     }
 
     if (getIsHighPositionImpact(fees?.positionPriceImpact)) {
-      return "text-yellow-500 !decoration-yellow-500/50";
+      return "text-yellow-300 !decoration-yellow-300/50";
     }
 
     return "";
@@ -145,7 +145,7 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
                     textClassName={getPositiveOrNegativeClass(uncappedPositionPriceImpactDeltaUsd, "text-green-500")}
                     label={
                       <>
-                        <div className="text-white">{t`Price Impact`}:</div>
+                        <div className="text-typography-primary">{t`Price Impact`}:</div>
                         <div>
                           (
                           {formatPercentage(bigMath.abs(uncappedPositionPriceImpactPercentage), {
@@ -165,7 +165,7 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
                   textClassName={getPositiveOrNegativeClass(fees.priceImpactDiff!.deltaUsd)}
                   label={
                     <>
-                      <div className="text-white">{t`Price Impact Rebates`}:</div>
+                      <div className="text-typography-primary">{t`Price Impact Rebates`}:</div>
                       <div>
                         (
                         {formatPercentage(bigMath.abs(fees.priceImpactDiff.precisePercentage), {
@@ -182,7 +182,7 @@ export const ExecutionPriceRow = memo(function ExecutionPriceRow({
               )}
               {acceptablePriceFormatted !== undefined && (
                 <StatsTooltipRow
-                  labelClassName="text-white"
+                  labelClassName="text-typography-primary"
                   label={t`Order Acceptable Price`}
                   value={
                     <>

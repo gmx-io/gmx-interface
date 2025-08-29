@@ -54,7 +54,7 @@ export default function SwapErrorModal({
     setLowestFeeToken(lowestFeeTokenInfo);
   }, [chainId, glpAmount, glpPrice, usdgSupply, totalTokenWeights, infoTokens, swapUsdMin, swapToken.address]);
 
-  const label = t`${swapToken?.symbol} Capacity Reached`;
+  const label = t`${swapToken?.symbol} capacity reached`;
 
   if (lowestFeeToken && swapUsdMin !== undefined && swapUsdMin > lowestFeeToken.amountLeftToDeposit) {
     return (

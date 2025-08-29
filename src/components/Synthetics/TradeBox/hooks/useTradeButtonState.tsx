@@ -393,7 +393,7 @@ export function useTradeboxButtonState({
         ...commonState,
         text: (
           <>
-            {t`Express params loading...`}
+            {t`Express params loading`}
             <ImSpinner2 className="ml-4 animate-spin" />
           </>
         ),
@@ -425,7 +425,7 @@ export function useTradeboxButtonState({
     if (stage === "processing") {
       return {
         ...commonState,
-        text: t`Creating Order...`,
+        text: t`Creating order`,
         disabled: true,
       };
     }
@@ -452,7 +452,7 @@ export function useTradeboxButtonState({
       } else if (isTwap) {
         submitButtonText = t`Create TWAP ${isSwap ? "Swap" : "Increase"} order`;
       } else {
-        submitButtonText = t`Create ${getNameByOrderType(decreaseAmounts?.triggerOrderType, false)} Order`;
+        submitButtonText = t`Create ${getNameByOrderType(decreaseAmounts?.triggerOrderType, false)} order`;
       }
     }
 

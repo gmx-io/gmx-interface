@@ -35,10 +35,12 @@ export function AllowedSlippageRow({ slippageInputId }: { slippageInputId: strin
         <TooltipWithPortal
           handle={t`Allowed Slippage`}
           position="left-start"
+          variant="icon"
           content={
-            <div className="text-white">
+            <div className="text-typography-primary">
               <Trans>
-                You can edit the default Allowed Slippage in the settings menu on the top right of the page.
+                The maximum allowed percentage difference between the mark price and the execution price for market
+                orders. You can edit the default value in the settings menu on the top right of the page.
                 <br />
                 <br />
                 Note that a low allowed slippage, e.g. less than -

@@ -1,7 +1,5 @@
 import { Trans } from "@lingui/macro";
-import cx from "classnames";
 import { useCallback, useState } from "react";
-import { useMedia } from "react-use";
 
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -18,9 +16,6 @@ import { SettleAccruedFundingFeeModal } from "../SettleAccruedFundingFeeModal/Se
 import "./Claims.scss";
 
 const CLAIMS_HISTORY_PREFETCH_SIZE = 100;
-
-const MARGIN_RIGHT = { marginRight: 4 };
-const MARGIN_LEFT = { marginLeft: 4 };
 
 export function Claims({
   isSettling,
@@ -73,8 +68,6 @@ export function Claims({
     setIsClaiming(false);
   }, []);
 
-  const isMobile = useMedia("(max-width: 1100px)");
-
   return (
     <>
       <ClaimModal isVisible={isClaiming} onClose={handleClaimModalClose} setPendingTxns={setPendingTxns} />
@@ -93,29 +86,23 @@ export function Claims({
         onClose={handleClaimablePositionPriceImpactFeesCloseClick}
       />
 
-      <div>
+      <div className="flex grow flex-col">
         {account && isLoading && (
-          <div className="Claims-loading App-box">
+          <div className="Claims-loading bg-slate-900">
             <Trans>Loading...</Trans>
           </div>
         )}
-        <div
-          className={cx("flex", "w-full", {
-            "flex-col": isMobile,
-          })}
-        >
+        <div className={"flex w-full max-lg:flex-col"}>
           {account && !isLoading && (
             <SettleAccruedCard
               onSettleClick={handleSettleClick}
               onAccruedPositionPriceImpactRebateClick={handleAccruedPositionPriceImpactRebateClick}
-              style={isMobile ? undefined : MARGIN_RIGHT}
             />
           )}
           {account && !isLoading && (
             <ClaimableCard
               onClaimClick={handleClaimClick}
               onClaimablePositionPriceImpactFeesClick={handleClaimablePositionPriceImpactFeesClick}
-              style={isMobile ? undefined : MARGIN_LEFT}
             />
           )}
         </div>
