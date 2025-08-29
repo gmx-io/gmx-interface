@@ -98,7 +98,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           </div>
         </ReferralInfoCard>
         <ReferralInfoCard
-          value={`$${getUSDValue(currentReferralsData?.traderReferralTotalStats?.volume)}`}
+          value={`$\u200a${getUSDValue(currentReferralsData?.traderReferralTotalStats?.volume)}`}
           label={t`Trading Volume`}
           labelTooltipText={t`Volume traded by this account with an active referral code.`}
           tooltipContent={
@@ -143,7 +143,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           }
         />
         <ReferralInfoCard
-          value={`$${getUSDValue(currentReferralsData?.traderReferralTotalStats?.discountUsd)}`}
+          value={`$\u200a${getUSDValue(currentReferralsData?.traderReferralTotalStats?.discountUsd)}`}
           label={t`Rebates`}
           labelTooltipText={t`Rebates earned by this account as a trader.`}
           tooltipContent={

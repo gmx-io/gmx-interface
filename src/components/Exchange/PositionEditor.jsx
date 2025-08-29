@@ -679,7 +679,7 @@ export default function PositionEditor(props) {
                       {nextLiquidationPrice === undefined && (
                         <div>
                           {fromAmount === undefined &&
-                            `$${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}`}
+                            `$\u200a${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}`}
                           {fromAmount !== undefined && "-"}
                         </div>
                       )}

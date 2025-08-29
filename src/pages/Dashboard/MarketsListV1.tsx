@@ -204,7 +204,7 @@ export function MarketsListV1({
                   </div>
                   <div>
                     <TooltipComponent
-                      handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
+                      handle={`$\u200a${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
                       position="bottom-end"
                       renderContent={() => {
                         return (

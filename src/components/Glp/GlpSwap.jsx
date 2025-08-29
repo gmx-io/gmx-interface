@@ -754,17 +754,17 @@ export default function GlpSwap(props) {
   let receiveBalance = "$0.00";
   if (isBuying) {
     if (swapUsdMin !== undefined) {
-      payBalance = `$${formatAmount(swapUsdMin, USD_DECIMALS, 2, true)}`;
+      payBalance = `$\u200a${formatAmount(swapUsdMin, USD_DECIMALS, 2, true)}`;
     }
     if (glpUsdMax !== undefined) {
-      receiveBalance = `$${formatAmount(glpUsdMax, USD_DECIMALS, 2, true)}`;
+      receiveBalance = `$\u200a${formatAmount(glpUsdMax, USD_DECIMALS, 2, true)}`;
     }
   } else {
     if (glpUsdMax !== undefined) {
-      payBalance = `$${formatAmount(glpUsdMax, USD_DECIMALS, 2, true)}`;
+      payBalance = `$\u200a${formatAmount(glpUsdMax, USD_DECIMALS, 2, true)}`;
     }
     if (swapUsdMin !== undefined) {
-      receiveBalance = `$${formatAmount(swapUsdMin, USD_DECIMALS, 2, true)}`;
+      receiveBalance = `$\u200a${formatAmount(swapUsdMin, USD_DECIMALS, 2, true)}`;
     }
   }
 
@@ -915,7 +915,7 @@ export default function GlpSwap(props) {
                 </div>
                 <div className="value">
                   <Tooltip
-                    handle={`${formatAmount(reservedAmount, 18, 4, true)} GLP ($${formatAmount(
+                    handle={`${formatAmount(reservedAmount, 18, 4, true)} GLP ($\u200a${formatAmount(
                       reserveAmountUsd,
                       USD_DECIMALS,
                       2,
@@ -1501,7 +1501,7 @@ export default function GlpSwap(props) {
                       />
                       <div>
                         <Tooltip
-                          handle={`$${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`}
+                          handle={`$\u200a${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`}
                           position="bottom-end"
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
@@ -1532,7 +1532,7 @@ export default function GlpSwap(props) {
                           handle={
                             availableAmountUsd !== undefined && availableAmountUsd < 0
                               ? "$0.00"
-                              : `$${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
+                              : `$\u200a${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
                           }
                           position="bottom-end"
                           tooltipIconPosition="right"
