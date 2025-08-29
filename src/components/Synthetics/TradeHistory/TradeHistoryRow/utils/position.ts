@@ -42,7 +42,7 @@ export const formatPositionMessage = (
   relativeTimestamp = true
 ): RowDetails => {
   const collateralToken = tradeAction.initialCollateralToken;
-  const isV22Action = tradeAction.srcChainId !== null;
+  const isV22Action = tradeAction.srcChainId !== undefined;
 
   let sizeDeltaUsd = tradeAction.sizeDeltaUsd;
 
@@ -173,7 +173,7 @@ export const formatPositionMessage = (
   let displayedPriceImpact: string | undefined = undefined;
   if (isIncreaseOrderType(ot) && !isV22Action) {
     displayedPriceImpact = formatDeltaUsd(tradeAction.priceImpactUsd);
-  } else if (isDecreaseOrderType(ot) && isV22Action && tradeAction.totalImpactUsd !== null) {
+  } else if (isDecreaseOrderType(ot) && isV22Action && tradeAction.totalImpactUsd !== undefined) {
     displayedPriceImpact = formatDeltaUsd(tradeAction.totalImpactUsd);
   }
 
@@ -672,7 +672,7 @@ export const formatPositionMessage = (
       fundingFeeUsd !== undefined &&
       positionFeeUsd !== undefined &&
       liquidationFeeUsd !== undefined &&
-      tradeAction.totalImpactUsd !== null
+      tradeAction.totalImpactUsd !== undefined
     ) {
       returnedCollateralUsd = bigMath.max(
         0n,
@@ -755,11 +755,11 @@ export const formatPositionMessage = (
 };
 
 function getPriceImpactLines(tradeAction: PositionTradeAction) {
-  const isV22Action = tradeAction.srcChainId !== null;
+  const isV22Action = tradeAction.srcChainId !== undefined;
   const lines: Line[] = [];
 
   if (isLiquidationOrderType(tradeAction.orderType)) {
-    if (isV22Action && tradeAction.totalImpactUsd !== null) {
+    if (isV22Action && tradeAction.totalImpactUsd !== undefined) {
       const formattedNetPriceImpact = formatDeltaUsd(tradeAction.totalImpactUsd);
 
       lines.push(
@@ -798,7 +798,7 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
   }
 
   if (isDecreaseOrderType(tradeAction.orderType)) {
-    if (isV22Action && tradeAction.totalImpactUsd !== null) {
+    if (isV22Action && tradeAction.totalImpactUsd !== undefined) {
       const formattedNetPriceImpact = formatDeltaUsd(tradeAction.totalImpactUsd);
 
       lines.push(

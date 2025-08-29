@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { useAccount } from "wagmi";
 
-import { getIcon } from "config/icons";
+import { getChainIcon } from "config/icons";
 import { switchNetwork } from "lib/wallets";
 import { getChainName } from "sdk/configs/chains";
 
@@ -70,7 +70,7 @@ export default function NetworkDropdown(props: {
   );
 }
 function NavIcons({ chainId, open }) {
-  const icon = getIcon(chainId, "network");
+  const icon = getChainIcon(chainId);
   const chainName = getChainName(chainId);
 
   return (
