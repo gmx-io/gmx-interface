@@ -105,6 +105,7 @@ import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarnin
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
+import { useShowHighLeverageWarning } from "./hooks/useShowHighLeverageWarning";
 import { useExpressTradingWarnings } from "./hooks/useShowOneClickTradingInfo";
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
@@ -235,6 +236,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     tradeFlags,
     payUsd: fromUsd,
   });
+
+  const { showHighLeverageWarning, dismissHighLeverageWarning } = useShowHighLeverageWarning();
 
   const setIsDismissedRef = useLatest(priceImpactWarningState.setIsDismissed);
 
@@ -914,6 +917,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     expressParams: submitButtonState.expressParams,
     payTokenAddress: fromTokenAddress,
     isWrapOrUnwrap,
+    isGmxAccount: isFromTokenGmxAccount,
   });
 
   const showSectionBetweenInputsAndButton =
@@ -1006,6 +1010,11 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                     />
                   </div>
                 )}
+                {showHighLeverageWarning && (
+                  <AlertInfoCard type="info" onClose={dismissHighLeverageWarning}>
+                    <Trans>Using high leverage increases the risk of liquidation.</Trans>
+                  </AlertInfoCard>
+                )}
                 {isTrigger && (
                   <SyntheticsInfoRow
                     label={t`Market`}
@@ -1082,6 +1091,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}
             isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
             disabled={shouldShowDepositButton}
+            isGmxAccount={isFromTokenGmxAccount}
           />
           <div className="h-1 bg-stroke-primary" />
           {isSwap && !isTwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}

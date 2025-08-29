@@ -7,7 +7,7 @@ import { isDevelopment } from "config/env";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { getIsExpressSupported } from "config/features";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
-import { MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "config/multichain";
+import { MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "config/multichain";
 import { getChainName } from "config/static/chains";
 import { DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/twap";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
@@ -323,9 +323,7 @@ export function SettingsModal({
                   onClick={() => handleTradingModeChange(TradingMode.Express1CT)}
                 />
 
-                {isOutOfGasPaymentBalance && srcChainId === undefined && (
-                  <ExpressTradingOutOfGasBanner onClose={onClose} />
-                )}
+                {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
 
                 {isGeminiWallet && (
                   <ColorfulBanner color="slate" icon={<ExpressIcon className="-mt-6" />}>
@@ -367,7 +365,7 @@ export function SettingsModal({
                   elevated
                   value={settlementChainId}
                   onChange={setSettlementChainId}
-                  options={MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[srcChainId]}
+                  options={MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[srcChainId]}
                   item={({ option }) => (
                     <div className="flex items-center gap-8">
                       <img src={CHAIN_ID_TO_NETWORK_ICON[option]} alt={getChainName(option)} className="size-16" />

@@ -14,7 +14,7 @@ import {
 import {
   DEFAULT_SETTLEMENT_CHAIN_ID_MAP,
   IS_SOURCE_BASE_ALLOWED,
-  MULTI_CHAIN_TOKEN_MAPPING,
+  MULTICHAIN_TOKEN_MAPPING,
   isSettlementChain,
   isSourceChain,
 } from "config/multichain";
@@ -161,7 +161,7 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
     }
 
     const areChainsRelated =
-      Object.keys(MULTI_CHAIN_TOKEN_MAPPING[settlementChainId]?.[probableSourceChain] || {}).length > 0;
+      Object.keys(MULTICHAIN_TOKEN_MAPPING[settlementChainId]?.[probableSourceChain] || {}).length > 0;
 
     if (settlementChainId === undefined || !areChainsRelated) {
       handleSetSettlementChainId(DEFAULT_SETTLEMENT_CHAIN_ID_MAP[probableSourceChain] ?? DEFAULT_SETTLEMENT_CHAIN_ID);

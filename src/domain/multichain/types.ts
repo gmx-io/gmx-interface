@@ -2,11 +2,11 @@ import type { SourceChainId } from "config/chains";
 import type { Token, TokenPrices } from "domain/tokens";
 import type { IRelayUtils } from "typechain-types/LayerZeroProvider";
 import type {
+  MessagingFeeStructOutput,
   OFTFeeDetailStruct,
   OFTLimitStruct,
   OFTReceiptStruct,
-  MessagingFeeStructOutput,
-} from "typechain-types-stargate/interfaces/IStargate";
+} from "typechain-types-stargate/IStargate";
 
 export type TokenChainData = Token & {
   sourceChainId: SourceChainId;

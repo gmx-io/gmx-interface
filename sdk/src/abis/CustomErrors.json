@@ -3536,6 +3536,11 @@
       "inputs": [
         {
           "internalType": "address",
+          "name": "oracle",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
           "name": "token",
           "type": "address"
         }

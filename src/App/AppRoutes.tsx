@@ -4,7 +4,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import { cssTransition, ToastContainer } from "react-toastify";
 import { Hash } from "viem";
 
-import { ContractsChainId, SUPPORTED_CHAIN_IDS } from "config/chains";
+import { ContractsChainId, CONTRACTS_CHAIN_IDS } from "config/chains";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -115,7 +115,7 @@ export function AppRoutes() {
 
   useEffect(() => {
     const chainId = urlParams.chainId;
-    if (chainId && SUPPORTED_CHAIN_IDS.includes(Number(chainId) as ContractsChainId)) {
+    if (chainId && CONTRACTS_CHAIN_IDS.includes(Number(chainId) as ContractsChainId)) {
       switchNetwork(Number(chainId), true).then(() => {
         const searchParams = new URLSearchParams(history.location.search);
         searchParams.delete("chainId");

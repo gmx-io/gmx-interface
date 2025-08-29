@@ -25,7 +25,6 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
-  ContractsChainId,
   SettlementChainId,
   SOURCE_BASE_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
@@ -36,6 +35,8 @@ import { isDevelopment } from "config/env";
 import { LayerZeroEndpointId } from "domain/multichain/types";
 import { numberToBigint } from "lib/numbers";
 import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
+
+import { IS_SOURCE_BASE_ALLOWED_KEY } from "./localStorage";
 
 export {
   ethPoolArbitrumSepolia,
@@ -185,19 +186,12 @@ if (isDevelopment()) {
 }
 
 export const DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT = false;
-export const IS_SOURCE_BASE_ALLOWED = true; // localStorage.getItem(IS_SOURCE_BASE_ALLOWED_KEY) === "1";
+export const IS_SOURCE_BASE_ALLOWED =
+  import.meta.env.NODE_ENV === "test" ? true : localStorage.getItem(IS_SOURCE_BASE_ALLOWED_KEY) === "1";
 
 function ensureExhaustive<T extends number>(value: Record<T, true>): T[] {
   return Object.keys(value).map(Number) as T[];
 }
-
-export const CONTRACTS_CHAINS: ContractsChainId[] = ensureExhaustive<ContractsChainId>({
-  [ARBITRUM_SEPOLIA]: true,
-  [ARBITRUM]: true,
-  [AVALANCHE]: true,
-  [AVALANCHE_FUJI]: true,
-  [BOTANIX]: true,
-});
 
 export const SETTLEMENT_CHAINS: SettlementChainId[] = ensureExhaustive<SettlementChainId>({
   [ARBITRUM_SEPOLIA]: true,
@@ -221,10 +215,6 @@ if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
   SOURCE_CHAINS.push(ARBITRUM_SEPOLIA as SourceChainId, ARBITRUM as SourceChainId, AVALANCHE as SourceChainId);
 }
 
-export function isContractsChain(chainId: number): chainId is ContractsChainId {
-  return CONTRACTS_CHAINS.includes(chainId as ContractsChainId);
-}
-
 export function isSettlementChain(chainId: number): chainId is SettlementChainId {
   return SETTLEMENT_CHAINS.includes(chainId as SettlementChainId);
 }
@@ -233,16 +223,16 @@ export function isSourceChain(chainId: number | undefined): chainId is SourceCha
   return SOURCE_CHAINS.includes(chainId as SourceChainId);
 }
 
-export const MULTI_CHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;
+export const MULTICHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;
 
-export const MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS = {} as MultichainWithdrawSupportedTokens;
+export const MULTICHAIN_TRANSFER_SUPPORTED_TOKENS = {} as MultichainWithdrawSupportedTokens;
 
 export const CHAIN_ID_TO_TOKEN_ID_MAP: Record<
   SettlementChainId | SourceChainId,
   Record<string, MultichainTokenId>
 > = {} as any;
 
-export const MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING: MultichainSourceToSettlementsMap = {} as any;
+export const MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING: MultichainSourceToSettlementsMap = {} as any;
 
 for (const tokenSymbol in TOKEN_GROUPS) {
   for (const chainIdString in TOKEN_GROUPS[tokenSymbol]) {
@@ -279,17 +269,17 @@ for (const tokenSymbol in TOKEN_GROUPS) {
 
       empty = false;
 
-      MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId] =
-        MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId] || [];
-      MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId] = uniq(
-        MULTI_CHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId].concat(settlementChainId)
+      MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId] =
+        MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId] || [];
+      MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId] = uniq(
+        MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId].concat(settlementChainId)
       );
 
-      MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] = MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] || {};
-      MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] =
-        MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] || {};
+      MULTICHAIN_TOKEN_MAPPING[settlementChainId] = MULTICHAIN_TOKEN_MAPPING[settlementChainId] || {};
+      MULTICHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] =
+        MULTICHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] || {};
 
-      MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString][sourceChainToken.address] = {
+      MULTICHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString][sourceChainToken.address] = {
         settlementChainTokenAddress: tokenId.address,
         sourceChainTokenAddress: sourceChainToken.address,
         sourceChainTokenDecimals: sourceChainToken.decimals,
@@ -297,9 +287,9 @@ for (const tokenSymbol in TOKEN_GROUPS) {
     }
 
     if (!empty) {
-      MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId] =
-        MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId] || [];
-      MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId].push(
+      MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId] =
+        MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId] || [];
+      MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId].push(
         convertTokenAddress(settlementChainId, tokenId.address, "wrapped")
       );
     }

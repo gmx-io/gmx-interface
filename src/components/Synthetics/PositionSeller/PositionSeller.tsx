@@ -1015,6 +1015,7 @@ export function PositionSeller() {
                 expressParams={expressParams}
                 payTokenAddress={undefined}
                 isWrapOrUnwrap={false}
+                isGmxAccount={srcChainId !== undefined}
               />
 
               <div className="h-1 bg-stroke-primary" />

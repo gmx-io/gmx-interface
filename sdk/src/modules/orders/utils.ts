@@ -1,15 +1,15 @@
 import { Address, isAddressEqual } from "viem";
 
-import { ContractsChainId } from "configs/chains";
+import type { ContractsChainId } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { accountOrderListKey } from "configs/dataStore";
 import { getWrappedToken } from "configs/tokens";
-import { MarketFilterLongShortDirection, MarketFilterLongShortItemData } from "modules/trades/trades";
-import { GasLimitsConfig } from "types/fees";
-import { MarketsInfoData } from "types/markets";
+import type { MarketFilterLongShortDirection, MarketFilterLongShortItemData } from "modules/trades/trades";
+import type { GasLimitsConfig } from "types/fees";
+import type { MarketsInfoData } from "types/markets";
 import { DecreasePositionSwapType, Order, OrderType } from "types/orders";
 import { SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "types/sidecarOrders";
-import { TokensData } from "types/tokens";
+import type { TokensData } from "types/tokens";
 import { estimateOrderOraclePriceCount } from "utils/fees/estimateOraclePriceCount";
 import { estimateExecuteDecreaseOrderGasLimit, getExecutionFee } from "utils/fees/executionFee";
 import type { MulticallRequestConfig, MulticallResult } from "utils/multicall";

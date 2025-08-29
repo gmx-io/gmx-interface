@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import noop from "lodash/noop";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
 import { ImSpinner2 } from "react-icons/im";
 import Skeleton from "react-loading-skeleton";
@@ -16,7 +16,7 @@ import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
   DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT,
   MULTICHAIN_FUNDING_SLIPPAGE_BPS,
-  MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS,
+  MULTICHAIN_TRANSFER_SUPPORTED_TOKENS,
   StargateErrorsAbi,
   getMappedTokenId,
 } from "config/multichain";
@@ -62,7 +62,7 @@ import { convertTokenAddress, getNativeToken, getToken } from "sdk/configs/token
 import { bigMath } from "sdk/utils/bigmath";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
-import { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
+import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -117,6 +117,7 @@ export const DepositView = () => {
   } = useMultichainTokensRequest();
   const [isApproving, setIsApproving] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [shouldSendCrossChainDepositWhenLoaded, setShouldSendCrossChainDepositWhenLoaded] = useState(false);
 
   const { setMultichainSubmittedDeposit } = useSyntheticsEvents();
 
@@ -442,19 +443,20 @@ export const DepositView = () => {
     [setIsVisibleOrView, setMultichainSubmittedDeposit, settlementChainId]
   );
 
-  const handleCrossChainDeposit = useCallback(async () => {
-    if (
-      !depositViewTokenAddress ||
-      !account ||
-      inputAmount === undefined ||
-      inputAmount <= 0n ||
-      depositViewChain === undefined ||
-      quoteSend === undefined ||
-      sendParamsWithSlippage === undefined ||
-      selectedTokenSourceChainTokenId === undefined
-    ) {
+  const canSendCrossChainDeposit =
+    depositViewTokenAddress &&
+    account &&
+    inputAmount !== undefined &&
+    inputAmount > 0n &&
+    depositViewChain &&
+    quoteSend &&
+    sendParamsWithSlippage &&
+    selectedTokenSourceChainTokenId;
+
+  const handleCrossChainDeposit = useCallback(async (): Promise<boolean> => {
+    if (!canSendCrossChainDeposit) {
       helperToast.error(t`Deposit failed`);
-      return;
+      return false;
     }
 
     setIsSubmitting(true);
@@ -486,8 +488,11 @@ export const DepositView = () => {
         }),
       });
     });
+
+    return true;
   }, [
     account,
+    canSendCrossChainDeposit,
     depositViewChain,
     depositViewTokenAddress,
     inputAmount,
@@ -496,7 +501,8 @@ export const DepositView = () => {
     makeCrossChainCallback,
     quoteSend,
     selectedToken,
-    selectedTokenSourceChainTokenId,
+    selectedTokenSourceChainTokenId?.address,
+    selectedTokenSourceChainTokenId?.stargate,
     sendParamsWithSlippage,
     settlementChainId,
   ]);
@@ -505,9 +511,27 @@ export const DepositView = () => {
     if (DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT && (walletChainId as SettlementChainId) === settlementChainId) {
       await handleSameChainDeposit();
     } else {
-      await handleCrossChainDeposit();
+      setIsSubmitting(true);
+      setShouldSendCrossChainDepositWhenLoaded(true);
     }
-  }, [walletChainId, settlementChainId, handleSameChainDeposit, handleCrossChainDeposit]);
+  }, [walletChainId, settlementChainId, handleSameChainDeposit]);
+
+  const isCrossChainDepositLoading = useRef(false);
+  useEffect(() => {
+    if (!shouldSendCrossChainDepositWhenLoaded || isCrossChainDepositLoading.current) {
+      return;
+    }
+
+    if (!canSendCrossChainDeposit) {
+      return;
+    }
+
+    setShouldSendCrossChainDepositWhenLoaded(false);
+    isCrossChainDepositLoading.current = true;
+    handleCrossChainDeposit().finally(() => {
+      isCrossChainDepositLoading.current = false;
+    });
+  }, [canSendCrossChainDeposit, handleCrossChainDeposit, shouldSendCrossChainDepositWhenLoaded]);
 
   useEffect(
     function fallbackDepositViewChain() {
@@ -530,7 +554,7 @@ export const DepositView = () => {
 
       const isInvalidTokenAddress =
         depositViewTokenAddress === undefined ||
-        !MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId as SettlementChainId]
+        !MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId as SettlementChainId]
           .map((token) => convertTokenAddress(settlementChainId, token, "native"))
           .includes(depositViewTokenAddress as NativeTokenSupportedAddress);
 
@@ -664,6 +688,15 @@ export const DepositView = () => {
     }
   }
 
+  const onClick = buttonState.onClick;
+  const handleSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      onClick?.();
+    },
+    [onClick]
+  );
+
   let placeholder = "";
   if ((inputValue === undefined || inputValue === "") && selectedToken?.symbol) {
     placeholder = `0.0 ${selectedToken.symbol}`;
@@ -672,7 +705,7 @@ export const DepositView = () => {
   }
 
   return (
-    <div className="flex grow flex-col overflow-y-auto p-16">
+    <form className="flex grow flex-col overflow-y-auto p-16" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-20">
         <div className="flex flex-col gap-4">
           <div className="text-body-small text-slate-100">
@@ -764,7 +797,8 @@ export const DepositView = () => {
               <div className="font-[RelativeNumber] text-slate-100">{placeholder}</div>
             </div>
             <button
-              className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-4 bg-cold-blue-500 px-8 py-2 hover:bg-[#484e92] active:bg-[#505699]"
+              className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-4 bg-cold-blue-500 px-8 py-2 hover:bg-[#484e92] focus-visible:bg-[#484e92] active:bg-[#505699]"
+              type="button"
               onClick={handleMaxButtonClick}
             >
               <Trans>MAX</Trans>
@@ -834,9 +868,9 @@ export const DepositView = () => {
         />
       </div>
 
-      <Button variant="primary" className="w-full" onClick={buttonState.onClick} disabled={buttonState.disabled}>
+      <Button variant="primary" className="w-full" type="submit" disabled={buttonState.disabled}>
         {buttonState.text}
       </Button>
-    </div>
+    </form>
   );
 };

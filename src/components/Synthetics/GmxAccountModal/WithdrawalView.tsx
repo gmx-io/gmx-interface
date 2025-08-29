@@ -7,7 +7,7 @@ import { useHistory } from "react-router-dom";
 import { Address, encodeAbiParameters, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { ContractsChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
+import { ContractsChainId, getChainName, isContractsChain, SettlementChainId, SourceChainId } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
@@ -16,8 +16,8 @@ import {
   getMultichainTokenId,
   getStargatePoolAddress,
   isSettlementChain,
-  MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS,
   MULTICHAIN_FUNDING_SLIPPAGE_BPS,
+  MULTICHAIN_TRANSFER_SUPPORTED_TOKENS,
 } from "config/multichain";
 import {
   useGmxAccountDepositViewTokenAddress,
@@ -34,6 +34,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
+import { fallbackCustomError } from "domain/multichain/fallbackCustomError";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { BridgeOutParams } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
@@ -61,6 +62,7 @@ import {
 } from "lib/metrics";
 import {
   bigintToNumber,
+  expandDecimals,
   formatAmountFree,
   formatBalanceAmount,
   formatUsd,
@@ -71,12 +73,13 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
 import { WalletSigner } from "lib/wallets";
+import { getContract } from "sdk/configs/contracts";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
-import type { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
+import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -89,13 +92,35 @@ import {
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import { fallbackCustomError } from "../../../domain/multichain/fallbackCustomError";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { InsufficientWntBanner } from "./InsufficientWntBanner";
 import { toastCustomOrStargateError } from "./toastCustomOrStargateError";
 import { wrapChainAction } from "./wrapChainAction";
 
-const USD_GAS_TOKEN_BUFFER = 10n * 10n ** BigInt(USD_DECIMALS);
-const USD_GAS_TOKEN_WARNING_THRESHOLD = 5n * 10n ** BigInt(USD_DECIMALS);
+const USD_GAS_TOKEN_BUFFER_MAINNET = expandDecimals(4, USD_DECIMALS);
+const USD_GAS_TOKEN_WARNING_THRESHOLD_MAINNET = expandDecimals(3, USD_DECIMALS);
+const USD_GAS_TOKEN_BUFFER_TESTNET = expandDecimals(10, USD_DECIMALS);
+const USD_GAS_TOKEN_WARNING_THRESHOLD_TESTNET = expandDecimals(9, USD_DECIMALS);
+
+function useUsdGasTokenBuffer(): {
+  gasTokenBuffer: bigint;
+  gasTokenBufferWarningThreshold: bigint;
+} {
+  const { chainId } = useChainId();
+  const isMainnet = isContractsChain(chainId, false);
+
+  if (!isMainnet) {
+    return {
+      gasTokenBuffer: USD_GAS_TOKEN_BUFFER_TESTNET,
+      gasTokenBufferWarningThreshold: USD_GAS_TOKEN_WARNING_THRESHOLD_TESTNET,
+    };
+  }
+
+  return {
+    gasTokenBuffer: USD_GAS_TOKEN_BUFFER_MAINNET,
+    gasTokenBufferWarningThreshold: USD_GAS_TOKEN_WARNING_THRESHOLD_MAINNET,
+  };
+}
 
 const useIsFirstWithdrawal = () => {
   const [enabled, setEnabled] = useState(true);
@@ -140,6 +165,7 @@ export const WithdrawalView = () => {
   const networks = useGmxAccountWithdrawNetworks();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
   const relayerFeeToken = getByKey(tokensData, globalExpressParams?.relayerFeeTokenAddress);
+  const { gasTokenBuffer, gasTokenBufferWarningThreshold } = useUsdGasTokenBuffer();
 
   const { provider } = useJsonRpcProvider(chainId);
 
@@ -152,6 +178,8 @@ export const WithdrawalView = () => {
   const unwrappedSelectedTokenSymbol = unwrappedSelectedTokenAddress
     ? getToken(chainId, unwrappedSelectedTokenAddress).symbol
     : undefined;
+  const wrappedNativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
+  const wrappedNativeToken = getByKey(tokensData, wrappedNativeTokenAddress);
 
   const selectedTokenSettlementChainTokenId = unwrappedSelectedTokenAddress
     ? getMultichainTokenId(chainId, unwrappedSelectedTokenAddress)
@@ -169,7 +197,7 @@ export const WithdrawalView = () => {
       return EMPTY_ARRAY;
     }
 
-    return MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[chainId as SettlementChainId]
+    return MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[chainId as SettlementChainId]
       ?.map((tokenAddress) => tokensData[tokenAddress])
       .filter((token) => token.address !== zeroAddress)
       .sort((a, b) => {
@@ -379,19 +407,69 @@ export const WithdrawalView = () => {
   const relayFeeAmount = expressTxnParamsAsyncResult?.data?.gasPaymentParams.relayerFeeAmount;
   const gasPaymentParams = expressTxnParamsAsyncResult?.data?.gasPaymentParams;
 
-  const networkFeeUsd = useMemo(() => {
+  const { networkFeeUsd, networkFee } = useMemo(() => {
     if (relayFeeAmount === undefined || relayerFeeToken === undefined) {
-      return;
+      return { networkFeeUsd: undefined, networkFee: undefined };
     }
 
     const relayFeeUsd = convertToUsd(relayFeeAmount, relayerFeeToken.decimals, getMidPrice(relayerFeeToken.prices));
 
-    if (relayFeeUsd === undefined || bridgeNetworkFeeUsd === undefined) {
+    if (relayFeeUsd === undefined || bridgeNetworkFeeUsd === undefined || bridgeNetworkFee === undefined) {
+      return { networkFeeUsd: undefined, networkFee: undefined };
+    }
+
+    return {
+      networkFeeUsd: relayFeeUsd + bridgeNetworkFeeUsd,
+      networkFee:
+        // We assume it is all in WNT
+        relayFeeAmount + bridgeNetworkFee,
+    };
+  }, [bridgeNetworkFee, bridgeNetworkFeeUsd, relayFeeAmount, relayerFeeToken]);
+
+  const [showWntWarning, setShowWntWarning] = useState(false);
+  const [lastValidNetworkFees, setLastValidNetworkFees] = useState({
+    networkFee: networkFee,
+    networkFeeUsd: networkFeeUsd,
+  });
+  useEffect(() => {
+    if (networkFee !== undefined && networkFeeUsd !== undefined) {
+      setLastValidNetworkFees({
+        networkFee,
+        networkFeeUsd,
+      });
+    }
+  }, [networkFee, networkFeeUsd]);
+  useEffect(() => {
+    if (wrappedNativeTokenAddress === zeroAddress) {
+      setShowWntWarning(false);
       return;
     }
 
-    return relayFeeUsd + bridgeNetworkFeeUsd;
-  }, [bridgeNetworkFeeUsd, relayFeeAmount, relayerFeeToken]);
+    if (!wrappedNativeToken || wrappedNativeToken.gmxAccountBalance === undefined) {
+      return;
+    }
+
+    if (wrappedNativeToken.gmxAccountBalance === 0n) {
+      setShowWntWarning(true);
+      return;
+    }
+
+    const someNetworkFee = networkFee ?? lastValidNetworkFees.networkFee;
+    if (someNetworkFee === undefined) {
+      return;
+    }
+
+    const value = (unwrappedSelectedTokenAddress === zeroAddress ? inputAmount : 0n) ?? 0n;
+
+    setShowWntWarning(wrappedNativeToken.gmxAccountBalance - value < someNetworkFee);
+  }, [
+    wrappedNativeToken,
+    networkFee,
+    unwrappedSelectedTokenAddress,
+    inputAmount,
+    lastValidNetworkFees.networkFee,
+    wrappedNativeTokenAddress,
+  ]);
 
   const handleWithdraw = async () => {
     if (withdrawalViewChain === undefined || selectedToken === undefined || account === undefined) {
@@ -512,7 +590,7 @@ export const WithdrawalView = () => {
       amount = selectedToken.gmxAccountBalance;
     } else {
       const buffer = convertToTokenAmount(
-        USD_GAS_TOKEN_BUFFER,
+        gasTokenBuffer,
         gasPaymentToken.decimals,
         getMidPrice(gasPaymentToken.prices)
       )!;
@@ -538,6 +616,7 @@ export const WithdrawalView = () => {
     gasPaymentToken?.address,
     gasPaymentToken?.decimals,
     gasPaymentToken?.prices,
+    gasTokenBuffer,
     selectedToken,
     setInputValue,
     unwrappedSelectedTokenAddress,
@@ -568,7 +647,7 @@ export const WithdrawalView = () => {
     }
 
     const buffer = convertToTokenAmount(
-      USD_GAS_TOKEN_WARNING_THRESHOLD,
+      gasTokenBufferWarningThreshold,
       gasPaymentToken.decimals,
       getMidPrice(gasPaymentToken.prices)
     )!;
@@ -582,6 +661,7 @@ export const WithdrawalView = () => {
     gasPaymentToken?.address,
     gasPaymentToken?.decimals,
     gasPaymentToken?.prices,
+    gasTokenBufferWarningThreshold,
     inputAmount,
     selectedToken,
     withdrawalViewChain,
@@ -632,6 +712,11 @@ export const WithdrawalView = () => {
       text: t`Insufficient ${isOutOfTokenErrorToken?.symbol} balance`,
       disabled: true,
     };
+  } else if (showWntWarning) {
+    buttonState = {
+      text: t`Insufficient ${wrappedNativeToken?.symbol} balance`,
+      disabled: true,
+    };
   } else if (expressTxnParamsAsyncResult.error && !expressTxnParamsAsyncResult.isLoading) {
     buttonState = {
       text: expressTxnParamsAsyncResult.error.name.slice(0, 32) ?? t`Error simulating withdrawal`,
@@ -656,7 +741,7 @@ export const WithdrawalView = () => {
         return;
       }
 
-      const settlementChainWrappedTokenAddresses = MULTI_CHAIN_TRANSFER_SUPPORTED_TOKENS[chainId];
+      const settlementChainWrappedTokenAddresses = MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[chainId];
       if (!settlementChainWrappedTokenAddresses) {
         return;
       }
@@ -829,9 +914,9 @@ export const WithdrawalView = () => {
       {shouldShowMinRecommendedAmount && (
         <AlertInfoCard type="info" className="my-4">
           <Trans>
-            You're withdrawing {selectedToken?.symbol}, your gas token. It's recommended to keep{" "}
-            {formatUsd(USD_GAS_TOKEN_BUFFER, { displayDecimals: 0 })} in {selectedToken?.symbol} for transactions, or
-            switch your gas token in settings.
+            You're withdrawing {selectedToken?.symbol}, your gas token. Gas is required for this withdrawal, so please
+            keep at least {formatUsd(gasTokenBuffer, { displayDecimals: 0 })} in {selectedToken?.symbol} or switch your
+            gas token in settings.
           </Trans>
         </AlertInfoCard>
       )}
@@ -888,6 +973,13 @@ export const WithdrawalView = () => {
             </Trans>
           </AlertInfoCard>
         )}
+
+      {showWntWarning && (
+        <InsufficientWntBanner
+          neededAmount={networkFee ?? lastValidNetworkFees.networkFee}
+          neededAmountUsd={networkFeeUsd ?? lastValidNetworkFees.networkFeeUsd}
+        />
+      )}
 
       <div className="h-32 shrink-0 grow" />
 

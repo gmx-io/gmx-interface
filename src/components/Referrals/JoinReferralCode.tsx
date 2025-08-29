@@ -31,7 +31,7 @@ import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { encodeReferralCode } from "sdk/utils/referrals";
 import { nowInSeconds } from "sdk/utils/time";
 import type { IStargate } from "typechain-types-stargate";
-import type { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
+import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import Button from "components/Button/Button";
 import { useMultichainTokensRequest } from "components/Synthetics/GmxAccountModal/hooks";

@@ -404,12 +404,13 @@ export function PositionEditor() {
                 executionFeeUsd={executionFee?.feeUsd}
               />
 
-              <div className="">{button}</div>
+              <div>{button}</div>
 
               <ExpressTradingWarningCard
                 expressParams={expressParams}
                 payTokenAddress={undefined}
                 isWrapOrUnwrap={false}
+                isGmxAccount={isCollateralTokenFromGmxAccount}
               />
 
               {!isDeposit && (

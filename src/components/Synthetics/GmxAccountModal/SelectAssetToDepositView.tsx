@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 
 import { getChainName } from "config/chains";
 import { getChainIcon } from "config/icons";
-import { MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
+import { MULTICHAIN_TOKEN_MAPPING } from "config/multichain";
 import {
   useGmxAccountDepositViewChain,
   useGmxAccountDepositViewTokenAddress,
@@ -84,7 +84,7 @@ export const SelectAssetToDepositView = () => {
   const NETWORKS_FILTER = useMemo(() => {
     const wildCard = { id: "all" as const, name: "All Networks" };
 
-    const chainFilters = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId] ?? EMPTY_OBJECT).map((sourceChainId) => ({
+    const chainFilters = Object.keys(MULTICHAIN_TOKEN_MAPPING[chainId] ?? EMPTY_OBJECT).map((sourceChainId) => ({
       id: parseInt(sourceChainId),
       name: getChainName(parseInt(sourceChainId)),
     }));

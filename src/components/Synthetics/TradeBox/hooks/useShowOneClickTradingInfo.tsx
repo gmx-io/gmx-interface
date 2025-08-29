@@ -8,10 +8,7 @@ import {
   selectRawSubaccount,
   selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import {
-  selectTradeboxIsFromTokenGmxAccount,
-  selectTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
@@ -28,15 +25,16 @@ export function useExpressTradingWarnings({
   isWrapOrUnwrap,
   expressParams,
   payTokenAddress,
+  isGmxAccount,
 }: {
   isWrapOrUnwrap: boolean;
   payTokenAddress: string | undefined;
   expressParams: ExpressTxnParams | undefined;
+  isGmxAccount: boolean;
 }) {
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const isGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
   const isExpressTransactionAvailable = useSelector(selectIsExpressTransactionAvailable);
   const rawSubaccount = useSelector(selectRawSubaccount);
 

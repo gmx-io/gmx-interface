@@ -3,10 +3,7 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type {
-  PositionRouter,
-  PositionRouterInterface,
-} from "../PositionRouter";
+import type { PositionRouter, PositionRouterInterface } from "../PositionRouter";
 
 const _abi = [
   {
@@ -2037,10 +2034,7 @@ export class PositionRouter__factory {
   static createInterface(): PositionRouterInterface {
     return new Interface(_abi) as PositionRouterInterface;
   }
-  static connect(
-    address: string,
-    runner?: ContractRunner | null
-  ): PositionRouter {
+  static connect(address: string, runner?: ContractRunner | null): PositionRouter {
     return new Contract(address, _abi, runner) as unknown as PositionRouter;
   }
 }

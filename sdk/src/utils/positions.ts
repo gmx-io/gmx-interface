@@ -257,11 +257,6 @@ export function getLiquidationPrice(p: {
       return undefined;
     }
 
-    console.log("collateralUsd", collateralUsd);
-    console.log("priceImpactDeltaUsd", priceImpactDeltaUsd);
-    console.log("totalPendingFeesUsd", totalPendingFeesUsd);
-    console.log("closingFeeUsd", closingFeeUsd);
-
     const remainingCollateralUsd = collateralUsd + priceImpactDeltaUsd - totalPendingFeesUsd - closingFeeUsd;
 
     if (isLong) {

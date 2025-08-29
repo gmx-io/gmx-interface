@@ -5,7 +5,7 @@ import mapValues from "lodash/mapValues";
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useLatest } from "react-use";
 
-import { RPC_PROVIDERS, SUPPORTED_CHAIN_IDS } from "config/chains";
+import { RPC_PROVIDERS, CONTRACTS_CHAIN_IDS } from "config/chains";
 import { SOURCE_CHAINS } from "config/multichain";
 import { EMPTY_OBJECT } from "lib/objects";
 import { getCurrentRpcUrls, RPC_TRACKER_UPDATE_EVENT } from "lib/rpc/bestRpcTracker";
@@ -24,7 +24,7 @@ export function JsonRpcProviderContext({ children }: PropsWithChildren) {
     useState<Partial<Record<AnyChainId, { provider: JsonRpcProvider; url: string }>>>(EMPTY_OBJECT);
 
   const handleRpcUpdate = useCallback(() => {
-    for (const listenedChainId of SUPPORTED_CHAIN_IDS) {
+    for (const listenedChainId of CONTRACTS_CHAIN_IDS) {
       const { primary } = getCurrentRpcUrls(listenedChainId);
 
       if (providers[listenedChainId]?.url === primary) continue;

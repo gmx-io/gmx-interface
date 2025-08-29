@@ -37,11 +37,11 @@ export class GmxSdk {
           // retries works strangely in viem, so we disable them
           retryCount: 0,
           retryDelay: 10000000,
-          batch: BATCH_CONFIGS[this.config.chainId].http,
+          batch: BATCH_CONFIGS[this.config.chainId]?.http,
           timeout: MAX_TIMEOUT,
         }),
         pollingInterval: undefined,
-        batch: BATCH_CONFIGS[this.config.chainId].client,
+        batch: BATCH_CONFIGS[this.config.chainId]?.client,
         chain: getViemChain(this.config.chainId),
       });
     this.walletClient =
@@ -52,7 +52,7 @@ export class GmxSdk {
         transport: http(config.rpcUrl, {
           retryCount: 0,
           retryDelay: 10000000,
-          batch: BATCH_CONFIGS[config.chainId].http,
+          batch: BATCH_CONFIGS[config.chainId]?.http,
           timeout: MAX_TIMEOUT,
         }),
       });

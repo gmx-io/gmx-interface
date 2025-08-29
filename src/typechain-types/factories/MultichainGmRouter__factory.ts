@@ -3,11 +3,7 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type {
-  MultichainGmRouter,
-  MultichainGmRouterInterface,
-  MultichainRouter,
-} from "../MultichainGmRouter";
+import type { MultichainGmRouter, MultichainGmRouterInterface, MultichainRouter } from "../MultichainGmRouter";
 
 const _abi = [
   {
@@ -1099,8 +1095,7 @@ const _abi = [
                 type: "address[]",
               },
             ],
-            internalType:
-              "struct IWithdrawalUtils.CreateWithdrawalParamsAddresses",
+            internalType: "struct IWithdrawalUtils.CreateWithdrawalParamsAddresses",
             name: "addresses",
             type: "tuple",
           },
@@ -1463,10 +1458,7 @@ export class MultichainGmRouter__factory {
   static createInterface(): MultichainGmRouterInterface {
     return new Interface(_abi) as MultichainGmRouterInterface;
   }
-  static connect(
-    address: string,
-    runner?: ContractRunner | null
-  ): MultichainGmRouter {
+  static connect(address: string, runner?: ContractRunner | null): MultichainGmRouter {
     return new Contract(address, _abi, runner) as unknown as MultichainGmRouter;
   }
 }
