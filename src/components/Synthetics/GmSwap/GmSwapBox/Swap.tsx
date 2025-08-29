@@ -6,7 +6,7 @@ export function Swap() {
       <div
         className="absolute -top-19 left-1/2 flex size-36 -translate-x-1/2
                    rotate-90 cursor-not-allowed select-none items-center justify-center rounded-full
-                   bg-[#1b1e32] text-white"
+                   bg-[#1b1e32] text-typography-primary"
       >
         <IoMdSwap size={24} />
       </div>

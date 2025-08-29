@@ -1,8 +1,6 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useState } from "react";
-import { FaArrowLeft } from "react-icons/fa";
-import { useMedia } from "react-use";
 
 import { usePoolsDetailsContext } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import {
@@ -10,15 +8,19 @@ import {
   selectGlvAndMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { getTokenData } from "domain/synthetics/tokens";
+import { useBreakpoints } from "lib/breakpoints";
 import { getPageTitle } from "lib/legacy";
 import { getByKey } from "lib/objects";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
-import ButtonLink from "components/Button/ButtonLink";
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+import { BreadcrumbItem, Breadcrumbs } from "components/Breadcrumbs/Breadcrumbs";
 import Loader from "components/Common/Loader";
 import SEO from "components/Common/SEO";
-import Footer from "components/Footer/Footer";
+import SideNav from "components/SideNav/SideNav";
+import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 import { GmSwapBox, GmSwapBoxProps } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
 import { GmSwapBoxHeader } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader";
 import { useCompositionData } from "components/Synthetics/MarketStats/hooks/useCompositionData";
@@ -52,35 +54,44 @@ export function PoolsDetails() {
 
   const isMobile = usePoolsIsMobilePage();
 
-  const isInCurtain = useMedia("(max-width: 1180px)");
+  const { isDesktop: isInCurtain } = useBreakpoints();
+
+  const breadcrumbs = (
+    <Breadcrumbs>
+      <BreadcrumbItem to="/pools" back>
+        <Trans>Pools</Trans>
+      </BreadcrumbItem>
+
+      <BreadcrumbItem active>
+        {isGlvInfo(glvOrMarketInfo) ? <Trans>GLV Vaults</Trans> : <Trans>GM Pools</Trans>}
+      </BreadcrumbItem>
+    </Breadcrumbs>
+  );
 
   return (
-    <SEO title={getPageTitle("V2 Pools")}>
-      <div className={cx("default-container page-layout flex flex-col", { "gap-12": isMobile, "gap-16": !isMobile })}>
-        <ButtonLink
-          to="/pools"
-          className="inline-flex w-fit gap-4 rounded-4 bg-slate-700 px-16 py-12 hover:bg-cold-blue-700"
-        >
-          <FaArrowLeft size={16} />
-          Back to Pools
-        </ButtonLink>
-        {glvOrMarketInfo ? (
-          <>
-            <PoolsDetailsHeader glvOrMarketInfo={glvOrMarketInfo} marketToken={marketToken} />
+    <AppPageLayout
+      className="max-lg:pb-40"
+      sideNav={<SideNav className="max-xl:pb-40" />}
+      header={<ChainContentHeader breadcrumbs={breadcrumbs} leftContentClassName="!pl-0 max-md:!pl-8" />}
+    >
+      <SEO title={getPageTitle("V2 Pools")}>
+        <div className={cx("flex flex-col gap-8")}>
+          {glvOrMarketInfo ? (
+            <>
+              <PoolsDetailsHeader glvOrMarketInfo={glvOrMarketInfo} marketToken={marketToken} />
 
-            <div className={cx("mb-15 flex justify-between gap-12", { "flex-wrap": isInCurtain })}>
-              <div className="flex grow flex-col gap-16">
-                {glvOrMarketInfo && <MarketGraphs glvOrMarketInfo={glvOrMarketInfo} />}
-                <PoolsDetailsCard title={<Trans>Composition</Trans>} childrenContainerClassName="!p-0">
-                  <div className={cx("grid", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
-                    <div className={cx("border-stroke-primary", { "border-r": !isMobile, "border-b": isMobile })}>
-                      <MarketComposition
-                        type="backing"
-                        label={<Trans>Backing Composition</Trans>}
-                        title={<Trans>Exposure to Backing Tokens</Trans>}
-                        composition={backingComposition}
-                      />
-                    </div>
+              <div className={cx("flex justify-between gap-8", { "flex-wrap": isInCurtain })}>
+                <div className="flex grow flex-col gap-8">
+                  {glvOrMarketInfo && <MarketGraphs glvOrMarketInfo={glvOrMarketInfo} />}
+
+                  <div className={cx("grid gap-8", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
+                    <MarketComposition
+                      type="backing"
+                      label={<Trans>Backing Composition</Trans>}
+                      title={<Trans>Exposure to Backing Tokens</Trans>}
+                      composition={backingComposition}
+                    />
+
                     <MarketComposition
                       type="market"
                       label={<Trans>Market Composition</Trans>}
@@ -88,37 +99,35 @@ export function PoolsDetails() {
                       composition={marketComposition}
                     />
                   </div>
-                </PoolsDetailsCard>
+                  <PoolsDetailsCard title={<Trans>About</Trans>}>
+                    <PoolsDetailsAbout
+                      glvOrMarketInfo={glvOrMarketInfo}
+                      marketToken={marketToken}
+                      marketsInfoData={glvAndMarketsInfoData}
+                      marketTokensData={depositMarketTokensData}
+                    />
+                  </PoolsDetailsCard>
+                </div>
 
-                <PoolsDetailsCard title={<Trans>About</Trans>}>
-                  <PoolsDetailsAbout
-                    glvOrMarketInfo={glvOrMarketInfo}
-                    marketToken={marketToken}
-                    marketsInfoData={glvAndMarketsInfoData}
-                    marketTokensData={depositMarketTokensData}
-                  />
-                </PoolsDetailsCard>
+                <PoolsDetailsGmSwapBox
+                  selectedGlvOrMarketAddress={glvOrMarketAddress}
+                  onSelectGlvOrMarket={setGlvOrMarketAddress}
+                  selectedMarketForGlv={selectedMarketForGlv}
+                  onSelectedMarketForGlv={setSelectedMarketForGlv}
+                  operation={operation}
+                  mode={mode}
+                  onSetMode={setMode}
+                  onSetOperation={setOperation}
+                  isInCurtain={isInCurtain}
+                />
               </div>
-
-              <PoolsDetailsGmSwapBox
-                selectedGlvOrMarketAddress={glvOrMarketAddress}
-                onSelectGlvOrMarket={setGlvOrMarketAddress}
-                selectedMarketForGlv={selectedMarketForGlv}
-                onSelectedMarketForGlv={setSelectedMarketForGlv}
-                operation={operation}
-                mode={mode}
-                onSetMode={setMode}
-                onSetOperation={setOperation}
-                isInCurtain={isInCurtain}
-              />
-            </div>
-          </>
-        ) : (
-          <Loader />
-        )}
-        <Footer />
-      </div>
-    </SEO>
+            </>
+          ) : (
+            <Loader />
+          )}
+        </div>
+      </SEO>
+    </AppPageLayout>
   );
 }
 

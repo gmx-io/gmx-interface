@@ -9,21 +9,23 @@ import { useAccount } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ClaimAction, ClaimType, useClaimCollateralHistory } from "domain/synthetics/claimHistory";
+import { useBreakpoints } from "lib/breakpoints";
 import { downloadAsCsv } from "lib/csv";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { formatTokenAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 
 import Button from "components/Button/Button";
+import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Referrals/usePagination";
 import { ClaimsHistorySkeleton } from "components/Skeleton/Skeleton";
 import { DateRangeSelect } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
 import { MarketFilter } from "components/Synthetics/TableMarketFilter/MarketFilter";
-import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
-import downloadIcon from "img/ic_download_simple.svg";
+import DownloadIcon from "img/ic_download2.svg?react";
 
 import { claimCollateralEventTitles } from "./ClaimHistoryRow/ClaimCollateralHistoryRow";
 import { claimFundingFeeEventTitles } from "./ClaimHistoryRow/ClaimFundingFeesHistoryRow";
@@ -35,10 +37,24 @@ import "./ClaimsHistory.scss";
 
 const CLAIMS_HISTORY_PREFETCH_SIZE = 100;
 
+export type ClaimsHistoryProps = {
+  isLoading: boolean;
+  isEmpty: boolean;
+  hasFilters: boolean;
+  eventNameFilter: string[];
+  setEventNameFilter: (eventNameFilter: string[]) => void;
+  marketAddressesFilter: string[];
+  setMarketAddressesFilter: (marketAddressesFilter: string[]) => void;
+  currentPage: number;
+  setCurrentPage: (currentPage: number) => void;
+  pageCount: number;
+  currentPageData: ClaimAction[];
+};
+
 export function ClaimsHistory() {
   const chainId = useSelector(selectChainId);
   const account = useAccount();
-
+  const { isMobile } = useBreakpoints();
   const [startDate, endDate, setDateRange] = useDateRange();
   const [eventNameFilter, setEventNameFilter] = useState<string[]>([]);
   const [marketAddressesFilter, setMarketAddressesFilter] = useState<string[]>([]);
@@ -83,39 +99,46 @@ export function ClaimsHistory() {
 
   const handleCsvDownload = useDownloadAsCsv(claimActions);
 
-  return (
-    <>
-      <div className="App-box">
-        <div className="ClaimsHistory-controls">
-          <div>
-            <Trans>Claims History</Trans>
-          </div>
-          <div className="ClaimsHistory-controls-right">
-            <div className="ClaimsHistory-filters">
-              <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
-            </div>
-            <Button variant="secondary" imgSrc={downloadIcon} onClick={handleCsvDownload}>
-              CSV
-            </Button>
-          </div>
+  const controls = (
+    <div className="flex">
+      <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
+      <Button variant="ghost" onClick={handleCsvDownload} className="flex items-center gap-4">
+        <div className="size-16">
+          <DownloadIcon />
         </div>
+        <span className="text-body-small font-medium">CSV</span>
+      </Button>
+    </div>
+  );
 
-        <TableScrollFadeContainer>
-          <table className="ClaimsHistory-table">
+  return (
+    <div className="flex grow flex-col bg-slate-900">
+      <div className="flex items-center justify-between gap-8 pl-20 pr-8 pt-8">
+        {!isMobile ? (
+          <span className="text-body-medium font-medium">
+            <Trans>Claims history</Trans>
+          </span>
+        ) : null}
+
+        {controls}
+      </div>
+      <TableScrollFadeContainer disableScrollFade={isEmpty} className="flex grow flex-col">
+        {!isEmpty && (
+          <table className="ClaimsHistory-table table-fixed">
             <colgroup>
               <col className="ClaimsHistory-action-column" />
               <col className="ClaimsHistory-market-column" />
               <col className="ClaimsHistory-size-column" />
             </colgroup>
             <thead>
-              <TableTheadTr bordered>
-                <TableTh>
+              <TableTheadTr>
+                <TableTh className="w-[40%]">
                   <ActionFilter value={eventNameFilter} onChange={setEventNameFilter} />
                 </TableTh>
-                <TableTh>
+                <TableTh className="w-[40%]">
                   <MarketFilter excludeSpotOnly value={marketAddressesFilter} onChange={setMarketAddressesFilter} />
                 </TableTh>
-                <TableTh className="ClaimsHistory-price-header">
+                <TableTh className="ClaimsHistory-price-header w-[20%]">
                   <Trans>Size</Trans>
                 </TableTh>
               </TableTheadTr>
@@ -126,28 +149,25 @@ export function ClaimsHistory() {
               ) : (
                 currentPageData.map((claimAction) => <ClaimHistoryRow key={claimAction.id} claimAction={claimAction} />)
               )}
-              {isEmpty && !hasFilters && (
-                <TableTr hoverable={false} bordered={false}>
-                  <TableTd colSpan={3} className="text-slate-100">
-                    <Trans>No claims yet</Trans>
-                  </TableTd>
-                </TableTr>
-              )}
-
-              {isEmpty && hasFilters && (
-                <TableTr hoverable={false} bordered={false}>
-                  <TableTd colSpan={3} className="text-slate-100">
-                    <Trans>No claims match the selected filters</Trans>
-                  </TableTd>
-                </TableTr>
-              )}
             </tbody>
           </table>
-        </TableScrollFadeContainer>
+        )}
 
-        <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
-      </div>
-    </>
+        {isEmpty && !hasFilters && (
+          <EmptyTableContent isLoading={false} isEmpty={isEmpty} emptyText={<Trans>No claims yet</Trans>} />
+        )}
+
+        {isEmpty && hasFilters && (
+          <EmptyTableContent
+            isLoading={false}
+            isEmpty={isEmpty}
+            emptyText={<Trans>No claims match the selected filters</Trans>}
+          />
+        )}
+      </TableScrollFadeContainer>
+
+      <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
+    </div>
   );
 }
 

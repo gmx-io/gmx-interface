@@ -106,7 +106,7 @@ export function VesterDepositModal(props: {
       return error;
     }
     if (isDepositing) {
-      return t`Depositing...`;
+      return t`Depositing`;
     }
     return t`Deposit`;
   }, [error, isDepositing]);
@@ -116,9 +116,9 @@ export function VesterDepositModal(props: {
     const contract = new ethers.Contract(vesterAddress, abis.Vester, signer);
 
     callContract(chainId, contract, "deposit", [amount], {
-      sentMsg: t`Deposit submitted!`,
-      failMsg: t`Deposit failed!`,
-      successMsg: t`Deposited!`,
+      sentMsg: t`Deposit submitted.`,
+      failMsg: t`Deposit failed.`,
+      successMsg: t`Deposited.`,
       setPendingTxns,
     })
       .then(() => {
@@ -168,7 +168,7 @@ export function VesterDepositModal(props: {
                 position="top-end"
                 content={
                   <div>
-                    <p className="text-white">
+                    <p className="text-typography-primary">
                       <Trans>Vault Capacity for your Account:</Trans>
                     </p>
                     <br />

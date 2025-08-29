@@ -1,11 +1,11 @@
 .App-header-network {
   position: relative;
-  border: 1px solid var(--color-stroke-primary);
+  border: 0.5px solid var(--color-slate-600);
   border-radius: var(--border-radius-sm);
   height: 3.6rem;
   display: inline-flex;
   align-items: center;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .App-header-language {
@@ -19,13 +19,9 @@
   min-width: 17rem;
   padding-bottom: 0.8rem;
 }
-.network-dropdown-items:last-child {
-  padding-bottom: 0;
-}
 
 .network-dropdown-divider {
-  margin-bottom: 0.8rem;
-  border-bottom: 1px solid var(--color-stroke-primary);
+  border-bottom: 0.5px solid var(--color-slate-600);
 }
 .App-header-network:hover {
   background: var(--dark-blue-hover);
@@ -39,6 +35,7 @@
 }
 
 .network-dropdown-icon {
+  object-fit: cover;
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -60,9 +57,6 @@
   justify-content: space-between;
 }
 
-.last-dropdown-menu {
-  margin-bottom: 0.8rem;
-}
 .network-popup .Modal-content {
   width: 100%;
   max-width: 29.6rem;
@@ -71,17 +65,13 @@
 .network-option {
   cursor: pointer;
   background: var(--dark-blue);
-  border: 1px solid var(--color-stroke-primary);
+  border: 0.5px solid var(--color-slate-600);
   border-radius: 0.4rem;
   padding: 0.8rem 1.5rem;
   display: flex;
   align-items: center;
   position: relative;
   justify-content: space-between;
-  margin-bottom: 0.8rem;
-}
-.network-option:last-child {
-  margin-bottom: 0;
 }
 
 .network-option img {
@@ -93,14 +83,14 @@
   font-size: var(--font-size-body-medium);
   line-height: var(--line-height-body-medium);
   letter-spacing: 0.29px;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .network-option-img-label {
   font-size: var(--font-size-body-medium);
   line-height: var(--line-height-body-medium);
   letter-spacing: 0.29px;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .dropdown-label {
@@ -114,15 +104,6 @@
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(2, 1fr);
-}
-
-.language-modal-item {
-  border: 1px solid var(--dark-blue-border);
-  cursor: pointer;
-}
-
-.language-modal-item.active {
-  border: 1px solid #a1a3c4;
 }
 
 .menu-item-icon {
@@ -151,11 +132,6 @@
   color: var(--color-gray-50);
 }
 
-.language-item {
-  margin-left: 0.8rem;
-  font-size: 1.5rem;
-}
-
 .active-dot {
   width: 0.8rem;
   height: 0.8rem;
@@ -168,16 +144,12 @@
   background-color: #e84142;
 }
 .active-dot.Botanix {
-  background-color: #F7931A;
+  background-color: #f7931a;
 }
 .network-dropdown-label {
   font-size: 1.25rem;
   margin-bottom: 0.8rem;
   opacity: 0.7;
-}
-
-.more-options {
-  margin-top: 1rem;
 }
 
 @media (max-width: 1033px) {

@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useCallback, useMemo, useState } from "react";
-import { BiChevronDown } from "react-icons/bi";
+import { FaChevronDown } from "react-icons/fa6";
 
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
@@ -15,6 +15,7 @@ import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
 import { getCategoryTokenAddresses } from "sdk/configs/tokens";
 
+import Button from "components/Button/Button";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { SlideModal } from "components/Modal/SlideModal";
@@ -39,7 +40,6 @@ type Props = {
   footerContent?: ReactNode;
   getMarketState?: (market: MarketInfo) => MarketState | undefined;
   onSelectMarket: (indexName: string, market: MarketInfo) => void;
-  size?: "l" | "m";
 };
 
 type MarketState = {
@@ -67,7 +67,6 @@ export function MarketSelector({
   showBalances,
   footerContent,
   missedCoinsPlace,
-  size = "m",
   onSelectMarket,
   getMarketState,
 }: Props) {
@@ -189,7 +188,7 @@ export function MarketSelector({
           </>
         }
       >
-        <div className="TokenSelector-tokens">
+        <div className="flex flex-col">
           {filteredOptions.map((option, marketIndex) => (
             <MarketListItem
               key={option.marketInfo.marketTokenAddress}
@@ -204,20 +203,20 @@ export function MarketSelector({
           ))}
         </div>
         {filteredOptions.length === 0 && (
-          <div className="text-16 text-slate-100">
+          <div className="px-20 text-14 text-typography-secondary">
             <Trans>No markets matched.</Trans>
           </div>
         )}
       </SlideModal>
       <div
-        className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300", {
-          "text-h2 -mr-5": size === "l",
-        })}
+        className={cx(
+          "group/hoverable group text-body-large flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-300"
+        )}
         onClick={handleClick}
         data-qa="market-selector"
       >
         {selectedMarketLabel ? selectedMarketLabel : marketInfo ? getMarketIndexName(marketInfo) : "..."}
-        <BiChevronDown className={cx({ "text-body-large": size === "l", "-my-5 text-24": size === "m" })} />
+        <FaChevronDown className="w-12 text-typography-secondary group-hover:text-blue-300" />
       </div>
     </div>
   );
@@ -277,7 +276,10 @@ function MarketListItem(props: {
 
   return (
     <div
-      className={cx("TokenSelector-token-row", { disabled: state.disabled })}
+      className={cx(
+        "text-body-medium flex w-full cursor-pointer items-center justify-between p-8 px-20 hover:bg-fill-surfaceHover",
+        { disabled: state.disabled }
+      )}
       onClick={handleClick}
       data-qa={`market-selector-${indexName}`}
     >
@@ -286,7 +288,7 @@ function MarketListItem(props: {
           className="TokenSelector-tooltip"
           handle={<div className="TokenSelector-tooltip-backing" />}
           position={isInFirstHalf ? "bottom" : "top"}
-          disableHandleStyle
+          variant="none"
           closeOnDoubleClick
           fitHandleWidth
           renderContent={() => state.message}
@@ -312,12 +314,9 @@ function MarketListItem(props: {
           {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && <div>{formatUsd(balanceUsd)}</div>) || null}
         </span>
       </div>
-      <div
-        className="favorite-star flex cursor-pointer items-center rounded-4 p-9 text-16 hover:bg-cold-blue-700 active:bg-cold-blue-500"
-        onClick={handleFavoriteClick}
-      >
+      <Button variant="ghost" onClick={handleFavoriteClick}>
         <FavoriteStar isFavorite={isFavorite} />
-      </div>
+      </Button>
     </div>
   );
 }

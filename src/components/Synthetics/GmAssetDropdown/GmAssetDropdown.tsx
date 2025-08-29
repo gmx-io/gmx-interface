@@ -2,7 +2,7 @@ import { Placement, autoUpdate, flip, shift, useFloating } from "@floating-ui/re
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
 import React, { useCallback, type ReactNode } from "react";
-import { FiChevronDown } from "react-icons/fi";
+import { HiDotsVertical } from "react-icons/hi";
 import { createBreakpoint } from "react-use";
 
 import { getExplorerUrl } from "config/chains";
@@ -23,7 +23,7 @@ import useWallet, { WalletClient } from "lib/wallets/useWallet";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-import walletIcon from "img/ic_wallet_24.svg";
+import WalletIcon from "img/ic_wallet.svg?react";
 
 import "./GmAssetDropdown.scss";
 
@@ -104,13 +104,13 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
           ref={refs.setReference}
           className="dropdown-arrow center-both"
         >
-          <FiChevronDown size={20} className="text-slate-100" />
+          <HiDotsVertical className="size-16" />
         </Menu.Button>
         <Menu.Items
           as="div"
           ref={refs.setFloating}
           style={floatingStyles}
-          className="z-30 rounded-4 border border-stroke-primary bg-slate-800 outline-none"
+          className="z-30 rounded-8 border-1/2 border-slate-600 bg-slate-900 outline-none"
           onClick={handleMenuItemsClick}
         >
           {market && (
@@ -185,9 +185,9 @@ function AddToWalletButton({
             },
           });
         }}
-        className="asset-item"
+        className="asset-item group"
       >
-        <img src={walletIcon} className="wallet-icon" alt="Add to wallet" />
+        <WalletIcon className="size-16 text-typography-secondary group-hover:text-typography-primary" />
         <p>
           <Trans>Add {marketName} to Wallet</Trans>
         </p>

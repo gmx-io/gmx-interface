@@ -9,19 +9,21 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
 import { TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
+import { useBreakpoints } from "lib/breakpoints";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import Button from "components/Button/Button";
+import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Referrals/usePagination";
 import { TradesHistorySkeleton } from "components/Skeleton/Skeleton";
-import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import downloadIcon from "img/ic_download_simple.svg";
-import PnlAnalysisIcon from "img/ic_pnl_analysis_20.svg?react";
+import DownloadIcon from "img/ic_download2.svg?react";
+import PnlAnalysisIcon from "img/ic_pnl_analysis.svg?react";
 
 import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
@@ -33,6 +35,13 @@ import "./TradeHistorySynthetics.scss";
 
 const TRADE_HISTORY_PREFETCH_SIZE = 100;
 const ENTITIES_PER_PAGE = TRADE_HISTORY_PER_PAGE;
+
+type ActionFilter = {
+  orderType: OrderType[];
+  eventName: TradeActionType;
+  isDepositOrWithdraw: boolean;
+  isTwap: boolean;
+};
 
 type Props = {
   account: Address | null | undefined;
@@ -46,14 +55,7 @@ export function TradeHistory(p: Props) {
   const showDebugValues = useShowDebugValues();
   const [startDate, endDate, setDateRange] = useDateRange();
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
-  const [actionFilter, setActionFilter] = useState<
-    {
-      orderType: OrderType[];
-      eventName: TradeActionType;
-      isDepositOrWithdraw: boolean;
-      isTwap: boolean;
-    }[]
-  >([]);
+  const [actionFilter, setActionFilter] = useState<ActionFilter[]>([]);
 
   const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
 
@@ -97,9 +99,13 @@ export function TradeHistory(p: Props) {
     const url = buildAccountDashboardUrl(account, chainId, 2);
 
     return (
-      <Button variant="secondary" slim to={url}>
-        <PnlAnalysisIcon className="mr-8 h-16 text-white" />
-        <Trans>PnL Analysis</Trans>
+      <Button variant="ghost" to={url} className="flex items-center gap-4">
+        <div className="size-16">
+          <PnlAnalysisIcon />
+        </div>
+        <span className="text-body-small font-medium">
+          <Trans>PnL Analysis</Trans>
+        </span>
       </Button>
     );
   }, [account, chainId, hideDashboardLink]);
@@ -115,7 +121,7 @@ export function TradeHistory(p: Props) {
     }
   }, [currentPage, pageCount, tradeActionsPageIndex, setTradeActionsPageIndex]);
 
-  const [isCsvDownloading, handleCsvDownload] = useDownloadAsCsv({
+  const [, handleCsvDownload] = useDownloadAsCsv({
     account,
     forAllAccounts,
     fromTxTimestamp,
@@ -125,98 +131,102 @@ export function TradeHistory(p: Props) {
     minCollateralUsd: minCollateralUsd,
   });
 
-  return (
-    <div className="TradeHistorySynthetics">
-      <div className="App-box">
-        <div className="flex flex-wrap items-center justify-between gap-y-8 px-16 py-8">
-          <div>
-            <Trans>Trade History</Trans>
-          </div>
-          <div className="TradeHistorySynthetics-controls-right">
-            {pnlAnalysisButton}
-            <div className="TradeHistorySynthetics-filters">
-              <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
-            </div>
-            <Button
-              variant="secondary"
-              slim
-              disabled={isCsvDownloading}
-              imgSrc={downloadIcon}
-              onClick={handleCsvDownload}
-            >
-              CSV
-            </Button>
-          </div>
+  const { isMobile } = useBreakpoints();
+
+  let actions = (
+    <>
+      {pnlAnalysisButton}
+
+      <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
+
+      <Button variant="ghost" onClick={handleCsvDownload} className="flex items-center gap-4">
+        <div className="size-16">
+          <DownloadIcon />
         </div>
+        <span className="text-body-small font-medium">CSV</span>
+      </Button>
+    </>
+  );
 
-        <TableScrollFadeContainer>
-          <table className="TradeHistorySynthetics-table">
-            <colgroup>
-              <col className="TradeHistorySynthetics-action-column" />
-              <col className="TradeHistorySynthetics-market-column" />
-              <col className="TradeHistorySynthetics-size-column" />
-              <col className="TradeHistorySynthetics-price-column" />
-              <col className="TradeHistorySynthetics-pnl-fees-column" />
-            </colgroup>
-            <thead>
-              <TableTheadTr bordered>
-                <TableTh>
-                  <ActionFilter value={actionFilter} onChange={setActionFilter} />
-                </TableTh>
-                <TableTh>
-                  <MarketFilterLongShort
-                    withPositions="all"
-                    value={marketsDirectionsFilter}
-                    onChange={setMarketsDirectionsFilter}
-                  />
-                </TableTh>
-                <TableTh>
-                  <Trans>Size</Trans>
-                </TableTh>
-                <TableTh>
-                  <Trans>Price</Trans>
-                </TableTh>
-                <TableTh className="TradeHistorySynthetics-pnl-fees-header">
-                  <TooltipWithPortal content={<Trans>Realized PnL after fees and price impact.</Trans>}>
-                    <Trans>RPnL ($)</Trans>
-                  </TooltipWithPortal>
-                </TableTh>
-              </TableTheadTr>
-            </thead>
-            <tbody>
-              {isLoading ? (
-                <TradesHistorySkeleton withTimestamp={forAllAccounts} />
-              ) : (
-                currentPageData.map((tradeAction) => (
-                  <TradeHistoryRow
-                    key={tradeAction.id}
-                    tradeAction={tradeAction}
-                    minCollateralUsd={minCollateralUsd!}
-                    showDebugValues={showDebugValues}
-                    shouldDisplayAccount={forAllAccounts}
-                  />
-                ))
-              )}
-              {isEmpty && hasFilters && (
-                <TableTr hoverable={false} bordered={false}>
-                  <TableTd className="text-slate-100" colSpan={5}>
-                    <Trans>No trades match the selected filters</Trans>
-                  </TableTd>
-                </TableTr>
-              )}
-              {isEmpty && !hasFilters && !isLoading && (
-                <TableTr hoverable={false} bordered={false}>
-                  <TableTd className="text-slate-100" colSpan={5}>
-                    <Trans>No trades yet</Trans>
-                  </TableTd>
-                </TableTr>
-              )}
-            </tbody>
-          </table>
-        </TableScrollFadeContainer>
+  const controls = <div className="flex items-center gap-4">{actions}</div>;
 
-        <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
+  return (
+    <div className="TradeHistorySynthetics flex grow flex-col bg-slate-900">
+      <div className="flex items-center justify-between gap-8 pl-20 pr-8 pt-8">
+        {!isMobile ? (
+          <span className="text-body-medium font-medium">
+            <Trans>Trade history</Trans>
+          </span>
+        ) : null}
+
+        {controls}
       </div>
+      <TableScrollFadeContainer disableScrollFade={currentPageData.length === 0} className="flex grow flex-col">
+        <table className="TradeHistorySynthetics-table table-fixed">
+          <colgroup>
+            <col className="TradeHistorySynthetics-action-column" />
+            <col className="TradeHistorySynthetics-market-column" />
+            <col className="TradeHistorySynthetics-size-column" />
+            <col className="TradeHistorySynthetics-price-column" />
+            <col className="TradeHistorySynthetics-pnl-fees-column" />
+          </colgroup>
+          <thead>
+            <TableTheadTr>
+              <TableTh className="w-[22%]">
+                <ActionFilter value={actionFilter} onChange={setActionFilter} />
+              </TableTh>
+              <TableTh className="w-[22%]">
+                <MarketFilterLongShort
+                  withPositions="all"
+                  value={marketsDirectionsFilter}
+                  onChange={setMarketsDirectionsFilter}
+                />
+              </TableTh>
+              <TableTh className="w-[22%]">
+                <Trans>Size</Trans>
+              </TableTh>
+              <TableTh className="w-[22%]">
+                <Trans>Price</Trans>
+              </TableTh>
+              <TableTh className="TradeHistorySynthetics-pnl-fees-header w-[12%]">
+                <TooltipWithPortal
+                  variant="iconStroke"
+                  content={<Trans>Realized PnL after fees and price impact.</Trans>}
+                >
+                  <Trans>RPnL</Trans>
+                </TooltipWithPortal>
+              </TableTh>
+            </TableTheadTr>
+          </thead>
+          <tbody>
+            {isLoading ? (
+              <TradesHistorySkeleton withTimestamp={forAllAccounts} />
+            ) : (
+              currentPageData.map((tradeAction) => (
+                <TradeHistoryRow
+                  key={tradeAction.id}
+                  tradeAction={tradeAction}
+                  minCollateralUsd={minCollateralUsd!}
+                  showDebugValues={showDebugValues}
+                  shouldDisplayAccount={forAllAccounts}
+                />
+              ))
+            )}
+          </tbody>
+        </table>
+        {isEmpty && hasFilters && (
+          <EmptyTableContent
+            isLoading={false}
+            isEmpty={isEmpty}
+            emptyText={<Trans>No trades match the selected filters</Trans>}
+          />
+        )}
+        {isEmpty && !hasFilters && !isLoading && (
+          <EmptyTableContent isLoading={false} isEmpty={isEmpty} emptyText={<Trans>No trades yet</Trans>} />
+        )}
+      </TableScrollFadeContainer>
+
+      <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
     </div>
   );
 }

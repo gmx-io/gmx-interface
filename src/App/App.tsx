@@ -21,6 +21,7 @@ import { SettingsContextProvider } from "context/SettingsContext/SettingsContext
 import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
 import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContextProvider";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
+import { ThemeProvider } from "context/ThemeContext/ThemeContext";
 import { TokenPermitsContextProvider } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
@@ -68,6 +69,7 @@ function App() {
     </SWRConfig>
   );
   app = <GlobalStateProvider>{app}</GlobalStateProvider>;
+  app = <ThemeProvider>{app}</ThemeProvider>;
   app = <Router>{app}</Router>;
 
   return app;

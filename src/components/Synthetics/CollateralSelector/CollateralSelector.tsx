@@ -135,7 +135,7 @@ function CollateralSelectorMobile(props: Props) {
               }}
               tokenData={option}
             />
-            <p className="text-body-small text-gray-500 last:mb-0">{description}</p>
+            <p className="text-body-small text-typography-secondary last:mb-0">{description}</p>
           </>
         );
       })}
@@ -176,7 +176,7 @@ function CollateralListItemMobile({
   return (
     <SelectorBaseMobileButton onSelect={handleSelect} disabled={disabled}>
       <div className="CollateralSelector-mobile-column-pool" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
-        <TokenIcon symbol={tokenData.symbol} displaySize={28} importSize={24} />
+        <TokenIcon symbol={tokenData.symbol} displaySize={24} importSize={24} />
         <div>{tokenData.symbol}</div>
       </div>
     </SelectorBaseMobileButton>

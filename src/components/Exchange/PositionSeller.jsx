@@ -634,13 +634,13 @@ export default function PositionSeller(props) {
     }
     if (orderOption === STOP) {
       if (!triggerPriceUsd || triggerPriceUsd == 0n) {
-        return [t`Enter Price`];
+        return [t`Enter price`];
       }
       if (position.isLong && triggerPriceUsd <= liquidationPrice) {
-        return [t`Price below Liq. Price`];
+        return [t`Price below liq. price`];
       }
       if (!position.isLong && triggerPriceUsd >= liquidationPrice) {
-        return [t`Price above Liq. Price`];
+        return [t`Price above liq. price`];
       }
 
       if (profitPrice && nextDelta == 0n && nextHasProfit) {
@@ -649,23 +649,23 @@ export default function PositionSeller(props) {
     }
 
     if (isNotEnoughReceiveTokenLiquidity) {
-      return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientReceiveToken];
+      return [t`Insufficient liquidity.`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientReceiveToken];
     }
 
     if (!isClosing && keepLeverage && (leverageWithoutDelta < 0 || leverageWithoutDelta > 100 * BASIS_POINTS_DIVISOR)) {
-      return [t`Fees are higher than Collateral`, ErrorDisplayType.Tooltip, ErrorCode.FeesHigherThanCollateral];
+      return [t`Fees are higher than collateral.`, ErrorDisplayType.Tooltip, ErrorCode.FeesHigherThanCollateral];
     }
 
     if (!isClosing && keepLeverage && isKeepLeverageNotPossible) {
-      return [t`Keep Leverage is not possible`, ErrorDisplayType.Tooltip, ErrorCode.KeepLeverageNotPossible];
+      return [t`Keep leverage is not possible.`, ErrorDisplayType.Tooltip, ErrorCode.KeepLeverageNotPossible];
     }
 
     if (!isClosing && nextCollateral < 0) {
-      return [t`Realized PnL insufficient for Fees`, ErrorDisplayType.Tooltip, ErrorCode.NegativeNextCollateral];
+      return [t`Realized PnL insufficient for fees.`, ErrorDisplayType.Tooltip, ErrorCode.NegativeNextCollateral];
     }
 
     if (isCollateralPoolCapacityExceeded) {
-      return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.ReceiveCollateralTokenOnly];
+      return [t`Insufficient liquidity.`, ErrorDisplayType.Tooltip, ErrorCode.ReceiveCollateralTokenOnly];
     }
 
     if (!isClosing && position && position.size && fromAmount) {
@@ -690,16 +690,16 @@ export default function PositionSeller(props) {
     }
 
     if (!isClosing && nextLeverageWithoutDelta && nextLeverageWithoutDelta > MAX_LEVERAGE) {
-      return [t`Max Leverage without PnL: 100x`];
+      return [t`Max leverage without PnL: 100x`];
     }
 
     if (position.isLong) {
       if (!isClosing && nextLiquidationPrice && nextLiquidationPrice > position.markPrice) {
-        return [t`Invalid Liquidation Price`];
+        return [t`Invalid liquidation price`];
       }
     } else {
       if (!isClosing && nextLiquidationPrice && nextLiquidationPrice < position.markPrice) {
-        return [t`Invalid Liquidation Price`];
+        return [t`Invalid liquidation price`];
       }
     }
 
@@ -742,17 +742,17 @@ export default function PositionSeller(props) {
     }
 
     if (isWaitingForPositionRouterApproval) {
-      return t`Enabling Leverage...`;
+      return t`Enabling leverage`;
     }
 
     if (isPositionRouterApproving) {
-      return t`Enabling Leverage...`;
+      return t`Enabling leverage`;
     }
 
     if (hasPendingProfit) {
       return t`Close without profit`;
     }
-    return isSubmitting ? t`Closing...` : t`Close`;
+    return isSubmitting ? t`Closing` : t`Close`;
   };
 
   const resetForm = () => {
@@ -824,8 +824,8 @@ export default function PositionSeller(props) {
         collateralDelta,
         position.isLong,
         {
-          sentMsg: t`Order submitted!`,
-          successMsg: t`Order created!`,
+          sentMsg: t`Order submitted.`,
+          successMsg: t`Order created.`,
           failMsg: t`Order creation failed.`,
           setPendingTxns,
         }
@@ -890,7 +890,7 @@ export default function PositionSeller(props) {
     ];
 
     callContract(chainId, contract, "decreasePosition", params, {
-      sentMsg: t`Close submitted!`,
+      sentMsg: t`Close submitted.`,
       successMsg,
       failMsg: t`Close failed.`,
       setPendingTxns,
@@ -976,7 +976,7 @@ export default function PositionSeller(props) {
     [ErrorCode.InsufficientReceiveToken]: (
       <Trans>
         Swap amount from {position.collateralToken.symbol} to {receiveToken.symbol} exceeds {receiveToken.symbol}{" "}
-        available liquidity. Choose a different "Receive" token.
+        available liquidity. Choose a different receive token.
       </Trans>
     ),
     [ErrorCode.ReceiveCollateralTokenOnly]: (
@@ -990,13 +990,13 @@ export default function PositionSeller(props) {
     ),
     [ErrorCode.FeesHigherThanCollateral]: (
       <Trans>
-        Collateral is not enough to cover pending Fees. Please uncheck "Keep Leverage" to pay the Fees with the realized
+        Collateral is not enough to cover pending fees. Please uncheck "Keep Leverage" to pay the fees with the realized
         PnL.
       </Trans>
     ),
     [ErrorCode.NegativeNextCollateral]: (
       <Trans>
-        Neither Collateral nor realized PnL is enough to cover pending Fees. Please close a larger position amount.
+        Neither collateral nor realized PnL is enough to cover pending fees. Please close a larger position amount.
       </Trans>
     ),
   };
@@ -1049,7 +1049,6 @@ export default function PositionSeller(props) {
               bottomLeftValue={
                 convertedAmountFormatted ? `${convertedAmountFormatted} ${position.collateralToken.symbol}` : ""
               }
-              isBottomLeftValueMuted={convertedAmount === 0n}
               topRightLabel={t`Max`}
               topRightValue={maxAmount && maxAmountFormatted}
               onClickMax={fromValue !== maxAmountFormattedFree ? () => setFromValue(maxAmountFormattedFree) : undefined}
@@ -1091,13 +1090,13 @@ export default function PositionSeller(props) {
             {hasPendingProfit && orderOption !== STOP && (
               <div className="PositionEditor-accept-profit-warning">
                 <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
-                  <span className="text-slate-100">Forfeit profit</span>
+                  <span className="text-typography-secondary">Forfeit profit</span>
                 </Checkbox>
               </div>
             )}
             <div className="PositionEditor-keep-leverage-settings">
               <ToggleSwitch isChecked={keepLeverage} setIsChecked={setKeepLeverage} className="mb-10">
-                <span className="text-slate-100">
+                <span className="text-typography-secondary">
                   <Trans>Keep leverage at {formatAmount(position.leverage, 4, 2)}x</Trans>
                 </span>
               </ToggleSwitch>
@@ -1111,7 +1110,7 @@ export default function PositionSeller(props) {
                       position="top-start"
                       renderContent={() => {
                         return (
-                          <div className="text-white">
+                          <div className="text-typography-primary">
                             <Trans>
                               You can change this in the settings menu on the top right of the page.
                               <br />
@@ -1217,7 +1216,7 @@ export default function PositionSeller(props) {
                   }
                   position="top-start"
                   renderContent={() => {
-                    return <Trans>Initial Collateral (Collateral excluding Borrow Fee).</Trans>;
+                    return <Trans>Initial collateral (collateral excluding borrow fee).</Trans>;
                   }}
                 />
               </div>
@@ -1305,7 +1304,7 @@ export default function PositionSeller(props) {
                 <div className="align-right">
                   <TokenSelector
                     className={cx({
-                      "*:!text-yellow-500 hover:!text-yellow-500":
+                      "*:!text-yellow-300 hover:!text-yellow-300":
                         isNotEnoughReceiveTokenLiquidity || isCollateralPoolCapacityExceeded,
                     })}
                     label={t`Receive`}
@@ -1344,7 +1343,7 @@ export default function PositionSeller(props) {
                           disabled: true,
                           message: (
                             <div>
-                              <Trans>Insufficient Available Liquidity to swap to {tokenOptionInfo.symbol}:</Trans>
+                              <Trans>Insufficient available liquidity to swap to {tokenOptionInfo.symbol}:</Trans>
                               <br />
                               <br />
                               <StatsTooltipRow

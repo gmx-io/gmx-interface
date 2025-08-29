@@ -1,8 +1,6 @@
 import cx from "classnames";
 import { useCallback, type ReactNode } from "react";
 
-import "./ToggleSwitch.scss";
-
 type Props = {
   isChecked: boolean;
   setIsChecked: (value: boolean) => void;
@@ -22,8 +20,6 @@ export default function ToggleSwitch({
   textClassName,
   beforeSwitchContent,
 }: Props) {
-  const classNames = cx("Switch-toggle-wrapper", className);
-
   const handleToggle = useCallback(() => {
     if (disabled) {
       return;
@@ -33,12 +29,24 @@ export default function ToggleSwitch({
   }, [disabled, isChecked, setIsChecked]);
 
   return (
-    <div className={classNames}>
+    <div className={cx("inline-flex w-full items-center justify-between gap-8", className)}>
       <span className={textClassName}>{children}</span>
       <div className="flex items-center gap-8">
         {beforeSwitchContent}
-        <div className={cx("Switch-toggle", { checked: isChecked, disabled })} onClick={handleToggle}>
-          <div className="handle" />
+        <div
+          className={cx("group relative w-36 cursor-pointer rounded-full border transition-all duration-300", {
+            "border-blue-400 bg-blue-400": isChecked,
+            "bg-fill-slate-700 border-slate-600": !isChecked,
+            "pointer-events-none": disabled,
+          })}
+          onClick={handleToggle}
+        >
+          <div
+            className={cx("h-18 w-18 rounded-full shadow-[0px_2px_4px_0px_#00000040] transition-all duration-300", {
+              "translate-x bg-slate-100 opacity-60 group-hover:opacity-100": !isChecked,
+              "translate-x-[17px] bg-white": isChecked,
+            })}
+          />
         </div>
       </div>
     </div>

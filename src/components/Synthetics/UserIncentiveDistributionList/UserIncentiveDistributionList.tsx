@@ -128,14 +128,14 @@ export default function UserIncentiveDistributionList() {
         <Card title={t`Distribution History`} bodyPadding={false} divider={false}>
           {!userIncentiveData?.data?.length ? (
             <EmptyMessage
-              tooltipText={t`Incentives are airdropped weekly.`}
-              message={t`No incentives distribution history yet.`}
+              tooltipText={t`The distribution history for your incentives, airdrops, and prizes will be displayed here.`}
+              message={t`No distribution history yet.`}
               className="!mt-10"
             >
               {!active && (
                 <div className="mt-15">
                   <Button variant="secondary" onClick={openConnectModal}>
-                    <Trans>Connect Wallet</Trans>
+                    <Trans>Connect wallet</Trans>
                   </Button>
                 </div>
               )}
@@ -144,7 +144,7 @@ export default function UserIncentiveDistributionList() {
             <TableScrollFadeContainer>
               <table className="w-full min-w-max">
                 <thead>
-                  <TableTheadTr bordered>
+                  <TableTheadTr>
                     <TableTh>
                       <Trans>Date</Trans>
                     </TableTh>
@@ -209,6 +209,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
         showDollar={false}
         label={tokenInfo.symbol}
         value={formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}
+        valueClassName="numbers"
       />
     ));
   }, [tokenIncentiveDetails]);
@@ -224,11 +225,18 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const type = tooltipData ? <Tooltip handle={typeStr} renderContent={renderTooltipTypeContent} /> : typeStr;
 
   return (
-    <TableTr bordered={false} hoverable={false}>
+    <TableTr>
       <TableTd data-label="Date">{formatDate(transaction.timestamp)}</TableTd>
-      <TableTd data-label="Type">{type}</TableTd>
+      <TableTd data-label="Type" className="font-medium">
+        {type}
+      </TableTd>
       <TableTd data-label="Amount">
-        <Tooltip handle={formatUsd(totalUsd)} className="whitespace-nowrap" renderContent={renderTotalTooltipContent} />
+        <Tooltip
+          handle={formatUsd(totalUsd)}
+          handleClassName="numbers"
+          className="whitespace-nowrap"
+          renderContent={renderTotalTooltipContent}
+        />
       </TableTd>
       <TableTd data-label="Transaction">
         <ExternalLink href={`${explorerURL}tx/${transaction.hash}`}>

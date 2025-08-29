@@ -1,8 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
-import { AiOutlineEdit } from "react-icons/ai";
-import { FaAngleRight } from "react-icons/fa";
+import { FaChevronRight } from "react-icons/fa6";
 import { ImSpinner2 } from "react-icons/im";
 import { MdClose } from "react-icons/md";
 import Skeleton from "react-loading-skeleton";
@@ -40,13 +39,15 @@ import { getPositiveOrNegativeClass } from "lib/utils";
 import { getMarketIndexName } from "sdk/utils/markets";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
+import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
 import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import EditIcon from "img/ic_edit.svg?react";
 
 import { TwapOrderProgress } from "../OrderItem/OrderItem";
 
@@ -61,7 +62,6 @@ export type Props = {
   onShareClick: () => void;
   onSelectPositionClick?: (tradeMode?: TradeMode, showCurtain?: boolean) => void;
   isLarge: boolean;
-  openSettings: () => void;
   onOrdersClick?: (key?: string) => void;
   onCancelOrder?: (orderKey: string) => void;
 };
@@ -79,8 +79,9 @@ export function PositionItem(p: Props) {
 
   function renderNetValue() {
     return (
-      <Tooltip
+      <TooltipWithPortal
         handle={formatUsd(p.position.netValue)}
+        handleClassName="numbers"
         position={p.isLarge ? "bottom-start" : "bottom-end"}
         renderContent={() => (
           <div>
@@ -92,17 +93,20 @@ export function PositionItem(p: Props) {
             <StatsTooltipRow
               label={t`Initial Collateral`}
               value={formatUsd(p.position.collateralUsd) || "..."}
+              valueClassName="numbers"
               showDollar={false}
             />
             <StatsTooltipRow
               label={t`PnL`}
               value={formatDeltaUsd(p.position?.pnl) || "..."}
+              valueClassName="numbers"
               showDollar={false}
               textClassName={getPositiveOrNegativeClass(p.position.pnl)}
             />
             <StatsTooltipRow
               label={t`Accrued Borrow Fee`}
               value={formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}
+              valueClassName="numbers"
               showDollar={false}
               textClassName={cx({
                 "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
@@ -111,6 +115,7 @@ export function PositionItem(p: Props) {
             <StatsTooltipRow
               label={t`Accrued Negative Funding Fee`}
               value={formatUsd(-p.position.pendingFundingFeesUsd) || "..."}
+              valueClassName="numbers"
               showDollar={false}
               textClassName={cx({
                 "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
@@ -120,6 +125,7 @@ export function PositionItem(p: Props) {
               label={t`Close Fee`}
               showDollar={false}
               value={formatUsd(-p.position.closingFeeUsd) || "..."}
+              valueClassName="numbers"
               textClassName="text-red-500"
             />
             {p.position.uiFeeUsd > 0 && (
@@ -127,6 +133,7 @@ export function PositionItem(p: Props) {
                 label={t`UI Fee`}
                 showDollar={false}
                 value={formatUsd(-p.position.uiFeeUsd)}
+                valueClassName="numbers"
                 textClassName="text-red-500"
               />
             )}
@@ -134,6 +141,7 @@ export function PositionItem(p: Props) {
             <StatsTooltipRow
               label={t`PnL After Fees`}
               value={formatDeltaUsd(p.position.pnlAfterFees, p.position.pnlAfterFeesPercentage)}
+              valueClassName="numbers"
               showDollar={false}
               textClassName={getPositiveOrNegativeClass(p.position.pnlAfterFees)}
             />
@@ -169,13 +177,13 @@ export function PositionItem(p: Props) {
 
   function renderCollateral() {
     return (
-      <>
+      <div className="flex flex-col gap-4">
         <div className={cx("position-list-collateral", { isSmall: !p.isLarge })}>
-          <Tooltip
-            handle={<span data-qa="position-collateral-value">{formatUsd(p.position.remainingCollateralUsd)}</span>}
+          <TooltipWithPortal
+            handle={formatUsd(p.position.remainingCollateralUsd)}
+            handleClassName={cx("numbers", { negative: p.position.hasLowCollateral })}
             position={p.isLarge ? "bottom-start" : "bottom-end"}
             className="PositionItem-collateral-tooltip"
-            handleClassName={cx({ negative: p.position.hasLowCollateral })}
             content={
               <>
                 {p.position.hasLowCollateral && (
@@ -206,6 +214,7 @@ export function PositionItem(p: Props) {
                   label={t`Accrued Borrow Fee`}
                   showDollar={false}
                   value={formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}
+                  valueClassName="numbers"
                   textClassName={cx({
                     "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
                   })}
@@ -214,6 +223,7 @@ export function PositionItem(p: Props) {
                   label={t`Accrued Negative Funding Fee`}
                   showDollar={false}
                   value={formatDeltaUsd(-p.position.pendingFundingFeesUsd) || "..."}
+                  valueClassName="numbers"
                   textClassName={cx({
                     "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
                   })}
@@ -222,6 +232,7 @@ export function PositionItem(p: Props) {
                   label={t`Accrued Positive Funding Fee`}
                   showDollar={false}
                   value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
+                  valueClassName="numbers"
                   textClassName={cx({
                     "text-green-500": p.position.pendingClaimableFundingFeesUsd > 0,
                   })}
@@ -231,6 +242,7 @@ export function PositionItem(p: Props) {
                   showDollar={false}
                   label={t`Current Borrow Fee / Day`}
                   value={borrowingFeeRateUsd !== undefined ? formatUsd(-borrowingFeeRateUsd) : "..."}
+                  valueClassName="numbers"
                   textClassName={cx({
                     "text-red-500": borrowingFeeRateUsd !== undefined && borrowingFeeRateUsd > 0,
                   })}
@@ -239,6 +251,7 @@ export function PositionItem(p: Props) {
                   showDollar={false}
                   label={t`Current Funding Fee / Day`}
                   value={formatDeltaUsd(fundingFeeRateUsd)}
+                  valueClassName="numbers"
                   textClassName={getPositiveOrNegativeClass(fundingFeeRateUsd)}
                 />
                 <br />
@@ -255,12 +268,12 @@ export function PositionItem(p: Props) {
 
           {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
             <span className="edit-icon" onClick={p.onEditCollateralClick} data-qa="position-edit-button">
-              <AiOutlineEdit className="text-slate-100" fontSize={16} />
+              <EditIcon className="text-typography-secondary" width={16} height={16} />
             </span>
           )}
         </div>
 
-        <div className="Exchange-list-info-label Position-collateral-amount muted">
+        <div className="muted text-body-small numbers">
           (
           {formatBalanceAmount(
             p.position.remainingCollateralAmount,
@@ -270,7 +283,7 @@ export function PositionItem(p: Props) {
           )}
           )
         </div>
-      </>
+      </div>
     );
   }
 
@@ -326,6 +339,7 @@ export function PositionItem(p: Props) {
             <StatsTooltipRow
               label={"Estimated Time to Liquidation"}
               value={formatEstimatedLiquidationTime(estimatedLiquidationHours)}
+              valueClassName="numbers"
               showDollar={false}
             />
           </div>
@@ -337,28 +351,32 @@ export function PositionItem(p: Props) {
 
     if (liqPriceWarning || estimatedLiquidationHours) {
       return (
-        <Tooltip
+        <TooltipWithPortal
           handle={
-            formatLiquidationPrice(p.position.liquidationPrice, {
-              displayDecimals: marketDecimals,
-              visualMultiplier: p.position.indexToken.visualMultiplier,
-            }) || "..."
+            p.position.liquidationPrice
+              ? formatLiquidationPrice(p.position.liquidationPrice, {
+                  displayDecimals: marketDecimals,
+                  visualMultiplier: p.position.indexToken.visualMultiplier,
+                })
+              : "..."
           }
-          position="bottom-end"
-          handleClassName={cx({
+          handleClassName={cx("numbers", {
             "LiqPrice-soft-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
             "LiqPrice-hard-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24,
           })}
+          position="bottom-end"
           renderContent={getLiqPriceTooltipContent}
         />
       );
     }
 
     return (
-      formatLiquidationPrice(p.position.liquidationPrice, {
-        displayDecimals: marketDecimals,
-        visualMultiplier: p.position.indexToken.visualMultiplier,
-      }) || "..."
+      <span className="numbers">
+        {formatLiquidationPrice(p.position.liquidationPrice, {
+          displayDecimals: marketDecimals,
+          visualMultiplier: p.position.indexToken.visualMultiplier,
+        }) || "..."}
+      </span>
     );
   }
 
@@ -367,7 +385,7 @@ export function PositionItem(p: Props) {
     const qaAttr = `position-item-${indexName}-${poolName}-${p.position.isLong ? "Long" : "Short"}`;
 
     return (
-      <TableTr data-qa={qaAttr}>
+      <TableTr hoverable={true} data-qa={qaAttr}>
         <TableTd
           data-qa="position-handle"
           className={cx("flex", {
@@ -378,7 +396,7 @@ export function PositionItem(p: Props) {
           {/* title */}
           <div className={cx("Position-item-info relative")}>
             <div className="Exchange-list-title">
-              <Tooltip
+              <TooltipWithPortal
                 handle={
                   <>
                     <TokenIcon
@@ -387,7 +405,9 @@ export function PositionItem(p: Props) {
                       displaySize={20}
                       importSize={24}
                     />
-                    {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
+                    <span className="font-medium">
+                      {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
+                    </span>
                   </>
                 }
                 position="bottom-start"
@@ -408,12 +428,12 @@ export function PositionItem(p: Props) {
 
                     <div>
                       <Trans>
-                        Click on the Position to select its market, then use the trade box to increase your Position
-                        Size, or to set Take Profit / Stop Loss Orders.
+                        Click on the position to select it, then use the trade box to increase it or to set TP/SL
+                        orders.
                       </Trans>
                       <br />
                       <br />
-                      <Trans>Use the "Close" button to reduce your Position Size.</Trans>
+                      <Trans>Use the "Close" button to reduce your position.</Trans>
                     </div>
 
                     {showDebugValues && (
@@ -434,7 +454,7 @@ export function PositionItem(p: Props) {
               )}
             </div>
             <div className="Exchange-list-info-label">
-              <span className={cx("muted mr-4 rounded-2 px-2 pb-1")}>
+              <span className={cx("muted mr-4 rounded-2 px-2 pb-1 numbers")}>
                 {formatLeverage(p.position.leverage) || "..."}
               </span>
               <span className={cx({ positive: p.position.isLong, negative: !p.position.isLong })}>
@@ -444,20 +464,21 @@ export function PositionItem(p: Props) {
           </div>
         </TableTd>
         <TableTd>
-          {formatUsd(p.position.sizeInUsd)}
-          <PositionItemOrdersLarge positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
+          <div className="flex flex-col gap-2">
+            <span className="numbers">{formatUsd(p.position.sizeInUsd)}</span>
+            <PositionItemOrdersLarge positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
+          </div>
         </TableTd>
         <TableTd>
           {/* netValue */}
           {p.position.isOpening ? (
             t`Opening...`
           ) : (
-            <>
+            <div className="flex flex-col gap-4">
               {renderNetValue()}
               {displayedPnl !== undefined && (
                 <div
-                  onClick={p.openSettings}
-                  className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {
+                  className={cx("Exchange-list-info-label Position-pnl text-body-small numbers", {
                     positive: displayedPnl > 0,
                     negative: displayedPnl < 0,
                     muted: displayedPnl == 0n,
@@ -466,7 +487,7 @@ export function PositionItem(p: Props) {
                   {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
                 </div>
               )}
-            </>
+            </div>
           )}
         </TableTd>
         <TableTd>
@@ -475,19 +496,25 @@ export function PositionItem(p: Props) {
         </TableTd>
         <TableTd>
           {/* entryPrice */}
-          {p.position.isOpening
-            ? t`Opening...`
-            : formatUsd(p.position.entryPrice, {
+          {p.position.isOpening ? (
+            t`Opening...`
+          ) : (
+            <span className="numbers">
+              {formatUsd(p.position.entryPrice, {
                 displayDecimals: marketDecimals,
                 visualMultiplier: p.position.indexToken.visualMultiplier,
               })}
+            </span>
+          )}
         </TableTd>
         <TableTd>
           {/* markPrice */}
-          {formatUsd(p.position.markPrice, {
-            displayDecimals: marketDecimals,
-            visualMultiplier: p.position.indexToken.visualMultiplier,
-          })}
+          <span className="numbers">
+            {formatUsd(p.position.markPrice, {
+              displayDecimals: marketDecimals,
+              visualMultiplier: p.position.indexToken.visualMultiplier,
+            })}
+          </span>
         </TableTd>
         <TableTd>
           {/* liqPrice */}
@@ -497,18 +524,17 @@ export function PositionItem(p: Props) {
         {!p.hideActions && (
           <>
             {!p.position.isOpening ? (
-              <>
-                <TableTd>
-                  <button
-                    className="Exchange-list-action"
+              <TableTd>
+                <div className="flex items-center justify-end gap-4">
+                  <Button
+                    variant="ghost"
                     onClick={p.onClosePositionClick}
                     disabled={p.position.sizeInUsd == 0n}
                     data-qa="position-close-button"
                   >
                     <Trans>Close</Trans>
-                  </button>
-                </TableTd>
-                <TableTd>
+                  </Button>
+
                   <PositionDropdown
                     handleEditCollateral={p.onEditCollateralClick}
                     handleMarketSelect={() => p.onSelectPositionClick?.()}
@@ -518,13 +544,10 @@ export function PositionItem(p: Props) {
                     handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket)}
                     handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger)}
                   />
-                </TableTd>
-              </>
+                </div>
+              </TableTd>
             ) : (
-              <>
-                <TableTd />
-                <TableTd />
-              </>
+              <TableTd />
             )}
           </>
         )}
@@ -536,171 +559,158 @@ export function PositionItem(p: Props) {
     const { indexName, poolName } = p.position;
 
     return (
-      <div className="App-card flex flex-col justify-between" data-qa="position-item">
-        <div className="flex flex-grow flex-col">
-          <div className="flex-grow">
-            <div
-              className={cx("App-card-title Position-card-title text-body-medium", {
-                "Position-active-card": isCurrentMarket,
+      <AppCard dataQa="position-item">
+        <AppCardSection onClick={p.onSelectPositionClick}>
+          <div className="text-body-medium flex items-center gap-8">
+            <span
+              className={cx("text-body-medium relative flex items-center gap-4 font-medium", {
+                "after:absolute after:-left-10 after:top-[50%] after:h-16 after:w-2 after:-translate-y-[50%] after:bg-blue-300":
+                  isCurrentMarket,
               })}
-              onClick={() => p.onSelectPositionClick?.()}
             >
-              <span className="Exchange-list-title flex">
-                <TokenIcon
-                  className="PositionList-token-icon"
-                  symbol={p.position.indexToken?.symbol}
-                  displaySize={20}
-                  importSize={24}
-                />
-                {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
+              <TokenIcon symbol={p.position.indexToken?.symbol} displaySize={16} importSize={24} />
+              {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
+            </span>
+            <div className="text-body-small flex items-center gap-4">
+              <span className="rounded-4 leading-1">{formatLeverage(p.position.leverage) || "..."}</span>
+              <span
+                className={cx("Exchange-list-side", {
+                  positive: p.position.isLong,
+                  negative: !p.position.isLong,
+                })}
+              >
+                {p.position.isLong ? t`Long` : t`Short`}
               </span>
-              <div className="flex items-center">
-                <span className={cx("mr-8 rounded-4 px-4 leading-1")}>
-                  {formatLeverage(p.position.leverage) || "..."}
-                </span>
-                <span
-                  className={cx("Exchange-list-side", {
-                    positive: p.position.isLong,
-                    negative: !p.position.isLong,
-                  })}
-                >
-                  {p.position.isLong ? t`Long` : t`Short`}
-                </span>
-              </div>
-              {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
             </div>
-
-            <div className="App-card-divider" />
-            <div className="App-card-content">
-              {showDebugValues && (
-                <div className="App-card-row">
-                  <div className="label">Key</div>
-                  <div className="debug-key muted">{p.position.contractKey}</div>
-                </div>
-              )}
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Pool</Trans>
-                </div>
-                <div>
-                  <div className="flex items-start">
-                    <span>{indexName && indexName}</span>
-                    <span className="subtext">{poolName && `[${poolName}]`}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Size</Trans>
-                </div>
-                <div>{formatUsd(p.position.sizeInUsd)}</div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Net Value</Trans>
-                </div>
-                <div>{renderNetValue()}</div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">{savedShowPnlAfterFees ? t`PnL After Fees` : t`PnL`}</div>
-                <div>
-                  <span
-                    className={cx("Exchange-list-info-label Position-pnl cursor-pointer", {
-                      positive: displayedPnl > 0,
-                      negative: displayedPnl < 0,
-                      muted: displayedPnl == 0n,
-                    })}
-                    onClick={p.openSettings}
-                  >
-                    {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
-                  </span>
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Collateral</Trans>
-                </div>
-                <div>{renderCollateral()}</div>
-              </div>
+            {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
+          </div>
+        </AppCardSection>
+        <AppCardSection>
+          {showDebugValues && (
+            <div className="App-card-row">
+              <div className="font-medium text-typography-secondary">Key</div>
+              <div className="debug-key muted">{p.position.contractKey}</div>
             </div>
-            <div className="App-card-divider" />
-            <div className="App-card-content">
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Entry Price</Trans>
-                </div>
-                <div>
-                  {formatUsd(p.position.entryPrice, {
-                    displayDecimals: marketDecimals,
-                    visualMultiplier: p.position.indexToken.visualMultiplier,
-                  })}
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Mark Price</Trans>
-                </div>
-                <div>
-                  {formatUsd(p.position.markPrice, {
-                    displayDecimals: marketDecimals,
-                    visualMultiplier: p.position.indexToken.visualMultiplier,
-                  })}
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Liq. Price</Trans>
-                </div>
-                <div>{renderLiquidationPrice()}</div>
-              </div>
+          )}
+          <div className="App-card-row">
+            <div className="font-medium text-typography-secondary">
+              <Trans>Pool</Trans>
             </div>
-            <div className="App-card-divider" />
-            <div className="flex flex-wrap gap-15">
-              <div className="label">
-                <Trans>Orders</Trans>
-              </div>
-              <div className="flex-grow">
-                <PositionItemOrdersSmall positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
+            <div>
+              <div className="flex items-start">
+                <span>{indexName && indexName}</span>
+                <span className="subtext">{poolName && `[${poolName}]`}</span>
               </div>
             </div>
           </div>
-          {!p.hideActions && (
-            <footer>
-              <div className="App-card-divider" />
-              <div className="Position-item-action">
-                <div className="Position-item-buttons">
-                  <Button variant="secondary" disabled={p.position.sizeInUsd == 0n} onClick={p.onClosePositionClick}>
-                    <Trans>Close</Trans>
-                  </Button>
-                  <Button variant="secondary" disabled={p.position.sizeInUsd == 0n} onClick={p.onEditCollateralClick}>
-                    <Trans>Edit Collateral</Trans>
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    disabled={p.position.sizeInUsd == 0n}
-                    onClick={() => {
-                      p.onSelectPositionClick?.(TradeMode.Trigger, true);
-                    }}
-                  >
-                    <Trans>TP/SL</Trans>
-                  </Button>
-                </div>
-                <div>
-                  {!p.position.isOpening && !p.hideActions && (
-                    <PositionDropdown
-                      handleMarketSelect={() => p.onSelectPositionClick?.()}
-                      handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market, true)}
-                      handleShare={p.onShareClick}
-                      handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit, true)}
-                      handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket, true)}
-                    />
-                  )}
-                </div>
+          <div className="App-card-row">
+            <div className="font-medium text-typography-secondary">
+              <Trans>Size</Trans>
+            </div>
+            <div className="numbers">{formatUsd(p.position.sizeInUsd)}</div>
+          </div>
+          <div className="App-card-row">
+            <div className="font-medium text-typography-secondary">
+              <Trans>Net Value</Trans>
+            </div>
+            <div>{renderNetValue()}</div>
+          </div>
+          <div className="App-card-row">
+            <div className="font-medium text-typography-secondary">
+              {savedShowPnlAfterFees ? t`PnL After Fees` : t`PnL`}
+            </div>
+            <div>
+              <span
+                className={cx("Exchange-list-info-label Position-pnl numbers", {
+                  positive: displayedPnl > 0,
+                  negative: displayedPnl < 0,
+                  muted: displayedPnl == 0n,
+                })}
+              >
+                {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
+              </span>
+            </div>
+          </div>
+          <div className="App-card-row">
+            <div className="font-medium text-typography-secondary">
+              <Trans>Collateral</Trans>
+            </div>
+            <div>{renderCollateral()}</div>
+          </div>
+        </AppCardSection>
+        <AppCardSection>
+          <div className="App-card-row">
+            <div className="font-medium text-typography-secondary">
+              <Trans>Entry Price</Trans>
+            </div>
+            <div className="numbers">
+              {formatUsd(p.position.entryPrice, {
+                displayDecimals: marketDecimals,
+                visualMultiplier: p.position.indexToken.visualMultiplier,
+              })}
+            </div>
+          </div>
+          <div className="App-card-row">
+            <div className="font-medium text-typography-secondary">
+              <Trans>Mark Price</Trans>
+            </div>
+            <div className="numbers">
+              {formatUsd(p.position.markPrice, {
+                displayDecimals: marketDecimals,
+                visualMultiplier: p.position.indexToken.visualMultiplier,
+              })}
+            </div>
+          </div>
+          <div className="App-card-row">
+            <div className="font-medium text-typography-secondary">
+              <Trans>Liq. Price</Trans>
+            </div>
+            <div>{renderLiquidationPrice()}</div>
+          </div>
+        </AppCardSection>
+        <AppCardSection>
+          <div className="font-medium text-typography-secondary">
+            <Trans>Orders</Trans>
+          </div>
+
+          <PositionItemOrdersSmall positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
+        </AppCardSection>
+
+        {!p.hideActions && (
+          <AppCardSection>
+            <div className="flex items-center justify-between">
+              <div className="flex gap-8">
+                <Button variant="secondary" disabled={p.position.sizeInUsd == 0n} onClick={p.onClosePositionClick}>
+                  <Trans>Close</Trans>
+                </Button>
+                <Button variant="secondary" disabled={p.position.sizeInUsd == 0n} onClick={p.onEditCollateralClick}>
+                  <Trans>Edit Collateral</Trans>
+                </Button>
+                <Button
+                  variant="secondary"
+                  disabled={p.position.sizeInUsd == 0n}
+                  onClick={() => {
+                    p.onSelectPositionClick?.(TradeMode.Trigger, true);
+                  }}
+                >
+                  <Trans>TP/SL</Trans>
+                </Button>
               </div>
-            </footer>
-          )}
-        </div>
-      </div>
+              <div>
+                {!p.position.isOpening && !p.hideActions && (
+                  <PositionDropdown
+                    handleMarketSelect={() => p.onSelectPositionClick?.()}
+                    handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market, true)}
+                    handleShare={p.onShareClick}
+                    handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit, true)}
+                    handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket, true)}
+                  />
+                )}
+              </div>
+            </div>
+          </AppCardSection>
+        )}
+      </AppCard>
     );
   }
 
@@ -747,31 +757,31 @@ function PositionItemOrdersLarge({
 
   return (
     <div>
-      <Tooltip
+      <TooltipWithPortal
         className="Position-list-active-orders"
         handle={
           <>
             <Trans>Orders ({ordersWithErrors.length})</Trans>
             <div
               className={cx("relative top-3 size-6 rounded-full", {
-                "bg-yellow-500": ordersWarningsList.length > 0 && !ordersErrorList.length,
+                "bg-yellow-300": ordersWarningsList.length > 0 && !ordersErrorList.length,
                 "bg-red-500": ordersErrorList.length > 0,
               })}
             />
           </>
         }
-        position="bottom-start"
+        position="bottom"
         handleClassName={cx([
           "Exchange-list-info-label",
           "Exchange-position-list-orders",
           "clickable",
-          "text-slate-100",
+          "text-typography-secondary",
         ])}
         maxAllowedWidth={370}
         tooltipClassName="!z-10 w-[370px]"
         content={
           <div className="flex max-h-[350px] cursor-auto flex-col gap-8 overflow-y-auto leading-base">
-            <div className="font-bold">
+            <div className="font-medium">
               <Trans>Active Orders</Trans>
             </div>
             {ordersWithErrors.map((params) => (
@@ -811,38 +821,23 @@ function PositionItemOrder({
   const isDisabled = isCancelling || Boolean(disabledCancelMarketOrderMessage);
 
   const cancelButton = (
-    <Button
-      variant="secondary"
-      className={cx("!bg-slate-100 !bg-opacity-15 !p-6", {
-        "hover:!bg-opacity-20 active:!bg-opacity-25": !isDisabled,
-      })}
-      disabled={isDisabled}
-      onClick={cancel}
-    >
-      <MdClose fontSize={16} className={cx({ "text-slate-100": isDisabled, "text-white": !isDisabled })} />
+    <Button variant="secondary" disabled={isDisabled} onClick={cancel} className="px-8">
+      <MdClose fontSize={16} />
     </Button>
   );
 
   return (
     <div key={order.key}>
       <div className="flex items-start justify-between gap-6">
-        <Button
-          variant="secondary"
-          className="!block w-full !bg-slate-100 !bg-opacity-15 !p-5 hover:!bg-opacity-20 active:!bg-opacity-25"
-          onClick={handleOrdersClick}
-        >
+        <Button variant="secondary" className="w-full" onClick={handleOrdersClick}>
           <div className="flex items-center justify-between">
             <PositionItemOrderText order={order} />
-            <FaAngleRight fontSize={16} className="ml-5" />
+            <FaChevronRight fontSize={14} className="ml-4" />
           </div>
         </Button>
         {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
-          <Button
-            variant="secondary"
-            className="!bg-slate-100 !bg-opacity-15 !p-6 hover:!bg-opacity-20 active:!bg-opacity-25"
-            onClick={handleEditClick}
-          >
-            <AiOutlineEdit fontSize={16} />
+          <Button variant="secondary" onClick={handleEditClick} className="px-8">
+            <EditIcon className="size-16" />
           </Button>
         )}
         {disabledCancelMarketOrderMessage ? (
@@ -859,7 +854,7 @@ function PositionItemOrder({
               key={err.key}
               className={cx("hyphens-auto [overflow-wrap:anywhere]", {
                 "text-red-500": err.level === "error",
-                "text-yellow-500": err.level === "warning",
+                "text-yellow-300": err.level === "warning",
               })}
             >
               {err.msg}
@@ -879,19 +874,21 @@ function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
   return (
     <div key={order.key} className="text-start">
       {getNameByOrderType(order.orderType, order.isTwap, { abbr: true })}
-      {!isTwap && !isMarketOrderType(order.orderType)
-        ? `: ${triggerThresholdType} ` +
-          formatUsd(order.triggerPrice, {
+      {!isTwap && !isMarketOrderType(order.orderType) ? `: ${triggerThresholdType} ` : null}
+      {!isTwap && !isMarketOrderType(order.orderType) && (
+        <span className="numbers">
+          {formatUsd(order.triggerPrice, {
             displayDecimals: calculateDisplayDecimals(
               order.triggerPrice,
               undefined,
               order.indexToken?.visualMultiplier
             ),
             visualMultiplier: order.indexToken?.visualMultiplier,
-          })
-        : null}
+          })}
+        </span>
+      )}
       :{" "}
-      <span>
+      <span className="numbers">
         {isIncrease ? "+" : "-"}
         {formatUsd(order.sizeDeltaUsd)} {isTwapOrder(order) && <TwapOrderProgress order={order} />}
       </span>

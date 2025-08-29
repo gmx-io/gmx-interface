@@ -25,7 +25,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.9);
+  background: #090a1480;
 }
 
 .Modal-content {
@@ -34,39 +34,21 @@
   max-width: 100%;
   max-height: 90vh;
   overflow: auto;
-  background: var(--color-slate-800);
-  border-radius: 4px;
+  background: var(--color-slate-900);
+  border-radius: 8px;
+  border: 0.5px solid var(--color-slate-600);
   display: flex;
   flex-direction: column;
-}
-
-.divider {
-  border-bottom: 1px solid var(--color-stroke-primary);
 }
 
 .Modal.non-scrollable .Modal-content {
   overflow: visible;
 }
 
-.Modal-header-wrapper {
-  margin: 1.5rem;
-}
-
 .Modal-title-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.Modal-body {
-  /* for scrollbar to have a space on left and right */
-  margin: 1.5rem 1rem 1.5rem 1.5rem;
-  padding-right: 0.5rem;
-}
-
-.Modal-body.no-content-padding {
-  margin: 0;
-  padding-right: 0.5rem;
 }
 
 .Modal-title {

@@ -1,5 +1,6 @@
 import { Trans, plural, t } from "@lingui/macro";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
 
 import {
   OrderStatus,
@@ -146,12 +147,12 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
               <span>{order.isLong ? t`Long` : t`Short`}</span>{" "}
               <div className="inline-flex">
                 <span>{indexName}</span>
-                <span className="subtext gm-toast !text-white">[{poolName}]</span>
+                <span className="subtext gm-toast !text-typography-primary">[{poolName}]</span>
               </div>
             </Trans>
           );
 
-          let text = <Trans>{positionName} Fees settling</Trans>;
+          let text = <Trans>{positionName} Settling fees.</Trans>;
           let status: TransactionStatusType = "muted";
           let txnHash: string | undefined;
 
@@ -160,13 +161,13 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
           }
 
           if (orderStatus?.executedTxnHash) {
-            text = <Trans>{positionName} Fees settled</Trans>;
+            text = <Trans>{positionName} Fees settled.</Trans>;
             status = "success";
             txnHash = orderStatus?.executedTxnHash;
           }
 
           if (orderStatus?.cancelledTxnHash) {
-            text = <Trans>{positionName} Failed to settle</Trans>;
+            text = <Trans>{positionName} Failed to settle.</Trans>;
             status = "error";
             txnHash = orderStatus?.cancelledTxnHash;
           }
@@ -179,8 +180,14 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
 
   useToastAutoClose(isCompleted, toastTimestamp);
 
+  useEffect(() => {
+    if (hasError) {
+      toast.update(toastTimestamp, { type: "error" });
+    }
+  }, [hasError, toastTimestamp]);
+
   return (
-    <StatusNotification title={t`Settling Position Fees`} hasError={hasError}>
+    <StatusNotification title={t`Settling position fees`}>
       {creationStatus}
       {executionStatuses}
     </StatusNotification>

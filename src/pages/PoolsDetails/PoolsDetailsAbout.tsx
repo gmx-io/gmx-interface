@@ -53,7 +53,7 @@ export function PoolsDetailsAbout({
 
   return (
     <div className="flex flex-col gap-16">
-      <div className="text-body-medium text-slate-100">
+      <div className="text-body-medium text-typography-secondary">
         {isGlv ? (
           <Trans>
             This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps
@@ -73,7 +73,7 @@ export function PoolsDetailsAbout({
         <BridgingInfo chainId={chainId} tokenSymbol={glvOrMarketInfo?.shortToken?.symbol} />
       )}
 
-      <div className={cx("grid pt-8", { "grid-cols-1 gap-12": isMobile, "grid-cols-3": !isMobile })}>
+      <div className={cx("flex pt-8", { "flex-col gap-12": isMobile, "flex-row gap-20": !isMobile })}>
         <PoolsDetailsMarketAmount
           label={<Trans>Buyable</Trans>}
           value={
@@ -81,6 +81,8 @@ export function PoolsDetailsAbout({
               ? `${formatAmountHuman(mintable?.mintableAmount, marketToken?.decimals, false, 2)} ${marketToken?.symbol}`
               : "..."
           }
+          valueClassName="text-13"
+          secondaryValueClassName="text-12"
           secondaryValue={mintable ? formatAmountHuman(mintable?.mintableUsd, USD_DECIMALS, true, 2) : undefined}
           tooltipContent={
             !isGlv ? <BuyableTooltipContent marketInfo={glvOrMarketInfo} mintableInfo={mintableInfo} /> : undefined
@@ -93,6 +95,8 @@ export function PoolsDetailsAbout({
               ? `${formatAmountHuman(sellable?.totalAmount, marketToken?.decimals, false, 2)} ${marketToken?.symbol}`
               : "..."
           }
+          valueClassName="text-13"
+          secondaryValueClassName="text-12"
           secondaryValue={sellable ? formatAmountHuman(sellable?.totalUsd, USD_DECIMALS, true, 2) : undefined}
           tooltipContent={
             !isGlv ? <SellableTooltipContent marketInfo={glvOrMarketInfo} sellableInfo={sellableInfo} /> : undefined
@@ -109,6 +113,8 @@ export function PoolsDetailsAbout({
                   : formatDateTime(bigintToNumber(glvOrMarketInfo.shiftLastExecutedAt, 0))
                 : "..."
             }
+            valueClassName="text-13"
+            secondaryValueClassName="text-12"
           />
         )}
       </div>
@@ -213,7 +219,10 @@ const BuyableTooltipContent = ({
           decimals={marketInfo?.longToken?.decimals}
           usd={(mintableInfo?.longDepositCapacityUsd ?? 0n) + (mintableInfo?.shortDepositCapacityUsd ?? 0n)}
         />,
-        <span key="longTokenMaxValue-isSameCollaterals-ratio" className="text-body-small text-slate-100">
+        <span
+          key="longTokenMaxValue-isSameCollaterals-ratio"
+          className="text-body-small text-typography-secondary numbers"
+        >
           ({poolUsd} / {maxPoolUsd})
         </span>,
       ];
@@ -230,7 +239,7 @@ const BuyableTooltipContent = ({
         usd={mintableInfo?.longDepositCapacityUsd}
         symbol={marketInfo?.longToken?.symbol}
       />,
-      <span key="longTokenMaxValue-ratio" className="text-body-small text-slate-100">
+      <span key="longTokenMaxValue-ratio" className="text-body-small text-typography-secondary numbers">
         ({poolUsd} / {maxPoolUsd})
       </span>,
     ];
@@ -258,7 +267,7 @@ const BuyableTooltipContent = ({
         usd={mintableInfo?.shortDepositCapacityUsd}
         symbol={marketInfo?.shortToken?.symbol}
       />,
-      <span key="shortTokenMaxValue-ratio" className="text-body-small text-slate-100">
+      <span key="shortTokenMaxValue-ratio" className="text-body-small text-typography-secondary numbers">
         ({poolUsd} / {maxPoolUsd})
       </span>,
     ];
@@ -279,7 +288,7 @@ const BuyableTooltipContent = ({
 
   return (
     <>
-      <p className="text-white">
+      <p className="text-typography-primary">
         {marketInfo?.isSameCollaterals ? (
           <Trans>
             {marketInfo?.longToken?.symbol} can be used to buy GM for this market up to the specified buying caps.

@@ -253,7 +253,7 @@ export function PositionEditor() {
         qa="position-edit-modal"
       >
         {position && (
-          <>
+          <div className="flex flex-col gap-12">
             <Tabs
               onChange={setOperation}
               selectedValue={operation}
@@ -266,7 +266,6 @@ export function PositionEditor() {
             <BuyInputSection
               topLeftLabel={localizedOperationLabels[operation]}
               bottomLeftValue={formatUsd(collateralDeltaUsd)}
-              isBottomLeftValueMuted={collateralDeltaUsd === 0n}
               bottomRightLabel={t`Max`}
               bottomRightValue={
                 isDeposit
@@ -312,7 +311,7 @@ export function PositionEditor() {
                 collateralToken?.symbol
               )}
             </BuyInputSection>
-            <div className="flex flex-col gap-14 pt-14">
+            <div className="flex flex-col gap-14">
               <HighPriceImpactOrFeesWarningCard
                 priceImpactWarningState={priceImpactWarningState}
                 collateralImpact={fees?.positionCollateralPriceImpact}
@@ -322,7 +321,7 @@ export function PositionEditor() {
                 executionFeeUsd={executionFee?.feeUsd}
               />
 
-              <div className="">{button}</div>
+              <div>{button}</div>
 
               <ExpressTradingWarningCard
                 expressParams={expressParams}
@@ -365,7 +364,7 @@ export function PositionEditor() {
 
               <PositionEditorAdvancedRows operation={operation} gasPaymentParams={expressParams?.gasPaymentParams} />
             </div>
-          </>
+          </div>
         )}
       </Modal>
     </div>

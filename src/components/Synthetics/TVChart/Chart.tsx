@@ -1,6 +1,5 @@
 import { Trans } from "@lingui/macro";
 import { Suspense, lazy } from "react";
-import { useMedia } from "react-use";
 
 import { isDevelopment } from "config/env";
 import {
@@ -13,36 +12,26 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { DepthChart } from "components/DepthChart/DepthChart";
 import Tabs from "components/Tabs/Tabs";
 
-import AntennaBarsIcon from "img/ic_antenna_bars.svg?react";
-import CandlestickChartIcon from "img/ic_candlestick_chart.svg?react";
-
-import { ChartHeader } from "./ChartHeader";
 import { TVChart } from "./TVChart";
 
 import "./TVChart.scss";
 
-const LazyBiNetworkChart = lazy(() => import("react-icons/bi").then((mod) => ({ default: mod.BiNetworkChart })));
 const LazyMarketGraph = lazy(() => import("components/DebugMarketGraph/DebugMarketGraph"));
 
 const TAB_LABELS = {
   PRICE: (
     <div className="flex items-center gap-8">
-      <CandlestickChartIcon />
-      <Trans>PRICE</Trans>
+      <Trans>Price</Trans>
     </div>
   ),
   DEPTH: (
     <div className="flex items-center gap-8">
-      <AntennaBarsIcon />
-      <Trans>DEPTH</Trans>
+      <Trans>Depth</Trans>
     </div>
   ),
   MARKET_GRAPH: (
     <div className="flex items-center gap-8">
-      <Suspense fallback={<div>...</div>}>
-        <LazyBiNetworkChart />
-      </Suspense>
-      MARKET GRAPH
+      <Trans>Market Graph</Trans>
     </div>
   ),
 };
@@ -65,15 +54,12 @@ const TABS_OPTIONS = TABS.map((tab) => ({
 }));
 
 export function Chart() {
-  const isMobile = useMedia("(max-width: 700px)");
   const [tab, setTab] = useLocalStorageSerializeKey("chart-tab", "PRICE");
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
   return (
     <div className="ExchangeChart tv flex h-[60rem] flex-col [@media(min-width:2560px)]:min-h-[780px] [@media(min-width:3840px)]:min-h-[1140px]">
-      <ChartHeader isMobile={isMobile} />
-
-      <div className="flex grow flex-col overflow-hidden rounded-4 bg-slate-800 [@media(max-width:1920px)]:h-[53.6rem]">
+      <div className="flex grow flex-col overflow-hidden rounded-8 bg-slate-900 max-[1920px]:h-[53.6rem]">
         {isSwap ? (
           tab === "MARKET_GRAPH" ? (
             TAB_CONTENTS.MARKET_GRAPH
@@ -82,9 +68,7 @@ export function Chart() {
           )
         ) : (
           <>
-            <div className="text-body-medium border-b border-stroke-primary px-20 py-10">
-              <Tabs type="inline" className="flex" options={TABS_OPTIONS} selectedValue={tab} onChange={setTab} />
-            </div>
+            <ChartTabs tab={tab} setTab={setTab} />
 
             {TAB_CONTENTS[tab || "PRICE"]}
           </>
@@ -107,3 +91,7 @@ function DepthChartContainer() {
     </div>
   );
 }
+
+const ChartTabs = ({ tab, setTab }: { tab: string | undefined; setTab: (tab: string) => void }) => {
+  return <Tabs options={TABS_OPTIONS} selectedValue={tab} onChange={setTab} />;
+};

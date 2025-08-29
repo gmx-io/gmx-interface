@@ -139,7 +139,7 @@ export default function GlpSwap(props) {
     () => ({
       [tabOptions[0]]: {
         regular:
-          "border-b border-b-[transparent] !cursor-not-allowed !bg-[#1b1e32] text-slate-500 !hover:bg-[#1b1e32] hover:!text-slate-500",
+          "border-b border-b-[transparent] !cursor-not-allowed !bg-[#1b1e32] text-typography-secondary !hover:bg-[#1b1e32] hover:!text-typography-secondary",
       },
       [tabOptions[1]]: {
         active: "!bg-[#392A46] border-b border-b-red-500",
@@ -817,7 +817,7 @@ export default function GlpSwap(props) {
           textClassName="text-green-500"
         />
         <br />
-        <div className="text-white">
+        <div className="text-typography-primary">
           <Trans>
             The Bonus Rebate is an estimate and will be airdropped as ARB tokens when migrating this liquidity to GM
             pools within the same epoch.{" "}
@@ -828,7 +828,7 @@ export default function GlpSwap(props) {
           </Trans>
         </div>
         <br />
-        <div className="text-white">
+        <div className="text-typography-primary">
           <Trans>
             Buy GM tokens before the epoch resets in {getTimeLeftToNextWednesday()} to be eligible for the Bonus Rebate.
             Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same epoch.
@@ -844,7 +844,7 @@ export default function GlpSwap(props) {
     return (
       <div className="PositionSeller-price-impact-warning">
         <Checkbox asRow isChecked={isEpochAcknowledgeSelected} setIsChecked={setIsEpochAcknowledgeSelected}>
-          <span className="text-sm text-yellow-500">
+          <span className="text-body-small text-yellow-300">
             <Trans>Acknowledge epoch is ending in {minutes} minutes</Trans>
           </span>
         </Checkbox>
@@ -978,7 +978,6 @@ export default function GlpSwap(props) {
                       onSelectToken={onSelectSwapToken}
                       tokens={whitelistedTokens}
                       infoTokens={infoTokens}
-                      size="l"
                       showSymbolImage={true}
                       showTokenImgInDropdown={true}
                     />
@@ -1070,7 +1069,6 @@ export default function GlpSwap(props) {
                         onSelectToken={onSelectSwapToken}
                         tokens={whitelistedTokens}
                         infoTokens={infoTokens}
-                        size="l"
                         showSymbolImage={true}
                         showTokenImgInDropdown={true}
                       />
@@ -1091,13 +1089,13 @@ export default function GlpSwap(props) {
                       renderContent={() => {
                         if (!feeBasisPoints) {
                           return (
-                            <div className="text-white">
+                            <div className="text-typography-primary">
                               <Trans>Fees will be shown once you have entered an amount in the order form.</Trans>
                             </div>
                           );
                         }
                         return (
-                          <div className="text-white">
+                          <div className="text-typography-primary">
                             {isFeesHigh && <Trans>To reduce fees, select a different asset to pay with.</Trans>}
                             <Trans>Check the "Save on Fees" section below to get the lowest fee percentages.</Trans>
                           </div>
@@ -1112,13 +1110,13 @@ export default function GlpSwap(props) {
                       renderContent={() => {
                         if (!feeBasisPoints) {
                           return (
-                            <div className="text-white">
+                            <div className="text-typography-primary">
                               <Trans>Fees will be shown once you have entered an amount in the order form.</Trans>
                             </div>
                           );
                         }
                         return (
-                          <div className="text-white">
+                          <div className="text-typography-primary">
                             {renderMigrationIncentive()}
                             {isFeesHigh && (
                               <>
@@ -1188,7 +1186,7 @@ export default function GlpSwap(props) {
                     className="normal-case"
                     position="bottom-end"
                     renderContent={() => (
-                      <p className="text-white">
+                      <p className="text-typography-primary">
                         <Trans>Available amount to deposit into GLP.</Trans>
                       </p>
                     )}
@@ -1201,7 +1199,7 @@ export default function GlpSwap(props) {
                     position="bottom"
                     renderContent={() => {
                       return (
-                        <p className="text-white">
+                        <p className="text-typography-primary">
                           <Trans>
                             Available amount to withdraw from GLP. Funds not utilized by current open positions.
                           </Trans>
@@ -1222,7 +1220,7 @@ export default function GlpSwap(props) {
                   position="bottom"
                   renderContent={() => {
                     return (
-                      <div className="text-white">
+                      <div className="text-typography-primary">
                         <Trans>Fees will be shown once you have entered an amount in the order form.</Trans>
                       </div>
                     );
@@ -1295,7 +1293,7 @@ export default function GlpSwap(props) {
                         handle="NA"
                         position="bottom-end"
                         renderContent={() => (
-                          <div className="text-white">
+                          <div className="text-typography-primary">
                             <Trans>
                               Max pool capacity reached for {tokenInfo.symbol}
                               <br />
@@ -1496,7 +1494,7 @@ export default function GlpSwap(props) {
                         position="bottom-start"
                         className="label"
                         renderContent={() => (
-                          <p className="text-white">
+                          <p className="text-typography-primary">
                             <Trans>Available amount to deposit into GLP.</Trans>
                           </p>
                         )}
@@ -1519,7 +1517,7 @@ export default function GlpSwap(props) {
                           position="bottom-start"
                           renderContent={() => {
                             return (
-                              <p className="text-white">
+                              <p className="text-typography-primary">
                                 <Trans>
                                   Available amount to withdraw from GLP. Funds not utilized by current open positions.
                                 </Trans>
@@ -1567,7 +1565,7 @@ export default function GlpSwap(props) {
                           handle={t`Fees`}
                           className="label"
                           renderContent={() => (
-                            <p className="text-white">
+                            <p className="text-typography-primary">
                               <Trans>Fees will be shown once you have entered an amount in the order form.</Trans>
                             </p>
                           )}

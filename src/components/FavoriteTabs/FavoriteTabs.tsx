@@ -24,14 +24,15 @@ export function FavoriteTabs({
   const localizedTabOptionLabels = useLocalizedMap(tokensFavoritesTabOptionLabels);
 
   return (
-    <div className="flex items-center gap-4 whitespace-nowrap">
+    <div className="flex items-center gap-8 whitespace-nowrap">
       {tokensFavoritesTabOptions.map((option) => (
         <Button
           key={option}
           type="button"
           variant={"ghost"}
-          className={cx("!text-body-medium !py-7", className, {
-            "!bg-cold-blue-500": tab === option,
+          size="small"
+          className={cx(className, {
+            "!bg-button-secondary !text-typography-primary": tab === option,
             [activeClassName]: activeClassName && tab === option,
           })}
           onClick={() => setTab(option)}

@@ -42,21 +42,22 @@ export function SwapCard(p: Props) {
   }, [fromToken, toToken]);
 
   return (
-    <div className="text-body-medium relative rounded-4 bg-slate-800 p-15 max-[1100px]:mt-0">
-      <div className="text-[15px]">
+    <div className="text-body-medium relative rounded-4 bg-slate-900 p-15 max-[1024px]:mt-0">
+      <div className="text-body-medium mb-14 font-medium">
         <Trans>Swap</Trans>
       </div>
-      <div className="my-15 h-1 bg-stroke-primary" />
 
       <div className="flex flex-col gap-14">
         <SyntheticsInfoRow
           label={t`${fromToken?.symbol} Price`}
           value={formatUsdPrice(fromToken?.prices?.minPrice) || "..."}
+          valueClassName="numbers"
         />
 
         <SyntheticsInfoRow
           label={t`${toToken?.symbol} Price`}
           value={formatUsdPrice(toToken?.prices?.maxPrice) || "..."}
+          valueClassName="numbers"
         />
 
         <SyntheticsInfoRow
@@ -64,6 +65,7 @@ export function SwapCard(p: Props) {
           value={
             <Tooltip
               handle={formatUsd(maxLiquidityUsd) || "..."}
+              handleClassName="numbers"
               position="left-start"
               content={
                 <StatsTooltipRow
@@ -86,7 +88,7 @@ export function SwapCard(p: Props) {
           }
         />
 
-        <SyntheticsInfoRow label={t`Price`} value={ratioStr} />
+        <SyntheticsInfoRow label={t`Price`} value={ratioStr} valueClassName="numbers" />
       </div>
     </div>
   );

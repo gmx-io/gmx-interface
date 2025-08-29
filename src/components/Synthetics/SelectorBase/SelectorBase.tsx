@@ -5,7 +5,7 @@ import cx from "classnames";
 import noop from "lodash/noop";
 import React, { PropsWithChildren, ReactNode, useCallback, useContext, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { BiChevronDown } from "react-icons/bi";
+import { FaChevronDown } from "react-icons/fa6";
 import { useMedia } from "react-use";
 
 import { SlideModal } from "components/Modal/SlideModal";
@@ -67,11 +67,12 @@ export function SelectorBaseMobileButton(
   props: PropsWithChildren<{
     onSelect: () => void;
     disabled?: boolean;
+    rowClassName?: string;
   }>
 ) {
   return (
     <button
-      className={cx("SelectorBaseUtils-mobile-row", {
+      className={cx("SelectorBaseUtils-mobile-row", props.rowClassName, {
         "SelectorBaseUtils-mobile-row-disabled": props.disabled,
       })}
       onClick={props.onSelect}
@@ -98,7 +99,6 @@ export function SelectorBaseDesktopRow(
         className={cx("SelectorBaseUtils-row SelectorBaseUtils-row-disabled", props.className)}
         content={props.disabledMessage}
         position="left-start"
-        bordered={false}
         hoverable={false}
       >
         {props.children}
@@ -116,7 +116,6 @@ export function SelectorBaseDesktopRow(
         )}
         content={props.message}
         position="bottom-end"
-        bordered={false}
         hoverable={!!props.onClick}
         onClick={props.disabled ? undefined : props.onClick}
       >
@@ -134,7 +133,6 @@ export function SelectorBaseDesktopRow(
         },
         props.className
       )}
-      bordered={false}
       hoverable={!!props.onClick}
       onClick={props.disabled ? undefined : props.onClick}
     >
@@ -158,7 +156,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
   const { refs, floatingStyles } = useFloating({
     middleware: [
       offset({
-        mainAxis: props.popoverYOffset ?? 4,
+        mainAxis: props.popoverYOffset ?? 8,
         crossAxis: props.popoverXOffset ?? 0,
       }),
       flip(),
@@ -189,12 +187,14 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
         <>
           <Popover.Button
             as="div"
-            className={cx("SelectorBase-button group/selector-base", props.handleClassName)}
+            className={cx("SelectorBase-button group/selector-base group gap-8", props.handleClassName)}
             ref={refs.setReference}
             data-qa={props.qa ? props.qa + "-button" : undefined}
           >
             {props.label}
-            <BiChevronDown className={cx("-my-5 -mr-4 inline-block align-middle text-24", props.chevronClassName)} />
+            <FaChevronDown
+              className={cx("inline-block text-[12px] text-typography-secondary", props.chevronClassName)}
+            />
           </Popover.Button>
           {popoverProps.open && (
             <FloatingPortal>
@@ -244,9 +244,7 @@ function SelectorBaseMobile(props: Props) {
     <>
       <div className={cx("SelectorBase-button group/selector-base", props.handleClassName)} onClick={toggleVisibility}>
         {props.label}
-        {!props.disabled && (
-          <BiChevronDown className={cx("-my-5 -mr-4 inline-block align-middle text-24", props.chevronClassName)} />
-        )}
+        {!props.disabled && <FaChevronDown className={cx("text-s inline-block", props.chevronClassName)} />}
       </div>
 
       <SlideModal
@@ -256,7 +254,6 @@ function SelectorBaseMobile(props: Props) {
         qa={props.qa}
         headerRef={headerContentRef}
         contentPadding={props.mobileModalContentPadding}
-        noDivider
         footerContent={props.footerContent}
       >
         <SelectorContextProvider close={toggleVisibility} mobileHeader={headerContent}>

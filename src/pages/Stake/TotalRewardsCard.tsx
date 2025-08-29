@@ -67,7 +67,7 @@ export function TotalRewardsCard({
   );
 
   const gmxAvgAprText = useMemo(() => {
-    return `${formatAmount(processedData?.gmxAprTotal, 2, 2, true)}%`;
+    return <span className="numbers">{formatAmount(processedData?.gmxAprTotal, 2, 2, true)}%</span>;
   }, [processedData?.gmxAprTotal]);
 
   const gmxMarketAddress = useMemo(() => {
@@ -91,7 +91,7 @@ export function TotalRewardsCard({
     const gmxApy =
       (marketsTokensApyData?.[gmxMarketAddress] ?? 0n) + (marketsTokensIncentiveAprData?.[gmxMarketAddress] ?? 0n);
 
-    return `${formatAmount(gmxApy, 28, 2, true)}%`;
+    return <span className="numbers">{formatAmount(gmxApy, 28, 2, true)}%</span>;
   }, [marketsTokensApyData, marketsTokensIncentiveAprData, gmxMarketAddress, chainId]);
 
   const hideToasts = useCallback(() => toast.dismiss(), []);
@@ -239,7 +239,11 @@ export function TotalRewardsCard({
             <div className="label">
               <Trans>Total</Trans>
             </div>
-            <div>${formatKeyAmount(processedData, "totalRewardsUsd", USD_DECIMALS, 2, true)}</div>
+            <div>
+              <span className="numbers">
+                ${formatKeyAmount(processedData, "totalRewardsUsd", USD_DECIMALS, 2, true)}
+              </span>
+            </div>
           </div>
           <div className="App-card-footer">
             <div className="App-card-divider"></div>
@@ -251,7 +255,7 @@ export function TotalRewardsCard({
               )}
               {!active && (
                 <Button variant="secondary" onClick={openConnectModal}>
-                  <Trans>Connect Wallet</Trans>
+                  <Trans>Connect wallet</Trans>
                 </Button>
               )}
             </div>

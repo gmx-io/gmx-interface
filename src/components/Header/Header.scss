@@ -76,7 +76,7 @@
 .App-header-drawer .App-header-link-container a:focus,
 .App-header-drawer .App-header-link-container a.active {
   background: #303fd024;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .App-header.large .App-header-link-container {
@@ -113,7 +113,7 @@
 }
 
 .App-header-menu-icon {
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   font-size: 2rem;
   cursor: pointer;
   opacity: 0.7;
@@ -180,7 +180,7 @@
 }
 
 .App-header-container-left a.active {
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .App-header-container-right {
@@ -198,12 +198,12 @@
 }
 
 .App-header-user-address {
-  border: 1px solid var(--color-stroke-primary);
+  border: 0.5px solid var(--color-slate-600);
   height: 3.6rem;
   border-radius: 0.4rem;
   display: inline-flex;
   align-items: center;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   position: relative;
 }
 

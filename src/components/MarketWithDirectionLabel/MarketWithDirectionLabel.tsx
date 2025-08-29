@@ -18,18 +18,13 @@ export function MarketWithDirectionLabel({
 }) {
   return (
     <div
-      className={cx("inline leading-base", {
-        "cursor-help border-b border-dashed border-b-gray-400": bordered,
+      className={cx("inline-flex items-center gap-4 leading-base", {
+        "cursor-help": bordered,
       })}
     >
+      <TokenIcon className="size-20 !align-[-3px]" displaySize={20} symbol={tokenSymbol} importSize={iconImportSize} />
+      <span className="font-medium text-typography-primary">{indexName}</span>
       <span className={cx(isLong ? "text-green-500" : "text-red-500")}>{isLong ? t`Long` : t`Short`}</span>
-      <TokenIcon
-        className="mx-5 size-20 !align-[-3px]"
-        displaySize={20}
-        symbol={tokenSymbol}
-        importSize={iconImportSize}
-      />
-      <span>{indexName}</span>
     </div>
   );
 }

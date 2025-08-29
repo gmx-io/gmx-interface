@@ -30,7 +30,7 @@ export function AvailableLiquidityRow() {
 
   if (isSwap && swapAmounts) {
     tooltipContent = isLiquidityRisk
-      ? t`There may not be sufficient liquidity to execute your order when the Min. Receive are met.`
+      ? t`There may not be sufficient liquidity to execute your order when the min. receive is met.`
       : t`The order will be executed if there is sufficient liquidity and the execution price guarantees that you will receive the minimum receive amount.`;
   }
 
@@ -44,7 +44,7 @@ export function AvailableLiquidityRow() {
     <SyntheticsInfoRow label={t`Available Liquidity`}>
       <Tooltip
         position="bottom-end"
-        handleClassName={isLiquidityRisk ? "negative" : ""}
+        handleClassName={isLiquidityRisk ? "negative numbers" : "numbers"}
         handle={
           isSwap
             ? formatTokenAmount(availableLiquidityAmount, toToken?.decimals, toToken?.symbol, {

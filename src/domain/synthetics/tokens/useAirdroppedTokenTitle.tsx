@@ -31,7 +31,7 @@ export function useLpAirdroppedTokenTitle(): string | JSX.Element {
     const title = (
       <span className="inline-flex items-center">
         <span>GM: {indexName}</span>
-        <span className="ml-2 text-12 leading-1 text-slate-100">[{poolName}]</span>
+        <span className="ml-2 text-12 leading-1 text-typography-secondary">[{poolName}]</span>
       </span>
     );
     return title;
@@ -72,7 +72,7 @@ export function useTradingAirdroppedTokenTitle(): string | JSX.Element {
     const title = (
       <span className="inline-flex items-center">
         <span>GM: {indexName}</span>
-        <span className="ml-2 text-12 leading-1 text-slate-100">[{poolName}]</span>
+        <span className="ml-2 text-12 leading-1 text-typography-secondary">[{poolName}]</span>
       </span>
     );
 

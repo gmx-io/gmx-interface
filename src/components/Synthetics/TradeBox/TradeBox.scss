@@ -66,8 +66,8 @@
   position: relative;
 
   .Tooltip-handle {
-    color: var(--color-yellow-500);
-    text-decoration-color: var(--color-yellow-500);
+    color: var(--color-yellow-300);
+    text-decoration-color: var(--color-yellow-300);
   }
 
   &.error {
@@ -78,7 +78,7 @@
   }
 
   .MarketSelector-tooltip-content {
-    color: var(--color-white);
+    color: var(--color-typography-primary);
   }
 
   .MarketSelector-tooltip-row-action {
@@ -95,8 +95,8 @@
 }
 
 .LiqPrice-soft-warning {
-  color: var(--color-yellow-500);
-  text-decoration-color: var(--color-yellow-500);
+  color: var(--color-yellow-300);
+  text-decoration-color: var(--color-yellow-300);
 }
 
 .LiqPrice-hard-warning {
@@ -139,8 +139,8 @@
   color: var(--color-gray-400);
 
   &:hover {
-    text-decoration-color: var(--color-white);
-    color: var(--color-white);
+    text-decoration-color: var(--color-typography-primary);
+    color: var(--color-typography-primary);
   }
 }
 
