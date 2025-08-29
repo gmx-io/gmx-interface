@@ -151,10 +151,6 @@ msgstr "Yield-Optimierer auf Avalanche"
 msgid "Swap order submitted."
 msgstr ""
 
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -374,6 +370,10 @@ msgstr "Stop-Markt - Short Erhöhung"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Take Profit"
 msgstr "Take-Profit fehlgeschlagen"
+
+#: src/components/BuyCards/BuyCards.tsx
+msgid "GM"
+msgstr ""
 
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
@@ -1141,8 +1141,6 @@ msgstr "Übersicht"
 msgid "Allow all my tokens to be transferred to a new account"
 msgstr "Erlaube, dass alle meine Token auf ein neues Konto transferiert werden"
 
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche Max. APY: {0}"
@@ -1331,9 +1329,6 @@ msgstr "Insgesamt"
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Swap aktiv: {0}, ausgeführt: {1}, abgebrochen: {2}"
 
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -1402,6 +1397,10 @@ msgstr "Fehler verstecken"
 msgid "Leftover position below 10 USD"
 msgstr "Restposition unter 10 USD"
 
+#: src/components/BuyCards/BuyCards.tsx
+msgid "GLP"
+msgstr ""
+
 #: src/pages/Stake/Stake.tsx
 msgid "Distributions"
 msgstr ""
@@ -1426,7 +1425,6 @@ msgstr "NFT Adresse"
 msgid "{orderText} cancelled."
 msgstr "{orderText} abgebrochen."
 
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 msgstr "{avalancheLink} GLV-Pools sind <0>inceniviert{sparkle}.</0>"
@@ -1833,6 +1831,7 @@ msgstr "Schließgebühr"
 msgid "V1 Airdrop"
 msgstr "V1 Airdrop"
 
+#: src/components/BuyCards/BuyCards.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "GMX"
@@ -1990,8 +1989,6 @@ msgstr ""
 msgid "Cumulative PnL"
 msgstr "Kumulativer Gewinn/Verlust"
 
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum Max. APY:"
@@ -2552,6 +2549,10 @@ msgstr "Maximale Anzahl von Teilen: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "App starten"
 
+#: src/components/BuyCards/BuyCards.tsx
+msgid "Buy token on"
+msgstr ""
+
 #: src/pages/Exchange/Exchange.tsx
 msgid "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
 msgstr "{0} USD in {tokenSymbol} {longOrShortText} eingezahlt"
@@ -2576,7 +2577,6 @@ msgstr "Marktgraph"
 msgid "Buy order cancelled."
 msgstr ""
 
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
@@ -2972,6 +2972,10 @@ msgstr "Hinzufügen des Referral-Codes fehlgeschlagen."
 msgid "Updating"
 msgstr ""
 
+#: src/components/BuyCards/BuyCards.tsx
+msgid "Sell token on"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Max leverage without PnL: {0}x"
 msgstr "Max. Hebelwirkung ohne PnL: {0}x"
@@ -2987,10 +2991,6 @@ msgstr "V2 unterstützt dieses Netzwerk derzeit nicht"
 msgid "V1 Arbitrum"
 msgstr "V1 Arbitrum"
 
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -3089,7 +3089,6 @@ msgstr "Gestaket auf Arbitrum"
 msgid "Order creation failed."
 msgstr "Ordererstellung fehlgeschlagen."
 
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Sell token on:"
 msgstr "Token verkaufen auf:"
@@ -4287,6 +4286,10 @@ msgstr "{daysConsidered} Tage verdiente Gebühren"
 msgid "Fulfilling order request"
 msgstr "Orderanfrage erfüllen"
 
+#: src/components/BuyCards/BuyCards.tsx
+msgid "GLV"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance to pay for gas"
 msgstr "Unzureichendes {0}-Guthaben, um Gas zu bezahlen"
@@ -4367,7 +4370,6 @@ msgstr "Unbekannte Verkaufs-GM-Order"
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr "<0>Benachrichtigungen werden von Notifi bereitgestellt und sind nicht mit GMX verbunden. Durch Abonnieren stimmst du zu, dass die von dir an Notifi bereitgestellten Infos von seiner </0><1>Datenschutzrichtlinie</1><2> und </2><3>Nutzungsbedingungen</3> geregelt werden."
 
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 msgstr "{arbitrumLink} und {avalancheLink} GLV-Pools sind <0>incetiviert{sparkle}.</0>"
@@ -4638,8 +4640,6 @@ msgstr "Gesamtwert der Tokens in GM-Pools."
 msgid "Reserved"
 msgstr "Reserviert"
 
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Botanix"
@@ -5550,6 +5550,10 @@ msgstr "Diff"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dashboard for GMX referral stats"
 msgstr "Dashboard für GMX Referral Statistiken"
+
+#: src/components/BuyCards/BuyCards.tsx
+msgid "GLP is no longer available for buy"
+msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -7436,7 +7440,6 @@ msgstr "Anspruch bestätigen"
 msgid "GMX community discussion"
 msgstr "GMX-Community-Diskussion"
 
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{arbitrumLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 msgstr "{arbitrumLink} GLV-Pools sind <0>incenitivisiert{sparkle}.</0>"
@@ -7755,7 +7758,6 @@ msgstr ""
 msgid "GMX ecosystem pages."
 msgstr "GMX-Ökosystem-Seiten."
 
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
 msgstr "{avalancheLink} GM-Pools sind <0>incenitivisiert{sparkle}.</0>"
@@ -7946,7 +7948,6 @@ msgstr "DeFi-Portfolio-Tracker"
 msgid "Current Funding Fee / Day"
 msgstr "Aktuelle Finanzierungsgebühr / Tag"
 
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum APR:"
 msgstr "Arbitrum APR:"

@@ -70,7 +70,7 @@ const darkColors = {
   white: "#ffffff",
   black: "#000000",
   button: {
-    secondary: "#23263b",
+    secondary: "#1E2033",
     secondaryDisabled: "#1e2033",
   },
   fill: {

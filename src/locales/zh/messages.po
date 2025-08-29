@@ -151,10 +151,6 @@ msgstr "Avalanche 上的产量优化器"
 msgid "Swap order submitted."
 msgstr ""
 
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -374,6 +370,10 @@ msgstr "止损市场 - 空头增加"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Take Profit"
 msgstr "止盈失败"
+
+#: src/components/BuyCards/BuyCards.tsx
+msgid "GM"
+msgstr ""
 
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
@@ -1141,8 +1141,6 @@ msgstr "概述"
 msgid "Allow all my tokens to be transferred to a new account"
 msgstr "允许将我的所有代币转移到新账户"
 
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche Max. APY: {0}"
@@ -1331,9 +1329,6 @@ msgstr "总计"
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "交换活跃：{0}，执行：{1}，取消：{2}"
 
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -1402,6 +1397,10 @@ msgstr "隐藏错误"
 msgid "Leftover position below 10 USD"
 msgstr "剩余仓位低于 10 USD"
 
+#: src/components/BuyCards/BuyCards.tsx
+msgid "GLP"
+msgstr ""
+
 #: src/pages/Stake/Stake.tsx
 msgid "Distributions"
 msgstr ""
@@ -1426,7 +1425,6 @@ msgstr "NFT 地址"
 msgid "{orderText} cancelled."
 msgstr "{orderText} 已取消。"
 
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 msgstr "{avalancheLink} GLV 池被 <0>激励{sparkle}。</0>"
@@ -1833,6 +1831,7 @@ msgstr "关闭费用"
 msgid "V1 Airdrop"
 msgstr "V1 空投"
 
+#: src/components/BuyCards/BuyCards.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "GMX"
@@ -1990,8 +1989,6 @@ msgstr ""
 msgid "Cumulative PnL"
 msgstr "累积盈亏"
 
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum Max. APY:"
@@ -2552,6 +2549,10 @@ msgstr "最大部分数量：{MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "启动应用程序"
 
+#: src/components/BuyCards/BuyCards.tsx
+msgid "Buy token on"
+msgstr ""
+
 #: src/pages/Exchange/Exchange.tsx
 msgid "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
 msgstr "已存入 {0} USD 到 {tokenSymbol} {longOrShortText}"
@@ -2576,7 +2577,6 @@ msgstr "市场图表"
 msgid "Buy order cancelled."
 msgstr ""
 
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche APR:"
 msgstr "Avalanche 年化收益率："
@@ -2972,6 +2972,10 @@ msgstr "添加推荐代码失败。"
 msgid "Updating"
 msgstr ""
 
+#: src/components/BuyCards/BuyCards.tsx
+msgid "Sell token on"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Max leverage without PnL: {0}x"
 msgstr "无 PnL 的最大杠杆：{0}x"
@@ -2987,10 +2991,6 @@ msgstr "V2 当前不支持此网络"
 msgid "V1 Arbitrum"
 msgstr "V1 Arbitrum"
 
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -3089,7 +3089,6 @@ msgstr "在 Arbitrum 上质押"
 msgid "Order creation failed."
 msgstr "订单创建失败。"
 
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Sell token on:"
 msgstr "出售代币于："
@@ -4287,6 +4286,10 @@ msgstr "{daysConsidered} 天赚取费用"
 msgid "Fulfilling order request"
 msgstr "履行订单请求"
 
+#: src/components/BuyCards/BuyCards.tsx
+msgid "GLV"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance to pay for gas"
 msgstr "{0} 余额不足以支付 gas"
@@ -4367,7 +4370,6 @@ msgstr "未知出售 GM 订单"
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr "<0>通知由 Notifi 提供，与 GMX 无关。通过订阅，您同意您提供给 Notifi 的信息受其 </0><1>隐私政策</1><2> 和 </2><3>使用条款</3> 约束。"
 
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 msgstr "{arbitrumLink} 和 {avalancheLink} GLV 池 <0>有激励{sparkle}。</0>"
@@ -4638,8 +4640,6 @@ msgstr "GM 池中代币的总价值。"
 msgid "Reserved"
 msgstr "保留"
 
-#: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Botanix"
@@ -5550,6 +5550,10 @@ msgstr "差异"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dashboard for GMX referral stats"
 msgstr "GMX 推荐统计仪表板"
+
+#: src/components/BuyCards/BuyCards.tsx
+msgid "GLP is no longer available for buy"
+msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -7436,7 +7440,6 @@ msgstr "确认领取"
 msgid "GMX community discussion"
 msgstr "GMX 社区讨论"
 
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{arbitrumLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 msgstr "{arbitrumLink} GLV 池子被 <0>激励{sparkle}。</0>"
@@ -7755,7 +7758,6 @@ msgstr ""
 msgid "GMX ecosystem pages."
 msgstr "GMX 生态系统页面"
 
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
 msgstr "{avalancheLink} GM 池子被 <0>激励{sparkle}。</0>"
@@ -7946,7 +7948,6 @@ msgstr "DeFi 投资组合追踪器"
 msgid "Current Funding Fee / Day"
 msgstr "当前资金费用 / 天"
 
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum APR:"
 msgstr "Arbitrum 年利率："

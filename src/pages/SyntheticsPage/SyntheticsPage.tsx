@@ -218,7 +218,7 @@ export function SyntheticsPage(p: Props) {
     return (
       <div className="flex gap-4">
         <Trans>Orders</Trans>
-        <Badge value={ordersCount} indicator={indicator} />
+        <Badge indicator={indicator}>{ordersCount}</Badge>
       </div>
     );
   }, [ordersCount, ordersErrorsCount, ordersWarningsCount]);
@@ -228,7 +228,7 @@ export function SyntheticsPage(p: Props) {
       [ListSection.Positions]: (
         <div className="flex gap-4">
           <Trans>Positions</Trans>
-          <Badge value={positionsCount} />
+          <Badge>{positionsCount}</Badge>
         </div>
       ),
       [ListSection.Orders]: renderOrdersTabTitle(),
@@ -237,7 +237,7 @@ export function SyntheticsPage(p: Props) {
         totalClaimables > 0 ? (
           <div className="flex gap-4">
             <Trans>Claims</Trans>
-            <Badge value={totalClaimables} />
+            <Badge>{totalClaimables}</Badge>
           </div>
         ) : (
           t`Claims`

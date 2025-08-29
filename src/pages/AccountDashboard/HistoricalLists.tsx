@@ -75,7 +75,7 @@ function OrdersTabTitle({
   return (
     <div className="flex items-center gap-8">
       <Trans>Orders</Trans>
-      <Badge value={ordersCount} indicator={indicator} />
+      <Badge indicator={indicator}>{ordersCount}</Badge>
     </div>
   );
 }
@@ -89,7 +89,7 @@ function useTabLabels(): Record<TabKey, React.ReactNode> {
     () => ({
       [TabKey.Positions]: (
         <div className="flex items-center gap-8">
-          <Trans>Positions</Trans> <Badge value={positionsCount} />
+          <Trans>Positions</Trans> <Badge>{positionsCount}</Badge>
         </div>
       ),
       [TabKey.Orders]: (
