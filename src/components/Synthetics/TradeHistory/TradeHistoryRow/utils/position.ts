@@ -3,7 +3,7 @@ import { t } from "@lingui/macro";
 import { MaxInt256 } from "ethers";
 
 import { getMarketFullName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { OrderType, isDecreaseOrderType, isIncreaseOrderType } from "domain/synthetics/orders";
+import { OrderType, isDecreaseOrderType, isIncreaseOrderType, isLiquidationOrderType } from "domain/synthetics/orders";
 import { convertToUsd, parseContractPrice } from "domain/synthetics/tokens/utils";
 import { getShouldUseMaxPrice } from "domain/synthetics/trade";
 import {
@@ -584,7 +584,9 @@ export const formatPositionMessage = (
     //#region Liquidation
   } else if (ot === OrderType.Liquidation && ev === TradeActionType.OrderExecuted) {
     const maxLeverage =
-      tradeAction.marketInfo.minCollateralFactor === 0n ? 0n : PRECISION / tradeAction.marketInfo.minCollateralFactor;
+      tradeAction.marketInfo.minCollateralFactorForLiquidation === 0n
+        ? 0n
+        : PRECISION / tradeAction.marketInfo.minCollateralFactorForLiquidation;
     const formattedMaxLeverage = Number(maxLeverage).toFixed(1) + "x";
 
     const initialCollateralUsd = convertToUsd(
@@ -632,16 +634,22 @@ export const formatPositionMessage = (
       tradeAction.collateralTokenPriceMin
     );
     const formattedPositionFee = formatUsd(positionFeeUsd === undefined ? undefined : -positionFeeUsd);
+    const totalImpactUsd = tradeAction.totalImpactUsd ?? 0n;
 
-    let liquidationCollateralUsd = applyFactor(sizeDeltaUsd, tradeAction.marketInfo.minCollateralFactor);
+    let liquidationCollateralUsd = applyFactor(sizeDeltaUsd, tradeAction.marketInfo.minCollateralFactorForLiquidation);
     if (liquidationCollateralUsd < minCollateralUsd) {
       liquidationCollateralUsd = minCollateralUsd;
     }
 
-    let leftoverCollateralUsd =
+    const leftoverCollateralUsd =
       initialCollateralUsd === undefined
         ? undefined
-        : initialCollateralUsd + tradeAction.basePnlUsd! - borrowingFeeUsd! - fundingFeeUsd! - positionFeeUsd!;
+        : initialCollateralUsd +
+          tradeAction.basePnlUsd! -
+          borrowingFeeUsd! -
+          fundingFeeUsd! -
+          positionFeeUsd! +
+          totalImpactUsd;
 
     const formattedLeftoverCollateral = formatUsd(leftoverCollateralUsd!);
     const formattedMinCollateral = formatUsd(liquidationCollateralUsd)!;
@@ -664,7 +672,7 @@ export const formatPositionMessage = (
       fundingFeeUsd !== undefined &&
       positionFeeUsd !== undefined &&
       liquidationFeeUsd !== undefined &&
-      tradeAction.priceImpactUsd !== undefined
+      tradeAction.totalImpactUsd !== null
     ) {
       returnedCollateralUsd = bigMath.max(
         0n,
@@ -674,7 +682,7 @@ export const formatPositionMessage = (
           fundingFeeUsd -
           positionFeeUsd -
           liquidationFeeUsd +
-          tradeAction.priceImpactUsd
+          tradeAction.totalImpactUsd
       );
     }
 
@@ -749,6 +757,30 @@ export const formatPositionMessage = (
 function getPriceImpactLines(tradeAction: PositionTradeAction) {
   const isV22Action = tradeAction.srcChainId !== null;
   const lines: Line[] = [];
+
+  if (isLiquidationOrderType(tradeAction.orderType)) {
+    if (isV22Action && tradeAction.totalImpactUsd !== null) {
+      const formattedNetPriceImpact = formatDeltaUsd(tradeAction.totalImpactUsd);
+
+      lines.push(
+        infoRow(t`Net Price Impact`, {
+          text: formattedNetPriceImpact!,
+          state: numberToState(tradeAction.totalImpactUsd!),
+        })
+      );
+    } else {
+      const formattedPriceImpact = formatDeltaUsd(tradeAction.priceImpactUsd);
+
+      lines.push(
+        infoRow(t`Price Impact`, {
+          text: formattedPriceImpact!,
+          state: numberToState(tradeAction.priceImpactUsd!),
+        })
+      );
+    }
+
+    return lines;
+  }
 
   if (isIncreaseOrderType(tradeAction.orderType)) {
     if (isV22Action) {

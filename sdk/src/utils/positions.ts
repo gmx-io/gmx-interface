@@ -214,12 +214,6 @@ export function getLiquidationPrice(p: {
       pendingImpactAmount > 0 ? marketInfo.indexToken.prices.minPrice : marketInfo.indexToken.prices.maxPrice
     )!;
 
-    console.log("sizeInUsd", sizeInUsd);
-    console.log("pendingImpactAmount", pendingImpactAmount);
-    console.log(" marketInfo.indexToken", marketInfo.indexToken);
-    console.log("priceImpactDeltaUsd", priceImpactDeltaUsd);
-    console.log("pendingImpactUsd", pendingImpactUsd);
-
     priceImpactDeltaUsd = priceImpactDeltaUsd + pendingImpactUsd;
 
     if (priceImpactDeltaUsd > 0) {
