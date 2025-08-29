@@ -421,23 +421,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     }
   }
 
-  let priceImpactAmount = 0n;
-
-  if (values.positionPriceImpactDeltaUsd > 0) {
-    const price = triggerPrice !== undefined && triggerPrice > 0 ? triggerPrice : indexToken.prices.maxPrice;
-    priceImpactAmount = convertToTokenAmount(values.positionPriceImpactDeltaUsd, indexToken.decimals, price)!;
-  } else {
-    const price = triggerPrice !== undefined && triggerPrice > 0 ? triggerPrice : indexToken.prices.minPrice;
-    priceImpactAmount = convertToTokenAmount(values.positionPriceImpactDeltaUsd, indexToken.decimals, price)!;
-  }
-
   values.sizeDeltaInTokens = convertToTokenAmount(values.sizeDeltaUsd, indexToken.decimals, values.indexPrice)!;
-
-  if (isLong) {
-    values.sizeDeltaInTokens = values.sizeDeltaInTokens + priceImpactAmount;
-  } else {
-    values.sizeDeltaInTokens = values.sizeDeltaInTokens - priceImpactAmount;
-  }
 
   return values;
 }
