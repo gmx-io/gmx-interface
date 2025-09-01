@@ -419,7 +419,7 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
       enabled: true,
     },
     // WLFI/USD [WETH-USDC]
-    "0xb3588455858a49d3244237cee00880ccb84b91dd": {
+    "0xb3588455858a49D3244237CEe00880CcB84b91Dd": {
       enabled: true,
     },
   },
