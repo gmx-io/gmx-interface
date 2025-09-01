@@ -55,6 +55,7 @@ export type SubaccountState = {
   updateSubaccountSettings: (params: {
     nextRemainigActions?: bigint;
     nextRemainingSeconds?: bigint;
+    nextIsGmxAccount?: boolean;
   }) => Promise<boolean>;
   resetSubaccountApproval: () => void;
   tryEnableSubaccount: () => Promise<boolean>;
@@ -135,9 +136,11 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     async function updateSubaccountSettings({
       nextRemainigActions,
       nextRemainingSeconds,
+      nextIsGmxAccount,
     }: {
       nextRemainigActions?: bigint;
       nextRemainingSeconds?: bigint;
+      nextIsGmxAccount?: boolean;
     }): Promise<boolean> {
       if (!signer || !subaccount?.address || !provider) {
         return false;
@@ -149,7 +152,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         </StatusNotification>
       );
 
-      const isGmxAccount = calcSelector(selectTradeboxIsFromTokenGmxAccount);
+      const isGmxAccount = nextIsGmxAccount ?? calcSelector(selectTradeboxIsFromTokenGmxAccount);
 
       try {
         const signedSubaccountApproval = await signUpdatedSubaccountSettings({

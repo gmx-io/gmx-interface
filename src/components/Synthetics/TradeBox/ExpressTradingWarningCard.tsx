@@ -69,12 +69,13 @@ export function ExpressTradingWarningCard({
     updateSubaccountSettings({
       nextRemainigActions: BigInt(DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT),
       nextRemainingSeconds: BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION),
+      nextIsGmxAccount: isGmxAccount,
     }).then((success) => {
       if (success) {
         setIsVisible(false);
       }
     });
-  }, [updateSubaccountSettings]);
+  }, [updateSubaccountSettings, isGmxAccount]);
 
   const {
     shouldShowAllowedActionsWarning,

@@ -122,8 +122,12 @@ export function getFallbackProvider(chainId: number) {
   });
 }
 
-export function getExpressProvider(chainId: number) {
-  const providerUrl = getExpressRpcUrl(chainId);
+export function getExpressProvider(chainId: number): JsonRpcProvider | undefined {
+  const providerUrl: string | undefined = getExpressRpcUrl(chainId);
+
+  if (!providerUrl) {
+    return;
+  }
 
   return new ethers.JsonRpcProvider(providerUrl, chainId, {
     staticNetwork: Network.from(chainId),
