@@ -1,6 +1,6 @@
 import { maxUint256 } from "viem";
 
-import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "configs/factors";
 import { MarketInfo, MarketsInfoData } from "types/markets";
 import { OrderType } from "types/orders";
 import { PositionInfo } from "types/positions";
@@ -113,6 +113,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     triggerPrice: 0n,
     acceptablePrice: 0n,
     acceptablePriceDeltaBps: 0n,
+    recommendedAcceptablePriceDeltaBps: 0n,
 
     positionFeeUsd: 0n,
     uiFeeUsd: 0n,
@@ -395,15 +396,17 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       }
     } else {
       let maxNegativePriceImpactBps = fixedAcceptablePriceImpactBps;
+      values.recommendedAcceptablePriceDeltaBps = getDefaultAcceptablePriceImpactBps({
+        isIncrease: true,
+        isLong,
+        indexPrice: values.indexPrice,
+        sizeDeltaUsd: values.sizeDeltaUsd,
+        priceImpactDeltaUsd: values.positionPriceImpactDeltaUsd,
+        acceptablePriceImapctBuffer: acceptablePriceImpactBuffer || DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER,
+      });
+
       if (maxNegativePriceImpactBps === undefined) {
-        maxNegativePriceImpactBps = getDefaultAcceptablePriceImpactBps({
-          isIncrease: true,
-          isLong,
-          indexPrice: values.indexPrice,
-          sizeDeltaUsd: values.sizeDeltaUsd,
-          priceImpactDeltaUsd: values.positionPriceImpactDeltaUsd,
-          acceptablePriceImapctBuffer: acceptablePriceImpactBuffer,
-        });
+        maxNegativePriceImpactBps = values.recommendedAcceptablePriceDeltaBps;
       }
 
       const limitAcceptablePriceInfo = getAcceptablePriceInfo({

@@ -74,6 +74,7 @@ export type IncreasePositionAmounts = {
   triggerThresholdType?: TriggerThresholdType;
   acceptablePrice: bigint;
   acceptablePriceDeltaBps: bigint;
+  recommendedAcceptablePriceDeltaBps: bigint;
 
   positionFeeUsd: bigint;
   uiFeeUsd: bigint;
