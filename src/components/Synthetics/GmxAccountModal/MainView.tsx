@@ -30,18 +30,18 @@ import { Token } from "sdk/types/tokens";
 
 import { Avatar } from "components/Avatar/Avatar";
 import Button from "components/Button/Button";
-import ExternalLink from "components/ExternalLink/ExternalLink";
+import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import BellIcon from "img/bell.svg?react";
-import copy from "img/ic_copy_20.svg";
+import CopyIcon from "img/ic_copy_20.svg?react";
 import InfoIconComponent from "img/ic_info.svg?react";
-import externalLink from "img/ic_new_link_20.svg";
+import ExternalLinkIcon from "img/ic_new_link_20.svg?react";
 import PnlAnalysisIcon from "img/ic_pnl_analysis_20.svg?react";
 import SettingsIcon from "img/ic_settings.svg?react";
-import disconnectIcon from "img/ic_sign_out_20.svg";
+import DisconnectIcon from "img/ic_sign_out_20.svg?react";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import {
@@ -153,66 +153,53 @@ const Toolbar = ({ account }: { account: string }) => {
 
   return (
     <div className="flex items-center justify-between gap-8">
-      <button
-        className="border-stroke-primary text-body-medium inline-flex items-center justify-center rounded-4 border px-[6.5px] py-5 text-white hover:bg-slate-700 active:bg-[#808aff14] min-[701px]:grow"
+      <Button
+        variant="secondary"
+        className="flex items-center gap-8 text-typography-secondary"
         onClick={handleCopyAddress}
       >
-        <div className="flex items-center gap-4">
-          <div className="max-[410px]:hidden">
-            <Avatar size={20} ensName={ensName} address={account} />
-          </div>
-          <span className="max-[410px]:mx-0">{shortenAddressOrEns(ensName || account, 13)}</span>
-          <img src={copy} className="max-[370px]:hidden" alt="Copy" />
+        <div className="max-smallMobile:hidden">
+          <Avatar size={24} ensName={ensName} address={account} />
         </div>
-      </button>
+        <div className="text-body-medium font-medium text-typography-primary">
+          {shortenAddressOrEns(ensName || account, 13)}
+        </div>
+        <CopyIcon className="max-smallMobile:hidden" />
+      </Button>
       <div className="flex items-center gap-8">
-        <TooltipWithPortal content={t`PnL Analysis`} position="bottom" tooltipClassName="!min-w-max">
-          <button
-            className="border-stroke-primary flex size-32 items-center justify-center rounded-4 border hover:bg-slate-700"
-            onClick={handlePnlAnalysisClick}
-          >
-            <PnlAnalysisIcon width={20} height={20} className="text-slate-100" />
-          </button>
+        <TooltipWithPortal content={t`PnL Analysis`} position="bottom" tooltipClassName="!min-w-max" variant="none">
+          <Button variant="secondary" className="size-40 !p-10" onClick={handlePnlAnalysisClick}>
+            <PnlAnalysisIcon width={20} height={20} className="text-typography-secondary" />
+          </Button>
         </TooltipWithPortal>
         <TooltipWithPortal
           shouldPreventDefault={false}
           content={t`View in Explorer`}
           position="bottom"
           tooltipClassName="!min-w-max"
+          variant="none"
         >
-          <ExternalLink
-            href={accountUrl}
-            className="border-stroke-primary flex size-32 items-center justify-center rounded-4 border hover:bg-slate-700"
-          >
-            <img src={externalLink} alt="External Link" />
-          </ExternalLink>
+          <Button to={accountUrl} newTab variant="secondary" className="size-40 !p-10" showExternalLinkArrow={false}>
+            <ExternalLinkIcon />
+          </Button>
         </TooltipWithPortal>
         {showNotify && (
-          <TooltipWithPortal content={t`Notifications`} position="bottom" tooltipClassName="!min-w-max">
-            <button
-              className="border-stroke-primary flex size-32 items-center justify-center rounded-4 border hover:bg-slate-700"
-              onClick={handleNotificationsClick}
-            >
+          <TooltipWithPortal content={t`Notifications`} position="bottom" tooltipClassName="!min-w-max" variant="none">
+            <Button variant="secondary" className="size-40 !p-10" onClick={handleNotificationsClick}>
               <BellIcon className="text-slate-100" />
-            </button>
+            </Button>
           </TooltipWithPortal>
         )}
 
-        <TooltipWithPortal content={t`Settings`} position="bottom" tooltipClassName="!min-w-max">
-          <button
-            className="border-stroke-primary flex size-32 items-center justify-center rounded-4 border hover:bg-slate-700"
-            onClick={handleSettingsClick}
-          >
+        <TooltipWithPortal content={t`Settings`} position="bottom" tooltipClassName="!min-w-max" variant="none">
+          <Button variant="secondary" className="size-40 !p-10" onClick={handleSettingsClick}>
             <SettingsIcon width={20} height={20} className="text-slate-100" />
-          </button>
+          </Button>
         </TooltipWithPortal>
-        <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max">
-          <button
-            className="border-stroke-primary flex size-32 items-center justify-center rounded-4 border hover:bg-slate-700"
-            onClick={handleDisconnect}
-          >
-            <img src={disconnectIcon} alt="Disconnect" className="rotate-180" />
-          </button>
+        <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max" variant="none">
+          <Button variant="secondary" className="size-40 !p-10" onClick={handleDisconnect}>
+            <DisconnectIcon className="rotate-180" />
+          </Button>
         </TooltipWithPortal>
       </div>
     </div>
@@ -402,21 +389,15 @@ const FundingHistorySection = () => {
   };
 
   return (
-    <div className="flex grow flex-col gap-8 overflow-y-hidden">
-      <div className="flex items-center justify-between px-16">
+    <div className="flex grow flex-col gap-12 overflow-y-hidden">
+      <div className="flex items-center justify-between px-20">
         <div className="text-body-large">
           <Trans>Funding Activity</Trans>
         </div>
       </div>
       {Boolean(fundingHistory?.length) && (
-        <div className="px-16">
-          <input
-            type="text"
-            placeholder="Search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-4 bg-slate-700 px-12 py-8 text-white placeholder:text-slate-100"
-          />
+        <div className="px-20">
+          <SearchInput value={searchQuery} setValue={setSearchQuery} size="m" />
         </div>
       )}
       <VerticalScrollFadeContainer className="flex grow flex-col">
@@ -425,7 +406,7 @@ const FundingHistorySection = () => {
             role="button"
             tabIndex={0}
             key={transfer.id}
-            className="flex w-full cursor-pointer items-center justify-between px-16 py-8 text-left -outline-offset-4 gmx-hover:bg-slate-700"
+            className="flex w-full cursor-pointer items-center justify-between px-20 py-8 text-left -outline-offset-4 gmx-hover:bg-slate-700"
             onClick={() => handleTransferClick(transfer)}
           >
             <div className="flex items-center gap-8">
@@ -453,19 +434,19 @@ const FundingHistorySection = () => {
         ))}
 
         {!isLoading && fundingHistory && fundingHistory.length === 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 p-16 text-slate-100">
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-20 text-slate-100">
             <InfoIconComponent className="size-24" />
             <Trans>No funding activity</Trans>
           </div>
         )}
         {!isLoading && filteredFundingHistory?.length === 0 && fundingHistory && fundingHistory.length > 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 p-16 text-slate-100">
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-20 text-slate-100">
             <InfoIconComponent className="size-24" />
             <Trans>No funding activity matching your search</Trans>
           </div>
         )}
         {isLoading && (
-          <div className="flex grow items-center justify-center p-16 text-slate-100">
+          <div className="flex grow items-center justify-center p-20 text-slate-100">
             <TbLoader2 className="size-24 animate-spin" />
           </div>
         )}
@@ -476,8 +457,8 @@ const FundingHistorySection = () => {
 
 export const MainView = ({ account }: { account: string }) => {
   return (
-    <div className="text-body-medium flex grow flex-col gap-8 overflow-y-hidden">
-      <div className="flex flex-col gap-8 px-16 pb-20 pt-16">
+    <div className="text-body-medium flex grow flex-col gap-20 overflow-y-hidden">
+      <div className="flex flex-col gap-12 px-20 pb-12 pt-8">
         <Toolbar account={account} />
         <BalanceSection />
         <ActionButtons />

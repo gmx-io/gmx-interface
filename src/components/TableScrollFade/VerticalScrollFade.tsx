@@ -93,14 +93,14 @@ function VerticalScrollFadeControls({
   return (
     <div className="pointer-events-none absolute flex h-full w-full flex-col justify-between">
       <div
-        className={cx("z-[120] max-h-50 w-full bg-gradient-to-t from-[transparent] to-slate-800 transition-opacity", {
+        className={cx("z-[120] max-h-50 w-full bg-gradient-to-t from-[transparent] to-slate-900 transition-opacity", {
           "opacity-0": scrollTop <= 0,
           "opacity-100": scrollTop > 0,
         })}
         style={topStyles}
       />
       <div
-        className={cx("z-[120] max-h-50 w-full bg-gradient-to-b from-[transparent] to-slate-800 transition-opacity", {
+        className={cx("z-[120] max-h-50 w-full bg-gradient-to-b from-[transparent] to-slate-900 transition-opacity", {
           "opacity-0": scrollBottom <= 0,
           "opacity-100": scrollBottom > 0,
         })}

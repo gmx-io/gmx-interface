@@ -50,7 +50,6 @@ export function AddressDropdownWithMultichain({ account }: Props) {
         type="button"
         className={cx("h-40", { "!py-4 !pl-12 !pr-4": shouldShowDepositButton })}
         onClick={handleOpenGmxAccountModal}
-        data-qa="user-address"
       >
         <div
           className={cx(

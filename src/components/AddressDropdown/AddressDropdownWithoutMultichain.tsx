@@ -42,7 +42,7 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
   const handleDisconnect = useDisconnectAndClose();
 
   return (
-    <Menu>
+    <Menu as="div" className="relative">
       {({ open }) => (
         <>
           <Menu.Button as="div">
@@ -56,58 +56,57 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
               <FiChevronDown size={20} className={cx("block", { "rotate-180": open })} />
             </Button>
           </Menu.Button>
-          <div>
-            <Menu.Items as="div" className="menu-items">
+
+          <Menu.Items as="div" className="menu-items">
+            <Menu.Item>
+              <div
+                className="menu-item"
+                onClick={() => {
+                  copyToClipboard(account);
+                  helperToast.success(t`Address copied to your clipboard.`);
+                }}
+              >
+                <CopyIcon width={20} className="size-20" />
+                <p>
+                  <Trans>Copy Address</Trans>
+                </p>
+              </div>
+            </Menu.Item>
+            <Menu.Item>
+              <Link className="menu-item" to={buildAccountDashboardUrl(account as Address, undefined, 2)}>
+                <PnlAnalysisIcon width={20} className="size-20" />
+                <p>
+                  <Trans>PnL Analysis</Trans>
+                </p>
+              </Link>
+            </Menu.Item>
+            <Menu.Item>
+              <ExternalLink href={accountUrl} className="menu-item !no-underline">
+                <ExternalLinkIcon width={20} className="size-20" />
+                <p>
+                  <Trans>View in Explorer</Trans>
+                </p>
+              </ExternalLink>
+            </Menu.Item>
+            {!isBotanix ? (
               <Menu.Item>
-                <div
-                  className="menu-item"
-                  onClick={() => {
-                    copyToClipboard(account);
-                    helperToast.success(t`Address copied to your clipboard.`);
-                  }}
-                >
-                  <CopyIcon width={20} className="size-20" />
+                <div className="menu-item" onClick={openNotifyModal}>
+                  <BellIcon className="ml-2 size-20 pt-2" />
                   <p>
-                    <Trans>Copy Address</Trans>
+                    <Trans>Alerts</Trans>
                   </p>
                 </div>
               </Menu.Item>
-              <Menu.Item>
-                <Link className="menu-item" to={buildAccountDashboardUrl(account as Address, undefined, 2)}>
-                  <PnlAnalysisIcon width={20} className="size-20" />
-                  <p>
-                    <Trans>PnL Analysis</Trans>
-                  </p>
-                </Link>
-              </Menu.Item>
-              <Menu.Item>
-                <ExternalLink href={accountUrl} className="menu-item !no-underline">
-                  <ExternalLinkIcon width={20} className="size-20" />
-                  <p>
-                    <Trans>View in Explorer</Trans>
-                  </p>
-                </ExternalLink>
-              </Menu.Item>
-              {!isBotanix ? (
-                <Menu.Item>
-                  <div className="menu-item" onClick={openNotifyModal}>
-                    <BellIcon className="ml-2 size-20 pt-2" />
-                    <p>
-                      <Trans>Alerts</Trans>
-                    </p>
-                  </div>
-                </Menu.Item>
-              ) : null}
-              <Menu.Item>
-                <div className="menu-item" onClick={handleDisconnect}>
-                  <DisconnectIcon width={20} className="size-20" />
-                  <p>
-                    <Trans>Disconnect</Trans>
-                  </p>
-                </div>
-              </Menu.Item>
-            </Menu.Items>
-          </div>
+            ) : null}
+            <Menu.Item>
+              <div className="menu-item" onClick={handleDisconnect}>
+                <DisconnectIcon width={20} className="size-20" />
+                <p>
+                  <Trans>Disconnect</Trans>
+                </p>
+              </div>
+            </Menu.Item>
+          </Menu.Items>
         </>
       )}
     </Menu>
