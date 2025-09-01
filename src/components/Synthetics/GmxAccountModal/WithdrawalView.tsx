@@ -1,4 +1,5 @@
 import { t, Trans } from "@lingui/macro";
+import cx from "classnames";
 import { type Provider } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
@@ -794,7 +795,7 @@ export const WithdrawalView = () => {
     <div className="flex grow flex-col overflow-y-auto p-16">
       <div className="flex flex-col gap-20">
         <div className="flex flex-col gap-4">
-          <div className="text-body-small text-slate-100">Asset</div>
+          <div className="text-body-medium text-typography-secondary">Asset</div>
           <DropdownSelector
             value={selectedTokenAddress}
             onChange={setSelectedTokenAddress}
@@ -814,7 +815,7 @@ export const WithdrawalView = () => {
         </div>
 
         <div className="flex flex-col gap-4">
-          <div className="text-body-small text-slate-100">
+          <div className="text-body-medium text-typography-secondary">
             <Trans>To Network</Trans>
           </div>
           <DropdownSelector
@@ -855,7 +856,7 @@ export const WithdrawalView = () => {
         </div>
 
         <div className="flex flex-col gap-4">
-          <div className="text-body-small flex items-center justify-between text-slate-100">
+          <div className="text-body-medium flex items-center justify-between text-typography-secondary">
             <Trans>Withdraw</Trans>
             {selectedToken !== undefined &&
               selectedToken.gmxAccountBalance !== undefined &&
@@ -872,25 +873,27 @@ export const WithdrawalView = () => {
             <NumberInput
               value={inputValue}
               onValueChange={(e) => setInputValue(e.target.value)}
-              className="text-body-large w-full rounded-4 bg-cold-blue-900 py-12 pl-14 pr-72"
+              className="text-body-large w-full rounded-8 border border-slate-800  bg-slate-800 py-12 pl-14 pr-72 focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
               placeholder={`0.0 ${selectedToken?.symbol || ""}`}
             />
             {inputValue !== "" && inputValue !== undefined && (
               <div className="pointer-events-none absolute left-14 top-1/2 flex max-w-[calc(100%-72px)] -translate-y-1/2 overflow-hidden">
                 <div className="invisible whitespace-pre font-[RelativeNumber]">{inputValue} </div>
-                <div className="text-slate-100">{selectedToken?.symbol || ""}</div>
+                <div className="text-typography-secondary">{selectedToken?.symbol || ""}</div>
               </div>
             )}
             <button
-              className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-4 bg-cold-blue-500 px-8 py-2 disabled:cursor-not-allowed
-                         disabled:opacity-50 hover:[&:not([disabled])]:bg-[#484e92] active:[&:not([disabled])]:bg-[#505699]"
+              // className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-4 bg-cold-blue-500 px-8 py-2 disabled:cursor-not-allowed
+              //            disabled:opacity-50 hover:[&:not([disabled])]:bg-[#484e92] active:[&:not([disabled])]:bg-[#505699]"
+              className="hover:not-disabled:bg-[#484e92] focus-visible:not-disabled:bg-[#484e92] active:not-disabled:bg-[#505699] text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-full bg-slate-600 px-8 py-2 font-medium
+                         disabled:opacity-50"
               disabled={isMaxButtonDisabled}
               onClick={handleMaxButtonClick}
             >
-              <Trans>MAX</Trans>
+              <Trans>Max</Trans>
             </button>
           </div>
-          <div className="text-body-small text-slate-100">{formatUsd(inputAmountUsd ?? 0n)}</div>
+          <div className="text-body-medium text-typography-secondary">{formatUsd(inputAmountUsd ?? 0n)}</div>
         </div>
       </div>
 
@@ -983,7 +986,7 @@ export const WithdrawalView = () => {
 
       <div className="h-32 shrink-0 grow" />
 
-      <div className="mb-16 flex flex-col gap-14">
+      <div className="mb-16 flex flex-col gap-10">
         <SyntheticsInfoRow
           label={<Trans>Network Fee</Trans>}
           value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
@@ -1042,18 +1045,20 @@ function NetworkItem({ option }: { option: { id: number; name: string } }) {
 }
 
 function WithdrawAssetItem({ option }: { option: TokenData }) {
+  const isZero = option.gmxAccountBalance === 0n || option.gmxAccountBalance === undefined;
   return (
     <div className="flex items-center justify-between gap-8">
       <div className="flex gap-8">
         <TokenIcon symbol={option.symbol} displaySize={20} importSize={40} />
         <span>
-          {option.symbol} <span className="text-slate-100">{option.name}</span>
+          {option.symbol} <span className="text-body-small text-typography-secondary">{option.name}</span>
         </span>
       </div>
-      <div className="text-slate-100">
+      <div className={cx(isZero ? "text-typography-secondary" : "text-typography-primary")}>
         {option.gmxAccountBalance !== undefined
           ? formatBalanceAmount(option.gmxAccountBalance, option.decimals, undefined, {
               isStable: option.isStable,
+              showZero: true,
             })
           : "-"}
       </div>

@@ -174,22 +174,22 @@ export function TradingSettings({
             />
             <DropdownSelector
               slim
-              elevated
+              variant="ghost"
               value={settlementChainId}
               onChange={setSettlementChainId}
               options={MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[srcChainId]}
               item={({ option }) => (
-                <div className="flex items-center gap-8">
-                  <img src={CHAIN_ID_TO_NETWORK_ICON[option]} alt={getChainName(option)} className="size-16" />
+                <div className="flex items-center gap-8 text-typography-primary">
+                  <img src={CHAIN_ID_TO_NETWORK_ICON[option]} alt={getChainName(option)} className="size-20" />
                   <span>{getChainName(option)}</span>
                 </div>
               )}
               button={
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 text-typography-primary">
                   <img
                     src={CHAIN_ID_TO_NETWORK_ICON[settlementChainId]}
                     alt={getChainName(settlementChainId)}
-                    className="size-16"
+                    className="size-20"
                   />
                   <span>{getChainName(settlementChainId)}</span>
                 </div>
