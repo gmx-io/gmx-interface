@@ -667,7 +667,8 @@ export const formatPositionMessage = (
       positionFeeUsd !== undefined &&
       liquidationFeeUsd !== undefined
     ) {
-      const totalImpactUsd = tradeAction.totalImpactUsd ?? 0n;
+      // For v2.2+ totalImpactUsd is used
+      const priceImpactUsd = tradeAction.totalImpactUsd ?? tradeAction.priceImpactUsd ?? 0n;
 
       returnedCollateralUsd = bigMath.max(
         0n,
@@ -677,7 +678,7 @@ export const formatPositionMessage = (
           fundingFeeUsd -
           positionFeeUsd -
           liquidationFeeUsd +
-          totalImpactUsd
+          priceImpactUsd
       );
     }
 
