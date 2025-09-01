@@ -5094,9 +5094,19 @@ msgstr "GM se puede vender por {0} en este mercado hasta los límites de venta e
 msgid "REBATE"
 msgstr "REEMBOLSO"
 
+<<<<<<< HEAD
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending shift request."
 msgstr ""
+=======
+#: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+msgid "There may not be sufficient liquidity to execute your order when the Min. Receive are met."
+msgstr ""
+
+#: src/components/Synthetics/TVChart/Chart.tsx
+#~ msgid "DEPTH"
+#~ msgstr ""
+>>>>>>> 441072523191ab59369d30bb3ca912d1b450327c
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx

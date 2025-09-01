@@ -634,7 +634,6 @@ export const formatPositionMessage = (
       tradeAction.collateralTokenPriceMin
     );
     const formattedPositionFee = formatUsd(positionFeeUsd === undefined ? undefined : -positionFeeUsd);
-    const totalImpactUsd = tradeAction.totalImpactUsd ?? 0n;
 
     let liquidationCollateralUsd = applyFactor(sizeDeltaUsd, tradeAction.marketInfo.minCollateralFactorForLiquidation);
     if (liquidationCollateralUsd < minCollateralUsd) {
@@ -644,12 +643,7 @@ export const formatPositionMessage = (
     const leftoverCollateralUsd =
       initialCollateralUsd === undefined
         ? undefined
-        : initialCollateralUsd +
-          tradeAction.basePnlUsd! -
-          borrowingFeeUsd! -
-          fundingFeeUsd! -
-          positionFeeUsd! +
-          totalImpactUsd;
+        : initialCollateralUsd + tradeAction.basePnlUsd! - borrowingFeeUsd! - fundingFeeUsd! - positionFeeUsd!;
 
     const formattedLeftoverCollateral = formatUsd(leftoverCollateralUsd!);
     const formattedMinCollateral = formatUsd(liquidationCollateralUsd)!;
@@ -673,6 +667,9 @@ export const formatPositionMessage = (
       positionFeeUsd !== undefined &&
       liquidationFeeUsd !== undefined
     ) {
+      // For v2.2+ totalImpactUsd is used
+      const priceImpactUsd = tradeAction.totalImpactUsd ?? tradeAction.priceImpactUsd ?? 0n;
+
       returnedCollateralUsd = bigMath.max(
         0n,
         initialCollateralUsd +
@@ -681,7 +678,7 @@ export const formatPositionMessage = (
           fundingFeeUsd -
           positionFeeUsd -
           liquidationFeeUsd +
-          (tradeAction.totalImpactUsd ?? 0n)
+          priceImpactUsd
       );
     }
 
