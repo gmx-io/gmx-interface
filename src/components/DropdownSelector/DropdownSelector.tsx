@@ -16,7 +16,7 @@ export const DropdownSelector = <Id extends Primitive, Option>({
   itemKey,
   placeholder,
   slim = false,
-  variant = "ghost",
+  variant,
 }: {
   value: Id | undefined;
   onChange: (value: Id) => void;

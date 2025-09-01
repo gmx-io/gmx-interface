@@ -718,7 +718,7 @@ export const DepositView = () => {
               onClick={() => {
                 setIsVisibleOrView("selectAssetToDeposit");
               }}
-              className="flex items-center justify-between rounded-8 bg-slate-800 px-14 py-12 gmx-hover:bg-fill-surfaceElevatedHover"
+              className="flex items-center justify-between rounded-8 border border-slate-800 bg-slate-800 px-14 py-12 gmx-hover:bg-fill-surfaceElevatedHover"
             >
               <div className="flex items-center gap-8">
                 {selectedToken ? (
