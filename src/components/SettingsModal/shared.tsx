@@ -3,9 +3,9 @@ import { ReactNode } from "react";
 
 import { useBreakpoints } from "lib/breakpoints";
 
-import NumberInput from "components/NumberInput/NumberInput";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { ValueInput } from "components/ValueInput/ValueInput";
 
 import InfoIcon from "img/ic_info.svg?react";
 
@@ -65,12 +65,7 @@ export function InputSetting({
         suggestions={suggestions}
       />
     ) : (
-      <NumberInput
-        className="w-60 rounded-4 border border-solid border-slate-700 bg-slate-700 px-4 py-2 text-right hover:border-cold-blue-700"
-        value={value}
-        onValueChange={(e) => onChange(Number(e.target.value))}
-        onBlur={onBlur}
-      />
+      <ValueInput value={value ?? 0} onChange={onChange} onBlur={onBlur} className="w-[80px]" />
     );
 
   return (

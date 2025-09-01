@@ -1229,6 +1229,10 @@ msgstr "Tokens"
 msgid "Request Withdraw"
 msgstr "Demander un retrait"
 
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Action(s)"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "1inch"
 msgstr "1inch"
@@ -2340,6 +2344,10 @@ msgstr "TOKEN"
 
 #: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "What is the bonus incentive for holding your GLV?"
+msgstr ""
+
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Day(s)"
 msgstr ""
 
 #: src/pages/NftWallet/NftWallet.jsx
@@ -3779,6 +3787,10 @@ msgstr "Annuler l'ordre"
 msgid "Withdraw"
 msgstr "Retirer"
 
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Maximum number of days before reauthorization is required."
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Stop Market"
 msgstr "Actualiser Stop Market"
@@ -4126,6 +4138,10 @@ msgstr "Réclamer les récompenses esGMX"
 #: src/pages/Stake/Stake.tsx
 msgid "Trading incentives program is live on {avalancheLink}."
 msgstr "Le programme d'incitations au trading est en direct sur {avalancheLink}."
+
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Maximum number of actions allowed before reauthorization is required."
+msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
@@ -5360,6 +5376,10 @@ msgstr "Échec de la mise à jour du code de parrainage."
 msgid "Price"
 msgstr "Prix"
 
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Remaining Allowed Actions"
+msgstr ""
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signing was cancelled"
 msgstr "Signature du permis annulée"
@@ -6062,6 +6082,10 @@ msgstr "Augmenter la taille (Marché)"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Couldn't find a swap path with enough liquidity"
 msgstr "Impossible de trouver un chemin de swap avec suffisamment de liquidité"
+
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Time Limit"
+msgstr ""
 
 #: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
 msgid "Withdrawn!"

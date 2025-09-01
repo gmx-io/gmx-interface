@@ -1229,6 +1229,10 @@ msgstr "토큰"
 msgid "Request Withdraw"
 msgstr "인출 요청"
 
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Action(s)"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "1inch"
 msgstr "1inch"
@@ -2340,6 +2344,10 @@ msgstr "토큰"
 
 #: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "What is the bonus incentive for holding your GLV?"
+msgstr ""
+
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Day(s)"
 msgstr ""
 
 #: src/pages/NftWallet/NftWallet.jsx
@@ -3779,6 +3787,10 @@ msgstr "주문 취소"
 msgid "Withdraw"
 msgstr "인출"
 
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Maximum number of days before reauthorization is required."
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Stop Market"
 msgstr "스탑 마켓 업데이트"
@@ -4126,6 +4138,10 @@ msgstr "esGMX 보상 수령"
 #: src/pages/Stake/Stake.tsx
 msgid "Trading incentives program is live on {avalancheLink}."
 msgstr "{avalancheLink}에서 거래 인센티브 프로그램이 라이브입니다."
+
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Maximum number of actions allowed before reauthorization is required."
+msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
@@ -5360,6 +5376,10 @@ msgstr "추천인 코드 업데이트 실패."
 msgid "Price"
 msgstr "가격"
 
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Remaining Allowed Actions"
+msgstr ""
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signing was cancelled"
 msgstr "허가 서명이 취소되었습니다"
@@ -6062,6 +6082,10 @@ msgstr "크기 증가 (시장)"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Couldn't find a swap path with enough liquidity"
 msgstr "충분한 유동성을 가진 스왑 경로를 찾을 수 없음"
+
+#: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
+msgid "Time Limit"
+msgstr ""
 
 #: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
 msgid "Withdrawn!"

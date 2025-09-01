@@ -145,14 +145,10 @@ export function TradingSettings({
             )}
 
             {settings.expressOrdersEnabled && (
-              <>
-                <div className="divider"></div>
-
-                <GasPaymentTokenSelector
-                  curentTokenAddress={settings.gasPaymentTokenAddress}
-                  onSelectToken={settings.setGasPaymentTokenAddress}
-                />
-              </>
+              <GasPaymentTokenSelector
+                curentTokenAddress={settings.gasPaymentTokenAddress}
+                onSelectToken={settings.setGasPaymentTokenAddress}
+              />
             )}
           </SettingsSection>
         </>
