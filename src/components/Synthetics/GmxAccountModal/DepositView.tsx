@@ -705,10 +705,10 @@ export const DepositView = () => {
   }
 
   return (
-    <form className="flex grow flex-col overflow-y-auto p-16" onSubmit={handleSubmit}>
+    <form className="flex grow flex-col overflow-y-auto px-20 pb-20 pt-16" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-20">
         <div className="flex flex-col gap-4">
-          <div className="text-body-small text-slate-100">
+          <div className="text-body-medium text-typography-secondary">
             <Trans>Asset</Trans>
           </div>
           {!tokenSelectorDisabled ? (
@@ -718,7 +718,7 @@ export const DepositView = () => {
               onClick={() => {
                 setIsVisibleOrView("selectAssetToDeposit");
               }}
-              className="flex items-center justify-between rounded-4 bg-cold-blue-900 px-14 py-12 active:bg-cold-blue-500 gmx-hover:bg-cold-blue-700"
+              className="flex items-center justify-between rounded-8 bg-slate-800 px-14 py-12 gmx-hover:bg-fill-surfaceElevatedHover"
             >
               <div className="flex items-center gap-8">
                 {selectedToken ? (
@@ -738,17 +738,17 @@ export const DepositView = () => {
                     <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={40} height={16} />
                   </>
                 ) : (
-                  <span className="text-slate-100">
+                  <span className="text-typography-secondary">
                     <Trans>Pick an asset to deposit</Trans>
                   </span>
                 )}
               </div>
-              <BiChevronRight className="size-20 text-slate-100" />
+              <BiChevronRight className="size-20 text-typography-secondary" />
             </div>
           ) : (
-            <div className="flex items-center justify-between rounded-4 bg-cold-blue-900 px-14 py-12">
+            <div className="flex items-center justify-between rounded-8 bg-cold-blue-900 px-14 py-12">
               <div className="flex items-center gap-8">
-                <span className="text-slate-100">
+                <span className="text-typography-secondary">
                   {depositViewChain !== undefined ? (
                     <Trans>No assets available for deposit on {getChainName(depositViewChain)}</Trans>
                   ) : (
@@ -761,50 +761,52 @@ export const DepositView = () => {
         </div>
         {depositViewChain !== undefined && (
           <div className="flex flex-col gap-4">
-            <div className="text-body-small text-slate-100">
+            <div className="text-body-medium text-typography-secondary">
               <Trans>From Network</Trans>
             </div>
-            <div className="flex items-center gap-8 rounded-4 border border-cold-blue-900 px-14 py-12">
+            <div className="flex items-center gap-8 rounded-8 border border-cold-blue-900 px-14 py-12">
               <img src={getChainIcon(depositViewChain)} alt={getChainName(depositViewChain)} className="size-20" />
-              <span className="text-body-large text-slate-100">{getChainName(depositViewChain)}</span>
+              <span className="text-body-large text-typography-secondary">{getChainName(depositViewChain)}</span>
             </div>
           </div>
         )}
 
         <div className={cx("flex flex-col gap-4", { invisible: depositViewTokenAddress === undefined })}>
-          <div className="text-body-small flex items-center justify-between gap-4 text-slate-100">
+          <div className="text-body-medium flex items-center justify-between gap-4 text-typography-secondary">
             <Trans>Deposit</Trans>
             {selectedTokenSourceChainBalance !== undefined && selectedToken !== undefined && (
               <div>
                 <Trans>Available:</Trans>{" "}
-                {formatBalanceAmount(selectedTokenSourceChainBalance, selectedToken.decimals, selectedToken.symbol, {
-                  isStable: selectedToken.isStable,
-                })}
+                <span className="text-typography-primary">
+                  {formatBalanceAmount(selectedTokenSourceChainBalance, selectedToken.decimals, selectedToken.symbol, {
+                    isStable: selectedToken.isStable,
+                  })}
+                </span>
               </div>
             )}
           </div>
-          <div className="text-body-large relative">
+          <div className="relative">
             <NumberInput
               value={inputValue}
               onValueChange={(e) => setInputValue(e.target.value)}
-              className="text-body-large w-full rounded-4 bg-cold-blue-900 py-12 pl-14 pr-72"
+              className="w-full rounded-8 bg-slate-800 py-14 pl-12 pr-68 leading-[20px]"
             />
             <div className="pointer-events-none absolute left-14 top-1/2 flex max-w-[calc(100%-72px)] -translate-y-1/2 overflow-hidden">
               <div className="invisible whitespace-pre font-[RelativeNumber]">
                 {inputValue}
                 {inputValue === "" || inputValue === undefined ? "" : " "}
               </div>
-              <div className="font-[RelativeNumber] text-slate-100">{placeholder}</div>
+              <div className="font-[RelativeNumber] text-typography-secondary">{placeholder}</div>
             </div>
             <button
-              className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-4 bg-cold-blue-500 px-8 py-2 hover:bg-[#484e92] focus-visible:bg-[#484e92] active:bg-[#505699]"
+              className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-full bg-cold-blue-500 px-8 py-2 font-medium hover:bg-[#484e92] focus-visible:bg-[#484e92] active:bg-[#505699]"
               type="button"
               onClick={handleMaxButtonClick}
             >
-              <Trans>MAX</Trans>
+              <Trans>Max</Trans>
             </button>
           </div>
-          <div className="text-body-small text-slate-100">{formatUsd(inputAmountUsd ?? 0n)}</div>
+          <div className="text-body-medium text-typography-secondary">{formatUsd(inputAmountUsd ?? 0n)}</div>
         </div>
       </div>
 

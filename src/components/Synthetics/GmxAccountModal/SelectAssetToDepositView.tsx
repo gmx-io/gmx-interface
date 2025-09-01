@@ -20,6 +20,7 @@ import Button from "components/Button/Button";
 import SearchInput from "components/SearchInput/SearchInput";
 import { useMultichainTokensRequest } from "components/Synthetics/GmxAccountModal/hooks";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import InfoIconComponent from "img/ic_info.svg?react";
@@ -34,7 +35,7 @@ const TokenListItem = ({ tokenChainData, onClick, className }: TokenListItemProp
   return (
     <div
       key={tokenChainData.symbol + "_" + tokenChainData.sourceChainId}
-      className={cx("gmx-hover-gradient flex cursor-pointer items-center justify-between px-16 py-8", className)}
+      className={cx("gmx-hover-gradient flex cursor-pointer items-center justify-between px-20 py-8", className)}
       onClick={onClick}
     >
       <div className="flex items-center gap-8">
@@ -126,30 +127,27 @@ export const SelectAssetToDepositView = () => {
   }, [tokenChainDataArray, searchQuery, selectedNetwork]);
 
   return (
-    <div className="flex grow flex-col gap-8 overflow-y-hidden">
-      <div className="px-16 pt-16">
+    <div className="flex grow flex-col overflow-y-hidden">
+      <div className="mb-16 px-20 pt-20">
         <SearchInput
           placeholder="Search tokens..."
           value={searchQuery}
           setValue={(value) => setSearchQuery(value)}
-          className="rounded-4 bg-slate-700"
-          size="s"
           noBorder
         />
       </div>
 
-      <div className="px-16 ">
+      <div className="mb-12 px-20">
         <ButtonRowScrollFadeContainer>
           <div className="flex gap-4">
             {NETWORKS_FILTER.map((network) => (
               <Button
                 key={network.id}
                 type="button"
-                variant="secondary"
+                variant={selectedNetwork === network.id ? "secondary" : "ghost"}
                 size="small"
                 className={cx("whitespace-nowrap", {
-                  "!bg-cold-blue-500": selectedNetwork === network.id,
-                  "!text-slate-100": selectedNetwork !== network.id,
+                  "!text-typography-primary": selectedNetwork === network.id,
                 })}
                 onClick={() => setSelectedNetwork(network.id as number | "all")}
                 imgSrc={network.id !== "all" ? getChainIcon(network.id) : undefined}
@@ -162,7 +160,7 @@ export const SelectAssetToDepositView = () => {
         </ButtonRowScrollFadeContainer>
       </div>
 
-      <div className="grow overflow-y-auto">
+      <VerticalScrollFadeContainer className="flex grow flex-col overflow-y-auto">
         {filteredBalances.map((tokenChainData) => (
           <TokenListItem
             key={tokenChainData.symbol + "_" + tokenChainData.sourceChainId}
@@ -175,7 +173,7 @@ export const SelectAssetToDepositView = () => {
           />
         ))}
         {filteredBalances.length === 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 p-16 text-slate-100">
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-20 text-slate-100">
             <InfoIconComponent className="size-24" />
             {selectedNetwork === "all" ? (
               <Trans>No assets are available for deposit</Trans>
@@ -184,7 +182,7 @@ export const SelectAssetToDepositView = () => {
             )}
           </div>
         )}
-      </div>
+      </VerticalScrollFadeContainer>
     </div>
   );
 };

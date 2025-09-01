@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
-import { IoArrowDown } from "react-icons/io5";
+import { FaChevronRight } from "react-icons/fa6";
 import { TbLoader2 } from "react-icons/tb";
 import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
@@ -153,11 +153,7 @@ const Toolbar = ({ account }: { account: string }) => {
 
   return (
     <div className="flex items-center justify-between gap-8">
-      <Button
-        variant="secondary"
-        className="flex items-center gap-8 text-typography-secondary"
-        onClick={handleCopyAddress}
-      >
+      <Button variant="secondary" className="flex items-center gap-8" onClick={handleCopyAddress}>
         <div className="max-smallMobile:hidden">
           <Avatar size={24} ensName={ensName} address={account} />
         </div>
@@ -169,7 +165,7 @@ const Toolbar = ({ account }: { account: string }) => {
       <div className="flex items-center gap-8">
         <TooltipWithPortal content={t`PnL Analysis`} position="bottom" tooltipClassName="!min-w-max" variant="none">
           <Button variant="secondary" className="size-40 !p-10" onClick={handlePnlAnalysisClick}>
-            <PnlAnalysisIcon width={20} height={20} className="text-typography-secondary" />
+            <PnlAnalysisIcon width={20} height={20} />
           </Button>
         </TooltipWithPortal>
         <TooltipWithPortal
@@ -186,14 +182,14 @@ const Toolbar = ({ account }: { account: string }) => {
         {showNotify && (
           <TooltipWithPortal content={t`Notifications`} position="bottom" tooltipClassName="!min-w-max" variant="none">
             <Button variant="secondary" className="size-40 !p-10" onClick={handleNotificationsClick}>
-              <BellIcon className="text-slate-100" />
+              <BellIcon />
             </Button>
           </TooltipWithPortal>
         )}
 
         <TooltipWithPortal content={t`Settings`} position="bottom" tooltipClassName="!min-w-max" variant="none">
           <Button variant="secondary" className="size-40 !p-10" onClick={handleSettingsClick}>
-            <SettingsIcon width={20} height={20} className="text-slate-100" />
+            <SettingsIcon width={20} height={20} />
           </Button>
         </TooltipWithPortal>
         <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max" variant="none">
@@ -211,50 +207,50 @@ function SettlementChainBalance() {
   const availableToTradeAssetSymbols = useAvailableToTradeAssetSymbolsSettlementChain();
 
   return (
-    <div className="flex flex-col gap-8 rounded-4 bg-cold-blue-900 p-12">
-      <div className="text-body-small text-slate-100">
+    <div className="flex flex-col gap-12 rounded-8 bg-fill-surfaceElevated50 p-12">
+      <div className="text-body-small text-[#CACCEC]">
         <Trans>Available to Trade</Trans>
       </div>
       <Balance usd={totalUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
-      <div className="bg-stroke-primary my-4 h-1" />
-      <SyntheticsInfoRow
-        label="Wallet"
-        className="h-23 !items-start"
-        valueClassName="leading-[21px]"
-        value={
-          walletUsd !== undefined ? (
-            formatUsd(walletUsd)
-          ) : (
-            <Skeleton
-              baseColor="#B4BBFF1A"
-              highlightColor="#B4BBFF1A"
-              width={54}
-              height={21}
-              className="!block"
-              inline={true}
-            />
-          )
-        }
-      />
-      <SyntheticsInfoRow
-        label={<Trans>GMX Account Balance</Trans>}
-        className="h-23 !items-start"
-        valueClassName="leading-[21px]"
-        value={
-          gmxAccountUsd !== undefined ? (
-            formatUsd(gmxAccountUsd)
-          ) : (
-            <Skeleton
-              baseColor="#B4BBFF1A"
-              highlightColor="#B4BBFF1A"
-              width={54}
-              height={21}
-              className="!block"
-              inline={true}
-            />
-          )
-        }
-      />
+      <div className="h-[0.5px] bg-slate-600" />
+      <div>
+        <SyntheticsInfoRow
+          label={t`Wallet`}
+          className="py-5"
+          value={
+            walletUsd !== undefined ? (
+              formatUsd(walletUsd)
+            ) : (
+              <Skeleton
+                baseColor="#B4BBFF1A"
+                highlightColor="#B4BBFF1A"
+                width={54}
+                height={21}
+                className="!block"
+                inline={true}
+              />
+            )
+          }
+        />
+        <SyntheticsInfoRow
+          label={<Trans>GMX Account Balance</Trans>}
+          className="py-5"
+          value={
+            gmxAccountUsd !== undefined ? (
+              formatUsd(gmxAccountUsd)
+            ) : (
+              <Skeleton
+                baseColor="#B4BBFF1A"
+                highlightColor="#B4BBFF1A"
+                width={54}
+                height={21}
+                className="!block"
+                inline={true}
+              />
+            )
+          }
+        />
+      </div>
     </div>
   );
 }
@@ -264,8 +260,8 @@ function MultichainBalance() {
   const availableToTradeAssetSymbols = useAvailableToTradeAssetSymbolsMultichain();
 
   return (
-    <div className="flex flex-col gap-8 rounded-4 bg-cold-blue-900 p-12">
-      <div className="text-body-small text-slate-100">
+    <div className="flex flex-col gap-8 rounded-8 bg-cold-blue-900 p-12">
+      <div className="text-body-small text-[#CACCEC]">
         <Trans>Balance</Trans>
       </div>
       <Balance usd={gmxAccountUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
@@ -289,25 +285,25 @@ function Balance({
   return (
     <div className="flex flex-wrap items-center justify-between gap-8">
       {usd !== undefined ? (
-        <div className="text-24 leading-[28px]">{formatUsd(usd)}</div>
+        <div className="text-h2  leading-[30px]">{formatUsd(usd)}</div>
       ) : (
         <Skeleton
           baseColor="#B4BBFF1A"
           highlightColor="#B4BBFF1A"
           width={100}
-          height={28}
+          height={30}
           className="!block"
           inline={true}
         />
       )}
       {usd !== undefined && usd !== 0n && (
         <button
-          className="flex items-center gap-4 rounded-4 bg-cold-blue-700 py-4 pl-8 pr-4 gmx-hover:bg-cold-blue-500"
+          className="flex items-center gap-4 rounded-full bg-slate-600 py-8 pl-12 pr-12 text-[13px] font-medium gmx-hover:bg-cold-blue-500"
           onClick={handleAvailableToTradeClick}
         >
           <Trans>All assets</Trans>
           <TokenIcons tokens={availableToTradeAssetSymbols} />
-          <IoArrowDown className="block size-16 -rotate-90 text-slate-100" />
+          <FaChevronRight size={16} className="text-typography-secondary" />
         </button>
       )}
       {usd === undefined && (
@@ -343,10 +339,10 @@ const ActionButtons = () => {
 
   return (
     <div className="flex gap-8">
-      <Button variant="secondary" className="flex-1" onClick={handleDepositClick}>
+      <Button variant="secondary" className="flex-1 !text-typography-primary" onClick={handleDepositClick}>
         <Trans>Deposit</Trans>
       </Button>
-      <Button variant="secondary" className="flex-1" onClick={handleWithdrawClick}>
+      <Button variant="secondary" className="flex-1 !text-typography-primary" onClick={handleWithdrawClick}>
         <Trans>Withdraw</Trans>
       </Button>
     </div>

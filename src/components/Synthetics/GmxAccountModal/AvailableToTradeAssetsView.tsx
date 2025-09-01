@@ -13,6 +13,8 @@ import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import Button from "components/Button/Button";
+import SearchInput from "components/SearchInput/SearchInput";
+import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 type FilterType = "all" | "gmxAccount" | "wallet";
@@ -73,17 +75,21 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
   }, [tokens, searchQuery, noChainFilter, activeFilter]);
 
   return (
-    <div className="flex grow flex-col gap-8 overflow-y-hidden pt-16">
+    <div className="flex grow flex-col overflow-y-hidden pt-20">
+      <div className="mb-16 px-20">
+        <SearchInput value={searchQuery} setValue={setSearchQuery} noBorder />
+      </div>
+
       {!noChainFilter && (
-        <div className="flex gap-4 px-16">
+        <div className="mb-12 flex gap-4 px-20">
           {FILTERS.map((filter) => (
             <Button
               key={filter}
               type="button"
-              variant="ghost"
+              variant={activeFilter === filter ? "secondary" : "ghost"}
               size="small"
               className={cx({
-                "!bg-cold-blue-500": activeFilter === filter,
+                "!text-typography-primary": activeFilter === filter,
               })}
               onClick={() => setActiveFilter(filter)}
             >
@@ -92,22 +98,11 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
           ))}
         </div>
       )}
-
-      <div className="px-16">
-        <input
-          type="text"
-          placeholder="Search tokens..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full rounded-4 bg-slate-700 px-12 py-8 text-white placeholder:text-slate-100"
-        />
-      </div>
-
-      <div className="grow overflow-y-auto">
+      <VerticalScrollFadeContainer className="flex grow flex-col overflow-y-auto">
         {sortedFilteredTokens.map((displayToken) => (
           <div
             key={displayToken.symbol + "_" + displayToken.chainId}
-            className="flex items-center justify-between px-16 py-8 gmx-hover:bg-slate-700"
+            className="flex items-center justify-between px-20 py-8 gmx-hover:bg-slate-700"
           >
             <div className="flex items-center gap-8">
               <TokenIcon
@@ -122,12 +117,12 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
               </div>
             </div>
             <div className="text-right">
-              <div>{formatBalanceAmount(displayToken.balance ?? 0n, displayToken.decimals, displayToken.symbol)}</div>
+              <div>{formatBalanceAmount(displayToken.balance ?? 0n, displayToken.decimals)}</div>
               <div className="text-body-small text-slate-100">{formatUsd(displayToken.balanceUsd)}</div>
             </div>
           </div>
         ))}
-      </div>
+      </VerticalScrollFadeContainer>
     </div>
   );
 };
