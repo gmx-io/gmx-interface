@@ -34,6 +34,20 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "wlfi-listing",
+    isActive: true,
+    startDate: "01 Sep 2025, 12:00",
+    endDate: "07 Sep 2025, 12:00",
+    title: "WLFI market added on Avalanche and Arbitrum",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> this market, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
+        <span className="text-slate-100">[WAVAX-USDC]</span> for WLFI on Avalanche, and GM or GLV{" "}
+        <span className="text-slate-100">[WETH-USDC]</span> on Arbitrum.
+      </>
+    ),
+  },
+  {
     id: "aero-brett-pbtc-listing",
     isActive: true,
     startDate: "28 Aug 2025, 10:00",

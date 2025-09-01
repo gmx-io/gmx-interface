@@ -719,6 +719,13 @@ export const MARKETS: Record<UiContractsChain, Record<string, MarketConfig>> = {
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // WLFI/USD [WETH-USDC]
+    "0xb3588455858a49d3244237cee00880ccb84b91dd": {
+      marketTokenAddress: "0xb3588455858a49d3244237cee00880ccb84b91dd",
+      indexTokenAddress: "0xC5799ab6E2818fD8d0788dB8D156B0c5db1Bf97b",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
@@ -837,6 +844,13 @@ export const MARKETS: Record<UiContractsChain, Record<string, MarketConfig>> = {
     "0x94cE6F65188a92F297C7f0A5A7B3cAd9013450F8": {
       marketTokenAddress: "0x94cE6F65188a92F297C7f0A5A7B3cAd9013450F8",
       indexTokenAddress: "0xdA598795DfE56388ca3D35e2ccFA96EFf83eC306",
+      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+    },
+    // WLFI/USD [WAVAX-USDC]
+    "0x1cb9932CE322877A2B86489BD1aA3C3CfF879F0d": {
+      marketTokenAddress: "0x1cb9932CE322877A2B86489BD1aA3C3CfF879F0d",
+      indexTokenAddress: "0xbDF8a77ACB7A54597E7760b34D3E632912bB59b7",
       longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
       shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
     },
