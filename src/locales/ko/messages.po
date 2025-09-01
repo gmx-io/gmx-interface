@@ -7461,8 +7461,8 @@ msgid "Vault Capacity"
 msgstr "볼트 용량"
 
 #: src/components/Synthetics/TVChart/Chart.tsx
-msgid "Depth"
-msgstr "깊이"
+#~ msgid "Depth"
+#~ msgstr "깊이"
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"

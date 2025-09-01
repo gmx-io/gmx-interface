@@ -5092,21 +5092,19 @@ msgstr "GM se puede vender por {0} en este mercado hasta los límites de venta e
 #: src/components/Synthetics/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "REBATE"
-msgstr "REEMBOLSO"
+msgstr "REEMBOLSO<<<<<<< HEAD"
 
-<<<<<<< HEAD
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending shift request."
-msgstr ""
-=======
+msgstr "======="
+
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
-msgid "There may not be sufficient liquidity to execute your order when the Min. Receive are met."
-msgstr ""
+#~ msgid "There may not be sufficient liquidity to execute your order when the Min. Receive are met."
+#~ msgstr ""
 
 #: src/components/Synthetics/TVChart/Chart.tsx
 #~ msgid "DEPTH"
-#~ msgstr ""
->>>>>>> 441072523191ab59369d30bb3ca912d1b450327c
+#~ msgstr ">>>>>>> 441072523191ab59369d30bb3ca912d1b450327c"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -7471,8 +7469,8 @@ msgid "Vault Capacity"
 msgstr "Capacidad de Vault"
 
 #: src/components/Synthetics/TVChart/Chart.tsx
-msgid "Depth"
-msgstr "Profundidad"
+#~ msgid "Depth"
+#~ msgstr "Profundidad"
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"

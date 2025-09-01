@@ -7461,8 +7461,8 @@ msgid "Vault Capacity"
 msgstr "Vault Capacity"
 
 #: src/components/Synthetics/TVChart/Chart.tsx
-msgid "Depth"
-msgstr "Depth"
+#~ msgid "Depth"
+#~ msgstr "Depth"
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
