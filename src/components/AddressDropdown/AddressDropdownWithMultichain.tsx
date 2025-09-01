@@ -26,7 +26,7 @@ export function AddressDropdownWithMultichain({ account }: Props) {
   const { totalUsd, gmxAccountUsd, isGmxAccountLoading } = useAvailableToTradeAssetSettlementChain();
   const { shouldShowDepositButton } = useGmxAccountShowDepositButton();
 
-  const { isMobile } = useBreakpoints();
+  const { isMobile, isSmallMobile } = useBreakpoints();
   const displayAddressLength = isMobile ? 9 : 13;
 
   const handleOpenGmxAccountModal = useCallback(() => {
@@ -48,24 +48,28 @@ export function AddressDropdownWithMultichain({ account }: Props) {
       <Button
         variant="secondary"
         type="button"
-        className={cx("h-40", { "!py-4 !pl-12 !pr-4": shouldShowDepositButton })}
+        className={cx("h-40 max-md:h-32", {
+          "!py-4 !pl-12 !pr-4": shouldShowDepositButton && !isMobile,
+          "!py-0 !pl-12 !pr-0": shouldShowDepositButton && isMobile,
+        })}
         onClick={handleOpenGmxAccountModal}
       >
         <div
           className={cx(
             "text-body-medium flex items-center font-medium text-typography-primary",
-            !shouldShowDepositButton ? "gap-16" : "gap-20"
+            !isMobile && (!shouldShowDepositButton ? "gap-16" : "gap-20"),
+            isMobile && "gap-8"
           )}
         >
           <div className="flex items-center gap-8">
             <Avatar size={isMobile ? 16 : 24} ensName={ensName} address={account} />
 
-            {shortenAddressOrEns(ensName || account, displayAddressLength)}
+            {!isSmallMobile && <>{shortenAddressOrEns(ensName || account, displayAddressLength)}</>}
           </div>
 
           {showSideButton && !shouldShowDepositButton && (
             <>
-              <div className="h-20 w-1 shrink-0 bg-slate-600" />
+              {!isSmallMobile && <div className="h-20 w-1 shrink-0 bg-slate-600" />}
 
               {isGmxAccountLoading ? (
                 <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={55} height={18} />
@@ -76,7 +80,7 @@ export function AddressDropdownWithMultichain({ account }: Props) {
           )}
 
           {shouldShowDepositButton && (
-            <Button variant="primary" type="button" onClick={handleOpenDeposit}>
+            <Button variant="primary" className="" onClick={handleOpenDeposit}>
               <Trans>Deposit</Trans>
             </Button>
           )}

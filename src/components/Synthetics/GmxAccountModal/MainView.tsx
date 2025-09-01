@@ -16,6 +16,7 @@ import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFu
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
+import { useBreakpoints } from "lib/breakpoints";
 import { useChainId } from "lib/chains";
 import { formatRelativeDateWithComma } from "lib/dates";
 import { helperToast } from "lib/helperToast";
@@ -109,6 +110,7 @@ const Toolbar = ({ account }: { account: string }) => {
   const { chainId: settlementChainId, srcChainId } = useChainId();
   const history = useHistory();
 
+  const { isSmallMobile } = useBreakpoints();
   const chainId = srcChainId ?? settlementChainId;
 
   const { openNotifyModal } = useNotifyModalState();
@@ -150,21 +152,22 @@ const Toolbar = ({ account }: { account: string }) => {
   };
 
   const showNotify = settlementChainId !== BOTANIX;
+  const buttonClassName = isSmallMobile ? cx("size-32 !p-0") : cx("size-40 !p-0");
 
   return (
-    <div className="flex items-center justify-between gap-8">
+    <div className="flex items-stretch justify-between gap-8 max-smallMobile:flex-wrap">
       <Button variant="secondary" className="flex items-center gap-8" onClick={handleCopyAddress}>
-        <div className="max-smallMobile:hidden">
+        <div className="max-[500px]:hidden">
           <Avatar size={24} ensName={ensName} address={account} />
         </div>
         <div className="text-body-medium font-medium text-typography-primary">
           {shortenAddressOrEns(ensName || account, 13)}
         </div>
-        <CopyIcon className="max-smallMobile:hidden" />
+        <CopyIcon className="max-[500px]:hidden" />
       </Button>
       <div className="flex items-center gap-8">
         <TooltipWithPortal content={t`PnL Analysis`} position="bottom" tooltipClassName="!min-w-max" variant="none">
-          <Button variant="secondary" className="size-40 !p-10" onClick={handlePnlAnalysisClick}>
+          <Button variant="secondary" className={buttonClassName} onClick={handlePnlAnalysisClick}>
             <PnlAnalysisIcon width={20} height={20} />
           </Button>
         </TooltipWithPortal>
@@ -175,25 +178,25 @@ const Toolbar = ({ account }: { account: string }) => {
           tooltipClassName="!min-w-max"
           variant="none"
         >
-          <Button to={accountUrl} newTab variant="secondary" className="size-40 !p-10" showExternalLinkArrow={false}>
+          <Button to={accountUrl} newTab variant="secondary" className={buttonClassName} showExternalLinkArrow={false}>
             <ExternalLinkIcon />
           </Button>
         </TooltipWithPortal>
         {showNotify && (
           <TooltipWithPortal content={t`Notifications`} position="bottom" tooltipClassName="!min-w-max" variant="none">
-            <Button variant="secondary" className="size-40 !p-10" onClick={handleNotificationsClick}>
+            <Button variant="secondary" className={buttonClassName} onClick={handleNotificationsClick}>
               <BellIcon />
             </Button>
           </TooltipWithPortal>
         )}
 
         <TooltipWithPortal content={t`Settings`} position="bottom" tooltipClassName="!min-w-max" variant="none">
-          <Button variant="secondary" className="size-40 !p-10" onClick={handleSettingsClick}>
+          <Button variant="secondary" className={buttonClassName} onClick={handleSettingsClick}>
             <SettingsIcon width={20} height={20} />
           </Button>
         </TooltipWithPortal>
         <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max" variant="none">
-          <Button variant="secondary" className="size-40 !p-10" onClick={handleDisconnect}>
+          <Button variant="secondary" className={buttonClassName} onClick={handleDisconnect}>
             <DisconnectIcon className="rotate-180" />
           </Button>
         </TooltipWithPortal>
