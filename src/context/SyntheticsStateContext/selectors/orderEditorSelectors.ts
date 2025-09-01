@@ -688,6 +688,7 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
     indexTokenAmount,
     leverage: existingPosition?.leverage,
     triggerPrice: isLimitOrderType(order.orderType) ? triggerPrice : undefined,
+    limitOrderType: order.orderType as OrderType.LimitIncrease | OrderType.StopIncrease,
     position: existingPosition,
     findSwapPath,
     userReferralInfo,

@@ -190,8 +190,8 @@ export function OrderEditor(p: Props) {
   const { minCollateralUsd } = usePositionsConstants();
 
   const recommendedAcceptablePriceImpactBps =
-    isLimitIncreaseOrderType(p.order.orderType) && increaseAmounts?.acceptablePrice
-      ? bigMath.abs(increaseAmounts.acceptablePriceDeltaBps)
+    isLimitIncreaseOrderType(p.order.orderType) && increaseAmounts?.acceptablePrice !== undefined
+      ? increaseAmounts.recommendedAcceptablePriceDeltaBps
       : decreaseAmounts?.recommendedAcceptablePriceDeltaBps !== undefined
         ? bigMath.abs(decreaseAmounts?.recommendedAcceptablePriceDeltaBps)
         : undefined;
