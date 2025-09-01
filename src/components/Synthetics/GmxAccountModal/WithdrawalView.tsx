@@ -1022,7 +1022,7 @@ export const WithdrawalView = () => {
         />
       </div>
 
-      <Button variant="primary" className="w-full" onClick={buttonState.onClick} disabled={buttonState.disabled}>
+      <Button variant="primary-action" className="w-full" onClick={buttonState.onClick} disabled={buttonState.disabled}>
         {buttonState.text}
       </Button>
     </div>

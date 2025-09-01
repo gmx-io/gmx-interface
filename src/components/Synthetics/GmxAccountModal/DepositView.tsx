@@ -870,7 +870,7 @@ export const DepositView = () => {
         />
       </div>
 
-      <Button variant="primary" className="w-full" type="submit" disabled={buttonState.disabled}>
+      <Button variant="primary-action" className="w-full" type="submit" disabled={buttonState.disabled}>
         {buttonState.text}
       </Button>
     </form>
