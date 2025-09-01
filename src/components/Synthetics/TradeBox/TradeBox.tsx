@@ -822,6 +822,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       isHandlerDisabled
       handleClassName="w-full"
       position="bottom"
+      variant="none"
+      contentClassName="w-full"
     />
   ) : (
     buttonContent
