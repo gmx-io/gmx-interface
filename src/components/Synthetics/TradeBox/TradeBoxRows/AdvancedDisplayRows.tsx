@@ -193,8 +193,8 @@ export function TradeBoxAdvancedGroups({
   totalExecutionFee,
 }: {
   slippageInputId: string;
-  gasPaymentParams?: GasPaymentParams;
-  totalExecutionFee?: ExecutionFee;
+  gasPaymentParams: GasPaymentParams | undefined;
+  totalExecutionFee: ExecutionFee | undefined;
 }) {
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);

@@ -1102,7 +1102,11 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           />
         )}
         {!isTwap && <PriceImpactFeesRow />}
-        <TradeBoxAdvancedGroups slippageInputId={submitButtonState.slippageInputId} />
+        <TradeBoxAdvancedGroups
+          slippageInputId={submitButtonState.slippageInputId}
+          gasPaymentParams={submitButtonState.expressParams?.gasPaymentParams}
+          totalExecutionFee={submitButtonState.totalExecutionFee}
+        />
       </div>
     </form>
   );
