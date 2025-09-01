@@ -720,8 +720,8 @@ export const MARKETS: Record<UiContractsChain, Record<string, MarketConfig>> = {
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
     // WLFI/USD [WETH-USDC]
-    "0xb3588455858a49d3244237cee00880ccb84b91dd": {
-      marketTokenAddress: "0xb3588455858a49d3244237cee00880ccb84b91dd",
+    "0xb3588455858a49D3244237CEe00880CcB84b91Dd": {
+      marketTokenAddress: "0xb3588455858a49D3244237CEe00880CcB84b91Dd",
       indexTokenAddress: "0xC5799ab6E2818fD8d0788dB8D156B0c5db1Bf97b",
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
