@@ -3,17 +3,12 @@ import { Suspense, lazy } from "react";
 import { useMedia } from "react-use";
 
 import { isDevelopment } from "config/env";
-import {
-  selectTradeboxMarketInfo,
-  selectTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
-import { DepthChart } from "components/DepthChart/DepthChart";
 import Tabs from "components/Tabs/Tabs";
 
-import AntennaBarsIcon from "img/ic_antenna_bars.svg?react";
 import CandlestickChartIcon from "img/ic_candlestick_chart.svg?react";
 
 import { ChartHeader } from "./ChartHeader";
@@ -31,12 +26,12 @@ const TAB_LABELS = {
       <Trans>PRICE</Trans>
     </div>
   ),
-  DEPTH: (
-    <div className="flex items-center gap-8">
-      <AntennaBarsIcon />
-      <Trans>DEPTH</Trans>
-    </div>
-  ),
+  // DEPTH: (
+  //   <div className="flex items-center gap-8">
+  //     <AntennaBarsIcon />
+  //     <Trans>DEPTH</Trans>
+  //   </div>
+  // ),
   MARKET_GRAPH: (
     <div className="flex items-center gap-8">
       <Suspense fallback={<div>...</div>}>
@@ -49,7 +44,7 @@ const TAB_LABELS = {
 
 const TAB_CONTENTS = {
   PRICE: <TVChart />,
-  DEPTH: <DepthChartContainer />,
+  // DEPTH: <DepthChartContainer />,
   MARKET_GRAPH: (
     <Suspense fallback={<div>...</div>}>
       <LazyMarketGraph />
@@ -57,7 +52,8 @@ const TAB_CONTENTS = {
   ),
 };
 
-const TABS = isDevelopment() ? ["PRICE", "DEPTH", "MARKET_GRAPH"] : ["PRICE", "DEPTH"];
+// const TABS = isDevelopment() ? ["PRICE", "DEPTH", "MARKET_GRAPH"] : ["PRICE", "DEPTH"];
+const TABS = isDevelopment() ? ["PRICE", "MARKET_GRAPH"] : ["PRICE"];
 
 const TABS_OPTIONS = TABS.map((tab) => ({
   value: tab,
@@ -66,7 +62,7 @@ const TABS_OPTIONS = TABS.map((tab) => ({
 
 export function Chart() {
   const isMobile = useMedia("(max-width: 700px)");
-  const [tab, setTab] = useLocalStorageSerializeKey("chart-tab", "PRICE");
+  const [tab, setTab] = useLocalStorageSerializeKey("chart-tab-v2.2", "PRICE");
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
   return (
@@ -94,16 +90,16 @@ export function Chart() {
   );
 }
 
-function DepthChartContainer() {
-  const marketInfo = useSelector(selectTradeboxMarketInfo);
+// function DepthChartContainer() {
+//   const marketInfo = useSelector(selectTradeboxMarketInfo);
 
-  if (!marketInfo) {
-    return null;
-  }
+//   if (!marketInfo) {
+//     return null;
+//   }
 
-  return (
-    <div className="h-full w-full pb-8 pl-16">
-      <DepthChart marketInfo={marketInfo} />
-    </div>
-  );
-}
+//   return (
+//     <div className="h-full w-full pb-8 pl-16">
+//       <DepthChart marketInfo={marketInfo} />
+//     </div>
+//   );
+// }

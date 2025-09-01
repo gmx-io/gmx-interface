@@ -4446,6 +4446,7 @@ msgstr "Gas Payment Token"
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/useDownloadAsCsv.tsx
 msgid "Price Impact"
 msgstr "Price Impact"
@@ -4616,6 +4617,7 @@ msgstr "Withdraw submitted."
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Net Price Impact"
 msgstr "Net Price Impact"
@@ -4972,8 +4974,8 @@ msgid "There may not be sufficient liquidity to execute your order when the Min.
 msgstr "There may not be sufficient liquidity to execute your order when the Min. Receive are met."
 
 #: src/components/Synthetics/TVChart/Chart.tsx
-msgid "DEPTH"
-msgstr "DEPTH"
+#~ msgid "DEPTH"
+#~ msgstr "DEPTH"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx

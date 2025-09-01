@@ -543,6 +543,7 @@ export class Positions extends Module {
         marketInfo.longToken.decimals,
         marketInfo.longToken.prices.minPrice
       )!;
+
       const pendingClaimableFundingFeesShortUsd = convertToUsd(
         position.claimableShortTokenAmount,
         marketInfo.shortToken.decimals,
