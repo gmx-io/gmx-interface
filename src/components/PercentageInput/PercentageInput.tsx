@@ -122,7 +122,7 @@ export default function PercentageInput({
       position={tooltipPosition}
     >
       <SuggestionInput
-        className="w-80"
+        className="w-80 [&.input-error]:!border-yellow-500"
         label={negativeSign ? "-" : undefined}
         value={inputValue}
         setValue={handleChange}
@@ -131,6 +131,7 @@ export default function PercentageInput({
         symbol="%"
         onPanelVisibleChange={setIsPanelVisible}
         inputId={inputId}
+        isError={!!error}
       />
     </TooltipWithPortal>
   );
