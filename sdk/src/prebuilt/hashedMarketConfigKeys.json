@@ -5255,7 +5255,7 @@
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
     },
-    "0xb3588455858a49d3244237cee00880ccb84b91dd": {
+    "0xb3588455858a49D3244237CEe00880CcB84b91Dd": {
       "isDisabled": "0x087ba50382083fa517d97fa52e1064524f44b18e1f0a7c170c2e8506c63f5ef4",
       "maxLongPoolAmount": "0xb80fe19ef167bbaaf8f96bdff28c57a7da1b36f6c1033a16dccd1fc14bc865a3",
       "maxShortPoolAmount": "0x70a0f55ec4aa84e936d72562c1a5c558bb05a99a0b8626741f6406a5272f9aea",
