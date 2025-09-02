@@ -4,7 +4,7 @@ import keys from "lodash/keys";
 import uniq from "lodash/uniq";
 import { ReactNode, useCallback, useMemo } from "react";
 
-import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, UiSupportedChain } from "config/chains";
 import { getIcon } from "config/icons";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import type { MarketTokensAPRData } from "domain/synthetics/markets/types";
@@ -30,16 +30,18 @@ const gmxIcon = getIcon("common", "gmx");
 const gmIcon = getIcon("common", "gm");
 const glvIcon = getIcon("common", "glv");
 
-const NETWORK_ICONS = {
+const NETWORK_ICONS: Record<UiSupportedChain, React.ComponentType<{ className?: string }>> = {
   [ARBITRUM]: ArbitrumIcon,
   [AVALANCHE]: AvalancheIcon,
   [BOTANIX]: BotanixIcon,
+  [AVALANCHE_FUJI]: AvalancheIcon,
 };
 
-const NETWORK_NAMES = {
+const NETWORK_NAMES: Record<UiSupportedChain, string> = {
   [ARBITRUM]: "Arbitrum",
   [AVALANCHE]: "Avalanche",
   [BOTANIX]: "Botanix",
+  [AVALANCHE_FUJI]: "Avalanche Fuji",
 };
 
 function calculateMaxApr(apr: MarketTokensAPRData, incentiveApr: MarketTokensAPRData) {
@@ -48,8 +50,7 @@ function calculateMaxApr(apr: MarketTokensAPRData, incentiveApr: MarketTokensAPR
   let maxApr = 0n;
 
   for (const key of allKeys) {
-    let aprValue = 0n;
-    aprValue = apr[key] ?? 0n;
+    const aprValue = apr[key] ?? 0n;
 
     const incentiveAprValue = incentiveApr[key] ?? 0n;
     const totalApr = aprValue + incentiveAprValue;

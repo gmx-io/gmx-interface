@@ -1,3 +1,4 @@
+import cx from "classnames";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useLatest } from "react-use";
 
@@ -122,7 +123,7 @@ export default function PercentageInput({
       position={tooltipPosition}
     >
       <SuggestionInput
-        className="w-80 [&.input-error]:!border-yellow-500"
+        className={cx("w-80", { "!border-yellow-500": !!error })}
         label={negativeSign ? "-" : undefined}
         value={inputValue}
         setValue={handleChange}
