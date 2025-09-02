@@ -4,7 +4,7 @@ import { ARBITRUM } from "configs/chains";
 import { getTokenBySymbol, getWrappedToken } from "configs/tokens";
 import { OrderType } from "types/orders";
 import { parseValue, USD_DECIMALS } from "utils/numbers";
-import { buildUpdateOrderPayload } from "utils/orderTransactions";
+import { buildUpdateOrderPayload, UpdateOrderParams } from "utils/orderTransactions";
 
 import { MOCK_GAS_PRICE } from "../../../test/mock";
 
@@ -23,7 +23,7 @@ describe("Update Order Payloads", () => {
 
   describe("buildUpdateOrderPayload", () => {
     it("Update Limit Swap", () => {
-      const params = {
+      const params: UpdateOrderParams = {
         chainId: CHAIN_ID,
         orderKey: ORDER_KEY,
         orderType: OrderType.LimitSwap,
@@ -55,7 +55,7 @@ describe("Update Order Payloads", () => {
     });
 
     it("Update Limit Increase with Execution Fee Top Up", () => {
-      const params = {
+      const params: UpdateOrderParams = {
         chainId: CHAIN_ID,
         orderKey: ORDER_KEY,
         orderType: OrderType.LimitIncrease,

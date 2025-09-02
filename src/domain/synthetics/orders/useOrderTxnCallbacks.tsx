@@ -324,7 +324,6 @@ export function useOrderTxnCallbacks() {
                   getInvalidPermitSignatureError({
                     isValid: validationResult.isValid,
                     permit,
-                    recoveredAddress: validationResult.recoveredAddress,
                     error: validationResult.error,
                   }),
                   "simulation.permitError"

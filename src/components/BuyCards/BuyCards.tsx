@@ -4,7 +4,15 @@ import keys from "lodash/keys";
 import uniq from "lodash/uniq";
 import { ReactNode, useCallback, useMemo } from "react";
 
-import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  BOTANIX,
+  ContractsChainId,
+  getChainName,
+} from "config/chains";
 import { getIcon } from "config/icons";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import type { MarketTokensAPRData } from "domain/synthetics/markets/types";
@@ -22,6 +30,7 @@ import Button from "components/Button/Button";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
 import ArbitrumIcon from "img/ic_arbitrum_24.svg?react";
+import ArbitrumSepoliaIcon from "img/ic_arbitrum_sepolia_24.svg?react";
 import AvalancheIcon from "img/ic_avalanche_24.svg?react";
 import BotanixIcon from "img/ic_botanix_24.svg?react";
 
@@ -30,16 +39,12 @@ const gmxIcon = getIcon("common", "gmx");
 const gmIcon = getIcon("common", "gm");
 const glvIcon = getIcon("common", "glv");
 
-const NETWORK_ICONS = {
+const NETWORK_ICONS: Record<ContractsChainId, React.ComponentType<{ className?: string }>> = {
   [ARBITRUM]: ArbitrumIcon,
   [AVALANCHE]: AvalancheIcon,
   [BOTANIX]: BotanixIcon,
-};
-
-const NETWORK_NAMES = {
-  [ARBITRUM]: "Arbitrum",
-  [AVALANCHE]: "Avalanche",
-  [BOTANIX]: "Botanix",
+  [AVALANCHE_FUJI]: AvalancheIcon,
+  [ARBITRUM_SEPOLIA]: ArbitrumSepoliaIcon,
 };
 
 function calculateMaxApr(apr: MarketTokensAPRData, incentiveApr: MarketTokensAPRData) {
@@ -48,8 +53,7 @@ function calculateMaxApr(apr: MarketTokensAPRData, incentiveApr: MarketTokensAPR
   let maxApr = 0n;
 
   for (const key of allKeys) {
-    let aprValue = 0n;
-    aprValue = apr[key] ?? 0n;
+    const aprValue = apr[key] ?? 0n;
 
     const incentiveAprValue = incentiveApr[key] ?? 0n;
     const totalApr = aprValue + incentiveAprValue;
@@ -97,7 +101,7 @@ const BuyLink = ({
   return (
     <Button to={to} onClick={() => changeNetwork(network)} variant="secondary" className="flex gap-8">
       <Icon className="size-24" />
-      <span className="text-typography-primary">{NETWORK_NAMES[network]}</span>
+      <span className="text-typography-primary">{getChainName(network)}</span>
       {badge ? <Badge>{badge}</Badge> : null}
     </Button>
   );
@@ -120,13 +124,13 @@ export default function BuyCards() {
     marketsTokensIncentiveAprData: arbIncentiveApr,
     glvTokensIncentiveAprData: arbGlvIncentiveApr,
     glvApyInfoData: arbGlvApy,
-  } = useGmMarketsApy(ARBITRUM, { period: PERIOD });
+  } = useGmMarketsApy(ARBITRUM, undefined, { period: PERIOD });
   const {
     marketsTokensApyData: avaxApy,
     marketsTokensIncentiveAprData: avaxIncentiveApr,
     glvTokensIncentiveAprData: avaxGlvIncentiveApr,
     glvApyInfoData: avaxGlvApy,
-  } = useGmMarketsApy(AVALANCHE, { period: PERIOD });
+  } = useGmMarketsApy(AVALANCHE, undefined, { period: PERIOD });
 
   const maxMarketApyText = useMemo(() => {
     if (!arbApy || !arbIncentiveApr || !avaxApy || !avaxIncentiveApr)
@@ -182,7 +186,7 @@ export default function BuyCards() {
                   APR <APRLabel chainId={ARBITRUM} label="avgGMXAprTotal" />
                 </span>
               }
-            ></BuyLink>
+            />
             <BuyLink
               chainId={chainId}
               active={active}
@@ -193,7 +197,7 @@ export default function BuyCards() {
                   APR <APRLabel chainId={AVALANCHE} label="avgGMXAprTotal" />
                 </span>
               }
-            ></BuyLink>
+            />
           </div>
           <TrackingLink>
             <Button

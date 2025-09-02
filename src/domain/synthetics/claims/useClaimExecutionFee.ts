@@ -3,7 +3,8 @@ import useSWR from "swr";
 
 import { getContract } from "config/contracts";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
-import { WalletSigner } from "lib/wallets";
+import type { WalletSigner } from "lib/wallets";
+import type { ContractsChainId } from "sdk/configs/chains";
 
 import { useGasPrice } from "../fees";
 import { getClaimTransactionCallData } from "./createClaimTransaction";
@@ -18,7 +19,7 @@ export const useClaimExecutionFee = ({
 }: {
   account: string | undefined;
   claimableTokens: string[];
-  chainId: number;
+  chainId: ContractsChainId;
   claimTermsAcceptedSignature: string | undefined;
   signer: WalletSigner | undefined;
   distributionId: bigint;

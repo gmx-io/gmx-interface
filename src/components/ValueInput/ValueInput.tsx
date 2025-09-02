@@ -7,7 +7,7 @@ export const ValueInput = ({
   onBlur,
   className,
 }: {
-  value: number;
+  value: number | undefined;
   onChange: (value: number) => void;
   onBlur?: () => void;
   label?: string;
@@ -27,7 +27,7 @@ export const ValueInput = ({
     <SuggestionInput
       label={label}
       className={className}
-      value={value.toString()}
+      value={value?.toString()}
       setValue={onValueChange}
       onBlur={onBlur}
     />

@@ -24,7 +24,7 @@ function injectColorsPlugin({ addBase }: any) {
   });
 }
 
-function customUtilsPlugin({ addUtilities, addVariant }: any) {
+function customUtilsPlugin({ addUtilities, addVariant, addComponents }: any) {
   addUtilities({
     ".scrollbar-hide": {
       "scrollbar-width": "none",
@@ -62,6 +62,20 @@ function customUtilsPlugin({ addUtilities, addVariant }: any) {
     ".numbers": {
       letterSpacing: "0.03em",
       whiteSpace: "nowrap",
+    },
+  });
+
+  addVariant("not-group-gmx-hover", [
+    `@media (hover: hover) {:merge(.group):not(:hover) &}`,
+    `@media (hover: none) {:merge(.group):not(:active) &}`,
+  ]);
+  addVariant("not-disabled", [`&:not([disabled])`]);
+  addComponents({
+    ".gmx-hover-gradient": {
+      "@apply gmx-hover:bg-gradient-to-r gmx-hover:from-[#23263B] gmx-hover:to-[#16182E]": {},
+    },
+    ".gmx-hover-gradient-to-l": {
+      "@apply gmx-hover:bg-gradient-to-l gmx-hover:from-[#23263B] gmx-hover:to-[#16182E]": {},
     },
   });
 }

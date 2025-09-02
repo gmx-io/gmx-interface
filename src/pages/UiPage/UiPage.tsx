@@ -4,7 +4,8 @@ import mapKeys from "lodash/mapKeys";
 import upperFirst from "lodash/upperFirst";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
-import { colors, type ColorConfig, type ColorValue } from "config/colors";
+import { colors } from "config/colors";
+import { ColorTree, ColorValue } from "lib/generateColorConfig";
 import { getCategoryTokenAddresses, getToken } from "sdk/configs/tokens";
 import { TokenCategory } from "sdk/types/tokens";
 
@@ -66,7 +67,6 @@ const otherImages = Object.keys(otherImagesContext)
     };
   }) as { src: string; name: string; path: string; importUrl: string }[];
 
-
 export default function UiPage() {
   return (
     <AppPageLayout>
@@ -81,7 +81,7 @@ export default function UiPage() {
             {entries(colors).map(([colorName, shades]) => {
               // Check if it's a single color value (white/black)
               const isSingleColor = shades && typeof shades === "object" && "light" in shades && "dark" in shades;
-              
+
               if (isSingleColor) {
                 const colorValue = shades as ColorValue;
                 return (
@@ -89,7 +89,7 @@ export default function UiPage() {
                     <div className="flex w-fit items-center overflow-hidden *:size-64">
                       <div className="!w-96 text-12">{colorName}</div>
                       <div className={`bg-${colorName}`}>
-                        <div className="flex h-full flex-col justify-center px-8 text-10">
+                        <div className="text-10 flex h-full flex-col justify-center px-8">
                           <div className="text-gray-900">L: {colorValue.light}</div>
                           <div className="text-gray-100">D: {colorValue.dark}</div>
                         </div>
@@ -104,12 +104,12 @@ export default function UiPage() {
                 <div key={colorName}>
                   <div className="flex w-fit overflow-hidden *:size-64">
                     <div className="!w-96 text-12">{colorName}</div>
-                    {entries(shades as ColorConfig).map(([shade, colorValue]) => {
+                    {entries(shades as ColorTree).map(([shade, colorValue]) => {
                       const bgClass = `bg-${colorName}-${shade}`;
                       const value = colorValue as ColorValue;
                       return (
                         <div key={`${colorName}-${shade}`} className={bgClass}>
-                          <div className="flex h-full flex-col justify-center px-4 text-10">
+                          <div className="text-10 flex h-full flex-col justify-center px-4">
                             <div className="font-bold">{shade}</div>
                             <div className="text-gray-900 opacity-80">L: {value.light}</div>
                             <div className="text-gray-100 opacity-80">D: {value.dark}</div>

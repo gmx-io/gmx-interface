@@ -41,6 +41,14 @@ export const MAX_PNL_FACTOR_FOR_TRADERS_KEY = hashString("MAX_PNL_FACTOR_FOR_TRA
 export const MAX_POSITION_IMPACT_FACTOR_FOR_LIQUIDATIONS_KEY = hashString(
   "MAX_POSITION_IMPACT_FACTOR_FOR_LIQUIDATIONS"
 );
+export const CLAIMABLE_COLLATERAL_DELAY_KEY = hashString("CLAIMABLE_COLLATERAL_DELAY");
+export const CLAIMABLE_COLLATERAL_REDUCTION_FACTOR_KEY = hashString("CLAIMABLE_COLLATERAL_REDUCTION_FACTOR");
+export const CLAIMABLE_COLLATERAL_TIME_DIVISOR_KEY = hashString("CLAIMABLE_COLLATERAL_TIME_DIVISOR");
+export const MAX_LENDABLE_IMPACT_FACTOR_KEY = hashString("MAX_LENDABLE_IMPACT_FACTOR");
+export const MAX_LENDABLE_IMPACT_USD_KEY = hashString("MAX_LENDABLE_IMPACT_USD");
+export const MAX_LENDABLE_IMPACT_FACTOR_FOR_WITHDRAWALS_KEY = hashString("MAX_LENDABLE_IMPACT_FACTOR_FOR_WITHDRAWALS");
+export const LENT_POSITION_IMPACT_POOL_AMOUNT_KEY = hashString("LENT_POSITION_IMPACT_POOL_AMOUNT");
+
 export const POSITION_IMPACT_POOL_AMOUNT_KEY = hashString("POSITION_IMPACT_POOL_AMOUNT");
 export const MIN_POSITION_IMPACT_POOL_AMOUNT_KEY = hashString("MIN_POSITION_IMPACT_POOL_AMOUNT");
 export const POSITION_IMPACT_POOL_DISTRIBUTION_RATE_KEY = hashString("POSITION_IMPACT_POOL_DISTRIBUTION_RATE");
@@ -81,8 +89,10 @@ export const SUBACCOUNT_LIST_KEY = hashString("SUBACCOUNT_LIST");
 export const MAX_ALLOWED_SUBACCOUNT_ACTION_COUNT = hashString("MAX_ALLOWED_SUBACCOUNT_ACTION_COUNT");
 export const SUBACCOUNT_ACTION_COUNT = hashString("SUBACCOUNT_ACTION_COUNT");
 export const SUBACCOUNT_ORDER_ACTION = hashString("SUBACCOUNT_ORDER_ACTION");
+export const SUBACCOUNT_INTEGRATION_ID = hashString("SUBACCOUNT_INTEGRATION_ID");
 export const SUBACCOUNT_AUTO_TOP_UP_AMOUNT = hashString("SUBACCOUNT_AUTO_TOP_UP_AMOUNT");
 export const GLV_MAX_MARKET_TOKEN_BALANCE_USD = hashString("GLV_MAX_MARKET_TOKEN_BALANCE_USD");
+export const MIN_COLLATERAL_FACTOR_FOR_LIQUIDATION_KEY = hashString("MIN_COLLATERAL_FACTOR_FOR_LIQUIDATION");
 export const GLV_MAX_MARKET_TOKEN_BALANCE_AMOUNT = hashString("GLV_MAX_MARKET_TOKEN_BALANCE_AMOUNT");
 export const IS_GLV_MARKET_DISABLED = hashString("IS_GLV_MARKET_DISABLED");
 export const GLV_SHIFT_LAST_EXECUTED_AT = hashString("GLV_SHIFT_LAST_EXECUTED_AT");
@@ -95,6 +105,7 @@ export const OPTIMAL_USAGE_FACTOR = hashString("OPTIMAL_USAGE_FACTOR");
 export const BASE_BORROWING_FACTOR = hashString("BASE_BORROWING_FACTOR");
 export const ABOVE_OPTIMAL_USAGE_BORROWING_FACTOR = hashString("ABOVE_OPTIMAL_USAGE_BORROWING_FACTOR");
 export const SUBACCOUNT_EXPIRES_AT = hashString("SUBACCOUNT_EXPIRES_AT");
+export const MULTICHAIN_BALANCE = hashString("MULTICHAIN_BALANCE");
 export const PRICE_FEED_KEY = hashString("PRICE_FEED");
 export const GASLESS_FEATURE_DISABLED_KEY = hashString("GASLESS_FEATURE_DISABLED");
 export const GELATO_RELAY_FEE_MULTIPLIER_FACTOR_KEY = hashString("GELATO_RELAY_FEE_MULTIPLIER_FACTOR");
@@ -302,6 +313,10 @@ export function minCollateralFactorKey(market: string) {
   return hashData(["bytes32", "address"], [MIN_COLLATERAL_FACTOR_KEY, market]);
 }
 
+export function minCollateralFactorForLiquidationKey(market: string) {
+  return hashData(["bytes32", "address"], [MIN_COLLATERAL_FACTOR_FOR_LIQUIDATION_KEY, market]);
+}
+
 export function minCollateralFactorForOpenInterest(market: string, isLong: boolean) {
   return hashData(
     ["bytes32", "address", "bool"],
@@ -374,8 +389,28 @@ export function subaccountActionCountKey(account: string, subaccount: string, ac
   );
 }
 
+export function maxLendableImpactFactorKey(market: string) {
+  return hashData(["bytes32", "address"], [MAX_LENDABLE_IMPACT_FACTOR_KEY, market]);
+}
+
+export function maxLendableImpactFactorForWithdrawalsKey(market: string) {
+  return hashData(["bytes32", "address"], [MAX_LENDABLE_IMPACT_FACTOR_FOR_WITHDRAWALS_KEY, market]);
+}
+
+export function maxLendableImpactUsdKey(market: string) {
+  return hashData(["bytes32", "address"], [MAX_LENDABLE_IMPACT_USD_KEY, market]);
+}
+
+export function subaccountIntegrationIdKey(account: string, subaccount: string) {
+  return hashData(["bytes32", "address", "address"], [SUBACCOUNT_INTEGRATION_ID, account, subaccount]);
+}
+
 export function subaccountAutoTopUpAmountKey(account: string, subaccount: string) {
   return hashData(["bytes32", "address", "address"], [SUBACCOUNT_AUTO_TOP_UP_AMOUNT, account, subaccount]);
+}
+
+export function multichainBalanceKey(account: string, token: string) {
+  return hashData(["bytes32", "address", "address"], [MULTICHAIN_BALANCE, account, token]);
 }
 
 export function priceFeedKey(token: string) {

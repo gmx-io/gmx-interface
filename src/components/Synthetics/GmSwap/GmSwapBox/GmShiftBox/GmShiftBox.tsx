@@ -9,6 +9,7 @@ import {
   selectGasLimits,
   selectGasPrice,
   selectGlvAndMarketsInfoData,
+  selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -23,9 +24,14 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { MarketState } from "components/MarketSelector/types";
+import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
+import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import { ExpandableRow } from "components/Synthetics/ExpandableRow";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 
+import { GmFees } from "../../GmFees/GmFees";
+import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
+import { SelectedPool } from "../SelectedPool";
 import { Operation } from "../types";
 import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
 import { useGmWarningState } from "../useGmWarningState";
@@ -35,9 +41,6 @@ import { useShiftFees } from "./useShiftFees";
 import { useShiftSubmitState } from "./useShiftSubmitState";
 import { useUpdateMarkets } from "./useUpdateMarkets";
 import { useUpdateTokens } from "./useUpdateTokens";
-import { GmFees } from "../../GmFees/GmFees";
-import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
-import { SelectedPool } from "../SelectedPool";
 
 export function GmShiftBox({
   selectedGlvOrMarketAddress,
@@ -61,7 +64,8 @@ export function GmShiftBox({
   const gasPrice = useSelector(selectGasPrice);
   const glvAndMarketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const tokensData = useTokensData();
-  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
+  const srcChainId = useSelector(selectSrcChainId);
+  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: true });
   const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedPoolsWithIndexToken(
     glvAndMarketsInfoData,
     depositMarketTokensData
@@ -304,12 +308,16 @@ export function GmShiftBox({
               shouldShowWarningForPosition={shouldShowWarningForPosition}
               shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
             />
+
+            <SwitchToSettlementChainWarning topic="liquidity" />
           </div>
 
           <div className="rounded-b-8 border-t border-slate-600 bg-slate-900 p-12">
-            <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
-              {submitState.text}
-            </Button>
+            <SwitchToSettlementChainButtons>
+              <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
+                {submitState.text}
+              </Button>
+            </SwitchToSettlementChainButtons>
           </div>
         </div>
 

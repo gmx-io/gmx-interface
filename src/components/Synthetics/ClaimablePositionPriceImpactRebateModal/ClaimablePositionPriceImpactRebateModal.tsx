@@ -1,6 +1,9 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { memo, useCallback, useMemo, useState } from "react";
+import { ImSpinner2 } from "react-icons/im";
+import { toast } from "react-toastify";
 
+import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
@@ -9,14 +12,26 @@ import {
   selectClaimsPriceImpactClaimableTotal,
 } from "context/SyntheticsStateContext/selectors/claimsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { createClaimCollateralTxn } from "domain/synthetics/claimHistory/claimPriceImpactRebate";
+import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
+import {
+  buildAndSignClaimPositionPriceImpactFeesTxn,
+  createClaimCollateralTxn,
+} from "domain/synthetics/claimHistory/claimPriceImpactRebate";
+import { ExpressTransactionBuilder, RawRelayParamsPayload } from "domain/synthetics/express";
 import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
+import { helperToast } from "lib/helperToast";
+import { metrics } from "lib/metrics";
 import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
+import { useJsonRpcProvider } from "lib/rpc";
+import { sendExpressTransaction } from "lib/transactions";
+import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
+import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { bigMath } from "sdk/utils/bigmath";
+import { nowInSeconds } from "sdk/utils/time";
 
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
@@ -29,22 +44,35 @@ export function ClaimablePositionPriceImpactRebateModal({
   isVisible: boolean;
   onClose: () => void;
 }) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { chainId } = useChainId();
-  const total = useSelector(selectClaimsPriceImpactClaimableTotal);
-  const totalUsd = useMemo(() => formatDeltaUsd(total), [total]);
-  const { signer, account } = useWallet();
-  const groups = useSelector(selectClaimsGroupedPositionPriceImpactClaimableFees);
-  const claimablePositionPriceImpactFees = useSelector(selectClaimablePositionPriceImpactFees);
+  const { srcChainId } = useChainId();
 
-  const [buttonText, buttonDisabled] = useMemo(() => {
-    if (isSubmitting) return [t`Claiming`, true];
-    return [t`Claim`, false];
-  }, [isSubmitting]);
+  return srcChainId !== undefined ? (
+    <ClaimablePositionPriceImpactRebateModalMultichain isVisible={isVisible} onClose={onClose} />
+  ) : (
+    <ClaimablePositionPriceImpactRebateModalSettlementChain isVisible={isVisible} onClose={onClose} />
+  );
+}
+
+function ClaimablePositionPriceImpactRebateModalSettlementChain({
+  isVisible,
+  onClose,
+}: {
+  isVisible: boolean;
+  onClose: () => void;
+}) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { chainId, srcChainId } = useChainId();
+  const { signer, account, active } = useWallet();
+  const claimablePositionPriceImpactFees = useSelector(selectClaimablePositionPriceImpactFees);
 
   const handleSubmit = useCallback(async () => {
     if (!signer) throw new Error("No signer");
     if (!account) throw new Error("No account");
+
+    if (srcChainId !== undefined) {
+      switchNetwork(chainId, active);
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -57,7 +85,197 @@ export function ClaimablePositionPriceImpactRebateModal({
     } finally {
       setIsSubmitting(false);
     }
-  }, [account, chainId, claimablePositionPriceImpactFees, onClose, signer]);
+  }, [account, active, chainId, claimablePositionPriceImpactFees, onClose, signer, srcChainId]);
+
+  const buttonState: {
+    text: string;
+    disabled?: boolean;
+    onSubmit?: () => void;
+  } = useMemo(() => {
+    if (isSubmitting) {
+      return { text: t`Claiming`, disabled: true };
+    }
+    return { text: t`Claim`, disabled: false, onSubmit: handleSubmit };
+  }, [handleSubmit, isSubmitting]);
+
+  return (
+    <ClaimablePositionPriceImpactRebateModalComponent
+      isVisible={isVisible}
+      onClose={onClose}
+      buttonState={buttonState}
+    />
+  );
+}
+
+function ClaimablePositionPriceImpactRebateModalMultichain({
+  isVisible,
+  onClose,
+}: {
+  isVisible: boolean;
+  onClose: () => void;
+}) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { chainId, srcChainId } = useChainId();
+  const { signer, account } = useWallet();
+  const claimablePositionPriceImpactFees = useSelector(selectClaimablePositionPriceImpactFees);
+  const { provider } = useJsonRpcProvider(chainId);
+
+  const expressTransactionBuilder = useMemo((): ExpressTransactionBuilder | undefined => {
+    if (
+      srcChainId === undefined ||
+      account === undefined ||
+      signer === undefined ||
+      provider === undefined ||
+      isSubmitting
+    ) {
+      return undefined;
+    }
+
+    return async (params) => {
+      const txnData = await buildAndSignClaimPositionPriceImpactFeesTxn({
+        signer,
+        relayParams: {
+          ...(params.relayParams as RawRelayParamsPayload),
+          deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+        },
+        account,
+        claimablePositionPriceImpactFees,
+        receiver: account,
+        chainId,
+        emptySignature: true,
+        relayerFeeTokenAddress: params.gasPaymentParams.relayerFeeTokenAddress,
+        relayerFeeAmount: params.gasPaymentParams.relayerFeeAmount,
+      });
+
+      return {
+        txnData,
+      };
+    };
+  }, [account, chainId, claimablePositionPriceImpactFees, isSubmitting, provider, signer, srcChainId]);
+
+  const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload({
+    expressTransactionBuilder,
+    isGmxAccount: srcChainId !== undefined,
+  });
+
+  const handleSubmit = useCallback(async () => {
+    const onMissingParams = () => {
+      helperToast.error(t`No necessary params to claim. Retry in a few seconds.`);
+      metrics.pushError(new Error("No necessary params to claim"), "expressClaimPositionPriceImpactFees");
+    };
+
+    if (!expressTxnParamsAsyncResult.promise) {
+      onMissingParams();
+      return;
+    }
+
+    setIsSubmitting(true);
+    expressTxnParamsAsyncResult.promise
+      .then(async (params) => {
+        if (!params || !signer || !account || !provider) {
+          onMissingParams();
+          return;
+        }
+
+        const txnData = await buildAndSignClaimPositionPriceImpactFeesTxn({
+          signer,
+          relayParams: {
+            ...(params.relayParamsPayload as RawRelayParamsPayload),
+            deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+          },
+          account,
+          claimablePositionPriceImpactFees,
+          receiver: account,
+          chainId,
+          relayerFeeTokenAddress: params.gasPaymentParams.relayerFeeTokenAddress,
+          relayerFeeAmount: params.gasPaymentParams.relayerFeeAmount,
+        });
+
+        const request = await sendExpressTransaction({
+          chainId,
+          isSponsoredCall: params.isSponsoredCall,
+          txnData,
+        });
+
+        helperToast.success(
+          <div className="flex items-center justify-between">
+            <div className="text-white/50">
+              <Trans>Claiming position price impact fees</Trans>
+            </div>
+            <ImSpinner2 width={60} height={60} className="spin size-15 text-white" />
+          </div>,
+          {
+            autoClose: false,
+            toastId: "position-price-impact-fees",
+          }
+        );
+        request.wait().then((res) => {
+          if (res.status === "success") {
+            toast.update("position-price-impact-fees", {
+              render: t`Success claiming position price impact fees`,
+              type: "success",
+              autoClose: TOAST_AUTO_CLOSE_TIME,
+            });
+          } else if (res.status === "failed") {
+            toast.update("position-price-impact-fees", {
+              render: t`Claiming position price impact fees failed`,
+              type: "error",
+              autoClose: TOAST_AUTO_CLOSE_TIME,
+            });
+          }
+        });
+
+        onClose();
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
+  }, [
+    account,
+    chainId,
+    claimablePositionPriceImpactFees,
+    expressTxnParamsAsyncResult.promise,
+    onClose,
+    provider,
+    signer,
+  ]);
+
+  const buttonState: {
+    text: string;
+    disabled?: boolean;
+    onSubmit?: () => void;
+  } = useMemo(() => {
+    if (isSubmitting) {
+      return { text: t`Claiming`, disabled: true };
+    }
+    return { text: t`Claim`, disabled: false, onSubmit: handleSubmit };
+  }, [handleSubmit, isSubmitting]);
+
+  return (
+    <ClaimablePositionPriceImpactRebateModalComponent
+      isVisible={isVisible}
+      onClose={onClose}
+      buttonState={buttonState}
+    />
+  );
+}
+
+function ClaimablePositionPriceImpactRebateModalComponent({
+  isVisible,
+  onClose,
+  buttonState,
+}: {
+  isVisible: boolean;
+  onClose: () => void;
+  buttonState: {
+    text: string;
+    disabled?: boolean;
+    onSubmit?: () => void;
+  };
+}) {
+  const total = useSelector(selectClaimsPriceImpactClaimableTotal);
+  const totalUsd = useMemo(() => formatDeltaUsd(total), [total]);
+  const groups = useSelector(selectClaimsGroupedPositionPriceImpactClaimableFees);
 
   return (
     <Modal
@@ -87,8 +305,13 @@ export function ClaimablePositionPriceImpactRebateModal({
           ))}
         </div>
       </div>
-      <Button className="w-full" variant="primary-action" disabled={buttonDisabled} onClick={handleSubmit}>
-        {buttonText}
+      <Button
+        className="w-full"
+        variant="primary-action"
+        disabled={buttonState.disabled}
+        onClick={buttonState.onSubmit}
+      >
+        {buttonState.text}
       </Button>
     </Modal>
   );

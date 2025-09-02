@@ -5,12 +5,13 @@ import { FiPlus, FiTwitter } from "react-icons/fi";
 import { IoWarningOutline } from "react-icons/io5";
 import { useCopyToClipboard } from "react-use";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ContractsChainId, getExplorerUrl, SourceChainId } from "config/chains";
 import { isDevelopment } from "config/env";
 import { RebateDistributionType, ReferralCodeStats, TotalReferralsStats, useTiers } from "domain/referrals";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
+import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { formatDate } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { shortenAddress } from "lib/legacy";
@@ -30,8 +31,6 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
 import { AffiliateCodeForm } from "./AddAffiliateCode";
-import Card from "../Common/Card";
-import Modal from "../Modal/Modal";
 import { ClaimAffiliatesModal } from "./ClaimAffiliatesModal/ClaimAffiliatesModal";
 import EmptyMessage from "./EmptyMessage";
 import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
@@ -45,18 +44,23 @@ import {
   isRecentReferralCodeNotExpired,
 } from "./referralsHelper";
 import usePagination, { DEFAULT_PAGE_SIZE } from "./usePagination";
+import Card from "../Common/Card";
+import Modal from "../Modal/Modal";
+
 import "./AffiliatesStats.scss";
 
 type Props = {
-  chainId: number;
+  chainId: ContractsChainId;
+  srcChainId: SourceChainId | undefined;
   referralsData?: TotalReferralsStats;
-  handleCreateReferralCode: (code: string) => void;
+  handleCreateReferralCode: (code: string) => Promise<unknown>;
   setRecentlyAddedCodes: (codes: ReferralCodeStats[]) => void;
   recentlyAddedCodes?: ReferralCodeStats[];
 };
 
 function AffiliatesStats({
   chainId,
+  srcChainId,
   referralsData,
   recentlyAddedCodes,
   handleCreateReferralCode,
@@ -66,7 +70,8 @@ function AffiliatesStats({
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
   const addNewModalRef = useRef<HTMLDivElement>(null);
 
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { affiliateRewardsData } = useAffiliateRewards(chainId);
 
   const esGmxAddress = getTokenBySymbol(chainId, "esGMX").address;

@@ -7,7 +7,7 @@ import { getByKey } from "utils/objects";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "utils/swap";
 import { createFindSwapPath } from "utils/swap/swapPath";
 import { convertToUsd, getIsUnwrap, getIsWrap, getTokensRatioByPrice } from "utils/tokens";
-import { getIncreasePositionAmounts } from "utils/trade/amounts";
+import { getIncreasePositionAmounts } from "utils/trade/increase";
 
 import type { GmxSdk } from "../..";
 

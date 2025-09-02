@@ -1,17 +1,27 @@
 import cryptoJs from "crypto-js";
-import { ethers, Provider, Signer } from "ethers";
-import { decodeFunctionResult, encodeAbiParameters, encodeFunctionData, keccak256, maxUint256, zeroHash } from "viem";
-
+import { ethers, Provider } from "ethers";
 import {
-  SignedSubbacountApproval,
+  decodeFunctionResult,
+  encodeAbiParameters,
+  encodeFunctionData,
+  Hex,
+  keccak256,
+  maxUint256,
+  zeroAddress,
+  zeroHash,
+} from "viem";
+
+import { isSourceChain } from "config/multichain";
+import type { AnyChainId, ContractsChainId } from "config/static/chains";
+import type {
+  SignedSubacсountApproval,
   Subaccount,
   SubaccountApproval,
   SubaccountSerializedConfig,
   SubaccountValidations,
 } from "domain/synthetics/subaccount/types";
-import { SubaccountOnchainData } from "domain/synthetics/subaccount/useSubaccountOnchainData";
 import { WalletSigner } from "lib/wallets";
-import { signTypedData } from "lib/wallets/signing";
+import { SignatureTypes, signTypedData } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import {
@@ -19,33 +29,46 @@ import {
   SUBACCOUNT_ORDER_ACTION,
   subaccountActionCountKey,
   subaccountExpiresAtKey,
+  subaccountIntegrationIdKey,
   subaccountListKey,
 } from "sdk/configs/dataStore";
 import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
 import { bigMath } from "sdk/utils/bigmath";
 import { ZERO_DATA } from "sdk/utils/hash";
 import { nowInSeconds, secondsToPeriod } from "sdk/utils/time";
+import type { SubaccountGelatoRelayRouter } from "typechain-types";
 
-import { getExpressContractAddress, getGelatoRelayRouterDomain } from "../express";
+import { getGelatoRelayRouterDomain } from "../express";
+import { SubaccountOnchainData } from "./useSubaccountOnchainData";
+import { getMultichainInfoFromSigner, getOrderRelayRouterAddress } from "../express/expressOrderUtils";
 
 export function getSubaccountValidations({
   requiredActions,
   subaccount,
+  subaccountRouterAddress,
 }: {
   requiredActions: number;
   subaccount: Subaccount;
+  subaccountRouterAddress: string;
 }): SubaccountValidations {
   return {
     isExpired: getIsSubaccountExpired(subaccount),
     isActionsExceeded: getIsSubaccountActionsExceeded(subaccount, requiredActions),
     isNonceExpired: getIsSubaccountNonceExpired(subaccount),
-    isValid: !getIsInvalidSubaccount(subaccount, requiredActions),
+    isApprovalInvalid: getIsSubaccountApprovalInvalid({
+      chainId: subaccount.chainId,
+      signerChainId: subaccount.signerChainId,
+      onchainData: subaccount.onchainData,
+      signedApproval: subaccount.signedApproval,
+      subaccountRouterAddress,
+    }),
+    isValid: !getIsInvalidSubaccount({ subaccount, requiredActions, subaccountRouterAddress }),
   };
 }
 
 export function getIsSubaccountActive(subaccount: {
   onchainData: SubaccountOnchainData;
-  signedApproval: SignedSubbacountApproval | undefined;
+  signedApproval: SignedSubacсountApproval | undefined;
 }): boolean {
   let active = subaccount.onchainData.active;
 
@@ -65,7 +88,7 @@ export function getSubaccountSigner(config: SubaccountSerializedConfig, account:
 
 export function getMaxSubaccountActions(subaccount: {
   onchainData: SubaccountOnchainData;
-  signedApproval: SignedSubbacountApproval | undefined;
+  signedApproval: SignedSubacсountApproval | undefined;
 }): bigint {
   if (subaccount.signedApproval && !getIsEmptySubaccountApproval(subaccount.signedApproval)) {
     return BigInt(subaccount.signedApproval.maxAllowedCount);
@@ -76,7 +99,7 @@ export function getMaxSubaccountActions(subaccount: {
 
 export function getSubaccountExpiresAt(subaccount: {
   onchainData: SubaccountOnchainData;
-  signedApproval: SignedSubbacountApproval | undefined;
+  signedApproval: SignedSubacсountApproval | undefined;
 }): bigint {
   if (subaccount.signedApproval && !getIsEmptySubaccountApproval(subaccount.signedApproval)) {
     return BigInt(subaccount.signedApproval.expiresAt);
@@ -87,7 +110,7 @@ export function getSubaccountExpiresAt(subaccount: {
 
 export function getRemainingSubaccountActions(subaccount: {
   onchainData: SubaccountOnchainData;
-  signedApproval: SignedSubbacountApproval | undefined;
+  signedApproval: SignedSubacсountApproval | undefined;
 }): bigint {
   const maxAllowedCount = getMaxSubaccountActions(subaccount);
   const currentActionCount = subaccount.onchainData.currentActionsCount;
@@ -120,6 +143,9 @@ export function getRemainingSubaccountDays(subaccount: Subaccount): bigint {
   return BigInt(secondsToPeriod(Number(seconds), "1d"));
 }
 
+/**
+ * Returns false for empty subaccount approval
+ */
 export function getIsApprovalExpired(subaccount: Subaccount): boolean {
   const { signedApproval } = subaccount;
 
@@ -135,18 +161,95 @@ export function getIsApprovalExpired(subaccount: Subaccount): boolean {
   return now >= expiresAt || now >= deadline;
 }
 
-export function getIsSubaccountNonceExpired(subaccount: {
+/**
+ * Returns false for empty subaccount approval
+ */
+export function getIsSubaccountNonceExpired({
+  chainId,
+  onchainData,
+  signedApproval,
+}: {
+  chainId: ContractsChainId;
   onchainData: SubaccountOnchainData;
-  signedApproval: SignedSubbacountApproval;
+  signedApproval: SignedSubacсountApproval;
 }): boolean {
-  if (getIsEmptySubaccountApproval(subaccount.signedApproval)) {
+  if (getIsEmptySubaccountApproval(signedApproval)) {
     return false;
   }
 
-  const onChainNonce = subaccount.onchainData.approvalNonce;
-  const signedNonce = subaccount.signedApproval.nonce;
+  if (chainId !== signedApproval.signatureChainId) {
+    return false;
+  }
+
+  let onChainNonce: bigint;
+  if (signedApproval.subaccountRouterAddress === getContract(chainId, "SubaccountGelatoRelayRouter")) {
+    onChainNonce = onchainData.approvalNonce;
+  } else if (signedApproval.subaccountRouterAddress === getContract(chainId, "MultichainSubaccountRouter")) {
+    onChainNonce = onchainData.multichainApprovalNonce;
+  } else if (!signedApproval.subaccountRouterAddress) {
+    if (isSourceChain(signedApproval.signatureChainId)) {
+      onChainNonce = onchainData.multichainApprovalNonce;
+    } else {
+      onChainNonce = onchainData.approvalNonce;
+    }
+  } else {
+    // eslint-disable-next-line no-console
+    console.error(
+      `Invalid subaccount router address: ${signedApproval.subaccountRouterAddress} at ${signedApproval.signatureChainId} for chainId: ${chainId}`
+    );
+    return false;
+  }
+
+  const signedNonce = signedApproval.nonce;
 
   return signedNonce !== onChainNonce;
+}
+
+/**
+ * Returns false for empty subaccount approval
+ */
+export function getIsSubaccountApprovalInvalid({
+  chainId,
+  signerChainId,
+  signedApproval,
+  onchainData,
+  subaccountRouterAddress,
+}: {
+  chainId: ContractsChainId;
+  signerChainId: AnyChainId;
+  signedApproval: SignedSubacсountApproval;
+  onchainData: SubaccountOnchainData;
+  subaccountRouterAddress: string;
+}): boolean {
+  if (getIsEmptySubaccountApproval(signedApproval)) {
+    return false;
+  }
+
+  const isSignedSubaccountFresh = !onchainData.active;
+
+  let relatedOnchainNonce: bigint | undefined;
+  if (signedApproval.subaccountRouterAddress === getContract(chainId, "MultichainSubaccountRouter")) {
+    relatedOnchainNonce = onchainData.multichainApprovalNonce;
+  } else if (
+    signedApproval.subaccountRouterAddress === getContract(chainId, "SubaccountGelatoRelayRouter") ||
+    !signedApproval.subaccountRouterAddress
+  ) {
+    relatedOnchainNonce = onchainData.approvalNonce;
+  } else {
+    return true;
+  }
+
+  // Technically it is possible to create a new subaccount without deactivating the old one
+  // For this we need to check approval signature even if currently there is a subaccount but our nonce
+  // would be able to update it
+  const isSignedSubaccountPossibleUpdate = signedApproval.nonce === relatedOnchainNonce;
+
+  const result =
+    (isSignedSubaccountFresh || isSignedSubaccountPossibleUpdate) &&
+    (signedApproval.signatureChainId !== signerChainId ||
+      signedApproval.subaccountRouterAddress !== subaccountRouterAddress);
+
+  return result;
 }
 
 export function getIsSubaccountExpired(subaccount: Subaccount): boolean {
@@ -163,15 +266,33 @@ export function getIsSubaccountExpired(subaccount: Subaccount): boolean {
   return isExpired;
 }
 
-export function getIsInvalidSubaccount(subaccount: Subaccount, requiredActions: number): boolean {
+export function getIsInvalidSubaccount({
+  subaccount,
+  requiredActions,
+  subaccountRouterAddress,
+}: {
+  subaccount: Subaccount;
+  requiredActions: number;
+  subaccountRouterAddress: string;
+}): boolean {
   const isExpired = getIsSubaccountExpired(subaccount);
   const isNonceExpired = getIsSubaccountNonceExpired(subaccount);
   const actionsExceeded = getIsSubaccountActionsExceeded(subaccount, requiredActions);
+  const isApprovalInvalid = getIsSubaccountApprovalInvalid({
+    chainId: subaccount.chainId,
+    signedApproval: subaccount.signedApproval,
+    subaccountRouterAddress,
+    signerChainId: subaccount.signerChainId,
+    onchainData: subaccount.onchainData,
+  });
 
-  return isExpired || isNonceExpired || actionsExceeded;
+  return isExpired || isNonceExpired || actionsExceeded || isApprovalInvalid;
 }
 
-export function getEmptySubaccountApproval(subaccountAddress: string): SignedSubbacountApproval {
+export function getEmptySubaccountApproval(
+  chainId: ContractsChainId,
+  subaccountAddress: string
+): SignedSubacсountApproval {
   return {
     subaccount: subaccountAddress,
     shouldAdd: false,
@@ -180,18 +301,23 @@ export function getEmptySubaccountApproval(subaccountAddress: string): SignedSub
     actionType: SUBACCOUNT_ORDER_ACTION,
     nonce: 0n,
     deadline: maxUint256,
+    desChainId: chainId,
     signature: ZERO_DATA,
     signedAt: 0,
+    integrationId: zeroHash,
+    subaccountRouterAddress: zeroAddress,
+    signatureChainId: chainId,
   };
 }
 
-export function getIsEmptySubaccountApproval(subaccountApproval: SignedSubbacountApproval): boolean {
+export function getIsEmptySubaccountApproval(subaccountApproval: SignedSubacсountApproval): boolean {
   return (
     subaccountApproval.signature === ZERO_DATA &&
     subaccountApproval.nonce === 0n &&
     subaccountApproval.expiresAt === 0n &&
     subaccountApproval.maxAllowedCount === 0n &&
-    subaccountApproval.shouldAdd === false
+    subaccountApproval.shouldAdd === false &&
+    subaccountApproval.integrationId === zeroHash
   );
 }
 
@@ -200,11 +326,13 @@ export async function getInitialSubaccountApproval({
   signer,
   provider,
   subaccountAddress,
+  isGmxAccount,
 }: {
-  chainId: number;
+  chainId: ContractsChainId;
   signer: WalletSigner;
   provider: Provider;
   subaccountAddress: string;
+  isGmxAccount: boolean;
 }) {
   const onchainData = await getSubaccountOnchainData({ chainId, signer, provider, subaccountAddress });
 
@@ -225,42 +353,52 @@ export async function getInitialSubaccountApproval({
   const defaultSubaccountApproval = await createAndSignSubaccountApproval(
     chainId,
     signer,
+    provider,
     subaccountAddress,
-    onchainData.approvalNonce,
     {
       shouldAdd: !onchainData.active,
       expiresAt,
       maxAllowedCount,
-    }
+    },
+    isGmxAccount
   );
 
   return defaultSubaccountApproval;
 }
 
-export function getActualApproval(subaccount: {
+export function getActualApproval(params: {
+  chainId: ContractsChainId;
   address: string;
-  signedApproval: SignedSubbacountApproval | undefined;
+  signedApproval: SignedSubacсountApproval | undefined;
   onchainData: SubaccountOnchainData;
-}): SignedSubbacountApproval {
-  const { signedApproval, address, onchainData } = subaccount;
+}): SignedSubacсountApproval {
+  const { chainId, signedApproval, address, onchainData } = params;
 
-  if (!signedApproval || getIsSubaccountApprovalSynced({ signedApproval, onchainData })) {
-    return getEmptySubaccountApproval(address);
+  if (
+    !signedApproval ||
+    getIsSubaccountApprovalSynced({
+      chainId,
+      signedApproval,
+      onchainData,
+    })
+  ) {
+    return getEmptySubaccountApproval(chainId, address);
   }
 
   return signedApproval;
 }
 
-export function getIsSubaccountApprovalSynced(subaccount: {
-  signedApproval: SignedSubbacountApproval;
+export function getIsSubaccountApprovalSynced(params: {
+  chainId: ContractsChainId;
+  signedApproval: SignedSubacсountApproval;
   onchainData: SubaccountOnchainData;
 }): boolean {
-  const { signedApproval, onchainData } = subaccount;
+  const { signedApproval, onchainData } = params;
 
   /**
    * If nonce is expired, we believe a newer settings have been applied in some other way e.g. different browser
    */
-  if (getIsSubaccountNonceExpired(subaccount)) {
+  if (getIsSubaccountNonceExpired(params)) {
     return true;
   }
 
@@ -274,15 +412,19 @@ export function getIsSubaccountApprovalSynced(subaccount: {
 export async function signUpdatedSubaccountSettings({
   chainId,
   signer,
+  provider,
   subaccount,
   nextRemainigActions,
   nextRemainingSeconds,
+  isGmxAccount,
 }: {
-  chainId: number;
+  chainId: ContractsChainId;
   signer: WalletSigner;
+  provider: Provider;
   subaccount: Subaccount;
   nextRemainigActions: bigint | undefined;
   nextRemainingSeconds: bigint | undefined;
+  isGmxAccount: boolean;
 }) {
   const oldMaxAllowedCount = getMaxSubaccountActions(subaccount);
   const oldRemainingActions = getRemainingSubaccountActions(subaccount);
@@ -302,29 +444,41 @@ export async function signUpdatedSubaccountSettings({
     nextExpiresAt = oldExpiresAt + nextRemainingSeconds - oldRemainingSeconds;
   }
 
-  const nonce = await getSubaccountApprovalNonceForSigner(chainId, signer);
-
-  const signedSubaccountApproval = await createAndSignSubaccountApproval(chainId, signer, subaccount.address, nonce, {
-    expiresAt: nextExpiresAt,
-    maxAllowedCount: nextMaxAllowedCount,
-    shouldAdd: !subaccount.onchainData.active,
-  });
+  const signedSubaccountApproval = await createAndSignSubaccountApproval(
+    chainId,
+    signer,
+    provider,
+    subaccount.address,
+    {
+      expiresAt: nextExpiresAt,
+      maxAllowedCount: nextMaxAllowedCount,
+      shouldAdd: !subaccount.onchainData.active,
+    },
+    isGmxAccount
+  );
 
   return signedSubaccountApproval;
 }
 
 export async function createAndSignSubaccountApproval(
-  chainId: number,
-  mainAccountSigner: Signer,
+  chainId: ContractsChainId,
+  mainAccountSigner: WalletSigner,
+  provider: Provider,
   subaccountAddress: string,
-  nonce: bigint,
   params: {
     shouldAdd: boolean;
     expiresAt: bigint;
     maxAllowedCount: bigint;
-  }
-): Promise<SignedSubbacountApproval> {
-  const types = {
+  },
+  isGmxAccount: boolean
+): Promise<SignedSubacсountApproval> {
+  const srcChainId = await getMultichainInfoFromSigner(mainAccountSigner, chainId);
+
+  const nonce = await getSubaccountApprovalNonceForProvider(chainId, mainAccountSigner, provider, isGmxAccount);
+
+  const subaccountRouterAddress = getOrderRelayRouterAddress(chainId, true, isGmxAccount);
+
+  const types: SignatureTypes = {
     SubaccountApproval: [
       { name: "subaccount", type: "address" },
       { name: "shouldAdd", type: "bool" },
@@ -332,19 +486,23 @@ export async function createAndSignSubaccountApproval(
       { name: "maxAllowedCount", type: "uint256" },
       { name: "actionType", type: "bytes32" },
       { name: "nonce", type: "uint256" },
+      { name: "desChainId", type: "uint256" },
       { name: "deadline", type: "uint256" },
+      { name: "integrationId", type: "bytes32" },
     ],
   };
 
-  const domain = getGelatoRelayRouterDomain(chainId, true);
+  const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, subaccountRouterAddress);
 
   const typedData = {
     subaccount: subaccountAddress,
     shouldAdd: params.shouldAdd,
-    actionType: SUBACCOUNT_ORDER_ACTION,
     expiresAt: params.expiresAt,
     maxAllowedCount: params.maxAllowedCount,
+    desChainId: chainId,
+    actionType: SUBACCOUNT_ORDER_ACTION,
     nonce,
+    integrationId: zeroHash,
     deadline: params.expiresAt,
   };
 
@@ -354,10 +512,12 @@ export async function createAndSignSubaccountApproval(
     ...typedData,
     signature,
     signedAt: Date.now(),
+    signatureChainId: domain.chainId as AnyChainId,
+    subaccountRouterAddress,
   };
 }
 
-export function hashSubaccountApproval(subaccountApproval: SignedSubbacountApproval) {
+export function hashSubaccountApproval(subaccountApproval: SignedSubacсountApproval) {
   if (!subaccountApproval) {
     return zeroHash;
   }
@@ -373,7 +533,9 @@ export function hashSubaccountApproval(subaccountApproval: SignedSubbacountAppro
           { name: "maxAllowedCount", type: "uint256" },
           { name: "actionType", type: "bytes32" },
           { name: "nonce", type: "uint256" },
+          { name: "desChainId", type: "uint256" },
           { name: "deadline", type: "uint256" },
+          { name: "integrationId", type: "bytes32" },
           { name: "signature", type: "bytes" },
         ],
       },
@@ -384,11 +546,25 @@ export function hashSubaccountApproval(subaccountApproval: SignedSubbacountAppro
   return keccak256(encodedData);
 }
 
-export async function getSubaccountApprovalNonceForSigner(chainId: number, signer: WalletSigner) {
-  const contractAddress = getExpressContractAddress(chainId, { isSubaccount: true });
-  const contract = new ethers.Contract(contractAddress, abis.SubaccountGelatoRelayRouter, signer);
+async function getSubaccountApprovalNonceForProvider(
+  chainId: ContractsChainId,
+  signer: WalletSigner,
+  provider: Provider,
+  isGmxAccount: boolean
+): Promise<bigint> {
+  if (provider === undefined) {
+    throw new Error("Provider is required for multicall");
+  }
 
-  return contract.subaccountApprovalNonces(signer.address);
+  const subaccountRouterAddress = getOrderRelayRouterAddress(chainId, true, isGmxAccount);
+
+  const contract = new ethers.Contract(
+    subaccountRouterAddress,
+    abis.AbstractSubaccountApprovalNonceable,
+    provider
+  ) as unknown as SubaccountGelatoRelayRouter;
+
+  return await contract.subaccountApprovalNonces(signer.address);
 }
 
 export async function getSubaccountOnchainData({
@@ -397,7 +573,7 @@ export async function getSubaccountOnchainData({
   provider,
   subaccountAddress,
 }: {
-  chainId: number;
+  chainId: ContractsChainId;
   signer: WalletSigner;
   provider: Provider;
   subaccountAddress: string;
@@ -405,16 +581,24 @@ export async function getSubaccountOnchainData({
   const account = signer.address;
 
   const calls: {
-    [key in keyof SubaccountOnchainData]: {
-      contractAddress: string;
-      abi: any;
-      functionName: string;
-      args: any[];
-    };
+    [key in keyof SubaccountOnchainData]:
+      | {
+          contractAddress: string;
+          abi: any;
+          functionName: string;
+          args: any[];
+        }
+      | undefined;
   } = {
     approvalNonce: {
-      contractAddress: getExpressContractAddress(chainId, { isSubaccount: true }),
-      abi: abis.SubaccountGelatoRelayRouter,
+      contractAddress: getContract(chainId, "SubaccountGelatoRelayRouter"),
+      abi: abis.AbstractSubaccountApprovalNonceable,
+      functionName: "subaccountApprovalNonces",
+      args: [account],
+    },
+    multichainApprovalNonce: {
+      contractAddress: getContract(chainId, "MultichainSubaccountRouter"),
+      abi: abis.AbstractSubaccountApprovalNonceable,
       functionName: "subaccountApprovalNonces",
       args: [account],
     },
@@ -442,16 +626,26 @@ export async function getSubaccountOnchainData({
       functionName: "getUint",
       args: [subaccountExpiresAtKey(account, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
     },
+    integrationId: {
+      contractAddress: getContract(chainId, "DataStore"),
+      abi: abis.DataStore,
+      functionName: "getBytes32",
+      args: [subaccountIntegrationIdKey(account, subaccountAddress)],
+    },
   };
 
   const callData = encodeFunctionData({
     abi: abis.Multicall,
     functionName: "aggregate",
     args: [
-      Object.values(calls).map((call) => ({
-        target: call.contractAddress,
-        callData: encodeFunctionData(call),
-      })),
+      Object.values(calls)
+        .filter(
+          (call): call is { contractAddress: string; abi: any; functionName: string; args: any[] } => call !== undefined
+        )
+        .map((call) => ({
+          target: call.contractAddress,
+          callData: encodeFunctionData(call),
+        })),
     ],
   });
 
@@ -462,15 +656,19 @@ export async function getSubaccountOnchainData({
 
   const [_, decodedMulticallResults] = decodeFunctionResult({
     abi: abis.Multicall,
-    data: result as `0x${string}`,
+    data: result as Hex,
     functionName: "aggregate",
   }) as [bigint, string[]];
 
   const results: SubaccountOnchainData = Object.entries(calls).reduce((acc, [key, call], index) => {
+    if (call === undefined) {
+      return acc;
+    }
+
     acc[key] = decodeFunctionResult({
       abi: call.abi,
       functionName: call.functionName,
-      data: decodedMulticallResults[index] as `0x${string}`,
+      data: decodedMulticallResults[index] as Hex,
     });
 
     return acc;

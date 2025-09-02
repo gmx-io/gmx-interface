@@ -279,7 +279,7 @@ function MobileSlideModal({
           </div>
 
           <div
-            className="grow overflow-y-auto"
+            className="flex grow flex-col overflow-y-auto"
             ref={scrollableContainerRef}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
@@ -312,6 +312,7 @@ export function SlideModal({
   footerContent,
   className,
   desktopContentClassName,
+  disableOverflowHandling = false,
 }: PropsWithChildren<{
   label?: React.ReactNode;
   headerContent?: React.ReactNode;
@@ -323,6 +324,7 @@ export function SlideModal({
   footerContent?: React.ReactNode;
   className?: string;
   desktopContentClassName?: string;
+  disableOverflowHandling?: boolean;
 }>) {
   const isMobile = useMedia("(max-width: 700px)", false);
 
@@ -356,6 +358,7 @@ export function SlideModal({
         footerContent={footerContent}
         className={className}
         contentClassName={desktopContentClassName}
+        disableOverflowHandling={disableOverflowHandling}
       >
         {children}
       </Modal>

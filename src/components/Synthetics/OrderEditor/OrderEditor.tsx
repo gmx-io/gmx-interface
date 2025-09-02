@@ -13,11 +13,7 @@ import {
   useOrderEditorTriggerPriceInputValueState,
   useOrderEditorTriggerRatioInputValueState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import {
-  selectExpressNoncesData,
-  selectMarketsInfoData,
-  selectTokensData,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectOrderEditorAcceptablePrice,
   selectOrderEditorAcceptablePriceImpactBps,
@@ -46,8 +42,7 @@ import {
   selectOrderEditorTriggerPrice,
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
-import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
@@ -91,6 +86,7 @@ import {
   parseValue,
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useJsonRpcProvider } from "lib/rpc";
 import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
@@ -117,8 +113,9 @@ type Props = {
 };
 
 export function OrderEditor(p: Props) {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { signer } = useWallet();
+  const { provider } = useJsonRpcProvider(chainId);
   const tokensData = useSelector(selectTokensData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
@@ -143,7 +140,6 @@ export function OrderEditor(p: Props) {
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
   const markPrice = p.order.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
   const existingPosition = useSelector(selectOrderEditorExistingPosition);
-  const noncesData = useSelector(selectExpressNoncesData);
 
   const executionFee = useSelector(selectOrderEditorExecutionFee);
 
@@ -194,8 +190,8 @@ export function OrderEditor(p: Props) {
   const { minCollateralUsd } = usePositionsConstants();
 
   const recommendedAcceptablePriceImpactBps =
-    isLimitIncreaseOrderType(p.order.orderType) && increaseAmounts?.acceptablePrice
-      ? bigMath.abs(increaseAmounts.acceptablePriceDeltaBps)
+    isLimitIncreaseOrderType(p.order.orderType) && increaseAmounts?.acceptablePrice !== undefined
+      ? increaseAmounts.recommendedAcceptablePriceDeltaBps
       : decreaseAmounts?.recommendedAcceptablePriceDeltaBps !== undefined
         ? bigMath.abs(decreaseAmounts?.recommendedAcceptablePriceDeltaBps)
         : undefined;
@@ -347,6 +343,7 @@ export function OrderEditor(p: Props) {
   const { expressParams, expressParamsPromise } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Order Editor",
+    isGmxAccount: srcChainId !== undefined,
   });
 
   const networkFee = useMemo(() => {
@@ -450,7 +447,7 @@ export function OrderEditor(p: Props) {
   }
 
   async function onSubmit() {
-    if (!batchParams || !signer || !tokensData || !marketsInfoData) {
+    if (!batchParams || !signer || !tokensData || !marketsInfoData || !provider) {
       return;
     }
 
@@ -462,11 +459,12 @@ export function OrderEditor(p: Props) {
       chainId,
       signer,
       batchParams,
-      noncesData,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       simulationParams: undefined,
       callback: makeOrderTxnCallback({}),
+      provider,
+      isGmxAccount: srcChainId !== undefined,
     });
 
     if (expressParams?.subaccount) {
@@ -670,7 +668,12 @@ export function OrderEditor(p: Props) {
         <div className="flex flex-col gap-14">
           {button}
 
-          <ExpressTradingWarningCard expressParams={expressParams} payTokenAddress={undefined} isWrapOrUnwrap={false} />
+          <ExpressTradingWarningCard
+            expressParams={expressParams}
+            payTokenAddress={undefined}
+            isWrapOrUnwrap={false}
+            isGmxAccount={srcChainId !== undefined}
+          />
 
           {(isLimitIncreaseOrderType(p.order.orderType) || isStopIncreaseOrderType(p.order.orderType)) && (
             <SyntheticsInfoRow

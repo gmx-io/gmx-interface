@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ETH_MAINNET } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ETH_MAINNET } from "./chains";
 import { isDevelopment } from "./env";
 import { getSubgraphUrlKey } from "./localStorage";
 
@@ -8,14 +8,14 @@ const SUBGRAPH_URLS = {
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-referrals/api",
     nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum:prod/api/graphql",
+    subsquid: "https://gmx-test.squids.live/gmx-synthetics-arbitrum@911405/api/graphql",
   },
 
   [AVALANCHE]: {
     stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-stats/api",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-referrals/api",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-avalanche-stats/api",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-avalanche:prod/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-avalanche@c87c92/api/graphql",
   },
 
   [AVALANCHE_FUJI]: {
@@ -23,6 +23,10 @@ const SUBGRAPH_URLS = {
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-fuji-referrals/api",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-fuji-stats/api",
     subsquid: "https://gmx.squids.live/gmx-synthetics-fuji:prod/api/graphql",
+  },
+
+  [ARBITRUM_SEPOLIA]: {
+    subsquid: "https://gmx-test.squids.live/gmx-arb-sep@911405/api/graphql",
   },
 
   [BOTANIX]: {

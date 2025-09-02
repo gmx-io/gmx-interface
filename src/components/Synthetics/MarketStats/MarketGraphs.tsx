@@ -86,13 +86,13 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
 
   const address = isGlvInfo(glvOrMarketInfo) ? glvOrMarketInfo.glvTokenAddress : glvOrMarketInfo.marketTokenAddress;
 
-  const { chainId } = useChainId();
-  const { tokensData } = useTokensDataRequest(chainId);
-  const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId);
+  const { chainId, srcChainId } = useChainId();
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const enabledGlv = isGlvEnabled(chainId);
   const account = useSelector(selectAccount);
 
-  const { marketsTokensApyData, glvApyInfoData } = useGmMarketsApy(chainId, { period: timeRange });
+  const { marketsTokensApyData, glvApyInfoData } = useGmMarketsApy(chainId, srcChainId, { period: timeRange });
 
   const { glvData } = useGlvMarketsInfo(enabledGlv, {
     marketsInfoData: onlyGmMarketsInfoData,
@@ -101,7 +101,7 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
     account,
   });
 
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true, withGlv: true });
+  const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: true, withGlv: true });
 
   const tokenAddresses = useMemo(() => {
     return [glvOrMarketInfo.longTokenAddress, glvOrMarketInfo.shortTokenAddress, address];

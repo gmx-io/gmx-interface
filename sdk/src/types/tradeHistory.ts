@@ -12,6 +12,7 @@ export enum TradeActionType {
 
 export type PositionTradeAction = {
   id: string;
+  srcChainId?: number;
   eventName: TradeActionType;
   marketInfo: MarketInfo;
   marketAddress: string;
@@ -44,6 +45,7 @@ export type PositionTradeAction = {
   reason?: string;
   reasonBytes?: string | Uint8Array;
   shouldUnwrapNativeToken: boolean;
+  totalImpactUsd?: bigint;
   liquidationFeeAmount?: bigint;
   twapParams:
     | {
@@ -59,6 +61,7 @@ export type PositionTradeAction = {
 
 export type SwapTradeAction = {
   id: string;
+  srcChainId?: number;
   account: string;
   eventName: TradeActionType;
   initialCollateralTokenAddress: string;
