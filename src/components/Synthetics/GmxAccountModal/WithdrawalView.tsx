@@ -863,9 +863,16 @@ export const WithdrawalView = () => {
               selectedToken !== undefined && (
                 <div>
                   <Trans>Available:</Trans>{" "}
-                  {formatBalanceAmount(selectedToken.gmxAccountBalance, selectedToken.decimals, selectedToken.symbol, {
-                    isStable: selectedToken.isStable,
-                  })}
+                  <span className="text-typography-primary">
+                    {formatBalanceAmount(
+                      selectedToken.gmxAccountBalance,
+                      selectedToken.decimals,
+                      selectedToken.symbol,
+                      {
+                        isStable: selectedToken.isStable,
+                      }
+                    )}
+                  </span>
                 </div>
               )}
           </div>
