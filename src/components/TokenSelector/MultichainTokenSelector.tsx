@@ -138,7 +138,7 @@ export function MultichainTokenSelector({
     >
       <SlideModal
         qa={qa + "-modal"}
-        className="TokenSelector-modal text-body-medium text-white"
+        className="TokenSelector-modal text-body-medium"
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
