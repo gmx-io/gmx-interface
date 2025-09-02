@@ -173,10 +173,11 @@ export function MarketSelector({
         setIsVisible={setIsModalVisible}
         label={label}
         footerContent={footerContent}
+        contentPadding={false}
         headerContent={
-          <>
+          <div className="pb-16">
             <SearchInput
-              className="mb-8 *:!text-body-medium min-[700px]:mt-16"
+              className="mb-16"
               value={searchKeyword}
               setValue={setSearchKeyword}
               placeholder={t`Search Market`}
@@ -185,7 +186,7 @@ export function MarketSelector({
             <ButtonRowScrollFadeContainer>
               <FavoriteTabs favoritesKey="market-selector" />
             </ButtonRowScrollFadeContainer>
-          </>
+          </div>
         }
       >
         <div className="flex flex-col">
