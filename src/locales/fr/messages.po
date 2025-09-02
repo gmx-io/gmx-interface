@@ -888,6 +888,10 @@ msgstr ""
 msgid "Rewards"
 msgstr "Récompenses"
 
+#: landing/src/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+msgid "You're about to navigate to GMX Solana, which is operated by a separate team, so the experience may vary slightly."
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.jsx
 msgid "Liq. {0} {longOrShortText}"
 msgstr ""
@@ -3911,6 +3915,10 @@ msgstr ""
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. This can be useful for delta-neutral strategies to earn funding fees."
 msgstr ""
 
+#: landing/src/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+msgid "Open GMX Solana"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr "Remises obtenues par ce compte en tant que trader."
@@ -5114,6 +5122,10 @@ msgstr ""
 msgid "Failed to {0}"
 msgstr ""
 
+#: landing/src/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+msgid "GMX Solana"
+msgstr ""
+
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
 msgstr "Récompenses Affiliées Réclamées"
@@ -6015,6 +6027,10 @@ msgstr ""
 msgid "3rd Place"
 msgstr ""
 
+#: landing/src/Home/SocialSection/SocialSlider.tsx
+msgid "<0>🔷 24h Volume: $1.01 Billion.</0><1>Thank you to the hundreds of thousands of GMX users who continue to support permissionless onchain trading.</1>"
+msgstr ""
+
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming failed"
@@ -6815,6 +6831,10 @@ msgstr ""
 msgid "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees."
 msgstr "Les frais peuvent varier selon quel actif vous vendez pour du GLP. <0/>Indiquer la somme que vous souhaitez acheter, puis vérifiez ici pour comparer les frais."
 
+#: landing/src/Home/HeroSection/AnimatedTitle.tsx
+msgid "deep liquid markets"
+msgstr ""
+
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 msgid "Claim <0>{0}</0>"
 msgstr ""
@@ -7151,6 +7171,10 @@ msgstr ""
 msgid "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
 msgstr ""
 
+#: landing/src/Home/SocialSection/SocialSlider.tsx
+msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Keep leverage at {0}x"
 msgstr ""
@@ -7244,10 +7268,6 @@ msgstr "Retrait échoué"
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
-msgstr ""
-
-#: landing/src/Home/HeroSection/AnimatedTitle.tsx
-msgid "deep liquid market"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
