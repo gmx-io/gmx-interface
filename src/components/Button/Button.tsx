@@ -37,7 +37,7 @@ export default function Button({
   imgSrc,
   imgAlt = "",
   imgClassName = "",
-  type,
+  type = "button",
   newTab,
   buttonRef,
   showExternalLinkArrow: showExternalLinkArrowOverride,

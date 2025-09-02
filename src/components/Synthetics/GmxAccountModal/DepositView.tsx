@@ -718,7 +718,7 @@ export const DepositView = () => {
               onClick={() => {
                 setIsVisibleOrView("selectAssetToDeposit");
               }}
-              className="flex items-center justify-between rounded-8 bg-slate-800 px-14 py-12 gmx-hover:bg-fill-surfaceElevatedHover"
+              className="flex items-center justify-between rounded-8 border border-slate-800 bg-slate-800 px-14 py-12 gmx-hover:bg-fill-surfaceElevatedHover"
             >
               <div className="flex items-center gap-8">
                 {selectedToken ? (
@@ -764,7 +764,7 @@ export const DepositView = () => {
             <div className="text-body-medium text-typography-secondary">
               <Trans>From Network</Trans>
             </div>
-            <div className="flex items-center gap-8 rounded-8 border border-cold-blue-900 px-14 py-12">
+            <div className="flex items-center gap-8 rounded-8 border border-slate-600 px-14 py-12">
               <img src={getChainIcon(depositViewChain)} alt={getChainName(depositViewChain)} className="size-20" />
               <span className="text-body-large text-typography-secondary">{getChainName(depositViewChain)}</span>
             </div>
@@ -789,7 +789,7 @@ export const DepositView = () => {
             <NumberInput
               value={inputValue}
               onValueChange={(e) => setInputValue(e.target.value)}
-              className="w-full rounded-8 bg-slate-800 py-14 pl-12 pr-68 leading-[20px]"
+              className="w-full rounded-8 border border-slate-800 bg-slate-800 py-14 pl-12 pr-68 leading-[20px] focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
             />
             <div className="pointer-events-none absolute left-14 top-1/2 flex max-w-[calc(100%-72px)] -translate-y-1/2 overflow-hidden">
               <div className="invisible whitespace-pre font-[RelativeNumber]">
@@ -799,7 +799,7 @@ export const DepositView = () => {
               <div className="font-[RelativeNumber] text-typography-secondary">{placeholder}</div>
             </div>
             <button
-              className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-full bg-cold-blue-500 px-8 py-2 font-medium hover:bg-[#484e92] focus-visible:bg-[#484e92] active:bg-[#505699]"
+              className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-full bg-slate-600 px-8 py-2 font-medium hover:bg-[#484e92] focus-visible:bg-[#484e92] active:bg-[#505699]"
               type="button"
               onClick={handleMaxButtonClick}
             >
@@ -828,7 +828,7 @@ export const DepositView = () => {
       )}
       <div className="h-32 shrink-0 grow" />
 
-      <div className="mb-16 flex flex-col gap-14">
+      <div className="mb-16 flex flex-col gap-10">
         <SyntheticsInfoRow
           label={<Trans>Network Fee</Trans>}
           value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
@@ -870,7 +870,7 @@ export const DepositView = () => {
         />
       </div>
 
-      <Button variant="primary" className="w-full" type="submit" disabled={buttonState.disabled}>
+      <Button variant="primary-action" className="w-full" type="submit" disabled={buttonState.disabled}>
         {buttonState.text}
       </Button>
     </form>

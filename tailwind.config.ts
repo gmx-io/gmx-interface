@@ -146,6 +146,7 @@ function customUtilsPlugin({ addUtilities, addVariant, addComponents }: any) {
     `@media (hover: hover) {:merge(.group):not(:hover) &}`,
     `@media (hover: none) {:merge(.group):not(:active) &}`,
   ]);
+  addVariant("not-disabled", [`&:not([disabled])`]);
   addComponents({
     ".gmx-hover-gradient": {
       "@apply gmx-hover:bg-gradient-to-r gmx-hover:from-[#23263B] gmx-hover:to-[#16182E]": {},
