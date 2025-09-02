@@ -55,8 +55,8 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
   const [isOpen, setIsOpen] = useState(true);
 
   const handleToggle = useCallback(() => {
-    setIsOpen(!isOpen);
-  }, [isOpen, setIsOpen]);
+    setIsOpen((isOpen) => !isOpen);
+  }, []);
 
   return (
     <div

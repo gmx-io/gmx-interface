@@ -1,6 +1,5 @@
-import { JsonRpcProvider, Network, WebSocketProvider } from "ethers";
-import { Signer, ethers } from "ethers";
-import { useEffect, useState } from "react";
+import { JsonRpcProvider, Network, Signer, WebSocketProvider, ethers } from "ethers";
+import { useEffect, useMemo, useState } from "react";
 
 import {
   ARBITRUM,
@@ -10,9 +9,11 @@ import {
   FALLBACK_PROVIDERS,
   getAlchemyArbitrumWsUrl,
   getAlchemyBotanixWsUrl,
+  getExpressRpcUrl,
   getFallbackRpcUrl,
 } from "config/chains";
 import { isDevelopment } from "config/env";
+import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { getCurrentRpcUrls, useCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
 
 export function getProvider(signer: undefined, chainId: number): ethers.JsonRpcProvider;
@@ -36,7 +37,11 @@ export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvi
   const network = Network.from(chainId);
 
   if (chainId === ARBITRUM) {
-    return new ethers.WebSocketProvider(getAlchemyArbitrumWsUrl(), network, { staticNetwork: network });
+    return new ethers.WebSocketProvider(
+      getAlchemyArbitrumWsUrl(getIsLargeAccount() ? "largeAccount" : "fallback"),
+      network,
+      { staticNetwork: network }
+    );
   }
 
   if (chainId === AVALANCHE) {
@@ -52,7 +57,11 @@ export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvi
   }
 
   if (chainId === BOTANIX) {
-    return new ethers.WebSocketProvider(getAlchemyBotanixWsUrl(), network, { staticNetwork: network });
+    return new ethers.WebSocketProvider(
+      getAlchemyBotanixWsUrl(getIsLargeAccount() ? "largeAccount" : "fallback"),
+      network,
+      { staticNetwork: network }
+    );
   }
 }
 
@@ -61,23 +70,32 @@ export function getFallbackProvider(chainId: number) {
     return;
   }
 
-  const providerUrl = getFallbackRpcUrl(chainId);
+  const providerUrl = getFallbackRpcUrl(chainId, getIsLargeAccount());
 
   return new ethers.JsonRpcProvider(providerUrl, chainId, {
     staticNetwork: Network.from(chainId),
   });
 }
 
-export function useJsonRpcProvider(chainId: number) {
+export function getExpressProvider(chainId: number) {
+  const providerUrl = getExpressRpcUrl(chainId);
+
+  return new ethers.JsonRpcProvider(providerUrl, chainId, {
+    staticNetwork: Network.from(chainId),
+  });
+}
+
+export function useJsonRpcProvider(chainId: number, { isExpress = false }: { isExpress?: boolean } = {}) {
   const [provider, setProvider] = useState<JsonRpcProvider>();
 
-  const { primary: primaryRpcUrl } = useCurrentRpcUrls(chainId);
+  const { primary } = useCurrentRpcUrls(chainId);
+  const rpcUrl = useMemo(() => (isExpress ? getExpressRpcUrl(chainId) : primary), [chainId, isExpress, primary]);
 
   useEffect(() => {
     async function initializeProvider() {
-      if (!primaryRpcUrl) return;
+      if (!rpcUrl) return;
 
-      const provider = new ethers.JsonRpcProvider(primaryRpcUrl, chainId);
+      const provider = new ethers.JsonRpcProvider(rpcUrl, chainId);
 
       provider._start();
       await provider._waitUntilReady();
@@ -86,7 +104,7 @@ export function useJsonRpcProvider(chainId: number) {
     }
 
     initializeProvider();
-  }, [chainId, primaryRpcUrl]);
+  }, [chainId, rpcUrl]);
 
   return { provider };
 }

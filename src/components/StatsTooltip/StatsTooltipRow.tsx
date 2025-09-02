@@ -38,7 +38,7 @@ export default function StatsTooltipRow({
 
     return (
       <span className={cx("Tooltip-row-value", textClassName, valueClassName)}>
-        {showDollar && "$ "}
+        {showDollar && "$\u200a"}
         {value}
         {unit || ""}
       </span>

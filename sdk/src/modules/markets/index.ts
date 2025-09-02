@@ -382,6 +382,7 @@ export class Markets extends Module {
 
   async getMarketsInfo(): Promise<MarketsInfoResult> {
     const { marketsData, marketsAddresses } = await this.getMarkets();
+
     const { tokensData, pricesUpdatedAt } = await this.sdk.tokens.getTokensData();
 
     const [marketsValues, marketsConfigs, claimableFundingData] = await Promise.all([

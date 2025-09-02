@@ -171,7 +171,7 @@ function CompetitionPrize({ prize }: { prize: Prize }) {
 function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] }) {
   const winner = winners[0];
 
-  const { isSmallDesktop } = useBreakpoints();
+  const { isDesktop } = useBreakpoints();
 
   let handle = winner ? (
     <Link
@@ -184,7 +184,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
     </Link>
   ) : null;
 
-  if (isSmallDesktop) {
+  if (isDesktop) {
     handle = winner ? (
       <Link
         target="_blank"

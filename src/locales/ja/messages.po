@@ -46,11 +46,6 @@ msgstr "分散型取引プロトコル"
 msgid "STIP.b Trading Incentives"
 msgstr ""
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#: src/pages/Stake/ClaimModal.tsx
-#~ msgid "Claim submitted!"
-#~ msgstr "請求申し込み完了!"
-
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order executed."
 msgstr ""
@@ -298,10 +293,6 @@ msgstr "指値スワップのキャンセル"
 msgid "{seconds}s"
 msgstr "{seconds}秒"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
-#~ msgid "No incentives distribution history yet."
-#~ msgstr "インセンティブ分配履歴がまだありません。"
-
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/ConfirmationBox.jsx
@@ -472,10 +463,6 @@ msgstr "ポジション"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0}はスマートコントラクトアドレスに送信できません。別のトークンを選択してください。"
 
-#: src/domain/synthetics/markets/claimFundingFeesTxn.ts
-#~ msgid "Funding Claimed"
-#~ msgstr "ファンディング請求済"
-
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trading</2> under settings, which should offer a better experience."
 msgstr "RPCエラーにより取引が失敗しました。<0/><1/><2>エクスプレストレーディング</2>を設定で有効にしてください。これによりより良い体験が得られるはずです。"
@@ -522,10 +509,6 @@ msgstr "注文"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Increased {positionText}, +{0}"
 msgstr "{positionText}を増加、+{0}"
-
-#: src/pages/Stake/Stake.tsx
-#~ msgid "Claim and view your incentives, airdrops, and prizes"
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -651,10 +634,6 @@ msgstr "手仕舞い価格"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V2"
 msgstr "V2のリベート"
-
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
-#~ msgid "Incentives are airdropped weekly."
-#~ msgstr "インセンティブは毎週エアドロップされます。"
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
@@ -1124,10 +1103,6 @@ msgstr "ステークされたトークン"
 msgid "Beefy"
 msgstr "Beefy"
 
-#: src/pages/Stake/UnstakeModal.tsx
-#~ msgid "Unstake completed!"
-#~ msgstr "アンステーク完了!"
-
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/MinReceiveRow.tsx
@@ -1222,11 +1197,6 @@ msgstr "GLP売却"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
 msgstr "ポジションの担保が{symbol}であり、初期価値が{indexName}ロングポジションサイズより高いため、担保価値は負のPnLをカバーし、清算価格はありません。"
-
-#: src/components/Synthetics/Claims/ClaimsHistory.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-#~ msgid "CSV"
-#~ msgstr "CSV"
 
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
@@ -1416,10 +1386,6 @@ msgstr "現在の価格影響は{0}です。注文が処理されやすくなる
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Hide error"
 msgstr "エラーを隠す"
-
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of the standard {0}% for Tier {1}."
-#~ msgstr "この紹介コードの所有者は、ティア{1}の標準{0}%の代わりにカスタム割引{currentTierDiscount}%を設定しています。"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Leftover position below 10 USD"
@@ -1834,6 +1800,10 @@ msgstr "価格を入力"
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Account"
 msgstr "アカウント"
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Using high leverage increases the risk of liquidation."
+msgstr ""
 
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading is not available for wrapping or unwrapping native token {0}."
@@ -2447,11 +2417,6 @@ msgstr ""
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {このポジションに影響する可能性のあるアクティブなトリガー注文があります。} other {このポジションに影響する可能性のあるアクティブなトリガー注文が#あります。}}"
 
-#: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
-#~ msgid "<0>{0}</0> GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
-#~ msgstr "<0>{0}</0> GMXトークンを請求可能。総報酬セクションの下のオプションを使って請求してください。"
-
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
 msgstr "合計で少なくとも{0} {stakeTokenLabel}が必要で、{1} esGMXをベストできます。"
@@ -2616,10 +2581,6 @@ msgstr "1時間あたりのネットレート"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Vest with GMX on Avalanche"
 msgstr "AvalancheでGMXを使ってべスティングする"
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take Profit / Stop Loss Orders."
-#~ msgstr "ポジションをクリックしてマーケットを選択し、トレードボックスを使用してポジションサイズを増やしたり、テイクプロフィット/ストップロス注文を設定したりしてください。"
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Relayer request failed"
@@ -2863,10 +2824,6 @@ msgstr "十分な流動性があり、実行価格が最低受け取り額を保
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
 msgstr "デペッグしたステーブルコインでの取引は、現在の市場価格または$1.00の悪い方のスプレッドの対象となり、複数のステーブルコインを含む取引は複数のスプレッドを持つ可能性があります。"
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Use the \"Close\" button to reduce your Position Size."
-#~ msgstr "ポジションサイズを減らすには\"閉じる\"ボタンを使用してください。"
 
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Increase Size (Limit)"
@@ -3183,10 +3140,6 @@ msgstr "注文有効化できませんでした。"
 msgid "Total Staked"
 msgstr "ステーク総額"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#~ msgid "Claim V2 rebates from your referred traders."
-#~ msgstr ""
-
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -3391,10 +3344,6 @@ msgstr "方向"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open positions."
 msgstr "このマーケットでは指定された売却上限までGMを{0}と{1}で売却できます。プールの残りのトークンは現在オープンのポジションのために予約されています。"
-
-#: src/components/Glp/GlpSwap.jsx
-msgid "Due to the recent incident on GMX V1 Arbitrum, GLP on Arbitrum is not sellable."
-msgstr "最近のGMX V1 Arbitrumでのインシデントのため、Arbitrum上のGLPは売却できません。"
 
 #: src/components/Synthetics/GmList/GlvList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -3743,10 +3692,6 @@ msgstr "ネットワーク"
 msgid "<0>every</0> {hours} hours{0}"
 msgstr "<0>毎</0> {hours}時間{0}"
 
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
-#~ msgstr "V1のトレードでは、この割引は毎週水曜日にアカウントにエアドロップされます。V2では割引が自動的に適用され、トレード時の手数料が減額されます。"
-
 #: src/components/DebugExpressSettings/DebugSwapsSettings.tsx
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Fail External Swaps"
@@ -3974,10 +3919,6 @@ msgstr "過去180日"
 msgid "Unknown buy GM order"
 msgstr "不明なGM購入注文"
 
-#: src/components/Synthetics/PositionSeller/rows/AllowedSlippageRow.tsx
-#~ msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than -{0}, may result in failed orders if prices are volatile."
-#~ msgstr "デフォルトの許容スリッページはページ右上の設定メニューで編集できます。<0/><1/>低い許容スリッページ、例えば-{0}未満の場合、価格が変動すると注文が失敗する可能性があることに注意してください。"
-
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Updating order"
@@ -4148,11 +4089,6 @@ msgstr ""
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Set TP/SL"
 msgstr "TP/SLを設定"
-
-#: src/components/Synthetics/PositionEditor/PositionEditorAdvancedRows.tsx
-#: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
-#~ msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
-#~ msgstr "最初の担保 (借入およびファンディング手数料を除く担保)。"
 
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
@@ -4639,10 +4575,6 @@ msgstr "Avalancheでステーク済"
 msgid "Media Kit"
 msgstr "メディアキット"
 
-#: src/components/Synthetics/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
-#~ msgid "You can edit the default allowed slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than -{0}, may result in failed orders if prices are volatile."
-#~ msgstr ""
-
 #: src/pages/Home/Home.tsx
 msgid "Reduce Liquidation Risks"
 msgstr "清算リスクを減らす"
@@ -4704,10 +4636,6 @@ msgstr "SL - ロング減少"
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Airdrop"
 msgstr "エアドロップ"
-
-#: src/pages/Stake/UnstakeModal.tsx
-#~ msgid "Unstake submitted!"
-#~ msgstr "アンステーク申し込み完了!"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "This competition is held on the {0} network. <0>Change your network</0> to participate."
@@ -5188,10 +5116,6 @@ msgstr ""
 msgid "Yield Farming"
 msgstr "イールドファーミング"
 
-#: src/lib/contracts/callContract.tsx
-#~ msgid "Transaction completed!"
-#~ msgstr "取引完了!"
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "承認中..."
@@ -5232,10 +5156,6 @@ msgstr "注文タイプ"
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana"
 msgstr "GMX Solana"
-
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
-#~ msgid "Affiliate Rewards Claimed"
-#~ msgstr "アフィリエイト報酬請求済"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
@@ -5927,11 +5847,6 @@ msgstr "ロングネットレート / 1時間"
 msgid "Edit"
 msgstr "編集"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#~ msgid "Rebates are claimed manually."
-#~ msgstr ""
-
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No available leverage found"
@@ -6108,10 +6023,6 @@ msgstr "未実現手数料"
 msgid "Traders Referred"
 msgstr "紹介したトレーダー"
 
-#: src/components/Exchange/PositionsList.jsx
-#~ msgid "Use the \"Close\" button to reduce your Position Size, or to set Take Profit / Stop Loss Orders."
-#~ msgstr "\"クローズ\"ボタンを使ってポジションサイズを減らすか、テイクプロフィット / ストップロス注文を設定してください。"
-
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Increase Size (Market)"
 msgstr "サイズ増加 (市場)"
@@ -6132,11 +6043,6 @@ msgstr "3位"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet, your keys.<0/><1/>GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
 msgstr ""
-
-#: src/domain/synthetics/markets/claimFundingFeesTxn.ts
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
-#~ msgid "Claiming failed"
-#~ msgstr "請求に失敗"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Stop Loss"
@@ -6354,10 +6260,6 @@ msgstr "esGMXの請求"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer ETH to Arbitrum"
 msgstr "ETHを購入またはArbitrumへ移転"
-
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "The maximum percentage difference between your specified price and execution price when placing orders."
-#~ msgstr "注文時の指定価格と執行価格の最大パーセンテージ差。"
 
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Expected execution price for the order, including the current price impact, once the limit order executes."
@@ -6746,12 +6648,6 @@ msgstr "注文を有効にするため規約に同意する"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr "プロトコルの分析"
-
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
-#: src/pages/NftWallet/NftWallet.jsx
-#~ msgid "Transfer submitted!"
-#~ msgstr "移転申し込み完了!"
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid ""
@@ -7163,10 +7059,6 @@ msgstr "最大ネットワーク手数料には追加注文の手数料が含ま
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates"
 msgstr "リベート"
-
-#: src/components/Glp/GlpSwap.jsx
-msgid "GLP is not sellable"
-msgstr "GLPは売却できません"
 
 #: src/pages/BuyGlp/BuyGlp.jsx
 msgid "GMX V1 markets are disabled and only allow for position closing. GLP is being phased out and no longer supports GMX V1 markets."
@@ -7862,11 +7754,6 @@ msgstr "総報酬"
 msgid "NFT ID"
 msgstr "NFT ID"
 
-#: src/domain/synthetics/markets/claimFundingFeesTxn.ts
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
-#~ msgid "Success claimings"
-#~ msgstr "成功した請求"
-
 #: src/lib/legacy.ts
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr "分散型永久取引所 | GMX"
@@ -7953,10 +7840,6 @@ msgstr "文字、数字、アンダースコアのみ許可されます。"
 msgid "High TWAP network fee"
 msgstr ""
 
-#: src/pages/Referrals/Referrals.tsx
-#~ msgid "Referral code submitted!"
-#~ msgstr "紹介コードを提出しました!"
-
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "APY"
 msgstr "APY"
@@ -7986,10 +7869,6 @@ msgstr "画像生成エラー。更新して再度試してください。"
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 msgid "Price Impact Rebates"
 msgstr "価格インパクトリベート"
-
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "Take Profit and Stop Loss orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders."
-#~ msgstr "関連ポジションが完全にクローズされた場合、テイクプロフィットとストップロス注文は自動的にキャンセルされます。これは新しく作成されたTP/SL注文にのみ影響します。"
 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "The 365d estimate is based on the past {daysConsidered}d APY."
@@ -8035,10 +7914,6 @@ msgstr "DeFiポートフォリオトラッカー"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Current Funding Fee / Day"
 msgstr "現在のファンディング手数料 / 日"
-
-#: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
-#~ msgid "365d estimate based on past {daysConsidered}d APY."
-#~ msgstr "過去{daysConsidered}日のAPYに基づく365日推定。"
 
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum APR:"
@@ -8126,10 +8001,6 @@ msgstr "STIP.b LPインセンティブ"
 msgid "Cancel Stop Loss"
 msgstr "ストップロスをキャンセル"
 
-#: src/components/Exchange/PositionsList.jsx
-#~ msgid "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."
-#~ msgstr "ポジションをクリックしてマーケットを選択し、必要に応じて取引ボックスでポジションサイズを増加させてください。"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Decrease"
 msgstr "リミット減少"
@@ -8194,10 +8065,6 @@ msgstr "蓄積済"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Liquidation price is influenced by fees and collateral value."
 msgstr "清算価格は手数料と担保価値に影響されます。"
-
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-#~ msgid "GMX Solana is hosted on a different website by a different DAO team.<0/><1/>The experience may vary slightly."
-#~ msgstr "GMX Solanaは別のDAOチームによって別のウェブサイトでホストされています。<0/><1/>体験が多少異なる場合があります。"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "No data available"
@@ -8523,10 +8390,6 @@ msgstr "残余担保が{0} USD未満"
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
 msgstr "トリガー"
-
-#: src/components/Glp/GlpSwap.jsx
-msgid "Please <0>read here</0> for more information."
-msgstr "詳細は<0>ここを読む</0>。"
 
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Exchange/TradeHistory.jsx

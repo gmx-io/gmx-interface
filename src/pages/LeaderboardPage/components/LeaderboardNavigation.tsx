@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import cx from "classnames";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
@@ -6,6 +7,7 @@ import { Link } from "react-router-dom";
 import { useLeaderboardPageKey } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { LeaderboardPageKey, LeaderboardTimeframe } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES, LEADERBOARD_PAGES_ORDER } from "domain/synthetics/leaderboard/constants";
+import { getTimeframeLabel } from "lib/dates";
 import { mustNeverExist } from "lib/types";
 
 import { BodyScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
@@ -54,18 +56,6 @@ function getLabel(pageKey: LeaderboardPageKey) {
     default:
       throw mustNeverExist(pageKey);
   }
-}
-
-function getTimeframeLabel(timeframe: LeaderboardTimeframe): string | null {
-  if (!timeframe.to) return null;
-
-  const fmt = new Intl.DateTimeFormat("en", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-
-  return fmt.formatRange(new Date(timeframe.from * 1000), new Date(timeframe.to * 1000));
 }
 
 export function LeaderboardNavigation() {
@@ -140,12 +130,13 @@ export function LeaderboardNavigation() {
 }
 
 function NavigationItem({ item }: { item: LeaderboardNavigationItem }) {
-  const timeframeLabel = getTimeframeLabel(item.timeframe);
+  const { i18n } = useLingui();
+  const timeframeLabel = getTimeframeLabel(item.timeframe, i18n.locale);
   return (
     <Link
       to={item.href}
       className={cx(
-        "text-h1 inline-flex items-center gap-8 whitespace-nowrap leading-[1] text-typography-secondary hover:text-typography-primary",
+        "text-h1 inline-flex items-center gap-8 whitespace-nowrap leading-1 text-typography-secondary hover:text-typography-primary",
         {
           "!text-typography-primary": item.isSelected,
           "border-l-1/2 border-l-slate-600 pl-18": item.key === "concluded",

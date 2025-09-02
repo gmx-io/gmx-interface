@@ -388,7 +388,7 @@ function AffiliatesStats({
                       </TableTd>
                       <TableTd data-label="Total Volume">
                         <Tooltip
-                          handle={`$ ${getUSDValue(stat.volume)}`}
+                          handle={`$\u200a${getUSDValue(stat.volume)}`}
                           handleClassName="numbers"
                           position="bottom-start"
                           className="whitespace-nowrap"

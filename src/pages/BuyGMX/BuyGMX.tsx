@@ -143,7 +143,6 @@ export default function BuyGMX() {
                         textAlign="left"
                         key={exchange.name}
                         to={link}
-                        // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
                         imgSrc={icon}
                         imgAlt={exchange.name}
                         newTab
