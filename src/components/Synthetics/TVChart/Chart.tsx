@@ -55,8 +55,8 @@ export function Chart() {
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
   return (
-    <div className="ExchangeChart tv flex h-[60rem] flex-col [@media(min-width:2560px)]:min-h-[780px] [@media(min-width:3840px)]:min-h-[1140px]">
-      <div className="flex grow flex-col overflow-hidden rounded-8 bg-slate-900 max-[1920px]:h-[53.6rem]">
+    <div className="ExchangeChart tv flex min-h-[600px] flex-col max-[1920px]:h-[min(536px,60vh)] max-lg:min-h-[536px] max-md:min-h-[360px] [@media(min-width:2560px)]:min-h-[780px] [@media(min-width:3840px)]:min-h-[1140px]">
+      <div className="flex grow flex-col overflow-hidden rounded-8 bg-slate-900">
         {isSwap ? (
           tab === "MARKET_GRAPH" ? (
             TAB_CONTENTS.MARKET_GRAPH

@@ -57,7 +57,7 @@ code {
 
 @supports (scrollbar-width: auto) {
   :root {
-    scrollbar-color: #a0a3c4 #121421;
+    scrollbar-color: var(--color-slate-500) var(--color-slate-900);
   }
 }
 
@@ -69,18 +69,13 @@ code {
 
   /* Track */
   ::-webkit-scrollbar-track {
-    background-color: #121421;
+    background-color: var(--color-slate-900);
   }
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background-color: #a0a3c4;
+    background-color: var(--color-slate-500);
     border-radius: 15px;
-  }
-
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: #b3b4c2;
   }
 }
 

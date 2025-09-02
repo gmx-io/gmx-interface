@@ -714,7 +714,7 @@ export function getDeltaStr({ delta, deltaPercentage, hasProfit }) {
     deltaStr = "";
     deltaPercentageStr = "";
   }
-  deltaStr += `$${formatAmount(delta, USD_DECIMALS, 2, true)}`;
+  deltaStr += `$\u200a${formatAmount(delta, USD_DECIMALS, 2, true)}`;
   deltaPercentageStr += `${formatAmount(deltaPercentage, 2, 2)}%`;
 
   return { deltaStr, deltaPercentageStr };

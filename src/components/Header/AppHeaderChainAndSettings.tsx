@@ -14,7 +14,7 @@ import {
   getChainName,
 } from "config/chains";
 import { isDevelopment } from "config/env";
-import { getChainIcon, getIcon } from "config/icons";
+import { getChainIcon } from "config/icons";
 import { IS_SOURCE_BASE_ALLOWED } from "config/multichain";
 import { useChainId } from "lib/chains";
 import { isHomeSite, shouldShowRedirectModal } from "lib/legacy";
@@ -63,7 +63,7 @@ export const NETWORK_OPTIONS: NetworkOption[] = [
   {
     label: getChainName(BOTANIX),
     value: BOTANIX,
-    icon: getIcon(BOTANIX, "network"),
+    icon: getChainIcon(BOTANIX),
     color: "#F7931A",
   },
 ];

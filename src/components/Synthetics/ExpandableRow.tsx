@@ -78,7 +78,7 @@ export function ExpandableRow({
   contentClassName,
   scrollIntoViewOnMobile = false,
   withToggleSwitch = false,
-  handleClassName = "text-typography-secondary",
+  handleClassName,
 }: Props) {
   const previousHasError = usePrevious(hasError);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -140,7 +140,7 @@ export function ExpandableRow({
             })}
             onClick={disabled ? undefined : handleOnClick}
             label={
-              <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">{label}</span>
+              <span className="flex flex-row justify-between align-middle group-hover:!text-blue-300">{label}</span>
             }
             value={value}
           />

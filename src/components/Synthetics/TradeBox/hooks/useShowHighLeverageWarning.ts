@@ -58,7 +58,7 @@ export function useShowHighLeverageWarning(): {
 
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
   const toTokenSymbol = toTokenAddress ? getToken(chainId, toTokenAddress).symbol : undefined;
-  const isMajorToken = toTokenSymbol ? IS_MAJOR_TOKEN_MAP[chainId].includes(toTokenSymbol) : false;
+  const isMajorToken = toTokenSymbol ? IS_MAJOR_TOKEN_MAP[chainId]?.includes(toTokenSymbol) : false;
   const isLeverageSliderEnabled = useSelector(selectIsLeverageSliderEnabled);
   const leverageSliderLeverage = useSelector(selectTradeboxLeverage);
   const amounts = useSelector(selectTradeboxIncreasePositionAmounts);

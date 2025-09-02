@@ -12,8 +12,8 @@ import { TwapDuration } from "sdk/types/twap";
 import { changeTwapNumberOfPartsValue } from "sdk/utils/twap";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
-import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
+import { ValueInput } from "components/ValueInput/ValueInput";
 
 import { LOCALE_DATE_LOCALE_MAP } from "../DateRangeSelect/DateRangeSelect";
 import { useTradeboxChanges } from "../TradeBox/hooks/useTradeboxChanges";
@@ -90,6 +90,7 @@ const TwapRows = ({
             value={numberOfParts}
             onChange={(value) => setNumberOfParts(value)}
             onBlur={() => setNumberOfParts(changeTwapNumberOfPartsValue(numberOfParts))}
+            className="w-[112px]"
           />
         </div>
       </SyntheticsInfoRow>
@@ -160,45 +161,15 @@ const DurationField = ({
         label={t`Hour(s)`}
         value={duration.hours}
         onChange={(value) => setDuration({ ...duration, hours: value })}
+        className="w-[112px]"
       />
       <ValueInput
         label={t`Minute(s)`}
         value={duration.minutes}
         onChange={(value) => setDuration({ ...duration, minutes: value })}
+        className="w-[112px]"
       />
     </div>
-  );
-};
-
-export const ValueInput = ({
-  value,
-  onChange,
-  label,
-  onBlur,
-}: {
-  value: number;
-  onChange: (value: number) => void;
-  onBlur?: () => void;
-  label?: string;
-}) => {
-  const onValueChange = (value: string) => {
-    const parsedValue = parseInt(value);
-
-    if (isNaN(parsedValue)) {
-      onChange(0);
-    } else {
-      onChange(parsedValue);
-    }
-  };
-
-  return (
-    <SuggestionInput
-      label={label}
-      className="w-[112px]"
-      value={value.toString()}
-      setValue={onValueChange}
-      onBlur={onBlur}
-    />
   );
 };
 

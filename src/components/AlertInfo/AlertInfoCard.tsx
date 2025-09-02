@@ -13,9 +13,10 @@ type Props = {
   children: ReactNode;
   className?: string;
   onClose?: () => void;
+  hideClose?: boolean;
 };
 
-export function AlertInfoCard({ children, type = "info", onClose, className }: Props) {
+export function AlertInfoCard({ children, type = "info", onClose, className, hideClose }: Props) {
   const [closed, setClosed] = useState(false);
   const Icon = type === "warning" ? WarnIconComponent : InfoIconComponent;
 
@@ -35,7 +36,7 @@ export function AlertInfoCard({ children, type = "info", onClose, className }: P
       className={className}
       color={type === "info" ? "blue" : type === "warning" ? "yellow" : "red"}
       icon={Icon}
-      onClose={handleClose}
+      onClose={hideClose ? undefined : handleClose}
     >
       {children}
     </ColorfulBanner>

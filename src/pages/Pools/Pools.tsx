@@ -124,7 +124,7 @@ function PoolsTvl() {
   const tvl = v2Stats?.totalGMLiquidity;
 
   return (
-    <div className="flex flex-col gap-14">
+    <div className="flex flex-col gap-8">
       <span className="text-h1 normal-nums">{formatUsd(tvl, { displayDecimals: 0 })}</span>
       <span className="text-body-medium font-medium text-typography-secondary">TVL in vaults and pools.</span>
     </div>

@@ -57,18 +57,18 @@
   font-family: "TTHoves";
   font-style: normal;
   font-weight: 400;
-  src: url("fonts/tthoves/tt-hoves-pro-trial-regular.ttf");
+  src: url("fonts/tthoves/tthoves-pro-regular.ttf");
   src:
     local(""),
-    url("fonts/tthoves/tt-hoves-pro-trial-regular.ttf") format("truetype");
+    url("fonts/tthoves/tthoves-pro-regular.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "TTHoves";
   font-style: normal;
   font-weight: 500;
-  src: url("fonts/tthoves/tt-hoves-pro-trial-medium.ttf");
+  src: url("fonts/tthoves/tthoves-pro-medium.ttf");
   src:
     local(""),
-    url("fonts/tthoves/tt-hoves-pro-trial-medium.ttf") format("truetype");
+    url("fonts/tthoves/tthoves-pro-medium.ttf") format("truetype");
 }

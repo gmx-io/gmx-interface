@@ -263,7 +263,7 @@ export function SyntheticsStats() {
                   return (
                     <div className="cell">
                       <TooltipWithPortal
-                        handle={`$${formatAmountHuman(market.poolValueMax, 30)}`}
+                        handle={`$\u200a${formatAmountHuman(market.poolValueMax, 30)}`}
                         renderContent={() => (
                           <>
                             <StatsTooltipRow label="Pool USD Long" value={formatAmount(longPoolUsd, 30, 2, true)} />
@@ -326,7 +326,7 @@ export function SyntheticsStats() {
                     <div className="cell">
                       <div>
                         <TooltipWithPortal
-                          handle={`$${formatAmountHuman(longPoolUsd, 30)} / $${formatAmountHuman(shortPoolUsd, 30)}`}
+                          handle={`$\u200a${formatAmountHuman(longPoolUsd, 30)} / $\u200a${formatAmountHuman(shortPoolUsd, 30)}`}
                           renderContent={() => {
                             return (
                               <>
@@ -625,7 +625,7 @@ export function SyntheticsStats() {
                     <div className="cell">
                       <div>
                         <TooltipWithPortal
-                          handle={`$${formatAmountHuman(market.longInterestUsd, 30)} / $${formatAmountHuman(
+                          handle={`$\u200a${formatAmountHuman(market.longInterestUsd, 30)} / $\u200a${formatAmountHuman(
                             market.shortInterestUsd,
                             30
                           )}`}
@@ -798,7 +798,7 @@ export function SyntheticsStats() {
                   return (
                     <div className="cell">
                       <TooltipWithPortal
-                        handle={`$${formatAmount(positionImpactUsd, 30, 2, true)}`}
+                        handle={`$\u200a${formatAmount(positionImpactUsd, 30, 2, true)}`}
                         position="bottom-end"
                         renderContent={() => (
                           <>

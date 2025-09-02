@@ -263,7 +263,9 @@ export function Curtain({
           </div>
 
           <div
-            className="mt-1 flex grow flex-col overflow-y-auto bg-slate-900"
+            className={cx("flex grow flex-col overflow-y-auto bg-slate-900", {
+              "mt-1": !isOpen,
+            })}
             ref={scrollableContainerRef}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}

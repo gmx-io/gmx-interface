@@ -490,6 +490,8 @@ $app-card-padding: 1.5rem;
 .Toastify__toast {
   min-height: 4.65rem;
   cursor: default;
+  backdrop-filter: blur(100px) !important;
+  box-shadow: 0px 8px 40px -8px #090a1466 !important;
 }
 
 .Toastify__toast-body {

@@ -37,7 +37,7 @@ export function GasPaymentTokenSelector({ currentTokenAddress, onSelectToken }: 
       desktopPanelClassName="!z-[10000] w-[360px] !top-[10px]"
       label={
         <div className="flex w-full justify-between">
-          <div>
+          <div className="font-medium">
             <Trans>Gas Payment Token</Trans>
           </div>
           {currentToken && (

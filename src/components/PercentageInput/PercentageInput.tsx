@@ -1,3 +1,4 @@
+import cx from "classnames";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useLatest } from "react-use";
 
@@ -122,7 +123,7 @@ export default function PercentageInput({
       position={tooltipPosition}
     >
       <SuggestionInput
-        className="w-80"
+        className={cx("w-80", { "!border-yellow-500": !!error })}
         label={negativeSign ? "-" : undefined}
         value={inputValue}
         setValue={handleChange}
@@ -131,6 +132,7 @@ export default function PercentageInput({
         symbol="%"
         onPanelVisibleChange={setIsPanelVisible}
         inputId={inputId}
+        isError={!!error}
       />
     </TooltipWithPortal>
   );
