@@ -27,5 +27,5 @@
     }
   },
   "references": [{ "path": "./sdk" }],
-  "include": ["src", "scripts", "sdk/src/utils/trade/decrease.ts"]
+  "include": ["src", "scripts"]
 }
