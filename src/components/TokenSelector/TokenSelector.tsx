@@ -16,6 +16,7 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
+import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
@@ -200,13 +201,9 @@ export default function TokenSelector(props: Props) {
         setIsVisible={setIsModalVisible}
         label={props.label}
         footerContent={footerContent}
+        contentPadding={false}
         headerContent={
-          <SearchInput
-            className="*:!text-body-medium"
-            value={searchKeyword}
-            setValue={setSearchKeyword}
-            onKeyDown={_handleKeyDown}
-          />
+          <SearchInput className="mb-16" value={searchKeyword} setValue={setSearchKeyword} onKeyDown={_handleKeyDown} />
         }
       >
         {missedCoinsPlace && (
@@ -217,7 +214,7 @@ export default function TokenSelector(props: Props) {
             isLoaded={Boolean(visibleTokens.length)}
           />
         )}
-        <div className="flex flex-col gap-8 overflow-y-auto">
+        <VerticalScrollFadeContainer className="flex grow flex-col gap-8 overflow-y-auto">
           {sortedFilteredTokens.map((token, tokenIndex) => {
             let info = infoTokens?.[token.address] || ({} as TokenInfo);
 
@@ -239,7 +236,7 @@ export default function TokenSelector(props: Props) {
                 key={token.address}
                 data-qa={`${qa}-token-${token.symbol}`}
                 className={cx(
-                  "text-body-medium flex w-full cursor-pointer items-center justify-between px-20 py-8 hover:bg-slate-800",
+                  "px-adaptive text-body-medium flex w-full cursor-pointer items-center justify-between py-8 hover:bg-slate-800",
                   { disabled: tokenState.disabled }
                 )}
                 onClick={() => !tokenState.disabled && onSelectToken(token)}
@@ -266,7 +263,7 @@ export default function TokenSelector(props: Props) {
                     {marketToken && <span className="text-accent">[{getMarketPoolName(marketToken)}]</span>}
                   </div>
                 </div>
-                <div className="text-body-large flex flex-col items-end gap-4">
+                <div className="text-body-large flex flex-col items-end gap-2">
                   {(showBalances && balance !== undefined && (
                     <div>
                       {balance > 0 &&
@@ -284,12 +281,12 @@ export default function TokenSelector(props: Props) {
               </div>
             );
           })}
-        </div>
-        {sortedFilteredTokens.length === 0 && (
-          <div className="p-20 text-16 text-typography-secondary">
-            <Trans>No tokens matched.</Trans>
-          </div>
-        )}
+          {sortedFilteredTokens.length === 0 && (
+            <div className="p-adaptive text-16 text-typography-secondary">
+              <Trans>No tokens matched.</Trans>
+            </div>
+          )}
+        </VerticalScrollFadeContainer>
       </SlideModal>
       <div
         data-qa={qa}

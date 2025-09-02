@@ -24,6 +24,7 @@ import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
 import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import { PoolListItem } from "./PoolListItem";
@@ -206,13 +207,14 @@ export function GmPoolsSelectorForGlvMarket({
         setIsVisible={setIsModalVisible}
         label={label}
         className="TokenSelector-modal"
+        contentPadding={false}
         headerContent={
-          <div className="mt-16">
+          <div className="pb-12">
             <SearchInput
-              className="mb-8 *:!text-body-medium"
+              className="mb-8"
               value={searchKeyword}
               setValue={setSearchKeyword}
-              placeholder={t`Search Pool`}
+              placeholder={t`Search Pool 1`}
               onKeyDown={handleKeyDown}
             />
             <ButtonRowScrollFadeContainer>
@@ -221,7 +223,7 @@ export function GmPoolsSelectorForGlvMarket({
           </div>
         }
       >
-        <div className="flex flex-col gap-8">
+        <VerticalScrollFadeContainer className="flex flex-col gap-8">
           {filteredOptions.map((option, marketIndex) => (
             <PoolListItem
               key={getGlvOrMarketAddress(option.glvOrMarketInfo)}
@@ -235,12 +237,12 @@ export function GmPoolsSelectorForGlvMarket({
               onSelectOption={onSelectGmPool}
             />
           ))}
-        </div>
-        {filteredOptions.length === 0 && (
-          <div className="text-body-medium text-typography-secondary">
-            <Trans>No pools matched.</Trans>
-          </div>
-        )}
+          {filteredOptions.length === 0 && (
+            <div className="px-adaptive text-body-medium text-typography-secondary">
+              <Trans>No pools matched.</Trans>
+            </div>
+          )}
+        </VerticalScrollFadeContainer>
       </SlideModal>
 
       {marketInfo && (

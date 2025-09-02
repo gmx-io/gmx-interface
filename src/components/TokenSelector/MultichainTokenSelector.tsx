@@ -16,6 +16,7 @@ import { getToken } from "sdk/configs/tokens";
 import Button from "components/Button/Button";
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
+import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import "./TokenSelector.scss";
@@ -328,12 +329,12 @@ function AvailableToTradeTokenList({
   }, [searchKeyword, tokensData, srcChainId, extendedSortSequence]);
 
   return (
-    <div>
+    <VerticalScrollFadeContainer>
       {sortedFilteredTokens.map((token) => {
         return (
           <div
             key={token.address + "_" + (token.isGmxAccount ? "gmx" : "settlement")}
-            className="flex cursor-pointer items-center justify-between px-20 py-8 gmx-hover:bg-fill-surfaceElevated50"
+            className="px-adaptive flex cursor-pointer items-center justify-between py-8 gmx-hover:bg-fill-surfaceElevated50"
             onClick={() => onSelectTokenAddress(token.address, token.isGmxAccount)}
           >
             <div className="flex items-center gap-8">
@@ -366,7 +367,7 @@ function AvailableToTradeTokenList({
           </div>
         );
       })}
-    </div>
+    </VerticalScrollFadeContainer>
   );
 }
 
@@ -455,7 +456,7 @@ function MultichainTokenList({
         return (
           <div
             key={token.address + "_" + token.sourceChainId}
-            className="group flex cursor-pointer items-center justify-between px-20 py-8 gmx-hover:bg-fill-surfaceElevated50"
+            className="px-adaptive group flex cursor-pointer items-center justify-between py-8 gmx-hover:bg-fill-surfaceElevated50"
             onClick={() => onDepositTokenAddress(token.address, token.sourceChainId)}
           >
             <div className="flex items-center gap-8">
