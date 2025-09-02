@@ -1,8 +1,9 @@
-import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
-import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { ErrorData } from "lib/errors";
-import { TradeMode } from "sdk/types/trade";
-import { TwapDuration } from "sdk/types/twap";
+import type { SourceChainId } from "config/chains";
+import type { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+import type { ErrorData } from "lib/errors";
+import type { TradeMode } from "sdk/types/trade";
+import type { TwapDuration } from "sdk/types/twap";
 
 export type GlobalMetricData = {
   isMobileMetamask: boolean;
@@ -54,7 +55,9 @@ export type OrderMetricType =
   | EditCollateralMetricData["metricType"]
   | SwapGmMetricData["metricType"]
   | SwapGLVMetricData["metricType"]
-  | ShiftGmMetricData["metricType"];
+  | ShiftGmMetricData["metricType"]
+  | MultichainDepositMetricData["metricType"]
+  | MultichainWithdrawalMetricData["metricType"];
 
 export type OrderEventName = `${OrderMetricType}.${OrderStage}`;
 export type MeasureEventName = `${MeasureMetricType}.${LoadingStage}`;
@@ -68,7 +71,9 @@ export type OrderMetricData =
   | EditCollateralMetricData
   | SwapGmMetricData
   | SwapGLVMetricData
-  | ShiftGmMetricData;
+  | ShiftGmMetricData
+  | MultichainDepositMetricData
+  | MultichainWithdrawalMetricData;
 
 // General metrics
 export type OpenAppEvent = {
@@ -104,6 +109,22 @@ export type WsProviderHealthCheckFailed = {
   data: {
     requiredListenerCount: number;
     listenerCount: number;
+  };
+};
+
+export type WsSourceChainProviderConnected = {
+  event: "wsSourceChainProvider.connected";
+  isError: false;
+  data: {
+    chainId: SourceChainId;
+  };
+};
+
+export type WsSourceChainProviderDisconnected = {
+  event: "wsSourceChainProvider.disconnected";
+  isError: false;
+  data: {
+    chainId: SourceChainId;
   };
 };
 
@@ -303,6 +324,8 @@ export type SwapMetricData = {
   partsCount: number | undefined;
   tradeMode: TradeMode | undefined;
   expressData: ExpressOrderMetricData | undefined;
+  chainId: number;
+  isCollateralFromMultichain: boolean;
 };
 
 export type IncreaseOrderMetricData = PositionOrderMetricParams & {
@@ -365,6 +388,8 @@ export type PositionOrderMetricParams = {
   partsCount: number | undefined;
   tradeMode: TradeMode | undefined;
   expressData: ExpressOrderMetricData | undefined;
+  chainId: number;
+  isCollateralFromMultichain: boolean;
 };
 
 export type EditCollateralMetricData = {
@@ -384,6 +409,8 @@ export type EditCollateralMetricData = {
   orderType: OrderType | undefined;
   executionFee: number | undefined;
   expressData: ExpressOrderMetricData | undefined;
+  chainId: number;
+  isCollateralFromMultichain: boolean;
 };
 
 export type SwapGmMetricData = {
@@ -519,4 +546,35 @@ export type GetFeeDataBlockError = {
 
 export type SetAutoCloseOrdersAction = {
   event: "announcement.autoCloseOrders.updateExistingOrders";
+};
+
+type MultichainFundingParams = {
+  sourceChain: number;
+  settlementChain: number;
+  assetSymbol: string;
+  sizeInUsd: number;
+};
+
+export type MultichainDepositMetricData = MultichainFundingParams & {
+  metricId: `multichainDeposit:${string}`;
+  metricType: "multichainDeposit";
+  isFirstDeposit: boolean;
+};
+
+export type MultichainWithdrawalMetricData = MultichainFundingParams & {
+  metricId: `multichainWithdrawal:${string}`;
+  metricType: "multichainWithdrawal";
+  isFirstWithdrawal: boolean;
+};
+
+export type MultichainDepositEvent = {
+  event: "multichainDeposit";
+  isError: false;
+  data: MultichainDepositMetricData;
+};
+
+export type MultichainWithdrawalEvent = {
+  event: "multichainWithdrawal";
+  isError: false;
+  data: MultichainWithdrawalMetricData;
 };

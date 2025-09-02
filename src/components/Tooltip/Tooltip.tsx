@@ -51,6 +51,7 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
   handleClassName?: string;
   handleStyle?: React.CSSProperties;
   tooltipClassName?: string;
+  contentClassName?: string;
   /**
    * Disables interactions with the handle. Does not prevent the tooltip content from showing.
    */
@@ -70,6 +71,7 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
   as?: T;
   withPortal?: boolean;
   shouldStopPropagation?: boolean;
+  shouldPreventDefault?: boolean;
   fitHandleWidth?: boolean;
   closeOnDoubleClick?: boolean;
 
@@ -90,6 +92,7 @@ export default function Tooltip<T extends ElementType>({
   handleClassName,
   handleStyle,
   tooltipClassName,
+  contentClassName,
   isHandlerDisabled,
   disabled,
   openDelay = TOOLTIP_OPEN_DELAY,
@@ -98,6 +101,7 @@ export default function Tooltip<T extends ElementType>({
   as,
   withPortal,
   shouldStopPropagation,
+  shouldPreventDefault = true,
   fitHandleWidth,
   closeOnDoubleClick,
   variant = "underline",
@@ -170,12 +174,14 @@ export default function Tooltip<T extends ElementType>({
 
   const preventClick = useCallback(
     (event: MouseEvent) => {
-      event.preventDefault();
+      if (shouldPreventDefault) {
+        event.preventDefault();
+      }
       if (shouldStopPropagation) {
         event.stopPropagation();
       }
     },
-    [shouldStopPropagation]
+    [shouldPreventDefault, shouldStopPropagation]
   );
 
   useEffect(
@@ -244,7 +250,7 @@ export default function Tooltip<T extends ElementType>({
           },
         })}
       >
-        <div className="flex items-center gap-2">
+        <div className={cx("flex items-center gap-2", contentClassName)}>
           {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
           {isHandlerDisabled ? (
             <div className="pointer-events-none w-full flex-none [text-decoration:inherit]">{handle ?? children}</div>

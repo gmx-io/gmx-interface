@@ -63,7 +63,7 @@ export type Order = {
   orderType: OrderType;
   shouldUnwrapNativeToken: boolean;
   autoCancel: boolean;
-  data: string;
+  data: string[];
   uiFeeReceiver: string;
   validFromTime: bigint;
   title?: string;

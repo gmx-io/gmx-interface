@@ -187,16 +187,6 @@ $app-card-padding: 1.5rem;
   margin-right: 0.8rem;
 }
 
-.App-header-user-address {
-  border: 0.5px solid var(--color-slate-600);
-  height: 3.6rem;
-  border-radius: 0.4rem;
-  display: inline-flex;
-  align-items: center;
-  color: var(--color-typography-primary);
-  position: relative;
-}
-
 .mobile-menu-divider {
   height: 1px;
   background: var(--color-slate-100);
@@ -500,6 +490,8 @@ $app-card-padding: 1.5rem;
 .Toastify__toast {
   min-height: 4.65rem;
   cursor: default;
+  backdrop-filter: blur(100px) !important;
+  box-shadow: 0px 8px 40px -8px #090a1466 !important;
 }
 
 .Toastify__toast-body {
@@ -678,11 +670,6 @@ button.App-button-option:active:enabled {
 
 button.App-button-option:disabled {
   cursor: not-allowed;
-}
-
-.App-header-container-right {
-  display: flex;
-  align-items: center;
 }
 
 .App-header-user {
@@ -1015,9 +1002,6 @@ button.App-button {
   .long-connect-btn {
     display: none !important;
   }
-  .App-header-user-address {
-    padding: 0 0px;
-  }
 
   .short-connect-btn {
     display: flex !important;
@@ -1038,11 +1022,6 @@ button.App-button {
 
   .App-header-user {
     padding-bottom: 0;
-  }
-
-  .App-header-container-right {
-    display: flex;
-    align-items: center;
   }
 
   .App-header-link-desktop {

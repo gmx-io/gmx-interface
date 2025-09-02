@@ -1,23 +1,31 @@
 import { useMemo } from "react";
 import useSWR from "swr";
+import { zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT, getVestingData } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
+import type { ContractName } from "sdk/configs/contracts";
 
 export default function useVestingData(account?: string) {
   const { active } = useWallet();
   const { chainId } = useChainId();
 
   const readerAddress = getContract(chainId, "Reader");
-  const vesterAddresses = ["GmxVester", "GlpVester", "AffiliateVester"]
+  const vesterAddresses = (["GmxVester", "GlpVester", "AffiliateVester"] satisfies ContractName[])
     .map((contractName) => getContract(chainId, contractName))
     .filter(Boolean);
 
   const { data: vestingInfo } = useSWR(
-    [`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account ?? PLACEHOLDER_ACCOUNT],
+    readerAddress !== zeroAddress && [
+      `StakeV2:vestingInfo:${active}`,
+      chainId,
+      readerAddress,
+      "getVestingInfo",
+      account ?? PLACEHOLDER_ACCOUNT,
+    ],
     {
       fetcher: contractFetcher(undefined, "ReaderV2", [vesterAddresses.filter(Boolean)]),
     }

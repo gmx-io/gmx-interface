@@ -11,9 +11,9 @@ import {
 } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { CompetitionType, LeaderboardAccount, RemoteData } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
+import { useDebounce } from "lib/debounce/useDebounce";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatUsd } from "lib/numbers";
-import { useDebounce } from "lib/useDebounce";
 
 import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";

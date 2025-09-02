@@ -192,7 +192,7 @@ export default function TokenSelector(props: Props) {
   }
 
   return (
-    <div className={cx("TokenSelector text-body-large", props.className)} onClick={(event) => event.stopPropagation()}>
+    <div className={cx("TokenSelector", props.className)} onClick={(event) => event.stopPropagation()}>
       <SlideModal
         qa={qa + "-modal"}
         className="TokenSelector-modal text-typography-primary"
@@ -259,7 +259,7 @@ export default function TokenSelector(props: Props) {
                   {showTokenImgInDropdown && (
                     <TokenIcon symbol={token.symbol} displaySize={40} importSize={40} badge={tokenBadge} />
                   )}
-                  <div className="items text-body-large ml-16 flex gap-4">
+                  <div className="items ml-16 flex gap-4">
                     <div>
                       {token.isMarketToken && marketToken ? `GM: ${getMarketIndexName(marketToken)}` : token.symbol}
                     </div>

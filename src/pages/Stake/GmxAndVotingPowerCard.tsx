@@ -250,7 +250,7 @@ export function GmxAndVotingPowerCard({
           </div>
           <div>
             <Tooltip
-              handle={`$${formatKeyAmount(processedData, "totalStakingRewardsUsd", USD_DECIMALS, 2, true)}`}
+              handle={`$\u200a${formatKeyAmount(processedData, "totalStakingRewardsUsd", USD_DECIMALS, 2, true)}`}
               handleClassName="numbers"
               position="bottom-end"
               content={

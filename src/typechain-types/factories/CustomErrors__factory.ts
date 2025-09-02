@@ -117,6 +117,11 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [],
+    name: "BridgeOutNotSupportedDuringShift",
+    type: "error",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -212,6 +217,11 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [],
+    name: "DataListLengthExceeded",
+    type: "error",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -275,6 +285,17 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "existingDistributionId",
+        type: "uint256",
+      },
+    ],
+    name: "DuplicateClaimTerms",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "index",
         type: "uint256",
       },
@@ -296,6 +317,17 @@ const _abi = [
       },
     ],
     name: "DuplicatedMarketInSwapPath",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "EdgeDataStreamIdAlreadyExistsForToken",
     type: "error",
   },
   {
@@ -321,7 +353,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "EmptyChainlinkPaymentToken",
+    name: "EmptyAmount",
     type: "error",
   },
   {
@@ -359,6 +391,17 @@ const _abi = [
         type: "address",
       },
     ],
+    name: "EmptyClaimableAmount",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
     name: "EmptyDataStreamFeedId",
     type: "error",
   },
@@ -386,6 +429,11 @@ const _abi = [
   {
     inputs: [],
     name: "EmptyDepositAmountsAfterSwap",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "EmptyFundingAccount",
     type: "error",
   },
   {
@@ -456,6 +504,38 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "EmptyMultichainTransferInAmount",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "EmptyMultichainTransferOutAmount",
+    type: "error",
+  },
+  {
     inputs: [],
     name: "EmptyOrder",
     type: "error",
@@ -463,6 +543,11 @@ const _abi = [
   {
     inputs: [],
     name: "EmptyPosition",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "EmptyPositionImpactWithdrawalAmount",
     type: "error",
   },
   {
@@ -483,6 +568,11 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "EmptyReduceLentAmount",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "EmptyRelayFeeAddress",
     type: "error",
   },
@@ -499,6 +589,16 @@ const _abi = [
   {
     inputs: [],
     name: "EmptySizeDeltaInTokens",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "EmptyTarget",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "EmptyToken",
     type: "error",
   },
   {
@@ -530,6 +630,17 @@ const _abi = [
   {
     inputs: [],
     name: "EndOfOracleSimulation",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "key",
+        type: "string",
+      },
+    ],
+    name: "EventItemNotFound",
     type: "error",
   },
   {
@@ -1136,6 +1247,33 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "feeProvided",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "feeRequired",
+        type: "uint256",
+      },
+    ],
+    name: "InsufficientFee",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "InsufficientFunds",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "remainingCostUsd",
         type: "uint256",
       },
@@ -1161,7 +1299,39 @@ const _abi = [
         type: "uint256",
       },
     ],
+    name: "InsufficientGasForAutoCancellation",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "gas",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "minHandleExecutionErrorGas",
+        type: "uint256",
+      },
+    ],
     name: "InsufficientGasForCancellation",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "gas",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "estimatedGasLimit",
+        type: "uint256",
+      },
+    ],
+    name: "InsufficientGasLeft",
     type: "error",
   },
   {
@@ -1200,6 +1370,27 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "withdrawalAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "poolValue",
+        type: "uint256",
+      },
+      {
+        internalType: "int256",
+        name: "totalPendingImpactAmount",
+        type: "int256",
+      },
+    ],
+    name: "InsufficientImpactPoolValueForWithdrawal",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "balance",
         type: "uint256",
       },
@@ -1210,6 +1401,32 @@ const _abi = [
       },
     ],
     name: "InsufficientMarketTokens",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "balance",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "InsufficientMultichainBalance",
     type: "error",
   },
   {
@@ -1321,22 +1538,6 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "InsufficientWntAmount",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "wntAmount",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "executionFee",
-        type: "uint256",
-      },
-    ],
     name: "InsufficientWntAmountForExecutionFee",
     type: "error",
   },
@@ -1397,6 +1598,17 @@ const _abi = [
       },
     ],
     name: "InvalidBlockRangeSet",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "InvalidBridgeOutToken",
     type: "error",
   },
   {
@@ -1482,6 +1694,33 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "recoveredSigner",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "expectedSigner",
+        type: "address",
+      },
+    ],
+    name: "InvalidClaimTermsSignature",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "expectedSigner",
+        type: "address",
+      },
+    ],
+    name: "InvalidClaimTermsSignatureForContract",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "marketsLength",
         type: "uint256",
@@ -1504,6 +1743,17 @@ const _abi = [
       },
     ],
     name: "InvalidClaimableFactor",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidClaimableReductionFactor",
     type: "error",
   },
   {
@@ -1637,6 +1887,97 @@ const _abi = [
       },
     ],
     name: "InvalidDecreasePositionSwapType",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "desChainId",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidDestinationChainId",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "bid",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "ask",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidEdgeDataStreamBidAsk",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "int256",
+        name: "expo",
+        type: "int256",
+      },
+    ],
+    name: "InvalidEdgeDataStreamExpo",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "bid",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "ask",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidEdgeDataStreamPrices",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "recoverError",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidEdgeSignature",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "InvalidEdgeSigner",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "eid",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidEid",
     type: "error",
   },
   {
@@ -1895,6 +2236,22 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "InvalidHoldingAddress",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "InvalidInitializer",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "keeper",
         type: "address",
       },
@@ -2037,6 +2394,28 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "endpoint",
+        type: "address",
+      },
+    ],
+    name: "InvalidMultichainEndpoint",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "provider",
+        type: "address",
+      },
+    ],
+    name: "InvalidMultichainProvider",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "msgSender",
         type: "address",
       },
@@ -2107,7 +2486,7 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "receiver",
+        name: "signer",
         type: "address",
       },
     ],
@@ -2159,6 +2538,17 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "string",
+        name: "reason",
+        type: "string",
+      },
+    ],
+    name: "InvalidParams",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "spender",
         type: "address",
@@ -2192,6 +2582,22 @@ const _abi = [
       },
     ],
     name: "InvalidPoolValueForWithdrawal",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "distributionAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "positionImpactPoolAmount",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidPositionImpactPoolDistributionRate",
     type: "error",
   },
   {
@@ -2299,6 +2705,32 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "string",
+        name: "signatureType",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "recovered",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "recoveredFromMinified",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "expectedSigner",
+        type: "address",
+      },
+    ],
+    name: "InvalidRecoveredSigner",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "tokensLength",
         type: "uint256",
@@ -2353,6 +2785,28 @@ const _abi = [
       },
     ],
     name: "InvalidSizeDeltaForAdl",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "srcChainId",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidSrcChainId",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "desChainId",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidSubaccountApprovalDesChainId",
     type: "error",
   },
   {
@@ -2434,6 +2888,17 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "InvalidToken",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "tokenIn",
         type: "address",
       },
@@ -2444,6 +2909,16 @@ const _abi = [
       },
     ],
     name: "InvalidTokenIn",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "InvalidTransferRequestsLength",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "InvalidTrustedSignerAddress",
     type: "error",
   },
   {
@@ -2465,17 +2940,12 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "storedUserNonce",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "userNonce",
-        type: "uint256",
+        internalType: "bytes32",
+        name: "digest",
+        type: "bytes32",
       },
     ],
-    name: "InvalidUserNonce",
+    name: "InvalidUserDigest",
     type: "error",
   },
   {
@@ -2631,6 +3101,22 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "dataLength",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "maxDataLength",
+        type: "uint256",
+      },
+    ],
+    name: "MaxDataListLengthExceeded",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "maxFundingFactorPerSecond",
         type: "uint256",
       },
@@ -2641,6 +3127,27 @@ const _abi = [
       },
     ],
     name: "MaxFundingFactorPerSecondLimitExceeded",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "poolUsd",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "maxLendableUsd",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "lentUsd",
+        type: "uint256",
+      },
+    ],
+    name: "MaxLendableFactorForWithdrawalsExceeded",
     type: "error",
   },
   {
@@ -3027,7 +3534,17 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [],
+    name: "OraclePriceOutdated",
+    type: "error",
+  },
+  {
     inputs: [
+      {
+        internalType: "address",
+        name: "oracle",
+        type: "address",
+      },
       {
         internalType: "address",
         name: "token",
@@ -3035,6 +3552,22 @@ const _abi = [
       },
     ],
     name: "OracleProviderAlreadyExistsForToken",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "provider",
+        type: "address",
+      },
+    ],
+    name: "OracleProviderMinChangeDelayNotYetPassed",
     type: "error",
   },
   {
@@ -3281,6 +3814,22 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "lentAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "totalReductionAmount",
+        type: "uint256",
+      },
+    ],
+    name: "ReductionExceedsLentAmount",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "calldataLength",
         type: "uint256",
       },
@@ -3440,6 +3989,17 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "bytes32",
+        name: "integrationId",
+        type: "bytes32",
+      },
+    ],
+    name: "SubaccountIntegrationIdDisabled",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "account",
         type: "address",
@@ -3566,6 +4126,11 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [],
+    name: "TokenPermitsNotAllowedForMultichain",
+    type: "error",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -3637,6 +4202,16 @@ const _abi = [
       },
     ],
     name: "UnableToGetOppositeToken",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "UnableToPayOrderFee",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "UnableToPayOrderFeeFromCollateral",
     type: "error",
   },
   {
@@ -3771,6 +4346,17 @@ const _abi = [
       },
     ],
     name: "UnsupportedOrderType",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "orderType",
+        type: "uint256",
+      },
+    ],
+    name: "UnsupportedOrderTypeForAutoCancellation",
     type: "error",
   },
   {

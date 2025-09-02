@@ -694,7 +694,7 @@ export default function ConfirmationBox(props) {
                 </div>
               )}
               {nextAveragePrice &&
-                `$${formatAmount(nextAveragePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}`}
+                `$\u200a${formatAmount(nextAveragePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}`}
               {!nextAveragePrice && `-`}
             </ExchangeInfoRow>
           )}
@@ -717,13 +717,13 @@ export default function ConfirmationBox(props) {
             )}
             {toAmount &&
               displayLiquidationPrice &&
-              `$${formatAmount(displayLiquidationPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
+              `$\u200a${formatAmount(displayLiquidationPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
             {!toAmount && displayLiquidationPrice && `-`}
             {!displayLiquidationPrice && `-`}
           </ExchangeInfoRow>
           <ExchangeInfoRow label={t`Collateral (${collateralToken.symbol})`} isTop>
             <Tooltip
-              handle={`$${formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}`}
+              handle={`$\u200a${formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}`}
               position="top-end"
               renderContent={() => {
                 return (

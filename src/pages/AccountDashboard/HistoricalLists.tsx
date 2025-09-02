@@ -21,6 +21,7 @@ import {
   AccountPositionsV1,
   usePositionsV1,
 } from "pages/Actions/ActionsV1/ActionsV1";
+import type { ContractsChainId } from "sdk/configs/chains";
 
 import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import { ClaimsHistory } from "components/Synthetics/Claims/ClaimsHistory";
@@ -44,7 +45,7 @@ enum TabKeyV1 {
 }
 
 type Props = {
-  chainId: number;
+  chainId: ContractsChainId;
   account: Address;
 };
 
@@ -75,7 +76,7 @@ function OrdersTabTitle({
   return (
     <div className="flex items-center gap-8">
       <Trans>Orders</Trans>
-      <Badge value={ordersCount} indicator={indicator} />
+      <Badge indicator={indicator}>{ordersCount}</Badge>
     </div>
   );
 }
@@ -89,7 +90,7 @@ function useTabLabels(): Record<TabKey, React.ReactNode> {
     () => ({
       [TabKey.Positions]: (
         <div className="flex items-center gap-8">
-          <Trans>Positions</Trans> <Badge value={positionsCount} />
+          <Trans>Positions</Trans> <Badge>{positionsCount}</Badge>
         </div>
       ),
       [TabKey.Orders]: (
@@ -109,7 +110,7 @@ function useTabLabels(): Record<TabKey, React.ReactNode> {
 }
 
 function useTabLabelsV1(
-  chainId: number,
+  chainId: ContractsChainId,
   account: Address,
   signer: ethers.JsonRpcSigner | undefined,
   active: boolean

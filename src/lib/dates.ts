@@ -1,4 +1,5 @@
-import { format as formatDateFn, set as setTime } from "date-fns";
+import { t } from "@lingui/macro";
+import { format as formatDateFn, isToday, isYesterday, set as setTime } from "date-fns";
 import { useMemo, useState } from "react";
 
 export function formatDateTime(time: number) {
@@ -7,6 +8,22 @@ export function formatDateTime(time: number) {
 
 export function formatDate(time: number) {
   return formatDateFn(time * 1000, "dd MMM yyyy");
+}
+
+export function formatDateWithComma(time: number) {
+  return formatDateFn(time * 1000, "MMM dd, yyyy");
+}
+
+export function formatRelativeDateWithComma(time: number) {
+  if (isToday(time * 1000)) {
+    return t`Today`;
+  }
+
+  if (isYesterday(time * 1000)) {
+    return t`Yesterday`;
+  }
+
+  return formatDateWithComma(time);
 }
 
 export function formatTVDate(date: Date) {

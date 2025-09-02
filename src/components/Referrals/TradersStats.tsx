@@ -1,9 +1,9 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useRef, useState } from "react";
 import { BiEditAlt } from "react-icons/bi";
 import { IoWarningOutline } from "react-icons/io5";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl, ContractsChainId } from "config/chains";
 import { isDevelopment } from "config/env";
 import { TotalReferralsStats, useTiers } from "domain/referrals";
 import { formatDate } from "lib/dates";
@@ -19,7 +19,7 @@ import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table"
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
 import EmptyMessage from "./EmptyMessage";
-import { ReferralCodeForm } from "./JoinReferralCode";
+import { ReferralCodeEditFormContainer } from "./JoinReferralCode";
 import ReferralInfoCard from "./ReferralInfoCard";
 import { getSharePercentage, getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
 import usePagination, { DEFAULT_PAGE_SIZE } from "./usePagination";
@@ -32,7 +32,7 @@ import "./TradersStats.scss";
 type Props = {
   referralsData?: TotalReferralsStats;
   traderTier?: number;
-  chainId: number;
+  chainId: ContractsChainId;
   userReferralCodeString?: string;
   discountShare: bigint | undefined;
 };
@@ -98,7 +98,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           </div>
         </ReferralInfoCard>
         <ReferralInfoCard
-          value={`$${getUSDValue(currentReferralsData?.traderReferralTotalStats?.volume)}`}
+          value={`$\u200a${getUSDValue(currentReferralsData?.traderReferralTotalStats?.volume)}`}
           label={t`Trading Volume`}
           labelTooltipText={t`Volume traded by this account with an active referral code.`}
           tooltipContent={
@@ -143,7 +143,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           }
         />
         <ReferralInfoCard
-          value={`$${getUSDValue(currentReferralsData?.traderReferralTotalStats?.discountUsd)}`}
+          value={`$\u200a${getUSDValue(currentReferralsData?.traderReferralTotalStats?.discountUsd)}`}
           label={t`Rebates`}
           labelTooltipText={t`Rebates earned by this account as a trader.`}
           tooltipContent={
@@ -195,7 +195,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           onAfterOpen={() => editModalRef.current?.focus()}
         >
           <div className="edit-referral-modal">
-            <ReferralCodeForm
+            <ReferralCodeEditFormContainer
               userReferralCodeString={userReferralCodeString}
               type="edit"
               callAfterSuccess={() => setIsEditModalOpen(false)}

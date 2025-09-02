@@ -159,4 +159,10 @@ export const orderTypeToTitle: Partial<Record<`${OrderType}-${"long" | "short"}`
 
   [`${OrderType.StopIncrease}-short`]: msg`Stop Market - Short Inc.`,
   [`${OrderType.StopIncrease}-long`]: msg`Stop Market - Long Inc.`,
+
+  [`${OrderType.MarketIncrease}-long`]: msg`Market - Long Inc.`,
+  [`${OrderType.MarketIncrease}-short`]: msg`Market - Short Inc.`,
+
+  [`${OrderType.MarketDecrease}-long`]: msg`Market - Long Dec.`,
+  [`${OrderType.MarketDecrease}-short`]: msg`Market - Short Dec.`,
 };

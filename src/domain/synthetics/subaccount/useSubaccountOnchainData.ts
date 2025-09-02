@@ -3,13 +3,16 @@ import { useMemo } from "react";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
+import type { ContractsChainId } from "sdk/configs/chains";
 import {
   maxAllowedSubaccountActionCountKey,
   SUBACCOUNT_ORDER_ACTION,
   subaccountActionCountKey,
   subaccountExpiresAtKey,
+  subaccountIntegrationIdKey,
   subaccountListKey,
 } from "sdk/configs/dataStore";
+import type { MulticallRequestConfig } from "sdk/utils/multicall";
 
 export type SubaccountOnchainData = {
   active: boolean;
@@ -17,6 +20,8 @@ export type SubaccountOnchainData = {
   currentActionsCount: bigint;
   expiresAt: bigint;
   approvalNonce: bigint;
+  multichainApprovalNonce: bigint;
+  integrationId: string | undefined;
 };
 
 export type SubaccountOnchainDataResult = {
@@ -25,28 +30,41 @@ export type SubaccountOnchainDataResult = {
 };
 
 export function useSubaccountOnchainData(
-  chainId: number,
+  chainId: ContractsChainId,
   {
     account,
     subaccountAddress,
+    srcChainId,
   }: {
     account: string | undefined;
     subaccountAddress: string | undefined;
+    srcChainId: number | undefined;
   }
 ): SubaccountOnchainDataResult {
-  const { data, mutate } = useMulticall(chainId, "useSubaccountOnchainData", {
-    key: account && subaccountAddress ? [account, subaccountAddress] : null,
-    refreshInterval: FREQUENT_UPDATE_INTERVAL,
+  const queryCondition = account && subaccountAddress !== undefined;
 
+  const { data, mutate } = useMulticall(chainId, "useSubaccountOnchainData", {
+    key: queryCondition ? [account, subaccountAddress, srcChainId] : null,
+    refreshInterval: FREQUENT_UPDATE_INTERVAL,
     request: () => {
-      if (!account || !subaccountAddress) {
+      if (!queryCondition) {
         return {} as any;
       }
 
       return {
         subaccountRelayRouter: {
           contractAddress: getContract(chainId, "SubaccountGelatoRelayRouter"),
-          abiId: "SubaccountGelatoRelayRouter",
+          abiId: "AbstractSubaccountApprovalNonceable",
+          calls: {
+            subaccountApproval: {
+              methodName: "subaccountApprovalNonces",
+              params: [account],
+            },
+          },
+        },
+        multichainSubaccountRelayRouter: {
+          contractAddress: getContract(chainId, "MultichainSubaccountRouter"),
+          abiId: "AbstractSubaccountApprovalNonceable",
           calls: {
             subaccountApproval: {
               methodName: "subaccountApprovalNonces",
@@ -74,9 +92,13 @@ export function useSubaccountOnchainData(
               methodName: "getUint",
               params: [subaccountExpiresAtKey(account!, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
             },
+            integrationId: {
+              methodName: "getBytes32",
+              params: [subaccountIntegrationIdKey(account!, subaccountAddress)],
+            },
           },
         },
-      };
+      } satisfies MulticallRequestConfig<any>;
     },
     parseResponse: (res) => {
       const isSubaccountActive = Boolean(res.data.dataStore.isSubaccountActive.returnValues[0]);
@@ -84,7 +106,21 @@ export function useSubaccountOnchainData(
       const currentActionsCount = BigInt(res.data.dataStore.currentActionsCount.returnValues[0]);
       const expiresAt = BigInt(res.data.dataStore.expiresAt.returnValues[0]);
       const approvalNonce = BigInt(res.data.subaccountRelayRouter.subaccountApproval.returnValues[0]);
-      return { active: isSubaccountActive, maxAllowedCount, currentActionsCount, expiresAt, approvalNonce };
+      const multichainApprovalNonce = BigInt(
+        res.data.multichainSubaccountRelayRouter.subaccountApproval.returnValues[0]
+      );
+
+      const integrationId = res.data.dataStore.integrationId.returnValues[0];
+
+      return {
+        active: isSubaccountActive,
+        maxAllowedCount,
+        currentActionsCount,
+        expiresAt,
+        approvalNonce,
+        multichainApprovalNonce,
+        integrationId,
+      };
     },
   });
 

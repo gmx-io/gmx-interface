@@ -41,6 +41,11 @@ const selectPositionEditorSelectedCollateralAddressMap = (state: SyntheticsState
 export const selectPositionEditorSetSelectedCollateralAddress = (state: SyntheticsState) =>
   state.positionEditor.setSelectedCollateralAddress;
 
+export const selectPositionEditorIsCollateralTokenFromGmxAccount = (state: SyntheticsState) =>
+  state.positionEditor.isCollateralTokenFromGmxAccount;
+export const selectPositionEditorSetIsCollateralTokenFromGmxAccount = (state: SyntheticsState) =>
+  state.positionEditor.setIsCollateralTokenFromGmxAccount;
+
 export const selectPositionEditorSelectedCollateralAddress = createSelector((q) => {
   const positionKey = q(selectPositionEditorEditingPositionKey);
 
@@ -61,10 +66,19 @@ export const selectPositionEditorSelectedCollateralAddress = createSelector((q) 
 
 export const selectPositionEditorSelectedCollateralToken = createSelector((q) => {
   const tokenAddress = q(selectPositionEditorSelectedCollateralAddress);
+  const isCollateralTokenFromGmxAccount = q(selectPositionEditorIsCollateralTokenFromGmxAccount);
 
   if (!tokenAddress) return;
 
   const token = q((s) => selectTokensData(s)?.[tokenAddress]);
+
+  if (!token) {
+    return;
+  }
+
+  if (isCollateralTokenFromGmxAccount && !token.isGmxAccount) {
+    return { ...token, isGmxAccount: true, balance: token.gmxAccountBalance };
+  }
 
   return token;
 });

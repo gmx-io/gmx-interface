@@ -23,7 +23,7 @@ import {
 } from "domain/synthetics/markets";
 import { useKinkModelMarketsRates } from "domain/synthetics/markets/useKinkModelMarketsRates";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions";
-import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
+import { convertToUsd, getMidPrice, useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS } from "lib/legacy";
 import { expandDecimals, formatAmount, formatFactor, formatUsd, getPlusOrMinusSymbol, PRECISION } from "lib/numbers";
@@ -56,13 +56,14 @@ const CSV_EXCLUDED_FIELDS: (keyof MarketInfo)[] = [
 ];
 
 export function SyntheticsStats() {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
 
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { kinkMarketsBorrowingRatesData } = useKinkModelMarketsRates(chainId);
-  const {
-    positionsConstants: { minCollateralUsd, minPositionSizeUsd },
-  } = usePositionsConstantsRequest(chainId);
+  const { positionsConstants } = usePositionsConstantsRequest(chainId);
+  const { minCollateralUsd, minPositionSizeUsd, claimableCollateralDelay, claimableCollateralReductionFactor } =
+    positionsConstants || {};
 
   const markets = Object.values(marketsInfoData || {});
   markets.sort((a, b) => {
@@ -262,7 +263,7 @@ export function SyntheticsStats() {
                   return (
                     <div className="cell">
                       <TooltipWithPortal
-                        handle={`$${formatAmountHuman(market.poolValueMax, 30)}`}
+                        handle={`$\u200a${formatAmountHuman(market.poolValueMax, 30)}`}
                         renderContent={() => (
                           <>
                             <StatsTooltipRow label="Pool USD Long" value={formatAmount(longPoolUsd, 30, 2, true)} />
@@ -325,7 +326,7 @@ export function SyntheticsStats() {
                     <div className="cell">
                       <div>
                         <TooltipWithPortal
-                          handle={`$${formatAmountHuman(longPoolUsd, 30)} / $${formatAmountHuman(shortPoolUsd, 30)}`}
+                          handle={`$\u200a${formatAmountHuman(longPoolUsd, 30)} / $\u200a${formatAmountHuman(shortPoolUsd, 30)}`}
                           renderContent={() => {
                             return (
                               <>
@@ -624,7 +625,7 @@ export function SyntheticsStats() {
                     <div className="cell">
                       <div>
                         <TooltipWithPortal
-                          handle={`$${formatAmountHuman(market.longInterestUsd, 30)} / $${formatAmountHuman(
+                          handle={`$\u200a${formatAmountHuman(market.longInterestUsd, 30)} / $\u200a${formatAmountHuman(
                             market.shortInterestUsd,
                             30
                           )}`}
@@ -767,7 +768,7 @@ export function SyntheticsStats() {
                 }
 
                 function renderPositionImpactCell() {
-                  const summaryPoolUsd = (longPoolUsd ?? 0n) + (shortPoolUsd ?? 0n);
+                  const summaryPoolUsd = market.poolValueMax;
 
                   const bonusApr =
                     summaryPoolUsd > 0n
@@ -778,7 +779,7 @@ export function SyntheticsStats() {
                         ) * 100n
                       : undefined;
 
-                  const reservedPositivePriceImpactUsd = getPriceImpactUsd({
+                  const { priceImpactDeltaUsd: reservedPositivePriceImpactUsd } = getPriceImpactUsd({
                     currentLongUsd: market.longInterestUsd - market.shortInterestUsd,
                     currentShortUsd: 0n,
                     nextLongUsd: 0n,
@@ -797,7 +798,7 @@ export function SyntheticsStats() {
                   return (
                     <div className="cell">
                       <TooltipWithPortal
-                        handle={`$${formatAmount(positionImpactUsd, 30, 2, true)}`}
+                        handle={`$\u200a${formatAmount(positionImpactUsd, 30, 2, true)}`}
                         position="bottom-end"
                         renderContent={() => (
                           <>
@@ -1054,6 +1055,26 @@ export function SyntheticsStats() {
                                 value={formatFactor(market.maxPositionImpactFactorForLiquidations)}
                                 showDollar={false}
                               />
+                              <StatsTooltipRow
+                                label="Max Lendable Impact Factor"
+                                value={formatFactor(market.maxLendableImpactFactor)}
+                                showDollar={false}
+                              />
+                              <StatsTooltipRow
+                                label="Max Lendable Impact Factor for Withdrawals"
+                                value={formatFactor(market.maxLendableImpactFactorForWithdrawals)}
+                                showDollar={false}
+                              />
+                              <StatsTooltipRow
+                                label="Max Lendable Impact USD"
+                                value={formatUsd(market.maxLendableImpactUsd)}
+                                showDollar={false}
+                              />
+                              <StatsTooltipRow
+                                label="Lent Position Impact Pool Amount"
+                                value={formatUsd(market.lentPositionImpactPoolAmount)}
+                                showDollar={false}
+                              />
                               <br />
                               <div className="Tooltip-divider" />
                               <br />
@@ -1079,24 +1100,25 @@ export function SyntheticsStats() {
                               <br />
                               <div>Fees factors</div>
                               <br />
+
                               <StatsTooltipRow
                                 label="Swap Fee Factor (Positive PI)"
-                                value={formatFactor(market.swapFeeFactorForPositiveImpact)}
+                                value={formatFactor(market.swapFeeFactorForBalanceWasImproved)}
                                 showDollar={false}
                               />
                               <StatsTooltipRow
                                 label="Swap Fee Factor (Negative PI)"
-                                value={formatFactor(market.swapFeeFactorForNegativeImpact)}
+                                value={formatFactor(market.swapFeeFactorForBalanceWasNotImproved)}
                                 showDollar={false}
                               />
                               <StatsTooltipRow
                                 label="Position Fee Factor (Positive PI)"
-                                value={formatFactor(market.positionFeeFactorForPositiveImpact)}
+                                value={formatFactor(market.positionFeeFactorForBalanceWasImproved)}
                                 showDollar={false}
                               />
                               <StatsTooltipRow
                                 label="Position Fee Factor (Negative PI)"
-                                value={formatFactor(market.positionFeeFactorForNegativeImpact)}
+                                value={formatFactor(market.positionFeeFactorForBalanceWasNotImproved)}
                                 showDollar={false}
                               />
                               <StatsTooltipRow
@@ -1150,6 +1172,11 @@ export function SyntheticsStats() {
                                 showDollar={false}
                               />
                               <StatsTooltipRow
+                                label="Min Collateral Factor for Liquidation"
+                                value={formatFactor(market.minCollateralFactorForLiquidation)}
+                                showDollar={false}
+                              />
+                              <StatsTooltipRow
                                 label="Min Collateral Factor OI Long"
                                 value={formatFactor(market.minCollateralFactorForOpenInterestLong)}
                                 showDollar={false}
@@ -1189,6 +1216,16 @@ export function SyntheticsStats() {
                                 showDollar={false}
                               />
                               <br />
+                              <StatsTooltipRow
+                                label="Claimable Collateral Delay"
+                                value={claimableCollateralDelay?.toString() || "..."}
+                                showDollar={false}
+                              />
+                              <StatsTooltipRow
+                                label="Claimable Collateral Reduction Factor"
+                                value={formatFactor(claimableCollateralReductionFactor ?? 0n)}
+                                showDollar={false}
+                              />
                             </>
                           )}
                         />

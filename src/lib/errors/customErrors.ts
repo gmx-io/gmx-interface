@@ -56,12 +56,10 @@ export function getIsPermitSignatureErrorOnSimulation(error: ErrorLike) {
 
 export function getInvalidPermitSignatureError({
   isValid,
-  recoveredAddress,
   error,
   permit,
 }: {
   isValid: boolean;
-  recoveredAddress: string | undefined;
   error: ErrorData | undefined;
   permit: SignedTokenPermit;
 }) {
@@ -69,14 +67,9 @@ export function getInvalidPermitSignatureError({
     data: {
       isValid,
       originalError: error,
-      recoveredAddress,
-      owner: permit.owner,
       spender: permit.spender,
       value: permit.value,
       deadline: permit.deadline,
-      r: permit.r,
-      s: permit.s,
-      v: permit.v,
       onchainParams: {
         name: permit.onchainParams.name,
         version: permit.onchainParams.version,

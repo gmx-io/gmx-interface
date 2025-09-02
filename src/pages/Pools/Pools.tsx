@@ -27,7 +27,7 @@ import { usePoolsIsMobilePage } from "./usePoolsIsMobilePage";
 export default function Pools() {
   const { timeRange, setTimeRange } = usePoolsTimeRange();
 
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
 
   const period = useMemo(() => convertPoolsTimeRangeToPeriod(timeRange), [timeRange]);
 
@@ -39,10 +39,10 @@ export default function Pools() {
     glvTokensIncentiveAprData,
     marketsTokensLidoAprData,
     glvApyInfoData,
-  } = useGmMarketsApy(chainId, { period: apyPeriod });
+  } = useGmMarketsApy(chainId, srcChainId, { period: apyPeriod });
 
-  const { tokensData } = useTokensDataRequest(chainId);
-  const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const enabledGlv = isGlvEnabled(chainId);
   const account = useSelector(selectAccount);
 
@@ -124,7 +124,7 @@ function PoolsTvl() {
   const tvl = v2Stats?.totalGMLiquidity;
 
   return (
-    <div className="flex flex-col gap-14">
+    <div className="flex flex-col gap-8">
       <span className="text-h1 normal-nums">{formatUsd(tvl, { displayDecimals: 0 })}</span>
       <span className="text-body-medium font-medium text-typography-secondary">TVL in vaults and pools.</span>
     </div>

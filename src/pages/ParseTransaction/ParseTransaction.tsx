@@ -1,26 +1,38 @@
 import cx from "classnames";
+import invert from "lodash/invert";
+import mapValues from "lodash/mapValues";
 import { useCallback, useMemo, useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 import { BiCopy } from "react-icons/bi";
 import { Link, useParams } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 import useSWR from "swr";
-import { Hash, isHash, PublicClient } from "viem";
+import { Hash, PublicClient, isHash } from "viem";
 import { usePublicClient } from "wagmi";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, UiContractsChain, getExplorerUrl } from "config/chains";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  BOTANIX,
+  ContractsChainId,
+  getExplorerUrl,
+} from "config/chains";
 import { getIcon } from "config/icons";
 import {
   getGlvDisplayName,
   getMarketFullName,
-  useMarketsInfoRequest,
   useMarketTokensDataRequest,
+  useMarketsInfoRequest,
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { getOrderTypeLabel } from "domain/synthetics/orders";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
+import { CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
 import { formatFactor, formatUsd } from "lib/numbers";
+import { parseTxEvents } from "pages/ParseTransaction/parseTxEvents";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Loader from "components/Common/Loader";
@@ -51,29 +63,18 @@ import {
   formatRoleKey,
   formatSwapPath,
 } from "./formatting";
-import { parseTxEvents } from "./parseTxEvents";
 import { LogEntryComponentProps } from "./types";
 
-const NETWORKS = {
-  arbitrum: ARBITRUM,
-  avalanche: AVALANCHE,
-  fuji: AVALANCHE_FUJI,
-  botanix: BOTANIX,
-};
-
-export const NETWORKS_BY_CHAIN_IDS: Record<UiContractsChain, string> = {
+export const NETWORKS_BY_CHAIN_IDS: Record<ContractsChainId, string> = {
   [ARBITRUM]: "arbitrum",
   [AVALANCHE]: "avalanche",
   [AVALANCHE_FUJI]: "fuji",
+  // [BASE_MAINNET]: "base",
+  [ARBITRUM_SEPOLIA]: "arbitrum-sepolia",
   [BOTANIX]: "botanix",
 };
 
-const EXPLORER_TX_URLS: Record<UiContractsChain, string> = {
-  [ARBITRUM]: getExplorerUrl(ARBITRUM) + "tx/",
-  [AVALANCHE]: getExplorerUrl(AVALANCHE) + "tx/",
-  [AVALANCHE_FUJI]: getExplorerUrl(AVALANCHE_FUJI) + "tx/",
-  [BOTANIX]: getExplorerUrl(BOTANIX) + "tx/",
-};
+const NETWORKS = mapValues(invert(NETWORKS_BY_CHAIN_IDS), Number) as Record<string, ContractsChainId>;
 
 export function ParseTransactionPage() {
   const { tx, network } = useParams<{ tx: string; network: string }>();
@@ -82,7 +83,9 @@ export function ParseTransactionPage() {
   /** Default is Arbitrum to prevent page crashes in hooks, wrong networks handled on :207 */
   const chainId = NETWORKS[network as string] ?? ARBITRUM;
 
-  const client = usePublicClient({});
+  const client = usePublicClient({
+    chainId,
+  });
 
   const { data, isLoading, error } = useSWR([chainId, tx], async function fetchTransaction() {
     try {
@@ -96,15 +99,15 @@ export function ParseTransactionPage() {
 
   const isDeposit = data ? data.some((event) => event.name.toLowerCase().includes("deposit")) : false;
 
-  const { tokensData } = useTokensDataRequest(chainId);
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, undefined);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { glvData } = useGlvMarketsInfo(true, {
     marketsInfoData,
     tokensData,
     chainId,
     account: undefined,
   });
-  const { marketTokensData } = useMarketTokensDataRequest(chainId, {
+  const { marketTokensData } = useMarketTokensDataRequest(chainId, undefined, {
     isDeposit,
     withGlv: true,
     glvData,
@@ -113,7 +116,7 @@ export function ParseTransactionPage() {
   if (!network || typeof network !== "string" || !NETWORKS[network as string]) {
     return (
       <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
-        Specify network: arbitrum, avalanche, fuji, botanix
+        Specify network: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia
       </div>
     );
   }
@@ -140,7 +143,7 @@ export function ParseTransactionPage() {
     <AppPageLayout>
       <div className="mx-auto max-w-[1280px] pt-24">
         <h1 className="text-body-large mb-24">
-          Transaction: <ExternalLink href={EXPLORER_TX_URLS[chainId] + tx}>{tx}</ExternalLink>
+          Transaction: <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](tx)}>{tx}</ExternalLink>
         </h1>
         <Table className="mb-12 ">
           <tbody>
