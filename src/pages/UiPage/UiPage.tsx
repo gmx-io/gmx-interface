@@ -4,6 +4,7 @@ import mapKeys from "lodash/mapKeys";
 import upperFirst from "lodash/upperFirst";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
+import { colors, type ColorConfig, type ColorValue } from "config/colors";
 import { getCategoryTokenAddresses, getToken } from "sdk/configs/tokens";
 import { TokenCategory } from "sdk/types/tokens";
 
@@ -65,58 +66,6 @@ const otherImages = Object.keys(otherImagesContext)
     };
   }) as { src: string; name: string; path: string; importUrl: string }[];
 
-const colors = {
-  blue: {
-    "300": "bg-blue-300",
-    "400": "bg-blue-400",
-    "500": "bg-blue-500",
-    "600": "bg-blue-600",
-    "700": "bg-blue-700",
-  },
-  "cold-blue": {
-    "500": "bg-cold-blue-500",
-    "700": "bg-cold-blue-700",
-    "900": "bg-cold-blue-900",
-  },
-  slate: {
-    "100": "bg-slate-100",
-    "500": "bg-slate-100",
-    "600": "bg-slate-600",
-    "700": "bg-slate-700",
-    "800": "bg-slate-800",
-    "900": "bg-slate-900",
-    "950": "bg-slate-950",
-  },
-  gray: {
-    "50": "bg-gray-50",
-    "100": "bg-gray-100",
-    "200": "bg-gray-200",
-    "300": "bg-gray-300",
-    "400": "bg-gray-400",
-    "500": "bg-gray-500",
-    "600": "bg-gray-600",
-    "700": "bg-gray-700",
-    "800": "bg-gray-800",
-    "900": "bg-gray-900",
-    "950": "bg-gray-950",
-  },
-  yellow: {
-    "300": "bg-yellow-300",
-    "500": "bg-yellow-300",
-  },
-  red: {
-    "400": "bg-red-400",
-    "500": "bg-red-500",
-    "700": "bg-red-700",
-  },
-  green: {
-    "300": "bg-green-300",
-    "500": "bg-green-500",
-    "700": "bg-green-700",
-  },
-  white: "bg-white",
-  black: "bg-black",
-};
 
 export default function UiPage() {
   return (
@@ -128,28 +77,43 @@ export default function UiPage() {
 
         <h2 className="mb-16 mt-24 text-24 font-bold">Fill colors</h2>
         <div className="overflow-auto">
-          <div className="flex flex-col">
-            {entries(colors).map(([color, shades]) => {
-              if (typeof shades === "string") {
+          <div className="flex flex-col gap-8">
+            {entries(colors).map(([colorName, shades]) => {
+              // Check if it's a single color value (white/black)
+              const isSingleColor = shades && typeof shades === "object" && "light" in shades && "dark" in shades;
+              
+              if (isSingleColor) {
+                const colorValue = shades as ColorValue;
                 return (
-                  <div key={color}>
-                    <div className="flex w-fit overflow-hidden *:size-64">
-                      <div className="!w-96 text-12">{color}</div>
-                      <div className={shades} />
+                  <div key={colorName}>
+                    <div className="flex w-fit items-center overflow-hidden *:size-64">
+                      <div className="!w-96 text-12">{colorName}</div>
+                      <div className={`bg-${colorName}`}>
+                        <div className="flex h-full flex-col justify-center px-8 text-10">
+                          <div className="text-gray-900">L: {colorValue.light}</div>
+                          <div className="text-gray-100">D: {colorValue.dark}</div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 );
               }
 
+              // Nested color group
               return (
-                <div key={color}>
+                <div key={colorName}>
                   <div className="flex w-fit overflow-hidden *:size-64">
-                    <div className="!w-96 text-12"> {color}</div>
-                    {entries(shades).map(([shade, value]) => {
-                      if (shade === "DEFAULT") return <div key={shade + value} className={value}></div>;
+                    <div className="!w-96 text-12">{colorName}</div>
+                    {entries(shades as ColorConfig).map(([shade, colorValue]) => {
+                      const bgClass = `bg-${colorName}-${shade}`;
+                      const value = colorValue as ColorValue;
                       return (
-                        <div key={shade + value} className={value}>
-                          {shade}
+                        <div key={`${colorName}-${shade}`} className={bgClass}>
+                          <div className="flex h-full flex-col justify-center px-4 text-10">
+                            <div className="font-bold">{shade}</div>
+                            <div className="text-gray-900 opacity-80">L: {value.light}</div>
+                            <div className="text-gray-100 opacity-80">D: {value.dark}</div>
+                          </div>
                         </div>
                       );
                     })}
@@ -162,13 +126,13 @@ export default function UiPage() {
 
         <h2 className="mb-16 mt-24 text-24 font-bold">Text colors</h2>
 
-        <div className="flex gap-16">
-          <p className="text-blue-500">Blue text is blue</p>
-          <p className="text-gray-300">Gray text is gray</p>
-          <p className="text-yellow-300">Yellow text is yellow</p>
-          <p className="text-red-500">Red text is red</p>
-          <p className="text-green-500">Green text is green</p>
-          <p className="text-typography-primary">White text is white</p>
+        <div className="flex flex-wrap gap-16">
+          <p className="text-blue-500">Blue 500</p>
+          <p className="text-yellow-300">Yellow 300</p>
+          <p className="text-red-500">Red 500</p>
+          <p className="text-green-500">Green 500</p>
+          <p className="text-typography-primary">Typography Primary</p>
+          <p className="text-typography-secondary">Typography Secondary</p>
         </div>
         <p className="mt-8 text-typography-primary underline decoration-gray-400 decoration-dashed decoration-8">
           Decoration is gray-400
