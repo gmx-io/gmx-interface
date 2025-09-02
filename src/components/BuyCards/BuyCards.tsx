@@ -315,7 +315,7 @@ export default function BuyCards() {
             <BuyLink to={getTrackingLink("/buy_glp#redeem")} network={ARBITRUM} chainId={chainId} active={active} />
             <BuyLink to={getTrackingLink("/buy_glp#redeem")} network={AVALANCHE} chainId={chainId} active={active} />
             <AlertInfoCard type="warning" hideClose className="!py-10">
-              <Trans>GLP is no longer available for buy</Trans>
+              <Trans>GLP is no longer available to buy.</Trans>
             </AlertInfoCard>
           </div>
           <TrackingLink>

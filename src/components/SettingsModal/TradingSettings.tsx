@@ -165,7 +165,7 @@ export function TradingSettings({
         <SettingsSection className="mt-2">
           <div className="flex items-center justify-between">
             <TooltipWithPortal
-              content={<Trans>Network for Cross-Chain Deposits and positions.</Trans>}
+              content={<Trans>The settlement chain is the network used for your GMX Account and opening positions. GMX Account balances and positions are specific to the selected network.</Trans>}
               handle={<Trans>Settlement Chain</Trans>}
             />
             <DropdownSelector
@@ -231,7 +231,7 @@ export function TradingSettings({
             description={
               <div>
                 <Trans>
-                  The Max Network Fee is set to a higher value to handle potential increases in gas price during order
+                  The max network fee is set to a higher value to handle potential increases in gas price during order
                   execution. Any excess network fee will be refunded to your account when the order is executed. Only
                   applicable to GMX V2.
                 </Trans>
