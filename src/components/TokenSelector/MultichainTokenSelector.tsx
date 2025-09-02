@@ -8,10 +8,9 @@ import type { TokenChainData } from "domain/multichain/types";
 import { convertToUsd } from "domain/synthetics/tokens";
 import type { Token, TokenData, TokensData } from "domain/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
-import { formatAmount, formatBalanceAmount } from "lib/numbers";
+import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
 import { searchBy } from "lib/searchBy";
-import { USD_DECIMALS } from "sdk/configs/factors";
 import { getToken } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
@@ -145,25 +144,25 @@ export function MultichainTokenSelector({
         label={label}
         footerContent={footerContent}
         headerContent={
-          <>
+          <div className="pb-16">
             <SearchInput
-              className="*:!text-body-medium min-[700px]:mt-15"
               value={searchKeyword}
               setValue={setSearchKeyword}
+              className="mb-16"
               // onKeyDown={_handleKeyDown}
             />
             {isGmxAccountEmpty && srcChainId !== undefined ? (
-              <div className="text-body-medium mt-8 text-slate-100">
+              <div className="text-body-medium text-typography-secondary">
                 <Trans>To begin trading on GMX deposit assets into GMX account</Trans>
               </div>
             ) : (
-              <div className="mt-16 flex gap-4">
+              <div className="flex gap-4">
                 <Button
                   type="button"
-                  variant="ghost"
+                  variant={activeFilter === "pay" ? "secondary" : "ghost"}
                   size="small"
                   className={cx({
-                    "!bg-cold-blue-500": activeFilter === "pay",
+                    "!text-typography-primary": activeFilter === "pay",
                   })}
                   onClick={() => setActiveFilter("pay")}
                 >
@@ -171,10 +170,10 @@ export function MultichainTokenSelector({
                 </Button>
                 <Button
                   type="button"
-                  variant="ghost"
+                  variant={activeFilter === "deposit" ? "secondary" : "ghost"}
                   size="small"
                   className={cx({
-                    "!bg-cold-blue-500": activeFilter === "deposit",
+                    "!text-typography-primary": activeFilter === "deposit",
                   })}
                   onClick={() => setActiveFilter("deposit")}
                 >
@@ -182,7 +181,7 @@ export function MultichainTokenSelector({
                 </Button>
               </div>
             )}
-          </>
+          </div>
         }
         contentPadding={false}
       >
@@ -334,7 +333,7 @@ function AvailableToTradeTokenList({
         return (
           <div
             key={token.address + "_" + (token.isGmxAccount ? "gmx" : "settlement")}
-            className="gmx-hover-gradient flex cursor-pointer items-center justify-between px-16 py-8"
+            className="flex cursor-pointer items-center justify-between px-20 py-8 gmx-hover:bg-fill-surfaceElevated50"
             onClick={() => onSelectTokenAddress(token.address, token.isGmxAccount)}
           >
             <div className="flex items-center gap-8">
@@ -348,7 +347,7 @@ function AvailableToTradeTokenList({
 
               <div>
                 <div className="text-body-large">{token.symbol}</div>
-                <span className="text-body-small text-slate-100">{token.name}</span>
+                <span className="text-body-small text-typography-secondary">{token.name}</span>
               </div>
             </div>
             <div className="text-right">
@@ -360,8 +359,8 @@ function AvailableToTradeTokenList({
                 {token.balance == 0n && "-"}
               </div>
 
-              <span className="text-body-small text-slate-100">
-                {token.balanceUsd > 0n && <div>${formatAmount(token.balanceUsd, USD_DECIMALS, 2, true)}</div>}
+              <span className="text-body-small text-typography-secondary">
+                {token.balanceUsd > 0n && formatUsd(token.balanceUsd)}
               </span>
             </div>
           </div>
@@ -456,7 +455,7 @@ function MultichainTokenList({
         return (
           <div
             key={token.address + "_" + token.sourceChainId}
-            className="group gmx-hover-gradient-to-l flex cursor-pointer items-center justify-between px-16 py-8"
+            className="group flex cursor-pointer items-center justify-between px-20 py-8 gmx-hover:bg-fill-surfaceElevated50"
             onClick={() => onDepositTokenAddress(token.address, token.sourceChainId)}
           >
             <div className="flex items-center gap-8">
@@ -470,7 +469,7 @@ function MultichainTokenList({
 
               <div>
                 <div className="text-body-large">{token.symbol}</div>
-                <span className="text-body-small text-slate-100">{token.name}</span>
+                <span className="text-body-small text-typography-secondary">{token.name}</span>
               </div>
             </div>
             <div className="text-right group-gmx-hover:hidden">
@@ -484,15 +483,16 @@ function MultichainTokenList({
                 </div>
               )) ||
                 null}
-              <span className="text-body-small text-slate-100">
-                {token.sourceChainBalanceUsd !== undefined && token.sourceChainBalanceUsd > 0 && (
-                  <div>${formatAmount(token.sourceChainBalanceUsd, USD_DECIMALS, 2, true)}</div>
-                )}
+              <span className="text-body-small text-typography-secondary">
+                {token.sourceChainBalanceUsd !== undefined &&
+                  token.sourceChainBalanceUsd > 0 &&
+                  formatUsd(token.sourceChainBalanceUsd)}
               </span>
             </div>
-            <div className="text-right not-group-gmx-hover:hidden">
+
+            <Button variant="secondary" size="small" className="not-group-gmx-hover:hidden">
               <Trans>Deposit</Trans>
-            </div>
+            </Button>
           </div>
         );
       })}
