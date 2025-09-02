@@ -90,12 +90,12 @@ export default function SearchInput({
           onFocus={handleFocus}
           autoFocus={autoFocus ?? !isSmallerScreen}
           className={cx(
-            "block w-full rounded-8 bg-slate-800 leading-1 placeholder-slate-100 hover:bg-fill-surfaceElevatedHover",
+            "block h-full w-full rounded-8 bg-slate-800 leading-1 placeholder-slate-100 hover:bg-fill-surfaceElevatedHover",
             {
               border: !noBorder,
               "border-blue-300": isFocused && !noBorder,
               "border-slate-800": !isFocused && !noBorder,
-              "p-8 pl-32 text-[13px]": size === "m",
+              "p-[6.5px] pl-32 text-[13px]": size === "m",
               "py-[8.5px] pl-34 pr-30 text-14 ": size === "s",
             }
           )}

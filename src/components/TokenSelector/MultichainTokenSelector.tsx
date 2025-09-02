@@ -144,7 +144,7 @@ export function MultichainTokenSelector({
         label={label}
         footerContent={footerContent}
         headerContent={
-          <div className="pb-16">
+          <div className="pb-12">
             <SearchInput
               value={searchKeyword}
               setValue={setSearchKeyword}
