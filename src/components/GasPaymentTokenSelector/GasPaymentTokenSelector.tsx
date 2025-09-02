@@ -12,16 +12,17 @@ import { SelectorBase, useSelectorClose } from "components/Synthetics/SelectorBa
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 type Props = {
-  curentTokenAddress: string;
+  currentTokenAddress: string | undefined;
   onSelectToken: (address: string) => void;
 };
 
-export function GasPaymentTokenSelector({ curentTokenAddress, onSelectToken }: Props) {
-  const { chainId } = useChainId();
-  const { tokensData } = useTokensDataRequest(chainId);
+export function GasPaymentTokenSelector({ currentTokenAddress, onSelectToken }: Props) {
+  const { chainId, srcChainId } = useChainId();
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+
   const gasPaymentTokens = getGasPaymentTokens(chainId);
 
-  const currentToken = getByKey(tokensData, curentTokenAddress);
+  const currentToken = getByKey(tokensData, currentTokenAddress);
 
   const onSelectFactory = useCallback(
     (tokenAddress: string) => () => {
@@ -42,7 +43,7 @@ export function GasPaymentTokenSelector({ curentTokenAddress, onSelectToken }: P
           {currentToken && (
             <div className="flex items-center">
               <TokenIcon symbol={currentToken.symbol} className="mr-8" displaySize={16} />
-              <span className="mr-4 inline-block max-w-60 truncate align-baseline">
+              <span className="mr-4 inline-block align-baseline">
                 {formatTokenAmount(currentToken.balance, currentToken.decimals, undefined, {
                   isStable: currentToken.isStable,
                 })}
@@ -85,9 +86,7 @@ function GasTokenOption({ token, onClick }: { token?: TokenData; onClick: () => 
     >
       <div className="flex items-center">
         <TokenIcon symbol={token.symbol} className="mr-8" displaySize={20} />
-        <span className="mr-4 inline-block max-w-60 truncate align-baseline">
-          {formatTokenAmount(token.balance, token.decimals)}
-        </span>
+        <span className="mr-4 inline-block align-baseline">{formatTokenAmount(token.balance, token.decimals)}</span>
         {token.symbol}
       </div>
       <div className="text-right">{formatUsd(balanceUsd)}</div>

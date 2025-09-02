@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 import { USD_DECIMALS } from "config/factors";
+import { getMarketIndexName } from "domain/synthetics/markets/utils";
 import { formatAmountHuman } from "lib/numbers";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
@@ -10,7 +11,6 @@ import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
-import { getMarketIndexName } from "../../../../domain/synthetics/markets/utils";
 import { CompositionItem, CompositionType, getCompositionPercentage } from "../hooks/useCompositionData";
 
 interface Props<T extends CompositionType> {

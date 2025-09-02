@@ -236,83 +236,44 @@ export interface GovToken extends BaseContract {
   listeners(eventName?: string): Promise<Array<Listener>>;
   removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
-  /**
-   * Description of the clock
-   */
   CLOCK_MODE: TypedContractMethod<[], [string], "view">;
 
-  /**
-   * See {IERC20Permit-DOMAIN_SEPARATOR}.
-   */
   DOMAIN_SEPARATOR: TypedContractMethod<[], [string], "view">;
 
-  /**
-   * See {IERC20-allowance}.
-   */
   allowance: TypedContractMethod<[owner: AddressLike, spender: AddressLike], [bigint], "view">;
 
-  /**
-   * See {IERC20-approve}. NOTE: If `amount` is the maximum `uint256`, the allowance is not updated on `transferFrom`. This is semantically equivalent to an infinite approval. Requirements: - `spender` cannot be the zero address.
-   */
   approve: TypedContractMethod<[spender: AddressLike, amount: BigNumberish], [boolean], "nonpayable">;
 
-  /**
-   * See {IERC20-balanceOf}.
-   */
   balanceOf: TypedContractMethod<[account: AddressLike], [bigint], "view">;
 
   burn: TypedContractMethod<[account: AddressLike, amount: BigNumberish], [void], "nonpayable">;
 
-  /**
-   * Get the `pos`-th checkpoint for `account`.
-   */
   checkpoints: TypedContractMethod<
     [account: AddressLike, pos: BigNumberish],
     [ERC20Votes.CheckpointStructOutput],
     "view"
   >;
 
-  /**
-   * Clock used for flagging checkpoints. Can be overridden to implement timestamp based checkpoints (and voting).
-   */
   clock: TypedContractMethod<[], [bigint], "view">;
 
-  /**
-   * Returns the number of decimals used to get its user representation. For example, if `decimals` equals `2`, a balance of `505` tokens should be displayed to a user as `5.05` (`505 / 10 ** 2`). Tokens usually opt for a value of 18, imitating the relationship between Ether and Wei. This is the default value returned by this function, unless it's overridden. NOTE: This information is only used for _display_ purposes: it in no way affects any of the arithmetic of the contract, including {IERC20-balanceOf} and {IERC20-transfer}.
-   */
   decimals: TypedContractMethod<[], [bigint], "view">;
 
-  /**
-   * Atomically decreases the allowance granted to `spender` by the caller. This is an alternative to {approve} that can be used as a mitigation for problems described in {IERC20-approve}. Emits an {Approval} event indicating the updated allowance. Requirements: - `spender` cannot be the zero address. - `spender` must have allowance for the caller of at least `subtractedValue`.
-   */
   decreaseAllowance: TypedContractMethod<
     [spender: AddressLike, subtractedValue: BigNumberish],
     [boolean],
     "nonpayable"
   >;
 
-  /**
-   * Delegate votes from the sender to `delegatee`.
-   */
   delegate: TypedContractMethod<[delegatee: AddressLike], [void], "nonpayable">;
 
-  /**
-   * Delegates votes from signer to `delegatee`
-   */
   delegateBySig: TypedContractMethod<
     [delegatee: AddressLike, nonce: BigNumberish, expiry: BigNumberish, v: BigNumberish, r: BytesLike, s: BytesLike],
     [void],
     "nonpayable"
   >;
 
-  /**
-   * Get the address `account` is currently delegating to.
-   */
   delegates: TypedContractMethod<[account: AddressLike], [string], "view">;
 
-  /**
-   * See {EIP-5267}. _Available since v4.9._
-   */
   eip712Domain: TypedContractMethod<
     [],
     [
@@ -329,46 +290,22 @@ export interface GovToken extends BaseContract {
     "view"
   >;
 
-  /**
-   * Retrieve the `totalSupply` at the end of `timepoint`. Note, this value is the sum of all balances. It is NOT the sum of all the delegated votes! Requirements: - `timepoint` must be in the past
-   */
   getPastTotalSupply: TypedContractMethod<[timepoint: BigNumberish], [bigint], "view">;
 
-  /**
-   * Retrieve the number of votes for `account` at the end of `timepoint`. Requirements: - `timepoint` must be in the past
-   */
   getPastVotes: TypedContractMethod<[account: AddressLike, timepoint: BigNumberish], [bigint], "view">;
 
-  /**
-   * Gets the current votes balance for `account`
-   */
   getVotes: TypedContractMethod<[account: AddressLike], [bigint], "view">;
 
-  /**
-   * Atomically increases the allowance granted to `spender` by the caller. This is an alternative to {approve} that can be used as a mitigation for problems described in {IERC20-approve}. Emits an {Approval} event indicating the updated allowance. Requirements: - `spender` cannot be the zero address.
-   */
   increaseAllowance: TypedContractMethod<[spender: AddressLike, addedValue: BigNumberish], [boolean], "nonpayable">;
 
   mint: TypedContractMethod<[account: AddressLike, amount: BigNumberish], [void], "nonpayable">;
 
-  /**
-   * Returns the name of the token.
-   */
   name: TypedContractMethod<[], [string], "view">;
 
-  /**
-   * See {IERC20Permit-nonces}.
-   */
   nonces: TypedContractMethod<[owner: AddressLike], [bigint], "view">;
 
-  /**
-   * Get number of checkpoints for `account`.
-   */
   numCheckpoints: TypedContractMethod<[account: AddressLike], [bigint], "view">;
 
-  /**
-   * See {IERC20Permit-permit}.
-   */
   permit: TypedContractMethod<
     [
       owner: AddressLike,
@@ -385,24 +322,12 @@ export interface GovToken extends BaseContract {
 
   roleStore: TypedContractMethod<[], [string], "view">;
 
-  /**
-   * Returns the symbol of the token, usually a shorter version of the name.
-   */
   symbol: TypedContractMethod<[], [string], "view">;
 
-  /**
-   * See {IERC20-totalSupply}.
-   */
   totalSupply: TypedContractMethod<[], [bigint], "view">;
 
-  /**
-   * See {IERC20-transfer}. Requirements: - `to` cannot be the zero address. - the caller must have a balance of at least `amount`.
-   */
   transfer: TypedContractMethod<[to: AddressLike, amount: BigNumberish], [boolean], "nonpayable">;
 
-  /**
-   * See {IERC20-transferFrom}. Emits an {Approval} event indicating the updated allowance. This is not required by the EIP. See the note at the beginning of {ERC20}. NOTE: Does not update the allowance if the current allowance is the maximum `uint256`. Requirements: - `from` and `to` cannot be the zero address. - `from` must have a balance of at least `amount`. - the caller must have allowance for ``from``'s tokens of at least `amount`.
-   */
   transferFrom: TypedContractMethod<
     [from: AddressLike, to: AddressLike, amount: BigNumberish],
     [boolean],

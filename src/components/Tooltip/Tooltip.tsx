@@ -71,6 +71,7 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
   as?: T;
   withPortal?: boolean;
   shouldStopPropagation?: boolean;
+  shouldPreventDefault?: boolean;
   fitHandleWidth?: boolean;
   closeOnDoubleClick?: boolean;
 
@@ -100,6 +101,7 @@ export default function Tooltip<T extends ElementType>({
   as,
   withPortal,
   shouldStopPropagation,
+  shouldPreventDefault = true,
   fitHandleWidth,
   closeOnDoubleClick,
   variant = "underline",
@@ -172,12 +174,14 @@ export default function Tooltip<T extends ElementType>({
 
   const preventClick = useCallback(
     (event: MouseEvent) => {
-      event.preventDefault();
+      if (shouldPreventDefault) {
+        event.preventDefault();
+      }
       if (shouldStopPropagation) {
         event.stopPropagation();
       }
     },
-    [shouldStopPropagation]
+    [shouldPreventDefault, shouldStopPropagation]
   );
 
   useEffect(

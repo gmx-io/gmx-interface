@@ -71,7 +71,10 @@ const { tailwindColors, cssVariables } = generateColorConfig({
   black: { light: "#000000", dark: "#000000" },
   button: {
     secondary: { light: "#E0E0E8", dark: "#23263b" },
+    secondaryHover: { light: "#dadce8", dark: "#282d46" },
     secondaryDisabled: { light: "#E0E0E8", dark: "#1e2033" },
+    primaryHover: { light: "#293ce4", dark: "#2a3de5" },
+    primaryActive: { light: "#2637ce", dark: "#2536cd" },
   },
   fill: {
     surfaceElevated50: { light: "#EDEDF280", dark: "#1E203380" },
@@ -98,7 +101,7 @@ function injectColorsPlugin({ addBase }: any) {
   });
 }
 
-function customUtilsPlugin({ addUtilities, addVariant }: any) {
+function customUtilsPlugin({ addUtilities, addVariant, addComponents }: any) {
   addUtilities({
     ".scrollbar-hide": {
       "scrollbar-width": "none",
@@ -136,6 +139,20 @@ function customUtilsPlugin({ addUtilities, addVariant }: any) {
     ".numbers": {
       letterSpacing: "0.03em",
       whiteSpace: "nowrap",
+    },
+  });
+
+  addVariant("not-group-gmx-hover", [
+    `@media (hover: hover) {:merge(.group):not(:hover) &}`,
+    `@media (hover: none) {:merge(.group):not(:active) &}`,
+  ]);
+  addVariant("not-disabled", [`&:not([disabled])`]);
+  addComponents({
+    ".gmx-hover-gradient": {
+      "@apply gmx-hover:bg-gradient-to-r gmx-hover:from-[#23263B] gmx-hover:to-[#16182E]": {},
+    },
+    ".gmx-hover-gradient-to-l": {
+      "@apply gmx-hover:bg-gradient-to-l gmx-hover:from-[#23263B] gmx-hover:to-[#16182E]": {},
     },
   });
 }

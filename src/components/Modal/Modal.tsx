@@ -32,9 +32,13 @@ export type ModalProps = PropsWithChildren<{
   headerContent?: React.ReactNode;
   footerContent?: ReactNode;
   onAfterOpen?: () => void;
+  /**
+   * If false, you need to add padding and spacing to the children yourself.
+   */
   contentPadding?: boolean;
   qa?: string;
   contentClassName?: string;
+  disableOverflowHandling?: boolean;
 }>;
 
 export default function Modal({
@@ -50,6 +54,7 @@ export default function Modal({
   setIsVisible,
   qa,
   contentClassName,
+  disableOverflowHandling = false,
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement | null>(null);
 
@@ -109,11 +114,17 @@ export default function Modal({
             />
 
             <div
-              className={cx("Modal-content flex flex-col gap-16 p-20", contentClassName)}
+              className={cx(
+                "Modal-content flex flex-col",
+                {
+                  "gap-16": contentPadding,
+                },
+                contentClassName
+              )}
               onClick={stopPropagation}
               data-qa={qa}
             >
-              <div className="Modal-header-wrapper flex flex-col gap-8">
+              <div className="Modal-header-wrapper flex flex-col gap-8 px-20 pt-20">
                 <div className="Modal-title-bar">
                   <div className="Modal-title font-medium text-typography-primary">{label}</div>
                   <div className="Modal-close-button pb-5" onClick={() => setIsVisible(false)}>
@@ -122,12 +133,16 @@ export default function Modal({
                 </div>
                 {headerContent}
               </div>
-              <div className="overflow-auto">
-                <div className={cx("Modal-body", { "no-content-padding": !contentPadding })}>{children}</div>
-              </div>
+              {disableOverflowHandling ? (
+                children
+              ) : (
+                <div className="overflow-auto">
+                  <div className={cx("Modal-body", { "px-20": contentPadding })}>{children}</div>
+                </div>
+              )}
               {footerContent && (
                 <>
-                  <div>{footerContent}</div>
+                  <div className="px-20 pb-20">{footerContent}</div>
                 </>
               )}
             </div>

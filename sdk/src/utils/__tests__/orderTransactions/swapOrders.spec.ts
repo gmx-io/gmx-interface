@@ -1,17 +1,20 @@
 import { zeroAddress, zeroHash } from "viem";
-import { describe, expect, it, vi, beforeAll } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { MARKETS } from "configs/markets";
 import { getTokenBySymbol, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { DecreasePositionSwapType, OrderType } from "types/orders";
+import { ContractPrice, ERC20Address } from "types/tokens";
 import { parseValue } from "utils/numbers";
 import {
   buildSwapOrderPayload,
   buildTwapOrdersPayloads,
   CreateOrderPayload,
+  CreateOrderTxnParams,
   getIsTwapOrderPayload,
+  SwapOrderParams,
 } from "utils/orderTransactions";
 import { decodeTwapUiFeeReceiver } from "utils/twap/uiFeeReceiver";
 
@@ -45,7 +48,7 @@ describe("Swap Order Payloads", () => {
     autoCancel: false,
     externalSwapQuote: undefined,
     triggerRatio: undefined,
-  };
+  } satisfies Partial<SwapOrderParams>;
 
   const USDC = getTokenBySymbol(CHAIN_ID, "USDC");
   const WETH = getWrappedToken(CHAIN_ID);
@@ -53,7 +56,7 @@ describe("Swap Order Payloads", () => {
 
   describe("buildSwapOrderPayload", () => {
     it("Swap Native Token to ERC20", () => {
-      const params = {
+      const params: SwapOrderParams = {
         ...commonParams,
         payTokenAddress: NATIVE_TOKEN_ADDRESS,
         payTokenAmount: parseValue("1", WETH.decimals)!, // 1 ETH
@@ -74,7 +77,7 @@ describe("Swap Order Payloads", () => {
             callbackContract: zeroAddress,
             uiFeeReceiver: UI_FEE_RECEIVER,
             market: zeroAddress,
-            initialCollateralToken: WETH.address,
+            initialCollateralToken: WETH.address as ERC20Address,
             swapPath: [ETH_MARKET.marketTokenAddress],
           },
           numbers: {
@@ -93,12 +96,13 @@ describe("Swap Order Payloads", () => {
           shouldUnwrapNativeToken: true,
           autoCancel: false,
           referralCode: REFERRAL_CODE,
+          dataList: [],
         },
         params,
         tokenTransfersParams: {
           isNativePayment: true,
           isNativeReceive: false,
-          initialCollateralTokenAddress: WETH.address,
+          initialCollateralTokenAddress: WETH.address as ERC20Address,
           initialCollateralDeltaAmount: parseValue("1", WETH.decimals)!,
           tokenTransfers: [
             {
@@ -114,11 +118,11 @@ describe("Swap Order Payloads", () => {
           value: EXECUTION_FEE_AMOUNT + parseValue("1", WETH.decimals)!,
           externalCalls: undefined,
         },
-      });
+      } satisfies CreateOrderTxnParams<SwapOrderParams>);
     });
 
     it("Swap ERC20 to Native Token", () => {
-      const params = {
+      const params: SwapOrderParams = {
         ...commonParams,
         payTokenAddress: USDC.address,
         payTokenAmount: parseValue("1000", USDC.decimals)!, // 1000 USDC
@@ -139,7 +143,7 @@ describe("Swap Order Payloads", () => {
             callbackContract: zeroAddress,
             uiFeeReceiver: UI_FEE_RECEIVER,
             market: zeroAddress,
-            initialCollateralToken: USDC.address,
+            initialCollateralToken: USDC.address as ERC20Address,
             swapPath: [ETH_MARKET.marketTokenAddress],
           },
           numbers: {
@@ -158,12 +162,13 @@ describe("Swap Order Payloads", () => {
           shouldUnwrapNativeToken: true,
           autoCancel: false,
           referralCode: REFERRAL_CODE,
+          dataList: [],
         },
         params,
         tokenTransfersParams: {
           isNativePayment: false,
           isNativeReceive: true,
-          initialCollateralTokenAddress: USDC.address,
+          initialCollateralTokenAddress: USDC.address as ERC20Address,
           initialCollateralDeltaAmount: parseValue("1000", USDC.decimals)!,
           tokenTransfers: [
             {
@@ -184,7 +189,7 @@ describe("Swap Order Payloads", () => {
           value: EXECUTION_FEE_AMOUNT,
           externalCalls: undefined,
         },
-      });
+      } satisfies CreateOrderTxnParams<SwapOrderParams>);
     });
 
     it("swap ERC20 to ERC20", () => {
@@ -209,7 +214,7 @@ describe("Swap Order Payloads", () => {
             callbackContract: zeroAddress,
             uiFeeReceiver: UI_FEE_RECEIVER,
             market: zeroAddress,
-            initialCollateralToken: USDC.address,
+            initialCollateralToken: USDC.address as ERC20Address,
             swapPath: [ETH_MARKET.marketTokenAddress],
           },
           numbers: {
@@ -228,12 +233,13 @@ describe("Swap Order Payloads", () => {
           shouldUnwrapNativeToken: false,
           autoCancel: false,
           referralCode: REFERRAL_CODE,
+          dataList: [],
         },
         params,
         tokenTransfersParams: {
           isNativePayment: false,
           isNativeReceive: false,
-          initialCollateralTokenAddress: USDC.address,
+          initialCollateralTokenAddress: USDC.address as ERC20Address,
           initialCollateralDeltaAmount: parseValue("1000", USDC.decimals)!,
           tokenTransfers: [
             {
@@ -254,7 +260,7 @@ describe("Swap Order Payloads", () => {
           value: EXECUTION_FEE_AMOUNT,
           externalCalls: undefined,
         },
-      });
+      } satisfies CreateOrderTxnParams<SwapOrderParams>);
     });
 
     it("limit swap with trigger ratio", () => {
@@ -280,13 +286,13 @@ describe("Swap Order Payloads", () => {
             callbackContract: zeroAddress,
             uiFeeReceiver: UI_FEE_RECEIVER,
             market: zeroAddress,
-            initialCollateralToken: USDC.address,
+            initialCollateralToken: USDC.address as ERC20Address,
             swapPath: [ETH_MARKET.marketTokenAddress],
           },
           numbers: {
             sizeDeltaUsd: 0n,
             initialCollateralDeltaAmount: parseValue("1000", USDC.decimals)!,
-            triggerPrice: parseValue("1", 30)!,
+            triggerPrice: parseValue("1", 30)! as ContractPrice,
             acceptablePrice: 0n,
             executionFee: EXECUTION_FEE_AMOUNT,
             callbackGasLimit: 0n,
@@ -299,12 +305,13 @@ describe("Swap Order Payloads", () => {
           shouldUnwrapNativeToken: false,
           autoCancel: false,
           referralCode: REFERRAL_CODE,
+          dataList: [],
         },
         params,
         tokenTransfersParams: {
           isNativePayment: false,
           isNativeReceive: false,
-          initialCollateralTokenAddress: USDC.address,
+          initialCollateralTokenAddress: USDC.address as ERC20Address,
           initialCollateralDeltaAmount: parseValue("1000", USDC.decimals)!,
           tokenTransfers: [
             {
@@ -325,7 +332,7 @@ describe("Swap Order Payloads", () => {
           value: EXECUTION_FEE_AMOUNT,
           externalCalls: undefined,
         },
-      });
+      } satisfies CreateOrderTxnParams<SwapOrderParams>);
     });
 
     it("TWAP Swap Native Token to ERC20", () => {
@@ -377,13 +384,13 @@ describe("Swap Order Payloads", () => {
               callbackContract: zeroAddress,
               uiFeeReceiver,
               market: zeroAddress,
-              initialCollateralToken: WETH.address,
+              initialCollateralToken: WETH.address as ERC20Address,
               swapPath: [ETH_MARKET.marketTokenAddress],
             },
             numbers: {
               sizeDeltaUsd: 0n,
               initialCollateralDeltaAmount: params.payTokenAmount / 4n,
-              triggerPrice: parseValue("1", 30)!,
+              triggerPrice: parseValue("1", 30)! as ContractPrice,
               acceptablePrice: 0n,
               executionFee: EXECUTION_FEE_AMOUNT / 4n,
               callbackGasLimit: 0n,
@@ -396,6 +403,7 @@ describe("Swap Order Payloads", () => {
             shouldUnwrapNativeToken: true,
             autoCancel: false,
             referralCode: REFERRAL_CODE,
+            dataList: [],
           },
           params: {
             ...params,
@@ -410,7 +418,7 @@ describe("Swap Order Payloads", () => {
           tokenTransfersParams: {
             isNativePayment: true,
             isNativeReceive: false,
-            initialCollateralTokenAddress: WETH.address,
+            initialCollateralTokenAddress: WETH.address as ERC20Address,
             initialCollateralDeltaAmount: params.payTokenAmount / 4n,
             tokenTransfers: [
               {
@@ -426,7 +434,7 @@ describe("Swap Order Payloads", () => {
             value: EXECUTION_FEE_AMOUNT / 4n + params.payTokenAmount / 4n,
             externalCalls: undefined,
           },
-        };
+        } satisfies CreateOrderTxnParams<SwapOrderParams>;
       });
 
       expect(result).toEqual(expectedOrders);
@@ -458,7 +466,7 @@ describe("Swap Order Payloads", () => {
             callbackContract: zeroAddress,
             uiFeeReceiver: zeroAddress,
             market: zeroAddress,
-            initialCollateralToken: WETH.address,
+            initialCollateralToken: WETH.address as ERC20Address,
             swapPath: [ETH_MARKET.marketTokenAddress],
           },
           numbers: {
@@ -476,13 +484,14 @@ describe("Swap Order Payloads", () => {
           isLong: false,
           shouldUnwrapNativeToken: true,
           autoCancel: false,
+          dataList: [],
           referralCode: zeroHash,
         },
         params,
         tokenTransfersParams: {
           isNativePayment: true,
           isNativeReceive: false,
-          initialCollateralTokenAddress: WETH.address,
+          initialCollateralTokenAddress: WETH.address as ERC20Address,
           initialCollateralDeltaAmount: parseValue("1", WETH.decimals)!,
           tokenTransfers: [
             {
@@ -498,7 +507,7 @@ describe("Swap Order Payloads", () => {
           value: EXECUTION_FEE_AMOUNT + parseValue("1", WETH.decimals)!,
           externalCalls: undefined,
         },
-      });
+      } satisfies CreateOrderTxnParams<SwapOrderParams>);
     });
   });
 });

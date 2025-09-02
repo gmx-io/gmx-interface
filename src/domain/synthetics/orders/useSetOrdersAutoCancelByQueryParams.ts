@@ -98,7 +98,9 @@ export function useSetOrdersAutoCancelByQueryParams() {
       });
 
       if (history.location.search) {
-        history.replace({ search: "" });
+        const query = new URLSearchParams(history.location.search);
+        query.delete("setOrdersAutoCancel");
+        history.replace({ search: query.toString() });
       }
     },
     [setOrdersAutoCancel, ordersInfoData, signer, chainId, history, maxAutoCancelOrders, setPendingTxns]

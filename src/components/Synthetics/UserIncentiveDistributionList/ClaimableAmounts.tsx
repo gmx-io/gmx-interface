@@ -96,7 +96,7 @@ export default function ClaimableAmounts() {
         claimableTokenTitles,
         callback: claimFundsTransactionCallback,
       });
-      mutateClaimableAmounts(true);
+      mutateClaimableAmounts();
       setClaimTermsAcceptedSignature("");
     } finally {
       setIsClaiming(false);

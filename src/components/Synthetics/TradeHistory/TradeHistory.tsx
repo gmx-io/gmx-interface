@@ -59,9 +59,8 @@ export function TradeHistory(p: Props) {
 
   const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
 
-  const {
-    positionsConstants: { minCollateralUsd },
-  } = usePositionsConstantsRequest(chainId);
+  const { positionsConstants } = usePositionsConstantsRequest(chainId);
+  const { minCollateralUsd } = positionsConstants || {};
 
   const {
     tradeActions,

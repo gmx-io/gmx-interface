@@ -9,7 +9,7 @@ type AsyncFnParams<D extends object> = {
 
 type AsyncFn<T, D extends object> = (args: AsyncFnParams<D>) => Promise<T | RetryResult<T>>;
 
-type AsyncResult<T> = {
+export type AsyncResult<T> = {
   data: T | undefined;
   isLoading: boolean;
   error: Error | undefined;

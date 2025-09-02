@@ -183,11 +183,6 @@
   color: var(--color-typography-primary);
 }
 
-.App-header-container-right {
-  display: flex;
-  align-items: center;
-}
-
 .App-header-user {
   display: flex;
   align-items: center;
@@ -197,21 +192,7 @@
   margin-right: 2.4rem;
 }
 
-.App-header-user-address {
-  border: 0.5px solid var(--color-slate-600);
-  height: 3.6rem;
-  border-radius: 0.4rem;
-  display: inline-flex;
-  align-items: center;
-  color: var(--color-typography-primary);
-  position: relative;
-}
-
 @media (max-width: 1335px) {
-  .App-header-user-address {
-    padding: 0 0px;
-  }
-
   .App-header-user-link {
     margin-right: 1.6rem;
   }
@@ -222,11 +203,6 @@
 
   .App-header-user {
     padding-bottom: 0;
-  }
-
-  .App-header-container-right {
-    display: flex;
-    align-items: center;
   }
 
   .App-header-link-desktop {

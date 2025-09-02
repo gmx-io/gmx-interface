@@ -1,11 +1,15 @@
 import { Trans } from "@lingui/macro";
 
-import { BOTANIX } from "config/chains";
+import { BOTANIX, getChainName } from "config/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { getIsExpressSupported } from "config/features";
+import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
+import { MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "config/multichain";
 import { DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/twap";
+import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { SettlementChainWarningContainer } from "domain/multichain/SettlementChainWarningContainer";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { getIsSubaccountActive } from "domain/synthetics/subaccount";
 import { useChainId } from "lib/chains";
@@ -13,6 +17,7 @@ import { EMPTY_ARRAY } from "lib/objects";
 import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
@@ -25,7 +30,7 @@ import ExpressIcon from "img/ic_express.svg?react";
 import HourGlassIcon from "img/ic_hourglass.svg?react";
 import OneClickIcon from "img/ic_one_click.svg?react";
 
-import { SettingsSection, InputSetting, SettingButton, Chip, TradingMode } from "./shared";
+import { Chip, InputSetting, SettingButton, SettingsSection, TradingMode } from "./shared";
 
 interface TradingSettingsProps {
   tradingMode: TradingMode | undefined;
@@ -48,12 +53,13 @@ export function TradingSettings({
   numberOfParts,
   onClose,
 }: TradingSettingsProps) {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
   const isGeminiWallet = useIsGeminiWallet();
-  const isExpressTradingDisabled = isOutOfGasPaymentBalance || isGeminiWallet;
+  const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
+  const isExpressTradingDisabled = (isOutOfGasPaymentBalance && srcChainId === undefined) || isGeminiWallet;
 
   return (
     <div>
@@ -63,23 +69,24 @@ export function TradingSettings({
             <div className="text-14 font-medium text-typography-primary">
               <Trans>Trading Mode</Trans>
             </div>
-
-            <SettingButton
-              title={<Trans>Classic</Trans>}
-              description={<Trans>On-chain signing for every transaction.</Trans>}
-              info={
-                <Trans>
-                  Your wallet, your keys.
-                  <br />
-                  <br />
-                  You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments
-                  in ETH.
-                </Trans>
-              }
-              icon={<HourGlassIcon className="size-28" />}
-              active={tradingMode === TradingMode.Classic}
-              onClick={() => handleTradingModeChange(TradingMode.Classic)}
-            />
+            {!srcChainId && (
+              <SettingButton
+                title={<Trans>Classic</Trans>}
+                description={<Trans>On-chain signing for every transaction.</Trans>}
+                info={
+                  <Trans>
+                    Your wallet, your keys.
+                    <br />
+                    <br />
+                    You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas
+                    payments in ETH.
+                  </Trans>
+                }
+                icon={<HourGlassIcon className="size-28" />}
+                active={tradingMode === TradingMode.Classic}
+                onClick={() => handleTradingModeChange(TradingMode.Classic)}
+              />
+            )}
 
             <SettingButton
               title={<Trans>Express</Trans>}
@@ -146,12 +153,47 @@ export function TradingSettings({
 
             {settings.expressOrdersEnabled && (
               <GasPaymentTokenSelector
-                curentTokenAddress={settings.gasPaymentTokenAddress}
+                currentTokenAddress={settings.gasPaymentTokenAddress}
                 onSelectToken={settings.setGasPaymentTokenAddress}
               />
             )}
           </SettingsSection>
         </>
+      )}
+
+      {srcChainId && (
+        <SettingsSection className="mt-2">
+          <div className="flex items-center justify-between">
+            <TooltipWithPortal
+              content={<Trans>Network for Cross-Chain Deposits and positions.</Trans>}
+              handle={<Trans>Settlement Chain</Trans>}
+            />
+            <DropdownSelector
+              slim
+              variant="ghost"
+              value={settlementChainId}
+              onChange={setSettlementChainId}
+              options={MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[srcChainId]}
+              item={({ option }) => (
+                <div className="flex items-center gap-8 text-typography-primary">
+                  <img src={CHAIN_ID_TO_NETWORK_ICON[option]} alt={getChainName(option)} className="size-20" />
+                  <span>{getChainName(option)}</span>
+                </div>
+              )}
+              button={
+                <div className="flex items-center gap-4 text-typography-primary">
+                  <img
+                    src={CHAIN_ID_TO_NETWORK_ICON[settlementChainId]}
+                    alt={getChainName(settlementChainId)}
+                    className="size-20"
+                  />
+                  <span>{getChainName(settlementChainId)}</span>
+                </div>
+              }
+            />
+          </div>
+          <SettlementChainWarningContainer />
+        </SettingsSection>
       )}
 
       <SettingsSection className="mt-2">

@@ -1,7 +1,3 @@
-import { useDisconnect } from "wagmi";
-
-import { CURRENT_PROVIDER_LOCALSTORAGE_KEY } from "config/localStorage";
-import { SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 import { MobileSideNav } from "components/SideNav/MobileSideNav";
@@ -14,15 +10,7 @@ type Props = {
 };
 
 export function AppHeader({ leftContent }: Props) {
-  const { disconnect } = useDisconnect();
   const { setIsSettingsVisible } = useSettings();
-
-  const disconnectAccountAndCloseSettings = () => {
-    disconnect();
-    localStorage.removeItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY);
-    localStorage.removeItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY);
-    setIsSettingsVisible(false);
-  };
 
   const openSettings = () => {
     setIsSettingsVisible(true);
@@ -37,7 +25,6 @@ export function AppHeader({ leftContent }: Props) {
 
       <div className="shrink-0">
         <AppHeaderUser
-          disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
           openSettings={openSettings}
           menuToggle={
             <div className="hidden max-[1024px]:block">

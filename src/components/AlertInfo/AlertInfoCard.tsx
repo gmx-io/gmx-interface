@@ -9,7 +9,7 @@ type Props = {
   /**
    * @default "info"
    */
-  type?: "warning" | "info";
+  type?: "warning" | "info" | "error";
   children: ReactNode;
   className?: string;
   onClose?: () => void;
@@ -34,7 +34,7 @@ export function AlertInfoCard({ children, type = "info", onClose, className, hid
   return (
     <ColorfulBanner
       className={className}
-      color={type === "info" ? "blue" : "yellow"}
+      color={type === "info" ? "blue" : type === "warning" ? "yellow" : "red"}
       icon={Icon}
       onClose={hideClose ? undefined : handleClose}
     >

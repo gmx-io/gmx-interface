@@ -1,16 +1,39 @@
-import { ethers, Signer } from "ethers";
+import { ethers, Provider, Signer } from "ethers";
 import { encodeFunctionData } from "viem";
 
+import type { ContractsChainId, SourceChainId } from "config/static/chains";
+import {
+  estimateArbitraryRelayFee,
+  getArbitraryRelayParamsAndPayload,
+  getRawBaseRelayerParams,
+} from "domain/multichain/arbitraryRelayParams";
 import { callContract } from "lib/contracts";
+import { ExpressTxnData, sendExpressTransaction } from "lib/transactions";
+import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import SubaccountRouter from "sdk/abis/SubaccountRouter.json";
 import { getContract } from "sdk/configs/contracts";
+import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
+import { nowInSeconds } from "sdk/utils/time";
+import { MultichainSubaccountRouter, SubaccountGelatoRelayRouter } from "typechain-types";
 
-import { getGelatoRelayRouterDomain, hashRelayParams, RelayParamsPayload } from "../express";
+import {
+  ExpressTransactionBuilder,
+  getExpressContractAddress,
+  getGelatoRelayRouterDomain,
+  GlobalExpressParams,
+  hashRelayParams,
+  RelayParamsPayload,
+} from "../express";
+import { getMultichainInfoFromSigner, getOrderRelayRouterAddress } from "../express/expressOrderUtils";
 import { Subaccount } from "../subaccount";
 
-export async function removeSubaccountTxn(chainId: number, signer: Signer, subaccountAddress: string) {
+export async function removeSubaccountWalletTxn(
+  chainId: ContractsChainId,
+  signer: Signer,
+  subaccountAddress: string
+): Promise<void> {
   const subaccountRouter = new ethers.Contract(getContract(chainId, "SubaccountRouter"), SubaccountRouter.abi, signer);
 
   return callContract(chainId, subaccountRouter, "removeSubaccount", [subaccountAddress], {
@@ -26,44 +49,79 @@ export async function buildAndSignRemoveSubaccountTxn({
   relayParamsPayload,
   subaccount,
   signer,
+  relayerFeeTokenAddress,
+  relayerFeeAmount,
+  emptySignature,
 }: {
-  chainId: number;
+  chainId: ContractsChainId;
   relayParamsPayload: RelayParamsPayload;
   subaccount: Subaccount;
-  signer: Signer;
-}) {
-  const signature = await signRemoveSubaccountPayload({
-    signer,
-    relayParams: relayParamsPayload,
-    subaccountAddress: subaccount.address,
-    chainId,
+  signer: WalletSigner;
+  relayerFeeTokenAddress: string;
+  relayerFeeAmount: bigint;
+  emptySignature?: boolean;
+}): Promise<ExpressTxnData> {
+  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
+
+  const isMultichain = srcChainId !== undefined;
+
+  const relayRouterAddress = getExpressContractAddress(chainId, {
+    isSubaccount: true,
+    isMultichain,
+    scope: "subaccount",
   });
 
+  let signature: string;
+
+  if (emptySignature) {
+    signature = "0x";
+  } else {
+    signature = await signRemoveSubaccountPayload({
+      signer,
+      relayParams: relayParamsPayload,
+      subaccountAddress: subaccount.address,
+      chainId,
+    });
+  }
+
   const removeSubaccountCallData = encodeFunctionData({
-    abi: abis.SubaccountGelatoRelayRouter,
+    abi: isMultichain ? abis.MultichainSubaccountRouter : abis.SubaccountGelatoRelayRouter,
     functionName: "removeSubaccount",
-    args: [{ ...relayParamsPayload, signature }, await signer.getAddress(), subaccount.address],
+    args: isMultichain
+      ? ([
+          { ...relayParamsPayload, signature },
+          signer.address,
+          srcChainId ?? chainId,
+          subaccount.address,
+        ] satisfies Parameters<MultichainSubaccountRouter["removeSubaccount"]>)
+      : ([{ ...relayParamsPayload, signature }, signer.address, subaccount.address] satisfies Parameters<
+          SubaccountGelatoRelayRouter["removeSubaccount"]
+        >),
   });
 
   return {
     callData: removeSubaccountCallData,
-    contractAddress: getContract(chainId, "SubaccountGelatoRelayRouter"),
-    feeToken: relayParamsPayload.fee.feeToken,
-    feeAmount: relayParamsPayload.fee.feeAmount,
+    to: relayRouterAddress,
+    feeToken: relayerFeeTokenAddress,
+    feeAmount: relayerFeeAmount,
   };
 }
 
-export async function signRemoveSubaccountPayload({
+async function signRemoveSubaccountPayload({
   signer,
   relayParams,
   subaccountAddress,
   chainId,
 }: {
-  signer: Signer;
-  relayParams: RelayParamsPayload;
+  signer: WalletSigner;
+  relayParams: RelayParamsPayload | RelayParamsPayload;
   subaccountAddress: string;
-  chainId: number;
+  chainId: ContractsChainId;
 }) {
+  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
+
+  const relayRouterAddress = getOrderRelayRouterAddress(chainId, true, srcChainId !== undefined);
+
   const types = {
     RemoveSubaccount: [
       { name: "subaccount", type: "address" },
@@ -71,10 +129,10 @@ export async function signRemoveSubaccountPayload({
     ],
   };
 
-  const domain = getGelatoRelayRouterDomain(chainId, true);
+  const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, relayRouterAddress);
 
   const typedData = {
-    subaccountAddress,
+    subaccount: subaccountAddress,
     relayParams: hashRelayParams(relayParams),
   };
 
@@ -83,5 +141,111 @@ export async function signRemoveSubaccountPayload({
     types,
     typedData,
     domain,
+  });
+}
+
+export async function removeSubaccountExpressTxn({
+  chainId,
+  provider,
+  account,
+  srcChainId,
+  signer,
+  subaccount,
+  globalExpressParams,
+  isSponsoredCallAvailable,
+}: {
+  chainId: ContractsChainId;
+  provider: Provider;
+  account: string;
+  srcChainId: SourceChainId | undefined;
+  signer: WalletSigner;
+  subaccount: Subaccount;
+  globalExpressParams: GlobalExpressParams;
+  isSponsoredCallAvailable: boolean;
+}) {
+  if (!provider || !account) {
+    throw new Error("No provider or account");
+  }
+
+  const { rawBaseRelayParamsPayload, baseRelayFeeSwapParams } = getRawBaseRelayerParams({
+    chainId,
+    account,
+    globalExpressParams: globalExpressParams,
+  });
+
+  if (!rawBaseRelayParamsPayload || !baseRelayFeeSwapParams) {
+    throw new Error("No base express params");
+  }
+
+  const getTxnData: ExpressTransactionBuilder = async ({ relayParams, gasPaymentParams, subaccount }) => {
+    if (!subaccount) {
+      throw new Error("No subaccount");
+    }
+
+    const txnData = await buildAndSignRemoveSubaccountTxn({
+      chainId,
+      signer,
+      subaccount,
+      relayParamsPayload: {
+        ...relayParams,
+        deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+      },
+      relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
+      relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
+      emptySignature: true,
+    });
+
+    return {
+      txnData,
+    };
+  };
+
+  const relayerFeeAmount = await estimateArbitraryRelayFee({
+    chainId,
+    provider,
+    rawRelayParamsPayload: rawBaseRelayParamsPayload,
+    expressTransactionBuilder: getTxnData,
+    gasPaymentParams: baseRelayFeeSwapParams.gasPaymentParams,
+    subaccount: subaccount,
+  });
+
+  if (relayerFeeAmount === undefined) {
+    throw new Error("No relay fee amount");
+  }
+
+  const { relayFeeParams, relayParamsPayload } = getArbitraryRelayParamsAndPayload({
+    chainId,
+    account,
+    isGmxAccount: srcChainId !== undefined,
+    relayerFeeAmount,
+    globalExpressParams: globalExpressParams,
+    subaccount,
+  });
+
+  if (!relayFeeParams || !relayParamsPayload) {
+    throw new Error("No relayFeeParams or relayParamsPayload");
+  }
+
+  const txnData = await buildAndSignRemoveSubaccountTxn({
+    chainId,
+    signer,
+    subaccount,
+    relayParamsPayload: {
+      ...relayParamsPayload,
+      deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+    },
+    relayerFeeAmount: relayFeeParams.gasPaymentParams.relayerFeeAmount,
+    relayerFeeTokenAddress: relayFeeParams.gasPaymentParams.relayerFeeTokenAddress,
+    emptySignature: false,
+  });
+
+  if (!txnData) {
+    throw new Error("No txnData");
+  }
+
+  await sendExpressTransaction({
+    chainId,
+    isSponsoredCall: isSponsoredCallAvailable,
+    txnData,
   });
 }
