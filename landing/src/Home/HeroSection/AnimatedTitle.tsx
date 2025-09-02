@@ -25,7 +25,7 @@ export function AnimatedTitle() {
       t`with 100x leverage`,
       t`70+ crypto tokens`,
       t`multiple asset classes`,
-      t`deep liquid market`,
+      t`deep liquid markets`,
       t`from 6+ blockchains`,
     ];
   }, []);

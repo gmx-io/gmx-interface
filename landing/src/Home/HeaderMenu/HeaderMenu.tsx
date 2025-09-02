@@ -43,7 +43,7 @@ export function HeaderMenu() {
               ))}
             </div>
             {!isMenuOpen && (
-              <button className="btn-landing rounded-8 px-16 py-10 text-14" onClick={goToTradeArbitrum}>
+              <button className="btn-landing rounded-8 px-16 py-10 text-14 leading-[16px]" onClick={goToTradeArbitrum}>
                 <Trans>Open App</Trans>
               </button>
             )}
@@ -61,7 +61,7 @@ export function HeaderMenu() {
       </div>
       {isMenuOpen && (
         <div className="flex h-full w-full flex-col px-16 pb-20 pt-8">
-          <div className="mb-32 flex flex-col">
+          <div className="mb-32 flex flex-col text-14">
             {headerLinks.map((link) => (
               <a
                 href={link.href}
@@ -75,7 +75,7 @@ export function HeaderMenu() {
           <button className="btn-landing w-full rounded-8 px-16 py-10 text-14" onClick={goToTradeArbitrum}>
             <Trans>Open App</Trans>
           </button>
-          <div className="mt-auto flex w-full flex-col items-center gap-20 text-slate-100">
+          <div className="mt-auto flex w-full flex-col items-center gap-20 text-12 text-slate-100">
             <p>
               <Trans>Driven by our community</Trans>
             </p>

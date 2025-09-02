@@ -88,8 +88,8 @@ export function usePoolsData(): Partial<PoolsData> {
         const market = sortedAggregatedMarketInfos[marketIndex];
         const marketApy =
           market.chainId === ARBITRUM
-            ? aggregatedPerformance.arbitrum[market.id].performanceApy
-            : aggregatedPerformance.avalanche[market.id].performanceApy;
+            ? aggregatedPerformance.arbitrum[market.id]?.performanceApy ?? 0
+            : aggregatedPerformance.avalanche[market.id]?.performanceApy ?? 0;
         if (Number(marketIndex) < 20 && marketApy > gmApy) {
           gmApy = marketApy;
         }
@@ -98,7 +98,9 @@ export function usePoolsData(): Partial<PoolsData> {
       if (gmApy <= 0.1) {
         for (const market of sortedAggregatedMarketInfos) {
           const marketApy =
-            market.chainId === ARBITRUM ? arbitrumApys.markets[market.id].apy : avalancheApys.markets[market.id].apy;
+            market.chainId === ARBITRUM
+              ? arbitrumApys.markets[market.id]?.apy ?? 0
+              : avalancheApys.markets[market.id]?.apy ?? 0;
           if (marketApy > gmApy) {
             gmApy = marketApy;
           }

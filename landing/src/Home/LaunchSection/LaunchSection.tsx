@@ -9,7 +9,7 @@ export function LaunchSection() {
     chainId: REDIRECT_CHAIN_IDS.Arbitum,
   });
   return (
-    <section className="text-fiord-700 flex w-full items-center justify-center px-16 py-80 sm:px-40 sm:py-[120px]">
+    <section className="text-fiord-700 flex w-full items-center justify-center bg-white px-16 py-80 sm:px-40 sm:py-[120px]">
       <div className="flex max-w-[1200px] flex-col items-stretch justify-center gap-24 sm:items-center lg:flex-row">
         <div className="flex flex-1 flex-col items-stretch sm:items-start">
           <h2 className="text-heading-2 mb-20 sm:mb-24">
@@ -28,7 +28,7 @@ export function LaunchSection() {
             <Trans>Open App</Trans>
           </button>
         </div>
-        <div className="grid grid-flow-row grid-cols-1 gap-16 sm:grid-cols-2">
+        <div className="grid w-full grid-flow-row grid-cols-1 gap-16 md:grid-cols-3 lg:w-auto lg:grid-cols-2">
           <LaunchButtonContainer chainId={REDIRECT_CHAIN_IDS.Arbitum} />
           <LaunchButtonContainer chainId={REDIRECT_CHAIN_IDS.Base} />
           <LaunchButtonContainer chainId={REDIRECT_CHAIN_IDS.Solana} />

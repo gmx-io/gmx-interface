@@ -45,7 +45,7 @@ export function useGoToTrade({ buttonPosition, chainId }: Props) {
 
     const redirectUrl = REDIRECT_MAP[chainId];
     if (redirectUrl) {
-      redirectWithWarning(redirectUrl);
+      redirectWithWarning(redirectUrl, chainId);
     }
   }, [redirectWithWarning, shouldShowRedirectModal, buttonPosition, chainId]);
 }

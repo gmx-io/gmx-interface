@@ -33,7 +33,7 @@ export function PoolCard({ name, apr, description, iconComponent, coinImage, onC
     <div
       onClick={onClick}
       style={style}
-      className="bg-fiord-600 duration-180 group relative h-[200px] w-full cursor-pointer overflow-hidden rounded-20 bg-cover text-white transition-transform hover:-translate-y-4 sm:h-[380px] sm:w-[384px]"
+      className="bg-fiord-600 duration-180 group relative h-[200px] w-full cursor-pointer overflow-hidden rounded-20 bg-cover text-white transition-transform hover:-translate-y-4 lg:h-[380px] lg:w-[384px]"
     >
       <BgPoolsLines className="duration-180 absolute left-0 top-0 h-full w-full transition-transform group-hover:translate-y-4" />
       <img

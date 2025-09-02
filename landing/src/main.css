@@ -9,7 +9,7 @@
   }
   html {
     /* Restore native webkit behavior */
-    @apply leading-base;
+    @apply leading-base bg-fiord-700;
   }
 }
 

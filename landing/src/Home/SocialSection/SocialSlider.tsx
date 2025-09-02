@@ -41,7 +41,7 @@ function Slides() {
         postLink="https://x.com/Rewkang/status/1579864052834381825"
         date="5:58 PM · Oct 11, 2022"
       >
-        <>
+        <div className="flex-grow-1 flex h-full flex-col justify-between">
           <Trans>
             <p>
               Tried <span className="text-blue-100">@GMX_IO</span> for the first time.{" "}
@@ -49,8 +49,8 @@ function Slides() {
             <p> Pretty impressive experience - no slippage, fast execution </p>
             <p> Low size caps, but fun to do some degen gambling with </p>
           </Trans>
-          <img src={AndrewAttachment} alt="Andrew Attachment" className="mt-8 w-full object-cover" />
-        </>
+        </div>
+        <img src={AndrewAttachment} alt="Andrew Attachment" className="radius-8 w-full object-cover" />
       </SocialCard>
       <SocialCard
         author="Lucky"
@@ -59,7 +59,7 @@ function Slides() {
         postLink="https://x.com/LLuciano_BTC/status/1729126687915364713"
         date="2:15 PM · Nov 27, 2023"
       >
-        <>
+        <div className="flex-grow-1 flex h-full flex-col justify-between">
           <Trans>
             <p>
               <span className="text-blue-100">$GMX</span> has rightfully earned its title as the perpetual trading
@@ -72,9 +72,8 @@ function Slides() {
               <span className="text-blue-100">see more</span>
             </p>
           </Trans>
-
-          <img src={LuckyAttachment} alt="Lucky Attachment" className="mt-8 h-[70px] w-full object-cover sm:h-auto" />
-        </>
+        </div>
+        <img src={LuckyAttachment} alt="Lucky Attachment" className="radius-8 h-[70px] w-full object-cover sm:h-auto" />
       </SocialCard>
       <SocialCard
         author="Chainlink"
@@ -83,7 +82,7 @@ function Slides() {
         postLink="https://x.com/chainlink/status/1826716413249421376"
         date="10:21 PM · Aug 22, 2024"
       >
-        <>
+        <div className="flex-grow-1 flex h-full flex-col justify-between">
           <Trans>
             <p>
               ⬡ Chainlink Data Story ⬡ <br />
@@ -96,8 +95,8 @@ function Slides() {
               <span className="text-blue-100">https://dune.com/gmx-io/gmx-analytics#v2-volume</span>
             </p>
           </Trans>
-          <img src={ChainLinkAttachment} alt="ChainLink Attachment" className="w-full object-cover" />
-        </>
+        </div>
+        <img src={ChainLinkAttachment} alt="ChainLink Attachment" className="radius-8 w-full object-cover" />
       </SocialCard>
       <SocialCard
         author="GMX"
@@ -106,13 +105,16 @@ function Slides() {
         postLink="https://x.com/GMX_IO/status/1911726474442244304"
         date="5:49 PM · Apr 15, 2025"
       >
-        <>
-          <p>🔷 24h Volume: $1.01 Billion.</p>
-          <p>
-            Thank you to the hundreds of thousands of GMX users who continue to support permissionless onchain trading.
-          </p>
-        </>
-        <img src={GMXAttachment} alt="GMX Attachment" className="w-full object-cover" />
+        <div className="flex-grow-1 flex h-full flex-col justify-between">
+          <Trans>
+            <p>🔷 24h Volume: $1.01 Billion.</p>
+            <p>
+              Thank you to the hundreds of thousands of GMX users who continue to support permissionless onchain
+              trading.
+            </p>
+          </Trans>
+        </div>
+        <img src={GMXAttachment} alt="GMX Attachment" className="radius-8 w-full object-cover" />
       </SocialCard>
       <SocialCard
         author="LayerZero"
@@ -121,22 +123,24 @@ function Slides() {
         postLink="https://x.com/LayerZero_Labs/status/1911726474442244304"
         date="12:21 PM · Apr 14, 2025"
       >
-        <>
-          <p>
-            With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion!
-            The integration brings GMX:
-          </p>
-          <ul className="list-disc pl-14">
-            <li>The ability to expand to 125+ chains</li>
-            <li>Full ownership of all contracts and security</li>
-            <li>Fast, zero-slippage transfers</li>
-            <li>
-              Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications...{" "}
-              <span className="text-blue-100">see more</span>
-            </li>
-          </ul>
-        </>
-        <img src={LayerZeroAttachment} alt="LayerZero Attachment" className="w-full object-cover" />
+        <div className="flex-grow-1 flex h-full flex-col justify-between">
+          <Trans>
+            <p>
+              With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion!
+              The integration brings GMX:
+            </p>
+            <ul className="list-disc pl-14">
+              <li>The ability to expand to 125+ chains</li>
+              <li>Full ownership of all contracts and security</li>
+              <li>Fast, zero-slippage transfers</li>
+              <li>
+                Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications...{" "}
+                <span className="text-blue-100">see more</span>
+              </li>
+            </ul>
+          </Trans>
+        </div>
+        <img src={LayerZeroAttachment} alt="LayerZero Attachment" className="radius-8 w-full object-cover" />
       </SocialCard>
       <SocialCard
         author="Token Terminal"
@@ -145,7 +149,7 @@ function Slides() {
         postLink="https://x.com/tokenterminal/status/1905625374475583606"
         date="3:17 PM · Mar 28, 2025"
       >
-        <>
+        <div className="flex-grow-1 flex h-full flex-col justify-between">
           <Trans>
             <p>
               <span className="text-blue-100">@GMX_IO</span> enters into a Data Partnership with Token TerminalGMX is a
@@ -158,8 +162,8 @@ function Slides() {
               data-driven stakeholder reporting.
             </p>
           </Trans>
-          <img src={TokenTerminalAttachment} alt="Token Terminal Attachment" className="w-full object-cover" />
-        </>
+        </div>
+        <img src={TokenTerminalAttachment} alt="Token Terminal Attachment" className="radius-8 w-full object-cover" />
       </SocialCard>
       <SocialCard
         author="Tradao"
@@ -168,7 +172,7 @@ function Slides() {
         postLink="https://x.com/Tradaoperp/status/1747957871969702061"
         date="1:23 PM · Jan 18, 2024"
       >
-        <>
+        <div className="flex-grow-1 flex h-full flex-col justify-between">
           <Trans>
             <p>
               <span className="text-blue-100">#GMX V2</span>'s OI looks great
@@ -178,8 +182,8 @@ function Slides() {
               Check more: <span className="text-blue-100">https://tradao.xyz/#/open-interest</span>
             </p>
           </Trans>
-          <img src={TradaoAttachment} alt="Tradao Attachment" className="w-full object-cover" />
-        </>
+        </div>
+        <img src={TradaoAttachment} alt="Tradao Attachment" className="radius-8 w-full object-cover" />
       </SocialCard>
       <SocialCard
         author="PressieMoonBoy"
@@ -188,7 +192,7 @@ function Slides() {
         postLink="https://x.com/PressieMoonBoy/status/1530543648206626818"
         date="3:36 PM · May 28, 2022"
       >
-        <>
+        <div className="flex-grow-1 flex h-full flex-col justify-between">
           <Trans>
             <p>
               Have to keep an eye on <span className="text-blue-100">@GMX_IO</span> here. While all of DeFi is in
@@ -197,8 +201,8 @@ function Slides() {
               the Arb airdrop
             </p>
           </Trans>
-          <img src={MoonboyAttachment} alt="Moonboy Attachment" className="w-full object-cover" />
-        </>
+        </div>
+        <img src={MoonboyAttachment} alt="Moonboy Attachment" className="radius-8 w-full object-cover" />
       </SocialCard>
     </>
   );
