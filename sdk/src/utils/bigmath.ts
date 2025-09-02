@@ -5,7 +5,7 @@ export const bigMath = {
   mulDiv(x: bigint, y: bigint, z: bigint, roundUpMagnitude = false) {
     const result = (x * y) / z;
 
-    if (roundUpMagnitude && this.mullmod(x, y, z) > 0n) {
+    if (roundUpMagnitude && this.mulmod(x, y, z) > 0n) {
       return result + 1n;
     }
 
@@ -39,7 +39,7 @@ export const bigMath = {
   divRoundUp(x: bigint, y: bigint) {
     return (x + y - 1n) / y;
   },
-  mullmod(x: bigint, y: bigint, m: bigint): bigint {
+  mulmod(x: bigint, y: bigint, m: bigint): bigint {
     return (x * y) % m;
   },
 };

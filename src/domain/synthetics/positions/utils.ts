@@ -158,13 +158,12 @@ export function getEstimatedLiquidationTimeInHours(
 
   priceImpactDeltaUsd = priceImpactDeltaUsd + pendingImpactUsd;
 
+  // Ignore positive price impact
   if (priceImpactDeltaUsd > 0) {
     priceImpactDeltaUsd = 0n;
   } else if (priceImpactDeltaUsd < maxNegativePriceImpactUsd) {
     priceImpactDeltaUsd = maxNegativePriceImpactUsd;
   }
-
-  // Ignore positive price impact
 
   const totalFeesPerHour =
     bigMath.abs(borrowFeePerHour) + (fundingFeePerHour < 0 ? bigMath.abs(fundingFeePerHour) : 0n);
