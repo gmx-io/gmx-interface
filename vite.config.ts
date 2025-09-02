@@ -50,7 +50,7 @@ export default defineConfig(({ mode }) => {
     build: {
       assetsInlineLimit: 0,
       outDir: "build",
-      sourcemap: false,
+      sourcemap: true,
       rollupOptions: {
         maxParallelFileOps: 2,
         output: {

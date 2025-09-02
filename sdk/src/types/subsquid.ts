@@ -329,13 +329,6 @@ export interface AnnualizedPerformanceObject {
   __typename?: "AnnualizedPerformanceObject";
   address: Scalars["String"]["output"];
   entity: Scalars["String"]["output"];
-  performance: Scalars["BigInt"]["output"];
-}
-
-export interface AnnualizedPerformanceObject {
-  __typename?: "AnnualizedPerformanceObject";
-  address: Scalars["String"]["output"];
-  entity: Scalars["String"]["output"];
   longTokenPerformance: Scalars["BigInt"]["output"];
   shortTokenPerformance: Scalars["BigInt"]["output"];
   uniswapV2Performance: Scalars["BigInt"]["output"];
@@ -674,6 +667,12 @@ export enum ClaimActionOrderByInput {
   transaction_blockNumber_DESC = "transaction_blockNumber_DESC",
   transaction_blockNumber_DESC_NULLS_FIRST = "transaction_blockNumber_DESC_NULLS_FIRST",
   transaction_blockNumber_DESC_NULLS_LAST = "transaction_blockNumber_DESC_NULLS_LAST",
+  transaction_chainId_ASC = "transaction_chainId_ASC",
+  transaction_chainId_ASC_NULLS_FIRST = "transaction_chainId_ASC_NULLS_FIRST",
+  transaction_chainId_ASC_NULLS_LAST = "transaction_chainId_ASC_NULLS_LAST",
+  transaction_chainId_DESC = "transaction_chainId_DESC",
+  transaction_chainId_DESC_NULLS_FIRST = "transaction_chainId_DESC_NULLS_FIRST",
+  transaction_chainId_DESC_NULLS_LAST = "transaction_chainId_DESC_NULLS_LAST",
   transaction_from_ASC = "transaction_from_ASC",
   transaction_from_ASC_NULLS_FIRST = "transaction_from_ASC_NULLS_FIRST",
   transaction_from_ASC_NULLS_LAST = "transaction_from_ASC_NULLS_LAST",
@@ -1986,6 +1985,12 @@ export enum DistributionOrderByInput {
   transaction_blockNumber_DESC = "transaction_blockNumber_DESC",
   transaction_blockNumber_DESC_NULLS_FIRST = "transaction_blockNumber_DESC_NULLS_FIRST",
   transaction_blockNumber_DESC_NULLS_LAST = "transaction_blockNumber_DESC_NULLS_LAST",
+  transaction_chainId_ASC = "transaction_chainId_ASC",
+  transaction_chainId_ASC_NULLS_FIRST = "transaction_chainId_ASC_NULLS_FIRST",
+  transaction_chainId_ASC_NULLS_LAST = "transaction_chainId_ASC_NULLS_LAST",
+  transaction_chainId_DESC = "transaction_chainId_DESC",
+  transaction_chainId_DESC_NULLS_FIRST = "transaction_chainId_DESC_NULLS_FIRST",
+  transaction_chainId_DESC_NULLS_LAST = "transaction_chainId_DESC_NULLS_LAST",
   transaction_from_ASC = "transaction_from_ASC",
   transaction_from_ASC_NULLS_FIRST = "transaction_from_ASC_NULLS_FIRST",
   transaction_from_ASC_NULLS_LAST = "transaction_from_ASC_NULLS_LAST",
@@ -4047,46 +4052,73 @@ export enum MultichainFundingOperation {
   withdrawal = "withdrawal",
 }
 
-export interface MultichainFundingReceiveEvents {
-  __typename?: "MultichainFundingReceiveEvents";
-  deliveredTimestamp?: Maybe<Scalars["Int"]["output"]>;
-  deliveredTxn?: Maybe<Scalars["String"]["output"]>;
+export interface MultichainFundingReceiveEvent {
+  __typename?: "MultichainFundingReceiveEvent";
+  deliveredTxn?: Maybe<Transaction>;
   id: Scalars["String"]["output"];
   isDeliveryError?: Maybe<Scalars["Boolean"]["output"]>;
   isUncertain: Scalars["Boolean"]["output"];
   operation: MultichainFundingOperation;
   receivedAmount: Scalars["BigInt"]["output"];
-  receivedTimestamp: Scalars["Int"]["output"];
-  receivedTxn: Scalars["String"]["output"];
+  receivedTxn: Transaction;
   sourceChainId: Scalars["Int"]["output"];
 }
 
-export interface MultichainFundingReceiveEventsConnection {
-  __typename?: "MultichainFundingReceiveEventsConnection";
-  edges: Array<MultichainFundingReceiveEventsEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars["Int"]["output"];
-}
-
-export interface MultichainFundingReceiveEventsEdge {
-  __typename?: "MultichainFundingReceiveEventsEdge";
+export interface MultichainFundingReceiveEventEdge {
+  __typename?: "MultichainFundingReceiveEventEdge";
   cursor: Scalars["String"]["output"];
-  node: MultichainFundingReceiveEvents;
+  node: MultichainFundingReceiveEvent;
 }
 
-export enum MultichainFundingReceiveEventsOrderByInput {
-  deliveredTimestamp_ASC = "deliveredTimestamp_ASC",
-  deliveredTimestamp_ASC_NULLS_FIRST = "deliveredTimestamp_ASC_NULLS_FIRST",
-  deliveredTimestamp_ASC_NULLS_LAST = "deliveredTimestamp_ASC_NULLS_LAST",
-  deliveredTimestamp_DESC = "deliveredTimestamp_DESC",
-  deliveredTimestamp_DESC_NULLS_FIRST = "deliveredTimestamp_DESC_NULLS_FIRST",
-  deliveredTimestamp_DESC_NULLS_LAST = "deliveredTimestamp_DESC_NULLS_LAST",
-  deliveredTxn_ASC = "deliveredTxn_ASC",
-  deliveredTxn_ASC_NULLS_FIRST = "deliveredTxn_ASC_NULLS_FIRST",
-  deliveredTxn_ASC_NULLS_LAST = "deliveredTxn_ASC_NULLS_LAST",
-  deliveredTxn_DESC = "deliveredTxn_DESC",
-  deliveredTxn_DESC_NULLS_FIRST = "deliveredTxn_DESC_NULLS_FIRST",
-  deliveredTxn_DESC_NULLS_LAST = "deliveredTxn_DESC_NULLS_LAST",
+export enum MultichainFundingReceiveEventOrderByInput {
+  deliveredTxn_blockNumber_ASC = "deliveredTxn_blockNumber_ASC",
+  deliveredTxn_blockNumber_ASC_NULLS_FIRST = "deliveredTxn_blockNumber_ASC_NULLS_FIRST",
+  deliveredTxn_blockNumber_ASC_NULLS_LAST = "deliveredTxn_blockNumber_ASC_NULLS_LAST",
+  deliveredTxn_blockNumber_DESC = "deliveredTxn_blockNumber_DESC",
+  deliveredTxn_blockNumber_DESC_NULLS_FIRST = "deliveredTxn_blockNumber_DESC_NULLS_FIRST",
+  deliveredTxn_blockNumber_DESC_NULLS_LAST = "deliveredTxn_blockNumber_DESC_NULLS_LAST",
+  deliveredTxn_chainId_ASC = "deliveredTxn_chainId_ASC",
+  deliveredTxn_chainId_ASC_NULLS_FIRST = "deliveredTxn_chainId_ASC_NULLS_FIRST",
+  deliveredTxn_chainId_ASC_NULLS_LAST = "deliveredTxn_chainId_ASC_NULLS_LAST",
+  deliveredTxn_chainId_DESC = "deliveredTxn_chainId_DESC",
+  deliveredTxn_chainId_DESC_NULLS_FIRST = "deliveredTxn_chainId_DESC_NULLS_FIRST",
+  deliveredTxn_chainId_DESC_NULLS_LAST = "deliveredTxn_chainId_DESC_NULLS_LAST",
+  deliveredTxn_from_ASC = "deliveredTxn_from_ASC",
+  deliveredTxn_from_ASC_NULLS_FIRST = "deliveredTxn_from_ASC_NULLS_FIRST",
+  deliveredTxn_from_ASC_NULLS_LAST = "deliveredTxn_from_ASC_NULLS_LAST",
+  deliveredTxn_from_DESC = "deliveredTxn_from_DESC",
+  deliveredTxn_from_DESC_NULLS_FIRST = "deliveredTxn_from_DESC_NULLS_FIRST",
+  deliveredTxn_from_DESC_NULLS_LAST = "deliveredTxn_from_DESC_NULLS_LAST",
+  deliveredTxn_hash_ASC = "deliveredTxn_hash_ASC",
+  deliveredTxn_hash_ASC_NULLS_FIRST = "deliveredTxn_hash_ASC_NULLS_FIRST",
+  deliveredTxn_hash_ASC_NULLS_LAST = "deliveredTxn_hash_ASC_NULLS_LAST",
+  deliveredTxn_hash_DESC = "deliveredTxn_hash_DESC",
+  deliveredTxn_hash_DESC_NULLS_FIRST = "deliveredTxn_hash_DESC_NULLS_FIRST",
+  deliveredTxn_hash_DESC_NULLS_LAST = "deliveredTxn_hash_DESC_NULLS_LAST",
+  deliveredTxn_id_ASC = "deliveredTxn_id_ASC",
+  deliveredTxn_id_ASC_NULLS_FIRST = "deliveredTxn_id_ASC_NULLS_FIRST",
+  deliveredTxn_id_ASC_NULLS_LAST = "deliveredTxn_id_ASC_NULLS_LAST",
+  deliveredTxn_id_DESC = "deliveredTxn_id_DESC",
+  deliveredTxn_id_DESC_NULLS_FIRST = "deliveredTxn_id_DESC_NULLS_FIRST",
+  deliveredTxn_id_DESC_NULLS_LAST = "deliveredTxn_id_DESC_NULLS_LAST",
+  deliveredTxn_timestamp_ASC = "deliveredTxn_timestamp_ASC",
+  deliveredTxn_timestamp_ASC_NULLS_FIRST = "deliveredTxn_timestamp_ASC_NULLS_FIRST",
+  deliveredTxn_timestamp_ASC_NULLS_LAST = "deliveredTxn_timestamp_ASC_NULLS_LAST",
+  deliveredTxn_timestamp_DESC = "deliveredTxn_timestamp_DESC",
+  deliveredTxn_timestamp_DESC_NULLS_FIRST = "deliveredTxn_timestamp_DESC_NULLS_FIRST",
+  deliveredTxn_timestamp_DESC_NULLS_LAST = "deliveredTxn_timestamp_DESC_NULLS_LAST",
+  deliveredTxn_to_ASC = "deliveredTxn_to_ASC",
+  deliveredTxn_to_ASC_NULLS_FIRST = "deliveredTxn_to_ASC_NULLS_FIRST",
+  deliveredTxn_to_ASC_NULLS_LAST = "deliveredTxn_to_ASC_NULLS_LAST",
+  deliveredTxn_to_DESC = "deliveredTxn_to_DESC",
+  deliveredTxn_to_DESC_NULLS_FIRST = "deliveredTxn_to_DESC_NULLS_FIRST",
+  deliveredTxn_to_DESC_NULLS_LAST = "deliveredTxn_to_DESC_NULLS_LAST",
+  deliveredTxn_transactionIndex_ASC = "deliveredTxn_transactionIndex_ASC",
+  deliveredTxn_transactionIndex_ASC_NULLS_FIRST = "deliveredTxn_transactionIndex_ASC_NULLS_FIRST",
+  deliveredTxn_transactionIndex_ASC_NULLS_LAST = "deliveredTxn_transactionIndex_ASC_NULLS_LAST",
+  deliveredTxn_transactionIndex_DESC = "deliveredTxn_transactionIndex_DESC",
+  deliveredTxn_transactionIndex_DESC_NULLS_FIRST = "deliveredTxn_transactionIndex_DESC_NULLS_FIRST",
+  deliveredTxn_transactionIndex_DESC_NULLS_LAST = "deliveredTxn_transactionIndex_DESC_NULLS_LAST",
   id_ASC = "id_ASC",
   id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
   id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
@@ -4117,18 +4149,54 @@ export enum MultichainFundingReceiveEventsOrderByInput {
   receivedAmount_DESC = "receivedAmount_DESC",
   receivedAmount_DESC_NULLS_FIRST = "receivedAmount_DESC_NULLS_FIRST",
   receivedAmount_DESC_NULLS_LAST = "receivedAmount_DESC_NULLS_LAST",
-  receivedTimestamp_ASC = "receivedTimestamp_ASC",
-  receivedTimestamp_ASC_NULLS_FIRST = "receivedTimestamp_ASC_NULLS_FIRST",
-  receivedTimestamp_ASC_NULLS_LAST = "receivedTimestamp_ASC_NULLS_LAST",
-  receivedTimestamp_DESC = "receivedTimestamp_DESC",
-  receivedTimestamp_DESC_NULLS_FIRST = "receivedTimestamp_DESC_NULLS_FIRST",
-  receivedTimestamp_DESC_NULLS_LAST = "receivedTimestamp_DESC_NULLS_LAST",
-  receivedTxn_ASC = "receivedTxn_ASC",
-  receivedTxn_ASC_NULLS_FIRST = "receivedTxn_ASC_NULLS_FIRST",
-  receivedTxn_ASC_NULLS_LAST = "receivedTxn_ASC_NULLS_LAST",
-  receivedTxn_DESC = "receivedTxn_DESC",
-  receivedTxn_DESC_NULLS_FIRST = "receivedTxn_DESC_NULLS_FIRST",
-  receivedTxn_DESC_NULLS_LAST = "receivedTxn_DESC_NULLS_LAST",
+  receivedTxn_blockNumber_ASC = "receivedTxn_blockNumber_ASC",
+  receivedTxn_blockNumber_ASC_NULLS_FIRST = "receivedTxn_blockNumber_ASC_NULLS_FIRST",
+  receivedTxn_blockNumber_ASC_NULLS_LAST = "receivedTxn_blockNumber_ASC_NULLS_LAST",
+  receivedTxn_blockNumber_DESC = "receivedTxn_blockNumber_DESC",
+  receivedTxn_blockNumber_DESC_NULLS_FIRST = "receivedTxn_blockNumber_DESC_NULLS_FIRST",
+  receivedTxn_blockNumber_DESC_NULLS_LAST = "receivedTxn_blockNumber_DESC_NULLS_LAST",
+  receivedTxn_chainId_ASC = "receivedTxn_chainId_ASC",
+  receivedTxn_chainId_ASC_NULLS_FIRST = "receivedTxn_chainId_ASC_NULLS_FIRST",
+  receivedTxn_chainId_ASC_NULLS_LAST = "receivedTxn_chainId_ASC_NULLS_LAST",
+  receivedTxn_chainId_DESC = "receivedTxn_chainId_DESC",
+  receivedTxn_chainId_DESC_NULLS_FIRST = "receivedTxn_chainId_DESC_NULLS_FIRST",
+  receivedTxn_chainId_DESC_NULLS_LAST = "receivedTxn_chainId_DESC_NULLS_LAST",
+  receivedTxn_from_ASC = "receivedTxn_from_ASC",
+  receivedTxn_from_ASC_NULLS_FIRST = "receivedTxn_from_ASC_NULLS_FIRST",
+  receivedTxn_from_ASC_NULLS_LAST = "receivedTxn_from_ASC_NULLS_LAST",
+  receivedTxn_from_DESC = "receivedTxn_from_DESC",
+  receivedTxn_from_DESC_NULLS_FIRST = "receivedTxn_from_DESC_NULLS_FIRST",
+  receivedTxn_from_DESC_NULLS_LAST = "receivedTxn_from_DESC_NULLS_LAST",
+  receivedTxn_hash_ASC = "receivedTxn_hash_ASC",
+  receivedTxn_hash_ASC_NULLS_FIRST = "receivedTxn_hash_ASC_NULLS_FIRST",
+  receivedTxn_hash_ASC_NULLS_LAST = "receivedTxn_hash_ASC_NULLS_LAST",
+  receivedTxn_hash_DESC = "receivedTxn_hash_DESC",
+  receivedTxn_hash_DESC_NULLS_FIRST = "receivedTxn_hash_DESC_NULLS_FIRST",
+  receivedTxn_hash_DESC_NULLS_LAST = "receivedTxn_hash_DESC_NULLS_LAST",
+  receivedTxn_id_ASC = "receivedTxn_id_ASC",
+  receivedTxn_id_ASC_NULLS_FIRST = "receivedTxn_id_ASC_NULLS_FIRST",
+  receivedTxn_id_ASC_NULLS_LAST = "receivedTxn_id_ASC_NULLS_LAST",
+  receivedTxn_id_DESC = "receivedTxn_id_DESC",
+  receivedTxn_id_DESC_NULLS_FIRST = "receivedTxn_id_DESC_NULLS_FIRST",
+  receivedTxn_id_DESC_NULLS_LAST = "receivedTxn_id_DESC_NULLS_LAST",
+  receivedTxn_timestamp_ASC = "receivedTxn_timestamp_ASC",
+  receivedTxn_timestamp_ASC_NULLS_FIRST = "receivedTxn_timestamp_ASC_NULLS_FIRST",
+  receivedTxn_timestamp_ASC_NULLS_LAST = "receivedTxn_timestamp_ASC_NULLS_LAST",
+  receivedTxn_timestamp_DESC = "receivedTxn_timestamp_DESC",
+  receivedTxn_timestamp_DESC_NULLS_FIRST = "receivedTxn_timestamp_DESC_NULLS_FIRST",
+  receivedTxn_timestamp_DESC_NULLS_LAST = "receivedTxn_timestamp_DESC_NULLS_LAST",
+  receivedTxn_to_ASC = "receivedTxn_to_ASC",
+  receivedTxn_to_ASC_NULLS_FIRST = "receivedTxn_to_ASC_NULLS_FIRST",
+  receivedTxn_to_ASC_NULLS_LAST = "receivedTxn_to_ASC_NULLS_LAST",
+  receivedTxn_to_DESC = "receivedTxn_to_DESC",
+  receivedTxn_to_DESC_NULLS_FIRST = "receivedTxn_to_DESC_NULLS_FIRST",
+  receivedTxn_to_DESC_NULLS_LAST = "receivedTxn_to_DESC_NULLS_LAST",
+  receivedTxn_transactionIndex_ASC = "receivedTxn_transactionIndex_ASC",
+  receivedTxn_transactionIndex_ASC_NULLS_FIRST = "receivedTxn_transactionIndex_ASC_NULLS_FIRST",
+  receivedTxn_transactionIndex_ASC_NULLS_LAST = "receivedTxn_transactionIndex_ASC_NULLS_LAST",
+  receivedTxn_transactionIndex_DESC = "receivedTxn_transactionIndex_DESC",
+  receivedTxn_transactionIndex_DESC_NULLS_FIRST = "receivedTxn_transactionIndex_DESC_NULLS_FIRST",
+  receivedTxn_transactionIndex_DESC_NULLS_LAST = "receivedTxn_transactionIndex_DESC_NULLS_LAST",
   sourceChainId_ASC = "sourceChainId_ASC",
   sourceChainId_ASC_NULLS_FIRST = "sourceChainId_ASC_NULLS_FIRST",
   sourceChainId_ASC_NULLS_LAST = "sourceChainId_ASC_NULLS_LAST",
@@ -4137,35 +4205,11 @@ export enum MultichainFundingReceiveEventsOrderByInput {
   sourceChainId_DESC_NULLS_LAST = "sourceChainId_DESC_NULLS_LAST",
 }
 
-export interface MultichainFundingReceiveEventsWhereInput {
-  AND?: InputMaybe<Array<MultichainFundingReceiveEventsWhereInput>>;
-  OR?: InputMaybe<Array<MultichainFundingReceiveEventsWhereInput>>;
-  deliveredTimestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  deliveredTimestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
-  deliveredTimestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
-  deliveredTimestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
-  deliveredTimestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  deliveredTimestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
-  deliveredTimestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
-  deliveredTimestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  deliveredTimestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
-  deliveredTxn_contains?: InputMaybe<Scalars["String"]["input"]>;
-  deliveredTxn_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  deliveredTxn_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  deliveredTxn_eq?: InputMaybe<Scalars["String"]["input"]>;
-  deliveredTxn_gt?: InputMaybe<Scalars["String"]["input"]>;
-  deliveredTxn_gte?: InputMaybe<Scalars["String"]["input"]>;
-  deliveredTxn_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+export interface MultichainFundingReceiveEventWhereInput {
+  AND?: InputMaybe<Array<MultichainFundingReceiveEventWhereInput>>;
+  OR?: InputMaybe<Array<MultichainFundingReceiveEventWhereInput>>;
+  deliveredTxn?: InputMaybe<TransactionWhereInput>;
   deliveredTxn_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  deliveredTxn_lt?: InputMaybe<Scalars["String"]["input"]>;
-  deliveredTxn_lte?: InputMaybe<Scalars["String"]["input"]>;
-  deliveredTxn_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  deliveredTxn_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  deliveredTxn_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  deliveredTxn_not_eq?: InputMaybe<Scalars["String"]["input"]>;
-  deliveredTxn_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  deliveredTxn_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  deliveredTxn_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   id_contains?: InputMaybe<Scalars["String"]["input"]>;
   id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
   id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
@@ -4203,32 +4247,8 @@ export interface MultichainFundingReceiveEventsWhereInput {
   receivedAmount_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   receivedAmount_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   receivedAmount_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
-  receivedTimestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  receivedTimestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
-  receivedTimestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
-  receivedTimestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
-  receivedTimestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  receivedTimestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
-  receivedTimestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
-  receivedTimestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  receivedTimestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
-  receivedTxn_contains?: InputMaybe<Scalars["String"]["input"]>;
-  receivedTxn_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  receivedTxn_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  receivedTxn_eq?: InputMaybe<Scalars["String"]["input"]>;
-  receivedTxn_gt?: InputMaybe<Scalars["String"]["input"]>;
-  receivedTxn_gte?: InputMaybe<Scalars["String"]["input"]>;
-  receivedTxn_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  receivedTxn?: InputMaybe<TransactionWhereInput>;
   receivedTxn_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  receivedTxn_lt?: InputMaybe<Scalars["String"]["input"]>;
-  receivedTxn_lte?: InputMaybe<Scalars["String"]["input"]>;
-  receivedTxn_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  receivedTxn_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  receivedTxn_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  receivedTxn_not_eq?: InputMaybe<Scalars["String"]["input"]>;
-  receivedTxn_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  receivedTxn_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  receivedTxn_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   sourceChainId_eq?: InputMaybe<Scalars["Int"]["input"]>;
   sourceChainId_gt?: InputMaybe<Scalars["Int"]["input"]>;
   sourceChainId_gte?: InputMaybe<Scalars["Int"]["input"]>;
@@ -4240,6 +4260,13 @@ export interface MultichainFundingReceiveEventsWhereInput {
   sourceChainId_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
 }
 
+export interface MultichainFundingReceiveEventsConnection {
+  __typename?: "MultichainFundingReceiveEventsConnection";
+  edges: Array<MultichainFundingReceiveEventEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
+}
+
 export interface MultichainFundingSendEvent {
   __typename?: "MultichainFundingSendEvent";
   account: Scalars["String"]["output"];
@@ -4249,9 +4276,8 @@ export interface MultichainFundingSendEvent {
   sentAmount: Scalars["BigInt"]["output"];
   settlementChainId: Scalars["Int"]["output"];
   sourceChainId: Scalars["Int"]["output"];
-  timestamp: Scalars["Int"]["output"];
   token: Scalars["String"]["output"];
-  txn: Scalars["String"]["output"];
+  txn: Transaction;
 }
 
 export interface MultichainFundingSendEventEdge {
@@ -4303,24 +4329,60 @@ export enum MultichainFundingSendEventOrderByInput {
   sourceChainId_DESC = "sourceChainId_DESC",
   sourceChainId_DESC_NULLS_FIRST = "sourceChainId_DESC_NULLS_FIRST",
   sourceChainId_DESC_NULLS_LAST = "sourceChainId_DESC_NULLS_LAST",
-  timestamp_ASC = "timestamp_ASC",
-  timestamp_ASC_NULLS_FIRST = "timestamp_ASC_NULLS_FIRST",
-  timestamp_ASC_NULLS_LAST = "timestamp_ASC_NULLS_LAST",
-  timestamp_DESC = "timestamp_DESC",
-  timestamp_DESC_NULLS_FIRST = "timestamp_DESC_NULLS_FIRST",
-  timestamp_DESC_NULLS_LAST = "timestamp_DESC_NULLS_LAST",
   token_ASC = "token_ASC",
   token_ASC_NULLS_FIRST = "token_ASC_NULLS_FIRST",
   token_ASC_NULLS_LAST = "token_ASC_NULLS_LAST",
   token_DESC = "token_DESC",
   token_DESC_NULLS_FIRST = "token_DESC_NULLS_FIRST",
   token_DESC_NULLS_LAST = "token_DESC_NULLS_LAST",
-  txn_ASC = "txn_ASC",
-  txn_ASC_NULLS_FIRST = "txn_ASC_NULLS_FIRST",
-  txn_ASC_NULLS_LAST = "txn_ASC_NULLS_LAST",
-  txn_DESC = "txn_DESC",
-  txn_DESC_NULLS_FIRST = "txn_DESC_NULLS_FIRST",
-  txn_DESC_NULLS_LAST = "txn_DESC_NULLS_LAST",
+  txn_blockNumber_ASC = "txn_blockNumber_ASC",
+  txn_blockNumber_ASC_NULLS_FIRST = "txn_blockNumber_ASC_NULLS_FIRST",
+  txn_blockNumber_ASC_NULLS_LAST = "txn_blockNumber_ASC_NULLS_LAST",
+  txn_blockNumber_DESC = "txn_blockNumber_DESC",
+  txn_blockNumber_DESC_NULLS_FIRST = "txn_blockNumber_DESC_NULLS_FIRST",
+  txn_blockNumber_DESC_NULLS_LAST = "txn_blockNumber_DESC_NULLS_LAST",
+  txn_chainId_ASC = "txn_chainId_ASC",
+  txn_chainId_ASC_NULLS_FIRST = "txn_chainId_ASC_NULLS_FIRST",
+  txn_chainId_ASC_NULLS_LAST = "txn_chainId_ASC_NULLS_LAST",
+  txn_chainId_DESC = "txn_chainId_DESC",
+  txn_chainId_DESC_NULLS_FIRST = "txn_chainId_DESC_NULLS_FIRST",
+  txn_chainId_DESC_NULLS_LAST = "txn_chainId_DESC_NULLS_LAST",
+  txn_from_ASC = "txn_from_ASC",
+  txn_from_ASC_NULLS_FIRST = "txn_from_ASC_NULLS_FIRST",
+  txn_from_ASC_NULLS_LAST = "txn_from_ASC_NULLS_LAST",
+  txn_from_DESC = "txn_from_DESC",
+  txn_from_DESC_NULLS_FIRST = "txn_from_DESC_NULLS_FIRST",
+  txn_from_DESC_NULLS_LAST = "txn_from_DESC_NULLS_LAST",
+  txn_hash_ASC = "txn_hash_ASC",
+  txn_hash_ASC_NULLS_FIRST = "txn_hash_ASC_NULLS_FIRST",
+  txn_hash_ASC_NULLS_LAST = "txn_hash_ASC_NULLS_LAST",
+  txn_hash_DESC = "txn_hash_DESC",
+  txn_hash_DESC_NULLS_FIRST = "txn_hash_DESC_NULLS_FIRST",
+  txn_hash_DESC_NULLS_LAST = "txn_hash_DESC_NULLS_LAST",
+  txn_id_ASC = "txn_id_ASC",
+  txn_id_ASC_NULLS_FIRST = "txn_id_ASC_NULLS_FIRST",
+  txn_id_ASC_NULLS_LAST = "txn_id_ASC_NULLS_LAST",
+  txn_id_DESC = "txn_id_DESC",
+  txn_id_DESC_NULLS_FIRST = "txn_id_DESC_NULLS_FIRST",
+  txn_id_DESC_NULLS_LAST = "txn_id_DESC_NULLS_LAST",
+  txn_timestamp_ASC = "txn_timestamp_ASC",
+  txn_timestamp_ASC_NULLS_FIRST = "txn_timestamp_ASC_NULLS_FIRST",
+  txn_timestamp_ASC_NULLS_LAST = "txn_timestamp_ASC_NULLS_LAST",
+  txn_timestamp_DESC = "txn_timestamp_DESC",
+  txn_timestamp_DESC_NULLS_FIRST = "txn_timestamp_DESC_NULLS_FIRST",
+  txn_timestamp_DESC_NULLS_LAST = "txn_timestamp_DESC_NULLS_LAST",
+  txn_to_ASC = "txn_to_ASC",
+  txn_to_ASC_NULLS_FIRST = "txn_to_ASC_NULLS_FIRST",
+  txn_to_ASC_NULLS_LAST = "txn_to_ASC_NULLS_LAST",
+  txn_to_DESC = "txn_to_DESC",
+  txn_to_DESC_NULLS_FIRST = "txn_to_DESC_NULLS_FIRST",
+  txn_to_DESC_NULLS_LAST = "txn_to_DESC_NULLS_LAST",
+  txn_transactionIndex_ASC = "txn_transactionIndex_ASC",
+  txn_transactionIndex_ASC_NULLS_FIRST = "txn_transactionIndex_ASC_NULLS_FIRST",
+  txn_transactionIndex_ASC_NULLS_LAST = "txn_transactionIndex_ASC_NULLS_LAST",
+  txn_transactionIndex_DESC = "txn_transactionIndex_DESC",
+  txn_transactionIndex_DESC_NULLS_FIRST = "txn_transactionIndex_DESC_NULLS_FIRST",
+  txn_transactionIndex_DESC_NULLS_LAST = "txn_transactionIndex_DESC_NULLS_LAST",
 }
 
 export interface MultichainFundingSendEventWhereInput {
@@ -4401,15 +4463,6 @@ export interface MultichainFundingSendEventWhereInput {
   sourceChainId_lte?: InputMaybe<Scalars["Int"]["input"]>;
   sourceChainId_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
   sourceChainId_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
-  timestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  timestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
-  timestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
-  timestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
-  timestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  timestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
-  timestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
-  timestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  timestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
   token_contains?: InputMaybe<Scalars["String"]["input"]>;
   token_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
   token_endsWith?: InputMaybe<Scalars["String"]["input"]>;
@@ -4427,23 +4480,8 @@ export interface MultichainFundingSendEventWhereInput {
   token_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
   token_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   token_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  txn_contains?: InputMaybe<Scalars["String"]["input"]>;
-  txn_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  txn_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  txn_eq?: InputMaybe<Scalars["String"]["input"]>;
-  txn_gt?: InputMaybe<Scalars["String"]["input"]>;
-  txn_gte?: InputMaybe<Scalars["String"]["input"]>;
-  txn_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  txn?: InputMaybe<TransactionWhereInput>;
   txn_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  txn_lt?: InputMaybe<Scalars["String"]["input"]>;
-  txn_lte?: InputMaybe<Scalars["String"]["input"]>;
-  txn_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  txn_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  txn_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  txn_not_eq?: InputMaybe<Scalars["String"]["input"]>;
-  txn_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  txn_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  txn_startsWith?: InputMaybe<Scalars["String"]["input"]>;
 }
 
 export interface MultichainFundingSendEventsConnection {
@@ -4738,6 +4776,12 @@ export enum OrderOrderByInput {
   cancelledTxn_blockNumber_DESC = "cancelledTxn_blockNumber_DESC",
   cancelledTxn_blockNumber_DESC_NULLS_FIRST = "cancelledTxn_blockNumber_DESC_NULLS_FIRST",
   cancelledTxn_blockNumber_DESC_NULLS_LAST = "cancelledTxn_blockNumber_DESC_NULLS_LAST",
+  cancelledTxn_chainId_ASC = "cancelledTxn_chainId_ASC",
+  cancelledTxn_chainId_ASC_NULLS_FIRST = "cancelledTxn_chainId_ASC_NULLS_FIRST",
+  cancelledTxn_chainId_ASC_NULLS_LAST = "cancelledTxn_chainId_ASC_NULLS_LAST",
+  cancelledTxn_chainId_DESC = "cancelledTxn_chainId_DESC",
+  cancelledTxn_chainId_DESC_NULLS_FIRST = "cancelledTxn_chainId_DESC_NULLS_FIRST",
+  cancelledTxn_chainId_DESC_NULLS_LAST = "cancelledTxn_chainId_DESC_NULLS_LAST",
   cancelledTxn_from_ASC = "cancelledTxn_from_ASC",
   cancelledTxn_from_ASC_NULLS_FIRST = "cancelledTxn_from_ASC_NULLS_FIRST",
   cancelledTxn_from_ASC_NULLS_LAST = "cancelledTxn_from_ASC_NULLS_LAST",
@@ -4780,6 +4824,12 @@ export enum OrderOrderByInput {
   createdTxn_blockNumber_DESC = "createdTxn_blockNumber_DESC",
   createdTxn_blockNumber_DESC_NULLS_FIRST = "createdTxn_blockNumber_DESC_NULLS_FIRST",
   createdTxn_blockNumber_DESC_NULLS_LAST = "createdTxn_blockNumber_DESC_NULLS_LAST",
+  createdTxn_chainId_ASC = "createdTxn_chainId_ASC",
+  createdTxn_chainId_ASC_NULLS_FIRST = "createdTxn_chainId_ASC_NULLS_FIRST",
+  createdTxn_chainId_ASC_NULLS_LAST = "createdTxn_chainId_ASC_NULLS_LAST",
+  createdTxn_chainId_DESC = "createdTxn_chainId_DESC",
+  createdTxn_chainId_DESC_NULLS_FIRST = "createdTxn_chainId_DESC_NULLS_FIRST",
+  createdTxn_chainId_DESC_NULLS_LAST = "createdTxn_chainId_DESC_NULLS_LAST",
   createdTxn_from_ASC = "createdTxn_from_ASC",
   createdTxn_from_ASC_NULLS_FIRST = "createdTxn_from_ASC_NULLS_FIRST",
   createdTxn_from_ASC_NULLS_LAST = "createdTxn_from_ASC_NULLS_LAST",
@@ -4822,6 +4872,12 @@ export enum OrderOrderByInput {
   executedTxn_blockNumber_DESC = "executedTxn_blockNumber_DESC",
   executedTxn_blockNumber_DESC_NULLS_FIRST = "executedTxn_blockNumber_DESC_NULLS_FIRST",
   executedTxn_blockNumber_DESC_NULLS_LAST = "executedTxn_blockNumber_DESC_NULLS_LAST",
+  executedTxn_chainId_ASC = "executedTxn_chainId_ASC",
+  executedTxn_chainId_ASC_NULLS_FIRST = "executedTxn_chainId_ASC_NULLS_FIRST",
+  executedTxn_chainId_ASC_NULLS_LAST = "executedTxn_chainId_ASC_NULLS_LAST",
+  executedTxn_chainId_DESC = "executedTxn_chainId_DESC",
+  executedTxn_chainId_DESC_NULLS_FIRST = "executedTxn_chainId_DESC_NULLS_FIRST",
+  executedTxn_chainId_DESC_NULLS_LAST = "executedTxn_chainId_DESC_NULLS_LAST",
   executedTxn_from_ASC = "executedTxn_from_ASC",
   executedTxn_from_ASC_NULLS_FIRST = "executedTxn_from_ASC_NULLS_FIRST",
   executedTxn_from_ASC_NULLS_LAST = "executedTxn_from_ASC_NULLS_LAST",
@@ -5329,24 +5385,6 @@ export interface PageInfo {
   hasNextPage: Scalars["Boolean"]["output"];
   hasPreviousPage: Scalars["Boolean"]["output"];
   startCursor: Scalars["String"]["output"];
-}
-
-export interface PerformanceSnapshotObject {
-  __typename?: "PerformanceSnapshotObject";
-  performance: Scalars["String"]["output"];
-  snapshotTimestamp: Scalars["String"]["output"];
-}
-
-export interface PerformanceSnapshots {
-  __typename?: "PerformanceSnapshots";
-  address: Scalars["String"]["output"];
-  entity: Scalars["String"]["output"];
-  snapshots: Array<PerformanceSnapshotObject>;
-}
-
-export interface PerformanceWhereInput {
-  addresses?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  period: Scalars["String"]["input"];
 }
 
 export interface PerformanceSnapshotObject {
@@ -6101,6 +6139,12 @@ export enum PositionFeesEntityOrderByInput {
   transaction_blockNumber_DESC = "transaction_blockNumber_DESC",
   transaction_blockNumber_DESC_NULLS_FIRST = "transaction_blockNumber_DESC_NULLS_FIRST",
   transaction_blockNumber_DESC_NULLS_LAST = "transaction_blockNumber_DESC_NULLS_LAST",
+  transaction_chainId_ASC = "transaction_chainId_ASC",
+  transaction_chainId_ASC_NULLS_FIRST = "transaction_chainId_ASC_NULLS_FIRST",
+  transaction_chainId_ASC_NULLS_LAST = "transaction_chainId_ASC_NULLS_LAST",
+  transaction_chainId_DESC = "transaction_chainId_DESC",
+  transaction_chainId_DESC_NULLS_FIRST = "transaction_chainId_DESC_NULLS_FIRST",
+  transaction_chainId_DESC_NULLS_LAST = "transaction_chainId_DESC_NULLS_LAST",
   transaction_from_ASC = "transaction_from_ASC",
   transaction_from_ASC_NULLS_FIRST = "transaction_from_ASC_NULLS_FIRST",
   transaction_from_ASC_NULLS_LAST = "transaction_from_ASC_NULLS_LAST",
@@ -7146,8 +7190,8 @@ export interface Query {
   marketsConnection: MarketsConnection;
   marketsPnlAprByPeriod: Array<MarketPnlApr>;
   multichainFunding: Array<MultichainFundingInfo>;
-  multichainFundingReceiveEvents: Array<MultichainFundingReceiveEvents>;
-  multichainFundingReceiveEventsById?: Maybe<MultichainFundingReceiveEvents>;
+  multichainFundingReceiveEventById?: Maybe<MultichainFundingReceiveEvent>;
+  multichainFundingReceiveEvents: Array<MultichainFundingReceiveEvent>;
   multichainFundingReceiveEventsConnection: MultichainFundingReceiveEventsConnection;
   multichainFundingSendEventById?: Maybe<MultichainFundingSendEvent>;
   multichainFundingSendEvents: Array<MultichainFundingSendEvent>;
@@ -7184,7 +7228,7 @@ export interface Query {
   processorStatusById?: Maybe<ProcessorStatus>;
   processorStatuses: Array<ProcessorStatus>;
   processorStatusesConnection: ProcessorStatusesConnection;
-  squidStatus?: Maybe<SquidStatus>;
+  squidStatus: SquidStatus;
   swapInfoById?: Maybe<SwapInfo>;
   swapInfos: Array<SwapInfo>;
   swapInfosConnection: SwapInfosConnection;
@@ -7500,22 +7544,22 @@ export interface QuerymultichainFundingArgs {
   where?: InputMaybe<MultichainFundingWhereInput>;
 }
 
+export interface QuerymultichainFundingReceiveEventByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
 export interface QuerymultichainFundingReceiveEventsArgs {
   limit?: InputMaybe<Scalars["Int"]["input"]>;
   offset?: InputMaybe<Scalars["Int"]["input"]>;
-  orderBy?: InputMaybe<Array<MultichainFundingReceiveEventsOrderByInput>>;
-  where?: InputMaybe<MultichainFundingReceiveEventsWhereInput>;
-}
-
-export interface QuerymultichainFundingReceiveEventsByIdArgs {
-  id: Scalars["String"]["input"];
+  orderBy?: InputMaybe<Array<MultichainFundingReceiveEventOrderByInput>>;
+  where?: InputMaybe<MultichainFundingReceiveEventWhereInput>;
 }
 
 export interface QuerymultichainFundingReceiveEventsConnectionArgs {
   after?: InputMaybe<Scalars["String"]["input"]>;
   first?: InputMaybe<Scalars["Int"]["input"]>;
-  orderBy: Array<MultichainFundingReceiveEventsOrderByInput>;
-  where?: InputMaybe<MultichainFundingReceiveEventsWhereInput>;
+  orderBy: Array<MultichainFundingReceiveEventOrderByInput>;
+  where?: InputMaybe<MultichainFundingReceiveEventWhereInput>;
 }
 
 export interface QuerymultichainFundingSendEventByIdArgs {
@@ -7776,14 +7820,8 @@ export interface QuerytransactionsConnectionArgs {
 
 export interface SquidStatus {
   __typename?: "SquidStatus";
-  /** The hash of the last processed finalized block */
-  finalizedHash?: Maybe<Scalars["String"]["output"]>;
-  /** The height of the last processed finalized block */
-  finalizedHeight?: Maybe<Scalars["Int"]["output"]>;
-  /** The hash of the last processed block */
-  hash?: Maybe<Scalars["String"]["output"]>;
-  /** The height of the last processed block */
-  height?: Maybe<Scalars["Int"]["output"]>;
+  finalizedHeight: Scalars["Float"]["output"];
+  height: Scalars["Float"]["output"];
 }
 
 export interface SwapInfo {
@@ -7888,6 +7926,12 @@ export enum SwapInfoOrderByInput {
   transaction_blockNumber_DESC = "transaction_blockNumber_DESC",
   transaction_blockNumber_DESC_NULLS_FIRST = "transaction_blockNumber_DESC_NULLS_FIRST",
   transaction_blockNumber_DESC_NULLS_LAST = "transaction_blockNumber_DESC_NULLS_LAST",
+  transaction_chainId_ASC = "transaction_chainId_ASC",
+  transaction_chainId_ASC_NULLS_FIRST = "transaction_chainId_ASC_NULLS_FIRST",
+  transaction_chainId_ASC_NULLS_LAST = "transaction_chainId_ASC_NULLS_LAST",
+  transaction_chainId_DESC = "transaction_chainId_DESC",
+  transaction_chainId_DESC_NULLS_FIRST = "transaction_chainId_DESC_NULLS_FIRST",
+  transaction_chainId_DESC_NULLS_LAST = "transaction_chainId_DESC_NULLS_LAST",
   transaction_from_ASC = "transaction_from_ASC",
   transaction_from_ASC_NULLS_FIRST = "transaction_from_ASC_NULLS_FIRST",
   transaction_from_ASC_NULLS_LAST = "transaction_from_ASC_NULLS_LAST",
@@ -8370,6 +8414,12 @@ export enum TradeActionOrderByInput {
   transaction_blockNumber_DESC = "transaction_blockNumber_DESC",
   transaction_blockNumber_DESC_NULLS_FIRST = "transaction_blockNumber_DESC_NULLS_FIRST",
   transaction_blockNumber_DESC_NULLS_LAST = "transaction_blockNumber_DESC_NULLS_LAST",
+  transaction_chainId_ASC = "transaction_chainId_ASC",
+  transaction_chainId_ASC_NULLS_FIRST = "transaction_chainId_ASC_NULLS_FIRST",
+  transaction_chainId_ASC_NULLS_LAST = "transaction_chainId_ASC_NULLS_LAST",
+  transaction_chainId_DESC = "transaction_chainId_DESC",
+  transaction_chainId_DESC_NULLS_FIRST = "transaction_chainId_DESC_NULLS_FIRST",
+  transaction_chainId_DESC_NULLS_LAST = "transaction_chainId_DESC_NULLS_LAST",
   transaction_from_ASC = "transaction_from_ASC",
   transaction_from_ASC_NULLS_FIRST = "transaction_from_ASC_NULLS_FIRST",
   transaction_from_ASC_NULLS_LAST = "transaction_from_ASC_NULLS_LAST",
@@ -8866,6 +8916,7 @@ export interface TradeActionsConnection {
 export interface Transaction {
   __typename?: "Transaction";
   blockNumber: Scalars["Int"]["output"];
+  chainId: Scalars["Int"]["output"];
   from: Scalars["String"]["output"];
   hash: Scalars["String"]["output"];
   id: Scalars["String"]["output"];
@@ -8887,6 +8938,12 @@ export enum TransactionOrderByInput {
   blockNumber_DESC = "blockNumber_DESC",
   blockNumber_DESC_NULLS_FIRST = "blockNumber_DESC_NULLS_FIRST",
   blockNumber_DESC_NULLS_LAST = "blockNumber_DESC_NULLS_LAST",
+  chainId_ASC = "chainId_ASC",
+  chainId_ASC_NULLS_FIRST = "chainId_ASC_NULLS_FIRST",
+  chainId_ASC_NULLS_LAST = "chainId_ASC_NULLS_LAST",
+  chainId_DESC = "chainId_DESC",
+  chainId_DESC_NULLS_FIRST = "chainId_DESC_NULLS_FIRST",
+  chainId_DESC_NULLS_LAST = "chainId_DESC_NULLS_LAST",
   from_ASC = "from_ASC",
   from_ASC_NULLS_FIRST = "from_ASC_NULLS_FIRST",
   from_ASC_NULLS_LAST = "from_ASC_NULLS_LAST",
@@ -8937,6 +8994,15 @@ export interface TransactionWhereInput {
   blockNumber_lte?: InputMaybe<Scalars["Int"]["input"]>;
   blockNumber_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
   blockNumber_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  chainId_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  chainId_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  chainId_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  chainId_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  chainId_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  chainId_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  chainId_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  chainId_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  chainId_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
   from_contains?: InputMaybe<Scalars["String"]["input"]>;
   from_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
   from_endsWith?: InputMaybe<Scalars["String"]["input"]>;
