@@ -53,7 +53,7 @@ export function SocialSection() {
               Driven by <br /> our community
             </Trans>
           </h2>
-          <div className="border-fiord-500 flex w-full flex-col-reverse items-center justify-between gap-36 border-t-[0.5px] sm:flex-row">
+          <div className="border-fiord-500 flex w-full flex-col-reverse items-center justify-between gap-36 border-t-[0.5px] md:flex-row">
             <div className="flex flex-row flex-wrap gap-20 sm:gap-36">
               {links.map((link) => (
                 <div
@@ -72,7 +72,7 @@ export function SocialSection() {
 
             <form
               action="https://gmxio.substack.com/subscribe"
-              className="flex w-full flex-row items-stretch gap-8 py-28 sm:w-auto"
+              className="flex w-full flex-row items-stretch gap-8 py-28 md:w-auto"
               method="GET"
             >
               <input
