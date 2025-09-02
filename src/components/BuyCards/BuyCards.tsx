@@ -182,7 +182,7 @@ export default function BuyCards() {
                   APR <APRLabel chainId={ARBITRUM} label="avgGMXAprTotal" />
                 </span>
               }
-            ></BuyLink>
+            />
             <BuyLink
               chainId={chainId}
               active={active}
@@ -193,7 +193,7 @@ export default function BuyCards() {
                   APR <APRLabel chainId={AVALANCHE} label="avgGMXAprTotal" />
                 </span>
               }
-            ></BuyLink>
+            />
           </div>
           <TrackingLink>
             <Button
