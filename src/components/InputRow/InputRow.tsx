@@ -48,7 +48,7 @@ const InputBase = forwardRef<
           <span className="opacity-70">{symbol}</span>
         </label>
       </div>
-      {tooltip && <div className="text-xs text-slate-400 absolute right-0 mt-1">{tooltip}</div>}
+      {tooltip && <div className="text-xs absolute right-0 mt-1 text-slate-400">{tooltip}</div>}
     </div>
   );
 });
