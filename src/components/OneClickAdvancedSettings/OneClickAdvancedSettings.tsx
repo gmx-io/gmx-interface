@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
@@ -7,8 +7,10 @@ import { getRemainingSubaccountActions, getRemainingSubaccountSeconds } from "do
 import { periodToSeconds, secondsToPeriod } from "sdk/utils/time";
 
 import Button from "components/Button/Button";
-import { InputRow } from "components/InputRow/InputRow";
+import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import { ExpandableRow } from "components/Synthetics/ExpandableRow";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export function OneClickAdvancedSettings() {
   const { subaccount, updateSubaccountSettings } = useSubaccountContext();
@@ -99,24 +101,46 @@ export function OneClickAdvancedSettings() {
         title={<Trans>One-Click Settings</Trans>}
         className="mb-4"
       >
-        <div className="mt-12">
-          <InputRow
-            value={remainingActionsString}
-            setValue={onChangeRemainingActions}
-            label=" Remaining Allowed Actions"
-            symbol="Action(s)"
-            placeholder="0"
-            description="Maximum number of actions allowed before reauthorization is required."
-          />
+        <div className="mt-12 flex flex-col gap-14">
+          <SyntheticsInfoRow
+            label={
+              <TooltipWithPortal
+                position="left-start"
+                variant="icon"
+                content={<Trans>Maximum number of actions allowed before reauthorization is required.</Trans>}
+              >
+                <Trans>Remaining Allowed Actions</Trans>
+              </TooltipWithPortal>
+            }
+          >
+            <SuggestionInput
+              value={remainingActionsString}
+              setValue={onChangeRemainingActions}
+              label={t`Action(s)`}
+              placeholder="0"
+              className="w-[112px]"
+            />
+          </SyntheticsInfoRow>
 
-          <InputRow
-            value={daysLimitString}
-            setValue={onChangeDaysLimit}
-            label="Time Limit"
-            symbol="Day(s)"
-            placeholder="0"
-            description="Maximum number of days before reauthorization is required."
-          />
+          <SyntheticsInfoRow
+            label={
+              <TooltipWithPortal
+                position="left-start"
+                variant="icon"
+                content={<Trans>Maximum number of days before reauthorization is required.</Trans>}
+              >
+                <Trans>Time Limit</Trans>
+              </TooltipWithPortal>
+            }
+          >
+            <SuggestionInput
+              value={daysLimitString}
+              setValue={onChangeDaysLimit}
+              label={t`Day(s)`}
+              placeholder="0"
+              className="w-[112px]"
+            />
+          </SyntheticsInfoRow>
 
           <Button
             onClick={handleSave}

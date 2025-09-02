@@ -85,7 +85,7 @@ export default function ChartTokenSelector(props: Props) {
         <Button variant="secondary">
           {selectedToken ? (
             <span
-              className={cx("inline-flex gap-6 whitespace-nowrap pl-0 text-[13px] text-typography-primary", {
+              className={cx("inline-flex gap-6 whitespace-nowrap pl-0 text-[13px]", {
                 "items-start": !oneRowLabels,
                 "items-center": oneRowLabels || isSwap,
               })}
@@ -100,10 +100,10 @@ export default function ChartTokenSelector(props: Props) {
               <span
                 className={cx("flex justify-start", {
                   "flex-col": !oneRowLabels && !isSwap,
-                  "flex-row items-center": oneRowLabels || isSwap,
+                  "flex-row": oneRowLabels || isSwap,
                 })}
               >
-                <span className="text-start text-[13px] font-medium">
+                <span className="text-start text-[13px] font-medium text-typography-primary">
                   {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
                   {selectedToken.symbol}/USD
                 </span>

@@ -170,12 +170,8 @@ function ChartHeaderMobile() {
             <div className="text-body-medium mr-4 numbers">{avgPrice}</div>
             <div className="ExchangeChart-daily-change text-body-small numbers">{dayPriceDelta}</div>
           </div>
-          <span className="inline-flex cursor-pointer items-center justify-center rounded-4 pt-6 text-typography-secondary">
-            {detailsVisible ? (
-              <FaChevronUp className="-ml-6 -mt-2" size={12} />
-            ) : (
-              <FaChevronDown className="-ml-6 -mt-2" size={12} />
-            )}
+          <span className="flex shrink-0 cursor-pointer items-center justify-center rounded-4 pt-1 text-typography-secondary">
+            {detailsVisible ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
           </span>
         </div>
       </div>

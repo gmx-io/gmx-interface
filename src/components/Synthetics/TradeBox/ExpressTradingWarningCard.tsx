@@ -14,8 +14,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 
-import Button from "components/Button/Button";
-import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import { ColorfulBanner, ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import { useGasPaymentTokensText } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 
 import ExpressIcon from "img/ic_express.svg?react";
@@ -138,9 +137,9 @@ export function ExpressTradingWarningCard({
       {onClick && (
         <>
           <br />
-          <Button variant="link" className="mt-2 !text-12" onClick={onClick}>
+          <ColorfulButtonLink color="blue" onClick={onClick}>
             {buttonText}
-          </Button>
+          </ColorfulButtonLink>
         </>
       )}
     </ColorfulBanner>

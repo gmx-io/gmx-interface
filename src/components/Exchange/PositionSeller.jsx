@@ -1172,7 +1172,7 @@ export default function PositionSeller(props) {
                 {(!isClosing || orderOption === STOP) && (
                   <div>
                     {(nextLiquidationPrice === undefined || nextLiquidationPrice == liquidationPrice) && (
-                      <div>{`$${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}`}</div>
+                      <div>{`$\u200a${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}`}</div>
                     )}
                     {nextLiquidationPrice !== undefined && nextLiquidationPrice != liquidationPrice && (
                       <div>
@@ -1231,7 +1231,7 @@ export default function PositionSeller(props) {
                     ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
                   </div>
                 ) : (
-                  `$${formatAmount(position.collateral, USD_DECIMALS, 4, true)}`
+                  `$\u200a${formatAmount(position.collateral, USD_DECIMALS, 4, true)}`
                 )}
               </div>
             </div>
@@ -1351,7 +1351,7 @@ export default function PositionSeller(props) {
                                 // eslint-disable-next-line react-perf/jsx-no-new-array-as-prop
                                 value={[
                                   `${formatAmount(maxIn, collateralInfo.decimals, 0, true)} ${collateralInfo.symbol}`,
-                                  `($${formatAmount(maxInUsd, USD_DECIMALS, 0, true)})`,
+                                  `($\u200a${formatAmount(maxInUsd, USD_DECIMALS, 0, true)})`,
                                 ]}
                               />
                               <br />
@@ -1362,7 +1362,7 @@ export default function PositionSeller(props) {
                                   `${formatAmount(maxOut, tokenOptionInfo.decimals, 2, true)} ${
                                     tokenOptionInfo.symbol
                                   }`,
-                                  `($${formatAmount(maxOutUsd, USD_DECIMALS, 2, true)})`,
+                                  `($\u200a${formatAmount(maxOutUsd, USD_DECIMALS, 2, true)})`,
                                 ]}
                               />
                             </div>
