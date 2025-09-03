@@ -3,7 +3,7 @@ import React, { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useS
 import { MdClose } from "react-icons/md";
 import { RemoveScroll } from "react-remove-scroll";
 
-import { useBreakpoints } from "lib/breakpoints";
+import { useBreakpoints } from "lib/useBreakpoints";
 
 import Portal from "components/Common/Portal";
 
@@ -263,7 +263,7 @@ function MobileSlideModal({
           onClick={stopPropagation}
         >
           <div onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
-            <div className="px-adaptive mb-8 mt-12 flex h-28 touch-none select-none items-center justify-between gap-4">
+            <div className="mb-8 mt-12 flex h-28 touch-none select-none items-center justify-between gap-4 px-adaptive">
               <div className="text-body-medium grow font-medium text-typography-primary">{label}</div>
 
               <MdClose

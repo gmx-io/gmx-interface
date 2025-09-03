@@ -8,8 +8,8 @@ import { useEffectOnce } from "react-use";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useBreakpoints } from "lib/breakpoints";
 import { useChainId } from "lib/chains";
+import { useBreakpoints } from "lib/useBreakpoints";
 import { getToken } from "sdk/configs/tokens";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";

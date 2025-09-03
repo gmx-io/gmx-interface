@@ -8,11 +8,24 @@ import { defineConfig, type PluginOption } from "vite";
 import { analyzer } from "vite-bundle-analyzer";
 import svgr from "vite-plugin-svgr";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { BREAKPOINTS } from "./src/lib/breakpoints";
 
 export default defineConfig(({ mode }) => {
   return {
     worker: {
       format: "es",
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `
+            $screen-md: ${BREAKPOINTS.mobile}px;
+            $screen-lg: ${BREAKPOINTS.tablet}px;
+            $screen-xl: ${BREAKPOINTS.desktop}px;
+            $screen-sm: ${BREAKPOINTS.smallMobile}px;
+          `,
+        },
+      },
     },
     plugins: [
       svgr({

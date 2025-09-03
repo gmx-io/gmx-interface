@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { ReactNode } from "react";
 
-import { useBreakpoints } from "lib/breakpoints";
+import { useBreakpoints } from "lib/useBreakpoints";
 
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";

@@ -236,7 +236,7 @@ export default function TokenSelector(props: Props) {
                 key={token.address}
                 data-qa={`${qa}-token-${token.symbol}`}
                 className={cx(
-                  "px-adaptive text-body-medium flex w-full cursor-pointer items-center justify-between py-8 hover:bg-slate-800",
+                  "text-body-medium flex w-full cursor-pointer items-center justify-between px-adaptive py-8 hover:bg-slate-800",
                   { disabled: tokenState.disabled }
                 )}
                 onClick={() => !tokenState.disabled && onSelectToken(token)}

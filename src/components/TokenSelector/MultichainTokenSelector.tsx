@@ -341,7 +341,7 @@ function AvailableToTradeTokenList({
         return (
           <div
             key={token.address + "_" + (token.isGmxAccount ? "gmx" : "settlement")}
-            className="px-adaptive flex cursor-pointer items-center justify-between py-8 gmx-hover:bg-fill-surfaceElevated50"
+            className="flex cursor-pointer items-center justify-between px-adaptive py-8 gmx-hover:bg-fill-surfaceElevated50"
             onClick={() => onSelectTokenAddress(token.address, token.isGmxAccount)}
           >
             <div className="flex items-center gap-8">
@@ -464,7 +464,7 @@ function MultichainTokenList({
         return (
           <div
             key={token.address + "_" + token.sourceChainId}
-            className="px-adaptive group flex cursor-pointer items-center justify-between py-8 gmx-hover:bg-fill-surfaceElevated50"
+            className="group flex cursor-pointer items-center justify-between px-adaptive py-8 gmx-hover:bg-fill-surfaceElevated50"
             onClick={() => onDepositTokenAddress(token.address, token.sourceChainId)}
           >
             <div className="flex items-center gap-8">

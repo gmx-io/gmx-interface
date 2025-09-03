@@ -16,13 +16,13 @@ import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFu
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
-import { useBreakpoints } from "lib/breakpoints";
 import { useChainId } from "lib/chains";
 import { formatRelativeDateWithComma } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useENS } from "lib/legacy";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { useBreakpoints } from "lib/useBreakpoints";
 import { useNotifyModalState } from "lib/useNotifyModalState";
 import { shortenAddressOrEns } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
