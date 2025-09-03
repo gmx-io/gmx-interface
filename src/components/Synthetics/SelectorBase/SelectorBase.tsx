@@ -8,6 +8,8 @@ import { createPortal } from "react-dom";
 import { FaChevronDown } from "react-icons/fa6";
 import { useMedia } from "react-use";
 
+import { BREAKPOINTS } from "lib/breakpoints";
+
 import { SlideModal } from "components/Modal/SlideModal";
 import { TableTr } from "components/Table/Table";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -45,7 +47,7 @@ const SelectorContextProvider = (props: PropsWithChildren<{ close: () => void; m
   return <selectorContext.Provider value={stableValue}>{props.children}</selectorContext.Provider>;
 };
 
-export const SELECTOR_BASE_MOBILE_THRESHOLD = 700;
+export const SELECTOR_BASE_MOBILE_THRESHOLD = BREAKPOINTS.mobile;
 
 export function SelectorBase(props: Props) {
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);

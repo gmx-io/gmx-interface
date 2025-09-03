@@ -124,10 +124,10 @@ export default function Modal({
               onClick={stopPropagation}
               data-qa={qa}
             >
-              <div className="Modal-header-wrapper flex flex-col gap-8 px-20 pt-20">
-                <div className="Modal-title-bar">
+              <div className="Modal-header-wrapper flex flex-col gap-8 px-adaptive pt-adaptive">
+                <div className="Modal-title-bar h-28">
                   <div className="Modal-title font-medium text-typography-primary">{label}</div>
-                  <div className="Modal-close-button pb-5" onClick={() => setIsVisible(false)}>
+                  <div className="Modal-close-button" onClick={() => setIsVisible(false)}>
                     <RxCross2 fontSize={20} className="Modal-close-icon" />
                   </div>
                 </div>
@@ -137,12 +137,19 @@ export default function Modal({
                 children
               ) : (
                 <div className="overflow-auto">
-                  <div className={cx("Modal-body", { "px-20 pb-20": contentPadding })}>{children}</div>
+                  <div
+                    className={cx("Modal-body", {
+                      "px-adaptive": contentPadding,
+                      "pb-adaptive": contentPadding && !footerContent,
+                    })}
+                  >
+                    {children}
+                  </div>
                 </div>
               )}
               {footerContent && (
                 <>
-                  <div className="px-20 pb-20">{footerContent}</div>
+                  <div className="px-adaptive pb-adaptive">{footerContent}</div>
                 </>
               )}
             </div>

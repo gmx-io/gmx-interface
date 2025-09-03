@@ -3,6 +3,7 @@ import merge from "lodash/merge";
 import range from "lodash/range";
 import type { Config } from "tailwindcss";
 import defaultConfig from "tailwindcss/defaultConfig";
+import type { PluginAPI } from "tailwindcss/types/config";
 
 import { colors } from "./src/config/colors";
 import { BREAKPOINTS } from "./src/lib/breakpoints";
@@ -21,6 +22,19 @@ function injectColorsPlugin({ addBase }: any) {
 
   addBase({
     ":root:not(.dark)": cssVariables.light,
+  });
+}
+
+function injectAdaptiveVariablesPlugin({ addBase }: PluginAPI) {
+  addBase({
+    ":root": {
+      "--padding-adaptive": "16px",
+    },
+    [`@media (min-width: ${BREAKPOINTS.mobile}px)`]: {
+      ":root": {
+        "--padding-adaptive": "20px",
+      },
+    },
   });
 }
 
@@ -187,9 +201,12 @@ const config: Config = {
       borderWidth: {
         "1/2": "0.5px",
       },
+      padding: {
+        adaptive: "var(--padding-adaptive)",
+      },
     },
   },
-  plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin],
+  plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin, injectAdaptiveVariablesPlugin],
 };
 
 export default config;
