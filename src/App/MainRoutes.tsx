@@ -17,15 +17,12 @@ import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { VERSION_QUERY_PARAM } from "pages/AccountDashboard/constants";
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
-import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
 import Buy from "pages/Buy/Buy";
-import BuyGlp from "pages/BuyGlp/BuyGlp";
 import BuyGMX from "pages/BuyGMX/BuyGMX";
 import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
-import { Exchange } from "pages/Exchange/Exchange";
 import Jobs from "pages/Jobs/Jobs";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
 import NftWallet from "pages/NftWallet/NftWallet";
@@ -102,11 +99,11 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/">
         <RedirectWithQuery to="/trade" />
       </Route>
+      <Route exact path="/v1">
+        <RedirectWithQuery to="/trade" />
+      </Route>
       <Route exact path="/price_impact_rebates_stats">
         <PriceImpactRebatesStatsPage />
-      </Route>
-      <Route exact path="/v1/:tradeType?">
-        <Exchange ref={exchangeRef} openSettings={openSettings} />
       </Route>
       <Route exact path="/stats">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="stats">
@@ -153,9 +150,6 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </SyntheticsStateContextProvider>
       </Route>
       <RedirectWithQuery from="/v2" to="/trade" />
-      <Route exact path="/buy_glp">
-        <BuyGlp />
-      </Route>
       <Route exact path="/jobs">
         <Jobs />
       </Route>
@@ -223,9 +217,6 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       </Route>
       <Route exact path="/positions_overview">
         <PositionsOverview />
-      </Route>
-      <Route exact path="/begin_account_transfer">
-        <BeginAccountTransfer />
       </Route>
       <Route exact path="/complete_account_transfer/:sender/:receiver">
         <CompleteAccountTransfer />

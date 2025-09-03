@@ -171,7 +171,6 @@ msgstr "주문 ({0})"
 
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "You have not deposited any tokens for vesting."
 msgstr "베스팅을 위해 예치한 토큰이 없습니다."
 
@@ -1150,7 +1149,6 @@ msgid "GMX Staked Rewards"
 msgstr "GMX 스테이킹 보상"
 
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Staked Tokens"
 msgstr "스테이킹된 토큰"
 
@@ -1227,7 +1225,6 @@ msgstr "기본 APY"
 msgid "Order updated."
 msgstr ""
 
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "GMX V1 markets are disabled. GLP is being phased out and no longer supports GMX V1 markets."
 msgstr "GMX V1 마켓이 비활성화되었습니다. GLP가 단계적으로 종료되며 더 이상 GMX V1 마켓을 지원하지 않습니다."
@@ -1470,8 +1467,8 @@ msgid "Leftover position below 10 USD"
 msgstr "10 USD 미만 잔여 포지션"
 
 #: src/components/BuyCards/BuyCards.tsx
-msgid "GLP"
-msgstr ""
+#~ msgid "GLP"
+#~ msgstr ""
 
 #: src/pages/Stake/Stake.tsx
 msgid "Distributions"
@@ -2485,7 +2482,6 @@ msgid "You have an existing limit order in the {0} market pool but it lacks liqu
 msgstr "{0} 마켓 풀에 기존 지정가 주문이 있지만 이 주문에 대한 유동성이 부족합니다."
 
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Reserved for Vesting"
 msgstr "베스팅 예약"
 
@@ -2716,7 +2712,6 @@ msgid "You have an existing position with {0} as collateral."
 msgstr "{0}을 담보로 한 기존 포지션이 있습니다."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Transfer Account"
 msgstr "계정 이전"
 
@@ -3951,7 +3946,6 @@ msgstr ""
 #: src/domain/multichain/useMultichainFundingToast.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Withdraw"
 msgstr "인출"
 
@@ -4189,7 +4183,6 @@ msgid "Your opinions and experiences matter to us. Your feedback helps us unders
 msgstr "귀하의 의견과 경험은 우리에게 중요합니다. 피드백은 우리가 잘하고 있는 부분과 개선할 부분을 이해하는 데 도움이 됩니다."
 
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "<0>{0}</0> GMX tokens can be claimed, use the options under the total rewards section to claim them."
 msgstr ""
 
@@ -4230,7 +4223,6 @@ msgstr "트레이더로서 이 계정이 획득한 소개 보수."
 #: src/components/BuyCards/BuyCards.tsx
 #: src/components/BuyCards/BuyCards.tsx
 #: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -4265,7 +4257,6 @@ msgstr ""
 "-{1} USD,\n"
 "{2} 가격: {3} USD"
 
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Vesting Status"
@@ -4654,7 +4645,6 @@ msgstr "Binance 앱에 로그인하고 [지갑]을 탭하세요. [Web3]로 이�
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Claimable"
 msgstr "수령가능"
 
@@ -4879,7 +4869,6 @@ msgstr "손절 생성"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/TotalRewardsCard.tsx
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Connect wallet"
@@ -5785,8 +5774,8 @@ msgid "Dashboard for GMX referral stats"
 msgstr "GMX 추천 시스템 통계 대시보드"
 
 #: src/components/BuyCards/BuyCards.tsx
-msgid "GLP is no longer available for buy"
-msgstr ""
+#~ msgid "GLP is no longer available for buy"
+#~ msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -7132,7 +7121,6 @@ msgstr "1CT(원클릭 거래) 비활성화"
 #: src/pages/Stake/VesterDepositModal.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Deposit"
 msgstr "예치"
 
@@ -8161,9 +8149,8 @@ msgid "Fees will be shown once you have entered an amount in the order form."
 msgstr "주문 양식에 금액 입력 시 수수료 표시."
 
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
-msgid "GLP Vault"
-msgstr "GLP 볼트"
+#~ msgid "GLP Vault"
+#~ msgstr "GLP 볼트"
 
 #: src/components/Footer/constants.tsx
 #: src/pages/ReferralTerms/ReferralTerms.jsx
@@ -8253,8 +8240,8 @@ msgid "Total Volume"
 msgstr "총 거래량"
 
 #: src/pages/Stake/Vesting.tsx
-msgid "Withdraw from GLP Vault"
-msgstr "GLP 볼트에서 인출"
+#~ msgid "Withdraw from GLP Vault"
+#~ msgstr "GLP 볼트에서 인출"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Image generation error, please refresh and try again."
@@ -8597,7 +8584,6 @@ msgstr ""
 msgid "You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral. The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price."
 msgstr "롱 포지션과 {collateralSymbol} 담보로부터 {indexSymbol} 롱이 됩니다. 담보 가치가 가격 변화로 스테이블코인 담보 대비 청산 가격이 높아집니다."
 
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "<0>{0}</0> tokens have been converted to GMX from the <1>{1}</1> esGMX deposited for vesting."
