@@ -74,7 +74,7 @@ export function AddressDropdownWithMultichain({ account }: Props) {
               {isGmxAccountLoading ? (
                 <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={55} height={18} />
               ) : (
-                formatUsd(srcChainId ? gmxAccountUsd : totalUsd)
+                formatUsd(srcChainId ? gmxAccountUsd : totalUsd, { displayDecimals: 0 })
               )}
             </>
           )}

@@ -88,7 +88,7 @@ export function PoolListItem(props: {
     <>
       <div
         className={cx(
-          "text-body-medium flex w-full cursor-pointer items-center justify-between px-20 py-12 hover:bg-fill-surfaceHover",
+          "px-adaptive text-body-medium flex w-full cursor-pointer items-center justify-between py-12 hover:bg-fill-surfaceHover",
           { disabled: state.disabled }
         )}
         onClick={handleClick}
@@ -167,7 +167,9 @@ export function PoolListItem(props: {
           </Button>
         </div>
       </div>
-      {state.warning && <p className="mb-8 px-20 py-8 text-14 text-typography-secondary last:mb-0">{state.warning}</p>}
+      {state.warning && (
+        <p className="px-adaptive mb-8 py-8 text-14 text-typography-secondary last:mb-0">{state.warning}</p>
+      )}
     </>
   );
 }

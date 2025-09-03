@@ -63,7 +63,7 @@ const TokenIcons = ({ tokens }: { tokens: string[] }) => {
         <div
           key={token}
           className={cx(
-            "flex size-20 items-center justify-center rounded-full border border-cold-blue-500",
+            "flex size-20 items-center justify-center rounded-full border border-slate-600",
             index > 0 && "-ml-8"
           )}
         >
@@ -71,7 +71,7 @@ const TokenIcons = ({ tokens }: { tokens: string[] }) => {
         </div>
       ))}
       {remainingCount > 0 && (
-        <div className="-ml-8 flex size-20 items-center justify-center rounded-full border border-cold-blue-500 bg-white text-12 text-black">
+        <div className="-ml-8 flex size-20 items-center justify-center rounded-full border border-slate-600 bg-white text-12 text-black">
           +{remainingCount}
         </div>
       )}
@@ -211,7 +211,7 @@ function SettlementChainBalance() {
 
   return (
     <div className="flex flex-col gap-12 rounded-8 bg-fill-surfaceElevated50 p-12">
-      <div className="text-body-small text-[#CACCEC]">
+      <div className="text-body-small text-typography-secondary">
         <Trans>Available to Trade</Trans>
       </div>
       <Balance usd={totalUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
@@ -263,8 +263,8 @@ function MultichainBalance() {
   const availableToTradeAssetSymbols = useAvailableToTradeAssetSymbolsMultichain();
 
   return (
-    <div className="flex flex-col gap-8 rounded-8 bg-cold-blue-900 p-12">
-      <div className="text-body-small text-[#CACCEC]">
+    <div className="flex flex-col gap-8 rounded-8 bg-fill-surfaceElevated50 p-12">
+      <div className="text-body-small text-typography-secondary">
         <Trans>Balance</Trans>
       </div>
       <Balance usd={gmxAccountUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
@@ -301,7 +301,7 @@ function Balance({
       )}
       {usd !== undefined && usd !== 0n && (
         <button
-          className="flex items-center gap-4 rounded-full bg-slate-600 py-8 pl-12 pr-12 text-[13px] font-medium gmx-hover:bg-cold-blue-500"
+          className="flex items-center gap-4 rounded-full bg-slate-600 py-8 pl-12 pr-12 text-[13px] font-medium gmx-hover:bg-slate-600/90"
           onClick={handleAvailableToTradeClick}
         >
           <Trans>All assets</Trans>

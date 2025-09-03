@@ -11,13 +11,8 @@ import {
   SELECTED_NETWORK_LOCAL_STORAGE_KEY,
   SELECTED_SETTLEMENT_CHAIN_ID_KEY,
 } from "config/localStorage";
-import {
-  DEFAULT_SETTLEMENT_CHAIN_ID_MAP,
-  IS_SOURCE_BASE_ALLOWED,
-  MULTICHAIN_TOKEN_MAPPING,
-  isSettlementChain,
-  isSourceChain,
-} from "config/multichain";
+import { DEFAULT_SETTLEMENT_CHAIN_ID_MAP, IS_SOURCE_BASE_ALLOWED, isSettlementChain } from "config/multichain";
+import { areChainsRelated } from "domain/multichain/areChainsRelated";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { ARBITRUM, ARBITRUM_SEPOLIA, SettlementChainId, SourceChainId } from "sdk/configs/chains";
@@ -100,9 +95,18 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
 
   const [modalOpen, setModalOpen] = useState<GmxAccountContext["modalOpen"]>(false);
 
-  const [settlementChainId, setSettlementChainId] = useState<GmxAccountContext["settlementChainId"]>(
+  let [settlementChainId, setSettlementChainId] = useState<GmxAccountContext["settlementChainId"]>(
     getSettlementChainIdFromLocalStorage()
   );
+
+  if (walletChainId !== undefined && !areChainsRelated(settlementChainId, walletChainId as SourceChainId)) {
+    if (isSettlementChain(walletChainId as SettlementChainId)) {
+      settlementChainId = walletChainId as SettlementChainId;
+    } else {
+      settlementChainId =
+        DEFAULT_SETTLEMENT_CHAIN_ID_MAP[walletChainId as SourceChainId] ?? DEFAULT_SETTLEMENT_CHAIN_ID;
+    }
+  }
 
   const handleSetSettlementChainId = useCallback((chainId: SettlementChainId) => {
     setSettlementChainId(chainId);
@@ -138,35 +142,6 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
       setSelectedTransferGuid(undefined);
     }
   }, []);
-
-  useEffect(() => {
-    let probableSourceChain: SourceChainId | undefined = walletChainId as SourceChainId | undefined;
-    if (walletChainId === undefined) {
-      const unsanitizedChainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
-      if (!unsanitizedChainId) {
-        return;
-      }
-
-      const chainIdFromLocalStorage = parseInt(unsanitizedChainId);
-
-      if (!isSourceChain(chainIdFromLocalStorage)) {
-        return;
-      }
-
-      probableSourceChain = chainIdFromLocalStorage;
-    }
-
-    if (!isSourceChain(probableSourceChain)) {
-      return;
-    }
-
-    const areChainsRelated =
-      Object.keys(MULTICHAIN_TOKEN_MAPPING[settlementChainId]?.[probableSourceChain] || {}).length > 0;
-
-    if (settlementChainId === undefined || !areChainsRelated) {
-      handleSetSettlementChainId(DEFAULT_SETTLEMENT_CHAIN_ID_MAP[probableSourceChain] ?? DEFAULT_SETTLEMENT_CHAIN_ID);
-    }
-  }, [handleSetSettlementChainId, settlementChainId, walletChainId]);
 
   const value = useMemo(
     () => ({
