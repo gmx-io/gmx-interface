@@ -61,6 +61,8 @@ export function TradingSettings({
   const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
   const isExpressTradingDisabled = (isOutOfGasPaymentBalance && srcChainId === undefined) || isGeminiWallet;
 
+  const gasTokenSymbol = chainId === BOTANIX ? "BTC" : "ETH";
+
   return (
     <div>
       {getIsExpressSupported(chainId) && (
@@ -79,7 +81,7 @@ export function TradingSettings({
                     <br />
                     <br />
                     You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas
-                    payments in ETH.
+                    payments in {gasTokenSymbol}.
                   </Trans>
                 }
                 icon={<HourGlassIcon className="size-28" />}

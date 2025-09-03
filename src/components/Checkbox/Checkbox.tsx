@@ -32,16 +32,16 @@ export default function Checkbox(props: Props) {
     >
       <span
         className={cx(
-          `flex h-14  w-14
-       items-center justify-center rounded-4 border border-slate-100 group-hover:border-slate-400`,
+          `flex h-14  w-14 text-14 items-center justify-center rounded-4
+          border border-slate-100 group-hover:border-slate-400`,
           {
             "opacity-50": disabled,
             "border-none bg-blue-400 text-white": isChecked || isPartialChecked,
           }
         )}
       >
-        {isChecked && !isPartialChecked && <BsCheck />}
-        {isPartialChecked && <TiMinus />}
+        {isChecked && !isPartialChecked && <BsCheck className="size-14" />}
+        {isPartialChecked && <TiMinus className="size-12" />}
       </span>
       {props.children && props.children}
     </button>

@@ -5845,8 +5845,8 @@ msgid "30d"
 msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
-msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
-msgstr ""
+#~ msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
+#~ msgstr ""
 
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
@@ -6339,6 +6339,10 @@ msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "Alternatively, you can select a different collateral in token."
+msgstr ""
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in {gasTokenSymbol}."
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6972,6 +6976,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
+msgstr ""
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Show positions on chart"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx

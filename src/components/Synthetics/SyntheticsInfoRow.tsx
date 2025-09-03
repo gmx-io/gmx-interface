@@ -34,7 +34,7 @@ export function SyntheticsInfoRow({
     <Component
       type={onClick ? "button" : undefined}
       className={cx(
-        "flex w-full items-baseline justify-between gap-8 text-14 leading-[16px]",
+        "flex w-full items-baseline justify-between gap-8 text-14",
         {
           "cursor-pointer": onClick,
         },
