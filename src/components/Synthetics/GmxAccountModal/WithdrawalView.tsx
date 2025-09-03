@@ -318,7 +318,8 @@ export const WithdrawalView = () => {
     quoteSend,
     quoteOft,
     unwrappedTokenAddress: unwrappedSelectedTokenAddress,
-    srcChainId: withdrawalViewChain,
+    sourceChainId: chainId,
+    targetChainId: withdrawalViewChain,
   });
 
   const bridgeOutParams: BridgeOutParams | undefined = useMemo(() => {

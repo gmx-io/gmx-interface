@@ -340,7 +340,8 @@ export const DepositView = () => {
     quoteSend,
     quoteOft,
     unwrappedTokenAddress: unwrappedSelectedTokenAddress,
-    srcChainId: depositViewChain,
+    sourceChainId: depositViewChain,
+    targetChainId: settlementChainId,
   });
 
   const isFirstDeposit = useIsFirstDeposit();

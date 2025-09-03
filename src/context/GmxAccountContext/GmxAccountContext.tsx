@@ -11,12 +11,8 @@ import {
   SELECTED_NETWORK_LOCAL_STORAGE_KEY,
   SELECTED_SETTLEMENT_CHAIN_ID_KEY,
 } from "config/localStorage";
-import {
-  DEFAULT_SETTLEMENT_CHAIN_ID_MAP,
-  IS_SOURCE_BASE_ALLOWED,
-  MULTICHAIN_TOKEN_MAPPING,
-  isSettlementChain,
-} from "config/multichain";
+import { DEFAULT_SETTLEMENT_CHAIN_ID_MAP, IS_SOURCE_BASE_ALLOWED, isSettlementChain } from "config/multichain";
+import { areChainsRelated } from "domain/multichain/areChainsRelated";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { ARBITRUM, ARBITRUM_SEPOLIA, SettlementChainId, SourceChainId } from "sdk/configs/chains";
@@ -92,10 +88,6 @@ const getSettlementChainIdFromLocalStorage = () => {
 
   return chainIdFromLocalStorage;
 };
-
-function areChainsRelated(settlementChainId: SettlementChainId, sourceChainId: SourceChainId) {
-  return Object.keys(MULTICHAIN_TOKEN_MAPPING[settlementChainId]?.[sourceChainId] || {}).length > 0;
-}
 
 export function GmxAccountContextProvider({ children }: PropsWithChildren) {
   const { chainId: walletChainId } = useAccount();
