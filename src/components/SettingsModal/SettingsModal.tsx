@@ -266,11 +266,37 @@ export function SettingsModal({
       label={t`Settings`}
       qa="settings-modal"
       className="text-body-medium text-typography-secondary"
-      desktopContentClassName={isDevelopment() ? "w-[448px] h-[720px]" : "w-[420px] h-[720px]"}
     >
       <div className="flex flex-col gap-8">
         <Tabs options={tabOptions} selectedValue={activeTab} onChange={setActiveTab} type="inline" />
-        {renderTabContent()}
+        <div className="flex max-w-[380px] flex-row items-start overflow-x-hidden max-md:max-w-none">
+          <div className="w-[380px] shrink-0 max-md:w-full">{renderTabContent()}</div>
+
+          {activeTab !== "trading" && (
+            <div className="invisible w-[380px] shrink-0 max-md:w-full">
+              <TradingSettings
+                tradingMode={tradingMode}
+                handleTradingModeChange={handleTradingModeChange}
+                onChangeSlippage={onChangeSlippage}
+                onChangeExecutionFeeBufferBps={onChangeExecutionFeeBufferBps}
+                onChangeTwapNumberOfParts={onChangeTwapNumberOfParts}
+                onBlurTwapNumberOfParts={onBlurTwapNumberOfParts}
+                numberOfParts={numberOfParts}
+                onClose={onClose}
+              />
+            </div>
+          )}
+          {activeTab !== "display" && (
+            <div className="invisible w-[380px] shrink-0 max-md:w-full">
+              <DisplaySettings />
+            </div>
+          )}
+          {activeTab !== "debug" && (
+            <div className="invisible w-[380px] shrink-0 max-md:w-full">
+              <DebugSettings isSettingsVisible={isSettingsVisible} />
+            </div>
+          )}
+        </div>
       </div>
     </SlideModal>
   );
