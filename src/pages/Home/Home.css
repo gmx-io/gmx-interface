@@ -1,14 +1,3 @@
-.Home {
-  min-height: 100vh;
-  padding-bottom: 15rem;
-}
-
-@media (max-width: 1024px) {
-  .Home {
-    padding-bottom: 23rem;
-  }
-}
-
 .Home-top {
   display: flex;
   flex-direction: column;
@@ -22,6 +11,8 @@
   background-size: cover;
   background-position: right;
   margin-top: -6.2rem;
+  padding-left: 56px;
+  padding-right: 56px;
 }
 
 .Home-title {
@@ -57,6 +48,8 @@
 
 .Home-benefits-section {
   background: var(--color-slate-800);
+  padding-left: 56px;
+  padding-right: 56px;
 }
 
 .Home-benefits {
@@ -96,6 +89,8 @@
 
 .Home-cta-section {
   background: var(--color-slate-900);
+  padding-left: 56px;
+  padding-right: 56px;
 }
 
 .Home-cta-container {
@@ -212,7 +207,8 @@
   padding-top: 7.75rem;
   padding-bottom: 7.75rem;
   background: var(--color-slate-800);
-  margin-bottom: -4.65rem;
+  padding-left: 56px;
+  padding-right: 56px;
 }
 
 .Home-token-card-info {
