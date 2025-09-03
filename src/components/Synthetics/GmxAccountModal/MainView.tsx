@@ -211,7 +211,7 @@ function SettlementChainBalance() {
 
   return (
     <div className="flex flex-col gap-12 rounded-8 bg-fill-surfaceElevated50 p-12">
-      <div className="text-body-small text-[#CACCEC]">
+      <div className="text-body-small text-typography-secondary">
         <Trans>Available to Trade</Trans>
       </div>
       <Balance usd={totalUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />

@@ -283,6 +283,7 @@ function ClaimablePositionPriceImpactRebateModalComponent({
       className="Confirmation-box ClaimableModal"
       setIsVisible={onClose}
       isVisible={isVisible}
+      contentClassName="pb-20"
     >
       <div className="ConfirmationBox-main">
         <div className="text-center">

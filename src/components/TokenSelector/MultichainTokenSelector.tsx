@@ -163,7 +163,7 @@ export function MultichainTokenSelector({
                   variant="ghost"
                   size="small"
                   className={cx({
-                    "!bg-cold-blue-500": activeFilter === "pay",
+                    "!bg-button-secondary !text-typography-primary": activeFilter === "pay",
                   })}
                   onClick={() => setActiveFilter("pay")}
                 >
@@ -174,7 +174,7 @@ export function MultichainTokenSelector({
                   variant="ghost"
                   size="small"
                   className={cx({
-                    "!bg-cold-blue-500": activeFilter === "deposit",
+                    "!bg-button-secondary !text-typography-primary": activeFilter === "deposit",
                   })}
                   onClick={() => setActiveFilter("deposit")}
                 >

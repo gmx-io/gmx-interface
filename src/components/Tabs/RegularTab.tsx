@@ -50,8 +50,7 @@ export default function RegularTab<V extends string | number>({
         optionClassName,
         regularOptionClassname,
         {
-          "!text-typography-primary": isActive,
-          "border-b-blue-300": isActive,
+          "border-b-blue-300 !text-typography-primary": isActive,
         }
       )}
       onClick={() => onOptionClick?.(option.value)}
