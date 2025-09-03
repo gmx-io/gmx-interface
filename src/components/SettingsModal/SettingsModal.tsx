@@ -5,45 +5,24 @@ import { ReactNode, useCallback, useEffect, useState } from "react";
 import { BOTANIX } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
-import { getIsExpressSupported } from "config/features";
 import { DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/twap";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
-import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
-import { getIsSubaccountActive } from "domain/synthetics/subaccount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { roundToTwoDecimals } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
-import { mustNeverExist } from "lib/types";
-import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
-import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
-import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
 import { SlideModal } from "components/Modal/SlideModal";
 import NumberInput from "components/NumberInput/NumberInput";
-import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
-import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import TenderlySettings from "components/TenderlySettings/TenderlySettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-
-import ExpressIcon from "img/ic_express.svg?react";
-import HourGlassIcon from "img/ic_hourglass.svg?react";
-import InfoIcon from "img/ic_info.svg?react";
-import OneClickIcon from "img/ic_one_click.svg?react";
-
-enum TradingMode {
-  Classic = "classic",
-  Express = "express",
-  Express1CT = "express-1ct",
-}
 
 export function SettingsModal({
   isSettingsVisible,
@@ -56,11 +35,7 @@ export function SettingsModal({
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
 
-  const [tradingMode, setTradingMode] = useState<TradingMode | undefined>(undefined);
-  const [isTradingModeChanging, setIsTradingModeChanging] = useState(false);
-
   const [numberOfParts, setNumberOfParts] = useState<number>();
-  const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
 
   useEffect(() => {
     if (!isSettingsVisible) return;
@@ -141,96 +116,6 @@ export function SettingsModal({
     settings.setSavedTWAPNumberOfParts(numberOfParts);
   }, [numberOfParts, settings]);
 
-  const onClose = useCallback(() => {
-    setIsSettingsVisible(false);
-  }, [setIsSettingsVisible]);
-
-  const isGeminiWallet = useIsGeminiWallet();
-
-  const handleTradingModeChange = useCallback(
-    async (mode: TradingMode) => {
-      const prevMode = tradingMode;
-      setIsTradingModeChanging(true);
-      setTradingMode(mode);
-
-      switch (mode) {
-        case TradingMode.Classic: {
-          if (subaccountState.subaccount) {
-            const isSubaccountDeactivated = await subaccountState.tryDisableSubaccount();
-
-            if (!isSubaccountDeactivated) {
-              setTradingMode(prevMode);
-              setIsTradingModeChanging(false);
-              return;
-            }
-          }
-
-          settings.setExpressOrdersEnabled(false);
-          setIsTradingModeChanging(false);
-          break;
-        }
-        case TradingMode.Express: {
-          if (subaccountState.subaccount) {
-            const isSubaccountDeactivated = await subaccountState.tryDisableSubaccount();
-
-            if (!isSubaccountDeactivated) {
-              setTradingMode(prevMode);
-              setIsTradingModeChanging(false);
-              return;
-            }
-          }
-
-          settings.setExpressOrdersEnabled(true);
-          setIsTradingModeChanging(false);
-          break;
-        }
-        case TradingMode.Express1CT: {
-          const isSubaccountActivated = await subaccountState.tryEnableSubaccount();
-
-          if (!isSubaccountActivated) {
-            setTradingMode(prevMode);
-            setIsTradingModeChanging(false);
-            return;
-          }
-
-          settings.setExpressOrdersEnabled(true);
-          setIsTradingModeChanging(false);
-          break;
-        }
-        default: {
-          mustNeverExist(mode);
-          break;
-        }
-      }
-    },
-    [settings, subaccountState, tradingMode]
-  );
-
-  useEffect(
-    function defineTradingMode() {
-      if (isTradingModeChanging) {
-        return;
-      }
-
-      let nextTradingMode = tradingMode;
-
-      if (subaccountState.subaccount) {
-        nextTradingMode = TradingMode.Express1CT;
-      } else if (settings.expressOrdersEnabled) {
-        nextTradingMode = TradingMode.Express;
-      } else {
-        nextTradingMode = TradingMode.Classic;
-      }
-
-      if (nextTradingMode !== tradingMode) {
-        setTradingMode(nextTradingMode);
-      }
-    },
-    [isTradingModeChanging, settings.expressOrdersEnabled, subaccountState.subaccount, tradingMode]
-  );
-
-  const isExpressTradingDisabled = isOutOfGasPaymentBalance || isGeminiWallet;
-
   return (
     <SlideModal
       isVisible={isSettingsVisible}
@@ -245,98 +130,6 @@ export function SettingsModal({
           <Trans>Trading Settings</Trans>
         </h1>
         <div className="mt-16">
-          {getIsExpressSupported(chainId) && (
-            <>
-              <SettingsSection>
-                <div className="text-14 font-medium">
-                  <Trans>Trading Mode</Trans>
-                </div>
-
-                <SettingButton
-                  title="Classic"
-                  description="On-chain signing for every transaction"
-                  info={
-                    <Trans>
-                      Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided
-                      by your wallet. Gas payments in ETH.
-                    </Trans>
-                  }
-                  icon={<HourGlassIcon className="opacity-50" />}
-                  active={tradingMode === TradingMode.Classic}
-                  onClick={() => handleTradingModeChange(TradingMode.Classic)}
-                />
-
-                <SettingButton
-                  title="Express"
-                  description="High execution reliability using premium RPCs"
-                  info={
-                    <Trans>
-                      Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs
-                      for reliability, even during network congestion. Gas payments in USDC or WETH.
-                    </Trans>
-                  }
-                  icon={<ExpressIcon />}
-                  disabled={isExpressTradingDisabled}
-                  chip={
-                    <Chip color="gray">
-                      <Trans>Optimal</Trans>
-                    </Chip>
-                  }
-                  active={tradingMode === TradingMode.Express}
-                  onClick={() => handleTradingModeChange(TradingMode.Express)}
-                />
-
-                <SettingButton
-                  title="Express + One-Click"
-                  description="CEX-like experience with Express reliability"
-                  icon={<OneClickIcon />}
-                  disabled={isExpressTradingDisabled}
-                  info={
-                    <Trans>
-                      Your wallet, your keys. GMX executes transactions for you without individual signing, providing a
-                      seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during
-                      network congestion. Gas payments in USDC or WETH.
-                    </Trans>
-                  }
-                  chip={
-                    <Chip color="blue">
-                      <Trans>Fastest</Trans>
-                    </Chip>
-                  }
-                  active={tradingMode === TradingMode.Express1CT}
-                  onClick={() => handleTradingModeChange(TradingMode.Express1CT)}
-                />
-
-                {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
-
-                {isGeminiWallet && (
-                  <ColorfulBanner color="slate" icon={<ExpressIcon className="-mt-6" />}>
-                    <div className="text-body-small mr-8 pl-8">
-                      <Trans>Gemini Wallet is not supported for Express or One-Click trading.</Trans>
-                    </div>
-                  </ColorfulBanner>
-                )}
-
-                <OldSubaccountWithdraw />
-
-                {Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) && (
-                  <OneClickAdvancedSettings />
-                )}
-
-                {settings.expressOrdersEnabled && (
-                  <>
-                    <div className="divider"></div>
-
-                    <GasPaymentTokenSelector
-                      curentTokenAddress={settings.gasPaymentTokenAddress}
-                      onSelectToken={settings.setGasPaymentTokenAddress}
-                    />
-                  </>
-                )}
-              </SettingsSection>
-            </>
-          )}
-
           <SettingsSection className="mt-2">
             <InputSetting
               title={<Trans>Default Allowed Slippage</Trans>}
@@ -537,62 +330,4 @@ function InputSetting({
       {Input}
     </div>
   );
-}
-
-function SettingButton({
-  title,
-  icon,
-  description,
-  onClick,
-  active,
-  chip,
-  info,
-  disabled,
-}: {
-  title: string;
-  icon: ReactNode;
-  description: string;
-  active?: boolean;
-  chip?: ReactNode;
-  onClick: () => void;
-  info?: ReactNode;
-  disabled?: boolean;
-}) {
-  return (
-    <div
-      className={cx(
-        `flex select-none items-center rounded-4 border border-solid`,
-        active ? "border-gray-400" : "border-stroke-primary",
-        disabled ? "muted cursor-not-allowed" : "cursor-pointer"
-      )}
-      onClick={disabled ? undefined : onClick}
-    >
-      <div className={cx("px-16 py-6", disabled && "opacity-50")}>{icon}</div>
-      <div className="flex py-6 ">
-        <div className="flex flex-col border-l border-solid border-stroke-primary pl-12">
-          <div className="flex items-center gap-4">
-            <div>{title}</div>
-            {info && (
-              <TooltipWithPortal
-                content={info}
-                handleClassName="-mb-6"
-                handle={<InfoIcon className="muted size-12" />}
-              />
-            )}
-          </div>
-          <div className="text-slate-100">{description}</div>
-        </div>
-        {chip ? <div className="mr-6 mt-4">{chip}</div> : null}
-      </div>
-    </div>
-  );
-}
-
-function Chip({ children, color }: { children: ReactNode; color: "blue" | "gray" }) {
-  const colorClass = {
-    blue: "bg-blue-600",
-    gray: "bg-slate-500",
-  }[color];
-
-  return <div className={cx(`rounded-full px-8 py-4 text-[10px]`, colorClass)}>{children}</div>;
 }

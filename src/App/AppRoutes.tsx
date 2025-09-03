@@ -6,6 +6,7 @@ import { Hash } from "viem";
 import { useDisconnect } from "wagmi";
 
 import { SUPPORTED_CHAIN_IDS, UiContractsChain } from "config/chains";
+import { getIsV1Deployment } from "config/features";
 import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   REFERRAL_CODE_KEY,
@@ -36,6 +37,7 @@ import { SettingsModal } from "components/SettingsModal/SettingsModal";
 
 import { HomeRoutes } from "./HomeRoutes";
 import { MainRoutes } from "./MainRoutes";
+import { V1Routes } from "./V1Routes";
 
 const Zoom = cssTransition({
   enter: "zoomIn",
@@ -149,7 +151,12 @@ export function AppRoutes() {
             showRedirectModal={showRedirectModal}
           />
           {isHome && <HomeRoutes showRedirectModal={showRedirectModal} />}
-          {!isHome && <MainRoutes openSettings={openSettings} />}
+          {!isHome &&
+            (getIsV1Deployment() ? (
+              <V1Routes openSettings={openSettings} />
+            ) : (
+              <MainRoutes openSettings={openSettings} />
+            ))}
         </div>
       </div>
       <ToastContainer

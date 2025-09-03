@@ -6,16 +6,12 @@ import {
   memo,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from "react";
-import { matchPath, useHistory, useLocation } from "react-router-dom";
 import { useLocalStorage } from "react-use";
 
-import { REDIRECT_POPUP_TIMESTAMP_KEY, TRADE_LINK_KEY } from "config/localStorage";
-import { useChainId } from "lib/chains";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/localStorage";
 
 type GlobalContextType = null | {
   tradePageVersion: number;
@@ -90,41 +86,12 @@ export const useGlobalContext = () => {
 };
 
 function useTradePageVersion() {
-  const { chainId } = useChainId();
-  const location = useLocation();
-  const history = useHistory();
-
-  const isV2Matched = useMemo(() => matchPath(location.pathname, { path: "/trade/:tradeType?" }), [location.pathname]);
-  const isV1Matched = useMemo(() => matchPath(location.pathname, { path: "/v1/:tradeType?" }), [location.pathname]);
-  const defaultVersion = !isV1Matched ? 2 : 1;
-  const [savedTradePageVersion, setSavedTradePageVersion] = useLocalStorageSerializeKey(
-    [chainId, TRADE_LINK_KEY],
-    defaultVersion
-  );
-
-  const tradePageVersion = savedTradePageVersion ?? defaultVersion;
+  const tradePageVersion = 1;
 
   // manual switch
-  const setTradePageVersion = useCallback(
-    (version: number) => {
-      setSavedTradePageVersion(version);
-      if (version === 1 && isV2Matched) {
-        history.replace("/v1");
-      } else if (version === 2 && isV1Matched) {
-        history.replace("/trade");
-      }
-    },
-    [history, setSavedTradePageVersion, isV1Matched, isV2Matched]
-  );
-
-  // chainId changes -> switch to prev selected version
-  useEffect(() => {
-    if (savedTradePageVersion === 1 && isV2Matched) {
-      history.replace("/v1");
-    } else if (savedTradePageVersion === 2 && isV1Matched) {
-      history.replace("/trade");
-    }
-  }, [chainId, savedTradePageVersion, history, isV1Matched, isV2Matched]);
+  const setTradePageVersion = useCallback(() => {
+    return null;
+  }, []);
 
   return [tradePageVersion, setTradePageVersion] as const;
 }

@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback } from "react";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, getChainName } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
@@ -12,8 +12,6 @@ import { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
 import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import useWallet from "lib/wallets/useWallet";
-
-import { OneClickButton } from "components/OneClickButton/OneClickButton";
 
 import connectWalletImg from "img/ic_wallet_24.svg";
 
@@ -45,12 +43,6 @@ const NETWORK_OPTIONS = [
     value: AVALANCHE,
     icon: getIcon(AVALANCHE, "network"),
     color: "#E841424D",
-  },
-  {
-    label: getChainName(BOTANIX),
-    value: BOTANIX,
-    icon: getIcon(BOTANIX, "network"),
-    color: "#F7931A",
   },
 ];
 
@@ -122,7 +114,6 @@ export function AppHeaderUser({
             >
               {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
             </ConnectWalletButton>
-            {!small && <OneClickButton openSettings={openSettings} />}
             <NetworkDropdown
               small={small}
               networkOptions={NETWORK_OPTIONS}
@@ -164,7 +155,6 @@ export function AppHeaderUser({
               disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
             />
           </div>
-          {!small && <OneClickButton openSettings={openSettings} />}
           <NetworkDropdown
             small={small}
             networkOptions={NETWORK_OPTIONS}

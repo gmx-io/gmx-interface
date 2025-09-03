@@ -154,7 +154,7 @@ export default function useUserClaimableAmounts(chainId: number, account?: strin
     return result;
   }, [glvsInfo, tokensData, marketsInfo, allTokens]);
 
-  const { data: claimableAmountsData, mutate: mutateClaimableAmounts } = useMulticall<
+  const { data: claimableAmountsData } = useMulticall<
     ClaimableAmountsRequestConfig,
     Pick<ClaimableAmountsResult, "claimTerms" | "claimsDisabled" | "claimableAmounts">
   >(chainId, "glp-distribution", {
@@ -213,7 +213,7 @@ export default function useUserClaimableAmounts(chainId: number, account?: strin
   }, [claimableAmountsData?.claimableAmounts, allTokens]);
 
   return {
-    mutateClaimableAmounts,
+    mutateClaimableAmounts: () => null,
     claimTerms: claimableAmountsData?.claimTerms ?? "",
     claimsDisabled: claimableAmountsData?.claimsDisabled ?? false,
     claimableAmounts: claimableAmountsData?.claimableAmounts ?? {},

@@ -199,7 +199,6 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
             ) : (
               <AppHeaderLinks
                 small
-                openSettings={openSettings}
                 clickCloseIcon={() => setIsDrawerVisible(false)}
                 showRedirectModal={showRedirectModal}
               />

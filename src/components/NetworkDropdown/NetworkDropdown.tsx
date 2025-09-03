@@ -13,7 +13,6 @@ import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
 import type { ModalProps } from "components/Modal/Modal";
-import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 
 import language24Icon from "img/ic_language24.svg";
 import SettingsIcon16 from "img/ic_settings_16.svg?react";
@@ -115,10 +114,7 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, openSe
         </Menu.Button>
         <Menu.Items as="div" className="menu-items network-dropdown-items" data-qa="networks-dropdown">
           <div className="dropdown-label">
-            <Trans>Version and Network</Trans>
-          </div>
-          <div className="px-8 pb-8">
-            <VersionSwitch />
+            <Trans>Network</Trans>
           </div>
           <div className="network-dropdown-list">
             <NetworkMenuItems networkOptions={networkOptions} selectorLabel={selectorLabel} />

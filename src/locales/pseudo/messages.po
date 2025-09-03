@@ -155,7 +155,6 @@ msgstr ""
 
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "You have not deposited any tokens for vesting."
 msgstr ""
 
@@ -500,8 +499,8 @@ msgid "Increased {positionText}, +{0}"
 msgstr ""
 
 #: src/pages/Stake/Stake.tsx
-msgid "Claim and view your incentives, airdrops, and prizes"
-msgstr ""
+#~ msgid "Claim and view your incentives, airdrops, and prizes"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -543,7 +542,6 @@ msgstr ""
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Stats"
@@ -728,7 +726,6 @@ msgstr ""
 msgid "Min. Required Collateral"
 msgstr ""
 
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
@@ -1084,7 +1081,6 @@ msgid "GMX Staked Rewards"
 msgstr ""
 
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Staked Tokens"
 msgstr ""
 
@@ -1263,8 +1259,8 @@ msgid "Show less"
 msgstr ""
 
 #: src/pages/Stake/Vesting.tsx
-msgid "Vest"
-msgstr ""
+#~ msgid "Vest"
+#~ msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in the GLP pools."
@@ -1368,16 +1364,16 @@ msgid "The owner of this Referral Code has set a custom discount of {currentTier
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
-msgstr ""
+#~ msgid "Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Leftover position below 10 USD"
 msgstr ""
 
 #: src/pages/Stake/Stake.tsx
-msgid "Distributions"
-msgstr ""
+#~ msgid "Distributions"
+#~ msgstr ""
 
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>."
@@ -1662,8 +1658,8 @@ msgid "Price is below Mark Price"
 msgstr ""
 
 #: src/pages/Stake/Vesting.tsx
-msgid "Withdraw from GMX Vault"
-msgstr ""
+#~ msgid "Withdraw from GMX Vault"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Withdrawal submitted."
@@ -2024,8 +2020,8 @@ msgid "Affiliates"
 msgstr ""
 
 #: src/pages/Stake/Vesting.tsx
-msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
-msgstr ""
+#~ msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
+#~ msgstr ""
 
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
 msgid "Try Express"
@@ -2090,7 +2086,6 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/TotalRewardsCard.tsx
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Connect Wallet"
@@ -2158,8 +2153,8 @@ msgid "Deposited {0} into {positionText}"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "Your wallet, your keys. GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
-msgstr ""
+#~ msgid "Your wallet, your keys. GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
+#~ msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -2238,8 +2233,8 @@ msgid "<0>Error submitting order.</0><1/><2>Signer address does not match receiv
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "Trading Mode"
-msgstr ""
+#~ msgid "Trading Mode"
+#~ msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
@@ -2316,7 +2311,6 @@ msgstr ""
 msgid "You have an existing limit order in the {0} market pool but it lacks liquidity for this order."
 msgstr ""
 
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Reserved for Vesting"
 msgstr ""
@@ -2498,6 +2492,11 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Could not decrease {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}"
+msgstr ""
+
+#: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Stake/Vesting.tsx
+msgid "Vault"
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
@@ -2936,12 +2935,8 @@ msgstr ""
 msgid "SL"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
-#: src/pages/Stake/Stake.tsx
-#: src/pages/Stake/Stake.tsx
-#: src/pages/Stake/Stake.tsx
 #: src/pages/Stake/Stake.tsx
 #: src/pages/Stake/StakeModal.tsx
 #: src/pages/Stake/StakeModal.tsx
@@ -3623,6 +3618,10 @@ msgstr ""
 msgid "Yes, GLV is fully liquid and permissionless. You can sell via the GMX interface to redeem for underlying assets, with low fees."
 msgstr ""
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Network"
+msgstr ""
+
 #: src/components/Synthetics/TwapRows/TwapRows.tsx
 msgid "<0>every</0> {hours} hours{0}"
 msgstr ""
@@ -3683,7 +3682,6 @@ msgstr ""
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/TradeHistory/keys.ts
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Withdraw"
@@ -3810,6 +3808,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
+msgstr ""
+
+#: src/components/Header/AppHeaderLinks.tsx
+msgid "Redeem GLP"
 msgstr ""
 
 #: src/components/InterviewToast/InterviewToast.tsx
@@ -3953,7 +3955,6 @@ msgstr ""
 
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Vesting Status"
 msgstr ""
 
@@ -3970,8 +3971,8 @@ msgid "Negative funding fees are automatically settled against the collateral an
 msgstr ""
 
 #: src/pages/Stake/Stake.tsx
-msgid "Unstake esGMX"
-msgstr ""
+#~ msgid "Unstake esGMX"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "The actual trigger price at which order gets filled will depend on fees and price impact at the time of execution to guarantee that you receive the minimum receive amount."
@@ -4004,8 +4005,8 @@ msgid "Claim esGMX Rewards"
 msgstr ""
 
 #: src/pages/Stake/Stake.tsx
-msgid "Trading incentives program is live on {avalancheLink}."
-msgstr ""
+#~ msgid "Trading incentives program is live on {avalancheLink}."
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending sell request"
@@ -4235,7 +4236,6 @@ msgstr ""
 msgid "Read more."
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "PnL Analysis"
 msgstr ""
@@ -4327,8 +4327,8 @@ msgid "Exposure to Market Traders’ PnL"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "Optimal"
-msgstr ""
+#~ msgid "Optimal"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -4367,7 +4367,6 @@ msgstr ""
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Claimable"
 msgstr ""
 
@@ -4375,7 +4374,6 @@ msgstr ""
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"
 msgstr ""
@@ -4417,10 +4415,9 @@ msgid "Address copied to your clipboard"
 msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "Version and Network"
-msgstr ""
+#~ msgid "Version and Network"
+#~ msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -4853,8 +4850,8 @@ msgid "Firebird Finance"
 msgstr ""
 
 #: src/pages/Stake/Stake.tsx
-msgid "Stake GMX"
-msgstr ""
+#~ msgid "Stake GMX"
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
@@ -4974,8 +4971,8 @@ msgid "Execution prices for increasing shorts and<0/>decreasing longs."
 msgstr ""
 
 #: src/pages/Stake/Stake.tsx
-msgid "Deposit <0>GMX</0> and <1>esGMX</1> tokens to earn rewards."
-msgstr ""
+#~ msgid "Deposit <0>GMX</0> and <1>esGMX</1> tokens to earn rewards."
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
@@ -5076,7 +5073,6 @@ msgstr ""
 msgid "GMX Announcements"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Referrals/Referrals.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
@@ -5143,6 +5139,7 @@ msgid "Swap Order submitted!"
 msgstr ""
 
 #: src/App/MainRoutes.tsx
+#: src/App/V1Routes.tsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/TradeHistory.jsx
@@ -5326,7 +5323,6 @@ msgstr ""
 msgid "Transferring"
 msgstr ""
 
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
 msgstr ""
@@ -6051,8 +6047,8 @@ msgid "Balance"
 msgstr ""
 
 #: src/pages/Stake/Stake.tsx
-msgid "Liquidity and trading incentives programs are live on {avalancheLink}."
-msgstr ""
+#~ msgid "Liquidity and trading incentives programs are live on {avalancheLink}."
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX v2 Telegram & Discord Analytics"
@@ -6255,8 +6251,8 @@ msgid "less than a minute"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
-msgid "Ecosystem"
-msgstr ""
+#~ msgid "Ecosystem"
+#~ msgstr ""
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "Next"
@@ -6513,8 +6509,8 @@ msgstr ""
 
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-msgid "GMX Vault"
-msgstr ""
+#~ msgid "GMX Vault"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"
@@ -6712,7 +6708,6 @@ msgstr ""
 #: src/pages/Stake/VesterDepositModal.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Deposit"
 msgstr ""
 
@@ -6816,8 +6811,8 @@ msgid "Top Positions"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
-msgid "Pools"
-msgstr ""
+#~ msgid "Pools"
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Could not execute withdrawal from {0} {longOrShortText}"
@@ -6846,8 +6841,8 @@ msgid "Stop Loss"
 msgstr ""
 
 #: src/pages/Stake/Stake.tsx
-msgid "Liquidity incentives program is live on {avalancheLink}."
-msgstr ""
+#~ msgid "Liquidity incentives program is live on {avalancheLink}."
+#~ msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "GLP Distribution (test)"
@@ -7459,8 +7454,8 @@ msgid "Increasing"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "Fastest"
-msgstr ""
+#~ msgid "Fastest"
+#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Avg. Lev."
@@ -7664,8 +7659,8 @@ msgid "Order size is bigger than position, will only be executable if position i
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
-msgid "Buy"
-msgstr ""
+#~ msgid "Buy"
+#~ msgstr ""
 
 #: src/config/events.tsx
 msgid "Incentives are live for <0>Arbitrum</0> and <1>Avalanche</1> GM pools and V2 trading."
@@ -7727,8 +7722,8 @@ msgid "No markets matched."
 msgstr ""
 
 #: src/pages/Stake/Stake.tsx
-msgid "Stake esGMX"
-msgstr ""
+#~ msgid "Stake esGMX"
+#~ msgstr ""
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
@@ -7849,8 +7844,8 @@ msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Header/AppHeaderLinks.tsx
-msgid "Alerts"
-msgstr ""
+#~ msgid "Alerts"
+#~ msgstr ""
 
 #: src/components/Exchange/OrdersList.jsx
 msgid "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"
@@ -8008,7 +8003,6 @@ msgid "Settling..."
 msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
-#: src/components/Header/AppHeaderLinks.tsx
 msgid "Leaderboard"
 msgstr ""
 
@@ -8517,12 +8511,12 @@ msgid "This position could be liquidated, excluding any price movement, due to f
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "Gemini Wallet is not supported for Express or One-Click trading."
-msgstr ""
+#~ msgid "Gemini Wallet is not supported for Express or One-Click trading."
+#~ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
-msgstr ""
+#~ msgid "Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts

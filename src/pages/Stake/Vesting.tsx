@@ -15,9 +15,7 @@ import { formatAmount, formatKeyAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import PageTitle from "components/PageTitle/PageTitle";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
 import { AffiliateClaimModal } from "./AffiliateClaimModal";
@@ -55,29 +53,16 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
   const icons = getIcons(chainId);
 
   const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
-  const gmxVesterAddress = getContract(chainId, "GmxVester");
   const glpVesterAddress = getContract(chainId, "GlpVester");
   const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: sbfGmxBalance } = useSWR(
     [`StakeV2:sbfGmxBalance:${active}`, chainId, feeGmxTrackerAddress, "balanceOf", account ?? PLACEHOLDER_ACCOUNT],
     {
       fetcher: contractFetcher(undefined, "Token"),
     }
   );
-
-  const reservedAmount =
-    (processedData?.gmxInStakedGmx !== undefined &&
-      processedData?.esGmxInStakedGmx !== undefined &&
-      sbfGmxBalance !== undefined &&
-      processedData?.gmxInStakedGmx + processedData?.esGmxInStakedGmx - sbfGmxBalance) ||
-    0n;
-
-  let totalRewardTokens;
-
-  if (processedData && processedData.bonusGmxInFeeGmx !== undefined) {
-    totalRewardTokens = processedData.bonusGmxInFeeGmx;
-  }
 
   function showAffiliateVesterWithdrawModal() {
     if (vestingData?.affiliateVesterVestedAmount === undefined || vestingData.affiliateVesterVestedAmount <= 0) {
@@ -87,28 +72,6 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
 
     setIsAffiliateVesterWithdrawModalVisible(true);
   }
-
-  const showGmxVesterDepositModal = () => {
-    if (!vestingData) return;
-
-    let remainingVestableAmount = vestingData.gmxVester.maxVestableAmount - vestingData.gmxVester.vestedAmount;
-    if (processedData?.esGmxBalance !== undefined && processedData?.esGmxBalance < remainingVestableAmount) {
-      remainingVestableAmount = processedData.esGmxBalance;
-    }
-
-    setIsVesterDepositModalVisible(true);
-    setVesterDepositTitle(t`GMX Vault`);
-    setVesterDepositStakeTokenLabel("staked GMX + esGMX");
-    setVesterDepositMaxAmount(remainingVestableAmount);
-    setVesterDepositBalance(processedData?.esGmxBalance);
-    setVesterDepositVestedAmount(vestingData.gmxVester.vestedAmount);
-    setVesterDepositMaxVestableAmount(vestingData.gmxVester.maxVestableAmount);
-    setVesterDepositAverageStakedAmount(vestingData.gmxVester.averageStakedAmount);
-    setVesterDepositReserveAmount(reservedAmount);
-    setVesterDepositMaxReserveAmount(totalRewardTokens);
-    setVesterDepositValue("");
-    setVesterDepositAddress(gmxVesterAddress);
-  };
 
   const showGlpVesterDepositModal = () => {
     if (!vestingData) return;
@@ -130,17 +93,6 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
     setVesterDepositMaxReserveAmount(processedData?.glpBalance);
     setVesterDepositValue("");
     setVesterDepositAddress(glpVesterAddress);
-  };
-
-  const showGmxVesterWithdrawModal = () => {
-    if (!vestingData || vestingData.gmxVesterVestedAmount === undefined || vestingData.gmxVesterVestedAmount === 0n) {
-      helperToast.error(t`You have not deposited any tokens for vesting.`);
-      return;
-    }
-
-    setIsVesterWithdrawModalVisible(true);
-    setVesterWithdrawTitle(t`Withdraw from GMX Vault`);
-    setVesterWithdrawAddress(gmxVesterAddress);
   };
 
   const showGlpVesterWithdrawModal = () => {
@@ -241,128 +193,9 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
         totalVesterRewards={vestingData?.affiliateVesterClaimable ?? 0n}
       />
       <div>
-        <PageTitle
-          title={t`Vest`}
-          subtitle={
-            <Trans>
-              Convert esGMX tokens to GMX tokens.
-              <br />
-              Please read the{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/tokenomics/rewards#vesting">
-                vesting details
-              </ExternalLink>{" "}
-              before using the vaults.
-            </Trans>
-          }
-        />
+        <PageTitle title={t`Vault`} />
         <div>
           <div className="StakeV2-cards">
-            <div className="App-card StakeV2-gmx-card">
-              <div className="App-card-title">
-                <div className="inline-flex items-center">
-                  <img className="mr-5 h-20" alt="GMX" src={icons?.gmx} height={20} />
-                  <Trans>GMX Vault</Trans>
-                </div>
-              </div>
-              <div className="App-card-divider"></div>
-              <div className="App-card-content">
-                <div className="App-card-row">
-                  <div className="label">
-                    <Trans>Staked Tokens</Trans>
-                  </div>
-                  <div>
-                    <Tooltip
-                      handle={formatAmount(totalRewardTokens, 18, 2, true)}
-                      position="bottom-end"
-                      content={
-                        <>
-                          <StatsTooltipRow
-                            showDollar={false}
-                            label="GMX"
-                            value={formatAmount(processedData?.gmxInStakedGmx, 18, 2, true)}
-                          />
-
-                          <StatsTooltipRow
-                            showDollar={false}
-                            label="esGMX"
-                            value={formatAmount(processedData?.esGmxInStakedGmx, 18, 2, true)}
-                          />
-                        </>
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">
-                    <Trans>Reserved for Vesting</Trans>
-                  </div>
-                  <div>
-                    {formatAmount(reservedAmount, 18, 2, true)} / {formatAmount(totalRewardTokens, 18, 2, true)}
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">
-                    <Trans>Vesting Status</Trans>
-                  </div>
-                  <div>
-                    <Tooltip
-                      handle={`${formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} / ${formatKeyAmount(
-                        vestingData,
-                        "gmxVesterVestedAmount",
-                        18,
-                        4,
-                        true
-                      )}`}
-                      position="bottom-end"
-                      content={
-                        <div>
-                          <Trans>
-                            {formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} tokens have been converted
-                            to GMX from the {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)} esGMX
-                            deposited for vesting.
-                          </Trans>
-                        </div>
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">
-                    <Trans>Claimable</Trans>
-                  </div>
-                  <div>
-                    <Tooltip
-                      handle={formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)}
-                      position="bottom-end"
-                      content={
-                        <Trans>
-                          {formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)} GMX tokens can be claimed,
-                          use the options under the Total Rewards section to claim them.
-                        </Trans>
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="App-card-divider"></div>
-                <div className="App-card-buttons m-0">
-                  {!active && (
-                    <Button variant="secondary" onClick={openConnectModal}>
-                      <Trans>Connect Wallet</Trans>
-                    </Button>
-                  )}
-                  {active && (
-                    <Button variant="secondary" onClick={() => showGmxVesterDepositModal()}>
-                      <Trans>Deposit</Trans>
-                    </Button>
-                  )}
-                  {active && (
-                    <Button variant="secondary" onClick={() => showGmxVesterWithdrawModal()}>
-                      <Trans>Withdraw</Trans>
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </div>
             <div className="App-card StakeV2-gmx-card">
               <div className="App-card-title">
                 <div className="inline-flex items-center">
