@@ -8099,6 +8099,7 @@ msgstr "Aceptar confirmación de órdenes de activación"
 msgid "Choose to buy from decentralized or centralized exchanges."
 msgstr "Elige comprar en exchanges descentralizados o centralizados."
 
+#: src/components/Synthetics/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"

@@ -8099,6 +8099,7 @@ msgstr "Bestätigung von Trigger-Orders akzeptieren"
 msgid "Choose to buy from decentralized or centralized exchanges."
 msgstr "Wähle, ob du von dezentralen oder zentralen Exchanges kaufst."
 
+#: src/components/Synthetics/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"

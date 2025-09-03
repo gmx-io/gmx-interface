@@ -8099,6 +8099,7 @@ msgstr "トリガー注文の確認を受け入れる"
 msgid "Choose to buy from decentralized or centralized exchanges."
 msgstr "分散型または集中型取引所から購入を選択。"
 
+#: src/components/Synthetics/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
