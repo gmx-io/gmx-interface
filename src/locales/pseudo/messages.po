@@ -7510,6 +7510,10 @@ msgstr ""
 msgid "Vault Capacity"
 msgstr ""
 
+#: src/components/Synthetics/TVChart/Chart.tsx
+msgid "Depth"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
 msgstr ""

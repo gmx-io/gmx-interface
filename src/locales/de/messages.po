@@ -7516,6 +7516,10 @@ msgstr "Tausche {0} gegen {1}"
 msgid "Vault Capacity"
 msgstr "Vault-Kapazität"
 
+#: src/components/Synthetics/TVChart/Chart.tsx
+msgid "Depth"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Verringern aktiv: {0}, ausgeführt: {1}, abgebrochen: {2}"

@@ -7516,6 +7516,10 @@ msgstr "{0} を {1} にスワップ"
 msgid "Vault Capacity"
 msgstr "ボールト容量"
 
+#: src/components/Synthetics/TVChart/Chart.tsx
+msgid "Depth"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
 msgstr "減少 アクティブ: {0}、執行済: {1}、キャンセル済: {2}"

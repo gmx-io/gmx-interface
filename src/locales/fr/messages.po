@@ -7516,6 +7516,10 @@ msgstr "Échanger {0} pour {1}"
 msgid "Vault Capacity"
 msgstr "Capacité du vault"
 
+#: src/components/Synthetics/TVChart/Chart.tsx
+msgid "Depth"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Diminution active : {0}, exécutée : {1}, annulée : {2}"

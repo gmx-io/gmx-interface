@@ -7516,6 +7516,10 @@ msgstr "{0}을 {1}로 스왑"
 msgid "Vault Capacity"
 msgstr "볼트 용량"
 
+#: src/components/Synthetics/TVChart/Chart.tsx
+msgid "Depth"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
 msgstr "감소 액티브: {0}, 실행 완료: {1}, 취소 완료: {2}"
