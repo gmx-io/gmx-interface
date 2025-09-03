@@ -1,11 +1,11 @@
 import camelCase from "lodash/camelCase";
-import entries from "lodash/entries";
 import mapKeys from "lodash/mapKeys";
 import upperFirst from "lodash/upperFirst";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { colors } from "config/colors";
-import { ColorTree, ColorValue } from "lib/generateColorConfig";
+import { useTheme } from "context/ThemeContext/ThemeContext";
+import { ColorTree } from "lib/generateColorConfig";
 import { getCategoryTokenAddresses, getToken } from "sdk/configs/tokens";
 import { TokenCategory } from "sdk/types/tokens";
 
@@ -67,56 +67,48 @@ const otherImages = Object.keys(otherImagesContext)
     };
   }) as { src: string; name: string; path: string; importUrl: string }[];
 
+// Recursive function to flatten all colors from the config
+function flattenColors(obj: ColorTree, prefix = ""): Array<{ name: string; light: string; dark: string }> {
+  const result: Array<{ name: string; light: string; dark: string }> = [];
+
+  Object.entries(obj).forEach(([key, value]) => {
+    const name = prefix ? `${prefix}-${key}` : key;
+
+    if (value && typeof value === "object" && "light" in value && "dark" in value) {
+      // This is a color value
+      result.push({ name, light: value.light as string, dark: value.dark as string });
+    } else if (value && typeof value === "object") {
+      // This is a nested object, recurse
+      result.push(...flattenColors(value as ColorTree, name));
+    }
+  });
+
+  return result;
+}
+
 export default function UiPage() {
+  const { theme } = useTheme();
+  const allColors = flattenColors(colors);
   return (
     <AppPageLayout>
       <main className="mx-auto max-w-prose p-20">
-        <h1 className="text-34 font-bold">UI Page</h1>
+        <h1 className="text-34 font-medium">UI Page</h1>
 
         <p>This page demonstrates the use of the UI components in the app.</p>
 
-        <h2 className="mb-16 mt-24 text-24 font-bold">Fill colors</h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">Fill colors</h2>
         <div className="overflow-auto">
-          <div className="flex flex-col gap-8">
-            {entries(colors).map(([colorName, shades]) => {
-              // Check if it's a single color value (white/black)
-              const isSingleColor = shades && typeof shades === "object" && "light" in shades && "dark" in shades;
+          <div className="flex flex-wrap gap-4">
+            {allColors.map(({ name, light, dark }) => {
+              const displayValue = theme === "dark" ? dark : light;
+              // eslint-disable-next-line
+              const bgStyle = { backgroundColor: displayValue };
 
-              if (isSingleColor) {
-                const colorValue = shades as ColorValue;
-                return (
-                  <div key={colorName}>
-                    <div className="flex w-fit items-center overflow-hidden *:size-64">
-                      <div className="!w-96 text-12">{colorName}</div>
-                      <div className={`bg-${colorName}`}>
-                        <div className="text-10 flex h-full flex-col justify-center px-8">
-                          <div className="text-gray-900">L: {colorValue.light}</div>
-                          <div className="text-gray-100">D: {colorValue.dark}</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
-
-              // Nested color group
               return (
-                <div key={colorName}>
-                  <div className="flex w-fit overflow-hidden *:size-64">
-                    <div className="!w-96 text-12">{colorName}</div>
-                    {entries(shades as ColorTree).map(([shade, colorValue]) => {
-                      const bgClass = `bg-${colorName}-${shade}`;
-                      const value = colorValue as ColorValue;
-                      return (
-                        <div key={`${colorName}-${shade}`} className={bgClass}>
-                          <div className="text-10 flex h-full flex-col justify-center px-4">
-                            <div className="font-bold">{shade}</div>
-                            <div className="text-gray-900 opacity-80">L: {value.light}</div>
-                            <div className="text-gray-100 opacity-80">D: {value.dark}</div>
-                          </div>
-                        </div>
-                      );
-                    })}
+                <div key={name} className="flex flex-col items-center break-words text-11" title={name}>
+                  <div className="flex flex-col size-64 items-center justify-center" style={bgStyle}>
+                    <span className="px-2 text-center font-medium text-typography-primary overflow-hidden text-ellipsis w-full mix-blend-difference">{name}</span>
+                    <span className="mt-1 max-w-64 truncate text-center text-typography-primary mix-blend-difference">{displayValue}</span>
                   </div>
                 </div>
               );
@@ -124,7 +116,7 @@ export default function UiPage() {
           </div>
         </div>
 
-        <h2 className="mb-16 mt-24 text-24 font-bold">Text colors</h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">Text colors</h2>
 
         <div className="flex flex-wrap gap-16">
           <p className="text-blue-500">Blue 500</p>
@@ -138,7 +130,7 @@ export default function UiPage() {
           Decoration is gray-400
         </p>
 
-        <h2 className="mb-16 mt-24 text-24 font-bold">Font sizes</h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">Font sizes</h2>
         <div className="flex flex-col gap-16">
           <div className="flex items-baseline gap-8">
             <div>h1</div>
@@ -171,7 +163,7 @@ export default function UiPage() {
           </div>
         </div>
 
-        <h2 className="mb-16 mt-24 text-24 font-bold">Line heights</h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">Line heights</h2>
         <div className="flex flex-col gap-16">
           <p className="leading-1">
             leading-1
@@ -197,7 +189,7 @@ export default function UiPage() {
           </p>
         </div>
 
-        <h2 className="mb-16 mt-24 text-24 font-bold">Tooltips</h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">Tooltips</h2>
 
         <Tooltip
           content={
@@ -215,7 +207,7 @@ export default function UiPage() {
           closeDelay={100000000000}
         />
 
-        <h2 className="mb-16 mt-24 text-24 font-bold">Token categories</h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">Token categories</h2>
 
         <div className="flex flex-col gap-16">
           {[ARBITRUM, AVALANCHE, AVALANCHE_FUJI].map((chainId) => (
@@ -235,7 +227,7 @@ export default function UiPage() {
           ))}
         </div>
 
-        <h2 className="mb-16 mt-24 text-24 font-bold">Icons</h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">Icons</h2>
         <style>{`.ImageTooltip .Tooltip-popup {max-width: unset !important;}`}</style>
         <div className="relative left-1/2 flex w-screen -translate-x-1/2 flex-wrap items-center gap-16 px-20">
           {icons.map((icon) => (
@@ -266,7 +258,7 @@ export default function UiPage() {
           ))}
         </div>
 
-        <h2 className="mb-16 mt-24 text-24 font-bold">Images</h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">Images</h2>
 
         <div className="relative left-1/2 flex w-screen -translate-x-1/2 flex-wrap items-center gap-16 px-20">
           {otherImages.map((src) => (
