@@ -137,7 +137,14 @@ export default function Modal({
                 children
               ) : (
                 <div className="overflow-auto">
-                  <div className={cx("Modal-body", { "px-adaptive": contentPadding })}>{children}</div>
+                  <div
+                    className={cx("Modal-body", {
+                      "px-adaptive": contentPadding,
+                      "pb-adaptive": contentPadding && !footerContent,
+                    })}
+                  >
+                    {children}
+                  </div>
                 </div>
               )}
               {footerContent && (
