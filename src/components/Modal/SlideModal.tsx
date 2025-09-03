@@ -327,8 +327,6 @@ export function SlideModal({
   desktopContentClassName?: string;
   disableOverflowHandling?: boolean;
 }>) {
-  // const isMobile = useMedia("(max-width: 700px)", false);
-  // useBreakpoints;
   const { isMobile } = useBreakpoints();
 
   if (isMobile) {
