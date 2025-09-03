@@ -54,7 +54,6 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
 
   const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
   const glpVesterAddress = getContract(chainId, "GlpVester");
-  const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: sbfGmxBalance } = useSWR(
@@ -63,15 +62,6 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
       fetcher: contractFetcher(undefined, "Token"),
     }
   );
-
-  function showAffiliateVesterWithdrawModal() {
-    if (vestingData?.affiliateVesterVestedAmount === undefined || vestingData.affiliateVesterVestedAmount <= 0) {
-      helperToast.error(t`You have not deposited any tokens for vesting.`);
-      return;
-    }
-
-    setIsAffiliateVesterWithdrawModalVisible(true);
-  }
 
   const showGlpVesterDepositModal = () => {
     if (!vestingData) return;
@@ -105,41 +95,6 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
     setVesterWithdrawTitle(t`Withdraw from GLP Vault`);
     setVesterWithdrawAddress(glpVesterAddress);
   };
-
-  function showAffiliateVesterDepositModal() {
-    if (!vestingData?.affiliateVester) {
-      helperToast.error(t`Unsupported network`);
-      return;
-    }
-
-    let remainingVestableAmount =
-      vestingData.affiliateVester.maxVestableAmount - vestingData.affiliateVester.vestedAmount;
-    if (processedData?.esGmxBalance !== undefined && processedData.esGmxBalance < remainingVestableAmount) {
-      remainingVestableAmount = processedData.esGmxBalance;
-    }
-
-    setIsVesterDepositModalVisible(true);
-    setVesterDepositTitle(t`Affiliate Vault`);
-
-    setVesterDepositMaxAmount(remainingVestableAmount);
-    setVesterDepositBalance(processedData?.esGmxBalance);
-    setVesterDepositVestedAmount(vestingData?.affiliateVester.vestedAmount);
-    setVesterDepositMaxVestableAmount(vestingData?.affiliateVester.maxVestableAmount);
-    setVesterDepositAverageStakedAmount(vestingData?.affiliateVester.averageStakedAmount);
-
-    setVesterDepositReserveAmount(undefined);
-    setVesterDepositValue("");
-
-    setVesterDepositAddress(affiliateVesterAddress);
-  }
-
-  function showAffiliateVesterClaimModal() {
-    if (vestingData?.affiliateVesterClaimable === undefined || vestingData?.affiliateVesterClaimable <= 0) {
-      helperToast.error(t`You have no GMX tokens to claim.`);
-      return;
-    }
-    setIsAffiliateClaimModalVisible(true);
-  }
 
   return (
     <>
@@ -280,79 +235,14 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                       <Trans>Withdraw</Trans>
                     </Button>
                   )}
+                  {active && (
+                    <Button variant="secondary" to="/begin_account_transfer">
+                      <Trans>Transfer Account</Trans>
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
-            {(vestingData?.affiliateVesterMaxVestableAmount && vestingData?.affiliateVesterMaxVestableAmount > 0 && (
-              <div className="App-card StakeV2-gmx-card">
-                <div className="App-card-title">
-                  <div className="inline-flex items-center">
-                    <img className="mr-5 h-20" alt="GLP" src={icons?.gmx} height={20} />
-                    <Trans>Affiliate Vault</Trans>
-                  </div>
-                </div>
-                <div className="App-card-divider" />
-                <div className="App-card-content">
-                  <div className="App-card-row">
-                    <div className="label">
-                      <Trans>Vesting Status</Trans>
-                    </div>
-                    <div>
-                      <Tooltip
-                        handle={`${formatKeyAmount(
-                          vestingData,
-                          "affiliateVesterClaimSum",
-                          18,
-                          4,
-                          true
-                        )} / ${formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)}`}
-                        position="bottom-end"
-                        content={
-                          <div>
-                            <Trans>
-                              {formatKeyAmount(vestingData, "affiliateVesterClaimSum", 18, 4, true)} tokens have been
-                              converted to GMX from the{" "}
-                              {formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)} esGMX deposited
-                              for vesting.
-                            </Trans>
-                          </div>
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div className="App-card-row">
-                    <div className="label">
-                      <Trans>Claimable</Trans>
-                    </div>
-                    <div>{formatKeyAmount(vestingData, "affiliateVesterClaimable", 18, 4, true)}</div>
-                  </div>
-                  <div className="App-card-divider" />
-                  <div className="App-card-buttons m-0">
-                    {!active && (
-                      <Button variant="secondary" onClick={openConnectModal}>
-                        <Trans>Connect Wallet</Trans>
-                      </Button>
-                    )}
-                    {active && (
-                      <Button variant="secondary" onClick={() => showAffiliateVesterDepositModal()}>
-                        <Trans>Deposit</Trans>
-                      </Button>
-                    )}
-                    {active && (
-                      <Button variant="secondary" onClick={() => showAffiliateVesterWithdrawModal()}>
-                        <Trans>Withdraw</Trans>
-                      </Button>
-                    )}
-                    {active && (
-                      <Button variant="secondary" onClick={() => showAffiliateVesterClaimModal()}>
-                        <Trans>Claim</Trans>
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )) ||
-              null}
           </div>
         </div>
       </div>
