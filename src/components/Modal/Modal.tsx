@@ -124,7 +124,7 @@ export default function Modal({
               onClick={stopPropagation}
               data-qa={qa}
             >
-              <div className="Modal-header-wrapper px-adaptive pt-adaptive flex flex-col gap-8">
+              <div className="Modal-header-wrapper flex flex-col gap-8 px-adaptive pt-adaptive">
                 <div className="Modal-title-bar h-28">
                   <div className="Modal-title font-medium text-typography-primary">{label}</div>
                   <div className="Modal-close-button" onClick={() => setIsVisible(false)}>

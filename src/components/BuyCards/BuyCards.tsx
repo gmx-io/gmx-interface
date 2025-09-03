@@ -162,55 +162,57 @@ export default function BuyCards() {
 
   return (
     <div className="flex w-full flex-col gap-8">
-      <BuyCard
-        title={<Trans>GMX</Trans>}
-        icon={gmxIcon}
-        description={
-          <Trans>
-            GMX is the utility and governance token. It also accrues 30% of the protocol fees via a buyback and
-            distribution mechanism.
-          </Trans>
-        }
-        alt="GMX Icons"
-        type="buy"
-      >
-        <div className={cx("flex justify-between max-lg:flex-col max-lg:gap-12")}>
-          <div className={cx("buy flex gap-12 max-lg:flex-col")}>
-            <BuyLink
-              chainId={chainId}
-              active={active}
-              to={getTrackingLink("/buy_gmx")}
-              network={ARBITRUM}
-              badge={
-                <span>
-                  APR <APRLabel chainId={ARBITRUM} label="avgGMXAprTotal" />
-                </span>
-              }
-            />
-            <BuyLink
-              chainId={chainId}
-              active={active}
-              to={getTrackingLink("/buy_gmx")}
-              network={AVALANCHE}
-              badge={
-                <span>
-                  APR <APRLabel chainId={AVALANCHE} label="avgGMXAprTotal" />
-                </span>
-              }
-            />
+      {chainId !== BOTANIX && (
+        <BuyCard
+          title={<Trans>GMX</Trans>}
+          icon={gmxIcon}
+          description={
+            <Trans>
+              GMX is the utility and governance token. It also accrues 30% of the protocol fees via a buyback and
+              distribution mechanism.
+            </Trans>
+          }
+          alt="GMX Icons"
+          type="buy"
+        >
+          <div className={cx("flex justify-between max-lg:flex-col max-lg:gap-12")}>
+            <div className={cx("buy flex gap-12 max-lg:flex-col")}>
+              <BuyLink
+                chainId={chainId}
+                active={active}
+                to={getTrackingLink("/buy_gmx")}
+                network={ARBITRUM}
+                badge={
+                  <span>
+                    APR <APRLabel chainId={ARBITRUM} label="avgGMXAprTotal" />
+                  </span>
+                }
+              />
+              <BuyLink
+                chainId={chainId}
+                active={active}
+                to={getTrackingLink("/buy_gmx")}
+                network={AVALANCHE}
+                badge={
+                  <span>
+                    APR <APRLabel chainId={AVALANCHE} label="avgGMXAprTotal" />
+                  </span>
+                }
+              />
+            </div>
+            <TrackingLink>
+              <Button
+                className="!text-typography-primary"
+                newTab
+                variant="secondary"
+                to="https://docs.gmx.io/docs/category/tokenomics"
+              >
+                <Trans>Read more</Trans>
+              </Button>
+            </TrackingLink>
           </div>
-          <TrackingLink>
-            <Button
-              className="!text-typography-primary"
-              newTab
-              variant="secondary"
-              to="https://docs.gmx.io/docs/category/tokenomics"
-            >
-              <Trans>Read more</Trans>
-            </Button>
-          </TrackingLink>
-        </div>
-      </BuyCard>
+        </BuyCard>
+      )}
       <BuyCard
         title={<Trans>GLV</Trans>}
         icon={glvIcon}
