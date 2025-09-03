@@ -180,7 +180,7 @@ export function AffiliateCodeForm({
   }
 
   return (
-    <form onSubmit={buttonState.onSubmit} className="max-w-[400px]">
+    <form onSubmit={buttonState.onSubmit}>
       <input
         type="text"
         ref={inputRef}

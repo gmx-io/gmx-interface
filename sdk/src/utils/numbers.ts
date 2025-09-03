@@ -151,7 +151,7 @@ export function formatDeltaUsd(
 ) {
   if (typeof deltaUsd !== "bigint") {
     if (opts.fallbackToZero) {
-      return `${formatUsd(0n)} (${formatAmount(0n, 2, 2)} %)`;
+      return `${formatUsd(0n)} (${formatAmount(0n, 2, 2)}%)`;
     }
 
     return undefined;
@@ -175,7 +175,7 @@ export function formatPercentage(
 
   if (percentage === undefined) {
     if (fallbackToZero) {
-      return `${formatAmount(0n, PERCENT_PRECISION_DECIMALS, displayDecimals)} %`;
+      return `${formatAmount(0n, PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
     }
 
     return undefined;

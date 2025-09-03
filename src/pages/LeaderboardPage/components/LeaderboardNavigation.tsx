@@ -4,9 +4,11 @@ import cx from "classnames";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 
+import { AVALANCHE } from "config/chains";
 import { useLeaderboardPageKey } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { LeaderboardPageKey, LeaderboardTimeframe } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES, LEADERBOARD_PAGES_ORDER } from "domain/synthetics/leaderboard/constants";
+import { useChainId } from "lib/chains";
 import { getTimeframeLabel } from "lib/dates";
 import { mustNeverExist } from "lib/types";
 
@@ -60,6 +62,7 @@ function getLabel(pageKey: LeaderboardPageKey) {
 
 export function LeaderboardNavigation() {
   const pageKey = useLeaderboardPageKey();
+  const { chainId } = useChainId();
   const navigationItems = useMemo(() => {
     const allItems: LeaderboardNavigationItem[] = LEADERBOARD_PAGES_ORDER.map((key) => LEADERBOARD_PAGES[key])
       .filter((page) => !page.isCompetition || page.enabled)
@@ -98,7 +101,7 @@ export function LeaderboardNavigation() {
           : null;
 
       filteredItems = [...nonConcludedItems];
-      if (concludedTab) {
+      if (concludedTab && chainId !== AVALANCHE) {
         filteredItems.push(concludedTab);
       }
     }
@@ -118,7 +121,7 @@ export function LeaderboardNavigation() {
 
       return sortingPointA - sortingPointB;
     });
-  }, [pageKey]);
+  }, [pageKey, chainId]);
 
   return (
     <BodyScrollFadeContainer className="flex gap-20">
