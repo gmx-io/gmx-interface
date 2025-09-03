@@ -137,7 +137,7 @@ export function AppRoutes() {
     <>
       <div className="App w-full">
         {isHome ? (
-          <div>
+          <div className="bg-[#08091b]">
             <Header openSettings={openSettings} showRedirectModal={showRedirectModal} />
             <HomeRoutes showRedirectModal={showRedirectModal} />
             <HomeFooter />

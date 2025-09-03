@@ -36,14 +36,10 @@ export default function HomeFooter({ showRedirectModal, redirectPopupTimestamp, 
   return (
     <>
       <div
-        className={cx(
-          "w-full border-t border-t-slate-600 bg-slate-800 px-32 pt-32",
-          isMobileTradePage ? "pb-92" : "pb-32",
-          {
-            "grid grid-cols-[1fr_2fr_1fr]": !isMobile,
-            "flex flex-col gap-20": isMobile,
-          }
-        )}
+        className={cx("w-full border-t border-t-slate-600 px-32 pt-32", isMobileTradePage ? "pb-92" : "pb-32", {
+          "grid grid-cols-[1fr_2fr_1fr]": !isMobile,
+          "flex flex-col gap-20": isMobile,
+        })}
       >
         <div
           className={cx("flex items-center", {

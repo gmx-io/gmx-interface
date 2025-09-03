@@ -8053,6 +8053,10 @@ msgstr ""
 msgid "Staked"
 msgstr "Stakeado"
 
+#: src/pages/Home/HomeFooter.tsx
+msgid "Leave feedback"
+msgstr ""
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr "Traders"
