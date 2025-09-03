@@ -318,7 +318,8 @@ export const WithdrawalView = () => {
     quoteSend,
     quoteOft,
     unwrappedTokenAddress: unwrappedSelectedTokenAddress,
-    srcChainId: withdrawalViewChain,
+    sourceChainId: chainId,
+    targetChainId: withdrawalViewChain,
   });
 
   const bridgeOutParams: BridgeOutParams | undefined = useMemo(() => {
@@ -863,9 +864,16 @@ export const WithdrawalView = () => {
               selectedToken !== undefined && (
                 <div>
                   <Trans>Available:</Trans>{" "}
-                  {formatBalanceAmount(selectedToken.gmxAccountBalance, selectedToken.decimals, selectedToken.symbol, {
-                    isStable: selectedToken.isStable,
-                  })}
+                  <span className="text-typography-primary">
+                    {formatBalanceAmount(
+                      selectedToken.gmxAccountBalance,
+                      selectedToken.decimals,
+                      selectedToken.symbol,
+                      {
+                        isStable: selectedToken.isStable,
+                      }
+                    )}
+                  </span>
                 </div>
               )}
           </div>

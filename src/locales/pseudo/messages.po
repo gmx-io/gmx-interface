@@ -2667,10 +2667,6 @@ msgstr ""
 msgid "{actionDisplay} Order"
 msgstr ""
 
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Your wallet, your keys.<0/><1/>You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
-msgstr ""
-
 #: src/components/Synthetics/TVChart/Chart.tsx
 msgid "Market Graph"
 msgstr ""
@@ -5844,10 +5840,6 @@ msgstr ""
 msgid "30d"
 msgstr ""
 
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
-msgstr ""
-
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
 msgstr ""
@@ -6102,6 +6094,10 @@ msgstr ""
 msgid "Longs Net Rate / 1h"
 msgstr ""
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in {nativeTokenSymbol}."
+msgstr ""
+
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/OrdersList.jsx
@@ -6318,10 +6314,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "3rd Place"
-msgstr ""
-
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Your wallet, your keys.<0/><1/>GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
 msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
@@ -7018,6 +7010,10 @@ msgstr ""
 msgid "GLV tokens are similar in composition to GLP, and enable seamless integration into GMX V2's liquidity ecosystem. Users can either sell or hold the tokens to earn yield. To encourage long-term participation, a $500,000 GLV incentive pool will be distributed proportionally to those who hold their allocated GLV for at least 3 months."
 msgstr ""
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Your wallet, your keys.<0/><1/>GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in {gasPaymentTokensText}."
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/StatusNotification/StakeNotification.tsx
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
@@ -7510,6 +7506,10 @@ msgstr ""
 msgid "Vault Capacity"
 msgstr ""
 
+#: src/components/Synthetics/TVChart/Chart.tsx
+msgid "Depth"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
 msgstr ""
@@ -7731,6 +7731,10 @@ msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM Airdrop"
+msgstr ""
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Your wallet, your keys.<0/><1/>You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in {gasPaymentTokensText}."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx

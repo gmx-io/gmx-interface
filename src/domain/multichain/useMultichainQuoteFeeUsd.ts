@@ -1,24 +1,27 @@
 import { zeroAddress } from "viem";
 
-import type { SettlementChainId, SourceChainId } from "config/chains";
+import { AnyChainId, type SettlementChainId, type SourceChainId } from "config/chains";
 import { getMappedTokenId } from "config/multichain";
 import { useTokenRecentPricesRequest } from "domain/synthetics/tokens";
 import { convertToUsd } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { getToken } from "sdk/configs/tokens";
 
+import { NATIVE_TOKEN_PRICE_MAP } from "./nativeTokenPriceMap";
 import type { QuoteOft, QuoteSend } from "./types";
 
 export function useMultichainQuoteFeeUsd({
   quoteSend,
   quoteOft,
   unwrappedTokenAddress,
-  srcChainId,
+  sourceChainId,
+  targetChainId,
 }: {
   quoteSend: QuoteSend | undefined;
   quoteOft: QuoteOft | undefined;
   unwrappedTokenAddress: string | undefined;
-  srcChainId: SourceChainId | undefined;
+  sourceChainId: AnyChainId | undefined;
+  targetChainId: AnyChainId | undefined;
 }): {
   networkFee: bigint | undefined;
   networkFeeUsd: bigint | undefined;
@@ -29,7 +32,7 @@ export function useMultichainQuoteFeeUsd({
   const { chainId } = useChainId();
   const { pricesData: settlementChainTokenPricesData } = useTokenRecentPricesRequest(chainId);
 
-  if (!unwrappedTokenAddress || srcChainId === undefined) {
+  if (!unwrappedTokenAddress || sourceChainId === undefined || targetChainId === undefined) {
     return {
       networkFee: undefined,
       networkFeeUsd: undefined,
@@ -42,7 +45,7 @@ export function useMultichainQuoteFeeUsd({
   const sourceChainTokenId = getMappedTokenId(
     chainId as SettlementChainId,
     unwrappedTokenAddress,
-    srcChainId as SourceChainId
+    sourceChainId as SourceChainId
   );
 
   if (!sourceChainTokenId) {
@@ -58,17 +61,17 @@ export function useMultichainQuoteFeeUsd({
   const nativeFee = quoteSend?.nativeFee as bigint;
   const amountReceivedLD = quoteOft?.receipt.amountReceivedLD as bigint;
 
-  // ETH is the same as the source chain
-  // TODO: check if this is correct
-  const nativeTokenPrices = settlementChainTokenPricesData?.[zeroAddress];
-  const depositTokenPrices = settlementChainTokenPricesData?.[unwrappedTokenAddress];
+  const sourceChainNativeTokenPrices =
+    settlementChainTokenPricesData?.[NATIVE_TOKEN_PRICE_MAP[sourceChainId]?.[targetChainId] ?? zeroAddress];
+
+  const transferTokenPrices = settlementChainTokenPricesData?.[unwrappedTokenAddress];
   const sourceChainNativeTokenDecimals = getToken(chainId, zeroAddress)?.decimals ?? 18;
 
   const sourceChainDepositTokenDecimals = sourceChainTokenId?.decimals;
 
   const nativeFeeUsd =
     nativeFee !== undefined
-      ? convertToUsd(nativeFee as bigint, sourceChainNativeTokenDecimals, nativeTokenPrices?.maxPrice)
+      ? convertToUsd(nativeFee as bigint, sourceChainNativeTokenDecimals, sourceChainNativeTokenPrices?.maxPrice)
       : undefined;
 
   let protocolFeeAmount: bigint | undefined = undefined;
@@ -80,7 +83,7 @@ export function useMultichainQuoteFeeUsd({
         protocolFeeAmount -= feeDetail.feeAmountLD as bigint;
       }
     }
-    protocolFeeUsd = convertToUsd(protocolFeeAmount, sourceChainDepositTokenDecimals, depositTokenPrices?.maxPrice);
+    protocolFeeUsd = convertToUsd(protocolFeeAmount, sourceChainDepositTokenDecimals, transferTokenPrices?.maxPrice);
   }
 
   return {

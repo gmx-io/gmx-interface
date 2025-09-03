@@ -69,52 +69,50 @@ export default function SearchInput({
   }, [inputRef]);
 
   return (
-    <div className="flex gap-12">
-      <div className={cx("relative flex h-32 grow cursor-pointer items-center p-0", className)} ref={containerRef}>
-        <div className="absolute top-0 flex h-full items-center px-8">
-          <SearchIconComponent
-            height={18}
-            width={18}
-            onClick={handleClick}
-            className={cx("relative p-2 text-typography-secondary")}
-          />
-        </div>
-        <input
-          ref={inputRef}
-          data-qa={qa}
-          type="text"
-          placeholder={placeholder ?? t`Search`}
-          value={value}
-          onChange={handleChange}
-          onKeyDown={onKeyDown}
-          onFocus={handleFocus}
-          autoFocus={autoFocus ?? !isSmallerScreen}
-          className={cx(
-            "block w-full rounded-8 bg-slate-800 leading-1 placeholder-slate-100 hover:bg-fill-surfaceElevatedHover",
-            {
-              border: !noBorder,
-              "border-blue-300": isFocused && !noBorder,
-              "border-slate-800": !isFocused && !noBorder,
-              "p-8 pl-32 text-[13px]": size === "m",
-              "py-[8.5px] pl-34 pr-30 text-14 ": size === "s",
-            }
-          )}
+    <div className={cx("relative flex h-32 grow cursor-pointer items-center", className)} ref={containerRef}>
+      <div className="absolute top-0 flex h-full items-center px-8">
+        <SearchIconComponent
+          height={18}
+          width={18}
+          onClick={handleClick}
+          className={cx("relative p-2 text-typography-secondary")}
         />
-        {value && (
-          <Button
-            onClick={handleClear}
-            variant="ghost"
-            className="!absolute right-8 top-[50%] !h-24 !min-h-0 !w-24 -translate-y-1/2 !p-0"
-          >
-            <CrossIconComponent
-              className={cx("w-16", {
-                "text-typography-secondary": !isFocused,
-                "text-typography-primary": isFocused,
-              })}
-            />
-          </Button>
-        )}
       </div>
+      <input
+        ref={inputRef}
+        data-qa={qa}
+        type="text"
+        placeholder={placeholder ?? t`Search`}
+        value={value}
+        onChange={handleChange}
+        onKeyDown={onKeyDown}
+        onFocus={handleFocus}
+        autoFocus={autoFocus ?? !isSmallerScreen}
+        className={cx(
+          "block h-full w-full rounded-8 bg-slate-800 leading-1 placeholder-slate-100 hover:bg-fill-surfaceElevatedHover",
+          {
+            border: !noBorder,
+            "border-blue-300": isFocused && !noBorder,
+            "border-slate-800": !isFocused && !noBorder,
+            "p-[6.5px] pl-32 text-[13px]": size === "m",
+            "py-[8.5px] pl-34 pr-30 text-14 ": size === "s",
+          }
+        )}
+      />
+      {value && (
+        <Button
+          onClick={handleClear}
+          variant="ghost"
+          className="!absolute right-8 top-[50%] !h-24 !min-h-0 !w-24 -translate-y-1/2 !p-0"
+        >
+          <CrossIconComponent
+            className={cx("w-16", {
+              "text-typography-secondary": !isFocused,
+              "text-typography-primary": isFocused,
+            })}
+          />
+        </Button>
+      )}
     </div>
   );
 }

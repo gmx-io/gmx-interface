@@ -35,7 +35,10 @@ const TokenListItem = ({ tokenChainData, onClick, className }: TokenListItemProp
   return (
     <div
       key={tokenChainData.symbol + "_" + tokenChainData.sourceChainId}
-      className={cx("gmx-hover-gradient flex cursor-pointer items-center justify-between px-20 py-8", className)}
+      className={cx(
+        "flex cursor-pointer items-center justify-between px-20 py-8 gmx-hover:bg-fill-surfaceElevated50",
+        className
+      )}
       onClick={onClick}
     >
       <div className="flex items-center gap-8">
@@ -47,7 +50,7 @@ const TokenListItem = ({ tokenChainData, onClick, className }: TokenListItemProp
         />
         <div>
           <div>{tokenChainData.symbol}</div>
-          <div className="text-body-small text-slate-100">{getChainName(tokenChainData.sourceChainId)}</div>
+          <div className="text-body-small text-typography-secondary">{getChainName(tokenChainData.sourceChainId)}</div>
         </div>
       </div>
       <div className="text-right">
@@ -59,7 +62,7 @@ const TokenListItem = ({ tokenChainData, onClick, className }: TokenListItemProp
             { isStable: tokenChainData.isStable }
           )}
         </div>
-        <div className="text-body-small text-slate-100">
+        <div className="text-body-small text-typography-secondary">
           {tokenChainData.sourceChainBalanceUsd > 0n ? formatUsd(tokenChainData.sourceChainBalanceUsd) : "-"}
         </div>
       </div>
@@ -173,7 +176,7 @@ export const SelectAssetToDepositView = () => {
           />
         ))}
         {filteredBalances.length === 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 p-20 text-slate-100">
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-20 text-typography-secondary">
             <InfoIconComponent className="size-24" />
             {selectedNetwork === "all" ? (
               <Trans>No assets are available for deposit</Trans>

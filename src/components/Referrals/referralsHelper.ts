@@ -162,8 +162,6 @@ export const getSampleReferrarStat = ({
     registeredReferralsCount: 0,
     trades: 0,
     volume: 0n,
-    // time: Date.now(),
-
     v1Data: {
       volume: 0n,
       totalRebateUsd: 0n,
@@ -176,14 +174,6 @@ export const getSampleReferrarStat = ({
       discountUsd: 0n,
       affiliateRebateUsd: 0n,
     },
-    // ownerOnOtherChain: {
-    //   code: encodeReferralCode(code),
-    //   codeString: code,
-    //   owner: undefined,
-    //   isTaken: !isAddressZero(ownerOnOtherNetwork),
-    //   isTakenByCurrentUser:
-    //     !isAddressZero(ownerOnOtherNetwork) && ownerOnOtherNetwork.toLowerCase() === account.toLowerCase(),
-    // },
     affiliateRebateUsd: 0n,
     allOwnersOnOtherChains: takenInfo
       ? Object.fromEntries(
@@ -207,7 +197,7 @@ export const getSampleReferrarStat = ({
   };
 };
 
-export function getUSDValue(value, decimals = 2) {
+export function getUsdValue(value: bigint | undefined, decimals = 2) {
   return formatAmount(value, USD_DECIMALS, decimals, true, "0.00");
 }
 
