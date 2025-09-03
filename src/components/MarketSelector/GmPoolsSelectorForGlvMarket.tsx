@@ -214,7 +214,7 @@ export function GmPoolsSelectorForGlvMarket({
               className="mb-8"
               value={searchKeyword}
               setValue={setSearchKeyword}
-              placeholder={t`Search Pool 1`}
+              placeholder={t`Search Pool`}
               onKeyDown={handleKeyDown}
             />
             <ButtonRowScrollFadeContainer>
