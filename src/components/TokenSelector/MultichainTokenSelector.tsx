@@ -9,7 +9,7 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import type { Token, TokenData, TokensData } from "domain/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
-import { EMPTY_OBJECT } from "lib/objects";
+import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { searchBy } from "lib/searchBy";
 import { getToken } from "sdk/configs/tokens";
 
@@ -76,23 +76,6 @@ export function MultichainTokenSelector({
     propsOnDepositTokenAddress(tokenAddress, chainId);
   };
 
-  useEffect(() => {
-    if (isModalVisible) {
-      setSearchKeyword("");
-    }
-  }, [isModalVisible]);
-
-  // TODO implement
-  // const _handleKeyDown = (e) => {
-  //   if (e.key === "Enter") {
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     if (filteredTokens.length > 0) {
-  //       onSelectToken(filteredTokens[0]);
-  //     }
-  //   }
-  // };
-
   const isGmxAccountEmpty = useMemo(() => {
     if (!tokensData) return true;
 
@@ -104,6 +87,35 @@ export function MultichainTokenSelector({
   }, [tokensData]);
 
   const [activeFilter, setActiveFilter] = useState<"pay" | "deposit">("pay");
+
+  const availableToTradeTokenList = useAvailableToTradeTokenList({
+    activeFilter,
+    srcChainId,
+    searchKeyword,
+    tokensData,
+    extendedSortSequence,
+  });
+  const multichainTokenList = useMultichainTokensList({
+    searchKeyword,
+    multichainTokens,
+    extendedSortSequence,
+  });
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
+      if (activeFilter === "pay") {
+        if (availableToTradeTokenList.length > 0) {
+          onSelectTokenAddress(availableToTradeTokenList[0].address, availableToTradeTokenList[0].isGmxAccount);
+        }
+      } else {
+        if (multichainTokenList.length > 0) {
+          onDepositTokenAddress(multichainTokenList[0].address, multichainTokenList[0].sourceChainId);
+        }
+      }
+    }
+  };
 
   useEffect(() => {
     if (isModalVisible) {
@@ -120,6 +132,12 @@ export function MultichainTokenSelector({
       }
     }
   }, [isGmxAccountEmpty, isModalVisible, setSearchKeyword, srcChainId]);
+
+  // useEffect(() => {
+  //   if (isModalVisible) {
+  //     setSearchKeyword("");
+  //   }
+  // }, [isModalVisible]);
 
   if (!token) {
     return null;
@@ -150,7 +168,7 @@ export function MultichainTokenSelector({
               value={searchKeyword}
               setValue={setSearchKeyword}
               className="mb-16"
-              // onKeyDown={_handleKeyDown}
+              onKeyDown={handleKeyDown}
             />
             {isGmxAccountEmpty && srcChainId !== undefined ? (
               <div className="text-body-medium text-typography-secondary">
@@ -188,25 +206,13 @@ export function MultichainTokenSelector({
       >
         {activeFilter === "pay" && (
           <AvailableToTradeTokenList
-            isModalVisible={isModalVisible}
-            setSearchKeyword={setSearchKeyword}
             onSelectTokenAddress={onSelectTokenAddress}
-            searchKeyword={searchKeyword}
-            tokensData={tokensData}
-            extendedSortSequence={extendedSortSequence}
+            tokens={availableToTradeTokenList}
             chainId={chainId}
-            srcChainId={srcChainId}
           />
         )}
         {activeFilter === "deposit" && multichainTokens && (
-          <MultichainTokenList
-            isModalVisible={isModalVisible}
-            setSearchKeyword={setSearchKeyword}
-            searchKeyword={searchKeyword}
-            multichainTokens={multichainTokens}
-            extendedSortSequence={extendedSortSequence}
-            onDepositTokenAddress={onDepositTokenAddress}
-          />
+          <MultichainTokenList tokens={multichainTokenList} onDepositTokenAddress={onDepositTokenAddress} />
         )}
       </SlideModal>
       <div
@@ -232,35 +238,26 @@ export function MultichainTokenSelector({
   );
 }
 
-function AvailableToTradeTokenList({
-  chainId,
+type DisplayAvailableToTradeToken = TokenData & { balance: bigint; balanceUsd: bigint; isGmxAccount: boolean };
+function useAvailableToTradeTokenList({
+  activeFilter,
   srcChainId,
-  isModalVisible,
-  setSearchKeyword,
   searchKeyword,
   tokensData,
   extendedSortSequence,
-  onSelectTokenAddress,
 }: {
-  chainId: ContractsChainId;
+  activeFilter: "pay" | "deposit";
   srcChainId: SourceChainId | undefined;
-  isModalVisible: boolean;
-  setSearchKeyword: (searchKeyword: string) => void;
   searchKeyword: string;
   tokensData: TokensData | undefined;
   extendedSortSequence?: string[];
-  onSelectTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
 }) {
-  useEffect(() => {
-    if (isModalVisible) {
-      setSearchKeyword("");
+  return useMemo(() => {
+    if (activeFilter !== "pay") {
+      return EMPTY_ARRAY;
     }
-  }, [isModalVisible, setSearchKeyword]);
 
-  const sortedFilteredTokens = useMemo(() => {
-    type DisplayToken = TokenData & { balance: bigint; balanceUsd: bigint; isGmxAccount: boolean };
-
-    const concatenatedTokens: DisplayToken[] = [];
+    const concatenatedTokens: DisplayAvailableToTradeToken[] = [];
 
     for (const token of Object.values(tokensData ?? (EMPTY_OBJECT as TokensData))) {
       if (token.gmxAccountBalance !== undefined && (srcChainId !== undefined || token.gmxAccountBalance > 0n)) {
@@ -271,7 +268,7 @@ function AvailableToTradeTokenList({
       }
     }
 
-    let filteredTokens: DisplayToken[];
+    let filteredTokens: DisplayAvailableToTradeToken[];
     if (!searchKeyword.trim()) {
       filteredTokens = concatenatedTokens;
     } else {
@@ -289,8 +286,8 @@ function AvailableToTradeTokenList({
       );
     }
 
-    const tokensWithBalance: DisplayToken[] = [];
-    const tokensWithoutBalance: DisplayToken[] = [];
+    const tokensWithBalance: DisplayAvailableToTradeToken[] = [];
+    const tokensWithoutBalance: DisplayAvailableToTradeToken[] = [];
 
     for (const token of filteredTokens) {
       const balance = token.isGmxAccount ? token.gmxAccountBalance : token.walletBalance;
@@ -303,14 +300,14 @@ function AvailableToTradeTokenList({
       }
     }
 
-    const sortedTokensWithBalance: DisplayToken[] = tokensWithBalance.sort((a, b) => {
+    const sortedTokensWithBalance: DisplayAvailableToTradeToken[] = tokensWithBalance.sort((a, b) => {
       if (a.balanceUsd === b.balanceUsd) {
         return 0;
       }
       return b.balanceUsd - a.balanceUsd > 0n ? 1 : -1;
     });
 
-    const sortedTokensWithoutBalance: DisplayToken[] = tokensWithoutBalance.sort((a, b) => {
+    const sortedTokensWithoutBalance: DisplayAvailableToTradeToken[] = tokensWithoutBalance.sort((a, b) => {
       if (extendedSortSequence) {
         // making sure to use the wrapped address if it exists in the extended sort sequence
         const aAddress =
@@ -326,11 +323,21 @@ function AvailableToTradeTokenList({
     });
 
     return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
-  }, [searchKeyword, tokensData, srcChainId, extendedSortSequence]);
+  }, [activeFilter, searchKeyword, tokensData, srcChainId, extendedSortSequence]);
+}
 
+function AvailableToTradeTokenList({
+  chainId,
+  onSelectTokenAddress,
+  tokens,
+}: {
+  chainId: ContractsChainId;
+  onSelectTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
+  tokens: DisplayAvailableToTradeToken[];
+}) {
   return (
     <VerticalScrollFadeContainer>
-      {sortedFilteredTokens.map((token) => {
+      {tokens.map((token) => {
         return (
           <div
             key={token.address + "_" + (token.isGmxAccount ? "gmx" : "settlement")}
@@ -371,28 +378,21 @@ function AvailableToTradeTokenList({
   );
 }
 
-function MultichainTokenList({
-  isModalVisible,
-  setSearchKeyword,
+type DisplayMultichainToken = TokenChainData & { sourceChainBalanceUsd: bigint };
+function useMultichainTokensList({
   searchKeyword,
   multichainTokens,
   extendedSortSequence,
-  onDepositTokenAddress,
 }: {
-  isModalVisible: boolean;
-  setSearchKeyword: (searchKeyword: string) => void;
   searchKeyword: string;
-  multichainTokens: TokenChainData[];
+  multichainTokens: TokenChainData[] | undefined;
   extendedSortSequence?: string[];
-  onDepositTokenAddress: (tokenAddress: string, chainId: SourceChainId) => void;
 }) {
-  useEffect(() => {
-    if (isModalVisible) {
-      setSearchKeyword("");
-    }
-  }, [isModalVisible, setSearchKeyword]);
-
   const filteredTokens = useMemo(() => {
+    if (!multichainTokens) {
+      return EMPTY_ARRAY;
+    }
+
     if (!searchKeyword.trim()) {
       return multichainTokens;
     }
@@ -411,11 +411,9 @@ function MultichainTokenList({
     );
   }, [searchKeyword, multichainTokens]);
 
-  type DisplayToken = TokenChainData & { sourceChainBalanceUsd: bigint };
-
-  const sortedFilteredTokens: DisplayToken[] = useMemo((): DisplayToken[] => {
-    const tokensWithBalance: DisplayToken[] = [];
-    const tokensWithoutBalance: DisplayToken[] = [];
+  const sortedFilteredTokens: DisplayMultichainToken[] = useMemo((): DisplayMultichainToken[] => {
+    const tokensWithBalance: DisplayMultichainToken[] = [];
+    const tokensWithoutBalance: DisplayMultichainToken[] = [];
 
     for (const token of filteredTokens) {
       const balance = token.sourceChainBalance;
@@ -450,9 +448,19 @@ function MultichainTokenList({
     return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
   }, [filteredTokens, extendedSortSequence]);
 
+  return sortedFilteredTokens;
+}
+
+function MultichainTokenList({
+  tokens,
+  onDepositTokenAddress,
+}: {
+  tokens: DisplayMultichainToken[];
+  onDepositTokenAddress: (tokenAddress: string, chainId: SourceChainId) => void;
+}) {
   return (
     <div>
-      {sortedFilteredTokens.map((token) => {
+      {tokens.map((token) => {
         return (
           <div
             key={token.address + "_" + token.sourceChainId}

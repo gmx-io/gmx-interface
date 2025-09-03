@@ -247,7 +247,6 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
 });
 
 export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsState>, marketAddress: string) {
-  // const tokensData = q(selectTokensData);
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeType = q(selectTradeboxTradeType);
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
@@ -261,7 +260,6 @@ export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsStat
   const triggerPrice = q(selectTradeboxTriggerPrice);
 
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
-  // const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
   const fromToken = q(selectTradeboxFromToken);
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
   const toTokenAmount = q(selectTradeboxToTokenAmount);

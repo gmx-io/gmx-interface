@@ -15,10 +15,14 @@ import { getIsSubaccountActive } from "domain/synthetics/subaccount";
 import { useChainId } from "lib/chains";
 import { EMPTY_ARRAY } from "lib/objects";
 import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
+import { getNativeToken } from "sdk/configs/tokens";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
-import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
+import {
+  ExpressTradingOutOfGasBanner,
+  useGasPaymentTokensText,
+} from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
 import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
@@ -60,6 +64,8 @@ export function TradingSettings({
   const isGeminiWallet = useIsGeminiWallet();
   const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
   const isExpressTradingDisabled = (isOutOfGasPaymentBalance && srcChainId === undefined) || isGeminiWallet;
+  const nativeTokenSymbol = getNativeToken(chainId).symbol;
+  const { gasPaymentTokensText } = useGasPaymentTokensText(chainId);
 
   return (
     <div>
@@ -79,7 +85,7 @@ export function TradingSettings({
                     <br />
                     <br />
                     You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas
-                    payments in ETH.
+                    payments in {nativeTokenSymbol}.
                   </Trans>
                 }
                 icon={<HourGlassIcon className="size-28" />}
@@ -97,7 +103,7 @@ export function TradingSettings({
                   <br />
                   <br />
                   You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even
-                  during network congestion. Gas payments in USDC or WETH.
+                  during network congestion. Gas payments in {gasPaymentTokensText}.
                 </Trans>
               }
               icon={<ExpressIcon className="size-28" />}
@@ -123,7 +129,7 @@ export function TradingSettings({
                   <br />
                   GMX executes transactions for you without individual signing, providing a seamless, CEX-like
                   experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas
-                  payments in USDC or WETH.
+                  payments in {gasPaymentTokensText}.
                 </Trans>
               }
               chip={
