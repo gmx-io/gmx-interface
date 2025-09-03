@@ -964,12 +964,14 @@ export async function signSetTraderReferralCode({
   referralCode,
   chainId,
   srcChainId,
+  shouldUseSignerMethod,
 }: {
   signer: WalletSigner | Wallet;
   relayParams: RelayParamsPayload;
   referralCode: string;
   chainId: ContractsChainId;
   srcChainId: SourceChainId;
+  shouldUseSignerMethod?: boolean;
 }) {
   const types = {
     SetTraderReferralCode: [
@@ -984,7 +986,7 @@ export async function signSetTraderReferralCode({
     relayParams: hashRelayParams(relayParams),
   };
 
-  return signTypedData({ signer, domain, types, typedData });
+  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod });
 }
 
 function updateExpressOrdersAddresses(addressess: CreateOrderPayload["addresses"]): CreateOrderPayload["addresses"] {
