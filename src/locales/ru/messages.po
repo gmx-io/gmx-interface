@@ -154,7 +154,6 @@ msgid "Orders ({0})"
 msgstr "Ордера ({0})"
 
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "You have not deposited any tokens for vesting."
 msgstr ""
 
@@ -726,7 +725,6 @@ msgstr ""
 msgid "Min. Required Collateral"
 msgstr ""
 
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
 msgstr ""
@@ -2087,7 +2085,6 @@ msgstr ""
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/TotalRewardsCard.tsx
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Connect Wallet"
 msgstr "Подключить Кошелек"
 
@@ -2529,6 +2526,7 @@ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "Transfer Account"
 msgstr "Счет для Перевода"
 
@@ -3547,8 +3545,8 @@ msgid "COMP."
 msgstr ""
 
 #: src/pages/Stake/Vesting.tsx
-msgid "You have no GMX tokens to claim."
-msgstr ""
+#~ msgid "You have no GMX tokens to claim."
+#~ msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -3683,7 +3681,6 @@ msgstr ""
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Withdraw"
 msgstr "Вывод"
 
@@ -3728,8 +3725,8 @@ msgid "You can transfer AVAX from other networks to Avalanche using any of the b
 msgstr ""
 
 #: src/pages/Stake/Vesting.tsx
-msgid "Unsupported network"
-msgstr ""
+#~ msgid "Unsupported network"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3954,7 +3951,6 @@ msgid ""
 msgstr ""
 
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Vesting Status"
 msgstr ""
 
@@ -4105,8 +4101,8 @@ msgstr ""
 
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-msgid "Affiliate Vault"
-msgstr ""
+#~ msgid "Affiliate Vault"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4365,7 +4361,6 @@ msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
 msgstr "Войдите в свое приложение Binance и нажмите [Кошельки]. Перейдите в [Web3]."
 
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Claimable"
 msgstr "Заявленный"
@@ -6318,7 +6313,6 @@ msgstr ""
 #: src/pages/Stake/AffiliateClaimModal.tsx
 #: src/pages/Stake/ClaimModal.tsx
 #: src/pages/Stake/TotalRewardsCard.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Claim"
 msgstr "Запрос"
 
@@ -6706,7 +6700,6 @@ msgstr "Не удалось выполнить пополнение счета �
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/pages/Stake/VesterDepositModal.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Deposit"
 msgstr "Пополнение"

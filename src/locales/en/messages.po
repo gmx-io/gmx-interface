@@ -154,7 +154,6 @@ msgid "Orders ({0})"
 msgstr "Orders ({0})"
 
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "You have not deposited any tokens for vesting."
 msgstr "You have not deposited any tokens for vesting."
 
@@ -726,7 +725,6 @@ msgstr "Buy GMX using Decentralized Exchange Aggregators:"
 msgid "Min. Required Collateral"
 msgstr "Min. Required Collateral"
 
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
 msgstr "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
@@ -2087,7 +2085,6 @@ msgstr "We value your experience and insights and invite you to participate in a
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/TotalRewardsCard.tsx
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Connect Wallet"
 msgstr "Connect Wallet"
 
@@ -2529,6 +2526,7 @@ msgstr "You have an existing position with {0} as collateral."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
+#: src/pages/Stake/Vesting.tsx
 msgid "Transfer Account"
 msgstr "Transfer Account"
 
@@ -3547,8 +3545,8 @@ msgid "COMP."
 msgstr "COMP."
 
 #: src/pages/Stake/Vesting.tsx
-msgid "You have no GMX tokens to claim."
-msgstr "You have no GMX tokens to claim."
+#~ msgid "You have no GMX tokens to claim."
+#~ msgstr "You have no GMX tokens to claim."
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -3683,7 +3681,6 @@ msgstr "Cancel Order"
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Withdraw"
 msgstr "Withdraw"
 
@@ -3728,8 +3725,8 @@ msgid "You can transfer AVAX from other networks to Avalanche using any of the b
 msgstr "You can transfer AVAX from other networks to Avalanche using any of the below options:"
 
 #: src/pages/Stake/Vesting.tsx
-msgid "Unsupported network"
-msgstr "Unsupported network"
+#~ msgid "Unsupported network"
+#~ msgstr "Unsupported network"
 
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3957,7 +3954,6 @@ msgstr ""
 "{2} Price: {3} USD"
 
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Vesting Status"
 msgstr "Vesting Status"
 
@@ -4108,8 +4104,8 @@ msgstr "Txn failed. <0>View</0>."
 
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-msgid "Affiliate Vault"
-msgstr "Affiliate Vault"
+#~ msgid "Affiliate Vault"
+#~ msgstr "Affiliate Vault"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4368,7 +4364,6 @@ msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
 msgstr "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
 
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Claimable"
 msgstr "Claimable"
@@ -6321,7 +6316,6 @@ msgstr "trigger price"
 #: src/pages/Stake/AffiliateClaimModal.tsx
 #: src/pages/Stake/ClaimModal.tsx
 #: src/pages/Stake/TotalRewardsCard.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Claim"
 msgstr "Claim"
 
@@ -6712,7 +6706,6 @@ msgstr "Could not execute deposit into {0} {longOrShortText}"
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/pages/Stake/VesterDepositModal.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Deposit"
 msgstr "Deposit"
