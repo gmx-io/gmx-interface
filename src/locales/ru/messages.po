@@ -5847,10 +5847,6 @@ msgstr "Чистая стоимость: Начальный залог + PnL - �
 msgid "30d"
 msgstr "30д"
 
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
-#~ msgstr ""
-
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
 msgstr "Запросить вознаграждения аффилиатского хранилища"

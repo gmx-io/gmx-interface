@@ -67,7 +67,6 @@ const otherImages = Object.keys(otherImagesContext)
     };
   }) as { src: string; name: string; path: string; importUrl: string }[];
 
-// Recursive function to flatten all colors from the config
 function flattenColors(obj: ColorTree, prefix = ""): Array<{ name: string; light: string; dark: string }> {
   const result: Array<{ name: string; light: string; dark: string }> = [];
 
@@ -75,10 +74,8 @@ function flattenColors(obj: ColorTree, prefix = ""): Array<{ name: string; light
     const name = prefix ? `${prefix}-${key}` : key;
 
     if (value && typeof value === "object" && "light" in value && "dark" in value) {
-      // This is a color value
       result.push({ name, light: value.light as string, dark: value.dark as string });
     } else if (value && typeof value === "object") {
-      // This is a nested object, recurse
       result.push(...flattenColors(value as ColorTree, name));
     }
   });
@@ -106,9 +103,13 @@ export default function UiPage() {
 
               return (
                 <div key={name} className="flex flex-col items-center break-words text-11" title={name}>
-                  <div className="flex flex-col size-64 items-center justify-center" style={bgStyle}>
-                    <span className="px-2 text-center font-medium text-typography-primary overflow-hidden text-ellipsis w-full mix-blend-difference">{name}</span>
-                    <span className="mt-1 max-w-64 truncate text-center text-typography-primary mix-blend-difference">{displayValue}</span>
+                  <div className="flex size-64 flex-col items-center justify-center" style={bgStyle}>
+                    <span className="w-full overflow-hidden text-ellipsis px-2 text-center font-medium text-typography-primary mix-blend-difference">
+                      {name}
+                    </span>
+                    <span className="mt-1 max-w-64 truncate text-center text-typography-primary mix-blend-difference">
+                      {displayValue}
+                    </span>
                   </div>
                 </div>
               );
