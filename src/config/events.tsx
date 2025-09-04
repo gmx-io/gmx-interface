@@ -38,7 +38,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "04 Sep 2025, 10:00",
     endDate: "11 Sep 2025, 12:00",
-    title: "LINK, MORPH, VVV and WELL markets added on Arbitrum",
+    title: "LINK, MORPHO, VVV and WELL markets added on Arbitrum",
     bodyText: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
