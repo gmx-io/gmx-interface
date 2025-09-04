@@ -284,7 +284,7 @@ function ChartHeaderDesktop() {
           value={
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-4 numbers">{longOIValue}</div>
-              <span className="text-typography-secondary">/</span>
+              <span className="text-typography-inactive">/</span>
               <div className="flex items-center gap-4 numbers">{shortOIValue}</div>
             </div>
           }
@@ -295,7 +295,7 @@ function ChartHeaderDesktop() {
           value={
             <div className="flex items-center gap-4">
               <span className="numbers">{liquidityLong}</span>
-              <span className="text-typography-secondary">/</span>
+              <span className="text-typography-inactive">/</span>
               <span className="numbers">{liquidityShort}</span>
             </div>
           }
@@ -317,7 +317,7 @@ function ChartHeaderDesktop() {
             >
               <div className="flex items-center gap-4">
                 <div className="numbers">{netRateLong}</div>
-                <span className="text-typography-secondary">/</span>
+                <span className="text-typography-inactive">/</span>
                 <div className="numbers">{netRateShort}</div>
               </div>
             </TooltipWithPortal>

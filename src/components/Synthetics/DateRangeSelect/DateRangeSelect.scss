@@ -77,8 +77,14 @@
     bottom: 0;
   }
 
+  &-inRange,
+  &-startEdge,
+  &-endEdge {
+    background-color: var(--color-button-secondary);
+  }
+
   &-dayNumber span {
-    color: var(--color-typography-primary);
+    color: var(--color-typography-secondary);
   }
 
   &-weekDay {
@@ -194,6 +200,14 @@
     outline: none !important;
   }
 
+  &-dayNumber span {
+    color: var(--color-typography-secondary);
+  }
+
+  &-dayToday &-dayNumber span {
+    color: var(--color-typography-primary);
+  }
+
   &-dayToday &-dayNumber span::after {
     background-color: var(--color-blue-300) !important;
     border-radius: 4px !important;
@@ -219,4 +233,15 @@
     border-bottom: 0.5px solid var(--color-slate-600);
     height: unset;
   }
+}
+
+// to override the default color from library
+.rdrDay:not(.rdrDayPassive) .rdrInRange ~ .rdrDayNumber span {
+  color: var(--color-typography-primary);
+}
+
+.rdrDay:not(.rdrDayPassive) .rdrStartEdge ~ .rdrDayNumber span,
+.rdrDay:not(.rdrDayPassive) .rdrEndEdge ~ .rdrDayNumber span,
+.rdrDay:not(.rdrDayPassive) .rdrSelected ~ .rdrDayNumber span {
+  color: var(--color-white);
 }

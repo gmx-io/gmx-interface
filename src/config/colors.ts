@@ -54,7 +54,7 @@ export const colors: ColorTree = {
     100: { light: "#109375", dark: "#A4F9D9" },
     300: { light: "#56dba8", dark: "#56dba8" },
     400: { light: "#8CF3CB", dark: "#8CF3CB" },
-    500: { light: "#10937B", dark: "#0FDE8D" },
+    500: { light: "#109375", dark: "#0FDE8D" },
     600: { light: "#1F3445", dark: "#1F3445" },
     700: { light: "#0FDE8D", dark: "#0FDE8D" },
     800: { light: "#178969", dark: "#178969" },
@@ -77,5 +77,6 @@ export const colors: ColorTree = {
   typography: {
     primary: { light: "#000000", dark: "#ffffff" },
     secondary: { light: "#696D96", dark: "#a0a3c4" },
+    inactive: { light: "#C4C4D5", dark: "#3E4361" },
   },
 };
