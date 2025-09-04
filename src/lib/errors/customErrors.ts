@@ -7,6 +7,8 @@ import { ErrorData, ErrorLike, extendError, parseError } from ".";
 
 export const INVALID_PERMIT_SIGNATURE_ERROR = "Invalid permit signature";
 
+export const FAST_EXPRESS_PARAMS_TIMEOUT_ERROR = "fastExpressParams timeout";
+
 export function getIsPermitSignatureError(error: ErrorLike) {
   const parsedError = parseError(error);
 

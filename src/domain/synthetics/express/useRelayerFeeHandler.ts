@@ -11,9 +11,12 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
+import { FAST_EXPRESS_PARAMS_TIMEOUT_ERROR } from "lib/errors/customErrors";
 import { throttleLog } from "lib/logging";
+import { metrics } from "lib/metrics";
 import { roundBigIntToDecimals } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
+import { sleep } from "lib/sleep";
 import { usePrevious } from "lib/usePrevious";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import useWallet from "lib/wallets/useWallet";
@@ -77,21 +80,37 @@ export function useExpressOrdersParams({
 
   const forceRecalculate = estimationKey !== prevEstimationKey;
 
-  const { data: fastExpressParams, promise: fastExpressPromise } = useThrottledAsync(
+  const {
+    data: fastExpressParams,
+    promise: fastExpressPromise,
+    error: fastExpressError,
+  } = useThrottledAsync(
     async ({ params: p }) => {
-      const nextApproximateParams = await estimateBatchExpressParams({
-        chainId: p.chainId,
-        batchParams: p.orderParams,
-        signer: p.signer,
-        provider: p.provider,
-        globalExpressParams: p.globalExpressParams,
-        requireValidations: false,
-        estimationMethod: "approximate",
-        isGmxAccount: p.isGmxAccount,
-        subaccount: p.subaccount,
-      });
+      try {
+        const nextApproximateParams = await Promise.race([
+          estimateBatchExpressParams({
+            chainId: p.chainId,
+            batchParams: p.orderParams,
+            signer: p.signer,
+            provider: p.provider,
+            globalExpressParams: p.globalExpressParams,
+            requireValidations: false,
+            estimationMethod: "approximate",
+            isGmxAccount: p.isGmxAccount,
+            subaccount: p.subaccount,
+          }),
+          getIsEmptyBatch(p.orderParams)
+            ? Promise.resolve(undefined)
+            : sleep(2000).then(() => {
+                throw new Error(FAST_EXPRESS_PARAMS_TIMEOUT_ERROR);
+              }),
+        ]);
 
-      return nextApproximateParams;
+        return nextApproximateParams;
+      } catch (error) {
+        metrics.pushError(error, `fastExpressParams.error.${label}`);
+        throw error;
+      }
     },
     {
       params:
@@ -107,7 +126,7 @@ export function useExpressOrdersParams({
             }
           : undefined,
       forceRecalculate,
-      throttleMs: 200,
+      throttleMs: globalExpressParams?.isSponsoredCall ? 200 : 5000,
       leading: true,
       trailing: false,
       withLoading: true,
@@ -176,10 +195,10 @@ export function useExpressOrdersParams({
       expressEstimateMethod: expressParams?.estimationMethod,
       fastExpressParams,
       asyncExpressParams,
-      isLoading: !fastExpressParams,
+      isLoading: !fastExpressParams && !fastExpressError,
       expressParamsPromise,
     };
-  }, [isAvailable, asyncExpressParams, fastExpressParams, fastExpressPromise, asyncExpressPromise]);
+  }, [isAvailable, asyncExpressParams, fastExpressParams, fastExpressPromise, asyncExpressPromise, fastExpressError]);
 
   useSwitchGasPaymentTokenIfRequiredFromExpressParams({
     expressParams: result.expressParams,

@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/macro";
-import cx from "classnames";
 import { Suspense, lazy } from "react";
 
 import { isDevelopment } from "config/env";
