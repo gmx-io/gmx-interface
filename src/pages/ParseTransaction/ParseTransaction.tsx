@@ -69,7 +69,6 @@ export const NETWORKS_BY_CHAIN_IDS: Record<ContractsChainId, string> = {
   [ARBITRUM]: "arbitrum",
   [AVALANCHE]: "avalanche",
   [AVALANCHE_FUJI]: "fuji",
-  // [BASE_MAINNET]: "base",
   [ARBITRUM_SEPOLIA]: "arbitrum-sepolia",
   [BOTANIX]: "botanix",
 };

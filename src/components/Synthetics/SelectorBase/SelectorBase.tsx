@@ -8,6 +8,8 @@ import { createPortal } from "react-dom";
 import { FaChevronDown } from "react-icons/fa6";
 import { useMedia } from "react-use";
 
+import { BREAKPOINTS } from "lib/breakpoints";
+
 import { SlideModal } from "components/Modal/SlideModal";
 import { TableTr } from "components/Table/Table";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -45,7 +47,7 @@ const SelectorContextProvider = (props: PropsWithChildren<{ close: () => void; m
   return <selectorContext.Provider value={stableValue}>{props.children}</selectorContext.Provider>;
 };
 
-export const SELECTOR_BASE_MOBILE_THRESHOLD = 700;
+export const SELECTOR_BASE_MOBILE_THRESHOLD = BREAKPOINTS.mobile;
 
 export function SelectorBase(props: Props) {
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
@@ -187,13 +189,21 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
         <>
           <Popover.Button
             as="div"
-            className={cx("SelectorBase-button group/selector-base group gap-8", props.handleClassName)}
+            className={cx(
+              "SelectorBase-button group/selector-base group gap-5 tracking-wide gmx-hover:text-blue-300",
+              popoverProps.open && "text-blue-300",
+              props.handleClassName
+            )}
             ref={refs.setReference}
             data-qa={props.qa ? props.qa + "-button" : undefined}
           >
             {props.label}
             <FaChevronDown
-              className={cx("inline-block text-[12px] text-typography-secondary", props.chevronClassName)}
+              className={cx(
+                "inline-block text-[12px] group-gmx-hover/selector-base:text-blue-300",
+                popoverProps.open ? "text-blue-300" : "text-typography-secondary",
+                props.chevronClassName
+              )}
             />
           </Popover.Button>
           {popoverProps.open && (

@@ -23,7 +23,6 @@ import { userAnalytics } from "lib/userAnalytics";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
-import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import APRLabel from "components/APRLabel/APRLabel";
 import Badge from "components/Badge/Badge";
 import Button from "components/Button/Button";
@@ -34,7 +33,6 @@ import ArbitrumSepoliaIcon from "img/ic_arbitrum_sepolia_24.svg?react";
 import AvalancheIcon from "img/ic_avalanche_24.svg?react";
 import BotanixIcon from "img/ic_botanix_24.svg?react";
 
-const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
 const gmIcon = getIcon("common", "gm");
 const glvIcon = getIcon("common", "glv");
@@ -162,55 +160,57 @@ export default function BuyCards() {
 
   return (
     <div className="flex w-full flex-col gap-8">
-      <BuyCard
-        title={<Trans>GMX</Trans>}
-        icon={gmxIcon}
-        description={
-          <Trans>
-            GMX is the utility and governance token. It also accrues 30% of the protocol fees via a buyback and
-            distribution mechanism.
-          </Trans>
-        }
-        alt="GMX Icons"
-        type="buy"
-      >
-        <div className={cx("flex justify-between max-lg:flex-col max-lg:gap-12")}>
-          <div className={cx("buy flex gap-12 max-lg:flex-col")}>
-            <BuyLink
-              chainId={chainId}
-              active={active}
-              to={getTrackingLink("/buy_gmx")}
-              network={ARBITRUM}
-              badge={
-                <span>
-                  APR <APRLabel chainId={ARBITRUM} label="avgGMXAprTotal" />
-                </span>
-              }
-            />
-            <BuyLink
-              chainId={chainId}
-              active={active}
-              to={getTrackingLink("/buy_gmx")}
-              network={AVALANCHE}
-              badge={
-                <span>
-                  APR <APRLabel chainId={AVALANCHE} label="avgGMXAprTotal" />
-                </span>
-              }
-            />
+      {chainId !== BOTANIX && (
+        <BuyCard
+          title={<Trans>GMX</Trans>}
+          icon={gmxIcon}
+          description={
+            <Trans>
+              GMX is the utility and governance token. It also accrues 30% of the protocol fees via a buyback and
+              distribution mechanism.
+            </Trans>
+          }
+          alt="GMX Icons"
+          type="buy"
+        >
+          <div className={cx("flex justify-between max-lg:flex-col max-lg:gap-12")}>
+            <div className={cx("buy flex gap-12 max-lg:flex-col")}>
+              <BuyLink
+                chainId={chainId}
+                active={active}
+                to={getTrackingLink("/buy_gmx")}
+                network={ARBITRUM}
+                badge={
+                  <span>
+                    APR <APRLabel chainId={ARBITRUM} label="avgGMXAprTotal" />
+                  </span>
+                }
+              />
+              <BuyLink
+                chainId={chainId}
+                active={active}
+                to={getTrackingLink("/buy_gmx")}
+                network={AVALANCHE}
+                badge={
+                  <span>
+                    APR <APRLabel chainId={AVALANCHE} label="avgGMXAprTotal" />
+                  </span>
+                }
+              />
+            </div>
+            <TrackingLink>
+              <Button
+                className="!text-typography-primary"
+                newTab
+                variant="secondary"
+                to="https://docs.gmx.io/docs/category/tokenomics"
+              >
+                <Trans>Read more</Trans>
+              </Button>
+            </TrackingLink>
           </div>
-          <TrackingLink>
-            <Button
-              className="!text-typography-primary"
-              newTab
-              variant="secondary"
-              to="https://docs.gmx.io/docs/category/tokenomics"
-            >
-              <Trans>Read more</Trans>
-            </Button>
-          </TrackingLink>
-        </div>
-      </BuyCard>
+        </BuyCard>
+      )}
       <BuyCard
         title={<Trans>GLV</Trans>}
         icon={glvIcon}
@@ -294,36 +294,6 @@ export default function BuyCards() {
               newTab
               variant="secondary"
               to="https://docs.gmx.io/docs/providing-liquidity/v2"
-            >
-              <Trans>Read more</Trans>
-            </Button>
-          </TrackingLink>
-        </div>
-      </BuyCard>
-
-      <BuyCard
-        title={<Trans>GLP</Trans>}
-        icon={glpIcon}
-        description={
-          <Trans>GMX V1 markets are disabled. GLP is being phased out and no longer supports GMX V1 markets.</Trans>
-        }
-        alt="GLP icon"
-        type="sell"
-      >
-        <div className={cx("flex justify-between max-lg:flex-col max-lg:gap-12")}>
-          <div className={cx("buy flex gap-12 max-lg:flex-col")}>
-            <BuyLink to={getTrackingLink("/buy_glp#redeem")} network={ARBITRUM} chainId={chainId} active={active} />
-            <BuyLink to={getTrackingLink("/buy_glp#redeem")} network={AVALANCHE} chainId={chainId} active={active} />
-            <AlertInfoCard type="warning" hideClose className="!py-10">
-              <Trans>GLP is no longer available to buy.</Trans>
-            </AlertInfoCard>
-          </div>
-          <TrackingLink>
-            <Button
-              className="!text-typography-primary"
-              newTab
-              variant="secondary"
-              to="https://docs.gmx.io/docs/providing-liquidity/v1"
             >
               <Trans>Read more</Trans>
             </Button>

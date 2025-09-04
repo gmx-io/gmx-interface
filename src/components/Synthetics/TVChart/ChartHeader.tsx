@@ -8,8 +8,8 @@ import { useEffectOnce } from "react-use";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useBreakpoints } from "lib/breakpoints";
 import { useChainId } from "lib/chains";
+import { useBreakpoints } from "lib/useBreakpoints";
 import { getToken } from "sdk/configs/tokens";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -98,9 +98,9 @@ function ChartHeaderMobile() {
               <Trans>Open Interest</Trans>
             </span>
             <span>{" ("}</span>
-            <span className="numbers">{longOIPercentage}</span>
+            <span className="text-green-500 numbers">{longOIPercentage}</span>
             <span>/</span>
-            <span className="numbers">{shortOIPercentage}</span>
+            <span className="text-red-500 numbers">{shortOIPercentage}</span>
             <span>{")"}</span>
           </div>
           <div className="flex flex-row items-center gap-8 ">
@@ -277,14 +277,14 @@ function ChartHeaderDesktop() {
         <ChartHeaderItem
           label={
             <Trans>
-              Open Interest (<span className="numbers">{longOIPercentage}</span>/
-              <span className="numbers">{shortOIPercentage}</span>)
+              Open Interest (<span className="text-green-500 numbers">{longOIPercentage}</span>/
+              <span className="text-red-500 numbers">{shortOIPercentage}</span>)
             </Trans>
           }
           value={
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-4 numbers">{longOIValue}</div>
-              <span className="text-typography-secondary">/</span>
+              <span className="text-typography-inactive">/</span>
               <div className="flex items-center gap-4 numbers">{shortOIValue}</div>
             </div>
           }
@@ -295,7 +295,7 @@ function ChartHeaderDesktop() {
           value={
             <div className="flex items-center gap-4">
               <span className="numbers">{liquidityLong}</span>
-              <span className="text-typography-secondary">/</span>
+              <span className="text-typography-inactive">/</span>
               <span className="numbers">{liquidityShort}</span>
             </div>
           }
@@ -317,7 +317,7 @@ function ChartHeaderDesktop() {
             >
               <div className="flex items-center gap-4">
                 <div className="numbers">{netRateLong}</div>
-                <span className="text-typography-secondary">/</span>
+                <span className="text-typography-inactive">/</span>
                 <div className="numbers">{netRateShort}</div>
               </div>
             </TooltipWithPortal>

@@ -1,6 +1,6 @@
 type ColorType = "rgba" | "hex";
 
-type ColorValue<T extends ColorType = ColorType> = T extends "rgba"
+export type ColorValue<T extends ColorType = ColorType> = T extends "rgba"
   ? {
       light: `rgba(${string})`;
       dark: `rgba(${string})`;
@@ -12,7 +12,7 @@ type ColorValue<T extends ColorType = ColorType> = T extends "rgba"
       type?: T;
     };
 
-type ColorTree = {
+export type ColorTree = {
   [key: string]: ColorValue | ColorTree;
 };
 

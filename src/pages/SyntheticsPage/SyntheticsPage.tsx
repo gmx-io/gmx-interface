@@ -1,7 +1,7 @@
 import { Plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import uniq from "lodash/uniq";
-import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
+import { startTransition, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { getSyntheticsListSectionKey } from "config/localStorage";
@@ -39,7 +39,6 @@ import { TradeMode } from "domain/synthetics/trade";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
 import { getMidPrice } from "domain/tokens";
-import { useBreakpoints } from "lib/breakpoints";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
 import { getPageTitle } from "lib/legacy";
@@ -48,6 +47,7 @@ import { useMeasureComponentMountTime } from "lib/metrics/useMeasureComponentMou
 import { formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
+import { useBreakpoints } from "lib/useBreakpoints";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
@@ -103,6 +103,8 @@ export function SyntheticsPage(p: Props) {
     getSyntheticsListSectionKey(chainId),
     ListSection.Positions
   );
+
+  const tabsContentTabletRef = useRef<HTMLDivElement>(null);
 
   const [, setClosingPositionKeyRaw] = useClosingPositionKeyState();
   const setClosingPositionKey = useCallback(
@@ -259,6 +261,9 @@ export function SyntheticsPage(p: Props) {
 
   const handleTabChange = useCallback(
     (section: ListSection) => {
+      if (tabsContentTabletRef.current) {
+        tabsContentTabletRef.current.scrollIntoView({ behavior: "smooth" });
+      }
       setListSection(section);
       startTransition(() => {
         setOrderTypesFilter([]);
@@ -394,7 +399,11 @@ export function SyntheticsPage(p: Props) {
         )}
 
         {isTablet && (
-          <div className="flex w-full flex-col overflow-hidden rounded-8" data-qa="trade-table-small">
+          <div
+            className="flex w-full flex-col overflow-hidden rounded-8"
+            data-qa="trade-table-small"
+            ref={tabsContentTabletRef}
+          >
             <div className="overflow-x-auto scrollbar-hide">
               <Tabs
                 options={tabsOptions}

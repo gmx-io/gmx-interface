@@ -160,16 +160,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       refreshSubaccountData();
 
-      // TODO MLTCH why was reset there if it does not work with working reset
-      // if (
-      //   pendingExpressTxn?.subaccountApproval &&
-      //   !getIsEmptySubaccountApproval(pendingExpressTxn.subaccountApproval)
-      // ) {
-      //   resetSubaccountApproval();
-      // } else {
-      // refreshSubaccountData();
-      // }
-
       if (pendingExpressTxn?.tokenPermits?.length) {
         resetTokenPermits();
       }

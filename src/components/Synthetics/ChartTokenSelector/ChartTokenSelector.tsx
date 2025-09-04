@@ -33,10 +33,10 @@ import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
 import { stripBlacklistedWords, type Token } from "domain/tokens";
 import { getMidPrice } from "domain/tokens/utils";
-import { useBreakpoints } from "lib/breakpoints";
 import { formatAmountHuman, formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { searchBy } from "lib/searchBy";
+import { useBreakpoints } from "lib/useBreakpoints";
 import {
   convertTokenAddress,
   getCategoryTokenAddresses,

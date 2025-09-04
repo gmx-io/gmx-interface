@@ -1,5 +1,5 @@
 import { MessageDescriptor } from "@lingui/core";
-import { msg } from "@lingui/macro";
+import { msg, t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
@@ -113,7 +113,9 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
               />
               <div>
                 <div>{displayToken.symbol}</div>
-                <div className="text-body-small text-slate-100">{getChainName(displayToken.chainId)}</div>
+                <div className="text-body-small text-slate-100">
+                  {displayToken.chainId === 0 ? t`GMX Account` : getChainName(displayToken.chainId)}
+                </div>
               </div>
             </div>
             <div className="text-right">

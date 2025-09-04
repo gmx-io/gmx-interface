@@ -22,6 +22,7 @@ import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import { PoolListItem } from "./PoolListItem";
@@ -198,11 +199,12 @@ export function PoolSelector({
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
+        contentPadding={false}
         headerContent={
-          <div className="mt-16">
+          <div className="pb-12">
             <SearchInput
               value={searchKeyword}
-              className={cx("*:!text-body-medium", { "mb-8": withFilters })}
+              className={cx({ "mb-8": withFilters })}
               setValue={setSearchKeyword}
               placeholder={t`Search Pool`}
               onKeyDown={_handleKeyDown}
@@ -215,7 +217,7 @@ export function PoolSelector({
           </div>
         }
       >
-        <div className="flex flex-col">
+        <VerticalScrollFadeContainer className="flex grow flex-col">
           {filteredOptions.map((option, marketIndex) => {
             return (
               <PoolListItem
@@ -231,12 +233,12 @@ export function PoolSelector({
               />
             );
           })}
-        </div>
-        {filteredOptions.length === 0 && (
-          <div className="text-body-medium text-typography-secondary">
-            <Trans>No pools matched</Trans>
-          </div>
-        )}
+          {filteredOptions.length === 0 && (
+            <div className="text-body-medium text-typography-secondary">
+              <Trans>No pools matched.</Trans>
+            </div>
+          )}
+        </VerticalScrollFadeContainer>
       </SlideModal>
 
       {marketInfo && (

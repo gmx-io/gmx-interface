@@ -1,4 +1,4 @@
-import { useBreakpoints } from "lib/breakpoints";
+import { useBreakpoints } from "lib/useBreakpoints";
 
 export function usePoolsIsMobilePage() {
   const { isMobile } = useBreakpoints();

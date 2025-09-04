@@ -85,7 +85,7 @@ export function useMultichainFundingToast() {
 
           return (
             <div key={staticId} className="flex items-center justify-between">
-              <div className="text-white/50">
+              <div className="text-typography-secondary">
                 {item.operation === "deposit" ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>}
                 {array.length > 1 && <> {formattedAmount}</>}
               </div>

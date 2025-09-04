@@ -312,6 +312,7 @@ function ReferralCodeFormMultichain({
         signer: p.simulationSigner,
         relayParams,
         referralCode: p.referralCodeHex,
+        shouldUseSignerMethod: true,
       });
 
       const action: MultichainAction = {

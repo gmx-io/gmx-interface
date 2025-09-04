@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import { FaChevronLeft } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
-import { useBreakpoints } from "lib/breakpoints";
+import { useBreakpoints } from "lib/useBreakpoints";
 
 export type BreadcrumbsProps = {
   children: ReactNode;

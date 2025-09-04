@@ -856,7 +856,6 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
 
 const selectNextValuesForIncrease = createSelector(
   (q): Parameters<typeof makeSelectNextPositionValuesForIncrease>[0] => {
-    // const tokensData = q(selectTokensData);
     const tradeMode = q(selectTradeboxTradeMode);
     const tradeType = q(selectTradeboxTradeType);
     const fromTokenAddress = q(selectTradeboxFromTokenAddress);
@@ -873,7 +872,6 @@ const selectNextValuesForIncrease = createSelector(
     const positionKey = q(selectTradeboxSelectedPositionKey);
 
     const tradeFlags = createTradeFlags(tradeType, tradeMode);
-    // const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
     const fromToken = q(selectTradeboxFromToken);
     const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
     const leverage = BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
@@ -1106,11 +1104,9 @@ export const selectTradeboxTradeRatios = createSelector(function selectTradeboxT
 
   if (!isSwap) return {};
 
-  // const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const triggerRatioValue = q(selectTradeboxTriggerRatioValue);
   const toTokenAddress = q(selectTradeboxToTokenAddress);
   const toToken = q((s) => (toTokenAddress ? selectTokensData(s)?.[toTokenAddress] : undefined));
-  // const fromToken = q((s) => (fromTokenAddress ? selectTokensData(s)?.[fromTokenAddress] : undefined));
   const fromToken = q(selectTradeboxFromToken);
   const fromTokenPrice = fromToken?.prices.minPrice;
   const markPrice = q(selectTradeboxMarkPrice);

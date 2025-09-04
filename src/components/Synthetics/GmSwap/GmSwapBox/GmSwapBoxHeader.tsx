@@ -92,7 +92,7 @@ export function GmSwapBoxHeader(p: Props) {
       options={availableOperationsTabsOptions}
       selectedValue={operation}
       onChange={onSetOperation}
-      regularOptionClassname="grow"
+      regularOptionClassname={isInCurtain ? "grow !rounded-t-0" : "grow"}
       className={!isInCurtain ? "bg-slate-900" : undefined}
     />
   );

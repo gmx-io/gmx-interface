@@ -40,7 +40,7 @@ import {
   getSharePercentage,
   getTierIdDisplay,
   getTwitterShareUrl,
-  getUSDValue,
+  getUsdValue,
   isRecentReferralCodeNotExpired,
 } from "./referralsHelper";
 import usePagination, { DEFAULT_PAGE_SIZE } from "./usePagination";
@@ -196,94 +196,94 @@ function AffiliatesStats({
           }
         />
         <ReferralInfoCard
-          value={`$\u200a${getUSDValue(currentReferralsData?.affiliateTotalStats?.volume)}`}
+          value={`$\u200a${getUsdValue(currentReferralsData?.affiliateTotalStats?.volume)}`}
           label={t`Trading Volume`}
           labelTooltipText={t`Volume traded by your referred traders.`}
           tooltipContent={
             <>
               <StatsTooltipRow
                 label={t`V1 Arbitrum`}
-                value={getUSDValue(arbitrumData?.affiliateTotalStats.v1Data.volume)}
+                value={getUsdValue(arbitrumData?.affiliateTotalStats.v1Data.volume)}
                 valueClassName="numbers"
               />
               <StatsTooltipRow
                 label={t`V1 Avalanche`}
-                value={getUSDValue(avalancheData?.affiliateTotalStats.v1Data.volume)}
+                value={getUsdValue(avalancheData?.affiliateTotalStats.v1Data.volume)}
                 valueClassName="numbers"
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V1 Avalanche Fuji`}
-                  value={getUSDValue(fujiData?.affiliateTotalStats.v1Data.volume)}
+                  value={getUsdValue(fujiData?.affiliateTotalStats.v1Data.volume)}
                   valueClassName="numbers"
                 />
               )}
               <StatsTooltipRow
                 label={t`V2 Arbitrum`}
-                value={getUSDValue(arbitrumData?.affiliateTotalStats.v2Data.volume)}
+                value={getUsdValue(arbitrumData?.affiliateTotalStats.v2Data.volume)}
                 valueClassName="numbers"
               />
               <StatsTooltipRow
                 label={t`V2 Avalanche`}
-                value={getUSDValue(avalancheData?.affiliateTotalStats.v2Data.volume)}
+                value={getUsdValue(avalancheData?.affiliateTotalStats.v2Data.volume)}
                 valueClassName="numbers"
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V2 Avalanche Fuji`}
-                  value={getUSDValue(fujiData?.affiliateTotalStats.v2Data.volume)}
+                  value={getUsdValue(fujiData?.affiliateTotalStats.v2Data.volume)}
                   valueClassName="numbers"
                 />
               )}
               <div className="Tooltip-divider" />
-              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.affiliateVolume)} valueClassName="numbers" />
+              <StatsTooltipRow label={t`Total`} value={getUsdValue(total?.affiliateVolume)} valueClassName="numbers" />
             </>
           }
         />
         <ReferralInfoCard
-          value={`$\u200a${getUSDValue(currentReferralsData?.affiliateTotalStats?.affiliateRebateUsd)}`}
+          value={`$\u200a${getUsdValue(currentReferralsData?.affiliateTotalStats?.affiliateRebateUsd)}`}
           label={t`Rebates`}
           labelTooltipText={t`Rebates earned as an affiliate.`}
           tooltipContent={
             <>
               <StatsTooltipRow
                 label={t`V1 Arbitrum`}
-                value={getUSDValue(arbitrumData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
+                value={getUsdValue(arbitrumData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
                 valueClassName="numbers"
               />
               <StatsTooltipRow
                 label={t`V1 Avalanche`}
-                value={getUSDValue(avalancheData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
+                value={getUsdValue(avalancheData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
                 valueClassName="numbers"
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V1 Avalanche Fuji`}
-                  value={getUSDValue(fujiData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
+                  value={getUsdValue(fujiData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
                   valueClassName="numbers"
                 />
               )}
               <StatsTooltipRow
                 label={t`V2 Arbitrum`}
-                value={getUSDValue(arbitrumData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
+                value={getUsdValue(arbitrumData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
                 valueClassName="numbers"
               />
               <StatsTooltipRow
                 label={t`V2 Avalanche`}
-                value={getUSDValue(avalancheData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
+                value={getUsdValue(avalancheData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
                 valueClassName="numbers"
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V2 Avalanche Fuji`}
-                  value={getUSDValue(fujiData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
+                  value={getUsdValue(fujiData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
                   valueClassName="numbers"
                 />
               )}
               <div className="Tooltip-divider" />
               <StatsTooltipRow
                 label={t`Total`}
-                value={getUSDValue(total?.affiliateRebateUsd)}
+                value={getUsdValue(total?.affiliateRebateUsd)}
                 valueClassName="numbers"
               />
             </>
@@ -295,7 +295,7 @@ function AffiliatesStats({
           className="AffiliateStats-claimable-rewards-card"
         >
           <div className="AffiliateStats-claimable-rewards-container flex flex-col gap-6">
-            <span className="numbers">${getUSDValue(totalClaimableRewardsUsd, 4)}</span>
+            <span className="numbers">${getUsdValue(totalClaimableRewardsUsd, 4)}</span>
             {(totalClaimableRewardsUsd > 0 && (
               <Button variant="secondary" onClick={() => setIsClaiming(true)}>
                 Claim
@@ -393,7 +393,7 @@ function AffiliatesStats({
                       </TableTd>
                       <TableTd data-label="Total Volume">
                         <Tooltip
-                          handle={`$\u200a${getUSDValue(stat.volume)}`}
+                          handle={`$\u200a${getUsdValue(stat.volume)}`}
                           handleClassName="numbers"
                           position="bottom-start"
                           className="whitespace-nowrap"
@@ -401,12 +401,12 @@ function AffiliatesStats({
                             <>
                               <StatsTooltipRow
                                 label={t`Volume on V1`}
-                                value={getUSDValue(stat?.v1Data.volume)}
+                                value={getUsdValue(stat?.v1Data.volume)}
                                 valueClassName="numbers"
                               />
                               <StatsTooltipRow
                                 label={t`Volume on V2`}
-                                value={getUSDValue(stat?.v2Data.volume)}
+                                value={getUsdValue(stat?.v2Data.volume)}
                                 valueClassName="numbers"
                               />
                             </>
@@ -418,7 +418,7 @@ function AffiliatesStats({
                       </TableTd>
                       <TableTd data-label="Total Rebates">
                         <Tooltip
-                          handle={`$\u200a${getUSDValue(stat.affiliateRebateUsd)}`}
+                          handle={`$\u200a${getUsdValue(stat.affiliateRebateUsd)}`}
                           handleClassName="numbers"
                           position="bottom-start"
                           className="whitespace-nowrap"
@@ -426,12 +426,12 @@ function AffiliatesStats({
                             <>
                               <StatsTooltipRow
                                 label={t`Rebates on V1`}
-                                value={getUSDValue(stat.v1Data.affiliateRebateUsd)}
+                                value={getUsdValue(stat.v1Data.affiliateRebateUsd)}
                                 valueClassName="numbers"
                               />
                               <StatsTooltipRow
                                 label={t`Rebates on V2`}
-                                value={getUSDValue(stat.v2Data.affiliateRebateUsd)}
+                                value={getUsdValue(stat.v2Data.affiliateRebateUsd)}
                                 valueClassName="numbers"
                               />
                             </>
@@ -540,7 +540,7 @@ function AffiliatesStats({
                                     &nbsp;
                                   </>
                                 )}
-                                ${getUSDValue(totalUsd)}
+                                ${getUsdValue(totalUsd)}
                               </div>
                             }
                             renderContent={() => (

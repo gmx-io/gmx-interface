@@ -20,9 +20,9 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { CompetitionType } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
-import { useBreakpoints } from "lib/breakpoints";
 import { useChainId } from "lib/chains";
 import { mustNeverExist } from "lib/types";
+import { useBreakpoints } from "lib/useBreakpoints";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 

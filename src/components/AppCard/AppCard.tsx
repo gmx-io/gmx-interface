@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { forwardRef } from "react";
+import { forwardRef, useCallback } from "react";
 
 export const AppCard = forwardRef<HTMLDivElement, { children: React.ReactNode; dataQa?: string }>(
   ({ children, dataQa }, ref) => {
@@ -20,10 +20,12 @@ export function AppCardSection({
   className?: string;
   onClick?: () => void;
 }) {
+  const handleClick = useCallback(() => onClick?.(), [onClick]);
+
   return (
     <div
       className={cx("flex flex-col gap-12 border-b-1/2 border-slate-600 px-20 py-13 last:border-b-0", className)}
-      onClick={onClick}
+      onClick={handleClick}
     >
       {children}
     </div>

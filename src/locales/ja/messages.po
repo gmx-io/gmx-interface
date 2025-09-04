@@ -171,7 +171,6 @@ msgstr "注文 ({0})"
 
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "You have not deposited any tokens for vesting."
 msgstr "べスティングのためのトークンを入金していません。"
 
@@ -1150,7 +1149,6 @@ msgid "GMX Staked Rewards"
 msgstr "GMXステーク報酬"
 
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Staked Tokens"
 msgstr "ステークされたトークン"
 
@@ -1227,7 +1225,6 @@ msgstr "ベースAPY"
 msgid "Order updated."
 msgstr ""
 
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "GMX V1 markets are disabled. GLP is being phased out and no longer supports GMX V1 markets."
 msgstr "GMX V1市場は無効です。GLPは段階的に廃止されており、GMX V1市場をサポートしなくなりました。"
@@ -1470,8 +1467,8 @@ msgid "Leftover position below 10 USD"
 msgstr "10 USD未満の残りポジション"
 
 #: src/components/BuyCards/BuyCards.tsx
-msgid "GLP"
-msgstr ""
+#~ msgid "GLP"
+#~ msgstr ""
 
 #: src/pages/Stake/Stake.tsx
 msgid "Distributions"
@@ -1999,6 +1996,10 @@ msgstr "リベート分配履歴"
 msgid "Accrued Negative Funding Fee"
 msgstr "蓄積された負のファンディング手数料"
 
+#: src/components/Footer/constants.tsx
+msgid "V1 Interface"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Forfeit profit not checked"
 msgstr "利益喪失がチェックされていません"
@@ -2485,7 +2486,6 @@ msgid "You have an existing limit order in the {0} market pool but it lacks liqu
 msgstr "{0}市場プールに既存の指値注文がありますが、この注文のための流動性が不足しています。"
 
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Reserved for Vesting"
 msgstr "べスティングのためのリザーブ"
 
@@ -2667,10 +2667,6 @@ msgstr "受信者は以前にGMX/GLPをステークしています"
 msgid "{actionDisplay} Order"
 msgstr "{actionDisplay} 注文"
 
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Your wallet, your keys.<0/><1/>You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
-msgstr ""
-
 #: src/components/Synthetics/TVChart/Chart.tsx
 msgid "Market Graph"
 msgstr "マーケットグラフ"
@@ -2720,7 +2716,6 @@ msgid "You have an existing position with {0} as collateral."
 msgstr "担保として{0}を使用した既存のポジションがあります。"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Transfer Account"
 msgstr "アカウント移転"
 
@@ -3955,7 +3950,6 @@ msgstr ""
 #: src/domain/multichain/useMultichainFundingToast.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Withdraw"
 msgstr "出金"
 
@@ -4193,7 +4187,6 @@ msgid "Your opinions and experiences matter to us. Your feedback helps us unders
 msgstr "ご意見とご経験は私たちにとって重要です。フィードバックは私たちが何をうまくやっているか、どこを改善できるかを理解するのに役立ちます。"
 
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "<0>{0}</0> GMX tokens can be claimed, use the options under the total rewards section to claim them."
 msgstr ""
 
@@ -4234,7 +4227,6 @@ msgstr "トレーダーとしてこのアカウントが獲得したリベート
 #: src/components/BuyCards/BuyCards.tsx
 #: src/components/BuyCards/BuyCards.tsx
 #: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -4269,7 +4261,6 @@ msgstr ""
 "-{1} USD,\n"
 "{2} 価格: {3} USD"
 
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Vesting Status"
@@ -4658,7 +4649,6 @@ msgstr "Binanceアプリにログインし、[ウォレット]をタップして
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Claimable"
 msgstr "請求可能"
 
@@ -4883,7 +4873,6 @@ msgstr "ストップロスを作成"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/TotalRewardsCard.tsx
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Connect wallet"
@@ -5789,8 +5778,8 @@ msgid "Dashboard for GMX referral stats"
 msgstr "GMXの紹介統計ダッシュボード"
 
 #: src/components/BuyCards/BuyCards.tsx
-msgid "GLP is no longer available for buy"
-msgstr ""
+#~ msgid "GLP is no longer available for buy"
+#~ msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -5846,10 +5835,6 @@ msgstr "純価値: 初期担保 + PnL - 借入手数料 - クローズ手数料"
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "30d"
 msgstr "30日"
-
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in ETH."
-msgstr ""
 
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
@@ -6105,6 +6090,10 @@ msgstr "移転を完了するには、{receiver}のアカウントに接続し�
 msgid "Longs Net Rate / 1h"
 msgstr "ロングネットレート / 1時間"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in {nativeTokenSymbol}."
+msgstr ""
+
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/OrdersList.jsx
@@ -6322,10 +6311,6 @@ msgstr "引き出し完了!"
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "3rd Place"
 msgstr "3位"
-
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Your wallet, your keys.<0/><1/>GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in USDC or WETH."
-msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 msgid "Enter deposit amount"
@@ -6977,6 +6962,10 @@ msgstr "注文を有効にするため規約に同意する"
 msgid "Protocol analytics"
 msgstr "プロトコルの分析"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Show positions on chart"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.jsx
 msgid ""
 "Liquidated {0} {longOrShortText},\n"
@@ -7022,6 +7011,10 @@ msgstr "{0} および {1} は指定された購入上限までこの市場のGM�
 
 #: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "GLV tokens are similar in composition to GLP, and enable seamless integration into GMX V2's liquidity ecosystem. Users can either sell or hold the tokens to earn yield. To encourage long-term participation, a $500,000 GLV incentive pool will be distributed proportionally to those who hold their allocated GLV for at least 3 months."
+msgstr ""
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Your wallet, your keys.<0/><1/>GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in {gasPaymentTokensText}."
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
@@ -7134,7 +7127,6 @@ msgstr "1CT (ワンクリック取引) を無効化"
 #: src/domain/multichain/useMultichainFundingToast.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Deposit"
@@ -7516,6 +7508,10 @@ msgstr "{0} を {1} にスワップ"
 msgid "Vault Capacity"
 msgstr "ボールト容量"
 
+#: src/components/Synthetics/TVChart/Chart.tsx
+msgid "Depth"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
 msgstr "減少 アクティブ: {0}、執行済: {1}、キャンセル済: {2}"
@@ -7738,6 +7734,10 @@ msgstr ""
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM Airdrop"
 msgstr "GLPからGMへのエアドロップ"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Your wallet, your keys.<0/><1/>You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in {gasPaymentTokensText}."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -8095,6 +8095,7 @@ msgstr "トリガー注文の確認を受け入れる"
 msgid "Choose to buy from decentralized or centralized exchanges."
 msgstr "分散型または集中型取引所から購入を選択。"
 
+#: src/components/Synthetics/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
@@ -8157,9 +8158,8 @@ msgid "Fees will be shown once you have entered an amount in the order form."
 msgstr "注文フォームに額を入力すると手数料が表示されます。"
 
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
-msgid "GLP Vault"
-msgstr "GLPボールト"
+#~ msgid "GLP Vault"
+#~ msgstr "GLPボールト"
 
 #: src/components/Footer/constants.tsx
 #: src/pages/ReferralTerms/ReferralTerms.jsx
@@ -8249,8 +8249,8 @@ msgid "Total Volume"
 msgstr "総取引量"
 
 #: src/pages/Stake/Vesting.tsx
-msgid "Withdraw from GLP Vault"
-msgstr "GLPボールトから出金"
+#~ msgid "Withdraw from GLP Vault"
+#~ msgstr "GLPボールトから出金"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Image generation error, please refresh and try again."
@@ -8593,7 +8593,6 @@ msgstr ""
 msgid "You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral. The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price."
 msgstr "ロングポジションと{collateralSymbol}担保から{indexSymbol}をロングします。担保価値が価格とともに変化するため、ステーブルコイン担保使用時より清算価格が高くなります。"
 
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "<0>{0}</0> tokens have been converted to GMX from the <1>{1}</1> esGMX deposited for vesting."
