@@ -19,7 +19,7 @@ export function useGoToPools(pool: LandingPageProtocolTokenEvent["data"]["type"]
       },
       { instantSend: true }
     );
-    redirectWithWarning(makeLink(pool === "GMX" ? "/stake" : "/pools"));
+    redirectWithWarning(makeLink(pool === "GMX" ? "stake" : "pools"));
   }, [redirectWithWarning, pool]);
 }
 
