@@ -4,10 +4,12 @@ import { useHomePageContext } from "landing/Home/contexts/HomePageContext";
 import { cleanFormatUsd } from "landing/Home/utils/formatters";
 
 import { PoolCards } from "./PoolCards";
+import { useGoToPools } from "../hooks/useGoToPools";
 
 export function LiqiuditySection() {
   const { poolsData } = useHomePageContext();
   const totalLiquidity = poolsData?.totalLiquidity ? cleanFormatUsd(poolsData.totalLiquidity) : "-";
+  const onClickEarn = useGoToPools("GLV");
   return (
     <section className="text-fiord-700 flex w-full bg-[#F4F5F9] px-16 py-80 sm:px-40 sm:py-[120px]">
       <div className="mx-auto flex w-[1200px] flex-col items-stretch justify-center overflow-hidden sm:items-start">
@@ -20,7 +22,7 @@ export function LiqiuditySection() {
           <h3 className="leading-heading-md text-18 font-medium -tracking-[0.896px] sm:text-[28px]">
             <Trans>Join 14000 users earning real yield.</Trans>
           </h3>
-          <button className="btn-landing rounded-8 px-16 py-12 text-16 text-white">
+          <button onClick={onClickEarn} className="btn-landing rounded-8 px-16 py-12 text-16 text-white">
             <Trans>Start Earning</Trans>
           </button>
         </div>
