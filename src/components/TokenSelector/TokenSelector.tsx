@@ -283,7 +283,7 @@ export default function TokenSelector(props: Props) {
           })}
           {sortedFilteredTokens.length === 0 && (
             <div className="p-adaptive text-16 text-typography-secondary">
-              <Trans>No tokens matched.</Trans>
+              <Trans>No tokens matched</Trans>
             </div>
           )}
         </VerticalScrollFadeContainer>
