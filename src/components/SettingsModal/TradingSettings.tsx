@@ -81,9 +81,6 @@ export function TradingSettings({
                 description={<Trans>On-chain signing for every transaction.</Trans>}
                 info={
                   <Trans>
-                    Your wallet, your keys.
-                    <br />
-                    <br />
                     You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas
                     payments in {nativeTokenSymbol}.
                   </Trans>
@@ -99,9 +96,6 @@ export function TradingSettings({
               description={<Trans>High execution reliability using premium RPCs.</Trans>}
               info={
                 <Trans>
-                  Your wallet, your keys.
-                  <br />
-                  <br />
                   You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even
                   during network congestion. Gas payments in {gasPaymentTokensText}.
                 </Trans>
@@ -124,9 +118,6 @@ export function TradingSettings({
               disabled={isExpressTradingDisabled}
               info={
                 <Trans>
-                  Your wallet, your keys.
-                  <br />
-                  <br />
                   GMX executes transactions for you without individual signing, providing a seamless, CEX-like
                   experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas
                   payments in {gasPaymentTokensText}.
