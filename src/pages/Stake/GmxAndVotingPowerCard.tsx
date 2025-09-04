@@ -337,11 +337,6 @@ export function GmxAndVotingPowerCard({
               <Trans>Delegate</Trans>
             </Button>
           )}
-          {active && (
-            <Button variant="secondary" to="/begin_account_transfer">
-              <Trans>Transfer Account</Trans>
-            </Button>
-          )}
         </div>
       </div>
     </div>

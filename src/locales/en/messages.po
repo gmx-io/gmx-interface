@@ -171,7 +171,6 @@ msgstr "Orders ({0})"
 
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "You have not deposited any tokens for vesting."
 msgstr "You have not deposited any tokens for vesting."
 
@@ -1150,7 +1149,6 @@ msgid "GMX Staked Rewards"
 msgstr "GMX Staked Rewards"
 
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Staked Tokens"
 msgstr "Staked Tokens"
 
@@ -1227,7 +1225,6 @@ msgstr "Base APY"
 msgid "Order updated."
 msgstr "Order updated."
 
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "GMX V1 markets are disabled. GLP is being phased out and no longer supports GMX V1 markets."
 msgstr "GMX V1 markets are disabled. GLP is being phased out and no longer supports GMX V1 markets."
@@ -1470,8 +1467,8 @@ msgid "Leftover position below 10 USD"
 msgstr "Leftover position below 10 USD"
 
 #: src/components/BuyCards/BuyCards.tsx
-msgid "GLP"
-msgstr "GLP"
+#~ msgid "GLP"
+#~ msgstr "GLP"
 
 #: src/pages/Stake/Stake.tsx
 msgid "Distributions"
@@ -1999,6 +1996,10 @@ msgstr "Rebates Distribution History"
 msgid "Accrued Negative Funding Fee"
 msgstr "Accrued Negative Funding Fee"
 
+#: src/components/Footer/constants.tsx
+msgid "V1 Interface"
+msgstr "V1 Interface"
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Forfeit profit not checked"
 msgstr "Forfeit profit not checked"
@@ -2485,7 +2486,6 @@ msgid "You have an existing limit order in the {0} market pool but it lacks liqu
 msgstr "You have an existing limit order in the {0} market pool but it lacks liquidity for this order."
 
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Reserved for Vesting"
 msgstr "Reserved for Vesting"
 
@@ -2716,7 +2716,6 @@ msgid "You have an existing position with {0} as collateral."
 msgstr "You have an existing position with {0} as collateral."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Transfer Account"
 msgstr "Transfer Account"
 
@@ -3951,7 +3950,6 @@ msgstr "Claiming position price impact fees failed"
 #: src/domain/multichain/useMultichainFundingToast.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Withdraw"
 msgstr "Withdraw"
 
@@ -4189,7 +4187,6 @@ msgid "Your opinions and experiences matter to us. Your feedback helps us unders
 msgstr "Your opinions and experiences matter to us. Your feedback helps us understand what we are doing well and where we can make enhancements."
 
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "<0>{0}</0> GMX tokens can be claimed, use the options under the total rewards section to claim them."
 msgstr "<0>{0}</0> GMX tokens can be claimed, use the options under the total rewards section to claim them."
 
@@ -4230,7 +4227,6 @@ msgstr "Rebates earned by this account as a trader."
 #: src/components/BuyCards/BuyCards.tsx
 #: src/components/BuyCards/BuyCards.tsx
 #: src/components/BuyCards/BuyCards.tsx
-#: src/components/BuyCards/BuyCards.tsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -4265,7 +4261,6 @@ msgstr ""
 "-{1} USD,\n"
 "{2} Price: {3} USD"
 
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Vesting Status"
@@ -4654,7 +4649,6 @@ msgstr "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Claimable"
 msgstr "Claimable"
 
@@ -4879,7 +4873,6 @@ msgstr "Create Stop Loss"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/TotalRewardsCard.tsx
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Connect wallet"
@@ -5785,8 +5778,8 @@ msgid "Dashboard for GMX referral stats"
 msgstr "Dashboard for GMX referral stats"
 
 #: src/components/BuyCards/BuyCards.tsx
-msgid "GLP is no longer available for buy"
-msgstr "GLP is no longer available for buy"
+#~ msgid "GLP is no longer available for buy"
+#~ msgstr "GLP is no longer available for buy"
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -7136,7 +7129,6 @@ msgstr "Deactivate 1CT (One-Click Trading)"
 #: src/pages/Stake/VesterDepositModal.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Deposit"
 msgstr "Deposit"
 
@@ -8166,9 +8158,8 @@ msgid "Fees will be shown once you have entered an amount in the order form."
 msgstr "Fees will be shown once you have entered an amount in the order form."
 
 #: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
-msgid "GLP Vault"
-msgstr "GLP Vault"
+#~ msgid "GLP Vault"
+#~ msgstr "GLP Vault"
 
 #: src/components/Footer/constants.tsx
 #: src/pages/ReferralTerms/ReferralTerms.jsx
@@ -8258,8 +8249,8 @@ msgid "Total Volume"
 msgstr "Total Volume"
 
 #: src/pages/Stake/Vesting.tsx
-msgid "Withdraw from GLP Vault"
-msgstr "Withdraw from GLP Vault"
+#~ msgid "Withdraw from GLP Vault"
+#~ msgstr "Withdraw from GLP Vault"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Image generation error, please refresh and try again."
@@ -8602,7 +8593,6 @@ msgstr "Net Price Impact / Fees"
 msgid "You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral. The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price."
 msgstr "You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral. The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price."
 
-#: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "<0>{0}</0> tokens have been converted to GMX from the <1>{1}</1> esGMX deposited for vesting."
