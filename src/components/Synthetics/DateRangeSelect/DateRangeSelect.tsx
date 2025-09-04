@@ -15,16 +15,17 @@ import dateKo from "date-fns/locale/ko";
 import dateRu from "date-fns/locale/ru";
 import dateZh from "date-fns/locale/zh-CN";
 import { useCallback, useMemo } from "react";
-import { Calendar, DateRange, ClassNames as DateRangeClassNames, Range, RangeKeyDict } from "react-date-range";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 
 import { locales } from "lib/i18n";
 
 import Button from "components/Button/Button";
 
 import CalendarIcon from "img/ic_calendar.svg?react";
+import ChevronEdgeLeft from "img/ic_chevron_edge_left.svg?react";
+import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
 
-import "react-date-range/dist/styles.css"; // main css file
-import "react-date-range/dist/theme/default.css"; // theme css file
 import "./DateRangeSelect.scss";
 
 export const LOCALE_DATE_LOCALE_MAP: Record<keyof typeof locales, DateLocale> = {
@@ -51,36 +52,6 @@ type Props = {
  */
 const MIN_DATE = new Date(2021, 8, 6);
 const MAX_DATE = addYears(new Date(), 1);
-
-const DATE_RANGE_CLASSNAMES: DateRangeClassNames = {
-  calendarWrapper: "DateRangeSelect-calendarWrapper",
-  monthAndYearPickers: "DateRangeSelect-monthAndYearPickers",
-  dayNumber: "DateRangeSelect-dayNumber",
-  nextPrevButton: "DateRangeSelect-nextPrevButton",
-  prevButton: "DateRangeSelect-prevButton",
-  nextButton: "DateRangeSelect-nextButton",
-  month: "DateRangeSelect-month",
-  inRange: "DateRangeSelect-inRange",
-  startEdge: "DateRangeSelect-startEdge",
-  endEdge: "DateRangeSelect-endEdge",
-  dayHovered: "DateRangeSelect-dayHovered",
-  dayStartPreview: "DateRangeSelect-dayStartPreview",
-  dayInPreview: "DateRangeSelect-dayInPreview",
-  dayEndPreview: "DateRangeSelect-dayEndPreview",
-  dayStartOfWeek: "DateRangeSelect-dayStartOfWeek",
-  dayEndOfWeek: "DateRangeSelect-dayEndOfWeek",
-  dayStartOfMonth: "DateRangeSelect-dayStartOfMonth",
-  dayEndOfMonth: "DateRangeSelect-dayEndOfMonth",
-  selected: "DateRangeSelect-selected",
-  dayDisabled: "DateRangeSelect-dayDisabled",
-  day: "DateRangeSelect-day",
-  monthAndYearWrapper: "DateRangeSelect-monthAndYearWrapper",
-  weekDay: "DateRangeSelect-weekDay",
-  days: "DateRangeSelect-days",
-  dayToday: "DateRangeSelect-dayToday",
-};
-
-const RANGE_COLORS = ["#262843", "#3ecf8e", "#fed14c"];
 
 const PRESETS = {
   days30: {
@@ -111,11 +82,6 @@ const PRESET_LABELS: Record<PresetPeriod, MessageDescriptor> = {
 const DATE_RANGE_SELECT_PRESETS: PresetPeriod[] = ["days7", "days30", "days90", "days365", "allTime"];
 
 export function DateRangeSelect({ startDate, endDate, onChange, handleClassName }: Props) {
-  const rangeState = useMemo<[Range]>(
-    () => [{ key: "selection", startDate, endDate, color: endDate && startDate ? RANGE_COLORS[0] : "transparent" }],
-    [endDate, startDate]
-  );
-
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(10), flip(), shift()],
     placement: "top-start",
@@ -123,11 +89,18 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
   });
 
   const onDateRangeChange = useCallback(
-    (item: RangeKeyDict) => {
-      if (item.selection.startDate == item.selection.endDate) {
+    (value: Date | Date[] | [Date | null, Date | null] | null) => {
+      if (Array.isArray(value) && value.length === 2) {
+        // Handle range selection
+        const [start, end] = value;
+        if (start === end || (start === null && end === null)) {
+          return;
+        }
+        onChange([start || undefined, end || undefined]);
+      } else if (!Array.isArray(value) && value) {
+        // Single date clicked in range mode - don't update
         return;
       }
-      onChange([item.selection.startDate, item.selection.endDate]);
     },
     [onChange]
   );
@@ -135,20 +108,16 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
   const { _, i18n } = useLingui();
   const localeStr = i18n.locale;
 
-  const locale: DateLocale = LOCALE_DATE_LOCALE_MAP[localeStr] ?? LOCALE_DATE_LOCALE_MAP.en;
-
   const buttonText = useMemo(() => {
     if (!startDate || !endDate) {
       return t`All time`;
     }
 
-    const start = format(startDate, "dd MMM yyyy", {
-      locale,
-    });
-    const end = format(endDate, "dd MMM yyyy", { locale });
+    const start = format(startDate, "dd MMM yyyy");
+    const end = format(endDate, "dd MMM yyyy");
 
     return `${start} — ${end}`;
-  }, [startDate, locale, endDate]);
+  }, [startDate, endDate]);
 
   const handlePresetSelect = useCallback(
     (event: React.MouseEvent) => {
@@ -178,42 +147,42 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
   );
 
   return (
-    <>
-      <Popover as="div" className="DateRangeSelect-anchor" ref={refs.setReference}>
-        <Popover.Button as="div" className={handleClassName} refName="buttonRef">
-          <Button variant="ghost" className="flex items-center gap-4">
-            <div className="size-16">
-              <CalendarIcon />
-            </div>
-            <span className="text-body-small whitespace-nowrap font-medium">{buttonText}</span>
-          </Button>
-        </Popover.Button>
-        <Portal>
-          <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>
-            <DateRange
-              classNames={DATE_RANGE_CLASSNAMES}
-              editableDateInputs={true}
-              onChange={onDateRangeChange}
-              moveRangeOnFirstSelection={false}
-              ranges={rangeState}
-              showDateDisplay={false}
-              locale={locale}
-              minDate={MIN_DATE}
-              maxDate={MAX_DATE}
-              weekStartsOn={1}
-              rangeColors={RANGE_COLORS}
-            />
-            <div className="flex justify-between gap-4 border-t border-slate-600 p-12">
-              {DATE_RANGE_SELECT_PRESETS.map((preset) => (
-                <Button key={preset} variant="secondary" size="small" data-preset={preset} onClick={handlePresetSelect}>
-                  {_(PRESET_LABELS[preset])}
-                </Button>
-              ))}
-            </div>
-          </Popover.Panel>
-        </Portal>
-      </Popover>
-    </>
+    <Popover className="DateRangeSelect-anchor" ref={refs.setReference}>
+      <Popover.Button className={handleClassName}>
+        <Button variant="ghost" className="flex items-center gap-4">
+          <div className="size-16">
+            <CalendarIcon />
+          </div>
+          <span className="text-body-small whitespace-nowrap font-medium">{buttonText}</span>
+        </Button>
+      </Popover.Button>
+      <Portal>
+        <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>
+          <Calendar
+            onChange={onDateRangeChange}
+            value={startDate && endDate ? ([startDate, endDate] as [Date, Date]) : null}
+            selectRange={true}
+            locale={localeStr}
+            minDate={MIN_DATE}
+            maxDate={MAX_DATE}
+            className="DateRangeSelect-reactCalendar"
+            minDetail="decade"
+            formatMonthYear={(_, date) => format(date, "MMMM, yyyy")}
+            prevLabel={<ChevronLeftIcon className="size-20" />}
+            nextLabel={<ChevronLeftIcon className="size-20 rotate-180" />}
+            prev2Label={<ChevronEdgeLeft className="size-20" />}
+            next2Label={<ChevronEdgeLeft className="size-20 rotate-180" />}
+          />
+          <div className="flex justify-between gap-4 border-t border-slate-600 p-12">
+            {DATE_RANGE_SELECT_PRESETS.map((preset) => (
+              <Button key={preset} variant="secondary" size="small" data-preset={preset} onClick={handlePresetSelect}>
+                {_(PRESET_LABELS[preset])}
+              </Button>
+            ))}
+          </div>
+        </Popover.Panel>
+      </Portal>
+    </Popover>
   );
 }
 
@@ -237,8 +206,12 @@ export function DateSelect({
   });
 
   const onDateChange = useCallback(
-    (item: Date) => {
-      onChange(item);
+    (value: Date | Date[] | [Date | null, Date | null] | null) => {
+      if (value && !Array.isArray(value)) {
+        onChange(value);
+      } else if (value === null) {
+        onChange(undefined);
+      }
     },
     [onChange]
   );
@@ -246,23 +219,19 @@ export function DateSelect({
   const { i18n, _ } = useLingui();
   const localeStr = i18n.locale;
 
-  const locale: DateLocale = LOCALE_DATE_LOCALE_MAP[localeStr] ?? LOCALE_DATE_LOCALE_MAP.en;
-
   const buttonText = useMemo(() => {
     if (!date) {
       return t`All time`;
     }
 
-    const start = format(date, "dd MMM yyyy", {
-      locale,
-    });
+    const start = format(date, "dd MMM yyyy");
 
     if (buttonTextPrefix) {
       return `${buttonTextPrefix} ${start}`;
     }
 
     return `${start}`;
-  }, [buttonTextPrefix, date, locale]);
+  }, [buttonTextPrefix, date]);
 
   const handlePresetSelect = useCallback(
     (event: React.MouseEvent) => {
@@ -292,39 +261,40 @@ export function DateSelect({
   );
 
   return (
-    <>
-      <Popover as="div" className="DateRangeSelect-anchor" ref={refs.setReference}>
-        <Popover.Button as="div" className={handleClassName} refName="buttonRef">
-          <Button variant="ghost" className="flex items-center gap-4">
-            <div className="size-16">
-              <CalendarIcon />
-            </div>
-            <span className="text-body-small whitespace-nowrap font-medium">{buttonText}</span>
-          </Button>
-        </Popover.Button>
-        <Portal>
-          <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>
-            <div className="flex gap-4 border-t border-slate-600 p-12">
-              {DATE_SELECT_PRESETS.map((preset) => (
-                <Button key={preset} variant="secondary" size="small" data-preset={preset} onClick={handlePresetSelect}>
-                  {_(PRESET_LABELS[preset])}
-                </Button>
-              ))}
-            </div>
-            <Calendar
-              classNames={DATE_RANGE_CLASSNAMES}
-              editableDateInputs={true}
-              onChange={onDateChange}
-              date={date}
-              locale={locale}
-              minDate={MIN_DATE}
-              maxDate={MAX_DATE}
-              weekStartsOn={1}
-              rangeColors={RANGE_COLORS}
-            />
-          </Popover.Panel>
-        </Portal>
-      </Popover>
-    </>
+    <Popover className="DateRangeSelect-anchor" ref={refs.setReference}>
+      <Popover.Button className={handleClassName}>
+        <Button variant="ghost" className="flex items-center gap-4">
+          <div className="size-16">
+            <CalendarIcon />
+          </div>
+          <span className="text-body-small whitespace-nowrap font-medium">{buttonText}</span>
+        </Button>
+      </Popover.Button>
+      <Portal>
+        <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>
+          <div className="flex gap-4 border-t border-slate-600 p-12">
+            {DATE_SELECT_PRESETS.map((preset) => (
+              <Button key={preset} variant="secondary" size="small" data-preset={preset} onClick={handlePresetSelect}>
+                {_(PRESET_LABELS[preset])}
+              </Button>
+            ))}
+          </div>
+          <Calendar
+            onChange={onDateChange}
+            value={date}
+            locale={localeStr}
+            minDate={MIN_DATE}
+            maxDate={MAX_DATE}
+            className="DateRangeSelect-reactCalendar"
+            prevLabel={<ChevronLeftIcon className="size-20" />}
+            nextLabel={<ChevronLeftIcon className="size-20 rotate-180" />}
+            prev2Label={<ChevronEdgeLeft className="size-20" />}
+            next2Label={<ChevronEdgeLeft className="size-20 rotate-180" />}
+            minDetail="decade"
+            formatMonthYear={(_, date) => format(date, "MMMM, yyyy")}
+          />
+        </Popover.Panel>
+      </Portal>
+    </Popover>
   );
 }
