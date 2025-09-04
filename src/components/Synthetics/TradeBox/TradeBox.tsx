@@ -1064,18 +1064,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                     isLong={isLong}
                   />
                 )}
-
-                {priceImpactWarningState.shouldShowWarning && (
-                  <HighPriceImpactOrFeesWarningCard
-                    priceImpactWarningState={priceImpactWarningState}
-                    collateralImpact={fees?.positionCollateralPriceImpact}
-                    positionImpact={isIncrease ? fees?.increasePositionPriceImpact : fees?.totalPendingImpact}
-                    swapPriceImpact={fees?.swapPriceImpact}
-                    swapProfitFee={fees?.swapProfitFee}
-                    executionFeeUsd={executionFee?.feeUsd}
-                    externalSwapFeeItem={fees?.externalSwapFee}
-                  />
-                )}
               </div>
             )}
             <div className="flex flex-col gap-14">
@@ -1092,6 +1080,19 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               )}
 
               {!isTrigger && !isSwap && !isTwap && <LimitAndTPSLGroup />}
+
+              {priceImpactWarningState.shouldShowWarning && (
+                <HighPriceImpactOrFeesWarningCard
+                  priceImpactWarningState={priceImpactWarningState}
+                  collateralImpact={fees?.positionCollateralPriceImpact}
+                  positionImpact={isIncrease ? fees?.increasePositionPriceImpact : fees?.totalPendingImpact}
+                  swapPriceImpact={fees?.swapPriceImpact}
+                  swapProfitFee={fees?.swapProfitFee}
+                  executionFeeUsd={executionFee?.feeUsd}
+                  externalSwapFeeItem={fees?.externalSwapFee}
+                />
+              )}
+
               <div>{button}</div>
               <ExpressTradingWarningCard
                 expressParams={submitButtonState.expressParams}

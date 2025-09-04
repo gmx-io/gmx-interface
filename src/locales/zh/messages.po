@@ -6336,10 +6336,6 @@ msgstr "批准 {0}"
 msgid "Alternatively, you can select a different collateral in token."
 msgstr ""
 
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "Your wallet, your keys.<0/><1/>You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in {gasTokenSymbol}."
-#~ msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} long exceeded"
 msgstr "超过最大 {0} 多头"

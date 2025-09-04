@@ -12,9 +12,9 @@ const colorSchemas = {
     icon: "text-green-600",
   },
   red: {
-    border: "border-l-red-700",
-    bg: "bg-red-600",
-    icon: "text-red-600",
+    border: "border-l-red-500",
+    bg: "bg-red-900",
+    icon: "text-red-500",
   },
   blue: {
     border: "border-l-blue-300",
@@ -69,7 +69,7 @@ export function ColorfulBanner({
             <Icon className="size-20 p-[1.25px]" />
           </div>
         )}
-        <div className="flex flex-col justify-center">{children}</div>
+        <div>{children}</div>
       </div>
       {onClose && (
         <button
