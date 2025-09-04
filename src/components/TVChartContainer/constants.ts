@@ -4,13 +4,12 @@ import { lightFormat, parse } from "date-fns";
 
 import { ChartingLibraryFeatureset, ChartingLibraryWidgetOptions, WidgetOverrides } from "charting_library";
 import { ARBITRUM, AVALANCHE } from "config/chains";
+import { colors } from "config/colors";
 import { USD_DECIMALS } from "config/factors";
 import { OrderType } from "domain/synthetics/orders";
 import { formatTVDate, formatTVTime } from "lib/dates";
 import { calculateDisplayDecimals, numberToBigint } from "lib/numbers";
 
-export const RED = "#fa3c58";
-export const GREEN = "#0ecc83";
 export const DEFAULT_PERIOD = "4h";
 
 const createChartStyleOverrides = (upColor: string, downColor: string): Partial<WidgetOverrides> =>
@@ -36,9 +35,9 @@ export const chartOverridesDark: Partial<WidgetOverrides> = {
   "paneProperties.horzGridProperties.color": "#363A5980",
   "paneProperties.horzGridProperties.style": 2,
   "mainSeriesProperties.priceLineColor": "#8B94B6",
-  "scalesProperties.textColor": "#A0A3C4",
+  "scalesProperties.textColor": colors.typography["secondary"].dark,
   "mainSeriesProperties.statusViewStyle.showExchange": false,
-  ...createChartStyleOverrides(GREEN, RED),
+  ...createChartStyleOverrides(colors.green[500].dark, colors.red[500].dark),
 };
 
 export const chartOverridesLight: Partial<WidgetOverrides> = {
@@ -51,9 +50,9 @@ export const chartOverridesLight: Partial<WidgetOverrides> = {
   "paneProperties.horzGridProperties.color": "#E0E0E0",
   "paneProperties.horzGridProperties.style": 2,
   "mainSeriesProperties.priceLineColor": "#6B7280",
-  "scalesProperties.textColor": "#4B5563",
+  "scalesProperties.textColor": colors.typography["secondary"].light,
   "mainSeriesProperties.statusViewStyle.showExchange": false,
-  ...createChartStyleOverrides(GREEN, RED),
+  ...createChartStyleOverrides(colors.green[500].light, colors.red[500].light),
 };
 
 export const disabledFeaturesOnMobile: ChartingLibraryFeatureset[] = ["header_saveload", "header_fullscreen_button"];

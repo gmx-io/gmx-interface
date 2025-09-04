@@ -27,7 +27,6 @@ import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/Cha
 import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
 
 import { EscrowedGmxCard } from "./EscrowedGmxCard";
-import { GlpCard } from "./GlpCard";
 import { GmxAndVotingPowerCard } from "./GmxAndVotingPowerCard";
 import { StakeModal } from "./StakeModal";
 import { TotalRewardsCard } from "./TotalRewardsCard";
@@ -277,7 +276,6 @@ function StakeContent() {
             showStakeGmxModal={showStakeGmxModal}
           />
           <TotalRewardsCard processedData={processedData} showStakeGmxModal={showStakeGmxModal} />
-          <GlpCard processedData={processedData} />
           <EscrowedGmxCard
             processedData={processedData}
             showStakeEsGmxModal={showStakeEsGmxModal}
