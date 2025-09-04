@@ -98,9 +98,9 @@ function ChartHeaderMobile() {
               <Trans>Open Interest</Trans>
             </span>
             <span>{" ("}</span>
-            <span className="numbers">{longOIPercentage}</span>
+            <span className="text-green-500 numbers">{longOIPercentage}</span>
             <span>/</span>
-            <span className="numbers">{shortOIPercentage}</span>
+            <span className="text-red-500 numbers">{shortOIPercentage}</span>
             <span>{")"}</span>
           </div>
           <div className="flex flex-row items-center gap-8 ">
@@ -277,8 +277,8 @@ function ChartHeaderDesktop() {
         <ChartHeaderItem
           label={
             <Trans>
-              Open Interest (<span className="numbers">{longOIPercentage}</span>/
-              <span className="numbers">{shortOIPercentage}</span>)
+              Open Interest (<span className="text-green-500 numbers">{longOIPercentage}</span>/
+              <span className="text-red-500 numbers">{shortOIPercentage}</span>)
             </Trans>
           }
           value={
