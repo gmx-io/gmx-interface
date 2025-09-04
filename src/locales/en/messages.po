@@ -8103,6 +8103,7 @@ msgstr "Accept confirmation of trigger orders"
 msgid "Choose to buy from decentralized or centralized exchanges."
 msgstr "Choose to buy from decentralized or centralized exchanges."
 
+#: src/components/Synthetics/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"

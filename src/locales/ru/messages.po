@@ -8103,6 +8103,7 @@ msgstr "Принять подтверждение триггерных орде�
 msgid "Choose to buy from decentralized or centralized exchanges."
 msgstr "Выберите покупку на децентрализованных или централизованных биржах."
 
+#: src/components/Synthetics/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"

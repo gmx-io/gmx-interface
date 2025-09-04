@@ -578,7 +578,7 @@ export function PositionItem(p: Props) {
 
     return (
       <AppCard dataQa="position-item">
-        <AppCardSection onClick={p.onSelectPositionClick}>
+        <AppCardSection onClick={() => p.onSelectPositionClick?.()}>
           <div className="text-body-medium flex items-center gap-8">
             <span
               className={cx("text-body-medium relative flex items-center gap-4 font-medium", {

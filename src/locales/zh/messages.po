@@ -8103,6 +8103,7 @@ msgstr "接受触发订单的确认"
 msgid "Choose to buy from decentralized or centralized exchanges."
 msgstr "选择从去中心化或中心化交易所购买。"
 
+#: src/components/Synthetics/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"

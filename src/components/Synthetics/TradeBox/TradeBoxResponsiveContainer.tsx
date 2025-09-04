@@ -1,4 +1,4 @@
-import { useBreakpoints } from "lib/breakpoints";
+import { useBreakpoints } from "lib/useBreakpoints";
 
 import { Curtain } from "./Curtain";
 import { TradeBox } from "./TradeBox";

@@ -3,7 +3,7 @@ import React, { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useS
 import { MdClose } from "react-icons/md";
 import { RemoveScroll } from "react-remove-scroll";
 
-import { useBreakpoints } from "lib/breakpoints";
+import { useBreakpoints } from "lib/useBreakpoints";
 
 import Portal from "components/Common/Portal";
 

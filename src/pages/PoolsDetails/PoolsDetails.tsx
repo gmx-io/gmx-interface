@@ -10,9 +10,9 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { getTokenData } from "domain/synthetics/tokens";
-import { useBreakpoints } from "lib/breakpoints";
 import { getPageTitle } from "lib/legacy";
 import { getByKey } from "lib/objects";
+import { useBreakpoints } from "lib/useBreakpoints";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";

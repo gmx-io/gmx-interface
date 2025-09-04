@@ -8103,6 +8103,7 @@ msgstr "트리거 주문 확인 수락"
 msgid "Choose to buy from decentralized or centralized exchanges."
 msgstr "탈중앙화 또는 중앙화 거래소에서 구매 선택."
 
+#: src/components/Synthetics/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"

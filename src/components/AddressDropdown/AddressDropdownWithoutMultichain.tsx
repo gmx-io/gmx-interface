@@ -8,10 +8,10 @@ import { Address } from "viem";
 
 import { BOTANIX } from "config/chains";
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
-import { useBreakpoints } from "lib/breakpoints";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { getAccountUrl, useENS } from "lib/legacy";
+import { useBreakpoints } from "lib/useBreakpoints";
 import { useNotifyModalState } from "lib/useNotifyModalState";
 import { shortenAddressOrEns } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";

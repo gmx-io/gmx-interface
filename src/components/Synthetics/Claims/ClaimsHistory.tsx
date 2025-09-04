@@ -9,11 +9,11 @@ import { useAccount } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ClaimAction, ClaimType, useClaimCollateralHistory } from "domain/synthetics/claimHistory";
-import { useBreakpoints } from "lib/breakpoints";
 import { downloadAsCsv } from "lib/csv";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { formatTokenAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
+import { useBreakpoints } from "lib/useBreakpoints";
 
 import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
