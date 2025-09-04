@@ -14,7 +14,7 @@ import {
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
-import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl, isHomeSite } from "lib/legacy";
+import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
 import { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
@@ -33,7 +33,6 @@ import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 
-import { HomeRoutes } from "./HomeRoutes";
 import { MainRoutes } from "./MainRoutes";
 
 const Zoom = cssTransition({
@@ -46,7 +45,6 @@ const Zoom = cssTransition({
 
 export function AppRoutes() {
   const { disconnect } = useDisconnect();
-  const isHome = isHomeSite();
   const location = useLocation();
   const history = useHistory();
 
@@ -139,20 +137,17 @@ export function AppRoutes() {
 
   return (
     <>
-      {isHome && <HomeRoutes />}
-      {!isHome && (
-        <div className="App">
-          <div className="App-content">
-            <Header
-              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-              openSettings={openSettings}
-              showRedirectModal={showRedirectModal}
-            />
+      <div className="App">
+        <div className="App-content">
+          <Header
+            disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+            openSettings={openSettings}
+            showRedirectModal={showRedirectModal}
+          />
 
-            <MainRoutes openSettings={openSettings} />
-          </div>
+          <MainRoutes openSettings={openSettings} />
         </div>
-      )}
+      </div>
       <ToastContainer
         limit={1}
         transition={Zoom}
