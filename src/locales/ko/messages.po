@@ -439,7 +439,6 @@ msgid "sell"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
-#: src/config/events.tsx
 msgid "Please migrate your positions to GMX V2."
 msgstr ""
 
@@ -1071,8 +1070,8 @@ msgid "Referral Code"
 msgstr "추천인 코드"
 
 #: src/components/Footer/constants.ts
-msgid "Charts by TradingView"
-msgstr ""
+#~ msgid "Charts by TradingView"
+#~ msgstr ""
 
 #: src/pages/Stake/TotalRewardsCard.tsx
 msgid "GMX Staked Rewards"
@@ -4496,8 +4495,8 @@ msgstr ""
 
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts
-msgid "Media Kit"
-msgstr "미디어 키트"
+#~ msgid "Media Kit"
+#~ msgstr "미디어 키트"
 
 #: src/pages/Home/Home.tsx
 msgid "Reduce Liquidation Risks"
@@ -5421,8 +5420,8 @@ msgid "Start unrealized pnl"
 msgstr ""
 
 #: src/config/events.tsx
-msgid "Increasing positions (market or limit), adding collateral, and swapping on GMX V1 are now disabled. You can still close existing positions."
-msgstr ""
+#~ msgid "Increasing positions (market or limit), adding collateral, and swapping on GMX V1 are now disabled. You can still close existing positions."
+#~ msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
@@ -7058,7 +7057,6 @@ msgstr "수령 주소 입력"
 msgid "Additional reserve required"
 msgstr ""
 
-#: src/components/Footer/constants.ts
 #: src/pages/TermsAndConditions/TermsAndConditions.jsx
 msgid "Terms and Conditions"
 msgstr "약관"
@@ -7581,8 +7579,8 @@ msgid "Staked"
 msgstr "스테이킹 완료"
 
 #: src/components/Footer/Footer.tsx
-msgid "Leave feedback"
-msgstr ""
+#~ msgid "Leave feedback"
+#~ msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
@@ -7656,8 +7654,8 @@ msgstr "주문의 사이즈가 포지션을 초과했습니다. 포지션을 증
 #~ msgstr "구매"
 
 #: src/config/events.tsx
-msgid "Incentives are live for <0>Arbitrum</0> and <1>Avalanche</1> GM pools and V2 trading."
-msgstr ""
+#~ msgid "Incentives are live for <0>Arbitrum</0> and <1>Avalanche</1> GM pools and V2 trading."
+#~ msgstr ""
 
 #: src/pages/Stake/TotalRewardsCard.tsx
 msgid "Total Rewards"
@@ -7692,7 +7690,6 @@ msgstr "입력란에 수량을 입력하면 수수료가 표시됩니다."
 msgid "GLP Vault"
 msgstr ""
 
-#: src/components/Footer/constants.ts
 #: src/pages/ReferralTerms/ReferralTerms.jsx
 msgid "Referral Terms"
 msgstr "추천 약관"
