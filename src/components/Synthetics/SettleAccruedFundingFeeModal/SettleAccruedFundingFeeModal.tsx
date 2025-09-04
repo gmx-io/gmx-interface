@@ -156,7 +156,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
   const [buttonText, buttonDisabled] = useMemo(() => {
     if (isSubmitting) return [t`Settling`, true];
-    if (positionKeys.length === 0) return [t`Select Positions`, true];
+    if (positionKeys.length === 0) return [t`Select positions`, true];
     return [t`Settle`, false];
   }, [isSubmitting, positionKeys.length]);
 
