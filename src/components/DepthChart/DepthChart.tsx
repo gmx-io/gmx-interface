@@ -23,7 +23,9 @@ import type { CategoricalChartFunc } from "recharts/types/chart/generateCategori
 import type { ImplicitLabelType } from "recharts/types/component/Label";
 import type { AxisDomainItem, Margin } from "recharts/types/util/types";
 
+import { colors } from "config/colors";
 import { USD_DECIMALS } from "config/factors";
+import { useTheme } from "context/ThemeContext/ThemeContext";
 import type { MarketInfo } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets/utils";
 import { getNextPositionExecutionPrice } from "domain/synthetics/trade/utils/common";
@@ -39,8 +41,6 @@ import {
 import { sendDepthChartInteractionEvent } from "lib/userAnalytics";
 import { bigMath } from "sdk/utils/bigmath";
 import { getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
-
-import { GREEN, RED } from "components/TVChartContainer/constants";
 
 import { ChartTooltip, ChartTooltipHandle } from "./DepthChartTooltip";
 
@@ -112,6 +112,11 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
     isLeftEmpty,
     isRightEmpty,
   } = useEdgePoints(marketInfo, zoom);
+
+  const theme = useTheme();
+
+  const redColor = colors.red[500][theme.theme];
+  const greenColor = colors.green[500][theme.theme];
 
   const { ticks, marketPriceIndex, xAxisDomain, setTickCount } = useXAxis(marketInfo, {
     leftExecutionPrice: leftMaxExecutionPrice,
@@ -321,14 +326,14 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
       >
         <defs>
           <linearGradient id="colorGreen" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="50%" stopColor={GREEN} stopOpacity={0.5} />
-            <stop offset="100%" stopColor={GREEN} stopOpacity={0} />
+            <stop offset="50%" stopColor={greenColor} stopOpacity={0.5} />
+            <stop offset="100%" stopColor={greenColor} stopOpacity={0} />
           </linearGradient>
         </defs>
         <defs>
           <linearGradient id="colorRed" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="50%" stopColor={RED} stopOpacity={0.5} />
-            <stop offset="100%" stopColor={RED} stopOpacity={0} />
+            <stop offset="50%" stopColor={redColor} stopOpacity={0.5} />
+            <stop offset="100%" stopColor={redColor} stopOpacity={0} />
           </linearGradient>
         </defs>
 
@@ -338,7 +343,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           <>
             <Line
               dataKey="leftTransparentSize"
-              stroke={GREEN}
+              stroke={greenColor}
               opacity={0.3}
               strokeWidth={2}
               dot={isZeroPriceImpact ? <LineDot side="left" /> : false}
@@ -356,7 +361,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
               <ReferenceDot
                 x={leftMinExecutionPrice}
                 y={bigintToNumber(leftMin, USD_DECIMALS)}
-                fill={GREEN}
+                fill={greenColor}
                 shape={<TransparentOpaqueSeparatorDot />}
               />
             )}
@@ -364,7 +369,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
         )}
         <Area
           dataKey="leftOpaqueSize"
-          stroke={GREEN}
+          stroke={greenColor}
           strokeWidth={isZeroPriceImpact ? 0 : 2}
           dot={isZeroPriceImpact ? <AreaDot side="left" /> : false}
           fill="url(#colorGreen)"
@@ -380,7 +385,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
         />
         <Area
           dataKey="rightOpaqueSize"
-          stroke={RED}
+          stroke={redColor}
           strokeWidth={isZeroPriceImpact ? 0 : 2}
           dot={isZeroPriceImpact ? <AreaDot side="right" /> : false}
           fill="url(#colorRed)"
@@ -399,12 +404,12 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
             <ReferenceDot
               x={rightMinExecutionPrice}
               y={bigintToNumber(rightMin, USD_DECIMALS)}
-              fill={RED}
+              fill={redColor}
               shape={<TransparentOpaqueSeparatorDot />}
             />
             <Line
               dataKey="rightTransparentSize"
-              stroke={RED}
+              stroke={redColor}
               strokeWidth={2}
               opacity={0.3}
               dot={isZeroPriceImpact ? <LineDot side="right" /> : false}

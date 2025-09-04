@@ -5014,6 +5014,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-calendar@npm:4.1.0":
+  version: 4.1.0
+  resolution: "@types/react-calendar@npm:4.1.0"
+  dependencies:
+    react-calendar: "*"
+  checksum: 1961517393f90c4339c2752ffb25ab2887eff966e9d286e67175b7b26117445f43ee1ee61f6d16c079779e3bdcfd9185968e9d3b352418656bfe0d572f0459d7
+  languageName: node
+  linkType: hard
+
 "@types/react-date-range@npm:1.4.9":
   version: 1.4.9
   resolution: "@types/react-date-range@npm:1.4.9"
@@ -6074,6 +6083,13 @@ __metadata:
     "@walletconnect/window-getters": ^1.0.1
     tslib: 1.14.1
   checksum: e82aea7195c6fe95c00e87bb38051c5549838c2e8302da94f1afa48206f79f0b620166c9820f847494505d282d1568e2086a1561b0493d2d0a1fa115f9106aef
+  languageName: node
+  linkType: hard
+
+"@wojtekmaj/date-utils@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "@wojtekmaj/date-utils@npm:2.0.2"
+  checksum: d71487d00bb59220cb4a901b414f540f93f13b538e6895ac1a359a7eb7f38b34169ff7b3f4418d157d0178113e61bab75972efcb902ed108b4e771e3160780c6
   languageName: node
   linkType: hard
 
@@ -10109,6 +10125,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"get-user-locale@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "get-user-locale@npm:3.0.0"
+  dependencies:
+    memoize: ^10.0.0
+  checksum: f174946c04d1a48b6657dac9978e106aa44d4aa4d7561aaf454cb9c24fc8e69eb00825c1ed6d192be4f018954ba3f94eba6ab4317caa12006a341daa604b65ed
+  languageName: node
+  linkType: hard
+
 "glob-parent@npm:^5.0.0, glob-parent@npm:^5.1.2, glob-parent@npm:~5.1.0, glob-parent@npm:~5.1.2":
   version: 5.1.2
   resolution: "glob-parent@npm:5.1.2"
@@ -10272,6 +10297,7 @@ __metadata:
     "@types/lodash": 4.14.198
     "@types/node": 18.7.13
     "@types/react": 18.2.64
+    "@types/react-calendar": 4.1.0
     "@types/react-date-range": 1.4.9
     "@types/react-dom": 18.2.21
     "@types/react-router-dom": 5.3.3
@@ -10322,7 +10348,7 @@ __metadata:
     query-string: 7.1.1
     rc-slider: 9.7.5
     react: 18.2.0
-    react-date-range: 2.0.0-alpha.4
+    react-calendar: 6.0.0
     react-dom: 18.2.0
     react-helmet: 6.1.0
     react-hot-toast: 2.2.0
@@ -12030,6 +12056,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"memoize@npm:^10.0.0":
+  version: 10.1.0
+  resolution: "memoize@npm:10.1.0"
+  dependencies:
+    mimic-function: ^5.0.1
+  checksum: 6dad0db067b482da8eb17b4edc6a4ee843b6517690dda72cde7b2acb2cb5ac1a2cad99a56cf3d7854e6fa8b76c1c3d0b1a37cfd0643ec254a460d48345ceac00
+  languageName: node
+  linkType: hard
+
 "merge-stream@npm:^2.0.0":
   version: 2.0.0
   resolution: "merge-stream@npm:2.0.0"
@@ -12114,6 +12149,13 @@ __metadata:
   version: 4.0.0
   resolution: "mimic-fn@npm:4.0.0"
   checksum: 995dcece15ee29aa16e188de6633d43a3db4611bcf93620e7e62109ec41c79c0f34277165b8ce5e361205049766e371851264c21ac64ca35499acb5421c2ba56
+  languageName: node
+  linkType: hard
+
+"mimic-function@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "mimic-function@npm:5.0.1"
+  checksum: eb5893c99e902ccebbc267c6c6b83092966af84682957f79313311edb95e8bb5f39fb048d77132b700474d1c86d90ccc211e99bae0935447a4834eb4c882982c
   languageName: node
   linkType: hard
 
@@ -13396,7 +13438,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:15, prop-types@npm:^15.5.0, prop-types@npm:^15.5.10, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.5.0, prop-types@npm:^15.5.10, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -13662,18 +13704,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-date-range@npm:2.0.0-alpha.4":
-  version: 2.0.0-alpha.4
-  resolution: "react-date-range@npm:2.0.0-alpha.4"
+"react-calendar@npm:*, react-calendar@npm:6.0.0":
+  version: 6.0.0
+  resolution: "react-calendar@npm:6.0.0"
   dependencies:
-    classnames: ^2.2.6
-    prop-types: ^15.7.2
-    react-list: ^0.8.13
-    shallow-equal: ^1.2.1
+    "@wojtekmaj/date-utils": ^2.0.2
+    clsx: ^2.0.0
+    get-user-locale: ^3.0.0
+    warning: ^4.0.0
   peerDependencies:
-    date-fns: 3.0.6 || >=3.0.0
-    react: ^0.14 || ^15.0.0-rc || >=15.0
-  checksum: 03920e1a5e9e9f07e303c55ee04e3ad38841ce06c97f489bea4aed8aba6db82da13baab4b1b12e8c5c07a823f2c7f5273b133f7c1be23cf46da531cef3e8faf5
+    "@types/react": ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 89bf021f6b64bd895d16f3ccd500d57b2055131a8ba498b53cb84370dbbd8a95af6706c5b78f69b85ed3724c40899aa92c00ff41098a180c3f59d62cb5443761
   languageName: node
   linkType: hard
 
@@ -13761,17 +13807,6 @@ __metadata:
     react: ">=17.0.0"
     react-dom: ">=17.0.0"
   checksum: e975b143b001f6e06bf6269498749e174550a86dfd85c255c64750f2adfa0b94d5ac8d79e04eb8b136f94067ee30ce47dae06312f9f1d37219319dc2c658d671
-  languageName: node
-  linkType: hard
-
-"react-list@npm:^0.8.13":
-  version: 0.8.17
-  resolution: "react-list@npm:0.8.17"
-  dependencies:
-    prop-types: 15
-  peerDependencies:
-    react: 0.14 || 15 - 18
-  checksum: ab73693e36e33046e0fbf4aa8046433bc5dd146f06ec9ee273c78149f8f9c093d85f65705c42779d927fc8b5b8826eb3ddb21171830d34197c4f690313eb89d7
   languageName: node
   linkType: hard
 
@@ -14779,13 +14814,6 @@ __metadata:
   bin:
     sha.js: ./bin.js
   checksum: ebd3f59d4b799000699097dadb831c8e3da3eb579144fd7eb7a19484cbcbb7aca3c68ba2bb362242eb09e33217de3b4ea56e4678184c334323eca24a58e3ad07
-  languageName: node
-  linkType: hard
-
-"shallow-equal@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "shallow-equal@npm:1.2.1"
-  checksum: 4f1645cc516e7754c4438db687e1da439a5f29a7dba2ba90c5f88e5708aeb17bc4355ba45cad805b0e95dc898e37d8bf6d77d854919c7512f89939986cff8cd1
   languageName: node
   linkType: hard
 
@@ -16599,6 +16627,15 @@ __metadata:
     typescript:
       optional: true
   checksum: d279f9a31d3baf8525cfb1e286ecf2c14374f48704565375f8818c38645df4a4a8d43f2c7cd1d9208a76c49d77f5914edfa38ddf85e2f5572ad52f49db1583c3
+  languageName: node
+  linkType: hard
+
+"warning@npm:^4.0.0":
+  version: 4.0.3
+  resolution: "warning@npm:4.0.3"
+  dependencies:
+    loose-envify: ^1.0.0
+  checksum: 4f2cb6a9575e4faf71ddad9ad1ae7a00d0a75d24521c193fa464f30e6b04027bd97aa5d9546b0e13d3a150ab402eda216d59c1d0f2d6ca60124d96cd40dfa35c
   languageName: node
   linkType: hard
 
