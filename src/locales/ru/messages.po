@@ -1996,6 +1996,10 @@ msgstr "История Распределения Рибейтов"
 msgid "Accrued Negative Funding Fee"
 msgstr "Накопленная отрицательная комиссия финансирования"
 
+#: src/components/Footer/constants.tsx
+msgid "V1 Interface"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Forfeit profit not checked"
 msgstr "Неустойка за непроверенную прибыль"

@@ -1996,6 +1996,10 @@ msgstr "Historique de distribution des remises"
 msgid "Accrued Negative Funding Fee"
 msgstr "Frais de financement négatifs accumulés"
 
+#: src/components/Footer/constants.tsx
+msgid "V1 Interface"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Forfeit profit not checked"
 msgstr "Renoncer au profit non coché"

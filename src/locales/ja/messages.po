@@ -1996,6 +1996,10 @@ msgstr "リベート分配履歴"
 msgid "Accrued Negative Funding Fee"
 msgstr "蓄積された負のファンディング手数料"
 
+#: src/components/Footer/constants.tsx
+msgid "V1 Interface"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Forfeit profit not checked"
 msgstr "利益喪失がチェックされていません"

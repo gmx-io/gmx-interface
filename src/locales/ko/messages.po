@@ -1996,6 +1996,10 @@ msgstr "소개 보수 분배 내역"
 msgid "Accrued Negative Funding Fee"
 msgstr "누적 음의 펀딩 수수료"
 
+#: src/components/Footer/constants.tsx
+msgid "V1 Interface"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Forfeit profit not checked"
 msgstr "상실 이익이 확인되지 않았습니다."

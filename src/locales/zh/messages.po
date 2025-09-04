@@ -1996,6 +1996,10 @@ msgstr "返利分配历史"
 msgid "Accrued Negative Funding Fee"
 msgstr "累积负资金费用"
 
+#: src/components/Footer/constants.tsx
+msgid "V1 Interface"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Forfeit profit not checked"
 msgstr "未选中没收利润"
