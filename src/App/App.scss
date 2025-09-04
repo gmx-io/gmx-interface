@@ -465,43 +465,6 @@ $app-card-padding: 1.5rem;
   color: var(--color-typography-primary);
 }
 
-.Toastify__toast-container--top-right {
-  right: 3rem !important;
-  top: 3rem !important;
-}
-
-.Toastify__toast-container--bottom-right {
-  bottom: 3rem !important;
-  right: 3rem !important;
-}
-
-@media (max-width: 768px) {
-  .Toastify__toast-container--bottom-right,
-  .Toastify__toast-container--bottom-left {
-    bottom: 0rem !important;
-    & .Toastify__toast {
-      border-bottom-left-radius: 0 !important;
-      border-bottom-right-radius: 0 !important;
-    }
-  }
-}
-
-.Toastify {
-  font-family: "TTHoves", sans-serif;
-  font-size: var(--font-size-body-small);
-}
-
-.Toastify__toast {
-  min-height: 4.65rem;
-  cursor: default;
-  backdrop-filter: blur(100px) !important;
-  box-shadow: 0px 8px 40px -8px #090a1466 !important;
-}
-
-.Toastify__toast-body {
-  padding: 0 0.465rem;
-}
-
 .App-icon {
   vertical-align: middle;
   margin-bottom: 0.465rem;
@@ -765,53 +728,6 @@ button.App-button {
   font-size: 1.7rem;
   width: 90%;
   max-width: 46.5rem;
-}
-
-.Toastify__toast {
-  border-radius: 8px;
-  box-shadow: 0px 8px 40px -8px #090a1466;
-}
-
-.Toastify__toast--error {
-  background: var(--color-red-900) !important;
-  border-bottom: 2px solid var(--color-red-500);
-
-  .link-underline {
-    color: var(--color-white) !important;
-  }
-}
-
-.Toastify__toast--success {
-  background: var(--color-green-900);
-  border-bottom: 2px solid var(--color-green-500);
-}
-
-.Toastify__toast--default {
-  background: var(--color-cold-blue-900);
-}
-
-.Toastify__toast .Toastify__close-button:hover {
-  background: transparent;
-}
-
-.Toastify__close-button {
-  align-self: flex-start;
-  border-radius: 0.4rem;
-  width: 2.1rem;
-  min-width: 2.1rem;
-  height: 2rem;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  transition: none;
-  z-index: 2;
-}
-.Toastify__close-button:hover {
-  background: var(--color-gray-700) 0% 0% no-repeat padding-box;
-}
-.Toastify__toast-body {
-  font: normal normal normal 1.4rem/1.6rem "TTHoves";
-  line-height: 2rem;
 }
 
 .dropdown-backdrop {

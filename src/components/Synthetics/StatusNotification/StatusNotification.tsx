@@ -8,9 +8,9 @@ interface Props {
 const StatusNotification = memo<Props>(function StatusNotification({ children, title }) {
   return (
     <div className="StatusNotification">
-      <div className="StatusNotification-content">
+      <div className="relative z-[1]">
         <div className="StatusNotification-title">{title}</div>
-        <div className="StatusNotification-items">{children}</div>
+        <div className="mt-10">{children}</div>
       </div>
     </div>
   );

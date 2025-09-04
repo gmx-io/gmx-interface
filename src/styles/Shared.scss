@@ -1,3 +1,5 @@
+@import "_toasts.scss";
+
 html,
 body,
 #root {
@@ -381,16 +383,6 @@ button.btn-link:hover .logout-icon {
 
 a:hover .text-red {
   color: var(--error-red-hover);
-}
-
-.Toastify__toast-container {
-  width: 38rem;
-}
-
-@media screen and (max-width: 480px) {
-  .Toastify__toast-container {
-    width: 100vw;
-  }
 }
 
 .gap-right-xs > *:not(:last-child) {
