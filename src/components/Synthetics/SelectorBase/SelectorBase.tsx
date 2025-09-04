@@ -189,13 +189,21 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
         <>
           <Popover.Button
             as="div"
-            className={cx("SelectorBase-button group/selector-base group gap-8", props.handleClassName)}
+            className={cx(
+              "SelectorBase-button group/selector-base group gap-5 tracking-wide gmx-hover:text-blue-300",
+              popoverProps.open && "text-blue-300",
+              props.handleClassName
+            )}
             ref={refs.setReference}
             data-qa={props.qa ? props.qa + "-button" : undefined}
           >
             {props.label}
             <FaChevronDown
-              className={cx("inline-block text-[12px] text-typography-secondary", props.chevronClassName)}
+              className={cx(
+                "inline-block text-[12px] group-gmx-hover/selector-base:text-blue-300",
+                popoverProps.open ? "text-blue-300" : "text-typography-secondary",
+                props.chevronClassName
+              )}
             />
           </Popover.Button>
           {popoverProps.open && (

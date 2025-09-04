@@ -637,11 +637,14 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           topLeftLabel={t`Pay`}
           bottomLeftValue={payUsd !== undefined ? formatUsd(payUsd) : ""}
           bottomRightValue={
-            fromToken && fromToken.balance !== undefined && fromToken.balance > 0n
-              ? formatBalanceAmount(fromToken.balance, fromToken.decimals, fromToken.symbol, {
+            fromToken && fromToken.balance !== undefined && fromToken.balance > 0n ? (
+              <>
+                {formatBalanceAmount(fromToken.balance, fromToken.decimals, undefined, {
                   isStable: fromToken.isStable,
-                })
-              : undefined
+                })}{" "}
+                <span className="text-typography-secondary">{fromToken.symbol}</span>
+              </>
+            ) : undefined
           }
           inputValue={fromTokenInputValue}
           onInputValueChange={handleFromInputTokenChange}
@@ -764,12 +767,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
                 selectedMarketLabel={
                   toToken && (
-                    <>
-                      <span className="inline-flex items-center">
-                        <TokenIcon className="mr-5" symbol={toToken.symbol} importSize={24} displaySize={20} />
-                        <span>{getMarketIndexName({ indexToken: toToken, isSpotOnly: false })}</span>
-                      </span>
-                    </>
+                    <div className="flex items-center">
+                      <TokenIcon className="mr-4" symbol={toToken.symbol} importSize={24} displaySize={20} />
+                      <span>{getMarketIndexName({ indexToken: toToken, isSpotOnly: false })}</span>
+                    </div>
                   )
                 }
                 markets={sortedAllMarkets ?? EMPTY_ARRAY}
@@ -1030,7 +1031,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                           <MarketSelector
                             chainId={chainId}
                             label={t`Market`}
-                            className="-mr-4"
                             selectedIndexName={
                               toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined
                             }
