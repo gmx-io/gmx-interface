@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Address } from "viem";
 
 import {
+  AnyChainId,
   ARBITRUM,
   ARBITRUM_SEPOLIA,
   AVALANCHE,
@@ -377,11 +378,13 @@ function initTrackerState() {
 
     const providers = {
       ...prepareProviders(RPC_PROVIDERS[chainId], { isPublic: true }),
-      ...prepareProviders(privateRpcProviders, { isPublic: false }),
+      ...prepareProviders(privateRpcProviders ?? [], { isPublic: false }),
     };
 
-    let currentPrimaryUrl: string = getIsLargeAccount() ? privateRpcProviders[0] : RPC_PROVIDERS[chainId][0];
-    let currentSecondaryUrl: string = getIsLargeAccount() ? RPC_PROVIDERS[chainId][0] : privateRpcProviders[0];
+    let currentPrimaryUrl: string =
+      (getIsLargeAccount() ? privateRpcProviders?.[0] : RPC_PROVIDERS[chainId][0]) ?? RPC_PROVIDERS[chainId][0];
+    let currentSecondaryUrl: string =
+      (getIsLargeAccount() ? RPC_PROVIDERS[chainId][0] : privateRpcProviders?.[0]) ?? RPC_PROVIDERS[chainId][0];
 
     const storageKey = JSON.stringify(getRpcProviderKey(chainId));
     const storedProviderData = localStorage.getItem(storageKey);
@@ -417,7 +420,9 @@ function initTrackerState() {
   }, {} as RpcTrackerState);
 }
 
-export function getCurrentRpcUrls(chainId: number): { primary: string; secondary: string } {
+export function getCurrentRpcUrls(rawChainId: number): { primary: string; secondary: string } {
+  const chainId = rawChainId as AnyChainId;
+
   if (!RPC_PROVIDERS[chainId]?.length) {
     throw new Error(`No RPC providers found for chainId: ${chainId}`);
   }
@@ -429,7 +434,7 @@ export function getCurrentRpcUrls(chainId: number): { primary: string; secondary
   const privateRpcProviders = getIsLargeAccount() ? PRIVATE_RPC_PROVIDERS[chainId] : FALLBACK_PROVIDERS[chainId];
 
   const primary = trackerState?.[chainId]?.currentPrimaryUrl ?? RPC_PROVIDERS[chainId][0];
-  const secondary = trackerState?.[chainId]?.currentSecondaryUrl ?? privateRpcProviders[0] ?? primary;
+  const secondary = trackerState?.[chainId]?.currentSecondaryUrl ?? privateRpcProviders?.[0] ?? primary;
 
   return { primary, secondary };
 }

@@ -19,7 +19,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 
 type FilterType = "all" | "gmxAccount" | "wallet";
 
-const FILTERS: FilterType[] = ["all", "gmxAccount", "wallet"];
+const FILTERS: FilterType[] = ["all", "wallet", "gmxAccount"];
 
 const FILTER_TITLE_MAP: Record<FilterType, MessageDescriptor> = {
   all: msg`All`,
@@ -109,7 +109,7 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
                 symbol={displayToken.symbol}
                 displaySize={40}
                 importSize={40}
-                chainIdBadge={noChainFilter ? undefined : displayToken.chainId}
+                chainIdBadge={displayToken.chainId}
               />
               <div>
                 <div>{displayToken.symbol}</div>

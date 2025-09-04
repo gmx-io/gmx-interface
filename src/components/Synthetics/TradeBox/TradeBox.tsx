@@ -676,7 +676,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 tokenAddress={fromTokenAddress}
                 isGmxAccount={isFromTokenGmxAccount}
                 onSelectTokenAddress={handleSelectFromTokenAddress}
-                size="l"
                 extendedSortSequence={sortedLongAndShortTokens}
                 qa="collateral-selector"
                 tokensData={tokensData}

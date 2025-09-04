@@ -468,7 +468,6 @@ msgid "Switch to {0}"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
-#: src/config/events.tsx
 msgid "Please migrate your positions to GMX V2."
 msgstr "Пожалуйста, мигрируйте свои позиции на GMX V2."
 
@@ -671,6 +670,10 @@ msgstr "используется для обеспечения ликвидно�
 #: src/components/Exchange/SwapBox.jsx
 msgid "Exit Price"
 msgstr "Цена выхода"
+
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "Your wallet balance on the connected network. Usable for trading on the connected chain."
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V2"
@@ -1465,10 +1468,6 @@ msgstr "Скрыть ошибку"
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Leftover position below 10 USD"
 msgstr "Остаток позиции ниже 10 USD"
-
-#: src/components/BuyCards/BuyCards.tsx
-#~ msgid "GLP"
-#~ msgstr ""
 
 #: src/pages/Stake/Stake.tsx
 msgid "Distributions"
@@ -4916,6 +4915,10 @@ msgstr "<0>Стейкать GMX</0> и зарабатывать {gmxAvgAprText} 
 msgid "Mozaic Finance"
 msgstr "Mozaic Finance"
 
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "Your GMX Account balance, usable for trading on any supported chain.<0/><1/>The balance is based on the connected chain, or the selected settlement chain in settings if not connected to Arbitrum or Avalanche."
+msgstr ""
+
 #: src/pages/Exchange/Exchange.tsx
 msgid "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
 msgstr "Выведено {0} USD из {tokenSymbol} {longOrShortText}."
@@ -5700,10 +5703,6 @@ msgstr "ДОСТУПНАЯ ЛИКВ."
 msgid "Start unrealized pnl"
 msgstr "Начальный нереализованный PnL"
 
-#: src/config/events.tsx
-msgid "Increasing positions (market or limit), adding collateral, and swapping on GMX V1 are now disabled. You can still close existing positions."
-msgstr "Увеличение позиций (рынок или лимит), добавление залога и обмен на GMX V1 теперь отключены. Вы все еще можете закрывать существующие позиции."
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "Одобрение подано! <0>Просмотреть статус.</0>"
@@ -5776,10 +5775,6 @@ msgstr "Разница"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dashboard for GMX referral stats"
 msgstr "Панель для статистики рефералов GMX"
-
-#: src/components/BuyCards/BuyCards.tsx
-#~ msgid "GLP is no longer available for buy"
-#~ msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -6383,7 +6378,6 @@ msgstr "{formattedNetRate} / 1ч"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Balance"
 msgstr "Баланс"
 
@@ -7766,6 +7760,7 @@ msgstr "Подтвердить заявку"
 
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "GMX Account Balance"
 msgstr ""
 
@@ -8126,10 +8121,6 @@ msgstr "Размер ордера больше позиции, будет исп
 msgid "Buy"
 msgstr "Купить"
 
-#: src/config/events.tsx
-msgid "Incentives are live for <0>Arbitrum</0> and <1>Avalanche</1> GM pools and V2 trading."
-msgstr "Стимулы активны для пулов GM на <0>Arbitrum</0> и <1>Avalanche</1> и торговли V2."
-
 #: src/pages/Stake/TotalRewardsCard.tsx
 msgid "Total Rewards"
 msgstr "Общие награды"
@@ -8156,10 +8147,6 @@ msgstr "Ожидаемая комиссия за заем будет взима�
 #: src/components/Glp/GlpSwap.jsx
 msgid "Fees will be shown once you have entered an amount in the order form."
 msgstr "Комиссии будут показаны после ввода суммы в форму ордера."
-
-#: src/pages/Stake/Vesting.tsx
-#~ msgid "GLP Vault"
-#~ msgstr "Хранилище GLP"
 
 #: src/components/Footer/constants.tsx
 #: src/pages/ReferralTerms/ReferralTerms.jsx
@@ -8247,10 +8234,6 @@ msgstr "В вашем аккаунте на {1} недостаточно {0} д�
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Volume"
 msgstr "Общий объем"
-
-#: src/pages/Stake/Vesting.tsx
-#~ msgid "Withdraw from GLP Vault"
-#~ msgstr "Вывод из хранилища GLP"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Image generation error, please refresh and try again."
@@ -8813,6 +8796,10 @@ msgstr "7д"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
 msgstr "Rage Trade"
+
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "GMX Account funding activity."
+msgstr ""
 
 #: src/pages/Home/Home.tsx
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
