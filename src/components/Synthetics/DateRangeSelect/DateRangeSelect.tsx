@@ -108,16 +108,20 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
   const { _, i18n } = useLingui();
   const localeStr = i18n.locale;
 
+  const locale: DateLocale = LOCALE_DATE_LOCALE_MAP[localeStr] ?? LOCALE_DATE_LOCALE_MAP.en;
+
   const buttonText = useMemo(() => {
     if (!startDate || !endDate) {
       return t`All time`;
     }
 
-    const start = format(startDate, "dd MMM yyyy");
-    const end = format(endDate, "dd MMM yyyy");
+    const start = format(startDate, "dd MMM yyyy", {
+      locale,
+    });
+    const end = format(endDate, "dd MMM yyyy", { locale });
 
     return `${start} — ${end}`;
-  }, [startDate, endDate]);
+  }, [startDate, endDate, locale]);
 
   const handlePresetSelect = useCallback(
     (event: React.MouseEvent) => {
@@ -219,19 +223,23 @@ export function DateSelect({
   const { i18n, _ } = useLingui();
   const localeStr = i18n.locale;
 
+  const locale: DateLocale = LOCALE_DATE_LOCALE_MAP[localeStr] ?? LOCALE_DATE_LOCALE_MAP.en;
+
   const buttonText = useMemo(() => {
     if (!date) {
       return t`All time`;
     }
 
-    const start = format(date, "dd MMM yyyy");
+    const start = format(date, "dd MMM yyyy", {
+      locale,
+    });
 
     if (buttonTextPrefix) {
       return `${buttonTextPrefix} ${start}`;
     }
 
     return `${start}`;
-  }, [buttonTextPrefix, date]);
+  }, [buttonTextPrefix, date, locale]);
 
   const handlePresetSelect = useCallback(
     (event: React.MouseEvent) => {
