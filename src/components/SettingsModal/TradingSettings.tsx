@@ -171,6 +171,8 @@ export function TradingSettings({
         <SettingsSection className="mt-2">
           <div className="flex items-center justify-between">
             <TooltipWithPortal
+              className="font-medium"
+              variant="icon"
               content={<Trans>Network for Cross-Chain Deposits and positions.</Trans>}
               handle={<Trans>Settlement Chain</Trans>}
             />
