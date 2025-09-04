@@ -2336,10 +2336,6 @@ msgstr ""
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {Vous avez une commande de déclenchement active qui pourrait affecter cette position.} other {Vous avez # commandes de déclenchement actives qui pourraient affecter cette position.}}"
 
-#: landing/src/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Multichain</0><1>Botanix Support</1><2>GMX Express</2>"
-msgstr ""
-
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order executed"
 msgstr ""
@@ -3961,6 +3957,10 @@ msgstr ""
 msgid "Vesting Status"
 msgstr ""
 
+#: landing/src/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Market Groups</0><1>Net Open Interest</1>"
+msgstr ""
+
 #: landing/src/Home/HeroSection/Features.tsx
 msgid "Guaranteed Liquidity"
 msgstr ""
@@ -4331,6 +4331,10 @@ msgstr ""
 msgid "Exposure to Market Traders’ PnL"
 msgstr ""
 
+#: landing/src/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Cross-Margin </0><1>Cross-Collateral </1>"
+msgstr ""
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Optimal"
 msgstr ""
@@ -4403,10 +4407,6 @@ msgstr "Création de l'ordre..."
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Deposit disabled, pending {0} upgrade"
-msgstr ""
-
-#: landing/src/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Solana Support</0>"
 msgstr ""
 
 #: src/pages/Jobs/Jobs.jsx
@@ -4483,6 +4483,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Create Limit"
+msgstr ""
+
+#: landing/src/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Multichain </0><1>Just in Time Liquidity </1>"
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -4603,10 +4607,6 @@ msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to generate session"
-msgstr ""
-
-#: landing/src/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Real World Assets</0><1>Staking and trading tiers</1><2>Net Open Interest</2>"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
@@ -6403,10 +6403,6 @@ msgstr "Le prix d'exécution de l'ordre tient compte de l'impact sur le prix."
 msgid "Buy GLP or GMX"
 msgstr ""
 
-#: landing/src/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Cross-Collateral</0><1>Cross-Margin</1><2>Market Groups</2><3>Just in Time Liquidity</3>"
-msgstr ""
-
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Max Out"
 msgstr ""
@@ -7211,6 +7207,10 @@ msgstr ""
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed."
 msgstr "échange échoué."
+
+#: landing/src/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Solana Support</0><1>Botanix Support </1><2>GMX Express </2>"
+msgstr ""
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Failed to withdraw {balanceFormatted} to Main Account"
