@@ -468,7 +468,6 @@ msgid "Switch to {0}"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
-#: src/config/events.tsx
 msgid "Please migrate your positions to GMX V2."
 msgstr ""
 
@@ -670,6 +669,10 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "Exit Price"
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "Your wallet balance on the connected network. Usable for trading on the connected chain."
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -1465,10 +1468,6 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Leftover position below 10 USD"
 msgstr ""
-
-#: src/components/BuyCards/BuyCards.tsx
-#~ msgid "GLP"
-#~ msgstr ""
 
 #: src/pages/Stake/Stake.tsx
 msgid "Distributions"
@@ -4913,6 +4912,10 @@ msgstr ""
 msgid "Mozaic Finance"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "Your GMX Account balance, usable for trading on any supported chain.<0/><1/>The balance is based on the connected chain, or the selected settlement chain in settings if not connected to Arbitrum or Avalanche."
+msgstr ""
+
 #: src/pages/Exchange/Exchange.tsx
 msgid "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
 msgstr ""
@@ -5697,10 +5700,6 @@ msgstr ""
 msgid "Start unrealized pnl"
 msgstr ""
 
-#: src/config/events.tsx
-msgid "Increasing positions (market or limit), adding collateral, and swapping on GMX V1 are now disabled. You can still close existing positions."
-msgstr ""
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr ""
@@ -5773,10 +5772,6 @@ msgstr ""
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dashboard for GMX referral stats"
 msgstr ""
-
-#: src/components/BuyCards/BuyCards.tsx
-#~ msgid "GLP is no longer available for buy"
-#~ msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -6380,7 +6375,6 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Balance"
 msgstr ""
 
@@ -7760,6 +7754,7 @@ msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "GMX Account Balance"
 msgstr ""
 
@@ -8120,10 +8115,6 @@ msgstr ""
 msgid "Buy"
 msgstr ""
 
-#: src/config/events.tsx
-msgid "Incentives are live for <0>Arbitrum</0> and <1>Avalanche</1> GM pools and V2 trading."
-msgstr ""
-
 #: src/pages/Stake/TotalRewardsCard.tsx
 msgid "Total Rewards"
 msgstr ""
@@ -8150,10 +8141,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 msgid "Fees will be shown once you have entered an amount in the order form."
 msgstr ""
-
-#: src/pages/Stake/Vesting.tsx
-#~ msgid "GLP Vault"
-#~ msgstr ""
 
 #: src/components/Footer/constants.tsx
 #: src/pages/ReferralTerms/ReferralTerms.jsx
@@ -8241,10 +8228,6 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Volume"
 msgstr ""
-
-#: src/pages/Stake/Vesting.tsx
-#~ msgid "Withdraw from GLP Vault"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Image generation error, please refresh and try again."
@@ -8806,6 +8789,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "GMX Account funding activity."
 msgstr ""
 
 #: src/pages/Home/Home.tsx

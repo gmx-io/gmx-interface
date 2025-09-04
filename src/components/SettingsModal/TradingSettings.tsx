@@ -162,6 +162,8 @@ export function TradingSettings({
         <SettingsSection className="mt-2">
           <div className="flex items-center justify-between">
             <TooltipWithPortal
+              className="font-medium"
+              variant="icon"
               content={<Trans>The settlement chain is the network used for your GMX Account and opening positions. GMX Account balances and positions are specific to the selected network.</Trans>}
               handle={<Trans>Settlement Chain</Trans>}
             />

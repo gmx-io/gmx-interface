@@ -166,20 +166,16 @@ export const FALLBACK_PROVIDERS: Record<AnyChainId, string[]> = {
   [SOURCE_SEPOLIA]: [getAlchemyBaseSepoliaHttpUrl("fallback")],
 };
 
-export const PRIVATE_RPC_PROVIDERS: Record<ContractsChainId, string[]> = {
+export const PRIVATE_RPC_PROVIDERS: Partial<Record<AnyChainId, string[]>> = {
   [ARBITRUM]: [getAlchemyArbitrumHttpUrl("largeAccount")],
   [AVALANCHE]: [getAlchemyAvalancheHttpUrl("largeAccount")],
-  [AVALANCHE_FUJI]: [],
   [BOTANIX]: [getAlchemyBotanixHttpUrl("largeAccount")],
-  [ARBITRUM_SEPOLIA]: [],
 };
 
-export const EXPRESS_RPC_PROVIDERS: Record<ContractsChainId, string[]> = {
+export const EXPRESS_RPC_PROVIDERS: Partial<Record<AnyChainId, string[]>> = {
   [ARBITRUM]: [getAlchemyArbitrumHttpUrl("express")],
   [AVALANCHE]: [getAlchemyAvalancheHttpUrl("express")],
-  [AVALANCHE_FUJI]: [],
   [BOTANIX]: [getAlchemyBotanixHttpUrl("express")],
-  [ARBITRUM_SEPOLIA]: [],
 };
 
 type ConstantName = keyof (typeof constants)[ContractsChainId];

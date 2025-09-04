@@ -6,7 +6,13 @@ import { ImSpinner2 } from "react-icons/im";
 import { encodeFunctionData, zeroAddress } from "viem";
 import { usePublicClient } from "wagmi";
 
-import { CHAIN_ID_PREFERRED_DEPOSIT_TOKEN, getMappedTokenId, isSettlementChain, IStargateAbi } from "config/multichain";
+import {
+  CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
+  FAKE_INPUT_AMOUNT_MAP,
+  getMappedTokenId,
+  isSettlementChain,
+  IStargateAbi,
+} from "config/multichain";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -337,7 +343,8 @@ function ReferralCodeFormMultichain({
 
       const iStargateInstance = new Contract(sourceChainStargateAddress, IStargateAbi, signer) as unknown as IStargate;
 
-      const tokenAmount = numberToBigint(0.02, p.sourceChainTokenId.decimals);
+      const tokenAmount =
+        FAKE_INPUT_AMOUNT_MAP[p.sourceChainTokenId.symbol] ?? numberToBigint(0.02, p.sourceChainTokenId.decimals);
 
       const sendParamsWithRoughAmount = getMultichainTransferSendParams({
         isDeposit: true,
@@ -480,6 +487,9 @@ function ReferralCodeFormMultichain({
 
       const sourceChainStargateAddress = sourceChainTokenId.stargate;
 
+      const value =
+        sourceChainTokenId.address === zeroAddress ? result.data.nativeFee + result.data.amount : result.data.nativeFee;
+
       const txnResult = await sendWalletTransaction({
         chainId: srcChainId,
         to: sourceChainStargateAddress,
@@ -489,7 +499,7 @@ function ReferralCodeFormMultichain({
           functionName: "sendToken",
           args: [sendParams, { nativeFee: result.data.nativeFee, lzTokenFee: 0n }, account],
         }),
-        value: result.data.nativeFee as bigint,
+        value,
         msg: t`Sent referral code transaction`,
       });
 

@@ -468,7 +468,6 @@ msgid "Switch to {0}"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
-#: src/config/events.tsx
 msgid "Please migrate your positions to GMX V2."
 msgstr "ポジションをGMX V2に移行してください。"
 
@@ -671,6 +670,10 @@ msgstr "流動性で"
 #: src/components/Exchange/SwapBox.jsx
 msgid "Exit Price"
 msgstr "手仕舞い価格"
+
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "Your wallet balance on the connected network. Usable for trading on the connected chain."
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V2"
@@ -1465,10 +1468,6 @@ msgstr "エラーを隠す"
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Leftover position below 10 USD"
 msgstr "10 USD未満の残りポジション"
-
-#: src/components/BuyCards/BuyCards.tsx
-#~ msgid "GLP"
-#~ msgstr ""
 
 #: src/pages/Stake/Stake.tsx
 msgid "Distributions"
@@ -4916,6 +4915,10 @@ msgstr "<0>GMXをステーク</0>して{gmxAvgAprText} APRを獲得"
 msgid "Mozaic Finance"
 msgstr "Mozaic Finance"
 
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "Your GMX Account balance, usable for trading on any supported chain.<0/><1/>The balance is based on the connected chain, or the selected settlement chain in settings if not connected to Arbitrum or Avalanche."
+msgstr ""
+
 #: src/pages/Exchange/Exchange.tsx
 msgid "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
 msgstr "{tokenSymbol} {longOrShortText}から{0} USDを出金"
@@ -5700,10 +5703,6 @@ msgstr "利用可能流動性"
 msgid "Start unrealized pnl"
 msgstr "未実現PnL開始"
 
-#: src/config/events.tsx
-msgid "Increasing positions (market or limit), adding collateral, and swapping on GMX V1 are now disabled. You can still close existing positions."
-msgstr "GMX V1でのポジション増加 (市場または指値)、担保追加、スワップは無効化されました。既存ポジションのクローズは可能です。"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "承認が提出されました! <0>状況を確認する</0>"
@@ -5776,10 +5775,6 @@ msgstr "差異"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dashboard for GMX referral stats"
 msgstr "GMXの紹介統計ダッシュボード"
-
-#: src/components/BuyCards/BuyCards.tsx
-#~ msgid "GLP is no longer available for buy"
-#~ msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -6383,7 +6378,6 @@ msgstr "{formattedNetRate} / 1 時間"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Balance"
 msgstr "残高"
 
@@ -7766,6 +7760,7 @@ msgstr "請求を確認"
 
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "GMX Account Balance"
 msgstr ""
 
@@ -8126,10 +8121,6 @@ msgstr "注文サイズがポジションより大きいため、ポジション
 msgid "Buy"
 msgstr "購入"
 
-#: src/config/events.tsx
-msgid "Incentives are live for <0>Arbitrum</0> and <1>Avalanche</1> GM pools and V2 trading."
-msgstr "<0>Arbitrum</0>と<1>Avalanche</1>のGMプールおよびV2取引にインセンティブが適用されています。"
-
 #: src/pages/Stake/TotalRewardsCard.tsx
 msgid "Total Rewards"
 msgstr "総報酬"
@@ -8156,10 +8147,6 @@ msgstr "保留中の借入手数料はこの取引で課金されます。"
 #: src/components/Glp/GlpSwap.jsx
 msgid "Fees will be shown once you have entered an amount in the order form."
 msgstr "注文フォームに額を入力すると手数料が表示されます。"
-
-#: src/pages/Stake/Vesting.tsx
-#~ msgid "GLP Vault"
-#~ msgstr "GLPボールト"
 
 #: src/components/Footer/constants.tsx
 #: src/pages/ReferralTerms/ReferralTerms.jsx
@@ -8247,10 +8234,6 @@ msgstr "{1}のアカウントにこの取引を送信するための{0}が不足
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Volume"
 msgstr "総取引量"
-
-#: src/pages/Stake/Vesting.tsx
-#~ msgid "Withdraw from GLP Vault"
-#~ msgstr "GLPボールトから出金"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Image generation error, please refresh and try again."
@@ -8813,6 +8796,10 @@ msgstr "7日"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
 msgstr "Rage Trade"
+
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "GMX Account funding activity."
+msgstr ""
 
 #: src/pages/Home/Home.tsx
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"

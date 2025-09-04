@@ -218,7 +218,14 @@ function SettlementChainBalance() {
       <div className="h-[0.5px] bg-slate-600" />
       <div>
         <SyntheticsInfoRow
-          label={t`Wallet`}
+          label={
+            <TooltipWithPortal
+              content={t`Your wallet balance on the connected network. Usable for trading on the connected chain.`}
+              variant="icon"
+            >
+              <Trans>Wallet</Trans>
+            </TooltipWithPortal>
+          }
           className="py-5"
           value={
             walletUsd !== undefined ? (
@@ -236,7 +243,22 @@ function SettlementChainBalance() {
           }
         />
         <SyntheticsInfoRow
-          label={<Trans>GMX Account Balance</Trans>}
+          label={
+            <TooltipWithPortal
+              content={
+                <Trans>
+                  Your GMX Account balance, usable for trading on any supported chain.
+                  <br />
+                  <br />
+                  The balance is based on the connected chain, or the selected settlement chain in settings if not
+                  connected to Arbitrum or Avalanche.
+                </Trans>
+              }
+              variant="icon"
+            >
+              <Trans>GMX Account Balance</Trans>
+            </TooltipWithPortal>
+          }
           className="py-5"
           value={
             gmxAccountUsd !== undefined ? (
@@ -265,7 +287,7 @@ function MultichainBalance() {
   return (
     <div className="flex flex-col gap-8 rounded-8 bg-fill-surfaceElevated50 p-12">
       <div className="text-body-small text-typography-secondary">
-        <Trans>Balance</Trans>
+        <Trans>GMX Account Balance</Trans>
       </div>
       <Balance usd={gmxAccountUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
     </div>
@@ -391,7 +413,9 @@ const FundingHistorySection = () => {
     <div className="flex grow flex-col gap-12 overflow-y-hidden">
       <div className="flex items-center justify-between px-20">
         <div className="text-body-large">
-          <Trans>Funding Activity</Trans>
+          <TooltipWithPortal content={<Trans>GMX Account funding activity.</Trans>} variant="icon">
+            <Trans>Funding Activity</Trans>
+          </TooltipWithPortal>
         </div>
       </div>
       {Boolean(fundingHistory?.length) && (
