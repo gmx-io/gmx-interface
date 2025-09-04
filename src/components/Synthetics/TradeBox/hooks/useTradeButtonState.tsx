@@ -447,7 +447,7 @@ export function useTradeboxButtonState({
         ...commonState,
         text: (
           <>
-            {t`Express params loading`}
+            {t`Loading Express params`}
             <ImSpinner2 className="ml-4 animate-spin" />
           </>
         ),

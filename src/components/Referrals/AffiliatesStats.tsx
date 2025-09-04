@@ -243,7 +243,7 @@ function AffiliatesStats({
         <ReferralInfoCard
           value={`$\u200a${getUSDValue(currentReferralsData?.affiliateTotalStats?.affiliateRebateUsd)}`}
           label={t`Rebates`}
-          labelTooltipText={t`Rebates earned by this account as an affiliate.`}
+          labelTooltipText={t`Rebates earned as an affiliate.`}
           tooltipContent={
             <>
               <StatsTooltipRow
