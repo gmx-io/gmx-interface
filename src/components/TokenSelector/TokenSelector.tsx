@@ -298,7 +298,7 @@ export default function TokenSelector(props: Props) {
             {showSymbolImage && (
               <TokenIcon className="mr-4" symbol={tokenInfo.symbol} importSize={24} displaySize={20} />
             )}
-            <span>{showTokenName ? tokenInfo.name : tokenInfo.symbol}</span>
+            {showTokenName ? tokenInfo.name : tokenInfo.symbol}
           </span>
         )}
         <FaChevronDown className="w-12 text-typography-secondary group-hover:text-blue-300" />

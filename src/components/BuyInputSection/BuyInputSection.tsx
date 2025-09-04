@@ -12,7 +12,7 @@ type Props = {
   bottomLeftValue?: string;
   isBottomLeftValueMuted?: boolean;
   bottomRightLabel?: string;
-  bottomRightValue?: string;
+  bottomRightValue?: ReactNode;
   onClickBottomRightLabel?: () => void;
   topRightLabel?: string;
   topRightValue?: ReactNode;
@@ -209,7 +209,7 @@ export default function BuyInputSection(props: Props) {
             )}
           </div>
 
-          <div className="shrink-0 text-20">{children}</div>
+          <div className="shrink-0 text-20 leading-1 tracking-wide">{children}</div>
         </div>
 
         {(bottomLeftValue || bottomRightValue || (onClickMax && maxButtonPosition === "bottom-right")) && (

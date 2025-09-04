@@ -211,7 +211,7 @@ export function MarketSelector({
       </SlideModal>
       <div
         className={cx(
-          "group/hoverable group flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-300"
+          "group/hoverable group flex cursor-pointer items-center gap-4 whitespace-nowrap tracking-wide hover:text-blue-300"
         )}
         onClick={handleClick}
         data-qa="market-selector"

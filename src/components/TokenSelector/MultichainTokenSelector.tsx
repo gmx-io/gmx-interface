@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { BiChevronDown } from "react-icons/bi";
+import { FaChevronDown } from "react-icons/fa6";
 
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import type { TokenChainData } from "domain/multichain/types";
@@ -26,7 +26,6 @@ type Props = {
   srcChainId: SourceChainId | undefined;
 
   label?: string;
-  size?: "m" | "l";
   className?: string;
 
   tokenAddress: string;
@@ -52,7 +51,6 @@ export function MultichainTokenSelector({
   selectedTokenLabel,
   extendedSortSequence,
   footerContent,
-  size = "m",
   qa,
   onSelectTokenAddress: propsOnSelectTokenAddress,
   tokenAddress,
@@ -133,28 +131,12 @@ export function MultichainTokenSelector({
     }
   }, [isGmxAccountEmpty, isModalVisible, setSearchKeyword, srcChainId]);
 
-  // useEffect(() => {
-  //   if (isModalVisible) {
-  //     setSearchKeyword("");
-  //   }
-  // }, [isModalVisible]);
-
   if (!token) {
     return null;
   }
 
   return (
-    <div
-      className={cx(
-        "TokenSelector",
-        {
-          "-mr-2": size === "m",
-          "text-h2 -mr-5": size === "l",
-        },
-        className
-      )}
-      onClick={(event) => event.stopPropagation()}
-    >
+    <div className={cx("TokenSelector", className)} onClick={(event) => event.stopPropagation()}>
       <SlideModal
         qa={qa + "-modal"}
         className="TokenSelector-modal text-body-medium"
@@ -217,22 +199,23 @@ export function MultichainTokenSelector({
       </SlideModal>
       <div
         data-qa={qa}
-        className="flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
+        className="group/hoverable group flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-300"
         onClick={() => setIsModalVisible(true)}
       >
         {selectedTokenLabel || (
           <span className="inline-flex items-center">
             <TokenIcon
-              className="mr-5"
+              className="mr-4"
               symbol={token.symbol}
               importSize={24}
               displaySize={20}
               chainIdBadge={isGmxAccount ? 0 : undefined}
             />
-            <span>{token.symbol}</span>
+            {token.symbol}
           </span>
         )}
-        <BiChevronDown className="text-body-large" />
+
+        <FaChevronDown className="w-12 text-typography-secondary group-hover:text-[inherit]" />
       </div>
     </div>
   );

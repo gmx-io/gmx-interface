@@ -204,6 +204,9 @@ const config: Config = {
       padding: {
         adaptive: "var(--padding-adaptive)",
       },
+      letterSpacing: {
+        wide: "0.02em",
+      },
     },
   },
   plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin, injectAdaptiveVariablesPlugin],
