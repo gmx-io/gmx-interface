@@ -35,7 +35,7 @@ export function FaqSection() {
                 Liquidity providers receive 63% of all trading and liquidation fees. By depositing WBTC, ETH, USDC, or
                 other supported assets, you can earn up to ~35% annualized yield on the largest pools.
               </p>
-              <ul className="list-disc pl-12">
+              <ul className="list-disc pl-14">
                 <li> GM Pools – choose single-market exposure for targeted returns</li>
                 <li> GLV Vaults – auto-diversify across markets for a hands-off strategy</li>
               </ul>
@@ -47,7 +47,7 @@ export function FaqSection() {
           <FaqItem title={t`How do I get started on GMX?`}>
             <Trans>
               <p>No KYC, no lengthy onboarding:</p>
-              <ul className="list-decimal pl-12">
+              <ul className="list-decimal pl-14">
                 <li>Connect any EVM wallet (MetaMask, Rabby, Coinbase Wallet, Ledger, etc.)</li>
                 <li>Select a supported network where you have funds</li>
                 <li>Trade</li>

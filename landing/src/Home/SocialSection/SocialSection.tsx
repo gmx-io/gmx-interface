@@ -14,20 +14,20 @@ export function SocialSection() {
     () => [
       {
         ...SOCIAL_MAP.Discord,
-        value: shortFormat(777_122_122),
+        value: shortFormat(6_100),
       },
       {
         ...SOCIAL_MAP.Twitter,
-        value: shortFormat(777_00),
+        value: shortFormat(230_000),
       },
       {
         ...SOCIAL_MAP.Telegram,
-        value: shortFormat(100_000_000),
+        value: shortFormat(10_000),
       },
 
       {
         ...SOCIAL_MAP.Substack,
-        value: shortFormat(60_000),
+        value: shortFormat(1_500),
       },
       {
         ...SOCIAL_MAP.Github,
