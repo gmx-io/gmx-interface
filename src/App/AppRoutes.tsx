@@ -14,7 +14,7 @@ import {
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
-import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl, isHomeSite } from "lib/legacy";
+import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
 import { useHashQueryParams } from "lib/useHashQueryParams";
@@ -34,8 +34,7 @@ import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 
-import { HomeRoutes } from "./HomeRoutes";
-import { MainRoutes } from "./MainRoutes";
+import { V1Routes } from "./V1Routes";
 
 const Zoom = cssTransition({
   enter: "zoomIn",
@@ -47,7 +46,6 @@ const Zoom = cssTransition({
 
 export function AppRoutes() {
   const { disconnect } = useDisconnect();
-  const isHome = isHomeSite();
   const location = useLocation();
   const history = useHistory();
 
@@ -148,8 +146,7 @@ export function AppRoutes() {
             openSettings={openSettings}
             showRedirectModal={showRedirectModal}
           />
-          {isHome && <HomeRoutes showRedirectModal={showRedirectModal} />}
-          {!isHome && <MainRoutes openSettings={openSettings} />}
+          <V1Routes openSettings={openSettings} />
         </div>
       </div>
       <ToastContainer

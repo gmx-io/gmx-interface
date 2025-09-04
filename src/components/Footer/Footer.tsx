@@ -1,19 +1,15 @@
-import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useMedia } from "react-use";
 
 import { getAppBaseUrl, isHomeSite, shouldShowRedirectModal } from "lib/legacy";
-import { userAnalytics } from "lib/userAnalytics";
-import { LandingPageFooterMenuEvent } from "lib/userAnalytics/types";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
 import logoImg from "img/logo_GMX.svg";
 
-import { SOCIAL_LINKS, getFooterLinks } from "./constants";
+import { getFooterLinks } from "./constants";
 import { UserFeedbackModal } from "../UserFeedbackModal/UserFeedbackModal";
 
 type Props = {
@@ -95,42 +91,13 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
               </NavLink>
             );
           })}
-          {!isHome && (
-            <div className={linkClassName} onClick={() => setIsUserFeedbackModalVisible(true)}>
-              <Trans>Leave feedback</Trans>
-            </div>
-          )}
         </div>
         <div
           className={cx("flex gap-24", {
             "justify-center": isMobile,
             "justify-end": !isMobile,
           })}
-        >
-          {SOCIAL_LINKS.map((platform) => {
-            return (
-              <TrackingLink
-                key={platform.name}
-                onClick={async () => {
-                  await userAnalytics.pushEvent<LandingPageFooterMenuEvent>(
-                    {
-                      event: "LandingPageAction",
-                      data: {
-                        action: "FooterMenu",
-                        button: platform.name,
-                      },
-                    },
-                    { instantSend: true }
-                  );
-                }}
-              >
-                <ExternalLink href={platform.link} className="h-24 w-24">
-                  <img src={platform.icon} alt={platform.name} width="100%" />
-                </ExternalLink>
-              </TrackingLink>
-            );
-          })}
-        </div>
+        ></div>
       </div>
       {!isHome && (
         <UserFeedbackModal isVisible={isUserFeedbackModalVisible} setIsVisible={setIsUserFeedbackModalVisible} />
