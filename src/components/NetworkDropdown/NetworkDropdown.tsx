@@ -101,7 +101,11 @@ function DesktopDropdown({
                 <NavIcons chainId={chainId} open={open} />
               </Button>
             </Menu.Button>
-            <Menu.Items as="div" className="menu-items network-dropdown-items" data-qa="networks-dropdown">
+            <Menu.Items
+              as="div"
+              className="menu-items network-dropdown-items rounded-8 border-1/2 border-slate-600"
+              data-qa="networks-dropdown"
+            >
               <div className="p-12 pb-8 text-13 font-medium text-typography-secondary">
                 <Trans>Network</Trans>
               </div>
@@ -169,7 +173,7 @@ function NetworkMenuItem({ network, chainId }: { network: NetworkOption; chainId
         </div>
         <div className="network-dropdown-menu-item-img">
           {chainId === network.value && (
-            <div className={"h-10 w-10 rounded-full border-[2.5px] border-green-600 bg-green-500"} />
+            <div className={"h-8 w-8 rounded-full border-[2.5px] border-green-600 bg-green-500"} />
           )}
         </div>
       </div>
