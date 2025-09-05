@@ -1,8 +1,9 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
+import { memo } from "react";
 
-import { ARBITRUM, AVALANCHE } from "config/chains";
-import { getIcon } from "config/icons";
+import { AnyChainId, getChainName } from "config/chains";
+import { getChainIcon } from "config/icons";
 import { getPageTitle } from "lib/legacy";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
@@ -14,22 +15,24 @@ import { communityProjects, dashboardProjects, gmxPages, integrations, telegramG
 
 import "./Ecosystem.css";
 
-const NETWORK_ICONS = {
-  [ARBITRUM]: getIcon(ARBITRUM, "network"),
-  [AVALANCHE]: getIcon(AVALANCHE, "network"),
-};
-
-const NETWORK_ICON_ALTS = {
-  [ARBITRUM]: "Arbitrum Icon",
-  [AVALANCHE]: "Avalanche Icon",
-};
-
-const getNetworkIconStyle = (index: number) => {
-  return {
-    right: `${16 * index}px`,
-    zIndex: index + 1,
-  };
-};
+const Chains = memo(function Chains({ chainIds }: { chainIds: AnyChainId[] }) {
+  return (
+    <div className="flex shrink-0">
+      {chainIds.map((chainId, index, array) => (
+        <img
+          key={chainId}
+          className="-ml-4 w-20 first-of-type:ml-0"
+          width="20"
+          src={getChainIcon(chainId)}
+          alt={getChainName(chainId)}
+          // Safety: this chain ids never change + memo makes so that this component never re-renders
+          // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+          style={{ zIndex: array.length - index }}
+        />
+      ))}
+    </div>
+  );
+});
 
 export default function Ecosystem() {
   const { _ } = useLingui();
@@ -47,17 +50,7 @@ export default function Ecosystem() {
                   <div className="App-card" key={item.title.id}>
                     <div className="App-card-title">
                       {_(item.title)}
-                      <div className="App-card-title-icon">
-                        {item.chainIds.toReversed().map((network, index) => (
-                          <img
-                            width="20"
-                            key={network}
-                            src={NETWORK_ICONS[network]}
-                            alt={NETWORK_ICON_ALTS[network]}
-                            style={getNetworkIconStyle(index)}
-                          />
-                        ))}
-                      </div>
+                      <Chains chainIds={item.chainIds} />
                     </div>
                     <div className="App-card-divider"></div>
                     <div className="App-card-content">
@@ -98,17 +91,7 @@ export default function Ecosystem() {
                   <div className="App-card" key={item.title.id}>
                     <div className="App-card-title">
                       {_(item.title)}
-                      <div className="App-card-title-icon">
-                        {item.chainIds.toReversed().map((network, index) => (
-                          <img
-                            width="20"
-                            key={network}
-                            src={NETWORK_ICONS[network]}
-                            alt={NETWORK_ICON_ALTS[network]}
-                            style={getNetworkIconStyle(index)}
-                          />
-                        ))}
-                      </div>
+                      <Chains chainIds={item.chainIds} />
                     </div>
                     <div className="App-card-divider" />
                     <div className="App-card-content">
@@ -157,17 +140,7 @@ export default function Ecosystem() {
                   <div className="App-card" key={item.title.id}>
                     <div className="App-card-title">
                       {_(item.title)}
-                      <div className="App-card-title-icon">
-                        {item.chainIds.toReversed().map((network, index) => (
-                          <img
-                            width="20"
-                            key={network}
-                            src={NETWORK_ICONS[network]}
-                            alt={NETWORK_ICON_ALTS[network]}
-                            style={getNetworkIconStyle(index)}
-                          />
-                        ))}
-                      </div>
+                      <Chains chainIds={item.chainIds} />
                     </div>
 
                     <div className="App-card-divider"></div>
@@ -207,11 +180,7 @@ export default function Ecosystem() {
                   <div key={item.title.id} className="App-card">
                     <div className="App-card-title">
                       {_(item.title)}
-                      <div className="App-card-title-icon">
-                        {item.chainIds.toReversed().map((network) => (
-                          <img width="20" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
-                        ))}
-                      </div>
+                      <Chains chainIds={item.chainIds} />
                     </div>
                     <div className="App-card-divider"></div>
                     <div className="App-card-content">
