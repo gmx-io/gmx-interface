@@ -4,15 +4,9 @@
   grid-gap: 1.5rem;
 }
 
-.Ecosystem-projects .App-card-title-icon {
-  position: relative;
-}
-
-.Ecosystem-projects .App-card-title-icon img {
-  position: absolute;
-  max-width: 20px;
-  top: 50%;
-  transform: translateY(-50%);
+.Ecosystem-projects .App-card-title {
+  align-items: start;
+  gap: 4px;
 }
 
 @media (max-width: 1000px) {

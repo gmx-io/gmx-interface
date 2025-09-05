@@ -485,7 +485,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
       />
     );
 
-  return <span className="numbers">{rank}</span>;
+  return <span className="font-medium text-typography-secondary numbers">{rank}</span>;
 });
 
 const LeaderboardPnlTooltipContent = memo(({ position }: { position: LeaderboardPosition }) => {

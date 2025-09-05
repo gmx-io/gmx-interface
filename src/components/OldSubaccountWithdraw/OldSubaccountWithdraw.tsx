@@ -22,8 +22,6 @@ import { TransactionStatus } from "components/TransactionStatus/TransactionStatu
 
 import IconInfo from "img/ic_info.svg?react";
 
-import "./OldSubaccountWithdraw.scss";
-
 export function OldSubaccountWithdraw() {
   const { account } = useWallet();
   const { chainId } = useChainId();
