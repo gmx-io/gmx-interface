@@ -239,7 +239,7 @@ export function GmPoolsSelectorForGlvMarket({
           ))}
           {filteredOptions.length === 0 && (
             <div className="text-body-medium px-adaptive text-typography-secondary">
-              <Trans>No pools matched.</Trans>
+              <Trans>No pools matched</Trans>
             </div>
           )}
         </VerticalScrollFadeContainer>

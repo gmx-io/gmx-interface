@@ -81,9 +81,6 @@ export function TradingSettings({
                 description={<Trans>On-chain signing for every transaction.</Trans>}
                 info={
                   <Trans>
-                    Your wallet, your keys.
-                    <br />
-                    <br />
                     You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas
                     payments in {nativeTokenSymbol}.
                   </Trans>
@@ -99,9 +96,6 @@ export function TradingSettings({
               description={<Trans>High execution reliability using premium RPCs.</Trans>}
               info={
                 <Trans>
-                  Your wallet, your keys.
-                  <br />
-                  <br />
                   You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even
                   during network congestion. Gas payments in {gasPaymentTokensText}.
                 </Trans>
@@ -124,9 +118,6 @@ export function TradingSettings({
               disabled={isExpressTradingDisabled}
               info={
                 <Trans>
-                  Your wallet, your keys.
-                  <br />
-                  <br />
                   GMX executes transactions for you without individual signing, providing a seamless, CEX-like
                   experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas
                   payments in {gasPaymentTokensText}.
@@ -173,7 +164,7 @@ export function TradingSettings({
             <TooltipWithPortal
               className="font-medium"
               variant="icon"
-              content={<Trans>Network for Cross-Chain Deposits and positions.</Trans>}
+              content={<Trans>The settlement chain is the network used for your GMX Account and opening positions. GMX Account balances and positions are specific to the selected network.</Trans>}
               handle={<Trans>Settlement Chain</Trans>}
             />
             <DropdownSelector
@@ -239,7 +230,7 @@ export function TradingSettings({
             description={
               <div>
                 <Trans>
-                  The Max Network Fee is set to a higher value to handle potential increases in gas price during order
+                  The max network fee is set to a higher value to handle potential increases in gas price during order
                   execution. Any excess network fee will be refunded to your account when the order is executed. Only
                   applicable to GMX V2.
                 </Trans>

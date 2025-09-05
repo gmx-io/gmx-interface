@@ -59,7 +59,7 @@ export function AllowedSlippageRow({ slippageInputId }: { slippageInputId: strin
         defaultValue={savedAllowedSlippage}
         value={allowedSlippage}
         highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
-        highValueWarningText={t`Slippage is too high`}
+        highValueWarningText={t`Slippage is too high.`}
         inputId={slippageInputId}
       />
     </SyntheticsInfoRow>

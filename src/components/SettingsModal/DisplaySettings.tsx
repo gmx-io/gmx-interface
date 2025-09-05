@@ -22,11 +22,11 @@ export function DisplaySettings() {
         </ToggleSwitch>
 
         <ToggleSwitch isChecked={settings.isPnlInLeverage} setIsChecked={settings.setIsPnlInLeverage}>
-          <Trans>Include PnL In Leverage Display</Trans>
+          <Trans>Include PnL in Leverage Display</Trans>
         </ToggleSwitch>
 
         <ToggleSwitch isChecked={settings.shouldShowPositionLines} setIsChecked={settings.setShouldShowPositionLines}>
-          <Trans>Show positions on chart</Trans>
+          <Trans>Show Positions on Chart</Trans>
         </ToggleSwitch>
       </SettingsSection>
       <SettingsSection>

@@ -23,7 +23,7 @@ const FILTERS: FilterType[] = ["all", "wallet", "gmxAccount"];
 
 const FILTER_TITLE_MAP: Record<FilterType, MessageDescriptor> = {
   all: msg`All`,
-  gmxAccount: msg`Gmx Account`,
+  gmxAccount: msg`GMX Account`,
   wallet: msg`Wallet`,
 };
 

@@ -93,7 +93,7 @@ function renderAllowedSlippage(setAllowedSlippage, defaultSlippage, allowedSlipp
         value={allowedSlippage}
         defaultValue={defaultSlippage}
         highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
-        highValueWarningText={t`Slippage is too high`}
+        highValueWarningText={t`Slippage is too high.`}
       />
     </ExchangeInfoRow>
   );

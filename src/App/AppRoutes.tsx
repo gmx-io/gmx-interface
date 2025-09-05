@@ -22,6 +22,7 @@ import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalle
 import useRouteQuery from "lib/useRouteQuery";
 import useSearchParams from "lib/useSearchParams";
 import { switchNetwork } from "lib/wallets";
+import HomeFooter from "pages/Home/HomeFooter";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
 import { CloseToastButton } from "components/CloseToastButton/CloseToastButton";
@@ -136,9 +137,10 @@ export function AppRoutes() {
     <>
       <div className="App w-full">
         {isHome ? (
-          <div className="App-content">
+          <div className="bg-[#08091b]">
             <Header openSettings={openSettings} showRedirectModal={showRedirectModal} />
             <HomeRoutes showRedirectModal={showRedirectModal} />
+            <HomeFooter />
           </div>
         ) : (
           <MainRoutes openSettings={openSettings} />

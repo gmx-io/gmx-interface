@@ -1130,7 +1130,7 @@ export default function PositionSeller(props) {
                     value={allowedSlippage}
                     defaultValue={savedSlippageAmount}
                     highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
-                    highValueWarningText={t`Slippage is too high`}
+                    highValueWarningText={t`Slippage is too high.`}
                   />
                 </ExchangeInfoRow>
               </div>

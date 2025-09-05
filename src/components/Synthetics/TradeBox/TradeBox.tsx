@@ -989,8 +989,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 {isSwap && isLimit && !isTwap && (
                   <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
                     <Trans>
-                      The actual trigger price at which order gets filled will depend on fees and price impact at the
-                      time of execution to guarantee that you receive the minimum receive amount.
+                      The actual execution price may differ from the set limit price due to fees and price impact. This ensures that you receive at least the minimum receive amount.
                     </Trans>
                   </AlertInfoCard>
                 )}
