@@ -95,14 +95,14 @@ export function GmxCard({
         left={
           <>
             <AppCardSection>
-              <div className="flex items-center justify-between">
-                <div className="App-card-title-mark">
+              <div className="flex flex-wrap items-center justify-between gap-8">
+                <div className="flex items-center gap-8">
                   <div className="App-card-title-mark-icon">
                     <img src={currentIcons.gmx} width="40" alt="GMX Token Icon" />
                   </div>
-                  <div className="App-card-title-mark-info">
-                    <div className="App-card-title-mark-title">GMX</div>
-                    <div className="App-card-title-mark-subtitle">GMX</div>
+                  <div>
+                    <div className="text-body-medium font-medium">GMX</div>
+                    <div className="text-body-small text-typography-secondary">GMX</div>
                   </div>
                 </div>
                 <div className="h-32">
