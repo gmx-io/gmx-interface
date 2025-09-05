@@ -81,7 +81,9 @@ export function ParseTransactionPage() {
   /** Default is Arbitrum to prevent page crashes in hooks, wrong networks handled on :207 */
   const chainId = NETWORKS[network as string] ?? ARBITRUM;
 
-  const client = usePublicClient({});
+  const client = usePublicClient({
+    chainId,
+  });
 
   const { data, isLoading, error } = useSWR([chainId, tx], async function fetchTransaction() {
     try {

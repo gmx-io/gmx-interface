@@ -418,6 +418,10 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
     "0x6EeE8098dBC106aEde99763FA5F955A5bBc42C50": {
       enabled: true,
     },
+    // WLFI/USD [WETH-USDC]
+    "0xb3588455858a49D3244237CEe00880CcB84b91Dd": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
@@ -486,6 +490,10 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
     },
     // PUMP/USD [WAVAX-USDC]
     "0x94cE6F65188a92F297C7f0A5A7B3cAd9013450F8": {
+      enabled: true,
+    },
+    // WLFI/USD [WAVAX-USDC]
+    "0x1cb9932CE322877A2B86489BD1aA3C3CfF879F0d": {
       enabled: true,
     },
   },
