@@ -780,12 +780,14 @@ function PositionItemOrdersLarge({
         handle={
           <>
             <Trans>Orders ({ordersWithErrors.length})</Trans>
-            <div
-              className={cx("relative top-3 size-6 rounded-full", {
-                "bg-yellow-300": ordersWarningsList.length > 0 && !ordersErrorList.length,
-                "bg-red-500": ordersErrorList.length > 0,
-              })}
-            />
+            {ordersWarningsList.length > 0 || ordersErrorList.length > 0 ? (
+              <div
+                className={cx("relative top-3 size-6 rounded-full", {
+                  "bg-yellow-300": ordersWarningsList.length > 0 && !ordersErrorList.length,
+                  "bg-red-500": ordersErrorList.length > 0,
+                })}
+              />
+            ) : null}
           </>
         }
         position="bottom"

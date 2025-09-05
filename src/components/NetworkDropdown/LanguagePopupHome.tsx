@@ -5,7 +5,7 @@ import { useCallback, useState } from "react";
 
 import { isHomeSite } from "lib/legacy";
 
-import LanguageIcon from "img/ic_language24.svg?react";
+import LanguageIcon from "img/ic_language.svg?react";
 
 import LanguageModalContent from "./LanguageModalContent";
 import ModalWithPortal from "../Modal/ModalWithPortal";

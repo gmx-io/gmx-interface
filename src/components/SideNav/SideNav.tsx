@@ -31,8 +31,8 @@ function SideNav({ className }: { className?: string }) {
 
   return (
     <nav
-      className={cx("flex h-full shrink-0 flex-col bg-slate-950 pb-8", className, {
-        "w-[184px] max-xl:w-[144px]": !isCollapsed,
+      className={cx("flex h-full shrink-0 flex-col bg-slate-950", className, {
+        "w-[172px] max-xl:w-[144px]": !isCollapsed,
       })}
     >
       <div className={cx("flex w-full", { "justify-center": isCollapsed })}>
@@ -87,11 +87,11 @@ export interface NavItemProps {
 
 export function NavItem({ icon, label, isActive = false, isCollapsed = false, onClick, to, external }: NavItemProps) {
   const button = (
-    <button className={cx("group cursor-pointer select-none py-4", { "w-full": !isCollapsed })} onClick={onClick}>
+    <button className={cx("group cursor-pointer select-none py-1", { "w-full": !isCollapsed })} onClick={onClick}>
       <div
         className={cx(
           `relative flex cursor-pointer items-center gap-8
-          rounded-8 px-16 py-8 text-typography-secondary transition-colors group-hover:bg-blue-400/20 group-hover:text-blue-400
+          rounded-8 px-12 py-10 text-typography-secondary transition-colors group-hover:bg-blue-400/20 group-hover:text-blue-400
           dark:group-hover:bg-slate-700 dark:group-hover:text-typography-primary`,
           {
             "bg-blue-400/20 !text-blue-400 dark:bg-slate-700 dark:!text-typography-primary": isActive,
@@ -99,7 +99,7 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
           }
         )}
       >
-        <div className="flex size-24 h-24 w-24 shrink-0 items-center justify-center [&>svg]:w-full">{icon}</div>
+        <div className="flex size-20 shrink-0 items-center justify-center [&>svg]:w-full">{icon}</div>
         <span className={cx("text-body-medium font-medium tracking-[-1.2%]", { hidden: isCollapsed })}>{label}</span>
 
         <div

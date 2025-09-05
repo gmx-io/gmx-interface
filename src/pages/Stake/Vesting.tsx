@@ -213,7 +213,7 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
         setIsVisible={setIsAffiliateClaimModalVisible}
         totalVesterRewards={vestingData?.affiliateVesterClaimable ?? 0n}
       />
-      <div>
+      <div className="flex flex-col gap-16">
         <PageTitle
           title={t`Vest`}
           subtitle={

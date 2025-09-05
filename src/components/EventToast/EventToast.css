@@ -31,6 +31,7 @@
   border-radius: 8px;
   border: 0.5px solid var(--color-slate-600);
   width: 35rem;
+  mix-blend-mode: overlay;
 }
 .single-toast header {
   display: flex;
@@ -89,13 +90,4 @@
 
 .single-toast .toast-body a:hover {
   color: var(--color-typography-primary);
-}
-
-@media screen and (max-width: 500px) {
-  .event-toast-container {
-    inset: 8rem 1.6rem 0 1.6rem;
-  }
-  .single-toast {
-    background: rgba(43, 49, 85, 1);
-  }
 }
