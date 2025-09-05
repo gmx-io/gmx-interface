@@ -14,13 +14,16 @@ import useWallet from "lib/wallets/useWallet";
 import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
+import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 import { MarketsList } from "components/Synthetics/MarketsList/MarketsList";
 
-import { DashboardPageTitle } from "./DashboardPageTitle";
+import V1Icon from "img/ic_v1.svg?react";
+import V2Icon from "img/ic_v2.svg?react";
+
 import { GlpCard } from "./GlpCard";
 import { GmCard } from "./GmCard";
 import { GmxCard } from "./GmxCard";
@@ -109,72 +112,90 @@ export default function DashboardV2() {
 
   return (
     <SEO title={getPageTitle(t`Stats`)}>
-      <div className="default-container DashboardV2 page-layout">
-        <PageTitle
-          title={t`Total Stats`}
-          showNetworkIcon={false}
-          isTop
-          qa="dashboard-page"
-          subtitle={
-            <div>
-              <Trans>For detailed stats:</Trans>{" "}
-              {chainId === ARBITRUM && <ExternalLink href="https://stats.gmx.io">V1 Analytics</ExternalLink>}
-              {chainId === AVALANCHE && <ExternalLink href="https://stats.gmx.io/avalanche">V1 Analytics</ExternalLink>}
-              {(chainId === ARBITRUM || chainId === AVALANCHE) && " | "}
-              <ExternalLink href="https://dune.com/gmx-io/gmx-analytics">V2 Analytics</ExternalLink>
-              {" | "}
-              <Link className="link-underline" to="/monitor">
-                V2 Pools Stats
-              </Link>
-              .
+      <AppPageLayout header={<ChainContentHeader />}>
+        <div className="default-container DashboardV2 page-layout flex flex-col gap-20">
+          <PageTitle
+            title={t`Total Stats`}
+            qa="dashboard-page"
+            subtitle={
+              <div className="flex items-center gap-6 font-medium text-typography-secondary">
+                <Trans>For detailed stats</Trans>{" "}
+                {chainId === ARBITRUM && (
+                  <ExternalLink
+                    className="flex items-center gap-4 !no-underline hover:text-typography-primary"
+                    href="https://stats.gmx.io"
+                  >
+                    <V1Icon className="size-15" /> Analytics
+                  </ExternalLink>
+                )}
+                {chainId === AVALANCHE && (
+                  <ExternalLink
+                    className="flex items-center gap-4 !no-underline hover:text-typography-primary"
+                    href="https://stats.gmx.io/avalanche"
+                  >
+                    <V1Icon className="size-15" /> Analytics
+                  </ExternalLink>
+                )}
+                <ExternalLink
+                  className="flex items-center gap-4 !no-underline hover:text-typography-primary"
+                  href="https://dune.com/gmx-io/gmx-analytics"
+                >
+                  <V2Icon className="size-15" /> Analytics
+                </ExternalLink>
+                <Link
+                  className="flex items-center gap-4 text-typography-secondary !no-underline hover:text-typography-primary"
+                  to="/monitor"
+                >
+                  <V2Icon className="size-15" /> Pools Stats
+                </Link>
+              </div>
+            }
+          />
+          <div className="flex flex-col gap-20">
+            <div className="DashboardV2-cards">
+              <OverviewCard statsArbitrum={statsArbitrum} statsAvalanche={statsAvalanche} />
+              <StatsCard statsArbitrum={statsArbitrum} statsAvalanche={statsAvalanche} />
             </div>
-          }
-        />
-        <div className="DashboardV2-content">
-          <div className="DashboardV2-cards">
-            <OverviewCard statsArbitrum={statsArbitrum} statsAvalanche={statsAvalanche} />
-            <StatsCard statsArbitrum={statsArbitrum} statsAvalanche={statsAvalanche} />
-          </div>
-          <DashboardPageTitle tradePageVersion={tradePageVersion} />
-          <div className="DashboardV2-token-cards">
-            <div className="stats-wrapper stats-wrapper--gmx">
-              <GmxCard
-                chainId={chainId}
-                gmxPrice={gmxPrice}
-                gmxPriceFromArbitrum={gmxPriceFromArbitrum}
-                gmxPriceFromAvalanche={gmxPriceFromAvalanche}
-                totalGmxSupply={totalGmxSupply}
-                gmxMarketCap={gmxMarketCap}
-                totalGmxInLiquidity={totalGmxInLiquidity}
-              />
-              {isV1 && (
-                <GlpCard
+            <h2 className="text-h2 px-12 font-medium">{t`Tokens`}</h2>
+            <div className="DashboardV2-token-cards">
+              <div className="stats-wrapper stats-wrapper--gmx">
+                <GmxCard
                   chainId={chainId}
-                  glpPrice={glpPrice}
-                  glpSupply={glpSupply}
-                  glpMarketCap={glpMarketCap}
+                  gmxPrice={gmxPrice}
+                  gmxPriceFromArbitrum={gmxPriceFromArbitrum}
+                  gmxPriceFromAvalanche={gmxPriceFromAvalanche}
+                  totalGmxSupply={totalGmxSupply}
+                  gmxMarketCap={gmxMarketCap}
+                  totalGmxInLiquidity={totalGmxInLiquidity}
+                />
+                {isV1 && (
+                  <GlpCard
+                    chainId={chainId}
+                    glpPrice={glpPrice}
+                    glpSupply={glpSupply}
+                    glpMarketCap={glpMarketCap}
+                    adjustedUsdgSupply={adjustedUsdgSupply}
+                  />
+                )}
+                {isV2 && <GmCard />}
+              </div>
+              {isV1 && (
+                <MarketsListV1
+                  chainId={chainId}
+                  infoTokens={infoTokens}
+                  totalTokenWeights={totalTokenWeights}
                   adjustedUsdgSupply={adjustedUsdgSupply}
                 />
               )}
-              {isV2 && <GmCard />}
+              {isV2 && (
+                <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
+                  <MarketsList />
+                </SyntheticsStateContextProvider>
+              )}
             </div>
-            {isV1 && (
-              <MarketsListV1
-                chainId={chainId}
-                infoTokens={infoTokens}
-                totalTokenWeights={totalTokenWeights}
-                adjustedUsdgSupply={adjustedUsdgSupply}
-              />
-            )}
-            {isV2 && (
-              <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
-                <MarketsList />
-              </SyntheticsStateContextProvider>
-            )}
           </div>
         </div>
-        <Footer />
-      </div>
+      </AppPageLayout>
     </SEO>
   );
 }

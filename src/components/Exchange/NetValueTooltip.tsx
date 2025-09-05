@@ -21,7 +21,7 @@ export default function NetValueTooltip({ position, isMobile }: Props) {
 
   return (
     <Tooltip
-      handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
+      handle={`$\u200a${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
       position={isMobile ? "bottom-end" : "bottom-start"}
       renderContent={() => {
         return (
@@ -42,19 +42,19 @@ export default function NetValueTooltip({ position, isMobile }: Props) {
             <StatsTooltipRow
               label={t`Borrow Fee`}
               showDollar={false}
-              value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
+              value={`-$\u200a${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
               textClassName="text-red-500"
             />
             <StatsTooltipRow
               label={t`Open Fee`}
               showDollar={false}
-              value={`-$${formatAmount(position.closingFee, USD_DECIMALS, 2, true)}`}
+              value={`-$\u200a${formatAmount(position.closingFee, USD_DECIMALS, 2, true)}`}
               textClassName="text-red-500"
             />
             <StatsTooltipRow
               label={t`Close Fee`}
               showDollar={false}
-              value={`-$${formatAmount(position.closingFee, USD_DECIMALS, 2, true)}`}
+              value={`-$\u200a${formatAmount(position.closingFee, USD_DECIMALS, 2, true)}`}
               textClassName="text-red-500"
             />
             <br />

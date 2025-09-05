@@ -13,11 +13,7 @@ type Props = {
 function EmptyMessage({ message = "", tooltipText, className = "", children }: Props) {
   return (
     <div className={cx("empty-message", className)}>
-      {tooltipText ? (
-        <Tooltip handle={<span>{message}</span>} position="top" renderContent={() => tooltipText} />
-      ) : (
-        <p>{message}</p>
-      )}
+      {tooltipText ? <Tooltip handle={message} position="top" renderContent={() => tooltipText} /> : <p>{message}</p>}
       {children}
     </div>
   );

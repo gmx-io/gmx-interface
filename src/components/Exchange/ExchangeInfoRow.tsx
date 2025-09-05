@@ -20,7 +20,7 @@ export default function ExchangeInfoRow(props: Props) {
       onClick={onClick}
       data-qa={qa ? `info-row-${qa}` : undefined}
     >
-      <div className="Exchange-info-label">{label}</div>
+      <div className="Exchange-info-label font-medium">{label}</div>
       <div className={cx("Exchange-info-value", { "Exchange-info-value-warning": isWarning })}>{children || value}</div>
     </div>
   );

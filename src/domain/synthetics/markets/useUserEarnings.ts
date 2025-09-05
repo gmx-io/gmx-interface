@@ -6,6 +6,7 @@ import { getSubgraphUrl } from "config/subgraph";
 import { GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { bigMath } from "sdk/utils/bigmath";
 import graphqlFetcher from "sdk/utils/graphqlFetcher";
 
@@ -14,6 +15,7 @@ import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useGmMarketsApy } from "./useGmMarketsApy";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
 import { useMarketTokensData } from "./useMarketTokensData";
+import { useTokensDataRequest } from "../tokens";
 
 type RawBalanceChange = {
   cumulativeIncome: string;
@@ -87,9 +89,10 @@ function createQuery(marketAddress: string) {
 `;
 }
 
-export const useUserEarnings = (chainId: number) => {
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
+export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceChainId | undefined) => {
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
+  const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: true });
 
   const subgraphUrl = getSubgraphUrl(chainId, "syntheticsStats");
   const marketAddresses = useMemo(
@@ -102,7 +105,7 @@ export const useUserEarnings = (chainId: number) => {
 
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { account } = useWallet();
-  const marketsTokensAPRData = useGmMarketsApy(chainId, { period: "7d" }).marketsTokensApyData;
+  const marketsTokensAPRData = useGmMarketsApy(chainId, srcChainId, { period: "7d" }).marketsTokensApyData;
 
   const { data } = useSWR<UserEarningsData | null>(key, {
     fetcher: async (): Promise<UserEarningsData | null> => {

@@ -1,21 +1,48 @@
+import { Trans } from "@lingui/macro";
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
+import { useLeaderboardPageKey } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { LeaderboardPageConfig } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
 
-import Footer from "components/Footer/Footer";
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+import { Breadcrumbs, BreadcrumbItem } from "components/Breadcrumbs/Breadcrumbs";
+import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 
-import "./LeaderboardPage.scss";
 import { LeaderboardContainer } from "./components/LeaderboardContainer";
+import "./LeaderboardPage.scss";
+
+const LeaderboardBreadcrumbs = () => {
+  const pageKey = useLeaderboardPageKey();
+  const currentPage = LEADERBOARD_PAGES[pageKey];
+  const isCompetition = currentPage.isCompetition;
+  const isConcluded = currentPage.timeframe.to && currentPage.timeframe.to < Date.now() / 1000;
+
+  if (!isCompetition && !isConcluded) {
+    return null;
+  }
+
+  return (
+    <Breadcrumbs>
+      <BreadcrumbItem to="/leaderboard" back>
+        <Trans>Leaderboard</Trans>
+      </BreadcrumbItem>
+      <BreadcrumbItem active>
+        <Trans>Concluded Competitions</Trans>
+      </BreadcrumbItem>
+    </Breadcrumbs>
+  );
+};
 
 export function LeaderboardPage() {
   return (
-    <div className="page-layout">
-      <LeaderboardContainer />
-      <Footer />
-    </div>
+    <AppPageLayout header={<ChainContentHeader breadcrumbs={<LeaderboardBreadcrumbs />} />}>
+      <div className="page-layout">
+        <LeaderboardContainer />
+      </div>
+    </AppPageLayout>
   );
 }
 

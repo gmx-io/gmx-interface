@@ -1,15 +1,18 @@
 import { autoUpdate, useFloating, flip, offset, shift, FloatingPortal } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
-import "./PositionDropdown.css";
-import { AiOutlineEdit } from "react-icons/ai";
 import { BiSelectMultiple } from "react-icons/bi";
 import { HiDotsVertical } from "react-icons/hi";
 import { RiShareBoxFill } from "react-icons/ri";
 
-import increaseLimit from "img/ic_increaselimit_16.svg";
-import increaseMarket from "img/ic_increasemarket_16.svg";
-import triggerClose from "img/ic_triggerclose_16.svg";
+import Button from "components/Button/Button";
+
+import EditIcon from "img/ic_edit.svg?react";
+import IncreaseLimit from "img/ic_increaselimit_16.svg?react";
+import IncreaseMarket from "img/ic_increasemarket_16.svg?react";
+import TriggerClose from "img/ic_triggerclose_16.svg?react";
+
+import "./PositionDropdown.css";
 
 type Props = {
   handleEditCollateral?: () => void;
@@ -31,17 +34,21 @@ export default function PositionDropdown({
   handleTriggerClose,
 }: Props) {
   const { refs, floatingStyles } = useFloating({
-    middleware: [offset({ mainAxis: 10 }), flip(), shift()],
-    placement: "bottom-end",
+    middleware: [offset({ mainAxis: 8 }), flip(), shift()],
+    placement: "bottom-start",
     whileElementsMounted: autoUpdate,
   });
 
   return (
     <Menu>
       <Menu.Button as="div" ref={refs.setReference}>
-        <button className="PositionDropdown-dots-icon">
-          <HiDotsVertical fontSize={20} fontWeight={700} />
-        </button>
+        <Button variant="ghost">
+          <HiDotsVertical
+            fontSize={13}
+            fontWeight={500}
+            className="text-typography-secondary hover:text-typography-primary"
+          />
+        </Button>
       </Menu.Button>
       <FloatingPortal>
         <Menu.Items
@@ -63,7 +70,7 @@ export default function PositionDropdown({
           {handleEditCollateral && (
             <Menu.Item>
               <div className="menu-item" onClick={handleEditCollateral}>
-                <AiOutlineEdit fontSize={16} />
+                <EditIcon width={16} height={16} />
                 <p>
                   <Trans>Edit Collateral</Trans>
                 </p>
@@ -73,7 +80,7 @@ export default function PositionDropdown({
           {handleMarketIncreaseSize && (
             <Menu.Item>
               <div className="menu-item" onClick={handleMarketIncreaseSize}>
-                <img src={increaseMarket} className="size-16" alt="Increase Limit" height={16} />
+                <IncreaseMarket className="size-16" />
                 <p>
                   <Trans>Increase Size (Market)</Trans>
                 </p>
@@ -83,7 +90,7 @@ export default function PositionDropdown({
           {handleLimitIncreaseSize && (
             <Menu.Item>
               <div className="menu-item" onClick={handleLimitIncreaseSize}>
-                <img src={increaseLimit} className="size-16" alt="Increase Limit" height={16} />
+                <IncreaseLimit className="size-16" />
                 <p>
                   <Trans>Increase Size (Limit)</Trans>
                 </p>
@@ -93,7 +100,7 @@ export default function PositionDropdown({
           {handleStopMarketIncreaseSize && (
             <Menu.Item>
               <div className="menu-item" onClick={handleStopMarketIncreaseSize}>
-                <img src={increaseMarket} className="size-16" alt="Increase Stop Market" height={16} />
+                <IncreaseMarket className="size-16" />
                 <p>
                   <Trans>Increase Size (Stop Market)</Trans>
                 </p>
@@ -103,7 +110,7 @@ export default function PositionDropdown({
           {handleTriggerClose && (
             <Menu.Item>
               <div className="menu-item" onClick={handleTriggerClose}>
-                <img src={triggerClose} className="size-16" alt="Increase Limit" height={16} />
+                <TriggerClose className="size-16" />
                 <p>
                   <Trans>Set TP/SL</Trans>
                 </p>

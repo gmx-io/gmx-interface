@@ -17,6 +17,8 @@ import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Modal from "components/Modal/Modal";
+import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
+import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 
 export function UnstakeModal(props: {
   isVisible: boolean;
@@ -91,7 +93,7 @@ export function UnstakeModal(props: {
       return error;
     }
     if (isUnstaking) {
-      return t`Unstaking...`;
+      return t`Unstaking`;
     }
     return t`Unstake`;
   }, [error, isUnstaking]);
@@ -100,9 +102,9 @@ export function UnstakeModal(props: {
     setIsUnstaking(true);
     const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
     callContract(chainId, contract, unstakeMethodName, [amount], {
-      sentMsg: t`Unstake submitted!`,
+      sentMsg: t`Unstake submitted.`,
       failMsg: t`Unstake failed.`,
-      successMsg: t`Unstake completed!`,
+      successMsg: t`Unstake completed.`,
       setPendingTxns,
     })
       .then(() => {
@@ -164,10 +166,13 @@ export function UnstakeModal(props: {
               </Trans>
             </AlertInfo>
           )}
+        <SwitchToSettlementChainWarning topic="staking" />
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
-            {primaryText}
-          </Button>
+          <SwitchToSettlementChainButtons>
+            <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
+              {primaryText}
+            </Button>
+          </SwitchToSettlementChainButtons>
         </div>
       </Modal>
     </div>

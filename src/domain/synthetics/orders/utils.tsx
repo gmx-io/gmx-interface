@@ -6,6 +6,7 @@ import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import {
   isDecreaseOrderType,
   isIncreaseOrderType,
+  isLimitOrderType,
   isMarketOrderType,
   isOrderForPosition,
   isSwapOrder,
@@ -182,7 +183,7 @@ export function getOrderErrors(p: {
 
       if (getIsHighPriceImpact(undefined, swapImpactFeeItem)) {
         errors.push({
-          msg: t`There is currently a high swap price impact for the order swap path.`,
+          msg: t`There is currently a high swap price impact for this swap.`,
           level: "warning",
           key: "highPriceImpact",
         });
@@ -197,6 +198,7 @@ export function getOrderErrors(p: {
       const { acceptablePriceDeltaBps: currentAcceptablePriceDeltaBps } = getAcceptablePriceInfo({
         marketInfo: positionOrder.marketInfo,
         isIncrease: isIncreaseOrderType(positionOrder.orderType),
+        isLimit: isLimitOrderType(positionOrder.orderType),
         isLong: positionOrder.isLong,
         indexPrice: positionOrder.triggerPrice,
         sizeDeltaUsd: positionOrder.sizeDeltaUsd,

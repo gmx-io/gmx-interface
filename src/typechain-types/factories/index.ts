@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export { ArbitrumNodeInterface__factory } from "./ArbitrumNodeInterface__factory";
+export { ClaimHandler__factory } from "./ClaimHandler__factory";
 export { CustomErrors__factory } from "./CustomErrors__factory";
 export { DataStore__factory } from "./DataStore__factory";
 export { ERC20PermitInterface__factory } from "./ERC20PermitInterface__factory";
@@ -15,8 +16,17 @@ export { GlvReader__factory } from "./GlvReader__factory";
 export { GlvRouter__factory } from "./GlvRouter__factory";
 export { GmxMigrator__factory } from "./GmxMigrator__factory";
 export { GovToken__factory } from "./GovToken__factory";
+export { LayerZeroProvider__factory } from "./LayerZeroProvider__factory";
 export { MintableBaseToken__factory } from "./MintableBaseToken__factory";
 export { Multicall__factory } from "./Multicall__factory";
+export { MultichainClaimsRouter__factory } from "./MultichainClaimsRouter__factory";
+export { MultichainGlvRouter__factory } from "./MultichainGlvRouter__factory";
+export { MultichainGmRouter__factory } from "./MultichainGmRouter__factory";
+export { MultichainOrderRouter__factory } from "./MultichainOrderRouter__factory";
+export { MultichainSubaccountRouter__factory } from "./MultichainSubaccountRouter__factory";
+export { MultichainTransferRouter__factory } from "./MultichainTransferRouter__factory";
+export { MultichainUtils__factory } from "./MultichainUtils__factory";
+export { MultichainVault__factory } from "./MultichainVault__factory";
 export { OrderBook__factory } from "./OrderBook__factory";
 export { OrderBookReader__factory } from "./OrderBookReader__factory";
 export { OrderExecutor__factory } from "./OrderExecutor__factory";

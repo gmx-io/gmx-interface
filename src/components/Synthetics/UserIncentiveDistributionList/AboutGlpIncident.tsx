@@ -39,9 +39,9 @@ export function AboutGlpIncident() {
           title={t`Why is the claim in GLV tokens?`}
           open={rowStates[0]}
           onToggle={toggleRow(0)}
-          handleClassName="text-left !text-white"
+          handleClassName="text-left !text-typography-primary"
         >
-          <div className="text-slate-100">
+          <div className="text-typography-secondary">
             <Trans>
               GLV tokens are similar in composition to GLP, and enable seamless integration into GMX V2's liquidity
               ecosystem. Users can either sell or hold the tokens to earn yield. To encourage long-term participation, a
@@ -57,9 +57,9 @@ export function AboutGlpIncident() {
           title={t`What is GLV exactly?`}
           open={rowStates[1]}
           onToggle={toggleRow(1)}
-          handleClassName="text-left !text-white"
+          handleClassName="text-left !text-typography-primary"
         >
-          <div className="text-slate-100">
+          <div className="text-typography-secondary">
             <p className="mb-8">
               <Trans>
                 GLV (GMX Liquidity Vaults) should be seen as GMX V2’s improved version of GLP. It is a yield-optimizing
@@ -89,9 +89,9 @@ export function AboutGlpIncident() {
           title={t`Why do I receive two different GLV tokens?`}
           open={rowStates[2]}
           onToggle={toggleRow(2)}
-          handleClassName="text-left !text-white"
+          handleClassName="text-left !text-typography-primary"
         >
-          <div className="text-slate-100">
+          <div className="text-typography-secondary">
             <Trans>
               Distribution happens in two GLV variants to mirror GLP's multi-asset exposure: one variant is optimized
               for ETH-based markets (50% ETH / 50% USDC) and the other for BTC-based markets (50% BTC / 50% USDC). This
@@ -107,9 +107,9 @@ export function AboutGlpIncident() {
           title={t`Can I sell my GLV if I want, and where?`}
           open={rowStates[3]}
           onToggle={toggleRow(3)}
-          handleClassName="text-left !text-white"
+          handleClassName="text-left !text-typography-primary"
         >
-          <div className="text-slate-100">
+          <div className="text-typography-secondary">
             <Trans>
               Yes, GLV is fully liquid and permissionless. You can sell via the GMX interface to redeem for underlying
               assets, with low fees.
@@ -123,9 +123,9 @@ export function AboutGlpIncident() {
           title={t`How does GLV earn yield, and where do I see my earnings?`}
           open={rowStates[4]}
           onToggle={toggleRow(4)}
-          handleClassName="text-left !text-white"
+          handleClassName="text-left !text-typography-primary"
         >
-          <div className="text-slate-100">
+          <div className="text-typography-secondary">
             <Trans>
               GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools,
               with auto-compounding for seamless growth (20-30% historical average annualized performance). View
@@ -140,9 +140,9 @@ export function AboutGlpIncident() {
           title={t`What is the bonus incentive for holding your GLV?`}
           open={rowStates[5]}
           onToggle={toggleRow(5)}
-          handleClassName="text-left !text-white"
+          handleClassName="text-left !text-typography-primary"
         >
-          <div className="text-slate-100">
+          <div className="text-typography-secondary">
             <Trans>
               A $500,000 GLV pool (funded by DAO funds) rewards long-term holders: If you keep your distributed GLV for
               at least 3 months (without selling or transferring), you'll receive a pro rata share.

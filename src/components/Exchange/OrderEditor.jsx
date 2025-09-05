@@ -150,9 +150,9 @@ export default function OrderEditor(props) {
     }
 
     params.push({
-      successMsg: t`Order updated!`,
+      successMsg: t`Order updated.`,
       failMsg: t`Order update failed.`,
-      sentMsg: t`Order update submitted!`,
+      sentMsg: t`Order update submitted.`,
       pendingTxns,
       setPendingTxns,
     });
@@ -176,21 +176,21 @@ export default function OrderEditor(props) {
 
   const getError = () => {
     if (triggerRatio === undefined && !triggerPrice) {
-      return t`Enter Price`;
+      return t`Enter price`;
     }
     if (order.type === SWAP && triggerRatio == order.triggerRatio) {
-      return t`Enter new Price`;
+      return t`Enter new price`;
     }
     if (order.type !== SWAP && triggerPrice == order.triggerPrice) {
-      return t`Enter new Price`;
+      return t`Enter new price`;
     }
     if (position) {
       if (order.type === DECREASE) {
         if (position.isLong && triggerPrice <= liquidationPrice) {
-          return t`Price below Liq. Price`;
+          return t`Price below liq. price`;
         }
         if (!position.isLong && triggerPrice >= liquidationPrice) {
-          return t`Price above Liq. Price`;
+          return t`Price above liq. price`;
         }
       }
 
@@ -202,17 +202,17 @@ export default function OrderEditor(props) {
 
     if (order.type !== SWAP && indexTokenMarkPrice !== undefined && !savedShouldDisableValidationForTesting) {
       if (order.triggerAboveThreshold && indexTokenMarkPrice > triggerPrice) {
-        return t`Price below Mark Price`;
+        return t`Price below mark price`;
       }
       if (!order.triggerAboveThreshold && indexTokenMarkPrice < triggerPrice) {
-        return t`Price above Mark Price`;
+        return t`Price above mark price`;
       }
     }
 
     if (order.type === SWAP) {
       const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
       if (currentRate !== undefined && currentRate < triggerRatio) {
-        return triggerRatioInverted ? t`Price is below Mark Price` : t`Price is above Mark Price`;
+        return triggerRatioInverted ? t`Price is below mark price` : t`Price is above mark price`;
       }
     }
   };
@@ -236,9 +236,9 @@ export default function OrderEditor(props) {
     }
 
     if (isSubmitting) {
-      return t`Updating Order...`;
+      return t`Updating order`;
     }
-    return t`Update Order`;
+    return t`Update order`;
   };
 
   const TokensLabel = () => {
@@ -307,7 +307,7 @@ export default function OrderEditor(props) {
             <div className="Exchange-info-label">
               <Trans>Liq. Price</Trans>
             </div>
-            <div className="align-right">{`$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}</div>
+            <div className="align-right">{`$\u200a${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}</div>
           </div>
         )}
         <div className="Exchange-swap-button-container">

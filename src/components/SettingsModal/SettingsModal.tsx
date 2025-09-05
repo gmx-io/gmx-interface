@@ -1,49 +1,39 @@
-import { t, Trans } from "@lingui/macro";
+import { msg, t } from "@lingui/macro";
 import cx from "classnames";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { BOTANIX } from "config/chains";
 import { isDevelopment } from "config/env";
-import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
-import { getIsExpressSupported } from "config/features";
-import { DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/twap";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
-import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
-import { getIsSubaccountActive } from "domain/synthetics/subaccount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
+import { useLocalizedMap } from "lib/i18n";
 import { roundToTwoDecimals } from "lib/numbers";
-import { EMPTY_ARRAY } from "lib/objects";
 import { mustNeverExist } from "lib/types";
-import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 
-import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
-import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
-import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
-import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
 import { SlideModal } from "components/Modal/SlideModal";
-import NumberInput from "components/NumberInput/NumberInput";
-import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
-import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
-import PercentageInput from "components/PercentageInput/PercentageInput";
-import TenderlySettings from "components/TenderlySettings/TenderlySettings";
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import Tabs from "components/Tabs/Tabs";
 
-import ExpressIcon from "img/ic_express.svg?react";
-import HourGlassIcon from "img/ic_hourglass.svg?react";
-import InfoIcon from "img/ic_info.svg?react";
-import OneClickIcon from "img/ic_one_click.svg?react";
+import { DebugSettings } from "./DebugSettings";
+import { DisplaySettings } from "./DisplaySettings";
+import { TradingMode } from "./shared";
+import { TradingSettings } from "./TradingSettings";
 
-enum TradingMode {
-  Classic = "classic",
-  Express = "express",
-  Express1CT = "express-1ct",
+let SETTINGS_TABS: ("trading" | "display" | "debug")[] = [];
+if (isDevelopment()) {
+  SETTINGS_TABS = ["trading", "display", "debug"];
+} else {
+  SETTINGS_TABS = ["trading", "display"];
 }
+
+type SettingsTab = (typeof SETTINGS_TABS)[number];
+
+const TAB_LABELS = {
+  trading: msg`Trading Settings`,
+  display: msg`Display Settings`,
+  debug: msg`Debug Settings`,
+};
 
 export function SettingsModal({
   isSettingsVisible,
@@ -52,15 +42,16 @@ export function SettingsModal({
   isSettingsVisible: boolean;
   setIsSettingsVisible: (value: boolean) => void;
 }) {
-  const { chainId } = useChainId();
+  const { srcChainId } = useChainId();
+
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
 
+  const [activeTab, setActiveTab] = useState<SettingsTab>("trading");
   const [tradingMode, setTradingMode] = useState<TradingMode | undefined>(undefined);
   const [isTradingModeChanging, setIsTradingModeChanging] = useState(false);
 
   const [numberOfParts, setNumberOfParts] = useState<number>();
-  const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
 
   useEffect(() => {
     if (!isSettingsVisible) return;
@@ -145,8 +136,6 @@ export function SettingsModal({
     setIsSettingsVisible(false);
   }, [setIsSettingsVisible]);
 
-  const isGeminiWallet = useIsGeminiWallet();
-
   const handleTradingModeChange = useCallback(
     async (mode: TradingMode) => {
       const prevMode = tradingMode;
@@ -155,6 +144,13 @@ export function SettingsModal({
 
       switch (mode) {
         case TradingMode.Classic: {
+          if (srcChainId) {
+            // eslint-disable-next-line no-console
+            console.error("Express trading can not be disabled for multichain");
+            setTradingMode(prevMode);
+            setIsTradingModeChanging(false);
+            return;
+          }
           if (subaccountState.subaccount) {
             const isSubaccountDeactivated = await subaccountState.tryDisableSubaccount();
 
@@ -203,7 +199,7 @@ export function SettingsModal({
         }
       }
     },
-    [settings, subaccountState, tradingMode]
+    [settings, srcChainId, subaccountState, tradingMode]
   );
 
   useEffect(
@@ -229,7 +225,16 @@ export function SettingsModal({
     [isTradingModeChanging, settings.expressOrdersEnabled, subaccountState.subaccount, tradingMode]
   );
 
-  const isExpressTradingDisabled = isOutOfGasPaymentBalance || isGeminiWallet;
+  const tabLabels = useLocalizedMap(TAB_LABELS);
+
+  const tabOptions = useMemo(
+    () =>
+      SETTINGS_TABS.map((tab) => ({
+        value: tab,
+        label: tabLabels[tab],
+      })),
+    [tabLabels]
+  );
 
   return (
     <SlideModal
@@ -237,362 +242,52 @@ export function SettingsModal({
       setIsVisible={setIsSettingsVisible}
       label={t`Settings`}
       qa="settings-modal"
-      className="text-body-medium"
-      desktopContentClassName="w-[420px]"
+      className="text-body-medium text-typography-secondary"
     >
-      <div className="flex flex-col">
-        <h1 className="muted">
-          <Trans>Trading Settings</Trans>
-        </h1>
-        <div className="mt-16">
-          {getIsExpressSupported(chainId) && (
-            <>
-              <SettingsSection>
-                <div className="text-14 font-medium">
-                  <Trans>Trading Mode</Trans>
-                </div>
-
-                <SettingButton
-                  title="Classic"
-                  description="On-chain signing for every transaction"
-                  info={
-                    <Trans>
-                      Your wallet, your keys. You sign each transaction on-chain using your own RPC, typically provided
-                      by your wallet. Gas payments in ETH.
-                    </Trans>
-                  }
-                  icon={<HourGlassIcon className="opacity-50" />}
-                  active={tradingMode === TradingMode.Classic}
-                  onClick={() => handleTradingModeChange(TradingMode.Classic)}
-                />
-
-                <SettingButton
-                  title="Express"
-                  description="High execution reliability using premium RPCs"
-                  info={
-                    <Trans>
-                      Your wallet, your keys. You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs
-                      for reliability, even during network congestion. Gas payments in USDC or WETH.
-                    </Trans>
-                  }
-                  icon={<ExpressIcon />}
-                  disabled={isExpressTradingDisabled}
-                  chip={
-                    <Chip color="gray">
-                      <Trans>Optimal</Trans>
-                    </Chip>
-                  }
-                  active={tradingMode === TradingMode.Express}
-                  onClick={() => handleTradingModeChange(TradingMode.Express)}
-                />
-
-                <SettingButton
-                  title="Express + One-Click"
-                  description="CEX-like experience with Express reliability"
-                  icon={<OneClickIcon />}
-                  disabled={isExpressTradingDisabled}
-                  info={
-                    <Trans>
-                      Your wallet, your keys. GMX executes transactions for you without individual signing, providing a
-                      seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during
-                      network congestion. Gas payments in USDC or WETH.
-                    </Trans>
-                  }
-                  chip={
-                    <Chip color="blue">
-                      <Trans>Fastest</Trans>
-                    </Chip>
-                  }
-                  active={tradingMode === TradingMode.Express1CT}
-                  onClick={() => handleTradingModeChange(TradingMode.Express1CT)}
-                />
-
-                {isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />}
-
-                {isGeminiWallet && (
-                  <ColorfulBanner color="slate" icon={<ExpressIcon className="-mt-6" />}>
-                    <div className="text-body-small mr-8 pl-8">
-                      <Trans>Gemini Wallet is not supported for Express or One-Click trading.</Trans>
-                    </div>
-                  </ColorfulBanner>
-                )}
-
-                <OldSubaccountWithdraw />
-
-                {Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) && (
-                  <OneClickAdvancedSettings />
-                )}
-
-                {settings.expressOrdersEnabled && (
-                  <>
-                    <div className="divider"></div>
-
-                    <GasPaymentTokenSelector
-                      curentTokenAddress={settings.gasPaymentTokenAddress}
-                      onSelectToken={settings.setGasPaymentTokenAddress}
-                    />
-                  </>
-                )}
-              </SettingsSection>
-            </>
-          )}
-
-          <SettingsSection className="mt-2">
-            <InputSetting
-              title={<Trans>Default Allowed Slippage</Trans>}
-              description={
-                <Trans>
-                  The maximum percentage difference between your specified price and execution price when placing
-                  orders.
-                </Trans>
-              }
-              defaultValue={DEFAULT_SLIPPAGE_AMOUNT}
-              value={parseFloat(String(settings.savedAllowedSlippage))}
-              onChange={onChangeSlippage}
-              suggestions={EMPTY_ARRAY}
+      <div className="flex flex-col gap-8">
+        <Tabs options={tabOptions} selectedValue={activeTab} onChange={setActiveTab} type="inline" />
+        <div className="flex max-w-[380px] flex-row items-start overflow-x-hidden max-md:max-w-none">
+          <TabWrapper tab="trading" activeTab={activeTab}>
+            <TradingSettings
+              tradingMode={tradingMode}
+              handleTradingModeChange={handleTradingModeChange}
+              onChangeSlippage={onChangeSlippage}
+              onChangeExecutionFeeBufferBps={onChangeExecutionFeeBufferBps}
+              onChangeTwapNumberOfParts={onChangeTwapNumberOfParts}
+              onBlurTwapNumberOfParts={onBlurTwapNumberOfParts}
+              numberOfParts={numberOfParts}
+              onClose={onClose}
             />
-
-            <InputSetting
-              title={<Trans>TWAP Number of Parts</Trans>}
-              description={
-                <div>
-                  <Trans>The default number of parts for Time-Weighted Average Price (TWAP) orders.</Trans>
-                </div>
-              }
-              defaultValue={DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS}
-              value={numberOfParts}
-              onChange={onChangeTwapNumberOfParts}
-              onBlur={onBlurTwapNumberOfParts}
-              type="number"
-            />
-
-            {settings.shouldUseExecutionFeeBuffer && (
-              <InputSetting
-                title={<Trans>Max Network Fee Buffer</Trans>}
-                description={
-                  <div>
-                    <Trans>
-                      The Max Network Fee is set to a higher value to handle potential increases in gas price during
-                      order execution. Any excess network fee will be refunded to your account when the order is
-                      executed. Only applicable to GMX V2.
-                    </Trans>
-                    <br />
-                    <br />
-                    <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#network-fee-buffer">
-                      Read more
-                    </ExternalLink>
-                  </div>
-                }
-                defaultValue={30}
-                value={parseFloat(String(settings.executionFeeBufferBps))}
-                onChange={onChangeExecutionFeeBufferBps}
-                maxValue={1000 * 100}
-                suggestions={EMPTY_ARRAY}
-              />
-            )}
-
-            <ToggleSwitch isChecked={settings.isAutoCancelTPSL} setIsChecked={settings.setIsAutoCancelTPSL}>
-              <TooltipWithPortal
-                content={
-                  <div onClick={(e) => e.stopPropagation()}>
-                    <Trans>
-                      Take Profit and Stop Loss orders will be automatically cancelled when the associated position is
-                      completely closed. This will only affect newly created TP/SL orders.
-                    </Trans>
-                    <br />
-                    <br />
-                    <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#auto-cancel-tp--sl">
-                      Read more
-                    </ExternalLink>
-                  </div>
-                }
-                handle={<Trans>Auto-Cancel TP/SL</Trans>}
-              />
-            </ToggleSwitch>
-
-            {/* External swaps are enabled by default on Botanix */}
-            {chainId !== BOTANIX && (
-              <ToggleSwitch isChecked={settings.externalSwapsEnabled} setIsChecked={settings.setExternalSwapsEnabled}>
-                <Trans>Enable external swaps</Trans>
-              </ToggleSwitch>
-            )}
-          </SettingsSection>
-
-          <div className="divider mt-16"></div>
-
-          <h1 className="muted mt-16">
-            <Trans>Display Settings</Trans>
-          </h1>
-
-          <SettingsSection className="mt-16 gap-16">
-            <ToggleSwitch
-              isChecked={settings.isLeverageSliderEnabled}
-              setIsChecked={settings.setIsLeverageSliderEnabled}
-            >
-              <Trans>Show Leverage Slider</Trans>
-            </ToggleSwitch>
-
-            <ToggleSwitch isChecked={settings.showPnlAfterFees} setIsChecked={settings.setShowPnlAfterFees}>
-              <Trans>Display PnL After Fees</Trans>
-            </ToggleSwitch>
-
-            <ToggleSwitch isChecked={settings.isPnlInLeverage} setIsChecked={settings.setIsPnlInLeverage}>
-              <Trans>Include PnL In Leverage Display</Trans>
-            </ToggleSwitch>
-          </SettingsSection>
+          </TabWrapper>
+          <TabWrapper tab="display" activeTab={activeTab}>
+            <DisplaySettings />
+          </TabWrapper>
+          <TabWrapper tab="debug" activeTab={activeTab}>
+            <DebugSettings isSettingsVisible={isSettingsVisible} />
+          </TabWrapper>
         </div>
-
-        {isDevelopment() && (
-          <>
-            <div className="divider mt-16"></div>
-
-            <h1 className="muted mt-16">
-              <Trans>Debug Settings</Trans>
-            </h1>
-
-            <SettingsSection className="mt-16">
-              <ToggleSwitch isChecked={settings.showDebugValues} setIsChecked={settings.setShowDebugValues}>
-                <Trans>Show debug values</Trans>
-              </ToggleSwitch>
-
-              <ToggleSwitch
-                isChecked={settings.shouldDisableValidationForTesting}
-                setIsChecked={settings.setShouldDisableValidationForTesting}
-              >
-                <Trans>Disable validation for testing</Trans>
-              </ToggleSwitch>
-
-              <AbFlagSettings />
-
-              <DebugSwapsSettings />
-
-              <TenderlySettings isSettingsVisible={isSettingsVisible} />
-            </SettingsSection>
-          </>
-        )}
       </div>
     </SlideModal>
   );
 }
 
-function SettingsSection({ children, className }: { children?: React.ReactNode; className?: string }) {
-  return <div className={cx("flex flex-col gap-16 rounded-4 bg-cold-blue-900 p-16", className)}>{children}</div>;
-}
-
-function InputSetting({
-  title,
-  description,
-  defaultValue,
-  value,
-  maxValue,
-  onChange,
-  onBlur,
-  className,
-  suggestions,
-  type = "percentage",
+function TabWrapper({
+  tab,
+  activeTab,
+  children,
 }: {
-  title: ReactNode;
-  description?: ReactNode;
-  defaultValue: number;
-  value?: number;
-  maxValue?: number;
-  onChange: (value: number) => void;
-  onBlur?: () => void;
-  className?: string;
-  suggestions?: number[];
-  type?: "percentage" | "number";
-}) {
-  const titleComponent = <span className="text-14 font-medium">{title}</span>;
-
-  const titleWithDescription = description ? (
-    <TooltipWithPortal position="bottom" content={description}>
-      {titleComponent}
-    </TooltipWithPortal>
-  ) : (
-    titleComponent
-  );
-
-  const Input =
-    type === "percentage" ? (
-      <PercentageInput
-        defaultValue={defaultValue}
-        value={value}
-        maxValue={maxValue}
-        onChange={onChange}
-        tooltipPosition="bottom"
-        suggestions={suggestions}
-      />
-    ) : (
-      <NumberInput
-        className="w-60 rounded-4 border border-solid border-slate-700 bg-slate-700 px-4 py-2 text-right hover:border-cold-blue-700"
-        value={value}
-        onValueChange={(e) => onChange(Number(e.target.value))}
-        onBlur={onBlur}
-      />
-    );
-
-  return (
-    <div className={cx("flex items-center justify-between", className)}>
-      <div className="mr-8">{titleWithDescription}</div>
-      {Input}
-    </div>
-  );
-}
-
-function SettingButton({
-  title,
-  icon,
-  description,
-  onClick,
-  active,
-  chip,
-  info,
-  disabled,
-}: {
-  title: string;
-  icon: ReactNode;
-  description: string;
-  active?: boolean;
-  chip?: ReactNode;
-  onClick: () => void;
-  info?: ReactNode;
-  disabled?: boolean;
+  tab: SettingsTab;
+  activeTab: SettingsTab;
+  children: React.ReactNode;
 }) {
   return (
     <div
-      className={cx(
-        `flex select-none items-center rounded-4 border border-solid`,
-        active ? "border-gray-400" : "border-stroke-primary",
-        disabled ? "muted cursor-not-allowed" : "cursor-pointer"
-      )}
-      onClick={disabled ? undefined : onClick}
+      className={cx("w-[380px] shrink-0 max-md:w-full", {
+        invisible: activeTab !== tab,
+        "order-first": activeTab === tab,
+      })}
     >
-      <div className={cx("px-16 py-6", disabled && "opacity-50")}>{icon}</div>
-      <div className="flex py-6 ">
-        <div className="flex flex-col border-l border-solid border-stroke-primary pl-12">
-          <div className="flex items-center gap-4">
-            <div>{title}</div>
-            {info && (
-              <TooltipWithPortal
-                content={info}
-                handleClassName="-mb-6"
-                handle={<InfoIcon className="muted size-12" />}
-              />
-            )}
-          </div>
-          <div className="text-slate-100">{description}</div>
-        </div>
-        {chip ? <div className="mr-6 mt-4">{chip}</div> : null}
-      </div>
+      {children}
     </div>
   );
-}
-
-function Chip({ children, color }: { children: ReactNode; color: "blue" | "gray" }) {
-  const colorClass = {
-    blue: "bg-blue-600",
-    gray: "bg-slate-500",
-  }[color];
-
-  return <div className={cx(`rounded-full px-8 py-4 text-[10px]`, colorClass)}>{children}</div>;
 }

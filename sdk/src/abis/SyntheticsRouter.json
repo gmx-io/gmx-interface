@@ -1,7 +1,4 @@
 {
-  "_format": "hh-sol-artifact-1",
-  "contractName": "Router",
-  "sourceName": "contracts/router/Router.sol",
   "abi": [
     {
       "inputs": [
@@ -71,7 +68,5 @@
       "stateMutability": "view",
       "type": "function"
     }
-  ],
-  "linkReferences": {},
-  "deployedLinkReferences": {}
+  ]
 }

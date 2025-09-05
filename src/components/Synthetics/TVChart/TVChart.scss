@@ -5,7 +5,7 @@
   .Dropdown-current {
     font-size: 2.1rem;
     font-weight: 700;
-    color: var(--color-white);
+    color: var(--color-typography-primary);
   }
 
   .Dropdown-current-arrow {
@@ -37,7 +37,7 @@
 .Chart-header {
   display: grid;
   grid-template-columns: minmax(auto, max-content) auto;
-  background-color: var(--color-slate-800);
+  background-color: var(--color-slate-900);
 }
 
 .Chart-top-scrollable {
@@ -72,12 +72,12 @@
 
 .Chart-top-scrollable-fade-left {
   justify-content: flex-start;
-  background: linear-gradient(to left, transparent, var(--color-slate-800) 50%, var(--color-slate-800));
+  background: linear-gradient(to left, transparent, var(--color-slate-950) 50%, var(--color-slate-950));
 }
 
 .Chart-top-scrollable-fade-right {
   justify-content: flex-end;
-  background: linear-gradient(to right, transparent, var(--color-slate-800) 50%, var(--color-slate-800));
+  background: linear-gradient(to right, transparent, var(--color-slate-950) 50%, var(--color-slate-950));
 }
 
 .Chart-header-value {
@@ -85,12 +85,33 @@
   line-height: var(--line-height-body-medium);
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1024px) {
   .Chart-24h-low {
     display: block;
   }
 
   .Chart-header {
     grid-template-columns: minmax(auto, max-content) auto;
+  }
+}
+
+.Synthetics-chart {
+  height: min(536px, 60vh);
+
+  @media (max-width: $screen-md) and (max-height: 600px) {
+    height: calc(100svh - 200px);
+    min-height: 320px;
+  }
+
+  @media (min-width: $screen-lg) and (max-width: 2559px) {
+    min-height: 536px;
+  }
+
+  @media (min-width: 2560px) and (max-width: 3839px) {
+    min-height: 780px;
+  }
+
+  @media (min-width: 3840px) {
+    min-height: 1140px;
   }
 }

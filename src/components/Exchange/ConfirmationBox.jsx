@@ -73,9 +73,9 @@ function renderAllowedSlippage(setAllowedSlippage, defaultSlippage, allowedSlipp
           position="top-start"
           renderContent={() => {
             return (
-              <div className="text-white">
+              <div className="text-typography-primary">
                 <Trans>
-                  You can edit the default Allowed Slippage in the settings menu on the top right of the page.
+                  You can edit the default allowed slippage in the settings menu on the top right of the page.
                   <br />
                   <br />
                   Note that a low allowed slippage, e.g. less than{" "}
@@ -93,7 +93,7 @@ function renderAllowedSlippage(setAllowedSlippage, defaultSlippage, allowedSlipp
         value={allowedSlippage}
         defaultValue={defaultSlippage}
         highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
-        highValueWarningText={t`Slippage is too high`}
+        highValueWarningText={t`Slippage is too high.`}
       />
     </ExchangeInfoRow>
   );
@@ -694,7 +694,7 @@ export default function ConfirmationBox(props) {
                 </div>
               )}
               {nextAveragePrice &&
-                `$${formatAmount(nextAveragePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}`}
+                `$\u200a${formatAmount(nextAveragePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}`}
               {!nextAveragePrice && `-`}
             </ExchangeInfoRow>
           )}
@@ -717,13 +717,13 @@ export default function ConfirmationBox(props) {
             )}
             {toAmount &&
               displayLiquidationPrice &&
-              `$${formatAmount(displayLiquidationPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
+              `$\u200a${formatAmount(displayLiquidationPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
             {!toAmount && displayLiquidationPrice && `-`}
             {!displayLiquidationPrice && `-`}
           </ExchangeInfoRow>
           <ExchangeInfoRow label={t`Collateral (${collateralToken.symbol})`} isTop>
             <Tooltip
-              handle={`$${formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}`}
+              handle={`$\u200a${formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}`}
               position="top-end"
               renderContent={() => {
                 return (
@@ -755,7 +755,7 @@ export default function ConfirmationBox(props) {
           {decreaseOrdersThatWillBeExecuted.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
-                <span className="muted text-sm">
+                <span className="muted text-body-small">
                   <Trans>I am aware of the trigger orders</Trans>
                 </span>
               </Checkbox>

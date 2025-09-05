@@ -8,10 +8,6 @@ import {
 } from "domain/synthetics/fees";
 import { getMaxAllowedLeverageByMinCollateralFactor } from "domain/synthetics/markets";
 import {
-  OrderInfo,
-  OrderType,
-  PositionOrderInfo,
-  SwapOrderInfo,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
@@ -20,28 +16,32 @@ import {
   isSwapOrder,
   isSwapOrderType,
   isTriggerDecreaseOrderType,
+  OrderInfo,
+  OrderType,
+  PositionOrderInfo,
   sortPositionOrders,
   sortSwapOrders,
+  SwapOrderInfo,
 } from "domain/synthetics/orders";
 import { getPositionOrderError } from "domain/synthetics/orders/getPositionOrderError";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import {
-  TokensRatio,
   convertToTokenAmount,
   convertToUsd,
   getAmountByRatio,
   getTokenData,
   getTokensRatioByPrice,
+  TokensRatio,
 } from "domain/synthetics/tokens";
 import {
-  TradeMode,
-  TradeType,
   getAcceptablePriceInfo,
   getDecreasePositionAmounts,
   getIncreasePositionAmounts,
   getSwapPathOutputAddresses,
   getTradeFees,
   getTradeFlagsForOrder,
+  TradeMode,
+  TradeType,
 } from "domain/synthetics/trade";
 import { getPositionKey } from "lib/legacy";
 import { BN_ZERO, parseValue } from "lib/numbers";
@@ -66,8 +66,7 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectIsPnlInLeverage, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
-import { selectExternalSwapQuote } from "./tradeboxSelectors";
-import { selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
+import { selectExternalSwapQuote, selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
 import { makeSelectFindSwapPath, makeSelectNextPositionValuesForIncrease } from "./tradeSelectors";
 
 export const selectCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.cancellingOrdersKeys;
@@ -128,7 +127,10 @@ export const selectOrderEditorSwapFees = createSelector((q) => {
     swapSteps: order.swapPathStats?.swapSteps ?? [],
     positionFeeUsd: 0n,
     swapPriceImpactDeltaUsd: order.swapPathStats?.totalSwapPriceImpactDeltaUsd ?? 0n,
-    positionPriceImpactDeltaUsd: 0n,
+    increasePositionPriceImpactDeltaUsd: 0n,
+    totalPendingImpactDeltaUsd: 0n,
+    proportionalPendingImpactDeltaUsd: 0n,
+    decreasePositionPriceImpactDeltaUsd: 0n,
     priceImpactDiffUsd: 0n,
     borrowingFeeUsd: 0n,
     fundingFeeUsd: 0n,
@@ -136,6 +138,7 @@ export const selectOrderEditorSwapFees = createSelector((q) => {
     swapProfitFeeUsd: 0n,
     uiFeeFactor,
     externalSwapQuote: undefined,
+    type: "increase",
   });
 });
 
@@ -589,6 +592,7 @@ export const selectOrderEditorPriceImpactFeeBps = createSelector((q) => {
       getAcceptablePriceInfo({
         indexPrice: markPrice!,
         isIncrease: isIncreaseOrderType(order.orderType),
+        isLimit: isLimitOrderType(order.orderType),
         isLong: order.isLong,
         marketInfo: market,
         sizeDeltaUsd: sizeDeltaUsd!,
@@ -684,6 +688,7 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
     indexTokenAmount,
     leverage: existingPosition?.leverage,
     triggerPrice: isLimitOrderType(order.orderType) ? triggerPrice : undefined,
+    limitOrderType: order.orderType as OrderType.LimitIncrease | OrderType.StopIncrease,
     position: existingPosition,
     findSwapPath,
     userReferralInfo,

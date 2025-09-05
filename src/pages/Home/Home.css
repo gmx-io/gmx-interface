@@ -1,12 +1,19 @@
 .Home {
-  min-height: 100vh;
-  padding-bottom: 15rem;
-}
+  font-family:
+    "Relative",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
+    sans-serif;
 
-@media (max-width: 1024px) {
-  .Home {
-    padding-bottom: 23rem;
-  }
+  font-variant-numeric: normal;
 }
 
 .Home-top {
@@ -22,6 +29,8 @@
   background-size: cover;
   background-position: right;
   margin-top: -6.2rem;
+  padding-left: 56px;
+  padding-right: 56px;
 }
 
 .Home-title {
@@ -57,6 +66,8 @@
 
 .Home-benefits-section {
   background: var(--color-slate-800);
+  padding-left: 56px;
+  padding-right: 56px;
 }
 
 .Home-benefits {
@@ -96,6 +107,8 @@
 
 .Home-cta-section {
   background: var(--color-slate-900);
+  padding-left: 56px;
+  padding-right: 56px;
 }
 
 .Home-cta-container {
@@ -212,7 +225,8 @@
   padding-top: 7.75rem;
   padding-bottom: 7.75rem;
   background: var(--color-slate-800);
-  margin-bottom: -4.65rem;
+  padding-left: 56px;
+  padding-right: 56px;
 }
 
 .Home-token-card-info {
@@ -253,7 +267,7 @@
   font-size: var(--font-size-h2);
   line-height: var(--line-height-h2);
   letter-spacing: 0px;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   height: 3.1rem;
 }
 
@@ -265,7 +279,7 @@
   font-size: var(--font-size-body-large);
   line-height: var(--line-height-body-large);
   letter-spacing: 0px;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   margin-top: 2.325rem;
 }
 
@@ -318,7 +332,7 @@
 
 .Home-latest-info__value {
   font-family: "RelativeNumber";
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   font-size: 2.9rem;
   line-height: 3.9rem;
   letter-spacing: 0px;
@@ -364,7 +378,7 @@
 
 .Home-faqs-introduction__title {
   letter-spacing: 0px;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   font-size: 3.8rem;
   line-height: 4.8rem;
 }
@@ -418,7 +432,7 @@
   font-size: 1.7rem;
   line-height: 2.2rem;
   letter-spacing: 0px;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .Home-faqs-content-main {
@@ -554,4 +568,9 @@
   .Home-latest-info__icon {
     margin: 0 1.5rem;
   }
+}
+
+.Home .default-container {
+  max-width: 126.4rem;
+  margin: 0 auto;
 }

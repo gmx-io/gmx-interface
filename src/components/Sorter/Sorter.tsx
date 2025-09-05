@@ -8,7 +8,7 @@ import IcSortable from "img/ic_sortable.svg?react";
 import IcSortedAsc from "img/ic_sorted_asc.svg?react";
 import IcSortedDesc from "img/ic_sorted_desc.svg?react";
 
-const directionIconMap: Record<SortDirection, React.ComponentType> = {
+const directionIconMap: Record<SortDirection, React.ComponentType<{ className?: string }>> = {
   asc: IcSortedAsc,
   desc: IcSortedDesc,
   unspecified: IcSortable,
@@ -37,7 +37,7 @@ export function Sorter(
       onClickCapture={handleClick}
     >
       {props.children}
-      <Icon />
+      <Icon className="h-16 w-12" />
     </button>
   );
 }

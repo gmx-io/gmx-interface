@@ -1,9 +1,9 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useRef, useState } from "react";
 import { BiEditAlt } from "react-icons/bi";
 import { IoWarningOutline } from "react-icons/io5";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl, ContractsChainId } from "config/chains";
 import { isDevelopment } from "config/env";
 import { TotalReferralsStats, useTiers } from "domain/referrals";
 import { formatDate } from "lib/dates";
@@ -19,9 +19,9 @@ import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table"
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
 import EmptyMessage from "./EmptyMessage";
-import { ReferralCodeForm } from "./JoinReferralCode";
+import { ReferralCodeEditFormContainer } from "./JoinReferralCode";
 import ReferralInfoCard from "./ReferralInfoCard";
-import { getSharePercentage, getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
+import { getSharePercentage, getTierIdDisplay, getUsdValue, tierDiscountInfo } from "./referralsHelper";
 import usePagination, { DEFAULT_PAGE_SIZE } from "./usePagination";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
@@ -32,7 +32,7 @@ import "./TradersStats.scss";
 type Props = {
   referralsData?: TotalReferralsStats;
   traderTier?: number;
-  chainId: number;
+  chainId: ContractsChainId;
   userReferralCodeString?: string;
   discountShare: bigint | undefined;
 };
@@ -77,20 +77,14 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                   position="bottom"
                   className={(discountShare ?? 0) > 0 ? "tier-discount-warning" : ""}
                   renderContent={() => (
-                    <p className="text-white">
+                    <p className="text-typography-primary">
                       <Trans>You will receive a {currentTierDiscount}% discount on opening and closing fees.</Trans>
-                      <br />
-                      <br />
-                      <Trans>
-                        For trades on V1, this discount will be airdropped to your account every Wednesday. On V2,
-                        discounts are applied automatically and will reduce your fees when you make a trade.
-                      </Trans>
                       {((discountShare ?? 0) > 0 && (
                         <>
                           <br />
                           <br />
                           <Trans>
-                            The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead
+                            The owner of this referral code has set a custom discount of {currentTierDiscount}% instead
                             of the standard {tierDiscountInfo[traderTier]}% for Tier {getTierIdDisplay(traderTier)}.
                           </Trans>
                         </>
@@ -104,80 +98,92 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           </div>
         </ReferralInfoCard>
         <ReferralInfoCard
-          value={`$${getUSDValue(currentReferralsData?.traderReferralTotalStats?.volume)}`}
+          value={`$\u200a${getUsdValue(currentReferralsData?.traderReferralTotalStats?.volume)}`}
           label={t`Trading Volume`}
           labelTooltipText={t`Volume traded by this account with an active referral code.`}
           tooltipContent={
             <>
               <StatsTooltipRow
                 label={t`V1 Arbitrum`}
-                value={getUSDValue(arbitrumData?.traderReferralTotalStats.v1Data.volume)}
+                value={getUsdValue(arbitrumData?.traderReferralTotalStats.v1Data.volume)}
+                valueClassName="numbers"
               />
               <StatsTooltipRow
                 label={t`V1 Avalanche`}
-                value={getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.volume)}
+                value={getUsdValue(avalancheData?.traderReferralTotalStats.v1Data.volume)}
+                valueClassName="numbers"
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V1 Avalanche Fuji`}
-                  value={getUSDValue(fujiData?.traderReferralTotalStats.v1Data.volume)}
+                  value={getUsdValue(fujiData?.traderReferralTotalStats.v1Data.volume)}
+                  valueClassName="numbers"
                 />
               )}
               <StatsTooltipRow
                 label={t`V2 Arbitrum`}
-                value={getUSDValue(arbitrumData?.traderReferralTotalStats.v2Data.volume)}
+                value={getUsdValue(arbitrumData?.traderReferralTotalStats.v2Data.volume)}
+                valueClassName="numbers"
               />
               <StatsTooltipRow
                 label={t`V2 Avalanche`}
-                value={getUSDValue(avalancheData?.traderReferralTotalStats.v2Data.volume)}
+                value={getUsdValue(avalancheData?.traderReferralTotalStats.v2Data.volume)}
+                valueClassName="numbers"
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V2 Avalanche Fuji`}
-                  value={getUSDValue(fujiData?.traderReferralTotalStats.v2Data.volume)}
+                  value={getUsdValue(fujiData?.traderReferralTotalStats.v2Data.volume)}
+                  valueClassName="numbers"
                 />
               )}
               <div className="Tooltip-divider" />
-              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.traderVolume)} />
+              <StatsTooltipRow label={t`Total`} value={getUsdValue(total?.traderVolume)} valueClassName="numbers" />
             </>
           }
         />
         <ReferralInfoCard
-          value={`$${getUSDValue(currentReferralsData?.traderReferralTotalStats?.discountUsd)}`}
+          value={`$\u200a${getUsdValue(currentReferralsData?.traderReferralTotalStats?.discountUsd)}`}
           label={t`Rebates`}
           labelTooltipText={t`Rebates earned by this account as a trader.`}
           tooltipContent={
             <>
               <StatsTooltipRow
                 label={t`V1 Arbitrum`}
-                value={getUSDValue(arbitrumData?.traderReferralTotalStats.v1Data.discountUsd)}
+                value={getUsdValue(arbitrumData?.traderReferralTotalStats.v1Data.discountUsd)}
+                valueClassName="numbers"
               />
               <StatsTooltipRow
                 label={t`V1 Avalanche`}
-                value={getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.discountUsd)}
+                value={getUsdValue(avalancheData?.traderReferralTotalStats.v1Data.discountUsd)}
+                valueClassName="numbers"
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V1 Avalanche Fuji`}
-                  value={getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.discountUsd)}
+                  value={getUsdValue(avalancheData?.traderReferralTotalStats.v1Data.discountUsd)}
+                  valueClassName="numbers"
                 />
               )}
               <StatsTooltipRow
                 label={t`V2 Arbitrum`}
-                value={getUSDValue(arbitrumData?.traderReferralTotalStats.v2Data.discountUsd)}
+                value={getUsdValue(arbitrumData?.traderReferralTotalStats.v2Data.discountUsd)}
+                valueClassName="numbers"
               />
               <StatsTooltipRow
                 label={t`V2 Avalanche`}
-                value={getUSDValue(avalancheData?.traderReferralTotalStats.v2Data.discountUsd)}
+                value={getUsdValue(avalancheData?.traderReferralTotalStats.v2Data.discountUsd)}
+                valueClassName="numbers"
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V2 Avalanche Fuji`}
-                  value={getUSDValue(fujiData?.traderReferralTotalStats.v2Data.discountUsd)}
+                  value={getUsdValue(fujiData?.traderReferralTotalStats.v2Data.discountUsd)}
+                  valueClassName="numbers"
                 />
               )}
               <div className="Tooltip-divider" />
-              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.discountUsd)} />
+              <StatsTooltipRow label={t`Total`} value={getUsdValue(total?.discountUsd)} valueClassName="numbers" />
             </>
           }
         />
@@ -189,7 +195,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           onAfterOpen={() => editModalRef.current?.focus()}
         >
           <div className="edit-referral-modal">
-            <ReferralCodeForm
+            <ReferralCodeEditFormContainer
               userReferralCodeString={userReferralCodeString}
               type="edit"
               callAfterSuccess={() => setIsEditModalOpen(false)}
@@ -201,14 +207,14 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
         <div className="reward-history">
           <Card
             title={t`Rebates Distribution History`}
-            tooltipText={t`V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table.`}
+            tooltipText={t`GMX V2 discounts are automatically applied on each trade and are not displayed on this table.`}
             bodyPadding={false}
             divider={false}
           >
             <TableScrollFadeContainer>
               <table className="w-full min-w-max">
                 <thead>
-                  <TableTheadTr bordered>
+                  <TableTheadTr>
                     <TableTh scope="col">
                       <Trans>Date</Trans>
                     </TableTh>
@@ -251,7 +257,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (
-                      <TableTr key={rebate.id} hoverable={false} bordered={false}>
+                      <TableTr key={rebate.id}>
                         <TableTd data-label="Date">{formatDate(rebate.timestamp)}</TableTd>
                         <TableTd data-label="Type">V1 Airdrop</TableTd>
                         <TableTd data-label="Amount" className="Rebate-amount">
@@ -259,14 +265,14 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                             position="bottom"
                             className="whitespace-nowrap"
                             handle={
-                              <div className="Rebate-amount-value">
+                              <div className="Rebate-amount-value numbers">
                                 {tokensWithoutPrices.length > 0 && (
                                   <>
                                     <IoWarningOutline color="#ffba0e" size={16} />
                                     &nbsp;
                                   </>
                                 )}
-                                ${getUSDValue(totalUsd)}
+                                ${getUsdValue(totalUsd)}
                               </div>
                             }
                             content={
@@ -297,6 +303,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                                         undefined,
                                         { isStable: token.isStable }
                                       )}
+                                      valueClassName="numbers"
                                     />
                                   );
                                 })}
@@ -325,7 +332,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
         </div>
       ) : (
         <EmptyMessage
-          tooltipText={t`V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table.`}
+          tooltipText={t`GMX V2 Rebates are automatically applied as fee discounts on each trade and are not displayed on this table.`}
           message={t`No rebates distribution history yet.`}
         />
       )}

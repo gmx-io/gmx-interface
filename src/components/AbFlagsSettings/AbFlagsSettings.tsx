@@ -19,7 +19,7 @@ export function AbFlagSettings() {
           {Object.entries(abStorage).length === 0 ? (
             <div className="py-8">No AB flags.</div>
           ) : (
-            <div className="flex max-h-80 flex-col gap-8 overflow-auto py-8">
+            <div className="flex max-h-80 flex-col gap-8 overflow-auto py-8 pr-16">
               {Object.entries(abStorage).map(([flag, flagValue]) => (
                 <div key={flag}>
                   <ToggleSwitch

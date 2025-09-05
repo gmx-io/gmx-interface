@@ -1,18 +1,31 @@
 /// <reference types="vitest" />
 
-import { defineConfig, type PluginOption } from "vite";
-import { visualizer } from "rollup-plugin-visualizer";
+import { lingui } from "@lingui/vite-plugin";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import { visualizer } from "rollup-plugin-visualizer";
+import { defineConfig, type PluginOption } from "vite";
+import { analyzer } from "vite-bundle-analyzer";
 import svgr from "vite-plugin-svgr";
 import tsconfigPaths from "vite-tsconfig-paths";
-import { lingui } from "@lingui/vite-plugin";
-import { analyzer } from "vite-bundle-analyzer";
+import { BREAKPOINTS } from "./src/lib/breakpoints";
 
 export default defineConfig(({ mode }) => {
   return {
     worker: {
       format: "es",
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `
+            $screen-md: ${BREAKPOINTS.mobile}px;
+            $screen-lg: ${BREAKPOINTS.tablet}px;
+            $screen-xl: ${BREAKPOINTS.desktop}px;
+            $screen-sm: ${BREAKPOINTS.smallMobile}px;
+          `,
+        },
+      },
     },
     plugins: [
       svgr({
@@ -57,6 +70,14 @@ export default defineConfig(({ mode }) => {
             web3: ["ethers", "viem", "date-fns", "@rainbow-me/rainbowkit", "lodash", "@gelatonetwork/relay-sdk"],
             charts: ["recharts"],
             ui: ["@headlessui/react", "framer-motion", "react-select", "react-icons"],
+          },
+          sourcemapExcludeSources: true,
+          sourcemapPathTransform: (relativeSourcePath: string) => {
+            // Exclude react-icons from sourcemap
+            if (relativeSourcePath.includes("node_modules/react-icons")) {
+              return "";
+            }
+            return relativeSourcePath;
           },
         },
       },

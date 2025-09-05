@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
 
 import {
   PendingDepositData,
@@ -249,26 +250,26 @@ export function GmStatusNotification({
     let createdTxnHash: string | undefined;
 
     if (operation === "deposit") {
-      text = t`Sending buy request`;
+      text = t`Sending buy request.`;
 
       if (depositStatus?.createdTxnHash) {
-        text = t`Buy request sent`;
+        text = t`Buy request sent.`;
         status = "success";
         createdTxnHash = depositStatus?.createdTxnHash;
       }
     } else if (operation === "withdrawal") {
-      text = t`Sending sell request`;
+      text = t`Sending sell request.`;
 
       if (withdrawalStatus?.createdTxnHash) {
-        text = t`Sell request sent`;
+        text = t`Sell request sent.`;
         status = "success";
         createdTxnHash = withdrawalStatus?.createdTxnHash;
       }
     } else {
-      text = t`Sending shift request`;
+      text = t`Sending shift request.`;
 
       if (shiftStatus?.createdTxnHash) {
-        text = t`Shift request sent`;
+        text = t`Shift request sent.`;
         status = "success";
         createdTxnHash = shiftStatus?.createdTxnHash;
       }
@@ -283,56 +284,56 @@ export function GmStatusNotification({
     let txnHash: string | undefined;
 
     if (operation === "deposit") {
-      text = t`Fulfilling buy request`;
+      text = t`Fulfilling buy request.`;
 
       if (depositStatus?.createdTxnHash) {
         status = "loading";
       }
 
       if (depositStatus?.executedTxnHash) {
-        text = t`Buy order executed`;
+        text = t`Buy order executed.`;
         status = "success";
         txnHash = depositStatus?.executedTxnHash;
       }
 
       if (depositStatus?.cancelledTxnHash) {
-        text = t`Buy order cancelled`;
+        text = t`Buy order cancelled.`;
         status = "error";
         txnHash = depositStatus?.cancelledTxnHash;
       }
     } else if (operation === "withdrawal") {
-      text = t`Fulfilling sell request`;
+      text = t`Fulfilling sell request.`;
 
       if (withdrawalStatus?.createdTxnHash) {
         status = "loading";
       }
 
       if (withdrawalStatus?.executedTxnHash) {
-        text = t`Sell order executed`;
+        text = t`Sell order executed.`;
         status = "success";
         txnHash = withdrawalStatus?.executedTxnHash;
       }
 
       if (withdrawalStatus?.cancelledTxnHash) {
-        text = t`Sell order cancelled`;
+        text = t`Sell order cancelled.`;
         status = "error";
         txnHash = withdrawalStatus?.cancelledTxnHash;
       }
     } else {
-      text = t`Fulfilling shift request`;
+      text = t`Fulfilling shift request.`;
 
       if (shiftStatus?.createdTxnHash) {
         status = "loading";
       }
 
       if (shiftStatus?.executedTxnHash) {
-        text = t`Shift order executed`;
+        text = t`Shift order executed.`;
         status = "success";
         txnHash = shiftStatus?.executedTxnHash;
       }
 
       if (shiftStatus?.cancelledTxnHash) {
-        text = t`Shift order cancelled`;
+        text = t`Shift order cancelled.`;
         status = "error";
         txnHash = shiftStatus?.cancelledTxnHash;
       }
@@ -415,8 +416,14 @@ export function GmStatusNotification({
 
   useToastAutoClose(isCompleted, toastTimestamp);
 
+  useEffect(() => {
+    if (hasError) {
+      toast.update(toastTimestamp, { type: "error" });
+    }
+  }, [hasError, toastTimestamp]);
+
   return (
-    <StatusNotification title={title} hasError={hasError}>
+    <StatusNotification title={title}>
       {creationStatus}
       {executionStatus}
     </StatusNotification>
@@ -424,5 +431,5 @@ export function GmStatusNotification({
 }
 
 function PoolName({ children }: { children: ReactNode }) {
-  return children ? <span className="ml-2 text-12 font-normal text-white">[{children}]</span> : null;
+  return children ? <span className="ml-2 text-12 font-normal text-typography-primary">[{children}]</span> : null;
 }

@@ -1,10 +1,7 @@
 import { Trans, t } from "@lingui/macro";
-import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useMedia } from "react-use";
 
 import { getChainName } from "config/chains";
-import { getIcon } from "config/icons";
 import {
   useLeaderboardChainId,
   useLeaderboardDataTypeState,
@@ -15,26 +12,32 @@ import {
   useLeaderboardTimeframeTypeState,
   useLeaderboardTiming,
 } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
-import { selectLeaderboardIsLoading } from "context/SyntheticsStateContext/selectors/leaderboardSelectors";
+import {
+  selectLeaderboardIsLoading,
+  selectLeaderboardSearchAddress,
+  selectLeaderboardSetSearchAddress,
+} from "context/SyntheticsStateContext/selectors/leaderboardSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { CompetitionType } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
 import { mustNeverExist } from "lib/types";
+import { useBreakpoints } from "lib/useBreakpoints";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import SearchInput from "components/SearchInput/SearchInput";
+import { BodyScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tabs from "components/Tabs/Tabs";
 
-import { CompetitionCountdown } from "./CompetitionCountdown";
 import { CompetitionPrizes } from "./CompetitionPrizes";
 import { LeaderboardAccountsTable } from "./LeaderboardAccountsTable";
 import { LeaderboardNavigation } from "./LeaderboardNavigation";
 import { LeaderboardPositionsTable } from "./LeaderboardPositionsTable";
 
 const competitionsTabs = [0, 1];
-const leaderboardTimeframeTabs = [0, 1, 2];
+const leaderboardTimeframeTabs = [2, 1, 0];
 const leaderboardDataTypeTabs = [0, 1];
 
 export function LeaderboardContainer() {
@@ -52,10 +55,10 @@ export function LeaderboardContainer() {
   const page = LEADERBOARD_PAGES[leaderboardPageKey];
 
   const [, setLeaderboardTimeframeType] = useLeaderboardTimeframeTypeState();
-  const [leaderboardDataType, setLeaderboardDataType] = useLeaderboardDataTypeState();
+  const [, setLeaderboardDataType] = useLeaderboardDataTypeState();
 
   const competitionLabels = useMemo(() => [t`Top PnL ($)`, t`Top PnL (%)`], []);
-  const leaderboardTimeframeLabels = useMemo(() => [t`Total`, t`Last 30 days`, t`Last 7 days`], []);
+  const leaderboardTimeframeLabels = useMemo(() => [t`Total`, t`Last 30d`, t`Last 7d`], []);
   const leaderboardDataTypeLabels = useMemo(() => [t`Top Addresses`, t`Top Positions`], []);
 
   const activeCompetition: CompetitionType | undefined = isCompetition
@@ -104,21 +107,8 @@ export function LeaderboardContainer() {
     }
   }, [activeLeaderboardDataTypeIndex, setLeaderboardDataType]);
 
-  const title = useMemo(() => {
-    switch (leaderboardPageKey) {
-      case "leaderboard":
-        return t`Global Leaderboard`;
-
-      case "march_13-20_2024":
-        return t`EIP-4844 Competition`;
-
-      case "march_20-27_2024":
-        return t`EIP-4844 Competition`;
-
-      default:
-        throw mustNeverExist(leaderboardPageKey);
-    }
-  }, [leaderboardPageKey]);
+  const searchAddress = useSelector(selectLeaderboardSearchAddress);
+  const setSearchAddress = useSelector(selectLeaderboardSetSearchAddress);
 
   const handleSwitchNetworkClick = useCallback(() => {
     switchNetwork(leaderboardChainId, active);
@@ -142,8 +132,6 @@ export function LeaderboardContainer() {
     );
   }, [chainId, handleSwitchNetworkClick, leaderboardChainId, leaderboardPageKey, page]);
 
-  const isMobile = useMedia("(max-width: 1000px)");
-
   const description = useMemo(() => {
     switch (leaderboardPageKey) {
       case "leaderboard":
@@ -158,23 +146,22 @@ export function LeaderboardContainer() {
               <Trans>Read the rules</Trans>
             </ExternalLink>
             .{wrongNetworkSwitcher}{" "}
-            {isMobile && (
-              <>
-                <CompetitionCountdown size="mobile" />
-              </>
-            )}
           </>
         );
 
       default:
         throw mustNeverExist(leaderboardPageKey);
     }
-  }, [isMobile, leaderboardPageKey, wrongNetworkSwitcher]);
+  }, [leaderboardPageKey, wrongNetworkSwitcher]);
 
   const leaderboardDataTypeTabsOptions = useMemo(() => {
     return leaderboardDataTypeTabs.map((value) => ({
       value,
       label: leaderboardDataTypeLabels[value],
+      className: {
+        active: "!text-white !bg-blue-400",
+        regular: "hover:!text-typography-primary !bg-button-secondary",
+      },
     }));
   }, [leaderboardDataTypeLabels]);
 
@@ -189,62 +176,78 @@ export function LeaderboardContainer() {
     return competitionsTabs.map((value) => ({
       value,
       label: competitionLabels[value],
+      className: {
+        active: "!text-white !bg-blue-400",
+        regular: "hover:!text-typography-primary !bg-button-secondary",
+      },
     }));
   }, [competitionLabels]);
 
+  const { isMobile } = useBreakpoints();
+
   return (
-    <div className="GlobalLeaderboards">
-      <LeaderboardNavigation />
-      <div className="Leaderboard-Title default-container">
-        <div>
-          <h1 className="text-34 font-bold" data-qa="leaderboard-page">
-            {title} <img alt={t`Chain Icon`} src={getIcon(page.isCompetition ? page.chainId : chainId, "network")} />
-          </h1>
-          <div className="Page-description">{description}</div>
-        </div>
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-12 p-12">
+        <BodyScrollFadeContainer>
+          <div>
+            <LeaderboardNavigation />
+          </div>
+        </BodyScrollFadeContainer>
+        <div className="text-body-medium font-medium text-typography-secondary">{description}</div>
       </div>
-      {!isCompetition && (
-        <>
-          <div className="LeaderboardContainer__competition-tabs default-container">
+
+      <div>
+        <div className="flex items-center justify-between gap-16 rounded-t-8 border-b-1/2 border-slate-600 bg-slate-900 p-20 max-md:flex-col">
+          {!isCompetition ? (
             <Tabs
+              type="inline"
               selectedValue={activeLeaderboardDataTypeIndex}
               onChange={handleLeaderboardDataTypeTabChange}
               options={leaderboardDataTypeTabsOptions}
+              className="max-md:w-full"
+              regularOptionClassname="grow"
             />
-          </div>
-        </>
-      )}
-      {!isCompetition && (
-        <Tabs
-          selectedValue={activeLeaderboardTimeframeIndex}
-          onChange={handleLeaderboardTimeframeTabChange}
-          type="inline"
-          options={leaderboardTimeframeTabsOptions}
-          className={cx("LeaderboardContainer__leaderboard-tabs default-container", {
-            "LeaderboardContainer__leaderboard-tabs_positions": leaderboardDataType === "positions",
-          })}
-        />
-      )}
-
-      {isCompetition && (
-        <>
-          <div className="LeaderboardContainer__competition-tabs default-container">
+          ) : (
             <Tabs
+              type="inline"
               selectedValue={activeCompetitionIndex}
               onChange={handleCompetitionTabChange}
               options={competitionsTabsOptions}
+              className="max-md:w-full"
+              regularOptionClassname="grow"
             />
-            {!isMobile && <CompetitionCountdown className="default-container" size="desktop" />}
-          </div>
-          <br />
-          <br />
-        </>
-      )}
-      {isCompetition && activeCompetition && (
-        <CompetitionPrizes leaderboardPageKey={leaderboardPageKey} competitionType={activeCompetition} />
-      )}
+          )}
 
-      <Table activeCompetition={activeCompetition} />
+          <div className="flex gap-8 max-md:w-full max-md:justify-between">
+            <SearchInput
+              placeholder={isMobile ? t`Search` : t`Search Address`}
+              className="w-full max-w-[260px] max-md:min-w-[120px]"
+              value={searchAddress}
+              setValue={setSearchAddress}
+              size="s"
+            />
+            {!isCompetition && (
+              <Tabs
+                selectedValue={activeLeaderboardTimeframeIndex}
+                onChange={handleLeaderboardTimeframeTabChange}
+                type="inline"
+                className="shrink-0"
+                options={leaderboardTimeframeTabsOptions}
+              />
+            )}
+          </div>
+        </div>
+
+        {isCompetition && activeCompetition && (
+          <BodyScrollFadeContainer>
+            <div className="min-w-[1000px]">
+              <CompetitionPrizes leaderboardPageKey={leaderboardPageKey} competitionType={activeCompetition} />
+            </div>
+          </BodyScrollFadeContainer>
+        )}
+
+        <Table activeCompetition={activeCompetition} />
+      </div>
     </div>
   );
 }
@@ -268,6 +271,7 @@ function Table({ activeCompetition }: { activeCompetition: CompetitionType | und
 function AccountsTable({ activeCompetition }: { activeCompetition: CompetitionType | undefined }) {
   const accounts = useLeaderboardRankedAccounts();
   const isLoading = useSelector(selectLeaderboardIsLoading);
+  const searchAddress = useSelector(selectLeaderboardSearchAddress);
   const accountsStruct = useMemo(
     () => ({
       isLoading,
@@ -278,12 +282,19 @@ function AccountsTable({ activeCompetition }: { activeCompetition: CompetitionTy
     [accounts, isLoading]
   );
 
-  return <LeaderboardAccountsTable activeCompetition={activeCompetition} accounts={accountsStruct} />;
+  return (
+    <LeaderboardAccountsTable
+      activeCompetition={activeCompetition}
+      accounts={accountsStruct}
+      searchAddress={searchAddress}
+    />
+  );
 }
 
 function PositionsTable() {
   const positions = useLeaderboardPositions();
   const isLoading = useSelector(selectLeaderboardIsLoading);
+  const searchAddress = useSelector(selectLeaderboardSearchAddress);
   const positionsStruct = useMemo(
     () => ({
       isLoading,
@@ -293,5 +304,5 @@ function PositionsTable() {
     }),
     [positions, isLoading]
   );
-  return <LeaderboardPositionsTable positions={positionsStruct} />;
+  return <LeaderboardPositionsTable positions={positionsStruct} searchAddress={searchAddress} />;
 }

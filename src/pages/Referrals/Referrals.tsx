@@ -23,10 +23,10 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { serializeBigIntsInObject } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Loader from "components/Common/Loader";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
 import AddAffiliateCode from "components/Referrals/AddAffiliateCode";
 import AffiliatesStats from "components/Referrals/AffiliatesStats";
@@ -34,6 +34,7 @@ import JoinReferralCode from "components/Referrals/JoinReferralCode";
 import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "components/Referrals/referralsHelper";
 import TradersStats from "components/Referrals/TradersStats";
 import { BotanixBanner } from "components/Synthetics/BotanixBanner/BotanixBanner";
+import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 import Tabs from "components/Tabs/Tabs";
 
 import "./Referrals.css";
@@ -52,7 +53,7 @@ function Referrals() {
   } else {
     account = walletAccount;
   }
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const [activeTab, setActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, TRADERS);
   const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey<ReferralCodeStats[]>(
     [chainId, "REFERRAL", account],
@@ -73,9 +74,9 @@ function Referrals() {
   const { pendingTxns } = usePendingTxns();
   const localizedTabOptionLabels = useLocalizedMap(TAB_OPTION_LABELS);
 
-  function handleCreateReferralCode(referralCode) {
+  function handleCreateReferralCode(referralCode: string) {
     return registerReferralCode(chainId, referralCode, signer, {
-      sentMsg: t`Referral code submitted!`,
+      sentMsg: t`Referral code submitted.`,
       failMsg: t`Referral code creation failed.`,
       pendingTxns,
     });
@@ -98,6 +99,7 @@ function Referrals() {
           setRecentlyAddedCodes={setRecentlyAddedCodes}
           recentlyAddedCodes={recentlyAddedCodes}
           chainId={chainId}
+          srcChainId={srcChainId}
         />
       );
     } else {
@@ -136,36 +138,42 @@ function Referrals() {
   }
 
   return (
-    <SEO title={getPageTitle(t`Referrals`)}>
-      <div className="default-container page-layout Referrals">
-        <PageTitle
-          isTop
-          title={t`Referrals`}
-          subtitle={
-            !isBotanix ? (
-              <Trans>
-                Get fee discounts and earn rebates through the GMX referral program.
-                <br />
-                For more information, please read the{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/referrals">referral program details</ExternalLink>.
-              </Trans>
-            ) : undefined
-          }
-          qa="referrals-page"
-        />
-        {isBotanix ? (
-          <BotanixBanner />
-        ) : (
-          <>
-            <div className="referral-tab-container">
-              <Tabs options={tabsOptions} selectedValue={activeTab} onChange={setActiveTab} />
+    <AppPageLayout header={<ChainContentHeader />}>
+      <SEO title={getPageTitle(t`Referrals`)}>
+        <div className="default-container page-layout flex flex-col gap-20">
+          <PageTitle
+            isTop
+            title={t`Referrals`}
+            subtitle={
+              !isBotanix ? (
+                <Trans>
+                  Get fee discounts and earn rebates through the GMX referral program.
+                  <br />
+                  For more information, please read the{" "}
+                  <ExternalLink href="https://docs.gmx.io/docs/referrals">referral program details</ExternalLink>.
+                </Trans>
+              ) : undefined
+            }
+            qa="referrals-page"
+          />
+          {isBotanix ? (
+            <BotanixBanner />
+          ) : (
+            <div>
+              <Tabs
+                type="inline"
+                className="mb-16"
+                options={tabsOptions}
+                selectedValue={activeTab}
+                onChange={setActiveTab}
+              />
+
+              {activeTab === AFFILIATES ? renderAffiliatesTab() : renderTradersTab()}
             </div>
-            {activeTab === AFFILIATES ? renderAffiliatesTab() : renderTradersTab()}
-          </>
-        )}
-      </div>
-      <Footer />
-    </SEO>
+          )}
+        </div>
+      </SEO>
+    </AppPageLayout>
   );
 }
 

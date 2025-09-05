@@ -11,21 +11,30 @@ export function PoolsDetailsMarketAmount({
   secondaryValue,
   label,
   tooltipContent,
+  valueClassName,
+  secondaryValueClassName,
 }: {
   value: ReactNode;
   secondaryValue?: string;
   label?: ReactNode;
   tooltipContent?: ReactNode;
+  valueClassName?: string;
+  secondaryValueClassName?: string;
 }) {
   const isMobile = usePoolsIsMobilePage();
 
   const valueContent = (
-    <span className={cx("flex items-center", { "gap-8": !isMobile, "gap-4": isMobile })}>
-      <span className="text-body-medium">{value}</span>
+    <span
+      className={cx("text-body-large flex items-center max-md:text-body-medium", {
+        "gap-8": !isMobile,
+        "gap-4": isMobile,
+      })}
+    >
+      <span className={cx("numbers", valueClassName)}>{value}</span>
       {secondaryValue ? (
-        <span className={cx("text-slate-100", { "text-body-medium": !isMobile, "text-body-small": isMobile })}>
-          {`(${secondaryValue})`}
-        </span>
+        <>
+          <span className={cx("text-typography-secondary numbers", secondaryValueClassName)}>({secondaryValue})</span>
+        </>
       ) : null}
     </span>
   );
@@ -41,8 +50,8 @@ export function PoolsDetailsMarketAmount({
   }
 
   return (
-    <div className="flex flex-col gap-8">
-      <div className="text-body-small text-slate-100">{label}</div>
+    <div className="flex flex-col gap-2">
+      <div className="text-body-medium font-medium text-typography-secondary">{label}</div>
       {valueContentWithTooltip}
     </div>
   );

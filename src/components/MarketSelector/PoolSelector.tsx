@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
-import { BiChevronDown } from "react-icons/bi";
+import { FaChevronDown } from "react-icons/fa6";
 
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import {
@@ -22,6 +22,7 @@ import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import { PoolListItem } from "./PoolListItem";
@@ -33,13 +34,11 @@ function PoolLabel({
   marketInfo,
   showAllPools,
   marketsOptions,
-  size,
   onClick,
 }: {
   marketInfo: GlvOrMarketInfo | undefined;
   showAllPools: boolean;
   marketsOptions: MarketOption[];
-  size: "l" | "m";
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
 }) {
   if (!marketInfo) return "...";
@@ -54,13 +53,11 @@ function PoolLabel({
   if (marketsOptions?.length > 1) {
     return (
       <div
-        className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300", {
-          "text-h2 -mr-5": size === "l",
-        })}
+        className={cx("group flex cursor-pointer items-center gap-4 whitespace-nowrap hover:text-blue-300")}
         onClick={onClick}
       >
         {name ? name : "..."}
-        <BiChevronDown className="text-body-large" />
+        <FaChevronDown className="w-12 text-typography-secondary group-hover:text-blue-300" />
       </div>
     );
   }
@@ -84,7 +81,6 @@ export function PoolSelector({
   showIndexIcon = false,
   withFilters = true,
   favoriteKey,
-  size = "m",
 }: CommonPoolSelectorProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -203,11 +199,12 @@ export function PoolSelector({
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
+        contentPadding={false}
         headerContent={
-          <div className="mt-16">
+          <div className="pb-12">
             <SearchInput
               value={searchKeyword}
-              className={cx("*:!text-body-medium", { "mb-8": withFilters })}
+              className={cx({ "mb-8": withFilters })}
               setValue={setSearchKeyword}
               placeholder={t`Search Pool`}
               onKeyDown={_handleKeyDown}
@@ -220,7 +217,7 @@ export function PoolSelector({
           </div>
         }
       >
-        <div className="TokenSelector-tokens">
+        <VerticalScrollFadeContainer className="flex grow flex-col">
           {filteredOptions.map((option, marketIndex) => {
             return (
               <PoolListItem
@@ -236,12 +233,12 @@ export function PoolSelector({
               />
             );
           })}
-        </div>
-        {filteredOptions.length === 0 && (
-          <div className="text-body-medium text-slate-100">
-            <Trans>No pools matched.</Trans>
-          </div>
-        )}
+          {filteredOptions.length === 0 && (
+            <div className="text-body-medium text-typography-secondary">
+              <Trans>No pools matched</Trans>
+            </div>
+          )}
+        </VerticalScrollFadeContainer>
       </SlideModal>
 
       {marketInfo && (
@@ -262,7 +259,6 @@ export function PoolSelector({
             />
           )}
           <PoolLabel
-            size={size}
             marketInfo={marketInfo}
             showAllPools={showAllPools}
             marketsOptions={marketsOptions}

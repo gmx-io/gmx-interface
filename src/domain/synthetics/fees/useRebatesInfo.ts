@@ -3,9 +3,12 @@ import { getAddress } from "ethers";
 import { useMemo } from "react";
 import useSWR from "swr";
 
-import { expandDecimals } from "lib/numbers";
-import { getSyntheticsGraphClient } from "lib/subgraph";
+import { expandDecimals, PRECISION } from "lib/numbers";
+import { getSubsquidGraphClient } from "lib/subgraph";
 import useWallet from "lib/wallets/useWallet";
+import { nowInSeconds } from "sdk/utils/time";
+
+import { PositionsConstants } from "../positions/usePositionsConstants";
 
 type RawClaimableCollateral = {
   marketAddress: string;
@@ -14,6 +17,7 @@ type RawClaimableCollateral = {
   value: string;
   factor: string;
   factorByTime: string;
+  reductionFactor: string;
   id: string;
 };
 
@@ -24,6 +28,7 @@ export type RebateInfoItem = {
   timeKey: string;
   tokenAddress: string;
   valueByFactor: bigint;
+  reductionFactor: bigint;
   id: string;
 };
 
@@ -32,9 +37,18 @@ export type RebatesInfoResult = {
   claimablePositionPriceImpactFees: RebateInfoItem[];
 };
 
-export function useRebatesInfoRequest(chainId: number, enabled: boolean): RebatesInfoResult {
+export function useRebatesInfoRequest(
+  chainId: number,
+  {
+    enabled,
+    positionsConstants,
+  }: {
+    enabled: boolean;
+    positionsConstants: PositionsConstants | undefined;
+  }
+): RebatesInfoResult {
   const { account } = useWallet();
-  const client = getSyntheticsGraphClient(chainId);
+  const client = getSubsquidGraphClient(chainId);
 
   const key = enabled && chainId && client && account ? [chainId, "useRebatesInfo", account] : null;
 
@@ -42,7 +56,7 @@ export function useRebatesInfoRequest(chainId: number, enabled: boolean): Rebate
     fetcher: async () => {
       const query = gql(`{
         claimableCollaterals(
-          where: { account: "${account!.toLowerCase()}", claimed: false }
+          where: { account_eq: "${account}", claimed_eq: false }
         ) {
           id
           marketAddress
@@ -50,6 +64,7 @@ export function useRebatesInfoRequest(chainId: number, enabled: boolean): Rebate
           timeKey
           value
           factor
+          reductionFactor
           factorByTime
         }
       }`);
@@ -61,21 +76,43 @@ export function useRebatesInfoRequest(chainId: number, enabled: boolean): Rebate
   });
 
   const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useMemo(() => {
+    if (!positionsConstants) {
+      return {
+        accruedPositionPriceImpactFees: [],
+        claimablePositionPriceImpactFees: [],
+      };
+    }
+
     const res: {
       accruedPositionPriceImpactFees: RebateInfoItem[];
       claimablePositionPriceImpactFees: RebateInfoItem[];
     } = { accruedPositionPriceImpactFees: [], claimablePositionPriceImpactFees: [] };
 
     data?.forEach((rawRebateInfo) => {
-      let factor = BigInt(rawRebateInfo.factor);
       const factorByTime = BigInt(rawRebateInfo.factorByTime);
+      const reductionFactor = BigInt(rawRebateInfo.reductionFactor);
+      const timeKey = BigInt(rawRebateInfo.timeKey);
+      const value = BigInt(rawRebateInfo.value);
+
+      let factor = BigInt(rawRebateInfo.factor);
 
       if (factorByTime > factor) {
         factor = factorByTime;
       }
 
-      const value = BigInt(rawRebateInfo.value);
-      const valueByFactor = (value * factor) / expandDecimals(1, 30);
+      const timeDiff = BigInt(nowInSeconds()) - timeKey * positionsConstants.claimableCollateralTimeDivisor;
+
+      if (factor === 0n && reductionFactor === 0n && timeDiff > positionsConstants.claimableCollateralDelay) {
+        factor = PRECISION;
+      }
+
+      if (factor > reductionFactor) {
+        factor -= reductionFactor;
+      } else {
+        factor = 0n;
+      }
+
+      let valueByFactor = (value * factor) / expandDecimals(1, 30);
 
       const rebateInfo: RebateInfoItem = {
         factor,
@@ -84,6 +121,7 @@ export function useRebatesInfoRequest(chainId: number, enabled: boolean): Rebate
         timeKey: rawRebateInfo.timeKey,
         marketAddress: getAddress(rawRebateInfo.marketAddress),
         tokenAddress: getAddress(rawRebateInfo.tokenAddress),
+        reductionFactor,
         id: rawRebateInfo.id,
       };
 
@@ -101,7 +139,7 @@ export function useRebatesInfoRequest(chainId: number, enabled: boolean): Rebate
     });
 
     return res;
-  }, [data]);
+  }, [data, positionsConstants]);
 
   return {
     accruedPositionPriceImpactFees,

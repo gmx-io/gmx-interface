@@ -17,6 +17,7 @@ import { getExpressProvider, getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { CustomErrorName, ErrorData, TxErrorType, extendError, isContractError, parseError } from "sdk/utils/errors";
 import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
@@ -43,7 +44,7 @@ export function isSimulationPassed(errorData: ErrorData) {
   return isContractError(errorData, CustomErrorName.EndOfOracleSimulation);
 }
 
-export async function simulateExecution(chainId: number, p: SimulateExecuteParams) {
+export async function simulateExecution(chainId: ContractsChainId, p: SimulateExecuteParams) {
   let provider: JsonRpcProvider;
 
   if (p.isExpress) {

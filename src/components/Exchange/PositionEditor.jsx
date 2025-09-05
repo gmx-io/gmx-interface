@@ -55,7 +55,7 @@ const EDIT_OPTIONS_LABELS = {
 
 const ERROR_TOOLTIP_MSG = {
   [ErrorCode.InvalidLiqPrice]: msg`Liquidation price would cross mark price.`,
-  [ErrorCode.InsufficientDepositAmount]: msg`Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x`,
+  [ErrorCode.InsufficientDepositAmount]: msg`Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x.`,
 };
 
 export default function PositionEditor(props) {
@@ -312,28 +312,28 @@ export default function PositionEditor(props) {
     }
     if (isSwapping) {
       if (isDeposit) {
-        return t`Depositing...`;
+        return t`Depositing`;
       }
-      return t`Withdrawing...`;
+      return t`Withdrawing`;
     }
 
     if (isApproving) {
-      return t`Approving ${collateralToken.assetSymbol ?? collateralToken.symbol}...`;
+      return t`Approving ${collateralToken.assetSymbol ?? collateralToken.symbol}`;
     }
     if (needApproval) {
       return t`Approve ${collateralToken.assetSymbol ?? collateralToken.symbol}`;
     }
 
     if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
-      return t`Enabling Leverage`;
+      return t`Enabling leverage`;
     }
 
     if (isPositionRouterApproving) {
-      return t`Enabling Leverage...`;
+      return t`Enabling leverage`;
     }
 
     if (needPositionRouterApproval) {
-      return t`Enable Leverage`;
+      return t`Enable leverage`;
     }
 
     if (isDeposit) {
@@ -595,7 +595,6 @@ export default function PositionEditor(props) {
                     inputValue={fromValue}
                     onInputValueChange={(e) => setFromValue(e.target.value)}
                     topLeftLabel={isDeposit ? t`Deposit` : t`Withdraw`}
-                    isBottomLeftValueMuted={convertedAmount === 0n}
                     bottomLeftValue={
                       convertedAmountFormatted
                         ? `${convertedAmountFormatted} ${isDeposit ? "USD" : position.collateralToken.symbol}`
@@ -680,7 +679,7 @@ export default function PositionEditor(props) {
                       {nextLiquidationPrice === undefined && (
                         <div>
                           {fromAmount === undefined &&
-                            `$${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}`}
+                            `$\u200a${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}`}
                           {fromAmount !== undefined && "-"}
                         </div>
                       )}

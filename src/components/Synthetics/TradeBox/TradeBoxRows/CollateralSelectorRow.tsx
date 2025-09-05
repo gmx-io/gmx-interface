@@ -7,16 +7,15 @@ import {
   selectTradeboxHasExistingLimitOrder,
   selectTradeboxHasExistingPosition,
   selectTradeboxMarketAddress,
-  selectTradeboxMarketInfo,
   selectTradeboxSelectedCollateralTokenSymbol,
   selectTradeboxSetCollateralAddress,
   selectTradeboxTradeFlags,
-  selectTradeboxTradeType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxAvailableAndDisabledTokensForCollateral } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxAvailableAndDisabledTokensForCollateral";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -37,14 +36,17 @@ export function CollateralSelectorRow(p: Props) {
 
   const warnings = useCollateralWarnings();
   const collateralInTooltipContent = useCollateralInTooltipContent();
-  const marketInfo = useSelector(selectTradeboxMarketInfo);
-  const tradeType = useSelector(selectTradeboxTradeType);
 
   return (
     <>
       <SyntheticsInfoRow
         label={
-          <TooltipWithPortal position="left-start" content={collateralInTooltipContent}>
+          <TooltipWithPortal
+            position="left-start"
+            content={collateralInTooltipContent}
+            variant="icon"
+            closeDelay={1000000}
+          >
             <Trans>Collateral In</Trans>
           </TooltipWithPortal>
         }
@@ -54,8 +56,6 @@ export function CollateralSelectorRow(p: Props) {
             options={availableTokens}
             disabledOptions={disabledTokens}
             selectedTokenSymbol={selectedTokenName}
-            marketInfo={marketInfo}
-            tradeType={tradeType}
           />
         }
       />
@@ -100,15 +100,14 @@ function useCollateralWarnings() {
             <Trans>
               You have an existing position with {collateralWithPosition.symbol} as collateral. This action will not
               apply for that position.{" "}
-              <span
-                className="clickable muted underline"
+              <ColorfulButtonLink
+                color="blue"
                 onClick={() => {
                   onSelectCollateralAddress(collateralWithPosition.address);
                 }}
               >
                 Switch to {collateralWithPosition.symbol} collateral
-              </span>
-              .
+              </ColorfulButtonLink>
             </Trans>
           </AlertInfoCard>
         );
@@ -118,15 +117,14 @@ function useCollateralWarnings() {
             <Trans>
               You have an existing position with {collateralWithPosition.symbol} as collateral. This Order will not be
               valid for that Position.{" "}
-              <span
-                className="clickable muted underline"
+              <ColorfulButtonLink
+                color="blue"
                 onClick={() => {
                   onSelectCollateralAddress(collateralWithPosition.address);
                 }}
               >
                 Switch to {collateralWithPosition.symbol} collateral
-              </span>
-              .
+              </ColorfulButtonLink>
             </Trans>
           </AlertInfoCard>
         );
@@ -141,15 +139,14 @@ function useCollateralWarnings() {
         <AlertInfoCard key="showHasExistingOrderWithDifferentCollateral">
           <Trans>
             You have an existing limit order with {symbol} as collateral.{" "}
-            <span
-              className="clickable muted underline"
+            <ColorfulButtonLink
+              color="blue"
               onClick={() => {
                 onSelectCollateralAddress(address);
               }}
             >
               Switch to {symbol} collateral
-            </span>
-            .
+            </ColorfulButtonLink>
           </Trans>
         </AlertInfoCard>
       );

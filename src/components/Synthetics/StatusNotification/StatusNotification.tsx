@@ -1,21 +1,17 @@
-import cx from "classnames";
 import { ReactNode, memo } from "react";
 
 interface Props {
   children: ReactNode;
   title: ReactNode;
-  hasError?: boolean;
 }
 
-const StatusNotification = memo<Props>(function StatusNotification({ children, title, hasError }) {
+const StatusNotification = memo<Props>(function StatusNotification({ children, title }) {
   return (
     <div className="StatusNotification">
-      <div className="StatusNotification-content">
+      <div className="relative z-[1]">
         <div className="StatusNotification-title">{title}</div>
-        <div className="StatusNotification-items">{children}</div>
+        <div className="mt-10">{children}</div>
       </div>
-
-      <div className={cx("StatusNotification-background", { error: hasError })} />
     </div>
   );
 });

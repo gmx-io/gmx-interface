@@ -27,16 +27,17 @@ export interface ReferralStorageInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "BASIS_POINTS"
+      | "acceptOwnership"
       | "codeOwners"
       | "getTraderReferralInfo"
       | "gov"
       | "govSetCodeOwner"
       | "isHandler"
+      | "pendingGov"
       | "referrerDiscountShares"
       | "referrerTiers"
       | "registerCode"
       | "setCodeOwner"
-      | "setGov"
       | "setHandler"
       | "setReferrerDiscountShare"
       | "setReferrerTier"
@@ -45,6 +46,7 @@ export interface ReferralStorageInterface extends Interface {
       | "setTraderReferralCodeByUser"
       | "tiers"
       | "traderReferralCodes"
+      | "transferOwnership"
   ): FunctionFragment;
 
   getEvent(
@@ -52,6 +54,7 @@ export interface ReferralStorageInterface extends Interface {
       | "GovSetCodeOwner"
       | "RegisterCode"
       | "SetCodeOwner"
+      | "SetGov"
       | "SetHandler"
       | "SetReferrerDiscountShare"
       | "SetReferrerTier"
@@ -60,16 +63,17 @@ export interface ReferralStorageInterface extends Interface {
   ): EventFragment;
 
   encodeFunctionData(functionFragment: "BASIS_POINTS", values?: undefined): string;
+  encodeFunctionData(functionFragment: "acceptOwnership", values?: undefined): string;
   encodeFunctionData(functionFragment: "codeOwners", values: [BytesLike]): string;
   encodeFunctionData(functionFragment: "getTraderReferralInfo", values: [AddressLike]): string;
   encodeFunctionData(functionFragment: "gov", values?: undefined): string;
   encodeFunctionData(functionFragment: "govSetCodeOwner", values: [BytesLike, AddressLike]): string;
   encodeFunctionData(functionFragment: "isHandler", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "pendingGov", values?: undefined): string;
   encodeFunctionData(functionFragment: "referrerDiscountShares", values: [AddressLike]): string;
   encodeFunctionData(functionFragment: "referrerTiers", values: [AddressLike]): string;
   encodeFunctionData(functionFragment: "registerCode", values: [BytesLike]): string;
   encodeFunctionData(functionFragment: "setCodeOwner", values: [BytesLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "setGov", values: [AddressLike]): string;
   encodeFunctionData(functionFragment: "setHandler", values: [AddressLike, boolean]): string;
   encodeFunctionData(functionFragment: "setReferrerDiscountShare", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "setReferrerTier", values: [AddressLike, BigNumberish]): string;
@@ -78,18 +82,20 @@ export interface ReferralStorageInterface extends Interface {
   encodeFunctionData(functionFragment: "setTraderReferralCodeByUser", values: [BytesLike]): string;
   encodeFunctionData(functionFragment: "tiers", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "traderReferralCodes", values: [AddressLike]): string;
+  encodeFunctionData(functionFragment: "transferOwnership", values: [AddressLike]): string;
 
   decodeFunctionResult(functionFragment: "BASIS_POINTS", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "acceptOwnership", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "codeOwners", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getTraderReferralInfo", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "gov", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "govSetCodeOwner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "isHandler", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "pendingGov", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "referrerDiscountShares", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "referrerTiers", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "registerCode", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setCodeOwner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setGov", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setReferrerDiscountShare", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setReferrerTier", data: BytesLike): Result;
@@ -98,6 +104,7 @@ export interface ReferralStorageInterface extends Interface {
   decodeFunctionResult(functionFragment: "setTraderReferralCodeByUser", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "tiers", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "traderReferralCodes", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "transferOwnership", data: BytesLike): Result;
 }
 
 export namespace GovSetCodeOwnerEvent {
@@ -133,6 +140,19 @@ export namespace SetCodeOwnerEvent {
     account: string;
     newAccount: string;
     code: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace SetGovEvent {
+  export type InputTuple = [prevGov: AddressLike, nextGov: AddressLike];
+  export type OutputTuple = [prevGov: string, nextGov: string];
+  export interface OutputObject {
+    prevGov: string;
+    nextGov: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -241,6 +261,8 @@ export interface ReferralStorage extends BaseContract {
 
   BASIS_POINTS: TypedContractMethod<[], [bigint], "view">;
 
+  acceptOwnership: TypedContractMethod<[], [void], "nonpayable">;
+
   codeOwners: TypedContractMethod<[arg0: BytesLike], [string], "view">;
 
   getTraderReferralInfo: TypedContractMethod<[_account: AddressLike], [[string, string]], "view">;
@@ -251,6 +273,8 @@ export interface ReferralStorage extends BaseContract {
 
   isHandler: TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
 
+  pendingGov: TypedContractMethod<[], [string], "view">;
+
   referrerDiscountShares: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
 
   referrerTiers: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
@@ -258,8 +282,6 @@ export interface ReferralStorage extends BaseContract {
   registerCode: TypedContractMethod<[_code: BytesLike], [void], "nonpayable">;
 
   setCodeOwner: TypedContractMethod<[_code: BytesLike, _newAccount: AddressLike], [void], "nonpayable">;
-
-  setGov: TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
 
   setHandler: TypedContractMethod<[_handler: AddressLike, _isActive: boolean], [void], "nonpayable">;
 
@@ -285,9 +307,12 @@ export interface ReferralStorage extends BaseContract {
 
   traderReferralCodes: TypedContractMethod<[arg0: AddressLike], [string], "view">;
 
+  transferOwnership: TypedContractMethod<[_newGov: AddressLike], [void], "nonpayable">;
+
   getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
   getFunction(nameOrSignature: "BASIS_POINTS"): TypedContractMethod<[], [bigint], "view">;
+  getFunction(nameOrSignature: "acceptOwnership"): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(nameOrSignature: "codeOwners"): TypedContractMethod<[arg0: BytesLike], [string], "view">;
   getFunction(
     nameOrSignature: "getTraderReferralInfo"
@@ -297,13 +322,13 @@ export interface ReferralStorage extends BaseContract {
     nameOrSignature: "govSetCodeOwner"
   ): TypedContractMethod<[_code: BytesLike, _newAccount: AddressLike], [void], "nonpayable">;
   getFunction(nameOrSignature: "isHandler"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  getFunction(nameOrSignature: "pendingGov"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "referrerDiscountShares"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
   getFunction(nameOrSignature: "referrerTiers"): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
   getFunction(nameOrSignature: "registerCode"): TypedContractMethod<[_code: BytesLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setCodeOwner"
   ): TypedContractMethod<[_code: BytesLike, _newAccount: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "setGov"): TypedContractMethod<[_gov: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setHandler"
   ): TypedContractMethod<[_handler: AddressLike, _isActive: boolean], [void], "nonpayable">;
@@ -334,6 +359,7 @@ export interface ReferralStorage extends BaseContract {
     "view"
   >;
   getFunction(nameOrSignature: "traderReferralCodes"): TypedContractMethod<[arg0: AddressLike], [string], "view">;
+  getFunction(nameOrSignature: "transferOwnership"): TypedContractMethod<[_newGov: AddressLike], [void], "nonpayable">;
 
   getEvent(
     key: "GovSetCodeOwner"
@@ -348,6 +374,9 @@ export interface ReferralStorage extends BaseContract {
   getEvent(
     key: "SetCodeOwner"
   ): TypedContractEvent<SetCodeOwnerEvent.InputTuple, SetCodeOwnerEvent.OutputTuple, SetCodeOwnerEvent.OutputObject>;
+  getEvent(
+    key: "SetGov"
+  ): TypedContractEvent<SetGovEvent.InputTuple, SetGovEvent.OutputTuple, SetGovEvent.OutputObject>;
   getEvent(
     key: "SetHandler"
   ): TypedContractEvent<SetHandlerEvent.InputTuple, SetHandlerEvent.OutputTuple, SetHandlerEvent.OutputObject>;
@@ -409,6 +438,13 @@ export interface ReferralStorage extends BaseContract {
       SetCodeOwnerEvent.OutputTuple,
       SetCodeOwnerEvent.OutputObject
     >;
+
+    "SetGov(address,address)": TypedContractEvent<
+      SetGovEvent.InputTuple,
+      SetGovEvent.OutputTuple,
+      SetGovEvent.OutputObject
+    >;
+    SetGov: TypedContractEvent<SetGovEvent.InputTuple, SetGovEvent.OutputTuple, SetGovEvent.OutputObject>;
 
     "SetHandler(address,bool)": TypedContractEvent<
       SetHandlerEvent.InputTuple,

@@ -159,22 +159,6 @@ const _abi = [
         name: "tokensLength",
         type: "uint256",
       },
-    ],
-    name: "InvalidClaimAffiliateRewardsInput",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "marketsLength",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "tokensLength",
-        type: "uint256",
-      },
       {
         internalType: "uint256",
         name: "timeKeysLength",
@@ -182,38 +166,6 @@ const _abi = [
       },
     ],
     name: "InvalidClaimCollateralInput",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "marketsLength",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "tokensLength",
-        type: "uint256",
-      },
-    ],
-    name: "InvalidClaimFundingFeesInput",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "marketsLength",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "tokensLength",
-        type: "uint256",
-      },
-    ],
-    name: "InvalidClaimUiFeesInput",
     type: "error",
   },
   {
@@ -357,6 +309,25 @@ const _abi = [
     ],
     name: "Unauthorized",
     type: "error",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "string",
+        name: "reason",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "bytes",
+        name: "returndata",
+        type: "bytes",
+      },
+    ],
+    name: "TokenTransferReverted",
+    type: "event",
   },
   {
     inputs: [
@@ -536,44 +507,51 @@ const _abi = [
       {
         components: [
           {
-            internalType: "address",
-            name: "receiver",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "callbackContract",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "uiFeeReceiver",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "market",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "initialLongToken",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "initialShortToken",
-            type: "address",
-          },
-          {
-            internalType: "address[]",
-            name: "longTokenSwapPath",
-            type: "address[]",
-          },
-          {
-            internalType: "address[]",
-            name: "shortTokenSwapPath",
-            type: "address[]",
+            components: [
+              {
+                internalType: "address",
+                name: "receiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "callbackContract",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "uiFeeReceiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "market",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "initialLongToken",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "initialShortToken",
+                type: "address",
+              },
+              {
+                internalType: "address[]",
+                name: "longTokenSwapPath",
+                type: "address[]",
+              },
+              {
+                internalType: "address[]",
+                name: "shortTokenSwapPath",
+                type: "address[]",
+              },
+            ],
+            internalType: "struct IDepositUtils.CreateDepositParamsAddresses",
+            name: "addresses",
+            type: "tuple",
           },
           {
             internalType: "uint256",
@@ -595,8 +573,13 @@ const _abi = [
             name: "callbackGasLimit",
             type: "uint256",
           },
+          {
+            internalType: "bytes32[]",
+            name: "dataList",
+            type: "bytes32[]",
+          },
         ],
-        internalType: "struct DepositUtils.CreateDepositParams",
+        internalType: "struct IDepositUtils.CreateDepositParams",
         name: "params",
         type: "tuple",
       },
@@ -735,6 +718,11 @@ const _abi = [
             name: "referralCode",
             type: "bytes32",
           },
+          {
+            internalType: "bytes32[]",
+            name: "dataList",
+            type: "bytes32[]",
+          },
         ],
         internalType: "struct IBaseOrderUtils.CreateOrderParams",
         name: "params",
@@ -757,29 +745,36 @@ const _abi = [
       {
         components: [
           {
-            internalType: "address",
-            name: "receiver",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "callbackContract",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "uiFeeReceiver",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "fromMarket",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "toMarket",
-            type: "address",
+            components: [
+              {
+                internalType: "address",
+                name: "receiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "callbackContract",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "uiFeeReceiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "fromMarket",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "toMarket",
+                type: "address",
+              },
+            ],
+            internalType: "struct IShiftUtils.CreateShiftParamsAddresses",
+            name: "addresses",
+            type: "tuple",
           },
           {
             internalType: "uint256",
@@ -796,8 +791,13 @@ const _abi = [
             name: "callbackGasLimit",
             type: "uint256",
           },
+          {
+            internalType: "bytes32[]",
+            name: "dataList",
+            type: "bytes32[]",
+          },
         ],
-        internalType: "struct ShiftUtils.CreateShiftParams",
+        internalType: "struct IShiftUtils.CreateShiftParams",
         name: "params",
         type: "tuple",
       },
@@ -818,34 +818,41 @@ const _abi = [
       {
         components: [
           {
-            internalType: "address",
-            name: "receiver",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "callbackContract",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "uiFeeReceiver",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "market",
-            type: "address",
-          },
-          {
-            internalType: "address[]",
-            name: "longTokenSwapPath",
-            type: "address[]",
-          },
-          {
-            internalType: "address[]",
-            name: "shortTokenSwapPath",
-            type: "address[]",
+            components: [
+              {
+                internalType: "address",
+                name: "receiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "callbackContract",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "uiFeeReceiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "market",
+                type: "address",
+              },
+              {
+                internalType: "address[]",
+                name: "longTokenSwapPath",
+                type: "address[]",
+              },
+              {
+                internalType: "address[]",
+                name: "shortTokenSwapPath",
+                type: "address[]",
+              },
+            ],
+            internalType: "struct IWithdrawalUtils.CreateWithdrawalParamsAddresses",
+            name: "addresses",
+            type: "tuple",
           },
           {
             internalType: "uint256",
@@ -872,8 +879,13 @@ const _abi = [
             name: "callbackGasLimit",
             type: "uint256",
           },
+          {
+            internalType: "bytes32[]",
+            name: "dataList",
+            type: "bytes32[]",
+          },
         ],
-        internalType: "struct WithdrawalUtils.CreateWithdrawalParams",
+        internalType: "struct IWithdrawalUtils.CreateWithdrawalParams",
         name: "params",
         type: "tuple",
       },
@@ -933,34 +945,41 @@ const _abi = [
       {
         components: [
           {
-            internalType: "address",
-            name: "receiver",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "callbackContract",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "uiFeeReceiver",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "market",
-            type: "address",
-          },
-          {
-            internalType: "address[]",
-            name: "longTokenSwapPath",
-            type: "address[]",
-          },
-          {
-            internalType: "address[]",
-            name: "shortTokenSwapPath",
-            type: "address[]",
+            components: [
+              {
+                internalType: "address",
+                name: "receiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "callbackContract",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "uiFeeReceiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "market",
+                type: "address",
+              },
+              {
+                internalType: "address[]",
+                name: "longTokenSwapPath",
+                type: "address[]",
+              },
+              {
+                internalType: "address[]",
+                name: "shortTokenSwapPath",
+                type: "address[]",
+              },
+            ],
+            internalType: "struct IWithdrawalUtils.CreateWithdrawalParamsAddresses",
+            name: "addresses",
+            type: "tuple",
           },
           {
             internalType: "uint256",
@@ -987,8 +1006,13 @@ const _abi = [
             name: "callbackGasLimit",
             type: "uint256",
           },
+          {
+            internalType: "bytes32[]",
+            name: "dataList",
+            type: "bytes32[]",
+          },
         ],
-        internalType: "struct WithdrawalUtils.CreateWithdrawalParams",
+        internalType: "struct IWithdrawalUtils.CreateWithdrawalParams",
         name: "params",
         type: "tuple",
       },
@@ -1058,7 +1082,7 @@ const _abi = [
     ],
     name: "makeExternalCalls",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
     type: "function",
   },
   {

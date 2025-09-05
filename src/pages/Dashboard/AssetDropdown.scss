@@ -25,19 +25,19 @@
   cursor: pointer;
   color: var(--color-slate-100);
   text-decoration: none;
-  padding: 1rem 0.8rem;
+  padding: 8px 12px;
   font-size: var(--font-size-body-medium);
   text-align: left;
 
   &:hover {
-    background: var(--dark-blue-hover);
-    color: var(--color-white);
-    border-radius: 0.4rem;
+    background: var(--color-slate-800);
+    color: var(--color-typography-primary);
   }
 
   p {
     margin: 0;
-    margin-left: 0.5rem;
+    margin-left: 8px;
+    font-weight: 500;
   }
 
   .asset-item-icon {

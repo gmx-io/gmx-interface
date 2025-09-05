@@ -14,12 +14,13 @@
 
 .text-input {
   color: var(--color-slate-100);
-  border: 1px solid var(--color-gray-700);
+  border-radius: 8px;
   font-size: var(--font-size-body-medium);
+  background-color: var(--color-slate-800);
   width: 100%;
   box-sizing: border-box;
 
   &::placeholder {
-    color: var(--color-slate-500);
+    color: var(--color-slate-100);
   }
 }

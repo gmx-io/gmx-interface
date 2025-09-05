@@ -2,13 +2,13 @@ import { createPublicClient, http, zeroAddress } from "viem";
 import { describe, it } from "vitest";
 
 import { abis } from "abis";
-import { getChainName, getViemChain, SUPPORTED_CHAIN_IDS } from "configs/chains";
+import { getChainName, getViemChain, CONTRACTS_CHAIN_IDS } from "configs/chains";
 import { getV2Tokens } from "configs/tokens";
 
 const validPermitErrorParts = ["ERC20Permit", "permit-expired", "permit is expired"];
 
 describe("UI token permit configs", () => {
-  SUPPORTED_CHAIN_IDS.forEach(async (chainId) => {
+  CONTRACTS_CHAIN_IDS.forEach(async (chainId) => {
     const publicClient = createPublicClient({
       chain: getViemChain(chainId) as any,
       transport: http(),

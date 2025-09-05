@@ -1,8 +1,7 @@
 import { defined } from "lib/guards";
 import { bigintToNumber } from "lib/numbers";
 import { USD_DECIMALS } from "sdk/configs/factors";
-
-import { getMidPrice } from "../tokens";
+import { getMidPrice } from "sdk/utils/tokens";
 
 export type PriceSnapshot = {
   minPrice: string;

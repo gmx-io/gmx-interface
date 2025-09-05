@@ -9,7 +9,7 @@ type AsyncFnParams<D extends object> = {
 
 type AsyncFn<T, D extends object> = (args: AsyncFnParams<D>) => Promise<T | RetryResult<T>>;
 
-type AsyncResult<T> = {
+export type AsyncResult<T> = {
   data: T | undefined;
   isLoading: boolean;
   error: Error | undefined;
@@ -72,6 +72,10 @@ export function useThrottledAsync<T, D extends object>(
   const throttledFnRef = useRef<ReturnType<typeof throttle>>();
 
   const isRetryRef = useRef(false);
+
+  useEffect(() => {
+    setDynamicThrottleMs(throttleMs);
+  }, [throttleMs]);
 
   useEffect(() => {
     latestHandlerRef.current = async (args: D) => {

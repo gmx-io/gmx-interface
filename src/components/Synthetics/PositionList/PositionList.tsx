@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { memo, useCallback, useState } from "react";
 import { useMedia } from "react-use";
 
@@ -14,10 +14,12 @@ import { getByKey } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
 
+import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import PositionShare from "components/Exchange/PositionShare";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
-import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { Table, TableTh, TableTheadTr } from "components/Table/Table";
+import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode, showCurtain?: boolean) => void;
@@ -29,7 +31,7 @@ type Props = {
 };
 
 export function PositionList(p: Props) {
-  const { onClosePositionClick, onOrdersClick, onSelectPositionClick, openSettings, onCancelOrder, hideActions } = p;
+  const { onClosePositionClick, onOrdersClick, onSelectPositionClick, onCancelOrder, hideActions } = p;
   const positionsInfoData = usePositionsInfoData();
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
@@ -50,15 +52,17 @@ export function PositionList(p: Props) {
   }, []);
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const isLoading = useIsPositionsLoading();
-  const isMobile = useMedia("(max-width: 1300px)");
+  const isMobile = useMedia("(max-width: 1024px)");
 
   return (
-    <div>
+    <div className="flex grow flex-col">
       {isMobile && (
         <>
-          {positions.length === 0 && (
-            <div className="App-card text-slate-100">{isLoading ? t`Loading...` : t`No open positions`}</div>
-          )}
+          <EmptyTableContent
+            isLoading={isLoading}
+            isEmpty={positions.length === 0}
+            emptyText={<Trans>No open positions</Trans>}
+          />
           <div className="grid grid-cols-1 gap-8 min-[800px]:grid-cols-2">
             {!isLoading &&
               positions.map((position) => (
@@ -71,7 +75,6 @@ export function PositionList(p: Props) {
                   onSelectPositionClick={onSelectPositionClick}
                   isLarge={false}
                   onShareClick={handleSharePositionClick}
-                  openSettings={openSettings}
                   hideActions={hideActions}
                   onCancelOrder={onCancelOrder}
                 />
@@ -81,64 +84,66 @@ export function PositionList(p: Props) {
       )}
 
       {!isMobile && (
-        <Table>
-          <thead className="text-body-medium">
-            <TableTheadTr bordered>
-              <TableTh>
-                <Trans>Position</Trans>
-              </TableTh>
-              <TableTh>
-                <Trans>Size</Trans>
-              </TableTh>
-              <TableTh>
-                <Trans>Net Value</Trans>
-              </TableTh>
-              <TableTh>
-                <Trans>Collateral</Trans>
-              </TableTh>
-              <TableTh>
-                <Trans>Entry Price</Trans>
-              </TableTh>
-              <TableTh>
-                <Trans>Mark Price</Trans>
-              </TableTh>
-              <TableTh>
-                <Trans>Liq. Price</Trans>
-              </TableTh>
-              {!isLoading && !p.hideActions && (
-                <>
-                  <TableTh></TableTh>
-                  <TableTh></TableTh>
-                </>
-              )}
-            </TableTheadTr>
-          </thead>
-          <tbody>
-            {positions.length === 0 && (
-              <TableTr hoverable={false} bordered={false}>
-                <TableTd colSpan={15}>
-                  <div className="text-slate-100">{isLoading ? t`Loading...` : t`No open positions`}</div>
-                </TableTd>
-              </TableTr>
-            )}
-            {!isLoading &&
-              positions.map((position) => (
-                <PositionItemWrapper
-                  key={position.key}
-                  position={position}
-                  onEditCollateralClick={setEditingPositionKey}
-                  onClosePositionClick={onClosePositionClick}
-                  onOrdersClick={onOrdersClick}
-                  onSelectPositionClick={onSelectPositionClick}
-                  isLarge
-                  onShareClick={handleSharePositionClick}
-                  openSettings={openSettings}
-                  hideActions={hideActions}
-                  onCancelOrder={onCancelOrder}
-                />
-              ))}
-          </tbody>
-        </Table>
+        <TableScrollFadeContainer
+          disableScrollFade={positions.length === 0}
+          className="flex grow flex-col bg-slate-900"
+        >
+          <Table className="!w-[max(100%,900px)] table-fixed">
+            <thead className="text-body-medium">
+              <TableTheadTr>
+                <TableTh className="w-[18%]">
+                  <Trans>Position</Trans>
+                </TableTh>
+                <TableTh className="w-[10%]">
+                  <Trans>Size</Trans>
+                </TableTh>
+                <TableTh className="w-[14%]">
+                  <Trans>Net Value</Trans>
+                </TableTh>
+                <TableTh className="w-[14%]">
+                  <Trans>Collateral</Trans>
+                </TableTh>
+                <TableTh className="w-[10%]">
+                  <Trans>Entry Price</Trans>
+                </TableTh>
+                <TableTh className="w-[10%]">
+                  <Trans>Mark Price</Trans>
+                </TableTh>
+                <TableTh className="w-[10%]">
+                  <Trans>Liq. Price</Trans>
+                </TableTh>
+                {!isLoading && !p.hideActions && (
+                  <>
+                    <TableTh className="w-[124px]"></TableTh>
+                  </>
+                )}
+              </TableTheadTr>
+            </thead>
+            <tbody>
+              {!isLoading &&
+                positions.map((position) => (
+                  <PositionItemWrapper
+                    key={position.key}
+                    position={position}
+                    onEditCollateralClick={setEditingPositionKey}
+                    onClosePositionClick={onClosePositionClick}
+                    onOrdersClick={onOrdersClick}
+                    onSelectPositionClick={onSelectPositionClick}
+                    isLarge
+                    onShareClick={handleSharePositionClick}
+                    hideActions={hideActions}
+                    onCancelOrder={onCancelOrder}
+                  />
+                ))}
+            </tbody>
+          </Table>
+
+          <EmptyTableContent
+            isLoading={isLoading}
+            isEmpty={positions.length === 0}
+            emptyText={<Trans>No open positions</Trans>}
+          />
+        </TableScrollFadeContainer>
       )}
       {positionToShare && (
         <PositionShare
@@ -170,7 +175,6 @@ const PositionItemWrapper = memo(
     onOrdersClick,
     onSelectPositionClick,
     onShareClick,
-    openSettings,
     onCancelOrder,
   }: {
     position: PositionInfo;
@@ -180,7 +184,6 @@ const PositionItemWrapper = memo(
     onSelectPositionClick: (positionKey: string, tradeMode: TradeMode | undefined, showCurtain?: boolean) => void;
     isLarge: boolean;
     onShareClick: (positionKey: string) => void;
-    openSettings: () => void;
     hideActions: boolean | undefined;
     onCancelOrder: (orderKey: string) => void;
   }) => {
@@ -216,7 +219,6 @@ const PositionItemWrapper = memo(
         onSelectPositionClick={handleSelectPositionClick}
         showPnlAfterFees={showPnlAfterFees}
         isLarge={isLarge}
-        openSettings={openSettings}
         hideActions={hideActions}
         onShareClick={handleShareClick}
         onCancelOrder={handleCancelOrder}

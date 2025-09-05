@@ -6,6 +6,8 @@ import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { callContract } from "lib/contracts";
 import { isAddressZero } from "lib/legacy";
 import { abis } from "sdk/abis";
+import type { ContractsChainId } from "sdk/configs/chains";
+import { IGlvWithdrawalUtils } from "typechain-types/GlvRouter";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -22,7 +24,7 @@ interface GlvWithdrawalParams extends Omit<CreateWithdrawalParams, "marketTokenA
   glvTokenAddress: string;
 }
 
-export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p: GlvWithdrawalParams) {
+export async function createGlvWithdrawalTxn(chainId: ContractsChainId, signer: Signer, p: GlvWithdrawalParams) {
   const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), abis.GlvRouter, signer);
   const withdrawalVaultAddress = getContract(chainId, "GlvVault");
 
@@ -42,19 +44,22 @@ export async function createGlvWithdrawalTxn(chainId: number, signer: Signer, p:
       method: "createGlvWithdrawal",
       params: [
         {
-          receiver: p.account,
-          callbackContract: ethers.ZeroAddress,
-          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
-          market: p.selectedGmMarket,
-          glv: p.glv,
-          longTokenSwapPath: p.longTokenSwapPath,
-          shortTokenSwapPath: p.shortTokenSwapPath,
+          addresses: {
+            receiver: p.account,
+            callbackContract: ethers.ZeroAddress,
+            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
+            market: p.selectedGmMarket,
+            glv: p.glv,
+            longTokenSwapPath: p.longTokenSwapPath,
+            shortTokenSwapPath: p.shortTokenSwapPath,
+          },
           minLongTokenAmount,
           minShortTokenAmount,
           shouldUnwrapNativeToken: isNativeWithdrawal,
           executionFee: p.executionFee,
           callbackGasLimit: 0n,
-        },
+          dataList: [],
+        } satisfies IGlvWithdrawalUtils.CreateGlvWithdrawalParamsStruct,
       ],
     },
   ];

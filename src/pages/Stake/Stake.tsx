@@ -17,16 +17,16 @@ import { formatAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Footer from "components/Footer/Footer";
 import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import PageTitle from "components/PageTitle/PageTitle";
 import { BotanixBanner } from "components/Synthetics/BotanixBanner/BotanixBanner";
+import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
 
 import { EscrowedGmxCard } from "./EscrowedGmxCard";
-import { GlpCard } from "./GlpCard";
 import { GmxAndVotingPowerCard } from "./GmxAndVotingPowerCard";
 import { StakeModal } from "./StakeModal";
 import { TotalRewardsCard } from "./TotalRewardsCard";
@@ -38,7 +38,7 @@ import "./Stake.css";
 
 function StakeContent() {
   const { active, signer, account } = useWallet();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const incentiveStats = useIncentiveStats(chainId);
   const { isLpInterviewModalVisible, setIsLpInterviewModalVisible } = useLpInterviewNotification();
 
@@ -91,10 +91,16 @@ function StakeContent() {
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
   const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
 
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+  const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false });
 
   const { data: sbfGmxBalance } = useSWR(
-    [`StakeV2:sbfGmxBalance:${active}`, chainId, feeGmxTrackerAddress, "balanceOf", account ?? PLACEHOLDER_ACCOUNT],
+    feeGmxTrackerAddress !== zeroAddress && [
+      `StakeV2:sbfGmxBalance:${active}`,
+      chainId,
+      feeGmxTrackerAddress,
+      "balanceOf",
+      account ?? PLACEHOLDER_ACCOUNT,
+    ],
     {
       fetcher: contractFetcher(undefined, "Token"),
     }
@@ -187,23 +193,6 @@ function StakeContent() {
     <div className="default-container page-layout">
       <SEO title={getPageTitle(t`Stake`)} />
 
-      <PageTitle
-        isTop
-        title={t`Stake`}
-        qa="earn-page"
-        subtitle={
-          <div>
-            <Trans>
-              Deposit <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink> and{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/gmx-token">esGMX</ExternalLink> tokens to
-              earn rewards.
-            </Trans>
-            {earnMsg && <div className="Page-description">{earnMsg}</div>}
-            {incentivesMessage}
-          </div>
-        }
-      />
-
       <StakeModal
         isVisible={isStakeGmxModalVisible}
         setIsVisible={setIsStakeGmxModalVisible}
@@ -257,7 +246,23 @@ function StakeContent() {
         processedData={processedData}
       />
 
-      <div className="StakeV2-content">
+      <div className="flex flex-col gap-16">
+        <PageTitle
+          isTop
+          title={t`Stake`}
+          qa="earn-page"
+          subtitle={
+            <div>
+              <Trans>
+                Deposit <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink> and{" "}
+                <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/gmx-token">esGMX</ExternalLink> tokens
+                to earn rewards.
+              </Trans>
+              {earnMsg && <div className="Page-description">{earnMsg}</div>}
+              {incentivesMessage}
+            </div>
+          }
+        />
         <div className="StakeV2-cards">
           <GmxAndVotingPowerCard
             processedData={processedData}
@@ -271,28 +276,25 @@ function StakeContent() {
             showStakeGmxModal={showStakeGmxModal}
           />
           <TotalRewardsCard processedData={processedData} showStakeGmxModal={showStakeGmxModal} />
-          <GlpCard processedData={processedData} />
           <EscrowedGmxCard
             processedData={processedData}
             showStakeEsGmxModal={showStakeEsGmxModal}
             showUnstakeEsGmxModal={showUnstakeEsGmxModal}
           />
         </div>
+        <div>
+          <Vesting processedData={processedData} />
+        </div>
+        <div>
+          <PageTitle
+            title={t`Distributions`}
+            subtitle={<Trans>Claim and view your incentives, airdrops, and prizes.</Trans>}
+          />
+        </div>
+        <UserIncentiveDistributionList />
       </div>
-
-      <Vesting processedData={processedData} />
-
-      <div className="mt-10">
-        <PageTitle
-          title={t`Distributions`}
-          subtitle={<Trans>Claim and view your incentives, airdrops, and prizes</Trans>}
-        />
-      </div>
-
-      <UserIncentiveDistributionList />
 
       <InterviewModal type="lp" isVisible={isLpInterviewModalVisible} setIsVisible={setIsLpInterviewModalVisible} />
-      <Footer />
     </div>
   );
 }
@@ -301,16 +303,19 @@ export default function Stake() {
   const { chainId } = useChainId();
   const isBotanix = chainId === BOTANIX;
 
-  return isBotanix ? (
-    <div className="default-container page-layout">
-      <SEO title={getPageTitle(t`Stake`)} />
+  return (
+    <AppPageLayout header={<ChainContentHeader />}>
+      {isBotanix ? (
+        <div className="default-container page-layout">
+          <SEO title={getPageTitle(t`Stake`)} />
 
-      <PageTitle isTop title={t`Stake`} qa="earn-page" />
+          <PageTitle isTop title={t`Stake`} qa="earn-page" />
 
-      <BotanixBanner />
-      <Footer />
-    </div>
-  ) : (
-    <StakeContent />
+          <BotanixBanner />
+        </div>
+      ) : (
+        <StakeContent />
+      )}
+    </AppPageLayout>
   );
 }

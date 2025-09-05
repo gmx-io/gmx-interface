@@ -10,7 +10,7 @@
 }
 
 .PositionDropdown-dots-icon:hover {
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   background: var(--color-gray-900);
 }
 

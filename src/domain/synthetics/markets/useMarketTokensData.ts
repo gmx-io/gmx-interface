@@ -1,35 +1,36 @@
-/* eslint-disable import/order */
+import { useMemo } from "react";
+
 import { getExplorerUrl } from "config/chains";
 import { getContract } from "config/contracts";
 import { MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
-import { getTokenBySymbol } from "sdk/configs/tokens";
 // Warning: do not import through reexport, it will break jest
 import { USD_DECIMALS } from "config/factors";
-import { useSyntheticsStateSelector as useSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { selectGlvInfo, selectGlvs } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import {
+  useTokensBalancesUpdates,
+  useUpdatedTokensBalances,
+} from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { ContractCallsConfig, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
+import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
+import { getTokenBySymbol } from "sdk/configs/tokens";
 
-import { useMarkets } from "./useMarkets";
-import { getContractMarketPrices } from "./utils";
-
-import { selectGlvInfo, selectGlvs } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import {
-  useTokensBalancesUpdates,
-  useUpdatedTokensBalances,
-} from "context/TokensBalancesContext/TokensBalancesContextProvider";
-import { useMemo } from "react";
 import { isGlvEnabled } from "./glv";
 import { GlvInfoData } from "./types";
+import { useMarkets } from "./useMarkets";
+import { getContractMarketPrices } from "./utils";
 
 type MarketTokensDataResult = {
   marketTokensData?: TokensData;
 };
 
 export function useMarketTokensDataRequest(
-  chainId: number,
+  chainId: ContractsChainId,
+  srcChainId: SourceChainId | undefined,
   p: {
     isDeposit: boolean;
     account?: string;
@@ -41,7 +42,7 @@ export function useMarketTokensDataRequest(
   }
 ): MarketTokensDataResult {
   const { isDeposit, account, glvData = {}, withGlv = true } = p;
-  const { tokensData } = useTokensDataRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
   const { resetTokensBalancesUpdates } = useTokensBalancesUpdates();
 
@@ -184,7 +185,8 @@ export function useMarketTokensDataRequest(
 }
 
 export function useMarketTokensData(
-  chainId: number,
+  chainId: ContractsChainId,
+  srcChainId: SourceChainId | undefined,
   p: { isDeposit: boolean; withGlv?: boolean; glvData?: GlvInfoData }
 ): MarketTokensDataResult {
   const { isDeposit } = p;
@@ -194,7 +196,7 @@ export function useMarketTokensData(
 
   const glvData = p.glvData || storedGlvData;
 
-  return useMarketTokensDataRequest(chainId, {
+  return useMarketTokensDataRequest(chainId, srcChainId, {
     isDeposit,
     account,
     glvData: glvData,

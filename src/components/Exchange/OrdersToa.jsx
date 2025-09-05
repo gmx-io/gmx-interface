@@ -21,12 +21,12 @@ export default function OrdersToa(props) {
 
   const getPrimaryText = () => {
     if (isPluginApproving) {
-      return t`Enabling Orders...`;
+      return t`Enabling orders`;
     }
     if (!isChecked) {
       return t`Accept terms to enable orders`;
     }
-    return t`Enable Orders`;
+    return t`Enable orders`;
   };
 
   const isPrimaryEnabled = () => {

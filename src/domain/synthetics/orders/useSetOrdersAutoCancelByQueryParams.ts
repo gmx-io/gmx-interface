@@ -90,7 +90,7 @@ export function useSetOrdersAutoCancelByQueryParams() {
           }
         );
       } else {
-        helperToast.success("No orders eligble for conversion.");
+        helperToast.success("No orders eligible for conversion.");
       }
 
       emitMetricCounter<SetAutoCloseOrdersAction>({
@@ -98,7 +98,9 @@ export function useSetOrdersAutoCancelByQueryParams() {
       });
 
       if (history.location.search) {
-        history.replace({ search: "" });
+        const query = new URLSearchParams(history.location.search);
+        query.delete("setOrdersAutoCancel");
+        history.replace({ search: query.toString() });
       }
     },
     [setOrdersAutoCancel, ordersInfoData, signer, chainId, history, maxAutoCancelOrders, setPendingTxns]

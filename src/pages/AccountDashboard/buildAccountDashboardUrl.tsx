@@ -1,9 +1,7 @@
-import { type Address } from "viem";
-
 import { NETWORK_ID_SLUGS_MAP, NETWORK_QUERY_PARAM, VERSION_QUERY_PARAM } from "./constants";
 
 export function buildAccountDashboardUrl(
-  account: Address | undefined,
+  account: string | undefined,
   chainId: number | undefined,
   version: number | undefined = 2
 ) {

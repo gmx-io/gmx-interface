@@ -65,6 +65,7 @@ export declare namespace Order {
     minOutputAmount: BigNumberish;
     updatedAtTime: BigNumberish;
     validFromTime: BigNumberish;
+    srcChainId: BigNumberish;
   };
 
   export type NumbersStructOutput = [
@@ -79,6 +80,7 @@ export declare namespace Order {
     minOutputAmount: bigint,
     updatedAtTime: bigint,
     validFromTime: bigint,
+    srcChainId: bigint,
   ] & {
     orderType: bigint;
     decreasePositionSwapType: bigint;
@@ -91,6 +93,7 @@ export declare namespace Order {
     minOutputAmount: bigint;
     updatedAtTime: bigint;
     validFromTime: bigint;
+    srcChainId: bigint;
   };
 
   export type FlagsStruct = {
@@ -116,16 +119,88 @@ export declare namespace Order {
     addresses: Order.AddressesStruct;
     numbers: Order.NumbersStruct;
     flags: Order.FlagsStruct;
+    _dataList: BytesLike[];
   };
 
   export type PropsStructOutput = [
     addresses: Order.AddressesStructOutput,
     numbers: Order.NumbersStructOutput,
     flags: Order.FlagsStructOutput,
+    _dataList: string[],
   ] & {
     addresses: Order.AddressesStructOutput;
     numbers: Order.NumbersStructOutput;
     flags: Order.FlagsStructOutput;
+    _dataList: string[];
+  };
+}
+
+export declare namespace ReaderUtils {
+  export type OrderInfoStruct = {
+    orderKey: BytesLike;
+    order: Order.PropsStruct;
+  };
+
+  export type OrderInfoStructOutput = [orderKey: string, order: Order.PropsStructOutput] & {
+    orderKey: string;
+    order: Order.PropsStructOutput;
+  };
+
+  export type BaseFundingValuesStruct = {
+    fundingFeeAmountPerSize: MarketUtils.PositionTypeStruct;
+    claimableFundingAmountPerSize: MarketUtils.PositionTypeStruct;
+  };
+
+  export type BaseFundingValuesStructOutput = [
+    fundingFeeAmountPerSize: MarketUtils.PositionTypeStructOutput,
+    claimableFundingAmountPerSize: MarketUtils.PositionTypeStructOutput,
+  ] & {
+    fundingFeeAmountPerSize: MarketUtils.PositionTypeStructOutput;
+    claimableFundingAmountPerSize: MarketUtils.PositionTypeStructOutput;
+  };
+
+  export type VirtualInventoryStruct = {
+    virtualPoolAmountForLongToken: BigNumberish;
+    virtualPoolAmountForShortToken: BigNumberish;
+    virtualInventoryForPositions: BigNumberish;
+  };
+
+  export type VirtualInventoryStructOutput = [
+    virtualPoolAmountForLongToken: bigint,
+    virtualPoolAmountForShortToken: bigint,
+    virtualInventoryForPositions: bigint,
+  ] & {
+    virtualPoolAmountForLongToken: bigint;
+    virtualPoolAmountForShortToken: bigint;
+    virtualInventoryForPositions: bigint;
+  };
+
+  export type MarketInfoStruct = {
+    market: Market.PropsStruct;
+    borrowingFactorPerSecondForLongs: BigNumberish;
+    borrowingFactorPerSecondForShorts: BigNumberish;
+    baseFunding: ReaderUtils.BaseFundingValuesStruct;
+    nextFunding: MarketUtils.GetNextFundingAmountPerSizeResultStruct;
+    virtualInventory: ReaderUtils.VirtualInventoryStruct;
+    isDisabled: boolean;
+  };
+
+  export type MarketInfoStructOutput = [
+    market: Market.PropsStructOutput,
+    borrowingFactorPerSecondForLongs: bigint,
+    borrowingFactorPerSecondForShorts: bigint,
+    baseFunding: ReaderUtils.BaseFundingValuesStructOutput,
+    nextFunding: MarketUtils.GetNextFundingAmountPerSizeResultStructOutput,
+    virtualInventory: ReaderUtils.VirtualInventoryStructOutput,
+    isDisabled: boolean,
+  ] & {
+    market: Market.PropsStructOutput;
+    borrowingFactorPerSecondForLongs: bigint;
+    borrowingFactorPerSecondForShorts: bigint;
+    baseFunding: ReaderUtils.BaseFundingValuesStructOutput;
+    nextFunding: MarketUtils.GetNextFundingAmountPerSizeResultStructOutput;
+    virtualInventory: ReaderUtils.VirtualInventoryStructOutput;
+    isDisabled: boolean;
   };
 }
 
@@ -218,6 +293,7 @@ export declare namespace Position {
     sizeInUsd: BigNumberish;
     sizeInTokens: BigNumberish;
     collateralAmount: BigNumberish;
+    pendingImpactAmount: BigNumberish;
     borrowingFactor: BigNumberish;
     fundingFeeAmountPerSize: BigNumberish;
     longTokenClaimableFundingAmountPerSize: BigNumberish;
@@ -230,6 +306,7 @@ export declare namespace Position {
     sizeInUsd: bigint,
     sizeInTokens: bigint,
     collateralAmount: bigint,
+    pendingImpactAmount: bigint,
     borrowingFactor: bigint,
     fundingFeeAmountPerSize: bigint,
     longTokenClaimableFundingAmountPerSize: bigint,
@@ -240,6 +317,7 @@ export declare namespace Position {
     sizeInUsd: bigint;
     sizeInTokens: bigint;
     collateralAmount: bigint;
+    pendingImpactAmount: bigint;
     borrowingFactor: bigint;
     fundingFeeAmountPerSize: bigint;
     longTokenClaimableFundingAmountPerSize: bigint;
@@ -460,18 +538,27 @@ export declare namespace PositionPricingUtils {
 export declare namespace ReaderPricingUtils {
   export type ExecutionPriceResultStruct = {
     priceImpactUsd: BigNumberish;
-    priceImpactDiffUsd: BigNumberish;
     executionPrice: BigNumberish;
+    balanceWasImproved: boolean;
+    proportionalPendingImpactUsd: BigNumberish;
+    totalImpactUsd: BigNumberish;
+    priceImpactDiffUsd: BigNumberish;
   };
 
   export type ExecutionPriceResultStructOutput = [
     priceImpactUsd: bigint,
-    priceImpactDiffUsd: bigint,
     executionPrice: bigint,
+    balanceWasImproved: boolean,
+    proportionalPendingImpactUsd: bigint,
+    totalImpactUsd: bigint,
+    priceImpactDiffUsd: bigint,
   ] & {
     priceImpactUsd: bigint;
-    priceImpactDiffUsd: bigint;
     executionPrice: bigint;
+    balanceWasImproved: boolean;
+    proportionalPendingImpactUsd: bigint;
+    totalImpactUsd: bigint;
+    priceImpactDiffUsd: bigint;
   };
 }
 
@@ -547,6 +634,7 @@ export declare namespace Deposit {
     updatedAtTime: BigNumberish;
     executionFee: BigNumberish;
     callbackGasLimit: BigNumberish;
+    srcChainId: BigNumberish;
   };
 
   export type NumbersStructOutput = [
@@ -556,6 +644,7 @@ export declare namespace Deposit {
     updatedAtTime: bigint,
     executionFee: bigint,
     callbackGasLimit: bigint,
+    srcChainId: bigint,
   ] & {
     initialLongTokenAmount: bigint;
     initialShortTokenAmount: bigint;
@@ -563,6 +652,7 @@ export declare namespace Deposit {
     updatedAtTime: bigint;
     executionFee: bigint;
     callbackGasLimit: bigint;
+    srcChainId: bigint;
   };
 
   export type FlagsStruct = { shouldUnwrapNativeToken: boolean };
@@ -575,16 +665,19 @@ export declare namespace Deposit {
     addresses: Deposit.AddressesStruct;
     numbers: Deposit.NumbersStruct;
     flags: Deposit.FlagsStruct;
+    _dataList: BytesLike[];
   };
 
   export type PropsStructOutput = [
     addresses: Deposit.AddressesStructOutput,
     numbers: Deposit.NumbersStructOutput,
     flags: Deposit.FlagsStructOutput,
+    _dataList: string[],
   ] & {
     addresses: Deposit.AddressesStructOutput;
     numbers: Deposit.NumbersStructOutput;
     flags: Deposit.FlagsStructOutput;
+    _dataList: string[];
   };
 }
 
@@ -604,65 +697,6 @@ export declare namespace Market {
   };
 }
 
-export declare namespace ReaderUtils {
-  export type BaseFundingValuesStruct = {
-    fundingFeeAmountPerSize: MarketUtils.PositionTypeStruct;
-    claimableFundingAmountPerSize: MarketUtils.PositionTypeStruct;
-  };
-
-  export type BaseFundingValuesStructOutput = [
-    fundingFeeAmountPerSize: MarketUtils.PositionTypeStructOutput,
-    claimableFundingAmountPerSize: MarketUtils.PositionTypeStructOutput,
-  ] & {
-    fundingFeeAmountPerSize: MarketUtils.PositionTypeStructOutput;
-    claimableFundingAmountPerSize: MarketUtils.PositionTypeStructOutput;
-  };
-
-  export type VirtualInventoryStruct = {
-    virtualPoolAmountForLongToken: BigNumberish;
-    virtualPoolAmountForShortToken: BigNumberish;
-    virtualInventoryForPositions: BigNumberish;
-  };
-
-  export type VirtualInventoryStructOutput = [
-    virtualPoolAmountForLongToken: bigint,
-    virtualPoolAmountForShortToken: bigint,
-    virtualInventoryForPositions: bigint,
-  ] & {
-    virtualPoolAmountForLongToken: bigint;
-    virtualPoolAmountForShortToken: bigint;
-    virtualInventoryForPositions: bigint;
-  };
-
-  export type MarketInfoStruct = {
-    market: Market.PropsStruct;
-    borrowingFactorPerSecondForLongs: BigNumberish;
-    borrowingFactorPerSecondForShorts: BigNumberish;
-    baseFunding: ReaderUtils.BaseFundingValuesStruct;
-    nextFunding: MarketUtils.GetNextFundingAmountPerSizeResultStruct;
-    virtualInventory: ReaderUtils.VirtualInventoryStruct;
-    isDisabled: boolean;
-  };
-
-  export type MarketInfoStructOutput = [
-    market: Market.PropsStructOutput,
-    borrowingFactorPerSecondForLongs: bigint,
-    borrowingFactorPerSecondForShorts: bigint,
-    baseFunding: ReaderUtils.BaseFundingValuesStructOutput,
-    nextFunding: MarketUtils.GetNextFundingAmountPerSizeResultStructOutput,
-    virtualInventory: ReaderUtils.VirtualInventoryStructOutput,
-    isDisabled: boolean,
-  ] & {
-    market: Market.PropsStructOutput;
-    borrowingFactorPerSecondForLongs: bigint;
-    borrowingFactorPerSecondForShorts: bigint;
-    baseFunding: ReaderUtils.BaseFundingValuesStructOutput;
-    nextFunding: MarketUtils.GetNextFundingAmountPerSizeResultStructOutput;
-    virtualInventory: ReaderUtils.VirtualInventoryStructOutput;
-    isDisabled: boolean;
-  };
-}
-
 export declare namespace MarketPoolValueInfo {
   export type PropsStruct = {
     poolValue: BigNumberish;
@@ -676,6 +710,7 @@ export declare namespace MarketPoolValueInfo {
     totalBorrowingFees: BigNumberish;
     borrowingFeePoolFactor: BigNumberish;
     impactPoolAmount: BigNumberish;
+    lentImpactPoolAmount: BigNumberish;
   };
 
   export type PropsStructOutput = [
@@ -690,6 +725,7 @@ export declare namespace MarketPoolValueInfo {
     totalBorrowingFees: bigint,
     borrowingFeePoolFactor: bigint,
     impactPoolAmount: bigint,
+    lentImpactPoolAmount: bigint,
   ] & {
     poolValue: bigint;
     longPnl: bigint;
@@ -702,6 +738,7 @@ export declare namespace MarketPoolValueInfo {
     totalBorrowingFees: bigint;
     borrowingFeePoolFactor: bigint;
     impactPoolAmount: bigint;
+    lentImpactPoolAmount: bigint;
   };
 }
 
@@ -737,6 +774,7 @@ export declare namespace Shift {
     updatedAtTime: BigNumberish;
     executionFee: BigNumberish;
     callbackGasLimit: BigNumberish;
+    srcChainId: BigNumberish;
   };
 
   export type NumbersStructOutput = [
@@ -745,22 +783,30 @@ export declare namespace Shift {
     updatedAtTime: bigint,
     executionFee: bigint,
     callbackGasLimit: bigint,
+    srcChainId: bigint,
   ] & {
     marketTokenAmount: bigint;
     minMarketTokens: bigint;
     updatedAtTime: bigint;
     executionFee: bigint;
     callbackGasLimit: bigint;
+    srcChainId: bigint;
   };
 
   export type PropsStruct = {
     addresses: Shift.AddressesStruct;
     numbers: Shift.NumbersStruct;
+    _dataList: BytesLike[];
   };
 
-  export type PropsStructOutput = [addresses: Shift.AddressesStructOutput, numbers: Shift.NumbersStructOutput] & {
+  export type PropsStructOutput = [
+    addresses: Shift.AddressesStructOutput,
+    numbers: Shift.NumbersStructOutput,
+    _dataList: string[],
+  ] & {
     addresses: Shift.AddressesStructOutput;
     numbers: Shift.NumbersStructOutput;
+    _dataList: string[];
   };
 }
 
@@ -827,6 +873,7 @@ export declare namespace Withdrawal {
     updatedAtTime: BigNumberish;
     executionFee: BigNumberish;
     callbackGasLimit: BigNumberish;
+    srcChainId: BigNumberish;
   };
 
   export type NumbersStructOutput = [
@@ -836,6 +883,7 @@ export declare namespace Withdrawal {
     updatedAtTime: bigint,
     executionFee: bigint,
     callbackGasLimit: bigint,
+    srcChainId: bigint,
   ] & {
     marketTokenAmount: bigint;
     minLongTokenAmount: bigint;
@@ -843,6 +891,7 @@ export declare namespace Withdrawal {
     updatedAtTime: bigint;
     executionFee: bigint;
     callbackGasLimit: bigint;
+    srcChainId: bigint;
   };
 
   export type FlagsStruct = { shouldUnwrapNativeToken: boolean };
@@ -855,16 +904,19 @@ export declare namespace Withdrawal {
     addresses: Withdrawal.AddressesStruct;
     numbers: Withdrawal.NumbersStruct;
     flags: Withdrawal.FlagsStruct;
+    _dataList: BytesLike[];
   };
 
   export type PropsStructOutput = [
     addresses: Withdrawal.AddressesStructOutput,
     numbers: Withdrawal.NumbersStructOutput,
     flags: Withdrawal.FlagsStructOutput,
+    _dataList: string[],
   ] & {
     addresses: Withdrawal.AddressesStructOutput;
     numbers: Withdrawal.NumbersStructOutput;
     flags: Withdrawal.FlagsStructOutput;
+    _dataList: string[];
   };
 }
 
@@ -961,7 +1013,16 @@ export interface SyntheticsReaderInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getExecutionPrice",
-    values: [AddressLike, AddressLike, Price.PropsStruct, BigNumberish, BigNumberish, BigNumberish, boolean]
+    values: [
+      AddressLike,
+      AddressLike,
+      MarketUtils.MarketPricesStruct,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      boolean,
+    ]
   ): string;
   encodeFunctionData(functionFragment: "getMarket", values: [AddressLike, AddressLike]): string;
   encodeFunctionData(functionFragment: "getMarketBySalt", values: [AddressLike, BytesLike]): string;
@@ -1036,7 +1097,7 @@ export interface SyntheticsReaderInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "isPositionLiquidatable",
-    values: [AddressLike, AddressLike, BytesLike, Market.PropsStruct, MarketUtils.MarketPricesStruct, boolean]
+    values: [AddressLike, AddressLike, BytesLike, Market.PropsStruct, MarketUtils.MarketPricesStruct, boolean, boolean]
   ): string;
 
   decodeFunctionResult(functionFragment: "getAccountOrders", data: BytesLike): Result;
@@ -1105,7 +1166,7 @@ export interface SyntheticsReader extends BaseContract {
 
   getAccountOrders: TypedContractMethod<
     [dataStore: AddressLike, account: AddressLike, start: BigNumberish, end: BigNumberish],
-    [Order.PropsStructOutput[]],
+    [ReaderUtils.OrderInfoStructOutput[]],
     "view"
   >;
 
@@ -1157,10 +1218,11 @@ export interface SyntheticsReader extends BaseContract {
     [
       dataStore: AddressLike,
       marketKey: AddressLike,
-      indexTokenPrice: Price.PropsStruct,
+      prices: MarketUtils.MarketPricesStruct,
       positionSizeInUsd: BigNumberish,
       positionSizeInTokens: BigNumberish,
       sizeDeltaUsd: BigNumberish,
+      pendingImpactAmount: BigNumberish,
       isLong: boolean,
     ],
     [ReaderPricingUtils.ExecutionPriceResultStructOutput],
@@ -1354,6 +1416,7 @@ export interface SyntheticsReader extends BaseContract {
       market: Market.PropsStruct,
       prices: MarketUtils.MarketPricesStruct,
       shouldValidateMinCollateralUsd: boolean,
+      forLiquidation: boolean,
     ],
     [[boolean, string, PositionUtils.IsPositionLiquidatableInfoStructOutput]],
     "view"
@@ -1365,7 +1428,7 @@ export interface SyntheticsReader extends BaseContract {
     nameOrSignature: "getAccountOrders"
   ): TypedContractMethod<
     [dataStore: AddressLike, account: AddressLike, start: BigNumberish, end: BigNumberish],
-    [Order.PropsStructOutput[]],
+    [ReaderUtils.OrderInfoStructOutput[]],
     "view"
   >;
   getFunction(
@@ -1423,10 +1486,11 @@ export interface SyntheticsReader extends BaseContract {
     [
       dataStore: AddressLike,
       marketKey: AddressLike,
-      indexTokenPrice: Price.PropsStruct,
+      prices: MarketUtils.MarketPricesStruct,
       positionSizeInUsd: BigNumberish,
       positionSizeInTokens: BigNumberish,
       sizeDeltaUsd: BigNumberish,
+      pendingImpactAmount: BigNumberish,
       isLong: boolean,
     ],
     [ReaderPricingUtils.ExecutionPriceResultStructOutput],
@@ -1636,6 +1700,7 @@ export interface SyntheticsReader extends BaseContract {
       market: Market.PropsStruct,
       prices: MarketUtils.MarketPricesStruct,
       shouldValidateMinCollateralUsd: boolean,
+      forLiquidation: boolean,
     ],
     [[boolean, string, PositionUtils.IsPositionLiquidatableInfoStructOutput]],
     "view"

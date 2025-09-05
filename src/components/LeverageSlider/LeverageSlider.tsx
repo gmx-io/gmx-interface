@@ -6,7 +6,7 @@ import { forwardRef, useCallback, useEffect, useMemo } from "react";
 import "rc-slider/assets/index.css";
 import "./LeverageSlider.scss";
 
-const defaultMarks = [1.1, 2, 5, 10, 15, 20, 25, 30, 35, 40, 50];
+const defaultMarks = [0.1, 25, 50];
 const DEFAULT_LEVERAGE_KEY = 20;
 
 type Props = {
@@ -39,11 +39,7 @@ export function LeverageSlider(p: Props) {
   const { onChange, value, marks } = p;
   const finalMarks = marks ?? defaultMarks;
 
-  const { marksLabel, keyValueMap, valueKeyMap } = useMemo(() => {
-    const marksLabel = getMarksWithLabel(finalMarks);
-    const { keyValueMap, valueKeyMap } = generateKeyValueMap(finalMarks);
-    return { marksLabel, keyValueMap, valueKeyMap };
-  }, [finalMarks]);
+  const { keyValueMap, valueKeyMap } = useMemo(() => generateKeyValueMap(finalMarks), [finalMarks]);
 
   const firstValue = finalMarks[0];
   const firstKey = valueKeyMap[firstValue];
@@ -63,6 +59,19 @@ export function LeverageSlider(p: Props) {
     return (props: any) => <LeverageSliderHandle {...props} displayValue={value} />;
   }, [value]);
 
+  const leverageSliderMarks = useMemo(() => {
+    return Object.fromEntries(
+      Object.entries(getMarksWithLabel(finalMarks))
+        .sort((a, b) => Number(a[0]) - Number(b[0]))
+        .map(([key, value]) => [
+          key,
+          {
+            label: value,
+          },
+        ])
+    );
+  }, [finalMarks]);
+
   return (
     <div
       className={cx(
@@ -80,10 +89,10 @@ export function LeverageSlider(p: Props) {
         min={0}
         max={max}
         step={0.1}
-        marks={marksLabel}
         handle={customHandle}
         onChange={handleChange}
         value={sliderKey}
+        marks={leverageSliderMarks}
       />
     </div>
   );

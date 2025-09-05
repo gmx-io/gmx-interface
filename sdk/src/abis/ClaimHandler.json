@@ -1,5 +1,5 @@
 {
-    "abi": [
+  "abi": [
     {
       "inputs": [
         {
@@ -420,20 +420,5 @@
       "stateMutability": "nonpayable",
       "type": "function"
     }
-  ],
-    "libraries": {},
-    "devdoc": {
-      "kind": "dev",
-      "methods": {},
-      "version": 1
-    },
-    "userdoc": {
-      "kind": "user",
-      "methods": {},
-      "version": 1
-    },
-    "storageLayout": {
-      "storage": [],
-      "types": null
-    }
-  }
+  ]
+}
