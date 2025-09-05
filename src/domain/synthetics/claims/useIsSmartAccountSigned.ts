@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import { WalletSigner } from "lib/wallets";
 
-const CLAIM_TERMS_HASH = "0xf03d338494e40f5438acb6060c1004341de67a45bf0ebebb3f19b46a84fc582e";
+const CLAIM_TERMS_HASH = "0x09335c037e73849fe301478f91674da05757165154d1dccb1b881c1846938f3d";
 const VALID_SIGNATURE_RESPONSE = "0x1626ba7e";
 const abi = [
   {
