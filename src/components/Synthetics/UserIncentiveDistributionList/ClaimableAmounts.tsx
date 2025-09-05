@@ -79,7 +79,7 @@ export default function ClaimableAmounts() {
   });
 
   const claimAmounts = useCallback(async () => {
-    if (claimTerms && !claimTermsAcceptedSignature) {
+    if (claimTerms && (isSmartAccount ? !isSmartAccountSignedClaimTerms : !claimTermsAcceptedSignature)) {
       return;
     }
 
@@ -115,6 +115,8 @@ export default function ClaimableAmounts() {
     mutateClaimableAmounts,
     claimTerms,
     claimFundsTransactionCallback,
+    isSmartAccountSignedClaimTerms,
+    isSmartAccount,
   ]);
 
   const { balancesData } = useTokenBalances(chainId);
@@ -221,7 +223,7 @@ export default function ClaimableAmounts() {
         ) : null}
         {claimTerms && hasAvailableFundsToCoverExecutionFee && !claimsFeatureDisabled ? (
           <Checkbox
-            isChecked={Boolean(claimTermsAcceptedSignature)}
+            isChecked={Boolean(claimTermsAcceptedSignature || (isSmartAccount && isSmartAccountSignedClaimTerms))}
             setIsChecked={signClaimTerms}
             disabled={Boolean(claimTermsAcceptedSignature || isSmartAccount)}
           >
@@ -245,6 +247,7 @@ export default function ClaimableAmounts() {
     hasAvailableFundsToCoverExecutionFee,
     isButtonDisabled,
     isSmartAccount,
+    isSmartAccountSignedClaimTerms,
   ]);
 
   return (
