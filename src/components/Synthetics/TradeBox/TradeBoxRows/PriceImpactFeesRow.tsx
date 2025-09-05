@@ -137,14 +137,6 @@ export function PriceImpactFeesRow() {
         <>
           <span
             className={cx("numbers", {
-              "text-green-500": isPriceImpactPositive,
-            })}
-          >
-            {formattedPriceImpactPercentage}
-          </span>{" "}
-          /{" "}
-          <span
-            className={cx("numbers", {
               "text-green-500": isTotalFeePositive,
             })}
           >

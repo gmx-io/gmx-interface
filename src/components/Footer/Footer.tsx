@@ -31,7 +31,7 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
           {getFooterLinks(isHome).map(({ external, label, link, isAppLink }) => {
             if (external) {
               return (
-                <Button variant="ghost" key={label} href={link} newTab>
+                <Button variant="ghost" key={link} to={link} newTab>
                   {label}
                 </Button>
               );
@@ -39,14 +39,14 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
             if (isAppLink) {
               if (shouldShowRedirectModal(redirectPopupTimestamp)) {
                 return (
-                  <Button variant="ghost" key={label} onClick={() => showRedirectModal && showRedirectModal(link)}>
+                  <Button variant="ghost" key={link} onClick={() => showRedirectModal && showRedirectModal(link)}>
                     {label}
                   </Button>
                 );
               } else {
                 const baseUrl = getAppBaseUrl();
                 return (
-                  <Button variant="ghost" key={label} href={baseUrl + link} newTab>
+                  <Button variant="ghost" key={link} href={baseUrl + link} newTab>
                     {label}
                   </Button>
                 );

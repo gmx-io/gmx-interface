@@ -478,7 +478,11 @@ $app-card-padding: 1.5rem;
 @media (max-width: 768px) {
   .Toastify__toast-container--bottom-right,
   .Toastify__toast-container--bottom-left {
-    bottom: 4rem !important;
+    bottom: 0rem !important;
+    & .Toastify__toast {
+      border-bottom-left-radius: 0 !important;
+      border-bottom-right-radius: 0 !important;
+    }
   }
 }
 

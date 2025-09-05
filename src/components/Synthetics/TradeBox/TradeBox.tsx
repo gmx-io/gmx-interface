@@ -637,11 +637,14 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           topLeftLabel={t`Pay`}
           bottomLeftValue={payUsd !== undefined ? formatUsd(payUsd) : ""}
           bottomRightValue={
-            fromToken && fromToken.balance !== undefined && fromToken.balance > 0n
-              ? formatBalanceAmount(fromToken.balance, fromToken.decimals, fromToken.symbol, {
+            fromToken && fromToken.balance !== undefined && fromToken.balance > 0n ? (
+              <>
+                {formatBalanceAmount(fromToken.balance, fromToken.decimals, undefined, {
                   isStable: fromToken.isStable,
-                })
-              : undefined
+                })}{" "}
+                <span className="text-typography-secondary">{fromToken.symbol}</span>
+              </>
+            ) : undefined
           }
           inputValue={fromTokenInputValue}
           onInputValueChange={handleFromInputTokenChange}
@@ -673,7 +676,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 tokenAddress={fromTokenAddress}
                 isGmxAccount={isFromTokenGmxAccount}
                 onSelectTokenAddress={handleSelectFromTokenAddress}
-                size="l"
                 extendedSortSequence={sortedLongAndShortTokens}
                 qa="collateral-selector"
                 tokensData={tokensData}
@@ -764,12 +766,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
                 selectedMarketLabel={
                   toToken && (
-                    <>
-                      <span className="inline-flex items-center">
-                        <TokenIcon className="mr-5" symbol={toToken.symbol} importSize={24} displaySize={20} />
-                        <span>{getMarketIndexName({ indexToken: toToken, isSpotOnly: false })}</span>
-                      </span>
-                    </>
+                    <div className="flex items-center">
+                      <TokenIcon className="mr-4" symbol={toToken.symbol} importSize={24} displaySize={20} />
+                      <span>{getMarketIndexName({ indexToken: toToken, isSpotOnly: false })}</span>
+                    </div>
                   )
                 }
                 markets={sortedAllMarkets ?? EMPTY_ARRAY}
@@ -989,8 +989,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 {isSwap && isLimit && !isTwap && (
                   <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
                     <Trans>
-                      The actual trigger price at which order gets filled will depend on fees and price impact at the
-                      time of execution to guarantee that you receive the minimum receive amount.
+                      The actual execution price may differ from the set limit price due to fees and price impact. This ensures that you receive at least the minimum receive amount.
                     </Trans>
                   </AlertInfoCard>
                 )}
@@ -1030,7 +1029,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                           <MarketSelector
                             chainId={chainId}
                             label={t`Market`}
-                            className="-mr-4"
                             selectedIndexName={
                               toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined
                             }
@@ -1064,18 +1062,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                     isLong={isLong}
                   />
                 )}
-
-                {priceImpactWarningState.shouldShowWarning && (
-                  <HighPriceImpactOrFeesWarningCard
-                    priceImpactWarningState={priceImpactWarningState}
-                    collateralImpact={fees?.positionCollateralPriceImpact}
-                    positionImpact={isIncrease ? fees?.increasePositionPriceImpact : fees?.totalPendingImpact}
-                    swapPriceImpact={fees?.swapPriceImpact}
-                    swapProfitFee={fees?.swapProfitFee}
-                    executionFeeUsd={executionFee?.feeUsd}
-                    externalSwapFeeItem={fees?.externalSwapFee}
-                  />
-                )}
               </div>
             )}
             <div className="flex flex-col gap-14">
@@ -1092,6 +1078,19 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               )}
 
               {!isTrigger && !isSwap && !isTwap && <LimitAndTPSLGroup />}
+
+              {priceImpactWarningState.shouldShowWarning && (
+                <HighPriceImpactOrFeesWarningCard
+                  priceImpactWarningState={priceImpactWarningState}
+                  collateralImpact={fees?.positionCollateralPriceImpact}
+                  positionImpact={isIncrease ? fees?.increasePositionPriceImpact : fees?.totalPendingImpact}
+                  swapPriceImpact={fees?.swapPriceImpact}
+                  swapProfitFee={fees?.swapProfitFee}
+                  executionFeeUsd={executionFee?.feeUsd}
+                  externalSwapFeeItem={fees?.externalSwapFee}
+                />
+              )}
+
               <div>{button}</div>
               <ExpressTradingWarningCard
                 expressParams={submitButtonState.expressParams}

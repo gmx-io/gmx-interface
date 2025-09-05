@@ -824,7 +824,7 @@ export function PositionSeller() {
       return {
         text: (
           <>
-            {t`Express params loading`}
+            {t`Loading Express params`}
             <ImSpinner2 className="ml-4 animate-spin" />
           </>
         ),

@@ -1,4 +1,5 @@
 import { msg, t } from "@lingui/macro";
+import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { isDevelopment } from "config/env";
@@ -235,30 +236,6 @@ export function SettingsModal({
     [tabLabels]
   );
 
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case "trading":
-        return (
-          <TradingSettings
-            tradingMode={tradingMode}
-            handleTradingModeChange={handleTradingModeChange}
-            onChangeSlippage={onChangeSlippage}
-            onChangeExecutionFeeBufferBps={onChangeExecutionFeeBufferBps}
-            onChangeTwapNumberOfParts={onChangeTwapNumberOfParts}
-            onBlurTwapNumberOfParts={onBlurTwapNumberOfParts}
-            numberOfParts={numberOfParts}
-            onClose={onClose}
-          />
-        );
-      case "display":
-        return <DisplaySettings />;
-      case "debug":
-        return <DebugSettings isSettingsVisible={isSettingsVisible} />;
-      default:
-        return null;
-    }
-  };
-
   return (
     <SlideModal
       isVisible={isSettingsVisible}
@@ -266,12 +243,51 @@ export function SettingsModal({
       label={t`Settings`}
       qa="settings-modal"
       className="text-body-medium text-typography-secondary"
-      desktopContentClassName={isDevelopment() ? "w-[448px] h-[720px]" : "w-[420px] h-[720px]"}
     >
       <div className="flex flex-col gap-8">
         <Tabs options={tabOptions} selectedValue={activeTab} onChange={setActiveTab} type="inline" />
-        {renderTabContent()}
+        <div className="flex max-w-[380px] flex-row items-start overflow-x-hidden max-md:max-w-none">
+          <TabWrapper tab="trading" activeTab={activeTab}>
+            <TradingSettings
+              tradingMode={tradingMode}
+              handleTradingModeChange={handleTradingModeChange}
+              onChangeSlippage={onChangeSlippage}
+              onChangeExecutionFeeBufferBps={onChangeExecutionFeeBufferBps}
+              onChangeTwapNumberOfParts={onChangeTwapNumberOfParts}
+              onBlurTwapNumberOfParts={onBlurTwapNumberOfParts}
+              numberOfParts={numberOfParts}
+              onClose={onClose}
+            />
+          </TabWrapper>
+          <TabWrapper tab="display" activeTab={activeTab}>
+            <DisplaySettings />
+          </TabWrapper>
+          <TabWrapper tab="debug" activeTab={activeTab}>
+            <DebugSettings isSettingsVisible={isSettingsVisible} />
+          </TabWrapper>
+        </div>
       </div>
     </SlideModal>
+  );
+}
+
+function TabWrapper({
+  tab,
+  activeTab,
+  children,
+}: {
+  tab: SettingsTab;
+  activeTab: SettingsTab;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className={cx("w-[380px] shrink-0 max-md:w-full", {
+        invisible: activeTab !== tab,
+        "order-first": activeTab === tab,
+      })}
+    >
+      {children}
+    </div>
   );
 }

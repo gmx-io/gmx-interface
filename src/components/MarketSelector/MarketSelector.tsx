@@ -173,10 +173,11 @@ export function MarketSelector({
         setIsVisible={setIsModalVisible}
         label={label}
         footerContent={footerContent}
+        contentPadding={false}
         headerContent={
-          <>
+          <div className="pb-16">
             <SearchInput
-              className="mb-8 *:!text-body-medium min-[700px]:mt-16"
+              className="mb-16"
               value={searchKeyword}
               setValue={setSearchKeyword}
               placeholder={t`Search Market`}
@@ -185,7 +186,7 @@ export function MarketSelector({
             <ButtonRowScrollFadeContainer>
               <FavoriteTabs favoritesKey="market-selector" />
             </ButtonRowScrollFadeContainer>
-          </>
+          </div>
         }
       >
         <div className="flex flex-col">
@@ -204,13 +205,13 @@ export function MarketSelector({
         </div>
         {filteredOptions.length === 0 && (
           <div className="px-20 text-14 text-typography-secondary">
-            <Trans>No markets matched.</Trans>
+            <Trans>No markets matched</Trans>
           </div>
         )}
       </SlideModal>
       <div
         className={cx(
-          "group/hoverable group flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-300"
+          "group/hoverable group flex cursor-pointer items-center gap-4 whitespace-nowrap tracking-wide hover:text-blue-300"
         )}
         onClick={handleClick}
         data-qa="market-selector"

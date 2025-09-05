@@ -96,7 +96,6 @@ export function useRebatesInfoRequest(
 
       let factor = BigInt(rawRebateInfo.factor);
 
-      // factorByTime > factorByAccount
       if (factorByTime > factor) {
         factor = factorByTime;
       }

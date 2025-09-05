@@ -24,7 +24,7 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-import externalLink from "img/ic_new_link_20.svg";
+import ExternalLinkIcon from "img/ic_new_link_20.svg?react";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
@@ -127,11 +127,14 @@ export const TransferDetailsView = () => {
       <SyntheticsInfoRow
         label={<Trans>Amount</Trans>}
         value={
-          selectedTransfer && token
-            ? formatBalanceAmount(selectedTransfer.sentAmount, token.decimals, token.symbol, {
+          selectedTransfer && token ? (
+            <>
+              {formatBalanceAmount(selectedTransfer.sentAmount, token.decimals, undefined, {
                 isStable: token.isStable,
-              })
-            : undefined
+              })}{" "}
+              <span className="text-typography-secondary">{token.symbol}</span>
+            </>
+          ) : undefined
         }
       />
       {selectedTransfer?.receivedAmount !== undefined && (
@@ -139,16 +142,19 @@ export const TransferDetailsView = () => {
           <SyntheticsInfoRow
             label={<Trans>Fee</Trans>}
             value={
-              selectedTransfer && token
-                ? formatBalanceAmount(
+              selectedTransfer && token ? (
+                <>
+                  {formatBalanceAmount(
                     selectedTransfer.sentAmount - selectedTransfer.receivedAmount,
                     token.decimals,
-                    token.symbol,
+                    undefined,
                     {
                       isStable: token.isStable,
                     }
-                  )
-                : undefined
+                  )}{" "}
+                  <span className="text-typography-secondary">{token.symbol}</span>
+                </>
+              ) : undefined
             }
           />
         </>
@@ -202,6 +208,7 @@ export const TransferDetailsView = () => {
           }
           value={
             <ExternalLink
+              className="!no-underline"
               href={
                 selectedTransfer.operation === "deposit"
                   ? CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.sourceChainId](selectedTransfer.sentTxn)
@@ -210,7 +217,7 @@ export const TransferDetailsView = () => {
             >
               <div className="flex items-center gap-4">
                 {shortenAddressOrEns(selectedTransfer.sentTxn, 13)}
-                <img src={externalLink} alt="External Link" className="size-20" />
+                <ExternalLinkIcon className="size-20 text-typography-secondary" />
               </div>
             </ExternalLink>
           }

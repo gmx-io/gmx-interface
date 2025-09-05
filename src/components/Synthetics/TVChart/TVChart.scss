@@ -94,3 +94,24 @@
     grid-template-columns: minmax(auto, max-content) auto;
   }
 }
+
+.Synthetics-chart {
+  height: min(536px, 60vh);
+
+  @media (max-width: $screen-md) and (max-height: 600px) {
+    height: calc(100svh - 200px);
+    min-height: 320px;
+  }
+
+  @media (min-width: $screen-lg) and (max-width: 2559px) {
+    min-height: 536px;
+  }
+
+  @media (min-width: 2560px) and (max-width: 3839px) {
+    min-height: 780px;
+  }
+
+  @media (min-width: 3840px) {
+    min-height: 1140px;
+  }
+}

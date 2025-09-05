@@ -15,8 +15,8 @@ import type { JsonFragment } from "ethers";
 import invert from "lodash/invert";
 import mapValues from "lodash/mapValues";
 import uniq from "lodash/uniq";
-import type { Abi } from "viem";
-import { Hex, zeroAddress } from "viem";
+import type { Abi, Hex } from "viem";
+import { zeroAddress } from "viem";
 
 import {
   AnyChainId,

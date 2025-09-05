@@ -8,9 +8,9 @@ import { RiShareBoxFill } from "react-icons/ri";
 import Button from "components/Button/Button";
 
 import EditIcon from "img/ic_edit.svg?react";
-import increaseLimit from "img/ic_increaselimit_16.svg";
-import increaseMarket from "img/ic_increasemarket_16.svg";
-import triggerClose from "img/ic_triggerclose_16.svg";
+import IncreaseLimit from "img/ic_increaselimit_16.svg?react";
+import IncreaseMarket from "img/ic_increasemarket_16.svg?react";
+import TriggerClose from "img/ic_triggerclose_16.svg?react";
 
 import "./PositionDropdown.css";
 
@@ -80,7 +80,7 @@ export default function PositionDropdown({
           {handleMarketIncreaseSize && (
             <Menu.Item>
               <div className="menu-item" onClick={handleMarketIncreaseSize}>
-                <img src={increaseMarket} className="size-16" alt="Increase Limit" height={16} />
+                <IncreaseMarket className="size-16" />
                 <p>
                   <Trans>Increase Size (Market)</Trans>
                 </p>
@@ -90,7 +90,7 @@ export default function PositionDropdown({
           {handleLimitIncreaseSize && (
             <Menu.Item>
               <div className="menu-item" onClick={handleLimitIncreaseSize}>
-                <img src={increaseLimit} className="size-16" alt="Increase Limit" height={16} />
+                <IncreaseLimit className="size-16" />
                 <p>
                   <Trans>Increase Size (Limit)</Trans>
                 </p>
@@ -100,7 +100,7 @@ export default function PositionDropdown({
           {handleStopMarketIncreaseSize && (
             <Menu.Item>
               <div className="menu-item" onClick={handleStopMarketIncreaseSize}>
-                <img src={increaseMarket} className="size-16" alt="Increase Stop Market" height={16} />
+                <IncreaseMarket className="size-16" />
                 <p>
                   <Trans>Increase Size (Stop Market)</Trans>
                 </p>
@@ -110,7 +110,7 @@ export default function PositionDropdown({
           {handleTriggerClose && (
             <Menu.Item>
               <div className="menu-item" onClick={handleTriggerClose}>
-                <img src={triggerClose} className="size-16" alt="Increase Limit" height={16} />
+                <TriggerClose className="size-16" />
                 <p>
                   <Trans>Set TP/SL</Trans>
                 </p>

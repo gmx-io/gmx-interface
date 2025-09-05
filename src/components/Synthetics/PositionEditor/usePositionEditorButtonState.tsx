@@ -527,7 +527,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     return {
       text: (
         <>
-          {t`Express params loading...`}
+          {t`Loading Express params`}
           <ImSpinner2 className="ml-4 animate-spin" />
         </>
       ),

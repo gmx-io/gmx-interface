@@ -9,8 +9,8 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
 import { TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
-import { useBreakpoints } from "lib/breakpoints";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
+import { useBreakpoints } from "lib/useBreakpoints";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import Button from "components/Button/Button";

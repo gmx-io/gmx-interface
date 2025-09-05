@@ -1,5 +1,5 @@
 import { MessageDescriptor } from "@lingui/core";
-import { msg } from "@lingui/macro";
+import { msg, t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
@@ -19,11 +19,11 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 
 type FilterType = "all" | "gmxAccount" | "wallet";
 
-const FILTERS: FilterType[] = ["all", "gmxAccount", "wallet"];
+const FILTERS: FilterType[] = ["all", "wallet", "gmxAccount"];
 
 const FILTER_TITLE_MAP: Record<FilterType, MessageDescriptor> = {
   all: msg`All`,
-  gmxAccount: msg`Gmx Account`,
+  gmxAccount: msg`GMX Account`,
   wallet: msg`Wallet`,
 };
 
@@ -109,11 +109,13 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
                 symbol={displayToken.symbol}
                 displaySize={40}
                 importSize={40}
-                chainIdBadge={noChainFilter ? undefined : displayToken.chainId}
+                chainIdBadge={displayToken.chainId}
               />
               <div>
                 <div>{displayToken.symbol}</div>
-                <div className="text-body-small text-slate-100">{getChainName(displayToken.chainId)}</div>
+                <div className="text-body-small text-slate-100">
+                  {displayToken.chainId === 0 ? t`GMX Account` : getChainName(displayToken.chainId)}
+                </div>
               </div>
             </div>
             <div className="text-right">

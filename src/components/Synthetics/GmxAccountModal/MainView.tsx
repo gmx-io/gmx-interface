@@ -16,13 +16,13 @@ import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFu
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
-import { useBreakpoints } from "lib/breakpoints";
 import { useChainId } from "lib/chains";
 import { formatRelativeDateWithComma } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useENS } from "lib/legacy";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { useBreakpoints } from "lib/useBreakpoints";
 import { useNotifyModalState } from "lib/useNotifyModalState";
 import { shortenAddressOrEns } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
@@ -63,7 +63,7 @@ const TokenIcons = ({ tokens }: { tokens: string[] }) => {
         <div
           key={token}
           className={cx(
-            "flex size-20 items-center justify-center rounded-full border border-cold-blue-500",
+            "flex size-20 items-center justify-center rounded-full border border-slate-600",
             index > 0 && "-ml-8"
           )}
         >
@@ -71,7 +71,7 @@ const TokenIcons = ({ tokens }: { tokens: string[] }) => {
         </div>
       ))}
       {remainingCount > 0 && (
-        <div className="-ml-8 flex size-20 items-center justify-center rounded-full border border-cold-blue-500 bg-white text-12 text-black">
+        <div className="-ml-8 flex size-20 items-center justify-center rounded-full border border-slate-600 bg-white text-12 text-black">
           +{remainingCount}
         </div>
       )}
@@ -211,14 +211,21 @@ function SettlementChainBalance() {
 
   return (
     <div className="flex flex-col gap-12 rounded-8 bg-fill-surfaceElevated50 p-12">
-      <div className="text-body-small text-[#CACCEC]">
+      <div className="text-body-small text-typography-secondary">
         <Trans>Available to Trade</Trans>
       </div>
       <Balance usd={totalUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
       <div className="h-[0.5px] bg-slate-600" />
       <div>
         <SyntheticsInfoRow
-          label={t`Wallet`}
+          label={
+            <TooltipWithPortal
+              content={t`Your wallet balance on the connected network. Usable for trading on the connected chain.`}
+              variant="icon"
+            >
+              <Trans>Wallet</Trans>
+            </TooltipWithPortal>
+          }
           className="py-5"
           value={
             walletUsd !== undefined ? (
@@ -236,7 +243,22 @@ function SettlementChainBalance() {
           }
         />
         <SyntheticsInfoRow
-          label={<Trans>GMX Account Balance</Trans>}
+          label={
+            <TooltipWithPortal
+              content={
+                <Trans>
+                  Your GMX Account balance, usable for trading on any supported chain.
+                  <br />
+                  <br />
+                  The balance is based on the connected chain, or the selected settlement chain in settings if not
+                  connected to Arbitrum or Avalanche.
+                </Trans>
+              }
+              variant="icon"
+            >
+              <Trans>GMX Account Balance</Trans>
+            </TooltipWithPortal>
+          }
           className="py-5"
           value={
             gmxAccountUsd !== undefined ? (
@@ -263,9 +285,9 @@ function MultichainBalance() {
   const availableToTradeAssetSymbols = useAvailableToTradeAssetSymbolsMultichain();
 
   return (
-    <div className="flex flex-col gap-8 rounded-8 bg-cold-blue-900 p-12">
-      <div className="text-body-small text-[#CACCEC]">
-        <Trans>Balance</Trans>
+    <div className="flex flex-col gap-8 rounded-8 bg-fill-surfaceElevated50 p-12">
+      <div className="text-body-small text-typography-secondary">
+        <Trans>GMX Account Balance</Trans>
       </div>
       <Balance usd={gmxAccountUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
     </div>
@@ -301,7 +323,7 @@ function Balance({
       )}
       {usd !== undefined && usd !== 0n && (
         <button
-          className="flex items-center gap-4 rounded-full bg-slate-600 py-8 pl-12 pr-12 text-[13px] font-medium gmx-hover:bg-cold-blue-500"
+          className="flex items-center gap-4 rounded-full bg-slate-600 py-8 pl-12 pr-12 text-[13px] font-medium gmx-hover:bg-slate-600/90"
           onClick={handleAvailableToTradeClick}
         >
           <Trans>All assets</Trans>
@@ -391,7 +413,9 @@ const FundingHistorySection = () => {
     <div className="flex grow flex-col gap-12 overflow-y-hidden">
       <div className="flex items-center justify-between px-20">
         <div className="text-body-large">
-          <Trans>Funding Activity</Trans>
+          <TooltipWithPortal content={<Trans>GMX Account funding activity.</Trans>} variant="icon">
+            <Trans>Funding Activity</Trans>
+          </TooltipWithPortal>
         </div>
       </div>
       {Boolean(fundingHistory?.length) && (

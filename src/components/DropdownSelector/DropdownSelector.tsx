@@ -50,7 +50,7 @@ export const DropdownSelector = <Id extends Primitive, Option>({
           className={cx(
             "absolute left-0 right-0 top-full z-10 mt-4 overflow-auto rounded-8 px-0",
             slim ? "" : "py-8",
-            "border-1/2 border-slate-600 bg-[#131522]"
+            "border-1/2 border-slate-600 bg-slate-800"
           )}
         >
           {options.map((option) => (

@@ -389,7 +389,7 @@ describe("formatPercentage", () => {
   });
 
   it("should handle undefined input with fallbackToZero", () => {
-    expect(formatPercentage(undefined, { fallbackToZero: true })).toBe("0.00 %");
+    expect(formatPercentage(undefined, { fallbackToZero: true })).toBe("0.00%");
   });
 
   it("should display signed percentage", () => {

@@ -72,7 +72,7 @@ export function EscrowedGmxCard({
   }, [processedData?.gmxAprTotal]);
 
   return (
-    <div className="App-card">
+    <div className="App-card min-h-[360px]">
       <div className="App-card-title">
         <div className="inline-flex items-center">
           <img className="mr-5 h-20" alt="GLP" src={icons?.esgmx} height={20} />

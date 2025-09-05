@@ -2,7 +2,8 @@ import cx from "classnames";
 import React, { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MdClose } from "react-icons/md";
 import { RemoveScroll } from "react-remove-scroll";
-import { useMedia } from "react-use";
+
+import { useBreakpoints } from "lib/useBreakpoints";
 
 import Portal from "components/Common/Portal";
 
@@ -262,8 +263,8 @@ function MobileSlideModal({
           onClick={stopPropagation}
         >
           <div onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
-            <div className="flex touch-none select-none items-stretch justify-between gap-4 px-14 pb-14 pt-14">
-              <div className="text-body-medium grow pl-4 font-medium text-typography-primary">{label}</div>
+            <div className="mb-8 mt-12 flex h-28 touch-none select-none items-center justify-between gap-4 px-adaptive">
+              <div className="text-body-medium grow font-medium text-typography-primary">{label}</div>
 
               <MdClose
                 fontSize={20}
@@ -272,9 +273,9 @@ function MobileSlideModal({
               />
             </div>
             {headerRef ? (
-              <div className="px-14" ref={headerRef} />
+              <div className="px-adaptive" ref={headerRef} />
             ) : headerContent ? (
-              <div className="px-14">{headerContent}</div>
+              <div className="px-adaptive">{headerContent}</div>
             ) : null}
           </div>
 
@@ -286,7 +287,7 @@ function MobileSlideModal({
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerCancel}
           >
-            <div className={cx("flex grow flex-col", contentPadding ? "p-14" : "pr-5")}>{children}</div>
+            <div className={cx("flex grow flex-col overflow-y-auto", { "p-adaptive": contentPadding })}>{children}</div>
           </div>
           {footerContent && (
             <>
@@ -326,7 +327,7 @@ export function SlideModal({
   desktopContentClassName?: string;
   disableOverflowHandling?: boolean;
 }>) {
-  const isMobile = useMedia("(max-width: 700px)", false);
+  const { isMobile } = useBreakpoints();
 
   if (isMobile) {
     return (
