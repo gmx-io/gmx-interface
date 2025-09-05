@@ -25,7 +25,7 @@ export function MobileSideNav() {
       {isOpen ? (
         <Portal>
           <div className="fixed inset-0 z-[99] bg-[#090A1480]" onClick={handleToggle} />
-          <div className="fixed right-0 top-0 z-[100] flex h-full w-[360px] max-md:w-[min(320px,100dvw)] flex-col border-l-1/2 border-slate-600 bg-slate-900 max-lg:pb-40">
+          <div className="fixed right-0 top-0 z-[100] flex h-full w-[360px] flex-col border-l-1/2 border-slate-600 bg-slate-900 max-lg:pb-40 max-md:w-[min(320px,100dvw)]">
             <div className="grow border-b-1/2 border-slate-600 p-8">
               <div className="flex items-center justify-between">
                 <LogoSection isCollapsed={false} />
