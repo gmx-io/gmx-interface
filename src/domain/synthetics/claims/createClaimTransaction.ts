@@ -8,7 +8,7 @@ import ClaimHandlerAbi from "sdk/abis/ClaimHandler.json";
 export function getClaimTransactionCallData(
   tokens: string[],
   account: string,
-  signature: string,
+  signature = "0x",
   distributionId: bigint
 ) {
   const params = tokens.map((token) => ({
@@ -29,7 +29,7 @@ export function createClaimAmountsTransaction(data: {
   chainId: number;
   signer: WalletSigner;
   account: string;
-  signature: string;
+  signature: string | undefined;
   distributionId: bigint;
   claimableTokenTitles: Record<string, string>;
   callback: TxnCallback<WalletTxnCtx>;
