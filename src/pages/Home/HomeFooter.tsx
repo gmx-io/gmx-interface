@@ -59,7 +59,7 @@ export default function HomeFooter({ showRedirectModal, redirectPopupTimestamp, 
           {getFooterLinks(isHome).map(({ external, label, link, isAppLink }) => {
             if (external) {
               return (
-                <ExternalLink key={label} href={link} className={linkClassName}>
+                <ExternalLink key={link} href={link} className={linkClassName}>
                   {label}
                 </ExternalLink>
               );
@@ -68,7 +68,7 @@ export default function HomeFooter({ showRedirectModal, redirectPopupTimestamp, 
               if (shouldShowRedirectModal(redirectPopupTimestamp)) {
                 return (
                   <div
-                    key={label}
+                    key={link}
                     className={linkClassName}
                     onClick={() => showRedirectModal && showRedirectModal(link)}
                   >
@@ -78,7 +78,7 @@ export default function HomeFooter({ showRedirectModal, redirectPopupTimestamp, 
               } else {
                 const baseUrl = getAppBaseUrl();
                 return (
-                  <a key={label} href={baseUrl + link} className={linkClassName}>
+                  <a key={link} href={baseUrl + link} className={linkClassName}>
                     {label}
                   </a>
                 );
