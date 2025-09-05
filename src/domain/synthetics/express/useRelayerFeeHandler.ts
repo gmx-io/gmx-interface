@@ -195,10 +195,18 @@ export function useExpressOrdersParams({
       expressEstimateMethod: expressParams?.estimationMethod,
       fastExpressParams,
       asyncExpressParams,
-      isLoading: !fastExpressParams && !fastExpressError,
+      isLoading: getIsEmptyBatch(orderParams) && !fastExpressParams && !fastExpressError,
       expressParamsPromise,
     };
-  }, [isAvailable, asyncExpressParams, fastExpressParams, fastExpressPromise, asyncExpressPromise, fastExpressError]);
+  }, [
+    isAvailable,
+    asyncExpressParams,
+    fastExpressParams,
+    fastExpressPromise,
+    asyncExpressPromise,
+    orderParams,
+    fastExpressError,
+  ]);
 
   useSwitchGasPaymentTokenIfRequiredFromExpressParams({
     expressParams: result.expressParams,
