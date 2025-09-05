@@ -101,7 +101,7 @@ export function useExpressOrdersParams({
           }),
           getIsEmptyBatch(p.orderParams)
             ? Promise.resolve(undefined)
-            : sleep(2000).then(() => {
+            : sleep(5000).then(() => {
                 throw new Error(FAST_EXPRESS_PARAMS_TIMEOUT_ERROR);
               }),
         ]);
@@ -195,7 +195,7 @@ export function useExpressOrdersParams({
       expressEstimateMethod: expressParams?.estimationMethod,
       fastExpressParams,
       asyncExpressParams,
-      isLoading: getIsEmptyBatch(orderParams) && !fastExpressParams && !fastExpressError,
+      isLoading: !getIsEmptyBatch(orderParams) && !fastExpressParams && !fastExpressError,
       expressParamsPromise,
     };
   }, [
