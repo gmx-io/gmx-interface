@@ -8,17 +8,17 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import CollapseIcon from "img/collapse.svg?react";
-import DashboardIcon from "img/dashboard.svg?react"; //
-import DatabaseIcon from "img/database.svg?react"; //
-import DocsIcon from "img/docs.svg?react"; //
-import EarnIcon from "img/earn.svg?react"; //
+import DashboardIcon from "img/dashboard.svg?react";
+import DatabaseIcon from "img/database.svg?react";
+import DocsIcon from "img/docs.svg?react";
+import EarnIcon from "img/earn.svg?react";
 import EcosystemIcon from "img/ecosystem.svg?react";
-import BuyIcon from "img/ic_buy.svg?react"; //
-import LeaderboardIcon from "img/leaderboard.svg?react"; //
+import BuyIcon from "img/ic_buy.svg?react";
+import LeaderboardIcon from "img/leaderboard.svg?react";
 import logoIcon from "img/logo-icon.svg";
 import LogoText from "img/logo-text.svg?react";
-import ReferralsIcon from "img/referrals.svg?react"; //
-import TradeIcon from "img/trade.svg?react"; //
+import ReferralsIcon from "img/referrals.svg?react";
+import TradeIcon from "img/trade.svg?react";
 
 import { LanguageNavItem } from "./LanguageNavItem";
 
