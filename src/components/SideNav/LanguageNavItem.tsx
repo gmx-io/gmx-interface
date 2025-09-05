@@ -5,8 +5,7 @@ import { useCallback, useState } from "react";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import LanguageModalContent from "components/NetworkDropdown/LanguageModalContent";
 
-import Language24Icon from "img/ic_language24.svg?react";
-
+import LanguageIcon from "img/ic_language.svg?react";
 interface LanguageNavItemProps {
   isCollapsed: boolean | undefined;
   NavItem: React.ComponentType<any>;
@@ -27,7 +26,7 @@ export function LanguageNavItem({ isCollapsed, NavItem }: LanguageNavItemProps) 
   return (
     <>
       <NavItem
-        icon={<Language24Icon className="size-24" />}
+        icon={<LanguageIcon className="size-20" />}
         label={t`Language`}
         isCollapsed={isCollapsed}
         onClick={handleOpen}
