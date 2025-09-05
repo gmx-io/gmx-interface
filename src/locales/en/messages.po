@@ -8043,6 +8043,10 @@ msgstr "GMX is the utility and governance token. It also accrues 30% of the prot
 msgid "Staked"
 msgstr "Staked"
 
+#: src/pages/Home/HomeFooter.tsx
+msgid "Leave feedback"
+msgstr "Leave feedback"
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr "Traders"
