@@ -1,12 +1,19 @@
 .Home {
-  min-height: 100vh;
-  padding-bottom: 15rem;
-}
+  font-family:
+    "Relative",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
+    sans-serif;
 
-@media (max-width: 1024px) {
-  .Home {
-    padding-bottom: 23rem;
-  }
+  font-variant-numeric: normal;
 }
 
 .Home-top {
@@ -22,6 +29,8 @@
   background-size: cover;
   background-position: right;
   margin-top: -6.2rem;
+  padding-left: 56px;
+  padding-right: 56px;
 }
 
 .Home-title {
@@ -57,6 +66,8 @@
 
 .Home-benefits-section {
   background: var(--color-slate-800);
+  padding-left: 56px;
+  padding-right: 56px;
 }
 
 .Home-benefits {
@@ -96,6 +107,8 @@
 
 .Home-cta-section {
   background: var(--color-slate-900);
+  padding-left: 56px;
+  padding-right: 56px;
 }
 
 .Home-cta-container {
@@ -212,7 +225,8 @@
   padding-top: 7.75rem;
   padding-bottom: 7.75rem;
   background: var(--color-slate-800);
-  margin-bottom: -4.65rem;
+  padding-left: 56px;
+  padding-right: 56px;
 }
 
 .Home-token-card-info {
@@ -554,4 +568,9 @@
   .Home-latest-info__icon {
     margin: 0 1.5rem;
   }
+}
+
+.Home .default-container {
+  max-width: 126.4rem;
+  margin: 0 auto;
 }

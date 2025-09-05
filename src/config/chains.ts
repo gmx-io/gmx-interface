@@ -170,12 +170,14 @@ export const PRIVATE_RPC_PROVIDERS: Partial<Record<AnyChainId, string[]>> = {
   [ARBITRUM]: [getAlchemyArbitrumHttpUrl("largeAccount")],
   [AVALANCHE]: [getAlchemyAvalancheHttpUrl("largeAccount")],
   [BOTANIX]: [getAlchemyBotanixHttpUrl("largeAccount")],
+  [SOURCE_BASE_MAINNET]: [getAlchemyBaseMainnetHttpUrl("largeAccount")],
 };
 
 export const EXPRESS_RPC_PROVIDERS: Partial<Record<AnyChainId, string[]>> = {
   [ARBITRUM]: [getAlchemyArbitrumHttpUrl("express")],
   [AVALANCHE]: [getAlchemyAvalancheHttpUrl("express")],
   [BOTANIX]: [getAlchemyBotanixHttpUrl("express")],
+  [SOURCE_BASE_MAINNET]: [getAlchemyBaseMainnetHttpUrl("express")],
 };
 
 type ConstantName = keyof (typeof constants)[ContractsChainId];

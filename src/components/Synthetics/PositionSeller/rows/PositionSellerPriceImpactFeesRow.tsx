@@ -56,11 +56,12 @@ export function PositionSellerPriceImpactFeesRow() {
           handle={t`Net Price Impact / Fees`}
           content={
             <Trans>
-              Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is
-              only settled on position decrease.{" "}
+              Net price impact is the sum of the stored impact at increase and the impact at decrease, which is settled
+              on position decrease.{" "}
               <ExternalLink href={"https://docs.gmx.io/docs/trading/v2#price-impact"} newTab>
                 Read more
               </ExternalLink>
+              .
             </Trans>
           }
         />

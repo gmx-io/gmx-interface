@@ -231,8 +231,8 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
             variant="icon"
             content={
               <Trans>
-                Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does
-                not impact your collateral.
+                The aximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it
+                does not impact your collateral.
               </Trans>
             }
           >
@@ -252,8 +252,8 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
           variant="icon"
           content={
             <Trans>
-              Maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does
-              not impact your collateral.
+              The maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it
+              does not impact your collateral.
             </Trans>
           }
         >

@@ -205,7 +205,7 @@ export function MarketSelector({
         </div>
         {filteredOptions.length === 0 && (
           <div className="px-20 text-14 text-typography-secondary">
-            <Trans>No markets matched.</Trans>
+            <Trans>No markets matched</Trans>
           </div>
         )}
       </SlideModal>

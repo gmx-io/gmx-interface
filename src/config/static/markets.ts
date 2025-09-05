@@ -422,6 +422,22 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0xb3588455858a49D3244237CEe00880CcB84b91Dd": {
       enabled: true,
     },
+    // LINK/USD [WETH-USDC]
+    "0xF913B4748031EF569898ED91e5BA0d602bB93298": {
+      enabled: true,
+    },
+    // MORPHO/USD [WETH-USDC]
+    "0x4De268aC68477f794C3eAC5A419Cbcffc2cD5e02": {
+      enabled: true,
+    },
+    // VVV/USD [WETH-USDC]
+    "0x947C521E44f727219542B0f91a85182193c1D2ad": {
+      enabled: true,
+    },
+    // WELL/USD [WETH-USDC]
+    "0x2347EbB8645Cc2EA0Ba92D1EC59704031F2fCCf4": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

@@ -109,20 +109,20 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
           if (receipt.status === 1 && pendingTxn.message) {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             helperToast.success(
-              <div>
-                <div className="px-10 py-8">
+              <div className="StatusNotification">
+                <div className="StatusNotification-title">
                   {pendingTxn.message}{" "}
                   <ExternalLink href={txUrl}>
                     <Trans>View</Trans>
                   </ExternalLink>
                 </div>
                 {pendingTxn.messageDetails && (
-                  <div className="border-t-[1.5px] border-[#0f463d] px-10 py-8">{pendingTxn.messageDetails}</div>
+                  <>
+                    <hr className="my-8 -ml-12 -mr-32 h-[1.5px] border-none bg-[#0f463d]" />
+                    <div>{pendingTxn.messageDetails}</div>
+                  </>
                 )}
-              </div>,
-              {
-                className: "OrdersStatusNotificiation",
-              }
+              </div>
             );
           }
           continue;

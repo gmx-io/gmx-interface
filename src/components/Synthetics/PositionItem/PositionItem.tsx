@@ -86,7 +86,7 @@ export function PositionItem(p: Props) {
         renderContent={() => (
           <div>
             <Trans>
-              Net value is the amount held in the position inclusive of Pnl, fees and net price impact at close.
+              Net value is the amount held in the position inclusive of PnL, fees and net price impact at close.
             </Trans>
             <br />
             <br />

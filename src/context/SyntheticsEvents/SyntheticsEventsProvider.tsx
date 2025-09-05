@@ -1119,7 +1119,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           {
             autoClose: false,
             toastId,
-            className: "OrdersStatusNotificiation",
           }
         );
 

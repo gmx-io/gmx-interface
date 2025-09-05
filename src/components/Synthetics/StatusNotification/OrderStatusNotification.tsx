@@ -360,12 +360,12 @@ export function OrderStatusNotification({
 
   return (
     <div className={cx("StatusNotification", { error: hasError })}>
-      <div className="StatusNotification-content">
+      <div className="relative z-[1]">
         <div className={cx("StatusNotification-title", { "text-green-500": !hasError, "text-red-500": hasError })}>
           {title}
         </div>
 
-        <div className="StatusNotification-items">
+        <div className="mt-10">
           {externalSwapStatus}
           {sendingStatus}
           {executionStatus}

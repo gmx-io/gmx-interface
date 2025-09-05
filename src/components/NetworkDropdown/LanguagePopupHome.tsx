@@ -22,10 +22,14 @@ export default function LanguagePopupHome() {
 
   return (
     <>
-      <div className="App-header-network App-header-language" onClick={() => setIsLanguageModalOpen(true)}>
-        <div className={cx("network-dropdown", { "homepage-header": isHomeSite() })}>
+      <div className="" onClick={() => setIsLanguageModalOpen(true)}>
+        <div
+          className={cx("network-dropdown rounded-4 border border-slate-600 px-6 py-6 text-typography-secondary", {
+            "homepage-header": isHomeSite(),
+          })}
+        >
           <button className="transparent">
-            <LanguageIcon className="network-dropdown-icon size-24" />
+            <LanguageIcon />
           </button>
         </div>
       </div>

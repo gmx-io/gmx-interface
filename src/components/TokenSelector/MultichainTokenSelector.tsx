@@ -154,7 +154,7 @@ export function MultichainTokenSelector({
             />
             {isGmxAccountEmpty && srcChainId !== undefined ? (
               <div className="text-body-medium text-typography-secondary">
-                <Trans>To begin trading on GMX deposit assets into GMX account</Trans>
+                <Trans>To begin trading on GMX deposit assets into GMX account.</Trans>
               </div>
             ) : (
               <div className="flex gap-4">
