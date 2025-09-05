@@ -73,14 +73,14 @@ export function GmCard() {
         left={
           <>
             <AppCardSection>
-              <div className="flex items-center justify-between">
-                <div className="App-card-title-mark">
+              <div className="flex flex-wrap items-center justify-between gap-8">
+                <div className="flex items-center gap-8">
                   <div className="App-card-title-mark-icon">
                     <img src={currentIcons.gm} width="40" alt="GM Icon" />
                   </div>
-                  <div className="App-card-title-mark-info">
-                    <div className="App-card-title-mark-title">GM</div>
-                    <div className="App-card-title-mark-subtitle">GM</div>
+                  <div>
+                    <div className="text-body-medium font-medium">GM</div>
+                    <div className="text-body-small text-typography-secondary">GM</div>
                   </div>
                 </div>
                 <div className="h-32">
