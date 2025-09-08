@@ -286,6 +286,10 @@ msgstr "지정가 스왑 취소"
 msgid "{seconds}s"
 msgstr "{seconds}초"
 
+#: landing/src/Home/FaqSection/FaqSection.tsx
+msgid "FAQ"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/ConfirmationBox.jsx
@@ -478,6 +482,10 @@ msgstr "포지션"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0}은 스마트 컨트랙트 주소로 보낼 수 없습니다. 다른 토큰을 선택하세요."
 
+#: landing/src/Home/SocialSection/SocialSlider.tsx
+msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution </2><3> Low size caps, but fun to do some degen gambling with </3>"
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trading</2> under settings, which should offer a better experience."
 msgstr "RPC 오류로 트랜잭션 실패.<0/><1/>설정에서 <2>익스프레스 트레이딩</2>을 활성화하세요. 더 나은 경험을 제공할 것입니다."
@@ -486,12 +494,12 @@ msgstr "RPC 오류로 트랜잭션 실패.<0/><1/>설정에서 <2>익스프레�
 msgid "Referral code added!"
 msgstr ""
 
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
-msgid "Available to Trade"
-msgstr ""
-
 #: landing/src/Home/FaqSection/FaqSection.tsx
 msgid "<0>Liquidity providers receive 63% of all trading and liquidation fees. By depositing WBTC, ETH, USDC, or other supported assets, you can earn up to ~35% annualized yield on the largest pools.</0><1><2> GM Pools – choose single-market exposure for targeted returns</2><3> GLV Vaults – auto-diversify across markets for a hands-off strategy</3></1><4>Historically, both options have outperformed standard LP benchmarks. See live stats on the Pools page.</4>"
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "Available to Trade"
 msgstr ""
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
@@ -561,6 +569,10 @@ msgstr "텔레그램 내 GMX V2 데이터 분석"
 msgid "High external swap impact"
 msgstr ""
 
+#: landing/src/Home/FaqSection/FaqSection.tsx
+msgid "<0>GMX V2 routes every order against its own liquidity pools, which currently hold over $300 million, and quote the oracle index price rather than relying on an order book or external market makers. This architecture minimizes slippage and maintains deep liquidity, even for positions over $30 million.</0><1>To ensure accurate pricing without wicks, GMX V2 uses Chainlink Data Streams oracles, so liquidations occur only at fair market prices. With the free GMX Express mode, orders are signed off-chain and sent through premium RPC endpoints, enabling near-instant, reliable execution with a user experience similar to a centralized exchange.</1><2>GMX V2 uses a unique multi-asset AMM (Automated Market Maker) model that routes trades against a dynamically balanced liquidity pool instead of traditional order books. This design significantly</2>"
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Adding"
@@ -568,10 +580,6 @@ msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "Please <0>deposit</0> or <1>swap</1> to get {nativeTokenSymbol}."
-msgstr ""
-
-#: landing/src/Home/FaqSection/FaqSection.tsx
-msgid "<0>GMX V2 routes every order against its own liquidity pools, which currently hold over $300 million, and quote the oracle index price rather than relying on an order book or external market makers. This architecture minimizes slippage and maintains deep liquidity, even for positions over $30 million.</0><1>To ensure accurate pricing without wicks, GMX V2 uses Chainlink Data Streams oracles, so liquidations occur only at fair market prices. With the free GMX Express mode, orders are signed off-chain and sent through premium RPC endpoints, enabling near-instant, reliable execution with a user experience similar to a centralized exchange.</1><2>GMX V2 uses a unique multi-asset AMM (Automated Market Maker) model that routes trades against a dynamically balanced liquidity pool instead of traditional order books. This design significantly</2>"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
@@ -908,10 +916,6 @@ msgstr "주문 업데이트 실패"
 msgid "Cross-chain one-click deposits into GM"
 msgstr "GM으로 크로스체인 원클릭 예치"
 
-#: src/pages/Home/Home.tsx
-msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
-msgstr "간단한 스왑 인터페이스를 통해 포지션을 열어보세요. 지원되는 자산내에서 원하는 포지션으로 편리하게 스왑할 수 있습니다."
-
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched"
@@ -1000,6 +1004,10 @@ msgstr "청산 {0} {longOrShortText}"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Pay"
 msgstr "지불"
+
+#: landing/src/Home/HeroSection/AnimatedTitle.tsx
+msgid "from 6+ blockchains"
+msgstr ""
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
@@ -2041,6 +2049,10 @@ msgstr "세부 사항 표시"
 msgid "To reduce fees, select a different asset to pay with."
 msgstr "수수료를 줄이기 위해서는 다른 자산으로 지불해주세요."
 
+#: landing/src/Home/HeaderMenu/HeaderMenu.tsx
+msgid "Driven by our community"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Settlement Chain"
 msgstr ""
@@ -2254,10 +2266,6 @@ msgstr ""
 msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
 msgstr "{tokenSymbol} {longOrShortText} {0} USD의 증가 요청됨."
 
-#: src/pages/Home/Home.tsx
-msgid "Enter and exit positions with minimal spread and low price impact. Get the optimal price without incurring additional costs."
-msgstr "최소 스프레드와 낮은 가격 영향으로 포지션 진입 및 종료. 추가 비용 없이 최적 가격 획득."
-
 #: src/components/Synthetics/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
 msgstr ""
@@ -2372,10 +2380,6 @@ msgstr ""
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "On-chain signing for every transaction."
 msgstr ""
-
-#: src/pages/Home/Home.tsx
-msgid "Total Trading Volume"
-msgstr "총 트레이딩 거래량"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Order created."
@@ -2670,6 +2674,8 @@ msgstr "차입 수수료율"
 msgid "Max number of parts: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgstr "최대 부분 수: {MAX_TWAP_NUMBER_OF_PARTS}"
 
+#: landing/src/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
+#: landing/src/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: src/components/Header/AppHeaderChainAndSettings.tsx
 #: src/components/Header/AppHeaderChainAndSettings.tsx
 #: src/components/ModalViews/RedirectModal.tsx
@@ -2773,6 +2779,10 @@ msgstr "GMX의 구인"
 msgid "Initial collateral (collateral excluding borrow and funding Fee)."
 msgstr ""
 
+#: landing/src/Home/HeroSection/Features.tsx
+msgid "Trade from your wallet"
+msgstr ""
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
 msgstr "APR은 매주 수요일에 업데이트되며 한 주 동안 쌓인 수수료에 따라 달라집니다."
@@ -2789,6 +2799,14 @@ msgstr "{fromText}에서 {toMinText}로"
 #: src/components/Errors/errorToasts.tsx
 msgid "Otherwise, try changing the RPC url in your wallet settings with the help of <0>chainlist.org</0>."
 msgstr "그렇지 않으면 <0>chainlist.org</0>의 도움을 받아 지갑 설정에서 RPC URL을 변경해 보세요."
+
+#: landing/src/Home/LiqiuditySection/LiqiuditySection.tsx
+msgid "in available liquidity"
+msgstr ""
+
+#: landing/src/Home/SocialSection/SocialSlider.tsx
+msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the pay token to collateral token swap when the price conditions are met."
@@ -2906,6 +2924,10 @@ msgstr "승인 서명 중..."
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "The current price impact is {0}. Consider using -0.30% acceptable price impact so the order is more likely to be processed."
 msgstr "현재 가격 영향은 {0}입니다. 주문이 처리될 가능성을 높이기 위해 -0.30% 허용 가격 영향을 고려하세요."
+
+#: landing/src/Home/LaunchSection/LaunchSection.tsx
+msgid "Runs entirely on public chains"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-Cancel TP/SL"
@@ -3181,10 +3203,6 @@ msgstr "개선 도와주기"
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Staking is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
 msgstr ""
-
-#: src/pages/Home/Home.tsx
-msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
-msgstr "고품질의 여러 가격 피드를 통해 청산 발생 시기를 결정합니다. 이것은 일시적인 가격 변화로부터 포지션을 안전하게 유지합니다."
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Create Take Profit"
@@ -3907,6 +3925,10 @@ msgstr "GLV는 GMX V2 볼트의 유동성 제공자 토큰입니다. 여러 GM �
 msgid "The settlement chain is the network used for your GMX Account and opening positions. GMX Account balances and positions are specific to the selected network."
 msgstr ""
 
+#: landing/src/Home/FaqSection/FaqSection.tsx
+msgid "<0>No KYC, no lengthy onboarding:</0><1><2>Connect any EVM wallet (MetaMask, Rabby, Coinbase Wallet, Ledger, etc.)</2><3>Select a supported network where you have funds</3><4>Trade</4></1><5>You can trade directly using funds from Arbitrum, Avalanche, or Botanix, or deposit to your GMX Account to trade from any supported network.</5>"
+msgstr ""
+
 #: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "Yes, GLV is fully liquid and permissionless. You can sell via the GMX interface to redeem for underlying assets, with low fees."
 msgstr ""
@@ -3917,10 +3939,6 @@ msgstr "네트워크"
 
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 msgid "Success claiming funding fees"
-msgstr ""
-
-#: landing/src/Home/FaqSection/FaqSection.tsx
-msgid "<0>No KYC, no lengthy onboarding:</0><1><2>Connect any EVM wallet (MetaMask, Rabby, Coinbase Wallet, Ledger, etc.)</2><3>Select a supported network where you have funds</3><4>Trade</4></1><5>You can trade directly using funds from Arbitrum, Avalanche, or Botanix, or deposit to your GMX Account to trade from any supported network.</5>"
 msgstr ""
 
 #: src/components/Synthetics/TwapRows/TwapRows.tsx
@@ -4065,6 +4083,10 @@ msgstr "여는 중..."
 msgid "Fee"
 msgstr ""
 
+#: landing/src/Home/HeroSection/Features.tsx
+msgid "Secure & Permissionless"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Avalanche"
 msgstr "Avalanche에서 추천된 거래자"
@@ -4077,6 +4099,7 @@ msgstr "{0} 업그레이드 대기 중 트리거 주문 비활성화"
 msgid "Funding Fees"
 msgstr "자금 수수료"
 
+#: landing/src/Home/HeroSection/HeroSection.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Open Interest"
@@ -4267,23 +4290,22 @@ msgstr "거래 에어드랍"
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. This can be useful for delta-neutral strategies to earn funding fees."
 msgstr "숏 포지션에서 {indexSymbol}을 숏하면서 {collateralSymbol} 담보에서 {collateralSymbol}을 롱하게 됩니다. 이는 델타 중립 전략에서 자금 수수료를 획득하는 데 유용할 수 있습니다."
 
+#: landing/src/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Open GMX Solana"
-msgstr "GMX Solana 열기"
+msgstr ""
 
 #: src/components/Synthetics/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The maximum allowed percentage difference between the mark price and the execution price for market orders. You can edit the default value in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than -{0}, may result in failed orders if prices are volatile."
 msgstr ""
 
-#: landing/src/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-msgid "Open GMX Solana"
-msgstr ""
-
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr "트레이더로서 이 계정이 획득한 소개 보수."
 
+#: landing/src/Home/RoadmapSection/RoadmapSection.tsx
+#: landing/src/Home/RoadmapSection/RoadmapSection.tsx
 #: src/components/BuyCards/BuyCards.tsx
 #: src/components/BuyCards/BuyCards.tsx
 #: src/components/BuyCards/BuyCards.tsx
@@ -4326,12 +4348,12 @@ msgstr ""
 msgid "Vesting Status"
 msgstr "베스팅 상태"
 
-#: src/components/Exchange/OrderEditor.jsx
-msgid "Price above mark price"
-msgstr ""
-
 #: landing/src/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Market Groups</0><1>Net Open Interest</1>"
+msgstr ""
+
+#: src/components/Exchange/OrderEditor.jsx
+msgid "Price above mark price"
 msgstr ""
 
 #: landing/src/Home/HeroSection/Features.tsx
@@ -4681,6 +4703,10 @@ msgstr ""
 msgid "Exposure to Market Traders’ PnL"
 msgstr "시장 거래자 PnL 노출"
 
+#: landing/src/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Cross-Margin </0><1>Cross-Collateral </1>"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
 msgstr "최적"
@@ -4884,6 +4910,7 @@ msgstr "주문"
 msgid "Staked on Avalanche"
 msgstr "Avalanche에서 스테이킹됨"
 
+#: landing/src/Home/SocialSection/SocialSection.tsx
 #: src/components/Footer/constants.tsx
 #: src/components/Footer/constants.tsx
 msgid "Media Kit"
@@ -5484,6 +5511,7 @@ msgstr "숏 유동성"
 msgid "Order Type"
 msgstr "주문 유형"
 
+#: landing/src/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana"
 msgstr "GMX Solana"
@@ -5725,6 +5753,10 @@ msgstr "GMX 토큰의 총 순환 공급량."
 msgid "Target Weight"
 msgstr "목표 가중치"
 
+#: landing/src/Home/FaqSection/FaqSection.tsx
+msgid "What makes GMX one of the best places to earn yield on my crypto?"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.jsx
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "포지션을 닫을 때, 어떤 토큰으로 이익을 수취할 지 선택할 수 있습니다."
@@ -5859,12 +5891,12 @@ msgstr ""
 msgid "Stop Loss Decrease"
 msgstr "손절 감소"
 
-#: src/pages/AccountDashboard/AccountDashboard.tsx
-msgid "GMX information for account"
-msgstr ""
-
 #: landing/src/Home/HeroSection/Features.tsx
 msgid "Trade with confidence"
+msgstr ""
+
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+msgid "GMX information for account"
 msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
@@ -6324,13 +6356,13 @@ msgstr "티어 {0} ({currentTierDiscount}% 할인)"
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
 msgstr "{collateralSymbol}을 담보로 사용하는 이 주문은 {symbol}을 담보로 사용하는 기존 {longText} 포지션에 유효하지 않습니다."
 
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-msgid "Pick an asset to deposit"
-msgstr ""
-
 #: landing/src/Home/HeroSection/Features.tsx
 #: landing/src/Home/HeroSection/HeroSection.tsx
 msgid "Trade Now"
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Pick an asset to deposit"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -6418,6 +6450,10 @@ msgstr "인출 완료!"
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "3rd Place"
 msgstr "3위"
+
+#: landing/src/Home/SocialSection/SocialSlider.tsx
+msgid "<0>🔷 24h Volume: $1.01 Billion.</0><1>Thank you to the hundreds of thousands of GMX users who continue to support permissionless onchain trading.</1>"
+msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 msgid "Enter deposit amount"
@@ -6627,12 +6663,12 @@ msgstr "청산 확인"
 msgid "Acknowledge epoch is ending in {minutes} minutes"
 msgstr "{minutes} 분 후 에포크 종료 인정"
 
-#: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
-msgid "From Wallet"
-msgstr ""
-
 #: landing/src/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
+msgid "From Wallet"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
@@ -7216,6 +7252,10 @@ msgstr "지정가"
 msgid "You"
 msgstr "당신"
 
+#: landing/src/Home/HeroSection/AnimatedTitle.tsx
+msgid "with 100x leverage"
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivate 1CT (One-Click Trading)"
 msgstr "1CT(원클릭 거래) 비활성화"
@@ -7264,6 +7304,10 @@ msgstr "DeFi 마진 프로토콜"
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Claimable Balance"
+msgstr ""
+
+#: landing/src/Home/HeroSection/HeroSection.tsx
+msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
@@ -7592,8 +7636,10 @@ msgstr "수령 주소 입력"
 msgid "Additional reserve required"
 msgstr "추가 예비 필요"
 
+#: landing/src/Home/SocialSection/SocialSection.tsx
+#: landing/src/Home/SocialSection/SocialSection.tsx
+#: landing/src/TermsAndConditions/TermsAndConditions.tsx
 #: src/components/Footer/constants.tsx
-#: src/pages/TermsAndConditions/TermsAndConditions.jsx
 msgid "Terms and Conditions"
 msgstr "약관"
 
@@ -7694,6 +7740,10 @@ msgstr "실현 기본 PnL"
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed."
 msgstr "스왑 실패."
+
+#: landing/src/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Solana Support</0><1>Botanix Support </1><2>GMX Express </2>"
+msgstr ""
 
 #: src/components/Synthetics/MarketStats/components/MarketDescription.tsx
 msgid "This token automatically accrues fees from swaps for the {0}/{1} market. It is also exposed to {2} and {3} as per the composition displayed."
@@ -8040,6 +8090,10 @@ msgstr "이 크기 숏 증가를 위한 유동성이 없습니다. 최대 숏 �
 msgid "Close submitted."
 msgstr ""
 
+#: landing/src/Home/HeroSection/Features.tsx
+msgid "Seamless Trading"
+msgstr ""
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
 msgstr "{nativeTokenSymbol} APR"
@@ -8284,8 +8338,9 @@ msgstr "대기 중인 대출 수수료가 이 트랜잭션에 청구됩니다."
 msgid "Fees will be shown once you have entered an amount in the order form."
 msgstr "주문 양식에 금액 입력 시 수수료 표시."
 
+#: landing/src/Home/SocialSection/SocialSection.tsx
+#: landing/src/ReferralTerms/ReferralTerms.tsx
 #: src/components/Footer/constants.tsx
-#: src/pages/ReferralTerms/ReferralTerms.jsx
 msgid "Referral Terms"
 msgstr "추천 약관"
 
@@ -8300,6 +8355,10 @@ msgstr ""
 #: src/components/Synthetics/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "수수료 APY"
+
+#: landing/src/Home/FaqSection/FaqSection.tsx
+msgid "Can I build on top of GMX or integrate it into my DeFi app?"
+msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "Please <0>swap</0> to get {nativeTokenSymbol}."
@@ -8817,10 +8876,6 @@ msgstr "언어"
 msgid "Complete Transfer"
 msgstr "전송 완료"
 
-#: src/pages/Home/Home.tsx
-msgid "Total Users"
-msgstr "총 사용자"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "The maximum allowed percentage difference between the mark price and the execution price for market orders."
 msgstr ""
@@ -8933,6 +8988,12 @@ msgstr "잔여 담보 {0} USD 미만"
 msgid "trigger"
 msgstr "트리거"
 
+#: landing/src/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/Home/LaunchSection/LaunchSection.tsx
+msgid "Open App"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Try increasing the \"Allowed Slippage\", under the settings menu on the top right."
@@ -8949,10 +9010,6 @@ msgstr "레이지 트레이드"
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "GMX Account funding activity."
 msgstr ""
-
-#: src/pages/Home/Home.tsx
-msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
-msgstr "지갑에서 직접 BTC, ETH, AVAX 등 상위 암호화폐를 최대 100x 레버리지로 거래"
 
 #: src/components/Exchange/PositionsList.jsx
 msgid "Click on the position to select it, then use the trade box to increase it."
