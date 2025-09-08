@@ -793,8 +793,8 @@ export const WithdrawalView = () => {
   );
 
   return (
-    <div className="flex grow flex-col overflow-y-auto p-16">
-      <div className="flex flex-col gap-20">
+    <div className="flex grow flex-col overflow-y-auto p-adaptive">
+      <div className="flex flex-col gap-[--padding-adaptive]">
         <div className="flex flex-col gap-4">
           <div className="text-body-medium text-typography-secondary">Asset</div>
           <DropdownSelector

@@ -156,7 +156,7 @@ const Toolbar = ({ account }: { account: string }) => {
 
   return (
     <div className="flex items-stretch justify-between gap-8 max-smallMobile:flex-wrap">
-      <Button variant="secondary" className="flex items-center gap-8" onClick={handleCopyAddress}>
+      <Button variant="secondary" size="small" className="flex items-center gap-8" onClick={handleCopyAddress}>
         <div className="max-[500px]:hidden">
           <Avatar size={24} ensName={ensName} address={account} />
         </div>
@@ -167,7 +167,7 @@ const Toolbar = ({ account }: { account: string }) => {
       </Button>
       <div className="flex items-center gap-8">
         <TooltipWithPortal content={t`PnL Analysis`} position="bottom" tooltipClassName="!min-w-max" variant="none">
-          <Button variant="secondary" className={buttonClassName} onClick={handlePnlAnalysisClick}>
+          <Button variant="secondary" size="small" className={buttonClassName} onClick={handlePnlAnalysisClick}>
             <PnlAnalysisIcon width={20} height={20} />
           </Button>
         </TooltipWithPortal>
@@ -178,25 +178,32 @@ const Toolbar = ({ account }: { account: string }) => {
           tooltipClassName="!min-w-max"
           variant="none"
         >
-          <Button to={accountUrl} newTab variant="secondary" className={buttonClassName} showExternalLinkArrow={false}>
+          <Button
+            to={accountUrl}
+            newTab
+            variant="secondary"
+            size="small"
+            className={buttonClassName}
+            showExternalLinkArrow={false}
+          >
             <ExplorerIcon />
           </Button>
         </TooltipWithPortal>
         {showNotify && (
           <TooltipWithPortal content={t`Notifications`} position="bottom" tooltipClassName="!min-w-max" variant="none">
-            <Button variant="secondary" className={buttonClassName} onClick={handleNotificationsClick}>
+            <Button variant="secondary" size="small" className={buttonClassName} onClick={handleNotificationsClick}>
               <BellIcon />
             </Button>
           </TooltipWithPortal>
         )}
 
         <TooltipWithPortal content={t`Settings`} position="bottom" tooltipClassName="!min-w-max" variant="none">
-          <Button variant="secondary" className={buttonClassName} onClick={handleSettingsClick}>
+          <Button variant="secondary" size="small" className={buttonClassName} onClick={handleSettingsClick}>
             <SettingsIcon width={20} height={20} />
           </Button>
         </TooltipWithPortal>
         <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max" variant="none">
-          <Button variant="secondary" className={buttonClassName} onClick={handleDisconnect}>
+          <Button variant="secondary" size="small" className={buttonClassName} onClick={handleDisconnect}>
             <DisconnectIcon className="rotate-180" />
           </Button>
         </TooltipWithPortal>
@@ -411,15 +418,19 @@ const FundingHistorySection = () => {
 
   return (
     <div className="flex grow flex-col gap-12 overflow-y-hidden">
-      <div className="flex items-center justify-between px-20">
+      <div className="flex items-center justify-between px-adaptive">
         <div className="text-body-large">
-          <TooltipWithPortal content={<Trans>GMX Account funding activity.</Trans>} variant="icon">
+          <TooltipWithPortal
+            content={<Trans>GMX Account funding activity.</Trans>}
+            variant="icon"
+            handleClassName="font-medium"
+          >
             <Trans>Funding Activity</Trans>
           </TooltipWithPortal>
         </div>
       </div>
       {Boolean(fundingHistory?.length) && (
-        <div className="px-20">
+        <div className="px-adaptive">
           <SearchInput value={searchQuery} setValue={setSearchQuery} size="m" />
         </div>
       )}
@@ -429,7 +440,7 @@ const FundingHistorySection = () => {
             role="button"
             tabIndex={0}
             key={transfer.id}
-            className="flex w-full cursor-pointer items-center justify-between px-20 py-8 text-left -outline-offset-4 gmx-hover:bg-slate-700"
+            className="flex w-full cursor-pointer items-center justify-between px-adaptive py-8 text-left -outline-offset-4 gmx-hover:bg-slate-700"
             onClick={() => handleTransferClick(transfer)}
           >
             <div className="flex items-center gap-8">
@@ -457,19 +468,19 @@ const FundingHistorySection = () => {
         ))}
 
         {!isLoading && fundingHistory && fundingHistory.length === 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 p-20 text-slate-100">
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-slate-100">
             <InfoIconComponent className="size-24" />
             <Trans>No funding activity</Trans>
           </div>
         )}
         {!isLoading && filteredFundingHistory?.length === 0 && fundingHistory && fundingHistory.length > 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 p-20 text-slate-100">
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-slate-100">
             <InfoIconComponent className="size-24" />
             <Trans>No funding activity matching your search</Trans>
           </div>
         )}
         {isLoading && (
-          <div className="flex grow items-center justify-center p-20 text-slate-100">
+          <div className="flex grow items-center justify-center p-adaptive text-slate-100">
             <TbLoader2 className="size-24 animate-spin" />
           </div>
         )}
@@ -480,8 +491,8 @@ const FundingHistorySection = () => {
 
 export const MainView = ({ account }: { account: string }) => {
   return (
-    <div className="text-body-medium flex grow flex-col gap-20 overflow-y-hidden">
-      <div className="flex flex-col gap-12 px-20 pb-12 pt-8">
+    <div className="text-body-medium flex grow flex-col gap-[--padding-adaptive] overflow-y-hidden">
+      <div className="flex flex-col gap-12 px-adaptive pb-12 pt-8">
         <Toolbar account={account} />
         <BalanceSection />
         <ActionButtons />

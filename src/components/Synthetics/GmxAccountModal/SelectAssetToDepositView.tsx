@@ -36,7 +36,7 @@ const TokenListItem = ({ tokenChainData, onClick, className }: TokenListItemProp
     <div
       key={tokenChainData.symbol + "_" + tokenChainData.sourceChainId}
       className={cx(
-        "flex cursor-pointer items-center justify-between px-20 py-8 gmx-hover:bg-fill-surfaceElevated50",
+        "flex cursor-pointer items-center justify-between px-adaptive py-8 gmx-hover:bg-fill-surfaceElevated50",
         className
       )}
       onClick={onClick}
@@ -131,7 +131,7 @@ export const SelectAssetToDepositView = () => {
 
   return (
     <div className="flex grow flex-col overflow-y-hidden">
-      <div className="mb-16 px-20 pt-20">
+      <div className="mb-16 px-adaptive pt-adaptive">
         <SearchInput
           placeholder="Search tokens..."
           value={searchQuery}
@@ -140,7 +140,7 @@ export const SelectAssetToDepositView = () => {
         />
       </div>
 
-      <div className="mb-12 px-20">
+      <div className="mb-12 px-adaptive">
         <ButtonRowScrollFadeContainer>
           <div className="flex gap-4">
             {NETWORKS_FILTER.map((network) => (
@@ -176,7 +176,7 @@ export const SelectAssetToDepositView = () => {
           />
         ))}
         {filteredBalances.length === 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 p-20 text-typography-secondary">
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-typography-secondary">
             <InfoIconComponent className="size-24" />
             {selectedNetwork === "all" ? (
               <Trans>No assets are available for deposit</Trans>

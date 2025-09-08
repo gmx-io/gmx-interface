@@ -90,7 +90,7 @@ export const TransferDetailsView = () => {
   };
 
   return (
-    <div className="text-body-medium flex grow flex-col gap-8 p-16">
+    <div className="text-body-medium flex grow flex-col gap-8 p-adaptive">
       {selectedTransfer?.isExecutionError ? (
         <AlertInfoCard type="error">
           <Trans>Your deposit of from {sourceChainName} was not executed due to an error</Trans>

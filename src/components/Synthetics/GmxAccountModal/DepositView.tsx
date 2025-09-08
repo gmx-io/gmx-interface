@@ -706,8 +706,8 @@ export const DepositView = () => {
   }
 
   return (
-    <form className="flex grow flex-col overflow-y-auto px-20 pb-20 pt-16" onSubmit={handleSubmit}>
-      <div className="flex flex-col gap-20">
+    <form className="flex grow flex-col overflow-y-auto px-adaptive pb-adaptive pt-adaptive" onSubmit={handleSubmit}>
+      <div className="flex flex-col gap-[--padding-adaptive]">
         <div className="flex flex-col gap-4">
           <div className="text-body-medium text-typography-secondary">
             <Trans>Asset</Trans>

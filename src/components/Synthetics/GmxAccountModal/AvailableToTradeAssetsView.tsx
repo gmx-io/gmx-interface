@@ -75,13 +75,13 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
   }, [tokens, searchQuery, noChainFilter, activeFilter]);
 
   return (
-    <div className="flex grow flex-col overflow-y-hidden pt-20">
-      <div className="mb-16 px-20">
+    <div className="flex grow flex-col overflow-y-hidden pt-adaptive">
+      <div className="mb-16 px-adaptive">
         <SearchInput value={searchQuery} setValue={setSearchQuery} noBorder />
       </div>
 
       {!noChainFilter && (
-        <div className="mb-12 flex gap-4 px-20">
+        <div className="mb-12 flex gap-4 px-adaptive">
           {FILTERS.map((filter) => (
             <Button
               key={filter}
@@ -102,7 +102,7 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
         {sortedFilteredTokens.map((displayToken) => (
           <div
             key={displayToken.symbol + "_" + displayToken.chainId}
-            className="flex items-center justify-between px-20 py-8 gmx-hover:bg-slate-700"
+            className="flex items-center justify-between px-adaptive py-8 gmx-hover:bg-slate-700"
           >
             <div className="flex items-center gap-8">
               <TokenIcon
