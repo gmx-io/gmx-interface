@@ -36,11 +36,11 @@ import { VerticalScrollFadeContainer } from "components/TableScrollFade/Vertical
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import BellIcon from "img/bell.svg?react";
+import BellIcon from "img/ic_bell.svg?react";
 import CopyIcon from "img/ic_copy_20.svg?react";
+import ExplorerIcon from "img/ic_explorer.svg?react";
 import InfoIconComponent from "img/ic_info.svg?react";
-import ExternalLinkIcon from "img/ic_new_link_20.svg?react";
-import PnlAnalysisIcon from "img/ic_pnl_analysis_20.svg?react";
+import PnlAnalysisIcon from "img/ic_pnl_analysis.svg?react";
 import SettingsIcon from "img/ic_settings.svg?react";
 import DisconnectIcon from "img/ic_sign_out_20.svg?react";
 
@@ -179,7 +179,7 @@ const Toolbar = ({ account }: { account: string }) => {
           variant="none"
         >
           <Button to={accountUrl} newTab variant="secondary" className={buttonClassName} showExternalLinkArrow={false}>
-            <ExternalLinkIcon />
+            <ExplorerIcon />
           </Button>
         </TooltipWithPortal>
         {showNotify && (

@@ -1,6 +1,7 @@
 import camelCase from "lodash/camelCase";
 import mapKeys from "lodash/mapKeys";
 import upperFirst from "lodash/upperFirst";
+import { SVGProps, useState } from "react";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { colors } from "config/colors";
@@ -11,12 +12,13 @@ import { TokenCategory } from "sdk/types/tokens";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import SearchInput from "components/SearchInput/SearchInput";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
 const iconsContext = mapKeys(
   import.meta.glob("img/ic_*.svg", {
-    query: "?url",
+    query: "?react",
     import: "default",
     eager: true,
   }),
@@ -37,9 +39,16 @@ const icons = Object.keys(iconsContext).map((rawPath) => {
     name: name,
     importUrl: `import ${name} from "${rawPath}";`,
     importSvg: `import ${componentName} from "${rawPath}";`,
-    src: iconsContext[rawPath],
+    component: iconsContext[rawPath],
   };
-}) as { src: string; name: string; path: string; importUrl: string; importSvg: string }[];
+}) as {
+  component: React.ComponentType<SVGProps<SVGSVGElement>>;
+  name: string;
+  path: string;
+  importUrl: string;
+  importSvg: string;
+}[];
+// console.log({ icons });
 
 const otherImagesContext = mapKeys(
   import.meta.glob("img/**/*.{png,jpg,jpeg,gif,svg}", {
@@ -51,7 +60,7 @@ const otherImagesContext = mapKeys(
 );
 
 const otherImages = Object.keys(otherImagesContext)
-  .filter((key) => !key.includes("/ic_"))
+  .filter((key) => !/\bic_/.test(key))
   .map((key) => {
     let name = camelCase(key.match(/img\/(.+)\.(png|jpg|jpeg|gif|svg)$/)?.[1]) + "Image";
 
@@ -227,69 +236,105 @@ export default function UiPage() {
             </div>
           ))}
         </div>
-
-        <h2 className="mb-16 mt-24 text-24 font-medium">Icons</h2>
-        <style>{`.ImageTooltip .Tooltip-popup {max-width: unset !important;}`}</style>
-        <div className="relative left-1/2 flex w-screen -translate-x-1/2 flex-wrap items-center gap-16 px-20">
-          {icons.map((icon) => (
-            <Tooltip
-              key={icon.src}
-              variant="none"
-              as={"div"}
-              className="ImageTooltip"
-              closeDelay={500}
-              content={
-                <div>
-                  <pre>
-                    <code>
-                      Name: {icon.name}
-                      <br />
-                      Path: {icon.path}
-                      <br />
-                      Import URL: {icon.importUrl}
-                      <br />
-                      Import SVG: {icon.importSvg}
-                    </code>
-                  </pre>
-                </div>
-              }
-            >
-              <img className="max-w-[50px]" src={icon.src} />
-            </Tooltip>
-          ))}
-        </div>
-
-        <h2 className="mb-16 mt-24 text-24 font-medium">Images</h2>
-
-        <div className="relative left-1/2 flex w-screen -translate-x-1/2 flex-wrap items-center gap-16 px-20">
-          {otherImages.map((src) => (
-            <Tooltip
-              key={src.src}
-              variant="none"
-              as={"div"}
-              className="ImageTooltip"
-              closeDelay={500}
-              content={
-                <div>
-                  <pre>
-                    <code>
-                      Name: {src.name}
-                      <br />
-                      Path: {src.path}
-                      <br />
-                      Import URL: {src.importUrl}
-                    </code>
-                  </pre>
-                </div>
-              }
-            >
-              <img className="max-w-[100px]" src={src.src} />
-            </Tooltip>
-          ))}
-        </div>
-
-        <div className="h-50"></div>
       </main>
+
+      <IconsAndImages />
     </AppPageLayout>
+  );
+}
+
+function IconsAndImages() {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredIcons = icons.filter(
+    (icon) =>
+      icon.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      icon.path.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredImages = otherImages.filter(
+    (image) =>
+      image.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      image.path.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <>
+      <div className="mx-auto max-w-prose p-20">
+        <h2 className="mb-16 mt-24 text-24 font-medium">Icons & Images</h2>
+      </div>
+
+      <div className="mb-16 px-20">
+        <SearchInput
+          placeholder="Search icons and images..."
+          value={searchTerm}
+          setValue={setSearchTerm}
+          className="w-full"
+        />
+      </div>
+
+      <h3 className="mb-16 px-20 text-20 font-medium">Icons ({filteredIcons.length})</h3>
+      <style>{`.ImageTooltip .Tooltip-popup {max-width: unset !important;}`}</style>
+      <div className="relative flex flex-wrap items-center gap-16 px-20">
+        {filteredIcons.map((icon) => (
+          <Tooltip
+            key={icon.name}
+            variant="none"
+            as={"div"}
+            className="ImageTooltip"
+            closeDelay={500}
+            content={
+              <div>
+                <pre>
+                  <code>
+                    Name: {icon.name}
+                    <br />
+                    Path: {icon.path}
+                    <br />
+                    Import URL: {icon.importUrl}
+                    <br />
+                    Import SVG: {icon.importSvg}
+                  </code>
+                </pre>
+              </div>
+            }
+          >
+            <div className="max-w-[50px] border-1/2 border-black dark:border-white">
+              <icon.component className="h-full w-full" />
+            </div>
+          </Tooltip>
+        ))}
+      </div>
+
+      <h3 className="mb-16 mt-24 px-20 text-20 font-medium">Images ({filteredImages.length})</h3>
+      <div className="relative flex flex-wrap items-center gap-16 px-20">
+        {filteredImages.map((src) => (
+          <Tooltip
+            key={src.src}
+            variant="none"
+            as={"div"}
+            className="ImageTooltip"
+            closeDelay={500}
+            content={
+              <div>
+                <pre>
+                  <code>
+                    Name: {src.name}
+                    <br />
+                    Path: {src.path}
+                    <br />
+                    Import URL: {src.importUrl}
+                  </code>
+                </pre>
+              </div>
+            }
+          >
+            <img className="max-w-[100px]" src={src.src} />
+          </Tooltip>
+        ))}
+      </div>
+
+      <div className="h-50"></div>
+    </>
   );
 }
