@@ -41,7 +41,7 @@ const TokenListItem = ({ tokenChainData, onClick, className }: TokenListItemProp
       )}
       onClick={onClick}
     >
-      <div className="flex items-center gap-8">
+      <div className="flex items-center gap-16">
         <TokenIcon
           symbol={tokenChainData.symbol}
           displaySize={40}

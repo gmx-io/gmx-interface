@@ -453,7 +453,7 @@ const FundingHistorySection = () => {
             className="flex w-full cursor-pointer items-center justify-between px-adaptive py-8 text-left -outline-offset-4 gmx-hover:bg-slate-700"
             onClick={() => handleTransferClick(transfer)}
           >
-            <div className="flex items-center gap-8">
+            <div className="flex items-center gap-16">
               <TokenIcon symbol={transfer.token.symbol} displaySize={40} importSize={40} />
               <div>
                 <div>{transfer.token.symbol}</div>

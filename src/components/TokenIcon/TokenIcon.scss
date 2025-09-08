@@ -1,3 +1,23 @@
 .Token-icon {
   vertical-align: bottom;
 }
+
+@mixin circle-badge-crop-out($size: 20px, $offsetX: 6px, $offsetY: 2px) {
+  $gradient: radial-gradient(
+    circle at calc(100% - ($size / 2 - $offsetX)) calc(100% - ($size / 2 - $offsetY)),
+    transparent $size / 2,
+    white 0
+  );
+  -webkit-mask-image: $gradient;
+  mask-image: $gradient;
+}
+
+.token-icon-with-badge-large {
+  // 2px border, 4px x offset
+  @include circle-badge-crop-out(20px, 6px, 2px);
+}
+
+.token-icon-with-badge-small {
+  // 2px border, 2px x and y offset
+  @include circle-badge-crop-out(14px, 4px, 4px);
+}
