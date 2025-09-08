@@ -22,7 +22,7 @@ type ButtonProps = Omit<HTMLProps<HTMLButtonElement>, "size"> & {
   newTab?: boolean;
   showExternalLinkArrow?: boolean;
   buttonRef?: RefObject<HTMLButtonElement>;
-  size?: "small" | "medium";
+  size?: "small" | "medium" | "controlled";
   qa?: string;
 };
 
@@ -41,7 +41,7 @@ export default function Button({
   newTab,
   buttonRef,
   showExternalLinkArrow: showExternalLinkArrowOverride,
-  size = "medium",
+  size = "small",
   qa,
   ...rest
 }: ButtonProps) {

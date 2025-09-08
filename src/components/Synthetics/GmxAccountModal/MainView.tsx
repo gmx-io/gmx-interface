@@ -371,10 +371,20 @@ const ActionButtons = () => {
 
   return (
     <div className="flex gap-8">
-      <Button variant="secondary" className="flex-1 !text-typography-primary" onClick={handleDepositClick}>
+      <Button
+        variant="secondary"
+        size="medium"
+        className="flex-1 !text-typography-primary"
+        onClick={handleDepositClick}
+      >
         <Trans>Deposit</Trans>
       </Button>
-      <Button variant="secondary" className="flex-1 !text-typography-primary" onClick={handleWithdrawClick}>
+      <Button
+        variant="secondary"
+        size="medium"
+        className="flex-1 !text-typography-primary"
+        onClick={handleWithdrawClick}
+      >
         <Trans>Withdraw</Trans>
       </Button>
     </div>
