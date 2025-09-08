@@ -302,8 +302,9 @@ export function useTradeboxButtonState({
     if (shouldShowDepositButton) {
       if (fromToken) {
         const wrappedAddress = convertTokenAddress(chainId, fromToken.address, "wrapped");
-        const isSupportedToDeposit =
-          MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[chainId as SettlementChainId].includes(wrappedAddress);
+        const isSupportedToDeposit = Boolean(
+          MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[chainId as SettlementChainId]?.includes(wrappedAddress)
+        );
 
         if (isSupportedToDeposit) {
           setGmxAccountDepositViewTokenAddress(fromToken.address);
