@@ -118,7 +118,7 @@ export function HomePageContextProvider({ children }: { children: React.ReactNod
       {children}
       {redirectModalTo &&
         (redirectChainId === REDIRECT_CHAIN_IDS.Solana ? (
-          <SolanaRedirectModal isOpen={true} onClose={handleCloseModal} onConfirm={handleSolanaConfirm} />
+          <SolanaRedirectModal onClose={handleCloseModal} onConfirm={handleSolanaConfirm} />
         ) : (
           <LeaveHomepageRedirectModal
             to={redirectModalTo}

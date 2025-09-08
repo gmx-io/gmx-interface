@@ -7,7 +7,7 @@ import SEO from "components/Common/SEO";
 export default function TermsAndConditions() {
   return (
     <SEO title={getPageTitle(t`Terms and Conditions`)}>
-      <div className="bg-fiord-700 p-16 sm:p-40">
+      <div className="bg-slate-800 p-16 sm:p-40">
         <div className="text-center">
           <div className="text-heading-3">GMX</div>
           <div className="text-heading-4 my-24">Terms and Conditions</div>

@@ -4,7 +4,7 @@ import { Quareters } from "./Quareters";
 
 export function RoadmapSection() {
   return (
-    <section className="bg-fiord-700 flex w-full px-16 pb-[120px] text-white sm:px-40">
+    <section className="flex w-full bg-slate-900 px-16 pb-[120px] text-white sm:px-40">
       <div className="mx-auto flex w-[1200px] flex-col gap-28 overflow-hidden sm:gap-44">
         <div className="flex w-full flex-row items-end justify-between gap-16">
           <h2 className="text-heading-2">Roadmap</h2>

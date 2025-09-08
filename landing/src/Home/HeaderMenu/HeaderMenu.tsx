@@ -23,7 +23,7 @@ export function HeaderMenu() {
 
   return (
     <div
-      className={cx("bg-fiord-700 fixed left-0 top-0 z-30 flex w-full flex-col text-white", {
+      className={cx("fixed left-0 top-0 z-30 flex w-full flex-col bg-slate-900 text-white", {
         "h-screen": isMenuOpen,
       })}
     >
@@ -35,7 +35,7 @@ export function HeaderMenu() {
               {headerLinks.map((link) => (
                 <a
                   href={link.href}
-                  className="duration-180 transition-colors hover:text-[#CFCED0] active:text-[#9D9CA0]"
+                  className="duration-180 transition-colors hover:text-white/80 active:text-white/60"
                   key={link.label}
                 >
                   {link.label}
@@ -49,7 +49,7 @@ export function HeaderMenu() {
             )}
             <button
               className={cx("flex size-36 rounded-8 text-white sm:hidden", {
-                "bg-[#1E2033]": isMenuOpen,
+                "bg-slate-700": isMenuOpen,
               })}
               onClick={toggleMenu}
             >
@@ -66,7 +66,7 @@ export function HeaderMenu() {
               <a
                 href={link.href}
                 key={link.label}
-                className="border-fiord-500 border-t-[0.5px] py-12 last:border-b-[0.5px]"
+                className="border-t-[0.5px] border-slate-600 py-12 last:border-b-[0.5px]"
               >
                 {link.label}
               </a>
@@ -75,7 +75,7 @@ export function HeaderMenu() {
           <button className="btn-landing w-full rounded-8 px-16 py-10 text-14" onClick={goToTradeArbitrum}>
             <Trans>Open App</Trans>
           </button>
-          <div className="mt-auto flex w-full flex-col items-center gap-20 text-12 text-slate-100">
+          <div className="mt-auto flex w-full flex-col items-center gap-20 text-12 text-slate-500">
             <p>
               <Trans>Driven by our community</Trans>
             </p>

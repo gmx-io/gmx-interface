@@ -45,21 +45,8 @@ export function LeaveHomepageRedirectModal({
     });
   });
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" || (e.keyCode === 27 && onClose)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [onClose]);
-
   return (
-    <Modal isOpen={true} onClose={onClose}>
+    <Modal onClose={onClose}>
       <Modal.Header onClose={onClose}>
         <Trans>Launch App</Trans>
       </Modal.Header>
@@ -95,7 +82,7 @@ export function LeaveHomepageRedirectModal({
             />
             <IcLandingChecked
               className={cx("m-4 size-12 rounded-4 transition-colors", {
-                "bg-blue-600": shouldHideRedirectModal,
+                "bg-blue-400": shouldHideRedirectModal,
                 "bg-white": !shouldHideRedirectModal,
               })}
             />

@@ -9,7 +9,7 @@
   }
   html {
     /* Restore native webkit behavior */
-    @apply leading-base bg-fiord-700;
+    @apply leading-base bg-slate-800;
   }
 }
 

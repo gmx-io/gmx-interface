@@ -25,11 +25,11 @@ export function Features({ goToTradeArbitrum }: Props) {
     <div className="relative flex flex-col gap-24 py-80 lg:grid lg:grid-cols-3 lg:grid-rows-3 lg:py-[120px]">
       <div className="flex flex-col gap-24 lg:col-start-1 lg:col-end-2 lg:row-start-1 lg:row-end-4">
         {/* Trade with confidence */}
-        <div className="bg-fiord-600 flex-grow-0 rounded-20 p-20">
-          <div className="border-fiord-500 mb-18 flex flex-row items-center gap-20 border-b pb-20">
+        <div className="flex-grow-0 rounded-20 bg-slate-800 p-20">
+          <div className="mb-18 flex flex-row items-center gap-20 border-b border-slate-600 pb-20">
             <IconBox iconComponent={IcGears} />
             <div className="flex flex-col gap-4">
-              <p className="text-secondary text-12 uppercase tracking-[0.864px]">
+              <p className="text-slate-400 text-12 uppercase tracking-[0.864px]">
                 <Trans>Trade with confidence</Trans>
               </p>
               <p className="text-heading-4">
@@ -42,7 +42,7 @@ export function Features({ goToTradeArbitrum }: Props) {
           </p>
         </div>
         {/* Stay Safe from Liquidations */}
-        <div className="flex-grow-1 relative h-[220px] overflow-hidden rounded-20 bg-blue-600 p-20 lg:h-full">
+        <div className="flex-grow-1 relative h-[220px] overflow-hidden rounded-20 bg-blue-400 p-20 lg:h-full">
           <ProtectionBackground />
           <img src={bgProtection} alt="Protection" className="absolute bottom-1/2 left-1/2 w-[60%] object-cover" />
           <div className="relative flex h-full w-full flex-col justify-end">
@@ -60,7 +60,7 @@ export function Features({ goToTradeArbitrum }: Props) {
       {/* Support for numerous assets */}
       <div
         style={assetsBgStyle}
-        className="bg-fiord-600 h-[220px] overflow-hidden rounded-20 lg:col-start-2  lg:col-end-3 lg:row-start-1 lg:row-end-3 lg:h-full lg:min-h-[180px]"
+        className="h-[220px] overflow-hidden rounded-20 bg-slate-800 lg:col-start-2  lg:col-end-3 lg:row-start-1 lg:row-end-3 lg:h-full lg:min-h-[180px]"
       >
         <div className="h-full w-full overflow-hidden">
           <div className="relative flex flex-col p-20 pb-0 lg:p-28">
@@ -77,11 +77,11 @@ export function Features({ goToTradeArbitrum }: Props) {
         </div>
       </div>
       {/* Keep more of what you earn */}
-      <div className="bg-fiord-600 h-full rounded-20 p-20 lg:col-start-3 lg:col-end-4 lg:row-start-1 lg:row-end-2 lg:min-h-[180px]">
-        <div className="border-fiord-500 mb-18 flex flex-row items-center gap-20 border-b pb-20">
+      <div className="h-full rounded-20 bg-slate-800 p-20 lg:col-start-3 lg:col-end-4 lg:row-start-1 lg:row-end-2 lg:min-h-[180px]">
+        <div className="mb-18 flex flex-row items-center gap-20 border-b border-slate-600 pb-20">
           <IconBox iconComponent={IcProtection} />
           <div className="flex flex-col gap-4">
-            <p className="text-secondary text-12 uppercase tracking-[0.864px]">
+            <p className="text-slate-400 text-12 uppercase tracking-[0.864px]">
               <Trans>keep more of what you earn</Trans>
             </p>
             <p className="text-heading-4">
@@ -93,26 +93,26 @@ export function Features({ goToTradeArbitrum }: Props) {
       </div>
       {/*Secure
 & Permissionless */}
-      <div className="bg-fiord-600 h-full rounded-20 p-20 lg:col-start-3 lg:col-end-4 lg:row-start-2 lg:row-end-3 lg:min-h-[180px]">
+      <div className="h-full rounded-20 bg-slate-800 p-20 lg:col-start-3 lg:col-end-4 lg:row-start-2 lg:row-end-3 lg:min-h-[180px]">
         <div className="flex h-full w-full flex-col justify-between">
           <p className="text-heading-4 mb-20 lg:mb-0">
             <Trans>Secure & Permissionless</Trans>
           </p>
           <div className="flex flex-row flex-wrap gap-12 text-[13px]">
             <div className="flex flex-1 flex-col items-stretch gap-8 lg:flex-row lg:flex-wrap lg:items-start">
-              <div className="bg-fiord-500/50 text-secondary flex flex-row items-center justify-center gap-2 rounded-8 py-6 pl-3 pr-10">
+              <div className="text-slate-400 flex flex-row items-center justify-center gap-2 rounded-8 bg-slate-600/50 py-6 pl-3 pr-10">
                 <IcChecked className="text-blue-400" />
                 <p className="tracking-normal">
                   <Trans>No deposits required</Trans>
                 </p>
               </div>
-              <div className="bg-fiord-500/50 text-secondary flex flex-row items-center justify-center gap-2 rounded-8 py-6 pl-3 pr-10">
+              <div className="text-slate-400 flex flex-row items-center justify-center gap-2 rounded-8 bg-slate-600/50 py-6 pl-3 pr-10">
                 <IcChecked className="text-blue-400" />
                 <p className="tracking-normal">
                   <Trans>Trade from your wallet</Trans>
                 </p>
               </div>
-              <div className="bg-fiord-500/50 text-secondary flex flex-row items-center justify-center gap-2 rounded-8 py-6 pl-3 pr-10">
+              <div className="text-slate-400 flex flex-row items-center justify-center gap-2 rounded-8 bg-slate-600/50 py-6 pl-3 pr-10">
                 <IcChecked className="text-blue-400" />
                 <p className="tracking-normal">
                   <Trans>No loss of fund ownership</Trans>
@@ -123,7 +123,7 @@ export function Features({ goToTradeArbitrum }: Props) {
         </div>
       </div>
 
-      <div className="bg-fiord-600 relative h-full overflow-hidden rounded-20 p-20 lg:col-start-2 lg:col-end-4 lg:row-start-3 lg:row-end-4 lg:min-h-[180px] lg:p-28">
+      <div className="relative h-full overflow-hidden rounded-20 bg-slate-800 p-20 lg:col-start-2 lg:col-end-4 lg:row-start-3 lg:row-end-4 lg:min-h-[180px] lg:p-28">
         <SeamlessBackground />
         <div className="relative flex h-full flex-col items-stretch justify-between gap-20 lg:flex-row lg:items-end">
           <div className="w-[360px]">

@@ -1,8 +1,8 @@
 import cx from "classnames";
+import { useEffect } from "react";
 import { createPortal } from "react-dom";
 
 type ModalProps = {
-  isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
   className?: string;
@@ -25,20 +25,30 @@ type ModalBottomProps = {
   className?: string;
 };
 
-export function Modal({ isOpen, onClose, children, className }: ModalProps) {
-  if (!isOpen) return null;
-
+export function Modal({ onClose, children, className }: ModalProps) {
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
   };
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" || (e.keyCode === 27 && onClose)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onClose]);
 
   return createPortal(
-    <div className="bg-fiord-700/50 fixed inset-0 z-50 flex h-screen w-screen text-white" onClick={handleBackdropClick}>
+    <div className="fixed inset-0 z-50 flex h-screen w-screen bg-slate-900/50 text-white" onClick={handleBackdropClick}>
       <div
         className={cx(
-          "bg-fiord-800 m-auto flex w-[351px] flex-col rounded-8 border-[0.5px] border-[#363A59] sm:w-[420px]",
+          "bg-surface-primary m-auto flex w-[351px] flex-col rounded-8 border-[0.5px] border-stroke-primary sm:w-[420px]",
           className
         )}
       >
@@ -51,11 +61,11 @@ export function Modal({ isOpen, onClose, children, className }: ModalProps) {
 
 Modal.Header = function ModalHeader({ children, onClose, showCloseButton = true, className }: ModalHeaderProps) {
   return (
-    <div className={cx("flex justify-between gap-20 border-b-[0.5px] border-[#363A59] p-20 pt-24", className)}>
+    <div className={cx("flex justify-between gap-20 border-b-[0.5px] border-stroke-primary p-20 pt-24", className)}>
       <h3 className="text-16 font-medium leading-[125%] tracking-[-0.192px]">{children}</h3>
       {showCloseButton && onClose && (
         <button className="mr-4" onClick={onClose}>
-          <svg className="size-16 text-slate-100" viewBox="0 0 16 16" fill="currentColor">
+          <svg className="size-16 text-slate-500" viewBox="0 0 16 16" fill="currentColor">
             <path d="M8 6.586L13.657.929a1 1 0 1 1 1.414 1.414L9.414 8l5.657 5.657a1 1 0 0 1-1.414 1.414L8 9.414l-5.657 5.657a1 1 0 0 1-1.414-1.414L6.586 8 .929 2.343A1 1 0 0 1 2.343.929L8 6.586z" />
           </svg>
         </button>
@@ -74,6 +84,8 @@ Modal.Body = function ModalBody({ children, className }: ModalBodyProps) {
 
 Modal.Bottom = function ModalBottom({ children, className }: ModalBottomProps) {
   return (
-    <div className={cx("flex items-center gap-4 border-t-[0.5px] border-[#363A59] pt-12", className)}>{children}</div>
+    <div className={cx("flex items-center gap-4 border-t-[0.5px] border-stroke-primary pt-12", className)}>
+      {children}
+    </div>
   );
 };

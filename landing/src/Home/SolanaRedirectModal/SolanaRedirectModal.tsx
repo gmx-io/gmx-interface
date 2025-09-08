@@ -1,30 +1,15 @@
 import { Trans } from "@lingui/macro";
-import { useEffect } from "react";
 
 import { Modal } from "../../components/Modal/Modal";
 
 type SolanaRedirectModalProps = {
-  isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
 };
 
-export function SolanaRedirectModal({ isOpen, onClose, onConfirm }: SolanaRedirectModalProps) {
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" || (e.keyCode === 27 && onClose)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [onClose]);
-
+export function SolanaRedirectModal({ onClose, onConfirm }: SolanaRedirectModalProps) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal onClose={onClose}>
       <Modal.Header onClose={onClose}>
         <Trans>GMX Solana</Trans>
       </Modal.Header>

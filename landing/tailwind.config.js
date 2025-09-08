@@ -10,53 +10,32 @@ const { resolve } = require("node:path");
  * @See https://www.notion.so/gmxio/Colors-Clean-Up-13303574745d80deb5dcebb6f15e41ad#13303574745d8066aad0cbd650848ca6
  */
 const colors = {
-  secondary: "#BEC0DA",
-  primary: "#FFFFFF",
-  fiord: {
-    500: "#3C4067",
-    600: "#171827",
-    700: "#090A14",
-    800: "#121421",
+  slate: {
+    950: "#0B0B14",
+    900: "#090A14",
+    800: "#171827",
+    700: "#1E2033",
+    650: "#24273F",
+    600: "#3C4067",
+    500: "#A0A3C4",
+    400: "#BEC0DA",
+  },
+  light: {
+    150: "#F4F5F9",
   },
   blue: {
     100: "#A4C3F9",
     300: "#7885ff",
-    400: "#4d5ffa",
-    500: "#3d51ff",
-    600: "#2d42fc",
-    700: "#2e3dcd",
-  },
-  slate: {
-    100: "#a0a3c4",
-    500: "#3e4361",
-    600: "#373c58",
-    700: "#23263b",
-    750: "#17182c",
-    800: "#16182e",
-    900: "#101124",
-    950: "#08091b",
-  },
-  gray: {
-    50: "rgba(255, 255, 255, 0.95)",
-    100: "#e7e7e9",
-    200: "#cfcfd3",
-    300: "#b7b8bd",
-    400: "#9fa0a7",
-    500: "#878891",
-    600: "#70707c",
-    700: "#585866",
-    800: "rgba(255, 255, 255, 0.2)",
-    900: "rgba(255, 255, 255, 0.1)",
-    950: "rgba(255, 255, 255, 0.05)",
+    400: "#2D42FC",
   },
   white: "#ffffff",
   black: "#000000",
   stroke: {
-    primary: "#252A47",
+    primary: "#363A59",
   },
-  fill: {
-    tertiary: "#B4BBFF1A",
-  },
+  surface: {
+    primary: "#121421",
+  }
 };
 
 /**
@@ -131,30 +110,30 @@ function fontComponentsPlugin({ addComponents }) {
       "@apply text-24 font-medium leading-heading-md -tracking-[0.96px]": {},
     },
     ".text-subheadline": {
-      "@apply text-14 font-medium leading-body-sm text-secondary tracking-body": {},
+      "@apply text-14 font-medium leading-body-sm text-slate-400 tracking-body": {},
     },
     ".text-description": {
-      "@apply text-16 font-normal leading-body-sm text-secondary tracking-body": {},
+      "@apply text-16 font-normal leading-body-sm text-slate-400 tracking-body": {},
     },
     ".text-terms-heading": {
       "@apply text-18 font-medium": {},
     },
     ".text-terms-body": {
-      "@apply text-16 font-normal leading-[24px] text-gray-300": {},
+      "@apply text-16 font-normal leading-[24px] text-slate-900": {},
     },
     ".text-terms-subtitle": {
       "@apply text-18 font-medium": {},
     },
     ".btn-landing": {
-      "@apply bg-blue-600 font-medium text-white transition-colors duration-180": {},
+      "@apply bg-blue-400 font-medium text-white transition-colors duration-180": {},
       "&:hover": {
         "@media (hover: hover)": {
-          background: "linear-gradient(0deg, rgba(9, 10, 21, 0.1) 0%, rgba(9, 10, 21, 0.1) 100%), var(--color-blue-600)",
+          background: "linear-gradient(0deg, rgba(9, 10, 21, 0.1) 0%, rgba(9, 10, 21, 0.1) 100%), var(--color-blue-400)",
         },
       },
       "&:active": {
         "@media (hover: hover)": {
-          background: "linear-gradient(0deg, rgba(9, 10, 21, 0.2) 0%, rgba(9, 10, 21, 0.2) 100%), var(--color-blue-600)",
+          background: "linear-gradient(0deg, rgba(9, 10, 21, 0.2) 0%, rgba(9, 10, 21, 0.2) 100%), var(--color-blue-400)",
         },
       },
     },

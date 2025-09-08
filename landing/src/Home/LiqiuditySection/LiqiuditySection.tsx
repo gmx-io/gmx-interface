@@ -11,7 +11,7 @@ export function LiqiuditySection() {
   const totalLiquidity = poolsData?.totalLiquidity ? cleanFormatUsd(poolsData.totalLiquidity) : "-";
   const onClickEarn = useGoToPools("GLV");
   return (
-    <section className="text-fiord-700 flex w-full bg-[#F4F5F9] px-16 py-80 sm:px-40 sm:py-[120px]">
+    <section className="bg-light-150 flex w-full px-16 py-80 text-slate-900 sm:px-40 sm:py-[120px]">
       <div className="mx-auto flex w-[1200px] flex-col items-stretch justify-center overflow-hidden sm:items-start">
         <h2 className="text-heading-2 mb-20 sm:mb-28">
           {totalLiquidity}

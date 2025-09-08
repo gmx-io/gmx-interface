@@ -29,12 +29,12 @@ export function HeroSection() {
   };
 
   return (
-    <section className="bg-fiord-700 overflow-hidden px-16 sm:px-40">
+    <section className="overflow-hidden bg-slate-900 px-16 sm:px-40">
       <div className="mx-auto sm:max-w-[1200px]">
         <div className="relative h-[640px] py-60 sm:h-[860px] sm:py-80 ">
           <HeroBackground />
           <div className="relative flex h-full w-full flex-col justify-end">
-            <div className="text-heading-1 border-b-fiord-500 mb-28 w-full border-b-0 pb-28 sm:border-b-[0.5px] sm:pb-36">
+            <div className="text-heading-1 mb-28 w-full border-b-0 border-b-slate-600 pb-28 sm:border-b-[0.5px] sm:pb-36">
               <div className="float-left">
                 <Trans>Trade</Trans>
               </div>{" "}
@@ -49,7 +49,7 @@ export function HeroSection() {
                   onClick={goToTradeArbitrum}
                 >
                   <div className="self-end rounded-full bg-white p-4">
-                    <IcLinkArrow className="size-8 text-blue-600" />
+                    <IcLinkArrow className="size-8 text-blue-400" />
                   </div>
                   <Trans>Trade Now</Trans>
                 </button>
@@ -59,25 +59,25 @@ export function HeroSection() {
                   </Trans>
                 </div>
               </div>
-              <div className="border-t-fiord-500 flex w-full flex-row flex-wrap gap-36 border-t-[0.5px] pt-28 sm:w-auto sm:gap-60 sm:border-t-0 sm:pt-0">
+              <div className="flex w-full flex-row flex-wrap gap-36 border-t-[0.5px] border-t-slate-600 pt-28 sm:w-auto sm:gap-60 sm:border-t-0 sm:pt-0">
                 <div className="flex flex-col gap-4">
-                  <span className="text-secondary text-nowrap text-12 sm:text-14">
+                  <span className="text-slate-400 text-nowrap text-12 sm:text-14">
                     <Trans>Traders</Trans>
                   </span>
                   <div className="text-[30px] font-medium tracking-tight sm:text-[40px]">{traders}</div>
                 </div>
                 <div className="flex flex-col gap-4">
-                  <span className="text-secondary text-nowrap text-12 sm:text-14">
+                  <span className="text-slate-400 text-nowrap text-12 sm:text-14">
                     <Trans>Open Interest</Trans>
                   </span>
                   <div className="text-[30px] font-medium tracking-tight sm:text-[40px]">{openInterest}</div>
                 </div>
                 <div className="group flex cursor-pointer flex-col gap-4" onClick={onTotalVolumeClick}>
-                  <span className="text-secondary duration-180 inline-flex items-center text-nowrap text-12 transition-colors group-hover:text-blue-300 sm:text-14">
+                  <span className="text-slate-400 duration-180 inline-flex items-center text-nowrap text-12 transition-colors group-hover:text-blue-300 sm:text-14">
                     <Trans>Total Volume</Trans>{" "}
                     <IcMidChevron className="duration-180 size-16 transition-transform group-hover:translate-x-4" />
                   </span>
-                  <div className="duration-180 text-[30px] font-medium tracking-tight transition-colors group-active:text-[#CFCED0] sm:text-[40px]">
+                  <div className="duration-180 text-[30px] font-medium tracking-tight transition-colors group-active:text-white/80 sm:text-[40px]">
                     {totalVolumeText}
                   </div>
                 </div>

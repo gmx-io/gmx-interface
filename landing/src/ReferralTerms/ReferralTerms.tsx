@@ -7,7 +7,7 @@ import SEO from "components/Common/SEO";
 export default function ReferralTerms() {
   return (
     <SEO title={getPageTitle(t`Referral Terms`)}>
-      <div className="bg-fiord-700 p-16 sm:p-40">
+      <div className="bg-slate-800 p-16 sm:p-40">
         <div>
           <div className="text-center">
             <div className="text-heading-3">GMX Referral Program</div>

@@ -33,7 +33,7 @@ export function PoolCard({ name, apr, description, iconComponent, coinImage, onC
     <div
       onClick={onClick}
       style={style}
-      className="bg-fiord-600 duration-180 group relative h-[200px] w-full cursor-pointer overflow-hidden rounded-20 bg-cover text-white transition-transform hover:-translate-y-4 lg:h-[380px] lg:w-[384px]"
+      className="duration-180 group relative h-[200px] w-full cursor-pointer overflow-hidden rounded-20 bg-slate-800 bg-cover text-white transition-transform hover:-translate-y-4 lg:h-[380px] lg:w-[384px]"
     >
       <BgPoolsLines className="duration-180 absolute left-0 top-0 h-full w-full transition-transform group-hover:translate-y-4" />
       <img
@@ -51,17 +51,17 @@ export function PoolCard({ name, apr, description, iconComponent, coinImage, onC
         </div>
         <div className="flex flex-row items-end justify-between">
           <div className="flex flex-col gap-4">
-            <p className="leading-body-sm tracking-body text-secondary text-12 font-medium sm:text-14">
+            <p className="leading-body-sm tracking-body text-slate-400 text-12 font-medium sm:text-14">
               <Trans>Annually</Trans>
             </p>
             <p className="text-[28px] font-medium leading-[98%] sm:text-[50px] sm:-tracking-[2px]">
               {aprText}{" "}
-              <span className="leading-body-sm tracking-body text-secondary text-12 font-medium sm:text-14">
+              <span className="leading-body-sm tracking-body text-slate-400 text-12 font-medium sm:text-14">
                 <Trans>APR</Trans>
               </span>
             </p>
           </div>
-          <div className="flex size-36 rounded-8 bg-[#1E2033] text-slate-100 group-hover:bg-blue-600 group-hover:text-white">
+          <div className="flex size-36 rounded-8 bg-slate-700 text-slate-500 group-hover:bg-blue-400 group-hover:text-white">
             <IcLinkArrow className="m-auto size-8 rotate-90" />
           </div>
         </div>

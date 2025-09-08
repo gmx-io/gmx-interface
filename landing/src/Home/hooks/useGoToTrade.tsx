@@ -35,7 +35,7 @@ export function useGoToTrade({ buttonPosition, chainId }: Props) {
       {
         event: "LandingPageAction",
         data: {
-          action: "LaunchApp",
+          action: chainId === REDIRECT_CHAIN_IDS.Solana ? "SolanaNavigation" : "LaunchApp",
           buttonPosition: buttonPosition,
           shouldSeeConfirmationDialog: shouldShowRedirectModal(),
         },

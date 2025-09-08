@@ -13,8 +13,8 @@ function TermsPageLoader() {
     <div className="flex h-screen items-center justify-center">
       <div className="text-center">
         <div className="mb-16 text-24 font-medium text-white">Loading...</div>
-        <div className="h-2 w-32 rounded-full bg-gray-700">
-          <div className="h-full w-1/3 animate-pulse rounded-full bg-blue-500"></div>
+        <div className="h-2 w-32 rounded-full bg-slate-700">
+          <div className="h-full w-1/3 animate-pulse rounded-full bg-blue-400"></div>
         </div>
       </div>
     </div>
