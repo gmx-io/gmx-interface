@@ -795,8 +795,10 @@ export const WithdrawalView = () => {
   return (
     <div className="flex grow flex-col overflow-y-auto p-adaptive">
       <div className="flex flex-col gap-[--padding-adaptive]">
-        <div className="flex flex-col gap-4">
-          <div className="text-body-medium text-typography-secondary">Asset</div>
+        <div className="flex flex-col gap-6">
+          <div className="text-body-medium text-typography-secondary">
+            <Trans>Asset</Trans>
+          </div>
           <DropdownSelector
             value={selectedTokenAddress}
             onChange={setSelectedTokenAddress}
@@ -815,7 +817,7 @@ export const WithdrawalView = () => {
           />
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           <div className="text-body-medium text-typography-secondary">
             <Trans>To Network</Trans>
           </div>
@@ -856,7 +858,7 @@ export const WithdrawalView = () => {
           />
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           <div className="text-body-medium flex items-center justify-between text-typography-secondary">
             <Trans>Withdraw</Trans>
             {selectedToken !== undefined &&

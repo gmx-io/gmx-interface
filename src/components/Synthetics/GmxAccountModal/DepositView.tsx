@@ -708,7 +708,7 @@ export const DepositView = () => {
   return (
     <form className="flex grow flex-col overflow-y-auto px-adaptive pb-adaptive pt-adaptive" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-[--padding-adaptive]">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           <div className="text-body-medium text-typography-secondary">
             <Trans>Asset</Trans>
           </div>
@@ -761,7 +761,7 @@ export const DepositView = () => {
           )}
         </div>
         {depositViewChain !== undefined && (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-6">
             <div className="text-body-medium text-typography-secondary">
               <Trans>From Network</Trans>
             </div>
@@ -772,8 +772,8 @@ export const DepositView = () => {
           </div>
         )}
 
-        <div className={cx("flex flex-col gap-4", { invisible: depositViewTokenAddress === undefined })}>
-          <div className="text-body-medium flex items-center justify-between gap-4 text-typography-secondary">
+        <div className={cx("flex flex-col gap-6", { invisible: depositViewTokenAddress === undefined })}>
+          <div className="text-body-medium flex items-center justify-between gap-6 text-typography-secondary">
             <Trans>Deposit</Trans>
             {selectedTokenSourceChainBalance !== undefined && selectedToken !== undefined && (
               <div>

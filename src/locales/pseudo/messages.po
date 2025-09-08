@@ -5745,6 +5745,7 @@ msgid "Max {0} in"
 msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "Asset"
 msgstr ""
 
