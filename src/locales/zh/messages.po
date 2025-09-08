@@ -263,7 +263,7 @@ msgstr ""
 msgid "{0} Required"
 msgstr "{0} 需要的"
 
-#: landing/src/FaqSection/FaqSection.tsx
+#: landing/src/Home/FaqSection/FaqSection.tsx
 msgid "FAQ"
 msgstr ""
 
@@ -399,7 +399,7 @@ msgstr ""
 msgid "This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps from the included markets. Backed by {0} and {1}."
 msgstr ""
 
-#: landing/src/SocialSection/SocialSection.tsx
+#: landing/src/Home/SocialSection/SocialSection.tsx
 msgid "Join"
 msgstr ""
 
@@ -434,7 +434,7 @@ msgstr "仓位"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr ""
 
-#: landing/src/SocialSection/SocialSlider.tsx
+#: landing/src/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution </2><3> Low size caps, but fun to do some degen gambling with </3>"
 msgstr ""
 
@@ -450,7 +450,7 @@ msgstr ""
 msgid "Referral code added!"
 msgstr "添加了推荐代码"
 
-#: landing/src/FaqSection/FaqSection.tsx
+#: landing/src/Home/FaqSection/FaqSection.tsx
 msgid "<0>Liquidity providers receive 63% of all trading and liquidation fees. By depositing WBTC, ETH, USDC, or other supported assets, you can earn up to ~35% annualized yield on the largest pools.</0><1><2> GM Pools – choose single-market exposure for targeted returns</2><3> GLV Vaults – auto-diversify across markets for a hands-off strategy</3></1><4>Historically, both options have outperformed standard LP benchmarks. See live stats on the Pools page.</4>"
 msgstr ""
 
@@ -519,7 +519,7 @@ msgstr ""
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "您可以使用以下任何一种方式将ETH从其他网络转移到Arbitrum："
 
-#: landing/src/FaqSection/FaqSection.tsx
+#: landing/src/Home/FaqSection/FaqSection.tsx
 msgid "<0>GMX V2 routes every order against its own liquidity pools, which currently hold over $300 million, and quote the oracle index price rather than relying on an order book or external market makers. This architecture minimizes slippage and maintains deep liquidity, even for positions over $30 million.</0><1>To ensure accurate pricing without wicks, GMX V2 uses Chainlink Data Streams oracles, so liquidations occur only at fair market prices. With the free GMX Express mode, orders are signed off-chain and sent through premium RPC endpoints, enabling near-instant, reliable execution with a user experience similar to a centralized exchange.</1><2>GMX V2 uses a unique multi-asset AMM (Automated Market Maker) model that routes trades against a dynamically balanced liquidity pool instead of traditional order books. This design significantly</2>"
 msgstr ""
 
@@ -575,10 +575,14 @@ msgstr ""
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr "你需要在此页面上接受转让，<0>点击这里</0>，若需要，可复制链接至此页面"
 
-#: landing/src/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
+#: landing/src/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Don't show this message again for 30 days."
 msgstr "30天内不要再显示此信息"
+
+#: landing/src/Home/HeroSection/AnimatedTitle.tsx
+msgid "80+ crypto tokens"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "hide"
@@ -768,7 +772,7 @@ msgstr ""
 msgid "Claimable Rebates"
 msgstr ""
 
-#: landing/src/SocialSection/SocialSection.tsx
+#: landing/src/Home/SocialSection/SocialSection.tsx
 msgid "Driven by <0/> our community"
 msgstr ""
 
@@ -888,6 +892,10 @@ msgstr ""
 msgid "Rewards"
 msgstr "奖励"
 
+#: landing/src/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+msgid "You're about to navigate to GMX Solana, which is operated by a separate team, so the experience may vary slightly."
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.jsx
 msgid "Liq. {0} {longOrShortText}"
 msgstr ""
@@ -907,6 +915,10 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Pay"
 msgstr "支付"
+
+#: landing/src/Home/HeroSection/AnimatedTitle.tsx
+msgid "from 6+ blockchains"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Governance Page"
@@ -1053,7 +1065,7 @@ msgstr "触发订单"
 msgid "GMX fundamentals"
 msgstr "GMX基础"
 
-#: landing/src/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
+#: landing/src/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 msgid "Alternative links can be found in the <0>docs</0>. By clicking Agree you accept the <1>T&Cs</1> and <2>Referral T&Cs</2>."
 msgstr ""
 
@@ -1100,7 +1112,7 @@ msgstr ""
 msgid "Deactivating..."
 msgstr ""
 
-#: landing/src/HeaderMenu/HeaderMenu.tsx
+#: landing/src/Home/HeaderMenu/HeaderMenu.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Protocol"
 msgstr ""
@@ -1148,7 +1160,7 @@ msgstr ""
 msgid "GMX V1 markets are disabled. GLP is being phased out and no longer supports GMX V1 markets."
 msgstr ""
 
-#: landing/src/LiqiuditySection/LiqiuditySection.tsx
+#: landing/src/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "Start Earning"
 msgstr ""
 
@@ -1269,7 +1281,7 @@ msgstr "选择池子"
 msgid "WEIGHT"
 msgstr "重量"
 
-#: landing/src/LiqiuditySection/PoolCard.tsx
+#: landing/src/Home/LiqiuditySection/PoolCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "APR"
@@ -1885,7 +1897,7 @@ msgstr ""
 msgid "To reduce fees, select a different asset to pay with."
 msgstr "为了减少费用，请选择不同的资产来支付"
 
-#: landing/src/HeaderMenu/HeaderMenu.tsx
+#: landing/src/Home/HeaderMenu/HeaderMenu.tsx
 msgid "Driven by our community"
 msgstr ""
 
@@ -2032,7 +2044,7 @@ msgstr ""
 msgid "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}  USD"
 msgstr ""
 
-#: landing/src/SocialSection/SocialSlider.tsx
+#: landing/src/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
 msgstr ""
 
@@ -2188,7 +2200,7 @@ msgstr ""
 msgid "You have an existing limit order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>."
 msgstr ""
 
-#: landing/src/SocialSection/SocialSection.tsx
+#: landing/src/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr ""
 
@@ -2221,7 +2233,7 @@ msgstr ""
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings with the help of <2>chainlist.org</2>.<3/><4/><5>Read more</5>."
 msgstr ""
 
-#: landing/src/LiqiuditySection/PoolCards.tsx
+#: landing/src/Home/LiqiuditySection/PoolCards.tsx
 msgid "Stake for rewards and governance rights"
 msgstr ""
 
@@ -2328,14 +2340,6 @@ msgstr ""
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 
-#: landing/src/HeroSection/HeroSection.tsx
-msgid "Trade with"
-msgstr ""
-
-#: landing/src/RoadmapSection/Quareters.tsx
-msgid "<0>Multichain</0><1>Botanix Support</1><2>GMX Express</2>"
-msgstr ""
-
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order executed"
 msgstr ""
@@ -2441,8 +2445,8 @@ msgstr ""
 msgid "Max number of parts: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgstr ""
 
-#: landing/src/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: landing/src/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
+#: landing/src/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
+#: landing/src/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.tsx
@@ -2535,7 +2539,7 @@ msgstr "取回金额"
 msgid "Job openings at GMX."
 msgstr "GMX的职位空缺"
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/Home/HeroSection/Features.tsx
 msgid "Trade from your wallet"
 msgstr ""
 
@@ -2560,11 +2564,11 @@ msgstr "{fromText} 到 {toMinText}"
 msgid "Otherwise, try changing the RPC url in your wallet settings with the help of <0>chainlist.org</0>."
 msgstr ""
 
-#: landing/src/LiqiuditySection/LiqiuditySection.tsx
+#: landing/src/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "in available liquidity"
 msgstr ""
 
-#: landing/src/SocialSection/SocialSlider.tsx
+#: landing/src/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
 msgstr ""
 
@@ -2697,7 +2701,7 @@ msgstr ""
 msgid "The current price impact is {0}. Consider using -0.30% acceptable price impact so the order is more likely to be processed."
 msgstr ""
 
-#: landing/src/LaunchSection/LaunchSection.tsx
+#: landing/src/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
 msgstr ""
 
@@ -2883,11 +2887,12 @@ msgstr "已达到{0}池的最大容量。请使用另一个代币挖GLP"
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr ""
 
+#: landing/src/Home/HeroSection/HeroSection.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Trade"
 msgstr "交易"
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/Home/HeroSection/Features.tsx
 msgid "No deposits required"
 msgstr ""
 
@@ -2901,10 +2906,6 @@ msgstr ""
 
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
 msgid "V2 doesn't currently support this network"
-msgstr ""
-
-#: landing/src/HeroSection/HeroSection.tsx
-msgid "100x leverage from your wallet"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -3053,6 +3054,10 @@ msgstr ""
 msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
 msgstr "esGMX（IOU）代币是可以转让的，如果你愿意，你可以把代币加入你的钱包，并把它发送到另一个地址"
 
+#: landing/src/Home/LiqiuditySection/LiqiuditySection.tsx
+msgid "Join 14000 users earning real yield."
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Self-transfer not supported"
 msgstr "不支持自行转让"
@@ -3061,7 +3066,7 @@ msgstr "不支持自行转让"
 msgid "Generating session..."
 msgstr ""
 
-#: landing/src/FaqSection/FaqSection.tsx
+#: landing/src/Home/FaqSection/FaqSection.tsx
 msgid "How do I get started on GMX?"
 msgstr ""
 
@@ -3110,7 +3115,7 @@ msgstr ""
 msgid "Leverage"
 msgstr "杠杆"
 
-#: landing/src/SponsorsSection/SponsorsSection.tsx
+#: landing/src/Home/SponsorsSection/SponsorsSection.tsx
 msgid "over 100 protocols"
 msgstr ""
 
@@ -3165,7 +3170,7 @@ msgstr ""
 msgid "Lev."
 msgstr ""
 
-#: landing/src/LiqiuditySection/PoolCard.tsx
+#: landing/src/Home/LiqiuditySection/PoolCard.tsx
 msgid "Annually"
 msgstr ""
 
@@ -3450,7 +3455,7 @@ msgstr ""
 msgid "You are earning rewards with {0} tokens.<0/>Tokens: {amountStr}."
 msgstr ""
 
-#: landing/src/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
+#: landing/src/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "该网站是一个社区部署和维护的开放资源<0>GMX前端的实例</0>，在分布式、对等的<1>IPFS网络</1>上托管和服务"
@@ -3608,7 +3613,7 @@ msgstr "更多选项"
 msgid "GLV is the liquidity provider token for GMX V2 vaults. Consist of several GM tokens and accrues fees generated by them."
 msgstr ""
 
-#: landing/src/FaqSection/FaqSection.tsx
+#: landing/src/Home/FaqSection/FaqSection.tsx
 msgid "<0>No KYC, no lengthy onboarding:</0><1><2>Connect any EVM wallet (MetaMask, Rabby, Coinbase Wallet, Ledger, etc.)</2><3>Select a supported network where you have funds</3><4>Trade</4></1><5>You can trade directly using funds from Arbitrum, Avalanche, or Botanix, or deposit to your GMX Account to trade from any supported network.</5>"
 msgstr ""
 
@@ -3728,7 +3733,7 @@ msgstr ""
 msgid "Opening..."
 msgstr "开仓中"
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/Home/HeroSection/Features.tsx
 msgid "Secure & Permissionless"
 msgstr ""
 
@@ -3748,7 +3753,7 @@ msgstr "资金费用"
 msgid "Approval failed"
 msgstr "核准失败"
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/Home/HeroSection/HeroSection.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -3910,12 +3915,16 @@ msgstr ""
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. This can be useful for delta-neutral strategies to earn funding fees."
 msgstr ""
 
+#: landing/src/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+msgid "Open GMX Solana"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr "该账户作为交易商所赚取的回扣"
 
-#: landing/src/RoadmapSection/RoadmapSection.tsx
-#: landing/src/RoadmapSection/RoadmapSection.tsx
+#: landing/src/Home/RoadmapSection/RoadmapSection.tsx
+#: landing/src/Home/RoadmapSection/RoadmapSection.tsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Synthetics/ExecutionPriceRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -3952,7 +3961,11 @@ msgstr ""
 msgid "Vesting Status"
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Market Groups</0><1>Net Open Interest</1>"
+msgstr ""
+
+#: landing/src/Home/HeroSection/Features.tsx
 msgid "Guaranteed Liquidity"
 msgstr ""
 
@@ -3993,6 +4006,10 @@ msgstr ""
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 msgid "Net Rate / 1h"
 msgstr "净率 / 1小时"
+
+#: landing/src/Home/HeroSection/HeroSection.tsx
+msgid "from your wallet"
+msgstr ""
 
 #: src/pages/Stake/ClaimModal.tsx
 msgid "Claim esGMX Rewards"
@@ -4193,7 +4210,7 @@ msgstr ""
 msgid "Single"
 msgstr ""
 
-#: landing/src/LiqiuditySection/PoolCards.tsx
+#: landing/src/Home/LiqiuditySection/PoolCards.tsx
 msgid "Invest with control over risk and reward"
 msgstr ""
 
@@ -4217,7 +4234,7 @@ msgstr "在GMX上进行交易，赢取<0>$250.000</0> 美元的奖金! 活动至
 msgid "tBTC LP incentives"
 msgstr ""
 
-#: landing/src/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
+#: landing/src/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "您正要离开GMX.io，并且将被重新导向到第三方独立网站"
@@ -4318,6 +4335,10 @@ msgstr ""
 msgid "Exposure to Market Traders’ PnL"
 msgstr ""
 
+#: landing/src/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Cross-Margin </0><1>Cross-Collateral </1>"
+msgstr ""
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Optimal"
 msgstr ""
@@ -4335,7 +4356,7 @@ msgstr ""
 msgid "Execute order simulation failed."
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/Home/HeroSection/Features.tsx
 msgid "Support for"
 msgstr ""
 
@@ -4371,7 +4392,7 @@ msgstr "可领取"
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "此外，触发订单為市场订单，不保证以触发价格结算"
 
-#: landing/src/HeaderMenu/HeaderMenu.tsx
+#: landing/src/Home/HeaderMenu/HeaderMenu.tsx
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"
@@ -4390,10 +4411,6 @@ msgstr "创建指令中..."
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Deposit disabled, pending {0} upgrade"
-msgstr ""
-
-#: landing/src/RoadmapSection/Quareters.tsx
-msgid "<0>Solana Support</0>"
 msgstr ""
 
 #: src/pages/Jobs/Jobs.jsx
@@ -4472,6 +4489,10 @@ msgstr ""
 msgid "Create Limit"
 msgstr ""
 
+#: landing/src/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Multichain </0><1>Just in Time Liquidity </1>"
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer already initiated"
 msgstr "已启动转移"
@@ -4503,7 +4524,7 @@ msgstr "订单"
 msgid "Staked on Avalanche"
 msgstr ""
 
-#: landing/src/SocialSection/SocialSection.tsx
+#: landing/src/Home/SocialSection/SocialSection.tsx
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts
 msgid "Media Kit"
@@ -4513,7 +4534,7 @@ msgstr "多媒体工具"
 msgid "UniDex Leverage"
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/Home/HeroSection/Features.tsx
 msgid "Numerous Assets"
 msgstr ""
 
@@ -4590,10 +4611,6 @@ msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to generate session"
-msgstr ""
-
-#: landing/src/RoadmapSection/Quareters.tsx
-msgid "<0>Real World Assets</0><1>Staking and trading tiers</1><2>Net Open Interest</2>"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
@@ -4717,7 +4734,7 @@ msgstr ""
 msgid "POOL"
 msgstr "池子"
 
-#: landing/src/HeaderMenu/HeaderMenu.tsx
+#: landing/src/Home/HeaderMenu/HeaderMenu.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Voting"
 msgstr ""
@@ -4928,7 +4945,7 @@ msgstr "在下面选择你的归属选项，然后点击 \"Claim\""
 msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/Home/HeroSection/Features.tsx
 msgid "Save on Costs"
 msgstr "节省成本"
 
@@ -5109,6 +5126,10 @@ msgstr ""
 msgid "Failed to {0}"
 msgstr ""
 
+#: landing/src/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+msgid "GMX Solana"
+msgstr ""
+
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
 msgstr ""
@@ -5127,7 +5148,7 @@ msgstr ""
 msgid "Limit / Take Profit / Stop Loss"
 msgstr ""
 
-#: landing/src/LiqiuditySection/PoolCards.tsx
+#: landing/src/Home/LiqiuditySection/PoolCards.tsx
 msgid "Steady returns without management"
 msgstr ""
 
@@ -5367,7 +5388,7 @@ msgstr "目标重量"
 msgid "Winners:"
 msgstr ""
 
-#: landing/src/FaqSection/FaqSection.tsx
+#: landing/src/Home/FaqSection/FaqSection.tsx
 msgid "What makes GMX one of the best places to earn yield on my crypto?"
 msgstr ""
 
@@ -5479,7 +5500,7 @@ msgstr "最高{0}以内"
 msgid "Stop Loss Decrease"
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/Home/HeroSection/Features.tsx
 msgid "Trade with confidence"
 msgstr ""
 
@@ -5522,7 +5543,7 @@ msgstr ""
 msgid "Sell GLV"
 msgstr ""
 
-#: landing/src/LaunchSection/LaunchSection.tsx
+#: landing/src/Home/LaunchSection/LaunchSection.tsx
 msgid "Operates on open, permissionless networks to ensure transparency, decentralisation, and unrestricted access"
 msgstr ""
 
@@ -5593,7 +5614,7 @@ msgstr ""
 msgid "Perpie"
 msgstr ""
 
-#: landing/src/SponsorsSection/SponsorsSection.tsx
+#: landing/src/Home/SponsorsSection/SponsorsSection.tsx
 msgid "Supported by"
 msgstr ""
 
@@ -5648,7 +5669,7 @@ msgstr ""
 msgid "Swap {0} {1} for{2} USDG"
 msgstr ""
 
-#: landing/src/HeaderMenu/HeaderMenu.tsx
+#: landing/src/Home/HeaderMenu/HeaderMenu.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
 msgstr ""
@@ -5913,8 +5934,8 @@ msgstr ""
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/Home/HeroSection/Features.tsx
+#: landing/src/Home/HeroSection/HeroSection.tsx
 msgid "Trade Now"
 msgstr ""
 
@@ -6010,6 +6031,10 @@ msgstr ""
 msgid "3rd Place"
 msgstr ""
 
+#: landing/src/Home/SocialSection/SocialSlider.tsx
+msgid "<0>🔷 24h Volume: $1.01 Billion.</0><1>Thank you to the hundreds of thousands of GMX users who continue to support permissionless onchain trading.</1>"
+msgstr ""
+
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming failed"
@@ -6087,7 +6112,7 @@ msgstr ""
 msgid "Re-enable"
 msgstr ""
 
-#: landing/src/FaqSection/FaqSection.tsx
+#: landing/src/Home/FaqSection/FaqSection.tsx
 msgid "<0>Absolutely. GMX is fully composable and already integrated with hundreds of protocols, including Dolomite, 1inch, and Odos. You can interact directly with the smart contracts or use the provided APIs and SDKs for trading, liquidity, or data feeds. Visit the GMX Developer Docs to get started.</0>"
 msgstr ""
 
@@ -6192,7 +6217,7 @@ msgstr ""
 msgid "Acknowledge epoch is ending in {minutes} minutes"
 msgstr ""
 
-#: landing/src/SocialSection/SocialSlider.tsx
+#: landing/src/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr ""
 
@@ -6259,7 +6284,7 @@ msgstr "执行限价交换"
 msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
 msgstr ""
 
-#: landing/src/SocialSection/SocialSlider.tsx
+#: landing/src/Home/SocialSection/SocialSlider.tsx
 msgid "<0>⬡ Chainlink Data Story ⬡ <1/><2>#Chainlink</2> Data Streams have secured over $56B in volume for the <3>@GMX_IO</3> V2 protocol.</0><4>Data Streams’ low-latency delivery of high-quality market data has supercharged GMX's perpetual markets across <5>@arbitrum</5> and <6>@avax</6>. <7>https://dune.com/gmx-io/gmx-analytics#v2-volume</7></4>"
 msgstr ""
 
@@ -6380,10 +6405,6 @@ msgstr "订单执行价格考虑了价格影响"
 
 #: src/pages/Buy/Buy.tsx
 msgid "Buy GLP or GMX"
-msgstr ""
-
-#: landing/src/RoadmapSection/Quareters.tsx
-msgid "<0>Cross-Collateral</0><1>Cross-Margin</1><2>Market Groups</2><3>Just in Time Liquidity</3>"
 msgstr ""
 
 #: src/components/Exchange/ChartTokenSelector.tsx
@@ -6719,6 +6740,10 @@ msgstr "限制价格"
 msgid "You"
 msgstr ""
 
+#: landing/src/Home/HeroSection/AnimatedTitle.tsx
+msgid "with 100x leverage"
+msgstr ""
+
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "Pools providing liquidity to specific GMX markets, supporting single-asset and native asset options."
 msgstr ""
@@ -6768,7 +6793,7 @@ msgstr ""
 msgid "DeFi Margin Protocol"
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/Home/HeroSection/HeroSection.tsx
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
 msgstr ""
 
@@ -6801,6 +6826,10 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 msgid "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees."
 msgstr "费用决于你出售GLP的资产可能有所不同。<0/>在订单中输入你要购买的GLP数量，然后在此查看以比较费用。"
+
+#: landing/src/Home/HeroSection/AnimatedTitle.tsx
+msgid "deep liquid markets"
+msgstr ""
 
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 msgid "Claim <0>{0}</0>"
@@ -6877,7 +6906,7 @@ msgstr ""
 msgid "Liquidity incentives program is live on {avalancheLink}."
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/Home/HeroSection/Features.tsx
 msgid "keep more of what you earn"
 msgstr ""
 
@@ -7098,10 +7127,10 @@ msgstr "输入接收方地址"
 msgid "Additional reserve required"
 msgstr ""
 
-#: landing/src/SocialSection/SocialSection.tsx
-#: landing/src/SocialSection/SocialSection.tsx
+#: landing/src/Home/SocialSection/SocialSection.tsx
+#: landing/src/Home/SocialSection/SocialSection.tsx
+#: landing/src/TermsAndConditions/TermsAndConditions.tsx
 #: src/components/Footer/constants.ts
-#: src/pages/TermsAndConditions/TermsAndConditions.jsx
 msgid "Terms and Conditions"
 msgstr "条款及细则"
 
@@ -7136,6 +7165,10 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
+msgstr ""
+
+#: landing/src/Home/SocialSection/SocialSlider.tsx
+msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
@@ -7174,6 +7207,10 @@ msgstr ""
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed."
 msgstr "交易失败"
+
+#: landing/src/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Solana Support</0><1>Botanix Support </1><2>GMX Express </2>"
+msgstr ""
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Failed to withdraw {balanceFormatted} to Main Account"
@@ -7488,7 +7525,7 @@ msgstr ""
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>There is no price impact. There is a single<3/>execution price for decreasing longs for<4/>this size."
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/Home/HeroSection/Features.tsx
 msgid "Seamless Trading"
 msgstr ""
 
@@ -7614,7 +7651,7 @@ msgstr "质押完成"
 msgid "Leave feedback"
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/Home/HeroSection/HeroSection.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr ""
@@ -7707,7 +7744,7 @@ msgstr ""
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/Home/HeroSection/Features.tsx
 msgid "No loss of fund ownership"
 msgstr ""
 
@@ -7727,9 +7764,9 @@ msgstr "在订单中输入金额，费用就会显示出来"
 msgid "GLP Vault"
 msgstr ""
 
-#: landing/src/SocialSection/SocialSection.tsx
+#: landing/src/Home/SocialSection/SocialSection.tsx
+#: landing/src/ReferralTerms/ReferralTerms.tsx
 #: src/components/Footer/constants.ts
-#: src/pages/ReferralTerms/ReferralTerms.jsx
 msgid "Referral Terms"
 msgstr "推荐条款"
 
@@ -7741,7 +7778,7 @@ msgstr ""
 msgid "Fee APY"
 msgstr ""
 
-#: landing/src/FaqSection/FaqSection.tsx
+#: landing/src/Home/FaqSection/FaqSection.tsx
 msgid "Can I build on top of GMX or integrate it into my DeFi app?"
 msgstr ""
 
@@ -7813,7 +7850,7 @@ msgstr "已质押"
 msgid "There is not enough {0} in your account on {1} to send this transaction.<0/><1/><2>Buy or Transfer {2} to {3}</2>"
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/Home/HeroSection/HeroSection.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Volume"
 msgstr "总量"
@@ -8298,7 +8335,7 @@ msgstr ""
 msgid "{column}"
 msgstr ""
 
-#: landing/src/HeroSection/HeroSection.tsx
+#: landing/src/Home/HeroSection/Features.tsx
 msgid "Stay Safe from <0/> Liquidations"
 msgstr ""
 
@@ -8337,9 +8374,9 @@ msgstr ""
 msgid "Please <0>read here</0> for more information."
 msgstr ""
 
-#: landing/src/HeaderMenu/HeaderMenu.tsx
-#: landing/src/HeaderMenu/HeaderMenu.tsx
-#: landing/src/LaunchSection/LaunchSection.tsx
+#: landing/src/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/Home/LaunchSection/LaunchSection.tsx
 msgid "Open App"
 msgstr ""
 
@@ -8486,7 +8523,7 @@ msgstr ""
 msgid "I am aware of the trigger orders"
 msgstr "我了解触发的指令"
 
-#: landing/src/SocialSection/SocialSlider.tsx
+#: landing/src/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>@GMX_IO</1> enters into a Data Partnership with Token TerminalGMX is a leading permissionless perpetual exchange built on <2>@Arbitrum</2> and <3>@Avax</3>.</0><4>The protocol serves as a foundational liquidity baselayer for multichain DeFi.</4><5>With ~$280 billion in notional trading volume and counting, GMX recognized the need for reliable and data-driven stakeholder reporting.</5>"
 msgstr ""
 
@@ -8605,10 +8642,6 @@ msgstr ""
 msgid "Limit"
 msgstr "限制"
 
-#: landing/src/LiqiuditySection/LiqiuditySection.tsx
-msgid "Deposited by 13 654 users."
-msgstr ""
-
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact."
 msgstr ""
@@ -8643,6 +8676,10 @@ msgstr "出售中..."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute as the max. allowed leverage is exceeded. Consider decreasing the order's leverage by editing and decreasing its size. <0>Read more</0>."
+msgstr ""
+
+#: landing/src/Home/HeroSection/AnimatedTitle.tsx
+msgid "multiple asset classes"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx

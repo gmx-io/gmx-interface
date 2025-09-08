@@ -5,38 +5,25 @@
 @layer base {
   :root {
     @apply text-[10px];
+    -webkit-font-smoothing: antialiased;
   }
   html {
     /* Restore native webkit behavior */
-    @apply leading-base;
+    @apply leading-base bg-slate-800;
   }
-}
-
-@font-face {
-  font-family: "TTHoves";
-  font-style: normal;
-  font-weight: 300;
-  src: url("fonts/tthoves/tt-hoves-pro-trial-light.ttf");
 }
 
 @font-face {
   font-family: "TTHoves";
   font-style: normal;
   font-weight: 400;
-  src: url("fonts/tthoves/tt-hoves-pro-trial-regular.ttf");
+  src: url("fonts/tthoves/TT_Hoves_Pro_Regular.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "TTHoves";
   font-style: normal;
   font-weight: 500;
-  src: url("fonts/tthoves/tt-hoves-pro-trial-medium.ttf");
-}
-
-@font-face {
-  font-family: "TTHoves";
-  font-style: normal;
-  font-weight: bold;
-  src: url("fonts/tthoves/tt-hoves-pro-trial-bold.ttf");
+  src: url("fonts/tthoves/TT_Hoves_Pro_Medium.ttf") format("truetype");
 }
 
