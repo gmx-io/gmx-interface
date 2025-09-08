@@ -36,7 +36,7 @@ export function getFooterLinks(isHome) {
             {t`V1 Interface`}
           </>
         ),
-        link: "https://v1.gmx-interface.pages.dev",
+        link: "https://v1.app.gmx.io/#/v1",
         external: true,
       },
       { label: t`Media Kit`, link: "https://docs.gmx.io/docs/community/media-kit", external: true },
@@ -56,5 +56,9 @@ export const SOCIAL_LINKS: SocialLink[] = [
 ];
 
 function V1Icon() {
-  return <div className="rounded-2 bg-typography-secondary px-3 py-2 text-[8px] font-bold text-white dark:text-black">V1</div>;
+  return (
+    <div className="rounded-2 bg-typography-secondary px-3 py-2 text-[8px] font-bold text-white dark:text-black">
+      V1
+    </div>
+  );
 }
