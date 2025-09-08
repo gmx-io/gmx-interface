@@ -12,6 +12,7 @@ import {
   BatchReportBody,
   DayPriceCandle,
   OracleFetcher,
+  PerformanceInfo,
   RawIncentivesStats,
   TickersResponse,
   UserFeedbackBody,
@@ -149,6 +150,22 @@ export class OracleKeeperFetcher implements OracleFetcher {
       },
       body: JSON.stringify(body),
     });
+  }
+
+  fetchPerformance(period: ApyPeriod): Promise<PerformanceInfo[]> {
+    return fetch(buildUrl(this.url!, "/performance/annualized", { period }), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .catch((e) => {
+        // eslint-disable-next-line no-console
+        console.error(e);
+        this.switchOracleKeeper();
+        throw e;
+      });
   }
 
   fetchApys(period: ApyPeriod): Promise<ApyInfo> {

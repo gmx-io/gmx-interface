@@ -11,30 +11,25 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
-import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
+import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
 import { useHashQueryParams } from "lib/useHashQueryParams";
-import { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
 import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigureUserAnalyticsProfile";
-import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
 import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalletConnectedEvent";
 import useRouteQuery from "lib/useRouteQuery";
 import useSearchParams from "lib/useSearchParams";
 import { switchNetwork } from "lib/wallets";
-import HomeFooter from "pages/Home/HomeFooter";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
 import { CloseToastButton } from "components/CloseToastButton/CloseToastButton";
 import EventToastContainer from "components/EventToast/EventToastContainer";
 import useEventToast from "components/EventToast/useEventToast";
-import { Header } from "components/Header/Header";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 import { GmxAccountModal } from "components/Synthetics/GmxAccountModal/GmxAccountModal";
 
-import { HomeRoutes } from "./HomeRoutes";
 import { MainRoutes } from "./MainRoutes";
 
 const Zoom = cssTransition({
@@ -47,7 +42,6 @@ const Zoom = cssTransition({
 
 export function AppRoutes() {
   const { theme } = useTheme();
-  const isHome = isHomeSite();
   const location = useLocation();
   const history = useHistory();
 
@@ -104,17 +98,6 @@ export function AppRoutes() {
     }
   }
 
-  const showRedirectModal = useCallback((to: string) => {
-    userAnalytics.pushEvent<LandingPageAgreementConfirmationEvent>({
-      event: "LandingPageAction",
-      data: {
-        action: "AgreementConfirmationDialogShown",
-      },
-    });
-    setRedirectModalVisible(true);
-    setSelectedToPage(to);
-  }, []);
-
   const urlParams = useSearchParams<{ chainId: string }>();
 
   useEffect(() => {
@@ -136,15 +119,7 @@ export function AppRoutes() {
   return (
     <>
       <div className="App w-full">
-        {isHome ? (
-          <div className="bg-[#08091b]">
-            <Header openSettings={openSettings} showRedirectModal={showRedirectModal} />
-            <HomeRoutes showRedirectModal={showRedirectModal} />
-            <HomeFooter />
-          </div>
-        ) : (
-          <MainRoutes openSettings={openSettings} />
-        )}
+        <MainRoutes openSettings={openSettings} />
       </div>
       <ToastContainer
         limit={1}
