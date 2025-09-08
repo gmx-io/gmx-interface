@@ -3,7 +3,7 @@ import cx from "classnames";
 import { ethers } from "ethers";
 import React, { useCallback, useMemo, useState } from "react";
 
-import { ARBITRUM } from "config/chains";
+import { ARBITRUM, type ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
@@ -23,6 +23,8 @@ import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
+import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
+import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 
 import { GMX_DAO_LINKS } from "./constants";
 
@@ -31,7 +33,7 @@ export function ClaimModal(props: {
   setIsVisible: (isVisible: boolean) => void;
   rewardRouterAddress: string;
   signer: UncheckedJsonRpcSigner | undefined;
-  chainId: number;
+  chainId: ContractsChainId;
   setPendingTxns: SetPendingTransactions;
   totalGmxRewards: bigint | undefined;
   nativeTokenSymbol: string;
@@ -146,9 +148,9 @@ export function ClaimModal(props: {
         isNativeTokenToClaim ? shouldConvertWeth : false,
       ],
       {
-        sentMsg: t`Claim submitted!`,
+        sentMsg: t`Claim submitted.`,
         failMsg: t`Claim failed.`,
-        successMsg: t`Claim completed!`,
+        successMsg: t`Claim completed.`,
         successDetailsMsg: !shouldStakeGmx ? gmxUsageOptionsMsg : undefined,
         setPendingTxns,
       }
@@ -212,7 +214,7 @@ export function ClaimModal(props: {
 
   return (
     <ModalWithPortal className="StakeModal" isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Rewards`}>
-      <div className="CompoundModal-menu">
+      <div className="flex flex-col gap-8 pb-8">
         <div>
           <Checkbox isChecked={shouldClaimGmx} setIsChecked={setShouldClaimGmx} disabled={shouldStakeGmx}>
             <Trans>Claim GMX Rewards</Trans>
@@ -261,7 +263,7 @@ export function ClaimModal(props: {
         </div>
       )}
       {isUndelegatedGovToken ? (
-        <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-500">
+        <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-300">
           <Trans>
             <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
               Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
@@ -270,10 +272,13 @@ export function ClaimModal(props: {
           </Trans>
         </AlertInfo>
       ) : null}
+      <SwitchToSettlementChainWarning topic="staking" />
       <div className="Exchange-swap-button-container">
-        <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
-          {primaryText}
-        </Button>
+        <SwitchToSettlementChainButtons>
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
+            {primaryText}
+          </Button>
+        </SwitchToSettlementChainButtons>
       </div>
     </ModalWithPortal>
   );

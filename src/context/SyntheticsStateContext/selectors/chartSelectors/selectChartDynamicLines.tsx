@@ -5,7 +5,7 @@ import {
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
-import { PositionOrderInfo, isSwapOrderType } from "domain/synthetics/orders";
+import { PositionOrderInfo, isMarketOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { getTokenData } from "domain/synthetics/tokens";
 import { formatAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
@@ -29,7 +29,7 @@ export const selectChartDynamicLines = createSelector<DynamicChartLine[]>((q) =>
 
   const orderLines: DynamicChartLine[] = Object.values(ordersInfo || {})
     .filter((order) => {
-      if (isSwapOrderType(order.orderType)) {
+      if (isSwapOrderType(order.orderType) || isMarketOrderType(order.orderType)) {
         return false;
       }
 

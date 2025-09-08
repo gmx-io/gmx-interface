@@ -317,6 +317,7 @@ export async function fetchTradeActions({
             id
             eventName
 
+            srcChainId
             account
             marketAddress
             swapPath
@@ -351,6 +352,8 @@ export async function fetchTradeActions({
             shouldUnwrapNativeToken
             twapGroupId
             numberOfParts
+            totalImpactUsd
+            proportionalPendingImpactUsd
 
             reason
             reasonBytes

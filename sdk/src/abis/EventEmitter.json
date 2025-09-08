@@ -1,7 +1,4 @@
 {
-  "_format": "hh-sol-artifact-1",
-  "contractName": "EventEmitter",
-  "sourceName": "contracts/event/EventEmitter.sol",
   "abi": [
     {
       "inputs": [
@@ -2059,7 +2056,5 @@
       "stateMutability": "view",
       "type": "function"
     }
-  ],
-  "linkReferences": {},
-  "deployedLinkReferences": {}
+  ]
 }

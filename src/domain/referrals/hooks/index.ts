@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
-import { BigNumberish, Signer, ethers, isAddress } from "ethers";
+import { BigNumberish, ethers, isAddress, Signer } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
-import { Hash } from "viem";
+import { Hash, zeroAddress } from "viem";
 
 import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
@@ -15,19 +15,20 @@ import { getProvider } from "lib/rpc";
 import { getReferralsGraphClient } from "lib/subgraph";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { abis } from "sdk/abis";
+import { ContractsChainId } from "sdk/configs/chains";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
 
 import { UserReferralInfo } from "../types";
 
+export * from "./useReferralCodeFromUrl";
 export * from "./useReferralsData";
 export * from "./useUserCodesOnAllChain";
-export * from "./useReferralCodeFromUrl";
 
 export function useUserReferralInfoRequest(
   signer: Signer | undefined,
-  chainId: number,
+  chainId: ContractsChainId,
   account?: string | null,
   skipLocalReferralCode = false
 ): UserReferralInfo | undefined {
@@ -109,7 +110,7 @@ export function useAffiliateTier(signer, chainId, account) {
   };
 }
 
-export function useTiers(signer: Signer | undefined, chainId: number, tierLevel?: BigNumberish) {
+export function useTiers(signer: Signer | undefined, chainId: ContractsChainId, tierLevel?: BigNumberish) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
 
   const { data: [totalRebate, discountShare] = [], error } = useSWR<bigint[]>(
@@ -129,7 +130,7 @@ export function useTiers(signer: Signer | undefined, chainId: number, tierLevel?
   };
 }
 
-export async function setAffiliateTier(chainId: number, affiliate: string, tierId: number, signer, opts) {
+export async function setAffiliateTier(chainId: ContractsChainId, affiliate: string, tierId: number, signer, opts) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const timelockAddress = getContract(chainId, "Timelock");
   const contract = new ethers.Contract(timelockAddress, abis.Timelock, signer);
@@ -157,8 +158,11 @@ export async function setTraderReferralCodeByUser(chainId, referralCode, signer,
   return callContract(chainId, contract, "setTraderReferralCodeByUser", [referralCodeHex], opts);
 }
 
-export async function getReferralCodeOwner(chainId, referralCode) {
+export async function getReferralCodeOwner(chainId: ContractsChainId, referralCode: string): Promise<string> {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  if (referralStorageAddress === zeroAddress) {
+    return zeroAddress;
+  }
   const provider = getProvider(undefined, chainId);
   const contract = new ethers.Contract(referralStorageAddress, abis.ReferralStorage, provider);
   const codeOwner = await contract.codeOwners(referralCode);
@@ -227,6 +231,35 @@ export function useUserReferralCode(signer, chainId, account, skipLocalReferralC
   };
 }
 
+export function useLocalReferralCode() {
+  const userReferralCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
+
+  return useMemo(() => {
+    if (!userReferralCode) {
+      return undefined;
+    }
+
+    const userReferralCodeString = decodeReferralCode(userReferralCode as Hash);
+
+    return {
+      userReferralCode,
+      userReferralCodeString,
+    };
+  }, [userReferralCode]);
+}
+
+export function getRefCodeParamString() {
+  const userReferralCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
+
+  if (!userReferralCode) {
+    return undefined;
+  }
+
+  const userReferralCodeString = decodeReferralCode(userReferralCode as Hash);
+
+  return `ref=${userReferralCodeString}`;
+}
+
 export function useReferrerTier(signer, chainId, account) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const validAccount = useMemo(() => (isAddress(account) ? account : null), [account]);
@@ -288,7 +321,7 @@ export function useReferrerDiscountShare(library, chainId, owner) {
   };
 }
 
-export async function validateReferralCodeExists(referralCode, chainId) {
+export async function validateReferralCodeExists(referralCode: string, chainId: ContractsChainId) {
   const referralCodeBytes32 = encodeReferralCode(referralCode);
   const referralCodeOwner = await getReferralCodeOwner(chainId, referralCodeBytes32);
   return !isAddressZero(referralCodeOwner);

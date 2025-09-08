@@ -2,7 +2,9 @@ import { FloatingPortal, autoUpdate, flip, shift, useFloating } from "@floating-
 import { Menu } from "@headlessui/react";
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import { BiChevronDown } from "react-icons/bi";
+import { FiChevronDown } from "react-icons/fi";
+
+import Button from "components/Button/Button";
 
 import { NestedOption } from "./types";
 
@@ -32,23 +34,18 @@ export default function NestedTab<V extends string | number>({
   const label = selectedSubOption ? selectedSubOption.label || selectedSubOption.value : t`More`;
 
   return (
-    <Menu as="div" className="Tab-option flex items-center justify-center gap-8">
-      <Menu.Button
-        as="div"
-        className={cx("flex cursor-pointer items-center justify-center", commonOptionClassname, {
-          "text-white": !!selectedSubOption,
-        })}
-        ref={refs.setReference}
-        data-qa={qa ? `${qa}-tab-${option.label}` : undefined}
-      >
-        {label}
+    <Menu as="div" className="flex items-center justify-center gap-8">
+      <Menu.Button as="div" ref={refs.setReference} data-qa={qa ? `${qa}-tab-${option.label}` : undefined}>
+        <Button variant="ghost" className={cx({ "!bg-button-secondary !text-typography-primary": selectedSubOption })}>
+          <span>{label}</span>
 
-        <BiChevronDown size={16} />
+          <FiChevronDown size={16} className="mt-1" />
+        </Button>
       </Menu.Button>
       <FloatingPortal>
         <Menu.Items
           as="div"
-          className="z-[1000] mt-8 rounded-4 border border-gray-800 bg-slate-800 outline-none"
+          className="z-[1000] mt-8 overflow-hidden rounded-8 border border-slate-600 bg-slate-900 outline-none"
           ref={refs.setFloating}
           style={floatingStyles}
         >
@@ -58,8 +55,9 @@ export default function NestedTab<V extends string | number>({
                 as="div"
                 key={subOpt.value}
                 className={cx(
-                  "hover:bg-dark-blue-hover text-body-medium cursor-pointer p-8 text-slate-100 hover:rounded-4 hover:text-white",
-                  { "text-white": subOpt.value === selectedValue }
+                  "text-body-medium cursor-pointer p-8 font-medium text-typography-secondary hover:bg-fill-surfaceHover hover:text-typography-primary",
+                  { "text-typography-primary": subOpt.value === selectedValue },
+                  commonOptionClassname
                 )}
                 onClick={() => onOptionClick?.(subOpt.value)}
               >

@@ -5,11 +5,18 @@ import {
   selectExpressGlobalParams,
   selectIsExpressTransactionAvailable,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectSubaccountForMultichainAction,
+  selectSubaccountForSettlementChainAction,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
+import { FAST_EXPRESS_PARAMS_TIMEOUT_ERROR } from "lib/errors/customErrors";
 import { throttleLog } from "lib/logging";
+import { metrics } from "lib/metrics";
 import { roundBigIntToDecimals } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
+import { sleep } from "lib/sleep";
 import { usePrevious } from "lib/usePrevious";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import useWallet from "lib/wallets/useWallet";
@@ -24,7 +31,7 @@ import {
 
 import { ExpressTxnParams } from ".";
 import { estimateBatchExpressParams } from "./expressOrderUtils";
-import { useSwitchGasPaymentTokenIfRequired } from "./useSwitchGasPaymentTokenIfRequired";
+import { useSwitchGasPaymentTokenIfRequiredFromExpressParams } from "./useSwitchGasPaymentTokenIfRequired";
 
 export type ExpressOrdersParamsResult = {
   expressParams: ExpressTxnParams | undefined;
@@ -36,23 +43,27 @@ export type ExpressOrdersParamsResult = {
 
 export function useExpressOrdersParams({
   orderParams,
-
   label,
+  isGmxAccount,
 }: {
   orderParams: BatchOrderTxnParams | undefined;
   totalExecutionFee?: bigint;
   label?: string;
+  isGmxAccount: boolean;
 }): ExpressOrdersParamsResult {
   const { chainId } = useChainId();
 
   const showDebugValues = useShowDebugValues();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const subaccount = useSelector(
+    isGmxAccount ? selectSubaccountForMultichainAction : selectSubaccountForSettlementChainAction
+  );
   const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
 
   const isAvailable = isExpressAvailable && orderParams && !getBatchIsNativePayment(orderParams);
 
   const { signer } = useWallet();
-  const { provider } = useJsonRpcProvider(chainId);
+  const { provider } = useJsonRpcProvider(chainId, { isExpress: isExpressAvailable });
 
   const requiredActions = orderParams ? getBatchRequiredActions(orderParams) : undefined;
   const executionFee =
@@ -69,33 +80,53 @@ export function useExpressOrdersParams({
 
   const forceRecalculate = estimationKey !== prevEstimationKey;
 
-  const { data: fastExpressParams, promise: fastExpressPromise } = useThrottledAsync(
+  const {
+    data: fastExpressParams,
+    promise: fastExpressPromise,
+    error: fastExpressError,
+  } = useThrottledAsync(
     async ({ params: p }) => {
-      const nextApproximateParams = await estimateBatchExpressParams({
-        chainId: p.chainId,
-        batchParams: p.orderParams,
-        signer: p.signer,
-        provider: undefined,
-        globalExpressParams: p.globalExpressParams,
-        requireValidations: false,
-        estimationMethod: "approximate",
-      });
+      try {
+        const nextApproximateParams = await Promise.race([
+          estimateBatchExpressParams({
+            chainId: p.chainId,
+            batchParams: p.orderParams,
+            signer: p.signer,
+            provider: p.provider,
+            globalExpressParams: p.globalExpressParams,
+            requireValidations: false,
+            estimationMethod: "approximate",
+            isGmxAccount: p.isGmxAccount,
+            subaccount: p.subaccount,
+          }),
+          getIsEmptyBatch(p.orderParams)
+            ? Promise.resolve(undefined)
+            : sleep(5000).then(() => {
+                throw new Error(FAST_EXPRESS_PARAMS_TIMEOUT_ERROR);
+              }),
+        ]);
 
-      return nextApproximateParams;
+        return nextApproximateParams;
+      } catch (error) {
+        metrics.pushError(error, `fastExpressParams.error.${label}`);
+        throw error;
+      }
     },
     {
       params:
-        isAvailable && globalExpressParams && signer && orderParams
+        isAvailable && globalExpressParams && signer && orderParams && provider
           ? {
               chainId,
               signer,
               provider,
               orderParams,
               globalExpressParams,
+              isGmxAccount,
+              subaccount,
             }
           : undefined,
       forceRecalculate,
-      throttleMs: 200,
+      throttleMs: globalExpressParams?.isSponsoredCall ? 200 : 5000,
       leading: true,
       trailing: false,
       withLoading: true,
@@ -112,6 +143,8 @@ export function useExpressOrdersParams({
         globalExpressParams: p.globalExpressParams,
         requireValidations: false,
         estimationMethod: "estimateGas",
+        isGmxAccount: p.isGmxAccount,
+        subaccount: p.subaccount,
       });
 
       return expressParams;
@@ -125,6 +158,8 @@ export function useExpressOrdersParams({
               provider,
               orderParams,
               globalExpressParams,
+              isGmxAccount,
+              subaccount,
             }
           : undefined,
       forceRecalculate,
@@ -160,12 +195,23 @@ export function useExpressOrdersParams({
       expressEstimateMethod: expressParams?.estimationMethod,
       fastExpressParams,
       asyncExpressParams,
-      isLoading: !fastExpressParams,
+      isLoading: !getIsEmptyBatch(orderParams) && !fastExpressParams && !fastExpressError,
       expressParamsPromise,
     };
-  }, [isAvailable, asyncExpressParams, fastExpressParams, fastExpressPromise, asyncExpressPromise]);
+  }, [
+    isAvailable,
+    asyncExpressParams,
+    fastExpressParams,
+    fastExpressPromise,
+    asyncExpressPromise,
+    orderParams,
+    fastExpressError,
+  ]);
 
-  useSwitchGasPaymentTokenIfRequired({ expressParams: result.expressParams });
+  useSwitchGasPaymentTokenIfRequiredFromExpressParams({
+    expressParams: result.expressParams,
+    isGmxAccount,
+  });
 
   if (showDebugValues && label && result.expressParams) {
     throttleLog(`${label} express params`, {

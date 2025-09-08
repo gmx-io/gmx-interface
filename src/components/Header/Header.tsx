@@ -11,11 +11,11 @@ import { isHomeSite } from "lib/legacy";
 import { HeaderPromoBanner } from "components/HeaderPromoBanner/HeaderPromoBanner";
 import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
 
-import logoImg from "img/logo_GMX.svg";
-import logoSmallImg from "img/logo_GMX_small.svg";
+import LogoImg from "img/logo_GMX.svg?react";
+import LogoSmallImg from "img/logo_GMX_small.svg?react";
 
+import { AppHeaderChainAndSettings } from "./AppHeaderChainAndSettings";
 import { AppHeaderLinks } from "./AppHeaderLinks";
-import { AppHeaderUser } from "./AppHeaderUser";
 import { HeaderLink } from "./HeaderLink";
 import { HomeHeaderLinks } from "./HomeHeaderLinks";
 
@@ -39,15 +39,14 @@ const SLIDE_VARIANTS = {
 const TRANSITION = { duration: 0.2 };
 
 type Props = {
-  disconnectAccountAndCloseSettings: () => void;
   openSettings: () => void;
   showRedirectModal: (to: string) => void;
 };
 
-export function Header({ disconnectAccountAndCloseSettings, openSettings, showRedirectModal }: Props) {
+export function Header({ openSettings, showRedirectModal }: Props) {
   const isMobile = useMedia("(max-width: 1335px)");
 
-  const shouldHide1CTBanner = useMedia("(max-width: 1100px)");
+  const shouldHide1CTBanner = useMedia("(max-width: 1024px)");
   const shouldShorten1CTBanner = useMedia("(max-width: 1590px)");
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
@@ -107,8 +106,8 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
           <div className="App-header large">
             <div className="App-header-container-left">
               <Link className="App-header-link-main" to="/">
-                <img src={logoImg} className="big" alt="GMX Logo" />
-                <img src={logoSmallImg} className="small" alt="GMX Logo" />
+                <LogoImg className="hidden text-typography-primary md:block" />
+                <LogoSmallImg className="block md:hidden" />
               </Link>
               {isHomeSite() ? (
                 <HomeHeaderLinks showRedirectModal={showRedirectModal} />
@@ -116,18 +115,14 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
                 <AppHeaderLinks showRedirectModal={showRedirectModal} />
               )}
             </div>
-            <div className="App-header-container-right">
+            <div className="flex items-center gap-16">
               {!isHomeSite() ? (
-                <div className="mr-22">
+                <div className="mr-6">
                   <OneClickPromoBanner isShort={shouldShorten1CTBanner} openSettings={openSettings} />
                 </div>
               ) : null}
 
-              <AppHeaderUser
-                disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-                openSettings={openSettings}
-                showRedirectModal={showRedirectModal}
-              />
+              <AppHeaderChainAndSettings openSettings={openSettings} showRedirectModal={showRedirectModal} />
             </div>
           </div>
         )}
@@ -140,25 +135,21 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
             >
               <div className="App-header-container-left">
                 <div className="App-header-link-main clickable" onClick={toggleDrawer}>
-                  <img src={logoImg} className="big" alt="GMX Logo" />
-                  <img src={logoSmallImg} className="small" alt="GMX Logo" />
+                  <LogoImg className="hidden text-typography-primary md:block" />
+                  <LogoSmallImg className="block md:hidden" />
                 </div>
               </div>
-              <div className="App-header-container-right">
+              <div className="flex items-center gap-16">
                 {!shouldHide1CTBanner && <OneClickPromoBanner openSettings={openSettings} />}
-                <div>
-                  <AppHeaderUser
-                    disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-                    openSettings={openSettings}
-                    small
-                    showRedirectModal={showRedirectModal}
-                    menuToggle={
-                      <div className="App-header-menu-icon-block" onClick={toggleDrawer}>
-                        <RiMenuLine className="App-header-menu-icon" />
-                      </div>
-                    }
-                  />
-                </div>
+                <AppHeaderChainAndSettings
+                  openSettings={openSettings}
+                  showRedirectModal={showRedirectModal}
+                  menuToggle={
+                    <div className="App-header-menu-icon-block" onClick={toggleDrawer}>
+                      <RiMenuLine className="App-header-menu-icon" />
+                    </div>
+                  }
+                />
               </div>
             </div>
           </div>

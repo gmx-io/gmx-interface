@@ -7,6 +7,7 @@ import { ARBITRUM } from "config/chains";
 import { appEventsData, homeEventsData } from "config/events";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
+import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { isHomeSite } from "lib/legacy";
 
@@ -15,8 +16,9 @@ import EventToast from "./EventToast";
 function useEventToast() {
   const isHome = isHomeSite();
   const [visited, setVisited] = useLocalStorage<string[]>("visited-announcements", []);
-  const { chainId } = useChainId();
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { chainId, srcChainId } = useChainId();
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const arbIncentiveStats = useIncentiveStats(ARBITRUM);
 
   const isAdaptiveFundingActiveSomeMarkets = useMemo(() => {

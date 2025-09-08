@@ -7,7 +7,11 @@ import {
   FUNDING_FACTOR_KEY,
   FUNDING_INCREASE_FACTOR_PER_SECOND,
   IS_MARKET_DISABLED_KEY,
+  LENT_POSITION_IMPACT_POOL_AMOUNT_KEY,
   MAX_FUNDING_FACTOR_PER_SECOND,
+  MAX_LENDABLE_IMPACT_FACTOR_FOR_WITHDRAWALS_KEY,
+  MAX_LENDABLE_IMPACT_FACTOR_KEY,
+  MAX_LENDABLE_IMPACT_USD_KEY,
   MAX_OPEN_INTEREST_KEY,
   MAX_PNL_FACTOR_FOR_TRADERS_KEY,
   MAX_PNL_FACTOR_KEY,
@@ -15,6 +19,7 @@ import {
   MAX_POOL_USD_FOR_DEPOSIT_KEY,
   MAX_POSITION_IMPACT_FACTOR_FOR_LIQUIDATIONS_KEY,
   MAX_POSITION_IMPACT_FACTOR_KEY,
+  MIN_COLLATERAL_FACTOR_FOR_LIQUIDATION_KEY,
   MIN_COLLATERAL_FACTOR_FOR_OPEN_INTEREST_MULTIPLIER_KEY,
   MIN_COLLATERAL_FACTOR_KEY,
   MIN_FUNDING_FACTOR_PER_SECOND,
@@ -161,11 +166,11 @@ export function hashMarketConfigKeys(market: MarketConfig) {
       ["bytes32", "bytes32", "address", "bool"],
       [MAX_PNL_FACTOR_KEY, MAX_PNL_FACTOR_FOR_TRADERS_KEY, marketAddress, false],
     ],
-    positionFeeFactorForPositiveImpact: [
+    positionFeeFactorForBalanceWasImproved: [
       ["bytes32", "address", "bool"],
       [POSITION_FEE_FACTOR_KEY, marketAddress, true],
     ],
-    positionFeeFactorForNegativeImpact: [
+    positionFeeFactorForBalanceWasNotImproved: [
       ["bytes32", "address", "bool"],
       [POSITION_FEE_FACTOR_KEY, marketAddress, false],
     ],
@@ -189,9 +194,29 @@ export function hashMarketConfigKeys(market: MarketConfig) {
       ["bytes32", "address"],
       [MAX_POSITION_IMPACT_FACTOR_FOR_LIQUIDATIONS_KEY, marketAddress],
     ],
+    maxLendableImpactFactor: [
+      ["bytes32", "address"],
+      [MAX_LENDABLE_IMPACT_FACTOR_KEY, marketAddress],
+    ],
+    maxLendableImpactFactorForWithdrawals: [
+      ["bytes32", "address"],
+      [MAX_LENDABLE_IMPACT_FACTOR_FOR_WITHDRAWALS_KEY, marketAddress],
+    ],
+    maxLendableImpactUsd: [
+      ["bytes32", "address"],
+      [MAX_LENDABLE_IMPACT_USD_KEY, marketAddress],
+    ],
+    lentPositionImpactPoolAmount: [
+      ["bytes32", "address"],
+      [LENT_POSITION_IMPACT_POOL_AMOUNT_KEY, marketAddress],
+    ],
     minCollateralFactor: [
       ["bytes32", "address"],
       [MIN_COLLATERAL_FACTOR_KEY, marketAddress],
+    ],
+    minCollateralFactorForLiquidation: [
+      ["bytes32", "address"],
+      [MIN_COLLATERAL_FACTOR_FOR_LIQUIDATION_KEY, marketAddress],
     ],
     minCollateralFactorForOpenInterestLong: [
       ["bytes32", "address", "bool"],
@@ -205,11 +230,11 @@ export function hashMarketConfigKeys(market: MarketConfig) {
       ["bytes32", "address"],
       [POSITION_IMPACT_EXPONENT_FACTOR_KEY, marketAddress],
     ],
-    swapFeeFactorForPositiveImpact: [
+    swapFeeFactorForBalanceWasImproved: [
       ["bytes32", "address", "bool"],
       [SWAP_FEE_FACTOR_KEY, marketAddress, true],
     ],
-    swapFeeFactorForNegativeImpact: [
+    swapFeeFactorForBalanceWasNotImproved: [
       ["bytes32", "address", "bool"],
       [SWAP_FEE_FACTOR_KEY, marketAddress, false],
     ],

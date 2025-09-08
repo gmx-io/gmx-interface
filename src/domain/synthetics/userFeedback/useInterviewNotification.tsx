@@ -32,7 +32,7 @@ export function useInterviewNotification() {
 
       setInterviewInvitationShownTime(toastTimestamp);
 
-      helperToast.error(
+      helperToast.info(
         <InterviewToast
           type="trader"
           onButtonClick={() => {

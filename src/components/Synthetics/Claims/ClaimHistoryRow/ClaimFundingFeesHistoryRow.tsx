@@ -17,7 +17,6 @@ import {
   formatTradeActionTimestampISO,
 } from "components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared";
 import { TableTd, TableTr } from "components/Table/Table";
-import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import NewLink20ReactComponent from "img/ic_new_link_20.svg?react";
@@ -65,8 +64,8 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
       );
 
       return (
-        <Tooltip
-          disableHandleStyle
+        <TooltipWithPortal
+          variant="none"
           handleClassName="cursor-help"
           handle={formattedMarketNames}
           renderContent={() => {
@@ -76,7 +75,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
               const isLong = claimAction.isLongOrders[index];
               return (
                 <div
-                  className="ClaimHistoryRow-tooltip-row inline-flex items-start text-white"
+                  className="ClaimHistoryRow-tooltip-row inline-flex items-start text-typography-primary"
                   key={`${market.name}/${isLong}`}
                 >
                   {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
@@ -92,7 +91,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
       const indexName = getMarketIndexName(claimAction.markets[0]);
       return (
         <TooltipWithPortal
-          disableHandleStyle
+          variant="none"
           handleClassName="cursor-help *:cursor-auto"
           handle={
             <MarketWithDirectionLabel
@@ -109,7 +108,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
               const isLong = claimAction.isLongOrders[index];
               return (
                 <div
-                  className="ClaimHistoryRow-tooltip-row inline-flex items-start text-white"
+                  className="ClaimHistoryRow-tooltip-row inline-flex items-start text-typography-primary"
                   key={`${market.name}/${isLong}`}
                 >
                   {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
@@ -155,7 +154,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
 
             return (
               <div key={market.indexTokenAddress} className="flex flex-col gap-4">
-                <div className="flex items-baseline text-white">
+                <div className="flex items-baseline text-typography-primary">
                   <span>{indexName}</span>
                   <span className="subtext">[{poolName}]</span>
                 </div>
@@ -197,6 +196,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
         tooltipClassName="ClaimHistoryRow-size-tooltip-portal"
         content={amounts}
         handle={formattedTotalUsd}
+        handleClassName="numbers"
       />
     );
   }, [claimAction]);
@@ -205,7 +205,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
     <TableTr>
       <TableTd>
         <div className="flex">
-          <div className="ClaimHistoryRow-action-handle">{_(eventTitleDescriptor)}</div>
+          <div className="ClaimHistoryRow-action-handle font-medium">{_(eventTitleDescriptor)}</div>
           <ExternalLink
             className="ClaimHistoryRow-external-link ml-5"
             href={`${getExplorerUrl(chainId)}tx/${claimAction.transaction.hash}`}
@@ -214,14 +214,18 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
           </ExternalLink>
         </div>
         <TooltipWithPortal
-          disableHandleStyle
+          variant="none"
           handle={<span className="ClaimHistoryRow-time muted">{formattedTimestamp}</span>}
           tooltipClassName="ClaimHistoryRow-tooltip-portal"
           renderContent={renderIsoTimestamp}
         />
       </TableTd>
-      <TableTd>{marketContent}</TableTd>
-      <TableTd>{sizeContent}</TableTd>
+      <TableTd>
+        <span>{marketContent}</span>
+      </TableTd>
+      <TableTd>
+        <span>{sizeContent}</span>
+      </TableTd>
     </TableTr>
   );
 }

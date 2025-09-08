@@ -41,6 +41,7 @@ export function EntryPriceRow() {
           })
         )
       }
+      valueClassName="numbers"
     />
   );
 }

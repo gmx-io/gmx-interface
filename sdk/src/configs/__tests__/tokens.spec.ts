@@ -1,7 +1,7 @@
 import { withRetry, zeroAddress } from "viem";
 import { describe, expect, it } from "vitest";
 
-import { ARBITRUM, AVALANCHE, BOTANIX, getChainName, SUPPORTED_CHAIN_IDS } from "configs/chains";
+import { ARBITRUM, AVALANCHE, BOTANIX, getChainName, CONTRACTS_CHAIN_IDS } from "configs/chains";
 import { getOracleKeeperUrl } from "configs/oracleKeeper";
 import { TOKENS } from "configs/tokens";
 
@@ -13,7 +13,7 @@ type KeeperToken = {
 };
 
 const getKeeperTokens = async (chainId: number): Promise<{ tokens: KeeperToken[] }> => {
-  const res = await fetch(`${getOracleKeeperUrl(chainId, 0)}/tokens`);
+  const res = await fetch(`${getOracleKeeperUrl(chainId)}/tokens`);
   const data = (await res.json()) as {
     tokens: KeeperToken[];
   };
@@ -36,7 +36,7 @@ const getIgnoredTokensByChain = (chainId: number) => {
 };
 
 describe("tokens config", () => {
-  SUPPORTED_CHAIN_IDS.forEach(async (chainId) => {
+  CONTRACTS_CHAIN_IDS.forEach(async (chainId) => {
     it(`tokens should be consistent with keeper for ${getChainName(chainId)}`, async () => {
       const keeperTokens = await withRetry(() => getKeeperTokens(chainId), {
         retryCount: 2,

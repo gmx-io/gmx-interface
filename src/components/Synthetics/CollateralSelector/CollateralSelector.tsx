@@ -9,9 +9,7 @@ import {
   selectTradeboxTradeType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import type { MarketInfo } from "domain/synthetics/markets";
 import type { TokenData } from "domain/synthetics/tokens/types";
-import type { TradeType } from "domain/synthetics/trade";
 import { helperToast } from "lib/helperToast";
 
 import { TableTd } from "components/Table/Table";
@@ -37,7 +35,7 @@ type Props = {
   onSelect: (tokenAddress: string) => void;
 };
 
-export function CollateralSelector(props: Props & { marketInfo?: MarketInfo; tradeType: TradeType }) {
+export function CollateralSelector(props: Props) {
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
 
   return (
@@ -135,7 +133,7 @@ function CollateralSelectorMobile(props: Props) {
               }}
               tokenData={option}
             />
-            <p className="text-body-small text-gray-500 last:mb-0">{description}</p>
+            <p className="text-body-small text-typography-secondary last:mb-0">{description}</p>
           </>
         );
       })}
@@ -176,7 +174,7 @@ function CollateralListItemMobile({
   return (
     <SelectorBaseMobileButton onSelect={handleSelect} disabled={disabled}>
       <div className="CollateralSelector-mobile-column-pool" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
-        <TokenIcon symbol={tokenData.symbol} displaySize={28} importSize={24} />
+        <TokenIcon symbol={tokenData.symbol} displaySize={24} importSize={24} />
         <div>{tokenData.symbol}</div>
       </div>
     </SelectorBaseMobileButton>

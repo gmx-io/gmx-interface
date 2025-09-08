@@ -15,6 +15,7 @@ export function useGoToPools(pool: LandingPageProtocolTokenEvent["data"]["type"]
         data: {
           action: "ProtocolTokenAction",
           type: pool,
+          chain: "Arbitrum",
         },
       },
       { instantSend: true }
@@ -24,5 +25,5 @@ export function useGoToPools(pool: LandingPageProtocolTokenEvent["data"]["type"]
 }
 
 function makeLink(path: string) {
-  return `${import.meta.env.VITE_APP_BASE_URL}/${path}?${userAnalytics.getSessionIdUrlParams()}`;
+  return `${import.meta.env.VITE_APP_BASE_URL}/${path}?${userAnalytics.getSessionForwardParams()}`;
 }

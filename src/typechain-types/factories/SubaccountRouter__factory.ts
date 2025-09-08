@@ -94,64 +94,6 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "receiver",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "expectedReceiver",
-        type: "address",
-      },
-    ],
-    name: "InvalidReceiverForSubaccountOrder",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "subaccount",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "count",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "maxCount",
-        type: "uint256",
-      },
-    ],
-    name: "MaxSubaccountActionCountExceeded",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "subaccount",
-        type: "address",
-      },
-    ],
-    name: "SubaccountNotAuthorized",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
         name: "token",
         type: "address",
       },
@@ -168,6 +110,25 @@ const _abi = [
     ],
     name: "TokenTransferError",
     type: "error",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "string",
+        name: "reason",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "bytes",
+        name: "returndata",
+        type: "bytes",
+      },
+    ],
+    name: "TokenTransferReverted",
+    type: "event",
   },
   {
     inputs: [
@@ -322,6 +283,11 @@ const _abi = [
             internalType: "bytes32",
             name: "referralCode",
             type: "bytes32",
+          },
+          {
+            internalType: "bytes32[]",
+            name: "dataList",
+            type: "bytes32[]",
           },
         ],
         internalType: "struct IBaseOrderUtils.CreateOrderParams",
@@ -518,6 +484,24 @@ const _abi = [
       },
       {
         internalType: "bytes32",
+        name: "integrationId",
+        type: "bytes32",
+      },
+    ],
+    name: "setIntegrationId",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "subaccount",
+        type: "address",
+      },
+      {
+        internalType: "bytes32",
         name: "actionType",
         type: "bytes32",
       },
@@ -546,6 +530,29 @@ const _abi = [
       },
     ],
     name: "setSubaccountAutoTopUpAmount",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "subaccount",
+        type: "address",
+      },
+      {
+        internalType: "bytes32",
+        name: "actionType",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "expiresAt",
+        type: "uint256",
+      },
+    ],
+    name: "setSubaccountExpiresAt",
     outputs: [],
     stateMutability: "payable",
     type: "function",

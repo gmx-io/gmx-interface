@@ -2,7 +2,7 @@ import { zeroAddress } from "viem";
 
 import type { Token, TokenAddressTypesMap, TokenCategory } from "types/tokens";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX } from "./chains";
 import { getContract } from "./contracts";
 
 export const NATIVE_TOKEN_ADDRESS = zeroAddress;
@@ -1042,6 +1042,138 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GLV_LOGO.png",
       isPlatformToken: true,
     },
+    {
+      name: "Algorand",
+      symbol: "ALGO",
+      address: "0x72Cd3a21aA7A898028d9501868Fbe6dED0020434",
+      decimals: 6,
+      priceDecimals: 5,
+      isSynthetic: true,
+      categories: ["layer1", "defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/4380/standard/download.png?1696504978",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/algorand",
+    },
+    {
+      name: "Cronos",
+      symbol: "CRO",
+      address: "0xB7EfE7c7f059E84Ab87A83A169c583Fb4A54fAc3",
+      decimals: 8,
+      priceDecimals: 5,
+      isSynthetic: true,
+      categories: ["layer1"],
+      imageUrl: "https://assets.coingecko.com/coins/images/7310/standard/cro_token_logo.png?1696507599",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/cronos",
+    },
+    {
+      name: "Hedera",
+      symbol: "HBAR",
+      address: "0xEb2A83b973f4dbB9511D92dd40d2ba4C683f0971",
+      decimals: 8,
+      priceDecimals: 5,
+      isSynthetic: true,
+      categories: ["layer1", "defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/3688/standard/hbar.png?1696504364",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/hedera-hashgraph",
+    },
+    {
+      name: "Convex Finance",
+      symbol: "CVX",
+      address: "0x3B6f801C0052Dfe0Ac80287D611F31B7c47B9A6b",
+      decimals: 18,
+      priceDecimals: 4,
+      isSynthetic: true,
+      categories: ["defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/15585/standard/convex.png?1696515221",
+      coingeckoUrl: "https://www.coingecko.com/nl/coins/convex-finance",
+    },
+    {
+      name: "Kaspa",
+      symbol: "KAS",
+      address: "0x91c6a8F6aFAC036F4ABf1bA55f4E76892E865E4a",
+      decimals: 8,
+      priceDecimals: 6,
+      isSynthetic: true,
+      categories: ["layer1"],
+      imageUrl: "https://assets.coingecko.com/coins/images/25751/standard/kaspa-icon-exchanges.png?1696524837",
+      coingeckoUrl: "https://www.coingecko.com/nl/coins/kaspa",
+    },
+    {
+      name: "Aero",
+      symbol: "AERO",
+      address: "0xEcc5eb985Ddbb8335b175b0A2A1144E4c978F1f6",
+      decimals: 18,
+      priceDecimals: 4,
+      isSynthetic: true,
+      categories: ["defi"],
+      coingeckoUrl: "https://www.coingecko.com/en/coins/aerodrome-finance",
+      imageUrl: "https://assets.coingecko.com/coins/images/31745/standard/token.png?1696530564",
+    },
+    {
+      name: "Brett",
+      symbol: "BRETT",
+      address: "0x4249F6e0808bEfF7368AaAD3F7A3Fd511F61Ee60",
+      decimals: 18,
+      priceDecimals: 4,
+      isSynthetic: true,
+      categories: ["meme"],
+      imageUrl: "https://assets.coingecko.com/coins/images/54317/standard/AERO.png?1728309870",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/brett-2",
+    },
+    {
+      name: "World Liberty Financial",
+      symbol: "WLFI",
+      address: "0xC5799ab6E2818fD8d0788dB8D156B0c5db1Bf97b",
+      decimals: 18,
+      priceDecimals: 5,
+      isSynthetic: true,
+      categories: ["defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/50767/standard/wlfi.png?1756438915",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/world-liberty-financial",
+    },
+    {
+      name: "OKB",
+      symbol: "OKB",
+      address: "0xd37F01A3379f052FEF70F63c0Be27931891aa2B9",
+      decimals: 18,
+      priceDecimals: 3,
+      isSynthetic: true,
+      categories: ["layer2"],
+      imageUrl: "https://assets.coingecko.com/coins/images/4463/standard/WeChat_Image_20220118095654.png?1696505053",
+      coingeckoUrl: "https://www.coingecko.com/nl/coins/okb",
+    },
+    {
+      name: "Morpho",
+      symbol: "MORPHO",
+      address: "0xF67b2a901D674B443Fa9f6DB2A689B37c07fD4fE",
+      decimals: 18,
+      priceDecimals: 4,
+      isSynthetic: true,
+      categories: ["defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/29837/standard/Morpho-token-icon.png?1726771230",
+      coingeckoUrl: "https://www.coingecko.com/nl/coins/morpho",
+    },
+    {
+      name: "Venice Token",
+      symbol: "VVV",
+      address: "0xB79Eb5BA64A167676694bB41bc1640F95d309a2F",
+      decimals: 18,
+      priceDecimals: 4,
+      isSynthetic: true,
+      categories: ["defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/54023/standard/VVV_Token_Transparent.png?1741856877",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/venice-token",
+    },
+    {
+      name: "Moonwell",
+      symbol: "WELL",
+      address: "0x465A31E5bA29b8EAcC860d499D714a6f07e56E85",
+      decimals: 18,
+      priceDecimals: 4,
+      isSynthetic: true,
+      categories: ["defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/26133/standard/WELL.png?1696525221",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/moonwell",
+    },
   ],
   [AVALANCHE]: [
     {
@@ -1283,6 +1415,17 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/pump-fun",
       isSynthetic: true,
       categories: ["meme"],
+    },
+    {
+      name: "World Liberty Financial",
+      symbol: "WLFI",
+      address: "0xbDF8a77ACB7A54597E7760b34D3E632912bB59b7",
+      decimals: 18,
+      priceDecimals: 5,
+      isSynthetic: true,
+      categories: ["defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/50767/standard/wlfi.png?1756438915",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/world-liberty-financial",
     },
     {
       name: "Escrowed GMX",
@@ -1549,6 +1692,107 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isPlatformToken: true,
     },
   ],
+  [ARBITRUM_SEPOLIA]: [
+    {
+      name: "Ethereum",
+      symbol: "ETH",
+      decimals: 18,
+      address: zeroAddress,
+      wrappedAddress: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
+      isNative: true,
+      isShortable: true,
+      categories: ["layer1"],
+      imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
+    },
+    {
+      name: "Wrapped ETH",
+      symbol: "WETH",
+      address: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
+      decimals: 18,
+      isWrapped: true,
+      baseSymbol: "ETH",
+      categories: ["layer1"],
+      imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
+    },
+    {
+      name: "Bitcoin",
+      symbol: "BTC",
+      address: "0xF79cE1Cf38A09D572b021B4C5548b75A14082F12",
+      decimals: 8,
+      imageUrl: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1746042828",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
+    },
+    {
+      name: "USD Coin GMX",
+      symbol: "USDC",
+      address: "0x3321Fd36aEaB0d5CdfD26f4A3A93E2D2aAcCB99f",
+      decimals: 6,
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+    },
+    {
+      name: "USD Coin Stargate",
+      symbol: "USDC.SG",
+      address: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
+      decimals: 6,
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+    },
+    {
+      name: "CRV",
+      symbol: "CRV",
+      address: "0xD5DdAED48B09fa1D7944bd662CB05265FCD7077C",
+      decimals: 18,
+      priceDecimals: 5,
+      imageUrl: "https://assets.coingecko.com/coins/images/12134/small/curve.png?1596358786",
+      isSynthetic: true,
+      coingeckoUrl: "https://www.coingecko.com/en/coins/curve-dao-token",
+    },
+    /** Placeholder tokens */
+    {
+      name: "GMX",
+      symbol: "GMX",
+      address: "<gmx-address>",
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
+      isPlatformToken: true,
+    },
+    {
+      name: "Escrowed GMX",
+      symbol: "ESGMX",
+      address: "<esgmx-address>",
+      decimals: 18,
+      isPlatformToken: true,
+    },
+    {
+      name: "GMX LP",
+      symbol: "GLP",
+      address: "<glp-address>",
+      decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+      isPlatformToken: true,
+    },
+    {
+      name: "GMX Market tokens",
+      symbol: "GM",
+      address: "<market-token-address>",
+      decimals: 18,
+      imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GM_LOGO.png",
+      isPlatformToken: true,
+    },
+    {
+      name: "GLV Market tokens",
+      symbol: "GLV",
+      address: "<market-token-address>",
+      decimals: 18,
+      imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GLV_LOGO.png",
+      isPlatformToken: true,
+    },
+  ],
   [BOTANIX]: [
     {
       name: "Bitcoin",
@@ -1697,7 +1941,7 @@ export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Toke
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
 export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
 
-const CHAIN_IDS = [ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX];
+const CHAIN_IDS = [ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ARBITRUM_SEPOLIA];
 
 for (let j = 0; j < CHAIN_IDS.length; j++) {
   const chainId = CHAIN_IDS[j];
@@ -1781,6 +2025,10 @@ export function isValidToken(chainId: number, address: string) {
   if (!TOKENS_MAP[chainId]) {
     throw new Error(`Incorrect chainId ${chainId}`);
   }
+  return address in TOKENS_MAP[chainId];
+}
+
+export function isValidTokenSafe(chainId: number, address: string) {
   return address in TOKENS_MAP[chainId];
 }
 

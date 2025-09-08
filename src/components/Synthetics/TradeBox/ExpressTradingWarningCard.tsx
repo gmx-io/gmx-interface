@@ -1,21 +1,22 @@
 import { Trans } from "@lingui/macro";
-import { ReactNode, useCallback, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import {
   EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY,
   EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY,
 } from "config/localStorage";
+import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { selectUpdateSubaccountSettings } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { usePrevious } from "lib/usePrevious";
 import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 
-import Button from "components/Button/Button";
-import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import { ColorfulBanner, ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import { useGasPaymentTokensText } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 
 import ExpressIcon from "img/ic_express.svg?react";
@@ -27,14 +28,19 @@ export function ExpressTradingWarningCard({
   expressParams,
   payTokenAddress,
   isWrapOrUnwrap,
+  disabled,
+  isGmxAccount,
 }: {
   expressParams: ExpressTxnParams | undefined;
   payTokenAddress: string | undefined;
   isWrapOrUnwrap: boolean;
+  disabled?: boolean;
+  isGmxAccount: boolean;
 }) {
   const [isVisible, setIsVisible] = useState(true);
   const updateSubaccountSettings = useSelector(selectUpdateSubaccountSettings);
   const history = useHistory();
+  const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
 
   const { chainId } = useChainId();
 
@@ -62,10 +68,13 @@ export function ExpressTradingWarningCard({
     updateSubaccountSettings({
       nextRemainigActions: BigInt(DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT),
       nextRemainingSeconds: BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION),
-    }).then(() => {
-      setIsVisible(false);
+      nextIsGmxAccount: isGmxAccount,
+    }).then((success) => {
+      if (success) {
+        setIsVisible(false);
+      }
     });
-  }, [updateSubaccountSettings]);
+  }, [updateSubaccountSettings, isGmxAccount]);
 
   const {
     shouldShowAllowedActionsWarning,
@@ -74,23 +83,31 @@ export function ExpressTradingWarningCard({
     shouldShowExpiredSubaccountWarning,
     shouldShowNonceExpiredWarning,
     shouldShowOutOfGasPaymentBalanceWarning,
-  } = useExpressTradingWarnings({ expressParams, payTokenAddress, isWrapOrUnwrap });
+    shouldShowSubaccountApprovalInvalidWarning,
+  } = useExpressTradingWarnings({ expressParams, payTokenAddress, isWrapOrUnwrap, isGmxAccount });
+
+  const prevShouldShowSubaccountApprovalInvalidWarning = usePrevious(shouldShowSubaccountApprovalInvalidWarning);
+  useEffect(() => {
+    if (!prevShouldShowSubaccountApprovalInvalidWarning && shouldShowSubaccountApprovalInvalidWarning && !isVisible) {
+      setIsVisible(true);
+    }
+  }, [isVisible, prevShouldShowSubaccountApprovalInvalidWarning, shouldShowSubaccountApprovalInvalidWarning]);
 
   const { gasPaymentTokensText, gasPaymentTokenSymbols } = useGasPaymentTokensText(chainId);
 
   let content: ReactNode | undefined = undefined;
   let onCloseClick: undefined | (() => void) = undefined;
   let buttonText: ReactNode | undefined = undefined;
-  let icon: ReactNode | undefined = undefined;
+  let icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>> | undefined = undefined;
 
   let onClick: undefined | (() => void) = undefined;
 
-  if (!isVisible) {
+  if (!isVisible || disabled) {
     return null;
   } else if (shouldShowWrapOrUnwrapWarning) {
     onCloseClick = handleCloseWrapOrUnwrapWarningClick;
     const nativeToken = getNativeToken(chainId);
-    icon = <ExpressIcon className="-mt-6 ml-2" />;
+    icon = ExpressIcon;
     content = (
       <Trans>Express Trading is not available for wrapping or unwrapping native token {nativeToken.symbol}.</Trans>
     );
@@ -98,7 +115,7 @@ export function ExpressTradingWarningCard({
     const wrappedToken = getWrappedToken(chainId);
     const nativeToken = getNativeToken(chainId);
     onCloseClick = handleCloseNativeTokenWarningClick;
-    icon = <ExpressIcon className="-mt-6 ml-2" />;
+    icon = ExpressIcon;
     content = (
       <Trans>
         Express Trading is not available using network's native token {nativeToken.symbol}. Consider using{" "}
@@ -107,44 +124,67 @@ export function ExpressTradingWarningCard({
     );
   } else if (shouldShowAllowedActionsWarning) {
     onClick = handleUpdateSubaccountSettings;
-    icon = <OneClickIcon className="-mt-4 ml-4" />;
+    icon = OneClickIcon;
     content = <Trans>One-Click Trading is disabled. Action limit exceeded.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowNonceExpiredWarning) {
     onClick = handleUpdateSubaccountSettings;
-    icon = <OneClickIcon className="ml- -mt-4" />;
+    icon = OneClickIcon;
     content = <Trans>One-Click Approval nonce expired. Please sign a new approval.</Trans>;
     buttonText = <Trans>Re-sign</Trans>;
   } else if (shouldShowExpiredSubaccountWarning) {
     onClick = handleUpdateSubaccountSettings;
-    icon = <OneClickIcon className="-mt-4 ml-4" />;
+    icon = OneClickIcon;
     content = <Trans>One-Click Trading is disabled. Time limit expired.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowOutOfGasPaymentBalanceWarning) {
-    icon = <ExpressIcon className="-mt-6 ml-2" />;
-    content = <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance.</Trans>;
+    if (isGmxAccount) {
+      icon = ExpressIcon;
 
-    buttonText = <Trans>Buy {gasPaymentTokensText}</Trans>;
-    onClick = () => {
-      history.push(`/trade/swap?to=${gasPaymentTokenSymbols[0]}`);
-    };
+      const hasEth = getNativeToken(chainId).symbol === "ETH";
+      content = hasEth ? (
+        <Trans>Insufficient gas balance, please deposit more ETH or USDC.</Trans>
+      ) : (
+        <Trans>Insufficient gas balance, please deposit more USDC.</Trans>
+      );
+
+      buttonText = hasEth ? <Trans>Deposit USDC or ETH</Trans> : <Trans>Deposit USDC</Trans>;
+      onClick = () => {
+        setGmxAccountModalOpen("deposit");
+      };
+    } else {
+      icon = ExpressIcon;
+      content = <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance.</Trans>;
+      buttonText = <Trans>Buy {gasPaymentTokensText}</Trans>;
+      onClick = () => {
+        history.push(`/trade/swap?to=${gasPaymentTokenSymbols[0]}`);
+      };
+    }
+  } else if (shouldShowSubaccountApprovalInvalidWarning) {
+    icon = OneClickIcon;
+    content = (
+      <Trans>
+        One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Please
+        sign a new approval to continue.
+      </Trans>
+    );
+    buttonText = <Trans>Re-sign</Trans>;
+    onClick = handleUpdateSubaccountSettings;
   } else {
     return null;
   }
 
   return (
     <ColorfulBanner color="blue" icon={icon} onClose={onCloseClick}>
-      <div className="ml-10 text-12">
-        {content}
-        {onClick && (
-          <>
-            <br />
-            <Button variant="link" className="mt-2 !text-12" onClick={onClick}>
-              {buttonText}
-            </Button>
-          </>
-        )}
-      </div>
+      {content}
+      {onClick && (
+        <>
+          <br />
+          <ColorfulButtonLink color="blue" onClick={onClick}>
+            {buttonText}
+          </ColorfulButtonLink>
+        </>
+      )}
     </ColorfulBanner>
   );
 }

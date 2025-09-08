@@ -13,19 +13,21 @@ import {
   selectChainId,
   selectMarketsInfoData,
   selectOrdersInfoData,
+  selectSrcChainId,
+  selectSubaccountForChainAction,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   makeSelectOrderEditorPositionOrderError,
   selectOrderEditorSetTriggerPriceInputValue,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
-import { useCalcSelector } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useMarkets } from "domain/synthetics/markets";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { calculateDisplayDecimals, formatAmount, numberToBigint } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useJsonRpcProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import { PositionOrderInfo } from "sdk/types/orders";
@@ -44,6 +46,8 @@ export function DynamicLines({
   const dynamicChartLines = useSelector(selectChartDynamicLines);
   const { signer } = useWallet();
   const chainId = useSelector(selectChainId);
+  const srcChainId = useSelector(selectSrcChainId);
+  const { provider } = useJsonRpcProvider(chainId);
   const [, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const [isSubmitting] = useOrderEditorIsSubmittingState();
@@ -53,10 +57,11 @@ export function DynamicLines({
   const { marketsData } = useMarkets(chainId);
   const { pendingOrdersUpdates } = useSyntheticsEvents();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const subaccount = useSelector(selectSubaccountForChainAction);
 
   const onCancelOrder = useCallback(
     async (key: string) => {
-      if (!signer) return;
+      if (!signer || !provider) return;
       const order = getByKey(ordersInfoData, key);
 
       if (!order) return;
@@ -77,7 +82,9 @@ export function DynamicLines({
         globalExpressParams,
         requireValidations: true,
         estimationMethod: "approximate",
-        provider: undefined,
+        provider,
+        isGmxAccount: srcChainId !== undefined,
+        subaccount,
       });
 
       sendBatchOrderTxn({
@@ -85,14 +92,25 @@ export function DynamicLines({
         signer,
         batchParams,
         expressParams,
-        noncesData: globalExpressParams?.noncesData,
         simulationParams: undefined,
         callback: makeOrderTxnCallback({}),
+        provider,
+        isGmxAccount: srcChainId !== undefined,
       }).finally(() => {
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== key));
       });
     },
-    [chainId, globalExpressParams, makeOrderTxnCallback, ordersInfoData, setCancellingOrdersKeys, signer]
+    [
+      chainId,
+      globalExpressParams,
+      makeOrderTxnCallback,
+      ordersInfoData,
+      provider,
+      setCancellingOrdersKeys,
+      signer,
+      srcChainId,
+      subaccount,
+    ]
   );
 
   const calcSelector = useCalcSelector();

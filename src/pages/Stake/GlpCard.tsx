@@ -36,7 +36,9 @@ export function GlpCard({ processedData }: { processedData: ProcessedData | unde
             <div className="label">
               <Trans>Price</Trans>
             </div>
-            <div>${formatKeyAmount(processedData, "glpPrice", USD_DECIMALS, GLP_PRICE_DECIMALS, true)}</div>
+            <div className="numbers">
+              ${formatKeyAmount(processedData, "glpPrice", USD_DECIMALS, GLP_PRICE_DECIMALS, true)}
+            </div>
           </div>
           <div className="App-card-row">
             <div className="label">
@@ -71,7 +73,8 @@ export function GlpCard({ processedData }: { processedData: ProcessedData | unde
             </div>
             <div>
               <Tooltip
-                handle={`$${formatKeyAmount(processedData, "totalGlpRewardsUsd", USD_DECIMALS, 2, true)}`}
+                handle={`$\u200a${formatKeyAmount(processedData, "totalGlpRewardsUsd", USD_DECIMALS, 2, true)}`}
+                handleClassName="numbers"
                 position="bottom-end"
                 content={
                   <>

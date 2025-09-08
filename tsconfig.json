@@ -28,5 +28,5 @@
     }
   },
   "references": [{ "path": "./sdk" }],
-  "include": ["src", "scripts", "sdk/src/utils/twap/twap", "landing"]
+  "include": ["src", "scripts", "landing"]
 }

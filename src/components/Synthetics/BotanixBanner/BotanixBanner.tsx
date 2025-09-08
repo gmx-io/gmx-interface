@@ -27,7 +27,7 @@ export function BotanixBanner() {
       <p>
         <BotanixIcon className="-ml-4 inline-block pb-4" />
         <Trans>
-          <span className="text-[#fccd0d]">Botanix</span> currently only supports
+          <span className="text-yellow-500">Botanix</span> currently only supports
         </Trans>{" "}
         <Link to="/trade" className="underline">
           <Trans>V2 trading</Trans>

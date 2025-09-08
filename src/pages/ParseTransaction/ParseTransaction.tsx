@@ -1,27 +1,40 @@
 import cx from "classnames";
+import invert from "lodash/invert";
+import mapValues from "lodash/mapValues";
 import { useCallback, useMemo, useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 import { BiCopy } from "react-icons/bi";
 import { Link, useParams } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 import useSWR from "swr";
-import { Hash, isHash, PublicClient } from "viem";
+import { Hash, PublicClient, isHash } from "viem";
 import { usePublicClient } from "wagmi";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, UiContractsChain, getExplorerUrl } from "config/chains";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  BOTANIX,
+  ContractsChainId,
+  getExplorerUrl,
+} from "config/chains";
 import { getIcon } from "config/icons";
 import {
   getGlvDisplayName,
   getMarketFullName,
-  useMarketsInfoRequest,
   useMarketTokensDataRequest,
+  useMarketsInfoRequest,
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { getOrderTypeLabel } from "domain/synthetics/orders";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
+import { CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
 import { formatFactor, formatUsd } from "lib/numbers";
+import { parseTxEvents } from "pages/ParseTransaction/parseTxEvents";
 
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Loader from "components/Common/Loader";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Table, TableTd, TableTr } from "components/Table/Table";
@@ -50,29 +63,17 @@ import {
   formatRoleKey,
   formatSwapPath,
 } from "./formatting";
-import { parseTxEvents } from "./parseTxEvents";
 import { LogEntryComponentProps } from "./types";
 
-const NETWORKS = {
-  arbitrum: ARBITRUM,
-  avalanche: AVALANCHE,
-  fuji: AVALANCHE_FUJI,
-  botanix: BOTANIX,
-};
-
-export const NETWORKS_BY_CHAIN_IDS: Record<UiContractsChain, string> = {
+export const NETWORKS_BY_CHAIN_IDS: Record<ContractsChainId, string> = {
   [ARBITRUM]: "arbitrum",
   [AVALANCHE]: "avalanche",
   [AVALANCHE_FUJI]: "fuji",
+  [ARBITRUM_SEPOLIA]: "arbitrum-sepolia",
   [BOTANIX]: "botanix",
 };
 
-const EXPLORER_TX_URLS: Record<UiContractsChain, string> = {
-  [ARBITRUM]: getExplorerUrl(ARBITRUM) + "tx/",
-  [AVALANCHE]: getExplorerUrl(AVALANCHE) + "tx/",
-  [AVALANCHE_FUJI]: getExplorerUrl(AVALANCHE_FUJI) + "tx/",
-  [BOTANIX]: getExplorerUrl(BOTANIX) + "tx/",
-};
+const NETWORKS = mapValues(invert(NETWORKS_BY_CHAIN_IDS), Number) as Record<string, ContractsChainId>;
 
 export function ParseTransactionPage() {
   const { tx, network } = useParams<{ tx: string; network: string }>();
@@ -81,7 +82,9 @@ export function ParseTransactionPage() {
   /** Default is Arbitrum to prevent page crashes in hooks, wrong networks handled on :207 */
   const chainId = NETWORKS[network as string] ?? ARBITRUM;
 
-  const client = usePublicClient({});
+  const client = usePublicClient({
+    chainId,
+  });
 
   const { data, isLoading, error } = useSWR([chainId, tx], async function fetchTransaction() {
     try {
@@ -95,15 +98,15 @@ export function ParseTransactionPage() {
 
   const isDeposit = data ? data.some((event) => event.name.toLowerCase().includes("deposit")) : false;
 
-  const { tokensData } = useTokensDataRequest(chainId);
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, undefined);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { glvData } = useGlvMarketsInfo(true, {
     marketsInfoData,
     tokensData,
     chainId,
     account: undefined,
   });
-  const { marketTokensData } = useMarketTokensDataRequest(chainId, {
+  const { marketTokensData } = useMarketTokensDataRequest(chainId, undefined, {
     isDeposit,
     withGlv: true,
     glvData,
@@ -112,7 +115,7 @@ export function ParseTransactionPage() {
   if (!network || typeof network !== "string" || !NETWORKS[network as string]) {
     return (
       <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
-        Specify network: arbitrum, avalanche, fuji, botanix
+        Specify network: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia
       </div>
     );
   }
@@ -136,73 +139,75 @@ export function ParseTransactionPage() {
   }
 
   return (
-    <div className="mx-auto max-w-[1280px] pt-24">
-      <h1 className="text-body-large mb-24">
-        Transaction: <ExternalLink href={EXPLORER_TX_URLS[chainId] + tx}>{tx}</ExternalLink>
-      </h1>
-      <Table className="mb-12 ">
-        <tbody>
-          {data.length ? (
-            data.map((event) => {
-              return (
-                <Fragment key={event.key}>
-                  <TableTr>
-                    <TableTd className="w-[25rem] font-bold">Name</TableTd>
-                    <TableTd className="group !text-left" colSpan={2}>
-                      <div className="flex flex-row items-center justify-between gap-8">
-                        <span className="flex flex-row items-center gap-8 whitespace-nowrap">
-                          {event.log}: {event.name}
-                          <CopyButton value={event.name} />
-                        </span>
-                        <span>LogIndex: {event.logIndex}</span>
-                      </div>
-                    </TableTd>
-                  </TableTr>
-                  <TableTr>
-                    <TableTd className="w-[25rem] font-bold">Topics</TableTd>
-                    <TableTd className="group !text-left" colSpan={3}>
-                      {event.topics.length > 0
-                        ? event.topics.map((t) => (
-                            <div className="mb-4 flex flex-row items-center gap-8" key={event.name + t}>
-                              {t}
-                              <CopyButton value={t} />
-                            </div>
-                          ))
-                        : "No topics"}
-                    </TableTd>
-                  </TableTr>
-                  {event.values.map((value) => (
-                    <LogEntryComponent
-                      name={event.name}
-                      key={value.item}
-                      {...value}
-                      network={network}
-                      chainId={chainId}
-                      entries={event.values}
-                      tokensData={tokensData}
-                      marketsInfoData={marketsInfoData}
-                      glvData={glvData}
-                      marketTokensData={marketTokensData}
-                      copyToClipboard={copyToClipboard}
-                      allEvents={data}
-                    />
-                  ))}
-                  <TableTr>
-                    <TableTd padding="compact" className="bg-slate-950" colSpan={3}></TableTd>
-                  </TableTr>
-                </Fragment>
-              );
-            })
-          ) : (
-            <TableTr>
-              <TableTd className="!text-center font-bold" colSpan={3}>
-                No events
-              </TableTd>
-            </TableTr>
-          )}
-        </tbody>
-      </Table>
-    </div>
+    <AppPageLayout>
+      <div className="mx-auto max-w-[1280px] pt-24">
+        <h1 className="text-body-large mb-24">
+          Transaction: <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](tx)}>{tx}</ExternalLink>
+        </h1>
+        <Table className="mb-12 ">
+          <tbody>
+            {data.length ? (
+              data.map((event) => {
+                return (
+                  <Fragment key={event.key}>
+                    <TableTr>
+                      <TableTd className="w-[25rem] font-bold">Name</TableTd>
+                      <TableTd className="group !text-left" colSpan={2}>
+                        <div className="flex flex-row items-center justify-between gap-8">
+                          <span className="flex flex-row items-center gap-8 whitespace-nowrap">
+                            {event.log}: {event.name}
+                            <CopyButton value={event.name} />
+                          </span>
+                          <span>LogIndex: {event.logIndex}</span>
+                        </div>
+                      </TableTd>
+                    </TableTr>
+                    <TableTr>
+                      <TableTd className="w-[25rem] font-bold">Topics</TableTd>
+                      <TableTd className="group !text-left" colSpan={3}>
+                        {event.topics.length > 0
+                          ? event.topics.map((t) => (
+                              <div className="mb-4 flex flex-row items-center gap-8" key={event.name + t}>
+                                {t}
+                                <CopyButton value={t} />
+                              </div>
+                            ))
+                          : "No topics"}
+                      </TableTd>
+                    </TableTr>
+                    {event.values.map((value) => (
+                      <LogEntryComponent
+                        name={event.name}
+                        key={value.item}
+                        {...value}
+                        network={network}
+                        chainId={chainId}
+                        entries={event.values}
+                        tokensData={tokensData}
+                        marketsInfoData={marketsInfoData}
+                        glvData={glvData}
+                        marketTokensData={marketTokensData}
+                        copyToClipboard={copyToClipboard}
+                        allEvents={data}
+                      />
+                    ))}
+                    <TableTr>
+                      <TableTd padding="compact" className="bg-slate-900" colSpan={3}></TableTd>
+                    </TableTr>
+                  </Fragment>
+                );
+              })
+            ) : (
+              <TableTr>
+                <TableTd className="!text-center font-bold" colSpan={3}>
+                  No events
+                </TableTd>
+              </TableTr>
+            )}
+          </tbody>
+        </Table>
+      </div>
+    </AppPageLayout>
   );
 }
 
@@ -360,7 +365,10 @@ function LogEntryComponent(props: LogEntryComponentProps) {
         value = (
           <span className="flex flex-row items-center gap-8">
             <TokenSymbolWithIcon symbol={token.symbol} /> ({props.value})
-            <ExternalLink className="text-slate-100 underline" href={`${explorerUrl}address/${props.value.toString()}`}>
+            <ExternalLink
+              className="text-typography-secondary underline"
+              href={`${explorerUrl}address/${props.value.toString()}`}
+            >
               <img src={explorerIconSrc} className="h-18 w-18" />
             </ExternalLink>
           </span>
@@ -369,7 +377,10 @@ function LogEntryComponent(props: LogEntryComponentProps) {
         value = (
           <span className="flex flex-row items-center gap-8">
             {isGlvInfo(marketOrGlv) ? getGlvDisplayName(marketOrGlv) : getMarketFullName(marketOrGlv)} ({props.value})
-            <ExternalLink className="text-slate-100 underline" href={`${explorerUrl}address/${props.value.toString()}`}>
+            <ExternalLink
+              className="text-typography-secondary underline"
+              href={`${explorerUrl}address/${props.value.toString()}`}
+            >
               <img src={explorerIconSrc} className="h-18 w-18" />
             </ExternalLink>
           </span>
@@ -386,10 +397,16 @@ function LogEntryComponent(props: LogEntryComponentProps) {
 
     value = (
       <span className="flex flex-row items-center gap-8">
-        <Link className="text-slate-100 underline" to={`/accounts/${props.value.toString()}?network=${network}&v=2`}>
+        <Link
+          className="text-typography-secondary underline"
+          to={`/accounts/${props.value.toString()}?network=${network}&v=2`}
+        >
           {props.value.toString()}
         </Link>
-        <ExternalLink className="text-slate-100 underline" href={`${explorerUrl}address/${props.value.toString()}`}>
+        <ExternalLink
+          className="text-typography-secondary underline"
+          href={`${explorerUrl}address/${props.value.toString()}`}
+        >
           <img src={explorerIconSrc} className="h-18 w-18" />
         </ExternalLink>
       </span>
@@ -485,9 +502,12 @@ function CopyButton({ value }: { value: string }) {
   return (
     <BiCopy
       size={16}
-      className={cx("hidden cursor-pointer text-slate-100 transition-transform hover:text-white group-hover:block", {
-        "scale-110 text-white": isCopied,
-      })}
+      className={cx(
+        "hidden cursor-pointer text-typography-secondary transition-transform hover:text-typography-primary group-hover:block",
+        {
+          "scale-110 text-typography-primary": isCopied,
+        }
+      )}
       onClick={onClick}
     />
   );

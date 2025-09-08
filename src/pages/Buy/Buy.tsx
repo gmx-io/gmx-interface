@@ -2,25 +2,18 @@ import { t } from "@lingui/macro";
 
 import { getPageTitle } from "lib/legacy";
 
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+import BuyCards from "components/BuyCards/BuyCards";
 import SEO from "components/Common/SEO";
-import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
-import TokenCard from "components/TokenCard/TokenCard";
 
-import "./Buy.css";
-
-export default function BuyGMXGLP() {
+export default function Buy() {
   return (
     <SEO title={getPageTitle(t`Buy GLP or GMX`)}>
-      <div className="BuyGMXGLP page-layout">
-        <div className="default-container">
-          <div className="BuyGMXGLP-container">
-            <PageTitle showNetworkIcon={false} isTop title={t`Protocol Tokens`} qa="buy-page" />
-            <TokenCard />
-          </div>
-        </div>
-        <Footer />
-      </div>
+      <AppPageLayout>
+        <PageTitle isTop title={t`Protocol Tokens`} qa="buy-page" />
+        <BuyCards />
+      </AppPageLayout>
     </SEO>
   );
 }

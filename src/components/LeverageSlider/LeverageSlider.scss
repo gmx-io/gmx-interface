@@ -1,16 +1,16 @@
 $blue: var(--color-blue-300);
-$gray: var(--color-stroke-primary);
+$gray: var(--color-slate-600);
 
 .LeverageSlider {
   margin-top: 1.5rem;
   margin-bottom: 3.4rem;
 
   &.slim {
-    margin-top: 4px;
-    margin-bottom: 19px;
+    margin-top: 0px;
+    margin-bottom: 0px;
   }
 
-  padding: 0 8px;
+  padding: 0 8px 0 12px;
 
   user-select: none;
 
@@ -32,27 +32,35 @@ $gray: var(--color-stroke-primary);
 
   .rc-slider-rail {
     border-radius: 0;
-    background: $gray;
+    height: 4px;
+    background: var(--color-slate-800);
   }
 
   .rc-slider-track {
     border-radius: 0;
-    background-color: $blue;
+    height: 4px;
+    background-color: var(--color-blue-300);
   }
 
   .rc-slider-dot {
-    border: none;
-    border-radius: 1px;
-    width: 2px;
-    margin-left: -1px;
-    background: $gray;
+    border: 1.5px solid var(--color-slate-800);
+    border-radius: 50%;
+    width: 4px;
+    height: 4px;
+    background: var(--color-slate-900);
+    box-sizing: content-box;
+    top: -1px;
   }
   .rc-slider-dot-active {
-    background-color: $blue;
+    border-color: var(--color-blue-300);
   }
   .rc-slider-handle {
-    background-color: $blue;
-    border: solid 2px #a1aaff;
+    background-color: var(--color-slate-800);
+    border: solid 2px $blue;
+    width: 8px;
+    height: 8px;
+    box-sizing: content-box;
+    top: 6px;
 
     &:active {
       box-shadow: unset;
@@ -63,6 +71,10 @@ $gray: var(--color-stroke-primary);
   .rc-slider-mark-text-active {
     color: var(--color-slate-100);
     opacity: 0.7;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    text-align: left;
   }
 
   .rc-slider-mark-text:hover,

@@ -1,6 +1,6 @@
 {
   "name": "@gmx-io/sdk",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "type": "module",
   "main": "./build/cjs/src/index.js",
   "module": "./build/esm/src/index.js",
@@ -72,7 +72,7 @@
     "query-string": "7.1.1",
     "typescript": "5.4.2",
     "universal-perf-hooks": "1.0.1",
-    "viem": "^2.7.20"
+    "viem": "^2.37.1"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",

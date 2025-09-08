@@ -1,7 +1,7 @@
 import noop from "lodash/noop";
-import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useMemo, useState } from "react";
+import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import { ARBITRUM, BOTANIX, EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/chains";
+import { ARBITRUM, BOTANIX, EXECUTION_FEE_CONFIG_V2 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
@@ -10,7 +10,6 @@ import {
   EXTERNAL_SWAPS_ENABLED_KEY,
   IS_AUTO_CANCEL_TPSL_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
-  ORACLE_KEEPER_INSTANCES_CONFIG_KEY,
   SETTINGS_WARNING_DOT_VISIBLE_KEY,
   SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_DEBUG_VALUES_KEY,
@@ -29,7 +28,7 @@ import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/local
 import { tenderlyLsKeys } from "lib/tenderly";
 import useWallet from "lib/wallets/useWallet";
 import { getDefaultGasPaymentToken } from "sdk/configs/express";
-import { getOracleKeeperRandomIndex } from "sdk/configs/oracleKeeper";
+import { isValidTokenSafe } from "sdk/configs/tokens";
 import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 
 export type SettingsContextType = {
@@ -42,8 +41,6 @@ export type SettingsContextType = {
   setSavedAcceptablePriceImpactBuffer: (val: number) => void;
   executionFeeBufferBps: number | undefined;
   shouldUseExecutionFeeBuffer: boolean;
-  oracleKeeperInstancesConfig: { [chainId: number]: number };
-  setOracleKeeperInstancesConfig: Dispatch<SetStateAction<{ [chainId: number]: number } | undefined>>;
   showPnlAfterFees: boolean;
   setShowPnlAfterFees: (val: boolean) => void;
   isPnlInLeverage: boolean;
@@ -100,8 +97,9 @@ export function useSettings() {
 }
 
 export function SettingsContextProvider({ children }: { children: ReactNode }) {
+  const { chainId, srcChainId } = useChainId();
   const { account } = useWallet();
-  const { chainId } = useChainId();
+
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const [savedAllowedSlippage, setSavedAllowedSlippage] = useLocalStorageSerializeKey(
@@ -126,18 +124,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     getExecutionFeeBufferBpsKey(chainId),
     EXECUTION_FEE_CONFIG_V2[chainId]?.defaultBufferBps
   );
-  const shouldUseExecutionFeeBuffer = Boolean(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps);
 
-  const [oracleKeeperInstancesConfig, setOracleKeeperInstancesConfig] = useLocalStorageSerializeKey(
-    ORACLE_KEEPER_INSTANCES_CONFIG_KEY,
-    SUPPORTED_CHAIN_IDS.reduce(
-      (acc, chainId) => {
-        acc[chainId] = getOracleKeeperRandomIndex(chainId);
-        return acc;
-      },
-      {} as { [chainId: number]: number }
-    )
-  );
+  const shouldUseExecutionFeeBuffer = Boolean(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps);
 
   const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
     [chainId, SHOW_PNL_AFTER_FEES_KEY],
@@ -181,10 +169,14 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     false
   );
 
-  const [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useLocalStorageSerializeKey(
+  let [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useLocalStorageSerializeKey(
     getGasPaymentTokenAddressKey(chainId, account),
     getDefaultGasPaymentToken(chainId)
   );
+  // Reason: useLocalStorageSerializeKey leaks previous value to the next render even if key is changed
+  if (gasPaymentTokenAddress && !isValidTokenSafe(chainId, gasPaymentTokenAddress)) {
+    gasPaymentTokenAddress = getDefaultGasPaymentToken(chainId);
+  }
 
   let savedShouldDisableValidationForTesting: boolean | undefined;
   let setSavedShouldDisableValidationForTesting: (val: boolean) => void;
@@ -228,6 +220,15 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   ]);
 
+  useEffect(
+    function fallbackMultichain() {
+      if (srcChainId && !expressOrdersEnabled) {
+        setExpressOrdersEnabled(true);
+      }
+    },
+    [expressOrdersEnabled, setExpressOrdersEnabled, srcChainId]
+  );
+
   const contextState: SettingsContextType = useMemo(() => {
     return {
       showDebugValues: isDevelopment() ? showDebugValues! : false,
@@ -237,8 +238,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       executionFeeBufferBps,
       setExecutionFeeBufferBps,
       shouldUseExecutionFeeBuffer,
-      oracleKeeperInstancesConfig: oracleKeeperInstancesConfig!,
-      setOracleKeeperInstancesConfig,
       savedAcceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer!,
       setSavedAcceptablePriceImpactBuffer,
       showPnlAfterFees: savedShowPnlAfterFees!,
@@ -292,8 +291,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     executionFeeBufferBps,
     setExecutionFeeBufferBps,
     shouldUseExecutionFeeBuffer,
-    oracleKeeperInstancesConfig,
-    setOracleKeeperInstancesConfig,
     savedAcceptablePriceImpactBuffer,
     setSavedAcceptablePriceImpactBuffer,
     savedShowPnlAfterFees,
