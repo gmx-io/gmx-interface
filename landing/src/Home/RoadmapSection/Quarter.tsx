@@ -9,7 +9,7 @@ export function Quarter({ children, lastCompleted }: Props) {
   return (
     <div
       className={clsx(
-        "group relative flex w-auto flex-shrink-0 flex-grow flex-col gap-16 py-28 pr-28 sm:w-[282px] sm:pr-48",
+        "group relative flex w-auto flex-shrink-0 flex-grow flex-col gap-16 py-28 pr-28 last:mr-8 sm:w-[282px] sm:pr-48",
         {
           "is-last-completed": lastCompleted,
         }
