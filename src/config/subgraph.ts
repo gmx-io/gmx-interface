@@ -30,7 +30,7 @@ const SUBGRAPH_URLS = {
   },
 
   [BOTANIX]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-botanix:prod/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-botanix@c87c92/api/graphql",
     stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-botanix-stats/api",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-botanix-stats/api",
   },
