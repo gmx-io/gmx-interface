@@ -2,7 +2,7 @@ import { Chain, createPublicClient, http } from "viem";
 
 import { getViemChain } from "config/chains";
 import { isWebWorker } from "config/env";
-import {
+import type {
   MulticallErrorEvent,
   MulticallFallbackRpcModeCounter,
   MulticallRequestCounter,
@@ -10,14 +10,13 @@ import {
   MulticallTimeoutEvent,
 } from "lib/metrics";
 import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
+import type { MulticallRequestConfig, MulticallResult } from "lib/multicall/types";
+import { serializeMulticallErrors } from "lib/multicall/utils";
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { sleep } from "lib/sleep";
 import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
-import { abis as allAbis } from "sdk/abis";
+import { AbiId, abis as allAbis } from "sdk/abis";
 import { BATCH_CONFIGS } from "sdk/configs/batch";
-
-import type { MulticallRequestConfig, MulticallResult } from "./types";
-import { serializeMulticallErrors } from "./utils";
 
 export const MAX_TIMEOUT = 20000;
 
@@ -98,7 +97,7 @@ export class Multicall {
       callKey: string;
     }[] = [];
 
-    const abis: any = {};
+    const abiWithErrorsMap: Partial<Record<AbiId, any>> = {};
 
     const encodedPayload: { address: string; abi: any; functionName: string; args: any }[] = [];
 
@@ -119,12 +118,11 @@ export class Multicall {
         }
 
         // Add Errors ABI to each contract ABI to correctly parse errors
-        abis[contractCallConfig.contractAddress] = abis[contractCallConfig.contractAddress] || [
-          ...allAbis[contractCallConfig.abiId],
-          ...allAbis.CustomErrors,
-        ];
+        if (!abiWithErrorsMap[contractCallConfig.abiId]) {
+          abiWithErrorsMap[contractCallConfig.abiId] = [...allAbis[contractCallConfig.abiId], ...allAbis.CustomErrors];
+        }
 
-        const abi = abis[contractCallConfig.contractAddress];
+        const abi = abiWithErrorsMap[contractCallConfig.abiId];
 
         originalKeys.push({
           contractKey,

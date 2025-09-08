@@ -4,7 +4,11 @@ import { useCallback, useMemo } from "react";
 import type { Address } from "viem";
 
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectChainId, selectOrdersInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectChainId,
+  selectOrdersInfoData,
+  selectSrcChainId,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateContext/selectors/positionsSelectors";
 import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
@@ -46,10 +50,11 @@ const selectPositionsWithOrders = createSelector((q) => {
 
 export function MarketFilterLongShort({ value, onChange, withPositions, asButton }: MarketFilterLongShortProps) {
   const chainId = useSelector(selectChainId);
+  const srcChainId = useSelector(selectSrcChainId);
   const marketsInfoData = useMarketsInfoData();
   const allPositions = useSelector(selectPositionsInfoDataSortedByMarket);
   const filteredPositions = useSelector(selectPositionsWithOrders);
-  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, {
+  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, srcChainId, {
     isDeposit: true,
     withGlv: false,
   });
@@ -109,7 +114,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
     if (withPositions) {
       return [
         {
-          groupName: withPositions === "all" ? t`Open Positions` : t`Open Positions with Orders`,
+          groupName: withPositions === "all" ? t`Open positions` : t`Open positions with orders`,
           items: strippedOpenPositions!,
         },
         anyMarketDirectedGroup,
@@ -176,7 +181,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
             <div className="inline-flex items-center">
               <span className="subtext">[{poolName}]</span>
             </div>
-            {collateralSymbol && <span className="text-slate-100"> ({collateralSymbol})</span>}
+            {collateralSymbol && <span className="text-typography-secondary"> ({collateralSymbol})</span>}
           </>
         );
       }

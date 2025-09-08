@@ -7,10 +7,11 @@ import { selectGlvInfo, selectMarketsInfoData } from "context/SyntheticsStateCon
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { TokenData } from "domain/tokens";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
+import { ContractsChainId } from "sdk/configs/chains";
 import { getTokenBySymbolSafe } from "sdk/configs/tokens";
+import { getMarketPoolName } from "sdk/utils/markets";
 import { convertToUsd } from "sdk/utils/tokens";
 
-import { getMarketPoolName } from "../../../../sdk/src/utils/markets";
 import { useMarketTokensData } from "../markets";
 
 export const GLP_DISTRIBUTION_TEST_ID = 4672592n;
@@ -58,14 +59,14 @@ export interface ClaimableAmountsResult {
     | undefined
   >;
   claimableAmountsLoaded: boolean;
-  mutateClaimableAmounts: (shouldRevalidate?: boolean) => void;
+  mutateClaimableAmounts: () => void;
 }
 
-export default function useUserClaimableAmounts(chainId: number, account?: string): ClaimableAmountsResult {
+export default function useUserClaimableAmounts(chainId: ContractsChainId, account?: string): ClaimableAmountsResult {
   const glvsInfo = useSelector(selectGlvInfo);
   const marketsInfo = useSelector(selectMarketsInfoData);
 
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+  const { marketTokensData } = useMarketTokensData(chainId, undefined, { isDeposit: false });
   const tokensData = useTokensData();
 
   const tokens = useMemo(

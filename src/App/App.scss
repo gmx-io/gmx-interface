@@ -4,6 +4,12 @@ $app-card-padding: 1.5rem;
   position: relative;
   min-height: 100%;
   font-size: var(--font-size-body-medium);
+  height: 100%;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.App-content {
+  height: 100%;
 }
 
 .App-content header {
@@ -70,7 +76,7 @@ $app-card-padding: 1.5rem;
 }
 
 .App-header-menu-icon {
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   font-size: 2rem;
   cursor: pointer;
   opacity: 0.7;
@@ -99,8 +105,8 @@ $app-card-padding: 1.5rem;
 .App-box-highlight,
 .App-box-solid {
   position: relative;
-  border-radius: 0.4rem;
-  background: var(--color-slate-800);
+  border-radius: 8px;
+  background: var(--color-slate-900);
   font-size: var(--font-size-body-medium);
 }
 
@@ -129,9 +135,9 @@ $app-card-padding: 1.5rem;
 }
 
 .App-card-divider-vertical {
-  width: 1px;
+  width: 0.5px;
   height: 8.8rem;
-  background: var(--color-slate-100);
+  background: var(--color-slate-600);
 }
 
 .App-card-title-block {
@@ -153,7 +159,7 @@ $app-card-padding: 1.5rem;
 .App-card-info-title {
   font-weight: normal;
   letter-spacing: 0px;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .App-card-info-subtitle {
@@ -177,94 +183,18 @@ $app-card-padding: 1.5rem;
   filter: unset;
 }
 
-.Wallet-btn {
-  display: block;
-  box-shadow: inset 0px 0px 1rem 0.5rem rgba(27, 30, 46, 0.2);
-  background: var(--dark-blue);
-  height: 5.1rem;
-  width: 26.35rem;
-  border: 1px solid var(--color-stroke-primary);
-  border-radius: 0.3rem;
-  position: relative;
-  color: var(--color-white);
-  font-size: 2rem;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  text-align: left;
-  padding-left: 1.85rem;
-  padding-top: 1.05rem;
-}
-.Wallet-btn:hover {
-  background: var(--dark-blue-hover);
-  border-color: var(--dark-blue-border);
-}
-.Wallet-btn:active {
-  background: var(--dark-blue-active);
-}
-
-.Wallet-btn:not(:last-child) {
-  margin-bottom: 1.05rem;
-}
-
-.MetaMask-btn img {
-  display: inline-block;
-  height: 2.325rem;
-  margin-right: 1.7rem;
-  margin-left: 0.15rem;
-}
-
-.CoinbaseWallet-btn img {
-  display: inline-block;
-  height: 2.8rem;
-  margin-right: 1.7rem;
-}
-
-.WalletConnect-btn img {
-  display: inline-block;
-  height: 2.8rem;
-  margin-right: 1.8rem;
-}
-
-button.App-connect-wallet {
-  cursor: pointer;
-  display: inline-block;
-  border: none;
-  font-size: var(--font-size-body-small);
-  line-height: 2rem;
-  font-weight: 500;
-  padding: 0.9rem 2.4rem;
-  height: 3.6rem;
-  color: var(--color-slate-800);
-  background: #03cfcd 0% 0% no-repeat padding-box;
-  border-radius: 0.4rem;
-}
-
-button.App-connect-wallet:hover {
-  opacity: 1;
-}
-
 .App-header-trade-link {
   margin-right: 0.8rem;
 }
 
-.App-header-user-address {
-  border: 1px solid var(--color-stroke-primary);
-  height: 3.6rem;
-  border-radius: 0.4rem;
-  display: inline-flex;
-  align-items: center;
-  color: var(--color-white);
-  position: relative;
-}
-
 .mobile-menu-divider {
   height: 1px;
-  background: var(--color-slate-500);
+  background: var(--color-slate-100);
 }
 
 .App-card-divider {
-  height: 1px;
-  background: var(--color-slate-700);
+  height: 0.5px;
+  background: var(--color-slate-600);
   margin: 1.05rem -1.5rem;
 
   &:last-child {
@@ -328,7 +258,7 @@ button.App-connect-wallet:hover {
 .section-title-content .section-title-content__title {
   font-size: var(--font-size-body-large);
   line-height: 3.1rem;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   letter-spacing: 0px;
 }
 
@@ -343,7 +273,7 @@ button.App-connect-wallet:hover {
 
 .section-title-content .section-title-content__description span {
   cursor: pointer;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .Page-title-section {
@@ -385,7 +315,7 @@ button.App-connect-wallet:hover {
 }
 
 .Page-description span:hover {
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   opacity: 0.9;
 }
 
@@ -422,9 +352,9 @@ button.App-connect-wallet:hover {
 
 .App-card-title {
   font-size: var(--font-size-body-large);
-  font-weight: normal;
-  letter-spacing: 0px;
-  color: var(--color-white);
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  color: var(--color-typography-primary);
   margin-bottom: $app-card-padding;
   display: flex;
   align-items: center;
@@ -433,15 +363,6 @@ button.App-connect-wallet:hover {
 
 .Position-card-title {
   justify-content: start;
-}
-
-.Position-card-title::after {
-  content: "";
-  position: absolute;
-  left: -$app-card-padding;
-  top: -$app-card-padding;
-  bottom: -$app-card-padding;
-  right: -$app-card-padding;
 }
 
 .App-card-title-small {
@@ -541,20 +462,7 @@ button.App-connect-wallet:hover {
 
 .App-header-container-left .a.active,
 .App-header-container-left a.active {
-  color: var(--color-white);
-}
-
-.Toastify {
-  font-size: var(--font-size-body-small);
-}
-
-.Toastify__toast {
-  min-height: 4.65rem;
-  cursor: default;
-}
-
-.Toastify__toast-body {
-  padding: 0 0.465rem;
+  color: var(--color-typography-primary);
 }
 
 .App-icon {
@@ -666,7 +574,7 @@ button.App-connect-wallet:hover {
 
 a.App-cta,
 button.App-cta {
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   text-decoration: none;
   background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, var(--color-blue-700) 100%);
 }
@@ -685,7 +593,7 @@ button.App-cta.transparent {
 
 a.App-cta.transparent:hover,
 button.App-cta.transparent:hover:enabled {
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   box-shadow: none;
   background: none;
 }
@@ -704,7 +612,7 @@ button.App-button-option {
   line-height: 2rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   padding-left: 16px;
   padding-right: 16px;
   text-decoration: none;
@@ -729,11 +637,6 @@ button.App-button-option:active:enabled {
 
 button.App-button-option:disabled {
   cursor: not-allowed;
-}
-
-.App-header-container-right {
-  display: flex;
-  align-items: center;
 }
 
 .App-header-user {
@@ -764,7 +667,7 @@ a.App-social-link {
   margin-left: 1.1rem;
   margin-right: 1.1rem;
   font-size: 2.635rem;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   opacity: 0.8;
 }
 
@@ -825,62 +728,6 @@ button.App-button {
   font-size: 1.7rem;
   width: 90%;
   max-width: 46.5rem;
-}
-
-.Toastify__toast--error {
-  background: #333957;
-  color: var(--color-white);
-  border-radius: 0.6rem;
-
-  .link-underline {
-    color: var(--color-white) !important;
-  }
-}
-
-.Toastify__toast--success {
-  background: transparent linear-gradient(90deg, #19836c 0%, #177c66 100%) 0% 0% no-repeat padding-box;
-  color: var(--color-white);
-  box-shadow: 0px 0.3rem 0.6rem #0000005c;
-  border-radius: 0.4rem;
-
-  .link-underline {
-    color: var(--color-white) !important;
-  }
-}
-
-.Toastify__toast--default {
-  background: linear-gradient(90deg, #0b0b0f 0%, rgba(10, 13, 28, 1) 100%);
-  color: var(--color-white);
-  border-radius: 0.6rem;
-}
-
-.Toastify__toast--default .Toastify__close-button {
-  color: var(--color-white);
-}
-
-.Toastify__toast--default .Toastify__close-button:hover {
-  color: var(--color-white);
-  background: transparent;
-}
-
-.Toastify__close-button {
-  align-self: flex-start;
-  border-radius: 0.4rem;
-  width: 2.1rem;
-  min-width: 2.1rem;
-  height: 2rem;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  transition: none;
-  z-index: 2;
-}
-.Toastify__close-button:hover {
-  background: var(--color-gray-700) 0% 0% no-repeat padding-box;
-}
-.Toastify__toast-body {
-  font: normal normal normal 1.4rem/1.6rem Relative;
-  line-height: 2rem;
 }
 
 .dropdown-backdrop {
@@ -944,11 +791,11 @@ button.App-button {
 }
 
 .warning {
-  color: var(--color-yellow-500);
+  color: var(--color-yellow-300);
 }
 
 .warning-decoration {
-  text-decoration-color: var(--color-yellow-500);
+  text-decoration-color: var(--color-yellow-300);
 }
 
 .App-warning,
@@ -1075,9 +922,6 @@ button.App-button {
   .long-connect-btn {
     display: none !important;
   }
-  .App-header-user-address {
-    padding: 0 0px;
-  }
 
   .short-connect-btn {
     display: flex !important;
@@ -1098,11 +942,6 @@ button.App-button {
 
   .App-header-user {
     padding-bottom: 0;
-  }
-
-  .App-header-container-right {
-    display: flex;
-    align-items: center;
   }
 
   .App-header-link-desktop {
@@ -1163,12 +1002,6 @@ button.App-button {
       width: 20px;
       vertical-align: bottom;
     }
-  }
-}
-
-@media (max-width: 600px) {
-  .page-layout {
-    padding-top: 2.5rem;
   }
 }
 

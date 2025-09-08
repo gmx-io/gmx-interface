@@ -43,12 +43,14 @@ export function TableFilterBase({ popupPlacement, isActive, label, children, asB
         <Popover.Button
           {...(asButton ? AS_BUTTON_PROPS : AS_DEFAULT_PROPS)}
           ref={refs.setReference}
-          className={cx("TableFilterBase-filter", {
+          className={cx("TableFilterBase-filter flex items-center gap-4", {
             active: isActive,
           })}
         >
-          {label}
-          <FilterIcon />
+          <div className="flex items-center gap-4">
+            {label}
+            <FilterIcon className="size-14" />
+          </div>
         </Popover.Button>
         <FloatingPortal>
           <Popover.Panel ref={refs.setFloating} style={floatingStyles} className="TableFilterBase-filter-popover">

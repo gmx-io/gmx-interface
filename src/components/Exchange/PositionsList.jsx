@@ -49,7 +49,7 @@ const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => 
     .map((order) => {
       order.error = getOrderError(account, order, undefined, position);
       if (order.type === DECREASE && order.sizeDelta > position.size) {
-        order.error = t`Order size is bigger than position, will only be executable if position increases`;
+        order.error = t`Order size is bigger than the position, so it'll only be executable if the position increases.`;
       }
       return order;
     });
@@ -296,7 +296,7 @@ export default function PositionsList(props) {
                         <div className="label">
                           <Trans>Size</Trans>
                         </div>
-                        <div>${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
+                        <div className="numbers">${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
                       </div>
                       <div className="App-card-row">
                         <div className="label">
@@ -304,7 +304,11 @@ export default function PositionsList(props) {
                         </div>
                         <div className="position-list-collateral">
                           <Tooltip
-                            handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`}
+                            handle={
+                              <span className="numbers">
+                                ${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
+                              </span>
+                            }
                             position="bottom-end"
                             handleClassName={cx({ negative: position.hasLowCollateral })}
                             renderContent={() => {
@@ -323,16 +327,19 @@ export default function PositionsList(props) {
                                   <StatsTooltipRow
                                     label={t`Initial Collateral`}
                                     value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                                    valueClassName="numbers"
                                   />
                                   <StatsTooltipRow
                                     label={t`Borrow Fee`}
                                     value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
+                                    valueClassName="numbers"
                                     textClassName="text-red-500"
                                   />
                                   <StatsTooltipRow
                                     showDollar={false}
                                     label={t`Borrow Fee / Day`}
-                                    value={`-$${borrowFeeUSD}`}
+                                    value={`-$\u200a${borrowFeeUSD}`}
+                                    valueClassName="numbers"
                                     textClassName="text-red-500"
                                   />
 
@@ -354,19 +361,25 @@ export default function PositionsList(props) {
                         <div className="label">
                           <Trans>Entry Price</Trans>
                         </div>
-                        <div>${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}</div>
+                        <div className="numbers">
+                          ${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
+                        </div>
                       </div>
                       <div className="App-card-row">
                         <div className="label">
                           <Trans>Mark Price</Trans>
                         </div>
-                        <div>${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}</div>
+                        <div className="numbers">
+                          ${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
+                        </div>
                       </div>
                       <div className="App-card-row">
                         <div className="label">
                           <Trans>Liq. Price</Trans>
                         </div>
-                        <div>${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}</div>
+                        <div className="numbers">
+                          ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
+                        </div>
                       </div>
                     </div>
                     <div className="App-card-divider" />
@@ -379,8 +392,10 @@ export default function PositionsList(props) {
                         {positionOrders.map((order) => {
                           const orderText = () => (
                             <>
-                              {order.triggerAboveThreshold ? ">" : "<"} {formatAmount(order.triggerPrice, 30, 2, true)}:
-                              {order.type === INCREASE ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
+                              {order.triggerAboveThreshold ? ">" : "<"}{" "}
+                              <span className="numbers">{formatAmount(order.triggerPrice, 30, 2, true)}</span>:
+                              {order.type === INCREASE ? " +" : " -"}
+                              <span className="numbers">${formatAmount(order.sizeDelta, 30, 2, true)}</span>
                             </>
                           );
                           if (order.error) {
@@ -522,16 +537,10 @@ export default function PositionsList(props) {
                         renderContent={() => {
                           return (
                             <div>
-                              <Trans>
-                                Click on the Position to select its market, then use the trade box to increase your
-                                Position Size if needed.
-                              </Trans>
+                              <Trans>Click on the position to select it, then use the trade box to increase it.</Trans>
                               <br />
                               <br />
-                              <Trans>
-                                Use the "Close" button to reduce your Position Size, or to set Take Profit / Stop Loss
-                                Orders.
-                              </Trans>
+                              <Trans>Use the "Close" button to reduce your position, or to set TP/SL orders.</Trans>
                             </div>
                           );
                         }}
@@ -557,7 +566,7 @@ export default function PositionsList(props) {
                   </div>
                 </td>
                 <td>
-                  <div>${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
+                  <div className="numbers">${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
                   {positionOrders.length > 0 && (
                     <div
                       className="Position-list-active-orders"
@@ -573,9 +582,9 @@ export default function PositionsList(props) {
                         renderContent={() => {
                           return (
                             <>
-                              <strong>
+                              <span className="font-medium">
                                 <Trans>Active Orders</Trans>
-                              </strong>
+                              </span>
                               {positionOrders.map((order) => {
                                 const priceDecimal = getPriceDecimals(chainId, order.indexToken.symbol);
                                 return (
@@ -624,7 +633,11 @@ export default function PositionsList(props) {
                 <td>
                   <div className="position-list-collateral">
                     <Tooltip
-                      handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`}
+                      handle={
+                        <span className="numbers">
+                          ${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
+                        </span>
+                      }
                       position="bottom-start"
                       handleClassName={cx({ negative: position.hasLowCollateral })}
                       renderContent={() => {
@@ -648,13 +661,14 @@ export default function PositionsList(props) {
                             <StatsTooltipRow
                               label={t`Borrow Fee`}
                               showDollar={false}
-                              value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
+                              value={`-$\u200a${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
+                              valueClassName="numbers"
                               textClassName="text-red-500"
                             />
                             <StatsTooltipRow
                               showDollar={false}
                               label={t`Borrow Fee / Day`}
-                              value={`-$${borrowFeeUSD}`}
+                              value={`-$\u200a${borrowFeeUSD}`}
                               textClassName="text-red-500"
                             />
                             {!hideActions && (
@@ -669,9 +683,13 @@ export default function PositionsList(props) {
                     />
                   </div>
                 </td>
-                <td>${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}</td>
-                <td>${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}</td>
-                <td>${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}</td>
+                <td className="numbers">
+                  ${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
+                </td>
+                <td className="numbers">
+                  ${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
+                </td>
+                <td className="numbers">${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}</td>
 
                 {!hideActions && (
                   <td>

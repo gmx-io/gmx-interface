@@ -1,10 +1,13 @@
-import { AbiCoder, Contract, LogParams, Provider, ProviderEvent, ZeroAddress, ethers, isAddress } from "ethers";
+import { AbiCoder, Contract, ethers, isAddress, LogParams, Provider, ProviderEvent, ZeroAddress } from "ethers";
 import { MutableRefObject } from "react";
+import { Abi, decodeEventLog, Hex } from "viem";
+import type { ContractEventArgsFromTopics } from "viem/_types/types/contract";
 
 import { getContract, tryGetContract } from "config/contracts";
 import type { EventLogData, EventTxnParams } from "context/SyntheticsEvents/types";
 import { abis } from "sdk/abis";
-import { NATIVE_TOKEN_ADDRESS, getTokens } from "sdk/configs/tokens";
+import type { ContractsChainId } from "sdk/configs/chains";
+import { getTokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 const coder = AbiCoder.defaultAbiCoder();
 
@@ -77,8 +80,54 @@ const GLV_WITHDRAWAL_CANCELLED_HASH = ethers.id("GlvWithdrawalCancelled");
 const APPROVED_HASH = ethers.id("Approval(address,address,uint256)");
 const TRANSFER_HASH = ethers.id("Transfer(address,address,uint256)");
 
+const MULTICHAIN_BRIDGE_IN_HASH = ethers.id("MultichainBridgeIn");
+
+const OFT_SENT_HASH = ethers.id("OFTSent(bytes32,uint32,address,uint256,uint256)");
+const OFT_RECEIVED_HASH = ethers.id("OFTReceived(bytes32,uint32,address,uint256)");
+const COMPOSE_DELIVERED_HASH = ethers.id("ComposeDelivered(address,address,bytes32,uint16)");
+
+export const OFT_SENT_ABI = [
+  {
+    inputs: [
+      { indexed: true, internalType: "bytes32", name: "guid", type: "bytes32" },
+      { indexed: false, internalType: "uint32", name: "dstEid", type: "uint32" },
+      { indexed: true, internalType: "address", name: "fromAddress", type: "address" },
+      { indexed: false, internalType: "uint256", name: "amountSentLD", type: "uint256" },
+      { indexed: false, internalType: "uint256", name: "amountReceivedLD", type: "uint256" },
+    ],
+    name: "OFTSent",
+    type: "event",
+  },
+] as const satisfies Abi;
+
+export const OFT_RECEIVED_ABI = [
+  {
+    inputs: [
+      { indexed: true, internalType: "bytes32", name: "guid", type: "bytes32" },
+      { indexed: false, internalType: "uint32", name: "srcEid", type: "uint32" },
+      { indexed: true, internalType: "address", name: "toAddress", type: "address" },
+      { indexed: false, internalType: "uint256", name: "amountReceivedLD", type: "uint256" },
+    ],
+    name: "OFTReceived",
+    type: "event",
+  },
+] as const satisfies Abi;
+
+export const COMPOSE_DELIVERED_ABI = [
+  {
+    inputs: [
+      { indexed: false, internalType: "address", name: "from", type: "address" },
+      { indexed: false, internalType: "address", name: "to", type: "address" },
+      { indexed: false, internalType: "bytes32", name: "guid", type: "bytes32" },
+      { indexed: false, internalType: "uint16", name: "index", type: "uint16" },
+    ],
+    name: "ComposeDelivered",
+    type: "event",
+  },
+] as const satisfies Abi;
+
 export function subscribeToV2Events(
-  chainId: number,
+  chainId: ContractsChainId,
   provider: Provider,
   account: string,
   eventLogHandlers: MutableRefObject<
@@ -144,7 +193,7 @@ export function subscribeToV2Events(
 }
 
 export function subscribeToTransferEvents(
-  chainId: number,
+  chainId: ContractsChainId,
   provider: Provider,
   account: string,
   marketTokensAddresses: string[],
@@ -216,7 +265,7 @@ export function subscribeToTransferEvents(
 }
 
 export function subscribeToApprovalEvents(
-  chainId: number,
+  chainId: ContractsChainId,
   provider: Provider,
   account: string,
   onApprove: (tokenAddress: string, spender: string, value: bigint) => void
@@ -255,6 +304,161 @@ export function subscribeToApprovalEvents(
   };
 }
 
+export function subscribeToOftSentEvents(
+  provider: Provider,
+  account: string,
+  stargates: string[],
+  onOftSent: (
+    info: {
+      sender: string;
+      txnHash: string;
+    } & ContractEventArgsFromTopics<typeof OFT_SENT_ABI, "OFTSent">
+  ) => void
+): () => void {
+  const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [account]);
+
+  const providerFilter: ProviderEvent = {
+    address: stargates,
+    topics: [OFT_SENT_HASH, null, addressHash],
+  };
+
+  const handleOftSentLog = (log: LogParams) => {
+    const args = decodeEventLog({
+      abi: OFT_SENT_ABI,
+      eventName: "OFTSent",
+      topics: log.topics as any,
+      data: log.data as Hex,
+    }).args;
+
+    onOftSent({
+      sender: log.address,
+      txnHash: log.transactionHash,
+      ...args,
+    });
+  };
+
+  provider.on(providerFilter, handleOftSentLog);
+
+  return () => {
+    provider.off(providerFilter, handleOftSentLog);
+  };
+}
+
+export function subscribeToOftReceivedEvents(
+  provider: Provider,
+  stargates: string[],
+  guids: string[],
+  onOftReceive: (
+    info: { sender: string; txnHash: string } & ContractEventArgsFromTopics<typeof OFT_RECEIVED_ABI, "OFTReceived">
+  ) => void
+) {
+  if (guids.length === 0) {
+    return undefined;
+  }
+
+  const providerFilter: ProviderEvent = {
+    address: stargates,
+    topics: [OFT_RECEIVED_HASH, guids, null],
+  };
+
+  const handleOftReceivedLog = (log: LogParams) => {
+    const args = decodeEventLog({
+      abi: OFT_RECEIVED_ABI,
+      eventName: "OFTReceived",
+      topics: log.topics as any,
+      data: log.data as Hex,
+    }).args;
+
+    onOftReceive({
+      sender: log.address,
+      txnHash: log.transactionHash,
+      ...args,
+    });
+  };
+
+  provider.on(providerFilter, handleOftReceivedLog);
+
+  return () => {
+    provider.off(providerFilter, handleOftReceivedLog);
+  };
+}
+
+export function subscribeToComposeDeliveredEvents(
+  provider: Provider,
+  layerZeroEndpoint: string,
+  guids: string[],
+  onComposeDelivered: (
+    info: { sender: string; txnHash: string } & ContractEventArgsFromTopics<
+      typeof COMPOSE_DELIVERED_ABI,
+      "ComposeDelivered"
+    >
+  ) => void
+) {
+  if (guids.length === 0) {
+    return undefined;
+  }
+
+  const providerFilter: ProviderEvent = {
+    address: layerZeroEndpoint,
+    topics: [COMPOSE_DELIVERED_HASH],
+  };
+
+  const handleComposeDeliveredLog = (log: LogParams) => {
+    const args = decodeEventLog({
+      abi: COMPOSE_DELIVERED_ABI,
+      eventName: "ComposeDelivered",
+      topics: log.topics as any,
+      data: log.data as Hex,
+    }).args;
+
+    // Manual filtering because event params are not indexed
+    if (!guids.includes(args.guid)) {
+      return;
+    }
+
+    onComposeDelivered({
+      sender: log.address,
+      txnHash: log.transactionHash,
+      ...args,
+    });
+  };
+
+  provider.on(providerFilter, handleComposeDeliveredLog);
+
+  return () => {
+    provider.off(providerFilter, handleComposeDeliveredLog);
+  };
+}
+
+export function subscribeToMultichainApprovalEvents(
+  provider: Provider,
+  account: string,
+  tokenAddresses: string[],
+  spenders: string[],
+  onApprove: (tokenAddress: string, spender: string, value: bigint) => void
+) {
+  const spenderTopics = spenders.map((spender) => AbiCoder.defaultAbiCoder().encode(["address"], [spender]));
+  const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [account]);
+
+  const approvalsFilter: ProviderEvent = {
+    address: tokenAddresses,
+    topics: [APPROVED_HASH, addressHash, spenderTopics],
+  };
+
+  const handleApprovalsLog = (log: LogParams) => {
+    const tokenAddress = log.address;
+    const spender = ethers.AbiCoder.defaultAbiCoder().decode(["address"], log.topics[2])[0];
+    const value = ethers.AbiCoder.defaultAbiCoder().decode(["uint256"], log.data)[0];
+    onApprove(tokenAddress, spender, value);
+  };
+
+  provider.on(approvalsFilter, handleApprovalsLog);
+
+  return () => {
+    provider.off(approvalsFilter, handleApprovalsLog);
+  };
+}
+
 function parseEventLogData(eventData): EventLogData {
   const ret: any = {};
   for (const typeKey of [
@@ -280,7 +484,7 @@ function parseEventLogData(eventData): EventLogData {
   return ret as EventLogData;
 }
 
-function createV2EventFilters(chainId: number, account: string, wsProvider: Provider): ProviderEvent[] {
+function createV2EventFilters(chainId: ContractsChainId, account: string, wsProvider: Provider): ProviderEvent[] {
   const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [account]);
   const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), abis.EventEmitter, wsProvider);
   const EVENT_LOG_TOPIC = eventEmitter.interface.getEvent("EventLog")?.topicHash ?? null;
@@ -365,11 +569,16 @@ function createV2EventFilters(chainId: number, account: string, wsProvider: Prov
       address: getContract(chainId, "EventEmitter"),
       topics: [EVENT_LOG2_TOPIC, GLV_TOPICS_FILTER, null, addressHash],
     },
+    // Multichain
+    {
+      address: getContract(chainId, "EventEmitter"),
+      topics: [EVENT_LOG1_TOPIC, [MULTICHAIN_BRIDGE_IN_HASH], addressHash],
+    },
   ];
 }
 
 export function getTotalSubscribersEventsCount(
-  chainId: number,
+  chainId: ContractsChainId,
   provider: Provider,
   { v1, v2 }: { v1: boolean; v2: boolean }
 ) {

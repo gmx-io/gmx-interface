@@ -111,7 +111,8 @@ export async function callContract(
       async function retrieveGasLimit() {
         return customGasLimits[i] !== undefined
           ? (customGasLimits[i] as bigint | number)
-          : await getGasLimit(cntrct, method, params, opts.value);
+          : // here
+            await getGasLimit(cntrct, method, params, opts.value);
       }
 
       async function retrieveGasPrice() {
@@ -165,7 +166,7 @@ export async function callContract(
     }
 
     if (opts.setPendingTxns) {
-      const message = opts.hideSuccessMsg ? "" : opts.successMsg || t`Transaction completed!`;
+      const message = opts.hideSuccessMsg ? "" : opts.successMsg || t`Transaction completed.`;
       const pendingTxn: PendingTransaction = {
         hash: res.hash,
         message,

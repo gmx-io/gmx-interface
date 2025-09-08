@@ -1,10 +1,13 @@
 import { Contract, ContractRunner, ethers, InterfaceAbi } from "ethers";
+import type { Address } from "viem";
 
-import { getContract, CONTRACTS } from "sdk/configs/contracts";
+import { ContractName, getContract } from "sdk/configs/contracts";
 import { GlvRouter__factory } from "typechain-types";
 import { DataStore__factory } from "typechain-types/factories/DataStore__factory";
 import { ExchangeRouter__factory } from "typechain-types/factories/ExchangeRouter__factory";
 import { Multicall__factory } from "typechain-types/factories/Multicall__factory";
+
+import { ContractsChainId } from "./chains";
 
 const { ZeroAddress } = ethers;
 
@@ -18,10 +21,10 @@ export const XGMT_EXCLUDED_ACCOUNTS = [
 ];
 
 function makeGetContract<T extends { abi: InterfaceAbi; connect: (address: string) => unknown }>(
-  name: string,
+  name: ContractName,
   factory: T
 ) {
-  return (chainId: number, provider?: ContractRunner) =>
+  return (chainId: ContractsChainId, provider?: ContractRunner) =>
     new Contract(getContract(chainId, name), factory.abi, provider) as unknown as ReturnType<T["connect"]>;
 }
 
@@ -32,6 +35,10 @@ export const getGlvRouterContract = makeGetContract("GlvRouter", GlvRouter__fact
 
 export const getZeroAddressContract = (provider?: ContractRunner) => new Contract(ZeroAddress, [], provider);
 
-export function tryGetContract(chainId: number, name: string): string | undefined {
-  return CONTRACTS[chainId]?.[name];
+export function tryGetContract(chainId: ContractsChainId, name: ContractName): Address | undefined {
+  try {
+    return getContract(chainId, name);
+  } catch (e) {
+    return undefined;
+  }
 }

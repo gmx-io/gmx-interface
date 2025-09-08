@@ -1,7 +1,3 @@
-.Referrals {
-  padding-top: 4.65rem;
-}
-
 .section-center {
   margin: 0 auto;
   text-align: center;
@@ -18,16 +14,15 @@
 .referral-card {
   position: relative;
   padding: 2.4rem;
-  border-radius: 1.3rem;
-  max-width: 59.2rem;
-  background: var(--color-slate-800);
-  border-radius: 0.4rem;
+  max-width: 60rem;
+  background: var(--color-slate-900);
+  border-radius: 8px;
 }
 .referral-card .title {
   font-weight: 500;
   font-size: var(--font-size-h2);
   line-height: auto;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   padding: 0.775rem 0;
   margin: 0;
 }
@@ -35,7 +30,7 @@
   font-size: var(--font-size-body-large);
   line-height: var(--line-height-body-large);
   letter-spacing: 0px;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   margin-top: 1.1625rem;
 }
 .referral-card .card-action {
@@ -115,7 +110,7 @@
   align-items: center;
   background: transparent;
   padding: 0.75rem 1.25rem;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   font-size: var(--font-size-body-small);
   border: 1px solid var(--dark-blue-border);
   border-radius: var(--border-radius-sm);
@@ -186,7 +181,7 @@
   line-height: 2.1rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   margin-top: 16px;
   margin-bottom: 1.5rem;
   text-align: center;
@@ -255,10 +250,10 @@
   justify-content: center;
   align-items: center;
   padding: 3rem 1.5rem;
-  border: 1px solid var(--color-slate-700);
   border-radius: 0.4rem;
-  background: var(--color-slate-800);
+  background: var(--color-slate-900);
   font-size: var(--font-size-body-medium);
+  color: var(--color-slate-100);
   flex-direction: column;
 }
 

@@ -13,50 +13,26 @@
       text-decoration: underline;
 
       &:hover {
-        color: var(--color-white);
+        color: var(--color-typography-primary);
       }
     }
   }
 }
 
-.StatusNotification-background {
-  position: absolute;
-  width: 300%;
-  height: 300%;
-  left: -100px;
-  right: 0;
-  bottom: -100px;
+.StatusNotification-title {
+  font-weight: 500;
+  font-style: medium;
+  letter-spacing: -0.012em;
+}
 
-  &.error {
-    background-color: rgba(174, 43, 63, 1);
+.Toastify__toast--error {
+  .StatusNotification-title {
+    color: var(--color-red-500);
   }
 }
 
-.Toastify__toast.OrdersStatusNotificiation {
-  padding: 0;
-  position: relative;
-
-  .Toastify__close-button {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-  }
-
-  .Toastify__toast-body {
-    padding: 0;
-
-    .StatusNotification-wrapper {
-      .StatusNotification-list {
-        .StatusNotification {
-          padding: 0.8rem 1rem;
-          &.error {
-            background-color: rgba(174, 43, 63, 1);
-          }
-          &:not(:last-child) {
-            border-bottom: 1.5px #0f463d solid;
-          }
-        }
-      }
-    }
+.Toastify__toast--success {
+  .StatusNotification-title {
+    color: var(--color-green-500);
   }
 }

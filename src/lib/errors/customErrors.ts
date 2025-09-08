@@ -7,6 +7,8 @@ import { ErrorData, ErrorLike, extendError, parseError } from ".";
 
 export const INVALID_PERMIT_SIGNATURE_ERROR = "Invalid permit signature";
 
+export const FAST_EXPRESS_PARAMS_TIMEOUT_ERROR = "fastExpressParams timeout";
+
 export function getIsPermitSignatureError(error: ErrorLike) {
   const parsedError = parseError(error);
 
@@ -56,12 +58,10 @@ export function getIsPermitSignatureErrorOnSimulation(error: ErrorLike) {
 
 export function getInvalidPermitSignatureError({
   isValid,
-  recoveredAddress,
   error,
   permit,
 }: {
   isValid: boolean;
-  recoveredAddress: string | undefined;
   error: ErrorData | undefined;
   permit: SignedTokenPermit;
 }) {
@@ -69,14 +69,9 @@ export function getInvalidPermitSignatureError({
     data: {
       isValid,
       originalError: error,
-      recoveredAddress,
-      owner: permit.owner,
       spender: permit.spender,
       value: permit.value,
       deadline: permit.deadline,
-      r: permit.r,
-      s: permit.s,
-      v: permit.v,
       onchainParams: {
         name: permit.onchainParams.name,
         version: permit.onchainParams.version,

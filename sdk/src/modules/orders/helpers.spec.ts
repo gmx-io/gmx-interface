@@ -6,7 +6,7 @@ import { TokenData, TokensData } from "types/tokens";
 import { getByKey } from "utils/objects";
 import * as swapPath from "utils/swap/swapPath";
 import { arbitrumSdk } from "utils/testUtil";
-import * as tradeAmounts from "utils/trade/amounts";
+import * as tradeAmounts from "utils/trade/increase";
 
 describe("increaseOrderHelper", () => {
   let marketsInfoData: MarketsInfoData;

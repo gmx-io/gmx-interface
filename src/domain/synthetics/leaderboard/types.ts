@@ -1,3 +1,5 @@
+import type { ContractsChainId } from "sdk/configs/chains";
+
 import { LEADERBOARD_PAGES_ORDER } from "./constants";
 
 export enum PerfPeriod {
@@ -37,7 +39,7 @@ export type LeaderboardPageConfig =
       key: LeaderboardPageKey;
       href: string;
       isCompetition: true;
-      chainId: number;
+      chainId: ContractsChainId;
       enabled: boolean;
       timeframe: LeaderboardTimeframe;
     };
