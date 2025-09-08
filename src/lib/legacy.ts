@@ -357,9 +357,11 @@ export function getSellGlpToAmount(
 
   // in the Vault contract, the token.usdgAmount is reduced before the fee basis points
   // is calculated
+  const diff = fromToken.usdgAmount !== undefined ? fromToken.usdgAmount - usdgAmount : undefined;
+  const noNegativeDiff = diff !== undefined ? (diff > 0n ? diff : 0n) : undefined;
   const feeBasisPoints = getFeeBasisPoints(
     fromToken,
-    fromToken?.usdgAmount !== undefined ? fromToken.usdgAmount - usdgAmount : undefined,
+    noNegativeDiff,
     usdgAmount,
     MINT_BURN_FEE_BASIS_POINTS,
     TAX_BASIS_POINTS,
