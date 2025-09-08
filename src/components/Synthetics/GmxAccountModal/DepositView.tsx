@@ -800,7 +800,8 @@ export const DepositView = () => {
               <div className="font-[RelativeNumber] text-typography-secondary">{placeholder}</div>
             </div>
             <button
-              className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-full bg-slate-600 px-8 py-2 font-medium hover:bg-[#484e92] focus-visible:bg-[#484e92] active:bg-[#505699]"
+              className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-full bg-slate-600 px-8 py-2 font-medium
+                         hover:bg-slate-500 focus-visible:bg-slate-500 active:bg-slate-500/70"
               type="button"
               onClick={handleMaxButtonClick}
             >

@@ -893,8 +893,8 @@ export const WithdrawalView = () => {
               </div>
             )}
             <button
-              className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-full bg-slate-600 px-8 py-2 font-medium disabled:opacity-50 hover:not-disabled:bg-[#484e92] focus-visible:not-disabled:bg-[#484e92]
-                         active:not-disabled:bg-[#505699]"
+              className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-full bg-slate-600 px-8 py-2 font-medium disabled:opacity-50
+                         hover:not-disabled:bg-slate-500 focus-visible:not-disabled:bg-slate-500 active:not-disabled:bg-slate-500/70"
               disabled={isMaxButtonDisabled}
               onClick={handleMaxButtonClick}
             >
