@@ -106,10 +106,13 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
         {!isMobile && (
           <div className="App-header large">
             <div className="App-header-container-left">
-              <Link className="App-header-link-main" to="/">
-                <img src={logoImg} className="big" alt="GMX Logo" />
-                <img src={logoSmallImg} className="small" alt="GMX Logo" />
-              </Link>
+              <div className="flex items-center">
+                <Link className="App-header-link-main" to="/">
+                  <img src={logoImg} className="big" alt="GMX Logo" />
+                  <img src={logoSmallImg} className="small" alt="GMX Logo" />
+                </Link>
+                <div className="-ml-18 rounded-4 bg-cold-blue-700 p-6 text-[12px] text-white">V1</div>
+              </div>
               {isHomeSite() ? (
                 <HomeHeaderLinks showRedirectModal={showRedirectModal} />
               ) : (
@@ -143,6 +146,7 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
                   <img src={logoImg} className="big" alt="GMX Logo" />
                   <img src={logoSmallImg} className="small" alt="GMX Logo" />
                 </div>
+                <div className="-ml-18 rounded-4 bg-cold-blue-700 p-6 text-[12px] text-white">V1</div>
               </div>
               <div className="App-header-container-right">
                 {!shouldHide1CTBanner && <OneClickPromoBanner openSettings={openSettings} />}
