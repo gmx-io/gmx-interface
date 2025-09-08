@@ -580,6 +580,10 @@ msgstr ""
 msgid "Don't show this message again for 30 days."
 msgstr ""
 
+#: landing/src/Home/HeroSection/AnimatedTitle.tsx
+msgid "80+ crypto tokens"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "hide"
 msgstr ""
@@ -6713,10 +6717,6 @@ msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 msgid "Current Price"
-msgstr ""
-
-#: landing/src/Home/HeroSection/AnimatedTitle.tsx
-msgid "70+ crypto tokens"
 msgstr ""
 
 #: src/pages/NftWallet/NftWallet.jsx

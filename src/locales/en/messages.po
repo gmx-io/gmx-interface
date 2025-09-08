@@ -580,6 +580,10 @@ msgstr "You will need to be on this page to accept the transfer, <0>click here</
 msgid "Don't show this message again for 30 days."
 msgstr "Don't show this message again for 30 days."
 
+#: landing/src/Home/HeroSection/AnimatedTitle.tsx
+msgid "80+ crypto tokens"
+msgstr "80+ crypto tokens"
+
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "hide"
 msgstr "hide"
@@ -6720,10 +6724,6 @@ msgstr "Kudai AI Agent"
 #: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 msgid "Current Price"
 msgstr "Current Price"
-
-#: landing/src/Home/HeroSection/AnimatedTitle.tsx
-msgid "70+ crypto tokens"
-msgstr "70+ crypto tokens"
 
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Enter NFT ID"
