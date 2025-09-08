@@ -830,47 +830,49 @@ export const DepositView = () => {
       )}
       <div className="h-32 shrink-0 grow" />
 
-      <div className="mb-16 flex flex-col gap-10">
-        <SyntheticsInfoRow
-          label={<Trans>Network Fee</Trans>}
-          value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
-        />
-        <SyntheticsInfoRow
-          label={<Trans>Deposit Fee</Trans>}
-          value={protocolFeeUsd !== undefined ? formatUsd(protocolFeeUsd) : "..."}
-        />
-        <SyntheticsInfoRow
-          label={<Trans>GMX Balance</Trans>}
-          value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
-        />
-        <SyntheticsInfoRow
-          label={<Trans>Asset Balance</Trans>}
-          value={
-            <ValueTransition
-              from={
-                selectedTokenData !== undefined && selectedTokenData.gmxAccountBalance !== undefined
-                  ? formatBalanceAmount(
-                      selectedTokenData.gmxAccountBalance,
-                      selectedTokenData.decimals,
-                      selectedTokenData.symbol,
-                      { isStable: selectedTokenData.isStable }
-                    )
-                  : undefined
-              }
-              to={
-                nextTokenGmxAccountBalance !== undefined && selectedTokenData !== undefined
-                  ? formatBalanceAmount(
-                      nextTokenGmxAccountBalance,
-                      selectedTokenData.decimals,
-                      selectedTokenData.symbol,
-                      { isStable: selectedTokenData.isStable }
-                    )
-                  : undefined
-              }
-            />
-          }
-        />
-      </div>
+      {depositViewTokenAddress && (
+        <div className="mb-16 flex flex-col gap-10">
+          <SyntheticsInfoRow
+            label={<Trans>Network Fee</Trans>}
+            value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
+          />
+          <SyntheticsInfoRow
+            label={<Trans>Deposit Fee</Trans>}
+            value={protocolFeeUsd !== undefined ? formatUsd(protocolFeeUsd) : "..."}
+          />
+          <SyntheticsInfoRow
+            label={<Trans>GMX Balance</Trans>}
+            value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
+          />
+          <SyntheticsInfoRow
+            label={<Trans>Asset Balance</Trans>}
+            value={
+              <ValueTransition
+                from={
+                  selectedTokenData !== undefined && selectedTokenData.gmxAccountBalance !== undefined
+                    ? formatBalanceAmount(
+                        selectedTokenData.gmxAccountBalance,
+                        selectedTokenData.decimals,
+                        selectedTokenData.symbol,
+                        { isStable: selectedTokenData.isStable }
+                      )
+                    : undefined
+                }
+                to={
+                  nextTokenGmxAccountBalance !== undefined && selectedTokenData !== undefined
+                    ? formatBalanceAmount(
+                        nextTokenGmxAccountBalance,
+                        selectedTokenData.decimals,
+                        selectedTokenData.symbol,
+                        { isStable: selectedTokenData.isStable }
+                      )
+                    : undefined
+                }
+              />
+            }
+          />
+        </div>
+      )}
 
       <Button variant="primary-action" className="w-full" type="submit" disabled={buttonState.disabled}>
         {buttonState.text}
