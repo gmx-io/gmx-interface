@@ -450,7 +450,7 @@ const FundingHistorySection = () => {
             role="button"
             tabIndex={0}
             key={transfer.id}
-            className="flex w-full cursor-pointer items-center justify-between px-adaptive py-8 text-left -outline-offset-4 gmx-hover:bg-slate-700"
+            className="flex w-full cursor-pointer items-center justify-between px-adaptive py-8 text-left -outline-offset-4 gmx-hover:bg-fill-surfaceElevated50"
             onClick={() => handleTransferClick(transfer)}
           >
             <div className="flex items-center gap-16">
