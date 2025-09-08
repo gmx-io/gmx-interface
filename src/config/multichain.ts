@@ -67,11 +67,13 @@ type MultichainTokenMapping = Record<
   >
 >;
 
-type MultichainWithdrawSupportedTokens = Record<
-  // settlement chain id
-  SettlementChainId,
-  // settlement chain wrapped token address
-  string[]
+type MultichainWithdrawSupportedTokens = Partial<
+  Record<
+    // settlement chain id
+    SettlementChainId,
+    // settlement chain wrapped token address
+    string[]
+  >
 >;
 
 type MultichainSourceToSettlementsMap = Record<SourceChainId, SettlementChainId[]>;
@@ -289,7 +291,7 @@ for (const tokenSymbol in TOKEN_GROUPS) {
     if (!empty) {
       MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId] =
         MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId] || [];
-      MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId].push(
+      MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId]!.push(
         convertTokenAddress(settlementChainId, tokenId.address, "wrapped")
       );
     }
