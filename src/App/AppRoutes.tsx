@@ -1,37 +1,34 @@
 import { ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { ToastContainer, cssTransition } from "react-toastify";
+import { cssTransition, ToastContainer } from "react-toastify";
 import { Hash } from "viem";
-import { useDisconnect } from "wagmi";
 
-import { SUPPORTED_CHAIN_IDS, UiContractsChain } from "config/chains";
-import {
-  CURRENT_PROVIDER_LOCALSTORAGE_KEY,
-  REFERRAL_CODE_KEY,
-  SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
-} from "config/localStorage";
+import { ContractsChainId, CONTRACTS_CHAIN_IDS } from "config/chains";
+import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useTheme } from "context/ThemeContext/ThemeContext";
+import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
-import { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
+import { useHashQueryParams } from "lib/useHashQueryParams";
 import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigureUserAnalyticsProfile";
-import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
 import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalletConnectedEvent";
 import useRouteQuery from "lib/useRouteQuery";
 import useSearchParams from "lib/useSearchParams";
 import { switchNetwork } from "lib/wallets";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
+import { CloseToastButton } from "components/CloseToastButton/CloseToastButton";
 import EventToastContainer from "components/EventToast/EventToastContainer";
 import useEventToast from "components/EventToast/useEventToast";
-import { Header } from "components/Header/Header";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
+import { GmxAccountModal } from "components/Synthetics/GmxAccountModal/GmxAccountModal";
 
 import { MainRoutes } from "./MainRoutes";
 
@@ -44,7 +41,7 @@ const Zoom = cssTransition({
 });
 
 export function AppRoutes() {
-  const { disconnect } = useDisconnect();
+  const { theme } = useTheme();
   const location = useLocation();
   const history = useHistory();
 
@@ -54,6 +51,8 @@ export function AppRoutes() {
   useOpenAppMetric();
   useAccountInitedMetric();
   useWalletConnectedUserAnalyticsEvent();
+  useMultichainFundingToast();
+  useHashQueryParams();
 
   const query = useRouteQuery();
 
@@ -79,13 +78,6 @@ export function AppRoutes() {
     }
   }, [query, history, location]);
 
-  const disconnectAccountAndCloseSettings = () => {
-    disconnect();
-    localStorage.removeItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY);
-    localStorage.removeItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY);
-    setIsSettingsVisible(false);
-  };
-
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
 
@@ -106,22 +98,11 @@ export function AppRoutes() {
     }
   }
 
-  const showRedirectModal = useCallback((to: string) => {
-    userAnalytics.pushEvent<LandingPageAgreementConfirmationEvent>({
-      event: "LandingPageAction",
-      data: {
-        action: "AgreementConfirmationDialogShown",
-      },
-    });
-    setRedirectModalVisible(true);
-    setSelectedToPage(to);
-  }, []);
-
   const urlParams = useSearchParams<{ chainId: string }>();
 
   useEffect(() => {
     const chainId = urlParams.chainId;
-    if (chainId && SUPPORTED_CHAIN_IDS.includes(Number(chainId) as UiContractsChain)) {
+    if (chainId && CONTRACTS_CHAIN_IDS.includes(Number(chainId) as ContractsChainId)) {
       switchNetwork(Number(chainId), true).then(() => {
         const searchParams = new URLSearchParams(history.location.search);
         searchParams.delete("chainId");
@@ -137,16 +118,8 @@ export function AppRoutes() {
 
   return (
     <>
-      <div className="App">
-        <div className="App-content">
-          <Header
-            disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-            openSettings={openSettings}
-            showRedirectModal={showRedirectModal}
-          />
-
-          <MainRoutes openSettings={openSettings} />
-        </div>
+      <div className="App w-full">
+        <MainRoutes openSettings={openSettings} />
       </div>
       <ToastContainer
         limit={1}
@@ -158,8 +131,9 @@ export function AppRoutes() {
         closeOnClick={false}
         draggable={false}
         pauseOnHover
-        theme="dark"
+        theme={theme}
         icon={false}
+        closeButton={CloseToastButton}
       />
       <EventToastContainer />
       <RedirectPopupModal
@@ -169,6 +143,7 @@ export function AppRoutes() {
         setShouldHideRedirectModal={setShouldHideRedirectModal}
         shouldHideRedirectModal={shouldHideRedirectModal}
       />
+      <GmxAccountModal />
       <SettingsModal isSettingsVisible={isSettingsVisible} setIsSettingsVisible={setIsSettingsVisible} />
       <NotifyModal />
     </>

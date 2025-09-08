@@ -5,12 +5,13 @@ import { FiPlus, FiTwitter } from "react-icons/fi";
 import { IoWarningOutline } from "react-icons/io5";
 import { useCopyToClipboard } from "react-use";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ContractsChainId, getExplorerUrl, SourceChainId } from "config/chains";
 import { isDevelopment } from "config/env";
 import { RebateDistributionType, ReferralCodeStats, TotalReferralsStats, useTiers } from "domain/referrals";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
+import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { formatDate } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { shortenAddress } from "lib/legacy";
@@ -30,8 +31,6 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
 import { AffiliateCodeForm } from "./AddAffiliateCode";
-import Card from "../Common/Card";
-import Modal from "../Modal/Modal";
 import { ClaimAffiliatesModal } from "./ClaimAffiliatesModal/ClaimAffiliatesModal";
 import EmptyMessage from "./EmptyMessage";
 import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
@@ -41,22 +40,27 @@ import {
   getSharePercentage,
   getTierIdDisplay,
   getTwitterShareUrl,
-  getUSDValue,
+  getUsdValue,
   isRecentReferralCodeNotExpired,
 } from "./referralsHelper";
 import usePagination, { DEFAULT_PAGE_SIZE } from "./usePagination";
+import Card from "../Common/Card";
+import Modal from "../Modal/Modal";
+
 import "./AffiliatesStats.scss";
 
 type Props = {
-  chainId: number;
+  chainId: ContractsChainId;
+  srcChainId: SourceChainId | undefined;
   referralsData?: TotalReferralsStats;
-  handleCreateReferralCode: (code: string) => void;
+  handleCreateReferralCode: (code: string) => Promise<unknown>;
   setRecentlyAddedCodes: (codes: ReferralCodeStats[]) => void;
   recentlyAddedCodes?: ReferralCodeStats[];
 };
 
 function AffiliatesStats({
   chainId,
+  srcChainId,
   referralsData,
   recentlyAddedCodes,
   handleCreateReferralCode,
@@ -66,7 +70,8 @@ function AffiliatesStats({
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
   const addNewModalRef = useRef<HTMLDivElement>(null);
 
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { affiliateRewardsData } = useAffiliateRewards(chainId);
 
   const esGmxAddress = getTokenBySymbol(chainId, "esGMX").address;
@@ -191,94 +196,110 @@ function AffiliatesStats({
           }
         />
         <ReferralInfoCard
-          value={`$${getUSDValue(currentReferralsData?.affiliateTotalStats?.volume)}`}
+          value={`$\u200a${getUsdValue(currentReferralsData?.affiliateTotalStats?.volume)}`}
           label={t`Trading Volume`}
           labelTooltipText={t`Volume traded by your referred traders.`}
           tooltipContent={
             <>
               <StatsTooltipRow
                 label={t`V1 Arbitrum`}
-                value={getUSDValue(arbitrumData?.affiliateTotalStats.v1Data.volume)}
+                value={getUsdValue(arbitrumData?.affiliateTotalStats.v1Data.volume)}
+                valueClassName="numbers"
               />
               <StatsTooltipRow
                 label={t`V1 Avalanche`}
-                value={getUSDValue(avalancheData?.affiliateTotalStats.v1Data.volume)}
+                value={getUsdValue(avalancheData?.affiliateTotalStats.v1Data.volume)}
+                valueClassName="numbers"
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V1 Avalanche Fuji`}
-                  value={getUSDValue(fujiData?.affiliateTotalStats.v1Data.volume)}
+                  value={getUsdValue(fujiData?.affiliateTotalStats.v1Data.volume)}
+                  valueClassName="numbers"
                 />
               )}
               <StatsTooltipRow
                 label={t`V2 Arbitrum`}
-                value={getUSDValue(arbitrumData?.affiliateTotalStats.v2Data.volume)}
+                value={getUsdValue(arbitrumData?.affiliateTotalStats.v2Data.volume)}
+                valueClassName="numbers"
               />
               <StatsTooltipRow
                 label={t`V2 Avalanche`}
-                value={getUSDValue(avalancheData?.affiliateTotalStats.v2Data.volume)}
+                value={getUsdValue(avalancheData?.affiliateTotalStats.v2Data.volume)}
+                valueClassName="numbers"
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V2 Avalanche Fuji`}
-                  value={getUSDValue(fujiData?.affiliateTotalStats.v2Data.volume)}
+                  value={getUsdValue(fujiData?.affiliateTotalStats.v2Data.volume)}
+                  valueClassName="numbers"
                 />
               )}
               <div className="Tooltip-divider" />
-              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.affiliateVolume)} />
+              <StatsTooltipRow label={t`Total`} value={getUsdValue(total?.affiliateVolume)} valueClassName="numbers" />
             </>
           }
         />
         <ReferralInfoCard
-          value={`$${getUSDValue(currentReferralsData?.affiliateTotalStats?.affiliateRebateUsd)}`}
+          value={`$\u200a${getUsdValue(currentReferralsData?.affiliateTotalStats?.affiliateRebateUsd)}`}
           label={t`Rebates`}
-          labelTooltipText={t`Rebates earned by this account as an affiliate.`}
+          labelTooltipText={t`Rebates earned as an affiliate.`}
           tooltipContent={
             <>
               <StatsTooltipRow
                 label={t`V1 Arbitrum`}
-                value={getUSDValue(arbitrumData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
+                value={getUsdValue(arbitrumData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
+                valueClassName="numbers"
               />
               <StatsTooltipRow
                 label={t`V1 Avalanche`}
-                value={getUSDValue(avalancheData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
+                value={getUsdValue(avalancheData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
+                valueClassName="numbers"
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V1 Avalanche Fuji`}
-                  value={getUSDValue(fujiData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
+                  value={getUsdValue(fujiData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
+                  valueClassName="numbers"
                 />
               )}
               <StatsTooltipRow
                 label={t`V2 Arbitrum`}
-                value={getUSDValue(arbitrumData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
+                value={getUsdValue(arbitrumData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
+                valueClassName="numbers"
               />
               <StatsTooltipRow
                 label={t`V2 Avalanche`}
-                value={getUSDValue(avalancheData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
+                value={getUsdValue(avalancheData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
+                valueClassName="numbers"
               />
               {isDevelopment() && (
                 <StatsTooltipRow
                   label={t`V2 Avalanche Fuji`}
-                  value={getUSDValue(fujiData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
+                  value={getUsdValue(fujiData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
+                  valueClassName="numbers"
                 />
               )}
               <div className="Tooltip-divider" />
-              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.affiliateRebateUsd)} />
+              <StatsTooltipRow
+                label={t`Total`}
+                value={getUsdValue(total?.affiliateRebateUsd)}
+                valueClassName="numbers"
+              />
             </>
           }
         />
         <ReferralInfoCard
           label={t`Claimable Rebates`}
-          labelTooltipText={t`Claim V2 Rebates from your referred Traders.`}
+          labelTooltipText={t`Claimable rebates from your referred traders.`}
           className="AffiliateStats-claimable-rewards-card"
         >
-          <div className="AffiliateStats-claimable-rewards-container">
-            ${getUSDValue(totalClaimableRewardsUsd, 4)}
+          <div className="AffiliateStats-claimable-rewards-container flex flex-col gap-6">
+            <span className="numbers">${getUsdValue(totalClaimableRewardsUsd, 4)}</span>
             {(totalClaimableRewardsUsd > 0 && (
-              <div onClick={() => setIsClaiming(true)} className="AffiliateStats-claim-button">
+              <Button variant="secondary" onClick={() => setIsClaiming(true)}>
                 Claim
-              </div>
+              </Button>
             )) ||
               null}
           </div>
@@ -325,7 +346,7 @@ function AffiliatesStats({
           <TableScrollFadeContainer>
             <table className="w-full">
               <thead>
-                <TableTheadTr bordered>
+                <TableTheadTr>
                   <TableTh scope="col">
                     <Trans>Referral Code</Trans>
                   </TableTh>
@@ -343,7 +364,7 @@ function AffiliatesStats({
               <tbody>
                 {currentAffiliatesData.map((stat, index) => {
                   return (
-                    <TableTr key={index} hoverable={false} bordered={false}>
+                    <TableTr key={index}>
                       <TableTd data-label="Referral Code">
                         <div className="table-referral-code">
                           <span className="referral-text ">{stat.referralCode}</span>
@@ -372,32 +393,46 @@ function AffiliatesStats({
                       </TableTd>
                       <TableTd data-label="Total Volume">
                         <Tooltip
-                          handle={`$${getUSDValue(stat.volume)}`}
+                          handle={`$\u200a${getUsdValue(stat.volume)}`}
+                          handleClassName="numbers"
                           position="bottom-start"
                           className="whitespace-nowrap"
                           renderContent={() => (
                             <>
-                              <StatsTooltipRow label={t`Volume on V1`} value={getUSDValue(stat?.v1Data.volume)} />
-                              <StatsTooltipRow label={t`Volume on V2`} value={getUSDValue(stat?.v2Data.volume)} />
+                              <StatsTooltipRow
+                                label={t`Volume on V1`}
+                                value={getUsdValue(stat?.v1Data.volume)}
+                                valueClassName="numbers"
+                              />
+                              <StatsTooltipRow
+                                label={t`Volume on V2`}
+                                value={getUsdValue(stat?.v2Data.volume)}
+                                valueClassName="numbers"
+                              />
                             </>
                           )}
                         />
                       </TableTd>
-                      <TableTd data-label="Traders Referred">{stat.registeredReferralsCount}</TableTd>
+                      <TableTd data-label="Traders Referred" className="numbers">
+                        {stat.registeredReferralsCount}
+                      </TableTd>
                       <TableTd data-label="Total Rebates">
                         <Tooltip
-                          handle={`$${getUSDValue(stat.affiliateRebateUsd)}`}
+                          handle={`$\u200a${getUsdValue(stat.affiliateRebateUsd)}`}
+                          handleClassName="numbers"
                           position="bottom-start"
                           className="whitespace-nowrap"
                           renderContent={() => (
                             <>
                               <StatsTooltipRow
                                 label={t`Rebates on V1`}
-                                value={getUSDValue(stat.v1Data.affiliateRebateUsd)}
+                                value={getUsdValue(stat.v1Data.affiliateRebateUsd)}
+                                valueClassName="numbers"
                               />
                               <StatsTooltipRow
                                 label={t`Rebates on V2`}
-                                value={getUSDValue(stat.v2Data.affiliateRebateUsd)}
+                                value={getUsdValue(stat.v2Data.affiliateRebateUsd)}
+                                valueClassName="numbers"
                               />
                             </>
                           )}
@@ -428,14 +463,14 @@ function AffiliatesStats({
                 <Trans>Rebates Distribution History</Trans>
               </span>
             }
-            tooltipText={t`V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually.`}
+            tooltipText={t`Distribution history for claimed rebates and airdrops.`}
             bodyPadding={false}
             divider={false}
           >
             <TableScrollFadeContainer>
               <table className="w-full min-w-max">
                 <thead>
-                  <TableTheadTr bordered>
+                  <TableTheadTr>
                     <TableTh scope="col">
                       <Trans>Date</Trans>
                     </TableTh>
@@ -491,21 +526,21 @@ function AffiliatesStats({
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (
-                      <TableTr key={index} hoverable={false} bordered={false}>
+                      <TableTr key={index}>
                         <TableTd data-label="Date">{formatDate(rebate.timestamp)}</TableTd>
                         <TableTd data-label="Type">{rebateType}</TableTd>
                         <TableTd data-label="Amount">
                           <Tooltip
                             className="whitespace-nowrap"
                             handle={
-                              <div className="Rebate-amount-value">
+                              <div className="Rebate-amount-value numbers">
                                 {tokensWithoutPrices.length > 0 && (
                                   <>
                                     <IoWarningOutline color="#ffba0e" size={16} />
                                     &nbsp;
                                   </>
                                 )}
-                                ${getUSDValue(totalUsd)}
+                                ${getUsdValue(totalUsd)}
                               </div>
                             }
                             renderContent={() => (
@@ -537,6 +572,7 @@ function AffiliatesStats({
                                           undefined,
                                           { isStable: token.isStable }
                                         )}
+                                        valueClassName="numbers"
                                       />
                                     </>
                                   );
@@ -569,7 +605,7 @@ function AffiliatesStats({
         </div>
       ) : (
         <EmptyMessage
-          tooltipText={t`Rebates are airdropped weekly.`}
+          tooltipText={t`Distribution history for claimed rebates and airdrops.`}
           message={t`No rebates distribution history yet.`}
         />
       )}

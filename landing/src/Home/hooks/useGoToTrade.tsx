@@ -1,6 +1,5 @@
 import { useCallback } from "react";
 
-import type { UiSupportedChain } from "config/chains";
 import type { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
 import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
 import { ARBITRUM, AVALANCHE, BOTANIX } from "sdk/configs/chainIds";
@@ -50,6 +49,6 @@ export function useGoToTrade({ buttonPosition, chainId }: Props) {
   }, [redirectWithWarning, shouldShowRedirectModal, buttonPosition, chainId]);
 }
 
-function makeLink(chainId: UiSupportedChain) {
-  return `${import.meta.env.VITE_APP_BASE_URL}/trade?${userAnalytics.getSessionIdUrlParams()}&chainId=${chainId}`;
+function makeLink(chainId: number) {
+  return `${import.meta.env.VITE_APP_BASE_URL}/trade?${userAnalytics.getSessionForwardParams()}&chainId=${chainId}`;
 }

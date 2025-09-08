@@ -95,7 +95,7 @@ export function useNpsSurvey() {
     const toastTimestamp = Date.now();
     setNpsSurveyShownTime(toastTimestamp);
 
-    helperToast.error(
+    helperToast.info(
       <RatingToast
         onRatingClick={(rating) => {
           setIsModalVisible(true);

@@ -119,7 +119,7 @@ function fontComponentsPlugin({ addComponents }) {
       "@apply text-18 font-medium": {},
     },
     ".text-terms-body": {
-      "@apply text-16 font-normal leading-[24px] text-slate-900": {},
+      "@apply text-16 font-normal leading-[24px] text-light-150": {},
     },
     ".text-terms-subtitle": {
       "@apply text-18 font-medium": {},

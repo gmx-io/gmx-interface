@@ -2,8 +2,8 @@ import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 import { MarketsInfoData } from "types/markets";
 import { InternalSwapStrategy, NoSwapStrategy } from "types/swapStrategy";
 import type { TokenData, TokensRatio } from "types/tokens";
-import { ExternalSwapQuoteParams, SwapRoute } from "types/trade";
 import type { FindSwapPath, SwapAmounts, SwapOptimizationOrderArray } from "types/trade";
+import { ExternalSwapQuoteParams, SwapRoute } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { getTotalSwapVolumeFromSwapStats } from "utils/fees";
 import { applyFactor } from "utils/numbers";
@@ -154,18 +154,8 @@ export function getSwapAmountsByToValue(p: {
     return getSwapAmountsByToValueDefault(p);
   }
 
-  const reverseSwapStrategy = buildReverseSwapStrategy({
-    amountIn: amountOut,
-    tokenIn,
-    tokenOut,
-    marketsInfoData,
-    chainId,
-    externalSwapQuoteParams,
-    swapOptimizationOrder,
-  });
-
-  const swapStrategy = buildSwapStrategy({
-    amountIn: reverseSwapStrategy.amountOut,
+  const swapStrategy = buildReverseSwapStrategy({
+    amountOut,
     tokenIn,
     tokenOut,
     marketsInfoData,
@@ -220,10 +210,7 @@ export function getSwapAmountsByToValue(p: {
     }
     amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, swapStrategy.priceIn)!;
   } else {
-    const adjustedUsdIn =
-      swapStrategy.usdOut > 0 ? bigMath.mulDiv(usdIn, swapStrategy.usdOut, swapStrategy.usdOut) : 0n;
-
-    usdIn = adjustedUsdIn + uiFeeUsd;
+    usdIn = swapStrategy.usdIn + uiFeeUsd;
     amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, swapStrategy.priceIn)!;
   }
 
@@ -233,8 +220,8 @@ export function getSwapAmountsByToValue(p: {
   }
 
   return {
-    amountIn,
-    amountOut,
+    amountIn: swapStrategy.amountIn,
+    amountOut: swapStrategy.amountOut,
     usdIn,
     minOutputAmount,
     usdOut: swapStrategy.usdOut,

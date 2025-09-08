@@ -3,11 +3,13 @@ import type { Address } from "viem";
 import {
   selectPositionEditorCollateralInputValue,
   selectPositionEditorEditingPositionKey,
+  selectPositionEditorIsCollateralTokenFromGmxAccount,
   selectPositionEditorMinCollateralFactor,
   selectPositionEditorPosition,
   selectPositionEditorSelectedCollateralAddress,
   selectPositionEditorSetCollateralInputValue,
   selectPositionEditorSetEditingPositionKey,
+  selectPositionEditorSetIsCollateralTokenFromGmxAccount,
   selectPositionEditorSetSelectedCollateralAddress,
 } from "../selectors/positionEditorSelectors";
 import { useSelector } from "../utils";
@@ -28,6 +30,13 @@ export const usePositionEditorSelectedCollateralAddress = (): [Address | undefin
   const setSelectedCollateralAddress = useSelector(selectPositionEditorSetSelectedCollateralAddress);
 
   return [selectedCollateralAddress, setSelectedCollateralAddress];
+};
+
+export const usePositionEditorIsCollateralTokenFromGmxAccount = (): [boolean, (isGmxAccount: boolean) => void] => {
+  const isCollateralTokenFromGmxAccount = useSelector(selectPositionEditorIsCollateralTokenFromGmxAccount);
+  const setIsCollateralTokenFromGmxAccount = useSelector(selectPositionEditorSetIsCollateralTokenFromGmxAccount);
+
+  return [isCollateralTokenFromGmxAccount, setIsCollateralTokenFromGmxAccount];
 };
 
 export const usePositionEditorCollateralInputValue = (): [string, (value: string) => void] => {

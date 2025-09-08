@@ -1,4 +1,5 @@
 export const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
+export const SELECTED_SETTLEMENT_CHAIN_ID_KEY = "SELECTED_SETTLEMENT_CHAIN_ID";
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
 export const WALLET_CONNECT_V2_LOCALSTORAGE_KEY = "walletconnect_v2";
 export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
@@ -25,26 +26,24 @@ export const LEVERAGE_ENABLED_KEY = "leverage-enabled";
 export const KEEP_LEVERAGE_FOR_DECREASE_KEY = "Exchange-keep-leverage";
 export const TRADE_LINK_KEY = "trade-link";
 export const SHOW_DEBUG_VALUES_KEY = "show-debug-values";
-export const ORACLE_KEEPER_INSTANCES_CONFIG_KEY = "oracle-keeper-instances-config";
 export const SORTED_MARKETS_KEY = "sorted-markets-key";
 export const TWAP_NUMBER_OF_PARTS_KEY = "twap-number-of-parts";
 export const TWAP_INFO_CARD_CLOSED_KEY = "twap-info-card-closed";
+// key updated with chart overrides, to update tv chart with new release
+export const WAS_TV_CHART_OVERRIDDEN_KEY = "was-tv-chart-overridden-1";
+export const UTM_PARAMS_KEY = "utm_params";
 
 export const SYNTHETICS_TRADE_OPTIONS = "synthetics-trade-options";
 export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY = "synthetics-acceptable-price-impact-buffer";
 export const SYNTHETICS_DEPOSIT_INDEX_TOKEN_KEY = "synthetics-deposit-index-token";
 export const SYNTHETICS_DEPOSIT_MARKET_KEY = "synthetics-market-deposit-market";
 
-export const SYNTHETICS_GLV_MARKET_DEPOSIT_TOKEN_KEY = "synthetics-glv-market-deposit-token";
 export const SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY = "synthetics-market-deposit-token";
-export const SYNTHETICS_COLLATERAL_DEPOSIT_TOKEN_KEY = "synthetics-collateral-deposit-token";
 export const SYNTHETICS_LIST_SECTION_KEY = "synthetics-list-section";
 export const ACCOUNT_DASHBOARD_TAB_KEY = "account-dashboard-tab";
-/**
- * @deprecated
- */
-export const SYNTHETICS_COLLATERAL_EDIT_TOKEN_KEY = "synthetics-collateral-edit-token";
 export const SYNTHETICS_COLLATERAL_EDIT_TOKEN_MAP_KEY = "synthetics-collateral-edit-token-map";
+export const SYNTHETICS_COLLATERAL_EDIT_TOKEN_IS_FROM_GMX_ACCOUNT_KEY =
+  "synthetics-collateral-edit-token-is-from-gmx-account";
 export const PRODUCTION_PREVIEW_KEY = "production-preview";
 export const REQUIRED_UI_VERSION_KEY = "required-ui-version";
 export const DEBUG_SWAP_SETTINGS_KEY = "debug-swap-settings";
@@ -74,6 +73,9 @@ export const AB_FLAG_STORAGE_KEY = "ab-flags";
 export const RPC_PROVIDER_KEY = "rpc-provider";
 export const IS_LARGE_ACCOUNT_KEY = "is-large-account";
 
+export const IS_SOURCE_BASE_ALLOWED_KEY = "is-source-base-allowed";
+export const IS_SOURCE_BASE_ALLOWED_NOTIFICATION_SHOWN_KEY = "is-source-base-allowed-notification-shown";
+
 /**
  * @deprecated
  */
@@ -86,6 +88,9 @@ export const EXPRESS_TRADING_BANNER_DISMISSED_KEY = "express-trading-banner-dism
 
 export const SUBACCOUNT_APPROVAL_KEY = "subaccount-approval";
 export const TOKEN_PERMITS_KEY = "token-permits";
+export const CLAIM_TERMS_ACCEPTED_KEY = "claim-terms-accepted";
+
+export const HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY = "high-leverage-warning-dismissed-timestamp";
 
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
@@ -123,15 +128,12 @@ export function getSyntheticsTradeOptionsKey(chainId: number) {
   return [chainId, SYNTHETICS_TRADE_OPTIONS];
 }
 
-/**
- * @deprecated
- */
-export function getSyntheticsCollateralEditAddressKey(chainId: number, positionCollateralAddress?: string) {
-  return [chainId, SYNTHETICS_COLLATERAL_EDIT_TOKEN_KEY, positionCollateralAddress];
-}
-
 export function getSyntheticsCollateralEditAddressMapKey(chainId: number) {
   return [chainId, SYNTHETICS_COLLATERAL_EDIT_TOKEN_MAP_KEY];
+}
+
+export function getSyntheticsCollateralEditTokenIsFromGmxAccountMapKey(chainId: number) {
+  return [chainId, SYNTHETICS_COLLATERAL_EDIT_TOKEN_IS_FROM_GMX_ACCOUNT_KEY];
 }
 
 export function getLeverageKey(chainId: number) {
@@ -207,4 +209,21 @@ export function getOneClickTradingPromoHiddenKey(chainId: number) {
 
 export function getExpressTradingPromoHiddenKey(chainId: number) {
   return `${chainId}-${EXPRESS_TRADING_PROMO_HIDDEN_KEY}`;
+}
+
+export function getFromTokenIsGmxAccountKey(chainId: number) {
+  return [chainId, "from-token-is-gmx-account"];
+}
+
+export function getClaimTermsAcceptedKey(
+  chainId: number,
+  account: string | undefined,
+  distributionId: bigint,
+  claimTerms: string
+) {
+  return `${chainId}:${account}:${distributionId}:${claimTerms}-${CLAIM_TERMS_ACCEPTED_KEY}`;
+}
+
+export function getHighLeverageWarningDismissedTimestampKey(account: string) {
+  return `${account}-${HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY}`;
 }

@@ -154,7 +154,8 @@ function useAcceptablePrice(
     const initialTriggerPrice = positionOrder.triggerPrice;
     const initialPriceDelta =
       initialAcceptablePrice === undefined ? 0n : bigMath.abs(initialAcceptablePrice - (initialTriggerPrice ?? 0n));
-    initialAcceptablePriceImpactBps = getBasisPoints(initialPriceDelta, initialTriggerPrice);
+    initialAcceptablePriceImpactBps =
+      initialTriggerPrice === 0n ? 0n : getBasisPoints(initialPriceDelta, initialTriggerPrice);
   }
 
   const [acceptablePriceImpactBps, setAcceptablePriceImpactBps] = useState(initialAcceptablePriceImpactBps);

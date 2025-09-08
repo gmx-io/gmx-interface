@@ -8,6 +8,7 @@ import type {
   FunctionFragment,
   Result,
   Interface,
+  EventFragment,
   AddressLike,
   ContractRunner,
   ContractMethod,
@@ -17,12 +18,13 @@ import type {
   TypedContractEvent,
   TypedDeferredTopicFilter,
   TypedEventLog,
+  TypedLogDescription,
   TypedListener,
   TypedContractMethod,
 } from "./common";
 
-export declare namespace DepositUtils {
-  export type CreateDepositParamsStruct = {
+export declare namespace IDepositUtils {
+  export type CreateDepositParamsAddressesStruct = {
     receiver: AddressLike;
     callbackContract: AddressLike;
     uiFeeReceiver: AddressLike;
@@ -31,13 +33,9 @@ export declare namespace DepositUtils {
     initialShortToken: AddressLike;
     longTokenSwapPath: AddressLike[];
     shortTokenSwapPath: AddressLike[];
-    minMarketTokens: BigNumberish;
-    shouldUnwrapNativeToken: boolean;
-    executionFee: BigNumberish;
-    callbackGasLimit: BigNumberish;
   };
 
-  export type CreateDepositParamsStructOutput = [
+  export type CreateDepositParamsAddressesStructOutput = [
     receiver: string,
     callbackContract: string,
     uiFeeReceiver: string,
@@ -46,10 +44,6 @@ export declare namespace DepositUtils {
     initialShortToken: string,
     longTokenSwapPath: string[],
     shortTokenSwapPath: string[],
-    minMarketTokens: bigint,
-    shouldUnwrapNativeToken: boolean,
-    executionFee: bigint,
-    callbackGasLimit: bigint,
   ] & {
     receiver: string;
     callbackContract: string;
@@ -59,10 +53,31 @@ export declare namespace DepositUtils {
     initialShortToken: string;
     longTokenSwapPath: string[];
     shortTokenSwapPath: string[];
+  };
+
+  export type CreateDepositParamsStruct = {
+    addresses: IDepositUtils.CreateDepositParamsAddressesStruct;
+    minMarketTokens: BigNumberish;
+    shouldUnwrapNativeToken: boolean;
+    executionFee: BigNumberish;
+    callbackGasLimit: BigNumberish;
+    dataList: BytesLike[];
+  };
+
+  export type CreateDepositParamsStructOutput = [
+    addresses: IDepositUtils.CreateDepositParamsAddressesStructOutput,
+    minMarketTokens: bigint,
+    shouldUnwrapNativeToken: boolean,
+    executionFee: bigint,
+    callbackGasLimit: bigint,
+    dataList: string[],
+  ] & {
+    addresses: IDepositUtils.CreateDepositParamsAddressesStructOutput;
     minMarketTokens: bigint;
     shouldUnwrapNativeToken: boolean;
     executionFee: bigint;
     callbackGasLimit: bigint;
+    dataList: string[];
   };
 }
 
@@ -135,6 +150,7 @@ export declare namespace IBaseOrderUtils {
     shouldUnwrapNativeToken: boolean;
     autoCancel: boolean;
     referralCode: BytesLike;
+    dataList: BytesLike[];
   };
 
   export type CreateOrderParamsStructOutput = [
@@ -146,6 +162,7 @@ export declare namespace IBaseOrderUtils {
     shouldUnwrapNativeToken: boolean,
     autoCancel: boolean,
     referralCode: string,
+    dataList: string[],
   ] & {
     addresses: IBaseOrderUtils.CreateOrderParamsAddressesStructOutput;
     numbers: IBaseOrderUtils.CreateOrderParamsNumbersStructOutput;
@@ -155,69 +172,73 @@ export declare namespace IBaseOrderUtils {
     shouldUnwrapNativeToken: boolean;
     autoCancel: boolean;
     referralCode: string;
+    dataList: string[];
   };
 }
 
-export declare namespace ShiftUtils {
-  export type CreateShiftParamsStruct = {
+export declare namespace IShiftUtils {
+  export type CreateShiftParamsAddressesStruct = {
     receiver: AddressLike;
     callbackContract: AddressLike;
     uiFeeReceiver: AddressLike;
     fromMarket: AddressLike;
     toMarket: AddressLike;
-    minMarketTokens: BigNumberish;
-    executionFee: BigNumberish;
-    callbackGasLimit: BigNumberish;
   };
 
-  export type CreateShiftParamsStructOutput = [
+  export type CreateShiftParamsAddressesStructOutput = [
     receiver: string,
     callbackContract: string,
     uiFeeReceiver: string,
     fromMarket: string,
     toMarket: string,
-    minMarketTokens: bigint,
-    executionFee: bigint,
-    callbackGasLimit: bigint,
   ] & {
     receiver: string;
     callbackContract: string;
     uiFeeReceiver: string;
     fromMarket: string;
     toMarket: string;
+  };
+
+  export type CreateShiftParamsStruct = {
+    addresses: IShiftUtils.CreateShiftParamsAddressesStruct;
+    minMarketTokens: BigNumberish;
+    executionFee: BigNumberish;
+    callbackGasLimit: BigNumberish;
+    dataList: BytesLike[];
+  };
+
+  export type CreateShiftParamsStructOutput = [
+    addresses: IShiftUtils.CreateShiftParamsAddressesStructOutput,
+    minMarketTokens: bigint,
+    executionFee: bigint,
+    callbackGasLimit: bigint,
+    dataList: string[],
+  ] & {
+    addresses: IShiftUtils.CreateShiftParamsAddressesStructOutput;
     minMarketTokens: bigint;
     executionFee: bigint;
     callbackGasLimit: bigint;
+    dataList: string[];
   };
 }
 
-export declare namespace WithdrawalUtils {
-  export type CreateWithdrawalParamsStruct = {
+export declare namespace IWithdrawalUtils {
+  export type CreateWithdrawalParamsAddressesStruct = {
     receiver: AddressLike;
     callbackContract: AddressLike;
     uiFeeReceiver: AddressLike;
     market: AddressLike;
     longTokenSwapPath: AddressLike[];
     shortTokenSwapPath: AddressLike[];
-    minLongTokenAmount: BigNumberish;
-    minShortTokenAmount: BigNumberish;
-    shouldUnwrapNativeToken: boolean;
-    executionFee: BigNumberish;
-    callbackGasLimit: BigNumberish;
   };
 
-  export type CreateWithdrawalParamsStructOutput = [
+  export type CreateWithdrawalParamsAddressesStructOutput = [
     receiver: string,
     callbackContract: string,
     uiFeeReceiver: string,
     market: string,
     longTokenSwapPath: string[],
     shortTokenSwapPath: string[],
-    minLongTokenAmount: bigint,
-    minShortTokenAmount: bigint,
-    shouldUnwrapNativeToken: boolean,
-    executionFee: bigint,
-    callbackGasLimit: bigint,
   ] & {
     receiver: string;
     callbackContract: string;
@@ -225,11 +246,34 @@ export declare namespace WithdrawalUtils {
     market: string;
     longTokenSwapPath: string[];
     shortTokenSwapPath: string[];
+  };
+
+  export type CreateWithdrawalParamsStruct = {
+    addresses: IWithdrawalUtils.CreateWithdrawalParamsAddressesStruct;
+    minLongTokenAmount: BigNumberish;
+    minShortTokenAmount: BigNumberish;
+    shouldUnwrapNativeToken: boolean;
+    executionFee: BigNumberish;
+    callbackGasLimit: BigNumberish;
+    dataList: BytesLike[];
+  };
+
+  export type CreateWithdrawalParamsStructOutput = [
+    addresses: IWithdrawalUtils.CreateWithdrawalParamsAddressesStructOutput,
+    minLongTokenAmount: bigint,
+    minShortTokenAmount: bigint,
+    shouldUnwrapNativeToken: boolean,
+    executionFee: bigint,
+    callbackGasLimit: bigint,
+    dataList: string[],
+  ] & {
+    addresses: IWithdrawalUtils.CreateWithdrawalParamsAddressesStructOutput;
     minLongTokenAmount: bigint;
     minShortTokenAmount: bigint;
     shouldUnwrapNativeToken: boolean;
     executionFee: bigint;
     callbackGasLimit: bigint;
+    dataList: string[];
   };
 }
 
@@ -318,6 +362,8 @@ export interface ExchangeRouterInterface extends Interface {
       | "withdrawalHandler"
   ): FunctionFragment;
 
+  getEvent(nameOrSignatureOrTopic: "TokenTransferReverted"): EventFragment;
+
   encodeFunctionData(functionFragment: "cancelDeposit", values: [BytesLike]): string;
   encodeFunctionData(functionFragment: "cancelOrder", values: [BytesLike]): string;
   encodeFunctionData(functionFragment: "cancelShift", values: [BytesLike]): string;
@@ -332,19 +378,19 @@ export interface ExchangeRouterInterface extends Interface {
   ): string;
   encodeFunctionData(functionFragment: "claimFundingFees", values: [AddressLike[], AddressLike[], AddressLike]): string;
   encodeFunctionData(functionFragment: "claimUiFees", values: [AddressLike[], AddressLike[], AddressLike]): string;
-  encodeFunctionData(functionFragment: "createDeposit", values: [DepositUtils.CreateDepositParamsStruct]): string;
+  encodeFunctionData(functionFragment: "createDeposit", values: [IDepositUtils.CreateDepositParamsStruct]): string;
   encodeFunctionData(functionFragment: "createOrder", values: [IBaseOrderUtils.CreateOrderParamsStruct]): string;
-  encodeFunctionData(functionFragment: "createShift", values: [ShiftUtils.CreateShiftParamsStruct]): string;
+  encodeFunctionData(functionFragment: "createShift", values: [IShiftUtils.CreateShiftParamsStruct]): string;
   encodeFunctionData(
     functionFragment: "createWithdrawal",
-    values: [WithdrawalUtils.CreateWithdrawalParamsStruct]
+    values: [IWithdrawalUtils.CreateWithdrawalParamsStruct]
   ): string;
   encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
   encodeFunctionData(functionFragment: "depositHandler", values?: undefined): string;
   encodeFunctionData(functionFragment: "eventEmitter", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "executeAtomicWithdrawal",
-    values: [WithdrawalUtils.CreateWithdrawalParamsStruct, OracleUtils.SetPricesParamsStruct]
+    values: [IWithdrawalUtils.CreateWithdrawalParamsStruct, OracleUtils.SetPricesParamsStruct]
   ): string;
   encodeFunctionData(functionFragment: "externalHandler", values?: undefined): string;
   encodeFunctionData(
@@ -439,6 +485,19 @@ export interface ExchangeRouterInterface extends Interface {
   decodeFunctionResult(functionFragment: "withdrawalHandler", data: BytesLike): Result;
 }
 
+export namespace TokenTransferRevertedEvent {
+  export type InputTuple = [reason: string, returndata: BytesLike];
+  export type OutputTuple = [reason: string, returndata: string];
+  export interface OutputObject {
+    reason: string;
+    returndata: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export interface ExchangeRouter extends BaseContract {
   connect(runner?: ContractRunner | null): ExchangeRouter;
   waitForDeployment(): Promise<this>;
@@ -474,22 +533,12 @@ export interface ExchangeRouter extends BaseContract {
 
   cancelDeposit: TypedContractMethod<[key: BytesLike], [void], "payable">;
 
-  /**
-   * Cancels the given order. The `cancelOrder()` feature must be enabled for the given order type. The caller must be the owner of the order, and the order must not be a market order. The order is cancelled by calling the `cancelOrder()` function in the `OrderUtils` contract. This function also records the starting gas amount and the reason for cancellation, which is passed to the `cancelOrder()` function.
-   * @param key The unique ID of the order to be cancelled
-   */
   cancelOrder: TypedContractMethod<[key: BytesLike], [void], "payable">;
 
   cancelShift: TypedContractMethod<[key: BytesLike], [void], "payable">;
 
   cancelWithdrawal: TypedContractMethod<[key: BytesLike], [void], "payable">;
 
-  /**
-   * Claims affiliate rewards for the given markets and tokens on behalf of the caller, and sends the rewards to the specified receiver. The length of the `markets` and `tokens` arrays must be the same. For each market-token pair, the `claimAffiliateReward()` function in the `ReferralUtils` contract is called to claim the rewards for the caller.
-   * @param markets An array of market addresses
-   * @param receiver The address to which the claimed rewards should be sent
-   * @param tokens An array of token addresses, corresponding to the given markets
-   */
   claimAffiliateRewards: TypedContractMethod<
     [markets: AddressLike[], tokens: AddressLike[], receiver: AddressLike],
     [bigint[]],
@@ -502,12 +551,6 @@ export interface ExchangeRouter extends BaseContract {
     "payable"
   >;
 
-  /**
-   * Claims funding fees for the given markets and tokens on behalf of the caller, and sends the fees to the specified receiver. The length of the `markets` and `tokens` arrays must be the same. For each market-token pair, the `claimFundingFees()` function in the `MarketUtils` contract is called to claim the fees for the caller.
-   * @param markets An array of market addresses
-   * @param receiver The address to which the claimed fees should be sent
-   * @param tokens An array of token addresses, corresponding to the given markets
-   */
   claimFundingFees: TypedContractMethod<
     [markets: AddressLike[], tokens: AddressLike[], receiver: AddressLike],
     [bigint[]],
@@ -520,13 +563,13 @@ export interface ExchangeRouter extends BaseContract {
     "payable"
   >;
 
-  createDeposit: TypedContractMethod<[params: DepositUtils.CreateDepositParamsStruct], [string], "payable">;
+  createDeposit: TypedContractMethod<[params: IDepositUtils.CreateDepositParamsStruct], [string], "payable">;
 
   createOrder: TypedContractMethod<[params: IBaseOrderUtils.CreateOrderParamsStruct], [string], "payable">;
 
-  createShift: TypedContractMethod<[params: ShiftUtils.CreateShiftParamsStruct], [string], "payable">;
+  createShift: TypedContractMethod<[params: IShiftUtils.CreateShiftParamsStruct], [string], "payable">;
 
-  createWithdrawal: TypedContractMethod<[params: WithdrawalUtils.CreateWithdrawalParamsStruct], [string], "payable">;
+  createWithdrawal: TypedContractMethod<[params: IWithdrawalUtils.CreateWithdrawalParamsStruct], [string], "payable">;
 
   dataStore: TypedContractMethod<[], [string], "view">;
 
@@ -535,7 +578,7 @@ export interface ExchangeRouter extends BaseContract {
   eventEmitter: TypedContractMethod<[], [string], "view">;
 
   executeAtomicWithdrawal: TypedContractMethod<
-    [params: WithdrawalUtils.CreateWithdrawalParamsStruct, oracleParams: OracleUtils.SetPricesParamsStruct],
+    [params: IWithdrawalUtils.CreateWithdrawalParamsStruct, oracleParams: OracleUtils.SetPricesParamsStruct],
     [void],
     "payable"
   >;
@@ -550,12 +593,9 @@ export interface ExchangeRouter extends BaseContract {
       refundReceivers: AddressLike[],
     ],
     [void],
-    "nonpayable"
+    "payable"
   >;
 
-  /**
-   * Receives and executes a batch of function calls on this contract.
-   */
   multicall: TypedContractMethod<[data: BytesLike[]], [string[]], "payable">;
 
   orderHandler: TypedContractMethod<[], [string], "view">;
@@ -668,23 +708,23 @@ export interface ExchangeRouter extends BaseContract {
   ): TypedContractMethod<[markets: AddressLike[], tokens: AddressLike[], receiver: AddressLike], [bigint[]], "payable">;
   getFunction(
     nameOrSignature: "createDeposit"
-  ): TypedContractMethod<[params: DepositUtils.CreateDepositParamsStruct], [string], "payable">;
+  ): TypedContractMethod<[params: IDepositUtils.CreateDepositParamsStruct], [string], "payable">;
   getFunction(
     nameOrSignature: "createOrder"
   ): TypedContractMethod<[params: IBaseOrderUtils.CreateOrderParamsStruct], [string], "payable">;
   getFunction(
     nameOrSignature: "createShift"
-  ): TypedContractMethod<[params: ShiftUtils.CreateShiftParamsStruct], [string], "payable">;
+  ): TypedContractMethod<[params: IShiftUtils.CreateShiftParamsStruct], [string], "payable">;
   getFunction(
     nameOrSignature: "createWithdrawal"
-  ): TypedContractMethod<[params: WithdrawalUtils.CreateWithdrawalParamsStruct], [string], "payable">;
+  ): TypedContractMethod<[params: IWithdrawalUtils.CreateWithdrawalParamsStruct], [string], "payable">;
   getFunction(nameOrSignature: "dataStore"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "depositHandler"): TypedContractMethod<[], [string], "view">;
   getFunction(nameOrSignature: "eventEmitter"): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "executeAtomicWithdrawal"
   ): TypedContractMethod<
-    [params: WithdrawalUtils.CreateWithdrawalParamsStruct, oracleParams: OracleUtils.SetPricesParamsStruct],
+    [params: IWithdrawalUtils.CreateWithdrawalParamsStruct, oracleParams: OracleUtils.SetPricesParamsStruct],
     [void],
     "payable"
   >;
@@ -699,7 +739,7 @@ export interface ExchangeRouter extends BaseContract {
       refundReceivers: AddressLike[],
     ],
     [void],
-    "nonpayable"
+    "payable"
   >;
   getFunction(nameOrSignature: "multicall"): TypedContractMethod<[data: BytesLike[]], [string[]], "payable">;
   getFunction(nameOrSignature: "orderHandler"): TypedContractMethod<[], [string], "view">;
@@ -780,5 +820,24 @@ export interface ExchangeRouter extends BaseContract {
   >;
   getFunction(nameOrSignature: "withdrawalHandler"): TypedContractMethod<[], [string], "view">;
 
-  filters: {};
+  getEvent(
+    key: "TokenTransferReverted"
+  ): TypedContractEvent<
+    TokenTransferRevertedEvent.InputTuple,
+    TokenTransferRevertedEvent.OutputTuple,
+    TokenTransferRevertedEvent.OutputObject
+  >;
+
+  filters: {
+    "TokenTransferReverted(string,bytes)": TypedContractEvent<
+      TokenTransferRevertedEvent.InputTuple,
+      TokenTransferRevertedEvent.OutputTuple,
+      TokenTransferRevertedEvent.OutputObject
+    >;
+    TokenTransferReverted: TypedContractEvent<
+      TokenTransferRevertedEvent.InputTuple,
+      TokenTransferRevertedEvent.OutputTuple,
+      TokenTransferRevertedEvent.OutputObject
+    >;
+  };
 }

@@ -248,17 +248,27 @@ export class Markets extends Module {
             minCollateralFactorForOpenInterestShort:
               dataStoreValues.minCollateralFactorForOpenInterestShort.returnValues[0],
 
-            positionFeeFactorForPositiveImpact: dataStoreValues.positionFeeFactorForPositiveImpact.returnValues[0],
-            positionFeeFactorForNegativeImpact: dataStoreValues.positionFeeFactorForNegativeImpact.returnValues[0],
+            minCollateralFactorForLiquidation: dataStoreValues.minCollateralFactorForLiquidation.returnValues[0],
+
+            positionFeeFactorForBalanceWasImproved:
+              dataStoreValues.positionFeeFactorForBalanceWasImproved.returnValues[0],
+            positionFeeFactorForBalanceWasNotImproved:
+              dataStoreValues.positionFeeFactorForBalanceWasNotImproved.returnValues[0],
             positionImpactFactorPositive: dataStoreValues.positionImpactFactorPositive.returnValues[0],
             positionImpactFactorNegative: dataStoreValues.positionImpactFactorNegative.returnValues[0],
             maxPositionImpactFactorPositive: dataStoreValues.maxPositionImpactFactorPositive.returnValues[0],
             maxPositionImpactFactorNegative: dataStoreValues.maxPositionImpactFactorNegative.returnValues[0],
             maxPositionImpactFactorForLiquidations:
               dataStoreValues.maxPositionImpactFactorForLiquidations.returnValues[0],
+            maxLendableImpactFactor: dataStoreValues.maxLendableImpactFactor.returnValues[0],
+            maxLendableImpactFactorForWithdrawals:
+              dataStoreValues.maxLendableImpactFactorForWithdrawals.returnValues[0],
+            maxLendableImpactUsd: dataStoreValues.maxLendableImpactUsd.returnValues[0],
+            lentPositionImpactPoolAmount: dataStoreValues.lentPositionImpactPoolAmount.returnValues[0],
             positionImpactExponentFactor: dataStoreValues.positionImpactExponentFactor.returnValues[0],
-            swapFeeFactorForPositiveImpact: dataStoreValues.swapFeeFactorForPositiveImpact.returnValues[0],
-            swapFeeFactorForNegativeImpact: dataStoreValues.swapFeeFactorForNegativeImpact.returnValues[0],
+            swapFeeFactorForBalanceWasImproved: dataStoreValues.swapFeeFactorForBalanceWasImproved.returnValues[0],
+            swapFeeFactorForBalanceWasNotImproved:
+              dataStoreValues.swapFeeFactorForBalanceWasNotImproved.returnValues[0],
             swapImpactFactorPositive: dataStoreValues.swapImpactFactorPositive.returnValues[0],
             atomicSwapFeeFactor: dataStoreValues.atomicSwapFeeFactor.returnValues[0],
             swapImpactFactorNegative: dataStoreValues.swapImpactFactorNegative.returnValues[0],
@@ -382,6 +392,7 @@ export class Markets extends Module {
 
   async getMarketsInfo(): Promise<MarketsInfoResult> {
     const { marketsData, marketsAddresses } = await this.getMarkets();
+
     const { tokensData, pricesUpdatedAt } = await this.sdk.tokens.getTokensData();
 
     const [marketsValues, marketsConfigs, claimableFundingData] = await Promise.all([

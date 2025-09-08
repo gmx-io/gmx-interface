@@ -1,4 +1,4 @@
-import { TokenData } from "./tokens";
+import type { TokenData } from "./tokens";
 
 export type PnlFactorType = "FOR_DEPOSITS" | "FOR_WITHDRAWALS" | "FOR_TRADERS";
 
@@ -75,6 +75,7 @@ export type MarketInfo = Market &
     positionImpactPoolDistributionRate: bigint;
 
     minCollateralFactor: bigint;
+    minCollateralFactorForLiquidation: bigint;
     minCollateralFactorForOpenInterestLong: bigint;
     minCollateralFactorForOpenInterestShort: bigint;
 
@@ -92,17 +93,21 @@ export type MarketInfo = Market &
     longInterestInTokens: bigint;
     shortInterestInTokens: bigint;
 
-    positionFeeFactorForPositiveImpact: bigint;
-    positionFeeFactorForNegativeImpact: bigint;
+    positionFeeFactorForBalanceWasImproved: bigint;
+    positionFeeFactorForBalanceWasNotImproved: bigint;
     positionImpactFactorPositive: bigint;
     positionImpactFactorNegative: bigint;
     maxPositionImpactFactorPositive: bigint;
     maxPositionImpactFactorNegative: bigint;
     maxPositionImpactFactorForLiquidations: bigint;
+    maxLendableImpactFactor: bigint;
+    maxLendableImpactFactorForWithdrawals: bigint;
+    maxLendableImpactUsd: bigint;
+    lentPositionImpactPoolAmount: bigint;
     positionImpactExponentFactor: bigint;
 
-    swapFeeFactorForPositiveImpact: bigint;
-    swapFeeFactorForNegativeImpact: bigint;
+    swapFeeFactorForBalanceWasImproved: bigint;
+    swapFeeFactorForBalanceWasNotImproved: bigint;
     atomicSwapFeeFactor: bigint;
     swapImpactFactorPositive: bigint;
     swapImpactFactorNegative: bigint;

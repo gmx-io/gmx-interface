@@ -22,7 +22,7 @@ import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import NewLink20ReactComponent from "img/ic_new_link_20.svg?react";
+import NewLinkIcon from "img/ic_new_link.svg?react";
 
 import { formatPositionMessage } from "./utils/position";
 import { TooltipContent, TooltipString } from "./utils/shared";
@@ -43,12 +43,12 @@ function LineSpan({ span }: { span: TooltipString }) {
   }
 
   if (typeof span === "string") {
-    return <span>{span}</span>;
+    return <span className="numbers">{span}</span>;
   }
 
   return (
     <span
-      className={cx({
+      className={cx("numbers", {
         "text-red-500": span.state === "error",
         "text-green-500": span.state === "success",
         muted: span.state === "muted",
@@ -183,41 +183,44 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
   return (
     <>
       <TableTr
+        hoverable={true}
         className={cx("TradeHistoryRow", {
           debug: showDebugValues,
         })}
       >
         <TableTd>
           <div className="flex">
-            {msg.actionComment ? (
-              <TooltipWithPortal
-                className={cx("TradeHistoryRow-action-handle")}
-                handleClassName={cx("TradeHistoryRow-action-handle", {
-                  "text-red-500 !decoration-red-500/50": msg.isActionError,
-                })}
-                handle={msg.action}
-                renderContent={renderActionTooltipContent}
-              />
-            ) : (
-              <span
-                className={cx("TradeHistoryRow-action-handle", {
-                  "text-red-500": msg.isActionError,
-                })}
-              >
-                {msg.action}
-              </span>
-            )}
-            <div className="flex flex-row items-center">
+            <div className="flex items-center gap-4">
+              {msg.actionComment ? (
+                <TooltipWithPortal
+                  className={cx("TradeHistoryRow-action-handle")}
+                  handleClassName={cx("TradeHistoryRow-action-handle", {
+                    "text-red-500 !decoration-red-500/50": msg.isActionError,
+                  })}
+                  handle={<span className="font-medium">{msg.action}</span>}
+                  renderContent={renderActionTooltipContent}
+                />
+              ) : (
+                <span
+                  className={cx("TradeHistoryRow-action-handle font-medium", {
+                    "text-red-500": msg.isActionError,
+                  })}
+                >
+                  {msg.action}
+                </span>
+              )}
               <ExternalLink
-                className="TradeHistoryRow-external-link ml-5"
+                className="TradeHistoryRow-external-link size-10"
                 href={`${getExplorerUrl(chainId)}tx/${tradeAction.transaction.hash}`}
               >
-                <NewLink20ReactComponent />
+                <NewLinkIcon />
               </ExternalLink>
+            </div>
+            <div className="flex flex-row items-center">
               {showDebugValues && (
                 <Link
                   to={`/parsetx/${NETWORKS_BY_CHAIN_IDS[chainId]}/${tradeAction.transaction.hash}`}
-                  className="text-body-small ml-5 text-slate-100 hover:text-white"
+                  className="text-body-small ml-5 text-typography-secondary hover:text-typography-primary"
                 >
                   Events
                 </Link>
@@ -225,7 +228,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             </div>
           </div>
           <TooltipWithPortal
-            disableHandleStyle
+            variant="none"
             handle={<span className="TradeHistoryRow-time muted cursor-help">{msg.timestamp}</span>}
             tooltipClassName="TradeHistoryRow-tooltip-portal cursor-help *:cursor-auto"
             renderContent={renderTimestamp}
@@ -241,42 +244,46 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
         </TableTd>
         <TableTd>
           <TooltipWithPortal
-            disableHandleStyle
+            variant="none"
             tooltipClassName="cursor-help *:cursor-auto"
             handle={marketTooltipHandle}
             renderContent={renderMarketContent}
           />
         </TableTd>
         <TableTd>
-          {msg.swapFromTokenSymbol ? (
-            <Trans>
-              {msg.swapFromTokenAmount} <TokenIcon symbol={msg.swapFromTokenSymbol!} displaySize={18} importSize={24} />
-              <span> to </span>
-              {msg.swapToTokenAmount} <TokenIcon symbol={msg.swapToTokenSymbol!} displaySize={18} importSize={24} />
-            </Trans>
-          ) : (
-            msg.size
-          )}
+          <span className="numbers">
+            {msg.swapFromTokenSymbol ? (
+              <Trans>
+                {msg.swapFromTokenAmount}{" "}
+                <TokenIcon symbol={msg.swapFromTokenSymbol!} displaySize={18} importSize={24} />
+                <span> to </span>
+                {msg.swapToTokenAmount} <TokenIcon symbol={msg.swapToTokenSymbol!} displaySize={18} importSize={24} />
+              </Trans>
+            ) : (
+              msg.size
+            )}
+          </span>
         </TableTd>
         <TableTd>
           {msg.priceComment ? (
             <TooltipWithPortal
               tooltipClassName="TradeHistoryRow-price-tooltip-portal"
               handle={msg.price}
+              handleClassName="numbers"
               position="bottom-end"
               renderContent={renderPriceContent}
               maxAllowedWidth={PRICE_TOOLTIP_WIDTH}
             />
           ) : (
-            <>{msg.price}</>
+            <span className="numbers">{msg.price}</span>
           )}
         </TableTd>
         <TableTd className="TradeHistoryRow-pnl-fees">
           {!msg.pnl ? (
-            <span className="text-slate-100">-</span>
+            <span className="text-typography-secondary">-</span>
           ) : (
             <span
-              className={cx({
+              className={cx("numbers", {
                 "text-red-500": msg.pnlState === "error",
                 "text-green-500": msg.pnlState === "success",
               })}

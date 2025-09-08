@@ -2,10 +2,10 @@ import { gql } from "@apollo/client";
 import { BigNumberish, ethers } from "ethers";
 import { useEffect, useState } from "react";
 
-import { SUPPORTED_CHAIN_IDS, UiContractsChain } from "config/chains";
+import { ContractsChainId, CONTRACTS_CHAIN_IDS } from "config/chains";
 import { BN_ZERO } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
-import { getReferralsGraphClient } from "lib/subgraph";
+import { getReferralsGraphClient, REFERRAL_SUPPORTED_CHAIN_IDS } from "lib/subgraph";
 import { decodeReferralCode } from "sdk/utils/referrals";
 
 import {
@@ -144,7 +144,7 @@ export function useReferralsData(account?: string | null) {
 
           const referralCodes = res.data.referralCodes.map((e) => e.code);
           const allCodesOwnersOnOtherChains = await Promise.allSettled(
-            SUPPORTED_CHAIN_IDS.filter((otherChainId) => otherChainId !== chainId).map(async (otherChainId) => ({
+            CONTRACTS_CHAIN_IDS.filter((otherChainId) => otherChainId !== chainId).map(async (otherChainId) => ({
               chainId: otherChainId,
               data: await getCodeOwnersData(otherChainId, account, referralCodes),
             }))
@@ -154,7 +154,7 @@ export function useReferralsData(account?: string | null) {
                 (
                   chainResult
                 ): chainResult is PromiseFulfilledResult<{
-                  chainId: UiContractsChain;
+                  chainId: ContractsChainId;
                   data: CodeOwnershipInfo[] | undefined;
                 }> => chainResult.status === "fulfilled"
               )
@@ -292,7 +292,7 @@ export function useReferralsData(account?: string | null) {
     }
 
     Promise.allSettled(
-      SUPPORTED_CHAIN_IDS.map(async (chainId) => {
+      REFERRAL_SUPPORTED_CHAIN_IDS.map(async (chainId) => {
         try {
           const data = await getChainReferralData(chainId);
           return data;

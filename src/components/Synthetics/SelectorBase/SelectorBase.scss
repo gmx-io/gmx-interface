@@ -5,11 +5,6 @@
 
     cursor: pointer;
 
-    &:not(&-disabled),
-    &:not(&-disabled) * {
-      @apply gmx-hover:text-blue-300;
-    }
-
     &-disabled {
       cursor: text;
       opacity: 1;
@@ -18,13 +13,13 @@
 
   &-panel {
     position: relative;
-    z-index: 1000;
+    z-index: calc(var(--modal-z-index) + 1);
 
     font-size: var(--font-size-body-medium);
 
-    border-radius: var(--border-radius-sm);
+    border-radius: 8px;
     background-color: var(--dark-blue-bg);
-    border: 1px solid var(--color-gray-700);
+    border: 0.5px solid var(--color-slate-600);
     overflow: hidden;
   }
 }
@@ -52,20 +47,20 @@
 
     color: inherit;
     font-size: var(--font-size-body-medium);
-
-    border: 1px solid var(--color-gray-700);
+    background-color: var(--color-slate-800);
     border-radius: var(--border-radius-sm);
-    padding: 12px;
+    padding: 8px 16px;
+    font-weight: 500;
 
     &:hover,
     &:active {
-      background: var(--color-cold-blue-900);
+      background: var(--color-slate-700);
       box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
     }
 
     &-disabled {
       cursor: not-allowed;
-      color: var(--color-slate-500);
+      color: var(--color-slate-100);
 
       .Token-icon {
         opacity: 0.5;

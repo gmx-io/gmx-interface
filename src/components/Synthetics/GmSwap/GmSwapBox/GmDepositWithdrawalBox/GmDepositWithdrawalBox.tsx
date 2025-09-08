@@ -20,7 +20,7 @@ import {
   getMarketIndexName,
   getTokenPoolType,
 } from "domain/synthetics/markets/utils";
-import { TokenData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
+import { convertToUsd, getTokenData, TokenData } from "domain/synthetics/tokens";
 import { useAvailableTokenOptions } from "domain/synthetics/trade";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { Token } from "domain/tokens";
@@ -32,25 +32,26 @@ import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
+import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import { useBestGmPoolAddressForGlv } from "components/Synthetics/MarketStats/hooks/useBestGmPoolForGlv";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import type { GmSwapBoxProps } from "../GmSwapBox";
+import { GmSwapBoxPoolRow } from "../GmSwapBoxPoolRow";
+import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
+import { SelectedPool } from "../SelectedPool";
+import { Mode, Operation } from "../types";
 import { useGmWarningState } from "../useGmWarningState";
+import { InfoRows } from "./InfoRows";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 import { useGmDepositWithdrawalBoxState } from "./useGmDepositWithdrawalBoxState";
 import { useGmSwapSubmitState } from "./useGmSwapSubmitState";
 import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
 import { useUpdateTokens } from "./useUpdateTokens";
-import type { GmSwapBoxProps } from "../GmSwapBox";
-import { Swap } from "../Swap";
-import { Mode, Operation } from "../types";
-import { InfoRows } from "./InfoRows";
-import { GmSwapBoxPoolRow } from "../GmSwapBoxPoolRow";
-import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
-import { SelectedPool } from "../SelectedPool";
 
 export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const {
@@ -62,12 +63,14 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     onSelectedMarketForGlv,
   } = p;
   const { shouldDisableValidationForTesting } = useSettings();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const [isMarketForGlvSelectedManually, setIsMarketForGlvSelectedManually] = useState(false);
 
   // #region Requests
-  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
-  const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: true });
+  const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, srcChainId, {
+    isDeposit: false,
+  });
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
@@ -87,6 +90,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     marketsInfoData: glvAndMarketsInfoData,
     tokensData,
     marketTokens: isDeposit ? depositMarketTokensData : withdrawalMarketTokensData,
+    srcChainId,
   });
 
   // #region State
@@ -652,19 +656,14 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   // #region Render
   const submitButton = useMemo(() => {
     const btn = (
-      <Button
-        className="w-full"
-        variant="primary-action"
-        onClick={submitState.onSubmit}
-        disabled={submitState.disabled}
-      >
+      <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
         {submitState.text}
       </Button>
     );
 
     if (submitState.errorDescription) {
       return (
-        <TooltipWithPortal content={submitState.errorDescription} disableHandleStyle>
+        <TooltipWithPortal content={submitState.errorDescription} variant="none">
           {btn}
         </TooltipWithPortal>
       );
@@ -698,113 +697,122 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
         isDeposit ? marketToken?.prices?.maxPrice : marketToken?.prices?.minPrice
       )!;
 
+  const handleSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      submitState.onSubmit?.();
+    },
+    [submitState]
+  );
+
   return (
     <>
-      <form>
-        <div className={cx("mb-12 flex gap-2", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
-          <BuyInputSection
-            topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
-            bottomLeftValue={formatUsd(firstTokenUsd ?? 0n)}
-            isBottomLeftValueMuted={firstTokenUsd === undefined || firstTokenUsd === 0n}
-            bottomRightLabel={t`Balance`}
-            bottomRightValue={
-              firstToken && firstToken.balance !== undefined
-                ? formatBalanceAmount(firstToken.balance, firstToken.decimals, undefined, {
-                    isStable: firstToken.isStable,
-                  })
-                : undefined
-            }
-            onClickTopRightLabel={isDeposit ? onMaxClickFirstToken : undefined}
-            inputValue={firstTokenInputValue}
-            onInputValueChange={handleFirstTokenInputValueChange}
-            onClickMax={firstTokenShowMaxButton ? onMaxClickFirstToken : undefined}
-          >
-            {firstTokenAddress && isSingle && isDeposit && tokenOptions.length > 1 ? (
-              <TokenSelector
-                label={isDeposit ? t`Pay` : t`Receive`}
-                chainId={chainId}
-                tokenInfo={viewTokenInfo}
-                showTokenName={showTokenName}
-                tokenAddress={firstTokenAddress}
-                onSelectToken={firstTokenSelectToken}
-                tokens={tokenOptions}
-                infoTokens={infoTokens}
-                size="l"
-                showSymbolImage={true}
-                showTokenImgInDropdown={true}
-                marketsInfoData={marketsInfoData}
-              />
-            ) : (
-              firstTokenPlaceholder
-            )}
-          </BuyInputSection>
+      <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
+        <div className="flex flex-col rounded-b-8 bg-slate-900">
+          <div className="flex flex-col gap-12 p-12">
+            <div className={cx("flex gap-4", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
+              <BuyInputSection
+                topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
+                bottomLeftValue={formatUsd(firstTokenUsd ?? 0n)}
+                bottomRightLabel={t`Balance`}
+                bottomRightValue={
+                  firstToken && firstToken.balance !== undefined
+                    ? formatBalanceAmount(firstToken.balance, firstToken.decimals, undefined, {
+                        isStable: firstToken.isStable,
+                      })
+                    : undefined
+                }
+                onClickTopRightLabel={isDeposit ? onMaxClickFirstToken : undefined}
+                inputValue={firstTokenInputValue}
+                onInputValueChange={handleFirstTokenInputValueChange}
+                onClickMax={firstTokenShowMaxButton ? onMaxClickFirstToken : undefined}
+              >
+                {firstTokenAddress && isSingle && isDeposit && tokenOptions.length > 1 ? (
+                  <TokenSelector
+                    label={isDeposit ? t`Pay` : t`Receive`}
+                    chainId={chainId}
+                    tokenInfo={viewTokenInfo}
+                    showTokenName={showTokenName}
+                    tokenAddress={firstTokenAddress}
+                    onSelectToken={firstTokenSelectToken}
+                    tokens={tokenOptions}
+                    infoTokens={infoTokens}
+                    showSymbolImage={true}
+                    showTokenImgInDropdown={true}
+                    marketsInfoData={marketsInfoData}
+                  />
+                ) : (
+                  firstTokenPlaceholder
+                )}
+              </BuyInputSection>
 
-          {isPair && secondTokenAddress && (
-            <BuyInputSection
-              topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
-              bottomLeftValue={formatUsd(secondTokenUsd ?? 0n)}
-              isBottomLeftValueMuted={secondTokenUsd === undefined || secondTokenUsd === 0n}
-              bottomRightLabel={t`Balance`}
-              bottomRightValue={
-                secondToken && secondToken.balance !== undefined
-                  ? formatBalanceAmount(secondToken.balance, secondToken.decimals, undefined, {
-                      isStable: secondToken.isStable,
-                    })
-                  : undefined
-              }
-              inputValue={secondTokenInputValue}
-              onInputValueChange={secondTokenInputValueChange}
-              onClickTopRightLabel={onMaxClickSecondToken}
-              onClickMax={secondTokenShowMaxButton ? onMaxClickSecondToken : undefined}
-            >
-              <div className="selected-token">
-                <TokenWithIcon symbol={secondToken?.symbol} displaySize={20} />
+              {isPair && secondTokenAddress && (
+                <BuyInputSection
+                  topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
+                  bottomLeftValue={formatUsd(secondTokenUsd ?? 0n)}
+                  bottomRightLabel={t`Balance`}
+                  bottomRightValue={
+                    secondToken && secondToken.balance !== undefined
+                      ? formatBalanceAmount(secondToken.balance, secondToken.decimals, undefined, {
+                          isStable: secondToken.isStable,
+                        })
+                      : undefined
+                  }
+                  inputValue={secondTokenInputValue}
+                  onInputValueChange={secondTokenInputValueChange}
+                  onClickTopRightLabel={onMaxClickSecondToken}
+                  onClickMax={secondTokenShowMaxButton ? onMaxClickSecondToken : undefined}
+                >
+                  <div className="selected-token">
+                    <TokenWithIcon symbol={secondToken?.symbol} displaySize={20} />
+                  </div>
+                </BuyInputSection>
+              )}
+
+              <div className={cx("flex", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
+                <BuyInputSection
+                  topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
+                  bottomLeftValue={formatUsd(receiveTokenUsd ?? 0n)}
+                  bottomRightLabel={t`Balance`}
+                  bottomRightValue={receiveTokenFormatted}
+                  inputValue={marketOrGlvTokenInputValue}
+                  onInputValueChange={marketOrGlvTokenInputValueChange}
+                  onClickTopRightLabel={marketTokenInputClickTopRightLabel}
+                  onClickMax={marketTokenInputShowMaxButton ? marketTokenInputClickMax : undefined}
+                >
+                  <SelectedPool
+                    glvAndMarketsInfoData={glvAndMarketsInfoData}
+                    selectedGlvOrMarketAddress={selectedGlvOrMarketAddress}
+                  />
+                </BuyInputSection>
               </div>
-            </BuyInputSection>
-          )}
+            </div>
 
-          <div className={cx("flex", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
-            <Swap />
-
-            <BuyInputSection
-              topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
-              bottomLeftValue={formatUsd(receiveTokenUsd ?? 0n)}
-              isBottomLeftValueMuted={receiveTokenUsd === undefined || receiveTokenUsd === 0n}
-              bottomRightLabel={t`Balance`}
-              bottomRightValue={receiveTokenFormatted}
-              inputValue={marketOrGlvTokenInputValue}
-              onInputValueChange={marketOrGlvTokenInputValueChange}
-              onClickTopRightLabel={marketTokenInputClickTopRightLabel}
-              onClickMax={marketTokenInputShowMaxButton ? marketTokenInputClickMax : undefined}
-            >
-              <SelectedPool
-                glvAndMarketsInfoData={glvAndMarketsInfoData}
-                selectedGlvOrMarketAddress={selectedGlvOrMarketAddress}
+            <div className="flex flex-col gap-14">
+              <GmSwapBoxPoolRow
+                indexName={indexName}
+                marketAddress={selectedGlvOrMarketAddress}
+                marketTokensData={marketTokensData}
+                isDeposit={isDeposit}
+                glvInfo={glvInfo}
+                selectedMarketForGlv={selectedMarketForGlv}
+                disablePoolSelector={fromMarketTokenInputState !== undefined}
+                onMarketChange={glvInfo ? onMarketChange : onGlvOrMarketChange}
               />
-            </BuyInputSection>
+
+              <GmSwapWarningsRow
+                shouldShowWarning={shouldShowWarning}
+                shouldShowWarningForPosition={shouldShowWarningForPosition}
+                shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
+              />
+
+              <SwitchToSettlementChainWarning topic="liquidity" />
+            </div>
+          </div>
+          <div className="border-t border-slate-600 p-12">
+            <SwitchToSettlementChainButtons>{submitButton}</SwitchToSettlementChainButtons>
           </div>
         </div>
-
-        <div className="flex flex-col gap-14">
-          <GmSwapBoxPoolRow
-            indexName={indexName}
-            marketAddress={selectedGlvOrMarketAddress}
-            marketTokensData={marketTokensData}
-            isDeposit={isDeposit}
-            glvInfo={glvInfo}
-            selectedMarketForGlv={selectedMarketForGlv}
-            disablePoolSelector={fromMarketTokenInputState !== undefined}
-            onMarketChange={glvInfo ? onMarketChange : onGlvOrMarketChange}
-          />
-
-          <GmSwapWarningsRow
-            shouldShowWarning={shouldShowWarning}
-            shouldShowWarningForPosition={shouldShowWarningForPosition}
-            shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
-          />
-        </div>
-
-        <div className="Exchange-swap-button-container mb-14 border-b border-stroke-primary pb-14">{submitButton}</div>
 
         <InfoRows fees={fees} executionFee={executionFee} isDeposit={isDeposit} />
       </form>

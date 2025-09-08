@@ -7,7 +7,7 @@ import { sleep } from "lib/sleep";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
-import Footer from "components/Footer/Footer";
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 
 export function SyntheticsFallbackPage() {
   const { active } = useWallet();
@@ -21,40 +21,41 @@ export function SyntheticsFallbackPage() {
   if (!isLoaded) return null;
 
   return (
-    <div className="page-layout">
-      <div className="page-not-found-container">
-        <div className="page-not-found">
-          <h2>
-            <Trans>V2 doesn't currently support this network</Trans>
-          </h2>
+    <AppPageLayout>
+      <div className="page-layout">
+        <div className="page-not-found-container">
+          <div className="page-not-found">
+            <h2>
+              <Trans>V2 doesn't currently support this network</Trans>
+            </h2>
 
-          <p className="go-back">
-            <div>
-              <Trans>
-                <span>Switch to:</span>
-              </Trans>
-            </div>
+            <p className="go-back">
+              <div>
+                <Trans>
+                  <span>Switch to:</span>
+                </Trans>
+              </div>
 
-            <br />
-            <div className="clickable underline" onClick={() => switchNetwork(ARBITRUM, active)}>
-              {getChainName(ARBITRUM)}
-            </div>
+              <br />
+              <div className="clickable underline" onClick={() => switchNetwork(ARBITRUM, active)}>
+                {getChainName(ARBITRUM)}
+              </div>
 
-            <div className="clickable underline" onClick={() => switchNetwork(AVALANCHE, active)}>
-              {getChainName(AVALANCHE)}
-            </div>
+              <div className="clickable underline" onClick={() => switchNetwork(AVALANCHE, active)}>
+                {getChainName(AVALANCHE)}
+              </div>
 
-            {isDevelopment() && (
-              <>
-                <div className="clickable underline" onClick={() => switchNetwork(AVALANCHE_FUJI, active)}>
-                  {getChainName(AVALANCHE_FUJI)}
-                </div>
-              </>
-            )}
-          </p>
+              {isDevelopment() && (
+                <>
+                  <div className="clickable underline" onClick={() => switchNetwork(AVALANCHE_FUJI, active)}>
+                    {getChainName(AVALANCHE_FUJI)}
+                  </div>
+                </>
+              )}
+            </p>
+          </div>
         </div>
       </div>
-      <Footer />
-    </div>
+    </AppPageLayout>
   );
 }

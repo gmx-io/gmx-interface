@@ -31,7 +31,8 @@ export interface DataStoreInterface extends Interface {
       | "addressValues"
       | "applyBoundedDeltaToUint"
       | "applyDeltaToInt"
-      | "applyDeltaToUint"
+      | "applyDeltaToUint(bytes32,int256,string)"
+      | "applyDeltaToUint(bytes32,uint256)"
       | "boolArrayValues"
       | "boolValues"
       | "bytes32ArrayValues"
@@ -104,7 +105,11 @@ export interface DataStoreInterface extends Interface {
   encodeFunctionData(functionFragment: "addressValues", values: [BytesLike]): string;
   encodeFunctionData(functionFragment: "applyBoundedDeltaToUint", values: [BytesLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "applyDeltaToInt", values: [BytesLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "applyDeltaToUint", values: [BytesLike, BigNumberish, string]): string;
+  encodeFunctionData(
+    functionFragment: "applyDeltaToUint(bytes32,int256,string)",
+    values: [BytesLike, BigNumberish, string]
+  ): string;
+  encodeFunctionData(functionFragment: "applyDeltaToUint(bytes32,uint256)", values: [BytesLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "boolArrayValues", values: [BytesLike, BigNumberish]): string;
   encodeFunctionData(functionFragment: "boolValues", values: [BytesLike]): string;
   encodeFunctionData(functionFragment: "bytes32ArrayValues", values: [BytesLike, BigNumberish]): string;
@@ -176,7 +181,8 @@ export interface DataStoreInterface extends Interface {
   decodeFunctionResult(functionFragment: "addressValues", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "applyBoundedDeltaToUint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "applyDeltaToInt", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "applyDeltaToUint", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "applyDeltaToUint(bytes32,int256,string)", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "applyDeltaToUint(bytes32,uint256)", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "boolArrayValues", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "boolValues", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "bytes32ArrayValues", data: BytesLike): Result;
@@ -289,8 +295,14 @@ export interface DataStore extends BaseContract {
 
   applyDeltaToInt: TypedContractMethod<[key: BytesLike, value: BigNumberish], [bigint], "nonpayable">;
 
-  applyDeltaToUint: TypedContractMethod<
+  "applyDeltaToUint(bytes32,int256,string)": TypedContractMethod<
     [key: BytesLike, value: BigNumberish, errorMessage: string],
+    [bigint],
+    "nonpayable"
+  >;
+
+  "applyDeltaToUint(bytes32,uint256)": TypedContractMethod<
+    [key: BytesLike, value: BigNumberish],
     [bigint],
     "nonpayable"
   >;
@@ -451,8 +463,11 @@ export interface DataStore extends BaseContract {
     nameOrSignature: "applyDeltaToInt"
   ): TypedContractMethod<[key: BytesLike, value: BigNumberish], [bigint], "nonpayable">;
   getFunction(
-    nameOrSignature: "applyDeltaToUint"
+    nameOrSignature: "applyDeltaToUint(bytes32,int256,string)"
   ): TypedContractMethod<[key: BytesLike, value: BigNumberish, errorMessage: string], [bigint], "nonpayable">;
+  getFunction(
+    nameOrSignature: "applyDeltaToUint(bytes32,uint256)"
+  ): TypedContractMethod<[key: BytesLike, value: BigNumberish], [bigint], "nonpayable">;
   getFunction(
     nameOrSignature: "boolArrayValues"
   ): TypedContractMethod<[arg0: BytesLike, arg1: BigNumberish], [boolean], "view">;

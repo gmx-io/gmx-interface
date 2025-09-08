@@ -1,10 +1,10 @@
-import { BOTANIX } from "config/chains";
+import { BOTANIX, ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 
 const DEFAULT_ASSETS_PER_SHARE = 10n ** 18n;
 
-export const useBotanixStakingAssetsPerShare = ({ chainId }: { chainId: number }): bigint | undefined => {
+export const useBotanixStakingAssetsPerShare = ({ chainId }: { chainId: ContractsChainId }): bigint | undefined => {
   const { data: botanixData } = useMulticall(chainId, "useBotanixStakingAssetsPerShare_StBTC", {
     key: chainId === BOTANIX ? [] : null,
     request: () => {

@@ -1,4 +1,4 @@
-import { getExcessiveExecutionFee, getHighExecutionFee, MIN_EXECUTION_FEE_USD } from "configs/chains";
+import { ContractsChainId, getExcessiveExecutionFee, getHighExecutionFee, MIN_EXECUTION_FEE_USD } from "configs/chains";
 import { USD_DECIMALS } from "configs/factors";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { ExecutionFee, GasLimitsConfig, L1ExpressOrderGasReference } from "types/fees";
@@ -104,23 +104,29 @@ export function estimateBatchGasLimit({
   updateOrdersCount,
   cancelOrdersCount,
   externalCallsGasLimit,
+  isGmxAccount,
 }: {
   gasLimits: GasLimitsConfig;
   createOrdersCount: number;
   updateOrdersCount: number;
   cancelOrdersCount: number;
   externalCallsGasLimit: bigint;
+  isGmxAccount: boolean;
 }) {
   const createOrdersGasLimit = gasLimits.createOrderGasLimit * BigInt(createOrdersCount);
   const updateOrdersGasLimit = gasLimits.updateOrderGasLimit * BigInt(updateOrdersCount);
   const cancelOrdersGasLimit = gasLimits.cancelOrderGasLimit * BigInt(cancelOrdersCount);
+  const gmxAccountOverhead = isGmxAccount ? gasLimits.gmxAccountCollateralGasLimit : 0n;
 
-  return createOrdersGasLimit + updateOrdersGasLimit + cancelOrdersGasLimit + externalCallsGasLimit;
+  return (
+    createOrdersGasLimit + updateOrdersGasLimit + cancelOrdersGasLimit + externalCallsGasLimit + gmxAccountOverhead
+  );
 }
 
 export function estimateBatchMinGasPaymentTokenAmount({
   chainId,
   gasPaymentToken,
+  isGmxAccount,
   relayFeeToken,
   gasPrice,
   gasLimits,
@@ -131,7 +137,8 @@ export function estimateBatchMinGasPaymentTokenAmount({
   cancelOrdersCount = 0,
   executionFeeAmount,
 }: {
-  chainId: number;
+  chainId: ContractsChainId;
+  isGmxAccount: boolean;
   gasLimits: GasLimitsConfig;
   gasPaymentToken: TokenData;
   relayFeeToken: TokenData;
@@ -149,6 +156,7 @@ export function estimateBatchMinGasPaymentTokenAmount({
     updateOrdersCount,
     cancelOrdersCount,
     externalCallsGasLimit: 0n,
+    isGmxAccount,
   });
 
   const relayerGasLimit = estimateRelayerGasLimit({

@@ -1,12 +1,11 @@
-import { Contract, ethers, Provider, Wallet } from "ethers";
-import { encodeAbiParameters, keccak256 } from "viem";
+import { Address, encodeAbiParameters, keccak256 } from "viem";
 
+import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getBestSwapStrategy } from "domain/synthetics/externalSwaps/utils";
-import { SignedTokenPermit, TokenData } from "domain/tokens";
-import { WalletSigner } from "lib/wallets";
+import type { SignedTokenPermit, TokenData } from "domain/tokens";
+import type { SignatureDomain } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
-import RelayParamsAbi from "sdk/abis/RelayParams.json";
-import { getContract } from "sdk/configs/contracts";
+import { ContractName, getContract } from "sdk/configs/contracts";
 import { MarketsInfoData } from "sdk/types/markets";
 import { ExternalSwapQuote, FindSwapPath, SwapAmounts } from "sdk/types/trade";
 import {
@@ -16,30 +15,69 @@ import {
   getExternalCallsPayload,
 } from "sdk/utils/orderTransactions";
 import { getSwapAmountsByToValue } from "sdk/utils/swap";
+import { nowInSeconds } from "sdk/utils/time";
 
 import { getOracleParamsForRelayParams } from "./oracleParamsUtils";
-import { GasPaymentParams, RawRelayParamsPayload, RelayFeePayload, RelayParamsPayload } from "./types";
+import type { GasPaymentParams, RawRelayParamsPayload, RelayFeePayload, RelayParamsPayload } from "./types";
 
-export function getExpressContractAddress(chainId: number, { isSubaccount }: { isSubaccount: boolean }) {
-  return getContract(chainId, isSubaccount ? "SubaccountGelatoRelayRouter" : "GelatoRelayRouter");
+export function getExpressContractAddress(
+  chainId: ContractsChainId,
+  {
+    isSubaccount,
+    isMultichain,
+    scope,
+  }: {
+    isSubaccount?: boolean;
+    isMultichain?: boolean;
+    scope?: "glv" | "gm" | "transfer" | "claims" | "order" | "subaccount";
+  }
+): Address {
+  let contractName: ContractName;
+  if (isMultichain) {
+    switch (scope) {
+      case "claims":
+        contractName = "MultichainClaimsRouter";
+        break;
+      case "order":
+        contractName = "MultichainOrderRouter";
+        break;
+      case "subaccount":
+        contractName = "MultichainSubaccountRouter";
+        break;
+      case "glv":
+        contractName = "MultichainGlvRouter";
+        break;
+      case "gm":
+        contractName = "MultichainGmRouter";
+        break;
+      case "transfer":
+        contractName = "MultichainTransferRouter";
+        break;
+      default:
+        throw new Error(`Invalid scope: ${scope}`);
+    }
+  } else {
+    if (isSubaccount) {
+      contractName = "SubaccountGelatoRelayRouter";
+    } else {
+      contractName = "GelatoRelayRouter";
+    }
+  }
+
+  return getContract(chainId, contractName);
 }
 
-export function getExpressContractInstance(chainId: number, provider: Provider, isSubaccount: boolean) {
-  const contractAddress = getExpressContractAddress(chainId, { isSubaccount });
+export function getGelatoRelayRouterDomain(
+  chainId: SourceChainId | ContractsChainId,
+  relayRouterAddress: string
+): SignatureDomain {
+  const name = "GmxBaseGelatoRelayRouter";
 
-  const abi = isSubaccount ? abis.SubaccountGelatoRelayRouter : abis.GelatoRelayRouter;
-
-  const contract = new Contract(contractAddress, abi, provider);
-
-  return contract;
-}
-
-export function getGelatoRelayRouterDomain(chainId: number, isSubaccount: boolean) {
   return {
-    name: "GmxBaseGelatoRelayRouter",
+    name,
     version: "1",
-    chainId: chainId,
-    verifyingContract: getExpressContractAddress(chainId, { isSubaccount }),
+    chainId,
+    verifyingContract: relayRouterAddress,
   };
 }
 
@@ -50,16 +88,18 @@ export function getRelayerFeeParams({
   relayerFeeToken,
   relayerFeeAmount,
   totalRelayerFeeTokenAmount,
+  gasPaymentTokenAsCollateralAmount,
   transactionExternalCalls,
   feeExternalSwapQuote,
   findFeeSwapPath,
 }: {
-  chainId: number;
+  chainId: ContractsChainId;
   account: string;
   relayerFeeAmount: bigint;
   totalRelayerFeeTokenAmount: bigint;
   relayerFeeToken: TokenData;
   gasPaymentToken: TokenData;
+  gasPaymentTokenAsCollateralAmount: bigint;
   findFeeSwapPath: FindSwapPath | undefined;
   feeExternalSwapQuote: ExternalSwapQuote | undefined;
   /**
@@ -76,6 +116,7 @@ export function getRelayerFeeParams({
     relayerFeeAmount,
     totalRelayerFeeTokenAmount,
     gasPaymentTokenAmount: 0n,
+    gasPaymentTokenAsCollateralAmount,
   };
 
   let feeParams: RelayFeePayload;
@@ -158,14 +199,14 @@ export function getRawRelayerParams({
   tokenPermits,
   marketsInfoData,
 }: {
-  chainId: number;
+  chainId: ContractsChainId;
   gasPaymentTokenAddress: string;
   relayerFeeTokenAddress: string;
   feeParams: RelayFeePayload;
   externalCalls: ExternalCallsPayload;
   tokenPermits: SignedTokenPermit[];
   marketsInfoData: MarketsInfoData;
-}) {
+}): RawRelayParamsPayload {
   const oracleParams = getOracleParamsForRelayParams({
     chainId,
     externalCalls,
@@ -180,13 +221,15 @@ export function getRawRelayerParams({
     tokenPermits,
     externalCalls,
     fee: feeParams,
+    desChainId: BigInt(chainId),
+    userNonce: nowInSeconds(),
   };
 
   return relayParamsPayload;
 }
 
 export function hashRelayParams(relayParams: RelayParamsPayload) {
-  const encoded = encodeAbiParameters(RelayParamsAbi.abi, [
+  const encoded = encodeAbiParameters(abis.RelayParams, [
     [relayParams.oracleParams.tokens, relayParams.oracleParams.providers, relayParams.oracleParams.data],
     [
       relayParams.externalCalls.sendTokens,
@@ -200,20 +243,10 @@ export function hashRelayParams(relayParams: RelayParamsPayload) {
     [relayParams.fee.feeToken, relayParams.fee.feeAmount, relayParams.fee.feeSwapPath],
     relayParams.userNonce,
     relayParams.deadline,
+    relayParams.desChainId,
   ]);
 
   const hash = keccak256(encoded);
 
   return hash;
-}
-
-export async function getRelayRouterNonceForSigner(
-  chainId: number,
-  signer: WalletSigner | Wallet,
-  isSubaccount: boolean
-): Promise<bigint> {
-  const contractAddress = getExpressContractAddress(chainId, { isSubaccount });
-  const contract = new ethers.Contract(contractAddress, abis.GelatoRelayRouter, signer);
-
-  return contract.userNonces(signer.address);
 }

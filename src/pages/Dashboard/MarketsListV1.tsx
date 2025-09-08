@@ -47,7 +47,7 @@ export function MarketsListV1({
         </div>
         <table className="w-full">
           <thead>
-            <TableTheadTr bordered>
+            <TableTheadTr>
               <TableTh>
                 <Trans>TOKEN</Trans>
               </TableTh>
@@ -87,7 +87,7 @@ export function MarketsListV1({
               }
 
               return (
-                <TableTr key={token.address} bordered={false} hoverable={false}>
+                <TableTr key={token.address}>
                   <TableTd>
                     <div className="token-symbol-wrapper">
                       <div className="App-card-title-info">
@@ -204,7 +204,7 @@ export function MarketsListV1({
                   </div>
                   <div>
                     <TooltipComponent
-                      handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
+                      handle={`$\u200a${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
                       position="bottom-end"
                       renderContent={() => {
                         return (

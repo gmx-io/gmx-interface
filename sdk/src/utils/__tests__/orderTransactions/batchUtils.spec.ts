@@ -16,6 +16,7 @@ import {
   getBatchTotalPayCollateralAmount,
   getIsEmptyBatch,
   getIsInvalidBatchReceiver,
+  IncreasePositionOrderParams,
 } from "utils/orderTransactions";
 
 import { mockExternalSwap } from "../../../test/mock";
@@ -44,7 +45,6 @@ const commonMarketIncreaseParams = {
   collateralDeltaAmount: parseValue("1", WETH.decimals)!,
   swapPath: [WETH.address],
   externalSwapQuote: undefined as ExternalSwapQuote | undefined,
-  minOutputAmount: 0n,
   triggerPrice: undefined,
   referralCode: zeroHash,
   autoCancel: false,
@@ -53,7 +53,7 @@ const commonMarketIncreaseParams = {
   validFromTime: 0n,
   orderType: OrderType.MarketIncrease as const,
   uiFeeReceiver: zeroAddress,
-};
+} satisfies Partial<IncreasePositionOrderParams>;
 
 // Helper to build a batch with multiple increase orders
 function buildMultiIncreaseBatch(paramsList: (typeof commonMarketIncreaseParams)[]) {
