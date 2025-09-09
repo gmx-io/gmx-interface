@@ -37,7 +37,7 @@ export function AppHeaderLinks({ small, clickCloseIcon, showRedirectModal }: Pro
       </div>
       <div className="App-header-link-container">
         <HeaderLink qa="buy" to="/sell_glp" showRedirectModal={showRedirectModal}>
-          <Trans>Redeem GLP</Trans>
+          <Trans>Sell GLP</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
