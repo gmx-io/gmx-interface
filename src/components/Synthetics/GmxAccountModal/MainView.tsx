@@ -434,6 +434,7 @@ const FundingHistorySection = () => {
             content={<Trans>GMX Account funding activity.</Trans>}
             variant="icon"
             handleClassName="font-medium"
+            iconClassName="text-typography-secondary"
           >
             <Trans>Funding Activity</Trans>
           </TooltipWithPortal>
