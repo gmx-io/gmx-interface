@@ -71,7 +71,6 @@ msgstr "Kaufe GM-Token vor dem Zurücksetzen der Epoche in {0}, um für den Bonu
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "PRICE"
 msgstr "PREIS"
 
@@ -1079,7 +1078,6 @@ msgstr "Kaufe {operationTokenSymbol}"
 msgid "Buy GM: {0}"
 msgstr "Kaufe GM: {0}"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Market Cap"
@@ -1348,8 +1346,8 @@ msgid "Select pool"
 msgstr "Pool wählen"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "WEIGHT"
-msgstr "GEWICHTUNG"
+#~ msgid "WEIGHT"
+#~ msgstr "GEWICHTUNG"
 
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -1829,8 +1827,8 @@ msgid "Create Order"
 msgstr "Order erstellen"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Utilization"
-msgstr "Nutzung"
+#~ msgid "Utilization"
+#~ msgstr "Nutzung"
 
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 msgid "Select Asset to Deposit"
@@ -2409,7 +2407,6 @@ msgid "Max {0} sellable amount exceeded"
 msgstr "Max. {0} verkaufbarer Betrag überschritten"
 
 #: src/components/Glp/GlpSwap.jsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "TOKEN"
 msgstr "TOKEN"
 
@@ -2572,7 +2569,6 @@ msgstr "TVL"
 msgid "Shift Fee"
 msgstr "Shift-Gebühr"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "GLP Pool"
 msgstr "GLP Pool"
@@ -3272,7 +3268,6 @@ msgstr "Lasse mindestens {0} ETH für Gas"
 msgid "Enable orders failed."
 msgstr "Aktivieren von Orders fehlgeschlagen."
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GlpCard.tsx
@@ -4628,8 +4623,8 @@ msgstr "Ungültige Transferadressen: Bitte überprüfe die URL."
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "GLP Index Composition"
-msgstr "GLP-Index-Zusammensetzung"
+#~ msgid "GLP Index Composition"
+#~ msgstr "GLP-Index-Zusammensetzung"
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "No distribution history yet"
@@ -5026,7 +5021,6 @@ msgstr "{0}: {1}, Preis: {priceDisplay}"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "POOL"
 msgstr "POOL"
 
@@ -5083,8 +5077,8 @@ msgid "Order cannot be executed as it would reduce the position's leverage below
 msgstr "Auftrag kann nicht ausgeführt werden, da er die Hebelwirkung der Position unter 1 reduzieren würde"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Weight"
-msgstr "Gewichtung"
+#~ msgid "Weight"
+#~ msgstr "Gewichtung"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -5362,7 +5356,6 @@ msgid "Approving..."
 msgstr "Genehmige..."
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "UTILIZATION"
 msgstr "NUTZUNG"
 
@@ -5568,9 +5561,7 @@ msgstr "Referral Code Update fehlgeschlagen."
 #: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TVChart/Chart.tsx
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GlpCard.tsx
@@ -5788,7 +5779,6 @@ msgstr "Dashboard für GMX Referral Statistiken"
 msgid "Action"
 msgstr "Aktion"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmCard.tsx
 msgid "Supply"
 msgstr "Versorgung"
@@ -6199,8 +6189,8 @@ msgid "Volume traded by your referred traders."
 msgstr "Von deinen empfohlenen Tradern gehandeltes Volumen."
 
 #: src/pages/Dashboard/GlpCard.tsx
-msgid "Stablecoin Percentage"
-msgstr "Stablecoin-Prozentsatz"
+#~ msgid "Stablecoin Percentage"
+#~ msgstr "Stablecoin-Prozentsatz"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order will be executed once there is sufficient liquidity."
@@ -6546,8 +6536,8 @@ msgstr "der Eröffnungsgebühr"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Pool Amount"
-msgstr "Pool-Betrag"
+#~ msgid "Pool Amount"
+#~ msgstr "Pool-Betrag"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -7304,8 +7294,8 @@ msgstr "GMX kaufen"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Max {0} Capacity"
-msgstr "Max. {0} Kapazität"
+#~ msgid "Max {0} Capacity"
+#~ msgstr "Max. {0} Kapazität"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copy error"
@@ -7835,7 +7825,6 @@ msgstr "Long"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Pool"
 msgstr "Pool"
 
@@ -8175,8 +8164,8 @@ msgstr "esGMX staken"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Target Min Amount"
-msgstr "Ziel-Min.-Betrag"
+#~ msgid "Target Min Amount"
+#~ msgstr "Ziel-Min.-Betrag"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts

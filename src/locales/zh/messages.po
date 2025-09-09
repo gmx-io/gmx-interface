@@ -71,7 +71,6 @@ msgstr "在周期重置前 {0} 内购买 GM 代币，以获得奖金返利资格
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "PRICE"
 msgstr "价格"
 
@@ -1079,7 +1078,6 @@ msgstr "购买 {operationTokenSymbol}"
 msgid "Buy GM: {0}"
 msgstr "购买 GM: {0}"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Market Cap"
@@ -1348,8 +1346,8 @@ msgid "Select pool"
 msgstr "选择池"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "WEIGHT"
-msgstr "权重"
+#~ msgid "WEIGHT"
+#~ msgstr "权重"
 
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -1829,8 +1827,8 @@ msgid "Create Order"
 msgstr "创建订单"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Utilization"
-msgstr "利用率"
+#~ msgid "Utilization"
+#~ msgstr "利用率"
 
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 msgid "Select Asset to Deposit"
@@ -2409,7 +2407,6 @@ msgid "Max {0} sellable amount exceeded"
 msgstr "超过最大 {0} 可售卖金额"
 
 #: src/components/Glp/GlpSwap.jsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "TOKEN"
 msgstr "代币"
 
@@ -2572,7 +2569,6 @@ msgstr "TVL"
 msgid "Shift Fee"
 msgstr "转移费用"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "GLP Pool"
 msgstr "GLP 池"
@@ -3272,7 +3268,6 @@ msgstr "至少留下 {0} ETH 用于 gas"
 msgid "Enable orders failed."
 msgstr "启用订单失败。"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GlpCard.tsx
@@ -4628,8 +4623,8 @@ msgstr "无效转移地址：请检查 URL。"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "GLP Index Composition"
-msgstr "GLP 指数组成"
+#~ msgid "GLP Index Composition"
+#~ msgstr "GLP 指数组成"
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "No distribution history yet"
@@ -5026,7 +5021,6 @@ msgstr "{0}: {1}, 价格：{priceDisplay}"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "POOL"
 msgstr "池"
 
@@ -5083,8 +5077,8 @@ msgid "Order cannot be executed as it would reduce the position's leverage below
 msgstr "订单无法执行，因为这将使头寸的杠杆率低于 1"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Weight"
-msgstr "权重"
+#~ msgid "Weight"
+#~ msgstr "权重"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -5362,7 +5356,6 @@ msgid "Approving..."
 msgstr "正在批准..."
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "UTILIZATION"
 msgstr "利用率"
 
@@ -5568,9 +5561,7 @@ msgstr "推荐代码更新失败。"
 #: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TVChart/Chart.tsx
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GlpCard.tsx
@@ -5788,7 +5779,6 @@ msgstr "GMX 推荐统计仪表板"
 msgid "Action"
 msgstr "操作"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmCard.tsx
 msgid "Supply"
 msgstr "供应"
@@ -6199,8 +6189,8 @@ msgid "Volume traded by your referred traders."
 msgstr "您推荐的交易者的交易量。"
 
 #: src/pages/Dashboard/GlpCard.tsx
-msgid "Stablecoin Percentage"
-msgstr "稳定币百分比"
+#~ msgid "Stablecoin Percentage"
+#~ msgstr "稳定币百分比"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order will be executed once there is sufficient liquidity."
@@ -6546,8 +6536,8 @@ msgstr "开仓费用"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Pool Amount"
-msgstr "池金额"
+#~ msgid "Pool Amount"
+#~ msgstr "池金额"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -7304,8 +7294,8 @@ msgstr "购买 GMX"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Max {0} Capacity"
-msgstr "最大 {0} 容量"
+#~ msgid "Max {0} Capacity"
+#~ msgstr "最大 {0} 容量"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copy error"
@@ -7835,7 +7825,6 @@ msgstr "做多"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Pool"
 msgstr "池子"
 
@@ -8175,8 +8164,8 @@ msgstr "质押 esGMX"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Target Min Amount"
-msgstr "目标最低金额"
+#~ msgid "Target Min Amount"
+#~ msgstr "目标最低金额"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts

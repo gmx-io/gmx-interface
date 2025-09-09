@@ -104,7 +104,7 @@ export function GmListItem({
 
   const history = useHistory();
 
-  const handleMobileItemClick = useCallback(
+  const handleItemClick = useCallback(
     (event: React.MouseEvent) => {
       history.push(`/pools/details?market=${marketOrGlvTokenAddress}`);
       event.stopPropagation();
@@ -138,7 +138,7 @@ export function GmListItem({
   if (isMobile) {
     return (
       <div className="flex flex-col gap-4 rounded-8 bg-fill-surfaceElevated50 p-12">
-        <div className="flex flex-wrap items-center pb-8" onClick={handleMobileItemClick}>
+        <div className="flex flex-wrap items-center pb-8" onClick={handleItemClick}>
           <div className="flex items-center">
             <div className="mr-12 flex shrink-0 items-center">
               <TokenIcon
@@ -225,7 +225,7 @@ export function GmListItem({
   }
 
   return (
-    <TableTr key={token.address}>
+    <TableTr key={token.address} hoverable onClick={handleItemClick}>
       <TableTd className="w-[22%] !py-10 pl-16">
         <div className="w-[220px]">
           <div className="flex items-center gap-8">

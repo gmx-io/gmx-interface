@@ -71,7 +71,6 @@ msgstr "보너스 리베이트 자격을 얻기 위해 에포크가 {0} 안에 �
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "PRICE"
 msgstr "가격"
 
@@ -1079,7 +1078,6 @@ msgstr "{operationTokenSymbol} 구매"
 msgid "Buy GM: {0}"
 msgstr "GM 구매: {0}"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Market Cap"
@@ -1348,8 +1346,8 @@ msgid "Select pool"
 msgstr "풀 선택"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "WEIGHT"
-msgstr "비중"
+#~ msgid "WEIGHT"
+#~ msgstr "비중"
 
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -1829,8 +1827,8 @@ msgid "Create Order"
 msgstr "주문 생성"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Utilization"
-msgstr "이용률"
+#~ msgid "Utilization"
+#~ msgstr "이용률"
 
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 msgid "Select Asset to Deposit"
@@ -2409,7 +2407,6 @@ msgid "Max {0} sellable amount exceeded"
 msgstr "최대 {0} 판매 가능 금액 초과"
 
 #: src/components/Glp/GlpSwap.jsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "TOKEN"
 msgstr "토큰"
 
@@ -2572,7 +2569,6 @@ msgstr "TVL"
 msgid "Shift Fee"
 msgstr "교환 수수료"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "GLP Pool"
 msgstr "GLP 풀"
@@ -3272,7 +3268,6 @@ msgstr "가스비로 최소 {0} ETH 남기기"
 msgid "Enable orders failed."
 msgstr "주문 유효화 실패"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GlpCard.tsx
@@ -4628,8 +4623,8 @@ msgstr "유효하지 않은 이전 주소: URL 확인하세요."
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "GLP Index Composition"
-msgstr "GLP 인덱스 구성"
+#~ msgid "GLP Index Composition"
+#~ msgstr "GLP 인덱스 구성"
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "No distribution history yet"
@@ -5026,7 +5021,6 @@ msgstr "{0}: {1}, 가격: {priceDisplay}"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "POOL"
 msgstr "풀"
 
@@ -5083,8 +5077,8 @@ msgid "Order cannot be executed as it would reduce the position's leverage below
 msgstr "포지션의 레버리지가 1 미만으로 감소되므로 주문을 실행할 수 없습니다"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Weight"
-msgstr "가중치"
+#~ msgid "Weight"
+#~ msgstr "가중치"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -5362,7 +5356,6 @@ msgid "Approving..."
 msgstr "승인 중..."
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "UTILIZATION"
 msgstr "이용률"
 
@@ -5568,9 +5561,7 @@ msgstr "추천인 코드 업데이트 실패."
 #: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TVChart/Chart.tsx
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GlpCard.tsx
@@ -5788,7 +5779,6 @@ msgstr "GMX 추천 시스템 통계 대시보드"
 msgid "Action"
 msgstr "액션"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmCard.tsx
 msgid "Supply"
 msgstr "공급량"
@@ -6199,8 +6189,8 @@ msgid "Volume traded by your referred traders."
 msgstr "추천한 트레이더의 거래량."
 
 #: src/pages/Dashboard/GlpCard.tsx
-msgid "Stablecoin Percentage"
-msgstr "스테이블코인 비율"
+#~ msgid "Stablecoin Percentage"
+#~ msgstr "스테이블코인 비율"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order will be executed once there is sufficient liquidity."
@@ -6546,8 +6536,8 @@ msgstr "개설 수수료의"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Pool Amount"
-msgstr "풀 수량"
+#~ msgid "Pool Amount"
+#~ msgstr "풀 수량"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -7304,8 +7294,8 @@ msgstr "GMX 구매"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Max {0} Capacity"
-msgstr "{0} 최대 수용량"
+#~ msgid "Max {0} Capacity"
+#~ msgstr "{0} 최대 수용량"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copy error"
@@ -7835,7 +7825,6 @@ msgstr "롱"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Pool"
 msgstr "풀"
 
@@ -8175,8 +8164,8 @@ msgstr "esGMX 스테이킹"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Target Min Amount"
-msgstr "목표 최소 금액"
+#~ msgid "Target Min Amount"
+#~ msgstr "목표 최소 금액"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
