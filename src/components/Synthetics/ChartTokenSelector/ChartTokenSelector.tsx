@@ -99,7 +99,7 @@ export default function ChartTokenSelector(props: Props) {
               <TokenIcon symbol={selectedToken.symbol} displaySize={isMobile ? 32 : 20} importSize={40} />
               <span
                 className={cx("flex items-baseline justify-start leading-base", {
-                  "flex-col": !oneRowLabels && !isSwap,
+                  "flex-col gap-2": !oneRowLabels && !isSwap,
                   "flex-row": oneRowLabels || isSwap,
                 })}
               >
