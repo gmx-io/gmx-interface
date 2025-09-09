@@ -9,9 +9,10 @@ import { isSettlementChain } from "config/multichain";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
-import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
+import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
@@ -34,6 +35,7 @@ type DisplayToken = {
   balance: bigint | undefined;
   balanceUsd: bigint | undefined;
   decimals: number;
+  isStable: boolean | undefined;
 };
 
 const tokenSorter = (a: DisplayToken, b: DisplayToken): 1 | -1 | 0 => {
@@ -119,8 +121,13 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
               </div>
             </div>
             <div className="text-right">
-              <div>{formatBalanceAmount(displayToken.balance ?? 0n, displayToken.decimals)}</div>
-              <div className="text-body-small text-slate-100">{formatUsd(displayToken.balanceUsd)}</div>
+              <Amount
+                className="text-body-large"
+                amount={displayToken.balance}
+                decimals={displayToken.decimals}
+                isStable={displayToken.isStable}
+              />
+              <div className="text-body-small text-slate-100 numbers">{formatUsd(displayToken.balanceUsd)}</div>
             </div>
           </div>
         ))}
@@ -144,6 +151,7 @@ const AssetListMultichain = () => {
           balance: token.gmxAccountBalance,
           balanceUsd: convertToUsd(token.gmxAccountBalance, token.decimals, getMidPrice(token.prices)),
           decimals: token.decimals,
+          isStable: token.isStable,
         })
       )
       .sort(tokenSorter);
@@ -165,6 +173,7 @@ const AssetListSettlementChain = () => {
           balance: tokenData.gmxAccountBalance,
           balanceUsd: convertToUsd(tokenData.gmxAccountBalance, tokenData.decimals, getMidPrice(tokenData.prices)),
           chainId: 0,
+          isStable: tokenData.isStable,
         },
         {
           ...tokenData,
@@ -172,6 +181,7 @@ const AssetListSettlementChain = () => {
           balance: tokenData.walletBalance,
           balanceUsd: convertToUsd(tokenData.walletBalance, tokenData.decimals, getMidPrice(tokenData.prices)),
           chainId: chainId,
+          isStable: tokenData.isStable,
         },
       ])
       .filter((token) => token.balance !== undefined && token.balance > 0n)

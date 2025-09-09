@@ -16,11 +16,12 @@ import {
 import { useGmxAccountFundingHistoryItem } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
 import { CHAIN_ID_TO_EXPLORER_NAME, CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
-import { formatAmountFree, formatBalanceAmount } from "lib/numbers";
+import { formatAmountFree } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import { getToken } from "sdk/configs/tokens";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
@@ -128,12 +129,13 @@ export const TransferDetailsView = () => {
         label={<Trans>Amount</Trans>}
         value={
           selectedTransfer && token ? (
-            <>
-              {formatBalanceAmount(selectedTransfer.sentAmount, token.decimals, undefined, {
-                isStable: token.isStable,
-              })}{" "}
-              <span className="text-typography-secondary">{token.symbol}</span>
-            </>
+            <Amount
+              amount={selectedTransfer.sentAmount}
+              decimals={token.decimals}
+              isStable={token.isStable}
+              symbol={token.symbol}
+              symbolClassName="text-typography-secondary"
+            />
           ) : undefined
         }
       />
@@ -143,17 +145,13 @@ export const TransferDetailsView = () => {
             label={<Trans>Fee</Trans>}
             value={
               selectedTransfer && token ? (
-                <>
-                  {formatBalanceAmount(
-                    selectedTransfer.sentAmount - selectedTransfer.receivedAmount,
-                    token.decimals,
-                    undefined,
-                    {
-                      isStable: token.isStable,
-                    }
-                  )}{" "}
-                  <span className="text-typography-secondary">{token.symbol}</span>
-                </>
+                <Amount
+                  amount={selectedTransfer.sentAmount - selectedTransfer.receivedAmount}
+                  decimals={token.decimals}
+                  isStable={token.isStable}
+                  symbol={token.symbol}
+                  symbolClassName="text-typography-secondary"
+                />
               ) : undefined
             }
           />

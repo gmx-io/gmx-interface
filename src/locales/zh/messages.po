@@ -610,10 +610,6 @@ msgstr "最大容量"
 msgid "Market Swap"
 msgstr "市场交换"
 
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-msgid "The amount you are trying to deposit exceeds the limit. Please try an amount smaller than {upperLimitFormatted}."
-msgstr ""
-
 #: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "A $500,000 GLV pool (funded by DAO funds) rewards long-term holders: If you keep your distributed GLV for at least 3 months (without selling or transferring), you'll receive a pro rata share."
 msgstr ""
@@ -662,10 +658,6 @@ msgstr "流动性中"
 #: src/components/Exchange/SwapBox.jsx
 msgid "Exit Price"
 msgstr "退出价格"
-
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
-msgid "Your wallet balance on the connected network. Usable for trading on the connected chain."
-msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V2"
@@ -1564,6 +1556,10 @@ msgstr "转移 GM"
 msgid "Requested withdrawal of {0} USD from {1} {longOrShortText}."
 msgstr "请求从 {1} {longOrShortText} 提取 {0} USD。"
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
+msgstr ""
+
 #: src/pages/Exchange/Exchange.tsx
 msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 msgstr "无法在允许滑点范围内增加 {tokenSymbol} {longOrShortText}，您可以在页面右上角的设置中调整允许滑点。"
@@ -2243,10 +2239,6 @@ msgstr ""
 msgid "<0>Read more</0> about fees."
 msgstr "<0>阅读更多</0> 关于费用。"
 
-#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
-msgid "Withdrawing requires {0} while you have {1}. Please <0>swap</0> or <1>deposit</1> more {2} to your GMX account."
-msgstr ""
-
 #: src/components/Exchange/OrdersList.jsx
 msgid "You will receive at least {0} {1} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed."
 msgstr "如果此订单执行，您将至少收到 {0} {1}。执行价格可能因订单执行时的交换费用而异。"
@@ -2516,6 +2508,10 @@ msgstr "{existingTriggerOrderLength, plural, one {您有一个活跃的触发订
 msgid "The actual execution price may differ from the set limit price due to fees and price impact. This ensures that you receive at least the minimum receive amount."
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "The amount you are trying to deposit exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
+msgstr ""
+
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
 msgstr "您至少需要总计 {0} {stakeTokenLabel} 来授权 {1} esGMX。"
@@ -2523,6 +2519,10 @@ msgstr "您至少需要总计 {0} {stakeTokenLabel} 来授权 {1} esGMX。"
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Swap {0} USDG for{1} {2}"
 msgstr "将 {0} USDG 交换为{1} {2}"
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Native token cannot be approved"
+msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "{0} will be swapped to {1} on order execution."
@@ -2997,6 +2997,10 @@ msgstr ""
 msgid "Speed up page loading"
 msgstr "加速页面加载"
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+msgid "The amount you are trying to withdraw is below the limit. Please try an amount larger than <0>{lowerLimitFormatted}</0>."
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.jsx
 msgid "{0}: Swap {amountInDisplay}{1} for{minOutDisplay} {2}, Price:{3} USD"
 msgstr "{0}：将 {amountInDisplay}{1} 交换为{minOutDisplay} {2}，价格：{3} USD"
@@ -3399,10 +3403,6 @@ msgstr "提交中..."
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
 msgstr "应用程序"
-
-#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
-msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than {upperLimitFormatted}."
-msgstr ""
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to Wallet"
@@ -3815,10 +3815,6 @@ msgstr "请求市场交换"
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
 msgstr "{0} 市场池流动性不足。请为此市场选择不同的池。{1}"
 
-#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
-msgid "The amount you are trying to withdraw is below the limit. Please try an amount larger than {lowerLimitFormatted}."
-msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
 msgstr "应用程序禁用，待 {0} 升级"
@@ -4021,6 +4017,11 @@ msgstr "触发订单禁用，待 {0} 升级"
 msgid "Funding Fees"
 msgstr "资金费用"
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Approval failed"
+msgstr ""
+
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Home/Home.tsx
@@ -4038,6 +4039,10 @@ msgstr "该仓位将在 {0} USD 开仓，最大滑点为 {1}%。<0/><1/>滑点�
 #: src/components/Referrals/TradersStats.tsx
 msgid "Active Referral Code"
 msgstr "活跃推荐代码"
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "The amount you are trying to deposit is below the limit. Please try an amount larger than <0>{lowerLimitFormatted}</0>."
+msgstr ""
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Save One-Click Trading settings"
@@ -4495,10 +4500,6 @@ msgstr "准备交易错误。提供者未定义"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity in GM Pool"
 msgstr "GM 池流动性不足"
-
-#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least {1} in {2} or switch your gas token in settings."
-msgstr ""
 
 #: src/components/Exchange/ExchangeBanner.jsx
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
@@ -5441,7 +5442,6 @@ msgstr ""
 #: src/components/Synthetics/Claims/Claims.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -6132,10 +6132,6 @@ msgstr "协议代币"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Collateral at Liquidation"
 msgstr "清算时的抵押品"
-
-#: src/components/Synthetics/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "You’ll need {formattedAmount} ({formattedUsd}) {nativeTokenSymbol} in your account to withdraw funds."
-msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -7396,6 +7392,10 @@ msgstr ""
 msgid "Update Limit"
 msgstr "更新限价"
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawing requires <0/> while you have <1/>. Please <2>swap</2> or <3>deposit</3> more {0} to your GMX account."
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -7719,6 +7719,10 @@ msgstr ""
 msgid "Why is the claim in GLV tokens?"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "You’ll need <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {nativeTokenSymbol} in your account to withdraw funds."
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express + One-Click"
 msgstr ""
@@ -7855,10 +7859,6 @@ msgstr "<0>池子容量已达到 {0}。请使用其他代币购买 GLP。</0><1>
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX dashboards and analytics."
 msgstr "GMX 仪表板和分析。"
-
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-msgid "The amount you are trying to deposit is below the limit. Please try an amount larger than {lowerLimitFormatted}."
-msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
@@ -8806,10 +8806,6 @@ msgstr "7 天"
 msgid "Rage Trade"
 msgstr "Rage Trade"
 
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
-msgid "GMX Account funding activity."
-msgstr ""
-
 #: src/pages/Home/Home.tsx
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
 msgstr "直接从您的钱包使用高达 100x 杠杆交易 BTC、ETH、AVAX 和其他顶级加密货币"
@@ -9066,6 +9062,10 @@ msgstr "生态系统项目"
 msgid "Market order will be cancellable in ..."
 msgstr "市价订单将在 ... 可取消"
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in settings."
+msgstr ""
+
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"
 msgstr "与 GMX 匿名聊天"
@@ -9073,6 +9073,7 @@ msgstr "与 GMX 匿名聊天"
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Loading"
 msgstr ""

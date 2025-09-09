@@ -26,6 +26,7 @@ import {
   useGmxAccountDepositViewTokenInputValue,
   useGmxAccountModalOpen,
   useGmxAccountSelector,
+  useGmxAccountSettlementChainId,
 } from "context/GmxAccountContext/hooks";
 import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountContext/selectors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -65,6 +66,7 @@ import { applySlippageToMinOut } from "sdk/utils/trade";
 import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import NumberInput from "components/NumberInput/NumberInput";
@@ -102,6 +104,7 @@ const useIsFirstDeposit = () => {
 export const DepositView = () => {
   const { chainId: settlementChainId, srcChainId } = useChainId();
   const { address: account, chainId: walletChainId } = useAccount();
+  const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const [depositViewChain, setDepositViewChain] = useGmxAccountDepositViewChain();
   const walletSigner = useEthersSigner({ chainId: srcChainId });
   const { provider: sourceChainProvider } = useJsonRpcProvider(depositViewChain);
@@ -232,23 +235,23 @@ export const DepositView = () => {
 
   const handleApprove = useCallback(async () => {
     if (!depositViewTokenAddress || inputAmount === undefined || !spenderAddress || !depositViewChain) {
-      helperToast.error("Approve failed");
+      helperToast.error(t`Approval failed`);
       return;
     }
 
     const isNative = depositViewTokenAddress === zeroAddress;
 
     if (isNative) {
-      helperToast.error("Native token cannot be approved");
+      helperToast.error(t`Native token cannot be approved`);
       return;
     }
 
     if (!selectedTokenSourceChainTokenId) {
-      helperToast.error("Approve failed");
+      helperToast.error(t`Approval failed`);
       return;
     }
 
-    await wrapChainAction(depositViewChain, async (signer) => {
+    await wrapChainAction(depositViewChain, setSettlementChainId, async (signer) => {
       await approveTokens({
         chainId: depositViewChain,
         tokenAddress: selectedTokenSourceChainTokenId.address,
@@ -260,7 +263,14 @@ export const DepositView = () => {
         approveAmount: undefined,
       });
     });
-  }, [depositViewTokenAddress, inputAmount, spenderAddress, selectedTokenSourceChainTokenId, depositViewChain]);
+  }, [
+    depositViewTokenAddress,
+    inputAmount,
+    spenderAddress,
+    depositViewChain,
+    selectedTokenSourceChainTokenId,
+    setSettlementChainId,
+  ]);
 
   useEffect(() => {
     if (!needTokenApprove && isApproving) {
@@ -471,7 +481,7 @@ export const DepositView = () => {
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
-    await wrapChainAction(depositViewChain, async (signer) => {
+    await wrapChainAction(depositViewChain, setSettlementChainId, async (signer) => {
       await sendCrossChainDepositTxn({
         chainId: depositViewChain,
         signer,
@@ -505,6 +515,7 @@ export const DepositView = () => {
     selectedTokenSourceChainTokenId?.address,
     selectedTokenSourceChainTokenId?.stargate,
     sendParamsWithSlippage,
+    setSettlementChainId,
     settlementChainId,
   ]);
 
@@ -698,13 +709,6 @@ export const DepositView = () => {
     [onClick]
   );
 
-  let placeholder = "";
-  if ((inputValue === undefined || inputValue === "") && selectedToken?.symbol) {
-    placeholder = `0.0 ${selectedToken.symbol}`;
-  } else if (selectedToken?.symbol) {
-    placeholder = selectedToken.symbol;
-  }
-
   return (
     <form className="flex grow flex-col overflow-y-auto px-adaptive pb-adaptive pt-adaptive" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-[--padding-adaptive]">
@@ -719,13 +723,13 @@ export const DepositView = () => {
               onClick={() => {
                 setIsVisibleOrView("selectAssetToDeposit");
               }}
-              className="flex items-center justify-between rounded-8 border border-slate-800 bg-slate-800 px-14 py-12 gmx-hover:bg-fill-surfaceElevatedHover"
+              className="flex items-center justify-between rounded-8 border border-slate-800 bg-slate-800 px-14 py-13 gmx-hover:bg-fill-surfaceElevatedHover"
             >
               <div className="flex items-center gap-8">
                 {selectedToken ? (
                   <>
                     <TokenIcon symbol={selectedToken.symbol} displaySize={20} importSize={40} />
-                    <span className="text-body-large">{selectedToken.symbol}</span>
+                    <span className="text-16 leading-base">{selectedToken.symbol}</span>
                   </>
                 ) : depositViewChain !== undefined ? (
                   <>
@@ -747,7 +751,7 @@ export const DepositView = () => {
               <BiChevronRight className="size-20 text-typography-secondary" />
             </div>
           ) : (
-            <div className="rounded-8 border border-slate-800 bg-slate-800 px-14 py-12 text-typography-secondary">
+            <div className="rounded-8 border border-slate-800 bg-slate-800 px-14 py-13 text-typography-secondary">
               <span className="flex min-h-20 items-center">
                 {depositViewChain !== undefined ? (
                   <Trans>No assets available for deposit on {getChainName(depositViewChain)}</Trans>
@@ -763,9 +767,9 @@ export const DepositView = () => {
             <div className="text-body-medium text-typography-secondary">
               <Trans>From Network</Trans>
             </div>
-            <div className="flex items-center gap-8 rounded-8 border border-slate-600 px-14 py-12">
+            <div className="flex items-center gap-8 rounded-8 border border-slate-600 px-14 py-13">
               <img src={getChainIcon(depositViewChain)} alt={getChainName(depositViewChain)} className="size-20" />
-              <span className="text-body-large text-typography-secondary">{getChainName(depositViewChain)}</span>
+              <span className="text-16 leading-base text-typography-secondary">{getChainName(depositViewChain)}</span>
             </div>
           </div>
         )}
@@ -776,37 +780,37 @@ export const DepositView = () => {
             {selectedTokenSourceChainBalance !== undefined && selectedToken !== undefined && (
               <div>
                 <Trans>Available:</Trans>{" "}
-                <span className="text-typography-primary">
-                  {formatBalanceAmount(selectedTokenSourceChainBalance, selectedToken.decimals, selectedToken.symbol, {
-                    isStable: selectedToken.isStable,
-                  })}
-                </span>
+                <Amount
+                  className="text-typography-primary"
+                  amount={selectedTokenSourceChainBalance}
+                  decimals={selectedToken.decimals}
+                  isStable={selectedToken.isStable}
+                  symbol={selectedToken.symbol}
+                />
               </div>
             )}
           </div>
-          <div className="relative">
+          <div className="relative text-16 leading-base">
             <NumberInput
               value={inputValue}
               onValueChange={(e) => setInputValue(e.target.value)}
-              className="w-full rounded-8 border border-slate-800 bg-slate-800 py-14 pl-12 pr-68 leading-[20px] focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
+              className="w-full rounded-8 border border-slate-800 bg-slate-800 py-13 pl-12 pr-96 text-16 leading-base
+                         focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
+              placeholder="0.00"
             />
-            <div className="pointer-events-none absolute left-14 top-1/2 flex max-w-[calc(100%-72px)] -translate-y-1/2 overflow-hidden">
-              <div className="invisible whitespace-pre font-[RelativeNumber]">
-                {inputValue}
-                {inputValue === "" || inputValue === undefined ? "" : " "}
-              </div>
-              <div className="font-[RelativeNumber] text-typography-secondary">{placeholder}</div>
+            <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
+              <span className="text-typography-secondary">{selectedToken?.symbol}</span>
+              <button
+                className="text-body-small pointer-events-auto rounded-full bg-slate-600 px-8 py-2 font-medium
+                           hover:bg-slate-500 focus-visible:bg-slate-500 active:bg-slate-500/70"
+                type="button"
+                onClick={handleMaxButtonClick}
+              >
+                <Trans>Max</Trans>
+              </button>
             </div>
-            <button
-              className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-full bg-slate-600 px-8 py-2 font-medium
-                         hover:bg-slate-500 focus-visible:bg-slate-500 active:bg-slate-500/70"
-              type="button"
-              onClick={handleMaxButtonClick}
-            >
-              <Trans>Max</Trans>
-            </button>
           </div>
-          <div className="text-body-medium text-typography-secondary">{formatUsd(inputAmountUsd ?? 0n)}</div>
+          <div className="text-body-medium text-typography-secondary numbers">{formatUsd(inputAmountUsd ?? 0n)}</div>
         </div>
       </div>
 
@@ -814,7 +818,7 @@ export const DepositView = () => {
         <AlertInfoCard type="warning" className="mt-8">
           <Trans>
             The amount you are trying to deposit exceeds the limit. Please try an amount smaller than{" "}
-            {upperLimitFormatted}.
+            <span className="numbers">{upperLimitFormatted}</span>.
           </Trans>
         </AlertInfoCard>
       )}
@@ -822,7 +826,7 @@ export const DepositView = () => {
         <AlertInfoCard type="warning" className="mt-8">
           <Trans>
             The amount you are trying to deposit is below the limit. Please try an amount larger than{" "}
-            {lowerLimitFormatted}.
+            <span className="numbers">{lowerLimitFormatted}</span>.
           </Trans>
         </AlertInfoCard>
       )}
@@ -832,10 +836,12 @@ export const DepositView = () => {
         <div className="mb-16 flex flex-col gap-10">
           <SyntheticsInfoRow
             label={<Trans>Network Fee</Trans>}
+            valueClassName="numbers"
             value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
           />
           <SyntheticsInfoRow
             label={<Trans>Deposit Fee</Trans>}
+            valueClassName="numbers"
             value={protocolFeeUsd !== undefined ? formatUsd(protocolFeeUsd) : "..."}
           />
           <SyntheticsInfoRow
@@ -872,7 +878,7 @@ export const DepositView = () => {
         </div>
       )}
 
-      <Button variant="primary-action" className="w-full" type="submit" disabled={buttonState.disabled}>
+      <Button variant="primary-action" className="w-full shrink-0" type="submit" disabled={buttonState.disabled}>
         {buttonState.text}
       </Button>
     </form>

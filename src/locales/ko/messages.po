@@ -610,10 +610,6 @@ msgstr "최대 수용량"
 msgid "Market Swap"
 msgstr "마켓 스왑"
 
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-msgid "The amount you are trying to deposit exceeds the limit. Please try an amount smaller than {upperLimitFormatted}."
-msgstr ""
-
 #: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "A $500,000 GLV pool (funded by DAO funds) rewards long-term holders: If you keep your distributed GLV for at least 3 months (without selling or transferring), you'll receive a pro rata share."
 msgstr ""
@@ -662,10 +658,6 @@ msgstr "유동성 내"
 #: src/components/Exchange/SwapBox.jsx
 msgid "Exit Price"
 msgstr "종료 가격"
-
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
-msgid "Your wallet balance on the connected network. Usable for trading on the connected chain."
-msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V2"
@@ -1564,6 +1556,10 @@ msgstr "GM 이동"
 msgid "Requested withdrawal of {0} USD from {1} {longOrShortText}."
 msgstr "{1} {longOrShortText}에서 {0} USD 인출 요청됨."
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
+msgstr ""
+
 #: src/pages/Exchange/Exchange.tsx
 msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 msgstr "허용가능한 슬리피지 안에서는 {tokenSymbol} {longOrShortText}을 증가시키지 못했습니다. 최상단 우측의 설정 버튼을 통해 허용가능한 슬리피지를 변경할 수 있습니다."
@@ -2243,10 +2239,6 @@ msgstr ""
 msgid "<0>Read more</0> about fees."
 msgstr "수수료에 대해 <0>더 읽기</0>"
 
-#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
-msgid "Withdrawing requires {0} while you have {1}. Please <0>swap</0> or <1>deposit</1> more {2} to your GMX account."
-msgstr ""
-
 #: src/components/Exchange/OrdersList.jsx
 msgid "You will receive at least {0} {1} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed."
 msgstr "해당 주문이 실행되게 되면 최소 {0} {1}을 받을 수 있습니다. 정확한 실행가격은 주문이 실행된 스왑 수수료에 의해 상이합니다."
@@ -2516,6 +2508,10 @@ msgstr "{existingTriggerOrderLength, plural, one {이 포지션에 영향을 미
 msgid "The actual execution price may differ from the set limit price due to fees and price impact. This ensures that you receive at least the minimum receive amount."
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "The amount you are trying to deposit exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
+msgstr ""
+
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
 msgstr "최소 {0} {stakeTokenLabel}이 {1} esGMX를 베스팅하기 위해 필요합니다."
@@ -2523,6 +2519,10 @@ msgstr "최소 {0} {stakeTokenLabel}이 {1} esGMX를 베스팅하기 위해 필�
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Swap {0} USDG for{1} {2}"
 msgstr "{0} USDG를 {1} {2}로 스왑"
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Native token cannot be approved"
+msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "{0} will be swapped to {1} on order execution."
@@ -2997,6 +2997,10 @@ msgstr ""
 msgid "Speed up page loading"
 msgstr "페이지 로드 속도 향상"
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+msgid "The amount you are trying to withdraw is below the limit. Please try an amount larger than <0>{lowerLimitFormatted}</0>."
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.jsx
 msgid "{0}: Swap {amountInDisplay}{1} for{minOutDisplay} {2}, Price:{3} USD"
 msgstr "{0}: {amountInDisplay}{1}을 {minOutDisplay} {2}로 스왑, 가격:{3} USD"
@@ -3399,10 +3403,6 @@ msgstr "제출 중..."
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
 msgstr "앱"
-
-#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
-msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than {upperLimitFormatted}."
-msgstr ""
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to Wallet"
@@ -3815,10 +3815,6 @@ msgstr "마켓 스왑 요청"
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
 msgstr "{0} 시장 풀의 유동성 부족. 이 시장에 대해 다른 풀을 선택하세요.{1}"
 
-#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
-msgid "The amount you are trying to withdraw is below the limit. Please try an amount larger than {lowerLimitFormatted}."
-msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
 msgstr "{0} 업그레이드 대기 중 앱 비활성화"
@@ -4021,6 +4017,11 @@ msgstr "{0} 업그레이드 대기 중 트리거 주문 비활성화"
 msgid "Funding Fees"
 msgstr "자금 수수료"
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Approval failed"
+msgstr ""
+
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Home/Home.tsx
@@ -4038,6 +4039,10 @@ msgstr "해당 포지션은 최대 슬리피지 {1}%의 {0} USD에서 열리게 
 #: src/components/Referrals/TradersStats.tsx
 msgid "Active Referral Code"
 msgstr "활성화된 추천 코드"
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "The amount you are trying to deposit is below the limit. Please try an amount larger than <0>{lowerLimitFormatted}</0>."
+msgstr ""
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Save One-Click Trading settings"
@@ -4495,10 +4500,6 @@ msgstr "트랜잭션 준비 오류. 제공자가 정의되지 않음"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity in GM Pool"
 msgstr "GM 풀의 유동성 부족"
-
-#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least {1} in {2} or switch your gas token in settings."
-msgstr ""
 
 #: src/components/Exchange/ExchangeBanner.jsx
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
@@ -5441,7 +5442,6 @@ msgstr ""
 #: src/components/Synthetics/Claims/Claims.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -6132,10 +6132,6 @@ msgstr "프로토콜 토큰"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Collateral at Liquidation"
 msgstr "청산 시 담보"
-
-#: src/components/Synthetics/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "You’ll need {formattedAmount} ({formattedUsd}) {nativeTokenSymbol} in your account to withdraw funds."
-msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -7396,6 +7392,10 @@ msgstr ""
 msgid "Update Limit"
 msgstr "지정가 업데이트"
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawing requires <0/> while you have <1/>. Please <2>swap</2> or <3>deposit</3> more {0} to your GMX account."
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -7719,6 +7719,10 @@ msgstr ""
 msgid "Why is the claim in GLV tokens?"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "You’ll need <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {nativeTokenSymbol} in your account to withdraw funds."
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express + One-Click"
 msgstr ""
@@ -7855,10 +7859,6 @@ msgstr "<0>{0}에 대한 풀 용량이 도달했습니다. 다른 토큰으로 G
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX dashboards and analytics."
 msgstr "GMX 대시보드 및 분석."
-
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-msgid "The amount you are trying to deposit is below the limit. Please try an amount larger than {lowerLimitFormatted}."
-msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
@@ -8806,10 +8806,6 @@ msgstr "7일"
 msgid "Rage Trade"
 msgstr "레이지 트레이드"
 
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
-msgid "GMX Account funding activity."
-msgstr ""
-
 #: src/pages/Home/Home.tsx
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
 msgstr "지갑에서 직접 BTC, ETH, AVAX 등 상위 암호화폐를 최대 100x 레버리지로 거래"
@@ -9066,6 +9062,10 @@ msgstr "생태계 프로젝트"
 msgid "Market order will be cancellable in ..."
 msgstr "시장 주문 취소 가능 ..."
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in settings."
+msgstr ""
+
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"
 msgstr "GMX와 익명 채팅"
@@ -9073,6 +9073,7 @@ msgstr "GMX와 익명 채팅"
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Loading"
 msgstr ""

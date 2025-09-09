@@ -7,16 +7,39 @@ export function Amount({
   decimals,
   isStable,
   className,
+  symbol,
+  symbolClassName,
   signed = false,
+  emptyValue,
+  showZero = false,
 }: {
   amount: bigint | undefined;
   decimals: number;
   isStable: boolean | undefined;
   className?: string;
+  symbol?: string;
+  symbolClassName?: string;
   signed?: boolean;
+  emptyValue?: string;
+  showZero?: boolean;
 }) {
   if (amount === undefined) {
-    return null;
+    return emptyValue ?? null;
+  }
+
+  if (symbol) {
+    return (
+      <span className={className}>
+        <span className="numbers">
+          {formatBalanceAmount(amount, decimals, undefined, {
+            isStable,
+            signed,
+            showZero,
+          })}
+        </span>{" "}
+        <span className={symbolClassName}>{symbol}</span>
+      </span>
+    );
   }
 
   return (
