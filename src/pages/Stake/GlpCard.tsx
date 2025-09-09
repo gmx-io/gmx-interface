@@ -126,7 +126,7 @@ export function GlpCard({ processedData }: { processedData: ProcessedData | unde
       <div>
         <div className="App-card-divider" />
         <div className="App-card-buttons glp-buttons m-0">
-          <Button variant="secondary" to="/buy_glp#redeem">
+          <Button variant="secondary" to="/sell_glp">
             <Trans>Sell GLP</Trans>
           </Button>
         </div>
