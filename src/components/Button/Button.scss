@@ -38,6 +38,7 @@
     color: var(--color-white);
     border-radius: 8px;
     min-height: 40px;
+    line-height: normal;
 
     &:not([disabled], .disabled):hover {
       background-color: var(--color-button-primaryHover);
