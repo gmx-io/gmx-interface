@@ -747,16 +747,14 @@ export const DepositView = () => {
               <BiChevronRight className="size-20 text-typography-secondary" />
             </div>
           ) : (
-            <div className="flex items-center justify-between rounded-8 bg-cold-blue-900 px-14 py-12">
-              <div className="flex items-center gap-8">
-                <span className="text-typography-secondary">
-                  {depositViewChain !== undefined ? (
-                    <Trans>No assets available for deposit on {getChainName(depositViewChain)}</Trans>
-                  ) : (
-                    <Trans>No assets available for deposit</Trans>
-                  )}
-                </span>
-              </div>
+            <div className="rounded-8 border border-slate-800 bg-slate-800 px-14 py-12 text-typography-secondary">
+              <span className="flex min-h-20 items-center">
+                {depositViewChain !== undefined ? (
+                  <Trans>No assets available for deposit on {getChainName(depositViewChain)}</Trans>
+                ) : (
+                  <Trans>No assets available for deposit</Trans>
+                )}
+              </span>
             </div>
           )}
         </div>

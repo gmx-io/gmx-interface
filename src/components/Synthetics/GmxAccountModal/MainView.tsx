@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
-import { FaChevronRight } from "react-icons/fa6";
 import { TbLoader2 } from "react-icons/tb";
 import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
@@ -21,7 +20,7 @@ import { formatRelativeDateWithComma } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useENS } from "lib/legacy";
-import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { useNotifyModalState } from "lib/useNotifyModalState";
 import { shortenAddressOrEns } from "lib/wallets";
@@ -29,6 +28,7 @@ import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDas
 import { getToken } from "sdk/configs/tokens";
 import { Token } from "sdk/types/tokens";
 
+import { Amount } from "components/Amount/Amount";
 import { Avatar } from "components/Avatar/Avatar";
 import Button from "components/Button/Button";
 import SearchInput from "components/SearchInput/SearchInput";
@@ -37,9 +37,9 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import BellIcon from "img/ic_bell.svg?react";
+import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
 import CopyIcon from "img/ic_copy_20.svg?react";
 import ExplorerIcon from "img/ic_explorer.svg?react";
-import InfoIconComponent from "img/ic_info.svg?react";
 import PnlAnalysisIcon from "img/ic_pnl_analysis.svg?react";
 import SettingsIcon from "img/ic_settings.svg?react";
 import DisconnectIcon from "img/ic_sign_out_20.svg?react";
@@ -53,9 +53,20 @@ import {
 } from "./hooks";
 import { FUNDING_OPERATIONS_LABELS } from "./keys";
 
+function UsdValueWithSkeleton({ usd }: { usd: bigint | undefined }) {
+  return (
+    <span className="numbers">
+      {usd !== undefined ? (
+        formatUsd(usd)
+      ) : (
+        <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={54} className="leading-base" inline={true} />
+      )}
+    </span>
+  );
+}
+
 const TokenIcons = ({ tokens }: { tokens: string[] }) => {
   const displayTokens = tokens.slice(0, 3);
-  const remainingCount = Math.max(0, tokens.length - 3);
 
   return (
     <div className="flex items-center">
@@ -63,18 +74,17 @@ const TokenIcons = ({ tokens }: { tokens: string[] }) => {
         <div
           key={token}
           className={cx(
-            "flex size-20 items-center justify-center rounded-full border border-slate-600",
-            index > 0 && "-ml-8"
+            "-ml-6 flex size-14 items-center justify-center rounded-full border border-slate-600 first-of-type:-ml-0"
           )}
+          // Safety: its small
+          // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+          style={{
+            zIndex: tokens.length - index,
+          }}
         >
           <TokenIcon symbol={token} displaySize={18} importSize={24} />
         </div>
       ))}
-      {remainingCount > 0 && (
-        <div className="-ml-8 flex size-20 items-center justify-center rounded-full border border-slate-600 bg-white text-12 text-black">
-          +{remainingCount}
-        </div>
-      )}
     </div>
   );
 };
@@ -155,7 +165,7 @@ const Toolbar = ({ account }: { account: string }) => {
   const buttonClassName = isSmallMobile ? cx("size-32 !p-0") : cx("size-40 !p-0");
 
   return (
-    <div className="flex items-stretch justify-between gap-8 max-smallMobile:flex-wrap">
+    <div className="flex items-stretch justify-between gap-12 max-smallMobile:flex-wrap">
       <Button variant="secondary" size="small" className="flex items-center gap-8" onClick={handleCopyAddress}>
         <div className="max-[500px]:hidden">
           <Avatar size={24} ensName={ensName} address={account} />
@@ -204,7 +214,7 @@ const Toolbar = ({ account }: { account: string }) => {
         </TooltipWithPortal>
         <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max" variant="none">
           <Button variant="secondary" size="small" className={buttonClassName} onClick={handleDisconnect}>
-            <DisconnectIcon className="rotate-180" />
+            <DisconnectIcon />
           </Button>
         </TooltipWithPortal>
       </div>
@@ -218,36 +228,18 @@ function SettlementChainBalance() {
 
   return (
     <div className="flex flex-col gap-12 rounded-8 bg-fill-surfaceElevated50 p-12">
-      <div className="text-body-small text-typography-secondary">
-        <Trans>Available to Trade</Trans>
+      <div className="flex flex-col gap-8">
+        <div className="text-body-small text-typography-secondary">
+          <Trans>Available to Trade</Trans>
+        </div>
+        <Balance usd={totalUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
       </div>
-      <Balance usd={totalUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
       <div className="h-[0.5px] bg-slate-600" />
       <div>
         <SyntheticsInfoRow
-          label={
-            <TooltipWithPortal
-              content={t`Your wallet balance on the connected network. Usable for trading on the connected chain.`}
-              variant="icon"
-            >
-              <Trans>Wallet</Trans>
-            </TooltipWithPortal>
-          }
-          className="py-5"
-          value={
-            walletUsd !== undefined ? (
-              formatUsd(walletUsd)
-            ) : (
-              <Skeleton
-                baseColor="#B4BBFF1A"
-                highlightColor="#B4BBFF1A"
-                width={54}
-                height={21}
-                className="!block"
-                inline={true}
-              />
-            )
-          }
+          label={<Trans>Wallet</Trans>}
+          className="py-4"
+          value={<UsdValueWithSkeleton usd={walletUsd} />}
         />
         <SyntheticsInfoRow
           label={
@@ -261,26 +253,13 @@ function SettlementChainBalance() {
                   connected to Arbitrum or Avalanche.
                 </Trans>
               }
-              variant="icon"
+              variant="iconStroke"
             >
               <Trans>GMX Account Balance</Trans>
             </TooltipWithPortal>
           }
-          className="py-5"
-          value={
-            gmxAccountUsd !== undefined ? (
-              formatUsd(gmxAccountUsd)
-            ) : (
-              <Skeleton
-                baseColor="#B4BBFF1A"
-                highlightColor="#B4BBFF1A"
-                width={54}
-                height={21}
-                className="!block"
-                inline={true}
-              />
-            )
-          }
+          className="py-4"
+          value={<UsdValueWithSkeleton usd={gmxAccountUsd} />}
         />
       </div>
     </div>
@@ -315,9 +294,9 @@ function Balance({
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-8">
+    <div className="flex min-h-32 flex-wrap items-center justify-between gap-8">
       {usd !== undefined ? (
-        <div className="text-h2  leading-[30px]">{formatUsd(usd)}</div>
+        <div className="text-h2 normal-nums leading-[30px]">{formatUsd(usd)}</div>
       ) : (
         <Skeleton
           baseColor="#B4BBFF1A"
@@ -330,12 +309,12 @@ function Balance({
       )}
       {usd !== undefined && usd !== 0n && (
         <button
-          className="flex items-center gap-4 rounded-full bg-slate-600 py-8 pl-12 pr-12 text-[13px] font-medium gmx-hover:bg-slate-600/90"
+          className="flex min-h-32 items-center gap-4 rounded-full bg-slate-600 py-6 pl-12 pr-12 text-[13px] font-medium gmx-hover:bg-slate-600/90"
           onClick={handleAvailableToTradeClick}
         >
           <Trans>All assets</Trans>
           <TokenIcons tokens={availableToTradeAssetSymbols} />
-          <FaChevronRight size={16} className="text-typography-secondary" />
+          <ChevronLeftIcon className="size-16 rotate-180 text-typography-secondary" />
         </button>
       )}
       {usd === undefined && (
@@ -343,7 +322,7 @@ function Balance({
           baseColor="#B4BBFF1A"
           highlightColor="#B4BBFF1A"
           width={134}
-          height={28}
+          height={32}
           className="!block"
           inline={true}
         />
@@ -370,7 +349,7 @@ const ActionButtons = () => {
   };
 
   return (
-    <div className="flex gap-8">
+    <div className="flex gap-12">
       <Button
         variant="secondary"
         size="medium"
@@ -429,15 +408,8 @@ const FundingHistorySection = () => {
   return (
     <div className="flex grow flex-col gap-12 overflow-y-hidden">
       <div className="flex items-center justify-between px-adaptive">
-        <div className="text-body-large">
-          <TooltipWithPortal
-            content={<Trans>GMX Account funding activity.</Trans>}
-            variant="icon"
-            handleClassName="font-medium"
-            iconClassName="text-typography-secondary"
-          >
-            <Trans>Funding Activity</Trans>
-          </TooltipWithPortal>
+        <div className="text-body-large font-medium">
+          <Trans>Funding Activity</Trans>
         </div>
       </div>
       {Boolean(fundingHistory?.length) && (
@@ -457,7 +429,7 @@ const FundingHistorySection = () => {
             <div className="flex items-center gap-16">
               <TokenIcon symbol={transfer.token.symbol} displaySize={40} importSize={40} />
               <div>
-                <div>{transfer.token.symbol}</div>
+                <div className="text-body-large">{transfer.token.symbol}</div>
                 <FundingHistoryItemLabel
                   step={transfer.step}
                   operation={transfer.operation}
@@ -466,11 +438,13 @@ const FundingHistorySection = () => {
               </div>
             </div>
             <div className="text-right">
-              <div>
-                {formatBalanceAmount(transfer.sentAmount, transfer.token.decimals, transfer.token.symbol, {
-                  isStable: transfer.token.isStable,
-                })}
-              </div>
+              <Amount
+                className="text-body-large"
+                amount={transfer.sentAmount}
+                decimals={transfer.token.decimals}
+                isStable={transfer.token.isStable}
+                signed
+              />
               <div className="text-body-small text-slate-100">
                 {formatRelativeDateWithComma(transfer.sentTimestamp)}
               </div>
@@ -480,13 +454,11 @@ const FundingHistorySection = () => {
 
         {!isLoading && fundingHistory && fundingHistory.length === 0 && (
           <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-slate-100">
-            <InfoIconComponent className="size-24" />
             <Trans>No funding activity</Trans>
           </div>
         )}
         {!isLoading && filteredFundingHistory?.length === 0 && fundingHistory && fundingHistory.length > 0 && (
           <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-slate-100">
-            <InfoIconComponent className="size-24" />
             <Trans>No funding activity matching your search</Trans>
           </div>
         )}

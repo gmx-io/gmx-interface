@@ -12,18 +12,17 @@ import {
 } from "context/GmxAccountContext/hooks";
 import { TokenChainData } from "domain/multichain/types";
 import { useChainId } from "lib/chains";
-import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
+import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
 import SearchInput from "components/SearchInput/SearchInput";
 import { useMultichainTokensRequest } from "components/Synthetics/GmxAccountModal/hooks";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-
-import InfoIconComponent from "img/ic_info.svg?react";
 
 type TokenListItemProps = {
   tokenChainData: DisplayTokenChainData;
@@ -49,19 +48,17 @@ const TokenListItem = ({ tokenChainData, onClick, className }: TokenListItemProp
           chainIdBadge={tokenChainData.sourceChainId}
         />
         <div>
-          <div>{tokenChainData.symbol}</div>
+          <div className="text-body-large">{tokenChainData.symbol}</div>
           <div className="text-body-small text-typography-secondary">{getChainName(tokenChainData.sourceChainId)}</div>
         </div>
       </div>
       <div className="text-right">
-        <div>
-          {formatBalanceAmount(
-            tokenChainData.sourceChainBalance ?? 0n,
-            tokenChainData.sourceChainDecimals,
-            tokenChainData.symbol,
-            { isStable: tokenChainData.isStable }
-          )}
-        </div>
+        <Amount
+          className="text-body-large"
+          amount={tokenChainData.sourceChainBalance}
+          decimals={tokenChainData.sourceChainDecimals}
+          isStable={tokenChainData.isStable}
+        />
         <div className="text-body-small text-typography-secondary">
           {tokenChainData.sourceChainBalanceUsd > 0n ? formatUsd(tokenChainData.sourceChainBalanceUsd) : "-"}
         </div>
@@ -132,12 +129,7 @@ export const SelectAssetToDepositView = () => {
   return (
     <div className="flex grow flex-col overflow-y-hidden">
       <div className="mb-16 px-adaptive pt-adaptive">
-        <SearchInput
-          placeholder="Search tokens..."
-          value={searchQuery}
-          setValue={(value) => setSearchQuery(value)}
-          noBorder
-        />
+        <SearchInput value={searchQuery} setValue={(value) => setSearchQuery(value)} noBorder />
       </div>
 
       <div className="mb-12 px-adaptive">
@@ -177,7 +169,6 @@ export const SelectAssetToDepositView = () => {
         ))}
         {filteredBalances.length === 0 && (
           <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-typography-secondary">
-            <InfoIconComponent className="size-24" />
             {selectedNetwork === "all" ? (
               <Trans>No assets are available for deposit</Trans>
             ) : (
