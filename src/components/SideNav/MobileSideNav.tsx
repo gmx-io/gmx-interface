@@ -19,7 +19,7 @@ export function MobileSideNav() {
 
   return (
     <div>
-      <Button variant="secondary" className="md:h-40" onClick={handleToggle}>
+      <Button variant="secondary" size="controlled" className="size-32 !p-0 md:size-40" onClick={handleToggle}>
         <HiMenu className="h-20 w-20" />
       </Button>
       {isOpen ? (

@@ -1,4 +1,4 @@
-import { Provider, Signer, Wallet } from "ethers";
+import { AbstractSigner, Provider, Signer, Wallet } from "ethers";
 import { encodeFunctionData, size, zeroAddress, zeroHash } from "viem";
 
 import { BOTANIX } from "config/chains";
@@ -966,7 +966,7 @@ export async function signSetTraderReferralCode({
   srcChainId,
   shouldUseSignerMethod,
 }: {
-  signer: WalletSigner | Wallet;
+  signer: AbstractSigner;
   relayParams: RelayParamsPayload;
   referralCode: string;
   chainId: ContractsChainId;

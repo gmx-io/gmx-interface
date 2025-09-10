@@ -71,7 +71,8 @@ export function InsufficientWntBanner({
 
     firstLine = (
       <Trans>
-        You’ll need {formattedAmount} ({formattedUsd}) {nativeTokenSymbol} in your account to withdraw funds.
+        You’ll need <span className="numbers">{formattedAmount}</span> (<span className="numbers">{formattedUsd}</span>){" "}
+        {nativeTokenSymbol} in your account to withdraw funds.
       </Trans>
     );
   } else {
