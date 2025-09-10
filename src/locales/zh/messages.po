@@ -492,6 +492,10 @@ msgstr "仓位"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0} 无法发送到智能合约地址。请选择另一个代币。"
 
+#: src/components/SideNav/SideNav.tsx
+msgid "Expand"
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trading</2> under settings, which should offer a better experience."
 msgstr "由于 RPC 错误，交易失败。<0/><1/>请在设置下启用 <2>快速交易</2>，这应该提供更好的体验。"

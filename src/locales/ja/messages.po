@@ -492,6 +492,10 @@ msgstr "ポジション"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0}はスマートコントラクトアドレスに送信できません。別のトークンを選択してください。"
 
+#: src/components/SideNav/SideNav.tsx
+msgid "Expand"
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trading</2> under settings, which should offer a better experience."
 msgstr "RPCエラーにより取引が失敗しました。<0/><1/><2>エクスプレストレーディング</2>を設定で有効にしてください。これによりより良い体験が得られるはずです。"

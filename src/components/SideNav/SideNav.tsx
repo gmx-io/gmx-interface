@@ -47,7 +47,7 @@ function SideNav({ className }: { className?: string }) {
           <DocsNavItem isCollapsed={isCollapsed} />
           <NavItem
             icon={<CollapseIcon />}
-            label={t`Collapse`}
+            label={isCollapsed ? t`Expand` : t`Collapse`}
             isCollapsed={isCollapsed}
             onClick={handleCollapseToggle}
           />
