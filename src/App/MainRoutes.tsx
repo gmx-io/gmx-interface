@@ -149,7 +149,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </SyntheticsStateContextProvider>
       </Route>
       <RedirectWithQuery from="/v2" to="/trade" />
-      <Route exact path="/buy_glp">
+      <Route exact path="/sell_glp">
         <BuyGlp />
       </Route>
       <Route exact path="/jobs">

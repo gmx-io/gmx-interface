@@ -9,7 +9,6 @@ import { useMedia } from "react-use";
 import { isHomeSite } from "lib/legacy";
 
 import { HeaderPromoBanner } from "components/HeaderPromoBanner/HeaderPromoBanner";
-import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
 
 import logoImg from "img/logo_GMX.svg";
 import logoSmallImg from "img/logo_GMX_small.svg";
@@ -46,9 +45,6 @@ type Props = {
 
 export function Header({ disconnectAccountAndCloseSettings, openSettings, showRedirectModal }: Props) {
   const isMobile = useMedia("(max-width: 1335px)");
-
-  const shouldHide1CTBanner = useMedia("(max-width: 1100px)");
-  const shouldShorten1CTBanner = useMedia("(max-width: 1590px)");
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isNativeSelectorModalVisible, setIsNativeSelectorModalVisible] = useState(false);
@@ -120,12 +116,6 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
               )}
             </div>
             <div className="App-header-container-right">
-              {!isHomeSite() ? (
-                <div className="mr-22">
-                  <OneClickPromoBanner isShort={shouldShorten1CTBanner} openSettings={openSettings} />
-                </div>
-              ) : null}
-
               <AppHeaderUser
                 disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
                 openSettings={openSettings}
@@ -149,7 +139,6 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
                 <div className="-ml-18 rounded-4 bg-cold-blue-700 p-6 text-[12px] text-white">V1</div>
               </div>
               <div className="App-header-container-right">
-                {!shouldHide1CTBanner && <OneClickPromoBanner openSettings={openSettings} />}
                 <div>
                   <AppHeaderUser
                     disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}

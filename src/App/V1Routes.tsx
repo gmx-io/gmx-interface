@@ -84,7 +84,7 @@ export function V1Routes({ openSettings }: { openSettings: () => void }) {
           <Stake />
         </SyntheticsStateContextProvider>
       </Route>
-      <Route exact path="/buy_glp">
+      <Route exact path="/sell_glp">
         <BuyGlp />
       </Route>
       <Route exact path="/begin_account_transfer">
