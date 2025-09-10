@@ -31,6 +31,7 @@ import { Token } from "sdk/types/tokens";
 import { Amount } from "components/Amount/Amount";
 import { Avatar } from "components/Avatar/Avatar";
 import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -222,6 +223,16 @@ const Toolbar = ({ account }: { account: string }) => {
   );
 };
 
+function GmxAccountBalanceTooltipContent() {
+  return (
+    <Trans>
+      Your GMX Account balance, usable for trading on any supported chain.
+      <br />
+      <ExternalLink href="https://docs.gmx.io/docs/trading/v2#multichain-trading">Read more</ExternalLink>.
+    </Trans>
+  );
+}
+
 function SettlementChainBalance() {
   const { totalUsd, gmxAccountUsd, walletUsd } = useAvailableToTradeAssetSettlementChain();
   const availableToTradeAssetSymbols = useAvailableToTradeAssetSymbolsSettlementChain();
@@ -243,18 +254,7 @@ function SettlementChainBalance() {
         />
         <SyntheticsInfoRow
           label={
-            <TooltipWithPortal
-              content={
-                <Trans>
-                  Your GMX Account balance, usable for trading on any supported chain.
-                  <br />
-                  <br />
-                  The balance is based on the connected chain, or the selected settlement chain in settings if not
-                  connected to Arbitrum or Avalanche.
-                </Trans>
-              }
-              variant="iconStroke"
-            >
+            <TooltipWithPortal content={<GmxAccountBalanceTooltipContent />} variant="iconStroke">
               <Trans>GMX Account Balance</Trans>
             </TooltipWithPortal>
           }
@@ -272,9 +272,14 @@ function MultichainBalance() {
 
   return (
     <div className="flex flex-col gap-8 rounded-8 bg-fill-surfaceElevated50 p-12">
-      <div className="text-body-small text-typography-secondary">
-        <Trans>GMX Account Balance</Trans>
-      </div>
+      <TooltipWithPortal
+        handleClassName="text-body-small text-typography-secondary"
+        content={<GmxAccountBalanceTooltipContent />}
+        variant="iconStroke"
+      >
+        <Trans>Balance</Trans>
+      </TooltipWithPortal>
+
       <Balance usd={gmxAccountUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
     </div>
   );

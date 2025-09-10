@@ -284,6 +284,10 @@ msgstr "{0} se puede usar para comprar GM para este mercado hasta los límites d
 msgid "Execute Market Swap"
 msgstr "Ejecutar Intercambio de Mercado"
 
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "Your GMX Account balance, usable for trading on any supported chain.<0/><1>Read more</1>."
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Volume"
@@ -1280,6 +1284,7 @@ msgstr "1inch"
 msgid "Copied"
 msgstr "Copiado"
 
+#: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 msgid "Deposit to GMX Account"
 msgstr ""
@@ -3943,7 +3948,6 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
-#: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
@@ -4931,10 +4935,6 @@ msgstr "<0>Stakea GMX</0> y gana {gmxAvgAprText} APR"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Mozaic Finance"
 msgstr "Mozaic Finance"
-
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
-msgid "Your GMX Account balance, usable for trading on any supported chain.<0/><1/>The balance is based on the connected chain, or the selected settlement chain in settings if not connected to Arbitrum or Avalanche."
-msgstr ""
 
 #: src/pages/Exchange/Exchange.tsx
 msgid "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
@@ -6129,6 +6129,10 @@ msgstr ""
 msgid "Protocol Tokens"
 msgstr "Tokens de Protocolo"
 
+#: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
+msgid "Withdraw from GMX Account"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Collateral at Liquidation"
 msgstr "Garantía en Liquidación"
@@ -6381,6 +6385,7 @@ msgstr "{formattedNetRate} / 1h"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Balance"
 msgstr "Balance"
 
@@ -7104,7 +7109,6 @@ msgstr "Desactivar 1CT (One-Click Trading)"
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-#: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/GmxAccountModal/keys.ts
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
@@ -7756,7 +7760,6 @@ msgid "Confirm Claim"
 msgstr "Confirmar Reclamación"
 
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "GMX Account Balance"
 msgstr ""

@@ -284,6 +284,10 @@ msgstr "{0}은 지정된 구매 상한까지 이 마켓의 GM 구매에 사용�
 msgid "Execute Market Swap"
 msgstr "마켓 스왑 실행"
 
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "Your GMX Account balance, usable for trading on any supported chain.<0/><1>Read more</1>."
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Volume"
@@ -1280,6 +1284,7 @@ msgstr "1inch"
 msgid "Copied"
 msgstr "복사됨"
 
+#: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 msgid "Deposit to GMX Account"
 msgstr ""
@@ -3943,7 +3948,6 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
-#: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
@@ -4931,10 +4935,6 @@ msgstr "<0>GMX 스테이킹</0>하고 {gmxAvgAprText} APR 획득"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Mozaic Finance"
 msgstr "Mozaic Finance"
-
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
-msgid "Your GMX Account balance, usable for trading on any supported chain.<0/><1/>The balance is based on the connected chain, or the selected settlement chain in settings if not connected to Arbitrum or Avalanche."
-msgstr ""
 
 #: src/pages/Exchange/Exchange.tsx
 msgid "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
@@ -6129,6 +6129,10 @@ msgstr ""
 msgid "Protocol Tokens"
 msgstr "프로토콜 토큰"
 
+#: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
+msgid "Withdraw from GMX Account"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Collateral at Liquidation"
 msgstr "청산 시 담보"
@@ -6381,6 +6385,7 @@ msgstr "{formattedNetRate} / 1시간"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Balance"
 msgstr "잔고"
 
@@ -7104,7 +7109,6 @@ msgstr "1CT(원클릭 거래) 비활성화"
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-#: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/GmxAccountModal/keys.ts
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
@@ -7756,7 +7760,6 @@ msgid "Confirm Claim"
 msgstr "수령 확인"
 
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "GMX Account Balance"
 msgstr ""
