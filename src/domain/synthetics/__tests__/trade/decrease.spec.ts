@@ -4,8 +4,8 @@ import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthe
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { PositionInfoLoaded } from "domain/synthetics/positions";
 import { TokenData } from "domain/synthetics/tokens";
-import { getDecreasePositionAmounts } from "domain/synthetics/trade/utils/decrease";
 import { expandDecimals } from "lib/numbers";
+import { getDecreasePositionAmounts } from "sdk/utils/trade/decrease";
 
 const closeSizeUsd = BigInt(99);
 
@@ -98,20 +98,25 @@ const marketInfo: MarketInfo = {
   maxPnlFactorForTradersLong: BigInt("0x0b5c0e8d21d902d61fa0000000"),
   maxPnlFactorForTradersShort: BigInt("0x0b5c0e8d21d902d61fa0000000"),
   minCollateralFactor: BigInt("0x204fce5e3e25026110000000"),
+  minCollateralFactorForLiquidation: BigInt("0x204fce5e3e25026110000000"),
   minCollateralFactorForOpenInterestLong: BigInt("0x0ad78ebc5ac6200000"),
   minCollateralFactorForOpenInterestShort: BigInt("0x0ad78ebc5ac6200000"),
   claimableFundingAmountLong: BigInt("0x1cefb332ff83"),
   claimableFundingAmountShort: BigInt("0x05b1ee"),
-  positionFeeFactorForPositiveImpact: BigInt("0x019d971e4fe8401e74000000"),
-  positionFeeFactorForNegativeImpact: BigInt("0x024306c4097859c43c000000"),
+  positionFeeFactorForBalanceWasImproved: BigInt("0x019d971e4fe8401e74000000"),
+  positionFeeFactorForBalanceWasNotImproved: BigInt("0x024306c4097859c43c000000"),
   positionImpactFactorPositive: BigInt("0x04e1003b28d9280000"),
   positionImpactFactorNegative: BigInt("0x0821ab0d4414980000"),
   maxPositionImpactFactorPositive: BigInt("0x1027e72f1f12813088000000"),
   maxPositionImpactFactorNegative: BigInt("0x1027e72f1f12813088000000"),
   maxPositionImpactFactorForLiquidations: BigInt("0x00"),
+  maxLendableImpactFactor: BigInt("0x00"),
+  maxLendableImpactFactorForWithdrawals: BigInt("0x00"),
+  maxLendableImpactUsd: BigInt("0x00"),
+  lentPositionImpactPoolAmount: BigInt("0x00"),
   positionImpactExponentFactor: BigInt("0x193e5939a08ce9dbd480000000"),
-  swapFeeFactorForPositiveImpact: BigInt("0x019d971e4fe8401e74000000"),
-  swapFeeFactorForNegativeImpact: BigInt("0x024306c4097859c43c000000"),
+  swapFeeFactorForBalanceWasImproved: BigInt("0x019d971e4fe8401e74000000"),
+  swapFeeFactorForBalanceWasNotImproved: BigInt("0x024306c4097859c43c000000"),
   swapImpactFactorPositive: BigInt("0x0ad78ebc5ac6200000"),
   swapImpactFactorNegative: BigInt("0x0ad78ebc5ac6200000"),
   swapImpactExponentFactor: BigInt("0x193e5939a08ce9dbd480000000"),
@@ -139,6 +144,7 @@ const position: PositionInfoLoaded = {
   collateralAmount: BigInt("0x1b3c0b"),
   increasedAtTime: BigInt((Date.now() / 1000) >> 0),
   decreasedAtTime: BigInt((Date.now() / 1000) >> 0),
+  pendingImpactAmount: BigInt("0x00"),
   isLong: true,
   pendingBorrowingFeesUsd: BigInt("0x01f7685a27fa507f04c467a667"),
   fundingFeeAmount: BigInt("0x059624"),
@@ -155,6 +161,8 @@ const position: PositionInfoLoaded = {
   pnlToken: wethToken,
   markPrice: BigInt("0x9630ee7c4228a0ae237af8000000"),
   entryPrice: BigInt("0x6f0b60ef22cc9d66ddf3e1340000"),
+  netPriceImapctDeltaUsd: BigInt("0x00"),
+  priceImpactDiffUsd: BigInt("0x00"),
   liquidationPrice: BigInt("0x682958f55ba441c1492a47080000"),
   collateralUsd: BigInt("0x1686d970e074ba9aa5c2e20000"),
   remainingCollateralUsd: BigInt("0x0ff0843a734b191deb6e225999"),

@@ -103,6 +103,7 @@
     "es-x/no-promise-all-settled": "off",
     "es-x/no-promise-withresolvers": "off",
     "es-x/no-array-prototype-findlast-findlastindex": "off",
+    "es-x/no-array-prototype-toreversed": "off",
 
     "no-restricted-imports": [
       "error",

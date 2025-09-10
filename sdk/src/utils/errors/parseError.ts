@@ -228,3 +228,44 @@ function hasStack(error: unknown): error is { stack: string } {
 function hasName(error: unknown): error is { name: string } {
   return !!error && typeof error === "object" && typeof (error as { name: string }).name === "string";
 }
+
+export class CustomError extends Error {
+  isGmxCustomError = true;
+  args: any;
+
+  constructor({ name, message, args }: { name: string; message: string; args: any }) {
+    super(message);
+    this.name = name;
+    this.args = args;
+  }
+}
+
+export function isCustomError(error: Error | undefined): error is CustomError {
+  return (error as CustomError)?.isGmxCustomError === true;
+}
+
+export function getCustomError(error: Error): CustomError | Error {
+  const data = (error as any)?.info?.error?.data ?? (error as any)?.data;
+
+  let prettyErrorName = error.name;
+  let prettyErrorMessage = error.message;
+  let prettyErrorArgs: any = undefined;
+
+  try {
+    const parsedError = decodeErrorResult({
+      abi: abis.CustomErrors,
+      data: data,
+    });
+
+    prettyErrorArgs = parsedError.args;
+
+    prettyErrorName = parsedError.errorName;
+    prettyErrorMessage = JSON.stringify(parsedError, null, 2);
+  } catch (decodeError) {
+    return error;
+  }
+
+  const prettyError = new CustomError({ name: prettyErrorName, message: prettyErrorMessage, args: prettyErrorArgs });
+
+  return prettyError;
+}

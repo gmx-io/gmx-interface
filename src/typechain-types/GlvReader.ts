@@ -67,6 +67,7 @@ export declare namespace GlvDeposit {
     updatedAtTime: BigNumberish;
     executionFee: BigNumberish;
     callbackGasLimit: BigNumberish;
+    srcChainId: BigNumberish;
   };
 
   export type NumbersStructOutput = [
@@ -77,6 +78,7 @@ export declare namespace GlvDeposit {
     updatedAtTime: bigint,
     executionFee: bigint,
     callbackGasLimit: bigint,
+    srcChainId: bigint,
   ] & {
     marketTokenAmount: bigint;
     initialLongTokenAmount: bigint;
@@ -85,6 +87,7 @@ export declare namespace GlvDeposit {
     updatedAtTime: bigint;
     executionFee: bigint;
     callbackGasLimit: bigint;
+    srcChainId: bigint;
   };
 
   export type FlagsStruct = {
@@ -101,16 +104,19 @@ export declare namespace GlvDeposit {
     addresses: GlvDeposit.AddressesStruct;
     numbers: GlvDeposit.NumbersStruct;
     flags: GlvDeposit.FlagsStruct;
+    _dataList: BytesLike[];
   };
 
   export type PropsStructOutput = [
     addresses: GlvDeposit.AddressesStructOutput,
     numbers: GlvDeposit.NumbersStructOutput,
     flags: GlvDeposit.FlagsStructOutput,
+    _dataList: string[],
   ] & {
     addresses: GlvDeposit.AddressesStructOutput;
     numbers: GlvDeposit.NumbersStructOutput;
     flags: GlvDeposit.FlagsStructOutput;
+    _dataList: string[];
   };
 }
 
@@ -153,6 +159,7 @@ export declare namespace GlvWithdrawal {
     updatedAtTime: BigNumberish;
     executionFee: BigNumberish;
     callbackGasLimit: BigNumberish;
+    srcChainId: BigNumberish;
   };
 
   export type NumbersStructOutput = [
@@ -162,6 +169,7 @@ export declare namespace GlvWithdrawal {
     updatedAtTime: bigint,
     executionFee: bigint,
     callbackGasLimit: bigint,
+    srcChainId: bigint,
   ] & {
     glvTokenAmount: bigint;
     minLongTokenAmount: bigint;
@@ -169,6 +177,7 @@ export declare namespace GlvWithdrawal {
     updatedAtTime: bigint;
     executionFee: bigint;
     callbackGasLimit: bigint;
+    srcChainId: bigint;
   };
 
   export type FlagsStruct = { shouldUnwrapNativeToken: boolean };
@@ -181,16 +190,19 @@ export declare namespace GlvWithdrawal {
     addresses: GlvWithdrawal.AddressesStruct;
     numbers: GlvWithdrawal.NumbersStruct;
     flags: GlvWithdrawal.FlagsStruct;
+    _dataList: BytesLike[];
   };
 
   export type PropsStructOutput = [
     addresses: GlvWithdrawal.AddressesStructOutput,
     numbers: GlvWithdrawal.NumbersStructOutput,
     flags: GlvWithdrawal.FlagsStructOutput,
+    _dataList: string[],
   ] & {
     addresses: GlvWithdrawal.AddressesStructOutput;
     numbers: GlvWithdrawal.NumbersStructOutput;
     flags: GlvWithdrawal.FlagsStructOutput;
+    _dataList: string[];
   };
 }
 

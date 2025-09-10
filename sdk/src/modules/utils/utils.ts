@@ -142,8 +142,9 @@ export class Utils extends Module {
           updateOrderGasLimit: staticGasLimits.updateOrderGasLimit,
           cancelOrderGasLimit: staticGasLimits.cancelOrderGasLimit,
           tokenPermitGasLimit: staticGasLimits.tokenPermitGasLimit,
+          gmxAccountCollateralGasLimit: staticGasLimits.gmxAccountCollateralGasLimit,
           gelatoRelayFeeMultiplierFactor: getBigInt("gelatoRelayFeeMultiplierFactor"),
-        };
+        } satisfies GasLimitsConfig;
       });
 
     this._gasLimits = gasLimits;

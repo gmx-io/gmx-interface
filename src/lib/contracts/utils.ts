@@ -28,7 +28,7 @@ export async function getGasLimit(
   }
 
   if (gasLimit < 22000) {
-    gasLimit = 22000n;
+    gasLimit = 22_000n;
   }
 
   return (gasLimit * 11n) / 10n; // add a 10% buffer

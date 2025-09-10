@@ -20,7 +20,7 @@
   align-items: center;
   background: transparent;
   padding: 1rem 1.5rem;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
   font-size: 1.2rem;
   cursor: pointer;
   border: none;
@@ -46,7 +46,7 @@
 }
 
 .pagination-btn.active {
-  border-color: var(--color-white);
+  border-color: var(--color-typography-primary);
 }
 
 @media screen and (max-width: 450px) {

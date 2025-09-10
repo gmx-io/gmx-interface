@@ -1,16 +1,25 @@
-import { JsonRpcProvider, Network, Signer, WebSocketProvider, ethers } from "ethers";
+import { ethers, JsonRpcProvider, Network, Signer, WebSocketProvider } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 
 import {
+  AnyChainId,
   ARBITRUM,
+  ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
   FALLBACK_PROVIDERS,
+  getAlchemyArbitrumSepoliaWsUrl,
   getAlchemyArbitrumWsUrl,
+  getAlchemyBaseMainnetWsUrl,
   getAlchemyBotanixWsUrl,
+  getAlchemyOptimismSepoliaWsUrl,
+  getAlchemySepoliaWsUrl,
   getExpressRpcUrl,
   getFallbackRpcUrl,
+  SOURCE_BASE_MAINNET,
+  SOURCE_OPTIMISM_SEPOLIA,
+  SOURCE_SEPOLIA,
 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
@@ -33,7 +42,7 @@ export function getProvider(signer: Signer | undefined, chainId: number): ethers
   return new ethers.JsonRpcProvider(url, chainId, { staticNetwork: network });
 }
 
-export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvider | undefined {
+export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcProvider {
   const network = Network.from(chainId);
 
   if (chainId === ARBITRUM) {
@@ -45,7 +54,10 @@ export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvi
   }
 
   if (chainId === AVALANCHE) {
-    return new ethers.WebSocketProvider("wss://api.avax.network/ext/bc/C/ws", network, { staticNetwork: network });
+    const provider = new ethers.WebSocketProvider("wss://api.avax.network/ext/bc/C/ws", network, {
+      staticNetwork: network,
+    });
+    return provider;
   }
 
   if (chainId === AVALANCHE_FUJI) {
@@ -56,6 +68,27 @@ export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvi
     return provider;
   }
 
+  if (chainId === ARBITRUM_SEPOLIA) {
+    const provider = new ethers.WebSocketProvider(getAlchemyArbitrumSepoliaWsUrl("fallback"), network, {
+      staticNetwork: network,
+    });
+    return provider;
+  }
+
+  if (chainId === SOURCE_SEPOLIA) {
+    const provider = new ethers.WebSocketProvider(getAlchemySepoliaWsUrl("fallback"), network, {
+      staticNetwork: network,
+    });
+    return provider;
+  }
+
+  if (chainId === SOURCE_OPTIMISM_SEPOLIA) {
+    const provider = new ethers.WebSocketProvider(getAlchemyOptimismSepoliaWsUrl("fallback"), network, {
+      staticNetwork: network,
+    });
+    return provider;
+  }
+
   if (chainId === BOTANIX) {
     return new ethers.WebSocketProvider(
       getAlchemyBotanixWsUrl(getIsLargeAccount() ? "largeAccount" : "fallback"),
@@ -63,6 +96,18 @@ export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvi
       { staticNetwork: network }
     );
   }
+
+  if (chainId === SOURCE_BASE_MAINNET) {
+    return new ethers.WebSocketProvider(
+      getAlchemyBaseMainnetWsUrl(getIsLargeAccount() ? "largeAccount" : "fallback"),
+      network,
+      {
+        staticNetwork: network,
+      }
+    );
+  }
+
+  throw new Error(`Unsupported websocket provider for chain id: ${chainId}`);
 }
 
 export function getFallbackProvider(chainId: number) {
@@ -77,21 +122,32 @@ export function getFallbackProvider(chainId: number) {
   });
 }
 
-export function getExpressProvider(chainId: number) {
-  const providerUrl = getExpressRpcUrl(chainId);
+export function getExpressProvider(chainId: number): JsonRpcProvider | undefined {
+  const providerUrl: string | undefined = getExpressRpcUrl(chainId);
+
+  if (!providerUrl) {
+    return;
+  }
 
   return new ethers.JsonRpcProvider(providerUrl, chainId, {
     staticNetwork: Network.from(chainId),
   });
 }
 
-export function useJsonRpcProvider(chainId: number, { isExpress = false }: { isExpress?: boolean } = {}) {
+export function useJsonRpcProvider(chainId: number | undefined, { isExpress = false }: { isExpress?: boolean } = {}) {
   const [provider, setProvider] = useState<JsonRpcProvider>();
 
   const { primary } = useCurrentRpcUrls(chainId);
-  const rpcUrl = useMemo(() => (isExpress ? getExpressRpcUrl(chainId) : primary), [chainId, isExpress, primary]);
+  const rpcUrl = useMemo(
+    () => (isExpress && chainId ? getExpressRpcUrl(chainId) : primary),
+    [chainId, isExpress, primary]
+  );
 
   useEffect(() => {
+    if (!chainId) {
+      return;
+    }
+
     async function initializeProvider() {
       if (!rpcUrl) return;
 

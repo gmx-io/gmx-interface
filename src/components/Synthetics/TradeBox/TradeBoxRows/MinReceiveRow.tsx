@@ -22,7 +22,7 @@ export function MinReceiveRow({ allowedSlippage }: { allowedSlippage: number }) 
   }
 
   return (
-    <SyntheticsInfoRow label={<Trans>Min. Receive</Trans>}>
+    <SyntheticsInfoRow label={<Trans>Min. Receive</Trans>} valueClassName="numbers">
       {isMarket
         ? formatBalanceAmount(
             applySlippageToMinOut(allowedSlippage, swapAmounts.minOutputAmount),

@@ -6,7 +6,7 @@
 */
 import { MARKETS as SDK_MARKETS } from "sdk/configs/markets";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, UiContractsChain } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "./chains";
 
 type MarketUiConfig = {
   enabled: boolean;
@@ -16,7 +16,7 @@ type MarketUiConfig = {
   ATTENTION
   When adding new markets, please add them also to the end of the list in ./sortedMarkets.ts
 */
-const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig>> = {
+const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig>> = {
   [ARBITRUM]: {
     // BTC/USD [WBTC.e-USDC]
     "0x47c031236e19d024b42f8AE6780E44A573170703": {
@@ -422,6 +422,22 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
     "0xb3588455858a49D3244237CEe00880CcB84b91Dd": {
       enabled: true,
     },
+    // LINK/USD [WETH-USDC]
+    "0xF913B4748031EF569898ED91e5BA0d602bB93298": {
+      enabled: true,
+    },
+    // MORPHO/USD [WETH-USDC]
+    "0x4De268aC68477f794C3eAC5A419Cbcffc2cD5e02": {
+      enabled: true,
+    },
+    // VVV/USD [WETH-USDC]
+    "0x947C521E44f727219542B0f91a85182193c1D2ad": {
+      enabled: true,
+    },
+    // WELL/USD [WETH-USDC]
+    "0x2347EbB8645Cc2EA0Ba92D1EC59704031F2fCCf4": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
@@ -576,6 +592,28 @@ const MARKETS_UI_CONFIGS: Record<UiContractsChain, Record<string, MarketUiConfig
     },
     // WBTC/USD [WBTC]
     "0x3b649015Fe0a4d15617e57aA11c0FbbfA03A9e11": {
+      enabled: true,
+    },
+  },
+  [ARBITRUM_SEPOLIA]: {
+    // ETH/USD [ETH-USDC]
+    "0x482Df3D320C964808579b585a8AC7Dd5D144eFaF": {
+      enabled: true,
+    },
+    // BTC/USD [BTC-USDC]
+    "0xBb532Ab4923C23c2bfA455151B14fec177a34C0D": {
+      enabled: true,
+    },
+    // ETH/USD [ETH-USDC.SG]
+    "0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc": {
+      enabled: true,
+    },
+    // BTC/USD [BTC-USDC.SG]
+    "0x3A83246bDDD60c4e71c91c10D9A66Fd64399bBCf": {
+      enabled: true,
+    },
+    // CRV/USD [WETH-USDC]
+    "0xAde9D177B9E060D2064ee9F798125e6539fDaA1c": {
       enabled: true,
     },
   },

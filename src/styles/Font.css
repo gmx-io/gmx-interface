@@ -52,3 +52,23 @@
     /* Super Modern Browsers */ url("fonts/relative/relative-book-pro.woff") format("woff"),
     /* Modern Browsers */ url("fonts/relative/relative-book-pro.ttf") format("truetype"); /* Safari, Android, iOS */
 }
+
+@font-face {
+  font-family: "TTHoves";
+  font-style: normal;
+  font-weight: 400;
+  src: url("fonts/tthoves/tthoves-pro-regular.ttf");
+  src:
+    local(""),
+    url("fonts/tthoves/tthoves-pro-regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "TTHoves";
+  font-style: normal;
+  font-weight: 500;
+  src: url("fonts/tthoves/tthoves-pro-medium.ttf");
+  src:
+    local(""),
+    url("fonts/tthoves/tthoves-pro-medium.ttf") format("truetype");
+}

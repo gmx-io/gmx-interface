@@ -4,13 +4,13 @@ import { memo } from "react";
 import { useNotifyModalState } from "lib/useNotifyModalState";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import ModalWithPortal from "components/Modal/ModalWithPortal";
 
 import ArrowBulletIcon from "img/arrow-bullet.svg?react";
 import ExternalLinkIcon from "img/external-link.svg?react";
 import NotifiLogoIcon from "img/notifi-logo.svg?react";
 
 import Button from "../Button/Button";
-import Modal from "../Modal/Modal";
 
 import "./NotifyModal.scss";
 
@@ -18,7 +18,7 @@ export function NotifyModal() {
   const { notifyModalOpen, setNotifyModalOpen } = useNotifyModalState();
 
   return (
-    <Modal isVisible={notifyModalOpen} setIsVisible={setNotifyModalOpen} label={t`GMX Alerts`}>
+    <ModalWithPortal isVisible={notifyModalOpen} setIsVisible={setNotifyModalOpen} label={t`GMX Alerts`}>
       <div className="NotifyModal">
         <p className="text-body-medium">
           <Trans>
@@ -52,7 +52,7 @@ export function NotifyModal() {
           <NotifiLogoIcon />
         </div>
       </div>
-    </Modal>
+    </ModalWithPortal>
   );
 }
 

@@ -11,16 +11,17 @@ import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { BN_ZERO, expandDecimals, numberToBigint, PRECISION } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { ApyPeriod, useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokenBySymbolSafe } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
+import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
+import { useTokensDataRequest } from "../tokens";
 import { isGlvEnabled, isGlvInfo } from "./glv";
 import { GlvAndGmMarketsInfoData, MarketTokensAPRData } from "./types";
 import { useGlvMarketsInfo } from "./useGlvMarkets";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
 import { useMarketTokensData } from "./useMarketTokensData";
-import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
-import { useTokensDataRequest } from "../tokens";
 import { convertToUsd } from "../tokens/utils";
 
 type GmGlvTokensAPRResult = {
@@ -47,7 +48,7 @@ function useMarketAddresses(marketsInfoData: GlvAndGmMarketsInfoData | undefined
 }
 
 function useExcludedLiquidityMarketMap(
-  chainId: number,
+  chainId: ContractsChainId,
   marketsInfoData: GlvAndGmMarketsInfoData | undefined
 ): {
   [marketAddress: string]: bigint;
@@ -126,14 +127,15 @@ function useExcludedLiquidityMarketMap(
 }
 
 function useIncentivesBonusApr(
-  chainId: number,
+  chainId: ContractsChainId,
+  srcChainId: SourceChainId | undefined,
   marketsInfoData: GlvAndGmMarketsInfoData | undefined,
   glvData: GlvInfoData | undefined
 ) {
   const liquidityProvidersIncentives = useLiquidityProvidersIncentives(chainId);
-  const { tokensData } = useTokensDataRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const marketAddresses = useMarketAddresses(marketsInfoData);
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false, withGlv: true, glvData });
+  const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true, glvData });
   const tokenAddress = liquidityProvidersIncentives?.token;
   const excludedLiquidityMarketMap = useExcludedLiquidityMarketMap(chainId, marketsInfoData);
 
@@ -235,12 +237,13 @@ function useIncentivesBonusApr(
 }
 
 export function useGmMarketsApy(
-  chainId: number,
+  chainId: ContractsChainId,
+  srcChainId: SourceChainId | undefined,
   { period }: { period: ApyPeriod } | undefined = { period: "total" }
 ): GmGlvTokensAPRResult {
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false, withGlv: false });
-  const { tokensData } = useTokensDataRequest(chainId);
-  const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId);
+  const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: false });
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const enabledGlv = isGlvEnabled(chainId);
   const account = useSelector(selectAccount);
 
@@ -335,7 +338,7 @@ export function useGmMarketsApy(
     },
   });
 
-  const marketsTokensIncentiveAprData = useIncentivesBonusApr(chainId, marketsInfoData, glvData);
+  const marketsTokensIncentiveAprData = useIncentivesBonusApr(chainId, srcChainId, marketsInfoData, glvData);
 
   return {
     glvApyInfoData: data?.glvApyInfoData,

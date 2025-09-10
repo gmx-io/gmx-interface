@@ -1,0 +1,80 @@
+.Toastify {
+  font-family: "TTHoves", sans-serif;
+  font-size: var(--font-size-body-small);
+}
+
+.Toastify__toast-container {
+  width: 38rem;
+  padding: 0;
+
+  &--top-right {
+    right: 3rem !important;
+    top: 3rem !important;
+  }
+
+  &--bottom-right {
+    bottom: 3rem !important;
+    right: 3rem !important;
+  }
+
+  @media screen and (max-width: 480px) {
+    & {
+      width: 100vw;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .Toastify__toast-container--bottom-right,
+  .Toastify__toast-container--bottom-left {
+    bottom: 0rem !important;
+    & .Toastify__toast {
+      border-bottom-left-radius: 0 !important;
+      border-bottom-right-radius: 0 !important;
+    }
+  }
+}
+
+.Toastify__toast {
+  min-height: 4.65rem;
+  cursor: default;
+  backdrop-filter: blur(100px) !important;
+  box-shadow: 0px 8px 40px -8px #090a1466 !important;
+  padding: 0;
+  margin: 0;
+  border-radius: 8px;
+}
+
+.Toastify__toast--error {
+  color: var(--color-red-100);
+  background: var(--color-red-900) !important;
+  border-bottom: 2px solid var(--color-red-500);
+
+  .link-underline {
+    color: var(--color-white) !important;
+  }
+
+  .close-toast-button > svg {
+    color: var(--color-red-500) !important;
+  }
+}
+
+.Toastify__toast--success {
+  color: var(--color-green-100);
+  background: var(--color-green-900);
+  border-bottom: 2px solid var(--color-green-500);
+
+  .close-toast-button > svg {
+    color: var(--color-green-500) !important;
+  }
+}
+
+.Toastify__toast--default {
+  background: var(--color-cold-blue-900);
+}
+
+.Toastify__toast-body {
+  padding: 12px 0 12px 12px;
+  font: normal normal normal 1.4rem/1.6rem "TTHoves";
+  line-height: 2rem;
+}

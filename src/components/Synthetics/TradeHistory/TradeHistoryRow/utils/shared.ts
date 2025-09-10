@@ -182,17 +182,17 @@ export function tryGetError(reasonBytes: BytesLike): ReturnType<typeof customErr
 
 export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean) {
   if (errorName === CustomErrorName.OrderNotFulfillableAtAcceptablePrice && !isMarketOrder) {
-    return t`The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met.`;
+    return t`The execution price didn't meet the acceptable price condition. The order will get filled when the condition is met.`;
   } else if (errorName === CustomErrorName.OrderNotFulfillableAtAcceptablePrice && isMarketOrder) {
-    return t`The Execution Price didn't meet the Acceptable Price condition.`;
+    return t`The execution price didn't meet the acceptable price condition.`;
   } else if (errorName === CustomErrorName.InsufficientReserveForOpenInterest && !isMarketOrder) {
-    return t`Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity.`;
+    return t`Not enough available liquidity to fill the order. The order will get filled when the condition is met and there is enough available liquidity.`;
   } else if (errorName === CustomErrorName.InsufficientReserveForOpenInterest && isMarketOrder) {
-    return t`Not enough Available Liquidity to fill the Order.`;
+    return t`Not enough available liquidity to fill the order.`;
   } else if (errorName === CustomErrorName.InsufficientSwapOutputAmount && !isMarketOrder) {
-    return t`Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity.`;
+    return t`Not enough available swap liquidity to fill the order. The order will get filled when the condition is met and there is enough available swap liquidity.`;
   } else if (errorName === CustomErrorName.InsufficientSwapOutputAmount && isMarketOrder) {
-    return t`Not enough Available Swap Liquidity to fill the Order.`;
+    return t`Not enough available swap liquidity to fill the order.`;
   }
 
   return t`Reason: ${words(errorName).join(" ").toLowerCase()}`;

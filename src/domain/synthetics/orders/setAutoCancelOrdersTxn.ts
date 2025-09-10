@@ -6,6 +6,7 @@ import { getContract } from "config/contracts";
 import { Token } from "domain/tokens";
 import { callContract } from "lib/contracts";
 import { abis } from "sdk/abis";
+import { ContractsChainId } from "sdk/configs/chains";
 import { OrderType } from "sdk/types/orders";
 import {
   buildUpdateOrderMulticall,
@@ -30,7 +31,7 @@ type SetAutoCancelOrdersMeta = {
 };
 
 export function setAutoCancelOrdersTxn(
-  chainId: number,
+  chainId: ContractsChainId,
   signer: Signer,
   setPendingTxns: (txns: any) => void,
   ps: SetAutoCancelOrdersParams[],

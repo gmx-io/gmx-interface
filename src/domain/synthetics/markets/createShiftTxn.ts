@@ -8,6 +8,8 @@ import { callContract } from "lib/contracts";
 import { OrderMetricId } from "lib/metrics/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
+import type { ContractsChainId } from "sdk/configs/chains";
+import type { IShiftUtils } from "typechain-types/ExchangeRouter";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -33,7 +35,7 @@ type Params = {
   setPendingShift: SetPendingShift;
 };
 
-export async function createShiftTxn(chainId: number, signer: Signer, p: Params) {
+export async function createShiftTxn(chainId: ContractsChainId, signer: Signer, p: Params) {
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const shiftVaultAddress = getContract(chainId, "ShiftVault");
 
@@ -48,15 +50,18 @@ export async function createShiftTxn(chainId: number, signer: Signer, p: Params)
       method: "createShift",
       params: [
         {
-          receiver: p.account,
-          callbackContract: ethers.ZeroAddress,
-          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
-          fromMarket: p.fromMarketTokenAddress,
-          toMarket: p.toMarketTokenAddress,
+          addresses: {
+            receiver: p.account,
+            callbackContract: ethers.ZeroAddress,
+            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
+            fromMarket: p.fromMarketTokenAddress,
+            toMarket: p.toMarketTokenAddress,
+          },
           minMarketTokens: minToMarketTokenAmount,
           executionFee: p.executionFee,
           callbackGasLimit: 0n,
-        },
+          dataList: [],
+        } satisfies IShiftUtils.CreateShiftParamsStruct,
       ],
     },
   ];

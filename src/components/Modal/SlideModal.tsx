@@ -2,7 +2,8 @@ import cx from "classnames";
 import React, { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MdClose } from "react-icons/md";
 import { RemoveScroll } from "react-remove-scroll";
-import { useMedia } from "react-use";
+
+import { useBreakpoints } from "lib/useBreakpoints";
 
 import Portal from "components/Common/Portal";
 
@@ -24,7 +25,6 @@ function MobileSlideModal({
   contentPadding = true,
   footerContent,
   className,
-  noDivider = false,
 }: PropsWithChildren<{
   label?: React.ReactNode;
   headerContent?: React.ReactNode;
@@ -35,7 +35,6 @@ function MobileSlideModal({
   contentPadding?: boolean;
   footerContent?: React.ReactNode;
   className?: string;
-  noDivider?: boolean;
 }>) {
   const curtainStyle = useMemo(
     () => ({
@@ -257,40 +256,42 @@ function MobileSlideModal({
           data-qa={qa}
           ref={setCurtainRef}
           className={cx(
-            "text-body-medium fixed left-0 right-0 z-[10000] flex flex-col rounded-t-4 border-x border-t border-gray-800 bg-slate-800",
+            "text-body-medium fixed left-0 right-0 z-[10000] flex flex-col rounded-t-4 border-t border-slate-700 bg-slate-900",
             className
           )}
           style={curtainStyle}
           onClick={stopPropagation}
         >
           <div onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
-            <div className="flex touch-none select-none items-stretch justify-between gap-4 px-14 pb-14 pt-14">
-              <div className="text-body-large grow">{label}</div>
+            <div className="mb-8 mt-12 flex h-28 touch-none select-none items-center justify-between gap-4 px-adaptive">
+              <div className="text-body-medium grow font-medium text-typography-primary">{label}</div>
 
-              <MdClose fontSize={20} className="cursor-pointer text-slate-100 hover:opacity-90" onClick={handleClose} />
+              <MdClose
+                fontSize={20}
+                className="cursor-pointer text-typography-secondary hover:opacity-90"
+                onClick={handleClose}
+              />
             </div>
             {headerRef ? (
-              <div className="px-14 last:*:mb-14" ref={headerRef} />
+              <div className="px-adaptive" ref={headerRef} />
             ) : headerContent ? (
-              <div className="px-14 last:*:mb-14">{headerContent}</div>
+              <div className="px-adaptive">{headerContent}</div>
             ) : null}
-
-            {!noDivider && <div className="divider" />}
           </div>
 
           <div
-            className="grow overflow-y-auto"
+            className="flex grow flex-col overflow-y-auto"
             ref={scrollableContainerRef}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerCancel}
           >
-            <div className={cx("flex grow flex-col", contentPadding ? "p-14" : "pr-5")}>{children}</div>
+            <div className={cx("flex grow flex-col overflow-y-auto", { "p-adaptive": contentPadding })}>{children}</div>
           </div>
           {footerContent && (
             <>
-              <div className="border-b border-stroke-primary" />
+              <div className="border-b-1/2 border-slate-600" />
               <div>{footerContent}</div>
             </>
           )}
@@ -311,8 +312,8 @@ export function SlideModal({
   contentPadding = true,
   footerContent,
   className,
-  noDivider = false,
   desktopContentClassName,
+  disableOverflowHandling = false,
 }: PropsWithChildren<{
   label?: React.ReactNode;
   headerContent?: React.ReactNode;
@@ -323,10 +324,10 @@ export function SlideModal({
   contentPadding?: boolean;
   footerContent?: React.ReactNode;
   className?: string;
-  noDivider?: boolean;
   desktopContentClassName?: string;
+  disableOverflowHandling?: boolean;
 }>) {
-  const isMobile = useMedia("(max-width: 700px)", false);
+  const { isMobile } = useBreakpoints();
 
   if (isMobile) {
     return (
@@ -339,7 +340,6 @@ export function SlideModal({
         setIsVisible={setIsVisible}
         contentPadding={contentPadding}
         footerContent={footerContent}
-        noDivider={noDivider}
         className={className}
       >
         {children}
@@ -356,10 +356,10 @@ export function SlideModal({
         label={label}
         headerContent={headerContent}
         contentPadding={contentPadding}
-        noDivider={noDivider}
         footerContent={footerContent}
         className={className}
         contentClassName={desktopContentClassName}
+        disableOverflowHandling={disableOverflowHandling}
       >
         {children}
       </Modal>

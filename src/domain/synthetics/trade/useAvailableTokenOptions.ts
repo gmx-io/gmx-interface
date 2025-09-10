@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef } from "react";
 import { zeroAddress } from "viem";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, UiSupportedChain } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX } from "config/chains";
 import { getSortedMarketsAddressesKey } from "config/localStorage";
 import { SORTED_MARKETS } from "config/static/sortedMarkets";
 import { GlvAndGmMarketsInfoData, Market, MarketInfo, MarketsData, isMarketInfo } from "domain/synthetics/markets";
 import { InfoTokens, Token, getMidPrice } from "domain/tokens";
 import { getByKey } from "lib/objects";
+import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, getTokensMap } from "sdk/configs/tokens";
 
 import { isGlvInfo } from "../markets/glv";
@@ -59,7 +60,7 @@ function getSortedMarketsConfigs(marketsData?: MarketsData, sortedAddresses?: st
   return resultSortedAddresses.map((address) => getByKey(marketsData, address)).filter(Boolean) as Market[];
 }
 
-const FORCE_ALLOWED_COLLATERAL_TOKENS: Record<UiSupportedChain, string[]> = {
+const FORCE_ALLOWED_COLLATERAL_TOKENS: Record<ContractsChainId, string[]> = {
   // handled by wrapOrUnwrap or by stakeOrUnstake
   [BOTANIX]: [
     // bBTC
@@ -70,6 +71,7 @@ const FORCE_ALLOWED_COLLATERAL_TOKENS: Record<UiSupportedChain, string[]> = {
   [AVALANCHE]: [],
   [ARBITRUM]: [],
   [AVALANCHE_FUJI]: [],
+  [ARBITRUM_SEPOLIA]: [],
 };
 
 export function useAvailableTokenOptions(
@@ -79,9 +81,10 @@ export function useAvailableTokenOptions(
     marketsData?: MarketsData;
     tokensData?: TokensData;
     marketTokens?: TokensData;
+    srcChainId: SourceChainId | undefined;
   }
 ): AvailableTokenOptions {
-  const { marketsInfoData, marketsData, tokensData, marketTokens } = p;
+  const { marketsInfoData, marketsData, tokensData, marketTokens, srcChainId } = p;
 
   const sortedMarketAddressesRef = useRef<string[]>();
 
@@ -144,7 +147,7 @@ export function useAvailableTokenOptions(
         continue;
       }
 
-      if ((longToken.isWrapped || shortToken.isWrapped) && nativeToken) {
+      if ((longToken.isWrapped || shortToken.isWrapped) && nativeToken && !srcChainId) {
         collaterals.add(nativeToken);
       }
 
@@ -230,5 +233,5 @@ export function useAvailableTokenOptions(
       sortedAllMarkets,
       sortedMarketConfigs,
     };
-  }, [marketsInfoData, marketsData, chainId, tokensData, marketTokens]);
+  }, [marketsInfoData, chainId, tokensData, marketsData, marketTokens, srcChainId]);
 }

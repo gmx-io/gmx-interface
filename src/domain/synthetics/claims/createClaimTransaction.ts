@@ -2,8 +2,9 @@ import { encodeFunctionData } from "viem";
 
 import { getContract } from "config/contracts";
 import { sendWalletTransaction, TxnCallback, WalletTxnCtx } from "lib/transactions";
-import { WalletSigner } from "lib/wallets";
+import type { WalletSigner } from "lib/wallets";
 import ClaimHandlerAbi from "sdk/abis/ClaimHandler.json";
+import type { ContractsChainId } from "sdk/configs/chains";
 
 export function getClaimTransactionCallData(
   tokens: string[],
@@ -26,7 +27,7 @@ export function getClaimTransactionCallData(
 
 export function createClaimAmountsTransaction(data: {
   tokens: string[];
-  chainId: number;
+  chainId: ContractsChainId;
   signer: WalletSigner;
   account: string;
   signature: string | undefined;

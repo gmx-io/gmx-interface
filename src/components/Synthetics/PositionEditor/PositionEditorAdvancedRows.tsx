@@ -39,12 +39,7 @@ export function PositionEditorAdvancedRows({ operation, gasPaymentParams }: Opti
   }
 
   return (
-    <ExpandableRow
-      title={t`Execution Details`}
-      open={open}
-      onToggle={setOpen}
-      contentClassName="flex flex-col gap-14 pt-14"
-    >
+    <ExpandableRow title={t`Execution Details`} open={open} onToggle={setOpen} contentClassName="flex flex-col gap-14">
       <TradeFeesRow {...fees} feesType="edit" shouldShowRebate={false} />
       <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} />
 
@@ -62,7 +57,7 @@ export function PositionEditorAdvancedRows({ operation, gasPaymentParams }: Opti
               </span>
             }
             position="left-start"
-            content={<Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>}
+            content={<Trans>Initial collateral (collateral excluding borrow and funding fee).</Trans>}
           />
         }
         value={

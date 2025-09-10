@@ -23,7 +23,9 @@ import type { CategoricalChartFunc } from "recharts/types/chart/generateCategori
 import type { ImplicitLabelType } from "recharts/types/component/Label";
 import type { AxisDomainItem, Margin } from "recharts/types/util/types";
 
+import { colors } from "config/colors";
 import { USD_DECIMALS } from "config/factors";
+import { useTheme } from "context/ThemeContext/ThemeContext";
 import type { MarketInfo } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets/utils";
 import { getNextPositionExecutionPrice } from "domain/synthetics/trade/utils/common";
@@ -40,15 +42,13 @@ import { sendDepthChartInteractionEvent } from "lib/userAnalytics";
 import { bigMath } from "sdk/utils/bigmath";
 import { getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
 
-import { GREEN, RED } from "components/TVChartContainer/constants";
-
 import { ChartTooltip, ChartTooltipHandle } from "./DepthChartTooltip";
 
 const getYAxisLabel = (): LabelProps => ({
   value: t`Size, $`,
   position: "top",
   offset: 0,
-  fill: "#ffffff",
+  fill: "var(--color-typography-primary)",
   opacity: 0.7,
   dx: -3,
   fontSize: 12,
@@ -62,7 +62,7 @@ const getOraclePriceLabel = (): ImplicitLabelType => ({
   position: "bottom",
   offset: 28,
   value: t`ORACLE PRICE`,
-  fill: "#ffffff",
+  fill: "var(--color-typography-primary)",
   opacity: 0.7,
   fontSize: 10,
 });
@@ -71,7 +71,11 @@ const DOLLAR: bigint = expandDecimals(1n, USD_DECIMALS);
 
 const CHART_MARGIN: Margin = { bottom: 10, top: 20, right: 0 };
 const TOOLTIP_WRAPPER_POSITION = { x: 0, y: 0 };
-const Y_AXIS_TICK = { fill: "#ffffff", opacity: 0.7, fontSize: 12 } satisfies SVGProps<SVGTextElement>;
+const Y_AXIS_TICK = {
+  fill: "var(--color-typography-primary)",
+  opacity: 0.7,
+  fontSize: 12,
+} satisfies SVGProps<SVGTextElement>;
 const TICKS_SPACING = 120;
 const DEFAULT_TICK_COUNT_BIGINT = 9n;
 const LINE_PATH_ELLIPSIS = "3px 3px 3px 3px 3px 3px 1000%";
@@ -108,6 +112,11 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
     isLeftEmpty,
     isRightEmpty,
   } = useEdgePoints(marketInfo, zoom);
+
+  const theme = useTheme();
+
+  const redColor = colors.red[500][theme.theme];
+  const greenColor = colors.green[500][theme.theme];
 
   const { ticks, marketPriceIndex, xAxisDomain, setTickCount } = useXAxis(marketInfo, {
     leftExecutionPrice: leftMaxExecutionPrice,
@@ -317,24 +326,24 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
       >
         <defs>
           <linearGradient id="colorGreen" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="50%" stopColor={GREEN} stopOpacity={0.5} />
-            <stop offset="100%" stopColor={GREEN} stopOpacity={0} />
+            <stop offset="50%" stopColor={greenColor} stopOpacity={0.5} />
+            <stop offset="100%" stopColor={greenColor} stopOpacity={0} />
           </linearGradient>
         </defs>
         <defs>
           <linearGradient id="colorRed" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="50%" stopColor={RED} stopOpacity={0.5} />
-            <stop offset="100%" stopColor={RED} stopOpacity={0} />
+            <stop offset="50%" stopColor={redColor} stopOpacity={0.5} />
+            <stop offset="100%" stopColor={redColor} stopOpacity={0} />
           </linearGradient>
         </defs>
 
-        <CartesianGrid strokeDasharray="2 2" stroke="#ffffff" opacity={0.07} />
+        <CartesianGrid strokeDasharray="2 2" stroke="var(--color-typography-primary)" opacity={0.07} />
 
         {drawLeftTransparent && (
           <>
             <Line
               dataKey="leftTransparentSize"
-              stroke={GREEN}
+              stroke={greenColor}
               opacity={0.3}
               strokeWidth={2}
               dot={isZeroPriceImpact ? <LineDot side="left" /> : false}
@@ -352,7 +361,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
               <ReferenceDot
                 x={leftMinExecutionPrice}
                 y={bigintToNumber(leftMin, USD_DECIMALS)}
-                fill={GREEN}
+                fill={greenColor}
                 shape={<TransparentOpaqueSeparatorDot />}
               />
             )}
@@ -360,7 +369,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
         )}
         <Area
           dataKey="leftOpaqueSize"
-          stroke={GREEN}
+          stroke={greenColor}
           strokeWidth={isZeroPriceImpact ? 0 : 2}
           dot={isZeroPriceImpact ? <AreaDot side="left" /> : false}
           fill="url(#colorGreen)"
@@ -376,7 +385,7 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
         />
         <Area
           dataKey="rightOpaqueSize"
-          stroke={RED}
+          stroke={redColor}
           strokeWidth={isZeroPriceImpact ? 0 : 2}
           dot={isZeroPriceImpact ? <AreaDot side="right" /> : false}
           fill="url(#colorRed)"
@@ -395,12 +404,12 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
             <ReferenceDot
               x={rightMinExecutionPrice}
               y={bigintToNumber(rightMin, USD_DECIMALS)}
-              fill={RED}
+              fill={redColor}
               shape={<TransparentOpaqueSeparatorDot />}
             />
             <Line
               dataKey="rightTransparentSize"
-              stroke={RED}
+              stroke={redColor}
               strokeWidth={2}
               opacity={0.3}
               dot={isZeroPriceImpact ? <LineDot side="right" /> : false}
@@ -468,7 +477,13 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
           tickMargin={7}
           tick={<Tick marketPriceIndex={marketPriceIndex} />}
         />
-        <ReferenceLine x={oraclePrice} label={oraclePriceLabel} stroke="#ffffff" opacity={0.6} strokeDasharray="2 2" />
+        <ReferenceLine
+          x={oraclePrice}
+          label={oraclePriceLabel}
+          stroke="var(--color-typography-primary)"
+          opacity={0.6}
+          strokeDasharray="2 2"
+        />
       </ComposedChart>
     </ResponsiveContainer>
   );
@@ -655,7 +670,7 @@ function Tick(
       y={y}
       height={height}
       textAnchor={textAnchor}
-      fill="#ffffff"
+      fill="var(--color-typography-primary)"
       opacity={index === marketPriceIndex ? 1 : 0.7}
       fontWeight={index === marketPriceIndex ? "bold" : "normal"}
       verticalAnchor={verticalAnchor}
@@ -785,7 +800,9 @@ function useDepthChartPricesData(
       const leftInc = (leftMax - DOLLAR) / SIDE_POINTS_COUNT;
       // from left to center
       for (let positionSize = leftMax; positionSize >= DOLLAR; positionSize -= leftInc) {
-        const priceImpactUsd = getPriceImpactForPosition(marketInfo, positionSize, false, { fallbackToZero: true });
+        const { priceImpactDeltaUsd: priceImpactUsd } = getPriceImpactForPosition(marketInfo, positionSize, false, {
+          fallbackToZero: true,
+        });
 
         const executionPrice = getDepthChartExecutionPrice({
           isIncrease: true,
@@ -814,9 +831,10 @@ function useDepthChartPricesData(
         });
 
         if (positionSize - leftInc < leftMin && positionSize > leftMin && leftMin > DOLLAR) {
-          const priceImpactUsd = getPriceImpactForPosition(marketInfo, leftMin, false, {
+          const { priceImpactDeltaUsd: priceImpactUsd } = getPriceImpactForPosition(marketInfo, leftMin, false, {
             fallbackToZero: true,
           });
+
           const executionPrice = getDepthChartExecutionPrice({
             isIncrease: true,
             isLong: false,
@@ -848,7 +866,9 @@ function useDepthChartPricesData(
         }
 
         if (positionSize - leftInc < DOLLAR && positionSize > DOLLAR) {
-          const priceImpactUsd = getPriceImpactForPosition(marketInfo, DOLLAR, false, { fallbackToZero: true });
+          const { priceImpactDeltaUsd: priceImpactUsd } = getPriceImpactForPosition(marketInfo, DOLLAR, false, {
+            fallbackToZero: true,
+          });
 
           const executionPrice = getDepthChartExecutionPrice({
             isIncrease: true,
@@ -885,7 +905,9 @@ function useDepthChartPricesData(
 
       // from right max to center
       for (let positionSize = rightMax; positionSize >= DOLLAR; positionSize -= rightInc) {
-        const priceImpactUsd = getPriceImpactForPosition(marketInfo, positionSize, true, { fallbackToZero: true });
+        const { priceImpactDeltaUsd: priceImpactUsd } = getPriceImpactForPosition(marketInfo, positionSize, true, {
+          fallbackToZero: true,
+        });
 
         const executionPrice = getDepthChartExecutionPrice({
           isIncrease: true,
@@ -914,7 +936,7 @@ function useDepthChartPricesData(
         });
 
         if (positionSize - rightInc < rightMin && positionSize > rightMin && rightMin > DOLLAR) {
-          const priceImpactUsd = getPriceImpactForPosition(marketInfo, rightMin, true, {
+          const { priceImpactDeltaUsd: priceImpactUsd } = getPriceImpactForPosition(marketInfo, rightMin, true, {
             fallbackToZero: true,
           });
 
@@ -949,7 +971,9 @@ function useDepthChartPricesData(
         }
 
         if (positionSize - rightInc < DOLLAR && positionSize > DOLLAR) {
-          const priceImpactUsd = getPriceImpactForPosition(marketInfo, DOLLAR, true, { fallbackToZero: true });
+          const { priceImpactDeltaUsd: priceImpactUsd } = getPriceImpactForPosition(marketInfo, DOLLAR, true, {
+            fallbackToZero: true,
+          });
 
           const executionPrice = getDepthChartExecutionPrice({
             isIncrease: true,
@@ -1121,7 +1145,9 @@ function useEdgePoints(
   let rightMaxExecutionPrice = 0n;
 
   {
-    const priceImpactUsd = getPriceImpactForPosition(marketInfo, rightMax, true, { fallbackToZero: true });
+    const { priceImpactDeltaUsd: priceImpactUsd } = getPriceImpactForPosition(marketInfo, rightMax, true, {
+      fallbackToZero: true,
+    });
 
     const executionPrice = getDepthChartExecutionPrice({
       isIncrease: true,
@@ -1136,7 +1162,9 @@ function useEdgePoints(
   }
 
   {
-    const priceImpactUsd = getPriceImpactForPosition(marketInfo, leftMax, false, { fallbackToZero: true });
+    const { priceImpactDeltaUsd: priceImpactUsd } = getPriceImpactForPosition(marketInfo, leftMax, false, {
+      fallbackToZero: true,
+    });
 
     const executionPrice = getDepthChartExecutionPrice({
       isIncrease: true,

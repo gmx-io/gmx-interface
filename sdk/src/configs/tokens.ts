@@ -2,7 +2,7 @@ import { zeroAddress } from "viem";
 
 import type { Token, TokenAddressTypesMap, TokenCategory } from "types/tokens";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX } from "./chains";
 import { getContract } from "./contracts";
 
 export const NATIVE_TOKEN_ADDRESS = zeroAddress;
@@ -1141,6 +1141,39 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/4463/standard/WeChat_Image_20220118095654.png?1696505053",
       coingeckoUrl: "https://www.coingecko.com/nl/coins/okb",
     },
+    {
+      name: "Morpho",
+      symbol: "MORPHO",
+      address: "0xF67b2a901D674B443Fa9f6DB2A689B37c07fD4fE",
+      decimals: 18,
+      priceDecimals: 4,
+      isSynthetic: true,
+      categories: ["defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/29837/standard/Morpho-token-icon.png?1726771230",
+      coingeckoUrl: "https://www.coingecko.com/nl/coins/morpho",
+    },
+    {
+      name: "Venice Token",
+      symbol: "VVV",
+      address: "0xB79Eb5BA64A167676694bB41bc1640F95d309a2F",
+      decimals: 18,
+      priceDecimals: 4,
+      isSynthetic: true,
+      categories: ["defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/54023/standard/VVV_Token_Transparent.png?1741856877",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/venice-token",
+    },
+    {
+      name: "Moonwell",
+      symbol: "WELL",
+      address: "0x465A31E5bA29b8EAcC860d499D714a6f07e56E85",
+      decimals: 18,
+      priceDecimals: 4,
+      isSynthetic: true,
+      categories: ["defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/26133/standard/WELL.png?1696525221",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/moonwell",
+    },
   ],
   [AVALANCHE]: [
     {
@@ -1659,6 +1692,107 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isPlatformToken: true,
     },
   ],
+  [ARBITRUM_SEPOLIA]: [
+    {
+      name: "Ethereum",
+      symbol: "ETH",
+      decimals: 18,
+      address: zeroAddress,
+      wrappedAddress: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
+      isNative: true,
+      isShortable: true,
+      categories: ["layer1"],
+      imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
+    },
+    {
+      name: "Wrapped ETH",
+      symbol: "WETH",
+      address: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
+      decimals: 18,
+      isWrapped: true,
+      baseSymbol: "ETH",
+      categories: ["layer1"],
+      imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
+    },
+    {
+      name: "Bitcoin",
+      symbol: "BTC",
+      address: "0xF79cE1Cf38A09D572b021B4C5548b75A14082F12",
+      decimals: 8,
+      imageUrl: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1746042828",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
+    },
+    {
+      name: "USD Coin GMX",
+      symbol: "USDC",
+      address: "0x3321Fd36aEaB0d5CdfD26f4A3A93E2D2aAcCB99f",
+      decimals: 6,
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+    },
+    {
+      name: "USD Coin Stargate",
+      symbol: "USDC.SG",
+      address: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
+      decimals: 6,
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+    },
+    {
+      name: "CRV",
+      symbol: "CRV",
+      address: "0xD5DdAED48B09fa1D7944bd662CB05265FCD7077C",
+      decimals: 18,
+      priceDecimals: 5,
+      imageUrl: "https://assets.coingecko.com/coins/images/12134/small/curve.png?1596358786",
+      isSynthetic: true,
+      coingeckoUrl: "https://www.coingecko.com/en/coins/curve-dao-token",
+    },
+    /** Placeholder tokens */
+    {
+      name: "GMX",
+      symbol: "GMX",
+      address: "<gmx-address>",
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
+      isPlatformToken: true,
+    },
+    {
+      name: "Escrowed GMX",
+      symbol: "ESGMX",
+      address: "<esgmx-address>",
+      decimals: 18,
+      isPlatformToken: true,
+    },
+    {
+      name: "GMX LP",
+      symbol: "GLP",
+      address: "<glp-address>",
+      decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+      isPlatformToken: true,
+    },
+    {
+      name: "GMX Market tokens",
+      symbol: "GM",
+      address: "<market-token-address>",
+      decimals: 18,
+      imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GM_LOGO.png",
+      isPlatformToken: true,
+    },
+    {
+      name: "GLV Market tokens",
+      symbol: "GLV",
+      address: "<market-token-address>",
+      decimals: 18,
+      imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GLV_LOGO.png",
+      isPlatformToken: true,
+    },
+  ],
   [BOTANIX]: [
     {
       name: "Bitcoin",
@@ -1807,7 +1941,7 @@ export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Toke
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
 export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
 
-const CHAIN_IDS = [ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX];
+const CHAIN_IDS = [ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ARBITRUM_SEPOLIA];
 
 for (let j = 0; j < CHAIN_IDS.length; j++) {
   const chainId = CHAIN_IDS[j];
@@ -1891,6 +2025,10 @@ export function isValidToken(chainId: number, address: string) {
   if (!TOKENS_MAP[chainId]) {
     throw new Error(`Incorrect chainId ${chainId}`);
   }
+  return address in TOKENS_MAP[chainId];
+}
+
+export function isValidTokenSafe(chainId: number, address: string) {
   return address in TOKENS_MAP[chainId];
 }
 
