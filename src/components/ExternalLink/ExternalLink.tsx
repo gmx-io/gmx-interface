@@ -1,5 +1,8 @@
 import cx from "classnames";
 import React from "react";
+
+import ExternalIcon from "img/ic_external.svg?react";
+
 import "./ExternalLink.scss";
 
 type Props = {
@@ -7,10 +10,13 @@ type Props = {
   children: React.ReactNode;
   className?: string;
   newTab?: boolean;
+  variant?: "underline" | "icon";
 };
 
-function ExternalLink({ href, children, className, newTab = true }: Props) {
-  const classNames = cx("link-underline", className);
+function ExternalLink({ href, children, className, newTab = true, variant = "underline" }: Props) {
+  const classNames = cx("link-underline", className, {
+    "!no-underline": variant !== "underline",
+  });
   const props = {
     href,
     className: classNames,
@@ -21,7 +27,11 @@ function ExternalLink({ href, children, className, newTab = true }: Props) {
         }
       : {}),
   };
-  return <a {...props}>{children}</a>;
+  return (
+    <a {...props}>
+      {children} {variant === "icon" && <ExternalIcon className="ml-4 mt-3 size-12" />}
+    </a>
+  );
 }
 
 export default ExternalLink;

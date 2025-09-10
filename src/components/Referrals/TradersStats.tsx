@@ -1,6 +1,5 @@
 import { t, Trans } from "@lingui/macro";
 import { useRef, useState } from "react";
-import { BiEditAlt } from "react-icons/bi";
 import { IoWarningOutline } from "react-icons/io5";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl, ContractsChainId } from "config/chains";
@@ -17,6 +16,8 @@ import { BottomTablePagination } from "components/Pagination/BottomTablePaginati
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+
+import EditIcon from "img/ic_edit.svg?react";
 
 import EmptyMessage from "./EmptyMessage";
 import { ReferralCodeEditFormContainer } from "./JoinReferralCode";
@@ -62,20 +63,29 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
   const open = () => setIsEditModalOpen(true);
   const close = () => setIsEditModalOpen(false);
   return (
-    <div className="rebate-container">
-      <div className="referral-stats">
-        <ReferralInfoCard label={t`Active Referral Code`}>
-          <div className="active-referral-code">
-            <div className="edit">
+    <div className="flex flex-col gap-8">
+      <div className="grid grid-cols-3 max-lg:grid-cols-1">
+        <ReferralInfoCard
+          label={t`Active Referral Code`}
+          value={
+            <div className="flex items-center gap-4">
               <span>{userReferralCodeString}</span>
-              <BiEditAlt onClick={open} />
+              <EditIcon
+                className="size-16 cursor-pointer text-typography-secondary hover:text-typography-primary"
+                onClick={open}
+              />
             </div>
+          }
+        >
+          <div className="active-referral-code">
             {traderTier !== undefined ? (
               <div className="tier">
                 <Tooltip
-                  handle={t`Tier ${getTierIdDisplay(traderTier)} (${currentTierDiscount}% discount)`}
+                  handle={t`Tier ${getTierIdDisplay(traderTier)}: ${currentTierDiscount}% discount`}
                   position="bottom"
-                  className={(discountShare ?? 0) > 0 ? "tier-discount-warning" : ""}
+                  variant="icon"
+                  handleClassName="text-body-small rounded-full bg-cold-blue-900 px-12 py-8 font-medium leading-[1.25] text-typography-primary"
+                  iconClassName="text-typography-secondary ml-4"
                   renderContent={() => (
                     <p className="text-typography-primary">
                       <Trans>You will receive a {currentTierDiscount}% discount on opening and closing fees.</Trans>
@@ -204,132 +214,131 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
         </Modal>
       </div>
       {currentDiscountDistributions.length > 0 ? (
-        <div className="reward-history">
-          <Card
-            title={t`Rebates Distribution History`}
-            tooltipText={t`GMX V2 discounts are automatically applied on each trade and are not displayed on this table.`}
-            bodyPadding={false}
-            divider={false}
-          >
-            <TableScrollFadeContainer>
-              <table className="w-full min-w-max">
-                <thead>
-                  <TableTheadTr>
-                    <TableTh scope="col">
-                      <Trans>Date</Trans>
-                    </TableTh>
-                    <TableTh scope="col">
-                      <Trans>Type</Trans>
-                    </TableTh>
-                    <TableTh scope="col">
-                      <Trans>Amount</Trans>
-                    </TableTh>
-                    <TableTh scope="col">
-                      <Trans>Transaction</Trans>
-                    </TableTh>
-                  </TableTheadTr>
-                </thead>
-                <tbody>
-                  {currentDiscountDistributions.map((rebate) => {
-                    const amountsByTokens = rebate.tokens.reduce(
-                      (acc, tokenAddress, i) => {
-                        let token;
-                        try {
-                          token = getToken(chainId, tokenAddress);
-                        } catch (error) {
-                          token = getNativeToken(chainId);
-                        }
-                        acc[token.address] = acc[token.address] ?? 0n;
-                        acc[token.address] = acc[token.address] + rebate.amounts[i];
-                        return acc;
-                      },
-                      {} as { [address: string]: bigint }
-                    );
-                    const tokensWithoutPrices: string[] = [];
-
-                    const totalUsd = rebate.amountsInUsd.reduce((acc, amount, i) => {
-                      if (amount == 0n && rebate.amounts[i] != 0n) {
-                        tokensWithoutPrices.push(rebate.tokens[i]);
+        <Card
+          title={t`Rebates Distribution History`}
+          tooltipText={t`GMX V2 discounts are automatically applied on each trade and are not displayed on this table.`}
+          bodyPadding={false}
+          divider={true}
+        >
+          <TableScrollFadeContainer>
+            <table className="w-full min-w-max">
+              <thead>
+                <TableTheadTr>
+                  <TableTh scope="col">
+                    <Trans>Date</Trans>
+                  </TableTh>
+                  <TableTh scope="col">
+                    <Trans>Type</Trans>
+                  </TableTh>
+                  <TableTh scope="col">
+                    <Trans>Amount</Trans>
+                  </TableTh>
+                  <TableTh scope="col">
+                    <Trans>Transaction</Trans>
+                  </TableTh>
+                </TableTheadTr>
+              </thead>
+              <tbody>
+                {currentDiscountDistributions.map((rebate) => {
+                  const amountsByTokens = rebate.tokens.reduce(
+                    (acc, tokenAddress, i) => {
+                      let token;
+                      try {
+                        token = getToken(chainId, tokenAddress);
+                      } catch (error) {
+                        token = getNativeToken(chainId);
                       }
+                      acc[token.address] = acc[token.address] ?? 0n;
+                      acc[token.address] = acc[token.address] + rebate.amounts[i];
+                      return acc;
+                    },
+                    {} as { [address: string]: bigint }
+                  );
+                  const tokensWithoutPrices: string[] = [];
 
-                      return acc + amount;
-                    }, 0n);
+                  const totalUsd = rebate.amountsInUsd.reduce((acc, amount, i) => {
+                    if (amount == 0n && rebate.amounts[i] != 0n) {
+                      tokensWithoutPrices.push(rebate.tokens[i]);
+                    }
 
-                    const explorerURL = getExplorerUrl(chainId);
-                    return (
-                      <TableTr key={rebate.id}>
-                        <TableTd data-label="Date">{formatDate(rebate.timestamp)}</TableTd>
-                        <TableTd data-label="Type">V1 Airdrop</TableTd>
-                        <TableTd data-label="Amount" className="Rebate-amount">
-                          <Tooltip
-                            position="bottom"
-                            className="whitespace-nowrap"
-                            handle={
-                              <div className="Rebate-amount-value numbers">
-                                {tokensWithoutPrices.length > 0 && (
-                                  <>
-                                    <IoWarningOutline color="#ffba0e" size={16} />
-                                    &nbsp;
-                                  </>
-                                )}
-                                ${getUsdValue(totalUsd)}
-                              </div>
-                            }
-                            content={
-                              <>
-                                {tokensWithoutPrices.length > 0 && (
-                                  <>
-                                    <Trans>
-                                      USD Value may not be accurate since the data does not contain prices for{" "}
-                                      {tokensWithoutPrices
-                                        .map((address) => getToken(chainId, address).symbol)
-                                        .join(", ")}
-                                    </Trans>
-                                    <br />
-                                    <br />
-                                  </>
-                                )}
-                                {Object.keys(amountsByTokens).map((tokenAddress) => {
-                                  const token = getToken(chainId, tokenAddress);
+                    return acc + amount;
+                  }, 0n);
 
-                                  return (
-                                    <StatsTooltipRow
-                                      key={tokenAddress}
-                                      showDollar={false}
-                                      label={token.symbol}
-                                      value={formatBalanceAmount(
-                                        amountsByTokens[tokenAddress],
-                                        token.decimals,
-                                        undefined,
-                                        { isStable: token.isStable }
-                                      )}
-                                      valueClassName="numbers"
-                                    />
-                                  );
-                                })}
-                              </>
-                            }
-                          />
-                        </TableTd>
-                        <TableTd data-label="Transaction">
-                          <ExternalLink href={explorerURL + `tx/${rebate.transactionHash}`}>
-                            {shortenAddress(rebate.transactionHash, 20)}
-                          </ExternalLink>
-                        </TableTd>
-                      </TableTr>
-                    );
-                  })}
-                  {currentDiscountDistributions.length > 0 &&
-                    currentDiscountDistributions.length < DEFAULT_PAGE_SIZE && (
-                      // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                      <tr style={{ height: 42.5 * (DEFAULT_PAGE_SIZE - currentDiscountDistributions.length) }}></tr>
-                    )}
-                </tbody>
-              </table>
-            </TableScrollFadeContainer>
-            <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
-          </Card>
-        </div>
+                  const explorerURL = getExplorerUrl(chainId);
+                  return (
+                    <TableTr key={rebate.id}>
+                      <TableTd data-label="Date">{formatDate(rebate.timestamp)}</TableTd>
+                      <TableTd data-label="Type">V1 Airdrop</TableTd>
+                      <TableTd data-label="Amount" className="Rebate-amount">
+                        <Tooltip
+                          position="bottom"
+                          className="whitespace-nowrap"
+                          handle={
+                            <div className="Rebate-amount-value numbers">
+                              {tokensWithoutPrices.length > 0 && (
+                                <>
+                                  <IoWarningOutline color="#ffba0e" size={16} />
+                                  &nbsp;
+                                </>
+                              )}
+                              ${getUsdValue(totalUsd)}
+                            </div>
+                          }
+                          content={
+                            <>
+                              {tokensWithoutPrices.length > 0 && (
+                                <>
+                                  <Trans>
+                                    USD Value may not be accurate since the data does not contain prices for{" "}
+                                    {tokensWithoutPrices.map((address) => getToken(chainId, address).symbol).join(", ")}
+                                  </Trans>
+                                  <br />
+                                  <br />
+                                </>
+                              )}
+                              {Object.keys(amountsByTokens).map((tokenAddress) => {
+                                const token = getToken(chainId, tokenAddress);
+
+                                return (
+                                  <StatsTooltipRow
+                                    key={tokenAddress}
+                                    showDollar={false}
+                                    label={token.symbol}
+                                    value={formatBalanceAmount(
+                                      amountsByTokens[tokenAddress],
+                                      token.decimals,
+                                      undefined,
+                                      { isStable: token.isStable }
+                                    )}
+                                    valueClassName="numbers"
+                                  />
+                                );
+                              })}
+                            </>
+                          }
+                        />
+                      </TableTd>
+                      <TableTd data-label="Transaction">
+                        <ExternalLink
+                          className="text-typography-secondary hover:text-typography-primary"
+                          variant="icon"
+                          href={explorerURL + `tx/${rebate.transactionHash}`}
+                        >
+                          {shortenAddress(rebate.transactionHash, 20)}
+                        </ExternalLink>
+                      </TableTd>
+                    </TableTr>
+                  );
+                })}
+                {currentDiscountDistributions.length > 0 && currentDiscountDistributions.length < DEFAULT_PAGE_SIZE && (
+                  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+                  <tr style={{ height: 42.5 * (DEFAULT_PAGE_SIZE - currentDiscountDistributions.length) }}></tr>
+                )}
+              </tbody>
+            </table>
+          </TableScrollFadeContainer>
+          <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
+        </Card>
       ) : (
         <EmptyMessage
           tooltipText={t`GMX V2 Rebates are automatically applied as fee discounts on each trade and are not displayed on this table.`}
