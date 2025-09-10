@@ -556,7 +556,7 @@ export const DepositView = () => {
       const isInvalidTokenAddress =
         depositViewTokenAddress === undefined ||
         !MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId as SettlementChainId]
-          .map((token) => convertTokenAddress(settlementChainId, token, "native"))
+          ?.map((token) => convertTokenAddress(settlementChainId, token, "native"))
           .includes(depositViewTokenAddress as NativeTokenSupportedAddress);
 
       if (

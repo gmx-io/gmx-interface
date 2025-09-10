@@ -3,6 +3,8 @@
 import { type JSX } from "react";
 import { Link } from "react-router-dom";
 
+import ExternalLink from "components/ExternalLink/ExternalLink";
+
 export type EventData = {
   id: string;
   title: string;
@@ -24,6 +26,19 @@ export type EventData = {
 export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
+  {
+    id: "new-interface-and-price-impact-improvements",
+    isActive: true,
+    startDate: "08 Sep 2025, 12:00",
+    endDate: "22 Sep 2025, 12:00",
+    title: "New interface and price impact improvements",
+    bodyText: (
+      <>
+        The app has a revamped interface, including a new light theme. Price impact is now capped and charged only on
+        position close. <ExternalLink href="https://x.com/GMX_IO/status/1965077965236056467">Read more</ExternalLink>.
+      </>
+    ),
+  },
   {
     id: "listing-09-04",
     isActive: true,

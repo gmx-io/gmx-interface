@@ -193,20 +193,22 @@ export const WithdrawalView = () => {
     ? convertToUsd(inputAmount, selectedToken.decimals, selectedToken.prices.maxPrice)
     : undefined;
 
-  const options = useMemo(() => {
+  const options = useMemo((): TokenData[] => {
     if (!isSettlementChain(chainId) || !tokensData) {
       return EMPTY_ARRAY;
     }
 
-    return MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[chainId as SettlementChainId]
-      ?.map((tokenAddress) => tokensData[tokenAddress])
-      .filter((token) => token.address !== zeroAddress)
-      .sort((a, b) => {
-        const aFloat = bigintToNumber(a.gmxAccountBalance ?? 0n, a.decimals);
-        const bFloat = bigintToNumber(b.gmxAccountBalance ?? 0n, b.decimals);
+    return (
+      MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[chainId]
+        ?.map((tokenAddress) => tokensData[tokenAddress])
+        .filter((token) => token.address !== zeroAddress)
+        .sort((a, b) => {
+          const aFloat = bigintToNumber(a.gmxAccountBalance ?? 0n, a.decimals);
+          const bFloat = bigintToNumber(b.gmxAccountBalance ?? 0n, b.decimals);
 
-        return bFloat - aFloat;
-      });
+          return bFloat - aFloat;
+        }) ?? EMPTY_ARRAY
+    );
   }, [chainId, tokensData]);
 
   const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
