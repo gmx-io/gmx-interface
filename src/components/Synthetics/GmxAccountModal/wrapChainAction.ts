@@ -20,10 +20,7 @@ export async function wrapChainAction(
     ? parseInt(rawLocalStorageSettlementChainId)
     : undefined;
   const shouldUpdateLocalStorageSettlementChainId =
-    isSettlementChain(currentChainId) &&
-    localStorageSettlementChainId &&
-    isSettlementChain(localStorageSettlementChainId) &&
-    localStorageSettlementChainId !== currentChainId;
+    isSettlementChain(currentChainId) && localStorageSettlementChainId !== currentChainId;
 
   if (shouldUpdateLocalStorageSettlementChainId) {
     setSettlementChainId(currentChainId);

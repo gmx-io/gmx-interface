@@ -1,3 +1,5 @@
+@use "sass:math";
+
 .Token-icon {
   vertical-align: bottom;
 }
@@ -5,7 +7,7 @@
 @mixin circle-badge-crop-out($size: 20px, $offsetX: 6px, $offsetY: 2px) {
   $gradient: radial-gradient(
     circle at calc(100% - ($size / 2 - $offsetX)) calc(100% - ($size / 2 - $offsetY)),
-    transparent $size / 2,
+    transparent math.div($size, 2),
     white 0
   );
   -webkit-mask-image: $gradient;
