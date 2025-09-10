@@ -95,7 +95,7 @@ export function GlvList({
       ) : (
         <div className="overflow-hidden rounded-4">
           <TableScrollFadeContainer>
-            <table className="w-[max(100%,1000px)]">
+            <table className="mb-4 w-[max(100%,1000px)]">
               <thead>
                 <TableTheadTr>
                   <TableTh className="pl-16">

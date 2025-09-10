@@ -131,7 +131,7 @@ export function GmList({
           <div className="flex flex-wrap items-center justify-between gap-12 py-8">
             <SearchInput
               size="s"
-              className="w-full *:!text-body-medium md:w-[260px]"
+              className="w-full *:!text-body-medium md:max-w-[260px]"
               value={searchText}
               setValue={setSearchText}
               placeholder={t`Search Pools`}
@@ -167,7 +167,7 @@ export function GmList({
           </div>
         ) : (
           <TableScrollFadeContainer className="flex grow flex-col">
-            <table className="w-[max(100%,1000px)]">
+            <table className="mb-4 w-[max(100%,1000px)]">
               <thead>
                 <TableTheadTr>
                   <TableTh className="pl-16">
