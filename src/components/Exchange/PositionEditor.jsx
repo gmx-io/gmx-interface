@@ -660,7 +660,8 @@ export default function PositionEditor(props) {
                       <Trans>Entry Price</Trans>
                     </div>
                     <div className="align-right">
-                      ${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
+                      ${"\u200a"}
+                      {formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
                     </div>
                   </div>
                   <div className="Exchange-info-row">
@@ -668,7 +669,8 @@ export default function PositionEditor(props) {
                       <Trans>Mark Price</Trans>
                     </div>
                     <div className="align-right">
-                      ${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
+                      ${"\u200a"}
+                      {formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
                     </div>
                   </div>
                   <div className="Exchange-info-row">
@@ -686,10 +688,12 @@ export default function PositionEditor(props) {
                       {nextLiquidationPrice !== undefined && (
                         <div>
                           <div className="muted inline-block">
-                            ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
+                            ${"\u200a"}
+                            {formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                             <BsArrowRight className="transition-arrow inline-block" />
                           </div>
-                          ${formatAmount(nextLiquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
+                          ${"\u200a"}
+                          {formatAmount(nextLiquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                         </div>
                       )}
                     </div>
@@ -706,15 +710,20 @@ export default function PositionEditor(props) {
                     </div>
                     <div className="align-right">
                       {!nextCollateral && (
-                        <div>${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}</div>
+                        <div>
+                          ${"\u200a"}
+                          {formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
+                        </div>
                       )}
                       {nextCollateral && (
                         <div>
                           <div className="muted inline-block">
-                            ${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
+                            ${"\u200a"}
+                            {formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
                             <BsArrowRight className="transition-arrow inline-block" />
                           </div>
-                          ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
+                          ${"\u200a"}
+                          {formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
                         </div>
                       )}
                     </div>
@@ -730,7 +739,8 @@ export default function PositionEditor(props) {
                           handle={
                             <>
                               <div className="muted inline-block">
-                                ${formatAmount(fundingFee, USD_DECIMALS, 2, true)}
+                                ${"\u200a"}
+                                {formatAmount(fundingFee, USD_DECIMALS, 2, true)}
                                 <BsArrowRight className="transition-arrow inline-block" />
                               </div>
                               $0

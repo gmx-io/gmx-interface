@@ -449,8 +449,11 @@ export default function OrdersList(props) {
                   <Trans>Collateral</Trans>
                 </div>
                 <div>
-                  <span className="numbers">${formatAmount(collateralUSD, USD_DECIMALS, 2, true)}</span> (
-                  <span className="numbers">{formatAmount(order.amountIn, fromTokenInfo.decimals, 4, true)}</span>{" "}
+                  <span className="numbers">
+                    ${"\u200a"}
+                    {formatAmount(collateralUSD, USD_DECIMALS, 2, true)}
+                  </span>{" "}
+                  (<span className="numbers">{formatAmount(order.amountIn, fromTokenInfo.decimals, 4, true)}</span>{" "}
                   {fromTokenInfo.baseSymbol || fromTokenInfo.symbol})
                 </div>
               </div>
@@ -538,7 +541,11 @@ export default function OrdersList(props) {
                   <Trans>Collateral</Trans>
                 </div>
                 <div>
-                  <span className="numbers">${formatAmount(collateralUSD, USD_DECIMALS, 2, true)}</span> (
+                  <span className="numbers">
+                    ${"\u200a"}
+                    {formatAmount(collateralUSD, USD_DECIMALS, 2, true)}
+                  </span>{" "}
+                  (
                   <span className="numbers">
                     {formatAmount(order.purchaseTokenAmount, collateralTokenInfo.decimals, 4, true)}
                   </span>{" "}

@@ -274,7 +274,10 @@ export default function TokenSelector(props: Props) {
                     null}
                   <span className="text-body-small text-typography-secondary">
                     {showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
-                      <div>${formatAmount(balanceUsd, 30, 2, true)}</div>
+                      <div>
+                        ${"\u200a"}
+                        {formatAmount(balanceUsd, 30, 2, true)}
+                      </div>
                     )}
                   </span>
                 </div>

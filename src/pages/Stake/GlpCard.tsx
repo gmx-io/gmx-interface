@@ -37,7 +37,8 @@ export function GlpCard({ processedData }: { processedData: ProcessedData | unde
               <Trans>Price</Trans>
             </div>
             <div className="numbers">
-              ${formatKeyAmount(processedData, "glpPrice", USD_DECIMALS, GLP_PRICE_DECIMALS, true)}
+              ${"\u200a"}
+              {formatKeyAmount(processedData, "glpPrice", USD_DECIMALS, GLP_PRICE_DECIMALS, true)}
             </div>
           </div>
           <div className="App-card-row">

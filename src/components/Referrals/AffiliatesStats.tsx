@@ -295,7 +295,10 @@ function AffiliatesStats({
           className="AffiliateStats-claimable-rewards-card"
         >
           <div className="AffiliateStats-claimable-rewards-container flex flex-col gap-6">
-            <span className="numbers">${getUsdValue(totalClaimableRewardsUsd, 4)}</span>
+            <span className="numbers">
+              ${"\u200a"}
+              {getUsdValue(totalClaimableRewardsUsd, 4)}
+            </span>
             {(totalClaimableRewardsUsd > 0 && (
               <Button variant="secondary" onClick={() => setIsClaiming(true)}>
                 Claim

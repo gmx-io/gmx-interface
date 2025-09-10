@@ -731,7 +731,8 @@ export function SyntheticsStats() {
                               formatAmountHuman(collateralLiquidityUsd, 30)
                             ) : (
                               <span>
-                                ${formatAmountHuman(liquidity, 30)} / ${formatAmountHuman(maxLiquidity, 30)}
+                                ${"\u200a"}
+                                {formatAmountHuman(liquidity, 30)} / ${formatAmountHuman(maxLiquidity, 30)}
                               </span>
                             )
                           }

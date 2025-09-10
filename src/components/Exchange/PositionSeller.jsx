@@ -1152,7 +1152,8 @@ export default function PositionSeller(props) {
                 <Trans>Mark Price</Trans>
               </div>
               <div className="align-right">
-                ${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
+                ${"\u200a"}
+                {formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
               </div>
             </div>
             <div className="Exchange-info-row">
@@ -1160,7 +1161,8 @@ export default function PositionSeller(props) {
                 <Trans>Entry Price</Trans>
               </div>
               <div className="align-right">
-                ${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
+                ${"\u200a"}
+                {formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
               </div>
             </div>
             <div className="Exchange-info-row">
@@ -1177,10 +1179,12 @@ export default function PositionSeller(props) {
                     {nextLiquidationPrice !== undefined && nextLiquidationPrice != liquidationPrice && (
                       <div>
                         <div className="muted inline-block">
-                          ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
+                          ${"\u200a"}
+                          {formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                           <BsArrowRight className="transition-arrow inline-block" />
                         </div>
-                        ${formatAmount(nextLiquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
+                        ${"\u200a"}
+                        {formatAmount(nextLiquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                       </div>
                     )}
                   </div>
@@ -1195,14 +1199,19 @@ export default function PositionSeller(props) {
                 {position && position.size !== undefined && fromAmount !== undefined && (
                   <div>
                     <div className="muted inline-block">
-                      ${formatAmount(position.size, USD_DECIMALS, 2, true)}
+                      ${"\u200a"}
+                      {formatAmount(position.size, USD_DECIMALS, 2, true)}
                       <BsArrowRight className="transition-arrow inline-block" />
                     </div>
-                    ${formatAmount(position.size - fromAmount, USD_DECIMALS, 2, true)}
+                    ${"\u200a"}
+                    {formatAmount(position.size - fromAmount, USD_DECIMALS, 2, true)}
                   </div>
                 )}
                 {position && position.size && fromAmount === undefined && (
-                  <div>${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
+                  <div>
+                    ${"\u200a"}
+                    {formatAmount(position.size, USD_DECIMALS, 2, true)}
+                  </div>
                 )}
               </div>
             </div>
@@ -1225,10 +1234,12 @@ export default function PositionSeller(props) {
                 {nextCollateral && nextCollateral != position.collateral ? (
                   <div>
                     <div className="muted inline-block">
-                      ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                      ${"\u200a"}
+                      {formatAmount(position.collateral, USD_DECIMALS, 2, true)}
                       <BsArrowRight className="transition-arrow inline-block" />
                     </div>
-                    ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
+                    ${"\u200a"}
+                    {formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
                   </div>
                 ) : (
                   `$\u200a${formatAmount(position.collateral, USD_DECIMALS, 4, true)}`

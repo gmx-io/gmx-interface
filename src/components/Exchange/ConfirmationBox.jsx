@@ -689,7 +689,8 @@ export default function ConfirmationBox(props) {
             <ExchangeInfoRow label={t`Entry Price`}>
               {hasExistingPosition && toAmount && toAmount > 0 && (
                 <div className="muted inline-block">
-                  ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
+                  ${"\u200a"}
+                  {formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                   <BsArrowRight className="transition-arrow inline-block" />
                 </div>
               )}
@@ -700,18 +701,21 @@ export default function ConfirmationBox(props) {
           )}
           {!isMarketOrder && (
             <ExchangeInfoRow label={t`Mark Price`} isTop={true}>
-              ${formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}
+              ${"\u200a"}
+              {formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}
             </ExchangeInfoRow>
           )}
           {!isMarketOrder && (
             <ExchangeInfoRow label={t`Limit Price`}>
-              ${formatAmount(triggerPriceUsd, USD_DECIMALS, toTokenPriceDecimal, true)}
+              ${"\u200a"}
+              {formatAmount(triggerPriceUsd, USD_DECIMALS, toTokenPriceDecimal, true)}
             </ExchangeInfoRow>
           )}
           <ExchangeInfoRow label={t`Liq. Price`}>
             {hasExistingPosition && toAmount && toAmount > 0 && (
               <div className="muted inline-block">
-                ${formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
+                ${"\u200a"}
+                {formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                 <BsArrowRight className="transition-arrow inline-block" />
               </div>
             )}

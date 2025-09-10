@@ -242,7 +242,8 @@ export function TotalRewardsCard({
             </div>
             <div>
               <span className="numbers">
-                ${formatKeyAmount(processedData, "totalRewardsUsd", USD_DECIMALS, 2, true)}
+                ${"\u200a"}
+                {formatKeyAmount(processedData, "totalRewardsUsd", USD_DECIMALS, 2, true)}
               </span>
             </div>
           </div>

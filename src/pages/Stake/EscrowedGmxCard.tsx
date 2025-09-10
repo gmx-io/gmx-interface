@@ -88,7 +88,10 @@ export function EscrowedGmxCard({
             <Trans>Price</Trans>
           </div>
           <div>
-            <span className="numbers">${formatAmount(gmxPrice, USD_DECIMALS, 2, true)}</span>
+            <span className="numbers">
+              ${"\u200a"}
+              {formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
+            </span>
           </div>
         </div>
         <div className="App-card-row">
