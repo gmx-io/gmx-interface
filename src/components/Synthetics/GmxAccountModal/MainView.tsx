@@ -440,7 +440,7 @@ const FundingHistorySection = () => {
             <div className="text-right">
               <Amount
                 className="text-body-large"
-                amount={transfer.sentAmount}
+                amount={(transfer.operation === "deposit" ? 1n : -1n) * transfer.sentAmount}
                 decimals={transfer.token.decimals}
                 isStable={transfer.token.isStable}
                 signed
