@@ -90,6 +90,20 @@ export const TransferDetailsView = () => {
     }
   };
 
+  const addressLabel = selectedTransfer ? shortenAddressOrEns(selectedTransfer.account, 13) : undefined;
+
+  const networkLabel = selectedTransfer && (
+    <span>
+      <img
+        src={CHAIN_ID_TO_NETWORK_ICON[selectedTransfer.sourceChainId]}
+        width={20}
+        height={20}
+        className="-my-5 inline-block size-20 rounded-full align-baseline"
+      />{" "}
+      {getChainName(selectedTransfer.sourceChainId)}
+    </span>
+  );
+
   return (
     <div className="text-body-medium flex grow flex-col gap-8 p-adaptive">
       {selectedTransfer?.isExecutionError ? (
@@ -102,29 +116,39 @@ export const TransferDetailsView = () => {
         value={selectedTransfer ? formatTradeActionTimestamp(selectedTransfer.sentTimestamp) : undefined}
       />
       <SyntheticsInfoRow
-        label={<Trans>Type</Trans>}
+        label={selectedTransfer?.operation === "deposit" ? <Trans>From</Trans> : <Trans>To</Trans>}
         value={
-          selectedTransfer ? (
-            selectedTransfer.operation === "deposit" ? (
-              <Trans>Deposit</Trans>
-            ) : (
-              <Trans>Withdrawal</Trans>
-            )
-          ) : undefined
+          <Trans>
+            {addressLabel} on {networkLabel}
+          </Trans>
         }
       />
-      <SyntheticsInfoRow
-        label={<Trans>Wallet</Trans>}
-        value={
-          selectedTransfer ? (
-            selectedTransfer.operation === "deposit" ? (
-              <Trans>GMX Balance</Trans>
-            ) : (
-              shortenAddressOrEns(selectedTransfer.account, 13)
-            )
-          ) : undefined
-        }
-      />
+      {selectedTransfer?.sentTxn && (
+        <SyntheticsInfoRow
+          label={
+            CHAIN_ID_TO_EXPLORER_NAME[
+              selectedTransfer.operation === "deposit"
+                ? selectedTransfer.sourceChainId
+                : selectedTransfer.settlementChainId
+            ]
+          }
+          value={
+            <ExternalLink
+              className="!no-underline"
+              href={
+                selectedTransfer.operation === "deposit"
+                  ? CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.sourceChainId](selectedTransfer.sentTxn)
+                  : CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.settlementChainId](selectedTransfer.sentTxn)
+              }
+            >
+              <div className="flex items-center gap-4">
+                {shortenAddressOrEns(selectedTransfer.sentTxn, 13)}
+                <ExternalLinkIcon className="size-20 text-typography-secondary" />
+              </div>
+            </ExternalLink>
+          }
+        />
+      )}
       <SyntheticsInfoRow
         label={<Trans>Amount</Trans>}
         value={
@@ -157,70 +181,7 @@ export const TransferDetailsView = () => {
           />
         </>
       )}
-      <SyntheticsInfoRow
-        label={
-          selectedTransfer ? (
-            selectedTransfer.operation === "deposit" ? (
-              <Trans>From Network</Trans>
-            ) : (
-              <Trans>To Network</Trans>
-            )
-          ) : undefined
-        }
-        className="!items-center"
-        valueClassName="-my-5"
-        value={
-          selectedTransfer && (
-            <div className="flex items-center gap-8">
-              <img
-                src={CHAIN_ID_TO_NETWORK_ICON[selectedTransfer.sourceChainId]}
-                width={20}
-                height={20}
-                className="size-20 rounded-full"
-              />
-              {getChainName(selectedTransfer.sourceChainId)}
-            </div>
-          )
-        }
-      />
-      <SyntheticsInfoRow
-        label={
-          selectedTransfer ? (
-            selectedTransfer.operation === "deposit" ? (
-              <Trans>From Wallet</Trans>
-            ) : (
-              <Trans>To Wallet</Trans>
-            )
-          ) : undefined
-        }
-        value={selectedTransfer ? shortenAddressOrEns(selectedTransfer.account, 13) : undefined}
-      />
-      {selectedTransfer?.sentTxn && (
-        <SyntheticsInfoRow
-          label={
-            CHAIN_ID_TO_EXPLORER_NAME[
-              selectedTransfer.operation === "deposit"
-                ? selectedTransfer.sourceChainId
-                : selectedTransfer.settlementChainId
-            ]
-          }
-          value={
-            <ExternalLink
-              className="!no-underline"
-              href={
-                selectedTransfer.operation === "deposit"
-                  ? CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.sourceChainId](selectedTransfer.sentTxn)
-                  : CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.settlementChainId](selectedTransfer.sentTxn)
-              }
-            >
-              <div className="flex items-center gap-4">
-                {shortenAddressOrEns(selectedTransfer.sentTxn, 13)}
-                <ExternalLinkIcon className="size-20 text-typography-secondary" />
-              </div>
-            </ExternalLink>
-          }
-        />
-      )}
+
       <div className="grow" />
       <Button variant="secondary" onClick={handleRepeatTransaction}>
         <Trans>Repeat Transaction</Trans>
