@@ -28,6 +28,7 @@ function TokenIcon({ className, symbol, displaySize, importSize = 24, badge, bad
   if (!iconPath) return <></>;
 
   let sub;
+  let containerClassName = "";
 
   if (badge) {
     if (typeof badge === "string") {
@@ -67,24 +68,24 @@ function TokenIcon({ className, symbol, displaySize, importSize = 24, badge, bad
       );
     }
   } else if (chainIdBadge !== undefined) {
-    let size = 22;
-    let offset = "-bottom-1 -right-1";
+    let size: number;
+    let offset: string;
+
     if (displaySize >= 40) {
-      size = 22;
-      offset = "-bottom-1 -right-1";
-    } else if (displaySize === 20) {
-      size = 14;
-      offset = "-bottom-3 -right-3";
+      size = 16;
+      offset = "-bottom-0 -right-4";
+      containerClassName = "token-icon-with-badge-large";
     } else {
-      size = displaySize / 2 + 2;
-      offset = "-bottom-3 -right-3";
+      size = 10;
+      offset = "-bottom-2 -right-2";
+      containerClassName = "token-icon-with-badge-small";
     }
     sub = (
       <img
         src={CHAIN_ID_TO_NETWORK_ICON[chainIdBadge]}
         width={size}
         height={size}
-        className={cx("absolute z-10 rounded-full border-2 border-slate-800 bg-slate-800", offset)}
+        className={cx("absolute  z-10 box-content rounded-full bg-slate-900", offset)}
       />
     );
   }
@@ -92,7 +93,7 @@ function TokenIcon({ className, symbol, displaySize, importSize = 24, badge, bad
   const img = (
     <img
       data-qa="token-icon"
-      className={sub ? "" : classNames}
+      className={sub ? containerClassName : classNames}
       src={importImage(iconPath)}
       alt={symbol}
       width={displaySize}

@@ -4,8 +4,9 @@ import { IoArrowBack } from "react-icons/io5";
 import { useAccount } from "wagmi";
 
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
-import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
+import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { useGmxAccountFundingHistoryItem } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
 
 import { SlideModal } from "components/Modal/SlideModal";
@@ -36,6 +37,9 @@ const AvailableToTradeAssetsTitle = () => {
 
 const TransferDetailsTitle = () => {
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
+  const [selectedTransferGuid] = useGmxAccountSelectedTransferGuid();
+  const selectedTransfer = useGmxAccountFundingHistoryItem(selectedTransferGuid);
+
   return (
     <div className="flex items-center gap-8">
       <IoArrowBack
@@ -44,7 +48,11 @@ const TransferDetailsTitle = () => {
         role="button"
         onClick={() => setIsVisibleOrView("main")}
       />
-      <Trans>Transfer Details</Trans>
+      {selectedTransfer?.operation === "withdrawal" ? (
+        <Trans>Withdrawal from GMX Account</Trans>
+      ) : (
+        <Trans>Deposit to GMX Account</Trans>
+      )}
     </div>
   );
 };
@@ -121,7 +129,7 @@ export const GmxAccountModal = memo(() => {
       label={VIEW_TITLE[view]}
       isVisible={isVisible}
       setIsVisible={setIsVisibleOrView}
-      desktopContentClassName="!h-[640px] !w-[454px]"
+      desktopContentClassName="!h-[640px] !w-[461px]"
       disableOverflowHandling={true}
       className="text-body-medium"
       contentPadding={false}

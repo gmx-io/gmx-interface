@@ -1,12 +1,11 @@
 .button {
   cursor: pointer;
-  line-height: 1.25;
+  line-height: 1;
   display: inline-flex;
   align-items: center;
   font-weight: 500;
   border: none;
   user-select: none;
-  min-height: 32px;
 
   &.center {
     justify-content: center;
@@ -39,6 +38,7 @@
     color: var(--color-white);
     border-radius: 8px;
     min-height: 40px;
+    line-height: normal;
 
     &:not([disabled], .disabled):hover {
       background-color: var(--color-button-primaryHover);
