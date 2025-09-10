@@ -67,7 +67,7 @@ const DepositTitle = () => {
         role="button"
         onClick={() => setIsVisibleOrView("main")}
       />
-      <Trans>Deposit</Trans>
+      <Trans>Deposit to GMX Account</Trans>
     </div>
   );
 };
@@ -97,7 +97,7 @@ const WithdrawTitle = () => {
         role="button"
         onClick={() => setIsVisibleOrView("main")}
       />
-      <Trans>Withdraw</Trans>
+      <Trans>Withdraw from GMX Account</Trans>
     </div>
   );
 };
