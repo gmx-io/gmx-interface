@@ -2539,8 +2539,8 @@ msgid "{0} will be swapped to {1} on order execution."
 msgstr "{0} will be swapped to {1} on order execution."
 
 #: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
-msgid "Claiming with a smart account requires specific instructions. Contributors will post these in the coming days."
-msgstr "Claiming with a smart account requires specific instructions. Contributors will post these in the coming days."
+#~ msgid "Claiming with a smart account requires specific instructions. Contributors will post these in the coming days."
+#~ msgstr "Claiming with a smart account requires specific instructions. Contributors will post these in the coming days."
 
 #. Button to clear the filter selection
 #: src/components/Synthetics/TableOptionsFilter/TableOptionsFilter.tsx
@@ -3317,6 +3317,10 @@ msgstr "The aximum network fee paid to the network. This fee is a blockchain cos
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Leverage"
 msgstr "Leverage"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "To sign the terms using a Safe account in order to claim, please <0>follow these steps</0>."
+msgstr "To sign the terms using a Safe account in order to claim, please <0>follow these steps</0>."
 
 #: src/pages/Exchange/Exchange.tsx
 msgid "Enable orders sent."

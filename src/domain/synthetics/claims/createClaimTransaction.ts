@@ -9,7 +9,7 @@ import type { ContractsChainId } from "sdk/configs/chains";
 export function getClaimTransactionCallData(
   tokens: string[],
   account: string,
-  signature: string,
+  signature = "0x",
   distributionId: bigint
 ) {
   const params = tokens.map((token) => ({
@@ -30,7 +30,7 @@ export function createClaimAmountsTransaction(data: {
   chainId: ContractsChainId;
   signer: WalletSigner;
   account: string;
-  signature: string;
+  signature: string | undefined;
   distributionId: bigint;
   claimableTokenTitles: Record<string, string>;
   callback: TxnCallback<WalletTxnCtx>;
