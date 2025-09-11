@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import { useCallback } from "react";
 import { useLocalStorage } from "react-use";
 
-import { getIsFlagEnabled } from "config/ab";
 import { getOneClickTradingPromoHiddenKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
@@ -24,8 +23,7 @@ export function OneClickPromoBanner({ openSettings, isShort }: { openSettings: (
   const isGeminiWallet = useIsGeminiWallet();
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
 
-  const shouldShow =
-    getIsFlagEnabled("testOneClickPromo") && !isOneClickPromoHidden && !expressOrdersEnabled && !isGeminiWallet;
+  const shouldShow = !isOneClickPromoHidden && !expressOrdersEnabled && !isGeminiWallet;
 
   const onClickEnable = useCallback(() => {
     openSettings();
