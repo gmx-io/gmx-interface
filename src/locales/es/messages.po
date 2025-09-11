@@ -71,7 +71,6 @@ msgstr "Compra tokens GM antes de que se reinicie la época en {0} para ser eleg
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "PRICE"
 msgstr "PRECIO"
 
@@ -492,6 +491,10 @@ msgstr "Posiciones"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0} no se puede enviar a direcciones de contratos inteligentes. Selecciona otro token."
+
+#: src/components/SideNav/SideNav.tsx
+msgid "Expand"
+msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trading</2> under settings, which should offer a better experience."
@@ -961,7 +964,6 @@ msgid "This value may be higher on other websites due to the collateral of posit
 msgstr "Este valor puede ser mayor en otros sitios web debido a que la garantía de posiciones se incluye en el cálculo."
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/pages/Stake/GlpCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Rewards"
 msgstr "Recompensas"
@@ -1078,7 +1080,6 @@ msgstr "Comprar {operationTokenSymbol}"
 msgid "Buy GM: {0}"
 msgstr "Comprar GM: {0}"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Market Cap"
@@ -1238,7 +1239,6 @@ msgstr "ADVERTENCIA: Esta posición tiene una cantidad baja de garantía despué
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/pages/BuyGlp/BuyGlp.jsx
-#: src/pages/Stake/GlpCard.tsx
 msgid "Sell GLP"
 msgstr "Vender GLP"
 
@@ -1352,8 +1352,8 @@ msgid "Select pool"
 msgstr "Seleccionar reserva"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "WEIGHT"
-msgstr "PESO"
+#~ msgid "WEIGHT"
+#~ msgstr "PESO"
 
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -1576,8 +1576,8 @@ msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed sli
 msgstr "No se pudo incrementar {tokenSymbol} {longOrShortText} con el deslizamiento permitido, puedes ajustar el deslizamiento permitido a través de ajustes en la esquina superior derecha de la página."
 
 #: src/components/Referrals/AffiliatesStats.tsx
-msgid "Tier {0} ({currentRebatePercentage}% rebate)"
-msgstr "Nivel {0} ({currentRebatePercentage}% reembolso)"
+#~ msgid "Tier {0} ({currentRebatePercentage}% rebate)"
+#~ msgstr "Nivel {0} ({currentRebatePercentage}% reembolso)"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX Alerts"
@@ -1791,6 +1791,10 @@ msgstr "Optimizaciones de Rendimiento"
 msgid "Receive (Approximate)"
 msgstr "Recibir (Aproximado)"
 
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "Tier {0}: {currentRebatePercentage}% rebate"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -1836,8 +1840,8 @@ msgid "Create Order"
 msgstr "Crear Orden"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Utilization"
-msgstr "Utilización"
+#~ msgid "Utilization"
+#~ msgstr "Utilización"
 
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 msgid "Select Asset to Deposit"
@@ -2412,7 +2416,6 @@ msgid "Max {0} sellable amount exceeded"
 msgstr "Cantidad máxima vendible de {0} superada"
 
 #: src/components/Glp/GlpSwap.jsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "TOKEN"
 msgstr "TOKEN"
 
@@ -2583,7 +2586,6 @@ msgstr "TVL"
 msgid "Shift Fee"
 msgstr "Tarifa de Shift"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "GLP Pool"
 msgstr "Reserva de GLP"
@@ -3287,10 +3289,8 @@ msgstr "Deja al menos {0} ETH para gas"
 msgid "Enable orders failed."
 msgstr "Activación de órdenes fallida."
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GlpCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Total Staked"
 msgstr "Total Stakeado"
@@ -4293,6 +4293,10 @@ msgstr "Tienes una Orden Límite activa para Aumentar {longOrShortText} {sizeInT
 msgid "Negative funding fees are automatically settled against the collateral and impact the liquidation price. Positive funding fees can be claimed under the claims tab."
 msgstr "Comisiones de financiación negativas se liquidan automáticamente contra la garantía e impactan el precio de liquidación. Comisiones de financiación positivas pueden reclamarse en la pestaña de reclamos."
 
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "Create new code"
+msgstr ""
+
 #: src/pages/Stake/Stake.tsx
 msgid "Unstake esGMX"
 msgstr "Destakear esGMX"
@@ -4638,8 +4642,8 @@ msgstr "Direcciones de Transferencia Inválidas: Por favor verifica la url."
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "GLP Index Composition"
-msgstr "Composición de Índice GLP"
+#~ msgid "GLP Index Composition"
+#~ msgstr "Composición de Índice GLP"
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "No distribution history yet"
@@ -5032,7 +5036,6 @@ msgstr "{0}: {1}, Precio: {priceDisplay}"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "POOL"
 msgstr "RESERVA"
 
@@ -5089,8 +5092,8 @@ msgid "Order cannot be executed as it would reduce the position's leverage below
 msgstr "La orden no se puede ejecutar pues reduciría el apalancamiento de la posición por debajo de 1"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Weight"
-msgstr "Peso"
+#~ msgid "Weight"
+#~ msgstr "Peso"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -5364,7 +5367,6 @@ msgid "Approving..."
 msgstr "Aprobando..."
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "UTILIZATION"
 msgstr "UTILIZACIÓN"
 
@@ -5569,12 +5571,9 @@ msgstr "Falló la actualización del código de referido."
 #: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TVChart/Chart.tsx
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GlpCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Price"
 msgstr "Precio"
@@ -5790,7 +5789,6 @@ msgstr "Panel de estadísticas programa de referidos GMX"
 msgid "Action"
 msgstr "Acción"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmCard.tsx
 msgid "Supply"
 msgstr "Suministros"
@@ -6201,8 +6199,8 @@ msgid "Volume traded by your referred traders."
 msgstr "Volumen negociado por sus traders referidos."
 
 #: src/pages/Dashboard/GlpCard.tsx
-msgid "Stablecoin Percentage"
-msgstr "Porcentaje de Stablecoin"
+#~ msgid "Stablecoin Percentage"
+#~ msgstr "Porcentaje de Stablecoin"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order will be executed once there is sufficient liquidity."
@@ -6217,8 +6215,8 @@ msgid "SNTL esGMX Market"
 msgstr "Mercado SNTL esGMX"
 
 #: src/components/Referrals/TradersStats.tsx
-msgid "Tier {0} ({currentTierDiscount}% discount)"
-msgstr "Nivel {0} ({currentTierDiscount}% descuento)"
+#~ msgid "Tier {0} ({currentTierDiscount}% discount)"
+#~ msgstr "Nivel {0} ({currentTierDiscount}% descuento)"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
@@ -6545,8 +6543,8 @@ msgstr "de comisión de apertura"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Pool Amount"
-msgstr "Cantidad de Reserva"
+#~ msgid "Pool Amount"
+#~ msgstr "Cantidad de Reserva"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -6619,7 +6617,6 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Create"
@@ -7304,8 +7301,8 @@ msgstr "Comprar GMX"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Max {0} Capacity"
-msgstr "Capacidad {0} máxima"
+#~ msgid "Max {0} Capacity"
+#~ msgstr "Capacidad {0} máxima"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copy error"
@@ -7842,7 +7839,6 @@ msgstr "Largo"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Pool"
 msgstr "Reserva"
 
@@ -8027,7 +8023,6 @@ msgstr "Reclamar Recompensas de {wrappedTokenSymbol}"
 #: src/components/Glp/GlpSwap.jsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GlpCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Total Supply"
 msgstr "Suministro Total"
@@ -8041,7 +8036,6 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GlpCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Staked"
 msgstr "Stakeado"
@@ -8178,8 +8172,8 @@ msgstr "Stakear esGMX"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Target Min Amount"
-msgstr "Cantidad Mínima Objetivo"
+#~ msgid "Target Min Amount"
+#~ msgstr "Cantidad Mínima Objetivo"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -8325,7 +8319,6 @@ msgstr "El APR de Bonificación se airdropeará como tokens {airdropTokenTitle}.
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GlpCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Wallet"
@@ -8546,6 +8539,10 @@ msgstr "ÚLTIMO PRECIO"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in {nativeTokenSymbol}."
+msgstr ""
+
+#: src/components/Referrals/TradersStats.tsx
+msgid "Tier {0}: {currentTierDiscount}% discount"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx

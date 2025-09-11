@@ -907,7 +907,7 @@ export function PositionSeller() {
           />
         </div>
 
-        <div className="w-full pb-14">
+        <div className="w-full">
           {position && (
             <>
               <div className="flex flex-col gap-2">

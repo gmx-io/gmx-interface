@@ -47,6 +47,34 @@ export const TableTr = forwardRef<
   );
 });
 
+export const TableTrActionable = forwardRef<
+  HTMLTableRowElement,
+  PropsWithChildren<{ onClick: (event: React.MouseEvent) => void }> & React.HTMLProps<HTMLTableRowElement>
+>(function TableTrInternal({ className, ...props }, ref) {
+  return <tr {...props} ref={ref} className={cx("group/tr", className)} />;
+});
+
+export const TableTdActionable = forwardRef<
+  HTMLTableCellElement,
+  PropsWithChildren & React.HTMLProps<HTMLTableCellElement>
+>(function TableTdInternal({ className, ...props }, ref) {
+  return (
+    <td
+      {...props}
+      ref={ref}
+      className={cx(
+        "relative text-[13px] last-of-type:[&:not(:first-of-type)]:text-right",
+        "px-12 py-10 first-of-type:before:rounded-l-8 last-of-type:before:rounded-r-8 group-hover/tr:before:bg-fill-surfaceHover",
+        "before:absolute before:bottom-2 before:left-0 before:top-2 before:z-0 before:bg-fill-surfaceElevated50",
+        "before:h-[calc(100%-4px)] before:w-full before:content-['']",
+        className
+      )}
+    >
+      <div className="z-1 relative">{props.children}</div>
+    </td>
+  );
+});
+
 export function TableTd(props: TableTdThProps) {
   const { padding = "all", ...rest } = props;
   return (

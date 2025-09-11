@@ -71,7 +71,6 @@ msgstr "보너스 리베이트 자격을 얻기 위해 에포크가 {0} 안에 �
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "PRICE"
 msgstr "가격"
 
@@ -492,6 +491,10 @@ msgstr "포지션"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0}은 스마트 컨트랙트 주소로 보낼 수 없습니다. 다른 토큰을 선택하세요."
+
+#: src/components/SideNav/SideNav.tsx
+msgid "Expand"
+msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trading</2> under settings, which should offer a better experience."
@@ -961,7 +964,6 @@ msgid "This value may be higher on other websites due to the collateral of posit
 msgstr "다른 웹사이트에서 포지션 담보가 계산에 포함되어 이 값이 더 높을 수 있습니다."
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/pages/Stake/GlpCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Rewards"
 msgstr "보상"
@@ -1078,7 +1080,6 @@ msgstr "{operationTokenSymbol} 구매"
 msgid "Buy GM: {0}"
 msgstr "GM 구매: {0}"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Market Cap"
@@ -1238,7 +1239,6 @@ msgstr "경고: 이 포지션은 차용수수료를 차감하면 담보액이 �
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/pages/BuyGlp/BuyGlp.jsx
-#: src/pages/Stake/GlpCard.tsx
 msgid "Sell GLP"
 msgstr "GLP 판매"
 
@@ -1352,8 +1352,8 @@ msgid "Select pool"
 msgstr "풀 선택"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "WEIGHT"
-msgstr "비중"
+#~ msgid "WEIGHT"
+#~ msgstr "비중"
 
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -1576,8 +1576,8 @@ msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed sli
 msgstr "허용가능한 슬리피지 안에서는 {tokenSymbol} {longOrShortText}을 증가시키지 못했습니다. 최상단 우측의 설정 버튼을 통해 허용가능한 슬리피지를 변경할 수 있습니다."
 
 #: src/components/Referrals/AffiliatesStats.tsx
-msgid "Tier {0} ({currentRebatePercentage}% rebate)"
-msgstr "Tier {0} ({currentRebatePercentage}% 리베이트)"
+#~ msgid "Tier {0} ({currentRebatePercentage}% rebate)"
+#~ msgstr "Tier {0} ({currentRebatePercentage}% 리베이트)"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX Alerts"
@@ -1791,6 +1791,10 @@ msgstr "일드 최적화"
 msgid "Receive (Approximate)"
 msgstr "수령 (대략)"
 
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "Tier {0}: {currentRebatePercentage}% rebate"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -1836,8 +1840,8 @@ msgid "Create Order"
 msgstr "주문 생성"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Utilization"
-msgstr "이용률"
+#~ msgid "Utilization"
+#~ msgstr "이용률"
 
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 msgid "Select Asset to Deposit"
@@ -2412,7 +2416,6 @@ msgid "Max {0} sellable amount exceeded"
 msgstr "최대 {0} 판매 가능 금액 초과"
 
 #: src/components/Glp/GlpSwap.jsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "TOKEN"
 msgstr "토큰"
 
@@ -2583,7 +2586,6 @@ msgstr "TVL"
 msgid "Shift Fee"
 msgstr "교환 수수료"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "GLP Pool"
 msgstr "GLP 풀"
@@ -3287,10 +3289,8 @@ msgstr "가스비로 최소 {0} ETH 남기기"
 msgid "Enable orders failed."
 msgstr "주문 유효화 실패"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GlpCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Total Staked"
 msgstr "총 스테이킹"
@@ -4293,6 +4293,10 @@ msgstr "{longOrShortText} {sizeInToken} {0} (${1})를 ${2} 가격에서 증가�
 msgid "Negative funding fees are automatically settled against the collateral and impact the liquidation price. Positive funding fees can be claimed under the claims tab."
 msgstr "음의 자금 수수료는 자동으로 담보에 대해 정산되며 청산 가격에 영향을 미칩니다. 양의 자금 수수료는 수령 탭에서 수령할 수 있습니다."
 
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "Create new code"
+msgstr ""
+
 #: src/pages/Stake/Stake.tsx
 msgid "Unstake esGMX"
 msgstr "esGMX 언스테이킹"
@@ -4638,8 +4642,8 @@ msgstr "유효하지 않은 이전 주소: URL 확인하세요."
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "GLP Index Composition"
-msgstr "GLP 인덱스 구성"
+#~ msgid "GLP Index Composition"
+#~ msgstr "GLP 인덱스 구성"
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "No distribution history yet"
@@ -5032,7 +5036,6 @@ msgstr "{0}: {1}, 가격: {priceDisplay}"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "POOL"
 msgstr "풀"
 
@@ -5089,8 +5092,8 @@ msgid "Order cannot be executed as it would reduce the position's leverage below
 msgstr "포지션의 레버리지가 1 미만으로 감소되므로 주문을 실행할 수 없습니다"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Weight"
-msgstr "가중치"
+#~ msgid "Weight"
+#~ msgstr "가중치"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -5364,7 +5367,6 @@ msgid "Approving..."
 msgstr "승인 중..."
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "UTILIZATION"
 msgstr "이용률"
 
@@ -5569,12 +5571,9 @@ msgstr "추천인 코드 업데이트 실패."
 #: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TVChart/Chart.tsx
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GlpCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Price"
 msgstr "가격"
@@ -5790,7 +5789,6 @@ msgstr "GMX 추천 시스템 통계 대시보드"
 msgid "Action"
 msgstr "액션"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmCard.tsx
 msgid "Supply"
 msgstr "공급량"
@@ -6201,8 +6199,8 @@ msgid "Volume traded by your referred traders."
 msgstr "추천한 트레이더의 거래량."
 
 #: src/pages/Dashboard/GlpCard.tsx
-msgid "Stablecoin Percentage"
-msgstr "스테이블코인 비율"
+#~ msgid "Stablecoin Percentage"
+#~ msgstr "스테이블코인 비율"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order will be executed once there is sufficient liquidity."
@@ -6217,8 +6215,8 @@ msgid "SNTL esGMX Market"
 msgstr "SNTL esGMX 시장"
 
 #: src/components/Referrals/TradersStats.tsx
-msgid "Tier {0} ({currentTierDiscount}% discount)"
-msgstr "티어 {0} ({currentTierDiscount}% 할인)"
+#~ msgid "Tier {0} ({currentTierDiscount}% discount)"
+#~ msgstr "티어 {0} ({currentTierDiscount}% 할인)"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
@@ -6545,8 +6543,8 @@ msgstr "개설 수수료의"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Pool Amount"
-msgstr "풀 수량"
+#~ msgid "Pool Amount"
+#~ msgstr "풀 수량"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -6619,7 +6617,6 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Create"
@@ -7304,8 +7301,8 @@ msgstr "GMX 구매"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Max {0} Capacity"
-msgstr "{0} 최대 수용량"
+#~ msgid "Max {0} Capacity"
+#~ msgstr "{0} 최대 수용량"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copy error"
@@ -7842,7 +7839,6 @@ msgstr "롱"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Pool"
 msgstr "풀"
 
@@ -8027,7 +8023,6 @@ msgstr "{wrappedTokenSymbol} 보상 청구"
 #: src/components/Glp/GlpSwap.jsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GlpCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Total Supply"
 msgstr "총 공급량"
@@ -8041,7 +8036,6 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GlpCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Staked"
 msgstr "스테이킹됨"
@@ -8178,8 +8172,8 @@ msgstr "esGMX 스테이킹"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Target Min Amount"
-msgstr "목표 최소 금액"
+#~ msgid "Target Min Amount"
+#~ msgstr "목표 최소 금액"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -8325,7 +8319,6 @@ msgstr "보너스 APR은 {airdropTokenTitle} 토큰으로 에어드랍됩니다.
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GlpCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Wallet"
@@ -8546,6 +8539,10 @@ msgstr "최종 가격"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in {nativeTokenSymbol}."
+msgstr ""
+
+#: src/components/Referrals/TradersStats.tsx
+msgid "Tier {0}: {currentTierDiscount}% discount"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx

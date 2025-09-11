@@ -150,7 +150,10 @@ function Referrals() {
                   Get fee discounts and earn rebates through the GMX referral program.
                   <br />
                   For more information, please read the{" "}
-                  <ExternalLink href="https://docs.gmx.io/docs/referrals">referral program details</ExternalLink>.
+                  <ExternalLink href="https://docs.gmx.io/docs/referrals" variant="icon">
+                    referral program details
+                  </ExternalLink>
+                  .
                 </Trans>
               ) : undefined
             }
@@ -161,7 +164,7 @@ function Referrals() {
           ) : (
             <div>
               <Tabs
-                type="inline"
+                type="inline-primary"
                 className="mb-16"
                 options={tabsOptions}
                 selectedValue={activeTab}

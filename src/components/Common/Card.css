@@ -19,6 +19,7 @@
   height: 0.5px;
   background: var(--color-slate-600);
 }
+
 .card-body {
   padding: 16px;
 }

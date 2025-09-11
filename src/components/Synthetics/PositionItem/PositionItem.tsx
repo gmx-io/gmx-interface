@@ -849,7 +849,7 @@ function PositionItemOrder({
   return (
     <div key={order.key}>
       <div className="flex items-start justify-between gap-6">
-        <Button variant="secondary" className="w-full" onClick={handleOrdersClick}>
+        <Button variant="secondary" className="w-full !justify-start !pl-12" onClick={handleOrdersClick}>
           <div className="flex items-center justify-between">
             <PositionItemOrderText order={order} />
             <FaChevronRight fontSize={14} className="ml-4" />

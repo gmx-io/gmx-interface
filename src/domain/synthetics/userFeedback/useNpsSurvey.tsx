@@ -106,6 +106,7 @@ export function useNpsSurvey() {
       {
         autoClose: false,
         toastId: toastTimestamp,
+        className: "!bg-slate-950/50",
       }
     );
   }, [setNpsSurveyShownTime]);

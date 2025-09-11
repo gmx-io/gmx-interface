@@ -80,7 +80,6 @@ export function GmCard() {
                   </div>
                   <div>
                     <div className="text-body-medium font-medium">GM</div>
-                    <div className="text-body-small text-typography-secondary">GM</div>
                   </div>
                 </div>
                 <div className="h-32">
