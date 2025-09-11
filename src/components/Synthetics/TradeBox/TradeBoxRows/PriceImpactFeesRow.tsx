@@ -132,9 +132,28 @@ export function PriceImpactFeesRow() {
 
   return (
     <SyntheticsInfoRow
-      label={t`Fees`}
+      label={
+        <span>
+          <Tooltip
+            handle={t`Price Impact`}
+            content={
+              <Trans>
+                There is no price impact for increasing positions, and orders are filled at the mark price. Price impact
+                is applied during position decreases.
+                <ExternalLink href={"https://docs.gmx.io/docs/trading/v2#price-impact"} newTab>
+                  Read more
+                </ExternalLink>
+                .
+              </Trans>
+            }
+          />
+          {" / "}
+          {t`Fees`}
+        </span>
+      }
       value={
         <>
+          <span>0.000%</span> /{" "}
           <span
             className={cx("numbers", {
               "text-green-500": isTotalFeePositive,

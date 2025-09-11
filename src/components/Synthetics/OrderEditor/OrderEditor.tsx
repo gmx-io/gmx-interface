@@ -265,6 +265,7 @@ export function OrderEditor(p: Props) {
           showPnlInLeverage: false,
           sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
           sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+          positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
           userReferralInfo,
         });
 

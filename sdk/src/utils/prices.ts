@@ -105,7 +105,7 @@ export function getAcceptablePriceInfo(p: {
     isIncrease,
     {
       fallbackToZero: !isIncrease,
-      shouldCapNegativeImpact: isIncrease && !isLimit,
+      shouldCapNegativeImpact: false,
     }
   );
 
