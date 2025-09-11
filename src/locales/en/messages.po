@@ -283,10 +283,6 @@ msgstr "{0} can be used to buy GM for this market up to the specified buying cap
 msgid "Execute Market Swap"
 msgstr "Execute Market Swap"
 
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
-msgid "Your GMX Account balance, usable for trading on any supported chain.<0/><1>Read more</1>."
-msgstr "Your GMX Account balance, usable for trading on any supported chain.<0/><1>Read more</1>."
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Volume"
@@ -8286,6 +8282,10 @@ msgstr "DeFi Portfolio Tracker"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Current Funding Fee / Day"
 msgstr "Current Funding Fee / Day"
+
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "Your GMX Account balance, usable for trading from any supported chain.<0/><1>Read more</1>."
+msgstr "Your GMX Account balance, usable for trading from any supported chain.<0/><1>Read more</1>."
 
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum APR:"
