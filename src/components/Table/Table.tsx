@@ -63,12 +63,15 @@ export const TableTdActionable = forwardRef<
       {...props}
       ref={ref}
       className={cx(
-        "text-[13px] last-of-type:[&:not(:first-of-type)]:text-right",
-        "p-0 pb-4 first:pl-8 last:pr-8 [&:first-of-type>div]:rounded-l-8 [&:last-of-type>div]:rounded-r-8",
+        "group text-[13px] last-of-type:[&:not(:first-of-type)]:text-right",
+        "p-0 pb-4 first:pl-8 last:pr-8",
         className
       )}
     >
-      <div className="flex h-[60px] items-center bg-fill-surfaceElevated50 px-12 py-10 group-hover:bg-fill-surfaceHover">
+      <div
+        className={`flex h-60 items-center bg-fill-surfaceElevated50 px-12 py-10
+      group-first:rounded-l-8 group-last:rounded-r-8 group-hover:bg-fill-surfaceHover`}
+      >
         {props.children}
       </div>
     </td>

@@ -1,7 +1,7 @@
 import cx from "classnames";
 import React from "react";
 
-import ExternalIcon from "img/ic_external.svg?react";
+import NewLinkIcon from "img/ic_new_link.svg?react";
 
 import "./ExternalLink.scss";
 
@@ -29,7 +29,8 @@ function ExternalLink({ href, children, className, newTab = true, variant = "und
   };
   return (
     <a {...props}>
-      {children} {variant === "icon" && <ExternalIcon className="ml-4 mt-3 size-12" />}
+      {children}{" "}
+      {variant === "icon" && <NewLinkIcon className="ml-4 mt-3 size-12 shrink-0 self-baseline align-baseline" />}
     </a>
   );
 }

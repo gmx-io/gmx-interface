@@ -4,12 +4,11 @@ import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
-import { USD_DECIMALS } from "config/factors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useUserStat } from "domain/legacy";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { getTotalVolumeSum, shouldShowRedirectModal } from "lib/legacy";
-import { bigNumberify, formatAmount, numberWithCommas } from "lib/numbers";
+import { bigNumberify, formatUsd, numberWithCommas } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageLaunchAppEvent, LandingPageViewEvent } from "lib/userAnalytics/types";
 import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
@@ -187,10 +186,7 @@ export default function Home({ showRedirectModal }) {
               <div className="Home-latest-info__title">
                 <Trans>Total Trading Volume</Trans>
               </div>
-              <div className="Home-latest-info__value">
-                ${"\u200a"}
-                {formatAmount(totalVolumeSum, USD_DECIMALS, 0, true)}
-              </div>
+              <div className="Home-latest-info__value">{formatUsd(totalVolumeSum)}</div>
             </div>
           </div>
           <div className="Home-latest-info-block">
@@ -199,10 +195,7 @@ export default function Home({ showRedirectModal }) {
               <div className="Home-latest-info__title">
                 <Trans>Open Interest</Trans>
               </div>
-              <div className="Home-latest-info__value">
-                ${"\u200a"}
-                {formatAmount(openInterest, USD_DECIMALS, 0, true)}
-              </div>
+              <div className="Home-latest-info__value">{formatUsd(openInterest)}</div>
             </div>
           </div>
           <div className="Home-latest-info-block">

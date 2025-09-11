@@ -71,19 +71,13 @@ function ChartHeaderMobile() {
             <div className="mb-4 text-[11px] font-medium uppercase text-typography-secondary">
               <Trans>24h High</Trans>
             </div>
-            <div className="numbers">
-              ${"\u200a"}
-              {high24}
-            </div>
+            <div className="numbers">{high24}</div>
           </div>
           <div>
             <div className="mb-4 text-[11px] font-medium uppercase text-typography-secondary">
               <Trans>24h Low</Trans>
             </div>
-            <div className="numbers">
-              ${"\u200a"}
-              {low24}
-            </div>
+            <div className="numbers">{low24}</div>
           </div>
         </div>
       );

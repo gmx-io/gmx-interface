@@ -43,7 +43,7 @@ function LineSpan({ span }: { span: TooltipString }) {
   }
 
   if (typeof span === "string") {
-    return <span>{span}</span>;
+    return span;
   }
 
   return (

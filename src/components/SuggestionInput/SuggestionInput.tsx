@@ -120,7 +120,7 @@ export default function SuggestionInput({
       </div>
       {suggestionList && isPanelVisible && (
         <Portal>
-          <div className="z-[10000]" ref={refs.setFloating} style={floatingStyles}>
+          <div className="z-[100]" ref={refs.setFloating} style={floatingStyles}>
             <ul className="Suggestion-list">
               {suggestionList.map((suggestion) => (
                 <li key={suggestion} onMouseDown={() => handleSuggestionClick(suggestion)}>

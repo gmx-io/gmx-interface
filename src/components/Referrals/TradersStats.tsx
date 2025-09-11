@@ -7,7 +7,7 @@ import { isDevelopment } from "config/env";
 import { TotalReferralsStats, useTiers } from "domain/referrals";
 import { formatDate } from "lib/dates";
 import { shortenAddress } from "lib/legacy";
-import { formatBalanceAmount } from "lib/numbers";
+import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { getNativeToken, getToken } from "sdk/configs/tokens";
 
@@ -108,7 +108,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           </div>
         </ReferralInfoCard>
         <ReferralInfoCard
-          value={`$\u200a${getUsdValue(currentReferralsData?.traderReferralTotalStats?.volume)}`}
+          value={formatUsd(currentReferralsData?.traderReferralTotalStats?.volume)}
           label={t`Trading Volume`}
           labelTooltipText={t`Volume traded by this account with an active referral code.`}
           tooltipContent={
@@ -153,7 +153,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           }
         />
         <ReferralInfoCard
-          value={`$\u200a${getUsdValue(currentReferralsData?.traderReferralTotalStats?.discountUsd)}`}
+          value={formatUsd(currentReferralsData?.traderReferralTotalStats?.discountUsd)}
           label={t`Rebates`}
           labelTooltipText={t`Rebates earned by this account as a trader.`}
           tooltipContent={
@@ -281,7 +281,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                                   &nbsp;
                                 </>
                               )}
-                              ${getUsdValue(totalUsd)}
+                              {formatUsd(totalUsd)}
                             </div>
                           }
                           content={

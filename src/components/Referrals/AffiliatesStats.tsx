@@ -14,7 +14,7 @@ import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { formatDate } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { shortenAddress } from "lib/legacy";
-import { formatBalanceAmount } from "lib/numbers";
+import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
 import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
@@ -198,7 +198,7 @@ function AffiliatesStats({
           }
         />
         <ReferralInfoCard
-          value={`$\u200a${getUsdValue(currentReferralsData?.affiliateTotalStats?.volume)}`}
+          value={formatUsd(currentReferralsData?.affiliateTotalStats?.volume)}
           label={t`Trading Volume`}
           labelTooltipText={t`Volume traded by your referred traders.`}
           tooltipContent={
@@ -243,7 +243,7 @@ function AffiliatesStats({
           }
         />
         <ReferralInfoCard
-          value={`$\u200a${getUsdValue(currentReferralsData?.affiliateTotalStats?.affiliateRebateUsd)}`}
+          value={formatUsd(currentReferralsData?.affiliateTotalStats?.affiliateRebateUsd)}
           label={t`Rebates`}
           labelTooltipText={t`Rebates earned as an affiliate.`}
           tooltipContent={
@@ -293,12 +293,7 @@ function AffiliatesStats({
         />
         <ReferralInfoCard
           label={t`Claimable Rebates`}
-          value={
-            <span className="numbers">
-              ${"\u200a"}
-              {getUsdValue(totalClaimableRewardsUsd, 4)}
-            </span>
-          }
+          value={<span className="numbers">{formatUsd(totalClaimableRewardsUsd, { displayDecimals: 4 })}</span>}
           labelTooltipText={t`Claimable rebates from your referred traders.`}
           className="AffiliateStats-claimable-rewards-card"
         >
@@ -335,7 +330,7 @@ function AffiliatesStats({
             <div className="referral-table-header">
               <p className="title text-body-large">
                 <Trans>Referral Codes</Trans>{" "}
-                <span className="text-body-small rounded-full bg-cold-blue-900 px-8 py-4 font-medium leading-[1.25] text-typography-secondary">
+                <span className="rounded-full bg-cold-blue-900 px-8 py-4 text-12 font-medium leading-[1.25] text-typography-secondary">
                   {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)}: ${currentRebatePercentage}% rebate`}
                 </span>
               </p>
@@ -398,7 +393,7 @@ function AffiliatesStats({
                       </TableTd>
                       <TableTd data-label="Total Volume">
                         <Tooltip
-                          handle={`$\u200a${getUsdValue(stat.volume)}`}
+                          handle={formatUsd(stat.volume)}
                           handleClassName="numbers"
                           position="bottom-start"
                           className="whitespace-nowrap"
@@ -423,7 +418,7 @@ function AffiliatesStats({
                       </TableTd>
                       <TableTd data-label="Total Rebates">
                         <Tooltip
-                          handle={`$\u200a${getUsdValue(stat.affiliateRebateUsd)}`}
+                          handle={formatUsd(stat.affiliateRebateUsd)}
                           handleClassName="numbers"
                           position="bottom-start"
                           className="whitespace-nowrap"
@@ -544,7 +539,7 @@ function AffiliatesStats({
                                   &nbsp;
                                 </>
                               )}
-                              ${getUsdValue(totalUsd)}
+                              {formatUsd(totalUsd)}
                             </div>
                           }
                           renderContent={() => (

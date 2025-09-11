@@ -95,12 +95,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
   }
 
   return (
-    <ExpandableRow
-      title={t`Execution Details`}
-      open={Boolean(open)}
-      onToggle={setOpen}
-      contentClassName="flex flex-col gap-14"
-    >
+    <ExpandableRow title={t`Execution Details`} open={open} onToggle={setOpen} contentClassName="flex flex-col gap-14">
       <TradeFeesRow {...fees} feesType="decrease" />
       <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} />
 
