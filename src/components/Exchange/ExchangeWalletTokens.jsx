@@ -31,7 +31,10 @@ export default function ExchangeWalletTokens(props) {
             <div className="ExchangeWalletTokens-content-row">
               <div className="ExchangeWalletTokens-token-name">{token.name}</div>
               {balanceUsd !== undefined && balanceUsd > 0 && (
-                <div className="align-right numbers">${formatAmount(balanceUsd, 30, 2, true)}</div>
+                <div className="align-right numbers">
+                  ${"\u200a"}
+                  {formatAmount(balanceUsd, 30, 2, true)}
+                </div>
               )}
             </div>
           </div>

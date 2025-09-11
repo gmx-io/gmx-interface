@@ -47,7 +47,7 @@ function SideNav({ className }: { className?: string }) {
           <DocsNavItem isCollapsed={isCollapsed} />
           <NavItem
             icon={<CollapseIcon />}
-            label={t`Collapse`}
+            label={isCollapsed ? t`Expand` : t`Collapse`}
             isCollapsed={isCollapsed}
             onClick={handleCollapseToggle}
           />
@@ -109,8 +109,8 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
             { "group-hover:flex": isCollapsed }
           )}
         >
-          <div className="flex items-center gap-8 rounded-8 bg-blue-400/20 px-16 py-8 dark:bg-slate-700">
-            <div className="flex h-24 w-24 shrink-0 items-center justify-center">{icon}</div>
+          <div className="flex items-center gap-8 rounded-8 bg-blue-400/20 px-12 py-10 dark:bg-slate-700">
+            <div className="flex size-20 shrink-0 items-center justify-center">{icon}</div>
             <span className={cx("text-body-medium font-medium tracking-[-1.2%]")}>{label}</span>
           </div>
         </div>

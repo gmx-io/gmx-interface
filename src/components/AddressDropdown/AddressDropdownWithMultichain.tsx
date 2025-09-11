@@ -48,7 +48,8 @@ export function AddressDropdownWithMultichain({ account }: Props) {
       <Button
         variant="secondary"
         type="button"
-        className={cx("h-40 max-md:h-32", {
+        size="controlled"
+        className={cx("h-32 md:h-40", {
           "!py-4 !pl-12 !pr-4": shouldShowDepositButton && !isMobile,
           "!py-0 !pl-12 !pr-0": shouldShowDepositButton && isMobile,
         })}
@@ -80,7 +81,7 @@ export function AddressDropdownWithMultichain({ account }: Props) {
           )}
 
           {shouldShowDepositButton && (
-            <Button variant="primary" className="" onClick={handleOpenDeposit}>
+            <Button variant="primary" onClick={handleOpenDeposit}>
               <Trans>Deposit</Trans>
             </Button>
           )}

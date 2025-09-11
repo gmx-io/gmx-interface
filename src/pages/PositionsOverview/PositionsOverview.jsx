@@ -65,9 +65,18 @@ export default function PositionsOverview() {
                     return (
                       <tr key={i}>
                         <td>{account}</td>
-                        <td>${formatAmount(size, USD_DECIMALS, 2, true)}</td>
-                        <td>${formatAmount(collateral, USD_DECIMALS, 2, true)}</td>
-                        <td className={cx({ negative: danger })}>${formatAmount(fee, USD_DECIMALS, 2, true)}</td>
+                        <td>
+                          ${"\u200a"}
+                          {formatAmount(size, USD_DECIMALS, 2, true)}
+                        </td>
+                        <td>
+                          ${"\u200a"}
+                          {formatAmount(collateral, USD_DECIMALS, 2, true)}
+                        </td>
+                        <td className={cx({ negative: danger })}>
+                          ${"\u200a"}
+                          {formatAmount(fee, USD_DECIMALS, 2, true)}
+                        </td>
                         <td>
                           {getTimeRemaining(liqTime)} (${formatAmount(feesPerHour, USD_DECIMALS, 2, true)}/h)
                         </td>

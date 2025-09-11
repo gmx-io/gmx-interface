@@ -70,7 +70,7 @@ export function useChartHeaderFormattedValues() {
       value = value * visualMultiplier;
     }
 
-    return numberWithCommas(value.toFixed(oraclePriceDecimals));
+    return numberWithCommas(value.toFixed(oraclePriceDecimals), { showDollar: true });
   }, [dayPriceDeltaData, oraclePriceDecimals, visualMultiplier, isSwap]);
 
   const low24 = useMemo(() => {
@@ -83,7 +83,7 @@ export function useChartHeaderFormattedValues() {
       value = value * visualMultiplier;
     }
 
-    return numberWithCommas(value.toFixed(oraclePriceDecimals));
+    return numberWithCommas(value.toFixed(oraclePriceDecimals), { showDollar: true });
   }, [dayPriceDeltaData, oraclePriceDecimals, visualMultiplier, isSwap]);
 
   const dayPriceDelta = useMemo(() => {
@@ -113,7 +113,7 @@ export function useChartHeaderFormattedValues() {
         <>
           <LongIcon width={12} className="relative top-1 opacity-70" />
           <span key="long-oi-value" className="whitespace-nowrap numbers">
-            {`$\u200a${formatAmountHuman(info?.openInterestLong, USD_DECIMALS)}`}
+            {formatAmountHuman(info?.openInterestLong, USD_DECIMALS, true)}
           </span>
         </>,
         formatPercentageDisplay(info.longOpenInterestPercentage),
@@ -129,7 +129,7 @@ export function useChartHeaderFormattedValues() {
         <>
           <ShortIcon width={12} className="relative opacity-70" />
           <span key="short-oi-value" className="whitespace-nowrap numbers">
-            {`$\u200a${formatAmountHuman(info?.openInterestShort, USD_DECIMALS)}`}
+            {formatAmountHuman(info?.openInterestShort, USD_DECIMALS, true)}
           </span>
         </>,
         formatPercentageDisplay(info.shortOpenInterestPercentage),
@@ -152,7 +152,7 @@ export function useChartHeaderFormattedValues() {
         handle={
           <span className="flex items-center justify-center gap-4 numbers">
             <LongIcon width={12} className="relative top-1 opacity-70" />
-            {`$\u200a${formatAmountHuman(liquidity, USD_DECIMALS)}`}
+            {formatAmountHuman(liquidity, USD_DECIMALS, true)}
           </span>
         }
         position="bottom-end"
@@ -174,7 +174,7 @@ export function useChartHeaderFormattedValues() {
         handle={
           <span className="flex items-center justify-center gap-4 numbers">
             <ShortIcon width={12} className="relative opacity-70" />
-            {`$\u200a${formatAmountHuman(liquidity, USD_DECIMALS)}`}
+            {formatAmountHuman(liquidity, USD_DECIMALS, true)}
           </span>
         }
         position="bottom-end"
@@ -215,7 +215,7 @@ export function useChartHeaderFormattedValues() {
 
   const dailyVolume = useMemo(() => {
     return dailyVolumesValue !== undefined ? (
-      <span className="numbers">{`$\u200a${formatAmountHuman(dailyVolumesValue, USD_DECIMALS)}`}</span>
+      <span className="numbers">{formatAmountHuman(dailyVolumesValue, USD_DECIMALS, true)}</span>
     ) : (
       "..."
     );

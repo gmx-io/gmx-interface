@@ -16,11 +16,12 @@ import {
 import { useGmxAccountFundingHistoryItem } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
 import { CHAIN_ID_TO_EXPLORER_NAME, CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
-import { formatAmountFree, formatBalanceAmount } from "lib/numbers";
+import { formatAmountFree } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import { getToken } from "sdk/configs/tokens";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
@@ -89,8 +90,22 @@ export const TransferDetailsView = () => {
     }
   };
 
+  const addressLabel = selectedTransfer ? shortenAddressOrEns(selectedTransfer.account, 13) : undefined;
+
+  const networkLabel = selectedTransfer && (
+    <span>
+      <img
+        src={CHAIN_ID_TO_NETWORK_ICON[selectedTransfer.sourceChainId]}
+        width={20}
+        height={20}
+        className="-my-5 inline-block size-20 rounded-full align-baseline"
+      />{" "}
+      {getChainName(selectedTransfer.sourceChainId)}
+    </span>
+  );
+
   return (
-    <div className="text-body-medium flex grow flex-col gap-8 p-16">
+    <div className="text-body-medium flex grow flex-col gap-8 p-adaptive">
       {selectedTransfer?.isExecutionError ? (
         <AlertInfoCard type="error">
           <Trans>Your deposit of from {sourceChainName} was not executed due to an error</Trans>
@@ -101,101 +116,12 @@ export const TransferDetailsView = () => {
         value={selectedTransfer ? formatTradeActionTimestamp(selectedTransfer.sentTimestamp) : undefined}
       />
       <SyntheticsInfoRow
-        label={<Trans>Type</Trans>}
+        label={selectedTransfer?.operation === "deposit" ? <Trans>From</Trans> : <Trans>To</Trans>}
         value={
-          selectedTransfer ? (
-            selectedTransfer.operation === "deposit" ? (
-              <Trans>Deposit</Trans>
-            ) : (
-              <Trans>Withdrawal</Trans>
-            )
-          ) : undefined
+          <Trans>
+            {addressLabel} on {networkLabel}
+          </Trans>
         }
-      />
-      <SyntheticsInfoRow
-        label={<Trans>Wallet</Trans>}
-        value={
-          selectedTransfer ? (
-            selectedTransfer.operation === "deposit" ? (
-              <Trans>GMX Balance</Trans>
-            ) : (
-              shortenAddressOrEns(selectedTransfer.account, 13)
-            )
-          ) : undefined
-        }
-      />
-      <SyntheticsInfoRow
-        label={<Trans>Amount</Trans>}
-        value={
-          selectedTransfer && token ? (
-            <>
-              {formatBalanceAmount(selectedTransfer.sentAmount, token.decimals, undefined, {
-                isStable: token.isStable,
-              })}{" "}
-              <span className="text-typography-secondary">{token.symbol}</span>
-            </>
-          ) : undefined
-        }
-      />
-      {selectedTransfer?.receivedAmount !== undefined && (
-        <>
-          <SyntheticsInfoRow
-            label={<Trans>Fee</Trans>}
-            value={
-              selectedTransfer && token ? (
-                <>
-                  {formatBalanceAmount(
-                    selectedTransfer.sentAmount - selectedTransfer.receivedAmount,
-                    token.decimals,
-                    undefined,
-                    {
-                      isStable: token.isStable,
-                    }
-                  )}{" "}
-                  <span className="text-typography-secondary">{token.symbol}</span>
-                </>
-              ) : undefined
-            }
-          />
-        </>
-      )}
-      <SyntheticsInfoRow
-        label={
-          selectedTransfer ? (
-            selectedTransfer.operation === "deposit" ? (
-              <Trans>From Network</Trans>
-            ) : (
-              <Trans>To Network</Trans>
-            )
-          ) : undefined
-        }
-        className="!items-center"
-        valueClassName="-my-5"
-        value={
-          selectedTransfer && (
-            <div className="flex items-center gap-8">
-              <img
-                src={CHAIN_ID_TO_NETWORK_ICON[selectedTransfer.sourceChainId]}
-                width={20}
-                height={20}
-                className="size-20 rounded-full"
-              />
-              {getChainName(selectedTransfer.sourceChainId)}
-            </div>
-          )
-        }
-      />
-      <SyntheticsInfoRow
-        label={
-          selectedTransfer ? (
-            selectedTransfer.operation === "deposit" ? (
-              <Trans>From Wallet</Trans>
-            ) : (
-              <Trans>To Wallet</Trans>
-            )
-          ) : undefined
-        }
-        value={selectedTransfer ? shortenAddressOrEns(selectedTransfer.account, 13) : undefined}
       />
       {selectedTransfer?.sentTxn && (
         <SyntheticsInfoRow
@@ -223,6 +149,39 @@ export const TransferDetailsView = () => {
           }
         />
       )}
+      <SyntheticsInfoRow
+        label={<Trans>Amount</Trans>}
+        value={
+          selectedTransfer && token ? (
+            <Amount
+              amount={selectedTransfer.sentAmount}
+              decimals={token.decimals}
+              isStable={token.isStable}
+              symbol={token.symbol}
+              symbolClassName="text-typography-secondary"
+            />
+          ) : undefined
+        }
+      />
+      {selectedTransfer?.receivedAmount !== undefined && (
+        <>
+          <SyntheticsInfoRow
+            label={<Trans>Fee</Trans>}
+            value={
+              selectedTransfer && token ? (
+                <Amount
+                  amount={selectedTransfer.sentAmount - selectedTransfer.receivedAmount}
+                  decimals={token.decimals}
+                  isStable={token.isStable}
+                  symbol={token.symbol}
+                  symbolClassName="text-typography-secondary"
+                />
+              ) : undefined
+            }
+          />
+        </>
+      )}
+
       <div className="grow" />
       <Button variant="secondary" onClick={handleRepeatTransaction}>
         <Trans>Repeat Transaction</Trans>

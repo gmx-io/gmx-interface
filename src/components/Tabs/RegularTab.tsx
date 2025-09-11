@@ -10,7 +10,7 @@ type Props<V extends string | number> = {
   onOptionClick: ((value: V) => void) | undefined;
   regularOptionClassname?: string;
   qa?: string;
-  type: "inline" | "block";
+  type: "inline" | "block" | "inline-primary";
 };
 
 export default function RegularTab<V extends string | number>({
@@ -24,6 +24,21 @@ export default function RegularTab<V extends string | number>({
   const isActive = option.value === selectedValue;
   const label = option.label || option.value;
   const optionClassName = isActive ? option.className?.active : option.className?.regular;
+
+  if (type === "inline-primary") {
+    return (
+      <Button
+        variant={isActive ? "primary" : "secondary"}
+        onClick={() => onOptionClick?.(option.value)}
+        key={option.value}
+        data-qa={qa ? `${qa}-tab-${option.value}` : undefined}
+        className={cx(optionClassName, regularOptionClassname)}
+      >
+        {option.icon && <span className="mt-2 scale-75 opacity-70">{option.icon}</span>}
+        {label}
+      </Button>
+    );
+  }
 
   if (type === "inline") {
     return (

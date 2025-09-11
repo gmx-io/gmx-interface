@@ -71,7 +71,6 @@ msgstr "Achetez des tokens GM avant la réinitialisation de l'époque dans {0} p
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "PRICE"
 msgstr "PRIX"
 
@@ -185,7 +184,6 @@ msgstr ""
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-#: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Synthetics/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
@@ -302,6 +300,10 @@ msgstr "Annuler l'échange limité"
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "{seconds}s"
 msgstr "{seconds}s"
+
+#: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
+msgid "To"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #: src/components/Exchange/ConfirmationBox.jsx
@@ -491,6 +493,10 @@ msgstr "Positions"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0} ne peut pas être envoyé à des adresses de contrats intelligents. Sélectionnez un autre token."
 
+#: src/components/SideNav/SideNav.tsx
+msgid "Expand"
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trading</2> under settings, which should offer a better experience."
 msgstr "Transaction échouée en raison d'une erreur RPC.<0/><1/>Veuillez activer <2>Trading Express</2> dans les paramètres, ce qui devrait offrir une meilleure expérience."
@@ -615,10 +621,6 @@ msgstr "Capacité maximale"
 msgid "Market Swap"
 msgstr "Swap de marché"
 
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-msgid "The amount you are trying to deposit exceeds the limit. Please try an amount smaller than {upperLimitFormatted}."
-msgstr ""
-
 #: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "A $500,000 GLV pool (funded by DAO funds) rewards long-term holders: If you keep your distributed GLV for at least 3 months (without selling or transferring), you'll receive a pro rata share."
 msgstr ""
@@ -667,10 +669,6 @@ msgstr "en liquidité"
 #: src/components/Exchange/SwapBox.jsx
 msgid "Exit Price"
 msgstr "Prix de sortie"
-
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
-msgid "Your wallet balance on the connected network. Usable for trading on the connected chain."
-msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V2"
@@ -971,7 +969,6 @@ msgid "This value may be higher on other websites due to the collateral of posit
 msgstr "Cette valeur peut être plus élevée sur d'autres sites en raison de l'inclusion du collatéral des positions dans le calcul."
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/pages/Stake/GlpCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Rewards"
 msgstr "Récompenses"
@@ -1088,7 +1085,6 @@ msgstr "Acheter {operationTokenSymbol}"
 msgid "Buy GM: {0}"
 msgstr "Acheter GM : {0}"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Market Cap"
@@ -1248,7 +1244,6 @@ msgstr "AVERTISSEMENT : Cette position a un montant de collatéral bas après d�
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/pages/BuyGlp/BuyGlp.jsx
-#: src/pages/Stake/GlpCard.tsx
 msgid "Sell GLP"
 msgstr "Vendre GLP"
 
@@ -1293,6 +1288,11 @@ msgstr "1inch"
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copied"
 msgstr "Copié"
+
+#: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
+msgid "Deposit to GMX Account"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.jsx
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
@@ -1357,8 +1357,8 @@ msgid "Select pool"
 msgstr "Sélectionner un pool"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "WEIGHT"
-msgstr "POIDS"
+#~ msgid "WEIGHT"
+#~ msgstr "POIDS"
 
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -1431,7 +1431,6 @@ msgstr "Remises totales"
 msgid "This token automatically accrues fees from leverage trading and swaps for the {0} market. It is also exposed to {1} and {2} as per the composition displayed."
 msgstr "Ce token accumule automatiquement des frais du trading à effet de levier et des swaps pour le marché {0}. Il est également exposé à {1} et {2} selon la composition affichée."
 
-#: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "To Network"
 msgstr ""
@@ -1573,13 +1572,17 @@ msgstr "Shift GM"
 msgid "Requested withdrawal of {0} USD from {1} {longOrShortText}."
 msgstr "Retrait demandé de {0} USD de {1} {longOrShortText}."
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
+msgstr ""
+
 #: src/pages/Exchange/Exchange.tsx
 msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 msgstr "Impossible d'augmenter  {tokenSymbol} {longOrShortText} dans les limites de glissement autorisé, vous pouvez ajuster le glissement autorisé dans les paramètres en haut à droite de la page."
 
 #: src/components/Referrals/AffiliatesStats.tsx
-msgid "Tier {0} ({currentRebatePercentage}% rebate)"
-msgstr "Tier {0} ({currentRebatePercentage}% de remise)"
+#~ msgid "Tier {0} ({currentRebatePercentage}% rebate)"
+#~ msgstr "Tier {0} ({currentRebatePercentage}% de remise)"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX Alerts"
@@ -1793,6 +1796,10 @@ msgstr "Optimisations de rendement"
 msgid "Receive (Approximate)"
 msgstr "Recevoir (Approximatif)"
 
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "Tier {0}: {currentRebatePercentage}% rebate"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -1838,8 +1845,8 @@ msgid "Create Order"
 msgstr "Créer un ordre"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Utilization"
-msgstr "Utilisation"
+#~ msgid "Utilization"
+#~ msgstr "Utilisation"
 
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 msgid "Select Asset to Deposit"
@@ -2252,10 +2259,6 @@ msgstr ""
 msgid "<0>Read more</0> about fees."
 msgstr "<0>Lire plus</0> sur les frais."
 
-#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
-msgid "Withdrawing requires {0} while you have {1}. Please <0>swap</0> or <1>deposit</1> more {2} to your GMX account."
-msgstr ""
-
 #: src/components/Exchange/OrdersList.jsx
 msgid "You will receive at least {0} {1} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed."
 msgstr "Vous recevrez au moins {0} {1} si cet ordre est exécuté. Le prix d'exécution peut varier en fonction des frais de swap au moment de l'exécution de l'ordre."
@@ -2418,7 +2421,6 @@ msgid "Max {0} sellable amount exceeded"
 msgstr "Montant vendable max {0} dépassé"
 
 #: src/components/Glp/GlpSwap.jsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "TOKEN"
 msgstr "TOKEN"
 
@@ -2525,6 +2527,10 @@ msgstr "{existingTriggerOrderLength, plural, one {Vous avez une commande de déc
 msgid "The actual execution price may differ from the set limit price due to fees and price impact. This ensures that you receive at least the minimum receive amount."
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "The amount you are trying to deposit exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
+msgstr ""
+
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
 msgstr "Vous avez besoin d'au moins {0} {stakeTokenLabel} au total pour vester {1} esGMX."
@@ -2532,6 +2538,10 @@ msgstr "Vous avez besoin d'au moins {0} {stakeTokenLabel} au total pour vester {
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Swap {0} USDG for{1} {2}"
 msgstr "Échanger {0} USDG pour {1} {2}"
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Native token cannot be approved"
+msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "{0} will be swapped to {1} on order execution."
@@ -2581,7 +2591,6 @@ msgstr "TVL"
 msgid "Shift Fee"
 msgstr "Frais de transfert"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "GLP Pool"
 msgstr "Pool de GLP"
@@ -3010,6 +3019,10 @@ msgstr ""
 msgid "Speed up page loading"
 msgstr "Accélérer le chargement de la page"
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+msgid "The amount you are trying to withdraw is below the limit. Please try an amount larger than <0>{lowerLimitFormatted}</0>."
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.jsx
 msgid "{0}: Swap {amountInDisplay}{1} for{minOutDisplay} {2}, Price:{3} USD"
 msgstr "{0} : Échanger {amountInDisplay}{1} pour {minOutDisplay} {2}, Prix : {3} USD"
@@ -3285,10 +3298,8 @@ msgstr "Laissez au moins {0} ETH pour le gaz"
 msgid "Enable orders failed."
 msgstr "Activation des ordres échouée."
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GlpCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Total Staked"
 msgstr "Total staké"
@@ -3404,7 +3415,6 @@ msgid "You can edit the default allowed slippage in the settings menu on the top
 msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/keys.ts
-#: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
 msgid "Withdrawal"
 msgstr ""
 
@@ -3416,10 +3426,6 @@ msgstr "Soumission..."
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
 msgstr "Application"
-
-#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
-msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than {upperLimitFormatted}."
-msgstr ""
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to Wallet"
@@ -3832,10 +3838,6 @@ msgstr "Demander un échange de marché"
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
 msgstr "Liquidité insuffisante dans le pool de marché {0}. Sélectionnez un pool différent pour ce marché.{1}"
 
-#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
-msgid "The amount you are trying to withdraw is below the limit. Please try an amount larger than {lowerLimitFormatted}."
-msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
 msgstr "Application désactivée, en attente de mise à niveau {0}"
@@ -3963,7 +3965,6 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
-#: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
@@ -4042,6 +4043,11 @@ msgstr "Ordre de déclenchement désactivé, en attente de mise à niveau {0}"
 msgid "Funding Fees"
 msgstr "Frais de financement"
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "Approval failed"
+msgstr ""
+
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Home/Home.tsx
@@ -4059,6 +4065,10 @@ msgstr "La position sera ouverte à {0} USD avec un glissement max de {1}%.<0/><
 #: src/components/Referrals/TradersStats.tsx
 msgid "Active Referral Code"
 msgstr "Code de parrainage actif"
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "The amount you are trying to deposit is below the limit. Please try an amount larger than <0>{lowerLimitFormatted}</0>."
+msgstr ""
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Save One-Click Trading settings"
@@ -4300,6 +4310,10 @@ msgstr "Vous avez un ordre limite actif pour augmenter {longOrShortText} {sizeIn
 msgid "Negative funding fees are automatically settled against the collateral and impact the liquidation price. Positive funding fees can be claimed under the claims tab."
 msgstr "Les frais de financement négatifs sont automatiquement réglés contre le collatéral et impactent le prix de liquidation. Les frais de financement positifs peuvent être réclamés sous l'onglet des réclamations."
 
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "Create new code"
+msgstr ""
+
 #: src/pages/Stake/Stake.tsx
 msgid "Unstake esGMX"
 msgstr "Unstaker esGMX"
@@ -4517,10 +4531,6 @@ msgstr "Erreur lors de la préparation de la transaction. Fournisseur non défin
 msgid "Insufficient liquidity in GM Pool"
 msgstr "Liquidité insuffisante dans le pool GM"
 
-#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least {1} in {2} or switch your gas token in settings."
-msgstr ""
-
 #: src/components/Exchange/ExchangeBanner.jsx
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "Tradez sur GMX et gagnez <0>250.000 $</0> de prix ! En direct jusqu'au 30 novembre, <1>cliquez ici</1> pour en savoir plus."
@@ -4650,8 +4660,8 @@ msgstr "Adresses de transfert invalides : Veuillez vérifier l'URL."
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "GLP Index Composition"
-msgstr "Composition de l'indice GLP"
+#~ msgid "GLP Index Composition"
+#~ msgstr "Composition de l'indice GLP"
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "No distribution history yet"
@@ -4949,10 +4959,6 @@ msgstr "<0>Staker GMX</0> et gagnez {gmxAvgAprText} APR"
 msgid "Mozaic Finance"
 msgstr "Mozaic Finance"
 
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
-msgid "Your GMX Account balance, usable for trading on any supported chain.<0/><1/>The balance is based on the connected chain, or the selected settlement chain in settings if not connected to Arbitrum or Avalanche."
-msgstr ""
-
 #: src/pages/Exchange/Exchange.tsx
 msgid "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
 msgstr "{0} USD retirés de {tokenSymbol} {longOrShortText}."
@@ -5049,7 +5055,6 @@ msgstr "{0} : {1}, Prix : {priceDisplay}"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "POOL"
 msgstr "POOL"
 
@@ -5106,8 +5111,8 @@ msgid "Order cannot be executed as it would reduce the position's leverage below
 msgstr "L'ordre ne peut être exécuté car il réduirait l'effet de levier de la position en dessous de 1"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Weight"
-msgstr "Poids"
+#~ msgid "Weight"
+#~ msgstr "Poids"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -5283,10 +5288,6 @@ msgstr "Adresse NFT invalide"
 msgid "LIQ."
 msgstr "LIQ."
 
-#: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
-msgid "Transfer Details"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP and GMX autocompounding vaults"
 msgstr "Vaults d'auto-composition GLP et GMX"
@@ -5385,7 +5386,6 @@ msgid "Approving..."
 msgstr "Approbation en cours..."
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "UTILIZATION"
 msgstr "UTILISATION"
 
@@ -5464,7 +5464,6 @@ msgstr ""
 #: src/components/Synthetics/Claims/Claims.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Synthetics/PositionEditor/usePositionEditorButtonState.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -5595,12 +5594,9 @@ msgstr "Échec de la mise à jour du code de parrainage."
 #: src/components/Synthetics/TradeBox/components/SideOrderEntries.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TVChart/Chart.tsx
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GlpCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Price"
 msgstr "Prix"
@@ -5775,6 +5771,7 @@ msgid "Max {0} in"
 msgstr "Max {0} dans"
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "Asset"
 msgstr ""
 
@@ -5815,7 +5812,6 @@ msgstr "Tableau de bord pour les statistiques de parrainage GMX"
 msgid "Action"
 msgstr "Action"
 
-#: src/pages/Dashboard/GlpCard.tsx
 #: src/pages/Dashboard/GmCard.tsx
 msgid "Supply"
 msgstr "Fournir"
@@ -5830,10 +5826,6 @@ msgstr ""
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "No open positions"
 msgstr "Aucune position ouverte"
-
-#: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
-msgid "To Wallet"
-msgstr ""
 
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Size, $"
@@ -5957,6 +5949,10 @@ msgstr "Liquidité insuffisante pour échanger le collatéral"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Decrease"
 msgstr "Diminution de marché"
+
+#: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
+msgid "Withdrawal from GMX Account"
+msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Governance Alerts"
@@ -6146,7 +6142,6 @@ msgid "Limit size is required"
 msgstr "La taille limite est requise"
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-#: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
 msgid "From Network"
 msgstr ""
 
@@ -6155,13 +6150,13 @@ msgstr ""
 msgid "Protocol Tokens"
 msgstr "Tokens du protocole"
 
+#: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
+msgid "Withdraw from GMX Account"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Collateral at Liquidation"
 msgstr "Collatéral à la liquidation"
-
-#: src/components/Synthetics/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "You’ll need {formattedAmount} ({formattedUsd}) {nativeTokenSymbol} in your account to withdraw funds."
-msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -6177,6 +6172,7 @@ msgstr "Aujourd'hui"
 msgid "Receiver Address"
 msgstr "Adresse du destinataire"
 
+#: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "From"
 msgstr "De"
@@ -6226,8 +6222,8 @@ msgid "Volume traded by your referred traders."
 msgstr "Volume tradé par vos traders parrainés."
 
 #: src/pages/Dashboard/GlpCard.tsx
-msgid "Stablecoin Percentage"
-msgstr "Pourcentage de stablecoins"
+#~ msgid "Stablecoin Percentage"
+#~ msgstr "Pourcentage de stablecoins"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order will be executed once there is sufficient liquidity."
@@ -6242,8 +6238,8 @@ msgid "SNTL esGMX Market"
 msgstr "Marché SNTL esGMX"
 
 #: src/components/Referrals/TradersStats.tsx
-msgid "Tier {0} ({currentTierDiscount}% discount)"
-msgstr "Tier {0} ({currentTierDiscount}% de remise)"
+#~ msgid "Tier {0} ({currentTierDiscount}% discount)"
+#~ msgstr "Tier {0} ({currentTierDiscount}% de remise)"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
@@ -6410,6 +6406,7 @@ msgstr "{formattedNetRate} / 1h"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Balance"
 msgstr "Solde"
 
@@ -6543,10 +6540,6 @@ msgstr "Confirmations de liquidation"
 msgid "Acknowledge epoch is ending in {minutes} minutes"
 msgstr "Reconnaître que l'époque se termine dans {minutes} minutes"
 
-#: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
-msgid "From Wallet"
-msgstr ""
-
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "High Price Impact"
 msgstr "Impact élevé sur le prix"
@@ -6573,8 +6566,8 @@ msgstr "des frais d'ouverture"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Pool Amount"
-msgstr "Montant du pool"
+#~ msgid "Pool Amount"
+#~ msgstr "Montant du pool"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -6647,7 +6640,6 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Create"
@@ -6856,7 +6848,6 @@ msgstr "L'effet de levier maximal de 100x a été dépassé, le collatéral rest
 
 #: src/components/Synthetics/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-#: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "GMX Balance"
 msgstr ""
@@ -6916,6 +6907,10 @@ msgstr "Airdrop GM"
 #: src/components/Glp/GlpSwap.jsx
 msgid "Save on Fees"
 msgstr "Économiser sur les frais"
+
+#: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
+msgid "{addressLabel} on {networkLabel}"
+msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 msgid "Approving"
@@ -7134,10 +7129,8 @@ msgstr "Désactiver 1CT (One-Click Trading)"
 #: src/components/Exchange/PositionEditor.jsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-#: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/Synthetics/GmxAccountModal/keys.ts
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
-#: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Synthetics/PositionEditor/types.ts
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/Synthetics/TradeHistory/keys.ts
@@ -7335,8 +7328,8 @@ msgstr "Acheter GMX"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Max {0} Capacity"
-msgstr "Capacité maximale {0}"
+#~ msgid "Max {0} Capacity"
+#~ msgstr "Capacité maximale {0}"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copy error"
@@ -7425,6 +7418,10 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Limit"
 msgstr "Mettre à jour la limite"
+
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawing requires <0/> while you have <1/>. Please <2>swap</2> or <3>deposit</3> more {0} to your GMX account."
+msgstr ""
 
 #: src/components/Exchange/OrderEditor.jsx
 #: src/components/Exchange/OrderEditor.jsx
@@ -7749,6 +7746,10 @@ msgstr ""
 msgid "Why is the claim in GLV tokens?"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "You’ll need <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {nativeTokenSymbol} in your account to withdraw funds."
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express + One-Click"
 msgstr ""
@@ -7783,7 +7784,6 @@ msgid "Confirm Claim"
 msgstr "Confirmer la réclamation"
 
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "GMX Account Balance"
 msgstr ""
@@ -7866,7 +7866,6 @@ msgstr "Long"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
 msgid "Pool"
 msgstr "Pool"
 
@@ -7885,10 +7884,6 @@ msgstr "<0>La capacité du pool a été atteinte pour {0}. Veuillez utiliser un 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX dashboards and analytics."
 msgstr "Tableaux de bord et analyses GMX."
-
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-msgid "The amount you are trying to deposit is below the limit. Please try an amount larger than {lowerLimitFormatted}."
-msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
@@ -8055,7 +8050,6 @@ msgstr "Réclamer les récompenses {wrappedTokenSymbol}"
 #: src/components/Glp/GlpSwap.jsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GlpCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Total Supply"
 msgstr "Offre totale"
@@ -8069,7 +8063,6 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GlpCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Staked"
 msgstr "Staké"
@@ -8206,8 +8199,8 @@ msgstr "Staker esGMX"
 
 #: src/pages/Dashboard/MarketsListV1.tsx
 #: src/pages/Dashboard/MarketsListV1.tsx
-msgid "Target Min Amount"
-msgstr "Montant min. cible"
+#~ msgid "Target Min Amount"
+#~ msgstr "Montant min. cible"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -8321,6 +8314,10 @@ msgstr "Suivi de portefeuille DeFi"
 msgid "Current Funding Fee / Day"
 msgstr "Frais de financement actuels / Jour"
 
+#: src/components/Synthetics/GmxAccountModal/MainView.tsx
+msgid "Your GMX Account balance, usable for trading from any supported chain.<0/><1>Read more</1>."
+msgstr ""
+
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum APR:"
 msgstr "TAEG Arbitrum :"
@@ -8351,10 +8348,8 @@ msgstr "Le TAEG bonus sera airdroppé sous forme de tokens {airdropTokenTitle}. 
 #: src/components/Synthetics/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/Synthetics/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
-#: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GlpCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Wallet"
@@ -8575,6 +8570,10 @@ msgstr "DERNIER PRIX"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in {nativeTokenSymbol}."
+msgstr ""
+
+#: src/components/Referrals/TradersStats.tsx
+msgid "Tier {0}: {currentTierDiscount}% discount"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
@@ -8842,10 +8841,6 @@ msgstr "7j"
 msgid "Rage Trade"
 msgstr "Rage Trade"
 
-#: src/components/Synthetics/GmxAccountModal/MainView.tsx
-msgid "GMX Account funding activity."
-msgstr ""
-
 #: src/pages/Home/Home.tsx
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
 msgstr "Tradez BTC, ETH, AVAX et d'autres cryptos majeures avec un levier jusqu'à 100x directement depuis votre portefeuille"
@@ -9102,6 +9097,10 @@ msgstr "Projets écosystème"
 msgid "Market order will be cancellable in ..."
 msgstr "L'ordre au marché sera annulable dans ..."
 
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in settings."
+msgstr ""
+
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"
 msgstr "Chat anonyme avec GMX"
@@ -9109,6 +9108,7 @@ msgstr "Chat anonyme avec GMX"
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Loading"
 msgstr ""

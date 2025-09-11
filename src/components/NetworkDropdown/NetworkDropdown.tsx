@@ -97,7 +97,11 @@ function DesktopDropdown({
         {({ open }) => (
           <>
             <Menu.Button as="div" data-qa="networks-dropdown-handle">
-              <Button variant="secondary" className="flex h-40 items-center gap-8 px-15 pr-12 max-md:h-32 max-md:p-6">
+              <Button
+                variant="secondary"
+                size="controlled"
+                className="flex h-40 items-center gap-8 px-15 pr-12 max-md:h-32 max-md:p-6"
+              >
                 <NavIcons chainId={chainId} open={open} />
               </Button>
             </Menu.Button>

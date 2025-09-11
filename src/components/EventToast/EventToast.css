@@ -33,6 +33,7 @@
   width: 35rem;
   mix-blend-mode: overlay;
 }
+
 .single-toast header {
   display: flex;
   justify-content: space-between;
@@ -71,17 +72,12 @@
 }
 .single-toast header p {
   margin: 0;
-  padding: 0.3875rem 0;
   margin-left: 4px;
-  font-size: var(--font-size-body-large);
 }
 
 .single-toast .toast-body {
-  margin: 0.8rem 0;
-  padding: 0;
-  font-size: var(--font-size-body-medium);
   line-height: 1.5;
-  padding: 0 1.5rem;
+  padding: 12px;
 }
 
 .single-toast .toast-body a {
