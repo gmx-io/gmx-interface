@@ -166,8 +166,8 @@ export function GmList({
             {isLoading && <Loader />}
           </div>
         ) : (
-          <TableScrollFadeContainer className="flex grow flex-col">
-            <table className="mb-4 w-[max(100%,1000px)]">
+          <TableScrollFadeContainer className="flex grow flex-col p-8 pt-0">
+            <table className="w-[max(100%,1000px)]">
               <thead>
                 <TableTheadTr>
                   <TableTh className="pl-16">

@@ -225,7 +225,7 @@ export function GmListItem({
   }
 
   return (
-    <TableTrActionable key={token.address} className="group cursor-pointer !bg-[transparent]" onClick={handleItemClick}>
+    <TableTrActionable key={token.address} className="cursor-pointer" onClick={handleItemClick}>
       <TableTdActionable className="w-[220px] pl-16">
         <div className="flex items-center gap-8">
           {onFavoriteClick && (

@@ -51,7 +51,7 @@ export const TableTrActionable = forwardRef<
   HTMLTableRowElement,
   PropsWithChildren<{ onClick: (event: React.MouseEvent) => void }> & React.HTMLProps<HTMLTableRowElement>
 >(function TableTrInternal({ className, ...props }, ref) {
-  return <tr {...props} ref={ref} className={cx("odd:bg-fill-surfaceElevated50", className)} />;
+  return <tr {...props} ref={ref} className={cx("group/tr", className)} />;
 });
 
 export const TableTdActionable = forwardRef<
@@ -63,17 +63,14 @@ export const TableTdActionable = forwardRef<
       {...props}
       ref={ref}
       className={cx(
-        "group text-[13px] last-of-type:[&:not(:first-of-type)]:text-right",
-        "p-0 pb-4 first:pl-8 last:pr-8",
+        "relative text-[13px] last-of-type:[&:not(:first-of-type)]:text-right",
+        "px-12 py-10 first-of-type:before:rounded-l-8 last-of-type:before:rounded-r-8 group-hover/tr:before:bg-fill-surfaceHover",
+        "before:absolute before:bottom-2 before:left-0 before:top-2 before:z-0 before:bg-fill-surfaceElevated50",
+        "before:h-[calc(100%-4px)] before:w-full before:content-['']",
         className
       )}
     >
-      <div
-        className={`flex h-60 items-center bg-fill-surfaceElevated50 px-12 py-10
-      group-first:rounded-l-8 group-last:rounded-r-8 group-hover:bg-fill-surfaceHover`}
-      >
-        {props.children}
-      </div>
+      <div className="z-1 relative">{props.children}</div>
     </td>
   );
 });
