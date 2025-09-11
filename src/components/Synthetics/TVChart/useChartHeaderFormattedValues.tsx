@@ -70,7 +70,7 @@ export function useChartHeaderFormattedValues() {
       value = value * visualMultiplier;
     }
 
-    return `$\u200a${numberWithCommas(value.toFixed(oraclePriceDecimals))}`;
+    return numberWithCommas(value.toFixed(oraclePriceDecimals), { showDollar: true });
   }, [dayPriceDeltaData, oraclePriceDecimals, visualMultiplier, isSwap]);
 
   const low24 = useMemo(() => {
@@ -83,7 +83,7 @@ export function useChartHeaderFormattedValues() {
       value = value * visualMultiplier;
     }
 
-    return `$\u200a${numberWithCommas(value.toFixed(oraclePriceDecimals))}`;
+    return numberWithCommas(value.toFixed(oraclePriceDecimals), { showDollar: true });
   }, [dayPriceDeltaData, oraclePriceDecimals, visualMultiplier, isSwap]);
 
   const dayPriceDelta = useMemo(() => {

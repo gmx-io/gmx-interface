@@ -425,14 +425,14 @@ export function formatFactor(factor: bigint) {
   const factorDecimals = 30 - trailingZeroes;
   return formatAmount(factor, 30, factorDecimals);
 }
-export function numberWithCommas(x: BigNumberish) {
+export function numberWithCommas(x: BigNumberish, { showDollar = false }: { showDollar?: boolean } = {}) {
   if (x === undefined || x === null) {
     return "...";
   }
 
   const parts = x.toString().split(".");
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return parts.join(".");
+  return `${showDollar ? "$\u200a" : ""}${parts.join(".")}`;
 }
 
 export const formatAmount = (
