@@ -19,7 +19,6 @@ import {
 import { bigMath } from "utils/bigmath";
 import {
   capPositionImpactUsdByMaxImpactPool,
-  capPositionImpactUsdByMaxImpactPool,
   capPositionImpactUsdByMaxPriceImpactFactor,
   getPositionFee,
   getPriceImpactForPosition,
