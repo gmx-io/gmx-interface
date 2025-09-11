@@ -17,7 +17,14 @@ import {
   TriggerThresholdType,
 } from "types/trade";
 import { bigMath } from "utils/bigmath";
-import { getPositionFee, getPriceImpactForPosition, getTotalSwapVolumeFromSwapStats } from "utils/fees";
+import {
+  capPositionImpactUsdByMaxImpactPool,
+  capPositionImpactUsdByMaxImpactPool,
+  capPositionImpactUsdByMaxPriceImpactFactor,
+  getPositionFee,
+  getPriceImpactForPosition,
+  getTotalSwapVolumeFromSwapStats,
+} from "utils/fees";
 import { applyFactor } from "utils/numbers";
 import {
   getEntryPrice,
@@ -637,7 +644,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     userReferralInfo,
   });
 
-  const nextPendingImpactDeltaUsd =
+  let nextPendingImpactDeltaUsd =
     existingPosition?.pendingImpactUsd !== undefined
       ? existingPosition.pendingImpactUsd + positionPriceImpactDeltaUsd
       : positionPriceImpactDeltaUsd;
@@ -647,6 +654,16 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     marketInfo,
     sizeDeltaUsd,
   });
+
+  if (nextPendingImpactDeltaUsd > 0) {
+    nextPendingImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(
+      marketInfo,
+      sizeDeltaUsd,
+      nextPendingImpactDeltaUsd
+    );
+  }
+
+  nextPendingImpactDeltaUsd = capPositionImpactUsdByMaxImpactPool(marketInfo, nextPendingImpactDeltaUsd);
 
   return {
     nextSizeUsd,

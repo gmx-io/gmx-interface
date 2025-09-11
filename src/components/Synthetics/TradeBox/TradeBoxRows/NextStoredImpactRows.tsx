@@ -47,6 +47,14 @@ export function NextStoredImpactRows() {
         }
         valueClassName="numbers"
       />
+      {nextPositionValues?.potentialPriceImpactDiffUsd !== undefined &&
+        nextPositionValues?.potentialPriceImpactDiffUsd > 0n && (
+          <SyntheticsInfoRow
+            label={t`Est. Impact Rebate`}
+            value={formatDeltaUsd(nextPositionValues?.potentialPriceImpactDiffUsd)}
+            valueClassName="numbers text-green-500"
+          />
+        )}
     </>
   );
 }
