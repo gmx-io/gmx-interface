@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 
 import {
   selectTradeboxNextPositionValues,
@@ -7,7 +7,9 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatDeltaUsd } from "lib/numbers";
 
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 export function NextStoredImpactRows() {
@@ -17,7 +19,21 @@ export function NextStoredImpactRows() {
   return (
     <>
       <SyntheticsInfoRow
-        label={t`Stored Price Impact`}
+        label={
+          <TooltipWithPortal
+            handle={t`Stored Price Impact`}
+            content={
+              <Trans>
+                The price impact is not applied until the decrease action. These are the current estimated values at
+                increase.{" "}
+                <ExternalLink href="https://docs.gmx.io/docs/trading/v2#price-impact" newTab>
+                  Read more
+                </ExternalLink>
+                .
+              </Trans>
+            }
+          />
+        }
         value={
           nextPositionValues?.nextPendingImpactDeltaUsd !== undefined &&
           selectedPosition?.pendingImpactUsd !== undefined ? (
