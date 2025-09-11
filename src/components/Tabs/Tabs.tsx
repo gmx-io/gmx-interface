@@ -12,7 +12,7 @@ type Props<V extends BaseOptionValue> = {
   selectedValue: V | undefined;
   onChange?: (value: V) => void;
   size?: "l" | "m";
-  type?: "inline" | "block";
+  type?: "inline" | "block" | "inline-primary";
   className?: string;
   regularOptionClassname?: string;
   qa?: string;
@@ -44,7 +44,7 @@ export default function Tabs<V extends string | number>({
     >
       <div
         className={cx("flex w-full", {
-          "gap-8": type === "inline",
+          "gap-8": type === "inline" || type === "inline-primary",
         })}
       >
         {options.map((opt) =>

@@ -79,7 +79,7 @@ export default function ChartTokenSelector(props: Props) {
         "mr-24": oneRowLabels === false,
         "py-0 md:h-40": isSwap,
       })}
-      desktopPanelClassName={cx("max-w-[100vw]", { "w-[520px]": isSwap, "w-[880px]": !isSwap })}
+      desktopPanelClassName={cx("max-w-[100vw] shadow-md", { "w-[520px]": isSwap, "w-[880px]": !isSwap })}
       chevronClassName="hidden"
       label={
         <Button variant="secondary">
@@ -98,8 +98,8 @@ export default function ChartTokenSelector(props: Props) {
 
               <TokenIcon symbol={selectedToken.symbol} displaySize={isMobile ? 32 : 20} importSize={40} />
               <span
-                className={cx("flex justify-start", {
-                  "flex-col": !oneRowLabels && !isSwap,
+                className={cx("flex items-baseline justify-start leading-base", {
+                  "flex-col gap-2": !oneRowLabels && !isSwap,
                   "flex-row": oneRowLabels || isSwap,
                 })}
               >
@@ -109,8 +109,8 @@ export default function ChartTokenSelector(props: Props) {
                 </span>
                 {poolName && (
                   <span
-                    className={cx("text-body-small mt-1 font-normal text-typography-secondary", {
-                      "ml-8": oneRowLabels,
+                    className={cx("text-12 font-normal text-typography-secondary", {
+                      "ml-4": oneRowLabels,
                     })}
                   >
                     <span>[{poolName}]</span>

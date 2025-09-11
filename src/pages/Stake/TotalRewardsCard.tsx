@@ -15,7 +15,7 @@ import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts/contractFetcher";
 import { PLACEHOLDER_ACCOUNT, ProcessedData } from "lib/legacy";
-import { formatAmount, formatKeyAmount } from "lib/numbers";
+import { formatAmount, formatUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
@@ -241,9 +241,7 @@ export function TotalRewardsCard({
               <Trans>Total</Trans>
             </div>
             <div>
-              <span className="numbers">
-                ${formatKeyAmount(processedData, "totalRewardsUsd", USD_DECIMALS, 2, true)}
-              </span>
+              <span className="numbers">{formatUsd(processedData?.totalRewardsUsd)}</span>
             </div>
           </div>
           <div className="App-card-footer">

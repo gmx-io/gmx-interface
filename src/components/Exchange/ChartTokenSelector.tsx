@@ -185,7 +185,8 @@ export default function ChartTokenSelector(props: Props) {
                                 }
                               }}
                             >
-                              ${formatAmount(isSwap ? option.maxInUsd : option.maxAvailableLong, USD_DECIMALS, 0, true)}
+                              ${"\u200a"}
+                              {formatAmount(isSwap ? option.maxInUsd : option.maxAvailableLong, USD_DECIMALS, 0, true)}
                             </td>
                             <td
                               onClick={() => {
