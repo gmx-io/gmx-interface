@@ -5855,6 +5855,10 @@ msgstr "Valor Neto: Garantía Inicial + PnL - Comisión de Préstamo - Comisión
 msgid "30d"
 msgstr "30d"
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
+msgid "Est. Impact Rebate"
+msgstr ""
+
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
 msgstr "Reclamar Recompensas de Vault de Afiliado"

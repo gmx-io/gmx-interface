@@ -5855,6 +5855,10 @@ msgstr "Valeur nette : Collatéral initial + PnL - Frais d'emprunt - Frais de cl
 msgid "30d"
 msgstr "30j"
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
+msgid "Est. Impact Rebate"
+msgstr ""
+
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
 msgstr "Réclamer les récompenses du vault de parrainage"

@@ -5855,6 +5855,10 @@ msgstr "净值：初始抵押品 + PnL - 借贷费 - 平仓费"
 msgid "30d"
 msgstr "30 天"
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
+msgid "Est. Impact Rebate"
+msgstr ""
+
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
 msgstr "领取附属金库奖励"

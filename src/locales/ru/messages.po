@@ -5855,6 +5855,10 @@ msgstr "Чистая стоимость: Начальный залог + PnL - �
 msgid "30d"
 msgstr "30д"
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
+msgid "Est. Impact Rebate"
+msgstr ""
+
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
 msgstr "Запросить вознаграждения аффилиатского хранилища"

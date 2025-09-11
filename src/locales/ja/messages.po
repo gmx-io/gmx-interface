@@ -5855,6 +5855,10 @@ msgstr "純価値: 初期担保 + PnL - 借入手数料 - クローズ手数料"
 msgid "30d"
 msgstr "30日"
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
+msgid "Est. Impact Rebate"
+msgstr ""
+
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
 msgstr "アフィリエイトボールト報酬を請求"
