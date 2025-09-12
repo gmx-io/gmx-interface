@@ -166,61 +166,67 @@ export function GmList({
             {isLoading && <Loader />}
           </div>
         ) : (
-          <TableScrollFadeContainer className="flex grow flex-col p-8 pt-0">
-            <table className="w-[max(100%,1000px)]">
-              <thead>
-                <TableTheadTr>
-                  <TableTh className="pl-16">
-                    <Trans>POOL</Trans>
-                  </TableTh>
-                  <TableTh>
-                    <Sorter {...getSorterProps("totalSupply")}>
-                      <Trans>TVL (SUPPLY)</Trans>
-                    </Sorter>
-                  </TableTh>
-                  <TableTh>
-                    <Sorter {...getSorterProps("wallet")}>
-                      <GmTokensTotalBalanceInfo
-                        balance={userTotalGmInfo?.balance}
-                        balanceUsd={userTotalGmInfo?.balanceUsd}
-                        userEarnings={userEarnings}
-                        label={t`WALLET`}
+          <div className="flex grow flex-col p-8 pt-0">
+            <TableScrollFadeContainer className="flex grow flex-col">
+              <table className="w-[max(100%,1000px)]">
+                <thead>
+                  <TableTheadTr>
+                    <TableTh className="pl-16">
+                      <Trans>POOL</Trans>
+                    </TableTh>
+                    <TableTh>
+                      <Sorter {...getSorterProps("totalSupply")}>
+                        <Trans>TVL (SUPPLY)</Trans>
+                      </Sorter>
+                    </TableTh>
+                    <TableTh>
+                      <Sorter {...getSorterProps("wallet")}>
+                        <GmTokensTotalBalanceInfo
+                          balance={userTotalGmInfo?.balance}
+                          balanceUsd={userTotalGmInfo?.balanceUsd}
+                          userEarnings={userEarnings}
+                          label={t`WALLET`}
+                        />
+                      </Sorter>
+                    </TableTh>
+                    <TableTh>
+                      <Sorter {...getSorterProps("apy")}>
+                        <FeeApyLabel upperCase variant="iconStroke" />
+                      </Sorter>
+                    </TableTh>
+                    <TableTh>
+                      <Sorter {...getSorterProps("performance")}>
+                        <PerformanceLabel upperCase variant="iconStroke" />
+                      </Sorter>
+                    </TableTh>
+                    <TableTh>
+                      <TooltipWithPortal
+                        handle={t`SNAPSHOT`}
+                        className="normal-case"
+                        position="bottom-end"
+                        content={<Trans>Graph showing performance vs benchmark over the selected period.</Trans>}
+                        variant="iconStroke"
                       />
-                    </Sorter>
-                  </TableTh>
-                  <TableTh>
-                    <Sorter {...getSorterProps("apy")}>
-                      <FeeApyLabel upperCase variant="iconStroke" />
-                    </Sorter>
-                  </TableTh>
-                  <TableTh>
-                    <Sorter {...getSorterProps("performance")}>
-                      <PerformanceLabel upperCase variant="iconStroke" />
-                    </Sorter>
-                  </TableTh>
-                  <TableTh>
-                    <TooltipWithPortal
-                      handle={t`SNAPSHOT`}
-                      className="normal-case"
-                      position="bottom-end"
-                      content={<Trans>Graph showing performance vs benchmark over the selected period.</Trans>}
-                      variant="iconStroke"
-                    />
-                  </TableTh>
-                  <TableTh className="pr-16" />
-                </TableTheadTr>
-              </thead>
-              <tbody>
-                {rows}
+                    </TableTh>
+                    <TableTh className="pr-16" />
+                  </TableTheadTr>
+                </thead>
+                <tbody>
+                  {rows}
 
-                {isLoading && <GMListSkeleton />}
-              </tbody>
-            </table>
+                  {isLoading && <GMListSkeleton />}
+                </tbody>
+              </table>
 
-            {!currentData.length && !isLoading && (
-              <EmptyTableContent emptyText={t`No pools matched`} isLoading={isLoading} isEmpty={!currentData.length} />
-            )}
-          </TableScrollFadeContainer>
+              {!currentData.length && !isLoading && (
+                <EmptyTableContent
+                  emptyText={t`No pools matched`}
+                  isLoading={isLoading}
+                  isEmpty={!currentData.length}
+                />
+              )}
+            </TableScrollFadeContainer>
+          </div>
         )}
       </div>
     </PoolsCard>

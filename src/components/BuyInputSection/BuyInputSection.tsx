@@ -30,6 +30,7 @@ type Props = {
   onPercentChange?: (percentage: number) => void;
   qa?: string;
   isDisabled?: boolean;
+  className?: string;
 };
 
 function getMaxButtonPosition({
@@ -74,6 +75,7 @@ export default function BuyInputSection(props: Props) {
     onPercentChange,
     qa,
     isDisabled = false,
+    className,
   } = props;
   const [isPercentSelectorVisible, setIsPercentSelectorVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -152,7 +154,8 @@ export default function BuyInputSection(props: Props) {
           {
             "bg-slate-900": isDisabled,
             "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300": !isDisabled,
-          }
+          },
+          className
         )}
         onClick={handleBoxClick}
       >
