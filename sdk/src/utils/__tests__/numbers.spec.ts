@@ -360,6 +360,8 @@ describe("formatBalanceAmount", () => {
     expect(formatBalanceAmount(ONE_USD / 100_000_000n, USD_DECIMALS, undefined, { isStable: true })).toBe(  "0.00000001");
     expect(formatBalanceAmount(ONE_USD / 1_000_000_000n, USD_DECIMALS, undefined, { isStable: true })).toBe("1.00e-9");
     expect(formatBalanceAmount(0n, USD_DECIMALS, undefined, { isStable: true, showZero: true })).toBe(      "0.00");
+    expect(formatBalanceAmount(ONE_USD, USD_DECIMALS, undefined, { isStable: true, signed: true })).toBe(  "+1.00");
+    expect(formatBalanceAmount(-ONE_USD, USD_DECIMALS, undefined, { isStable: true, signed: true })).toBe( "-1.00");
     expect(formatBalanceAmount(0n, USD_DECIMALS, undefined, { isStable: true, showZero: false })).toBe(     "-");
   });
 });

@@ -99,6 +99,8 @@ export function mockPositionInfo(
     pendingClaimableFundingFeesUsd: 0n,
     positionFeeAmount: 0n,
     traderDiscountAmount: 0n,
+    pendingImpactUsd: 0n,
+    closePriceImpactDeltaUsd: 0n,
     uiFeeAmount: 0n,
     ...overrides,
   };

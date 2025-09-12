@@ -6,13 +6,12 @@ import { zeroAddress } from "viem";
 
 import { ARBITRUM, getConstant } from "config/chains";
 import { getContract } from "config/contracts";
-import { USD_DECIMALS } from "config/factors";
 import { getIcons } from "config/icons";
 import { useGmxPrice } from "domain/legacy";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { ProcessedData } from "lib/legacy";
-import { expandDecimals, formatAmount } from "lib/numbers";
+import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -88,7 +87,7 @@ export function EscrowedGmxCard({
             <Trans>Price</Trans>
           </div>
           <div>
-            <span className="numbers">${formatAmount(gmxPrice, USD_DECIMALS, 2, true)}</span>
+            <span className="numbers">{formatUsd(gmxPrice)}</span>
           </div>
         </div>
         <div className="App-card-row">

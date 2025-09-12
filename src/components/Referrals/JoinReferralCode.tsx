@@ -1,6 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { Contract, Wallet } from "ethers";
+import { Contract } from "ethers";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
 import { encodeFunctionData, zeroAddress } from "viem";
@@ -12,6 +12,7 @@ import {
   getMappedTokenId,
   isSettlementChain,
   IStargateAbi,
+  RANDOM_WALLET,
 } from "config/multichain";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
@@ -253,7 +254,7 @@ function ReferralCodeFormMultichain({
       return;
     }
 
-    return new Wallet("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80", signer?.provider);
+    return RANDOM_WALLET.connect(signer?.provider);
   }, [signer?.provider]);
 
   const globalExpressParams = useSelector(selectExpressGlobalParams);

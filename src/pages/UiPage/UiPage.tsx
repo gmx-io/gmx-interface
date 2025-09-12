@@ -1,6 +1,7 @@
 import camelCase from "lodash/camelCase";
 import mapKeys from "lodash/mapKeys";
 import upperFirst from "lodash/upperFirst";
+import { memo, SVGProps, useState } from "react";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { colors } from "config/colors";
@@ -11,12 +12,13 @@ import { TokenCategory } from "sdk/types/tokens";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import SearchInput from "components/SearchInput/SearchInput";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
 const iconsContext = mapKeys(
   import.meta.glob("img/ic_*.svg", {
-    query: "?url",
+    query: "?react",
     import: "default",
     eager: true,
   }),
@@ -37,9 +39,16 @@ const icons = Object.keys(iconsContext).map((rawPath) => {
     name: name,
     importUrl: `import ${name} from "${rawPath}";`,
     importSvg: `import ${componentName} from "${rawPath}";`,
-    src: iconsContext[rawPath],
+    component: iconsContext[rawPath],
   };
-}) as { src: string; name: string; path: string; importUrl: string; importSvg: string }[];
+}) as {
+  component: React.ComponentType<SVGProps<SVGSVGElement>>;
+  name: string;
+  path: string;
+  importUrl: string;
+  importSvg: string;
+}[];
+// console.log({ icons });
 
 const otherImagesContext = mapKeys(
   import.meta.glob("img/**/*.{png,jpg,jpeg,gif,svg}", {
@@ -51,7 +60,7 @@ const otherImagesContext = mapKeys(
 );
 
 const otherImages = Object.keys(otherImagesContext)
-  .filter((key) => !key.includes("/ic_"))
+  .filter((key) => !/\bic_/.test(key))
   .map((key) => {
     let name = camelCase(key.match(/img\/(.+)\.(png|jpg|jpeg|gif|svg)$/)?.[1]) + "Image";
 
@@ -67,13 +76,17 @@ const otherImages = Object.keys(otherImagesContext)
     };
   }) as { src: string; name: string; path: string; importUrl: string }[];
 
+function isColor(obj: any): obj is { light: string; dark: string } {
+  return obj && typeof obj === "object" && "light" in obj && "dark" in obj;
+}
+
 function flattenColors(obj: ColorTree, prefix = ""): Array<{ name: string; light: string; dark: string }> {
   const result: Array<{ name: string; light: string; dark: string }> = [];
 
   Object.entries(obj).forEach(([key, value]) => {
     const name = prefix ? `${prefix}-${key}` : key;
 
-    if (value && typeof value === "object" && "light" in value && "dark" in value) {
+    if (isColor(value)) {
       result.push({ name, light: value.light as string, dark: value.dark as string });
     } else if (value && typeof value === "object") {
       result.push(...flattenColors(value as ColorTree, name));
@@ -83,9 +96,8 @@ function flattenColors(obj: ColorTree, prefix = ""): Array<{ name: string; light
   return result;
 }
 
-export default function UiPage() {
+export default memo(function UiPage() {
   const { theme } = useTheme();
-  const allColors = flattenColors(colors);
   return (
     <AppPageLayout>
       <main className="mx-auto max-w-prose p-20">
@@ -95,28 +107,21 @@ export default function UiPage() {
 
         <h2 className="mb-16 mt-24 text-24 font-medium">Fill colors</h2>
         <div className="overflow-auto">
-          <div className="flex flex-wrap gap-4">
-            {allColors.map(({ name, light, dark }) => {
-              const displayValue = theme === "dark" ? dark : light;
-              // eslint-disable-next-line
-              const bgStyle = { backgroundColor: displayValue };
+          {Object.entries(colors).map(([key, value]) => {
+            const colors = isColor(value) ? flattenColors({ [key]: value }) : flattenColors(value, key);
 
-              return (
-                <div key={name} className="flex flex-col items-center break-words text-11" title={name}>
-                  <div className="flex size-64 flex-col items-center justify-center" style={bgStyle}>
-                    <span className="w-full overflow-hidden text-ellipsis px-2 text-center font-medium text-typography-primary mix-blend-difference">
-                      {name}
-                    </span>
-                    <span className="mt-1 max-w-64 truncate text-center text-typography-primary mix-blend-difference">
-                      {displayValue}
-                    </span>
+            return (
+              <div key={key} className="flex">
+                {colors.map((color) => (
+                  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+                  <div key={color.name} className="h-[100px] basis-full" style={{ backgroundColor: color[theme] }}>
+                    <span>{color.name}</span>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                ))}
+              </div>
+            );
+          })}
         </div>
-
         <h2 className="mb-16 mt-24 text-24 font-medium">Text colors</h2>
 
         <div className="flex flex-wrap gap-16">
@@ -227,69 +232,106 @@ export default function UiPage() {
             </div>
           ))}
         </div>
-
-        <h2 className="mb-16 mt-24 text-24 font-medium">Icons</h2>
-        <style>{`.ImageTooltip .Tooltip-popup {max-width: unset !important;}`}</style>
-        <div className="relative left-1/2 flex w-screen -translate-x-1/2 flex-wrap items-center gap-16 px-20">
-          {icons.map((icon) => (
-            <Tooltip
-              key={icon.src}
-              variant="none"
-              as={"div"}
-              className="ImageTooltip"
-              closeDelay={500}
-              content={
-                <div>
-                  <pre>
-                    <code>
-                      Name: {icon.name}
-                      <br />
-                      Path: {icon.path}
-                      <br />
-                      Import URL: {icon.importUrl}
-                      <br />
-                      Import SVG: {icon.importSvg}
-                    </code>
-                  </pre>
-                </div>
-              }
-            >
-              <img className="max-w-[50px]" src={icon.src} />
-            </Tooltip>
-          ))}
-        </div>
-
-        <h2 className="mb-16 mt-24 text-24 font-medium">Images</h2>
-
-        <div className="relative left-1/2 flex w-screen -translate-x-1/2 flex-wrap items-center gap-16 px-20">
-          {otherImages.map((src) => (
-            <Tooltip
-              key={src.src}
-              variant="none"
-              as={"div"}
-              className="ImageTooltip"
-              closeDelay={500}
-              content={
-                <div>
-                  <pre>
-                    <code>
-                      Name: {src.name}
-                      <br />
-                      Path: {src.path}
-                      <br />
-                      Import URL: {src.importUrl}
-                    </code>
-                  </pre>
-                </div>
-              }
-            >
-              <img className="max-w-[100px]" src={src.src} />
-            </Tooltip>
-          ))}
-        </div>
-
-        <div className="h-50"></div>
       </main>
+
+      <IconsAndImages />
     </AppPageLayout>
+  );
+});
+
+function IconsAndImages() {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredIcons = icons.filter(
+    (icon) =>
+      icon.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      icon.path.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredImages = otherImages.filter(
+    (image) =>
+      image.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      image.path.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <>
+      <div className="mx-auto max-w-prose p-20">
+        <h2 className="mb-16 mt-24 text-24 font-medium">Icons & Images</h2>
+      </div>
+
+      <div className="mb-16 px-20">
+        <SearchInput
+          placeholder="Search icons and images..."
+          value={searchTerm}
+          setValue={setSearchTerm}
+          className="w-full"
+          autoFocus={false}
+        />
+      </div>
+
+      <h3 className="mb-16 px-20 text-20 font-medium">Icons ({filteredIcons.length})</h3>
+      <style>{`.ImageTooltip .Tooltip-popup {max-width: unset !important;}`}</style>
+      <div className="relative flex flex-wrap items-center gap-16 px-20">
+        {filteredIcons.map((icon) => (
+          <Tooltip
+            key={icon.name}
+            variant="none"
+            as={"div"}
+            className="ImageTooltip"
+            closeDelay={500}
+            content={
+              <div>
+                <pre>
+                  <code>
+                    Name: {icon.name}
+                    <br />
+                    Path: {icon.path}
+                    <br />
+                    Import URL: {icon.importUrl}
+                    <br />
+                    Import SVG: {icon.importSvg}
+                  </code>
+                </pre>
+              </div>
+            }
+          >
+            <div className="max-w-[50px] border-1/2 border-black dark:border-white">
+              <icon.component className="h-full w-full" />
+            </div>
+          </Tooltip>
+        ))}
+      </div>
+
+      <h3 className="mb-16 mt-24 px-20 text-20 font-medium">Images ({filteredImages.length})</h3>
+      <div className="relative flex flex-wrap items-center gap-16 px-20">
+        {filteredImages.map((src) => (
+          <Tooltip
+            key={src.src}
+            variant="none"
+            as={"div"}
+            className="ImageTooltip"
+            closeDelay={500}
+            content={
+              <div>
+                <pre>
+                  <code>
+                    Name: {src.name}
+                    <br />
+                    Path: {src.path}
+                    <br />
+                    Import URL: {src.importUrl}
+                  </code>
+                </pre>
+              </div>
+            }
+          >
+            <img className="max-w-[100px]" src={src.src} />
+          </Tooltip>
+        ))}
+      </div>
+
+      <div className="h-50"></div>
+    </>
   );
 }

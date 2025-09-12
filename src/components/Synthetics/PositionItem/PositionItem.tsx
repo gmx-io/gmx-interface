@@ -67,7 +67,7 @@ export type Props = {
 };
 
 export function PositionItem(p: Props) {
-  const { showDebugValues } = useSettings();
+  const { showDebugValues, breakdownNetPriceImpactEnabled } = useSettings();
   const savedShowPnlAfterFees = useSelector(selectShowPnlAfterFees);
   const displayedPnl = savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
   const displayedPnlPercentage = savedShowPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
@@ -121,12 +121,35 @@ export function PositionItem(p: Props) {
                 "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
               })}
             />
-            <StatsTooltipRow
-              label={t`Net Price Impact`}
-              value={formatDeltaUsd(p.position.netPriceImapctDeltaUsd) || "..."}
-              showDollar={false}
-              textClassName={getPositiveOrNegativeClass(p.position.netPriceImapctDeltaUsd)}
-            />
+            {breakdownNetPriceImpactEnabled ? (
+              <>
+                <StatsTooltipRow
+                  label={t`Stored Price Impact`}
+                  value={formatDeltaUsd(p.position.pendingImpactUsd) || "..."}
+                  showDollar={false}
+                  textClassName={getPositiveOrNegativeClass(p.position.pendingImpactUsd)}
+                />
+                <StatsTooltipRow
+                  label={t`Close Price Impact`}
+                  value={formatDeltaUsd(p.position.closePriceImpactDeltaUsd) || "..."}
+                  showDollar={false}
+                  textClassName={getPositiveOrNegativeClass(p.position.closePriceImpactDeltaUsd)}
+                />
+                <StatsTooltipRow
+                  label={t`Net Price Impact`}
+                  value={formatDeltaUsd(p.position.netPriceImapctDeltaUsd) || "..."}
+                  showDollar={false}
+                  textClassName={getPositiveOrNegativeClass(p.position.netPriceImapctDeltaUsd)}
+                />
+              </>
+            ) : (
+              <StatsTooltipRow
+                label={t`Net Price Impact`}
+                value={formatDeltaUsd(p.position.netPriceImapctDeltaUsd) || "..."}
+                showDollar={false}
+                textClassName={getPositiveOrNegativeClass(p.position.netPriceImapctDeltaUsd)}
+              />
+            )}
 
             {p.position.priceImpactDiffUsd !== 0n && (
               <StatsTooltipRow
@@ -849,7 +872,7 @@ function PositionItemOrder({
   return (
     <div key={order.key}>
       <div className="flex items-start justify-between gap-6">
-        <Button variant="secondary" className="w-full" onClick={handleOrdersClick}>
+        <Button variant="secondary" className="w-full !justify-start !pl-12" onClick={handleOrdersClick}>
           <div className="flex items-center justify-between">
             <PositionItemOrderText order={order} />
             <FaChevronRight fontSize={14} className="ml-4" />

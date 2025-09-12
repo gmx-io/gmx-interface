@@ -43,12 +43,12 @@ function LineSpan({ span }: { span: TooltipString }) {
   }
 
   if (typeof span === "string") {
-    return <span className="numbers">{span}</span>;
+    return span;
   }
 
   return (
     <span
-      className={cx("numbers", {
+      className={cx({
         "text-red-500": span.state === "error",
         "text-green-500": span.state === "success",
         muted: span.state === "muted",

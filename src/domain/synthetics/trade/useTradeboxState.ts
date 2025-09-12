@@ -6,6 +6,8 @@ import mapValues from "lodash/mapValues";
 import set from "lodash/set";
 import values from "lodash/values";
 import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
+import { useHistory } from "react-router-dom";
+import { useLatest } from "react-use";
 
 import { ContractsChainId, SourceChainId } from "config/chains";
 import { getKeepLeverageKey, getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
@@ -98,6 +100,10 @@ export function useTradeboxState(
     srcChainId: SourceChainId | undefined;
   }
 ) {
+  const history = useHistory();
+  const latestHistory = useLatest(history);
+  const latestEnabled = useLatest(enabled);
+
   const { marketsInfoData, marketsData, tokensData, positionsInfoData, ordersInfoData, srcChainId } = p;
 
   const availableTokensOptions = useAvailableTokenOptions(chainId, {
@@ -150,10 +156,13 @@ export function useTradeboxState(
 
         localStorage.setItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)), JSON.stringify(newState));
 
+        if (latestEnabled.current && newState.tradeType !== oldState.tradeType) {
+          latestHistory.current.replace(`/trade/${newState.tradeType.toLowerCase()}`);
+        }
         return newState;
       });
     },
-    [chainId]
+    [chainId, latestEnabled, latestHistory]
   );
 
   const { savedAllowedSlippage, savedTwapNumberOfParts, expressOrdersEnabled } = useSettings();
@@ -405,64 +414,12 @@ export function useTradeboxState(
   }, [setStoredOptions]);
 
   const isSwitchTokensAllowed = useMemo(() => {
-    if (!enabled) {
+    if (!enabled || storedOptions.tradeType !== TradeType.Swap) {
       return false;
     }
 
-    if (storedOptions.tradeType === TradeType.Swap) {
-      return true;
-    }
-
-    const desirablePayAddress = storedOptions.tokens.indexTokenAddress;
-    const desirableToAddress = storedOptions.tokens.fromTokenAddress;
-
-    let swappedOptionsWithFallback;
-
-    try {
-      swappedOptionsWithFallback = fallbackPositionTokens({
-        chainId,
-        srcChainId,
-        prevState: storedOptions,
-        nextState: {
-          ...storedOptions,
-          tokens: {
-            ...storedOptions.tokens,
-            fromTokenAddress: desirablePayAddress,
-            indexTokenAddress: desirableToAddress,
-          },
-        },
-        allowedPayTokens: availableSwapTokenAddresses,
-        allowedMarkets: availableTokensOptions.sortedAllMarkets,
-      });
-    } catch (e) {
-      /**
-       * This fallback made in attempt to prevent crushes for those users who already have invalid stored options.
-       * @see https://app.asana.com/0/1207525044994982/1207972476109456
-       */
-      setStoredOptionsOnChain(INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE);
-      return false;
-    }
-
-    const nextPayAddress = swappedOptionsWithFallback.tokens.fromTokenAddress;
-    const nextToAddress = swappedOptionsWithFallback.tokens.indexTokenAddress;
-
-    if (!desirablePayAddress || !nextPayAddress || !desirableToAddress || !nextToAddress) {
-      return false;
-    }
-
-    return (
-      isSimilarToken(getToken(chainId, desirablePayAddress), getToken(chainId, nextPayAddress)) ||
-      isSimilarToken(getToken(chainId, desirableToAddress), getToken(chainId, nextToAddress))
-    );
-  }, [
-    enabled,
-    storedOptions,
-    chainId,
-    srcChainId,
-    availableSwapTokenAddresses,
-    availableTokensOptions.sortedAllMarkets,
-    setStoredOptionsOnChain,
-  ]);
+    return true;
+  }, [enabled, storedOptions]);
 
   const setMarketAddress = useCallback(
     (marketAddress?: string) => {

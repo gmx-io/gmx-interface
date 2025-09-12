@@ -102,7 +102,6 @@ export function GmxCard({
                   </div>
                   <div>
                     <div className="text-body-medium font-medium">GMX</div>
-                    <div className="text-body-small text-typography-secondary">GMX</div>
                   </div>
                 </div>
                 <div className="h-32">

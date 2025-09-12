@@ -2,7 +2,6 @@ import cx from "classnames";
 import { type Address } from "viem";
 
 import { CHAIN_NAMES_MAP, CONTRACTS_CHAIN_IDS } from "config/chains";
-import { getIsV1Supported } from "config/features";
 import { getIcon } from "config/icons";
 
 import Button from "components/Button/Button";
@@ -40,27 +39,7 @@ function Options({ account, chainId, version }: { account?: Address; chainId: nu
               src={getIcon(supportedChainId, "network")}
               alt={CHAIN_NAMES_MAP[supportedChainId]}
             />
-            V2 {CHAIN_NAMES_MAP[supportedChainId]}
-          </Button>
-        );
-      })}
-      {CONTRACTS_CHAIN_IDS.filter(getIsV1Supported).map((supportedChainId) => {
-        const isActive = supportedChainId === chainId && version === 1;
-        return (
-          <Button
-            variant="ghost"
-            to={buildAccountDashboardUrl(account, supportedChainId, 1)}
-            key={supportedChainId}
-            className={cx("flex !min-h-32 items-center gap-4", {
-              "!bg-button-secondary !text-typography-primary": isActive,
-            })}
-          >
-            <img
-              className="inline-block h-16"
-              src={getIcon(supportedChainId, "network")}
-              alt={CHAIN_NAMES_MAP[supportedChainId]}
-            />
-            V1 {CHAIN_NAMES_MAP[supportedChainId]}
+            {CHAIN_NAMES_MAP[supportedChainId]}
           </Button>
         );
       })}

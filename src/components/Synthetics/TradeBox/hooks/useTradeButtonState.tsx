@@ -643,6 +643,7 @@ export function useDetectAndSetAvailableMaxLeverage({
           showPnlInLeverage: false,
           sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
           sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+          positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
           userReferralInfo,
         });
 
