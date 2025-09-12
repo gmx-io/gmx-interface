@@ -1674,7 +1674,8 @@ export default function SwapBox(props) {
                 <div className="align-right">
                   {hasExistingPosition && toAmount !== undefined && toAmount > 0 && (
                     <div className="muted inline-block">
-                      ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
+                      ${"\u200a"}
+                      {formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                       <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                   )}
@@ -1690,7 +1691,8 @@ export default function SwapBox(props) {
                 <div className="align-right">
                   {hasExistingPosition && toAmount !== undefined && toAmount > 0 && (
                     <div className="muted inline-block">
-                      ${formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
+                      ${"\u200a"}
+                      {formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                       <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                   )}
@@ -1752,7 +1754,8 @@ export default function SwapBox(props) {
                 <Trans>{fromToken.symbol} Price</Trans>
               </div>
               <div className="align-right">
-                ${fromTokenInfo && formatAmount(fromTokenInfo.minPrice, USD_DECIMALS, 2, true)}
+                ${"\u200a"}
+                {fromTokenInfo && formatAmount(fromTokenInfo.minPrice, USD_DECIMALS, 2, true)}
               </div>
             </div>
             <div className="Exchange-info-row">

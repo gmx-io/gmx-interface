@@ -711,63 +711,69 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
         <div className="flex flex-col rounded-b-8 bg-slate-900">
           <div className="flex flex-col gap-12 p-12">
             <div className={cx("flex gap-4", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
-              <BuyInputSection
-                topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
-                bottomLeftValue={formatUsd(firstTokenUsd ?? 0n)}
-                bottomRightLabel={t`Balance`}
-                bottomRightValue={
-                  firstToken && firstToken.balance !== undefined
-                    ? formatBalanceAmount(firstToken.balance, firstToken.decimals, undefined, {
-                        isStable: firstToken.isStable,
-                      })
-                    : undefined
-                }
-                onClickTopRightLabel={isDeposit ? onMaxClickFirstToken : undefined}
-                inputValue={firstTokenInputValue}
-                onInputValueChange={handleFirstTokenInputValueChange}
-                onClickMax={firstTokenShowMaxButton ? onMaxClickFirstToken : undefined}
-              >
-                {firstTokenAddress && isSingle && isDeposit && tokenOptions.length > 1 ? (
-                  <TokenSelector
-                    label={isDeposit ? t`Pay` : t`Receive`}
-                    chainId={chainId}
-                    tokenInfo={viewTokenInfo}
-                    showTokenName={showTokenName}
-                    tokenAddress={firstTokenAddress}
-                    onSelectToken={firstTokenSelectToken}
-                    tokens={tokenOptions}
-                    infoTokens={infoTokens}
-                    showSymbolImage={true}
-                    showTokenImgInDropdown={true}
-                    marketsInfoData={marketsInfoData}
-                  />
-                ) : (
-                  firstTokenPlaceholder
-                )}
-              </BuyInputSection>
-
-              {isPair && secondTokenAddress && (
+              <div>
                 <BuyInputSection
                   topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
-                  bottomLeftValue={formatUsd(secondTokenUsd ?? 0n)}
+                  bottomLeftValue={formatUsd(firstTokenUsd ?? 0n)}
                   bottomRightLabel={t`Balance`}
                   bottomRightValue={
-                    secondToken && secondToken.balance !== undefined
-                      ? formatBalanceAmount(secondToken.balance, secondToken.decimals, undefined, {
-                          isStable: secondToken.isStable,
+                    firstToken && firstToken.balance !== undefined
+                      ? formatBalanceAmount(firstToken.balance, firstToken.decimals, undefined, {
+                          isStable: firstToken.isStable,
                         })
                       : undefined
                   }
-                  inputValue={secondTokenInputValue}
-                  onInputValueChange={secondTokenInputValueChange}
-                  onClickTopRightLabel={onMaxClickSecondToken}
-                  onClickMax={secondTokenShowMaxButton ? onMaxClickSecondToken : undefined}
+                  onClickTopRightLabel={isDeposit ? onMaxClickFirstToken : undefined}
+                  inputValue={firstTokenInputValue}
+                  onInputValueChange={handleFirstTokenInputValueChange}
+                  onClickMax={firstTokenShowMaxButton ? onMaxClickFirstToken : undefined}
+                  className={isPair ? "rounded-b-0" : undefined}
                 >
-                  <div className="selected-token">
-                    <TokenWithIcon symbol={secondToken?.symbol} displaySize={20} />
-                  </div>
+                  {firstTokenAddress && isSingle && isDeposit && tokenOptions.length > 1 ? (
+                    <TokenSelector
+                      label={isDeposit ? t`Pay` : t`Receive`}
+                      chainId={chainId}
+                      tokenInfo={viewTokenInfo}
+                      showTokenName={showTokenName}
+                      tokenAddress={firstTokenAddress}
+                      onSelectToken={firstTokenSelectToken}
+                      tokens={tokenOptions}
+                      infoTokens={infoTokens}
+                      showSymbolImage={true}
+                      showTokenImgInDropdown={true}
+                      marketsInfoData={marketsInfoData}
+                    />
+                  ) : (
+                    firstTokenPlaceholder
+                  )}
                 </BuyInputSection>
-              )}
+
+                {isPair && secondTokenAddress && (
+                  <div className="border-t-1/2 border-slate-600">
+                    <BuyInputSection
+                      topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
+                      bottomLeftValue={formatUsd(secondTokenUsd ?? 0n)}
+                      bottomRightLabel={t`Balance`}
+                      bottomRightValue={
+                        secondToken && secondToken.balance !== undefined
+                          ? formatBalanceAmount(secondToken.balance, secondToken.decimals, undefined, {
+                              isStable: secondToken.isStable,
+                            })
+                          : undefined
+                      }
+                      inputValue={secondTokenInputValue}
+                      onInputValueChange={secondTokenInputValueChange}
+                      onClickTopRightLabel={onMaxClickSecondToken}
+                      onClickMax={secondTokenShowMaxButton ? onMaxClickSecondToken : undefined}
+                      className={isPair ? "rounded-t-0" : undefined}
+                    >
+                      <div className="selected-token">
+                        <TokenWithIcon symbol={secondToken?.symbol} displaySize={20} />
+                      </div>
+                    </BuyInputSection>
+                  </div>
+                )}
+              </div>
 
               <div className={cx("flex", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
                 <BuyInputSection

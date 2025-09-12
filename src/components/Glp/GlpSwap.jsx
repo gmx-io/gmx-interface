@@ -887,7 +887,10 @@ export default function GlpSwap(props) {
               <div className="label">
                 <Trans>Price</Trans>
               </div>
-              <div className="value">${formatAmount(glpPrice, USD_DECIMALS, GLP_PRICE_DECIMALS, true)}</div>
+              <div className="value">
+                ${"\u200a"}
+                {formatAmount(glpPrice, USD_DECIMALS, GLP_PRICE_DECIMALS, true)}
+              </div>
             </div>
             <div className="App-card-row">
               <div className="label">

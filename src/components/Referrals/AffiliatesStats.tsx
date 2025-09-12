@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { BiCopy } from "react-icons/bi";
-import { FiPlus, FiTwitter } from "react-icons/fi";
+import { FiPlus } from "react-icons/fi";
 import { IoWarningOutline } from "react-icons/io5";
 import { useCopyToClipboard } from "react-use";
 
@@ -15,7 +14,7 @@ import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { formatDate } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { shortenAddress } from "lib/legacy";
-import { formatBalanceAmount } from "lib/numbers";
+import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
 import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
@@ -29,6 +28,9 @@ import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table"
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tooltip from "components/Tooltip/Tooltip";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
+
+import CopyIcon from "img/ic_copy_20.svg?react";
+import TwitterIcon from "img/ic_x.svg?react";
 
 import { AffiliateCodeForm } from "./AddAffiliateCode";
 import { ClaimAffiliatesModal } from "./ClaimAffiliatesModal/ClaimAffiliatesModal";
@@ -165,8 +167,8 @@ function AffiliatesStats({
   }, []);
 
   return (
-    <div className="referral-body-container">
-      <div className="referral-stats">
+    <div className="flex flex-col gap-8">
+      <div className="grid grid-cols-4 max-lg:grid-cols-1">
         <ReferralInfoCard
           value={String(currentReferralsData?.affiliateTotalStats.registeredReferralsCount || 0)}
           label={t`Traders Referred`}
@@ -196,7 +198,7 @@ function AffiliatesStats({
           }
         />
         <ReferralInfoCard
-          value={`$\u200a${getUsdValue(currentReferralsData?.affiliateTotalStats?.volume)}`}
+          value={formatUsd(currentReferralsData?.affiliateTotalStats?.volume)}
           label={t`Trading Volume`}
           labelTooltipText={t`Volume traded by your referred traders.`}
           tooltipContent={
@@ -241,7 +243,7 @@ function AffiliatesStats({
           }
         />
         <ReferralInfoCard
-          value={`$\u200a${getUsdValue(currentReferralsData?.affiliateTotalStats?.affiliateRebateUsd)}`}
+          value={formatUsd(currentReferralsData?.affiliateTotalStats?.affiliateRebateUsd)}
           label={t`Rebates`}
           labelTooltipText={t`Rebates earned as an affiliate.`}
           tooltipContent={
@@ -291,11 +293,11 @@ function AffiliatesStats({
         />
         <ReferralInfoCard
           label={t`Claimable Rebates`}
+          value={<span className="numbers">{formatUsd(totalClaimableRewardsUsd, { displayDecimals: 4 })}</span>}
           labelTooltipText={t`Claimable rebates from your referred traders.`}
           className="AffiliateStats-claimable-rewards-card"
         >
           <div className="AffiliateStats-claimable-rewards-container flex flex-col gap-6">
-            <span className="numbers">${getUsdValue(totalClaimableRewardsUsd, 4)}</span>
             {(totalClaimableRewardsUsd > 0 && (
               <Button variant="secondary" onClick={() => setIsClaiming(true)}>
                 Claim
@@ -328,19 +330,17 @@ function AffiliatesStats({
             <div className="referral-table-header">
               <p className="title text-body-large">
                 <Trans>Referral Codes</Trans>{" "}
-                <span className="sub-title">
-                  {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)} (${currentRebatePercentage}% rebate)`}
+                <span className="rounded-full bg-cold-blue-900 px-8 py-4 text-12 font-medium leading-[1.25] text-typography-secondary">
+                  {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)}: ${currentRebatePercentage}% rebate`}
                 </span>
               </p>
-              <Button variant="secondary" onClick={open}>
-                <FiPlus />{" "}
-                <span className="ml-small">
-                  <Trans>Create</Trans>
-                </span>
+              <Button variant="secondary" onClick={open} size="small">
+                <Trans>Create new code</Trans>
+                <FiPlus />
               </Button>
             </div>
           }
-          divider={false}
+          divider={true}
           bodyPadding={false}
         >
           <TableScrollFadeContainer>
@@ -366,7 +366,7 @@ function AffiliatesStats({
                   return (
                     <TableTr key={index}>
                       <TableTd data-label="Referral Code">
-                        <div className="table-referral-code">
+                        <div className="flex items-center gap-8">
                           <span className="referral-text ">{stat.referralCode}</span>
                           <div
                             onClick={() => {
@@ -374,18 +374,18 @@ function AffiliatesStats({
                               copyToClipboard(getReferralCodeTradeUrl(stat.referralCode));
                               helperToast.success("Referral link copied to your clipboard");
                             }}
-                            className="referral-code-icon"
+                            className="referral-code-icon size-14 text-typography-secondary hover:text-typography-primary"
                           >
-                            <BiCopy />
+                            <CopyIcon width={14} height={14} />
                           </div>
                           <TrackingLink onClick={trackShareTwitter}>
                             <a
                               href={getTwitterShareUrl(stat.referralCode)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="referral-code-icon"
+                              className="referral-code-icon size-14 text-typography-secondary hover:text-typography-primary"
                             >
-                              <FiTwitter />
+                              <TwitterIcon />
                             </a>
                           </TrackingLink>
                           <ReferralCodeWarnings allOwnersOnOtherChains={stat?.allOwnersOnOtherChains} />
@@ -393,7 +393,7 @@ function AffiliatesStats({
                       </TableTd>
                       <TableTd data-label="Total Volume">
                         <Tooltip
-                          handle={`$\u200a${getUsdValue(stat.volume)}`}
+                          handle={formatUsd(stat.volume)}
                           handleClassName="numbers"
                           position="bottom-start"
                           className="whitespace-nowrap"
@@ -418,7 +418,7 @@ function AffiliatesStats({
                       </TableTd>
                       <TableTd data-label="Total Rebates">
                         <Tooltip
-                          handle={`$\u200a${getUsdValue(stat.affiliateRebateUsd)}`}
+                          handle={formatUsd(stat.affiliateRebateUsd)}
                           handleClassName="numbers"
                           position="bottom-start"
                           className="whitespace-nowrap"
@@ -456,153 +456,153 @@ function AffiliatesStats({
         </Card>
       </div>
       {currentRebateData.length > 0 ? (
-        <div className="reward-history">
-          <Card
-            title={
-              <span className="text-body-large">
-                <Trans>Rebates Distribution History</Trans>
-              </span>
-            }
-            tooltipText={t`Distribution history for claimed rebates and airdrops.`}
-            bodyPadding={false}
-            divider={false}
-          >
-            <TableScrollFadeContainer>
-              <table className="w-full min-w-max">
-                <thead>
-                  <TableTheadTr>
-                    <TableTh scope="col">
-                      <Trans>Date</Trans>
-                    </TableTh>
-                    <TableTh scope="col">
-                      <Trans>Type</Trans>
-                    </TableTh>
-                    <TableTh scope="col">
-                      <Trans>Amount</Trans>
-                    </TableTh>
-                    <TableTh scope="col">
-                      <Trans>Transaction</Trans>
-                    </TableTh>
-                  </TableTheadTr>
-                </thead>
-                <tbody>
-                  {currentRebateData.map((rebate, index) => {
-                    let rebateType = "-";
+        <Card
+          title={
+            <span className="text-body-large">
+              <Trans>Rebates Distribution History</Trans>
+            </span>
+          }
+          tooltipText={t`Distribution history for claimed rebates and airdrops.`}
+          bodyPadding={false}
+          divider={true}
+        >
+          <TableScrollFadeContainer>
+            <table className="w-full min-w-max">
+              <thead>
+                <TableTheadTr>
+                  <TableTh scope="col">
+                    <Trans>Date</Trans>
+                  </TableTh>
+                  <TableTh scope="col">
+                    <Trans>Type</Trans>
+                  </TableTh>
+                  <TableTh scope="col">
+                    <Trans>Amount</Trans>
+                  </TableTh>
+                  <TableTh scope="col">
+                    <Trans>Transaction</Trans>
+                  </TableTh>
+                </TableTheadTr>
+              </thead>
+              <tbody>
+                {currentRebateData.map((rebate, index) => {
+                  let rebateType = "-";
 
-                    if (rebate.typeId === RebateDistributionType.Rebate) {
-                      if (rebate.tokens[0] === esGmxAddress) {
-                        rebateType = t`V1 esGMX`;
-                      } else {
-                        rebateType = t`V1 Airdrop`;
+                  if (rebate.typeId === RebateDistributionType.Rebate) {
+                    if (rebate.tokens[0] === esGmxAddress) {
+                      rebateType = t`V1 esGMX`;
+                    } else {
+                      rebateType = t`V1 Airdrop`;
+                    }
+                  } else if (rebate.typeId === RebateDistributionType.Claim) {
+                    rebateType = t`V2 Claim`;
+                  }
+
+                  const amountsByTokens = rebate.tokens.reduce(
+                    (acc, tokenAddress, i) => {
+                      let token;
+                      try {
+                        token = getToken(chainId, tokenAddress);
+                      } catch (error) {
+                        token = getNativeToken(chainId);
                       }
-                    } else if (rebate.typeId === RebateDistributionType.Claim) {
-                      rebateType = t`V2 Claim`;
+                      acc[token.address] = acc[token.address] ?? 0n;
+                      acc[token.address] = acc[token.address] + rebate.amounts[i];
+                      return acc;
+                    },
+                    {} as { [address: string]: bigint }
+                  );
+
+                  const tokensWithoutPrices: string[] = [];
+
+                  const totalUsd = rebate.amountsInUsd.reduce((acc, usdAmount, i) => {
+                    if (usdAmount == 0n && rebate.amounts[i] != 0n) {
+                      tokensWithoutPrices.push(rebate.tokens[i]);
                     }
 
-                    const amountsByTokens = rebate.tokens.reduce(
-                      (acc, tokenAddress, i) => {
-                        let token;
-                        try {
-                          token = getToken(chainId, tokenAddress);
-                        } catch (error) {
-                          token = getNativeToken(chainId);
-                        }
-                        acc[token.address] = acc[token.address] ?? 0n;
-                        acc[token.address] = acc[token.address] + rebate.amounts[i];
-                        return acc;
-                      },
-                      {} as { [address: string]: bigint }
-                    );
+                    return acc + usdAmount;
+                  }, 0n);
 
-                    const tokensWithoutPrices: string[] = [];
+                  const explorerURL = getExplorerUrl(chainId);
+                  return (
+                    <TableTr key={index}>
+                      <TableTd data-label="Date">{formatDate(rebate.timestamp)}</TableTd>
+                      <TableTd data-label="Type">{rebateType}</TableTd>
+                      <TableTd data-label="Amount">
+                        <Tooltip
+                          className="whitespace-nowrap"
+                          handle={
+                            <div className="Rebate-amount-value numbers">
+                              {tokensWithoutPrices.length > 0 && (
+                                <>
+                                  <IoWarningOutline color="#ffba0e" size={16} />
+                                  &nbsp;
+                                </>
+                              )}
+                              {formatUsd(totalUsd)}
+                            </div>
+                          }
+                          renderContent={() => (
+                            <>
+                              {tokensWithoutPrices.length > 0 && (
+                                <>
+                                  <Trans>
+                                    USD Value may not be accurate since the data does not contain prices for{" "}
+                                    {tokensWithoutPrices.map((address) => getToken(chainId, address).symbol).join(", ")}
+                                  </Trans>
+                                  <br />
+                                  <br />
+                                </>
+                              )}
+                              {Object.keys(amountsByTokens).map((tokenAddress) => {
+                                const token = getToken(chainId, tokenAddress);
 
-                    const totalUsd = rebate.amountsInUsd.reduce((acc, usdAmount, i) => {
-                      if (usdAmount == 0n && rebate.amounts[i] != 0n) {
-                        tokensWithoutPrices.push(rebate.tokens[i]);
-                      }
-
-                      return acc + usdAmount;
-                    }, 0n);
-
-                    const explorerURL = getExplorerUrl(chainId);
-                    return (
-                      <TableTr key={index}>
-                        <TableTd data-label="Date">{formatDate(rebate.timestamp)}</TableTd>
-                        <TableTd data-label="Type">{rebateType}</TableTd>
-                        <TableTd data-label="Amount">
-                          <Tooltip
-                            className="whitespace-nowrap"
-                            handle={
-                              <div className="Rebate-amount-value numbers">
-                                {tokensWithoutPrices.length > 0 && (
+                                return (
                                   <>
-                                    <IoWarningOutline color="#ffba0e" size={16} />
-                                    &nbsp;
+                                    <StatsTooltipRow
+                                      key={tokenAddress}
+                                      showDollar={false}
+                                      label={token.symbol}
+                                      value={formatBalanceAmount(
+                                        amountsByTokens[tokenAddress],
+                                        token.decimals,
+                                        undefined,
+                                        { isStable: token.isStable }
+                                      )}
+                                      valueClassName="numbers"
+                                    />
                                   </>
-                                )}
-                                ${getUsdValue(totalUsd)}
-                              </div>
-                            }
-                            renderContent={() => (
-                              <>
-                                {tokensWithoutPrices.length > 0 && (
-                                  <>
-                                    <Trans>
-                                      USD Value may not be accurate since the data does not contain prices for{" "}
-                                      {tokensWithoutPrices
-                                        .map((address) => getToken(chainId, address).symbol)
-                                        .join(", ")}
-                                    </Trans>
-                                    <br />
-                                    <br />
-                                  </>
-                                )}
-                                {Object.keys(amountsByTokens).map((tokenAddress) => {
-                                  const token = getToken(chainId, tokenAddress);
-
-                                  return (
-                                    <>
-                                      <StatsTooltipRow
-                                        key={tokenAddress}
-                                        showDollar={false}
-                                        label={token.symbol}
-                                        value={formatBalanceAmount(
-                                          amountsByTokens[tokenAddress],
-                                          token.decimals,
-                                          undefined,
-                                          { isStable: token.isStable }
-                                        )}
-                                        valueClassName="numbers"
-                                      />
-                                    </>
-                                  );
-                                })}
-                              </>
-                            )}
-                          />
-                        </TableTd>
-                        <TableTd data-label="Transaction">
-                          <ExternalLink href={explorerURL + `tx/${rebate.transactionHash}`}>
-                            {shortenAddress(rebate.transactionHash, 13)}
-                          </ExternalLink>
-                        </TableTd>
-                      </TableTr>
-                    );
-                  })}
-                  {currentRebateData.length < DEFAULT_PAGE_SIZE && (
-                    // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                    <tr style={{ height: 42.5 * (DEFAULT_PAGE_SIZE - currentRebateData.length) }}></tr>
-                  )}
-                </tbody>
-              </table>
-            </TableScrollFadeContainer>
-            <BottomTablePagination
-              page={currentRebatePage}
-              pageCount={rebatePageCount}
-              onPageChange={setCurrentRebatePage}
-            />
-          </Card>
-        </div>
+                                );
+                              })}
+                            </>
+                          )}
+                        />
+                      </TableTd>
+                      <TableTd data-label="Transaction">
+                        <ExternalLink
+                          className="text-typography-secondary hover:text-typography-primary"
+                          variant="icon"
+                          href={explorerURL + `tx/${rebate.transactionHash}`}
+                        >
+                          {shortenAddress(rebate.transactionHash, 13)}
+                        </ExternalLink>
+                      </TableTd>
+                    </TableTr>
+                  );
+                })}
+                {currentRebateData.length < DEFAULT_PAGE_SIZE && (
+                  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+                  <tr style={{ height: 42.5 * (DEFAULT_PAGE_SIZE - currentRebateData.length) }}></tr>
+                )}
+              </tbody>
+            </table>
+          </TableScrollFadeContainer>
+          <BottomTablePagination
+            page={currentRebatePage}
+            pageCount={rebatePageCount}
+            onPageChange={setCurrentRebatePage}
+          />
+        </Card>
       ) : (
         <EmptyMessage
           tooltipText={t`Distribution history for claimed rebates and airdrops.`}

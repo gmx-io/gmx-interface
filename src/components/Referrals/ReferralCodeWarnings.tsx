@@ -1,13 +1,14 @@
 import { Trans } from "@lingui/macro";
 import toPairs from "lodash/toPairs";
 import values from "lodash/values";
-import { BiErrorCircle } from "react-icons/bi";
-import { IoWarningOutline } from "react-icons/io5";
 
 import { CHAIN_NAMES_MAP } from "config/chains";
 import type { CodeOwnershipInfo } from "domain/referrals/types";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import InfoIcon from "img/ic_info_circle.svg?react";
+import WarnIcon from "img/ic_warn.svg?react";
 
 type Props = {
   allOwnersOnOtherChains:
@@ -36,7 +37,9 @@ export function ReferralCodeWarnings({ allOwnersOnOtherChains }: Props) {
         <div className="info">
           <TooltipWithPortal
             position="right"
-            handle={<IoWarningOutline color="#ffba0e" size={16} />}
+            handle={<WarnIcon className="size-16 text-yellow-300" />}
+            variant="none"
+            className="flex"
             renderContent={() => (
               <div>
                 <Trans>
@@ -54,7 +57,9 @@ export function ReferralCodeWarnings({ allOwnersOnOtherChains }: Props) {
         <div className="info">
           <TooltipWithPortal
             position="right"
-            handle={<BiErrorCircle color="#e82e56" size={16} />}
+            handle={<InfoIcon className="size-16 text-red-500" />}
+            variant="none"
+            className="flex"
             renderContent={() => (
               <div>
                 <Trans>

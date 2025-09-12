@@ -1,4 +1,4 @@
-import { TypedDataEncoder, type Wallet } from "ethers";
+import { AbstractSigner, TypedDataEncoder, type Wallet } from "ethers";
 import { withRetry } from "viem";
 
 import { parseError } from "lib/errors";
@@ -15,7 +15,7 @@ export type SignatureDomain = {
 export type SignatureTypes = Record<string, { name: string; type: string }[]>;
 
 export type SignTypedDataParams = {
-  signer: WalletSigner | Wallet;
+  signer: WalletSigner | Wallet | AbstractSigner;
   types: SignatureTypes;
   typedData: Record<string, any>;
   domain: SignatureDomain;

@@ -353,10 +353,12 @@ export function formatBalanceAmount(
     showZero = false,
     toExponential = true,
     isStable = false,
+    signed = false,
   }: {
     showZero?: boolean;
     toExponential?: boolean;
     isStable?: boolean;
+    signed?: boolean;
   } = {}
 ): string {
   if (amount === undefined) return "-";
@@ -378,31 +380,32 @@ export function formatBalanceAmount(
     return "-";
   }
 
+  const sign = signed || amount < 0n ? getPlusOrMinusSymbol(amount) : "";
   const absAmount = bigMath.abs(amount);
   const absAmountFloat = bigintToNumber(absAmount, tokenDecimals);
 
   let value = "";
 
   const baseDecimals = isStable ? 2 : 4;
-  if (absAmountFloat >= 1) value = formatAmount(amount, tokenDecimals, baseDecimals, true);
-  else if (absAmountFloat >= 0.1) value = formatAmount(amount, tokenDecimals, baseDecimals + 1, true);
-  else if (absAmountFloat >= 0.01) value = formatAmount(amount, tokenDecimals, baseDecimals + 2, true);
-  else if (absAmountFloat >= 0.001) value = formatAmount(amount, tokenDecimals, baseDecimals + 3, true);
-  else if (absAmountFloat >= 1e-8) value = formatAmount(amount, tokenDecimals, 8, true);
+  if (absAmountFloat >= 1) value = formatAmount(absAmount, tokenDecimals, baseDecimals, true);
+  else if (absAmountFloat >= 0.1) value = formatAmount(absAmount, tokenDecimals, baseDecimals + 1, true);
+  else if (absAmountFloat >= 0.01) value = formatAmount(absAmount, tokenDecimals, baseDecimals + 2, true);
+  else if (absAmountFloat >= 0.001) value = formatAmount(absAmount, tokenDecimals, baseDecimals + 3, true);
+  else if (absAmountFloat >= 1e-8) value = formatAmount(absAmount, tokenDecimals, 8, true);
   else {
     if (toExponential) {
-      value = bigintToNumber(amount, tokenDecimals).toExponential(2);
+      value = bigintToNumber(absAmount, tokenDecimals).toExponential(2);
     } else {
-      value = bigintToNumber(amount, tokenDecimals).toFixed(8);
+      value = bigintToNumber(absAmount, tokenDecimals).toFixed(8);
     }
   }
 
   if (tokenSymbol) {
     // Non-breaking space
-    return `${value} ${tokenSymbol}`;
+    return `${sign}${value} ${tokenSymbol}`;
   }
 
-  return value;
+  return `${sign}${value}`;
 }
 
 export function formatFactor(factor: bigint) {
@@ -422,14 +425,14 @@ export function formatFactor(factor: bigint) {
   const factorDecimals = 30 - trailingZeroes;
   return formatAmount(factor, 30, factorDecimals);
 }
-export function numberWithCommas(x: BigNumberish) {
+export function numberWithCommas(x: BigNumberish, { showDollar = false }: { showDollar?: boolean } = {}) {
   if (x === undefined || x === null) {
     return "...";
   }
 
   const parts = x.toString().split(".");
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return parts.join(".");
+  return `${showDollar ? "$\u200a" : ""}${parts.join(".")}`;
 }
 
 export const formatAmount = (

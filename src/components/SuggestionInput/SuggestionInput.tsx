@@ -1,6 +1,8 @@
+import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
 import cx from "classnames";
 import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
 
+import Portal from "components/Common/Portal";
 import NumberInput from "components/NumberInput/NumberInput";
 
 import "./SuggestionInput.scss";
@@ -85,11 +87,18 @@ export default function SuggestionInput({
     [onKeyDown]
   );
 
+  const { refs, floatingStyles } = useFloating({
+    middleware: [offset(4), flip(), shift()],
+    placement: "bottom-end",
+    whileElementsMounted: autoUpdate,
+  });
+
   return (
     <div className="Suggestion-input-wrapper">
       <div
         className={cx("Suggestion-input flex items-baseline", className, { "input-error": isError, "pr-6": !symbol })}
         onClick={() => inputRef.current?.focus()}
+        ref={refs.setReference}
       >
         {label ? <span className="pl-7 pr-7 text-typography-secondary">{label}</span> : null}
         <NumberInput
@@ -110,13 +119,17 @@ export default function SuggestionInput({
         )}
       </div>
       {suggestionList && isPanelVisible && (
-        <ul className="Suggestion-list">
-          {suggestionList.map((suggestion) => (
-            <li key={suggestion} onMouseDown={() => handleSuggestionClick(suggestion)}>
-              {suggestion}%
-            </li>
-          ))}
-        </ul>
+        <Portal>
+          <div className="z-[100]" ref={refs.setFloating} style={floatingStyles}>
+            <ul className="Suggestion-list">
+              {suggestionList.map((suggestion) => (
+                <li key={suggestion} onMouseDown={() => handleSuggestionClick(suggestion)}>
+                  {suggestion}%
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Portal>
       )}
     </div>
   );

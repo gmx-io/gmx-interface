@@ -182,6 +182,8 @@ const position: PositionInfoLoaded = {
   positionFeeAmount: 0n,
   traderDiscountAmount: 0n,
   uiFeeAmount: 0n,
+  pendingImpactUsd: 0n,
+  closePriceImpactDeltaUsd: 0n,
 };
 
 const keepLeverage = false;

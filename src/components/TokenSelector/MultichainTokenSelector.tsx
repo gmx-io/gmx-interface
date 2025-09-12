@@ -327,7 +327,7 @@ function AvailableToTradeTokenList({
             className="flex cursor-pointer items-center justify-between px-adaptive py-8 gmx-hover:bg-fill-surfaceElevated50"
             onClick={() => onSelectTokenAddress(token.address, token.isGmxAccount)}
           >
-            <div className="flex items-center gap-8">
+            <div className="flex items-center gap-16">
               <TokenIcon
                 symbol={token.symbol}
                 className="size-40"
@@ -450,7 +450,7 @@ function MultichainTokenList({
             className="group flex cursor-pointer items-center justify-between px-adaptive py-8 gmx-hover:bg-fill-surfaceElevated50"
             onClick={() => onDepositTokenAddress(token.address, token.sourceChainId)}
           >
-            <div className="flex items-center gap-8">
+            <div className="flex items-center gap-16">
               <TokenIcon
                 symbol={token.symbol}
                 className="size-40"

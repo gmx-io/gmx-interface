@@ -283,7 +283,7 @@ function TabWrapper({
   return (
     <div
       className={cx("w-[380px] shrink-0 max-md:w-full", {
-        invisible: activeTab !== tab,
+        "max-md:hidden md:invisible": activeTab !== tab,
         "order-first": activeTab === tab,
       })}
     >
