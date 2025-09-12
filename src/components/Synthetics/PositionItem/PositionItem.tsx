@@ -104,7 +104,7 @@ export function PositionItem(p: Props) {
               textClassName={getPositiveOrNegativeClass(p.position.pnl)}
             />
             <StatsTooltipRow
-              label={t`Accrued Borrow Fee`}
+              label={t`Borrow Fee`}
               value={formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}
               valueClassName="numbers"
               showDollar={false}
@@ -113,7 +113,7 @@ export function PositionItem(p: Props) {
               })}
             />
             <StatsTooltipRow
-              label={t`Accrued Negative Funding Fee`}
+              label={t`Negative Funding Fee`}
               value={formatUsd(-p.position.pendingFundingFeesUsd) || "..."}
               valueClassName="numbers"
               showDollar={false}
@@ -229,7 +229,7 @@ export function PositionItem(p: Props) {
                 />
                 <br />
                 <StatsTooltipRow
-                  label={t`Accrued Borrow Fee`}
+                  label={t`Borrow Fee`}
                   showDollar={false}
                   value={formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}
                   valueClassName="numbers"
@@ -238,7 +238,7 @@ export function PositionItem(p: Props) {
                   })}
                 />
                 <StatsTooltipRow
-                  label={t`Accrued Negative Funding Fee`}
+                  label={t`Negative Funding Fee`}
                   showDollar={false}
                   value={formatDeltaUsd(-p.position.pendingFundingFeesUsd) || "..."}
                   valueClassName="numbers"

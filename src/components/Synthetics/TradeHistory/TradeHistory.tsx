@@ -154,7 +154,7 @@ export function TradeHistory(p: Props) {
       <div className="flex items-center justify-between gap-8 pl-20 pr-8 pt-8">
         {!isMobile ? (
           <span className="text-body-medium font-medium">
-            <Trans>Trade history</Trans>
+            <Trans>Trade History</Trans>
           </span>
         ) : null}
 
