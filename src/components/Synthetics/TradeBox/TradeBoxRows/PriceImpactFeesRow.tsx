@@ -202,7 +202,7 @@ export function PriceImpactFeesRow() {
             content={
               <Trans>
                 There is no price impact for increasing positions, and orders are filled at the mark price. Price impact
-                is applied during position decreases.
+                is applied during position decreases.{" "}
                 <ExternalLink href={"https://docs.gmx.io/docs/trading/v2#price-impact"} newTab>
                   Read more
                 </ExternalLink>

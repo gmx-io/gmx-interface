@@ -226,9 +226,7 @@ const Toolbar = ({ account }: { account: string }) => {
 function GmxAccountBalanceTooltipContent() {
   return (
     <Trans>
-      Your GMX Account balance, usable for trading from any supported chain.
-      <br />
-      <ExternalLink href="https://docs.gmx.io/docs/trading/v2#multichain-trading">Read more</ExternalLink>.
+      Your GMX Account balance, usable for trading from any supported chain. <ExternalLink href="https://docs.gmx.io/docs/trading/v2#multichain-trading">Read more</ExternalLink>.
     </Trans>
   );
 }
