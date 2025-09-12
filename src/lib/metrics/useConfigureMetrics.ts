@@ -15,7 +15,7 @@ import { isHomeSite } from "../legacy";
 import { metrics } from "./Metrics";
 
 export function useConfigureMetrics() {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const fetcher = useOracleKeeperFetcher(chainId);
   const { active } = useWallet();
   const [showDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
@@ -52,8 +52,9 @@ export function useConfigureMetrics() {
       browserVersion: bowser?.browser.version,
       platform: bowser?.platform.type,
       isInited: Boolean(bowser),
+      srcChainId,
     });
-  }, [active, isMobileMetamask, isWindowVisible, isLargeAccount, bowser]);
+  }, [active, isMobileMetamask, isWindowVisible, isLargeAccount, bowser, srcChainId]);
 
   useEffect(() => {
     metrics.updateWalletNames();

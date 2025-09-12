@@ -1,6 +1,5 @@
 import { ethers } from "ethers";
 import sample from "lodash/sample";
-import { arbitrumSepolia, base, optimismSepolia, sepolia } from "viem/chains";
 
 import {
   AnyChainId,
@@ -140,10 +139,23 @@ export const RPC_PROVIDERS: Record<AnyChainId | typeof ETH_MAINNET, string[]> = 
     // "https://ava-testnet.public.blastapi.io/v1/avax/fuji/public",
     // "https://rpc.ankr.com/avalanche_fuji",
   ],
-  [ARBITRUM_SEPOLIA]: [...arbitrumSepolia.rpcUrls.default.http],
-  [SOURCE_BASE_MAINNET]: [...base.rpcUrls.default.http],
-  [SOURCE_OPTIMISM_SEPOLIA]: [...optimismSepolia.rpcUrls.default.http],
-  [SOURCE_SEPOLIA]: [...sepolia.rpcUrls.default.http],
+  [ARBITRUM_SEPOLIA]: [
+    "https://sepolia-rollup.arbitrum.io/rpc",
+    "https://arbitrum-sepolia.drpc.org",
+    "https://arbitrum-sepolia-rpc.publicnode.com",
+  ],
+  [SOURCE_BASE_MAINNET]: [
+    "https://mainnet.base.org",
+    "https://base.llamarpc.com",
+    "https://base-rpc.publicnode.com",
+    "https://base.drpc.org",
+  ],
+  [SOURCE_OPTIMISM_SEPOLIA]: [
+    "https://sepolia.optimism.io",
+    "https://optimism-sepolia.drpc.org",
+    "https://optimism-sepolia.therpc.io",
+  ],
+  [SOURCE_SEPOLIA]: ["https://sepolia.drpc.org"],
   [BOTANIX]: [
     // returns incorrect gas price
     // "https://rpc.botanixlabs.com",
@@ -286,7 +298,7 @@ export function getExplorerUrl(chainId: number): string {
     case AVALANCHE_FUJI:
       return "https://testnet.snowtrace.io/";
     case ARBITRUM_SEPOLIA:
-      return arbitrumSepolia.blockExplorers.default.url + "/";
+      return "https://sepolia.arbiscan.io/";
     case SOURCE_OPTIMISM_SEPOLIA:
       return "https://sepolia-optimism.etherscan.io/";
     case SOURCE_SEPOLIA:

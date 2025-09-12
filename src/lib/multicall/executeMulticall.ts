@@ -242,6 +242,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
   emitMetricCounter<MulticallBatchedCallCounter>({
     event: "multicall.batched.call",
     data: {
+      chainId,
       priority,
     },
   });
@@ -256,6 +257,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
         event: "multicall.batched.timing",
         time: Math.round(duration),
         data: {
+          chainId,
           priority,
         },
       });
@@ -263,6 +265,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
       emitMetricCounter<MulticallBatchedErrorCounter>({
         event: "multicall.batched.error",
         data: {
+          chainId,
           priority,
         },
       });
