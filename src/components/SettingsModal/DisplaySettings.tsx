@@ -40,7 +40,7 @@ export function DisplaySettings() {
               handle={<Trans>Breakdown Net Price Impact</Trans>}
               position="top"
               renderContent={() => (
-                <div className="text-xs">
+                <div>
                   <Trans>
                     The net price impact is broken down into stored impact and close price impact in the net value
                     tooltip and execution details in the close modal. Display stored impact for increase actions.{" "}

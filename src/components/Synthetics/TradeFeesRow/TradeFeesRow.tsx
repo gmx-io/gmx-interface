@@ -266,7 +266,9 @@ export function TradeFeesRow(p: Props) {
             id: "proportionalPendingImpactDeltaUsd",
             label: (
               <>
-                <div className="text-typography-primary">{t`Proportional Stored Impact`}:</div>
+                <div className="text-typography-primary">
+                  <Trans>Proportional Stored Impact</Trans>:
+                </div>
                 <div>
                   (
                   {formatPercentage(bigMath.abs(p.proportionalPendingImpact.precisePercentage), {
