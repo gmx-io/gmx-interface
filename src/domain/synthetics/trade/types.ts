@@ -1,4 +1,4 @@
-import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "domain/synthetics/fees";
+import { FeeItem } from "domain/synthetics/fees";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { ExternalSwapQuote } from "sdk/types/trade";
 
@@ -172,28 +172,6 @@ export type SwapPathStats = {
 };
 
 export type FindSwapPath = (usdIn: bigint, opts: { order?: ("liquidity" | "length")[] }) => SwapPathStats | undefined;
-
-export type TradeFeesType = "swap" | "increase" | "decrease" | "edit";
-
-export type TradeFees = {
-  totalFees?: FeeItem;
-  payTotalFees?: FeeItem;
-  swapFees?: SwapFeeItem[];
-  positionFee?: FeeItem;
-  swapPriceImpact?: FeeItem;
-  positionPriceImpact?: FeeItem;
-  priceImpactDiff?: FeeItem;
-  positionCollateralPriceImpact?: FeeItem;
-  collateralPriceImpactDiff?: FeeItem;
-  positionFeeFactor?: bigint;
-  borrowFee?: FeeItem;
-  fundingFee?: FeeItem;
-  uiFee?: FeeItem;
-  uiSwapFee?: FeeItem;
-  feeDiscountUsd?: bigint;
-  swapProfitFee?: FeeItem;
-  externalSwapFee?: ExternalSwapFeeItem;
-};
 
 export type GmSwapFees = {
   totalFees?: FeeItem;

@@ -190,6 +190,11 @@ msgstr ""
 msgid "Type"
 msgstr "타입"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Close Price Impact"
+msgstr ""
+
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL order(s)"
 msgstr "{updateOrdersCount} TP/SL 주문 업데이트 중"
@@ -796,6 +801,10 @@ msgstr "순위"
 
 #: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap price impact"
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Proportional Stored Impact"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -2639,8 +2648,8 @@ msgid "Trigger price above lowest limit price"
 msgstr "트리거 가격이 최저 지정가 가격 초과"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Borrow Fee Rate"
-msgstr "차입 수수료율"
+#~ msgid "Borrow Fee Rate"
+#~ msgstr "차입 수수료율"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2891,8 +2900,8 @@ msgid "Auto-Cancel TP/SL"
 msgstr "TP/SL 자동 취소"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Funding Fee Rate"
-msgstr "자금 수수료율"
+#~ msgid "Funding Fee Rate"
+#~ msgstr "자금 수수료율"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
@@ -2997,6 +3006,10 @@ msgstr "마켓 선택"
 #: src/pages/PositionsOverview/PositionsOverview.jsx
 msgid "Open positions: {0}<0/>Under risk: {1}"
 msgstr "열린 포지션: {0}<0>리스크: {1}"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Breakdown Net Price Impact"
+msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Cumulative PnL <0>{0}</0>"
@@ -3932,6 +3945,10 @@ msgstr "시장 증가"
 msgid "No funding activity"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
+msgid "The price impact is not applied until the decrease action. These are the current estimated values at increase. <0>Read more</0>."
+msgstr ""
+
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 msgid "No claims yet"
 msgstr "수령 없음"
@@ -4600,6 +4617,7 @@ msgstr "가스 지불 토큰"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4780,6 +4798,7 @@ msgstr "이전이 이미 시작됐습니다"
 msgid "Withdraw submitted."
 msgstr "인출 제출 완료."
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -5500,6 +5519,10 @@ msgstr "레버리지 슬라이더 표시"
 msgid "Cancelling {orderText}."
 msgstr "{orderText} 취소 중."
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "There is no price impact for increasing positions, and orders are filled at the mark price. Price impact is applied during position decreases.<0>Read more</0>."
+msgstr ""
+
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Collateral Delta"
 msgstr "담보 델타"
@@ -5831,6 +5854,10 @@ msgstr "순 가치: 초기 담보 + PnL - 차입 수수료 - 종료 수수료"
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "30d"
 msgstr "30일"
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
+msgid "Est. Impact Rebate"
+msgstr ""
 
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
@@ -6683,6 +6710,7 @@ msgid "Claim"
 msgstr "수령"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price Impact / Fees"
 msgstr "가격 영향 / 수수료"
 
@@ -7127,6 +7155,10 @@ msgstr "365일 예상 수수료"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Trigger price below highest limit price"
 msgstr "트리거 가격이 최고 지정가 미만"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "The net price impact is broken down into stored impact and close price impact in the net value tooltip and execution details in the close modal. Display stored impact for increase actions. <0>Read more</0>."
+msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -8620,6 +8652,12 @@ msgstr "소개"
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "This may take a few minutes."
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
+msgid "Stored Price Impact"
 msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx

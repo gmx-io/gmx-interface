@@ -190,6 +190,11 @@ msgstr ""
 msgid "Type"
 msgstr "Type"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Close Price Impact"
+msgstr ""
+
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL order(s)"
 msgstr "Mise à jour de {updateOrdersCount} ordre(s) TP/SL"
@@ -796,6 +801,10 @@ msgstr "Rang"
 
 #: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap price impact"
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Proportional Stored Impact"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -2639,8 +2648,8 @@ msgid "Trigger price above lowest limit price"
 msgstr "Prix de déclenchement supérieur au prix limite le plus bas"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Borrow Fee Rate"
-msgstr "Taux de frais d'emprunt"
+#~ msgid "Borrow Fee Rate"
+#~ msgstr "Taux de frais d'emprunt"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2891,8 +2900,8 @@ msgid "Auto-Cancel TP/SL"
 msgstr "Annulation automatique TP/SL"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Funding Fee Rate"
-msgstr "Taux de frais de financement"
+#~ msgid "Funding Fee Rate"
+#~ msgstr "Taux de frais de financement"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
@@ -2997,6 +3006,10 @@ msgstr "Sélectionner le marché"
 #: src/pages/PositionsOverview/PositionsOverview.jsx
 msgid "Open positions: {0}<0/>Under risk: {1}"
 msgstr "Positions ouvertes : {0}<0/>Sous risque : {1}"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Breakdown Net Price Impact"
+msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Cumulative PnL <0>{0}</0>"
@@ -3932,6 +3945,10 @@ msgstr "Augmentation du marché"
 msgid "No funding activity"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
+msgid "The price impact is not applied until the decrease action. These are the current estimated values at increase. <0>Read more</0>."
+msgstr ""
+
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 msgid "No claims yet"
 msgstr "Pas encore de réclamations"
@@ -4600,6 +4617,7 @@ msgstr "Token de paiement de gaz"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4780,6 +4798,7 @@ msgstr "Transfert déjà initié"
 msgid "Withdraw submitted."
 msgstr "Retrait soumis."
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -5500,6 +5519,10 @@ msgstr "Afficher le curseur d'effet de levier"
 msgid "Cancelling {orderText}."
 msgstr "Annulation de {orderText}."
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "There is no price impact for increasing positions, and orders are filled at the mark price. Price impact is applied during position decreases.<0>Read more</0>."
+msgstr ""
+
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Collateral Delta"
 msgstr "Delta de collatéral"
@@ -5831,6 +5854,10 @@ msgstr "Valeur nette : Collatéral initial + PnL - Frais d'emprunt - Frais de cl
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "30d"
 msgstr "30j"
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
+msgid "Est. Impact Rebate"
+msgstr ""
 
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
@@ -6683,6 +6710,7 @@ msgid "Claim"
 msgstr "Réclamer"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price Impact / Fees"
 msgstr "Impact sur le prix / Frais"
 
@@ -7127,6 +7155,10 @@ msgstr "Frais estimés 365j"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Trigger price below highest limit price"
 msgstr "Prix de déclenchement inférieur au prix limite le plus élevé"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "The net price impact is broken down into stored impact and close price impact in the net value tooltip and execution details in the close modal. Display stored impact for increase actions. <0>Read more</0>."
+msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -8620,6 +8652,12 @@ msgstr "À propos"
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "This may take a few minutes."
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
+msgid "Stored Price Impact"
 msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx

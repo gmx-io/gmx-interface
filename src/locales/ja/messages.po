@@ -190,6 +190,11 @@ msgstr ""
 msgid "Type"
 msgstr "タイプ"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Close Price Impact"
+msgstr ""
+
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL order(s)"
 msgstr "{updateOrdersCount}件のTP/SL注文を更新中"
@@ -796,6 +801,10 @@ msgstr "ランク"
 
 #: src/components/Synthetics/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap price impact"
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Proportional Stored Impact"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -2639,8 +2648,8 @@ msgid "Trigger price above lowest limit price"
 msgstr "トリガー価格が最低リミット価格を上回っています"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Borrow Fee Rate"
-msgstr "借入手数料率"
+#~ msgid "Borrow Fee Rate"
+#~ msgstr "借入手数料率"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2891,8 +2900,8 @@ msgid "Auto-Cancel TP/SL"
 msgstr "TP/SLの自動キャンセル"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Funding Fee Rate"
-msgstr "ファンディング手数料率"
+#~ msgid "Funding Fee Rate"
+#~ msgstr "ファンディング手数料率"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
@@ -2997,6 +3006,10 @@ msgstr "マーケット選択"
 #: src/pages/PositionsOverview/PositionsOverview.jsx
 msgid "Open positions: {0}<0/>Under risk: {1}"
 msgstr "オープンのポジション: {0}<0/>リスクあり: {1}"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Breakdown Net Price Impact"
+msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Cumulative PnL <0>{0}</0>"
@@ -3932,6 +3945,10 @@ msgstr "マーケット増加"
 msgid "No funding activity"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
+msgid "The price impact is not applied until the decrease action. These are the current estimated values at increase. <0>Read more</0>."
+msgstr ""
+
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 msgid "No claims yet"
 msgstr "請求なし"
@@ -4600,6 +4617,7 @@ msgstr "ガス支払いトークン"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4780,6 +4798,7 @@ msgstr "移転はすでに開始されています"
 msgid "Withdraw submitted."
 msgstr "出金申し込み完了。"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -5500,6 +5519,10 @@ msgstr "レバレッジスライダーを表示"
 msgid "Cancelling {orderText}."
 msgstr "{orderText} をキャンセル中。"
 
+#: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "There is no price impact for increasing positions, and orders are filled at the mark price. Price impact is applied during position decreases.<0>Read more</0>."
+msgstr ""
+
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Collateral Delta"
 msgstr "担保デルタ"
@@ -5831,6 +5854,10 @@ msgstr "純価値: 初期担保 + PnL - 借入手数料 - クローズ手数料"
 #: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "30d"
 msgstr "30日"
+
+#: src/components/Synthetics/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
+msgid "Est. Impact Rebate"
+msgstr ""
 
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim Affiliate Vault Rewards"
@@ -6683,6 +6710,7 @@ msgid "Claim"
 msgstr "請求"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price Impact / Fees"
 msgstr "価格インパクト / 手数料"
 
@@ -7127,6 +7155,10 @@ msgstr "365日推定手数料"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Trigger price below highest limit price"
 msgstr "トリガー価格が最高指値価格を下回る"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "The net price impact is broken down into stored impact and close price impact in the net value tooltip and execution details in the close modal. Display stored impact for increase actions. <0>Read more</0>."
+msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -8620,6 +8652,12 @@ msgstr "について"
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "This may take a few minutes."
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
+msgid "Stored Price Impact"
 msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx

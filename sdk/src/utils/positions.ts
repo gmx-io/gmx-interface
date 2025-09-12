@@ -201,8 +201,8 @@ export function getLiquidationPrice(p: {
   if (useMaxPriceImpact) {
     priceImpactDeltaUsd = maxNegativePriceImpactUsd;
   } else {
-    const priceImapctForPosition = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, { fallbackToZero: true });
-    priceImpactDeltaUsd = priceImapctForPosition.priceImpactDeltaUsd;
+    const priceImpactForPosition = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, { fallbackToZero: true });
+    priceImpactDeltaUsd = priceImpactForPosition.priceImpactDeltaUsd;
 
     if (priceImpactDeltaUsd > 0) {
       priceImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeInUsd, priceImpactDeltaUsd);
@@ -298,17 +298,12 @@ export function getNetPriceImpactDeltaUsdForDecrease({
   });
 
   let totalImpactDeltaUsd = priceImpactDeltaUsd + proportionalPendingImpactDeltaUsd;
-  let priceImpactDiffUsd = 0n;
 
-  if (totalImpactDeltaUsd < 0) {
-    const { maxNegativeImpactFactor } = getMaxPositionImpactFactors(marketInfo);
-
-    const maxNegativeImpactUsd = -applyFactor(sizeDeltaUsd, maxNegativeImpactFactor);
-
-    if (totalImpactDeltaUsd < maxNegativeImpactUsd) {
-      priceImpactDiffUsd = maxNegativeImpactUsd - totalImpactDeltaUsd;
-    }
-  }
+  const priceImpactDiffUsd = getPriceImpactDiffUsd({
+    totalImpactDeltaUsd,
+    marketInfo,
+    sizeDeltaUsd,
+  });
 
   if (totalImpactDeltaUsd > 0) {
     totalImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeDeltaUsd, totalImpactDeltaUsd);
@@ -321,6 +316,32 @@ export function getNetPriceImpactDeltaUsdForDecrease({
     proportionalPendingImpactDeltaUsd,
     priceImpactDiffUsd,
   };
+}
+
+export function getPriceImpactDiffUsd({
+  totalImpactDeltaUsd,
+  marketInfo,
+  sizeDeltaUsd,
+}: {
+  totalImpactDeltaUsd: bigint;
+  marketInfo: MarketInfo;
+  sizeDeltaUsd: bigint;
+}) {
+  if (totalImpactDeltaUsd > 0) {
+    return 0n;
+  }
+
+  const { maxNegativeImpactFactor } = getMaxPositionImpactFactors(marketInfo);
+
+  const maxNegativeImpactUsd = -applyFactor(sizeDeltaUsd, maxNegativeImpactFactor);
+
+  let priceImpactDiffUsd = 0n;
+
+  if (totalImpactDeltaUsd < maxNegativeImpactUsd) {
+    priceImpactDiffUsd = maxNegativeImpactUsd - totalImpactDeltaUsd;
+  }
+
+  return priceImpactDiffUsd;
 }
 
 export function getMinCollateralFactorForPosition(position: PositionInfoLoaded, openInterestDelta: bigint) {
