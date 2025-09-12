@@ -260,7 +260,7 @@ export function TradeBoxAdvancedGroups({
         <>
           {isMarket && !isSwap && <CollateralSpreadRow />}
           {isMarket && <AllowedSlippageRow slippageInputId={slippageInputId} />}
-          <NextStoredImpactRows />
+          {!isSwap && <NextStoredImpactRows />}
           <LeverageInfoRows />
           <EntryPriceRow />
           <ExistingPositionInfoRows />

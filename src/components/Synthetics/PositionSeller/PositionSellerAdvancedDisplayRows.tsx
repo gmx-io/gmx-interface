@@ -56,10 +56,6 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
 
   const isStopLoss = decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease;
 
-  if (!breakdownNetPriceImpactEnabled) {
-    return null;
-  }
-
   const acceptablePriceImpactInputRow = (() => {
     return (
       <AcceptablePriceImpactInputRow
@@ -117,21 +113,23 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
 
       {!isTwap && (
         <>
-          <SyntheticsInfoRow
-            label={t`Stored Price Impact`}
-            value={
-              nextPositionValues?.nextPendingImpactDeltaUsd !== undefined &&
-              position?.pendingImpactUsd !== undefined ? (
-                <ValueTransition
-                  from={formatDeltaUsd(position?.pendingImpactUsd)}
-                  to={formatDeltaUsd(nextPositionValues?.nextPendingImpactDeltaUsd)}
-                />
-              ) : (
-                formatDeltaUsd(nextPositionValues?.nextPendingImpactDeltaUsd)
-              )
-            }
-            valueClassName="numbers"
-          />
+          {breakdownNetPriceImpactEnabled && (
+            <SyntheticsInfoRow
+              label={t`Stored Price Impact`}
+              value={
+                nextPositionValues?.nextPendingImpactDeltaUsd !== undefined &&
+                position?.pendingImpactUsd !== undefined ? (
+                  <ValueTransition
+                    from={formatDeltaUsd(position?.pendingImpactUsd)}
+                    to={formatDeltaUsd(nextPositionValues?.nextPendingImpactDeltaUsd)}
+                  />
+                ) : (
+                  formatDeltaUsd(nextPositionValues?.nextPendingImpactDeltaUsd)
+                )
+              }
+              valueClassName="numbers"
+            />
+          )}
           <SyntheticsInfoRow label={t`Leverage`} value={leverageValue} />
           {sizeRow}
           <SyntheticsInfoRow
