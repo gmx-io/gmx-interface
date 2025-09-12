@@ -6710,6 +6710,7 @@ msgid "Claim"
 msgstr "Réclamer"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price Impact / Fees"
 msgstr "Impact sur le prix / Frais"
 

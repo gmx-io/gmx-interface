@@ -6710,6 +6710,7 @@ msgid "Claim"
 msgstr "請求"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price Impact / Fees"
 msgstr "価格インパクト / 手数料"
 

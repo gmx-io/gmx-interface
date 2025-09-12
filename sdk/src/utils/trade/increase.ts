@@ -651,13 +651,13 @@ export function getNextPositionValuesForIncreaseTrade(p: {
   const potentialPriceImpactDiffUsd = getPriceImpactDiffUsd({
     totalImpactDeltaUsd: nextPendingImpactDeltaUsd,
     marketInfo,
-    sizeDeltaUsd,
+    sizeDeltaUsd: nextSizeUsd,
   });
 
   if (nextPendingImpactDeltaUsd > 0) {
     nextPendingImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(
       marketInfo,
-      sizeDeltaUsd,
+      nextSizeUsd,
       nextPendingImpactDeltaUsd
     );
   }

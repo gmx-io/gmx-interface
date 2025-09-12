@@ -1,5 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 
+import { selectBreakdownNetPriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
@@ -15,6 +16,11 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 export function NextStoredImpactRows() {
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
+  const breakdownNetPriceImpactEnabled = useSelector(selectBreakdownNetPriceImpactEnabled);
+
+  if (!breakdownNetPriceImpactEnabled) {
+    return null;
+  }
 
   return (
     <>

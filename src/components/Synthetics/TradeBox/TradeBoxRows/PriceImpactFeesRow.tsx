@@ -26,23 +26,59 @@ export function PriceImpactFeesRow() {
   const userReferralInfo = useSelector(selectUserReferralInfo);
   const feesType = useSelector(selectTradeboxTradeFeesType);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isTrigger } = tradeFlags;
+  const { isTrigger, isSwap } = tradeFlags;
   const tradingIncentives = useTradingIncentives(chainId);
   const estimatedRebatesPercentage = tradingIncentives?.estimatedRebatePercent ?? 0n;
 
-  const totalPriceImpactPercentage =
-    (fees?.totalPendingImpact?.precisePercentage ?? 0n) + (fees?.priceImpactDiff?.precisePercentage ?? 0n);
+  const { formattedPriceImpactPercentage, isPriceImpactPositive } = useMemo(() => {
+    if (isTrigger) {
+      const totalPriceImpactPercentage =
+        (fees?.totalPendingImpact?.precisePercentage ?? 0n) + (fees?.priceImpactDiff?.precisePercentage ?? 0n);
 
-  const formattedPriceImpactPercentage =
-    totalPriceImpactPercentage === undefined
-      ? "..."
-      : formatPercentage(totalPriceImpactPercentage, {
-          bps: false,
-          signed: true,
-          displayDecimals: 3,
-        });
+      const formattedPriceImpactPercentage =
+        totalPriceImpactPercentage === undefined
+          ? "..."
+          : formatPercentage(totalPriceImpactPercentage, {
+              bps: false,
+              signed: true,
+              displayDecimals: 3,
+            });
 
-  const isPriceImpactPositive = totalPriceImpactPercentage !== undefined && totalPriceImpactPercentage > 0;
+      const isPriceImpactPositive = totalPriceImpactPercentage !== undefined && totalPriceImpactPercentage > 0;
+
+      return {
+        totalPriceImpactPercentage,
+        formattedPriceImpactPercentage: formattedPriceImpactPercentage,
+        isPriceImpactPositive,
+      };
+    } else if (isSwap) {
+      const formattedPriceImpactPercentage =
+        fees?.swapPriceImpact?.precisePercentage === undefined
+          ? "..."
+          : formatPercentage(fees?.swapPriceImpact?.precisePercentage, {
+              bps: false,
+              signed: true,
+              displayDecimals: 3,
+            });
+
+      return {
+        formattedPriceImpactPercentage: formattedPriceImpactPercentage,
+        isPriceImpactPositive:
+          fees?.swapPriceImpact?.precisePercentage !== undefined && fees?.swapPriceImpact?.precisePercentage > 0,
+      };
+    } else {
+      return {
+        formattedPriceImpactPercentage: "...",
+        isPriceImpactPositive: false,
+      };
+    }
+  }, [
+    isTrigger,
+    isSwap,
+    fees?.totalPendingImpact?.precisePercentage,
+    fees?.priceImpactDiff?.precisePercentage,
+    fees?.swapPriceImpact?.precisePercentage,
+  ]);
 
   const rebateIsApplicable =
     fees?.positionFee?.deltaUsd !== undefined && fees.positionFee.deltaUsd <= 0 && feesType !== "swap";
@@ -119,6 +155,33 @@ export function PriceImpactFeesRow() {
             /{" "}
             <span
               className={cx({
+                "text-green-500": isTotalFeePositive,
+              })}
+            >
+              {formattedTotalFeePercentage}
+            </span>
+          </>
+        }
+      />
+    );
+  }
+
+  if (isSwap) {
+    return (
+      <SyntheticsInfoRow
+        label={t`Price Impact / Fees`}
+        value={
+          <>
+            <span
+              className={cx({
+                "text-green-500": isPriceImpactPositive,
+              })}
+            >
+              {formattedPriceImpactPercentage}
+            </span>{" "}
+            /{" "}
+            <span
+              className={cx("numbers", {
                 "text-green-500": isTotalFeePositive,
               })}
             >

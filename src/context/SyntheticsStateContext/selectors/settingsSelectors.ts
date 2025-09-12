@@ -24,3 +24,4 @@ export const selectDebugSwapMarketsConfig = (s: SyntheticsState) => s.settings.d
 export const selectSetDebugSwapMarketsConfig = (s: SyntheticsState) => s.settings.setDebugSwapMarketsConfig;
 export const selectSettingsWarningDotVisible = (s: SyntheticsState) => s.settings.settingsWarningDotVisible;
 export const selectSetSettingsWarningDotVisible = (s: SyntheticsState) => s.settings.setSettingsWarningDotVisible;
+export const selectBreakdownNetPriceImpactEnabled = (s: SyntheticsState) => s.settings.breakdownNetPriceImpactEnabled;
