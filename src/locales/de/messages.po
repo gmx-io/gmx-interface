@@ -316,6 +316,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/pages/Dashboard/StatsCard.tsx
@@ -4800,6 +4801,7 @@ msgstr "Abheben eingereicht."
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8602,7 +8604,6 @@ msgstr "<0>Delegiere deine nicht delegierte {0} GMX DAO</0> Stimmkraft vor dem B
 msgid "Claim funds"
 msgstr ""
 
-#: src/components/Synthetics/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net Price Impact / Fees"
 msgstr ""

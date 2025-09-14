@@ -18,12 +18,8 @@ export default function SolanaNetworkItem() {
 
   return (
     <>
-      <div
-        className="network-dropdown-menu-item menu-item cursor-pointer"
-        data-qa="networks-dropdown-solana"
-        onClick={handleClick}
-      >
-        <div className="menu-item-group">
+      <div className="network-dropdown-menu-item menu-item" data-qa="networks-dropdown-solana" onClick={handleClick}>
+        <div className="menu-item-group cursor-pointer">
           <div className="menu-item-icon">
             <img className="network-dropdown-icon" src={solanaIcon} alt={t`Solana`} />
           </div>

@@ -6,18 +6,21 @@ import ModalWithPortal from "components/Modal/ModalWithPortal";
 import LanguageModalContent from "components/NetworkDropdown/LanguageModalContent";
 
 import LanguageIcon from "img/ic_language.svg?react";
+
+import { NavItem } from "./SideNav";
 interface LanguageNavItemProps {
   isCollapsed: boolean | undefined;
-  NavItem: React.ComponentType<any>;
+  onClick?: () => void;
 }
 
-export function LanguageNavItem({ isCollapsed, NavItem }: LanguageNavItemProps) {
+export function LanguageNavItem({ isCollapsed, onClick }: LanguageNavItemProps) {
   const currentLanguage = useLingui().i18n.locale;
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpen = useCallback(() => {
+    onClick?.();
     setIsModalOpen(true);
-  }, []);
+  }, [onClick]);
 
   const handleClose = useCallback(() => {
     setIsModalOpen(false);

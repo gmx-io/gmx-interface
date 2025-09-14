@@ -43,7 +43,7 @@ function SideNav({ className }: { className?: string }) {
         <MenuSection isCollapsed={isCollapsed} />
 
         <ul className="flex list-none flex-col px-0">
-          <LanguageNavItem isCollapsed={isCollapsed} NavItem={NavItem} />
+          <LanguageNavItem isCollapsed={isCollapsed} />
           <DocsNavItem isCollapsed={isCollapsed} />
           <NavItem
             icon={<CollapseIcon />}
@@ -91,7 +91,7 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
       <div
         className={cx(
           `relative flex cursor-pointer items-center gap-8
-          rounded-8 px-12 py-10 text-typography-secondary transition-colors group-hover:bg-blue-400/20 group-hover:text-blue-400
+          rounded-8 px-12 py-10 text-typography-secondary group-hover:bg-blue-400/20 group-hover:text-blue-400
           dark:group-hover:bg-slate-700 dark:group-hover:text-typography-primary`,
           {
             "bg-blue-400/20 !text-blue-400 dark:bg-slate-700 dark:!text-typography-primary": isActive,
@@ -133,7 +133,13 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
   return <li className="p-0 first:-mt-4">{content}</li>;
 }
 
-export function MenuSection({ isCollapsed }: { isCollapsed: boolean | undefined }) {
+export function MenuSection({
+  isCollapsed,
+  onMenuItemClick,
+}: {
+  isCollapsed: boolean | undefined;
+  onMenuItemClick?: () => void;
+}) {
   const mainNavItems = [
     { icon: <TradeIcon />, label: t`Trade`, key: "trade", to: "/trade" },
     { icon: <DatabaseIcon />, label: t`Pools`, key: "pools", to: "/pools" },
@@ -157,6 +163,7 @@ export function MenuSection({ isCollapsed }: { isCollapsed: boolean | undefined 
           isActive={pathname === item.to}
           isCollapsed={isCollapsed}
           to={item.to}
+          onClick={onMenuItemClick}
         />
       ))}
     </ul>
