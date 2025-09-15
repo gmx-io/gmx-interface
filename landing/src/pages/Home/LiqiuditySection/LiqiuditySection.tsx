@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 
-import { useHomePageContext } from "landing/Home/contexts/HomePageContext";
-import { cleanFormatUsd } from "landing/Home/utils/formatters";
+import { useHomePageContext } from "landing/pages/Home/contexts/HomePageContext";
+import { cleanFormatUsd } from "landing/pages/Home/utils/formatters";
 
 import { PoolCards } from "./PoolCards";
 import { useGoToPools } from "../hooks/useGoToPools";

@@ -14,8 +14,8 @@ export default function ReferralTerms() {
             <div className="text-heading-4 my-24">Terms and Conditions</div>
             <div className="text-14">Last modified: August 1st, 2022</div>
           </div>
-          <div className="mt-74">
-            <div className="mb-74">
+          <div className="mt-74 space-y-74">
+            <div>
               <p className="text-terms-body mb-24">
                 Welcome to GMX.io ("we," "us," or "our"), the informational resource for GMX Protocol, as defined below.
               </p>
@@ -34,7 +34,7 @@ export default function ReferralTerms() {
                 Please do not use the Referral Program if you disagree with any of these Terms.
               </p>
             </div>
-            <div className="mb-74">
+            <div>
               <h3 className="text-terms-heading mb-24">1. USE OF THE REFERRAL PROGRAM</h3>
               <p className="text-terms-body mb-24">All this content is for informational purposes only.</p>
               <p className="text-terms-body mb-24">
@@ -52,7 +52,7 @@ export default function ReferralTerms() {
                 A Trader can also manually enter your Referral Code in the Traders section and change it at any time.
               </p>
             </div>
-            <div className="mb-74">
+            <div>
               <h3 className="text-terms-heading mb-24">2. OBLIGATIONS</h3>
               <p className="text-terms-body mb-24">
                 2.1 As an Affiliate, GMX DApp provides you with the Links and Referral Codes necessary to promote the
@@ -75,7 +75,7 @@ export default function ReferralTerms() {
                 violent acts against others; (ii) if you try any form of gaming through self-referrals.
               </p>
             </div>
-            <div className="mb-74">
+            <div>
               <h3 className="text-terms-heading mb-24">3. REBATES AND DISCOUNTS</h3>
               <p className="text-terms-body mb-24">
                 Referrers will receive rebates based on a sliding percentage of fees paid by Referred Users. Rebates
@@ -91,7 +91,7 @@ export default function ReferralTerms() {
                 <a href="https://docs.gmx.io/docs/referrals">https://docs.gmx.io/docs/referrals.</a>
               </p>
             </div>
-            <div className="mb-74">
+            <div>
               <h3 className="text-terms-heading mb-24">4. LIMITATION OF LIABILITY</h3>
               <p className="text-terms-body mb-24">
                 Under no circumstances shall GMX.io be liable for any direct, indirect, incidental, punitive, special,
@@ -108,7 +108,7 @@ export default function ReferralTerms() {
                 hundred Singapore Dollars (500 SGD).
               </p>
             </div>
-            <div className="mb-74">
+            <div>
               <h3 className="text-terms-heading mb-24">5. INDEMNIFICATION</h3>
               <p className="text-terms-body mb-24">
                 You will defend, indemnify, and hold harmless GMX.io, its affiliates, members, member, managers,
@@ -127,7 +127,7 @@ export default function ReferralTerms() {
                 terms of this paragraph will survive any termination or cancellation of the Terms.
               </p>
             </div>
-            <div className="mb-74">
+            <div>
               <h3 className="text-terms-heading mb-24">6. MODIFICATION, SUSPENSION, AND TERMINATION</h3>
               <p className="text-terms-body mb-24">
                 The Referral Program runs independently from GMX.io, which the token holders of GMX determine. Due to
@@ -146,7 +146,7 @@ export default function ReferralTerms() {
                 Referral Program after those revisions become effective, you agree to be bound by the revised Terms.
               </p>
             </div>
-            <div className="mb-74">
+            <div>
               <h3 className="text-terms-heading mb-24">7. GOVERNING LAW</h3>
               <p className="text-terms-body mb-24">
                 The interpretation and enforcement of these Terms, and any dispute related to these Terms, the Site, or
@@ -154,7 +154,7 @@ export default function ReferralTerms() {
                 applicable.
               </p>
             </div>
-            <div className="mb-74">
+            <div>
               <h3 className="text-terms-heading mb-24">8. GENERAL</h3>
               <p className="text-terms-body mb-24">
                 8.1 These Terms, including other policies or agreements incorporated herein, constitute the entire and
@@ -194,7 +194,7 @@ export default function ReferralTerms() {
                 request of the government, communications, power failure, or equipment or software malfunction.
               </p>
             </div>
-            <div className="mb-74">
+            <div>
               <h3 className="text-terms-heading mb-24">9. CONTACT INFORMATION</h3>
               <p className="text-terms-body mb-24">
                 If you have any questions about these Terms, the Site, or the Interface, please get in touch with GMX.io

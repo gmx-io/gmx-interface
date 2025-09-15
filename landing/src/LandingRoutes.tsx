@@ -1,11 +1,11 @@
 import { lazy, Suspense } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 
-import Home from "./Home/Home";
+import Home from "./pages/Home/Home";
 
 // Lazy load Terms pages to reduce main bundle size
-const ReferralTerms = lazy(() => import("./ReferralTerms/ReferralTerms"));
-const TermsAndConditions = lazy(() => import("./TermsAndConditions/TermsAndConditions"));
+const ReferralTerms = lazy(() => import("./pages/ReferralTerms/ReferralTerms"));
+const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions/TermsAndConditions"));
 
 // Loading fallback component
 function TermsPageLoader() {

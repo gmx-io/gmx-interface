@@ -2,6 +2,8 @@ import cx from "classnames";
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 
+import IcCross from "img/ic_cross.svg?react";
+
 type ModalProps = {
   onClose: () => void;
   children: React.ReactNode;
@@ -61,13 +63,11 @@ export function Modal({ onClose, children, className }: ModalProps) {
 
 export function ModalHeader({ children, onClose, showCloseButton = true, className }: ModalHeaderProps) {
   return (
-    <div className={cx("border-stroke-primary flex justify-between gap-20 border-b-1/2 p-20 pt-24", className)}>
+    <div className={cx("border-stroke-p rimary flex justify-between gap-20 border-b-1/2 p-20 pt-24", className)}>
       <h3 className="text-16 font-medium leading-[125%] tracking-[-0.192px]">{children}</h3>
       {showCloseButton && onClose && (
         <button className="mr-4" onClick={onClose}>
-          <svg className="size-16 text-slate-500" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 6.586L13.657.929a1 1 0 1 1 1.414 1.414L9.414 8l5.657 5.657a1 1 0 0 1-1.414 1.414L8 9.414l-5.657 5.657a1 1 0 0 1-1.414-1.414L6.586 8 .929 2.343A1 1 0 0 1 2.343.929L8 6.586z" />
-          </svg>
+          <IcCross className="size-16 text-slate-500" />
         </button>
       )}
     </div>

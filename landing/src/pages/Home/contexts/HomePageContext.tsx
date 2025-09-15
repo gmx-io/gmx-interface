@@ -3,8 +3,8 @@ import { createContext, Dispatch, SetStateAction, useCallback, useContext, useMe
 import { useLocalStorage } from "react-use";
 
 import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/localStorage";
-import { RedirectChainIds } from "landing/Home/hooks/useGoToTrade";
-import { PoolsData, usePoolsData } from "landing/Home/hooks/usePoolsData";
+import { RedirectChainIds } from "landing/pages/Home/hooks/useGoToTrade";
+import { PoolsData, usePoolsData } from "landing/pages/Home/hooks/usePoolsData";
 
 import { LeaveHomepageRedirectModal } from "../LeaveHomepageRedirectModal/LeaveHompageRedirectModal";
 import { SolanaRedirectModal } from "../SolanaRedirectModal/SolanaRedirectModal";
@@ -34,7 +34,6 @@ export function HomePageContextProvider({ children }: { children: React.ReactNod
   const poolsData = usePoolsData();
   const [redirectModalTo, setRedirectModalTo] = useState<string | null>(null);
   const [redirectChainId, setRedirectChainId] = useState<RedirectChainIds | null>(null);
-  // TODO: After App redesign remove the same from GlobalContext, needed only here
   const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage<number | undefined>(
     REDIRECT_POPUP_TIMESTAMP_KEY,
     undefined,

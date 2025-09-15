@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 
-import { Modal, ModalHeader } from "../../components/Modal/Modal";
-import { ModalBody } from "../../components/Modal/Modal";
+import { Modal, ModalHeader } from "../Modal/Modal";
+import { ModalBody } from "../Modal/Modal";
 
 type SolanaRedirectModalProps = {
   onClose: () => void;

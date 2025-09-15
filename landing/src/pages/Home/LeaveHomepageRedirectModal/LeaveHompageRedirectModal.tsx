@@ -7,7 +7,7 @@ import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
 
 import IcLandingChecked from "img/ic_landing_checked.svg?react";
 
-import { Modal, ModalBody, ModalBottom, ModalHeader } from "../../components/Modal/Modal";
+import { Modal, ModalBody, ModalBottom, ModalHeader } from "../Modal/Modal";
 
 type LeaveHomepageRedirectModalProps = {
   onClose: () => void;

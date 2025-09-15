@@ -13,8 +13,8 @@ export default function TermsAndConditions() {
           <div className="text-heading-4 my-24">Terms and Conditions</div>
           <div className="text-14">Last modified: August 1st, 2022</div>
         </div>
-        <div className="mt-74">
-          <div className="mb-74">
+        <div className="mt-74 space-y-74">
+          <div>
             <p className="text-terms-body mb-24">
               Welcome to GMX.io ("we," "us," or "our"), the informational resource for GMX Protocol, as defined below.
             </p>
@@ -30,7 +30,7 @@ export default function TermsAndConditions() {
               use the Site or Interface if you disagree with any of these Terms.
             </p>
           </div>
-          <div className="mb-74">
+          <div>
             <h3 className="text-terms-heading mb-24">1. USE OF THE SITE AND THE INTERFACE</h3>
             <p className="text-terms-body mb-24">The GMX.io site is for informational purposes only.</p>
             <p className="text-terms-body mb-24">
@@ -182,7 +182,7 @@ export default function TermsAndConditions() {
               </li>
             </ul>
           </div>
-          <div className="mb-74">
+          <div>
             <h3 className="text-terms-heading mb-24">2. FEES</h3>
             <p className="text-terms-body mb-24">
               You are required to pay all fees for transactions involving certain blockchain networks. These fees may
@@ -190,7 +190,7 @@ export default function TermsAndConditions() {
               fees. GMX.io does not receive fees for any blockchain transactions or using the Site or the Interface.
             </p>
           </div>
-          <div className="mb-74">
+          <div>
             <h3 className="text-terms-heading mb-24">3. NO PROFESSIONAL ADVICE OR FIDUCIARY DUTIES</h3>
             <p className="text-terms-body mb-24">
               Nothing herein constitutes legal, financial, business, or tax advice, and you are strongly advised to
@@ -202,7 +202,7 @@ export default function TermsAndConditions() {
               intended to, and do not, create or impose any fiduciary duties on us.
             </p>
           </div>
-          <div className="mb-74">
+          <div>
             <h3 className="text-terms-heading mb-24">4. PROPRIETARY RIGHT</h3>
             <ul className="list-none">
               <li>
@@ -225,7 +225,7 @@ export default function TermsAndConditions() {
               </li>
             </ul>
           </div>
-          <div className="mb-74">
+          <div>
             <h3 className="text-terms-heading mb-24">5. MODIFICATION, SUSPENSION, AND TERMINATION</h3>
             <ul className="list-none">
               <li>
@@ -251,7 +251,7 @@ export default function TermsAndConditions() {
               </li>
             </ul>
           </div>
-          <div className="mb-74">
+          <div>
             <h3 className="text-terms-heading mb-24">6. RISKS</h3>
             <ul className="list-none">
               <li>
@@ -333,7 +333,7 @@ export default function TermsAndConditions() {
               </li>
             </ul>
           </div>
-          <div className="mb-74">
+          <div>
             <h3 className="text-terms-heading mb-24">7. PROHIBITED USES</h3>
             <ul className="list-none">
               <li>
@@ -403,7 +403,7 @@ export default function TermsAndConditions() {
               </li>
             </ul>
           </div>
-          <div className="mb-74">
+          <div>
             <h3 className="text-terms-heading mb-24">8. DISCLOSURES; DISCLAIMERS</h3>
             <p className="text-terms-body mb-24">
               GMX.io is an informational site for the GMX Protocol. GMX.io does not operate an exchange platform or
@@ -427,7 +427,7 @@ export default function TermsAndConditions() {
               makes no guarantees of any kind or connection with the Site or the Interface.
             </p>
           </div>
-          <div className="mb-74">
+          <div>
             <h3 className="text-terms-heading mb-24">9. LIMITATION OF LIABILITY</h3>
             <p className="text-terms-body mb-24">
               In no event shall GMX.io, its affiliates, its suppliers and contractors, and its affiliates', suppliers'
@@ -448,7 +448,7 @@ export default function TermsAndConditions() {
               exceed one thousand Singapore Dollars (1,000.00 SGD).
             </p>
           </div>
-          <div className="mb-74">
+          <div>
             <h3 className="text-terms-heading mb-24">10. INDEMNIFICATION</h3>
             <p className="text-terms-body mb-24">
               You will defend, indemnify, and hold harmless GMX.io, its affiliates, members, member, managers,
@@ -465,7 +465,7 @@ export default function TermsAndConditions() {
               with our defense of any claim. You will not, in any event, settle any claim without.
             </p>
           </div>
-          <div className="mb-74">
+          <div>
             <h3 className="text-terms-heading mb-24">11. DISPUTE RESOLUTION & ARBITRATION</h3>
             <p className="text-terms-body mb-24">
               GMX.io will use its best efforts to resolve potential disputes through informal, good faith negotiations.
@@ -493,7 +493,7 @@ export default function TermsAndConditions() {
               will not have the right to assert the claim.
             </p>
           </div>
-          <div className="mb-74">
+          <div>
             <h3 className="text-terms-heading mb-24">12. GOVERNING LAW</h3>
             <p className="text-terms-body mb-24">
               The interpretation and enforcement of these Terms, and any dispute related to these Terms, the Site, or
@@ -501,7 +501,7 @@ export default function TermsAndConditions() {
               applicable.
             </p>
           </div>
-          <div className="mb-74">
+          <div>
             <h3 className="text-terms-heading mb-24">13. GENERAL INFORMATION</h3>
             <ul className="list-none">
               <li>
@@ -565,7 +565,7 @@ export default function TermsAndConditions() {
               </li>
             </ul>
           </div>
-          <div className="mb-74">
+          <div>
             <h3 className="text-terms-heading mb-24">CONTACT INFORMATION</h3>
             <p className="text-terms-body mb-24">
               If you have any questions about these Terms, the Site, or the Interface, please get in touch with GMX.io
