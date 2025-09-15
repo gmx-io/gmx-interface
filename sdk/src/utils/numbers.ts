@@ -144,6 +144,10 @@ export function formatUsd(
   return `${symbol}${sign}$\u200a\u200d${displayUsd}`;
 }
 
+export function formatBigUsd(amount: bigint, opts: { displayDecimals?: number } = {}) {
+  return formatUsd(amount, { maxThreshold: "9999999999999999999999999", displayDecimals: opts.displayDecimals ?? 0 });
+}
+
 export function formatDeltaUsd(
   deltaUsd?: bigint,
   percentage?: bigint,

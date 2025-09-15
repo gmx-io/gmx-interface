@@ -7,7 +7,7 @@ import { isDevelopment } from "config/env";
 import { TotalReferralsStats, useTiers } from "domain/referrals";
 import { formatDate } from "lib/dates";
 import { shortenAddress } from "lib/legacy";
-import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatBalanceAmount, formatBigUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { getNativeToken, getToken } from "sdk/configs/tokens";
 
@@ -108,10 +108,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           </div>
         </ReferralInfoCard>
         <ReferralInfoCard
-          value={formatUsd(currentReferralsData?.traderReferralTotalStats?.volume, {
-            maxThreshold: "999999999999999999",
-            displayDecimals: 0,
-          })}
+          value={formatBigUsd(currentReferralsData?.traderReferralTotalStats?.volume)}
           label={t`Trading Volume`}
           labelTooltipText={t`Volume traded by this account with an active referral code.`}
           tooltipContent={
@@ -156,10 +153,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           }
         />
         <ReferralInfoCard
-          value={formatUsd(currentReferralsData?.traderReferralTotalStats?.discountUsd, {
-            maxThreshold: "999999999999999999",
-            displayDecimals: 0,
-          })}
+          value={formatBigUsd(currentReferralsData?.traderReferralTotalStats?.discountUsd)}
           label={t`Rebates`}
           labelTooltipText={t`Rebates earned by this account as a trader.`}
           tooltipContent={
@@ -287,7 +281,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                                   &nbsp;
                                 </>
                               )}
-                              {formatUsd(totalUsd, { maxThreshold: "999999999999999999", displayDecimals: 0 })}
+                              {formatBigUsd(totalUsd)}
                             </div>
                           }
                           content={

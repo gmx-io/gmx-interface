@@ -9,7 +9,7 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { InfoTokens, Token, TokenInfo } from "domain/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
-import { expandDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { expandDecimals, formatBalanceAmount, formatBigUsd } from "lib/numbers";
 import { searchBy } from "lib/searchBy";
 import { getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
@@ -273,7 +273,10 @@ export default function TokenSelector(props: Props) {
                   )) ||
                     null}
                   <span className="text-body-small text-typography-secondary">
-                    {showBalances && balanceUsd !== undefined && balanceUsd > 0 && formatUsd(balanceUsd)}
+                    {showBalances &&
+                      balanceUsd !== undefined &&
+                      balanceUsd > 0 &&
+                      formatBigUsd(balanceUsd, { displayDecimals: 2 })}
                   </span>
                 </div>
               </div>
