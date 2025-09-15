@@ -288,7 +288,7 @@ describe("formatUsdPrice", () => {
       expect(formatUsdPrice(ONE_USD / 10_000n)).toBe(           "$\u200a\u200d0.0001000");
       expect(formatUsdPrice(ONE_USD / 100_000n)).toBe(          "$\u200a\u200d0.00001000");
       expect(formatUsdPrice(ONE_USD / 1_000_000_000n)).toBe(    "$\u200a\u200d0.000000001");
-      expect(formatUsdPrice(ONE_USD / 10_000_000_000n)).toBe( "< $\u200a\u200d0.000000001");
+      expect(formatUsdPrice(ONE_USD / 10_000_000_000n)).toBe( "<\u00a0$\u200a\u200d0.000000001");
     });
 });
 
