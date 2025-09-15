@@ -17,13 +17,13 @@
   font-family: "TTHoves";
   font-style: normal;
   font-weight: 400;
-  src: url("fonts/tthoves/TT_Hoves_Pro_Regular.ttf") format("truetype");
+  src: url("fonts/tthoves/tthoves-pro-regular.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "TTHoves";
   font-style: normal;
   font-weight: 500;
-  src: url("fonts/tthoves/TT_Hoves_Pro_Medium.ttf") format("truetype");
+  src: url("fonts/tthoves/tthoves-pro-medium.ttf") format("truetype");
 }
 
