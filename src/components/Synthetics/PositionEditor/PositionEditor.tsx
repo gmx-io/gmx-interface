@@ -208,8 +208,8 @@ export function PositionEditor() {
   });
 
   const priceImpactWarningState = usePriceImpactWarningState({
-    collateralImpact: fees?.positionCollateralPriceImpact,
-    positionImpact: fees?.positionPriceImpact,
+    collateralNetPriceImpact: fees?.collateralNetPriceImpact,
+    positionNetPriceImpact: fees?.positionNetPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
@@ -340,7 +340,7 @@ export function PositionEditor() {
         qa="position-edit-modal"
       >
         {position && (
-          <>
+          <div className="flex flex-col gap-12">
             <Tabs
               onChange={setOperation}
               selectedValue={operation}
@@ -353,7 +353,6 @@ export function PositionEditor() {
             <BuyInputSection
               topLeftLabel={localizedOperationLabels[operation]}
               bottomLeftValue={formatUsd(collateralDeltaUsd)}
-              isBottomLeftValueMuted={collateralDeltaUsd === 0n}
               bottomRightLabel={t`Max`}
               bottomRightValue={
                 isDeposit
@@ -395,22 +394,22 @@ export function PositionEditor() {
                 collateralToken?.symbol
               )}
             </BuyInputSection>
-            <div className="flex flex-col gap-14 pt-14">
+            <div className="flex flex-col gap-14">
               <HighPriceImpactOrFeesWarningCard
                 priceImpactWarningState={priceImpactWarningState}
-                collateralImpact={fees?.positionCollateralPriceImpact}
-                positionImpact={fees?.positionPriceImpact}
+                collateralImpact={fees?.collateralNetPriceImpact}
                 swapPriceImpact={fees?.swapPriceImpact}
                 swapProfitFee={fees?.swapProfitFee}
                 executionFeeUsd={executionFee?.feeUsd}
               />
 
-              <div className="">{button}</div>
+              <div>{button}</div>
 
               <ExpressTradingWarningCard
                 expressParams={expressParams}
                 payTokenAddress={undefined}
                 isWrapOrUnwrap={false}
+                isGmxAccount={isCollateralTokenFromGmxAccount}
               />
 
               {!isDeposit && (
@@ -448,7 +447,7 @@ export function PositionEditor() {
 
               <PositionEditorAdvancedRows operation={operation} gasPaymentParams={expressParams?.gasPaymentParams} />
             </div>
-          </>
+          </div>
         )}
       </Modal>
     </div>

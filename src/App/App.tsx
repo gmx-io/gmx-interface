@@ -22,6 +22,7 @@ import { SettingsContextProvider } from "context/SettingsContext/SettingsContext
 import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
 import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContextProvider";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
+import { ThemeProvider } from "context/ThemeContext/ThemeContext";
 import { TokenPermitsContextProvider } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
@@ -68,11 +69,12 @@ function App() {
   app = <RainbowKitProviderWrapper>{app}</RainbowKitProviderWrapper>;
   app = <I18nProvider i18n={i18n as any}>{app}</I18nProvider>;
   app = <PendingTxnsContextProvider>{app}</PendingTxnsContextProvider>;
-  app = <SettingsContextProvider>{app}</SettingsContextProvider>;
   app = <SWRConfigWithKey>{app}</SWRConfigWithKey>;
+  app = <SettingsContextProvider>{app}</SettingsContextProvider>;
   app = <GlobalStateProvider>{app}</GlobalStateProvider>;
   app = <ChainContextProvider>{app}</ChainContextProvider>;
   app = <GmxAccountContextProvider>{app}</GmxAccountContextProvider>;
+  app = <ThemeProvider>{app}</ThemeProvider>;
   app = <Router>{app}</Router>;
 
   return app;

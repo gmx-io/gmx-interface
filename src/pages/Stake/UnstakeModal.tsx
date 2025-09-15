@@ -93,7 +93,7 @@ export function UnstakeModal(props: {
       return error;
     }
     if (isUnstaking) {
-      return t`Unstaking...`;
+      return t`Unstaking`;
     }
     return t`Unstake`;
   }, [error, isUnstaking]);
@@ -102,9 +102,9 @@ export function UnstakeModal(props: {
     setIsUnstaking(true);
     const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
     callContract(chainId, contract, unstakeMethodName, [amount], {
-      sentMsg: t`Unstake submitted!`,
+      sentMsg: t`Unstake submitted.`,
       failMsg: t`Unstake failed.`,
-      successMsg: t`Unstake completed!`,
+      successMsg: t`Unstake completed.`,
       setPendingTxns,
     })
       .then(() => {

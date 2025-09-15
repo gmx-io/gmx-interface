@@ -22,7 +22,7 @@
 
     .Exchange-swap-max {
       position: unset;
-      color: var(--color-white);
+      color: var(--color-typography-primary);
       font-size: var(--font-size-body-medium);
       line-height: var(--line-height-body-medium);
     }
@@ -71,7 +71,7 @@
     font-size: 1.4rem;
 
     &:hover {
-      background: var(--color-slate-500);
+      background: var(--color-slate-100);
     }
   }
 }

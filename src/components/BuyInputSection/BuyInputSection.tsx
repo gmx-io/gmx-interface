@@ -12,7 +12,7 @@ type Props = {
   bottomLeftValue?: string;
   isBottomLeftValueMuted?: boolean;
   bottomRightLabel?: string;
-  bottomRightValue?: string;
+  bottomRightValue?: ReactNode;
   onClickBottomRightLabel?: () => void;
   topRightLabel?: string;
   topRightValue?: ReactNode;
@@ -30,6 +30,7 @@ type Props = {
   onPercentChange?: (percentage: number) => void;
   qa?: string;
   isDisabled?: boolean;
+  className?: string;
 };
 
 function getMaxButtonPosition({
@@ -58,7 +59,7 @@ export default function BuyInputSection(props: Props) {
   const {
     topLeftLabel,
     bottomLeftValue,
-    isBottomLeftValueMuted = false,
+    isBottomLeftValueMuted = true,
     bottomRightLabel,
     bottomRightValue,
     onClickBottomRightLabel,
@@ -74,6 +75,7 @@ export default function BuyInputSection(props: Props) {
     onPercentChange,
     qa,
     isDisabled = false,
+    className,
   } = props;
   const [isPercentSelectorVisible, setIsPercentSelectorVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -147,17 +149,18 @@ export default function BuyInputSection(props: Props) {
     <div data-qa={qa}>
       <div
         className={cx(
-          `flex cursor-text flex-col justify-between gap-8 rounded-4 bg-cold-blue-900
-          px-14 pb-16 pt-12 text-12 leading-[16px] shadow-[inset_0_0_0_1px] shadow-[transparent]`,
+          `text-body-small flex cursor-text flex-col justify-between gap-2 rounded-8
+          border border-slate-800 bg-slate-800 p-12`,
           {
-            "border-2 border-cold-blue-900 bg-slate-800": isDisabled,
-            "focus-within:shadow-cold-blue-500 hover:[&:not(:focus-within)]:shadow-[rgba(58,63,121,0.4)]": !isDisabled,
-          }
+            "bg-slate-900": isDisabled,
+            "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300": !isDisabled,
+          },
+          className
         )}
         onClick={handleBoxClick}
       >
         <div className="flex justify-between">
-          <div data-label="left" className="text-slate-100">
+          <div data-label="left" className="text-typography-secondary">
             {topLeftLabel}
           </div>
           {(topRightLabel || topRightValue || (onClickMax && maxButtonPosition === "top-right")) && (
@@ -169,18 +172,9 @@ export default function BuyInputSection(props: Props) {
               )}
               onClick={handleTopRightClick}
             >
-              {topRightLabel && <span className="text-slate-100">{topRightLabel}:</span>}
-              {topRightValue && <span>{topRightValue}</span>}
-              {onClickMax && maxButtonPosition === "top-right" && (
-                <button
-                  type="button"
-                  className="-my-4 rounded-4 bg-cold-blue-500 px-8 py-2 hover:bg-[#484e92] active:bg-[#505699]"
-                  onClick={handleMaxClick}
-                  data-qa="input-max"
-                >
-                  <Trans>MAX</Trans>
-                </button>
-              )}
+              {topRightLabel && <span className="text-typography-secondary">{topRightLabel}:</span>}
+              {topRightValue && <span className="numbers">{topRightValue}</span>}
+              {onClickMax && maxButtonPosition === "top-right" && <MaxButton onClick={handleMaxClick} />}
             </div>
           )}
         </div>
@@ -189,7 +183,7 @@ export default function BuyInputSection(props: Props) {
           <div className="relative grow">
             <NumberInput
               value={inputValue}
-              className="h-28 w-full min-w-0 p-0 text-24 !leading-[24px] outline-none"
+              className="text-body-large h-28 w-full min-w-0 p-0 outline-none"
               inputRef={inputRef}
               onValueChange={onUserInput}
               onFocus={handleOnFocus}
@@ -198,7 +192,6 @@ export default function BuyInputSection(props: Props) {
               qa={qa ? qa + "-input" : undefined}
               isDisabled={isDisabled}
             />
-            <div className="absolute right-0 top-0 h-full w-8 bg-gradient-to-r from-[rgba(0,0,0,0)] to-cold-blue-900" />
 
             {showPercentSelector && isPercentSelectorVisible && onPercentChange && (
               <ul className="PercentSelector">
@@ -219,15 +212,15 @@ export default function BuyInputSection(props: Props) {
             )}
           </div>
 
-          <div className="shrink-0 text-24 leading-[24px]">{children}</div>
+          <div className="shrink-0 text-20 leading-1 tracking-wide">{children}</div>
         </div>
 
         {(bottomLeftValue || bottomRightValue || (onClickMax && maxButtonPosition === "bottom-right")) && (
           <div className="flex justify-between">
             <div
-              className={cx({
-                "text-slate-100": isBottomLeftValueMuted,
-                "text-white": !isBottomLeftValueMuted,
+              className={cx("numbers", {
+                "text-typography-secondary": isBottomLeftValueMuted,
+                "text-typography-primary": !isBottomLeftValueMuted,
               })}
             >
               {bottomLeftValue || ""}
@@ -239,19 +232,10 @@ export default function BuyInputSection(props: Props) {
               )}
               onClick={handleBottomRightClick}
             >
-              {bottomRightLabel && <span className="text-slate-100">{bottomRightLabel}:</span>}
-              {bottomRightValue && <span>{bottomRightValue}</span>}
+              {bottomRightLabel && <span className="text-typography-secondary">{bottomRightLabel}:</span>}
+              {bottomRightValue && <span className="numbers">{bottomRightValue}</span>}
 
-              {onClickMax && maxButtonPosition === "bottom-right" && (
-                <button
-                  type="button"
-                  className="-my-4 rounded-4 bg-cold-blue-500 px-8 py-2 hover:bg-[#484e92] active:bg-[#505699]"
-                  onClick={handleMaxClick}
-                  data-qa="input-max"
-                >
-                  <Trans>MAX</Trans>
-                </button>
-              )}
+              {onClickMax && maxButtonPosition === "bottom-right" && <MaxButton onClick={handleMaxClick} />}
             </div>
           </div>
         )}
@@ -259,3 +243,16 @@ export default function BuyInputSection(props: Props) {
     </div>
   );
 }
+
+const MaxButton = ({ onClick }: { onClick: (e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>) => void }) => {
+  return (
+    <button
+      type="button"
+      className="-my-4 rounded-full bg-slate-600 px-8 py-2 font-medium hover:bg-slate-500"
+      onClick={onClick}
+      data-qa="input-max"
+    >
+      <Trans>Max</Trans>
+    </button>
+  );
+};

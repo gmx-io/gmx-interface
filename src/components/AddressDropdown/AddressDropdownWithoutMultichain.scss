@@ -5,33 +5,31 @@
 .menu-items {
   position: absolute;
   right: 0;
-  top: 4.3rem;
+  top: calc(100% + 8px);
   min-width: 17rem;
   width: 100%;
   transform-origin: top right;
-  border-radius: 0.4rem;
+  border-radius: 8px;
   overflow: hidden;
-  background: var(--color-slate-800);
-  border: 1px solid var(--color-stroke-primary);
+  background: var(--color-slate-900);
+  border: 0.5px solid var(--color-slate-600);
   list-style: none;
   cursor: pointer;
   outline: none;
   z-index: 1000;
+  padding-bottom: 8px;
 
   .menu-item {
     display: flex !important;
     align-items: center;
     color: var(--color-slate-100);
-    padding-bottom: 1.5rem;
-    font-size: var(--font-size-body-medium);
-    padding: 0.85rem 0.8rem;
-    border-radius: 0.4rem;
+    font-size: 13px;
+    padding: 8px 12px;
+    font-weight: 500;
 
     &:hover {
-      background: #808aff14 !important;
-      border-radius: 0.4rem;
-      opacity: 1;
-      color: var(--color-gray-50);
+      background: var(--color-fill-surfaceHover);
+      color: var(--color-typography-primary);
     }
 
     > p {

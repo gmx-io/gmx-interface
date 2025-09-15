@@ -400,7 +400,7 @@ function ClaimModalComponent(p: {
             handle={t`FUNDING FEE`}
             renderContent={() => (
               <Trans>
-                <span className="text-white">Claimable Funding Fee.</span>
+                <span className="text-typography-primary">Claimable Funding Fee.</span>
               </Trans>
             )}
           />

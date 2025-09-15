@@ -285,6 +285,17 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "existingDistributionId",
+        type: "uint256",
+      },
+    ],
+    name: "DuplicateClaimTerms",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "index",
         type: "uint256",
       },
@@ -341,6 +352,11 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [],
+    name: "EmptyAmount",
+    type: "error",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -365,6 +381,17 @@ const _abi = [
   {
     inputs: [],
     name: "EmptyClaimFeesMarket",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "EmptyClaimableAmount",
     type: "error",
   },
   {
@@ -1235,6 +1262,17 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "InsufficientFunds",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "remainingCostUsd",
         type: "uint256",
@@ -1651,6 +1689,33 @@ const _abi = [
       },
     ],
     name: "InvalidClaimFundingFeesInput",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "recoveredSigner",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "expectedSigner",
+        type: "address",
+      },
+    ],
+    name: "InvalidClaimTermsSignature",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "expectedSigner",
+        type: "address",
+      },
+    ],
+    name: "InvalidClaimTermsSignatureForContract",
     type: "error",
   },
   {
@@ -2473,6 +2538,17 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "string",
+        name: "reason",
+        type: "string",
+      },
+    ],
+    name: "InvalidParams",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "spender",
         type: "address",
@@ -2726,6 +2802,17 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "desChainId",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidSubaccountApprovalDesChainId",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "storedNonce",
         type: "uint256",
       },
@@ -2795,6 +2882,17 @@ const _abi = [
       },
     ],
     name: "InvalidTimelockDelay",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "InvalidToken",
     type: "error",
   },
   {
@@ -3442,6 +3540,11 @@ const _abi = [
   },
   {
     inputs: [
+      {
+        internalType: "address",
+        name: "oracle",
+        type: "address",
+      },
       {
         internalType: "address",
         name: "token",

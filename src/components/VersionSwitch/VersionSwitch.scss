@@ -27,11 +27,11 @@
 
   &.active {
     background: var(--color-cold-blue-500);
-    color: var(--color-white);
+    color: var(--color-typography-primary);
   }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1024px) {
   .VersionSwitch-option {
     padding: 0.75rem 1.2rem;
   }

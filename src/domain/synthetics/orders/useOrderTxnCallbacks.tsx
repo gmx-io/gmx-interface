@@ -11,14 +11,21 @@ import {
 } from "context/SyntheticsEvents";
 import { selectOrdersInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
-import { getIsPossibleExternalSwapError } from "domain/synthetics/externalSwaps/utils";
 import { getPositionKey } from "domain/synthetics/positions/utils";
 import { getRemainingSubaccountActions, Subaccount } from "domain/synthetics/subaccount";
+import { validateTokenPermitSignature } from "domain/tokens/permitUtils";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
+import {
+  getInvalidPermitSignatureError,
+  getIsPermitSignatureErrorOnSimulation,
+  getIsPossibleExternalSwapError,
+} from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import {
+  metrics,
   OrderMetricId,
   sendOrderSimulatedMetric,
   sendOrderTxnSubmittedMetric,
@@ -71,6 +78,7 @@ export function useOrderTxnCallbacks() {
   const { showDebugValues, setIsSettingsVisible } = useSettings();
   const ordersInfoData = useSelector(selectOrdersInfoData);
   const { setOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
+  const { setIsPermitsDisabled, resetTokenPermits } = useTokenPermitsContext();
   const tokensData = useSelector(selectTokensData);
   const blockNumber = useBlockNumber(chainId);
 
@@ -186,6 +194,8 @@ export function useOrderTxnCallbacks() {
             payTokenAddresses: Object.keys(optimisticBatchPayAmounts),
             pendingOrdersKeys: pendingOrders.map(getPendingOrderKey),
             pendingPositionsKeys: pendingPositions.map((p) => p.positionKey),
+            estimatedExecutionFee: expressParams.executionFeeAmount,
+            estimatedExecutionGasLimit: expressParams.executionGasLimit,
             metricId: ctx.metricId,
             createdAt: Date.now(),
             taskId: undefined,
@@ -286,11 +296,16 @@ export function useOrderTxnCallbacks() {
               ? ctx.onInternalSwapFallback
               : undefined;
 
+          const isPermitIssue =
+            Boolean(expressParams?.relayParamsPayload.tokenPermits?.length) &&
+            getIsPermitSignatureErrorOnSimulation(error);
+
           const toastParams = getTxnErrorToast(chainId, errorData, {
             defaultMessage: operationMessage,
             slippageInputId: ctx.slippageInputId,
             additionalContent: ctx.additionalErrorContent,
             isInternalSwapFallback: Boolean(fallbackToInternalSwap),
+            isPermitIssue: isPermitIssue,
             setIsSettingsVisible,
           });
 
@@ -300,6 +315,24 @@ export function useOrderTxnCallbacks() {
 
           if (fallbackToInternalSwap) {
             fallbackToInternalSwap();
+          }
+
+          if (isPermitIssue) {
+            expressParams?.relayParamsPayload.tokenPermits.forEach((permit) => {
+              validateTokenPermitSignature(chainId, permit).then((validationResult) => {
+                metrics.pushError(
+                  getInvalidPermitSignatureError({
+                    isValid: validationResult.isValid,
+                    permit,
+                    error: validationResult.error,
+                  }),
+                  "simulation.permitError"
+                );
+              });
+            });
+
+            setIsPermitsDisabled(true);
+            resetTokenPermits();
           }
 
           if (pendingOrderUpdate) {
@@ -314,6 +347,8 @@ export function useOrderTxnCallbacks() {
       blockNumber,
       chainId,
       ordersInfoData,
+      resetTokenPermits,
+      setIsPermitsDisabled,
       setIsSettingsVisible,
       setOptimisticTokensBalancesUpdates,
       setPendingExpressTxn,

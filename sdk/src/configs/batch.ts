@@ -1,9 +1,19 @@
 import { ClientConfig, MulticallBatchOptions } from "viem";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import {
+  AnyChainId,
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  BOTANIX,
+  SOURCE_BASE_MAINNET,
+  SOURCE_OPTIMISM_SEPOLIA,
+  SOURCE_SEPOLIA,
+} from "./chains";
 
 export const BATCH_CONFIGS: Record<
-  number,
+  AnyChainId,
   {
     http: MulticallBatchOptions;
     client: ClientConfig["batch"];
@@ -33,6 +43,20 @@ export const BATCH_CONFIGS: Record<
       },
     },
   },
+
+  [SOURCE_BASE_MAINNET]: {
+    http: {
+      batchSize: 0,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
+  },
+
   [AVALANCHE_FUJI]: {
     http: {
       batchSize: 40,
@@ -42,6 +66,54 @@ export const BATCH_CONFIGS: Record<
       multicall: {
         batchSize: 1024 * 1024,
         wait: 0,
+      },
+    },
+  },
+  [BOTANIX]: {
+    http: {
+      batchSize: 0,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
+  },
+  [ARBITRUM_SEPOLIA]: {
+    http: {
+      batchSize: 40,
+      wait: 100,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 100,
+      },
+    },
+  },
+  [SOURCE_OPTIMISM_SEPOLIA]: {
+    http: {
+      batchSize: 40,
+      wait: 100,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 100,
+      },
+    },
+  },
+  [SOURCE_SEPOLIA]: {
+    http: {
+      batchSize: 40,
+      wait: 100,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 100,
       },
     },
   },

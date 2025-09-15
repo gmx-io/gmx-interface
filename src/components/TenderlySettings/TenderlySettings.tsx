@@ -47,9 +47,9 @@ export function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boo
             value={accessKey}
             onChange={setTenderlyAccessKey}
           />
-          <div className="">
+          <div>
             <ToggleSwitch isChecked={Boolean(tenderlySimulationEnabled)} setIsChecked={setTenderlySimulationEnabled}>
-              <span className="">Simulate TXs</span>
+              <span>Simulate TXs</span>
             </ToggleSwitch>
           </div>
           <br />
@@ -89,7 +89,7 @@ function TenderlyInput({
         value={value}
         onChange={handleChange}
         placeholder={placeholder}
-        className="border-1 w-[280px] border border-stroke-primary px-5 py-4 text-12"
+        className="border-1 w-[280px] border border-slate-600 px-5 py-4 text-12"
       />
     </p>
   );

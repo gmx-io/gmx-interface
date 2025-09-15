@@ -55,6 +55,7 @@ export type SubaccountState = {
   updateSubaccountSettings: (params: {
     nextRemainigActions?: bigint;
     nextRemainingSeconds?: bigint;
+    nextIsGmxAccount?: boolean;
   }) => Promise<boolean>;
   resetSubaccountApproval: () => void;
   tryEnableSubaccount: () => Promise<boolean>;
@@ -135,9 +136,11 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     async function updateSubaccountSettings({
       nextRemainigActions,
       nextRemainingSeconds,
+      nextIsGmxAccount,
     }: {
       nextRemainigActions?: bigint;
       nextRemainingSeconds?: bigint;
+      nextIsGmxAccount?: boolean;
     }): Promise<boolean> {
       if (!signer || !subaccount?.address || !provider) {
         return false;
@@ -149,7 +152,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         </StatusNotification>
       );
 
-      const isGmxAccount = calcSelector(selectTradeboxIsFromTokenGmxAccount);
+      const isGmxAccount = nextIsGmxAccount ?? calcSelector(selectTradeboxIsFromTokenGmxAccount);
 
       try {
         const signedSubaccountApproval = await signUpdatedSubaccountSettings({
@@ -436,12 +439,14 @@ function SubaccountActivateNotification({ toastId }: { toastId: number }) {
     [isCompleted, subaccountActivationState, toastId]
   );
 
+  useEffect(() => {
+    if (hasError) {
+      toast.update(toastId, { type: "error" });
+    }
+  }, [hasError, toastId]);
+
   return (
-    <StatusNotification
-      key="updateSubaccountSettingsSuccess"
-      title={t`Activate 1CT (One-Click Trading)`}
-      hasError={hasError}
-    >
+    <StatusNotification key="updateSubaccountSettingsSuccess" title={t`Activate 1CT (One-Click Trading)`}>
       {generatingStatus}
       {approvalSigningStatus}
     </StatusNotification>
@@ -473,6 +478,12 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
     return <TransactionStatus status={status} text={text} />;
   }, [subaccountDeactivationState]);
 
+  useEffect(() => {
+    if (hasError) {
+      toast.update(toastId, { type: "error" });
+    }
+  }, [hasError, toastId]);
+
   useEffect(
     function cleanup() {
       if (isCompleted && !dismissTimerId.current) {
@@ -491,11 +502,7 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
     [isCompleted, subaccountDeactivationState, toastId]
   );
 
-  return (
-    <StatusNotification title={t`Deactivate 1CT (One-Click Trading)`} hasError={hasError}>
-      {deactivatingStatus}
-    </StatusNotification>
-  );
+  return <StatusNotification title={t`Deactivate 1CT (One-Click Trading)`}>{deactivatingStatus}</StatusNotification>;
 }
 
 function useStoredSubaccountData(chainId: number, account: string | undefined) {

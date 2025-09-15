@@ -656,7 +656,6 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
      * */
     initialCollateralTokenAddress = convertTokenAddress(chainId, externalSwapQuote.outTokenAddress, "wrapped");
     initialCollateralDeltaAmount = 0n;
-    swapPath = [];
     externalCalls = getExternalCallsPayload({
       chainId,
       account: receiver,

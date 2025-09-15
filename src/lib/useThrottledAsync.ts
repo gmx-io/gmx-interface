@@ -74,6 +74,10 @@ export function useThrottledAsync<T, D extends object>(
   const isRetryRef = useRef(false);
 
   useEffect(() => {
+    setDynamicThrottleMs(throttleMs);
+  }, [throttleMs]);
+
+  useEffect(() => {
     latestHandlerRef.current = async (args: D) => {
       if (isRetryRef.current) {
         setDynamicThrottleMs(throttleMs);

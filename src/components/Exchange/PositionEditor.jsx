@@ -55,7 +55,7 @@ const EDIT_OPTIONS_LABELS = {
 
 const ERROR_TOOLTIP_MSG = {
   [ErrorCode.InvalidLiqPrice]: msg`Liquidation price would cross mark price.`,
-  [ErrorCode.InsufficientDepositAmount]: msg`Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x`,
+  [ErrorCode.InsufficientDepositAmount]: msg`Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x.`,
 };
 
 export default function PositionEditor(props) {
@@ -312,28 +312,28 @@ export default function PositionEditor(props) {
     }
     if (isSwapping) {
       if (isDeposit) {
-        return t`Depositing...`;
+        return t`Depositing`;
       }
-      return t`Withdrawing...`;
+      return t`Withdrawing`;
     }
 
     if (isApproving) {
-      return t`Approving ${collateralToken.assetSymbol ?? collateralToken.symbol}...`;
+      return t`Approving ${collateralToken.assetSymbol ?? collateralToken.symbol}`;
     }
     if (needApproval) {
       return t`Approve ${collateralToken.assetSymbol ?? collateralToken.symbol}`;
     }
 
     if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
-      return t`Enabling Leverage`;
+      return t`Enabling leverage`;
     }
 
     if (isPositionRouterApproving) {
-      return t`Enabling Leverage...`;
+      return t`Enabling leverage`;
     }
 
     if (needPositionRouterApproval) {
-      return t`Enable Leverage`;
+      return t`Enable leverage`;
     }
 
     if (isDeposit) {
@@ -595,7 +595,6 @@ export default function PositionEditor(props) {
                     inputValue={fromValue}
                     onInputValueChange={(e) => setFromValue(e.target.value)}
                     topLeftLabel={isDeposit ? t`Deposit` : t`Withdraw`}
-                    isBottomLeftValueMuted={convertedAmount === 0n}
                     bottomLeftValue={
                       convertedAmountFormatted
                         ? `${convertedAmountFormatted} ${isDeposit ? "USD" : position.collateralToken.symbol}`
@@ -661,7 +660,8 @@ export default function PositionEditor(props) {
                       <Trans>Entry Price</Trans>
                     </div>
                     <div className="align-right">
-                      ${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
+                      ${"\u200a\u200d"}
+                      {formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
                     </div>
                   </div>
                   <div className="Exchange-info-row">
@@ -669,7 +669,8 @@ export default function PositionEditor(props) {
                       <Trans>Mark Price</Trans>
                     </div>
                     <div className="align-right">
-                      ${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
+                      ${"\u200a\u200d"}
+                      {formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
                     </div>
                   </div>
                   <div className="Exchange-info-row">
@@ -680,17 +681,19 @@ export default function PositionEditor(props) {
                       {nextLiquidationPrice === undefined && (
                         <div>
                           {fromAmount === undefined &&
-                            `$${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}`}
+                            `$\u200a\u200d${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}`}
                           {fromAmount !== undefined && "-"}
                         </div>
                       )}
                       {nextLiquidationPrice !== undefined && (
                         <div>
                           <div className="muted inline-block">
-                            ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
+                            ${"\u200a\u200d"}
+                            {formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                             <BsArrowRight className="transition-arrow inline-block" />
                           </div>
-                          ${formatAmount(nextLiquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
+                          ${"\u200a\u200d"}
+                          {formatAmount(nextLiquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                         </div>
                       )}
                     </div>
@@ -707,15 +710,20 @@ export default function PositionEditor(props) {
                     </div>
                     <div className="align-right">
                       {!nextCollateral && (
-                        <div>${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}</div>
+                        <div>
+                          ${"\u200a\u200d"}
+                          {formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
+                        </div>
                       )}
                       {nextCollateral && (
                         <div>
                           <div className="muted inline-block">
-                            ${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
+                            ${"\u200a\u200d"}
+                            {formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
                             <BsArrowRight className="transition-arrow inline-block" />
                           </div>
-                          ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
+                          ${"\u200a\u200d"}
+                          {formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
                         </div>
                       )}
                     </div>
@@ -731,7 +739,8 @@ export default function PositionEditor(props) {
                           handle={
                             <>
                               <div className="muted inline-block">
-                                ${formatAmount(fundingFee, USD_DECIMALS, 2, true)}
+                                ${"\u200a\u200d"}
+                                {formatAmount(fundingFee, USD_DECIMALS, 2, true)}
                                 <BsArrowRight className="transition-arrow inline-block" />
                               </div>
                               $0

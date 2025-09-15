@@ -1,24 +1,30 @@
-import "lib/monkeyPatching";
-import "lib/polyfills";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { afterAll, beforeAll, describe } from "vitest";
-
-// import { ARBITRUM } from "config/chains";
+import { ARBITRUM, SOURCE_BASE_MAINNET } from "config/chains";
 import { getMulticallBatchingLoggingEnabledKey } from "config/localStorage";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
-// import { fetchMultichainTokenBalances } from "./fetchMultichainTokenBalances";
+import { fetchMultichainTokenBalances } from "./fetchMultichainTokenBalances";
 
-describe.skip("fetchMultichainTokenBalances", () => {
-  beforeAll(() => {
-    localStorage.setItem(JSON.stringify(getMulticallBatchingLoggingEnabledKey()), "1");
-  });
+const DEBUG = false;
 
-  afterAll(() => {
-    localStorage.removeItem(JSON.stringify(getMulticallBatchingLoggingEnabledKey()));
-  });
+describe("fetchMultichainTokenBalances", () => {
+  if (DEBUG) {
+    beforeAll(() => {
+      localStorage.setItem(JSON.stringify(getMulticallBatchingLoggingEnabledKey()), "1");
+    });
 
-  // it("should fetch real token balances", { timeout: 30_000 }, async () => {
-  //   const account = "0x8F091A33f310EFd8Ca31f7aE4362d6306cA6Ec8d";
-  //   const result = await fetchMultichainTokenBalances(ARBITRUM, account);
-  // });
+    afterAll(() => {
+      localStorage.removeItem(JSON.stringify(getMulticallBatchingLoggingEnabledKey()));
+    });
+  }
+
+  it("should fetch real token balances", async () => {
+    const account = "0x0000000000000000000000000000000000000000";
+    const result = await fetchMultichainTokenBalances({
+      settlementChainId: ARBITRUM,
+      account,
+    });
+    expect(result[SOURCE_BASE_MAINNET][NATIVE_TOKEN_ADDRESS]).toBeGreaterThan(0n);
+  }, 10_000);
 });

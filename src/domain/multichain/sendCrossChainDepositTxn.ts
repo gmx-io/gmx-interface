@@ -1,11 +1,11 @@
-import { zeroAddress, encodeFunctionData } from "viem";
+import { encodeFunctionData, zeroAddress } from "viem";
 
 import type { SourceChainId } from "config/chains";
 import { IStargateAbi } from "config/multichain";
 import type { QuoteSend } from "domain/multichain/types";
 import { TxnCallback, WalletTxnCtx, sendWalletTransaction } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
-import type { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
+import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 export async function sendCrossChainDepositTxn({
   chainId,

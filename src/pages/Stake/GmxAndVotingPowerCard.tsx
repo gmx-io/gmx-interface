@@ -102,7 +102,7 @@ export function GmxAndVotingPowerCard({
   );
 
   const gmxAvgAprText = useMemo(() => {
-    return `${formatAmount(processedData?.gmxAprTotal, 2, 2, true)}%`;
+    return <span className="numbers">{formatAmount(processedData?.gmxAprTotal, 2, 2, true)}%</span>;
   }, [processedData?.gmxAprTotal]);
 
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
@@ -129,16 +129,21 @@ export function GmxAndVotingPowerCard({
               <Tooltip
                 position="bottom-end"
                 className="whitespace-nowrap"
-                handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
+                handle={"$\u200a\u200d" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
+                handleClassName="numbers"
                 renderContent={() => (
                   <>
                     <StatsTooltipRow
                       label={t`Price on Avalanche`}
-                      value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
+                      value={
+                        <span className="numbers">{formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}</span>
+                      }
                     />
                     <StatsTooltipRow
                       label={t`Price on Arbitrum`}
-                      value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
+                      value={
+                        <span className="numbers">{formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}</span>
+                      }
                     />
                   </>
                 )}
@@ -183,10 +188,11 @@ export function GmxAndVotingPowerCard({
                   position="bottom-end"
                   className="nowrap"
                   handle={formatBalanceAmount(govTokenAmount, 18, "GMX DAO", { showZero: true })}
+                  handleClassName="numbers"
                   content={
                     <>
                       {govTokenDelegatesAddress === NATIVE_TOKEN_ADDRESS && govTokenAmount > 0 ? (
-                        <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-500">
+                        <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-300">
                           <Trans>
                             <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                               Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
@@ -244,7 +250,8 @@ export function GmxAndVotingPowerCard({
           </div>
           <div>
             <Tooltip
-              handle={`$${formatKeyAmount(processedData, "totalStakingRewardsUsd", USD_DECIMALS, 2, true)}`}
+              handle={`$\u200a\u200d${formatKeyAmount(processedData, "totalStakingRewardsUsd", USD_DECIMALS, 2, true)}`}
+              handleClassName="numbers"
               position="bottom-end"
               content={
                 <>
@@ -306,7 +313,9 @@ export function GmxAndVotingPowerCard({
           <div className="label">
             <Trans>Total Supply</Trans>
           </div>
-          <AmountWithUsdHuman amount={totalGmxSupply} decimals={18} usd={totalSupplyUsd} />
+          <div>
+            <AmountWithUsdHuman amount={totalGmxSupply} decimals={18} usd={totalSupplyUsd} />
+          </div>
         </div>
         <div className="App-card-divider" />
         <div className="App-card-buttons m-0">
@@ -326,11 +335,6 @@ export function GmxAndVotingPowerCard({
           {active && chainId === ARBITRUM && (
             <Button variant="secondary" to={GMX_DAO_LINKS.VOTING_POWER} newTab>
               <Trans>Delegate</Trans>
-            </Button>
-          )}
-          {active && (
-            <Button variant="secondary" to="/begin_account_transfer">
-              <Trans>Transfer Account</Trans>
             </Button>
           )}
         </div>

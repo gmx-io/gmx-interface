@@ -1,5 +1,7 @@
 import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "./fees";
 import { DecreasePositionSwapType, OrderType } from "./orders";
+import { SwapStrategyForIncreaseOrders } from "./swapStrategy";
+import { TokensData } from "./tokens";
 
 export enum TradeType {
   Long = "Long",
@@ -44,7 +46,7 @@ export type SwapAmounts = {
   usdOut: bigint;
   priceIn: bigint;
   priceOut: bigint;
-  swapPathStats: SwapPathStats | undefined;
+  swapStrategy: SwapStrategyForIncreaseOrders;
   minOutputAmount: bigint;
   uiFeeUsd?: bigint;
 };
@@ -56,8 +58,7 @@ export type IncreasePositionAmounts = {
   collateralDeltaAmount: bigint;
   collateralDeltaUsd: bigint;
 
-  swapPathStats: SwapPathStats | undefined;
-  externalSwapQuote: ExternalSwapQuote | undefined;
+  swapStrategy: SwapStrategyForIncreaseOrders;
   indexTokenAmount: bigint;
 
   sizeDeltaUsd: bigint;
@@ -73,6 +74,7 @@ export type IncreasePositionAmounts = {
   triggerThresholdType?: TriggerThresholdType;
   acceptablePrice: bigint;
   acceptablePriceDeltaBps: bigint;
+  recommendedAcceptablePriceDeltaBps: bigint;
 
   positionFeeUsd: bigint;
   uiFeeUsd: bigint;
@@ -109,8 +111,11 @@ export type DecreasePositionAmounts = {
   borrowingFeeUsd: bigint;
   fundingFeeUsd: bigint;
   swapProfitFeeUsd: bigint;
-  positionPriceImpactDeltaUsd: bigint;
+  proportionalPendingImpactDeltaUsd: bigint;
+  closePriceImpactDeltaUsd: bigint;
+  totalPendingImpactDeltaUsd: bigint;
   priceImpactDiffUsd: bigint;
+  balanceWasImproved: boolean;
   payedRemainingCollateralAmount: bigint;
 
   payedOutputUsd: bigint;
@@ -161,6 +166,8 @@ export type NextPositionValues = {
   nextPnlPercentage?: bigint;
   nextEntryPrice?: bigint;
   remainingCollateralFeesUsd?: bigint;
+  nextPendingImpactDeltaUsd?: bigint;
+  potentialPriceImpactDiffUsd?: bigint;
 };
 
 export type SwapStats = {
@@ -254,6 +261,7 @@ export type TradeFeesType = "swap" | "increase" | "decrease" | "edit";
 
 export enum ExternalSwapAggregator {
   OpenOcean = "openOcean",
+  BotanixStaking = "botanixStaking",
 }
 
 export type ExternalSwapQuote = {
@@ -278,6 +286,20 @@ export type ExternalSwapQuote = {
   };
 };
 
+export type ExternalSwapPath = {
+  aggregator: ExternalSwapAggregator;
+  inTokenAddress: string;
+  outTokenAddress: string;
+};
+
+export type ExternalSwapQuoteParams = {
+  chainId: number;
+  receiverAddress: string;
+  gasPrice: bigint | undefined;
+  tokensData: TokensData | undefined;
+  botanixStakingAssetsPerShare: bigint | undefined;
+};
+
 export type ExternalSwapCalculationStrategy = "byFromValue" | "leverageBySize";
 
 export type ExternalSwapInputs = {
@@ -298,9 +320,14 @@ export type TradeFees = {
   swapFees?: SwapFeeItem[];
   positionFee?: FeeItem;
   swapPriceImpact?: FeeItem;
-  positionPriceImpact?: FeeItem;
-  priceImpactDiff?: FeeItem;
   positionCollateralPriceImpact?: FeeItem;
+  proportionalPendingImpact?: FeeItem;
+  increasePositionPriceImpact?: FeeItem;
+  decreasePositionPriceImpact?: FeeItem;
+  totalPendingImpact?: FeeItem;
+  priceImpactDiff?: FeeItem;
+  positionNetPriceImpact?: FeeItem;
+  collateralNetPriceImpact?: FeeItem;
   collateralPriceImpactDiff?: FeeItem;
   positionFeeFactor?: bigint;
   borrowFee?: FeeItem;

@@ -112,7 +112,7 @@ const BuyLink = ({
   );
 
   const Icon = networkIcons[network];
-  const className = `flex cursor-pointer justify-center gap-8 rounded-3 text-white bg-slate-700
+  const className = `flex cursor-pointer justify-center gap-8 rounded-3 text-typography-primary bg-slate-700
         px-16 py-10 leading-[1.4em] hover:bg-cold-blue-700 active:bg-cold-blue-500`;
 
   const isHome = isHomeSite();
@@ -174,7 +174,7 @@ function getTrackingLink(link: string) {
 
   const paramsPrefix = link.includes("?") ? "&" : "?";
 
-  return `${link}${paramsPrefix}${userAnalytics.getSessionIdUrlParams()}`;
+  return `${link}${paramsPrefix}${userAnalytics.getSessionForwardParams()}`;
 }
 
 async function sendUserAnalyticsProtocolReadMoreEvent() {
@@ -309,8 +309,8 @@ export default function TokenCard({ showRedirectModal, showGlp = true }: Props) 
           <div className="Home-token-card-option-info">
             <div className="Home-token-card-option-title">
               <Trans>
-                GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees,
-                respectively.
+                GMX is the utility and governance token. It also accrues 30% of the protocol fees via a buyback and
+                distribution mechanism.
               </Trans>
             </div>
             <div className="Home-token-card-option-apr">
@@ -319,7 +319,7 @@ export default function TokenCard({ showRedirectModal, showGlp = true }: Props) 
             </div>
           </div>
         </div>
-        <div className="mt-50 flex flex-col gap-15 text-slate-100">
+        <div className="mt-50 flex flex-col gap-15 text-typography-secondary">
           <Trans>Buy token on:</Trans>
           <div className={cx("flex justify-between", { "flex-col gap-15": isMobile })}>
             <div className={cx("buy flex gap-15", { "flex-col": isMobile })}>
@@ -383,7 +383,7 @@ export default function TokenCard({ showRedirectModal, showGlp = true }: Props) 
           </div>
         </div>
 
-        <div className="mt-50 flex flex-col gap-15 text-slate-100">
+        <div className="mt-50 flex flex-col gap-15 text-typography-secondary">
           <Trans>Buy token on:</Trans>
           <div className={cx("flex justify-between", { "flex-col gap-15": isMobile })}>
             <div className={cx("buy flex gap-15", { "flex-col": isMobile })}>
@@ -456,7 +456,7 @@ export default function TokenCard({ showRedirectModal, showGlp = true }: Props) 
           </div>
         </div>
 
-        <div className="mt-50 flex flex-col gap-15 text-slate-100">
+        <div className="mt-50 flex flex-col gap-15 text-typography-secondary">
           <Trans>Buy token on:</Trans>
           <div className={cx("flex justify-between", { "flex-col gap-15": isMobile })}>
             <div className={cx("buy flex gap-15", { "flex-col": isMobile })}>
@@ -527,7 +527,7 @@ export default function TokenCard({ showRedirectModal, showGlp = true }: Props) 
               </div>
             </div>
           </div>
-          <div className="mt-50 flex flex-col gap-15 text-slate-100">
+          <div className="mt-50 flex flex-col gap-15 text-typography-secondary">
             <Trans>Sell token on:</Trans>
             <div className={cx("flex justify-between", { "flex-col gap-15": isMobile })}>
               <div className={cx("buy flex gap-15", { "flex-col": isMobile })}>

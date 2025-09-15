@@ -231,6 +231,35 @@ export function useUserReferralCode(signer, chainId, account, skipLocalReferralC
   };
 }
 
+export function useLocalReferralCode() {
+  const userReferralCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
+
+  return useMemo(() => {
+    if (!userReferralCode) {
+      return undefined;
+    }
+
+    const userReferralCodeString = decodeReferralCode(userReferralCode as Hash);
+
+    return {
+      userReferralCode,
+      userReferralCodeString,
+    };
+  }, [userReferralCode]);
+}
+
+export function getRefCodeParamString() {
+  const userReferralCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
+
+  if (!userReferralCode) {
+    return undefined;
+  }
+
+  const userReferralCodeString = decodeReferralCode(userReferralCode as Hash);
+
+  return `ref=${userReferralCodeString}`;
+}
+
 export function useReferrerTier(signer, chainId, account) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const validAccount = useMemo(() => (isAddress(account) ? account : null), [account]);

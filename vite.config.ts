@@ -8,11 +8,24 @@ import { defineConfig, type PluginOption } from "vite";
 import { analyzer } from "vite-bundle-analyzer";
 import svgr from "vite-plugin-svgr";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { BREAKPOINTS } from "./src/lib/breakpoints";
 
 export default defineConfig(({ mode }) => {
   return {
     worker: {
       format: "es",
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `
+            $screen-md: ${BREAKPOINTS.mobile}px;
+            $screen-lg: ${BREAKPOINTS.tablet}px;
+            $screen-xl: ${BREAKPOINTS.desktop}px;
+            $screen-sm: ${BREAKPOINTS.smallMobile}px;
+          `,
+        },
+      },
     },
     plugins: [
       svgr({
@@ -50,13 +63,21 @@ export default defineConfig(({ mode }) => {
     build: {
       assetsInlineLimit: 0,
       outDir: "build",
-      sourcemap: false,
+      sourcemap: true,
       rollupOptions: {
         output: {
           manualChunks: {
             web3: ["ethers", "viem", "date-fns", "@rainbow-me/rainbowkit", "lodash", "@gelatonetwork/relay-sdk"],
             charts: ["recharts"],
             ui: ["@headlessui/react", "framer-motion", "react-select", "react-icons"],
+          },
+          sourcemapExcludeSources: true,
+          sourcemapPathTransform: (relativeSourcePath: string) => {
+            // Exclude react-icons from sourcemap
+            if (relativeSourcePath.includes("node_modules/react-icons")) {
+              return "";
+            }
+            return relativeSourcePath;
           },
         },
       },

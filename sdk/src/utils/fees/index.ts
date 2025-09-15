@@ -12,7 +12,7 @@ export * from "./priceImpact";
 export function getSwapFee(
   marketInfo: MarketInfo,
   swapAmount: bigint,
-  forPositiveImpact: boolean,
+  balanceWasImproved: boolean,
   isAtomicSwap: boolean
 ) {
   let factor: bigint;
@@ -20,7 +20,9 @@ export function getSwapFee(
   if (isAtomicSwap) {
     factor = marketInfo.atomicSwapFeeFactor;
   } else {
-    factor = forPositiveImpact ? marketInfo.swapFeeFactorForPositiveImpact : marketInfo.swapFeeFactorForNegativeImpact;
+    factor = balanceWasImproved
+      ? marketInfo.swapFeeFactorForBalanceWasImproved
+      : marketInfo.swapFeeFactorForBalanceWasNotImproved;
   }
 
   return applyFactor(swapAmount, factor);
@@ -29,13 +31,13 @@ export function getSwapFee(
 export function getPositionFee(
   marketInfo: MarketInfo,
   sizeDeltaUsd: bigint,
-  forPositiveImpact: boolean,
+  balanceWasImproved: boolean,
   referralInfo: { totalRebateFactor: bigint; discountFactor: bigint } | undefined,
   uiFeeFactor?: bigint
 ) {
-  const factor = forPositiveImpact
-    ? marketInfo.positionFeeFactorForPositiveImpact
-    : marketInfo.positionFeeFactorForNegativeImpact;
+  const factor = balanceWasImproved
+    ? marketInfo.positionFeeFactorForBalanceWasImproved
+    : marketInfo.positionFeeFactorForBalanceWasNotImproved;
 
   let positionFeeUsd = applyFactor(sizeDeltaUsd, factor);
   const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor ?? 0n);

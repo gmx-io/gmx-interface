@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import identity from "lodash/identity";
 import { zeroAddress } from "viem";
 
-import { SUPPORTED_CHAIN_IDS, ContractsChainId } from "config/chains";
+import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { CodeOwnershipInfo, getReferralCodeOwner, ReferralCodeStats } from "domain/referrals";
 import { getTwitterIntentURL, isAddressZero, MAX_REFERRAL_CODE_LENGTH, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
@@ -47,7 +47,7 @@ export async function getReferralCodeTakenStatus(
   const ownerMap: Partial<Record<ContractsChainId, string>> = {};
 
   await Promise.all(
-    SUPPORTED_CHAIN_IDS.map(async (otherChainId) => {
+    CONTRACTS_CHAIN_IDS.map(async (otherChainId) => {
       const res = await getReferralCodeOwner(otherChainId, referralCodeBytes32);
       ownerMap[otherChainId] = res;
     })
@@ -55,7 +55,7 @@ export async function getReferralCodeTakenStatus(
 
   const takenMap: Partial<Record<ContractsChainId, boolean>> = {};
 
-  for (const otherChainId of SUPPORTED_CHAIN_IDS) {
+  for (const otherChainId of CONTRACTS_CHAIN_IDS) {
     // const takenOnArb =
     //   !isAddressZero(ownerArbitrum) && (ownerArbitrum !== account || (ownerArbitrum === account && chainId === ARBITRUM));
     const owner = ownerMap[otherChainId];
@@ -72,7 +72,7 @@ export async function getReferralCodeTakenStatus(
     all: allTaken,
   };
 
-  for (const otherChainId of SUPPORTED_CHAIN_IDS) {
+  for (const otherChainId of CONTRACTS_CHAIN_IDS) {
     referralCodeTakenInfo[otherChainId] = {
       taken: takenMap[otherChainId] ?? false,
       owner: ownerMap[otherChainId] ?? zeroAddress,
@@ -162,8 +162,6 @@ export const getSampleReferrarStat = ({
     registeredReferralsCount: 0,
     trades: 0,
     volume: 0n,
-    // time: Date.now(),
-
     v1Data: {
       volume: 0n,
       totalRebateUsd: 0n,
@@ -176,18 +174,10 @@ export const getSampleReferrarStat = ({
       discountUsd: 0n,
       affiliateRebateUsd: 0n,
     },
-    // ownerOnOtherChain: {
-    //   code: encodeReferralCode(code),
-    //   codeString: code,
-    //   owner: undefined,
-    //   isTaken: !isAddressZero(ownerOnOtherNetwork),
-    //   isTakenByCurrentUser:
-    //     !isAddressZero(ownerOnOtherNetwork) && ownerOnOtherNetwork.toLowerCase() === account.toLowerCase(),
-    // },
     affiliateRebateUsd: 0n,
     allOwnersOnOtherChains: takenInfo
       ? Object.fromEntries(
-          SUPPORTED_CHAIN_IDS.map((chainId): [ContractsChainId, CodeOwnershipInfo] | undefined => {
+          CONTRACTS_CHAIN_IDS.map((chainId): [ContractsChainId, CodeOwnershipInfo] | undefined => {
             const taken = takenInfo[chainId];
             if (!taken) return undefined;
 
@@ -207,7 +197,7 @@ export const getSampleReferrarStat = ({
   };
 };
 
-export function getUSDValue(value, decimals = 2) {
+export function getUsdValue(value: bigint | undefined, decimals = 2) {
   return formatAmount(value, USD_DECIMALS, decimals, true, "0.00");
 }
 

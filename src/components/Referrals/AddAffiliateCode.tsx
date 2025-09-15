@@ -20,7 +20,7 @@ import { getCodeError, getReferralCodeTakenStatus, getSampleReferrarStat } from 
 function AddAffiliateCode({ handleCreateReferralCode, active, setRecentlyAddedCodes, recentlyAddedCodes }) {
   const { openConnectModal } = useConnectModal();
   return (
-    <div className="referral-card section-center mt-medium">
+    <div className="referral-card section-center">
       <h2 className="title">
         <Trans>Generate Referral Code</Trans>
       </h2>
@@ -120,7 +120,7 @@ export function AffiliateCodeForm({
             recentlyAddedCodes.push(getSampleReferrarStat({ code: trimmedCode, takenInfo, account }));
             setRecentlyAddedCodes(recentlyAddedCodes);
           }
-          helperToast.success(t`Referral code created!`);
+          helperToast.success(t`Referral code created.`);
           setReferralCode("");
         }
       } catch (err) {
@@ -144,7 +144,7 @@ export function AffiliateCodeForm({
 
   if (srcChainId !== undefined) {
     buttonState = {
-      text: t`Switch to ${getChainName(srcChainId)}`,
+      text: t`Switch to ${getChainName(chainId)}`,
       disabled: false,
       onSubmit: (event: React.FormEvent) => {
         event.preventDefault();
@@ -163,12 +163,12 @@ export function AffiliateCodeForm({
     };
   } else if (referralCodeCheckStatus === "checking") {
     buttonState = {
-      text: t`Checking code...`,
+      text: t`Checking code`,
       disabled: true,
     };
   } else if (isProcessing) {
     buttonState = {
-      text: t`Creating...`,
+      text: t`Creating`,
       disabled: true,
     };
   } else {
@@ -180,7 +180,7 @@ export function AffiliateCodeForm({
   }
 
   return (
-    <form onSubmit={buttonState.onSubmit} className="max-w-[400px]">
+    <form onSubmit={buttonState.onSubmit}>
       <input
         type="text"
         ref={inputRef}

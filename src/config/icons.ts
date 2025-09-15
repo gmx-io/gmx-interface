@@ -100,6 +100,9 @@ export const CHAIN_ID_TO_NETWORK_ICON: Record<AnyChainId | 0, string> = {
   [BOTANIX]: botanix,
 };
 
+/**
+ * For chain icons use `getChainIcon`
+ */
 export function getIcon(chainId: number | "common", label: keyof ChainIcons) {
   if (!chainId || !(chainId in ICONS)) {
     throw new Error(`No icons found for chain: ${chainId}`);
@@ -108,7 +111,7 @@ export function getIcon(chainId: number | "common", label: keyof ChainIcons) {
   return ICONS[chainId][label];
 }
 
-export function getChainIcon(chainId: number) {
+export function getChainIcon(chainId: number): string {
   if (!(chainId in CHAIN_ID_TO_NETWORK_ICON)) {
     throw new Error(`No icon found for chain: ${chainId}`);
   }

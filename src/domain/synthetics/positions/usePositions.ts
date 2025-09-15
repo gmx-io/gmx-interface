@@ -29,10 +29,6 @@ type PositionsResult = {
   error?: Error;
 };
 
-// todo
-// sometimes there is an issue with decoding from abi
-// Multicall request failed: usePositionsData-multichain-421614 Error: Response error reader: positions: Bytes value "102,1,128,153,224,35,39,163,83,117,145" is not a valid boolean. The bytes array must contain a single byte of either a 0 or 1 value.;
-
 export function usePositions(
   chainId: ContractsChainId,
   p: {
@@ -116,6 +112,7 @@ export function usePositions(
           fundingFeeAmount: fees.funding.fundingFeeAmount,
           claimableLongTokenAmount: fees.funding.claimableLongTokenAmount,
           claimableShortTokenAmount: fees.funding.claimableShortTokenAmount,
+          pendingImpactAmount: numbers.pendingImpactAmount,
           pnl: basePnlUsd,
           positionFeeAmount: fees.positionFeeAmount,
           traderDiscountAmount: fees.referral.traderDiscountAmount,
@@ -312,7 +309,6 @@ export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Po
     pnl: 0n,
     traderDiscountAmount: 0n,
     pendingImpactAmount: 0n,
-    pendingImpactUsd: 0n,
     borrowingFactor: 0n,
     fundingFeeAmountPerSize: 0n,
     longTokenClaimableFundingAmountPerSize: 0n,

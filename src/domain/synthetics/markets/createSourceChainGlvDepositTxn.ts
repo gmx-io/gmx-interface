@@ -23,7 +23,7 @@ import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 import type { IRelayUtils } from "typechain-types/MultichainGmRouter";
 import type { IStargate } from "typechain-types-stargate";
-import type { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
+import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import { toastCustomOrStargateError } from "components/Synthetics/GmxAccountModal/toastCustomOrStargateError";
 

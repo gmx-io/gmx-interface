@@ -31,7 +31,7 @@ export function VesterWithdrawModal(props: {
     callContract(chainId, contract, "withdraw", [], {
       sentMsg: t`Withdraw submitted.`,
       failMsg: t`Withdraw failed.`,
-      successMsg: t`Withdrawn!`,
+      successMsg: t`Withdrawn.`,
       setPendingTxns,
     })
       .then(() => {

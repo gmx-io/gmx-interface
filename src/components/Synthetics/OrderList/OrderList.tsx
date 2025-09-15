@@ -1,6 +1,5 @@
-import { Plural, Trans, t } from "@lingui/macro";
+import { Plural, Trans } from "@lingui/macro";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef } from "react";
-import { useMeasure, useMedia } from "react-use";
 
 import {
   useIsOrdersLoading,
@@ -39,13 +38,16 @@ import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { EMPTY_ARRAY } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
+import { useBreakpoints } from "lib/useBreakpoints";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
+import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
-import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { Table, TableTh, TableTheadTr } from "components/Table/Table";
+import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
 import { OrderItem } from "../OrderItem/OrderItem";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
@@ -79,9 +81,7 @@ export function OrderList({
   const positionsData = usePositionsInfoData();
   const isLoading = useIsOrdersLoading();
 
-  const [ref, { width }] = useMeasure<HTMLDivElement>();
-  const isScreenSmall = useMedia("(max-width: 1100px)");
-  const isContainerSmall = width === 0 ? isScreenSmall : width < 1000;
+  const { isTablet: isContainerSmall } = useBreakpoints();
 
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
@@ -199,10 +199,10 @@ export function OrderList({
   }, []);
 
   return (
-    <div ref={ref}>
-      {(isContainerSmall || isScreenSmall) && !isLoading && (
-        <div className="flex flex-col gap-8">
-          <div className="flex flex-wrap items-center justify-between gap-8 bg-slate-950">
+    <div className="flex grow flex-col">
+      {isContainerSmall && !isLoading && (
+        <div className="flex grow flex-col gap-8">
+          <div className="flex flex-wrap items-center justify-between gap-8">
             {isContainerSmall ? (
               <div className="flex gap-8">
                 <Button variant="secondary" onClick={onSelectAllOrders}>
@@ -223,7 +223,7 @@ export function OrderList({
             ) : (
               <div />
             )}
-            {isScreenSmall && selectedOrdersKeys && selectedOrdersKeys.length > 0 && (
+            {isContainerSmall && selectedOrdersKeys && selectedOrdersKeys.length > 0 && (
               <Button variant="secondary" onClick={onCancelSelectedOrders}>
                 <Plural value={selectedOrdersKeys.length} one="Cancel order" other="Cancel # orders" />
               </Button>
@@ -252,72 +252,75 @@ export function OrderList({
       )}
 
       {isContainerSmall && orders.length === 0 && (
-        <div className="rounded-4 bg-slate-800 p-14 text-slate-100">
-          {isLoading ? t`Loading...` : t`No open orders`}
-        </div>
+        <EmptyTableContent
+          isLoading={isLoading}
+          isEmpty={orders.length === 0}
+          emptyText={<Trans>No open orders</Trans>}
+        />
       )}
 
       {!isContainerSmall && (
-        <Table>
-          <thead>
-            <TableTheadTr bordered>
-              {!hideActions && (
-                <TableTh className="cursor-pointer" onClick={onSelectAllOrders}>
-                  <Checkbox
-                    isPartialChecked={onlySomeOrdersSelected}
-                    isChecked={areAllOrdersSelected}
-                    setIsChecked={onSelectAllOrders}
+        <TableScrollFadeContainer disableScrollFade={orders.length === 0} className="flex grow flex-col bg-slate-900">
+          <Table className="!w-[max(100%,580px)] table-fixed">
+            <thead>
+              <TableTheadTr>
+                {!hideActions && (
+                  <TableTh className="w-[48px] cursor-pointer" onClick={onSelectAllOrders}>
+                    <Checkbox
+                      isPartialChecked={onlySomeOrdersSelected}
+                      isChecked={areAllOrdersSelected}
+                      setIsChecked={onSelectAllOrders}
+                    />
+                  </TableTh>
+                )}
+                <TableTh>
+                  <MarketFilterLongShort
+                    withPositions="withOrders"
+                    value={marketsDirectionsFilter}
+                    onChange={setMarketsDirectionsFilter}
                   />
                 </TableTh>
-              )}
-              <TableTh>
-                <MarketFilterLongShort
-                  withPositions="withOrders"
-                  value={marketsDirectionsFilter}
-                  onChange={setMarketsDirectionsFilter}
-                />
-              </TableTh>
-              <TableTh>
-                <OrderTypeFilter value={orderTypesFilter} onChange={setOrderTypesFilter} />
-              </TableTh>
-              <TableTh>
-                <Trans>Size</Trans>
-              </TableTh>
-              <TableTh>
-                <Trans>Trigger Price</Trans>
-              </TableTh>
-              <TableTh>
-                <Trans>Mark Price</Trans>
-              </TableTh>
+                <TableTh className="w-[10%]">
+                  <OrderTypeFilter value={orderTypesFilter} onChange={setOrderTypesFilter} />
+                </TableTh>
+                <TableTh className="w-[15%]">
+                  <Trans>Size</Trans>
+                </TableTh>
+                <TableTh className="w-[16%]">
+                  <Trans>Trigger Price</Trans>
+                </TableTh>
+                <TableTh className="w-[16%]">
+                  <Trans>Mark Price</Trans>
+                </TableTh>
 
-              {!hideActions && <TableTh></TableTh>}
-            </TableTheadTr>
-          </thead>
-          <tbody>
-            {orders.length === 0 && (
-              <TableTr hoverable={false} bordered={false}>
-                <TableTd colSpan={7} className="text-slate-100">
-                  {isLoading ? t`Loading...` : t`No open orders`}
-                </TableTd>
-              </TableTr>
-            )}
-            {!isLoading &&
-              orders.map((order) => (
-                <OrderItem
-                  isLarge
-                  isSelected={selectedOrdersKeys?.includes(order.key)}
-                  key={order.key}
-                  order={order}
-                  onToggleOrder={() => onToggleOrder(order.key)}
-                  isCanceling={cancellingOrdersKeys.includes(order.key)}
-                  onCancelOrder={() => onCancelOrder(order)}
-                  hideActions={hideActions}
-                  positionsInfoData={positionsData}
-                  setRef={(el) => (orderRefs.current[order.key] = el)}
-                />
-              ))}
-          </tbody>
-        </Table>
+                {!hideActions && <TableTh className="w-[10%]"></TableTh>}
+              </TableTheadTr>
+            </thead>
+            <tbody>
+              {!isLoading &&
+                orders.map((order) => (
+                  <OrderItem
+                    isLarge
+                    isSelected={selectedOrdersKeys?.includes(order.key)}
+                    key={order.key}
+                    order={order}
+                    onToggleOrder={() => onToggleOrder(order.key)}
+                    isCanceling={cancellingOrdersKeys.includes(order.key)}
+                    onCancelOrder={() => onCancelOrder(order)}
+                    hideActions={hideActions}
+                    positionsInfoData={positionsData}
+                    setRef={(el) => (orderRefs.current[order.key] = el)}
+                  />
+                ))}
+            </tbody>
+          </Table>
+
+          <EmptyTableContent
+            isLoading={isLoading}
+            isEmpty={orders.length === 0}
+            emptyText={<Trans>No open orders</Trans>}
+          />
+        </TableScrollFadeContainer>
       )}
 
       <OrderEditorContainer />

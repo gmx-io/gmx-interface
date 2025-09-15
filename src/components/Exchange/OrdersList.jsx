@@ -131,7 +131,7 @@ export default function OrdersList(props) {
 
     return (
       <tr>
-        <td colSpan="5" className="text-slate-100">
+        <td colSpan="5" className="text-typography-secondary">
           <Trans>No open orders</Trans>
         </td>
       </tr>
@@ -339,7 +339,9 @@ export default function OrdersList(props) {
             )}
           </td>
           <td>
-            {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, indexTokenPriceDecimal, true)}
+            <span className="numbers">
+              {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
+            </span>
           </td>
           <td>
             <Tooltip
@@ -399,9 +401,14 @@ export default function OrdersList(props) {
         const collateralUSD = getUsd(order.amountIn, fromTokenInfo.address, true, infoTokens);
         const titleText = (
           <>
-            Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, fromTokenInfo.isStable ? 2 : 4, true)}{" "}
+            Swap{" "}
+            <span className="numbers">
+              {formatAmount(order.amountIn, fromTokenInfo.decimals, fromTokenInfo.isStable ? 2 : 4, true)}
+            </span>{" "}
             <TokenIcon symbol={fromTokenInfo.symbol} displaySize={18} importSize={24} /> {fromTokenInfo.symbol} for{" "}
-            {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable ? 2 : 4, true)}{" "}
+            <span className="numbers">
+              {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable ? 2 : 4, true)}
+            </span>{" "}
             <TokenIcon symbol={toTokenInfo.symbol} displaySize={18} importSize={24} /> {toTokenInfo.symbol}
           </>
         );
@@ -442,8 +449,11 @@ export default function OrdersList(props) {
                   <Trans>Collateral</Trans>
                 </div>
                 <div>
-                  ${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (
-                  {formatAmount(order.amountIn, fromTokenInfo.decimals, 4, true)}{" "}
+                  <span className="numbers">
+                    ${"\u200a\u200d"}
+                    {formatAmount(collateralUSD, USD_DECIMALS, 2, true)}
+                  </span>{" "}
+                  (<span className="numbers">{formatAmount(order.amountIn, fromTokenInfo.decimals, 4, true)}</span>{" "}
                   {fromTokenInfo.baseSymbol || fromTokenInfo.symbol})
                 </div>
               </div>
@@ -500,7 +510,9 @@ export default function OrdersList(props) {
                 <Trans>Price</Trans>
               </div>
               <div>
-                {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
+                <span className="numbers">
+                  {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
+                </span>
               </div>
             </div>
             <div className="App-card-row">
@@ -510,6 +522,7 @@ export default function OrdersList(props) {
               <div>
                 <Tooltip
                   handle={formatAmount(markPrice, USD_DECIMALS, 2, true)}
+                  handleClassName="numbers"
                   position="bottom-end"
                   renderContent={() => {
                     return (
@@ -528,8 +541,14 @@ export default function OrdersList(props) {
                   <Trans>Collateral</Trans>
                 </div>
                 <div>
-                  ${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (
-                  {formatAmount(order.purchaseTokenAmount, collateralTokenInfo.decimals, 4, true)}{" "}
+                  <span className="numbers">
+                    ${"\u200a\u200d"}
+                    {formatAmount(collateralUSD, USD_DECIMALS, 2, true)}
+                  </span>{" "}
+                  (
+                  <span className="numbers">
+                    {formatAmount(order.purchaseTokenAmount, collateralTokenInfo.decimals, 4, true)}
+                  </span>{" "}
                   {collateralTokenInfo.baseSymbol || collateralTokenInfo.symbol})
                 </div>
               </div>
@@ -565,7 +584,7 @@ export default function OrdersList(props) {
         </tbody>
       </table>
       {(!orders || orders.length === 0) && (
-        <div className="Exchange-empty-positions-list-note small App-card text-slate-100">
+        <div className="Exchange-empty-positions-list-note small App-card text-typography-secondary">
           <Trans>No open orders</Trans>
         </div>
       )}

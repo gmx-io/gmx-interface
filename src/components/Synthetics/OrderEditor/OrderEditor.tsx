@@ -190,8 +190,8 @@ export function OrderEditor(p: Props) {
   const { minCollateralUsd } = usePositionsConstants();
 
   const recommendedAcceptablePriceImpactBps =
-    isLimitIncreaseOrderType(p.order.orderType) && increaseAmounts?.acceptablePrice
-      ? bigMath.abs(increaseAmounts.acceptablePriceDeltaBps)
+    isLimitIncreaseOrderType(p.order.orderType) && increaseAmounts?.acceptablePrice !== undefined
+      ? increaseAmounts.recommendedAcceptablePriceDeltaBps
       : decreaseAmounts?.recommendedAcceptablePriceDeltaBps !== undefined
         ? bigMath.abs(decreaseAmounts?.recommendedAcceptablePriceDeltaBps)
         : undefined;
@@ -248,6 +248,9 @@ export function OrderEditor(p: Props) {
           externalSwapQuote: undefined,
           leverage,
           triggerPrice,
+          marketsInfoData,
+          chainId,
+          externalSwapQuoteParams: undefined,
         });
 
         const nextPositionValues = getNextPositionValuesForIncreaseTrade({
@@ -262,6 +265,7 @@ export function OrderEditor(p: Props) {
           showPnlInLeverage: false,
           sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
           sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+          positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
           userReferralInfo,
         });
 
@@ -369,7 +373,7 @@ export function OrderEditor(p: Props) {
 
   function getError() {
     if (isSubmitting) {
-      return t`Updating Order...`;
+      return t`Updating order`;
     }
 
     if (isSwapOrderType(p.order.orderType)) {
@@ -596,8 +600,9 @@ export function OrderEditor(p: Props) {
                 inputValue={sizeInputValue}
                 onInputValueChange={(e) => setSizeInputValue(e.target.value)}
                 bottomLeftValue={isTriggerDecreaseOrderType(p.order.orderType) ? formatUsd(sizeUsd) : undefined}
-                isBottomLeftValueMuted={sizeUsd === 0n}
-                bottomRightLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Max` : undefined}
+                bottomRightLabel={
+                  isTriggerDecreaseOrderType(p.order.orderType) && positionSize !== undefined ? t`Max` : undefined
+                }
                 bottomRightValue={
                   isTriggerDecreaseOrderType(p.order.orderType) ? formatUsdPrice(positionSize) : undefined
                 }
@@ -664,7 +669,12 @@ export function OrderEditor(p: Props) {
         <div className="flex flex-col gap-14">
           {button}
 
-          <ExpressTradingWarningCard expressParams={expressParams} payTokenAddress={undefined} isWrapOrUnwrap={false} />
+          <ExpressTradingWarningCard
+            expressParams={expressParams}
+            payTokenAddress={undefined}
+            isWrapOrUnwrap={false}
+            isGmxAccount={srcChainId !== undefined}
+          />
 
           {(isLimitIncreaseOrderType(p.order.orderType) || isStopIncreaseOrderType(p.order.orderType)) && (
             <SyntheticsInfoRow
@@ -720,7 +730,7 @@ export function OrderEditor(p: Props) {
                   renderContent={() => (
                     <>
                       <StatsTooltipRow
-                        label={<div className="text-white">{t`Network Fee`}:</div>}
+                        label={<div className="text-typography-primary">{t`Network Fee`}:</div>}
                         value={formatTokenAmountWithUsd(
                           networkFee.feeTokenAmount * -1n,
                           networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n,
@@ -734,7 +744,7 @@ export function OrderEditor(p: Props) {
                         showDollar={false}
                       />
                       <br />
-                      <div className="text-white">
+                      <div className="text-typography-primary">
                         <Trans>As network fees have increased, an additional network fee is needed.</Trans>
                       </div>
                     </>
@@ -753,7 +763,7 @@ export function OrderEditor(p: Props) {
                 recommendedAllowedSwapSlippageBps={defaultAllowedSwapSlippageBps}
                 setAllowedSwapSlippageBps={setSelectedAllowedSwapSlippageBps}
               />
-              <div className="h-1 bg-stroke-primary" />
+              <div className="h-1 bg-slate-600" />
               <SyntheticsInfoRow
                 label={t`Min. Receive`}
                 value={formatBalanceAmount(

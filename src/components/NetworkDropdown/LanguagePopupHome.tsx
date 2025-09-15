@@ -5,7 +5,7 @@ import { useCallback, useState } from "react";
 
 import { isHomeSite } from "lib/legacy";
 
-import language24Icon from "img/ic_language24.svg";
+import LanguageIcon from "img/ic_language.svg?react";
 
 import LanguageModalContent from "./LanguageModalContent";
 import ModalWithPortal from "../Modal/ModalWithPortal";
@@ -22,10 +22,14 @@ export default function LanguagePopupHome() {
 
   return (
     <>
-      <div className="App-header-network App-header-language" onClick={() => setIsLanguageModalOpen(true)}>
-        <div className={cx("network-dropdown", { "homepage-header": isHomeSite() })}>
+      <div className="" onClick={() => setIsLanguageModalOpen(true)}>
+        <div
+          className={cx("network-dropdown rounded-4 border border-slate-600 px-6 py-6 text-typography-secondary", {
+            "homepage-header": isHomeSite(),
+          })}
+        >
           <button className="transparent">
-            <img className="network-dropdown-icon" src={language24Icon} alt="Select Language" />
+            <LanguageIcon />
           </button>
         </div>
       </div>

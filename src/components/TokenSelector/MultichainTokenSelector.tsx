@@ -1,23 +1,23 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { BiChevronDown } from "react-icons/bi";
+import { FaChevronDown } from "react-icons/fa6";
 
 import type { AnyChainId, ContractsChainId, SourceChainId } from "config/chains";
 import { isSourceChain } from "config/multichain";
 import type { TokenChainData } from "domain/multichain/types";
 import { convertToUsd } from "domain/synthetics/tokens";
-import type { Token, TokensData } from "domain/tokens";
+import { TokenBalanceType, type Token, type TokenData, type TokensData } from "domain/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
-import { formatAmount, formatBalanceAmount } from "lib/numbers";
-import { EMPTY_OBJECT } from "lib/objects";
+import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { searchBy } from "lib/searchBy";
-import { USD_DECIMALS } from "sdk/configs/factors";
 import { getToken } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
+import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import "./TokenSelector.scss";
@@ -27,7 +27,6 @@ type Props = {
   srcChainId: SourceChainId | undefined;
 
   label?: string;
-  size?: "m" | "l";
   className?: string;
 
   tokenAddress: string;
@@ -54,7 +53,6 @@ export function MultichainTokenSelector({
   selectedTokenLabel,
   extendedSortSequence,
   footerContent,
-  size = "m",
   qa,
   onSelectTokenAddress: propsOnSelectTokenAddress,
   tokenAddress,
@@ -84,23 +82,6 @@ export function MultichainTokenSelector({
     propsOnDepositTokenAddress(tokenAddress, chainId);
   };
 
-  useEffect(() => {
-    if (isModalVisible) {
-      setSearchKeyword("");
-    }
-  }, [isModalVisible]);
-
-  // TODO implement
-  // const _handleKeyDown = (e) => {
-  //   if (e.key === "Enter") {
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     if (filteredTokens.length > 0) {
-  //       onSelectToken(filteredTokens[0]);
-  //     }
-  //   }
-  // };
-
   const isGmxAccountEmpty = useMemo(() => {
     if (!tokensData) return true;
 
@@ -112,6 +93,38 @@ export function MultichainTokenSelector({
   }, [tokensData]);
 
   const [activeFilter, setActiveFilter] = useState<"pay" | "deposit">("pay");
+
+  const availableToTradeTokenList = useAvailableToTradeTokenList({
+    activeFilter,
+    srcChainId,
+    searchKeyword,
+    tokensData,
+    extendedSortSequence,
+    chainId,
+    multichainTokens,
+    includeMultichainTokensInPay,
+  });
+  const multichainTokenList = useMultichainTokensList({
+    searchKeyword,
+    multichainTokens,
+    extendedSortSequence,
+  });
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
+      if (activeFilter === "pay") {
+        if (availableToTradeTokenList.length > 0) {
+          onSelectTokenAddress(availableToTradeTokenList[0].address, availableToTradeTokenList[0].chainId);
+        }
+      } else {
+        if (multichainTokenList.length > 0) {
+          onDepositTokenAddress(multichainTokenList[0].address, multichainTokenList[0].sourceChainId);
+        }
+      }
+    }
+  };
 
   useEffect(() => {
     if (isModalVisible) {
@@ -134,44 +147,34 @@ export function MultichainTokenSelector({
   }
 
   return (
-    <div
-      className={cx(
-        "TokenSelector",
-        {
-          "-mr-2": size === "m",
-          "text-h2 -mr-5": size === "l",
-        },
-        className
-      )}
-      onClick={(event) => event.stopPropagation()}
-    >
+    <div className={cx("TokenSelector", className)} onClick={(event) => event.stopPropagation()}>
       <SlideModal
         qa={qa + "-modal"}
-        className="TokenSelector-modal text-body-medium text-white"
+        className="TokenSelector-modal text-body-medium"
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
         footerContent={footerContent}
         headerContent={
-          <>
+          <div className="pb-12">
             <SearchInput
-              className="*:!text-body-medium min-[700px]:mt-15"
               value={searchKeyword}
               setValue={setSearchKeyword}
-              // onKeyDown={_handleKeyDown}
+              className="mb-16"
+              onKeyDown={handleKeyDown}
             />
             {isGmxAccountEmpty && srcChainId !== undefined ? (
-              <div className="text-body-medium mt-8 text-slate-100">
-                <Trans>To begin trading on GMX deposit assets into GMX account</Trans>
+              <div className="text-body-medium text-typography-secondary">
+                <Trans>To begin trading on GMX deposit assets into GMX account.</Trans>
               </div>
             ) : (
-              <div className="mt-16 flex gap-4">
+              <div className="flex gap-4">
                 <Button
                   type="button"
-                  variant="ghost"
-                  slim
+                  variant={activeFilter === "pay" ? "secondary" : "ghost"}
+                  size="small"
                   className={cx({
-                    "!bg-cold-blue-500": activeFilter === "pay",
+                    "!text-typography-primary": activeFilter === "pay",
                   })}
                   onClick={() => setActiveFilter("pay")}
                 >
@@ -179,10 +182,10 @@ export function MultichainTokenSelector({
                 </Button>
                 <Button
                   type="button"
-                  variant="ghost"
-                  slim
+                  variant={activeFilter === "deposit" ? "secondary" : "ghost"}
+                  size="small"
                   className={cx({
-                    "!bg-cold-blue-500": activeFilter === "deposit",
+                    "!text-typography-primary": activeFilter === "deposit",
                   })}
                   onClick={() => setActiveFilter("deposit")}
                 >
@@ -190,105 +193,76 @@ export function MultichainTokenSelector({
                 </Button>
               </div>
             )}
-          </>
+          </div>
         }
         contentPadding={false}
-        noDivider
       >
         {activeFilter === "pay" && (
-          <AvailableToTradeTokenList
-            isModalVisible={isModalVisible}
-            setSearchKeyword={setSearchKeyword}
-            onSelectTokenAddress={onSelectTokenAddress}
-            searchKeyword={searchKeyword}
-            tokensData={tokensData}
-            extendedSortSequence={extendedSortSequence}
-            chainId={chainId}
-            srcChainId={srcChainId}
-            multichainTokens={multichainTokens}
-            includeMultichainTokensInPay={includeMultichainTokensInPay}
-          />
+          <AvailableToTradeTokenList onSelectTokenAddress={onSelectTokenAddress} tokens={availableToTradeTokenList} />
         )}
         {activeFilter === "deposit" && multichainTokens && (
-          <MultichainTokenList
-            isModalVisible={isModalVisible}
-            setSearchKeyword={setSearchKeyword}
-            searchKeyword={searchKeyword}
-            multichainTokens={multichainTokens}
-            extendedSortSequence={extendedSortSequence}
-            onDepositTokenAddress={onDepositTokenAddress}
-          />
+          <MultichainTokenList tokens={multichainTokenList} onDepositTokenAddress={onDepositTokenAddress} />
         )}
       </SlideModal>
       <div
         data-qa={qa}
-        className="flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
+        className="group/hoverable group flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-300"
         onClick={() => setIsModalVisible(true)}
       >
         {selectedTokenLabel || (
           <span className="inline-flex items-center">
             <TokenIcon
-              className="mr-5"
+              className="mr-4"
               symbol={token.symbol}
               importSize={24}
               displaySize={20}
               chainIdBadge={payChainId}
             />
-            <span>{token.symbol}</span>
+            {token.symbol}
           </span>
         )}
-        <BiChevronDown className="text-body-large" />
+
+        <FaChevronDown className="w-12 text-typography-secondary group-hover:text-[inherit]" />
       </div>
     </div>
   );
 }
 
-function AvailableToTradeTokenList({
+type DisplayAvailableToTradeToken = TokenData & { balance: bigint; balanceUsd: bigint; chainId: AnyChainId | 0 };
+function useAvailableToTradeTokenList({
   chainId,
+  activeFilter,
   srcChainId,
-  isModalVisible,
-  setSearchKeyword,
   searchKeyword,
   tokensData,
   multichainTokens,
   extendedSortSequence,
-  onSelectTokenAddress,
   includeMultichainTokensInPay,
 }: {
   chainId: ContractsChainId;
+  activeFilter: "pay" | "deposit";
   srcChainId: SourceChainId | undefined;
-  isModalVisible: boolean;
-  setSearchKeyword: (searchKeyword: string) => void;
   searchKeyword: string;
   tokensData: TokensData | undefined;
   multichainTokens: TokenChainData[] | undefined;
   extendedSortSequence?: string[];
-  onSelectTokenAddress: (tokenAddress: string, chainId: AnyChainId | 0) => void;
   includeMultichainTokensInPay?: boolean;
 }) {
-  useEffect(() => {
-    if (isModalVisible) {
-      setSearchKeyword("");
+  return useMemo(() => {
+    if (activeFilter !== "pay") {
+      return EMPTY_ARRAY;
     }
-  }, [isModalVisible, setSearchKeyword]);
 
-  const sortedFilteredTokens = useMemo(() => {
-    type DisplayToken = Token & {
-      balance: bigint;
-      balanceUsd: bigint;
-      chainId: AnyChainId | 0;
-    };
-
-    const concatenatedTokens: DisplayToken[] = [];
+    const concatenatedTokens: DisplayAvailableToTradeToken[] = [];
 
     for (const token of Object.values(tokensData ?? (EMPTY_OBJECT as TokensData))) {
-      if (token.gmxAccountBalance !== undefined) {
-        const balanceUsd = convertToUsd(token.gmxAccountBalance, token.decimals, token.prices.maxPrice) ?? 0n;
+      if (token.gmxAccountBalance !== undefined && (srcChainId !== undefined || token.gmxAccountBalance > 0n)) {
         concatenatedTokens.push({
           ...token,
-          balance: token.gmxAccountBalance,
-          balanceUsd,
+          balanceType: TokenBalanceType.GmxAccount,
           chainId: 0,
+          balance: token.gmxAccountBalance,
+          balanceUsd: 0n,
         });
       }
       if (token.walletBalance !== undefined && srcChainId === undefined) {
@@ -297,6 +271,7 @@ function AvailableToTradeTokenList({
           ...token,
           balance: token.walletBalance,
           balanceUsd,
+          balanceType: TokenBalanceType.Wallet,
           chainId,
         });
       }
@@ -304,7 +279,7 @@ function AvailableToTradeTokenList({
 
     if (includeMultichainTokensInPay && multichainTokens) {
       for (const token of multichainTokens) {
-        if (token.sourceChainBalance === undefined) {
+        if (token.sourceChainBalance === undefined || token.sourceChainPrices === undefined) {
           continue;
         }
 
@@ -312,14 +287,16 @@ function AvailableToTradeTokenList({
           convertToUsd(token.sourceChainBalance, token.sourceChainDecimals, token.sourceChainPrices?.maxPrice) ?? 0n;
         concatenatedTokens.push({
           ...token,
+          prices: token.sourceChainPrices,
           balance: token.sourceChainBalance,
           balanceUsd,
           chainId: token.sourceChainId,
+          balanceType: TokenBalanceType.SourceChain,
         });
       }
     }
 
-    let filteredTokens: DisplayToken[];
+    let filteredTokens: DisplayAvailableToTradeToken[];
     if (!searchKeyword.trim()) {
       filteredTokens = concatenatedTokens;
     } else {
@@ -337,8 +314,8 @@ function AvailableToTradeTokenList({
       );
     }
 
-    const tokensWithBalance: DisplayToken[] = [];
-    const tokensWithoutBalance: DisplayToken[] = [];
+    const tokensWithBalance: DisplayAvailableToTradeToken[] = [];
+    const tokensWithoutBalance: DisplayAvailableToTradeToken[] = [];
 
     for (const token of filteredTokens) {
       const balance = token.balance;
@@ -350,14 +327,14 @@ function AvailableToTradeTokenList({
       }
     }
 
-    const sortedTokensWithBalance: DisplayToken[] = tokensWithBalance.sort((a, b) => {
+    const sortedTokensWithBalance: DisplayAvailableToTradeToken[] = tokensWithBalance.sort((a, b) => {
       if (a.balanceUsd === b.balanceUsd) {
         return 0;
       }
       return b.balanceUsd - a.balanceUsd > 0n ? 1 : -1;
     });
 
-    const sortedTokensWithoutBalance: DisplayToken[] = tokensWithoutBalance.sort((a, b) => {
+    const sortedTokensWithoutBalance: DisplayAvailableToTradeToken[] = tokensWithoutBalance.sort((a, b) => {
       if (extendedSortSequence) {
         // making sure to use the wrapped address if it exists in the extended sort sequence
         const aAddress =
@@ -374,25 +351,34 @@ function AvailableToTradeTokenList({
 
     return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
   }, [
-    chainId,
-    extendedSortSequence,
+    activeFilter,
     includeMultichainTokensInPay,
     multichainTokens,
     searchKeyword,
-    srcChainId,
     tokensData,
+    srcChainId,
+    chainId,
+    extendedSortSequence,
   ]);
+}
 
+function AvailableToTradeTokenList({
+  onSelectTokenAddress,
+  tokens,
+}: {
+  onSelectTokenAddress: (tokenAddress: string, chainId: AnyChainId | 0) => void;
+  tokens: DisplayAvailableToTradeToken[];
+}) {
   return (
-    <div>
-      {sortedFilteredTokens.map((token) => {
+    <VerticalScrollFadeContainer>
+      {tokens.map((token) => {
         return (
           <div
             key={`${token.address}_${token.chainId}`}
-            className="gmx-hover-gradient flex cursor-pointer items-center justify-between px-16 py-8"
+            className="flex cursor-pointer items-center justify-between px-adaptive py-8 gmx-hover:bg-fill-surfaceElevated50"
             onClick={() => onSelectTokenAddress(token.address, token.chainId)}
           >
-            <div className="flex items-center gap-8">
+            <div className="flex items-center gap-16">
               <TokenIcon
                 symbol={token.symbol}
                 className="size-40"
@@ -403,7 +389,7 @@ function AvailableToTradeTokenList({
 
               <div>
                 <div className="text-body-large">{token.symbol}</div>
-                <span className="text-body-small text-slate-100">{token.name}</span>
+                <span className="text-body-small text-typography-secondary">{token.name}</span>
               </div>
             </div>
             <div className="text-right">
@@ -415,39 +401,32 @@ function AvailableToTradeTokenList({
                 {token.balance == 0n && "-"}
               </div>
 
-              <span className="text-body-small text-slate-100">
-                {token.balanceUsd > 0n && <div>${formatAmount(token.balanceUsd, USD_DECIMALS, 2, true)}</div>}
+              <span className="text-body-small text-typography-secondary">
+                {token.balanceUsd > 0n && formatUsd(token.balanceUsd)}
               </span>
             </div>
           </div>
         );
       })}
-    </div>
+    </VerticalScrollFadeContainer>
   );
 }
 
-function MultichainTokenList({
-  isModalVisible,
-  setSearchKeyword,
+type DisplayMultichainToken = TokenChainData & { sourceChainBalanceUsd: bigint };
+function useMultichainTokensList({
   searchKeyword,
   multichainTokens,
   extendedSortSequence,
-  onDepositTokenAddress,
 }: {
-  isModalVisible: boolean;
-  setSearchKeyword: (searchKeyword: string) => void;
   searchKeyword: string;
-  multichainTokens: TokenChainData[];
+  multichainTokens: TokenChainData[] | undefined;
   extendedSortSequence?: string[];
-  onDepositTokenAddress: (tokenAddress: string, chainId: SourceChainId) => void;
 }) {
-  useEffect(() => {
-    if (isModalVisible) {
-      setSearchKeyword("");
-    }
-  }, [isModalVisible, setSearchKeyword]);
-
   const filteredTokens = useMemo(() => {
+    if (!multichainTokens) {
+      return EMPTY_ARRAY;
+    }
+
     if (!searchKeyword.trim()) {
       return multichainTokens;
     }
@@ -466,11 +445,9 @@ function MultichainTokenList({
     );
   }, [searchKeyword, multichainTokens]);
 
-  type DisplayToken = TokenChainData & { sourceChainBalanceUsd: bigint };
-
-  const sortedFilteredTokens: DisplayToken[] = useMemo((): DisplayToken[] => {
-    const tokensWithBalance: DisplayToken[] = [];
-    const tokensWithoutBalance: DisplayToken[] = [];
+  const sortedFilteredTokens: DisplayMultichainToken[] = useMemo((): DisplayMultichainToken[] => {
+    const tokensWithBalance: DisplayMultichainToken[] = [];
+    const tokensWithoutBalance: DisplayMultichainToken[] = [];
 
     for (const token of filteredTokens) {
       const balance = token.sourceChainBalance;
@@ -505,16 +482,26 @@ function MultichainTokenList({
     return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
   }, [filteredTokens, extendedSortSequence]);
 
+  return sortedFilteredTokens;
+}
+
+function MultichainTokenList({
+  tokens,
+  onDepositTokenAddress,
+}: {
+  tokens: DisplayMultichainToken[];
+  onDepositTokenAddress: (tokenAddress: string, chainId: SourceChainId) => void;
+}) {
   return (
     <div>
-      {sortedFilteredTokens.map((token) => {
+      {tokens.map((token) => {
         return (
           <div
             key={token.address + "_" + token.sourceChainId}
-            className="group gmx-hover-gradient-to-l flex cursor-pointer items-center justify-between px-16 py-8"
+            className="group flex cursor-pointer items-center justify-between px-adaptive py-8 gmx-hover:bg-fill-surfaceElevated50"
             onClick={() => onDepositTokenAddress(token.address, token.sourceChainId)}
           >
-            <div className="flex items-center gap-8">
+            <div className="flex items-center gap-16">
               <TokenIcon
                 symbol={token.symbol}
                 className="size-40"
@@ -525,7 +512,7 @@ function MultichainTokenList({
 
               <div>
                 <div className="text-body-large">{token.symbol}</div>
-                <span className="text-body-small text-slate-100">{token.name}</span>
+                <span className="text-body-small text-typography-secondary">{token.name}</span>
               </div>
             </div>
             <div className="text-right group-gmx-hover:hidden">
@@ -539,15 +526,16 @@ function MultichainTokenList({
                 </div>
               )) ||
                 null}
-              <span className="text-body-small text-slate-100">
-                {token.sourceChainBalanceUsd !== undefined && token.sourceChainBalanceUsd > 0 && (
-                  <div>${formatAmount(token.sourceChainBalanceUsd, USD_DECIMALS, 2, true)}</div>
-                )}
+              <span className="text-body-small text-typography-secondary">
+                {token.sourceChainBalanceUsd !== undefined &&
+                  token.sourceChainBalanceUsd > 0 &&
+                  formatUsd(token.sourceChainBalanceUsd)}
               </span>
             </div>
-            <div className="text-right not-group-gmx-hover:hidden">
+
+            <Button variant="secondary" size="small" className="not-group-gmx-hover:hidden">
               <Trans>Deposit</Trans>
-            </div>
+            </Button>
           </div>
         );
       })}

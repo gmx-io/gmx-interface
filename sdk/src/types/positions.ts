@@ -22,17 +22,22 @@ export type Position = {
   positionFeeAmount: bigint;
   traderDiscountAmount: bigint;
   uiFeeAmount: bigint;
-  /** @deprecated Only available when multicall ab flag is enabled */
-  pendingImpactAmount?: bigint;
-  /** @deprecated Only available when multicall ab flag is enabled */
-  pendingImpactUsd?: bigint;
-  /** @deprecated Only available when multicall ab flag is enabled */
+  pendingImpactAmount: bigint;
+  /**
+   * Not implemented in parsing
+   */
   borrowingFactor?: bigint;
-  /** @deprecated Only available when multicall ab flag is enabled */
+  /**
+   * Not implemented in parsing
+   */
   fundingFeeAmountPerSize?: bigint;
-  /** @deprecated Only available when multicall ab flag is enabled */
+  /**
+   * Not implemented in parsing
+   */
   longTokenClaimableFundingAmountPerSize?: bigint;
-  /** @deprecated Only available when multicall ab flag is enabled */
+  /**
+   * Not implemented in parsing
+   */
   shortTokenClaimableFundingAmountPerSize?: bigint;
   data: string;
 };
@@ -58,6 +63,10 @@ export type PositionInfo = Position & {
   pnlPercentage: bigint;
   pnlAfterFees: bigint;
   pnlAfterFeesPercentage: bigint;
+  netPriceImapctDeltaUsd: bigint;
+  priceImpactDiffUsd: bigint;
+  pendingImpactUsd: bigint;
+  closePriceImpactDeltaUsd: bigint;
   leverage: bigint | undefined;
   leverageWithPnl: bigint | undefined;
   netValue: bigint;
@@ -66,6 +75,8 @@ export type PositionInfo = Position & {
   pendingFundingFeesUsd: bigint;
   pendingClaimableFundingFeesUsd: bigint;
 };
+
+export type PositionInfoLoaded = PositionInfo & { marketInfo: MarketInfo };
 
 export type PositionsData = {
   [positionKey: string]: Position;

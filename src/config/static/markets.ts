@@ -50,6 +50,14 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0xC25cEf6061Cf5dE5eb761b50E4743c1F5D7E5407": {
       enabled: true,
     },
+    // SPX6900/USD [WETH-USDC]
+    "0x8263bC3766a09f6dD4Bab04b4bf8D45F2B0973FF": {
+      enabled: true,
+    },
+    // MNT/USD [WETH-USDC]
+    "0x40dAEAc02dCf6b3c51F9151f532C21DCEF2F7E63": {
+      enabled: true,
+    },
     // SWAP-ONLY [USDC-USDC.e]
     "0x9C2433dFD71096C435Be9465220BB2B189375eA7": {
       enabled: true,
@@ -366,6 +374,70 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0x39AC3C494950A4363D739201BA5A0861265C9ae5": {
       enabled: true,
     },
+    // PUMP/USD [WBTC-USDC]
+    "0x4C0Bb704529Fa49A26bD854802d70206982c6f1B": {
+      enabled: true,
+    },
+    // ARB/USD [ARB-ARB]
+    "0x672fEA44f4583DdaD620d60C1Ac31021F47558Cb": {
+      enabled: true,
+    },
+    // ALGO/USD [WBTC-USDC]
+    "0x3B7f4e4Cf2fa43df013d2B32673e6A01d29ab2Ac": {
+      enabled: true,
+    },
+    // CRO/USD [WBTC-USDC]
+    "0xa29FfE4152B65A0347512Ae5c6A4Bbc7a3d6d51B": {
+      enabled: true,
+    },
+    // HBAR/USD [WBTC-USDC]
+    "0x9f0849FB830679829d1FB759b11236D375D15C78": {
+      enabled: true,
+    },
+    // CVX/USD [WETH-USDC]
+    "0x41E3bC5B72384C8B26b559B7d16C2B81Fd36fbA2": {
+      enabled: true,
+    },
+    // KAS/USD [WBTC-USDC]
+    "0x4024418592450E4d62faB15e2f833FC03A3447dc": {
+      enabled: true,
+    },
+    // OKB/USD [WETH-USDC]
+    "0x2a331e51a3D17211852d8625a1029898450e539B": {
+      enabled: true,
+    },
+    // WIF/USD [WBTC-USDC]
+    "0x3f649eab7f4CE4945F125939C64429Be2C5d0cB4": {
+      enabled: true,
+    },
+    // AERO/USD [WETH-USDC]
+    "0xfaEaE570B07618D3F10360608E43c241181c4614": {
+      enabled: true,
+    },
+    // BRETT/USD [WETH-USDC]
+    "0x6EeE8098dBC106aEde99763FA5F955A5bBc42C50": {
+      enabled: true,
+    },
+    // WLFI/USD [WETH-USDC]
+    "0xb3588455858a49D3244237CEe00880CcB84b91Dd": {
+      enabled: true,
+    },
+    // LINK/USD [WETH-USDC]
+    "0xF913B4748031EF569898ED91e5BA0d602bB93298": {
+      enabled: true,
+    },
+    // MORPHO/USD [WETH-USDC]
+    "0x4De268aC68477f794C3eAC5A419Cbcffc2cD5e02": {
+      enabled: true,
+    },
+    // VVV/USD [WETH-USDC]
+    "0x947C521E44f727219542B0f91a85182193c1D2ad": {
+      enabled: true,
+    },
+    // WELL/USD [WETH-USDC]
+    "0x2347EbB8645Cc2EA0Ba92D1EC59704031F2fCCf4": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
@@ -430,6 +502,14 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     },
     // MELANIA/USD [WAVAX-USDC]
     "0xe19da27Bf9733c429445E289B662bECDCa6ce10b": {
+      enabled: true,
+    },
+    // PUMP/USD [WAVAX-USDC]
+    "0x94cE6F65188a92F297C7f0A5A7B3cAd9013450F8": {
+      enabled: true,
+    },
+    // WLFI/USD [WAVAX-USDC]
+    "0x1cb9932CE322877A2B86489BD1aA3C3CfF879F0d": {
       enabled: true,
     },
   },
@@ -544,6 +624,10 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     },
     // BTC/USD [stBTC-USDC.E]
     "0x2f95a2529328E427d3204555F164B1102086690E": {
+      enabled: true,
+    },
+    // BTC/USD [PBTC-PBTC]
+    "0x6bFDD025827F7CE130BcfC446927AEF34ae2a98d": {
       enabled: true,
     },
   },

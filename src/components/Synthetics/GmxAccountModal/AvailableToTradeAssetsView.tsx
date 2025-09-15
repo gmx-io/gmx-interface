@@ -1,5 +1,5 @@
 import { MessageDescriptor } from "@lingui/core";
-import { msg } from "@lingui/macro";
+import { msg, t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
@@ -9,19 +9,22 @@ import { isSettlementChain } from "config/multichain";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
-import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
+import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
+import SearchInput from "components/SearchInput/SearchInput";
+import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 type FilterType = "all" | "gmxAccount" | "wallet";
 
-const FILTERS: FilterType[] = ["all", "gmxAccount", "wallet"];
+const FILTERS: FilterType[] = ["all", "wallet", "gmxAccount"];
 
 const FILTER_TITLE_MAP: Record<FilterType, MessageDescriptor> = {
   all: msg`All`,
-  gmxAccount: msg`Gmx Account`,
+  gmxAccount: msg`GMX Account`,
   wallet: msg`Wallet`,
 };
 
@@ -32,6 +35,7 @@ type DisplayToken = {
   balance: bigint | undefined;
   balanceUsd: bigint | undefined;
   decimals: number;
+  isStable: boolean | undefined;
 };
 
 const tokenSorter = (a: DisplayToken, b: DisplayToken): 1 | -1 | 0 => {
@@ -73,17 +77,21 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
   }, [tokens, searchQuery, noChainFilter, activeFilter]);
 
   return (
-    <div className="flex grow flex-col gap-8 overflow-y-hidden pt-16">
+    <div className="flex grow flex-col overflow-y-hidden pt-adaptive">
+      <div className="mb-16 px-adaptive">
+        <SearchInput value={searchQuery} setValue={setSearchQuery} noBorder />
+      </div>
+
       {!noChainFilter && (
-        <div className="flex gap-4 px-16">
+        <div className="mb-12 flex gap-4 px-adaptive">
           {FILTERS.map((filter) => (
             <Button
               key={filter}
               type="button"
-              variant="ghost"
-              slim
+              variant={activeFilter === filter ? "secondary" : "ghost"}
+              size="small"
               className={cx({
-                "!bg-cold-blue-500": activeFilter === filter,
+                "!text-typography-primary": activeFilter === filter,
               })}
               onClick={() => setActiveFilter(filter)}
             >
@@ -92,42 +100,38 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
           ))}
         </div>
       )}
-
-      <div className="px-16">
-        <input
-          type="text"
-          placeholder="Search tokens..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full rounded-4 bg-slate-700 px-12 py-8 text-white placeholder:text-slate-100"
-        />
-      </div>
-
-      <div className="grow overflow-y-auto">
+      <VerticalScrollFadeContainer className="flex grow flex-col overflow-y-auto">
         {sortedFilteredTokens.map((displayToken) => (
           <div
             key={displayToken.symbol + "_" + displayToken.chainId}
-            className="flex items-center justify-between px-16 py-8 gmx-hover:bg-slate-700"
+            className="flex items-center justify-between px-adaptive py-8 gmx-hover:bg-fill-surfaceElevated50"
           >
-            <div className="flex items-center gap-8">
+            <div className="flex items-center gap-16">
               <TokenIcon
                 symbol={displayToken.symbol}
                 displaySize={40}
                 importSize={40}
-                chainIdBadge={noChainFilter ? undefined : displayToken.chainId}
+                chainIdBadge={displayToken.chainId}
               />
               <div>
                 <div>{displayToken.symbol}</div>
-                <div className="text-body-small text-slate-100">{getChainName(displayToken.chainId)}</div>
+                <div className="text-body-small text-slate-100">
+                  {displayToken.chainId === 0 ? t`GMX Account` : getChainName(displayToken.chainId)}
+                </div>
               </div>
             </div>
             <div className="text-right">
-              <div>{formatBalanceAmount(displayToken.balance ?? 0n, displayToken.decimals, displayToken.symbol)}</div>
-              <div className="text-body-small text-slate-100">{formatUsd(displayToken.balanceUsd)}</div>
+              <Amount
+                className="text-body-large"
+                amount={displayToken.balance}
+                decimals={displayToken.decimals}
+                isStable={displayToken.isStable}
+              />
+              <div className="text-body-small text-slate-100 numbers">{formatUsd(displayToken.balanceUsd)}</div>
             </div>
           </div>
         ))}
-      </div>
+      </VerticalScrollFadeContainer>
     </div>
   );
 };
@@ -147,6 +151,7 @@ const AssetListMultichain = () => {
           balance: token.gmxAccountBalance,
           balanceUsd: convertToUsd(token.gmxAccountBalance, token.decimals, getMidPrice(token.prices)),
           decimals: token.decimals,
+          isStable: token.isStable,
         })
       )
       .sort(tokenSorter);
@@ -168,6 +173,7 @@ const AssetListSettlementChain = () => {
           balance: tokenData.gmxAccountBalance,
           balanceUsd: convertToUsd(tokenData.gmxAccountBalance, tokenData.decimals, getMidPrice(tokenData.prices)),
           chainId: 0,
+          isStable: tokenData.isStable,
         },
         {
           ...tokenData,
@@ -175,6 +181,7 @@ const AssetListSettlementChain = () => {
           balance: tokenData.walletBalance,
           balanceUsd: convertToUsd(tokenData.walletBalance, tokenData.decimals, getMidPrice(tokenData.prices)),
           chainId: chainId,
+          isStable: tokenData.isStable,
         },
       ])
       .filter((token) => token.balance !== undefined && token.balance > 0n)

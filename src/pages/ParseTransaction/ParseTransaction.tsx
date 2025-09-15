@@ -34,6 +34,7 @@ import { CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
 import { formatFactor, formatUsd } from "lib/numbers";
 import { parseTxEvents } from "pages/ParseTransaction/parseTxEvents";
 
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Loader from "components/Common/Loader";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Table, TableTd, TableTr } from "components/Table/Table";
@@ -68,7 +69,6 @@ export const NETWORKS_BY_CHAIN_IDS: Record<ContractsChainId, string> = {
   [ARBITRUM]: "arbitrum",
   [AVALANCHE]: "avalanche",
   [AVALANCHE_FUJI]: "fuji",
-  // [BASE_MAINNET]: "base",
   [ARBITRUM_SEPOLIA]: "arbitrum-sepolia",
   [BOTANIX]: "botanix",
 };
@@ -82,7 +82,9 @@ export function ParseTransactionPage() {
   /** Default is Arbitrum to prevent page crashes in hooks, wrong networks handled on :207 */
   const chainId = NETWORKS[network as string] ?? ARBITRUM;
 
-  const client = usePublicClient({});
+  const client = usePublicClient({
+    chainId,
+  });
 
   const { data, isLoading, error } = useSWR([chainId, tx], async function fetchTransaction() {
     try {
@@ -114,7 +116,7 @@ export function ParseTransactionPage() {
   if (!network || typeof network !== "string" || !NETWORKS[network as string]) {
     return (
       <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
-        Specify network: arbitrum, avalanche, fuji, botanix
+        Specify network: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia
       </div>
     );
   }
@@ -138,73 +140,75 @@ export function ParseTransactionPage() {
   }
 
   return (
-    <div className="mx-auto max-w-[1280px] pt-24">
-      <h1 className="text-body-large mb-24">
-        Transaction: <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](tx)}>{tx}</ExternalLink>
-      </h1>
-      <Table className="mb-12 ">
-        <tbody>
-          {data.length ? (
-            data.map((event) => {
-              return (
-                <Fragment key={event.key}>
-                  <TableTr>
-                    <TableTd className="w-[25rem] font-bold">Name</TableTd>
-                    <TableTd className="group !text-left" colSpan={2}>
-                      <div className="flex flex-row items-center justify-between gap-8">
-                        <span className="flex flex-row items-center gap-8 whitespace-nowrap">
-                          {event.log}: {event.name}
-                          <CopyButton value={event.name} />
-                        </span>
-                        <span>LogIndex: {event.logIndex}</span>
-                      </div>
-                    </TableTd>
-                  </TableTr>
-                  <TableTr>
-                    <TableTd className="w-[25rem] font-bold">Topics</TableTd>
-                    <TableTd className="group !text-left" colSpan={3}>
-                      {event.topics.length > 0
-                        ? event.topics.map((t) => (
-                            <div className="mb-4 flex flex-row items-center gap-8" key={event.name + t}>
-                              {t}
-                              <CopyButton value={t} />
-                            </div>
-                          ))
-                        : "No topics"}
-                    </TableTd>
-                  </TableTr>
-                  {event.values.map((value) => (
-                    <LogEntryComponent
-                      name={event.name}
-                      key={value.item}
-                      {...value}
-                      network={network}
-                      chainId={chainId}
-                      entries={event.values}
-                      tokensData={tokensData}
-                      marketsInfoData={marketsInfoData}
-                      glvData={glvData}
-                      marketTokensData={marketTokensData}
-                      copyToClipboard={copyToClipboard}
-                      allEvents={data}
-                    />
-                  ))}
-                  <TableTr>
-                    <TableTd padding="compact" className="bg-slate-950" colSpan={3}></TableTd>
-                  </TableTr>
-                </Fragment>
-              );
-            })
-          ) : (
-            <TableTr>
-              <TableTd className="!text-center font-bold" colSpan={3}>
-                No events
-              </TableTd>
-            </TableTr>
-          )}
-        </tbody>
-      </Table>
-    </div>
+    <AppPageLayout>
+      <div className="mx-auto max-w-[1280px] pt-24">
+        <h1 className="text-body-large mb-24">
+          Transaction: <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](tx)}>{tx}</ExternalLink>
+        </h1>
+        <Table className="mb-12 ">
+          <tbody>
+            {data.length ? (
+              data.map((event) => {
+                return (
+                  <Fragment key={event.key}>
+                    <TableTr>
+                      <TableTd className="w-[25rem] font-bold">Name</TableTd>
+                      <TableTd className="group !text-left" colSpan={2}>
+                        <div className="flex flex-row items-center justify-between gap-8">
+                          <span className="flex flex-row items-center gap-8 whitespace-nowrap">
+                            {event.log}: {event.name}
+                            <CopyButton value={event.name} />
+                          </span>
+                          <span>LogIndex: {event.logIndex}</span>
+                        </div>
+                      </TableTd>
+                    </TableTr>
+                    <TableTr>
+                      <TableTd className="w-[25rem] font-bold">Topics</TableTd>
+                      <TableTd className="group !text-left" colSpan={3}>
+                        {event.topics.length > 0
+                          ? event.topics.map((t) => (
+                              <div className="mb-4 flex flex-row items-center gap-8" key={event.name + t}>
+                                {t}
+                                <CopyButton value={t} />
+                              </div>
+                            ))
+                          : "No topics"}
+                      </TableTd>
+                    </TableTr>
+                    {event.values.map((value) => (
+                      <LogEntryComponent
+                        name={event.name}
+                        key={value.item}
+                        {...value}
+                        network={network}
+                        chainId={chainId}
+                        entries={event.values}
+                        tokensData={tokensData}
+                        marketsInfoData={marketsInfoData}
+                        glvData={glvData}
+                        marketTokensData={marketTokensData}
+                        copyToClipboard={copyToClipboard}
+                        allEvents={data}
+                      />
+                    ))}
+                    <TableTr>
+                      <TableTd padding="compact" className="bg-slate-900" colSpan={3}></TableTd>
+                    </TableTr>
+                  </Fragment>
+                );
+              })
+            ) : (
+              <TableTr>
+                <TableTd className="!text-center font-bold" colSpan={3}>
+                  No events
+                </TableTd>
+              </TableTr>
+            )}
+          </tbody>
+        </Table>
+      </div>
+    </AppPageLayout>
   );
 }
 
@@ -362,7 +366,10 @@ function LogEntryComponent(props: LogEntryComponentProps) {
         value = (
           <span className="flex flex-row items-center gap-8">
             <TokenSymbolWithIcon symbol={token.symbol} /> ({props.value})
-            <ExternalLink className="text-slate-100 underline" href={`${explorerUrl}address/${props.value.toString()}`}>
+            <ExternalLink
+              className="text-typography-secondary underline"
+              href={`${explorerUrl}address/${props.value.toString()}`}
+            >
               <img src={explorerIconSrc} className="h-18 w-18" />
             </ExternalLink>
           </span>
@@ -371,7 +378,10 @@ function LogEntryComponent(props: LogEntryComponentProps) {
         value = (
           <span className="flex flex-row items-center gap-8">
             {isGlvInfo(marketOrGlv) ? getGlvDisplayName(marketOrGlv) : getMarketFullName(marketOrGlv)} ({props.value})
-            <ExternalLink className="text-slate-100 underline" href={`${explorerUrl}address/${props.value.toString()}`}>
+            <ExternalLink
+              className="text-typography-secondary underline"
+              href={`${explorerUrl}address/${props.value.toString()}`}
+            >
               <img src={explorerIconSrc} className="h-18 w-18" />
             </ExternalLink>
           </span>
@@ -388,10 +398,16 @@ function LogEntryComponent(props: LogEntryComponentProps) {
 
     value = (
       <span className="flex flex-row items-center gap-8">
-        <Link className="text-slate-100 underline" to={`/accounts/${props.value.toString()}?network=${network}&v=2`}>
+        <Link
+          className="text-typography-secondary underline"
+          to={`/accounts/${props.value.toString()}?network=${network}&v=2`}
+        >
           {props.value.toString()}
         </Link>
-        <ExternalLink className="text-slate-100 underline" href={`${explorerUrl}address/${props.value.toString()}`}>
+        <ExternalLink
+          className="text-typography-secondary underline"
+          href={`${explorerUrl}address/${props.value.toString()}`}
+        >
           <img src={explorerIconSrc} className="h-18 w-18" />
         </ExternalLink>
       </span>
@@ -487,9 +503,12 @@ function CopyButton({ value }: { value: string }) {
   return (
     <BiCopy
       size={16}
-      className={cx("hidden cursor-pointer text-slate-100 transition-transform hover:text-white group-hover:block", {
-        "scale-110 text-white": isCopied,
-      })}
+      className={cx(
+        "invisible cursor-pointer text-typography-secondary transition-transform hover:text-typography-primary group-hover:visible",
+        {
+          "scale-110 text-typography-primary": isCopied,
+        }
+      )}
       onClick={onClick}
     />
   );

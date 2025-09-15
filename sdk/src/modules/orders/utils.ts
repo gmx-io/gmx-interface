@@ -1,15 +1,15 @@
 import { Address, isAddressEqual } from "viem";
 
-import { ContractsChainId } from "configs/chains";
+import type { ContractsChainId } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { accountOrderListKey } from "configs/dataStore";
 import { getWrappedToken } from "configs/tokens";
-import { MarketFilterLongShortDirection, MarketFilterLongShortItemData } from "modules/trades/trades";
-import { GasLimitsConfig } from "types/fees";
-import { MarketsInfoData } from "types/markets";
+import type { MarketFilterLongShortDirection, MarketFilterLongShortItemData } from "modules/trades/trades";
+import type { GasLimitsConfig } from "types/fees";
+import type { MarketsInfoData } from "types/markets";
 import { DecreasePositionSwapType, Order, OrderType } from "types/orders";
 import { SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "types/sidecarOrders";
-import { TokensData } from "types/tokens";
+import type { TokensData } from "types/tokens";
 import { estimateOrderOraclePriceCount } from "utils/fees/estimateOraclePriceCount";
 import { estimateExecuteDecreaseOrderGasLimit, getExecutionFee } from "utils/fees/executionFee";
 import type { MulticallRequestConfig, MulticallResult } from "utils/multicall";
@@ -186,7 +186,9 @@ export function buildGetOrdersMulticall(chainId: ContractsChainId, account: stri
 
 export function parseGetOrdersResponse(res: MulticallResult<ReturnType<typeof buildGetOrdersMulticall>>) {
   const count = Number(res.data.dataStore.count.returnValues[0]);
+  const orderKeys = res.data.dataStore.keys.returnValues;
   const orders = res.data.reader.orders.returnValues as {
+    orderKey: string;
     order: {
       addresses: {
         account: string;
@@ -199,8 +201,8 @@ export function parseGetOrdersResponse(res: MulticallResult<ReturnType<typeof bu
         swapPath: string[];
       };
       numbers: {
-        orderType: number;
-        decreasePositionSwapType: number;
+        orderType: bigint;
+        decreasePositionSwapType: bigint;
         sizeDeltaUsd: bigint;
         initialCollateralDeltaAmount: bigint;
         triggerPrice: bigint;
@@ -212,22 +214,18 @@ export function parseGetOrdersResponse(res: MulticallResult<ReturnType<typeof bu
         validFromTime: bigint;
         srcChainId: bigint;
       };
-      flags: {
-        isLong: boolean;
-        shouldUnwrapNativeToken: boolean;
-        isFrozen: boolean;
-        autoCancel: boolean;
-      };
+      flags: { isLong: boolean; shouldUnwrapNativeToken: boolean; isFrozen: boolean; autoCancel: boolean };
       _dataList: string[];
     };
-    orderKey: string;
   }[];
 
   return {
     count,
-    orders: orders.map(({ order, orderKey }) => {
+    orders: orders.map(({ order }, i) => {
+      const key = orderKeys[i];
+
       const orderData: Order = {
-        key: orderKey,
+        key,
         account: order.addresses.account as Address,
         receiver: order.addresses.receiver as Address,
         callbackContract: order.addresses.callbackContract as Address,
@@ -245,8 +243,8 @@ export function parseGetOrdersResponse(res: MulticallResult<ReturnType<typeof bu
         isLong: order.flags.isLong as boolean,
         shouldUnwrapNativeToken: order.flags.shouldUnwrapNativeToken as boolean,
         isFrozen: order.flags.isFrozen as boolean,
-        orderType: order.numbers.orderType as OrderType,
-        decreasePositionSwapType: order.numbers.decreasePositionSwapType as DecreasePositionSwapType,
+        orderType: Number(order.numbers.orderType) as OrderType,
+        decreasePositionSwapType: Number(order.numbers.decreasePositionSwapType) as DecreasePositionSwapType,
         autoCancel: order.flags.autoCancel as boolean,
         uiFeeReceiver: order.addresses.uiFeeReceiver as Address,
         validFromTime: BigInt(order.numbers.validFromTime),

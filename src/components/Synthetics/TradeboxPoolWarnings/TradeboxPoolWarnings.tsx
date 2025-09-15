@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { ReactNode, useCallback, useEffect } from "react";
 
-import { BOTANIX, getChainName } from "config/chains";
+import { getChainName } from "config/chains";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectAccountStats, selectSubaccountState } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectExpressOrdersEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -14,7 +14,6 @@ import {
   selectTradeboxState,
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
-  selectTradeboxTradeType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getFeeItem } from "domain/synthetics/fees";
@@ -31,17 +30,13 @@ import {
   TradeBoxWarningShownEvent,
   TradeBoxWarningSwitchPoolClickEvent,
 } from "lib/userAnalytics/types";
-import { getTokenBySymbol } from "sdk/configs/tokens";
-import { TradeMode, TradeType } from "sdk/types/trade";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
-import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolWithIcon";
+import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 
 const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // +0.01%
 
-const SPACE = " ";
-
-export const useTradeboxPoolWarnings = (withActions = true) => {
+export const useTradeboxPoolWarnings = () => {
   const { chainId } = useChainId();
   const marketsInfoData = useMarketsInfoData();
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);
@@ -73,17 +68,6 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
         : shortLiquidity >= (increaseAmounts?.sizeDeltaUsd || 0);
     },
     [increaseAmounts, isLong]
-  );
-
-  const WithActon = useCallback(
-    ({ children }: { children: ReactNode }) =>
-      withActions ? (
-        <>
-          {SPACE}
-          {children}
-        </>
-      ) : null,
-    [withActions]
   );
 
   const indexToken = marketInfo?.indexToken;
@@ -154,20 +138,6 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
   const marketPoolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
   const tradeMode = useSelector(selectTradeboxTradeMode);
-  const tradeType = useSelector(selectTradeboxTradeType);
-
-  const showBotanixSwapWarning =
-    chainId === BOTANIX &&
-    (fromToken?.assetSymbol === "pBTC" || fromToken?.assetSymbol === "BTC") &&
-    (tradeType !== TradeType.Swap || tradeMode !== TradeMode.Market);
-
-  const { setFromTokenAddress, setToTokenAddress, setTradeType, setTradeMode } = useSelector(selectTradeboxState);
-  const handleBotanixSwapClick = useCallback(() => {
-    setTradeType(TradeType.Swap);
-    setTradeMode(TradeMode.Market);
-    setFromTokenAddress(fromToken?.address);
-    setToTokenAddress(getTokenBySymbol(chainId, "STBTC")?.address);
-  }, [chainId, fromToken?.address, setFromTokenAddress, setToTokenAddress, setTradeMode, setTradeType]);
 
   useEffect(() => {
     if (
@@ -261,8 +231,7 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
     !showHasExistingOrderWarning &&
     !showHasBetterOpenFeesWarning &&
     !showHasExistingPositionButNotEnoughLiquidityWarning &&
-    !showHasExistingOrderButNoLiquidityWarning &&
-    !showBotanixSwapWarning
+    !showHasExistingOrderButNoLiquidityWarning
   ) {
     return null;
   }
@@ -274,18 +243,15 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
       <AlertInfoCard key="showHasExistingPositionWarning">
         <Trans>
           You have an existing position in the {getMarketPoolName(marketWithPosition)} market pool.
-          <WithActon>
-            <span
-              className="clickable muted underline"
-              onClick={() => {
-                setMarketAddress(marketWithPosition.marketTokenAddress);
-                setCollateralAddress(marketsOptions.collateralWithPosition?.address);
-              }}
-            >
-              Switch to {getMarketPoolName(marketWithPosition)} market pool
-            </span>
-            .
-          </WithActon>
+          <ColorfulButtonLink
+            color="blue"
+            onClick={() => {
+              setMarketAddress(marketWithPosition.marketTokenAddress);
+              setCollateralAddress(marketsOptions.collateralWithPosition?.address);
+            }}
+          >
+            Switch to {getMarketPoolName(marketWithPosition)} market pool
+          </ColorfulButtonLink>
         </Trans>
       </AlertInfoCard>
     );
@@ -317,15 +283,9 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
           Insufficient liquidity in the {marketInfo ? getMarketPoolName(marketInfo) : "..."} market pool. Select a
           different pool for this market.
           {hasEnoughLiquidity(minOpenFeesMarket) && (
-            <WithActon>
-              <span
-                className="clickable muted underline"
-                onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}
-              >
-                Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
-              </span>
-              .
-            </WithActon>
+            <ColorfulButtonLink color="blue" onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}>
+              Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
+            </ColorfulButtonLink>
           )}
         </Trans>
       </AlertInfoCard>
@@ -339,15 +299,12 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
           Insufficient liquidity in the {marketInfo ? getMarketPoolName(marketInfo) : "..."} market pool. Select a
           different pool for this market. Choosing a different pool would open a new position different from the
           existing one.
-          <WithActon>
-            <span
-              className="clickable muted underline"
-              onClick={() => setMarketAddress(marketsOptions.minOpenFeesMarket?.marketAddress)}
-            >
-              Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
-            </span>
-            .
-          </WithActon>
+          <ColorfulButtonLink
+            color="blue"
+            onClick={() => setMarketAddress(marketsOptions.minOpenFeesMarket?.marketAddress)}
+          >
+            Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
+          </ColorfulButtonLink>
         </Trans>
       </AlertInfoCard>
     );
@@ -360,18 +317,14 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
       <AlertInfoCard key="showHasExistingOrderWarning">
         <Trans>
           You have an existing limit order in the {getMarketPoolName(marketWithOrder)} market pool.
-          <WithActon>
-            <span
-              className="clickable muted underline"
-              onClick={() => {
-                setMarketAddress(marketWithOrder.marketTokenAddress);
-                setCollateralAddress(address);
-              }}
-            >
-              Switch to {getMarketPoolName(marketWithOrder)} market pool
-            </span>
-            .
-          </WithActon>
+          <ColorfulButtonLink
+            onClick={() => {
+              setMarketAddress(marketWithOrder.marketTokenAddress);
+              setCollateralAddress(address);
+            }}
+          >
+            Switch to {getMarketPoolName(marketWithOrder)} market pool
+          </ColorfulButtonLink>
         </Trans>
       </AlertInfoCard>
     );
@@ -407,25 +360,9 @@ export const useTradeboxPoolWarnings = (withActions = true) => {
       <AlertInfoCard key="showHasBetterOpenFeesWarning">
         <Trans>
           Save {formatPercentage(improvedOpenFeesDeltaBps)} in price impact and fees by{" "}
-          <WithActon>
-            <span className="clickable muted underline" onClick={onSwitchPoolClick}>
-              switching to the {getMarketPoolName(minOpenFeesMarket)} pool
-            </span>
-            .
-          </WithActon>
-        </Trans>
-      </AlertInfoCard>
-    );
-  }
-
-  if (showBotanixSwapWarning) {
-    warning.push(
-      <AlertInfoCard key="botanixSwapWarning">
-        <Trans>
-          <span onClick={handleBotanixSwapClick} className="clickable muted underline">
-            Swap {fromToken?.symbol} to STBTC
-          </span>{" "}
-          to trade with <TokenSymbolWithIcon symbol="STBTC" /> or <TokenSymbolWithIcon symbol="USDC.E" /> as collateral.
+          <ColorfulButtonLink color="blue" onClick={onSwitchPoolClick}>
+            switching to the {getMarketPoolName(minOpenFeesMarket)} pool
+          </ColorfulButtonLink>
         </Trans>
       </AlertInfoCard>
     );

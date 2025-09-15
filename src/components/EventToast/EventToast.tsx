@@ -1,12 +1,12 @@
 import "./EventToast.css";
 import { Toast } from "react-hot-toast";
-import { MdOutlineClose } from "react-icons/md";
+import { RxCross2 } from "react-icons/rx";
 
 import { EventData } from "config/events";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-import Icon from "./AnnouncementIcon";
+import MessageIcon from "img/ic_message.svg?react";
 
 export default function EventToast({
   event,
@@ -20,13 +20,17 @@ export default function EventToast({
   toast: Toast;
 }) {
   return (
-    <div data-qa="toast" className={`single-toast ${toast.visible ? "zoomIn" : "zoomOut"}`} key={id}>
+    <div data-qa="toast" className={`single-toast text-body-medium ${toast.visible ? "zoomIn" : "zoomOut"}`} key={id}>
       <header>
-        <div className="toast-title">
-          <Icon className="announcement-icon" />
-          <p>{event.title}</p>
+        <div className="flex items-center gap-8">
+          <MessageIcon className="size-20 shrink-0 text-blue-300" />
+          <p className="font-medium">{event.title}</p>
         </div>
-        <MdOutlineClose onClick={onClick} className="cross-icon" color="white" data-qa="close-toast" />
+        <RxCross2
+          onClick={onClick}
+          className="size-20 shrink-0 cursor-pointer text-typography-secondary hover:text-typography-primary"
+          data-qa="close-toast"
+        />
       </header>
       {Array.isArray(event.bodyText) ? (
         event.bodyText.map((text, i) =>

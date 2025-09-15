@@ -4,8 +4,8 @@ import { zeroAddress } from "viem";
 import { SettlementChainId, SourceChainId, getChainName } from "config/chains";
 import {
   MULTICALLS_MAP,
-  MULTI_CHAIN_TOKEN_MAPPING,
   MULTI_CHAIN_DEPOSIT_TRADE_TOKENS,
+  MULTI_CHAIN_TOKEN_MAPPING,
   MultichainTokenMapping,
 } from "config/multichain";
 import { executeMulticall } from "lib/multicall/executeMulticall";

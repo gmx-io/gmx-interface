@@ -16,7 +16,7 @@ export const DropdownSelector = <Id extends Primitive, Option>({
   itemKey,
   placeholder,
   slim = false,
-  elevated = false,
+  variant,
 }: {
   value: Id | undefined;
   onChange: (value: Id) => void;
@@ -25,28 +25,32 @@ export const DropdownSelector = <Id extends Primitive, Option>({
   item: ({ option }: { option: Option }) => React.JSX.Element;
   placeholder?: string;
   slim?: boolean;
-  elevated?: boolean;
+  variant?: "ghost";
 } & WithConditionalItemKey<Id, Option>) => {
   return (
     <Listbox value={value ?? null} onChange={onChange}>
       <div className="relative">
         <Listbox.Button
-          className={cx(
-            "flex w-full items-center justify-between rounded-4",
-            slim ? "text-body-medium p-4" : "text-body-large px-14 py-12",
-            elevated
-              ? "bg-cold-blue-700 active:bg-cold-blue-500 gmx-hover:bg-cold-blue-500"
-              : "bg-cold-blue-900 active:bg-cold-blue-500 gmx-hover:bg-cold-blue-700"
-          )}
+          className={({ open }) =>
+            cx(
+              "flex w-full items-center justify-between rounded-8",
+              slim ? "text-body-medium p-4" : "px-14 py-13 text-16 leading-base",
+              variant === "ghost"
+                ? "border"
+                : "border bg-slate-800 hover:bg-fill-surfaceElevatedHover active:bg-fill-surfaceElevated50",
+              variant !== "ghost" && (open ? "group border-blue-300" : "border-slate-800"),
+              variant === "ghost" && (open ? "group border-blue-300" : "border-[transparent]")
+            )
+          }
         >
-          {value === undefined ? <div className="text-slate-100">{placeholder}</div> : button}
-          <BiChevronDown className="size-20 text-slate-100" />
+          {value === undefined ? <div className="text-typography-primary">{placeholder}</div> : button}
+          <BiChevronDown className="size-20 group-aria-expanded:text-blue-300" />
         </Listbox.Button>
         <Listbox.Options
           className={cx(
-            "absolute left-0 right-0 top-full z-10 mt-4 overflow-auto rounded-4 px-0",
+            "absolute left-0 right-0 top-full z-10 mt-4 overflow-auto rounded-8 px-0",
             slim ? "" : "py-8",
-            elevated ? "bg-cold-blue-700" : "border border-slate-600 bg-slate-700"
+            "border-1/2 border-slate-600 bg-slate-800"
           )}
         >
           {options.map((option) => (
@@ -57,7 +61,7 @@ export const DropdownSelector = <Id extends Primitive, Option>({
                 cx(
                   "cursor-pointer",
                   slim ? "text-body-medium p-4" : "text-body-large px-14 py-8",
-                  (active || selected) && (elevated ? "bg-cold-blue-500" : "bg-slate-600")
+                  (active || selected) && (variant === "ghost" ? "bg-fill-surfaceHover" : "bg-fill-surfaceHover")
                 )
               }
             >

@@ -18,10 +18,10 @@ import { importImage } from "lib/legacy";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
 import Card from "components/Common/Card";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Footer from "components/Footer/Footer";
 
 import bondProtocolIcon from "img/ic_bondprotocol_arbitrum.svg";
 import gmxArbitrumIcon from "img/ic_gmx_arbitrum.svg";
@@ -86,124 +86,125 @@ export default function BuyGMX() {
   const canTransferNativeToken = TRANSFER_EXCHANGES.filter((e) => chainId in e.links).length > 0;
 
   return (
-    <div className="BuyGMXGLP default-container page-layout">
-      <div className="BuyGMXGLP-container">
-        <div className="section-title-block">
-          <div className="section-title-content">
-            <div className="Page-title">
-              <Trans>Buy GMX on {chainName}</Trans>
-              <img className="Page-title-icon ml-5 inline-block" src={icons?.network} alt={chainName} />
-            </div>
-            <div className="Page-description">
-              <Trans>Choose to buy from decentralized or centralized exchanges.</Trans>
-              <br />
-              <Trans>
-                To purchase GMX on the {getChainName(OPPOSITE_CHAIN_ID[chainId])} blockchain, please{" "}
-                <span onClick={() => onNetworkSelect(OPPOSITE_CHAIN_ID[chainId])}>change your network</span>.
-              </Trans>
-            </div>
-          </div>
-        </div>
-        <div className="cards-row">
-          <DecentralisedExchanges chainId={chainId} externalLinks={externalLinks} />
-          <CentralisedExchanges chainId={chainId} />
-        </div>
-        <div className="section-title-block mt-top" id="bridge">
-          <div className="section-title-content">
-            <div className="Page-title">
-              <Trans>
-                Buy or Transfer {nativeTokenSymbol} to {chainName}
-              </Trans>
-              <img className="Page-title-icon ml-5 inline-block" src={icons?.network} alt={chainName} />
-            </div>
-            <div className="Page-description">
-              <Trans>
-                Buy {nativeTokenSymbol} directly on {chainName} or transfer it there.
-              </Trans>
+    <AppPageLayout>
+      <div className="BuyGMXGLP default-container page-layout">
+        <div className="BuyGMXGLP-container">
+          <div className="section-title-block">
+            <div className="section-title-content">
+              <div className="Page-title">
+                <Trans>Buy GMX on {chainName}</Trans>
+                <img className="Page-title-icon ml-5 inline-block" src={icons?.network} alt={chainName} />
+              </div>
+              <div className="Page-description">
+                <Trans>Choose to buy from decentralized or centralized exchanges.</Trans>
+                <br />
+                <Trans>
+                  To purchase GMX on the {getChainName(OPPOSITE_CHAIN_ID[chainId])} blockchain, please{" "}
+                  <span onClick={() => onNetworkSelect(OPPOSITE_CHAIN_ID[chainId])}>change your network</span>.
+                </Trans>
+              </div>
             </div>
           </div>
-        </div>
+          <div className="cards-row">
+            <DecentralisedExchanges chainId={chainId} externalLinks={externalLinks} />
+            <CentralisedExchanges chainId={chainId} />
+          </div>
 
-        <div className="cards-row">
-          <Card title={t`Buy ${nativeTokenSymbol}`}>
-            {canBuyNativeToken ? (
-              <div className="App-card-content">
-                <div className="BuyGMXGLP-description">
-                  <Trans>
-                    You can buy {nativeTokenSymbol} directly on{" "}
-                    <ExternalLink href={externalLinks.networkWebsite}>{chainName}</ExternalLink> using these options:
-                  </Trans>
-                </div>
-                <div className="buttons-group">
-                  {BUY_NATIVE_TOKENS.filter((e) => chainId in e.links).map((exchange) => {
-                    const icon = importImage(exchange.icon) || "";
-                    const link = exchange.links[chainId];
-                    return (
-                      <Button
-                        variant="secondary"
-                        textAlign="left"
-                        key={exchange.name}
-                        to={link}
-                        // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                        imgSrc={icon}
-                        imgAlt={exchange.name}
-                        newTab
-                      >
-                        {exchange.name}
-                      </Button>
-                    );
-                  })}
-                </div>
-              </div>
-            ) : (
-              <div className="App-card-content tracking-normal text-slate-100">
+          <div className="section-title-block mt-top" id="bridge">
+            <div className="section-title-content">
+              <div className="Page-title">
                 <Trans>
-                  No options available to buy {nativeTokenSymbol} directly on {chainName}.
+                  Buy or Transfer {nativeTokenSymbol} to {chainName}
+                </Trans>
+                <img className="Page-title-icon ml-5 inline-block" src={icons?.network} alt={chainName} />
+              </div>
+              <div className="Page-description">
+                <Trans>
+                  Buy {nativeTokenSymbol} directly on {chainName} or transfer it there.
                 </Trans>
               </div>
-            )}
-          </Card>
-          <Card title={t`Transfer ${nativeTokenSymbol}`}>
-            {canTransferNativeToken ? (
-              <div className="App-card-content">
-                <div className="BuyGMXGLP-description">
+            </div>
+          </div>
+
+          <div className="cards-row">
+            <Card title={t`Buy ${nativeTokenSymbol}`}>
+              {canBuyNativeToken ? (
+                <div className="App-card-content">
+                  <div className="BuyGMXGLP-description">
+                    <Trans>
+                      You can buy {nativeTokenSymbol} directly on{" "}
+                      <ExternalLink href={externalLinks.networkWebsite}>{chainName}</ExternalLink> using these options:
+                    </Trans>
+                  </div>
+                  <div className="buttons-group">
+                    {BUY_NATIVE_TOKENS.filter((e) => chainId in e.links).map((exchange) => {
+                      const icon = importImage(exchange.icon) || "";
+                      const link = exchange.links[chainId];
+                      return (
+                        <Button
+                          variant="secondary"
+                          textAlign="left"
+                          key={exchange.name}
+                          to={link}
+                          imgSrc={icon}
+                          imgAlt={exchange.name}
+                          newTab
+                        >
+                          {exchange.name}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : (
+                <div className="App-card-content tracking-normal text-slate-100">
                   <Trans>
-                    You can transfer {nativeTokenSymbol} from other networks to {chainName} using any of the below
-                    options:
+                    No options available to buy {nativeTokenSymbol} directly on {chainName}.
                   </Trans>
                 </div>
-                <div className="buttons-group">
-                  {TRANSFER_EXCHANGES.filter((e) => chainId in e.links).map((exchange) => {
-                    const icon = importImage(exchange.icon) || "";
-                    const link = exchange.links[chainId];
-                    return (
-                      <Button
-                        variant="secondary"
-                        textAlign="left"
-                        key={exchange.name}
-                        to={link}
-                        imgSrc={icon}
-                        imgAlt={exchange.name}
-                        newTab
-                      >
-                        {exchange.name}
-                      </Button>
-                    );
-                  })}
+              )}
+            </Card>
+            <Card title={t`Transfer ${nativeTokenSymbol}`}>
+              {canTransferNativeToken ? (
+                <div className="App-card-content">
+                  <div className="BuyGMXGLP-description">
+                    <Trans>
+                      You can transfer {nativeTokenSymbol} from other networks to {chainName} using any of the below
+                      options:
+                    </Trans>
+                  </div>
+                  <div className="buttons-group">
+                    {TRANSFER_EXCHANGES.filter((e) => chainId in e.links).map((exchange) => {
+                      const icon = importImage(exchange.icon) || "";
+                      const link = exchange.links[chainId];
+                      return (
+                        <Button
+                          variant="secondary"
+                          textAlign="left"
+                          key={exchange.name}
+                          to={link}
+                          imgSrc={icon}
+                          imgAlt={exchange.name}
+                          newTab
+                        >
+                          {exchange.name}
+                        </Button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="App-card-content tracking-normal text-slate-100">
-                <Trans>
-                  No options available to transfer {nativeTokenSymbol} to {chainName}.
-                </Trans>
-              </div>
-            )}
-          </Card>
+              ) : (
+                <div className="App-card-content tracking-normal text-slate-100">
+                  <Trans>
+                    No options available to transfer {nativeTokenSymbol} to {chainName}.
+                  </Trans>
+                </div>
+              )}
+            </Card>
+          </div>
         </div>
       </div>
-      <Footer />
-    </div>
+    </AppPageLayout>
   );
 }
 

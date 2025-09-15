@@ -1,4 +1,4 @@
-import { Provider, Signer, Wallet } from "ethers";
+import { AbstractSigner, Provider, Signer, Wallet } from "ethers";
 import { encodeFunctionData, size, zeroAddress, zeroHash } from "viem";
 
 import { BOTANIX } from "config/chains";
@@ -174,6 +174,7 @@ function getBatchExpressEstimatorParams({
     account: signer.address,
     gasPaymentTokenAsCollateralAmount,
     executionFeeAmount: executionFeeAmount.feeTokenAmount,
+    executionGasLimit: executionFeeAmount.gasLimit,
     transactionPayloadGasLimit,
     transactionExternalCalls,
     subaccountActions,
@@ -223,6 +224,7 @@ export async function estimateExpressParams({
     expressTransactionBuilder,
     gasPaymentTokenAsCollateralAmount,
     executionFeeAmount,
+    executionGasLimit,
     transactionPayloadGasLimit,
     transactionExternalCalls,
     subaccountActions,
@@ -404,6 +406,8 @@ export async function estimateExpressParams({
     relayParamsPayload: finalRelayParams,
     isSponsoredCall,
     gasPaymentParams: finalRelayFeeParams.gasPaymentParams,
+    executionFeeAmount,
+    executionGasLimit,
     estimationMethod,
     gasLimit,
     l1GasLimit,
@@ -717,6 +721,7 @@ export async function getBatchSignatureParams({
     types,
     typedData,
     domain,
+    shouldUseSignerMethod: subaccountApproval !== undefined,
   };
 }
 
@@ -959,12 +964,14 @@ export async function signSetTraderReferralCode({
   referralCode,
   chainId,
   srcChainId,
+  shouldUseSignerMethod,
 }: {
-  signer: WalletSigner | Wallet;
+  signer: AbstractSigner;
   relayParams: RelayParamsPayload;
   referralCode: string;
   chainId: ContractsChainId;
   srcChainId: SourceChainId;
+  shouldUseSignerMethod?: boolean;
 }) {
   const types = {
     SetTraderReferralCode: [
@@ -979,7 +986,7 @@ export async function signSetTraderReferralCode({
     relayParams: hashRelayParams(relayParams),
   };
 
-  return signTypedData({ signer, domain, types, typedData });
+  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod });
 }
 
 function updateExpressOrdersAddresses(addressess: CreateOrderPayload["addresses"]): CreateOrderPayload["addresses"] {

@@ -1,9 +1,7 @@
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getTokenData } from "domain/synthetics/tokens";
-import { TradeMode, TradeType } from "domain/synthetics/trade";
 import { getToken, getTokenBySymbolSafe } from "sdk/configs/tokens";
-import { createTradeFlags } from "sdk/utils/trade";
 
 import { selectTradeboxFromTokenAddress, selectTradeboxToTokenAddress } from "./baseSelectors";
 import { selectTradeboxTradeFlags } from "../tradeboxSelectors";
@@ -17,13 +15,10 @@ export const selectChartToken = createSelector((q) => {
   }
 
   const chainId = q(selectChainId);
-  const tradeFlags = createTradeFlags(TradeType.Swap, TradeMode.Market);
-  const { isSwap } = tradeFlags;
 
   try {
-    const fromToken = getToken(chainId, fromTokenAddress);
     const toToken = getToken(chainId, toTokenAddress);
-    const chartToken = isSwap && toToken?.isStable && !fromToken?.isStable ? fromToken : toToken;
+    const chartToken = toToken;
     const tokensData = q(selectTokensData);
 
     const symbol = chartToken.symbol;

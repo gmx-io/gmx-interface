@@ -3,7 +3,7 @@ import { t } from "@lingui/macro";
 import { MaxInt256 } from "ethers";
 
 import { getMarketFullName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { OrderType, isIncreaseOrderType } from "domain/synthetics/orders";
+import { OrderType, isDecreaseOrderType, isIncreaseOrderType, isLiquidationOrderType } from "domain/synthetics/orders";
 import { convertToUsd, parseContractPrice } from "domain/synthetics/tokens/utils";
 import { getShouldUseMaxPrice } from "domain/synthetics/trade";
 import {
@@ -23,6 +23,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import {
   INEQUALITY_GT,
   INEQUALITY_LT,
+  Line,
   MakeOptional,
   RowDetails,
   formatTradeActionTimestamp,
@@ -41,6 +42,8 @@ export const formatPositionMessage = (
   relativeTimestamp = true
 ): RowDetails => {
   const collateralToken = tradeAction.initialCollateralToken;
+  const isV22Action = tradeAction.srcChainId !== undefined;
+
   let sizeDeltaUsd = tradeAction.sizeDeltaUsd;
 
   if (
@@ -164,7 +167,15 @@ export const formatPositionMessage = (
     displayDecimals: marketPriceDecimals,
     visualMultiplier: tradeAction.indexToken.visualMultiplier,
   });
-  const formattedPriceImpact = formatDeltaUsd(tradeAction.priceImpactUsd);
+
+  const priceImpactLines = getPriceImpactLines(tradeAction);
+
+  let displayedPriceImpact: string | undefined = undefined;
+  if (isIncreaseOrderType(ot) && !isV22Action) {
+    displayedPriceImpact = formatDeltaUsd(tradeAction.priceImpactUsd);
+  } else if (isDecreaseOrderType(ot) && isV22Action && tradeAction.totalImpactUsd !== undefined) {
+    displayedPriceImpact = formatDeltaUsd(tradeAction.totalImpactUsd);
+  }
 
   let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "timestampISO" | "price" | "size">;
 
@@ -185,6 +196,7 @@ export const formatPositionMessage = (
   } else if (ot === OrderType.MarketIncrease && ev === TradeActionType.OrderExecuted) {
     const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Deposit-OrderExecuted"]!);
     const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
+
     const priceComment =
       sizeDeltaUsd > 0
         ? lines(
@@ -192,12 +204,7 @@ export const formatPositionMessage = (
             "",
             infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice),
             infoRow(t`Order Execution Price`, formattedExecutionPrice!),
-            infoRow(t`Price Impact`, {
-              text: formattedPriceImpact!,
-              state: numberToState(tradeAction.priceImpactUsd!),
-            }),
-            "",
-            t`Order execution price takes into account price impact.`
+            ...priceImpactLines
           )
         : lines(t`Mark price for the order.`);
 
@@ -255,12 +262,7 @@ export const formatPositionMessage = (
             ? infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
             : undefined,
           infoRow(t`Order Execution Price`, formattedExecutionPrice!),
-          infoRow(t`Price Impact`, {
-            text: formattedPriceImpact!,
-            state: numberToState(tradeAction.priceImpactUsd!),
-          }),
-          "",
-          t`Order execution price takes into account price impact.`
+          ...priceImpactLines
         ),
         acceptablePrice: t`N/A`,
         pnl: formattedPnl,
@@ -329,12 +331,7 @@ export const formatPositionMessage = (
           ? infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
           : undefined,
         infoRow(t`Order Execution Price`, formattedExecutionPrice!),
-        infoRow(t`Price Impact`, {
-          text: formattedPriceImpact!,
-          state: numberToState(tradeAction.priceImpactUsd!),
-        }),
-        "",
-        t`Order execution price takes into account price impact.`
+        ...priceImpactLines
       ),
       acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
     };
@@ -432,12 +429,7 @@ export const formatPositionMessage = (
         "",
         infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice),
         infoRow(t`Order Execution Price`, formattedExecutionPrice!),
-        infoRow(t`Price Impact`, {
-          text: formattedPriceImpact!,
-          state: numberToState(tradeAction.priceImpactUsd!),
-        }),
-        "",
-        t`Order execution price takes into account price impact.`
+        ...priceImpactLines
       ),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
       pnl: formattedPnl,
@@ -477,12 +469,7 @@ export const formatPositionMessage = (
         infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
         infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice),
         infoRow(t`Order Execution Price`, formattedExecutionPrice!),
-        infoRow(t`Price Impact`, {
-          text: formattedPriceImpact!,
-          state: numberToState(tradeAction.priceImpactUsd!),
-        }),
-        "",
-        t`Order execution price takes into account price impact.`
+        ...priceImpactLines
       ),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
       pnl: formattedPnl,
@@ -558,12 +545,7 @@ export const formatPositionMessage = (
           ? infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
           : undefined,
         infoRow(t`Order Execution Price`, formattedExecutionPrice!),
-        infoRow(t`Price Impact`, {
-          text: formattedPriceImpact!,
-          state: numberToState(tradeAction.priceImpactUsd!),
-        }),
-        "",
-        t`Order execution price takes into account price impact.`
+        ...priceImpactLines
       ),
       pnl: formattedPnl,
       pnlState: numberToState(tradeAction.pnlUsd),
@@ -602,7 +584,9 @@ export const formatPositionMessage = (
     //#region Liquidation
   } else if (ot === OrderType.Liquidation && ev === TradeActionType.OrderExecuted) {
     const maxLeverage =
-      tradeAction.marketInfo.minCollateralFactor === 0n ? 0n : PRECISION / tradeAction.marketInfo.minCollateralFactor;
+      tradeAction.marketInfo.minCollateralFactorForLiquidation === 0n
+        ? 0n
+        : PRECISION / tradeAction.marketInfo.minCollateralFactorForLiquidation;
     const formattedMaxLeverage = Number(maxLeverage).toFixed(1) + "x";
 
     const initialCollateralUsd = convertToUsd(
@@ -651,12 +635,12 @@ export const formatPositionMessage = (
     );
     const formattedPositionFee = formatUsd(positionFeeUsd === undefined ? undefined : -positionFeeUsd);
 
-    let liquidationCollateralUsd = applyFactor(sizeDeltaUsd, tradeAction.marketInfo.minCollateralFactor);
+    let liquidationCollateralUsd = applyFactor(sizeDeltaUsd, tradeAction.marketInfo.minCollateralFactorForLiquidation);
     if (liquidationCollateralUsd < minCollateralUsd) {
       liquidationCollateralUsd = minCollateralUsd;
     }
 
-    let leftoverCollateralUsd =
+    const leftoverCollateralUsd =
       initialCollateralUsd === undefined
         ? undefined
         : initialCollateralUsd + tradeAction.basePnlUsd! - borrowingFeeUsd! - fundingFeeUsd! - positionFeeUsd!;
@@ -681,9 +665,11 @@ export const formatPositionMessage = (
       borrowingFeeUsd !== undefined &&
       fundingFeeUsd !== undefined &&
       positionFeeUsd !== undefined &&
-      liquidationFeeUsd !== undefined &&
-      tradeAction.priceImpactUsd !== undefined
+      liquidationFeeUsd !== undefined
     ) {
+      // For v2.2+ totalImpactUsd is used
+      const priceImpactUsd = tradeAction.totalImpactUsd ?? tradeAction.priceImpactUsd ?? 0n;
+
       returnedCollateralUsd = bigMath.max(
         0n,
         initialCollateralUsd +
@@ -692,7 +678,7 @@ export const formatPositionMessage = (
           fundingFeeUsd -
           positionFeeUsd -
           liquidationFeeUsd +
-          tradeAction.priceImpactUsd
+          priceImpactUsd
       );
     }
 
@@ -730,10 +716,7 @@ export const formatPositionMessage = (
         infoRow(t`Min. Required Collateral`, formattedMinCollateral),
         infoRow(t`Collateral at Liquidation`, formattedLeftoverCollateral),
         "",
-        infoRow(t`Price Impact`, {
-          text: formattedPriceImpact!,
-          state: numberToState(tradeAction.priceImpactUsd!),
-        }),
+        ...priceImpactLines,
         infoRow(t`Liquidation Fee`, {
           text: formattedLiquidationFee,
           state: "error",
@@ -760,12 +743,84 @@ export const formatPositionMessage = (
     size: sizeDeltaText,
     marketPrice: formattedMarketPrice,
     executionPrice: formattedExecutionPrice,
-    priceImpact: formattedPriceImpact,
+    priceImpact: displayedPriceImpact,
     indexName,
     poolName,
     ...result!,
   };
 };
+
+function getPriceImpactLines(tradeAction: PositionTradeAction) {
+  const isV22Action = tradeAction.srcChainId !== undefined;
+  const lines: Line[] = [];
+
+  if (isLiquidationOrderType(tradeAction.orderType)) {
+    if (isV22Action && tradeAction.totalImpactUsd !== undefined) {
+      const formattedNetPriceImpact = formatDeltaUsd(tradeAction.totalImpactUsd);
+
+      lines.push(
+        infoRow(t`Net Price Impact`, {
+          text: formattedNetPriceImpact!,
+          state: numberToState(tradeAction.totalImpactUsd!),
+        })
+      );
+    } else {
+      const formattedPriceImpact = formatDeltaUsd(tradeAction.priceImpactUsd);
+
+      lines.push(
+        infoRow(t`Price Impact`, {
+          text: formattedPriceImpact!,
+          state: numberToState(tradeAction.priceImpactUsd!),
+        })
+      );
+    }
+
+    return lines;
+  }
+
+  if (isIncreaseOrderType(tradeAction.orderType)) {
+    if (isV22Action) {
+      return [];
+    }
+
+    const formattedPriceImpact = formatDeltaUsd(tradeAction.priceImpactUsd);
+
+    lines.push(
+      infoRow(t`Price Impact`, {
+        text: formattedPriceImpact!,
+        state: numberToState(tradeAction.priceImpactUsd!),
+      })
+    );
+  }
+
+  if (isDecreaseOrderType(tradeAction.orderType)) {
+    if (isV22Action && tradeAction.totalImpactUsd !== undefined) {
+      const formattedNetPriceImpact = formatDeltaUsd(tradeAction.totalImpactUsd);
+
+      lines.push(
+        infoRow(t`Net Price Impact`, {
+          text: formattedNetPriceImpact!,
+          state: numberToState(tradeAction.totalImpactUsd!),
+        })
+      );
+    } else {
+      const formattedPriceImpact = formatDeltaUsd(tradeAction.priceImpactUsd);
+
+      lines.push(
+        infoRow(t`Price Impact`, {
+          text: formattedPriceImpact!,
+          state: numberToState(tradeAction.priceImpactUsd!),
+        })
+      );
+    }
+  }
+
+  if (lines.length > 0) {
+    lines.push("", t`Order execution price takes into account price impact.`);
+  }
+
+  return lines;
+}
 
 function getTokenPriceByTradeAction(tradeAction: PositionTradeAction) {
   return getShouldUseMaxPrice(isIncreaseOrderType(tradeAction.orderType), tradeAction.isLong)

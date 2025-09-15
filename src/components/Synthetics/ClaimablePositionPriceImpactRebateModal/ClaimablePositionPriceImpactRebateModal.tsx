@@ -93,7 +93,7 @@ function ClaimablePositionPriceImpactRebateModalSettlementChain({
     onSubmit?: () => void;
   } = useMemo(() => {
     if (isSubmitting) {
-      return { text: t`Claiming...`, disabled: true };
+      return { text: t`Claiming`, disabled: true };
     }
     return { text: t`Claim`, disabled: false, onSubmit: handleSubmit };
   }, [handleSubmit, isSubmitting]);
@@ -246,7 +246,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
     onSubmit?: () => void;
   } = useMemo(() => {
     if (isSubmitting) {
-      return { text: t`Claiming...`, disabled: true };
+      return { text: t`Claiming`, disabled: true };
     }
     return { text: t`Claim`, disabled: false, onSubmit: handleSubmit };
   }, [handleSubmit, isSubmitting]);
@@ -325,7 +325,7 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
     const poolName = getMarketPoolName(market);
     return (
       <div className="flex items-center">
-        <span className="text-white">{indexName}</span>
+        <span className="text-typography-primary">{indexName}</span>
         <span className="subtext">[{poolName}]</span>
       </div>
     );

@@ -4,11 +4,11 @@ import { ReactNode, useMemo } from "react";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIncentivesV2Url } from "config/links";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
-import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
-import { TradeFeesType } from "domain/synthetics/trade";
+import { TradeFees, TradeFeesType } from "domain/synthetics/trade";
 import { getIsHighSwapImpact } from "domain/synthetics/trade/utils/warnings";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatDeltaUsd, formatPercentage } from "lib/numbers";
@@ -26,24 +26,9 @@ import sparkleIcon from "img/sparkle.svg";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import "./TradeFeesRow.scss";
 
-type Props = {
-  totalFees?: FeeItem;
+type Props = TradeFees & {
   shouldShowRebate?: boolean;
-  swapFees?: SwapFeeItem[];
-  swapProfitFee?: FeeItem;
-  swapPriceImpact?: FeeItem;
-  positionFee?: FeeItem;
-  positionPriceImpact?: FeeItem;
-  priceImpactDiff?: FeeItem;
-  borrowFee?: FeeItem;
-  fundingFee?: FeeItem;
-  borrowFeeRateStr?: string;
-  fundingFeeRateStr?: string;
-  feeDiscountUsd?: bigint;
-  externalSwapFee?: ExternalSwapFeeItem;
   feesType: TradeFeesType | null;
-  uiFee?: FeeItem;
-  uiSwapFee?: FeeItem;
 };
 
 type FeeRow = {
@@ -60,6 +45,7 @@ export function TradeFeesRow(p: Props) {
   const shouldShowRebate = p.shouldShowRebate ?? true;
   const shouldShowWarning = getIsHighSwapImpact(p.swapPriceImpact);
   const showDebugValues = useShowDebugValues();
+  const { breakdownNetPriceImpactEnabled } = useSettings();
 
   const estimatedRebatesPercentage = tradingIncentives?.estimatedRebatePercent ?? 0n;
 
@@ -74,7 +60,7 @@ export function TradeFeesRow(p: Props) {
           id: "swapPriceImpact",
           label: (
             <>
-              <div className="text-white">{t`Swap Price Impact`}:</div>
+              <div className="text-typography-primary">{t`Swap Price Impact`}:</div>
               <div>
                 (
                 {formatPercentage(bigMath.abs(p.swapPriceImpact!.precisePercentage), {
@@ -96,7 +82,7 @@ export function TradeFeesRow(p: Props) {
             id: `external-swap-${p.externalSwapFee.tokenInAddress}-${p.externalSwapFee.tokenOutAddress}`,
             label: (
               <>
-                <div className="text-white">
+                <div className="text-typography-primary">
                   {t`External Swap ${getToken(chainId, p.externalSwapFee.tokenInAddress).symbol} to ${
                     getToken(chainId, p.externalSwapFee.tokenOutAddress).symbol
                   }`}
@@ -122,12 +108,12 @@ export function TradeFeesRow(p: Props) {
         id: `swap-${swap.tokenInAddress}-${swap.tokenOutAddress}`,
         label: (
           <>
-            <div className="text-white">
+            <div className="text-typography-primary">
               <Trans>
                 Swap {getToken(chainId, swap.tokenInAddress).symbol} to {getToken(chainId, swap.tokenOutAddress).symbol}
               </Trans>
               {showDebugValues && (
-                <span className="text-slate-100">
+                <span className="text-typography-secondary">
                   {" "}
                   in {getToken(chainId, MARKETS[chainId][swap.marketAddress].indexTokenAddress).symbol}
                 </span>
@@ -154,7 +140,7 @@ export function TradeFeesRow(p: Props) {
             id: "swapProfitFee",
             label: (
               <>
-                <div className="text-white">{t`Swap Profit Fee`}:</div>
+                <div className="text-typography-primary">{t`Swap Profit Fee`}:</div>
                 <div>
                   (
                   {formatPercentage(
@@ -181,7 +167,7 @@ export function TradeFeesRow(p: Props) {
           id: "positionFee",
           label: (
             <>
-              <div className="text-white">{feesTypeName}:</div>
+              <div className="text-typography-primary">{feesTypeName}:</div>
               <div>
                 (
                 {formatPercentage(bigMath.abs(p.positionFee!.precisePercentage), {
@@ -202,7 +188,7 @@ export function TradeFeesRow(p: Props) {
           id: "uiFee",
           label: (
             <>
-              <div className="text-white">{t`UI Fee`}:</div>
+              <div className="text-typography-primary">{t`UI Fee`}:</div>
               <div>
                 (
                 {formatPercentage(bigMath.abs(p!.uiFee!.precisePercentage), {
@@ -224,7 +210,7 @@ export function TradeFeesRow(p: Props) {
             id: "swapUiFee",
             label: (
               <>
-                <div className="text-white">{p.feesType === "swap" ? t`UI Fee` : t`Swap UI Fee`}:</div>
+                <div className="text-typography-primary">{p.feesType === "swap" ? t`UI Fee` : t`Swap UI Fee`}:</div>
                 <div>
                   (
                   {formatPercentage(bigMath.abs(p.uiSwapFee.precisePercentage), {
@@ -244,7 +230,7 @@ export function TradeFeesRow(p: Props) {
       ? {
           id: "feeDiscount",
           label: (
-            <div className="text-white">
+            <div className="text-typography-primary">
               <Trans>Referral Discount</Trans>:
             </div>
           ),
@@ -257,7 +243,7 @@ export function TradeFeesRow(p: Props) {
       p.borrowFee && (p.borrowFee?.deltaUsd === undefined ? undefined : p.borrowFee.deltaUsd !== 0n)
         ? {
             id: "borrowFee",
-            label: <div className="text-white">{t`Borrow Fee`}:</div>,
+            label: <div className="text-typography-primary">{t`Borrow Fee`}:</div>,
             value: formatDeltaUsd(p.borrowFee.deltaUsd),
             className: getPositiveOrNegativeClass(p.borrowFee.deltaUsd, "text-green-500"),
           }
@@ -267,36 +253,110 @@ export function TradeFeesRow(p: Props) {
       p.fundingFee && (p.fundingFee?.deltaUsd === undefined ? undefined : bigMath.abs(p.fundingFee.deltaUsd) > 0)
         ? {
             id: "fundingFee",
-            label: <div className="text-white">{t`Funding Fee`}:</div>,
+            label: <div>{t`Funding Fee`}:</div>,
             value: formatDeltaUsd(p.fundingFee.deltaUsd),
             className: getPositiveOrNegativeClass(p.fundingFee.deltaUsd, "text-green-500"),
           }
         : undefined;
 
-    const borrowFeeRateRow = p.borrowFeeRateStr
-      ? {
-          id: "borrowFeeRate",
-          label: <div className="text-white">{t`Borrow Fee Rate`}:</div>,
-          value: p.borrowFeeRateStr,
-          className: p.borrowFeeRateStr?.startsWith("-") ? "text-red-500" : "text-green-500",
-        }
-      : undefined;
+    const proportionalPendingImpactDeltaUsdRow =
+      breakdownNetPriceImpactEnabled &&
+      (p.proportionalPendingImpact?.deltaUsd !== undefined && p.proportionalPendingImpact.deltaUsd !== 0n
+        ? {
+            id: "proportionalPendingImpactDeltaUsd",
+            label: (
+              <>
+                <div className="text-typography-primary">
+                  <Trans>Proportional Stored Impact</Trans>:
+                </div>
+                <div>
+                  (
+                  {formatPercentage(bigMath.abs(p.proportionalPendingImpact.precisePercentage), {
+                    displayDecimals: 3,
+                    bps: false,
+                  })}{" "}
+                  of position size)
+                </div>
+              </>
+            ),
+            value: formatDeltaUsd(p.proportionalPendingImpact.deltaUsd),
+            className: getPositiveOrNegativeClass(p.proportionalPendingImpact.deltaUsd, "text-green-500"),
+          }
+        : undefined);
 
-    const fundingFeeRateRow = p.fundingFeeRateStr
-      ? {
-          id: "fundingFeeRate",
-          label: <div className="text-white">{t`Funding Fee Rate`}:</div>,
-          value: p.fundingFeeRateStr,
-          className: p.fundingFeeRateStr?.startsWith("-") ? "text-red-500" : "text-green-500",
-        }
-      : undefined;
+    const closePriceImpactDeltaUsdRow =
+      breakdownNetPriceImpactEnabled &&
+      (p.decreasePositionPriceImpact?.deltaUsd !== undefined && p.decreasePositionPriceImpact.deltaUsd !== 0n
+        ? {
+            id: "closePriceImpactDeltaUsd",
+            label: (
+              <>
+                <div className="text-typography-primary">{t`Close Price Impact`}:</div>
+                <div>
+                  (
+                  {formatPercentage(bigMath.abs(p.decreasePositionPriceImpact.precisePercentage), {
+                    displayDecimals: 3,
+                    bps: false,
+                  })}{" "}
+                  of position size)
+                </div>
+              </>
+            ),
+            value: formatDeltaUsd(p.decreasePositionPriceImpact.deltaUsd),
+            className: getPositiveOrNegativeClass(p.decreasePositionPriceImpact.deltaUsd, "text-green-500"),
+          }
+        : undefined);
+
+    const netPriceImpactRow =
+      p.totalPendingImpact?.deltaUsd !== undefined && p.totalPendingImpact.deltaUsd !== 0n
+        ? {
+            id: "netPriceImpact",
+            label: (
+              <>
+                <div className="text-typography-primary">{t`Net Price Impact`}:</div>
+                <div>
+                  (
+                  {formatPercentage(bigMath.abs(p.totalPendingImpact.precisePercentage), {
+                    displayDecimals: 3,
+                    bps: false,
+                  })}{" "}
+                  of position size)
+                </div>
+              </>
+            ),
+            value: formatDeltaUsd(p.totalPendingImpact.deltaUsd),
+            className: getPositiveOrNegativeClass(p.totalPendingImpact.deltaUsd, "text-green-500"),
+          }
+        : undefined;
+
+    const priceImpactRebatesRow =
+      p.priceImpactDiff?.deltaUsd !== undefined && p.priceImpactDiff.deltaUsd !== 0n
+        ? {
+            id: "priceImpactDiff",
+            label: (
+              <>
+                <div className="text-typography-primary">{t`Price Impact Rebates`}:</div>
+                <div>
+                  (
+                  {formatPercentage(bigMath.abs(p.priceImpactDiff.precisePercentage), {
+                    displayDecimals: 3,
+                    bps: false,
+                  })}{" "}
+                  of position size)
+                </div>
+              </>
+            ),
+            value: formatDeltaUsd(p.priceImpactDiff.deltaUsd),
+            className: getPositiveOrNegativeClass(p.priceImpactDiff.deltaUsd, "text-green-500"),
+          }
+        : undefined;
 
     const rebateRow =
       tradingIncentives && rebateIsApplicable
         ? {
             label: (
               <>
-                <div className="text-white">
+                <div className="text-typography-primary">
                   <span className="relative">
                     <Trans>Bonus Rebate</Trans>
                     <img className="absolute -right-11 -top-1 h-7" src={sparkleIcon} alt="sparkle" />
@@ -334,13 +394,15 @@ export function TradeFeesRow(p: Props) {
         uiSwapFeeRow,
         borrowFeeRow,
         fundingFeeRow,
-        borrowFeeRateRow,
-        fundingFeeRateRow,
       ].filter(Boolean) as FeeRow[];
     }
 
     if (p.feesType === "decrease") {
       return [
+        proportionalPendingImpactDeltaUsdRow,
+        closePriceImpactDeltaUsdRow,
+        netPriceImpactRow,
+        priceImpactRebatesRow,
         borrowFeeRow,
         fundingFeeRow,
         positionFeeRow,
@@ -359,7 +421,15 @@ export function TradeFeesRow(p: Props) {
     }
 
     return [];
-  }, [p, chainId, tradingIncentives, rebateIsApplicable, estimatedRebatesPercentage, showDebugValues]);
+  }, [
+    p,
+    chainId,
+    tradingIncentives,
+    rebateIsApplicable,
+    estimatedRebatesPercentage,
+    showDebugValues,
+    breakdownNetPriceImpactEnabled,
+  ]);
 
   const totalFeeUsd = useMemo(() => {
     const totalBeforeRebate = p.totalFees?.deltaUsd;
@@ -417,8 +487,26 @@ export function TradeFeesRow(p: Props) {
     );
   }, [chainId, incentivesTokenTitle, rebateIsApplicable, tradingIncentives?.maxRebatePercent]);
 
+  const priceImpactRebatesInfo = useMemo(() => {
+    if (p.priceImpactDiff?.deltaUsd === undefined || p.priceImpactDiff.deltaUsd === 0n) {
+      return null;
+    }
+
+    return (
+      <Trans>
+        Price impact rebates for closing trades are claimable under the claims tab.{" "}
+        <ExternalLink href={"https://docs.gmx.io/docs/trading/v2#price-impact-rebates"} newTab>
+          Read more
+        </ExternalLink>
+      </Trans>
+    );
+  }, [p.priceImpactDiff?.deltaUsd]);
+
   const swapRouteMsg = useMemo(() => {
-    if (p.swapFees && p.swapFees.length <= 2) return;
+    if (p.swapFees && p.swapFees.length <= 2) {
+      return null;
+    }
+
     return (
       <>
         <br />
@@ -435,7 +523,7 @@ export function TradeFeesRow(p: Props) {
         <span
           className={cx({
             "text-green-500": totalFeeUsd > 0 && !shouldShowWarning,
-            "text-yellow-500": shouldShowWarning,
+            "text-yellow-300": shouldShowWarning,
           })}
         >
           {formatDeltaUsd(totalFeeUsd)}
@@ -447,7 +535,7 @@ export function TradeFeesRow(p: Props) {
           tooltipClassName="TradeFeesRow-tooltip"
           handleClassName={cx({
             "text-green-500": totalFeeUsd > 0 && !shouldShowWarning,
-            "text-yellow-500 !decoration-yellow-500/50": shouldShowWarning,
+            "text-yellow-300 !decoration-yellow-300/50": shouldShowWarning,
           })}
           handle={formatDeltaUsd(totalFeeUsd)}
           position="left-start"
@@ -462,15 +550,30 @@ export function TradeFeesRow(p: Props) {
                   showDollar={false}
                 />
               ))}
-              {incentivesBottomText && <br />}
-              {incentivesBottomText}
-              {swapRouteMsg}
+              {incentivesBottomText && (
+                <div>
+                  <br />
+                  {incentivesBottomText}
+                </div>
+              )}
+              {priceImpactRebatesInfo && (
+                <div>
+                  <br />
+                  {priceImpactRebatesInfo}
+                </div>
+              )}
+              {swapRouteMsg && (
+                <div>
+                  <br />
+                  {swapRouteMsg}
+                </div>
+              )}
             </div>
           }
         />
       );
     }
-  }, [totalFeeUsd, feeRows, incentivesBottomText, shouldShowWarning, swapRouteMsg]);
+  }, [totalFeeUsd, feeRows, incentivesBottomText, shouldShowWarning, priceImpactRebatesInfo, swapRouteMsg]);
 
   return <SyntheticsInfoRow label={title} value={value} />;
 }

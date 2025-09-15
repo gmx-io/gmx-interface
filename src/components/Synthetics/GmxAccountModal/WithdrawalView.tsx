@@ -1,4 +1,5 @@
 import { t, Trans } from "@lingui/macro";
+import cx from "classnames";
 import { type Provider } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
@@ -7,7 +8,7 @@ import { useHistory } from "react-router-dom";
 import { Address, encodeAbiParameters, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { ContractsChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
+import { ContractsChainId, getChainName, isContractsChain, SettlementChainId, SourceChainId } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
@@ -23,6 +24,7 @@ import {
   useGmxAccountDepositViewTokenAddress,
   useGmxAccountDepositViewTokenInputValue,
   useGmxAccountModalOpen,
+  useGmxAccountSettlementChainId,
   useGmxAccountWithdrawalViewChain,
   useGmxAccountWithdrawalViewTokenAddress,
   useGmxAccountWithdrawalViewTokenInputValue,
@@ -34,6 +36,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
+import { fallbackCustomError } from "domain/multichain/fallbackCustomError";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { BridgeOutParams } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
@@ -61,6 +64,7 @@ import {
 } from "lib/metrics";
 import {
   bigintToNumber,
+  expandDecimals,
   formatAmountFree,
   formatBalanceAmount,
   formatUsd,
@@ -71,14 +75,16 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
 import { WalletSigner } from "lib/wallets";
+import { getContract } from "sdk/configs/contracts";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
-import type { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
+import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import NumberInput from "components/NumberInput/NumberInput";
@@ -89,13 +95,35 @@ import {
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import { fallbackCustomError } from "../../../domain/multichain/fallbackCustomError";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { InsufficientWntBanner } from "./InsufficientWntBanner";
 import { toastCustomOrStargateError } from "./toastCustomOrStargateError";
 import { wrapChainAction } from "./wrapChainAction";
 
-const USD_GAS_TOKEN_BUFFER = 10n * 10n ** BigInt(USD_DECIMALS);
-const USD_GAS_TOKEN_WARNING_THRESHOLD = 5n * 10n ** BigInt(USD_DECIMALS);
+const USD_GAS_TOKEN_BUFFER_MAINNET = expandDecimals(4, USD_DECIMALS);
+const USD_GAS_TOKEN_WARNING_THRESHOLD_MAINNET = expandDecimals(3, USD_DECIMALS);
+const USD_GAS_TOKEN_BUFFER_TESTNET = expandDecimals(10, USD_DECIMALS);
+const USD_GAS_TOKEN_WARNING_THRESHOLD_TESTNET = expandDecimals(9, USD_DECIMALS);
+
+function useUsdGasTokenBuffer(): {
+  gasTokenBuffer: bigint;
+  gasTokenBufferWarningThreshold: bigint;
+} {
+  const { chainId } = useChainId();
+  const isMainnet = isContractsChain(chainId, false);
+
+  if (!isMainnet) {
+    return {
+      gasTokenBuffer: USD_GAS_TOKEN_BUFFER_TESTNET,
+      gasTokenBufferWarningThreshold: USD_GAS_TOKEN_WARNING_THRESHOLD_TESTNET,
+    };
+  }
+
+  return {
+    gasTokenBuffer: USD_GAS_TOKEN_BUFFER_MAINNET,
+    gasTokenBufferWarningThreshold: USD_GAS_TOKEN_WARNING_THRESHOLD_MAINNET,
+  };
+}
 
 const useIsFirstWithdrawal = () => {
   const [enabled, setEnabled] = useState(true);
@@ -124,6 +152,7 @@ const useIsFirstWithdrawal = () => {
 export const WithdrawalView = () => {
   const history = useHistory();
   const { chainId } = useChainId();
+  const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const [withdrawalViewChain, setWithdrawalViewChain] = useGmxAccountWithdrawalViewChain();
   const { address: account } = useAccount();
   const [, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
@@ -140,6 +169,7 @@ export const WithdrawalView = () => {
   const networks = useGmxAccountWithdrawNetworks();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
   const relayerFeeToken = getByKey(tokensData, globalExpressParams?.relayerFeeTokenAddress);
+  const { gasTokenBuffer, gasTokenBufferWarningThreshold } = useUsdGasTokenBuffer();
 
   const { provider } = useJsonRpcProvider(chainId);
 
@@ -152,6 +182,8 @@ export const WithdrawalView = () => {
   const unwrappedSelectedTokenSymbol = unwrappedSelectedTokenAddress
     ? getToken(chainId, unwrappedSelectedTokenAddress).symbol
     : undefined;
+  const wrappedNativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
+  const wrappedNativeToken = getByKey(tokensData, wrappedNativeTokenAddress);
 
   const selectedTokenSettlementChainTokenId = unwrappedSelectedTokenAddress
     ? getMultichainTokenId(chainId, unwrappedSelectedTokenAddress)
@@ -164,19 +196,21 @@ export const WithdrawalView = () => {
     ? convertToUsd(inputAmount, selectedToken.decimals, selectedToken.prices.maxPrice)
     : undefined;
 
-  const options = useMemo(() => {
+  const options = useMemo((): TokenData[] => {
     if (!isSettlementChain(chainId) || !tokensData) {
       return EMPTY_ARRAY;
     }
 
-    return MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId as SettlementChainId]
-      ?.map((tokenAddress) => tokensData[tokenAddress])
-      .sort((a, b) => {
-        const aFloat = bigintToNumber(a.gmxAccountBalance ?? 0n, a.decimals);
-        const bFloat = bigintToNumber(b.gmxAccountBalance ?? 0n, b.decimals);
+    return (
+      MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId as SettlementChainId]
+        ?.map((tokenAddress) => tokensData[tokenAddress])
+        .sort((a, b) => {
+          const aFloat = bigintToNumber(a.gmxAccountBalance ?? 0n, a.decimals);
+          const bFloat = bigintToNumber(b.gmxAccountBalance ?? 0n, b.decimals);
 
-        return bFloat - aFloat;
-      });
+          return bFloat - aFloat;
+        }) ?? EMPTY_ARRAY
+    );
   }, [chainId, tokensData]);
 
   const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
@@ -288,7 +322,8 @@ export const WithdrawalView = () => {
     quoteSend,
     quoteOft,
     unwrappedTokenAddress: unwrappedSelectedTokenAddress,
-    srcChainId: withdrawalViewChain,
+    sourceChainId: chainId,
+    targetChainId: withdrawalViewChain,
   });
 
   const bridgeOutParams: BridgeOutParams | undefined = useMemo(() => {
@@ -378,19 +413,69 @@ export const WithdrawalView = () => {
   const relayFeeAmount = expressTxnParamsAsyncResult?.data?.gasPaymentParams.relayerFeeAmount;
   const gasPaymentParams = expressTxnParamsAsyncResult?.data?.gasPaymentParams;
 
-  const networkFeeUsd = useMemo(() => {
+  const { networkFeeUsd, networkFee } = useMemo(() => {
     if (relayFeeAmount === undefined || relayerFeeToken === undefined) {
-      return;
+      return { networkFeeUsd: undefined, networkFee: undefined };
     }
 
     const relayFeeUsd = convertToUsd(relayFeeAmount, relayerFeeToken.decimals, getMidPrice(relayerFeeToken.prices));
 
-    if (relayFeeUsd === undefined || bridgeNetworkFeeUsd === undefined) {
+    if (relayFeeUsd === undefined || bridgeNetworkFeeUsd === undefined || bridgeNetworkFee === undefined) {
+      return { networkFeeUsd: undefined, networkFee: undefined };
+    }
+
+    return {
+      networkFeeUsd: relayFeeUsd + bridgeNetworkFeeUsd,
+      networkFee:
+        // We assume it is all in WNT
+        relayFeeAmount + bridgeNetworkFee,
+    };
+  }, [bridgeNetworkFee, bridgeNetworkFeeUsd, relayFeeAmount, relayerFeeToken]);
+
+  const [showWntWarning, setShowWntWarning] = useState(false);
+  const [lastValidNetworkFees, setLastValidNetworkFees] = useState({
+    networkFee: networkFee,
+    networkFeeUsd: networkFeeUsd,
+  });
+  useEffect(() => {
+    if (networkFee !== undefined && networkFeeUsd !== undefined) {
+      setLastValidNetworkFees({
+        networkFee,
+        networkFeeUsd,
+      });
+    }
+  }, [networkFee, networkFeeUsd]);
+  useEffect(() => {
+    if (wrappedNativeTokenAddress === zeroAddress) {
+      setShowWntWarning(false);
       return;
     }
 
-    return relayFeeUsd + bridgeNetworkFeeUsd;
-  }, [bridgeNetworkFeeUsd, relayFeeAmount, relayerFeeToken]);
+    if (!wrappedNativeToken || wrappedNativeToken.gmxAccountBalance === undefined) {
+      return;
+    }
+
+    if (wrappedNativeToken.gmxAccountBalance === 0n) {
+      setShowWntWarning(true);
+      return;
+    }
+
+    const someNetworkFee = networkFee ?? lastValidNetworkFees.networkFee;
+    if (someNetworkFee === undefined) {
+      return;
+    }
+
+    const value = (unwrappedSelectedTokenAddress === zeroAddress ? inputAmount : 0n) ?? 0n;
+
+    setShowWntWarning(wrappedNativeToken.gmxAccountBalance - value < someNetworkFee);
+  }, [
+    wrappedNativeToken,
+    networkFee,
+    unwrappedSelectedTokenAddress,
+    inputAmount,
+    lastValidNetworkFees.networkFee,
+    wrappedNativeTokenAddress,
+  ]);
 
   const handleWithdraw = async () => {
     if (withdrawalViewChain === undefined || selectedToken === undefined || account === undefined) {
@@ -430,7 +515,7 @@ export const WithdrawalView = () => {
     try {
       const relayParamsPayload = expressTxnParams.relayParamsPayload;
 
-      await wrapChainAction(withdrawalViewChain, async (signer) => {
+      await wrapChainAction(withdrawalViewChain, setSettlementChainId, async (signer) => {
         await simulateWithdraw({
           chainId: chainId as SettlementChainId,
           relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
@@ -511,7 +596,7 @@ export const WithdrawalView = () => {
       amount = selectedToken.gmxAccountBalance;
     } else {
       const buffer = convertToTokenAmount(
-        USD_GAS_TOKEN_BUFFER,
+        gasTokenBuffer,
         gasPaymentToken.decimals,
         getMidPrice(gasPaymentToken.prices)
       )!;
@@ -526,6 +611,8 @@ export const WithdrawalView = () => {
       amount = amount - (nativeFee * 11n) / 10n;
     }
 
+    amount = bigMath.max(amount, 0n);
+
     setInputValue(formatAmountFree(amount, selectedToken.decimals));
   }, [
     account,
@@ -535,6 +622,7 @@ export const WithdrawalView = () => {
     gasPaymentToken?.address,
     gasPaymentToken?.decimals,
     gasPaymentToken?.prices,
+    gasTokenBuffer,
     selectedToken,
     setInputValue,
     unwrappedSelectedTokenAddress,
@@ -565,7 +653,7 @@ export const WithdrawalView = () => {
     }
 
     const buffer = convertToTokenAmount(
-      USD_GAS_TOKEN_WARNING_THRESHOLD,
+      gasTokenBufferWarningThreshold,
       gasPaymentToken.decimals,
       getMidPrice(gasPaymentToken.prices)
     )!;
@@ -579,6 +667,7 @@ export const WithdrawalView = () => {
     gasPaymentToken?.address,
     gasPaymentToken?.decimals,
     gasPaymentToken?.prices,
+    gasTokenBufferWarningThreshold,
     inputAmount,
     selectedToken,
     withdrawalViewChain,
@@ -629,6 +718,11 @@ export const WithdrawalView = () => {
       text: t`Insufficient ${isOutOfTokenErrorToken?.symbol} balance`,
       disabled: true,
     };
+  } else if (showWntWarning) {
+    buttonState = {
+      text: t`Insufficient ${wrappedNativeToken?.symbol} balance`,
+      disabled: true,
+    };
   } else if (expressTxnParamsAsyncResult.error && !expressTxnParamsAsyncResult.isLoading) {
     buttonState = {
       text: expressTxnParamsAsyncResult.error.name.slice(0, 32) ?? t`Error simulating withdrawal`,
@@ -638,7 +732,7 @@ export const WithdrawalView = () => {
     buttonState = {
       text: (
         <>
-          <Trans>Loading...</Trans>
+          <Trans>Loading</Trans>
           <ImSpinner2 className="ml-4 animate-spin" />
         </>
       ),
@@ -703,10 +797,12 @@ export const WithdrawalView = () => {
   );
 
   return (
-    <div className="flex grow flex-col overflow-y-auto p-16">
-      <div className="flex flex-col gap-20">
-        <div className="flex flex-col gap-4">
-          <div className="text-body-small text-slate-100">Asset</div>
+    <div className="flex grow flex-col overflow-y-auto p-adaptive">
+      <div className="flex flex-col gap-[--padding-adaptive]">
+        <div className="flex flex-col gap-6">
+          <div className="text-body-medium text-typography-secondary">
+            <Trans>Asset</Trans>
+          </div>
           <DropdownSelector
             value={selectedTokenAddress}
             onChange={setSelectedTokenAddress}
@@ -725,8 +821,8 @@ export const WithdrawalView = () => {
           />
         </div>
 
-        <div className="flex flex-col gap-4">
-          <div className="text-body-small text-slate-100">
+        <div className="flex flex-col gap-6">
+          <div className="text-body-medium text-typography-secondary">
             <Trans>To Network</Trans>
           </div>
           <DropdownSelector
@@ -744,7 +840,7 @@ export const WithdrawalView = () => {
                       alt={getChainName(withdrawalViewChain)}
                       className="size-20"
                     />
-                    <span className="text-body-large">{getChainName(withdrawalViewChain)}</span>
+                    <span className="text-16 leading-base">{getChainName(withdrawalViewChain)}</span>
                   </>
                 ) : (
                   <>
@@ -766,43 +862,45 @@ export const WithdrawalView = () => {
           />
         </div>
 
-        <div className="flex flex-col gap-4">
-          <div className="text-body-small flex items-center justify-between text-slate-100">
+        <div className="flex flex-col gap-6">
+          <div className="text-body-medium flex items-center justify-between text-typography-secondary">
             <Trans>Withdraw</Trans>
             {selectedToken !== undefined &&
               selectedToken.gmxAccountBalance !== undefined &&
               selectedToken !== undefined && (
                 <div>
                   <Trans>Available:</Trans>{" "}
-                  {formatBalanceAmount(selectedToken.gmxAccountBalance, selectedToken.decimals, selectedToken.symbol, {
-                    isStable: selectedToken.isStable,
-                  })}
+                  <Amount
+                    className="text-typography-primary"
+                    amount={selectedToken.gmxAccountBalance}
+                    decimals={selectedToken.decimals}
+                    isStable={selectedToken.isStable}
+                    symbol={selectedToken.symbol}
+                  />
                 </div>
               )}
           </div>
-          <div className="text-body-large relative">
+          <div className="relative text-16 leading-base">
             <NumberInput
               value={inputValue}
               onValueChange={(e) => setInputValue(e.target.value)}
-              className="text-body-large w-full rounded-4 bg-cold-blue-900 py-12 pl-14 pr-72"
-              placeholder={`0.0 ${selectedToken?.symbol || ""}`}
+              className="w-full rounded-8 border border-slate-800 bg-slate-800 py-13 pl-14 pr-96 text-16 leading-base
+                         focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
+              placeholder="0.00"
             />
-            {inputValue !== "" && inputValue !== undefined && (
-              <div className="pointer-events-none absolute left-14 top-1/2 flex max-w-[calc(100%-72px)] -translate-y-1/2 overflow-hidden">
-                <div className="invisible whitespace-pre font-[RelativeNumber]">{inputValue} </div>
-                <div className="text-slate-100">{selectedToken?.symbol || ""}</div>
-              </div>
-            )}
-            <button
-              className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-4 bg-cold-blue-500 px-8 py-2 disabled:cursor-not-allowed
-                         disabled:opacity-50 hover:[&:not([disabled])]:bg-[#484e92] active:[&:not([disabled])]:bg-[#505699]"
-              disabled={isMaxButtonDisabled}
-              onClick={handleMaxButtonClick}
-            >
-              <Trans>MAX</Trans>
-            </button>
+            <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
+              <span className="text-typography-secondary">{selectedToken?.symbol}</span>
+              <button
+                className="text-body-small pointer-events-auto rounded-full bg-slate-600 px-8 py-2 font-medium disabled:opacity-50
+                         hover:not-disabled:bg-slate-500 focus-visible:not-disabled:bg-slate-500 active:not-disabled:bg-slate-500/70"
+                disabled={isMaxButtonDisabled}
+                onClick={handleMaxButtonClick}
+              >
+                <Trans>Max</Trans>
+              </button>
+            </div>
           </div>
-          <div className="text-body-small text-slate-100">{formatUsd(inputAmountUsd ?? 0n)}</div>
+          <div className="text-body-medium text-typography-secondary numbers">{formatUsd(inputAmountUsd ?? 0n)}</div>
         </div>
       </div>
 
@@ -810,7 +908,7 @@ export const WithdrawalView = () => {
         <AlertInfoCard type="warning" className="my-4">
           <Trans>
             The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than{" "}
-            {upperLimitFormatted}.
+            <span className="numbers">{upperLimitFormatted}</span>.
           </Trans>
         </AlertInfoCard>
       )}
@@ -818,7 +916,7 @@ export const WithdrawalView = () => {
         <AlertInfoCard type="warning" className="my-4">
           <Trans>
             The amount you are trying to withdraw is below the limit. Please try an amount larger than{" "}
-            {lowerLimitFormatted}.
+            <span className="numbers">{lowerLimitFormatted}</span>.
           </Trans>
         </AlertInfoCard>
       )}
@@ -826,9 +924,9 @@ export const WithdrawalView = () => {
       {shouldShowMinRecommendedAmount && (
         <AlertInfoCard type="info" className="my-4">
           <Trans>
-            You're withdrawing {selectedToken?.symbol}, your gas token. It's recommended to keep{" "}
-            {formatUsd(USD_GAS_TOKEN_BUFFER, { displayDecimals: 0 })} in {selectedToken?.symbol} for transactions, or
-            switch your gas token in settings.
+            You're withdrawing {selectedToken?.symbol}, your gas token. Gas is required for this withdrawal, so please
+            keep at least <span className="numbers">{formatUsd(gasTokenBuffer, { displayDecimals: 0 })}</span> in{" "}
+            {selectedToken?.symbol} or switch your gas token in settings.
           </Trans>
         </AlertInfoCard>
       )}
@@ -839,23 +937,19 @@ export const WithdrawalView = () => {
           <AlertInfoCard type="error" className="my-4">
             <Trans>
               Withdrawing requires{" "}
-              {formatBalanceAmount(
-                errors.isOutOfTokenError.requiredAmount,
-                isOutOfTokenErrorToken?.decimals,
-                isOutOfTokenErrorToken?.symbol,
-                {
-                  isStable: isOutOfTokenErrorToken?.isStable,
-                }
-              )}{" "}
+              <Amount
+                amount={errors.isOutOfTokenError.requiredAmount ?? 0n}
+                decimals={isOutOfTokenErrorToken.decimals}
+                isStable={isOutOfTokenErrorToken.isStable}
+                symbol={isOutOfTokenErrorToken.symbol}
+              />{" "}
               while you have{" "}
-              {formatBalanceAmount(
-                isOutOfTokenErrorToken.gmxAccountBalance ?? 0n,
-                isOutOfTokenErrorToken?.decimals,
-                isOutOfTokenErrorToken?.symbol,
-                {
-                  isStable: isOutOfTokenErrorToken?.isStable,
-                }
-              )}
+              <Amount
+                amount={isOutOfTokenErrorToken.gmxAccountBalance ?? 0n}
+                decimals={isOutOfTokenErrorToken.decimals}
+                isStable={isOutOfTokenErrorToken.isStable}
+                symbol={isOutOfTokenErrorToken.symbol}
+              />
               . Please{" "}
               <Button
                 variant="link"
@@ -886,45 +980,66 @@ export const WithdrawalView = () => {
           </AlertInfoCard>
         )}
 
+      {showWntWarning && (
+        <InsufficientWntBanner
+          neededAmount={networkFee ?? lastValidNetworkFees.networkFee}
+          neededAmountUsd={networkFeeUsd ?? lastValidNetworkFees.networkFeeUsd}
+        />
+      )}
+
       <div className="h-32 shrink-0 grow" />
 
-      <div className="mb-16 flex flex-col gap-14">
-        <SyntheticsInfoRow
-          label={<Trans>Network Fee</Trans>}
-          value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
-        />
-        <SyntheticsInfoRow
-          label={<Trans>Withdraw Fee</Trans>}
-          value={protocolFeeUsd !== undefined ? formatUsd(protocolFeeUsd) : "..."}
-        />
-        <SyntheticsInfoRow
-          label={<Trans>GMX Balance</Trans>}
-          value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
-        />
-        <SyntheticsInfoRow
-          label={<Trans>Asset Balance</Trans>}
-          value={
-            <ValueTransition
-              from={
-                selectedToken !== undefined && selectedToken.gmxAccountBalance !== undefined
-                  ? formatBalanceAmount(selectedToken.gmxAccountBalance, selectedToken.decimals, selectedToken.symbol, {
-                      isStable: selectedToken.isStable,
-                    })
-                  : undefined
-              }
-              to={
-                nextTokenGmxAccountBalance !== undefined && selectedToken !== undefined
-                  ? formatBalanceAmount(nextTokenGmxAccountBalance, selectedToken.decimals, selectedToken.symbol, {
-                      isStable: selectedToken.isStable,
-                    })
-                  : undefined
-              }
-            />
-          }
-        />
-      </div>
+      {selectedTokenAddress && (
+        <div className="mb-16 flex flex-col gap-10">
+          <SyntheticsInfoRow
+            label={<Trans>Network Fee</Trans>}
+            valueClassName="numbers"
+            value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
+          />
+          <SyntheticsInfoRow
+            label={<Trans>Withdraw Fee</Trans>}
+            valueClassName="numbers"
+            value={protocolFeeUsd !== undefined ? formatUsd(protocolFeeUsd) : "..."}
+          />
+          <SyntheticsInfoRow
+            label={<Trans>GMX Balance</Trans>}
+            value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
+          />
+          <SyntheticsInfoRow
+            label={<Trans>Asset Balance</Trans>}
+            value={
+              <ValueTransition
+                from={
+                  selectedToken !== undefined && selectedToken.gmxAccountBalance !== undefined
+                    ? formatBalanceAmount(
+                        selectedToken.gmxAccountBalance,
+                        selectedToken.decimals,
+                        selectedToken.symbol,
+                        {
+                          isStable: selectedToken.isStable,
+                        }
+                      )
+                    : undefined
+                }
+                to={
+                  nextTokenGmxAccountBalance !== undefined && selectedToken !== undefined
+                    ? formatBalanceAmount(nextTokenGmxAccountBalance, selectedToken.decimals, selectedToken.symbol, {
+                        isStable: selectedToken.isStable,
+                      })
+                    : undefined
+                }
+              />
+            }
+          />
+        </div>
+      )}
 
-      <Button variant="primary" className="w-full" onClick={buttonState.onClick} disabled={buttonState.disabled}>
+      <Button
+        variant="primary-action"
+        className="w-full shrink-0"
+        onClick={buttonState.onClick}
+        disabled={buttonState.disabled}
+      >
         {buttonState.text}
       </Button>
     </div>
@@ -947,20 +1062,24 @@ function NetworkItem({ option }: { option: { id: number; name: string } }) {
 }
 
 function WithdrawAssetItem({ option }: { option: TokenData }) {
+  const isZero = option.gmxAccountBalance === 0n || option.gmxAccountBalance === undefined;
   return (
     <div className="flex items-center justify-between gap-8">
       <div className="flex gap-8">
         <TokenIcon symbol={option.symbol} displaySize={20} importSize={40} />
         <span>
-          {option.symbol} <span className="text-slate-100">{option.name}</span>
+          {option.symbol} <span className="text-body-small text-typography-secondary">{option.name}</span>
         </span>
       </div>
-      <div className="text-slate-100">
-        {option.gmxAccountBalance !== undefined
-          ? formatBalanceAmount(option.gmxAccountBalance, option.decimals, undefined, {
-              isStable: option.isStable,
-            })
-          : "-"}
+      <div className={cx(isZero ? "text-typography-secondary" : "text-typography-primary")}>
+        <Amount
+          className="text-typography-primary"
+          amount={option.gmxAccountBalance}
+          decimals={option.decimals}
+          isStable={option.isStable}
+          showZero
+          emptyValue="-"
+        />
       </div>
     </div>
   );

@@ -155,9 +155,8 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   }, [isVisible]);
 
   const [buttonText, buttonDisabled] = useMemo(() => {
-    if (isSubmitting) return [t`Settling...`, true];
-
-    if (positionKeys.length === 0) return [t`Select Positions`, true];
+    if (isSubmitting) return [t`Settling`, true];
+    if (positionKeys.length === 0) return [t`Select positions`, true];
     return [t`Settle`, false];
   }, [isSubmitting, positionKeys.length]);
 
@@ -202,7 +201,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
   const renderTooltipContent = useCallback(
     () => (
-      <span className="text-white">
+      <span className="text-typography-primary">
         <Trans>Accrued Funding Fee.</Trans>
       </span>
     ),

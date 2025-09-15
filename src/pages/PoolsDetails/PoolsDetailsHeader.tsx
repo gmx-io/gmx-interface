@@ -1,6 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { FaChevronDown } from "react-icons/fa";
 import { ImSpinner2 } from "react-icons/im";
 
 import { USD_DECIMALS } from "config/factors";
@@ -15,7 +16,7 @@ import {
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
-import { TokenData, convertToUsd } from "domain/synthetics/tokens";
+import { convertToUsd, TokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatAmountHuman, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -23,6 +24,7 @@ import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import { AnyChainId, getChainName } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
+import Button from "components/Button/Button";
 import { useMultichainMarketTokenBalancesRequest } from "components/Synthetics/GmxAccountModal/hooks";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -78,88 +80,98 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
 
   const marketBalanceUsd = convertToUsd(totalBalance, marketToken?.decimals, marketPrice);
 
+  const [isOpen, setIsOpen] = useState(true);
+
+  const handleToggle = useCallback(() => {
+    setIsOpen((isOpen) => !isOpen);
+  }, []);
+
   return (
     <div
-      className={cx("flex rounded-4 bg-slate-800 px-16 py-20", {
-        "flex-col gap-10": isMobile,
+      className={cx("flex rounded-8 bg-slate-900 px-16 py-20 max-md:px-12 max-md:py-12", {
+        "flex-col gap-18": isMobile,
         "items-center gap-28": !isMobile,
       })}
     >
       {glvOrMarketInfo ? (
         <>
           <div
-            className={cx("flex items-center gap-20 border-stroke-primary", {
-              "border-r": !isMobile,
-              "mb-12 border-b pb-14": isMobile,
+            className={cx("flex items-center justify-between ", {
+              "border-b-1/2 border-slate-600 pb-18": isOpen && isMobile,
             })}
           >
-            {iconName ? (
-              <TokenIcon
-                symbol={iconName}
-                displaySize={40}
-                importSize={40}
-                badge={
-                  isGlv
-                    ? getGlvMarketShortening(chainId, getGlvOrMarketAddress(glvOrMarketInfo))
-                    : ([glvOrMarketInfo.longToken.symbol, glvOrMarketInfo.shortToken.symbol] as const)
+            <div className="flex items-center gap-20">
+              {iconName ? (
+                <TokenIcon
+                  symbol={iconName}
+                  displaySize={40}
+                  importSize={40}
+                  badge={
+                    isGlv
+                      ? getGlvMarketShortening(chainId, getGlvOrMarketAddress(glvOrMarketInfo))
+                      : ([glvOrMarketInfo.longToken.symbol, glvOrMarketInfo.shortToken.symbol] as const)
+                  }
+                />
+              ) : null}
+              <div className={cx("flex flex-col gap-4 pr-20 font-medium")}>
+                <div className="text-body-large">{isGlv ? "GLV" : `GM: ${getMarketIndexName(glvOrMarketInfo)}`}</div>
+                <div className="text-body-small text-typography-secondary">{`[${getMarketPoolName(glvOrMarketInfo)}]`}</div>
+              </div>
+            </div>
+            {isMobile ? (
+              <Button className="flex h-32 w-32 items-center justify-center" variant="secondary" onClick={handleToggle}>
+                <FaChevronDown className={cx({ "rotate-180": isOpen })} />
+              </Button>
+            ) : null}
+          </div>
+          {!isOpen && isMobile ? null : (
+            <div className="flex gap-14 max-md:flex-col">
+              <PoolsDetailsMarketAmount
+                label={<Trans>TVL (Supply)</Trans>}
+                value={formatAmountHuman(marketTotalSupplyUsd, USD_DECIMALS, true, 2)}
+                secondaryValue={
+                  typeof marketTotalSupply === "bigint" && typeof marketToken?.decimals === "number"
+                    ? `${formatAmountHuman(marketTotalSupply, marketToken?.decimals, false, 2)} ${isGlv ? "GLV" : "GM"}`
+                    : undefined
                 }
               />
-            ) : null}
-            <div className={cx("flex flex-col gap-4 pr-20")}>
-              <div className="text-body-large">{isGlv ? "GLV" : `GM: ${getMarketIndexName(glvOrMarketInfo)}`}</div>
-              <div className="text-body-small text-slate-100">{`[${getMarketPoolName(glvOrMarketInfo)}]`}</div>
+
+              {typeof totalBalance === "bigint" && typeof marketToken?.decimals === "number" ? (
+                <PoolsDetailsMarketAmount
+                  label={<Trans>Wallet</Trans>}
+                  value={formatUsd(marketBalanceUsd)}
+                  secondaryValue={`${formatBalanceAmount(totalBalance, marketToken?.decimals, undefined, {
+                    showZero: true,
+                  })} ${isGlv ? "GLV" : "GM"}`}
+                  tooltipContent={
+                    <div>
+                      {sortedTokenBalancesDataArray.map(({ chainId, balance }) => {
+                        const chainName = chainId === 0 ? t`GMX Account` : getChainName(chainId);
+
+                        return (
+                          <SyntheticsInfoRow
+                            key={chainId}
+                            label={chainName}
+                            value={formatBalanceAmount(balance, marketToken?.decimals, undefined, {
+                              showZero: true,
+                            })}
+                          />
+                        );
+                      })}
+                      {isBalanceDataLoading ? <ImSpinner2 className="animate-spin" /> : null}
+                    </div>
+                  }
+                />
+              ) : null}
+
+              {marketEarnings ? (
+                <PoolsDetailsMarketAmount
+                  label={<Trans>Total Earned Fees</Trans>}
+                  value={formatUsd(marketEarnings?.total)}
+                />
+              ) : null}
             </div>
-          </div>
-
-          <PoolsDetailsMarketAmount
-            label={<Trans>TVL (Supply)</Trans>}
-            value={formatAmountHuman(marketTotalSupplyUsd, USD_DECIMALS, true, 2)}
-            secondaryValue={
-              typeof marketTotalSupply === "bigint" && typeof marketToken?.decimals === "number"
-                ? `${formatAmountHuman(marketTotalSupply, marketToken?.decimals, false, 2)} ${isGlv ? "GLV" : "GM"}`
-                : undefined
-            }
-          />
-
-          {typeof totalBalance === "bigint" && typeof marketToken?.decimals === "number" ? (
-            <PoolsDetailsMarketAmount
-              label={<Trans>Balance</Trans>}
-              value={
-                <>
-                  {isBalanceDataLoading ? <ImSpinner2 className="mr-4 inline-block animate-spin" /> : null}
-                  {formatUsd(marketBalanceUsd)}
-                </>
-              }
-              secondaryValue={`${formatBalanceAmount(totalBalance, marketToken?.decimals, undefined, {
-                showZero: true,
-              })} ${isGlv ? "GLV" : "GM"}`}
-              tooltipContent={
-                <div>
-                  {sortedTokenBalancesDataArray.map(({ chainId, balance }) => {
-                    const chainName = chainId === 0 ? t`GMX Account` : getChainName(chainId);
-
-                    return (
-                      <SyntheticsInfoRow
-                        key={chainId}
-                        label={chainName}
-                        value={formatBalanceAmount(balance, marketToken?.decimals, undefined, {
-                          showZero: true,
-                        })}
-                      />
-                    );
-                  })}
-                  {isBalanceDataLoading ? <ImSpinner2 className="animate-spin" /> : null}
-                </div>
-              }
-            />
-          ) : null}
-
-          {marketEarnings ? (
-            <PoolsDetailsMarketAmount
-              label={<Trans>Total Earned Fees</Trans>}
-              value={formatUsd(marketEarnings?.total)}
-            />
-          ) : null}
+          )}
         </>
       ) : (
         <div>...</div>

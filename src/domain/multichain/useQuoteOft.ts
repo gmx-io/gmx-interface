@@ -6,11 +6,11 @@ import { IStargateAbi } from "config/multichain";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { IStargate } from "typechain-types-stargate";
 import type {
-  SendParamStruct,
-  OFTLimitStruct,
   OFTFeeDetailStruct,
+  OFTLimitStruct,
   OFTReceiptStruct,
-} from "typechain-types-stargate/interfaces/IStargate";
+  SendParamStruct,
+} from "typechain-types-stargate/IStargate";
 
 import type { QuoteOft } from "./types";
 
@@ -49,6 +49,7 @@ export function useQuoteOft({
           fromChainProvider
         ) as unknown as IStargate;
 
+        // TODO: add timing metrics
         const [limit, oftFeeDetails, receipt]: [OFTLimitStruct, OFTFeeDetailStruct[], OFTReceiptStruct] =
           await iStargateInstance.quoteOFT(sendParams);
 

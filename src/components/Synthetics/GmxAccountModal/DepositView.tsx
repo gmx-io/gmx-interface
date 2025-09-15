@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import noop from "lodash/noop";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
 import { ImSpinner2 } from "react-icons/im";
 import Skeleton from "react-loading-skeleton";
@@ -26,6 +26,7 @@ import {
   useGmxAccountDepositViewTokenInputValue,
   useGmxAccountModalOpen,
   useGmxAccountSelector,
+  useGmxAccountSettlementChainId,
 } from "context/GmxAccountContext/hooks";
 import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountContext/selectors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -62,9 +63,10 @@ import { convertTokenAddress, getNativeToken, getToken } from "sdk/configs/token
 import { bigMath } from "sdk/utils/bigmath";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
-import { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
+import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import NumberInput from "components/NumberInput/NumberInput";
@@ -102,6 +104,7 @@ const useIsFirstDeposit = () => {
 export const DepositView = () => {
   const { chainId: settlementChainId, srcChainId } = useChainId();
   const { address: account, chainId: walletChainId } = useAccount();
+  const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const [depositViewChain, setDepositViewChain] = useGmxAccountDepositViewChain();
   const walletSigner = useEthersSigner({ chainId: srcChainId });
   const { provider: sourceChainProvider } = useJsonRpcProvider(depositViewChain);
@@ -117,6 +120,7 @@ export const DepositView = () => {
   } = useMultichainTokensRequest(settlementChainId, account);
   const [isApproving, setIsApproving] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [shouldSendCrossChainDepositWhenLoaded, setShouldSendCrossChainDepositWhenLoaded] = useState(false);
 
   const { setMultichainSubmittedDeposit } = useSyntheticsEvents();
 
@@ -231,23 +235,23 @@ export const DepositView = () => {
 
   const handleApprove = useCallback(async () => {
     if (!depositViewTokenAddress || inputAmount === undefined || !spenderAddress || !depositViewChain) {
-      helperToast.error("Approve failed");
+      helperToast.error(t`Approval failed`);
       return;
     }
 
     const isNative = depositViewTokenAddress === zeroAddress;
 
     if (isNative) {
-      helperToast.error("Native token cannot be approved");
+      helperToast.error(t`Native token cannot be approved`);
       return;
     }
 
     if (!selectedTokenSourceChainTokenId) {
-      helperToast.error("Approve failed");
+      helperToast.error(t`Approval failed`);
       return;
     }
 
-    await wrapChainAction(depositViewChain, async (signer) => {
+    await wrapChainAction(depositViewChain, setSettlementChainId, async (signer) => {
       await approveTokens({
         chainId: depositViewChain,
         tokenAddress: selectedTokenSourceChainTokenId.address,
@@ -259,7 +263,14 @@ export const DepositView = () => {
         approveAmount: undefined,
       });
     });
-  }, [depositViewTokenAddress, inputAmount, spenderAddress, selectedTokenSourceChainTokenId, depositViewChain]);
+  }, [
+    depositViewTokenAddress,
+    inputAmount,
+    spenderAddress,
+    depositViewChain,
+    selectedTokenSourceChainTokenId,
+    setSettlementChainId,
+  ]);
 
   useEffect(() => {
     if (!needTokenApprove && isApproving) {
@@ -339,7 +350,8 @@ export const DepositView = () => {
     quoteSend,
     quoteOft,
     unwrappedTokenAddress: unwrappedSelectedTokenAddress,
-    srcChainId: depositViewChain,
+    sourceChainId: depositViewChain,
+    targetChainId: settlementChainId,
   });
 
   const isFirstDeposit = useIsFirstDeposit();
@@ -442,19 +454,20 @@ export const DepositView = () => {
     [setIsVisibleOrView, setMultichainSubmittedDeposit, settlementChainId]
   );
 
-  const handleCrossChainDeposit = useCallback(async () => {
-    if (
-      !depositViewTokenAddress ||
-      !account ||
-      inputAmount === undefined ||
-      inputAmount <= 0n ||
-      depositViewChain === undefined ||
-      quoteSend === undefined ||
-      sendParamsWithSlippage === undefined ||
-      selectedTokenSourceChainTokenId === undefined
-    ) {
+  const canSendCrossChainDeposit =
+    depositViewTokenAddress &&
+    account &&
+    inputAmount !== undefined &&
+    inputAmount > 0n &&
+    depositViewChain &&
+    quoteSend &&
+    sendParamsWithSlippage &&
+    selectedTokenSourceChainTokenId;
+
+  const handleCrossChainDeposit = useCallback(async (): Promise<boolean> => {
+    if (!canSendCrossChainDeposit) {
       helperToast.error(t`Deposit failed`);
-      return;
+      return false;
     }
 
     setIsSubmitting(true);
@@ -468,7 +481,7 @@ export const DepositView = () => {
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
-    await wrapChainAction(depositViewChain, async (signer) => {
+    await wrapChainAction(depositViewChain, setSettlementChainId, async (signer) => {
       await sendCrossChainDepositTxn({
         chainId: depositViewChain,
         signer,
@@ -486,8 +499,11 @@ export const DepositView = () => {
         }),
       });
     });
+
+    return true;
   }, [
     account,
+    canSendCrossChainDeposit,
     depositViewChain,
     depositViewTokenAddress,
     inputAmount,
@@ -496,8 +512,10 @@ export const DepositView = () => {
     makeCrossChainCallback,
     quoteSend,
     selectedToken,
-    selectedTokenSourceChainTokenId,
+    selectedTokenSourceChainTokenId?.address,
+    selectedTokenSourceChainTokenId?.stargate,
     sendParamsWithSlippage,
+    setSettlementChainId,
     settlementChainId,
   ]);
 
@@ -505,9 +523,27 @@ export const DepositView = () => {
     if (DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT && (walletChainId as SettlementChainId) === settlementChainId) {
       await handleSameChainDeposit();
     } else {
-      await handleCrossChainDeposit();
+      setIsSubmitting(true);
+      setShouldSendCrossChainDepositWhenLoaded(true);
     }
-  }, [walletChainId, settlementChainId, handleSameChainDeposit, handleCrossChainDeposit]);
+  }, [walletChainId, settlementChainId, handleSameChainDeposit]);
+
+  const isCrossChainDepositLoading = useRef(false);
+  useEffect(() => {
+    if (!shouldSendCrossChainDepositWhenLoaded || isCrossChainDepositLoading.current) {
+      return;
+    }
+
+    if (!canSendCrossChainDeposit) {
+      return;
+    }
+
+    setShouldSendCrossChainDepositWhenLoaded(false);
+    isCrossChainDepositLoading.current = true;
+    handleCrossChainDeposit().finally(() => {
+      isCrossChainDepositLoading.current = false;
+    });
+  }, [canSendCrossChainDeposit, handleCrossChainDeposit, shouldSendCrossChainDepositWhenLoaded]);
 
   useEffect(
     function fallbackDepositViewChain() {
@@ -530,9 +566,9 @@ export const DepositView = () => {
 
       const isInvalidTokenAddress =
         depositViewTokenAddress === undefined ||
-        !MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[settlementChainId as SettlementChainId]
-          .map((token) => convertTokenAddress(settlementChainId, token, "native"))
-          .includes(depositViewTokenAddress as NativeTokenSupportedAddress);
+        !MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[settlementChainId as SettlementChainId].includes(
+          depositViewTokenAddress as NativeTokenSupportedAddress
+        );
 
       if (
         !isPriceDataLoading &&
@@ -664,18 +700,20 @@ export const DepositView = () => {
     }
   }
 
-  let placeholder = "";
-  if ((inputValue === undefined || inputValue === "") && selectedToken?.symbol) {
-    placeholder = `0.0 ${selectedToken.symbol}`;
-  } else if (selectedToken?.symbol) {
-    placeholder = selectedToken.symbol;
-  }
+  const onClick = buttonState.onClick;
+  const handleSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      onClick?.();
+    },
+    [onClick]
+  );
 
   return (
-    <div className="flex grow flex-col overflow-y-auto p-16">
-      <div className="flex flex-col gap-20">
-        <div className="flex flex-col gap-4">
-          <div className="text-body-small text-slate-100">
+    <form className="flex grow flex-col overflow-y-auto px-adaptive pb-adaptive pt-adaptive" onSubmit={handleSubmit}>
+      <div className="flex flex-col gap-[--padding-adaptive]">
+        <div className="flex flex-col gap-6">
+          <div className="text-body-medium text-typography-secondary">
             <Trans>Asset</Trans>
           </div>
           {!tokenSelectorDisabled ? (
@@ -685,13 +723,13 @@ export const DepositView = () => {
               onClick={() => {
                 setIsVisibleOrView("selectAssetToDeposit");
               }}
-              className="flex items-center justify-between rounded-4 bg-cold-blue-900 px-14 py-12 active:bg-cold-blue-500 gmx-hover:bg-cold-blue-700"
+              className="flex items-center justify-between rounded-8 border border-slate-800 bg-slate-800 px-14 py-13 gmx-hover:bg-fill-surfaceElevatedHover"
             >
               <div className="flex items-center gap-8">
                 {selectedToken ? (
                   <>
                     <TokenIcon symbol={selectedToken.symbol} displaySize={20} importSize={40} />
-                    <span className="text-body-large">{selectedToken.symbol}</span>
+                    <span className="text-16 leading-base">{selectedToken.symbol}</span>
                   </>
                 ) : depositViewChain !== undefined ? (
                   <>
@@ -705,72 +743,74 @@ export const DepositView = () => {
                     <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={40} height={16} />
                   </>
                 ) : (
-                  <span className="text-slate-100">
+                  <span className="text-typography-secondary">
                     <Trans>Pick an asset to deposit</Trans>
                   </span>
                 )}
               </div>
-              <BiChevronRight className="size-20 text-slate-100" />
+              <BiChevronRight className="size-20 text-typography-secondary" />
             </div>
           ) : (
-            <div className="flex items-center justify-between rounded-4 bg-cold-blue-900 px-14 py-12">
-              <div className="flex items-center gap-8">
-                <span className="text-slate-100">
-                  {depositViewChain !== undefined ? (
-                    <Trans>No assets available for deposit on {getChainName(depositViewChain)}</Trans>
-                  ) : (
-                    <Trans>No assets available for deposit</Trans>
-                  )}
-                </span>
-              </div>
+            <div className="rounded-8 border border-slate-800 bg-slate-800 px-14 py-13 text-typography-secondary">
+              <span className="flex min-h-20 items-center">
+                {depositViewChain !== undefined ? (
+                  <Trans>No assets available for deposit on {getChainName(depositViewChain)}</Trans>
+                ) : (
+                  <Trans>No assets available for deposit</Trans>
+                )}
+              </span>
             </div>
           )}
         </div>
         {depositViewChain !== undefined && (
-          <div className="flex flex-col gap-4">
-            <div className="text-body-small text-slate-100">
+          <div className="flex flex-col gap-6">
+            <div className="text-body-medium text-typography-secondary">
               <Trans>From Network</Trans>
             </div>
-            <div className="flex items-center gap-8 rounded-4 border border-cold-blue-900 px-14 py-12">
+            <div className="flex items-center gap-8 rounded-8 border border-slate-600 px-14 py-13">
               <img src={getChainIcon(depositViewChain)} alt={getChainName(depositViewChain)} className="size-20" />
-              <span className="text-body-large text-slate-100">{getChainName(depositViewChain)}</span>
+              <span className="text-16 leading-base text-typography-secondary">{getChainName(depositViewChain)}</span>
             </div>
           </div>
         )}
 
-        <div className={cx("flex flex-col gap-4", { invisible: depositViewTokenAddress === undefined })}>
-          <div className="text-body-small flex items-center justify-between gap-4 text-slate-100">
+        <div className={cx("flex flex-col gap-6", { invisible: depositViewTokenAddress === undefined })}>
+          <div className="text-body-medium flex items-center justify-between gap-6 text-typography-secondary">
             <Trans>Deposit</Trans>
             {selectedTokenSourceChainBalance !== undefined && selectedToken !== undefined && (
               <div>
                 <Trans>Available:</Trans>{" "}
-                {formatBalanceAmount(selectedTokenSourceChainBalance, selectedToken.decimals, selectedToken.symbol, {
-                  isStable: selectedToken.isStable,
-                })}
+                <Amount
+                  className="text-typography-primary"
+                  amount={selectedTokenSourceChainBalance}
+                  decimals={selectedToken.decimals}
+                  isStable={selectedToken.isStable}
+                  symbol={selectedToken.symbol}
+                />
               </div>
             )}
           </div>
-          <div className="text-body-large relative">
+          <div className="relative text-16 leading-base">
             <NumberInput
               value={inputValue}
               onValueChange={(e) => setInputValue(e.target.value)}
-              className="text-body-large w-full rounded-4 bg-cold-blue-900 py-12 pl-14 pr-72"
+              className="w-full rounded-8 border border-slate-800 bg-slate-800 py-13 pl-12 pr-96 text-16 leading-base
+                         focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
+              placeholder="0.00"
             />
-            <div className="pointer-events-none absolute left-14 top-1/2 flex max-w-[calc(100%-72px)] -translate-y-1/2 overflow-hidden">
-              <div className="invisible whitespace-pre font-[RelativeNumber]">
-                {inputValue}
-                {inputValue === "" || inputValue === undefined ? "" : " "}
-              </div>
-              <div className="font-[RelativeNumber] text-slate-100">{placeholder}</div>
+            <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
+              <span className="text-typography-secondary">{selectedToken?.symbol}</span>
+              <button
+                className="text-body-small pointer-events-auto rounded-full bg-slate-600 px-8 py-2 font-medium
+                           hover:bg-slate-500 focus-visible:bg-slate-500 active:bg-slate-500/70"
+                type="button"
+                onClick={handleMaxButtonClick}
+              >
+                <Trans>Max</Trans>
+              </button>
             </div>
-            <button
-              className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-4 bg-cold-blue-500 px-8 py-2 hover:bg-[#484e92] active:bg-[#505699]"
-              onClick={handleMaxButtonClick}
-            >
-              <Trans>MAX</Trans>
-            </button>
           </div>
-          <div className="text-body-small text-slate-100">{formatUsd(inputAmountUsd ?? 0n)}</div>
+          <div className="text-body-medium text-typography-secondary numbers">{formatUsd(inputAmountUsd ?? 0n)}</div>
         </div>
       </div>
 
@@ -778,7 +818,7 @@ export const DepositView = () => {
         <AlertInfoCard type="warning" className="mt-8">
           <Trans>
             The amount you are trying to deposit exceeds the limit. Please try an amount smaller than{" "}
-            {upperLimitFormatted}.
+            <span className="numbers">{upperLimitFormatted}</span>.
           </Trans>
         </AlertInfoCard>
       )}
@@ -786,57 +826,61 @@ export const DepositView = () => {
         <AlertInfoCard type="warning" className="mt-8">
           <Trans>
             The amount you are trying to deposit is below the limit. Please try an amount larger than{" "}
-            {lowerLimitFormatted}.
+            <span className="numbers">{lowerLimitFormatted}</span>.
           </Trans>
         </AlertInfoCard>
       )}
       <div className="h-32 shrink-0 grow" />
 
-      <div className="mb-16 flex flex-col gap-14">
-        <SyntheticsInfoRow
-          label={<Trans>Network Fee</Trans>}
-          value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
-        />
-        <SyntheticsInfoRow
-          label={<Trans>Deposit Fee</Trans>}
-          value={protocolFeeUsd !== undefined ? formatUsd(protocolFeeUsd) : "..."}
-        />
-        <SyntheticsInfoRow
-          label={<Trans>GMX Balance</Trans>}
-          value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
-        />
-        <SyntheticsInfoRow
-          label={<Trans>Asset Balance</Trans>}
-          value={
-            <ValueTransition
-              from={
-                selectedTokenData !== undefined && selectedTokenData.gmxAccountBalance !== undefined
-                  ? formatBalanceAmount(
-                      selectedTokenData.gmxAccountBalance,
-                      selectedTokenData.decimals,
-                      selectedTokenData.symbol,
-                      { isStable: selectedTokenData.isStable }
-                    )
-                  : undefined
-              }
-              to={
-                nextTokenGmxAccountBalance !== undefined && selectedTokenData !== undefined
-                  ? formatBalanceAmount(
-                      nextTokenGmxAccountBalance,
-                      selectedTokenData.decimals,
-                      selectedTokenData.symbol,
-                      { isStable: selectedTokenData.isStable }
-                    )
-                  : undefined
-              }
-            />
-          }
-        />
-      </div>
+      {depositViewTokenAddress && (
+        <div className="mb-16 flex flex-col gap-10">
+          <SyntheticsInfoRow
+            label={<Trans>Network Fee</Trans>}
+            valueClassName="numbers"
+            value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
+          />
+          <SyntheticsInfoRow
+            label={<Trans>Deposit Fee</Trans>}
+            valueClassName="numbers"
+            value={protocolFeeUsd !== undefined ? formatUsd(protocolFeeUsd) : "..."}
+          />
+          <SyntheticsInfoRow
+            label={<Trans>GMX Balance</Trans>}
+            value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
+          />
+          <SyntheticsInfoRow
+            label={<Trans>Asset Balance</Trans>}
+            value={
+              <ValueTransition
+                from={
+                  selectedTokenData !== undefined && selectedTokenData.gmxAccountBalance !== undefined
+                    ? formatBalanceAmount(
+                        selectedTokenData.gmxAccountBalance,
+                        selectedTokenData.decimals,
+                        selectedTokenData.symbol,
+                        { isStable: selectedTokenData.isStable }
+                      )
+                    : undefined
+                }
+                to={
+                  nextTokenGmxAccountBalance !== undefined && selectedTokenData !== undefined
+                    ? formatBalanceAmount(
+                        nextTokenGmxAccountBalance,
+                        selectedTokenData.decimals,
+                        selectedTokenData.symbol,
+                        { isStable: selectedTokenData.isStable }
+                      )
+                    : undefined
+                }
+              />
+            }
+          />
+        </div>
+      )}
 
-      <Button variant="primary" className="w-full" onClick={buttonState.onClick} disabled={buttonState.disabled}>
+      <Button variant="primary-action" className="w-full shrink-0" type="submit" disabled={buttonState.disabled}>
         {buttonState.text}
       </Button>
-    </div>
+    </form>
   );
 };

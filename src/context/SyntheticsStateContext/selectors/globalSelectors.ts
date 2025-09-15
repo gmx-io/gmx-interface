@@ -56,9 +56,9 @@ export const selectGlvAndMarketsInfoData = createSelector((q) => {
   };
 });
 
-export const selectMinCollateralUsd = (s: SyntheticsState) => s.globals.positionsConstants.minCollateralUsd;
-export const selectMinPositionSizeUsd = (s: SyntheticsState) => s.globals.positionsConstants.minPositionSizeUsd;
-export const selectMaxAutoCancelOrders = (s: SyntheticsState) => s.globals.positionsConstants.maxAutoCancelOrders;
+export const selectMinCollateralUsd = (s: SyntheticsState) => s.globals.positionsConstants?.minCollateralUsd;
+export const selectMinPositionSizeUsd = (s: SyntheticsState) => s.globals.positionsConstants?.minPositionSizeUsd;
+export const selectMaxAutoCancelOrders = (s: SyntheticsState) => s.globals.positionsConstants?.maxAutoCancelOrders;
 
 export const selectClosingPositionKey = (s: SyntheticsState) => s.globals.closingPositionKey;
 export const selectSetClosingPositionKey = (s: SyntheticsState) => s.globals.setClosingPositionKey;
@@ -78,6 +78,8 @@ export const selectSetKeepLeverage = (s: SyntheticsState) => s.globals.setKeepLe
 export const selectLastWeekAccountStats = (s: SyntheticsState) => s.globals.lastWeekAccountStats;
 export const selectLastMonthAccountStats = (s: SyntheticsState) => s.globals.lastMonthAccountStats;
 export const selectAccountStats = (s: SyntheticsState) => s.globals.accountStats;
+
+export const selectBotanixStakingAssetsPerShare = (s: SyntheticsState) => s.globals.botanixStakingAssetsPerShare;
 
 export const selectPositionConstants = createSelectorDeprecated(
   [selectMinCollateralUsd, selectMinPositionSizeUsd],
@@ -107,7 +109,7 @@ export const selectPositiveFeePositionsSortedByUsd = createSelector((q) => {
 /**
  * This selector might return subaccount with approval signed for other chain and lead to errors
  */
-const selectRawSubaccount = (s: SyntheticsState) => s.subaccountState.subaccount;
+export const selectRawSubaccount = (s: SyntheticsState) => s.subaccountState.subaccount;
 
 export const selectSubaccountForSettlementChainAction = createSelector((q) => {
   const chainId = q(selectChainId);
@@ -164,3 +166,5 @@ export const selectSubaccountForChainAction = createSelector((q) => {
 });
 
 export const selectOracleSettings = (s: SyntheticsState) => s.globals.oracleSettings;
+
+export const selectIsAutoCancelTPSLEnabled = (s: SyntheticsState) => s.settings.isAutoCancelTPSL;

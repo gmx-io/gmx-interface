@@ -3,7 +3,7 @@ import { msg, t } from "@lingui/macro";
 import cx from "classnames";
 import format from "date-fns/format";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { USD_DECIMALS } from "config/factors";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -25,13 +25,13 @@ import { PoolsTimeRange, usePoolsTimeRange } from "domain/synthetics/markets/use
 import { TokensData, getMidPrice } from "domain/synthetics/tokens";
 import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
 import { useChainId } from "lib/chains";
-import { formatDate } from "lib/dates";
 import { useLocalizedMap } from "lib/i18n";
 import { bigintToNumber, formatPercentage, formatUsdPrice, parseValue } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
-import { PoolsDetailsCard } from "pages/PoolsDetails/PoolsDetailsCard";
+
+import Tabs from "components/Tabs/Tabs";
 
 import { FeeApyLabel } from "../GmList/FeeApyLabel";
 import { PerformanceLabel } from "../GmList/PerformanceLabel";
@@ -140,9 +140,9 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
   );
 
   const graphTitleLabelMap = {
-    performance: <PerformanceLabel short={false} disableHandleStyle />,
+    performance: <PerformanceLabel short={false} variant="none" />,
     price: t`Current Price`,
-    feeApr: <FeeApyLabel disableHandleStyle />,
+    feeApr: <FeeApyLabel variant="none" />,
   };
 
   const poolsTabs = (
@@ -167,17 +167,15 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
   );
 
   return (
-    <PoolsDetailsCard
-      title={
-        <PoolsTabs<MarketGraphType>
-          tabs={marketGraphsTabs}
-          selected={marketGraphType}
-          setSelected={setMarketGraphType}
-        />
-      }
-    >
-      <div className="flex">
-        <div className="flex grow flex-col gap-16">
+    <div className="flex flex-col rounded-8 bg-slate-900">
+      <Tabs<MarketGraphType>
+        type="block"
+        options={marketGraphsTabs}
+        selectedValue={marketGraphType}
+        onChange={setMarketGraphType}
+      />
+      <div className="flex p-20">
+        <div className="flex grow flex-col gap-20">
           <div className={cx("grid", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
             <GraphValue
               value={getGraphValue({
@@ -190,7 +188,7 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
                 marketTokensData,
               })}
               label={graphTitleLabelMap[marketGraphType]}
-              valueClassName={cx({
+              valueClassName={cx("normal-nums", {
                 "text-green-300":
                   marketGraphType === "performance" && (glvPerformance[address] > 0 || gmPerformance[address] > 0),
               })}
@@ -207,23 +205,27 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
             marketGraphType={marketGraphType}
             aprSnapshots={aprSnapshotsByAddress}
           />
-          {isMobile ? <div className="flex justify-center">{poolsTabs}</div> : null}
         </div>
       </div>
-    </PoolsDetailsCard>
+      {isMobile ? (
+        <div className="flex justify-center border-t-1/2 border-t-slate-600 px-16 py-12">{poolsTabs}</div>
+      ) : null}
+    </div>
   );
 }
 
 const ACTIVE_DOT_PROPS = {
   r: 4,
+  strokeWidth: 2,
   stroke: "var(--color-blue-300)",
+  fill: "var(--color-slate-900)",
 };
 
 const DOT_PROPS = {
   r: 0,
 };
 
-const GRAPH_MARGIN = { top: 5, right: 20, bottom: 0, left: 0 };
+const GRAPH_MARGIN = { top: 5, right: 0, bottom: 0, left: 0 };
 
 type GraphData = {
   value: number;
@@ -257,6 +259,14 @@ const axisValueFormatter = (marketGraphType: MarketGraphType) => (value: number)
 
   return valueMap[marketGraphType];
 };
+
+const CHART_CURSOR_PROPS = {
+  stroke: "var(--color-slate-500)",
+  strokeWidth: 1,
+  strokeDasharray: "2 2",
+};
+
+const AXIS_TICK_PROPS = { fill: "var(--color-slate-100)", fontSize: 12, fontWeight: 500 };
 
 const GraphChart = ({
   performanceSnapshots,
@@ -307,8 +317,6 @@ const GraphChart = ({
 
   const isMobile = usePoolsIsMobilePage();
 
-  const axisTick = useMemo(() => ({ fill: "var(--color-slate-100)", fontSize: isMobile ? 12 : 14 }), [isMobile]);
-
   const [data, setData] = useState<GraphData[]>([]);
 
   const prevMarketGraphType = usePrevious(marketGraphType);
@@ -328,30 +336,49 @@ const GraphChart = ({
   return (
     <div>
       <ResponsiveContainer height={isMobile ? 260 : 300} width="100%">
-        <LineChart data={data} margin={GRAPH_MARGIN} key={marketGraphType}>
-          <Line
+        {/* @ts-expect-error */}
+        <AreaChart data={data} margin={GRAPH_MARGIN} key={marketGraphType} overflow="visible">
+          <defs>
+            <linearGradient id="market-graph-gradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="-45%" stopColor="var(--color-blue-300)" stopOpacity={0.5} />
+              <stop offset="100%" stopColor="var(--color-blue-300)" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid vertical={false} strokeDasharray="5 3" strokeWidth={0.5} stroke="var(--color-slate-600)" />
+
+          <Tooltip cursor={CHART_CURSOR_PROPS} content={<GraphTooltip formatValue={formatValue} />} />
+          <Area
             key={marketGraphType}
             type="linear"
             dataKey="value"
             stroke="var(--color-blue-300)"
+            fill="url(#market-graph-gradient)"
             strokeWidth={2}
             dot={DOT_PROPS}
             activeDot={ACTIVE_DOT_PROPS}
             animationEasing="ease-in-out"
             animationDuration={750}
             animateNewValues={true}
+            baseValue="dataMin"
           />
-          <Tooltip cursor={false} content={<GraphTooltip formatValue={formatValue} />} />
           <XAxis
             dataKey="snapshotTimestamp"
             tickFormatter={(value) => format(value, "dd/MM")}
             tickLine={false}
             axisLine={false}
-            tick={axisTick}
+            tick={AXIS_TICK_PROPS}
             minTickGap={isMobile ? 16 : 32}
+            tickMargin={8}
           />
-          <YAxis dataKey="value" tickFormatter={formatAxisValue} tickLine={false} axisLine={false} tick={axisTick} />
-        </LineChart>
+          <YAxis
+            dataKey="value"
+            tickFormatter={formatAxisValue}
+            tickLine={false}
+            axisLine={false}
+            tick={AXIS_TICK_PROPS}
+            width={44}
+          />
+        </AreaChart>
       </ResponsiveContainer>
     </div>
   );
@@ -362,8 +389,13 @@ const GraphTooltip = ({ active, payload, formatValue }: any) => {
     const item = payload[0].payload as GraphData;
 
     return (
-      <div className="rounded-4 bg-slate-600 p-10">
-        {formatDate(item.snapshotTimestamp.getTime() / 1000)}: {formatValue(item.value)}
+      <div
+        className={`backdrop-blur-100 text-body-small flex flex-col rounded-4 bg-[rgba(160,163,196,0.1)]
+      bg-[linear-gradient(0deg,var(--color-slate-800),var(--color-slate-800))] px-12 py-8 bg-blend-overlay
+      shadow-lg`}
+      >
+        <span className=" text-typography-secondary">{format(item.snapshotTimestamp.getTime(), "MMMM dd, yyyy")}</span>
+        <span className="numbers">{formatValue(item.value)}</span>
       </div>
     );
   }
@@ -382,8 +414,8 @@ const GraphValue = ({
 }) => {
   return (
     <div className="flex items-center gap-8">
-      <span className={cx("text-[24px]", valueClassName)}>{value ?? "..."}</span>
-      <span className="text-body-medium text-slate-100">{label}</span>
+      <span className={cx("text-h2", valueClassName)}>{value ?? "..."}</span>
+      <span className="text-body-small text-typography-secondary">{label}</span>
     </div>
   );
 };

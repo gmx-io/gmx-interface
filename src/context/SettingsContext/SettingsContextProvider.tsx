@@ -1,16 +1,16 @@
 import noop from "lodash/noop";
-import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useMemo, useState } from "react";
+import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import { ARBITRUM, BOTANIX, EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/chains";
+import { ARBITRUM, BOTANIX, EXECUTION_FEE_CONFIG_V2 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
+  BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY,
   DEBUG_SWAP_MARKETS_CONFIG_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
   EXTERNAL_SWAPS_ENABLED_KEY,
   IS_AUTO_CANCEL_TPSL_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
-  ORACLE_KEEPER_INSTANCES_CONFIG_KEY,
   SETTINGS_WARNING_DOT_VISIBLE_KEY,
   SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_DEBUG_VALUES_KEY,
@@ -29,7 +29,7 @@ import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/local
 import { tenderlyLsKeys } from "lib/tenderly";
 import useWallet from "lib/wallets/useWallet";
 import { getDefaultGasPaymentToken } from "sdk/configs/express";
-import { getOracleKeeperRandomIndex } from "sdk/configs/oracleKeeper";
+import { isValidTokenSafe } from "sdk/configs/tokens";
 import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 
 export type SettingsContextType = {
@@ -42,8 +42,6 @@ export type SettingsContextType = {
   setSavedAcceptablePriceImpactBuffer: (val: number) => void;
   executionFeeBufferBps: number | undefined;
   shouldUseExecutionFeeBuffer: boolean;
-  oracleKeeperInstancesConfig: { [chainId: number]: number };
-  setOracleKeeperInstancesConfig: Dispatch<SetStateAction<{ [chainId: number]: number } | undefined>>;
   showPnlAfterFees: boolean;
   setShowPnlAfterFees: (val: boolean) => void;
   isPnlInLeverage: boolean;
@@ -65,6 +63,9 @@ export type SettingsContextType = {
   setTenderlyAccessKey: (val: string | undefined) => void;
   tenderlySimulationEnabled: boolean | undefined;
   setTenderlySimulationEnabled: (val: boolean | undefined) => void;
+
+  breakdownNetPriceImpactEnabled: boolean;
+  setBreakdownNetPriceImpactEnabled: (val: boolean) => void;
 
   isSettingsVisible: boolean;
   setIsSettingsVisible: (val: boolean) => void;
@@ -110,8 +111,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     DEFAULT_SLIPPAGE_AMOUNT
   );
 
-  const isBotanix = chainId === BOTANIX;
-
   const [savedAcceptablePriceImpactBuffer, setSavedAcceptablePriceImpactBuffer] = useLocalStorageSerializeKey(
     getSyntheticsAcceptablePriceImpactBufferKey(chainId),
     DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER
@@ -131,17 +130,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   );
 
   const shouldUseExecutionFeeBuffer = Boolean(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps);
-
-  const [oracleKeeperInstancesConfig, setOracleKeeperInstancesConfig] = useLocalStorageSerializeKey(
-    ORACLE_KEEPER_INSTANCES_CONFIG_KEY,
-    SUPPORTED_CHAIN_IDS.reduce(
-      (acc, chainId) => {
-        acc[chainId] = getOracleKeeperRandomIndex(chainId);
-        return acc;
-      },
-      {} as { [chainId: number]: number }
-    )
-  );
 
   const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
     [chainId, SHOW_PNL_AFTER_FEES_KEY],
@@ -174,7 +162,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const [externalSwapsEnabled, setExternalSwapsEnabled] = useLocalStorageByChainId(
     chainId,
     EXTERNAL_SWAPS_ENABLED_KEY,
-    false
+    true
   );
   const [debugSwapMarketsConfig, setDebugSwapMarketsConfig] = useLocalStorageSerializeKey<
     undefined | { disabledSwapMarkets?: string[]; manualPath?: string[] }
@@ -185,10 +173,19 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     false
   );
 
-  const [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useLocalStorageSerializeKey(
+  const [savedBreakdownNetPriceImpactEnabled, setSavedBreakdownNetPriceImpactEnabled] = useLocalStorageSerializeKey(
+    [chainId, BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY],
+    false
+  );
+
+  let [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useLocalStorageSerializeKey(
     getGasPaymentTokenAddressKey(chainId, account),
     getDefaultGasPaymentToken(chainId)
   );
+  // Reason: useLocalStorageSerializeKey leaks previous value to the next render even if key is changed
+  if (gasPaymentTokenAddress && !isValidTokenSafe(chainId, gasPaymentTokenAddress)) {
+    gasPaymentTokenAddress = getDefaultGasPaymentToken(chainId);
+  }
 
   let savedShouldDisableValidationForTesting: boolean | undefined;
   let setSavedShouldDisableValidationForTesting: (val: boolean) => void;
@@ -250,8 +247,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       executionFeeBufferBps,
       setExecutionFeeBufferBps,
       shouldUseExecutionFeeBuffer,
-      oracleKeeperInstancesConfig: oracleKeeperInstancesConfig!,
-      setOracleKeeperInstancesConfig,
       savedAcceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer!,
       setSavedAcceptablePriceImpactBuffer,
       showPnlAfterFees: savedShowPnlAfterFees!,
@@ -266,6 +261,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       setIsAutoCancelTPSL: setIsAutoCancelTPSL,
       isLeverageSliderEnabled: isLeverageSliderEnabled!,
       setIsLeverageSliderEnabled: setIsLeverageSliderEnabled,
+
+      breakdownNetPriceImpactEnabled: savedBreakdownNetPriceImpactEnabled!,
+      setBreakdownNetPriceImpactEnabled: setSavedBreakdownNetPriceImpactEnabled,
 
       setTenderlyAccessKey,
       setTenderlyAccountSlug,
@@ -284,7 +282,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       gasPaymentTokenAddress: gasPaymentTokenAddress!,
       setGasPaymentTokenAddress,
 
-      externalSwapsEnabled: isBotanix ? false : externalSwapsEnabled!,
+      // External swaps are enabled by default on Botanix
+      externalSwapsEnabled: chainId === BOTANIX || externalSwapsEnabled!,
       setExternalSwapsEnabled,
 
       debugSwapMarketsConfig: debugSwapMarketsConfig!,
@@ -304,8 +303,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     executionFeeBufferBps,
     setExecutionFeeBufferBps,
     shouldUseExecutionFeeBuffer,
-    oracleKeeperInstancesConfig,
-    setOracleKeeperInstancesConfig,
     savedAcceptablePriceImpactBuffer,
     setSavedAcceptablePriceImpactBuffer,
     savedShowPnlAfterFees,
@@ -320,6 +317,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setIsAutoCancelTPSL,
     isLeverageSliderEnabled,
     setIsLeverageSliderEnabled,
+    savedBreakdownNetPriceImpactEnabled,
+    setSavedBreakdownNetPriceImpactEnabled,
     setTenderlyAccessKey,
     setTenderlyAccountSlug,
     setTenderlyProjectSlug,
@@ -333,7 +332,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setExpressOrdersEnabled,
     gasPaymentTokenAddress,
     setGasPaymentTokenAddress,
-    isBotanix,
+    chainId,
     externalSwapsEnabled,
     setExternalSwapsEnabled,
     debugSwapMarketsConfig,

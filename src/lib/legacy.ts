@@ -714,7 +714,7 @@ export function getDeltaStr({ delta, deltaPercentage, hasProfit }) {
     deltaStr = "";
     deltaPercentageStr = "";
   }
-  deltaStr += `$${formatAmount(delta, USD_DECIMALS, 2, true)}`;
+  deltaStr += `$\u200a\u200d${formatAmount(delta, USD_DECIMALS, 2, true)}`;
   deltaPercentageStr += `${formatAmount(deltaPercentage, 2, 2)}%`;
 
   return { deltaStr, deltaPercentageStr };
@@ -1503,6 +1503,10 @@ export function importImage(name) {
     return imageStaticMap[name] as string;
   }
 
+  const pngName = name.replace(/_\d+\.svg$/, ".png");
+  if (pngName in imageStaticMap) {
+    return imageStaticMap[pngName] as string;
+  }
   throw new Error(`Image ${name} not found`);
 }
 

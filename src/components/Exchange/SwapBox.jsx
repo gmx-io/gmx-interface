@@ -326,7 +326,7 @@ export default function SwapBox(props) {
         </div>
         <div className="align-right">
           <Tooltip
-            handle={`$${formatAmount(toTokenInfo?.maxAvailableLong, USD_DECIMALS, 2, true)}`}
+            handle={`$\u200a\u200d${formatAmount(toTokenInfo?.maxAvailableLong, USD_DECIMALS, 2, true)}`}
             position="bottom-end"
             renderContent={() => {
               return (
@@ -814,11 +814,11 @@ export default function SwapBox(props) {
 
     const contract = new ethers.Contract(nativeTokenAddress, abis.WETH, signer);
     callContract(chainId, contract, "withdraw", [fromAmount], {
-      sentMsg: t`Swap submitted!`,
+      sentMsg: t`Swap submitted.`,
       failMsg: t`Swap failed.`,
       successMsg: t`Swapped ${formatAmount(fromAmount, fromToken.decimals, 4, true)} ${
         fromToken.symbol
-      } for ${formatAmount(toAmount, toToken.decimals, 4, true)} ${toToken.symbol}!`,
+      } for ${formatAmount(toAmount, toToken.decimals, 4, true)} ${toToken.symbol}.`,
       setPendingTxns,
     }).finally(() => {
       setIsSubmitting(false);
@@ -881,7 +881,7 @@ export default function SwapBox(props) {
       setIsSubmitting(false);
       setIsPendingConfirmation(true);
       helperToast.error(
-        t`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "nativeTokenSymbol")} for gas`
+        t`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "nativeTokenSymbol")} for gas.`
       );
       return;
     }
@@ -889,9 +889,9 @@ export default function SwapBox(props) {
     if (!isMarketOrder) {
       minOut = toAmount;
       Api.createSwapOrder(chainId, signer, path, fromAmount, minOut, triggerRatio, nativeTokenAddress, {
-        sentMsg: t`Swap Order submitted!`,
-        successMsg: t`Swap Order created!`,
-        failMsg: t`Swap Order creation failed.`,
+        sentMsg: t`Swap order submitted.`,
+        successMsg: t`Swap order created.`,
+        failMsg: t`Swap order creation failed.`,
         pendingTxns,
         setPendingTxns,
       })
@@ -927,7 +927,7 @@ export default function SwapBox(props) {
 
     callContract(chainId, contract, method, params, {
       value,
-      sentMsg: t`Swap ${!isMarketOrder ? " order " : ""} submitted!`,
+      sentMsg: t`Swap ${!isMarketOrder ? " order " : ""} submitted.`,
       successMsg: t`Swapped ${formatAmount(fromAmount, fromToken.decimals, 4, true)} ${
         fromToken.symbol
       } for ${formatAmount(toAmount, toToken.decimals, 4, true)} ${toToken.symbol}!`,
@@ -979,7 +979,7 @@ export default function SwapBox(props) {
       {
         pendingTxns,
         setPendingTxns,
-        sentMsg: t`Limit order submitted!`,
+        sentMsg: t`Limit order submitted.`,
         successMsg,
         failMsg: t`Limit order creation failed.`,
       }
@@ -1042,7 +1042,7 @@ export default function SwapBox(props) {
         isSwap
       );
       if (nextToAmount == 0n) {
-        helperToast.error(t`Insufficient Liquidity`);
+        helperToast.error(t`Insufficient Liquidity.`);
         return;
       }
       if (multiPath) {
@@ -1085,7 +1085,7 @@ export default function SwapBox(props) {
       setIsSubmitting(false);
       setIsPendingConfirmation(false);
       helperToast.error(
-        t`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "nativeTokenSymbol")} for gas`
+        t`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "nativeTokenSymbol")} for gas.`
       );
       return;
     }
@@ -1247,7 +1247,7 @@ export default function SwapBox(props) {
       fromTokenInfo
         ? [
             `${formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 0, true)} ${fromTokenInfo.symbol}`,
-            `($${formatAmount(maxFromTokenInUSD, USD_DECIMALS, 0, true)})`,
+            `($\u200a\u200d${formatAmount(maxFromTokenInUSD, USD_DECIMALS, 0, true)})`,
           ]
         : null,
     [fromTokenInfo, maxFromTokenIn, maxFromTokenInUSD]
@@ -1257,7 +1257,7 @@ export default function SwapBox(props) {
       toTokenInfo
         ? [
             `${formatAmount(maxToTokenOut, toTokenInfo.decimals, 0, true)} ${toTokenInfo.symbol}`,
-            `($${formatAmount(maxToTokenOutUSD, USD_DECIMALS, 0, true)})`,
+            `($\u200a\u200d${formatAmount(maxToTokenOutUSD, USD_DECIMALS, 0, true)})`,
           ]
         : null,
     [maxToTokenOut, maxToTokenOutUSD, toTokenInfo]
@@ -1440,7 +1440,9 @@ export default function SwapBox(props) {
                 <>
                   <BuyInputSection
                     topLeftLabel={t`Pay`}
-                    bottomLeftValue={fromUsdMin !== undefined && `$${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}`}
+                    bottomLeftValue={
+                      fromUsdMin !== undefined && `$\u200a\u200d${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}`
+                    }
                     bottomRightLabel={t`Balance`}
                     bottomRightValue={
                       fromBalance !== undefined && formatAmount(fromBalance, fromToken.decimals, 4, true)
@@ -1453,7 +1455,6 @@ export default function SwapBox(props) {
                   >
                     <TokenSelector
                       label={t`Pay`}
-                      size="l"
                       chainId={chainId}
                       tokenAddress={fromTokenAddress}
                       onSelectToken={onSelectFromToken}
@@ -1472,7 +1473,9 @@ export default function SwapBox(props) {
                     <BuyInputSection
                       topLeftLabel={getToLabel()}
                       bottomRightLabel={isSwap ? t`Balance` : t`Leverage`}
-                      bottomLeftValue={toUsdMax !== undefined && `$${formatAmount(toUsdMax, USD_DECIMALS, 2, true)}`}
+                      bottomLeftValue={
+                        toUsdMax !== undefined && `$\u200a\u200d${formatAmount(toUsdMax, USD_DECIMALS, 2, true)}`
+                      }
                       bottomRightValue={
                         isSwap
                           ? formatAmount(toBalance, toToken.decimals, 4, true)
@@ -1484,7 +1487,6 @@ export default function SwapBox(props) {
                     >
                       <TokenSelector
                         label={getTokenLabel()}
-                        size="l"
                         chainId={chainId}
                         tokenAddress={toTokenAddress}
                         onSelectToken={onSelectToToken}
@@ -1594,7 +1596,7 @@ export default function SwapBox(props) {
                             onClick={() => {
                               setShortCollateralAddress(existingCurrentIndexCollateralToken?.address);
                             }}
-                            className="cursor-pointer text-slate-100 underline"
+                            className="cursor-pointer text-typography-secondary underline"
                           >
                             <Trans>Switch to {existingCurrentIndexCollateralToken?.symbol} collateral.</Trans>
                           </div>
@@ -1672,11 +1674,13 @@ export default function SwapBox(props) {
                 <div className="align-right">
                   {hasExistingPosition && toAmount !== undefined && toAmount > 0 && (
                     <div className="muted inline-block">
-                      ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
+                      ${"\u200a\u200d"}
+                      {formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                       <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                   )}
-                  {nextAveragePrice && `$${formatAmount(nextAveragePrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
+                  {nextAveragePrice &&
+                    `$\u200a\u200d${formatAmount(nextAveragePrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
                   {!nextAveragePrice && `-`}
                 </div>
               </div>
@@ -1687,13 +1691,14 @@ export default function SwapBox(props) {
                 <div className="align-right">
                   {hasExistingPosition && toAmount !== undefined && toAmount > 0 && (
                     <div className="muted inline-block">
-                      ${formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
+                      ${"\u200a\u200d"}
+                      {formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                       <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                   )}
                   {toAmount !== undefined &&
                     displayLiquidationPrice !== undefined &&
-                    `$${formatAmount(displayLiquidationPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
+                    `$\u200a\u200d${formatAmount(displayLiquidationPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
                   {toAmount === undefined && displayLiquidationPrice !== undefined && `-`}
                   {displayLiquidationPrice === undefined && `-`}
                 </div>
@@ -1749,7 +1754,8 @@ export default function SwapBox(props) {
                 <Trans>{fromToken.symbol} Price</Trans>
               </div>
               <div className="align-right">
-                ${fromTokenInfo && formatAmount(fromTokenInfo.minPrice, USD_DECIMALS, 2, true)}
+                ${"\u200a\u200d"}
+                {fromTokenInfo && formatAmount(fromTokenInfo.minPrice, USD_DECIMALS, 2, true)}
               </div>
             </div>
             <div className="Exchange-info-row">
@@ -1767,7 +1773,7 @@ export default function SwapBox(props) {
 
               <div className="align-right al-swap">
                 <Tooltip
-                  handle={`$${formatAmount(maxSwapAmountUsd, USD_DECIMALS, 2, true)}`}
+                  handle={`$\u200a\u200d${formatAmount(maxSwapAmountUsd, USD_DECIMALS, 2, true)}`}
                   position="bottom-end"
                   renderContent={() => {
                     return (
@@ -1799,7 +1805,7 @@ export default function SwapBox(props) {
               </div>
               <div className="align-right">
                 <Tooltip
-                  handle={`$${formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
+                  handle={`$\u200a\u200d${formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
                   position="bottom-end"
                   renderContent={() => {
                     return (
@@ -1831,7 +1837,7 @@ export default function SwapBox(props) {
               </div>
               <div className="align-right">
                 <Tooltip
-                  handle={`$${formatAmount(exitMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
+                  handle={`$\u200a\u200d${formatAmount(exitMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
                   position="bottom-end"
                   renderContent={() => {
                     return (
@@ -1868,8 +1874,9 @@ export default function SwapBox(props) {
                       <div>
                         {hasZeroBorrowFee && (
                           <div>
-                            {isLong && t`There are more shorts than longs, borrow fees for longing is currently zero`}
-                            {isShort && t`There are more longs than shorts, borrow fees for shorting is currently zero`}
+                            {isLong && t`There are more shorts than longs, borrow fees for longing is currently zero.`}
+                            {isShort &&
+                              t`There are more longs than shorts, borrow fees for shorting is currently zero.`}
                           </div>
                         )}
                         {!hasZeroBorrowFee && (
@@ -1880,7 +1887,7 @@ export default function SwapBox(props) {
                             </Trans>
                             <br />
                             <br />
-                            {isShort && t`You can change the "Collateral In" token above to find lower fees`}
+                            {isShort && t`You can change the "Collateral In" token above to find lower fees.`}
                           </div>
                         )}
                         <br />
@@ -1904,17 +1911,17 @@ export default function SwapBox(props) {
                 </div>
                 <div className="align-right">
                   <Tooltip
-                    handle={`$${formatAmount(toTokenInfo.maxAvailableShort, USD_DECIMALS, 2, true)}`}
+                    handle={`$\u200a\u200d${formatAmount(toTokenInfo.maxAvailableShort, USD_DECIMALS, 2, true)}`}
                     position="bottom-end"
                     renderContent={() => {
                       return (
                         <>
                           <StatsTooltipRow
-                            label={t`Max ${toTokenInfo.symbol} short capacity`}
+                            label={t`Max ${toTokenInfo.symbol} short capacity.`}
                             value={formatAmount(toTokenInfo.maxGlobalShortSize, USD_DECIMALS, 0, true)}
                           />
                           <StatsTooltipRow
-                            label={t`Current ${toTokenInfo.symbol} shorts`}
+                            label={t`Current ${toTokenInfo.symbol} shorts.`}
                             value={formatAmount(toTokenInfo.globalShortSize, USD_DECIMALS, 0, true)}
                           />
                         </>

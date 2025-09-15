@@ -297,16 +297,23 @@ const useDepositTransactions = ({
         return undefined;
       }
 
+      const tokenId = getMultichainTokenId(chainId, marketTokenAddress);
+
+      if (!tokenId) {
+        return undefined;
+      }
+
       const actionHash = CodecUiHelper.encodeMultichainActionData({
         actionType: MultichainActionType.BridgeOut,
         actionData: {
           deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
           desChainId: chainId,
           minAmountOut: minMarketTokens / 2n,
-          provider: getMultichainTokenId(chainId, marketTokenAddress)!.stargate,
+          provider: tokenId.stargate,
           providerData: numberToHex(CHAIN_ID_TO_ENDPOINT_ID[srcChainId], { size: 32 }),
         },
       });
+
       const bytes = hexToBytes(actionHash as Hex);
       const bytes32array = chunk(bytes, 32).map((b) => bytesToHex(Uint8Array.from(b)));
 

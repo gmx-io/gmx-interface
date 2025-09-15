@@ -3,22 +3,16 @@ import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffe
 
 import { getExplorerUrl } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import {
-  getExecutionFeeBufferBps,
-  getGasPremium,
-  getMinimumExecutionFeeBufferBps,
-} from "domain/synthetics/fees/utils/executionFee";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
 import { getCallStaticError } from "lib/errors/additionalValidation";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
-import { formatPercentage } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendUserAnalyticsOrderResultEvent } from "lib/userAnalytics";
 
+import { getInsufficientExecutionFeeToastContent } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
 export type PendingTransactionData = {
   estimatedExecutionFee: bigint;
@@ -82,45 +76,17 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
             if (errorData?.contractError === "InsufficientExecutionFee" && txnData) {
               const [minExecutionFee, executionFee]: bigint[] = errorData.contractErrorArgs;
 
-              const requiredBufferBps = getMinimumExecutionFeeBufferBps({
-                minExecutionFee: minExecutionFee,
-                estimatedExecutionFee: executionFee,
-                currentBufferBps: getExecutionFeeBufferBps(chainId, executionFeeBufferBps),
-                premium: getGasPremium(chainId),
-                gasLimit: pendingTxn.data?.estimatedExecutionGasLimit ?? 1n,
+              toastMsg = getInsufficientExecutionFeeToastContent({
+                minExecutionFee,
+                executionFee,
+                chainId,
+                executionFeeBufferBps,
+                txUrl,
+                errorMessage: errorData?.errorMessage,
+                shouldOfferExpress: true,
+                setIsSettingsVisible,
+                estimatedExecutionGasLimit: pendingTxn.data?.estimatedExecutionGasLimit ?? 1n,
               });
-
-              toastMsg = (
-                <div>
-                  <Trans>
-                    Transaction failed due to execution fee validation. <ExternalLink href={txUrl}>View</ExternalLink>.
-                    <br />
-                    <br />
-                    Please{" "}
-                    <div
-                      className=" muted inline-block cursor-pointer underline"
-                      onClick={() => setIsSettingsVisible(true)}
-                    >
-                      enable Express trading
-                    </div>{" "}
-                    under settings, which should offer a better experience.
-                    <br />
-                    <br />
-                    Otherwise, try increasing the max network fee buffer to{" "}
-                    {formatPercentage(requiredBufferBps, { displayDecimals: 0 })} in{" "}
-                    <div
-                      className=" muted inline-block cursor-pointer underline"
-                      onClick={() => setIsSettingsVisible(true)}
-                    >
-                      settings
-                    </div>
-                    .
-                  </Trans>
-                  <br />
-                  <br />
-                  {errorData?.errorMessage && <ToastifyDebug error={errorData.errorMessage} />}
-                </div>
-              );
             } else {
               toastMsg = (
                 <div>
@@ -143,20 +109,20 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
           if (receipt.status === 1 && pendingTxn.message) {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             helperToast.success(
-              <div>
-                <div className="px-10 py-8">
+              <div className="StatusNotification">
+                <div className="StatusNotification-title">
                   {pendingTxn.message}{" "}
                   <ExternalLink href={txUrl}>
                     <Trans>View</Trans>
                   </ExternalLink>
                 </div>
                 {pendingTxn.messageDetails && (
-                  <div className="border-t-[1.5px] border-[#0f463d] px-10 py-8">{pendingTxn.messageDetails}</div>
+                  <>
+                    <hr className="my-8 -ml-12 -mr-32 h-[1.5px] border-none bg-[#0f463d]" />
+                    <div>{pendingTxn.messageDetails}</div>
+                  </>
                 )}
-              </div>,
-              {
-                className: "OrdersStatusNotificiation",
-              }
+              </div>
             );
           }
           continue;

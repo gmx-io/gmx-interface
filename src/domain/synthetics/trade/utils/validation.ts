@@ -52,7 +52,7 @@ export function getCommonError(p: { chainId: number; isConnected: boolean; hasOu
   }
 
   if (!isConnected) {
-    return [t`Connect Wallet`];
+    return [t`Connect wallet`];
   }
 
   return [undefined];
@@ -146,12 +146,16 @@ export function getSwapError(p: {
     return [undefined];
   }
 
-  if (!isLimit && (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)) {
-    return [t`Insufficient liquidity`];
+  if (fromToken.symbol === "USDC.E" && (toToken.symbol === "BTC" || toToken.symbol === "PBTC")) {
+    return [t`No swap path found`, "noSwapPath"];
   }
 
   if (fromToken.symbol === "STBTC" && toToken.symbol === "BTC") {
     return [t`No swap path found`, "noSwapPath"];
+  }
+
+  if (!isLimit && (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)) {
+    return [t`Insufficient liquidity`];
   }
 
   const noInternalSwap =

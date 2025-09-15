@@ -127,7 +127,10 @@ export const selectOrderEditorSwapFees = createSelector((q) => {
     swapSteps: order.swapPathStats?.swapSteps ?? [],
     positionFeeUsd: 0n,
     swapPriceImpactDeltaUsd: order.swapPathStats?.totalSwapPriceImpactDeltaUsd ?? 0n,
-    positionPriceImpactDeltaUsd: 0n,
+    increasePositionPriceImpactDeltaUsd: 0n,
+    totalPendingImpactDeltaUsd: 0n,
+    proportionalPendingImpactDeltaUsd: 0n,
+    decreasePositionPriceImpactDeltaUsd: 0n,
     priceImpactDiffUsd: 0n,
     borrowingFeeUsd: 0n,
     fundingFeeUsd: 0n,
@@ -135,6 +138,7 @@ export const selectOrderEditorSwapFees = createSelector((q) => {
     swapProfitFeeUsd: 0n,
     uiFeeFactor,
     externalSwapQuote: undefined,
+    type: "increase",
   });
 });
 
@@ -588,6 +592,7 @@ export const selectOrderEditorPriceImpactFeeBps = createSelector((q) => {
       getAcceptablePriceInfo({
         indexPrice: markPrice!,
         isIncrease: isIncreaseOrderType(order.orderType),
+        isLimit: isLimitOrderType(order.orderType),
         isLong: order.isLong,
         marketInfo: market,
         sizeDeltaUsd: sizeDeltaUsd!,
@@ -665,6 +670,8 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
   const sizeDeltaUsd = q(selectOrderEditorSizeDeltaUsd);
   const userReferralInfo = q(selectUserReferralInfo);
   const uiFeeFactor = q(selectUiFeeFactor);
+  const marketsInfoData = q(selectMarketsInfoData);
+  const chainId = q(selectChainId);
 
   const positionOrder = order as PositionOrderInfo;
   const indexTokenAmount = convertToTokenAmount(sizeDeltaUsd, positionOrder.indexToken.decimals, triggerPrice);
@@ -681,11 +688,15 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
     indexTokenAmount,
     leverage: existingPosition?.leverage,
     triggerPrice: isLimitOrderType(order.orderType) ? triggerPrice : undefined,
+    limitOrderType: order.orderType as OrderType.LimitIncrease | OrderType.StopIncrease,
     position: existingPosition,
     findSwapPath,
     userReferralInfo,
     uiFeeFactor,
     strategy: "independent",
+    marketsInfoData,
+    chainId,
+    externalSwapQuoteParams: undefined,
   });
 });
 

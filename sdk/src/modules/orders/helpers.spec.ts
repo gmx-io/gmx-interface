@@ -6,9 +6,9 @@ import { TokenData, TokensData } from "types/tokens";
 import { getByKey } from "utils/objects";
 import * as swapPath from "utils/swap/swapPath";
 import { arbitrumSdk } from "utils/testUtil";
-import * as tradeAmounts from "utils/trade/amounts";
+import * as tradeAmounts from "utils/trade/increase";
 
-describe.skip("increaseOrderHelper", () => {
+describe("increaseOrderHelper", () => {
   let marketsInfoData: MarketsInfoData;
   let tokensData: TokensData;
   let mockParams: any;
@@ -150,7 +150,7 @@ describe.skip("increaseOrderHelper", () => {
             positionPriceImpactDeltaUsd: 0n,
             limitOrderType: undefined,
             triggerThresholdType: undefined,
-            externalSwapQuote: undefined,
+            swapStrategy: expect.any(Object),
           }),
         })
       );

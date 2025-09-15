@@ -1,18 +1,8 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 
-import { ARBITRUM_SEPOLIA } from "config/chains";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
-import {
-  selectGasPaymentToken,
-  selectIsExpressTransactionAvailable,
-} from "context/SyntheticsStateContext/selectors/expressSelectors";
-import {
-  selectGasPrice,
-  selectSubaccountForMultichainAction,
-  selectSubaccountForSettlementChainAction,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/shared/baseSelectors";
+import { selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectBaseExternalSwapOutput,
   selectExternalSwapInputs,
@@ -20,11 +10,8 @@ import {
   selectSetBaseExternalSwapOutput,
   selectSetShouldFallbackToInternalSwap,
   selectShouldFallbackToInternalSwap,
-  selectShouldRequestExternalSwapQuote,
   selectTradeboxAllowedSlippage,
-  selectTradeboxCollateralToken,
   selectTradeboxFromTokenAddress,
-  selectTradeboxIsFromTokenGmxAccount,
   selectTradeboxSelectSwapToToken,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -33,6 +20,7 @@ import { throttleLog } from "lib/logging";
 import { getContract } from "sdk/configs/contracts";
 
 import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
+import { useExternalSwapsEnabled } from "./useExternalSwapsEnabled";
 
 export function useExternalSwapHandler() {
   const { chainId } = useChainId();
@@ -48,28 +36,11 @@ export function useExternalSwapHandler() {
   const externalSwapInputs = useSelector(selectExternalSwapInputs);
   const shouldDebugValues = useShowDebugValues();
 
-  const shouldRequestExternalSwapQuote = useSelector(selectShouldRequestExternalSwapQuote);
-
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
   const shouldFallbackToInternalSwap = useSelector(selectShouldFallbackToInternalSwap);
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
-  const { isTwap } = useSelector(selectTradeboxTradeFlags);
-  const isExpressTradingEnabled = useSelector(selectIsExpressTransactionAvailable);
-  const isGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
-  const gasPaymentToken = useSelector(selectGasPaymentToken);
-  const collateralToken = useSelector(selectTradeboxCollateralToken);
 
-  const disabledByExpressSchema = useMemo(() => {
-    if (!isExpressTradingEnabled) {
-      return false;
-    }
-
-    return gasPaymentToken === collateralToken;
-  }, [collateralToken, gasPaymentToken, isExpressTradingEnabled]);
-
-  const subaccount = useSelector(
-    isGmxAccount ? selectSubaccountForMultichainAction : selectSubaccountForSettlementChainAction
-  );
+  const enabled = useExternalSwapsEnabled();
 
   const { quote } = useExternalSwapOutputRequest({
     chainId,
@@ -79,12 +50,7 @@ export function useExternalSwapHandler() {
     receiverAddress: getContract(chainId, "OrderVault"),
     slippage,
     gasPrice,
-    enabled:
-      !disabledByExpressSchema &&
-      !isTwap &&
-      !subaccount &&
-      shouldRequestExternalSwapQuote &&
-      chainId !== ARBITRUM_SEPOLIA,
+    enabled,
   });
 
   if (shouldDebugValues) {

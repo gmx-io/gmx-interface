@@ -1,11 +1,12 @@
 import cx from "classnames";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
-import { BiChevronDown, BiChevronUp } from "react-icons/bi";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { useMedia } from "react-use";
 
 import { usePrevious } from "lib/usePrevious";
 
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { SyntheticsInfoRow } from "./SyntheticsInfoRow";
@@ -41,7 +42,7 @@ const EXPAND_ANIMATION_VARIANTS: Variants = {
 
 interface Props {
   title: ReactNode;
-  open: boolean;
+  open: boolean | undefined;
   children: ReactNode;
   onToggle: (val: boolean) => void;
   /**
@@ -60,6 +61,8 @@ interface Props {
   className?: string;
   contentClassName?: string;
   scrollIntoViewOnMobile?: boolean;
+  withToggleSwitch?: boolean;
+  handleClassName?: string;
 }
 
 export function ExpandableRow({
@@ -74,11 +77,13 @@ export function ExpandableRow({
   className,
   contentClassName,
   scrollIntoViewOnMobile = false,
+  withToggleSwitch = false,
+  handleClassName,
 }: Props) {
   const previousHasError = usePrevious(hasError);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const isMobile = useMedia(`(max-width: 1100px)`, false);
+  const isMobile = useMedia(`(max-width: 1024px)`, false);
 
   const handleAnimationComplete = useCallback(
     (definition: string) => {
@@ -95,40 +100,51 @@ export function ExpandableRow({
     }
   }, [hasError, previousHasError, open, onToggle, autoExpandOnError]);
 
-  const handleOnClick = useCallback(() => {
-    if (hasError && disableCollapseOnError) {
-      return;
-    }
+  const handleOnClick = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      e.preventDefault();
+      if (hasError && disableCollapseOnError) {
+        return;
+      }
 
-    onToggle(!open);
-  }, [onToggle, open, hasError, disableCollapseOnError]);
+      onToggle(!open);
+    },
+    [onToggle, open, hasError, disableCollapseOnError]
+  );
 
   const label = useMemo(() => {
-    return hasError && disableCollapseOnError ? <TooltipWithPortal handle={title} content={errorMessage} /> : title;
-  }, [hasError, disableCollapseOnError, title, errorMessage]);
+    return hasError && disableCollapseOnError ? (
+      <TooltipWithPortal handle={title} handleClassName={handleClassName} content={errorMessage} />
+    ) : (
+      <span className={handleClassName}>{title}</span>
+    );
+  }, [hasError, disableCollapseOnError, title, errorMessage, handleClassName]);
 
   const disabled = disableCollapseOnError && hasError;
 
-  return (
-    <div className={className}>
-      <SyntheticsInfoRow
-        className={cx("group relative -my-14 !items-center py-14 gmx-hover:text-blue-300", {
-          "cursor-not-allowed": disabled,
-        })}
-        onClick={disabled ? undefined : handleOnClick}
-        label={
-          <span className="flex flex-row justify-between align-middle group-gmx-hover:text-blue-300">{label}</span>
-        }
-        value={
-          open ? (
-            <BiChevronUp className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
-          ) : (
-            <BiChevronDown className="-mb-4 -mr-[0.3rem] -mt-4 h-24 w-24 text-white group-gmx-hover:text-blue-300" />
-          )
-        }
-      />
+  const value = withToggleSwitch ? (
+    <ToggleSwitch isChecked={open} setIsChecked={onToggle} disabled={disabled} />
+  ) : open ? (
+    <FaChevronUp className="w-12 text-typography-secondary group-gmx-hover:text-blue-300" />
+  ) : (
+    <FaChevronDown className="w-12 text-typography-secondary group-gmx-hover:text-blue-300" />
+  );
 
+  return (
+    <div className={cx("min-h-16", className)}>
       <AnimatePresence initial={false}>
+        <div key="handle" className={cx({ "mb-14": open })}>
+          <SyntheticsInfoRow
+            className={cx("group relative !items-center gmx-hover:text-blue-300", {
+              "cursor-not-allowed": disabled,
+            })}
+            onClick={disabled ? undefined : handleOnClick}
+            label={
+              <span className="flex flex-row justify-between align-middle group-hover:!text-blue-300">{label}</span>
+            }
+            value={value}
+          />
+        </div>
         {open && (
           <motion.div
             ref={contentRef}

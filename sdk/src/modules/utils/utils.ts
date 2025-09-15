@@ -168,10 +168,10 @@ export class Utils extends Module {
 
     switch (tradeFeesType) {
       case "swap": {
-        if (!swapAmounts || !swapAmounts.swapPathStats) return null;
+        if (!swapAmounts?.swapStrategy.swapPathStats) return null;
 
         return estimateExecuteSwapOrderGasLimit(gasLimits, {
-          swapsCount: swapAmounts.swapPathStats.swapPath.length,
+          swapsCount: swapAmounts.swapStrategy.swapPathStats?.swapPath.length,
           callbackGasLimit: 0n,
         });
       }
@@ -179,7 +179,7 @@ export class Utils extends Module {
         if (!increaseAmounts) return null;
 
         return estimateExecuteIncreaseOrderGasLimit(gasLimits, {
-          swapsCount: increaseAmounts.swapPathStats?.swapPath.length,
+          swapsCount: increaseAmounts.swapStrategy.swapPathStats?.swapPath.length,
         });
       }
       case "decrease": {

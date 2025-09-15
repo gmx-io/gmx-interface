@@ -22,7 +22,7 @@ export default function ExchangeWalletTokens(props) {
             <div className="ExchangeWalletTokens-top-row">
               <div>{token.symbol}</div>
               {balance && (
-                <div className="align-right">
+                <div className="align-right numbers">
                   {balance > 0 && formatAmount(balance, token.decimals, 4, true)}
                   {balance == 0n && "-"}
                 </div>
@@ -31,7 +31,10 @@ export default function ExchangeWalletTokens(props) {
             <div className="ExchangeWalletTokens-content-row">
               <div className="ExchangeWalletTokens-token-name">{token.name}</div>
               {balanceUsd !== undefined && balanceUsd > 0 && (
-                <div className="align-right">${formatAmount(balanceUsd, 30, 2, true)}</div>
+                <div className="align-right numbers">
+                  ${"\u200a\u200d"}
+                  {formatAmount(balanceUsd, 30, 2, true)}
+                </div>
               )}
             </div>
           </div>

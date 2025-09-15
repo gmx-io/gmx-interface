@@ -1,12 +1,19 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { Contract, Wallet } from "ethers";
+import { Contract } from "ethers";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
 import { encodeFunctionData, zeroAddress } from "viem";
 import { usePublicClient } from "wagmi";
 
-import { CHAIN_ID_PREFERRED_DEPOSIT_TOKEN, getMappedTokenId, isSettlementChain, IStargateAbi } from "config/multichain";
+import {
+  CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
+  FAKE_INPUT_AMOUNT_MAP,
+  getMappedTokenId,
+  isSettlementChain,
+  IStargateAbi,
+  RANDOM_WALLET,
+} from "config/multichain";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -31,7 +38,7 @@ import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { encodeReferralCode } from "sdk/utils/referrals";
 import { nowInSeconds } from "sdk/utils/time";
 import type { IStargate } from "typechain-types-stargate";
-import type { SendParamStruct } from "typechain-types-stargate/interfaces/IStargate";
+import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import Button from "components/Button/Button";
 import { useMultichainTokensRequest } from "components/Synthetics/GmxAccountModal/hooks";
@@ -43,9 +50,9 @@ import { REFERRAL_CODE_REGEX } from "./referralsHelper";
 function JoinReferralCode({ active }: { active: boolean }) {
   const { openConnectModal } = useConnectModal();
   return (
-    <div className="referral-card section-center mt-medium">
+    <div className="referral-card section-center">
       <h2 className="title text-h2">
-        <Trans>Enter Referral Code</Trans>
+        <Trans>Enter referral code</Trans>
       </h2>
       <p className="sub-title">
         <Trans>Please input a referral code to benefit from fee discounts.</Trans>
@@ -95,7 +102,7 @@ function ReferralCodeForm({
     try {
       const tx = await setTraderReferralCodeByUser(chainId, referralCode, signer, {
         account,
-        successMsg: isEdit ? t`Referral code updated!` : t`Referral code added!`,
+        successMsg: isEdit ? t`Referral code updated.` : t`Referral code added.`,
         failMsg: isEdit ? t`Referral code updated failed.` : t`Adding referral code failed.`,
         setPendingTxns,
         pendingTxns,
@@ -131,27 +138,27 @@ function ReferralCodeForm({
     };
   } else if (isEdit && isSubmitting) {
     buttonState = {
-      text: t`Updating...`,
+      text: t`Updating`,
       disabled: true,
     };
   } else if (isSubmitting) {
     buttonState = {
-      text: t`Adding...`,
+      text: t`Adding`,
       disabled: true,
     };
   } else if (debouncedReferralCode === "") {
     buttonState = {
-      text: t`Enter Referral Code`,
+      text: t`Enter referral code`,
       disabled: true,
     };
   } else if (isValidating) {
     buttonState = {
-      text: t`Checking code...`,
+      text: t`Checking code`,
       disabled: true,
     };
   } else if (!referralCodeExists) {
     buttonState = {
-      text: t`Referral Code does not exist`,
+      text: t`Referral code does not exist`,
       disabled: true,
     };
   } else if (isEdit) {
@@ -200,7 +207,7 @@ function ReferralCodeForm({
         ref={inputRef}
         disabled={isSubmitting}
         type="text"
-        placeholder="Enter referral code"
+        placeholder={t`Enter referral code`}
         className="text-input"
         value={referralCode}
         onChange={({ target }) => {
@@ -247,7 +254,7 @@ function ReferralCodeFormMultichain({
       return;
     }
 
-    return new Wallet("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80", signer?.provider);
+    return RANDOM_WALLET.connect(signer?.provider);
   }, [signer?.provider]);
 
   const globalExpressParams = useSelector(selectExpressGlobalParams);
@@ -312,6 +319,7 @@ function ReferralCodeFormMultichain({
         signer: p.simulationSigner,
         relayParams,
         referralCode: p.referralCodeHex,
+        shouldUseSignerMethod: true,
       });
 
       const action: MultichainAction = {
@@ -336,7 +344,8 @@ function ReferralCodeFormMultichain({
 
       const iStargateInstance = new Contract(sourceChainStargateAddress, IStargateAbi, signer) as unknown as IStargate;
 
-      const tokenAmount = numberToBigint(0.02, p.sourceChainTokenId.decimals);
+      const tokenAmount =
+        FAKE_INPUT_AMOUNT_MAP[p.sourceChainTokenId.symbol] ?? numberToBigint(0.02, p.sourceChainTokenId.decimals);
 
       const sendParamsWithRoughAmount = getMultichainTransferSendParams({
         isDeposit: true,
@@ -479,6 +488,9 @@ function ReferralCodeFormMultichain({
 
       const sourceChainStargateAddress = sourceChainTokenId.stargate;
 
+      const value =
+        sourceChainTokenId.address === zeroAddress ? result.data.nativeFee + result.data.amount : result.data.nativeFee;
+
       const txnResult = await sendWalletTransaction({
         chainId: srcChainId,
         to: sourceChainStargateAddress,
@@ -488,7 +500,7 @@ function ReferralCodeFormMultichain({
           functionName: "sendToken",
           args: [sendParams, { nativeFee: result.data.nativeFee, lzTokenFee: 0n }, account],
         }),
-        value: result.data.nativeFee as bigint,
+        value,
         msg: t`Sent referral code transaction`,
       });
 
@@ -534,27 +546,27 @@ function ReferralCodeFormMultichain({
     };
   } else if (isEdit && isSubmitting) {
     buttonState = {
-      text: t`Updating...`,
+      text: t`Updating`,
       disabled: true,
     };
   } else if (isSubmitting) {
     buttonState = {
-      text: t`Adding...`,
+      text: t`Adding`,
       disabled: true,
     };
   } else if (debouncedReferralCode === "") {
     buttonState = {
-      text: t`Enter Referral Code`,
+      text: t`Enter referral code`,
       disabled: true,
     };
   } else if (isValidating) {
     buttonState = {
-      text: t`Checking code...`,
+      text: t`Checking code`,
       disabled: true,
     };
   } else if (!referralCodeExists) {
     buttonState = {
-      text: t`Referral Code does not exist`,
+      text: t`Referral code does not exist`,
       disabled: true,
     };
   } else if (result.isLoading || !result.data) {
@@ -613,7 +625,7 @@ function ReferralCodeFormMultichain({
         ref={inputRef}
         disabled={isSubmitting}
         type="text"
-        placeholder="Enter referral code"
+        placeholder={t`Enter referral code`}
         className="text-input"
         value={referralCode}
         onChange={({ target }) => {

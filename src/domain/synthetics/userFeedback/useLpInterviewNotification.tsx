@@ -52,7 +52,7 @@ export function useLpInterviewNotification() {
 
       setLpInterviewInvitationShownTime(toastTimestamp);
 
-      helperToast.error(
+      helperToast.info(
         <InterviewToast
           type="lp"
           onButtonClick={() => {

@@ -10,23 +10,24 @@ import {
   sepolia,
 } from "viem/chains";
 
-import { GasLimitsConfig } from "types/fees";
+import type { GasLimitsConfig } from "types/fees";
 
-export const AVALANCHE = 43114;
-export const AVALANCHE_FUJI = 43113;
-export const ARBITRUM = 42161;
 export const ETH_MAINNET = 1;
+// Production
+export const AVALANCHE = 43114;
+export const ARBITRUM = 42161;
 export const BOTANIX = 3637;
+// Production source
 export const SOURCE_BASE_MAINNET = 8453;
-// export const BASE_SEPOLIA = 84532;
-export const SOURCE_SONIC_MAINNET = 146;
-// export const SONIC_BLAZE = 57054;
+// Testnets
+export const AVALANCHE_FUJI = 43113;
 export const ARBITRUM_SEPOLIA = 421614;
+// Testnet source
 export const SOURCE_OPTIMISM_SEPOLIA = 11155420;
 export const SOURCE_SEPOLIA = 11155111;
 
-export const SUPPORTED_CHAIN_IDS: ContractsChainId[] = [ARBITRUM, AVALANCHE, BOTANIX];
-export const SUPPORTED_CHAIN_IDS_DEV: ContractsChainId[] = [...SUPPORTED_CHAIN_IDS, AVALANCHE_FUJI, ARBITRUM_SEPOLIA];
+export const CONTRACTS_CHAIN_IDS: ContractsChainId[] = [ARBITRUM, AVALANCHE, BOTANIX];
+export const CONTRACTS_CHAIN_IDS_DEV: ContractsChainId[] = [...CONTRACTS_CHAIN_IDS, AVALANCHE_FUJI, ARBITRUM_SEPOLIA];
 
 export type ContractsChainId =
   | typeof ARBITRUM
@@ -35,7 +36,7 @@ export type ContractsChainId =
   | typeof BOTANIX
   | typeof ARBITRUM_SEPOLIA;
 
-export type SettlementChainId = typeof ARBITRUM_SEPOLIA | typeof ARBITRUM;
+export type SettlementChainId = typeof ARBITRUM_SEPOLIA | typeof ARBITRUM | typeof AVALANCHE;
 export type SourceChainId = typeof SOURCE_OPTIMISM_SEPOLIA | typeof SOURCE_SEPOLIA | typeof SOURCE_BASE_MAINNET;
 export type AnyChainId = ContractsChainId | SettlementChainId | SourceChainId;
 
@@ -190,8 +191,8 @@ export function getExcessiveExecutionFee(chainId: number) {
   return EXCESSIVE_EXECUTION_FEES_MAP[chainId] ?? 10;
 }
 
-export function isSupportedChain(chainId: number, dev = false) {
-  return (dev ? SUPPORTED_CHAIN_IDS_DEV : SUPPORTED_CHAIN_IDS).includes(chainId as ContractsChainId);
+export function isContractsChain(chainId: number, dev = false): chainId is ContractsChainId {
+  return (dev ? CONTRACTS_CHAIN_IDS_DEV : CONTRACTS_CHAIN_IDS).includes(chainId as ContractsChainId);
 }
 
 export const EXECUTION_FEE_CONFIG_V2: {

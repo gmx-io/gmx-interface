@@ -1,5 +1,5 @@
 import { differenceInMilliseconds } from "date-fns";
-import { Provider, ethers } from "ethers";
+import { ethers, Provider } from "ethers";
 import maxBy from "lodash/maxBy";
 import minBy from "lodash/minBy";
 import orderBy from "lodash/orderBy";
@@ -7,16 +7,18 @@ import { useEffect, useState } from "react";
 import { Address } from "viem";
 
 import {
+  AnyChainId,
   ARBITRUM,
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
+  CONTRACTS_CHAIN_IDS,
   ContractsChainId,
   FALLBACK_PROVIDERS,
-  RPC_PROVIDERS,
-  SUPPORTED_CHAIN_IDS,
   getFallbackRpcUrl,
+  PRIVATE_RPC_PROVIDERS,
+  RPC_PROVIDERS,
 } from "config/chains";
 import { getContract, getDataStoreContract, getMulticallContract } from "config/contracts";
 import { getRpcProviderKey } from "config/localStorage";
@@ -104,7 +106,7 @@ function trackRpcProviders({ warmUp = false } = {}) {
           }
 
           // Use fallback provider both as primary and secondary if no successful probes received
-          const fallbackRpcUrl = getFallbackRpcUrl(chainId);
+          const fallbackRpcUrl = getFallbackRpcUrl(chainId, getIsLargeAccount());
 
           return {
             primaryUrl: fallbackRpcUrl,
@@ -181,7 +183,7 @@ async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerSta
 
   let nextPrimaryRpc = bestResponseTimeValidProbe;
   let nextSecondaryRpc = {
-    url: getFallbackRpcUrl(chainId),
+    url: getFallbackRpcUrl(chainId, getIsLargeAccount()),
   };
 
   if (getIsLargeAccount()) {
@@ -359,7 +361,7 @@ async function probeRpc(
 function initTrackerState() {
   const now = Date.now();
 
-  return SUPPORTED_CHAIN_IDS.reduce<RpcTrackerState>((acc, chainId) => {
+  return CONTRACTS_CHAIN_IDS.reduce<RpcTrackerState>((acc, chainId) => {
     const prepareProviders = (urls: string[], { isPublic }: { isPublic: boolean }) => {
       return urls.reduce<Record<string, ProviderData>>((acc, rpcUrl) => {
         acc[rpcUrl] = {
@@ -372,13 +374,17 @@ function initTrackerState() {
       }, {});
     };
 
+    const privateRpcProviders = getIsLargeAccount() ? PRIVATE_RPC_PROVIDERS[chainId] : FALLBACK_PROVIDERS[chainId];
+
     const providers = {
       ...prepareProviders(RPC_PROVIDERS[chainId], { isPublic: true }),
-      ...prepareProviders(FALLBACK_PROVIDERS[chainId], { isPublic: false }),
+      ...prepareProviders(privateRpcProviders ?? [], { isPublic: false }),
     };
 
-    let currentPrimaryUrl: string = getIsLargeAccount() ? FALLBACK_PROVIDERS[chainId][0] : RPC_PROVIDERS[chainId][0];
-    let currentSecondaryUrl: string = getIsLargeAccount() ? RPC_PROVIDERS[chainId][0] : FALLBACK_PROVIDERS[chainId][0];
+    let currentPrimaryUrl: string =
+      (getIsLargeAccount() ? privateRpcProviders?.[0] : RPC_PROVIDERS[chainId][0]) ?? RPC_PROVIDERS[chainId][0];
+    let currentSecondaryUrl: string =
+      (getIsLargeAccount() ? RPC_PROVIDERS[chainId][0] : privateRpcProviders?.[0]) ?? RPC_PROVIDERS[chainId][0];
 
     const storageKey = JSON.stringify(getRpcProviderKey(chainId));
     const storedProviderData = localStorage.getItem(storageKey);
@@ -414,7 +420,9 @@ function initTrackerState() {
   }, {} as RpcTrackerState);
 }
 
-export function getCurrentRpcUrls(chainId: number): { primary: string; secondary: string } {
+export function getCurrentRpcUrls(rawChainId: number): { primary: string; secondary: string } {
+  const chainId = rawChainId as AnyChainId;
+
   if (!RPC_PROVIDERS[chainId]?.length) {
     throw new Error(`No RPC providers found for chainId: ${chainId}`);
   }
@@ -423,8 +431,10 @@ export function getCurrentRpcUrls(chainId: number): { primary: string; secondary
     trackerState[chainId].lastUsage = new Date();
   }
 
+  const privateRpcProviders = getIsLargeAccount() ? PRIVATE_RPC_PROVIDERS[chainId] : FALLBACK_PROVIDERS[chainId];
+
   const primary = trackerState?.[chainId]?.currentPrimaryUrl ?? RPC_PROVIDERS[chainId][0];
-  const secondary = trackerState?.[chainId]?.currentSecondaryUrl ?? FALLBACK_PROVIDERS?.[chainId]?.[0] ?? primary;
+  const secondary = trackerState?.[chainId]?.currentSecondaryUrl ?? privateRpcProviders?.[0] ?? primary;
 
   return { primary, secondary };
 }

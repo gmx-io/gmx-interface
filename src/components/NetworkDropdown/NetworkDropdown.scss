@@ -1,11 +1,11 @@
 .App-header-network {
   position: relative;
-  border: 1px solid var(--color-stroke-primary);
+  border: 0.5px solid var(--color-slate-600);
   border-radius: var(--border-radius-sm);
   height: 3.6rem;
   display: inline-flex;
   align-items: center;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .App-header-language {
@@ -16,16 +16,12 @@
   display: inline-flex;
 }
 .network-dropdown-items {
-  min-width: 17rem;
+  min-width: 18rem;
   padding-bottom: 0.8rem;
-}
-.network-dropdown-items:last-child {
-  padding-bottom: 0;
 }
 
 .network-dropdown-divider {
-  margin-bottom: 0.8rem;
-  border-bottom: 1px solid var(--color-stroke-primary);
+  border-bottom: 0.5px solid var(--color-slate-600);
 }
 .App-header-network:hover {
   background: var(--dark-blue-hover);
@@ -39,6 +35,7 @@
 }
 
 .network-dropdown-icon {
+  object-fit: cover;
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -56,13 +53,10 @@
 .network-dropdown-menu-item {
   display: flex;
   align-items: center;
-  padding: 0.8rem;
+  padding: 8px 12px;
   justify-content: space-between;
 }
 
-.last-dropdown-menu {
-  margin-bottom: 0.8rem;
-}
 .network-popup .Modal-content {
   width: 100%;
   max-width: 29.6rem;
@@ -71,17 +65,12 @@
 .network-option {
   cursor: pointer;
   background: var(--dark-blue);
-  border: 1px solid var(--color-stroke-primary);
-  border-radius: 0.4rem;
-  padding: 0.8rem 1.5rem;
+  border: 0.5px solid var(--color-slate-600);
+  padding: 8px 12px;
   display: flex;
   align-items: center;
   position: relative;
   justify-content: space-between;
-  margin-bottom: 0.8rem;
-}
-.network-option:last-child {
-  margin-bottom: 0;
 }
 
 .network-option img {
@@ -93,19 +82,18 @@
   font-size: var(--font-size-body-medium);
   line-height: var(--line-height-body-medium);
   letter-spacing: 0.29px;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .network-option-img-label {
   font-size: var(--font-size-body-medium);
   line-height: var(--line-height-body-medium);
   letter-spacing: 0.29px;
-  color: var(--color-white);
+  color: var(--color-typography-primary);
 }
 
 .dropdown-label {
   color: var(--color-slate-100);
-  padding: 0.8rem;
   font-size: var(--font-size-body-small);
   line-height: var(--line-height-body-small);
 }
@@ -114,15 +102,6 @@
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(2, 1fr);
-}
-
-.language-modal-item {
-  border: 1px solid var(--dark-blue-border);
-  cursor: pointer;
-}
-
-.language-modal-item.active {
-  border: 1px solid #a1a3c4;
 }
 
 .menu-item-icon {
@@ -151,11 +130,6 @@
   color: var(--color-gray-50);
 }
 
-.language-item {
-  margin-left: 0.8rem;
-  font-size: 1.5rem;
-}
-
 .active-dot {
   width: 0.8rem;
   height: 0.8rem;
@@ -166,10 +140,6 @@
   font-size: 1.25rem;
   margin-bottom: 0.8rem;
   opacity: 0.7;
-}
-
-.more-options {
-  margin-top: 1rem;
 }
 
 @media (max-width: 1033px) {
@@ -198,29 +168,26 @@
   min-width: 17rem;
   width: 100%;
   transform-origin: top right;
-  border-radius: 0.4rem;
+  border-radius: 8px;
   overflow: hidden;
-  background: var(--color-slate-800);
-  border: 1px solid var(--color-stroke-primary);
+  background: var(--color-slate-900);
+  border: 0.5px solid var(--color-slate-600);
   list-style: none;
   cursor: pointer;
   outline: none;
   z-index: 1000;
+  box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.08);
 
   .menu-item {
     display: flex !important;
     align-items: center;
     color: var(--color-slate-100);
-    padding-bottom: 1.5rem;
-    font-size: var(--font-size-body-medium);
-    padding: 0.85rem 0.8rem;
-    border-radius: 0.4rem;
+    font-size: 13px;
 
     &:hover {
-      background: #808aff14 !important;
-      border-radius: 0.4rem;
+      background: var(--color-fill-surfaceHover) !important;
       opacity: 1;
-      color: var(--color-gray-50);
+      color: var(--color-typography-secondary);
     }
 
     > p {
