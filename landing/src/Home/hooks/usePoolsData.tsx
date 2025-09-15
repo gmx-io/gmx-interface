@@ -115,6 +115,7 @@ export function usePoolsData(): Partial<PoolsData> {
     ...glvApy,
     totalLiquidity: totalLiquidity,
     openInterest: positionStats && openInterest ? positionStats.openInterest + openInterest : undefined,
+    totalDepositedUsers: marketInfos?.totalDepositedUsers,
   };
   return result;
 }
@@ -152,8 +153,8 @@ function useMarketInfos() {
     const [arbitrumRes, avalancheRes] = await Promise.all([arbitrumReq, avalancheReq]);
     const arbitrumMarketInfos = arbitrumRes.data?.marketInfos;
     const avalancheMarketInfos = avalancheRes.data?.marketInfos;
-    const arbitrumPlatformStats = arbitrumRes.data?.platformStats;
-    const avalanchePlatformStats = avalancheRes.data?.platformStats;
+    const arbitrumPlatformStats = arbitrumRes.data?.platformStats[0];
+    const avalanchePlatformStats = avalancheRes.data?.platformStats[0];
     let totalLiquidity = 0n;
     let openInterest = 0n;
     const sortedAggregatedMarketInfos: (MarketInfo & { chainId: number })[] = [];
