@@ -285,12 +285,20 @@ msgstr ""
 msgid "Cancel Limit Swap"
 msgstr ""
 
+#: landing/src/Home/RoadmapSection/RoadmapSection.tsx
+msgid "Roadmap"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "{seconds}s"
 msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
+msgstr ""
+
+#: landing/src/Home/FaqSection/FaqSection.tsx
+msgid "FAQ"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
@@ -379,6 +387,10 @@ msgstr ""
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swapped {0} for {1}."
+msgstr ""
+
+#: landing/src/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Multichain</0><1>Just in Time Liquidity</1>"
 msgstr ""
 
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -487,6 +499,10 @@ msgstr ""
 
 #: src/components/SideNav/SideNav.tsx
 msgid "Expand"
+msgstr ""
+
+#: landing/src/Home/SocialSection/SocialSlider.tsx
+msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution </2><3> Low size caps, but fun to do some degen gambling with </3>"
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
@@ -863,6 +879,10 @@ msgstr ""
 msgid "Claimable Rebates"
 msgstr ""
 
+#: landing/src/Home/LiqiuditySection/LiqiuditySection.tsx
+msgid "Join {0} users earning real yield."
+msgstr ""
+
 #: landing/src/Home/SocialSection/SocialSection.tsx
 msgid "Driven by <0/> our community"
 msgstr ""
@@ -1001,10 +1021,6 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Pay"
-msgstr ""
-
-#: landing/src/Home/HeroSection/AnimatedTitle.tsx
-msgid "from 6+ blockchains"
 msgstr ""
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
@@ -1378,10 +1394,6 @@ msgstr ""
 msgid "Select pool"
 msgstr ""
 
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "WEIGHT"
-#~ msgstr ""
-
 #: landing/src/Home/LiqiuditySection/PoolCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -1602,10 +1614,6 @@ msgstr ""
 #: src/pages/Exchange/Exchange.tsx
 msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#~ msgid "Tier {0} ({currentRebatePercentage}% rebate)"
-#~ msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX Alerts"
@@ -1866,10 +1874,6 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Create Order"
 msgstr ""
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Utilization"
-#~ msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 msgid "Select Asset to Deposit"
@@ -2574,10 +2578,6 @@ msgstr ""
 msgid "{0} will be swapped to {1} on order execution."
 msgstr ""
 
-#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
-#~ msgid "Claiming with a smart account requires specific instructions. Contributors will post these in the coming days."
-#~ msgstr ""
-
 #. Button to clear the filter selection
 #: src/components/Synthetics/TableOptionsFilter/TableOptionsFilter.tsx
 msgid "Clear selection"
@@ -2673,10 +2673,6 @@ msgstr ""
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Trigger price above lowest limit price"
 msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Borrow Fee Rate"
-#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2943,10 +2939,6 @@ msgstr ""
 msgid "Auto-Cancel TP/SL"
 msgstr ""
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Funding Fee Rate"
-#~ msgstr ""
-
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr ""
@@ -3020,6 +3012,10 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation Fee"
+msgstr ""
+
+#: landing/src/Home/HeroSection/AnimatedTitle.tsx
+msgid "from 5+ blockchains"
 msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
@@ -3319,10 +3315,6 @@ msgstr ""
 msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
 msgstr ""
 
-#: landing/src/Home/LiqiuditySection/LiqiuditySection.tsx
-msgid "Join 14000 users earning real yield."
-msgstr ""
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Self-transfer not supported"
 msgstr ""
@@ -3386,6 +3378,10 @@ msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
 msgid "To sign the terms using a Safe account in order to claim, please <0>follow these steps</0>."
+msgstr ""
+
+#: landing/src/Home/SponsorsSection/SponsorsSection.tsx
+msgid "over 100 protocols"
 msgstr ""
 
 #: src/pages/Exchange/Exchange.tsx
@@ -4114,6 +4110,7 @@ msgstr ""
 msgid "Approval failed"
 msgstr ""
 
+#: landing/src/Home/HeroSection/HeroSection.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Open Interest"
@@ -4719,10 +4716,6 @@ msgstr ""
 msgid "Exposure to Market Traders’ PnL"
 msgstr ""
 
-#: landing/src/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Cross-Margin </0><1>Cross-Collateral </1>"
-msgstr ""
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
 msgstr ""
@@ -4747,11 +4740,6 @@ msgstr ""
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 msgid "Invalid Transfer Addresses: Please check the url."
 msgstr ""
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "GLP Index Composition"
-#~ msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "No distribution history yet"
@@ -4878,10 +4866,6 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Create Limit"
-msgstr ""
-
-#: landing/src/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Multichain </0><1>Just in Time Liquidity </1>"
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -5137,6 +5121,10 @@ msgstr ""
 msgid "High price impact"
 msgstr ""
 
+#: landing/src/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
 msgstr ""
@@ -5206,10 +5194,6 @@ msgstr ""
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
 msgstr ""
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Weight"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -5578,6 +5562,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
 msgid "Share"
+msgstr ""
+
+#: landing/src/Home/HeroSection/Features.tsx
+msgid "Use your preferred token to pay and collateralize your positions"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -6343,10 +6331,6 @@ msgstr ""
 msgid "Volume traded by your referred traders."
 msgstr ""
 
-#: src/pages/Dashboard/GlpCard.tsx
-#~ msgid "Stablecoin Percentage"
-#~ msgstr ""
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order will be executed once there is sufficient liquidity."
 msgstr ""
@@ -6358,10 +6342,6 @@ msgstr ""
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "SNTL esGMX Market"
 msgstr ""
-
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Tier {0} ({currentTierDiscount}% discount)"
-#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
@@ -6675,6 +6655,10 @@ msgstr ""
 msgid "Acknowledge epoch is ending in {minutes} minutes"
 msgstr ""
 
+#: landing/src/Home/SocialSection/SocialSlider.tsx
+msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "High Price Impact"
 msgstr ""
@@ -6698,11 +6682,6 @@ msgstr ""
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "of open fee"
 msgstr ""
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Pool Amount"
-#~ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -7006,6 +6985,10 @@ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Order size exceeds position"
+msgstr ""
+
+#: landing/src/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Cross-Margin</0><1>Cross-Collateral</1>"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
@@ -7479,11 +7462,6 @@ msgstr ""
 msgid "Buy GMX"
 msgstr ""
 
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Max {0} Capacity"
-#~ msgstr ""
-
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copy error"
 msgstr ""
@@ -7749,10 +7727,6 @@ msgstr ""
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed."
-msgstr ""
-
-#: landing/src/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Solana Support</0><1>Botanix Support </1><2>GMX Express </2>"
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/components/MarketDescription.tsx
@@ -8374,11 +8348,6 @@ msgstr ""
 msgid "Stake esGMX"
 msgstr ""
 
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Target Min Amount"
-#~ msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -8469,6 +8438,10 @@ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
+msgstr ""
+
+#: landing/src/Home/HeroSection/Features.tsx
+msgid "Benefit from up to 100x leverage, and guaranteed on-chain liquidity that's not dependent on order book depth"
 msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
@@ -9023,10 +8996,6 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
-msgstr ""
-
-#: src/pages/Home/Home.tsx
-msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx

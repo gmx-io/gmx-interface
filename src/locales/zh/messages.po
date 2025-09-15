@@ -285,12 +285,20 @@ msgstr "交易量"
 msgid "Cancel Limit Swap"
 msgstr "取消限价交换"
 
+#: landing/src/Home/RoadmapSection/RoadmapSection.tsx
+msgid "Roadmap"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "{seconds}s"
 msgstr "{seconds}秒"
 
 #: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
+msgstr ""
+
+#: landing/src/Home/FaqSection/FaqSection.tsx
+msgid "FAQ"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
@@ -379,6 +387,10 @@ msgstr ""
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swapped {0} for {1}."
+msgstr ""
+
+#: landing/src/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Multichain</0><1>Just in Time Liquidity</1>"
 msgstr ""
 
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -487,6 +499,10 @@ msgstr "{0} 无法发送到智能合约地址。请选择另一个代币。"
 
 #: src/components/SideNav/SideNav.tsx
 msgid "Expand"
+msgstr ""
+
+#: landing/src/Home/SocialSection/SocialSlider.tsx
+msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution </2><3> Low size caps, but fun to do some degen gambling with </3>"
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
@@ -863,6 +879,10 @@ msgstr "止盈 - 多头减少"
 msgid "Claimable Rebates"
 msgstr "可领取返利"
 
+#: landing/src/Home/LiqiuditySection/LiqiuditySection.tsx
+msgid "Join {0} users earning real yield."
+msgstr ""
+
 #: landing/src/Home/SocialSection/SocialSection.tsx
 msgid "Driven by <0/> our community"
 msgstr ""
@@ -1002,10 +1022,6 @@ msgstr "清算 {0} {longOrShortText}"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Pay"
 msgstr "支付"
-
-#: landing/src/Home/HeroSection/AnimatedTitle.tsx
-msgid "from 6+ blockchains"
-msgstr ""
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
@@ -1378,10 +1394,6 @@ msgstr ""
 msgid "Select pool"
 msgstr "选择池"
 
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "WEIGHT"
-#~ msgstr "权重"
-
 #: landing/src/Home/LiqiuditySection/PoolCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -1602,10 +1614,6 @@ msgstr ""
 #: src/pages/Exchange/Exchange.tsx
 msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 msgstr "无法在允许滑点范围内增加 {tokenSymbol} {longOrShortText}，您可以在页面右上角的设置中调整允许滑点。"
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#~ msgid "Tier {0} ({currentRebatePercentage}% rebate)"
-#~ msgstr "Tier {0} ({currentRebatePercentage}% 返利)"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX Alerts"
@@ -1866,10 +1874,6 @@ msgstr "从 {positionText} 提取 {0}"
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Create Order"
 msgstr "创建订单"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Utilization"
-#~ msgstr "利用率"
 
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 msgid "Select Asset to Deposit"
@@ -2574,10 +2578,6 @@ msgstr ""
 msgid "{0} will be swapped to {1} on order execution."
 msgstr "{0} 将在订单执行时交换为 {1}。"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
-#~ msgid "Claiming with a smart account requires specific instructions. Contributors will post these in the coming days."
-#~ msgstr ""
-
 #. Button to clear the filter selection
 #: src/components/Synthetics/TableOptionsFilter/TableOptionsFilter.tsx
 msgid "Clear selection"
@@ -2673,10 +2673,6 @@ msgstr "桥接和交换"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Trigger price above lowest limit price"
 msgstr "触发价格高于最低限价"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Borrow Fee Rate"
-#~ msgstr "借贷费用率"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2943,10 +2939,6 @@ msgstr ""
 msgid "Auto-Cancel TP/SL"
 msgstr "自动取消 TP/SL"
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Funding Fee Rate"
-#~ msgstr "资金费用率"
-
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr "请求减少 {0} {longOrShortText} {sizeDeltaUsd} USD。"
@@ -3021,6 +3013,10 @@ msgstr "该订单可能不会以期望的 {priceText} 执行，因为其可接�
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation Fee"
 msgstr "清算费用"
+
+#: landing/src/Home/HeroSection/AnimatedTitle.tsx
+msgid "from 5+ blockchains"
+msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -3319,10 +3315,6 @@ msgstr "我们如何继续满足您的期望？"
 msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
 msgstr "esGMX (IOU) 代币是可转移的。如果您愿意，可以将代币添加到您的钱包并发送到另一个地址进行领取。"
 
-#: landing/src/Home/LiqiuditySection/LiqiuditySection.tsx
-msgid "Join 14000 users earning real yield."
-msgstr ""
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Self-transfer not supported"
 msgstr "不支持自我转移"
@@ -3386,6 +3378,10 @@ msgstr "杠杆"
 
 #: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
 msgid "To sign the terms using a Safe account in order to claim, please <0>follow these steps</0>."
+msgstr ""
+
+#: landing/src/Home/SponsorsSection/SponsorsSection.tsx
+msgid "over 100 protocols"
 msgstr ""
 
 #: src/pages/Exchange/Exchange.tsx
@@ -4114,6 +4110,7 @@ msgstr "资金费用"
 msgid "Approval failed"
 msgstr ""
 
+#: landing/src/Home/HeroSection/HeroSection.tsx
 #: src/components/Synthetics/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Open Interest"
@@ -4722,10 +4719,6 @@ msgstr ""
 msgid "Exposure to Market Traders’ PnL"
 msgstr "对市场交易者 PnL 的敞口"
 
-#: landing/src/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Cross-Margin </0><1>Cross-Collateral </1>"
-msgstr ""
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
 msgstr "最佳"
@@ -4750,11 +4743,6 @@ msgstr ""
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 msgid "Invalid Transfer Addresses: Please check the url."
 msgstr "无效转移地址：请检查 URL。"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "GLP Index Composition"
-#~ msgstr "GLP 指数组成"
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "No distribution history yet"
@@ -4882,10 +4870,6 @@ msgstr "衍生品投资组合跟踪器"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Create Limit"
 msgstr "创建限价"
-
-#: landing/src/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Multichain </0><1>Just in Time Liquidity </1>"
-msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer already initiated"
@@ -5140,6 +5124,10 @@ msgstr "创建推荐代码"
 msgid "High price impact"
 msgstr ""
 
+#: landing/src/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
 msgstr "组合止盈已达到最大 (100%)。减少现有值以添加更多订单。"
@@ -5209,10 +5197,6 @@ msgstr "剩余抵押品低于 5 USD"
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
 msgstr "订单无法执行，因为这将使头寸的杠杆率低于 1"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Weight"
-#~ msgstr "权重"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -5582,6 +5566,10 @@ msgstr "正在加载..."
 #: src/components/Exchange/PositionsList.jsx
 msgid "Share"
 msgstr "分享"
+
+#: landing/src/Home/HeroSection/Features.tsx
+msgid "Use your preferred token to pay and collateralize your positions"
+msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/pages/OrdersOverview/OrdersOverview.jsx
@@ -6346,10 +6334,6 @@ msgstr "使用任何网络的任何代币购买 GMX："
 msgid "Volume traded by your referred traders."
 msgstr "您推荐的交易者的交易量。"
 
-#: src/pages/Dashboard/GlpCard.tsx
-#~ msgid "Stablecoin Percentage"
-#~ msgstr "稳定币百分比"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order will be executed once there is sufficient liquidity."
 msgstr "一旦有足够的流动性，此订单的部分将被执行。"
@@ -6361,10 +6345,6 @@ msgstr "请仅用于完整账户转移。<0/>这将转移您所有的 GMX、esGM
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "SNTL esGMX Market"
 msgstr "SNTL esGMX 市场"
-
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Tier {0} ({currentTierDiscount}% discount)"
-#~ msgstr "层级 {0} ({currentTierDiscount}% 折扣)"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
@@ -6678,6 +6658,10 @@ msgstr "清算确认"
 msgid "Acknowledge epoch is ending in {minutes} minutes"
 msgstr "确认时代将在 {minutes} 分钟内结束"
 
+#: landing/src/Home/SocialSection/SocialSlider.tsx
+msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "High Price Impact"
 msgstr "高价格影响"
@@ -6701,11 +6685,6 @@ msgstr ""
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "of open fee"
 msgstr "开仓费用"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Pool Amount"
-#~ msgstr "池金额"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -7010,6 +6989,10 @@ msgstr "触发价格高于标记价格"
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Order size exceeds position"
 msgstr "订单大小超过头寸"
+
+#: landing/src/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Cross-Margin</0><1>Cross-Collateral</1>"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Concluded"
@@ -7485,11 +7468,6 @@ msgstr "会话已生成"
 msgid "Buy GMX"
 msgstr "购买 GMX"
 
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Max {0} Capacity"
-#~ msgstr "最大 {0} 容量"
-
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copy error"
 msgstr "复制错误"
@@ -7756,10 +7734,6 @@ msgstr "已实现基础盈亏"
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed."
 msgstr "交换失败。"
-
-#: landing/src/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Solana Support</0><1>Botanix Support </1><2>GMX Express </2>"
-msgstr ""
 
 #: src/components/Synthetics/MarketStats/components/MarketDescription.tsx
 msgid "This token automatically accrues fees from swaps for the {0}/{1} market. It is also exposed to {2} and {3} as per the composition displayed."
@@ -8380,11 +8354,6 @@ msgstr ""
 msgid "Stake esGMX"
 msgstr "质押 esGMX"
 
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Target Min Amount"
-#~ msgstr "目标最低金额"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -8476,6 +8445,10 @@ msgstr "V1 返利"
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "无效代币 indexToken: \"{0}\" collateralToken: \"{1}\""
+
+#: landing/src/Home/HeroSection/Features.tsx
+msgid "Benefit from up to 100x leverage, and guaranteed on-chain liquidity that's not dependent on order book depth"
+msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdraw Fee"
@@ -9030,10 +9003,6 @@ msgstr "7 天"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
 msgstr "Rage Trade"
-
-#: src/pages/Home/Home.tsx
-msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet"
-msgstr "直接从您的钱包使用高达 100x 杠杆交易 BTC、ETH、AVAX 和其他顶级加密货币"
 
 #: src/components/Exchange/PositionsList.jsx
 msgid "Click on the position to select it, then use the trade box to increase it."
