@@ -277,17 +277,17 @@ describe("formatUsdPrice", () => {
   it("should calculate correct decimals if displayDecimals not passed", () =>
     // prettier-ignore
     {
-      expect(formatUsdPrice(ONE_USD * 10000n)).toBe(       "$\u200a\u200d10,000.00");
-      expect(formatUsdPrice(ONE_USD * 1000n)).toBe(         "$\u200a\u200d1,000.00");
-      expect(formatUsdPrice(ONE_USD * 100n)).toBe(            "$\u200a\u200d100.000");
-      expect(formatUsdPrice(ONE_USD * 10n)).toBe(              "$\u200a\u200d10.0000");
-      expect(formatUsdPrice(ONE_USD)).toBe(                     "$\u200a\u200d1.0000");
-      expect(formatUsdPrice(ONE_USD / 10n)).toBe(               "$\u200a\u200d0.10000");
-      expect(formatUsdPrice(ONE_USD / 100n)).toBe(              "$\u200a\u200d0.010000");
-      expect(formatUsdPrice(ONE_USD / 1000n)).toBe(             "$\u200a\u200d0.0010000");
-      expect(formatUsdPrice(ONE_USD / 10_000n)).toBe(           "$\u200a\u200d0.0001000");
-      expect(formatUsdPrice(ONE_USD / 100_000n)).toBe(          "$\u200a\u200d0.00001000");
-      expect(formatUsdPrice(ONE_USD / 1_000_000_000n)).toBe(    "$\u200a\u200d0.000000001");
+      expect(formatUsdPrice(ONE_USD * 10000n)).toBe(                 "$\u200a\u200d10,000.00");
+      expect(formatUsdPrice(ONE_USD * 1000n)).toBe(                  "$\u200a\u200d1,000.00");
+      expect(formatUsdPrice(ONE_USD * 100n)).toBe(                   "$\u200a\u200d100.000");
+      expect(formatUsdPrice(ONE_USD * 10n)).toBe(                    "$\u200a\u200d10.0000");
+      expect(formatUsdPrice(ONE_USD)).toBe(                          "$\u200a\u200d1.0000");
+      expect(formatUsdPrice(ONE_USD / 10n)).toBe(                    "$\u200a\u200d0.10000");
+      expect(formatUsdPrice(ONE_USD / 100n)).toBe(                   "$\u200a\u200d0.010000");
+      expect(formatUsdPrice(ONE_USD / 1000n)).toBe(                  "$\u200a\u200d0.0010000");
+      expect(formatUsdPrice(ONE_USD / 10_000n)).toBe(                "$\u200a\u200d0.0001000");
+      expect(formatUsdPrice(ONE_USD / 100_000n)).toBe(               "$\u200a\u200d0.00001000");
+      expect(formatUsdPrice(ONE_USD / 1_000_000_000n)).toBe(         "$\u200a\u200d0.000000001");
       expect(formatUsdPrice(ONE_USD / 10_000_000_000n)).toBe( "<\u00a0$\u200a\u200d0.000000001");
     });
 });
