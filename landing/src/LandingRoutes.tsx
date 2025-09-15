@@ -3,11 +3,9 @@ import { Redirect, Route, Switch } from "react-router-dom";
 
 import Home from "./pages/Home/Home";
 
-// Lazy load Terms pages to reduce main bundle size
 const ReferralTerms = lazy(() => import("./pages/ReferralTerms/ReferralTerms"));
 const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions/TermsAndConditions"));
 
-// Loading fallback component
 function TermsPageLoader() {
   return (
     <div className="flex h-screen items-center justify-center">
