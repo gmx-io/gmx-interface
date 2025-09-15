@@ -1356,10 +1356,6 @@ msgstr ""
 msgid "Select pool"
 msgstr "풀 선택"
 
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "WEIGHT"
-#~ msgstr "비중"
-
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "APR"
@@ -1579,10 +1575,6 @@ msgstr ""
 #: src/pages/Exchange/Exchange.tsx
 msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 msgstr "허용가능한 슬리피지 안에서는 {tokenSymbol} {longOrShortText}을 증가시키지 못했습니다. 최상단 우측의 설정 버튼을 통해 허용가능한 슬리피지를 변경할 수 있습니다."
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#~ msgid "Tier {0} ({currentRebatePercentage}% rebate)"
-#~ msgstr "Tier {0} ({currentRebatePercentage}% 리베이트)"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX Alerts"
@@ -1843,10 +1835,6 @@ msgstr "{positionText}에서 {0} 인출"
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Create Order"
 msgstr "주문 생성"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Utilization"
-#~ msgstr "이용률"
 
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 msgid "Select Asset to Deposit"
@@ -2547,10 +2535,6 @@ msgstr ""
 msgid "{0} will be swapped to {1} on order execution."
 msgstr "{0}이 주문 실행 시 {1}로 스왑됩니다."
 
-#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
-#~ msgid "Claiming with a smart account requires specific instructions. Contributors will post these in the coming days."
-#~ msgstr ""
-
 #. Button to clear the filter selection
 #: src/components/Synthetics/TableOptionsFilter/TableOptionsFilter.tsx
 msgid "Clear selection"
@@ -2646,10 +2630,6 @@ msgstr "브릿지 및 스왑"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Trigger price above lowest limit price"
 msgstr "트리거 가격이 최저 지정가 가격 초과"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Borrow Fee Rate"
-#~ msgstr "차입 수수료율"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2898,10 +2878,6 @@ msgstr "현재 가격 영향은 {0}입니다. 주문이 처리될 가능성을 �
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-Cancel TP/SL"
 msgstr "TP/SL 자동 취소"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Funding Fee Rate"
-#~ msgstr "자금 수수료율"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
@@ -4658,11 +4634,6 @@ msgstr "주문 시뮬레이션 실행 실패."
 msgid "Invalid Transfer Addresses: Please check the url."
 msgstr "유효하지 않은 이전 주소: URL 확인하세요."
 
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "GLP Index Composition"
-#~ msgstr "GLP 인덱스 구성"
-
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "No distribution history yet"
 msgstr ""
@@ -5109,10 +5080,6 @@ msgstr "잔여 담보가 5 USD 미만입니다"
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
 msgstr "포지션의 레버리지가 1 미만으로 감소되므로 주문을 실행할 수 없습니다"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Weight"
-#~ msgstr "가중치"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -6225,10 +6192,6 @@ msgstr "모든 네트워크의 모든 토큰으로 GMX 구매:"
 msgid "Volume traded by your referred traders."
 msgstr "추천한 트레이더의 거래량."
 
-#: src/pages/Dashboard/GlpCard.tsx
-#~ msgid "Stablecoin Percentage"
-#~ msgstr "스테이블코인 비율"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order will be executed once there is sufficient liquidity."
 msgstr "충분한 유동성이 있을 때 이 주문의 일부가 실행됩니다."
@@ -6240,10 +6203,6 @@ msgstr "전체 계정 이전에만 사용해주세요.<0/>이 작업은 모든 G
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "SNTL esGMX Market"
 msgstr "SNTL esGMX 시장"
-
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Tier {0} ({currentTierDiscount}% discount)"
-#~ msgstr "티어 {0} ({currentTierDiscount}% 할인)"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
@@ -6567,11 +6526,6 @@ msgstr ""
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "of open fee"
 msgstr "개설 수수료의"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Pool Amount"
-#~ msgstr "풀 수량"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -7330,11 +7284,6 @@ msgstr "세션 생성됨"
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
 msgstr "GMX 구매"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Max {0} Capacity"
-#~ msgstr "{0} 최대 수용량"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copy error"
@@ -8201,11 +8150,6 @@ msgstr ""
 #: src/pages/Stake/Stake.tsx
 msgid "Stake esGMX"
 msgstr "esGMX 스테이킹"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Target Min Amount"
-#~ msgstr "목표 최소 금액"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts

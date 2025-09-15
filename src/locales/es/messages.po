@@ -1356,10 +1356,6 @@ msgstr ""
 msgid "Select pool"
 msgstr "Seleccionar reserva"
 
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "WEIGHT"
-#~ msgstr "PESO"
-
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "APR"
@@ -1579,10 +1575,6 @@ msgstr ""
 #: src/pages/Exchange/Exchange.tsx
 msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 msgstr "No se pudo incrementar {tokenSymbol} {longOrShortText} con el deslizamiento permitido, puedes ajustar el deslizamiento permitido a través de ajustes en la esquina superior derecha de la página."
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#~ msgid "Tier {0} ({currentRebatePercentage}% rebate)"
-#~ msgstr "Nivel {0} ({currentRebatePercentage}% reembolso)"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX Alerts"
@@ -1843,10 +1835,6 @@ msgstr "Retirado {0} de {positionText}"
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Create Order"
 msgstr "Crear Orden"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Utilization"
-#~ msgstr "Utilización"
 
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 msgid "Select Asset to Deposit"
@@ -2547,10 +2535,6 @@ msgstr ""
 msgid "{0} will be swapped to {1} on order execution."
 msgstr "{0} se intercambiará a {1} en la ejecución de la orden."
 
-#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
-#~ msgid "Claiming with a smart account requires specific instructions. Contributors will post these in the coming days."
-#~ msgstr ""
-
 #. Button to clear the filter selection
 #: src/components/Synthetics/TableOptionsFilter/TableOptionsFilter.tsx
 msgid "Clear selection"
@@ -2646,10 +2630,6 @@ msgstr "Puente y intercambio"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Trigger price above lowest limit price"
 msgstr "Precio de activación por encima del precio límite más bajo"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Borrow Fee Rate"
-#~ msgstr "Tasa de Préstamo"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2898,10 +2878,6 @@ msgstr "El impacto de precio actual es {0}. Considera usar un impacto de precio 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-Cancel TP/SL"
 msgstr "Auto-Cancelar TP/SL"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Funding Fee Rate"
-#~ msgstr "Tasa de Comisión de Financiación"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
@@ -4658,11 +4634,6 @@ msgstr "Simulación de ejecución de orden fallida."
 msgid "Invalid Transfer Addresses: Please check the url."
 msgstr "Direcciones de Transferencia Inválidas: Por favor verifica la url."
 
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "GLP Index Composition"
-#~ msgstr "Composición de Índice GLP"
-
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "No distribution history yet"
 msgstr ""
@@ -5109,10 +5080,6 @@ msgstr "Garantía restante por debajo de 5 USD"
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
 msgstr "La orden no se puede ejecutar pues reduciría el apalancamiento de la posición por debajo de 1"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Weight"
-#~ msgstr "Peso"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -6225,10 +6192,6 @@ msgstr "Comprar GMX usando cualquier token de cualquier red:"
 msgid "Volume traded by your referred traders."
 msgstr "Volumen negociado por sus traders referidos."
 
-#: src/pages/Dashboard/GlpCard.tsx
-#~ msgid "Stablecoin Percentage"
-#~ msgstr "Porcentaje de Stablecoin"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order will be executed once there is sufficient liquidity."
 msgstr "Partes de esta orden se ejecutarán una vez que haya suficiente liquidez."
@@ -6240,10 +6203,6 @@ msgstr "Por favor, usa esto solo para transferencias completas de cuenta.<0/>Est
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "SNTL esGMX Market"
 msgstr "Mercado SNTL esGMX"
-
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Tier {0} ({currentTierDiscount}% discount)"
-#~ msgstr "Nivel {0} ({currentTierDiscount}% descuento)"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
@@ -6567,11 +6526,6 @@ msgstr ""
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "of open fee"
 msgstr "de comisión de apertura"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Pool Amount"
-#~ msgstr "Cantidad de Reserva"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -7330,11 +7284,6 @@ msgstr "Sesión generada"
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
 msgstr "Comprar GMX"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Max {0} Capacity"
-#~ msgstr "Capacidad {0} máxima"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copy error"
@@ -8201,11 +8150,6 @@ msgstr ""
 #: src/pages/Stake/Stake.tsx
 msgid "Stake esGMX"
 msgstr "Stakear esGMX"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Target Min Amount"
-#~ msgstr "Cantidad Mínima Objetivo"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
