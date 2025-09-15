@@ -694,17 +694,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     fromMarketTokenInputState,
     marketTokensData,
   });
-
-  useEffect(
-    function fallbackSourceChainPaySource() {
-      if (paySource === "sourceChain" && srcChainId === undefined) {
-        setPaySource("settlementChain");
-      } else if (paySource === "settlementChain" && srcChainId !== undefined) {
-        setPaySource("sourceChain");
-      }
-    },
-    [paySource, setPaySource, srcChainId]
-  );
   // #endregion
 
   // #region Render
