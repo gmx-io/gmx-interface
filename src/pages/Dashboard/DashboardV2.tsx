@@ -2,14 +2,12 @@ import { Trans, t } from "@lingui/macro";
 import { Link } from "react-router-dom";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
-import { USD_DECIMALS } from "config/factors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxSupply } from "domain/legacy";
 import { useInfoTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
-import { GLP_DECIMALS, GMX_DECIMALS, getPageTitle } from "lib/legacy";
+import { GMX_DECIMALS, getPageTitle } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
-import { useTradePageVersion } from "lib/useTradePageVersion";
 import useWallet from "lib/wallets/useWallet";
 import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
@@ -24,10 +22,8 @@ import { MarketsList } from "components/Synthetics/MarketsList/MarketsList";
 import V1Icon from "img/ic_v1.svg?react";
 import V2Icon from "img/ic_v2.svg?react";
 
-import { GlpCard } from "./GlpCard";
 import { GmCard } from "./GmCard";
 import { GmxCard } from "./GmxCard";
-import { MarketsListV1 } from "./MarketsListV1";
 import { OverviewCard } from "./OverviewCard";
 import { StatsCard } from "./StatsCard";
 import { useDashboardChainStatsMulticall } from "./useDashboardChainStatsMulticall";
@@ -40,26 +36,10 @@ export default function DashboardV2() {
   const { active, signer } = useWallet();
   const { chainId } = useChainId();
 
-  const [tradePageVersion] = useTradePageVersion();
-
-  const isV1 = tradePageVersion === 1;
-  const isV2 = tradePageVersion === 2;
-
   let { total: totalGmxSupply } = useTotalGmxSupply();
 
   const statsArbitrum = useDashboardChainStatsMulticall(ARBITRUM);
   const statsAvalanche = useDashboardChainStatsMulticall(AVALANCHE);
-
-  const tokenWeightsArbitrum = statsArbitrum?.vault.totalTokenWeights;
-  const tokenWeightsAvalanche = statsAvalanche?.vault.totalTokenWeights;
-  const totalTokenWeights = chainId === ARBITRUM ? tokenWeightsArbitrum : tokenWeightsAvalanche;
-
-  const glpTvlArbitrum = statsArbitrum?.glp.aum;
-  const glpTvlAvalanche = statsAvalanche?.glp.aum;
-
-  const glpSupplyArbitrum = statsArbitrum?.reader.tokenBalancesWithSupplies?.glpSupply;
-  const glpSupplyAvalanche = statsAvalanche?.reader.tokenBalancesWithSupplies?.glpSupply;
-  const glpSupply = chainId === ARBITRUM ? glpSupplyArbitrum : glpSupplyAvalanche;
 
   const { infoTokens: arbitrumInfoTokens } = useInfoTokens(signer, ARBITRUM, active, undefined, undefined);
   const { infoTokens: avalancheInfoTokens } = useInfoTokens(signer, AVALANCHE, active, undefined, undefined);
@@ -77,26 +57,6 @@ export default function DashboardV2() {
       : undefined;
 
   let { total: totalGmxInLiquidity } = useTotalGmxInLiquidity();
-
-  const glpPriceArbitrum =
-    glpTvlArbitrum !== undefined && glpTvlArbitrum > 0n && glpSupplyArbitrum !== undefined
-      ? bigMath.mulDiv(glpTvlArbitrum, expandDecimals(1, GLP_DECIMALS), glpSupplyArbitrum)
-      : expandDecimals(1, USD_DECIMALS);
-  const glpPriceAvalanche =
-    glpTvlAvalanche !== undefined && glpTvlAvalanche > 0n && glpSupplyAvalanche !== undefined
-      ? bigMath.mulDiv(glpTvlAvalanche, expandDecimals(1, GLP_DECIMALS), glpSupplyAvalanche)
-      : expandDecimals(1, USD_DECIMALS);
-  const glpPrice = chainId === ARBITRUM ? glpPriceArbitrum : glpPriceAvalanche;
-
-  const glpMarketCapArbitrum =
-    glpSupplyArbitrum !== undefined
-      ? bigMath.mulDiv(glpPriceArbitrum, glpSupplyArbitrum, expandDecimals(1, GLP_DECIMALS))
-      : undefined;
-  const glpMarketCapAvalanche =
-    glpSupplyAvalanche !== undefined
-      ? bigMath.mulDiv(glpPriceAvalanche, glpSupplyAvalanche, expandDecimals(1, GLP_DECIMALS))
-      : undefined;
-  const glpMarketCap = chainId === ARBITRUM ? glpMarketCapArbitrum : glpMarketCapAvalanche;
 
   const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
@@ -168,30 +128,12 @@ export default function DashboardV2() {
                   gmxMarketCap={gmxMarketCap}
                   totalGmxInLiquidity={totalGmxInLiquidity}
                 />
-                {isV1 && (
-                  <GlpCard
-                    chainId={chainId}
-                    glpPrice={glpPrice}
-                    glpSupply={glpSupply}
-                    glpMarketCap={glpMarketCap}
-                    adjustedUsdgSupply={adjustedUsdgSupply}
-                  />
-                )}
-                {isV2 && <GmCard />}
+                <GmCard />
               </div>
-              {isV1 && (
-                <MarketsListV1
-                  chainId={chainId}
-                  infoTokens={infoTokens}
-                  totalTokenWeights={totalTokenWeights}
-                  adjustedUsdgSupply={adjustedUsdgSupply}
-                />
-              )}
-              {isV2 && (
-                <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
-                  <MarketsList />
-                </SyntheticsStateContextProvider>
-              )}
+
+              <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
+                <MarketsList />
+              </SyntheticsStateContextProvider>
             </div>
           </div>
         </div>

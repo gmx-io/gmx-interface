@@ -40,6 +40,7 @@ import RewardRouter from "./RewardRouter.json";
 import RewardTracker from "./RewardTracker.json";
 import RouterV2 from "./Router-v2.json";
 import Router from "./Router.json";
+import SmartAccount from "./SmartAccount.json";
 import StBTC from "./StBTC.json";
 import SubaccountGelatoRelayRouter from "./SubaccountGelatoRelayRouter.json";
 import SubaccountRouter from "./SubaccountRouter.json";
@@ -104,6 +105,7 @@ export type AbiId =
   | "RewardTracker"
   | "Router"
   | "RouterV2"
+  | "SmartAccount"
   | "StBTC"
   | "SubaccountGelatoRelayRouter"
   | "SubaccountGelatoRelayRouter"
@@ -210,6 +212,7 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   RewardTracker: RewardTracker.abi,
   Router: Router.abi,
   RouterV2: RouterV2.abi,
+  SmartAccount: SmartAccount.abi,
   StBTC: StBTC.abi,
   SubaccountGelatoRelayRouter: SubaccountGelatoRelayRouter.abi,
   SubaccountRouter: SubaccountRouter.abi,

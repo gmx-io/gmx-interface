@@ -11,7 +11,7 @@ import { address as ethPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-
 import { address as usdcSgPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolUSDC.json";
 import { address as ethPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolUSDC.json";
-import type { JsonFragment } from "ethers";
+import { Wallet, type JsonFragment } from "ethers";
 import invert from "lodash/invert";
 import mapValues from "lodash/mapValues";
 import uniq from "lodash/uniq";
@@ -67,11 +67,13 @@ type MultichainTokenMapping = Record<
   >
 >;
 
-type MultichainWithdrawSupportedTokens = Record<
-  // settlement chain id
-  SettlementChainId,
-  // settlement chain wrapped token address
-  string[]
+type MultichainWithdrawSupportedTokens = Partial<
+  Record<
+    // settlement chain id
+    SettlementChainId,
+    // settlement chain wrapped token address
+    string[]
+  >
 >;
 
 type MultichainSourceToSettlementsMap = Record<SourceChainId, SettlementChainId[]>;
@@ -289,7 +291,7 @@ for (const tokenSymbol in TOKEN_GROUPS) {
     if (!empty) {
       MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId] =
         MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId] || [];
-      MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId].push(
+      MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId]!.push(
         convertTokenAddress(settlementChainId, tokenId.address, "wrapped")
       );
     }
@@ -388,3 +390,4 @@ export const FAKE_INPUT_AMOUNT_MAP: Record<string, bigint> = {
 };
 
 export const RANDOM_SLOT = "0x23995301f0ea59f7cace2ae906341fc4662f3f5d23f124431ee3520d1070148c";
+export const RANDOM_WALLET = Wallet.createRandom();

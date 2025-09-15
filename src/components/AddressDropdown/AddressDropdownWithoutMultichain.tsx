@@ -20,10 +20,10 @@ import { Avatar } from "components/Avatar/Avatar";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-import BellIcon from "img/bell.svg?react";
+import BellIcon from "img/ic_bell.svg?react";
 import CopyIcon from "img/ic_copy_20.svg?react";
-import ExternalLinkIcon from "img/ic_new_link_20.svg?react";
-import PnlAnalysisIcon from "img/ic_pnl_analysis_20.svg?react";
+import ExplorerIcon from "img/ic_explorer.svg?react";
+import PnlAnalysisIcon from "img/ic_pnl_analysis.svg?react";
 import DisconnectIcon from "img/ic_sign_out_20.svg?react";
 
 import "./AddressDropdownWithoutMultichain.scss";
@@ -82,7 +82,7 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
             </Menu.Item>
             <Menu.Item>
               <ExternalLink href={accountUrl} className="menu-item !no-underline">
-                <ExternalLinkIcon width={20} className="size-20" />
+                <ExplorerIcon width={20} className="size-20" />
                 <p>
                   <Trans>View in Explorer</Trans>
                 </p>

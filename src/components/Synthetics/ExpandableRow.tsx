@@ -42,7 +42,7 @@ const EXPAND_ANIMATION_VARIANTS: Variants = {
 
 interface Props {
   title: ReactNode;
-  open: boolean;
+  open: boolean | undefined;
   children: ReactNode;
   onToggle: (val: boolean) => void;
   /**

@@ -33,7 +33,12 @@ export function RatingToast({ onRatingClick }: Props) {
 
 function RatingItem({ rating, onClick }: { rating: number; onClick: () => void }) {
   return (
-    <Button onClick={onClick} variant="secondary" size="small" className="h-32 w-28 whitespace-nowrap">
+    <Button
+      onClick={onClick}
+      variant="secondary"
+      size="small"
+      className="h-32 w-28 whitespace-nowrap hover:!bg-blue-500 hover:!text-white"
+    >
       {rating}
     </Button>
   );

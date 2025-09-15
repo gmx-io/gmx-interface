@@ -928,6 +928,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     priceImpactWarningState.shouldShowWarning ||
     (!isTrigger && !isSwap) ||
     (isSwap && isLimit) ||
+    isTwap ||
     maxAutoCancelOrdersWarning ||
     shouldShowOneClickTradingWarning;
 

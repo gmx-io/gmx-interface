@@ -43,6 +43,7 @@ import { AllowedSlippageRow } from "./AllowedSlippageRow";
 import { AvailableLiquidityRow } from "./AvailableLiquidityRow";
 import { CollateralSpreadRow } from "./CollateralSpreadRow";
 import { EntryPriceRow } from "./EntryPriceRow";
+import { NextStoredImpactRows } from "./NextStoredImpactRows";
 import { SwapSpreadRow } from "./SwapSpreadRow";
 import { useTradeboxAllowedSwapSlippageValues } from "../hooks/useTradeboxAllowedSwapSlippageValues";
 
@@ -259,7 +260,7 @@ export function TradeBoxAdvancedGroups({
         <>
           {isMarket && !isSwap && <CollateralSpreadRow />}
           {isMarket && <AllowedSlippageRow slippageInputId={slippageInputId} />}
-
+          {!isSwap && <NextStoredImpactRows />}
           <LeverageInfoRows />
           <EntryPriceRow />
           <ExistingPositionInfoRows />

@@ -166,6 +166,8 @@ export type NextPositionValues = {
   nextPnlPercentage?: bigint;
   nextEntryPrice?: bigint;
   remainingCollateralFeesUsd?: bigint;
+  nextPendingImpactDeltaUsd?: bigint;
+  potentialPriceImpactDiffUsd?: bigint;
 };
 
 export type SwapStats = {

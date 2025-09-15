@@ -5,6 +5,7 @@ import { ARBITRUM, BOTANIX, EXECUTION_FEE_CONFIG_V2 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
+  BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY,
   DEBUG_SWAP_MARKETS_CONFIG_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
   EXTERNAL_SWAPS_ENABLED_KEY,
@@ -62,6 +63,9 @@ export type SettingsContextType = {
   setTenderlyAccessKey: (val: string | undefined) => void;
   tenderlySimulationEnabled: boolean | undefined;
   setTenderlySimulationEnabled: (val: boolean | undefined) => void;
+
+  breakdownNetPriceImpactEnabled: boolean;
+  setBreakdownNetPriceImpactEnabled: (val: boolean) => void;
 
   isSettingsVisible: boolean;
   setIsSettingsVisible: (val: boolean) => void;
@@ -169,6 +173,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     false
   );
 
+  const [savedBreakdownNetPriceImpactEnabled, setSavedBreakdownNetPriceImpactEnabled] = useLocalStorageSerializeKey(
+    [chainId, BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY],
+    false
+  );
+
   let [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useLocalStorageSerializeKey(
     getGasPaymentTokenAddressKey(chainId, account),
     getDefaultGasPaymentToken(chainId)
@@ -253,6 +262,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       isLeverageSliderEnabled: isLeverageSliderEnabled!,
       setIsLeverageSliderEnabled: setIsLeverageSliderEnabled,
 
+      breakdownNetPriceImpactEnabled: savedBreakdownNetPriceImpactEnabled!,
+      setBreakdownNetPriceImpactEnabled: setSavedBreakdownNetPriceImpactEnabled,
+
       setTenderlyAccessKey,
       setTenderlyAccountSlug,
       setTenderlyProjectSlug,
@@ -305,6 +317,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setIsAutoCancelTPSL,
     isLeverageSliderEnabled,
     setIsLeverageSliderEnabled,
+    savedBreakdownNetPriceImpactEnabled,
+    setSavedBreakdownNetPriceImpactEnabled,
     setTenderlyAccessKey,
     setTenderlyAccountSlug,
     setTenderlyProjectSlug,
@@ -318,6 +332,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setExpressOrdersEnabled,
     gasPaymentTokenAddress,
     setGasPaymentTokenAddress,
+    chainId,
     externalSwapsEnabled,
     setExternalSwapsEnabled,
     debugSwapMarketsConfig,
@@ -326,7 +341,6 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSettingsWarningDotVisible,
     savedTwapNumberOfParts,
     setSavedTWAPNumberOfParts,
-    chainId,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

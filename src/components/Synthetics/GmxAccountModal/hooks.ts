@@ -18,33 +18,40 @@ export function useAvailableToTradeAssetSymbolsSettlementChain(): string[] {
   const { chainId, srcChainId } = useChainId();
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
 
-  const tokenSymbols = new Set<string>();
+  return useMemo(() => {
+    const tokenSymbols: Record<string, bigint> = {};
 
-  for (const token of Object.values(tokensData ?? {})) {
-    if (token.walletBalance !== undefined && token.walletBalance > 0n) {
-      tokenSymbols.add(token.symbol);
-    }
-    if (token.gmxAccountBalance !== undefined && token.gmxAccountBalance > 0n) {
-      tokenSymbols.add(token.symbol);
-    }
-  }
+    for (const token of Object.values(tokensData ?? {})) {
+      const amount = (token.walletBalance ?? 0n) + (token.gmxAccountBalance ?? 0n);
+      const usd = convertToUsd(amount, token.decimals, getMidPrice(token.prices))!;
 
-  return Array.from(tokenSymbols);
+      tokenSymbols[token.symbol] = usd;
+    }
+
+    return Object.entries(tokenSymbols)
+      .sort((a, b) => (a[1] === b[1] ? 0 : a[1] > b[1] ? -1 : 1))
+      .map(([symbol]) => symbol);
+  }, [tokensData]);
 }
 
 export function useAvailableToTradeAssetSymbolsMultichain(): string[] {
   const { chainId, srcChainId } = useChainId();
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
 
-  const tokenSymbols = new Set<string>();
+  return useMemo(() => {
+    const tokenSymbols: Record<string, bigint> = {};
 
-  for (const token of Object.values(tokensData ?? {})) {
-    if (token.gmxAccountBalance !== undefined && token.gmxAccountBalance > 0n) {
-      tokenSymbols.add(token.symbol);
+    for (const token of Object.values(tokensData ?? {})) {
+      if (token.gmxAccountBalance !== undefined && token.gmxAccountBalance > 0n) {
+        const usd = convertToUsd(token.gmxAccountBalance, token.decimals, getMidPrice(token.prices))!;
+        tokenSymbols[token.symbol] = usd;
+      }
     }
-  }
 
-  return Array.from(tokenSymbols);
+    return Object.entries(tokenSymbols)
+      .sort((a, b) => (a[1] === b[1] ? 0 : a[1] > b[1] ? -1 : 1))
+      .map(([symbol]) => symbol);
+  }, [tokensData]);
 }
 
 export function useAvailableToTradeAssetSettlementChain(): {

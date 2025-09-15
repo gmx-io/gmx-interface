@@ -24,6 +24,7 @@ import {
   useGmxAccountDepositViewTokenAddress,
   useGmxAccountDepositViewTokenInputValue,
   useGmxAccountModalOpen,
+  useGmxAccountSettlementChainId,
   useGmxAccountWithdrawalViewChain,
   useGmxAccountWithdrawalViewTokenAddress,
   useGmxAccountWithdrawalViewTokenInputValue,
@@ -83,6 +84,7 @@ import { applySlippageToMinOut } from "sdk/utils/trade";
 import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import NumberInput from "components/NumberInput/NumberInput";
@@ -150,6 +152,7 @@ const useIsFirstWithdrawal = () => {
 export const WithdrawalView = () => {
   const history = useHistory();
   const { chainId } = useChainId();
+  const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const [withdrawalViewChain, setWithdrawalViewChain] = useGmxAccountWithdrawalViewChain();
   const { address: account } = useAccount();
   const [, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
@@ -193,20 +196,22 @@ export const WithdrawalView = () => {
     ? convertToUsd(inputAmount, selectedToken.decimals, selectedToken.prices.maxPrice)
     : undefined;
 
-  const options = useMemo(() => {
+  const options = useMemo((): TokenData[] => {
     if (!isSettlementChain(chainId) || !tokensData) {
       return EMPTY_ARRAY;
     }
 
-    return MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[chainId as SettlementChainId]
-      ?.map((tokenAddress) => tokensData[tokenAddress])
-      .filter((token) => token.address !== zeroAddress)
-      .sort((a, b) => {
-        const aFloat = bigintToNumber(a.gmxAccountBalance ?? 0n, a.decimals);
-        const bFloat = bigintToNumber(b.gmxAccountBalance ?? 0n, b.decimals);
+    return (
+      MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[chainId]
+        ?.map((tokenAddress) => tokensData[tokenAddress])
+        .filter((token) => token.address !== zeroAddress)
+        .sort((a, b) => {
+          const aFloat = bigintToNumber(a.gmxAccountBalance ?? 0n, a.decimals);
+          const bFloat = bigintToNumber(b.gmxAccountBalance ?? 0n, b.decimals);
 
-        return bFloat - aFloat;
-      });
+          return bFloat - aFloat;
+        }) ?? EMPTY_ARRAY
+    );
   }, [chainId, tokensData]);
 
   const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
@@ -511,7 +516,7 @@ export const WithdrawalView = () => {
     try {
       const relayParamsPayload = expressTxnParams.relayParamsPayload;
 
-      await wrapChainAction(withdrawalViewChain, async (signer) => {
+      await wrapChainAction(withdrawalViewChain, setSettlementChainId, async (signer) => {
         await simulateWithdraw({
           chainId: chainId as SettlementChainId,
           relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
@@ -728,7 +733,7 @@ export const WithdrawalView = () => {
     buttonState = {
       text: (
         <>
-          <Trans>Loading...</Trans>
+          <Trans>Loading</Trans>
           <ImSpinner2 className="ml-4 animate-spin" />
         </>
       ),
@@ -793,10 +798,12 @@ export const WithdrawalView = () => {
   );
 
   return (
-    <div className="flex grow flex-col overflow-y-auto p-16">
-      <div className="flex flex-col gap-20">
-        <div className="flex flex-col gap-4">
-          <div className="text-body-medium text-typography-secondary">Asset</div>
+    <div className="flex grow flex-col overflow-y-auto p-adaptive">
+      <div className="flex flex-col gap-[--padding-adaptive]">
+        <div className="flex flex-col gap-6">
+          <div className="text-body-medium text-typography-secondary">
+            <Trans>Asset</Trans>
+          </div>
           <DropdownSelector
             value={selectedTokenAddress}
             onChange={setSelectedTokenAddress}
@@ -815,7 +822,7 @@ export const WithdrawalView = () => {
           />
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           <div className="text-body-medium text-typography-secondary">
             <Trans>To Network</Trans>
           </div>
@@ -834,7 +841,7 @@ export const WithdrawalView = () => {
                       alt={getChainName(withdrawalViewChain)}
                       className="size-20"
                     />
-                    <span className="text-body-large">{getChainName(withdrawalViewChain)}</span>
+                    <span className="text-16 leading-base">{getChainName(withdrawalViewChain)}</span>
                   </>
                 ) : (
                   <>
@@ -856,7 +863,7 @@ export const WithdrawalView = () => {
           />
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           <div className="text-body-medium flex items-center justify-between text-typography-secondary">
             <Trans>Withdraw</Trans>
             {selectedToken !== undefined &&
@@ -864,42 +871,37 @@ export const WithdrawalView = () => {
               selectedToken !== undefined && (
                 <div>
                   <Trans>Available:</Trans>{" "}
-                  <span className="text-typography-primary">
-                    {formatBalanceAmount(
-                      selectedToken.gmxAccountBalance,
-                      selectedToken.decimals,
-                      selectedToken.symbol,
-                      {
-                        isStable: selectedToken.isStable,
-                      }
-                    )}
-                  </span>
+                  <Amount
+                    className="text-typography-primary"
+                    amount={selectedToken.gmxAccountBalance}
+                    decimals={selectedToken.decimals}
+                    isStable={selectedToken.isStable}
+                    symbol={selectedToken.symbol}
+                  />
                 </div>
               )}
           </div>
-          <div className="text-body-large relative">
+          <div className="relative text-16 leading-base">
             <NumberInput
               value={inputValue}
               onValueChange={(e) => setInputValue(e.target.value)}
-              className="text-body-large w-full rounded-8 border border-slate-800  bg-slate-800 py-12 pl-14 pr-72 focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
-              placeholder={`0.0 ${selectedToken?.symbol || ""}`}
+              className="w-full rounded-8 border border-slate-800 bg-slate-800 py-13 pl-14 pr-96 text-16 leading-base
+                         focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
+              placeholder="0.00"
             />
-            {inputValue !== "" && inputValue !== undefined && (
-              <div className="pointer-events-none absolute left-14 top-1/2 flex max-w-[calc(100%-72px)] -translate-y-1/2 overflow-hidden">
-                <div className="invisible whitespace-pre font-[RelativeNumber]">{inputValue} </div>
-                <div className="text-typography-secondary">{selectedToken?.symbol || ""}</div>
-              </div>
-            )}
-            <button
-              className="text-body-small absolute right-14 top-1/2 -translate-y-1/2 rounded-full bg-slate-600 px-8 py-2 font-medium disabled:opacity-50 hover:not-disabled:bg-[#484e92] focus-visible:not-disabled:bg-[#484e92]
-                         active:not-disabled:bg-[#505699]"
-              disabled={isMaxButtonDisabled}
-              onClick={handleMaxButtonClick}
-            >
-              <Trans>Max</Trans>
-            </button>
+            <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
+              <span className="text-typography-secondary">{selectedToken?.symbol}</span>
+              <button
+                className="text-body-small pointer-events-auto rounded-full bg-slate-600 px-8 py-2 font-medium disabled:opacity-50
+                         hover:not-disabled:bg-slate-500 focus-visible:not-disabled:bg-slate-500 active:not-disabled:bg-slate-500/70"
+                disabled={isMaxButtonDisabled}
+                onClick={handleMaxButtonClick}
+              >
+                <Trans>Max</Trans>
+              </button>
+            </div>
           </div>
-          <div className="text-body-medium text-typography-secondary">{formatUsd(inputAmountUsd ?? 0n)}</div>
+          <div className="text-body-medium text-typography-secondary numbers">{formatUsd(inputAmountUsd ?? 0n)}</div>
         </div>
       </div>
 
@@ -907,7 +909,7 @@ export const WithdrawalView = () => {
         <AlertInfoCard type="warning" className="my-4">
           <Trans>
             The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than{" "}
-            {upperLimitFormatted}.
+            <span className="numbers">{upperLimitFormatted}</span>.
           </Trans>
         </AlertInfoCard>
       )}
@@ -915,7 +917,7 @@ export const WithdrawalView = () => {
         <AlertInfoCard type="warning" className="my-4">
           <Trans>
             The amount you are trying to withdraw is below the limit. Please try an amount larger than{" "}
-            {lowerLimitFormatted}.
+            <span className="numbers">{lowerLimitFormatted}</span>.
           </Trans>
         </AlertInfoCard>
       )}
@@ -924,8 +926,8 @@ export const WithdrawalView = () => {
         <AlertInfoCard type="info" className="my-4">
           <Trans>
             You're withdrawing {selectedToken?.symbol}, your gas token. Gas is required for this withdrawal, so please
-            keep at least {formatUsd(gasTokenBuffer, { displayDecimals: 0 })} in {selectedToken?.symbol} or switch your
-            gas token in settings.
+            keep at least <span className="numbers">{formatUsd(gasTokenBuffer, { displayDecimals: 0 })}</span> in{" "}
+            {selectedToken?.symbol} or switch your gas token in settings.
           </Trans>
         </AlertInfoCard>
       )}
@@ -936,23 +938,19 @@ export const WithdrawalView = () => {
           <AlertInfoCard type="error" className="my-4">
             <Trans>
               Withdrawing requires{" "}
-              {formatBalanceAmount(
-                errors.isOutOfTokenError.requiredAmount,
-                isOutOfTokenErrorToken?.decimals,
-                isOutOfTokenErrorToken?.symbol,
-                {
-                  isStable: isOutOfTokenErrorToken?.isStable,
-                }
-              )}{" "}
+              <Amount
+                amount={errors.isOutOfTokenError.requiredAmount ?? 0n}
+                decimals={isOutOfTokenErrorToken.decimals}
+                isStable={isOutOfTokenErrorToken.isStable}
+                symbol={isOutOfTokenErrorToken.symbol}
+              />{" "}
               while you have{" "}
-              {formatBalanceAmount(
-                isOutOfTokenErrorToken.gmxAccountBalance ?? 0n,
-                isOutOfTokenErrorToken?.decimals,
-                isOutOfTokenErrorToken?.symbol,
-                {
-                  isStable: isOutOfTokenErrorToken?.isStable,
-                }
-              )}
+              <Amount
+                amount={isOutOfTokenErrorToken.gmxAccountBalance ?? 0n}
+                decimals={isOutOfTokenErrorToken.decimals}
+                isStable={isOutOfTokenErrorToken.isStable}
+                symbol={isOutOfTokenErrorToken.symbol}
+              />
               . Please{" "}
               <Button
                 variant="link"
@@ -992,43 +990,57 @@ export const WithdrawalView = () => {
 
       <div className="h-32 shrink-0 grow" />
 
-      <div className="mb-16 flex flex-col gap-10">
-        <SyntheticsInfoRow
-          label={<Trans>Network Fee</Trans>}
-          value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
-        />
-        <SyntheticsInfoRow
-          label={<Trans>Withdraw Fee</Trans>}
-          value={protocolFeeUsd !== undefined ? formatUsd(protocolFeeUsd) : "..."}
-        />
-        <SyntheticsInfoRow
-          label={<Trans>GMX Balance</Trans>}
-          value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
-        />
-        <SyntheticsInfoRow
-          label={<Trans>Asset Balance</Trans>}
-          value={
-            <ValueTransition
-              from={
-                selectedToken !== undefined && selectedToken.gmxAccountBalance !== undefined
-                  ? formatBalanceAmount(selectedToken.gmxAccountBalance, selectedToken.decimals, selectedToken.symbol, {
-                      isStable: selectedToken.isStable,
-                    })
-                  : undefined
-              }
-              to={
-                nextTokenGmxAccountBalance !== undefined && selectedToken !== undefined
-                  ? formatBalanceAmount(nextTokenGmxAccountBalance, selectedToken.decimals, selectedToken.symbol, {
-                      isStable: selectedToken.isStable,
-                    })
-                  : undefined
-              }
-            />
-          }
-        />
-      </div>
+      {selectedTokenAddress && (
+        <div className="mb-16 flex flex-col gap-10">
+          <SyntheticsInfoRow
+            label={<Trans>Network Fee</Trans>}
+            valueClassName="numbers"
+            value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
+          />
+          <SyntheticsInfoRow
+            label={<Trans>Withdraw Fee</Trans>}
+            valueClassName="numbers"
+            value={protocolFeeUsd !== undefined ? formatUsd(protocolFeeUsd) : "..."}
+          />
+          <SyntheticsInfoRow
+            label={<Trans>GMX Balance</Trans>}
+            value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
+          />
+          <SyntheticsInfoRow
+            label={<Trans>Asset Balance</Trans>}
+            value={
+              <ValueTransition
+                from={
+                  selectedToken !== undefined && selectedToken.gmxAccountBalance !== undefined
+                    ? formatBalanceAmount(
+                        selectedToken.gmxAccountBalance,
+                        selectedToken.decimals,
+                        selectedToken.symbol,
+                        {
+                          isStable: selectedToken.isStable,
+                        }
+                      )
+                    : undefined
+                }
+                to={
+                  nextTokenGmxAccountBalance !== undefined && selectedToken !== undefined
+                    ? formatBalanceAmount(nextTokenGmxAccountBalance, selectedToken.decimals, selectedToken.symbol, {
+                        isStable: selectedToken.isStable,
+                      })
+                    : undefined
+                }
+              />
+            }
+          />
+        </div>
+      )}
 
-      <Button variant="primary-action" className="w-full" onClick={buttonState.onClick} disabled={buttonState.disabled}>
+      <Button
+        variant="primary-action"
+        className="w-full shrink-0"
+        onClick={buttonState.onClick}
+        disabled={buttonState.disabled}
+      >
         {buttonState.text}
       </Button>
     </div>
@@ -1061,12 +1073,14 @@ function WithdrawAssetItem({ option }: { option: TokenData }) {
         </span>
       </div>
       <div className={cx(isZero ? "text-typography-secondary" : "text-typography-primary")}>
-        {option.gmxAccountBalance !== undefined
-          ? formatBalanceAmount(option.gmxAccountBalance, option.decimals, undefined, {
-              isStable: option.isStable,
-              showZero: true,
-            })
-          : "-"}
+        <Amount
+          className="text-typography-primary"
+          amount={option.gmxAccountBalance}
+          decimals={option.decimals}
+          isStable={option.isStable}
+          showZero
+          emptyValue="-"
+        />
       </div>
     </div>
   );

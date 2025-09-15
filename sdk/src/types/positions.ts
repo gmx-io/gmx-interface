@@ -65,6 +65,8 @@ export type PositionInfo = Position & {
   pnlAfterFeesPercentage: bigint;
   netPriceImapctDeltaUsd: bigint;
   priceImpactDiffUsd: bigint;
+  pendingImpactUsd: bigint;
+  closePriceImpactDeltaUsd: bigint;
   leverage: bigint | undefined;
   leverageWithPnl: bigint | undefined;
   netValue: bigint;

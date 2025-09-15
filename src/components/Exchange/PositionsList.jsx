@@ -296,7 +296,10 @@ export default function PositionsList(props) {
                         <div className="label">
                           <Trans>Size</Trans>
                         </div>
-                        <div className="numbers">${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
+                        <div className="numbers">
+                          ${"\u200a"}
+                          {formatAmount(position.size, USD_DECIMALS, 2, true)}
+                        </div>
                       </div>
                       <div className="App-card-row">
                         <div className="label">
@@ -306,7 +309,8 @@ export default function PositionsList(props) {
                           <Tooltip
                             handle={
                               <span className="numbers">
-                                ${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
+                                ${"\u200a"}
+                                {formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
                               </span>
                             }
                             position="bottom-end"
@@ -362,7 +366,8 @@ export default function PositionsList(props) {
                           <Trans>Entry Price</Trans>
                         </div>
                         <div className="numbers">
-                          ${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
+                          ${"\u200a"}
+                          {formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
                         </div>
                       </div>
                       <div className="App-card-row">
@@ -370,7 +375,8 @@ export default function PositionsList(props) {
                           <Trans>Mark Price</Trans>
                         </div>
                         <div className="numbers">
-                          ${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
+                          ${"\u200a"}
+                          {formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
                         </div>
                       </div>
                       <div className="App-card-row">
@@ -378,7 +384,8 @@ export default function PositionsList(props) {
                           <Trans>Liq. Price</Trans>
                         </div>
                         <div className="numbers">
-                          ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
+                          ${"\u200a"}
+                          {formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                         </div>
                       </div>
                     </div>
@@ -395,7 +402,10 @@ export default function PositionsList(props) {
                               {order.triggerAboveThreshold ? ">" : "<"}{" "}
                               <span className="numbers">{formatAmount(order.triggerPrice, 30, 2, true)}</span>:
                               {order.type === INCREASE ? " +" : " -"}
-                              <span className="numbers">${formatAmount(order.sizeDelta, 30, 2, true)}</span>
+                              <span className="numbers">
+                                ${"\u200a"}
+                                {formatAmount(order.sizeDelta, 30, 2, true)}
+                              </span>
                             </>
                           );
                           if (order.error) {
@@ -566,7 +576,10 @@ export default function PositionsList(props) {
                   </div>
                 </td>
                 <td>
-                  <div className="numbers">${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
+                  <div className="numbers">
+                    ${"\u200a"}
+                    {formatAmount(position.size, USD_DECIMALS, 2, true)}
+                  </div>
                   {positionOrders.length > 0 && (
                     <div
                       className="Position-list-active-orders"
@@ -635,7 +648,8 @@ export default function PositionsList(props) {
                     <Tooltip
                       handle={
                         <span className="numbers">
-                          ${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
+                          ${"\u200a"}
+                          {formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
                         </span>
                       }
                       position="bottom-start"
@@ -684,12 +698,17 @@ export default function PositionsList(props) {
                   </div>
                 </td>
                 <td className="numbers">
-                  ${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
+                  ${"\u200a"}
+                  {formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
                 </td>
                 <td className="numbers">
-                  ${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
+                  ${"\u200a"}
+                  {formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
                 </td>
-                <td className="numbers">${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}</td>
+                <td className="numbers">
+                  ${"\u200a"}
+                  {formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
+                </td>
 
                 {!hideActions && (
                   <td>

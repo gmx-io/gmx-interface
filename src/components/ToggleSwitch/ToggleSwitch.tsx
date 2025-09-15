@@ -2,7 +2,7 @@ import cx from "classnames";
 import { useCallback, type ReactNode } from "react";
 
 type Props = {
-  isChecked: boolean;
+  isChecked: boolean | undefined;
   setIsChecked: (value: boolean) => void;
   className?: string;
   textClassName?: string;
