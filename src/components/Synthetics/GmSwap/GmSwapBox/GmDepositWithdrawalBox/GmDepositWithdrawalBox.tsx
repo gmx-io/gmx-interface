@@ -811,7 +811,13 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                       className={isPair ? "rounded-t-0" : undefined}
                     >
                       <div className="selected-token">
-                        <TokenWithIcon symbol={secondToken?.symbol} displaySize={20} />
+                        <TokenWithIcon
+symbol={secondToken?.symbol}
+displaySize={20}
+                          chainIdBadge={
+                            paySource === "gmxAccount" ? 0 : paySource === "sourceChain" ? srcChainId : undefined
+                          }
+                        />
                       </div>
                     </BuyInputSection>
                   </div>
