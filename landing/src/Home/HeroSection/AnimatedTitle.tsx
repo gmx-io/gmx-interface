@@ -26,7 +26,7 @@ export function AnimatedTitle() {
       t`80+ crypto tokens`,
       t`multiple asset classes`,
       t`deep liquid markets`,
-      t`from 6+ blockchains`,
+      t`from 5+ blockchains`,
     ];
   }, []);
   const intervalRef = useRef<number | null>(null);
