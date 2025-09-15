@@ -7,4 +7,7 @@ export type TokenInputState = {
   isMarketToken: boolean;
 };
 
-export type GmOrGlvPaySource = "settlementChain" | "gmxAccount" | "sourceChain";
+/**
+ * GM or GLV pay source
+ */
+export type GmPaySource = "settlementChain" | "gmxAccount" | "sourceChain";

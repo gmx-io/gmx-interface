@@ -22,7 +22,7 @@ import { useDepositWithdrawalTransactions } from "./useDepositWithdrawalTransact
 import { useTokensToApprove } from "./useTokensToApprove";
 import { getGmSwapBoxApproveTokenSymbol } from "../getGmSwapBoxApproveToken";
 import { Operation } from "../types";
-import type { GmOrGlvPaySource } from "./types";
+import type { GmPaySource } from "./types";
 
 interface Props {
   amounts: ReturnType<typeof useDepositWithdrawalAmounts>;
@@ -49,7 +49,7 @@ interface Props {
   marketsInfoData?: MarketsInfoData;
   glvAndMarketsInfoData: GlvAndGmMarketsInfoData;
   selectedMarketInfoForGlv?: MarketInfo;
-  paySource: GmOrGlvPaySource;
+  paySource: GmPaySource;
 }
 
 const processingTextMap = {

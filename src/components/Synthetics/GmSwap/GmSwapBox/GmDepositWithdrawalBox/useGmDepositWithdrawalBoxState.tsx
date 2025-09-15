@@ -8,13 +8,13 @@ import { useSafeState } from "lib/useSafeState";
 
 import { Mode, Operation } from "../types";
 import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
-import type { GmOrGlvPaySource } from "./types";
+import type { GmPaySource } from "./types";
 
-function isValidPaySource(paySource: string | undefined): paySource is GmOrGlvPaySource {
+function isValidPaySource(paySource: string | undefined): paySource is GmPaySource {
   return (
-    (paySource as GmOrGlvPaySource) === "settlementChain" ||
-    (paySource as GmOrGlvPaySource) === "sourceChain" ||
-    (paySource as GmOrGlvPaySource) === "gmxAccount"
+    (paySource as GmPaySource) === "settlementChain" ||
+    (paySource as GmPaySource) === "sourceChain" ||
+    (paySource as GmPaySource) === "gmxAccount"
   );
 }
 
@@ -26,7 +26,7 @@ export function useGmDepositWithdrawalBoxState(operation: Operation, mode: Mode,
 
   const [focusedInput, setFocusedInput] = useState<"longCollateral" | "shortCollateral" | "market">("market");
 
-  let [rawPaySource, setPaySource] = useLocalStorageSerializeKey<GmOrGlvPaySource>(
+  let [rawPaySource, setPaySource] = useLocalStorageSerializeKey<GmPaySource>(
     [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, "paySource"],
     "settlementChain"
   );

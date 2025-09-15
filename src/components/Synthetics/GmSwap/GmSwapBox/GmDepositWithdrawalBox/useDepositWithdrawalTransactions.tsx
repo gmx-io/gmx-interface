@@ -62,7 +62,7 @@ import { applySlippageToMinOut } from "sdk/utils/trade";
 import { IRelayUtils } from "typechain-types/MultichainGmRouter";
 
 import { Operation } from "../types";
-import type { GmOrGlvPaySource } from "./types";
+import type { GmPaySource } from "./types";
 
 interface Props {
   marketInfo?: MarketInfo;
@@ -88,7 +88,7 @@ interface Props {
   selectedMarketInfoForGlv?: MarketInfo;
   isMarketTokenDeposit?: boolean;
   isFirstBuy: boolean;
-  paySource: GmOrGlvPaySource;
+  paySource: GmPaySource;
 }
 
 function getTransferRequests({
@@ -147,7 +147,7 @@ function useMultichainDepositExpressTxnParams({
   glvParams,
 }: {
   transferRequests: IRelayUtils.TransferRequestsStruct;
-  paySource: GmOrGlvPaySource;
+  paySource: GmPaySource;
   gmParams: CreateDepositParamsStruct | undefined;
   glvParams: CreateGlvDepositParamsStruct | undefined;
 }) {
