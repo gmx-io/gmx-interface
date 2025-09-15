@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/macro";
 
-import { Modal } from "../../components/Modal/Modal";
+import { Modal, ModalHeader } from "../../components/Modal/Modal";
+import { ModalBody } from "../../components/Modal/Modal";
 
 type SolanaRedirectModalProps = {
   onClose: () => void;
@@ -10,11 +11,11 @@ type SolanaRedirectModalProps = {
 export function SolanaRedirectModal({ onClose, onConfirm }: SolanaRedirectModalProps) {
   return (
     <Modal onClose={onClose}>
-      <Modal.Header onClose={onClose}>
+      <ModalHeader onClose={onClose}>
         <Trans>GMX Solana</Trans>
-      </Modal.Header>
+      </ModalHeader>
 
-      <Modal.Body>
+      <ModalBody>
         <p>
           <Trans>
             You're about to navigate to GMX Solana, which is operated by a separate team, so the experience may vary
@@ -28,7 +29,7 @@ export function SolanaRedirectModal({ onClose, onConfirm }: SolanaRedirectModalP
         >
           <Trans>Open GMX Solana</Trans>
         </button>
-      </Modal.Body>
+      </ModalBody>
     </Modal>
   );
 }

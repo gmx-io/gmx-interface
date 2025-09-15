@@ -1,21 +1,21 @@
 import { Trans } from "@lingui/macro";
 
-import AndrewAttachment from "img/social/attachment_andrew.png";
-import ChainLinkAttachment from "img/social/attachment_chainlink_1.png";
+import andrewAttachment from "img/social/attachment_andrew.png";
+import сhainLinkAttachment from "img/social/attachment_chainlink_1.png";
 import GMXAttachment from "img/social/attachment_gmx.png";
-import LayerZeroAttachment from "img/social/attachment_layerzero.png";
-import LuckyAttachment from "img/social/attachment_lucky.png";
-import MoonboyAttachment from "img/social/attachment_moonboy.png";
-import TokenTerminalAttachment from "img/social/attachment_tokenterminal.png";
-import TradaoAttachment from "img/social/attachment_tradao.png";
-import AndrewAvatar from "img/social/avatar_andrew.png";
-import ChainLinkAvatar from "img/social/avatar_chainlink.png";
+import layerZeroAttachment from "img/social/attachment_layerzero.png";
+import luckyAttachment from "img/social/attachment_lucky.png";
+import moonboyAttachment from "img/social/attachment_moonboy.png";
+import tokenTerminalAttachment from "img/social/attachment_tokenterminal.png";
+import tradaoAttachment from "img/social/attachment_tradao.png";
+import andrewAvatar from "img/social/avatar_andrew.png";
+import chainLinkAvatar from "img/social/avatar_chainlink.png";
 import GMXAvatar from "img/social/avatar_gmx.png";
-import LayerZeroAvatar from "img/social/avatar_layerzero.png";
-import LuckyAvatar from "img/social/avatar_lucky.png";
-import MoonboyAvatar from "img/social/avatar_moonboy.png";
-import TokenTerminalAvatar from "img/social/avatar_tokenterminal.png";
-import TradaoAvatar from "img/social/avatar_tradao.png";
+import layerZeroAvatar from "img/social/avatar_layerzero.png";
+import luckyAvatar from "img/social/avatar_lucky.png";
+import moonboyAvatar from "img/social/avatar_moonboy.png";
+import tokenTerminalAvatar from "img/social/avatar_tokenterminal.png";
+import tradaoAvatar from "img/social/avatar_tradao.png";
 
 import { SocialCard } from "./SocialCard";
 
@@ -36,12 +36,12 @@ function Slides() {
     <>
       <SocialCard
         author="Andrew Kang"
-        avatarUrl={AndrewAvatar}
+        avatarUrl={andrewAvatar}
         username="Rewkang"
         postLink="https://x.com/Rewkang/status/1579864052834381825"
         date="5:58 PM · Oct 11, 2022"
       >
-        <div className="flex-grow-1 flex h-full flex-col justify-between">
+        <div className="flex h-full grow flex-col justify-between">
           <Trans>
             <p>
               Tried <span className="text-blue-100">@GMX_IO</span> for the first time.{" "}
@@ -50,16 +50,16 @@ function Slides() {
             <p> Low size caps, but fun to do some degen gambling with </p>
           </Trans>
         </div>
-        <img src={AndrewAttachment} alt="Andrew Attachment" className="radius-8 w-full object-cover" />
+        <img src={andrewAttachment} alt="Andrew Attachment" className="radius-8 w-full object-cover" />
       </SocialCard>
       <SocialCard
         author="Lucky"
-        avatarUrl={LuckyAvatar}
+        avatarUrl={luckyAvatar}
         username="LLuciano_BTC"
         postLink="https://x.com/LLuciano_BTC/status/1729126687915364713"
         date="2:15 PM · Nov 27, 2023"
       >
-        <div className="flex-grow-1 flex h-full flex-col justify-between">
+        <div className="flex h-full grow flex-col justify-between">
           <Trans>
             <p>
               <span className="text-blue-100">$GMX</span> has rightfully earned its title as the perpetual trading
@@ -73,16 +73,16 @@ function Slides() {
             </p>
           </Trans>
         </div>
-        <img src={LuckyAttachment} alt="Lucky Attachment" className="radius-8 h-[70px] w-full object-cover sm:h-auto" />
+        <img src={luckyAttachment} alt="Lucky Attachment" className="radius-8 h-[70px] w-full object-cover sm:h-auto" />
       </SocialCard>
       <SocialCard
         author="Chainlink"
-        avatarUrl={ChainLinkAvatar}
+        avatarUrl={chainLinkAvatar}
         username="chainlink"
         postLink="https://x.com/chainlink/status/1826716413249421376"
         date="10:21 PM · Aug 22, 2024"
       >
-        <div className="flex-grow-1 flex h-full flex-col justify-between">
+        <div className="flex h-full grow flex-col justify-between">
           <Trans>
             <p>
               ⬡ Chainlink Data Story ⬡ <br />
@@ -96,7 +96,7 @@ function Slides() {
             </p>
           </Trans>
         </div>
-        <img src={ChainLinkAttachment} alt="ChainLink Attachment" className="radius-8 w-full object-cover" />
+        <img src={сhainLinkAttachment} alt="ChainLink Attachment" className="radius-8 w-full object-cover" />
       </SocialCard>
       <SocialCard
         author="GMX"
@@ -105,7 +105,7 @@ function Slides() {
         postLink="https://x.com/GMX_IO/status/1911726474442244304"
         date="5:49 PM · Apr 15, 2025"
       >
-        <div className="flex-grow-1 flex h-full flex-col justify-between">
+        <div className="flex h-full grow flex-col justify-between">
           <Trans>
             <p>🔷 24h Volume: $1.01 Billion.</p>
             <p>
@@ -118,12 +118,12 @@ function Slides() {
       </SocialCard>
       <SocialCard
         author="LayerZero"
-        avatarUrl={LayerZeroAvatar}
+        avatarUrl={layerZeroAvatar}
         username="LayerZero_Core"
         postLink="https://x.com/LayerZero_Labs/status/1911726474442244304"
         date="12:21 PM · Apr 14, 2025"
       >
-        <div className="flex-grow-1 flex h-full flex-col justify-between">
+        <div className="flex h-full grow flex-col justify-between">
           <Trans>
             <p>
               With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion!
@@ -140,16 +140,16 @@ function Slides() {
             </ul>
           </Trans>
         </div>
-        <img src={LayerZeroAttachment} alt="LayerZero Attachment" className="radius-8 w-full object-cover" />
+        <img src={layerZeroAttachment} alt="LayerZero Attachment" className="radius-8 w-full object-cover" />
       </SocialCard>
       <SocialCard
         author="Token Terminal"
-        avatarUrl={TokenTerminalAvatar}
+        avatarUrl={tokenTerminalAvatar}
         username="tokenterminal"
         postLink="https://x.com/tokenterminal/status/1905625374475583606"
         date="3:17 PM · Mar 28, 2025"
       >
-        <div className="flex-grow-1 flex h-full flex-col justify-between">
+        <div className="flex h-full grow flex-col justify-between">
           <Trans>
             <p>
               <span className="text-blue-100">@GMX_IO</span> enters into a Data Partnership with Token TerminalGMX is a
@@ -163,16 +163,16 @@ function Slides() {
             </p>
           </Trans>
         </div>
-        <img src={TokenTerminalAttachment} alt="Token Terminal Attachment" className="radius-8 w-full object-cover" />
+        <img src={tokenTerminalAttachment} alt="Token Terminal Attachment" className="radius-8 w-full object-cover" />
       </SocialCard>
       <SocialCard
         author="Tradao"
-        avatarUrl={TradaoAvatar}
+        avatarUrl={tradaoAvatar}
         username="Tradaoperp"
         postLink="https://x.com/Tradaoperp/status/1747957871969702061"
         date="1:23 PM · Jan 18, 2024"
       >
-        <div className="flex-grow-1 flex h-full flex-col justify-between">
+        <div className="flex h-full grow flex-col justify-between">
           <Trans>
             <p>
               <span className="text-blue-100">#GMX V2</span>'s OI looks great
@@ -183,16 +183,16 @@ function Slides() {
             </p>
           </Trans>
         </div>
-        <img src={TradaoAttachment} alt="Tradao Attachment" className="radius-8 w-full object-cover" />
+        <img src={tradaoAttachment} alt="Tradao Attachment" className="radius-8 w-full object-cover" />
       </SocialCard>
       <SocialCard
         author="PressieMoonBoy"
-        avatarUrl={MoonboyAvatar}
+        avatarUrl={moonboyAvatar}
         username="PressieMoonBoy"
         postLink="https://x.com/PressieMoonBoy/status/1530543648206626818"
         date="3:36 PM · May 28, 2022"
       >
-        <div className="flex-grow-1 flex h-full flex-col justify-between">
+        <div className="flex h-full grow flex-col justify-between">
           <Trans>
             <p>
               Have to keep an eye on <span className="text-blue-100">@GMX_IO</span> here. While all of DeFi is in
@@ -202,7 +202,7 @@ function Slides() {
             </p>
           </Trans>
         </div>
-        <img src={MoonboyAttachment} alt="Moonboy Attachment" className="radius-8 w-full object-cover" />
+        <img src={moonboyAttachment} alt="Moonboy Attachment" className="radius-8 w-full object-cover" />
       </SocialCard>
     </>
   );

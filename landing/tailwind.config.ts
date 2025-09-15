@@ -35,7 +35,7 @@ const colors = {
   },
   surface: {
     primary: "#121421",
-  }
+  },
 };
 
 /**
@@ -89,7 +89,7 @@ function customUtilsPlugin({ addUtilities, matchUtilities, matchVariant, addVari
       border: "0",
     },
   });
-  addVariant('filled', '&:not(:placeholder-shown)')
+  addVariant("filled", "&:not(:placeholder-shown)");
 }
 
 /**
@@ -128,12 +128,14 @@ function fontComponentsPlugin({ addComponents }) {
       "@apply bg-blue-400 font-medium text-white transition-colors duration-180": {},
       "&:hover": {
         "@media (hover: hover)": {
-          background: "linear-gradient(0deg, rgba(9, 10, 21, 0.1) 0%, rgba(9, 10, 21, 0.1) 100%), var(--color-blue-400)",
+          background:
+            "linear-gradient(0deg, rgba(9, 10, 21, 0.1) 0%, rgba(9, 10, 21, 0.1) 100%), var(--color-blue-400)",
         },
       },
       "&:active": {
         "@media (hover: hover)": {
-          background: "linear-gradient(0deg, rgba(9, 10, 21, 0.2) 0%, rgba(9, 10, 21, 0.2) 100%), var(--color-blue-400)",
+          background:
+            "linear-gradient(0deg, rgba(9, 10, 21, 0.2) 0%, rgba(9, 10, 21, 0.2) 100%), var(--color-blue-400)",
         },
       },
     },
@@ -141,17 +143,17 @@ function fontComponentsPlugin({ addComponents }) {
 }
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    resolve(__dirname, "./index.html"),
-    resolve(__dirname, "./src/**/*.{js,jsx,ts,tsx}"),
-  ],
+export default {
+  content: [resolve(__dirname, "./index.html"), resolve(__dirname, "./src/**/*.{js,jsx,ts,tsx}")],
   theme: {
     // @see https://tailwindcss.com/docs/customizing-spacing
     spacing: fromPairs(range(0, 96 + 1).map((spacing) => [spacing, `${spacing}px`])),
     borderRadius: merge(fromPairs(range(0, 96 + 1).map((borderRadius) => [borderRadius, `${borderRadius}px`])), {
       full: "9999px",
     }),
+    borderWidth: {
+      "1/2": "0.5px",
+    },
     fontSize: {
       12: "1.2rem",
       14: "1.4rem",

@@ -13,7 +13,7 @@ import { RoadmapSection } from "./RoadmapSection/RoadmapSection";
 import { SocialSection } from "./SocialSection/SocialSection";
 import { SponsorsSection } from "./SponsorsSection/SponsorsSection";
 
-export default function Home(_) {
+export default function Home() {
   useEffect(() => {
     userAnalytics.pushEvent<LandingPageViewEvent>(
       {

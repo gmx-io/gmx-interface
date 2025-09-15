@@ -1,12 +1,12 @@
 import { Trans } from "@lingui/macro";
 
 import { LaunchButtonContainer } from "./LaunchButtonContainer";
-import { REDIRECT_CHAIN_IDS, useGoToTrade } from "../hooks/useGoToTrade";
+import { RedirectChainIds, useGoToTrade } from "../hooks/useGoToTrade";
 
 export function LaunchSection() {
   const goToTradeArbitrum = useGoToTrade({
     buttonPosition: "LaunchSection",
-    chainId: REDIRECT_CHAIN_IDS.Arbitum,
+    chainId: RedirectChainIds.Arbitum,
   });
   return (
     <section className="flex w-full items-center justify-center bg-white px-16 py-80 text-slate-900 sm:px-40 sm:py-[120px]">
@@ -29,11 +29,11 @@ export function LaunchSection() {
           </button>
         </div>
         <div className="grid w-full grid-flow-row grid-cols-1 gap-16 md:grid-cols-3 lg:w-auto lg:grid-cols-2">
-          <LaunchButtonContainer chainId={REDIRECT_CHAIN_IDS.Arbitum} />
-          <LaunchButtonContainer chainId={REDIRECT_CHAIN_IDS.Base} />
-          <LaunchButtonContainer chainId={REDIRECT_CHAIN_IDS.Solana} />
-          <LaunchButtonContainer chainId={REDIRECT_CHAIN_IDS.Avalanche} />
-          <LaunchButtonContainer chainId={REDIRECT_CHAIN_IDS.Botanix} />
+          <LaunchButtonContainer chainId={RedirectChainIds.Arbitum} />
+          <LaunchButtonContainer chainId={RedirectChainIds.Base} />
+          <LaunchButtonContainer chainId={RedirectChainIds.Solana} />
+          <LaunchButtonContainer chainId={RedirectChainIds.Avalanche} />
+          <LaunchButtonContainer chainId={RedirectChainIds.Botanix} />
         </div>
       </div>
     </section>

@@ -48,7 +48,7 @@ export function Modal({ onClose, children, className }: ModalProps) {
     <div className="fixed inset-0 z-50 flex h-screen w-screen bg-slate-900/50 text-white" onClick={handleBackdropClick}>
       <div
         className={cx(
-          "bg-surface-primary m-auto flex w-[351px] flex-col rounded-8 border-[0.5px] border-stroke-primary sm:w-[420px]",
+          "bg-surface-primary border-stroke-primary m-auto flex w-[351px] flex-col rounded-8 border-1/2 sm:w-[420px]",
           className
         )}
       >
@@ -59,9 +59,9 @@ export function Modal({ onClose, children, className }: ModalProps) {
   );
 }
 
-Modal.Header = function ModalHeader({ children, onClose, showCloseButton = true, className }: ModalHeaderProps) {
+export function ModalHeader({ children, onClose, showCloseButton = true, className }: ModalHeaderProps) {
   return (
-    <div className={cx("flex justify-between gap-20 border-b-[0.5px] border-stroke-primary p-20 pt-24", className)}>
+    <div className={cx("border-stroke-primary flex justify-between gap-20 border-b-1/2 p-20 pt-24", className)}>
       <h3 className="text-16 font-medium leading-[125%] tracking-[-0.192px]">{children}</h3>
       {showCloseButton && onClose && (
         <button className="mr-4" onClick={onClose}>
@@ -72,20 +72,18 @@ Modal.Header = function ModalHeader({ children, onClose, showCloseButton = true,
       )}
     </div>
   );
-};
+}
 
-Modal.Body = function ModalBody({ children, className }: ModalBodyProps) {
+export function ModalBody({ children, className }: ModalBodyProps) {
   return (
     <div className={cx("tracking-body flex flex-col gap-16 p-20 text-14 font-normal leading-[130%]", className)}>
       {children}
     </div>
   );
-};
+}
 
-Modal.Bottom = function ModalBottom({ children, className }: ModalBottomProps) {
+export function ModalBottom({ children, className }: ModalBottomProps) {
   return (
-    <div className={cx("flex items-center gap-4 border-t-[0.5px] border-stroke-primary pt-12", className)}>
-      {children}
-    </div>
+    <div className={cx("border-stroke-primary flex items-center gap-4 border-t-1/2 pt-12", className)}>{children}</div>
   );
-};
+}

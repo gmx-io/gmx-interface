@@ -16,7 +16,7 @@ export function FaqItem({ title, children }: Props) {
   };
 
   return (
-    <div className="flex flex-col border-b-[0.5px] border-slate-600 py-28">
+    <div className="flex flex-col border-b-1/2 border-slate-600 py-28">
       <div
         onClick={handleClick}
         className="duration-180 mb-12 flex cursor-pointer items-center justify-between gap-[44px] transition-colors hover:text-blue-400"
@@ -32,7 +32,7 @@ export function FaqItem({ title, children }: Props) {
       </div>
       <div
         className={cx(
-          "leading-body-md text-slate-400 duration-180 flex flex-col gap-16 overflow-hidden text-16 -tracking-[0.512px] transition-all ease-in-out",
+          "leading-body-md duration-180 flex flex-col gap-16 overflow-hidden text-16 -tracking-[0.512px] text-slate-400 transition-all ease-in-out",
           {
             "max-h-0 opacity-0": !isOpen,
             "max-h-[1000px] opacity-100": isOpen,

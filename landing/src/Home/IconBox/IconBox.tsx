@@ -1,9 +1,5 @@
 type Props = {
-  iconComponent: React.FunctionComponent<
-    React.SVGProps<SVGSVGElement> & {
-      title?: string;
-    }
-  >;
+  iconComponent: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
 };
 
 export function IconBox({ iconComponent: IconComponent }: Props) {

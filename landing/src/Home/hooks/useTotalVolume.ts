@@ -5,22 +5,22 @@ import { getServerUrl } from "config/backend";
 import { getTotalVolumeSum } from "lib/legacy";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { ARBITRUM, AVALANCHE } from "sdk/configs/chainIds";
-
+const query = {
+  query: gql`
+    query VolumeInfos {
+      volumeInfos(where: { period: "total" }) {
+        volumeUsd
+      }
+    }
+  `,
+};
 export function useTotalVolume() {
   const clientArbitum = getSyntheticsGraphClient(ARBITRUM)!;
   const clientAvalanche = getSyntheticsGraphClient(AVALANCHE)!;
   return useSWR(["volumeInfos"], async () => {
     const totalArbitumVolumeReq = fetchTotalVolumeByChainId(ARBITRUM);
     const totalAvalancheVolumeReq = fetchTotalVolumeByChainId(AVALANCHE);
-    const query = {
-      query: gql`
-        query VolumeInfos {
-          volumeInfos(where: { period: "total" }) {
-            volumeUsd
-          }
-        }
-      `,
-    };
+
     const syntheticsArbitumReq = clientArbitum.query(query);
     const syntheticsAvalancheReq = clientAvalanche.query(query);
     const [totalArbitumVolumeRes, totalAvalancheVolumeRes, syntheticsArbitumRes, syntheticsAvalancheRes] =

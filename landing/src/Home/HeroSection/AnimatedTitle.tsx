@@ -60,8 +60,7 @@ export function AnimatedTitle() {
   const currentText = titles[currentIndex];
   return (
     <div className="relative">
-      {/* I have no idea if there is a better way to do this */}
-      <span className="opacity-0">&nbsp;{currentText}</span>
+      <span className="invisible">&nbsp;{currentText}</span>
       <AnimatePresence mode="popLayout">
         <motion.div
           className="will-change-opacity absolute inset-0 transform-gpu will-change-transform

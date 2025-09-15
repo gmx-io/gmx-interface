@@ -1,4 +1,4 @@
-import { REDIRECT_CHAIN_IDS } from "landing/Home/hooks/useGoToTrade";
+import { RedirectChainIds } from "landing/Home/hooks/useGoToTrade";
 
 import IcArb from "img/ic_arb_24.svg?react";
 import IcArrowRight from "img/ic_arrowright16.svg?react";
@@ -8,23 +8,23 @@ import IcBotanix from "img/ic_botanix_landing.svg?react";
 import IcSol from "img/ic_sol_24.svg?react";
 
 const icons = {
-  [REDIRECT_CHAIN_IDS.Arbitum]: IcArb,
-  [REDIRECT_CHAIN_IDS.Base]: IcBase,
-  [REDIRECT_CHAIN_IDS.Solana]: IcSol,
-  [REDIRECT_CHAIN_IDS.Avalanche]: IcAvax,
-  [REDIRECT_CHAIN_IDS.Botanix]: IcBotanix,
+  [RedirectChainIds.Arbitum]: IcArb,
+  [RedirectChainIds.Base]: IcBase,
+  [RedirectChainIds.Solana]: IcSol,
+  [RedirectChainIds.Avalanche]: IcAvax,
+  [RedirectChainIds.Botanix]: IcBotanix,
 };
 
 const names = {
-  [REDIRECT_CHAIN_IDS.Arbitum]: "Arbitrum",
-  [REDIRECT_CHAIN_IDS.Base]: "Base",
-  [REDIRECT_CHAIN_IDS.Solana]: "Solana",
-  [REDIRECT_CHAIN_IDS.Avalanche]: "Avalanche",
-  [REDIRECT_CHAIN_IDS.Botanix]: "Botanix",
+  [RedirectChainIds.Arbitum]: "Arbitrum",
+  [RedirectChainIds.Base]: "Base",
+  [RedirectChainIds.Solana]: "Solana",
+  [RedirectChainIds.Avalanche]: "Avalanche",
+  [RedirectChainIds.Botanix]: "Botanix",
 };
 
 type Props = {
-  chainId: REDIRECT_CHAIN_IDS;
+  chainId: RedirectChainIds;
   onClick: () => void;
 };
 
@@ -36,7 +36,7 @@ export function LaunchButton({ chainId, onClick }: Props) {
       onClick={onClick}
       className="duration-180 bg-light-150 group inline-flex w-full select-none items-center gap-12 rounded-16 p-12 pr-20 transition-colors hover:bg-[#EFF0F4] lg:w-[288px]"
     >
-      <div className="flex h-60 w-60 flex-shrink-0 items-center justify-center rounded-12 border-[0.5px] border-[#E8EAF2] bg-white">
+      <div className="flex h-60 w-60 flex-shrink-0 items-center justify-center rounded-12 border-1/2 border-[#E8EAF2] bg-white">
         <Icon className="size-24" />
       </div>
       <span className="text-16 font-medium -tracking-[0.768px] sm:text-24">{name}</span>

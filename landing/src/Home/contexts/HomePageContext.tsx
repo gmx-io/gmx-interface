@@ -3,16 +3,16 @@ import { createContext, Dispatch, SetStateAction, useCallback, useContext, useMe
 import { useLocalStorage } from "react-use";
 
 import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/localStorage";
-import { REDIRECT_CHAIN_IDS } from "landing/Home/hooks/useGoToTrade";
+import { RedirectChainIds } from "landing/Home/hooks/useGoToTrade";
 import { PoolsData, usePoolsData } from "landing/Home/hooks/usePoolsData";
 
 import { LeaveHomepageRedirectModal } from "../LeaveHomepageRedirectModal/LeaveHompageRedirectModal";
 import { SolanaRedirectModal } from "../SolanaRedirectModal/SolanaRedirectModal";
 
 type HomePageContextType = {
-  redirectWithWarning: (to: string, chainId?: REDIRECT_CHAIN_IDS) => void;
+  redirectWithWarning: (to: string, chainId?: RedirectChainIds) => void;
   redirectModalTo: string | null;
-  redirectChainId: REDIRECT_CHAIN_IDS | null;
+  redirectChainId: RedirectChainIds | null;
   redirectPopupTimestamp: number | undefined;
   setRedirectPopupTimestamp: Dispatch<SetStateAction<number | undefined>>;
   shouldShowRedirectModal: () => boolean;
@@ -33,7 +33,7 @@ const THIRTY_DAYS = 1000 * 60 * 60 * 24 * 30;
 export function HomePageContextProvider({ children }: { children: React.ReactNode }) {
   const poolsData = usePoolsData();
   const [redirectModalTo, setRedirectModalTo] = useState<string | null>(null);
-  const [redirectChainId, setRedirectChainId] = useState<REDIRECT_CHAIN_IDS | null>(null);
+  const [redirectChainId, setRedirectChainId] = useState<RedirectChainIds | null>(null);
   // TODO: After App redesign remove the same from GlobalContext, needed only here
   const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage<number | undefined>(
     REDIRECT_POPUP_TIMESTAMP_KEY,
@@ -46,7 +46,7 @@ export function HomePageContextProvider({ children }: { children: React.ReactNod
         }
         const num = parseInt(val);
 
-        if (Number.isNaN(num)) {
+        if (isNaN(num)) {
           return undefined;
         }
 
@@ -70,7 +70,7 @@ export function HomePageContextProvider({ children }: { children: React.ReactNod
   }, [redirectPopupTimestamp]);
 
   const redirectWithWarning = useCallback(
-    (to: string, chainId?: REDIRECT_CHAIN_IDS) => {
+    (to: string, chainId?: RedirectChainIds) => {
       if (shouldShowRedirectModal()) {
         setRedirectModalTo(to);
         setRedirectChainId(chainId || null);
@@ -117,7 +117,7 @@ export function HomePageContextProvider({ children }: { children: React.ReactNod
     <HomePageContext.Provider value={value}>
       {children}
       {redirectModalTo &&
-        (redirectChainId === REDIRECT_CHAIN_IDS.Solana ? (
+        (redirectChainId === RedirectChainIds.Solana ? (
           <SolanaRedirectModal onClose={handleCloseModal} onConfirm={handleSolanaConfirm} />
         ) : (
           <LeaveHomepageRedirectModal

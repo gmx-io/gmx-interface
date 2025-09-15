@@ -7,7 +7,7 @@ import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
 
 import IcLandingChecked from "img/ic_landing_checked.svg?react";
 
-import { Modal } from "../../components/Modal/Modal";
+import { Modal, ModalBody, ModalBottom, ModalHeader } from "../../components/Modal/Modal";
 
 type LeaveHomepageRedirectModalProps = {
   onClose: () => void;
@@ -47,11 +47,11 @@ export function LeaveHomepageRedirectModal({
 
   return (
     <Modal onClose={onClose}>
-      <Modal.Header onClose={onClose}>
+      <ModalHeader onClose={onClose}>
         <Trans>Launch App</Trans>
-      </Modal.Header>
+      </ModalHeader>
 
-      <Modal.Body>
+      <ModalBody>
         <div className="flex flex-col gap-12">
           <p>
             <Trans>You are leaving GMX.io and will be redirected to a third party, independent website.</Trans>
@@ -72,7 +72,7 @@ export function LeaveHomepageRedirectModal({
           </p>
         </div>
 
-        <Modal.Bottom>
+        <ModalBottom>
           <label className="flex cursor-pointer items-center gap-4">
             <input
               type="checkbox"
@@ -88,7 +88,7 @@ export function LeaveHomepageRedirectModal({
             />
             <Trans>Don't show this message again for 30 days.</Trans>
           </label>
-        </Modal.Bottom>
+        </ModalBottom>
 
         <button
           className="btn-landing w-full rounded-8 py-18 text-center text-16 tracking-[-0.192px]"
@@ -96,7 +96,7 @@ export function LeaveHomepageRedirectModal({
         >
           <Trans>Launch App</Trans>
         </button>
-      </Modal.Body>
+      </ModalBody>
     </Modal>
   );
 }

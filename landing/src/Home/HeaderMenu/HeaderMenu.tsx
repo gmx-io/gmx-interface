@@ -8,12 +8,12 @@ import IcBurger from "img/ic_burger.svg?react";
 import IcCross from "img/ic_cross.svg?react";
 import IcGmxHeader from "img/ic_gmx_header.svg?react";
 
-import { REDIRECT_CHAIN_IDS, useGoToTrade } from "../hooks/useGoToTrade";
+import { RedirectChainIds, useGoToTrade } from "../hooks/useGoToTrade";
 
 export function HeaderMenu() {
   const goToTradeArbitrum = useGoToTrade({
     buttonPosition: "MenuButton",
-    chainId: REDIRECT_CHAIN_IDS.Arbitum,
+    chainId: RedirectChainIds.Arbitum,
   });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => {
@@ -63,11 +63,7 @@ export function HeaderMenu() {
         <div className="flex h-full w-full flex-col px-16 pb-20 pt-8">
           <div className="mb-32 flex flex-col text-14">
             {headerLinks.map((link) => (
-              <a
-                href={link.href}
-                key={link.label}
-                className="border-t-[0.5px] border-slate-600 py-12 last:border-b-[0.5px]"
-              >
+              <a href={link.href} key={link.label} className="border-t-1/2 border-slate-600 py-12 last:border-b-1/2">
                 {link.label}
               </a>
             ))}

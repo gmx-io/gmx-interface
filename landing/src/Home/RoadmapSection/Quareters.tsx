@@ -8,20 +8,20 @@ export function Quareters() {
       <Quarter lastCompleted>
         <Trans>
           <p>Solana Support</p>
-          <p>Botanix Support </p>
-          <p>GMX Express </p>
+          <p>Botanix Support</p>
+          <p>GMX Express</p>
         </Trans>
       </Quarter>
       <Quarter>
         <Trans>
-          <p>Multichain </p>
-          <p>Just in Time Liquidity </p>
+          <p>Multichain</p>
+          <p>Just in Time Liquidity</p>
         </Trans>
       </Quarter>
       <Quarter>
         <Trans>
-          <p>Cross-Margin </p>
-          <p>Cross-Collateral </p>
+          <p>Cross-Margin</p>
+          <p>Cross-Collateral</p>
         </Trans>
       </Quarter>
       <Quarter>

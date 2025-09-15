@@ -11,12 +11,12 @@ import IcMidChevron from "img/ic_mid_chevron.svg?react";
 import { AnimatedTitle } from "./AnimatedTitle";
 import { Features } from "./Features";
 import { HeroBackground } from "./HeroBackground";
-import { REDIRECT_CHAIN_IDS, useGoToTrade } from "../hooks/useGoToTrade";
+import { RedirectChainIds, useGoToTrade } from "../hooks/useGoToTrade";
 
 export function HeroSection() {
   const goToTradeArbitrum = useGoToTrade({
     buttonPosition: "HeroSection",
-    chainId: REDIRECT_CHAIN_IDS.Arbitum,
+    chainId: RedirectChainIds.Arbitum,
   });
   const tradersRaw = useTraders();
   const { poolsData } = useHomePageContext();
@@ -34,7 +34,7 @@ export function HeroSection() {
         <div className="relative h-[640px] py-60 sm:h-[860px] sm:py-80 ">
           <HeroBackground />
           <div className="relative flex h-full w-full flex-col justify-end">
-            <div className="text-heading-1 mb-28 w-full border-b-0 border-b-slate-600 pb-28 sm:border-b-[0.5px] sm:pb-36">
+            <div className="text-heading-1 mb-28 w-full border-b-0 border-b-slate-600 pb-28 sm:border-b-1/2 sm:pb-36">
               <div className="float-left">
                 <Trans>Trade</Trans>
               </div>{" "}
@@ -59,21 +59,21 @@ export function HeroSection() {
                   </Trans>
                 </div>
               </div>
-              <div className="flex w-full flex-row flex-wrap gap-36 border-t-[0.5px] border-t-slate-600 pt-28 sm:w-auto sm:gap-60 sm:border-t-0 sm:pt-0">
+              <div className="flex w-full flex-row flex-wrap gap-36 border-t-slate-600 pt-28 sm:w-auto sm:gap-60 sm:border-t-0 sm:pt-0">
                 <div className="flex flex-col gap-4">
-                  <span className="text-slate-400 text-nowrap text-12 sm:text-14">
+                  <span className="text-nowrap text-12 text-slate-400 sm:text-14">
                     <Trans>Traders</Trans>
                   </span>
                   <div className="text-[30px] font-medium tracking-tight sm:text-[40px]">{traders}</div>
                 </div>
                 <div className="flex flex-col gap-4">
-                  <span className="text-slate-400 text-nowrap text-12 sm:text-14">
+                  <span className="text-nowrap text-12 text-slate-400 sm:text-14">
                     <Trans>Open Interest</Trans>
                   </span>
                   <div className="text-[30px] font-medium tracking-tight sm:text-[40px]">{openInterest}</div>
                 </div>
                 <div className="group flex cursor-pointer flex-col gap-4" onClick={onTotalVolumeClick}>
-                  <span className="text-slate-400 duration-180 inline-flex items-center text-nowrap text-12 transition-colors group-hover:text-blue-300 sm:text-14">
+                  <span className="duration-180 inline-flex items-center text-nowrap text-12 text-slate-400 transition-colors group-hover:text-blue-300 sm:text-14">
                     <Trans>Total Volume</Trans>{" "}
                     <IcMidChevron className="duration-180 size-16 transition-transform group-hover:translate-x-4" />
                   </span>

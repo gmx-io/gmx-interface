@@ -15,11 +15,7 @@ type Props = {
   apr: number | undefined;
   onClick: () => void;
   coinImage: string;
-  iconComponent: React.FunctionComponent<
-    React.SVGProps<SVGSVGElement> & {
-      title?: string;
-    }
-  >;
+  iconComponent: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
 };
 
 const style: React.CSSProperties = {
@@ -51,12 +47,12 @@ export function PoolCard({ name, apr, description, iconComponent, coinImage, onC
         </div>
         <div className="flex flex-row items-end justify-between">
           <div className="flex flex-col gap-4">
-            <p className="leading-body-sm tracking-body text-slate-400 text-12 font-medium sm:text-14">
+            <p className="leading-body-sm tracking-body text-12 font-medium text-slate-400 sm:text-14">
               <Trans>Annually</Trans>
             </p>
-            <p className="text-[28px] font-medium leading-[98%] sm:text-[50px] sm:-tracking-[2px]">
+            <p className="leading-heading-lg text-[28px] font-medium sm:text-[50px] sm:-tracking-[2px]">
               {aprText}{" "}
-              <span className="leading-body-sm tracking-body text-slate-400 text-12 font-medium sm:text-14">
+              <span className="leading-body-sm tracking-body text-12 font-medium text-slate-400 sm:text-14">
                 <Trans>APR</Trans>
               </span>
             </p>

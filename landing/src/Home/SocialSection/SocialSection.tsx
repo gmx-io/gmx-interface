@@ -41,7 +41,7 @@ export function SocialSection() {
     []
   );
   return (
-    <section className="flex w-full flex-col border-t-0 border-slate-600 bg-slate-900 pt-0 text-white sm:border-t-[0.5px] sm:pt-[120px]">
+    <section className="flex w-full flex-col border-t-0 border-slate-600 bg-slate-900 pt-0 text-white sm:border-t-1/2 sm:pt-[120px]">
       <div className="mx-auto flex flex-col gap-28 overflow-x-clip sm:gap-44">
         <SocialSlider />
       </div>
@@ -53,7 +53,7 @@ export function SocialSection() {
               Driven by <br /> our community
             </Trans>
           </h2>
-          <div className="flex w-full flex-col-reverse items-center justify-between gap-36 border-t-[0.5px] border-slate-600 md:flex-row">
+          <div className="flex w-full flex-col-reverse items-center justify-between gap-36 border-t-1/2 border-slate-600 md:flex-row">
             <div className="flex flex-row flex-wrap gap-20 sm:gap-36">
               {links.map((link) => (
                 <div
@@ -80,7 +80,7 @@ export function SocialSection() {
                 name="email"
                 id="email"
                 required
-                className="filled:border-slate-600 filled:bg-[#252635] w-full min-w-0 rounded-8 border-[0.5px] border-slate-600/0 bg-slate-800 px-16 py-10 text-16 font-medium -tracking-[0.512px] outline-none placeholder:text-slate-500 hover:bg-[#252635] focus:bg-[#252635] sm:min-w-[350px] lg:w-auto"
+                className="filled:border-slate-600 filled:bg-[#252635] w-full min-w-0 rounded-8 border-1/2 border-slate-600/0 bg-slate-800 px-16 py-10 text-16 font-medium -tracking-[0.512px] outline-none placeholder:text-slate-500 hover:bg-[#252635] focus:bg-[#252635] sm:min-w-[350px] lg:w-auto"
                 placeholder="Your e-mail"
               />
               <button
