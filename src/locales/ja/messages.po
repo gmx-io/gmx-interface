@@ -1356,10 +1356,6 @@ msgstr ""
 msgid "Select pool"
 msgstr "プールを選択"
 
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "WEIGHT"
-#~ msgstr "ウェイト"
-
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "APR"
@@ -1579,10 +1575,6 @@ msgstr ""
 #: src/pages/Exchange/Exchange.tsx
 msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 msgstr "{tokenSymbol} {longOrShortText}を増やせませんでした。最大スリッページはページ右上にある設定から変更できます。"
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#~ msgid "Tier {0} ({currentRebatePercentage}% rebate)"
-#~ msgstr "ティア {0} ({currentRebatePercentage}% リベート)"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX Alerts"
@@ -1843,10 +1835,6 @@ msgstr "{positionText}から{0}を出金"
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Create Order"
 msgstr "注文の作成"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Utilization"
-#~ msgstr "利用率"
 
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 msgid "Select Asset to Deposit"
@@ -2547,10 +2535,6 @@ msgstr ""
 msgid "{0} will be swapped to {1} on order execution."
 msgstr "{0}は注文実行時に{1}にスワップされます。"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
-#~ msgid "Claiming with a smart account requires specific instructions. Contributors will post these in the coming days."
-#~ msgstr ""
-
 #. Button to clear the filter selection
 #: src/components/Synthetics/TableOptionsFilter/TableOptionsFilter.tsx
 msgid "Clear selection"
@@ -2646,10 +2630,6 @@ msgstr "ブリッジとスワップ"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Trigger price above lowest limit price"
 msgstr "トリガー価格が最低リミット価格を上回っています"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Borrow Fee Rate"
-#~ msgstr "借入手数料率"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2898,10 +2878,6 @@ msgstr "現在の価格インパクトは{0}です。注文が処理されやす
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-Cancel TP/SL"
 msgstr "TP/SLの自動キャンセル"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Funding Fee Rate"
-#~ msgstr "ファンディング手数料率"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
@@ -4658,11 +4634,6 @@ msgstr "注文シミュレーション実行に失敗しました。"
 msgid "Invalid Transfer Addresses: Please check the url."
 msgstr "無効な転送アドレス: URLを確認してください。"
 
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "GLP Index Composition"
-#~ msgstr "GLPインデックス構成"
-
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "No distribution history yet"
 msgstr ""
@@ -5109,10 +5080,6 @@ msgstr "残りの担保が5 USD未満"
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
 msgstr "レバレッジ倍率が1倍以下になるため注文を執行できません"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Weight"
-#~ msgstr "ウェイト"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -6225,10 +6192,6 @@ msgstr "任意のネットワークから任意のトークンを使ってGMXを
 msgid "Volume traded by your referred traders."
 msgstr "あなたが紹介したトレーダーによる取引高"
 
-#: src/pages/Dashboard/GlpCard.tsx
-#~ msgid "Stablecoin Percentage"
-#~ msgstr "ステーブルコイン比率"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order will be executed once there is sufficient liquidity."
 msgstr "十分な流動性がある場合にこの注文の一部が執行されます。"
@@ -6240,10 +6203,6 @@ msgstr "これは完全なアカウント移転専用です。<0/>これによ�
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "SNTL esGMX Market"
 msgstr "SNTL esGMX市場"
-
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Tier {0} ({currentTierDiscount}% discount)"
-#~ msgstr "ティア {0} ({currentTierDiscount}% 割引)"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
@@ -6567,11 +6526,6 @@ msgstr ""
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "of open fee"
 msgstr "オープン手数料の"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Pool Amount"
-#~ msgstr "プール額"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -7330,11 +7284,6 @@ msgstr "セッション生成済"
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
 msgstr "GMXを購入"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Max {0} Capacity"
-#~ msgstr "{0}の最大キャパシティ"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copy error"
@@ -8201,11 +8150,6 @@ msgstr ""
 #: src/pages/Stake/Stake.tsx
 msgid "Stake esGMX"
 msgstr "esGMXをステーク"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Target Min Amount"
-#~ msgstr "ターゲット最低額"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts

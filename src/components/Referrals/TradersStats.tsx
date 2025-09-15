@@ -108,7 +108,10 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           </div>
         </ReferralInfoCard>
         <ReferralInfoCard
-          value={formatUsd(currentReferralsData?.traderReferralTotalStats?.volume)}
+          value={formatUsd(currentReferralsData?.traderReferralTotalStats?.volume, {
+            maxThreshold: "999999999999999999",
+            displayDecimals: 0,
+          })}
           label={t`Trading Volume`}
           labelTooltipText={t`Volume traded by this account with an active referral code.`}
           tooltipContent={
@@ -153,7 +156,10 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           }
         />
         <ReferralInfoCard
-          value={formatUsd(currentReferralsData?.traderReferralTotalStats?.discountUsd)}
+          value={formatUsd(currentReferralsData?.traderReferralTotalStats?.discountUsd, {
+            maxThreshold: "999999999999999999",
+            displayDecimals: 0,
+          })}
           label={t`Rebates`}
           labelTooltipText={t`Rebates earned by this account as a trader.`}
           tooltipContent={
@@ -281,7 +287,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                                   &nbsp;
                                 </>
                               )}
-                              {formatUsd(totalUsd)}
+                              {formatUsd(totalUsd, { maxThreshold: "999999999999999999", displayDecimals: 0 })}
                             </div>
                           }
                           content={

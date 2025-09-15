@@ -198,7 +198,10 @@ function AffiliatesStats({
           }
         />
         <ReferralInfoCard
-          value={formatUsd(currentReferralsData?.affiliateTotalStats?.volume)}
+          value={formatUsd(currentReferralsData?.affiliateTotalStats?.volume, {
+            maxThreshold: "999999999999999999",
+            displayDecimals: 0,
+          })}
           label={t`Trading Volume`}
           labelTooltipText={t`Volume traded by your referred traders.`}
           tooltipContent={
@@ -243,7 +246,10 @@ function AffiliatesStats({
           }
         />
         <ReferralInfoCard
-          value={formatUsd(currentReferralsData?.affiliateTotalStats?.affiliateRebateUsd)}
+          value={formatUsd(currentReferralsData?.affiliateTotalStats?.affiliateRebateUsd, {
+            maxThreshold: "999999999999999999",
+            displayDecimals: 0,
+          })}
           label={t`Rebates`}
           labelTooltipText={t`Rebates earned as an affiliate.`}
           tooltipContent={
@@ -393,7 +399,7 @@ function AffiliatesStats({
                       </TableTd>
                       <TableTd data-label="Total Volume">
                         <Tooltip
-                          handle={formatUsd(stat.volume)}
+                          handle={formatUsd(stat.volume, { maxThreshold: "999999999999999999", displayDecimals: 0 })}
                           handleClassName="numbers"
                           position="bottom-start"
                           className="whitespace-nowrap"
@@ -418,7 +424,10 @@ function AffiliatesStats({
                       </TableTd>
                       <TableTd data-label="Total Rebates">
                         <Tooltip
-                          handle={formatUsd(stat.affiliateRebateUsd)}
+                          handle={formatUsd(stat.affiliateRebateUsd, {
+                            maxThreshold: "999999999999999999",
+                            displayDecimals: 0,
+                          })}
                           handleClassName="numbers"
                           position="bottom-start"
                           className="whitespace-nowrap"
@@ -539,7 +548,7 @@ function AffiliatesStats({
                                   &nbsp;
                                 </>
                               )}
-                              {formatUsd(totalUsd)}
+                              {formatUsd(totalUsd, { maxThreshold: "999999999999999999", displayDecimals: 0 })}
                             </div>
                           }
                           renderContent={() => (

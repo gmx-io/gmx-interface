@@ -1356,10 +1356,6 @@ msgstr ""
 msgid "Select pool"
 msgstr "选择池"
 
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "WEIGHT"
-#~ msgstr "权重"
-
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "APR"
@@ -1579,10 +1575,6 @@ msgstr ""
 #: src/pages/Exchange/Exchange.tsx
 msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 msgstr "无法在允许滑点范围内增加 {tokenSymbol} {longOrShortText}，您可以在页面右上角的设置中调整允许滑点。"
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#~ msgid "Tier {0} ({currentRebatePercentage}% rebate)"
-#~ msgstr "Tier {0} ({currentRebatePercentage}% 返利)"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX Alerts"
@@ -1843,10 +1835,6 @@ msgstr "从 {positionText} 提取 {0}"
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Create Order"
 msgstr "创建订单"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Utilization"
-#~ msgstr "利用率"
 
 #: src/components/Synthetics/GmxAccountModal/GmxAccountModal.tsx
 msgid "Select Asset to Deposit"
@@ -2547,10 +2535,6 @@ msgstr ""
 msgid "{0} will be swapped to {1} on order execution."
 msgstr "{0} 将在订单执行时交换为 {1}。"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
-#~ msgid "Claiming with a smart account requires specific instructions. Contributors will post these in the coming days."
-#~ msgstr ""
-
 #. Button to clear the filter selection
 #: src/components/Synthetics/TableOptionsFilter/TableOptionsFilter.tsx
 msgid "Clear selection"
@@ -2646,10 +2630,6 @@ msgstr "桥接和交换"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Trigger price above lowest limit price"
 msgstr "触发价格高于最低限价"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Borrow Fee Rate"
-#~ msgstr "借贷费用率"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2898,10 +2878,6 @@ msgstr "当前价格影响为 {0}。考虑使用 -0.30% 的可接受价格影响
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-Cancel TP/SL"
 msgstr "自动取消 TP/SL"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Funding Fee Rate"
-#~ msgstr "资金费用率"
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
@@ -4658,11 +4634,6 @@ msgstr "执行订单模拟失败。"
 msgid "Invalid Transfer Addresses: Please check the url."
 msgstr "无效转移地址：请检查 URL。"
 
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "GLP Index Composition"
-#~ msgstr "GLP 指数组成"
-
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "No distribution history yet"
 msgstr ""
@@ -5109,10 +5080,6 @@ msgstr "剩余抵押品低于 5 USD"
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
 msgstr "订单无法执行，因为这将使头寸的杠杆率低于 1"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Weight"
-#~ msgstr "权重"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -6225,10 +6192,6 @@ msgstr "使用任何网络的任何代币购买 GMX："
 msgid "Volume traded by your referred traders."
 msgstr "您推荐的交易者的交易量。"
 
-#: src/pages/Dashboard/GlpCard.tsx
-#~ msgid "Stablecoin Percentage"
-#~ msgstr "稳定币百分比"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order will be executed once there is sufficient liquidity."
 msgstr "一旦有足够的流动性，此订单的部分将被执行。"
@@ -6240,10 +6203,6 @@ msgstr "请仅用于完整账户转移。<0/>这将转移您所有的 GMX、esGM
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "SNTL esGMX Market"
 msgstr "SNTL esGMX 市场"
-
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Tier {0} ({currentTierDiscount}% discount)"
-#~ msgstr "层级 {0} ({currentTierDiscount}% 折扣)"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
@@ -6567,11 +6526,6 @@ msgstr ""
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "of open fee"
 msgstr "开仓费用"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Pool Amount"
-#~ msgstr "池金额"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -7330,11 +7284,6 @@ msgstr "会话已生成"
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
 msgstr "购买 GMX"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Max {0} Capacity"
-#~ msgstr "最大 {0} 容量"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copy error"
@@ -8201,11 +8150,6 @@ msgstr ""
 #: src/pages/Stake/Stake.tsx
 msgid "Stake esGMX"
 msgstr "质押 esGMX"
-
-#: src/pages/Dashboard/MarketsListV1.tsx
-#: src/pages/Dashboard/MarketsListV1.tsx
-#~ msgid "Target Min Amount"
-#~ msgstr "目标最低金额"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts

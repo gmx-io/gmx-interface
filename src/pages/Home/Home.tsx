@@ -186,7 +186,9 @@ export default function Home({ showRedirectModal }) {
               <div className="Home-latest-info__title">
                 <Trans>Total Trading Volume</Trans>
               </div>
-              <div className="Home-latest-info__value">{formatUsd(totalVolumeSum, { displayDecimals: 0 })}</div>
+              <div className="Home-latest-info__value">
+                {formatUsd(totalVolumeSum, { displayDecimals: 0, maxThreshold: "999999999999999999" })}
+              </div>
             </div>
           </div>
           <div className="Home-latest-info-block">
@@ -195,7 +197,9 @@ export default function Home({ showRedirectModal }) {
               <div className="Home-latest-info__title">
                 <Trans>Open Interest</Trans>
               </div>
-              <div className="Home-latest-info__value">{formatUsd(openInterest, { displayDecimals: 0 })}</div>
+              <div className="Home-latest-info__value">
+                {formatUsd(openInterest, { displayDecimals: 0, maxThreshold: "999999999999999999" })}
+              </div>
             </div>
           </div>
           <div className="Home-latest-info-block">
