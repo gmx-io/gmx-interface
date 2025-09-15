@@ -31,11 +31,11 @@ export function HeaderMenu() {
         <div className="flex w-[1200px] items-center justify-between">
           <IcGmxHeader className="h-20 sm:h-24" />
           <div className="flex items-center gap-8 sm:gap-12">
-            <div className="leading-body-sm mr-36 hidden flex-row gap-28 text-14 font-medium -tracking-[0.448px] sm:flex">
+            <div className="leading-body-sm mr-36 hidden flex-row gap-22 text-14 font-medium -tracking-[0.448px] sm:flex">
               {headerLinks.map((link) => (
                 <a
                   href={link.href}
-                  className="duration-180 transition-colors hover:text-white/80 active:text-white/60"
+                  className="duration-180 px-6 py-8 transition-colors hover:text-white/80 active:text-white/60"
                   key={link.label}
                 >
                   {link.label}
