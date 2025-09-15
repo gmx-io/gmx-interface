@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 
 import { useHomePageContext } from "landing/pages/Home/contexts/HomePageContext";
 import { useProcessedData } from "pages/Stake/useProcessedData";
+import { ARBITRUM } from "sdk/configs/chainIds";
 
 import glvCoin from "img/bg_coin_glv.png";
 import gmCoin from "img/bg_coin_gm.png";
@@ -20,8 +21,7 @@ export function PoolCards() {
   const onClickGlv = useGoToPools("GLV");
   const onClickGm = useGoToPools("GM");
   const { poolsData } = useHomePageContext();
-  const processedData = useProcessedData();
-  console.log(processedData);
+  const processedData = useProcessedData(ARBITRUM);
   const gmxAprForGmxPercentage = Number(processedData?.gmxAprForGmx) / 10 ** DECIMALS;
   return (
     <>

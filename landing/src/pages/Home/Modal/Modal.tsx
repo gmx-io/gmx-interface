@@ -63,7 +63,7 @@ export function Modal({ onClose, children, className }: ModalProps) {
 
 export function ModalHeader({ children, onClose, showCloseButton = true, className }: ModalHeaderProps) {
   return (
-    <div className={cx("border-stroke-p rimary flex justify-between gap-20 border-b-1/2 p-20 pt-24", className)}>
+    <div className={cx("border-stroke-primary flex justify-between gap-20 border-b-1/2 p-20 pt-24", className)}>
       <h3 className="text-16 font-medium leading-[125%] tracking-[-0.192px]">{children}</h3>
       {showCloseButton && onClose && (
         <button className="mr-4" onClick={onClose}>
