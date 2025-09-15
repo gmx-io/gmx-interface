@@ -689,45 +689,45 @@ export default function ConfirmationBox(props) {
             <ExchangeInfoRow label={t`Entry Price`}>
               {hasExistingPosition && toAmount && toAmount > 0 && (
                 <div className="muted inline-block">
-                  ${"\u200a"}
+                  ${"\u200a\u200d"}
                   {formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                   <BsArrowRight className="transition-arrow inline-block" />
                 </div>
               )}
               {nextAveragePrice &&
-                `$\u200a${formatAmount(nextAveragePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}`}
+                `$\u200a\u200d${formatAmount(nextAveragePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}`}
               {!nextAveragePrice && `-`}
             </ExchangeInfoRow>
           )}
           {!isMarketOrder && (
             <ExchangeInfoRow label={t`Mark Price`} isTop={true}>
-              ${"\u200a"}
+              ${"\u200a\u200d"}
               {formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}
             </ExchangeInfoRow>
           )}
           {!isMarketOrder && (
             <ExchangeInfoRow label={t`Limit Price`}>
-              ${"\u200a"}
+              ${"\u200a\u200d"}
               {formatAmount(triggerPriceUsd, USD_DECIMALS, toTokenPriceDecimal, true)}
             </ExchangeInfoRow>
           )}
           <ExchangeInfoRow label={t`Liq. Price`}>
             {hasExistingPosition && toAmount && toAmount > 0 && (
               <div className="muted inline-block">
-                ${"\u200a"}
+                ${"\u200a\u200d"}
                 {formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                 <BsArrowRight className="transition-arrow inline-block" />
               </div>
             )}
             {toAmount &&
               displayLiquidationPrice &&
-              `$\u200a${formatAmount(displayLiquidationPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
+              `$\u200a\u200d${formatAmount(displayLiquidationPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
             {!toAmount && displayLiquidationPrice && `-`}
             {!displayLiquidationPrice && `-`}
           </ExchangeInfoRow>
           <ExchangeInfoRow label={t`Collateral (${collateralToken.symbol})`} isTop>
             <Tooltip
-              handle={`$\u200a${formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}`}
+              handle={`$\u200a\u200d${formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}`}
               position="top-end"
               renderContent={() => {
                 return (

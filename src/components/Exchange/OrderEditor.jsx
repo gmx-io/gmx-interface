@@ -307,7 +307,7 @@ export default function OrderEditor(props) {
             <div className="Exchange-info-label">
               <Trans>Liq. Price</Trans>
             </div>
-            <div className="align-right">{`$\u200a${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}</div>
+            <div className="align-right">{`$\u200a\u200d${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}</div>
           </div>
         )}
         <div className="Exchange-swap-button-container">

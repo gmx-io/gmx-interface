@@ -277,18 +277,18 @@ describe("formatUsdPrice", () => {
   it("should calculate correct decimals if displayDecimals not passed", () =>
     // prettier-ignore
     {
-      expect(formatUsdPrice(ONE_USD * 10000n)).toBe(       "$\u200a10,000.00");
-      expect(formatUsdPrice(ONE_USD * 1000n)).toBe(         "$\u200a1,000.00");
-      expect(formatUsdPrice(ONE_USD * 100n)).toBe(            "$\u200a100.000");
-      expect(formatUsdPrice(ONE_USD * 10n)).toBe(              "$\u200a10.0000");
-      expect(formatUsdPrice(ONE_USD)).toBe(                     "$\u200a1.0000");
-      expect(formatUsdPrice(ONE_USD / 10n)).toBe(               "$\u200a0.10000");
-      expect(formatUsdPrice(ONE_USD / 100n)).toBe(              "$\u200a0.010000");
-      expect(formatUsdPrice(ONE_USD / 1000n)).toBe(             "$\u200a0.0010000");
-      expect(formatUsdPrice(ONE_USD / 10_000n)).toBe(           "$\u200a0.0001000");
-      expect(formatUsdPrice(ONE_USD / 100_000n)).toBe(          "$\u200a0.00001000");
-      expect(formatUsdPrice(ONE_USD / 1_000_000_000n)).toBe(    "$\u200a0.000000001");
-      expect(formatUsdPrice(ONE_USD / 10_000_000_000n)).toBe( "< $\u200a0.000000001");
+      expect(formatUsdPrice(ONE_USD * 10000n)).toBe(       "$\u200a\u200d10,000.00");
+      expect(formatUsdPrice(ONE_USD * 1000n)).toBe(         "$\u200a\u200d1,000.00");
+      expect(formatUsdPrice(ONE_USD * 100n)).toBe(            "$\u200a\u200d100.000");
+      expect(formatUsdPrice(ONE_USD * 10n)).toBe(              "$\u200a\u200d10.0000");
+      expect(formatUsdPrice(ONE_USD)).toBe(                     "$\u200a\u200d1.0000");
+      expect(formatUsdPrice(ONE_USD / 10n)).toBe(               "$\u200a\u200d0.10000");
+      expect(formatUsdPrice(ONE_USD / 100n)).toBe(              "$\u200a\u200d0.010000");
+      expect(formatUsdPrice(ONE_USD / 1000n)).toBe(             "$\u200a\u200d0.0010000");
+      expect(formatUsdPrice(ONE_USD / 10_000n)).toBe(           "$\u200a\u200d0.0001000");
+      expect(formatUsdPrice(ONE_USD / 100_000n)).toBe(          "$\u200a\u200d0.00001000");
+      expect(formatUsdPrice(ONE_USD / 1_000_000_000n)).toBe(    "$\u200a\u200d0.000000001");
+      expect(formatUsdPrice(ONE_USD / 10_000_000_000n)).toBe( "< $\u200a\u200d0.000000001");
     });
 });
 
@@ -306,8 +306,8 @@ describe("formatAmountHuman", () => {
   });
 
   it("should display dollar sign", () => {
-    expect(formatAmountHuman(ONE_USD, USD_DECIMALS, true)).toBe("$\u200a1.0");
-    expect(formatAmountHuman(-1n * ONE_USD, USD_DECIMALS, true)).toBe("-$\u200a1.0");
+    expect(formatAmountHuman(ONE_USD, USD_DECIMALS, true)).toBe("$\u200a\u200d1.0");
+    expect(formatAmountHuman(-1n * ONE_USD, USD_DECIMALS, true)).toBe("-$\u200a\u200d1.0");
   });
 
   it("should display decimals", () => {
@@ -395,8 +395,8 @@ describe("formatPercentage", () => {
   });
 
   it("should display signed percentage", () => {
-    expect(formatPercentage(100n, { signed: true })).toBe("+\u200a1.00%");
-    expect(formatPercentage(-100n, { signed: true })).toBe("-\u200a1.00%");
+    expect(formatPercentage(100n, { signed: true })).toBe("+\u200a\u200d1.00%");
+    expect(formatPercentage(-100n, { signed: true })).toBe("-\u200a\u200d1.00%");
   });
 
   it("should format with different displayDecimals", () => {
