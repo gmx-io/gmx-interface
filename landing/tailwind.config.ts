@@ -110,10 +110,10 @@ function fontComponentsPlugin({ addComponents }) {
       "@apply text-24 font-medium leading-heading-md -tracking-[0.96px]": {},
     },
     ".text-subheadline": {
-      "@apply text-14 font-medium leading-body-sm text-slate-400 tracking-body": {},
+      "@apply text-14 font-medium leading-body-sm text-slate-400 tracking-wide": {},
     },
     ".text-description": {
-      "@apply text-16 font-normal leading-body-sm text-slate-400 tracking-body": {},
+      "@apply text-16 font-normal leading-body-sm text-slate-400 tracking-wide": {},
     },
     ".text-terms-heading": {
       "@apply text-18 font-medium": {},
@@ -177,7 +177,7 @@ export default {
     },
     letterSpacing: {
       ...defaultConfig.theme.letterSpacing,
-      body: "0.028px",
+      wide: "0.028px",
     },
     transitionDuration: {
       ...defaultConfig.theme.transitionDuration,

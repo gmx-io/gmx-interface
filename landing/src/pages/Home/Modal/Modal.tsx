@@ -76,7 +76,7 @@ export function ModalHeader({ children, onClose, showCloseButton = true, classNa
 
 export function ModalBody({ children, className }: ModalBodyProps) {
   return (
-    <div className={cx("tracking-body flex flex-col gap-16 p-20 text-14 font-normal leading-[130%]", className)}>
+    <div className={cx("flex flex-col gap-16 p-20 text-14 font-normal leading-[130%] tracking-wide", className)}>
       {children}
     </div>
   );
