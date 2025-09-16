@@ -15,23 +15,19 @@ import { useChainId } from "lib/chains";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
-import { VERSION_QUERY_PARAM } from "pages/AccountDashboard/constants";
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
 import Buy from "pages/Buy/Buy";
 import BuyGMX from "pages/BuyGMX/BuyGMX";
 import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
-import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import Jobs from "pages/Jobs/Jobs";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
 import NftWallet from "pages/NftWallet/NftWallet";
-import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import { ParseTransactionPage } from "pages/ParseTransaction/ParseTransaction";
 import Pools from "pages/Pools/Pools";
 import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
-import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import Referrals from "pages/Referrals/Referrals";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
@@ -194,7 +190,6 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
           />
         )}
       </Route>
-      <Redirect exact from="/actions/v1" to={`/accounts?${VERSION_QUERY_PARAM}=1`} />
       <Redirect exact from="/actions/v2" to="/accounts" />
       <Redirect exact from="/actions" to="/accounts" />
       <Redirect exact from="/actions/:account" to="/accounts/:account" />
@@ -211,15 +206,6 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       </Route>
       <Route exact path="/monitor">
         <Stats />
-      </Route>
-      <Route exact path="/orders_overview">
-        <OrdersOverview />
-      </Route>
-      <Route exact path="/positions_overview">
-        <PositionsOverview />
-      </Route>
-      <Route exact path="/complete_account_transfer/:sender/:receiver">
-        <CompleteAccountTransfer />
       </Route>
       {isDevelopment() && (
         <Route exact path="/ui">

@@ -12,7 +12,7 @@ import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/Cha
 
 import { DailyAndCumulativePnL } from "./DailyAndCumulativePnL";
 import { GeneralPerformanceDetails } from "./GeneralPerformanceDetails";
-import { HistoricalLists, HistoricalListsV1 } from "./HistoricalLists";
+import { HistoricalLists } from "./HistoricalLists";
 import { usePageParams } from "./usePageParams";
 import { VersionNetworkSwitcherRow } from "./VersionNetworkSwitcherRow";
 
@@ -68,8 +68,6 @@ export function AccountDashboard() {
             </div>
           </SyntheticsStateContextProvider>
         )}
-
-        {version === 1 && <HistoricalListsV1 account={account} chainId={chainId} />}
       </div>
     </AppPageLayout>
   );

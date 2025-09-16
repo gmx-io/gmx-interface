@@ -15,8 +15,8 @@ import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
 
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
-import PositionShare from "components/Exchange/PositionShare";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
+import PositionShare from "components/PositionShare/PositionShare";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { Table, TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";

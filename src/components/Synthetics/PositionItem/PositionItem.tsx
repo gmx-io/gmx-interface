@@ -41,7 +41,7 @@ import { getMarketIndexName } from "sdk/utils/markets";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
-import PositionDropdown from "components/Exchange/PositionDropdown";
+import PositionDropdown from "components/PositionDropdown/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";

@@ -7,10 +7,10 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GlvInfo, GlvOrMarketInfo, MarketInfo, getGlvOrMarketAddress } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import ExchangeInfoRow from "components/ExchangeInfoRow/ExchangeInfoRow";
 import { GmPoolsSelectorForGlvMarket } from "components/MarketSelector/GmPoolsSelectorForGlvMarket";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
+import { ExchangeInfo } from "components/Synthetics/GmSwap/GmSwapBox/ExchangeInfo";
 
 export function GmSwapBoxPoolRow({
   indexName,
