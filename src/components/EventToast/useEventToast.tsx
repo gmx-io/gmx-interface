@@ -45,6 +45,12 @@ function useEventToast() {
     account: account,
   });
 
+  const hasMKRPosition = useMemo(() => {
+    return Object.values(positions.positionsData ?? {}).some(
+      (position) => position.marketAddress === MKR_USD_MARKET_ADDRESS
+    );
+  }, [positions.positionsData]);
+
   useEffect(() => {
     const someIncentivesOn = Boolean(arbIncentiveStats?.lp?.isActive || arbIncentiveStats?.trading?.isActive);
     const validationParams = {
@@ -57,13 +63,7 @@ function useEventToast() {
     const eventsData = isHome ? homeEventsData : appEventsData;
 
     eventsData
-      .filter((event) =>
-        event.id == MKR_USD_DELISTING_EVENT_ID
-          ? Object.values(positions.positionsData ?? {}).some(
-              (position) => position.marketAddress === MKR_USD_MARKET_ADDRESS
-            )
-          : true
-      )
+      .filter((event) => event.id !== MKR_USD_DELISTING_EVENT_ID || hasMKRPosition)
       .filter((event) => event.isActive)
       .filter(
         (event) => !event.startDate || !isFuture(parse(event.startDate + ", +00", "d MMM yyyy, H:mm, x", new Date()))
@@ -100,7 +100,7 @@ function useEventToast() {
     isAdaptiveFundingActiveSomeMarkets,
     isAdaptiveFundingActiveAllMarkets,
     arbIncentiveStats,
-    positions.positionsData,
+    hasMKRPosition,
   ]);
 }
 
