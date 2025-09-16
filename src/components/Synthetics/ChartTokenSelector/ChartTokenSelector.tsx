@@ -86,39 +86,47 @@ export default function ChartTokenSelector(props: Props) {
         <Button variant="secondary">
           {selectedToken ? (
             <span
-              className={cx("inline-flex gap-6 whitespace-nowrap pl-0 text-[13px]", {
+              className={cx("inline-flex gap-12 whitespace-nowrap pl-0 text-[13px]", {
                 "items-start": !oneRowLabels,
-                "items-center": oneRowLabels || isSwap,
+                "items-center": oneRowLabels,
               })}
             >
-              {isSwap ? (
+              {isSwap && oneRowLabels ? (
                 <div className="rounded-4 bg-blue-300 bg-opacity-[20%] px-7 py-4 text-blue-300">
                   <Trans>Swap</Trans>
                 </div>
               ) : null}
 
-              <TokenIcon symbol={selectedToken.symbol} displaySize={isMobile ? 32 : 20} importSize={40} />
-              <span
-                className={cx("flex items-baseline justify-start leading-base", {
-                  "flex-col gap-2": !oneRowLabels && !isSwap,
-                  "flex-row": oneRowLabels || isSwap,
-                })}
-              >
-                <span className="text-start text-[13px] font-medium text-typography-primary">
-                  {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
-                  {selectedToken.symbol}/USD
-                </span>
-                {poolName && (
-                  <span
-                    className={cx("text-12 font-normal text-typography-secondary", {
-                      "ml-4": oneRowLabels,
-                    })}
-                  >
-                    <span>[{poolName}]</span>
+              <div className="flex gap-8">
+                <TokenIcon symbol={selectedToken.symbol} displaySize={isMobile ? 32 : 20} importSize={40} />
+                <span
+                  className={cx("flex justify-start leading-base", {
+                    "flex-col items-baseline gap-2": !oneRowLabels,
+                    "flex-row items-center": oneRowLabels,
+                  })}
+                >
+                  <span className="text-start text-[13px] font-medium text-typography-primary">
+                    {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
+                    {selectedToken.symbol}/USD
                   </span>
-                )}
-              </span>
-              <FaChevronDown className="inline-block text-[12px]" />
+                  {poolName && (
+                    <span
+                      className={cx("text-12 font-normal text-typography-secondary", {
+                        "ml-4": oneRowLabels,
+                      })}
+                    >
+                      <span>[{poolName}]</span>
+                    </span>
+                  )}
+
+                  {isSwap && !oneRowLabels ? (
+                    <div className="text-blue-300">
+                      <Trans>Swap</Trans>
+                    </div>
+                  ) : null}
+                </span>
+                <FaChevronDown className={cx("inline-block text-[14px]", { "mt-2": oneRowLabels })} />
+              </div>
             </span>
           ) : (
             "..."
