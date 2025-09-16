@@ -1394,6 +1394,7 @@ msgstr ""
 msgid "Select pool"
 msgstr "选择池"
 
+#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "APR"
@@ -3012,10 +3013,6 @@ msgstr "该订单可能不会以期望的 {priceText} 执行，因为其可接�
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation Fee"
 msgstr "清算费用"
-
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "from 5+ blockchains"
-msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -7374,6 +7371,10 @@ msgstr "最高头寸"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "池"
+
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "from 4 blockchains"
+msgstr ""
 
 #: src/components/Synthetics/GmList/GlvList.tsx
 msgid "VAULT"

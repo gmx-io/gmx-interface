@@ -1394,6 +1394,7 @@ msgstr ""
 msgid "Select pool"
 msgstr ""
 
+#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "APR"
@@ -3011,10 +3012,6 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation Fee"
-msgstr ""
-
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "from 5+ blockchains"
 msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
@@ -7367,6 +7364,10 @@ msgstr ""
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
+msgstr ""
+
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "from 4 blockchains"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GlvList.tsx

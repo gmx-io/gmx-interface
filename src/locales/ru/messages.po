@@ -1394,6 +1394,7 @@ msgstr ""
 msgid "Select pool"
 msgstr "Выбрать пул"
 
+#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "APR"
@@ -3012,10 +3013,6 @@ msgstr "Ордер может не выполниться по желаемой 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation Fee"
 msgstr "Комиссия за Ликвидацию"
-
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "from 5+ blockchains"
-msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -7374,6 +7371,10 @@ msgstr "Топ позиции"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "Пулы"
+
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "from 4 blockchains"
+msgstr ""
 
 #: src/components/Synthetics/GmList/GlvList.tsx
 msgid "VAULT"
