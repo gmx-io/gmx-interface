@@ -71,7 +71,7 @@ function PositionShare({
   const sharePositionBgImg = useLoadImage(shareBgImg);
   const cardRef = useRef<HTMLDivElement>(null);
   const tweetLink = getTwitterIntentURL(
-    `Latest $\u200a${indexToken?.symbol} trade on @GMX_IO`,
+    `Latest $\u200a\u200d${indexToken?.symbol} trade on @GMX_IO`,
     getShareURL(uploadedImageInfo, userAffiliateCode)
   );
 

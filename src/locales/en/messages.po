@@ -1394,7 +1394,6 @@ msgstr "Not enough available liquidity to fill the order. The order will get fil
 msgid "Select pool"
 msgstr "Select pool"
 
-#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "APR"

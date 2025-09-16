@@ -87,7 +87,7 @@ function renderLiquidationTooltip(liquidationData, label) {
             label={t`PnL`}
             showDollar={false}
             textClassName="text-red-500"
-            value={`-$\u200a${formatAmount(liquidationData.loss, USD_DECIMALS, 2, true)}`}
+            value={`-$\u200a\u200d${formatAmount(liquidationData.loss, USD_DECIMALS, 2, true)}`}
           />
           {liquidationData.type === "full" && (
             <StatsTooltipRow label={t`Liquidation Fee`} showDollar value={formatAmount(LIQUIDATION_FEE, 30, 2, true)} />

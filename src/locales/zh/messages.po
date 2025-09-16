@@ -1394,7 +1394,6 @@ msgstr ""
 msgid "Select pool"
 msgstr "选择池"
 
-#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "APR"

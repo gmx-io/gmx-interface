@@ -326,7 +326,7 @@ export default function SwapBox(props) {
         </div>
         <div className="align-right">
           <Tooltip
-            handle={`$\u200a${formatAmount(toTokenInfo?.maxAvailableLong, USD_DECIMALS, 2, true)}`}
+            handle={`$\u200a\u200d${formatAmount(toTokenInfo?.maxAvailableLong, USD_DECIMALS, 2, true)}`}
             position="bottom-end"
             renderContent={() => {
               return (
@@ -1247,7 +1247,7 @@ export default function SwapBox(props) {
       fromTokenInfo
         ? [
             `${formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 0, true)} ${fromTokenInfo.symbol}`,
-            `($\u200a${formatAmount(maxFromTokenInUSD, USD_DECIMALS, 0, true)})`,
+            `($\u200a\u200d${formatAmount(maxFromTokenInUSD, USD_DECIMALS, 0, true)})`,
           ]
         : null,
     [fromTokenInfo, maxFromTokenIn, maxFromTokenInUSD]
@@ -1257,7 +1257,7 @@ export default function SwapBox(props) {
       toTokenInfo
         ? [
             `${formatAmount(maxToTokenOut, toTokenInfo.decimals, 0, true)} ${toTokenInfo.symbol}`,
-            `($\u200a${formatAmount(maxToTokenOutUSD, USD_DECIMALS, 0, true)})`,
+            `($\u200a\u200d${formatAmount(maxToTokenOutUSD, USD_DECIMALS, 0, true)})`,
           ]
         : null,
     [maxToTokenOut, maxToTokenOutUSD, toTokenInfo]
@@ -1441,7 +1441,7 @@ export default function SwapBox(props) {
                   <BuyInputSection
                     topLeftLabel={t`Pay`}
                     bottomLeftValue={
-                      fromUsdMin !== undefined && `$\u200a${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}`
+                      fromUsdMin !== undefined && `$\u200a\u200d${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}`
                     }
                     bottomRightLabel={t`Balance`}
                     bottomRightValue={
@@ -1474,7 +1474,7 @@ export default function SwapBox(props) {
                       topLeftLabel={getToLabel()}
                       bottomRightLabel={isSwap ? t`Balance` : t`Leverage`}
                       bottomLeftValue={
-                        toUsdMax !== undefined && `$\u200a${formatAmount(toUsdMax, USD_DECIMALS, 2, true)}`
+                        toUsdMax !== undefined && `$\u200a\u200d${formatAmount(toUsdMax, USD_DECIMALS, 2, true)}`
                       }
                       bottomRightValue={
                         isSwap
@@ -1674,13 +1674,13 @@ export default function SwapBox(props) {
                 <div className="align-right">
                   {hasExistingPosition && toAmount !== undefined && toAmount > 0 && (
                     <div className="muted inline-block">
-                      ${"\u200a"}
+                      ${"\u200a\u200d"}
                       {formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                       <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                   )}
                   {nextAveragePrice &&
-                    `$\u200a${formatAmount(nextAveragePrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
+                    `$\u200a\u200d${formatAmount(nextAveragePrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
                   {!nextAveragePrice && `-`}
                 </div>
               </div>
@@ -1691,14 +1691,14 @@ export default function SwapBox(props) {
                 <div className="align-right">
                   {hasExistingPosition && toAmount !== undefined && toAmount > 0 && (
                     <div className="muted inline-block">
-                      ${"\u200a"}
+                      ${"\u200a\u200d"}
                       {formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                       <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                   )}
                   {toAmount !== undefined &&
                     displayLiquidationPrice !== undefined &&
-                    `$\u200a${formatAmount(displayLiquidationPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
+                    `$\u200a\u200d${formatAmount(displayLiquidationPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
                   {toAmount === undefined && displayLiquidationPrice !== undefined && `-`}
                   {displayLiquidationPrice === undefined && `-`}
                 </div>
@@ -1754,7 +1754,7 @@ export default function SwapBox(props) {
                 <Trans>{fromToken.symbol} Price</Trans>
               </div>
               <div className="align-right">
-                ${"\u200a"}
+                ${"\u200a\u200d"}
                 {fromTokenInfo && formatAmount(fromTokenInfo.minPrice, USD_DECIMALS, 2, true)}
               </div>
             </div>
@@ -1773,7 +1773,7 @@ export default function SwapBox(props) {
 
               <div className="align-right al-swap">
                 <Tooltip
-                  handle={`$\u200a${formatAmount(maxSwapAmountUsd, USD_DECIMALS, 2, true)}`}
+                  handle={`$\u200a\u200d${formatAmount(maxSwapAmountUsd, USD_DECIMALS, 2, true)}`}
                   position="bottom-end"
                   renderContent={() => {
                     return (
@@ -1805,7 +1805,7 @@ export default function SwapBox(props) {
               </div>
               <div className="align-right">
                 <Tooltip
-                  handle={`$\u200a${formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
+                  handle={`$\u200a\u200d${formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
                   position="bottom-end"
                   renderContent={() => {
                     return (
@@ -1837,7 +1837,7 @@ export default function SwapBox(props) {
               </div>
               <div className="align-right">
                 <Tooltip
-                  handle={`$\u200a${formatAmount(exitMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
+                  handle={`$\u200a\u200d${formatAmount(exitMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
                   position="bottom-end"
                   renderContent={() => {
                     return (
@@ -1911,7 +1911,7 @@ export default function SwapBox(props) {
                 </div>
                 <div className="align-right">
                   <Tooltip
-                    handle={`$\u200a${formatAmount(toTokenInfo.maxAvailableShort, USD_DECIMALS, 2, true)}`}
+                    handle={`$\u200a\u200d${formatAmount(toTokenInfo.maxAvailableShort, USD_DECIMALS, 2, true)}`}
                     position="bottom-end"
                     renderContent={() => {
                       return (
