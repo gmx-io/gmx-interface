@@ -14,7 +14,7 @@ import { getSwapPathOutputAddresses, getSwapPathStats } from "utils/swap/swapSta
 
 import { bigMath } from "./bigmath";
 import { getByKey } from "./objects";
-import { parsePositionKey } from "./positions";
+import { getPositionKey, parsePositionKey } from "./positions";
 import { getOrderThresholdType } from "./prices";
 import {
   convertToTokenAmount,
@@ -317,4 +317,13 @@ export function isOrderForPositionByData(
   }
 
   return isMatch;
+}
+
+export function getOrderTradeboxKey(order: OrderInfo) {
+  if (isPositionOrder(order) || isTwapPositionOrder(order)) {
+    return `POSITION-${getPositionKey(order.account, order.marketAddress, order.initialCollateralTokenAddress, order.isLong)}`;
+  }
+
+  const marketAddress = order.swapPath[order.swapPath.length - 1];
+  return `SWAP-${order.account}:${marketAddress}:${order.initialCollateralTokenAddress}:${order.targetCollateralToken.address}`;
 }

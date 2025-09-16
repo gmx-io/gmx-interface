@@ -326,6 +326,7 @@ export const selectTradeboxTriggerRatioInputValue = (s: SyntheticsState) => s.tr
 export const selectTradeboxLeverageOption = (s: SyntheticsState) => s.tradebox.leverageOption;
 export const selectTradeboxKeepLeverage = (s: SyntheticsState) => s.tradebox.keepLeverage;
 export const selectTradeboxSetActivePosition = (s: SyntheticsState) => s.tradebox.setActivePosition;
+export const selectTradeboxSetActiveOrder = (s: SyntheticsState) => s.tradebox.setActiveOrder;
 export const selectTradeboxSetToTokenAddress = (s: SyntheticsState) => s.tradebox.setToTokenAddress;
 export const selectTradeboxSetTradeConfig = (s: SyntheticsState) => s.tradebox.setTradeConfig;
 export const selectTradeboxSetKeepLeverage = (s: SyntheticsState) => s.tradebox.setKeepLeverage;
@@ -1009,6 +1010,39 @@ export const selectTradeboxSelectedPositionKey = createSelectorDeprecated(
     }
 
     return getPositionKey(account, marketAddress, collateralAddress, tradeFlags.isLong);
+  }
+);
+
+export const selectTradeboxActiveMarketAddress = createSelector((q) => {
+  const tradeFlags = q(selectTradeboxTradeFlags);
+  const marketAddress = q(selectTradeboxMarketAddress);
+  if (!tradeFlags.isSwap) {
+    return marketAddress;
+  }
+
+  const swapStrategy = q(selectTradeboxSwapStrategy);
+  return swapStrategy?.swapPathStats?.swapPath[swapStrategy.swapPathStats.swapPath.length - 1];
+});
+
+export const selectTradeboxSelectedOrderKey = createSelectorDeprecated(
+  [
+    selectAccount,
+    selectTradeboxCollateralTokenAddress,
+    selectTradeboxActiveMarketAddress,
+    selectTradeboxTradeFlags,
+    selectTradeboxFromTokenAddress,
+    selectTradeboxToTokenAddress,
+  ],
+  (account, collateralAddress, marketAddress, tradeFlags, fromTokenAddress, toTokenAddress) => {
+    if (!account || !collateralAddress) {
+      return undefined;
+    }
+
+    if (!tradeFlags.isSwap && marketAddress) {
+      return `POSITION-${getPositionKey(account, marketAddress, collateralAddress, tradeFlags.isLong)}`;
+    }
+
+    return `SWAP-${account}:${marketAddress}:${fromTokenAddress}:${toTokenAddress}`;
   }
 );
 

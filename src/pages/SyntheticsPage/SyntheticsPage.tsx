@@ -23,6 +23,7 @@ import {
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import {
   selectTradeboxMaxLiquidityPath,
+  selectTradeboxSetActiveOrder,
   selectTradeboxSetActivePosition,
   selectTradeboxState,
   selectTradeboxTradeFlags,
@@ -113,6 +114,7 @@ export function SyntheticsPage(p: Props) {
   );
 
   const setActivePosition = useSelector(selectTradeboxSetActivePosition);
+  const setActiveOrder = useSelector(selectTradeboxSetActiveOrder);
 
   useTradeParamsProcessor();
   useSetOrdersAutoCancelByQueryParams();
@@ -199,6 +201,18 @@ export function SyntheticsPage(p: Props) {
       }
     },
     [calcSelector, setActivePosition, setIsCurtainOpen]
+  );
+
+  const onSelectOrderClick = useCallback(
+    (orderKey: string) => {
+      const ordersInfoData = calcSelector(selectOrdersInfoData);
+      const order = getByKey(ordersInfoData, orderKey);
+
+      if (!order) return;
+
+      setActiveOrder(order);
+    },
+    [calcSelector, setActiveOrder]
   );
 
   const renderOrdersTabTitle = useCallback(() => {
@@ -362,6 +376,7 @@ export function SyntheticsPage(p: Props) {
                   orderTypesFilter={orderTypesFilter}
                   setOrderTypesFilter={setOrderTypesFilter}
                   onCancelSelectedOrders={onCancelSelectedOrders}
+                  onSelectOrderClick={onSelectOrderClick}
                 />
               )}
               {listSection === ListSection.Trades && <TradeHistory account={account} />}
@@ -442,6 +457,7 @@ export function SyntheticsPage(p: Props) {
                 orderTypesFilter={orderTypesFilter}
                 setOrderTypesFilter={setOrderTypesFilter}
                 onCancelSelectedOrders={onCancelSelectedOrders}
+                onSelectOrderClick={onSelectOrderClick}
               />
             )}
             {listSection === ListSection.Trades && <TradeHistory account={account} />}
