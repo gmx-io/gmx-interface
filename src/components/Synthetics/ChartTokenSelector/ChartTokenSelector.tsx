@@ -1,8 +1,9 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import partition from "lodash/partition";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FaChevronDown } from "react-icons/fa6";
+import { usePrevious } from "react-use";
 import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
@@ -170,9 +171,16 @@ function MarketsList() {
 
   const close = useSelectorClose();
 
-  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("chart-token-selector");
+  const { orderBy, direction, getSorterProps, setOrderBy } = useSorterHandlers<SortField>("chart-token-selector");
   const [searchKeyword, setSearchKeyword] = useState("");
   const isSwap = tradeType === TradeType.Swap;
+  const prevIsSwap = usePrevious(isSwap);
+
+  useEffect(() => {
+    if (isSwap !== prevIsSwap) {
+      setOrderBy("unspecified");
+    }
+  }, [isSwap, setOrderBy, prevIsSwap]);
 
   const sortedTokens = useFilterSortTokens({
     chainId,
@@ -463,7 +471,6 @@ function useFilterSortTokens({
       dayVolumes,
       indexTokenStatsMap,
       getMaxLongShortLiquidityPool,
-      isSwap,
     });
 
     const sortedFavorites = favorites.slice().sort(sorter);
@@ -482,7 +489,6 @@ function useFilterSortTokens({
     indexTokenStatsMap,
     getMaxLongShortLiquidityPool,
     favoriteTokens,
-    isSwap,
   ]);
 
   return sortedTokens;
@@ -704,7 +710,6 @@ function tokenSortingComparatorBuilder({
   dayVolumes,
   indexTokenStatsMap,
   getMaxLongShortLiquidityPool,
-  isSwap,
 }: {
   chainId: number;
   orderBy: SortField;
@@ -717,18 +722,12 @@ function tokenSortingComparatorBuilder({
     maxLongLiquidityPool: TokenOption;
     maxShortLiquidityPool: TokenOption;
   };
-  isSwap: boolean;
 }) {
   const directionMultiplier = direction === "asc" ? 1 : -1;
 
   return (a: Token, b: Token) => {
     const aAddress = convertTokenAddress(chainId, a.address, "wrapped");
     const bAddress = convertTokenAddress(chainId, b.address, "wrapped");
-
-    if (isSwap) {
-      // Swap tokens are already sorted by long and short tokens
-      return 0;
-    }
 
     if (orderBy === "unspecified" || direction === "unspecified") {
       // Tokens are already sorted by pool size
