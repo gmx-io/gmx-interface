@@ -450,7 +450,7 @@ export default function OrdersList(props) {
                 </div>
                 <div>
                   <span className="numbers">
-                    ${"\u200a"}
+                    ${"\u200a\u200d"}
                     {formatAmount(collateralUSD, USD_DECIMALS, 2, true)}
                   </span>{" "}
                   (<span className="numbers">{formatAmount(order.amountIn, fromTokenInfo.decimals, 4, true)}</span>{" "}
@@ -542,7 +542,7 @@ export default function OrdersList(props) {
                 </div>
                 <div>
                   <span className="numbers">
-                    ${"\u200a"}
+                    ${"\u200a\u200d"}
                     {formatAmount(collateralUSD, USD_DECIMALS, 2, true)}
                   </span>{" "}
                   (

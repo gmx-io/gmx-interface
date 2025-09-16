@@ -8,7 +8,7 @@ import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/S
 import { useUserStat } from "domain/legacy";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { getTotalVolumeSum, shouldShowRedirectModal } from "lib/legacy";
-import { bigNumberify, formatUsd, numberWithCommas } from "lib/numbers";
+import { bigNumberify, formatBigUsd, numberWithCommas } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageLaunchAppEvent, LandingPageViewEvent } from "lib/userAnalytics/types";
 import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
@@ -186,7 +186,7 @@ export default function Home({ showRedirectModal }) {
               <div className="Home-latest-info__title">
                 <Trans>Total Trading Volume</Trans>
               </div>
-              <div className="Home-latest-info__value">{formatUsd(totalVolumeSum)}</div>
+              <div className="Home-latest-info__value">{formatBigUsd(totalVolumeSum)}</div>
             </div>
           </div>
           <div className="Home-latest-info-block">
@@ -195,7 +195,7 @@ export default function Home({ showRedirectModal }) {
               <div className="Home-latest-info__title">
                 <Trans>Open Interest</Trans>
               </div>
-              <div className="Home-latest-info__value">{formatUsd(openInterest)}</div>
+              <div className="Home-latest-info__value">{formatBigUsd(openInterest)}</div>
             </div>
           </div>
           <div className="Home-latest-info-block">

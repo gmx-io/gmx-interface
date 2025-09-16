@@ -14,7 +14,7 @@ import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { formatDate } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { shortenAddress } from "lib/legacy";
-import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatBalanceAmount, formatBigUsd, formatUsd } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
 import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
@@ -198,7 +198,7 @@ function AffiliatesStats({
           }
         />
         <ReferralInfoCard
-          value={formatUsd(currentReferralsData?.affiliateTotalStats?.volume)}
+          value={formatBigUsd(currentReferralsData?.affiliateTotalStats?.volume)}
           label={t`Trading Volume`}
           labelTooltipText={t`Volume traded by your referred traders.`}
           tooltipContent={
@@ -243,7 +243,7 @@ function AffiliatesStats({
           }
         />
         <ReferralInfoCard
-          value={formatUsd(currentReferralsData?.affiliateTotalStats?.affiliateRebateUsd)}
+          value={formatBigUsd(currentReferralsData?.affiliateTotalStats?.affiliateRebateUsd)}
           label={t`Rebates`}
           labelTooltipText={t`Rebates earned as an affiliate.`}
           tooltipContent={
@@ -393,7 +393,7 @@ function AffiliatesStats({
                       </TableTd>
                       <TableTd data-label="Total Volume">
                         <Tooltip
-                          handle={formatUsd(stat.volume)}
+                          handle={formatBigUsd(stat.volume)}
                           handleClassName="numbers"
                           position="bottom-start"
                           className="whitespace-nowrap"
@@ -418,7 +418,7 @@ function AffiliatesStats({
                       </TableTd>
                       <TableTd data-label="Total Rebates">
                         <Tooltip
-                          handle={formatUsd(stat.affiliateRebateUsd)}
+                          handle={formatBigUsd(stat.affiliateRebateUsd)}
                           handleClassName="numbers"
                           position="bottom-start"
                           className="whitespace-nowrap"
@@ -539,7 +539,7 @@ function AffiliatesStats({
                                   &nbsp;
                                 </>
                               )}
-                              {formatUsd(totalUsd)}
+                              {formatBigUsd(totalUsd)}
                             </div>
                           }
                           renderContent={() => (
