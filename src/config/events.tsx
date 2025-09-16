@@ -25,7 +25,25 @@ export type EventData = {
 
 export const homeEventsData: EventData[] = [];
 
+export const MKR_USD_DELISTING_EVENT_ID = "mkr-usd-delisting";
+
 export const appEventsData: EventData[] = [
+  {
+    id: MKR_USD_DELISTING_EVENT_ID,
+    isActive: true,
+    startDate: "16 Sep 2025, 10:00",
+    endDate: "30 Sep 2025, 12:00",
+    title: "MKR/USD delisting",
+    bodyText: (
+      <>
+        Position opening for MKR/USD are no longer available. Existing positions remain open, but closing is
+        recommended.
+        <br />
+        <br />
+        The listing committee will evaluate listing SKY/USD.
+      </>
+    ),
+  },
   {
     id: "new-interface-and-price-impact-improvements",
     isActive: true,
