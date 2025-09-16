@@ -4,7 +4,7 @@ import { Quarter } from "./Quarter";
 
 export function Quareters() {
   return (
-    <div className="flex flex-row gap-0 overflow-x-scroll pt-8">
+    <div className="flex flex-row gap-0 overflow-x-scroll pt-8 scrollbar-hide">
       <Quarter lastCompleted>
         <Trans>
           <p>Solana Support</p>
