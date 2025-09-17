@@ -28,9 +28,9 @@ export function useFilterSortPools({
   searchText,
   tab,
   favoriteTokens,
-  gmPerformance,
+  performance,
 }: {
-  gmPerformance: PerformanceData | undefined;
+  performance: PerformanceData | undefined;
   marketsInfo: MarketsInfoData | undefined;
   marketTokensData: TokensData | undefined;
   orderBy: SortField;
@@ -88,7 +88,7 @@ export function useFilterSortPools({
       marketsTokensApyData,
       marketsTokensIncentiveAprData,
       marketsTokensLidoAprData,
-      gmPerformance,
+      performance,
     });
   }, [
     marketsInfo,
@@ -99,7 +99,7 @@ export function useFilterSortPools({
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
-    gmPerformance,
+    performance,
   ]);
 
   const filteredTokens = useMemo(() => {

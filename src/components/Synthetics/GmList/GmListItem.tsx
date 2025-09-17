@@ -21,10 +21,10 @@ import {
   getMarketPoolName,
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { PerformanceSnapshot, formatPerformanceBps } from "domain/synthetics/markets/performance";
+import { formatPerformanceBps } from "domain/synthetics/markets/performance";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformanceAnnualized";
-import { PerformanceSnapshotsData } from "domain/synthetics/markets/useGmGlvPerformanceSnapshots";
+import { PerformanceSnapshot, PerformanceSnapshotsData } from "domain/synthetics/markets/useGmGlvPerformanceSnapshots";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { TokenData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
@@ -55,10 +55,8 @@ export function GmListItem({
   glvTokensApyData,
   isFavorite,
   onFavoriteClick,
-  glvPerformance,
-  gmPerformance,
-  glvPerformanceSnapshots,
-  gmPerformanceSnapshots,
+  performance,
+  performanceSnapshots,
 }: {
   token: TokenData;
   marketsTokensApyData: MarketTokensAPRData | undefined;
@@ -68,10 +66,8 @@ export function GmListItem({
   glvTokensApyData: MarketTokensAPRData | undefined;
   isFavorite: boolean | undefined;
   onFavoriteClick: ((address: string) => void) | undefined;
-  glvPerformance: PerformanceData | undefined;
-  gmPerformance: PerformanceData | undefined;
-  glvPerformanceSnapshots: PerformanceSnapshotsData | undefined;
-  gmPerformanceSnapshots: PerformanceSnapshotsData | undefined;
+  performance: PerformanceData | undefined;
+  performanceSnapshots: PerformanceSnapshotsData | undefined;
 }) {
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
@@ -130,10 +126,8 @@ export function GmListItem({
     onFavoriteClick?.(marketOrGlvTokenAddress);
   };
 
-  const performance = isGlv ? glvPerformance?.[token.address] : gmPerformance?.[token.address];
-  const performanceSnapshots = isGlv
-    ? glvPerformanceSnapshots?.[token.address]
-    : gmPerformanceSnapshots?.[token.address];
+  const tokenPerformance = performance?.[token.address];
+  const tokenPerformanceSnapshots = performanceSnapshots?.[token.address];
 
   if (isMobile) {
     return (
@@ -168,7 +162,10 @@ export function GmListItem({
             </div>
           </div>
           <div className="ml-auto flex items-center gap-8">
-            <SnapshotGraph performanceSnapshots={performanceSnapshots ?? EMPTY_ARRAY} performance={performance ?? 0} />
+            <SnapshotGraph
+              performanceSnapshots={tokenPerformanceSnapshots ?? EMPTY_ARRAY}
+              performance={tokenPerformance ?? 0}
+            />
 
             {onFavoriteClick ? (
               <div>
@@ -212,8 +209,8 @@ export function GmListItem({
           />
           <SyntheticsInfoRow
             label={<PerformanceLabel />}
-            value={performance ? formatPerformanceBps(performance) : "..."}
-            valueClassName={performance ? "numbers" : undefined}
+            value={tokenPerformance ? formatPerformanceBps(tokenPerformance) : "..."}
+            valueClassName={tokenPerformance ? "numbers" : undefined}
           />
         </div>
 
@@ -288,11 +285,14 @@ export function GmListItem({
       </TableTdActionable>
 
       <TableTdActionable className="w-[18%]">
-        {performance ? <div className="numbers">{formatPerformanceBps(performance)}</div> : "..."}
+        {tokenPerformance ? <div className="numbers">{formatPerformanceBps(tokenPerformance)}</div> : "..."}
       </TableTdActionable>
 
       <TableTdActionable className="w-[14%]">
-        <SnapshotGraph performanceSnapshots={performanceSnapshots ?? EMPTY_ARRAY} performance={performance ?? 0} />
+        <SnapshotGraph
+          performanceSnapshots={tokenPerformanceSnapshots ?? EMPTY_ARRAY}
+          performance={tokenPerformance ?? 0}
+        />
       </TableTdActionable>
 
       <TableTdActionable className="w-[10%] pr-16">

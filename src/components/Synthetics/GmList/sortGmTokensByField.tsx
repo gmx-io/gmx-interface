@@ -16,7 +16,7 @@ export function sortGmTokensByField({
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
-  gmPerformance,
+  performance,
 }: {
   marketsInfo: MarketsInfoData;
   marketTokensData: TokensData;
@@ -25,7 +25,7 @@ export function sortGmTokensByField({
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
-  gmPerformance: PerformanceData | undefined;
+  performance: PerformanceData | undefined;
 }) {
   const gmTokens = values(marketTokensData);
 
@@ -74,8 +74,8 @@ export function sortGmTokensByField({
 
   if (orderBy === "performance") {
     return gmTokens.sort((a, b) => {
-      const performanceA = gmPerformance?.[a.address] ?? 0;
-      const performanceB = gmPerformance?.[b.address] ?? 0;
+      const performanceA = performance?.[a.address] ?? 0;
+      const performanceB = performance?.[b.address] ?? 0;
 
       return performanceA > performanceB ? directionMultiplier : -directionMultiplier;
     });

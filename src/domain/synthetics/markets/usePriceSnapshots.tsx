@@ -4,7 +4,6 @@ import useSWR from "swr";
 
 import { getSubsquidGraphClient } from "lib/subgraph";
 
-import { PriceSnapshot } from "./performance";
 import { Period } from "./usePoolsTimeRange";
 
 const PRICES_QUERY = gql`
@@ -32,6 +31,14 @@ export type PriceData = {
 
 export type PriceDataMapped = {
   [tokenAddress: string]: Record<number, PriceSnapshot>;
+};
+
+export type PriceSnapshot = {
+  minPrice: string;
+  maxPrice: string;
+  snapshotTimestamp: number;
+  token: string;
+  type: string;
 };
 
 export function usePriceSnapshots({

@@ -26,31 +26,17 @@ export function useGmGlvPerformanceAnnualized({
     },
   });
 
-  const glvPerformance = useMemo(() => {
+  const performance = useMemo(() => {
     if (!apiData) return {};
 
-    return apiData
-      .filter((item) => item.entity === "Glv")
-      .reduce((acc, item) => {
-        acc[item.address] = parseFloat(item.uniswapV2Performance);
-        return acc;
-      }, {} as PerformanceData);
-  }, [apiData]);
-
-  const gmPerformance = useMemo(() => {
-    if (!apiData) return {};
-
-    return apiData
-      .filter((item) => item.entity === "Market")
-      .reduce((acc, item) => {
-        acc[item.address] = parseFloat(item.uniswapV2Performance);
-        return acc;
-      }, {} as PerformanceData);
+    return apiData.reduce((acc, item) => {
+      acc[item.address] = parseFloat(item.uniswapV2Performance);
+      return acc;
+    }, {} as PerformanceData);
   }, [apiData]);
 
   return {
-    glvPerformance,
-    gmPerformance,
+    performance,
     data: apiData,
     error,
     isLoading,

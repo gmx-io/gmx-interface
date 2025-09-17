@@ -40,10 +40,8 @@ export type Props = {
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   glvTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
-  glvPerformance: PerformanceData | undefined;
-  gmPerformance: PerformanceData | undefined;
-  glvPerformanceSnapshots: PerformanceSnapshotsData | undefined;
-  gmPerformanceSnapshots: PerformanceSnapshotsData | undefined;
+  performance: PerformanceData | undefined;
+  performanceSnapshots: PerformanceSnapshotsData | undefined;
   isDeposit: boolean;
 };
 
@@ -54,10 +52,8 @@ export function GmList({
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
   isDeposit,
-  glvPerformance,
-  gmPerformance,
-  glvPerformanceSnapshots,
-  gmPerformanceSnapshots,
+  performance,
+  performanceSnapshots,
 }: Props) {
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
@@ -83,7 +79,7 @@ export function GmList({
     searchText,
     tab,
     favoriteTokens,
-    gmPerformance,
+    performance,
   });
 
   const { currentPage, currentData, pageCount, setCurrentPage } = usePagination(
@@ -108,10 +104,8 @@ export function GmList({
         marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
         marketsTokensLidoAprData={marketsTokensLidoAprData}
         glvTokensApyData={undefined}
-        glvPerformance={glvPerformance}
-        gmPerformance={gmPerformance}
-        glvPerformanceSnapshots={glvPerformanceSnapshots}
-        gmPerformanceSnapshots={gmPerformanceSnapshots}
+        performance={performance}
+        performanceSnapshots={performanceSnapshots}
         isFavorite={favoriteTokens.includes(token.address)}
         onFavoriteClick={toggleFavoriteToken}
       />

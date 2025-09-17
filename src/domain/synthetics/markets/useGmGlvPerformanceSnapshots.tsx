@@ -31,37 +31,20 @@ export function useGmGlvPerformanceSnapshots({
     },
   });
 
-  const glvPerformanceSnapshots = useMemo(() => {
+  const performanceSnapshots = useMemo(() => {
     if (!apiData) return {};
 
-    return apiData
-      .filter((item) => item.entity === "Glv")
-      .reduce((acc, item) => {
-        acc[item.address] = item.snapshots.map((snapshot) => ({
-          snapshotTimestamp: parseInt(snapshot.snapshotTimestamp),
-          performance: parseFloat(snapshot.uniswapV2Performance),
-        }));
-        return acc;
-      }, {} as PerformanceSnapshotsData);
-  }, [apiData]);
-
-  const gmPerformanceSnapshots = useMemo(() => {
-    if (!apiData) return {};
-
-    return apiData
-      .filter((item) => item.entity === "Market")
-      .reduce((acc, item) => {
-        acc[item.address] = item.snapshots.map((snapshot) => ({
-          snapshotTimestamp: parseInt(snapshot.snapshotTimestamp),
-          performance: parseFloat(snapshot.uniswapV2Performance),
-        }));
-        return acc;
-      }, {} as PerformanceSnapshotsData);
+    return apiData.reduce((acc, item) => {
+      acc[item.address] = item.snapshots.map((snapshot) => ({
+        snapshotTimestamp: parseInt(snapshot.snapshotTimestamp),
+        performance: parseFloat(snapshot.uniswapV2Performance),
+      }));
+      return acc;
+    }, {} as PerformanceSnapshotsData);
   }, [apiData]);
 
   return {
-    glvPerformanceSnapshots,
-    gmPerformanceSnapshots,
+    performanceSnapshots,
     data: apiData,
     error,
     isLoading,

@@ -33,12 +33,12 @@ export default function Pools() {
     glvApyInfoData,
   } = useGmMarketsApy(chainId, srcChainId, { period: apyPeriod });
 
-  const { glvPerformance, gmPerformance } = useGmGlvPerformanceAnnualized({
+  const { performance } = useGmGlvPerformanceAnnualized({
     chainId,
     period: timeRange,
   });
 
-  const { glvPerformanceSnapshots, gmPerformanceSnapshots } = useGmGlvPerformanceSnapshots({
+  const { performanceSnapshots } = useGmGlvPerformanceSnapshots({
     chainId,
     period: timeRange,
   });
@@ -75,10 +75,8 @@ export default function Pools() {
             glvTokensIncentiveAprData={glvTokensIncentiveAprData}
             marketsTokensLidoAprData={marketsTokensLidoAprData}
             glvTokensApyData={glvApyInfoData}
-            glvPerformance={glvPerformance}
-            gmPerformance={gmPerformance}
-            glvPerformanceSnapshots={glvPerformanceSnapshots}
-            gmPerformanceSnapshots={gmPerformanceSnapshots}
+            performance={performance}
+            performanceSnapshots={performanceSnapshots}
             isDeposit
           />
         )}
@@ -89,10 +87,8 @@ export default function Pools() {
           marketsTokensApyData={marketsTokensApyData}
           marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
           marketsTokensLidoAprData={marketsTokensLidoAprData}
-          glvPerformance={glvPerformance}
-          gmPerformance={gmPerformance}
-          glvPerformanceSnapshots={glvPerformanceSnapshots}
-          gmPerformanceSnapshots={gmPerformanceSnapshots}
+          performance={performance}
+          performanceSnapshots={performanceSnapshots}
           isDeposit
         />
       </div>
