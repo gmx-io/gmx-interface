@@ -6,24 +6,17 @@ import { ReactNode, useEffect, useMemo, useState } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { USD_DECIMALS } from "config/factors";
-import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import {
-  GlvOrMarketInfo,
-  MarketTokensAPRData,
-  useMarketTokensData,
-  useMarketsInfoRequest,
-} from "domain/synthetics/markets";
-import { isGlvEnabled, isGlvInfo } from "domain/synthetics/markets/glv";
+import { GlvOrMarketInfo, MarketTokensAPRData, useMarketTokensData } from "domain/synthetics/markets";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { PerformanceSnapshot, PriceSnapshot, formatPerformanceBps } from "domain/synthetics/markets/performance";
-import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { AprSnapshot, useGmGlvAprSnapshots } from "domain/synthetics/markets/useGmGlvAprSnapshots";
-import { useGmGlvPerformance } from "domain/synthetics/markets/useGmGlvPerformance";
+import { useGmGlvPerformanceAnnualized } from "domain/synthetics/markets/useGmGlvPerformanceAnnualized";
+import { useGmGlvPerformanceSnapshots } from "domain/synthetics/markets/useGmGlvPerformanceSnapshots";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { POOLS_TIME_RANGE_OPTIONS, convertPoolsTimeRangeToPeriod } from "domain/synthetics/markets/usePoolsTimeRange";
 import { PoolsTimeRange, usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
+import { usePriceSnapshots } from "domain/synthetics/markets/usePriceSnapshots";
 import { TokensData, getMidPrice } from "domain/synthetics/tokens";
-import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
 import { bigintToNumber, formatPercentage, formatUsdPrice, parseValue } from "lib/numbers";
@@ -87,19 +80,8 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
   const address = isGlvInfo(glvOrMarketInfo) ? glvOrMarketInfo.glvTokenAddress : glvOrMarketInfo.marketTokenAddress;
 
   const { chainId, srcChainId } = useChainId();
-  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
-  const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
-  const enabledGlv = isGlvEnabled(chainId);
-  const account = useSelector(selectAccount);
 
   const { marketsTokensApyData, glvApyInfoData } = useGmMarketsApy(chainId, srcChainId, { period: timeRange });
-
-  const { glvData } = useGlvMarketsInfo(enabledGlv, {
-    marketsInfoData: onlyGmMarketsInfoData,
-    tokensData,
-    chainId,
-    account,
-  });
 
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: true, withGlv: true });
 
@@ -107,14 +89,21 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
     return [glvOrMarketInfo.longTokenAddress, glvOrMarketInfo.shortTokenAddress, address];
   }, [glvOrMarketInfo.longTokenAddress, glvOrMarketInfo.shortTokenAddress, address]);
 
-  const { glvPerformance, gmPerformance, glvPerformanceSnapshots, gmPerformanceSnapshots, prices } =
-    useGmGlvPerformance({
-      chainId,
-      period: convertPoolsTimeRangeToPeriod(timeRange),
-      gmData: onlyGmMarketsInfoData,
-      glvData,
-      tokenAddresses,
-    });
+  const { glvPerformance, gmPerformance } = useGmGlvPerformanceAnnualized({
+    chainId,
+    period: timeRange,
+  });
+
+  const { glvPerformanceSnapshots, gmPerformanceSnapshots } = useGmGlvPerformanceSnapshots({
+    chainId,
+    period: timeRange,
+  });
+
+  const { prices } = usePriceSnapshots({
+    chainId,
+    period: convertPoolsTimeRangeToPeriod(timeRange),
+    tokenAddresses,
+  });
 
   const { aprSnapshots } = useGmGlvAprSnapshots({
     chainId,

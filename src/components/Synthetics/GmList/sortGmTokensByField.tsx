@@ -2,7 +2,7 @@ import values from "lodash/values";
 
 import type { SortDirection } from "context/SorterContext/types";
 import { MarketTokensAPRData, MarketsInfoData } from "domain/synthetics/markets";
-import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformance";
+import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformanceAnnualized";
 import { convertToUsd, type TokensData } from "domain/synthetics/tokens";
 
 import type { SortField } from "./GmList";

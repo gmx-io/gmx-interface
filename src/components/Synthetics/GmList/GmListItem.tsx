@@ -23,8 +23,8 @@ import {
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { PerformanceSnapshot, formatPerformanceBps } from "domain/synthetics/markets/performance";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
-import { PerformanceSnapshotsData } from "domain/synthetics/markets/useGmGlvPerformance";
-import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformance";
+import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformanceAnnualized";
+import { PerformanceSnapshotsData } from "domain/synthetics/markets/useGmGlvPerformanceSnapshots";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { TokenData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";

@@ -86,6 +86,25 @@ export type ApyInfo = {
 
 export type ApyPeriod = "1d" | "7d" | "30d" | "90d" | "180d" | "total";
 
+export type PerformancePeriod = "1d" | "7d" | "30d" | "90d" | "180d" | "total";
+
+export type PerformanceAnnualizedResponse = {
+  address: string;
+  entity: "Market" | "Glv";
+  longTokenPerformance: string;
+  shortTokenPerformance: string;
+  uniswapV2Performance: string;
+}[];
+
+export type PerformanceSnapshotsResponse = {
+  address: string;
+  entity: "Market" | "Glv";
+  snapshots: {
+    snapshotTimestamp: string;
+    uniswapV2Performance: string;
+  }[];
+}[];
+
 export interface OracleFetcher {
   readonly url: string;
   fetchTickers(): Promise<TickersResponse>;
@@ -96,6 +115,8 @@ export interface OracleFetcher {
   fetchPostFeedback(body: UserFeedbackBody, debug?: boolean): Promise<Response>;
   fetchUiVersion(currentVersion: number, active: boolean): Promise<number>;
   fetchApys(period: ApyPeriod, debug?: boolean): Promise<ApyInfo>;
+  fetchPerformanceAnnualized(period: PerformancePeriod): Promise<PerformanceAnnualizedResponse>;
+  fetchPerformanceSnapshots(period: PerformancePeriod): Promise<PerformanceSnapshotsResponse>;
 }
 
 export type TickersResponse = {

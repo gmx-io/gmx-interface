@@ -2,17 +2,11 @@ import cx from "classnames";
 import { useMemo } from "react";
 
 import { BOTANIX } from "config/chains";
-import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { isGlvEnabled } from "domain/synthetics/markets/glv";
-import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
-import { useGmGlvPerformance } from "domain/synthetics/markets/useGmGlvPerformance";
+import { useGmGlvPerformanceAnnualized } from "domain/synthetics/markets/useGmGlvPerformanceAnnualized";
+import { useGmGlvPerformanceSnapshots } from "domain/synthetics/markets/useGmGlvPerformanceSnapshots";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
-import { useMarketsInfoRequest } from "domain/synthetics/markets/useMarketsInfoRequest";
 import { convertPoolsTimeRangeToApyPeriod, usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
-import { convertPoolsTimeRangeToPeriod } from "domain/synthetics/markets/usePoolsTimeRange";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
-import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
 
@@ -29,8 +23,6 @@ export default function Pools() {
 
   const { chainId, srcChainId } = useChainId();
 
-  const period = useMemo(() => convertPoolsTimeRangeToPeriod(timeRange), [timeRange]);
-
   const apyPeriod = useMemo(() => convertPoolsTimeRangeToApyPeriod(timeRange), [timeRange]);
 
   const {
@@ -41,23 +33,14 @@ export default function Pools() {
     glvApyInfoData,
   } = useGmMarketsApy(chainId, srcChainId, { period: apyPeriod });
 
-  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
-  const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
-  const enabledGlv = isGlvEnabled(chainId);
-  const account = useSelector(selectAccount);
-
-  const { glvData } = useGlvMarketsInfo(enabledGlv, {
-    marketsInfoData: onlyGmMarketsInfoData,
-    tokensData,
+  const { glvPerformance, gmPerformance } = useGmGlvPerformanceAnnualized({
     chainId,
-    account,
+    period: timeRange,
   });
 
-  const { glvPerformance, gmPerformance, glvPerformanceSnapshots, gmPerformanceSnapshots } = useGmGlvPerformance({
+  const { glvPerformanceSnapshots, gmPerformanceSnapshots } = useGmGlvPerformanceSnapshots({
     chainId,
-    period,
-    gmData: onlyGmMarketsInfoData,
-    glvData,
+    period: timeRange,
   });
 
   const isMobile = usePoolsIsMobilePage();

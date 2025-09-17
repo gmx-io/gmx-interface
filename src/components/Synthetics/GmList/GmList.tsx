@@ -9,8 +9,8 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MarketTokensAPRData, getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
-import { PerformanceSnapshotsData } from "domain/synthetics/markets/useGmGlvPerformance";
-import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformance";
+import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformanceAnnualized";
+import { PerformanceSnapshotsData } from "domain/synthetics/markets/useGmGlvPerformanceSnapshots";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import useWallet from "lib/wallets/useWallet";
 import PoolsCard from "pages/Pools/PoolsCard";
