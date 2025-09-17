@@ -34,7 +34,7 @@ export type AprData = {
   [address: string]: AprSnapshot[];
 };
 
-export function useGmGlvAprSnapshots({
+export function useAprSnapshots({
   chainId,
   period,
   tokenAddresses,
@@ -44,7 +44,7 @@ export function useGmGlvAprSnapshots({
   tokenAddresses?: string[];
 }) {
   const { data } = useSWR<AprData | undefined>(
-    ["useGmGlvAprSnapshots", period.periodStart, period.periodEnd, tokenAddresses?.join(",")],
+    ["useAprSnapshots", period.periodStart, period.periodEnd, tokenAddresses?.join(",")],
     {
       fetcher: async () => {
         const client = getSubsquidGraphClient(chainId);

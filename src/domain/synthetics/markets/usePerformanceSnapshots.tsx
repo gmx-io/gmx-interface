@@ -14,29 +14,22 @@ export type PerformanceSnapshotsData = {
   [address: string]: PerformanceSnapshot[];
 };
 
-export function useGmGlvPerformanceSnapshots({
-  chainId,
-  period = "7d",
-}: {
-  chainId: number;
-  period?: PerformancePeriod;
-}) {
+export function usePerformanceSnapshots({ chainId, period }: { chainId: number; period: PerformancePeriod }) {
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
-  const {
-    data: apiData,
-    error,
-    isLoading,
-  } = useSWR<PerformanceSnapshotsResponse>(["useGmGlvPerformanceSnapshots", chainId, period], {
-    fetcher: async () => {
-      return oracleKeeperFetcher.fetchPerformanceSnapshots(period);
-    },
-  });
+  const { data, error, isLoading } = useSWR<PerformanceSnapshotsResponse>(
+    ["usePerformanceSnapshots", chainId, period],
+    {
+      fetcher: async () => {
+        return oracleKeeperFetcher.fetchPerformanceSnapshots(period);
+      },
+    }
+  );
 
   const performanceSnapshots = useMemo(() => {
-    if (!apiData) return {};
+    if (!data) return {};
 
-    return apiData.reduce((acc, item) => {
+    return data.reduce((acc, item) => {
       acc[item.address] = item.snapshots
         .map((snapshot) => {
           const performance = parseValue(snapshot.uniswapV2Performance, PRECISION_DECIMALS);
@@ -50,11 +43,10 @@ export function useGmGlvPerformanceSnapshots({
         .sort((a, b) => a.snapshotTimestamp - b.snapshotTimestamp);
       return acc;
     }, {} as PerformanceSnapshotsData);
-  }, [apiData]);
+  }, [data]);
 
   return {
     performanceSnapshots,
-    data: apiData,
     error,
     isLoading,
   };

@@ -1,9 +1,9 @@
 import cx from "classnames";
 
 import { BOTANIX } from "config/chains";
-import { useGmGlvPerformanceAnnualized } from "domain/synthetics/markets/useGmGlvPerformanceAnnualized";
-import { useGmGlvPerformanceSnapshots } from "domain/synthetics/markets/useGmGlvPerformanceSnapshots";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
+import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerformanceAnnualized";
+import { usePerformanceSnapshots } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { useChainId } from "lib/chains";
@@ -30,12 +30,12 @@ export default function Pools() {
     glvApyInfoData,
   } = useGmMarketsApy(chainId, srcChainId, { period: timeRange });
 
-  const { performance } = useGmGlvPerformanceAnnualized({
+  const { performance } = usePerformanceAnnualized({
     chainId,
     period: timeRange,
   });
 
-  const { performanceSnapshots } = useGmGlvPerformanceSnapshots({
+  const { performanceSnapshots } = usePerformanceSnapshots({
     chainId,
     period: timeRange,
   });

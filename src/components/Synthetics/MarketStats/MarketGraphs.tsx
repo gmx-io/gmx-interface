@@ -8,13 +8,10 @@ import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YA
 import { USD_DECIMALS } from "config/factors";
 import { GlvOrMarketInfo, MarketTokensAPRData, useMarketTokensData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { AprSnapshot, useGmGlvAprSnapshots } from "domain/synthetics/markets/useGmGlvAprSnapshots";
-import { useGmGlvPerformanceAnnualized } from "domain/synthetics/markets/useGmGlvPerformanceAnnualized";
-import {
-  PerformanceSnapshot,
-  useGmGlvPerformanceSnapshots,
-} from "domain/synthetics/markets/useGmGlvPerformanceSnapshots";
+import { AprSnapshot, useAprSnapshots } from "domain/synthetics/markets/useGmGlvAprSnapshots";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
+import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerformanceAnnualized";
+import { PerformanceSnapshot, usePerformanceSnapshots } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { POOLS_TIME_RANGE_OPTIONS, convertPoolsTimeRangeToPeriod } from "domain/synthetics/markets/usePoolsTimeRange";
 import { PoolsTimeRange, usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import { PriceSnapshot, usePriceSnapshots } from "domain/synthetics/markets/usePriceSnapshots";
@@ -63,9 +60,9 @@ const getGraphValue = ({
     ? getByKey(glvApyInfoData, glvOrMarketInfo.glvTokenAddress)
     : getByKey(marketsTokensApyData, glvOrMarketInfo.marketTokenAddress);
   const tokenPrice = marketTokensData?.[address]?.prices.minPrice;
-  const addressPerformance = performance[address];
+  const marketPerformance = performance[address];
   const valuesMap: Record<MarketGraphType, string | undefined> = {
-    performance: addressPerformance ? formatPercentage(addressPerformance, { bps: false }) : undefined,
+    performance: marketPerformance ? formatPercentage(marketPerformance, { bps: false }) : undefined,
     price: tokenPrice ? formatUsdPrice(tokenPrice) : undefined,
     feeApr: apy ? formatPercentage(apy, { bps: false }) : undefined,
   };
@@ -89,12 +86,12 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
     return [glvOrMarketInfo.longTokenAddress, glvOrMarketInfo.shortTokenAddress, address];
   }, [glvOrMarketInfo.longTokenAddress, glvOrMarketInfo.shortTokenAddress, address]);
 
-  const { performance } = useGmGlvPerformanceAnnualized({
+  const { performance } = usePerformanceAnnualized({
     chainId,
     period: timeRange,
   });
 
-  const { performanceSnapshots } = useGmGlvPerformanceSnapshots({
+  const { performanceSnapshots } = usePerformanceSnapshots({
     chainId,
     period: timeRange,
   });
@@ -105,7 +102,7 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
     tokenAddresses,
   });
 
-  const { aprSnapshots } = useGmGlvAprSnapshots({
+  const { aprSnapshots } = useAprSnapshots({
     chainId,
     period: convertPoolsTimeRangeToPeriod(timeRange),
     tokenAddresses: [address],

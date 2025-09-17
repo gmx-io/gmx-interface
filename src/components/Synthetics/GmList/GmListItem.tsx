@@ -22,8 +22,8 @@ import {
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
-import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformanceAnnualized";
-import { PerformanceSnapshot, PerformanceSnapshotsData } from "domain/synthetics/markets/useGmGlvPerformanceSnapshots";
+import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
+import { PerformanceSnapshot, PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { TokenData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { bigintToNumber, formatPercentage, PRECISION_DECIMALS } from "lib/numbers";
@@ -126,8 +126,8 @@ export function GmListItem({
     onFavoriteClick?.(marketOrGlvTokenAddress);
   };
 
-  const tokenPerformance = performance?.[token.address];
-  const tokenPerformanceSnapshots = performanceSnapshots?.[token.address];
+  const marketPerformance = performance?.[token.address];
+  const marketPerformanceSnapshots = performanceSnapshots?.[token.address];
 
   if (isMobile) {
     return (
@@ -163,8 +163,8 @@ export function GmListItem({
           </div>
           <div className="ml-auto flex items-center gap-8">
             <SnapshotGraph
-              performanceSnapshots={tokenPerformanceSnapshots ?? EMPTY_ARRAY}
-              performance={tokenPerformance ?? 0n}
+              performanceSnapshots={marketPerformanceSnapshots ?? EMPTY_ARRAY}
+              performance={marketPerformance ?? 0n}
             />
 
             {onFavoriteClick ? (
@@ -209,8 +209,8 @@ export function GmListItem({
           />
           <SyntheticsInfoRow
             label={<PerformanceLabel />}
-            value={tokenPerformance ? formatPercentage(tokenPerformance, { bps: false }) : "..."}
-            valueClassName={tokenPerformance ? "numbers" : undefined}
+            value={marketPerformance ? formatPercentage(marketPerformance, { bps: false }) : "..."}
+            valueClassName={marketPerformance ? "numbers" : undefined}
           />
         </div>
 
@@ -285,13 +285,17 @@ export function GmListItem({
       </TableTdActionable>
 
       <TableTdActionable className="w-[18%]">
-        {tokenPerformance ? <div className="numbers">{formatPercentage(tokenPerformance, { bps: false })}</div> : "..."}
+        {marketPerformance ? (
+          <div className="numbers">{formatPercentage(marketPerformance, { bps: false })}</div>
+        ) : (
+          "..."
+        )}
       </TableTdActionable>
 
       <TableTdActionable className="w-[14%]">
         <SnapshotGraph
-          performanceSnapshots={tokenPerformanceSnapshots ?? EMPTY_ARRAY}
-          performance={tokenPerformance ?? 0n}
+          performanceSnapshots={marketPerformanceSnapshots ?? EMPTY_ARRAY}
+          performance={marketPerformance ?? 0n}
         />
       </TableTdActionable>
 
