@@ -14,6 +14,7 @@ import SpinningLoader from "components/Common/SpinningLoader";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import coinImg from "img/coin.png";
+import VectorCircleIcon from "img/ic_vector_circle.svg?react";
 
 type Props = {
   entryPrice: bigint | undefined;
@@ -58,8 +59,14 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
         >
           <div className="flex flex-col justify-end gap-12">
             <div className="flex gap-8">
-              <div className={cx("text-13 font-medium", isLong ? "text-green-500" : "text-red-500")}>
-                {isLong ? "LONG" : "SHORT"} {formatAmount(leverage, 4, 2, true)}x&nbsp;
+              <div
+                className={cx(
+                  "inline-flex items-center gap-4 text-13 font-medium",
+                  isLong ? "text-green-500" : "text-red-500"
+                )}
+              >
+                <VectorCircleIcon className={cx("size-14", { "rotate-180": !isLong })} />
+                {isLong ? "LONG" : "SHORT"} {formatAmount(leverage, 4, 2, true)}x
               </div>
               <div className="flex items-center gap-4 font-medium">
                 <TokenIcon symbol={indexToken.symbol} displaySize={16} importSize={24} />
