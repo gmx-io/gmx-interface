@@ -92,6 +92,16 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
 
   return (
     <Switch>
+      <Redirect exact from="/actions/v2" to="/accounts" />
+      <Redirect exact from="/actions" to="/accounts" />
+      <Redirect exact from="/actions/:account" to="/accounts/:account" />
+      {/* redirect from previous dashboard url */}
+      <RedirectWithQuery exact from="/dashboard" to="/stats" />
+      <RedirectWithQuery exact from="/monitor/v2" to="/monitor" />
+      {/* redirect from previous stake(earn) url */}
+      <RedirectWithQuery exact from="/earn" to="/stake" />
+      <RedirectWithQuery from="/v2" to="/trade" />
+
       <Route exact path="/">
         <RedirectWithQuery to="/trade" />
       </Route>
@@ -106,32 +116,33 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
           <DashboardV2 />
         </SyntheticsStateContextProvider>
       </Route>
-      {/* redirect from previous dashboard url */}
-      <RedirectWithQuery exact from="/dashboard" to="/stats" />
+
       <Route exact path="/monitor/v1">
         <Stats />
       </Route>
-      <RedirectWithQuery exact from="/monitor/v2" to="/monitor" />
+
       <Route exact path="/monitor">
         <SyntheticsStats />
       </Route>
+
       <Route exact path="/stake">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="stake">
           <Stake />
         </SyntheticsStateContextProvider>
       </Route>
-      {/* redirect from previous stake(earn) url */}
-      <RedirectWithQuery exact from="/earn" to="/stake" />
+
       <Route exact path="/buy">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="buy">
           <Buy />
         </SyntheticsStateContextProvider>
       </Route>
+
       <Route exact path="/pools">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
           <Pools />
         </SyntheticsStateContextProvider>
       </Route>
+
       <Route exact path="/pools/details">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
           <PoolsDetailsContextProvider>
@@ -145,7 +156,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
           <SyntheticsPage openSettings={openSettings} />
         </SyntheticsStateContextProvider>
       </Route>
-      <RedirectWithQuery from="/v2" to="/trade" />
+
       <Route exact path="/jobs">
         <Jobs />
       </Route>
@@ -155,30 +166,37 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/ecosystem">
         <Ecosystem />
       </Route>
+
       <Route path="/leaderboard/">
         <SyntheticsStateContextProvider skipLocalReferralCode pageType="leaderboard">
           <LeaderboardPage />
         </SyntheticsStateContextProvider>
       </Route>
+
       <Route exact path="/competitions/">
         <SyntheticsStateContextProvider skipLocalReferralCode pageType="competitions">
           <CompetitionRedirect />
         </SyntheticsStateContextProvider>
       </Route>
+
       <Route path="/competitions/:leaderboardPageKey">
         <SyntheticsStateContextProvider skipLocalReferralCode pageType="competitions">
           <LeaderboardPage />
         </SyntheticsStateContextProvider>
       </Route>
+
       <Route exact path="/referrals">
         <Referrals />
       </Route>
+
       <Route exact path="/referrals/:account">
         <Referrals />
       </Route>
+
       <Route exact path="/nft_wallet">
         <NftWallet />
       </Route>
+
       <Route exact path="/claim_es_gmx">
         <ClaimEsGmx />
       </Route>
@@ -190,13 +208,11 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
           />
         )}
       </Route>
-      <Redirect exact from="/actions/v2" to="/accounts" />
-      <Redirect exact from="/actions" to="/accounts" />
-      <Redirect exact from="/actions/:account" to="/accounts/:account" />
 
       <Route exact path="/accounts">
         <AccountsRouter />
       </Route>
+
       <Route exact path="/accounts/:account">
         <AccountDashboard />
       </Route>
@@ -204,22 +220,25 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/referrals-tier">
         <ReferralsTier />
       </Route>
+
       <Route exact path="/monitor">
         <Stats />
       </Route>
-      {isDevelopment() && (
-        <Route exact path="/ui">
-          <UiPage />
-        </Route>
-      )}
-      {isDevelopment() && (
-        <Route exact path="/permits">
-          <TestPermits />
-        </Route>
-      )}
+
       <Route path="/parsetx/:network/:tx">
         <ParseTransactionPage />
       </Route>
+
+      {isDevelopment() && (
+        <>
+          <Route exact path="/ui">
+            <UiPage />
+          </Route>
+          <Route exact path="/permits">
+            <TestPermits />
+          </Route>
+        </>
+      )}
 
       <Route path="*">
         <PageNotFound />
