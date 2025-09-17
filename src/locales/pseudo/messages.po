@@ -4847,6 +4847,10 @@ msgstr ""
 msgid "Botanix"
 msgstr ""
 
+#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
+msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take Profit / Stop Loss"
 msgstr ""
@@ -8492,8 +8496,8 @@ msgid "COLLATERAL"
 msgstr ""
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
-msgid "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
-msgstr ""
+#~ msgid "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
+#~ msgstr ""
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx

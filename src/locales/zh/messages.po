@@ -4850,6 +4850,10 @@ msgstr "保留"
 msgid "Botanix"
 msgstr "Botanix"
 
+#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
+msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take Profit / Stop Loss"
 msgstr "止盈 / 止损"
@@ -8498,8 +8502,8 @@ msgid "COLLATERAL"
 msgstr "抵押品"
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
-msgid "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
-msgstr "已累积价格影响返利。大约十天后可领取。<0/><1/><2>阅读更多</2>。"
+#~ msgid "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
+#~ msgstr "已累积价格影响返利。大约十天后可领取。<0/><1/><2>阅读更多</2>。"
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx

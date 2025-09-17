@@ -4850,6 +4850,10 @@ msgstr "Reservado"
 msgid "Botanix"
 msgstr "Botanix"
 
+#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
+msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take Profit / Stop Loss"
 msgstr "Take Profit / Stop Loss"
@@ -8498,8 +8502,8 @@ msgid "COLLATERAL"
 msgstr "GARANTÍA"
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
-msgid "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
-msgstr "Reembolsos de impacto de precio acumulados. Serán reclamables después de aproximadamente diez días.<0/><1/><2>Leer más</2>."
+#~ msgid "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
+#~ msgstr "Reembolsos de impacto de precio acumulados. Serán reclamables después de aproximadamente diez días.<0/><1/><2>Leer más</2>."
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx

@@ -4850,6 +4850,10 @@ msgstr "리저브 완료"
 msgid "Botanix"
 msgstr "Botanix"
 
+#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
+msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take Profit / Stop Loss"
 msgstr "이익 실현 / 손절"
@@ -8498,8 +8502,8 @@ msgid "COLLATERAL"
 msgstr "담보"
 
 #: src/components/Synthetics/Claims/SettleAccruedCard.tsx
-msgid "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
-msgstr "적립된 가격 영향 리베이트. 약 10일 후 청구 가능.<0/><1/><2>더 읽기</2>."
+#~ msgid "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
+#~ msgstr "적립된 가격 영향 리베이트. 약 10일 후 청구 가능.<0/><1/><2>더 읽기</2>."
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/PoolSelector2/PoolSelector2.tsx
