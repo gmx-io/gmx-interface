@@ -1013,22 +1013,11 @@ export const selectTradeboxSelectedPositionKey = createSelectorDeprecated(
   }
 );
 
-export const selectTradeboxActiveMarketAddress = createSelector((q) => {
-  const tradeFlags = q(selectTradeboxTradeFlags);
-  const marketAddress = q(selectTradeboxMarketAddress);
-  if (!tradeFlags.isSwap) {
-    return marketAddress;
-  }
-
-  const swapStrategy = q(selectTradeboxSwapStrategy);
-  return swapStrategy?.swapPathStats?.swapPath[swapStrategy.swapPathStats.swapPath.length - 1];
-});
-
 export const selectTradeboxSelectedOrderKey = createSelectorDeprecated(
   [
     selectAccount,
     selectTradeboxCollateralTokenAddress,
-    selectTradeboxActiveMarketAddress,
+    selectTradeboxMarketAddress,
     selectTradeboxTradeFlags,
     selectTradeboxFromTokenAddress,
     selectTradeboxToTokenAddress,
@@ -1042,7 +1031,7 @@ export const selectTradeboxSelectedOrderKey = createSelectorDeprecated(
       return `POSITION-${getPositionKey(account, marketAddress, collateralAddress, tradeFlags.isLong)}`;
     }
 
-    return `SWAP-${account}:${marketAddress}:${fromTokenAddress}:${toTokenAddress}`;
+    return `SWAP-${account}:${fromTokenAddress}:${toTokenAddress}`;
   }
 );
 

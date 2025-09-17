@@ -324,6 +324,5 @@ export function getOrderTradeboxKey(order: OrderInfo) {
     return `POSITION-${getPositionKey(order.account, order.marketAddress, order.initialCollateralTokenAddress, order.isLong)}`;
   }
 
-  const marketAddress = order.swapPath[order.swapPath.length - 1];
-  return `SWAP-${order.account}:${marketAddress}:${order.initialCollateralTokenAddress}:${order.targetCollateralToken.address}`;
+  return `SWAP-${order.account}:${order.initialCollateralTokenAddress}:${order.targetCollateralToken.address}`;
 }
