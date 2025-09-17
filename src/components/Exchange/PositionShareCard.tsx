@@ -2,12 +2,12 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { QRCodeSVG } from "qrcode.react";
 import { forwardRef, useMemo } from "react";
-import { useMedia } from "react-use";
 
 import { Token } from "domain/tokens";
 import { getHomeUrl } from "lib/legacy";
 import { calculateDisplayDecimals } from "lib/numbers";
 import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
+import { useBreakpoints } from "lib/useBreakpoints";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import SpinningLoader from "components/Common/SpinningLoader";
@@ -43,7 +43,7 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
     },
     ref
   ) => {
-    const isMobile = useMedia("(max-width: 400px)");
+    const { isMobile } = useBreakpoints();
     const { code, success } = userAffiliateCode;
     const homeURL = getHomeUrl();
     const style = useMemo(() => ({ backgroundImage: `url(${sharePositionBgImg})` }), [sharePositionBgImg]);
@@ -54,10 +54,11 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
       <div className="relative overflow-hidden rounded-9">
         <div
           ref={ref}
-          className="flex h-[240px] w-[460px] justify-between rounded-9 bg-contain bg-no-repeat p-20"
+          className="flex aspect-[460/240] w-[460px] justify-between rounded-9 bg-contain bg-no-repeat p-20 max-md:w-[360px] max-md:p-16 max-smallMobile:w-full"
           style={style}
         >
-          <div className="flex flex-col justify-end gap-12">
+          <img src={coinImg} alt="coin" className="z-1 absolute bottom-0 right-0 size-[100px] max-md:size-[70px]" />
+          <div className="z-3 relative flex flex-col justify-end gap-12 max-md:gap-4 max-smallMobile:gap-0">
             <div className="flex gap-8">
               <div
                 className={cx(
@@ -77,11 +78,14 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
               </div>
             </div>
             <h3
-              className={cx("text-[40px] font-medium", pnlAfterFeesPercentage < 0 ? "text-red-500" : "text-green-500")}
+              className={cx(
+                "text-[40px] font-medium max-md:text-[32px]",
+                pnlAfterFeesPercentage < 0 ? "text-red-500" : "text-green-500"
+              )}
             >
               {formatPercentage(pnlAfterFeesPercentage, { signed: true })}
             </h3>
-            <div className="flex gap-20">
+            <div className="flex gap-20 max-md:gap-10">
               <div className="flex flex-col gap-4">
                 <p className="text-caption">Entry Price</p>
                 <p className="text-13 font-medium text-white">
@@ -110,7 +114,10 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
             </div>
           </div>
 
-          <QRCodeSVG size={isMobile ? 24 : 32} value={success && code ? `${homeURL}/#/?ref=${code}` : `${homeURL}`} />
+          <div className="flex flex-col items-end justify-between">
+            <QRCodeSVG size={isMobile ? 24 : 32} value={success && code ? `${homeURL}/#/?ref=${code}` : `${homeURL}`} />
+            <div className="size-80 max-md:size-50"></div>
+          </div>
         </div>
         {loading && (
           <div className="absolute left-1/2 top-0 z-10 flex -translate-x-1/2 items-center gap-8 bg-slate-800/90 px-8 py-6">
@@ -120,7 +127,6 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
             </p>
           </div>
         )}
-        <img src={coinImg} alt="coin" className="absolute bottom-0 right-0 size-[100px]" />
       </div>
     );
   }
