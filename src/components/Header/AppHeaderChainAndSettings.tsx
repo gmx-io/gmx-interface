@@ -28,7 +28,7 @@ import { OneClickButton } from "components/OneClickButton/OneClickButton";
 
 import { HeaderLink } from "./HeaderLink";
 import { AddressDropdown } from "../AddressDropdown/AddressDropdown";
-import ConnectWalletButton from "../Common/ConnectWalletButton";
+import ConnectWalletButton from "../ConnectWalletButton/ConnectWalletButton";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 

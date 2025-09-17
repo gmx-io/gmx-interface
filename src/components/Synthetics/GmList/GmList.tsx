@@ -16,9 +16,9 @@ import useWallet from "lib/wallets/useWallet";
 import PoolsCard from "pages/Pools/PoolsCard";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
-import Loader from "components/Common/Loader";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
+import Loader from "components/Loader/Loader";
 import Pagination from "components/Pagination/Pagination";
 import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
 import SearchInput from "components/SearchInput/SearchInput";

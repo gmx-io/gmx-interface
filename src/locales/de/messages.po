@@ -4323,7 +4323,7 @@ msgstr "Trading-Paar-Preiswarnungen"
 #~ msgid "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."
 #~ msgstr "Du erhältst mindestens {0} {1}, wenn diese Order ausgeführt wird. Der genaue Ausführungspreis kann je nach Gebühren zum Zeitpunkt der Ausführung variieren."
 
-#: src/components/Common/SEO.tsx
+#: src/components/Seo/SEO.tsx
 msgid "GMX | Decentralized Perpetual Exchange"
 msgstr "GMX | Dezentrale Perpetual-Exchange"
 
@@ -7063,7 +7063,7 @@ msgstr "Fehler beim Übermitteln der Order"
 msgid "Duration"
 msgstr "Dauer"
 
-#: src/components/Common/SEO.tsx
+#: src/components/Seo/SEO.tsx
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche."
 msgstr "Trade Spot oder Perpetual BTC, ETH, AVAX und andere Top-Kryptowährungen mit bis zu 100x Hebelwirkung direkt aus deinem Wallet auf Arbitrum und Avalanche."
 

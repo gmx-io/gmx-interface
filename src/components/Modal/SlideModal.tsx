@@ -5,7 +5,7 @@ import { RemoveScroll } from "react-remove-scroll";
 
 import { useBreakpoints } from "lib/useBreakpoints";
 
-import Portal from "components/Common/Portal";
+import Portal from "components/Portal/Portal";
 
 import Modal from "./Modal";
 

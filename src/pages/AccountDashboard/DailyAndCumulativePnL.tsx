@@ -30,7 +30,7 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import Button from "components/Button/Button";
-import Loader from "components/Common/Loader";
+import Loader from "components/Loader/Loader";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { DateSelect } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
 

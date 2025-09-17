@@ -4323,7 +4323,7 @@ msgstr "Alertas de Precio de Par de Trading"
 #~ msgid "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."
 #~ msgstr "Recibirás al menos {0} {1} si esta orden se ejecuta. El precio de ejecución exacto puede variar dependiendo de las comisiones en el momento de ejecución de la orden."
 
-#: src/components/Common/SEO.tsx
+#: src/components/Seo/SEO.tsx
 msgid "GMX | Decentralized Perpetual Exchange"
 msgstr "GMX | Exchange Perpetuo Descentralizado"
 
@@ -7063,7 +7063,7 @@ msgstr "Error al enviar la orden"
 msgid "Duration"
 msgstr "Duración"
 
-#: src/components/Common/SEO.tsx
+#: src/components/Seo/SEO.tsx
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche."
 msgstr "Opera spot o perpetuos BTC, ETH, AVAX y otras criptomonedas top con hasta 100x apalancamiento directamente desde tu wallet en Arbitrum y Avalanche."
 

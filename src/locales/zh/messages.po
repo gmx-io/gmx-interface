@@ -4323,7 +4323,7 @@ msgstr "交易对价格警报"
 #~ msgid "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."
 #~ msgstr "如果该订单执行，您将至少收到 {0} {1}。确切执行价格可能因订单执行时的费用而异。"
 
-#: src/components/Common/SEO.tsx
+#: src/components/Seo/SEO.tsx
 msgid "GMX | Decentralized Perpetual Exchange"
 msgstr "GMX | 去中心化永续交易所"
 
@@ -7063,7 +7063,7 @@ msgstr "提交订单错误"
 msgid "Duration"
 msgstr "持续时间"
 
-#: src/components/Common/SEO.tsx
+#: src/components/Seo/SEO.tsx
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche."
 msgstr "在 Arbitrum 和 Avalanche 上直接从您的钱包交易现货或永续 BTC、ETH、AVAX 和其他顶级加密货币，杠杆高达 100x。"
 

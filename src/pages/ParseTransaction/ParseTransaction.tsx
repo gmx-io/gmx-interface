@@ -35,8 +35,8 @@ import { formatFactor, formatUsd } from "lib/numbers";
 import { parseTxEvents } from "pages/ParseTransaction/parseTxEvents";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
-import Loader from "components/Common/Loader";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Loader from "components/Loader/Loader";
 import { Table, TableTd, TableTr } from "components/Table/Table";
 import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolWithIcon";
 

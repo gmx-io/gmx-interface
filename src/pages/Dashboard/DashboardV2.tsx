@@ -13,9 +13,9 @@ import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
-import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import PageTitle from "components/PageTitle/PageTitle";
+import SEO from "components/Seo/SEO";
 import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 import { MarketsList } from "components/Synthetics/MarketsList/MarketsList";
 

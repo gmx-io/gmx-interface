@@ -4323,7 +4323,7 @@ msgstr "거래 쌍 가격 알림"
 #~ msgid "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."
 #~ msgstr "해당 주문이 실행되게 되면 최소 {0} {1}을 받을 수 있습니다. 정확한 실행가격은 주문이 실행된 수수료에 의해 상이합니다."
 
-#: src/components/Common/SEO.tsx
+#: src/components/Seo/SEO.tsx
 msgid "GMX | Decentralized Perpetual Exchange"
 msgstr "GMX | 탈중앙화 퍼페추얼 거래소"
 
@@ -7063,7 +7063,7 @@ msgstr "주문 제출 오류"
 msgid "Duration"
 msgstr "기간"
 
-#: src/components/Common/SEO.tsx
+#: src/components/Seo/SEO.tsx
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche."
 msgstr "Arbitrum 및 Avalanche에서 지갑에서 직접 최대 100x 레버리지로 BTC, ETH, AVAX 및 기타 상위 암호화폐를 스팟 또는 퍼페추얼 거래하세요."
 

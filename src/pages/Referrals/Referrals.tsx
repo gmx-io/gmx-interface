@@ -24,15 +24,15 @@ import { serializeBigIntsInObject } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
-import Loader from "components/Common/Loader";
-import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Loader from "components/Loader/Loader";
 import PageTitle from "components/PageTitle/PageTitle";
 import AddAffiliateCode from "components/Referrals/AddAffiliateCode";
 import AffiliatesStats from "components/Referrals/AffiliatesStats";
 import JoinReferralCode from "components/Referrals/JoinReferralCode";
 import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "components/Referrals/referralsHelper";
 import TradersStats from "components/Referrals/TradersStats";
+import SEO from "components/Seo/SEO";
 import { BotanixBanner } from "components/Synthetics/BotanixBanner/BotanixBanner";
 import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 import Tabs from "components/Tabs/Tabs";

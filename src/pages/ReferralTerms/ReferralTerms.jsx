@@ -2,8 +2,8 @@ import { t } from "@lingui/macro";
 
 import { getPageTitle } from "lib/legacy";
 
-import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import SEO from "components/Seo/SEO";
 
 import "./ReferralTerms.css";
 
