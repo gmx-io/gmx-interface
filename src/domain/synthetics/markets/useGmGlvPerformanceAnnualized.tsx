@@ -1,10 +1,11 @@
 import { useMemo } from "react";
 import useSWR from "swr";
 
+import { parseValue, PRECISION_DECIMALS } from "lib/numbers";
 import { PerformanceAnnualizedResponse, PerformancePeriod, useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 
 export type PerformanceData = {
-  [address: string]: number;
+  [address: string]: bigint;
 };
 
 export function useGmGlvPerformanceAnnualized({
@@ -30,7 +31,9 @@ export function useGmGlvPerformanceAnnualized({
     if (!apiData) return {};
 
     return apiData.reduce((acc, item) => {
-      acc[item.address] = parseFloat(item.uniswapV2Performance);
+      const performance = parseValue(item.uniswapV2Performance, PRECISION_DECIMALS);
+      if (typeof performance === "undefined") return acc;
+      acc[item.address] = performance;
       return acc;
     }, {} as PerformanceData);
   }, [apiData]);

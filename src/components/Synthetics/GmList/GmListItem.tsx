@@ -21,12 +21,12 @@ import {
   getMarketPoolName,
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { formatPerformanceBps } from "domain/synthetics/markets/performance";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformanceAnnualized";
 import { PerformanceSnapshot, PerformanceSnapshotsData } from "domain/synthetics/markets/useGmGlvPerformanceSnapshots";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { TokenData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
+import { bigintToNumber, formatPercentage, PRECISION_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
@@ -164,7 +164,7 @@ export function GmListItem({
           <div className="ml-auto flex items-center gap-8">
             <SnapshotGraph
               performanceSnapshots={tokenPerformanceSnapshots ?? EMPTY_ARRAY}
-              performance={tokenPerformance ?? 0}
+              performance={tokenPerformance ?? 0n}
             />
 
             {onFavoriteClick ? (
@@ -209,7 +209,7 @@ export function GmListItem({
           />
           <SyntheticsInfoRow
             label={<PerformanceLabel />}
-            value={tokenPerformance ? formatPerformanceBps(tokenPerformance) : "..."}
+            value={tokenPerformance ? formatPercentage(tokenPerformance, { bps: false }) : "..."}
             valueClassName={tokenPerformance ? "numbers" : undefined}
           />
         </div>
@@ -285,13 +285,13 @@ export function GmListItem({
       </TableTdActionable>
 
       <TableTdActionable className="w-[18%]">
-        {tokenPerformance ? <div className="numbers">{formatPerformanceBps(tokenPerformance)}</div> : "..."}
+        {tokenPerformance ? <div className="numbers">{formatPercentage(tokenPerformance, { bps: false })}</div> : "..."}
       </TableTdActionable>
 
       <TableTdActionable className="w-[14%]">
         <SnapshotGraph
           performanceSnapshots={tokenPerformanceSnapshots ?? EMPTY_ARRAY}
-          performance={tokenPerformance ?? 0}
+          performance={tokenPerformance ?? 0n}
         />
       </TableTdActionable>
 
@@ -324,16 +324,21 @@ const SnapshotGraph = ({
   performance,
 }: {
   performanceSnapshots: PerformanceSnapshot[];
-  performance: number;
+  performance: bigint;
 }) => {
-  const isNegative = performance < 0;
+  const isNegative = performance < 0n;
 
   const isMobile = usePoolsIsMobilePage();
   const size = isMobile ? MOBILE_SNAPSHOT_GRAPH_SIZE : DESKTOP_SNAPSHOT_GRAPH_SIZE;
 
+  const chartData = performanceSnapshots.map((snapshot) => ({
+    ...snapshot,
+    performance: bigintToNumber(snapshot.performance, PRECISION_DECIMALS),
+  }));
+
   return (
     <div style={isMobile ? MOBILE_SNAPSHOT_GRAPH_SIZE : DESKTOP_SNAPSHOT_GRAPH_SIZE}>
-      <AreaChart width={size.width} height={size.height} data={performanceSnapshots}>
+      <AreaChart width={size.width} height={size.height} data={chartData}>
         <defs>
           <linearGradient id={`snapshot-graph-gradient-green`} x1="0" y1="0" x2="0" y2="1">
             <stop offset="-45%" stopColor="var(--color-green-500)" stopOpacity={0.5}></stop>

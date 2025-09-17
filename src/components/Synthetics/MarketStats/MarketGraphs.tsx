@@ -8,7 +8,6 @@ import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YA
 import { USD_DECIMALS } from "config/factors";
 import { GlvOrMarketInfo, MarketTokensAPRData, useMarketTokensData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { formatPerformanceBps } from "domain/synthetics/markets/performance";
 import { AprSnapshot, useGmGlvAprSnapshots } from "domain/synthetics/markets/useGmGlvAprSnapshots";
 import { useGmGlvPerformanceAnnualized } from "domain/synthetics/markets/useGmGlvPerformanceAnnualized";
 import {
@@ -22,7 +21,7 @@ import { PriceSnapshot, usePriceSnapshots } from "domain/synthetics/markets/useP
 import { TokensData, getMidPrice } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
-import { bigintToNumber, formatPercentage, formatUsdPrice, parseValue } from "lib/numbers";
+import { bigintToNumber, formatPercentage, formatUsdPrice, parseValue, PRECISION_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
@@ -53,7 +52,7 @@ const getGraphValue = ({
 }: {
   marketGraphType: MarketGraphType;
   glvOrMarketInfo: GlvOrMarketInfo;
-  performance: Record<string, number>;
+  performance: Record<string, bigint>;
   marketsTokensApyData: MarketTokensAPRData | undefined;
   glvApyInfoData: MarketTokensAPRData | undefined;
   marketTokensData: TokensData | undefined;
@@ -66,7 +65,7 @@ const getGraphValue = ({
   const tokenPrice = marketTokensData?.[address]?.prices.minPrice;
   const addressPerformance = performance[address];
   const valuesMap: Record<MarketGraphType, string | undefined> = {
-    performance: addressPerformance ? formatPerformanceBps(addressPerformance) : undefined,
+    performance: addressPerformance ? formatPercentage(addressPerformance, { bps: false }) : undefined,
     price: tokenPrice ? formatUsdPrice(tokenPrice) : undefined,
     feeApr: apy ? formatPercentage(apy, { bps: false }) : undefined,
   };
@@ -175,7 +174,7 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
               })}
               label={graphTitleLabelMap[marketGraphType]}
               valueClassName={cx("normal-nums", {
-                "text-green-300": marketGraphType === "performance" && performance[address] > 0,
+                "text-green-300": marketGraphType === "performance" && performance[address] > 0n,
               })}
             />
             {!isMobile ? <div className="ml-auto">{poolsTabs}</div> : null}
@@ -211,6 +210,10 @@ const GRAPH_MARGIN = { top: 5, right: 0, bottom: 0, left: 0 };
 type GraphData = {
   value: number;
   snapshotTimestamp: Date;
+};
+
+export const formatPerformanceBps = (performance: number): string => {
+  return Number((performance * 100).toFixed(2)) + "%";
 };
 
 const valueFormatter = (marketGraphType: MarketGraphType) => (value: number) => {
@@ -264,7 +267,7 @@ const GraphChart = ({
     () =>
       performanceSnapshots.map((snapshot) => ({
         snapshotTimestamp: new Date(snapshot.snapshotTimestamp * 1000),
-        value: snapshot.performance,
+        value: bigintToNumber(snapshot.performance, PRECISION_DECIMALS),
       })),
     [performanceSnapshots]
   );

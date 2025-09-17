@@ -1,10 +1,12 @@
 import { useMemo } from "react";
 import useSWR from "swr";
 
+import { defined } from "lib/guards";
+import { parseValue, PRECISION_DECIMALS } from "lib/numbers";
 import { PerformancePeriod, PerformanceSnapshotsResponse, useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 
 export type PerformanceSnapshot = {
-  performance: number;
+  performance: bigint;
   snapshotTimestamp: number;
 };
 
@@ -35,10 +37,16 @@ export function useGmGlvPerformanceSnapshots({
     if (!apiData) return {};
 
     return apiData.reduce((acc, item) => {
-      acc[item.address] = item.snapshots.map((snapshot) => ({
-        snapshotTimestamp: parseInt(snapshot.snapshotTimestamp),
-        performance: parseFloat(snapshot.uniswapV2Performance),
-      }));
+      acc[item.address] = item.snapshots
+        .map((snapshot) => {
+          const performance = parseValue(snapshot.uniswapV2Performance, PRECISION_DECIMALS);
+          if (typeof performance === "undefined") return null;
+          return {
+            snapshotTimestamp: parseInt(snapshot.snapshotTimestamp),
+            performance,
+          };
+        })
+        .filter(defined);
       return acc;
     }, {} as PerformanceSnapshotsData);
   }, [apiData]);
