@@ -1,8 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaAngleRight } from "react-icons/fa";
-import { ImSpinner2 } from "react-icons/im";
 
 import { USD_DECIMALS } from "config/factors";
 import { getUsd } from "domain/tokens/utils";
@@ -14,6 +13,8 @@ import { getPriceDecimals } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import NetValueTooltip from "./NetValueTooltip";
 import OrdersToa from "./OrdersToa";
@@ -566,7 +567,7 @@ export default function PositionsList(props) {
                         {position.indexToken.symbol}
                       </div>
                     )}
-                    {position.hasPendingChanges && <ImSpinner2 className="spin position-loading-icon" />}
+                    {position.hasPendingChanges && <SpinnerIcon className="spin position-loading-icon" />}
                   </div>
                   <div className="Exchange-list-info-label">
                     {position.leverageStr && <span className="muted Position-leverage">{position.leverageStr}</span>}

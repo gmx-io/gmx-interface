@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
-import { ImSpinner2 } from "react-icons/im";
 import { MdClose } from "react-icons/md";
 import Skeleton from "react-loading-skeleton";
 
@@ -48,6 +47,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 import EditIcon from "img/ic_edit.svg?react";
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { TwapOrderProgress } from "../OrderItem/OrderItem";
 
@@ -491,7 +491,7 @@ export function PositionItem(p: Props) {
                 )}
               />
               {p.position.pendingUpdate && (
-                <ImSpinner2 data-qa="position-loading" className="spin position-loading-icon" />
+                <SpinnerIcon data-qa="position-loading" className="spin position-loading-icon" />
               )}
             </div>
             <div className="Exchange-list-info-label">
@@ -623,7 +623,7 @@ export function PositionItem(p: Props) {
                 {p.position.isLong ? t`Long` : t`Short`}
               </span>
             </div>
-            {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
+            {p.position.pendingUpdate && <SpinnerIcon className="spin position-loading-icon" />}
           </div>
         </AppCardSection>
         <AppCardSection>
