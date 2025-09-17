@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { HiDotsVertical } from "react-icons/hi";
 import { useHistory } from "react-router-dom";
 import { Area, AreaChart } from "recharts";
@@ -331,10 +331,14 @@ const SnapshotGraph = ({
   const isMobile = usePoolsIsMobilePage();
   const size = isMobile ? MOBILE_SNAPSHOT_GRAPH_SIZE : DESKTOP_SNAPSHOT_GRAPH_SIZE;
 
-  const chartData = performanceSnapshots.map((snapshot) => ({
-    ...snapshot,
-    performance: bigintToNumber(snapshot.performance, PRECISION_DECIMALS),
-  }));
+  const chartData = useMemo(
+    () =>
+      performanceSnapshots.map((snapshot) => ({
+        ...snapshot,
+        performance: bigintToNumber(snapshot.performance, PRECISION_DECIMALS),
+      })),
+    [performanceSnapshots]
+  );
 
   return (
     <div style={isMobile ? MOBILE_SNAPSHOT_GRAPH_SIZE : DESKTOP_SNAPSHOT_GRAPH_SIZE}>

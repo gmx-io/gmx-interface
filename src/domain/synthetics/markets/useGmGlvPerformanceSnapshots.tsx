@@ -46,7 +46,8 @@ export function useGmGlvPerformanceSnapshots({
             performance,
           };
         })
-        .filter(defined);
+        .filter(defined)
+        .sort((a, b) => a.snapshotTimestamp - b.snapshotTimestamp);
       return acc;
     }, {} as PerformanceSnapshotsData);
   }, [apiData]);

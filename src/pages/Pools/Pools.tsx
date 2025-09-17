@@ -1,11 +1,10 @@
 import cx from "classnames";
-import { useMemo } from "react";
 
 import { BOTANIX } from "config/chains";
 import { useGmGlvPerformanceAnnualized } from "domain/synthetics/markets/useGmGlvPerformanceAnnualized";
 import { useGmGlvPerformanceSnapshots } from "domain/synthetics/markets/useGmGlvPerformanceSnapshots";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
-import { convertPoolsTimeRangeToApyPeriod, usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
+import { usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
@@ -23,15 +22,13 @@ export default function Pools() {
 
   const { chainId, srcChainId } = useChainId();
 
-  const apyPeriod = useMemo(() => convertPoolsTimeRangeToApyPeriod(timeRange), [timeRange]);
-
   const {
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
     glvTokensIncentiveAprData,
     marketsTokensLidoAprData,
     glvApyInfoData,
-  } = useGmMarketsApy(chainId, srcChainId, { period: apyPeriod });
+  } = useGmMarketsApy(chainId, srcChainId, { period: timeRange });
 
   const { performance } = useGmGlvPerformanceAnnualized({
     chainId,
