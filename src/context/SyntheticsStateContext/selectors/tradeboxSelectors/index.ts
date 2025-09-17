@@ -3,7 +3,7 @@ import { maxUint256 } from "viem";
 import { getSwapDebugSettings, getSwapPriceImpactForExternalSwapThresholdBps } from "config/externalSwaps";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { createSelector, createSelectorDeprecated } from "context/SyntheticsStateContext/utils";
+import { createSelector } from "context/SyntheticsStateContext/utils";
 import {
   getExternalSwapInputsByFromValue,
   getExternalSwapInputsByLeverageSize,
@@ -1002,43 +1002,44 @@ export const selectTradeboxNextPositionValues = createSelector((q) => {
   return isIncrease ? q(selectTradeboxNextPositionValuesForIncrease) : q(selectTradeboxNextPositionValuesForDecrease);
 });
 
-export const selectTradeboxSelectedPositionKey = createSelectorDeprecated(
-  [selectAccount, selectTradeboxCollateralTokenAddress, selectTradeboxMarketAddress, selectTradeboxTradeFlags],
-  (account, collateralAddress, marketAddress, tradeFlags) => {
-    if (!account || !collateralAddress || !marketAddress) {
-      return undefined;
-    }
+export const selectTradeboxSelectedPositionKey = createSelector((q) => {
+  const account = q(selectAccount);
+  const collateralAddress = q(selectTradeboxCollateralTokenAddress);
+  const marketAddress = q(selectTradeboxMarketAddress);
+  const tradeFlags = q(selectTradeboxTradeFlags);
 
-    return getPositionKey(account, marketAddress, collateralAddress, tradeFlags.isLong);
+  if (!account || !collateralAddress || !marketAddress) {
+    return undefined;
   }
-);
 
-export const selectTradeboxSelectedOrderKey = createSelectorDeprecated(
-  [
-    selectAccount,
-    selectTradeboxCollateralTokenAddress,
-    selectTradeboxMarketAddress,
-    selectTradeboxTradeFlags,
-    selectTradeboxFromTokenAddress,
-    selectTradeboxToTokenAddress,
-  ],
-  (account, collateralAddress, marketAddress, tradeFlags, fromTokenAddress, toTokenAddress) => {
-    if (!account || !collateralAddress) {
-      return undefined;
-    }
+  return getPositionKey(account, marketAddress, collateralAddress, tradeFlags.isLong);
+});
 
-    if (!tradeFlags.isSwap && marketAddress) {
-      return `POSITION-${getPositionKey(account, marketAddress, collateralAddress, tradeFlags.isLong)}`;
-    }
+export const selectTradeboxSelectedOrderKey = createSelector((q) => {
+  const account = q(selectAccount);
+  const collateralAddress = q(selectTradeboxCollateralTokenAddress);
+  const marketAddress = q(selectTradeboxMarketAddress);
+  const tradeFlags = q(selectTradeboxTradeFlags);
+  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
+  const toTokenAddress = q(selectTradeboxToTokenAddress);
 
-    return `SWAP-${account}:${fromTokenAddress}:${toTokenAddress}`;
+  if (!account || !collateralAddress) {
+    return undefined;
   }
-);
 
-export const selectTradeboxSelectedPosition = createSelectorDeprecated(
-  [selectTradeboxSelectedPositionKey, selectPositionsInfoData],
-  (selectedPositionKey, positionsInfoData) => getByKey(positionsInfoData, selectedPositionKey)
-);
+  if (!tradeFlags.isSwap && marketAddress) {
+    return `POSITION-${getPositionKey(account, marketAddress, collateralAddress, tradeFlags.isLong)}`;
+  }
+
+  return `SWAP-${account}:${fromTokenAddress}:${toTokenAddress}`;
+});
+
+export const selectTradeboxSelectedPosition = createSelector((q) => {
+  const selectedPositionKey = q(selectTradeboxSelectedPositionKey);
+  const positionsInfoData = q(selectPositionsInfoData);
+
+  return getByKey(positionsInfoData, selectedPositionKey);
+});
 
 export const selectTradeboxExistingOrders = createSelector((q) => {
   const ordersInfoData = q(selectOrdersInfoData);

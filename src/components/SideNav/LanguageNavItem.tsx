@@ -29,7 +29,7 @@ export function LanguageNavItem({ isCollapsed, onClick }: LanguageNavItemProps) 
   return (
     <>
       <NavItem
-        icon={<LanguageIcon className="size-20" />}
+        icon={<LanguageIcon className="size-24" />}
         label={t`Language`}
         isCollapsed={isCollapsed}
         onClick={handleOpen}
