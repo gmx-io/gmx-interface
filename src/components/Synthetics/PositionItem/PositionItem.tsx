@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
-import { FaChevronRight } from "react-icons/fa6";
 import { ImSpinner2 } from "react-icons/im";
 import { MdClose } from "react-icons/md";
 import Skeleton from "react-loading-skeleton";
@@ -47,6 +46,7 @@ import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 import EditIcon from "img/ic_edit.svg?react";
 
 import { TwapOrderProgress } from "../OrderItem/OrderItem";
@@ -875,7 +875,7 @@ function PositionItemOrder({
         <Button variant="secondary" className="w-full !justify-start !pl-12" onClick={handleOrdersClick}>
           <div className="flex items-center justify-between">
             <PositionItemOrderText order={order} />
-            <FaChevronRight fontSize={14} className="ml-4" />
+            <ChevronRightIcon className="ml-4 size-14" />
           </div>
         </Button>
         {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (

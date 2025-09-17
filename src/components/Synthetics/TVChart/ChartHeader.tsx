@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { useEffectOnce } from "react-use";
 
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
@@ -13,6 +12,9 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import { getToken } from "sdk/configs/tokens";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
+import ChevronUpIcon from "img/ic_chevron_up.svg?react";
 
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 import { renderNetFeeHeaderTooltipContent } from "../MarketsList/NetFeeHeaderTooltipContent";
@@ -171,7 +173,7 @@ function ChartHeaderMobile() {
             <div className="ExchangeChart-daily-change text-body-small numbers">{dayPriceDelta}</div>
           </div>
           <span className="flex shrink-0 cursor-pointer items-center justify-center rounded-4 pt-1 text-typography-secondary">
-            {detailsVisible ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
+            {detailsVisible ? <ChevronUpIcon className="size-12" /> : <ChevronDownIcon className="size-12" />}
           </span>
         </div>
       </div>

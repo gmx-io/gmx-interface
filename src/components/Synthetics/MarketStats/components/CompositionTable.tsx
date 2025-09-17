@@ -1,6 +1,5 @@
 import { t, Trans } from "@lingui/macro";
 import { useMemo, useState } from "react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 import { USD_DECIMALS } from "config/factors";
 import { getMarketIndexName } from "domain/synthetics/markets/utils";
@@ -10,6 +9,9 @@ import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
+import ChevronUpIcon from "img/ic_chevron_up.svg?react";
 
 import { CompositionItem, CompositionType, getCompositionPercentage } from "../hooks/useCompositionData";
 
@@ -80,7 +82,7 @@ export function CompositionTable<T extends CompositionType>({ composition, compo
           onClick={toggleOpen}
         >
           <span>{isOpen ? <Trans>Show less</Trans> : <Trans>Show more</Trans>}</span>
-          {isOpen ? <FaChevronUp size={12} className="mt-2" /> : <FaChevronDown size={12} className="mt-2" />}
+          {isOpen ? <ChevronUpIcon className="mt-2 size-12" /> : <ChevronDownIcon className="mt-2 size-12" />}
         </div>
       ) : null}
     </div>

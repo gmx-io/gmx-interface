@@ -3,7 +3,6 @@ import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import noop from "lodash/noop";
 import { useMemo, useState } from "react";
-import { FiChevronDown } from "react-icons/fi";
 import { useAccount } from "wagmi";
 
 import { getChainIcon } from "config/icons";
@@ -14,6 +13,7 @@ import Button from "components/Button/Button";
 import type { NetworkOption } from "components/Header/AppHeaderChainAndSettings";
 import type { ModalProps } from "components/Modal/Modal";
 
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import SettingsIcon from "img/ic_settings.svg?react";
 
 import SolanaNetworkItem from "./SolanaNetworkItem";
@@ -77,7 +77,7 @@ function NavIcons({ chainId, open }) {
     <>
       <img className="size-20" src={icon} alt={chainName} />
 
-      <FiChevronDown size={20} className={cx({ "rotate-180": open })} />
+      <ChevronDownIcon className={cx("size-20", { "rotate-180": open })} />
     </>
   );
 }

@@ -1,9 +1,10 @@
 import cx from "classnames";
 import { ReactNode } from "react";
-import { FaChevronLeft } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 import { useBreakpoints } from "lib/useBreakpoints";
+
+import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
 
 export type BreadcrumbsProps = {
   children: ReactNode;
@@ -33,8 +34,8 @@ export function BreadcrumbItem({ to: href, children, back, active, onClick, clas
   const content = (
     <div
       className={cx(
-        `text-slate-300 relative inline-flex items-center gap-6 rounded-full border-1/2 border-slate-600
-        px-12 py-8 text-13 font-medium leading-[1.15] transition-colors after:absolute after:-left-13 after:top-[50%]
+        `text-slate-300 relative inline-flex size-32 items-center gap-6 rounded-full border-1/2
+        border-slate-600 text-13 font-medium leading-[1.15] transition-colors after:absolute after:-left-13 after:top-[50%]
         after:translate-y-[-50%] after:text-11 after:text-slate-600 after:content-['/']
         first:after:content-none max-md:px-8`,
         {
@@ -44,7 +45,7 @@ export function BreadcrumbItem({ to: href, children, back, active, onClick, clas
         className
       )}
     >
-      {back && <FaChevronLeft className="text-12" />}
+      {back && <ChevronLeftIcon className="-ml-1 size-16" />}
       {!isMobile ? children : null}
     </div>
   );
