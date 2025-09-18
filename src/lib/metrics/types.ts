@@ -17,6 +17,7 @@ export type GlobalMetricData = {
   browserVersion?: string;
   platform?: string;
   isInited?: boolean;
+  srcChainId?: SourceChainId;
 };
 
 export enum OrderStage {
@@ -109,22 +110,6 @@ export type WsProviderHealthCheckFailed = {
   data: {
     requiredListenerCount: number;
     listenerCount: number;
-  };
-};
-
-export type WsSourceChainProviderConnected = {
-  event: "wsSourceChainProvider.connected";
-  isError: false;
-  data: {
-    chainId: SourceChainId;
-  };
-};
-
-export type WsSourceChainProviderDisconnected = {
-  event: "wsSourceChainProvider.disconnected";
-  isError: false;
-  data: {
-    chainId: SourceChainId;
   };
 };
 
@@ -475,6 +460,7 @@ export type LongTaskTiming = { event: "longtasks.self.timing"; data: { isInitial
 export type MulticallBatchedTiming = {
   event: "multicall.batched.timing";
   data: {
+    chainId: number;
     priority: string;
   };
 };
@@ -482,6 +468,7 @@ export type MulticallBatchedTiming = {
 export type MulticallRequestTiming = {
   event: "multicall.request.timing";
   data: {
+    chainId: number;
     requestType: string;
     rpcProvider: string;
     isLargeAccount: boolean;
@@ -499,6 +486,7 @@ export type GelatoPollingTiming = {
 export type MulticallBatchedCallCounter = {
   event: "multicall.batched.call";
   data: {
+    chainId: number;
     priority: string;
   };
 };
@@ -506,6 +494,7 @@ export type MulticallBatchedCallCounter = {
 export type MulticallBatchedErrorCounter = {
   event: "multicall.batched.error";
   data: {
+    chainId: number;
     priority: string;
   };
 };
@@ -517,6 +506,7 @@ export type OpenOceanQuoteTiming = {
 export type MulticallRequestCounter = {
   event: `multicall.request.${"call" | "timeout" | "error"}`;
   data: {
+    chainId: number;
     isInMainThread: boolean;
     requestType: string;
     rpcProvider: string;
@@ -527,6 +517,7 @@ export type MulticallRequestCounter = {
 export type MulticallFallbackRpcModeCounter = {
   event: `multicall.fallbackRpcMode.${"on" | "off"}`;
   data: {
+    chainId: number;
     isInMainThread: boolean;
   };
 };
@@ -534,9 +525,24 @@ export type MulticallFallbackRpcModeCounter = {
 export type RpcTrackerRankingCounter = {
   event: "rpcTracker.ranking.setBestRpc";
   data: {
+    chainId: number;
     rpcProvider: string;
     bestBlockGap: number | "unknown";
     isLargeAccount: boolean;
+  };
+};
+
+export type WsSourceChainProviderConnectedCounter = {
+  event: "wsSourceChainProvider.connected";
+  data: {
+    srcChainId: SourceChainId;
+  };
+};
+
+export type WsSourceChainProviderDisconnectedCounter = {
+  event: "wsSourceChainProvider.disconnected";
+  data: {
+    srcChainId: SourceChainId;
   };
 };
 

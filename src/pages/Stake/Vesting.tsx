@@ -407,28 +407,31 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                       </span>
                     </div>
                   </div>
-                  <div className="App-card-divider" />
-                  <div className="App-card-buttons m-0">
-                    {!active && (
-                      <Button variant="secondary" onClick={openConnectModal}>
-                        <Trans>Connect wallet</Trans>
-                      </Button>
-                    )}
-                    {active && (
-                      <Button variant="secondary" onClick={() => showAffiliateVesterDepositModal()}>
-                        <Trans>Deposit</Trans>
-                      </Button>
-                    )}
-                    {active && (
-                      <Button variant="secondary" onClick={() => showAffiliateVesterWithdrawModal()}>
-                        <Trans>Withdraw</Trans>
-                      </Button>
-                    )}
-                    {active && (
-                      <Button variant="secondary" onClick={() => showAffiliateVesterClaimModal()}>
-                        <Trans>Claim</Trans>
-                      </Button>
-                    )}
+
+                  <div className="App-card-footer">
+                    <div className="App-card-divider" />
+                    <div className="App-card-buttons m-0 h-32">
+                      {!active && (
+                        <Button variant="secondary" onClick={openConnectModal} size="small">
+                          <Trans>Connect wallet</Trans>
+                        </Button>
+                      )}
+                      {active && (
+                        <Button variant="secondary" onClick={() => showAffiliateVesterDepositModal()} size="small">
+                          <Trans>Deposit</Trans>
+                        </Button>
+                      )}
+                      {active && (
+                        <Button variant="secondary" onClick={() => showAffiliateVesterWithdrawModal()} size="small">
+                          <Trans>Withdraw</Trans>
+                        </Button>
+                      )}
+                      {active && (
+                        <Button variant="secondary" onClick={() => showAffiliateVesterClaimModal()} size="small">
+                          <Trans>Claim</Trans>
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

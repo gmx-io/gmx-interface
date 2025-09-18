@@ -26,7 +26,17 @@ import { createTradeFlags } from "sdk/utils/trade";
 
 import { MarketsData, MarketsInfoData } from "../markets";
 import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
-import { OrdersInfoData } from "../orders";
+import {
+  isLimitOrderType,
+  isStopIncreaseOrderType,
+  isSwapOrder,
+  OrderInfo,
+  OrdersInfoData,
+  isTriggerDecreaseOrderType,
+  isTwapOrder,
+  isTwapSwapOrder,
+  PositionOrderInfo,
+} from "../orders";
 import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokensData, useTokensAllowanceData } from "../tokens";
 import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
@@ -278,7 +288,6 @@ export function useTradeboxState(
   const tradeMode = storedOptions?.tradeMode;
 
   const [leverageOption, setLeverageOption] = useLocalStorageSerializeKey(getLeverageKey(chainId), 2);
-  // const [isLeverageEnabled, setIsLeverageEnabled] = useLocalStorageSerializeKey(getLeverageEnabledKey(chainId), true);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
   const [leverageInputValue, setLeverageInputValue] = useState<string>(() => leverageOption?.toString() ?? "");
 
@@ -460,6 +469,59 @@ export function useTradeboxState(
             ["collaterals", position.marketAddress, position.isLong ? "long" : "short"],
             position.collateralTokenAddress
           );
+        });
+      });
+    },
+    [setStoredOptions]
+  );
+
+  const setActiveOrder = useCallback(
+    (order?: OrderInfo) => {
+      setStoredOptions((oldState) => {
+        if (!order) {
+          return oldState;
+        }
+
+        return produce(oldState, (draft) => {
+          draft.tradeMode = TradeMode.Market;
+          if (isLimitOrderType(order.orderType)) {
+            draft.tradeMode = TradeMode.Limit;
+          }
+          if (isTriggerDecreaseOrderType(order.orderType)) {
+            draft.tradeMode = TradeMode.Trigger;
+          }
+          if (isStopIncreaseOrderType(order.orderType)) {
+            draft.tradeMode = TradeMode.StopMarket;
+          }
+          if (isTwapOrder(order)) {
+            draft.tradeMode = TradeMode.Twap;
+          }
+
+          if (isSwapOrder(order) || isTwapSwapOrder(order)) {
+            draft.tradeType = TradeType.Swap;
+            const marketAddress = order.swapPath[order.swapPath.length - 1];
+
+            draft.tokens.fromTokenAddress = order.initialCollateralToken.address;
+            draft.tokens.swapToTokenAddress = order.targetCollateralToken.address;
+            draft.markets[marketAddress] = draft.markets[marketAddress] || {};
+            set(
+              draft,
+              ["collaterals", order.marketAddress, order.isLong ? "long" : "short"],
+              order.initialCollateralTokenAddress
+            );
+          } else {
+            draft.tradeType = order.isLong ? TradeType.Long : TradeType.Short;
+            const newIndexTokenAddress = (order as PositionOrderInfo).indexToken.address;
+            draft.tokens.indexTokenAddress = newIndexTokenAddress;
+            draft.tokens.fromTokenAddress = order.initialCollateralToken.address;
+            draft.markets[newIndexTokenAddress] = draft.markets[newIndexTokenAddress] || {};
+            draft.markets[newIndexTokenAddress][order.isLong ? "long" : "short"] = order.marketAddress;
+            set(
+              draft,
+              ["collaterals", order.marketAddress, order.isLong ? "long" : "short"],
+              order.initialCollateralToken
+            );
+          }
         });
       });
     },
@@ -693,6 +755,7 @@ export function useTradeboxState(
     isSwitchTokensAllowed,
     tokensAllowance,
     setActivePosition,
+    setActiveOrder,
     setFromTokenAddress,
     setToTokenAddress,
     setMarketAddress,

@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.3.1
+
+- Fix calling createOrder with `dataList` in SDK
+
+## 1.3.0
+
+- Support v2.2 contracts in SDK
+
+## 1.2.1
+
+- Fixed Botanix default Viem client initialization
+
 ## 1.2.0
 
 - Added: PUMP/USD [WBTC-USDC] and ARB/USD [ARB-ARB] in Arbitrum and PUMP/USD [WAVAX-USDC] in Avalanche
