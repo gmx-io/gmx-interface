@@ -588,10 +588,6 @@ msgstr "Аналитика данных GMX V2 в Telegram"
 msgid "High external swap impact"
 msgstr ""
 
-#: landing/src/pages/Home/FaqSection/FaqSection.tsx
-msgid "<0>GMX V2 routes every order against its own liquidity pools, which currently hold over $300 million, and quote the oracle index price rather than relying on an order book or external market makers. This architecture minimizes slippage and maintains deep liquidity, even for positions over $30 million.</0><1>To ensure accurate pricing without wicks, GMX V2 uses Chainlink Data Streams oracles, so liquidations occur only at fair market prices. With the free GMX Express mode, orders are signed off-chain and sent through premium RPC endpoints, enabling near-instant, reliable execution with a user experience similar to a centralized exchange.</1><2>GMX V2 uses a unique multi-asset AMM (Automated Market Maker) model that routes trades against a dynamically balanced liquidity pool instead of traditional order books. This design significantly</2>"
-msgstr ""
-
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Adding"
@@ -683,6 +679,7 @@ msgstr ""
 msgid "hide"
 msgstr "скрыть"
 
+#: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "in liquidity"
 msgstr "используется для обеспечения ликвидности"
@@ -2806,10 +2803,6 @@ msgstr "{fromText} в {toMinText}"
 msgid "Otherwise, try changing the RPC url in your wallet settings with the help of <0>chainlist.org</0>."
 msgstr "В противном случае, попробуйте изменить URL RPC в настройках вашего кошелька с помощью <0>chainlist.org</0>."
 
-#: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
-msgid "in available liquidity"
-msgstr ""
-
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
 msgstr ""
@@ -2938,6 +2931,10 @@ msgstr ""
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-Cancel TP/SL"
 msgstr "Авто-Отмена TP/SL"
+
+#: landing/src/pages/Home/FaqSection/FaqSection.tsx
+msgid "What makes GMX more cost-efficient than other perpetual platforms?"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
@@ -3924,10 +3921,6 @@ msgstr "GLV — это токен поставщика ликвидности д
 msgid "The settlement chain is the network used for your GMX Account and opening positions. GMX Account balances and positions are specific to the selected network."
 msgstr ""
 
-#: landing/src/pages/Home/FaqSection/FaqSection.tsx
-msgid "<0>No KYC, no lengthy onboarding:</0><1><2>Connect any EVM wallet (MetaMask, Rabby, Coinbase Wallet, Ledger, etc.)</2><3>Select a supported network where you have funds</3><4>Trade</4></1><5>You can trade directly using funds from Arbitrum, Avalanche, or Botanix, or deposit to your GMX Account to trade from any supported network.</5>"
-msgstr ""
-
 #: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "Yes, GLV is fully liquid and permissionless. You can sell via the GMX interface to redeem for underlying assets, with low fees."
 msgstr ""
@@ -3989,6 +3982,10 @@ msgstr "PnL"
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading is not available using network's native token {0}. Consider using {1} instead."
 msgstr "Экспресс-Торговля недоступна с использованием нативного токена сети {0}. Рассмотрите использование {1} вместо этого."
+
+#: landing/src/pages/Home/FaqSection/FaqSection.tsx
+msgid "<0>Yes, we encourage you to build on top of GMX or integrate it into your DeFi app. GMX is fully composable and already integrated with hundreds of protocols across the ecosystem, including notable names like Pendle, Dolomite, Silo Finance, Venus Protocol, Abracadabra, Compound, or Beefy. You can interact directly with GMX smart contracts or use available APIs and SDKs to plug into trading, liquidity, or data flows. Check out the <1>GMX Developer Docs</1> to get started.</0>"
+msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
@@ -4934,6 +4931,10 @@ msgstr "залог"
 msgid "WALLET"
 msgstr "КОШЕЛЁК"
 
+#: landing/src/pages/Home/FaqSection/FaqSection.tsx
+msgid "<0>GMX executes trades against a dynamically balanced liquidity pool, unlike traditional order books. This model supports deep liquidity, allowing for opening positions of over $50m with reduced price impact, even compared to the biggest order books in the space. In some cases, you may get paid when executing an order due to a positive price impact.</0><1>GMX prevents unfair liquidations by using decentralized oracles from Chainlink and Chaos Labs, which aggregate prices from multiple trusted sources to avoid manipulation.</1>"
+msgstr ""
+
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
@@ -5530,6 +5531,10 @@ msgstr ""
 msgid "Spread"
 msgstr "Спред"
 
+#: landing/src/pages/Home/FaqSection/FaqSection.tsx
+msgid "<0>No KYC, no lengthy onboarding, and no depositing is required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger,etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, Avalanche, or Botanix, or deposit to your GMX Account to trade from any supported network.</5>"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "This position was liquidated as the max. leverage of {formattedMaxLeverage} was exceeded when taking into account fees."
 msgstr "Эта позиция была ликвидирована, так как максимальное кредитное плечо {formattedMaxLeverage} было превышено с учетом комиссий."
@@ -5746,10 +5751,6 @@ msgstr "Общий циркулирующий запас токенов GMX."
 #: src/pages/Dashboard/WeightText.tsx
 msgid "Target Weight"
 msgstr "Целевой вес"
-
-#: landing/src/pages/Home/FaqSection/FaqSection.tsx
-msgid "What makes GMX one of the best places to earn yield on my crypto?"
-msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 msgid "When closing the position, you can select which token you would like to receive the profits in."
@@ -6532,10 +6533,6 @@ msgstr "Аналитика GMX v2 Telegram & Discord"
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-enable"
 msgstr "Повторно включить"
-
-#: landing/src/pages/Home/FaqSection/FaqSection.tsx
-msgid "<0>Absolutely. GMX is fully composable and already integrated with hundreds of protocols, including Dolomite, 1inch, and Odos. You can interact directly with the smart contracts or use the provided APIs and SDKs for trading, liquidity, or data feeds. Visit the GMX Developer Docs to get started.</0>"
-msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "I do not want to transfer the Affiliate esGMX tokens"
