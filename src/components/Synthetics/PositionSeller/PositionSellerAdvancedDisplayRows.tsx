@@ -7,7 +7,10 @@ import {
   selectPositionSellerNextPositionValuesForDecrease,
   selectPositionSellerPosition,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
-import { selectBreakdownNetPriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import {
+  selectBreakdownNetPriceImpactEnabled,
+  selectSetAcceptablePriceImpactEnabled,
+} from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GasPaymentParams } from "domain/synthetics/express";
 import { OrderType } from "domain/synthetics/orders";
@@ -36,6 +39,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
   const [open, setOpen] = useLocalStorageSerializeKey("position-seller-advanced-display-rows-open", false);
   const position = useSelector(selectPositionSellerPosition);
   const breakdownNetPriceImpactEnabled = useSelector(selectBreakdownNetPriceImpactEnabled);
+  const isSetAcceptablePriceImpactEnabled = useSelector(selectSetAcceptablePriceImpactEnabled);
 
   const {
     allowedSlippage,
@@ -102,7 +106,9 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
       <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} />
 
       {isTrigger || isTwap ? (
-        acceptablePriceImpactInputRow
+        isSetAcceptablePriceImpactEnabled ? (
+          acceptablePriceImpactInputRow
+        ) : null
       ) : (
         <AllowedSlippageRow
           allowedSlippage={allowedSlippage}

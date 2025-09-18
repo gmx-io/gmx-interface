@@ -67,7 +67,7 @@ type Props = {
 };
 
 export function OrderItem(p: Props) {
-  const { showDebugValues } = useSettings();
+  const { showDebugValues, setAcceptablePriceImpactEnabled } = useSettings();
 
   const [, setEditingOrderState] = useEditingOrderState();
 
@@ -80,6 +80,7 @@ export function OrderItem(p: Props) {
       order={p.order}
       hideActions={p.hideActions}
       showDebugValues={showDebugValues}
+      setAcceptablePriceImpactEnabled={setAcceptablePriceImpactEnabled}
       onToggleOrder={p.onToggleOrder}
       setEditingOrderKey={setEditingOrderKey}
       onCancelOrder={p.onCancelOrder}
@@ -90,6 +91,7 @@ export function OrderItem(p: Props) {
   ) : (
     <OrderItemSmall
       order={p.order}
+      setAcceptablePriceImpactEnabled={setAcceptablePriceImpactEnabled}
       showDebugValues={showDebugValues}
       hideActions={p.hideActions}
       onCancelOrder={p.onCancelOrder}
@@ -387,10 +389,12 @@ function MarkPrice({ order, className }: { order: OrderInfo; className?: string 
 function TriggerPrice({
   order,
   hideActions,
+  setAcceptablePriceImpactEnabled,
   className,
 }: {
   order: OrderInfo;
   hideActions: boolean | undefined;
+  setAcceptablePriceImpactEnabled: boolean;
   className?: string;
 }) {
   if (isTwapOrder(order)) {
@@ -409,14 +413,18 @@ function TriggerPrice({
       positionOrder?.indexToken?.visualMultiplier
     );
 
-    return (
+    const handle = (
+      <span className="font-medium">
+        <Trans>N/A</Trans>
+      </span>
+    );
+
+    return !setAcceptablePriceImpactEnabled ? (
+      handle
+    ) : (
       <TooltipWithPortal
         position="bottom-end"
-        handle={
-          <span className="font-medium">
-            <Trans>N/A</Trans>
-          </span>
-        }
+        handle={handle}
         content={
           <StatsTooltipRow
             label={t`Acceptable Price`}
@@ -449,9 +457,11 @@ function TriggerPrice({
             handleClassName="numbers"
             renderContent={() => (
               <>
-                <div className="pb-8">
-                  <StatsTooltipRow label={t`Acceptable Price`} value={acceptablePriceText} showDollar={false} />
-                </div>
+                {setAcceptablePriceImpactEnabled && (
+                  <div className="pb-8">
+                    <StatsTooltipRow label={t`Acceptable Price`} value={acceptablePriceText} showDollar={false} />
+                  </div>
+                )}
                 {t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact.`}
               </>
             )}
@@ -468,33 +478,35 @@ function TriggerPrice({
       undefined,
       positionOrder?.indexToken?.visualMultiplier
     );
-    return (
+
+    const handle = (
+      <span>
+        {positionOrder.triggerThresholdType}{" "}
+        {formatUsd(positionOrder.triggerPrice, {
+          displayDecimals: priceDecimals,
+          visualMultiplier: positionOrder.indexToken?.visualMultiplier,
+        })}
+      </span>
+    );
+    return !setAcceptablePriceImpactEnabled ? (
+      handle
+    ) : (
       <TooltipWithPortal
-        handle={
-          <span>
-            {positionOrder.triggerThresholdType}{" "}
-            {formatUsd(positionOrder.triggerPrice, {
-              displayDecimals: priceDecimals,
-              visualMultiplier: positionOrder.indexToken?.visualMultiplier,
-            })}
-          </span>
-        }
+        handle={handle}
         position="bottom-end"
         renderContent={() => (
-          <>
-            <StatsTooltipRow
-              label={t`Acceptable Price`}
-              value={
-                isStopLossOrderType(positionOrder.orderType) || isStopIncreaseOrderType(positionOrder.orderType)
-                  ? "NA"
-                  : `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
-                      displayDecimals: priceDecimals,
-                      visualMultiplier: positionOrder.indexToken?.visualMultiplier,
-                    })}`
-              }
-              showDollar={false}
-            />
-          </>
+          <StatsTooltipRow
+            label={t`Acceptable Price`}
+            value={
+              isStopLossOrderType(positionOrder.orderType) || isStopIncreaseOrderType(positionOrder.orderType)
+                ? "NA"
+                : `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
+                    displayDecimals: priceDecimals,
+                    visualMultiplier: positionOrder.indexToken?.visualMultiplier,
+                  })}`
+            }
+            showDollar={false}
+          />
         )}
       />
     );
@@ -507,6 +519,7 @@ function OrderItemLarge({
   hideActions,
   onToggleOrder,
   showDebugValues,
+  setAcceptablePriceImpactEnabled,
   setEditingOrderKey,
   onCancelOrder,
   isCanceling,
@@ -516,6 +529,7 @@ function OrderItemLarge({
   setRef?: (el: HTMLElement | null, orderKey: string) => void;
   hideActions: boolean | undefined;
   showDebugValues: boolean | undefined;
+  setAcceptablePriceImpactEnabled: boolean;
   onToggleOrder: undefined | (() => void);
   setEditingOrderKey: undefined | (() => void);
   onCancelOrder: undefined | (() => void);
@@ -626,7 +640,11 @@ function OrderItemLarge({
       </TableTd>
 
       <TableTd>
-        <TriggerPrice order={order} hideActions={hideActions} />
+        <TriggerPrice
+          order={order}
+          hideActions={hideActions}
+          setAcceptablePriceImpactEnabled={setAcceptablePriceImpactEnabled}
+        />
       </TableTd>
       <TableTd>
         <MarkPrice order={order} />
@@ -656,6 +674,7 @@ function OrderItemLarge({
 function OrderItemSmall({
   showDebugValues,
   order,
+  setAcceptablePriceImpactEnabled,
   setEditingOrderKey,
   onCancelOrder,
   hideActions,
@@ -665,6 +684,7 @@ function OrderItemSmall({
 }: {
   showDebugValues: boolean;
   order: OrderInfo;
+  setAcceptablePriceImpactEnabled: boolean;
   hideActions: boolean | undefined;
   setEditingOrderKey: undefined | (() => void);
   onCancelOrder: undefined | (() => void);
@@ -759,7 +779,11 @@ function OrderItemSmall({
             <Trans>Trigger Price</Trans>
           </div>
           <div>
-            <TriggerPrice order={order} hideActions={hideActions} />
+            <TriggerPrice
+              order={order}
+              hideActions={hideActions}
+              setAcceptablePriceImpactEnabled={setAcceptablePriceImpactEnabled}
+            />
           </div>
         </div>
 

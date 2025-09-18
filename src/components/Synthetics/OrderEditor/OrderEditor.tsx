@@ -215,7 +215,8 @@ export function OrderEditor(p: Props) {
     return false;
   }
 
-  const { savedAcceptablePriceImpactBuffer } = useSettings();
+  const { savedAcceptablePriceImpactBuffer, setAcceptablePriceImpactEnabled: isSetAcceptablePriceImpactEnabled } =
+    useSettings();
 
   function detectAndSetAvailableMaxLeverage() {
     const positionOrder = p.order as PositionOrderInfo;
@@ -690,7 +691,8 @@ export function OrderEditor(p: Props) {
 
           {!isSwapOrderType(p.order.orderType) &&
             !isStopLossOrderType(p.order.orderType) &&
-            !isStopIncreaseOrderType(p.order.orderType) && (
+            !isStopIncreaseOrderType(p.order.orderType) &&
+            isSetAcceptablePriceImpactEnabled && (
               <AcceptablePriceImpactInputRow
                 acceptablePriceImpactBps={acceptablePriceImpactBps}
                 initialPriceImpactFeeBps={initialAcceptablePriceImpactBps}
