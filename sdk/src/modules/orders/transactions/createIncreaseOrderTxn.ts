@@ -40,6 +40,7 @@ type IncreaseOrderParams = {
   referralCode: string | undefined;
   indexToken: TokenData;
   tokensData: TokensData;
+  dataList?: string[];
 };
 
 type SecondaryOrderCommonParams = {
@@ -270,6 +271,7 @@ function createOrderParams({
     shouldUnwrapNativeToken: isNativePayment,
     autoCancel: false,
     referralCode: p.referralCode || zeroHash,
+    dataList: p.dataList ?? [],
   };
 }
 

@@ -3,7 +3,7 @@ import useSWR from "swr";
 import { zeroAddress } from "viem";
 
 import { getServerUrl } from "config/backend";
-import { ARBITRUM } from "config/chains";
+import { ARBITRUM, ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { useGmxPrice } from "domain/legacy";
 import useVestingData from "domain/vesting/useVestingData";
@@ -18,9 +18,10 @@ import {
 } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
 
-export function useProcessedData() {
+export function useProcessedData(targetChainId?: ContractsChainId) {
   const { active, signer, account } = useWallet();
-  const { chainId } = useChainId();
+  const { chainId: currentChainId } = useChainId();
+  const chainId = targetChainId ?? currentChainId;
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
 
@@ -69,7 +70,7 @@ export function useProcessedData() {
     extendedGmxTrackerAddress,
   ];
 
-  const vestingData = useVestingData(account);
+  const vestingData = useVestingData(account, chainId);
 
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 

@@ -35,6 +35,7 @@ export type DecreaseOrderParams = {
   indexToken: Token;
   tokensData: TokensData;
   autoCancel: boolean;
+  dataList?: string[];
 };
 
 export async function createDecreaseOrderTxn(sdk: GmxSdk, params: DecreaseOrderParams | DecreaseOrderParams[]) {
@@ -132,6 +133,7 @@ export function createDecreaseEncodedPayload({
         shouldUnwrapNativeToken: isNativeReceive,
         autoCancel: p.autoCancel,
         referralCode: p.referralCode || zeroHash,
+        dataList: p.dataList ?? [],
       };
 
       return [

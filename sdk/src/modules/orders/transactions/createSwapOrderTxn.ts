@@ -23,6 +23,7 @@ export type SwapOrderParams = {
   executionFee: bigint;
   allowedSlippage: number;
   triggerPrice?: bigint;
+  dataList?: string[];
 };
 
 export async function createSwapOrderTxn(sdk: GmxSdk, p: SwapOrderParams) {
@@ -92,6 +93,7 @@ async function getParams(sdk: GmxSdk, p: SwapOrderParams) {
     isLong: false,
     shouldUnwrapNativeToken: isNativeReceive,
     referralCode: p.referralCode || zeroHash,
+    dataList: p.dataList ?? [],
   };
 
   const multicall = [

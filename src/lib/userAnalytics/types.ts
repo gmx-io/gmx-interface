@@ -12,8 +12,8 @@ export type LandingPageViewEvent = {
 export type LandingPageLaunchAppEvent = {
   event: "LandingPageAction";
   data: {
-    action: "LaunchApp";
-    buttonPosition: "MenuButton" | "StickyHeader" | "Title" | "Chains";
+    action: "LaunchApp" | "SolanaNavigation";
+    buttonPosition: "MenuButton" | "StickyHeader" | "Title" | "Chains" | "LaunchSection" | "HeroSection";
     shouldSeeConfirmationDialog: boolean;
   };
 };
