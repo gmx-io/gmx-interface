@@ -2804,6 +2804,10 @@ msgstr ""
 msgid "Otherwise, try changing the RPC url in your wallet settings with the help of <0>chainlist.org</0>."
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
+msgid "Testnet LayerZero Scan"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
 msgstr ""
@@ -3350,6 +3354,10 @@ msgstr ""
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Network Fee"
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+msgid "20s"
 msgstr ""
 
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
@@ -4272,6 +4280,11 @@ msgstr ""
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Your opinions and experiences matter to us. Your feedback helps us understand what we are doing well and where we can make enhancements."
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+msgid "Estimated Time"
 msgstr ""
 
 #: src/pages/Stake/Vesting.tsx
@@ -5720,6 +5733,11 @@ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transferring"
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+msgid "1m 40s"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -8708,6 +8726,10 @@ msgstr ""
 msgid "Net Rate"
 msgstr ""
 
+#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+msgid "30s"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd Place"
@@ -9316,6 +9338,10 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Your position's collateral after deducting fees:"
+msgstr ""
+
+#: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
+msgid "LayerZero Scan"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx

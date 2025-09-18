@@ -9,7 +9,7 @@ import { useLatest } from "react-use";
 import { Hex, decodeErrorResult, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { AnyChainId, SettlementChainId, SourceChainId, getChainName } from "config/chains";
+import { AnyChainId, SettlementChainId, SourceChainId, getChainName, isContractsChain } from "config/chains";
 import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
 import {
@@ -260,7 +260,7 @@ export const DepositView = () => {
         onApproveSubmitted: () => setIsApproving(true),
         setIsApproving: noop,
         permitParams: undefined,
-        approveAmount: undefined,
+        approveAmount: inputAmount,
       });
     });
   }, [
@@ -709,6 +709,8 @@ export const DepositView = () => {
     [onClick]
   );
 
+  const isTestnet = !isContractsChain(settlementChainId, false);
+
   return (
     <form className="flex grow flex-col overflow-y-auto px-adaptive pb-adaptive pt-adaptive" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-[--padding-adaptive]">
@@ -834,6 +836,19 @@ export const DepositView = () => {
 
       {depositViewTokenAddress && (
         <div className="mb-16 flex flex-col gap-10">
+          <SyntheticsInfoRow
+            label={<Trans>Estimated Time</Trans>}
+            valueClassName="numbers"
+            value={
+              inputAmount === undefined || inputAmount === 0n ? (
+                "..."
+              ) : isTestnet ? (
+                <Trans>1m 40s</Trans>
+              ) : (
+                <Trans>30s</Trans>
+              )
+            }
+          />
           <SyntheticsInfoRow
             label={<Trans>Network Fee</Trans>}
             valueClassName="numbers"

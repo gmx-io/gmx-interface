@@ -13,7 +13,10 @@ import {
   SOURCE_SEPOLIA,
 } from "config/chains";
 
-export const CHAIN_ID_TO_TX_URL_BUILDER: Record<AnyChainId, (txId: string) => string> = {
+export const CHAIN_ID_TO_TX_URL_BUILDER: Record<
+  AnyChainId | "layerzero" | "layerzero-testnet",
+  (txId: string) => string
+> = {
   [ARBITRUM]: (txId: string) => `${getExplorerUrl(ARBITRUM)}tx/${txId}`,
   [AVALANCHE]: (txId: string) => `${getExplorerUrl(AVALANCHE)}tx/${txId}`,
   [SOURCE_BASE_MAINNET]: (txId: string) => `${getExplorerUrl(SOURCE_BASE_MAINNET)}tx/${txId}`,
@@ -22,6 +25,8 @@ export const CHAIN_ID_TO_TX_URL_BUILDER: Record<AnyChainId, (txId: string) => st
   [AVALANCHE_FUJI]: (txId: string) => `${getExplorerUrl(AVALANCHE_FUJI)}tx/${txId}`,
   [SOURCE_SEPOLIA]: (txId: string) => `${getExplorerUrl(SOURCE_SEPOLIA)}tx/${txId}`,
   [BOTANIX]: (txId: string) => `${getExplorerUrl(BOTANIX)}tx/${txId}`,
+  layerzero: (txId: string) => `${getExplorerUrl("layerzero")}tx/${txId}`,
+  "layerzero-testnet": (txId: string) => `${getExplorerUrl("layerzero-testnet")}tx/${txId}`,
 };
 
 export const CHAIN_ID_TO_EXPLORER_NAME: Record<AnyChainId, string> = {

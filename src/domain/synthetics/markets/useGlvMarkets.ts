@@ -317,7 +317,7 @@ export function useGlvMarketsInfo(
           };
         });
 
-        resetTokensBalancesUpdates(Object.keys(result));
+        resetTokensBalancesUpdates(Object.keys(result), "wallet");
 
         return result;
       },
@@ -340,7 +340,7 @@ export function useGlvMarketsInfo(
       const glvToken = result[tokenAddress].glvToken;
 
       if (glvToken.balance !== undefined) {
-        glvToken.balance = updateTokenBalance(balanceUpdate, glvToken.balance);
+        glvToken.balance = updateTokenBalance(balanceUpdate, glvToken.balance, "wallet");
       }
     }
 

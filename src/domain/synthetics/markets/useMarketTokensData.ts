@@ -158,7 +158,7 @@ export function useMarketTokensDataRequest(
           explorerUrl: `${getExplorerUrl(chainId)}/token/${marketAddress}`,
         };
 
-        resetTokensBalancesUpdates(Object.keys(marketTokensMap));
+        resetTokensBalancesUpdates(Object.keys(marketTokensMap), "wallet");
 
         return marketTokensMap;
       }, {} as TokensData),
