@@ -9,7 +9,7 @@ import { getUsd } from "domain/tokens/utils";
 import { getOrderError, FUNDING_RATE_PRECISION, SWAP, LONG, SHORT, INCREASE, DECREASE } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
-import useAccountType, { AccountType } from "lib/wallets/useAccountType";
+import { useAccountType, AccountType } from "lib/wallets/useAccountType";
 import { getPriceDecimals } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
@@ -101,7 +101,7 @@ export default function PositionsList(props) {
   const [ordersToaOpen, setOrdersToaOpen] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
   const accountType = useAccountType();
-  const isContractAccount = accountType === AccountType.CONTRACT;
+  const isContractAccount = accountType === AccountType.SmartAccount || accountType === AccountType.Safe;
 
   const sellPosition = (position) => {
     setPositionToSellKey(position.key);

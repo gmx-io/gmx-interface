@@ -3810,7 +3810,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:^1.9.1, @noble/curves@npm:~1.9.0":
+"@noble/curves@npm:^1.6.0, @noble/curves@npm:^1.9.1, @noble/curves@npm:~1.9.0":
   version: 1.9.7
   resolution: "@noble/curves@npm:1.9.7"
   dependencies:
@@ -4049,6 +4049,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@peculiar/asn1-schema@npm:^2.3.13":
+  version: 2.5.0
+  resolution: "@peculiar/asn1-schema@npm:2.5.0"
+  dependencies:
+    asn1js: ^3.0.6
+    pvtsutils: ^1.3.6
+    tslib: ^2.8.1
+  checksum: afa900ed07e4bad4003a8452d35114c01084021dac6d089777ae200b1e1f6534695e2d95a75c9d0b53841499e130a52548965305e5aad2ba5ec1b8305a00a3b5
+  languageName: node
+  linkType: hard
+
 "@pkgjs/parseargs@npm:^0.11.0":
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
@@ -4219,6 +4230,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@safe-global/protocol-kit@npm:6.1.1":
+  version: 6.1.1
+  resolution: "@safe-global/protocol-kit@npm:6.1.1"
+  dependencies:
+    "@noble/curves": ^1.6.0
+    "@peculiar/asn1-schema": ^2.3.13
+    "@safe-global/safe-deployments": ^1.37.42
+    "@safe-global/safe-modules-deployments": ^2.2.14
+    "@safe-global/types-kit": ^3.0.0
+    abitype: ^1.0.2
+    semver: ^7.7.2
+    viem: ^2.21.8
+  dependenciesMeta:
+    "@noble/curves":
+      optional: true
+    "@peculiar/asn1-schema":
+      optional: true
+  checksum: 3999727d68a0504f5fd0e4ffa64fe83ff3d4ae80797106c52070cbd541f0bbaf6758f76ebf1161cce7c323d87d9e989e4aaaf8d9a3135101c1329c62443992ff
+  languageName: node
+  linkType: hard
+
 "@safe-global/safe-apps-provider@npm:0.18.3":
   version: 0.18.3
   resolution: "@safe-global/safe-apps-provider@npm:0.18.3"
@@ -4239,12 +4271,37 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@safe-global/safe-deployments@npm:^1.37.42":
+  version: 1.37.45
+  resolution: "@safe-global/safe-deployments@npm:1.37.45"
+  dependencies:
+    semver: ^7.6.2
+  checksum: 3e9aa3617a078a1f56a4f85f1436ae0ebcbff5e77d0fa1e0eb365d27e5341145ee8d6b2f2904d1ffb784ee2d7c64014b6218916c7cda609e786e2d312cff49e9
+  languageName: node
+  linkType: hard
+
 "@safe-global/safe-gateway-typescript-sdk@npm:^3.5.3":
   version: 3.9.0
   resolution: "@safe-global/safe-gateway-typescript-sdk@npm:3.9.0"
   dependencies:
     cross-fetch: ^3.1.5
   checksum: 71472d77a36bb626c6aeded98d7e994dacd008000d356b0f14b8baa73d296ff9da30bb637ba74679efe74d61925010cfad4b3956639a873d2ade91648654ec3c
+  languageName: node
+  linkType: hard
+
+"@safe-global/safe-modules-deployments@npm:^2.2.14":
+  version: 2.2.16
+  resolution: "@safe-global/safe-modules-deployments@npm:2.2.16"
+  checksum: 89522cb2c57c1afb101d9c1a3116408f2e565f800499e914373cf10b08ee026cc49a9978070dbea95e7d8de4bb1045db8319a8e5c10882799b9c4a107105da31
+  languageName: node
+  linkType: hard
+
+"@safe-global/types-kit@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@safe-global/types-kit@npm:3.0.0"
+  dependencies:
+    abitype: ^1.0.2
+  checksum: 02f868e8a2de0681c637ed853473766468a4e4b9ee024c3d807b72bf0cbd3555593d88711c0ebd7b0cee159e8d61320542d659dd291cbff0829a2466b5b6fa3f
   languageName: node
   linkType: hard
 
@@ -6158,6 +6215,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"abitype@npm:1.1.0, abitype@npm:^1.0.2":
+  version: 1.1.0
+  resolution: "abitype@npm:1.1.0"
+  peerDependencies:
+    typescript: ">=5.0.4"
+    zod: ^3.22.0 || ^4.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+    zod:
+      optional: true
+  checksum: 55f724d038a60cc5e4ce4913298f912f0c34c53e13240cd3b97b272f4122bdf4c84541d85d1e3bb36f6e8dab6685f232c69600718fad62ccc389bea3f63ed7e4
+  languageName: node
+  linkType: hard
+
 "abitype@npm:^0.1.6":
   version: 0.1.8
   resolution: "abitype@npm:0.1.8"
@@ -6528,6 +6600,17 @@ __metadata:
     get-intrinsic: ^1.2.6
     is-array-buffer: ^3.0.4
   checksum: b1d1fd20be4e972a3779b1569226f6740170dca10f07aa4421d42cefeec61391e79c557cda8e771f5baefe47d878178cd4438f60916ce831813c08132bced765
+  languageName: node
+  linkType: hard
+
+"asn1js@npm:^3.0.6":
+  version: 3.0.6
+  resolution: "asn1js@npm:3.0.6"
+  dependencies:
+    pvtsutils: ^1.3.6
+    pvutils: ^1.1.3
+    tslib: ^2.8.1
+  checksum: 2b43a4c7964183cc2c6b45d7f757eeeb93d2c60e89250dae2826250580e2049a43a795af6ab6d8eb6cbb13c8f51674a430923b2981313c64503b7159e378b477
   languageName: node
   linkType: hard
 
@@ -10287,6 +10370,7 @@ __metadata:
     "@lingui/react": 4.10.0
     "@lingui/vite-plugin": 4.11.3
     "@rainbow-me/rainbowkit": 2.2.0
+    "@safe-global/protocol-kit": 6.1.1
     "@stargatefinance/stg-evm-sdk-v2": 1.1.12
     "@tanstack/react-query": 5.25.0
     "@taskworld.com/rereselect": 0.3.0
@@ -13491,6 +13575,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pvtsutils@npm:^1.3.6":
+  version: 1.3.6
+  resolution: "pvtsutils@npm:1.3.6"
+  dependencies:
+    tslib: ^2.8.1
+  checksum: 97b023b46d7b95bff004f8340efc465c1d995f35d7e97a2ef2e28d5e160f5ca47b48f42463b6be92b4341452a6b8c555feb2b1eb59ee90b97bd5d6fc86ffb186
+  languageName: node
+  linkType: hard
+
+"pvutils@npm:^1.1.3":
+  version: 1.1.3
+  resolution: "pvutils@npm:1.1.3"
+  checksum: 2ee26a9e5176c348977d6ec00d8ee80bff62f51743b1c5fe8abeeb4c5d29d9959cdfe0ce146707a9e6801bce88190fed3002d720b072dc87d031c692820b44c9
+  languageName: node
+  linkType: hard
+
 "qr-code-styling@npm:^1.6.0-rc.1":
   version: 1.9.2
   resolution: "qr-code-styling@npm:1.9.2"
@@ -14754,6 +14854,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"semver@npm:^7.6.2, semver@npm:^7.7.2":
+  version: 7.7.2
+  resolution: "semver@npm:7.7.2"
+  bin:
+    semver: bin/semver.js
+  checksum: dd94ba8f1cbc903d8eeb4dd8bf19f46b3deb14262b6717d0de3c804b594058ae785ef2e4b46c5c3b58733c99c83339068203002f9e37cfe44f7e2cc5e3d2f621
+  languageName: node
+  linkType: hard
+
 "set-blocking@npm:^2.0.0":
   version: 2.0.0
   resolution: "set-blocking@npm:2.0.0"
@@ -15861,7 +15970,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.0, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.3.1, tslib@npm:^2.4.0":
+"tslib@npm:^2.0.0, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.3.1, tslib@npm:^2.4.0, tslib@npm:^2.8.1":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: e4aba30e632b8c8902b47587fd13345e2827fa639e7c3121074d5ee0880723282411a8838f830b55100cbe4517672f84a2472667d355b81e8af165a55dc6203a
@@ -16463,6 +16572,27 @@ __metadata:
     typescript:
       optional: true
   checksum: ea8bea4728c4ddc5af606564b8b3b34fd463614166e96445980ecba6bcd13d7cc30747c05a74fc44b1296fbff079e9e4a4e9a584dd3404c4f564a5c4e908a147
+  languageName: node
+  linkType: hard
+
+"viem@npm:^2.21.8":
+  version: 2.37.6
+  resolution: "viem@npm:2.37.6"
+  dependencies:
+    "@noble/curves": 1.9.1
+    "@noble/hashes": 1.8.0
+    "@scure/bip32": 1.7.0
+    "@scure/bip39": 1.6.0
+    abitype: 1.1.0
+    isows: 1.0.7
+    ox: 0.9.3
+    ws: 8.18.3
+  peerDependencies:
+    typescript: ">=5.0.4"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 2a8b0ebf6eb09029acc4ca0aac3986c467b03b29c41afe0d3a24b3e0ec1ef38a1d1479f821051e00df8d93d230b8eecb527f033f23007a0157637cb37d336168
   languageName: node
   linkType: hard
 

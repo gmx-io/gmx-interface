@@ -11,13 +11,12 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { createClaimAmountsTransaction } from "domain/synthetics/claims/createClaimTransaction";
 import { useClaimExecutionFee } from "domain/synthetics/claims/useClaimExecutionFee";
 import { useClaimFundsTransactionCallback } from "domain/synthetics/claims/useClaimFundsTransactionCallback";
-import { useIsSmartAccountSignedClaimTerms } from "domain/synthetics/claims/useIsSmartAccountSigned";
 import useUserClaimableAmounts, { GLP_DISTRIBUTION_ID } from "domain/synthetics/claims/useUserClaimableAmounts";
 import { estimateExecutionGasPrice, getExecutionFeeBufferBps } from "domain/synthetics/fees/utils/executionFee";
 import { useTokenBalances } from "domain/synthetics/tokens";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { useIsSafeAccount } from "lib/wallets/useIsSmartAccount";
+import { useAccountType, AccountType } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
@@ -26,9 +25,13 @@ import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+//
+// Safe and ERC-4337 message signing support is implemented below in signClaimTerms.
+//
+
 export default function ClaimableAmounts() {
-  const { account, signer } = useWallet();
-  const isSmartAccount = useIsSafeAccount();
+  const { account, signer, walletClient } = useWallet();
+  const accountType = useAccountType();
   const chainId = useSelector(selectChainId);
   const {
     claimTerms,
@@ -47,7 +50,7 @@ export default function ClaimableAmounts() {
     ""
   );
 
-  const isSmartAccountSignedClaimTerms = useIsSmartAccountSignedClaimTerms({ account, signer });
+  const isSmartAccount = accountType !== AccountType.EOA && accountType !== AccountType.PostEip7702EOA;
 
   const claimableTokens = useMemo(() => {
     return Object.keys(claimableAmounts).filter(
@@ -65,13 +68,63 @@ export default function ClaimableAmounts() {
   });
 
   const signClaimTerms = useCallback(async () => {
-    const message = `${claimTerms}\ndistributionId ${GLP_DISTRIBUTION_ID}\ncontract ${getContract(chainId, "ClaimHandler").toLowerCase()}\nchainId ${chainId}`;
-    const signature = await signer?.signMessage(message);
-
-    if (signature) {
-      setClaimTermsAcceptedSignature(signature);
+    if (!account || !claimTerms) {
+      return;
     }
-  }, [setClaimTermsAcceptedSignature, signer, claimTerms, chainId]);
+
+    debugger;
+
+    const message = `${claimTerms}\ndistributionId ${GLP_DISTRIBUTION_ID}\ncontract ${getContract(chainId, "ClaimHandler").toLowerCase()}\nchainId ${chainId}`;
+    // Safe accounts: delegate signing to the Safe-aware wallet provider (Rabby/MMI/Safe Wallet)
+    if (accountType === AccountType.Safe) {
+      try {
+        if (!walletClient) throw new Error("Missing wallet client for Safe signing");
+        const signature = (await walletClient.signMessage({ account: account as `0x${string}`, message })) as string;
+        if (!signature || !signature.startsWith("0x")) throw new Error("Invalid Safe signature format");
+        setClaimTermsAcceptedSignature(signature);
+        return;
+      } catch (error: any) {
+        // eslint-disable-next-line no-console
+        console.error("Safe signing failed:", error);
+        throw new Error(
+          `Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing. Error: ${error?.message ?? error}`
+        );
+      }
+    }
+
+    // ERC-4337 smart accounts: sign with the connected wallet client/account
+    if (accountType === AccountType.SmartAccount) {
+      try {
+        let signature: string | undefined;
+        if (walletClient && account) {
+          signature = (await walletClient.signMessage({ account: account as `0x${string}`, message })) as string;
+        } else if (signer) {
+          signature = await signer.signMessage(message);
+        }
+
+        if (signature && signature.startsWith("0x")) {
+          setClaimTermsAcceptedSignature(signature);
+        }
+        return;
+      } catch (error: any) {
+        // eslint-disable-next-line no-console
+        console.error("Smart account signing failed:", error);
+        throw new Error(`Unable to sign message with smart account. Error: ${error?.message ?? error}`);
+      }
+    }
+
+    // EOAs (including post-EIP-7702 undelegated): standard signMessage
+    try {
+      const signature = await signer?.signMessage(message);
+      if (signature && signature.startsWith("0x")) {
+        setClaimTermsAcceptedSignature(signature);
+      }
+    } catch (error: any) {
+      // eslint-disable-next-line no-console
+      console.error("EOA signing failed:", error);
+      throw new Error(`Unable to sign message. Error: ${error?.message ?? error}`);
+    }
+  }, [account, accountType, chainId, claimTerms, setClaimTermsAcceptedSignature, signer, walletClient]);
 
   const claimFundsTransactionCallback = useClaimFundsTransactionCallback({
     tokens: claimableTokens,
@@ -79,7 +132,7 @@ export default function ClaimableAmounts() {
   });
 
   const claimAmounts = useCallback(async () => {
-    if (claimTerms && (isSmartAccount ? !isSmartAccountSignedClaimTerms : !claimTermsAcceptedSignature)) {
+    if (claimTerms && !claimTermsAcceptedSignature) {
       return;
     }
 
@@ -115,8 +168,6 @@ export default function ClaimableAmounts() {
     mutateClaimableAmounts,
     claimTerms,
     claimFundsTransactionCallback,
-    isSmartAccountSignedClaimTerms,
-    isSmartAccount,
   ]);
 
   const { balancesData } = useTokenBalances(chainId);
@@ -138,11 +189,7 @@ export default function ClaimableAmounts() {
     isButtonDisabled = !hasAvailableFundsToCoverExecutionFee;
 
     if (claimTerms) {
-      if (isSmartAccount) {
-        isButtonDisabled = isButtonDisabled || !isSmartAccountSignedClaimTerms;
-      } else {
-        isButtonDisabled = isButtonDisabled || !claimTermsAcceptedSignature;
-      }
+      isButtonDisabled = isButtonDisabled || !claimTermsAcceptedSignature;
     }
 
     if (claimsFeatureDisabled || isClaiming || !claimableAmountsLoaded) {
@@ -161,16 +208,8 @@ export default function ClaimableAmounts() {
 
     let buttonTooltipText: React.ReactNode | null = null;
 
-    if (isSmartAccount && !isSmartAccountSignedClaimTerms) {
-      buttonTooltipText = (
-        <Trans>
-          To sign the terms using a Safe account in order to claim, please{" "}
-          <a href="https://docs.gmx.io/docs/providing-liquidity/v1/#safe-account" target="_blank" rel="noreferrer">
-            follow these steps
-          </a>
-          .
-        </Trans>
-      );
+    if (isSmartAccount && !claimTermsAcceptedSignature) {
+      buttonTooltipText = <Trans>Please accept the Claim Terms above to continue.</Trans>;
     }
 
     return {
@@ -190,7 +229,6 @@ export default function ClaimableAmounts() {
     isClaiming,
     isSmartAccount,
     executionFee,
-    isSmartAccountSignedClaimTerms,
   ]);
 
   const controls = useMemo(() => {
@@ -223,9 +261,9 @@ export default function ClaimableAmounts() {
         ) : null}
         {claimTerms && hasAvailableFundsToCoverExecutionFee && !claimsFeatureDisabled ? (
           <Checkbox
-            isChecked={Boolean(claimTermsAcceptedSignature || (isSmartAccount && isSmartAccountSignedClaimTerms))}
+            isChecked={Boolean(claimTermsAcceptedSignature)}
             setIsChecked={signClaimTerms}
-            disabled={Boolean(claimTermsAcceptedSignature || isSmartAccount)}
+            disabled={Boolean(claimTermsAcceptedSignature)}
           >
             <span className="muted">
               <Trans>Accept Claim Terms</Trans>
@@ -246,8 +284,6 @@ export default function ClaimableAmounts() {
     buttonTooltipText,
     hasAvailableFundsToCoverExecutionFee,
     isButtonDisabled,
-    isSmartAccount,
-    isSmartAccountSignedClaimTerms,
   ]);
 
   return (

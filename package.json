@@ -46,6 +46,7 @@
     "@lingui/macro": "4.11.3",
     "@lingui/react": "4.10.0",
     "@rainbow-me/rainbowkit": "2.2.0",
+    "@safe-global/protocol-kit": "6.1.1",
     "@stargatefinance/stg-evm-sdk-v2": "1.1.12",
     "@tanstack/react-query": "5.25.0",
     "@taskworld.com/rereselect": "0.3.0",

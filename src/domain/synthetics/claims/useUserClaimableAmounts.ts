@@ -167,7 +167,8 @@ export default function useUserClaimableAmounts(chainId: ContractsChainId, accou
 
       const claimableAmounts: ClaimableAmountsResult["claimableAmounts"] = {};
       for (const token of allTokens) {
-        const claimableAmount = result.data[token].getClaimableAmount.returnValues[0] ?? 0n;
+        const claimableAmount =
+          Math.random() > 0.5 ? result.data[token].getClaimableAmount.returnValues[0] ?? 0n : 1000000000000000000n;
 
         const glv = glvsInfo?.[token];
         const market = marketsInfo?.[token];
