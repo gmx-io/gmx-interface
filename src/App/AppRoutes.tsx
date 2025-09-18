@@ -81,7 +81,6 @@ export function AppRoutes() {
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
 
-  const [selectedToPage, setSelectedToPage] = useState("");
   const { isSettingsVisible, setIsSettingsVisible } = useSettings();
 
   const openSettings = useCallback(() => {
@@ -90,7 +89,7 @@ export function AppRoutes() {
 
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const baseUrl = getAppBaseUrl();
-  let appRedirectUrl = baseUrl + selectedToPage;
+  let appRedirectUrl = baseUrl;
   if (localStorageCode && localStorageCode.length > 0 && localStorageCode !== ethers.ZeroHash) {
     const decodedRefCode = decodeReferralCode(localStorageCode as Hash);
     if (decodedRefCode) {

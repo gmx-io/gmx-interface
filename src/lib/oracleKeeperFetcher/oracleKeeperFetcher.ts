@@ -163,7 +163,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
       .catch((e) => {
         // eslint-disable-next-line no-console
         console.error(e);
-        this.switchOracleKeeper();
+        this.handleFailure();
         throw e;
       });
   }
