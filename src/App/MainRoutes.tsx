@@ -1,18 +1,12 @@
 import { Trans } from "@lingui/macro";
-import { Provider, ethers } from "ethers";
-import { Suspense, lazy, useEffect, useRef } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import type { Address } from "viem";
 
-import { ARBITRUM } from "config/chains";
-import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { PoolsDetailsContextProvider } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { subscribeToV1Events } from "context/WebsocketContext/subscribeToEvents";
-import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { useChainId } from "lib/chains";
-import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
@@ -36,7 +30,6 @@ import Stats from "pages/Stats/Stats";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { TestPermits } from "pages/TestPermits/TestPermits";
-import { abis } from "sdk/abis";
 
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 
@@ -48,40 +41,7 @@ export const UiPage = () => (
 );
 
 export function MainRoutes({ openSettings }: { openSettings: () => void }) {
-  const exchangeRef = useRef<any>();
-  const { hasV1LostFocus } = useHasLostFocus();
   const { chainId } = useChainId();
-
-  const { wsProvider } = useWebsocketProvider();
-
-  const vaultAddress = getContract(chainId, "Vault");
-  const positionRouterAddress = getContract(chainId, "PositionRouter");
-
-  useEffect(() => {
-    const wsVaultAbi = chainId === ARBITRUM ? abis.VaultV2 : abis.VaultV2b;
-    if (hasV1LostFocus || !wsProvider) {
-      return;
-    }
-
-    const wsVault = new ethers.Contract(vaultAddress, wsVaultAbi, wsProvider as Provider);
-    const wsPositionRouter = new ethers.Contract(positionRouterAddress, abis.PositionRouter, wsProvider as Provider);
-
-    const callExchangeRef = (method, ...args) => {
-      if (!exchangeRef || !exchangeRef.current) {
-        return;
-      }
-
-      exchangeRef.current[method](...args);
-    };
-
-    // handle the subscriptions here instead of within the Exchange component to avoid unsubscribing and re-subscribing
-    // each time the Exchange components re-renders, which happens on every data update
-    const unsubscribe = subscribeToV1Events(wsVault, wsPositionRouter, callExchangeRef);
-
-    return function cleanup() {
-      unsubscribe();
-    };
-  }, [chainId, vaultAddress, positionRouterAddress, wsProvider, hasV1LostFocus]);
 
   const { pathname } = useLocation();
 

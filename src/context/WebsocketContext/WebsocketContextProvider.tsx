@@ -58,12 +58,11 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
   const [wsSourceChainProviders, setWsSourceChainProviders] =
     useState<Partial<Record<SourceChainId, WebSocketProvider | JsonRpcProvider>>>(EMPTY_OBJECT);
 
-  const { hasPageLostFocus, hasV1LostFocus, hasV2LostFocus } = useHasLostFocus();
+  const { hasPageLostFocus, hasV2LostFocus } = useHasLostFocus();
   const initializedTime = useRef<number>();
   const healthCheckTimerId = useRef<any>();
-  const lostFocusRef = useRef({ hasV1LostFocus, hasV2LostFocus });
+  const lostFocusRef = useRef({ hasV2LostFocus });
 
-  lostFocusRef.current.hasV1LostFocus = hasV1LostFocus;
   lostFocusRef.current.hasV2LostFocus = hasV2LostFocus;
 
   useEffect(
@@ -244,7 +243,6 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
           initializedTime.current && Date.now() - initializedTime.current > WS_RECONNECT_INTERVAL;
         const listenerCount = await wsProvider.listenerCount();
         const requiredListenerCount = getTotalSubscribersEventsCount(chainId, wsProvider, {
-          v1: !lostFocusRef.current.hasV1LostFocus,
           v2: !lostFocusRef.current.hasV2LostFocus,
         });
 
