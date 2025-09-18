@@ -13,9 +13,9 @@ import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 const LARGE_ACCOUNT_CHAINS = [ARBITRUM, AVALANCHE];
 
 // Thresholds to recognise large accounts
-const MAX_DAILY_VOLUME = expandDecimals(220_000n, USD_DECIMALS);
-const AGG_14_DAYS_VOLUME = expandDecimals(1_200_000n, USD_DECIMALS);
-const AGG_ALL_TIME_VOLUME = expandDecimals(3_500_000n, USD_DECIMALS);
+const MAX_DAILY_VOLUME = expandDecimals(340_000n, USD_DECIMALS);
+const AGG_14_DAYS_VOLUME = expandDecimals(1_800_000n, USD_DECIMALS);
+const AGG_ALL_TIME_VOLUME = expandDecimals(5_800_000n, USD_DECIMALS);
 
 export function useIsLargeAccountData(account?: string) {
   const { data, error, isLoading } = useIsLargeAccountVolumeStats({ account });
