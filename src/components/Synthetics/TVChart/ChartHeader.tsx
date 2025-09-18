@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { useEffectOnce } from "react-use";
 
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
@@ -13,6 +12,8 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import { getToken } from "sdk/configs/tokens";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import DocsIcon from "img/docs.svg?react";
 
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 import { renderNetFeeHeaderTooltipContent } from "../MarketsList/NetFeeHeaderTooltipContent";
@@ -166,12 +167,12 @@ function ChartHeaderMobile() {
           role="button"
           onClick={toggleDetailsVisible}
         >
-          <div className="flex flex-col items-end">
-            <div className="text-body-medium mr-4 numbers">{avgPrice}</div>
-            <div className="ExchangeChart-daily-change text-body-small numbers">{dayPriceDelta}</div>
+          <div className="flex flex-col items-end gap-2">
+            <div className="mr-4 text-14 leading-[1.25] numbers">{avgPrice}</div>
+            <div className="ExchangeChart-daily-change text-12 leading-[1.25] numbers">{dayPriceDelta}</div>
           </div>
-          <span className="flex shrink-0 cursor-pointer items-center justify-center rounded-4 pt-1 text-typography-secondary">
-            {detailsVisible ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
+          <span className="shrink-0 cursor-pointer rounded-full border-1/2 border-slate-600 p-8 text-typography-secondary">
+            <DocsIcon className="size-16" />
           </span>
         </div>
       </div>
