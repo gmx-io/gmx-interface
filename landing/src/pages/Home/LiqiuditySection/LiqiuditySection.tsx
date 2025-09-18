@@ -16,7 +16,7 @@ export function LiqiuditySection() {
         <h2 className="text-heading-2 mb-20 sm:mb-28">
           {totalLiquidity}
           <br />
-          <Trans>in available liquidity</Trans>
+          <Trans>in liquidity</Trans>
         </h2>
         <div className="mb-44 flex w-full flex-col items-stretch justify-between gap-24 lg:flex-row lg:items-center">
           <h3 className="leading-heading-md text-18 font-medium -tracking-[0.896px] sm:text-[28px]">

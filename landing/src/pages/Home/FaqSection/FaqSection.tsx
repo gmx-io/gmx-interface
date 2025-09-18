@@ -10,26 +10,7 @@ export function FaqSection() {
           <Trans>FAQ</Trans>
         </h2>
         <div className="flex w-full flex-col gap-12 sm:w-[800px]">
-          <FaqItem title="What makes GMX more efficient and reliable for trades compared with other perpetual platforms?">
-            <Trans>
-              <p>
-                GMX V2 routes every order against its own liquidity pools, which currently hold over $300 million, and
-                quote the oracle index price rather than relying on an order book or external market makers. This
-                architecture minimizes slippage and maintains deep liquidity, even for positions over $30 million.
-              </p>
-              <p>
-                To ensure accurate pricing without wicks, GMX V2 uses Chainlink Data Streams oracles, so liquidations
-                occur only at fair market prices. With the free GMX Express mode, orders are signed off-chain and sent
-                through premium RPC endpoints, enabling near-instant, reliable execution with a user experience similar
-                to a centralized exchange.
-              </p>
-              <p>
-                GMX V2 uses a unique multi-asset AMM (Automated Market Maker) model that routes trades against a
-                dynamically balanced liquidity pool instead of traditional order books. This design significantly
-              </p>
-            </Trans>
-          </FaqItem>
-          <FaqItem title={t`What makes GMX one of the best places to earn yield on my crypto?`}>
+          <FaqItem title="What makes GMX one of the best places to earn yield on my crypto?">
             <Trans>
               <p>
                 Liquidity providers receive 63% of all trading and liquidation fees. By depositing WBTC, ETH, USDC, or
@@ -46,24 +27,50 @@ export function FaqSection() {
           </FaqItem>
           <FaqItem title={t`How do I get started on GMX?`}>
             <Trans>
-              <p>No KYC, no lengthy onboarding:</p>
+              <p>
+                No KYC, no lengthy onboarding, and no depositing is required. All you need is a self-custody wallet:
+              </p>
               <ul className="list-decimal pl-14">
-                <li>Connect any EVM wallet (MetaMask, Rabby, Coinbase Wallet, Ledger, etc.)</li>
-                <li>Select a supported network where you have funds</li>
-                <li>Trade</li>
+                <li>
+                  Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet,
+                  Ledger,etc.)
+                </li>
+                <li>Select a supported blockchain network where you have funds available</li>
+                <li>Start trading</li>
               </ul>
               <p>
-                You can trade directly using funds from Arbitrum, Avalanche, or Botanix, or deposit to your GMX Account
-                to trade from any supported network.
+                You can trade directly using funds on Arbitrum, Avalanche, or Botanix, or deposit to your GMX Account to
+                trade from any supported network.
+              </p>
+            </Trans>
+          </FaqItem>
+          <FaqItem title={t`What makes GMX more cost-efficient than other perpetual platforms?`}>
+            <Trans>
+              <p>
+                GMX executes trades against a dynamically balanced liquidity pool, unlike traditional order books. This
+                model supports deep liquidity, allowing for opening positions of over $50m with reduced price impact,
+                even compared to the biggest order books in the space. In some cases, you may get paid when executing an
+                order due to a positive price impact.
+              </p>
+
+              <p>
+                GMX prevents unfair liquidations by using decentralized oracles from Chainlink and Chaos Labs, which
+                aggregate prices from multiple trusted sources to avoid manipulation.
               </p>
             </Trans>
           </FaqItem>
           <FaqItem title={t`Can I build on top of GMX or integrate it into my DeFi app?`}>
             <Trans>
               <p>
-                Absolutely. GMX is fully composable and already integrated with hundreds of protocols, including
-                Dolomite, 1inch, and Odos. You can interact directly with the smart contracts or use the provided APIs
-                and SDKs for trading, liquidity, or data feeds. Visit the GMX Developer Docs to get started.
+                Yes, we encourage you to build on top of GMX or integrate it into your DeFi app. GMX is fully composable
+                and already integrated with hundreds of protocols across the ecosystem, including notable names like
+                Pendle, Dolomite, Silo Finance, Venus Protocol, Abracadabra, Compound, or Beefy. You can interact
+                directly with GMX smart contracts or use available APIs and SDKs to plug into trading, liquidity, or
+                data flows. Check out the{" "}
+                <a href="https://docs.gmx.io/docs/category/api/" className="cursor-pointer text-blue-400">
+                  GMX Developer Docs
+                </a>{" "}
+                to get started.
               </p>
             </Trans>
           </FaqItem>
