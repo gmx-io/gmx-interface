@@ -175,6 +175,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     provider.getBalance(currentAccount, "pending").then((balance) => {
       setWebsocketTokenBalancesUpdates((old) =>
         setByKey(old, NATIVE_TOKEN_ADDRESS, {
+          balanceType: "wallet",
           balance,
         })
       );
@@ -897,6 +898,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             const oldDiff = old[tokenAddress]?.diff || 0n;
 
             return setByKey(old, tokenAddress, {
+              balanceType: "wallet",
               diff: oldDiff + amount,
             });
           });

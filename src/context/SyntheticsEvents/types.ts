@@ -80,6 +80,7 @@ export type PendingExpressTxnParams = {
   key: string;
   taskId: string | undefined;
   isSponsoredCall: boolean;
+  isGmxAccount: boolean;
   subaccountApproval?: SignedSubacсountApproval;
   tokenPermits?: SignedTokenPermit[];
   payTokenAddresses?: string[];
