@@ -6,11 +6,11 @@ import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
 import type { IRelayUtils } from "typechain-types/MultichainGmRouter";
 
-import type { CreateDepositParamsStruct } from ".";
+import type { CreateWithdrawalParamsStruct } from ".";
 import { getGelatoRelayRouterDomain, hashRelayParams } from "../express/relayParamsUtils";
 import type { RelayParamsPayload } from "../express/types";
 
-export async function signCreateDeposit({
+export async function signCreateGlvWithdrawal({
   signer,
   chainId,
   srcChainId,
@@ -21,42 +21,43 @@ export async function signCreateDeposit({
   signer: WalletSigner | Wallet;
   relayParams: RelayParamsPayload;
   transferRequests: IRelayUtils.TransferRequestsStruct;
-  params: CreateDepositParamsStruct;
+  params: CreateWithdrawalParamsStruct;
   chainId: ContractsChainId;
   srcChainId: SourceChainId | undefined;
 }) {
   const types = {
-    CreateDeposit: [
+    CreateGlvWithdrawal: [
       { name: "transferTokens", type: "address[]" },
       { name: "transferReceivers", type: "address[]" },
       { name: "transferAmounts", type: "uint256[]" },
-      { name: "addresses", type: "CreateDepositAddresses" },
-      { name: "minMarketTokens", type: "uint256" },
+      { name: "addresses", type: "CreateGlvWithdrawalAddresses" },
+      { name: "minLongTokenAmount", type: "uint256" },
+      { name: "minShortTokenAmount", type: "uint256" },
       { name: "shouldUnwrapNativeToken", type: "bool" },
       { name: "executionFee", type: "uint256" },
       { name: "callbackGasLimit", type: "uint256" },
       { name: "dataList", type: "bytes32[]" },
       { name: "relayParams", type: "bytes32" },
     ],
-    CreateDepositAddresses: [
+    CreateGlvWithdrawalAddresses: [
       { name: "receiver", type: "address" },
       { name: "callbackContract", type: "address" },
       { name: "uiFeeReceiver", type: "address" },
       { name: "market", type: "address" },
-      { name: "initialLongToken", type: "address" },
-      { name: "initialShortToken", type: "address" },
+      { name: "glv", type: "address" },
       { name: "longTokenSwapPath", type: "address[]" },
       { name: "shortTokenSwapPath", type: "address[]" },
     ],
   };
 
-  const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainGmRouter"));
+  const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainGlvRouter"));
   const typedData = {
     transferTokens: transferRequests.tokens,
     transferReceivers: transferRequests.receivers,
     transferAmounts: transferRequests.amounts,
     addresses: params.addresses,
-    minMarketTokens: params.minMarketTokens,
+    minLongTokenAmount: params.minLongTokenAmount,
+    minShortTokenAmount: params.minShortTokenAmount,
     shouldUnwrapNativeToken: params.shouldUnwrapNativeToken,
     executionFee: params.executionFee,
     callbackGasLimit: params.callbackGasLimit,

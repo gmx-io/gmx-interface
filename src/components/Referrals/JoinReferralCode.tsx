@@ -348,7 +348,7 @@ function ReferralCodeFormMultichain({
         FAKE_INPUT_AMOUNT_MAP[p.sourceChainTokenId.symbol] ?? numberToBigint(0.02, p.sourceChainTokenId.decimals);
 
       const sendParamsWithRoughAmount = getMultichainTransferSendParams({
-        isDeposit: true,
+        isToGmx: true,
         dstChainId: p.chainId,
         account: p.simulationSigner.address,
         amount: tokenAmount,
@@ -482,7 +482,7 @@ function ReferralCodeFormMultichain({
         srcChainId,
         amount: result.data.amount,
         composeGas: result.data.composeGas,
-        isDeposit: true,
+        isToGmx: true,
         action,
       });
 

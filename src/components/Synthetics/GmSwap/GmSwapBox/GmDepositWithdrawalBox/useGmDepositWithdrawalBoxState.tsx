@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import type { SourceChainId } from "config/chains";
 import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -18,6 +19,30 @@ function isValidPaySource(paySource: string | undefined): paySource is GmPaySour
   );
 }
 
+function fallbackPaySource({
+  operation,
+  mode,
+  paySource,
+  srcChainId,
+}: {
+  operation: Operation;
+  mode: Mode;
+  paySource: GmPaySource | undefined;
+  srcChainId: SourceChainId | undefined;
+}) {
+  if (!isValidPaySource(paySource)) {
+    return "gmxAccount";
+  } else if (paySource === "sourceChain" && srcChainId === undefined) {
+    return "settlementChain";
+  } else if (paySource === "settlementChain" && srcChainId !== undefined) {
+    return "sourceChain";
+  } else if (operation === Operation.Deposit && paySource === "sourceChain" && mode === Mode.Pair) {
+    return "gmxAccount";
+  }
+
+  return paySource;
+}
+
 export function useGmDepositWithdrawalBoxState(operation: Operation, mode: Mode, marketAddress: string | undefined) {
   const isDeposit = operation === Operation.Deposit;
 
@@ -31,29 +56,16 @@ export function useGmDepositWithdrawalBoxState(operation: Operation, mode: Mode,
     "settlementChain"
   );
 
-  let paySource = rawPaySource;
-
-  if (!isValidPaySource(paySource)) {
-    paySource = "gmxAccount";
-  } else if (rawPaySource === "sourceChain" && srcChainId === undefined) {
-    paySource = "settlementChain";
-  } else if (rawPaySource === "settlementChain" && srcChainId !== undefined) {
-    paySource = "sourceChain";
-  } else if (paySource === "sourceChain" && mode === Mode.Pair) {
-    paySource = "gmxAccount";
-  }
+  let paySource = fallbackPaySource({ operation, mode, paySource: rawPaySource, srcChainId });
 
   useEffect(
     function fallbackSourceChainPaySource() {
-      if (rawPaySource === "sourceChain" && srcChainId === undefined) {
-        setPaySource("settlementChain");
-      } else if (rawPaySource === "settlementChain" && srcChainId !== undefined) {
-        setPaySource("sourceChain");
-      } else if (rawPaySource === "sourceChain" && mode === Mode.Pair) {
-        setPaySource("gmxAccount");
+      const newPaySource = fallbackPaySource({ operation, mode, paySource: rawPaySource, srcChainId });
+      if (newPaySource !== rawPaySource) {
+        setPaySource(newPaySource);
       }
     },
-    [mode, rawPaySource, setPaySource, srcChainId]
+    [mode, operation, rawPaySource, setPaySource, srcChainId]
   );
 
   let [isSendBackToSourceChain, setIsSendBackToSourceChain] = useLocalStorageSerializeKey<boolean>(

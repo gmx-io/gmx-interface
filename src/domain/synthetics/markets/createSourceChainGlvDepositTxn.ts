@@ -80,7 +80,7 @@ export async function createSourceChainGlvDepositTxn({
   const action: MultichainAction = {
     actionType: MultichainActionType.GlvDeposit,
     actionData: {
-      relayParams: relayParams,
+      relayParams,
       transferRequests,
       params,
       signature,
@@ -102,7 +102,7 @@ export async function createSourceChainGlvDepositTxn({
     srcChainId,
     amount: tokenAmount + relayFeePayload.feeAmount,
     composeGas: composeGas,
-    isDeposit: true,
+    isToGmx: true,
     action,
   });
 

@@ -33,7 +33,6 @@ type Props = {
   payChainId: AnyChainId | 0 | undefined;
 
   tokensData: TokensData | undefined;
-  selectedTokenLabel?: ReactNode | string;
 
   onSelectTokenAddress: (tokenAddress: string, isGmxAccount: boolean, srcChainId: SourceChainId | undefined) => void;
   extendedSortSequence?: string[] | undefined;
@@ -50,7 +49,6 @@ export function MultichainTokenSelector({
   chainId,
   srcChainId,
   tokensData,
-  selectedTokenLabel,
   extendedSortSequence,
   footerContent,
   qa,
@@ -209,18 +207,16 @@ export function MultichainTokenSelector({
         className="group/hoverable group flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-300"
         onClick={() => setIsModalVisible(true)}
       >
-        {selectedTokenLabel || (
-          <span className="inline-flex items-center">
-            <TokenIcon
-              className="mr-4"
-              symbol={token.symbol}
-              importSize={24}
-              displaySize={20}
-              chainIdBadge={payChainId}
-            />
-            {token.symbol}
-          </span>
-        )}
+        <span className="inline-flex items-center">
+          <TokenIcon
+            className="mr-4"
+            symbol={token.symbol}
+            importSize={24}
+            displaySize={20}
+            chainIdBadge={payChainId}
+          />
+          {token.symbol}
+        </span>
 
         <FaChevronDown className="w-12 text-typography-secondary group-hover:text-[inherit]" />
       </div>

@@ -32,6 +32,8 @@ import {
 } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 
+import type { GmPaySource } from "components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
+
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
 
 export type ValidationTooltipName = "maxLeverage";
@@ -662,6 +664,8 @@ export function getGmSwapError(p: {
   glvInfo?: GlvInfo;
   marketTokensData?: TokensData;
   isMarketTokenDeposit?: boolean;
+  paySource: GmPaySource;
+  isPair: boolean;
 }) {
   const {
     isDeposit,
@@ -684,6 +688,8 @@ export function getGmSwapError(p: {
     glvInfo,
     marketTokensData,
     isMarketTokenDeposit,
+    paySource,
+    isPair,
   } = p;
 
   if (!marketInfo || !marketToken) {
@@ -691,6 +697,10 @@ export function getGmSwapError(p: {
   }
 
   const glvTooltipMessage = t`The buyable cap for the pool GM: ${marketInfo.name} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens.`;
+
+  if (isPair && isDeposit && paySource === "sourceChain") {
+    return [t`Deposit from source chain support only single token`];
+  }
 
   if (isDeposit) {
     if (priceImpactUsd !== undefined && priceImpactUsd > 0) {

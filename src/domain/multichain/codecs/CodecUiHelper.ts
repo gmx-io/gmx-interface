@@ -2,15 +2,21 @@ import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { Address, concatHex, encodeAbiParameters, Hex, isHex, toHex } from "viem";
 
 import type { RelayParamsPayload } from "domain/synthetics/express";
-import { CreateDepositParamsStruct, CreateGlvDepositParamsStruct } from "domain/synthetics/markets/types";
+import {
+  CreateDepositParamsStruct,
+  CreateGlvDepositParamsStruct,
+  CreateWithdrawalParamsStruct,
+} from "domain/synthetics/markets/types";
 import type { ContractsChainId, SettlementChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { hashString } from "sdk/utils/hash";
 import type { IRelayUtils } from "typechain-types/MultichainGmRouter";
 
 import {
+  BRIDGE_OUT_PARAMS,
   CREATE_DEPOSIT_PARAMS_TYPE,
   CREATE_GLV_DEPOSIT_PARAMS_TYPE,
+  CREATE_WITHDRAWAL_PARAMS_TYPE,
   RELAY_PARAMS_TYPE,
   TRANSFER_REQUESTS_TYPE,
 } from "./hashParamsAbiItems";
@@ -21,6 +27,8 @@ export enum MultichainActionType {
   GlvDeposit = 2,
   BridgeOut = 3,
   SetTraderReferralCode = 4,
+  Withdrawal = 5,
+  GlvWithdrawal = 6,
 }
 
 type CommonActionData = {
@@ -53,6 +61,9 @@ type BridgeOutActionData = {
   provider: string;
   providerData: string;
   minAmountOut: bigint;
+  secondaryProvider: string;
+  secondaryProviderData: string;
+  secondaryMinAmountOut: bigint;
 };
 
 type BridgeOutAction = {
@@ -70,7 +81,22 @@ type GlvDepositAction = {
   actionData: GlvDepositActionData;
 };
 
-export type MultichainAction = SetTraderReferralCodeAction | DepositAction | BridgeOutAction | GlvDepositAction;
+type WithdrawalActionData = CommonActionData & {
+  transferRequests: IRelayUtils.TransferRequestsStruct;
+  params: CreateWithdrawalParamsStruct;
+};
+
+type WithdrawalAction = {
+  actionType: MultichainActionType.Withdrawal;
+  actionData: WithdrawalActionData;
+};
+
+export type MultichainAction =
+  | SetTraderReferralCodeAction
+  | DepositAction
+  | BridgeOutAction
+  | GlvDepositAction
+  | WithdrawalAction;
 
 export const GMX_DATA_ACTION_HASH = hashString("GMX_DATA_ACTION");
 // TODO MLTCH also implement     bytes32 public constant MAX_DATA_LENGTH = keccak256(abi.encode("MAX_DATA_LENGTH"));
@@ -104,20 +130,17 @@ export class CodecUiHelper {
   }
 
   public static encodeMultichainActionData(action: MultichainAction): string {
+    let actionData: Hex | undefined;
     if (action.actionType === MultichainActionType.SetTraderReferralCode) {
-      const actionData = encodeAbiParameters(
+      actionData = encodeAbiParameters(
         [RELAY_PARAMS_TYPE, { type: "bytes32" }],
         [
           { ...(action.actionData.relayParams as any), signature: action.actionData.signature as Hex },
           action.actionData.referralCode as Hex,
         ]
       );
-
-      const data = encodeAbiParameters([{ type: "uint8" }, { type: "bytes" }], [action.actionType, actionData]);
-
-      return data;
     } else if (action.actionType === MultichainActionType.Deposit) {
-      const actionData = encodeAbiParameters(
+      actionData = encodeAbiParameters(
         [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_DEPOSIT_PARAMS_TYPE],
         [
           { ...(action.actionData.relayParams as any), signature: action.actionData.signature as Hex },
@@ -125,27 +148,24 @@ export class CodecUiHelper {
           action.actionData.params,
         ]
       );
-
-      const data = encodeAbiParameters([{ type: "uint8" }, { type: "bytes" }], [action.actionType, actionData]);
-
-      return data;
     } else if (action.actionType === MultichainActionType.BridgeOut) {
-      const actionData = encodeAbiParameters(
-        [{ type: "uint256" }, { type: "uint256" }, { type: "address" }, { type: "bytes" }, { type: "uint256" }],
+      actionData = encodeAbiParameters(
+        [BRIDGE_OUT_PARAMS],
         [
-          BigInt(action.actionData.desChainId),
-          action.actionData.deadline,
-          action.actionData.provider as Address,
-          action.actionData.providerData as Hex,
-          action.actionData.minAmountOut,
+          {
+            desChainId: BigInt(action.actionData.desChainId),
+            deadline: action.actionData.deadline,
+            provider: action.actionData.provider as Address,
+            providerData: action.actionData.providerData as Hex,
+            minAmountOut: action.actionData.minAmountOut,
+            secondaryProvider: action.actionData.secondaryProvider as Address,
+            secondaryProviderData: action.actionData.secondaryProviderData as Hex,
+            secondaryMinAmountOut: action.actionData.secondaryMinAmountOut,
+          },
         ]
       );
-
-      const data = encodeAbiParameters([{ type: "uint8" }, { type: "bytes" }], [action.actionType, actionData]);
-
-      return data;
     } else if (action.actionType === MultichainActionType.GlvDeposit) {
-      const actionData = encodeAbiParameters(
+      actionData = encodeAbiParameters(
         [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_GLV_DEPOSIT_PARAMS_TYPE],
         [
           { ...(action.actionData.relayParams as any), signature: action.actionData.signature as Hex },
@@ -153,12 +173,23 @@ export class CodecUiHelper {
           action.actionData.params,
         ]
       );
-
-      const data = encodeAbiParameters([{ type: "uint8" }, { type: "bytes" }], [action.actionType, actionData]);
-
-      return data;
+    } else if (action.actionType === MultichainActionType.Withdrawal) {
+      actionData = encodeAbiParameters(
+        [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_WITHDRAWAL_PARAMS_TYPE],
+        [
+          { ...(action.actionData.relayParams as any), signature: action.actionData.signature as Hex },
+          action.actionData.transferRequests,
+          action.actionData.params,
+        ]
+      );
     }
 
-    throw new Error("Unsupported multichain action type");
+    if (!actionData) {
+      throw new Error("Unsupported multichain action type");
+    }
+
+    const data = encodeAbiParameters([{ type: "uint8" }, { type: "bytes" }], [action.actionType, actionData]);
+
+    return data;
   }
 }

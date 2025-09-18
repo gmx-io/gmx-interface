@@ -1,10 +1,13 @@
 import { t } from "@lingui/macro";
-import { Signer, ethers } from "ethers";
+import { ethers } from "ethers";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { SetPendingWithdrawal } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
-import { isAddressZero } from "lib/legacy";
+import { OrderMetricId } from "lib/metrics";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { IGlvWithdrawalUtils } from "typechain-types/GlvRouter";
@@ -14,49 +17,55 @@ import { validateSignerAddress } from "components/Errors/errorToasts";
 import { SwapPricingType } from "../orders";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
-import { applySlippageToMinOut } from "../trade";
-import { CreateWithdrawalParams } from "./createWithdrawalTxn";
+import type { TokensData } from "../tokens";
+import type { CreateGlvWithdrawalParamsStruct } from "./types";
 
-interface GlvWithdrawalParams extends Omit<CreateWithdrawalParams, "marketTokenAmount" | "marketTokenAddress"> {
-  glv: string;
-  selectedGmMarket: string;
+type CreateGlvWithdrawalParams = {
+  chainId: ContractsChainId;
+  signer: WalletSigner;
+  executionGasLimit: bigint;
+  skipSimulation?: boolean;
+  tokensData: TokensData;
+  metricId?: OrderMetricId;
+  blockTimestampData: BlockTimestampData | undefined;
+  params: CreateGlvWithdrawalParamsStruct;
   glvTokenAmount: bigint;
-  glvTokenAddress: string;
-}
+  setPendingTxns: (txns: any) => void;
+  setPendingWithdrawal: SetPendingWithdrawal;
+};
 
-export async function createGlvWithdrawalTxn(chainId: ContractsChainId, signer: Signer, p: GlvWithdrawalParams) {
-  const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), abis.GlvRouter, signer);
-  const withdrawalVaultAddress = getContract(chainId, "GlvVault");
+export async function createGlvWithdrawalTxn(p: CreateGlvWithdrawalParams) {
+  const contract = new ethers.Contract(getContract(p.chainId, "GlvRouter"), abis.GlvRouter, p.signer);
+  const withdrawalVaultAddress = getContract(p.chainId, "GlvVault");
 
-  const isNativeWithdrawal = isAddressZero(p.initialLongTokenAddress) || isAddressZero(p.initialShortTokenAddress);
+  const wntAmount = p.params.executionFee;
 
-  const wntAmount = p.executionFee;
+  await validateSignerAddress(p.signer, p.params.addresses.receiver);
 
-  await validateSignerAddress(signer, p.account);
-
-  const minLongTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minLongTokenAmount);
-  const minShortTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minShortTokenAmount);
+  // TODO MLTCH: do not forget to apply slippage elsewhere
+  // const minLongTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minLongTokenAmount);
+  // const minShortTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minShortTokenAmount);
 
   const multicall = [
     { method: "sendWnt", params: [withdrawalVaultAddress, wntAmount] },
-    { method: "sendTokens", params: [p.glvTokenAddress, withdrawalVaultAddress, p.glvTokenAmount] },
+    { method: "sendTokens", params: [p.params.addresses.glv, withdrawalVaultAddress, p.glvTokenAmount] },
     {
       method: "createGlvWithdrawal",
       params: [
         {
           addresses: {
-            receiver: p.account,
+            receiver: p.params.addresses.receiver,
             callbackContract: ethers.ZeroAddress,
             uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
-            market: p.selectedGmMarket,
-            glv: p.glv,
-            longTokenSwapPath: p.longTokenSwapPath,
-            shortTokenSwapPath: p.shortTokenSwapPath,
+            market: p.params.addresses.market,
+            glv: p.params.addresses.glv,
+            longTokenSwapPath: p.params.addresses.longTokenSwapPath,
+            shortTokenSwapPath: p.params.addresses.shortTokenSwapPath,
           },
-          minLongTokenAmount,
-          minShortTokenAmount,
-          shouldUnwrapNativeToken: isNativeWithdrawal,
-          executionFee: p.executionFee,
+          minLongTokenAmount: p.params.minLongTokenAmount,
+          minShortTokenAmount: p.params.minShortTokenAmount,
+          shouldUnwrapNativeToken: p.params.shouldUnwrapNativeToken,
+          executionFee: p.params.executionFee,
           callbackGasLimit: 0n,
           dataList: [],
         } satisfies IGlvWithdrawalUtils.CreateGlvWithdrawalParamsStruct,
@@ -69,8 +78,8 @@ export async function createGlvWithdrawalTxn(chainId: ContractsChainId, signer: 
     .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
 
   const simulationPromise = !p.skipSimulation
-    ? simulateExecuteTxn(chainId, {
-        account: p.account,
+    ? simulateExecuteTxn(p.chainId, {
+        account: p.params.addresses.receiver,
         primaryPriceOverrides: {},
         tokensData: p.tokensData,
         createMulticallPayload: encodedPayload,
@@ -84,7 +93,7 @@ export async function createGlvWithdrawalTxn(chainId: ContractsChainId, signer: 
     : undefined;
 
   const { gasLimit, gasPriceData } = await prepareOrderTxn(
-    chainId,
+    p.chainId,
     contract,
     "multicall",
     [encodedPayload],
@@ -93,7 +102,7 @@ export async function createGlvWithdrawalTxn(chainId: ContractsChainId, signer: 
     p.metricId
   );
 
-  return callContract(chainId, contract, "multicall", [encodedPayload], {
+  return callContract(p.chainId, contract, "multicall", [encodedPayload], {
     value: wntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
@@ -102,17 +111,17 @@ export async function createGlvWithdrawalTxn(chainId: ContractsChainId, signer: 
     gasPriceData,
     setPendingTxns: p.setPendingTxns,
     pendingTransactionData: {
-      estimatedExecutionFee: p.executionFee,
+      estimatedExecutionFee: p.params.executionFee,
       estimatedExecutionGasLimit: p.executionGasLimit,
     },
   }).then(() => {
     p.setPendingWithdrawal({
-      account: p.account,
-      marketAddress: p.glv,
+      account: p.params.addresses.receiver,
+      marketAddress: p.params.addresses.glv,
       marketTokenAmount: p.glvTokenAmount,
-      minLongTokenAmount,
-      minShortTokenAmount,
-      shouldUnwrapNativeToken: isNativeWithdrawal,
+      minLongTokenAmount: p.params.minLongTokenAmount,
+      minShortTokenAmount: p.params.minShortTokenAmount,
+      shouldUnwrapNativeToken: p.params.shouldUnwrapNativeToken,
     });
   });
 }

@@ -3,79 +3,69 @@ import { Signer, ethers } from "ethers";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { SetPendingWithdrawal } from "context/SyntheticsEvents";
+import type { SetPendingWithdrawal } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
-import { isAddressZero } from "lib/legacy";
-import { OrderMetricId } from "lib/metrics/types";
-import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import type { OrderMetricId } from "lib/metrics/types";
+import type { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
-import type { IWithdrawalUtils } from "typechain-types/ExchangeRouter";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
 import { SwapPricingType } from "../orders";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
-import { TokensData } from "../tokens";
-import { applySlippageToMinOut } from "../trade";
+import type { TokensData } from "../tokens";
+import type { CreateWithdrawalParamsStruct } from "./types";
 
 export type CreateWithdrawalParams = {
-  account: string;
-  marketTokenAddress: string;
+  chainId: ContractsChainId;
+  signer: Signer;
   marketTokenAmount: bigint;
-  initialLongTokenAddress: string;
-  minLongTokenAmount: bigint;
-  longTokenSwapPath: string[];
-  initialShortTokenAddress: string;
-  shortTokenSwapPath: string[];
-  minShortTokenAmount: bigint;
-  executionFee: bigint;
   executionGasLimit: bigint;
-  allowedSlippage: number;
   skipSimulation?: boolean;
   tokensData: TokensData;
   metricId?: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
+  params: CreateWithdrawalParamsStruct;
   setPendingTxns: (txns: any) => void;
   setPendingWithdrawal: SetPendingWithdrawal;
 };
 
-export async function createWithdrawalTxn(chainId: ContractsChainId, signer: Signer, p: CreateWithdrawalParams) {
-  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
-  const withdrawalVaultAddress = getContract(chainId, "WithdrawalVault");
+export async function createWithdrawalTxn(p: CreateWithdrawalParams) {
+  const contract = new ethers.Contract(getContract(p.chainId, "ExchangeRouter"), abis.ExchangeRouter, p.signer);
+  const withdrawalVaultAddress = getContract(p.chainId, "WithdrawalVault");
 
-  const isNativeWithdrawal = isAddressZero(p.initialLongTokenAddress) || isAddressZero(p.initialShortTokenAddress);
+  await validateSignerAddress(p.signer, p.params.addresses.receiver);
 
-  await validateSignerAddress(signer, p.account);
+  // const wntAmount = p.params.executionFee;
 
-  const wntAmount = p.executionFee;
-
-  const minLongTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minLongTokenAmount);
-  const minShortTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minShortTokenAmount);
+  // TODO MLTCH: do not forget to apply slippage elsewhere
+  // const minLongTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.params.minLongTokenAmount);
+  // const minShortTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.params.minShortTokenAmount);
 
   const multicall = [
-    { method: "sendWnt", params: [withdrawalVaultAddress, wntAmount] },
-    { method: "sendTokens", params: [p.marketTokenAddress, withdrawalVaultAddress, p.marketTokenAmount] },
+    { method: "sendWnt", params: [withdrawalVaultAddress, p.params.executionFee] },
+    { method: "sendTokens", params: [p.params.addresses.market, withdrawalVaultAddress, p.marketTokenAmount] },
     {
       method: "createWithdrawal",
       params: [
         {
           addresses: {
-            receiver: p.account,
+            receiver: p.params.addresses.receiver,
             callbackContract: ethers.ZeroAddress,
-            market: p.marketTokenAddress,
-            longTokenSwapPath: p.longTokenSwapPath,
-            shortTokenSwapPath: p.shortTokenSwapPath,
+            market: p.params.addresses.market,
+            longTokenSwapPath: p.params.addresses.longTokenSwapPath,
+            shortTokenSwapPath: p.params.addresses.shortTokenSwapPath,
             uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
           },
-          minLongTokenAmount,
-          minShortTokenAmount,
-          shouldUnwrapNativeToken: isNativeWithdrawal,
-          executionFee: p.executionFee,
+          minLongTokenAmount: p.params.minLongTokenAmount,
+          minShortTokenAmount: p.params.minShortTokenAmount,
+          shouldUnwrapNativeToken: p.params.shouldUnwrapNativeToken,
+          executionFee: p.params.executionFee,
           callbackGasLimit: 0n,
           dataList: [],
-        } satisfies IWithdrawalUtils.CreateWithdrawalParamsStruct,
+        } satisfies CreateWithdrawalParamsStruct,
       ],
     },
   ];
@@ -85,14 +75,14 @@ export async function createWithdrawalTxn(chainId: ContractsChainId, signer: Sig
     .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
 
   const simulationPromise = !p.skipSimulation
-    ? simulateExecuteTxn(chainId, {
-        account: p.account,
+    ? simulateExecuteTxn(p.chainId, {
+        account: p.params.addresses.receiver,
         primaryPriceOverrides: {},
         tokensData: p.tokensData,
         createMulticallPayload: encodedPayload,
         method: "simulateExecuteLatestWithdrawal",
         errorTitle: t`Withdrawal error.`,
-        value: wntAmount,
+        value: p.params.executionFee,
         swapPricingType: SwapPricingType.TwoStep,
         metricId: p.metricId,
         blockTimestampData: p.blockTimestampData,
@@ -100,17 +90,17 @@ export async function createWithdrawalTxn(chainId: ContractsChainId, signer: Sig
     : undefined;
 
   const { gasLimit, gasPriceData } = await prepareOrderTxn(
-    chainId,
+    p.chainId,
     contract,
     "multicall",
     [encodedPayload],
-    wntAmount,
+    p.params.executionFee,
     simulationPromise,
     p.metricId
   );
 
-  return callContract(chainId, contract, "multicall", [encodedPayload], {
-    value: wntAmount,
+  return callContract(p.chainId, contract, "multicall", [encodedPayload], {
+    value: p.params.executionFee,
     hideSentMsg: true,
     hideSuccessMsg: true,
     metricId: p.metricId,
@@ -118,17 +108,17 @@ export async function createWithdrawalTxn(chainId: ContractsChainId, signer: Sig
     gasPriceData,
     setPendingTxns: p.setPendingTxns,
     pendingTransactionData: {
-      estimatedExecutionFee: p.executionFee,
+      estimatedExecutionFee: p.params.executionFee,
       estimatedExecutionGasLimit: p.executionGasLimit,
     },
   }).then(() => {
     p.setPendingWithdrawal({
-      account: p.account,
-      marketAddress: p.marketTokenAddress,
+      account: p.params.addresses.receiver,
+      marketAddress: p.params.addresses.market,
       marketTokenAmount: p.marketTokenAmount,
-      minLongTokenAmount,
-      minShortTokenAmount,
-      shouldUnwrapNativeToken: isNativeWithdrawal,
+      minLongTokenAmount: p.params.minLongTokenAmount,
+      minShortTokenAmount: p.params.minShortTokenAmount,
+      shouldUnwrapNativeToken: p.params.shouldUnwrapNativeToken,
     });
   });
 }

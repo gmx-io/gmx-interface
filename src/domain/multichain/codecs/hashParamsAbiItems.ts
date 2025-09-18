@@ -58,7 +58,7 @@ export const TRANSFER_REQUESTS_TYPE = {
     { type: "address[]", name: "receivers" },
     { type: "uint256[]", name: "amounts" },
   ],
-};
+} as const;
 
 export const CREATE_DEPOSIT_PARAMS_TYPE = {
   type: "tuple",
@@ -84,7 +84,7 @@ export const CREATE_DEPOSIT_PARAMS_TYPE = {
     { type: "uint256", name: "callbackGasLimit" },
     { type: "bytes32[]", name: "dataList" },
   ],
-};
+} as const;
 
 export const CREATE_GLV_DEPOSIT_PARAMS_TYPE = {
   type: "tuple",
@@ -112,4 +112,44 @@ export const CREATE_GLV_DEPOSIT_PARAMS_TYPE = {
     { type: "bool", name: "isMarketTokenDeposit" },
     { type: "bytes32[]", name: "dataList" },
   ],
-};
+} as const;
+
+export const CREATE_WITHDRAWAL_PARAMS_TYPE = {
+  type: "tuple",
+  name: "",
+  components: [
+    {
+      type: "tuple",
+      name: "addresses",
+      components: [
+        { type: "address", name: "receiver" },
+        { type: "address", name: "callbackContract" },
+        { type: "address", name: "uiFeeReceiver" },
+        { type: "address", name: "market" },
+        { type: "address[]", name: "longTokenSwapPath" },
+        { type: "address[]", name: "shortTokenSwapPath" },
+      ],
+    },
+    { type: "uint256", name: "minLongTokenAmount" },
+    { type: "uint256", name: "minShortTokenAmount" },
+    { type: "bool", name: "shouldUnwrapNativeToken" },
+    { type: "uint256", name: "executionFee" },
+    { type: "uint256", name: "callbackGasLimit" },
+    { type: "bytes32[]", name: "dataList" },
+  ],
+} as const;
+
+export const BRIDGE_OUT_PARAMS = {
+  type: "tuple",
+  name: "",
+  components: [
+    { type: "uint256", name: "desChainId" },
+    { type: "uint256", name: "deadline" },
+    { type: "address", name: "provider" },
+    { type: "bytes", name: "providerData" },
+    { type: "uint256", name: "minAmountOut" },
+    { type: "address", name: "secondaryProvider" },
+    { type: "bytes", name: "secondaryProviderData" },
+    { type: "uint256", name: "secondaryMinAmountOut" },
+  ],
+} as const;

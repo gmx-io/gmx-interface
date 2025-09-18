@@ -16,9 +16,9 @@ import { userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 
+import { useLpTransactions } from "./lpTxn/useLpTransactions";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
-import { useDepositWithdrawalTransactions } from "./useDepositWithdrawalTransactions";
 import { useTokensToApprove } from "./useTokensToApprove";
 import { getGmSwapBoxApproveTokenSymbol } from "../getGmSwapBoxApproveToken";
 import { Operation } from "../types";
@@ -50,6 +50,7 @@ interface Props {
   glvAndMarketsInfoData: GlvAndGmMarketsInfoData;
   selectedMarketInfoForGlv?: MarketInfo;
   paySource: GmPaySource;
+  isPair: boolean;
 }
 
 const processingTextMap = {
@@ -93,6 +94,7 @@ export const useGmSwapSubmitState = ({
   isMarketTokenDeposit,
   glvAndMarketsInfoData,
   paySource,
+  isPair,
 }: Props): SubmitButtonState => {
   const chainId = useSelector(selectChainId);
   const hasOutdatedUi = useHasOutdatedUi();
@@ -112,7 +114,7 @@ export const useGmSwapSubmitState = ({
 
   const isFirstBuy = Object.values(marketTokensData ?? {}).every((marketToken) => marketToken.balance === 0n);
 
-  const { isSubmitting, onSubmit } = useDepositWithdrawalTransactions({
+  const { isSubmitting, onSubmit } = useLpTransactions({
     marketInfo,
     marketToken,
     operation,
@@ -167,6 +169,8 @@ export const useGmSwapSubmitState = ({
     priceImpactUsd: fees?.swapPriceImpact?.deltaUsd,
     marketTokensData,
     isMarketTokenDeposit,
+    paySource,
+    isPair,
   });
 
   const error = commonError || swapError;

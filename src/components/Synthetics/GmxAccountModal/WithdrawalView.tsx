@@ -235,7 +235,7 @@ export const WithdrawalView = () => {
       dstChainId: withdrawalViewChain,
       account,
       amount: inputAmount,
-      isDeposit: false,
+      isToGmx: false,
     });
   }, [account, inputAmount, withdrawalViewChain]);
 
@@ -294,7 +294,7 @@ export const WithdrawalView = () => {
       dstChainId: withdrawalViewChain,
       account,
       amount: fakeInputAmount,
-      isDeposit: false,
+      isToGmx: false,
       srcChainId: chainId,
     });
   }, [account, chainId, unwrappedSelectedTokenSymbol, withdrawalViewChain]);

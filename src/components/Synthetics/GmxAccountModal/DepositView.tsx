@@ -301,7 +301,7 @@ export const DepositView = () => {
       srcChainId: depositViewChain,
       composeGas,
       dstChainId: settlementChainId,
-      isDeposit: true,
+      isToGmx: true,
     });
   }, [account, inputAmount, depositViewChain, composeGas, settlementChainId]);
 

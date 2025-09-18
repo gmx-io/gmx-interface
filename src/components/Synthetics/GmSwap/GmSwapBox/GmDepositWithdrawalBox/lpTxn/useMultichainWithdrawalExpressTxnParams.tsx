@@ -1,0 +1,81 @@
+import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
+import type { CreateGlvWithdrawalParamsStruct, CreateWithdrawalParamsStruct } from "domain/synthetics/markets";
+import { buildAndSignMultichainGlvWithdrawalTxn } from "domain/synthetics/markets/createMultichainGlvWithdrawalTxn";
+import { buildAndSignMultichainWithdrawalTxn } from "domain/synthetics/markets/createMultichainWithdrawalTxn";
+import { useChainId } from "lib/chains";
+import useWallet from "lib/wallets/useWallet";
+import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
+import { nowInSeconds } from "sdk/utils/time";
+import type { IRelayUtils } from "typechain-types/MultichainGmRouter";
+
+import type { GmPaySource } from "../types";
+
+export function useMultichainWithdrawalExpressTxnParams({
+  transferRequests,
+  paySource,
+  gmParams,
+  glvParams,
+}: {
+  transferRequests: IRelayUtils.TransferRequestsStruct;
+  paySource: GmPaySource;
+  gmParams: CreateWithdrawalParamsStruct | undefined;
+  glvParams: CreateGlvWithdrawalParamsStruct | undefined;
+}) {
+  const { chainId, srcChainId } = useChainId();
+  const { signer } = useWallet();
+
+  const multichainWithdrawalExpressTxnParams = useArbitraryRelayParamsAndPayload({
+    isGmxAccount: paySource === "gmxAccount",
+    enabled: paySource === "gmxAccount",
+    executionFeeAmount: glvParams ? glvParams.executionFee : gmParams?.executionFee,
+    expressTransactionBuilder: async ({ relayParams, gasPaymentParams }) => {
+      if ((!gmParams && !glvParams) || !signer) {
+        throw new Error("Invalid params");
+      }
+
+      if (glvParams) {
+        const txnData = await buildAndSignMultichainGlvWithdrawalTxn({
+          emptySignature: true,
+          account: glvParams!.addresses.receiver,
+          chainId,
+          params: glvParams!,
+          srcChainId,
+          relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
+          relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
+          relayParams: {
+            ...relayParams,
+            deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+          },
+          signer,
+          transferRequests,
+        });
+
+        return {
+          txnData,
+        };
+      }
+
+      const txnData = await buildAndSignMultichainWithdrawalTxn({
+        emptySignature: true,
+        account: gmParams!.addresses.receiver,
+        chainId,
+        params: gmParams!,
+        srcChainId,
+        relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
+        relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
+        relayParams: {
+          ...relayParams,
+          deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+        },
+        signer,
+        transferRequests,
+      });
+
+      return {
+        txnData,
+      };
+    },
+  });
+
+  return multichainWithdrawalExpressTxnParams;
+}

@@ -1,10 +1,9 @@
 import { t } from "@lingui/macro";
 import chunk from "lodash/chunk";
-import { useCallback, useMemo, useState } from "react";
-import { bytesToHex, Hex, hexToBytes, numberToHex, zeroAddress } from "viem";
+import { useCallback, useMemo } from "react";
+import { Hex, bytesToHex, hexToBytes, numberToHex, zeroAddress } from "viem";
 
-import { ContractsChainId, SettlementChainId } from "config/chains";
-import { getContract } from "config/contracts";
+import { SettlementChainId } from "config/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { CHAIN_ID_TO_ENDPOINT_ID, getMultichainTokenId } from "config/multichain";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -18,31 +17,15 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
 import { CodecUiHelper, GMX_DATA_ACTION_HASH, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
-import { ExecutionFee } from "domain/synthetics/fees";
-import {
-  CreateDepositParamsStruct,
-  createDepositTxn,
-  CreateGlvDepositParamsStruct,
-  createWithdrawalTxn,
-  GlvInfo,
-  MarketInfo,
-} from "domain/synthetics/markets";
+import { getTransferRequests } from "domain/multichain/getTransferRequests";
+import { CreateDepositParamsStruct, CreateGlvDepositParamsStruct, createDepositTxn } from "domain/synthetics/markets";
 import { createGlvDepositTxn } from "domain/synthetics/markets/createGlvDepositTxn";
-import { createGlvWithdrawalTxn } from "domain/synthetics/markets/createGlvWithdrawalTxn";
-import {
-  buildAndSignMultichainDepositTxn,
-  createMultichainDepositTxn,
-} from "domain/synthetics/markets/createMultichainDepositTxn";
-import {
-  buildAndSignMultichainGlvDepositTxn,
-  createMultichainGlvDepositTxn,
-} from "domain/synthetics/markets/createMultichainGlvDepositTxn";
+import { createMultichainDepositTxn } from "domain/synthetics/markets/createMultichainDepositTxn";
+import { createMultichainGlvDepositTxn } from "domain/synthetics/markets/createMultichainGlvDepositTxn";
 import { createSourceChainDepositTxn } from "domain/synthetics/markets/createSourceChainDepositTxn";
 import { createSourceChainGlvDepositTxn } from "domain/synthetics/markets/createSourceChainGlvDepositTxn";
-import { convertToTokenAmount, getMidPrice, getTokenData, TokenData, TokensData } from "domain/synthetics/tokens";
-import { useChainId } from "lib/chains";
+import { convertToTokenAmount, getMidPrice, getTokenData } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import {
   initGLVSwapMetricData,
@@ -55,162 +38,17 @@ import {
 import { EMPTY_ARRAY } from "lib/objects";
 import { makeUserAnalyticsOrderFailResultHandler, sendUserAnalyticsOrderConfirmClickEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
+import { getContract } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
-import { convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
+import { convertTokenAddress } from "sdk/configs/tokens";
 import { nowInSeconds } from "sdk/utils/time";
 import { applySlippageToMinOut } from "sdk/utils/trade";
 import { IRelayUtils } from "typechain-types/MultichainGmRouter";
 
-import { Operation } from "../types";
-import type { GmPaySource } from "./types";
+import type { UseLpTransactionProps } from "./useLpTransactions";
+import { useMultichainDepositExpressTxnParams } from "./useMultichainDepositExpressTxnParams";
 
-interface Props {
-  marketInfo?: MarketInfo;
-  glvInfo?: GlvInfo;
-  marketToken: TokenData | undefined;
-  operation: Operation;
-  longTokenAddress: string | undefined;
-  shortTokenAddress: string | undefined;
-
-  marketTokenAmount: bigint | undefined;
-  marketTokenUsd: bigint | undefined;
-  longTokenAmount: bigint | undefined;
-  shortTokenAmount: bigint | undefined;
-
-  glvTokenAmount: bigint | undefined;
-  glvTokenUsd: bigint | undefined;
-
-  shouldDisableValidation?: boolean;
-
-  tokensData: TokensData | undefined;
-  executionFee: ExecutionFee | undefined;
-  selectedMarketForGlv?: string;
-  selectedMarketInfoForGlv?: MarketInfo;
-  isMarketTokenDeposit?: boolean;
-  isFirstBuy: boolean;
-  paySource: GmPaySource;
-}
-
-function getTransferRequests({
-  chainId,
-  longTokenAddress,
-  longTokenAmount,
-  shortTokenAddress,
-  shortTokenAmount,
-  feeTokenAmount,
-  isGlv,
-}: {
-  chainId: ContractsChainId;
-  longTokenAddress: string | undefined;
-  longTokenAmount: bigint | undefined;
-  shortTokenAddress: string | undefined;
-  shortTokenAmount: bigint | undefined;
-  feeTokenAmount: bigint | undefined;
-  isGlv: boolean;
-}): IRelayUtils.TransferRequestsStruct {
-  const requests: IRelayUtils.TransferRequestsStruct = {
-    tokens: [],
-    receivers: [],
-    amounts: [],
-  };
-
-  const vaultAddress = isGlv ? getContract(chainId, "GlvVault") : getContract(chainId, "DepositVault");
-  const routerAddress = isGlv
-    ? getContract(chainId, "MultichainGlvRouter")
-    : getContract(chainId, "MultichainGmRouter");
-
-  if (longTokenAddress && longTokenAmount !== undefined && longTokenAmount > 0n) {
-    requests.tokens.push(longTokenAddress);
-    requests.receivers.push(vaultAddress);
-    requests.amounts.push(longTokenAmount);
-  }
-
-  if (shortTokenAddress && shortTokenAmount !== undefined && shortTokenAmount > 0n) {
-    requests.tokens.push(shortTokenAddress);
-    requests.receivers.push(vaultAddress);
-    requests.amounts.push(shortTokenAmount);
-  }
-
-  if (feeTokenAmount !== undefined && feeTokenAmount > 0n) {
-    requests.tokens.push(getWrappedToken(chainId).address);
-    requests.receivers.push(routerAddress);
-    requests.amounts.push(feeTokenAmount);
-  }
-
-  return requests;
-}
-
-function useMultichainDepositExpressTxnParams({
-  transferRequests,
-  paySource,
-  gmParams,
-  glvParams,
-}: {
-  transferRequests: IRelayUtils.TransferRequestsStruct;
-  paySource: GmPaySource;
-  gmParams: CreateDepositParamsStruct | undefined;
-  glvParams: CreateGlvDepositParamsStruct | undefined;
-}) {
-  const { chainId, srcChainId } = useChainId();
-  const { signer } = useWallet();
-
-  const multichainDepositExpressTxnParams = useArbitraryRelayParamsAndPayload({
-    isGmxAccount: paySource === "gmxAccount",
-    enabled: paySource === "gmxAccount",
-    executionFeeAmount: glvParams ? glvParams.executionFee : gmParams?.executionFee,
-    expressTransactionBuilder: async ({ relayParams, gasPaymentParams }) => {
-      if ((!gmParams && !glvParams) || !signer) {
-        throw new Error("Invalid params");
-      }
-
-      if (glvParams) {
-        const txnData = await buildAndSignMultichainGlvDepositTxn({
-          emptySignature: true,
-          account: glvParams!.addresses.receiver,
-          chainId,
-          params: glvParams!,
-          srcChainId,
-          relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
-          relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
-          relayParams: {
-            ...relayParams,
-            deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
-          },
-          signer,
-          transferRequests,
-        });
-
-        return {
-          txnData,
-        };
-      }
-
-      const txnData = await buildAndSignMultichainDepositTxn({
-        emptySignature: true,
-        account: gmParams!.addresses.receiver,
-        chainId,
-        params: gmParams!,
-        srcChainId,
-        relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
-        relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
-        relayParams: {
-          ...relayParams,
-          deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
-        },
-        signer,
-        transferRequests,
-      });
-
-      return {
-        txnData,
-      };
-    },
-  });
-
-  return multichainDepositExpressTxnParams;
-}
-
-const useDepositTransactions = ({
+export const useDepositTransactions = ({
   marketInfo,
   marketToken,
   longTokenAddress = marketInfo?.longTokenAddress,
@@ -219,7 +57,6 @@ const useDepositTransactions = ({
   shortTokenAmount,
   glvTokenAmount,
   glvTokenUsd,
-
   marketTokenAmount,
   marketTokenUsd,
   shouldDisableValidation,
@@ -231,7 +68,7 @@ const useDepositTransactions = ({
   isMarketTokenDeposit,
   isFirstBuy,
   paySource,
-}: Props): {
+}: UseLpTransactionProps): {
   onCreateDeposit: () => Promise<void>;
 } => {
   const chainId = useSelector(selectChainId);
@@ -264,15 +101,19 @@ const useDepositTransactions = ({
   const isGlv = glvInfo !== undefined && selectedMarketForGlv !== undefined;
 
   const transferRequests = useMemo((): IRelayUtils.TransferRequestsStruct => {
-    return getTransferRequests({
-      chainId,
-      longTokenAddress: initialLongTokenAddress,
-      longTokenAmount,
-      shortTokenAddress: initialShortTokenAddress,
-      shortTokenAmount,
-      feeTokenAmount: 0n, // executionFeeTokenAmount,
-      isGlv,
-    });
+    const vaultAddress = isGlv ? getContract(chainId, "GlvVault") : getContract(chainId, "DepositVault");
+    return getTransferRequests([
+      {
+        to: vaultAddress,
+        token: initialLongTokenAddress,
+        amount: longTokenAmount,
+      },
+      {
+        to: vaultAddress,
+        token: initialShortTokenAddress,
+        amount: shortTokenAmount,
+      },
+    ]);
   }, [chainId, initialLongTokenAddress, initialShortTokenAddress, isGlv, longTokenAmount, shortTokenAmount]);
 
   const gmParams = useMemo((): CreateDepositParamsStruct | undefined => {
@@ -297,23 +138,19 @@ const useDepositTransactions = ({
         return undefined;
       }
 
-      const tokenId = getMultichainTokenId(chainId, marketTokenAddress);
-
-      if (!tokenId) {
-        return undefined;
-      }
-
       const actionHash = CodecUiHelper.encodeMultichainActionData({
         actionType: MultichainActionType.BridgeOut,
         actionData: {
           deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
           desChainId: chainId,
-          minAmountOut: minMarketTokens / 2n,
-          provider: tokenId.stargate,
+          provider: getMultichainTokenId(chainId, marketTokenAddress)!.stargate,
           providerData: numberToHex(CHAIN_ID_TO_ENDPOINT_ID[srcChainId], { size: 32 }),
+          minAmountOut: minMarketTokens,
+          secondaryProvider: zeroAddress,
+          secondaryProviderData: zeroAddress,
+          secondaryMinAmountOut: 0n,
         },
       });
-
       const bytes = hexToBytes(actionHash as Hex);
       const bytes32array = chunk(bytes, 32).map((b) => bytesToHex(Uint8Array.from(b)));
 
@@ -374,14 +211,22 @@ const useDepositTransactions = ({
         return undefined;
       }
 
+      const tokenId = getMultichainTokenId(chainId, glvInfo!.glvTokenAddress);
+      if (!tokenId) {
+        return undefined;
+      }
+
       const actionHash = CodecUiHelper.encodeMultichainActionData({
         actionType: MultichainActionType.BridgeOut,
         actionData: {
           deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
           desChainId: chainId,
-          minAmountOut: minGlvTokens / 2n,
-          provider: getMultichainTokenId(chainId, glvInfo!.glvTokenAddress)!.stargate,
+          minAmountOut: minGlvTokens,
+          provider: tokenId.stargate,
           providerData: numberToHex(CHAIN_ID_TO_ENDPOINT_ID[srcChainId], { size: 32 }),
+          secondaryProvider: zeroAddress,
+          secondaryProviderData: zeroAddress,
+          secondaryMinAmountOut: 0n,
         },
       });
       const bytes = hexToBytes(actionHash as Hex);
@@ -738,196 +583,5 @@ const useDepositTransactions = ({
 
   return {
     onCreateDeposit,
-  };
-};
-
-export const useDepositWithdrawalTransactions = (
-  props: Props
-): {
-  onSubmit: () => void;
-  isSubmitting: boolean;
-} => {
-  const {
-    marketInfo,
-    marketToken,
-    operation,
-    longTokenAddress,
-    longTokenAmount,
-    shortTokenAddress,
-    shortTokenAmount,
-    glvTokenAmount,
-    glvTokenUsd,
-
-    marketTokenAmount,
-    marketTokenUsd,
-    shouldDisableValidation,
-    tokensData,
-    executionFee,
-    selectedMarketForGlv,
-    selectedMarketInfoForGlv,
-    glvInfo,
-    isFirstBuy,
-  } = props;
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const chainId = useSelector(selectChainId);
-  const { signer, account } = useWallet();
-  const { setPendingWithdrawal } = useSyntheticsEvents();
-  const { setPendingTxns } = usePendingTxns();
-  const blockTimestampData = useSelector(selectBlockTimestampData);
-
-  const { onCreateDeposit } = useDepositTransactions(props);
-
-  const onCreateWithdrawal = useCallback(
-    function onCreateWithdrawal() {
-      const metricData =
-        glvInfo && selectedMarketForGlv
-          ? initGLVSwapMetricData({
-              chainId,
-              longTokenAddress,
-              shortTokenAddress,
-              selectedMarketForGlv,
-              isDeposit: false,
-              executionFee,
-              glvAddress: glvInfo.glvTokenAddress,
-              glvToken: glvInfo.glvToken,
-              longTokenAmount,
-              shortTokenAmount,
-              marketTokenAmount,
-              glvTokenAmount,
-              marketName: selectedMarketInfoForGlv?.name,
-              glvTokenUsd,
-              isFirstBuy,
-            })
-          : initGMSwapMetricData({
-              chainId,
-              longTokenAddress,
-              shortTokenAddress,
-              marketToken,
-              isDeposit: false,
-              executionFee,
-              marketInfo,
-              longTokenAmount,
-              shortTokenAmount,
-              marketTokenAmount,
-              marketTokenUsd,
-              isFirstBuy,
-            });
-
-      if (
-        !account ||
-        !marketInfo ||
-        !marketToken ||
-        !executionFee ||
-        longTokenAmount === undefined ||
-        shortTokenAmount === undefined ||
-        !tokensData ||
-        !signer
-      ) {
-        helperToast.error(t`Error submitting order`);
-        sendTxnValidationErrorMetric(metricData.metricId);
-        return Promise.resolve();
-      }
-
-      if (glvInfo && selectedMarketForGlv) {
-        return createGlvWithdrawalTxn(chainId, signer, {
-          account,
-          initialLongTokenAddress: longTokenAddress || marketInfo.longTokenAddress,
-          initialShortTokenAddress: shortTokenAddress || marketInfo.shortTokenAddress,
-          longTokenSwapPath: [],
-          shortTokenSwapPath: [],
-          glvTokenAddress: glvInfo.glvTokenAddress,
-          glvTokenAmount: glvTokenAmount!,
-          minLongTokenAmount: longTokenAmount,
-          minShortTokenAmount: shortTokenAmount,
-          executionFee: executionFee.feeTokenAmount,
-          executionGasLimit: executionFee.gasLimit,
-          allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
-          skipSimulation: shouldDisableValidation,
-          tokensData,
-          setPendingTxns,
-          setPendingWithdrawal,
-          selectedGmMarket: selectedMarketForGlv,
-          glv: glvInfo.glvTokenAddress,
-          blockTimestampData,
-        })
-          .then(makeTxnSentMetricsHandler(metricData.metricId))
-          .catch(makeTxnErrorMetricsHandler(metricData.metricId));
-      }
-
-      return createWithdrawalTxn(chainId, signer, {
-        account,
-        initialLongTokenAddress: longTokenAddress || marketInfo.longTokenAddress,
-        initialShortTokenAddress: shortTokenAddress || marketInfo.shortTokenAddress,
-        longTokenSwapPath: [],
-        shortTokenSwapPath: [],
-        marketTokenAmount: marketTokenAmount!,
-        minLongTokenAmount: longTokenAmount,
-        minShortTokenAmount: shortTokenAmount,
-        marketTokenAddress: marketToken.address,
-        executionFee: executionFee.feeTokenAmount,
-        executionGasLimit: executionFee.gasLimit,
-        allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
-        tokensData,
-        skipSimulation: shouldDisableValidation,
-        setPendingTxns,
-        setPendingWithdrawal,
-        blockTimestampData,
-      })
-        .then(makeTxnSentMetricsHandler(metricData.metricId))
-        .catch(makeTxnErrorMetricsHandler(metricData.metricId));
-    },
-    [
-      glvInfo,
-      selectedMarketForGlv,
-      longTokenAddress,
-      shortTokenAddress,
-      executionFee,
-      longTokenAmount,
-      shortTokenAmount,
-      marketTokenAmount,
-      glvTokenAmount,
-      selectedMarketInfoForGlv?.name,
-      glvTokenUsd,
-      isFirstBuy,
-      marketToken,
-      marketInfo,
-      marketTokenUsd,
-      account,
-      tokensData,
-      signer,
-      chainId,
-      shouldDisableValidation,
-      setPendingTxns,
-      setPendingWithdrawal,
-      blockTimestampData,
-    ]
-  );
-
-  const onSubmit = useCallback(() => {
-    setIsSubmitting(true);
-
-    let txnPromise: Promise<any>;
-
-    if (operation === Operation.Deposit) {
-      txnPromise = onCreateDeposit();
-    } else if (operation === Operation.Withdrawal) {
-      txnPromise = onCreateWithdrawal();
-    } else {
-      throw new Error("Invalid operation");
-    }
-
-    txnPromise
-      .catch((error) => {
-        throw error;
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
-  }, [operation, onCreateDeposit, onCreateWithdrawal]);
-
-  return {
-    onSubmit,
-    isSubmitting,
   };
 };

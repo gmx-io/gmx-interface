@@ -3,6 +3,7 @@ import cx from "classnames";
 import mapValues from "lodash/mapValues";
 import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
 import { isSourceChain } from "config/multichain";
@@ -23,7 +24,7 @@ import {
   getMarketIndexName,
   getTokenPoolType,
 } from "domain/synthetics/markets/utils";
-import { convertToUsd, getTokenData, TokenData } from "domain/synthetics/tokens";
+import { convertToUsd, getMidPrice, getTokenData, TokenData } from "domain/synthetics/tokens";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { Token, TokenBalanceType } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
@@ -35,16 +36,19 @@ import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { useMultichainTokens } from "components/Synthetics/GmxAccountModal/hooks";
+import {
+  useMultichainMarketTokenBalancesRequest,
+  useMultichainTokens,
+} from "components/Synthetics/GmxAccountModal/hooks";
 import { useBestGmPoolAddressForGlv } from "components/Synthetics/MarketStats/hooks/useBestGmPoolForGlv";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+import { MultichainMarketTokenSelector } from "components/TokenSelector/MultichainMarketTokenSelector";
 import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import type { GmSwapBoxProps } from "../GmSwapBox";
 import { GmSwapBoxPoolRow } from "../GmSwapBoxPoolRow";
 import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
-import { SelectedPool } from "../SelectedPool";
 import { Mode, Operation } from "../types";
 import { useGmWarningState } from "../useGmWarningState";
 import { InfoRows } from "./InfoRows";
@@ -78,6 +82,13 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const gasPrice = useGasPrice(chainId);
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
   const { tokenChainDataArray } = useMultichainTokens();
+  const { address: account } = useAccount();
+  const { tokenBalancesData: marketTokenBalancesData } = useMultichainMarketTokenBalancesRequest(
+    chainId,
+    srcChainId,
+    account,
+    selectedGlvOrMarketAddress
+  );
   // #endregion
 
   // #region Selectors
@@ -416,6 +427,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     marketsInfoData,
     glvAndMarketsInfoData,
     paySource,
+    isPair,
   });
 
   const firstTokenMaxDetails = useMaxAvailableAmount({
@@ -824,10 +836,36 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                   onClickTopRightLabel={marketTokenInputClickTopRightLabel}
                   onClickMax={marketTokenInputShowMaxButton ? marketTokenInputClickMax : undefined}
                 >
-                  <SelectedPool
-                    glvAndMarketsInfoData={glvAndMarketsInfoData}
-                    selectedGlvOrMarketAddress={selectedGlvOrMarketAddress}
-                  />
+                  {selectedGlvOrMarketAddress && (
+                    <MultichainMarketTokenSelector
+                      chainId={chainId}
+                      label={isWithdrawal ? t`Pay` : t`Receive`}
+                      srcChainId={srcChainId}
+                      paySource={paySource}
+                      onSelectTokenAddress={async (newChainId) => {
+                        if (newChainId === 0) {
+                          setPaySource("gmxAccount");
+                        } else if (newChainId === chainId) {
+                          if (srcChainId !== undefined) {
+                            await switchNetwork(chainId, true);
+                          }
+                          setPaySource("settlementChain");
+                        } else {
+                          await switchNetwork(newChainId, true);
+                          setPaySource("sourceChain");
+                        }
+                      }}
+                      marketInfo={glvInfo ?? marketInfo}
+                      tokenBalancesData={marketTokenBalancesData}
+                      marketTokenPrice={
+                        glvToken
+                          ? getMidPrice(glvToken.prices)
+                          : marketToken
+                            ? getMidPrice(marketToken.prices)
+                            : undefined
+                      }
+                    />
+                  )}
                 </BuyInputSection>
               </div>
             </div>

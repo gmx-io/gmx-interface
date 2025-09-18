@@ -33,6 +33,7 @@ import Buy16Icon from "img/ic_buy_16.svg?react";
 import Sell16Icon from "img/ic_sell_16.svg?react";
 
 import { PoolsDetailsMarketAmount } from "./PoolsDetailsMarketAmount";
+import { TransferInModal } from "./TransferInModal";
 
 type Props = {
   glvOrMarketInfo: GlvOrMarketInfo | undefined;
@@ -50,6 +51,8 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
       ? glvOrMarketInfo?.glvToken.symbol
       : glvOrMarketInfo?.indexToken.symbol;
 
+  const [openedTransferModal, setOpenedTransferModal] = useState<"transferIn" | "transferOut" | undefined>(undefined);
+
   const marketPrice = marketToken?.prices?.maxPrice;
 
   const marketTotalSupply = marketToken?.totalSupply;
@@ -60,12 +63,11 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
 
   const { isMobile, isTablet } = useBreakpoints();
 
-  const { totalBalance, tokenBalancesData, isBalanceDataLoading } = useMultichainMarketTokenBalancesRequest(
-    chainId,
-    srcChainId,
-    account,
-    marketToken?.address
-  );
+  const {
+    totalBalance,
+    tokenBalancesData: tokenBalancesData,
+    isBalanceDataLoading,
+  } = useMultichainMarketTokenBalancesRequest(chainId, srcChainId, account, marketToken?.address);
 
   const sortedTokenBalancesDataArray = useMemo(() => {
     return Object.entries(tokenBalancesData)
@@ -89,7 +91,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
     setIsOpen((isOpen) => !isOpen);
   }, []);
 
-  const glOrGm = isGlv ? "GLV" : "GM";
+  const glvOrGm = isGlv ? "GLV" : "GM";
 
   return (
     <div
@@ -190,15 +192,30 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
         )}
       </div>
       <div className={cx("flex items-center gap-8 max-lg:w-full lg:gap-12")}>
-        <Button className="min-w-max basis-full" variant="secondary" size={isTablet ? "small" : "medium"}>
+        <Button
+          className="min-w-max basis-full"
+          variant="secondary"
+          size={isTablet ? "small" : "medium"}
+          onClick={() => setOpenedTransferModal("transferOut")}
+        >
           {isTablet && <Sell16Icon className="size-16" />}
-          <Trans>Withdraw {glOrGm}</Trans>
+          <Trans>Withdraw {glvOrGm}</Trans>
         </Button>
-        <Button className="min-w-max basis-full" variant="secondary" size={isTablet ? "small" : "medium"}>
+        <Button
+          className="min-w-max basis-full"
+          variant="secondary"
+          size={isTablet ? "small" : "medium"}
+          onClick={() => setOpenedTransferModal("transferIn")}
+        >
           {isTablet && <Buy16Icon className="size-16" />}
-          <Trans>Deposit {glOrGm}</Trans>
+          <Trans>Deposit {glvOrGm}</Trans>
         </Button>
       </div>
+      <TransferInModal
+        isVisible={openedTransferModal === "transferIn"}
+        setIsVisible={(newIsVisible) => setOpenedTransferModal(newIsVisible ? "transferIn" : undefined)}
+        glvOrMarketInfo={glvOrMarketInfo}
+      />
     </div>
   );
 }
