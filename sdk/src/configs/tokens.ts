@@ -1174,6 +1174,28 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/26133/standard/WELL.png?1696525221",
       coingeckoUrl: "https://www.coingecko.com/en/coins/moonwell",
     },
+    {
+      name: "KTA",
+      symbol: "KTA",
+      decimals: 18,
+      address: "0x96Ee343E36E8642627FAEa235D57a9FEC8a6e34f",
+      isSynthetic: true,
+      priceDecimals: 5,
+      categories: ["layer1"],
+      imageUrl: "https://assets.coingecko.com/coins/images/54693/standard/zora.jpg?1741094751",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/zora",
+    },
+    {
+      name: "Zora",
+      symbol: "ZORA",
+      decimals: 18,
+      address: "0xc5ff0eB026dB972F95DF3dfF04e697d8b660092a",
+      isSynthetic: true,
+      priceDecimals: 6,
+      categories: ["layer2"],
+      imageUrl: "https://assets.coingecko.com/coins/images/54723/standard/2025-03-05_22.53.06.jpg?1741234207",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/keeta",
+    },
   ],
   [AVALANCHE]: [
     {
