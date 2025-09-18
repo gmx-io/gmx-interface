@@ -39,9 +39,6 @@ export type MarketInfo = Market &
     maxLongPoolUsdForDeposit: bigint;
     maxShortPoolUsdForDeposit: bigint;
 
-    longPoolAmountAdjustment: bigint;
-    shortPoolAmountAdjustment: bigint;
-
     poolValueMax: bigint;
     poolValueMin: bigint;
 

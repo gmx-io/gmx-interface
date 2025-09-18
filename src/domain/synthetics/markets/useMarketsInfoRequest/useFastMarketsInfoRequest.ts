@@ -36,9 +36,6 @@ export function useFastMarketsInfoRequest(chainId: number) {
                 maxLongPoolUsdForDeposit
                 maxShortPoolUsdForDeposit
 
-                longPoolAmountAdjustment
-                shortPoolAmountAdjustment
-
                 poolValueMax
                 poolValueMin
 
@@ -142,9 +139,6 @@ export function useFastMarketsInfoRequest(chainId: number) {
             maxShortPoolAmount: BigInt(mInfo.maxShortPoolAmount),
             maxLongPoolUsdForDeposit: BigInt(mInfo.maxLongPoolUsdForDeposit),
             maxShortPoolUsdForDeposit: BigInt(mInfo.maxShortPoolUsdForDeposit),
-
-            longPoolAmountAdjustment: BigInt(mInfo.longPoolAmountAdjustment),
-            shortPoolAmountAdjustment: BigInt(mInfo.shortPoolAmountAdjustment),
 
             poolValueMax: BigInt(mInfo.poolValueMax),
             poolValueMin: BigInt(mInfo.poolValueMin),
