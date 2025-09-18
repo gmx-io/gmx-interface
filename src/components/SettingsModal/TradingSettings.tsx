@@ -288,8 +288,8 @@ export function TradingSettings({
         )}
 
         <ToggleSwitch
-          isChecked={settings.setAcceptablePriceImpactEnabled}
-          setIsChecked={settings.setSetAcceptablePriceImpactEnabled}
+          isChecked={settings.isSetAcceptablePriceImpactEnabled}
+          setIsChecked={settings.setIsSetAcceptablePriceImpactEnabled}
           className="font-medium"
         >
           <Trans>Set Acceptable Price Impact</Trans>

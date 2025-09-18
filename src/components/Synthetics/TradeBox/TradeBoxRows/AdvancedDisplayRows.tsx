@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { ReactNode, useCallback, useMemo } from "react";
 
-import { selectSetAcceptablePriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import { selectIsSetAcceptablePriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAdvancedOptions,
   selectTradeboxDecreasePositionAmounts,
@@ -159,7 +159,7 @@ export function TradeBoxAdvancedGroups({
   const setSelectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
   const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
   const defaultTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxDefaultTriggerAcceptablePriceImpactBps);
-  const isSetAcceptablePriceImpactEnabled = useSelector(selectSetAcceptablePriceImpactEnabled);
+  const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
 
   const defaultAllowedSwapSlippageBps = useSelector(selectTradeboxDefaultAllowedSwapSlippageBps);
   const selectedAllowedSwapSlippageBps = useSelector(selectTradeboxSelectedAllowedSwapSlippageBps);

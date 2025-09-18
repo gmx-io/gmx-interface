@@ -94,8 +94,8 @@ export type SettingsContextType = {
   savedTwapNumberOfParts: number;
   setSavedTWAPNumberOfParts: (val: number) => void;
 
-  setAcceptablePriceImpactEnabled: boolean;
-  setSetAcceptablePriceImpactEnabled: (val: boolean) => void;
+  isSetAcceptablePriceImpactEnabled: boolean;
+  setIsSetAcceptablePriceImpactEnabled: (val: boolean) => void;
 };
 
 export const SettingsContext = createContext({});
@@ -274,8 +274,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       breakdownNetPriceImpactEnabled: savedBreakdownNetPriceImpactEnabled!,
       setBreakdownNetPriceImpactEnabled: setSavedBreakdownNetPriceImpactEnabled,
 
-      setAcceptablePriceImpactEnabled: savedSetAcceptablePriceImpactEnabled!,
-      setSetAcceptablePriceImpactEnabled: setSavedSetAcceptablePriceImpactEnabled,
+      isSetAcceptablePriceImpactEnabled: savedSetAcceptablePriceImpactEnabled!,
+      setIsSetAcceptablePriceImpactEnabled: setSavedSetAcceptablePriceImpactEnabled,
 
       setTenderlyAccessKey,
       setTenderlyAccountSlug,

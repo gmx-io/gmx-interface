@@ -9,7 +9,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import {
   selectBreakdownNetPriceImpactEnabled,
-  selectSetAcceptablePriceImpactEnabled,
+  selectIsSetAcceptablePriceImpactEnabled,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GasPaymentParams } from "domain/synthetics/express";
@@ -39,7 +39,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
   const [open, setOpen] = useLocalStorageSerializeKey("position-seller-advanced-display-rows-open", false);
   const position = useSelector(selectPositionSellerPosition);
   const breakdownNetPriceImpactEnabled = useSelector(selectBreakdownNetPriceImpactEnabled);
-  const isSetAcceptablePriceImpactEnabled = useSelector(selectSetAcceptablePriceImpactEnabled);
+  const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
 
   const {
     allowedSlippage,

@@ -67,7 +67,7 @@ type Props = {
 };
 
 export function OrderItem(p: Props) {
-  const { showDebugValues, setAcceptablePriceImpactEnabled } = useSettings();
+  const { showDebugValues, isSetAcceptablePriceImpactEnabled } = useSettings();
 
   const [, setEditingOrderState] = useEditingOrderState();
 
@@ -80,7 +80,7 @@ export function OrderItem(p: Props) {
       order={p.order}
       hideActions={p.hideActions}
       showDebugValues={showDebugValues}
-      setAcceptablePriceImpactEnabled={setAcceptablePriceImpactEnabled}
+      isSetAcceptablePriceImpactEnabled={isSetAcceptablePriceImpactEnabled}
       onToggleOrder={p.onToggleOrder}
       setEditingOrderKey={setEditingOrderKey}
       onCancelOrder={p.onCancelOrder}
@@ -91,7 +91,7 @@ export function OrderItem(p: Props) {
   ) : (
     <OrderItemSmall
       order={p.order}
-      setAcceptablePriceImpactEnabled={setAcceptablePriceImpactEnabled}
+      isSetAcceptablePriceImpactEnabled={isSetAcceptablePriceImpactEnabled}
       showDebugValues={showDebugValues}
       hideActions={p.hideActions}
       onCancelOrder={p.onCancelOrder}
@@ -389,12 +389,12 @@ function MarkPrice({ order, className }: { order: OrderInfo; className?: string 
 function TriggerPrice({
   order,
   hideActions,
-  setAcceptablePriceImpactEnabled,
+  isSetAcceptablePriceImpactEnabled,
   className,
 }: {
   order: OrderInfo;
   hideActions: boolean | undefined;
-  setAcceptablePriceImpactEnabled: boolean;
+  isSetAcceptablePriceImpactEnabled: boolean;
   className?: string;
 }) {
   if (isTwapOrder(order)) {
@@ -419,7 +419,7 @@ function TriggerPrice({
       </span>
     );
 
-    return !setAcceptablePriceImpactEnabled ? (
+    return !isSetAcceptablePriceImpactEnabled ? (
       handle
     ) : (
       <TooltipWithPortal
@@ -457,7 +457,7 @@ function TriggerPrice({
             handleClassName="numbers"
             renderContent={() => (
               <>
-                {setAcceptablePriceImpactEnabled && (
+                {isSetAcceptablePriceImpactEnabled && (
                   <div className="pb-8">
                     <StatsTooltipRow label={t`Acceptable Price`} value={acceptablePriceText} showDollar={false} />
                   </div>
@@ -488,7 +488,7 @@ function TriggerPrice({
         })}
       </span>
     );
-    return !setAcceptablePriceImpactEnabled ? (
+    return !isSetAcceptablePriceImpactEnabled ? (
       handle
     ) : (
       <TooltipWithPortal
@@ -519,7 +519,7 @@ function OrderItemLarge({
   hideActions,
   onToggleOrder,
   showDebugValues,
-  setAcceptablePriceImpactEnabled,
+  isSetAcceptablePriceImpactEnabled,
   setEditingOrderKey,
   onCancelOrder,
   isCanceling,
@@ -529,7 +529,7 @@ function OrderItemLarge({
   setRef?: (el: HTMLElement | null, orderKey: string) => void;
   hideActions: boolean | undefined;
   showDebugValues: boolean | undefined;
-  setAcceptablePriceImpactEnabled: boolean;
+  isSetAcceptablePriceImpactEnabled: boolean;
   onToggleOrder: undefined | (() => void);
   setEditingOrderKey: undefined | (() => void);
   onCancelOrder: undefined | (() => void);
@@ -643,7 +643,7 @@ function OrderItemLarge({
         <TriggerPrice
           order={order}
           hideActions={hideActions}
-          setAcceptablePriceImpactEnabled={setAcceptablePriceImpactEnabled}
+          isSetAcceptablePriceImpactEnabled={isSetAcceptablePriceImpactEnabled}
         />
       </TableTd>
       <TableTd>
@@ -674,7 +674,7 @@ function OrderItemLarge({
 function OrderItemSmall({
   showDebugValues,
   order,
-  setAcceptablePriceImpactEnabled,
+  isSetAcceptablePriceImpactEnabled,
   setEditingOrderKey,
   onCancelOrder,
   hideActions,
@@ -684,7 +684,7 @@ function OrderItemSmall({
 }: {
   showDebugValues: boolean;
   order: OrderInfo;
-  setAcceptablePriceImpactEnabled: boolean;
+  isSetAcceptablePriceImpactEnabled: boolean;
   hideActions: boolean | undefined;
   setEditingOrderKey: undefined | (() => void);
   onCancelOrder: undefined | (() => void);
@@ -782,7 +782,7 @@ function OrderItemSmall({
             <TriggerPrice
               order={order}
               hideActions={hideActions}
-              setAcceptablePriceImpactEnabled={setAcceptablePriceImpactEnabled}
+              isSetAcceptablePriceImpactEnabled={isSetAcceptablePriceImpactEnabled}
             />
           </div>
         </div>

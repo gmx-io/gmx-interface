@@ -106,6 +106,7 @@ import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 
 import "./OrderEditor.scss";
+
 type Props = {
   order: OrderInfo;
   source: EditingOrderSource;
@@ -215,8 +216,7 @@ export function OrderEditor(p: Props) {
     return false;
   }
 
-  const { savedAcceptablePriceImpactBuffer, setAcceptablePriceImpactEnabled: isSetAcceptablePriceImpactEnabled } =
-    useSettings();
+  const { savedAcceptablePriceImpactBuffer, isSetAcceptablePriceImpactEnabled } = useSettings();
 
   function detectAndSetAvailableMaxLeverage() {
     const positionOrder = p.order as PositionOrderInfo;
@@ -252,6 +252,7 @@ export function OrderEditor(p: Props) {
           marketsInfoData,
           chainId,
           externalSwapQuoteParams: undefined,
+          isSetAcceptablePriceImpactEnabled,
         });
 
         const nextPositionValues = getNextPositionValuesForIncreaseTrade({
