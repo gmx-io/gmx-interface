@@ -2,7 +2,7 @@ import values from "lodash/values";
 
 import type { SortDirection } from "context/SorterContext/types";
 import { MarketTokensAPRData, MarketsInfoData } from "domain/synthetics/markets";
-import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformance";
+import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { convertToUsd, type TokensData } from "domain/synthetics/tokens";
 
 import type { SortField } from "./GmList";
@@ -16,7 +16,7 @@ export function sortGmTokensByField({
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
-  gmPerformance,
+  performance,
 }: {
   marketsInfo: MarketsInfoData;
   marketTokensData: TokensData;
@@ -25,7 +25,7 @@ export function sortGmTokensByField({
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
-  gmPerformance: PerformanceData | undefined;
+  performance: PerformanceData | undefined;
 }) {
   const gmTokens = values(marketTokensData);
 
@@ -74,8 +74,8 @@ export function sortGmTokensByField({
 
   if (orderBy === "performance") {
     return gmTokens.sort((a, b) => {
-      const performanceA = gmPerformance?.[a.address] ?? 0;
-      const performanceB = gmPerformance?.[b.address] ?? 0;
+      const performanceA = performance?.[a.address] ?? 0n;
+      const performanceB = performance?.[b.address] ?? 0n;
 
       return performanceA > performanceB ? directionMultiplier : -directionMultiplier;
     });

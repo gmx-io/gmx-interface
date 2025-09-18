@@ -31,10 +31,8 @@ export function GlvList({
   glvTokensIncentiveAprData,
   marketsTokensLidoAprData,
   isDeposit,
-  glvPerformance,
-  gmPerformance,
-  glvPerformanceSnapshots,
-  gmPerformanceSnapshots,
+  performance,
+  performanceSnapshots,
 }: Props) {
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
@@ -66,10 +64,8 @@ export function GlvList({
         glvTokensApyData={glvTokensApyData}
         isFavorite={undefined}
         onFavoriteClick={undefined}
-        glvPerformance={glvPerformance}
-        gmPerformance={gmPerformance}
-        glvPerformanceSnapshots={glvPerformanceSnapshots}
-        gmPerformanceSnapshots={gmPerformanceSnapshots}
+        performance={performance}
+        performanceSnapshots={performanceSnapshots}
       />
     ));
 

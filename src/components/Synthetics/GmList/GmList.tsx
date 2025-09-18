@@ -9,8 +9,8 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MarketTokensAPRData, getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
-import { PerformanceSnapshotsData } from "domain/synthetics/markets/useGmGlvPerformance";
-import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformance";
+import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
+import { PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import useWallet from "lib/wallets/useWallet";
 import PoolsCard from "pages/Pools/PoolsCard";
@@ -40,10 +40,8 @@ export type Props = {
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   glvTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
-  glvPerformance: PerformanceData | undefined;
-  gmPerformance: PerformanceData | undefined;
-  glvPerformanceSnapshots: PerformanceSnapshotsData | undefined;
-  gmPerformanceSnapshots: PerformanceSnapshotsData | undefined;
+  performance: PerformanceData | undefined;
+  performanceSnapshots: PerformanceSnapshotsData | undefined;
   isDeposit: boolean;
 };
 
@@ -54,10 +52,8 @@ export function GmList({
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
   isDeposit,
-  glvPerformance,
-  gmPerformance,
-  glvPerformanceSnapshots,
-  gmPerformanceSnapshots,
+  performance,
+  performanceSnapshots,
 }: Props) {
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
@@ -83,7 +79,7 @@ export function GmList({
     searchText,
     tab,
     favoriteTokens,
-    gmPerformance,
+    performance,
   });
 
   const { currentPage, currentData, pageCount, setCurrentPage } = usePagination(
@@ -108,10 +104,8 @@ export function GmList({
         marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
         marketsTokensLidoAprData={marketsTokensLidoAprData}
         glvTokensApyData={undefined}
-        glvPerformance={glvPerformance}
-        gmPerformance={gmPerformance}
-        glvPerformanceSnapshots={glvPerformanceSnapshots}
-        gmPerformanceSnapshots={gmPerformanceSnapshots}
+        performance={performance}
+        performanceSnapshots={performanceSnapshots}
         isFavorite={favoriteTokens.includes(token.address)}
         onFavoriteClick={toggleFavoriteToken}
       />
