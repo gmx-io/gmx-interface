@@ -17,8 +17,8 @@ import {
   getMultichainTokenId,
   getStargatePoolAddress,
   isSettlementChain,
+  MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS,
   MULTICHAIN_FUNDING_SLIPPAGE_BPS,
-  MULTICHAIN_TRANSFER_SUPPORTED_TOKENS,
 } from "config/multichain";
 import {
   useGmxAccountDepositViewTokenAddress,
@@ -202,9 +202,8 @@ export const WithdrawalView = () => {
     }
 
     return (
-      MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[chainId]
+      MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId as SettlementChainId]
         ?.map((tokenAddress) => tokensData[tokenAddress])
-        .filter((token) => token.address !== zeroAddress)
         .sort((a, b) => {
           const aFloat = bigintToNumber(a.gmxAccountBalance ?? 0n, a.decimals);
           const bFloat = bigintToNumber(b.gmxAccountBalance ?? 0n, b.decimals);
@@ -235,8 +234,8 @@ export const WithdrawalView = () => {
     return getMultichainTransferSendParams({
       dstChainId: withdrawalViewChain,
       account,
-      inputAmount,
-      isDeposit: false,
+      amount: inputAmount,
+      isToGmx: false,
     });
   }, [account, inputAmount, withdrawalViewChain]);
 
@@ -294,8 +293,8 @@ export const WithdrawalView = () => {
     return getMultichainTransferSendParams({
       dstChainId: withdrawalViewChain,
       account,
-      inputAmount: fakeInputAmount,
-      isDeposit: false,
+      amount: fakeInputAmount,
+      isToGmx: false,
       srcChainId: chainId,
     });
   }, [account, chainId, unwrappedSelectedTokenSymbol, withdrawalViewChain]);
@@ -748,7 +747,7 @@ export const WithdrawalView = () => {
         return;
       }
 
-      const settlementChainWrappedTokenAddresses = MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[chainId];
+      const settlementChainWrappedTokenAddresses = MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId];
       if (!settlementChainWrappedTokenAddresses) {
         return;
       }

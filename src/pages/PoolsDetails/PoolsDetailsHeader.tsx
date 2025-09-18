@@ -1,9 +1,12 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
+import { ImSpinner2 } from "react-icons/im";
 
 import { USD_DECIMALS } from "config/factors";
+import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   getGlvMarketShortening,
   getGlvOrMarketAddress,
@@ -13,17 +16,24 @@ import {
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
-import { TokenData, convertToUsd } from "domain/synthetics/tokens";
+import { convertToUsd, TokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatAmountHuman, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
+import { useBreakpoints } from "lib/useBreakpoints";
+import { AnyChainId, getChainName } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
+import { useMultichainMarketTokenBalancesRequest } from "components/Synthetics/GmxAccountModal/hooks";
+import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
+import Buy16Icon from "img/ic_buy_16.svg?react";
+import Sell16Icon from "img/ic_sell_16.svg?react";
+
 import { PoolsDetailsMarketAmount } from "./PoolsDetailsMarketAmount";
+import { TransferInModal } from "./TransferInModal";
 
 type Props = {
   glvOrMarketInfo: GlvOrMarketInfo | undefined;
@@ -32,6 +42,7 @@ type Props = {
 
 export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
   const { chainId, srcChainId } = useChainId();
+  const account = useSelector(selectAccount);
   const isGlv = glvOrMarketInfo && isGlvInfo(glvOrMarketInfo);
   const iconName = glvOrMarketInfo?.isSpotOnly
     ? getNormalizedTokenSymbol(glvOrMarketInfo.longToken.symbol) +
@@ -40,9 +51,9 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
       ? glvOrMarketInfo?.glvToken.symbol
       : glvOrMarketInfo?.indexToken.symbol;
 
+  const [openedTransferModal, setOpenedTransferModal] = useState<"transferIn" | "transferOut" | undefined>(undefined);
+
   const marketPrice = marketToken?.prices?.maxPrice;
-  const marketBalance = marketToken?.balance;
-  const marketBalanceUsd = convertToUsd(marketBalance, marketToken?.decimals, marketPrice);
 
   const marketTotalSupply = marketToken?.totalSupply;
   const marketTotalSupplyUsd = convertToUsd(marketTotalSupply, marketToken?.decimals, marketPrice);
@@ -50,7 +61,29 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
   const userEarnings = useUserEarnings(chainId, srcChainId);
   const marketEarnings = getByKey(userEarnings?.byMarketAddress, marketToken?.address);
 
-  const isMobile = usePoolsIsMobilePage();
+  const { isMobile, isTablet } = useBreakpoints();
+
+  const {
+    totalBalance,
+    tokenBalancesData: tokenBalancesData,
+    isBalanceDataLoading,
+  } = useMultichainMarketTokenBalancesRequest(chainId, srcChainId, account, marketToken?.address);
+
+  const sortedTokenBalancesDataArray = useMemo(() => {
+    return Object.entries(tokenBalancesData)
+      .sort((a, b) => {
+        const aBalance = a[1];
+        const bBalance = b[1];
+
+        return aBalance > bBalance ? -1 : 1;
+      })
+      .map(([chainId, balance]) => ({
+        chainId: parseInt(chainId) as AnyChainId | 0,
+        balance,
+      }));
+  }, [tokenBalancesData]);
+
+  const marketBalanceUsd = convertToUsd(totalBalance, marketToken?.decimals, marketPrice);
 
   const [isOpen, setIsOpen] = useState(true);
 
@@ -58,78 +91,131 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
     setIsOpen((isOpen) => !isOpen);
   }, []);
 
+  const glvOrGm = isGlv ? "GLV" : "GM";
+
   return (
     <div
-      className={cx("flex rounded-8 bg-slate-900 px-16 py-20 max-md:px-12 max-md:py-12", {
-        "flex-col gap-18": isMobile,
-        "items-center gap-28": !isMobile,
-      })}
+      className={cx(
+        "flex justify-between gap-18 rounded-8 bg-slate-900 px-16 py-20 max-lg:flex-col max-md:px-12 max-md:py-12"
+      )}
     >
-      {glvOrMarketInfo ? (
-        <>
-          <div
-            className={cx("flex items-center justify-between ", {
-              "border-b-1/2 border-slate-600 pb-18": isOpen && isMobile,
-            })}
-          >
-            <div className="flex items-center gap-20">
-              {iconName ? (
-                <TokenIcon
-                  symbol={iconName}
-                  displaySize={40}
-                  importSize={40}
-                  badge={
-                    isGlv
-                      ? getGlvMarketShortening(chainId, getGlvOrMarketAddress(glvOrMarketInfo))
-                      : ([glvOrMarketInfo.longToken.symbol, glvOrMarketInfo.shortToken.symbol] as const)
+      <div
+        className={cx("flex", {
+          "flex-col gap-18": isMobile,
+          "items-center gap-28": !isMobile,
+        })}
+      >
+        {!glvOrMarketInfo ? (
+          <div>...</div>
+        ) : (
+          <>
+            <div
+              className={cx("flex items-center justify-between ", {
+                "border-b-1/2 border-slate-600 pb-18": isOpen && isMobile,
+              })}
+            >
+              <div className="flex items-center gap-20">
+                {iconName && (
+                  <TokenIcon
+                    symbol={iconName}
+                    displaySize={40}
+                    importSize={40}
+                    badge={
+                      isGlv
+                        ? getGlvMarketShortening(chainId, getGlvOrMarketAddress(glvOrMarketInfo))
+                        : ([glvOrMarketInfo.longToken.symbol, glvOrMarketInfo.shortToken.symbol] as const)
+                    }
+                  />
+                )}
+                <div className={cx("flex flex-col gap-4 pr-20 font-medium")}>
+                  <div className="text-body-large">{isGlv ? "GLV" : `GM: ${getMarketIndexName(glvOrMarketInfo)}`}</div>
+                  <div className="text-body-small text-typography-secondary">{`[${getMarketPoolName(glvOrMarketInfo)}]`}</div>
+                </div>
+              </div>
+              {isMobile && (
+                <Button
+                  className="flex h-32 w-32 items-center justify-center"
+                  variant="secondary"
+                  onClick={handleToggle}
+                >
+                  <FaChevronDown className={cx({ "rotate-180": isOpen })} />
+                </Button>
+              )}
+            </div>
+            {(isOpen || !isMobile) && (
+              <div className="flex gap-14 max-md:flex-col">
+                <PoolsDetailsMarketAmount
+                  label={<Trans>TVL (Supply)</Trans>}
+                  value={formatAmountHuman(marketTotalSupplyUsd, USD_DECIMALS, true, 2)}
+                  secondaryValue={
+                    typeof marketTotalSupply === "bigint" && typeof marketToken?.decimals === "number"
+                      ? `${formatAmountHuman(marketTotalSupply, marketToken?.decimals, false, 2)} ${isGlv ? "GLV" : "GM"}`
+                      : undefined
                   }
                 />
-              ) : null}
-              <div className={cx("flex flex-col gap-4 pr-20 font-medium")}>
-                <div className="text-body-large">{isGlv ? "GLV" : `GM: ${getMarketIndexName(glvOrMarketInfo)}`}</div>
-                <div className="text-body-small text-typography-secondary">{`[${getMarketPoolName(glvOrMarketInfo)}]`}</div>
+                {typeof totalBalance === "bigint" && typeof marketToken?.decimals === "number" && (
+                  <PoolsDetailsMarketAmount
+                    label={<Trans>Balance</Trans>}
+                    value={formatUsd(marketBalanceUsd)}
+                    secondaryValue={`${formatBalanceAmount(totalBalance, marketToken?.decimals, undefined, {
+                      showZero: true,
+                    })} ${isGlv ? "GLV" : "GM"}`}
+                    tooltipContent={
+                      <div>
+                        {sortedTokenBalancesDataArray.map(({ chainId, balance }) => {
+                          const chainName = chainId === 0 ? t`GMX Account` : getChainName(chainId);
+
+                          return (
+                            <SyntheticsInfoRow
+                              key={chainId}
+                              label={chainName}
+                              value={formatBalanceAmount(balance, marketToken?.decimals, undefined, {
+                                showZero: true,
+                              })}
+                            />
+                          );
+                        })}
+                        {isBalanceDataLoading && <ImSpinner2 className="animate-spin" />}
+                      </div>
+                    }
+                  />
+                )}
+                {marketEarnings && (
+                  <PoolsDetailsMarketAmount
+                    label={<Trans>Total Earned Fees</Trans>}
+                    value={formatUsd(marketEarnings?.total)}
+                  />
+                )}
               </div>
-            </div>
-            {isMobile ? (
-              <Button className="flex h-32 w-32 items-center justify-center" variant="secondary" onClick={handleToggle}>
-                <FaChevronDown className={cx({ "rotate-180": isOpen })} />
-              </Button>
-            ) : null}
-          </div>
-          {!isOpen && isMobile ? null : (
-            <div className="flex gap-14 max-md:flex-col">
-              <PoolsDetailsMarketAmount
-                label={<Trans>TVL (Supply)</Trans>}
-                value={formatAmountHuman(marketTotalSupplyUsd, USD_DECIMALS, true, 2)}
-                secondaryValue={
-                  typeof marketTotalSupply === "bigint" && typeof marketToken?.decimals === "number"
-                    ? `${formatAmountHuman(marketTotalSupply, marketToken?.decimals, false, 2)} ${isGlv ? "GLV" : "GM"}`
-                    : undefined
-                }
-              />
-
-              {typeof marketBalance === "bigint" && typeof marketToken?.decimals === "number" ? (
-                <PoolsDetailsMarketAmount
-                  label={<Trans>Wallet</Trans>}
-                  value={formatUsd(marketBalanceUsd)}
-                  secondaryValue={`${formatBalanceAmount(marketBalance, marketToken?.decimals, undefined, {
-                    showZero: true,
-                  })} ${isGlv ? "GLV" : "GM"}`}
-                />
-              ) : null}
-
-              {marketEarnings ? (
-                <PoolsDetailsMarketAmount
-                  label={<Trans>Total Earned Fees</Trans>}
-                  value={formatUsd(marketEarnings?.total)}
-                />
-              ) : null}
-            </div>
-          )}
-        </>
-      ) : (
-        <div>...</div>
-      )}
+            )}
+          </>
+        )}
+      </div>
+      <div className={cx("flex items-center gap-8 max-lg:w-full lg:gap-12")}>
+        <Button
+          className="min-w-max basis-full"
+          variant="secondary"
+          size={isTablet ? "small" : "medium"}
+          onClick={() => setOpenedTransferModal("transferOut")}
+        >
+          {isTablet && <Sell16Icon className="size-16" />}
+          <Trans>Withdraw {glvOrGm}</Trans>
+        </Button>
+        <Button
+          className="min-w-max basis-full"
+          variant="secondary"
+          size={isTablet ? "small" : "medium"}
+          onClick={() => setOpenedTransferModal("transferIn")}
+        >
+          {isTablet && <Buy16Icon className="size-16" />}
+          <Trans>Deposit {glvOrGm}</Trans>
+        </Button>
+      </div>
+      <TransferInModal
+        isVisible={openedTransferModal === "transferIn"}
+        setIsVisible={(newIsVisible) => setOpenedTransferModal(newIsVisible ? "transferIn" : undefined)}
+        glvOrMarketInfo={glvOrMarketInfo}
+      />
     </div>
   );
 }

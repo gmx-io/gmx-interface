@@ -8,7 +8,7 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { GlvAndGmMarketsInfoData, GlvInfo, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
-import { TokenData, TokensData } from "domain/synthetics/tokens";
+import { getTokenData, TokenData, TokensData } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { approveTokens } from "domain/tokens";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -16,12 +16,13 @@ import { userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 
+import { useLpTransactions } from "./lpTxn/useLpTransactions";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
-import { useDepositWithdrawalTransactions } from "./useDepositWithdrawalTransactions";
 import { useTokensToApprove } from "./useTokensToApprove";
 import { getGmSwapBoxApproveTokenSymbol } from "../getGmSwapBoxApproveToken";
 import { Operation } from "../types";
+import type { GmPaySource } from "./types";
 
 interface Props {
   amounts: ReturnType<typeof useDepositWithdrawalAmounts>;
@@ -32,8 +33,8 @@ interface Props {
   glvInfo?: GlvInfo;
   marketToken: TokenData;
   operation: Operation;
-  longToken: TokenData | undefined;
-  shortToken: TokenData | undefined;
+  longTokenAddress: string | undefined;
+  shortTokenAddress: string | undefined;
   glvToken: TokenData | undefined;
   longTokenLiquidityUsd?: bigint | undefined;
   shortTokenLiquidityUsd?: bigint | undefined;
@@ -48,6 +49,8 @@ interface Props {
   marketsInfoData?: MarketsInfoData;
   glvAndMarketsInfoData: GlvAndGmMarketsInfoData;
   selectedMarketInfoForGlv?: MarketInfo;
+  paySource: GmPaySource;
+  isPair: boolean;
 }
 
 const processingTextMap = {
@@ -73,9 +76,9 @@ export const useGmSwapSubmitState = ({
   fees,
   marketInfo,
   marketToken,
-  longToken,
+  longTokenAddress,
+  shortTokenAddress,
   operation,
-  shortToken,
   glvToken,
   longTokenLiquidityUsd,
   shortTokenLiquidityUsd,
@@ -90,6 +93,8 @@ export const useGmSwapSubmitState = ({
   glvInfo,
   isMarketTokenDeposit,
   glvAndMarketsInfoData,
+  paySource,
+  isPair,
 }: Props): SubmitButtonState => {
   const chainId = useSelector(selectChainId);
   const hasOutdatedUi = useHasOutdatedUi();
@@ -109,13 +114,13 @@ export const useGmSwapSubmitState = ({
 
   const isFirstBuy = Object.values(marketTokensData ?? {}).every((marketToken) => marketToken.balance === 0n);
 
-  const { isSubmitting, onSubmit } = useDepositWithdrawalTransactions({
+  const { isSubmitting, onSubmit } = useLpTransactions({
     marketInfo,
     marketToken,
     operation,
-    longToken,
+    longTokenAddress,
     longTokenAmount,
-    shortToken,
+    shortTokenAddress,
     shortTokenAmount,
     marketTokenAmount,
     glvTokenAmount,
@@ -129,6 +134,7 @@ export const useGmSwapSubmitState = ({
     selectedMarketInfoForGlv,
     marketTokenUsd,
     isFirstBuy,
+    paySource,
   });
 
   const onConnectAccount = useCallback(() => {
@@ -146,8 +152,8 @@ export const useGmSwapSubmitState = ({
     marketInfo,
     glvInfo,
     marketToken,
-    longToken,
-    shortToken,
+    longToken: getTokenData(tokensData, longTokenAddress),
+    shortToken: getTokenData(tokensData, shortTokenAddress),
     glvToken,
     glvTokenAmount,
     glvTokenUsd,
@@ -163,6 +169,8 @@ export const useGmSwapSubmitState = ({
     priceImpactUsd: fees?.swapPriceImpact?.deltaUsd,
     marketTokensData,
     isMarketTokenDeposit,
+    paySource,
+    isPair,
   });
 
   const error = commonError || swapError;
@@ -173,11 +181,11 @@ export const useGmSwapSubmitState = ({
     operation,
     marketToken,
     marketTokenAmount,
-    longToken,
+    longTokenAddress,
     longTokenAmount,
-    shortToken,
+    shortTokenAddress,
     shortTokenAmount,
-    glvToken,
+    glvTokenAddress: glvToken?.address,
     glvTokenAmount,
     isMarketTokenDeposit,
   });

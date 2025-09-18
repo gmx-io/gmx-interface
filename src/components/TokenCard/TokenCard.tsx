@@ -186,7 +186,7 @@ async function sendUserAnalyticsProtocolReadMoreEvent() {
 const PERIOD = "90d";
 
 export default function TokenCard({ showRedirectModal, showGlp = true }: Props) {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { active, account } = useWallet();
   const arbitrumIncentiveState = useIncentiveStats(ARBITRUM);
   const avalancheIncentiveState = useIncentiveStats(AVALANCHE);
@@ -196,6 +196,7 @@ export default function TokenCard({ showRedirectModal, showGlp = true }: Props) 
     account,
     marketsInfoData: undefined,
     tokensData: undefined,
+    srcChainId,
   });
 
   const { glvs: glvAvax } = useGlvMarketsInfo(isGlvEnabled(AVALANCHE), {
@@ -203,6 +204,7 @@ export default function TokenCard({ showRedirectModal, showGlp = true }: Props) 
     marketsInfoData: undefined,
     tokensData: undefined,
     account,
+    srcChainId,
   });
 
   const {

@@ -20,7 +20,7 @@ import { TokenData, TokensData, TokensRatio, getIsEquivalentTokens } from "domai
 import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { NATIVE_TOKEN_ADDRESS, getToken } from "sdk/configs/tokens";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import {
   ExternalSwapQuote,
@@ -31,6 +31,8 @@ import {
   TriggerThresholdType,
 } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
+
+import type { GmPaySource } from "components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
 
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
 
@@ -662,6 +664,8 @@ export function getGmSwapError(p: {
   glvInfo?: GlvInfo;
   marketTokensData?: TokensData;
   isMarketTokenDeposit?: boolean;
+  paySource: GmPaySource;
+  isPair: boolean;
 }) {
   const {
     isDeposit,
@@ -684,6 +688,8 @@ export function getGmSwapError(p: {
     glvInfo,
     marketTokensData,
     isMarketTokenDeposit,
+    paySource,
+    isPair,
   } = p;
 
   if (!marketInfo || !marketToken) {
@@ -691,6 +697,10 @@ export function getGmSwapError(p: {
   }
 
   const glvTooltipMessage = t`The buyable cap for the pool GM: ${marketInfo.name} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens.`;
+
+  if (isPair && isDeposit && paySource === "sourceChain") {
+    return [t`Deposit from source chain support only single token`];
+  }
 
   if (isDeposit) {
     if (priceImpactUsd !== undefined && priceImpactUsd > 0) {

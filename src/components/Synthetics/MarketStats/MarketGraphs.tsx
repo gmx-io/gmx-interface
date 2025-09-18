@@ -99,6 +99,7 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
     tokensData,
     chainId,
     account,
+    srcChainId,
   });
 
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: true, withGlv: true });

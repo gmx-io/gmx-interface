@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { isSettlementChain, MULTICHAIN_TOKEN_MAPPING } from "config/multichain";
+import { isSettlementChain, MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
 import { useChainId } from "lib/chains";
 import { EMPTY_OBJECT } from "lib/objects";
 import type { SettlementChainId } from "sdk/configs/chains";
@@ -17,7 +17,7 @@ export function AddressDropdown({ account }: Props) {
 
   const hasRelatedSourceChains = useMemo(
     () =>
-      Object.values(MULTICHAIN_TOKEN_MAPPING[chainId as SettlementChainId] || EMPTY_OBJECT).some(
+      Object.values(MULTI_CHAIN_TOKEN_MAPPING[chainId as SettlementChainId] || EMPTY_OBJECT).some(
         (sourceChainMapping) => Object.keys(sourceChainMapping).length > 0
       ),
     [chainId]

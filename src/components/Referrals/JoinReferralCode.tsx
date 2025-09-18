@@ -247,7 +247,7 @@ function ReferralCodeFormMultichain({
   const [referralCodeExists, setReferralCodeExists] = useState(true);
   const debouncedReferralCode = useDebounce(referralCode, 300);
   const settlementChainPublicClient = usePublicClient({ chainId });
-  const { tokenChainDataArray: multichainTokens } = useMultichainTokensRequest();
+  const { tokenChainDataArray: multichainTokens } = useMultichainTokensRequest(chainId, account);
 
   const simulationSigner = useMemo(() => {
     if (!signer?.provider) {
@@ -348,10 +348,10 @@ function ReferralCodeFormMultichain({
         FAKE_INPUT_AMOUNT_MAP[p.sourceChainTokenId.symbol] ?? numberToBigint(0.02, p.sourceChainTokenId.decimals);
 
       const sendParamsWithRoughAmount = getMultichainTransferSendParams({
-        isDeposit: true,
+        isToGmx: true,
         dstChainId: p.chainId,
         account: p.simulationSigner.address,
-        inputAmount: tokenAmount,
+        amount: tokenAmount,
         srcChainId: p.srcChainId,
         composeGas,
         action,
@@ -480,9 +480,9 @@ function ReferralCodeFormMultichain({
         dstChainId: chainId,
         account,
         srcChainId,
-        inputAmount: result.data.amount,
+        amount: result.data.amount,
         composeGas: result.data.composeGas,
-        isDeposit: true,
+        isToGmx: true,
         action,
       });
 
