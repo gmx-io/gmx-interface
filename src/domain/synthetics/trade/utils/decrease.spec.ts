@@ -68,8 +68,6 @@ const marketInfo: MarketInfo = {
   maxShortPoolUsdForDeposit: BigInt("0x51dac207a000"),
   maxLongPoolAmount: BigInt("0x0800b55b59670a800000"),
   maxShortPoolAmount: BigInt("0x5af3107a4000"),
-  longPoolAmountAdjustment: BigInt("0x00"),
-  shortPoolAmountAdjustment: BigInt("0x00"),
   poolValueMin: BigInt("0x452f9638e41a56df3fe3e70889447d22"),
   poolValueMax: BigInt("0x4532dc368befac08ca96e5c969036182"),
   reserveFactorLong: BigInt("0x11aba4db89fc3d4d14c0000000"),
