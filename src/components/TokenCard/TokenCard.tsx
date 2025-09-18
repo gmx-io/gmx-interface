@@ -146,6 +146,7 @@ async function sendUserAnalyticsProtocolTokenEvent(type: LandingPageProtocolToke
       data: {
         action: "ProtocolTokenAction",
         type,
+        chain: undefined,
       },
     },
     { instantSend: true }

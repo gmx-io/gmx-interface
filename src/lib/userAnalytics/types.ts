@@ -22,7 +22,7 @@ export type LandingPageProtocolTokenEvent = {
   event: "LandingPageAction";
   data: {
     action: "ProtocolTokenAction";
-    chain: ChainName;
+    chain: ChainName | undefined;
     type: "GMX" | "GM" | "GLV" | "GLP";
   };
 };
