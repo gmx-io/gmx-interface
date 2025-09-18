@@ -2937,6 +2937,10 @@ msgstr "Авто-Отмена TP/SL"
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr ""
 
+#: landing/src/pages/Home/FaqSection/FaqSection.tsx
+msgid "<0>No KYC, no lengthy onboarding, and no depositing is required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, Avalanche, Solana, or Botanix, or deposit to your GMX Account to trade from any supported Multichain network.</5>"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr "Запрошено уменьшение {0} {longOrShortText} на {sizeDeltaUsd} USD."
@@ -3006,6 +3010,10 @@ msgstr "Увеличить Размер (Лимит)"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
 msgstr "Ордер может не выполниться по желаемой {priceText}, поскольку его допустимое влияние цены установлено на {formattedOrderAcceptablePriceImpact}, что ниже текущего рыночного влияния цены {formattedCurrentAcceptablePriceImpact}. Это можно отредактировать с помощью кнопки \"Редактировать\"."
+
+#: landing/src/pages/Home/FaqSection/FaqSection.tsx
+msgid "<0>Yes, we encourage you to build on top of GMX or integrate it into your DeFi app. GMX is fully composable and already integrated with hundreds of protocols across the ecosystem, including notable names like Pendle, Dolomite, Radiant, Silo Finance, Venus Protocol, Abracadabra, Compound, and Beefy. You can interact directly with GMX smart contracts or use available APIs and SDKs to plug into trading, liquidity, or data flows. Check out the <1>GMX Developer Docs</1> to get started.</0>"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3984,10 +3992,6 @@ msgstr "PnL"
 msgid "Express Trading is not available using network's native token {0}. Consider using {1} instead."
 msgstr "Экспресс-Торговля недоступна с использованием нативного токена сети {0}. Рассмотрите использование {1} вместо этого."
 
-#: landing/src/pages/Home/FaqSection/FaqSection.tsx
-msgid "<0>Yes, we encourage you to build on top of GMX or integrate it into your DeFi app. GMX is fully composable and already integrated with hundreds of protocols across the ecosystem, including notable names like Pendle, Dolomite, Silo Finance, Venus Protocol, Abracadabra, Compound, or Beefy. You can interact directly with GMX smart contracts or use available APIs and SDKs to plug into trading, liquidity, or data flows. Check out the <1>GMX Developer Docs</1> to get started.</0>"
-msgstr ""
-
 #: src/components/Synthetics/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Increase"
@@ -4312,6 +4316,10 @@ msgstr ""
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr "Рибейты, заработанные этим аккаунтом в качестве трейдера."
+
+#: landing/src/pages/Home/FaqSection/FaqSection.tsx
+msgid "<0>GMX executes trades against a dynamically balanced liquidity pool, unlike traditional order books. This model supports deep liquidity, allowing for opening positions of over $50m with reduced price impact, even when compared to the biggest order books in the space. In some cases, you may even get paid when executing an order due to a positive price impact.</0><1>GMX prevents unfair liquidations by using decentralized oracles from Chainlink and Chaos Labs, which aggregate prices from multiple trusted sources to avoid manipulation.</1>"
+msgstr ""
 
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
@@ -4933,10 +4941,6 @@ msgstr "залог"
 msgid "WALLET"
 msgstr "КОШЕЛЁК"
 
-#: landing/src/pages/Home/FaqSection/FaqSection.tsx
-msgid "<0>GMX executes trades against a dynamically balanced liquidity pool, unlike traditional order books. This model supports deep liquidity, allowing for opening positions of over $50m with reduced price impact, even compared to the biggest order books in the space. In some cases, you may get paid when executing an order due to a positive price impact.</0><1>GMX prevents unfair liquidations by using decentralized oracles from Chainlink and Chaos Labs, which aggregate prices from multiple trusted sources to avoid manipulation.</1>"
-msgstr ""
-
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
@@ -5532,10 +5536,6 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBoxRows/SwapSpreadRow.tsx
 msgid "Spread"
 msgstr "Спред"
-
-#: landing/src/pages/Home/FaqSection/FaqSection.tsx
-msgid "<0>No KYC, no lengthy onboarding, and no depositing is required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger,etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, Avalanche, or Botanix, or deposit to your GMX Account to trade from any supported network.</5>"
-msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "This position was liquidated as the max. leverage of {formattedMaxLeverage} was exceeded when taking into account fees."
