@@ -340,8 +340,8 @@ msgstr "The mark price has changed, consider increasing your allowed slippage by
 #~ msgstr "Max pool capacity reached for {0}<0/><1/>Please mint GLP using another token"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Enter a value"
-msgstr "Enter a value"
+#~ msgid "Enter a value"
+#~ msgstr "Enter a value"
 
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Enter NFT Address"
@@ -2536,8 +2536,8 @@ msgstr "GLP Pool"
 #~ msgstr "Insufficient liquidity."
 
 #: src/domain/legacy.ts
-msgid "Cancel submitted."
-msgstr "Cancel submitted."
+#~ msgid "Cancel submitted."
+#~ msgstr "Cancel submitted."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Traderjoe:"
@@ -2772,8 +2772,8 @@ msgid "Transaction sent."
 msgstr "Transaction sent."
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Enter up to 10 coins"
-msgstr "Enter up to 10 coins"
+#~ msgid "Enter up to 10 coins"
+#~ msgstr "Enter up to 10 coins"
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to Backing Tokens"
@@ -2875,8 +2875,8 @@ msgstr "Withdraw from Affiliate Vault"
 #~ msgstr "Current Pool Amount"
 
 #: src/domain/legacy.ts
-msgid "Cancel failed."
-msgstr "Cancel failed."
+#~ msgid "Cancel failed."
+#~ msgstr "Cancel failed."
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "The order will be executed if there is sufficient liquidity and the execution price guarantees that you will receive the minimum receive amount."
@@ -3135,8 +3135,8 @@ msgid "T"
 msgstr "T"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Please enter the names of the coins you'd like to see added:"
-msgstr "Please enter the names of the coins you'd like to see added:"
+#~ msgid "Please enter the names of the coins you'd like to see added:"
+#~ msgstr "Please enter the names of the coins you'd like to see added:"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #~ msgid "Forfeit profit and Short"
@@ -3514,8 +3514,8 @@ msgid "Take Profit PnL"
 msgstr "Take Profit PnL"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Let us know which coins you're missing"
-msgstr "Let us know which coins you're missing"
+#~ msgid "Let us know which coins you're missing"
+#~ msgstr "Let us know which coins you're missing"
 
 #: src/components/Exchange/PositionEditor.jsx
 #~ msgid "Enable withdraw sent."
@@ -4453,8 +4453,8 @@ msgid "Capital Used"
 msgstr "Capital Used"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Max 10 symbols in name"
-msgstr "Max 10 symbols in name"
+#~ msgid "Max 10 symbols in name"
+#~ msgstr "Max 10 symbols in name"
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"
@@ -5488,8 +5488,8 @@ msgid "There may not be sufficient liquidity to execute your order when the pric
 msgstr "There may not be sufficient liquidity to execute your order when the price conditions are met."
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Error submitting coins"
-msgstr "Error submitting coins"
+#~ msgid "Error submitting coins"
+#~ msgstr "Error submitting coins"
 
 #: src/components/Glp/GlpSwap.jsx
 #~ msgid "WARNING: High Fees"
@@ -5808,8 +5808,8 @@ msgid "Telegram Bot"
 msgstr "Telegram Bot"
 
 #: src/domain/legacy.ts
-msgid "Order cancelled."
-msgstr "Order cancelled."
+#~ msgid "Order cancelled."
+#~ msgstr "Order cancelled."
 
 #: src/components/Exchange/SwapBox.jsx
 #~ msgid "Swap order creation failed."
@@ -5850,8 +5850,8 @@ msgid "Ann. Performance"
 msgstr "Ann. Performance"
 
 #: src/domain/legacy.ts
-msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
-msgstr "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
+#~ msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
+#~ msgstr "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
 
 #: src/components/Exchange/SwapBox.jsx
 #~ msgid "Current {0} long"
@@ -6232,8 +6232,8 @@ msgid "Win/Loss"
 msgstr "Win/Loss"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Names could be separated by commas or spaces"
-msgstr "Names could be separated by commas or spaces"
+#~ msgid "Names could be separated by commas or spaces"
+#~ msgstr "Names could be separated by commas or spaces"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -6393,7 +6393,6 @@ msgstr "To purchase GMX on the {0} blockchain, please <0>change your network</0>
 msgid "Open positions with orders"
 msgstr "Open positions with orders"
 
-#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -7904,8 +7903,8 @@ msgid "Referral Terms"
 msgstr "Referral Terms"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Enter unique coins"
-msgstr "Enter unique coins"
+#~ msgid "Enter unique coins"
+#~ msgstr "Enter unique coins"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet the acceptable price condition. The order will get filled when the condition is met."
@@ -8127,8 +8126,8 @@ msgid "Stabilize Protocol"
 msgstr "Stabilize Protocol"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Enter a valid coin names"
-msgstr "Enter a valid coin names"
+#~ msgid "Enter a valid coin names"
+#~ msgstr "Enter a valid coin names"
 
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "All assets"
@@ -8253,8 +8252,8 @@ msgstr "The esGMX tokens can be staked or vested at any time."
 #~ msgstr "Enter new price"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Max 110 symbols exceeded"
-msgstr "Max 110 symbols exceeded"
+#~ msgid "Max 110 symbols exceeded"
+#~ msgstr "Max 110 symbols exceeded"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed"

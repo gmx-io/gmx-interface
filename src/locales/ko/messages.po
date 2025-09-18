@@ -340,8 +340,8 @@ msgstr ""
 #~ msgstr "최대 풀 수용량인 {0}에 도달했습니다<0/><1/>다른 토큰을 이용행 GLP를 민트해주세요"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Enter a value"
-msgstr "값 입력"
+#~ msgid "Enter a value"
+#~ msgstr "값 입력"
 
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Enter NFT Address"
@@ -2536,8 +2536,8 @@ msgstr "GLP 풀"
 #~ msgstr ""
 
 #: src/domain/legacy.ts
-msgid "Cancel submitted."
-msgstr "취소 제출 완료"
+#~ msgid "Cancel submitted."
+#~ msgstr "취소 제출 완료"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Traderjoe:"
@@ -2772,8 +2772,8 @@ msgid "Transaction sent."
 msgstr "트랜잭션 전송됨."
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Enter up to 10 coins"
-msgstr "최대 10개의 코인 입력"
+#~ msgid "Enter up to 10 coins"
+#~ msgstr "최대 10개의 코인 입력"
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to Backing Tokens"
@@ -2875,8 +2875,8 @@ msgstr "어필리에이트 볼트에서 인출"
 #~ msgstr "현재 풀 양"
 
 #: src/domain/legacy.ts
-msgid "Cancel failed."
-msgstr "취소 실패"
+#~ msgid "Cancel failed."
+#~ msgstr "취소 실패"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "The order will be executed if there is sufficient liquidity and the execution price guarantees that you will receive the minimum receive amount."
@@ -3135,8 +3135,8 @@ msgid "T"
 msgstr "T"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Please enter the names of the coins you'd like to see added:"
-msgstr "추가하고 싶은 코인 이름을 입력하세요:"
+#~ msgid "Please enter the names of the coins you'd like to see added:"
+#~ msgstr "추가하고 싶은 코인 이름을 입력하세요:"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #~ msgid "Forfeit profit and Short"
@@ -3514,8 +3514,8 @@ msgid "Take Profit PnL"
 msgstr "이익 실현 PnL"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Let us know which coins you're missing"
-msgstr "누락된 코인을 알려주세요"
+#~ msgid "Let us know which coins you're missing"
+#~ msgstr "누락된 코인을 알려주세요"
 
 #: src/components/Exchange/PositionEditor.jsx
 #~ msgid "Enable withdraw sent."
@@ -4453,8 +4453,8 @@ msgid "Capital Used"
 msgstr "사용 자본"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Max 10 symbols in name"
-msgstr "이름에 최대 10자"
+#~ msgid "Max 10 symbols in name"
+#~ msgstr "이름에 최대 10자"
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"
@@ -5488,8 +5488,8 @@ msgid "There may not be sufficient liquidity to execute your order when the pric
 msgstr "가격 조건이 충족될 때 주문을 실행할 충분한 유동성이 없을 수 있습니다."
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Error submitting coins"
-msgstr "코인 제출 오류"
+#~ msgid "Error submitting coins"
+#~ msgstr "코인 제출 오류"
 
 #: src/components/Glp/GlpSwap.jsx
 #~ msgid "WARNING: High Fees"
@@ -5808,8 +5808,8 @@ msgid "Telegram Bot"
 msgstr "텔레그램 봇"
 
 #: src/domain/legacy.ts
-msgid "Order cancelled."
-msgstr "주문이 취소되었습니다."
+#~ msgid "Order cancelled."
+#~ msgstr "주문이 취소되었습니다."
 
 #: src/components/Exchange/SwapBox.jsx
 #~ msgid "Swap order creation failed."
@@ -5850,8 +5850,8 @@ msgid "Ann. Performance"
 msgstr "연간 성과"
 
 #: src/domain/legacy.ts
-msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
-msgstr "현재 네트워크 수수료가 매우 높습니다. 이는 {0} 네트워크의 일시적인 거래량 증가로 인한 것일 수 있습니다."
+#~ msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
+#~ msgstr "현재 네트워크 수수료가 매우 높습니다. 이는 {0} 네트워크의 일시적인 거래량 증가로 인한 것일 수 있습니다."
 
 #: src/components/Exchange/SwapBox.jsx
 #~ msgid "Current {0} long"
@@ -6232,8 +6232,8 @@ msgid "Win/Loss"
 msgstr "승/패"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Names could be separated by commas or spaces"
-msgstr "이름은 쉼표 또는 공백으로 구분될 수 있습니다"
+#~ msgid "Names could be separated by commas or spaces"
+#~ msgstr "이름은 쉼표 또는 공백으로 구분될 수 있습니다"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -6393,7 +6393,6 @@ msgstr "{0} 블록체인에서 GMX를 구매하려면 <0>네트워크 변경</0>
 msgid "Open positions with orders"
 msgstr ""
 
-#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -7904,8 +7903,8 @@ msgid "Referral Terms"
 msgstr "추천 약관"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Enter unique coins"
-msgstr "고유 코인 입력"
+#~ msgid "Enter unique coins"
+#~ msgstr "고유 코인 입력"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet the acceptable price condition. The order will get filled when the condition is met."
@@ -8127,8 +8126,8 @@ msgid "Stabilize Protocol"
 msgstr "스태빌라이즈 프로토콜"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Enter a valid coin names"
-msgstr "유효한 코인 이름 입력"
+#~ msgid "Enter a valid coin names"
+#~ msgstr "유효한 코인 이름 입력"
 
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "All assets"
@@ -8253,8 +8252,8 @@ msgstr "esGMX 토큰은 언제든 스테이킹 또는 베스팅 가능."
 #~ msgstr ""
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Max 110 symbols exceeded"
-msgstr "최대 110 심볼 초과"
+#~ msgid "Max 110 symbols exceeded"
+#~ msgstr "최대 110 심볼 초과"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed"

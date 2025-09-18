@@ -340,8 +340,8 @@ msgstr ""
 #~ msgstr "Max. Pool-Kapazität für {0}<0/><1/> erreicht. Bitte minte GLP mit einem anderen Token"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Enter a value"
-msgstr "Wert eingeben"
+#~ msgid "Enter a value"
+#~ msgstr "Wert eingeben"
 
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Enter NFT Address"
@@ -2536,8 +2536,8 @@ msgstr "GLP Pool"
 #~ msgstr ""
 
 #: src/domain/legacy.ts
-msgid "Cancel submitted."
-msgstr "Abbruch übermittelt."
+#~ msgid "Cancel submitted."
+#~ msgstr "Abbruch übermittelt."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Traderjoe:"
@@ -2772,8 +2772,8 @@ msgid "Transaction sent."
 msgstr "Transaktion gesendet."
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Enter up to 10 coins"
-msgstr "Gib bis zu 10 Coins ein"
+#~ msgid "Enter up to 10 coins"
+#~ msgstr "Gib bis zu 10 Coins ein"
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to Backing Tokens"
@@ -2875,8 +2875,8 @@ msgstr "Abheben aus Affiliate-Vault"
 #~ msgstr "Aktueller Pool-Betrag"
 
 #: src/domain/legacy.ts
-msgid "Cancel failed."
-msgstr "Abbruch fehlgeschlagen."
+#~ msgid "Cancel failed."
+#~ msgstr "Abbruch fehlgeschlagen."
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "The order will be executed if there is sufficient liquidity and the execution price guarantees that you will receive the minimum receive amount."
@@ -3135,8 +3135,8 @@ msgid "T"
 msgstr "T"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Please enter the names of the coins you'd like to see added:"
-msgstr "Bitte gib die Namen der Coins ein, die du hinzugefügt sehen möchtest:"
+#~ msgid "Please enter the names of the coins you'd like to see added:"
+#~ msgstr "Bitte gib die Namen der Coins ein, die du hinzugefügt sehen möchtest:"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #~ msgid "Forfeit profit and Short"
@@ -3514,8 +3514,8 @@ msgid "Take Profit PnL"
 msgstr "Take-Profit PnL"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Let us know which coins you're missing"
-msgstr "Lass uns wissen, welche Coins du vermisst"
+#~ msgid "Let us know which coins you're missing"
+#~ msgstr "Lass uns wissen, welche Coins du vermisst"
 
 #: src/components/Exchange/PositionEditor.jsx
 #~ msgid "Enable withdraw sent."
@@ -4453,8 +4453,8 @@ msgid "Capital Used"
 msgstr "Genutztes Kapital"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Max 10 symbols in name"
-msgstr "Max. 10 Symbole im Namen"
+#~ msgid "Max 10 symbols in name"
+#~ msgstr "Max. 10 Symbole im Namen"
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"
@@ -5488,8 +5488,8 @@ msgid "There may not be sufficient liquidity to execute your order when the pric
 msgstr "Es könnte nicht genügend Liquidität vorhanden sein, um deinen Auftrag auszuführen, wenn die Preisbedingungen erfüllt sind."
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Error submitting coins"
-msgstr "Fehler beim Übermitteln von Coins"
+#~ msgid "Error submitting coins"
+#~ msgstr "Fehler beim Übermitteln von Coins"
 
 #: src/components/Glp/GlpSwap.jsx
 #~ msgid "WARNING: High Fees"
@@ -5808,8 +5808,8 @@ msgid "Telegram Bot"
 msgstr "Telegram Bot"
 
 #: src/domain/legacy.ts
-msgid "Order cancelled."
-msgstr "Order storniert."
+#~ msgid "Order cancelled."
+#~ msgstr "Order storniert."
 
 #: src/components/Exchange/SwapBox.jsx
 #~ msgid "Swap order creation failed."
@@ -5850,8 +5850,8 @@ msgid "Ann. Performance"
 msgstr "Ann. Performance"
 
 #: src/domain/legacy.ts
-msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
-msgstr "Die Netzwerkgebühren sind derzeit sehr hoch, was auf eine vorübergehende Zunahme von Transaktionen im {0}-Netzwerk zurückzuführen sein kann."
+#~ msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
+#~ msgstr "Die Netzwerkgebühren sind derzeit sehr hoch, was auf eine vorübergehende Zunahme von Transaktionen im {0}-Netzwerk zurückzuführen sein kann."
 
 #: src/components/Exchange/SwapBox.jsx
 #~ msgid "Current {0} long"
@@ -6232,8 +6232,8 @@ msgid "Win/Loss"
 msgstr "Gewinn/Verlust"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Names could be separated by commas or spaces"
-msgstr "Namen können durch Kommas oder Leerzeichen getrennt werden"
+#~ msgid "Names could be separated by commas or spaces"
+#~ msgstr "Namen können durch Kommas oder Leerzeichen getrennt werden"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -6393,7 +6393,6 @@ msgstr "Um GMX auf der {0}-Blockchain zu kaufen, bitte <0>dein Netzwerk ändern<
 msgid "Open positions with orders"
 msgstr ""
 
-#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -7904,8 +7903,8 @@ msgid "Referral Terms"
 msgstr "Referral-Bedingungen"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Enter unique coins"
-msgstr "Einzigartige Coins eingeben"
+#~ msgid "Enter unique coins"
+#~ msgstr "Einzigartige Coins eingeben"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet the acceptable price condition. The order will get filled when the condition is met."
@@ -8127,8 +8126,8 @@ msgid "Stabilize Protocol"
 msgstr "Stabilize-Protokoll"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Enter a valid coin names"
-msgstr "Gültige Coin-Namen eingeben"
+#~ msgid "Enter a valid coin names"
+#~ msgstr "Gültige Coin-Namen eingeben"
 
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "All assets"
@@ -8253,8 +8252,8 @@ msgstr "Die esGMX-Tokens können jederzeit gestaket oder gevested werden."
 #~ msgstr ""
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Max 110 symbols exceeded"
-msgstr "Max. 110 Symbole überschritten"
+#~ msgid "Max 110 symbols exceeded"
+#~ msgstr "Max. 110 Symbole überschritten"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed"

@@ -340,8 +340,8 @@ msgstr ""
 #~ msgstr "{0}の最大プールキャパシティ到達<0/><1/>別のトークンを使用してGLPをミントしてください"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Enter a value"
-msgstr "値を入力"
+#~ msgid "Enter a value"
+#~ msgstr "値を入力"
 
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Enter NFT Address"
@@ -2536,8 +2536,8 @@ msgstr "GLPプール"
 #~ msgstr ""
 
 #: src/domain/legacy.ts
-msgid "Cancel submitted."
-msgstr "キャンセル申し込み完了"
+#~ msgid "Cancel submitted."
+#~ msgstr "キャンセル申し込み完了"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Traderjoe:"
@@ -2772,8 +2772,8 @@ msgid "Transaction sent."
 msgstr "取引は送信済です。"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Enter up to 10 coins"
-msgstr "最大10個のコインを入力"
+#~ msgid "Enter up to 10 coins"
+#~ msgstr "最大10個のコインを入力"
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to Backing Tokens"
@@ -2875,8 +2875,8 @@ msgstr "アフィリエイトボールトから出金"
 #~ msgstr "現在のプール額"
 
 #: src/domain/legacy.ts
-msgid "Cancel failed."
-msgstr "キャンセルできませんでした"
+#~ msgid "Cancel failed."
+#~ msgstr "キャンセルできませんでした"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "The order will be executed if there is sufficient liquidity and the execution price guarantees that you will receive the minimum receive amount."
@@ -3135,8 +3135,8 @@ msgid "T"
 msgstr "T"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Please enter the names of the coins you'd like to see added:"
-msgstr "追加してほしいコインの名前を入力してください:"
+#~ msgid "Please enter the names of the coins you'd like to see added:"
+#~ msgstr "追加してほしいコインの名前を入力してください:"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #~ msgid "Forfeit profit and Short"
@@ -3514,8 +3514,8 @@ msgid "Take Profit PnL"
 msgstr "テイクプロフィット損益"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Let us know which coins you're missing"
-msgstr "不足しているコインをお知らせください"
+#~ msgid "Let us know which coins you're missing"
+#~ msgstr "不足しているコインをお知らせください"
 
 #: src/components/Exchange/PositionEditor.jsx
 #~ msgid "Enable withdraw sent."
@@ -4453,8 +4453,8 @@ msgid "Capital Used"
 msgstr "使用資本"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Max 10 symbols in name"
-msgstr "名前は最大10文字"
+#~ msgid "Max 10 symbols in name"
+#~ msgstr "名前は最大10文字"
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"
@@ -5488,8 +5488,8 @@ msgid "There may not be sufficient liquidity to execute your order when the pric
 msgstr "価格条件が満たされた場合でも、注文を執行するための十分な流動性がない可能性があります。"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Error submitting coins"
-msgstr "コイン提出エラー"
+#~ msgid "Error submitting coins"
+#~ msgstr "コイン提出エラー"
 
 #: src/components/Glp/GlpSwap.jsx
 #~ msgid "WARNING: High Fees"
@@ -5808,8 +5808,8 @@ msgid "Telegram Bot"
 msgstr "Telegramボット"
 
 #: src/domain/legacy.ts
-msgid "Order cancelled."
-msgstr "注文はキャンセルされました。"
+#~ msgid "Order cancelled."
+#~ msgstr "注文はキャンセルされました。"
 
 #: src/components/Exchange/SwapBox.jsx
 #~ msgid "Swap order creation failed."
@@ -5850,8 +5850,8 @@ msgid "Ann. Performance"
 msgstr "年率パフォーマンス"
 
 #: src/domain/legacy.ts
-msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
-msgstr "現在ネットワーク手数料が非常に高いです。これは{0}ネットワーク上の一時的なトランザクション増加によるものかもしれません。"
+#~ msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
+#~ msgstr "現在ネットワーク手数料が非常に高いです。これは{0}ネットワーク上の一時的なトランザクション増加によるものかもしれません。"
 
 #: src/components/Exchange/SwapBox.jsx
 #~ msgid "Current {0} long"
@@ -6232,8 +6232,8 @@ msgid "Win/Loss"
 msgstr "勝/敗"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Names could be separated by commas or spaces"
-msgstr "名前はコンマまたはスペースで区切ることができます"
+#~ msgid "Names could be separated by commas or spaces"
+#~ msgstr "名前はコンマまたはスペースで区切ることができます"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -6393,7 +6393,6 @@ msgstr "{0}ブロックチェーン上でGMXを購入するには、<0>ネット
 msgid "Open positions with orders"
 msgstr ""
 
-#: src/components/MissedCoinsModal/MissedCoinsModal.tsx
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -7904,8 +7903,8 @@ msgid "Referral Terms"
 msgstr "紹介規約"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Enter unique coins"
-msgstr "ユニークなコインを入力"
+#~ msgid "Enter unique coins"
+#~ msgstr "ユニークなコインを入力"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet the acceptable price condition. The order will get filled when the condition is met."
@@ -8127,8 +8126,8 @@ msgid "Stabilize Protocol"
 msgstr "Stabilizeプロトコル"
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Enter a valid coin names"
-msgstr "有効なコイン名を入力"
+#~ msgid "Enter a valid coin names"
+#~ msgstr "有効なコイン名を入力"
 
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "All assets"
@@ -8253,8 +8252,8 @@ msgstr "esGMXトークンはいつでもステークまたはベストできま�
 #~ msgstr ""
 
 #: src/components/MissedCoinsModal/MissedCoinsModal.tsx
-msgid "Max 110 symbols exceeded"
-msgstr "最大110シンボルを超えました"
+#~ msgid "Max 110 symbols exceeded"
+#~ msgstr "最大110シンボルを超えました"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed"
