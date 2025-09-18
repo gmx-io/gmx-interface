@@ -32,15 +32,15 @@ export function FaqSection() {
               </p>
               <ul className="list-decimal pl-14">
                 <li>
-                  Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet,
-                  Ledger, etc.)
+                  Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger,
+                  etc.)
                 </li>
                 <li>Select a supported blockchain network where you have funds available</li>
                 <li>Start trading</li>
               </ul>
               <p>
-                You can trade directly using funds on Arbitrum, Avalanche, Solana or Botanix, or deposit to your GMX Account to
-                trade from any supported Multichain network.
+                You can trade directly using funds on Arbitrum, Avalanche, Solana, or Botanix, or deposit to your GMX
+                Account to trade from any supported Multichain network.
               </p>
             </Trans>
           </FaqItem>
@@ -49,8 +49,8 @@ export function FaqSection() {
               <p>
                 GMX executes trades against a dynamically balanced liquidity pool, unlike traditional order books. This
                 model supports deep liquidity, allowing for opening positions of over $50m with reduced price impact,
-                even when compared to the biggest order books in the space. In some cases, you may even get paid when executing an
-                order due to a positive price impact.
+                even when compared to the biggest order books in the space. In some cases, you may even get paid when
+                executing an order due to a positive price impact.
               </p>
 
               <p>
@@ -64,9 +64,9 @@ export function FaqSection() {
               <p>
                 Yes, we encourage you to build on top of GMX or integrate it into your DeFi app. GMX is fully composable
                 and already integrated with hundreds of protocols across the ecosystem, including notable names like
-                Pendle, Dolomite, Radiant, Silo Finance, Venus Protocol, Abracadabra, Compound, and Beefy. You can interact
-                directly with GMX smart contracts or use available APIs and SDKs to plug into trading, liquidity, or
-                data flows. Check out the{" "}
+                Pendle, Dolomite, Radiant, Silo Finance, Venus Protocol, Abracadabra, Compound, and Beefy. You can
+                interact directly with GMX smart contracts or use available APIs and SDKs to plug into trading,
+                liquidity, or data flows. Check out the{" "}
                 <a href="https://docs.gmx.io/docs/category/api/" className="cursor-pointer text-blue-400">
                   GMX Developer Docs
                 </a>{" "}
