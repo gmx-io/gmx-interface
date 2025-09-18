@@ -312,6 +312,7 @@ msgstr "FAQ"
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/pages/Dashboard/StatsCard.tsx
@@ -4875,6 +4876,7 @@ msgstr "Withdraw submitted."
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8751,7 +8753,6 @@ msgstr "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming
 msgid "Claim funds"
 msgstr "Claim funds"
 
-#: src/components/Synthetics/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net Price Impact / Fees"
 msgstr "Net Price Impact / Fees"
@@ -8828,6 +8829,7 @@ msgstr "Generate Referral Code"
 #: src/components/Exchange/OrdersList.jsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx

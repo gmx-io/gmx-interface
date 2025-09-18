@@ -5,24 +5,27 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 import SettingsIcon from "img/ic_settings.svg?react";
 
+import { NavItem } from "./SideNav";
+
 interface SettingsNavItemProps {
   isCollapsed: boolean | undefined;
-  NavItem: React.ComponentType<any>;
+  onClick?: () => void;
 }
 
-export function SettingsNavItem({ isCollapsed, NavItem }: SettingsNavItemProps) {
+export function SettingsNavItem({ isCollapsed, onClick }: SettingsNavItemProps) {
   const { setIsSettingsVisible } = useSettings();
 
-  const handleOpen = useCallback(() => {
+  const handleClick = useCallback(() => {
+    onClick?.();
     setIsSettingsVisible(true);
-  }, [setIsSettingsVisible]);
+  }, [onClick, setIsSettingsVisible]);
 
   return (
     <NavItem
       icon={<SettingsIcon className="size-24" />}
       label={t`Settings`}
       isCollapsed={isCollapsed}
-      onClick={handleOpen}
+      onClick={handleClick}
     />
   );
 }

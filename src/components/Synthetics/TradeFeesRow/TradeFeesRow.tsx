@@ -253,7 +253,7 @@ export function TradeFeesRow(p: Props) {
       p.fundingFee && (p.fundingFee?.deltaUsd === undefined ? undefined : bigMath.abs(p.fundingFee.deltaUsd) > 0)
         ? {
             id: "fundingFee",
-            label: <div>{t`Funding Fee`}:</div>,
+            label: <div className="text-typography-primary">{t`Funding Fee`}:</div>,
             value: formatDeltaUsd(p.fundingFee.deltaUsd),
             className: getPositiveOrNegativeClass(p.fundingFee.deltaUsd, "text-green-500"),
           }
