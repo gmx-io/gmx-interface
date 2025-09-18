@@ -3464,6 +3464,10 @@ msgstr "Комиссия UI Обмена"
 msgid "Decrease the size to match the max. allowed leverage:"
 msgstr "Уменьшите размер, чтобы соответствовать макс. допустимому плечу:"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Set Acceptable Price Impact"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Positive Funding Fee"
 msgstr "Начисленная Положительная Комиссия за Финансирование"

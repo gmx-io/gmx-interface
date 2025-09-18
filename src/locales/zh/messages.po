@@ -3464,6 +3464,10 @@ msgstr "交换 UI 费用"
 msgid "Decrease the size to match the max. allowed leverage:"
 msgstr "减少规模以匹配最大允许杠杆："
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Set Acceptable Price Impact"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Positive Funding Fee"
 msgstr "累积正资金费用"

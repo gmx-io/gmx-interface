@@ -3464,6 +3464,10 @@ msgstr "스왑 UI 수수료"
 msgid "Decrease the size to match the max. allowed leverage:"
 msgstr "최대 허용 레버리지에 맞게 크기 감소:"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Set Acceptable Price Impact"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Positive Funding Fee"
 msgstr "누적 양의 자금 수수료"

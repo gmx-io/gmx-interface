@@ -11,6 +11,7 @@ import {
   EXTERNAL_SWAPS_ENABLED_KEY,
   IS_AUTO_CANCEL_TPSL_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
+  SET_ACCEPTABLE_PRICE_IMPACT_ENABLED_KEY,
   SETTINGS_WARNING_DOT_VISIBLE_KEY,
   SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_DEBUG_VALUES_KEY,
@@ -92,6 +93,9 @@ export type SettingsContextType = {
 
   savedTwapNumberOfParts: number;
   setSavedTWAPNumberOfParts: (val: number) => void;
+
+  setAcceptablePriceImpactEnabled: boolean;
+  setSetAcceptablePriceImpactEnabled: (val: boolean) => void;
 };
 
 export const SettingsContext = createContext({});
@@ -175,6 +179,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const [savedBreakdownNetPriceImpactEnabled, setSavedBreakdownNetPriceImpactEnabled] = useLocalStorageSerializeKey(
     [chainId, BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY],
+    false
+  );
+
+  const [savedSetAcceptablePriceImpactEnabled, setSavedSetAcceptablePriceImpactEnabled] = useLocalStorageSerializeKey(
+    [chainId, SET_ACCEPTABLE_PRICE_IMPACT_ENABLED_KEY],
     false
   );
 
@@ -265,6 +274,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       breakdownNetPriceImpactEnabled: savedBreakdownNetPriceImpactEnabled!,
       setBreakdownNetPriceImpactEnabled: setSavedBreakdownNetPriceImpactEnabled,
 
+      setAcceptablePriceImpactEnabled: savedSetAcceptablePriceImpactEnabled!,
+      setSetAcceptablePriceImpactEnabled: setSavedSetAcceptablePriceImpactEnabled,
+
       setTenderlyAccessKey,
       setTenderlyAccountSlug,
       setTenderlyProjectSlug,
@@ -319,6 +331,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setIsLeverageSliderEnabled,
     savedBreakdownNetPriceImpactEnabled,
     setSavedBreakdownNetPriceImpactEnabled,
+    savedSetAcceptablePriceImpactEnabled,
+    setSavedSetAcceptablePriceImpactEnabled,
     setTenderlyAccessKey,
     setTenderlyAccountSlug,
     setTenderlyProjectSlug,

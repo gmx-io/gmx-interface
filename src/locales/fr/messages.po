@@ -3464,6 +3464,10 @@ msgstr "Frais d'interface d'échange"
 msgid "Decrease the size to match the max. allowed leverage:"
 msgstr "Diminuez la taille pour correspondre au levier max autorisé :"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Set Acceptable Price Impact"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Positive Funding Fee"
 msgstr "Frais de financement positif accumulé"

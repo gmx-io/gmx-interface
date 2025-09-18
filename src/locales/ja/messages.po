@@ -3464,6 +3464,10 @@ msgstr "スワップUI手数料"
 msgid "Decrease the size to match the max. allowed leverage:"
 msgstr "最大許容レバレッジに合わせるためにサイズを減少させてください:"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Set Acceptable Price Impact"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Positive Funding Fee"
 msgstr "累積ポジティブファンディング手数料"

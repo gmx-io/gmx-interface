@@ -3464,6 +3464,10 @@ msgstr "Comisión UI de Intercambio"
 msgid "Decrease the size to match the max. allowed leverage:"
 msgstr "Reduce el tamaño para coincidir con el apalancamiento máximo permitido:"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Set Acceptable Price Impact"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Positive Funding Fee"
 msgstr "Comisión de Financiación Positiva Acumulada"
