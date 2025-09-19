@@ -3,7 +3,10 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { LayerZeroProvider, LayerZeroProviderInterface } from "../LayerZeroProvider";
+import type {
+  LayerZeroProvider,
+  LayerZeroProviderInterface,
+} from "../LayerZeroProvider";
 
 const _abi = [
   {
@@ -381,7 +384,10 @@ export class LayerZeroProvider__factory {
   static createInterface(): LayerZeroProviderInterface {
     return new Interface(_abi) as LayerZeroProviderInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): LayerZeroProvider {
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): LayerZeroProvider {
     return new Contract(address, _abi, runner) as unknown as LayerZeroProvider;
   }
 }

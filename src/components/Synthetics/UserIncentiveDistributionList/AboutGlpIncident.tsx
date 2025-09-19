@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMedia } from "react-use";
 
-import Card from "components/Common/Card";
+import Card from "components/Card/Card";
 import { ExpandableRow } from "components/Synthetics/ExpandableRow";
 
 export function AboutGlpIncident() {

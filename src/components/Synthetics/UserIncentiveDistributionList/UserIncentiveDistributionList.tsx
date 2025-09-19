@@ -26,7 +26,7 @@ import { Distribution } from "sdk/types/subsquid";
 import { bigMath } from "sdk/utils/bigmath";
 
 import Button from "components/Button/Button";
-import Card from "components/Common/Card";
+import Card from "components/Card/Card";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import EmptyMessage from "components/Referrals/EmptyMessage";

@@ -17,8 +17,8 @@ import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { BreadcrumbItem, Breadcrumbs } from "components/Breadcrumbs/Breadcrumbs";
-import Loader from "components/Common/Loader";
-import SEO from "components/Common/SEO";
+import Loader from "components/Loader/Loader";
+import SEO from "components/Seo/SEO";
 import SideNav from "components/SideNav/SideNav";
 import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 import { GmSwapBox, GmSwapBoxProps } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";

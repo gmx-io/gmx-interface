@@ -31,7 +31,7 @@ import { useChainId } from "lib/chains";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
 
-import SEO from "components/Common/SEO";
+import SEO from "components/Seo/SEO";
 
 import { AppRoutes } from "./AppRoutes";
 import { SWRConfigProp } from "./swrConfig";

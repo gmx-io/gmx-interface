@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 
 import { getPageTitle } from "lib/legacy";
 
-import SEO from "components/Common/SEO";
+import SEO from "components/Seo/SEO";
 
 export default function TermsAndConditions() {
   return (

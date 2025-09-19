@@ -46,7 +46,7 @@ import {
   isRecentReferralCodeNotExpired,
 } from "./referralsHelper";
 import usePagination, { DEFAULT_PAGE_SIZE } from "./usePagination";
-import Card from "../Common/Card";
+import Card from "../Card/Card";
 import Modal from "../Modal/Modal";
 
 import "./AffiliatesStats.scss";

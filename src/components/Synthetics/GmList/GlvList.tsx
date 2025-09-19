@@ -12,7 +12,7 @@ import { useMarketTokensData } from "domain/synthetics/markets";
 import PoolsCard from "pages/Pools/PoolsCard";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
-import Loader from "components/Common/Loader";
+import Loader from "components/Loader/Loader";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";

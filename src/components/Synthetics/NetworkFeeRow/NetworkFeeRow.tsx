@@ -14,7 +14,7 @@ import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { bigMath } from "sdk/utils/bigmath";
 
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import ExchangeInfoRow from "components/ExchangeInfoRow/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";

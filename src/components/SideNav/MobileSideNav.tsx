@@ -3,8 +3,8 @@ import { HiMenu } from "react-icons/hi";
 import { IoCloseOutline } from "react-icons/io5";
 
 import Button from "components/Button/Button";
-import Portal from "components/Common/Portal";
 import Footer from "components/Footer/Footer";
+import Portal from "components/Portal/Portal";
 
 import { LanguageNavItem } from "./LanguageNavItem";
 import { SettingsNavItem } from "./SettingsNavItem";

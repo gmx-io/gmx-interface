@@ -20,7 +20,7 @@ import useWallet from "lib/wallets/useWallet";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
-import Card from "components/Common/Card";
+import Card from "components/Card/Card";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import bondProtocolIcon from "img/ic_bondprotocol_arbitrum.svg";
