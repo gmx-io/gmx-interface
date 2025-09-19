@@ -156,6 +156,7 @@ export function HistoricalLists({ chainId, account }: Props) {
           setMarketsDirectionsFilter={setMarketsDirectionsFilter}
           orderTypesFilter={orderTypesFilter}
           setOrderTypesFilter={setOrderTypesFilter}
+          onSelectOrderClick={undefined}
         />
       )}
       {tabKey === TabKey.Trades && <TradeHistory account={account} />}

@@ -12,8 +12,8 @@ import {
   WsProviderConnected,
   WsProviderDisconnected,
   WsProviderHealthCheckFailed,
-  WsSourceChainProviderConnected,
-  WsSourceChainProviderDisconnected,
+  WsSourceChainProviderConnectedCounter,
+  WsSourceChainProviderDisconnectedCounter,
 } from "lib/metrics";
 import { EMPTY_OBJECT } from "lib/objects";
 import { closeWsConnection, getWsProvider, isProviderInClosedState, isWebsocketProvider } from "lib/rpc";
@@ -122,12 +122,8 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
       if (newSourceChainProvider) {
         debugLog("source chain provider connected", srcChainId);
 
-        metrics.pushEvent<WsSourceChainProviderConnected>({
-          event: "wsSourceChainProvider.connected",
-          isError: false,
-          data: {
-            chainId: srcChainId,
-          },
+        metrics.pushCounter<WsSourceChainProviderConnectedCounter>("wsSourceChainProvider.connected", {
+          srcChainId,
         });
         setWsSourceChainProviders((prev) => {
           const newProviders = { ...prev };
@@ -148,12 +144,9 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
             delete newProviders[srcChainId];
             return newProviders;
           });
-          metrics.pushEvent<WsSourceChainProviderDisconnected>({
-            event: "wsSourceChainProvider.disconnected",
-            isError: false,
-            data: {
-              chainId: srcChainId,
-            },
+
+          metrics.pushCounter<WsSourceChainProviderDisconnectedCounter>("wsSourceChainProvider.disconnected", {
+            srcChainId,
           });
         }, WS_ADDITIONAL_SOURCE_CHAIN_DISCONNECT_DELAY);
 

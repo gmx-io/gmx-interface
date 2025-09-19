@@ -173,7 +173,7 @@ export function GmListItem({
             {onFavoriteClick ? (
               <div>
                 <Button variant="secondary" className="shrink-0" onClick={handleFavoriteClick}>
-                  <FavoriteStar isFavorite={isFavorite} activeClassName="!text-typography-primary" />
+                  <FavoriteStar isFavorite={isFavorite} />
                 </Button>
               </div>
             ) : null}

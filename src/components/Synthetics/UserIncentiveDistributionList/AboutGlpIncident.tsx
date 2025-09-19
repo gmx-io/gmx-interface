@@ -34,7 +34,6 @@ export function AboutGlpIncident() {
     >
       <Card title={t`About GLP Incident`}>
         <ExpandableRow
-          className="flex cursor-pointer flex-col gap-14"
           contentClassName="flex flex-col gap-14"
           title={t`Why is the claim in GLV tokens?`}
           open={rowStates[0]}
@@ -52,7 +51,6 @@ export function AboutGlpIncident() {
         </ExpandableRow>
         <div className="App-card-divider" />
         <ExpandableRow
-          className="flex flex-col gap-14"
           contentClassName="flex flex-col gap-14"
           title={t`What is GLV exactly?`}
           open={rowStates[1]}
@@ -84,7 +82,6 @@ export function AboutGlpIncident() {
         </ExpandableRow>
         <div className="App-card-divider" />
         <ExpandableRow
-          className="flex flex-col gap-14"
           contentClassName="flex flex-col gap-14"
           title={t`Why do I receive two different GLV tokens?`}
           open={rowStates[2]}
@@ -102,7 +99,6 @@ export function AboutGlpIncident() {
         </ExpandableRow>
         <div className="App-card-divider" />
         <ExpandableRow
-          className="flex flex-col gap-14"
           contentClassName="flex flex-col gap-14"
           title={t`Can I sell my GLV if I want, and where?`}
           open={rowStates[3]}
@@ -118,7 +114,6 @@ export function AboutGlpIncident() {
         </ExpandableRow>
         <div className="App-card-divider" />
         <ExpandableRow
-          className="flex flex-col gap-14"
           contentClassName="flex flex-col gap-14"
           title={t`How does GLV earn yield, and where do I see my earnings?`}
           open={rowStates[4]}
@@ -135,7 +130,6 @@ export function AboutGlpIncident() {
         </ExpandableRow>
         <div className="App-card-divider" />
         <ExpandableRow
-          className="flex flex-col gap-14"
           contentClassName="flex flex-col gap-14"
           title={t`What is the bonus incentive for holding your GLV?`}
           open={rowStates[5]}

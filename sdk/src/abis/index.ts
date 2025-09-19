@@ -25,6 +25,8 @@ import MultichainSubaccountRouter from "./MultichainSubaccountRouter.json";
 import MultichainTransferRouter from "./MultichainTransferRouter.json";
 import MultichainUtils from "./MultichainUtils.json";
 import MultichainVault from "./MultichainVault.json";
+import Reader from "./Reader.json";
+import ReaderV2 from "./ReaderV2.json";
 import ReferralStorage from "./ReferralStorage.json";
 import RelayParams from "./RelayParams.json";
 import RewardReader from "./RewardReader.json";
@@ -92,6 +94,8 @@ export type AbiId =
   | "SyntheticsRouter"
   | "Timelock"
   | "Token"
+  | "Reader"
+  | "ReaderV2"
   | "Treasury"
   | "UniPool"
   | "UniswapV2"
@@ -186,6 +190,8 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   SyntheticsRouter: SyntheticsRouter.abi,
   Timelock: Timelock.abi,
   Token: Token.abi,
+  Reader: Reader.abi,
+  ReaderV2: ReaderV2.abi,
   Treasury: Treasury.abi,
   UniPool: UniPool.abi,
   UniswapV2: UniswapV2.abi,

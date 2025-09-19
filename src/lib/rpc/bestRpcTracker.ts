@@ -235,6 +235,7 @@ function setCurrentProviders(chainId: number, { primaryUrl, secondaryUrl, bestBe
   emitMetricCounter<RpcTrackerRankingCounter>({
     event: "rpcTracker.ranking.setBestRpc",
     data: {
+      chainId,
       rpcProvider: getProviderNameFromUrl(primaryUrl),
       bestBlockGap: bestBestBlockGap ?? "unknown",
       isLargeAccount: getIsLargeAccount(),

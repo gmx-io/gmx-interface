@@ -64,6 +64,7 @@ type Props = {
   orderTypesFilter: OrderTypeFilterValue[];
   setOrderTypesFilter: Dispatch<SetStateAction<OrderTypeFilterValue[]>>;
   onCancelSelectedOrders?: () => void;
+  onSelectOrderClick: ((key: string) => void) | undefined;
 };
 
 export function OrderList({
@@ -77,6 +78,7 @@ export function OrderList({
   setOrderTypesFilter,
   hideActions,
   onCancelSelectedOrders,
+  onSelectOrderClick,
 }: Props) {
   const positionsData = usePositionsInfoData();
   const isLoading = useIsOrdersLoading();
@@ -243,6 +245,7 @@ export function OrderList({
                   positionsInfoData={positionsData}
                   hideActions={hideActions}
                   setRef={handleSetRef}
+                  onSelectOrderClick={() => onSelectOrderClick?.(order.key)}
                 />
               ))}
             </div>
@@ -310,6 +313,7 @@ export function OrderList({
                     hideActions={hideActions}
                     positionsInfoData={positionsData}
                     setRef={(el) => (orderRefs.current[order.key] = el)}
+                    onSelectOrderClick={() => onSelectOrderClick?.(order.key)}
                   />
                 ))}
             </tbody>

@@ -40,7 +40,9 @@ export function AccountsRouter() {
 
   return (
     <SyntheticsStateContextProvider overrideChainId={chainId} pageType="accounts" skipLocalReferralCode>
-      <SyntheticsActions />
+      <AppPageLayout>
+        <SyntheticsActions />
+      </AppPageLayout>
     </SyntheticsStateContextProvider>
   );
 }

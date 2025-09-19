@@ -4,12 +4,10 @@ import { Link } from "react-router-dom";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxSupply } from "domain/legacy";
-import { useInfoTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { GMX_DECIMALS, getPageTitle } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
-import { getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
@@ -19,7 +17,6 @@ import SEO from "components/Seo/SEO";
 import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 import { MarketsList } from "components/Synthetics/MarketsList/MarketsList";
 
-import V1Icon from "img/ic_v1.svg?react";
 import V2Icon from "img/ic_v2.svg?react";
 
 import { GmCard } from "./GmCard";
@@ -41,10 +38,6 @@ export default function DashboardV2() {
   const statsArbitrum = useDashboardChainStatsMulticall(ARBITRUM);
   const statsAvalanche = useDashboardChainStatsMulticall(AVALANCHE);
 
-  const { infoTokens: arbitrumInfoTokens } = useInfoTokens(signer, ARBITRUM, active, undefined, undefined);
-  const { infoTokens: avalancheInfoTokens } = useInfoTokens(signer, AVALANCHE, active, undefined, undefined);
-  const infoTokens = chainId === ARBITRUM ? arbitrumInfoTokens : avalancheInfoTokens;
-
   const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
     chainId,
     { arbitrum: chainId === ARBITRUM ? signer : undefined },
@@ -58,18 +51,6 @@ export default function DashboardV2() {
 
   let { total: totalGmxInLiquidity } = useTotalGmxInLiquidity();
 
-  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
-  const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
-
-  let adjustedUsdgSupply = 0n;
-  for (let i = 0; i < tokenList.length; i++) {
-    const token = tokenList[i];
-    const tokenInfo = infoTokens[token.address];
-    if (tokenInfo && tokenInfo.usdgAmount !== undefined) {
-      adjustedUsdgSupply = adjustedUsdgSupply + tokenInfo.usdgAmount;
-    }
-  }
-
   return (
     <SEO title={getPageTitle(t`Stats`)}>
       <AppPageLayout header={<ChainContentHeader />}>
@@ -80,22 +61,6 @@ export default function DashboardV2() {
             subtitle={
               <div className="flex items-center gap-6 font-medium text-typography-secondary">
                 <Trans>For detailed stats</Trans>{" "}
-                {chainId === ARBITRUM && (
-                  <ExternalLink
-                    className="flex items-center gap-4 !no-underline hover:text-typography-primary"
-                    href="https://stats.gmx.io"
-                  >
-                    <V1Icon className="size-15" /> Analytics
-                  </ExternalLink>
-                )}
-                {chainId === AVALANCHE && (
-                  <ExternalLink
-                    className="flex items-center gap-4 !no-underline hover:text-typography-primary"
-                    href="https://stats.gmx.io/avalanche"
-                  >
-                    <V1Icon className="size-15" /> Analytics
-                  </ExternalLink>
-                )}
                 <ExternalLink
                   className="flex items-center gap-4 !no-underline hover:text-typography-primary"
                   href="https://dune.com/gmx-io/gmx-analytics"
