@@ -21,7 +21,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import BellIcon from "img/ic_bell.svg?react";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
-import CopyIcon from "img/ic_copy_20.svg?react";
+import CopyIcon from "img/ic_copy.svg?react";
 import ExplorerIcon from "img/ic_explorer.svg?react";
 import PnlAnalysisIcon from "img/ic_pnl_analysis.svg?react";
 import DisconnectIcon from "img/ic_sign_out_20.svg?react";
@@ -66,7 +66,7 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
                   helperToast.success(t`Address copied to your clipboard.`);
                 }}
               >
-                <CopyIcon width={20} className="size-20" />
+                <CopyIcon className="size-20" />
                 <p>
                   <Trans>Copy Address</Trans>
                 </p>

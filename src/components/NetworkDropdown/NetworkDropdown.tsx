@@ -77,7 +77,7 @@ function NavIcons({ chainId, open }) {
     <>
       <img className="size-20" src={icon} alt={chainName} />
 
-      <ChevronDownIcon className={cx("size-20", { "rotate-180": open })} />
+      <ChevronDownIcon className={cx("size-16", { "rotate-180": open })} />
     </>
   );
 }

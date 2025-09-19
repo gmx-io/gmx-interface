@@ -2,7 +2,6 @@ import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
-import { IoMdSwap } from "react-icons/io";
 import { useHistory } from "react-router-dom";
 
 import { ARBITRUM, getConstant } from "config/chains";
@@ -1466,9 +1465,7 @@ export default function SwapBox(props) {
                   </BuyInputSection>
                   <div>
                     <div className="Exchange-swap-ball-container">
-                      <button type="button" className="Exchange-swap-ball" onClick={switchTokens}>
-                        <IoMdSwap className="Exchange-swap-ball-icon" />
-                      </button>
+                      <button type="button" className="Exchange-swap-ball" onClick={switchTokens}></button>
                     </div>
                     <BuyInputSection
                       topLeftLabel={getToLabel()}

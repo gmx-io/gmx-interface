@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
-import { MdClose } from "react-icons/md";
 import Skeleton from "react-loading-skeleton";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -46,6 +45,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ChevronRightIcon from "img/ic_chevron_right.svg?react";
+import CloseIcon from "img/ic_close.svg?react";
 import EditIcon from "img/ic_edit.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -865,7 +865,7 @@ function PositionItemOrder({
 
   const cancelButton = (
     <Button variant="secondary" disabled={isDisabled} onClick={cancel} className="px-8">
-      <MdClose fontSize={16} />
+      <CloseIcon className="size-16" />
     </Button>
   );
 

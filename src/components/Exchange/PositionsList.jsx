@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useState } from "react";
-import { FaAngleRight } from "react-icons/fa";
 
 import { USD_DECIMALS } from "config/factors";
 import { getUsd } from "domain/tokens/utils";
@@ -615,7 +614,6 @@ export default function PositionsList(props) {
                                           {formatAmount(order.sizeDelta, 30, 2, true)}
                                         </span>
                                       </span>
-                                      <FaAngleRight fontSize={14} />
                                     </div>
                                     {order.error && <div className="negative active-order-error">{order.error}</div>}
                                   </div>
