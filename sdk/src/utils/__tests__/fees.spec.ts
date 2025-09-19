@@ -57,7 +57,7 @@ describe("getFundingFactorPerPeriod", () => {
     } as MarketInfo;
 
     const forLongs = getFundingFactorPerPeriod(marketInfo, true, second);
-    expect(forLongs.toString()).toBe(toFactor("-62.5%").toString());
+    expect(forLongs.toString()).toBe(toFactor("-50%").toString());
 
     const forShorts = getFundingFactorPerPeriod(marketInfo, false, second);
     expect(forShorts.toString()).toBe(toFactor("50%").toString());
@@ -75,6 +75,6 @@ describe("getFundingFactorPerPeriod", () => {
     expect(forLongs.toString()).toBe(toFactor("-50%").toString());
 
     const forShorts = getFundingFactorPerPeriod(marketInfo, false, second);
-    expect(forShorts.toString()).toBe(toFactor("62.5%").toString());
+    expect(forShorts.toString()).toBe(toFactor("50%").toString());
   });
 });
