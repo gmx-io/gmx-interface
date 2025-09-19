@@ -1,6 +1,5 @@
 import { Trans } from "@lingui/macro";
 import { memo, useEffect } from "react";
-import { IoArrowBack } from "react-icons/io5";
 import { useAccount } from "wagmi";
 
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
@@ -10,6 +9,8 @@ import { useGmxAccountFundingHistoryItem } from "domain/multichain/useGmxAccount
 import { useChainId } from "lib/chains";
 
 import { SlideModal } from "components/Modal/SlideModal";
+
+import ArrowLeftIcon from "img/ic_arrow_left.svg?react";
 
 import { AvailableToTradeAssetsView } from "./AvailableToTradeAssetsView";
 import { DepositView } from "./DepositView";
@@ -24,7 +25,7 @@ const AvailableToTradeAssetsTitle = () => {
 
   return (
     <div className="flex items-center gap-8">
-      <IoArrowBack
+      <ArrowLeftIcon
         className="size-20 text-slate-100 outline-none"
         tabIndex={0}
         role="button"
@@ -42,7 +43,7 @@ const TransferDetailsTitle = () => {
 
   return (
     <div className="flex items-center gap-8">
-      <IoArrowBack
+      <ArrowLeftIcon
         className="size-20 text-slate-100 outline-none"
         tabIndex={0}
         role="button"
@@ -61,7 +62,7 @@ const DepositTitle = () => {
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   return (
     <div className="flex items-center gap-8">
-      <IoArrowBack
+      <ArrowLeftIcon
         className="size-20 text-slate-100 outline-none"
         tabIndex={0}
         role="button"
@@ -76,7 +77,7 @@ const SelectAssetToDepositTitle = () => {
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   return (
     <div className="flex items-center gap-8">
-      <IoArrowBack
+      <ArrowLeftIcon
         className="size-20 text-slate-100 outline-none"
         tabIndex={0}
         role="button"
@@ -91,7 +92,7 @@ const WithdrawTitle = () => {
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   return (
     <div className="flex items-center gap-8">
-      <IoArrowBack
+      <ArrowLeftIcon
         className="size-20 text-slate-100 outline-none"
         tabIndex={0}
         role="button"

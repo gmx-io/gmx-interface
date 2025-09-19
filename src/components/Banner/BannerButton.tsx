@@ -1,5 +1,6 @@
 import cx from "classnames";
-import { FiChevronRight } from "react-icons/fi";
+
+import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 
 import "./BannerButton.scss";
 
@@ -21,7 +22,7 @@ export default function BannerButton({ label, className, link }: Props) {
           {remainingText}
           <span className="Banner-label-last-word">{` ${lastWord}`}</span>
         </div>
-        <FiChevronRight className="Banner-right-icon" fontSize={16} />
+        <ChevronRightIcon className="Banner-right-icon size-16" />
       </a>
     </div>
   );

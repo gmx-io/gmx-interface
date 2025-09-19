@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
-import { TbLoader2 } from "react-icons/tb";
 import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
@@ -39,11 +38,12 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import BellIcon from "img/ic_bell.svg?react";
 import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
-import CopyIcon from "img/ic_copy_20.svg?react";
+import CopyIcon from "img/ic_copy.svg?react";
 import ExplorerIcon from "img/ic_explorer.svg?react";
 import PnlAnalysisIcon from "img/ic_pnl_analysis.svg?react";
 import SettingsIcon from "img/ic_settings.svg?react";
 import DisconnectIcon from "img/ic_sign_out_20.svg?react";
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import {
@@ -105,7 +105,7 @@ function FundingHistoryItemLabel({
   if (isLoading) {
     return (
       <div className="text-body-small flex items-center gap-4 text-slate-100">
-        <TbLoader2 className="size-16 animate-spin" />
+        <SpinnerIcon className="size-16 animate-spin" />
         {text}
       </div>
     );
@@ -174,7 +174,7 @@ const Toolbar = ({ account }: { account: string }) => {
         <div className="text-body-medium font-medium text-typography-primary">
           {shortenAddressOrEns(ensName || account, 13)}
         </div>
-        <CopyIcon className="max-[500px]:hidden" />
+        <CopyIcon className="size-20 max-[500px]:hidden" />
       </Button>
       <div className="flex items-center gap-8">
         <TooltipWithPortal content={t`PnL Analysis`} position="bottom" tooltipClassName="!min-w-max" variant="none">
@@ -469,7 +469,7 @@ const FundingHistorySection = () => {
         )}
         {isLoading && (
           <div className="flex grow items-center justify-center p-adaptive text-slate-100">
-            <TbLoader2 className="size-24 animate-spin" />
+            <SpinnerIcon className="size-24 animate-spin" />
           </div>
         )}
       </VerticalScrollFadeContainer>

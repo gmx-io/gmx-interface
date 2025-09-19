@@ -1,7 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback } from "react";
-import { FaChevronDown } from "react-icons/fa6";
 
 import { useTheme } from "context/ThemeContext/ThemeContext";
 
@@ -9,6 +8,7 @@ import Button from "components/Button/Button";
 import { SelectorBase, useSelectorClose } from "components/Synthetics/SelectorBase/SelectorBase";
 
 import CheckIcon from "img/ic_checked.svg?react";
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 function ThemeOption({
   option,
@@ -71,7 +71,7 @@ export function ThemeSelector() {
           </div>
           <Button variant="secondary">
             {currentTheme?.label}
-            <FaChevronDown className="inline-block text-[12px]" />
+            <ChevronDownIcon className="inline-block size-12" />
           </Button>
         </div>
       }

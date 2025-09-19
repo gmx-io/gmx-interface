@@ -2,7 +2,6 @@ import { t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import uniq from "lodash/uniq";
 import { useMemo, useState, useEffect } from "react";
-import { ImSpinner2 } from "react-icons/im";
 
 import { getContract } from "config/contracts";
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -19,6 +18,8 @@ import { userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import type { GmSwapFees } from "sdk/types/trade";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { useShiftTransactions } from "./useShiftTransactions";
 import { getGmSwapBoxApproveTokenSymbol } from "../getGmSwapBoxApproveToken";
@@ -164,7 +165,7 @@ export function useShiftSubmitState({
       return {
         text: (
           <>
-            {t`Allow ${tokenSymbol} to be spent`} <ImSpinner2 className="ml-4 animate-spin" />
+            {t`Allow ${tokenSymbol} to be spent`} <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
         disabled: true,

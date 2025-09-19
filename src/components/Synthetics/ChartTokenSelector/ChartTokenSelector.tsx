@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import partition from "lodash/partition";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FaChevronDown } from "react-icons/fa6";
 import { usePrevious } from "react-use";
 import type { Address } from "viem";
 
@@ -54,6 +53,7 @@ import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
 
@@ -125,7 +125,7 @@ export default function ChartTokenSelector(props: Props) {
                     </div>
                   ) : null}
                 </span>
-                <FaChevronDown className={cx("inline-block text-[14px]", { "mt-2": oneRowLabels })} />
+                <ChevronDownIcon className="inline-block size-12" />
               </div>
             </span>
           ) : (

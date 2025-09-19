@@ -1,8 +1,9 @@
 import cx from "classnames";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import React, { PropsWithChildren, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
-import { RxCross2 } from "react-icons/rx";
 import { RemoveScroll } from "react-remove-scroll";
+
+import CloseIcon from "img/ic_close.svg?react";
 
 import "./Modal.css";
 
@@ -128,7 +129,7 @@ export default function Modal({
                 <div className="Modal-title-bar h-28">
                   <div className="Modal-title font-medium text-typography-primary">{label}</div>
                   <div className="Modal-close-button" onClick={() => setIsVisible(false)}>
-                    <RxCross2 fontSize={20} className="Modal-close-icon" />
+                    <CloseIcon className="Modal-close-icon size-20" />
                   </div>
                 </div>
                 {headerContent}

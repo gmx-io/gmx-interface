@@ -2,8 +2,6 @@ import { Trans, msg, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
-import { BsArrowRight } from "react-icons/bs";
-import { IoMdSwap } from "react-icons/io";
 import { useHistory } from "react-router-dom";
 
 import { ARBITRUM, getConstant } from "config/chains";
@@ -74,6 +72,7 @@ import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 
+import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
 import SwapIcon from "img/swap.svg?react";
@@ -1466,9 +1465,7 @@ export default function SwapBox(props) {
                   </BuyInputSection>
                   <div>
                     <div className="Exchange-swap-ball-container">
-                      <button type="button" className="Exchange-swap-ball" onClick={switchTokens}>
-                        <IoMdSwap className="Exchange-swap-ball-icon" />
-                      </button>
+                      <button type="button" className="Exchange-swap-ball" onClick={switchTokens}></button>
                     </div>
                     <BuyInputSection
                       topLeftLabel={getToLabel()}
@@ -1656,7 +1653,7 @@ export default function SwapBox(props) {
                   {hasExistingPosition && toAmount !== undefined && toAmount > 0 && (
                     <div className="muted inline-block">
                       {formatAmount(existingPosition.leverage, 4, 2)}x
-                      <BsArrowRight className="transition-arrow inline-block" />
+                      <ArrowRightIcon className="transition-arrow inline-block" />
                     </div>
                   )}
                   {toAmount !== undefined &&
@@ -1676,7 +1673,7 @@ export default function SwapBox(props) {
                     <div className="muted inline-block">
                       ${"\u200a\u200d"}
                       {formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
-                      <BsArrowRight className="transition-arrow inline-block" />
+                      <ArrowRightIcon className="transition-arrow inline-block" />
                     </div>
                   )}
                   {nextAveragePrice &&
@@ -1693,7 +1690,7 @@ export default function SwapBox(props) {
                     <div className="muted inline-block">
                       ${"\u200a\u200d"}
                       {formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
-                      <BsArrowRight className="transition-arrow inline-block" />
+                      <ArrowRightIcon className="transition-arrow inline-block" />
                     </div>
                   )}
                   {toAmount !== undefined &&

@@ -1,6 +1,5 @@
 import { Plural, Trans, t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BsArrowRight } from "react-icons/bs";
 import { useKey } from "react-use";
 
 import { getConstant } from "config/chains";
@@ -36,6 +35,8 @@ import Button from "components/Button/Button";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import FeesTooltip from "./FeesTooltip";
@@ -672,7 +673,7 @@ export default function ConfirmationBox(props) {
             {hasExistingPosition && toAmount && toAmount > 0 && (
               <div className="muted inline-block">
                 {formatAmount(existingPosition?.leverage, 4, 2)}x
-                <BsArrowRight className="transition-arrow inline-block" />
+                <ArrowRightIcon className="transition-arrow inline-block" />
               </div>
             )}
             {toAmount && leverage && leverage > 0 && `${formatAmount(leverage, 4, 2)}x`}
@@ -691,7 +692,7 @@ export default function ConfirmationBox(props) {
                 <div className="muted inline-block">
                   ${"\u200a\u200d"}
                   {formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
-                  <BsArrowRight className="transition-arrow inline-block" />
+                  <ArrowRightIcon className="transition-arrow inline-block" />
                 </div>
               )}
               {nextAveragePrice &&
@@ -716,7 +717,7 @@ export default function ConfirmationBox(props) {
               <div className="muted inline-block">
                 ${"\u200a\u200d"}
                 {formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
-                <BsArrowRight className="transition-arrow inline-block" />
+                <ArrowRightIcon className="transition-arrow inline-block" />
               </div>
             )}
             {toAmount &&

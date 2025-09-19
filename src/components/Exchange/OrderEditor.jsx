@@ -1,6 +1,5 @@
 import { t, Trans } from "@lingui/macro";
 import React, { useState, useMemo } from "react";
-import { BsArrowRight } from "react-icons/bs";
 
 import { getContract } from "config/contracts";
 import { USD_DECIMALS } from "config/factors";
@@ -26,6 +25,8 @@ import { bigMath } from "sdk/utils/bigmath";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+
+import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import Modal from "../Modal/Modal";
@@ -292,7 +293,7 @@ export default function OrderEditor(props) {
                 {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
               </span>
               &nbsp;
-              <BsArrowRight className="inline-block" />
+              <ArrowRightIcon className="inline-block" />
               &nbsp;
               {triggerPricePrefix} {formatAmount(triggerPrice, USD_DECIMALS, 2, true)}
             </>
@@ -352,7 +353,7 @@ export default function OrderEditor(props) {
           <>
             <span className="muted">{formatAmount(order.minOut, toTokenInfo.decimals, 4, true)}</span>
             &nbsp;
-            <BsArrowRight className="inline-block" />
+            <ArrowRightIcon className="inline-block" />
             &nbsp;
             {formatAmount(toAmount, toTokenInfo.decimals, 4, true)}
           </>
@@ -370,7 +371,7 @@ export default function OrderEditor(props) {
               })}
             </span>
             &nbsp;
-            <BsArrowRight className="inline-block" />
+            <ArrowRightIcon className="inline-block" />
             &nbsp;
             {getExchangeRateDisplay(triggerRatio, fromTokenInfo, toTokenInfo)}
           </>

@@ -3,7 +3,6 @@ import { t } from "@lingui/macro";
 import cx from "classnames";
 import { BigNumberish } from "ethers";
 import { useState } from "react";
-import { FaChevronDown } from "react-icons/fa";
 
 import { USD_DECIMALS } from "config/factors";
 import { getUsd } from "domain/tokens";
@@ -15,6 +14,8 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import "./ChartTokenSelector.scss";
 
@@ -130,7 +131,7 @@ export default function ChartTokenSelector(props: Props) {
                   />
                   {selectedToken.symbol} / USD
                 </span>
-                <FaChevronDown fontSize={14} />
+                <ChevronDownIcon className="size-14" />
               </button>
             </Popover.Button>
             <div className="chart-token-menu">

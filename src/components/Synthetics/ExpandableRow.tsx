@@ -1,13 +1,15 @@
 import cx from "classnames";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { useMedia } from "react-use";
 
 import { usePrevious } from "lib/usePrevious";
 
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
+import ChevronUpIcon from "img/ic_chevron_up.svg?react";
 
 import { SyntheticsInfoRow } from "./SyntheticsInfoRow";
 
@@ -125,9 +127,9 @@ export function ExpandableRow({
   const value = withToggleSwitch ? (
     <ToggleSwitch isChecked={open} setIsChecked={onToggle} disabled={disabled} />
   ) : open ? (
-    <FaChevronUp className="w-12 text-typography-secondary group-gmx-hover:text-blue-300" />
+    <ChevronUpIcon className="w-12 text-typography-secondary group-gmx-hover:text-blue-300" />
   ) : (
-    <FaChevronDown className="w-12 text-typography-secondary group-gmx-hover:text-blue-300" />
+    <ChevronDownIcon className="w-12 text-typography-secondary group-gmx-hover:text-blue-300" />
   );
 
   return (

@@ -1,6 +1,5 @@
 import { t, Trans } from "@lingui/macro";
 import React, { useCallback, useEffect } from "react";
-import { TbArrowRight } from "react-icons/tb";
 import { toast } from "react-toastify";
 import { useMedia } from "react-use";
 
@@ -11,6 +10,8 @@ import { formatBalanceAmount } from "lib/numbers";
 
 import { TableTd } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 
 import {
   SELECTOR_BASE_MOBILE_THRESHOLD,
@@ -125,7 +126,7 @@ function CollateralListItemDesktop({
 
           {variant === "destination" && (
             <>
-              <TbArrowRight className="text-slate-100" />
+              <ArrowRightIcon className="text-slate-100" />
               <div className="flex items-center gap-4">
                 <img
                   src={getChainIcon(tokenData.isGmxAccount ? 0 : chainId)}

@@ -1,11 +1,12 @@
 import cx from "classnames";
 import React, { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { MdClose } from "react-icons/md";
 import { RemoveScroll } from "react-remove-scroll";
 
 import { useBreakpoints } from "lib/useBreakpoints";
 
 import Portal from "components/Common/Portal";
+
+import CloseIcon from "img/ic_close.svg?react";
 
 import Modal from "./Modal";
 
@@ -266,9 +267,8 @@ function MobileSlideModal({
             <div className="mb-8 mt-12 flex h-28 touch-none select-none items-center justify-between gap-4 px-adaptive">
               <div className="text-body-medium grow font-medium text-typography-primary">{label}</div>
 
-              <MdClose
-                fontSize={20}
-                className="cursor-pointer text-typography-secondary hover:opacity-90"
+              <CloseIcon
+                className="size-20 cursor-pointer text-typography-secondary hover:opacity-90"
                 onClick={handleClose}
               />
             </div>

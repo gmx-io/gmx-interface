@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import { useMemo, useState } from "react";
-import { FaCheck, FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 import { zeroAddress } from "viem";
@@ -21,14 +20,17 @@ import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import Modal from "components/Modal/Modal";
 
+import CheckIcon from "img/ic_check.svg?react";
+import CloseIcon from "img/ic_close.svg?react";
+
 import "./BeginAccountTransfer.css";
 
 function ValidationRow({ isValid, children }) {
   return (
     <div className="ValidationRow">
       <div className="ValidationRow-icon-container">
-        {isValid && <FaCheck className="ValidationRow-icon" />}
-        {!isValid && <FaTimes className="ValidationRow-icon" />}
+        {isValid && <CheckIcon className="ValidationRow-icon" />}
+        {!isValid && <CloseIcon className="ValidationRow-icon" />}
       </div>
       <div>{children}</div>
     </div>

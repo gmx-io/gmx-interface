@@ -1,7 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
-import { ImSpinner2 } from "react-icons/im";
 
 import { getBridgingOptionsForToken } from "config/bridging";
 import { BOTANIX, SettlementChainId } from "config/chains";
@@ -79,6 +78,8 @@ import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase"
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { tradeTypeLabels } from "../tradeboxConstants";
 import { useTradeboxTransactions } from "./useTradeboxTransactions";
@@ -449,7 +450,7 @@ export function useTradeboxButtonState({
         text: (
           <>
             {t`Loading Express params`}
-            <ImSpinner2 className="ml-4 animate-spin" />
+            <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
         disabled: true,
@@ -462,7 +463,7 @@ export function useTradeboxButtonState({
         text: (
           <>
             {t`Allow ${getToken(chainId, tokensToApprove[0].tokenAddress).symbol} to be spent`}{" "}
-            <ImSpinner2 className="ml-4 animate-spin" />
+            <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
         disabled: true,

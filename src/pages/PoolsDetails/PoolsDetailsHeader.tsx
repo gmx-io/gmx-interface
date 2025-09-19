@@ -1,7 +1,6 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useState } from "react";
-import { FaChevronDown } from "react-icons/fa";
 
 import { USD_DECIMALS } from "config/factors";
 import {
@@ -22,6 +21,8 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import { PoolsDetailsMarketAmount } from "./PoolsDetailsMarketAmount";
 
@@ -92,7 +93,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
             </div>
             {isMobile ? (
               <Button className="flex h-32 w-32 items-center justify-center" variant="secondary" onClick={handleToggle}>
-                <FaChevronDown className={cx({ "rotate-180": isOpen })} />
+                <ChevronDownIcon className={cx({ "rotate-180": isOpen })} />
               </Button>
             ) : null}
           </div>

@@ -2,8 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BiChevronRight } from "react-icons/bi";
-import { ImSpinner2 } from "react-icons/im";
 import Skeleton from "react-loading-skeleton";
 import { useLatest } from "react-use";
 import { Hex, decodeErrorResult, zeroAddress } from "viem";
@@ -73,6 +71,9 @@ import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
+
+import ChevronRightIcon from "img/ic_chevron_right.svg?react";
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { useAvailableToTradeAssetMultichain, useMultichainTokensRequest } from "./hooks";
 import { wrapChainAction } from "./wrapChainAction";
@@ -649,7 +650,7 @@ export const DepositView = () => {
       text: (
         <>
           <Trans>Approving</Trans>
-          <ImSpinner2 className="ml-4 animate-spin" />
+          <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
       disabled: true,
@@ -672,7 +673,7 @@ export const DepositView = () => {
       text: (
         <>
           <Trans>Depositing</Trans>
-          <ImSpinner2 className="ml-4 animate-spin" />
+          <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
       disabled: true,
@@ -748,7 +749,7 @@ export const DepositView = () => {
                   </span>
                 )}
               </div>
-              <BiChevronRight className="size-20 text-typography-secondary" />
+              <ChevronRightIcon className="size-14 text-typography-secondary" />
             </div>
           ) : (
             <div className="rounded-8 border border-slate-800 bg-slate-800 px-14 py-13 text-typography-secondary">

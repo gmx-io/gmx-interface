@@ -1,6 +1,5 @@
 import { t, Trans } from "@lingui/macro";
 import { memo, useCallback, useMemo, useState } from "react";
-import { ImSpinner2 } from "react-icons/im";
 import { toast } from "react-toastify";
 
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
@@ -36,6 +35,8 @@ import { nowInSeconds } from "sdk/utils/time";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 export function ClaimablePositionPriceImpactRebateModal({
   isVisible,
@@ -202,7 +203,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
             <div className="text-white/50">
               <Trans>Claiming position price impact fees</Trans>
             </div>
-            <ImSpinner2 width={60} height={60} className="spin size-15 text-white" />
+            <SpinnerIcon className="spin size-15 text-white" />
           </div>,
           {
             autoClose: false,

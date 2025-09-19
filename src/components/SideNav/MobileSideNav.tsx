@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { HiMenu } from "react-icons/hi";
-import { IoCloseOutline } from "react-icons/io5";
 
 import Button from "components/Button/Button";
 import Portal from "components/Common/Portal";
 import Footer from "components/Footer/Footer";
+
+import BurgerMenuIcon from "img/ic_burger_menu.svg?react";
+import CloseIcon from "img/ic_close.svg?react";
 
 import { LanguageNavItem } from "./LanguageNavItem";
 import { SettingsNavItem } from "./SettingsNavItem";
@@ -20,7 +21,7 @@ export function MobileSideNav() {
   return (
     <div>
       <Button variant="secondary" size="controlled" className="size-32 !p-0 md:size-40" onClick={handleToggle}>
-        <HiMenu className="h-20 w-20" />
+        <BurgerMenuIcon className="size-20" />
       </Button>
       {isOpen ? (
         <Portal>
@@ -34,7 +35,7 @@ export function MobileSideNav() {
                   onClick={handleToggle}
                   className="p-8 text-typography-secondary hover:text-typography-primary active:text-typography-primary"
                 >
-                  <IoCloseOutline size={24} />
+                  <CloseIcon className="size-20" />
                 </button>
               </div>
               <div className="grow border-b-1/2 border-slate-600 p-8">

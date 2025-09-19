@@ -2,7 +2,6 @@ import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { type Provider } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ImSpinner2 } from "react-icons/im";
 import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
 import { Address, encodeAbiParameters, zeroAddress } from "viem";
@@ -94,6 +93,8 @@ import {
 } from "components/Synthetics/GmxAccountModal/hooks";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { InsufficientWntBanner } from "./InsufficientWntBanner";
@@ -690,7 +691,7 @@ export const WithdrawalView = () => {
       text: (
         <>
           <Trans>Withdrawing...</Trans>
-          <ImSpinner2 className="ml-4 animate-spin" />
+          <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
       disabled: true,
@@ -734,7 +735,7 @@ export const WithdrawalView = () => {
       text: (
         <>
           <Trans>Loading</Trans>
-          <ImSpinner2 className="ml-4 animate-spin" />
+          <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
       disabled: true,

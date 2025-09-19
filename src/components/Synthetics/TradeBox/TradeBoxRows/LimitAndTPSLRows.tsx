@@ -1,6 +1,5 @@
 import { t, Trans } from "@lingui/macro";
 import { useCallback, useMemo, useRef } from "react";
-import { FaPlus } from "react-icons/fa6";
 
 import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
@@ -18,6 +17,8 @@ import { formatAmount, formatPercentage, formatUsd, formatUsdPrice } from "lib/n
 import { ExpandableRow } from "components/Synthetics/ExpandableRow";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import PlusIcon from "img/ic_plus.svg?react";
 
 import { EntryButton } from "../components/EntryButton";
 import { SideOrderEntries } from "../components/SideOrderEntries";
@@ -80,7 +81,7 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
                   disabled={!entriesInfo.allowAddEntry}
                   className="-my-5"
                 >
-                  <FaPlus />
+                  <PlusIcon className="size-12" />
                 </EntryButton>
               </TooltipWithPortal>
             )}

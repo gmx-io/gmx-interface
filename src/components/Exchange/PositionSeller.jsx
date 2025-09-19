@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ethers } from "ethers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BsArrowRight } from "react-icons/bs";
 import { useKey } from "react-use";
 
 import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant } from "config/chains";
@@ -63,6 +62,8 @@ import PercentageInput from "components/PercentageInput/PercentageInput";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import ExchangeInfoRow from "./ExchangeInfoRow";
@@ -1181,7 +1182,7 @@ export default function PositionSeller(props) {
                         <div className="muted inline-block">
                           ${"\u200a\u200d"}
                           {formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
-                          <BsArrowRight className="transition-arrow inline-block" />
+                          <ArrowRightIcon className="transition-arrow inline-block" />
                         </div>
                         ${"\u200a\u200d"}
                         {formatAmount(nextLiquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
@@ -1201,7 +1202,7 @@ export default function PositionSeller(props) {
                     <div className="muted inline-block">
                       ${"\u200a\u200d"}
                       {formatAmount(position.size, USD_DECIMALS, 2, true)}
-                      <BsArrowRight className="transition-arrow inline-block" />
+                      <ArrowRightIcon className="transition-arrow inline-block" />
                     </div>
                     ${"\u200a\u200d"}
                     {formatAmount(position.size - fromAmount, USD_DECIMALS, 2, true)}
@@ -1236,7 +1237,7 @@ export default function PositionSeller(props) {
                     <div className="muted inline-block">
                       ${"\u200a\u200d"}
                       {formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-                      <BsArrowRight className="transition-arrow inline-block" />
+                      <ArrowRightIcon className="transition-arrow inline-block" />
                     </div>
                     ${"\u200a\u200d"}
                     {formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
@@ -1260,7 +1261,7 @@ export default function PositionSeller(props) {
                         <div>
                           <div className="muted inline-block">
                             {formatAmount(position.leverage, 4, 2)}x
-                            <BsArrowRight className="transition-arrow inline-block" />
+                            <ArrowRightIcon className="transition-arrow inline-block" />
                           </div>
                           {formatAmount(nextLeverage, 4, 2)}x
                         </div>
