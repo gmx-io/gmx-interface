@@ -28,6 +28,7 @@ import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
+import { ExitPriceRow } from "../ExitPriceRow/ExitPriceRow";
 
 export type Props = {
   triggerPriceInputValue: string;
@@ -60,17 +61,15 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
 
   const isStopLoss = decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease;
 
-  const acceptablePriceImpactInputRow = (() => {
-    return (
-      <AcceptablePriceImpactInputRow
-        notAvailable={!triggerPriceInputValue || isStopLoss || !decreaseAmounts}
-        acceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
-        recommendedAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
-        priceImpactFeeBps={fees?.decreasePositionPriceImpact?.bps}
-        setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
-      />
-    );
-  })();
+  const acceptablePriceImpactInputRow = (
+    <AcceptablePriceImpactInputRow
+      notAvailable={!triggerPriceInputValue || isStopLoss || !decreaseAmounts}
+      acceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
+      recommendedAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
+      priceImpactFeeBps={fees?.decreasePositionPriceImpact?.bps}
+      setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
+    />
+  );
 
   const sizeRow = (
     <SyntheticsInfoRow
@@ -102,6 +101,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
 
   return (
     <ExpandableRow title={t`Execution Details`} open={open} onToggle={setOpen} contentClassName="flex flex-col gap-14">
+      <ExitPriceRow isSwap={false} fees={fees} markPrice={position.markPrice} isLong={position.isLong} />
       <TradeFeesRow {...fees} feesType="decrease" />
       <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} />
 

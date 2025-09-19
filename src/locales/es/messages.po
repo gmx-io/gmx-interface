@@ -667,6 +667,7 @@ msgid "in liquidity"
 msgstr "en liquidez"
 
 #: src/components/Exchange/SwapBox.jsx
+#: src/components/Synthetics/ExitPriceRow/ExitPriceRow.tsx
 msgid "Exit Price"
 msgstr "Precio de Salida"
 
@@ -5576,6 +5577,10 @@ msgstr "Firma de permiso cancelada"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Optimizer"
 msgstr "Optimizador Yield Yak"
+
+#: src/components/Synthetics/ExitPriceRow/ExitPriceRow.tsx
+msgid "Expected exit price for the order, including the current capped net price impact."
+msgstr ""
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 msgid "Incorrect Account"

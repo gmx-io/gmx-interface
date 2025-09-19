@@ -667,6 +667,7 @@ msgid "in liquidity"
 msgstr "流動性で"
 
 #: src/components/Exchange/SwapBox.jsx
+#: src/components/Synthetics/ExitPriceRow/ExitPriceRow.tsx
 msgid "Exit Price"
 msgstr "手仕舞い価格"
 
@@ -5576,6 +5577,10 @@ msgstr "許可署名がキャンセルされました"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Optimizer"
 msgstr "Yield Yak Optimizer"
+
+#: src/components/Synthetics/ExitPriceRow/ExitPriceRow.tsx
+msgid "Expected exit price for the order, including the current capped net price impact."
+msgstr ""
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 msgid "Incorrect Account"

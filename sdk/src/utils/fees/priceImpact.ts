@@ -1,5 +1,6 @@
 import { MarketInfo } from "types/markets";
 import { TokenData } from "types/tokens";
+import { TradeFees } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { getTokenPoolType } from "utils/markets";
 import { applyFactor, expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "utils/numbers";
@@ -513,4 +514,18 @@ export function applyImpactFactor(diff: bigint, factor: bigint, exponent: bigint
   result = (result * factor) / expandDecimals(1, 30);
 
   return result;
+}
+
+export function getCappedPriceImpactPercentageFromFees({
+  fees,
+  isSwap,
+}: {
+  fees: TradeFees | undefined;
+  isSwap: boolean;
+}): bigint | undefined {
+  if (isSwap) {
+    return fees?.swapPriceImpact?.precisePercentage;
+  }
+
+  return (fees?.totalPendingImpact?.precisePercentage ?? 0n) + (fees?.priceImpactDiff?.precisePercentage ?? 0n);
 }

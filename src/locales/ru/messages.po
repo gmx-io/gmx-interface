@@ -667,6 +667,7 @@ msgid "in liquidity"
 msgstr "используется для обеспечения ликвидности"
 
 #: src/components/Exchange/SwapBox.jsx
+#: src/components/Synthetics/ExitPriceRow/ExitPriceRow.tsx
 msgid "Exit Price"
 msgstr "Цена выхода"
 
@@ -5576,6 +5577,10 @@ msgstr "Подпись разрешения отменена"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Optimizer"
 msgstr "Оптимизатор Yield Yak"
+
+#: src/components/Synthetics/ExitPriceRow/ExitPriceRow.tsx
+msgid "Expected exit price for the order, including the current capped net price impact."
+msgstr ""
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.jsx
 msgid "Incorrect Account"
