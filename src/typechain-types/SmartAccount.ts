@@ -3,12 +3,10 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumberish,
   BytesLike,
   FunctionFragment,
   Result,
   Interface,
-  AddressLike,
   ContractRunner,
   ContractMethod,
   Listener,
@@ -21,35 +19,25 @@ import type {
   TypedContractMethod,
 } from "./common";
 
-export interface VaultReaderInterface extends Interface {
-  getFunction(
-    nameOrSignature: "getVaultTokenInfoV3" | "getVaultTokenInfoV4"
-  ): FunctionFragment;
+export interface SmartAccountInterface extends Interface {
+  getFunction(nameOrSignature: "isValidSignature"): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "getVaultTokenInfoV3",
-    values: [AddressLike, AddressLike, AddressLike, BigNumberish, AddressLike[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getVaultTokenInfoV4",
-    values: [AddressLike, AddressLike, AddressLike, BigNumberish, AddressLike[]]
+    functionFragment: "isValidSignature",
+    values: [BytesLike, BytesLike]
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "getVaultTokenInfoV3",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getVaultTokenInfoV4",
+    functionFragment: "isValidSignature",
     data: BytesLike
   ): Result;
 }
 
-export interface VaultReader extends BaseContract {
-  connect(runner?: ContractRunner | null): VaultReader;
+export interface SmartAccount extends BaseContract {
+  connect(runner?: ContractRunner | null): SmartAccount;
   waitForDeployment(): Promise<this>;
 
-  interface: VaultReaderInterface;
+  interface: SmartAccountInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -88,27 +76,9 @@ export interface VaultReader extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  getVaultTokenInfoV3: TypedContractMethod<
-    [
-      _vault: AddressLike,
-      _positionManager: AddressLike,
-      _weth: AddressLike,
-      _usdgAmount: BigNumberish,
-      _tokens: AddressLike[]
-    ],
-    [bigint[]],
-    "view"
-  >;
-
-  getVaultTokenInfoV4: TypedContractMethod<
-    [
-      _vault: AddressLike,
-      _positionManager: AddressLike,
-      _weth: AddressLike,
-      _usdgAmount: BigNumberish,
-      _tokens: AddressLike[]
-    ],
-    [bigint[]],
+  isValidSignature: TypedContractMethod<
+    [_hash: BytesLike, _signature: BytesLike],
+    [string],
     "view"
   >;
 
@@ -117,29 +87,10 @@ export interface VaultReader extends BaseContract {
   ): T;
 
   getFunction(
-    nameOrSignature: "getVaultTokenInfoV3"
+    nameOrSignature: "isValidSignature"
   ): TypedContractMethod<
-    [
-      _vault: AddressLike,
-      _positionManager: AddressLike,
-      _weth: AddressLike,
-      _usdgAmount: BigNumberish,
-      _tokens: AddressLike[]
-    ],
-    [bigint[]],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "getVaultTokenInfoV4"
-  ): TypedContractMethod<
-    [
-      _vault: AddressLike,
-      _positionManager: AddressLike,
-      _weth: AddressLike,
-      _usdgAmount: BigNumberish,
-      _tokens: AddressLike[]
-    ],
-    [bigint[]],
+    [_hash: BytesLike, _signature: BytesLike],
+    [string],
     "view"
   >;
 
