@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BiChevronRight } from "react-icons/bi";
 import Skeleton from "react-loading-skeleton";
 import { useLatest } from "react-use";
 import { Hex, decodeErrorResult, zeroAddress } from "viem";
@@ -73,6 +72,7 @@ import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { useAvailableToTradeAssetMultichain, useMultichainTokensRequest } from "./hooks";
@@ -749,7 +749,7 @@ export const DepositView = () => {
                   </span>
                 )}
               </div>
-              <BiChevronRight className="size-20 text-typography-secondary" />
+              <ChevronRightIcon className="size-14 text-typography-secondary" />
             </div>
           ) : (
             <div className="rounded-8 border border-slate-800 bg-slate-800 px-14 py-13 text-typography-secondary">
