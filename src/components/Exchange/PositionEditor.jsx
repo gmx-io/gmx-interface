@@ -3,7 +3,6 @@ import { Trans, msg, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { ethers } from "ethers";
 import { useEffect, useState, useMemo, useRef } from "react";
-import { BsArrowRight } from "react-icons/bs";
 import { useKey } from "react-use";
 
 import { getChainName, IS_NETWORK_DISABLED } from "config/chains";
@@ -36,6 +35,8 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Tabs from "components/Tabs/Tabs";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import FeesTooltip from "./FeesTooltip";
@@ -648,7 +649,7 @@ export default function PositionEditor(props) {
                         <div>
                           <div className="muted inline-block">
                             {formatAmount(position.leverage, 4, 2, true)}x
-                            <BsArrowRight className="transition-arrow inline-block" />
+                            <ArrowRightIcon className="transition-arrow inline-block" />
                           </div>
                           {formatAmount(nextLeverage, 4, 2, true)}x
                         </div>
@@ -690,7 +691,7 @@ export default function PositionEditor(props) {
                           <div className="muted inline-block">
                             ${"\u200a\u200d"}
                             {formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
-                            <BsArrowRight className="transition-arrow inline-block" />
+                            <ArrowRightIcon className="transition-arrow inline-block" />
                           </div>
                           ${"\u200a\u200d"}
                           {formatAmount(nextLiquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
@@ -720,7 +721,7 @@ export default function PositionEditor(props) {
                           <div className="muted inline-block">
                             ${"\u200a\u200d"}
                             {formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
-                            <BsArrowRight className="transition-arrow inline-block" />
+                            <ArrowRightIcon className="transition-arrow inline-block" />
                           </div>
                           ${"\u200a\u200d"}
                           {formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
@@ -741,7 +742,7 @@ export default function PositionEditor(props) {
                               <div className="muted inline-block">
                                 ${"\u200a\u200d"}
                                 {formatAmount(fundingFee, USD_DECIMALS, 2, true)}
-                                <BsArrowRight className="transition-arrow inline-block" />
+                                <ArrowRightIcon className="transition-arrow inline-block" />
                               </div>
                               $0
                             </>
