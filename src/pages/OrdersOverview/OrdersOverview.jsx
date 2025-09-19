@@ -284,7 +284,7 @@ export default function OrdersOverview() {
                         {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
                       </td>
                       <td className={cx({ positive: shouldExecute, near: !shouldExecute && nearExecute })}>
-                        ${"\u200a"}
+                        ${"\u200a\u200d"}
                         {formatAmount(markPrice, USD_DECIMALS, 2, true)}
                       </td>
                       <td className={cx({ positive: shouldExecute, near: !shouldExecute && nearExecute })}>

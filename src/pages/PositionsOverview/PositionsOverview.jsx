@@ -66,15 +66,15 @@ export default function PositionsOverview() {
                       <tr key={i}>
                         <td>{account}</td>
                         <td>
-                          ${"\u200a"}
+                          ${"\u200a\u200d"}
                           {formatAmount(size, USD_DECIMALS, 2, true)}
                         </td>
                         <td>
-                          ${"\u200a"}
+                          ${"\u200a\u200d"}
                           {formatAmount(collateral, USD_DECIMALS, 2, true)}
                         </td>
                         <td className={cx({ negative: danger })}>
-                          ${"\u200a"}
+                          ${"\u200a\u200d"}
                           {formatAmount(fee, USD_DECIMALS, 2, true)}
                         </td>
                         <td>

@@ -236,11 +236,11 @@ export function OverviewCard({
 
   const dailyVolumeEntries = useMemo(
     () => ({
-      "V1 Arbitrum": v1ArbitrumDailyVolume,
       "V2 Arbitrum": v2ArbitrumOverview?.dailyVolume,
-      "V1 Avalanche": v1AvalancheDailyVolume,
       "V2 Avalanche": v2AvalancheOverview?.dailyVolume,
       "V2 Botanix": v2BotanixOverview?.dailyVolume,
+      "V1 Arbitrum": v1ArbitrumDailyVolume,
+      "V1 Avalanche": v1AvalancheDailyVolume,
     }),
     [
       v1ArbitrumDailyVolume,
@@ -253,11 +253,11 @@ export function OverviewCard({
 
   const openInterestEntries = useMemo(
     () => ({
-      "V1 Arbitrum": v1ArbitrumOpenInterest,
       "V2 Arbitrum": v2ArbitrumOpenInterest,
-      "V1 Avalanche": v1AvalancheOpenInterest,
       "V2 Avalanche": v2AvalancheOpenInterest,
       "V2 Botanix": v2BotanixOpenInterest,
+      "V1 Avalanche": v1AvalancheOpenInterest,
+      "V1 Arbitrum": v1ArbitrumOpenInterest,
     }),
     [
       v1ArbitrumOpenInterest,
@@ -270,11 +270,11 @@ export function OverviewCard({
 
   const totalLongPositionSizesEntries = useMemo(
     () => ({
-      "V1 Arbitrum": v1ArbitrumLongPositionSizes,
       "V2 Arbitrum": v2ArbitrumLongPositionSizes,
-      "V1 Avalanche": v1AvalancheLongPositionSizes,
       "V2 Avalanche": v2AvalancheLongPositionSizes,
       "V2 Botanix": v2BotanixLongPositionSizes,
+      "V1 Arbitrum": v1ArbitrumLongPositionSizes,
+      "V1 Avalanche": v1AvalancheLongPositionSizes,
     }),
     [
       v1ArbitrumLongPositionSizes,
@@ -287,11 +287,11 @@ export function OverviewCard({
 
   const totalShortPositionSizesEntries = useMemo(
     () => ({
-      "V1 Arbitrum": v1ArbitrumShortPositionSizes,
       "V2 Arbitrum": v2ArbitrumShortPositionSizes,
-      "V1 Avalanche": v1AvalancheShortPositionSizes,
       "V2 Avalanche": v2AvalancheShortPositionSizes,
       "V2 Botanix": v2BotanixShortPositionSizes,
+      "V1 Arbitrum": v1ArbitrumShortPositionSizes,
+      "V1 Avalanche": v1AvalancheShortPositionSizes,
     }),
     [
       v1ArbitrumShortPositionSizes,
@@ -304,11 +304,11 @@ export function OverviewCard({
 
   const epochFeesEntries = useMemo(
     () => ({
-      "V1 Arbitrum": v1ArbitrumEpochFees,
       "V2 Arbitrum": v2ArbitrumEpochFees,
-      "V1 Avalanche": v1AvalancheEpochFees,
       "V2 Avalanche": v2AvalancheEpochFees,
       "V2 Botanix": v2BotanixEpochFees,
+      "V1 Arbitrum": v1ArbitrumEpochFees,
+      "V1 Avalanche": v1AvalancheEpochFees,
     }),
     [v1ArbitrumEpochFees, v1AvalancheEpochFees, v2ArbitrumEpochFees, v2AvalancheEpochFees, v2BotanixEpochFees]
   );
@@ -369,6 +369,20 @@ export function OverviewCard({
         leftClassName="max-lg:border-r-0 max-lg:border-b"
         right={
           <AppCardSection className="pb-24">
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>Fees for the past</Trans> {formattedDuration}
+              </div>
+              <div>
+                <TooltipComponent
+                  position="bottom-end"
+                  className="whitespace-nowrap"
+                  handle={formatAmountHuman(totalEpochFeesUsd, USD_DECIMALS, true, 2)}
+                  handleClassName="numbers"
+                  content={<ChainsStatsTooltipRow entries={epochFeesEntries} subtotal={feesSubtotal} />}
+                />
+              </div>
+            </div>
             <div className="App-card-row">
               <div className="label">
                 <Trans>TVL</Trans>
@@ -494,6 +508,10 @@ export function OverviewCard({
                 />
               </div>
             </div>
+          </AppCardSection>
+        }
+        left={
+          <AppCardSection className="pb-24">
             <div className="App-card-row">
               <div className="label">
                 <Trans>24h Volume</Trans>
@@ -508,10 +526,6 @@ export function OverviewCard({
                 />
               </div>
             </div>
-          </AppCardSection>
-        }
-        left={
-          <AppCardSection className="pb-24">
             <div className="App-card-row">
               <div className="label">
                 <Trans>Open Interest</Trans>
@@ -551,20 +565,6 @@ export function OverviewCard({
                   handle={formatAmountHuman(totalShortPositionSizes, USD_DECIMALS, true, 2)}
                   handleClassName="numbers"
                   content={<ChainsStatsTooltipRow entries={totalShortPositionSizesEntries} />}
-                />
-              </div>
-            </div>
-            <div className="App-card-row">
-              <div className="label">
-                <Trans>Fees for the past</Trans> {formattedDuration}
-              </div>
-              <div>
-                <TooltipComponent
-                  position="bottom-end"
-                  className="whitespace-nowrap"
-                  handle={formatAmountHuman(totalEpochFeesUsd, USD_DECIMALS, true, 2)}
-                  handleClassName="numbers"
-                  content={<ChainsStatsTooltipRow entries={epochFeesEntries} subtotal={feesSubtotal} />}
                 />
               </div>
             </div>
