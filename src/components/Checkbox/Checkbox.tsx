@@ -29,6 +29,7 @@ export default function Checkbox(props: Props) {
         setIsChecked?.(!isChecked);
         event.stopPropagation();
       }}
+      disabled={disabled}
       data-qa={props.qa}
     >
       <span

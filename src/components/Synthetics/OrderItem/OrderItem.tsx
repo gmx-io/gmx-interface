@@ -11,6 +11,7 @@ import {
   selectMarketsInfoData,
   selectOracleSettings,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectTradeboxSelectedOrderKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import {
@@ -18,6 +19,7 @@ import {
   PositionOrderInfo,
   SwapOrderInfo,
   TwapOrderInfo,
+  getOrderTradeboxKey,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
@@ -64,6 +66,7 @@ type Props = {
   isLarge: boolean;
   positionsInfoData?: PositionsInfoData;
   setRef?: (el: HTMLElement | null, orderKey: string) => void;
+  onSelectOrderClick: () => void | undefined;
 };
 
 export function OrderItem(p: Props) {
@@ -74,6 +77,8 @@ export function OrderItem(p: Props) {
   const setEditingOrderKey = useCallback(() => {
     setEditingOrderState({ orderKey: p.order.key, source: "PositionsList" });
   }, [p.order.key, setEditingOrderState]);
+
+  const isCurrentMarket = useSelector(selectTradeboxSelectedOrderKey) === getOrderTradeboxKey(p.order);
 
   return p.isLarge ? (
     <OrderItemLarge
@@ -86,6 +91,8 @@ export function OrderItem(p: Props) {
       isCanceling={p.isCanceling}
       isSelected={p.isSelected}
       setRef={p.setRef}
+      isCurrentMarket={isCurrentMarket}
+      onSelectOrderClick={p.onSelectOrderClick}
     />
   ) : (
     <OrderItemSmall
@@ -97,6 +104,8 @@ export function OrderItem(p: Props) {
       isSelected={p.isSelected}
       onToggleOrder={p.onToggleOrder}
       setRef={p.setRef}
+      isCurrentMarket={isCurrentMarket}
+      onSelectOrderClick={p.onSelectOrderClick}
     />
   );
 }
@@ -511,6 +520,8 @@ function OrderItemLarge({
   onCancelOrder,
   isCanceling,
   isSelected,
+  isCurrentMarket,
+  onSelectOrderClick,
 }: {
   order: OrderInfo;
   setRef?: (el: HTMLElement | null, orderKey: string) => void;
@@ -521,6 +532,8 @@ function OrderItemLarge({
   onCancelOrder: undefined | (() => void);
   isCanceling: boolean | undefined;
   isSelected: boolean | undefined;
+  isCurrentMarket: boolean | undefined;
+  onSelectOrderClick: undefined | (() => void);
 }) {
   const marketInfoData = useSelector(selectMarketsInfoData);
   const isSwap = isSwapOrderType(order.orderType);
@@ -563,13 +576,19 @@ function OrderItemLarge({
   );
 
   return (
-    <TableTr hoverable={true} ref={handleSetRef}>
+    <TableTr
+      hoverable={true}
+      ref={handleSetRef}
+      className={cx({
+        "shadow-[inset_2px_0_0] shadow-cold-blue-500": isCurrentMarket,
+      })}
+    >
       {!hideActions && onToggleOrder && (
         <TableTd className="cursor-pointer" onClick={onToggleOrder}>
           <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder} />
         </TableTd>
       )}
-      <TableTd>
+      <TableTd onClick={onSelectOrderClick} className="cursor-pointer">
         {isSwap ? (
           <TooltipWithPortal
             handle={
@@ -662,6 +681,8 @@ function OrderItemSmall({
   isSelected,
   onToggleOrder,
   setRef,
+  isCurrentMarket,
+  onSelectOrderClick,
 }: {
   showDebugValues: boolean;
   order: OrderInfo;
@@ -671,6 +692,8 @@ function OrderItemSmall({
   isSelected: boolean | undefined;
   onToggleOrder: undefined | (() => void);
   setRef?: (el: HTMLElement | null, orderKey: string) => void;
+  isCurrentMarket: boolean | undefined;
+  onSelectOrderClick: undefined | (() => void);
 }) {
   const marketInfoData = useSelector(selectMarketsInfoData);
 
@@ -722,14 +745,20 @@ function OrderItemSmall({
 
   return (
     <AppCard ref={handleSetRef}>
-      <AppCardSection>
-        <div className="flex cursor-pointer items-center" onClick={onToggleOrder}>
+      <AppCardSection
+        className={cx("relative", {
+          "after:absolute after:left-10 after:top-[50%] after:h-16 after:w-2 after:-translate-y-[50%] after:bg-blue-300":
+            isCurrentMarket,
+        })}
+      >
+        <div className="flex cursor-pointer items-center gap-8" onClick={onSelectOrderClick}>
           {hideActions ? (
             title
           ) : (
-            <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder}>
+            <>
+              <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder}></Checkbox>
               {title}
-            </Checkbox>
+            </>
           )}
         </div>
       </AppCardSection>

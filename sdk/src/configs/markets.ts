@@ -754,6 +754,20 @@ export const MARKETS: Record<ContractsChainId, Record<string, MarketConfig>> = {
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // KTA/USD [WETH-USDC]
+    "0x970b730b5dD18de53A230eE8F4af088dBC3a6F8d": {
+      marketTokenAddress: "0x970b730b5dD18de53A230eE8F4af088dBC3a6F8d",
+      indexTokenAddress: "0x96Ee343E36E8642627FAEa235D57a9FEC8a6e34f",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // ZORA/USD [WETH-USDC]
+    "0xac484106d935f0f20F1485b631fA6F65AeEff550": {
+      marketTokenAddress: "0xac484106d935f0f20F1485b631fA6F65AeEff550",
+      indexTokenAddress: "0xc5ff0eB026dB972F95DF3dfF04e697d8b660092a",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

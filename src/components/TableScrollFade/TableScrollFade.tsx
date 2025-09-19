@@ -229,7 +229,7 @@ function ScrollFadeControls({
     <div className="pointer-events-none absolute flex h-full w-full flex-row justify-between" ref={absoluteRef}>
       <div
         className={cx(
-          "group z-[120] h-full max-w-50 cursor-pointer transition-opacity",
+          "group z-[20] h-full max-w-50 cursor-pointer transition-opacity",
           "bg-gradient-to-l from-[transparent]",
           toColor,
           "flex justify-start",
@@ -250,7 +250,7 @@ function ScrollFadeControls({
       </div>
       <div
         className={cx(
-          "group z-[120] h-full max-w-50 cursor-pointer transition-opacity",
+          "group z-[20] h-full max-w-50 cursor-pointer transition-opacity",
           "bg-gradient-to-r from-[transparent]",
           toColor,
           "flex justify-end",
