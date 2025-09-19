@@ -150,8 +150,8 @@ msgstr "Avalanche 上的产量优化器"
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Arbitrum"
-msgstr "Arbitrum"
+#~ msgid "Arbitrum"
+#~ msgstr "Arbitrum"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Orders ({0})"
@@ -437,7 +437,6 @@ msgstr "超过最大 {0} 做空"
 msgid "Insufficient GM balance"
 msgstr "GM 余额不足"
 
-#: src/components/Synthetics/MarketStats/components/MarketDescription.tsx
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps from the included markets. Backed by {0} and {1}."
 msgstr "此代币是一个自动再平衡 GM 代币的金库，从包含的市场杠杆交易和交换中累积费用。由 {0} 和 {1} 支持。"
@@ -506,8 +505,8 @@ msgid "Available to Trade"
 msgstr ""
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-msgid "SELLABLE"
-msgstr "可售卖"
+#~ msgid "SELLABLE"
+#~ msgstr "可售卖"
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Treasury"
@@ -594,7 +593,6 @@ msgstr ""
 #~ msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 #~ msgstr "无效代币 fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/StatsCard.tsx
@@ -1180,7 +1178,6 @@ msgid "Deactivating..."
 msgstr "停用中..."
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Protocol"
 msgstr "协议"
 
@@ -1198,8 +1195,8 @@ msgstr "概述"
 
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Avalanche Max. APY: {0}"
-msgstr "Avalanche 最大 APY: {0}"
+#~ msgid "Avalanche Max. APY: {0}"
+#~ msgstr "Avalanche 最大 APY: {0}"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -1225,8 +1222,8 @@ msgstr "基础 APY"
 #~ msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "GMX V1 markets are disabled. GLP is being phased out and no longer supports GMX V1 markets."
-msgstr "GMX V1 市场已禁用。GLP 正在逐步淘汰，不再支持 GMX V1 市场。"
+#~ msgid "GMX V1 markets are disabled. GLP is being phased out and no longer supports GMX V1 markets."
+#~ msgstr "GMX V1 市场已禁用。GLP 正在逐步淘汰，不再支持 GMX V1 市场。"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express"
@@ -1263,8 +1260,8 @@ msgid "One-Click Trading is disabled. Time limit expired."
 msgstr "一键交易已禁用。时间限制已过期。"
 
 #: src/components/Synthetics/MarketStats/components/MarketDescription.tsx
-msgid "This token automatically accrues fees from leverage trading and swaps for the {0} market. It is also exposed to {composition} as per the composition displayed."
-msgstr "此代币从 {0} 市场的杠杆交易和交换中自动累积费用。它还根据显示的组成暴露于 {composition}。"
+#~ msgid "This token automatically accrues fees from leverage trading and swaps for the {0} market. It is also exposed to {composition} as per the composition displayed."
+#~ msgstr "此代币从 {0} 市场的杠杆交易和交换中自动累积费用。它还根据显示的组成暴露于 {composition}。"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "Buy Fee"
@@ -1388,8 +1385,8 @@ msgstr "总计"
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Buy token on:"
-msgstr "购买代币于："
+#~ msgid "Buy token on:"
+#~ msgstr "购买代币于："
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 msgid "Claims history"
@@ -1427,8 +1424,8 @@ msgid "Total Rebates"
 msgstr "总返利"
 
 #: src/components/Synthetics/MarketStats/components/MarketDescription.tsx
-msgid "This token automatically accrues fees from leverage trading and swaps for the {0} market. It is also exposed to {1} and {2} as per the composition displayed."
-msgstr "此代币从 {0} 市场的杠杆交易和交换中自动累积费用。它还根据显示的组成暴露于 {1} 和 {2}。"
+#~ msgid "This token automatically accrues fees from leverage trading and swaps for the {0} market. It is also exposed to {1} and {2} as per the composition displayed."
+#~ msgstr "此代币从 {0} 市场的杠杆交易和交换中自动累积费用。它还根据显示的组成暴露于 {1} 和 {2}。"
 
 #: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "To Network"
@@ -1448,7 +1445,6 @@ msgid "TWAP Swap"
 msgstr "TWAP 交换"
 
 #: src/components/BuyCards/BuyCards.tsx
-#: src/components/TokenCard/TokenCard.tsx
 #: src/pages/Dashboard/DashboardPageTitle.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
 msgstr "GM 是 GMX V2 市场的流动性提供者代币。累积 V2 市场生成费用的 63%。"
@@ -1490,8 +1486,8 @@ msgid "{orderText} cancelled."
 msgstr "{orderText} 已取消。"
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "{avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
-msgstr "{avalancheLink} GLV 池被 <0>激励{sparkle}。</0>"
+#~ msgid "{avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
+#~ msgstr "{avalancheLink} GLV 池被 <0>激励{sparkle}。</0>"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
@@ -2042,8 +2038,8 @@ msgstr "累积盈亏"
 
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Arbitrum Max. APY:"
-msgstr "Arbitrum 最大 APY："
+#~ msgid "Arbitrum Max. APY:"
+#~ msgstr "Arbitrum 最大 APY："
 
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Vault Capacity for your Account:"
@@ -2337,8 +2333,8 @@ msgid "Subscribe"
 msgstr ""
 
 #: src/components/Header/Header.tsx
-msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
-msgstr "在 Arbitrum 的 GMX V2 上交易，赢得 280,000 ARB (> $500k) 奖品，在 <0>两个每周</0> 比赛中。从 3 月 13 日到 27 日直播。"
+#~ msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
+#~ msgstr "在 Arbitrum 的 GMX V2 上交易，赢得 280,000 ARB (> $500k) 奖品，在 <0>两个每周</0> 比赛中。从 3 月 13 日到 27 日直播。"
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 #~ msgid "Index"
@@ -2645,8 +2641,8 @@ msgid "Buy order cancelled."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Avalanche APR:"
-msgstr "Avalanche 年化收益率："
+#~ msgid "Avalanche APR:"
+#~ msgstr "Avalanche 年化收益率："
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics for GMX"
@@ -3056,7 +3052,6 @@ msgid "No liquidity is available for increasing shorts for<0/>this size. Max sho
 msgstr "没有流动性可用于增加此规模的做空。<0/>最大做空规模：{0}<1/><2/>减少做多的执行价格。"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Trade"
 msgstr "交易"
@@ -3102,8 +3097,8 @@ msgstr "V1 Arbitrum"
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Avalanche"
-msgstr "Avalanche"
+#~ msgid "Avalanche"
+#~ msgstr "Avalanche"
 
 #: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 msgid "Fee APR"
@@ -3113,7 +3108,6 @@ msgstr "费用年化收益率"
 msgid "SL"
 msgstr "SL"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -3194,12 +3188,12 @@ msgstr "在 Arbitrum 上质押"
 #~ msgstr "订单创建失败。"
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Sell token on:"
-msgstr "出售代币于："
+#~ msgid "Sell token on:"
+#~ msgstr "出售代币于："
 
 #: src/components/Synthetics/MissedCoinsHint/MissedCoinsHint.tsx
-msgid "Can’t find the coin you need? Let us know"
-msgstr "找不到您需要的币种？告诉我们"
+#~ msgid "Can’t find the coin you need? Let us know"
+#~ msgstr "找不到您需要的币种？告诉我们"
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Delegated to"
@@ -3390,8 +3384,8 @@ msgid "Submitting..."
 msgstr "提交中..."
 
 #: src/components/Header/HomeHeaderLinks.tsx
-msgid "App"
-msgstr "应用程序"
+#~ msgid "App"
+#~ msgstr "应用程序"
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to Wallet"
@@ -3824,7 +3818,6 @@ msgid "More Options"
 msgstr "更多选项"
 
 #: src/components/BuyCards/BuyCards.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "GLV is the liquidity provider token for GMX V2 vaults. Consist of several GM tokens and accrues fees generated by them."
 msgstr "GLV 是 GMX V2 金库的流动性提供者代币。由多个 GM 代币组成，并累积它们产生的费用。"
 
@@ -4035,8 +4028,8 @@ msgid "The position would be immediately liquidated upon order execution. Try re
 msgstr "订单执行后仓位将立即清算。请尝试减少规模。"
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-msgid "BUYABLE"
-msgstr "可购买"
+#~ msgid "BUYABLE"
+#~ msgstr "可购买"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Create TWAP"
@@ -4222,10 +4215,6 @@ msgstr ""
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 #: src/pages/Dashboard/WeightText.tsx
 msgid "Read more"
 msgstr "阅读更多"
@@ -4362,8 +4351,8 @@ msgid "Claiming failed."
 msgstr ""
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-msgid "GMX Market Tokens"
-msgstr "GMX 市场代币"
+#~ msgid "GMX Market Tokens"
+#~ msgstr "GMX 市场代币"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Stop Market price is above mark price"
@@ -4520,8 +4509,8 @@ msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By 
 msgstr "<0>通知由 Notifi 提供，与 GMX 无关。通过订阅，您同意您提供给 Notifi 的信息受其 </0><1>隐私政策</1><2> 和 </2><3>使用条款</3> 约束。"
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
-msgstr "{arbitrumLink} 和 {avalancheLink} GLV 池 <0>有激励{sparkle}。</0>"
+#~ msgid "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
+#~ msgstr "{arbitrumLink} 和 {avalancheLink} GLV 池 <0>有激励{sparkle}。</0>"
 
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
@@ -4624,8 +4613,6 @@ msgstr "可领取"
 #~ msgstr "此外，触发订单为市价订单，不保证以触发价格结算。"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/AppHeaderLinks.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "文档"
@@ -4671,7 +4658,6 @@ msgstr "止损市价失败"
 msgid "Address copied to your clipboard"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -4810,8 +4796,8 @@ msgstr "GM 池中代币的总价值。"
 
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Botanix"
-msgstr "Botanix"
+#~ msgid "Botanix"
+#~ msgstr "Botanix"
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take Profit / Stop Loss"
@@ -4992,12 +4978,10 @@ msgstr "网络"
 #~ msgstr "{0}: {1}, 价格：{priceDisplay}"
 
 #: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "POOL"
 msgstr "池"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Voting"
 msgstr "投票"
 
@@ -5323,7 +5307,6 @@ msgstr "GMX 公告"
 msgid "Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is only settled on position decrease. <0>Read more</0>"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Referrals/Referrals.tsx
 #: src/pages/Referrals/Referrals.tsx
@@ -5804,8 +5787,6 @@ msgstr "编辑订单"
 
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "Search Pool"
 msgstr "搜索池"
 
@@ -5886,7 +5867,6 @@ msgid "Yield-optimized vaults supplying liquidity across multiple GMX<0/> market
 msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
 msgstr "治理"
 
@@ -6165,8 +6145,8 @@ msgid "Order request sent"
 msgstr "订单请求已发送"
 
 #: src/components/ExpressTradingEnabledBanner/ExpressTradingEnabledBanner.tsx
-msgid "Express Trading is enabled. Enjoy smoother, more reliable trades!"
-msgstr "快速交易已启用。享受更顺畅、更可靠的交易！"
+#~ msgid "Express Trading is enabled. Enjoy smoother, more reliable trades!"
+#~ msgstr "快速交易已启用。享受更顺畅、更可靠的交易！"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more."
@@ -6528,7 +6508,6 @@ msgstr "选择一个选项"
 msgid "less than a minute"
 msgstr "不到一分钟"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Ecosystem"
 msgstr "生态系统"
@@ -7129,7 +7108,6 @@ msgstr "已实现费用"
 msgid "Top Positions"
 msgstr "最高头寸"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
@@ -7490,8 +7468,8 @@ msgid "Swap failed."
 msgstr "交换失败。"
 
 #: src/components/Synthetics/MarketStats/components/MarketDescription.tsx
-msgid "This token automatically accrues fees from swaps for the {0}/{1} market. It is also exposed to {2} and {3} as per the composition displayed."
-msgstr "此代币自动从 {0}/{1} 市场的交换中累积费用。它也根据显示的组成暴露于 {2} 和 {3}。"
+#~ msgid "This token automatically accrues fees from swaps for the {0}/{1} market. It is also exposed to {2} and {3} as per the composition displayed."
+#~ msgstr "此代币自动从 {0}/{1} 市场的交换中累积费用。它也根据显示的组成暴露于 {2} 和 {3}。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Page outdated, please refresh"
@@ -7511,8 +7489,8 @@ msgid "GMX Proposals"
 msgstr "GMX 提案"
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-msgid "BUY…"
-msgstr "购买…"
+#~ msgid "BUY…"
+#~ msgstr "购买…"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Vest with GLP on Arbitrum"
@@ -7689,8 +7667,8 @@ msgid "GMX community discussion"
 msgstr "GMX 社区讨论"
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "{arbitrumLink} GLV Pools are <0>incentivized{sparkle}.</0>"
-msgstr "{arbitrumLink} GLV 池子被 <0>激励{sparkle}。</0>"
+#~ msgid "{arbitrumLink} GLV Pools are <0>incentivized{sparkle}.</0>"
+#~ msgstr "{arbitrumLink} GLV 池子被 <0>激励{sparkle}。</0>"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GM"
@@ -7922,7 +7900,6 @@ msgid "Total Supply"
 msgstr "总供应量"
 
 #: src/components/BuyCards/BuyCards.tsx
-#: src/components/TokenCard/TokenCard.tsx
 #: src/pages/Dashboard/DashboardPageTitle.tsx
 #: src/pages/Dashboard/DashboardPageTitle.tsx
 msgid "GMX is the utility and governance token. It also accrues 30% of the protocol fees via a buyback and distribution mechanism."
@@ -7934,8 +7911,8 @@ msgid "Staked"
 msgstr "已质押"
 
 #: src/pages/Home/HomeFooter.tsx
-msgid "Leave feedback"
-msgstr ""
+#~ msgid "Leave feedback"
+#~ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/pages/Referrals/Referrals.tsx
@@ -7992,8 +7969,8 @@ msgid "GMX ecosystem pages."
 msgstr "GMX 生态系统页面"
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "{avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
-msgstr "{avalancheLink} GM 池子被 <0>激励{sparkle}。</0>"
+#~ msgid "{avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
+#~ msgstr "{avalancheLink} GM 池子被 <0>激励{sparkle}。</0>"
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order cancelled."
@@ -8007,7 +7984,6 @@ msgstr ""
 msgid "Order size is bigger than position, will only be executable if position increases"
 msgstr "订单规模大于仓位，只有在仓位增加时才可执行"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Buy"
 msgstr "购买"
@@ -8110,8 +8086,8 @@ msgid "High TWAP network fee"
 msgstr ""
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-msgid "APY"
-msgstr "年利率"
+#~ msgid "APY"
+#~ msgstr "年利率"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "staked"
@@ -8174,7 +8150,6 @@ msgid "Withdraw Fee"
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
-#: src/components/Header/AppHeaderLinks.tsx
 msgid "Alerts"
 msgstr "警报"
 
@@ -8195,8 +8170,8 @@ msgid "Your GMX Account balance, usable for trading from any supported chain.<0/
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Arbitrum APR:"
-msgstr "Arbitrum 年利率："
+#~ msgid "Arbitrum APR:"
+#~ msgstr "Arbitrum 年利率："
 
 #: src/pages/Jobs/Jobs.jsx
 msgid "Job Openings"
@@ -8313,7 +8288,6 @@ msgstr "止损盈亏"
 msgid "Market - Long Dec."
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
@@ -8361,8 +8335,8 @@ msgid "Funding claimed."
 msgstr ""
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-msgid "SELL…"
-msgstr "出售…"
+#~ msgid "SELL…"
+#~ msgstr "出售…"
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #~ msgid "Confirm Swap"
@@ -8497,7 +8471,6 @@ msgstr "执行价格"
 #: src/components/MarketSelector/PoolSelector.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "No pools matched"
 msgstr ""
 

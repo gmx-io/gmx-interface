@@ -150,8 +150,8 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Arbitrum"
-msgstr ""
+#~ msgid "Arbitrum"
+#~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Orders ({0})"
@@ -437,7 +437,6 @@ msgstr ""
 msgid "Insufficient GM balance"
 msgstr ""
 
-#: src/components/Synthetics/MarketStats/components/MarketDescription.tsx
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps from the included markets. Backed by {0} and {1}."
 msgstr ""
@@ -506,8 +505,8 @@ msgid "Available to Trade"
 msgstr ""
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-msgid "SELLABLE"
-msgstr ""
+#~ msgid "SELLABLE"
+#~ msgstr ""
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Treasury"
@@ -594,7 +593,6 @@ msgstr ""
 #~ msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 #~ msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/StatsCard.tsx
@@ -1180,7 +1178,6 @@ msgid "Deactivating..."
 msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Protocol"
 msgstr ""
 
@@ -1198,8 +1195,8 @@ msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Avalanche Max. APY: {0}"
-msgstr ""
+#~ msgid "Avalanche Max. APY: {0}"
+#~ msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -1225,8 +1222,8 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "GMX V1 markets are disabled. GLP is being phased out and no longer supports GMX V1 markets."
-msgstr ""
+#~ msgid "GMX V1 markets are disabled. GLP is being phased out and no longer supports GMX V1 markets."
+#~ msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express"
@@ -1263,8 +1260,8 @@ msgid "One-Click Trading is disabled. Time limit expired."
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/components/MarketDescription.tsx
-msgid "This token automatically accrues fees from leverage trading and swaps for the {0} market. It is also exposed to {composition} as per the composition displayed."
-msgstr ""
+#~ msgid "This token automatically accrues fees from leverage trading and swaps for the {0} market. It is also exposed to {composition} as per the composition displayed."
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "Buy Fee"
@@ -1388,8 +1385,8 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Buy token on:"
-msgstr ""
+#~ msgid "Buy token on:"
+#~ msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 msgid "Claims history"
@@ -1427,8 +1424,8 @@ msgid "Total Rebates"
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/components/MarketDescription.tsx
-msgid "This token automatically accrues fees from leverage trading and swaps for the {0} market. It is also exposed to {1} and {2} as per the composition displayed."
-msgstr ""
+#~ msgid "This token automatically accrues fees from leverage trading and swaps for the {0} market. It is also exposed to {1} and {2} as per the composition displayed."
+#~ msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "To Network"
@@ -1448,7 +1445,6 @@ msgid "TWAP Swap"
 msgstr ""
 
 #: src/components/BuyCards/BuyCards.tsx
-#: src/components/TokenCard/TokenCard.tsx
 #: src/pages/Dashboard/DashboardPageTitle.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
 msgstr ""
@@ -1490,8 +1486,8 @@ msgid "{orderText} cancelled."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "{avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
-msgstr ""
+#~ msgid "{avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
+#~ msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/hooks/useTradeButtonState.tsx
@@ -2042,8 +2038,8 @@ msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Arbitrum Max. APY:"
-msgstr ""
+#~ msgid "Arbitrum Max. APY:"
+#~ msgstr ""
 
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Vault Capacity for your Account:"
@@ -2337,8 +2333,8 @@ msgid "Subscribe"
 msgstr ""
 
 #: src/components/Header/Header.tsx
-msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
-msgstr ""
+#~ msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
+#~ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 #~ msgid "Index"
@@ -2645,8 +2641,8 @@ msgid "Buy order cancelled."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Avalanche APR:"
-msgstr ""
+#~ msgid "Avalanche APR:"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics for GMX"
@@ -3056,7 +3052,6 @@ msgid "No liquidity is available for increasing shorts for<0/>this size. Max sho
 msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Trade"
 msgstr ""
@@ -3102,8 +3097,8 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Avalanche"
-msgstr ""
+#~ msgid "Avalanche"
+#~ msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketGraphs.tsx
 msgid "Fee APR"
@@ -3113,7 +3108,6 @@ msgstr ""
 msgid "SL"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -3194,12 +3188,12 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Sell token on:"
-msgstr ""
+#~ msgid "Sell token on:"
+#~ msgstr ""
 
 #: src/components/Synthetics/MissedCoinsHint/MissedCoinsHint.tsx
-msgid "Can’t find the coin you need? Let us know"
-msgstr ""
+#~ msgid "Can’t find the coin you need? Let us know"
+#~ msgstr ""
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Delegated to"
@@ -3390,8 +3384,8 @@ msgid "Submitting..."
 msgstr ""
 
 #: src/components/Header/HomeHeaderLinks.tsx
-msgid "App"
-msgstr ""
+#~ msgid "App"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to Wallet"
@@ -3824,7 +3818,6 @@ msgid "More Options"
 msgstr ""
 
 #: src/components/BuyCards/BuyCards.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "GLV is the liquidity provider token for GMX V2 vaults. Consist of several GM tokens and accrues fees generated by them."
 msgstr ""
 
@@ -4035,8 +4028,8 @@ msgid "The position would be immediately liquidated upon order execution. Try re
 msgstr ""
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-msgid "BUYABLE"
-msgstr ""
+#~ msgid "BUYABLE"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Create TWAP"
@@ -4222,10 +4215,6 @@ msgstr ""
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 #: src/pages/Dashboard/WeightText.tsx
 msgid "Read more"
 msgstr ""
@@ -4359,8 +4348,8 @@ msgid "Claiming failed."
 msgstr ""
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-msgid "GMX Market Tokens"
-msgstr ""
+#~ msgid "GMX Market Tokens"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Stop Market price is above mark price"
@@ -4517,8 +4506,8 @@ msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By 
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
-msgstr ""
+#~ msgid "{arbitrumLink} and {avalancheLink} GLV Pools are <0>incentivized{sparkle}.</0>"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
@@ -4621,8 +4610,6 @@ msgstr ""
 #~ msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/AppHeaderLinks.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr ""
@@ -4668,7 +4655,6 @@ msgstr ""
 msgid "Address copied to your clipboard"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -4807,8 +4793,8 @@ msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Botanix"
-msgstr ""
+#~ msgid "Botanix"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take Profit / Stop Loss"
@@ -4989,12 +4975,10 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "POOL"
 msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Voting"
 msgstr ""
 
@@ -5324,7 +5308,6 @@ msgstr ""
 msgid "Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is only settled on position decrease. <0>Read more</0>"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Referrals/Referrals.tsx
 #: src/pages/Referrals/Referrals.tsx
@@ -5805,8 +5788,6 @@ msgstr ""
 
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "Search Pool"
 msgstr ""
 
@@ -5887,7 +5868,6 @@ msgid "Yield-optimized vaults supplying liquidity across multiple GMX<0/> market
 msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
 msgstr ""
 
@@ -6166,8 +6146,8 @@ msgid "Order request sent"
 msgstr ""
 
 #: src/components/ExpressTradingEnabledBanner/ExpressTradingEnabledBanner.tsx
-msgid "Express Trading is enabled. Enjoy smoother, more reliable trades!"
-msgstr ""
+#~ msgid "Express Trading is enabled. Enjoy smoother, more reliable trades!"
+#~ msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more."
@@ -6529,7 +6509,6 @@ msgstr ""
 msgid "less than a minute"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Ecosystem"
 msgstr ""
@@ -7127,7 +7106,6 @@ msgstr ""
 msgid "Top Positions"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
@@ -7488,8 +7466,8 @@ msgid "Swap failed."
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/components/MarketDescription.tsx
-msgid "This token automatically accrues fees from swaps for the {0}/{1} market. It is also exposed to {2} and {3} as per the composition displayed."
-msgstr ""
+#~ msgid "This token automatically accrues fees from swaps for the {0}/{1} market. It is also exposed to {2} and {3} as per the composition displayed."
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Page outdated, please refresh"
@@ -7509,8 +7487,8 @@ msgid "GMX Proposals"
 msgstr ""
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-msgid "BUY…"
-msgstr ""
+#~ msgid "BUY…"
+#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Vest with GLP on Arbitrum"
@@ -7687,8 +7665,8 @@ msgid "GMX community discussion"
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "{arbitrumLink} GLV Pools are <0>incentivized{sparkle}.</0>"
-msgstr ""
+#~ msgid "{arbitrumLink} GLV Pools are <0>incentivized{sparkle}.</0>"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GM"
@@ -7920,7 +7898,6 @@ msgid "Total Supply"
 msgstr ""
 
 #: src/components/BuyCards/BuyCards.tsx
-#: src/components/TokenCard/TokenCard.tsx
 #: src/pages/Dashboard/DashboardPageTitle.tsx
 #: src/pages/Dashboard/DashboardPageTitle.tsx
 msgid "GMX is the utility and governance token. It also accrues 30% of the protocol fees via a buyback and distribution mechanism."
@@ -7932,8 +7909,8 @@ msgid "Staked"
 msgstr ""
 
 #: src/pages/Home/HomeFooter.tsx
-msgid "Leave feedback"
-msgstr ""
+#~ msgid "Leave feedback"
+#~ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/pages/Referrals/Referrals.tsx
@@ -7990,8 +7967,8 @@ msgid "GMX ecosystem pages."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "{avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
-msgstr ""
+#~ msgid "{avalancheLink} GM Pools are <0>incentivized{sparkle}.</0>"
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order cancelled."
@@ -8005,7 +7982,6 @@ msgstr ""
 msgid "Order size is bigger than position, will only be executable if position increases"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Buy"
 msgstr ""
@@ -8108,8 +8084,8 @@ msgid "High TWAP network fee"
 msgstr ""
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-msgid "APY"
-msgstr ""
+#~ msgid "APY"
+#~ msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "staked"
@@ -8172,7 +8148,6 @@ msgid "Withdraw Fee"
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
-#: src/components/Header/AppHeaderLinks.tsx
 msgid "Alerts"
 msgstr ""
 
@@ -8193,8 +8168,8 @@ msgid "Your GMX Account balance, usable for trading from any supported chain.<0/
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
-msgid "Arbitrum APR:"
-msgstr ""
+#~ msgid "Arbitrum APR:"
+#~ msgstr ""
 
 #: src/pages/Jobs/Jobs.jsx
 msgid "Job Openings"
@@ -8311,7 +8286,6 @@ msgstr ""
 msgid "Market - Long Dec."
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
@@ -8359,8 +8333,8 @@ msgid "Funding claimed."
 msgstr ""
 
 #: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
-msgid "SELL…"
-msgstr ""
+#~ msgid "SELL…"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.jsx
 #~ msgid "Confirm Swap"
@@ -8495,7 +8469,6 @@ msgstr ""
 #: src/components/MarketSelector/PoolSelector.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "No pools matched"
 msgstr ""
 
