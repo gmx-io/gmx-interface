@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="30" height="32" viewBox="0 0 30 32">
-  <g id="ic_olympus" transform="translate(4 4)">
-    <rect id="Base_ic" width="30" height="32" transform="translate(-4 -4)" fill="none"/>
-    <rect id="Rectangle_433" data-name="Rectangle 433" width="22" height="24" fill="rgba(255,255,255,0)"/>
-    <path id="Path_1632" data-name="Path 1632" d="M8.961,25.175V20.939a7.7,7.7,0,0,1-5-7.353,7.486,7.486,0,0,1,7.22-7.726,7.486,7.486,0,0,1,7.22,7.726,7.7,7.7,0,0,1-5,7.353v4.236h7.961V22.024H17.433a10.976,10.976,0,0,0,3.885-8.463c0-5.937-4.538-10.75-10.136-10.75S1.046,7.624,1.046,13.561a10.976,10.976,0,0,0,3.885,8.463H1v3.151Z" transform="translate(-0.339 -2.149)" fill="#fff"/>
-  </g>
-</svg>
