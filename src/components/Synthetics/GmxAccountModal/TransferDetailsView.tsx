@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { useEffect, useState } from "react";
 
-import { getChainName, isContractsChain, SourceChainId } from "config/chains";
+import { getChainName, isTestnetChain, SourceChainId } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import {
   useGmxAccountDepositViewChain,
@@ -104,7 +104,7 @@ export const TransferDetailsView = () => {
     </span>
   );
 
-  const isTestnet = selectedTransfer && !isContractsChain(selectedTransfer.settlementChainId, false);
+  const isTestnet = selectedTransfer && isTestnetChain(selectedTransfer.settlementChainId);
 
   return (
     <div className="text-body-medium flex grow flex-col gap-8 p-adaptive">

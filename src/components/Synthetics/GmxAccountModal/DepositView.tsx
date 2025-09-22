@@ -9,7 +9,7 @@ import { useLatest } from "react-use";
 import { Hex, decodeErrorResult, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { AnyChainId, SettlementChainId, SourceChainId, getChainName, isContractsChain } from "config/chains";
+import { AnyChainId, SettlementChainId, SourceChainId, getChainName, isTestnetChain } from "config/chains";
 import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
 import {
@@ -709,7 +709,7 @@ export const DepositView = () => {
     [onClick]
   );
 
-  const isTestnet = !isContractsChain(settlementChainId, false);
+  const isTestnet = isTestnetChain(settlementChainId);
 
   return (
     <form className="flex grow flex-col overflow-y-auto px-adaptive pb-adaptive pt-adaptive" onSubmit={handleSubmit}>

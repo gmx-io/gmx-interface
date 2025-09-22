@@ -8,7 +8,14 @@ import { useHistory } from "react-router-dom";
 import { Address, encodeAbiParameters, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { ContractsChainId, getChainName, isContractsChain, SettlementChainId, SourceChainId } from "config/chains";
+import {
+  ContractsChainId,
+  getChainName,
+  isContractsChain,
+  isTestnetChain,
+  SettlementChainId,
+  SourceChainId,
+} from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
@@ -799,7 +806,7 @@ export const WithdrawalView = () => {
     [chainId, hasSelectedToken, isVisibleOrView, setSelectedTokenAddress, tokensData, withdrawalViewChain]
   );
 
-  const isTestnet = !isContractsChain(chainId, false);
+  const isTestnet = isTestnetChain(chainId);
 
   return (
     <div className="flex grow flex-col overflow-y-auto p-adaptive">
