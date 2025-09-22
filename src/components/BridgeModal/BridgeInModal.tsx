@@ -25,7 +25,7 @@ import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
 import { MultichainMarketTokenSelector } from "components/TokenSelector/MultichainMarketTokenSelector";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-export function TransferInModal({
+export function BridgeInModal({
   isVisible,
   setIsVisible,
   glvOrMarketInfo,
@@ -37,8 +37,8 @@ export function TransferInModal({
   const { chainId, srcChainId } = useChainId();
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
-  const [transferInChain, setTransferInChain] = useState<SourceChainId | undefined>();
-  const [transferInInputValue, setTransferInInputValue] = useState("");
+  const [bridgeInChain, setBridgeInChain] = useState<SourceChainId | undefined>(srcChainId);
+  const [bridgeInInputValue, setBridgeInInputValue] = useState("");
 
   const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
   const glvOrMarketAddress = glvOrMarketInfo ? getGlvOrMarketAddress(glvOrMarketInfo) : undefined;
@@ -53,17 +53,17 @@ export function TransferInModal({
     marketTokenPrice = getMidPrice(marketToken?.prices);
   }
 
-  const transferInAmount = useMemo(() => {
-    return transferInInputValue && marketTokenDecimals !== undefined
-      ? parseValue(transferInInputValue, marketTokenDecimals)
+  const bridgeInAmount = useMemo(() => {
+    return bridgeInInputValue && marketTokenDecimals !== undefined
+      ? parseValue(bridgeInInputValue, marketTokenDecimals)
       : undefined;
-  }, [transferInInputValue, marketTokenDecimals]);
+  }, [bridgeInInputValue, marketTokenDecimals]);
 
-  const transferInUsd = useMemo(() => {
-    return transferInAmount !== undefined && marketTokenDecimals !== undefined
-      ? convertToUsd(transferInAmount, marketTokenDecimals, marketTokenPrice)
+  const bridgeInUsd = useMemo(() => {
+    return bridgeInAmount !== undefined && marketTokenDecimals !== undefined
+      ? convertToUsd(bridgeInAmount, marketTokenDecimals, marketTokenPrice)
       : undefined;
-  }, [transferInAmount, marketTokenDecimals, marketTokenPrice]);
+  }, [bridgeInAmount, marketTokenDecimals, marketTokenPrice]);
 
   const glvOrGm = isGlv ? "GLV" : "GM";
   const { address: account } = useAccount();
@@ -83,15 +83,15 @@ export function TransferInModal({
     };
   }, [chainId, marketTokenBalancesData]);
 
-  const transferInChainMarketTokenBalance: bigint | undefined = transferInChain
-    ? marketTokenBalancesData[transferInChain]
+  const bridgeInChainMarketTokenBalance: bigint | undefined = bridgeInChain
+    ? marketTokenBalancesData[bridgeInChain]
     : undefined;
 
   const gmxAccountMarketTokenBalance: bigint | undefined = marketTokenBalancesData[0];
 
   const nextGmxAccountMarketTokenBalance: bigint | undefined =
-    gmxAccountMarketTokenBalance !== undefined && transferInAmount !== undefined
-      ? gmxAccountMarketTokenBalance + transferInAmount
+    gmxAccountMarketTokenBalance !== undefined && bridgeInAmount !== undefined
+      ? gmxAccountMarketTokenBalance + bridgeInAmount
       : undefined;
 
   if (!glvOrMarketInfo) {
@@ -100,16 +100,16 @@ export function TransferInModal({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!account || !glvOrMarketAddress || transferInAmount === undefined || !transferInChain || !globalExpressParams) {
+    if (!account || !glvOrMarketAddress || bridgeInAmount === undefined || !bridgeInChain || !globalExpressParams) {
       return;
     }
-    await wrapChainAction(transferInChain, setSettlementChainId, async (signer) => {
+    await wrapChainAction(bridgeInChain, setSettlementChainId, async (signer) => {
       await createBridgeInTxn({
         chainId: chainId as SettlementChainId,
-        srcChainId: transferInChain,
+        srcChainId: bridgeInChain,
         account,
         tokenAddress: glvOrMarketAddress,
-        tokenAmount: transferInAmount,
+        tokenAmount: bridgeInAmount,
         signer,
         globalExpressParams,
       });
@@ -125,31 +125,31 @@ export function TransferInModal({
       <form onSubmit={handleSubmit} className="flex flex-col gap-12">
         <BuyInputSection
           topLeftLabel={t`Deposit`}
-          inputValue={transferInInputValue}
-          onInputValueChange={(e) => setTransferInInputValue(e.target.value)}
-          bottomLeftValue={formatUsd(transferInUsd)}
+          inputValue={bridgeInInputValue}
+          onInputValueChange={(e) => setBridgeInInputValue(e.target.value)}
+          bottomLeftValue={formatUsd(bridgeInUsd)}
           bottomRightValue={
-            transferInChainMarketTokenBalance !== undefined && marketTokenDecimals !== undefined
-              ? formatBalanceAmount(transferInChainMarketTokenBalance, marketTokenDecimals)
+            bridgeInChainMarketTokenBalance !== undefined && marketTokenDecimals !== undefined
+              ? formatBalanceAmount(bridgeInChainMarketTokenBalance, marketTokenDecimals)
               : undefined
           }
           bottomRightLabel={t`Available`}
           onClickMax={() => {
-            if (transferInChainMarketTokenBalance === undefined || marketTokenDecimals === undefined) {
+            if (bridgeInChainMarketTokenBalance === undefined || marketTokenDecimals === undefined) {
               return;
             }
-            setTransferInInputValue(formatAmountFree(transferInChainMarketTokenBalance, marketTokenDecimals));
+            setBridgeInInputValue(formatAmountFree(bridgeInChainMarketTokenBalance, marketTokenDecimals));
           }}
         >
           <MultichainMarketTokenSelector
             chainId={chainId}
-            srcChainId={transferInChain}
+            srcChainId={bridgeInChain}
             paySource={"sourceChain"}
-            onSelectTokenAddress={(newTransferInChain) => {
-              if (!isSourceChain(newTransferInChain)) {
+            onSelectTokenAddress={(newBridgeInChain) => {
+              if (!isSourceChain(newBridgeInChain)) {
                 return;
               }
-              setTransferInChain(newTransferInChain);
+              setBridgeInChain(newBridgeInChain);
             }}
             marketInfo={glvOrMarketInfo}
             marketTokenPrice={marketTokenPrice}

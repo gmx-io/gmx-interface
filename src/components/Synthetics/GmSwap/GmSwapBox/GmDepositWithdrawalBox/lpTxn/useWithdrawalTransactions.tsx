@@ -4,13 +4,7 @@ import { useCallback, useMemo } from "react";
 import { bytesToHex, Hex, hexToBytes, numberToHex, zeroAddress } from "viem";
 
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
-import {
-  CHAIN_ID_TO_ENDPOINT_ID,
-  getLayerZeroEndpointId,
-  getMultichainTokenId,
-  getStargatePoolAddress,
-  isSettlementChain,
-} from "config/multichain";
+import { getLayerZeroEndpointId, getStargatePoolAddress, isSettlementChain } from "config/multichain";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -27,6 +21,7 @@ import {
 import { createGlvWithdrawalTxn } from "domain/synthetics/markets/createGlvWithdrawalTxn";
 import { createMultichainGlvWithdrawalTxn } from "domain/synthetics/markets/createMultichainGlvWithdrawalTxn";
 import { createMultichainWithdrawalTxn } from "domain/synthetics/markets/createMultichainWithdrawalTxn";
+import { createSourceChainGlvWithdrawalTxn } from "domain/synthetics/markets/createSourceChainGlvWithdrawalTxn";
 import { createSourceChainWithdrawalTxn } from "domain/synthetics/markets/createSourceChainWithdrawalTxn";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -65,9 +60,7 @@ export const useWithdrawalTransactions = ({
   executionFee,
   selectedMarketInfoForGlv,
   marketToken,
-  operation,
   tokensData,
-  isMarketTokenDeposit,
   marketInfo,
   shouldDisableValidation,
 }: UseLpTransactionProps) => {
@@ -125,8 +118,6 @@ export const useWithdrawalTransactions = ({
       !initialLongTokenAddress ||
       !initialShortTokenAddress
     ) {
-      console.log("NO GM PARAMS");
-
       return undefined;
     }
 
@@ -136,8 +127,6 @@ export const useWithdrawalTransactions = ({
 
     if (paySource === "sourceChain") {
       if (!srcChainId) {
-        console.log("NO SRC CHAIN ID");
-
         return undefined;
       }
 
@@ -148,17 +137,12 @@ export const useWithdrawalTransactions = ({
       );
 
       if (!provider || !secondaryProvider) {
-        console.log("NO PROVIDER OR SECONDARY PROVIDER", {
-          initialLongTokenAddress,
-          initialShortTokenAddress,
-        });
         return undefined;
       }
 
       const dstEid = getLayerZeroEndpointId(srcChainId);
 
       if (!dstEid) {
-        console.log("NO DST EID");
         return undefined;
       }
 
@@ -230,30 +214,41 @@ export const useWithdrawalTransactions = ({
       return undefined;
     }
 
-    const minGlvTokens = applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, glvTokenAmount);
-
     let dataList: string[] = EMPTY_ARRAY;
     if (paySource === "sourceChain") {
       if (!srcChainId) {
         return undefined;
       }
 
-      const tokenId = getMultichainTokenId(chainId, glvTokenAddress!);
-      if (!tokenId) {
+      const provider = getStargatePoolAddress(chainId, convertTokenAddress(chainId, initialLongTokenAddress, "native"));
+      const secondaryProvider = getStargatePoolAddress(
+        chainId,
+        convertTokenAddress(chainId, initialShortTokenAddress, "native")
+      );
+
+      if (!provider || !secondaryProvider) {
         return undefined;
       }
+
+      const dstEid = getLayerZeroEndpointId(srcChainId);
+
+      if (!dstEid) {
+        return undefined;
+      }
+
+      const providerData = numberToHex(dstEid, { size: 32 });
 
       const actionHash = CodecUiHelper.encodeMultichainActionData({
         actionType: MultichainActionType.BridgeOut,
         actionData: {
           deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
           desChainId: chainId,
-          minAmountOut: minGlvTokens / 2n,
-          provider: tokenId.stargate,
-          providerData: numberToHex(CHAIN_ID_TO_ENDPOINT_ID[srcChainId], { size: 32 }),
-          // TODO MLTCH put secondary provider and data
-          secondaryProvider: zeroAddress,
-          secondaryProviderData: zeroAddress,
+          provider: provider,
+          providerData: providerData,
+          // TODO MLTCH apply some slippage
+          minAmountOut: 0n,
+          secondaryProvider: secondaryProvider,
+          secondaryProviderData: providerData,
           secondaryMinAmountOut: 0n,
         },
       });
@@ -389,12 +384,22 @@ export const useWithdrawalTransactions = ({
       let promise: Promise<void>;
 
       if (paySource === "sourceChain") {
-        throw new Error("Not implemented");
+        if (!isSettlementChain(chainId) || !srcChainId || !globalExpressParams) {
+          throw new Error("An error occurred");
+        }
+
+        promise = createSourceChainGlvWithdrawalTxn({
+          chainId,
+          srcChainId,
+          signer,
+          globalExpressParams,
+          transferRequests,
+          params: glvParams!,
+          tokenAmount: glvTokenAmount!,
+        });
       } else if (paySource === "gmxAccount") {
         const expressTxnParams = await multichainWithdrawalExpressTxnParams.promise;
         if (!expressTxnParams) {
-          console.log(multichainWithdrawalExpressTxnParams.error);
-
           throw new Error("Express txn params are not set");
         }
 
@@ -407,30 +412,6 @@ export const useWithdrawalTransactions = ({
           srcChainId,
         });
       } else if (paySource === "settlementChain") {
-        // promise = createGlvWithdrawalTxn({
-        //   chainId,
-        //   signer,
-        //   account,
-        //   initialLongTokenAddress: longTokenAddress || marketInfo.longTokenAddress,
-        //   initialShortTokenAddress: shortTokenAddress || marketInfo.shortTokenAddress,
-        //   longTokenSwapPath: [],
-        //   shortTokenSwapPath: [],
-        //   glvTokenAddress: glvInfo!.glvTokenAddress,
-        //   glvTokenAmount: glvTokenAmount!,
-        //   minLongTokenAmount: longTokenAmount,
-        //   minShortTokenAmount: shortTokenAmount,
-        //   executionFee: executionFee.feeTokenAmount,
-        //   executionGasLimit: executionFee.gasLimit,
-        //   allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
-        //   skipSimulation: shouldDisableValidation,
-        //   tokensData,
-        //   setPendingTxns,
-        //   setPendingWithdrawal,
-        //   selectedGmMarket: selectedMarketForGlv!,
-        //   glv: glvInfo!.glvTokenAddress,
-        //   blockTimestampData,
-        // });
-
         promise = createGlvWithdrawalTxn({
           chainId,
           signer,
@@ -461,16 +442,16 @@ export const useWithdrawalTransactions = ({
       tokensData,
       signer,
       paySource,
-      multichainWithdrawalExpressTxnParams.promise,
-      multichainWithdrawalExpressTxnParams.error,
       chainId,
-      glvParams,
-      transferRequests,
       srcChainId,
+      globalExpressParams,
+      transferRequests,
+      glvParams,
+      glvTokenAmount,
+      multichainWithdrawalExpressTxnParams.promise,
       setPendingTxns,
       setPendingWithdrawal,
       blockTimestampData,
-      glvTokenAmount,
     ]
   );
 
@@ -514,8 +495,6 @@ export const useWithdrawalTransactions = ({
       } else if (paySource === "gmxAccount") {
         const expressTxnParams = await multichainWithdrawalExpressTxnParams.promise;
         if (!expressTxnParams) {
-          console.log(multichainWithdrawalExpressTxnParams.error);
-
           throw new Error("Express txn params are not set");
         }
 
@@ -531,19 +510,9 @@ export const useWithdrawalTransactions = ({
         promise = createWithdrawalTxn({
           chainId,
           signer,
-          // account,
-          // initialLongTokenAddress: longTokenAddress || marketInfo.longTokenAddress,
-          // initialShortTokenAddress: shortTokenAddress || marketInfo.shortTokenAddress,
-          // longTokenSwapPath: [],
-          // shortTokenSwapPath: [],
           marketTokenAmount: marketTokenAmount!,
-          // minLongTokenAmount: longTokenAmount,
-          // minShortTokenAmount: shortTokenAmount,
-          // marketTokenAddress: marketToken.address,
-          // executionFee: executionFee.feeTokenAmount,
           executionGasLimit: executionFee.gasLimit,
           params: gmParams!,
-          // allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
           tokensData,
           skipSimulation: shouldDisableValidation,
           setPendingTxns,
@@ -576,7 +545,6 @@ export const useWithdrawalTransactions = ({
       gmParams,
       marketTokenAmount,
       multichainWithdrawalExpressTxnParams.promise,
-      multichainWithdrawalExpressTxnParams.error,
       shouldDisableValidation,
       setPendingTxns,
       setPendingWithdrawal,

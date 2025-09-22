@@ -466,10 +466,25 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const receiveTokenFormatted = useMemo(() => {
     const usedMarketToken = glvInfo ? glvToken : marketToken;
 
-    return usedMarketToken && usedMarketToken.balance !== undefined
-      ? formatBalanceAmount(usedMarketToken.balance, usedMarketToken.decimals)
-      : undefined;
-  }, [marketToken, glvInfo, glvToken]);
+    if (!usedMarketToken) {
+      return undefined;
+    }
+
+    let balance;
+    if (paySource === "gmxAccount") {
+      balance = usedMarketToken.gmxAccountBalance;
+    } else if (paySource === "sourceChain") {
+      balance = usedMarketToken.sourceChainBalance;
+    } else {
+      balance = usedMarketToken.walletBalance;
+    }
+
+    if (balance === undefined) {
+      return undefined;
+    }
+
+    return formatBalanceAmount(balance, usedMarketToken.decimals);
+  }, [glvInfo, glvToken, marketToken, paySource]);
 
   const receiveTokenUsd = glvInfo
     ? amounts?.glvTokenUsd ?? 0n

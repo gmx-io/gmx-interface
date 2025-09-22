@@ -362,12 +362,7 @@ export const WithdrawalView = () => {
   }, [withdrawalViewChain, selectedTokenAddress, unwrappedSelectedTokenAddress, inputAmount, chainId]);
 
   const expressTransactionBuilder: ExpressTransactionBuilder | undefined = useMemo(() => {
-    if (
-      account === undefined ||
-      bridgeOutParams === undefined ||
-      provider === undefined ||
-      withdrawalViewChain === undefined
-    ) {
+    if (account === undefined || bridgeOutParams === undefined || withdrawalViewChain === undefined) {
       return;
     }
 
@@ -376,7 +371,7 @@ export const WithdrawalView = () => {
         chainId: chainId as SettlementChainId,
         signer: undefined,
         account,
-        relayParamsPayload: relayParams as RawRelayParamsPayload,
+        relayParamsPayload: relayParams,
         params: bridgeOutParams,
         emptySignature: true,
         relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
@@ -386,7 +381,7 @@ export const WithdrawalView = () => {
     });
 
     return expressTransactionBuilder;
-  }, [account, bridgeOutParams, chainId, provider, withdrawalViewChain]);
+  }, [account, bridgeOutParams, chainId, withdrawalViewChain]);
 
   const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload({
     expressTransactionBuilder,
@@ -437,6 +432,7 @@ export const WithdrawalView = () => {
     networkFee: networkFee,
     networkFeeUsd: networkFeeUsd,
   });
+
   useEffect(() => {
     if (networkFee !== undefined && networkFeeUsd !== undefined) {
       setLastValidNetworkFees({
@@ -445,6 +441,7 @@ export const WithdrawalView = () => {
       });
     }
   }, [networkFee, networkFeeUsd]);
+
   useEffect(() => {
     if (wrappedNativeTokenAddress === zeroAddress) {
       setShowWntWarning(false);
@@ -520,7 +517,7 @@ export const WithdrawalView = () => {
           chainId: chainId as SettlementChainId,
           relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
           relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
-          relayParamsPayload: relayParamsPayload as RawRelayParamsPayload,
+          relayParamsPayload: relayParamsPayload,
           params: bridgeOutParams,
           signer,
           provider,

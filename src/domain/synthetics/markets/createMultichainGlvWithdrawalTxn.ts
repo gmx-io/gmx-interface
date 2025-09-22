@@ -82,7 +82,7 @@ export async function createMultichainGlvWithdrawalTxn({
   srcChainId,
   signer,
   transferRequests,
-  expressTxnParams: expressTxnParams,
+  expressTxnParams,
   params,
 }: {
   chainId: ContractsChainId;
@@ -112,8 +112,7 @@ export async function createMultichainGlvWithdrawalTxn({
 
   await sendExpressTransaction({
     chainId,
-    // TODO MLTCH: pass true when we can
-    isSponsoredCall: false,
+    isSponsoredCall: expressTxnParams.isSponsoredCall,
     txnData,
   });
 }

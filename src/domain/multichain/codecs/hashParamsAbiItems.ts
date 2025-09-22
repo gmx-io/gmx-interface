@@ -153,3 +153,29 @@ export const BRIDGE_OUT_PARAMS = {
     { type: "uint256", name: "secondaryMinAmountOut" },
   ],
 } as const;
+
+export const CREATE_GLV_WITHDRAWAL_PARAMS_TYPE = {
+  type: "tuple",
+  name: "",
+  components: [
+    {
+      type: "tuple",
+      name: "addresses",
+      components: [
+        { type: "address", name: "receiver" },
+        { type: "address", name: "callbackContract" },
+        { type: "address", name: "uiFeeReceiver" },
+        { type: "address", name: "market" },
+        { type: "address", name: "glv" },
+        { type: "address[]", name: "longTokenSwapPath" },
+        { type: "address[]", name: "shortTokenSwapPath" },
+      ],
+    },
+    { type: "uint256", name: "minLongTokenAmount" },
+    { type: "uint256", name: "minShortTokenAmount" },
+    { type: "bool", name: "shouldUnwrapNativeToken" },
+    { type: "uint256", name: "executionFee" },
+    { type: "uint256", name: "callbackGasLimit" },
+    { type: "bytes32[]", name: "dataList" },
+  ],
+} as const;

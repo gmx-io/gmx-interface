@@ -5,6 +5,7 @@ import type { RelayParamsPayload } from "domain/synthetics/express";
 import {
   CreateDepositParamsStruct,
   CreateGlvDepositParamsStruct,
+  CreateGlvWithdrawalParamsStruct,
   CreateWithdrawalParamsStruct,
 } from "domain/synthetics/markets/types";
 import type { ContractsChainId, SettlementChainId } from "sdk/configs/chains";
@@ -16,6 +17,7 @@ import {
   BRIDGE_OUT_PARAMS,
   CREATE_DEPOSIT_PARAMS_TYPE,
   CREATE_GLV_DEPOSIT_PARAMS_TYPE,
+  CREATE_GLV_WITHDRAWAL_PARAMS_TYPE,
   CREATE_WITHDRAWAL_PARAMS_TYPE,
   RELAY_PARAMS_TYPE,
   TRANSFER_REQUESTS_TYPE,
@@ -91,12 +93,23 @@ type WithdrawalAction = {
   actionData: WithdrawalActionData;
 };
 
+type GlvWithdrawalActionData = CommonActionData & {
+  transferRequests: IRelayUtils.TransferRequestsStruct;
+  params: CreateGlvWithdrawalParamsStruct;
+};
+
+type GlvWithdrawalAction = {
+  actionType: MultichainActionType.GlvWithdrawal;
+  actionData: GlvWithdrawalActionData;
+};
+
 export type MultichainAction =
   | SetTraderReferralCodeAction
   | DepositAction
   | BridgeOutAction
   | GlvDepositAction
-  | WithdrawalAction;
+  | WithdrawalAction
+  | GlvWithdrawalAction;
 
 export const GMX_DATA_ACTION_HASH = hashString("GMX_DATA_ACTION");
 // TODO MLTCH also implement     bytes32 public constant MAX_DATA_LENGTH = keccak256(abi.encode("MAX_DATA_LENGTH"));
@@ -129,6 +142,7 @@ export class CodecUiHelper {
     return layerZeroEndpoint;
   }
 
+  // TODO MLTCH make this type safe
   public static encodeMultichainActionData(action: MultichainAction): string {
     let actionData: Hex | undefined;
     if (action.actionType === MultichainActionType.SetTraderReferralCode) {
@@ -144,8 +158,8 @@ export class CodecUiHelper {
         [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_DEPOSIT_PARAMS_TYPE],
         [
           { ...(action.actionData.relayParams as any), signature: action.actionData.signature as Hex },
-          action.actionData.transferRequests,
-          action.actionData.params,
+          action.actionData.transferRequests as any,
+          action.actionData.params as any,
         ]
       );
     } else if (action.actionType === MultichainActionType.BridgeOut) {
@@ -169,8 +183,8 @@ export class CodecUiHelper {
         [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_GLV_DEPOSIT_PARAMS_TYPE],
         [
           { ...(action.actionData.relayParams as any), signature: action.actionData.signature as Hex },
-          action.actionData.transferRequests,
-          action.actionData.params,
+          action.actionData.transferRequests as any,
+          action.actionData.params as any,
         ]
       );
     } else if (action.actionType === MultichainActionType.Withdrawal) {
@@ -178,8 +192,17 @@ export class CodecUiHelper {
         [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_WITHDRAWAL_PARAMS_TYPE],
         [
           { ...(action.actionData.relayParams as any), signature: action.actionData.signature as Hex },
-          action.actionData.transferRequests,
-          action.actionData.params,
+          action.actionData.transferRequests as any,
+          action.actionData.params as any,
+        ]
+      );
+    } else if (action.actionType === MultichainActionType.GlvWithdrawal) {
+      actionData = encodeAbiParameters(
+        [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_GLV_WITHDRAWAL_PARAMS_TYPE],
+        [
+          { ...(action.actionData.relayParams as any), signature: action.actionData.signature as Hex },
+          action.actionData.transferRequests as any,
+          action.actionData.params as any,
         ]
       );
     }

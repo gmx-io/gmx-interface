@@ -24,6 +24,8 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import { AnyChainId, getChainName } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
+import { BridgeInModal } from "components/BridgeModal/BridgeInModal";
+import { BridgeOutModal } from "components/BridgeModal/BridgeOutModal";
 import Button from "components/Button/Button";
 import { useMultichainMarketTokenBalancesRequest } from "components/Synthetics/GmxAccountModal/hooks";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
@@ -33,7 +35,6 @@ import Buy16Icon from "img/ic_buy_16.svg?react";
 import Sell16Icon from "img/ic_sell_16.svg?react";
 
 import { PoolsDetailsMarketAmount } from "./PoolsDetailsMarketAmount";
-import { TransferInModal } from "./TransferInModal";
 
 type Props = {
   glvOrMarketInfo: GlvOrMarketInfo | undefined;
@@ -211,9 +212,14 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
           <Trans>Deposit {glvOrGm}</Trans>
         </Button>
       </div>
-      <TransferInModal
+      <BridgeInModal
         isVisible={openedTransferModal === "transferIn"}
         setIsVisible={(newIsVisible) => setOpenedTransferModal(newIsVisible ? "transferIn" : undefined)}
+        glvOrMarketInfo={glvOrMarketInfo}
+      />
+      <BridgeOutModal
+        isVisible={openedTransferModal === "transferOut"}
+        setIsVisible={(newIsVisible) => setOpenedTransferModal(newIsVisible ? "transferOut" : undefined)}
         glvOrMarketInfo={glvOrMarketInfo}
       />
     </div>
