@@ -143,7 +143,7 @@ export function MenuSection({
   const mainNavItems = [
     { icon: <TradeIcon />, label: t`Trade`, key: "trade", to: "/trade" },
     { icon: <DatabaseIcon />, label: t`Pools`, key: "pools", to: "/pools" },
-    { icon: <EarnIcon />, label: t`Stake`, key: "stake", to: "/stake" },
+    { icon: <EarnIcon />, label: t`Earn`, key: "earn", to: "/earn" },
     { icon: <DashboardIcon />, label: t`Stats`, key: "stats", to: "/stats" },
     { icon: <BuyIcon />, label: t`Buy`, key: "buy", to: "/buy" },
     { icon: <ReferralsIcon />, label: t`Referrals`, key: "referrals", to: "/referrals" },
@@ -160,7 +160,7 @@ export function MenuSection({
           key={item.key}
           icon={item.icon}
           label={item.label}
-          isActive={pathname === item.to}
+          isActive={pathname === item.to || pathname.startsWith(`${item.to}/`)}
           isCollapsed={isCollapsed}
           to={item.to}
           onClick={onMenuItemClick}

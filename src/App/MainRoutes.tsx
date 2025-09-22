@@ -22,6 +22,11 @@ import BuyGMX from "pages/BuyGMX/BuyGMX";
 import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
+import EarnAdditionalOpportunitiesPage from "pages/Earn/AdditionalOpportunities";
+import EarnDiscoveryPage from "pages/Earn/Discovery";
+import EarnDistributionPage from "pages/Earn/Distribution";
+import { EarnRedirect } from "pages/Earn/EarnRedirect";
+import EarnPortfolioPage from "pages/Earn/Portfolio";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import Jobs from "pages/Jobs/Jobs";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
@@ -124,8 +129,21 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
           <Stake />
         </SyntheticsStateContextProvider>
       </Route>
-      {/* redirect from previous stake(earn) url */}
-      <RedirectWithQuery exact from="/earn" to="/stake" />
+      <Route exact path="/earn">
+        <EarnRedirect />
+      </Route>
+      <Route exact path="/earn/discovery">
+        <EarnDiscoveryPage />
+      </Route>
+      <Route exact path="/earn/portfolio">
+        <EarnPortfolioPage />
+      </Route>
+      <Route exact path="/earn/additional-opportunities">
+        <EarnAdditionalOpportunitiesPage />
+      </Route>
+      <Route exact path="/earn/distribution">
+        <EarnDistributionPage />
+      </Route>
       <Route exact path="/buy">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="buy">
           <Buy />

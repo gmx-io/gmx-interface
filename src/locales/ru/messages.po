@@ -276,6 +276,10 @@ msgstr "{0} может использоваться для покупки GM д�
 msgid "Execute Market Swap"
 msgstr "Исполнение рыночного обмена"
 
+#: src/pages/Earn/EarnPageLayout.tsx
+msgid "Discover"
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Volume"
@@ -3193,7 +3197,6 @@ msgid "SL"
 msgstr "SL"
 
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/components/SideNav/SideNav.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 #: src/pages/Stake/Stake.tsx
@@ -3673,6 +3676,10 @@ msgstr "Активация вывода отправлена."
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "Ваш баланс esGMX (IOU) уменьшится на сумму требования после требования, это ожидаемое поведение."
+
+#: src/pages/Earn/EarnPageLayout.tsx
+msgid "Portfolio"
+msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "stop market"
@@ -4259,6 +4266,11 @@ msgstr "Compass Labs Дашборд Токенов GM"
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {3} USD"
 msgstr "Запрос на увеличение {0} {longOrShortText}, +{1} USD, Приемлемая Цена: {2} {3} USD"
+
+#: src/components/SideNav/SideNav.tsx
+#: src/pages/Earn/EarnPageLayout.tsx
+msgid "Earn"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
@@ -7177,6 +7189,10 @@ msgstr "Начальные нереализованные комиссии"
 msgid "Referral Codes"
 msgstr "Реферальные коды"
 
+#: src/pages/Earn/EarnPageLayout.tsx
+msgid "Additional Opportunities"
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
@@ -8732,6 +8748,10 @@ msgstr ""
 msgid "Tier {0}: {currentTierDiscount}% discount"
 msgstr ""
 
+#: src/pages/Earn/EarnPageLayout.tsx
+msgid "Stake GMX and buy GLV or GM to earn rewards."
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/Synthetics/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
@@ -8856,6 +8876,7 @@ msgid "Deposit {0} USD into {1} {longOrShortText}"
 msgstr "Внести {0} USD в {1} {longOrShortText}"
 
 #: src/pages/Dashboard/GmxCard.tsx
+#: src/pages/Earn/EarnPageLayout.tsx
 msgid "Distribution"
 msgstr "Распределение"
 
