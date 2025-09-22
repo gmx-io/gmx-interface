@@ -26,6 +26,8 @@ import type {
   ResolutionString,
 } from "../../charting_library";
 
+import "./ExchangeChart.scss";
+
 type Props = {
   chainId: number;
   chartLines: StaticChartLine[];
