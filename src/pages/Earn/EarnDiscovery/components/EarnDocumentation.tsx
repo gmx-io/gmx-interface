@@ -4,7 +4,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export default function EarnDocumentation() {
   return (
-    <div className="flex flex-col gap-12 rounded-8 border border-slate-700 bg-slate-900 p-20">
+    <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-20">
       <h4 className="text-16 font-medium text-typography-primary">{t`Documentation`}</h4>
       <div className="flex flex-col gap-8">
         <ExternalLink

@@ -4,6 +4,7 @@ import EarnPageLayout from "../EarnPageLayout";
 import EarnDocumentation from "./components/EarnDocumentation";
 import EarnFaq from "./components/EarnFaq";
 import EarnProductCard from "./components/EarnProductCard";
+import EarnYieldOverview from "./components/EarnYieldOverview";
 
 export default function EarnDiscoveryPage() {
   return (
@@ -28,6 +29,7 @@ export default function EarnDiscoveryPage() {
             <EarnProductCard type="glv" />
             <EarnProductCard type="gm" />
           </div>
+          <EarnYieldOverview />
         </div>
 
         <div className="flex w-[400px] shrink-0 flex-col gap-8">
