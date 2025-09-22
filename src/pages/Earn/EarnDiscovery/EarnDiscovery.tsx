@@ -1,9 +1,9 @@
 import { Trans } from "@lingui/macro";
 
+import EarnPageLayout from "../EarnPageLayout";
 import EarnDocumentation from "./components/EarnDocumentation";
 import EarnFaq from "./components/EarnFaq";
 import EarnProductCard from "./components/EarnProductCard";
-import EarnPageLayout from "./EarnPageLayout";
 
 export default function EarnDiscoveryPage() {
   return (

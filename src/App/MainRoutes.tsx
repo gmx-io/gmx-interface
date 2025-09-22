@@ -23,7 +23,7 @@ import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
 import EarnAdditionalOpportunitiesPage from "pages/Earn/EarnAdditionalOpportunities";
-import EarnDiscoveryPage from "pages/Earn/EarnDiscovery";
+import EarnDiscoveryPage from "pages/Earn/EarnDiscovery/EarnDiscovery";
 import EarnDistributionPage from "pages/Earn/EarnDistribution";
 import EarnPortfolioPage from "pages/Earn/EarnPortfolio";
 import { EarnRedirect } from "pages/Earn/EarnRedirect";
