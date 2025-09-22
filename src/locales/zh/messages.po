@@ -302,6 +302,7 @@ msgid "To"
 msgstr ""
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
+#: src/pages/Earn/components/EarnFaq.tsx
 msgid "FAQ"
 msgstr ""
 
@@ -330,6 +331,10 @@ msgstr "查看状态"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buyable"
 msgstr "可购买"
+
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "What is GLV?"
+msgstr ""
 
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "To begin trading on GMX deposit assets into GMX account."
@@ -1472,6 +1477,10 @@ msgstr "此代币从 {0} 市场的杠杆交易和交换中自动累积费用。�
 msgid "To Network"
 msgstr ""
 
+#: src/pages/Earn/components/EarnFaq.tsx
+msgid "GLV consists of a vault holding multiple separate GM tokens with the same backing tokens. For example, GLV [ETH-USDC] holds several markets that are also exposed to ETH and USDC. GLV allows users to make more passive decisions rather than finding a specific GM pool to join, as GLV gives a wider, more optimized exposure for passive liquidity providers. GM is mainly focused on liquidity providers who aim to have exposure to only a few markets."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min order: {0}"
 msgstr "最小订单：{0}"
@@ -1680,6 +1689,10 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Limit Swap"
 msgstr "更新限价交换"
+
+#: src/pages/Earn/components/EarnFaq.tsx
+msgid "For staking GMX, only Avalanche and Arbitrum are currently supported. Different compositions of GLV and GM tokens exist per chain, please check the pools page to get an overview of what's available."
+msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.jsx
 msgid "fee"
@@ -2031,6 +2044,7 @@ msgstr "未选中没收利润"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
+#: src/pages/Earn/components/EarnProductCard.tsx
 msgid "Buy GM"
 msgstr "购买 GM"
 
@@ -2191,6 +2205,10 @@ msgstr ""
 #: src/pages/Stake/Vesting.tsx
 msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
 msgstr "将 esGMX 代币转换为 GMX 代币。<0/>在使用金库前，请阅读 <1>授权详情</1>。"
+
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Passive"
+msgstr ""
 
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
 msgid "Try Express"
@@ -2516,6 +2534,10 @@ msgstr "仓位"
 msgid "Trading Volume"
 msgstr "交易量"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Support isolated liquidity per market"
+msgstr ""
+
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing limit order in the {0} market pool but it lacks liquidity for this order."
 msgstr "您在 {0} 市场池中有现有限价订单，但该订单缺乏流动性。"
@@ -2562,6 +2584,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 msgid "The amount you are trying to deposit exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
+msgstr ""
+
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Active"
 msgstr ""
 
 #: src/pages/Stake/VesterDepositModal.tsx
@@ -2783,6 +2809,10 @@ msgstr "可领取金额"
 msgid "Job openings at GMX."
 msgstr "GMX 的职位空缺。"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Autocompound"
+msgstr ""
+
 #: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Initial collateral (collateral excluding borrow and funding Fee)."
 msgstr ""
@@ -2810,6 +2840,10 @@ msgstr "否则，请尝试在您的钱包设置中更改 RPC URL，可借助 <0>
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
+msgstr ""
+
+#: src/pages/Earn/components/EarnFaq.tsx
+msgid "What networks are supported?"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
@@ -3462,6 +3496,10 @@ msgstr ""
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 msgid "Annually"
+msgstr ""
+
+#: src/pages/Earn/components/EarnFaq.tsx
+msgid "Can I unstake anytime?"
 msgstr ""
 
 #: src/pages/Stake/StakeModal.tsx
@@ -4243,6 +4281,7 @@ msgid "Funding Activity"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
+#: src/pages/Earn/components/EarnProductCard.tsx
 msgid "Buy GLV"
 msgstr "购买 GLV"
 
@@ -4355,6 +4394,7 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/pages/Dashboard/WeightText.tsx
+#: src/pages/Earn/components/EarnProductCard.tsx
 msgid "Read more"
 msgstr "阅读更多"
 
@@ -4558,6 +4598,10 @@ msgstr "清算价格"
 msgid "Trading Pair Price Alerts"
 msgstr "交易对价格警报"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Optimized exposure to the highest utilized pools"
+msgstr ""
+
 #: src/components/Exchange/OrdersList.jsx
 msgid "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."
 msgstr "如果该订单执行，您将至少收到 {0} {1}。确切执行价格可能因订单执行时的费用而异。"
@@ -4705,6 +4749,10 @@ msgstr "名称最多 10 个符号"
 msgid "Users"
 msgstr "用户"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Auto-compounding yield"
+msgstr ""
+
 #: src/components/GasPaymentTokenSelector/GasPaymentTokenSelector.tsx
 #: src/components/GasPaymentTokenSelector/GasPaymentTokenSelector.tsx
 msgid "Gas Payment Token"
@@ -4830,6 +4878,10 @@ msgstr "止损市价失败"
 
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Address copied to your clipboard"
+msgstr ""
+
+#: src/pages/Earn/components/EarnDocumentation.tsx
+msgid "Documentation"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
@@ -5032,6 +5084,10 @@ msgstr "此竞赛已结束。"
 msgid "Shorts Net Rate / 1h"
 msgstr "做空净率 / 1h"
 
+#: src/pages/Earn/EarnDiscovery.tsx
+msgid "Discover GMX Earn"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Realized PnL insufficient for fees."
 msgstr ""
@@ -5180,6 +5236,10 @@ msgstr "<0>切换到：</0>"
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price."
 msgstr "{typeString} 做空限价：当价格高于触发价格时 {0} 一个做空仓位。"
+
+#: src/pages/Earn/EarnDiscovery.tsx
+msgid "Welcome to GMX Earn. Learn how GMX, GLV, and GM work together to power a decentralized and efficient trading experience. Start your journey by understanding how each token fits into the bigger picture — and how you can participate."
+msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "No trades match the selected filters"
@@ -5410,6 +5470,10 @@ msgstr "存入 <0>GMX</0> 和 <1>esGMX</1> 代币以赚取奖励。"
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
 msgstr "奖金回扣是一个估计值，可达开仓费用的 {0}%。它将按比例空投为 {incentivesTokenTitle} 代币。<0><1>阅读更多</1>。</0>"
+
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Get rewards from trading fees"
+msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "<0>The order will be executed when the oracle price is {0} {1}.</0><1/><2>Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if the price impact exceeds your acceptable price.</2>"
@@ -5863,6 +5927,10 @@ msgstr "关闭 {longOrShortText} {0}"
 msgid "Update order"
 msgstr ""
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Stake GMX to earn GMX rewards"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling shift request."
 msgstr ""
@@ -5927,6 +5995,10 @@ msgstr "操作"
 #: src/pages/Dashboard/GmCard.tsx
 msgid "Supply"
 msgstr "供应"
+
+#: src/pages/Earn/components/EarnFaq.tsx
+msgid "GMX staking rewards get distributed from a buyback and distribute model. GMX tokens get bought back from the open market with revenue generated from the protocol and then distributed back to stakers. No new GMX tokens are minted during this process."
+msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Positive Funding Fees"
@@ -6481,6 +6553,10 @@ msgstr ""
 msgid "Max {0} long exceeded"
 msgstr "超过最大 {0} 多头"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Auto-rebalancing of liquidity"
+msgstr ""
+
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
@@ -6633,6 +6709,10 @@ msgstr "胜 / 负"
 msgid "Min position size: {0}"
 msgstr "最小头寸大小：{0}"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "GM is a yield bearing token that tracks liquidity for specific GMX markets. Liquidity providers earn trading, swap, and borrowing fees that automatically compound into their GM balance."
+msgstr ""
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/sidecarOrders/utils.ts
@@ -6736,6 +6816,10 @@ msgstr ""
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submit"
 msgstr "提交"
+
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Participate in protocol governance"
+msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signed!"
@@ -6949,6 +7033,10 @@ msgstr "年化："
 
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Concluded Competitions"
+msgstr ""
+
+#: src/pages/Earn/components/EarnFaq.tsx
+msgid "What's the difference between providing liquidity in GLV or GM?"
 msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
@@ -7479,6 +7567,7 @@ msgid "Session generated"
 msgstr "会话已生成"
 
 #: src/pages/Dashboard/GmxCard.tsx
+#: src/pages/Earn/components/EarnProductCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
 msgstr "购买 GMX"
@@ -7558,6 +7647,10 @@ msgstr "回扣"
 #: src/pages/BuyGlp/BuyGlp.jsx
 msgid "GMX V1 markets are disabled and only allow for position closing. GLP is being phased out and no longer supports GMX V1 markets."
 msgstr "GMX V1 市场已禁用，仅允许平仓。GLP 正在逐步淘汰，不再支持 GMX V1 市场。"
+
+#: src/pages/Earn/components/EarnFaq.tsx
+msgid "Yes. All tokens (GMX, GLV and GM) are liquid and can be unstaked and withdrawn at any time. For LP tokens, there could be some edge cases where your liquidity is being used by active trades."
+msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Sell failed."
@@ -7950,6 +8043,10 @@ msgstr ""
 msgid "GMX community discussion"
 msgstr "GMX 社区讨论"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Earn trading fees and funding spreads"
+msgstr ""
+
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{arbitrumLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 msgstr "{arbitrumLink} GLV 池子被 <0>激励{sparkle}。</0>"
@@ -8057,6 +8154,14 @@ msgstr "外部交换 {0} 到 {1}"
 msgid "Position"
 msgstr "仓位"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "What is GMX?"
+msgstr ""
+
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "GLV (GMX Liquidity Vault) gives diversified exposure to a basket of GM markets. Vault positions rebalance automatically based on utilization, unlocking higher potential yield versus single pools."
+msgstr ""
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Bonus Rebate"
 msgstr "奖金返利"
@@ -8101,6 +8206,10 @@ msgstr ""
 msgid "{nativeTokenSymbol} APR"
 msgstr "{nativeTokenSymbol} 年利率"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "GMX is the governance and utility token of the GMX protocol. Staking GMX grants rewards funded by trading fees and protocol buybacks."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram Group (Chinese)"
 msgstr "Telegram 群组（中文）"
@@ -8131,6 +8240,11 @@ msgstr "清算价格"
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 msgid "Leave at least {0} {1} for gas."
+msgstr ""
+
+#: src/pages/Earn/components/EarnProductCard.tsx
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "No active management required"
 msgstr ""
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -8409,6 +8523,10 @@ msgstr ""
 msgid "APY"
 msgstr "年利率"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "What is GM?"
+msgstr ""
+
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "staked"
 msgstr "已质押"
@@ -8564,6 +8682,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Price change to Liq."
 msgstr "价格变化至清算"
+
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Become a market maker"
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b LP incentives"
@@ -8857,6 +8979,10 @@ msgstr "生成推荐代码"
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Swap"
 msgstr "交换"
+
+#: src/pages/Earn/components/EarnFaq.tsx
+msgid "Where do GMX staking rewards come from?"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "long"
@@ -9344,6 +9470,10 @@ msgstr "<0>流动性不足以执行订单</0><1>作为交易所价格总和的�
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Your position's collateral after deducting fees:"
 msgstr "扣除费用后您的仓位抵押品："
+
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Great for passive users"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Selling..."

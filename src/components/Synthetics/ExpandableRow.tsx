@@ -63,6 +63,7 @@ interface Props {
   scrollIntoViewOnMobile?: boolean;
   withToggleSwitch?: boolean;
   handleClassName?: string;
+  chevronClassName?: string;
 }
 
 export function ExpandableRow({
@@ -79,6 +80,7 @@ export function ExpandableRow({
   scrollIntoViewOnMobile = false,
   withToggleSwitch = false,
   handleClassName,
+  chevronClassName,
 }: Props) {
   const previousHasError = usePrevious(hasError);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -125,9 +127,9 @@ export function ExpandableRow({
   const value = withToggleSwitch ? (
     <ToggleSwitch isChecked={open} setIsChecked={onToggle} disabled={disabled} />
   ) : open ? (
-    <FaChevronUp className="w-12 text-typography-secondary group-gmx-hover:text-blue-300" />
+    <FaChevronUp className={cx("w-12 text-typography-secondary group-gmx-hover:text-blue-300", chevronClassName)} />
   ) : (
-    <FaChevronDown className="w-12 text-typography-secondary group-gmx-hover:text-blue-300" />
+    <FaChevronDown className={cx("w-12 text-typography-secondary group-gmx-hover:text-blue-300", chevronClassName)} />
   );
 
   return (

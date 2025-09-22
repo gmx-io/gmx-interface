@@ -302,6 +302,7 @@ msgid "To"
 msgstr ""
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
+#: src/pages/Earn/components/EarnFaq.tsx
 msgid "FAQ"
 msgstr ""
 
@@ -330,6 +331,10 @@ msgstr "상태 보기."
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buyable"
 msgstr "구매 가능"
+
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "What is GLV?"
+msgstr ""
 
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "To begin trading on GMX deposit assets into GMX account."
@@ -1472,6 +1477,10 @@ msgstr "이 토큰은 {0} 마켓의 레버리지 트레이딩 및 스왑에서 �
 msgid "To Network"
 msgstr ""
 
+#: src/pages/Earn/components/EarnFaq.tsx
+msgid "GLV consists of a vault holding multiple separate GM tokens with the same backing tokens. For example, GLV [ETH-USDC] holds several markets that are also exposed to ETH and USDC. GLV allows users to make more passive decisions rather than finding a specific GM pool to join, as GLV gives a wider, more optimized exposure for passive liquidity providers. GM is mainly focused on liquidity providers who aim to have exposure to only a few markets."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min order: {0}"
 msgstr "최소 주문: {0}"
@@ -1680,6 +1689,10 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Limit Swap"
 msgstr "지정가 스왑 업데이트"
+
+#: src/pages/Earn/components/EarnFaq.tsx
+msgid "For staking GMX, only Avalanche and Arbitrum are currently supported. Different compositions of GLV and GM tokens exist per chain, please check the pools page to get an overview of what's available."
+msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.jsx
 msgid "fee"
@@ -2031,6 +2044,7 @@ msgstr "상실 이익이 확인되지 않았습니다."
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
+#: src/pages/Earn/components/EarnProductCard.tsx
 msgid "Buy GM"
 msgstr "GM 구매"
 
@@ -2191,6 +2205,10 @@ msgstr ""
 #: src/pages/Stake/Vesting.tsx
 msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
 msgstr "esGMX 토큰을 GMX 토큰으로 변환.<0/>볼트 사용 전에 <1>베스팅 세부 사항</1>을 읽으세요."
+
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Passive"
+msgstr ""
 
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
 msgid "Try Express"
@@ -2516,6 +2534,10 @@ msgstr "포지션"
 msgid "Trading Volume"
 msgstr "거래량"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Support isolated liquidity per market"
+msgstr ""
+
 #: src/components/Synthetics/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing limit order in the {0} market pool but it lacks liquidity for this order."
 msgstr "{0} 마켓 풀에 기존 지정가 주문이 있지만 이 주문에 대한 유동성이 부족합니다."
@@ -2562,6 +2584,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 msgid "The amount you are trying to deposit exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
+msgstr ""
+
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Active"
 msgstr ""
 
 #: src/pages/Stake/VesterDepositModal.tsx
@@ -2783,6 +2809,10 @@ msgstr "수령할 양"
 msgid "Job openings at GMX."
 msgstr "GMX의 구인"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Autocompound"
+msgstr ""
+
 #: src/components/Synthetics/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Initial collateral (collateral excluding borrow and funding Fee)."
 msgstr ""
@@ -2810,6 +2840,10 @@ msgstr "그렇지 않으면 <0>chainlist.org</0>의 도움을 받아 지갑 설�
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
+msgstr ""
+
+#: src/pages/Earn/components/EarnFaq.tsx
+msgid "What networks are supported?"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
@@ -3462,6 +3496,10 @@ msgstr ""
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 msgid "Annually"
+msgstr ""
+
+#: src/pages/Earn/components/EarnFaq.tsx
+msgid "Can I unstake anytime?"
 msgstr ""
 
 #: src/pages/Stake/StakeModal.tsx
@@ -4243,6 +4281,7 @@ msgid "Funding Activity"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
+#: src/pages/Earn/components/EarnProductCard.tsx
 msgid "Buy GLV"
 msgstr "GLV 구매"
 
@@ -4355,6 +4394,7 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/pages/Dashboard/WeightText.tsx
+#: src/pages/Earn/components/EarnProductCard.tsx
 msgid "Read more"
 msgstr "더 알아보기"
 
@@ -4558,6 +4598,10 @@ msgstr "청산가"
 msgid "Trading Pair Price Alerts"
 msgstr "거래 쌍 가격 알림"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Optimized exposure to the highest utilized pools"
+msgstr ""
+
 #: src/components/Exchange/OrdersList.jsx
 msgid "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."
 msgstr "해당 주문이 실행되게 되면 최소 {0} {1}을 받을 수 있습니다. 정확한 실행가격은 주문이 실행된 수수료에 의해 상이합니다."
@@ -4705,6 +4749,10 @@ msgstr "이름에 최대 10자"
 msgid "Users"
 msgstr "사용자"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Auto-compounding yield"
+msgstr ""
+
 #: src/components/GasPaymentTokenSelector/GasPaymentTokenSelector.tsx
 #: src/components/GasPaymentTokenSelector/GasPaymentTokenSelector.tsx
 msgid "Gas Payment Token"
@@ -4830,6 +4878,10 @@ msgstr "스탑 마켓 실패"
 
 #: src/components/Synthetics/GmxAccountModal/MainView.tsx
 msgid "Address copied to your clipboard"
+msgstr ""
+
+#: src/pages/Earn/components/EarnDocumentation.tsx
+msgid "Documentation"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
@@ -5032,6 +5084,10 @@ msgstr "이 대회가 종료되었습니다."
 msgid "Shorts Net Rate / 1h"
 msgstr "숏 순율 / 1시간"
 
+#: src/pages/Earn/EarnDiscovery.tsx
+msgid "Discover GMX Earn"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.jsx
 msgid "Realized PnL insufficient for fees."
 msgstr ""
@@ -5180,6 +5236,10 @@ msgstr "<0>전환:</0>"
 #: src/components/Synthetics/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price."
 msgstr "{typeString} 숏 지정가: 가격이 트리거 가격 위로 오를 때 숏 포지션 {0}."
+
+#: src/pages/Earn/EarnDiscovery.tsx
+msgid "Welcome to GMX Earn. Learn how GMX, GLV, and GM work together to power a decentralized and efficient trading experience. Start your journey by understanding how each token fits into the bigger picture — and how you can participate."
+msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "No trades match the selected filters"
@@ -5410,6 +5470,10 @@ msgstr "<0>GMX</0> 및 <1>esGMX</1> 토큰을 예치하여 보상을 받으세�
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
 msgstr "보너스 리베이트는 추정치이며 개설 수수료의 최대 {0}%일 수 있습니다. 이는 {incentivesTokenTitle} 토큰으로 비례 배분되어 에어드랍됩니다. <0><1>더 읽기</1>.</0>"
+
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Get rewards from trading fees"
+msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "<0>The order will be executed when the oracle price is {0} {1}.</0><1/><2>Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if the price impact exceeds your acceptable price.</2>"
@@ -5863,6 +5927,10 @@ msgstr "{longOrShortText} {0} 종료"
 msgid "Update order"
 msgstr ""
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Stake GMX to earn GMX rewards"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling shift request."
 msgstr ""
@@ -5927,6 +5995,10 @@ msgstr "액션"
 #: src/pages/Dashboard/GmCard.tsx
 msgid "Supply"
 msgstr "공급량"
+
+#: src/pages/Earn/components/EarnFaq.tsx
+msgid "GMX staking rewards get distributed from a buyback and distribute model. GMX tokens get bought back from the open market with revenue generated from the protocol and then distributed back to stakers. No new GMX tokens are minted during this process."
+msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Positive Funding Fees"
@@ -6481,6 +6553,10 @@ msgstr ""
 msgid "Max {0} long exceeded"
 msgstr "{0} 롱 최대치 초과"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Auto-rebalancing of liquidity"
+msgstr ""
+
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
@@ -6633,6 +6709,10 @@ msgstr "승 / 패"
 msgid "Min position size: {0}"
 msgstr "최소 포지션 크기: {0}"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "GM is a yield bearing token that tracks liquidity for specific GMX markets. Liquidity providers earn trading, swap, and borrowing fees that automatically compound into their GM balance."
+msgstr ""
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/sidecarOrders/utils.ts
@@ -6736,6 +6816,10 @@ msgstr ""
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submit"
 msgstr "제출"
+
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Participate in protocol governance"
+msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signed!"
@@ -6949,6 +7033,10 @@ msgstr "연간화:"
 
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Concluded Competitions"
+msgstr ""
+
+#: src/pages/Earn/components/EarnFaq.tsx
+msgid "What's the difference between providing liquidity in GLV or GM?"
 msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
@@ -7479,6 +7567,7 @@ msgid "Session generated"
 msgstr "세션 생성됨"
 
 #: src/pages/Dashboard/GmxCard.tsx
+#: src/pages/Earn/components/EarnProductCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
 msgstr "GMX 구매"
@@ -7558,6 +7647,10 @@ msgstr "리베이트"
 #: src/pages/BuyGlp/BuyGlp.jsx
 msgid "GMX V1 markets are disabled and only allow for position closing. GLP is being phased out and no longer supports GMX V1 markets."
 msgstr "GMX V1 시장은 비활성화되어 포지션 종료만 허용됩니다. GLP는 단계적으로 폐지되며 더 이상 GMX V1 시장을 지원하지 않습니다."
+
+#: src/pages/Earn/components/EarnFaq.tsx
+msgid "Yes. All tokens (GMX, GLV and GM) are liquid and can be unstaked and withdrawn at any time. For LP tokens, there could be some edge cases where your liquidity is being used by active trades."
+msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Sell failed."
@@ -7950,6 +8043,10 @@ msgstr ""
 msgid "GMX community discussion"
 msgstr "GMX 커뮤니티 토론"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Earn trading fees and funding spreads"
+msgstr ""
+
 #: src/components/TokenCard/TokenCard.tsx
 msgid "{arbitrumLink} GLV Pools are <0>incentivized{sparkle}.</0>"
 msgstr "{arbitrumLink} GLV 풀은 <0>인센티브{sparkle}.</0>"
@@ -8057,6 +8154,14 @@ msgstr "{0}을 {1}로 외부 스왑"
 msgid "Position"
 msgstr "포지션"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "What is GMX?"
+msgstr ""
+
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "GLV (GMX Liquidity Vault) gives diversified exposure to a basket of GM markets. Vault positions rebalance automatically based on utilization, unlocking higher potential yield versus single pools."
+msgstr ""
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Bonus Rebate"
 msgstr "보너스 리베이트"
@@ -8101,6 +8206,10 @@ msgstr ""
 msgid "{nativeTokenSymbol} APR"
 msgstr "{nativeTokenSymbol} APR"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "GMX is the governance and utility token of the GMX protocol. Staking GMX grants rewards funded by trading fees and protocol buybacks."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram Group (Chinese)"
 msgstr "텔레그램 그룹 (중국어)"
@@ -8131,6 +8240,11 @@ msgstr "청산 가격"
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/Exchange/SwapBox.jsx
 msgid "Leave at least {0} {1} for gas."
+msgstr ""
+
+#: src/pages/Earn/components/EarnProductCard.tsx
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "No active management required"
 msgstr ""
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -8409,6 +8523,10 @@ msgstr ""
 msgid "APY"
 msgstr "APY"
 
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "What is GM?"
+msgstr ""
+
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "staked"
 msgstr "스테이킹됨"
@@ -8564,6 +8682,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Price change to Liq."
 msgstr "청산까지 가격 변화"
+
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Become a market maker"
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b LP incentives"
@@ -8857,6 +8979,10 @@ msgstr "추천 코드 생성"
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Swap"
 msgstr "스왑"
+
+#: src/pages/Earn/components/EarnFaq.tsx
+msgid "Where do GMX staking rewards come from?"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "long"
@@ -9344,6 +9470,10 @@ msgstr "<0>주문 실행 유동성 부족</0><1>거래소 가격 집계 시장 �
 #: src/components/Exchange/ConfirmationBox.jsx
 msgid "Your position's collateral after deducting fees:"
 msgstr "수수료 차감 후 포지션 담보:"
+
+#: src/pages/Earn/components/EarnProductCard.tsx
+msgid "Great for passive users"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.jsx
 msgid "Selling..."
