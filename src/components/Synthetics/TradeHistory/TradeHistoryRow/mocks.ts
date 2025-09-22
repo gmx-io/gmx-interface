@@ -140,14 +140,6 @@ export const requestIncreasePosition = prepare({
       type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
-    longPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    shortPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
-    },
     poolValueMin: {
       type: "bigint",
       hex: "0xb9a13c1cd44fb107b4317ba1aff5",
@@ -621,14 +613,6 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
-    longPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    shortPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
-    },
     poolValueMin: {
       type: "bigint",
       hex: "0xb9ae6f030e75b41fc7ad7c5c4a59",
@@ -1097,14 +1081,6 @@ export const deposit1Usd = prepare({
       type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
-    longPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    shortPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
-    },
     poolValueMin: {
       type: "bigint",
       hex: "0x05c5aff17ef19c51e3390cc886d66d",
@@ -1571,14 +1547,6 @@ export const createOrderDecreaseLong = prepare({
       type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
     },
-    longPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    shortPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
-    },
     poolValueMin: {
       type: "bigint",
       hex: "0x075604a051118873263d1c8933c137",
@@ -2037,14 +2005,6 @@ export const cancelOrderIncreaseLong = prepare({
     maxShortPoolAmount: {
       type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
-    },
-    longPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    shortPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
     },
     poolValueMin: {
       type: "bigint",
@@ -2511,14 +2471,6 @@ export const createOrderIncreaseLong = prepare({
     maxShortPoolAmount: {
       type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
-    },
-    longPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    shortPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
     },
     poolValueMin: {
       type: "bigint",
@@ -2996,14 +2948,6 @@ export const executeOrderDecreaseShort = prepare({
     maxShortPoolAmount: {
       type: "bigint",
       hex: "0xe8d4a51000",
-    },
-    longPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    shortPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
     },
     poolValueMin: {
       type: "bigint",
@@ -3492,14 +3436,6 @@ export const executeOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0xe8d4a51000",
     },
-    longPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    shortPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
-    },
     poolValueMin: {
       type: "bigint",
       hex: "0xfdafb5ebe27c6ab88ea4d2ead354cb",
@@ -3985,14 +3921,6 @@ export const frozenOrderIncreaseShort = prepare({
       type: "bigint",
       hex: "0x09184e72a000",
     },
-    longPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    shortPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
-    },
     poolValueMin: {
       type: "bigint",
       hex: "0x0738fb12f5ec0f84e24c4d140d1ba86c",
@@ -4461,14 +4389,6 @@ export const undefinedOrder = prepare({
     maxShortPoolAmount: {
       type: "bigint",
       hex: "0xe8d4a51000",
-    },
-    longPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    shortPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
     },
     poolValueMin: {
       type: "bigint",
@@ -4943,14 +4863,6 @@ export const liquidated = prepare({
     maxShortPoolAmount: {
       type: "bigint",
       hex: "0x015d3ef79800",
-    },
-    longPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    shortPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
     },
     poolValueMin: {
       type: "bigint",
@@ -5486,14 +5398,6 @@ export const increaseLongETH = prepare({
     maxShortPoolAmount: {
       type: "bigint",
       hex: "0x033b2e3c9fd0803ce8000000",
-    },
-    longPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    shortPoolAmountAdjustment: {
-      type: "bigint",
-      hex: "0x00",
     },
     poolValueMin: {
       type: "bigint",
@@ -6188,8 +6092,6 @@ export const createOrderStopMarketLong = prepare({
     maxShortPoolUsdForDeposit: { type: "bigint", value: "60000000000000000000000000000000000000" },
     maxLongPoolAmount: { type: "bigint", value: "220000000000" },
     maxShortPoolAmount: { type: "bigint", value: "110000000000000" },
-    longPoolAmountAdjustment: { type: "bigint", value: "0" },
-    shortPoolAmountAdjustment: { type: "bigint", value: "0" },
     reserveFactorLong: { type: "bigint", value: "2150000000000000000000000000000" },
     reserveFactorShort: { type: "bigint", value: "2150000000000000000000000000000" },
     openInterestReserveFactorLong: { type: "bigint", value: "2100000000000000000000000000000" },
@@ -6414,8 +6316,6 @@ export const executeOrderStopMarketLong = prepare({
     maxShortPoolUsdForDeposit: { type: "bigint", value: "60000000000000000000000000000000000000" },
     maxLongPoolAmount: { type: "bigint", value: "220000000000" },
     maxShortPoolAmount: { type: "bigint", value: "110000000000000" },
-    longPoolAmountAdjustment: { type: "bigint", value: "0" },
-    shortPoolAmountAdjustment: { type: "bigint", value: "0" },
     reserveFactorLong: { type: "bigint", value: "2150000000000000000000000000000" },
     reserveFactorShort: { type: "bigint", value: "2150000000000000000000000000000" },
     openInterestReserveFactorLong: { type: "bigint", value: "2100000000000000000000000000000" },
