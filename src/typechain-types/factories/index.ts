@@ -41,6 +41,7 @@ export { RewardRouter__factory } from "./RewardRouter__factory";
 export { RewardTracker__factory } from "./RewardTracker__factory";
 export { Router__factory } from "./Router__factory";
 export { RouterV2__factory } from "./RouterV2__factory";
+export { SmartAccount__factory } from "./SmartAccount__factory";
 export { StBTC__factory } from "./StBTC__factory";
 export { SubaccountApproval__factory } from "./SubaccountApproval__factory";
 export { SubaccountGelatoRelayRouter__factory } from "./SubaccountGelatoRelayRouter__factory";

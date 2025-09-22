@@ -1709,6 +1709,10 @@ msgstr "GMX 프로포절 투표 페이지"
 msgid "DEX Aggregator"
 msgstr "DEX 어그리게이터"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Waiting for remaining Safe confirmations..."
+msgstr ""
+
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2664,6 +2668,10 @@ msgstr "최대 부분 수: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "앱 실행하기"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/utils.ts
+msgid "Unable to sign message with EOA. Error:"
+msgstr ""
+
 #: src/components/BuyCards/BuyCards.tsx
 msgid "Buy token on"
 msgstr ""
@@ -3088,6 +3096,10 @@ msgstr "주문 유효화"
 msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
 msgstr "{0}의 최대 풀 수용량에 도달했습니다"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/utils.ts
+msgid "Please continue signing on your wallet interface where the signature request should appear. You will be able to claim once all signers have signed."
+msgstr ""
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "이 크기로 숏 증가를 위한 유동성이 없습니다. 최대 숏 크기: {0}<1/><2/>롱 감소를 위한 실행 가격."
@@ -3332,8 +3344,8 @@ msgid "Leverage"
 msgstr "레버리지"
 
 #: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
-msgid "To sign the terms using a Safe account in order to claim, please <0>follow these steps</0>."
-msgstr ""
+#~ msgid "To sign the terms using a Safe account in order to claim, please <0>follow these steps</0>."
+#~ msgstr ""
 
 #: src/pages/Exchange/Exchange.tsx
 msgid "Enable orders sent."
@@ -3849,6 +3861,10 @@ msgstr "{0}을 1inch에서 스왑"
 #: src/components/Glp/GlpSwap.jsx
 msgid "{0} GLP bought with {1} {2}!"
 msgstr "{1} {2}로 GLP를 구매하였습니다!"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Please accept the Claim Terms above to continue."
+msgstr ""
 
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -7053,6 +7069,10 @@ msgstr "스톱 마켓 실행"
 msgid "Volume traded by this account with an active referral code."
 msgstr "활성 추천 코드로 이 계정의 거래량."
 
+#: src/components/Synthetics/UserIncentiveDistributionList/utils.ts
+msgid "Unable to sign message with smart account. Error:"
+msgstr ""
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized fees"
 msgstr "시작 미실현 수수료"
@@ -8217,6 +8237,10 @@ msgstr "수수료가 지불 금액 초과"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Market Swap"
 msgstr "시장 스왑 실패"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/utils.ts
+msgid "Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing. Error:"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "HoudiniSwap"
