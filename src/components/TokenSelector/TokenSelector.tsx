@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { BiChevronDown } from "react-icons/bi";
+import { FaChevronDown } from "react-icons/fa6";
 
 import { getMarketUiConfig } from "config/markets";
 import { getMarketBadge, getMarketIndexName, getMarketPoolName, MarketsInfoData } from "domain/synthetics/markets";
@@ -9,13 +9,14 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { InfoTokens, Token, TokenInfo } from "domain/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
-import { expandDecimals, formatAmount, formatBalanceAmount } from "lib/numbers";
+import { expandDecimals, formatBalanceAmount, formatBigUsd } from "lib/numbers";
 import { searchBy } from "lib/searchBy";
 import { getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
+import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
@@ -33,7 +34,6 @@ type ExtendedToken = Token & { isMarketToken?: boolean };
 type Props = {
   chainId: number;
   label?: string;
-  size?: "m" | "l";
   className?: string;
   tokenAddress: string;
   tokens: ExtendedToken[];
@@ -80,7 +80,6 @@ export default function TokenSelector(props: Props) {
     missedCoinsPlace,
     marketsInfoData,
     chainId,
-    size = "m",
     qa,
   } = props;
 
@@ -194,31 +193,17 @@ export default function TokenSelector(props: Props) {
   }
 
   return (
-    <div
-      className={cx(
-        "TokenSelector",
-        {
-          "-mr-2": size === "m",
-          "text-h2 -mr-5": size === "l",
-        },
-        props.className
-      )}
-      onClick={(event) => event.stopPropagation()}
-    >
+    <div className={cx("TokenSelector", props.className)} onClick={(event) => event.stopPropagation()}>
       <SlideModal
         qa={qa + "-modal"}
-        className="TokenSelector-modal text-white"
+        className="TokenSelector-modal text-typography-primary"
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={props.label}
         footerContent={footerContent}
+        contentPadding={false}
         headerContent={
-          <SearchInput
-            className="*:!text-body-medium min-[700px]:mt-15"
-            value={searchKeyword}
-            setValue={setSearchKeyword}
-            onKeyDown={_handleKeyDown}
-          />
+          <SearchInput className="mb-16" value={searchKeyword} setValue={setSearchKeyword} onKeyDown={_handleKeyDown} />
         }
       >
         {missedCoinsPlace && (
@@ -229,7 +214,7 @@ export default function TokenSelector(props: Props) {
             isLoaded={Boolean(visibleTokens.length)}
           />
         )}
-        <div className="TokenSelector-tokens">
+        <VerticalScrollFadeContainer className="flex grow flex-col gap-8 overflow-y-auto">
           {sortedFilteredTokens.map((token, tokenIndex) => {
             let info = infoTokens?.[token.address] || ({} as TokenInfo);
 
@@ -250,7 +235,10 @@ export default function TokenSelector(props: Props) {
               <div
                 key={token.address}
                 data-qa={`${qa}-token-${token.symbol}`}
-                className={cx("TokenSelector-token-row", { disabled: tokenState.disabled })}
+                className={cx(
+                  "text-body-medium flex w-full cursor-pointer items-center justify-between px-adaptive py-8 hover:bg-slate-800",
+                  { disabled: tokenState.disabled }
+                )}
                 onClick={() => !tokenState.disabled && onSelectToken(token)}
               >
                 {tokenState.disabled && tokenState.message && (
@@ -258,7 +246,7 @@ export default function TokenSelector(props: Props) {
                     className="TokenSelector-tooltip"
                     handle={<div className="TokenSelector-tooltip-backing" />}
                     position={tokenIndex < filteredTokens.length / 2 ? "bottom" : "top"}
-                    disableHandleStyle
+                    variant="none"
                     closeOnDoubleClick
                     fitHandleWidth
                     renderContent={() => tokenState.message}
@@ -266,60 +254,55 @@ export default function TokenSelector(props: Props) {
                 )}
                 <div className="Token-info">
                   {showTokenImgInDropdown && (
-                    <TokenIcon
-                      symbol={token.symbol}
-                      className="token-logo"
-                      displaySize={40}
-                      importSize={40}
-                      badge={tokenBadge}
-                    />
+                    <TokenIcon symbol={token.symbol} displaySize={40} importSize={40} badge={tokenBadge} />
                   )}
-                  <div className="ml-8 flex items-center gap-4">
-                    <div className="Token-text">
+                  <div className="items ml-16 flex gap-4">
+                    <div>
                       {token.isMarketToken && marketToken ? `GM: ${getMarketIndexName(marketToken)}` : token.symbol}
                     </div>
                     {marketToken && <span className="text-accent">[{getMarketPoolName(marketToken)}]</span>}
                   </div>
                 </div>
-                <div className="Token-balance">
+                <div className="text-body-large flex flex-col items-end gap-2">
                   {(showBalances && balance !== undefined && (
-                    <div className="Token-text">
+                    <div>
                       {balance > 0 &&
                         formatBalanceAmount(balance, token.decimals, undefined, { isStable: token.isStable })}
                       {balance == 0n && "-"}
                     </div>
                   )) ||
                     null}
-                  <span className="text-accent">
-                    {showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
-                      <div>${formatAmount(balanceUsd, 30, 2, true)}</div>
-                    )}
+                  <span className="text-body-small text-typography-secondary">
+                    {showBalances &&
+                      balanceUsd !== undefined &&
+                      balanceUsd > 0 &&
+                      formatBigUsd(balanceUsd, { displayDecimals: 2 })}
                   </span>
                 </div>
               </div>
             );
           })}
-        </div>
-        {sortedFilteredTokens.length === 0 && (
-          <div className="text-16 text-slate-100">
-            <Trans>No tokens matched.</Trans>
-          </div>
-        )}
+          {sortedFilteredTokens.length === 0 && (
+            <div className="p-adaptive text-16 text-typography-secondary">
+              <Trans>No tokens matched</Trans>
+            </div>
+          )}
+        </VerticalScrollFadeContainer>
       </SlideModal>
       <div
         data-qa={qa}
-        className="group/hoverable flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
+        className="group/hoverable group flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-300"
         onClick={() => setIsModalVisible(true)}
       >
         {selectedTokenLabel || (
           <span className="inline-flex items-center">
             {showSymbolImage && (
-              <TokenIcon className="mr-5" symbol={tokenInfo.symbol} importSize={24} displaySize={20} />
+              <TokenIcon className="mr-4" symbol={tokenInfo.symbol} importSize={24} displaySize={20} />
             )}
-            <span>{showTokenName ? tokenInfo.name : tokenInfo.symbol}</span>
+            {showTokenName ? tokenInfo.name : tokenInfo.symbol}
           </span>
         )}
-        <BiChevronDown className="text-body-large" />
+        <FaChevronDown className="w-12 text-typography-secondary group-hover:text-blue-300" />
       </div>
     </div>
   );

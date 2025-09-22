@@ -15,6 +15,7 @@ import useWallet from "lib/wallets/useWallet";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
+import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
 
@@ -91,11 +92,11 @@ export function StatsCard({
 
   const totalFeesEntries = useMemo(
     () => ({
-      "V1 Arbitrum": v1ArbitrumTotalFees?.totalFees,
       "V2 Arbitrum": v2ArbitrumOverview?.totalFees,
-      "V1 Avalanche": v1AvalancheTotalFees?.totalFees,
       "V2 Avalanche": v2AvalancheOverview?.totalFees,
       "V2 Botanix": v2BotanixOverview?.totalFees,
+      "V1 Arbitrum": v1ArbitrumTotalFees?.totalFees,
+      "V1 Avalanche": v1AvalancheTotalFees?.totalFees,
     }),
     [
       v1AvalancheTotalFees?.totalFees,
@@ -108,33 +109,32 @@ export function StatsCard({
 
   const totalVolumeEntries = useMemo(
     () => ({
-      "V1 Arbitrum": v1TotalVolume?.[ARBITRUM],
       "V2 Arbitrum": v2ArbitrumOverview?.totalVolume,
-      "V1 Avalanche": v1TotalVolume?.[AVALANCHE],
       "V2 Avalanche": v2AvalancheOverview?.totalVolume,
       "V2 Botanix": v2BotanixOverview?.totalVolume,
+      "V1 Arbitrum": v1TotalVolume?.[ARBITRUM],
+      "V1 Avalanche": v1TotalVolume?.[AVALANCHE],
     }),
     [v1TotalVolume, v2ArbitrumOverview?.totalVolume, v2AvalancheOverview?.totalVolume, v2BotanixOverview?.totalVolume]
   );
 
   const uniqueUsersEntries = useMemo(
     () => ({
-      "V1 Arbitrum": uniqueUsers?.[ARBITRUM],
       "V2 Arbitrum": v2ArbitrumOverview?.totalUsers,
-      "V1 Avalanche": uniqueUsers?.[AVALANCHE],
       "V2 Avalanche": v2AvalancheOverview?.totalUsers,
       "V2 Botanix": v2BotanixOverview?.totalUsers,
+      "V1 Arbitrum": uniqueUsers?.[ARBITRUM],
+      "V1 Avalanche": uniqueUsers?.[AVALANCHE],
     }),
     [uniqueUsers, v2ArbitrumOverview?.totalUsers, v2AvalancheOverview?.totalUsers, v2BotanixOverview?.totalUsers]
   );
 
   return (
-    <div className="App-card">
-      <div className="App-card-title">
+    <AppCard>
+      <AppCardSection className="text-body-large font-medium">
         <Trans>Stats</Trans>
-      </div>
-      <div className="App-card-divider"></div>
-      <div className="App-card-content">
+      </AppCardSection>
+      <AppCardSection>
         <div className="App-card-row">
           <div className="label">
             <Trans>Fees</Trans>
@@ -144,6 +144,7 @@ export function StatsCard({
               position="bottom-end"
               className="whitespace-nowrap"
               handle={formatAmountHuman(totalFeesUsd, USD_DECIMALS, true, 2)}
+              handleClassName="numbers"
               content={<ChainsStatsTooltipRow entries={totalFeesEntries} />}
             />
           </div>
@@ -169,6 +170,7 @@ export function StatsCard({
                 true,
                 2
               )}
+              handleClassName="numbers"
               content={<ChainsStatsTooltipRow entries={totalVolumeEntries} />}
             />
           </div>
@@ -194,6 +196,7 @@ export function StatsCard({
                 false,
                 2
               )}
+              handleClassName="numbers"
               content={
                 <ChainsStatsTooltipRow showDollar={false} entries={uniqueUsersEntries} decimalsForConversion={0} />
               }
@@ -204,9 +207,11 @@ export function StatsCard({
           <div className="label">
             <Trans>Treasury</Trans>
           </div>
-          <div>{formatAmountHuman(totalTreasuryFundUsd, USD_DECIMALS, true, 2)}</div>
+          <div>
+            <span className="numbers">{formatAmountHuman(totalTreasuryFundUsd, USD_DECIMALS, true, 2)}</span>
+          </div>
         </div>
-      </div>
-    </div>
+      </AppCardSection>
+    </AppCard>
   );
 }

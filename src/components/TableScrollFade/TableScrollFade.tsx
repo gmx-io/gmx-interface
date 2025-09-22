@@ -203,7 +203,7 @@ function ScrollFadeControls({
   rightStyles,
   scrollToLeft,
   scrollToRight,
-  gradientColor = "slate-800",
+  gradientColor = "slate-900",
 }: {
   scrollLeft: number;
   scrollRight: number;
@@ -227,7 +227,7 @@ function ScrollFadeControls({
     <div className="pointer-events-none absolute flex h-full w-full flex-row justify-between" ref={absoluteRef}>
       <div
         className={cx(
-          "group z-[120] h-full max-w-50 cursor-pointer transition-opacity",
+          "group z-[20] h-full max-w-50 cursor-pointer transition-opacity",
           "bg-gradient-to-l from-[transparent]",
           toColor,
           "flex justify-start",
@@ -248,7 +248,7 @@ function ScrollFadeControls({
       </div>
       <div
         className={cx(
-          "group z-[120] h-full max-w-50 cursor-pointer transition-opacity",
+          "group z-[20] h-full max-w-50 cursor-pointer transition-opacity",
           "bg-gradient-to-r from-[transparent]",
           toColor,
           "flex justify-end",
@@ -271,13 +271,29 @@ function ScrollFadeControls({
   );
 }
 
-export function TableScrollFadeContainer({ children }: PropsWithChildren<{}>) {
+export function TableScrollFadeContainer({
+  children,
+  disableScrollFade,
+  className,
+}: PropsWithChildren<{ disableScrollFade?: boolean; className?: string }>) {
   const tableScrollFade = useTableScrollFade();
 
+  useEffect(() => {
+    if (disableScrollFade) {
+      tableScrollFade.scrollToLeft();
+    }
+  }, [tableScrollFade, disableScrollFade]);
+
   return (
-    <div className="relative">
-      <ScrollFadeControls {...tableScrollFade} />
-      <div className="overflow-x-auto scrollbar-hide" ref={tableScrollFade.setScrollableRef}>
+    <div className={cx("relative", className)}>
+      {!disableScrollFade && <ScrollFadeControls {...tableScrollFade} />}
+      <div
+        className={cx("flex grow flex-col scrollbar-hide", {
+          "overflow-hidden": disableScrollFade,
+          "overflow-x-auto": !disableScrollFade,
+        })}
+        ref={tableScrollFade.setScrollableRef}
+      >
         {children}
       </div>
     </div>

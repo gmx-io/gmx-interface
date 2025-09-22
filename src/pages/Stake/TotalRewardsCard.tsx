@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import useSWR from "swr";
+import { zeroAddress } from "viem";
 
 import { ARBITRUM, getConstant } from "config/chains";
 import { getContract } from "config/contracts";
@@ -14,7 +15,7 @@ import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts/contractFetcher";
 import { PLACEHOLDER_ACCOUNT, ProcessedData } from "lib/legacy";
-import { formatAmount, formatKeyAmount } from "lib/numbers";
+import { formatAmount, formatUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
@@ -32,7 +33,7 @@ export function TotalRewardsCard({
   showStakeGmxModal: () => void;
 }) {
   const { active, account, signer } = useWallet();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { openConnectModal } = useConnectModal();
   const { setPendingTxns } = usePendingTxns();
 
@@ -54,7 +55,7 @@ export function TotalRewardsCard({
     (processedData?.totalNativeTokenRewardsUsd ?? 0n) > 10n ** BigInt(USD_DECIMALS) / 100n;
 
   const { mutate: refetchBalances } = useSWR(
-    [
+    readerAddress !== zeroAddress && [
       `StakeV2:walletBalances:${active}`,
       chainId,
       readerAddress,
@@ -67,7 +68,7 @@ export function TotalRewardsCard({
   );
 
   const gmxAvgAprText = useMemo(() => {
-    return `${formatAmount(processedData?.gmxAprTotal, 2, 2, true)}%`;
+    return <span className="numbers">{formatAmount(processedData?.gmxAprTotal, 2, 2, true)}%</span>;
   }, [processedData?.gmxAprTotal]);
 
   const gmxMarketAddress = useMemo(() => {
@@ -83,7 +84,7 @@ export function TotalRewardsCard({
     // glvTokensIncentiveAprData,
     // marketsTokensLidoAprData,
     // glvApyInfoData,
-  } = useGmMarketsApy(chainId, { period: "90d" });
+  } = useGmMarketsApy(chainId, srcChainId, { period: "90d" });
 
   const gmxMarketApyDataText = useMemo(() => {
     if (!gmxMarketAddress || chainId !== ARBITRUM) return;
@@ -91,7 +92,7 @@ export function TotalRewardsCard({
     const gmxApy =
       (marketsTokensApyData?.[gmxMarketAddress] ?? 0n) + (marketsTokensIncentiveAprData?.[gmxMarketAddress] ?? 0n);
 
-    return `${formatAmount(gmxApy, 28, 2, true)}%`;
+    return <span className="numbers">{formatAmount(gmxApy, 28, 2, true)}%</span>;
   }, [marketsTokensApyData, marketsTokensIncentiveAprData, gmxMarketAddress, chainId]);
 
   const hideToasts = useCallback(() => toast.dismiss(), []);
@@ -239,7 +240,9 @@ export function TotalRewardsCard({
             <div className="label">
               <Trans>Total</Trans>
             </div>
-            <div>${formatKeyAmount(processedData, "totalRewardsUsd", USD_DECIMALS, 2, true)}</div>
+            <div>
+              <span className="numbers">{formatUsd(processedData?.totalRewardsUsd)}</span>
+            </div>
           </div>
           <div className="App-card-footer">
             <div className="App-card-divider"></div>
@@ -251,7 +254,7 @@ export function TotalRewardsCard({
               )}
               {!active && (
                 <Button variant="secondary" onClick={openConnectModal}>
-                  <Trans>Connect Wallet</Trans>
+                  <Trans>Connect wallet</Trans>
                 </Button>
               )}
             </div>

@@ -5,11 +5,8 @@ import { TokenPrices } from "types/tokens";
 import { TriggerThresholdType } from "types/trade";
 
 import { bigMath } from "./bigmath";
-import { getPriceImpactByAcceptablePrice } from "./fees";
-import { getCappedPositionImpactUsd } from "./fees";
-import { expandDecimals, getBasisPoints } from "./numbers";
-import { roundUpMagnitudeDivision } from "./numbers";
-import { applyFactor } from "./numbers";
+import { getCappedPositionImpactUsd, getPriceImpactByAcceptablePrice } from "./fees";
+import { expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "./numbers";
 import { convertToTokenAmount } from "./tokens";
 
 export function getMarkPrice(p: { prices: TokenPrices; isIncrease: boolean; isLong: boolean }) {
@@ -51,6 +48,7 @@ export function getOrderThresholdType(orderType: OrderType, isLong: boolean) {
 export function getAcceptablePriceInfo(p: {
   marketInfo: MarketInfo;
   isIncrease: boolean;
+  isLimit: boolean;
   isLong: boolean;
   indexPrice: bigint;
   sizeDeltaUsd: bigint;
@@ -62,9 +60,12 @@ export function getAcceptablePriceInfo(p: {
   const values = {
     acceptablePrice: 0n,
     acceptablePriceDeltaBps: 0n,
+    cappedPriceImpactDeltaUsd: 0n,
+    cappedPriceImpactDeltaAmount: 0n,
     priceImpactDeltaAmount: 0n,
     priceImpactDeltaUsd: 0n,
     priceImpactDiffUsd: 0n,
+    balanceWasImproved: false,
   };
 
   if (sizeDeltaUsd <= 0 || indexPrice == 0n) {
@@ -95,23 +96,24 @@ export function getAcceptablePriceInfo(p: {
     return values;
   }
 
-  values.priceImpactDeltaUsd = getCappedPositionImpactUsd(
+  const { priceImpactDeltaUsd, balanceWasImproved } = getCappedPositionImpactUsd(
     marketInfo,
-    isIncrease ? sizeDeltaUsd : sizeDeltaUsd * -1n,
+    sizeDeltaUsd,
     isLong,
+    isIncrease,
     {
       fallbackToZero: !isIncrease,
+      shouldCapNegativeImpact: false,
     }
   );
 
-  if (!isIncrease && values.priceImpactDeltaUsd < 0) {
-    const minPriceImpactUsd = applyFactor(sizeDeltaUsd, marketInfo.maxPositionImpactFactorNegative) * -1n;
-
-    if (values.priceImpactDeltaUsd < minPriceImpactUsd) {
-      values.priceImpactDiffUsd = minPriceImpactUsd - values.priceImpactDeltaUsd;
-      values.priceImpactDeltaUsd = minPriceImpactUsd;
-    }
-  }
+  /**
+   * We display this value as price impact on action (increase or decrease)
+   * But for acceptable price calculation uncapped price impact is used
+   * Also on decrease action we calculate totalImpactUsd which will be deducted from the collateral
+   */
+  values.priceImpactDeltaUsd = priceImpactDeltaUsd;
+  values.balanceWasImproved = balanceWasImproved;
 
   if (values.priceImpactDeltaUsd > 0) {
     values.priceImpactDeltaAmount = convertToTokenAmount(
@@ -126,12 +128,24 @@ export function getAcceptablePriceInfo(p: {
     );
   }
 
+  // Use uncapped price impact for the acceptable price calculation
+  const { priceImpactDeltaUsd: priceImpactDeltaUsdForAcceptablePrice } = getCappedPositionImpactUsd(
+    marketInfo,
+    sizeDeltaUsd,
+    isLong,
+    isIncrease,
+    {
+      fallbackToZero: !isIncrease,
+      shouldCapNegativeImpact: false,
+    }
+  );
+
   const acceptablePriceValues = getAcceptablePriceByPriceImpact({
     isIncrease,
     isLong,
     indexPrice,
     sizeDeltaUsd,
-    priceImpactDeltaUsd: values.priceImpactDeltaUsd,
+    priceImpactDeltaUsd: priceImpactDeltaUsdForAcceptablePrice,
   });
 
   values.acceptablePrice = acceptablePriceValues.acceptablePrice;

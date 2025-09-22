@@ -15,10 +15,10 @@ import { callContract, contractFetcher } from "lib/contracts";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
-import Footer from "components/Footer/Footer";
 import Modal from "components/Modal/Modal";
 
 import "./BeginAccountTransfer.css";
@@ -255,7 +255,7 @@ export default function BeginAccountTransfer() {
     const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
 
     callContract(chainId, contract, "signalTransfer", [parsedReceiver], {
-      sentMsg: t`Transfer submitted!`,
+      sentMsg: t`Transfer submitted.`,
       failMsg: t`Transfer failed.`,
       setPendingTxns,
     })
@@ -276,7 +276,10 @@ export default function BeginAccountTransfer() {
     spenderAddress: parsedReceiver,
     tokenAddresses: [feeGmxTrackerAddress],
   });
-  const { balancesData } = useTokenBalances(chainId, undefined, [{ address: feeGmxTrackerAddress }], 1000);
+  const { balancesData } = useTokenBalances(chainId, {
+    overrideTokenList: [{ address: feeGmxTrackerAddress }],
+    refreshInterval: 1000,
+  });
 
   const feeGmxTrackerBalance = balancesData?.[feeGmxTrackerAddress];
   const needFeeGmxTrackerApproval = useMemo(
@@ -292,121 +295,122 @@ export default function BeginAccountTransfer() {
   );
 
   return (
-    <div className="BeginAccountTransfer Page page-layout ">
-      <Modal
-        isVisible={isTransferSubmittedModalVisible}
-        setIsVisible={setIsTransferSubmittedModalVisible}
-        label={t`Transfer Submitted`}
-      >
-        <Trans>Your transfer has been initiated.</Trans>
-        <br />
-        <br />
-        <Link className="App-cta" to={completeTransferLink}>
-          <Trans>Continue</Trans>
-        </Link>
-      </Modal>
+    <AppPageLayout>
+      <div className="BeginAccountTransfer Page page-layout ">
+        <Modal
+          isVisible={isTransferSubmittedModalVisible}
+          setIsVisible={setIsTransferSubmittedModalVisible}
+          label={t`Transfer Submitted`}
+        >
+          <Trans>Your transfer has been initiated.</Trans>
+          <br />
+          <br />
+          <Link className="App-cta" to={completeTransferLink}>
+            <Trans>Continue</Trans>
+          </Link>
+        </Modal>
 
-      <div className="default-container !m-0 pb-16">
-        <div className="Page-title">
-          <Trans>Transfer Account</Trans>
-        </div>
-        <div className="Page-description">
-          <Trans>
-            Please only use this for full account transfers.
-            <br />
-            This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.
-            <br />
-            Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.
-            <br />
-            Transfers are one-way, you will not be able to transfer staked tokens back to the sending account.
-          </Trans>
-        </div>
-        {hasPendingReceiver && (
+        <div className="default-container !m-0 pb-16">
+          <div className="Page-title">
+            <Trans>Transfer Account</Trans>
+          </div>
           <div className="Page-description">
             <Trans>
-              You have a <Link to={pendingTransferLink}>pending transfer</Link> to {pendingReceiver}.
+              Please only use this for full account transfers.
+              <br />
+              This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.
+              <br />
+              Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.
+              <br />
+              Transfers are one-way, you will not be able to transfer staked tokens back to the sending account.
             </Trans>
           </div>
-        )}
-      </div>
-      <div className="default-container !m-0">
-        <div className="input-form">
-          <div className="input-row">
-            <label className="input-label">
-              <Trans>Receiver Address</Trans>
-            </label>
-            <div>
-              <input
-                type="text"
-                value={receiver}
-                onChange={(e) => setReceiver(e.target.value)}
-                className="text-input"
-              />
+          {hasPendingReceiver && (
+            <div className="Page-description">
+              <Trans>
+                You have a <Link to={pendingTransferLink}>pending transfer</Link> to {pendingReceiver}.
+              </Trans>
             </div>
-          </div>
-          <div className="BeginAccountTransfer-validations">
-            <ValidationRow isValid={!hasVestedGmx}>
-              <Trans>Sender has withdrawn all tokens from GMX Vesting Vault</Trans>
-            </ValidationRow>
-            <ValidationRow isValid={!hasVestedGlp}>
-              <Trans>Sender has withdrawn all tokens from GLP Vesting Vault</Trans>
-            </ValidationRow>
-            <ValidationRow isValid={!hasVestedAffiliate}>
-              <Trans>Sender has withdrawn all tokens from Affiliate Vesting Vault</Trans>
-            </ValidationRow>
-            {hasVestedAffiliate && (
+          )}
+        </div>
+        <div className="default-container !m-0">
+          <div className="input-form">
+            <div className="input-row">
+              <label className="input-label">
+                <Trans>Receiver Address</Trans>
+              </label>
+              <div>
+                <input
+                  type="text"
+                  value={receiver}
+                  onChange={(e) => setReceiver(e.target.value)}
+                  className="text-input"
+                />
+              </div>
+            </div>
+            <div className="BeginAccountTransfer-validations">
+              <ValidationRow isValid={!hasVestedGmx}>
+                <Trans>Sender has withdrawn all tokens from GMX Vesting Vault</Trans>
+              </ValidationRow>
+              <ValidationRow isValid={!hasVestedGlp}>
+                <Trans>Sender has withdrawn all tokens from GLP Vesting Vault</Trans>
+              </ValidationRow>
+              <ValidationRow isValid={!hasVestedAffiliate}>
+                <Trans>Sender has withdrawn all tokens from Affiliate Vesting Vault</Trans>
+              </ValidationRow>
+              {hasVestedAffiliate && (
+                <>
+                  <p className="soft-error">
+                    <Trans>
+                      You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to
+                      transfer them to the new account
+                    </Trans>
+                  </p>
+                  <Checkbox
+                    className="VestedAffiliate-checkbox"
+                    isChecked={isAffiliateVesterSkipValidation}
+                    setIsChecked={setIsAffiliateVesterSkipValidation}
+                  >
+                    <span className="text-body-small text-yellow-300">
+                      <Trans>I do not want to transfer the Affiliate esGMX tokens</Trans>
+                    </span>
+                  </Checkbox>
+                </>
+              )}
+
+              <ValidationRow isValid={!hasStakedGmx}>
+                <Trans>Receiver has not staked GMX tokens before</Trans>
+              </ValidationRow>
+              <ValidationRow isValid={!hasStakedGlp}>
+                <Trans>Receiver has not staked GLP tokens before</Trans>
+              </ValidationRow>
+            </div>
+
+            {isReadyForSbfGmxTokenApproval && needFeeGmxTrackerApproval && (
               <>
-                <p className="soft-error">
-                  <Trans>
-                    You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to
-                    transfer them to the new account
-                  </Trans>
-                </p>
-                <Checkbox
-                  className="VestedAffiliate-checkbox"
-                  isChecked={isAffiliateVesterSkipValidation}
-                  setIsChecked={setIsAffiliateVesterSkipValidation}
-                >
-                  <span className="text-sm text-yellow-500">
-                    <Trans>I do not want to transfer the Affiliate esGMX tokens</Trans>
-                  </span>
-                </Checkbox>
+                <ApproveTokenButton
+                  tokenAddress={feeGmxTrackerAddress}
+                  tokenSymbol={"sbfGMX"}
+                  customLabel={t`Allow all my tokens to be transferred to a new account`}
+                  spenderAddress={parsedReceiver}
+                  approveAmount={feeGmxTrackerBalance}
+                />
+                <br />
               </>
             )}
-
-            <ValidationRow isValid={!hasStakedGmx}>
-              <Trans>Receiver has not staked GMX tokens before</Trans>
-            </ValidationRow>
-            <ValidationRow isValid={!hasStakedGlp}>
-              <Trans>Receiver has not staked GLP tokens before</Trans>
-            </ValidationRow>
-          </div>
-
-          {isReadyForSbfGmxTokenApproval && needFeeGmxTrackerApproval && (
-            <>
-              <ApproveTokenButton
-                tokenAddress={feeGmxTrackerAddress}
-                tokenSymbol={"sbfGMX"}
-                customLabel={t`Allow all my tokens to be transferred to a new account`}
-                spenderAddress={parsedReceiver}
-                approveAmount={feeGmxTrackerBalance}
-              />
-              <br />
-            </>
-          )}
-          <div className="input-row">
-            <Button
-              variant="primary-action"
-              className="w-full"
-              disabled={!isPrimaryEnabled()}
-              onClick={() => onClickPrimary()}
-            >
-              {getPrimaryText()}
-            </Button>
+            <div className="input-row">
+              <Button
+                variant="primary-action"
+                className="w-full"
+                disabled={!isPrimaryEnabled()}
+                onClick={() => onClickPrimary()}
+              >
+                {getPrimaryText()}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
-      <Footer />
-    </div>
+    </AppPageLayout>
   );
 }

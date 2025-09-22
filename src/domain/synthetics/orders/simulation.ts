@@ -8,18 +8,19 @@ import {
   getMulticallContract,
   getZeroAddressContract,
 } from "config/contracts";
+import { isDevelopment } from "config/env";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { SignedTokenPermit } from "domain/tokens";
-import { getFallbackProvider, getProvider } from "lib/rpc";
+import { getExpressProvider, getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { CustomErrorName, ErrorData, TxErrorType, extendError, isContractError, parseError } from "sdk/utils/errors";
 import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
-import { isDevelopment } from "config/env";
 
 export type SimulateExecuteParams = {
   account: string;
@@ -43,12 +44,12 @@ export function isSimulationPassed(errorData: ErrorData) {
   return isContractError(errorData, CustomErrorName.EndOfOracleSimulation);
 }
 
-export async function simulateExecution(chainId: number, p: SimulateExecuteParams) {
+export async function simulateExecution(chainId: ContractsChainId, p: SimulateExecuteParams) {
   let provider: JsonRpcProvider;
 
   if (p.isExpress) {
     // Use alchemy rpc for express transactions simulation to increase reliability
-    provider = getFallbackProvider(chainId) ?? getProvider(undefined, chainId);
+    provider = getExpressProvider(chainId) ?? getProvider(undefined, chainId);
   } else {
     provider = getProvider(undefined, chainId);
   }

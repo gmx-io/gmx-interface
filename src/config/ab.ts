@@ -1,5 +1,6 @@
 import mapValues from "lodash/mapValues";
 
+import { BASIS_POINTS_DIVISOR_BIGINT } from "./factors";
 import { AB_FLAG_STORAGE_KEY } from "./localStorage";
 
 type AbFlagValue = {
@@ -11,10 +12,9 @@ type AbStorage = {
 };
 
 const abFlagsConfig = {
+  testMultichain: 1,
   testSponsoredCall: 1,
   testExampleAb: 0,
-  testOneClickPromo: 0.25,
-  testExpressInsufficientExecutionFee: 0,
 };
 
 export type AbFlag = keyof typeof abFlagsConfig;
@@ -99,3 +99,10 @@ export function getAbFlagUrlParams(): string {
     .map(([flag, { enabled }]) => `${flag}=${enabled ? 1 : 0}`)
     .join("&");
 }
+
+// Config for deterministic ab flags based on address
+
+export const AB_HIGH_LEVERAGE_WARNING_GROUP = "alert-high-leverage";
+export const AB_HIGH_LEVERAGE_WARNING_PROBABILITY = 0.5;
+export const AB_HIGH_LEVERAGE_WARNING_MAJOR_TOKEN_LEVERAGE = 15n * BASIS_POINTS_DIVISOR_BIGINT;
+export const AB_HIGH_LEVERAGE_WARNING_ALTCOIN_LEVERAGE = 10n * BASIS_POINTS_DIVISOR_BIGINT;

@@ -95,7 +95,7 @@ export function useNpsSurvey() {
     const toastTimestamp = Date.now();
     setNpsSurveyShownTime(toastTimestamp);
 
-    helperToast.error(
+    helperToast.info(
       <RatingToast
         onRatingClick={(rating) => {
           setIsModalVisible(true);
@@ -106,6 +106,7 @@ export function useNpsSurvey() {
       {
         autoClose: false,
         toastId: toastTimestamp,
+        className: "!bg-slate-950/50",
       }
     );
   }, [setNpsSurveyShownTime]);

@@ -31,6 +31,7 @@ export const useLeaderboardState = (account: string | undefined, enabled: boolea
     return page.chainId;
   }, [leaderboardPageKey]);
   const chainId = competitionChainId ?? activeChainId;
+  const [searchAddress, setSearchAddress] = useState("");
 
   const {
     data,
@@ -59,6 +60,8 @@ export const useLeaderboardState = (account: string | undefined, enabled: boolea
       leaderboardPageKey,
       chainId,
       isLoading,
+      searchAddress,
+      setSearchAddress,
     }),
     [
       data?.accounts,
@@ -72,6 +75,8 @@ export const useLeaderboardState = (account: string | undefined, enabled: boolea
       leaderboardPageKey,
       chainId,
       isLoading,
+      searchAddress,
+      setSearchAddress,
     ]
   );
 };

@@ -10,22 +10,23 @@ import {
   useMarketTokensData,
   useMarketsInfoRequest,
 } from "domain/synthetics/markets";
-import { convertToUsd } from "domain/synthetics/tokens";
+import { convertToUsd, useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { BN_ZERO, formatAmountHuman } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
 import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
+import { AppCard, AppCardSection, AppCardSplit } from "components/AppCard/AppCard";
+import Button from "components/Button/Button";
 import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
 
-import AssetDropdown from "./AssetDropdown";
-
 export function GmCard() {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const currentIcons = getIcons(chainId)!;
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true, withGlv: false });
-  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: true, withGlv: false });
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
 
   const totalGMSupply = useMemo(
     () =>
@@ -65,39 +66,59 @@ export function GmCard() {
   }, [marketsInfoData, totalGMSupply]);
 
   return (
-    <div className="App-card">
-      <div className="stats-block">
-        <div className="App-card-title">
-          <div className="App-card-title-mark">
-            <div className="App-card-title-mark-icon">
-              <img src={currentIcons.gm} width="40" alt="GM Icon" />
-            </div>
-            <div className="App-card-title-mark-info">
-              <div className="App-card-title-mark-title">GM</div>
-              <div className="App-card-title-mark-subtitle">GM</div>
-            </div>
-            <div>
-              <AssetDropdown assetSymbol="GM" />
-            </div>
-          </div>
-        </div>
-        <div className="App-card-divider"></div>
-        <div className="App-card-content">
-          <div className="App-card-row">
-            <div className="label">
-              <Trans>Supply</Trans>
-            </div>
-            <div>{formatAmountHuman(totalGMSupply?.amount, 18, false, 2)}</div>
-          </div>
-          <div className="App-card-row">
-            <div className="label">
-              <Trans>Market Cap</Trans>
-            </div>
-            <div>{formatAmountHuman(totalGMSupply?.usd, USD_DECIMALS, true, 2)}</div>
-          </div>
-        </div>
-      </div>
-      <InteractivePieChart data={chartData} label={t`GM Markets`} />
-    </div>
+    <AppCard>
+      <AppCardSplit
+        className="grid h-full grid-cols-[1fr_minmax(250px,auto)] max-md:grid-cols-1"
+        leftClassName="max-md:border-b-1/2 max-md:border-r-0"
+        left={
+          <>
+            <AppCardSection>
+              <div className="flex flex-wrap items-center justify-between gap-8">
+                <div className="flex items-center gap-8">
+                  <div className="App-card-title-mark-icon">
+                    <img src={currentIcons.gm} width="40" alt="GM Icon" />
+                  </div>
+                  <div>
+                    <div className="text-body-medium font-medium">GM</div>
+                  </div>
+                </div>
+                <div className="h-32">
+                  <Button size="small" variant="secondary" to="/pools">
+                    <img src={currentIcons.gm} width="16" alt="GMX Icon" />
+                    <Trans>Buy GM</Trans>
+                  </Button>
+                </div>
+              </div>
+              <div className="text-13 text-typography-secondary">
+                GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees.
+              </div>
+            </AppCardSection>
+            <AppCardSection>
+              <div className="App-card-row">
+                <div className="label">
+                  <Trans>Supply</Trans>
+                </div>
+                <div>
+                  <span className="numbers">{formatAmountHuman(totalGMSupply?.amount, 18, false, 2)}</span>
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">
+                  <Trans>Market Cap</Trans>
+                </div>
+                <div>
+                  <span className="numbers">{formatAmountHuman(totalGMSupply?.usd, USD_DECIMALS, true, 2)}</span>
+                </div>
+              </div>
+            </AppCardSection>
+          </>
+        }
+        right={
+          <AppCardSection>
+            <InteractivePieChart data={chartData} label={t`GM Markets`} />
+          </AppCardSection>
+        }
+      />
+    </AppCard>
   );
 }

@@ -29,8 +29,13 @@ const _abi = [
         type: "address",
       },
       {
-        internalType: "contract IGlvHandler",
-        name: "_glvHandler",
+        internalType: "contract IGlvDepositHandler",
+        name: "_glvDepositHandler",
+        type: "address",
+      },
+      {
+        internalType: "contract IGlvWithdrawalHandler",
+        name: "_glvWithdrawalHandler",
         type: "address",
       },
       {
@@ -122,6 +127,25 @@ const _abi = [
     type: "error",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "string",
+        name: "reason",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "bytes",
+        name: "returndata",
+        type: "bytes",
+      },
+    ],
+    name: "TokenTransferReverted",
+    type: "event",
+  },
+  {
     inputs: [
       {
         internalType: "bytes32",
@@ -152,49 +176,56 @@ const _abi = [
       {
         components: [
           {
-            internalType: "address",
-            name: "glv",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "market",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "receiver",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "callbackContract",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "uiFeeReceiver",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "initialLongToken",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "initialShortToken",
-            type: "address",
-          },
-          {
-            internalType: "address[]",
-            name: "longTokenSwapPath",
-            type: "address[]",
-          },
-          {
-            internalType: "address[]",
-            name: "shortTokenSwapPath",
-            type: "address[]",
+            components: [
+              {
+                internalType: "address",
+                name: "glv",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "market",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "receiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "callbackContract",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "uiFeeReceiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "initialLongToken",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "initialShortToken",
+                type: "address",
+              },
+              {
+                internalType: "address[]",
+                name: "longTokenSwapPath",
+                type: "address[]",
+              },
+              {
+                internalType: "address[]",
+                name: "shortTokenSwapPath",
+                type: "address[]",
+              },
+            ],
+            internalType: "struct IGlvDepositUtils.CreateGlvDepositParamsAddresses",
+            name: "addresses",
+            type: "tuple",
           },
           {
             internalType: "uint256",
@@ -221,8 +252,13 @@ const _abi = [
             name: "isMarketTokenDeposit",
             type: "bool",
           },
+          {
+            internalType: "bytes32[]",
+            name: "dataList",
+            type: "bytes32[]",
+          },
         ],
-        internalType: "struct GlvDepositUtils.CreateGlvDepositParams",
+        internalType: "struct IGlvDepositUtils.CreateGlvDepositParams",
         name: "params",
         type: "tuple",
       },
@@ -243,39 +279,46 @@ const _abi = [
       {
         components: [
           {
-            internalType: "address",
-            name: "receiver",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "callbackContract",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "uiFeeReceiver",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "market",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "glv",
-            type: "address",
-          },
-          {
-            internalType: "address[]",
-            name: "longTokenSwapPath",
-            type: "address[]",
-          },
-          {
-            internalType: "address[]",
-            name: "shortTokenSwapPath",
-            type: "address[]",
+            components: [
+              {
+                internalType: "address",
+                name: "receiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "callbackContract",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "uiFeeReceiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "market",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "glv",
+                type: "address",
+              },
+              {
+                internalType: "address[]",
+                name: "longTokenSwapPath",
+                type: "address[]",
+              },
+              {
+                internalType: "address[]",
+                name: "shortTokenSwapPath",
+                type: "address[]",
+              },
+            ],
+            internalType: "struct IGlvWithdrawalUtils.CreateGlvWithdrawalParamsAddresses",
+            name: "addresses",
+            type: "tuple",
           },
           {
             internalType: "uint256",
@@ -302,8 +345,13 @@ const _abi = [
             name: "callbackGasLimit",
             type: "uint256",
           },
+          {
+            internalType: "bytes32[]",
+            name: "dataList",
+            type: "bytes32[]",
+          },
         ],
-        internalType: "struct GlvWithdrawalUtils.CreateGlvWithdrawalParams",
+        internalType: "struct IGlvWithdrawalUtils.CreateGlvWithdrawalParams",
         name: "params",
         type: "tuple",
       },
@@ -360,10 +408,23 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "glvHandler",
+    name: "glvDepositHandler",
     outputs: [
       {
-        internalType: "contract IGlvHandler",
+        internalType: "contract IGlvDepositHandler",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "glvWithdrawalHandler",
+    outputs: [
+      {
+        internalType: "contract IGlvWithdrawalHandler",
         name: "",
         type: "address",
       },
@@ -396,7 +457,7 @@ const _abi = [
     ],
     name: "makeExternalCalls",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
     type: "function",
   },
   {

@@ -1,5 +1,5 @@
-import { Market, MarketInfo } from "./markets";
-import { TokenData } from "./tokens";
+import type { Market, MarketInfo } from "./markets";
+import type { TokenData } from "./tokens";
 
 export type Position = {
   key: string;
@@ -22,6 +22,23 @@ export type Position = {
   positionFeeAmount: bigint;
   traderDiscountAmount: bigint;
   uiFeeAmount: bigint;
+  pendingImpactAmount: bigint;
+  /**
+   * Not implemented in parsing
+   */
+  borrowingFactor?: bigint;
+  /**
+   * Not implemented in parsing
+   */
+  fundingFeeAmountPerSize?: bigint;
+  /**
+   * Not implemented in parsing
+   */
+  longTokenClaimableFundingAmountPerSize?: bigint;
+  /**
+   * Not implemented in parsing
+   */
+  shortTokenClaimableFundingAmountPerSize?: bigint;
   data: string;
 };
 
@@ -46,6 +63,10 @@ export type PositionInfo = Position & {
   pnlPercentage: bigint;
   pnlAfterFees: bigint;
   pnlAfterFeesPercentage: bigint;
+  netPriceImapctDeltaUsd: bigint;
+  priceImpactDiffUsd: bigint;
+  pendingImpactUsd: bigint;
+  closePriceImpactDeltaUsd: bigint;
   leverage: bigint | undefined;
   leverageWithPnl: bigint | undefined;
   netValue: bigint;
@@ -54,6 +75,8 @@ export type PositionInfo = Position & {
   pendingFundingFeesUsd: bigint;
   pendingClaimableFundingFeesUsd: bigint;
 };
+
+export type PositionInfoLoaded = PositionInfo & { marketInfo: MarketInfo };
 
 export type PositionsData = {
   [positionKey: string]: Position;

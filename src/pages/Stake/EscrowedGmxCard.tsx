@@ -2,16 +2,16 @@ import { Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useMemo } from "react";
 import useSWR from "swr";
+import { zeroAddress } from "viem";
 
 import { ARBITRUM, getConstant } from "config/chains";
 import { getContract } from "config/contracts";
-import { USD_DECIMALS } from "config/factors";
 import { getIcons } from "config/icons";
 import { useGmxPrice } from "domain/legacy";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { ProcessedData } from "lib/legacy";
-import { expandDecimals, formatAmount } from "lib/numbers";
+import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -47,7 +47,13 @@ export function EscrowedGmxCard({
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
 
   const { data: esGmxSupply } = useSWR<bigint>(
-    [`StakeV2:esGmxSupply:${active}`, chainId, readerAddress, "getTokenSupply", esGmxAddress],
+    readerAddress !== zeroAddress && [
+      `StakeV2:esGmxSupply:${active}`,
+      chainId,
+      readerAddress,
+      "getTokenSupply",
+      esGmxAddress,
+    ],
     {
       fetcher: contractFetcher<bigint>(signer, "ReaderV2", [excludedEsGmxAccounts]),
     }
@@ -61,11 +67,11 @@ export function EscrowedGmxCard({
   }
 
   const gmxAvgAprText = useMemo(() => {
-    return `${formatAmount(processedData?.gmxAprTotal, 2, 2, true)}%`;
+    return <span className="numbers">{formatAmount(processedData?.gmxAprTotal, 2, 2, true)}%</span>;
   }, [processedData?.gmxAprTotal]);
 
   return (
-    <div className="App-card">
+    <div className="App-card min-h-[360px]">
       <div className="App-card-title">
         <div className="inline-flex items-center">
           <img className="mr-5 h-20" alt="GLP" src={icons?.esgmx} height={20} />
@@ -80,7 +86,9 @@ export function EscrowedGmxCard({
           <div className="label">
             <Trans>Price</Trans>
           </div>
-          <div>${formatAmount(gmxPrice, USD_DECIMALS, 2, true)}</div>
+          <div>
+            <span className="numbers">{formatUsd(gmxPrice)}</span>
+          </div>
         </div>
         <div className="App-card-row">
           <div className="label">
@@ -159,7 +167,7 @@ export function EscrowedGmxCard({
             )}
             {!active && (
               <Button variant="secondary" onClick={openConnectModal}>
-                <Trans> Connect Wallet</Trans>
+                <Trans> Connect wallet</Trans>
               </Button>
             )}
           </div>

@@ -16,7 +16,8 @@ import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
 
-import Footer from "components/Footer/Footer";
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 import { GlvList } from "components/Synthetics/GmList/GlvList";
 import { GmList } from "components/Synthetics/GmList/GmList";
 
@@ -26,7 +27,7 @@ import { usePoolsIsMobilePage } from "./usePoolsIsMobilePage";
 export default function Pools() {
   const { timeRange, setTimeRange } = usePoolsTimeRange();
 
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
 
   const period = useMemo(() => convertPoolsTimeRangeToPeriod(timeRange), [timeRange]);
 
@@ -38,10 +39,10 @@ export default function Pools() {
     glvTokensIncentiveAprData,
     marketsTokensLidoAprData,
     glvApyInfoData,
-  } = useGmMarketsApy(chainId, { period: apyPeriod });
+  } = useGmMarketsApy(chainId, srcChainId, { period: apyPeriod });
 
-  const { tokensData } = useTokensDataRequest(chainId);
-  const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const enabledGlv = isGlvEnabled(chainId);
   const account = useSelector(selectAccount);
 
@@ -64,9 +65,9 @@ export default function Pools() {
   const isBotanix = chainId === BOTANIX;
 
   return (
-    <div className="default-container page-layout">
+    <AppPageLayout header={<ChainContentHeader />}>
       <div
-        className={cx("mb-24 grid", {
+        className={cx("mb-24 grid w-full flex-col", {
           "grid-cols-1": isMobile,
           "grid-cols-2": !isMobile,
         })}
@@ -74,7 +75,7 @@ export default function Pools() {
         <PoolsTvl />
 
         <div
-          className={cx("", {
+          className={cx("flex-end flex", {
             "ml-0 mt-28": isMobile,
             "ml-auto mt-auto": !isMobile,
           })}
@@ -83,7 +84,7 @@ export default function Pools() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-16">
+      <div className="flex grow flex-col gap-16 lg:overflow-hidden">
         {!isBotanix && (
           <GlvList
             marketsTokensApyData={marketsTokensApyData}
@@ -112,9 +113,7 @@ export default function Pools() {
           isDeposit
         />
       </div>
-
-      <Footer />
-    </div>
+    </AppPageLayout>
   );
 }
 
@@ -125,9 +124,9 @@ function PoolsTvl() {
   const tvl = v2Stats?.totalGMLiquidity;
 
   return (
-    <div className="flex flex-col">
-      <span className="text-h1">{formatUsd(tvl, { displayDecimals: 0 })}</span>
-      <span className="text-body-medium text-slate-100">TVL in vaults and pools.</span>
+    <div className="flex flex-col gap-8">
+      <span className="text-h1 normal-nums">{formatUsd(tvl, { displayDecimals: 0 })}</span>
+      <span className="text-body-medium font-medium text-typography-secondary">TVL in vaults and pools.</span>
     </div>
   );
 }

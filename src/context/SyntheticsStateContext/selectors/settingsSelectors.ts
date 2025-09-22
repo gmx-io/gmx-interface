@@ -13,8 +13,6 @@ export const selectSavedAcceptablePriceImpactBuffer = (s: SyntheticsState) =>
 export const selectSetSavedAcceptablePriceImpactBuffer = (s: SyntheticsState) =>
   s.settings.setSavedAcceptablePriceImpactBuffer;
 export const selectShouldUseExecutionFeeBuffer = (s: SyntheticsState) => s.settings.shouldUseExecutionFeeBuffer;
-export const selectOracleKeeperInstancesConfig = (s: SyntheticsState) => s.settings.oracleKeeperInstancesConfig;
-export const selectSetOracleKeeperInstancesConfig = (s: SyntheticsState) => s.settings.setOracleKeeperInstancesConfig;
 export const selectIsPnlInLeverage = (s: SyntheticsState) => s.settings.isPnlInLeverage;
 export const selectShowPnlAfterFees = (s: SyntheticsState) => s.settings.showPnlAfterFees;
 export const selectIsLeverageSliderEnabled = (s: SyntheticsState) => s.settings.isLeverageSliderEnabled;
@@ -26,3 +24,4 @@ export const selectDebugSwapMarketsConfig = (s: SyntheticsState) => s.settings.d
 export const selectSetDebugSwapMarketsConfig = (s: SyntheticsState) => s.settings.setDebugSwapMarketsConfig;
 export const selectSettingsWarningDotVisible = (s: SyntheticsState) => s.settings.settingsWarningDotVisible;
 export const selectSetSettingsWarningDotVisible = (s: SyntheticsState) => s.settings.setSettingsWarningDotVisible;
+export const selectBreakdownNetPriceImpactEnabled = (s: SyntheticsState) => s.settings.breakdownNetPriceImpactEnabled;

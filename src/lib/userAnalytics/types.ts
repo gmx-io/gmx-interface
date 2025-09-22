@@ -1,3 +1,4 @@
+import type { ChainName } from "config/chains";
 import { EditingOrderSource } from "domain/synthetics/orders/types";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
 
@@ -11,8 +12,8 @@ export type LandingPageViewEvent = {
 export type LandingPageLaunchAppEvent = {
   event: "LandingPageAction";
   data: {
-    action: "LaunchApp";
-    buttonPosition: "MenuButton" | "StickyHeader" | "Title" | "Chains";
+    action: "LaunchApp" | "SolanaNavigation";
+    buttonPosition: "MenuButton" | "StickyHeader" | "Title" | "Chains" | "LaunchSection" | "HeroSection";
     shouldSeeConfirmationDialog: boolean;
   };
 };
@@ -21,7 +22,7 @@ export type LandingPageProtocolTokenEvent = {
   event: "LandingPageAction";
   data: {
     action: "ProtocolTokenAction";
-    chain: "Arbitrum" | "Avalanche" | "Botanix";
+    chain: ChainName | undefined;
     type: "GMX" | "GM" | "GLV" | "GLP";
   };
 };
@@ -197,7 +198,7 @@ export type TradeBoxWarningShownEvent = {
     isExpress1CT: boolean;
     sizeDeltaUsd: number;
     leverage: string;
-    chain: "Arbitrum" | "Avalanche";
+    chain: ChainName;
     isFirstOrder: boolean;
   };
 };
@@ -306,5 +307,17 @@ export type TradePageEditOrderEvent = {
     orderType: AnalyticsOrderType | undefined;
     pair: string;
     source: EditingOrderSource;
+  };
+};
+
+export type MultichainActionEvent = {
+  event: "MultichainAction";
+  data: {
+    action: "DepositSuccess" | "WithdrawalSuccess";
+    settlementChain: ChainName;
+    sourceChain: ChainName;
+    sizeInUsd: number;
+    asset: string;
+    isFirstTime: boolean;
   };
 };

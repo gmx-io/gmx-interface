@@ -216,17 +216,21 @@ export function mockMarketsInfoData(
       swapImpactPoolAmountLong: usdToToken(1000, longToken),
       swapImpactPoolAmountShort: usdToToken(1000, shortToken),
 
-      positionFeeFactorForPositiveImpact: expandDecimals(5, 26),
-      positionFeeFactorForNegativeImpact: expandDecimals(5, 26),
+      positionFeeFactorForBalanceWasImproved: expandDecimals(5, 26),
+      positionFeeFactorForBalanceWasNotImproved: expandDecimals(5, 26),
       positionImpactFactorPositive: expandDecimals(2, 23),
       positionImpactFactorNegative: expandDecimals(1, 23),
       maxPositionImpactFactorPositive: expandDecimals(2, 23),
       maxPositionImpactFactorNegative: expandDecimals(1, 23),
       maxPositionImpactFactorForLiquidations: expandDecimals(1, 23),
+      maxLendableImpactFactor: expandDecimals(1, 23),
+      maxLendableImpactFactorForWithdrawals: expandDecimals(1, 23),
+      maxLendableImpactUsd: expandDecimals(1, 23),
+      lentPositionImpactPoolAmount: expandDecimals(1, 23),
       positionImpactExponentFactor: expandDecimals(2, 30),
 
-      swapFeeFactorForPositiveImpact: expandDecimals(2, 27),
-      swapFeeFactorForNegativeImpact: expandDecimals(2, 27),
+      swapFeeFactorForBalanceWasImproved: expandDecimals(2, 27),
+      swapFeeFactorForBalanceWasNotImproved: expandDecimals(2, 27),
 
       atomicSwapFeeFactor: expandDecimals(2, 27),
 
@@ -251,12 +255,11 @@ export function mockMarketsInfoData(
 
       totalBorrowingFees: 0n,
       minCollateralFactor: 0n,
+      minCollateralFactorForLiquidation: 0n,
 
       minCollateralFactorForOpenInterestLong: 0n,
       minCollateralFactorForOpenInterestShort: 0n,
 
-      longPoolAmountAdjustment: 0n,
-      shortPoolAmountAdjustment: 0n,
       borrowingFactorLong: 0n,
       borrowingFactorShort: 0n,
 

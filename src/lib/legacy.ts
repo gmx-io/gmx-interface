@@ -5,7 +5,7 @@ import useSWR from "swr";
 import { useEnsName } from "wagmi";
 
 import { getServerBaseUrl } from "config/backend";
-import { CHAIN_ID, ETH_MAINNET, getExplorerUrl } from "config/chains";
+import { CHAIN_ID, ETH_MAINNET, getExplorerUrl, ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { isLocal } from "config/env";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
@@ -714,7 +714,7 @@ export function getDeltaStr({ delta, deltaPercentage, hasProfit }) {
     deltaStr = "";
     deltaPercentageStr = "";
   }
-  deltaStr += `$${formatAmount(delta, USD_DECIMALS, 2, true)}`;
+  deltaStr += `$\u200a\u200d${formatAmount(delta, USD_DECIMALS, 2, true)}`;
   deltaPercentageStr += `${formatAmount(deltaPercentage, 2, 2)}%`;
 
   return { deltaStr, deltaPercentageStr };
@@ -880,7 +880,7 @@ export function getOrderKey(order) {
 export function useAccountOrders(
   flagOrdersEnabled: boolean,
   overrideAccount?: string,
-  overrideChainId?: number,
+  overrideChainId?: ContractsChainId,
   overrideSigner?: ethers.JsonRpcSigner,
   overrideActive?: boolean
 ) {
@@ -984,7 +984,7 @@ export function useAccountOrders(
   return [orders, updateOrders, ordersError];
 }
 
-export function getAccountUrl(chainId, account) {
+export function getAccountUrl(chainId: number, account: string) {
   if (!account) {
     return getExplorerUrl(chainId);
   }

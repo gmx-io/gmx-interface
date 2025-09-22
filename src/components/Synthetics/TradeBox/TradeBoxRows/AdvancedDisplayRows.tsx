@@ -3,11 +3,9 @@ import { ReactNode, useCallback, useMemo } from "react";
 
 import {
   selectTradeboxAdvancedOptions,
-  selectTradeboxAllowedSlippage,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxDefaultAllowedSwapSlippageBps,
   selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
-  selectTradeboxExecutionPrice,
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxNextPositionValues,
@@ -18,7 +16,6 @@ import {
   selectTradeboxSetSelectedAcceptablePriceImpactBps,
   selectTradeboxSetSelectedAllowedSwapSlippageBps,
   selectTradeboxTotalSwapImpactBps,
-  selectTradeboxToToken,
   selectTradeboxTradeFeesType,
   selectTradeboxTradeFlags,
   selectTradeboxTriggerPrice,
@@ -33,11 +30,9 @@ import { formatLeverage } from "domain/synthetics/positions";
 import { formatUsd } from "lib/numbers";
 import { ExecutionFee } from "sdk/types/fees";
 import { isStopIncreaseOrderType } from "sdk/utils/orders";
-import { applySlippageToPrice } from "sdk/utils/trade";
 
 import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { AllowedSwapSlippageInputRow } from "components/Synthetics/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
-import { ExecutionPriceRow } from "components/Synthetics/ExecutionPriceRow";
 import { ExpandableRow } from "components/Synthetics/ExpandableRow";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
@@ -48,6 +43,7 @@ import { AllowedSlippageRow } from "./AllowedSlippageRow";
 import { AvailableLiquidityRow } from "./AvailableLiquidityRow";
 import { CollateralSpreadRow } from "./CollateralSpreadRow";
 import { EntryPriceRow } from "./EntryPriceRow";
+import { NextStoredImpactRows } from "./NextStoredImpactRows";
 import { SwapSpreadRow } from "./SwapSpreadRow";
 import { useTradeboxAllowedSwapSlippageValues } from "../hooks/useTradeboxAllowedSwapSlippageValues";
 
@@ -92,7 +88,7 @@ function LeverageInfoRows() {
 
     return (
       <>
-        <SyntheticsInfoRow label={t`Leverage`} value={leverageValue} />
+        <SyntheticsInfoRow label={t`Leverage`} value={leverageValue} valueClassName="numbers" />
       </>
     );
   }
@@ -135,71 +131,19 @@ function ExistingPositionInfoRows() {
   );
 }
 
-function IncreaseOrderRow() {
-  const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isMarket, isLong } = tradeFlags;
-  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
-  const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
-  const fees = useSelector(selectTradeboxFees);
-  const executionPrice = useSelector(selectTradeboxExecutionPrice);
-  const toToken = useSelector(selectTradeboxToToken);
-
-  const acceptablePrice =
-    isMarket && increaseAmounts?.acceptablePrice
-      ? applySlippageToPrice(allowedSlippage, increaseAmounts.acceptablePrice, true, isLong)
-      : increaseAmounts?.acceptablePrice;
-
-  return (
-    <ExecutionPriceRow
-      tradeFlags={tradeFlags}
-      fees={fees}
-      acceptablePrice={acceptablePrice}
-      executionPrice={executionPrice ?? undefined}
-      visualMultiplier={toToken?.visualMultiplier}
-      triggerOrderType={increaseAmounts?.limitOrderType}
-    />
-  );
-}
-
-function DecreaseOrderRow() {
-  const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isMarket, isLong } = tradeFlags;
-  const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
-  const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
-  const fees = useSelector(selectTradeboxFees);
-  const executionPrice = useSelector(selectTradeboxExecutionPrice);
-  const toToken = useSelector(selectTradeboxToToken);
-
-  const acceptablePrice =
-    isMarket && decreaseAmounts?.acceptablePrice
-      ? applySlippageToPrice(allowedSlippage, decreaseAmounts.acceptablePrice, true, isLong)
-      : decreaseAmounts?.acceptablePrice;
-
-  return (
-    <ExecutionPriceRow
-      tradeFlags={tradeFlags}
-      fees={fees}
-      acceptablePrice={acceptablePrice}
-      executionPrice={executionPrice ?? undefined}
-      visualMultiplier={toToken?.visualMultiplier}
-      triggerOrderType={decreaseAmounts?.triggerOrderType}
-    />
-  );
-}
-
 export function TradeBoxAdvancedGroups({
   slippageInputId,
   gasPaymentParams,
   totalExecutionFee,
 }: {
   slippageInputId: string;
-  gasPaymentParams?: GasPaymentParams;
-  totalExecutionFee?: ExecutionFee;
+  gasPaymentParams: GasPaymentParams | undefined;
+  totalExecutionFee: ExecutionFee | undefined;
 }) {
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isSwap, isIncrease, isMarket, isLimit, isTrigger, isTwap } = tradeFlags;
+  const { isSwap, isMarket, isLimit, isTrigger, isTwap } = tradeFlags;
 
   const { isLiquidityRisk } = useSelector(selectTradeboxLiquidityInfo);
 
@@ -208,7 +152,6 @@ export function TradeBoxAdvancedGroups({
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const limitPrice = useSelector(selectTradeboxTriggerPrice);
-  const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const triggerRatioInputValue = useSelector(selectTradeboxTriggerRatioInputValue);
   const totalSwapImpactBps = useSelector(selectTradeboxTotalSwapImpactBps);
 
@@ -267,7 +210,6 @@ export function TradeBoxAdvancedGroups({
       onToggle={toggleAdvancedDisplay}
       disableCollapseOnError={false}
       hasError={hasError}
-      className="flex flex-col gap-14"
       contentClassName="flex flex-col gap-14"
       scrollIntoViewOnMobile
     >
@@ -281,25 +223,20 @@ export function TradeBoxAdvancedGroups({
             }
             acceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
             recommendedAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
-            priceImpactFeeBps={fees?.positionPriceImpact?.bps}
+            priceImpactFeeBps={
+              isTrigger ? fees?.decreasePositionPriceImpact?.bps : fees?.increasePositionPriceImpact?.bps
+            }
             setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
           />
-          {!isTwap && <div className="h-1 shrink-0 bg-stroke-primary" />}
         </>
       )}
 
-      {isIncrease && !isTwap && <IncreaseOrderRow />}
-      {isTrigger && <DecreaseOrderRow />}
       <TradeFeesRow {...fees} feesType={feesType} />
       <NetworkFeeRow executionFee={totalExecutionFee} gasPaymentParams={gasPaymentParams} />
 
       {isTwap && isSwap ? (
         <SyntheticsInfoRow label={<Trans>Acceptable Swap Impact</Trans>} value={<Trans>N/A</Trans>} />
       ) : null}
-
-      {((isSwap && !isTwap) || isLimit || (isMarket && !isSwap) || isMarket) && (
-        <div className="h-1 shrink-0 bg-stroke-primary" />
-      )}
 
       {/* only when isSwap */}
       {isSwap && <SwapSpreadRow />}
@@ -323,11 +260,7 @@ export function TradeBoxAdvancedGroups({
         <>
           {isMarket && !isSwap && <CollateralSpreadRow />}
           {isMarket && <AllowedSlippageRow slippageInputId={slippageInputId} />}
-
-          {((isIncrease && selectedPosition) || (isTrigger && selectedPosition)) && (
-            <div className="h-1 shrink-0 bg-stroke-primary" />
-          )}
-
+          {!isSwap && <NextStoredImpactRows />}
           <LeverageInfoRows />
           <EntryPriceRow />
           <ExistingPositionInfoRows />

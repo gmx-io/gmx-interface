@@ -22,7 +22,6 @@ import {
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import {
   selectBlockTimestampData,
-  selectExpressNoncesData,
   selectGasPaymentTokenAllowance,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -62,6 +61,7 @@ import { getCommonError, getDecreaseError, getExpressError } from "domain/synthe
 import { Token } from "domain/tokens";
 import { useApproveToken } from "domain/tokens/useApproveTokens";
 import { useChainId } from "lib/chains";
+import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
@@ -74,7 +74,7 @@ import {
   formatUsd,
   parseValue,
 } from "lib/numbers";
-import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
+import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { convertTokenAddress, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
@@ -99,12 +99,14 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
+import { PositionSellerPriceImpactFeesRow } from "./rows/PositionSellerPriceImpactFeesRow";
+
 import "./PositionSeller.scss";
 
 export type Props = {
@@ -127,8 +129,9 @@ export function PositionSeller() {
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const availableReceiveTokens = useSelector(selectPositionSellerAvailableReceiveTokens);
   const tokensData = useTokensData();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { signer, account } = useWallet();
+  const { provider } = useJsonRpcProvider(chainId);
   const { openConnectModal } = useConnectModal();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
@@ -143,7 +146,6 @@ export function PositionSeller() {
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const tokenPermits = useSelector(selectTokenPermits);
   const { approveToken } = useApproveToken();
-  const noncesData = useSelector(selectExpressNoncesData);
   const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
 
   const isVisible = Boolean(position);
@@ -239,8 +241,8 @@ export function PositionSeller() {
   const { fees, executionFee } = useSelector(selectPositionSellerFees);
 
   const priceImpactWarningState = usePriceImpactWarningState({
-    collateralImpact: fees?.positionCollateralPriceImpact,
-    positionImpact: fees?.positionPriceImpact,
+    collateralNetPriceImpact: fees?.collateralNetPriceImpact,
+    positionNetPriceImpact: fees?.positionNetPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
@@ -362,10 +364,16 @@ export function PositionSeller() {
     fastExpressParams,
     asyncExpressParams,
   } = useExpressOrdersParams({
+    label: "Position Seller",
     orderParams: batchParams,
+    isGmxAccount: srcChainId !== undefined,
   });
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
+    if (srcChainId) {
+      return { tokensToApprove: [], isAllowanceLoaded: true };
+    }
+
     if (!batchParams) {
       return { tokensToApprove: [], isAllowanceLoaded: false };
     }
@@ -391,6 +399,7 @@ export function PositionSeller() {
     expressParams,
     gasPaymentTokenAllowance?.isLoaded,
     gasPaymentTokenAllowance?.tokensAllowanceData,
+    srcChainId,
     tokenPermits,
   ]);
 
@@ -436,7 +445,7 @@ export function PositionSeller() {
     }
 
     if (isSubmitting) {
-      return t`Creating Order...`;
+      return t`Creating order`;
     }
   }, [
     account,
@@ -509,6 +518,8 @@ export function PositionSeller() {
       fastExpressParams,
       asyncExpressParams,
       expressParams,
+      chainId: srcChainId ?? chainId,
+      isCollateralFromMultichain: srcChainId !== undefined,
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
@@ -522,7 +533,8 @@ export function PositionSeller() {
       !receiveToken?.address ||
       receiveUsd === undefined ||
       decreaseAmounts?.acceptablePrice === undefined ||
-      !signer
+      !signer ||
+      !provider
     ) {
       helperToast.error(t`Error submitting order`);
       sendTxnValidationErrorMetric(metricData.metricId);
@@ -536,8 +548,9 @@ export function PositionSeller() {
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
+      provider,
       batchParams,
-      noncesData,
+      isGmxAccount: srcChainId !== undefined,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       simulationParams: shouldDisableValidationForTesting
@@ -692,13 +705,12 @@ export function PositionSeller() {
   ) : (
     <SyntheticsInfoRow
       label={t`Receive`}
-      className=""
       value={
         receiveToken && (
           <TokenSelector
             label={t`Receive`}
             className={cx({
-              "*:!text-yellow-500 hover:!text-yellow-500": isNotEnoughReceiveTokenLiquidity,
+              "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
             })}
             chainId={chainId}
             showBalances={false}
@@ -711,7 +723,7 @@ export function PositionSeller() {
               <span className="PositionSelector-selected-receive-token">
                 <AmountWithUsdBalance
                   className={cx({
-                    "*:!text-yellow-500 hover:!text-yellow-500": isNotEnoughReceiveTokenLiquidity,
+                    "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
                   })}
                   amount={receiveTokenAmount}
                   decimals={receiveToken.decimals}
@@ -803,7 +815,7 @@ export function PositionSeller() {
   const buttonState = useMemo(() => {
     if (!isAllowanceLoaded) {
       return {
-        text: t`Loading...`,
+        text: t`Loading`,
         disabled: true,
       };
     }
@@ -812,7 +824,7 @@ export function PositionSeller() {
       return {
         text: (
           <>
-            {t`Express params loading...`}
+            {t`Loading Express params`}
             <ImSpinner2 className="ml-4 animate-spin" />
           </>
         ),
@@ -862,7 +874,7 @@ export function PositionSeller() {
     tokensToApprove,
   ]);
 
-  const isMobile = useMedia("(max-width: 1100px)");
+  const isMobile = useMedia("(max-width: 1024px)");
 
   return (
     <div className="text-body-medium">
@@ -879,7 +891,7 @@ export function PositionSeller() {
         qa="position-close-modal"
         contentClassName="w-[380px]"
       >
-        <div className="mb-[10.5px] flex items-center justify-between">
+        <div className="mb-[10.5px] flex w-full items-center justify-between">
           <Tabs
             options={tabsOptions}
             selectedValue={orderOption}
@@ -895,133 +907,140 @@ export function PositionSeller() {
           />
         </div>
 
-        {position && (
-          <>
-            <div className="flex flex-col gap-2">
-              <BuyInputSection
-                topLeftLabel={t`Close`}
-                inputValue={closeUsdInputValue}
-                onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
-                bottomLeftValue={formatUsd(closeSizeUsd)}
-                isBottomLeftValueMuted={closeSizeUsd === 0n}
-                bottomRightLabel={t`Max`}
-                bottomRightValue={formatUsd(maxCloseSize)}
-                onClickMax={
-                  maxCloseSize > 0 && closeSizeUsd !== maxCloseSize
-                    ? () => setCloseUsdInputValueRaw(formatAmountFree(maxCloseSize, USD_DECIMALS))
-                    : undefined
-                }
-                showPercentSelector
-                onPercentChange={(percentage) => {
-                  const formattedAmount = formatAmountFree((maxCloseSize * BigInt(percentage)) / 100n, USD_DECIMALS, 2);
-                  setCloseUsdInputValueRaw(formattedAmount);
-                }}
-                qa="amount-input"
-              >
-                USD
-              </BuyInputSection>
-              {isTrigger && (
+        <div className="w-full">
+          {position && (
+            <>
+              <div className="flex flex-col gap-2">
                 <BuyInputSection
-                  topLeftLabel={t`Trigger Price`}
-                  topRightLabel={t`Mark`}
-                  topRightValue={formatUsd(markPrice, {
-                    displayDecimals: marketDecimals,
-                    visualMultiplier: toToken?.visualMultiplier,
-                  })}
-                  onClickTopRightLabel={() => {
-                    setTriggerPriceInputValueRaw(
-                      formatAmount(
-                        markPrice,
-                        USD_DECIMALS,
-                        calculateDisplayDecimals(markPrice, USD_DECIMALS, toToken?.visualMultiplier),
-                        undefined,
-                        undefined,
-                        toToken?.visualMultiplier
-                      )
+                  topLeftLabel={t`Close`}
+                  inputValue={closeUsdInputValue}
+                  onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
+                  bottomLeftValue={formatUsd(closeSizeUsd)}
+                  bottomRightLabel={t`Max`}
+                  bottomRightValue={formatUsd(maxCloseSize)}
+                  onClickMax={
+                    maxCloseSize > 0 && closeSizeUsd !== maxCloseSize
+                      ? () => setCloseUsdInputValueRaw(formatAmountFree(maxCloseSize, USD_DECIMALS))
+                      : undefined
+                  }
+                  showPercentSelector
+                  onPercentChange={(percentage) => {
+                    const formattedAmount = formatAmountFree(
+                      (maxCloseSize * BigInt(percentage)) / 100n,
+                      USD_DECIMALS,
+                      2
                     );
+                    setCloseUsdInputValueRaw(formattedAmount);
                   }}
-                  inputValue={triggerPriceInputValue}
-                  onInputValueChange={(e) => {
-                    setTriggerPriceInputValue(e.target.value);
-                  }}
-                  qa="trigger-input"
+                  qa="amount-input"
                 >
                   USD
                 </BuyInputSection>
-              )}
-            </div>
+                {isTrigger && (
+                  <BuyInputSection
+                    topLeftLabel={t`Trigger Price`}
+                    topRightLabel={t`Mark`}
+                    topRightValue={formatUsd(markPrice, {
+                      displayDecimals: marketDecimals,
+                      visualMultiplier: toToken?.visualMultiplier,
+                    })}
+                    onClickTopRightLabel={() => {
+                      setTriggerPriceInputValueRaw(
+                        formatAmount(
+                          markPrice,
+                          USD_DECIMALS,
+                          calculateDisplayDecimals(markPrice, USD_DECIMALS, toToken?.visualMultiplier),
+                          undefined,
+                          undefined,
+                          toToken?.visualMultiplier
+                        )
+                      );
+                    }}
+                    inputValue={triggerPriceInputValue}
+                    onInputValueChange={(e) => {
+                      setTriggerPriceInputValue(e.target.value);
+                    }}
+                    qa="trigger-input"
+                  >
+                    USD
+                  </BuyInputSection>
+                )}
+              </div>
 
-            {isTwap && (
-              <div className="pt-14">
-                <TwapRows
-                  duration={duration}
-                  numberOfParts={numberOfParts}
-                  setNumberOfParts={setNumberOfParts}
-                  setDuration={setDuration}
-                  isLong={position.isLong}
-                  sizeUsd={decreaseAmounts?.sizeDeltaUsd}
-                  marketInfo={position.marketInfo}
-                  type="decrease"
+              {isTwap && (
+                <div className="pt-14">
+                  <TwapRows
+                    duration={duration}
+                    numberOfParts={numberOfParts}
+                    setNumberOfParts={setNumberOfParts}
+                    setDuration={setDuration}
+                    isLong={position.isLong}
+                    sizeUsd={decreaseAmounts?.sizeDeltaUsd}
+                    marketInfo={position.marketInfo}
+                    type="decrease"
+                  />
+                </div>
+              )}
+
+              <div className="flex w-full flex-col gap-14 pt-14">
+                {isTrigger && maxAutoCancelOrdersWarning}
+                <HighPriceImpactOrFeesWarningCard
+                  priceImpactWarningState={priceImpactWarningState}
+                  collateralImpact={fees?.positionCollateralPriceImpact}
+                  positionImpact={fees?.totalPendingImpact}
+                  swapPriceImpact={fees?.swapPriceImpact}
+                  swapProfitFee={fees?.swapProfitFee}
+                  executionFeeUsd={executionFee?.feeUsd}
+                />
+
+                {!isTwap && (
+                  <ToggleSwitch
+                    textClassName="text-typography-secondary"
+                    isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
+                    setIsChecked={setKeepLeverage}
+                    disabled={leverageCheckboxDisabledByCollateral || decreaseAmounts?.isFullClose}
+                  >
+                    {keepLeverageTextElem}
+                  </ToggleSwitch>
+                )}
+
+                <Button
+                  className="w-full"
+                  variant="primary-action"
+                  disabled={buttonState.disabled}
+                  onClick={onSubmit}
+                  buttonRef={submitButtonRef}
+                  qa="confirm-button"
+                >
+                  {buttonState.text}
+                </Button>
+
+                <ExpressTradingWarningCard
+                  expressParams={expressParams}
+                  payTokenAddress={undefined}
+                  isWrapOrUnwrap={false}
+                  isGmxAccount={srcChainId !== undefined}
+                />
+
+                {!isTwap && (
+                  <>
+                    {receiveTokenRow}
+                    {liqPriceRow}
+                    {pnlRow}
+                  </>
+                )}
+
+                <PositionSellerPriceImpactFeesRow />
+
+                <PositionSellerAdvancedRows
+                  triggerPriceInputValue={triggerPriceInputValue}
+                  slippageInputId={slippageInputId}
+                  gasPaymentParams={expressParams?.gasPaymentParams}
                 />
               </div>
-            )}
-
-            <div className="flex flex-col gap-14 pt-14">
-              {isTrigger && maxAutoCancelOrdersWarning}
-              <HighPriceImpactOrFeesWarningCard
-                priceImpactWarningState={priceImpactWarningState}
-                collateralImpact={fees?.positionCollateralPriceImpact}
-                positionImpact={fees?.positionPriceImpact}
-                swapPriceImpact={fees?.swapPriceImpact}
-                swapProfitFee={fees?.swapProfitFee}
-                executionFeeUsd={executionFee?.feeUsd}
-              />
-              {!isTwap && (
-                <ToggleSwitch
-                  textClassName="text-slate-100"
-                  isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
-                  setIsChecked={setKeepLeverage}
-                  disabled={leverageCheckboxDisabledByCollateral || decreaseAmounts?.isFullClose}
-                >
-                  {keepLeverageTextElem}
-                </ToggleSwitch>
-              )}
-
-              <Button
-                className="w-full"
-                variant="primary-action"
-                disabled={buttonState.disabled}
-                onClick={onSubmit}
-                buttonRef={submitButtonRef}
-                qa="confirm-button"
-              >
-                {buttonState.text}
-              </Button>
-
-              <ExpressTradingWarningCard
-                expressParams={expressParams}
-                payTokenAddress={undefined}
-                isWrapOrUnwrap={false}
-              />
-
-              <div className="h-1 bg-stroke-primary" />
-
-              {!isTwap && (
-                <>
-                  {receiveTokenRow}
-                  {liqPriceRow}
-                  {pnlRow}
-                </>
-              )}
-
-              <PositionSellerAdvancedRows
-                triggerPriceInputValue={triggerPriceInputValue}
-                slippageInputId={slippageInputId}
-                gasPaymentParams={expressParams?.gasPaymentParams}
-              />
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
       </Modal>
     </div>
   );

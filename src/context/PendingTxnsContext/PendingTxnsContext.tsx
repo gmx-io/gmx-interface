@@ -8,8 +8,8 @@ import { parseError } from "lib/errors";
 import { getCallStaticError } from "lib/errors/additionalValidation";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
+import { useJsonRpcProvider } from "lib/rpc";
 import { sendUserAnalyticsOrderResultEvent } from "lib/userAnalytics";
-import { useEthersSigner } from "lib/wallets/useEthersSigner";
 
 import { getInsufficientExecutionFeeToastContent } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -44,32 +44,32 @@ export function usePendingTxns() {
 }
 
 export function PendingTxnsContextProvider({ children }: { children: ReactNode }) {
-  const signer = useEthersSigner();
   const { chainId } = useChainId();
+  const { provider } = useJsonRpcProvider(chainId);
   const { setIsSettingsVisible, executionFeeBufferBps } = useSettings();
 
   const [pendingTxns, setPendingTxns] = useState<PendingTransaction[]>([]);
 
   useEffect(() => {
     const checkPendingTxns = async () => {
-      if (!signer) {
+      if (!provider) {
         return;
       }
 
       const updatedPendingTxns: any[] = [];
       for (let i = 0; i < pendingTxns.length; i++) {
         const pendingTxn = pendingTxns[i];
-        const receipt = await signer.provider.getTransactionReceipt(pendingTxn.hash);
+        const receipt = await provider.getTransactionReceipt(pendingTxn.hash);
         if (receipt) {
           if (receipt.status === 0) {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             const { error: onchainError, txnData } = await getCallStaticError(
               chainId,
-              signer.provider,
+              provider,
               undefined,
               pendingTxn.hash
             );
-            const errorData = onchainError ? parseError(onchainError) : undefined;
+            const errorData = onchainError ? parseError(onchainError as any) : undefined;
 
             let toastMsg: ReactNode;
 
@@ -109,20 +109,20 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
           if (receipt.status === 1 && pendingTxn.message) {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             helperToast.success(
-              <div>
-                <div className="px-10 py-8">
+              <div className="StatusNotification">
+                <div className="StatusNotification-title">
                   {pendingTxn.message}{" "}
                   <ExternalLink href={txUrl}>
                     <Trans>View</Trans>
                   </ExternalLink>
                 </div>
                 {pendingTxn.messageDetails && (
-                  <div className="border-t-[1.5px] border-[#0f463d] px-10 py-8">{pendingTxn.messageDetails}</div>
+                  <>
+                    <hr className="my-8 -ml-12 -mr-32 h-[1.5px] border-none bg-[#0f463d]" />
+                    <div>{pendingTxn.messageDetails}</div>
+                  </>
                 )}
-              </div>,
-              {
-                className: "OrdersStatusNotificiation",
-              }
+              </div>
             );
           }
           continue;
@@ -139,7 +139,7 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
       checkPendingTxns();
     }, 2 * 1000);
     return () => clearInterval(interval);
-  }, [signer, pendingTxns, chainId, setIsSettingsVisible, executionFeeBufferBps]);
+  }, [provider, pendingTxns, chainId, setIsSettingsVisible, executionFeeBufferBps]);
 
   const state = useMemo(() => ({ pendingTxns, setPendingTxns }), [pendingTxns, setPendingTxns]);
 

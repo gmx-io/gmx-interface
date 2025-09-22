@@ -4,29 +4,30 @@ import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { MarketConfig, MarketValues } from "sdk/modules/markets/types";
+import type { MarketConfig, MarketValues } from "sdk/modules/markets/types";
 import type { MarketInfo, MarketsData, MarketsInfoData } from "sdk/types/markets";
 
-import { buildMarketsConfigsRequest } from "./buildMarketsConfigsRequest";
-import { buildMarketsValuesRequest } from "./buildMarketsValuesRequest";
-import { TokensData, useTokensDataRequest } from "../../tokens";
+import type { TokensData } from "../../tokens";
 import { useClaimableFundingDataRequest } from "../useClaimableFundingDataRequest";
 import { useMarkets } from "../useMarkets";
-import { useFastMarketsInfoRequest } from "./useFastMarketsInfoRequest";
 import { getMarketDivisor } from "../utils";
+import { buildMarketsConfigsRequest } from "./buildMarketsConfigsRequest";
+import { buildMarketsValuesRequest } from "./buildMarketsValuesRequest";
+import { useFastMarketsInfoRequest } from "./useFastMarketsInfoRequest";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
-  tokensData?: TokensData;
-  pricesUpdatedAt?: number;
-  isBalancesLoaded?: boolean;
   error?: Error;
 };
 
-export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
+export function useMarketsInfoRequest(
+  chainId: ContractsChainId,
+  { tokensData }: { tokensData: TokensData | undefined }
+): MarketsInfoResult {
   const { marketsData, marketsAddresses } = useMarkets(chainId);
-  const { tokensData, pricesUpdatedAt, error: tokensDataError, isBalancesLoaded } = useTokensDataRequest(chainId);
+
   const { claimableFundingData } = useClaimableFundingDataRequest(chainId);
   const { fastMarketInfoData } = useFastMarketsInfoRequest(chainId);
 
@@ -102,14 +103,11 @@ export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
     claimableFundingData,
   ]);
 
-  const error = tokensDataError || marketsValues.error || marketsConfigs.error;
+  const error = marketsValues.error || marketsConfigs.error;
 
   return {
     marketsInfoData: isDependenciesLoading ? undefined : mergedData,
-    tokensData,
-    pricesUpdatedAt,
     error,
-    isBalancesLoaded,
   };
 }
 
@@ -120,7 +118,7 @@ function useMarketsValuesRequest({
   marketsData,
   tokensData,
 }: {
-  chainId: number;
+  chainId: ContractsChainId;
   isDependenciesLoading: boolean;
   marketsAddresses: string[] | undefined;
   marketsData: MarketsData | undefined;
@@ -129,7 +127,7 @@ function useMarketsValuesRequest({
   const dataStoreAddress = getContract(chainId, "DataStore");
   const syntheticsReaderAddress = getContract(chainId, "SyntheticsReader");
 
-  const marketsValuesQuery = useMulticall(chainId, "useMarketsValuesRequest", {
+  const marketsValuesQuery = useMulticall(chainId, `useMarketsValuesRequest-${chainId}`, {
     key:
       !isDependenciesLoading && marketsAddresses?.length && marketsAddresses.length > 0 ? [...marketsAddresses] : null,
 
@@ -248,7 +246,7 @@ function useMarketsConfigsRequest({
   isDependenciesLoading,
   marketsAddresses,
 }: {
-  chainId: number;
+  chainId: ContractsChainId;
   isDependenciesLoading: boolean;
   marketsAddresses: string[] | undefined;
 }) {
@@ -286,8 +284,6 @@ function useMarketsConfigsRequest({
             maxShortPoolUsdForDeposit: dataStoreValues.maxShortPoolUsdForDeposit.returnValues[0],
             maxLongPoolAmount: dataStoreValues.maxLongPoolAmount.returnValues[0],
             maxShortPoolAmount: dataStoreValues.maxShortPoolAmount.returnValues[0],
-            longPoolAmountAdjustment: dataStoreValues.longPoolAmountAdjustment.returnValues[0],
-            shortPoolAmountAdjustment: dataStoreValues.shortPoolAmountAdjustment.returnValues[0],
             reserveFactorLong: dataStoreValues.reserveFactorLong.returnValues[0],
             reserveFactorShort: dataStoreValues.reserveFactorShort.returnValues[0],
             openInterestReserveFactorLong: dataStoreValues.openInterestReserveFactorLong.returnValues[0],
@@ -313,23 +309,33 @@ function useMarketsConfigsRequest({
             maxPnlFactorForTradersShort: dataStoreValues.maxPnlFactorForTradersShort.returnValues[0],
 
             minCollateralFactor: dataStoreValues.minCollateralFactor.returnValues[0],
+            minCollateralFactorForLiquidation: dataStoreValues.minCollateralFactorForLiquidation.returnValues[0],
+
             minCollateralFactorForOpenInterestLong:
               dataStoreValues.minCollateralFactorForOpenInterestLong.returnValues[0],
 
             minCollateralFactorForOpenInterestShort:
               dataStoreValues.minCollateralFactorForOpenInterestShort.returnValues[0],
 
-            positionFeeFactorForPositiveImpact: dataStoreValues.positionFeeFactorForPositiveImpact.returnValues[0],
-            positionFeeFactorForNegativeImpact: dataStoreValues.positionFeeFactorForNegativeImpact.returnValues[0],
+            positionFeeFactorForBalanceWasImproved:
+              dataStoreValues.positionFeeFactorForBalanceWasImproved.returnValues[0],
+            positionFeeFactorForBalanceWasNotImproved:
+              dataStoreValues.positionFeeFactorForBalanceWasNotImproved.returnValues[0],
             positionImpactFactorPositive: dataStoreValues.positionImpactFactorPositive.returnValues[0],
             positionImpactFactorNegative: dataStoreValues.positionImpactFactorNegative.returnValues[0],
             maxPositionImpactFactorPositive: dataStoreValues.maxPositionImpactFactorPositive.returnValues[0],
             maxPositionImpactFactorNegative: dataStoreValues.maxPositionImpactFactorNegative.returnValues[0],
             maxPositionImpactFactorForLiquidations:
               dataStoreValues.maxPositionImpactFactorForLiquidations.returnValues[0],
+            maxLendableImpactFactor: dataStoreValues.maxLendableImpactFactor.returnValues[0],
+            maxLendableImpactFactorForWithdrawals:
+              dataStoreValues.maxLendableImpactFactorForWithdrawals.returnValues[0],
+            maxLendableImpactUsd: dataStoreValues.maxLendableImpactUsd.returnValues[0],
+            lentPositionImpactPoolAmount: dataStoreValues.lentPositionImpactPoolAmount.returnValues[0],
             positionImpactExponentFactor: dataStoreValues.positionImpactExponentFactor.returnValues[0],
-            swapFeeFactorForPositiveImpact: dataStoreValues.swapFeeFactorForPositiveImpact.returnValues[0],
-            swapFeeFactorForNegativeImpact: dataStoreValues.swapFeeFactorForNegativeImpact.returnValues[0],
+            swapFeeFactorForBalanceWasImproved: dataStoreValues.swapFeeFactorForBalanceWasImproved.returnValues[0],
+            swapFeeFactorForBalanceWasNotImproved:
+              dataStoreValues.swapFeeFactorForBalanceWasNotImproved.returnValues[0],
             swapImpactFactorPositive: dataStoreValues.swapImpactFactorPositive.returnValues[0],
             swapImpactFactorNegative: dataStoreValues.swapImpactFactorNegative.returnValues[0],
             atomicSwapFeeFactor: dataStoreValues.atomicSwapFeeFactor.returnValues[0],

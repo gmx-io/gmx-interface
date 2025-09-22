@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ETH_MAINNET } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ETH_MAINNET } from "./chains";
 import { isDevelopment } from "./env";
 import { getSubgraphUrlKey } from "./localStorage";
 
@@ -23,6 +23,10 @@ const SUBGRAPH_URLS = {
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-fuji-referrals/api",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-fuji-stats/api",
     subsquid: "https://gmx.squids.live/gmx-synthetics-fuji:prod/api/graphql",
+  },
+
+  [ARBITRUM_SEPOLIA]: {
+    subsquid: "https://gmx.squids.live/gmx-synthetics-arb-sepolia:prod/api/graphql",
   },
 
   [BOTANIX]: {

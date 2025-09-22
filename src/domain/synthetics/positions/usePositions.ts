@@ -1,22 +1,25 @@
 import { ethers } from "ethers";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
 import { hashedPositionKey } from "config/dataStore";
+import { ContractsChainId } from "config/static/chains";
 import {
   PendingPositionUpdate,
   PositionDecreaseEvent,
   PositionIncreaseEvent,
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
+import type { Position } from "domain/synthetics/positions/types";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
+import type { ContractMarketPrices, MarketsData } from "sdk/types/markets";
+import type { PositionsData } from "sdk/types/positions";
+import type { TokensData } from "sdk/types/tokens";
+import { getContractMarketPrices } from "sdk/utils/markets";
 import { getPositionKey, parsePositionKey } from "sdk/utils/positions";
-
-import { ContractMarketPrices, MarketsData, getContractMarketPrices } from "../markets";
-import { TokensData } from "../tokens";
-import { Position, PositionsData } from "./types";
+import type { SyntheticsReader } from "typechain-types/SyntheticsReader";
 
 const MAX_PENDING_UPDATE_AGE = 600 * 1000; // 10 minutes
 
@@ -27,7 +30,7 @@ type PositionsResult = {
 };
 
 export function usePositions(
-  chainId: number,
+  chainId: ContractsChainId,
   p: {
     marketsData?: MarketsData;
     tokensData?: TokensData;
@@ -35,7 +38,6 @@ export function usePositions(
   }
 ): PositionsResult {
   const { marketsData, tokensData, account } = p;
-  const [disableBatching, setDisableBatching] = useState(true);
 
   const keysAndPrices = useKeysAndPricesParams({
     marketsData,
@@ -53,36 +55,37 @@ export function usePositions(
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     clearUnusedKeys: true,
     keepPreviousData: true,
-    disableBatching,
 
-    request: () => ({
-      reader: {
-        contractAddress: getContract(chainId, "SyntheticsReader"),
-        abiId: "SyntheticsReader",
-        calls: {
-          positions: {
-            methodName: "getAccountPositionInfoList",
-            params: [
-              getContract(chainId, "DataStore"),
-              getContract(chainId, "ReferralStorage"),
-              account,
-              keysAndPrices.marketsKeys,
-              keysAndPrices.marketsPrices,
-              // uiFeeReceiver
-              ethers.ZeroAddress,
-              0,
-              1000,
-            ],
+    request: (requestChainId) => {
+      return {
+        reader: {
+          contractAddress: getContract(requestChainId, "SyntheticsReader"),
+          abiId: "SyntheticsReader",
+          calls: {
+            positions: {
+              methodName: "getAccountPositionInfoList",
+              params: [
+                getContract(requestChainId, "DataStore"),
+                getContract(requestChainId, "ReferralStorage"),
+                account!,
+                keysAndPrices.marketsKeys,
+                keysAndPrices.marketsPrices,
+                // uiFeeReceiver
+                ethers.ZeroAddress,
+                0,
+                1000,
+              ] satisfies Parameters<SyntheticsReader["getAccountPositionInfoList"]>,
+            },
           },
         },
-      },
-    }),
+      };
+    },
     parseResponse: (res) => {
       const positions = res.data.reader.positions.returnValues;
 
       return positions.reduce((positionsMap: PositionsData, positionInfo) => {
         const { position, fees, basePnlUsd } = positionInfo;
-        const { addresses, numbers, flags, data } = position;
+        const { addresses, numbers, flags } = position;
         const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
 
         // Empty position
@@ -109,23 +112,18 @@ export function usePositions(
           fundingFeeAmount: fees.funding.fundingFeeAmount,
           claimableLongTokenAmount: fees.funding.claimableLongTokenAmount,
           claimableShortTokenAmount: fees.funding.claimableShortTokenAmount,
+          pendingImpactAmount: numbers.pendingImpactAmount,
           pnl: basePnlUsd,
           positionFeeAmount: fees.positionFeeAmount,
           traderDiscountAmount: fees.referral.traderDiscountAmount,
           uiFeeAmount: fees.ui.uiFeeAmount,
-          data,
+          data: "",
         };
 
         return positionsMap;
       }, {} as PositionsData);
     },
   });
-
-  useEffect(() => {
-    if (positionsData && disableBatching) {
-      setDisableBatching(false);
-    }
-  }, [disableBatching, positionsData]);
 
   const optimisticPositionsData = useOptimisticPositions({
     positionsData: positionsData,
@@ -310,8 +308,12 @@ export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Po
     uiFeeAmount: 0n,
     pnl: 0n,
     traderDiscountAmount: 0n,
+    pendingImpactAmount: 0n,
+    borrowingFactor: 0n,
+    fundingFeeAmountPerSize: 0n,
+    longTokenClaimableFundingAmountPerSize: 0n,
+    shortTokenClaimableFundingAmountPerSize: 0n,
     data: "0x",
-
     isOpening: true,
     pendingUpdate: pendingUpdate,
   };

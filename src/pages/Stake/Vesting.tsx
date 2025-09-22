@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useState } from "react";
 import useSWR from "swr";
+import { zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { getIcons } from "config/icons";
@@ -56,11 +57,16 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
 
   const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
   const gmxVesterAddress = getContract(chainId, "GmxVester");
-  const glpVesterAddress = getContract(chainId, "GlpVester");
   const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
 
   const { data: sbfGmxBalance } = useSWR(
-    [`StakeV2:sbfGmxBalance:${active}`, chainId, feeGmxTrackerAddress, "balanceOf", account ?? PLACEHOLDER_ACCOUNT],
+    feeGmxTrackerAddress !== zeroAddress && [
+      `StakeV2:sbfGmxBalance:${active}`,
+      chainId,
+      feeGmxTrackerAddress,
+      "balanceOf",
+      account ?? PLACEHOLDER_ACCOUNT,
+    ],
     {
       fetcher: contractFetcher(undefined, "Token"),
     }
@@ -110,28 +116,6 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
     setVesterDepositAddress(gmxVesterAddress);
   };
 
-  const showGlpVesterDepositModal = () => {
-    if (!vestingData) return;
-
-    let remainingVestableAmount = vestingData.glpVester.maxVestableAmount - vestingData.glpVester.vestedAmount;
-    if (processedData?.esGmxBalance !== undefined && processedData?.esGmxBalance < remainingVestableAmount) {
-      remainingVestableAmount = processedData.esGmxBalance;
-    }
-
-    setIsVesterDepositModalVisible(true);
-    setVesterDepositTitle(t`GLP Vault`);
-    setVesterDepositStakeTokenLabel("staked GLP");
-    setVesterDepositMaxAmount(remainingVestableAmount);
-    setVesterDepositBalance(processedData?.esGmxBalance);
-    setVesterDepositVestedAmount(vestingData.glpVester.vestedAmount);
-    setVesterDepositMaxVestableAmount(vestingData.glpVester.maxVestableAmount);
-    setVesterDepositAverageStakedAmount(vestingData.glpVester.averageStakedAmount);
-    setVesterDepositReserveAmount(vestingData.glpVester.pairAmount);
-    setVesterDepositMaxReserveAmount(processedData?.glpBalance);
-    setVesterDepositValue("");
-    setVesterDepositAddress(glpVesterAddress);
-  };
-
   const showGmxVesterWithdrawModal = () => {
     if (!vestingData || vestingData.gmxVesterVestedAmount === undefined || vestingData.gmxVesterVestedAmount === 0n) {
       helperToast.error(t`You have not deposited any tokens for vesting.`);
@@ -141,17 +125,6 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
     setIsVesterWithdrawModalVisible(true);
     setVesterWithdrawTitle(t`Withdraw from GMX Vault`);
     setVesterWithdrawAddress(gmxVesterAddress);
-  };
-
-  const showGlpVesterWithdrawModal = () => {
-    if (!vestingData || vestingData.glpVesterVestedAmount === undefined || vestingData.glpVesterVestedAmount === 0n) {
-      helperToast.error(t`You have not deposited any tokens for vesting.`);
-      return;
-    }
-
-    setIsVesterWithdrawModalVisible(true);
-    setVesterWithdrawTitle(t`Withdraw from GLP Vault`);
-    setVesterWithdrawAddress(glpVesterAddress);
   };
 
   function showAffiliateVesterDepositModal() {
@@ -240,7 +213,7 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
         setIsVisible={setIsAffiliateClaimModalVisible}
         totalVesterRewards={vestingData?.affiliateVesterClaimable ?? 0n}
       />
-      <div>
+      <div className="flex flex-col gap-16">
         <PageTitle
           title={t`Vest`}
           subtitle={
@@ -273,19 +246,28 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                   <div>
                     <Tooltip
                       handle={formatAmount(totalRewardTokens, 18, 2, true)}
+                      handleClassName="numbers"
                       position="bottom-end"
                       content={
                         <>
                           <StatsTooltipRow
                             showDollar={false}
                             label="GMX"
-                            value={formatAmount(processedData?.gmxInStakedGmx, 18, 2, true)}
+                            value={
+                              <span className="numbers">
+                                {formatAmount(processedData?.gmxInStakedGmx, 18, 2, true)}
+                              </span>
+                            }
                           />
 
                           <StatsTooltipRow
                             showDollar={false}
                             label="esGMX"
-                            value={formatAmount(processedData?.esGmxInStakedGmx, 18, 2, true)}
+                            value={
+                              <span className="numbers">
+                                {formatAmount(processedData?.esGmxInStakedGmx, 18, 2, true)}
+                              </span>
+                            }
                           />
                         </>
                       }
@@ -297,7 +279,8 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                     <Trans>Reserved for Vesting</Trans>
                   </div>
                   <div>
-                    {formatAmount(reservedAmount, 18, 2, true)} / {formatAmount(totalRewardTokens, 18, 2, true)}
+                    <span className="numbers">{formatAmount(reservedAmount, 18, 2, true)}</span> /{" "}
+                    <span className="numbers">{formatAmount(totalRewardTokens, 18, 2, true)}</span>
                   </div>
                 </div>
                 <div className="App-card-row">
@@ -313,13 +296,19 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                         4,
                         true
                       )}`}
+                      handleClassName="numbers"
                       position="bottom-end"
                       content={
                         <div>
                           <Trans>
-                            {formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} tokens have been converted
-                            to GMX from the {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)} esGMX
-                            deposited for vesting.
+                            <span className="numbers">
+                              {formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)}
+                            </span>{" "}
+                            tokens have been converted to GMX from the{" "}
+                            <span className="numbers">
+                              {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)}
+                            </span>{" "}
+                            esGMX deposited for vesting.
                           </Trans>
                         </div>
                       }
@@ -333,11 +322,14 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                   <div>
                     <Tooltip
                       handle={formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)}
+                      handleClassName="numbers"
                       position="bottom-end"
                       content={
                         <Trans>
-                          {formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)} GMX tokens can be claimed,
-                          use the options under the Total Rewards section to claim them.
+                          <span className="numbers">
+                            {formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)}
+                          </span>{" "}
+                          GMX tokens can be claimed, use the options under the total rewards section to claim them.
                         </Trans>
                       }
                     />
@@ -347,7 +339,7 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                 <div className="App-card-buttons m-0">
                   {!active && (
                     <Button variant="secondary" onClick={openConnectModal}>
-                      <Trans>Connect Wallet</Trans>
+                      <Trans>Connect wallet</Trans>
                     </Button>
                   )}
                   {active && (
@@ -357,93 +349,6 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                   )}
                   {active && (
                     <Button variant="secondary" onClick={() => showGmxVesterWithdrawModal()}>
-                      <Trans>Withdraw</Trans>
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="App-card StakeV2-gmx-card">
-              <div className="App-card-title">
-                <div className="inline-flex items-center">
-                  <img className="mr-5 h-20" alt="GLP" src={icons?.glp} height={20} />
-                  <Trans>GLP Vault</Trans>
-                </div>
-              </div>
-              <div className="App-card-divider"></div>
-              <div className="App-card-content">
-                <div className="App-card-row">
-                  <div className="label">
-                    <Trans>Staked Tokens</Trans>
-                  </div>
-                  <div>{formatAmount(processedData?.glpBalance, 18, 2, true)} GLP</div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">
-                    <Trans>Reserved for Vesting</Trans>
-                  </div>
-                  <div>
-                    {formatKeyAmount(vestingData, "glpVesterPairAmount", 18, 2, true)} /{" "}
-                    {formatAmount(processedData?.glpBalance, 18, 2, true)}
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">
-                    <Trans>Vesting Status</Trans>
-                  </div>
-                  <div>
-                    <Tooltip
-                      handle={`${formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} / ${formatKeyAmount(
-                        vestingData,
-                        "glpVesterVestedAmount",
-                        18,
-                        4,
-                        true
-                      )}`}
-                      position="bottom-end"
-                      content={
-                        <div>
-                          <Trans>
-                            {formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} tokens have been converted
-                            to GMX from the {formatKeyAmount(vestingData, "glpVesterVestedAmount", 18, 4, true)} esGMX
-                            deposited for vesting.
-                          </Trans>
-                        </div>
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">
-                    <Trans>Claimable</Trans>
-                  </div>
-                  <div>
-                    <Tooltip
-                      handle={formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)}
-                      position="bottom-end"
-                      content={
-                        <Trans>
-                          {formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)} GMX tokens can be claimed,
-                          use the options under the Total Rewards section to claim them.
-                        </Trans>
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="App-card-divider"></div>
-                <div className="App-card-buttons m-0">
-                  {!active && (
-                    <Button variant="secondary" onClick={openConnectModal}>
-                      <Trans>Connect Wallet</Trans>
-                    </Button>
-                  )}
-                  {active && (
-                    <Button variant="secondary" onClick={() => showGlpVesterDepositModal()}>
-                      <Trans>Deposit</Trans>
-                    </Button>
-                  )}
-                  {active && (
-                    <Button variant="secondary" onClick={() => showGlpVesterWithdrawModal()}>
                       <Trans>Withdraw</Trans>
                     </Button>
                   )}
@@ -473,14 +378,19 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                           4,
                           true
                         )} / ${formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)}`}
+                        handleClassName="numbers"
                         position="bottom-end"
                         content={
                           <div>
                             <Trans>
-                              {formatKeyAmount(vestingData, "affiliateVesterClaimSum", 18, 4, true)} tokens have been
-                              converted to GMX from the{" "}
-                              {formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)} esGMX deposited
-                              for vesting.
+                              <span className="numbers">
+                                {formatKeyAmount(vestingData, "affiliateVesterClaimSum", 18, 4, true)}
+                              </span>{" "}
+                              tokens have been converted to GMX from the{" "}
+                              <span className="numbers">
+                                {formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)}
+                              </span>{" "}
+                              esGMX deposited for vesting.
                             </Trans>
                           </div>
                         }
@@ -491,30 +401,37 @@ export function Vesting({ processedData }: { processedData: ProcessedData | unde
                     <div className="label">
                       <Trans>Claimable</Trans>
                     </div>
-                    <div>{formatKeyAmount(vestingData, "affiliateVesterClaimable", 18, 4, true)}</div>
+                    <div>
+                      <span className="numbers">
+                        {formatKeyAmount(vestingData, "affiliateVesterClaimable", 18, 4, true)}
+                      </span>
+                    </div>
                   </div>
-                  <div className="App-card-divider" />
-                  <div className="App-card-buttons m-0">
-                    {!active && (
-                      <Button variant="secondary" onClick={openConnectModal}>
-                        <Trans>Connect Wallet</Trans>
-                      </Button>
-                    )}
-                    {active && (
-                      <Button variant="secondary" onClick={() => showAffiliateVesterDepositModal()}>
-                        <Trans>Deposit</Trans>
-                      </Button>
-                    )}
-                    {active && (
-                      <Button variant="secondary" onClick={() => showAffiliateVesterWithdrawModal()}>
-                        <Trans>Withdraw</Trans>
-                      </Button>
-                    )}
-                    {active && (
-                      <Button variant="secondary" onClick={() => showAffiliateVesterClaimModal()}>
-                        <Trans>Claim</Trans>
-                      </Button>
-                    )}
+
+                  <div className="App-card-footer">
+                    <div className="App-card-divider" />
+                    <div className="App-card-buttons m-0 h-32">
+                      {!active && (
+                        <Button variant="secondary" onClick={openConnectModal} size="small">
+                          <Trans>Connect wallet</Trans>
+                        </Button>
+                      )}
+                      {active && (
+                        <Button variant="secondary" onClick={() => showAffiliateVesterDepositModal()} size="small">
+                          <Trans>Deposit</Trans>
+                        </Button>
+                      )}
+                      {active && (
+                        <Button variant="secondary" onClick={() => showAffiliateVesterWithdrawModal()} size="small">
+                          <Trans>Withdraw</Trans>
+                        </Button>
+                      )}
+                      {active && (
+                        <Button variant="secondary" onClick={() => showAffiliateVesterClaimModal()} size="small">
+                          <Trans>Claim</Trans>
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

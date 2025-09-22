@@ -9,7 +9,7 @@ import { useLocalizedMap } from "lib/i18n";
 import { SwipeTabs } from "components/SwipeTabs/SwipeTabs";
 import Tabs from "components/Tabs/Tabs";
 
-import { mobileTradeTypeClassNames, tradeTypeClassNames, tradeTypeIcons, tradeTypeLabels } from "./tradeboxConstants";
+import { mobileTradeTypeClassNames, tradeTypeClassNames, tradeTypeLabels } from "./tradeboxConstants";
 
 const OPTIONS = Object.values(TradeType);
 
@@ -33,7 +33,6 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
       value: type,
       label: localizedTradeTypeLabels[type],
       className: tradeTypeClassNames[type],
-      icon: tradeTypeIcons[type],
     }));
   }, [localizedTradeTypeLabels]);
 
@@ -45,13 +44,14 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
         onChange={onTradeTypeChange}
         size="l"
         qa="trade-direction"
+        regularOptionClassname="grow"
+        className="bg-slate-900"
       />
     );
   }
 
   return (
     <SwipeTabs
-      icons={tradeTypeIcons}
       options={OPTIONS}
       optionLabels={localizedTradeTypeLabels}
       option={tradeType}

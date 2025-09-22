@@ -1,8 +1,8 @@
-import { Chain, ClientConfig, createPublicClient, http } from "viem";
+import { Chain, createPublicClient, http } from "viem";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, UiContractsChain, getViemChain } from "config/chains";
+import { getViemChain } from "config/chains";
 import { isWebWorker } from "config/env";
-import {
+import type {
   MulticallErrorEvent,
   MulticallFallbackRpcModeCounter,
   MulticallRequestCounter,
@@ -10,79 +10,19 @@ import {
   MulticallTimeoutEvent,
 } from "lib/metrics";
 import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
+import type { MulticallRequestConfig, MulticallResult } from "lib/multicall/types";
+import { serializeMulticallErrors } from "lib/multicall/utils";
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { sleep } from "lib/sleep";
 import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
-import { abis as allAbis } from "sdk/abis";
-
-import type { MulticallRequestConfig, MulticallResult } from "./types";
-import { serializeMulticallErrors } from "./utils";
+import { AbiId, abis as allAbis } from "sdk/abis";
+import { BATCH_CONFIGS } from "sdk/configs/batch";
 
 export const MAX_TIMEOUT = 20000;
 
 export type MulticallProviderUrls = {
   primary: string;
   secondary: string;
-};
-
-const BATCH_CONFIGS: Record<
-  UiContractsChain,
-  {
-    http: {
-      batchSize: number;
-      wait: number;
-    };
-    client: ClientConfig["batch"];
-  }
-> = {
-  [ARBITRUM]: {
-    http: {
-      batchSize: 0, // disable batches, here batchSize is the number of eth_calls in a batch
-      wait: 0, // keep this setting in case batches are enabled in future
-    },
-    client: {
-      multicall: {
-        batchSize: 1024 * 1024, // here batchSize is the number of bytes in a multicall
-        wait: 0, // zero delay means formation of a batch in the current macro-task, like setTimeout(fn, 0)
-      },
-    },
-  },
-  [AVALANCHE]: {
-    http: {
-      batchSize: 0,
-      wait: 0,
-    },
-    client: {
-      multicall: {
-        batchSize: 1024 * 1024,
-        wait: 0,
-      },
-    },
-  },
-  [AVALANCHE_FUJI]: {
-    http: {
-      batchSize: 40,
-      wait: 0,
-    },
-    client: {
-      multicall: {
-        batchSize: 1024 * 1024,
-        wait: 0,
-      },
-    },
-  },
-  [BOTANIX]: {
-    http: {
-      batchSize: 0,
-      wait: 0,
-    },
-    client: {
-      multicall: {
-        batchSize: 1024 * 1024,
-        wait: 0,
-      },
-    },
-  },
 };
 
 export class Multicall {
@@ -125,6 +65,7 @@ export class Multicall {
       emitMetricCounter<MulticallFallbackRpcModeCounter>({
         event: "multicall.fallbackRpcMode.on",
         data: {
+          chainId: this.chainId,
           isInMainThread: !isWebWorker,
         },
       });
@@ -133,6 +74,7 @@ export class Multicall {
       emitMetricCounter<MulticallFallbackRpcModeCounter>({
         event: "multicall.fallbackRpcMode.off",
         data: {
+          chainId: this.chainId,
           isInMainThread: !isWebWorker,
         },
       });
@@ -157,7 +99,7 @@ export class Multicall {
       callKey: string;
     }[] = [];
 
-    const abis: any = {};
+    const abiWithErrorsMap: Partial<Record<AbiId, any>> = {};
 
     const encodedPayload: { address: string; abi: any; functionName: string; args: any }[] = [];
 
@@ -178,12 +120,11 @@ export class Multicall {
         }
 
         // Add Errors ABI to each contract ABI to correctly parse errors
-        abis[contractCallConfig.contractAddress] = abis[contractCallConfig.contractAddress] || [
-          ...allAbis[contractCallConfig.abiId],
-          ...allAbis.CustomErrors,
-        ];
+        if (!abiWithErrorsMap[contractCallConfig.abiId]) {
+          abiWithErrorsMap[contractCallConfig.abiId] = [...allAbis[contractCallConfig.abiId], ...allAbis.CustomErrors];
+        }
 
-        const abi = abis[contractCallConfig.contractAddress];
+        const abi = abiWithErrorsMap[contractCallConfig.abiId];
 
         originalKeys.push({
           contractKey,
@@ -210,6 +151,7 @@ export class Multicall {
       emitMetricCounter<MulticallRequestCounter>({
         event: `multicall.request.${event}`,
         data: {
+          chainId: this.chainId,
           isInMainThread: !isWebWorker,
           requestType,
           rpcProvider,
@@ -231,6 +173,7 @@ export class Multicall {
         event: "multicall.request.timing",
         time,
         data: {
+          chainId: this.chainId,
           requestType,
           rpcProvider,
           isLargeAccount,

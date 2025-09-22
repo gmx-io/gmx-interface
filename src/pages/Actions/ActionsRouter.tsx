@@ -8,6 +8,7 @@ import { useChainId } from "lib/chains";
 import { usePageParams } from "pages/AccountDashboard/usePageParams";
 import { VersionNetworkSwitcherRow } from "pages/AccountDashboard/VersionNetworkSwitcherRow";
 
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import PageTitle from "components/PageTitle/PageTitle";
 
 import ActionsPageV1 from "./ActionsV1/ActionsV1";
@@ -23,16 +24,18 @@ export function AccountsRouter() {
     const chainName = CHAIN_NAMES_MAP[chainId!];
 
     return (
-      <div className="default-container page-layout">
-        <PageTitle
-          isTop
-          title={t`GMX V1 Actions`}
-          subtitle={<VersionNetworkSwitcherRow chainId={chainId} version={1} />}
-        />
-        <div className="text-center text-yellow-500">
-          <Trans>V1 is not supported on {chainName}. Please switch to Arbitrum to use V1.</Trans>
+      <AppPageLayout>
+        <div className="default-container page-layout">
+          <PageTitle
+            isTop
+            title={t`GMX V1 Actions`}
+            subtitle={<VersionNetworkSwitcherRow chainId={chainId} version={1} />}
+          />
+          <div className="text-center text-yellow-300">
+            <Trans>V1 is not supported on {chainName}. Please switch to Arbitrum to use V1.</Trans>
+          </div>
         </div>
-      </div>
+      </AppPageLayout>
     );
   }
 
@@ -42,7 +45,9 @@ export function AccountsRouter() {
 
   return (
     <SyntheticsStateContextProvider overrideChainId={chainId} pageType="accounts" skipLocalReferralCode>
-      <SyntheticsActions />
+      <AppPageLayout>
+        <SyntheticsActions />
+      </AppPageLayout>
     </SyntheticsStateContextProvider>
   );
 }

@@ -112,7 +112,7 @@ const BuyLink = ({
   );
 
   const Icon = networkIcons[network];
-  const className = `flex cursor-pointer justify-center gap-8 rounded-3 text-white bg-slate-700
+  const className = `flex cursor-pointer justify-center gap-8 rounded-3 text-typography-primary bg-slate-700
         px-16 py-10 leading-[1.4em] hover:bg-cold-blue-700 active:bg-cold-blue-500`;
 
   const isHome = isHomeSite();
@@ -139,33 +139,30 @@ const BuyLink = ({
   );
 };
 
-async function sendUserAnalyticsProtocolTokenEvent(
-  chain: LandingPageProtocolTokenEvent["data"]["chain"],
-  type: LandingPageProtocolTokenEvent["data"]["type"]
-) {
+async function sendUserAnalyticsProtocolTokenEvent(type: LandingPageProtocolTokenEvent["data"]["type"]) {
   await userAnalytics.pushEvent<LandingPageProtocolTokenEvent>(
     {
       event: "LandingPageAction",
       data: {
         action: "ProtocolTokenAction",
-        chain,
         type,
+        chain: undefined,
       },
     },
     { instantSend: true }
   );
 }
 
-const trackGMXBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GMX");
-const trackGMXBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GMX");
-const trackGLPBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GLP");
-const trackGLPBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GLP");
-const trackGLVBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GLV");
-const trackGLVBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GLV");
-const trackGLVBuyBotanix = () => sendUserAnalyticsProtocolTokenEvent("Botanix", "GLV");
-const trackGMBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GM");
-const trackGMBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GM");
-const trackGMBuyBotanix = () => sendUserAnalyticsProtocolTokenEvent("Botanix", "GM");
+const trackGMXBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("GMX");
+const trackGMXBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("GMX");
+const trackGLPBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("GLP");
+const trackGLPBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("GLP");
+const trackGLVBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("GLV");
+const trackGLVBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("GLV");
+const trackGLVBuyBotanix = () => sendUserAnalyticsProtocolTokenEvent("GLV");
+const trackGMBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("GM");
+const trackGMBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("GM");
+const trackGMBuyBotanix = () => sendUserAnalyticsProtocolTokenEvent("GM");
 
 function getTrackingLink(link: string) {
   if (!isHomeSite()) {
@@ -174,7 +171,7 @@ function getTrackingLink(link: string) {
 
   const paramsPrefix = link.includes("?") ? "&" : "?";
 
-  return `${link}${paramsPrefix}${userAnalytics.getSessionIdUrlParams()}`;
+  return `${link}${paramsPrefix}${userAnalytics.getSessionForwardParams()}`;
 }
 
 async function sendUserAnalyticsProtocolReadMoreEvent() {
@@ -213,13 +210,13 @@ export default function TokenCard({ showRedirectModal, showGlp = true }: Props) 
     marketsTokensIncentiveAprData: arbIncentiveApr,
     glvTokensIncentiveAprData: arbGlvIncentiveApr,
     glvApyInfoData: arbGlvApy,
-  } = useGmMarketsApy(ARBITRUM, { period: PERIOD });
+  } = useGmMarketsApy(ARBITRUM, undefined, { period: PERIOD });
   const {
     marketsTokensApyData: avaxApy,
     marketsTokensIncentiveAprData: avaxIncentiveApr,
     glvTokensIncentiveAprData: avaxGlvIncentiveApr,
     glvApyInfoData: avaxGlvApy,
-  } = useGmMarketsApy(AVALANCHE, { period: PERIOD });
+  } = useGmMarketsApy(AVALANCHE, undefined, { period: PERIOD });
 
   const maxMarketApyText = useMemo(() => {
     if (!arbApy || !arbIncentiveApr || !avaxApy || !avaxIncentiveApr)
@@ -307,8 +304,8 @@ export default function TokenCard({ showRedirectModal, showGlp = true }: Props) 
           <div className="Home-token-card-option-info">
             <div className="Home-token-card-option-title">
               <Trans>
-                GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees,
-                respectively.
+                GMX is the utility and governance token. It also accrues 30% of the protocol fees via a buyback and
+                distribution mechanism.
               </Trans>
             </div>
             <div className="Home-token-card-option-apr">
@@ -317,7 +314,7 @@ export default function TokenCard({ showRedirectModal, showGlp = true }: Props) 
             </div>
           </div>
         </div>
-        <div className="mt-50 flex flex-col gap-15 text-slate-100">
+        <div className="mt-50 flex flex-col gap-15 text-typography-secondary">
           <Trans>Buy token on:</Trans>
           <div className={cx("flex justify-between", { "flex-col gap-15": isMobile })}>
             <div className={cx("buy flex gap-15", { "flex-col": isMobile })}>
@@ -381,7 +378,7 @@ export default function TokenCard({ showRedirectModal, showGlp = true }: Props) 
           </div>
         </div>
 
-        <div className="mt-50 flex flex-col gap-15 text-slate-100">
+        <div className="mt-50 flex flex-col gap-15 text-typography-secondary">
           <Trans>Buy token on:</Trans>
           <div className={cx("flex justify-between", { "flex-col gap-15": isMobile })}>
             <div className={cx("buy flex gap-15", { "flex-col": isMobile })}>
@@ -454,7 +451,7 @@ export default function TokenCard({ showRedirectModal, showGlp = true }: Props) 
           </div>
         </div>
 
-        <div className="mt-50 flex flex-col gap-15 text-slate-100">
+        <div className="mt-50 flex flex-col gap-15 text-typography-secondary">
           <Trans>Buy token on:</Trans>
           <div className={cx("flex justify-between", { "flex-col gap-15": isMobile })}>
             <div className={cx("buy flex gap-15", { "flex-col": isMobile })}>
@@ -525,7 +522,7 @@ export default function TokenCard({ showRedirectModal, showGlp = true }: Props) 
               </div>
             </div>
           </div>
-          <div className="mt-50 flex flex-col gap-15 text-slate-100">
+          <div className="mt-50 flex flex-col gap-15 text-typography-secondary">
             <Trans>Sell token on:</Trans>
             <div className={cx("flex justify-between", { "flex-col gap-15": isMobile })}>
               <div className={cx("buy flex gap-15", { "flex-col": isMobile })}>

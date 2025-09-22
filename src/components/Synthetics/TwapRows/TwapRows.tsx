@@ -1,8 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import cx from "classnames";
 import { formatDuration, type Locale as DateLocale } from "date-fns";
-import { ChangeEvent, useEffect } from "react";
+import { useEffect } from "react";
 import { useLocalStorage } from "react-use";
 
 import { TWAP_INFO_CARD_CLOSED_KEY } from "config/localStorage";
@@ -13,8 +12,8 @@ import { TwapDuration } from "sdk/types/twap";
 import { changeTwapNumberOfPartsValue } from "sdk/utils/twap";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
-import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
+import { ValueInput } from "components/ValueInput/ValueInput";
 
 import { LOCALE_DATE_LOCALE_MAP } from "../DateRangeSelect/DateRangeSelect";
 import { useTradeboxChanges } from "../TradeBox/hooks/useTradeboxChanges";
@@ -81,25 +80,28 @@ const TwapRows = ({
   }, [tradeboxChanges.direction, tradeboxChanges.toTokenAddress, savedTwapNumberOfParts, setNumberOfParts]);
 
   return (
-    <div className="flex flex-col">
-      <SyntheticsInfoRow label={t`Duration`} className="mb-11">
+    <div className="flex flex-col gap-14">
+      <SyntheticsInfoRow label={t`Duration`} className="h-20">
         <DurationField duration={duration} setDuration={setDuration} />
       </SyntheticsInfoRow>
-      <SyntheticsInfoRow label={t`Number of Parts`} className="mb-14">
+      <SyntheticsInfoRow label={t`Number of Parts`}>
         <div className="flex">
           <ValueInput
             value={numberOfParts}
             onChange={(value) => setNumberOfParts(value)}
             onBlur={() => setNumberOfParts(changeTwapNumberOfPartsValue(numberOfParts))}
+            className="w-[112px]"
           />
         </div>
       </SyntheticsInfoRow>
-      <SyntheticsInfoRow label={t`Frequency`} className="mb-14">
+      <SyntheticsInfoRow label={t`Frequency`}>
         <FrequencyField duration={duration} numberOfParts={numberOfParts} />
       </SyntheticsInfoRow>
-      <SyntheticsInfoRow label={t`Size per part`} className="mb-14">
-        {formatUsd(typeof sizeUsd === "bigint" && numberOfParts ? sizeUsd / BigInt(numberOfParts) : 0n)}
-      </SyntheticsInfoRow>
+      <SyntheticsInfoRow
+        label={t`Size per part`}
+        value={formatUsd(typeof sizeUsd === "bigint" && numberOfParts ? sizeUsd / BigInt(numberOfParts) : 0n)}
+        valueClassName="numbers"
+      />
 
       {!isTwapInfoCardClosed && marketInfo && typeof sizeUsd === "bigint" && sizeUsd > 0n && (
         <AlertInfoCard onClose={handleCloseTwapInfoCard}>
@@ -115,7 +117,7 @@ const TwapRows = ({
 };
 
 const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; numberOfParts: number }) => {
-  const seconds = numberOfParts ? ((duration.hours * 60 + duration.minutes) * 60) / numberOfParts : 0;
+  const seconds = numberOfParts ? Math.round(((duration.hours * 60 + duration.minutes) * 60) / numberOfParts) : 0;
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(seconds / 3600);
 
@@ -123,7 +125,7 @@ const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; n
     const remainMinutes = Math.floor((seconds % 3600) / 60);
     return (
       <Trans>
-        <span className="text-slate-100">every</span> {hours} hours
+        <span className="text-typography-secondary">every</span> {hours} hours
         {remainMinutes > 0 ? <> and {remainMinutes} minutes</> : undefined}
       </Trans>
     );
@@ -133,7 +135,7 @@ const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; n
     const remainSeconds = Math.floor(seconds % 60);
     return (
       <Trans>
-        <span className="text-slate-100">every</span> {minutes} minutes
+        <span className="text-typography-secondary">every</span> {minutes} minutes
         {remainSeconds > 0 ? <> and {remainSeconds} seconds</> : undefined}
       </Trans>
     );
@@ -141,7 +143,7 @@ const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; n
 
   return (
     <Trans>
-      <span className="text-slate-100">every</span> {seconds} seconds
+      <span className="text-typography-secondary">every</span> {seconds} seconds
     </Trans>
   );
 };
@@ -159,48 +161,15 @@ const DurationField = ({
         label={t`Hour(s)`}
         value={duration.hours}
         onChange={(value) => setDuration({ ...duration, hours: value })}
+        className="w-[112px]"
       />
       <ValueInput
         label={t`Minute(s)`}
         value={duration.minutes}
         onChange={(value) => setDuration({ ...duration, minutes: value })}
+        className="w-[112px]"
       />
     </div>
-  );
-};
-
-export const ValueInput = ({
-  value,
-  onChange,
-  label,
-  onBlur,
-}: {
-  value: number;
-  onChange: (value: number) => void;
-  onBlur?: () => void;
-  label?: string;
-}) => {
-  const onValueChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const parsedValue = parseInt(e.target.value);
-
-    if (isNaN(parsedValue)) {
-      onChange(0);
-    } else {
-      onChange(parsedValue);
-    }
-  };
-
-  return (
-    <label
-      className={cx("w-[114px] rounded-2 bg-fill-tertiary px-6 py-3", label && "flex items-center", {
-        "grid grid-cols-[1fr_1fr]": label,
-      })}
-    >
-      {label && <span className="opacity-70">{label}</span>}
-      <div>
-        <NumberInput className="w-full p-0 text-right" value={value} onValueChange={onValueChange} onBlur={onBlur} />
-      </div>
-    </label>
   );
 };
 

@@ -1,12 +1,12 @@
 import { TaskState } from "@gelatonetwork/relay-sdk";
 import { Address, encodePacked } from "viem";
 
-import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, BOTANIX, ContractsChainId } from "config/chains";
 import { GelatoPollingTiming, metrics } from "lib/metrics";
 import { sleep } from "lib/sleep";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 
-import { GelatoTaskStatus, TransactionWaiterResult } from "./types";
+import type { GelatoTaskStatus, TransactionWaiterResult } from "./types";
 
 export type ExpressTxnData = {
   callData: string;
@@ -21,7 +21,7 @@ export type ExpressTxnResult = {
 };
 
 export async function sendExpressTransaction(p: {
-  chainId: number;
+  chainId: ContractsChainId;
   txnData: ExpressTxnData;
   isSponsoredCall: boolean;
 }) {
@@ -32,7 +32,7 @@ export async function sendExpressTransaction(p: {
 
   let gelatoPromise: Promise<{ taskId: string }> | undefined;
 
-  const apiKey = apiKeys[p.chainId];
+  const apiKey = GELATO_API_KEYS[p.chainId];
 
   gelatoPromise = sendTxnToGelato({
     chainId: p.chainId,
@@ -41,7 +41,7 @@ export async function sendExpressTransaction(p: {
     feeToken: p.txnData.feeToken,
     sponsorApiKey: apiKey,
     retries: 0,
-    isSponsoredCall: p.isSponsoredCall,
+    isSponsoredCall: apiKey ? p.isSponsoredCall : false,
   });
 
   return gelatoPromise.then((res) => {
@@ -90,10 +90,11 @@ function makeExpressTxnResultWaiter(res: { taskId: string }) {
 
 const GELATO_API = "https://api.gelato.digital";
 
-const apiKeys = {
+export const GELATO_API_KEYS: Partial<Record<ContractsChainId, string>> = {
   [ARBITRUM]: "6dE6kOa9pc1ap4dQQC2iaK9i6nBFp8eYxQlm00VreWc_",
   [AVALANCHE]: "FalsQh9loL6V0rwPy4gWgnQPR6uTHfWjSVT2qlTzUq4_",
   [BOTANIX]: "s5GgkfX7dvd_2uYqsRSCjzMekUrXh0dibUvfLab1Anc_",
+  [ARBITRUM_SEPOLIA]: "nx5nyAg4h2kI_64YtOuPt7LSPDEXo4u8eJY_idF9xDw_",
 };
 
 export async function sendTxnToGelato({
@@ -109,10 +110,14 @@ export async function sendTxnToGelato({
   target: string;
   data: string;
   feeToken: string;
-  sponsorApiKey: string;
+  sponsorApiKey: string | undefined;
   retries: number;
   isSponsoredCall: boolean;
 }) {
+  if (isSponsoredCall && !sponsorApiKey) {
+    throw new Error("Sponsor API key is required for sponsored call");
+  }
+
   const url = isSponsoredCall ? `${GELATO_API}/relays/v2/sponsored-call` : `${GELATO_API}/relays/v2/call-with-sync-fee`;
 
   const res = await fetch(url, {

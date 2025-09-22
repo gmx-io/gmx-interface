@@ -73,9 +73,9 @@ function renderAllowedSlippage(setAllowedSlippage, defaultSlippage, allowedSlipp
           position="top-start"
           renderContent={() => {
             return (
-              <div className="text-white">
+              <div className="text-typography-primary">
                 <Trans>
-                  You can edit the default Allowed Slippage in the settings menu on the top right of the page.
+                  You can edit the default allowed slippage in the settings menu on the top right of the page.
                   <br />
                   <br />
                   Note that a low allowed slippage, e.g. less than{" "}
@@ -93,7 +93,7 @@ function renderAllowedSlippage(setAllowedSlippage, defaultSlippage, allowedSlipp
         value={allowedSlippage}
         defaultValue={defaultSlippage}
         highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
-        highValueWarningText={t`Slippage is too high`}
+        highValueWarningText={t`Slippage is too high.`}
       />
     </ExchangeInfoRow>
   );
@@ -689,41 +689,45 @@ export default function ConfirmationBox(props) {
             <ExchangeInfoRow label={t`Entry Price`}>
               {hasExistingPosition && toAmount && toAmount > 0 && (
                 <div className="muted inline-block">
-                  ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
+                  ${"\u200a\u200d"}
+                  {formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                   <BsArrowRight className="transition-arrow inline-block" />
                 </div>
               )}
               {nextAveragePrice &&
-                `$${formatAmount(nextAveragePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}`}
+                `$\u200a\u200d${formatAmount(nextAveragePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}`}
               {!nextAveragePrice && `-`}
             </ExchangeInfoRow>
           )}
           {!isMarketOrder && (
             <ExchangeInfoRow label={t`Mark Price`} isTop={true}>
-              ${formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}
+              ${"\u200a\u200d"}
+              {formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}
             </ExchangeInfoRow>
           )}
           {!isMarketOrder && (
             <ExchangeInfoRow label={t`Limit Price`}>
-              ${formatAmount(triggerPriceUsd, USD_DECIMALS, toTokenPriceDecimal, true)}
+              ${"\u200a\u200d"}
+              {formatAmount(triggerPriceUsd, USD_DECIMALS, toTokenPriceDecimal, true)}
             </ExchangeInfoRow>
           )}
           <ExchangeInfoRow label={t`Liq. Price`}>
             {hasExistingPosition && toAmount && toAmount > 0 && (
               <div className="muted inline-block">
-                ${formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
+                ${"\u200a\u200d"}
+                {formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                 <BsArrowRight className="transition-arrow inline-block" />
               </div>
             )}
             {toAmount &&
               displayLiquidationPrice &&
-              `$${formatAmount(displayLiquidationPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
+              `$\u200a\u200d${formatAmount(displayLiquidationPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
             {!toAmount && displayLiquidationPrice && `-`}
             {!displayLiquidationPrice && `-`}
           </ExchangeInfoRow>
           <ExchangeInfoRow label={t`Collateral (${collateralToken.symbol})`} isTop>
             <Tooltip
-              handle={`$${formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}`}
+              handle={`$\u200a\u200d${formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}`}
               position="top-end"
               renderContent={() => {
                 return (
@@ -755,7 +759,7 @@ export default function ConfirmationBox(props) {
           {decreaseOrdersThatWillBeExecuted.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
-                <span className="muted text-sm">
+                <span className="muted text-body-small">
                   <Trans>I am aware of the trigger orders</Trans>
                 </span>
               </Checkbox>

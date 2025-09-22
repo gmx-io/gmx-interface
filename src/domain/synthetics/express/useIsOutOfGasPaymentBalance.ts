@@ -10,8 +10,8 @@ import { useTokensDataRequest } from "../tokens";
 import { useL1ExpressOrderGasReference } from "./useL1ExpressGasReference";
 
 export function useIsOutOfGasPaymentBalance() {
-  const { chainId } = useChainId();
-  const { tokensData } = useTokensDataRequest(chainId);
+  const { chainId, srcChainId } = useChainId();
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const gasPrice = useGasPrice(chainId);
   const gasLimits = useGasLimits(chainId);
   const l1Reference = useL1ExpressOrderGasReference();
@@ -41,11 +41,12 @@ export function useIsOutOfGasPaymentBalance() {
         createOrdersCount: 1,
         updateOrdersCount: 0,
         cancelOrdersCount: 0,
+        isGmxAccount: srcChainId !== undefined,
       });
 
       return token.balance === undefined || token.balance < minBalance;
     });
 
     return conditions.every((condition) => condition);
-  }, [chainId, gasLimits, gasPaymentTokens, gasPrice, l1Reference, relayFeeToken, tokensData]);
+  }, [chainId, gasLimits, gasPaymentTokens, gasPrice, l1Reference, relayFeeToken, srcChainId, tokensData]);
 }

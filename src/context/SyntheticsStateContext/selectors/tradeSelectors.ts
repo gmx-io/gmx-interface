@@ -1,4 +1,4 @@
-import { UiContractsChain } from "config/chains";
+import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { OrderType } from "domain/synthetics/orders";
@@ -136,7 +136,7 @@ export const selectMarketAdjacencyGraph = isDevelopment()
       const disabledMarketAddresses = debugSwapMarketsConfig.disabledSwapMarkets;
 
       const strippedMarkets = Object.fromEntries(
-        Object.entries(MARKETS[chainId as UiContractsChain]).filter(
+        Object.entries(MARKETS[chainId as ContractsChainId]).filter(
           ([marketAddress]) => !disabledMarketAddresses.includes(marketAddress)
         )
       );
@@ -523,6 +523,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
             collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
             sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
             sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+            positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
             indexPrice: increaseAmounts.indexPrice,
             showPnlInLeverage: isPnlInLeverage,
             minCollateralUsd,
@@ -606,6 +607,7 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
           collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
           payedRemainingCollateralUsd: decreaseAmounts.payedRemainingCollateralUsd,
           payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
+          proportionalPendingImpactDeltaUsd: decreaseAmounts.proportionalPendingImpactDeltaUsd,
           showPnlInLeverage: isPnlInLeverage,
           isLong: tradeFlags.isLong,
           minCollateralUsd,

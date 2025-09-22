@@ -71,7 +71,7 @@ function GroupComponent<T>({
   return (
     <div key={group.groupName} className="TableOptionsFilter-group group/group">
       {showGroupToggle ? (
-        <div className="TableOptionsFilter-group-name" onClick={handleGroupToggle}>
+        <div className="TableOptionsFilter-group-name font-medium" onClick={handleGroupToggle}>
           <Checkbox
             isPartialChecked={group.isSomethingSelected && !group.isEverythingSelected}
             isChecked={group.isEverythingSelected}
@@ -81,7 +81,7 @@ function GroupComponent<T>({
           </Checkbox>
         </div>
       ) : (
-        <div className="TableOptionsFilter-group-name">{group.groupName}</div>
+        <div className="TableOptionsFilter-group-name font-medium">{group.groupName}</div>
       )}
       {group.items
         .filter((item) => !item.hidden)

@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { toJpeg } from "html-to-image";
+import { toPng } from "html-to-image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BiCopy } from "react-icons/bi";
 import { FiTwitter } from "react-icons/fi";
@@ -18,12 +18,10 @@ import { SharePositionActionEvent } from "lib/userAnalytics/types";
 import Button from "components/Button/Button";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
-import shareBgImg from "img/position-share-bg.png";
+import shareBgImg from "img/position-share-bg.jpg";
 
 import { PositionShareCard } from "./PositionShareCard";
 import Modal from "../Modal/Modal";
-
-import "./PositionShare.css";
 
 const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
@@ -71,7 +69,7 @@ function PositionShare({
   const sharePositionBgImg = useLoadImage(shareBgImg);
   const cardRef = useRef<HTMLDivElement>(null);
   const tweetLink = getTwitterIntentURL(
-    `Latest $${indexToken?.symbol} trade on @GMX_IO`,
+    `Latest $\u200a\u200d${indexToken?.symbol} trade on @GMX_IO`,
     getShareURL(uploadedImageInfo, userAffiliateCode)
   );
 
@@ -81,9 +79,9 @@ function PositionShare({
       if (element && userAffiliateCode.success && sharePositionBgImg) {
         // We have to call the toJpeg function multiple times to make sure the canvas renders all the elements like background image
         // @refer https://github.com/tsayen/dom-to-image/issues/343#issuecomment-652831863
-        const image = await toJpeg(element, config)
-          .then(() => toJpeg(element, config))
-          .then(() => toJpeg(element, config));
+        const image = await toPng(element, config)
+          .then(() => toPng(element, config))
+          .then(() => toPng(element, config));
         try {
           const imageInfo = await fetch(UPLOAD_URL, { method: "POST", body: image }).then((res) => res.json());
           setUploadedImageInfo(imageInfo);
@@ -105,10 +103,10 @@ function PositionShare({
       },
     });
 
-    const imgBlob = await toJpeg(element, config)
-      .then(() => toJpeg(element, config))
-      .then(() => toJpeg(element, config));
-    downloadImage(imgBlob, "share.jpeg");
+    const imgBlob = await toPng(element, config)
+      .then(() => toPng(element, config))
+      .then(() => toPng(element, config));
+    downloadImage(imgBlob, "share.png");
   }
 
   function handleCopy() {
@@ -145,35 +143,37 @@ function PositionShare({
       setIsVisible={setIsPositionShareModalOpen}
       label={t`Share Position`}
     >
-      <PositionShareCard
-        entryPrice={entryPrice}
-        indexToken={indexToken}
-        isLong={isLong}
-        leverage={leverage}
-        markPrice={markPrice}
-        pnlAfterFeesPercentage={pnlAfterFeesPercentage}
-        userAffiliateCode={userAffiliateCode}
-        ref={cardRef}
-        loading={!uploadedImageInfo && !uploadedImageError}
-        sharePositionBgImg={sharePositionBgImg}
-      />
-      {uploadedImageError && <span className="error">{uploadedImageError}</span>}
+      <div className="flex flex-col gap-20">
+        <PositionShareCard
+          entryPrice={entryPrice}
+          indexToken={indexToken}
+          isLong={isLong}
+          leverage={leverage}
+          markPrice={markPrice}
+          pnlAfterFeesPercentage={pnlAfterFeesPercentage}
+          userAffiliateCode={userAffiliateCode}
+          ref={cardRef}
+          loading={!uploadedImageInfo && !uploadedImageError}
+          sharePositionBgImg={sharePositionBgImg}
+        />
+        {uploadedImageError && <span className="error">{uploadedImageError}</span>}
 
-      <div className="actions">
-        <Button variant="secondary" disabled={!uploadedImageInfo} className="mr-15" onClick={handleCopy}>
-          <BiCopy className="icon" />
-          <Trans>Copy</Trans>
-        </Button>
-        <Button variant="secondary" disabled={!uploadedImageInfo} className="mr-15" onClick={handleDownload}>
-          <RiFileDownloadLine className="icon" />
-          <Trans>Download</Trans>
-        </Button>
-        <TrackingLink onClick={trackShareTwitter}>
-          <Button newTab variant="secondary" disabled={!uploadedImageInfo} className="mr-15" to={tweetLink}>
-            <FiTwitter className="icon" />
-            <Trans>Tweet</Trans>
+        <div className="actions">
+          <Button variant="secondary" disabled={!uploadedImageInfo} className="mr-15" onClick={handleCopy}>
+            <BiCopy className="icon" />
+            <Trans>Copy</Trans>
           </Button>
-        </TrackingLink>
+          <Button variant="secondary" disabled={!uploadedImageInfo} className="mr-15" onClick={handleDownload}>
+            <RiFileDownloadLine className="icon" />
+            <Trans>Download</Trans>
+          </Button>
+          <TrackingLink onClick={trackShareTwitter}>
+            <Button newTab variant="secondary" disabled={!uploadedImageInfo} className="mr-15" to={tweetLink}>
+              <FiTwitter className="icon" />
+              <Trans>Tweet</Trans>
+            </Button>
+          </TrackingLink>
+        </div>
       </div>
     </Modal>
   );

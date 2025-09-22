@@ -1,5 +1,6 @@
-import { useMedia } from "react-use";
+import { useBreakpoints } from "lib/useBreakpoints";
 
 export function usePoolsIsMobilePage() {
-  return useMedia("(max-width: 768px)");
+  const { isMobile } = useBreakpoints();
+  return isMobile;
 }

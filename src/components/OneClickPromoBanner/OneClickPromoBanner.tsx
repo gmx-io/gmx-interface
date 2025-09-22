@@ -2,11 +2,11 @@ import { Trans } from "@lingui/macro";
 import { useCallback } from "react";
 import { useLocalStorage } from "react-use";
 
-import { getIsFlagEnabled } from "config/ab";
 import { getOneClickTradingPromoHiddenKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { useChainId } from "lib/chains";
+import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 
@@ -20,19 +20,23 @@ export function OneClickPromoBanner({ openSettings, isShort }: { openSettings: (
     false
   );
 
+  const isGeminiWallet = useIsGeminiWallet();
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
 
-  const shouldShow = getIsFlagEnabled("testOneClickPromo") && !isOneClickPromoHidden && !expressOrdersEnabled;
+  const shouldShow = !isOneClickPromoHidden && !expressOrdersEnabled && !isGeminiWallet;
 
   const onClickEnable = useCallback(() => {
     openSettings();
-    if (!isOutOfGasPaymentBalance) {
-      setTimeout(() => {
-        setExpressOrdersEnabled(true);
-        setIsOneClickPromoHidden(true);
-      }, 500);
+
+    if (isOutOfGasPaymentBalance || isGeminiWallet) {
+      return;
     }
-  }, [isOutOfGasPaymentBalance, openSettings, setExpressOrdersEnabled, setIsOneClickPromoHidden]);
+
+    setTimeout(() => {
+      setExpressOrdersEnabled(true);
+      setIsOneClickPromoHidden(true);
+    }, 500);
+  }, [isGeminiWallet, isOutOfGasPaymentBalance, openSettings, setExpressOrdersEnabled, setIsOneClickPromoHidden]);
 
   if (!shouldShow) {
     return null;
@@ -41,14 +45,12 @@ export function OneClickPromoBanner({ openSettings, isShort }: { openSettings: (
   return (
     <ColorfulBanner
       color="blue"
-      icon={<OneClickIcon className="-mt-6 ml-2" />}
+      icon={OneClickIcon}
       onClose={() => setIsOneClickPromoHidden(true)}
       onClick={onClickEnable}
-      className="min-w-[180px]"
+      className="min-w-[180px] cursor-pointer"
     >
-      <div className="clickable ml-6 mr-8">
-        {isShort ? <Trans>Try Express</Trans> : <Trans>Try Express Trading</Trans>}
-      </div>
+      <div>{isShort ? <Trans>Try Express</Trans> : <Trans>Try Express Trading</Trans>}</div>
     </ColorfulBanner>
   );
 }

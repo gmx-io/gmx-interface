@@ -39,3 +39,9 @@ package-lock.json
 !.yarn/sdks
 !.yarn/versions
 /.idea/
+
+.cursor/
+CLAUDE.md
+.serena
+.claude
+claude.md

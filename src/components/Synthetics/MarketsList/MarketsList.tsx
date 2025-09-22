@@ -1,8 +1,7 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useMemo, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
-import { getIcon } from "config/icons";
 import { useMarketsInfoDataToIndexTokensStats } from "context/SyntheticsStateContext/hooks/statsHooks";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { IndexTokenStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
@@ -56,23 +55,27 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
   );
 
   return (
-    <div className="my-15 rounded-4 bg-slate-800 text-left">
-      <div className="flex items-center px-16 py-8 text-16">
-        <Trans>GM Pools</Trans>
-        <img className="ml-5 mr-10" src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
-        <SearchInput
-          size="s"
-          value={searchText}
-          setValue={setSearchText}
-          className="*:!text-body-medium"
-          placeholder="Search Market"
-          autoFocus={false}
-        />
+    <div className="my-15 rounded-4 bg-slate-900 text-left">
+      <div className="flex flex-col gap-16 p-20 text-16">
+        <span className="text-h2">
+          <Trans>GM Pools</Trans>
+        </span>
+
+        <div className="max-w-[260px]">
+          <SearchInput
+            size="s"
+            value={searchText}
+            setValue={setSearchText}
+            className="*:!text-body-medium"
+            placeholder={t`Search Market`}
+            autoFocus={false}
+          />
+        </div>
       </div>
       <TableScrollFadeContainer>
         <table className="w-[max(100%,900px)]">
           <thead>
-            <TableTheadTr bordered>
+            <TableTheadTr>
               <TableTh>
                 <Trans>MARKETS</Trans>
               </TableTh>
@@ -110,8 +113,8 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
               currentData.map((stats) => <MarketsListDesktopItem key={stats.token.address} stats={stats} />)}
 
             {indexTokensStats.length > 0 && !currentData.length && (
-              <TableTr hoverable={false} bordered={false} className="h-[64.5px]">
-                <TableTd colSpan={6} className="text-body-medium align-top text-slate-100">
+              <TableTr className="h-[64.5px]">
+                <TableTd colSpan={6} className="text-body-medium align-top text-typography-secondary">
                   <Trans>No markets found.</Trans>
                 </TableTd>
               </TableTr>
@@ -198,7 +201,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
   const marketIndexName = getMarketIndexName(anyPool.marketInfo);
 
   return (
-    <TableTr key={stats.token.symbol} bordered={false} hoverable={false}>
+    <TableTr key={stats.token.symbol}>
       <TableTd>
         <div className="token-symbol-wrapper">
           <div className="flex items-center">
@@ -210,7 +213,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
               />
             </div>
             <div>
-              <div className="text-body-large">{marketIndexName}</div>
+              <div className="text-body-large font-medium">{marketIndexName}</div>
             </div>
             <div>
               <AssetDropdown token={stats.token} marketsStats={stats.marketsStats} />
@@ -218,7 +221,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
           </div>
         </div>
       </TableTd>
-      <TableTd>
+      <TableTd className="numbers">
         {formatUsdPrice(stats.token.prices?.minPrice, {
           visualMultiplier: stats.token.visualMultiplier,
         })}
@@ -227,6 +230,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
         <TooltipWithPortal
           className="nowrap"
           handle={formatAmountHuman(stats.totalPoolValue, USD_DECIMALS, true, 2)}
+          handleClassName="numbers"
           content={
             <>
               {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
@@ -241,6 +245,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                     </div>
                   }
                   value={formatAmountHuman(poolValueUsd, USD_DECIMALS, true, 2)}
+                  valueClassName="numbers"
                 />
               ))}
             </>
@@ -251,6 +256,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
         <TooltipWithPortal
           className="nowrap"
           handle={formatAmountHuman(stats.totalMaxLiquidity, USD_DECIMALS, true, 2)}
+          handleClassName="numbers"
           content={
             <>
               {stats.marketsStats.map(({ marketInfo, maxLiquidity }) => (
@@ -265,6 +271,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                     </div>
                   }
                   value={formatAmountHuman(maxLiquidity, USD_DECIMALS, true, 2)}
+                  valueClassName="numbers"
                 />
               ))}
             </>
@@ -275,12 +282,13 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
         <TooltipWithPortal
           tooltipClassName="MarketList-netfee-tooltip"
           handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(netFeePerHourShort)}`}
+          handleClassName="numbers"
           maxAllowedWidth={510}
           position="bottom-end"
           renderContent={() => <NetFeeTooltip marketStats={stats.marketsStats} />}
         />
       </TableTd>
-      <TableTd>{formatAmount(stats.totalUtilization, 2, 2)}%</TableTd>
+      <TableTd className="numbers">{formatAmount(stats.totalUtilization, 2, 2)}%</TableTd>
     </TableTr>
   );
 }
