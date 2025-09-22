@@ -139,33 +139,30 @@ const BuyLink = ({
   );
 };
 
-async function sendUserAnalyticsProtocolTokenEvent(
-  chain: LandingPageProtocolTokenEvent["data"]["chain"],
-  type: LandingPageProtocolTokenEvent["data"]["type"]
-) {
+async function sendUserAnalyticsProtocolTokenEvent(type: LandingPageProtocolTokenEvent["data"]["type"]) {
   await userAnalytics.pushEvent<LandingPageProtocolTokenEvent>(
     {
       event: "LandingPageAction",
       data: {
         action: "ProtocolTokenAction",
-        chain,
         type,
+        chain: undefined,
       },
     },
     { instantSend: true }
   );
 }
 
-const trackGMXBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GMX");
-const trackGMXBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GMX");
-const trackGLPBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GLP");
-const trackGLPBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GLP");
-const trackGLVBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GLV");
-const trackGLVBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GLV");
-const trackGLVBuyBotanix = () => sendUserAnalyticsProtocolTokenEvent("Botanix", "GLV");
-const trackGMBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("Arbitrum", "GM");
-const trackGMBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("Avalanche", "GM");
-const trackGMBuyBotanix = () => sendUserAnalyticsProtocolTokenEvent("Botanix", "GM");
+const trackGMXBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("GMX");
+const trackGMXBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("GMX");
+const trackGLPBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("GLP");
+const trackGLPBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("GLP");
+const trackGLVBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("GLV");
+const trackGLVBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("GLV");
+const trackGLVBuyBotanix = () => sendUserAnalyticsProtocolTokenEvent("GLV");
+const trackGMBuyArbitrum = () => sendUserAnalyticsProtocolTokenEvent("GM");
+const trackGMBuyAvalanche = () => sendUserAnalyticsProtocolTokenEvent("GM");
+const trackGMBuyBotanix = () => sendUserAnalyticsProtocolTokenEvent("GM");
 
 function getTrackingLink(link: string) {
   if (!isHomeSite()) {

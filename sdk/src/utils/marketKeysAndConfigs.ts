@@ -27,7 +27,6 @@ import {
   OPEN_INTEREST_IN_TOKENS_KEY,
   OPEN_INTEREST_KEY,
   OPEN_INTEREST_RESERVE_FACTOR_KEY,
-  POOL_AMOUNT_ADJUSTMENT_KEY,
   POOL_AMOUNT_KEY,
   POSITION_FEE_FACTOR_KEY,
   POSITION_IMPACT_EXPONENT_FACTOR_KEY,
@@ -69,14 +68,6 @@ export function hashMarketConfigKeys(market: MarketConfig) {
     maxShortPoolUsdForDeposit: [
       ["bytes32", "address", "address"],
       [MAX_POOL_USD_FOR_DEPOSIT_KEY, marketAddress, market.shortTokenAddress],
-    ],
-    longPoolAmountAdjustment: [
-      ["bytes32", "address", "address"],
-      [POOL_AMOUNT_ADJUSTMENT_KEY, marketAddress, market.longTokenAddress],
-    ],
-    shortPoolAmountAdjustment: [
-      ["bytes32", "address", "address"],
-      [POOL_AMOUNT_ADJUSTMENT_KEY, marketAddress, market.shortTokenAddress],
     ],
     reserveFactorLong: [
       ["bytes32", "address", "bool"],

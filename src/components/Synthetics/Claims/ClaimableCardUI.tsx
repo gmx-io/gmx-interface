@@ -25,7 +25,7 @@ export function ClaimableCardUI({ title, style, sections }: Props) {
 
   return (
     <div
-      className="flex w-full flex-col gap-12 border-b-1/2 border-slate-600 bg-slate-900 px-20 py-12 last:border-r-0 lg:border-r-1/2"
+      className="flex w-full flex-col justify-between gap-12 border-b-1/2 border-slate-600 bg-slate-900 px-20 py-12 last:border-r-0 lg:border-r-1/2"
       style={style}
     >
       <div className="text-[11px] font-medium uppercase text-typography-secondary">{title}</div>

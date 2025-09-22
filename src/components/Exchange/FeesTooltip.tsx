@@ -34,14 +34,14 @@ function getExecutionFeeStr(chainId, executionFee, executionFeeUsd) {
 
   const formattedExecutionFee = formatAmountFree(executionFee, 18, 5);
   const formattedExecutionFeeUsd = formatAmount(executionFeeUsd, USD_DECIMALS, 2);
-  return `${formattedExecutionFee} ${nativeTokenSymbol} ($\u200a${formattedExecutionFeeUsd})`;
+  return `${formattedExecutionFee} ${nativeTokenSymbol} ($\u200a\u200d${formattedExecutionFeeUsd})`;
 }
 
 function getFeesStr(fees: bigint | undefined): string {
   if (fees === undefined || (fees ?? 0n) <= 0) {
     return "";
   }
-  return `$\u200a${formatAmount(fees, USD_DECIMALS, 2, true)}`;
+  return `$\u200a\u200d${formatAmount(fees, USD_DECIMALS, 2, true)}`;
 }
 
 function getFeesRows(isOpening: boolean, formattedFees: Record<string, string | undefined>) {
@@ -116,7 +116,7 @@ function FeesTooltip({
     <Tooltip
       position="top-end"
       className="PositionSeller-fees-tooltip"
-      handle={<div>{totalFees > 0 ? `$\u200a${formatAmount(totalFees, USD_DECIMALS, 2, true)}` : "-"}</div>}
+      handle={<div>{totalFees > 0 ? `$\u200a\u200d${formatAmount(totalFees, USD_DECIMALS, 2, true)}` : "-"}</div>}
       renderContent={() => (
         <div>
           {titleText && <p>{titleText}</p>}
