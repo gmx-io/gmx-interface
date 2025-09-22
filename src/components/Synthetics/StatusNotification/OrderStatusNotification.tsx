@@ -1,6 +1,7 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
 
 import { getExplorerUrl } from "config/chains";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -75,12 +76,8 @@ export function OrderStatusNotification({
   const isGelatoTaskFailed = useMemo(() => {
     const gelatoTaskStatus = getByKey(gelatoTaskStatuses, pendingExpressTxn?.taskId);
 
-    return (
-      gelatoTaskStatus &&
-      !pendingExpressTxn?.isViewed &&
-      [TaskState.Cancelled, TaskState.ExecReverted].includes(gelatoTaskStatus.taskState)
-    );
-  }, [gelatoTaskStatuses, pendingExpressTxn?.isViewed, pendingExpressTxn?.taskId]);
+    return gelatoTaskStatus && [TaskState.Cancelled, TaskState.ExecReverted].includes(gelatoTaskStatus.taskState);
+  }, [gelatoTaskStatuses, pendingExpressTxn?.taskId]);
 
   const hasError =
     isGelatoTaskFailed || (Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel");
@@ -349,6 +346,8 @@ export function OrderStatusNotification({
       const matchedPendingExpressTxnKey = Object.values(pendingExpressTxns).find((pendingExpressTxn) => {
         return (
           pendingExpressTxn.pendingOrdersKeys?.includes(pendingOrderKey) &&
+          pendingExpressTxn.createdAt &&
+          pendingExpressTxn.createdAt === pendingOrderData.createdAt &&
           pendingExpressTxn.taskId &&
           !pendingExpressTxn.isViewed
         );
@@ -359,15 +358,19 @@ export function OrderStatusNotification({
         updatePendingExpressTxn({ key: matchedPendingExpressTxnKey, isViewed: true });
       }
     },
-    [pendingExpressTxns, pendingOrderKey, pendingExpressTxnKey, updatePendingExpressTxn]
+    [pendingExpressTxns, pendingOrderKey, pendingExpressTxnKey, updatePendingExpressTxn, pendingOrderData.createdAt]
   );
 
+  useEffect(() => {
+    if (hasError) {
+      toast.update(toastTimestamp, { type: "error" });
+    }
+  }, [hasError, toastTimestamp]);
+
   return (
-    <div className={cx("StatusNotification", { error: hasError })}>
+    <div className={cx("StatusNotification")}>
       <div className="relative z-[1]">
-        <div className={cx("StatusNotification-title", { "text-green-500": !hasError, "text-red-500": hasError })}>
-          {title}
-        </div>
+        <div className={cx("StatusNotification-title")}>{title}</div>
 
         <div className="mt-10">
           {externalSwapStatus}
