@@ -177,17 +177,25 @@ export function getTradeFees(p: {
   const borrowFee = getFeeItem(borrowingFeeUsd * -1n, initialCollateralUsd);
 
   const fundingFee = getFeeItem(fundingFeeUsd * -1n, initialCollateralUsd);
+
   const increasePositionPriceImpact = getFeeItem(increasePositionPriceImpactDeltaUsd, sizeDeltaUsd);
   const decreasePositionPriceImpact = getFeeItem(decreasePositionPriceImpactDeltaUsd, sizeDeltaUsd);
+
   const proportionalPendingImpact = getFeeItem(proportionalPendingImpactDeltaUsd, sizeDeltaUsd);
+
   const totalPendingImpact = getFeeItem(totalPendingImpactDeltaUsd, sizeDeltaUsd);
   const priceImpactDiff = getFeeItem(priceImpactDiffUsd, sizeDeltaUsd);
-  const positionNetPriceImpact = getTotalFeeItem([totalPendingImpact, priceImpactDiff]);
+
+  const positionNetPriceImpact = getTotalFeeItem([
+    type === "increase" ? increasePositionPriceImpact : totalPendingImpact,
+    priceImpactDiff,
+  ]);
 
   const positionCollateralPriceImpact = getFeeItem(
     type === "increase" ? increasePositionPriceImpactDeltaUsd : totalPendingImpactDeltaUsd,
     bigMath.abs(collateralDeltaUsd)
   );
+
   const collateralPriceImpactDiff = getFeeItem(priceImpactDiffUsd, collateralDeltaUsd);
   const collateralNetPriceImpact = getTotalFeeItem([positionCollateralPriceImpact, collateralPriceImpactDiff]);
 
