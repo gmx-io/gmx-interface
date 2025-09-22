@@ -9,6 +9,12 @@ import { WalletSigner } from "lib/wallets";
 import { AccountType } from "lib/wallets/useAccountType";
 import { abis } from "sdk/abis";
 
+/**
+ * keccak256("isValidSignature(bytes32,bytes)")
+ * @see https://eips.ethereum.org/EIPS/eip-1271
+ */
+const VALID_SIGNATURE_RESPONSE = "0x1626ba7e";
+
 function getMessage({ chainId, claimTerms }) {
   return `${claimTerms}\ndistributionId ${GLP_DISTRIBUTION_ID}\ncontract ${getContract(chainId, "ClaimHandler").toLowerCase()}\nchainId ${chainId}`;
 }
@@ -32,10 +38,10 @@ export async function checkValidity({
     address: account as `0x${string}`,
     abi: abis.SmartAccount,
     functionName: "isValidSignature",
-    args: [hash, claimTermsAcceptedSignature as `0x${string}`],
+    args: [hash, claimTermsAcceptedSignature],
   })) as `0x${string}`;
 
-  return magic?.toLowerCase() === "0x1626ba7e";
+  return magic?.toLowerCase() === VALID_SIGNATURE_RESPONSE;
 }
 
 export async function beginSignatureProcess({

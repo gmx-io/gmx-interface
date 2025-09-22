@@ -16,7 +16,9 @@ async function isSafeAccount(address: `0x${string}`, client: PublicClient): Prom
   }
 
   const storage = await client.getStorageAt({ address, slot: "0x0" });
-  if (!storage) return false;
+  if (!storage) {
+    return false;
+  }
 
   const masterCopy = `0x${storage.slice(-40)}`.toLowerCase() as Hex;
 
@@ -33,10 +35,18 @@ async function isSafeAccount(address: `0x${string}`, client: PublicClient): Prom
 
 async function getAccountType(address: `0x${string}`, client: PublicClient): Promise<AccountType> {
   const bytecode = await client.getBytecode({ address });
-  if (!bytecode || bytecode === "0x") return AccountType.EOA;
-  if (bytecode.startsWith("0xef0100") && bytecode.length === 48) return AccountType.PostEip7702EOA;
+  if (!bytecode || bytecode === "0x") {
+    return AccountType.EOA;
+  }
+
+  if (bytecode.startsWith("0xef0100") && bytecode.length === 48) {
+    return AccountType.PostEip7702EOA;
+  }
+
   const isSafe = await isSafeAccount(address, client);
-  if (isSafe) return AccountType.Safe;
+  if (isSafe) {
+    return AccountType.Safe;
+  }
 
   return AccountType.SmartAccount;
 }
