@@ -42,7 +42,7 @@ const getCardContent = (type: EarnProductType) => {
       ],
       cta: {
         label: t`Buy GMX`,
-        to: "/buy",
+        to: "/buy_gmx",
       },
     },
     glv: {

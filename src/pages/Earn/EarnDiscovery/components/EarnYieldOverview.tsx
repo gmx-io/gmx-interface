@@ -1,15 +1,20 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import uniq from "lodash/uniq";
-import { ReactNode, useMemo } from "react";
+import { ReactNode, useMemo, useCallback } from "react";
 import { FaChevronRight } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { useAccount } from "wagmi";
 
 import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
 import { getIcon } from "config/icons";
 import type { MarketTokensAPRData } from "domain/synthetics/markets/types";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
+import { useTokensDataRequest } from "domain/synthetics/tokens";
+import { useChainId } from "lib/chains";
 import { formatPercentage } from "lib/numbers";
+import { switchNetwork } from "lib/wallets";
+import useWallet from "lib/wallets/useWallet";
 
 import APRLabel from "components/APRLabel/APRLabel";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -19,6 +24,21 @@ import gmIcon from "img/ic_gm_24.svg";
 import gmxIcon from "img/ic_gmx_24.svg";
 
 const PERIOD = "90d";
+
+function hasTokenBalance(tokensData: ReturnType<typeof useTokensDataRequest>["tokensData"], symbol: string) {
+  if (!tokensData) {
+    return false;
+  }
+
+  return Object.values(tokensData).some((token) => {
+    if (token.symbol !== symbol) {
+      return false;
+    }
+
+    const balance = token.balance ?? token.walletBalance;
+    return balance !== undefined && balance > 0n;
+  });
+}
 
 function calculateMaxApr(
   base?: MarketTokensAPRData,
@@ -82,6 +102,7 @@ type YieldRowProps = {
   metric: ReactNode;
   to?: string;
   disabled?: boolean;
+  chainId?: number;
 };
 
 type NetworkYieldCardProps = {
@@ -109,17 +130,33 @@ function NetworkYieldCard({ chainId, title, children }: NetworkYieldCardProps) {
   );
 }
 
-function YieldRow({ token, metric, to, disabled }: YieldRowProps) {
-  return (
-    <Link
-      to={to as string}
-      className={cx(
-        "group flex items-center justify-between gap-8 border-b-1/2 border-slate-600 px-12 py-8 last:border-b-0",
-        {
-          "cursor-default": disabled,
-        }
-      )}
-    >
+function YieldRow({ token, metric, to, disabled, chainId: targetChainId }: YieldRowProps) {
+  const { chainId: currentChainId } = useChainId();
+  const { active } = useWallet();
+
+  const changeNetwork = useCallback(() => {
+    if (!targetChainId || targetChainId === currentChainId) {
+      return;
+    }
+
+    if (!active) {
+      setTimeout(() => {
+        void switchNetwork(targetChainId, active);
+      }, 500);
+    } else {
+      void switchNetwork(targetChainId, active);
+    }
+  }, [active, currentChainId, targetChainId]);
+
+  const className = cx(
+    "group flex items-center justify-between gap-8 border-b-1/2 border-slate-600 px-12 py-8 last:border-b-0",
+    {
+      "cursor-default": disabled,
+    }
+  );
+
+  const content = (
+    <>
       <div className="flex items-center gap-8">
         <img className="size-20" src={ASSET_ICONS[token]} alt={token} />
         <span className="text-13 font-medium text-typography-primary">{token}</span>
@@ -131,11 +168,38 @@ function YieldRow({ token, metric, to, disabled }: YieldRowProps) {
           <FaChevronRight className={cx("text-typography-secondary", { "group-hover:text-blue-300": !disabled })} />
         )}
       </div>
+    </>
+  );
+
+  if (disabled || !to) {
+    return <div className={className}>{content}</div>;
+  }
+
+  return (
+    <Link to={to} className={className} onClick={changeNetwork}>
+      {content}
     </Link>
   );
 }
 
 export function EarnYieldOverview() {
+  const { address: account } = useAccount();
+
+  const arbitrumTokens = useTokensDataRequest(ARBITRUM);
+  const avalancheTokens = useTokensDataRequest(AVALANCHE);
+  const botanixTokens = useTokensDataRequest(BOTANIX);
+
+  const hasGmxHoldings = useMemo(
+    () =>
+      hasTokenBalance(arbitrumTokens.tokensData, "GMX") ||
+      hasTokenBalance(avalancheTokens.tokensData, "GMX") ||
+      hasTokenBalance(botanixTokens.tokensData, "GMX"),
+    [arbitrumTokens.tokensData, avalancheTokens.tokensData, botanixTokens.tokensData]
+  );
+
+  const gmxLink = account && hasGmxHoldings ? "/earn/portfolio" : "/buy";
+  const poolsLink = "/pools";
+
   const {
     glvApyInfoData: arbGlvApy,
     glvTokensIncentiveAprData: arbGlvIncentive,
@@ -185,29 +249,43 @@ export function EarnYieldOverview() {
         <NetworkYieldCard chainId={ARBITRUM} title={<Trans>Arbitrum</Trans>}>
           <YieldRow
             token="GMX"
-            to="/stake"
+            to={gmxLink}
+            chainId={ARBITRUM}
             metric={<YieldMetric value={<APRLabel chainId={ARBITRUM} label="avgGMXAprTotal" />} suffix="APR" />}
           />
           <YieldRow
             token="GLV"
-            to="/pools?pickBestGlv=1"
+            to={poolsLink}
+            chainId={ARBITRUM}
             metric={<YieldMetric value={formatAprValue(arbMaxGlv)} suffix="APY" />}
           />
-          <YieldRow token="GM" to="/pools" metric={<YieldMetric value={formatAprValue(arbMaxGm)} suffix="APY" />} />
+          <YieldRow
+            token="GM"
+            to={poolsLink}
+            chainId={ARBITRUM}
+            metric={<YieldMetric value={formatAprValue(arbMaxGm)} suffix="APY" />}
+          />
         </NetworkYieldCard>
 
         <NetworkYieldCard chainId={AVALANCHE} title={<Trans>Avalanche</Trans>}>
           <YieldRow
             token="GMX"
-            to="/stake"
+            to={gmxLink}
+            chainId={AVALANCHE}
             metric={<YieldMetric value={<APRLabel chainId={AVALANCHE} label="avgGMXAprTotal" />} suffix="APR" />}
           />
           <YieldRow
             token="GLV"
-            to="/pools?pickBestGlv=1"
+            to={poolsLink}
+            chainId={AVALANCHE}
             metric={<YieldMetric value={formatAprValue(avaxMaxGlv)} suffix="APY" />}
           />
-          <YieldRow token="GM" to="/pools" metric={<YieldMetric value={formatAprValue(avaxMaxGm)} suffix="APY" />} />
+          <YieldRow
+            token="GM"
+            to={poolsLink}
+            chainId={AVALANCHE}
+            metric={<YieldMetric value={formatAprValue(avaxMaxGm)} suffix="APY" />}
+          />
         </NetworkYieldCard>
 
         <NetworkYieldCard chainId={BOTANIX} title={<Trans>Botanix</Trans>}>
@@ -235,7 +313,12 @@ export function EarnYieldOverview() {
               />
             }
           />
-          <YieldRow token="GM" to="/pools" metric={<YieldMetric value={formatAprValue(botanixMaxGm)} suffix="APY" />} />
+          <YieldRow
+            token="GM"
+            to={poolsLink}
+            chainId={BOTANIX}
+            metric={<YieldMetric value={formatAprValue(botanixMaxGm)} suffix="APY" />}
+          />
         </NetworkYieldCard>
       </div>
     </div>
