@@ -6,7 +6,7 @@ import {
   getTotalSwapVolumeFromSwapStats,
 } from "domain/synthetics/fees";
 import { OrderInfo, isLimitOrderType, isMarketOrderType, isSwapOrderType } from "domain/synthetics/orders";
-import { PRECISION, applyFactor, getBasisPoints } from "lib/numbers";
+import { BASIS_POINTS_DIVISOR_BIGINT, PRECISION, applyFactor, getBasisPoints } from "lib/numbers";
 import { ExternalSwapQuote, SwapStats, TradeFees, TradeFlags, TradeMode, TradeType } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -89,6 +89,7 @@ export function getPositionSellerTradeFlags(isLong: boolean | undefined, orderOp
 
 export function getTradeFees(p: {
   initialCollateralUsd: bigint;
+  sizeInUsd: bigint;
   sizeDeltaUsd: bigint;
   collateralDeltaUsd: bigint;
   swapSteps: SwapStats[];
@@ -109,6 +110,7 @@ export function getTradeFees(p: {
 }): TradeFees {
   const {
     initialCollateralUsd,
+    sizeInUsd,
     sizeDeltaUsd,
     collateralDeltaUsd,
     swapSteps,
@@ -191,12 +193,27 @@ export function getTradeFees(p: {
     priceImpactDiff,
   ]);
 
+  let collateralDeltaBasis;
+  if (type === "increase") {
+    collateralDeltaBasis = collateralDeltaUsd;
+  } else {
+    /*
+     * For decrease orders collateral delta depends of keepLeverage flag,
+     * so we need to calculate the proportional collateral delta based on sizeDeltaUsd and sizeInUsd
+     */
+    const sizeDeltaBps = sizeInUsd !== 0n ? getBasisPoints(sizeDeltaUsd, sizeInUsd) : 1n;
+    const proportionalCollateralDeltaUsd =
+      initialCollateralUsd !== undefined ? (initialCollateralUsd * sizeDeltaBps) / BASIS_POINTS_DIVISOR_BIGINT : 0n;
+
+    collateralDeltaBasis = proportionalCollateralDeltaUsd;
+  }
+
   const positionCollateralPriceImpact = getFeeItem(
     type === "increase" ? increasePositionPriceImpactDeltaUsd : totalPendingImpactDeltaUsd,
-    bigMath.abs(collateralDeltaUsd)
+    bigMath.abs(collateralDeltaBasis)
   );
 
-  const collateralPriceImpactDiff = getFeeItem(priceImpactDiffUsd, collateralDeltaUsd);
+  const collateralPriceImpactDiff = getFeeItem(priceImpactDiffUsd, collateralDeltaBasis);
   const collateralNetPriceImpact = getTotalFeeItem([positionCollateralPriceImpact, collateralPriceImpactDiff]);
 
   const totalFees = getTotalFeeItem([
