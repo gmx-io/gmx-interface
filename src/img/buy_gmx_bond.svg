@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="88" height="56" viewBox="0 0 88 56">
+  <defs>
+    <clipPath id="clip-path">
+      <rect width="31" height="47" fill="none"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <rect width="31" height="35" fill="none"/>
+    </clipPath>
+    <clipPath id="clip-path-3">
+      <rect width="31" height="24" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="Group_295" data-name="Group 295" transform="translate(-825 -143)">
+    <rect id="ic_base" width="88" height="56" transform="translate(825 143)" fill="rgba(255,255,255,0)"/>
+    <rect id="Rectangle_453" data-name="Rectangle 453" width="39" height="56" rx="4" transform="translate(825 143)" fill="#303fd0"/>
+    <g id="Repeat_Grid_4" data-name="Repeat Grid 4" transform="translate(829 149)" opacity="0.23" clip-path="url(#clip-path)">
+      <g transform="translate(-829 -155)">
+        <rect id="Rectangle_460" data-name="Rectangle 460" width="31" height="3" transform="translate(829 155)" fill="#fff"/>
+      </g>
+      <g transform="translate(-829 -149)">
+        <rect id="Rectangle_460-2" data-name="Rectangle 460" width="31" height="3" transform="translate(829 155)" fill="#fff"/>
+      </g>
+      <g transform="translate(-829 -143)">
+        <rect id="Rectangle_460-3" data-name="Rectangle 460" width="31" height="3" transform="translate(829 155)" fill="#fff"/>
+      </g>
+      <g transform="translate(-829 -137)">
+        <rect id="Rectangle_460-4" data-name="Rectangle 460" width="31" height="3" transform="translate(829 155)" fill="#fff"/>
+      </g>
+      <g transform="translate(-829 -131)">
+        <rect id="Rectangle_460-5" data-name="Rectangle 460" width="31" height="3" transform="translate(829 155)" fill="#fff"/>
+      </g>
+      <g transform="translate(-829 -125)">
+        <rect id="Rectangle_460-6" data-name="Rectangle 460" width="31" height="3" transform="translate(829 155)" fill="#fff"/>
+      </g>
+      <g transform="translate(-829 -119)">
+        <rect id="Rectangle_460-7" data-name="Rectangle 460" width="31" height="3" transform="translate(829 155)" fill="#fff"/>
+      </g>
+      <g transform="translate(-829 -113)">
+        <rect id="Rectangle_460-8" data-name="Rectangle 460" width="31" height="3" transform="translate(829 155)" fill="#fff"/>
+      </g>
+    </g>
+    <rect id="Rectangle_454" data-name="Rectangle 454" width="39" height="44" rx="4" transform="translate(850 155)" fill="#02cecc"/>
+    <rect id="Rectangle_455" data-name="Rectangle 455" width="39" height="34" rx="4" transform="translate(874 165)" fill="#50d0fe"/>
+    <path id="Intersection_42" data-name="Intersection 42" d="M10659,821a4,4,0,0,1-4-4V781a4,4,0,0,1,4-4h10v40a4,4,0,0,1-4,4Z" transform="translate(-9805 -622)" fill="#4fcffe"/>
+    <g id="Repeat_Grid_5" data-name="Repeat Grid 5" transform="translate(855 161)" opacity="0.23" clip-path="url(#clip-path-2)">
+      <g transform="translate(-829 -155)">
+        <rect id="Rectangle_460-9" data-name="Rectangle 460" width="31" height="3" transform="translate(829 155)" fill="#fff"/>
+      </g>
+      <g transform="translate(-829 -149)">
+        <rect id="Rectangle_460-10" data-name="Rectangle 460" width="31" height="3" transform="translate(829 155)" fill="#fff"/>
+      </g>
+      <g transform="translate(-829 -143)">
+        <rect id="Rectangle_460-11" data-name="Rectangle 460" width="31" height="3" transform="translate(829 155)" fill="#fff"/>
+      </g>
+      <g transform="translate(-829 -137)">
+        <rect id="Rectangle_460-12" data-name="Rectangle 460" width="31" height="3" transform="translate(829 155)" fill="#fff"/>
+      </g>
+      <g transform="translate(-829 -131)">
+        <rect id="Rectangle_460-13" data-name="Rectangle 460" width="31" height="3" transform="translate(829 155)" fill="#fff"/>
+      </g>
+      <g transform="translate(-829 -125)">
+        <rect id="Rectangle_460-14" data-name="Rectangle 460" width="31" height="3" transform="translate(829 155)" fill="#fff"/>
+      </g>
+    </g>
+    <path id="Intersection_43" data-name="Intersection 43" d="M10658,809a4,4,0,0,1-4-4V779a4,4,0,0,1,4-4h11v30a4,4,0,0,1-4,4Z" transform="translate(-9780 -610)" fill="#51f6ff"/>
+    <g id="Repeat_Grid_6" data-name="Repeat Grid 6" transform="translate(878 170)" opacity="0.23" clip-path="url(#clip-path-3)">
+      <g transform="translate(-829 -155)">
+        <rect id="Rectangle_460-15" data-name="Rectangle 460" width="31" height="3" transform="translate(829 155)" fill="#fff"/>
+      </g>
+      <g transform="translate(-829 -149)">
+        <rect id="Rectangle_460-16" data-name="Rectangle 460" width="31" height="3" transform="translate(829 155)" fill="#fff"/>
+      </g>
+      <g transform="translate(-829 -143)">
+        <rect id="Rectangle_460-17" data-name="Rectangle 460" width="31" height="3" transform="translate(829 155)" fill="#fff"/>
+      </g>
+      <g transform="translate(-829 -137)">
+        <rect id="Rectangle_460-18" data-name="Rectangle 460" width="31" height="3" transform="translate(829 155)" fill="#fff"/>
+      </g>
+    </g>
+    <g id="logo_GMX" transform="translate(877.167 170.151)">
+      <g id="ic_olympus" transform="translate(-192.974 -16.957)">
+        <rect id="Rectangle_433" data-name="Rectangle 433" width="26" height="26" transform="translate(196.807 15.807)" fill="rgba(255,255,255,0)"/>
+        <path id="Path_1632" data-name="Path 1632" d="M10.167,26.261V21.82a8.129,8.129,0,0,1-5.756-7.71,8.21,8.21,0,0,1,8.314-8.1,8.21,8.21,0,0,1,8.314,8.1,8.129,8.129,0,0,1-5.756,7.71v4.441H24.45v-3.3H19.923A11.119,11.119,0,0,0,24.4,14.083,11.477,11.477,0,0,0,12.725,2.811,11.477,11.477,0,0,0,1.053,14.083a11.119,11.119,0,0,0,4.474,8.874H1v3.3Z" transform="translate(196.901 14.091)" fill="#fff"/>
+      </g>
+    </g>
+  </g>
+</svg>
