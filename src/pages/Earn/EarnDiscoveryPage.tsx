@@ -2,14 +2,14 @@ import { Trans } from "@lingui/macro";
 
 import { useBreakpoints } from "lib/useBreakpoints";
 
+import EarnDocumentation from "components/Earn/EarnDiscovery/components/EarnDocumentation";
+import EarnFaq from "components/Earn/EarnDiscovery/components/EarnFaq";
+import EarnProductCard from "components/Earn/EarnDiscovery/components/EarnProductCard";
+import EarnYieldOverview from "components/Earn/EarnDiscovery/components/EarnYieldOverview";
+import EarnPageLayout from "components/Earn/EarnPageLayout";
+
 import discoverBg from "img/discover_bg.png";
 import discoverBgMobile from "img/discover_bg_mobile.png";
-
-import EarnPageLayout from "../EarnPageLayout";
-import EarnDocumentation from "./components/EarnDocumentation";
-import EarnFaq from "./components/EarnFaq";
-import EarnProductCard from "./components/EarnProductCard";
-import EarnYieldOverview from "./components/EarnYieldOverview";
 
 const DISCOVER_STYLE = {
   backgroundImage: `url(${discoverBg})`,

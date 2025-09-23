@@ -22,11 +22,10 @@ import BuyGMX from "pages/BuyGMX/BuyGMX";
 import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
-import EarnAdditionalOpportunitiesPage from "pages/Earn/EarnAdditionalOpportunities";
-import EarnDiscoveryPage from "pages/Earn/EarnDiscovery/EarnDiscovery";
-import EarnDistributionPage from "pages/Earn/EarnDistribution";
-import EarnPortfolioPage from "pages/Earn/EarnPortfolio";
-import { EarnRedirect } from "pages/Earn/EarnRedirect";
+import EarnAdditionalOpportunitiesPage from "pages/Earn/EarnAdditionalOpportunitiesPage";
+import EarnDiscoveryPage from "pages/Earn/EarnDiscoveryPage";
+import EarnDistributionPage from "pages/Earn/EarnDistributionPage";
+import EarnPortfolioPage from "pages/Earn/EarnPortfolioPage";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import Jobs from "pages/Jobs/Jobs";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
@@ -47,6 +46,7 @@ import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { TestPermits } from "pages/TestPermits/TestPermits";
 import { abis } from "sdk/abis";
 
+import { EarnRedirect } from "components/Earn/EarnRedirect";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 
 const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));

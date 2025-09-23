@@ -147,11 +147,11 @@ msgstr "Yield Optimizer on Avalanche"
 msgid "Swap order submitted."
 msgstr "Swap order submitted."
 
+#: src/components/Earn/EarnDiscovery/components/EarnYieldOverview.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-#: src/pages/Earn/EarnDiscovery/components/EarnYieldOverview.tsx
 msgid "Arbitrum"
 msgstr "Arbitrum"
 
@@ -277,7 +277,7 @@ msgstr "{0} can be used to buy GM for this market up to the specified buying cap
 msgid "Execute Market Swap"
 msgstr "Execute Market Swap"
 
-#: src/pages/Earn/EarnPageLayout.tsx
+#: src/components/Earn/EarnPageLayout.tsx
 msgid "Discover"
 msgstr "Discover"
 
@@ -303,7 +303,7 @@ msgid "To"
 msgstr "To"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
-#: src/pages/Earn/EarnDiscovery/components/EarnFaq.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnFaq.tsx
 msgid "FAQ"
 msgstr "FAQ"
 
@@ -333,7 +333,7 @@ msgstr "View status."
 msgid "Buyable"
 msgstr "Buyable"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "What is GLV?"
 msgstr "What is GLV?"
 
@@ -1314,7 +1314,7 @@ msgstr "This token automatically accrues fees from leverage trading and swaps fo
 msgid "Buy Fee"
 msgstr "Buy Fee"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnYieldOverview.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnYieldOverview.tsx
 msgid "Current Yield Landscape"
 msgstr "Current Yield Landscape"
 
@@ -1482,7 +1482,7 @@ msgstr "This token automatically accrues fees from leverage trading and swaps fo
 msgid "To Network"
 msgstr "To Network"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnFaq.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnFaq.tsx
 msgid "GLV consists of a vault holding multiple separate GM tokens with the same backing tokens. For example, GLV [ETH-USDC] holds several markets that are also exposed to ETH and USDC. GLV allows users to make more passive decisions rather than finding a specific GM pool to join, as GLV gives a wider, more optimized exposure for passive liquidity providers. GM is mainly focused on liquidity providers who aim to have exposure to only a few markets."
 msgstr "GLV consists of a vault holding multiple separate GM tokens with the same backing tokens. For example, GLV [ETH-USDC] holds several markets that are also exposed to ETH and USDC. GLV allows users to make more passive decisions rather than finding a specific GM pool to join, as GLV gives a wider, more optimized exposure for passive liquidity providers. GM is mainly focused on liquidity providers who aim to have exposure to only a few markets."
 
@@ -1695,7 +1695,7 @@ msgstr "There is currently a high swap price impact for this swap."
 msgid "Update Limit Swap"
 msgstr "Update Limit Swap"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnFaq.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnFaq.tsx
 msgid "For staking GMX, only Avalanche and Arbitrum are currently supported. Different compositions of GLV and GM tokens exist per chain, please check the pools page to get an overview of what's available."
 msgstr "For staking GMX, only Avalanche and Arbitrum are currently supported. Different compositions of GLV and GM tokens exist per chain, please check the pools page to get an overview of what's available."
 
@@ -2047,9 +2047,9 @@ msgstr "V1 Interface"
 msgid "Forfeit profit not checked"
 msgstr "Forfeit profit not checked"
 
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "Buy GM"
 msgstr "Buy GM"
 
@@ -2211,7 +2211,7 @@ msgstr "Buy request sent."
 msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
 msgstr "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "Passive"
 msgstr "Passive"
 
@@ -2539,7 +2539,7 @@ msgstr "POSITION"
 msgid "Trading Volume"
 msgstr "Trading Volume"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "Support isolated liquidity per market"
 msgstr "Support isolated liquidity per market"
 
@@ -2591,7 +2591,7 @@ msgstr "The actual execution price may differ from the set limit price due to fe
 msgid "The amount you are trying to deposit exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "The amount you are trying to deposit exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "Active"
 msgstr "Active"
 
@@ -2814,7 +2814,7 @@ msgstr "Amount to claim"
 msgid "Job openings at GMX."
 msgstr "Job openings at GMX."
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "Autocompound"
 msgstr "Autocompound"
 
@@ -2847,7 +2847,7 @@ msgstr "Otherwise, try changing the RPC url in your wallet settings with the hel
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
 msgstr "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnFaq.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnFaq.tsx
 msgid "What networks are supported?"
 msgstr "What networks are supported?"
 
@@ -3046,7 +3046,7 @@ msgstr "The order will be executed if there is sufficient liquidity and the exec
 msgid "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
 msgstr "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
 
-#: src/pages/Earn/EarnDiscovery/components/EarnYieldOverview.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnYieldOverview.tsx
 msgid "GMX staking isn't currently supported on Botanix."
 msgstr "GMX staking isn't currently supported on Botanix."
 
@@ -3224,11 +3224,11 @@ msgstr "V2 doesn't currently support this network"
 msgid "V1 Arbitrum"
 msgstr "V1 Arbitrum"
 
+#: src/components/Earn/EarnDiscovery/components/EarnYieldOverview.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-#: src/pages/Earn/EarnDiscovery/components/EarnYieldOverview.tsx
 msgid "Avalanche"
 msgstr "Avalanche"
 
@@ -3508,7 +3508,7 @@ msgstr "Available to Trade Assets"
 msgid "Annually"
 msgstr "Annually"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnFaq.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnFaq.tsx
 msgid "Can I unstake anytime?"
 msgstr "Can I unstake anytime?"
 
@@ -3725,7 +3725,7 @@ msgstr "Enable withdraw sent."
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 
-#: src/pages/Earn/EarnPageLayout.tsx
+#: src/components/Earn/EarnPageLayout.tsx
 msgid "Portfolio"
 msgstr "Portfolio"
 
@@ -3945,7 +3945,7 @@ msgstr "Distribution happens in two GLV variants to mirror GLP's multi-asset exp
 msgid "Request Market Swap"
 msgstr "Request Market Swap"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnYieldOverview.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnYieldOverview.tsx
 msgid "No GLV vaults are currently active on Botanix."
 msgstr "No GLV vaults are currently active on Botanix."
 
@@ -4294,8 +4294,8 @@ msgstr "Deposit amount is insufficient to bring leverage below the max allowed l
 msgid "Funding Activity"
 msgstr "Funding Activity"
 
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "Buy GLV"
 msgstr "Buy GLV"
 
@@ -4320,8 +4320,8 @@ msgstr "Compass Labs GM Token Dashboard"
 msgid "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {3} USD"
 msgstr "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {3} USD"
 
+#: src/components/Earn/EarnPageLayout.tsx
 #: src/components/SideNav/SideNav.tsx
-#: src/pages/Earn/EarnPageLayout.tsx
 msgid "Earn"
 msgstr "Earn"
 
@@ -4391,6 +4391,7 @@ msgstr "<0>GMX executes trades against a dynamically balanced liquidity pool, un
 #: src/components/BuyCards/BuyCards.tsx
 #: src/components/BuyCards/BuyCards.tsx
 #: src/components/BuyCards/BuyCards.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 #: src/components/Exchange/SwapBox.jsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -4408,7 +4409,6 @@ msgstr "<0>GMX executes trades against a dynamically balanced liquidity pool, un
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/pages/Dashboard/WeightText.tsx
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "Read more"
 msgstr "Read more"
 
@@ -4612,7 +4612,7 @@ msgstr "Liq. Price"
 msgid "Trading Pair Price Alerts"
 msgstr "Trading Pair Price Alerts"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "Optimized exposure to the highest utilized pools"
 msgstr "Optimized exposure to the highest utilized pools"
 
@@ -4763,7 +4763,7 @@ msgstr "Max 10 symbols in name"
 msgid "Users"
 msgstr "Users"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "Auto-compounding yield"
 msgstr "Auto-compounding yield"
 
@@ -4894,7 +4894,7 @@ msgstr "Failed Stop Market"
 msgid "Address copied to your clipboard"
 msgstr "Address copied to your clipboard"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnDocumentation.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnDocumentation.tsx
 msgid "Documentation"
 msgstr "Documentation"
 
@@ -5038,9 +5038,9 @@ msgstr "Total value of tokens in GM Pools."
 msgid "Reserved"
 msgstr "Reserved"
 
+#: src/components/Earn/EarnDiscovery/components/EarnYieldOverview.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
-#: src/pages/Earn/EarnDiscovery/components/EarnYieldOverview.tsx
 msgid "Botanix"
 msgstr "Botanix"
 
@@ -5099,7 +5099,7 @@ msgstr "This competition has ended."
 msgid "Shorts Net Rate / 1h"
 msgstr "Shorts Net Rate / 1h"
 
-#: src/pages/Earn/EarnDiscovery/EarnDiscovery.tsx
+#: src/pages/Earn/EarnDiscoveryPage.tsx
 msgid "Discover GMX Earn"
 msgstr "Discover GMX Earn"
 
@@ -5252,7 +5252,7 @@ msgstr "<0>Switch to:</0>"
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price."
 msgstr "{typeString} Short Limit: {0} a short position when the price is above the trigger price."
 
-#: src/pages/Earn/EarnDiscovery/EarnDiscovery.tsx
+#: src/pages/Earn/EarnDiscoveryPage.tsx
 msgid "Welcome to GMX Earn. Learn how GMX, GLV, and GM work together to power a decentralized and efficient trading experience. Start your journey by understanding how each token fits into the bigger picture — and how you can participate."
 msgstr "Welcome to GMX Earn. Learn how GMX, GLV, and GM work together to power a decentralized and efficient trading experience. Start your journey by understanding how each token fits into the bigger picture — and how you can participate."
 
@@ -5458,7 +5458,7 @@ msgstr "Harmonix"
 msgid "Invalid NFT Address"
 msgstr "Invalid NFT Address"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "Less info"
 msgstr "Less info"
 
@@ -5490,7 +5490,7 @@ msgstr "Deposit <0>GMX</0> and <1>esGMX</1> tokens to earn rewards."
 msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
 msgstr "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "Get rewards from trading fees"
 msgstr "Get rewards from trading fees"
 
@@ -5946,7 +5946,7 @@ msgstr "Close {longOrShortText} {0}"
 msgid "Update order"
 msgstr "Update order"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "Stake GMX to earn GMX rewards"
 msgstr "Stake GMX to earn GMX rewards"
 
@@ -6015,7 +6015,7 @@ msgstr "Action"
 msgid "Supply"
 msgstr "Supply"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnFaq.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnFaq.tsx
 msgid "GMX staking rewards get distributed from a buyback and distribute model. GMX tokens get bought back from the open market with revenue generated from the protocol and then distributed back to stakers. No new GMX tokens are minted during this process."
 msgstr "GMX staking rewards get distributed from a buyback and distribute model. GMX tokens get bought back from the open market with revenue generated from the protocol and then distributed back to stakers. No new GMX tokens are minted during this process."
 
@@ -6572,10 +6572,12 @@ msgstr "Alternatively, you can select a different collateral in token."
 msgid "Max {0} long exceeded"
 msgstr "Max {0} long exceeded"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "Auto-rebalancing of liquidity"
 msgstr "Auto-rebalancing of liquidity"
 
+#: src/components/Earn/EarnDiscovery/components/EarnYieldOverview.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnYieldOverview.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
@@ -6584,8 +6586,6 @@ msgstr "Auto-rebalancing of liquidity"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-#: src/pages/Earn/EarnDiscovery/components/EarnYieldOverview.tsx
-#: src/pages/Earn/EarnDiscovery/components/EarnYieldOverview.tsx
 msgid "N/A"
 msgstr "N/A"
 
@@ -6730,7 +6730,7 @@ msgstr "Win / Loss"
 msgid "Min position size: {0}"
 msgstr "Min position size: {0}"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "GM is a yield bearing token that tracks liquidity for specific GMX markets. Liquidity providers earn trading, swap, and borrowing fees that automatically compound into their GM balance."
 msgstr "GM is a yield bearing token that tracks liquidity for specific GMX markets. Liquidity providers earn trading, swap, and borrowing fees that automatically compound into their GM balance."
 
@@ -6838,7 +6838,7 @@ msgstr "<0>⬡ Chainlink Data Story ⬡ <1/><2>#Chainlink</2> Data Streams have 
 msgid "Submit"
 msgstr "Submit"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "Participate in protocol governance"
 msgstr "Participate in protocol governance"
 
@@ -6871,7 +6871,7 @@ msgstr "Next"
 msgid "Could not execute deposit into {0} {longOrShortText}."
 msgstr "Could not execute deposit into {0} {longOrShortText}."
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "More info"
 msgstr "More info"
 
@@ -7060,7 +7060,7 @@ msgstr "Annualized:"
 msgid "Concluded Competitions"
 msgstr "Concluded Competitions"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnFaq.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnFaq.tsx
 msgid "What's the difference between providing liquidity in GLV or GM?"
 msgstr "What's the difference between providing liquidity in GLV or GM?"
 
@@ -7302,7 +7302,7 @@ msgstr "Start unrealized fees"
 msgid "Referral Codes"
 msgstr "Referral Codes"
 
-#: src/pages/Earn/EarnPageLayout.tsx
+#: src/components/Earn/EarnPageLayout.tsx
 msgid "Additional Opportunities"
 msgstr "Additional Opportunities"
 
@@ -7591,8 +7591,8 @@ msgstr "Max GM buyable amount reached"
 msgid "Session generated"
 msgstr "Session generated"
 
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
 msgstr "Buy GMX"
@@ -7673,7 +7673,7 @@ msgstr "Rebates"
 msgid "GMX V1 markets are disabled and only allow for position closing. GLP is being phased out and no longer supports GMX V1 markets."
 msgstr "GMX V1 markets are disabled and only allow for position closing. GLP is being phased out and no longer supports GMX V1 markets."
 
-#: src/pages/Earn/EarnDiscovery/components/EarnFaq.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnFaq.tsx
 msgid "Yes. All tokens (GMX, GLV and GM) are liquid and can be unstaked and withdrawn at any time. For LP tokens, there could be some edge cases where your liquidity is being used by active trades."
 msgstr "Yes. All tokens (GMX, GLV and GM) are liquid and can be unstaked and withdrawn at any time. For LP tokens, there could be some edge cases where your liquidity is being used by active trades."
 
@@ -8068,7 +8068,7 @@ msgstr "GMX Account Balance"
 msgid "GMX community discussion"
 msgstr "GMX community discussion"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "Earn trading fees and funding spreads"
 msgstr "Earn trading fees and funding spreads"
 
@@ -8179,11 +8179,11 @@ msgstr "External Swap {0} to {1}"
 msgid "Position"
 msgstr "Position"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "What is GMX?"
 msgstr "What is GMX?"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "GLV (GMX Liquidity Vault) gives diversified exposure to a basket of GM markets. Vault positions rebalance automatically based on utilization, unlocking higher potential yield versus single pools."
 msgstr "GLV (GMX Liquidity Vault) gives diversified exposure to a basket of GM markets. Vault positions rebalance automatically based on utilization, unlocking higher potential yield versus single pools."
 
@@ -8231,7 +8231,7 @@ msgstr "Seamless Trading"
 msgid "{nativeTokenSymbol} APR"
 msgstr "{nativeTokenSymbol} APR"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "GMX is the governance and utility token of the GMX protocol. Staking GMX grants rewards funded by trading fees and protocol buybacks."
 msgstr "GMX is the governance and utility token of the GMX protocol. Staking GMX grants rewards funded by trading fees and protocol buybacks."
 
@@ -8267,8 +8267,8 @@ msgstr "Liquidation Price"
 msgid "Leave at least {0} {1} for gas."
 msgstr "Leave at least {0} {1} for gas."
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "No active management required"
 msgstr "No active management required"
 
@@ -8548,7 +8548,7 @@ msgstr "High TWAP network fee"
 msgid "APY"
 msgstr "APY"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "What is GM?"
 msgstr "What is GM?"
 
@@ -8708,7 +8708,7 @@ msgstr "High execution reliability using premium RPCs."
 msgid "Price change to Liq."
 msgstr "Price change to Liq."
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "Become a market maker"
 msgstr "Become a market maker"
 
@@ -8895,7 +8895,7 @@ msgstr "You sign each transaction on-chain using your own RPC, typically provide
 msgid "Tier {0}: {currentTierDiscount}% discount"
 msgstr "Tier {0}: {currentTierDiscount}% discount"
 
-#: src/pages/Earn/EarnPageLayout.tsx
+#: src/components/Earn/EarnPageLayout.tsx
 msgid "Stake GMX and buy GLV or GM to earn rewards."
 msgstr "Stake GMX and buy GLV or GM to earn rewards."
 
@@ -9005,7 +9005,7 @@ msgstr "Generate Referral Code"
 msgid "Swap"
 msgstr "Swap"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnFaq.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnFaq.tsx
 msgid "Where do GMX staking rewards come from?"
 msgstr "Where do GMX staking rewards come from?"
 
@@ -9026,8 +9026,8 @@ msgstr "This code is not yet registered on {nonTakenNetworkNames}, you will not 
 msgid "Deposit {0} USD into {1} {longOrShortText}"
 msgstr "Deposit {0} USD into {1} {longOrShortText}"
 
+#: src/components/Earn/EarnPageLayout.tsx
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Earn/EarnPageLayout.tsx
 msgid "Distribution"
 msgstr "Distribution"
 
@@ -9496,7 +9496,7 @@ msgstr "<0>Insufficient liquidity to execute the order</0><1>The mark price whic
 msgid "Your position's collateral after deducting fees:"
 msgstr "Your position's collateral after deducting fees:"
 
-#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+#: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "Great for passive users"
 msgstr "Great for passive users"
 
