@@ -42,7 +42,9 @@ export function usePoolsData(): Partial<PoolsData> {
           ...arbitrumApys.glvs,
           ...avalancheApys.glvs,
         };
-        for (const glv of glvApys) {
+
+        for (const glvKey of Object.keys(glvApys)) {
+          const glv = glvApys[glvKey];
           if (glv.apy > result) {
             result = glv.apy;
           }
