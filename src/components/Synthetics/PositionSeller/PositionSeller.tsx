@@ -987,8 +987,8 @@ export function PositionSeller() {
                 {isTrigger && maxAutoCancelOrdersWarning}
                 <HighPriceImpactOrFeesWarningCard
                   priceImpactWarningState={priceImpactWarningState}
-                  collateralImpact={fees?.positionCollateralPriceImpact}
-                  positionImpact={fees?.totalPendingImpact}
+                  collateralImpact={fees?.collateralNetPriceImpact}
+                  positionImpact={fees?.positionNetPriceImpact}
                   swapPriceImpact={fees?.swapPriceImpact}
                   swapProfitFee={fees?.swapProfitFee}
                   executionFeeUsd={executionFee?.feeUsd}
