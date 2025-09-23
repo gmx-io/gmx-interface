@@ -189,6 +189,7 @@ export async function increaseOrderHelper(
     marketsInfoData,
     chainId: sdk.chainId,
     externalSwapQuoteParams: undefined,
+    isSetAcceptablePriceImpactEnabled: false,
   });
 
   const createIncreaseOrderParams: Parameters<typeof sdk.orders.createIncreaseOrder>[0] = {

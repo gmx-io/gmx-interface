@@ -34,6 +34,7 @@ export const WAS_TV_CHART_OVERRIDDEN_KEY = "was-tv-chart-overridden-1";
 export const UTM_PARAMS_KEY = "utm_params";
 
 export const BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY = "breakdown-net-price-impact-enabled";
+export const SET_ACCEPTABLE_PRICE_IMPACT_ENABLED_KEY = "set-acceptable-price-impact-enabled";
 
 export const SYNTHETICS_TRADE_OPTIONS = "synthetics-trade-options";
 export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY = "synthetics-acceptable-price-impact-buffer";

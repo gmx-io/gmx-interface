@@ -578,7 +578,7 @@ export function useDetectAndSetAvailableMaxLeverage({
   const { collateralToken, marketInfo, selectedTriggerAcceptablePriceImpactBps, setLeverageOption } =
     useSelector(selectTradeboxState);
 
-  const { isLeverageSliderEnabled } = useSettings();
+  const { isLeverageSliderEnabled, isSetAcceptablePriceImpactEnabled } = useSettings();
 
   const fromToken = useSelector(selectTradeboxFromToken);
   const fromTokenAmount = useSelector(selectTradeboxFromTokenAmount);
@@ -630,6 +630,7 @@ export function useDetectAndSetAvailableMaxLeverage({
           marketsInfoData,
           chainId,
           externalSwapQuoteParams,
+          isSetAcceptablePriceImpactEnabled,
         });
 
         const nextPositionValues = getNextPositionValuesForIncreaseTrade({
@@ -710,6 +711,7 @@ export function useDetectAndSetAvailableMaxLeverage({
     triggerPrice,
     uiFeeFactor,
     userReferralInfo,
+    isSetAcceptablePriceImpactEnabled,
   ]);
 }
 

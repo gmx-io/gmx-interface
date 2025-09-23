@@ -49,7 +49,7 @@ export function SettleAccruedCard({ onAccruedPositionPriceImpactRebateClick, onS
           buttonText: _(button2Text),
           tooltipText: (
             <Trans>
-              Accrued price impact rebates. They will become claimable after approximately ten days.
+              Accrued price impact rebates. They will become claimable after 5 days.
               <br />
               <br />
               <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">

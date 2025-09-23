@@ -39,6 +39,7 @@ export function DisplaySettings() {
             <TooltipWithPortal
               handle={<Trans>Breakdown Net Price Impact</Trans>}
               position="top"
+              variant="icon"
               renderContent={() => (
                 <div>
                   <Trans>

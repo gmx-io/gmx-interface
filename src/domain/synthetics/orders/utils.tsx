@@ -114,8 +114,9 @@ export function getOrderErrors(p: {
   findSwapPath: FindSwapPath;
   uiFeeFactor: bigint;
   chainId: number;
+  isSetAcceptablePriceImpactEnabled: boolean;
 }): { errors: OrderError[]; level: "error" | "warning" | undefined } {
-  const { order, positionsInfoData, marketsInfoData } = p;
+  const { order, positionsInfoData, marketsInfoData, isSetAcceptablePriceImpactEnabled } = p;
 
   const errors: OrderError[] = [];
 
@@ -194,7 +195,11 @@ export function getOrderErrors(p: {
 
     const position = Object.values(positionsInfoData || {}).find((pos) => isOrderForPosition(positionOrder, pos.key));
 
-    if ([OrderType.LimitDecrease, OrderType.LimitIncrease].includes(positionOrder.orderType) && !isTwapOrder(order)) {
+    if (
+      isSetAcceptablePriceImpactEnabled &&
+      [OrderType.LimitDecrease, OrderType.LimitIncrease].includes(positionOrder.orderType) &&
+      !isTwapOrder(order)
+    ) {
       const { acceptablePriceDeltaBps: currentAcceptablePriceDeltaBps } = getAcceptablePriceInfo({
         marketInfo: positionOrder.marketInfo,
         isIncrease: isIncreaseOrderType(positionOrder.orderType),
