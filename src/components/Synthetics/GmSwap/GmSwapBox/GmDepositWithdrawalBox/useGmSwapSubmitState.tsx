@@ -1,7 +1,6 @@
 import { t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ImSpinner2 } from "react-icons/im";
 
 import { getContract } from "config/contracts";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -15,6 +14,8 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
@@ -223,7 +224,7 @@ export const useGmSwapSubmitState = ({
       return {
         text: (
           <>
-            {t`Allow ${tokenSymbol} to be spent`} <ImSpinner2 className="ml-4 animate-spin" />
+            {t`Allow ${tokenSymbol} to be spent`} <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
         disabled: true,

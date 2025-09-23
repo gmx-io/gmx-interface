@@ -1,10 +1,11 @@
 import cx from "classnames";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 
 import Button from "components/Button/Button";
 
 import ChevronEdgeLeft from "img/ic_chevron_edge_left.svg?react";
 import ChevronEdgeRight from "img/ic_chevron_edge_right.svg?react";
+import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
+import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 
 import "./Pagination.css";
 
@@ -59,7 +60,7 @@ export default function Pagination({ page, pageCount, topMargin = true, onPageCh
           </div>
         </Button>
         <Button variant="secondary" onClick={() => onPageChange(page - 1)} className="h-32 w-32" disabled={page <= 1}>
-          <FaChevronLeft size={12} />
+          <ChevronLeftIcon className="size-12" />
         </Button>
         <div className="flex gap-8">{middleButtons}</div>
         <Button
@@ -68,7 +69,7 @@ export default function Pagination({ page, pageCount, topMargin = true, onPageCh
           className="h-32 w-32"
           disabled={page >= pageCount}
         >
-          <FaChevronRight size={12} />
+          <ChevronRightIcon className="size-12" />
         </Button>
         <Button
           variant="secondary"

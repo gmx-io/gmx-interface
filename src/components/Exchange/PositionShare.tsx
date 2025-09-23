@@ -1,9 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { toPng } from "html-to-image";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { BiCopy } from "react-icons/bi";
-import { FiTwitter } from "react-icons/fi";
-import { RiFileDownloadLine } from "react-icons/ri";
 import { useCopyToClipboard } from "react-use";
 
 import { useAffiliateCodes } from "domain/referrals/hooks";
@@ -18,6 +15,9 @@ import { SharePositionActionEvent } from "lib/userAnalytics/types";
 import Button from "components/Button/Button";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
+import CopyIcon from "img/ic_copy.svg?react";
+import DownloadIcon from "img/ic_download2.svg?react";
+import TwitterIcon from "img/ic_x.svg?react";
 import shareBgImg from "img/position-share-bg.jpg";
 
 import { PositionShareCard } from "./PositionShareCard";
@@ -160,16 +160,16 @@ function PositionShare({
 
         <div className="actions">
           <Button variant="secondary" disabled={!uploadedImageInfo} className="mr-15" onClick={handleCopy}>
-            <BiCopy className="icon" />
+            <CopyIcon className="icon" />
             <Trans>Copy</Trans>
           </Button>
           <Button variant="secondary" disabled={!uploadedImageInfo} className="mr-15" onClick={handleDownload}>
-            <RiFileDownloadLine className="icon" />
+            <DownloadIcon className="icon" />
             <Trans>Download</Trans>
           </Button>
           <TrackingLink onClick={trackShareTwitter}>
             <Button newTab variant="secondary" disabled={!uploadedImageInfo} className="mr-15" to={tweetLink}>
-              <FiTwitter className="icon" />
+              <TwitterIcon className="icon" />
               <Trans>Tweet</Trans>
             </Button>
           </TrackingLink>

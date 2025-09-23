@@ -3,7 +3,6 @@ import { msg, t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
-import { ImSpinner2 } from "react-icons/im";
 import { useKey, useLatest, useMedia } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
@@ -98,6 +97,8 @@ import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
@@ -825,7 +826,7 @@ export function PositionSeller() {
         text: (
           <>
             {t`Loading Express params`}
-            <ImSpinner2 className="ml-4 animate-spin" />
+            <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
         disabled: true,
@@ -838,7 +839,7 @@ export function PositionSeller() {
         text: (
           <>
             {t`Allow ${getToken(chainId, tokenToApprove.tokenAddress).symbol} to be spent`}{" "}
-            <ImSpinner2 className="ml-4 animate-spin" />
+            <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
         disabled: true,

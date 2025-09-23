@@ -69,15 +69,7 @@ export default defineConfig(({ mode }) => {
           manualChunks: {
             web3: ["ethers", "viem", "date-fns", "@rainbow-me/rainbowkit", "lodash", "@gelatonetwork/relay-sdk"],
             charts: ["recharts"],
-            ui: ["@headlessui/react", "framer-motion", "react-select", "react-icons"],
-          },
-          sourcemapExcludeSources: true,
-          sourcemapPathTransform: (relativeSourcePath: string) => {
-            // Exclude react-icons from sourcemap
-            if (relativeSourcePath.includes("node_modules/react-icons")) {
-              return "";
-            }
-            return relativeSourcePath;
+            ui: ["@headlessui/react", "framer-motion", "react-select"],
           },
         },
       },

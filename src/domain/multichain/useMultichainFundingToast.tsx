@@ -1,6 +1,5 @@
 import { Trans } from "@lingui/macro";
 import { useEffect, useMemo, useRef } from "react";
-import { ImSpinner2 } from "react-icons/im";
 import { toast, ToastContent } from "react-toastify";
 
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -12,6 +11,8 @@ import { EMPTY_OBJECT } from "lib/objects";
 import { getToken } from "sdk/configs/tokens";
 
 import { FUNDING_OPERATIONS_LABELS } from "components/Synthetics/GmxAccountModal/keys";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { isMultichainFundingItemLoading } from "./isMultichainFundingItemLoading";
 import { useGmxAccountFundingHistory } from "./useGmxAccountFundingHistory";
@@ -89,7 +90,7 @@ export function useMultichainFundingToast() {
                 {item.operation === "deposit" ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>}
                 {array.length > 1 && <> {formattedAmount}</>}
               </div>
-              {isLoading && <ImSpinner2 width={60} height={60} className="spin size-15 text-white" />}
+              {isLoading && <SpinnerIcon className="spin size-15 text-white" />}
             </div>
           );
         })}

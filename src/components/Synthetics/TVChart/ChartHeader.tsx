@@ -1,7 +1,6 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { useEffectOnce } from "react-use";
 
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
@@ -14,6 +13,8 @@ import { getToken } from "sdk/configs/tokens";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import DocsIcon from "img/docs.svg?react";
+import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
+import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 import { renderNetFeeHeaderTooltipContent } from "../MarketsList/NetFeeHeaderTooltipContent";
@@ -411,7 +412,7 @@ function ChartHeaderDesktop() {
             style={leftStyles}
             onClick={scrollToLeft}
           >
-            {scrollLeft > 0 && <BiChevronLeft className="text-typography-secondary" size={24} />}
+            {scrollLeft > 0 && <ChevronLeftIcon className="size-16 text-typography-secondary" />}
           </div>
           <div
             className={cx("Chart-top-scrollable-fade-right", {
@@ -421,7 +422,7 @@ function ChartHeaderDesktop() {
             style={rightStyles}
             onClick={scrollToRight}
           >
-            {scrollRight > 0 && <BiChevronRight className="text-typography-secondary" size={24} />}
+            {scrollRight > 0 && <ChevronRightIcon className="size-16 text-typography-secondary" />}
           </div>
         </div>
         <div className={cx("flex gap-20 overflow-x-auto scrollbar-hide")} ref={scrollableRef}>

@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useMemo, useRef } from "react";
-import { HiOutlineArrowDown } from "react-icons/hi";
 import { useKey, useLatest, usePrevious } from "react-use";
 
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
@@ -97,6 +96,7 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import ArrowDownIcon from "img/ic_arrow_down.svg?react";
 import SettingsIcon from "img/ic_settings.svg?react";
 
 import { useIsCurtainOpen } from "./Curtain";
@@ -703,7 +703,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   onClick={onSwitchTokens}
                   data-qa="swap-ball"
                 >
-                  <HiOutlineArrowDown size={16} className="block" />
+                  <ArrowDownIcon className="block" />
                 </button>
               )}
               <BuyInputSection
