@@ -4,8 +4,8 @@ import { useAccount, useChainId, usePublicClient } from "wagmi";
 
 export enum AccountType {
   Safe,
-  SmartAccount,
-  PostEip7702EOA,
+  SmartAccount, // ERC-4337 compatible smart account
+  PostEip7702EOA, // Post-EIP-7702 EOA (delegated EOA)
   EOA,
 }
 

@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { hashMessage, PublicClient, WalletClient } from "viem";
 
 import { ContractsChainId } from "config/chains";
@@ -8,6 +9,8 @@ import { helperToast } from "lib/helperToast";
 import { WalletSigner } from "lib/wallets";
 import { AccountType } from "lib/wallets/useAccountType";
 import { abis } from "sdk/abis";
+
+import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
 /**
  * keccak256("isValidSignature(bytes32,bytes)")
@@ -139,8 +142,12 @@ export async function signMessage({
       onFinish: onFinishMultisig,
       onError: (error) => {
         helperToast.error(
-          t`Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing. Error: ` +
-            (error?.message ?? error.toString())
+          <div className="flex flex-col gap-10">
+            <div className="text-body-medium font-bold">
+              <Trans>Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing</Trans>
+            </div>
+            <ToastifyDebug error={error?.message ?? error.toString()} />
+          </div>
         );
       },
     });
@@ -164,7 +171,14 @@ export async function signMessage({
       signer,
       onFinish: onFinishMultisig,
       onError: (error) => {
-        helperToast.error(t`Unable to sign message with smart account. Error: ` + (error?.message ?? error.toString()));
+        helperToast.error(
+          <div className="flex flex-col gap-10">
+            <div className="text-body-medium font-bold">
+              <Trans>Unable to sign message with smart account</Trans>
+            </div>
+            <ToastifyDebug error={error?.message ?? error.toString()} />
+          </div>
+        );
       },
     });
     return;
@@ -176,6 +190,13 @@ export async function signMessage({
       setClaimTermsAcceptedSignature(signature);
     }
   } catch (error: any) {
-    helperToast.error(t`Unable to sign message with EOA. Error: ` + (error?.message ?? error.toString()));
+    helperToast.error(
+      <div className="flex flex-col gap-10">
+        <div className="text-body-medium font-bold">
+          <Trans>Unable to sign message with EOA</Trans>
+        </div>
+        <ToastifyDebug error={error?.message ?? error.toString()} />
+      </div>
+    );
   }
 }

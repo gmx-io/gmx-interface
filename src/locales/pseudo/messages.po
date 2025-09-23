@@ -2691,8 +2691,8 @@ msgid "Launch App"
 msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/utils.ts
-msgid "Unable to sign message with EOA. Error:"
-msgstr ""
+#~ msgid "Unable to sign message with EOA. Error:"
+#~ msgstr ""
 
 #: src/components/BuyCards/BuyCards.tsx
 msgid "Buy token on"
@@ -2720,6 +2720,10 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order cancelled."
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/utils.tsx
+msgid "Unable to sign message with EOA"
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
@@ -3138,7 +3142,7 @@ msgstr ""
 msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
 msgstr ""
 
-#: src/components/Synthetics/UserIncentiveDistributionList/utils.ts
+#: src/components/Synthetics/UserIncentiveDistributionList/utils.tsx
 msgid "Please continue signing on your wallet interface where the signature request should appear. You will be able to claim once all signers have signed."
 msgstr ""
 
@@ -5775,6 +5779,10 @@ msgstr ""
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/utils.tsx
+msgid "Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
 msgstr ""
@@ -7180,8 +7188,8 @@ msgid "Volume traded by this account with an active referral code."
 msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/utils.ts
-msgid "Unable to sign message with smart account. Error:"
-msgstr ""
+#~ msgid "Unable to sign message with smart account. Error:"
+#~ msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized fees"
@@ -8379,8 +8387,8 @@ msgid "Failed Market Swap"
 msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/utils.ts
-msgid "Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing. Error:"
-msgstr ""
+#~ msgid "Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing. Error:"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "HoudiniSwap"
@@ -9211,6 +9219,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max. Leverage exceeded"
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/utils.tsx
+msgid "Unable to sign message with smart account"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
