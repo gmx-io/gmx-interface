@@ -46,6 +46,10 @@ msgstr ""
 msgid "You can transfer {nativeTokenSymbol} from other networks to {chainName} using any of the below options:"
 msgstr ""
 
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "from 5 blockchains"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order executed."
 msgstr ""
@@ -6853,10 +6857,6 @@ msgstr "주문 실행 가격은 가격 영향을 고려합니다."
 msgid "Buy GLP or GMX"
 msgstr "GLP 또는 GMX 구매"
 
-#: src/context/GmxAccountContext/GmxAccountContext.tsx
-msgid "Source Base is now available on GMX"
-msgstr ""
-
 #: src/components/Synthetics/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools, with auto-compounding for seamless growth (20-30% historical average annualized performance). View real-time earnings, performance, and portfolio value on the <0>Pools page</0>."
 msgstr ""
@@ -7388,10 +7388,6 @@ msgstr "상위 포지션"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "풀"
-
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "from 4 blockchains"
-msgstr ""
 
 #: src/components/Synthetics/GmList/GlvList.tsx
 msgid "VAULT"
