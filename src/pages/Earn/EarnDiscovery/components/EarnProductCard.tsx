@@ -1,6 +1,9 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
+import { FaChevronDown } from "react-icons/fa6";
+
+import { useBreakpoints } from "lib/useBreakpoints";
 
 import Badge from "components/Badge/Badge";
 import Button from "components/Button/Button";
@@ -90,35 +93,64 @@ const BULLET_GRADIENT_STYLE = {
 
 export default function EarnProductCard({ type, className }: EarnProductCardProps) {
   const content = getCardContent(type);
+  const { isMobile } = useBreakpoints();
+  const [isExpanded, setIsExpanded] = useState(!isMobile);
+
+  const shouldCollapse = isMobile && !isExpanded;
 
   return (
-    <div className={cx("flex h-full flex-col gap-16 rounded-8 bg-slate-900 p-20", className)}>
-      <div className="flex items-start justify-between gap-12">
-        <TokenIcon symbol={content.tokenSymbol} displaySize={40} importSize={40} className="!rounded-0" />
-        <Badge className="bg-fill-accent">{content.badge}</Badge>
+    <div
+      className={cx(
+        "relative flex h-full flex-col gap-16 rounded-8 bg-slate-900 p-20 transition-[max-height] duration-300 ease-in-out",
+        className
+      )}
+    >
+      <div className={cx("relative flex flex-col gap-16", { "max-h-[136px] overflow-hidden": shouldCollapse })}>
+        <div className="flex items-start justify-between gap-12">
+          <TokenIcon symbol={content.tokenSymbol} displaySize={40} importSize={40} className="!rounded-0" />
+          <Badge className="bg-fill-accent">{content.badge}</Badge>
+        </div>
+
+        <div className="flex flex-col gap-12">
+          <h3 className="text-16 font-medium text-typography-primary">{content.title}</h3>
+          <p className="text-13 text-typography-secondary">{content.description}</p>
+          <ExternalLink href={content.readMoreUrl} variant="icon" className="text-12 font-medium">
+            {t`Read more`}
+          </ExternalLink>
+        </div>
+
+        <div className="border-t-1/2 border-t-slate-600" />
+
+        <div className="text-body-medium flex flex-col gap-8 text-typography-secondary">
+          {content.bullets.map((bullet, index) => (
+            <div key={index} className="flex items-center gap-8">
+              <span className="size-8 shrink-0 rotate-[45deg]" style={BULLET_GRADIENT_STYLE} />
+              <span className="text-12 font-medium text-typography-primary">{bullet}</span>
+            </div>
+          ))}
+        </div>
+
+        {shouldCollapse && (
+          <div className="to-transparent pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-900" />
+        )}
       </div>
 
-      <div className="flex flex-col gap-12">
-        <h3 className="text-16 font-medium text-typography-primary">{content.title}</h3>
-        <p className="text-13 text-typography-secondary">{content.description}</p>
-        <ExternalLink href={content.readMoreUrl} variant="icon" className="text-12 font-medium">
-          {t`Read more`}
-        </ExternalLink>
-      </div>
-
-      <div className="border-t-1/2 border-t-slate-600" />
-
-      <div className="text-body-medium flex flex-col gap-8 text-typography-secondary">
-        {content.bullets.map((bullet, index) => (
-          <div key={index} className="flex items-center gap-8">
-            <span className="size-8 shrink-0 rotate-[45deg]" style={BULLET_GRADIENT_STYLE} />
-            <span className="text-12 font-medium text-typography-primary">{bullet}</span>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-auto">
-        <Button variant="primary" className="w-full justify-center" to={content.cta.to}>
+      <div className="mt-auto flex gap-8">
+        {isMobile && (
+          <Button
+            variant="secondary"
+            className="flex-1 justify-center"
+            type="button"
+            onClick={() => setIsExpanded((prev) => !prev)}
+            aria-expanded={isExpanded}
+          >
+            <span className="flex items-center justify-center gap-8">
+              {isExpanded ? t`Less info` : t`More info`}
+              <FaChevronDown className={cx("transition-transform", { "rotate-180": isExpanded })} />
+            </span>
+          </Button>
+        )}
+        <Button variant="primary" className="flex-1 justify-center" to={content.cta.to}>
           {content.cta.label}
         </Button>
       </div>

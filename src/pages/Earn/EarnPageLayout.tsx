@@ -32,16 +32,19 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
           <PageTitle title={t`Earn`} subtitle={t`Stake GMX and buy GLV or GM to earn rewards.`} isTop />
 
           <div className="mt-20 flex flex-col gap-8">
-            <div className="flex flex-wrap gap-8">
-              {tabOptions.map((tab) => (
-                <Button
-                  key={tab.value}
-                  variant={pathname.startsWith(`/earn/${tab.value}`) ? "primary" : "secondary"}
-                  to={`/earn/${tab.value}`}
-                >
-                  {tab.label}
-                </Button>
-              ))}
+            <div className="overflow-x-auto scrollbar-hide">
+              <div className="flex gap-8">
+                {tabOptions.map((tab) => (
+                  <Button
+                    key={tab.value}
+                    variant={pathname.startsWith(`/earn/${tab.value}`) ? "primary" : "secondary"}
+                    to={`/earn/${tab.value}`}
+                    className="shrink-0"
+                  >
+                    {tab.label}
+                  </Button>
+                ))}
+              </div>
             </div>
 
             {children ? <div className="flex flex-col gap-8">{children}</div> : null}

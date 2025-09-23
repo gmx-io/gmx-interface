@@ -5458,6 +5458,10 @@ msgstr "Harmonix"
 msgid "Invalid NFT Address"
 msgstr "Adresse NFT invalide"
 
+#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+msgid "Less info"
+msgstr ""
+
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LIQ."
 msgstr "LIQ."
@@ -6865,6 +6869,10 @@ msgstr "Suivant"
 
 #: src/components/Exchange/TradeHistory.jsx
 msgid "Could not execute deposit into {0} {longOrShortText}."
+msgstr ""
+
+#: src/pages/Earn/EarnDiscovery/components/EarnProductCard.tsx
+msgid "More info"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.jsx

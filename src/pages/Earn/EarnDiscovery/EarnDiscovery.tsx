@@ -46,7 +46,7 @@ export default function EarnDiscoveryPage() {
             </p>
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-3">
+          <div className="grid gap-8 xl:grid-cols-3">
             <EarnProductCard type="gmx" />
             <EarnProductCard type="glv" />
             <EarnProductCard type="gm" />
@@ -54,7 +54,7 @@ export default function EarnDiscoveryPage() {
           <EarnYieldOverview />
         </div>
 
-        <div className="flex w-[400px] shrink-0 flex-col gap-8">
+        <div className="flex w-[400px] shrink-0 flex-col gap-8 max-md:w-full">
           <EarnFaq />
           <EarnDocumentation />
         </div>

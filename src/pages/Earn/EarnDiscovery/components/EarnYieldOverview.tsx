@@ -1,22 +1,25 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import uniq from "lodash/uniq";
-import { ReactNode, useMemo, useCallback } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 import { FaChevronRight } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { useAccount } from "wagmi";
 
 import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
-import { getIcon } from "config/icons";
+import { getChainIcon, getIcon } from "config/icons";
 import type { MarketTokensAPRData } from "domain/synthetics/markets/types";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
+import { defined } from "lib/guards";
 import { formatPercentage } from "lib/numbers";
+import { useBreakpoints } from "lib/useBreakpoints";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
 import APRLabel from "components/APRLabel/APRLabel";
+import Tabs from "components/Tabs/Tabs";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import glvIcon from "img/ic_glv_24.svg";
@@ -35,8 +38,7 @@ function hasTokenBalance(tokensData: ReturnType<typeof useTokensDataRequest>["to
       return false;
     }
 
-    const balance = token.balance ?? token.walletBalance;
-    return balance !== undefined && balance > 0n;
+    return token.balance !== undefined && token.balance > 0n;
   });
 }
 
@@ -44,7 +46,7 @@ function calculateMaxApr(
   base?: MarketTokensAPRData,
   ...extra: (MarketTokensAPRData | undefined)[]
 ): bigint | undefined {
-  const sources = [base, ...extra].filter(Boolean) as MarketTokensAPRData[];
+  const sources = [base, ...extra].filter(defined);
 
   if (!sources.length) {
     return undefined;
@@ -105,25 +107,31 @@ type YieldRowProps = {
   chainId?: number;
 };
 
-type NetworkYieldCardProps = {
-  chainId: number;
-  title: ReactNode;
-  children: ReactNode;
-};
-
 const ASSET_ICONS: Record<YieldRowProps["token"], string> = {
   GMX: gmxIcon,
   GLV: glvIcon,
   GM: gmIcon,
 };
 
-function NetworkYieldCard({ chainId, title, children }: NetworkYieldCardProps) {
+function NetworkYieldCard({
+  chainId,
+  title,
+  children,
+  showTitle,
+}: {
+  chainId: number;
+  title: ReactNode;
+  children: ReactNode;
+  showTitle?: boolean;
+}) {
   return (
-    <div className="flex flex-col gap-8 rounded-8 bg-slate-900 p-16">
-      <div className="flex items-center justify-center gap-8 text-13 font-medium text-typography-primary">
-        <img src={getIcon(chainId, "network")} alt="network" className="h-20 w-20" />
-        {title}
-      </div>
+    <div className="flex flex-col gap-8 rounded-8 bg-slate-900 p-16 max-xl:p-0">
+      {showTitle && (
+        <div className="flex items-center justify-center gap-8 text-13 font-medium text-typography-primary">
+          <img src={getIcon(chainId, "network")} alt="network" className="h-20 w-20" />
+          {title}
+        </div>
+      )}
 
       <div className="flex flex-col">{children}</div>
     </div>
@@ -182,12 +190,17 @@ function YieldRow({ token, metric, to, disabled, chainId: targetChainId }: Yield
   );
 }
 
+const CHAINS_ORDER = [ARBITRUM, AVALANCHE, BOTANIX];
+
 export function EarnYieldOverview() {
   const { address: account } = useAccount();
+  const { isDesktop: isTabsMode } = useBreakpoints();
 
   const arbitrumTokens = useTokensDataRequest(ARBITRUM);
   const avalancheTokens = useTokensDataRequest(AVALANCHE);
   const botanixTokens = useTokensDataRequest(BOTANIX);
+
+  const [mobileChainId, setMobileChainId] = useState<number>(ARBITRUM);
 
   const hasGmxHoldings = useMemo(
     () =>
@@ -239,88 +252,152 @@ export function EarnYieldOverview() {
     [botanixGmApy, botanixGmIncentive, botanixGmLido]
   );
 
-  return (
-    <div className="flex flex-col">
-      <h4 className="py-20 text-20 font-medium text-typography-primary">
-        <Trans>Current Yield Landscape</Trans>
-      </h4>
-
-      <div className="grid gap-12 lg:grid-cols-3">
-        <NetworkYieldCard chainId={ARBITRUM} title={<Trans>Arbitrum</Trans>}>
+  const networkCards = useMemo(
+    () => ({
+      [ARBITRUM]: {
+        chainId: ARBITRUM,
+        title: <Trans>Arbitrum</Trans>,
+        rows: [
           <YieldRow
+            key="arb-gmx"
             token="GMX"
             to={gmxLink}
             chainId={ARBITRUM}
             metric={<YieldMetric value={<APRLabel chainId={ARBITRUM} label="avgGMXAprTotal" />} suffix="APR" />}
-          />
+          />,
           <YieldRow
+            key="arb-glv"
             token="GLV"
             to={poolsLink}
             chainId={ARBITRUM}
             metric={<YieldMetric value={formatAprValue(arbMaxGlv)} suffix="APY" />}
-          />
+          />,
           <YieldRow
+            key="arb-gm"
             token="GM"
             to={poolsLink}
             chainId={ARBITRUM}
             metric={<YieldMetric value={formatAprValue(arbMaxGm)} suffix="APY" />}
-          />
-        </NetworkYieldCard>
-
-        <NetworkYieldCard chainId={AVALANCHE} title={<Trans>Avalanche</Trans>}>
+          />,
+        ],
+      },
+      [AVALANCHE]: {
+        chainId: AVALANCHE,
+        title: <Trans>Avalanche</Trans>,
+        rows: [
           <YieldRow
+            key="avax-gmx"
             token="GMX"
             to={gmxLink}
             chainId={AVALANCHE}
             metric={<YieldMetric value={<APRLabel chainId={AVALANCHE} label="avgGMXAprTotal" />} suffix="APR" />}
-          />
+          />,
           <YieldRow
+            key="avax-glv"
             token="GLV"
             to={poolsLink}
             chainId={AVALANCHE}
             metric={<YieldMetric value={formatAprValue(avaxMaxGlv)} suffix="APY" />}
-          />
+          />,
           <YieldRow
+            key="avax-gm"
             token="GM"
             to={poolsLink}
             chainId={AVALANCHE}
             metric={<YieldMetric value={formatAprValue(avaxMaxGm)} suffix="APY" />}
-          />
-        </NetworkYieldCard>
-
-        <NetworkYieldCard chainId={BOTANIX} title={<Trans>Botanix</Trans>}>
+          />,
+        ],
+      },
+      [BOTANIX]: {
+        chainId: BOTANIX,
+        title: <Trans>Botanix</Trans>,
+        rows: [
           <YieldRow
+            key="bot-gmx"
             token="GMX"
             disabled
+            chainId={BOTANIX}
             metric={
               <YieldMetric
                 value={<Trans>N/A</Trans>}
                 suffix="APR"
-                disabled
                 tooltip={<Trans>GMX staking isn't currently supported on Botanix.</Trans>}
               />
             }
-          />
+          />,
           <YieldRow
+            key="bot-glv"
             token="GLV"
             disabled
+            chainId={BOTANIX}
             metric={
               <YieldMetric
                 value={<Trans>N/A</Trans>}
                 suffix="APY"
-                disabled
                 tooltip={<Trans>No GLV vaults are currently active on Botanix.</Trans>}
               />
             }
-          />
+          />,
           <YieldRow
+            key="bot-gm"
             token="GM"
             to={poolsLink}
             chainId={BOTANIX}
             metric={<YieldMetric value={formatAprValue(botanixMaxGm)} suffix="APY" />}
+          />,
+        ],
+      },
+    }),
+    [arbMaxGlv, arbMaxGm, avaxMaxGlv, avaxMaxGm, botanixMaxGm, gmxLink, poolsLink]
+  );
+
+  const tabs = useMemo(
+    () =>
+      CHAINS_ORDER.map((chainId) => networkCards[chainId]).map((card) => ({
+        value: card.chainId,
+        label: (
+          <>
+            <img src={getChainIcon(card.chainId)} className="size-16" /> {card.title}
+          </>
+        ),
+      })),
+    [networkCards]
+  );
+
+  const selectedCard = useMemo(
+    () => networkCards[mobileChainId] ?? networkCards[ARBITRUM],
+    [mobileChainId, networkCards]
+  );
+
+  return (
+    <div className="flex flex-col max-xl:rounded-8 max-xl:bg-slate-900 max-xl:p-16">
+      <h4 className="py-20 text-20 font-medium text-typography-primary max-xl:pb-12 max-xl:pt-0">
+        <Trans>Current Yield Landscape</Trans>
+      </h4>
+
+      {isTabsMode ? (
+        <div className="flex flex-col">
+          <Tabs<number>
+            options={tabs}
+            selectedValue={mobileChainId}
+            onChange={setMobileChainId}
+            type="inline"
+            regularOptionClassname="grow"
           />
-        </NetworkYieldCard>
-      </div>
+
+          <NetworkYieldCard chainId={selectedCard.chainId} title={selectedCard.title} showTitle={false}>
+            {selectedCard.rows}
+          </NetworkYieldCard>
+        </div>
+      ) : (
+        <div className="grid gap-12 lg:grid-cols-3">
+          {CHAINS_ORDER.map((chainId) => networkCards[chainId]).map((card) => (
+            <NetworkYieldCard key={card.chainId} chainId={card.chainId} title={card.title}>
+              {card.rows}
+            </NetworkYieldCard>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
