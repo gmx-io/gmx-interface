@@ -26,7 +26,7 @@ export function ChainContentHeader({
           </div>
         }
       />
-      <div className={cx("flex items-center gap-16 p-8 md:hidden", leftContentClassName)}>
+      <div className={cx("flex items-center gap-12 p-8 md:hidden", leftContentClassName)}>
         {breadcrumbs}
         <ChainDataImage />
       </div>

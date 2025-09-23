@@ -253,7 +253,6 @@ export function getPriceImpactForSwap(
     tokenAPoolType === "long" ? [usdDeltaTokenA, usdDeltaTokenB] : [usdDeltaTokenB, usdDeltaTokenA];
 
   const { longPoolUsd, shortPoolUsd, nextLongPoolUsd, nextShortPoolUsd } = getNextPoolAmountsParams({
-    marketInfo,
     longToken,
     shortToken,
     longPoolAmount: marketInfo.longPoolAmount,
@@ -291,7 +290,6 @@ export function getPriceImpactForSwap(
   }
 
   const virtualInventoryParams = getNextPoolAmountsParams({
-    marketInfo,
     longToken,
     shortToken,
     longPoolAmount: virtualInventoryLong,
@@ -372,7 +370,6 @@ function getNextOpenInterestParams(p: {
 }
 
 export function getNextPoolAmountsParams(p: {
-  marketInfo: MarketInfo;
   longToken: TokenData;
   shortToken: TokenData;
   longPoolAmount: bigint;
@@ -380,7 +377,7 @@ export function getNextPoolAmountsParams(p: {
   longDeltaUsd: bigint;
   shortDeltaUsd: bigint;
 }) {
-  const { marketInfo, longToken, shortToken, longPoolAmount, shortPoolAmount, longDeltaUsd, shortDeltaUsd } = p;
+  const { longToken, shortToken, longPoolAmount, shortPoolAmount, longDeltaUsd, shortDeltaUsd } = p;
 
   const longPrice = getMidPrice(longToken.prices);
   const shortPrice = getMidPrice(shortToken.prices);
@@ -388,11 +385,8 @@ export function getNextPoolAmountsParams(p: {
   const longPoolUsd = convertToUsd(longPoolAmount, longToken.decimals, longPrice)!;
   const shortPoolUsd = convertToUsd(shortPoolAmount, shortToken.decimals, shortPrice)!;
 
-  const longPoolUsdAdjustment = convertToUsd(marketInfo.longPoolAmountAdjustment, longToken.decimals, longPrice)!;
-  const shortPoolUsdAdjustment = convertToUsd(marketInfo.shortPoolAmountAdjustment, shortToken.decimals, shortPrice)!;
-
-  const nextLongPoolUsd = longPoolUsd + longDeltaUsd + longPoolUsdAdjustment;
-  const nextShortPoolUsd = shortPoolUsd + shortDeltaUsd + shortPoolUsdAdjustment;
+  const nextLongPoolUsd = longPoolUsd + longDeltaUsd;
+  const nextShortPoolUsd = shortPoolUsd + shortDeltaUsd;
 
   return {
     longPoolUsd,

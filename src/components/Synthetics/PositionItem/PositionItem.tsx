@@ -1,9 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
-import { FaChevronRight } from "react-icons/fa6";
-import { ImSpinner2 } from "react-icons/im";
-import { MdClose } from "react-icons/md";
 import Skeleton from "react-loading-skeleton";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -47,7 +44,10 @@ import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import ChevronRightIcon from "img/ic_chevron_right.svg?react";
+import CloseIcon from "img/ic_close.svg?react";
 import EditIcon from "img/ic_edit.svg?react";
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { TwapOrderProgress } from "../OrderItem/OrderItem";
 
@@ -491,7 +491,7 @@ export function PositionItem(p: Props) {
                 )}
               />
               {p.position.pendingUpdate && (
-                <ImSpinner2 data-qa="position-loading" className="spin position-loading-icon" />
+                <SpinnerIcon data-qa="position-loading" className="spin position-loading-icon" />
               )}
             </div>
             <div className="Exchange-list-info-label">
@@ -623,7 +623,7 @@ export function PositionItem(p: Props) {
                 {p.position.isLong ? t`Long` : t`Short`}
               </span>
             </div>
-            {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
+            {p.position.pendingUpdate && <SpinnerIcon className="spin position-loading-icon" />}
           </div>
         </AppCardSection>
         <AppCardSection>
@@ -865,7 +865,7 @@ function PositionItemOrder({
 
   const cancelButton = (
     <Button variant="secondary" disabled={isDisabled} onClick={cancel} className="px-8">
-      <MdClose fontSize={16} />
+      <CloseIcon className="size-16" />
     </Button>
   );
 
@@ -875,7 +875,7 @@ function PositionItemOrder({
         <Button variant="secondary" className="w-full !justify-start !pl-12" onClick={handleOrdersClick}>
           <div className="flex items-center justify-between">
             <PositionItemOrderText order={order} />
-            <FaChevronRight fontSize={14} className="ml-4" />
+            <ChevronRightIcon className="ml-4 size-14" />
           </div>
         </Button>
         {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (

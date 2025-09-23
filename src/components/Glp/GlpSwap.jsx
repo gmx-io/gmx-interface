@@ -4,7 +4,6 @@ import cx from "classnames";
 import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
 import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
-import { IoChevronDownOutline } from "react-icons/io5";
 import { useHistory } from "react-router-dom";
 import useSWR from "swr";
 
@@ -62,6 +61,8 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import PageTitle from "components/PageTitle/PageTitle";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import SwapErrorModal from "./SwapErrorModal";
 import BuyInputSection from "../BuyInputSection/BuyInputSection";
@@ -996,7 +997,7 @@ export default function GlpSwap(props) {
                           switchSwapOption(isBuying ? "redeem" : "");
                         }}
                       >
-                        <IoChevronDownOutline className="AppOrder-ball-icon" />
+                        <ChevronDownIcon className="AppOrder-ball-icon" />
                       </button>
                     </div>
 
@@ -1051,7 +1052,7 @@ export default function GlpSwap(props) {
                           switchSwapOption(isBuying ? "redeem" : "");
                         }}
                       >
-                        <IoChevronDownOutline className="AppOrder-ball-icon" />
+                        <ChevronDownIcon className="AppOrder-ball-icon" />
                       </button>
                     </div>
                     <BuyInputSection

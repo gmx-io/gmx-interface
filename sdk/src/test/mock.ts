@@ -260,8 +260,6 @@ export function mockMarketsInfoData(
       minCollateralFactorForOpenInterestLong: 0n,
       minCollateralFactorForOpenInterestShort: 0n,
 
-      longPoolAmountAdjustment: 0n,
-      shortPoolAmountAdjustment: 0n,
       borrowingFactorLong: 0n,
       borrowingFactorShort: 0n,
 

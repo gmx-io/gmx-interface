@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
-import { BiChevronDown } from "react-icons/bi";
 
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import {
@@ -26,6 +25,8 @@ import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStat
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import { PoolListItem } from "./PoolListItem";
 import { CommonPoolSelectorProps, MarketOption } from "./types";
@@ -58,7 +59,7 @@ function PoolLabel({
       onClick={!disablePoolSelector ? onClick : undefined}
     >
       {getMarketIndexName(marketInfo)} [{getMarketPoolName(marketInfo)}]
-      {!disablePoolSelector && <BiChevronDown className="text-body-large" />}
+      {!disablePoolSelector && <ChevronDownIcon className="size-16" />}
     </div>
   );
 }

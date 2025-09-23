@@ -214,6 +214,10 @@ export default function ClaimableAmounts() {
       buttonContent
     );
 
+    const isClaimTermsChecked = Boolean(
+      claimTermsAcceptedSignature || (isSmartAccount && isSmartAccountSignedClaimTerms)
+    );
+
     return (
       <>
         {!hasAvailableFundsToCoverExecutionFee ? (
@@ -222,11 +226,7 @@ export default function ClaimableAmounts() {
           </AlertInfoCard>
         ) : null}
         {claimTerms && hasAvailableFundsToCoverExecutionFee && !claimsFeatureDisabled ? (
-          <Checkbox
-            isChecked={Boolean(claimTermsAcceptedSignature || (isSmartAccount && isSmartAccountSignedClaimTerms))}
-            setIsChecked={signClaimTerms}
-            disabled={Boolean(claimTermsAcceptedSignature || isSmartAccount)}
-          >
+          <Checkbox isChecked={isClaimTermsChecked} setIsChecked={signClaimTerms} disabled={isClaimTermsChecked}>
             <span className="muted">
               <Trans>Accept Claim Terms</Trans>
             </span>

@@ -92,11 +92,11 @@ export function StatsCard({
 
   const totalFeesEntries = useMemo(
     () => ({
-      "V1 Arbitrum": v1ArbitrumTotalFees?.totalFees,
       "V2 Arbitrum": v2ArbitrumOverview?.totalFees,
-      "V1 Avalanche": v1AvalancheTotalFees?.totalFees,
       "V2 Avalanche": v2AvalancheOverview?.totalFees,
       "V2 Botanix": v2BotanixOverview?.totalFees,
+      "V1 Arbitrum": v1ArbitrumTotalFees?.totalFees,
+      "V1 Avalanche": v1AvalancheTotalFees?.totalFees,
     }),
     [
       v1AvalancheTotalFees?.totalFees,
@@ -109,22 +109,22 @@ export function StatsCard({
 
   const totalVolumeEntries = useMemo(
     () => ({
-      "V1 Arbitrum": v1TotalVolume?.[ARBITRUM],
       "V2 Arbitrum": v2ArbitrumOverview?.totalVolume,
-      "V1 Avalanche": v1TotalVolume?.[AVALANCHE],
       "V2 Avalanche": v2AvalancheOverview?.totalVolume,
       "V2 Botanix": v2BotanixOverview?.totalVolume,
+      "V1 Arbitrum": v1TotalVolume?.[ARBITRUM],
+      "V1 Avalanche": v1TotalVolume?.[AVALANCHE],
     }),
     [v1TotalVolume, v2ArbitrumOverview?.totalVolume, v2AvalancheOverview?.totalVolume, v2BotanixOverview?.totalVolume]
   );
 
   const uniqueUsersEntries = useMemo(
     () => ({
-      "V1 Arbitrum": uniqueUsers?.[ARBITRUM],
       "V2 Arbitrum": v2ArbitrumOverview?.totalUsers,
-      "V1 Avalanche": uniqueUsers?.[AVALANCHE],
       "V2 Avalanche": v2AvalancheOverview?.totalUsers,
       "V2 Botanix": v2BotanixOverview?.totalUsers,
+      "V1 Arbitrum": uniqueUsers?.[ARBITRUM],
+      "V1 Avalanche": uniqueUsers?.[AVALANCHE],
     }),
     [uniqueUsers, v2ArbitrumOverview?.totalUsers, v2AvalancheOverview?.totalUsers, v2BotanixOverview?.totalUsers]
   );

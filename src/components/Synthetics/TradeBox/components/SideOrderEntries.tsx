@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import { useCallback, useMemo, useRef } from "react";
-import { FaPlus } from "react-icons/fa6";
 
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -13,6 +12,8 @@ import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageInput";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import PlusIcon from "img/ic_plus.svg?react";
 
 import { EntryButton } from "./EntryButton";
 
@@ -162,7 +163,7 @@ function SideOrderEntry({
         disabled={entriesCount === 1 && !entry.percentage && !entry.price}
         theme="red"
       >
-        <FaPlus className="rotate-45" />
+        <PlusIcon className="size-12 rotate-45" />
       </EntryButton>
     </div>
   );
