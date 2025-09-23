@@ -29,8 +29,8 @@ export function LaunchSection() {
           </button>
         </div>
         <div className="grid w-full grid-flow-row grid-cols-1 gap-16 md:grid-cols-3 lg:w-auto lg:grid-cols-2">
+          <LaunchButtonContainer chainId={RedirectChainIds.Base} />
           <LaunchButtonContainer chainId={RedirectChainIds.Arbitum} />
-          {/* <LaunchButtonContainer chainId={RedirectChainIds.Base} /> */}
           <LaunchButtonContainer chainId={RedirectChainIds.Solana} />
           <LaunchButtonContainer chainId={RedirectChainIds.Avalanche} />
           <LaunchButtonContainer chainId={RedirectChainIds.Botanix} />
