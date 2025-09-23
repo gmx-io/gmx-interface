@@ -15,14 +15,15 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
+import { WithdrawalAmounts } from "sdk/types/trade";
 
+import { getGmSwapBoxApproveTokenSymbol } from "../getGmSwapBoxApproveToken";
+import { Operation } from "../types";
 import { useLpTransactions } from "./lpTxn/useLpTransactions";
+import type { GmPaySource } from "./types";
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 import { useTokensToApprove } from "./useTokensToApprove";
-import { getGmSwapBoxApproveTokenSymbol } from "../getGmSwapBoxApproveToken";
-import { Operation } from "../types";
-import type { GmPaySource } from "./types";
 
 interface Props {
   amounts: ReturnType<typeof useDepositWithdrawalAmounts>;
@@ -135,6 +136,8 @@ export const useGmSwapSubmitState = ({
     marketTokenUsd,
     isFirstBuy,
     paySource,
+    longTokenSwapPath: (amounts as WithdrawalAmounts)?.longTokenSwapPathStats?.swapPath,
+    shortTokenSwapPath: (amounts as WithdrawalAmounts)?.shortTokenSwapPathStats?.swapPath,
   });
 
   const onConnectAccount = useCallback(() => {

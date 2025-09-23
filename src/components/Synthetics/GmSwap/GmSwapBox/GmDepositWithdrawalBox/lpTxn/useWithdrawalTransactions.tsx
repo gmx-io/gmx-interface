@@ -12,7 +12,9 @@ import { selectExpressGlobalParams } from "context/SyntheticsStateContext/select
 import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { CodecUiHelper, GMX_DATA_ACTION_HASH, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
+import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
+import { useQuoteSend } from "domain/multichain/useQuoteSend";
 import {
   CreateGlvWithdrawalParamsStruct,
   CreateWithdrawalParamsStruct,
@@ -33,6 +35,7 @@ import {
   sendTxnValidationErrorMetric,
 } from "lib/metrics";
 import { EMPTY_ARRAY } from "lib/objects";
+import { useJsonRpcProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
@@ -50,6 +53,8 @@ export const useWithdrawalTransactions = ({
   longTokenAddress,
   shortTokenAddress,
   longTokenAmount,
+  longTokenSwapPath,
+  shortTokenSwapPath,
   shortTokenAmount,
   marketTokenAmount,
   marketTokenUsd,
@@ -108,15 +113,76 @@ export const useWithdrawalTransactions = ({
     ]);
   }, [chainId, glvTokenAddress, glvTokenAmount, isGlv, marketTokenAddress, marketTokenAmount]);
 
+  const { provider: settlementChainRpcProvider } = useJsonRpcProvider(chainId);
+
+  const longTokenProviderTokenAddress = longTokenAddress;
+  const shortTokenProviderTokenAddress = shortTokenAddress;
+  const longOftProvider = longTokenProviderTokenAddress
+    ? getStargatePoolAddress(chainId, convertTokenAddress(chainId, longTokenProviderTokenAddress, "native"))
+    : undefined;
+  const shortOftProvider = shortTokenProviderTokenAddress
+    ? getStargatePoolAddress(chainId, convertTokenAddress(chainId, shortTokenProviderTokenAddress, "native"))
+    : undefined;
+
+  const longTokenBaseSendParams = useMemo(() => {
+    if (!srcChainId || !account) {
+      return undefined;
+    }
+
+    if (longTokenAmount === undefined || longTokenAmount === 0n) {
+      return undefined;
+    }
+
+    return getMultichainTransferSendParams({
+      dstChainId: srcChainId,
+      account,
+      amount: longTokenAmount,
+      isToGmx: false,
+      srcChainId: chainId,
+    });
+  }, [account, chainId, longTokenAmount, srcChainId]);
+
+  const shortTokenBaseSendParams = useMemo(() => {
+    if (!srcChainId || !account) {
+      return undefined;
+    }
+
+    if (shortTokenAmount === undefined || shortTokenAmount === 0n) {
+      return undefined;
+    }
+
+    return getMultichainTransferSendParams({
+      dstChainId: srcChainId,
+      account,
+      amount: shortTokenAmount,
+      isToGmx: false,
+      srcChainId: chainId,
+    });
+  }, [account, chainId, shortTokenAmount, srcChainId]);
+
+  const longTokenQuoteSend = useQuoteSend({
+    fromChainId: chainId,
+    toChainId: srcChainId,
+    sendParams: longTokenBaseSendParams,
+    fromChainProvider: settlementChainRpcProvider,
+    fromStargateAddress: longOftProvider,
+  });
+
+  const shortTokenQuoteSend = useQuoteSend({
+    fromChainId: chainId,
+    toChainId: srcChainId,
+    sendParams: shortTokenBaseSendParams,
+    fromChainProvider: settlementChainRpcProvider,
+    fromStargateAddress: shortOftProvider,
+  });
+
   const gmParams = useMemo((): CreateWithdrawalParamsStruct | undefined => {
     if (
       !account ||
       !marketTokenAddress ||
       marketTokenAmount === undefined ||
       executionFeeTokenAmount === undefined ||
-      isGlv ||
-      !initialLongTokenAddress ||
-      !initialShortTokenAddress
+      isGlv
     ) {
       return undefined;
     }
@@ -125,20 +191,20 @@ export const useWithdrawalTransactions = ({
 
     let dataList: string[] = EMPTY_ARRAY;
 
+    let executionFee = executionFeeTokenAmount;
+
     if (paySource === "sourceChain") {
       if (!srcChainId) {
         return undefined;
       }
 
-      const provider = getStargatePoolAddress(chainId, convertTokenAddress(chainId, initialLongTokenAddress, "native"));
-      const secondaryProvider = getStargatePoolAddress(
-        chainId,
-        convertTokenAddress(chainId, initialShortTokenAddress, "native")
-      );
+      const provider = longOftProvider ?? shortOftProvider;
 
-      if (!provider || !secondaryProvider) {
+      if (!provider) {
         return undefined;
       }
+
+      const secondaryProvider = provider === shortOftProvider ? undefined : shortTokenAddress;
 
       const dstEid = getLayerZeroEndpointId(srcChainId);
 
@@ -158,8 +224,8 @@ export const useWithdrawalTransactions = ({
           // TODO MLTCH apply some slippage
           minAmountOut: 0n,
           // TODO MLTCH put secondary provider and data
-          secondaryProvider: secondaryProvider,
-          secondaryProviderData: providerData,
+          secondaryProvider: secondaryProvider ?? zeroAddress,
+          secondaryProviderData: secondaryProvider ? providerData : "0x",
           secondaryMinAmountOut: 0n,
         },
       });
@@ -175,13 +241,17 @@ export const useWithdrawalTransactions = ({
         callbackContract: zeroAddress,
         uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? zeroAddress,
         market: marketTokenAddress,
-        longTokenSwapPath: [],
-        shortTokenSwapPath: [],
+        longTokenSwapPath: longTokenSwapPath ?? [],
+        shortTokenSwapPath: shortTokenSwapPath ?? [],
       },
-      minLongTokenAmount: applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, longTokenAmount ?? 0n),
-      minShortTokenAmount: applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, shortTokenAmount ?? 0n),
+      // TODO MLTCH: do not forget to apply slippage here
+      // minLongTokenAmount: applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, longTokenAmount ?? 0n),
+      minLongTokenAmount: 0n,
+      // TODO MLTCH: do not forget to apply slippage
+      // minShortTokenAmount: applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, shortTokenAmount ?? 0n),
+      minShortTokenAmount: 0n,
       shouldUnwrapNativeToken: false,
-      executionFee: executionFeeTokenAmount,
+      executionFee,
       callbackGasLimit: 0n,
       dataList,
     };
@@ -191,14 +261,15 @@ export const useWithdrawalTransactions = ({
     account,
     chainId,
     executionFeeTokenAmount,
-    initialLongTokenAddress,
-    initialShortTokenAddress,
     isGlv,
-    longTokenAmount,
+    longOftProvider,
+    longTokenSwapPath,
     marketTokenAddress,
     marketTokenAmount,
     paySource,
-    shortTokenAmount,
+    shortOftProvider,
+    shortTokenAddress,
+    shortTokenSwapPath,
     srcChainId,
   ]);
 

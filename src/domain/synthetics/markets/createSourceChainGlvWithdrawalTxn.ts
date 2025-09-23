@@ -42,20 +42,23 @@ export async function createSourceChainGlvWithdrawalTxn({
   transferRequests: IRelayUtils.TransferRequestsStruct;
   params: CreateGlvWithdrawalParamsStruct;
   tokenAmount: bigint;
+  // additionalFee: bigint;
 }) {
   const account = params.addresses.receiver;
   const glvTokenAddress = params.addresses.glv;
-
+  // params.executionFee
   const rawRelayParamsPayload = getRawRelayerParams({
     chainId: chainId,
     gasPaymentTokenAddress: globalExpressParams!.gasPaymentTokenAddress,
     relayerFeeTokenAddress: globalExpressParams!.relayerFeeTokenAddress,
     feeParams: {
-      feeToken: getTokenBySymbol(chainId, "USDC.SG").address,
+      feeToken: getTokenBySymbol(chainId, "WETH").address,
       // TODO MLTCH this is going through the keeper to execute a depost
       // so there 100% should be a fee
-      feeAmount: 10n * 10n ** 6n,
-      feeSwapPath: ["0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc"],
+      // feeAmount: 10n * 10n ** 6n,
+      feeAmount: 85022412326765n, // params.executionFee,
+      // feeSwapPath: ["0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc"],
+      feeSwapPath: [],
     },
     externalCalls: getEmptyExternalCallsPayload(),
     tokenPermits: [],
@@ -66,8 +69,6 @@ export async function createSourceChainGlvWithdrawalTxn({
     ...rawRelayParamsPayload,
     deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
   };
-
-  params.executionFee = params.executionFee * 2n;
 
   const signature = await signCreateGlvWithdrawal({
     chainId,

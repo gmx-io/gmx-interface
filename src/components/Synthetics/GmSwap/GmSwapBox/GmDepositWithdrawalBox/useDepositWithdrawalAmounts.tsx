@@ -1,5 +1,7 @@
 import { useMemo } from "react";
 
+import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors/tradeSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GlvInfo, MarketInfo } from "domain/synthetics/markets/types";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
@@ -10,6 +12,7 @@ import { TokenInputState } from "./types";
 
 export function useDepositWithdrawalAmounts({
   isDeposit,
+  isPair,
   isWithdrawal,
   marketInfo,
   marketToken,
@@ -25,6 +28,7 @@ export function useDepositWithdrawalAmounts({
   glvInfo,
 }: {
   isDeposit: boolean;
+  isPair: boolean;
   isWithdrawal: boolean;
   marketInfo: MarketInfo | undefined;
   marketToken: TokenData | undefined;
@@ -40,6 +44,21 @@ export function useDepositWithdrawalAmounts({
   glvInfo: GlvInfo | undefined;
 }): DepositAmounts | WithdrawalAmounts | undefined {
   const halfOfLong = longTokenInputState?.amount !== undefined ? longTokenInputState.amount / 2n : undefined;
+
+  const hasLongTokenInputState = longTokenInputState !== undefined;
+
+  const receiveTokenAddress =
+    !isDeposit && !isPair ? longTokenInputState?.address ?? shortTokenInputState?.address : undefined;
+
+  const selectFindSwap = useMemo(() => {
+    if (!hasLongTokenInputState) {
+      // long to short swap
+      return makeSelectFindSwapPath(marketInfo?.longToken.address, marketInfo?.shortToken.address);
+    }
+
+    return makeSelectFindSwapPath(marketInfo?.shortToken.address, marketInfo?.longToken.address);
+  }, [hasLongTokenInputState, marketInfo?.longToken.address, marketInfo?.shortToken.address]);
+  const findSwapPath = useSelector(selectFindSwap);
 
   const amounts = useMemo(() => {
     if (isDeposit) {
@@ -118,26 +137,30 @@ export function useDepositWithdrawalAmounts({
         glvInfo,
         glvTokenAmount,
         glvToken,
+        findSwapPath,
+        receiveTokenAddress,
       });
     }
   }, [
-    focusedInput,
-    halfOfLong,
     isDeposit,
-    isMarketTokenDeposit,
     isWithdrawal,
-    marketTokensData,
-    longTokenInputState?.address,
-    longTokenInputState?.amount,
     marketInfo,
     marketToken,
+    marketTokensData,
+    glvInfo,
     marketTokenAmount,
+    glvTokenAmount,
+    longTokenInputState?.address,
+    longTokenInputState?.amount,
     shortTokenInputState?.address,
     shortTokenInputState?.amount,
     uiFeeFactor,
-    glvInfo,
+    focusedInput,
+    isMarketTokenDeposit,
     glvToken,
-    glvTokenAmount,
+    halfOfLong,
+    findSwapPath,
+    receiveTokenAddress,
   ]);
 
   return amounts;

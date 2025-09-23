@@ -55,13 +55,22 @@ export async function createSourceChainWithdrawalTxn({
     chainId: chainId,
     gasPaymentTokenAddress: globalExpressParams!.gasPaymentTokenAddress,
     relayerFeeTokenAddress: globalExpressParams!.relayerFeeTokenAddress,
+    // feeParams: {
+    //   // feeToken: globalExpressParams!.relayerFeeTokenAddress,
+    //   feeToken: getTokenBySymbol(chainId, "USDC.SG").address,
+    //   // TODO MLTCH this is going through the keeper to execute a depost
+    //   // so there 100% should be a fee
+    //   feeAmount: 2n * 10n ** 6n,
+    //   feeSwapPath: ["0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc"],
+    // },
     feeParams: {
-      // feeToken: globalExpressParams!.relayerFeeTokenAddress,
-      feeToken: getTokenBySymbol(chainId, "USDC.SG").address,
+      feeToken: getTokenBySymbol(chainId, "WETH").address,
       // TODO MLTCH this is going through the keeper to execute a depost
       // so there 100% should be a fee
-      feeAmount: 2n * 10n ** 6n,
-      feeSwapPath: ["0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc"],
+      // feeAmount: 10n * 10n ** 6n,
+      feeAmount: 639488160000000n, // params.executionFee,
+      // feeSwapPath: ["0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc"],
+      feeSwapPath: [],
     },
     externalCalls: getEmptyExternalCallsPayload(),
     tokenPermits: [],
@@ -134,7 +143,7 @@ export async function createSourceChainWithdrawalTxn({
       callData: encodeFunctionData({
         abi: IStargateAbi as unknown as typeof IStargate__factory.abi,
         functionName: "send",
-        args: [sendParams, { nativeFee: quoteSend.nativeFee, lzTokenFee: 0n }, account as Hex],
+        args: [sendParams as any, { nativeFee: quoteSend.nativeFee, lzTokenFee: 0n }, account as Hex],
       }),
       value,
       msg: t`Sent deposit transaction`,

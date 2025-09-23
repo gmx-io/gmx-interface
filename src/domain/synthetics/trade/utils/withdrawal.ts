@@ -1,7 +1,7 @@
 import { GlvInfo, MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { applyFactor } from "lib/numbers";
-import { WithdrawalAmounts } from "sdk/types/trade";
+import { FindSwapPath, WithdrawalAmounts } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 
 export function getWithdrawalAmounts(p: {
@@ -10,13 +10,15 @@ export function getWithdrawalAmounts(p: {
   marketTokenAmount: bigint;
   longTokenAmount: bigint;
   shortTokenAmount: bigint;
+  receiveTokenAddress: string | undefined;
   uiFeeFactor: bigint;
   strategy: "byMarketToken" | "byLongCollateral" | "byShortCollateral" | "byCollaterals";
   forShift?: boolean;
   glvInfo?: GlvInfo;
   glvTokenAmount?: bigint;
   glvToken?: TokenData;
-}) {
+  findSwapPath: FindSwapPath;
+}): WithdrawalAmounts {
   const {
     marketInfo,
     marketToken,
@@ -28,6 +30,7 @@ export function getWithdrawalAmounts(p: {
     glvInfo,
     glvToken,
     glvTokenAmount,
+    findSwapPath,
   } = p;
 
   const { longToken, shortToken } = marketInfo;
@@ -52,6 +55,8 @@ export function getWithdrawalAmounts(p: {
     swapFeeUsd: 0n,
     uiFeeUsd: 0n,
     swapPriceImpactDeltaUsd: 0n,
+    longTokenSwapPathStats: undefined,
+    shortTokenSwapPathStats: undefined,
   };
 
   if (totalPoolUsd == 0n) {
@@ -92,12 +97,44 @@ export function getWithdrawalAmounts(p: {
     values.longTokenUsd = values.longTokenUsd - longSwapFeeUsd - longUiFeeUsd;
     values.shortTokenUsd = values.shortTokenUsd - shortSwapFeeUsd - shortUiFeeUsd;
 
-    values.longTokenAmount = convertToTokenAmount(values.longTokenUsd, longToken.decimals, longToken.prices.maxPrice)!;
-    values.shortTokenAmount = convertToTokenAmount(
-      values.shortTokenUsd,
-      shortToken.decimals,
-      shortToken.prices.maxPrice
-    )!;
+    if (!p.receiveTokenAddress) {
+      values.longTokenAmount = convertToTokenAmount(
+        values.longTokenUsd,
+        longToken.decimals,
+        longToken.prices.maxPrice
+      )!;
+      values.shortTokenAmount = convertToTokenAmount(
+        values.shortTokenUsd,
+        shortToken.decimals,
+        shortToken.prices.maxPrice
+      )!;
+    } else if (p.receiveTokenAddress === longToken.address) {
+      const shortToLongSwapPathStats = findSwapPath(values.shortTokenUsd);
+      if (!shortToLongSwapPathStats) {
+        throw new Error("Short to long swap path stats is not valid");
+      }
+      values.shortTokenUsd = 0n;
+      values.shortTokenSwapPathStats = shortToLongSwapPathStats;
+      values.longTokenUsd += shortToLongSwapPathStats.usdOut;
+      values.longTokenAmount = convertToTokenAmount(
+        values.longTokenUsd,
+        longToken.decimals,
+        longToken.prices.maxPrice
+      )!;
+    } else if (p.receiveTokenAddress === shortToken.address) {
+      const longToShortSwapPathStats = findSwapPath(values.longTokenUsd);
+      if (!longToShortSwapPathStats) {
+        throw new Error("Long to short swap path stats is not valid");
+      }
+      values.longTokenUsd = 0n;
+      values.longTokenSwapPathStats = longToShortSwapPathStats;
+      values.shortTokenUsd += longToShortSwapPathStats.usdOut;
+      values.shortTokenAmount = convertToTokenAmount(
+        values.shortTokenUsd,
+        shortToken.decimals,
+        shortToken.prices.maxPrice
+      )!;
+    }
   } else {
     if (strategy === "byLongCollateral" && longPoolUsd > 0) {
       values.longTokenAmount = longTokenAmount;

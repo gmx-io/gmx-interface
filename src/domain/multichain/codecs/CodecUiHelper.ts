@@ -1,5 +1,5 @@
 import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
-import { Address, concatHex, encodeAbiParameters, Hex, isHex, toHex } from "viem";
+import { Address, concatHex, encodeAbiParameters, Hex, isHex, toHex, zeroAddress } from "viem";
 
 import type { RelayParamsPayload } from "domain/synthetics/express";
 import {
@@ -163,21 +163,40 @@ export class CodecUiHelper {
         ]
       );
     } else if (action.actionType === MultichainActionType.BridgeOut) {
-      actionData = encodeAbiParameters(
-        [BRIDGE_OUT_PARAMS],
-        [
-          {
-            desChainId: BigInt(action.actionData.desChainId),
-            deadline: action.actionData.deadline,
-            provider: action.actionData.provider as Address,
-            providerData: action.actionData.providerData as Hex,
-            minAmountOut: action.actionData.minAmountOut,
-            secondaryProvider: action.actionData.secondaryProvider as Address,
-            secondaryProviderData: action.actionData.secondaryProviderData as Hex,
-            secondaryMinAmountOut: action.actionData.secondaryMinAmountOut,
-          },
-        ]
-      );
+      if (action.actionData.secondaryProvider === zeroAddress || action.actionData.secondaryProviderData === "0x") {
+        actionData = encodeAbiParameters(
+          [
+            { type: "uint256", name: "desChainId" },
+            { type: "uint256", name: "deadline" },
+            { type: "address", name: "provider" },
+            { type: "bytes", name: "providerData" },
+            { type: "uint256", name: "minAmountOut" },
+          ],
+          [
+            BigInt(action.actionData.desChainId),
+            action.actionData.deadline,
+            action.actionData.provider as Address,
+            action.actionData.providerData as Hex,
+            action.actionData.minAmountOut,
+          ]
+        );
+      } else {
+        actionData = encodeAbiParameters(
+          [BRIDGE_OUT_PARAMS],
+          [
+            {
+              desChainId: BigInt(action.actionData.desChainId),
+              deadline: action.actionData.deadline,
+              provider: action.actionData.provider as Address,
+              providerData: action.actionData.providerData as Hex,
+              minAmountOut: action.actionData.minAmountOut,
+              secondaryProvider: action.actionData.secondaryProvider as Address,
+              secondaryProviderData: action.actionData.secondaryProviderData as Hex,
+              secondaryMinAmountOut: action.actionData.secondaryMinAmountOut,
+            },
+          ]
+        );
+      }
     } else if (action.actionType === MultichainActionType.GlvDeposit) {
       actionData = encodeAbiParameters(
         [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_GLV_DEPOSIT_PARAMS_TYPE],

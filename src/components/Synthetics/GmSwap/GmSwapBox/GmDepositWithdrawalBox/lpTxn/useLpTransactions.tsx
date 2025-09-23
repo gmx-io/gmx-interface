@@ -20,7 +20,9 @@ export interface UseLpTransactionProps {
   marketTokenAmount: bigint | undefined;
   marketTokenUsd: bigint | undefined;
   longTokenAmount: bigint | undefined;
+  longTokenSwapPath: string[] | undefined;
   shortTokenAmount: bigint | undefined;
+  shortTokenSwapPath: string[] | undefined;
 
   glvTokenAmount: bigint | undefined;
   glvTokenUsd: bigint | undefined;

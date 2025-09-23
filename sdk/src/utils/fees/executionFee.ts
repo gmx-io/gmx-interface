@@ -298,14 +298,13 @@ export function estimateExecuteGlvWithdrawalGasLimit(
  */
 export function estimateExecuteWithdrawalGasLimit(
   gasLimits: GasLimitsConfig,
-  withdrawal: { callbackGasLimit?: bigint }
+  withdrawal: { callbackGasLimit?: bigint; swapsCount?: number }
 ) {
-  // Swap is not used but supported in the contract.
-  // const gasPerSwap = gasLimits.singleSwap;
-  // const swapsCount = 0n;
-  // const gasForSwaps = swapsCount * gasPerSwap;
+  const gasPerSwap = gasLimits.singleSwap;
+  const swapsCount = BigInt(withdrawal.swapsCount ?? 0);
+  const gasForSwaps = swapsCount * gasPerSwap;
 
-  return gasLimits.withdrawalMultiToken + (withdrawal.callbackGasLimit ?? 0n);
+  return gasLimits.withdrawalMultiToken + (withdrawal.callbackGasLimit ?? 0n) + gasForSwaps;
 }
 
 /**

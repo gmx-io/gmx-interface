@@ -298,6 +298,7 @@ export const WithdrawalView = () => {
       srcChainId: chainId,
     });
   }, [account, chainId, unwrappedSelectedTokenSymbol, withdrawalViewChain]);
+
   const isMaxButtonDisabled = useMemo(() => {
     if (!baseSendParams) {
       return true;

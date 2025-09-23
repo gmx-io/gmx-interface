@@ -51,6 +51,7 @@ type Props = {
   footerContent?: ReactNode;
   marketsInfoData?: MarketsInfoData;
   qa?: string;
+  chainIdBadge?: number;
 };
 
 export default function TokenSelector(props: Props) {
@@ -81,6 +82,7 @@ export default function TokenSelector(props: Props) {
     marketsInfoData,
     chainId,
     qa,
+    chainIdBadge,
   } = props;
 
   const visibleTokens = tokens.filter((t) => t && !t.isTempHidden);
@@ -297,7 +299,13 @@ export default function TokenSelector(props: Props) {
         {selectedTokenLabel || (
           <span className="inline-flex items-center">
             {showSymbolImage && (
-              <TokenIcon className="mr-4" symbol={tokenInfo.symbol} importSize={24} displaySize={20} />
+              <TokenIcon
+                className="mr-4"
+                symbol={tokenInfo.symbol}
+                importSize={24}
+                displaySize={20}
+                chainIdBadge={chainIdBadge}
+              />
             )}
             {showTokenName ? tokenInfo.name : tokenInfo.symbol}
           </span>
