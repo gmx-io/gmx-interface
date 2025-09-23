@@ -464,7 +464,7 @@ export function getGasPaymentValidations({
   return {
     isOutGasTokenBalance,
     needGasPaymentTokenApproval,
-    isValid: true,
+    isValid: !isOutGasTokenBalance && !needGasPaymentTokenApproval,
   };
 }
 
@@ -531,7 +531,7 @@ export async function buildAndSignExpressBatchOrderTxn({
     chainId,
     relayPayload: {
       ...(relayParamsPayload as RelayParamsPayload),
-      deadline: BigInt(nowInSeconds() + 1),
+      deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
       userNonce: nowInSeconds(),
     } satisfies RelayParamsPayload,
     subaccountApproval: subaccount?.signedApproval,
