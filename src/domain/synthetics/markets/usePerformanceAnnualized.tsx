@@ -8,14 +8,22 @@ export type PerformanceData = {
   [address: string]: bigint;
 };
 
-export function usePerformanceAnnualized({ chainId, period }: { chainId: number; period: PerformancePeriod }) {
+export function usePerformanceAnnualized({
+  chainId,
+  period,
+  address,
+}: {
+  chainId: number;
+  period: PerformancePeriod;
+  address?: string;
+}) {
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
   const { data, error, isLoading } = useSWR<PerformanceAnnualizedResponse>(
-    ["usePerformanceAnnualized", chainId, period],
+    ["usePerformanceAnnualized", chainId, period, address],
     {
       fetcher: async () => {
-        return oracleKeeperFetcher.fetchPerformanceAnnualized(period);
+        return oracleKeeperFetcher.fetchPerformanceAnnualized(period, address);
       },
     }
   );

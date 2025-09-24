@@ -14,14 +14,22 @@ export type PerformanceSnapshotsData = {
   [address: string]: PerformanceSnapshot[];
 };
 
-export function usePerformanceSnapshots({ chainId, period }: { chainId: number; period: PerformancePeriod }) {
+export function usePerformanceSnapshots({
+  chainId,
+  period,
+  address,
+}: {
+  chainId: number;
+  period: PerformancePeriod;
+  address?: string;
+}) {
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
   const { data, error, isLoading } = useSWR<PerformanceSnapshotsResponse>(
-    ["usePerformanceSnapshots", chainId, period],
+    ["usePerformanceSnapshots", chainId, period, address],
     {
       fetcher: async () => {
-        return oracleKeeperFetcher.fetchPerformanceSnapshots(period);
+        return oracleKeeperFetcher.fetchPerformanceSnapshots(period, address);
       },
     }
   );

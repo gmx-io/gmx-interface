@@ -91,11 +91,13 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
   const { performance } = usePerformanceAnnualized({
     chainId,
     period: timeRange,
+    address,
   });
 
   const { performanceSnapshots } = usePerformanceSnapshots({
     chainId,
     period: timeRange,
+    address,
   });
 
   const { prices } = usePriceSnapshots({

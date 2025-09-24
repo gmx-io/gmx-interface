@@ -123,8 +123,8 @@ export interface OracleFetcher {
   fetchPostFeedback(body: UserFeedbackBody, debug?: boolean): Promise<Response>;
   fetchUiVersion(currentVersion: number, active: boolean): Promise<number>;
   fetchApys(period: ApyPeriod, debug?: boolean): Promise<ApyInfo>;
-  fetchPerformanceAnnualized(period: PerformancePeriod): Promise<PerformanceAnnualizedResponse>;
-  fetchPerformanceSnapshots(period: PerformancePeriod): Promise<PerformanceSnapshotsResponse>;
+  fetchPerformanceAnnualized(period: PerformancePeriod, address?: string): Promise<PerformanceAnnualizedResponse>;
+  fetchPerformanceSnapshots(period: PerformancePeriod, address?: string): Promise<PerformanceSnapshotsResponse>;
 }
 
 export type TickersResponse = {

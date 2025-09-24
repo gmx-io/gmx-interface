@@ -211,8 +211,8 @@ export class OracleKeeperFetcher implements OracleFetcher {
       .then((res) => res.version);
   }
 
-  fetchPerformanceAnnualized(period: PerformancePeriod): Promise<PerformanceAnnualizedResponse> {
-    return fetch(buildUrl(this.url!, "/performance/annualized", { period }), {
+  fetchPerformanceAnnualized(period: PerformancePeriod, address?: string): Promise<PerformanceAnnualizedResponse> {
+    return fetch(buildUrl(this.url!, "/performance/annualized", { period, address }), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -227,8 +227,8 @@ export class OracleKeeperFetcher implements OracleFetcher {
       });
   }
 
-  fetchPerformanceSnapshots(period: PerformancePeriod): Promise<PerformanceSnapshotsResponse> {
-    return fetch(buildUrl(this.url!, "/performance/snapshots", { period }), {
+  fetchPerformanceSnapshots(period: PerformancePeriod, address?: string): Promise<PerformanceSnapshotsResponse> {
+    return fetch(buildUrl(this.url!, "/performance/snapshots", { period, address }), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
