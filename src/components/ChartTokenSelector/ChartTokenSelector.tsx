@@ -97,35 +97,38 @@ export default function ChartTokenSelector(props: Props) {
                 </div>
               ) : null}
 
-              <div className="flex gap-8">
+              <div className="flex items-center gap-8">
                 <TokenIcon symbol={selectedToken.symbol} displaySize={isMobile ? 32 : 20} importSize={40} />
-                <span
-                  className={cx("flex justify-start leading-base", {
-                    "flex-col items-baseline gap-2": !oneRowLabels,
-                    "flex-row items-center": oneRowLabels,
-                  })}
-                >
-                  <span className="text-start text-[13px] font-medium text-typography-primary">
-                    {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
-                    {selectedToken.symbol}/USD
-                  </span>
-                  {poolName && (
-                    <span
-                      className={cx("text-12 font-normal text-typography-secondary", {
-                        "ml-4": oneRowLabels,
-                      })}
-                    >
-                      <span>[{poolName}]</span>
+                <div className="flex gap-2 md:items-center md:gap-8">
+                  <span
+                    className={cx("flex justify-start leading-base", {
+                      "flex-col items-baseline gap-2": !oneRowLabels,
+                      "flex-row items-center": oneRowLabels,
+                    })}
+                  >
+                    <span className="text-start text-[13px] font-medium text-typography-primary">
+                      {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
+                      {selectedToken.symbol}/USD
                     </span>
-                  )}
+                    {poolName && (
+                      <span
+                        className={cx("text-12 font-normal text-typography-secondary", {
+                          "ml-4": oneRowLabels,
+                        })}
+                      >
+                        <span>[{poolName}]</span>
+                      </span>
+                    )}
 
-                  {isSwap && !oneRowLabels ? (
-                    <div className="text-blue-300">
-                      <Trans>Swap</Trans>
-                    </div>
-                  ) : null}
-                </span>
-                <ChevronDownIcon className="inline-block size-12" />
+                    {isSwap && !oneRowLabels ? (
+                      <div className="text-blue-300">
+                        <Trans>Swap</Trans>
+                      </div>
+                    ) : null}
+                  </span>
+
+                  <ChevronDownIcon className="inline-block size-16" />
+                </div>
               </div>
             </span>
           ) : (

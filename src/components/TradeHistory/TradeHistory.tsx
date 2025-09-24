@@ -23,7 +23,7 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import DownloadIcon from "img/ic_download2.svg?react";
-import PnlAnalysisIcon from "img/ic_pnl_analysis.svg?react";
+import PieChartIcon from "img/ic_pie_chart.svg?react";
 
 import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
@@ -98,13 +98,10 @@ export function TradeHistory(p: Props) {
     const url = buildAccountDashboardUrl(account, chainId, 2);
 
     return (
-      <Button variant="ghost" to={url} className="flex items-center gap-4">
-        <div className="size-16">
-          <PnlAnalysisIcon />
-        </div>
-        <span className="text-body-small font-medium">
-          <Trans>PnL Analysis</Trans>
-        </span>
+      <Button variant="ghost" to={url}>
+        <PieChartIcon className="size-16" />
+
+        <Trans>PnL Analysis</Trans>
       </Button>
     );
   }, [account, chainId, hideDashboardLink]);
@@ -139,10 +136,8 @@ export function TradeHistory(p: Props) {
       <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
 
       <Button variant="ghost" onClick={handleCsvDownload} className="flex items-center gap-4">
-        <div className="size-16">
-          <DownloadIcon />
-        </div>
-        <span className="text-body-small font-medium">CSV</span>
+        <DownloadIcon className="size-16" />
+        CSV
       </Button>
     </>
   );

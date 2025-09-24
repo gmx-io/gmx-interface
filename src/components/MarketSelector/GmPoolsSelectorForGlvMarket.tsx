@@ -53,13 +53,15 @@ function PoolLabel({
 
   return (
     <div
-      className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300", {
+      className={cx("group flex cursor-pointer items-center gap-4 whitespace-nowrap hover:text-blue-300", {
         "pointer-events-none": disablePoolSelector,
       })}
       onClick={!disablePoolSelector ? onClick : undefined}
     >
       {getMarketIndexName(marketInfo)} [{getMarketPoolName(marketInfo)}]
-      {!disablePoolSelector && <ChevronDownIcon className="size-16" />}
+      {!disablePoolSelector && (
+        <ChevronDownIcon className="size-16 text-typography-secondary group-hover:text-blue-300" />
+      )}
     </div>
   );
 }

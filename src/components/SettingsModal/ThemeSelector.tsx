@@ -71,7 +71,7 @@ export function ThemeSelector() {
           </div>
           <Button variant="secondary">
             {currentTheme?.label}
-            <ChevronDownIcon className="inline-block size-12" />
+            <ChevronDownIcon className="inline-block size-14" />
           </Button>
         </div>
       }

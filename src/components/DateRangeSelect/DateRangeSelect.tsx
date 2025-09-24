@@ -154,9 +154,8 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
     <Popover className="DateRangeSelect-anchor" ref={refs.setReference}>
       <Popover.Button className={handleClassName}>
         <Button variant="ghost" className="flex items-center gap-4">
-          <div className="size-16">
-            <CalendarIcon />
-          </div>
+          <CalendarIcon className="size-16" />
+
           <span className="text-body-small whitespace-nowrap font-medium">{buttonText}</span>
         </Button>
       </Popover.Button>
