@@ -1,6 +1,5 @@
 import { Trans } from "@lingui/macro";
 import React, { useCallback, useMemo } from "react";
-import { HiDotsVertical } from "react-icons/hi";
 import { useHistory } from "react-router-dom";
 import { Area, AreaChart } from "recharts";
 
@@ -37,6 +36,8 @@ import Button from "components/Button/Button";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { TableTdActionable, TableTrActionable } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import MenuDotsIcon from "img/ic_menu_dots.svg?react";
 
 import { GmTokensBalanceInfo } from "./GmTokensTotalBalanceInfo";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
@@ -170,7 +171,7 @@ export function GmListItem({
             {onFavoriteClick ? (
               <div>
                 <Button variant="secondary" className="shrink-0" onClick={handleFavoriteClick}>
-                  <FavoriteStar isFavorite={isFavorite} activeClassName="!text-typography-primary" />
+                  <FavoriteStar isFavorite={isFavorite} />
                 </Button>
               </div>
             ) : null}
@@ -306,7 +307,7 @@ export function GmListItem({
           to={`/pools/details?market=${marketOrGlvTokenAddress}`}
         >
           <Trans>Details</Trans>
-          <HiDotsVertical className="size-16" />
+          <MenuDotsIcon className="size-14" />
         </Button>
       </TableTdActionable>
     </TableTrActionable>

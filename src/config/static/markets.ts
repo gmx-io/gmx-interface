@@ -438,6 +438,14 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0x2347EbB8645Cc2EA0Ba92D1EC59704031F2fCCf4": {
       enabled: true,
     },
+    // KTA/USD [WETH-USDC]
+    "0x970b730b5dD18de53A230eE8F4af088dBC3a6F8d": {
+      enabled: true,
+    },
+    // ZORA/USD [WETH-USDC]
+    "0xac484106d935f0f20F1485b631fA6F65AeEff550": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

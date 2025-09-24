@@ -1,15 +1,13 @@
 import { autoUpdate, useFloating, flip, offset, shift, FloatingPortal } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
-import { BiSelectMultiple } from "react-icons/bi";
-import { HiDotsVertical } from "react-icons/hi";
-import { RiShareBoxFill } from "react-icons/ri";
 
 import Button from "components/Button/Button";
 
 import EditIcon from "img/ic_edit.svg?react";
 import IncreaseLimit from "img/ic_increaselimit_16.svg?react";
 import IncreaseMarket from "img/ic_increasemarket_16.svg?react";
+import MenuDotsIcon from "img/ic_menu_dots.svg?react";
 import TriggerClose from "img/ic_triggerclose_16.svg?react";
 
 import "./PositionDropdown.css";
@@ -43,8 +41,8 @@ export default function PositionDropdown({
     <Menu>
       <Menu.Button as="div" ref={refs.setReference}>
         <Button variant="ghost">
-          <HiDotsVertical
-            fontSize={13}
+          <MenuDotsIcon
+            fontSize={14}
             fontWeight={500}
             className="text-typography-secondary hover:text-typography-primary"
           />
@@ -60,7 +58,6 @@ export default function PositionDropdown({
           {handleMarketSelect && (
             <Menu.Item>
               <div className="menu-item" onClick={handleMarketSelect}>
-                <BiSelectMultiple fontSize={16} />
                 <p>
                   <Trans>Select Market</Trans>
                 </p>
@@ -120,7 +117,6 @@ export default function PositionDropdown({
           {handleShare && (
             <Menu.Item>
               <div className="menu-item" onClick={handleShare}>
-                <RiShareBoxFill fontSize={16} />
                 <p>
                   <Trans>Share Position</Trans>
                 </p>

@@ -2,7 +2,8 @@ import "./SpinningLoader.css";
 
 import cx from "classnames";
 import { useMemo } from "react";
-import { ImSpinner2 } from "react-icons/im";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 interface Props {
   size?: string;
@@ -11,7 +12,7 @@ interface Props {
 
 function SpinningLoader({ size = "1.25rem", className }: Props) {
   const style = useMemo(() => ({ fontSize: size }), [size]);
-  return <ImSpinner2 className={cx("spin spinning-loader", className)} style={style} />;
+  return <SpinnerIcon className={cx("spin spinning-loader", className)} style={style} />;
 }
 
 export default SpinningLoader;

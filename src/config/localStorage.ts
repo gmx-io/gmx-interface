@@ -73,7 +73,7 @@ export const PERMITS_DISABLED_KEY = "permits-disabled";
 export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
 export const RPC_PROVIDER_KEY = "rpc-provider";
-export const IS_LARGE_ACCOUNT_KEY = "is-large-account";
+export const IS_LARGE_ACCOUNT_KEY = "is-large-account-2";
 
 export const IS_SOURCE_BASE_ALLOWED_KEY = "is-source-base-allowed";
 export const IS_SOURCE_BASE_ALLOWED_NOTIFICATION_SHOWN_KEY = "is-source-base-allowed-notification-shown";

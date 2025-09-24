@@ -84,6 +84,14 @@ export type ApyInfo = {
   glvs: { address: string; baseApy: number; bonusApy: number; apy: number }[];
 };
 
+export type PerformanceInfo = {
+  address: string;
+  entity: string;
+  longTokenPerformance: string;
+  shortTokenPerformance: string;
+  uniswapV2Performance: string;
+};
+
 export type ApyPeriod = "1d" | "7d" | "30d" | "90d" | "180d" | "total";
 
 export type PerformancePeriod = "1d" | "7d" | "30d" | "90d" | "180d" | "total";

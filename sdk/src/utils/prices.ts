@@ -60,8 +60,6 @@ export function getAcceptablePriceInfo(p: {
   const values = {
     acceptablePrice: 0n,
     acceptablePriceDeltaBps: 0n,
-    cappedPriceImpactDeltaUsd: 0n,
-    cappedPriceImpactDeltaAmount: 0n,
     priceImpactDeltaAmount: 0n,
     priceImpactDeltaUsd: 0n,
     priceImpactDiffUsd: 0n,

@@ -1,7 +1,9 @@
 import cx from "classnames";
 import { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { useEffectOnce, useMeasure, useWindowSize } from "react-use";
+
+import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
+import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 
 const MIN_FADE_AREA = 24; //px
 const MAX_SCROLL_LEFT_TO_END_AREA = 50; //px
@@ -227,7 +229,7 @@ function ScrollFadeControls({
     <div className="pointer-events-none absolute flex h-full w-full flex-row justify-between" ref={absoluteRef}>
       <div
         className={cx(
-          "group z-[120] h-full max-w-50 cursor-pointer transition-opacity",
+          "group z-[20] h-full max-w-50 cursor-pointer transition-opacity",
           "bg-gradient-to-l from-[transparent]",
           toColor,
           "flex justify-start",
@@ -242,13 +244,13 @@ function ScrollFadeControls({
       >
         {scrollLeft > 0 && (
           <div className={cx("sticky py-12", isContainerLarge ? "top-1/2" : "bottom-0 top-0")}>
-            <BiChevronLeft className="opacity-70 group-hover:opacity-100" size={24} />
+            <ChevronLeftIcon className="size-16 opacity-70 group-hover:opacity-100" />
           </div>
         )}
       </div>
       <div
         className={cx(
-          "group z-[120] h-full max-w-50 cursor-pointer transition-opacity",
+          "group z-[20] h-full max-w-50 cursor-pointer transition-opacity",
           "bg-gradient-to-r from-[transparent]",
           toColor,
           "flex justify-end",
@@ -263,7 +265,7 @@ function ScrollFadeControls({
       >
         {scrollRight > 0 && (
           <div className={cx("sticky py-12", isContainerLarge ? "top-1/2" : "bottom-0 top-0")}>
-            <BiChevronRight className="opacity-70 group-hover:opacity-100" size={24} />
+            <ChevronRightIcon className="size-16 opacity-70 group-hover:opacity-100" />
           </div>
         )}
       </div>

@@ -57,7 +57,9 @@ export const selectChartHeaderInfo = createSelector((q) => {
   const totalVolume = marketInfo.longInterestUsd + marketInfo.shortInterestUsd;
 
   const longOpenInterestPercentage =
-    totalVolume !== 0n ? Math.max(Math.min(Number(bigMath.mulDiv(longUsdVolume, 100n, totalVolume)), 100), 0.01) : 0;
+    totalVolume !== 0n
+      ? Math.max(Math.min(Math.round(Number(bigMath.mulDiv(longUsdVolume, 10000n, totalVolume)) / 100), 100), 0.01)
+      : 0;
 
   const shortOpenInterestPercentage =
     totalVolume === 0n ? 0 : longOpenInterestPercentage !== undefined ? 100 - longOpenInterestPercentage : undefined;
