@@ -94,7 +94,7 @@ const BULLET_GRADIENT_STYLE = {
 export default function EarnProductCard({ type, className }: EarnProductCardProps) {
   const content = getCardContent(type);
   const { isMobile } = useBreakpoints();
-  const [isExpanded, setIsExpanded] = useState(!isMobile);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const shouldCollapse = isMobile && !isExpanded;
 

@@ -127,7 +127,7 @@ function NetworkYieldCard({
   return (
     <div className="flex flex-col gap-8 rounded-8 bg-slate-900 p-16 max-xl:p-0">
       {showTitle && (
-        <div className="flex items-center justify-center gap-8 text-13 font-medium text-typography-primary">
+        <div className="flex items-center gap-8 pl-12 text-13 font-medium text-typography-primary">
           <img src={getIcon(chainId, "network")} alt="network" className="h-20 w-20" />
           {title}
         </div>
@@ -385,14 +385,14 @@ export function EarnYieldOverview() {
             regularOptionClassname="grow"
           />
 
-          <NetworkYieldCard chainId={selectedCard.chainId} title={selectedCard.title} showTitle={false}>
+          <NetworkYieldCard chainId={selectedCard.chainId} title={selectedCard.title}>
             {selectedCard.rows}
           </NetworkYieldCard>
         </div>
       ) : (
         <div className="grid gap-12 lg:grid-cols-3">
           {CHAINS_ORDER.map((chainId) => networkCards[chainId]).map((card) => (
-            <NetworkYieldCard key={card.chainId} chainId={card.chainId} title={card.title}>
+            <NetworkYieldCard key={card.chainId} chainId={card.chainId} title={card.title} showTitle={true}>
               {card.rows}
             </NetworkYieldCard>
           ))}

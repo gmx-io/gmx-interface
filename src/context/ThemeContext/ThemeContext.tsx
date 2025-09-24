@@ -4,10 +4,10 @@ import { useMedia } from "react-use";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 type ThemeMode = "dark" | "light" | "system";
-type ResolvedTheme = "dark" | "light";
+export type Theme = "dark" | "light";
 
 interface ThemeContextType {
-  theme: ResolvedTheme;
+  theme: Theme;
   themeMode: ThemeMode;
   setThemeMode: (mode: ThemeMode) => void;
 }
@@ -27,7 +27,7 @@ const DEFAULT_THEME_MODE = "dark";
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [themeMode, setThemeModeState] = useLocalStorageSerializeKey<ThemeMode>("app-theme-mode", DEFAULT_THEME_MODE);
   const prefersDarkMode = useMedia("(prefers-color-scheme: dark)");
-  const systemTheme: ResolvedTheme = prefersDarkMode ? "dark" : "light";
+  const systemTheme: Theme = prefersDarkMode ? "dark" : "light";
 
   const theme = themeMode === "system" ? systemTheme : themeMode || DEFAULT_THEME_MODE;
 
