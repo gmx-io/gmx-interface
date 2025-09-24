@@ -62,7 +62,7 @@ const getGraphValue = ({
   const tokenPrice = marketTokensData?.[address]?.prices.minPrice;
   const marketPerformance = performance[address];
   const valuesMap: Record<MarketGraphType, string | undefined> = {
-    performance: marketPerformance ? formatPercentage(marketPerformance, { bps: false }) : undefined,
+    performance: marketPerformance ? formatPercentage(marketPerformance, { bps: false, signed: true }) : undefined,
     price: tokenPrice ? formatUsdPrice(tokenPrice) : undefined,
     feeApr: apy ? formatPercentage(apy, { bps: false }) : undefined,
   };

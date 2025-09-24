@@ -287,7 +287,7 @@ export function GmListItem({
 
       <TableTdActionable className="w-[18%]">
         {marketPerformance ? (
-          <div className="numbers">{formatPercentage(marketPerformance, { bps: false })}</div>
+          <div className="numbers">{formatPercentage(marketPerformance, { bps: false, signed: true })}</div>
         ) : (
           "..."
         )}
