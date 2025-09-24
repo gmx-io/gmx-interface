@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
-import { ImSpinner2 } from "react-icons/im";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -70,6 +69,8 @@ import {
 } from "sdk/utils/orderTransactions";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
@@ -514,7 +515,7 @@ export function usePositionEditorButtonState(operation: Operation): {
       text: (
         <>
           {t`Allow ${getToken(chainId, tokenToApprove.tokenAddress).symbol} to be spent`}{" "}
-          <ImSpinner2 className="ml-4 animate-spin" />
+          <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
       tooltipContent: errorTooltipContent,
@@ -528,7 +529,7 @@ export function usePositionEditorButtonState(operation: Operation): {
       text: (
         <>
           {t`Loading Express params`}
-          <ImSpinner2 className="ml-4 animate-spin" />
+          <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
       tooltipContent: errorTooltipContent,
@@ -542,7 +543,7 @@ export function usePositionEditorButtonState(operation: Operation): {
       text: (
         <>
           {t`Loading...`}
-          <ImSpinner2 className="ml-4 animate-spin" />
+          <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
       tooltipContent: errorTooltipContent,

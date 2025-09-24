@@ -624,7 +624,6 @@ msgstr ""
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgstr "无效代币 fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/StatsCard.tsx
@@ -1217,7 +1216,6 @@ msgid "Deactivating..."
 msgstr "停用中..."
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Protocol"
 msgstr "协议"
 
@@ -2427,10 +2425,6 @@ msgstr "抵押品价差"
 msgid "Subscribe"
 msgstr ""
 
-#: src/components/Header/Header.tsx
-msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
-msgstr "在 Arbitrum 的 GMX V2 上交易，赢得 280,000 ARB (> $500k) 奖品，在 <0>两个每周</0> 比赛中。从 3 月 13 日到 27 日直播。"
-
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Index"
 msgstr "指数"
@@ -3182,7 +3176,6 @@ msgid "No liquidity is available for increasing shorts for<0/>this size. Max sho
 msgstr "没有流动性可用于增加此规模的做空。<0/>最大做空规模：{0}<1/><2/>减少做多的执行价格。"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Trade"
 msgstr "交易"
@@ -3240,7 +3233,6 @@ msgstr "费用年化收益率"
 msgid "SL"
 msgstr "SL"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 #: src/pages/Stake/Stake.tsx
@@ -3528,10 +3520,6 @@ msgstr ""
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submitting..."
 msgstr "提交中..."
-
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "App"
-msgstr "应用程序"
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to Wallet"
@@ -4847,8 +4835,6 @@ msgid "Additionally, trigger orders are market orders and are not guaranteed to 
 msgstr "此外，触发订单为市价订单，不保证以触发价格结算。"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/AppHeaderLinks.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "文档"
@@ -4898,7 +4884,6 @@ msgstr ""
 msgid "Documentation"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -5232,7 +5217,6 @@ msgid "POOL"
 msgstr "池"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Voting"
 msgstr "投票"
 
@@ -5584,7 +5568,6 @@ msgstr "GMX 公告"
 msgid "Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is only settled on position decrease. <0>Read more</0>"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Referrals/Referrals.tsx
 #: src/pages/Referrals/Referrals.tsx
@@ -6182,7 +6165,6 @@ msgid "Yield-optimized vaults supplying liquidity across multiple GMX<0/> market
 msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
 msgstr "治理"
 
@@ -6858,7 +6840,6 @@ msgstr "选择一个选项"
 msgid "less than a minute"
 msgstr "不到一分钟"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Ecosystem"
 msgstr "生态系统"
@@ -7494,7 +7475,6 @@ msgstr "已实现费用"
 msgid "Top Positions"
 msgstr "最高头寸"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
@@ -8442,7 +8422,6 @@ msgstr ""
 msgid "Order size is bigger than position, will only be executable if position increases"
 msgstr "订单规模大于仓位，只有在仓位增加时才可执行"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Buy"
 msgstr "购买"
@@ -8613,7 +8592,6 @@ msgid "Withdraw Fee"
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
-#: src/components/Header/AppHeaderLinks.tsx
 msgid "Alerts"
 msgstr "警报"
 
@@ -8766,7 +8744,6 @@ msgid "Market - Long Dec."
 msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"

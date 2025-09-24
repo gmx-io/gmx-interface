@@ -624,7 +624,6 @@ msgstr ""
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgstr "Token invalide duToken : \"{0}\" àToken : \"{toTokenAddress}\""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/StatsCard.tsx
@@ -1217,7 +1216,6 @@ msgid "Deactivating..."
 msgstr "Désactivation..."
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Protocol"
 msgstr "Protocole"
 
@@ -2427,10 +2425,6 @@ msgstr "Spread de collatéral"
 msgid "Subscribe"
 msgstr ""
 
-#: src/components/Header/Header.tsx
-msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
-msgstr "Trade sur GMX V2 sur Arbitrum et gagnez 280,000 ARB (> $500k) en prix dans <0>deux compétitions hebdomadaires</0>. En direct du 13 au 27 mars."
-
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Index"
 msgstr "Indice"
@@ -3182,7 +3176,6 @@ msgid "No liquidity is available for increasing shorts for<0/>this size. Max sho
 msgstr "Aucune liquidité n'est disponible pour augmenter les shorts pour<0/>cette taille. Taille short max : {0}<1/><2/>Prix d'exécution pour diminuer les longs."
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Trade"
 msgstr "Trader"
@@ -3240,7 +3233,6 @@ msgstr "Taux de rendement annualisé des frais"
 msgid "SL"
 msgstr "SL"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 #: src/pages/Stake/Stake.tsx
@@ -3528,10 +3520,6 @@ msgstr ""
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submitting..."
 msgstr "Soumission..."
-
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "App"
-msgstr "Application"
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to Wallet"
@@ -4847,8 +4835,6 @@ msgid "Additionally, trigger orders are market orders and are not guaranteed to 
 msgstr "De plus, les ordres de déclenchement sont des ordres au marché et ne sont pas garantis de s'exécuter au prix de déclenchement."
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/AppHeaderLinks.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "Documents"
@@ -4898,7 +4884,6 @@ msgstr ""
 msgid "Documentation"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -5232,7 +5217,6 @@ msgid "POOL"
 msgstr "POOL"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Voting"
 msgstr "Vote"
 
@@ -5584,7 +5568,6 @@ msgstr "Annonces GMX"
 msgid "Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is only settled on position decrease. <0>Read more</0>"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Referrals/Referrals.tsx
 #: src/pages/Referrals/Referrals.tsx
@@ -6182,7 +6165,6 @@ msgid "Yield-optimized vaults supplying liquidity across multiple GMX<0/> market
 msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
 msgstr "Gouvernance"
 
@@ -6858,7 +6840,6 @@ msgstr "Sélectionner une option"
 msgid "less than a minute"
 msgstr "moins d'une minute"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Ecosystem"
 msgstr "Écosystème"
@@ -7494,7 +7475,6 @@ msgstr "Frais réalisés"
 msgid "Top Positions"
 msgstr "Positions supérieures"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
@@ -8442,7 +8422,6 @@ msgstr ""
 msgid "Order size is bigger than position, will only be executable if position increases"
 msgstr "La taille de l'ordre est supérieure à la position, il sera exécutable seulement si la position augmente."
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Buy"
 msgstr "Acheter"
@@ -8613,7 +8592,6 @@ msgid "Withdraw Fee"
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
-#: src/components/Header/AppHeaderLinks.tsx
 msgid "Alerts"
 msgstr "Alertes"
 
@@ -8766,7 +8744,6 @@ msgid "Market - Long Dec."
 msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"

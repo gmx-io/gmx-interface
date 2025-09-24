@@ -2,7 +2,6 @@ import { Placement, autoUpdate, flip, shift, useFloating } from "@floating-ui/re
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
 import React, { useCallback, type ReactNode } from "react";
-import { HiDotsVertical } from "react-icons/hi";
 import { createBreakpoint } from "react-use";
 
 import { getExplorerUrl } from "config/chains";
@@ -23,6 +22,7 @@ import useWallet, { WalletClient } from "lib/wallets/useWallet";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
+import MenuDotsIcon from "img/ic_menu_dots.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
 
 import "./GmAssetDropdown.scss";
@@ -104,7 +104,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
           ref={refs.setReference}
           className="dropdown-arrow center-both"
         >
-          <HiDotsVertical className="size-16" />
+          <MenuDotsIcon className="size-14" />
         </Menu.Button>
         <Menu.Items
           as="div"

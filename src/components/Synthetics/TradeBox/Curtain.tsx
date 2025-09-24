@@ -1,9 +1,10 @@
 import cx from "classnames";
 import throttle from "lodash/throttle";
 import { CSSProperties, PropsWithChildren, useCallback, useEffect, useRef, useState } from "react";
-import { FaChevronDown } from "react-icons/fa6";
 import { RemoveScroll } from "react-remove-scroll";
 import { createGlobalState } from "react-use";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 const HEADER_HEIGHT = 39;
 const DECELERATION = 0.01;
@@ -253,9 +254,9 @@ export function Curtain({
               {header}
             </div>
             <button onClick={handleToggle} className="group p-10">
-              <FaChevronDown
+              <ChevronDownIcon
                 className={cx(
-                  "text-typography-secondary transition-transform duration-500 ease-out group-hover:text-typography-primary",
+                  "size-16 text-typography-secondary transition-transform duration-500 ease-out group-hover:text-typography-primary",
                   isOpen ? undefined : "rotate-180"
                 )}
               />

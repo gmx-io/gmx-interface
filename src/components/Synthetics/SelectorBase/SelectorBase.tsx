@@ -5,7 +5,6 @@ import cx from "classnames";
 import noop from "lodash/noop";
 import React, { PropsWithChildren, ReactNode, useCallback, useContext, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { FaChevronDown } from "react-icons/fa6";
 import { useMedia } from "react-use";
 
 import { BREAKPOINTS } from "lib/breakpoints";
@@ -13,6 +12,8 @@ import { BREAKPOINTS } from "lib/breakpoints";
 import { SlideModal } from "components/Modal/SlideModal";
 import { TableTr } from "components/Table/Table";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import "./SelectorBase.scss";
 
@@ -198,9 +199,9 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
             data-qa={props.qa ? props.qa + "-button" : undefined}
           >
             {props.label}
-            <FaChevronDown
+            <ChevronDownIcon
               className={cx(
-                "inline-block text-[12px] group-gmx-hover/selector-base:text-blue-300",
+                "inline-block size-16 group-gmx-hover/selector-base:text-blue-300",
                 popoverProps.open ? "text-blue-300" : "text-typography-secondary",
                 props.chevronClassName
               )}
@@ -254,7 +255,7 @@ function SelectorBaseMobile(props: Props) {
     <>
       <div className={cx("SelectorBase-button group/selector-base", props.handleClassName)} onClick={toggleVisibility}>
         {props.label}
-        {!props.disabled && <FaChevronDown className={cx("text-s inline-block", props.chevronClassName)} />}
+        {!props.disabled && <ChevronDownIcon className={cx("inline-block size-12", props.chevronClassName)} />}
       </div>
 
       <SlideModal

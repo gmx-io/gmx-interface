@@ -624,7 +624,6 @@ msgstr ""
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgstr "유요하지 않은 fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/StatsCard.tsx
@@ -1217,7 +1216,6 @@ msgid "Deactivating..."
 msgstr "비활성화 중..."
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Protocol"
 msgstr "프로토콜"
 
@@ -2427,10 +2425,6 @@ msgstr "담보 스프레드"
 msgid "Subscribe"
 msgstr ""
 
-#: src/components/Header/Header.tsx
-msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
-msgstr "Arbitrum에서 GMX V2에서 거래하고 <0>두 주간</0> 대회에서 280,000 ARB (> $500k) 상금을 획득하세요. 3월 13일부터 27일까지 라이브입니다."
-
 #: src/pages/OrdersOverview/OrdersOverview.jsx
 msgid "Index"
 msgstr "인덱스"
@@ -3182,7 +3176,6 @@ msgid "No liquidity is available for increasing shorts for<0/>this size. Max sho
 msgstr "이 크기로 숏 증가를 위한 유동성이 없습니다. 최대 숏 크기: {0}<1/><2/>롱 감소를 위한 실행 가격."
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Trade"
 msgstr "트레이드"
@@ -3240,7 +3233,6 @@ msgstr "수수료 APR"
 msgid "SL"
 msgstr "SL"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 #: src/pages/Stake/Stake.tsx
@@ -3528,10 +3520,6 @@ msgstr ""
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submitting..."
 msgstr "제출 중..."
-
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "App"
-msgstr "앱"
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to Wallet"
@@ -4847,8 +4835,6 @@ msgid "Additionally, trigger orders are market orders and are not guaranteed to 
 msgstr "추가로, 트리거 주문은 시장가 주문이며 트리거 가격으로 결제되지 않을 수도 있습니다."
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/AppHeaderLinks.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "문서"
@@ -4898,7 +4884,6 @@ msgstr ""
 msgid "Documentation"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -5232,7 +5217,6 @@ msgid "POOL"
 msgstr "풀"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Voting"
 msgstr "투표"
 
@@ -5584,7 +5568,6 @@ msgstr "GMX 발표"
 msgid "Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is only settled on position decrease. <0>Read more</0>"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Referrals/Referrals.tsx
 #: src/pages/Referrals/Referrals.tsx
@@ -6182,7 +6165,6 @@ msgid "Yield-optimized vaults supplying liquidity across multiple GMX<0/> market
 msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
 msgstr "거버넌스"
 
@@ -6858,7 +6840,6 @@ msgstr "옵션 선택"
 msgid "less than a minute"
 msgstr "1분 미만"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Ecosystem"
 msgstr "이코시스템"
@@ -7494,7 +7475,6 @@ msgstr "실현 수수료"
 msgid "Top Positions"
 msgstr "상위 포지션"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
@@ -8442,7 +8422,6 @@ msgstr ""
 msgid "Order size is bigger than position, will only be executable if position increases"
 msgstr "주문 크기가 포지션보다 큽니다. 포지션 증가 시에만 실행 가능"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Buy"
 msgstr "구매"
@@ -8613,7 +8592,6 @@ msgid "Withdraw Fee"
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
-#: src/components/Header/AppHeaderLinks.tsx
 msgid "Alerts"
 msgstr "알림"
 
@@ -8766,7 +8744,6 @@ msgid "Market - Long Dec."
 msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"

@@ -3,7 +3,6 @@ import { Menu } from "@headlessui/react";
 import { Trans, t } from "@lingui/macro";
 import { ethers, isAddress } from "ethers";
 import { useCallback } from "react";
-import { HiDotsVertical } from "react-icons/hi";
 import { Link } from "react-router-dom";
 
 import { getTokenExplorerUrl } from "config/chains";
@@ -21,6 +20,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import coingeckoIcon from "img/ic_coingecko_16.svg";
+import MenuDotsIcon from "img/ic_menu_dots.svg?react";
 import metamaskIcon from "img/ic_metamask_16.svg";
 import nansenPortfolioIcon from "img/nansen_portfolio.svg";
 
@@ -80,7 +80,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right", mar
           ref={refs.setReference}
           className="dropdown-arrow center-both"
         >
-          <HiDotsVertical size={16} />
+          <MenuDotsIcon className="size-14" />
         </Menu.Button>
         <FloatingPortal>
           <Menu.Items
