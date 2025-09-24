@@ -11,6 +11,8 @@ import "styles/Font.css";
 import "styles/Input.css";
 import "styles/Shared.scss";
 import "styles/recharts.css";
+import "styles/DeprecatedExchageStyles.scss";
+import "components/Card/Card.css";
 import "./App.scss";
 
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";

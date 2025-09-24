@@ -8288,7 +8288,6 @@ msgstr "Stop Loss PnL"
 msgid "Market - Long Dec."
 msgstr "Market - Long Dec."
 
-#: src/components/Exchange/UsefulLinks.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
