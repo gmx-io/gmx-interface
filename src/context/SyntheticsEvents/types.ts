@@ -248,6 +248,7 @@ export type PendingOrderData = {
   shouldUnwrapNativeToken: boolean;
   orderType: OrderType;
   referralCode?: string;
+  createdAt: number;
   txnType: OrderTxnType;
 };
 

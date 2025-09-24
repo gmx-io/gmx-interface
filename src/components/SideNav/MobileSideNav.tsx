@@ -1,8 +1,8 @@
 import { useState } from "react";
 
 import Button from "components/Button/Button";
-import Portal from "components/Common/Portal";
 import Footer from "components/Footer/Footer";
+import Portal from "components/Portal/Portal";
 
 import BurgerMenuIcon from "img/ic_burger_menu.svg?react";
 import CloseIcon from "img/ic_close.svg?react";

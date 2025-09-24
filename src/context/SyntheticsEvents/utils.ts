@@ -10,7 +10,7 @@ import type {
 } from "./types";
 
 export function getPendingOrderKey(
-  data: Omit<PendingOrderData, "txnType" | "triggerPrice" | "acceptablePrice" | "autoCancel">
+  data: Omit<PendingOrderData, "txnType" | "triggerPrice" | "acceptablePrice" | "autoCancel" | "createdAt">
 ) {
   return [
     data.account,

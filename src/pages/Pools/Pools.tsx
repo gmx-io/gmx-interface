@@ -10,9 +10,9 @@ import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
-import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
-import { GlvList } from "components/Synthetics/GmList/GlvList";
-import { GmList } from "components/Synthetics/GmList/GmList";
+import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
+import { GlvList } from "components/GmList/GlvList";
+import { GmList } from "components/GmList/GmList";
 
 import PoolsTimeRangeFilter from "./PoolsTimeRangeFilter";
 import { usePoolsIsMobilePage } from "./usePoolsIsMobilePage";

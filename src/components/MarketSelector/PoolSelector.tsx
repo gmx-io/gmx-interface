@@ -58,7 +58,7 @@ function PoolLabel({
         onClick={onClick}
       >
         {name ? name : "..."}
-        <ChevronDownIcon className="w-12 text-typography-secondary group-hover:text-blue-300" />
+        <ChevronDownIcon className="w-16 text-typography-secondary group-hover:text-blue-300" />
       </div>
     );
   }
