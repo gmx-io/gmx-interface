@@ -216,7 +216,7 @@ export function MultichainTokenSelector({
           </span>
         )}
 
-        <ChevronDownIcon className="w-12 text-typography-secondary group-hover:text-[inherit]" />
+        <ChevronDownIcon className="w-16 text-typography-secondary group-hover:text-[inherit]" />
       </div>
     </div>
   );

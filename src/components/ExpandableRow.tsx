@@ -127,9 +127,9 @@ export function ExpandableRow({
   const value = withToggleSwitch ? (
     <ToggleSwitch isChecked={open} setIsChecked={onToggle} disabled={disabled} />
   ) : open ? (
-    <ChevronUpIcon className="w-12 text-typography-secondary group-gmx-hover:text-blue-300" />
+    <ChevronUpIcon className="w-16 text-typography-secondary group-gmx-hover:text-blue-300" />
   ) : (
-    <ChevronDownIcon className="w-12 text-typography-secondary group-gmx-hover:text-blue-300" />
+    <ChevronDownIcon className="w-16 text-typography-secondary group-gmx-hover:text-blue-300" />
   );
 
   return (
