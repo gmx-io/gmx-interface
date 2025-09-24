@@ -19,9 +19,9 @@ import { searchBy } from "lib/searchBy";
 import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
+import { useGlvGmMarketsWithComposition } from "components/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
-import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";

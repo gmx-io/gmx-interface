@@ -15,7 +15,7 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Checkbox from "components/Checkbox/Checkbox";
-import SpinningLoader from "components/Common/SpinningLoader";
+import SpinningLoader from "components/Loader/SpinningLoader";
 
 import { RebateGroup, usePriceImpactRebateGroups } from "./hooks/usePriceImpactRebatesStats";
 

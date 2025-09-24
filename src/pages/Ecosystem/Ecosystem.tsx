@@ -7,9 +7,9 @@ import { getChainIcon } from "config/icons";
 import { getPageTitle } from "lib/legacy";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
-import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import PageTitle from "components/PageTitle/PageTitle";
+import SEO from "components/Seo/SEO";
 
 import { communityProjects, dashboardProjects, gmxPages, integrations, telegramGroups } from "./ecosystemConstants";
 

@@ -7,7 +7,6 @@ import { isHomeSite, shouldShowRedirectModal } from "lib/legacy";
 import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
-import "./Header.scss";
 
 type Props = {
   isHomeLink?: boolean;

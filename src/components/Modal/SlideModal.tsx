@@ -4,7 +4,7 @@ import { RemoveScroll } from "react-remove-scroll";
 
 import { useBreakpoints } from "lib/useBreakpoints";
 
-import Portal from "components/Common/Portal";
+import Portal from "components/Portal/Portal";
 
 import CloseIcon from "img/ic_close.svg?react";
 

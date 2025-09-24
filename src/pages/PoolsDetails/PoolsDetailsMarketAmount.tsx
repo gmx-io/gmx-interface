@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
-import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
+import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export function PoolsDetailsMarketAmount({
