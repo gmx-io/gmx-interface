@@ -37,10 +37,7 @@ export class SmartAccount__factory {
   static createInterface(): SmartAccountInterface {
     return new Interface(_abi) as SmartAccountInterface;
   }
-  static connect(
-    address: string,
-    runner?: ContractRunner | null
-  ): SmartAccount {
+  static connect(address: string, runner?: ContractRunner | null): SmartAccount {
     return new Contract(address, _abi, runner) as unknown as SmartAccount;
   }
 }

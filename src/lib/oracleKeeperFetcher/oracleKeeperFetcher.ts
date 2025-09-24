@@ -12,7 +12,9 @@ import {
   BatchReportBody,
   DayPriceCandle,
   OracleFetcher,
-  PerformanceInfo,
+  PerformanceAnnualizedResponse,
+  PerformancePeriod,
+  PerformanceSnapshotsResponse,
   RawIncentivesStats,
   TickersResponse,
   UserFeedbackBody,
@@ -152,22 +154,6 @@ export class OracleKeeperFetcher implements OracleFetcher {
     });
   }
 
-  fetchPerformance(period: ApyPeriod): Promise<PerformanceInfo[]> {
-    return fetch(buildUrl(this.url!, "/performance/annualized", { period }), {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .catch((e) => {
-        // eslint-disable-next-line no-console
-        console.error(e);
-        this.handleFailure();
-        throw e;
-      });
-  }
-
   fetchApys(period: ApyPeriod): Promise<ApyInfo> {
     return fetch(buildUrl(this.url!, "/apy", { period }), {
       method: "GET",
@@ -223,5 +209,37 @@ export class OracleKeeperFetcher implements OracleFetcher {
     return fetch(buildUrl(this.url!, `/ui/min_version?client_version=${currentVersion}&active=${active}`))
       .then((res) => res.json())
       .then((res) => res.version);
+  }
+
+  fetchPerformanceAnnualized(period: PerformancePeriod, address?: string): Promise<PerformanceAnnualizedResponse> {
+    return fetch(buildUrl(this.url!, "/performance/annualized", { period, address }), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .catch((e) => {
+        // eslint-disable-next-line no-console
+        console.error(e);
+        this.handleFailure();
+        throw e;
+      });
+  }
+
+  fetchPerformanceSnapshots(period: PerformancePeriod, address?: string): Promise<PerformanceSnapshotsResponse> {
+    return fetch(buildUrl(this.url!, "/performance/snapshots", { period, address }), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .catch((e) => {
+        // eslint-disable-next-line no-console
+        console.error(e);
+        this.handleFailure();
+        throw e;
+      });
   }
 }

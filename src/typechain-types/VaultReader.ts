@@ -22,9 +22,7 @@ import type {
 } from "./common";
 
 export interface VaultReaderInterface extends Interface {
-  getFunction(
-    nameOrSignature: "getVaultTokenInfoV3" | "getVaultTokenInfoV4"
-  ): FunctionFragment;
+  getFunction(nameOrSignature: "getVaultTokenInfoV3" | "getVaultTokenInfoV4"): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "getVaultTokenInfoV3",
@@ -35,14 +33,8 @@ export interface VaultReaderInterface extends Interface {
     values: [AddressLike, AddressLike, AddressLike, BigNumberish, AddressLike[]]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "getVaultTokenInfoV3",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getVaultTokenInfoV4",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "getVaultTokenInfoV3", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getVaultTokenInfoV4", data: BytesLike): Result;
 }
 
 export interface VaultReader extends BaseContract {
@@ -62,31 +54,21 @@ export interface VaultReader extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent
-  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent
-  ): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
   getVaultTokenInfoV3: TypedContractMethod<
     [
@@ -94,7 +76,7 @@ export interface VaultReader extends BaseContract {
       _positionManager: AddressLike,
       _weth: AddressLike,
       _usdgAmount: BigNumberish,
-      _tokens: AddressLike[]
+      _tokens: AddressLike[],
     ],
     [bigint[]],
     "view"
@@ -106,15 +88,13 @@ export interface VaultReader extends BaseContract {
       _positionManager: AddressLike,
       _weth: AddressLike,
       _usdgAmount: BigNumberish,
-      _tokens: AddressLike[]
+      _tokens: AddressLike[],
     ],
     [bigint[]],
     "view"
   >;
 
-  getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment
-  ): T;
+  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
   getFunction(
     nameOrSignature: "getVaultTokenInfoV3"
@@ -124,7 +104,7 @@ export interface VaultReader extends BaseContract {
       _positionManager: AddressLike,
       _weth: AddressLike,
       _usdgAmount: BigNumberish,
-      _tokens: AddressLike[]
+      _tokens: AddressLike[],
     ],
     [bigint[]],
     "view"
@@ -137,7 +117,7 @@ export interface VaultReader extends BaseContract {
       _positionManager: AddressLike,
       _weth: AddressLike,
       _usdgAmount: BigNumberish,
-      _tokens: AddressLike[]
+      _tokens: AddressLike[],
     ],
     [bigint[]],
     "view"

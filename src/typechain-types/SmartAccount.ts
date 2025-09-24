@@ -22,15 +22,9 @@ import type {
 export interface SmartAccountInterface extends Interface {
   getFunction(nameOrSignature: "isValidSignature"): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: "isValidSignature",
-    values: [BytesLike, BytesLike]
-  ): string;
+  encodeFunctionData(functionFragment: "isValidSignature", values: [BytesLike, BytesLike]): string;
 
-  decodeFunctionResult(
-    functionFragment: "isValidSignature",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "isValidSignature", data: BytesLike): Result;
 }
 
 export interface SmartAccount extends BaseContract {
@@ -50,49 +44,29 @@ export interface SmartAccount extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(
-    event: TCEvent,
-    listener: TypedListener<TCEvent>
-  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(
-    event: TCEvent
-  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(
-    event?: TCEvent
-  ): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
 
-  isValidSignature: TypedContractMethod<
-    [_hash: BytesLike, _signature: BytesLike],
-    [string],
-    "view"
-  >;
+  isValidSignature: TypedContractMethod<[_hash: BytesLike, _signature: BytesLike], [string], "view">;
 
-  getFunction<T extends ContractMethod = ContractMethod>(
-    key: string | FunctionFragment
-  ): T;
+  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
   getFunction(
     nameOrSignature: "isValidSignature"
-  ): TypedContractMethod<
-    [_hash: BytesLike, _signature: BytesLike],
-    [string],
-    "view"
-  >;
+  ): TypedContractMethod<[_hash: BytesLike, _signature: BytesLike], [string], "view">;
 
   filters: {};
 }
