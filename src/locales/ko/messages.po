@@ -6587,7 +6587,6 @@ msgstr "분산 거래소에서 GMX 구매"
 msgid "Powered by"
 msgstr "Powered by"
 
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "Asset Balance"
 msgstr ""

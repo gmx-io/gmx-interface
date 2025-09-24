@@ -6587,7 +6587,6 @@ msgstr "Kaufe GMX von dezentralen Exchanges"
 msgid "Powered by"
 msgstr "Unterstützt von"
 
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "Asset Balance"
 msgstr ""

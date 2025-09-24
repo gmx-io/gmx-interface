@@ -54,7 +54,7 @@ import {
   sendTxnErrorMetric,
   sendTxnSentMetric,
 } from "lib/metrics";
-import { USD_DECIMALS, formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { USD_DECIMALS, formatAmountFree, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
@@ -194,7 +194,7 @@ export const DepositView = () => {
 
   const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
 
-  const { nextGmxAccountBalanceUsd, nextTokenGmxAccountBalance } = useMemo((): {
+  const { nextGmxAccountBalanceUsd } = useMemo((): {
     nextGmxAccountBalanceUsd?: bigint;
     nextTokenGmxAccountBalance?: bigint;
   } => {
@@ -862,33 +862,6 @@ export const DepositView = () => {
           <SyntheticsInfoRow
             label={<Trans>GMX Balance</Trans>}
             value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
-          />
-          <SyntheticsInfoRow
-            label={<Trans>Asset Balance</Trans>}
-            value={
-              <ValueTransition
-                from={
-                  selectedTokenData !== undefined && selectedTokenData.gmxAccountBalance !== undefined
-                    ? formatBalanceAmount(
-                        selectedTokenData.gmxAccountBalance,
-                        selectedTokenData.decimals,
-                        selectedTokenData.symbol,
-                        { isStable: selectedTokenData.isStable }
-                      )
-                    : undefined
-                }
-                to={
-                  nextTokenGmxAccountBalance !== undefined && selectedTokenData !== undefined
-                    ? formatBalanceAmount(
-                        nextTokenGmxAccountBalance,
-                        selectedTokenData.decimals,
-                        selectedTokenData.symbol,
-                        { isStable: selectedTokenData.isStable }
-                      )
-                    : undefined
-                }
-              />
-            }
           />
         </div>
       )}

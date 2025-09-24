@@ -6587,7 +6587,6 @@ msgstr "Купить GMX на децентрализованных биржах"
 msgid "Powered by"
 msgstr "Работает на"
 
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "Asset Balance"
 msgstr ""

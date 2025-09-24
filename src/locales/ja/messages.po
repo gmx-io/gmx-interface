@@ -6587,7 +6587,6 @@ msgstr "分散型取引所からGMXを購入"
 msgid "Powered by"
 msgstr "提供:"
 
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
 #: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
 msgid "Asset Balance"
 msgstr ""
