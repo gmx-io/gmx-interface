@@ -175,7 +175,7 @@ export function formatPercentage(
   percentage?: bigint,
   opts: { fallbackToZero?: boolean; signed?: boolean; displayDecimals?: number; bps?: boolean; showPlus?: boolean } = {}
 ) {
-  const { fallbackToZero = false, signed = false, displayDecimals = 2, bps = true, showPlus } = opts;
+  const { fallbackToZero = false, signed = false, displayDecimals = 2, bps = true, showPlus = true } = opts;
 
   if (percentage === undefined) {
     if (fallbackToZero) {
@@ -185,9 +185,10 @@ export function formatPercentage(
     return undefined;
   }
 
-  const sign = signed ? `${getPlusOrMinusSymbol(percentage, { showPlus })}\u200a\u200d` : "";
+  const sign = signed ? `${getPlusOrMinusSymbol(percentage)}` : "";
+  const displaySign = !showPlus && sign === "+" ? "" : `${sign}`;
 
-  return `${sign}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
+  return `${displaySign}${displaySign ? "\u200a\u200d" : ""}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
 }
 
 export function formatTokenAmount(
@@ -571,24 +572,13 @@ export const padDecimals = (amount: BigNumberish, minDecimals: number) => {
   return amountStr;
 };
 
-export function getPlusOrMinusSymbol(
-  value?: bigint,
-  opts: { showPlusForZero?: boolean; showPlus?: boolean } = {}
-): string {
+export function getPlusOrMinusSymbol(value?: bigint, opts: { showPlusForZero?: boolean } = {}): string {
   if (value === undefined) {
     return "";
   }
 
-  const { showPlusForZero = false, showPlus = true } = opts;
-  const zeroSign = showPlusForZero ? "+" : "";
-  const positiveSign = showPlus ? "+" : "";
-  const negativeSign = "-";
-
-  if (value === 0n) {
-    return zeroSign;
-  }
-
-  return value < 0n ? negativeSign : positiveSign;
+  const { showPlusForZero = false } = opts;
+  return value === 0n ? (showPlusForZero ? "+" : "") : value < 0n ? "-" : "+";
 }
 
 export function roundWithDecimals(value: BigNumberish, opts: { displayDecimals: number; decimals: number }): bigint {
