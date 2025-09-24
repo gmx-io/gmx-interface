@@ -34,7 +34,7 @@ export const DropdownSelector = <Id extends Primitive, Option>({
           className={({ open }) =>
             cx(
               "flex w-full items-center justify-between rounded-8",
-              slim ? "text-body-medium p-4" : "text-body-large px-14 py-12",
+              slim ? "text-body-medium p-4" : "px-14 py-13 text-16 leading-base",
               variant === "ghost"
                 ? "border"
                 : "border bg-slate-800 hover:bg-fill-surfaceElevatedHover active:bg-fill-surfaceElevated50",

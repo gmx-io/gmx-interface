@@ -272,6 +272,8 @@ export function usePositionsInfoRequest(
         netValue,
         netPriceImapctDeltaUsd: netPriceImapctValues?.totalImpactDeltaUsd ?? 0n,
         priceImpactDiffUsd: netPriceImapctValues?.priceImpactDiffUsd ?? 0n,
+        pendingImpactUsd: netPriceImapctValues?.proportionalPendingImpactDeltaUsd ?? 0n,
+        closePriceImpactDeltaUsd: closeAcceptablePriceInfo?.priceImpactDeltaUsd ?? 0n,
         closingFeeUsd,
         uiFeeUsd,
         pendingFundingFeesUsd,

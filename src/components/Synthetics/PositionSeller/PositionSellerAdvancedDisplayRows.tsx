@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import React from "react";
 
 import { usePositionSeller } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import {
@@ -8,13 +7,14 @@ import {
   selectPositionSellerNextPositionValuesForDecrease,
   selectPositionSellerPosition,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
-import { selectTradeboxAdvancedOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectBreakdownNetPriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GasPaymentParams } from "domain/synthetics/express";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
-import { formatUsd } from "lib/numbers";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { formatDeltaUsd, formatUsd } from "lib/numbers";
 
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
@@ -33,9 +33,9 @@ export type Props = {
 };
 
 export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInputId, gasPaymentParams }: Props) {
-  const tradeboxAdvancedOptions = useSelector(selectTradeboxAdvancedOptions);
-  const [open, setOpen] = React.useState(tradeboxAdvancedOptions.advancedDisplay);
+  const [open, setOpen] = useLocalStorageSerializeKey("position-seller-advanced-display-rows-open", false);
   const position = useSelector(selectPositionSellerPosition);
+  const breakdownNetPriceImpactEnabled = useSelector(selectBreakdownNetPriceImpactEnabled);
 
   const {
     allowedSlippage,
@@ -113,6 +113,23 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
 
       {!isTwap && (
         <>
+          {breakdownNetPriceImpactEnabled && (
+            <SyntheticsInfoRow
+              label={t`Stored Price Impact`}
+              value={
+                nextPositionValues?.nextPendingImpactDeltaUsd !== undefined &&
+                position?.pendingImpactUsd !== undefined ? (
+                  <ValueTransition
+                    from={formatDeltaUsd(position?.pendingImpactUsd)}
+                    to={formatDeltaUsd(nextPositionValues?.nextPendingImpactDeltaUsd)}
+                  />
+                ) : (
+                  formatDeltaUsd(nextPositionValues?.nextPendingImpactDeltaUsd)
+                )
+              }
+              valueClassName="numbers"
+            />
+          )}
           <SyntheticsInfoRow label={t`Leverage`} value={leverageValue} />
           {sizeRow}
           <SyntheticsInfoRow

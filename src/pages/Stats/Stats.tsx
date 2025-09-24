@@ -121,16 +121,27 @@ export default function Stats() {
         <Tooltip
           handle={
             <div className={className}>
-              <span className="numbers">${formatAmountHuman(oi, 30)}</span> /{" "}
-              <span className="numbers">${formatAmountHuman(maxGlobalSize, 30)}</span>
+              <span className="numbers">
+                ${"\u200a\u200d"}
+                {formatAmountHuman(oi, 30)}
+              </span>{" "}
+              /{" "}
+              <span className="numbers">
+                ${"\u200a\u200d"}
+                {formatAmountHuman(maxGlobalSize, 30)}
+              </span>
             </div>
           }
           renderContent={() => {
             return (
               <div>
                 <>
-                  Increase rate: <span className="numbers">${formatAmountHuman(openInterestIncrement, 0)}</span> / 30
-                  minutes
+                  Increase rate:{" "}
+                  <span className="numbers">
+                    ${"\u200a\u200d"}
+                    {formatAmountHuman(openInterestIncrement, 0)}
+                  </span>{" "}
+                  / 30 minutes
                   <br />
                   Last increased at:{" "}
                   {caps?.globalSizeLastIncreasedAtLong
@@ -139,7 +150,11 @@ export default function Stats() {
                       })
                     : null}
                   <br />
-                  Max possible cap: <span className="numbers">${formatAmountHuman(maxOpenInterest, 0)}</span>
+                  Max possible cap:{" "}
+                  <span className="numbers">
+                    ${"\u200a\u200d"}
+                    {formatAmountHuman(maxOpenInterest, 0)}
+                  </span>
                 </>
               </div>
             );
@@ -238,11 +253,21 @@ export default function Stats() {
                 <tr key={tokenInfo.address}>
                   <td>{tokenInfo.symbol}</td>
                   <td>
-                    <span className="numbers">${formatAmountHuman(tokenInfo.managedUsd, 30)}</span>
+                    <span className="numbers">
+                      ${"\u200a\u200d"}
+                      {formatAmountHuman(tokenInfo.managedUsd, 30)}
+                    </span>
                   </td>
                   <td className={maxPoolClassName}>
-                    <span className="numbers">${formatAmountHuman(tokenInfo.usdgAmount, 18)}</span> /{" "}
-                    <span className="numbers">${formatAmountHuman(tokenInfo.maxUsdgAmount, 18)}</span>
+                    <span className="numbers">
+                      ${"\u200a\u200d"}
+                      {formatAmountHuman(tokenInfo.usdgAmount, 18)}
+                    </span>{" "}
+                    /{" "}
+                    <span className="numbers">
+                      ${"\u200a\u200d"}
+                      {formatAmountHuman(tokenInfo.maxUsdgAmount, 18)}
+                    </span>
                     {shareBar(tokenInfo.usdgAmount, tokenInfo.maxUsdgAmount)}
                   </td>
                   <td>
@@ -257,8 +282,15 @@ export default function Stats() {
                     {shareBar(weightDiffBps, targetWeightBps)}
                   </td>
                   <td>
-                    <span className="numbers">${formatAmountHuman(tokenInfo.usdgAmount, 18)}</span> /{" "}
-                    <span className="numbers">${formatAmountHuman(targetUsdg, 18)}</span>
+                    <span className="numbers">
+                      ${"\u200a\u200d"}
+                      {formatAmountHuman(tokenInfo.usdgAmount, 18)}
+                    </span>{" "}
+                    /{" "}
+                    <span className="numbers">
+                      ${"\u200a\u200d"}
+                      {formatAmountHuman(targetUsdg, 18)}
+                    </span>
                   </td>
                   <td>
                     <span className="numbers">

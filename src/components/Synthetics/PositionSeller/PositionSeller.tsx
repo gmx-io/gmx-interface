@@ -907,7 +907,7 @@ export function PositionSeller() {
           />
         </div>
 
-        <div className="w-full pb-14">
+        <div className="w-full">
           {position && (
             <>
               <div className="flex flex-col gap-2">
@@ -986,8 +986,8 @@ export function PositionSeller() {
                 {isTrigger && maxAutoCancelOrdersWarning}
                 <HighPriceImpactOrFeesWarningCard
                   priceImpactWarningState={priceImpactWarningState}
-                  collateralImpact={fees?.positionCollateralPriceImpact}
-                  positionImpact={fees?.totalPendingImpact}
+                  collateralImpact={fees?.collateralNetPriceImpact}
+                  positionImpact={fees?.positionNetPriceImpact}
                   swapPriceImpact={fees?.swapPriceImpact}
                   swapProfitFee={fees?.swapProfitFee}
                   executionFeeUsd={executionFee?.feeUsd}

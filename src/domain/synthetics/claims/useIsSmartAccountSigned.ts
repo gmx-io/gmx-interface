@@ -5,7 +5,7 @@ import { usePublicClient } from "wagmi";
 import { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
 
-const CLAIM_TERMS_HASH = "0x09335c037e73849fe301478f91674da05757165154d1dccb1b881c1846938f3dp";
+const CLAIM_TERMS_HASH = "0x09335c037e73849fe301478f91674da05757165154d1dccb1b881c1846938f3d";
 /**
  * keccak256("isValidSignature(bytes32,bytes)")
  * @see https://eips.ethereum.org/EIPS/eip-1271

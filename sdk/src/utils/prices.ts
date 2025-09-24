@@ -5,10 +5,8 @@ import { TokenPrices } from "types/tokens";
 import { TriggerThresholdType } from "types/trade";
 
 import { bigMath } from "./bigmath";
-import { getPriceImpactByAcceptablePrice } from "./fees";
-import { getCappedPositionImpactUsd } from "./fees";
-import { expandDecimals, getBasisPoints } from "./numbers";
-import { roundUpMagnitudeDivision } from "./numbers";
+import { getCappedPositionImpactUsd, getPriceImpactByAcceptablePrice } from "./fees";
+import { expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "./numbers";
 import { convertToTokenAmount } from "./tokens";
 
 export function getMarkPrice(p: { prices: TokenPrices; isIncrease: boolean; isLong: boolean }) {
@@ -56,14 +54,12 @@ export function getAcceptablePriceInfo(p: {
   sizeDeltaUsd: bigint;
   maxNegativePriceImpactBps?: bigint;
 }) {
-  const { marketInfo, isIncrease, isLong, isLimit, indexPrice, sizeDeltaUsd, maxNegativePriceImpactBps } = p;
+  const { marketInfo, isIncrease, isLong, indexPrice, sizeDeltaUsd, maxNegativePriceImpactBps } = p;
   const { indexToken } = marketInfo;
 
   const values = {
     acceptablePrice: 0n,
     acceptablePriceDeltaBps: 0n,
-    cappedPriceImpactDeltaUsd: 0n,
-    cappedPriceImpactDeltaAmount: 0n,
     priceImpactDeltaAmount: 0n,
     priceImpactDeltaUsd: 0n,
     priceImpactDiffUsd: 0n,
@@ -105,7 +101,7 @@ export function getAcceptablePriceInfo(p: {
     isIncrease,
     {
       fallbackToZero: !isIncrease,
-      shouldCapNegativeImpact: isIncrease && !isLimit,
+      shouldCapNegativeImpact: false,
     }
   );
 

@@ -139,9 +139,13 @@ export function formatUsd(
 
   const maybePlus = opts.displayPlus ? "+" : "";
   const sign = usd < 0n ? "-" : maybePlus;
-  const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
+  const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol}\u00a0` : "";
   const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, displayDecimals, true);
-  return `${symbol}${sign}$\u200a${displayUsd}`;
+  return `${symbol}${sign}$\u200a\u200d${displayUsd}`;
+}
+
+export function formatBigUsd(amount: bigint, opts: { displayDecimals?: number } = {}) {
+  return formatUsd(amount, { maxThreshold: "9999999999999999999999999", displayDecimals: opts.displayDecimals ?? 0 });
 }
 
 export function formatDeltaUsd(
@@ -164,7 +168,7 @@ export function formatDeltaUsd(
   const deltaUsdStr = formatAmount(exceedingInfo.value, USD_DECIMALS, 2, true);
   const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
 
-  return `${symbol}${sign}$\u200a${deltaUsdStr}${percentageStr}`;
+  return `${symbol}${sign}$\u200a\u200d${deltaUsdStr}${percentageStr}`;
 }
 
 export function formatPercentage(
@@ -181,7 +185,7 @@ export function formatPercentage(
     return undefined;
   }
 
-  const sign = signed ? `${getPlusOrMinusSymbol(percentage)}\u200a` : "";
+  const sign = signed ? `${getPlusOrMinusSymbol(percentage)}\u200a\u200d` : "";
 
   return `${sign}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
 }
@@ -283,7 +287,7 @@ export function formatRatePercentage(rate?: bigint, opts?: { displayDecimals?: n
   const plurOrMinus = signed ? getPlusOrMinusSymbol(rate) : "";
 
   const amount = bigMath.abs(rate * 100n);
-  return `${plurOrMinus}\u200a${formatAmount(amount, 30, opts?.displayDecimals ?? 4)}%`;
+  return `${plurOrMinus}\u200a\u200d${formatAmount(amount, 30, opts?.displayDecimals ?? 4)}%`;
 }
 
 export function formatUsdPrice(price?: bigint, opts: Parameters<typeof formatUsd>[1] = {}) {
@@ -328,7 +332,7 @@ export function formatAmountHuman(
   }
   const isNegative = n < 0;
   const absN = Math.abs(n);
-  const sign = showDollar ? "$\u200a" : "";
+  const sign = showDollar ? "$\u200a\u200d" : "";
 
   if (absN >= 1_000_000_000) {
     return `${isNegative ? "-" : ""}${sign}${(absN / 1_000_000_000).toFixed(displayDecimals)}b`;
@@ -353,10 +357,12 @@ export function formatBalanceAmount(
     showZero = false,
     toExponential = true,
     isStable = false,
+    signed = false,
   }: {
     showZero?: boolean;
     toExponential?: boolean;
     isStable?: boolean;
+    signed?: boolean;
   } = {}
 ): string {
   if (amount === undefined) return "-";
@@ -378,31 +384,32 @@ export function formatBalanceAmount(
     return "-";
   }
 
+  const sign = signed || amount < 0n ? getPlusOrMinusSymbol(amount) : "";
   const absAmount = bigMath.abs(amount);
   const absAmountFloat = bigintToNumber(absAmount, tokenDecimals);
 
   let value = "";
 
   const baseDecimals = isStable ? 2 : 4;
-  if (absAmountFloat >= 1) value = formatAmount(amount, tokenDecimals, baseDecimals, true);
-  else if (absAmountFloat >= 0.1) value = formatAmount(amount, tokenDecimals, baseDecimals + 1, true);
-  else if (absAmountFloat >= 0.01) value = formatAmount(amount, tokenDecimals, baseDecimals + 2, true);
-  else if (absAmountFloat >= 0.001) value = formatAmount(amount, tokenDecimals, baseDecimals + 3, true);
-  else if (absAmountFloat >= 1e-8) value = formatAmount(amount, tokenDecimals, 8, true);
+  if (absAmountFloat >= 1) value = formatAmount(absAmount, tokenDecimals, baseDecimals, true);
+  else if (absAmountFloat >= 0.1) value = formatAmount(absAmount, tokenDecimals, baseDecimals + 1, true);
+  else if (absAmountFloat >= 0.01) value = formatAmount(absAmount, tokenDecimals, baseDecimals + 2, true);
+  else if (absAmountFloat >= 0.001) value = formatAmount(absAmount, tokenDecimals, baseDecimals + 3, true);
+  else if (absAmountFloat >= 1e-8) value = formatAmount(absAmount, tokenDecimals, 8, true);
   else {
     if (toExponential) {
-      value = bigintToNumber(amount, tokenDecimals).toExponential(2);
+      value = bigintToNumber(absAmount, tokenDecimals).toExponential(2);
     } else {
-      value = bigintToNumber(amount, tokenDecimals).toFixed(8);
+      value = bigintToNumber(absAmount, tokenDecimals).toFixed(8);
     }
   }
 
   if (tokenSymbol) {
     // Non-breaking space
-    return `${value} ${tokenSymbol}`;
+    return `${sign}${value} ${tokenSymbol}`;
   }
 
-  return value;
+  return `${sign}${value}`;
 }
 
 export function formatFactor(factor: bigint) {
@@ -422,14 +429,14 @@ export function formatFactor(factor: bigint) {
   const factorDecimals = 30 - trailingZeroes;
   return formatAmount(factor, 30, factorDecimals);
 }
-export function numberWithCommas(x: BigNumberish) {
+export function numberWithCommas(x: BigNumberish, { showDollar = false }: { showDollar?: boolean } = {}) {
   if (x === undefined || x === null) {
     return "...";
   }
 
   const parts = x.toString().split(".");
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return parts.join(".");
+  return `${showDollar ? "$\u200a\u200d" : ""}${parts.join(".")}`;
 }
 
 export const formatAmount = (

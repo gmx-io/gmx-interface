@@ -8,7 +8,7 @@ import Footer from "components/Footer/Footer";
 
 import { LanguageNavItem } from "./LanguageNavItem";
 import { SettingsNavItem } from "./SettingsNavItem";
-import { DocsNavItem, LogoSection, MenuSection, NavItem } from "./SideNav";
+import { DocsNavItem, LogoSection, MenuSection } from "./SideNav";
 
 export function MobileSideNav() {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +19,7 @@ export function MobileSideNav() {
 
   return (
     <div>
-      <Button variant="secondary" className="md:h-40" onClick={handleToggle}>
+      <Button variant="secondary" size="controlled" className="size-32 !p-0 md:size-40" onClick={handleToggle}>
         <HiMenu className="h-20 w-20" />
       </Button>
       {isOpen ? (
@@ -38,13 +38,13 @@ export function MobileSideNav() {
                 </button>
               </div>
               <div className="grow border-b-1/2 border-slate-600 p-8">
-                <MenuSection isCollapsed={false} />
+                <MenuSection isCollapsed={false} onMenuItemClick={handleToggle} />
               </div>
 
               <div className="border-b-1/2 border-slate-600 p-8">
                 <ul className="flex list-none flex-col px-0">
-                  <SettingsNavItem isCollapsed={false} NavItem={NavItem} />
-                  <LanguageNavItem isCollapsed={false} NavItem={NavItem} />
+                  <SettingsNavItem isCollapsed={false} onClick={handleToggle} />
+                  <LanguageNavItem isCollapsed={false} onClick={handleToggle} />
                   <DocsNavItem isCollapsed={false} />
                 </ul>
               </div>

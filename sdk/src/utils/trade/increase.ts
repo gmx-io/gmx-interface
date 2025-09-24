@@ -17,9 +17,21 @@ import {
   TriggerThresholdType,
 } from "types/trade";
 import { bigMath } from "utils/bigmath";
-import { getPositionFee, getPriceImpactForPosition, getTotalSwapVolumeFromSwapStats } from "utils/fees";
+import {
+  capPositionImpactUsdByMaxImpactPool,
+  capPositionImpactUsdByMaxPriceImpactFactor,
+  getPositionFee,
+  getPriceImpactForPosition,
+  getTotalSwapVolumeFromSwapStats,
+} from "utils/fees";
 import { applyFactor } from "utils/numbers";
-import { getEntryPrice, getLeverage, getLiquidationPrice, getPositionPnlUsd } from "utils/positions";
+import {
+  getEntryPrice,
+  getLeverage,
+  getLiquidationPrice,
+  getPositionPnlUsd,
+  getPriceImpactDiffUsd,
+} from "utils/positions";
 import {
   getAcceptablePriceInfo,
   getDefaultAcceptablePriceImpactBps,
@@ -122,6 +134,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     borrowingFeeUsd: 0n,
     fundingFeeUsd: 0n,
     positionPriceImpactDeltaUsd: 0n,
+    potentialPriceImpactDiffUsd: 0n,
 
     limitOrderType: limitOrderType,
     triggerThresholdType: undefined,
@@ -383,6 +396,11 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
   });
 
   values.positionPriceImpactDeltaUsd = acceptablePriceInfo.priceImpactDeltaUsd;
+  values.potentialPriceImpactDiffUsd = getPriceImpactDiffUsd({
+    totalImpactDeltaUsd: values.positionPriceImpactDeltaUsd,
+    marketInfo,
+    sizeDeltaUsd: values.sizeDeltaUsd,
+  });
 
   values.acceptablePrice = acceptablePriceInfo.acceptablePrice;
   values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
@@ -555,6 +573,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
   existingPosition?: PositionInfo;
   marketInfo: MarketInfo;
   collateralToken: TokenData;
+  positionPriceImpactDeltaUsd: bigint;
   sizeDeltaUsd: bigint;
   sizeDeltaInTokens: bigint;
   collateralDeltaUsd: bigint;
@@ -578,6 +597,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     showPnlInLeverage,
     minCollateralUsd,
     userReferralInfo,
+    positionPriceImpactDeltaUsd,
   } = p;
 
   const nextCollateralUsd = existingPosition ? existingPosition.collateralUsd + collateralDeltaUsd : collateralDeltaUsd;
@@ -629,11 +649,34 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     userReferralInfo,
   });
 
+  let nextPendingImpactDeltaUsd =
+    existingPosition?.pendingImpactUsd !== undefined
+      ? existingPosition.pendingImpactUsd + positionPriceImpactDeltaUsd
+      : positionPriceImpactDeltaUsd;
+
+  const potentialPriceImpactDiffUsd = getPriceImpactDiffUsd({
+    totalImpactDeltaUsd: nextPendingImpactDeltaUsd,
+    marketInfo,
+    sizeDeltaUsd: nextSizeUsd,
+  });
+
+  if (nextPendingImpactDeltaUsd > 0) {
+    nextPendingImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(
+      marketInfo,
+      nextSizeUsd,
+      nextPendingImpactDeltaUsd
+    );
+  }
+
+  nextPendingImpactDeltaUsd = capPositionImpactUsdByMaxImpactPool(marketInfo, nextPendingImpactDeltaUsd);
+
   return {
     nextSizeUsd,
     nextCollateralUsd,
     nextEntryPrice,
     nextLeverage,
     nextLiqPrice,
+    nextPendingImpactDeltaUsd,
+    potentialPriceImpactDiffUsd,
   };
 }

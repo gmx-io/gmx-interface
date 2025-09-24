@@ -928,6 +928,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     priceImpactWarningState.shouldShowWarning ||
     (!isTrigger && !isSwap) ||
     (isSwap && isLimit) ||
+    isTwap ||
     maxAutoCancelOrdersWarning ||
     shouldShowOneClickTradingWarning;
 
@@ -1083,8 +1084,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               {priceImpactWarningState.shouldShowWarning && (
                 <HighPriceImpactOrFeesWarningCard
                   priceImpactWarningState={priceImpactWarningState}
-                  collateralImpact={fees?.positionCollateralPriceImpact}
-                  positionImpact={isIncrease ? fees?.increasePositionPriceImpact : fees?.totalPendingImpact}
+                  collateralImpact={fees?.collateralNetPriceImpact}
+                  positionImpact={fees?.positionNetPriceImpact}
                   swapPriceImpact={fees?.swapPriceImpact}
                   swapProfitFee={fees?.swapProfitFee}
                   executionFeeUsd={executionFee?.feeUsd}

@@ -183,6 +183,8 @@ const position: PositionInfoLoaded = {
   uiFeeAmount: 0n,
   netPriceImapctDeltaUsd: 0n,
   priceImpactDiffUsd: 0n,
+  pendingImpactUsd: 0n,
+  closePriceImpactDeltaUsd: 0n,
 };
 
 const keepLeverage = false;

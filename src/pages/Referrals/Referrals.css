@@ -47,9 +47,6 @@
 .referral-body-container .list {
   margin-top: 3.1rem;
 }
-.reward-history {
-  margin-top: 3.1rem;
-}
 .active-referral-code .edit {
   display: flex;
   align-items: center;
@@ -69,11 +66,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.active-referral-code .tier span {
-  font-size: var(--font-size-body-small);
-  color: var(--color-gray-400);
-  margin-right: 0.775rem;
 }
 
 .active-referral-code .tier .tier-discount-warning span {
@@ -160,13 +152,6 @@
   margin-left: 1.5rem;
 }
 
-.referral-stats {
-  margin: 0 auto;
-  display: grid;
-  grid-gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
-}
-
 .info-card {
   min-height: 13rem;
   background: var(--dark-blue-bg);
@@ -212,13 +197,8 @@
 }
 
 .table-referral-code .referral-code-icon {
-  margin-right: 1rem;
   cursor: pointer;
   display: inline-flex;
-}
-
-.table-referral-code .referral-code-icon:hover {
-  opacity: 0.75;
 }
 
 .table-referral-code .info {

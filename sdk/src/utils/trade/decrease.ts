@@ -629,6 +629,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
   collateralDeltaAmount: bigint;
   payedRemainingCollateralUsd: bigint;
   payedRemainingCollateralAmount: bigint;
+  proportionalPendingImpactDeltaUsd: bigint;
   showPnlInLeverage: boolean;
   isLong: boolean;
   minCollateralUsd: bigint;
@@ -647,6 +648,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     payedRemainingCollateralUsd,
     payedRemainingCollateralAmount,
     showPnlInLeverage,
+    proportionalPendingImpactDeltaUsd,
     isLong,
     minCollateralUsd,
     userReferralInfo,
@@ -698,6 +700,11 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     isLong: isLong,
   });
 
+  const nextPendingImpactDeltaUsd =
+    existingPosition?.pendingImpactUsd !== undefined && proportionalPendingImpactDeltaUsd !== undefined
+      ? existingPosition.pendingImpactUsd - proportionalPendingImpactDeltaUsd
+      : 0n;
+
   return {
     nextSizeUsd,
     nextCollateralUsd,
@@ -705,6 +712,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     nextPnl,
     nextPnlPercentage,
     nextLeverage,
+    nextPendingImpactDeltaUsd,
   };
 }
 

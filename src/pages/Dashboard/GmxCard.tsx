@@ -102,7 +102,6 @@ export function GmxCard({
                   </div>
                   <div>
                     <div className="text-body-medium font-medium">GMX</div>
-                    <div className="text-body-small text-typography-secondary">GMX</div>
                   </div>
                 </div>
                 <div className="h-32">
@@ -130,7 +129,7 @@ export function GmxCard({
                     <TooltipComponent
                       position="bottom-end"
                       className="whitespace-nowrap"
-                      handle={"$\u200a" + formatAmount(gmxPrice, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
+                      handle={"$\u200a\u200d" + formatAmount(gmxPrice, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
                       handleClassName="numbers"
                       content={
                         <>

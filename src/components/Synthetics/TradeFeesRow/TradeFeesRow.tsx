@@ -4,11 +4,11 @@ import { ReactNode, useMemo } from "react";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIncentivesV2Url } from "config/links";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
-import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
-import { TradeFeesType } from "domain/synthetics/trade";
+import { TradeFees, TradeFeesType } from "domain/synthetics/trade";
 import { getIsHighSwapImpact } from "domain/synthetics/trade/utils/warnings";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatDeltaUsd, formatPercentage } from "lib/numbers";
@@ -26,26 +26,9 @@ import sparkleIcon from "img/sparkle.svg";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import "./TradeFeesRow.scss";
 
-type Props = {
-  totalFees?: FeeItem;
+type Props = TradeFees & {
   shouldShowRebate?: boolean;
-  swapFees?: SwapFeeItem[];
-  swapProfitFee?: FeeItem;
-  swapPriceImpact?: FeeItem;
-  positionFee?: FeeItem;
-  totalPendingImpact?: FeeItem;
-  proportionalPendingImpact?: FeeItem;
-  closePriceImpact?: FeeItem;
-  priceImpactDiff?: FeeItem;
-  borrowFee?: FeeItem;
-  fundingFee?: FeeItem;
-  borrowFeeRateStr?: string;
-  fundingFeeRateStr?: string;
-  feeDiscountUsd?: bigint;
-  externalSwapFee?: ExternalSwapFeeItem;
   feesType: TradeFeesType | null;
-  uiFee?: FeeItem;
-  uiSwapFee?: FeeItem;
 };
 
 type FeeRow = {
@@ -62,6 +45,7 @@ export function TradeFeesRow(p: Props) {
   const shouldShowRebate = p.shouldShowRebate ?? true;
   const shouldShowWarning = getIsHighSwapImpact(p.swapPriceImpact);
   const showDebugValues = useShowDebugValues();
+  const { breakdownNetPriceImpactEnabled } = useSettings();
 
   const estimatedRebatesPercentage = tradingIncentives?.estimatedRebatePercent ?? 0n;
 
@@ -259,7 +243,7 @@ export function TradeFeesRow(p: Props) {
       p.borrowFee && (p.borrowFee?.deltaUsd === undefined ? undefined : p.borrowFee.deltaUsd !== 0n)
         ? {
             id: "borrowFee",
-            label: <div>{t`Borrow Fee`}:</div>,
+            label: <div className="text-typography-primary">{t`Borrow Fee`}:</div>,
             value: formatDeltaUsd(p.borrowFee.deltaUsd),
             className: getPositiveOrNegativeClass(p.borrowFee.deltaUsd, "text-green-500"),
           }
@@ -269,49 +253,57 @@ export function TradeFeesRow(p: Props) {
       p.fundingFee && (p.fundingFee?.deltaUsd === undefined ? undefined : bigMath.abs(p.fundingFee.deltaUsd) > 0)
         ? {
             id: "fundingFee",
-            label: <div>{t`Funding Fee`}:</div>,
+            label: <div className="text-typography-primary">{t`Funding Fee`}:</div>,
             value: formatDeltaUsd(p.fundingFee.deltaUsd),
             className: getPositiveOrNegativeClass(p.fundingFee.deltaUsd, "text-green-500"),
           }
         : undefined;
 
-    const borrowFeeRateRow = p.borrowFeeRateStr
-      ? {
-          id: "borrowFeeRate",
-          label: <div className="text-typography-primary">{t`Borrow Fee Rate`}:</div>,
-          value: p.borrowFeeRateStr,
-          className: p.borrowFeeRateStr?.startsWith("-") ? "text-red-500" : "text-green-500",
-        }
-      : undefined;
-
-    const fundingFeeRateRow = p.fundingFeeRateStr
-      ? {
-          id: "fundingFeeRate",
-          label: <div className="text-typography-primary">{t`Funding Fee Rate`}:</div>,
-          value: p.fundingFeeRateStr,
-          className: p.fundingFeeRateStr?.startsWith("-") ? "text-red-500" : "text-green-500",
-        }
-      : undefined;
-
     const proportionalPendingImpactDeltaUsdRow =
-      showDebugValues &&
+      breakdownNetPriceImpactEnabled &&
       (p.proportionalPendingImpact?.deltaUsd !== undefined && p.proportionalPendingImpact.deltaUsd !== 0n
         ? {
             id: "proportionalPendingImpactDeltaUsd",
-            label: <div className="text-white">{`Proportional Pending Impact`}:</div>,
+            label: (
+              <>
+                <div className="text-typography-primary">
+                  <Trans>Proportional Stored Impact</Trans>:
+                </div>
+                <div>
+                  (
+                  {formatPercentage(bigMath.abs(p.proportionalPendingImpact.precisePercentage), {
+                    displayDecimals: 3,
+                    bps: false,
+                  })}{" "}
+                  of position size)
+                </div>
+              </>
+            ),
             value: formatDeltaUsd(p.proportionalPendingImpact.deltaUsd),
             className: getPositiveOrNegativeClass(p.proportionalPendingImpact.deltaUsd, "text-green-500"),
           }
         : undefined);
 
     const closePriceImpactDeltaUsdRow =
-      showDebugValues &&
-      (p.closePriceImpact?.deltaUsd !== undefined && p.closePriceImpact.deltaUsd !== 0n
+      breakdownNetPriceImpactEnabled &&
+      (p.decreasePositionPriceImpact?.deltaUsd !== undefined && p.decreasePositionPriceImpact.deltaUsd !== 0n
         ? {
             id: "closePriceImpactDeltaUsd",
-            label: <div className="text-white">{`Close Price Impact`}:</div>,
-            value: formatDeltaUsd(p.closePriceImpact.deltaUsd),
-            className: getPositiveOrNegativeClass(p.closePriceImpact.deltaUsd, "text-green-500"),
+            label: (
+              <>
+                <div className="text-typography-primary">{t`Close Price Impact`}:</div>
+                <div>
+                  (
+                  {formatPercentage(bigMath.abs(p.decreasePositionPriceImpact.precisePercentage), {
+                    displayDecimals: 3,
+                    bps: false,
+                  })}{" "}
+                  of position size)
+                </div>
+              </>
+            ),
+            value: formatDeltaUsd(p.decreasePositionPriceImpact.deltaUsd),
+            className: getPositiveOrNegativeClass(p.decreasePositionPriceImpact.deltaUsd, "text-green-500"),
           }
         : undefined);
 
@@ -321,7 +313,7 @@ export function TradeFeesRow(p: Props) {
             id: "netPriceImpact",
             label: (
               <>
-                <div className="text-white">{t`Net Price Impact`}:</div>
+                <div className="text-typography-primary">{t`Net Price Impact`}:</div>
                 <div>
                   (
                   {formatPercentage(bigMath.abs(p.totalPendingImpact.precisePercentage), {
@@ -343,7 +335,7 @@ export function TradeFeesRow(p: Props) {
             id: "priceImpactDiff",
             label: (
               <>
-                <div className="text-white">{t`Price Impact Rebates`}:</div>
+                <div className="text-typography-primary">{t`Price Impact Rebates`}:</div>
                 <div>
                   (
                   {formatPercentage(bigMath.abs(p.priceImpactDiff.precisePercentage), {
@@ -402,15 +394,13 @@ export function TradeFeesRow(p: Props) {
         uiSwapFeeRow,
         borrowFeeRow,
         fundingFeeRow,
-        borrowFeeRateRow,
-        fundingFeeRateRow,
       ].filter(Boolean) as FeeRow[];
     }
 
     if (p.feesType === "decrease") {
       return [
-        closePriceImpactDeltaUsdRow,
         proportionalPendingImpactDeltaUsdRow,
+        closePriceImpactDeltaUsdRow,
         netPriceImpactRow,
         priceImpactRebatesRow,
         borrowFeeRow,
@@ -431,7 +421,15 @@ export function TradeFeesRow(p: Props) {
     }
 
     return [];
-  }, [p, chainId, tradingIncentives, rebateIsApplicable, estimatedRebatesPercentage, showDebugValues]);
+  }, [
+    p,
+    chainId,
+    tradingIncentives,
+    rebateIsApplicable,
+    estimatedRebatesPercentage,
+    showDebugValues,
+    breakdownNetPriceImpactEnabled,
+  ]);
 
   const totalFeeUsd = useMemo(() => {
     const totalBeforeRebate = p.totalFees?.deltaUsd;

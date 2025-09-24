@@ -263,7 +263,7 @@ export function SyntheticsStats() {
                   return (
                     <div className="cell">
                       <TooltipWithPortal
-                        handle={`$\u200a${formatAmountHuman(market.poolValueMax, 30)}`}
+                        handle={formatAmountHuman(market.poolValueMax, 30, true)}
                         renderContent={() => (
                           <>
                             <StatsTooltipRow label="Pool USD Long" value={formatAmount(longPoolUsd, 30, 2, true)} />
@@ -326,7 +326,7 @@ export function SyntheticsStats() {
                     <div className="cell">
                       <div>
                         <TooltipWithPortal
-                          handle={`$\u200a${formatAmountHuman(longPoolUsd, 30)} / $\u200a${formatAmountHuman(shortPoolUsd, 30)}`}
+                          handle={`${formatAmountHuman(longPoolUsd, 30, true)} / ${formatAmountHuman(shortPoolUsd, 30, true)}`}
                           renderContent={() => {
                             return (
                               <>
@@ -371,7 +371,7 @@ export function SyntheticsStats() {
                     <TooltipWithPortal
                       handle={
                         <div className="cell">
-                          {formatAmountHuman(poolAmount, token.decimals)} {token.symbol} / {formatUsd(maxPoolUsd)}{" "}
+                          {formatAmountHuman(poolAmount, token.decimals, true)} {token.symbol} / {formatUsd(maxPoolUsd)}{" "}
                           <ShareBar share={poolUsd} total={maxPoolUsd} warningThreshold={90} />
                         </div>
                       }
@@ -625,9 +625,10 @@ export function SyntheticsStats() {
                     <div className="cell">
                       <div>
                         <TooltipWithPortal
-                          handle={`$\u200a${formatAmountHuman(market.longInterestUsd, 30)} / $\u200a${formatAmountHuman(
+                          handle={`${formatAmountHuman(market.longInterestUsd, 30, true)} / ${formatAmountHuman(
                             market.shortInterestUsd,
-                            30
+                            30,
+                            true
                           )}`}
                           renderContent={() => (
                             <>
@@ -728,10 +729,10 @@ export function SyntheticsStats() {
                         <TooltipWithPortal
                           handle={
                             market.isSpotOnly ? (
-                              formatAmountHuman(collateralLiquidityUsd, 30)
+                              formatAmountHuman(collateralLiquidityUsd, 30, true)
                             ) : (
                               <span>
-                                ${formatAmountHuman(liquidity, 30)} / ${formatAmountHuman(maxLiquidity, 30)}
+                                {formatAmountHuman(liquidity, 30, true)} / {formatAmountHuman(maxLiquidity, 30, true)}
                               </span>
                             )
                           }
@@ -798,7 +799,7 @@ export function SyntheticsStats() {
                   return (
                     <div className="cell">
                       <TooltipWithPortal
-                        handle={`$\u200a${formatAmount(positionImpactUsd, 30, 2, true)}`}
+                        handle={`$\u200a\u200d${formatAmount(positionImpactUsd, 30, 2, true)}`}
                         position="bottom-end"
                         renderContent={() => (
                           <>

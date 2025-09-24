@@ -503,7 +503,7 @@ function CopyButton({ value }: { value: string }) {
     <BiCopy
       size={16}
       className={cx(
-        "hidden cursor-pointer text-typography-secondary transition-transform hover:text-typography-primary group-hover:block",
+        "invisible cursor-pointer text-typography-secondary transition-transform hover:text-typography-primary group-hover:visible",
         {
           "scale-110 text-typography-primary": isCopied,
         }

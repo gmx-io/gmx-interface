@@ -83,6 +83,7 @@ export type IncreasePositionAmounts = {
   borrowingFeeUsd: bigint;
   fundingFeeUsd: bigint;
   positionPriceImpactDeltaUsd: bigint;
+  potentialPriceImpactDiffUsd: bigint;
 };
 
 export type DecreasePositionAmounts = {
@@ -166,6 +167,8 @@ export type NextPositionValues = {
   nextPnlPercentage?: bigint;
   nextEntryPrice?: bigint;
   remainingCollateralFeesUsd?: bigint;
+  nextPendingImpactDeltaUsd?: bigint;
+  potentialPriceImpactDiffUsd?: bigint;
 };
 
 export type SwapStats = {

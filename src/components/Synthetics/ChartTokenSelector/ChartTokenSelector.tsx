@@ -1,8 +1,9 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import partition from "lodash/partition";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FaChevronDown } from "react-icons/fa6";
+import { usePrevious } from "react-use";
 import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
@@ -79,45 +80,53 @@ export default function ChartTokenSelector(props: Props) {
         "mr-24": oneRowLabels === false,
         "py-0 md:h-40": isSwap,
       })}
-      desktopPanelClassName={cx("max-w-[100vw]", { "w-[520px]": isSwap, "w-[880px]": !isSwap })}
+      desktopPanelClassName={cx("max-w-[100vw] shadow-md", { "w-[520px]": isSwap, "w-[880px]": !isSwap })}
       chevronClassName="hidden"
       label={
         <Button variant="secondary">
           {selectedToken ? (
             <span
-              className={cx("inline-flex gap-6 whitespace-nowrap pl-0 text-[13px]", {
+              className={cx("inline-flex gap-12 whitespace-nowrap pl-0 text-[13px]", {
                 "items-start": !oneRowLabels,
-                "items-center": oneRowLabels || isSwap,
+                "items-center": oneRowLabels,
               })}
             >
-              {isSwap ? (
+              {isSwap && oneRowLabels ? (
                 <div className="rounded-4 bg-blue-300 bg-opacity-[20%] px-7 py-4 text-blue-300">
                   <Trans>Swap</Trans>
                 </div>
               ) : null}
 
-              <TokenIcon symbol={selectedToken.symbol} displaySize={isMobile ? 32 : 20} importSize={40} />
-              <span
-                className={cx("flex justify-start", {
-                  "flex-col": !oneRowLabels && !isSwap,
-                  "flex-row": oneRowLabels || isSwap,
-                })}
-              >
-                <span className="text-start text-[13px] font-medium text-typography-primary">
-                  {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
-                  {selectedToken.symbol}/USD
-                </span>
-                {poolName && (
-                  <span
-                    className={cx("text-body-small mt-1 font-normal text-typography-secondary", {
-                      "ml-8": oneRowLabels,
-                    })}
-                  >
-                    <span>[{poolName}]</span>
+              <div className="flex gap-8">
+                <TokenIcon symbol={selectedToken.symbol} displaySize={isMobile ? 32 : 20} importSize={40} />
+                <span
+                  className={cx("flex justify-start leading-base", {
+                    "flex-col items-baseline gap-2": !oneRowLabels,
+                    "flex-row items-center": oneRowLabels,
+                  })}
+                >
+                  <span className="text-start text-[13px] font-medium text-typography-primary">
+                    {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
+                    {selectedToken.symbol}/USD
                   </span>
-                )}
-              </span>
-              <FaChevronDown className="inline-block text-[12px]" />
+                  {poolName && (
+                    <span
+                      className={cx("text-12 font-normal text-typography-secondary", {
+                        "ml-4": oneRowLabels,
+                      })}
+                    >
+                      <span>[{poolName}]</span>
+                    </span>
+                  )}
+
+                  {isSwap && !oneRowLabels ? (
+                    <div className="text-blue-300">
+                      <Trans>Swap</Trans>
+                    </div>
+                  ) : null}
+                </span>
+                <FaChevronDown className={cx("inline-block text-[14px]", { "mt-2": oneRowLabels })} />
+              </div>
             </span>
           ) : (
             "..."
@@ -170,9 +179,16 @@ function MarketsList() {
 
   const close = useSelectorClose();
 
-  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("chart-token-selector");
+  const { orderBy, direction, getSorterProps, setOrderBy } = useSorterHandlers<SortField>("chart-token-selector");
   const [searchKeyword, setSearchKeyword] = useState("");
   const isSwap = tradeType === TradeType.Swap;
+  const prevIsSwap = usePrevious(isSwap);
+
+  useEffect(() => {
+    if (isSwap !== prevIsSwap) {
+      setOrderBy("unspecified");
+    }
+  }, [isSwap, setOrderBy, prevIsSwap]);
 
   const sortedTokens = useFilterSortTokens({
     chainId,
@@ -463,7 +479,6 @@ function useFilterSortTokens({
       dayVolumes,
       indexTokenStatsMap,
       getMaxLongShortLiquidityPool,
-      isSwap,
     });
 
     const sortedFavorites = favorites.slice().sort(sorter);
@@ -482,7 +497,6 @@ function useFilterSortTokens({
     indexTokenStatsMap,
     getMaxLongShortLiquidityPool,
     favoriteTokens,
-    isSwap,
   ]);
 
   return sortedTokens;
@@ -704,7 +718,6 @@ function tokenSortingComparatorBuilder({
   dayVolumes,
   indexTokenStatsMap,
   getMaxLongShortLiquidityPool,
-  isSwap,
 }: {
   chainId: number;
   orderBy: SortField;
@@ -717,18 +730,12 @@ function tokenSortingComparatorBuilder({
     maxLongLiquidityPool: TokenOption;
     maxShortLiquidityPool: TokenOption;
   };
-  isSwap: boolean;
 }) {
   const directionMultiplier = direction === "asc" ? 1 : -1;
 
   return (a: Token, b: Token) => {
     const aAddress = convertTokenAddress(chainId, a.address, "wrapped");
     const bAddress = convertTokenAddress(chainId, b.address, "wrapped");
-
-    if (isSwap) {
-      // Swap tokens are already sorted by long and short tokens
-      return 0;
-    }
 
     if (orderBy === "unspecified" || direction === "unspecified") {
       // Tokens are already sorted by pool size

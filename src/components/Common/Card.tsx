@@ -34,13 +34,16 @@ function Card({
     <div className={`card ${className ? className : ""}`}>
       {tooltipText ? (
         <Tooltip
-          handle={<div className={cx("card-header pr-4", slimHeader ? "px-16 py-8" : "p-16")}>{title}</div>}
+          handle={<div className={cx("card-header pr-4", slimHeader ? "px-20 py-8" : "p-20")}>{title}</div>}
           position="bottom-start"
           content={tooltipText}
           variant="icon"
+          iconClassName="text-typography-secondary"
         />
       ) : (
-        <div className={cx("card-header", slimHeader ? "px-16 py-8" : "p-16")}>{title}</div>
+        <div className={cx("card-header border-b-1/2 border-slate-600", slimHeader ? "px-20 py-8" : "p-20")}>
+          {title}
+        </div>
       )}
       {divider && <div className="card-divider" />}
       <div className={bodyPadding ? "card-body" : ""}>{children}</div>

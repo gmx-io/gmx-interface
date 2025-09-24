@@ -161,7 +161,7 @@ function Referrals() {
           ) : (
             <div>
               <Tabs
-                type="inline"
+                type="inline-primary"
                 className="mb-16"
                 options={tabsOptions}
                 selectedValue={activeTab}

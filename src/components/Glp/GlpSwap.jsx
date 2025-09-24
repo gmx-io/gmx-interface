@@ -754,17 +754,17 @@ export default function GlpSwap(props) {
   let receiveBalance = "$0.00";
   if (isBuying) {
     if (swapUsdMin !== undefined) {
-      payBalance = `$\u200a${formatAmount(swapUsdMin, USD_DECIMALS, 2, true)}`;
+      payBalance = `$\u200a\u200d${formatAmount(swapUsdMin, USD_DECIMALS, 2, true)}`;
     }
     if (glpUsdMax !== undefined) {
-      receiveBalance = `$\u200a${formatAmount(glpUsdMax, USD_DECIMALS, 2, true)}`;
+      receiveBalance = `$\u200a\u200d${formatAmount(glpUsdMax, USD_DECIMALS, 2, true)}`;
     }
   } else {
     if (glpUsdMax !== undefined) {
-      payBalance = `$\u200a${formatAmount(glpUsdMax, USD_DECIMALS, 2, true)}`;
+      payBalance = `$\u200a\u200d${formatAmount(glpUsdMax, USD_DECIMALS, 2, true)}`;
     }
     if (swapUsdMin !== undefined) {
-      receiveBalance = `$\u200a${formatAmount(swapUsdMin, USD_DECIMALS, 2, true)}`;
+      receiveBalance = `$\u200a\u200d${formatAmount(swapUsdMin, USD_DECIMALS, 2, true)}`;
     }
   }
 
@@ -887,7 +887,10 @@ export default function GlpSwap(props) {
               <div className="label">
                 <Trans>Price</Trans>
               </div>
-              <div className="value">${formatAmount(glpPrice, USD_DECIMALS, GLP_PRICE_DECIMALS, true)}</div>
+              <div className="value">
+                ${"\u200a\u200d"}
+                {formatAmount(glpPrice, USD_DECIMALS, GLP_PRICE_DECIMALS, true)}
+              </div>
             </div>
             <div className="App-card-row">
               <div className="label">
@@ -915,7 +918,7 @@ export default function GlpSwap(props) {
                 </div>
                 <div className="value">
                   <Tooltip
-                    handle={`${formatAmount(reservedAmount, 18, 4, true)} GLP ($\u200a${formatAmount(
+                    handle={`${formatAmount(reservedAmount, 18, 4, true)} GLP ($\u200a\u200d${formatAmount(
                       reserveAmountUsd,
                       USD_DECIMALS,
                       2,
@@ -1501,7 +1504,7 @@ export default function GlpSwap(props) {
                       />
                       <div>
                         <Tooltip
-                          handle={`$\u200a${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`}
+                          handle={`$\u200a\u200d${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`}
                           position="bottom-end"
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
@@ -1532,7 +1535,7 @@ export default function GlpSwap(props) {
                           handle={
                             availableAmountUsd !== undefined && availableAmountUsd < 0
                               ? "$0.00"
-                              : `$\u200a${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
+                              : `$\u200a\u200d${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
                           }
                           position="bottom-end"
                           tooltipIconPosition="right"

@@ -65,6 +65,7 @@ export class Multicall {
       emitMetricCounter<MulticallFallbackRpcModeCounter>({
         event: "multicall.fallbackRpcMode.on",
         data: {
+          chainId: this.chainId,
           isInMainThread: !isWebWorker,
         },
       });
@@ -73,6 +74,7 @@ export class Multicall {
       emitMetricCounter<MulticallFallbackRpcModeCounter>({
         event: "multicall.fallbackRpcMode.off",
         data: {
+          chainId: this.chainId,
           isInMainThread: !isWebWorker,
         },
       });
@@ -149,6 +151,7 @@ export class Multicall {
       emitMetricCounter<MulticallRequestCounter>({
         event: `multicall.request.${event}`,
         data: {
+          chainId: this.chainId,
           isInMainThread: !isWebWorker,
           requestType,
           rpcProvider,
@@ -170,6 +173,7 @@ export class Multicall {
         event: "multicall.request.timing",
         time,
         data: {
+          chainId: this.chainId,
           requestType,
           rpcProvider,
           isLargeAccount,
