@@ -10299,7 +10299,6 @@ __metadata:
     react-dom: 18.2.0
     react-helmet: 6.1.0
     react-hot-toast: 2.2.0
-    react-icons: 5.5.0
     react-jazzicon: 1.0.4
     react-loading-skeleton: 3.3.1
     react-remove-scroll: 2.5.5
@@ -13677,15 +13676,6 @@ __metadata:
     react: ">=16"
     react-dom: ">=16"
   checksum: bb34ddc8ada14cbd75a37f14d2563412174e23276eb05e9fb23a031b6d8374ca190cefa1940692f4371529ddafeb2d4b8d3e5023187c2851ec8cb247461553ee
-  languageName: node
-  linkType: hard
-
-"react-icons@npm:5.5.0":
-  version: 5.5.0
-  resolution: "react-icons@npm:5.5.0"
-  peerDependencies:
-    react: "*"
-  checksum: cbd74f4b7982e6e18d59798a6b578268c8eb0909d78d87bcf9b25f99b3e544fd189a76551cb5e770d17f154a60b668551aee108aaf8471309b23f7af3b2c5b07
   languageName: node
   linkType: hard
 

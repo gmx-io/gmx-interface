@@ -1,6 +1,5 @@
 import { Trans, t } from "@lingui/macro";
 import { useCallback, useMemo, useState } from "react";
-import { ImSpinner2 } from "react-icons/im";
 import { toast } from "react-toastify";
 
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
@@ -28,6 +27,8 @@ import { nowInSeconds } from "sdk/utils/time";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import Tooltip from "components/Tooltip/Tooltip";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import "./ClaimModal.scss";
 
@@ -232,7 +233,7 @@ export function ClaimModalMultichain(p: Props) {
             <div className="text-white/50">
               <Trans>Claiming funding fees</Trans>
             </div>
-            <ImSpinner2 width={60} height={60} className="spin size-15 text-white" />
+            <SpinnerIcon className="spin size-15 text-white" />
           </div>,
           { autoClose: false, toastId: "funding-claimed" }
         );
@@ -281,7 +282,7 @@ export function ClaimModalMultichain(p: Props) {
         text: (
           <>
             <Trans>Loading</Trans>
-            <ImSpinner2 className="ml-4 animate-spin" />
+            <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
         disabled: true,

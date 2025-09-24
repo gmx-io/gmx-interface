@@ -3,7 +3,6 @@ import invert from "lodash/invert";
 import mapValues from "lodash/mapValues";
 import { useCallback, useMemo, useState } from "react";
 import { Fragment } from "react/jsx-runtime";
-import { BiCopy } from "react-icons/bi";
 import { Link, useParams } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 import useSWR from "swr";
@@ -39,6 +38,8 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import Loader from "components/Loader/Loader";
 import { Table, TableTd, TableTr } from "components/Table/Table";
 import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolWithIcon";
+
+import CopyIcon from "img/ic_copy.svg?react";
 
 import {
   formatAmountByCollateralToken,
@@ -500,10 +501,9 @@ function CopyButton({ value }: { value: string }) {
   }, [copyToClipboard, value]);
 
   return (
-    <BiCopy
-      size={16}
+    <CopyIcon
       className={cx(
-        "invisible cursor-pointer text-typography-secondary transition-transform hover:text-typography-primary group-hover:visible",
+        "invisible size-16 cursor-pointer text-typography-secondary transition-transform hover:text-typography-primary group-hover:visible",
         {
           "scale-110 text-typography-primary": isCopied,
         }

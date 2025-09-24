@@ -1,7 +1,6 @@
 import { Menu } from "@headlessui/react";
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { FiChevronDown } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 import { Address } from "viem";
@@ -21,7 +20,8 @@ import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import BellIcon from "img/ic_bell.svg?react";
-import CopyIcon from "img/ic_copy_20.svg?react";
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
+import CopyIcon from "img/ic_copy.svg?react";
 import ExplorerIcon from "img/ic_explorer.svg?react";
 import PnlAnalysisIcon from "img/ic_pnl_analysis.svg?react";
 import DisconnectIcon from "img/ic_sign_out_20.svg?react";
@@ -53,7 +53,7 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
                 {shortenAddressOrEns(ensName || account, displayAddressLength)}
               </span>
 
-              <FiChevronDown size={20} className={cx("block", { "rotate-180": open })} />
+              <ChevronDownIcon className={cx("block size-20", { "rotate-180": open })} />
             </Button>
           </Menu.Button>
 
@@ -66,7 +66,7 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
                   helperToast.success(t`Address copied to your clipboard.`);
                 }}
               >
-                <CopyIcon width={20} className="size-20" />
+                <CopyIcon className="size-20" />
                 <p>
                   <Trans>Copy Address</Trans>
                 </p>
