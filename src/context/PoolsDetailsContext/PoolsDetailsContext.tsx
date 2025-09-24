@@ -7,8 +7,8 @@ import { GlvOrMarketInfo } from "domain/synthetics/markets";
 import { getByKey } from "lib/objects";
 import useRouteQuery from "lib/useRouteQuery";
 
-import { getGmSwapBoxAvailableModes } from "components/Synthetics/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
-import { Mode, Operation, isMode, isOperation } from "components/Synthetics/GmSwap/GmSwapBox/types";
+import { getGmSwapBoxAvailableModes } from "components/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
+import { Mode, Operation, isMode, isOperation } from "components/GmSwap/GmSwapBox/types";
 
 export type PoolsDetailsQueryParams = {
   market: string;

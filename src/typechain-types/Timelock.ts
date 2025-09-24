@@ -112,40 +112,124 @@ export interface TimelockInterface extends Interface {
       | "SignalWithdrawToken"
   ): EventFragment;
 
-  encodeFunctionData(functionFragment: "MAX_BUFFER", values?: undefined): string;
-  encodeFunctionData(functionFragment: "MAX_FUNDING_RATE_FACTOR", values?: undefined): string;
-  encodeFunctionData(functionFragment: "MAX_LEVERAGE_VALIDATION", values?: undefined): string;
-  encodeFunctionData(functionFragment: "PRICE_PRECISION", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "MAX_BUFFER",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "MAX_FUNDING_RATE_FACTOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "MAX_LEVERAGE_VALIDATION",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "PRICE_PRECISION",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "admin", values?: undefined): string;
-  encodeFunctionData(functionFragment: "approve", values: [AddressLike, AddressLike, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "approve",
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "batchSetBonusRewards",
     values: [AddressLike, AddressLike[], BigNumberish[]]
   ): string;
-  encodeFunctionData(functionFragment: "batchWithdrawFees", values: [AddressLike, AddressLike[]]): string;
+  encodeFunctionData(
+    functionFragment: "batchWithdrawFees",
+    values: [AddressLike, AddressLike[]]
+  ): string;
   encodeFunctionData(functionFragment: "buffer", values?: undefined): string;
-  encodeFunctionData(functionFragment: "cancelAction", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "disableLeverage", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "enableLeverage", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "glpManager", values?: undefined): string;
-  encodeFunctionData(functionFragment: "govSetCodeOwner", values: [AddressLike, BytesLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "initGlpManager", values?: undefined): string;
-  encodeFunctionData(functionFragment: "initRewardRouter", values?: undefined): string;
-  encodeFunctionData(functionFragment: "isHandler", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "isKeeper", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "marginFeeBasisPoints", values?: undefined): string;
-  encodeFunctionData(functionFragment: "maxMarginFeeBasisPoints", values?: undefined): string;
-  encodeFunctionData(functionFragment: "maxTokenSupply", values?: undefined): string;
-  encodeFunctionData(functionFragment: "mintReceiver", values?: undefined): string;
-  encodeFunctionData(functionFragment: "pendingActions", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "processMint", values: [AddressLike, AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "redeemUsdg", values: [AddressLike, AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "removeAdmin", values: [AddressLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "rewardRouter", values?: undefined): string;
-  encodeFunctionData(functionFragment: "setAdmin", values: [AddressLike]): string;
-  encodeFunctionData(functionFragment: "setBuffer", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "setContractHandler", values: [AddressLike, boolean]): string;
-  encodeFunctionData(functionFragment: "setExternalAdmin", values: [AddressLike, AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "cancelAction",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "disableLeverage",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "enableLeverage",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "glpManager",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "govSetCodeOwner",
+    values: [AddressLike, BytesLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initGlpManager",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initRewardRouter",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isHandler",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isKeeper",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "marginFeeBasisPoints",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "maxMarginFeeBasisPoints",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "maxTokenSupply",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "mintReceiver",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "pendingActions",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "processMint",
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "redeemUsdg",
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeAdmin",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "rewardRouter",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setAdmin",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setBuffer",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setContractHandler",
+    values: [AddressLike, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setExternalAdmin",
+    values: [AddressLike, AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "setFees",
     values: [
@@ -158,36 +242,91 @@ export interface TimelockInterface extends Interface {
       BigNumberish,
       BigNumberish,
       BigNumberish,
-      boolean,
+      boolean
     ]
   ): string;
   encodeFunctionData(
     functionFragment: "setFundingRate",
     values: [AddressLike, BigNumberish, BigNumberish, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "setGlpCooldownDuration", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "setGov", values: [AddressLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "setHandler", values: [AddressLike, AddressLike, boolean]): string;
-  encodeFunctionData(functionFragment: "setInPrivateLiquidationMode", values: [AddressLike, boolean]): string;
-  encodeFunctionData(functionFragment: "setInPrivateTransferMode", values: [AddressLike, boolean]): string;
-  encodeFunctionData(functionFragment: "setIsLeverageEnabled", values: [AddressLike, boolean]): string;
-  encodeFunctionData(functionFragment: "setIsSwapEnabled", values: [AddressLike, boolean]): string;
-  encodeFunctionData(functionFragment: "setKeeper", values: [AddressLike, boolean]): string;
-  encodeFunctionData(functionFragment: "setLiquidator", values: [AddressLike, AddressLike, boolean]): string;
-  encodeFunctionData(functionFragment: "setMarginFeeBasisPoints", values: [BigNumberish, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "setMaxGasPrice", values: [AddressLike, BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "setGlpCooldownDuration",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setGov",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setHandler",
+    values: [AddressLike, AddressLike, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setInPrivateLiquidationMode",
+    values: [AddressLike, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setInPrivateTransferMode",
+    values: [AddressLike, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setIsLeverageEnabled",
+    values: [AddressLike, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setIsSwapEnabled",
+    values: [AddressLike, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setKeeper",
+    values: [AddressLike, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setLiquidator",
+    values: [AddressLike, AddressLike, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setMarginFeeBasisPoints",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setMaxGasPrice",
+    values: [AddressLike, BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "setMaxGlobalShortSize",
     values: [AddressLike, AddressLike, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "setMaxLeverage", values: [AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "setPriceFeed", values: [AddressLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "setReferrerTier", values: [AddressLike, AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "setShortsTrackerAveragePriceWeight", values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: "setShouldToggleIsLeverageEnabled", values: [boolean]): string;
+  encodeFunctionData(
+    functionFragment: "setMaxLeverage",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setPriceFeed",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setReferrerTier",
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setShortsTrackerAveragePriceWeight",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setShouldToggleIsLeverageEnabled",
+    values: [boolean]
+  ): string;
   encodeFunctionData(
     functionFragment: "setSwapFees",
-    values: [AddressLike, BigNumberish, BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+    values: [
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "setTier",
@@ -195,108 +334,332 @@ export interface TimelockInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setTokenConfig",
-    values: [AddressLike, AddressLike, BigNumberish, BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+    values: [
+      AddressLike,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
+    ]
   ): string;
-  encodeFunctionData(functionFragment: "setUsdgAmounts", values: [AddressLike, AddressLike[], BigNumberish[]]): string;
-  encodeFunctionData(functionFragment: "setVaultUtils", values: [AddressLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "shouldToggleIsLeverageEnabled", values?: undefined): string;
-  encodeFunctionData(functionFragment: "signalApprove", values: [AddressLike, AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "signalMint", values: [AddressLike, AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "signalRedeemUsdg", values: [AddressLike, AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "signalSetGov", values: [AddressLike, AddressLike]): string;
-  encodeFunctionData(functionFragment: "signalSetHandler", values: [AddressLike, AddressLike, boolean]): string;
-  encodeFunctionData(functionFragment: "signalSetPriceFeed", values: [AddressLike, AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "setUsdgAmounts",
+    values: [AddressLike, AddressLike[], BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setVaultUtils",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "shouldToggleIsLeverageEnabled",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "signalApprove",
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "signalMint",
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "signalRedeemUsdg",
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "signalSetGov",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "signalSetHandler",
+    values: [AddressLike, AddressLike, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "signalSetPriceFeed",
+    values: [AddressLike, AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "signalVaultSetTokenConfig",
-    values: [AddressLike, AddressLike, BigNumberish, BigNumberish, BigNumberish, BigNumberish, boolean, boolean]
+    values: [
+      AddressLike,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      boolean,
+      boolean
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "signalWithdrawToken",
     values: [AddressLike, AddressLike, AddressLike, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "tokenManager", values?: undefined): string;
-  encodeFunctionData(functionFragment: "transferIn", values: [AddressLike, AddressLike, BigNumberish]): string;
-  encodeFunctionData(functionFragment: "updateUsdgSupply", values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "tokenManager",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferIn",
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateUsdgSupply",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "vaultSetTokenConfig",
-    values: [AddressLike, AddressLike, BigNumberish, BigNumberish, BigNumberish, BigNumberish, boolean, boolean]
+    values: [
+      AddressLike,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      boolean,
+      boolean
+    ]
   ): string;
-  encodeFunctionData(functionFragment: "withdrawFees", values: [AddressLike, AddressLike, AddressLike]): string;
+  encodeFunctionData(
+    functionFragment: "withdrawFees",
+    values: [AddressLike, AddressLike, AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "withdrawToken",
     values: [AddressLike, AddressLike, AddressLike, BigNumberish]
   ): string;
 
   decodeFunctionResult(functionFragment: "MAX_BUFFER", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "MAX_FUNDING_RATE_FACTOR", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "MAX_LEVERAGE_VALIDATION", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "PRICE_PRECISION", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "MAX_FUNDING_RATE_FACTOR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "MAX_LEVERAGE_VALIDATION",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "PRICE_PRECISION",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "admin", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "batchSetBonusRewards", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "batchWithdrawFees", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "batchSetBonusRewards",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "batchWithdrawFees",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "buffer", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "cancelAction", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "disableLeverage", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "enableLeverage", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "cancelAction",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "disableLeverage",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "enableLeverage",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "glpManager", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "govSetCodeOwner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "initGlpManager", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "initRewardRouter", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "govSetCodeOwner",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "initGlpManager",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "initRewardRouter",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "isHandler", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "isKeeper", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "marginFeeBasisPoints", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "maxMarginFeeBasisPoints", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "maxTokenSupply", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "mintReceiver", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "pendingActions", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "processMint", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "marginFeeBasisPoints",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "maxMarginFeeBasisPoints",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "maxTokenSupply",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "mintReceiver",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "pendingActions",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "processMint",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "redeemUsdg", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "removeAdmin", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "rewardRouter", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "removeAdmin",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "rewardRouter",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setAdmin", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setBuffer", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setContractHandler", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setExternalAdmin", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setContractHandler",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setExternalAdmin",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setFees", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setFundingRate", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setGlpCooldownDuration", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setFundingRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setGlpCooldownDuration",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setGov", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setHandler", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setInPrivateLiquidationMode", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setInPrivateTransferMode", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setIsLeverageEnabled", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setIsSwapEnabled", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setInPrivateLiquidationMode",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setInPrivateTransferMode",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setIsLeverageEnabled",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setIsSwapEnabled",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setKeeper", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setLiquidator", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setMarginFeeBasisPoints", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setMaxGasPrice", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setMaxGlobalShortSize", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setMaxLeverage", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setPriceFeed", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setReferrerTier", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setShortsTrackerAveragePriceWeight", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setShouldToggleIsLeverageEnabled", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setSwapFees", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setLiquidator",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setMarginFeeBasisPoints",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setMaxGasPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setMaxGlobalShortSize",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setMaxLeverage",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setPriceFeed",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setReferrerTier",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setShortsTrackerAveragePriceWeight",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setShouldToggleIsLeverageEnabled",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setSwapFees",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setTier", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setTokenConfig", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setUsdgAmounts", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setVaultUtils", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "shouldToggleIsLeverageEnabled", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "signalApprove", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setTokenConfig",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setUsdgAmounts",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setVaultUtils",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "shouldToggleIsLeverageEnabled",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "signalApprove",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "signalMint", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "signalRedeemUsdg", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "signalSetGov", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "signalSetHandler", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "signalSetPriceFeed", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "signalVaultSetTokenConfig", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "signalWithdrawToken", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "tokenManager", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "signalRedeemUsdg",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "signalSetGov",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "signalSetHandler",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "signalSetPriceFeed",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "signalVaultSetTokenConfig",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "signalWithdrawToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenManager",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "transferIn", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "updateUsdgSupply", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "vaultSetTokenConfig", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "withdrawFees", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "withdrawToken", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "updateUsdgSupply",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "vaultSetTokenConfig",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawFees",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawToken",
+    data: BytesLike
+  ): Result;
 }
 
 export namespace ClearActionEvent {
@@ -312,8 +675,18 @@ export namespace ClearActionEvent {
 }
 
 export namespace SignalApproveEvent {
-  export type InputTuple = [token: AddressLike, spender: AddressLike, amount: BigNumberish, action: BytesLike];
-  export type OutputTuple = [token: string, spender: string, amount: bigint, action: string];
+  export type InputTuple = [
+    token: AddressLike,
+    spender: AddressLike,
+    amount: BigNumberish,
+    action: BytesLike
+  ];
+  export type OutputTuple = [
+    token: string,
+    spender: string,
+    amount: bigint,
+    action: string
+  ];
   export interface OutputObject {
     token: string;
     spender: string;
@@ -327,8 +700,18 @@ export namespace SignalApproveEvent {
 }
 
 export namespace SignalMintEvent {
-  export type InputTuple = [token: AddressLike, receiver: AddressLike, amount: BigNumberish, action: BytesLike];
-  export type OutputTuple = [token: string, receiver: string, amount: bigint, action: string];
+  export type InputTuple = [
+    token: AddressLike,
+    receiver: AddressLike,
+    amount: BigNumberish,
+    action: BytesLike
+  ];
+  export type OutputTuple = [
+    token: string,
+    receiver: string,
+    amount: bigint,
+    action: string
+  ];
   export interface OutputObject {
     token: string;
     receiver: string;
@@ -354,7 +737,11 @@ export namespace SignalPendingActionEvent {
 }
 
 export namespace SignalRedeemUsdgEvent {
-  export type InputTuple = [vault: AddressLike, token: AddressLike, amount: BigNumberish];
+  export type InputTuple = [
+    vault: AddressLike,
+    token: AddressLike,
+    amount: BigNumberish
+  ];
   export type OutputTuple = [vault: string, token: string, amount: bigint];
   export interface OutputObject {
     vault: string;
@@ -368,7 +755,11 @@ export namespace SignalRedeemUsdgEvent {
 }
 
 export namespace SignalSetGovEvent {
-  export type InputTuple = [target: AddressLike, gov: AddressLike, action: BytesLike];
+  export type InputTuple = [
+    target: AddressLike,
+    gov: AddressLike,
+    action: BytesLike
+  ];
   export type OutputTuple = [target: string, gov: string, action: string];
   export interface OutputObject {
     target: string;
@@ -382,8 +773,18 @@ export namespace SignalSetGovEvent {
 }
 
 export namespace SignalSetHandlerEvent {
-  export type InputTuple = [target: AddressLike, handler: AddressLike, isActive: boolean, action: BytesLike];
-  export type OutputTuple = [target: string, handler: string, isActive: boolean, action: string];
+  export type InputTuple = [
+    target: AddressLike,
+    handler: AddressLike,
+    isActive: boolean,
+    action: BytesLike
+  ];
+  export type OutputTuple = [
+    target: string,
+    handler: string,
+    isActive: boolean,
+    action: string
+  ];
   export interface OutputObject {
     target: string;
     handler: string;
@@ -397,7 +798,11 @@ export namespace SignalSetHandlerEvent {
 }
 
 export namespace SignalSetPriceFeedEvent {
-  export type InputTuple = [vault: AddressLike, priceFeed: AddressLike, action: BytesLike];
+  export type InputTuple = [
+    vault: AddressLike,
+    priceFeed: AddressLike,
+    action: BytesLike
+  ];
   export type OutputTuple = [vault: string, priceFeed: string, action: string];
   export interface OutputObject {
     vault: string;
@@ -419,7 +824,7 @@ export namespace SignalVaultSetTokenConfigEvent {
     minProfitBps: BigNumberish,
     maxUsdgAmount: BigNumberish,
     isStable: boolean,
-    isShortable: boolean,
+    isShortable: boolean
   ];
   export type OutputTuple = [
     vault: string,
@@ -429,7 +834,7 @@ export namespace SignalVaultSetTokenConfigEvent {
     minProfitBps: bigint,
     maxUsdgAmount: bigint,
     isStable: boolean,
-    isShortable: boolean,
+    isShortable: boolean
   ];
   export interface OutputObject {
     vault: string;
@@ -453,9 +858,15 @@ export namespace SignalWithdrawTokenEvent {
     token: AddressLike,
     receiver: AddressLike,
     amount: BigNumberish,
-    action: BytesLike,
+    action: BytesLike
   ];
-  export type OutputTuple = [target: string, token: string, receiver: string, amount: bigint, action: string];
+  export type OutputTuple = [
+    target: string,
+    token: string,
+    receiver: string,
+    amount: bigint,
+    action: string
+  ];
   export interface OutputObject {
     target: string;
     token: string;
@@ -486,21 +897,31 @@ export interface Timelock extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  on<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   on<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  once<TCEvent extends TypedContractEvent>(event: TCEvent, listener: TypedListener<TCEvent>): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
   once<TCEvent extends TypedContractEvent>(
     filter: TypedDeferredTopicFilter<TCEvent>,
     listener: TypedListener<TCEvent>
   ): Promise<this>;
 
-  listeners<TCEvent extends TypedContractEvent>(event: TCEvent): Promise<Array<TypedListener<TCEvent>>>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
   listeners(eventName?: string): Promise<Array<Listener>>;
-  removeAllListeners<TCEvent extends TypedContractEvent>(event?: TCEvent): Promise<this>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
   MAX_BUFFER: TypedContractMethod<[], [bigint], "view">;
 
@@ -524,15 +945,27 @@ export interface Timelock extends BaseContract {
     "nonpayable"
   >;
 
-  batchWithdrawFees: TypedContractMethod<[_vault: AddressLike, _tokens: AddressLike[]], [void], "nonpayable">;
+  batchWithdrawFees: TypedContractMethod<
+    [_vault: AddressLike, _tokens: AddressLike[]],
+    [void],
+    "nonpayable"
+  >;
 
   buffer: TypedContractMethod<[], [bigint], "view">;
 
   cancelAction: TypedContractMethod<[_action: BytesLike], [void], "nonpayable">;
 
-  disableLeverage: TypedContractMethod<[_vault: AddressLike], [void], "nonpayable">;
+  disableLeverage: TypedContractMethod<
+    [_vault: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
-  enableLeverage: TypedContractMethod<[_vault: AddressLike], [void], "nonpayable">;
+  enableLeverage: TypedContractMethod<
+    [_vault: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   glpManager: TypedContractMethod<[], [string], "view">;
 
@@ -572,7 +1005,11 @@ export interface Timelock extends BaseContract {
     "nonpayable"
   >;
 
-  removeAdmin: TypedContractMethod<[_token: AddressLike, _account: AddressLike], [void], "nonpayable">;
+  removeAdmin: TypedContractMethod<
+    [_token: AddressLike, _account: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   rewardRouter: TypedContractMethod<[], [string], "view">;
 
@@ -580,9 +1017,17 @@ export interface Timelock extends BaseContract {
 
   setBuffer: TypedContractMethod<[_buffer: BigNumberish], [void], "nonpayable">;
 
-  setContractHandler: TypedContractMethod<[_handler: AddressLike, _isActive: boolean], [void], "nonpayable">;
+  setContractHandler: TypedContractMethod<
+    [_handler: AddressLike, _isActive: boolean],
+    [void],
+    "nonpayable"
+  >;
 
-  setExternalAdmin: TypedContractMethod<[_target: AddressLike, _admin: AddressLike], [void], "nonpayable">;
+  setExternalAdmin: TypedContractMethod<
+    [_target: AddressLike, _admin: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   setFees: TypedContractMethod<
     [
@@ -595,7 +1040,7 @@ export interface Timelock extends BaseContract {
       _marginFeeBasisPoints: BigNumberish,
       _liquidationFeeUsd: BigNumberish,
       _minProfitTime: BigNumberish,
-      _hasDynamicFees: boolean,
+      _hasDynamicFees: boolean
     ],
     [void],
     "nonpayable"
@@ -606,15 +1051,23 @@ export interface Timelock extends BaseContract {
       _vault: AddressLike,
       _fundingInterval: BigNumberish,
       _fundingRateFactor: BigNumberish,
-      _stableFundingRateFactor: BigNumberish,
+      _stableFundingRateFactor: BigNumberish
     ],
     [void],
     "nonpayable"
   >;
 
-  setGlpCooldownDuration: TypedContractMethod<[_cooldownDuration: BigNumberish], [void], "nonpayable">;
+  setGlpCooldownDuration: TypedContractMethod<
+    [_cooldownDuration: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
-  setGov: TypedContractMethod<[_target: AddressLike, _gov: AddressLike], [void], "nonpayable">;
+  setGov: TypedContractMethod<
+    [_target: AddressLike, _gov: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   setHandler: TypedContractMethod<
     [_target: AddressLike, _handler: AddressLike, _isActive: boolean],
@@ -634,11 +1087,23 @@ export interface Timelock extends BaseContract {
     "nonpayable"
   >;
 
-  setIsLeverageEnabled: TypedContractMethod<[_vault: AddressLike, _isLeverageEnabled: boolean], [void], "nonpayable">;
+  setIsLeverageEnabled: TypedContractMethod<
+    [_vault: AddressLike, _isLeverageEnabled: boolean],
+    [void],
+    "nonpayable"
+  >;
 
-  setIsSwapEnabled: TypedContractMethod<[_vault: AddressLike, _isSwapEnabled: boolean], [void], "nonpayable">;
+  setIsSwapEnabled: TypedContractMethod<
+    [_vault: AddressLike, _isSwapEnabled: boolean],
+    [void],
+    "nonpayable"
+  >;
 
-  setKeeper: TypedContractMethod<[_keeper: AddressLike, _isActive: boolean], [void], "nonpayable">;
+  setKeeper: TypedContractMethod<
+    [_keeper: AddressLike, _isActive: boolean],
+    [void],
+    "nonpayable"
+  >;
 
   setLiquidator: TypedContractMethod<
     [_vault: AddressLike, _liquidator: AddressLike, _isActive: boolean],
@@ -647,12 +1112,19 @@ export interface Timelock extends BaseContract {
   >;
 
   setMarginFeeBasisPoints: TypedContractMethod<
-    [_marginFeeBasisPoints: BigNumberish, _maxMarginFeeBasisPoints: BigNumberish],
+    [
+      _marginFeeBasisPoints: BigNumberish,
+      _maxMarginFeeBasisPoints: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
 
-  setMaxGasPrice: TypedContractMethod<[_vault: AddressLike, _maxGasPrice: BigNumberish], [void], "nonpayable">;
+  setMaxGasPrice: TypedContractMethod<
+    [_vault: AddressLike, _maxGasPrice: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   setMaxGlobalShortSize: TypedContractMethod<
     [_vault: AddressLike, _token: AddressLike, _amount: BigNumberish],
@@ -660,12 +1132,24 @@ export interface Timelock extends BaseContract {
     "nonpayable"
   >;
 
-  setMaxLeverage: TypedContractMethod<[_vault: AddressLike, _maxLeverage: BigNumberish], [void], "nonpayable">;
+  setMaxLeverage: TypedContractMethod<
+    [_vault: AddressLike, _maxLeverage: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
-  setPriceFeed: TypedContractMethod<[_vault: AddressLike, _priceFeed: AddressLike], [void], "nonpayable">;
+  setPriceFeed: TypedContractMethod<
+    [_vault: AddressLike, _priceFeed: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   setReferrerTier: TypedContractMethod<
-    [_referralStorage: AddressLike, _referrer: AddressLike, _tierId: BigNumberish],
+    [
+      _referralStorage: AddressLike,
+      _referrer: AddressLike,
+      _tierId: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
@@ -689,14 +1173,19 @@ export interface Timelock extends BaseContract {
       _stableTaxBasisPoints: BigNumberish,
       _mintBurnFeeBasisPoints: BigNumberish,
       _swapFeeBasisPoints: BigNumberish,
-      _stableSwapFeeBasisPoints: BigNumberish,
+      _stableSwapFeeBasisPoints: BigNumberish
     ],
     [void],
     "nonpayable"
   >;
 
   setTier: TypedContractMethod<
-    [_referralStorage: AddressLike, _tierId: BigNumberish, _totalRebate: BigNumberish, _discountShare: BigNumberish],
+    [
+      _referralStorage: AddressLike,
+      _tierId: BigNumberish,
+      _totalRebate: BigNumberish,
+      _discountShare: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
@@ -709,7 +1198,7 @@ export interface Timelock extends BaseContract {
       _minProfitBps: BigNumberish,
       _maxUsdgAmount: BigNumberish,
       _bufferAmount: BigNumberish,
-      _usdgAmount: BigNumberish,
+      _usdgAmount: BigNumberish
     ],
     [void],
     "nonpayable"
@@ -721,7 +1210,11 @@ export interface Timelock extends BaseContract {
     "nonpayable"
   >;
 
-  setVaultUtils: TypedContractMethod<[_vault: AddressLike, _vaultUtils: AddressLike], [void], "nonpayable">;
+  setVaultUtils: TypedContractMethod<
+    [_vault: AddressLike, _vaultUtils: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   shouldToggleIsLeverageEnabled: TypedContractMethod<[], [boolean], "view">;
 
@@ -743,7 +1236,11 @@ export interface Timelock extends BaseContract {
     "nonpayable"
   >;
 
-  signalSetGov: TypedContractMethod<[_target: AddressLike, _gov: AddressLike], [void], "nonpayable">;
+  signalSetGov: TypedContractMethod<
+    [_target: AddressLike, _gov: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   signalSetHandler: TypedContractMethod<
     [_target: AddressLike, _handler: AddressLike, _isActive: boolean],
@@ -751,7 +1248,11 @@ export interface Timelock extends BaseContract {
     "nonpayable"
   >;
 
-  signalSetPriceFeed: TypedContractMethod<[_vault: AddressLike, _priceFeed: AddressLike], [void], "nonpayable">;
+  signalSetPriceFeed: TypedContractMethod<
+    [_vault: AddressLike, _priceFeed: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   signalVaultSetTokenConfig: TypedContractMethod<
     [
@@ -762,14 +1263,19 @@ export interface Timelock extends BaseContract {
       _minProfitBps: BigNumberish,
       _maxUsdgAmount: BigNumberish,
       _isStable: boolean,
-      _isShortable: boolean,
+      _isShortable: boolean
     ],
     [void],
     "nonpayable"
   >;
 
   signalWithdrawToken: TypedContractMethod<
-    [_target: AddressLike, _token: AddressLike, _receiver: AddressLike, _amount: BigNumberish],
+    [
+      _target: AddressLike,
+      _token: AddressLike,
+      _receiver: AddressLike,
+      _amount: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
@@ -782,7 +1288,11 @@ export interface Timelock extends BaseContract {
     "nonpayable"
   >;
 
-  updateUsdgSupply: TypedContractMethod<[usdgAmount: BigNumberish], [void], "nonpayable">;
+  updateUsdgSupply: TypedContractMethod<
+    [usdgAmount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   vaultSetTokenConfig: TypedContractMethod<
     [
@@ -793,7 +1303,7 @@ export interface Timelock extends BaseContract {
       _minProfitBps: BigNumberish,
       _maxUsdgAmount: BigNumberish,
       _isStable: boolean,
-      _isShortable: boolean,
+      _isShortable: boolean
     ],
     [void],
     "nonpayable"
@@ -806,21 +1316,42 @@ export interface Timelock extends BaseContract {
   >;
 
   withdrawToken: TypedContractMethod<
-    [_target: AddressLike, _token: AddressLike, _receiver: AddressLike, _amount: BigNumberish],
+    [
+      _target: AddressLike,
+      _token: AddressLike,
+      _receiver: AddressLike,
+      _amount: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
 
-  getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  getFunction(nameOrSignature: "MAX_BUFFER"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "MAX_FUNDING_RATE_FACTOR"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "MAX_LEVERAGE_VALIDATION"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "PRICE_PRECISION"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "admin"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "MAX_BUFFER"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "MAX_FUNDING_RATE_FACTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "MAX_LEVERAGE_VALIDATION"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "PRICE_PRECISION"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "admin"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "approve"
-  ): TypedContractMethod<[_token: AddressLike, _spender: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _spender: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "batchSetBonusRewards"
   ): TypedContractMethod<
@@ -830,12 +1361,26 @@ export interface Timelock extends BaseContract {
   >;
   getFunction(
     nameOrSignature: "batchWithdrawFees"
-  ): TypedContractMethod<[_vault: AddressLike, _tokens: AddressLike[]], [void], "nonpayable">;
-  getFunction(nameOrSignature: "buffer"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "cancelAction"): TypedContractMethod<[_action: BytesLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "disableLeverage"): TypedContractMethod<[_vault: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "enableLeverage"): TypedContractMethod<[_vault: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "glpManager"): TypedContractMethod<[], [string], "view">;
+  ): TypedContractMethod<
+    [_vault: AddressLike, _tokens: AddressLike[]],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "buffer"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "cancelAction"
+  ): TypedContractMethod<[_action: BytesLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "disableLeverage"
+  ): TypedContractMethod<[_vault: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "enableLeverage"
+  ): TypedContractMethod<[_vault: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "glpManager"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "govSetCodeOwner"
   ): TypedContractMethod<
@@ -843,33 +1388,77 @@ export interface Timelock extends BaseContract {
     [void],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "initGlpManager"): TypedContractMethod<[], [void], "nonpayable">;
-  getFunction(nameOrSignature: "initRewardRouter"): TypedContractMethod<[], [void], "nonpayable">;
-  getFunction(nameOrSignature: "isHandler"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
-  getFunction(nameOrSignature: "isKeeper"): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
-  getFunction(nameOrSignature: "marginFeeBasisPoints"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "maxMarginFeeBasisPoints"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "maxTokenSupply"): TypedContractMethod<[], [bigint], "view">;
-  getFunction(nameOrSignature: "mintReceiver"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "pendingActions"): TypedContractMethod<[arg0: BytesLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "initGlpManager"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "initRewardRouter"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "isHandler"
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "isKeeper"
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "marginFeeBasisPoints"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "maxMarginFeeBasisPoints"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "maxTokenSupply"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "mintReceiver"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "pendingActions"
+  ): TypedContractMethod<[arg0: BytesLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "processMint"
-  ): TypedContractMethod<[_token: AddressLike, _receiver: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _receiver: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "redeemUsdg"
-  ): TypedContractMethod<[_vault: AddressLike, _token: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_vault: AddressLike, _token: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "removeAdmin"
-  ): TypedContractMethod<[_token: AddressLike, _account: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "rewardRouter"): TypedContractMethod<[], [string], "view">;
-  getFunction(nameOrSignature: "setAdmin"): TypedContractMethod<[_admin: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "setBuffer"): TypedContractMethod<[_buffer: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _account: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "rewardRouter"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "setAdmin"
+  ): TypedContractMethod<[_admin: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setBuffer"
+  ): TypedContractMethod<[_buffer: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "setContractHandler"
-  ): TypedContractMethod<[_handler: AddressLike, _isActive: boolean], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_handler: AddressLike, _isActive: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setExternalAdmin"
-  ): TypedContractMethod<[_target: AddressLike, _admin: AddressLike], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_target: AddressLike, _admin: AddressLike],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setFees"
   ): TypedContractMethod<
@@ -883,7 +1472,7 @@ export interface Timelock extends BaseContract {
       _marginFeeBasisPoints: BigNumberish,
       _liquidationFeeUsd: BigNumberish,
       _minProfitTime: BigNumberish,
-      _hasDynamicFees: boolean,
+      _hasDynamicFees: boolean
     ],
     [void],
     "nonpayable"
@@ -895,70 +1484,137 @@ export interface Timelock extends BaseContract {
       _vault: AddressLike,
       _fundingInterval: BigNumberish,
       _fundingRateFactor: BigNumberish,
-      _stableFundingRateFactor: BigNumberish,
+      _stableFundingRateFactor: BigNumberish
     ],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "setGlpCooldownDuration"
-  ): TypedContractMethod<[_cooldownDuration: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_cooldownDuration: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setGov"
-  ): TypedContractMethod<[_target: AddressLike, _gov: AddressLike], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_target: AddressLike, _gov: AddressLike],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setHandler"
-  ): TypedContractMethod<[_target: AddressLike, _handler: AddressLike, _isActive: boolean], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_target: AddressLike, _handler: AddressLike, _isActive: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setInPrivateLiquidationMode"
-  ): TypedContractMethod<[_vault: AddressLike, _inPrivateLiquidationMode: boolean], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_vault: AddressLike, _inPrivateLiquidationMode: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setInPrivateTransferMode"
-  ): TypedContractMethod<[_token: AddressLike, _inPrivateTransferMode: boolean], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _inPrivateTransferMode: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setIsLeverageEnabled"
-  ): TypedContractMethod<[_vault: AddressLike, _isLeverageEnabled: boolean], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_vault: AddressLike, _isLeverageEnabled: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setIsSwapEnabled"
-  ): TypedContractMethod<[_vault: AddressLike, _isSwapEnabled: boolean], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_vault: AddressLike, _isSwapEnabled: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setKeeper"
-  ): TypedContractMethod<[_keeper: AddressLike, _isActive: boolean], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_keeper: AddressLike, _isActive: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setLiquidator"
-  ): TypedContractMethod<[_vault: AddressLike, _liquidator: AddressLike, _isActive: boolean], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_vault: AddressLike, _liquidator: AddressLike, _isActive: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setMarginFeeBasisPoints"
   ): TypedContractMethod<
-    [_marginFeeBasisPoints: BigNumberish, _maxMarginFeeBasisPoints: BigNumberish],
+    [
+      _marginFeeBasisPoints: BigNumberish,
+      _maxMarginFeeBasisPoints: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "setMaxGasPrice"
-  ): TypedContractMethod<[_vault: AddressLike, _maxGasPrice: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_vault: AddressLike, _maxGasPrice: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setMaxGlobalShortSize"
-  ): TypedContractMethod<[_vault: AddressLike, _token: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_vault: AddressLike, _token: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setMaxLeverage"
-  ): TypedContractMethod<[_vault: AddressLike, _maxLeverage: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_vault: AddressLike, _maxLeverage: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setPriceFeed"
-  ): TypedContractMethod<[_vault: AddressLike, _priceFeed: AddressLike], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_vault: AddressLike, _priceFeed: AddressLike],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setReferrerTier"
   ): TypedContractMethod<
-    [_referralStorage: AddressLike, _referrer: AddressLike, _tierId: BigNumberish],
+    [
+      _referralStorage: AddressLike,
+      _referrer: AddressLike,
+      _tierId: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "setShortsTrackerAveragePriceWeight"
-  ): TypedContractMethod<[_shortsTrackerAveragePriceWeight: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_shortsTrackerAveragePriceWeight: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setShouldToggleIsLeverageEnabled"
-  ): TypedContractMethod<[_shouldToggleIsLeverageEnabled: boolean], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_shouldToggleIsLeverageEnabled: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "setSwapFees"
   ): TypedContractMethod<
@@ -968,7 +1624,7 @@ export interface Timelock extends BaseContract {
       _stableTaxBasisPoints: BigNumberish,
       _mintBurnFeeBasisPoints: BigNumberish,
       _swapFeeBasisPoints: BigNumberish,
-      _stableSwapFeeBasisPoints: BigNumberish,
+      _stableSwapFeeBasisPoints: BigNumberish
     ],
     [void],
     "nonpayable"
@@ -976,7 +1632,12 @@ export interface Timelock extends BaseContract {
   getFunction(
     nameOrSignature: "setTier"
   ): TypedContractMethod<
-    [_referralStorage: AddressLike, _tierId: BigNumberish, _totalRebate: BigNumberish, _discountShare: BigNumberish],
+    [
+      _referralStorage: AddressLike,
+      _tierId: BigNumberish,
+      _totalRebate: BigNumberish,
+      _discountShare: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
@@ -990,7 +1651,7 @@ export interface Timelock extends BaseContract {
       _minProfitBps: BigNumberish,
       _maxUsdgAmount: BigNumberish,
       _bufferAmount: BigNumberish,
-      _usdgAmount: BigNumberish,
+      _usdgAmount: BigNumberish
     ],
     [void],
     "nonpayable"
@@ -1004,26 +1665,56 @@ export interface Timelock extends BaseContract {
   >;
   getFunction(
     nameOrSignature: "setVaultUtils"
-  ): TypedContractMethod<[_vault: AddressLike, _vaultUtils: AddressLike], [void], "nonpayable">;
-  getFunction(nameOrSignature: "shouldToggleIsLeverageEnabled"): TypedContractMethod<[], [boolean], "view">;
+  ): TypedContractMethod<
+    [_vault: AddressLike, _vaultUtils: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "shouldToggleIsLeverageEnabled"
+  ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
     nameOrSignature: "signalApprove"
-  ): TypedContractMethod<[_token: AddressLike, _spender: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _spender: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "signalMint"
-  ): TypedContractMethod<[_token: AddressLike, _receiver: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_token: AddressLike, _receiver: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "signalRedeemUsdg"
-  ): TypedContractMethod<[_vault: AddressLike, _token: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_vault: AddressLike, _token: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "signalSetGov"
-  ): TypedContractMethod<[_target: AddressLike, _gov: AddressLike], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_target: AddressLike, _gov: AddressLike],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "signalSetHandler"
-  ): TypedContractMethod<[_target: AddressLike, _handler: AddressLike, _isActive: boolean], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_target: AddressLike, _handler: AddressLike, _isActive: boolean],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "signalSetPriceFeed"
-  ): TypedContractMethod<[_vault: AddressLike, _priceFeed: AddressLike], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_vault: AddressLike, _priceFeed: AddressLike],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "signalVaultSetTokenConfig"
   ): TypedContractMethod<
@@ -1035,7 +1726,7 @@ export interface Timelock extends BaseContract {
       _minProfitBps: BigNumberish,
       _maxUsdgAmount: BigNumberish,
       _isStable: boolean,
-      _isShortable: boolean,
+      _isShortable: boolean
     ],
     [void],
     "nonpayable"
@@ -1043,14 +1734,25 @@ export interface Timelock extends BaseContract {
   getFunction(
     nameOrSignature: "signalWithdrawToken"
   ): TypedContractMethod<
-    [_target: AddressLike, _token: AddressLike, _receiver: AddressLike, _amount: BigNumberish],
+    [
+      _target: AddressLike,
+      _token: AddressLike,
+      _receiver: AddressLike,
+      _amount: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
-  getFunction(nameOrSignature: "tokenManager"): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "tokenManager"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "transferIn"
-  ): TypedContractMethod<[_sender: AddressLike, _token: AddressLike, _amount: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_sender: AddressLike, _token: AddressLike, _amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "updateUsdgSupply"
   ): TypedContractMethod<[usdgAmount: BigNumberish], [void], "nonpayable">;
@@ -1065,31 +1767,52 @@ export interface Timelock extends BaseContract {
       _minProfitBps: BigNumberish,
       _maxUsdgAmount: BigNumberish,
       _isStable: boolean,
-      _isShortable: boolean,
+      _isShortable: boolean
     ],
     [void],
     "nonpayable"
   >;
   getFunction(
     nameOrSignature: "withdrawFees"
-  ): TypedContractMethod<[_vault: AddressLike, _token: AddressLike, _receiver: AddressLike], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [_vault: AddressLike, _token: AddressLike, _receiver: AddressLike],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "withdrawToken"
   ): TypedContractMethod<
-    [_target: AddressLike, _token: AddressLike, _receiver: AddressLike, _amount: BigNumberish],
+    [
+      _target: AddressLike,
+      _token: AddressLike,
+      _receiver: AddressLike,
+      _amount: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
 
   getEvent(
     key: "ClearAction"
-  ): TypedContractEvent<ClearActionEvent.InputTuple, ClearActionEvent.OutputTuple, ClearActionEvent.OutputObject>;
+  ): TypedContractEvent<
+    ClearActionEvent.InputTuple,
+    ClearActionEvent.OutputTuple,
+    ClearActionEvent.OutputObject
+  >;
   getEvent(
     key: "SignalApprove"
-  ): TypedContractEvent<SignalApproveEvent.InputTuple, SignalApproveEvent.OutputTuple, SignalApproveEvent.OutputObject>;
+  ): TypedContractEvent<
+    SignalApproveEvent.InputTuple,
+    SignalApproveEvent.OutputTuple,
+    SignalApproveEvent.OutputObject
+  >;
   getEvent(
     key: "SignalMint"
-  ): TypedContractEvent<SignalMintEvent.InputTuple, SignalMintEvent.OutputTuple, SignalMintEvent.OutputObject>;
+  ): TypedContractEvent<
+    SignalMintEvent.InputTuple,
+    SignalMintEvent.OutputTuple,
+    SignalMintEvent.OutputObject
+  >;
   getEvent(
     key: "SignalPendingAction"
   ): TypedContractEvent<
@@ -1106,7 +1829,11 @@ export interface Timelock extends BaseContract {
   >;
   getEvent(
     key: "SignalSetGov"
-  ): TypedContractEvent<SignalSetGovEvent.InputTuple, SignalSetGovEvent.OutputTuple, SignalSetGovEvent.OutputObject>;
+  ): TypedContractEvent<
+    SignalSetGovEvent.InputTuple,
+    SignalSetGovEvent.OutputTuple,
+    SignalSetGovEvent.OutputObject
+  >;
   getEvent(
     key: "SignalSetHandler"
   ): TypedContractEvent<

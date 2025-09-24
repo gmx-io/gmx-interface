@@ -6,7 +6,6 @@ export const CONTRACTS = {
   [ARBITRUM]: {
     // V1
     Vault: "0x489ee077994B6658eAfA855C308275EAd8097C4A",
-    Router: "0xaBBc5F99639c9B6bCb58544ddf04EFA6802F4064",
     VaultReader: "0xfebB9f4CAC4cD523598fE1C5771181440143F24A",
     Reader: "0x2b43c90D1B727cEe1Df34925bcd5Ace52Ec37694",
     GlpManager: "0x3963FfC9dff443c2A94f21b129D429891E32ec18",
@@ -35,16 +34,10 @@ export const CONTRACTS = {
     GlpVester: "0xA75287d2f8b217273E7FCD7E86eF07D33972042E",
     AffiliateVester: "0x7c100c0F55A15221A4c1C5a25Db8C98A81df49B2",
 
-    OrderBook: "0x09f77E8A13De9a35a7231028187e9fD5DB8a2ACB",
-    OrderExecutor: "0x7257ac5D0a0aaC04AA7bA2AC0A6Eb742E332c3fB",
-    OrderBookReader: "0xa27C20A7CF0e1C68C0460706bB674f98F362Bc21",
-
     PositionRouter: "0xb87a436B93fFE9D75c5cFA7bAcFff96430b09868",
-    PositionManager: "0x75E42e6f01baf1D6022bEa862A28774a9f8a4A0C",
 
     UniswapGmxEthPool: "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E",
     ReferralStorage: "0xe6fab3f0c7199b0d34d7fbe83394fc0e0d06e99d",
-    ReferralReader: "0x8Aa382760BCdCe8644C33e6C2D52f6304A76F5c8",
     Timelock: "0xaa50bD556CE0Fe61D4A57718BA43177a3aB6A597",
 
     // Synthetics
@@ -89,7 +82,6 @@ export const CONTRACTS = {
   [AVALANCHE]: {
     // V1
     Vault: "0x9ab2De34A33fB459b538c43f251eB825645e8595",
-    Router: "0x5F719c2F1095F7B9fc68a68e35B51194f4b6abe8",
     VaultReader: "0x66eC8fc33A26feAEAe156afA3Cb46923651F6f0D",
     Reader: "0x2eFEE1950ededC65De687b40Fd30a7B5f4544aBd",
     GlpManager: "0xD152c7F25db7F4B95b7658323c5F33d176818EE4",
@@ -119,16 +111,10 @@ export const CONTRACTS = {
     GlpVester: "0x62331A7Bd1dfB3A7642B7db50B5509E57CA3154A",
     AffiliateVester: "0x754eC029EF9926184b4CFDeA7756FbBAE7f326f7",
 
-    OrderBook: "0x4296e307f108B2f583FF2F7B7270ee7831574Ae5",
-    OrderExecutor: "0x4296e307f108B2f583FF2F7B7270ee7831574Ae5",
-    OrderBookReader: "0xccFE3E576f8145403d3ce8f3c2f6519Dae40683B",
-
     PositionRouter: "0xffF6D276Bc37c61A23f06410Dce4A400f66420f8",
-    PositionManager: "0xA21B83E579f4315951bA658654c371520BDcB866",
 
     TraderJoeGmxAvaxPool: "0x0c91a070f862666bbcce281346be45766d874d98",
     ReferralStorage: "0x827ed045002ecdabeb6e2b0d1604cf5fc3d322f8",
-    ReferralReader: "0x505Ce16D3017be7D76a7C2631C0590E71A975083",
     Timelock: "0x8A68a039D555599Fd745f9343e8dE20C9eaFca75",
 
     // Synthetics
@@ -215,7 +201,6 @@ export const CONTRACTS = {
     Reader: zeroAddress,
     PositionRouter: zeroAddress,
     ReferralStorage: zeroAddress,
-    ReferralReader: zeroAddress,
     VaultReader: zeroAddress,
     GlpManager: zeroAddress,
     RewardRouter: zeroAddress,
@@ -241,9 +226,7 @@ export const CONTRACTS = {
     GovToken: zeroAddress,
     ES_GMX_IOU: zeroAddress,
     OrderBook: zeroAddress,
-    OrderExecutor: zeroAddress,
-    OrderBookReader: zeroAddress,
-    PositionManager: zeroAddress,
+
     UniswapGmxEthPool: zeroAddress,
 
     // botanix specific
@@ -284,16 +267,10 @@ export const CONTRACTS = {
     GlpVester: zeroAddress,
     AffiliateVester: zeroAddress,
 
-    OrderBook: zeroAddress,
-    OrderExecutor: zeroAddress,
-    OrderBookReader: zeroAddress,
-
     PositionRouter: zeroAddress,
-    PositionManager: zeroAddress,
 
     TraderJoeGmxAvaxPool: zeroAddress,
     ReferralStorage: "0x192e82A18a4ab446dD9968f055431b60640B155D",
-    ReferralReader: zeroAddress,
 
     // Synthetics
     DataStore: "0xEA1BFb4Ea9A412dCCd63454AbC127431eBB0F0d4",

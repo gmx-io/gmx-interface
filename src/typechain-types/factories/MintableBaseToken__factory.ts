@@ -3,7 +3,10 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { MintableBaseToken, MintableBaseTokenInterface } from "../MintableBaseToken";
+import type {
+  MintableBaseToken,
+  MintableBaseTokenInterface,
+} from "../MintableBaseToken";
 
 const _abi = [
   {
@@ -700,7 +703,10 @@ export class MintableBaseToken__factory {
   static createInterface(): MintableBaseTokenInterface {
     return new Interface(_abi) as MintableBaseTokenInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): MintableBaseToken {
+  static connect(
+    address: string,
+    runner?: ContractRunner | null
+  ): MintableBaseToken {
     return new Contract(address, _abi, runner) as unknown as MintableBaseToken;
   }
 }
