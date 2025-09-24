@@ -170,9 +170,9 @@ msgstr "stop loss"
 #~ msgid "Keep leverage is not possible."
 #~ msgstr ""
 
+#: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-#: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Type"
 msgstr "Tipo"
@@ -620,8 +620,8 @@ msgstr ""
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
 msgstr ""
 
-#: src/components/TradeBox/TradeBox.tsx
 #: src/components/Tabs/NestedTab.tsx
+#: src/components/TradeBox/TradeBox.tsx
 msgid "More"
 msgstr "Más"
 
@@ -911,8 +911,8 @@ msgstr "La orden no se pudo actualizar"
 msgid "Cross-chain one-click deposits into GM"
 msgstr "Depósitos en un clic cross-chain en GM"
 
-#: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/MarketSelector/MarketSelector.tsx
 msgid "No markets matched"
 msgstr "No se encontraron mercados"
 
@@ -1365,12 +1365,12 @@ msgstr "APR"
 msgid "Tranferring..."
 msgstr "Transfiriendo..."
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/TradersStats.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
@@ -1719,8 +1719,8 @@ msgstr "Valor Neto"
 msgid "Withdrawn {balanceFormatted} to main account."
 msgstr ""
 
-#: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -2185,11 +2185,11 @@ msgstr "Valoramos tu experiencia e insights y te invitamos a participar en un ch
 msgid "Market - Short Inc."
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Header/AppHeaderChainAndSettings.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 msgid "Connect Wallet"
 msgstr "Conectar Monedero"
 
@@ -3317,12 +3317,12 @@ msgstr ""
 msgid "Claiming"
 msgstr ""
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -3596,9 +3596,9 @@ msgstr "Enviando solicitud de liquidación"
 msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
 msgstr "La orden no se puede ejecutar ya que la posición restante sería menor a $5.00"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/components/ClaimModal/ClaimModal.tsx
-#: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/AffiliateClaimModal.tsx
@@ -3906,10 +3906,10 @@ msgstr "Cancelar Orden"
 msgid "Claiming position price impact fees failed"
 msgstr ""
 
-#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/PositionEditor/types.ts
 #: src/components/TradeHistory/keys.ts
 #: src/domain/multichain/useMultichainFundingToast.tsx
@@ -4204,9 +4204,9 @@ msgstr ""
 #: src/components/BuyCards/BuyCards.tsx
 #: src/components/BuyCards/BuyCards.tsx
 #: src/components/BuyCards/BuyCards.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -4313,11 +4313,11 @@ msgstr "NA"
 msgid "Trigger price for the order."
 msgstr "Precio de activación para la orden."
 
-#: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
+#: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -4538,8 +4538,8 @@ msgstr "Usuarios"
 msgid "Gas Payment Token"
 msgstr "Token de Pago de Gas"
 
-#: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
+#: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4658,11 +4658,11 @@ msgstr "Stop Mercado Fallido"
 msgid "Address copied to your clipboard"
 msgstr ""
 
+#: src/components/GmxAccountModal/MainView.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
-#: src/components/GmxAccountModal/MainView.tsx
 msgid "Settings"
 msgstr "Ajustes"
 
@@ -5322,8 +5322,8 @@ msgstr "Referidos"
 #~ msgstr "Confirma orden a Corto"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Short Liquidity"
-msgstr "Liquidez Corta"
+#~ msgid "Short Liquidity"
+#~ msgstr "Liquidez Corta"
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order Type"
@@ -5441,8 +5441,8 @@ msgid "Realized PnL after fees and price impact."
 msgstr "PnL Realizado después de comisiones e impacto de precio."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Long Liquidity"
-msgstr "Liquidez Larga"
+#~ msgid "Long Liquidity"
+#~ msgstr "Liquidez Larga"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -6543,9 +6543,9 @@ msgstr "Intercambiar {fromAmount} por {toAmount}"
 msgid "Copy"
 msgstr "Copiar"
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-#: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Amount"
 msgstr "Cantidad"
@@ -6576,12 +6576,12 @@ msgstr "precio de activación"
 msgid "GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in {gasPaymentTokensText}."
 msgstr ""
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Claims/ClaimableCard.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/AffiliateClaimModal.tsx
 #: src/pages/Stake/ClaimModal.tsx
@@ -6649,8 +6649,8 @@ msgid "Deposited."
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Max Out"
-msgstr "Máximo"
+#~ msgid "Max Out"
+#~ msgstr "Máximo"
 
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "There may not be sufficient liquidity to execute your order when the min. receive is met."
@@ -7011,9 +7011,9 @@ msgstr "Desactivar 1CT (One-Click Trading)"
 #: src/components/GmxAccountModal/keys.ts
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/PositionEditor/types.ts
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeHistory/keys.ts
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/domain/multichain/useMultichainFundingToast.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
@@ -7185,8 +7185,8 @@ msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies wit
 msgstr "Opera spot o perpetuos BTC, ETH, AVAX y otras criptomonedas top con hasta 100x apalancamiento directamente desde tu wallet en Arbitrum y Avalanche."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Max In"
-msgstr "Máx. Dentro"
+#~ msgid "Max In"
+#~ msgstr "Máx. Dentro"
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Myself"
@@ -7322,10 +7322,10 @@ msgstr "Reclamaciones"
 msgid "Failed to withdraw {balanceFormatted} to main account."
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
@@ -7655,9 +7655,9 @@ msgstr "Acciones de GMX V2"
 msgid "This code has been taken by someone else on {takenNetworkNames}, you will not receive rebates from traders using this code on {takenNetworkNames}."
 msgstr "Este código ha sido tomado por otra persona en {takenNetworkNames}, no recibirás reembolsos de traders que usen este código en {takenNetworkNames}."
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Confirm Claim"
 msgstr "Confirmar Reclamación"
 
@@ -7686,11 +7686,11 @@ msgstr "<0>Delega tu poder de voto {0} GMX DAO no delegado</0>."
 msgid "Shift error."
 msgstr "Error de cambio."
 
-#: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
+#: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -8471,10 +8471,10 @@ msgstr "Precio de Ejecución"
 #~ msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 #~ msgstr "El precio al que se puede ejecutar la orden puede diferir ligeramente del precio del gráfico, ya que las órdenes de mercado pueden cambiar el precio mientras que las órdenes de límite/activación no."
 
+#: src/components/GmList/GmList.tsx
+#: src/components/GmList/GmList.tsx
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
-#: src/components/GmList/GmList.tsx
-#: src/components/GmList/GmList.tsx
 msgid "No pools matched"
 msgstr ""
 
@@ -8937,11 +8937,11 @@ msgstr ""
 msgid "Anonymous chat with GMX"
 msgstr "Chat anónimo con GMX"
 
-#: src/components/EmptyTableContent/EmptyTableContent.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/EmptyTableContent/EmptyTableContent.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Loading"
 msgstr ""
 

@@ -170,9 +170,9 @@ msgstr "ストップロス"
 #~ msgid "Keep leverage is not possible."
 #~ msgstr ""
 
+#: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-#: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Type"
 msgstr "タイプ"
@@ -620,8 +620,8 @@ msgstr ""
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
 msgstr ""
 
-#: src/components/TradeBox/TradeBox.tsx
 #: src/components/Tabs/NestedTab.tsx
+#: src/components/TradeBox/TradeBox.tsx
 msgid "More"
 msgstr "もっと"
 
@@ -911,8 +911,8 @@ msgstr "注文を更新できませんでした"
 msgid "Cross-chain one-click deposits into GM"
 msgstr "GMへのクロスチェーン1クリック入金"
 
-#: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/MarketSelector/MarketSelector.tsx
 msgid "No markets matched"
 msgstr "一致する市場がありません"
 
@@ -1365,12 +1365,12 @@ msgstr "APR(実質年利)"
 msgid "Tranferring..."
 msgstr "移転中..."
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/TradersStats.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
@@ -1719,8 +1719,8 @@ msgstr "ネット価値"
 msgid "Withdrawn {balanceFormatted} to main account."
 msgstr ""
 
-#: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -2185,11 +2185,11 @@ msgstr "あなたの体験と洞察を評価し、匿名の一対一チャット
 msgid "Market - Short Inc."
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Header/AppHeaderChainAndSettings.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 msgid "Connect Wallet"
 msgstr "ウォレット接続"
 
@@ -3317,12 +3317,12 @@ msgstr ""
 msgid "Claiming"
 msgstr ""
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -3596,9 +3596,9 @@ msgstr "決済リクエスト送信中"
 msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
 msgstr "ポジション金額が$5未満になるため注文を執行できません"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/components/ClaimModal/ClaimModal.tsx
-#: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/AffiliateClaimModal.tsx
@@ -3906,10 +3906,10 @@ msgstr "注文をキャンセル"
 msgid "Claiming position price impact fees failed"
 msgstr ""
 
-#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/PositionEditor/types.ts
 #: src/components/TradeHistory/keys.ts
 #: src/domain/multichain/useMultichainFundingToast.tsx
@@ -4204,9 +4204,9 @@ msgstr ""
 #: src/components/BuyCards/BuyCards.tsx
 #: src/components/BuyCards/BuyCards.tsx
 #: src/components/BuyCards/BuyCards.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -4313,11 +4313,11 @@ msgstr "NA"
 msgid "Trigger price for the order."
 msgstr "注文のトリガー価格"
 
-#: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
+#: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -4538,8 +4538,8 @@ msgstr "ユーザー"
 msgid "Gas Payment Token"
 msgstr "ガス支払いトークン"
 
-#: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
+#: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4658,11 +4658,11 @@ msgstr "ストップマーケット失敗"
 msgid "Address copied to your clipboard"
 msgstr ""
 
+#: src/components/GmxAccountModal/MainView.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
-#: src/components/GmxAccountModal/MainView.tsx
 msgid "Settings"
 msgstr "設定"
 
@@ -5322,8 +5322,8 @@ msgstr "紹介"
 #~ msgstr "ショートを確認"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Short Liquidity"
-msgstr "ショート流動性"
+#~ msgid "Short Liquidity"
+#~ msgstr "ショート流動性"
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order Type"
@@ -5441,8 +5441,8 @@ msgid "Realized PnL after fees and price impact."
 msgstr "手数料と価格インパクト後の実現PnL。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Long Liquidity"
-msgstr "ロング流動性"
+#~ msgid "Long Liquidity"
+#~ msgstr "ロング流動性"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -6543,9 +6543,9 @@ msgstr "{fromAmount} を {toAmount} にスワップ"
 msgid "Copy"
 msgstr "コピー"
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-#: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Amount"
 msgstr "額"
@@ -6576,12 +6576,12 @@ msgstr "トリガー価格"
 msgid "GMX executes transactions for you without individual signing, providing a seamless, CEX-like experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in {gasPaymentTokensText}."
 msgstr ""
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Claims/ClaimableCard.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/AffiliateClaimModal.tsx
 #: src/pages/Stake/ClaimModal.tsx
@@ -6649,8 +6649,8 @@ msgid "Deposited."
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Max Out"
-msgstr "最大アウト"
+#~ msgid "Max Out"
+#~ msgstr "最大アウト"
 
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "There may not be sufficient liquidity to execute your order when the min. receive is met."
@@ -7011,9 +7011,9 @@ msgstr "1CT (ワンクリック取引) を無効化"
 #: src/components/GmxAccountModal/keys.ts
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/PositionEditor/types.ts
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeHistory/keys.ts
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/domain/multichain/useMultichainFundingToast.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
@@ -7185,8 +7185,8 @@ msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies wit
 msgstr "ArbitrumおよびAvalanche上でウォレットから直接、最大100xレバレッジでBTC、ETH、AVAXおよび他のトップ暗号通貨のスポットまたはパーペチュアルを取引。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "Max In"
-msgstr "最大イン"
+#~ msgid "Max In"
+#~ msgstr "最大イン"
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Myself"
@@ -7322,10 +7322,10 @@ msgstr "請求"
 msgid "Failed to withdraw {balanceFormatted} to main account."
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
@@ -7655,9 +7655,9 @@ msgstr "GMX V2アクション"
 msgid "This code has been taken by someone else on {takenNetworkNames}, you will not receive rebates from traders using this code on {takenNetworkNames}."
 msgstr "このコードは{takenNetworkNames}で他の誰かに取られています。{takenNetworkNames}でこのコードを使用しているトレーダーからリベートを受け取ることはできません。"
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Confirm Claim"
 msgstr "請求を確認"
 
@@ -7686,11 +7686,11 @@ msgstr "<0>未委任の{0} GMX DAO</0>投票権を委任。"
 msgid "Shift error."
 msgstr "シフトエラー。"
 
-#: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
+#: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -8471,10 +8471,10 @@ msgstr "執行価格"
 #~ msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 #~ msgstr "注文執行価格はチャート価格と多少異なる可能性があります。マーケット注文は価格を変えうるが、リミット/トリガー注文はできません。"
 
+#: src/components/GmList/GmList.tsx
+#: src/components/GmList/GmList.tsx
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
-#: src/components/GmList/GmList.tsx
-#: src/components/GmList/GmList.tsx
 msgid "No pools matched"
 msgstr ""
 
@@ -8937,11 +8937,11 @@ msgstr ""
 msgid "Anonymous chat with GMX"
 msgstr "GMXとの匿名チャット"
 
-#: src/components/EmptyTableContent/EmptyTableContent.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/EmptyTableContent/EmptyTableContent.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Loading"
 msgstr ""
 
