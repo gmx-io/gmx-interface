@@ -10,7 +10,7 @@ import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import WalletProvider from "lib/wallets/WalletProvider";
 import { ARBITRUM } from "sdk/configs/chainIds";
 
-import SEO from "components/Common/SEO";
+import SEO from "components/Seo/SEO";
 
 import { LandingRoutes } from "./LandingRoutes";
 

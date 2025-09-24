@@ -5,7 +5,7 @@ import { useCallback } from "react";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 
 import Button from "components/Button/Button";
-import { SelectorBase, useSelectorClose } from "components/Synthetics/SelectorBase/SelectorBase";
+import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
 
 import CheckIcon from "img/ic_checked.svg?react";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
@@ -71,7 +71,7 @@ export function ThemeSelector() {
           </div>
           <Button variant="secondary">
             {currentTheme?.label}
-            <ChevronDownIcon className="inline-block size-12" />
+            <ChevronDownIcon className="inline-block size-14" />
           </Button>
         </div>
       }

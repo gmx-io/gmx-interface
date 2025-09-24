@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import uniq from "lodash/uniq";
 import { ReactNode, useCallback, useMemo, useState } from "react";
-import { FaChevronRight } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { useAccount } from "wagmi";
 
@@ -22,6 +21,7 @@ import APRLabel from "components/APRLabel/APRLabel";
 import Tabs from "components/Tabs/Tabs";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 import glvIcon from "img/ic_glv_24.svg";
 import gmIcon from "img/ic_gm_24.svg";
 import gmxIcon from "img/ic_gmx_24.svg";
@@ -173,7 +173,9 @@ function YieldRow({ token, metric, to, disabled, chainId: targetChainId }: Yield
       <div className="flex items-center gap-8">
         {metric}
         {!disabled && (
-          <FaChevronRight className={cx("text-typography-secondary", { "group-hover:text-blue-300": !disabled })} />
+          <ChevronRightIcon
+            className={cx("size-16 text-typography-secondary", { "group-hover:text-blue-300": !disabled })}
+          />
         )}
       </div>
     </>

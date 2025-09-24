@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { ReactNode, useCallback, useState } from "react";
 
-import { ExpandableRow } from "components/Synthetics/ExpandableRow";
+import { ExpandableRow } from "components/ExpandableRow";
 
 export default function EarnFaq() {
   return (

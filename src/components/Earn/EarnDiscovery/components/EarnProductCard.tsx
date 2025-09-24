@@ -1,7 +1,6 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useState } from "react";
-import { FaChevronDown } from "react-icons/fa6";
 
 import { useBreakpoints } from "lib/useBreakpoints";
 
@@ -9,6 +8,8 @@ import Badge from "components/Badge/Badge";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 type EarnProductType = "gmx" | "glv" | "gm";
 
@@ -146,7 +147,7 @@ export default function EarnProductCard({ type, className }: EarnProductCardProp
           >
             <span className="flex items-center justify-center gap-8">
               {isExpanded ? t`Less info` : t`More info`}
-              <FaChevronDown className={cx("transition-transform", { "rotate-180": isExpanded })} />
+              <ChevronDownIcon className={cx("size-16 transition-transform", { "rotate-180": isExpanded })} />
             </span>
           </Button>
         )}

@@ -7,6 +7,8 @@ import { useTokensDataRequest } from "domain/synthetics/tokens";
 
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 
+import EarnPageLayout from "./EarnPageLayout";
+
 const EARN_TOKEN_SYMBOLS = new Set(["GMX", "GM", "GLV"]);
 
 function hasEarnTokenBalance(tokensData: TokensData | undefined) {
@@ -49,5 +51,9 @@ export function EarnRedirect() {
 
   const target = account && hasEarnHoldings ? "/earn/portfolio" : "/earn/discovery";
 
-  return <RedirectWithQuery to={target} />;
+  return (
+    <EarnPageLayout>
+      <RedirectWithQuery to={target} />
+    </EarnPageLayout>
+  );
 }

@@ -218,7 +218,7 @@ export function MarketSelector({
         data-qa="market-selector"
       >
         {selectedMarketLabel ? selectedMarketLabel : marketInfo ? getMarketIndexName(marketInfo) : "..."}
-        <ChevronDownIcon className="w-12 text-typography-secondary group-hover:text-blue-300" />
+        <ChevronDownIcon className="w-16 text-typography-secondary group-hover:text-blue-300" />
       </div>
     </div>
   );

@@ -6,8 +6,8 @@ import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/S
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
+import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 import PageTitle from "components/PageTitle/PageTitle";
-import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 
 export type EarnTabValue = "discovery" | "portfolio" | "additional-opportunities" | "distribution";
 
