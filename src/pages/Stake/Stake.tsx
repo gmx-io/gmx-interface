@@ -18,13 +18,13 @@ import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+import { BotanixBanner } from "components/BotanixBanner/BotanixBanner";
+import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import PageTitle from "components/PageTitle/PageTitle";
 import SEO from "components/Seo/SEO";
-import { BotanixBanner } from "components/Synthetics/BotanixBanner/BotanixBanner";
-import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
-import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
+import UserIncentiveDistributionList from "components/UserIncentiveDistributionList/UserIncentiveDistributionList";
 
 import { EscrowedGmxCard } from "./EscrowedGmxCard";
 import { GmxAndVotingPowerCard } from "./GmxAndVotingPowerCard";

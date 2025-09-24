@@ -25,10 +25,10 @@ import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 import { CloseToastButton } from "components/CloseToastButton/CloseToastButton";
 import EventToastContainer from "components/EventToast/EventToastContainer";
 import useEventToast from "components/EventToast/useEventToast";
+import { GmxAccountModal } from "components/GmxAccountModal/GmxAccountModal";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
-import { GmxAccountModal } from "components/Synthetics/GmxAccountModal/GmxAccountModal";
 
 import { MainRoutes } from "./MainRoutes";
 

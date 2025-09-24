@@ -14,12 +14,12 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import type { ContractsChainId } from "sdk/configs/chains";
 
 import Badge, { BadgeIndicator } from "components/Badge/Badge";
-import { ClaimsHistory } from "components/Synthetics/Claims/ClaimsHistory";
-import { OrderList } from "components/Synthetics/OrderList/OrderList";
-import { PositionList } from "components/Synthetics/PositionList/PositionList";
-import type { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
-import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
+import { ClaimsHistory } from "components/Claims/ClaimsHistory";
+import { OrderList } from "components/OrderList/OrderList";
+import { PositionList } from "components/PositionList/PositionList";
+import type { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 import Tabs from "components/Tabs/Tabs";
+import { TradeHistory } from "components/TradeHistory/TradeHistory";
 
 enum TabKey {
   Positions = "Positions",

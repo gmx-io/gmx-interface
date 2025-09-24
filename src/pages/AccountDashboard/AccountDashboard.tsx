@@ -7,8 +7,8 @@ import { useChainId } from "lib/chains";
 
 import AddressView from "components/AddressView/AddressView";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 import PageTitle from "components/PageTitle/PageTitle";
-import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 
 import { DailyAndCumulativePnL } from "./DailyAndCumulativePnL";
 import { GeneralPerformanceDetails } from "./GeneralPerformanceDetails";

@@ -24,6 +24,8 @@ import { serializeBigIntsInObject } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+import { BotanixBanner } from "components/BotanixBanner/BotanixBanner";
+import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Loader from "components/Loader/Loader";
 import PageTitle from "components/PageTitle/PageTitle";
@@ -33,8 +35,6 @@ import JoinReferralCode from "components/Referrals/JoinReferralCode";
 import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "components/Referrals/referralsHelper";
 import TradersStats from "components/Referrals/TradersStats";
 import SEO from "components/Seo/SEO";
-import { BotanixBanner } from "components/Synthetics/BotanixBanner/BotanixBanner";
-import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 import Tabs from "components/Tabs/Tabs";
 
 import "./Referrals.css";

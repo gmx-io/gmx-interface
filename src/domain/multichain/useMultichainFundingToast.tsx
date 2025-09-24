@@ -10,7 +10,7 @@ import { formatBalanceAmount } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
 import { getToken } from "sdk/configs/tokens";
 
-import { FUNDING_OPERATIONS_LABELS } from "components/Synthetics/GmxAccountModal/keys";
+import { FUNDING_OPERATIONS_LABELS } from "components/GmxAccountModal/keys";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 

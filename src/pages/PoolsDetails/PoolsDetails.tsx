@@ -17,16 +17,16 @@ import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { BreadcrumbItem, Breadcrumbs } from "components/Breadcrumbs/Breadcrumbs";
+import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
+import { GmSwapBox, GmSwapBoxProps } from "components/GmSwap/GmSwapBox/GmSwapBox";
+import { GmSwapBoxHeader } from "components/GmSwap/GmSwapBox/GmSwapBoxHeader";
 import Loader from "components/Loader/Loader";
+import { useCompositionData } from "components/MarketStats/hooks/useCompositionData";
+import { MarketComposition } from "components/MarketStats/MarketComposition";
+import { MarketGraphs } from "components/MarketStats/MarketGraphs";
 import SEO from "components/Seo/SEO";
 import SideNav from "components/SideNav/SideNav";
-import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
-import { GmSwapBox, GmSwapBoxProps } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
-import { GmSwapBoxHeader } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBoxHeader";
-import { useCompositionData } from "components/Synthetics/MarketStats/hooks/useCompositionData";
-import { MarketComposition } from "components/Synthetics/MarketStats/MarketComposition";
-import { MarketGraphs } from "components/Synthetics/MarketStats/MarketGraphs";
-import { Curtain } from "components/Synthetics/TradeBox/Curtain";
+import { Curtain } from "components/TradeBox/Curtain";
 
 import { PoolsDetailsAbout } from "./PoolsDetailsAbout";
 import { PoolsDetailsCard } from "./PoolsDetailsCard";

@@ -57,9 +57,9 @@ import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
 import { getInsufficientExecutionFeeToastContent } from "components/Errors/errorToasts";
-import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
-import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
-import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
+import { FeesSettlementStatusNotification } from "components/StatusNotification/FeesSettlementStatusNotification";
+import { GmStatusNotification } from "components/StatusNotification/GmStatusNotification";
+import { OrdersStatusNotificiation } from "components/StatusNotification/OrderStatusNotification";
 
 import {
   ApprovalStatuses,

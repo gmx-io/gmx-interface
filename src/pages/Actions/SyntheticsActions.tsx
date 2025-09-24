@@ -6,7 +6,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { VersionNetworkSwitcherRow } from "pages/AccountDashboard/VersionNetworkSwitcherRow";
 
 import PageTitle from "components/PageTitle/PageTitle";
-import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
+import { TradeHistory } from "components/TradeHistory/TradeHistory";
 
 import "./SyntheticsActions.scss";
 
