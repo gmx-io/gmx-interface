@@ -178,9 +178,14 @@ export const DepositView = () => {
         getMidPrice(selectedTokenChainData?.sourceChainPrices ?? { minPrice: 0n, maxPrice: 0n })
       )!;
 
-      const maxAmount = bigMath.max(selectedTokenSourceChainBalance - buffer, 0n);
+      let amount = selectedTokenSourceChainBalance;
 
-      setInputValue(formatAmountFree(maxAmount, selectedToken.decimals));
+      if (selectedTokenSourceChainBalance > buffer) {
+        const maxAmount = bigMath.max(selectedTokenSourceChainBalance - buffer, 0n);
+        amount = maxAmount;
+      }
+
+      setInputValue(formatAmountFree(amount, selectedToken.decimals));
       return;
     }
 
