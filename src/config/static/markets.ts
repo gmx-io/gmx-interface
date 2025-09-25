@@ -446,6 +446,18 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0xac484106d935f0f20F1485b631fA6F65AeEff550": {
       enabled: true,
     },
+    // XPL/USD [WBTC.e-USDC]
+    "0x4b67aa8F754b17b1029Ad2DB4fb6a276CCe350c4": {
+      enabled: true,
+    },
+    // SOL/USD [WBTC.e-USDC]
+    "0xcf083d35AD306A042d4Fb312fCdd8228b52b82f8": {
+      enabled: true,
+    },
+    // BNB/USD [WBTC.e-USDC]
+    "0x065577D05c3D4C11505ed7bc97BBF85d462A6A6f": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
