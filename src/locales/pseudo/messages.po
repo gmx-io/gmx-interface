@@ -1414,6 +1414,10 @@ msgstr ""
 msgid "DEX Aggregator"
 msgstr ""
 
+#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Waiting for remaining Safe confirmations..."
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2197,6 +2201,10 @@ msgstr ""
 msgid "Buy order cancelled."
 msgstr ""
 
+#: src/components/UserIncentiveDistributionList/utils.tsx
+msgid "Unable to sign message with EOA"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics for GMX"
 msgstr ""
@@ -2492,6 +2500,10 @@ msgstr ""
 msgid "GMX Solana is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open the GMX Solana frontend in a new tab."
 msgstr ""
 
+#: src/components/UserIncentiveDistributionList/utils.tsx
+msgid "Please continue signing on your wallet interface where the signature request should appear. You will be able to claim once all signers have signed."
+msgstr ""
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr ""
@@ -2668,10 +2680,6 @@ msgstr ""
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Leverage"
-msgstr ""
-
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
-msgid "To sign the terms using a Safe account in order to claim, please <0>follow these steps</0>."
 msgstr ""
 
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
@@ -3098,6 +3106,10 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
+msgstr ""
+
+#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Please accept the Claim Terms above to continue."
 msgstr ""
 
 #: src/pages/Stake/EscrowedGmxCard.tsx
@@ -4615,6 +4627,10 @@ msgstr ""
 
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
+msgstr ""
+
+#: src/components/UserIncentiveDistributionList/utils.tsx
+msgid "Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
@@ -7369,6 +7385,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max. Leverage exceeded"
+msgstr ""
+
+#: src/components/UserIncentiveDistributionList/utils.tsx
+msgid "Unable to sign message with smart account"
 msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx

@@ -1414,6 +1414,10 @@ msgstr "Страница Голосования по предложениям GM
 msgid "DEX Aggregator"
 msgstr "Агрегатор DEX"
 
+#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Waiting for remaining Safe confirmations..."
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2197,6 +2201,10 @@ msgstr "График рынка"
 msgid "Buy order cancelled."
 msgstr ""
 
+#: src/components/UserIncentiveDistributionList/utils.tsx
+msgid "Unable to sign message with EOA"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics for GMX"
 msgstr "Dune Analytics для GMX"
@@ -2492,6 +2500,10 @@ msgstr "Годовые данные на основе последних 7 дн�
 msgid "GMX Solana is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open the GMX Solana frontend in a new tab."
 msgstr ""
 
+#: src/components/UserIncentiveDistributionList/utils.tsx
+msgid "Please continue signing on your wallet interface where the signature request should appear. You will be able to claim once all signers have signed."
+msgstr ""
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "Нет доступной ликвидности для увеличения шортов для<0/>этого размера. Макс. размер шорта: {0}<1/><2/>Цены выполнения для уменьшения лонгов."
@@ -2669,10 +2681,6 @@ msgstr ""
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Leverage"
 msgstr "Плечо"
-
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
-msgid "To sign the terms using a Safe account in order to claim, please <0>follow these steps</0>."
-msgstr ""
 
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
 msgid "over 100 protocols"
@@ -3099,6 +3107,10 @@ msgstr "Недостаточно ликвидности в пуле рынка {
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
 msgstr "Приложение отключено, ожидается обновление {0}"
+
+#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Please accept the Claim Terms above to continue."
+msgstr ""
 
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -4616,6 +4628,10 @@ msgstr "Целевой вес"
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr "У вас может быть до {allowedAutoCancelOrdersNumber} активных автоканцелируемых ордеров TP/SL. Дополнительные ордера должны отменяться вручную, в то время как существующие все равно закроются автоматически с связанной позицией."
+
+#: src/components/UserIncentiveDistributionList/utils.tsx
+msgid "Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
@@ -7370,6 +7386,10 @@ msgstr "Запрос на рыночное уменьшение"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max. Leverage exceeded"
 msgstr "Превышено макс. плечо"
+
+#: src/components/UserIncentiveDistributionList/utils.tsx
+msgid "Unable to sign message with smart account"
+msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."

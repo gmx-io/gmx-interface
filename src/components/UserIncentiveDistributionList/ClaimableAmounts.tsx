@@ -1,9 +1,9 @@
 import { Trans } from "@lingui/macro";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useLocalStorage } from "react-use";
+import { usePublicClient } from "wagmi";
 
-import { getContract } from "config/contracts";
 import { getClaimTermsAcceptedKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -11,13 +11,12 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { createClaimAmountsTransaction } from "domain/synthetics/claims/createClaimTransaction";
 import { useClaimExecutionFee } from "domain/synthetics/claims/useClaimExecutionFee";
 import { useClaimFundsTransactionCallback } from "domain/synthetics/claims/useClaimFundsTransactionCallback";
-import { useIsSmartAccountSignedClaimTerms } from "domain/synthetics/claims/useIsSmartAccountSigned";
 import useUserClaimableAmounts, { GLP_DISTRIBUTION_ID } from "domain/synthetics/claims/useUserClaimableAmounts";
 import { estimateExecutionGasPrice, getExecutionFeeBufferBps } from "domain/synthetics/fees/utils/executionFee";
 import { useTokenBalances } from "domain/synthetics/tokens";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { useIsSafeAccount } from "lib/wallets/useIsSmartAccount";
+import { AccountType, useAccountType } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
@@ -26,10 +25,15 @@ import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import { checkValidity, signMessage } from "./utils";
+
+const MULTISIG_CHECK_INTERVAL = 5_000;
+
 export default function ClaimableAmounts() {
-  const { account, signer } = useWallet();
-  const isSmartAccount = useIsSafeAccount();
+  const { account, signer, walletClient } = useWallet();
+  const { accountType, isSmartAccount } = useAccountType();
   const chainId = useSelector(selectChainId);
+  const publicClient = usePublicClient();
   const {
     claimTerms,
     totalFundsToClaimUsd,
@@ -46,8 +50,9 @@ export default function ClaimableAmounts() {
     getClaimTermsAcceptedKey(chainId, account, GLP_DISTRIBUTION_ID, claimTerms),
     ""
   );
-
-  const isSmartAccountSignedClaimTerms = useIsSmartAccountSignedClaimTerms({ account, signer });
+  const [isContractOwnersSigned, setIsContractOwnersSigned] = useState(false);
+  const [isStartedMultisig, setIsStartedMultisig] = useState(false);
+  const [isSafeSigValid, setIsSafeSigValid] = useState(false);
 
   const claimableTokens = useMemo(() => {
     return Object.keys(claimableAmounts).filter(
@@ -64,14 +69,84 @@ export default function ClaimableAmounts() {
     distributionId: GLP_DISTRIBUTION_ID,
   });
 
-  const signClaimTerms = useCallback(async () => {
-    const message = `${claimTerms}\ndistributionId ${GLP_DISTRIBUTION_ID}\ncontract ${getContract(chainId, "ClaimHandler").toLowerCase()}\nchainId ${chainId}`;
-    const signature = await signer?.signMessage(message);
-
-    if (signature) {
+  const onFinishMultisig = useCallback(
+    (signature: string) => {
+      setIsContractOwnersSigned(true);
       setClaimTermsAcceptedSignature(signature);
+    },
+    [setIsContractOwnersSigned, setClaimTermsAcceptedSignature]
+  );
+
+  const signClaimTerms = useCallback(async () => {
+    if (!account || !claimTerms || !publicClient || !walletClient || !signer || !accountType) {
+      return;
     }
-  }, [setClaimTermsAcceptedSignature, signer, claimTerms, chainId]);
+
+    signMessage({
+      accountType,
+      account,
+      walletClient,
+      chainId,
+      publicClient,
+      claimTerms,
+      onFinishMultisig,
+      setClaimTermsAcceptedSignature,
+      setIsStartedMultisig,
+      signer,
+    });
+  }, [
+    account,
+    signer,
+    walletClient,
+    publicClient,
+    onFinishMultisig,
+    setClaimTermsAcceptedSignature,
+    claimTerms,
+    chainId,
+    accountType,
+  ]);
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timer | undefined;
+
+    async function runCheckValidity() {
+      try {
+        if (
+          !accountType ||
+          ![AccountType.Safe, AccountType.SmartAccount].includes(accountType) ||
+          !account ||
+          !publicClient ||
+          !claimTerms ||
+          !claimTermsAcceptedSignature
+        ) {
+          setIsSafeSigValid(false);
+          return;
+        }
+
+        const isValid = await checkValidity({
+          chainId,
+          account,
+          publicClient,
+          claimTerms,
+          claimTermsAcceptedSignature,
+        });
+        setIsSafeSigValid(isValid);
+        setIsContractOwnersSigned(isValid);
+      } catch (e) {
+        setIsSafeSigValid(false);
+      }
+    }
+
+    runCheckValidity();
+    if (accountType === AccountType.Safe && claimTermsAcceptedSignature) {
+      intervalId = setInterval(runCheckValidity, MULTISIG_CHECK_INTERVAL);
+    }
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [accountType, account, publicClient, claimTerms, claimTermsAcceptedSignature, chainId]);
 
   const claimFundsTransactionCallback = useClaimFundsTransactionCallback({
     tokens: claimableTokens,
@@ -79,7 +154,11 @@ export default function ClaimableAmounts() {
   });
 
   const claimAmounts = useCallback(async () => {
-    if (claimTerms && (isSmartAccount ? !isSmartAccountSignedClaimTerms : !claimTermsAcceptedSignature)) {
+    if (claimTerms && !claimTermsAcceptedSignature) {
+      return;
+    }
+
+    if (accountType === AccountType.Safe && !isSafeSigValid) {
       return;
     }
 
@@ -94,7 +173,7 @@ export default function ClaimableAmounts() {
         chainId,
         signer,
         account,
-        signature: claimTermsAcceptedSignature,
+        signature: isSmartAccount ? undefined : claimTermsAcceptedSignature,
         distributionId: GLP_DISTRIBUTION_ID,
         claimableTokenTitles,
         callback: claimFundsTransactionCallback,
@@ -115,7 +194,8 @@ export default function ClaimableAmounts() {
     mutateClaimableAmounts,
     claimTerms,
     claimFundsTransactionCallback,
-    isSmartAccountSignedClaimTerms,
+    accountType,
+    isSafeSigValid,
     isSmartAccount,
   ]);
 
@@ -138,8 +218,8 @@ export default function ClaimableAmounts() {
     isButtonDisabled = !hasAvailableFundsToCoverExecutionFee;
 
     if (claimTerms) {
-      if (isSmartAccount) {
-        isButtonDisabled = isButtonDisabled || !isSmartAccountSignedClaimTerms;
+      if (accountType === AccountType.Safe) {
+        isButtonDisabled = isButtonDisabled || !claimTermsAcceptedSignature || !isContractOwnersSigned;
       } else {
         isButtonDisabled = isButtonDisabled || !claimTermsAcceptedSignature;
       }
@@ -161,16 +241,12 @@ export default function ClaimableAmounts() {
 
     let buttonTooltipText: React.ReactNode | null = null;
 
-    if (isSmartAccount && !isSmartAccountSignedClaimTerms) {
-      buttonTooltipText = (
-        <Trans>
-          To sign the terms using a Safe account in order to claim, please{" "}
-          <a href="https://docs.gmx.io/docs/providing-liquidity/v1/#safe-account" target="_blank" rel="noreferrer">
-            follow these steps
-          </a>
-          .
-        </Trans>
-      );
+    if (isSmartAccount && !isContractOwnersSigned) {
+      buttonTooltipText = <Trans>Please accept the Claim Terms above to continue.</Trans>;
+    }
+
+    if (accountType === AccountType.Safe && isStartedMultisig && !isSafeSigValid) {
+      buttonTooltipText = <Trans>Waiting for remaining Safe confirmations...</Trans>;
     }
 
     return {
@@ -190,7 +266,10 @@ export default function ClaimableAmounts() {
     isClaiming,
     isSmartAccount,
     executionFee,
-    isSmartAccountSignedClaimTerms,
+    accountType,
+    isSafeSigValid,
+    isContractOwnersSigned,
+    isStartedMultisig,
   ]);
 
   const controls = useMemo(() => {
@@ -214,10 +293,6 @@ export default function ClaimableAmounts() {
       buttonContent
     );
 
-    const isClaimTermsChecked = Boolean(
-      claimTermsAcceptedSignature || (isSmartAccount && isSmartAccountSignedClaimTerms)
-    );
-
     return (
       <>
         {!hasAvailableFundsToCoverExecutionFee ? (
@@ -226,7 +301,11 @@ export default function ClaimableAmounts() {
           </AlertInfoCard>
         ) : null}
         {claimTerms && hasAvailableFundsToCoverExecutionFee && !claimsFeatureDisabled ? (
-          <Checkbox isChecked={isClaimTermsChecked} setIsChecked={signClaimTerms} disabled={isClaimTermsChecked}>
+          <Checkbox
+            isChecked={Boolean(claimTermsAcceptedSignature)}
+            setIsChecked={signClaimTerms}
+            disabled={Boolean(claimTermsAcceptedSignature)}
+          >
             <span className="muted">
               <Trans>Accept Claim Terms</Trans>
             </span>
@@ -246,8 +325,6 @@ export default function ClaimableAmounts() {
     buttonTooltipText,
     hasAvailableFundsToCoverExecutionFee,
     isButtonDisabled,
-    isSmartAccount,
-    isSmartAccountSignedClaimTerms,
   ]);
 
   return (
