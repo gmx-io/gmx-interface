@@ -4,8 +4,6 @@ set -e
 
 echo "🔍 Checking for merge conflict artifacts..."
 
-# Colors
-
 CONFLICTS_FOUND=0
 
 # Check for conflict markers in source files only
