@@ -4,9 +4,9 @@ import React from "react";
 import { getPageTitle } from "lib/legacy";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
-import Card from "components/Common/Card";
-import SEO from "components/Common/SEO";
+import Card from "components/Card/Card";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import SEO from "components/Seo/SEO";
 
 import "./Jobs.css";
 

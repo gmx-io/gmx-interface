@@ -4,8 +4,8 @@ import { getPageTitle } from "lib/legacy";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import BuyCards from "components/BuyCards/BuyCards";
-import SEO from "components/Common/SEO";
 import PageTitle from "components/PageTitle/PageTitle";
+import SEO from "components/Seo/SEO";
 
 export default function Buy() {
   return (

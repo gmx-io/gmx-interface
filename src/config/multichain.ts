@@ -34,9 +34,10 @@ import {
 import { isDevelopment } from "config/env";
 import { LayerZeroEndpointId } from "domain/multichain/types";
 import { numberToBigint } from "lib/numbers";
+import { isSettlementChain, isSourceChain, SOURCE_CHAINS } from "sdk/configs/multichain";
 import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
 
-import { IS_SOURCE_BASE_ALLOWED_KEY } from "./localStorage";
+export * from "sdk/configs/multichain";
 
 export {
   ethPoolArbitrumSepolia,
@@ -188,41 +189,9 @@ if (isDevelopment()) {
 }
 
 export const DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT = false;
-export const IS_SOURCE_BASE_ALLOWED =
-  import.meta.env.NODE_ENV === "test" ? true : localStorage.getItem(IS_SOURCE_BASE_ALLOWED_KEY) === "1";
-
-function ensureExhaustive<T extends number>(value: Record<T, true>): T[] {
-  return Object.keys(value).map(Number) as T[];
-}
-
-export const SETTLEMENT_CHAINS: SettlementChainId[] = ensureExhaustive<SettlementChainId>({
-  [ARBITRUM_SEPOLIA]: true,
-  [ARBITRUM]: true,
-  [AVALANCHE]: true,
-});
-
-// TODO MLTCH remove this
-// @ts-ignore
-export const SOURCE_CHAINS: SourceChainId[] = ensureExhaustive<SourceChainId>({
-  [SOURCE_OPTIMISM_SEPOLIA]: true,
-  [SOURCE_SEPOLIA]: true,
-  // [SOURCE_BASE_MAINNET]: true,
-});
-
-if (IS_SOURCE_BASE_ALLOWED) {
-  SOURCE_CHAINS.push(SOURCE_BASE_MAINNET);
-}
 
 if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
   SOURCE_CHAINS.push(ARBITRUM_SEPOLIA as SourceChainId, ARBITRUM as SourceChainId, AVALANCHE as SourceChainId);
-}
-
-export function isSettlementChain(chainId: number): chainId is SettlementChainId {
-  return SETTLEMENT_CHAINS.includes(chainId as SettlementChainId);
-}
-
-export function isSourceChain(chainId: number | undefined): chainId is SourceChainId {
-  return SOURCE_CHAINS.includes(chainId as SourceChainId);
 }
 
 export const MULTICHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;

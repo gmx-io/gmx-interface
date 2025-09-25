@@ -13,7 +13,7 @@ import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import ExchangeInfoRow from "components/EventToast/ExchangeInfoRow";
 import Modal from "components/Modal/Modal";
 import Tooltip from "components/Tooltip/Tooltip";
 
