@@ -116,7 +116,7 @@ const constants = {
   },
 } satisfies Record<ContractsChainId, Record<string, any>>;
 
-const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io"];
+const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io", "gmxapp.io"];
 
 export const RPC_PROVIDERS: Record<AnyChainId | typeof ETH_MAINNET, string[]> = {
   [ETH_MAINNET]: ["https://rpc.ankr.com/eth"],

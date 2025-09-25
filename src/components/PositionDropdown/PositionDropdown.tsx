@@ -8,6 +8,8 @@ import EditIcon from "img/ic_edit.svg?react";
 import IncreaseLimit from "img/ic_increaselimit_16.svg?react";
 import IncreaseMarket from "img/ic_increasemarket_16.svg?react";
 import MenuDotsIcon from "img/ic_menu_dots.svg?react";
+import SelectIcon from "img/ic_select.svg?react";
+import ShareIcon from "img/ic_share.svg?react";
 import TriggerClose from "img/ic_triggerclose_16.svg?react";
 
 import "./PositionDropdown.css";
@@ -58,6 +60,7 @@ export default function PositionDropdown({
           {handleMarketSelect && (
             <Menu.Item>
               <div className="menu-item" onClick={handleMarketSelect}>
+                <SelectIcon className="size-16" />
                 <p>
                   <Trans>Select Market</Trans>
                 </p>
@@ -117,6 +120,7 @@ export default function PositionDropdown({
           {handleShare && (
             <Menu.Item>
               <div className="menu-item" onClick={handleShare}>
+                <ShareIcon className="size-16" />
                 <p>
                   <Trans>Share Position</Trans>
                 </p>
