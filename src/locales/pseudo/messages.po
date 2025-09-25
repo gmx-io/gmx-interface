@@ -122,7 +122,6 @@ msgstr ""
 msgid "Yield Optimizer on Avalanche"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Orders ({0})"
 msgstr ""
@@ -437,7 +436,6 @@ msgstr ""
 msgid "Unstaking"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -1029,8 +1027,6 @@ msgstr ""
 msgid "Overview"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
@@ -1060,8 +1056,8 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
-msgid "WARNING: This position has a low amount of collateral after deducting borrowing fees, deposit more collateral to reduce the position's liquidation risk."
-msgstr ""
+#~ msgid "WARNING: This position has a low amount of collateral after deducting borrowing fees, deposit more collateral to reduce the position's liquidation risk."
+#~ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
@@ -1440,8 +1436,6 @@ msgstr ""
 msgid "Mark price for the order."
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "Net Value"
@@ -1466,8 +1460,8 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
-msgid "Borrow Fee / Day"
-msgstr ""
+#~ msgid "Borrow Fee / Day"
+#~ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
@@ -1748,8 +1742,6 @@ msgstr ""
 msgid "Generating shareable image..."
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Borrow Fee"
@@ -1829,8 +1821,6 @@ msgstr ""
 
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/Claims/ClaimsHistory.tsx
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderList/OrderList.tsx
@@ -1942,8 +1932,8 @@ msgid "Address"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
-msgid "Order size is bigger than the position, so it'll only be executable if the position increases."
-msgstr ""
+#~ msgid "Order size is bigger than the position, so it'll only be executable if the position increases."
+#~ msgstr ""
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
@@ -2918,8 +2908,6 @@ msgstr ""
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3207,7 +3195,6 @@ msgstr ""
 msgid "Swap submitted."
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -3300,7 +3287,6 @@ msgstr ""
 msgid "Unsupported network"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Opening..."
@@ -3608,8 +3594,6 @@ msgstr ""
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimsHistory.tsx
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
@@ -3666,8 +3650,6 @@ msgstr ""
 msgid "Failed Market Increase"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
@@ -4232,8 +4214,8 @@ msgid "24h Low"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
-msgid "Use the \"Close\" button to reduce your position, or to set TP/SL orders."
-msgstr ""
+#~ msgid "Use the \"Close\" button to reduce your position, or to set TP/SL orders."
+#~ msgstr ""
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
@@ -4510,8 +4492,6 @@ msgstr ""
 
 #: src/App/MainRoutes.tsx
 #: src/components/Claims/Claims.tsx
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
@@ -4525,8 +4505,8 @@ msgid "Loading..."
 msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
-msgid "Share"
-msgstr ""
+#~ msgid "Share"
+#~ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Use your preferred token to pay and collateralize your positions"
@@ -4805,8 +4785,6 @@ msgstr ""
 msgid "Positive Funding Fees"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "No open positions"
@@ -5119,8 +5097,6 @@ msgstr ""
 msgid "Submitting"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the edit collateral icon to deposit or withdraw collateral."
 msgstr ""
@@ -5734,7 +5710,6 @@ msgstr ""
 msgid "Update Take Profit"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Active Orders"
 msgstr ""
@@ -6461,8 +6436,6 @@ msgstr ""
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimsHistory.tsx
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
@@ -6516,7 +6489,6 @@ msgstr ""
 msgid "External Swap {0} to {1}"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Position"
@@ -6903,8 +6875,6 @@ msgstr ""
 msgid "<0>every</0> {minutes} minutes{0}"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/TradeBox/TradeBoxRows/EntryPriceRow.tsx
@@ -7303,8 +7273,8 @@ msgid "Rage Trade"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
-msgid "Click on the position to select it, then use the trade box to increase it."
-msgstr ""
+#~ msgid "Click on the position to select it, then use the trade box to increase it."
+#~ msgstr ""
 
 #: src/pages/Stake/ClaimModal.tsx
 msgid "Claim GMX Rewards"
@@ -7322,8 +7292,6 @@ msgstr ""
 msgid "Transfer failed."
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -7571,8 +7539,6 @@ msgstr ""
 msgid "multiple asset classes"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx

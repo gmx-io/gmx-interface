@@ -122,7 +122,6 @@ msgstr "创建 TWAP 交换"
 msgid "Yield Optimizer on Avalanche"
 msgstr "Avalanche 上的产量优化器"
 
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Orders ({0})"
 msgstr "订单 ({0})"
@@ -437,7 +436,6 @@ msgstr ""
 msgid "Unstaking"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -1029,8 +1027,6 @@ msgstr ""
 msgid "Overview"
 msgstr "概述"
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
@@ -1060,8 +1056,8 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
-msgid "WARNING: This position has a low amount of collateral after deducting borrowing fees, deposit more collateral to reduce the position's liquidation risk."
-msgstr ""
+#~ msgid "WARNING: This position has a low amount of collateral after deducting borrowing fees, deposit more collateral to reduce the position's liquidation risk."
+#~ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
@@ -1440,8 +1436,6 @@ msgstr ""
 msgid "Mark price for the order."
 msgstr "订单的标记价格。"
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "Net Value"
@@ -1466,8 +1460,8 @@ msgstr "交易 ID"
 
 #: src/components/Exchange/PositionsList.jsx
 #: src/components/Exchange/PositionsList.jsx
-msgid "Borrow Fee / Day"
-msgstr ""
+#~ msgid "Borrow Fee / Day"
+#~ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
@@ -1748,8 +1742,6 @@ msgstr "协议风险浏览器和统计"
 msgid "Generating shareable image..."
 msgstr "生成可分享图像中..."
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Borrow Fee"
@@ -1829,8 +1821,6 @@ msgstr "在 {chainName} 上购买 GMX"
 
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/Claims/ClaimsHistory.tsx
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderList/OrderList.tsx
@@ -1942,8 +1932,8 @@ msgid "Address"
 msgstr "地址"
 
 #: src/components/Exchange/PositionsList.jsx
-msgid "Order size is bigger than the position, so it'll only be executable if the position increases."
-msgstr ""
+#~ msgid "Order size is bigger than the position, so it'll only be executable if the position increases."
+#~ msgstr ""
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
@@ -2918,8 +2908,6 @@ msgstr "触发价格低于限价"
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
 msgstr "<0>购买 {0}{1}<1>{poolName}</1></0> <2>使用 {tokensText}</2>"
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3207,7 +3195,6 @@ msgstr ""
 msgid "Swap submitted."
 msgstr "交换已提交。"
 
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -3300,7 +3287,6 @@ msgstr "扫描后，将出现连接提示，您可以连接您的钱包。"
 msgid "Unsupported network"
 msgstr "不支持的网络"
 
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Opening..."
@@ -3608,8 +3594,6 @@ msgstr "订单的触发价格。"
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimsHistory.tsx
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
@@ -3666,8 +3650,6 @@ msgstr "输入价格"
 msgid "Failed Market Increase"
 msgstr "市场增加失败"
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
@@ -4232,8 +4214,8 @@ msgid "24h Low"
 msgstr "24 小时最低"
 
 #: src/components/Exchange/PositionsList.jsx
-msgid "Use the \"Close\" button to reduce your position, or to set TP/SL orders."
-msgstr ""
+#~ msgid "Use the \"Close\" button to reduce your position, or to set TP/SL orders."
+#~ msgstr ""
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
@@ -4510,8 +4492,6 @@ msgstr ""
 
 #: src/App/MainRoutes.tsx
 #: src/components/Claims/Claims.tsx
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
@@ -4525,8 +4505,8 @@ msgid "Loading..."
 msgstr "正在加载..."
 
 #: src/components/Exchange/PositionsList.jsx
-msgid "Share"
-msgstr ""
+#~ msgid "Share"
+#~ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Use your preferred token to pay and collateralize your positions"
@@ -4805,8 +4785,6 @@ msgstr "供应"
 msgid "Positive Funding Fees"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "No open positions"
@@ -5119,8 +5097,6 @@ msgstr "限价增加"
 msgid "Submitting"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the edit collateral icon to deposit or withdraw collateral."
 msgstr "使用编辑抵押品图标存入或提取抵押品。"
@@ -5734,7 +5710,6 @@ msgstr ""
 msgid "Update Take Profit"
 msgstr "更新止盈"
 
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Active Orders"
 msgstr "活跃订单"
@@ -6461,8 +6436,6 @@ msgstr "转移错误。"
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimsHistory.tsx
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/MarketWithDirectionLabel/MarketWithDirectionLabel.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
@@ -6516,7 +6489,6 @@ msgstr ""
 msgid "External Swap {0} to {1}"
 msgstr "外部交换 {0} 到 {1}"
 
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Position"
@@ -6903,8 +6875,6 @@ msgstr "输入触发价格"
 msgid "<0>every</0> {minutes} minutes{0}"
 msgstr "<0>每</0> {minutes} 分钟{0}"
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/TradeBox/TradeBoxRows/EntryPriceRow.tsx
@@ -7303,8 +7273,8 @@ msgid "Rage Trade"
 msgstr "Rage Trade"
 
 #: src/components/Exchange/PositionsList.jsx
-msgid "Click on the position to select it, then use the trade box to increase it."
-msgstr ""
+#~ msgid "Click on the position to select it, then use the trade box to increase it."
+#~ msgstr ""
 
 #: src/pages/Stake/ClaimModal.tsx
 msgid "Claim GMX Rewards"
@@ -7322,8 +7292,6 @@ msgstr ""
 msgid "Transfer failed."
 msgstr "转移失败。"
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -7571,8 +7539,6 @@ msgstr "订单可能无法执行，因为超过最大允许杠杆。考虑通过
 msgid "multiple asset classes"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
