@@ -6,7 +6,7 @@ echo "🔍 Checking for merge conflict artifacts..."
 
 CONFLICTS_FOUND=0
 
-# Check for conflict markers in source files only
+# Check for conflict markers in source files
 for file in $(find src landing -type f \( -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" -o -name "*.po" \) 2>/dev/null); do
     if grep -q "^<<<<<<<\|^=======\|^>>>>>>>\|<<<<<<<.*=======" "$file" 2>/dev/null; then
         echo -e "❌ Found conflict markers in: $file}"
