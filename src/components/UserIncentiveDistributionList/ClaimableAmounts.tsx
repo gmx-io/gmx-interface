@@ -31,7 +31,7 @@ const MULTISIG_CHECK_INTERVAL = 5_000;
 
 export default function ClaimableAmounts() {
   const { account, signer, walletClient } = useWallet();
-  const accountType = useAccountType();
+  const { accountType, isSmartAccount } = useAccountType();
   const chainId = useSelector(selectChainId);
   const publicClient = usePublicClient();
   const {
@@ -53,8 +53,6 @@ export default function ClaimableAmounts() {
   const [isContractOwnersSigned, setIsContractOwnersSigned] = useState(false);
   const [isStartedMultisig, setIsStartedMultisig] = useState(false);
   const [isSafeSigValid, setIsSafeSigValid] = useState(false);
-
-  const isSmartAccount = accountType !== AccountType.EOA && accountType !== AccountType.PostEip7702EOA;
 
   const claimableTokens = useMemo(() => {
     return Object.keys(claimableAmounts).filter(
@@ -80,7 +78,7 @@ export default function ClaimableAmounts() {
   );
 
   const signClaimTerms = useCallback(async () => {
-    if (!account || !claimTerms || !publicClient || !walletClient || !signer) {
+    if (!account || !claimTerms || !publicClient || !walletClient || !signer || !accountType) {
       return;
     }
 
@@ -114,6 +112,7 @@ export default function ClaimableAmounts() {
     async function runCheckValidity() {
       try {
         if (
+          !accountType ||
           ![AccountType.Safe, AccountType.SmartAccount].includes(accountType) ||
           !account ||
           !publicClient ||

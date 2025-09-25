@@ -1421,7 +1421,7 @@ msgstr "Страница Голосования по предложениям GM
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DEX Aggregator"
-msgstr "Агрегатор DEX<<<<<<< HEAD"
+msgstr "Агрегатор DEX"
 
 #: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
 msgid "Waiting for remaining Safe confirmations..."
@@ -2209,10 +2209,6 @@ msgstr "Максимальное количество частей: {MAX_TWAP_NU
 msgid "Launch App"
 msgstr "Запустить Приложение"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/utils.ts
-#~ msgid "Unable to sign message with EOA. Error:"
-#~ msgstr ""
-
 #: src/components/BuyCards/BuyCards.tsx
 msgid "Buy token on"
 msgstr ""
@@ -2227,15 +2223,11 @@ msgstr "График рынка"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order cancelled."
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/components/UserIncentiveDistributionList/utils.tsx
 msgid "Unable to sign message with EOA"
 msgstr ""
-
-#: src/components/TokenCard/TokenCard.tsx
-#~ msgid "Avalanche APR:"
-#~ msgstr "Avalanche Годовая Процентная Ставка:=======>>>>>>> release-83"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics for GMX"
@@ -2530,19 +2522,11 @@ msgstr "Годовые данные на основе последних 7 дн�
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open the GMX Solana frontend in a new tab."
-msgstr "<<<<<<< HEAD"
-
-#: src/components/Exchange/OrdersToa.jsx
-#~ msgid "Enable Orders"
-#~ msgstr "Активировать Ордера"
-
-#: src/components/Glp/GlpSwap.jsx
-#~ msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
-#~ msgstr "Достигнута максимальная вместимость пула для {0}. Пожалуйста, монетизируйте GLP, используя другой токен"
+msgstr ""
 
 #: src/components/UserIncentiveDistributionList/utils.tsx
 msgid "Please continue signing on your wallet interface where the signature request should appear. You will be able to claim once all signers have signed."
-msgstr "=======>>>>>>> release-83"
+msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
@@ -2720,11 +2704,11 @@ msgstr ""
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Leverage"
-msgstr "Плечо<<<<<<< HEAD"
+msgstr "Плечо"
 
 #: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
 #~ msgid "To sign the terms using a Safe account in order to claim, please <0>follow these steps</0>."
-#~ msgstr ">>>>>>> release-83"
+#~ msgstr ""
 
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
 msgid "over 100 protocols"
@@ -3152,19 +3136,11 @@ msgstr "Недостаточно ликвидности в пуле рынка {
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
-msgstr "Приложение отключено, ожидается обновление {0}<<<<<<< HEAD"
-
-#: src/components/Glp/GlpSwap.jsx
-#~ msgid "Swap {0} on 1inch"
-#~ msgstr "Обмен {0} на 1inch"
-
-#: src/components/Glp/GlpSwap.jsx
-#~ msgid "{0} GLP bought with {1} {2}!"
-#~ msgstr "{0} GLP куплено за {1} {2}!"
+msgstr "Приложение отключено, ожидается обновление {0}"
 
 #: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
 msgid "Please accept the Claim Terms above to continue."
-msgstr "=======>>>>>>> release-83"
+msgstr ""
 
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -5846,10 +5822,6 @@ msgstr "Выполнить стоп-маркет"
 msgid "Volume traded by this account with an active referral code."
 msgstr "Объем торгов этого аккаунта с активным реферальным кодом."
 
-#: src/components/Synthetics/UserIncentiveDistributionList/utils.ts
-#~ msgid "Unable to sign message with smart account. Error:"
-#~ msgstr ""
-
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized fees"
 msgstr "Начальные нереализованные комиссии"
@@ -6799,10 +6771,6 @@ msgstr "Комиссии превышают сумму оплаты"
 msgid "Failed Market Swap"
 msgstr "Неудачный рыночный своп"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/utils.ts
-#~ msgid "Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing. Error:"
-#~ msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "HoudiniSwap"
 msgstr "HoudiniSwap"
@@ -7479,7 +7447,7 @@ msgstr "Запрос на рыночное уменьшение"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max. Leverage exceeded"
-msgstr "Превышено макс. плечо<<<<<<< HEAD"
+msgstr "Превышено макс. плечо"
 
 #: src/components/UserIncentiveDistributionList/utils.tsx
 msgid "Unable to sign message with smart account"

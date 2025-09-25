@@ -2209,10 +2209,6 @@ msgstr "Max number of parts: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "Launch App"
 
-#: src/components/Synthetics/UserIncentiveDistributionList/utils.ts
-#~ msgid "Unable to sign message with EOA. Error:"
-#~ msgstr "Unable to sign message with EOA. Error:"
-
 #: src/components/BuyCards/BuyCards.tsx
 msgid "Buy token on"
 msgstr "Buy token on"
@@ -2232,10 +2228,6 @@ msgstr "Buy order cancelled."
 #: src/components/UserIncentiveDistributionList/utils.tsx
 msgid "Unable to sign message with EOA"
 msgstr "Unable to sign message with EOA"
-
-#: src/components/TokenCard/TokenCard.tsx
-#~ msgid "Avalanche APR:"
-#~ msgstr "Avalanche APR:=======>>>>>>> release-83"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics for GMX"
@@ -2532,14 +2524,6 @@ msgstr "Annualized data based on the past 7 days."
 msgid "GMX Solana is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open the GMX Solana frontend in a new tab."
 msgstr "GMX Solana is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open the GMX Solana frontend in a new tab."
 
-#: src/components/Exchange/OrdersToa.jsx
-#~ msgid "Enable Orders"
-#~ msgstr "Enable Orders"
-
-#: src/components/Glp/GlpSwap.jsx
-#~ msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
-#~ msgstr "Max pool capacity reached for {0}. Please mint GLP using another token"
-
 #: src/components/UserIncentiveDistributionList/utils.tsx
 msgid "Please continue signing on your wallet interface where the signature request should appear. You will be able to claim once all signers have signed."
 msgstr "Please continue signing on your wallet interface where the signature request should appear. You will be able to claim once all signers have signed."
@@ -2724,7 +2708,7 @@ msgstr "Leverage"
 
 #: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
 #~ msgid "To sign the terms using a Safe account in order to claim, please <0>follow these steps</0>."
-#~ msgstr "To sign the terms using a Safe account in order to claim, please <0>follow these steps</0>.>>>>>>> release-83"
+#~ msgstr "To sign the terms using a Safe account in order to claim, please <0>follow these steps</0>."
 
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
 msgid "over 100 protocols"
@@ -3153,14 +3137,6 @@ msgstr "Insufficient liquidity in the {0} market pool. Select a different pool f
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
 msgstr "App disabled, pending {0} upgrade"
-
-#: src/components/Glp/GlpSwap.jsx
-#~ msgid "Swap {0} on 1inch"
-#~ msgstr "Swap {0} on 1inch"
-
-#: src/components/Glp/GlpSwap.jsx
-#~ msgid "{0} GLP bought with {1} {2}!"
-#~ msgstr "{0} GLP bought with {1} {2}!"
 
 #: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
 msgid "Please accept the Claim Terms above to continue."
@@ -5846,10 +5822,6 @@ msgstr "Execute Stop Market"
 msgid "Volume traded by this account with an active referral code."
 msgstr "Volume traded by this account with an active referral code."
 
-#: src/components/Synthetics/UserIncentiveDistributionList/utils.ts
-#~ msgid "Unable to sign message with smart account. Error:"
-#~ msgstr "Unable to sign message with smart account. Error:"
-
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized fees"
 msgstr "Start unrealized fees"
@@ -6798,10 +6770,6 @@ msgstr "Fees exceed Pay amount"
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Swap"
 msgstr "Failed Market Swap"
-
-#: src/components/Synthetics/UserIncentiveDistributionList/utils.ts
-#~ msgid "Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing. Error:"
-#~ msgstr "Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing. Error:"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "HoudiniSwap"

@@ -56,16 +56,22 @@ export function useAccountType() {
   const chainId = useChainId();
   const publicClient = usePublicClient();
 
-  const { data } = useSWR(address && publicClient && [address, publicClient, chainId, "detectAccountType"], {
-    fetcher: async () => {
-      if (!address || !publicClient) {
-        return null;
-      }
+  const { data: accountType = null } = useSWR<AccountType | null>(
+    address && publicClient && [address, publicClient, chainId, "detectAccountType"],
+    {
+      fetcher: async () => {
+        if (!address || !publicClient) {
+          return null;
+        }
 
-      const account = await getAccountType(address, publicClient);
-      return account;
-    },
-  });
+        const account = await getAccountType(address, publicClient);
+        return account;
+      },
+    }
+  );
 
-  return data;
+  return {
+    accountType,
+    isSmartAccount: accountType !== AccountType.EOA && accountType !== AccountType.PostEip7702EOA,
+  };
 }
