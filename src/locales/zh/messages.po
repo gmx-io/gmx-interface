@@ -46,6 +46,10 @@ msgstr ""
 msgid "You can transfer {nativeTokenSymbol} from other networks to {chainName} using any of the below options:"
 msgstr ""
 
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "from 5 blockchains"
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order executed."
 msgstr ""
@@ -2274,6 +2278,10 @@ msgstr "{fromText} 到 {toMinText}"
 msgid "Otherwise, try changing the RPC url in your wallet settings with the help of <0>chainlist.org</0>."
 msgstr "否则，请尝试在您的钱包设置中更改 RPC URL，可借助 <0>chainlist.org</0>。"
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Testnet LayerZero Scan"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
 msgstr ""
@@ -2668,6 +2676,10 @@ msgstr "总质押"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Network Fee"
 msgstr "网络费用"
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "20s"
+msgstr ""
 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "The aximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
@@ -3438,6 +3450,11 @@ msgstr "GM 市场"
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Your opinions and experiences matter to us. Your feedback helps us understand what we are doing well and where we can make enhancements."
 msgstr "您的意见和经验对我们很重要。您的反馈帮助我们了解我们做得好以及哪里可以改进。"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Estimated Time"
+msgstr ""
 
 #: src/pages/Stake/Vesting.tsx
 msgid "<0>{0}</0> GMX tokens can be claimed, use the options under the total rewards section to claim them."
@@ -4600,6 +4617,11 @@ msgstr "Yield Yak 优化器"
 msgid "GMX & Voting Power"
 msgstr "GMX 和投票权"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "1m 40s"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP autocompounding vaults"
 msgstr "GLP 自动复合金库"
@@ -5268,7 +5290,6 @@ msgstr "从去中心化交易所购买 GMX"
 msgid "Powered by"
 msgstr "由...提供支持"
 
-#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Asset Balance"
 msgstr ""
@@ -5520,8 +5541,8 @@ msgid "Buy GLP or GMX"
 msgstr "购买 GLP 或 GMX"
 
 #: src/context/GmxAccountContext/GmxAccountContext.tsx
-msgid "Source Base is now available on GMX"
-msgstr ""
+#~ msgid "Source Base is now available on GMX"
+#~ msgstr ""
 
 #: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools, with auto-compounding for seamless growth (20-30% historical average annualized performance). View real-time earnings, performance, and portfolio value on the <0>Pools page</0>."
@@ -5938,8 +5959,8 @@ msgid "Pools"
 msgstr "池"
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "from 4 blockchains"
-msgstr ""
+#~ msgid "from 4 blockchains"
+#~ msgstr ""
 
 #: src/components/GmList/GlvList.tsx
 msgid "VAULT"
@@ -7001,6 +7022,10 @@ msgstr "已累积价格影响返利。大约十天后可领取。<0/><1/><2>阅�
 msgid "Net Rate"
 msgstr "净率"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "30s"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd Place"
@@ -7500,6 +7525,10 @@ msgstr "限价"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Trading Settings"
 msgstr "交易设置"
+
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "LayerZero Scan"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute as the max. allowed leverage is exceeded. Consider decreasing the order's leverage by editing and decreasing its size. <0>Read more</0>."

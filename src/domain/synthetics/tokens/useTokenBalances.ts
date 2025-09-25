@@ -87,13 +87,13 @@ export function useTokenBalances(
         result[tokenAddress] = res.data[tokenAddress].balance.returnValues[0];
       });
 
-      resetTokensBalancesUpdates(Object.keys(result));
+      resetTokensBalancesUpdates(Object.keys(result), "wallet");
 
       return result;
     },
   });
 
-  const balancesData = useUpdatedTokensBalances(data);
+  const balancesData = useUpdatedTokensBalances(data, "wallet");
 
   return {
     balancesData,

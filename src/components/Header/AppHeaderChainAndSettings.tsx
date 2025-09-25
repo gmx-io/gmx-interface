@@ -15,7 +15,6 @@ import {
 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getChainIcon } from "config/icons";
-import { IS_SOURCE_BASE_ALLOWED } from "config/multichain";
 import { useChainId } from "lib/chains";
 import { isHomeSite, shouldShowRedirectModal } from "lib/legacy";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
@@ -64,16 +63,13 @@ export const NETWORK_OPTIONS: NetworkOption[] = [
     icon: getChainIcon(BOTANIX),
     color: "#F7931A",
   },
-];
-
-if (IS_SOURCE_BASE_ALLOWED) {
-  NETWORK_OPTIONS.push({
+  {
     label: getChainName(SOURCE_BASE_MAINNET),
     value: SOURCE_BASE_MAINNET,
     icon: getChainIcon(SOURCE_BASE_MAINNET),
     color: "#0052ff",
-  });
-}
+  },
+];
 
 if (isDevelopment()) {
   NETWORK_OPTIONS.push(

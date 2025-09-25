@@ -117,7 +117,11 @@ export function useOrderTxnCallbacks() {
         setOptimisticTokensBalancesUpdates((old) => {
           const newState = { ...old };
           Object.entries(optimisticBatchPayAmounts).forEach(([tokenAddress, amount]) => {
-            newState[tokenAddress] = { diff: -amount, isPending: true };
+            newState[tokenAddress] = {
+              diff: -amount,
+              isPending: true,
+              balanceType: expressParams?.isGmxAccount ? "gmxAccount" : "wallet",
+            };
           });
           return newState;
         });
@@ -203,6 +207,7 @@ export function useOrderTxnCallbacks() {
             isRelayerMetricSent: false,
             successMessage,
             errorMessage,
+            isGmxAccount: expressParams.isGmxAccount,
           });
         }
       };
