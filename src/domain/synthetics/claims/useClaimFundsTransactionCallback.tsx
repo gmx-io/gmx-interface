@@ -1,11 +1,12 @@
 import { Trans } from "@lingui/macro";
 import { useCallback } from "react";
-import { ImSpinner2 } from "react-icons/im";
 
 import { helperToast } from "lib/helperToast";
 import { TxnEvent, TxnEventName, WalletTxnCtx } from "lib/transactions";
 
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 export function useClaimFundsTransactionCallback(data: {
   tokens: string[];
@@ -24,7 +25,7 @@ export function useClaimFundsTransactionCallback(data: {
               </div>
               <div className="flex flex-row gap-10 text-gray-200">
                 <Trans>This may take a few minutes.</Trans>
-                <ImSpinner2 width={60} height={60} className="spin size-15 text-typography-primary" />
+                <SpinnerIcon className="spin size-15 text-typography-primary" />
               </div>
             </div>
           );

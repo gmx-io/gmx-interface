@@ -32,7 +32,7 @@ import {
 } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 
-import type { GmPaySource } from "components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
+import type { GmPaySource } from "components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
 
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
 

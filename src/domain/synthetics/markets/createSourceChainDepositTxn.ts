@@ -20,7 +20,7 @@ import { IRelayUtils } from "typechain-types/MultichainGmRouter";
 import { IStargate } from "typechain-types-stargate";
 import { SendParamStruct } from "typechain-types-stargate/IStargate";
 
-import { toastCustomOrStargateError } from "components/Synthetics/GmxAccountModal/toastCustomOrStargateError";
+import { toastCustomOrStargateError } from "components/GmxAccountModal/toastCustomOrStargateError";
 
 import { signCreateDeposit } from "./signCreateDeposit";
 

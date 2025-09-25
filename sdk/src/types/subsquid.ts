@@ -78,6 +78,7 @@ export interface AccountStat {
   closedCount: Scalars["Int"]["output"];
   cumsumCollateral: Scalars["BigInt"]["output"];
   cumsumSize: Scalars["BigInt"]["output"];
+  deposits: Scalars["Int"]["output"];
   id: Scalars["String"]["output"];
   losses: Scalars["Int"]["output"];
   maxCapital: Scalars["BigInt"]["output"];
@@ -123,6 +124,12 @@ export enum AccountStatOrderByInput {
   cumsumSize_DESC = "cumsumSize_DESC",
   cumsumSize_DESC_NULLS_FIRST = "cumsumSize_DESC_NULLS_FIRST",
   cumsumSize_DESC_NULLS_LAST = "cumsumSize_DESC_NULLS_LAST",
+  deposits_ASC = "deposits_ASC",
+  deposits_ASC_NULLS_FIRST = "deposits_ASC_NULLS_FIRST",
+  deposits_ASC_NULLS_LAST = "deposits_ASC_NULLS_LAST",
+  deposits_DESC = "deposits_DESC",
+  deposits_DESC_NULLS_FIRST = "deposits_DESC_NULLS_FIRST",
+  deposits_DESC_NULLS_LAST = "deposits_DESC_NULLS_LAST",
   id_ASC = "id_ASC",
   id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
   id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
@@ -215,6 +222,15 @@ export interface AccountStatWhereInput {
   cumsumSize_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   cumsumSize_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   cumsumSize_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  deposits_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  deposits_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  deposits_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  deposits_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  deposits_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  deposits_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  deposits_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  deposits_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  deposits_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
   id_contains?: InputMaybe<Scalars["String"]["input"]>;
   id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
   id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
@@ -5425,6 +5441,103 @@ export interface PeriodAccountStatObject {
   wins: Scalars["Float"]["output"];
 }
 
+export interface PlatformStats {
+  __typename?: "PlatformStats";
+  depositedUsers: Scalars["Int"]["output"];
+  id: Scalars["String"]["output"];
+  tradedUsers: Scalars["Int"]["output"];
+  volume: Scalars["BigInt"]["output"];
+}
+
+export interface PlatformStatsConnection {
+  __typename?: "PlatformStatsConnection";
+  edges: Array<PlatformStatsEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
+}
+
+export interface PlatformStatsEdge {
+  __typename?: "PlatformStatsEdge";
+  cursor: Scalars["String"]["output"];
+  node: PlatformStats;
+}
+
+export enum PlatformStatsOrderByInput {
+  depositedUsers_ASC = "depositedUsers_ASC",
+  depositedUsers_ASC_NULLS_FIRST = "depositedUsers_ASC_NULLS_FIRST",
+  depositedUsers_ASC_NULLS_LAST = "depositedUsers_ASC_NULLS_LAST",
+  depositedUsers_DESC = "depositedUsers_DESC",
+  depositedUsers_DESC_NULLS_FIRST = "depositedUsers_DESC_NULLS_FIRST",
+  depositedUsers_DESC_NULLS_LAST = "depositedUsers_DESC_NULLS_LAST",
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  tradedUsers_ASC = "tradedUsers_ASC",
+  tradedUsers_ASC_NULLS_FIRST = "tradedUsers_ASC_NULLS_FIRST",
+  tradedUsers_ASC_NULLS_LAST = "tradedUsers_ASC_NULLS_LAST",
+  tradedUsers_DESC = "tradedUsers_DESC",
+  tradedUsers_DESC_NULLS_FIRST = "tradedUsers_DESC_NULLS_FIRST",
+  tradedUsers_DESC_NULLS_LAST = "tradedUsers_DESC_NULLS_LAST",
+  volume_ASC = "volume_ASC",
+  volume_ASC_NULLS_FIRST = "volume_ASC_NULLS_FIRST",
+  volume_ASC_NULLS_LAST = "volume_ASC_NULLS_LAST",
+  volume_DESC = "volume_DESC",
+  volume_DESC_NULLS_FIRST = "volume_DESC_NULLS_FIRST",
+  volume_DESC_NULLS_LAST = "volume_DESC_NULLS_LAST",
+}
+
+export interface PlatformStatsWhereInput {
+  AND?: InputMaybe<Array<PlatformStatsWhereInput>>;
+  OR?: InputMaybe<Array<PlatformStatsWhereInput>>;
+  depositedUsers_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  depositedUsers_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  depositedUsers_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  depositedUsers_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  depositedUsers_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  depositedUsers_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  depositedUsers_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  depositedUsers_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  depositedUsers_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  tradedUsers_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  tradedUsers_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  tradedUsers_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  tradedUsers_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  tradedUsers_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  tradedUsers_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  tradedUsers_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  tradedUsers_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  tradedUsers_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  volume_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volume_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volume_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volume_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  volume_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  volume_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volume_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volume_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volume_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+}
+
 export interface PnlAprSnapshot {
   __typename?: "PnlAprSnapshot";
   address: Scalars["String"]["output"];
@@ -6449,6 +6562,12 @@ export enum PositionOrderByInput {
   accountStat_cumsumSize_DESC = "accountStat_cumsumSize_DESC",
   accountStat_cumsumSize_DESC_NULLS_FIRST = "accountStat_cumsumSize_DESC_NULLS_FIRST",
   accountStat_cumsumSize_DESC_NULLS_LAST = "accountStat_cumsumSize_DESC_NULLS_LAST",
+  accountStat_deposits_ASC = "accountStat_deposits_ASC",
+  accountStat_deposits_ASC_NULLS_FIRST = "accountStat_deposits_ASC_NULLS_FIRST",
+  accountStat_deposits_ASC_NULLS_LAST = "accountStat_deposits_ASC_NULLS_LAST",
+  accountStat_deposits_DESC = "accountStat_deposits_DESC",
+  accountStat_deposits_DESC_NULLS_FIRST = "accountStat_deposits_DESC_NULLS_FIRST",
+  accountStat_deposits_DESC_NULLS_LAST = "accountStat_deposits_DESC_NULLS_LAST",
   accountStat_id_ASC = "accountStat_id_ASC",
   accountStat_id_ASC_NULLS_FIRST = "accountStat_id_ASC_NULLS_FIRST",
   accountStat_id_ASC_NULLS_LAST = "accountStat_id_ASC_NULLS_LAST",
@@ -7207,6 +7326,9 @@ export interface Query {
   ordersConnection: OrdersConnection;
   performanceSnapshots: Array<PerformanceSnapshots>;
   periodAccountStats: Array<PeriodAccountStatObject>;
+  platformStats: Array<PlatformStats>;
+  platformStatsById?: Maybe<PlatformStats>;
+  platformStatsConnection: PlatformStatsConnection;
   pnlAprSnapshotById?: Maybe<PnlAprSnapshot>;
   pnlAprSnapshots: Array<PnlAprSnapshot>;
   pnlAprSnapshotsConnection: PnlAprSnapshotsConnection;
@@ -7642,6 +7764,24 @@ export interface QueryperiodAccountStatsArgs {
   limit?: InputMaybe<Scalars["Float"]["input"]>;
   offset?: InputMaybe<Scalars["Float"]["input"]>;
   where?: InputMaybe<WhereInput>;
+}
+
+export interface QueryplatformStatsArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<PlatformStatsOrderByInput>>;
+  where?: InputMaybe<PlatformStatsWhereInput>;
+}
+
+export interface QueryplatformStatsByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QueryplatformStatsConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<PlatformStatsOrderByInput>;
+  where?: InputMaybe<PlatformStatsWhereInput>;
 }
 
 export interface QuerypnlAprSnapshotByIdArgs {

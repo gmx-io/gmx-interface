@@ -13,9 +13,11 @@ import {
 
 import { TokenBalancesData, TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
+import { TokenBalanceType } from "sdk/types/tokens";
 
 export type TokenBalanceUpdate = {
   isPending?: boolean;
+  balanceType: TokenBalanceType;
   balance?: bigint;
   diff?: bigint;
 };
@@ -29,7 +31,7 @@ type TokensBalancesContextType = {
   optimisticTokensBalancesUpdates: TokensBalancesUpdates;
   setWebsocketTokenBalancesUpdates: Dispatch<SetStateAction<TokensBalancesUpdates>>;
   setOptimisticTokensBalancesUpdates: Dispatch<SetStateAction<TokensBalancesUpdates>>;
-  resetTokensBalancesUpdates: (tokenAddresses: string[]) => void;
+  resetTokensBalancesUpdates: (tokenAddresses: string[], balanceType: TokenBalanceType) => void;
 };
 
 const Context = createContext<TokensBalancesContextType | null>(null);
@@ -48,11 +50,15 @@ export function TokensBalancesContextProvider({ children }: PropsWithChildren) {
   const [optimisticTokensBalancesUpdates, setOptimisticTokensBalancesUpdates] = useState<TokensBalancesUpdates>({});
   const [websocketTokenBalancesUpdates, setWebsocketTokenBalancesUpdates] = useState<TokensBalancesUpdates>({});
 
-  const resetTokensBalancesUpdates = useCallback((tokenAddresses: string[]) => {
+  const resetTokensBalancesUpdates = useCallback((tokenAddresses: string[], balanceType: TokenBalanceType) => {
     setWebsocketTokenBalancesUpdates((old) => {
       const newState = { ...old };
 
       tokenAddresses.forEach((tokenAddress) => {
+        if (newState[tokenAddress]?.balanceType !== balanceType) {
+          return;
+        }
+
         if (!newState[tokenAddress]?.isPending) {
           delete newState[tokenAddress];
         }
@@ -64,6 +70,10 @@ export function TokensBalancesContextProvider({ children }: PropsWithChildren) {
       const newState = { ...old };
 
       tokenAddresses.forEach((tokenAddress) => {
+        if (newState[tokenAddress]?.balanceType !== balanceType) {
+          return;
+        }
+
         if (!newState[tokenAddress]?.isPending) {
           delete newState[tokenAddress];
         }
@@ -86,7 +96,7 @@ export function TokensBalancesContextProvider({ children }: PropsWithChildren) {
       setWebsocketTokenBalancesUpdates,
       resetTokensBalancesUpdates,
     }),
-    [resetTokensBalancesUpdates, websocketTokenBalancesUpdates, optimisticTokensBalancesUpdates]
+    [websocketTokenBalancesUpdates, optimisticTokensBalancesUpdates, resetTokensBalancesUpdates]
   );
 
   return <Context.Provider value={state}>{children}</Context.Provider>;
@@ -102,7 +112,18 @@ export function useTokensBalancesUpdates(): TokensBalancesContextType {
   return context;
 }
 
-export function useUpdatedTokensBalances<T extends TokenBalancesData | TokensData>(balancesData?: T): T | undefined {
+export function useUpdatedTokensBalances(
+  balancesData: TokensData | undefined,
+  balanceType?: undefined
+): TokensData | undefined;
+export function useUpdatedTokensBalances(
+  balancesData: TokenBalancesData | undefined,
+  balanceType: TokenBalanceType
+): TokenBalancesData | undefined;
+export function useUpdatedTokensBalances<T extends TokenBalancesData | TokensData>(
+  balancesData: T | undefined,
+  balanceType: T extends TokensData ? undefined : TokenBalanceType
+): T | undefined {
   const { websocketTokenBalancesUpdates, optimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
 
   return useMemo(() => {
@@ -118,25 +139,26 @@ export function useUpdatedTokensBalances<T extends TokenBalancesData | TokensDat
     // Apply optimistic updates
     for (const [tokenAddress, balanceUpdate] of optimisticUpdateEntries) {
       if (balanceUpdate && !websocketTokenBalancesUpdates[tokenAddress]) {
-        nextBalancesData = applyBalanceUpdate(nextBalancesData, tokenAddress, balanceUpdate);
+        nextBalancesData = applyBalanceUpdate(nextBalancesData, tokenAddress, balanceUpdate, balanceType);
       }
     }
 
     // Apply websocket updates (these take priority and override optimistic updates)
     for (const [tokenAddress, balanceUpdate] of websocketUpdateEntries) {
       if (balanceUpdate) {
-        nextBalancesData = applyBalanceUpdate(nextBalancesData, tokenAddress, balanceUpdate);
+        nextBalancesData = applyBalanceUpdate(nextBalancesData, tokenAddress, balanceUpdate, balanceType);
       }
     }
 
     return nextBalancesData;
-  }, [balancesData, optimisticTokensBalancesUpdates, websocketTokenBalancesUpdates]);
+  }, [balanceType, balancesData, optimisticTokensBalancesUpdates, websocketTokenBalancesUpdates]);
 }
 
 const applyBalanceUpdate = <T extends TokenBalancesData | TokensData>(
   currentUpdates: T,
   tokenAddress: string,
-  balanceUpdate: TokenBalanceUpdate
+  balanceUpdate: TokenBalanceUpdate,
+  balanceType: T extends TokensData ? undefined : TokenBalanceType
 ): T => {
   const nextBalancesData = { ...currentUpdates };
 
@@ -145,17 +167,29 @@ const applyBalanceUpdate = <T extends TokenBalancesData | TokensData>(
   }
 
   if (typeof nextBalancesData[tokenAddress] === "bigint") {
-    nextBalancesData[tokenAddress] = updateTokenBalance(balanceUpdate, nextBalancesData[tokenAddress] as bigint);
+    nextBalancesData[tokenAddress] = updateTokenBalance(
+      balanceUpdate,
+      nextBalancesData[tokenAddress] as bigint,
+      balanceType!
+    );
   } else if (typeof (nextBalancesData[tokenAddress] as TokenData).balance === "bigint") {
     const tokenData = { ...(nextBalancesData[tokenAddress] as TokenData & { balance: bigint }) };
-    tokenData.balance = updateTokenBalance(balanceUpdate, tokenData.balance);
+    tokenData.balance = updateTokenBalance(
+      balanceUpdate,
+      tokenData.balance,
+      tokenData.balanceType ?? TokenBalanceType.Wallet
+    );
     nextBalancesData[tokenAddress] = tokenData;
   }
 
   return nextBalancesData;
 };
 
-export function updateTokenBalance(balanceUpdate: TokenBalanceUpdate, balance: bigint) {
+export function updateTokenBalance(balanceUpdate: TokenBalanceUpdate, balance: bigint, balanceType: TokenBalanceType) {
+  if (balanceType !== balanceUpdate.balanceType) {
+    return balance;
+  }
+
   if (balanceUpdate.diff !== undefined) {
     return balance + balanceUpdate.diff;
   } else if (balanceUpdate.balance !== undefined) {

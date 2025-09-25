@@ -16,6 +16,7 @@ import {
   updateTokenBalance,
   useTokensBalancesUpdates,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
+import { TokenBalanceType } from "domain/tokens";
 import { GM_DECIMALS } from "lib/legacy";
 import { ContractCallConfig, ContractCallsConfig, MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
@@ -337,7 +338,7 @@ export function useGlvMarketsInfo(
           };
         });
 
-        resetTokensBalancesUpdates(Object.keys(result));
+        resetTokensBalancesUpdates(Object.keys(result), TokenBalanceType.Wallet);
 
         return result;
       },
@@ -360,7 +361,7 @@ export function useGlvMarketsInfo(
       const glvToken = result[tokenAddress].glvToken;
 
       if (glvToken.balance !== undefined) {
-        glvToken.balance = updateTokenBalance(balanceUpdate, glvToken.balance);
+        glvToken.balance = updateTokenBalance(balanceUpdate, glvToken.balance, TokenBalanceType.Wallet);
       }
     }
 

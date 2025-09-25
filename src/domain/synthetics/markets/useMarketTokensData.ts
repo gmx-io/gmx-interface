@@ -16,6 +16,7 @@ import {
   useUpdatedTokensBalances,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { getBalanceTypeFromSrcChainId, TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
+import { TokenBalanceType } from "domain/tokens";
 import { ContractCallsConfig, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -187,7 +188,7 @@ export function useMarketTokensDataRequest(
           explorerUrl: `${getExplorerUrl(chainId)}/token/${marketAddress}`,
         };
 
-        resetTokensBalancesUpdates(Object.keys(marketTokensMap));
+        resetTokensBalancesUpdates(Object.keys(marketTokensMap), TokenBalanceType.Wallet);
 
         return marketTokensMap;
       }, {} as TokensData),

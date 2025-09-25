@@ -11,7 +11,7 @@ import StBTCABI from "sdk/abis/StBTC.json";
 import ERC20ABI from "sdk/abis/Token.json";
 import { encodeExchangeRouterMulticall, ExchangeRouterCall, ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
-import { StakeNotification } from "components/Synthetics/StatusNotification/StakeNotification";
+import { StakeNotification } from "components/StatusNotification/StakeNotification";
 
 export type StakeOrUnstakeParams = {
   amount: bigint;

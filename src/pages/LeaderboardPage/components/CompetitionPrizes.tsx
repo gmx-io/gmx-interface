@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
-import { FaChevronRight } from "react-icons/fa6";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import { Link } from "react-router-dom";
 import type { Address } from "viem";
@@ -20,6 +19,7 @@ import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDas
 import { BodyScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 import rank1Icon from "img/rank1.svg";
 import rank2Icon from "img/rank2.svg";
 import rank3Icon from "img/rank3.svg";
@@ -192,7 +192,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
         className={`flex items-center gap-6 rounded-full bg-slate-600 p-10 text-typography-secondary
         hover:bg-slate-500 hover:text-typography-primary active:bg-slate-500 active:text-typography-primary`}
       >
-        <FaChevronRight size={12} />
+        <ChevronRightIcon className="size-12" />
       </Link>
     ) : null;
   }

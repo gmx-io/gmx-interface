@@ -14,7 +14,7 @@ import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 import { IStargate, IStargate__factory } from "typechain-types-stargate";
 import { SendParamStruct } from "typechain-types-stargate/IStargate";
 
-import { toastCustomOrStargateError } from "components/Synthetics/GmxAccountModal/toastCustomOrStargateError";
+import { toastCustomOrStargateError } from "components/GmxAccountModal/toastCustomOrStargateError";
 
 export async function createBridgeInTxn({
   chainId,
@@ -70,7 +70,7 @@ export async function createBridgeInTxn({
       callData: encodeFunctionData({
         abi: IStargateAbi as unknown as typeof IStargate__factory.abi,
         functionName: "send",
-        args: [sendParams, { nativeFee: quoteSend.nativeFee, lzTokenFee: 0n }, account as Hex],
+        args: [sendParams as any, { nativeFee: quoteSend.nativeFee, lzTokenFee: 0n }, account as Hex],
       }),
       value,
       msg: t`Sent transfer in transaction`,

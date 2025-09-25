@@ -1,7 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
-import { FaChevronDown } from "react-icons/fa";
 import { ImSpinner2 } from "react-icons/im";
 
 import { USD_DECIMALS } from "config/factors";
@@ -27,11 +26,12 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { BridgeInModal } from "components/BridgeModal/BridgeInModal";
 import { BridgeOutModal } from "components/BridgeModal/BridgeOutModal";
 import Button from "components/Button/Button";
-import { useMultichainMarketTokenBalancesRequest } from "components/Synthetics/GmxAccountModal/hooks";
-import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
+import { useMultichainMarketTokenBalancesRequest } from "components/GmxAccountModal/hooks";
+import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import Buy16Icon from "img/ic_buy_16.svg?react";
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import Sell16Icon from "img/ic_sell_16.svg?react";
 
 import { PoolsDetailsMarketAmount } from "./PoolsDetailsMarketAmount";
@@ -139,7 +139,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
                   variant="secondary"
                   onClick={handleToggle}
                 >
-                  <FaChevronDown className={cx({ "rotate-180": isOpen })} />
+                  <ChevronDownIcon className={cx({ "rotate-180": isOpen })} />
                 </Button>
               )}
             </div>

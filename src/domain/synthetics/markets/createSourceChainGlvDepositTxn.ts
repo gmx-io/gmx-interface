@@ -25,7 +25,7 @@ import type { IRelayUtils } from "typechain-types/MultichainGmRouter";
 import type { IStargate } from "typechain-types-stargate";
 import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
-import { toastCustomOrStargateError } from "components/Synthetics/GmxAccountModal/toastCustomOrStargateError";
+import { toastCustomOrStargateError } from "components/GmxAccountModal/toastCustomOrStargateError";
 
 import { signCreateGlvDeposit } from "./signCreateGlvDeposit";
 

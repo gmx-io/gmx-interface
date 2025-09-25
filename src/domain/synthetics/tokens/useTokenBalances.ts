@@ -5,7 +5,7 @@ import {
   useTokensBalancesUpdates,
   useUpdatedTokensBalances,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
-import { Token } from "domain/tokens";
+import { Token, TokenBalanceType } from "domain/tokens";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 import { CacheKey, MulticallRequestConfig, useMulticall } from "lib/multicall";
 import type { ContractsChainId } from "sdk/configs/chains";
@@ -87,13 +87,13 @@ export function useTokenBalances(
         result[tokenAddress] = res.data[tokenAddress].balance.returnValues[0];
       });
 
-      resetTokensBalancesUpdates(Object.keys(result));
+      resetTokensBalancesUpdates(Object.keys(result), TokenBalanceType.Wallet);
 
       return result;
     },
   });
 
-  const balancesData = useUpdatedTokensBalances(data);
+  const balancesData = useUpdatedTokensBalances(data, TokenBalanceType.Wallet);
 
   return {
     balancesData,

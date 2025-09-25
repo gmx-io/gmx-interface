@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useCallback, useMemo, useState } from "react";
-import { FaChevronDown } from "react-icons/fa6";
 
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
@@ -21,6 +20,8 @@ import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 
@@ -217,7 +218,7 @@ export function MarketSelector({
         data-qa="market-selector"
       >
         {selectedMarketLabel ? selectedMarketLabel : marketInfo ? getMarketIndexName(marketInfo) : "..."}
-        <FaChevronDown className="w-12 text-typography-secondary group-hover:text-blue-300" />
+        <ChevronDownIcon className="w-16 text-typography-secondary group-hover:text-blue-300" />
       </div>
     </div>
   );

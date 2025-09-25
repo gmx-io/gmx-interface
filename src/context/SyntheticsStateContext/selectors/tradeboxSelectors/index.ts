@@ -765,6 +765,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
       if (!swapAmounts || !swapAmounts.swapStrategy.swapPathStats) return undefined;
 
       return getTradeFees({
+        sizeInUsd: 0n,
         initialCollateralUsd: swapAmounts.usdIn,
         collateralDeltaUsd: 0n,
         sizeDeltaUsd: 0n,
@@ -793,6 +794,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
       const selectedPosition = q(selectTradeboxSelectedPosition);
 
       return getTradeFees({
+        sizeInUsd: selectedPosition?.sizeInUsd || 0n,
         initialCollateralUsd: increaseAmounts.initialCollateralUsd,
         collateralDeltaUsd: increaseAmounts.initialCollateralUsd, // pay token amount in usd
         sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
@@ -802,7 +804,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         swapPriceImpactDeltaUsd: increaseAmounts.swapStrategy.swapPathStats?.totalSwapPriceImpactDeltaUsd || 0n,
         increasePositionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
         decreasePositionPriceImpactDeltaUsd: 0n,
-        priceImpactDiffUsd: 0n,
+        priceImpactDiffUsd: increaseAmounts.potentialPriceImpactDiffUsd,
         totalPendingImpactDeltaUsd: 0n,
         proportionalPendingImpactDeltaUsd: 0n,
         borrowingFeeUsd: selectedPosition?.pendingBorrowingFeesUsd || 0n,
@@ -829,6 +831,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
       const collateralDeltaUsd = bigMath.mulDiv(position.collateralUsd, sizeReductionBps, BASIS_POINTS_DIVISOR_BIGINT);
 
       return getTradeFees({
+        sizeInUsd: selectedPosition?.sizeInUsd || 0n,
         initialCollateralUsd: selectedPosition?.collateralUsd || 0n,
         collateralDeltaUsd,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,

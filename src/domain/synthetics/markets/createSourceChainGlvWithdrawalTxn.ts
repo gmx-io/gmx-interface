@@ -21,7 +21,7 @@ import { IRelayUtils } from "typechain-types/MultichainGlvRouter";
 import { IStargate, IStargate__factory } from "typechain-types-stargate";
 import { SendParamStruct } from "typechain-types-stargate/IStargate";
 
-import { toastCustomOrStargateError } from "components/Synthetics/GmxAccountModal/toastCustomOrStargateError";
+import { toastCustomOrStargateError } from "components/GmxAccountModal/toastCustomOrStargateError";
 
 import { signCreateGlvWithdrawal } from "./signCreateGlvWithdrawal";
 

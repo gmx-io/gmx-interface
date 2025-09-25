@@ -16,9 +16,9 @@ import { getTokenBySymbol } from "sdk/configs/tokens";
 import { getMarketPoolName } from "sdk/utils/markets";
 
 import Button from "components/Button/Button";
+import { GmPaySource } from "components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
+import { SelectedPoolLabel } from "components/GmSwap/GmSwapBox/SelectedPool";
 import { SlideModal } from "components/Modal/SlideModal";
-import { GmPaySource } from "components/Synthetics/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
-import { SelectedPoolLabel } from "components/Synthetics/GmSwap/GmSwapBox/SelectedPool";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -199,6 +199,7 @@ type DisplayToken = {
 
 function AvailableToTradeTokenList({
   chainId,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   srcChainId,
   onSelectTokenAddress,
   marketInfo,

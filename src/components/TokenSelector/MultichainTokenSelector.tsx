@@ -1,7 +1,6 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { FaChevronDown } from "react-icons/fa6";
 
 import type { AnyChainId, ContractsChainId, SourceChainId } from "config/chains";
 import { isSourceChain } from "config/multichain";
@@ -19,6 +18,8 @@ import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import "./TokenSelector.scss";
 
@@ -218,7 +219,7 @@ export function MultichainTokenSelector({
           {token.symbol}
         </span>
 
-        <FaChevronDown className="w-12 text-typography-secondary group-hover:text-[inherit]" />
+        <ChevronDownIcon className="w-16 text-typography-secondary group-hover:text-[inherit]" />
       </div>
     </div>
   );

@@ -24,10 +24,10 @@ import { formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "sd
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { useMultichainMarketTokenBalancesRequest } from "components/GmxAccountModal/hooks";
+import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 import { SlideModal } from "components/Modal/SlideModal";
-import { useMultichainMarketTokenBalancesRequest } from "components/Synthetics/GmxAccountModal/hooks";
-import { wrapChainAction } from "components/Synthetics/GmxAccountModal/wrapChainAction";
-import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
+import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { MultichainMarketTokenSelector } from "components/TokenSelector/MultichainMarketTokenSelector";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 

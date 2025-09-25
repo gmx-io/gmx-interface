@@ -83,6 +83,7 @@ export type IncreasePositionAmounts = {
   borrowingFeeUsd: bigint;
   fundingFeeUsd: bigint;
   positionPriceImpactDeltaUsd: bigint;
+  potentialPriceImpactDiffUsd: bigint;
 };
 
 export type DecreasePositionAmounts = {

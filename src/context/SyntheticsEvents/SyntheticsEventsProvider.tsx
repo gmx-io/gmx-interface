@@ -28,6 +28,7 @@ import {
 import { getPositionKey } from "domain/synthetics/positions";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
+import { TokenBalanceType } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { getIsInsufficientExecutionFeeError } from "lib/errors/customErrors";
@@ -57,9 +58,9 @@ import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
 import { getInsufficientExecutionFeeToastContent } from "components/Errors/errorToasts";
-import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
-import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
-import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
+import { FeesSettlementStatusNotification } from "components/StatusNotification/FeesSettlementStatusNotification";
+import { GmStatusNotification } from "components/StatusNotification/GmStatusNotification";
+import { OrdersStatusNotificiation } from "components/StatusNotification/OrderStatusNotification";
 
 import {
   ApprovalStatuses,
@@ -176,6 +177,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     provider.getBalance(currentAccount, "pending").then((balance) => {
       setWebsocketTokenBalancesUpdates((old) =>
         setByKey(old, NATIVE_TOKEN_ADDRESS, {
+          balanceType: TokenBalanceType.Wallet,
           balance,
         })
       );
@@ -898,6 +900,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             const oldDiff = old[tokenAddress]?.diff || 0n;
 
             return setByKey(old, tokenAddress, {
+              balanceType: TokenBalanceType.Wallet,
               diff: oldDiff + amount,
             });
           });

@@ -10,14 +10,14 @@ export function getWithdrawalAmounts(p: {
   marketTokenAmount: bigint;
   longTokenAmount: bigint;
   shortTokenAmount: bigint;
-  receiveTokenAddress: string | undefined;
+  receiveTokenAddress?: string;
   uiFeeFactor: bigint;
   strategy: "byMarketToken" | "byLongCollateral" | "byShortCollateral" | "byCollaterals";
   forShift?: boolean;
   glvInfo?: GlvInfo;
   glvTokenAmount?: bigint;
   glvToken?: TokenData;
-  findSwapPath: FindSwapPath;
+  findSwapPath?: FindSwapPath;
 }): WithdrawalAmounts {
   const {
     marketInfo,
@@ -109,7 +109,7 @@ export function getWithdrawalAmounts(p: {
         shortToken.prices.maxPrice
       )!;
     } else if (p.receiveTokenAddress === longToken.address) {
-      const shortToLongSwapPathStats = findSwapPath(values.shortTokenUsd);
+      const shortToLongSwapPathStats = findSwapPath!(values.shortTokenUsd);
       if (!shortToLongSwapPathStats) {
         throw new Error("Short to long swap path stats is not valid");
       }
@@ -122,7 +122,7 @@ export function getWithdrawalAmounts(p: {
         longToken.prices.maxPrice
       )!;
     } else if (p.receiveTokenAddress === shortToken.address) {
-      const longToShortSwapPathStats = findSwapPath(values.longTokenUsd);
+      const longToShortSwapPathStats = findSwapPath!(values.longTokenUsd);
       if (!longToShortSwapPathStats) {
         throw new Error("Long to short swap path stats is not valid");
       }
