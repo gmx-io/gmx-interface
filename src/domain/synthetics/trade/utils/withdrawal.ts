@@ -1,5 +1,6 @@
 import { GlvInfo, MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
+import { ERC20Address } from "domain/tokens";
 import { applyFactor } from "lib/numbers";
 import { FindSwapPath, WithdrawalAmounts } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
@@ -10,7 +11,7 @@ export function getWithdrawalAmounts(p: {
   marketTokenAmount: bigint;
   longTokenAmount: bigint;
   shortTokenAmount: bigint;
-  receiveTokenAddress?: string;
+  wrappedReceiveTokenAddress?: ERC20Address;
   uiFeeFactor: bigint;
   strategy: "byMarketToken" | "byLongCollateral" | "byShortCollateral" | "byCollaterals";
   forShift?: boolean;
@@ -31,6 +32,7 @@ export function getWithdrawalAmounts(p: {
     glvToken,
     glvTokenAmount,
     findSwapPath,
+    wrappedReceiveTokenAddress,
   } = p;
 
   const { longToken, shortToken } = marketInfo;
@@ -97,7 +99,7 @@ export function getWithdrawalAmounts(p: {
     values.longTokenUsd = values.longTokenUsd - longSwapFeeUsd - longUiFeeUsd;
     values.shortTokenUsd = values.shortTokenUsd - shortSwapFeeUsd - shortUiFeeUsd;
 
-    if (!p.receiveTokenAddress) {
+    if (!wrappedReceiveTokenAddress) {
       values.longTokenAmount = convertToTokenAmount(
         values.longTokenUsd,
         longToken.decimals,
@@ -108,7 +110,7 @@ export function getWithdrawalAmounts(p: {
         shortToken.decimals,
         shortToken.prices.maxPrice
       )!;
-    } else if (p.receiveTokenAddress === longToken.address) {
+    } else if (wrappedReceiveTokenAddress === longToken.address) {
       const shortToLongSwapPathStats = findSwapPath!(values.shortTokenUsd);
       if (!shortToLongSwapPathStats) {
         throw new Error("Short to long swap path stats is not valid");
@@ -121,7 +123,7 @@ export function getWithdrawalAmounts(p: {
         longToken.decimals,
         longToken.prices.maxPrice
       )!;
-    } else if (p.receiveTokenAddress === shortToken.address) {
+    } else if (wrappedReceiveTokenAddress === shortToken.address) {
       const longToShortSwapPathStats = findSwapPath!(values.longTokenUsd);
       if (!longToShortSwapPathStats) {
         throw new Error("Long to short swap path stats is not valid");

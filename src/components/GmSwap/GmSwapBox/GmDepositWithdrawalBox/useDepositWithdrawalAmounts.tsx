@@ -1,16 +1,19 @@
 import { useMemo } from "react";
 
+import { ContractsChainId } from "config/chains";
 import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GlvInfo, MarketInfo } from "domain/synthetics/markets/types";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
 import { getWithdrawalAmounts } from "domain/synthetics/trade/utils/withdrawal";
+import { convertTokenAddress } from "sdk/configs/tokens";
 import { DepositAmounts, WithdrawalAmounts } from "sdk/types/trade";
 
 import { TokenInputState } from "./types";
 
 export function useDepositWithdrawalAmounts({
+  chainId,
   isDeposit,
   isPair,
   isWithdrawal,
@@ -27,6 +30,7 @@ export function useDepositWithdrawalAmounts({
   isMarketTokenDeposit,
   glvInfo,
 }: {
+  chainId: ContractsChainId;
   isDeposit: boolean;
   isPair: boolean;
   isWithdrawal: boolean;
@@ -49,6 +53,9 @@ export function useDepositWithdrawalAmounts({
 
   const receiveTokenAddress =
     !isDeposit && !isPair ? longTokenInputState?.address ?? shortTokenInputState?.address : undefined;
+  const wrappedReceiveTokenAddress = receiveTokenAddress
+    ? convertTokenAddress(chainId, receiveTokenAddress, "wrapped")
+    : undefined;
 
   const selectFindSwap = useMemo(() => {
     if (!hasLongTokenInputState) {
@@ -138,7 +145,7 @@ export function useDepositWithdrawalAmounts({
         glvTokenAmount,
         glvToken,
         findSwapPath,
-        receiveTokenAddress,
+        wrappedReceiveTokenAddress,
       });
     }
   }, [
@@ -160,7 +167,7 @@ export function useDepositWithdrawalAmounts({
     glvToken,
     halfOfLong,
     findSwapPath,
-    receiveTokenAddress,
+    wrappedReceiveTokenAddress,
   ]);
 
   return amounts;

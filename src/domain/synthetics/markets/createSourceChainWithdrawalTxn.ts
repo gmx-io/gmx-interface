@@ -146,7 +146,7 @@ export async function createSourceChainWithdrawalTxn({
         args: [sendParams as any, { nativeFee: quoteSend.nativeFee, lzTokenFee: 0n }, account as Hex],
       }),
       value,
-      msg: t`Sent deposit transaction`,
+      msg: t`Sent withdrawal transaction`,
     });
 
     await txnResult.wait();

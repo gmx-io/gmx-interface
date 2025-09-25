@@ -3,7 +3,6 @@ import chunk from "lodash/chunk";
 import { useCallback, useMemo } from "react";
 import { bytesToHex, Hex, hexToBytes, numberToHex, zeroAddress } from "viem";
 
-import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { getLayerZeroEndpointId, getStargatePoolAddress, isSettlementChain } from "config/multichain";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -38,7 +37,6 @@ import { getContract } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { nowInSeconds } from "sdk/utils/time";
-import { applySlippageToMinOut } from "sdk/utils/trade/trade";
 import { IRelayUtils } from "typechain-types/MultichainGmRouter";
 
 import type { UseLpTransactionProps } from "./useLpTransactions";
@@ -78,17 +76,17 @@ export const useWithdrawalTransactions = ({
   const glvTokenAddress = glvInfo?.glvTokenAddress;
   const glvTokenTotalSupply = glvInfo?.glvToken.totalSupply;
   const executionFeeTokenAmount = executionFee?.feeTokenAmount;
-  const initialLongTokenAddress = longTokenAddress
-    ? convertTokenAddress(chainId, longTokenAddress, "wrapped")
-    : undefined;
-  const initialShortTokenAddress =
-    shortTokenAddress && initialLongTokenAddress
-      ? convertTokenAddress(
-          chainId,
-          marketInfo?.isSameCollaterals ? initialLongTokenAddress : shortTokenAddress,
-          "wrapped"
-        )
-      : undefined;
+  // const initialLongTokenAddress = longTokenAddress
+  //   ? convertTokenAddress(chainId, longTokenAddress, "wrapped")
+  //   : undefined;
+  // const initialShortTokenAddress =
+  //   shortTokenAddress && initialLongTokenAddress
+  //     ? convertTokenAddress(
+  //         chainId,
+  //         marketInfo?.isSameCollaterals ? initialLongTokenAddress : shortTokenAddress,
+  //         "wrapped"
+  //       )
+  //     : undefined;
 
   const transferRequests = useMemo((): IRelayUtils.TransferRequestsStruct => {
     if (isGlv) {
@@ -232,12 +230,17 @@ export const useWithdrawalTransactions = ({
       dataList = [GMX_DATA_ACTION_HASH, ...bytes32array];
     }
 
+    let shouldUnwrapNativeToken = false;
+    if (paySource === "settlementChain") {
+      shouldUnwrapNativeToken = longTokenAddress === zeroAddress || shortTokenAddress === zeroAddress ? true : false;
+    }
+
     const params: CreateWithdrawalParamsStruct = {
       addresses: {
+        market: marketTokenAddress,
         receiver: account,
         callbackContract: zeroAddress,
         uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? zeroAddress,
-        market: marketTokenAddress,
         longTokenSwapPath: longTokenSwapPath ?? [],
         shortTokenSwapPath: shortTokenSwapPath ?? [],
       },
@@ -247,7 +250,7 @@ export const useWithdrawalTransactions = ({
       // TODO MLTCH: do not forget to apply slippage
       // minShortTokenAmount: applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, shortTokenAmount ?? 0n),
       minShortTokenAmount: 0n,
-      shouldUnwrapNativeToken: false,
+      shouldUnwrapNativeToken,
       executionFee,
       callbackGasLimit: 0n,
       dataList,
@@ -260,6 +263,7 @@ export const useWithdrawalTransactions = ({
     executionFeeTokenAmount,
     isGlv,
     longOftProvider,
+    longTokenAddress,
     longTokenSwapPath,
     marketTokenAddress,
     marketTokenAmount,
@@ -271,14 +275,7 @@ export const useWithdrawalTransactions = ({
   ]);
 
   const glvParams = useMemo((): CreateGlvWithdrawalParamsStruct | undefined => {
-    if (
-      !account ||
-      executionFeeTokenAmount === undefined ||
-      !isGlv ||
-      glvTokenAmount === undefined ||
-      !initialLongTokenAddress ||
-      !initialShortTokenAddress
-    ) {
+    if (!account || executionFeeTokenAmount === undefined || !isGlv || glvTokenAmount === undefined) {
       return undefined;
     }
 
@@ -288,15 +285,13 @@ export const useWithdrawalTransactions = ({
         return undefined;
       }
 
-      const provider = getStargatePoolAddress(chainId, convertTokenAddress(chainId, initialLongTokenAddress, "native"));
-      const secondaryProvider = getStargatePoolAddress(
-        chainId,
-        convertTokenAddress(chainId, initialShortTokenAddress, "native")
-      );
+      const provider = longOftProvider ?? shortOftProvider;
 
-      if (!provider || !secondaryProvider) {
+      if (!provider) {
         return undefined;
       }
+
+      const secondaryProvider = provider === shortOftProvider ? undefined : shortTokenAddress;
 
       const dstEid = getLayerZeroEndpointId(srcChainId);
 
@@ -315,8 +310,8 @@ export const useWithdrawalTransactions = ({
           providerData: providerData,
           // TODO MLTCH apply some slippage
           minAmountOut: 0n,
-          secondaryProvider: secondaryProvider,
-          secondaryProviderData: providerData,
+          secondaryProvider: secondaryProvider ?? zeroAddress,
+          secondaryProviderData: secondaryProvider ? providerData : "0x",
           secondaryMinAmountOut: 0n,
         },
       });
@@ -329,7 +324,7 @@ export const useWithdrawalTransactions = ({
 
     let shouldUnwrapNativeToken = false;
     if (paySource === "settlementChain") {
-      shouldUnwrapNativeToken = true;
+      shouldUnwrapNativeToken = longTokenAddress === zeroAddress || shortTokenAddress === zeroAddress ? true : false;
     }
 
     const params: CreateGlvWithdrawalParamsStruct = {
@@ -339,11 +334,13 @@ export const useWithdrawalTransactions = ({
         receiver: glvTokenTotalSupply === 0n ? numberToHex(1, { size: 20 }) : account,
         callbackContract: zeroAddress,
         uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? zeroAddress,
-        longTokenSwapPath: [],
-        shortTokenSwapPath: [],
+        longTokenSwapPath: longTokenSwapPath ?? [],
+        shortTokenSwapPath: shortTokenSwapPath ?? [],
       },
-      minLongTokenAmount: applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, longTokenAmount ?? 0n),
-      minShortTokenAmount: applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, shortTokenAmount ?? 0n),
+      // minLongTokenAmount: applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, longTokenAmount ?? 0n),
+      minLongTokenAmount: 0n,
+      // minShortTokenAmount: applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, shortTokenAmount ?? 0n),
+      minShortTokenAmount: 0n,
       executionFee: executionFeeTokenAmount,
       callbackGasLimit: 0n,
       shouldUnwrapNativeToken,
@@ -358,13 +355,15 @@ export const useWithdrawalTransactions = ({
     glvTokenAddress,
     glvTokenAmount,
     glvTokenTotalSupply,
-    initialLongTokenAddress,
-    initialShortTokenAddress,
     isGlv,
-    longTokenAmount,
+    longOftProvider,
+    longTokenAddress,
+    longTokenSwapPath,
     paySource,
     selectedMarketForGlv,
-    shortTokenAmount,
+    shortOftProvider,
+    shortTokenAddress,
+    shortTokenSwapPath,
     srcChainId,
   ]);
 
@@ -442,7 +441,8 @@ export const useWithdrawalTransactions = ({
         longTokenAmount === undefined ||
         shortTokenAmount === undefined ||
         !tokensData ||
-        !signer
+        !signer ||
+        !glvParams
       ) {
         helperToast.error(t`Error submitting order`);
         sendTxnValidationErrorMetric(metricData.metricId);
@@ -462,7 +462,7 @@ export const useWithdrawalTransactions = ({
           signer,
           globalExpressParams,
           transferRequests,
-          params: glvParams!,
+          params: glvParams,
           tokenAmount: glvTokenAmount!,
         });
       } else if (paySource === "gmxAccount") {
@@ -474,7 +474,7 @@ export const useWithdrawalTransactions = ({
         promise = createMultichainGlvWithdrawalTxn({
           chainId,
           signer,
-          params: glvParams!,
+          params: glvParams,
           expressTxnParams,
           transferRequests,
           srcChainId,
@@ -483,7 +483,7 @@ export const useWithdrawalTransactions = ({
         promise = createGlvWithdrawalTxn({
           chainId,
           signer,
-          params: glvParams!,
+          params: glvParams,
           executionGasLimit: executionFee.gasLimit,
           tokensData,
           setPendingTxns,
@@ -535,7 +535,8 @@ export const useWithdrawalTransactions = ({
         longTokenAmount === undefined ||
         shortTokenAmount === undefined ||
         !tokensData ||
-        !signer
+        !signer ||
+        !gmParams
       ) {
         helperToast.error(t`Error submitting order`);
         sendTxnValidationErrorMetric(metricData.metricId);
@@ -557,7 +558,7 @@ export const useWithdrawalTransactions = ({
           globalExpressParams,
           // executionFee: executionFee.feeTokenAmount,
           transferRequests,
-          params: gmParams!,
+          params: gmParams,
           tokenAmount: marketTokenAmount!,
         });
       } else if (paySource === "gmxAccount") {
@@ -569,7 +570,7 @@ export const useWithdrawalTransactions = ({
         promise = createMultichainWithdrawalTxn({
           chainId,
           signer,
-          params: gmParams!,
+          params: gmParams,
           expressTxnParams,
           transferRequests,
           srcChainId,
@@ -580,7 +581,7 @@ export const useWithdrawalTransactions = ({
           signer,
           marketTokenAmount: marketTokenAmount!,
           executionGasLimit: executionFee.gasLimit,
-          params: gmParams!,
+          params: gmParams,
           tokensData,
           skipSimulation: shouldDisableValidation,
           setPendingTxns,

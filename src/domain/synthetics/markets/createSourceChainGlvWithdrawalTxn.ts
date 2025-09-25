@@ -56,7 +56,7 @@ export async function createSourceChainGlvWithdrawalTxn({
       // TODO MLTCH this is going through the keeper to execute a depost
       // so there 100% should be a fee
       // feeAmount: 10n * 10n ** 6n,
-      feeAmount: 85022412326765n, // params.executionFee,
+      feeAmount: 1117894200000000n * 2n, // params.executionFee,
       // feeSwapPath: ["0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc"],
       feeSwapPath: [],
     },

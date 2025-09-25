@@ -325,7 +325,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
         }
       }
 
-      if (glvInfo && !isPair) {
+      if (glvInfo && !isPair && isDeposit) {
         const options = [longToken, shortToken];
 
         options.push(
@@ -355,7 +355,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
       return uniqBy(result, (token) => token.address);
     },
-    [marketInfo, chainId, glvInfo, isPair, paySource, marketTokensData, marketsInfoData]
+    [marketInfo, chainId, glvInfo, isPair, isDeposit, paySource, marketTokensData, marketsInfoData]
   );
 
   const availableTokensData = useMemo(() => {
@@ -382,6 +382,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const isMarketTokenDeposit = Boolean(fromMarketTokenInputState);
 
   const amounts = useDepositWithdrawalAmounts({
+    chainId,
     isDeposit,
     marketInfo,
     marketToken,

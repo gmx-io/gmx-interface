@@ -67,6 +67,10 @@ export const useDepositWithdrawalFees = ({
     let oraclePriceCount;
 
     const glvMarketsCount = BigInt(glvInfo?.markets?.length ?? 0);
+    const swapPathCount = BigInt(
+      ((amounts as WithdrawalAmounts)?.longTokenSwapPathStats?.swapPath.length ?? 0) +
+        ((amounts as WithdrawalAmounts)?.shortTokenSwapPathStats?.swapPath.length ?? 0)
+    );
 
     if (glvInfo) {
       gasLimit = isDeposit
@@ -78,15 +82,13 @@ export const useDepositWithdrawalFees = ({
           })
         : estimateExecuteGlvWithdrawalGasLimit(gasLimits, {
             marketsCount: glvMarketsCount,
+            swapsCount: swapPathCount,
           });
 
       oraclePriceCount = isDeposit
         ? estimateGlvDepositOraclePriceCount(glvMarketsCount)
-        : estimateGlvWithdrawalOraclePriceCount(glvMarketsCount);
+        : estimateGlvWithdrawalOraclePriceCount(glvMarketsCount, swapPathCount);
     } else {
-      const swapPathCount =
-        ((amounts as WithdrawalAmounts)?.longTokenSwapPathStats?.swapPath.length ?? 0) +
-        ((amounts as WithdrawalAmounts)?.shortTokenSwapPathStats?.swapPath.length ?? 0);
       gasLimit = isDeposit
         ? estimateExecuteDepositGasLimit(gasLimits, {})
         : estimateExecuteWithdrawalGasLimit(gasLimits, {
