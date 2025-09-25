@@ -46,7 +46,7 @@ export function EarnRedirect() {
   );
 
   if (!isBalancesReady) {
-    return null;
+    return <EarnPageLayout />;
   }
 
   const target = account && hasEarnHoldings ? "/earn/portfolio" : "/earn/discovery";

@@ -326,7 +326,7 @@ function RewardOptionCard({
   setSecondaryChecked: (value: boolean) => void;
   nativeTokenSymbol?: string;
 }) {
-  const amountText = amount !== undefined ? `${formatAmount(amount, amountDecimals, 2, true)} ${amountSymbol}` : "...";
+  const amountText = amount !== undefined ? `${formatAmount(amount, amountDecimals)} ${amountSymbol}` : "...";
   const isPrimaryDisabled = Boolean(secondaryChecked);
 
   return (

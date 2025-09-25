@@ -141,14 +141,14 @@ export function MenuSection({
   onMenuItemClick?: () => void;
 }) {
   const mainNavItems = [
-    { icon: <TradeIcon />, label: t`Trade`, key: "trade", to: "/trade" },
-    { icon: <DatabaseIcon />, label: t`Pools`, key: "pools", to: "/pools" },
-    { icon: <EarnIcon />, label: t`Earn`, key: "earn", to: "/earn" },
-    { icon: <DashboardIcon />, label: t`Stats`, key: "stats", to: "/stats" },
-    { icon: <BuyIcon />, label: t`Buy`, key: "buy", to: "/buy" },
-    { icon: <ReferralsIcon />, label: t`Referrals`, key: "referrals", to: "/referrals" },
-    { icon: <LeaderboardIcon />, label: t`Leaderboard`, key: "leaderboard", to: "/leaderboard" },
-    { icon: <EcosystemIcon />, label: t`Ecosystem`, key: "ecosystem", to: "/ecosystem" },
+    { icon: <TradeIcon className="size-24" />, label: t`Trade`, key: "trade", to: "/trade" },
+    { icon: <DatabaseIcon className="size-24" />, label: t`Pools`, key: "pools", to: "/pools" },
+    { icon: <EarnIcon className="size-24" />, label: t`Earn`, key: "earn", to: "/earn" },
+    { icon: <DashboardIcon className="size-24" />, label: t`Stats`, key: "stats", to: "/stats" },
+    { icon: <BuyIcon className="size-24" />, label: t`Buy`, key: "buy", to: "/buy" },
+    { icon: <ReferralsIcon className="size-24" />, label: t`Referrals`, key: "referrals", to: "/referrals" },
+    { icon: <LeaderboardIcon className="size-24" />, label: t`Leaderboard`, key: "leaderboard", to: "/leaderboard" },
+    { icon: <EcosystemIcon className="size-24" />, label: t`Ecosystem`, key: "ecosystem", to: "/ecosystem" },
   ];
 
   const { pathname } = useLocation();
