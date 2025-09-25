@@ -111,7 +111,7 @@ function StakeContent() {
     return getTotalGmInfo(marketTokensData);
   }, [marketTokensData, active]);
 
-  const processedData = useProcessedData();
+  const { data: processedData } = useProcessedData();
 
   const reservedAmount =
     (processedData?.gmxInStakedGmx !== undefined &&

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 import { zeroAddress } from "viem";
 
@@ -32,7 +32,7 @@ export function useProcessedData(targetChainId?: ContractsChainId) {
 
   const accountForQuery = account || PLACEHOLDER_ACCOUNT;
 
-  const { data: contractsData } = useMulticall<
+  const { data: contractsData, mutate: mutateContractsData } = useMulticall<
     MulticallRequestConfig<any>,
     StakeProcessedDataMulticallResult | undefined
   >(chainId, "Stake:useProcessedData", {
@@ -53,7 +53,7 @@ export function useProcessedData(targetChainId?: ContractsChainId) {
   const nativeTokenPrice = contractsData?.nativeTokenPrice;
   const stakedGmxSupply = contractsData?.stakedGmxSupply;
 
-  const { data: gmxSupply } = useSWR<string>([gmxSupplyUrl], {
+  const { data: gmxSupply, mutate: mutateGmxSupply } = useSWR<string>([gmxSupplyUrl], {
     fetcher: (args: [string]) => fetch(...args).then((res) => res.text()),
   });
 
@@ -85,7 +85,34 @@ export function useProcessedData(targetChainId?: ContractsChainId) {
     ]
   );
 
-  return processedData;
+  const mutateProcessedData = useCallback(() => {
+    const promises: Promise<unknown>[] = [];
+
+    if (mutateContractsData) {
+      const result = mutateContractsData();
+      if (result) {
+        promises.push(result);
+      }
+    }
+
+    if (mutateGmxSupply) {
+      const result = mutateGmxSupply();
+      if (result) {
+        promises.push(result);
+      }
+    }
+
+    if (promises.length === 0) {
+      return Promise.resolve();
+    }
+
+    return Promise.all(promises);
+  }, [mutateContractsData, mutateGmxSupply]);
+
+  return {
+    data: processedData,
+    mutate: mutateProcessedData,
+  };
 }
 
 type StakeProcessedDataMulticallResult = {

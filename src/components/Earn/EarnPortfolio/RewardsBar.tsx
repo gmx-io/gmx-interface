@@ -13,6 +13,8 @@ import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
+import { ClaimRewardsButton } from "./ClaimRewardsButton";
+
 type PendingRewardItem = {
   label: ReactNode;
   symbol: string;
@@ -25,7 +27,7 @@ export function RewardsBar() {
   const { chainId, srcChainId } = useChainId();
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
 
-  const processedData = useProcessedData();
+  const { data: processedData, mutate: mutateProcessedData } = useProcessedData();
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
 
   const totalGmInfo = useMemo(() => getTotalGmInfo(marketTokensData), [marketTokensData]);
@@ -38,39 +40,48 @@ export function RewardsBar() {
 
   return (
     <div className="rounded-8 bg-slate-900 p-20 text-typography-primary">
-      <div className="flex gap-28 max-lg:flex-col max-lg:gap-16">
-        <div className="flex gap-28 max-lg:grid max-lg:grid-cols-2 max-lg:gap-12">
-          <div className="flex flex-col gap-2">
-            <span className="text-12 font-medium text-typography-secondary">
-              <Trans>Total Investment Value</Trans>
-            </span>
-            <span className="text-body-large font-medium numbers">{formatUsd(totalInvestmentUsd)}</span>
+      <div className="flex flex-col gap-16 lg:flex-row lg:items-start lg:justify-between">
+        <div className="flex gap-28 max-lg:flex-col max-lg:gap-16">
+          <div className="flex gap-28 max-lg:grid max-lg:grid-cols-2 max-lg:gap-12">
+            <div className="flex flex-col gap-2">
+              <span className="text-12 font-medium text-typography-secondary">
+                <Trans>Total Investment Value</Trans>
+              </span>
+              <span className="text-body-large font-medium numbers">{formatUsd(totalInvestmentUsd)}</span>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <span className="text-12 font-medium text-typography-secondary">
+                <Trans>Total Earned</Trans>
+              </span>
+              <TotalEarned processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
+            </div>
           </div>
 
-          <div className="flex flex-col gap-2">
-            <span className="text-12 font-medium text-typography-secondary">
-              <Trans>Total Earned</Trans>
-            </span>
-            <TotalEarned processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
+          <div className="border-r-1/2 border-slate-600 max-lg:border-b-1/2 max-lg:border-r-0" />
+
+          <div className="flex gap-28 max-lg:flex-col max-lg:gap-12">
+            <div className="flex flex-col gap-2">
+              <span className="text-12 font-medium text-typography-secondary">
+                <Trans>Pending Rewards</Trans>
+              </span>
+              <PendingRewards processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <span className="text-12 font-medium text-typography-secondary">
+                <Trans>Total Pending Rewards</Trans>
+              </span>
+              <span className="text-body-large font-medium numbers">{formatUsd(totalPendingRewardsUsd)}</span>
+            </div>
           </div>
         </div>
-        <div className="border-r-1/2 border-slate-600 max-lg:border-b-1/2 max-lg:border-r-0" />
 
-        <div className="flex gap-28 max-lg:flex-col max-lg:gap-12">
-          <div className="flex flex-col gap-2">
-            <span className="text-12 font-medium text-typography-secondary">
-              <Trans>Pending Rewards</Trans>
-            </span>
-            <PendingRewards processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <span className="text-12 font-medium text-typography-secondary">
-              <Trans>Total Pending Rewards</Trans>
-            </span>
-            <span className="text-body-large font-medium numbers">{formatUsd(totalPendingRewardsUsd)}</span>
-          </div>
-        </div>
+        <ClaimRewardsButton
+          className="lg:self-center"
+          processedData={processedData}
+          mutateProcessedData={mutateProcessedData}
+        />
       </div>
     </div>
   );
