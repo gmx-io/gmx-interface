@@ -46,6 +46,10 @@ msgstr ""
 msgid "You can transfer {nativeTokenSymbol} from other networks to {chainName} using any of the below options:"
 msgstr ""
 
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "from 5 blockchains"
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order executed."
 msgstr ""
@@ -239,7 +243,7 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "{seconds}s"
-msgstr "{seconds}초"
+msgstr "
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
@@ -2266,7 +2270,7 @@ msgstr "{fromText}에서 {toMinText}로"
 msgid "Otherwise, try changing the RPC url in your wallet settings with the help of <0>chainlist.org</0>."
 msgstr "그렇지 않으면 <0>chainlist.org</0>의 도움을 받아 지갑 설정에서 RPC URL을 변경해 보세요."
 
-#: src/components/Synthetics/GmxAccountModal/TransferDetailsView.tsx
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Testnet LayerZero Scan"
 msgstr ""
 
@@ -2660,6 +2664,10 @@ msgstr "총 스테이킹"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Network Fee"
 msgstr "네트워크 수수료"
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "20s"
+msgstr ""
 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "The aximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
@@ -3431,8 +3439,8 @@ msgstr "GM 시장"
 msgid "Your opinions and experiences matter to us. Your feedback helps us understand what we are doing well and where we can make enhancements."
 msgstr "귀하의 의견과 경험은 우리에게 중요합니다. 피드백은 우리가 잘하고 있는 부분과 개선할 부분을 이해하는 데 도움이 됩니다."
 
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
-#: src/components/Synthetics/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Estimated Time"
 msgstr ""
 
@@ -4597,6 +4605,11 @@ msgstr "Yield Yak Optimizer"
 msgid "GMX & Voting Power"
 msgstr "GMX 및 투표권"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "1m 40s"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP autocompounding vaults"
 msgstr "GLP 자동 복리 볼트"
@@ -5261,7 +5274,6 @@ msgstr "분산 거래소에서 GMX 구매"
 msgid "Powered by"
 msgstr "Powered by"
 
-#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Asset Balance"
 msgstr ""
@@ -5387,7 +5399,7 @@ msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Create {0} Order"
-msgstr "{0} 주문 생성"
+msgstr "
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Limit Swap"
@@ -5513,8 +5525,8 @@ msgid "Buy GLP or GMX"
 msgstr "GLP 또는 GMX 구매"
 
 #: src/context/GmxAccountContext/GmxAccountContext.tsx
-msgid "Source Base is now available on GMX"
-msgstr ""
+#~ msgid "Source Base is now available on GMX"
+#~ msgstr ""
 
 #: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools, with auto-compounding for seamless growth (20-30% historical average annualized performance). View real-time earnings, performance, and portfolio value on the <0>Pools page</0>."
@@ -5931,8 +5943,8 @@ msgid "Pools"
 msgstr "풀"
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "from 4 blockchains"
-msgstr ""
+#~ msgid "from 4 blockchains"
+#~ msgstr ""
 
 #: src/components/GmList/GlvList.tsx
 msgid "VAULT"
@@ -6994,7 +7006,7 @@ msgstr "적립된 가격 영향 리베이트. 약 10일 후 청구 가능.<0/><1
 msgid "Net Rate"
 msgstr "순 비율"
 
-#: src/components/Synthetics/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
 msgid "30s"
 msgstr ""
 
@@ -7493,6 +7505,10 @@ msgstr "지정가"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Trading Settings"
 msgstr "거래 설정"
+
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "LayerZero Scan"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute as the max. allowed leverage is exceeded. Consider decreasing the order's leverage by editing and decreasing its size. <0>Read more</0>."
