@@ -50,9 +50,9 @@ export const GMX_DECIMALS = 18;
 export const GM_DECIMALS = 18;
 export const DEFAULT_MAX_USDG_AMOUNT = expandDecimals(200 * 1000 * 1000, 18);
 
-export const TAX_BASIS_POINTS = 60;
-export const STABLE_TAX_BASIS_POINTS = 5;
-export const MINT_BURN_FEE_BASIS_POINTS = 25;
+export const TAX_BASIS_POINTS = 0;
+export const STABLE_TAX_BASIS_POINTS = 0;
+export const MINT_BURN_FEE_BASIS_POINTS = 0;
 export const SWAP_FEE_BASIS_POINTS = 25;
 export const STABLE_SWAP_FEE_BASIS_POINTS = 1;
 export const MARGIN_FEE_BASIS_POINTS = 10;
@@ -357,9 +357,11 @@ export function getSellGlpToAmount(
 
   // in the Vault contract, the token.usdgAmount is reduced before the fee basis points
   // is calculated
+  const diff = fromToken.usdgAmount !== undefined ? fromToken.usdgAmount - usdgAmount : undefined;
+  const noNegativeDiff = diff !== undefined ? (diff > 0n ? diff : 0n) : undefined;
   const feeBasisPoints = getFeeBasisPoints(
     fromToken,
-    fromToken?.usdgAmount !== undefined ? fromToken.usdgAmount - usdgAmount : undefined,
+    noNegativeDiff,
     usdgAmount,
     MINT_BURN_FEE_BASIS_POINTS,
     TAX_BASIS_POINTS,
