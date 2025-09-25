@@ -944,6 +944,10 @@ msgstr ""
 msgid "Average leverage used."
 msgstr ""
 
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "GMX Rewards"
+msgstr ""
+
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/TotalRewardsCard.tsx
 msgid "Escrowed GMX"
@@ -2846,6 +2850,10 @@ msgstr ""
 msgid "Unknown Error"
 msgstr ""
 
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "Pending Rewards"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a new ratio or allowed slippage"
 msgstr ""
@@ -3242,6 +3250,10 @@ msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading is not available using network's native token {0}. Consider using {1} instead."
+msgstr ""
+
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "Total Earned"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -3880,6 +3892,10 @@ msgstr ""
 msgid "No distribution history yet"
 msgstr ""
 
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "esGMX rewards"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr ""
@@ -4227,6 +4243,10 @@ msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 msgid "Voting"
+msgstr ""
+
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "Total Investment Value"
 msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -5094,6 +5114,10 @@ msgstr ""
 msgid "Longs Net Rate / 1h"
 msgstr ""
 
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "{nativeTokenSymbol} rewards"
+msgstr ""
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Edit"
 msgstr ""
@@ -5867,6 +5891,10 @@ msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
+msgstr ""
+
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "GMX rewards"
 msgstr ""
 
 #: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
@@ -6890,6 +6918,10 @@ msgstr ""
 msgid "High TWAP network fee"
 msgstr ""
 
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "{nativeTokenSymbol} Rewards"
+msgstr ""
+
 #: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "What is GM?"
 msgstr ""
@@ -7299,6 +7331,10 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "esGMX Rewards"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "The maximum allowed percentage difference between the mark price and the execution price for market orders."
 msgstr ""
@@ -7450,6 +7486,10 @@ msgstr ""
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing from subaccount"
+msgstr ""
+
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "Total Pending Rewards"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx

@@ -1,5 +1,6 @@
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { GLV_MARKETS } from "config/markets";
+import { getTotalTokenBalance } from "domain/tokens/getTotalTokenBalance";
 import { PRECISION, expandDecimals } from "lib/numbers";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
@@ -378,43 +379,11 @@ export function marketTokenAmountToUsd(marketInfo: MarketInfo, marketToken: Toke
 }
 
 export function getTotalGmInfo(tokensData?: TokensData) {
-  const defaultResult = {
-    balance: 0n,
-    balanceUsd: 0n,
-  };
-
-  if (!tokensData) {
-    return defaultResult;
-  }
-
-  const tokens = Object.values(tokensData).filter((token) => token.symbol === "GM");
-
-  return tokens.reduce((acc, token) => {
-    const balanceUsd = convertToUsd(token.balance, token.decimals, token.prices.minPrice);
-    acc.balance = acc.balance + (token.balance ?? 0n);
-    acc.balanceUsd = acc.balanceUsd + (balanceUsd ?? 0n);
-    return acc;
-  }, defaultResult);
+  return getTotalTokenBalance(tokensData, "GM");
 }
 
 export function getTotalGlvInfo(tokensData?: TokensData) {
-  const defaultResult = {
-    balance: 0n,
-    balanceUsd: 0n,
-  };
-
-  if (!tokensData) {
-    return defaultResult;
-  }
-
-  const tokens = Object.values(tokensData).filter((token) => token.symbol === "GLV");
-
-  return tokens.reduce((acc, token) => {
-    const balanceUsd = convertToUsd(token.balance, token.decimals, token.prices.minPrice);
-    acc.balance = acc.balance + (token.balance ?? 0n);
-    acc.balanceUsd = acc.balanceUsd + (balanceUsd ?? 0n);
-    return acc;
-  }, defaultResult);
+  return getTotalTokenBalance(tokensData, "GLV");
 }
 
 export function getIsZeroPriceImpactMarket(marketInfo: MarketInfo) {

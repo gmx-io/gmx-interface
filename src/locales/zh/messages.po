@@ -944,6 +944,10 @@ msgstr "市值"
 msgid "Average leverage used."
 msgstr "平均使用杠杆。"
 
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "GMX Rewards"
+msgstr ""
+
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/TotalRewardsCard.tsx
 msgid "Escrowed GMX"
@@ -2846,6 +2850,10 @@ msgstr ""
 msgid "Unknown Error"
 msgstr "未知错误"
 
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "Pending Rewards"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a new ratio or allowed slippage"
 msgstr "输入新比率或允许滑点"
@@ -3243,6 +3251,10 @@ msgstr "PnL"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading is not available using network's native token {0}. Consider using {1} instead."
 msgstr "使用网络的本机代币 {0} 无法进行快速交易。请考虑使用 {1}。"
+
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "Total Earned"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
@@ -3880,6 +3892,10 @@ msgstr ""
 msgid "No distribution history yet"
 msgstr ""
 
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "esGMX rewards"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr "TP"
@@ -4228,6 +4244,10 @@ msgstr "池"
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 msgid "Voting"
 msgstr "投票"
+
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "Total Investment Value"
+msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price."
@@ -5094,6 +5114,10 @@ msgstr "超出最大金额"
 msgid "Longs Net Rate / 1h"
 msgstr "多头净率 / 1 小时"
 
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "{nativeTokenSymbol} rewards"
+msgstr ""
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Edit"
 msgstr "编辑"
@@ -5868,6 +5892,10 @@ msgstr "在 Explorer 中打开 {0}"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 msgstr "{0} 和 {1} 可用于为此市场购买 GM，最高可达指定的购买上限。"
+
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "GMX rewards"
+msgstr ""
 
 #: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "GLV tokens are similar in composition to GLP, and enable seamless integration into GMX V2's liquidity ecosystem. Users can either sell or hold the tokens to earn yield. To encourage long-term participation, a $500,000 GLV incentive pool will be distributed proportionally to those who hold their allocated GLV for at least 3 months."
@@ -6890,6 +6918,10 @@ msgstr "仅允许字母、数字和下划线。"
 msgid "High TWAP network fee"
 msgstr ""
 
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "{nativeTokenSymbol} Rewards"
+msgstr ""
+
 #: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "What is GM?"
 msgstr ""
@@ -7299,6 +7331,10 @@ msgstr ""
 msgid "Language"
 msgstr "语言"
 
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "esGMX Rewards"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "The maximum allowed percentage difference between the mark price and the execution price for market orders."
 msgstr ""
@@ -7450,6 +7486,10 @@ msgstr "24 小时交易量"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing from subaccount"
+msgstr ""
+
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "Total Pending Rewards"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx

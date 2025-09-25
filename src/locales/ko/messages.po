@@ -944,6 +944,10 @@ msgstr "시가총액"
 msgid "Average leverage used."
 msgstr "사용된 평균 레버리지."
 
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "GMX Rewards"
+msgstr ""
+
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/TotalRewardsCard.tsx
 msgid "Escrowed GMX"
@@ -2846,6 +2850,10 @@ msgstr ""
 msgid "Unknown Error"
 msgstr "알 수 없는 오류"
 
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "Pending Rewards"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a new ratio or allowed slippage"
 msgstr "새 비율 또는 허용 슬리피지 입력"
@@ -3243,6 +3251,10 @@ msgstr "PnL"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading is not available using network's native token {0}. Consider using {1} instead."
 msgstr "네트워크의 네이티브 토큰 {0}을 사용한 익스프레스 거래는 사용할 수 없습니다. 대신 {1} 사용을 고려하세요."
+
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "Total Earned"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
@@ -3880,6 +3892,10 @@ msgstr ""
 msgid "No distribution history yet"
 msgstr ""
 
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "esGMX rewards"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr "TP"
@@ -4228,6 +4244,10 @@ msgstr "풀"
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 msgid "Voting"
 msgstr "투표"
+
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "Total Investment Value"
+msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price."
@@ -5094,6 +5114,10 @@ msgstr "최대 수량 초과"
 msgid "Longs Net Rate / 1h"
 msgstr "롱 순 수수료율 / 1시간"
 
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "{nativeTokenSymbol} rewards"
+msgstr ""
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Edit"
 msgstr "수정"
@@ -5868,6 +5892,10 @@ msgstr "탐색기에서 {0} 열기"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 msgstr "{0} 및 {1}은 지정된 구매 상한까지 이 시장의 GM 구매에 사용될 수 있습니다."
+
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "GMX rewards"
+msgstr ""
 
 #: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "GLV tokens are similar in composition to GLP, and enable seamless integration into GMX V2's liquidity ecosystem. Users can either sell or hold the tokens to earn yield. To encourage long-term participation, a $500,000 GLV incentive pool will be distributed proportionally to those who hold their allocated GLV for at least 3 months."
@@ -6890,6 +6918,10 @@ msgstr "문자, 숫자 및 언더스코어만 허용됩니다."
 msgid "High TWAP network fee"
 msgstr ""
 
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "{nativeTokenSymbol} Rewards"
+msgstr ""
+
 #: src/components/Earn/EarnDiscovery/components/EarnProductCard.tsx
 msgid "What is GM?"
 msgstr ""
@@ -7299,6 +7331,10 @@ msgstr ""
 msgid "Language"
 msgstr "언어"
 
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "esGMX Rewards"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "The maximum allowed percentage difference between the mark price and the execution price for market orders."
 msgstr ""
@@ -7450,6 +7486,10 @@ msgstr "24시간 거래량"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing from subaccount"
+msgstr ""
+
+#: src/components/Earn/EarnPortfolio/RewardsBar.tsx
+msgid "Total Pending Rewards"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx

@@ -56,8 +56,9 @@ export function AmountWithUsdBalance({
   usd,
   symbol,
   multiline = false,
-  usdOnTop = false,
+  usdAsPrimary = false,
   isStable = false,
+  secondaryValueClassName,
 }: {
   className?: string;
   amount: bigint | undefined;
@@ -65,8 +66,9 @@ export function AmountWithUsdBalance({
   usd: bigint | undefined;
   symbol?: string;
   multiline?: boolean;
-  usdOnTop?: boolean;
+  usdAsPrimary?: boolean;
   isStable?: boolean;
+  secondaryValueClassName?: string;
 }) {
   if (amount === undefined || usd === undefined) {
     return "...";
@@ -76,19 +78,23 @@ export function AmountWithUsdBalance({
 
   const formattedUsd = formatUsd(usd);
 
-  const topValue = usdOnTop ? formattedUsd : formattedAmount;
-  const bottomValue = usdOnTop ? formattedAmount : formattedUsd;
+  const primaryValue = usdAsPrimary ? formattedUsd : formattedAmount;
+  const secondaryValue = usdAsPrimary ? formattedAmount : formattedUsd;
 
   return (
     <span className={className}>
-      <span className="numbers">{topValue} </span>
+      <span className="numbers">{primaryValue} </span>
       {multiline && <br />}
       <span
-        className={cx("text-12 text-typography-secondary numbers group-hover/hoverable:text-[inherit]", {
-          "ml-2": multiline,
-        })}
+        className={cx(
+          "text-12 text-typography-secondary numbers group-hover/hoverable:text-[inherit]",
+          secondaryValueClassName,
+          {
+            "ml-2": multiline,
+          }
+        )}
       >
-        ({bottomValue})
+        ({secondaryValue})
       </span>
     </span>
   );

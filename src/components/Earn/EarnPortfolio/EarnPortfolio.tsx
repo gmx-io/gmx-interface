@@ -1,7 +1,13 @@
 import EarnPageLayout from "components/Earn/EarnPageLayout";
 
+import { RewardsBar } from "./RewardsBar";
+
 export function EarnPortfolio() {
-  return <EarnPageLayout>Portfolio</EarnPageLayout>;
+  return (
+    <EarnPageLayout>
+      <RewardsBar />
+    </EarnPageLayout>
+  );
 }
 
 export default EarnPortfolio;
