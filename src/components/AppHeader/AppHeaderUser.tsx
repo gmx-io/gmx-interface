@@ -9,7 +9,7 @@ import { NETWORK_OPTIONS } from "components/Header/AppHeaderChainAndSettings";
 import { OneClickButton } from "components/OneClickButton/OneClickButton";
 
 import { AddressDropdown } from "../AddressDropdown/AddressDropdown";
-import ConnectWalletButton from "../Common/ConnectWalletButton";
+import ConnectWalletButton from "../ConnectWalletButton/ConnectWalletButton";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 
 type Props = {

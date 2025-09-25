@@ -25,7 +25,7 @@ import { ReaderUtils } from "typechain-types/SyntheticsReader";
 import type {
   MarketFilterLongShortDirection,
   MarketFilterLongShortItemData,
-} from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
+} from "components/TableMarketFilter/MarketFilterLongShort";
 
 type OrdersResult = {
   ordersData?: OrdersData;

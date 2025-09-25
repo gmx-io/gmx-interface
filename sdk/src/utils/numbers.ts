@@ -173,9 +173,9 @@ export function formatDeltaUsd(
 
 export function formatPercentage(
   percentage?: bigint,
-  opts: { fallbackToZero?: boolean; signed?: boolean; displayDecimals?: number; bps?: boolean } = {}
+  opts: { fallbackToZero?: boolean; signed?: boolean; displayDecimals?: number; bps?: boolean; showPlus?: boolean } = {}
 ) {
-  const { fallbackToZero = false, signed = false, displayDecimals = 2, bps = true } = opts;
+  const { fallbackToZero = false, signed = false, displayDecimals = 2, bps = true, showPlus = true } = opts;
 
   if (percentage === undefined) {
     if (fallbackToZero) {
@@ -185,9 +185,10 @@ export function formatPercentage(
     return undefined;
   }
 
-  const sign = signed ? `${getPlusOrMinusSymbol(percentage)}\u200a\u200d` : "";
+  const sign = signed ? `${getPlusOrMinusSymbol(percentage)}` : "";
+  const displaySign = !showPlus && sign === "+" ? "" : `${sign}`;
 
-  return `${sign}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
+  return `${displaySign}${displaySign ? "\u200a\u200d" : ""}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
 }
 
 export function formatTokenAmount(
