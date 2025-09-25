@@ -25,6 +25,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import { GMX_DAO_LINKS } from "./constants";
 
@@ -36,6 +37,8 @@ export function ClaimModal(props: {
   chainId: ContractsChainId;
   setPendingTxns: SetPendingTransactions;
   totalGmxRewards: bigint | undefined;
+  totalEsGmxRewards: bigint | undefined;
+  totalNativeTokenRewards: bigint | undefined;
   nativeTokenSymbol: string;
   wrappedTokenSymbol: string;
   isNativeTokenToClaim?: boolean;
@@ -50,6 +53,8 @@ export function ClaimModal(props: {
     chainId,
     setPendingTxns,
     totalGmxRewards,
+    totalEsGmxRewards,
+    totalNativeTokenRewards,
     nativeTokenSymbol,
     wrappedTokenSymbol,
     isNativeTokenToClaim,
@@ -105,9 +110,28 @@ export function ClaimModal(props: {
     ((gmxTokenAllowance !== undefined && totalGmxRewards > gmxTokenAllowance) ||
       (totalGmxRewards > 0n && gmxTokenAllowance === undefined));
 
-  const isPrimaryEnabled = !isClaiming && !isApproving && !needApproval && !isUndelegatedGovToken;
+  const isAnySelectedToClaim = shouldClaimGmx || shouldClaimEsGmx || shouldClaimWeth;
+
+  const hasAnyPendingRewards =
+    (totalGmxRewards !== undefined && totalGmxRewards > 0n) ||
+    (totalEsGmxRewards !== undefined && totalEsGmxRewards > 0n) ||
+    (totalNativeTokenRewards !== undefined && totalNativeTokenRewards > 0n);
+
+  const isPrimaryEnabled =
+    !isClaiming &&
+    !isApproving &&
+    !needApproval &&
+    !isUndelegatedGovToken &&
+    hasAnyPendingRewards &&
+    isAnySelectedToClaim;
 
   const primaryText = useMemo(() => {
+    if (!hasAnyPendingRewards) {
+      return t`No rewards`;
+    }
+    if (!isAnySelectedToClaim) {
+      return t`Select rewards to claim`;
+    }
     if (needApproval || isApproving) {
       return t`Pending GMX approval`;
     }
@@ -115,7 +139,7 @@ export function ClaimModal(props: {
       return t`Claiming...`;
     }
     return t`Claim`;
-  }, [needApproval, isApproving, isClaiming]);
+  }, [hasAnyPendingRewards, isAnySelectedToClaim, needApproval, isApproving, isClaiming]);
 
   const onClickPrimary = useCallback(() => {
     if (needApproval) {
@@ -214,42 +238,39 @@ export function ClaimModal(props: {
 
   return (
     <ModalWithPortal className="StakeModal" isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Rewards`}>
-      <div className="flex flex-col gap-8 pb-8">
-        <div>
-          <Checkbox isChecked={shouldClaimGmx} setIsChecked={setShouldClaimGmx} disabled={shouldStakeGmx}>
-            <Trans>Claim GMX Rewards</Trans>
-          </Checkbox>
-        </div>
-        <div>
-          <Checkbox isChecked={shouldStakeGmx} setIsChecked={toggleShouldStakeGmx}>
-            <Trans>Stake GMX Rewards</Trans>
-          </Checkbox>
-        </div>
-        <div>
-          <Checkbox isChecked={shouldClaimEsGmx} setIsChecked={setShouldClaimEsGmx} disabled={shouldStakeEsGmx}>
-            <Trans>Claim esGMX Rewards</Trans>
-          </Checkbox>
-        </div>
-        <div>
-          <Checkbox isChecked={shouldStakeEsGmx} setIsChecked={toggleShouldStakeEsGmx}>
-            <Trans>Stake esGMX Rewards</Trans>
-          </Checkbox>
-        </div>
+      <div className="flex flex-col gap-12 pb-20 ">
+        <RewardOptionCard
+          tokenSymbol="GMX"
+          amount={totalGmxRewards}
+          amountDecimals={18}
+          amountSymbol="GMX"
+          primaryChecked={shouldClaimGmx}
+          setPrimaryChecked={setShouldClaimGmx}
+          secondaryChecked={shouldStakeGmx}
+          setSecondaryChecked={toggleShouldStakeGmx}
+        />
+        <RewardOptionCard
+          tokenSymbol="esGMX"
+          amount={totalEsGmxRewards}
+          amountDecimals={18}
+          amountSymbol="esGMX"
+          primaryChecked={shouldClaimEsGmx}
+          setPrimaryChecked={setShouldClaimEsGmx}
+          secondaryChecked={shouldStakeEsGmx}
+          setSecondaryChecked={toggleShouldStakeEsGmx}
+        />
         {isNativeTokenToClaim && (
-          <>
-            <div>
-              <Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth} disabled={shouldConvertWeth}>
-                <Trans>Claim {wrappedTokenSymbol} Rewards</Trans>
-              </Checkbox>
-            </div>
-            <div>
-              <Checkbox isChecked={shouldConvertWeth} setIsChecked={toggleConvertWeth}>
-                <Trans>
-                  Convert {wrappedTokenSymbol} to {nativeTokenSymbol}
-                </Trans>
-              </Checkbox>
-            </div>
-          </>
+          <RewardOptionCard
+            tokenSymbol={wrappedTokenSymbol}
+            amount={totalNativeTokenRewards}
+            amountDecimals={18}
+            amountSymbol={wrappedTokenSymbol}
+            primaryChecked={shouldClaimWeth}
+            setPrimaryChecked={setShouldClaimWeth}
+            secondaryChecked={shouldConvertWeth}
+            setSecondaryChecked={toggleConvertWeth}
+            nativeTokenSymbol={nativeTokenSymbol}
+          />
         )}
       </div>
       {(needApproval || isApproving) && (
@@ -281,5 +302,76 @@ export function ClaimModal(props: {
         </SwitchToSettlementChainButtons>
       </div>
     </ModalWithPortal>
+  );
+}
+
+function RewardOptionCard({
+  tokenSymbol,
+  amount,
+  amountDecimals,
+  amountSymbol,
+  primaryChecked,
+  setPrimaryChecked,
+  secondaryChecked,
+  setSecondaryChecked,
+  nativeTokenSymbol,
+}: {
+  tokenSymbol: string;
+  amount: bigint | undefined;
+  amountDecimals: number;
+  amountSymbol: string;
+  primaryChecked: boolean | undefined;
+  setPrimaryChecked: (value: boolean) => void;
+  secondaryChecked: boolean | undefined;
+  setSecondaryChecked: (value: boolean) => void;
+  nativeTokenSymbol?: string;
+}) {
+  const amountText = amount !== undefined ? `${formatAmount(amount, amountDecimals, 2, true)} ${amountSymbol}` : "...";
+  const isPrimaryDisabled = Boolean(secondaryChecked);
+
+  return (
+    <div className="overflow-hidden rounded-8 bg-slate-800">
+      <Checkbox
+        isChecked={primaryChecked}
+        setIsChecked={setPrimaryChecked}
+        disabled={isPrimaryDisabled}
+        className={cx(
+          "w-full justify-between px-16 py-14 text-left",
+          isPrimaryDisabled ? "text-typography-secondary" : "text-typography-primary"
+        )}
+      >
+        <div className="flex items-center gap-4">
+          <TokenIcon symbol={tokenSymbol} displaySize={20} importSize={40} className="!rounded-0" />
+          <span className="text-14 font-medium text-typography-primary">
+            <Trans>Claim {tokenSymbol} Rewards</Trans>
+          </span>
+        </div>
+        <span
+          className={cx(
+            "ml-auto text-14 numbers",
+            isPrimaryDisabled ? "text-typography-secondary" : "text-typography-primary"
+          )}
+        >
+          {amountText}
+        </span>
+      </Checkbox>
+
+      <div className="border-t-1/2 border-slate-600" />
+      <Checkbox
+        isChecked={Boolean(secondaryChecked)}
+        setIsChecked={setSecondaryChecked}
+        className="w-full justify-start px-16 py-14 text-left"
+      >
+        <span className="text-14">
+          {nativeTokenSymbol ? (
+            <Trans>
+              Convert {tokenSymbol} to {nativeTokenSymbol}
+            </Trans>
+          ) : (
+            <Trans>Stake {tokenSymbol} Rewards</Trans>
+          )}
+        </span>
+      </Checkbox>
+    </div>
   );
 }

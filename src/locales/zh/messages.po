@@ -75,8 +75,8 @@ msgid "GMX Referrals Dashboard"
 msgstr "GMX 推荐仪表板"
 
 #: src/pages/Stake/ClaimModal.tsx
-msgid "Stake GMX Rewards"
-msgstr "质押 GMX 奖励"
+#~ msgid "Stake GMX Rewards"
+#~ msgstr "质押 GMX 奖励"
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Decrease the withdraw size to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"
@@ -109,6 +109,10 @@ msgstr ""
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr "每日损失"
+
+#: src/pages/Stake/ClaimModal.tsx
+msgid "Claim {tokenSymbol} Rewards"
+msgstr ""
 
 #: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "earns fees from providing liquidity to multiple GMX V2 markets"
@@ -457,6 +461,10 @@ msgstr ""
 msgid "Orders"
 msgstr "订单"
 
+#: src/pages/Stake/ClaimModal.tsx
+msgid "No rewards"
+msgstr ""
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Increased {positionText}, +{0}"
 msgstr "增加 {positionText}, +{0}"
@@ -615,6 +623,10 @@ msgstr "Plutus"
 msgid "Pairs Trading"
 msgstr "对交易"
 
+#: src/pages/Stake/ClaimModal.tsx
+msgid "Stake {tokenSymbol} Rewards"
+msgstr ""
+
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Settling"
 msgstr ""
@@ -645,8 +657,8 @@ msgid "Create or Import a Wallet"
 msgstr "创建或导入钱包"
 
 #: src/pages/Stake/ClaimModal.tsx
-msgid "Stake esGMX Rewards"
-msgstr "质押 esGMX 奖励"
+#~ msgid "Stake esGMX Rewards"
+#~ msgstr "质押 esGMX 奖励"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
@@ -2618,6 +2630,10 @@ msgstr "允许 {tokenSymbol} 被支出"
 msgid "Help us improve"
 msgstr "帮助我们改进"
 
+#: src/components/Earn/EarnPortfolio/ClaimRewardsButton.tsx
+msgid "Claim rewards"
+msgstr ""
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Staking is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
 msgstr ""
@@ -3616,8 +3632,8 @@ msgid "from your wallet"
 msgstr ""
 
 #: src/pages/Stake/ClaimModal.tsx
-msgid "Claim esGMX Rewards"
-msgstr "领取 esGMX 奖励"
+#~ msgid "Claim esGMX Rewards"
+#~ msgstr "领取 esGMX 奖励"
 
 #: src/pages/Stake/Stake.tsx
 msgid "Trading incentives program is live on {avalancheLink}."
@@ -6008,6 +6024,10 @@ msgstr "365 天预估费用"
 msgid "Trigger price below highest limit price"
 msgstr "触发价格低于最高限价"
 
+#: src/pages/Stake/ClaimModal.tsx
+msgid "Select rewards to claim"
+msgstr ""
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "The net price impact is broken down into stored impact and close price impact in the net value tooltip and execution details in the close modal. Display stored impact for increase actions. <0>Read more</0>."
 msgstr ""
@@ -6325,8 +6345,8 @@ msgid "Terms and Conditions"
 msgstr "条款和条件"
 
 #: src/pages/Stake/ClaimModal.tsx
-msgid "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
-msgstr "将 {wrappedTokenSymbol} 转换为 {nativeTokenSymbol}"
+#~ msgid "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
+#~ msgstr "将 {wrappedTokenSymbol} 转换为 {nativeTokenSymbol}"
 
 #: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "What is GLV exactly?"
@@ -6758,8 +6778,8 @@ msgid "Increase"
 msgstr "增加"
 
 #: src/pages/Stake/ClaimModal.tsx
-msgid "Claim {wrappedTokenSymbol} Rewards"
-msgstr "领取 {wrappedTokenSymbol} 奖励"
+#~ msgid "Claim {wrappedTokenSymbol} Rewards"
+#~ msgstr "领取 {wrappedTokenSymbol} 奖励"
 
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
@@ -6771,6 +6791,10 @@ msgstr "总供应量"
 #: src/pages/Dashboard/DashboardPageTitle.tsx
 #: src/pages/Dashboard/DashboardPageTitle.tsx
 msgid "GMX is the utility and governance token. It also accrues 30% of the protocol fees via a buyback and distribution mechanism."
+msgstr ""
+
+#: src/pages/Stake/ClaimModal.tsx
+msgid "Convert {tokenSymbol} to {nativeTokenSymbol}"
 msgstr ""
 
 #: src/pages/Stake/EscrowedGmxCard.tsx
@@ -7448,8 +7472,8 @@ msgid "Rage Trade"
 msgstr "Rage Trade"
 
 #: src/pages/Stake/ClaimModal.tsx
-msgid "Claim GMX Rewards"
-msgstr "领取 GMX 奖励"
+#~ msgid "Claim GMX Rewards"
+#~ msgstr "领取 GMX 奖励"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "EIP-4844, 20-27 Mar"

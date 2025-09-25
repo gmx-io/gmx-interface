@@ -109,6 +109,8 @@ export function TotalRewardsCard({
         setIsVisible={setIsCompoundModalVisible}
         rewardRouterAddress={rewardRouterAddress}
         totalGmxRewards={processedData?.totalGmxRewards}
+        totalEsGmxRewards={processedData?.totalEsGmxRewards}
+        totalNativeTokenRewards={processedData?.totalNativeTokenRewards}
         wrappedTokenSymbol={wrappedTokenSymbol}
         nativeTokenSymbol={nativeTokenSymbol}
         signer={signer}
