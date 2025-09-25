@@ -1,7 +1,6 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
-import { BiChevronDown } from "react-icons/bi";
 
 import { getChainName, type AnyChainId, type ContractsChainId, type SourceChainId } from "config/chains";
 import { getChainIcon } from "config/icons";
@@ -21,6 +20,8 @@ import { SelectedPoolLabel } from "components/GmSwap/GmSwapBox/SelectedPool";
 import { SlideModal } from "components/Modal/SlideModal";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import "./TokenSelector.scss";
 
@@ -181,7 +182,7 @@ export function MultichainMarketTokenSelector({
           </span>
         )}
 
-        <BiChevronDown className="text-body-large" />
+        <ChevronDownIcon className="text-body-large" />
       </div>
     </div>
   );

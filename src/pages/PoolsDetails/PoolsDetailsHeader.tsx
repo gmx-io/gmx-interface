@@ -1,7 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
-import { ImSpinner2 } from "react-icons/im";
 
 import { USD_DECIMALS } from "config/factors";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -33,6 +32,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import Buy16Icon from "img/ic_buy_16.svg?react";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import Sell16Icon from "img/ic_sell_16.svg?react";
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { PoolsDetailsMarketAmount } from "./PoolsDetailsMarketAmount";
 
@@ -176,7 +176,8 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
                             />
                           );
                         })}
-                        {isBalanceDataLoading && <ImSpinner2 className="animate-spin" />}
+
+                        {isBalanceDataLoading && <SpinnerIcon className="animate-spin" />}
                       </div>
                     }
                   />
