@@ -27,11 +27,9 @@ import { OneClickButton } from "components/OneClickButton/OneClickButton";
 
 import { HeaderLink } from "./HeaderLink";
 import { AddressDropdown } from "../AddressDropdown/AddressDropdown";
-import ConnectWalletButton from "../Common/ConnectWalletButton";
+import ConnectWalletButton from "../ConnectWalletButton/ConnectWalletButton";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
-
-import "./Header.scss";
 
 type Props = {
   openSettings: () => void;
@@ -167,7 +165,7 @@ export function AppHeaderChainAndSettings({ menuToggle, openSettings, showRedire
   }
 
   return (
-    <div className="App-header-user">
+    <div className="flex items-center">
       {isHomeSite() ? (
         <div data-qa="trade" className="App-header-trade-link text-body-medium">
           <HeaderLink

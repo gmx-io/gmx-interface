@@ -110,7 +110,7 @@ export function useOrderTxnCallbacks() {
       const handleTxnSubmitted = async () => {
         const createdAt = Date.now();
 
-        const pendingOrders = getBatchPendingOrders(e.data.batchParams, ordersInfoData);
+        const pendingOrders = getBatchPendingOrders(e.data.batchParams, ordersInfoData, createdAt);
 
         const optimisticBatchPayAmounts = getOptimisticBatchPayAmounts(e.data);
 
@@ -129,7 +129,7 @@ export function useOrderTxnCallbacks() {
         if (mainActionType === "update" && batchParams.updateOrderParams[0]) {
           const updateOrderParams = batchParams.updateOrderParams[0];
           const order = getByKey(ordersInfoData, updateOrderParams.params.orderKey);
-          pendingOrderUpdate = order ? getPendingUpdateOrder(updateOrderParams, order) : undefined;
+          pendingOrderUpdate = order ? getPendingUpdateOrder(updateOrderParams, order, createdAt) : undefined;
         }
 
         const pendingPositions = e.data.batchParams.createOrderParams
@@ -201,7 +201,7 @@ export function useOrderTxnCallbacks() {
             estimatedExecutionFee: expressParams.executionFeeAmount,
             estimatedExecutionGasLimit: expressParams.executionGasLimit,
             metricId: ctx.metricId,
-            createdAt: Date.now(),
+            createdAt,
             taskId: undefined,
             isViewed: false,
             isRelayerMetricSent: false,
@@ -379,13 +379,14 @@ export function useOrderTxnCallbacks() {
 
 export function getBatchPendingOrders(
   txnParams: BatchOrderTxnParams,
-  ordersInfoData: OrdersInfoData | undefined
+  ordersInfoData: OrdersInfoData | undefined,
+  createdAt: number
 ): PendingOrderData[] {
   const createPendingOrders = txnParams.createOrderParams
     .filter((cp) => !getIsTwapOrderPayload(cp.orderPayload))
-    .map((cp) => getPendingCreateOrder(cp));
+    .map((cp) => getPendingCreateOrder(cp, false, createdAt));
 
-  const twapPendingOrders = getPendingCreateTwapOrders(txnParams.createOrderParams);
+  const twapPendingOrders = getPendingCreateTwapOrders(txnParams.createOrderParams, createdAt);
 
   const updatePendingOrders = txnParams.updateOrderParams
     .map((updateOrderParams) => {
@@ -394,7 +395,7 @@ export function getBatchPendingOrders(
         return undefined;
       }
 
-      return getPendingUpdateOrder(updateOrderParams, order);
+      return getPendingUpdateOrder(updateOrderParams, order, createdAt);
     })
     .filter((o) => o !== undefined);
 
@@ -405,7 +406,7 @@ export function getBatchPendingOrders(
         return undefined;
       }
 
-      return getPendingCancelOrder(cancelOrderParams, order);
+      return getPendingCancelOrder(cancelOrderParams, order, createdAt);
     })
     .filter((o) => o !== undefined);
 
@@ -416,7 +417,11 @@ export function getBatchPendingOrders(
     ...cancelPendingOrders,
   ] as PendingOrderData[];
 }
-export function getPendingCancelOrder(params: CancelOrderTxnParams, order: OrderInfo): PendingOrderData {
+export function getPendingCancelOrder(
+  params: CancelOrderTxnParams,
+  order: OrderInfo,
+  createdAt: number
+): PendingOrderData {
   return {
     txnType: "cancel",
     account: order.account,
@@ -435,6 +440,7 @@ export function getPendingCancelOrder(params: CancelOrderTxnParams, order: Order
     orderKey: params.orderKey,
     minOutputAmount: 0n,
     isTwap: order.isTwap,
+    createdAt,
   };
 }
 
@@ -471,7 +477,11 @@ export function getPendingPositionFromParams({
   };
 }
 
-export function getPendingUpdateOrder(updateOrderParams: UpdateOrderTxnParams, order: OrderInfo): PendingOrderData {
+export function getPendingUpdateOrder(
+  updateOrderParams: UpdateOrderTxnParams,
+  order: OrderInfo,
+  createdAt: number
+): PendingOrderData {
   return {
     txnType: "update",
     account: order.account,
@@ -490,6 +500,7 @@ export function getPendingUpdateOrder(updateOrderParams: UpdateOrderTxnParams, o
     externalSwapQuote: undefined,
     orderKey: updateOrderParams.params.orderKey,
     isTwap: order.isTwap,
+    createdAt,
   };
 }
 
@@ -516,7 +527,8 @@ export function getOptimisticBatchPayAmounts({
 
 export function getPendingCreateOrder(
   createOrderPayload: CreateOrderTxnParams<IncreasePositionOrderParams | DecreasePositionOrderParams | SwapOrderParams>,
-  isTwap = false
+  isTwap = false,
+  createdAt = Date.now()
 ): PendingOrderData {
   return {
     account: createOrderPayload.orderPayload.addresses.receiver,
@@ -540,13 +552,15 @@ export function getPendingCreateOrder(
     externalSwapQuote: createOrderPayload.params.externalSwapQuote,
     txnType: "create",
     isTwap,
+    createdAt,
   };
 }
 
 export function getPendingCreateTwapOrders(
   createOrderPayloads: CreateOrderTxnParams<
     IncreasePositionOrderParams | DecreasePositionOrderParams | SwapOrderParams
-  >[]
+  >[],
+  createdAt: number
 ): PendingOrderData[] {
   const ordersByUiFeeReceiver: Record<string, PendingOrderData> = {};
 
@@ -557,7 +571,7 @@ export function getPendingCreateTwapOrders(
 
     const uiFeeReceiver = cp.orderPayload.addresses.uiFeeReceiver;
 
-    const pendingOrder = getPendingCreateOrder(cp, true);
+    const pendingOrder = getPendingCreateOrder(cp, true, createdAt);
 
     if (!ordersByUiFeeReceiver[uiFeeReceiver]) {
       ordersByUiFeeReceiver[uiFeeReceiver] = pendingOrder;

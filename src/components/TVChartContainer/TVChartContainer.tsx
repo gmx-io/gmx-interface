@@ -12,7 +12,7 @@ import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { isChartAvailableForToken } from "sdk/configs/tokens";
 
-import Loader from "components/Common/Loader";
+import Loader from "components/Loader/Loader";
 
 import { chartOverridesDark, chartOverridesLight, defaultChartProps, disabledFeaturesOnMobile } from "./constants";
 import { DynamicLines } from "./DynamicLines";
