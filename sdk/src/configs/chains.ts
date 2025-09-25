@@ -205,7 +205,7 @@ export function isContractsChain(chainId: number, dev = false): chainId is Contr
 }
 
 export function isTestnetChain(chainId: number): boolean {
-  return !isContractsChain(chainId, false);
+  return [AVALANCHE_FUJI, ARBITRUM_SEPOLIA].includes(chainId);
 }
 
 export const EXECUTION_FEE_CONFIG_V2: {
