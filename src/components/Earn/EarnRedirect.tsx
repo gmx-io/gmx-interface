@@ -7,7 +7,7 @@ import { useTokensDataRequest } from "domain/synthetics/tokens";
 
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 
-import EarnPageLayout from "./EarnPageLayout";
+import EarnPageLayout from "../../pages/Earn/EarnPageLayout";
 
 const EARN_TOKEN_SYMBOLS = new Set(["GMX", "GM", "GLV"]);
 

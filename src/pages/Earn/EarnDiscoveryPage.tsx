@@ -3,12 +3,12 @@ import { useMemo } from "react";
 
 import { Theme, useTheme } from "context/ThemeContext/ThemeContext";
 import { useBreakpoints } from "lib/useBreakpoints";
+import EarnPageLayout from "pages/Earn/EarnPageLayout";
 
-import EarnDocumentation from "components/Earn/EarnDiscovery/components/EarnDocumentation";
-import EarnFaq from "components/Earn/EarnDiscovery/components/EarnFaq";
-import EarnProductCard from "components/Earn/EarnDiscovery/components/EarnProductCard";
-import EarnYieldOverview from "components/Earn/EarnDiscovery/components/EarnYieldOverview";
-import EarnPageLayout from "components/Earn/EarnPageLayout";
+import EarnDocumentation from "components/Earn/Discovery/EarnDocumentation";
+import EarnFaq from "components/Earn/Discovery/EarnFaq";
+import EarnProductCard from "components/Earn/Discovery/EarnProductCard";
+import EarnYieldOverview from "components/Earn/Discovery/EarnYieldOverview";
 
 import discoverBgDesktopDark from "img/discover_bg_desktop_dark.png";
 import discoverBgDesktopLight from "img/discover_bg_desktop_light.png";

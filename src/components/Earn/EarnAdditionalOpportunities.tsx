@@ -1,4 +1,4 @@
-import EarnPageLayout from "components/Earn/EarnPageLayout";
+import EarnPageLayout from "pages/Earn/EarnPageLayout";
 
 export function EarnAdditionalOpportunities() {
   return <EarnPageLayout>Additional Opportunities</EarnPageLayout>;
