@@ -243,11 +243,11 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "{seconds}s"
-msgstr ""
+msgstr "{seconds}s"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
-msgstr "<<<<<<< HEAD======="
+msgstr ""
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "FAQ"
@@ -2416,7 +2416,7 @@ msgstr "Aumentar Tamaño (Límite)"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
-msgstr "La orden puede no ejecutarse al {priceText} deseado ya que su impacto de precio aceptable está establecido en {formattedOrderAcceptablePriceImpact}, que es menor que el impacto de precio de mercado actual de {formattedCurrentAcceptablePriceImpact}. Puede editarse usando el botón \"Editar\".<<<<<<< HEAD======="
+msgstr "La orden puede no ejecutarse al {priceText} deseado ya que su impacto de precio aceptable está establecido en {formattedOrderAcceptablePriceImpact}, que es menor que el impacto de precio de mercado actual de {formattedCurrentAcceptablePriceImpact}. Puede editarse usando el botón \"Editar\"."
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "<0>Yes, we encourage you to build on top of GMX or integrate it into your DeFi app. GMX is fully composable and already integrated with hundreds of protocols across the ecosystem, including notable names like Pendle, Dolomite, Radiant, Silo Finance, Venus Protocol, Abracadabra, Compound, and Beefy. You can interact directly with GMX smart contracts or use available APIs and SDKs to plug into trading, liquidity, or data flows. Check out the <1>GMX Developer Docs</1> to get started.</0>"
@@ -3479,7 +3479,7 @@ msgstr "Estarás corto en {indexSymbol} desde tu posición corta, mientras está
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Open GMX Solana"
-msgstr ""
+msgstr "Abrir GMX Solana"
 
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
@@ -4189,7 +4189,7 @@ msgstr "Reducir"
 
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr "La orden no se puede ejecutar pues reduciría el apalancamiento de la posición por debajo de 1<<<<<<< HEAD"
+msgstr "La orden no se puede ejecutar pues reduciría el apalancamiento de la posición por debajo de 1"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -4463,7 +4463,7 @@ msgstr "Impacto de Precio de Intercambio para Umbral de Intercambio Externo"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Limit / Take Profit / Stop Loss"
-msgstr "Límite / Take Profit / Stop Loss<<<<<<< HEAD======="
+msgstr "Límite / Take Profit / Stop Loss"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Steady returns without management"
@@ -5411,7 +5411,7 @@ msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Create {0} Order"
-msgstr ""
+msgstr "Crear {0} Orden"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Limit Swap"
@@ -5423,7 +5423,7 @@ msgstr "Para comprar GMX en la blockchain {0}, por favor <0>cambia tu red</0>."
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions with orders"
-msgstr "<<<<<<< HEAD======="
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>⬡ Chainlink Data Story ⬡ <1/><2>#Chainlink</2> Data Streams have secured over $56B in volume for the <3>@GMX_IO</3> V2 protocol.</0><4>Data Streams’ low-latency delivery of high-quality market data has supercharged GMX's perpetual markets across <5>@arbitrum</5> and <6>@avax</6>. <7>https://dune.com/gmx-io/gmx-analytics#v2-volume</7></4>"
@@ -7520,7 +7520,7 @@ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute as the max. allowed leverage is exceeded. Consider decreasing the order's leverage by editing and decreasing its size. <0>Read more</0>."
-msgstr "La orden puede no ejecutarse ya que se excede el apal. máximo permitido. Considera disminuir el apalancamiento de la orden editándola y reduciendo su tamaño. <0>Leer más</0>.<<<<<<< HEAD======="
+msgstr "La orden puede no ejecutarse ya que se excede el apal. máximo permitido. Considera disminuir el apalancamiento de la orden editándola y reduciendo su tamaño. <0>Leer más</0>."
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "multiple asset classes"
