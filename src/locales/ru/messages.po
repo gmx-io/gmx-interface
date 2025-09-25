@@ -5290,10 +5290,6 @@ msgstr "Купить GMX на децентрализованных биржах"
 msgid "Powered by"
 msgstr "Работает на"
 
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "Asset Balance"
-msgstr ""
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No options available to transfer {nativeTokenSymbol} to {chainName}."
 msgstr ""
@@ -5539,10 +5535,6 @@ msgstr "Цена исполнения ордера учитывает влиян
 #: src/pages/Buy/Buy.tsx
 msgid "Buy GLP or GMX"
 msgstr "Купить GLP или GMX"
-
-#: src/context/GmxAccountContext/GmxAccountContext.tsx
-#~ msgid "Source Base is now available on GMX"
-#~ msgstr ""
 
 #: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools, with auto-compounding for seamless growth (20-30% historical average annualized performance). View real-time earnings, performance, and portfolio value on the <0>Pools page</0>."
@@ -5957,10 +5949,6 @@ msgstr "Топ позиции"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "Пулы"
-
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-#~ msgid "from 4 blockchains"
-#~ msgstr ""
 
 #: src/components/GmList/GlvList.tsx
 msgid "VAULT"
