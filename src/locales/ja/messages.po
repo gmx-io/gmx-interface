@@ -1054,11 +1054,6 @@ msgstr ""
 msgid "Start Earning"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
-#~ msgid "WARNING: This position has a low amount of collateral after deducting borrowing fees, deposit more collateral to reduce the position's liquidation risk."
-#~ msgstr ""
-
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
 msgstr "ポジションの担保が{symbol}であり、初期価値が{indexName}ロングポジションサイズより高いため、担保価値は負のPnLをカバーし、清算価格はありません。"
@@ -1457,11 +1452,6 @@ msgstr "市場検索"
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "Transaction ID"
 msgstr "取引ID"
-
-#: src/components/Exchange/PositionsList.jsx
-#: src/components/Exchange/PositionsList.jsx
-#~ msgid "Borrow Fee / Day"
-#~ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
@@ -1930,10 +1920,6 @@ msgstr "<0>流動性を提供</0>して{gmxMarketApyDataText} APYを獲得"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Address"
 msgstr "アドレス"
-
-#: src/components/Exchange/PositionsList.jsx
-#~ msgid "Order size is bigger than the position, so it'll only be executable if the position increases."
-#~ msgstr ""
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
@@ -2695,10 +2681,6 @@ msgstr ""
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Leverage"
 msgstr "レバレッジ"
-
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
-#~ msgid "To sign the terms using a Safe account in order to claim, please <0>follow these steps</0>."
-#~ msgstr ""
 
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
 msgid "over 100 protocols"
@@ -4213,10 +4195,6 @@ msgstr "{indexSymbol} のロングはロングポジションからのみとな�
 msgid "24h Low"
 msgstr "24時間安値"
 
-#: src/components/Exchange/PositionsList.jsx
-#~ msgid "Use the \"Close\" button to reduce your position, or to set TP/SL orders."
-#~ msgstr ""
-
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
 msgstr "{0, plural, one {# ポジション} other {# ポジション}} の決済リクエストを送信しました"
@@ -4503,10 +4481,6 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
 msgstr "ロード中..."
-
-#: src/components/Exchange/PositionsList.jsx
-#~ msgid "Share"
-#~ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Use your preferred token to pay and collateralize your positions"
@@ -7271,10 +7245,6 @@ msgstr "7日"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
 msgstr "Rage Trade"
-
-#: src/components/Exchange/PositionsList.jsx
-#~ msgid "Click on the position to select it, then use the trade box to increase it."
-#~ msgstr ""
 
 #: src/pages/Stake/ClaimModal.tsx
 msgid "Claim GMX Rewards"
