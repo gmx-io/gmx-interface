@@ -15,7 +15,6 @@ import {
 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getChainIcon } from "config/icons";
-import { IS_SOURCE_BASE_ALLOWED } from "config/multichain";
 import { useChainId } from "lib/chains";
 import { isHomeSite, shouldShowRedirectModal } from "lib/legacy";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
@@ -28,11 +27,9 @@ import { OneClickButton } from "components/OneClickButton/OneClickButton";
 
 import { HeaderLink } from "./HeaderLink";
 import { AddressDropdown } from "../AddressDropdown/AddressDropdown";
-import ConnectWalletButton from "../Common/ConnectWalletButton";
+import ConnectWalletButton from "../ConnectWalletButton/ConnectWalletButton";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
-
-import "./Header.scss";
 
 type Props = {
   openSettings: () => void;
@@ -66,16 +63,13 @@ export const NETWORK_OPTIONS: NetworkOption[] = [
     icon: getChainIcon(BOTANIX),
     color: "#F7931A",
   },
-];
-
-if (IS_SOURCE_BASE_ALLOWED) {
-  NETWORK_OPTIONS.push({
+  {
     label: getChainName(SOURCE_BASE_MAINNET),
     value: SOURCE_BASE_MAINNET,
     icon: getChainIcon(SOURCE_BASE_MAINNET),
     color: "#0052ff",
-  });
-}
+  },
+];
 
 if (isDevelopment()) {
   NETWORK_OPTIONS.push(
@@ -171,7 +165,7 @@ export function AppHeaderChainAndSettings({ menuToggle, openSettings, showRedire
   }
 
   return (
-    <div className="App-header-user">
+    <div className="flex items-center">
       {isHomeSite() ? (
         <div data-qa="trade" className="App-header-trade-link text-body-medium">
           <HeaderLink

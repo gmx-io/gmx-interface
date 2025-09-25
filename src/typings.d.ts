@@ -31,4 +31,5 @@ declare global {
 
 interface CustomEventMap {
   chartMouseMove: CustomEvent<{ x: number; y: number } | undefined>;
+  networkChange: CustomEvent<{ chainId: number }>;
 }

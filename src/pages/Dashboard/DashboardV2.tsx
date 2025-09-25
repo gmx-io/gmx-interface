@@ -11,11 +11,11 @@ import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
-import SEO from "components/Common/SEO";
+import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { MarketsList } from "components/MarketsList/MarketsList";
 import PageTitle from "components/PageTitle/PageTitle";
-import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
-import { MarketsList } from "components/Synthetics/MarketsList/MarketsList";
+import SEO from "components/Seo/SEO";
 
 import V2Icon from "img/ic_v2.svg?react";
 

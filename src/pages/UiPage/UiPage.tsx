@@ -11,7 +11,7 @@ import { getCategoryTokenAddresses, getToken } from "sdk/configs/tokens";
 import { TokenCategory } from "sdk/types/tokens";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import ExchangeInfoRow from "components/EventToast/ExchangeInfoRow";
 import SearchInput from "components/SearchInput/SearchInput";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
