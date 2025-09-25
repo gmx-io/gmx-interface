@@ -243,11 +243,11 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "{seconds}s"
-msgstr "
+msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
-msgstr "<<<<<<< HEAD======="
+msgstr ""
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "FAQ"
@@ -2416,7 +2416,7 @@ msgstr "サイズ増加 (リミット)"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
-msgstr "許容価格インパクトが{formattedOrderAcceptablePriceImpact}に設定されており、現在の市場価格インパクト{formattedCurrentAcceptablePriceImpact}より低いため、希望の{priceText}で注文が実行されない可能性があります。\"編集\"ボタンで編集できます。<<<<<<< HEAD======="
+msgstr "許容価格インパクトが{formattedOrderAcceptablePriceImpact}に設定されており、現在の市場価格インパクト{formattedCurrentAcceptablePriceImpact}より低いため、希望の{priceText}で注文が実行されない可能性があります。\"編集\"ボタンで編集できます。"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "<0>Yes, we encourage you to build on top of GMX or integrate it into your DeFi app. GMX is fully composable and already integrated with hundreds of protocols across the ecosystem, including notable names like Pendle, Dolomite, Radiant, Silo Finance, Venus Protocol, Abracadabra, Compound, and Beefy. You can interact directly with GMX smart contracts or use available APIs and SDKs to plug into trading, liquidity, or data flows. Check out the <1>GMX Developer Docs</1> to get started.</0>"
@@ -4463,7 +4463,7 @@ msgstr "外部スワップ閾値のスワップ価格インパクト"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Limit / Take Profit / Stop Loss"
-msgstr "指値 / テイクプロフィット / ストップロス<<<<<<< HEAD======="
+msgstr "指値 / テイクプロフィット / ストップロス"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Steady returns without management"
@@ -5415,7 +5415,7 @@ msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Create {0} Order"
-msgstr "
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Limit Swap"
@@ -5427,7 +5427,7 @@ msgstr "{0}ブロックチェーン上でGMXを購入するには、<0>ネット
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions with orders"
-msgstr "<<<<<<< HEAD======="
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>⬡ Chainlink Data Story ⬡ <1/><2>#Chainlink</2> Data Streams have secured over $56B in volume for the <3>@GMX_IO</3> V2 protocol.</0><4>Data Streams’ low-latency delivery of high-quality market data has supercharged GMX's perpetual markets across <5>@arbitrum</5> and <6>@avax</6>. <7>https://dune.com/gmx-io/gmx-analytics#v2-volume</7></4>"
@@ -7532,7 +7532,7 @@ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute as the max. allowed leverage is exceeded. Consider decreasing the order's leverage by editing and decreasing its size. <0>Read more</0>."
-msgstr "最大許容レバレッジを超えるため注文が執行されない可能性があります。サイズを減少させて注文のレバレッジを減少させてください。<0>詳細を読む</0>。<<<<<<< HEAD======="
+msgstr "最大許容レバレッジを超えるため注文が執行されない可能性があります。サイズを減少させて注文のレバレッジを減少させてください。<0>詳細を読む</0>。"
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "multiple asset classes"
