@@ -25,6 +25,11 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Check for merge conflicts
+        run: |
+          chmod +x ./scripts/check-conflicts.sh
+          ./scripts/check-conflicts.sh
+
       - name: Run linting
         run: yarn lint
 
