@@ -243,7 +243,7 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "{seconds}s"
-msgstr "
+msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
@@ -5415,7 +5415,7 @@ msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Create {0} Order"
-msgstr "
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Limit Swap"
