@@ -27,6 +27,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 
 import BuyIcon from "img/ic_buy.svg?react";
 import DownloadIcon from "img/ic_download2.svg?react";
+import esGmxIcon from "img/ic_esgmx_40.svg";
 import gmxIcon from "img/ic_gmx_40.svg";
 import IncreaseLimit from "img/ic_increaselimit_16.svg?react";
 import MenuDotsIcon from "img/ic_menu_dots.svg?react";
@@ -44,7 +45,7 @@ type UnstakeModalState = {
   value: string;
 };
 
-export function GmxAssetCard({ processedData }: { processedData: ProcessedData }) {
+export function GmxAssetCard({ processedData, esGmx = false }: { processedData: ProcessedData; esGmx?: boolean }) {
   const { chainId } = useChainId();
   const { active, signer, account } = useWallet();
   const { setPendingTxns } = usePendingTxns();
@@ -59,6 +60,7 @@ export function GmxAssetCard({ processedData }: { processedData: ProcessedData }
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
   const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
   const gmxAddress = getContract(chainId, "GMX");
+  const esGmxAddress = getContract(chainId, "ES_GMX");
 
   const shouldFetchSbfGmx = chainId !== undefined && feeGmxTrackerAddress !== zeroAddress;
   const { data: sbfGmxBalance } = useSWR<bigint>(
@@ -77,28 +79,41 @@ export function GmxAssetCard({ processedData }: { processedData: ProcessedData }
   );
 
   const reservedAmount = useMemo(() => {
-    if (
-      processedData?.gmxInStakedGmx !== undefined &&
-      processedData?.esGmxInStakedGmx !== undefined &&
-      sbfGmxBalance !== undefined
-    ) {
-      return processedData.gmxInStakedGmx + processedData.esGmxInStakedGmx - sbfGmxBalance;
+    if (sbfGmxBalance === undefined) {
+      return 0n;
     }
 
-    return 0n;
-  }, [processedData?.gmxInStakedGmx, processedData?.esGmxInStakedGmx, sbfGmxBalance]);
+    const stakedTotal = (processedData?.gmxInStakedGmx ?? 0n) + (processedData?.esGmxInStakedGmx ?? 0n);
+    const reserved = stakedTotal - sbfGmxBalance;
+
+    return reserved > 0n ? reserved : 0n;
+  }, [processedData?.esGmxInStakedGmx, processedData?.gmxInStakedGmx, sbfGmxBalance]);
+
+  const stakeTokenSymbol = esGmx ? "esGMX" : "GMX";
+  const title = esGmx ? "esGMX" : "GMX";
+  const icon = esGmx ? esGmxIcon : gmxIcon;
+  const balanceAmount = esGmx ? processedData?.esGmxBalance : processedData?.gmxBalance;
+  const balanceUsd = esGmx ? processedData?.esGmxBalanceUsd : processedData?.gmxBalanceUsd;
+  const stakedAmount = esGmx ? processedData?.esGmxInStakedGmx : processedData?.gmxInStakedGmx;
+  const stakedUsd = esGmx ? processedData?.esGmxInStakedGmxUsd : processedData?.gmxInStakedGmxUsd;
+  const stakeTitle = esGmx ? t`Stake esGMX` : t`Stake GMX`;
+  const unstakeTitle = esGmx ? t`Unstake esGMX` : t`Unstake GMX`;
+  const stakeMethod = esGmx ? "stakeEsGmx" : "stakeGmx";
+  const unstakeMethod = esGmx ? "unstakeEsGmx" : "unstakeGmx";
+  const stakeTokenAddress = esGmx ? esGmxAddress : gmxAddress;
+  const farmAddress = esGmx ? zeroAddress : stakedGmxTrackerAddress;
 
   const maxUnstakeAmount = useMemo(() => {
-    if (processedData?.gmxInStakedGmx === undefined) {
+    if (stakedAmount === undefined) {
       return undefined;
     }
 
     if (sbfGmxBalance === undefined) {
-      return processedData.gmxInStakedGmx;
+      return stakedAmount;
     }
 
-    return bigMath.min(processedData.gmxInStakedGmx, sbfGmxBalance);
-  }, [processedData?.gmxInStakedGmx, sbfGmxBalance]);
+    return bigMath.min(stakedAmount, sbfGmxBalance);
+  }, [sbfGmxBalance, stakedAmount]);
 
   const handleOpenStakeModal = useCallback(() => {
     setStakeModalState({ isVisible: true, value: "" });
@@ -135,10 +150,10 @@ export function GmxAssetCard({ processedData }: { processedData: ProcessedData }
   }, [aprHandle, processedData, nativeTokenSymbol, active]);
 
   return (
-    <>
+    <div>
       <BaseAssetCard
-        icon={<img src={gmxIcon} alt="GMX" className="size-40" />}
-        title="GMX"
+        icon={<img src={icon} alt={title} className="size-40" />}
+        title={title}
         headerButton={<DelegateDropdown />}
         footer={
           <div className="grid w-full grid-cols-3 gap-8">
@@ -163,23 +178,13 @@ export function GmxAssetCard({ processedData }: { processedData: ProcessedData }
           <SyntheticsInfoRow
             label={<Trans>Wallet</Trans>}
             value={
-              <AmountWithUsdBalance
-                amount={processedData?.gmxBalance}
-                decimals={18}
-                usd={processedData?.gmxBalanceUsd}
-                symbol="GMX"
-              />
+              <AmountWithUsdBalance amount={balanceAmount} decimals={18} usd={balanceUsd} symbol={stakeTokenSymbol} />
             }
           />
           <SyntheticsInfoRow
             label={<Trans>Staked</Trans>}
             value={
-              <AmountWithUsdBalance
-                amount={processedData?.gmxInStakedGmx}
-                decimals={18}
-                usd={processedData?.gmxInStakedGmxUsd}
-                symbol="GMX"
-              />
+              <AmountWithUsdBalance amount={stakedAmount} decimals={18} usd={stakedUsd} symbol={stakeTokenSymbol} />
             }
           />
         </div>
@@ -189,16 +194,16 @@ export function GmxAssetCard({ processedData }: { processedData: ProcessedData }
         isVisible={stakeModalState.isVisible}
         setIsVisible={(isVisible) => setStakeModalState((state) => ({ ...state, isVisible }))}
         chainId={chainId}
-        title={t`Stake GMX`}
-        maxAmount={processedData?.gmxBalance}
+        title={stakeTitle}
+        maxAmount={balanceAmount}
         value={stakeModalState.value}
         setValue={(value) => setStakeModalState((state) => ({ ...state, value }))}
         signer={signer}
-        stakingTokenSymbol="GMX"
-        stakingTokenAddress={gmxAddress}
-        farmAddress={stakedGmxTrackerAddress}
+        stakingTokenSymbol={stakeTokenSymbol}
+        stakingTokenAddress={stakeTokenAddress}
+        farmAddress={farmAddress}
         rewardRouterAddress={rewardRouterAddress}
-        stakeMethodName="stakeGmx"
+        stakeMethodName={stakeMethod}
         setPendingTxns={setPendingTxns}
         processedData={processedData}
       />
@@ -207,19 +212,19 @@ export function GmxAssetCard({ processedData }: { processedData: ProcessedData }
         isVisible={unstakeModalState.isVisible}
         setIsVisible={(isVisible) => setUnstakeModalState((state) => ({ ...state, isVisible }))}
         chainId={chainId}
-        title={t`Unstake GMX`}
+        title={unstakeTitle}
         maxAmount={maxUnstakeAmount}
         value={unstakeModalState.value}
         setValue={(value) => setUnstakeModalState((state) => ({ ...state, value }))}
         signer={signer}
-        unstakingTokenSymbol="GMX"
+        unstakingTokenSymbol={stakeTokenSymbol}
         rewardRouterAddress={rewardRouterAddress}
-        unstakeMethodName="unstakeGmx"
+        unstakeMethodName={unstakeMethod}
         reservedAmount={reservedAmount}
         setPendingTxns={setPendingTxns}
         processedData={processedData}
       />
-    </>
+    </div>
   );
 }
 

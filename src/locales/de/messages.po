@@ -3634,6 +3634,7 @@ msgstr "Negative Finanzierungsgebühren werden automatisch gegen das Kollateral 
 msgid "Create new code"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/Stake.tsx
 msgid "Unstake esGMX"
 msgstr "esGMX unstaken"
@@ -6923,6 +6924,7 @@ msgstr ""
 msgid "Please <0>swap</0> to get {nativeTokenSymbol}."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/Stake.tsx
 msgid "Stake esGMX"
 msgstr "esGMX staken"

@@ -3634,6 +3634,7 @@ msgstr "Negative funding fees are automatically settled against the collateral a
 msgid "Create new code"
 msgstr "Create new code"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/Stake.tsx
 msgid "Unstake esGMX"
 msgstr "Unstake esGMX"
@@ -6923,6 +6924,7 @@ msgstr "Can I build on top of GMX or integrate it into my DeFi app?"
 msgid "Please <0>swap</0> to get {nativeTokenSymbol}."
 msgstr "Please <0>swap</0> to get {nativeTokenSymbol}."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/Stake.tsx
 msgid "Stake esGMX"
 msgstr "Stake esGMX"

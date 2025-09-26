@@ -5,7 +5,12 @@ import { ProcessedData } from "lib/legacy";
 import { GmxAssetCard } from "./GmxAssetCard";
 
 export function AssetsList({ processedData }: { processedData: ProcessedData | undefined }) {
-  const hasGmx = processedData && ((processedData.gmxBalance ?? 0n) > 0n || (processedData.gmxInStakedGmx ?? 0n) > 0n);
+  if (!processedData) {
+    return null;
+  }
+
+  const hasGmx = (processedData.gmxBalance ?? 0n) > 0n || (processedData.gmxInStakedGmx ?? 0n) > 0n;
+  const hasEsGmx = (processedData.esGmxBalance ?? 0n) > 0n || (processedData.esGmxInStakedGmx ?? 0n) > 0n;
 
   return (
     <section className="flex flex-col rounded-8 bg-slate-900">
@@ -13,8 +18,9 @@ export function AssetsList({ processedData }: { processedData: ProcessedData | u
         <Trans>My assets</Trans>
       </h2>
 
-      <div className="grid grid-cols-1 p-12 md:grid-cols-2 min-[1300px]:grid-cols-3 min-[1660px]:grid-cols-4">
+      <div className="grid grid-cols-1 gap-12 p-12 md:grid-cols-2 min-[1300px]:grid-cols-3 min-[1660px]:grid-cols-4">
         {hasGmx ? <GmxAssetCard processedData={processedData} /> : null}
+        {hasEsGmx ? <GmxAssetCard processedData={processedData} esGmx /> : null}
       </div>
     </section>
   );
