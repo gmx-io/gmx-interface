@@ -953,8 +953,8 @@ msgid "Average leverage used."
 msgstr "Average leverage used."
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
-msgid "GMX Rewards"
-msgstr "GMX Rewards"
+#~ msgid "GMX Rewards"
+#~ msgstr "GMX Rewards"
 
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/TotalRewardsCard.tsx
@@ -6964,8 +6964,8 @@ msgid "High TWAP network fee"
 msgstr "High TWAP network fee"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
-msgid "{nativeTokenSymbol} Rewards"
-msgstr "{nativeTokenSymbol} Rewards"
+#~ msgid "{nativeTokenSymbol} Rewards"
+#~ msgstr "{nativeTokenSymbol} Rewards"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
@@ -7382,8 +7382,8 @@ msgid "Language"
 msgstr "Language"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
-msgid "esGMX Rewards"
-msgstr "esGMX Rewards"
+#~ msgid "esGMX Rewards"
+#~ msgstr "esGMX Rewards"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "The maximum allowed percentage difference between the mark price and the execution price for market orders."
