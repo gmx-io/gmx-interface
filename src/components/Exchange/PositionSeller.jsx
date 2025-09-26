@@ -51,7 +51,6 @@ import {
 } from "lib/numbers";
 import { getLeverage } from "lib/positions/getLeverage";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { usePrevious } from "lib/usePrevious";
 import { abis } from "sdk/abis";
 import { getPriceDecimals, getV1Tokens, getWrappedToken } from "sdk/configs/tokens";
@@ -312,7 +311,7 @@ export default function PositionSeller(props) {
 
   const isSwapAllowed = orderOption === MARKET;
 
-  const hasOutdatedUi = useHasOutdatedUi();
+  const hasOutdatedUi = false;
 
   let receiveToken;
   let maxAmount;
