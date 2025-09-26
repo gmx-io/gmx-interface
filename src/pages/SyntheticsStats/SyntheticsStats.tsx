@@ -47,13 +47,7 @@ function pow(bn: bigint, exponent: bigint) {
   return expandDecimals(afterExponent.toFixed(0), 30);
 }
 
-const CSV_EXCLUDED_FIELDS: (keyof MarketInfo)[] = [
-  "longToken",
-  "shortToken",
-  "indexToken",
-  "longPoolAmountAdjustment",
-  "shortPoolAmountAdjustment",
-];
+const CSV_EXCLUDED_FIELDS: (keyof MarketInfo)[] = ["longToken", "shortToken", "indexToken"];
 
 export function SyntheticsStats() {
   const { chainId, srcChainId } = useChainId();

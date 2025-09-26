@@ -8,6 +8,7 @@ import {
   glvShiftLastExecutedAtKey,
   glvShiftMinIntervalKey,
   isGlvDisabledKey,
+  multichainBalanceKey,
 } from "config/dataStore";
 import { USD_DECIMALS } from "config/factors";
 import { GLV_MARKETS } from "config/markets";
@@ -15,14 +16,15 @@ import {
   updateTokenBalance,
   useTokensBalancesUpdates,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
+import { TokenBalanceType } from "domain/tokens";
 import { GM_DECIMALS } from "lib/legacy";
 import { ContractCallConfig, ContractCallsConfig, MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
-import type { ContractsChainId } from "sdk/configs/chains";
+import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import { GlvInfoData, MarketsInfoData, getContractMarketPrices, getGlvMarketName } from ".";
-import { convertToContractTokenPrices } from "../tokens";
+import { convertToContractTokenPrices, getBalanceTypeFromSrcChainId } from "../tokens";
 import { TokenData, TokensData } from "../tokens/types";
 
 export type GlvList = {
@@ -51,11 +53,12 @@ export function useGlvMarketsInfo(
     marketsInfoData: MarketsInfoData | undefined;
     tokensData: TokensData | undefined;
     chainId: ContractsChainId;
+    srcChainId: SourceChainId | undefined;
     account: string | undefined;
   }
 ) {
   const { websocketTokenBalancesUpdates, resetTokensBalancesUpdates } = useTokensBalancesUpdates();
-  const { marketsInfoData, tokensData, chainId, account } = deps;
+  const { marketsInfoData, tokensData, chainId, account, srcChainId } = deps;
 
   const dataStoreAddress = enabled ? getContract(chainId, "DataStore") : "";
   const glvReaderAddress = enabled ? getContract(chainId, "GlvReader") : "";
@@ -176,6 +179,17 @@ export function useGlvMarketsInfo(
               methodName: "balanceOf",
               params: [account],
             } satisfies ContractCallConfig;
+
+            acc[glv.glvToken + "-gmxAccountData"] = {
+              contractAddress: getContract(chainId, "DataStore"),
+              abiId: "DataStore",
+              calls: {
+                balance: {
+                  methodName: "getUint",
+                  params: [multichainBalanceKey(account, glv.glvToken)],
+                },
+              },
+            } satisfies ContractCallsConfig<any>;
           }
 
           acc[glv.glvToken + "-info"] = {
@@ -250,7 +264,11 @@ export function useGlvMarketsInfo(
 
           const tokenConfig = getTokenBySymbol(chainId, "GLV");
 
-          const balance = data[glv.glvToken + "-tokenData"].balance?.returnValues[0] ?? 0n;
+          const walletBalance: bigint | undefined = data[glv.glvToken + "-tokenData"].balance?.returnValues[0];
+          const gmxAccountBalance: bigint | undefined =
+            data[glv.glvToken + "-gmxAccountData"]?.balance?.returnValues[0];
+          const balance = srcChainId !== undefined ? gmxAccountBalance : walletBalance;
+
           const contractSymbol = data[glv.glvToken + "-tokenData"].symbol.returnValues[0];
 
           const glvToken: TokenData & {
@@ -263,7 +281,10 @@ export function useGlvMarketsInfo(
               maxPrice: priceMax,
             },
             totalSupply,
+            balanceType: getBalanceTypeFromSrcChainId(srcChainId),
             balance,
+            gmxAccountBalance,
+            walletBalance,
             contractSymbol,
           };
 
@@ -317,7 +338,7 @@ export function useGlvMarketsInfo(
           };
         });
 
-        resetTokensBalancesUpdates(Object.keys(result));
+        resetTokensBalancesUpdates(Object.keys(result), TokenBalanceType.Wallet);
 
         return result;
       },
@@ -340,7 +361,7 @@ export function useGlvMarketsInfo(
       const glvToken = result[tokenAddress].glvToken;
 
       if (glvToken.balance !== undefined) {
-        glvToken.balance = updateTokenBalance(balanceUpdate, glvToken.balance);
+        glvToken.balance = updateTokenBalance(balanceUpdate, glvToken.balance, TokenBalanceType.Wallet);
       }
     }
 

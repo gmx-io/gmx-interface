@@ -284,8 +284,6 @@ function useMarketsConfigsRequest({
             maxShortPoolUsdForDeposit: dataStoreValues.maxShortPoolUsdForDeposit.returnValues[0],
             maxLongPoolAmount: dataStoreValues.maxLongPoolAmount.returnValues[0],
             maxShortPoolAmount: dataStoreValues.maxShortPoolAmount.returnValues[0],
-            longPoolAmountAdjustment: dataStoreValues.longPoolAmountAdjustment.returnValues[0],
-            shortPoolAmountAdjustment: dataStoreValues.shortPoolAmountAdjustment.returnValues[0],
             reserveFactorLong: dataStoreValues.reserveFactorLong.returnValues[0],
             reserveFactorShort: dataStoreValues.reserveFactorShort.returnValues[0],
             openInterestReserveFactorLong: dataStoreValues.openInterestReserveFactorLong.returnValues[0],

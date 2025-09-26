@@ -1,7 +1,6 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { FaChevronDown } from "react-icons/fa6";
 
 import { getMarketUiConfig } from "config/markets";
 import { getMarketBadge, getMarketIndexName, getMarketPoolName, MarketsInfoData } from "domain/synthetics/markets";
@@ -18,6 +17,8 @@ import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import { WithMissedCoinsSearch } from "../WithMissedCoinsSearch/WithMissedCoinsSearch";
@@ -51,6 +52,7 @@ type Props = {
   footerContent?: ReactNode;
   marketsInfoData?: MarketsInfoData;
   qa?: string;
+  chainIdBadge?: number;
 };
 
 export default function TokenSelector(props: Props) {
@@ -81,6 +83,7 @@ export default function TokenSelector(props: Props) {
     marketsInfoData,
     chainId,
     qa,
+    chainIdBadge,
   } = props;
 
   const visibleTokens = tokens.filter((t) => t && !t.isTempHidden);
@@ -297,12 +300,18 @@ export default function TokenSelector(props: Props) {
         {selectedTokenLabel || (
           <span className="inline-flex items-center">
             {showSymbolImage && (
-              <TokenIcon className="mr-4" symbol={tokenInfo.symbol} importSize={24} displaySize={20} />
+              <TokenIcon
+                className="mr-4"
+                symbol={tokenInfo.symbol}
+                importSize={24}
+                displaySize={20}
+                chainIdBadge={chainIdBadge}
+              />
             )}
             {showTokenName ? tokenInfo.name : tokenInfo.symbol}
           </span>
         )}
-        <FaChevronDown className="w-12 text-typography-secondary group-hover:text-blue-300" />
+        <ChevronDownIcon className="w-16 text-typography-secondary group-hover:text-blue-300" />
       </div>
     </div>
   );

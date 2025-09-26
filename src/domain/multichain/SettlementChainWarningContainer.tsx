@@ -11,7 +11,7 @@ import { EMPTY_OBJECT } from "lib/objects";
 
 import Button from "components/Button/Button";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
-import { useAvailableToTradeAssetMultichainRequest } from "components/Synthetics/GmxAccountModal/hooks";
+import { useAvailableToTradeAssetMultichainRequest } from "components/GmxAccountModal/hooks";
 
 import InfoIcon from "img/ic_info.svg?react";
 

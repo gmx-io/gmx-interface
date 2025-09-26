@@ -52,6 +52,7 @@ import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
 import { BOTANIX } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
+import { TokenBalanceType } from "sdk/types/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { createTradeFlags } from "sdk/utils/trade";
@@ -764,6 +765,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
       if (!swapAmounts || !swapAmounts.swapStrategy.swapPathStats) return undefined;
 
       return getTradeFees({
+        sizeInUsd: 0n,
         initialCollateralUsd: swapAmounts.usdIn,
         collateralDeltaUsd: 0n,
         sizeDeltaUsd: 0n,
@@ -792,6 +794,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
       const selectedPosition = q(selectTradeboxSelectedPosition);
 
       return getTradeFees({
+        sizeInUsd: selectedPosition?.sizeInUsd || 0n,
         initialCollateralUsd: increaseAmounts.initialCollateralUsd,
         collateralDeltaUsd: increaseAmounts.initialCollateralUsd, // pay token amount in usd
         sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
@@ -801,7 +804,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         swapPriceImpactDeltaUsd: increaseAmounts.swapStrategy.swapPathStats?.totalSwapPriceImpactDeltaUsd || 0n,
         increasePositionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
         decreasePositionPriceImpactDeltaUsd: 0n,
-        priceImpactDiffUsd: 0n,
+        priceImpactDiffUsd: increaseAmounts.potentialPriceImpactDiffUsd,
         totalPendingImpactDeltaUsd: 0n,
         proportionalPendingImpactDeltaUsd: 0n,
         borrowingFeeUsd: selectedPosition?.pendingBorrowingFeesUsd || 0n,
@@ -828,6 +831,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
       const collateralDeltaUsd = bigMath.mulDiv(position.collateralUsd, sizeReductionBps, BASIS_POINTS_DIVISOR_BIGINT);
 
       return getTradeFees({
+        sizeInUsd: selectedPosition?.sizeInUsd || 0n,
         initialCollateralUsd: selectedPosition?.collateralUsd || 0n,
         collateralDeltaUsd,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
@@ -1244,16 +1248,16 @@ export const selectTradeboxFromToken = createSelector((q): TokenData | undefined
     return undefined;
   }
 
-  if (isFromTokenGmxAccount && !token.isGmxAccount) {
+  if (isFromTokenGmxAccount && token.balanceType !== TokenBalanceType.GmxAccount) {
     return {
       ...token,
-      isGmxAccount: true,
+      balanceType: TokenBalanceType.GmxAccount,
       balance: token.gmxAccountBalance,
     };
-  } else if (!isFromTokenGmxAccount && token.isGmxAccount) {
+  } else if (!isFromTokenGmxAccount && token.balanceType !== TokenBalanceType.Wallet) {
     return {
       ...token,
-      isGmxAccount: false,
+      balanceType: TokenBalanceType.Wallet,
       balance: token.walletBalance,
     };
   }

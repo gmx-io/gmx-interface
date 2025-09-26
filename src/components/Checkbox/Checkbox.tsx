@@ -1,7 +1,8 @@
 import cx from "classnames";
 import { ReactNode } from "react";
-import { BsCheck } from "react-icons/bs";
-import { TiMinus } from "react-icons/ti";
+
+import CheckIcon from "img/ic_check.svg?react";
+import MinusIcon from "img/ic_minus.svg?react";
 
 type Props = {
   isChecked?: boolean;
@@ -28,6 +29,7 @@ export default function Checkbox(props: Props) {
         setIsChecked?.(!isChecked);
         event.stopPropagation();
       }}
+      disabled={disabled}
       data-qa={props.qa}
     >
       <span
@@ -40,8 +42,8 @@ export default function Checkbox(props: Props) {
           }
         )}
       >
-        {isChecked && !isPartialChecked && <BsCheck className="size-14" />}
-        {isPartialChecked && <TiMinus className="size-10" />}
+        {isChecked && !isPartialChecked && <CheckIcon className="size-11" />}
+        {isPartialChecked && <MinusIcon className="size-11" />}
       </span>
       {props.children && props.children}
     </button>

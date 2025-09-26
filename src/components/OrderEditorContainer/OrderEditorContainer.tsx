@@ -4,7 +4,7 @@ import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/order
 import { selectOrderEditorOrder } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
-import { OrderEditor } from "components/Synthetics/OrderEditor/OrderEditor";
+import { OrderEditor } from "components/OrderEditor/OrderEditor";
 
 export function OrderEditorContainer() {
   const editingOrder = useSelector(selectOrderEditorOrder);

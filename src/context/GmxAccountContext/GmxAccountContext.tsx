@@ -1,20 +1,11 @@
-import { t } from "@lingui/macro";
-import { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { createContext } from "use-context-selector";
 import { useAccount } from "wagmi";
 
 import { isDevelopment } from "config/env";
-import {
-  IS_SOURCE_BASE_ALLOWED_KEY,
-  IS_SOURCE_BASE_ALLOWED_NOTIFICATION_SHOWN_KEY,
-  SELECTED_NETWORK_LOCAL_STORAGE_KEY,
-  SELECTED_SETTLEMENT_CHAIN_ID_KEY,
-} from "config/localStorage";
-import { DEFAULT_SETTLEMENT_CHAIN_ID_MAP, IS_SOURCE_BASE_ALLOWED, isSettlementChain } from "config/multichain";
+import { SELECTED_NETWORK_LOCAL_STORAGE_KEY, SELECTED_SETTLEMENT_CHAIN_ID_KEY } from "config/localStorage";
+import { DEFAULT_SETTLEMENT_CHAIN_ID_MAP, isSettlementChain } from "config/multichain";
 import { areChainsRelated } from "domain/multichain/areChainsRelated";
-import { helperToast } from "lib/helperToast";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { ARBITRUM, ARBITRUM_SEPOLIA, SettlementChainId, SourceChainId } from "sdk/configs/chains";
 
 export type GmxAccountModalView =
@@ -91,7 +82,6 @@ const getSettlementChainIdFromLocalStorage = () => {
 
 export function GmxAccountContextProvider({ children }: PropsWithChildren) {
   const { chainId: walletChainId } = useAccount();
-  useMultichainUrlEnabled();
 
   const [modalOpen, setModalOpen] = useState<GmxAccountContext["modalOpen"]>(false);
 
@@ -190,46 +180,4 @@ export function GmxAccountContextProvider({ children }: PropsWithChildren) {
   );
 
   return <context.Provider value={value}>{children}</context.Provider>;
-}
-
-function useMultichainUrlEnabled() {
-  const history = useHistory();
-  const location = useLocation();
-  const isReloadingRef = useRef(false);
-
-  const [isSourceBaseAllowedNotificationShown, setIsSourceBaseAllowedNotificationShown] = useLocalStorageSerializeKey(
-    IS_SOURCE_BASE_ALLOWED_NOTIFICATION_SHOWN_KEY,
-    false
-  );
-
-  useEffect(() => {
-    if (isReloadingRef.current) {
-      return;
-    }
-
-    const query = new URLSearchParams(location.search);
-
-    const param = query.get(IS_SOURCE_BASE_ALLOWED_KEY);
-
-    if (param) {
-      query.delete(IS_SOURCE_BASE_ALLOWED_KEY);
-      history.replace({ search: query.toString() });
-      if (param === "1" && !IS_SOURCE_BASE_ALLOWED) {
-        localStorage.setItem(IS_SOURCE_BASE_ALLOWED_KEY, "1");
-
-        isReloadingRef.current = true;
-        window.location.reload();
-      } else if (param === "0" && IS_SOURCE_BASE_ALLOWED) {
-        localStorage.removeItem(IS_SOURCE_BASE_ALLOWED_KEY);
-        setIsSourceBaseAllowedNotificationShown(false);
-        isReloadingRef.current = true;
-        window.location.reload();
-      }
-    } else if (IS_SOURCE_BASE_ALLOWED && !isSourceBaseAllowedNotificationShown) {
-      setIsSourceBaseAllowedNotificationShown(true);
-      setTimeout(() => {
-        helperToast.success(t`Source Base is now available on GMX`);
-      }, 2000);
-    }
-  }, [history, isSourceBaseAllowedNotificationShown, location.search, setIsSourceBaseAllowedNotificationShown]);
 }

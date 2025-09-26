@@ -1,14 +1,14 @@
 import { MessageDescriptor } from "@lingui/core";
 import { msg } from "@lingui/macro";
 
-import { ARBITRUM, AVALANCHE, ChainId } from "config/chains";
+import { ARBITRUM, AVALANCHE, ContractsChainId } from "config/chains";
 
 type EcosystemGmxPage = {
   title: MessageDescriptor;
   link: string;
   linkLabel: string;
   about: MessageDescriptor;
-  chainIds: ChainId[];
+  chainIds: ContractsChainId[];
 };
 
 export const gmxPages: EcosystemGmxPage[] = [
@@ -63,7 +63,7 @@ type EcosystemCommunityProject = {
   about: MessageDescriptor;
   creatorLabel: string | string[];
   creatorLink: string | string[];
-  chainIds: ChainId[];
+  chainIds: ContractsChainId[];
 };
 
 export const communityProjects: EcosystemCommunityProject[] = [
@@ -166,7 +166,7 @@ type EcosystemDashboardProject = {
   about: MessageDescriptor;
   creatorLabel: string;
   creatorLink: string;
-  chainIds: ChainId[];
+  chainIds: ContractsChainId[];
 };
 
 export const dashboardProjects: EcosystemDashboardProject[] = [

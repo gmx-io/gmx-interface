@@ -1,6 +1,5 @@
 import { t, Trans } from "@lingui/macro";
 import { useRef, useState } from "react";
-import { IoWarningOutline } from "react-icons/io5";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl, ContractsChainId } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -18,13 +17,14 @@ import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table"
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
 import EditIcon from "img/ic_edit.svg?react";
+import WarnIcon from "img/ic_warn.svg?react";
 
 import EmptyMessage from "./EmptyMessage";
 import { ReferralCodeEditFormContainer } from "./JoinReferralCode";
 import ReferralInfoCard from "./ReferralInfoCard";
 import { getSharePercentage, getTierIdDisplay, getUsdValue, tierDiscountInfo } from "./referralsHelper";
 import usePagination, { DEFAULT_PAGE_SIZE } from "./usePagination";
-import Card from "../Common/Card";
+import Card from "../Card/Card";
 import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
 
@@ -277,7 +277,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                             <div className="Rebate-amount-value numbers">
                               {tokensWithoutPrices.length > 0 && (
                                 <>
-                                  <IoWarningOutline color="#ffba0e" size={16} />
+                                  <WarnIcon className="size-16 text-yellow-300" />
                                   &nbsp;
                                 </>
                               )}

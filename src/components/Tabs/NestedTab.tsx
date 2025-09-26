@@ -2,9 +2,10 @@ import { FloatingPortal, autoUpdate, flip, shift, useFloating } from "@floating-
 import { Menu } from "@headlessui/react";
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import { FiChevronDown } from "react-icons/fi";
 
 import Button from "components/Button/Button";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import { NestedOption } from "./types";
 
@@ -39,7 +40,7 @@ export default function NestedTab<V extends string | number>({
         <Button variant="ghost" className={cx({ "!bg-button-secondary !text-typography-primary": selectedSubOption })}>
           <span>{label}</span>
 
-          <FiChevronDown size={16} className="mt-1" />
+          <ChevronDownIcon className="mt-1 size-16" />
         </Button>
       </Menu.Button>
       <FloatingPortal>

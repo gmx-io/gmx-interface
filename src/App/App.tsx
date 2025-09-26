@@ -11,6 +11,8 @@ import "styles/Font.css";
 import "styles/Input.css";
 import "styles/Shared.scss";
 import "styles/recharts.css";
+import "styles/DeprecatedExchageStyles.scss";
+import "components/Card/Card.css";
 import "./App.scss";
 
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
@@ -31,7 +33,7 @@ import { useChainId } from "lib/chains";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
 
-import SEO from "components/Common/SEO";
+import SEO from "components/Seo/SEO";
 
 import { AppRoutes } from "./AppRoutes";
 import { SWRConfigProp } from "./swrConfig";

@@ -30,7 +30,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 
-import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
+import { StatusNotification } from "components/StatusNotification/StatusNotification";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
 enum SubaccountActivationState {

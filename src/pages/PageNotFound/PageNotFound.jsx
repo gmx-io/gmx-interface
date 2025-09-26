@@ -4,7 +4,7 @@ import { getPageTitle } from "lib/legacy";
 import { getHomeUrl, getTradePageUrl } from "lib/legacy";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
-import SEO from "components/Common/SEO";
+import SEO from "components/Seo/SEO";
 
 import "./PageNotFound.css";
 

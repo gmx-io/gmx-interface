@@ -83,6 +83,7 @@ export type IncreasePositionAmounts = {
   borrowingFeeUsd: bigint;
   fundingFeeUsd: bigint;
   positionPriceImpactDeltaUsd: bigint;
+  potentialPriceImpactDiffUsd: bigint;
 };
 
 export type DecreasePositionAmounts = {
@@ -147,9 +148,11 @@ export type WithdrawalAmounts = {
   marketTokenAmount: bigint;
   marketTokenUsd: bigint;
   longTokenAmount: bigint;
+  longTokenSwapPathStats: SwapPathStats | undefined;
   shortTokenAmount: bigint;
   longTokenUsd: bigint;
   shortTokenUsd: bigint;
+  shortTokenSwapPathStats: SwapPathStats | undefined;
   glvTokenAmount: bigint;
   glvTokenUsd: bigint;
   swapFeeUsd: bigint;

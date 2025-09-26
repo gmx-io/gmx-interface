@@ -25,7 +25,7 @@ import { PositionTradeAction, TradeAction, TradeActionType } from "sdk/types/tra
 import { GraphQlFilters, buildFiltersBody } from "sdk/utils/subgraph";
 import { createRawTradeActionTransformer } from "sdk/utils/tradeHistory";
 
-import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
+import { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 
 export type TradeHistoryResult = {
   tradeActions?: TradeAction[];

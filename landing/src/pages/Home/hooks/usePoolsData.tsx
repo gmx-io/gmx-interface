@@ -42,7 +42,9 @@ export function usePoolsData(): Partial<PoolsData> {
           ...arbitrumApys.glvs,
           ...avalancheApys.glvs,
         };
-        for (const glv of glvApys) {
+
+        for (const glvKey of Object.keys(glvApys)) {
+          const glv = glvApys[glvKey];
           if (glv.apy > result) {
             result = glv.apy;
           }
@@ -191,7 +193,7 @@ function useMarketInfos() {
 function usePerformanceByChainId(chainId: number) {
   const fetcher = useOracleKeeperFetcher(chainId);
   return useSWR(["performance", chainId], async () => {
-    const res = await fetcher.fetchPerformance("90d");
+    const res = await fetcher.fetchPerformanceAnnualized("90d");
     return res;
   });
 }

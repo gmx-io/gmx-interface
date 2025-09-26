@@ -153,6 +153,23 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
     return unsubscribe;
   }, []);
 
+  useEffect(() => {
+    if (connectedChainId) {
+      return;
+    }
+
+    const switchNetworkHandler = (switchNetworkInfo: CustomEvent<{ chainId: number }>) => {
+      const newChainId = switchNetworkInfo.detail.chainId;
+      if (isContractsChain(newChainId, IS_DEVELOPMENT) || isSourceChain(newChainId)) {
+        setDisplayedChainId(newChainId);
+      }
+    };
+    document.addEventListener("networkChange", switchNetworkHandler);
+    return () => {
+      document.removeEventListener("networkChange", switchNetworkHandler);
+    };
+  }, [connectedChainId]);
+
   if (mustChangeChainId) {
     if (isLocalStorageChainSupported) {
       return { chainId: chainIdFromLocalStorage as SettlementChainId, srcChainId };

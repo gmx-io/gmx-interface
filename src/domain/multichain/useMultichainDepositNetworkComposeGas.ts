@@ -16,7 +16,7 @@ import { useGmxAccountDepositViewChain } from "context/GmxAccountContext/hooks";
 import { useChainId } from "lib/chains";
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { abis } from "sdk/abis";
-import { getToken } from "sdk/configs/tokens";
+import { getToken, isValidTokenSafe } from "sdk/configs/tokens";
 
 import { CodecUiHelper, MultichainAction } from "./codecs/CodecUiHelper";
 import { OFTComposeMsgCodec } from "./codecs/OFTComposeMsgCodec";
@@ -104,7 +104,10 @@ export async function estimateMultichainDepositNetworkComposeGas({
     throw new Error("Stargate endpoint ID not found");
   }
 
-  const fakeAmount = FAKE_INPUT_AMOUNT_MAP[getToken(chainId, tokenAddress).symbol] ?? 10n ** 18n;
+  // TODO get decimals from token config
+  const fakeAmount = isValidTokenSafe(chainId, tokenAddress)
+    ? FAKE_INPUT_AMOUNT_MAP[getToken(chainId, tokenAddress).symbol] ?? 10n ** 18n
+    : 10n ** 18n;
 
   const message = OFTComposeMsgCodec.encode(0n, sourceChainEndpointId, fakeAmount, composeFromWithMsg);
 

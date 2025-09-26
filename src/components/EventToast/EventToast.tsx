@@ -1,11 +1,11 @@
 import "./EventToast.css";
 import { Toast } from "react-hot-toast";
-import { RxCross2 } from "react-icons/rx";
 
 import { EventData } from "config/events";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
+import CloseIcon from "img/ic_close.svg?react";
 import MessageIcon from "img/ic_message.svg?react";
 
 export default function EventToast({
@@ -26,7 +26,7 @@ export default function EventToast({
           <MessageIcon className="size-20 shrink-0 text-blue-300" />
           <p className="font-medium">{event.title}</p>
         </div>
-        <RxCross2
+        <CloseIcon
           onClick={onClick}
           className="size-20 shrink-0 cursor-pointer text-typography-secondary hover:text-typography-primary"
           data-qa="close-toast"

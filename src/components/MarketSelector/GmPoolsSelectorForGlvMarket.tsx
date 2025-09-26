@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
-import { BiChevronDown } from "react-icons/bi";
 
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import {
@@ -20,12 +19,14 @@ import { searchBy } from "lib/searchBy";
 import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
+import { useGlvGmMarketsWithComposition } from "components/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
-import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import { PoolListItem } from "./PoolListItem";
 import { CommonPoolSelectorProps, MarketOption } from "./types";
@@ -52,13 +53,15 @@ function PoolLabel({
 
   return (
     <div
-      className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300", {
+      className={cx("group flex cursor-pointer items-center gap-4 whitespace-nowrap hover:text-blue-300", {
         "pointer-events-none": disablePoolSelector,
       })}
       onClick={!disablePoolSelector ? onClick : undefined}
     >
       {getMarketIndexName(marketInfo)} [{getMarketPoolName(marketInfo)}]
-      {!disablePoolSelector && <BiChevronDown className="text-body-large" />}
+      {!disablePoolSelector && (
+        <ChevronDownIcon className="size-16 text-typography-secondary group-hover:text-blue-300" />
+      )}
     </div>
   );
 }

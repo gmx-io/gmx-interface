@@ -81,7 +81,6 @@ export const VIRTUAL_TOKEN_ID_KEY = hashString("VIRTUAL_TOKEN_ID");
 export const VIRTUAL_MARKET_ID_KEY = hashString("VIRTUAL_MARKET_ID");
 export const VIRTUAL_INVENTORY_FOR_POSITIONS_KEY = hashString("VIRTUAL_INVENTORY_FOR_POSITIONS");
 export const VIRTUAL_INVENTORY_FOR_SWAPS_KEY = hashString("VIRTUAL_INVENTORY_FOR_SWAPS");
-export const POOL_AMOUNT_ADJUSTMENT_KEY = hashString("POOL_AMOUNT_ADJUSTMENT");
 export const AFFILIATE_REWARD_KEY = hashString("AFFILIATE_REWARD");
 export const IS_MARKET_DISABLED_KEY = hashString("IS_MARKET_DISABLED");
 export const UI_FEE_FACTOR = hashString("UI_FEE_FACTOR");
@@ -345,10 +344,6 @@ export function virtualInventoryForSwapsKey(virtualMarketId: string, token: stri
 
 export function virtualInventoryForPositionsKey(virtualTokenId: string) {
   return hashData(["bytes32", "bytes32"], [VIRTUAL_INVENTORY_FOR_POSITIONS_KEY, virtualTokenId]);
-}
-
-export function poolAmountAdjustmentKey(market: string, token: string) {
-  return hashData(["bytes32", "address", "address"], [POOL_AMOUNT_ADJUSTMENT_KEY, market, token]);
 }
 
 export function affiliateRewardKey(market: string, token: string, account: string) {

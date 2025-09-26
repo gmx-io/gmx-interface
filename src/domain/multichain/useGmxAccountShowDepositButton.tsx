@@ -1,6 +1,6 @@
 import { useChainId } from "lib/chains";
 
-import { useAvailableToTradeAssetSettlementChain } from "components/Synthetics/GmxAccountModal/hooks";
+import { useAvailableToTradeAssetSettlementChain } from "components/GmxAccountModal/hooks";
 
 export function useGmxAccountShowDepositButton() {
   const { srcChainId } = useChainId();

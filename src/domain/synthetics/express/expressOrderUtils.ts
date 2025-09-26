@@ -414,6 +414,7 @@ export async function estimateExpressParams({
     gasPrice,
     subaccountValidations,
     gasPaymentValidations,
+    isGmxAccount,
   };
 }
 
@@ -794,6 +795,7 @@ export function getOrderRelayRouterAddress(
   return getContract(chainId, contractName);
 }
 
+// TODO MLTCH: move to bridge out utils
 export async function buildAndSignBridgeOutTxn({
   chainId,
   srcChainId,

@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { POOLS_TIME_RANGE_OPTIONS, PoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import { useLocalizedMap } from "lib/i18n";
 
-import { PoolsTabs } from "components/Synthetics/PoolsTabs/PoolsTabs";
+import { PoolsTabs } from "components/PoolsTabs/PoolsTabs";
 
 const LABEL_BY_POOLS_TIME_RANGE: Record<PoolsTimeRange, MessageDescriptor> = {
   total: msg`Total`,

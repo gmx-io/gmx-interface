@@ -122,6 +122,7 @@ export const selectOrderEditorSwapFees = createSelector((q) => {
 
   return getTradeFees({
     initialCollateralUsd,
+    sizeInUsd: 0n,
     collateralDeltaUsd: 0n,
     sizeDeltaUsd: 0n,
     swapSteps: order.swapPathStats?.swapSteps ?? [],

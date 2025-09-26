@@ -1,4 +1,4 @@
-import { AbiCoder, Contract, ethers, isAddress, LogParams, Provider, ProviderEvent, ZeroAddress } from "ethers";
+import { AbiCoder, ethers, isAddress, LogParams, Provider, ProviderEvent, ZeroAddress } from "ethers";
 import { MutableRefObject } from "react";
 import { Abi, decodeEventLog, Hex } from "viem";
 import type { ContractEventArgsFromTopics } from "viem/_types/types/contract";
@@ -10,44 +10,6 @@ import type { ContractsChainId } from "sdk/configs/chains";
 import { getTokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 const coder = AbiCoder.defaultAbiCoder();
-
-const vaultEvents = {
-  UpdatePosition: "onUpdatePosition",
-  ClosePosition: "onClosePosition",
-  IncreasePosition: "onIncreasePosition",
-  DecreasePosition: "onDecreasePosition",
-} as const;
-
-const positionRouterEvents = {
-  CancelIncreasePosition: "onCancelIncreasePosition",
-  CancelDecreasePosition: "onCancelDecreasePosition",
-} as const;
-
-export function subscribeToV1Events(
-  wsVault: Contract,
-  wsPositionRouter: Contract,
-  callExchangeRef: (method: any, ...args: any[]) => void
-) {
-  const unsubs: (() => void)[] = [];
-
-  Object.keys(vaultEvents).forEach((eventName) => {
-    const handlerName = vaultEvents[eventName];
-    const handler = (...args) => callExchangeRef(handlerName, ...args);
-    wsVault.on(eventName, handler);
-    unsubs.push(() => wsVault.off(eventName, handler));
-  });
-
-  Object.keys(positionRouterEvents).forEach((eventName) => {
-    const handlerName = positionRouterEvents[eventName];
-    const handler = (...args) => callExchangeRef(handlerName, ...args);
-    wsPositionRouter.on(eventName, handler);
-    unsubs.push(() => wsPositionRouter.off(eventName, handler));
-  });
-
-  return () => {
-    unsubs.forEach((unsub) => unsub());
-  };
-}
 
 const DEPOSIT_CREATED_HASH = ethers.id("DepositCreated");
 const DEPOSIT_EXECUTED_HASH = ethers.id("DepositExecuted");
@@ -577,12 +539,8 @@ function createV2EventFilters(chainId: ContractsChainId, account: string, wsProv
   ];
 }
 
-export function getTotalSubscribersEventsCount(
-  chainId: ContractsChainId,
-  provider: Provider,
-  { v1, v2 }: { v1: boolean; v2: boolean }
-) {
-  const v1Count = v1 ? Object.keys(vaultEvents).length + Object.keys(positionRouterEvents).length : 0;
+export function getTotalSubscribersEventsCount(chainId: ContractsChainId, provider: Provider, { v2 }: { v2: boolean }) {
+  const v1Count = 0;
   const v2Count = v2 ? createV2EventFilters(chainId, ZeroAddress, provider).length : 0;
   return v1Count + v2Count;
 }

@@ -80,6 +80,7 @@ export type PendingExpressTxnParams = {
   key: string;
   taskId: string | undefined;
   isSponsoredCall: boolean;
+  isGmxAccount: boolean;
   subaccountApproval?: SignedSubacсountApproval;
   tokenPermits?: SignedTokenPermit[];
   payTokenAddresses?: string[];
@@ -248,6 +249,7 @@ export type PendingOrderData = {
   shouldUnwrapNativeToken: boolean;
   orderType: OrderType;
   referralCode?: string;
+  createdAt: number;
   txnType: OrderTxnType;
 };
 

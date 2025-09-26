@@ -13,7 +13,7 @@ import { shortenAddressOrEns } from "lib/wallets";
 
 import { Avatar } from "components/Avatar/Avatar";
 import Button from "components/Button/Button";
-import { useAvailableToTradeAssetSettlementChain } from "components/Synthetics/GmxAccountModal/hooks";
+import { useAvailableToTradeAssetSettlementChain } from "components/GmxAccountModal/hooks";
 
 type Props = {
   account: string;

@@ -8,7 +8,7 @@ import { getOrderInfo, isPositionOrder, isSwapOrder, isTwapPositionOrder, isTwap
 import { getTwapOrderKey } from "sdk/utils/twap/index";
 import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
-import { MarketFilterLongShortItemData } from "components/Synthetics/TableMarketFilter/MarketFilterLongShort";
+import { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 
 import { useOrders } from "./useOrders";
 import { MarketsInfoData } from "../markets";

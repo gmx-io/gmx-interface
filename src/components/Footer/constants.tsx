@@ -48,11 +48,11 @@ export function getFooterLinks(isHome) {
 }
 
 export const SOCIAL_LINKS: SocialLink[] = [
-  { link: "https://twitter.com/GMX_IO", name: "Twitter", icon: <XIcon /> },
-  { link: "https://gmxio.substack.com/", name: "Substack", icon: <SubstackIcon /> },
-  { link: "https://github.com/gmx-io", name: "Github", icon: <GithubIcon /> },
-  { link: "https://t.me/GMX_IO", name: "Telegram", icon: <TelegramIcon /> },
-  { link: "https://discord.gg/H5PeQru3Aa", name: "Discord", icon: <DiscordIcon /> },
+  { link: "https://twitter.com/GMX_IO", name: "Twitter", icon: <XIcon className="size-16" /> },
+  { link: "https://gmxio.substack.com/", name: "Substack", icon: <SubstackIcon className="size-16" /> },
+  { link: "https://github.com/gmx-io", name: "Github", icon: <GithubIcon className="size-16" /> },
+  { link: "https://t.me/GMX_IO", name: "Telegram", icon: <TelegramIcon className="size-16" /> },
+  { link: "https://discord.gg/H5PeQru3Aa", name: "Discord", icon: <DiscordIcon className="size-16" /> },
 ];
 
 function V1Icon() {

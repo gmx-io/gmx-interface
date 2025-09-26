@@ -89,7 +89,7 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
                 }}
               >
                 <Button variant="ghost" href={platform.link} newTab>
-                  <div className="h-16 w-16">{platform.icon}</div>
+                  <div className="size-16">{platform.icon}</div>
                 </Button>
               </TrackingLink>
             );

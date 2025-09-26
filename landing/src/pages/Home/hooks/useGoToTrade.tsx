@@ -2,7 +2,7 @@ import { useCallback } from "react";
 
 import type { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
 import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
-import { ARBITRUM, AVALANCHE, BOTANIX } from "sdk/configs/chainIds";
+import { ARBITRUM, AVALANCHE, BOTANIX, SOURCE_BASE_MAINNET } from "sdk/configs/chainIds";
 
 import { useHomePageContext } from "../contexts/HomePageContext";
 
@@ -21,7 +21,7 @@ type Props = {
 
 const REDIRECT_MAP = {
   [RedirectChainIds.Solana]: "https://gmxsol.io/",
-  [RedirectChainIds.Base]: makeLink(ARBITRUM),
+  [RedirectChainIds.Base]: makeLink(SOURCE_BASE_MAINNET),
   [RedirectChainIds.Arbitum]: makeLink(ARBITRUM),
   [RedirectChainIds.Avalanche]: makeLink(AVALANCHE),
   [RedirectChainIds.Botanix]: makeLink(BOTANIX),

@@ -1,7 +1,7 @@
 import { RedirectChainIds } from "landing/pages/Home/hooks/useGoToTrade";
 
 import IcArb from "img/ic_arb_24.svg?react";
-import IcArrowRight from "img/ic_arrowright16.svg?react";
+import IcArrowRight from "img/ic_arrow_right.svg?react";
 import IcAvax from "img/ic_avax_24.svg?react";
 import IcBase from "img/ic_base.svg?react";
 import IcBotanix from "img/ic_botanix_landing.svg?react";

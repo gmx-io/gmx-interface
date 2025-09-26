@@ -1,6 +1,7 @@
 import { Listbox } from "@headlessui/react";
 import cx from "classnames";
-import { BiChevronDown } from "react-icons/bi";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 type Primitive = string | number;
 type WithConditionalItemKey<Id extends Primitive, Option> = Id extends Primitive
@@ -44,7 +45,7 @@ export const DropdownSelector = <Id extends Primitive, Option>({
           }
         >
           {value === undefined ? <div className="text-typography-primary">{placeholder}</div> : button}
-          <BiChevronDown className="size-20 group-aria-expanded:text-blue-300" />
+          <ChevronDownIcon className="size-20 group-aria-expanded:text-blue-300" />
         </Listbox.Button>
         <Listbox.Options
           className={cx(

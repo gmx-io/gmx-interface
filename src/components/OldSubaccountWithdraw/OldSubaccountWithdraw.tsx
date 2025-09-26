@@ -17,7 +17,7 @@ import { getNativeToken } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
-import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
+import { StatusNotification } from "components/StatusNotification/StatusNotification";
 import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
 
 import IconInfo from "img/ic_info.svg?react";

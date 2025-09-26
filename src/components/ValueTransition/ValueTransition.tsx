@@ -1,6 +1,7 @@
 import "./ValueTransition.scss";
 import { ReactNode } from "react";
-import { BsArrowRight } from "react-icons/bs";
+
+import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 
 type Props = {
   from?: ReactNode;
@@ -14,7 +15,7 @@ export function ValueTransition(p: Props) {
   return (
     <div className="ValueTransition numbers">
       <div className="muted inline-block">
-        {p.from} <BsArrowRight className="transition-arrow inline-block" />
+        {p.from} <ArrowRightIcon className="transition-arrow inline-block" />
       </div>{" "}
       {p.to}
     </div>

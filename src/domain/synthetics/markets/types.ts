@@ -1,4 +1,5 @@
 import { TokenData } from "domain/synthetics/tokens";
+import type { ERC20Address } from "domain/tokens";
 import { Market, MarketInfo, MarketPoolTokens } from "sdk/types/markets";
 
 export * from "sdk/types/markets";
@@ -60,4 +61,85 @@ export type ClaimableFunding = {
 
 export type ClaimableFundingData = {
   [marketAddress: string]: ClaimableFunding;
+};
+
+export type CreateDepositParamsAddressesStruct = {
+  receiver: string;
+  callbackContract: string;
+  uiFeeReceiver: string;
+  market: string;
+  initialLongToken: ERC20Address;
+  initialShortToken: ERC20Address;
+  longTokenSwapPath: string[];
+  shortTokenSwapPath: string[];
+};
+
+export type CreateDepositParamsStruct = {
+  addresses: CreateDepositParamsAddressesStruct;
+  minMarketTokens: bigint;
+  shouldUnwrapNativeToken: boolean;
+  executionFee: bigint;
+  callbackGasLimit: bigint;
+  dataList: string[];
+};
+
+export type CreateGlvDepositAddressesStruct = {
+  glv: string;
+  market: string;
+  receiver: string;
+  callbackContract: string;
+  uiFeeReceiver: string;
+  initialLongToken: string;
+  initialShortToken: string;
+  longTokenSwapPath: string[];
+  shortTokenSwapPath: string[];
+};
+
+export type CreateGlvDepositParamsStruct = {
+  addresses: CreateGlvDepositAddressesStruct;
+  minGlvTokens: bigint;
+  executionFee: bigint;
+  callbackGasLimit: bigint;
+  shouldUnwrapNativeToken: boolean;
+  isMarketTokenDeposit: boolean;
+  dataList: string[];
+};
+
+export type CreateWithdrawalAddressesStruct = {
+  receiver: string;
+  callbackContract: string;
+  uiFeeReceiver: string;
+  market: string;
+  longTokenSwapPath: string[];
+  shortTokenSwapPath: string[];
+};
+
+export type CreateWithdrawalParamsStruct = {
+  addresses: CreateWithdrawalAddressesStruct;
+  minLongTokenAmount: bigint;
+  minShortTokenAmount: bigint;
+  shouldUnwrapNativeToken: boolean;
+  executionFee: bigint;
+  callbackGasLimit: bigint;
+  dataList: string[];
+};
+
+export type CreateGlvWithdrawalAddressesStruct = {
+  receiver: string;
+  callbackContract: string;
+  uiFeeReceiver: string;
+  market: string;
+  glv: string;
+  longTokenSwapPath: string[];
+  shortTokenSwapPath: string[];
+};
+
+export type CreateGlvWithdrawalParamsStruct = {
+  addresses: CreateGlvWithdrawalAddressesStruct;
+  minLongTokenAmount: bigint;
+  minShortTokenAmount: bigint;
+  shouldUnwrapNativeToken: boolean;
+  executionFee: bigint;
+  callbackGasLimit: bigint;
+  dataList: string[];
 };
