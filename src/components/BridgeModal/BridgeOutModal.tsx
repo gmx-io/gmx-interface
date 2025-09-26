@@ -133,12 +133,7 @@ export function BridgeOutModal({
   }, [bridgeOutChain, glvOrMarketAddress, bridgeOutAmount, chainId]);
 
   const expressTransactionBuilder: ExpressTransactionBuilder | undefined = useMemo(() => {
-    if (
-      account === undefined ||
-      bridgeOutParams === undefined ||
-      // provider === undefined ||
-      bridgeOutChain === undefined
-    ) {
+    if (account === undefined || bridgeOutParams === undefined || bridgeOutChain === undefined) {
       return;
     }
 
