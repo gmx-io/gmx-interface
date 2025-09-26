@@ -1181,6 +1181,7 @@ msgid "Select pool"
 msgstr "Выбрать пул"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "APR"
@@ -2620,6 +2621,7 @@ msgstr "Годовая Процентная Ставка Комиссии"
 msgid "SL"
 msgstr "SL"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 #: src/pages/Stake/Stake.tsx
@@ -3205,6 +3207,7 @@ msgstr "Приложение отключено, ожидается обновл
 msgid "Please accept the Claim Terms above to continue."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 #: src/pages/Stake/UnstakeModal.tsx
@@ -4371,6 +4374,7 @@ msgstr "<0>Подпись разрешения недействительна. �
 msgid "Firebird Finance"
 msgstr "Firebird Finance"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/Stake.tsx
 msgid "Stake GMX"
 msgstr "Стейк GMX"
@@ -4445,6 +4449,7 @@ msgstr "{longShortText} {0} Резерв"
 msgid "Cancel newly created orders"
 msgstr "Отменить недавно созданные ордера"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Delegate"
 msgstr "Делегат"
@@ -4718,6 +4723,7 @@ msgstr "Цена триггера для этого ордера основан�
 msgid "Referral code updated failed."
 msgstr "Обновление реферального кода не удалось"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/components/SideOrderEntries.tsx
@@ -5184,6 +5190,10 @@ msgstr ""
 #: src/pages/Buy/Buy.tsx
 msgid "Protocol Tokens"
 msgstr "Токены протокола"
+
+#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+msgid "My assets"
+msgstr ""
 
 #: src/components/GmxAccountModal/GmxAccountModal.tsx
 msgid "Withdraw from GMX Account"
@@ -6204,6 +6214,7 @@ msgid "Session generated"
 msgstr "Сессия сгенерирована"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
@@ -6806,6 +6817,7 @@ msgstr ""
 msgid "Convert {tokenSymbol} to {nativeTokenSymbol}"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Staked"
@@ -7047,6 +7059,7 @@ msgstr "Активировать 1CT (торговля в один клик)"
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr "Бонусный APR будет аирдропнут как токены {airdropTokenTitle}. <0>Подробнее</0>."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/components/GmList/GmListItem.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
@@ -7878,6 +7891,7 @@ msgstr ""
 msgid "You have {balanceFormatted} remaining in your old version 1CT subaccount."
 msgstr "У вас осталось {balanceFormatted} в старой версии субаккаунта 1CT."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Unstake GMX"
 msgstr "Анстейкать GMX"

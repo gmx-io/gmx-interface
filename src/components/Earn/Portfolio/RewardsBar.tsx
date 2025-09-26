@@ -7,7 +7,6 @@ import { getTotalGlvInfo, getTotalGmInfo } from "domain/synthetics/markets/utils
 import { useChainId } from "lib/chains";
 import { ProcessedData } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
-import { useProcessedData } from "pages/Stake/useProcessedData";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -23,11 +22,16 @@ type PendingRewardItem = {
   decimals: number;
 };
 
-export function RewardsBar() {
+export function RewardsBar({
+  processedData,
+  mutateProcessedData,
+}: {
+  processedData: ProcessedData | undefined;
+  mutateProcessedData: () => void;
+}) {
   const { chainId, srcChainId } = useChainId();
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
 
-  const { data: processedData, mutate: mutateProcessedData } = useProcessedData();
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
 
   const totalGmInfo = useMemo(() => getTotalGmInfo(marketTokensData), [marketTokensData]);
@@ -72,7 +76,7 @@ export function RewardsBar() {
               <span className="text-12 font-medium text-typography-secondary">
                 <Trans>Total Pending Rewards</Trans>
               </span>
-              <span className="text-body-large font-medium numbers">{formatUsd(totalPendingRewardsUsd)}</span>
+              <span className="text-body-large numbers">{formatUsd(totalPendingRewardsUsd)}</span>
             </div>
           </div>
         </div>
@@ -214,8 +218,8 @@ function PendingRewards({
             decimals={item.decimals}
             usd={item.usd}
             symbol={item.symbol}
-            className="text-body-large font-medium"
-            secondaryValueClassName="!text-body-large font-medium"
+            className="text-body-large"
+            secondaryValueClassName="!text-body-large"
           />
 
           {index < pendingRewardItems.length - 1 && <span className="mb-2 text-16 text-typography-inactive">/</span>}

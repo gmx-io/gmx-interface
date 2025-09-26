@@ -346,14 +346,7 @@ function RewardOptionCard({
             <Trans>Claim {tokenSymbol} Rewards</Trans>
           </span>
         </div>
-        <span
-          className={cx(
-            "ml-auto text-14 numbers",
-            isPrimaryDisabled ? "text-typography-secondary" : "text-typography-primary"
-          )}
-        >
-          {amountText}
-        </span>
+        <span className={cx("ml-auto text-14 numbers", "text-typography-secondary")}>{amountText}</span>
       </Checkbox>
 
       <div className="border-t-1/2 border-slate-600" />

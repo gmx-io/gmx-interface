@@ -1181,6 +1181,7 @@ msgid "Select pool"
 msgstr "풀 선택"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "APR"
@@ -2620,6 +2621,7 @@ msgstr "수수료 APR"
 msgid "SL"
 msgstr "SL"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 #: src/pages/Stake/Stake.tsx
@@ -3205,6 +3207,7 @@ msgstr "{0} 업그레이드 대기 중 앱 비활성화"
 msgid "Please accept the Claim Terms above to continue."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 #: src/pages/Stake/UnstakeModal.tsx
@@ -4371,6 +4374,7 @@ msgstr "<0>허가 서명이 유효하지 않습니다. 다시 시도해주세요
 msgid "Firebird Finance"
 msgstr "Firebird Finance"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/Stake.tsx
 msgid "Stake GMX"
 msgstr "GMX 스테이킹"
@@ -4445,6 +4449,7 @@ msgstr "{longShortText} {0} 예비"
 msgid "Cancel newly created orders"
 msgstr "새로 생성된 주문 취소"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Delegate"
 msgstr "위임"
@@ -4718,6 +4723,7 @@ msgstr "이 주문의 트리거 가격은 스왑 수수료와 가격 영향을 �
 msgid "Referral code updated failed."
 msgstr "추천인 코드 업데이트 실패."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/components/SideOrderEntries.tsx
@@ -5184,6 +5190,10 @@ msgstr ""
 #: src/pages/Buy/Buy.tsx
 msgid "Protocol Tokens"
 msgstr "프로토콜 토큰"
+
+#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+msgid "My assets"
+msgstr ""
 
 #: src/components/GmxAccountModal/GmxAccountModal.tsx
 msgid "Withdraw from GMX Account"
@@ -6204,6 +6214,7 @@ msgid "Session generated"
 msgstr "세션 생성됨"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
@@ -6806,6 +6817,7 @@ msgstr ""
 msgid "Convert {tokenSymbol} to {nativeTokenSymbol}"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Staked"
@@ -7047,6 +7059,7 @@ msgstr "1CT (원클릭 거래) 활성화"
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr "보너스 APR은 {airdropTokenTitle} 토큰으로 에어드랍됩니다. <0>더 읽기</0>."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/components/GmList/GmListItem.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
@@ -7878,6 +7891,7 @@ msgstr ""
 msgid "You have {balanceFormatted} remaining in your old version 1CT subaccount."
 msgstr "구 버전 1CT 서브계정에 {balanceFormatted} 남음."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Unstake GMX"
 msgstr "GMX 언스테이킹"

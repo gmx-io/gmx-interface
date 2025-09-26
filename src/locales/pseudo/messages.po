@@ -1181,6 +1181,7 @@ msgid "Select pool"
 msgstr ""
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "APR"
@@ -2620,6 +2621,7 @@ msgstr ""
 msgid "SL"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 #: src/pages/Stake/Stake.tsx
@@ -3205,6 +3207,7 @@ msgstr ""
 msgid "Please accept the Claim Terms above to continue."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 #: src/pages/Stake/UnstakeModal.tsx
@@ -4371,6 +4374,7 @@ msgstr ""
 msgid "Firebird Finance"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/Stake.tsx
 msgid "Stake GMX"
 msgstr ""
@@ -4445,6 +4449,7 @@ msgstr ""
 msgid "Cancel newly created orders"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Delegate"
 msgstr ""
@@ -4718,6 +4723,7 @@ msgstr ""
 msgid "Referral code updated failed."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/components/SideOrderEntries.tsx
@@ -5183,6 +5189,10 @@ msgstr ""
 
 #: src/pages/Buy/Buy.tsx
 msgid "Protocol Tokens"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+msgid "My assets"
 msgstr ""
 
 #: src/components/GmxAccountModal/GmxAccountModal.tsx
@@ -6204,6 +6214,7 @@ msgid "Session generated"
 msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
@@ -6806,6 +6817,7 @@ msgstr ""
 msgid "Convert {tokenSymbol} to {nativeTokenSymbol}"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Staked"
@@ -7047,6 +7059,7 @@ msgstr ""
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/components/GmList/GmListItem.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
@@ -7878,6 +7891,7 @@ msgstr ""
 msgid "You have {balanceFormatted} remaining in your old version 1CT subaccount."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Unstake GMX"
 msgstr ""
