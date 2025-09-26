@@ -3,7 +3,7 @@ import { encodeFunctionData } from "viem";
 import { getContract } from "config/contracts";
 import { sendWalletTransaction, TxnCallback, WalletTxnCtx } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
-import ClaimHandlerAbi from "sdk/abis/ClaimHandler.json";
+import ClaimHandlerAbi from "sdk/abis/ClaimHandler";
 import type { ContractsChainId } from "sdk/configs/chains";
 
 export function getClaimTransactionCallData(
@@ -19,7 +19,7 @@ export function getClaimTransactionCallData(
   }));
 
   return encodeFunctionData({
-    abi: ClaimHandlerAbi.abi,
+    abi: ClaimHandlerAbi,
     functionName: "claimFunds",
     args: [params, account],
   });

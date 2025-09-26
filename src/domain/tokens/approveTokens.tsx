@@ -7,7 +7,7 @@ import { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContex
 import { INVALID_PERMIT_SIGNATURE_ERROR } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
-import Token from "sdk/abis/Token.json";
+import TokenAbi from "sdk/abis/Token";
 import { getNativeToken, getToken } from "sdk/configs/tokens";
 import { InfoTokens, TokenInfo } from "sdk/types/tokens";
 
@@ -112,7 +112,7 @@ export async function approveTokens({
       });
   }
 
-  const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
+  const contract = new ethers.Contract(tokenAddress, TokenAbi, signer);
   const nativeToken = getNativeToken(chainId);
   const networkName = getChainName(chainId);
   return await contract

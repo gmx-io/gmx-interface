@@ -11,7 +11,7 @@ import { address as ethPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-
 import { address as usdcSgPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolUSDC.json";
 import { address as ethPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolUSDC.json";
-import { Wallet, type JsonFragment } from "ethers";
+import { Wallet } from "ethers";
 import invert from "lodash/invert";
 import mapValues from "lodash/mapValues";
 import uniq from "lodash/uniq";
@@ -338,7 +338,7 @@ export const CHAIN_ID_PREFERRED_DEPOSIT_TOKEN: Record<SettlementChainId, string>
 
 export const MULTICHAIN_FUNDING_SLIPPAGE_BPS = 50;
 
-export const StargateErrorsAbi = _StargateErrorsAbi as readonly (Abi[number] & JsonFragment)[];
+export const StargateErrorsAbi = _StargateErrorsAbi as Abi;
 
 export const CHAIN_ID_TO_ENDPOINT_ID: Record<SettlementChainId | SourceChainId, LayerZeroEndpointId> = {
   [ARBITRUM_SEPOLIA]: 40231,

@@ -7,8 +7,8 @@ import { getContract } from "config/contracts";
 import { helperToast } from "lib/helperToast";
 import { sleep } from "lib/sleep";
 import { sendWalletTransaction, TxnEventName } from "lib/transactions";
-import StBTCABI from "sdk/abis/StBTC.json";
-import ERC20ABI from "sdk/abis/Token.json";
+import StBTCABI from "sdk/abis/StBTC";
+import ERC20ABI from "sdk/abis/Token";
 import { encodeExchangeRouterMulticall, ExchangeRouterCall, ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 import { StakeNotification } from "components/StatusNotification/StakeNotification";
@@ -57,12 +57,12 @@ export async function createStakeOrUnstakeTxn(chainId: number, signer: Signer, p
     externalCalls.externalCallTargets.push(getContract(chainId, "PBTC"), getContract(chainId, "StBTC"));
     externalCalls.externalCallDataList.push(
       encodeFunctionData({
-        abi: ERC20ABI.abi,
+        abi: ERC20ABI,
         functionName: "approve",
         args: [getContract(chainId, "StBTC"), p.amount],
       }),
       encodeFunctionData({
-        abi: StBTCABI.abi,
+        abi: StBTCABI,
         functionName: "deposit",
         args: [p.amount, address],
       })
@@ -73,7 +73,7 @@ export async function createStakeOrUnstakeTxn(chainId: number, signer: Signer, p
       throw new Error("Unwrapping not implemented");
     }
 
-    const stBTC = new ethers.Contract(getContract(chainId, "StBTC"), StBTCABI.abi, signer);
+    const stBTC = new ethers.Contract(getContract(chainId, "StBTC"), StBTCABI, signer);
     const tx = await stBTC.withdraw(p.amount, address, address);
     await signer.provider?.waitForTransaction(tx.hash, 0);
 

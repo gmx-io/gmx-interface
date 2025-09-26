@@ -166,7 +166,9 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
         ? getNormalizedTokenSymbol(market.longToken.symbol) + getNormalizedTokenSymbol(market.shortToken.symbol)
         : market.indexToken.symbol;
 
-      const collateralToken = props.item.collateralAddress && getToken(chainId, props.item.collateralAddress);
+      const collateralToken = props.item.collateralAddress
+        ? getToken(chainId, props.item.collateralAddress)
+        : undefined;
       const collateralSymbol = collateralToken?.symbol;
 
       if (props.item.direction === "long" || props.item.direction === "short") {

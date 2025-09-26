@@ -9,7 +9,7 @@ export enum AccountType {
   EOA,
 }
 
-async function isSafeAccount(address: `0x${string}`, client: PublicClient): Promise<boolean> {
+async function isSafeAccount(address: string, client: PublicClient): Promise<boolean> {
   const bytecode = await client.getBytecode({ address });
   if (!bytecode || bytecode === "0x") {
     return false;
@@ -33,7 +33,7 @@ async function isSafeAccount(address: `0x${string}`, client: PublicClient): Prom
   return knownSafeSingletons.includes(masterCopy);
 }
 
-async function getAccountType(address: `0x${string}`, client: PublicClient): Promise<AccountType> {
+async function getAccountType(address: string, client: PublicClient): Promise<AccountType> {
   const bytecode = await client.getBytecode({ address });
   if (!bytecode || bytecode === "0x") {
     return AccountType.EOA;

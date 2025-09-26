@@ -99,7 +99,7 @@ export async function buildAndSignClaimPositionPriceImpactFeesTxn({
   const claimCollateralCallData = encodeFunctionData({
     abi: abis.MultichainClaimsRouter,
     functionName: "claimCollateral",
-    args: [{ ...relayParams, signature }, account, srcChainId, markets, tokens, timeKeys, receiver],
+    args: [{ ...relayParams, signature }, account, BigInt(srcChainId), markets, tokens, timeKeys, receiver],
   });
 
   return {
