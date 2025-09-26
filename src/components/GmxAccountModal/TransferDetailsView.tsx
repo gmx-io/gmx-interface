@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { useEffect, useState } from "react";
 
-import { getChainName, SourceChainId } from "config/chains";
+import { getChainName, isTestnetChain, SourceChainId } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import {
   useGmxAccountDepositViewChain,
@@ -104,6 +104,8 @@ export const TransferDetailsView = () => {
     </span>
   );
 
+  const isTestnet = selectedTransfer && isTestnetChain(selectedTransfer.settlementChainId);
+
   return (
     <div className="text-body-medium flex grow flex-col gap-8 p-adaptive">
       {selectedTransfer?.isExecutionError ? (
@@ -139,6 +141,26 @@ export const TransferDetailsView = () => {
                 selectedTransfer.operation === "deposit"
                   ? CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.sourceChainId](selectedTransfer.sentTxn)
                   : CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.settlementChainId](selectedTransfer.sentTxn)
+              }
+            >
+              <div className="flex items-center gap-4">
+                {shortenAddressOrEns(selectedTransfer.sentTxn, 13)}
+                <ExternalLinkIcon className="size-20 text-typography-secondary" />
+              </div>
+            </ExternalLink>
+          }
+        />
+      )}
+      {selectedTransfer?.sentTxn && (
+        <SyntheticsInfoRow
+          label={isTestnet ? <Trans>Testnet LayerZero Scan</Trans> : <Trans>LayerZero Scan</Trans>}
+          value={
+            <ExternalLink
+              className="!no-underline"
+              href={
+                isTestnet
+                  ? CHAIN_ID_TO_TX_URL_BUILDER["layerzero-testnet"](selectedTransfer.sentTxn)
+                  : CHAIN_ID_TO_TX_URL_BUILDER["layerzero"](selectedTransfer.sentTxn)
               }
             >
               <div className="flex items-center gap-4">

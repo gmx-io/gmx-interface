@@ -1,18 +1,11 @@
 import cx from "classnames";
-import { useMemo } from "react";
 
 import { BOTANIX } from "config/chains";
-import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { isGlvEnabled } from "domain/synthetics/markets/glv";
-import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
-import { useGmGlvPerformance } from "domain/synthetics/markets/useGmGlvPerformance";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
-import { useMarketsInfoRequest } from "domain/synthetics/markets/useMarketsInfoRequest";
-import { convertPoolsTimeRangeToApyPeriod, usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
-import { convertPoolsTimeRangeToPeriod } from "domain/synthetics/markets/usePoolsTimeRange";
+import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerformanceAnnualized";
+import { usePerformanceSnapshots } from "domain/synthetics/markets/usePerformanceSnapshots";
+import { usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
-import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
 
@@ -29,35 +22,22 @@ export default function Pools() {
 
   const { chainId, srcChainId } = useChainId();
 
-  const period = useMemo(() => convertPoolsTimeRangeToPeriod(timeRange), [timeRange]);
-
-  const apyPeriod = useMemo(() => convertPoolsTimeRangeToApyPeriod(timeRange), [timeRange]);
-
   const {
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
     glvTokensIncentiveAprData,
     marketsTokensLidoAprData,
     glvApyInfoData,
-  } = useGmMarketsApy(chainId, srcChainId, { period: apyPeriod });
+  } = useGmMarketsApy(chainId, srcChainId, { period: timeRange });
 
-  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
-  const { marketsInfoData: onlyGmMarketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
-  const enabledGlv = isGlvEnabled(chainId);
-  const account = useSelector(selectAccount);
-
-  const { glvData } = useGlvMarketsInfo(enabledGlv, {
-    marketsInfoData: onlyGmMarketsInfoData,
-    tokensData,
+  const { performance } = usePerformanceAnnualized({
     chainId,
-    account,
+    period: timeRange,
   });
 
-  const { glvPerformance, gmPerformance, glvPerformanceSnapshots, gmPerformanceSnapshots } = useGmGlvPerformance({
+  const { performanceSnapshots } = usePerformanceSnapshots({
     chainId,
-    period,
-    gmData: onlyGmMarketsInfoData,
-    glvData,
+    period: timeRange,
   });
 
   const isMobile = usePoolsIsMobilePage();
@@ -92,10 +72,8 @@ export default function Pools() {
             glvTokensIncentiveAprData={glvTokensIncentiveAprData}
             marketsTokensLidoAprData={marketsTokensLidoAprData}
             glvTokensApyData={glvApyInfoData}
-            glvPerformance={glvPerformance}
-            gmPerformance={gmPerformance}
-            glvPerformanceSnapshots={glvPerformanceSnapshots}
-            gmPerformanceSnapshots={gmPerformanceSnapshots}
+            performance={performance}
+            performanceSnapshots={performanceSnapshots}
             isDeposit
           />
         )}
@@ -106,10 +84,8 @@ export default function Pools() {
           marketsTokensApyData={marketsTokensApyData}
           marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
           marketsTokensLidoAprData={marketsTokensLidoAprData}
-          glvPerformance={glvPerformance}
-          gmPerformance={gmPerformance}
-          glvPerformanceSnapshots={glvPerformanceSnapshots}
-          gmPerformanceSnapshots={gmPerformanceSnapshots}
+          performance={performance}
+          performanceSnapshots={performanceSnapshots}
           isDeposit
         />
       </div>

@@ -6,7 +6,7 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import type { TokenFavoritesTabOption } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MarketTokensAPRData, MarketsInfoData, getMarketPoolName } from "domain/synthetics/markets";
-import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformance";
+import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import type { TokensData } from "domain/synthetics/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { getByKey } from "lib/objects";
@@ -28,9 +28,9 @@ export function useFilterSortPools({
   searchText,
   tab,
   favoriteTokens,
-  gmPerformance,
+  performance,
 }: {
-  gmPerformance: PerformanceData | undefined;
+  performance: PerformanceData | undefined;
   marketsInfo: MarketsInfoData | undefined;
   marketTokensData: TokensData | undefined;
   orderBy: SortField;
@@ -88,7 +88,7 @@ export function useFilterSortPools({
       marketsTokensApyData,
       marketsTokensIncentiveAprData,
       marketsTokensLidoAprData,
-      gmPerformance,
+      performance,
     });
   }, [
     marketsInfo,
@@ -99,7 +99,7 @@ export function useFilterSortPools({
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
-    gmPerformance,
+    performance,
   ]);
 
   const filteredTokens = useMemo(() => {

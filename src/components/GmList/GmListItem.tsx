@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import { Area, AreaChart } from "recharts";
 
@@ -20,12 +20,12 @@ import {
   getMarketPoolName,
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { PerformanceSnapshot, formatPerformanceBps } from "domain/synthetics/markets/performance";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
-import { PerformanceSnapshotsData } from "domain/synthetics/markets/useGmGlvPerformance";
-import { PerformanceData } from "domain/synthetics/markets/useGmGlvPerformance";
+import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
+import { PerformanceSnapshot, PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { TokenData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
+import { bigintToNumber, formatPercentage, PRECISION_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
@@ -56,10 +56,8 @@ export function GmListItem({
   glvTokensApyData,
   isFavorite,
   onFavoriteClick,
-  glvPerformance,
-  gmPerformance,
-  glvPerformanceSnapshots,
-  gmPerformanceSnapshots,
+  performance,
+  performanceSnapshots,
 }: {
   token: TokenData;
   marketsTokensApyData: MarketTokensAPRData | undefined;
@@ -69,10 +67,8 @@ export function GmListItem({
   glvTokensApyData: MarketTokensAPRData | undefined;
   isFavorite: boolean | undefined;
   onFavoriteClick: ((address: string) => void) | undefined;
-  glvPerformance: PerformanceData | undefined;
-  gmPerformance: PerformanceData | undefined;
-  glvPerformanceSnapshots: PerformanceSnapshotsData | undefined;
-  gmPerformanceSnapshots: PerformanceSnapshotsData | undefined;
+  performance: PerformanceData | undefined;
+  performanceSnapshots: PerformanceSnapshotsData | undefined;
 }) {
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
@@ -131,10 +127,8 @@ export function GmListItem({
     onFavoriteClick?.(marketOrGlvTokenAddress);
   };
 
-  const performance = isGlv ? glvPerformance?.[token.address] : gmPerformance?.[token.address];
-  const performanceSnapshots = isGlv
-    ? glvPerformanceSnapshots?.[token.address]
-    : gmPerformanceSnapshots?.[token.address];
+  const marketPerformance = performance?.[token.address];
+  const marketPerformanceSnapshots = performanceSnapshots?.[token.address];
 
   if (isMobile) {
     return (
@@ -169,7 +163,10 @@ export function GmListItem({
             </div>
           </div>
           <div className="ml-auto flex items-center gap-8">
-            <SnapshotGraph performanceSnapshots={performanceSnapshots ?? EMPTY_ARRAY} performance={performance ?? 0} />
+            <SnapshotGraph
+              performanceSnapshots={marketPerformanceSnapshots ?? EMPTY_ARRAY}
+              performance={marketPerformance ?? 0n}
+            />
 
             {onFavoriteClick ? (
               <div>
@@ -213,8 +210,12 @@ export function GmListItem({
           />
           <SyntheticsInfoRow
             label={<PerformanceLabel />}
-            value={performance ? formatPerformanceBps(performance) : "..."}
-            valueClassName={performance ? "numbers" : undefined}
+            value={
+              marketPerformance
+                ? formatPercentage(marketPerformance, { bps: false, signed: true, showPlus: false })
+                : "..."
+            }
+            valueClassName={marketPerformance ? "numbers" : undefined}
           />
         </div>
 
@@ -289,11 +290,20 @@ export function GmListItem({
       </TableTdActionable>
 
       <TableTdActionable className="w-[18%]">
-        {performance ? <div className="numbers">{formatPerformanceBps(performance)}</div> : "..."}
+        {marketPerformance ? (
+          <div className="numbers">
+            {formatPercentage(marketPerformance, { bps: false, signed: true, showPlus: false })}
+          </div>
+        ) : (
+          "..."
+        )}
       </TableTdActionable>
 
       <TableTdActionable className="w-[14%]">
-        <SnapshotGraph performanceSnapshots={performanceSnapshots ?? EMPTY_ARRAY} performance={performance ?? 0} />
+        <SnapshotGraph
+          performanceSnapshots={marketPerformanceSnapshots ?? EMPTY_ARRAY}
+          performance={marketPerformance ?? 0n}
+        />
       </TableTdActionable>
 
       <TableTdActionable className="w-[10%] pr-16">
@@ -325,16 +335,25 @@ const SnapshotGraph = ({
   performance,
 }: {
   performanceSnapshots: PerformanceSnapshot[];
-  performance: number;
+  performance: bigint;
 }) => {
-  const isNegative = performance < 0;
+  const isNegative = performance < 0n;
 
   const isMobile = usePoolsIsMobilePage();
   const size = isMobile ? MOBILE_SNAPSHOT_GRAPH_SIZE : DESKTOP_SNAPSHOT_GRAPH_SIZE;
 
+  const chartData = useMemo(
+    () =>
+      performanceSnapshots.map((snapshot) => ({
+        ...snapshot,
+        performance: bigintToNumber(snapshot.performance, PRECISION_DECIMALS),
+      })),
+    [performanceSnapshots]
+  );
+
   return (
     <div style={isMobile ? MOBILE_SNAPSHOT_GRAPH_SIZE : DESKTOP_SNAPSHOT_GRAPH_SIZE}>
-      <AreaChart width={size.width} height={size.height} data={performanceSnapshots}>
+      <AreaChart width={size.width} height={size.height} data={chartData}>
         <defs>
           <linearGradient id={`snapshot-graph-gradient-green`} x1="0" y1="0" x2="0" y2="1">
             <stop offset="-45%" stopColor="var(--color-green-500)" stopOpacity={0.5}></stop>

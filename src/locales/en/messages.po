@@ -46,6 +46,10 @@ msgstr "STIP.b Trading Incentives"
 msgid "You can transfer {nativeTokenSymbol} from other networks to {chainName} using any of the below options:"
 msgstr "You can transfer {nativeTokenSymbol} from other networks to {chainName} using any of the below options:"
 
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "from 5 blockchains"
+msgstr "from 5 blockchains"
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order executed."
 msgstr "Buy order executed."
@@ -73,10 +77,6 @@ msgstr "receive"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Referrals Dashboard"
 msgstr "GMX Referrals Dashboard"
-
-#: src/pages/Stake/ClaimModal.tsx
-#~ msgid "Stake GMX Rewards"
-#~ msgstr "Stake GMX Rewards"
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Decrease the withdraw size to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"
@@ -655,10 +655,6 @@ msgstr "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Create or Import a Wallet"
 msgstr "Create or Import a Wallet"
-
-#: src/pages/Stake/ClaimModal.tsx
-#~ msgid "Stake esGMX Rewards"
-#~ msgstr "Stake esGMX Rewards"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
@@ -1454,6 +1450,10 @@ msgstr "GMX Proposals Voting page"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DEX Aggregator"
 msgstr "DEX Aggregator"
+
+#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Waiting for remaining Safe confirmations..."
+msgstr "Waiting for remaining Safe confirmations..."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2251,6 +2251,10 @@ msgstr "Market Graph"
 msgid "Buy order cancelled."
 msgstr "Buy order cancelled."
 
+#: src/components/UserIncentiveDistributionList/utils.tsx
+msgid "Unable to sign message with EOA"
+msgstr "Unable to sign message with EOA"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics for GMX"
 msgstr "Dune Analytics for GMX"
@@ -2323,6 +2327,10 @@ msgstr "{fromText} to {toMinText}"
 #: src/components/Errors/errorToasts.tsx
 msgid "Otherwise, try changing the RPC url in your wallet settings with the help of <0>chainlist.org</0>."
 msgstr "Otherwise, try changing the RPC url in your wallet settings with the help of <0>chainlist.org</0>."
+
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Testnet LayerZero Scan"
+msgstr "Testnet LayerZero Scan"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
@@ -2558,6 +2566,10 @@ msgstr "Annualized data based on the past 7 days."
 msgid "GMX Solana is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open the GMX Solana frontend in a new tab."
 msgstr "GMX Solana is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open the GMX Solana frontend in a new tab."
 
+#: src/components/UserIncentiveDistributionList/utils.tsx
+msgid "Please continue signing on your wallet interface where the signature request should appear. You will be able to claim once all signers have signed."
+msgstr "Please continue signing on your wallet interface where the signature request should appear. You will be able to claim once all signers have signed."
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
@@ -2730,6 +2742,10 @@ msgstr "Total Staked"
 msgid "Network Fee"
 msgstr "Network Fee"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "20s"
+msgstr "20s"
+
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "The aximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
 msgstr "The aximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
@@ -2742,10 +2758,6 @@ msgstr "The aximum network fee paid to the network. This fee is a blockchain cos
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Leverage"
 msgstr "Leverage"
-
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
-msgid "To sign the terms using a Safe account in order to claim, please <0>follow these steps</0>."
-msgstr "To sign the terms using a Safe account in order to claim, please <0>follow these steps</0>."
 
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
 msgid "over 100 protocols"
@@ -3189,6 +3201,10 @@ msgstr "Insufficient liquidity in the {0} market pool. Select a different pool f
 msgid "App disabled, pending {0} upgrade"
 msgstr "App disabled, pending {0} upgrade"
 
+#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Please accept the Claim Terms above to continue."
+msgstr "Please accept the Claim Terms above to continue."
+
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 #: src/pages/Stake/UnstakeModal.tsx
@@ -3526,6 +3542,11 @@ msgstr "GM Markets"
 msgid "Your opinions and experiences matter to us. Your feedback helps us understand what we are doing well and where we can make enhancements."
 msgstr "Your opinions and experiences matter to us. Your feedback helps us understand what we are doing well and where we can make enhancements."
 
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Estimated Time"
+msgstr "Estimated Time"
+
 #: src/pages/Stake/Vesting.tsx
 msgid "<0>{0}</0> GMX tokens can be claimed, use the options under the total rewards section to claim them."
 msgstr "<0>{0}</0> GMX tokens can be claimed, use the options under the total rewards section to claim them."
@@ -3630,10 +3651,6 @@ msgstr "Net Rate / 1h"
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "from your wallet"
 msgstr "from your wallet"
-
-#: src/pages/Stake/ClaimModal.tsx
-#~ msgid "Claim esGMX Rewards"
-#~ msgstr "Claim esGMX Rewards"
 
 #: src/pages/Stake/Stake.tsx
 msgid "Trading incentives program is live on {avalancheLink}."
@@ -4728,6 +4745,11 @@ msgstr "Yield Yak Optimizer"
 msgid "GMX & Voting Power"
 msgstr "GMX & Voting Power"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "1m 40s"
+msgstr "1m 40s"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP autocompounding vaults"
 msgstr "GLP autocompounding vaults"
@@ -4756,6 +4778,10 @@ msgstr "Target Weight"
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
+
+#: src/components/UserIncentiveDistributionList/utils.tsx
+msgid "Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing"
+msgstr "Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
@@ -5410,7 +5436,6 @@ msgstr "Buy GMX from decentralized exchanges"
 msgid "Powered by"
 msgstr "Powered by"
 
-#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Asset Balance"
 msgstr "Asset Balance"
@@ -5672,10 +5697,6 @@ msgstr "Order execution price takes into account price impact."
 #: src/pages/Buy/Buy.tsx
 msgid "Buy GLP or GMX"
 msgstr "Buy GLP or GMX"
-
-#: src/context/GmxAccountContext/GmxAccountContext.tsx
-msgid "Source Base is now available on GMX"
-msgstr "Source Base is now available on GMX"
 
 #: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools, with auto-compounding for seamless growth (20-30% historical average annualized performance). View real-time earnings, performance, and portfolio value on the <0>Pools page</0>."
@@ -6107,10 +6128,6 @@ msgstr "Top Positions"
 msgid "Pools"
 msgstr "Pools"
 
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "from 4 blockchains"
-msgstr "from 4 blockchains"
-
 #: src/components/GmList/GlvList.tsx
 msgid "VAULT"
 msgstr "VAULT"
@@ -6343,10 +6360,6 @@ msgstr "Additional reserve required"
 #: src/components/Footer/constants.tsx
 msgid "Terms and Conditions"
 msgstr "Terms and Conditions"
-
-#: src/pages/Stake/ClaimModal.tsx
-#~ msgid "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
-#~ msgstr "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
 
 #: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "What is GLV exactly?"
@@ -6776,10 +6789,6 @@ msgstr "Confirming..."
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase"
 msgstr "Increase"
-
-#: src/pages/Stake/ClaimModal.tsx
-#~ msgid "Claim {wrappedTokenSymbol} Rewards"
-#~ msgstr "Claim {wrappedTokenSymbol} Rewards"
 
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
@@ -7213,6 +7222,10 @@ msgstr "Accrued price impact rebates. They will become claimable after approxima
 msgid "Net Rate"
 msgstr "Net Rate"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "30s"
+msgstr "30s"
+
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd Place"
@@ -7471,10 +7484,6 @@ msgstr "7d"
 msgid "Rage Trade"
 msgstr "Rage Trade"
 
-#: src/pages/Stake/ClaimModal.tsx
-#~ msgid "Claim GMX Rewards"
-#~ msgstr "Claim GMX Rewards"
-
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "EIP-4844, 20-27 Mar"
 msgstr "EIP-4844, 20-27 Mar"
@@ -7616,6 +7625,10 @@ msgstr "Request Market Decrease"
 msgid "Max. Leverage exceeded"
 msgstr "Max. Leverage exceeded"
 
+#: src/components/UserIncentiveDistributionList/utils.tsx
+msgid "Unable to sign message with smart account"
+msgstr "Unable to sign message with smart account"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
@@ -7729,6 +7742,10 @@ msgstr "Trading Settings"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Great for passive users"
 msgstr "Great for passive users"
+
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "LayerZero Scan"
+msgstr "LayerZero Scan"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute as the max. allowed leverage is exceeded. Consider decreasing the order's leverage by editing and decreasing its size. <0>Read more</0>."

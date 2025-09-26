@@ -7,7 +7,7 @@ import { useLatest } from "react-use";
 import { Hex, decodeErrorResult, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { AnyChainId, SettlementChainId, SourceChainId, getChainName } from "config/chains";
+import { AnyChainId, SettlementChainId, SourceChainId, getChainName, isTestnetChain } from "config/chains";
 import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
 import {
@@ -52,7 +52,7 @@ import {
   sendTxnErrorMetric,
   sendTxnSentMetric,
 } from "lib/metrics";
-import { USD_DECIMALS, formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { USD_DECIMALS, formatAmountFree, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
@@ -195,7 +195,7 @@ export const DepositView = () => {
 
   const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
 
-  const { nextGmxAccountBalanceUsd, nextTokenGmxAccountBalance } = useMemo((): {
+  const { nextGmxAccountBalanceUsd } = useMemo((): {
     nextGmxAccountBalanceUsd?: bigint;
     nextTokenGmxAccountBalance?: bigint;
   } => {
@@ -261,7 +261,7 @@ export const DepositView = () => {
         onApproveSubmitted: () => setIsApproving(true),
         setIsApproving: noop,
         permitParams: undefined,
-        approveAmount: undefined,
+        approveAmount: inputAmount,
       });
     });
   }, [
@@ -710,6 +710,8 @@ export const DepositView = () => {
     [onClick]
   );
 
+  const isTestnet = isTestnetChain(settlementChainId);
+
   return (
     <form className="flex grow flex-col overflow-y-auto px-adaptive pb-adaptive pt-adaptive" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-[--padding-adaptive]">
@@ -836,6 +838,19 @@ export const DepositView = () => {
       {depositViewTokenAddress && (
         <div className="mb-16 flex flex-col gap-10">
           <SyntheticsInfoRow
+            label={<Trans>Estimated Time</Trans>}
+            valueClassName="numbers"
+            value={
+              inputAmount === undefined || inputAmount === 0n ? (
+                "..."
+              ) : isTestnet ? (
+                <Trans>1m 40s</Trans>
+              ) : (
+                <Trans>30s</Trans>
+              )
+            }
+          />
+          <SyntheticsInfoRow
             label={<Trans>Network Fee</Trans>}
             valueClassName="numbers"
             value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
@@ -848,33 +863,6 @@ export const DepositView = () => {
           <SyntheticsInfoRow
             label={<Trans>GMX Balance</Trans>}
             value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
-          />
-          <SyntheticsInfoRow
-            label={<Trans>Asset Balance</Trans>}
-            value={
-              <ValueTransition
-                from={
-                  selectedTokenData !== undefined && selectedTokenData.gmxAccountBalance !== undefined
-                    ? formatBalanceAmount(
-                        selectedTokenData.gmxAccountBalance,
-                        selectedTokenData.decimals,
-                        selectedTokenData.symbol,
-                        { isStable: selectedTokenData.isStable }
-                      )
-                    : undefined
-                }
-                to={
-                  nextTokenGmxAccountBalance !== undefined && selectedTokenData !== undefined
-                    ? formatBalanceAmount(
-                        nextTokenGmxAccountBalance,
-                        selectedTokenData.decimals,
-                        selectedTokenData.symbol,
-                        { isStable: selectedTokenData.isStable }
-                      )
-                    : undefined
-                }
-              />
-            }
           />
         </div>
       )}

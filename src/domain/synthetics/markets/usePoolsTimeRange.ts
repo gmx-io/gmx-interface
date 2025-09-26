@@ -1,6 +1,5 @@
 import { getTimestampByDaysAgo, normalizeDateRange } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { ApyPeriod } from "lib/oracleKeeperFetcher";
 
 export const POOLS_TIME_RANGE_OPTIONS = ["30d", "90d", "180d", "total"] as const;
 
@@ -38,18 +37,3 @@ export function convertPoolsTimeRangeToPeriod(timeRange: PoolsTimeRange): Period
     periodEnd: Math.min(periodEnd, Date.now()),
   };
 }
-
-export const convertPoolsTimeRangeToApyPeriod = (timeRange: PoolsTimeRange): ApyPeriod => {
-  switch (timeRange) {
-    case "total":
-      return "total";
-    case "30d":
-      return "30d";
-    case "90d":
-      return "90d";
-    case "180d":
-      return "180d";
-    default:
-      return "90d";
-  }
-};

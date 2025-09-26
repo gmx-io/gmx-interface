@@ -7,7 +7,14 @@ import { useHistory } from "react-router-dom";
 import { Address, encodeAbiParameters, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { ContractsChainId, getChainName, isContractsChain, SettlementChainId, SourceChainId } from "config/chains";
+import {
+  ContractsChainId,
+  getChainName,
+  isContractsChain,
+  isTestnetChain,
+  SettlementChainId,
+  SourceChainId,
+} from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
@@ -600,8 +607,10 @@ export const WithdrawalView = () => {
         getMidPrice(gasPaymentToken.prices)
       )!;
 
-      const maxAmount = bigMath.max(selectedToken.gmxAccountBalance - buffer, 0n);
-      amount = maxAmount;
+      if (selectedToken.gmxAccountBalance > buffer) {
+        const maxAmount = bigMath.max(selectedToken.gmxAccountBalance - buffer, 0n);
+        amount = maxAmount;
+      }
     }
 
     const nativeFee = bridgeNetworkFee ?? baseQuoteSend?.nativeFee;
@@ -794,6 +803,8 @@ export const WithdrawalView = () => {
     },
     [chainId, hasSelectedToken, isVisibleOrView, setSelectedTokenAddress, tokensData, withdrawalViewChain]
   );
+
+  const isTestnet = isTestnetChain(chainId);
 
   return (
     <div className="flex grow flex-col overflow-y-auto p-adaptive">
@@ -990,6 +1001,19 @@ export const WithdrawalView = () => {
 
       {selectedTokenAddress && (
         <div className="mb-16 flex flex-col gap-10">
+          <SyntheticsInfoRow
+            label={<Trans>Estimated Time</Trans>}
+            valueClassName="numbers"
+            value={
+              inputAmount === undefined || inputAmount === 0n ? (
+                "..."
+              ) : isTestnet ? (
+                <Trans>1m 40s</Trans>
+              ) : (
+                <Trans>20s</Trans>
+              )
+            }
+          />
           <SyntheticsInfoRow
             label={<Trans>Network Fee</Trans>}
             valueClassName="numbers"

@@ -7,6 +7,7 @@ import { CHAIN_ID, ETH_MAINNET, getExplorerUrl } from "config/chains";
 import { getContract } from "config/contracts";
 import { isLocal } from "config/env";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { PRODUCTION_HOST } from "config/links";
 import { TokenInfo, getMostAbundantStableToken } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 
@@ -1291,7 +1292,7 @@ export function getAppBaseUrl() {
     return "http://localhost:3011/#";
   }
 
-  return "https://app.gmx.io/#";
+  return PRODUCTION_HOST;
 }
 
 export function getRootShareApiUrl() {
@@ -1307,7 +1308,7 @@ export function getTradePageUrl() {
     return "http://localhost:3011/#/trade";
   }
 
-  return "https://app.gmx.io/#/trade";
+  return PRODUCTION_HOST + "/#/trade";
 }
 
 // Resolves all images in the folder that match the pattern and store them as `fileName -> path` pairs
