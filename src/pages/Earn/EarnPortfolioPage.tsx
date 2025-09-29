@@ -13,6 +13,7 @@ import { useProcessedData } from "pages/Stake/useProcessedData";
 import AssetsList from "components/Earn/Portfolio/AssetsList/AssetsList";
 import { RecommendedAssets } from "components/Earn/Portfolio/RecommendedAssets/RecommendedAssets";
 import RewardsBar from "components/Earn/Portfolio/RewardsBar";
+import Loader from "components/Loader/Loader";
 
 export default function EarnPortfolioPage() {
   const { data: processedData, mutate: mutateProcessedData } = useProcessedData();
@@ -61,42 +62,48 @@ export default function EarnPortfolioPage() {
   return (
     <EarnPageLayout>
       <RewardsBar processedData={processedData} mutateProcessedData={mutateProcessedData} />
-      {hasAnyAssets && (
-        <AssetsList
-          processedData={processedData}
-          chainId={chainId}
-          hasAnyAssets={hasAnyAssets}
-          hasGmx={hasGmxAssets}
-          hasEsGmx={hasEsGmxAssets}
-          gmGlvAssets={gmGlvAssets}
-          marketTokensData={marketTokensData}
-          glvTotalApyData={glvTotalApyData}
-          marketsTotalApyData={marketsTotalApyData}
-          glvThirtyDayApyData={glvThirtyDayApyData}
-          marketsThirtyDayApyData={marketsThirtyDayApyData}
-        />
-      )}
-      <RecommendedAssets
-        hasGmxAssets={hasGmxAssets}
-        marketsInfoData={marketsInfoData}
-        marketsApyInfo={marketsThirtyDayApyData}
-        marketTokensData={marketTokensData}
-        glvsApyInfo={glvThirtyDayApyData}
-      />
-      {!hasAnyAssets && (
-        <AssetsList
-          processedData={processedData}
-          chainId={chainId}
-          hasAnyAssets={hasAnyAssets}
-          hasGmx={hasGmxAssets}
-          hasEsGmx={hasEsGmxAssets}
-          gmGlvAssets={gmGlvAssets}
-          marketTokensData={marketTokensData}
-          glvTotalApyData={glvTotalApyData}
-          marketsTotalApyData={marketsTotalApyData}
-          glvThirtyDayApyData={glvThirtyDayApyData}
-          marketsThirtyDayApyData={marketsThirtyDayApyData}
-        />
+      {marketsInfoData && marketTokensData ? (
+        <>
+          {hasAnyAssets && (
+            <AssetsList
+              processedData={processedData}
+              chainId={chainId}
+              hasAnyAssets={hasAnyAssets}
+              hasGmx={hasGmxAssets}
+              hasEsGmx={hasEsGmxAssets}
+              gmGlvAssets={gmGlvAssets}
+              marketTokensData={marketTokensData}
+              glvTotalApyData={glvTotalApyData}
+              marketsTotalApyData={marketsTotalApyData}
+              glvThirtyDayApyData={glvThirtyDayApyData}
+              marketsThirtyDayApyData={marketsThirtyDayApyData}
+            />
+          )}
+          <RecommendedAssets
+            hasGmxAssets={hasGmxAssets}
+            marketsInfoData={marketsInfoData}
+            marketsApyInfo={marketsThirtyDayApyData}
+            marketTokensData={marketTokensData}
+            glvsApyInfo={glvThirtyDayApyData}
+          />
+          {!hasAnyAssets && (
+            <AssetsList
+              processedData={processedData}
+              chainId={chainId}
+              hasAnyAssets={hasAnyAssets}
+              hasGmx={hasGmxAssets}
+              hasEsGmx={hasEsGmxAssets}
+              gmGlvAssets={gmGlvAssets}
+              marketTokensData={marketTokensData}
+              glvTotalApyData={glvTotalApyData}
+              marketsTotalApyData={marketsTotalApyData}
+              glvThirtyDayApyData={glvThirtyDayApyData}
+              marketsThirtyDayApyData={marketsThirtyDayApyData}
+            />
+          )}
+        </>
+      ) : (
+        <Loader />
       )}
     </EarnPageLayout>
   );
