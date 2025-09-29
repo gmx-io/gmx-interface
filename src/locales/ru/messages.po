@@ -7807,6 +7807,10 @@ msgstr "Ссылка"
 msgid "Long Positions"
 msgstr "Лонг позиции"
 
+#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+msgid "You currently don't have any assets.<0/>Please check the recommended section above to start earning."
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {0} to {positionText}"
 msgstr "Внесение {0} в {positionText}"

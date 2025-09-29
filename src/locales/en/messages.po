@@ -7807,6 +7807,10 @@ msgstr "Link"
 msgid "Long Positions"
 msgstr "Long Positions"
 
+#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+msgid "You currently don't have any assets.<0/>Please check the recommended section above to start earning."
+msgstr "You currently don't have any assets.<0/>Please check the recommended section above to start earning."
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {0} to {positionText}"
 msgstr "Depositing {0} to {positionText}"

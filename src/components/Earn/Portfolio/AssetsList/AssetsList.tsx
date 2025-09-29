@@ -11,6 +11,8 @@ import { useChainId } from "lib/chains";
 import { ProcessedData } from "lib/legacy";
 import { getByKey } from "lib/objects";
 
+import EarnIcon from "img/ic_earn.svg?react";
+
 import { GmGlvAssetCard } from "./GmGlvAssetCard";
 import { GmxAssetCard } from "./GmxAssetCard";
 
@@ -52,40 +54,53 @@ export function AssetsList({ processedData }: { processedData: ProcessedData | u
     ? (processedData.esGmxBalance ?? 0n) > 0n || (processedData.esGmxInStakedGmx ?? 0n) > 0n
     : false;
 
-  const hasMarketAssets = gmGlvAssets.length > 0;
+  const hasGmGlvAssets = gmGlvAssets.length > 0;
 
-  if (!hasGmx && !hasEsGmx && !hasMarketAssets) {
-    return null;
-  }
+  const hasAnyAssets = hasGmx || hasEsGmx || hasGmGlvAssets;
 
   return (
-    <section className="flex flex-col rounded-8 bg-slate-900">
+    <section className="flex grow flex-col rounded-8 bg-slate-900">
       <h2 className="text-body-large p-20 pb-2 font-medium text-typography-primary">
         <Trans>My assets</Trans>
       </h2>
 
-      <div className="grid grid-cols-1 gap-12 p-12 md:grid-cols-2 min-[1300px]:grid-cols-3 min-[1660px]:grid-cols-4">
-        {hasGmx && processedData ? <GmxAssetCard processedData={processedData} /> : null}
-        {hasEsGmx && processedData ? <GmxAssetCard processedData={processedData} esGmx /> : null}
-        {gmGlvAssets.map((info) => (
-          <GmGlvAssetCard
-            key={getGlvOrMarketAddress(info)}
-            token={getByKey(marketTokensData, getGlvOrMarketAddress(info))}
-            marketInfo={info}
-            chainId={chainId}
-            totalFeeApy={
-              isGlvInfo(info)
-                ? getByKey(glvTotalApyData, info.glvTokenAddress)
-                : getByKey(marketsTotalApyData, info.marketTokenAddress)
-            }
-            thirtyDayFeeApy={
-              isGlvInfo(info)
-                ? getByKey(glvThirtyDayApyData, info.glvTokenAddress)
-                : getByKey(marketsThirtyDayApyData, info.marketTokenAddress)
-            }
-          />
-        ))}
-      </div>
+      {hasAnyAssets && (
+        <div className="grid grid-cols-1 gap-12 p-12 md:grid-cols-2 min-[1300px]:grid-cols-3 min-[1660px]:grid-cols-4">
+          {hasGmx && processedData ? <GmxAssetCard processedData={processedData} /> : null}
+          {hasEsGmx && processedData ? <GmxAssetCard processedData={processedData} esGmx /> : null}
+          {gmGlvAssets.map((info) => (
+            <GmGlvAssetCard
+              key={getGlvOrMarketAddress(info)}
+              token={getByKey(marketTokensData, getGlvOrMarketAddress(info))}
+              marketInfo={info}
+              chainId={chainId}
+              totalFeeApy={
+                isGlvInfo(info)
+                  ? getByKey(glvTotalApyData, info.glvTokenAddress)
+                  : getByKey(marketsTotalApyData, info.marketTokenAddress)
+              }
+              thirtyDayFeeApy={
+                isGlvInfo(info)
+                  ? getByKey(glvThirtyDayApyData, info.glvTokenAddress)
+                  : getByKey(marketsThirtyDayApyData, info.marketTokenAddress)
+              }
+            />
+          ))}
+        </div>
+      )}
+
+      {!hasAnyAssets && (
+        <div className="flex h-full flex-col items-center justify-center gap-8">
+          <EarnIcon className="size-20 text-blue-300" />
+          <span className="text-body-small text-center font-medium text-typography-secondary">
+            <Trans>
+              You currently don't have any assets.
+              <br />
+              Please check the recommended section above to start earning.
+            </Trans>
+          </span>
+        </div>
+      )}
     </section>
   );
 }

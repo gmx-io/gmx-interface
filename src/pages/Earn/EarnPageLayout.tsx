@@ -28,27 +28,25 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
   return (
     <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
       <AppPageLayout header={<ChainContentHeader />}>
-        <div>
-          <PageTitle title={t`Earn`} subtitle={t`Stake GMX and buy GLV or GM to earn rewards.`} isTop />
+        <PageTitle title={t`Earn`} subtitle={t`Stake GMX and buy GLV or GM to earn rewards.`} isTop />
 
-          <div className="mt-20 flex flex-col gap-8">
-            <div className="overflow-x-auto scrollbar-hide">
-              <div className="flex gap-8">
-                {tabOptions.map((tab) => (
-                  <Button
-                    key={tab.value}
-                    variant={pathname.startsWith(`/earn/${tab.value}`) ? "primary" : "secondary"}
-                    to={`/earn/${tab.value}`}
-                    className="shrink-0"
-                  >
-                    {tab.label}
-                  </Button>
-                ))}
-              </div>
+        <div className="mt-20 flex grow flex-col gap-8">
+          <div className="overflow-x-auto scrollbar-hide">
+            <div className="flex gap-8">
+              {tabOptions.map((tab) => (
+                <Button
+                  key={tab.value}
+                  variant={pathname.startsWith(`/earn/${tab.value}`) ? "primary" : "secondary"}
+                  to={`/earn/${tab.value}`}
+                  className="shrink-0"
+                >
+                  {tab.label}
+                </Button>
+              ))}
             </div>
-
-            {children ? <div className="flex flex-col gap-8">{children}</div> : null}
           </div>
+
+          {children ? <div className="flex grow flex-col gap-8">{children}</div> : null}
         </div>
       </AppPageLayout>
     </SyntheticsStateContextProvider>

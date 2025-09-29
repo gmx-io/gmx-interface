@@ -7807,6 +7807,10 @@ msgstr "링크"
 msgid "Long Positions"
 msgstr "롱 포지션"
 
+#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+msgid "You currently don't have any assets.<0/>Please check the recommended section above to start earning."
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {0} to {positionText}"
 msgstr "{positionText}에 {0} 입금 중"
