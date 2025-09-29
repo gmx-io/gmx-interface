@@ -4306,6 +4306,10 @@ msgstr "선택한 필터와 일치하는 거래가 없습니다"
 msgid "Decreased"
 msgstr "감소 완료"
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+msgid "Recommended"
+msgstr ""
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Updating {orderText}."
 msgstr " {orderText} 업데이트 중."

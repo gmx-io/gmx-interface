@@ -94,20 +94,31 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/earn">
-        <EarnRedirect />
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
+          <EarnRedirect />
+        </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/earn/discovery">
-        <EarnDiscoveryPage />
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
+          <EarnDiscoveryPage />
+        </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/earn/portfolio">
-        <EarnPortfolioPage />
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
+          <EarnPortfolioPage />
+        </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/earn/additional-opportunities">
-        <EarnAdditionalOpportunitiesPage />
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
+          <EarnAdditionalOpportunitiesPage />
+        </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/earn/distribution">
-        <EarnDistributionPage />
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
+          <EarnDistributionPage />
+        </SyntheticsStateContextProvider>
       </Route>
+
       <Route exact path="/buy">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="buy">
           <Buy />

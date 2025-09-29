@@ -4306,6 +4306,10 @@ msgstr "Нет сделок, соответствующих выбранным �
 msgid "Decreased"
 msgstr "Уменьшено"
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+msgid "Recommended"
+msgstr ""
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Updating {orderText}."
 msgstr "Обновление {orderText}."

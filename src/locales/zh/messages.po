@@ -4306,6 +4306,10 @@ msgstr "没有交易符合选定筛选条件"
 msgid "Decreased"
 msgstr "已减少"
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+msgid "Recommended"
+msgstr ""
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Updating {orderText}."
 msgstr "正在更新 {orderText}。"

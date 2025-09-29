@@ -4306,6 +4306,10 @@ msgstr "選択したフィルターに一致するトレードはありません
 msgid "Decreased"
 msgstr "減額しました"
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+msgid "Recommended"
+msgstr ""
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Updating {orderText}."
 msgstr "{orderText} を更新中。"

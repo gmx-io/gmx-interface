@@ -1,13 +1,10 @@
 import { Trans } from "@lingui/macro";
-import { useMemo } from "react";
 
-import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getGlvOrMarketAddress } from "domain/synthetics/markets";
+import { ContractsChainId } from "config/chains";
+import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
-import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
-import { useChainId } from "lib/chains";
+import { MarketTokensAPRData } from "domain/synthetics/markets/types";
+import { TokensData } from "domain/synthetics/tokens";
 import { ProcessedData } from "lib/legacy";
 import { getByKey } from "lib/objects";
 
@@ -16,48 +13,31 @@ import EarnIcon from "img/ic_earn.svg?react";
 import { GmGlvAssetCard } from "./GmGlvAssetCard";
 import { GmxAssetCard } from "./GmxAssetCard";
 
-export function AssetsList({ processedData }: { processedData: ProcessedData | undefined }) {
-  const { chainId, srcChainId } = useChainId();
-  const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
-  const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
-
-  const { marketsTokensApyData: marketsTotalApyData, glvApyInfoData: glvTotalApyData } = useGmMarketsApy(
-    chainId,
-    srcChainId,
-    { period: "total" }
-  );
-
-  const { marketsTokensApyData: marketsThirtyDayApyData, glvApyInfoData: glvThirtyDayApyData } = useGmMarketsApy(
-    chainId,
-    srcChainId,
-    { period: "30d" }
-  );
-
-  const gmGlvAssets = useMemo(() => {
-    if (!marketsInfoData || !marketTokensData) {
-      return [];
-    }
-
-    return Object.values(marketsInfoData).filter((info) => {
-      const balance = getByKey(
-        marketTokensData,
-        isGlvInfo(info) ? info.glvTokenAddress : info.marketTokenAddress
-      )?.balance;
-      return balance !== undefined && balance > 0n;
-    });
-  }, [marketTokensData, marketsInfoData]);
-
-  const hasGmx = processedData
-    ? (processedData.gmxBalance ?? 0n) > 0n || (processedData.gmxInStakedGmx ?? 0n) > 0n
-    : false;
-  const hasEsGmx = processedData
-    ? (processedData.esGmxBalance ?? 0n) > 0n || (processedData.esGmxInStakedGmx ?? 0n) > 0n
-    : false;
-
-  const hasGmGlvAssets = gmGlvAssets.length > 0;
-
-  const hasAnyAssets = hasGmx || hasEsGmx || hasGmGlvAssets;
-
+export function AssetsList({
+  chainId,
+  processedData,
+  hasAnyAssets,
+  hasGmx,
+  hasEsGmx,
+  gmGlvAssets,
+  marketTokensData,
+  glvTotalApyData,
+  marketsTotalApyData,
+  glvThirtyDayApyData,
+  marketsThirtyDayApyData,
+}: {
+  chainId: ContractsChainId;
+  processedData: ProcessedData | undefined;
+  hasAnyAssets: boolean;
+  hasGmx: boolean;
+  hasEsGmx: boolean;
+  gmGlvAssets: GlvOrMarketInfo[];
+  marketTokensData: TokensData | undefined;
+  glvTotalApyData: MarketTokensAPRData | undefined;
+  marketsTotalApyData: MarketTokensAPRData | undefined;
+  glvThirtyDayApyData: MarketTokensAPRData | undefined;
+  marketsThirtyDayApyData: MarketTokensAPRData | undefined;
+}) {
   return (
     <section className="flex grow flex-col rounded-8 bg-slate-900">
       <h2 className="text-body-large p-20 pb-2 font-medium text-typography-primary">

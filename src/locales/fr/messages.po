@@ -4306,6 +4306,10 @@ msgstr "Aucun trade ne correspond aux filtres sélectionnés"
 msgid "Decreased"
 msgstr "Diminué"
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+msgid "Recommended"
+msgstr ""
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Updating {orderText}."
 msgstr "Mise à jour de {orderText}."
