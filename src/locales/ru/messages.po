@@ -3863,6 +3863,10 @@ msgstr "{typeString} Лонг Лимит: {0} лонг позицию, когд�
 msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
 msgstr "{0} требуется для залога.<0/><1/>Нет пути обмена для {1} на {2} в GMX.<2/><3/><4>Вы можете купить {3} на 1inch.</4>"
 
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+msgid "Total Fee APY"
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Capital Used"
@@ -5408,6 +5412,7 @@ msgstr "Агрегатор перпетуалов"
 msgid "{formattedNetRate} / 1h"
 msgstr "{formattedNetRate} / 1ч"
 
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -6878,6 +6883,7 @@ msgstr ""
 msgid "Order size is bigger than position, will only be executable if position increases"
 msgstr "Размер ордера больше позиции, будет исполнен только если позиция увеличится"
 
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Buy"
 msgstr "Купить"
@@ -7280,6 +7286,10 @@ msgstr "<0>Делегируйте вашу не делегированную {0}
 msgid "Claim funds"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+msgid "30d Fee APY"
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net Price Impact / Fees"
 msgstr ""
@@ -7606,6 +7616,10 @@ msgstr "Топ адреса"
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily and Cumulative PnL"
 msgstr "Ежедневная и кумулятивная PnL"
+
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+msgid "Sell"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
