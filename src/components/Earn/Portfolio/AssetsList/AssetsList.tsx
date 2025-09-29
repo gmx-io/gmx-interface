@@ -45,7 +45,7 @@ export function AssetsList({
       </h2>
 
       {hasAnyAssets && (
-        <div className="grid grid-cols-1 gap-12 p-12 md:grid-cols-2 min-[1300px]:grid-cols-3 min-[1660px]:grid-cols-4">
+        <div className="grid grid-cols-1 gap-12 p-12 md:grid-cols-2 min-[1300px]:grid-cols-3 min-[1460px]:grid-cols-4">
           {hasGmx && processedData ? <GmxAssetCard processedData={processedData} /> : null}
           {hasEsGmx && processedData ? <GmxAssetCard processedData={processedData} esGmx /> : null}
           {gmGlvAssets.map((info) => (

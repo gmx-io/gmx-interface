@@ -157,16 +157,16 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
         headerButton={<DelegateDropdown />}
         footer={
           <div className="grid w-full grid-cols-3 gap-8">
-            <Button variant="secondary" to="/buy_gmx">
-              <BuyIcon className="size-16" />
+            <Button variant="secondary" to="/buy_gmx" className="whitespace-nowrap">
+              <BuyIcon className="size-16 shrink-0" />
               <Trans>Buy GMX</Trans>
             </Button>
             <Button variant="secondary" onClick={handleOpenStakeModal} disabled={!active}>
-              <DownloadIcon className="size-16" />
+              <DownloadIcon className="size-16 shrink-0" />
               <Trans>Stake</Trans>
             </Button>
             <Button variant="secondary" onClick={handleOpenUnstakeModal} disabled={!active}>
-              <IncreaseLimit className="size-16" />
+              <IncreaseLimit className="size-16 shrink-0" />
               <Trans>Unstake</Trans>
             </Button>
           </div>
