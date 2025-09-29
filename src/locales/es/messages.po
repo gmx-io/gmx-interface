@@ -1182,6 +1182,7 @@ msgstr "Seleccionar reserva"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "APR"
@@ -1603,6 +1604,8 @@ msgid "V1 Airdrop"
 msgstr "Airdrop V1"
 
 #: src/components/BuyCards/BuyCards.tsx
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "GMX"
@@ -1796,6 +1799,7 @@ msgstr "El valor USD de las comisiones se calcula en el momento en que se ganan 
 msgid "Max"
 msgstr "Máx."
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -3526,6 +3530,7 @@ msgstr "TP - Corto Dec."
 msgid "Compass Labs GM Token Dashboard"
 msgstr "Dashboard de Token GM de Compass Labs"
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Earn"
@@ -3662,6 +3667,10 @@ msgstr "Programa de incentivos de trading está activo en {avalancheLink}."
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum number of actions allowed before reauthorization is required."
+msgstr ""
+
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+msgid "Explore more"
 msgstr ""
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
@@ -4175,6 +4184,7 @@ msgstr "Tasa Neta de Cortos / 1h"
 msgid "Discover GMX Earn"
 msgstr ""
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GLV Vaults"
@@ -6225,6 +6235,7 @@ msgstr "Sesión generada"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
@@ -6922,6 +6933,7 @@ msgstr "Términos de Referido"
 msgid "The execution price didn't meet the acceptable price condition. The order will get filled when the condition is met."
 msgstr ""
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "APY de Comisión"

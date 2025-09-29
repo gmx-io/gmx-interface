@@ -70,7 +70,7 @@ export function AssetsList({
       )}
 
       {!hasAnyAssets && (
-        <div className="flex h-full flex-col items-center justify-center gap-8">
+        <div className="flex h-full flex-col items-center justify-center gap-8 p-20">
           <EarnIcon className="size-20 text-blue-300" />
           <span className="text-body-small text-center font-medium text-typography-secondary">
             <Trans>

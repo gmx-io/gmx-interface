@@ -1182,6 +1182,7 @@ msgstr "プールを選択"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "APR"
@@ -1603,6 +1604,8 @@ msgid "V1 Airdrop"
 msgstr "V1エアドロップ"
 
 #: src/components/BuyCards/BuyCards.tsx
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "GMX"
@@ -1796,6 +1799,7 @@ msgstr "手数料のUSD価値は獲得時に計算され、インセンティブ
 msgid "Max"
 msgstr "最大"
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -3526,6 +3530,7 @@ msgstr "TP - ショート減少"
 msgid "Compass Labs GM Token Dashboard"
 msgstr "Compass Labs GMトークンダッシュボード"
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Earn"
@@ -3662,6 +3667,10 @@ msgstr "トレーディングインセンティブプログラムが{avalancheLi
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum number of actions allowed before reauthorization is required."
+msgstr ""
+
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+msgid "Explore more"
 msgstr ""
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
@@ -4175,6 +4184,7 @@ msgstr "1時間あたりのショートネットレート"
 msgid "Discover GMX Earn"
 msgstr ""
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GLV Vaults"
@@ -6225,6 +6235,7 @@ msgstr "セッション生成済"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
@@ -6922,6 +6933,7 @@ msgstr "紹介規約"
 msgid "The execution price didn't meet the acceptable price condition. The order will get filled when the condition is met."
 msgstr ""
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "手数料APY"

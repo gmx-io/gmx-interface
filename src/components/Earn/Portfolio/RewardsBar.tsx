@@ -68,7 +68,7 @@ export function RewardsBar({
               <span className="text-12 font-medium text-typography-secondary">
                 <Trans>Total Pending Rewards</Trans>
               </span>
-              <span className="text-body-large numbers">{formatUsd(totalPendingRewardsUsd)}</span>
+              <span className="text-body-large font-medium numbers">{formatUsd(totalPendingRewardsUsd)}</span>
             </div>
           </div>
         </div>
@@ -178,8 +178,8 @@ function PendingRewards({
           decimals={18}
           usd={processedData?.totalGmxRewardsUsd ?? 0n}
           symbol="GMX"
-          className="text-body-large"
-          secondaryValueClassName="!text-body-large"
+          className="text-body-large font-medium"
+          secondaryValueClassName="!text-body-large font-medium"
         />
         <span className="mb-2 text-16 text-typography-inactive">/</span>
       </div>
@@ -189,8 +189,8 @@ function PendingRewards({
           decimals={18}
           usd={processedData?.totalEsGmxRewardsUsd ?? 0n}
           symbol="esGMX"
-          className="text-body-large"
-          secondaryValueClassName="!text-body-large"
+          className="text-body-large font-medium"
+          secondaryValueClassName="!text-body-large font-medium"
         />
         {hasNativeRewards && <span className="mb-2 text-16 text-typography-inactive">/</span>}
       </div>
@@ -201,8 +201,8 @@ function PendingRewards({
             decimals={18}
             usd={processedData?.totalNativeTokenRewardsUsd ?? 0n}
             symbol={nativeTokenSymbol}
-            className="text-body-large"
-            secondaryValueClassName="!text-body-large"
+            className="text-body-large font-medium"
+            secondaryValueClassName="!text-body-large font-medium"
           />
         </div>
       )}

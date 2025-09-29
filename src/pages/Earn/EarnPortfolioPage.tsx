@@ -47,16 +47,16 @@ export default function EarnPortfolioPage() {
     });
   }, [marketTokensData, marketsInfoData]);
 
-  const hasGmx = processedData
+  const hasGmxAssets = processedData
     ? (processedData.gmxBalance ?? 0n) > 0n || (processedData.gmxInStakedGmx ?? 0n) > 0n
     : false;
-  const hasEsGmx = processedData
+  const hasEsGmxAssets = processedData
     ? (processedData.esGmxBalance ?? 0n) > 0n || (processedData.esGmxInStakedGmx ?? 0n) > 0n
     : false;
 
   const hasGmGlvAssets = gmGlvAssets.length > 0;
 
-  const hasAnyAssets = hasGmx || hasEsGmx || hasGmGlvAssets;
+  const hasAnyAssets = hasGmxAssets || hasEsGmxAssets || hasGmGlvAssets;
 
   return (
     <EarnPageLayout>
@@ -66,8 +66,8 @@ export default function EarnPortfolioPage() {
           processedData={processedData}
           chainId={chainId}
           hasAnyAssets={hasAnyAssets}
-          hasGmx={hasGmx}
-          hasEsGmx={hasEsGmx}
+          hasGmx={hasGmxAssets}
+          hasEsGmx={hasEsGmxAssets}
           gmGlvAssets={gmGlvAssets}
           marketTokensData={marketTokensData}
           glvTotalApyData={glvTotalApyData}
@@ -76,14 +76,20 @@ export default function EarnPortfolioPage() {
           marketsThirtyDayApyData={marketsThirtyDayApyData}
         />
       )}
-      <RecommendedAssets />
+      <RecommendedAssets
+        hasGmxAssets={hasGmxAssets}
+        marketsInfoData={marketsInfoData}
+        marketsApyInfo={marketsThirtyDayApyData}
+        marketTokensData={marketTokensData}
+        glvsApyInfo={glvThirtyDayApyData}
+      />
       {!hasAnyAssets && (
         <AssetsList
           processedData={processedData}
           chainId={chainId}
           hasAnyAssets={hasAnyAssets}
-          hasGmx={hasGmx}
-          hasEsGmx={hasEsGmx}
+          hasGmx={hasGmxAssets}
+          hasEsGmx={hasEsGmxAssets}
           gmGlvAssets={gmGlvAssets}
           marketTokensData={marketTokensData}
           glvTotalApyData={glvTotalApyData}
