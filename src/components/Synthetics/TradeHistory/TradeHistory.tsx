@@ -190,7 +190,7 @@ export function TradeHistory(p: Props) {
               <TableTh className="TradeHistorySynthetics-pnl-fees-header w-[12%]">
                 <TooltipWithPortal
                   variant="iconStroke"
-                  content={<Trans>Realized PnL after fees and price impact.</Trans>}
+                  content={<Trans>Realized PnL after fees and net price impact.</Trans>}
                 >
                   <Trans>RPnL</Trans>
                 </TooltipWithPortal>
