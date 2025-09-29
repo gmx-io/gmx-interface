@@ -1,5 +1,5 @@
 import Modal, { type ModalProps } from "./Modal";
-import Portal from "../Common/Portal";
+import Portal from "../Portal/Portal";
 
 export default function ModalWithPortal(props: ModalProps) {
   return (

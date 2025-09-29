@@ -8,7 +8,7 @@ import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getGasPaymentTokens } from "sdk/configs/express";
 
-import { SelectorBase, useSelectorClose } from "components/Synthetics/SelectorBase/SelectorBase";
+import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 type Props = {

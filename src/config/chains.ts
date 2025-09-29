@@ -116,7 +116,7 @@ const constants = {
   },
 } satisfies Record<ContractsChainId, Record<string, any>>;
 
-const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io"];
+const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io", "gmxapp.io"];
 
 export const RPC_PROVIDERS: Record<AnyChainId | typeof ETH_MAINNET, string[]> = {
   [ETH_MAINNET]: ["https://rpc.ankr.com/eth"],
@@ -289,8 +289,8 @@ export function getAlchemySepoliaWsUrl(purpose: AlchemyKeyPurpose) {
   return `wss://eth-sepolia.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
 }
 
-export function getExplorerUrl(chainId: number): string {
-  switch (chainId as AnyChainId) {
+export function getExplorerUrl(chainId: number | "layerzero" | "layerzero-testnet"): string {
+  switch (chainId as AnyChainId | "layerzero" | "layerzero-testnet") {
     case ARBITRUM:
       return "https://arbiscan.io/";
     case AVALANCHE:
@@ -307,6 +307,10 @@ export function getExplorerUrl(chainId: number): string {
       return "https://botanixscan.io/";
     case SOURCE_BASE_MAINNET:
       return "https://basescan.org/";
+    case "layerzero":
+      return "https://layerzeroscan.com/";
+    case "layerzero-testnet":
+      return "https://testnet.layerzeroscan.com/";
   }
 }
 
