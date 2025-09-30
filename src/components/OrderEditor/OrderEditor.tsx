@@ -704,12 +704,14 @@ export function OrderEditor(p: Props) {
             )}
           {!isSwapOrderType(p.order.orderType) && (
             <>
-              <SyntheticsInfoRow
-                label={t`Acceptable Price`}
-                value={formatAcceptablePrice(acceptablePrice, {
-                  visualMultiplier: indexToken?.visualMultiplier,
-                })}
-              />
+              {isSetAcceptablePriceImpactEnabled && (
+                <SyntheticsInfoRow
+                  label={t`Acceptable Price`}
+                  value={formatAcceptablePrice(acceptablePrice, {
+                    visualMultiplier: indexToken?.visualMultiplier,
+                  })}
+                />
+              )}
 
               {existingPosition && (
                 <SyntheticsInfoRow
