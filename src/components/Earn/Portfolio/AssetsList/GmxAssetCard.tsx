@@ -25,12 +25,12 @@ import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
-import BuyIcon from "img/ic_buy.svg?react";
 import DownloadIcon from "img/ic_download2.svg?react";
 import esGmxIcon from "img/ic_esgmx_40.svg";
 import gmxIcon from "img/ic_gmx_40.svg";
 import IncreaseLimit from "img/ic_increaselimit_16.svg?react";
 import MenuDotsIcon from "img/ic_menu_dots.svg?react";
+import PlusCircleIcon from "img/ic_plus_circle.svg?react";
 import ShareIcon from "img/ic_share.svg?react";
 
 import { BaseAssetCard } from "./BaseAssetCard";
@@ -158,7 +158,7 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
         footer={
           <div className="grid w-full grid-cols-3 gap-8">
             <Button variant="secondary" to="/buy_gmx" className="whitespace-nowrap">
-              <BuyIcon className="size-16 shrink-0" />
+              <PlusCircleIcon className="size-16 shrink-0" />
               <Trans>Buy GMX</Trans>
             </Button>
             <Button variant="secondary" onClick={handleOpenStakeModal} disabled={!active}>

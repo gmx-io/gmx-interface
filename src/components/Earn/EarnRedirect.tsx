@@ -5,6 +5,7 @@ import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
 import type { TokensData } from "domain/synthetics/tokens";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 
+import Loader from "components/Loader/Loader";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 
 import EarnPageLayout from "../../pages/Earn/EarnPageLayout";
@@ -45,15 +46,12 @@ export function EarnRedirect() {
     [arbitrumTokens.tokensData, avalancheTokens.tokensData, botanixTokens.tokensData]
   );
 
-  if (!isBalancesReady) {
-    return <EarnPageLayout />;
-  }
-
   const target = account && hasEarnHoldings ? "/earn/portfolio" : "/earn/discovery";
 
   return (
     <EarnPageLayout>
-      <RedirectWithQuery to={target} />
+      <Loader />
+      {isBalancesReady && <RedirectWithQuery to={target} />}
     </EarnPageLayout>
   );
 }

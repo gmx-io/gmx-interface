@@ -231,7 +231,7 @@ function GlvGmxRecommendedAssetItem({
           symbol={iconTokenSymbol}
           displaySize={32}
           importSize={40}
-          className={cx({ "rounded-0": isGlvInfo(glvOrMarketInfo) })}
+          className={cx({ "!rounded-0": isGlvInfo(glvOrMarketInfo) })}
         />
       }
       title={getMarketIndexName(glvOrMarketInfo)}
