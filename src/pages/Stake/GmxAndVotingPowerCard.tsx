@@ -29,24 +29,14 @@ import { GMX_DAO_LINKS, getGmxDAODelegateLink } from "./constants";
 
 export function GmxAndVotingPowerCard({
   processedData,
-  sbfGmxBalance,
-  setIsUnstakeModalVisible,
-  setUnstakeModalTitle,
-  setUnstakeModalMaxAmount,
-  setUnstakeValue,
-  setUnstakingTokenSymbol,
-  setUnstakeMethodName,
+  sbfGmxBalance: _sbfGmxBalance,
   showStakeGmxModal,
+  showUnstakeGmxModal,
 }: {
   processedData: ProcessedData | undefined;
   sbfGmxBalance: bigint;
-  setIsUnstakeModalVisible: (visible: boolean) => void;
-  setUnstakeModalTitle: (title: string) => void;
-  setUnstakeModalMaxAmount: (amount: bigint) => void;
-  setUnstakeValue: (value: string) => void;
-  setUnstakingTokenSymbol: (symbol: string) => void;
-  setUnstakeMethodName: (methodName: string) => void;
   showStakeGmxModal: () => void;
+  showUnstakeGmxModal: () => void;
 }) {
   const { chainId } = useChainId();
   const { active, signer, account } = useWallet();
@@ -77,21 +67,6 @@ export function GmxAndVotingPowerCard({
   if (totalGmxSupply !== undefined && totalGmxSupply !== 0n && gmxPrice !== undefined) {
     totalSupplyUsd = bigMath.mulDiv(totalGmxSupply, gmxPrice, expandDecimals(1, 18));
   }
-
-  const showUnstakeGmxModal = () => {
-    setIsUnstakeModalVisible(true);
-    setUnstakeModalTitle(t`Unstake GMX`);
-    let maxAmount = processedData?.gmxInStakedGmx;
-
-    if (maxAmount !== undefined) {
-      maxAmount = bigMath.min(maxAmount, sbfGmxBalance);
-    }
-
-    setUnstakeModalMaxAmount(maxAmount!);
-    setUnstakeValue("");
-    setUnstakingTokenSymbol("GMX");
-    setUnstakeMethodName("unstakeGmx");
-  };
 
   const stakedEntries = useMemo(
     () => ({

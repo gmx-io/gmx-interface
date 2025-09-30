@@ -1,6 +1,6 @@
 import { autoUpdate, flip, FloatingPortal, offset, shift, useFloating } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
-import { Trans, t } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 import { zeroAddress } from "viem";
@@ -15,8 +15,7 @@ import { PLACEHOLDER_ACCOUNT, ProcessedData } from "lib/legacy";
 import { formatAmount, formatUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { GMX_DAO_LINKS } from "pages/Stake/constants";
-import { StakeModal } from "pages/Stake/StakeModal";
-import { UnstakeModal } from "pages/Stake/UnstakeModal";
+import { StakeModal, StakeModalTabConfig } from "pages/Stake/StakeModal";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
@@ -28,22 +27,11 @@ import Tooltip from "components/Tooltip/Tooltip";
 import DownloadIcon from "img/ic_download2.svg?react";
 import esGmxIcon from "img/ic_esgmx_40.svg";
 import gmxIcon from "img/ic_gmx_40.svg";
-import IncreaseLimit from "img/ic_increaselimit_16.svg?react";
 import MenuDotsIcon from "img/ic_menu_dots.svg?react";
 import PlusCircleIcon from "img/ic_plus_circle.svg?react";
 import ShareIcon from "img/ic_share.svg?react";
 
 import { BaseAssetCard } from "./BaseAssetCard";
-
-type StakeModalState = {
-  isVisible: boolean;
-  value: string;
-};
-
-type UnstakeModalState = {
-  isVisible: boolean;
-  value: string;
-};
 
 export function GmxAssetCard({ processedData, esGmx = false }: { processedData: ProcessedData; esGmx?: boolean }) {
   const { chainId } = useChainId();
@@ -53,8 +41,9 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
 
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
 
-  const [stakeModalState, setStakeModalState] = useState<StakeModalState>({ isVisible: false, value: "" });
-  const [unstakeModalState, setUnstakeModalState] = useState<UnstakeModalState>({ isVisible: false, value: "" });
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [stakeValue, setStakeValue] = useState("");
+  const [unstakeValue, setUnstakeValue] = useState("");
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
@@ -96,10 +85,6 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
   const balanceUsd = esGmx ? processedData?.esGmxBalanceUsd : processedData?.gmxBalanceUsd;
   const stakedAmount = esGmx ? processedData?.esGmxInStakedGmx : processedData?.gmxInStakedGmx;
   const stakedUsd = esGmx ? processedData?.esGmxInStakedGmxUsd : processedData?.gmxInStakedGmxUsd;
-  const stakeTitle = esGmx ? t`Stake esGMX` : t`Stake GMX`;
-  const unstakeTitle = esGmx ? t`Unstake esGMX` : t`Unstake GMX`;
-  const stakeMethod = esGmx ? "stakeEsGmx" : "stakeGmx";
-  const unstakeMethod = esGmx ? "unstakeEsGmx" : "unstakeGmx";
   const stakeTokenAddress = esGmx ? esGmxAddress : gmxAddress;
   const farmAddress = esGmx ? zeroAddress : stakedGmxTrackerAddress;
 
@@ -116,11 +101,8 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
   }, [sbfGmxBalance, stakedAmount]);
 
   const handleOpenStakeModal = useCallback(() => {
-    setStakeModalState({ isVisible: true, value: "" });
-  }, []);
-
-  const handleOpenUnstakeModal = useCallback(() => {
-    setUnstakeModalState({ isVisible: true, value: "" });
+    setIsModalVisible(true);
+    setStakeValue("");
   }, []);
 
   const priceRowValue = gmxPrice === undefined ? "..." : formatUsd(gmxPrice);
@@ -149,6 +131,24 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
     );
   }, [aprHandle, processedData, nativeTokenSymbol, active]);
 
+  const stakeConfig: StakeModalTabConfig = useMemo(
+    () => ({
+      maxAmount: balanceAmount,
+      value: stakeValue,
+      setValue: setStakeValue,
+    }),
+    [balanceAmount, stakeValue, setStakeValue]
+  );
+
+  const unstakeConfig: StakeModalTabConfig = useMemo(
+    () => ({
+      maxAmount: maxUnstakeAmount,
+      value: unstakeValue,
+      setValue: setUnstakeValue,
+    }),
+    [maxUnstakeAmount, unstakeValue, setUnstakeValue]
+  );
+
   return (
     <div>
       <BaseAssetCard
@@ -164,10 +164,6 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
             <Button variant="secondary" onClick={handleOpenStakeModal} disabled={!active}>
               <DownloadIcon className="size-16 shrink-0" />
               <Trans>Stake</Trans>
-            </Button>
-            <Button variant="secondary" onClick={handleOpenUnstakeModal} disabled={!active}>
-              <IncreaseLimit className="size-16 shrink-0" />
-              <Trans>Unstake</Trans>
             </Button>
           </div>
         }
@@ -191,36 +187,17 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
       </BaseAssetCard>
 
       <StakeModal
-        isVisible={stakeModalState.isVisible}
-        setIsVisible={(isVisible) => setStakeModalState((state) => ({ ...state, isVisible }))}
+        isVisible={isModalVisible}
+        setIsVisible={setIsModalVisible}
         chainId={chainId}
-        title={stakeTitle}
-        maxAmount={balanceAmount}
-        value={stakeModalState.value}
-        setValue={(value) => setStakeModalState((state) => ({ ...state, value }))}
         signer={signer}
-        stakingTokenSymbol={stakeTokenSymbol}
-        stakingTokenAddress={stakeTokenAddress}
-        farmAddress={farmAddress}
+        tokenSymbol={stakeTokenSymbol}
         rewardRouterAddress={rewardRouterAddress}
-        stakeMethodName={stakeMethod}
-        setPendingTxns={setPendingTxns}
-        processedData={processedData}
-      />
-
-      <UnstakeModal
-        isVisible={unstakeModalState.isVisible}
-        setIsVisible={(isVisible) => setUnstakeModalState((state) => ({ ...state, isVisible }))}
-        chainId={chainId}
-        title={unstakeTitle}
-        maxAmount={maxUnstakeAmount}
-        value={unstakeModalState.value}
-        setValue={(value) => setUnstakeModalState((state) => ({ ...state, value }))}
-        signer={signer}
-        unstakingTokenSymbol={stakeTokenSymbol}
-        rewardRouterAddress={rewardRouterAddress}
-        unstakeMethodName={unstakeMethod}
+        stakeTokenAddress={stakeTokenAddress}
+        stakeFarmAddress={farmAddress}
         reservedAmount={reservedAmount}
+        stake={stakeConfig}
+        unstake={unstakeConfig}
         setPendingTxns={setPendingTxns}
         processedData={processedData}
       />

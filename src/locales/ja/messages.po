@@ -359,8 +359,8 @@ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>{
 msgstr ""
 
 #: src/pages/Stake/StakeModal.tsx
-msgid "Pending {stakingTokenSymbol} approval"
-msgstr "{stakingTokenSymbol}の承認待ち"
+#~ msgid "Pending {stakingTokenSymbol} approval"
+#~ msgstr "{stakingTokenSymbol}の承認待ち"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
@@ -449,7 +449,7 @@ msgstr "トレジャリー"
 msgid "Classic"
 msgstr ""
 
-#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 msgid "Unstaking"
 msgstr ""
 
@@ -808,6 +808,10 @@ msgstr "GMへのクロスチェーン1クリック入金"
 #: src/components/MarketSelector/MarketSelector.tsx
 msgid "No markets matched"
 msgstr "一致する市場がありません"
+
+#: src/pages/Stake/StakeModal.tsx
+msgid "Unstake {tokenSymbol}"
+msgstr ""
 
 #: src/components/InputSection/InputSection.jsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
@@ -1794,7 +1798,6 @@ msgstr "手数料のUSD価値は獲得時に計算され、インセンティブ
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/pages/Stake/StakeModal.tsx
-#: src/pages/Stake/UnstakeModal.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Max"
 msgstr "最大"
@@ -2153,7 +2156,7 @@ msgstr "選択をクリア"
 msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
 msgstr "注文のトリガー価格がポジションの清算価格を超えているため、注文は実行されません。"
 
-#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 msgid "Unstake completed."
 msgstr ""
 
@@ -2361,7 +2364,7 @@ msgstr ""
 msgid "Trigger"
 msgstr "トリガー"
 
-#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 msgid "Unstake failed."
 msgstr "アンステークに失敗しました。"
 
@@ -2632,6 +2635,7 @@ msgstr "SL"
 #: src/pages/Stake/Stake.tsx
 #: src/pages/Stake/Stake.tsx
 #: src/pages/Stake/Stake.tsx
+#: src/pages/Stake/StakeModal.tsx
 #: src/pages/Stake/StakeModal.tsx
 #: src/pages/Stake/StakeModal.tsx
 msgid "Stake"
@@ -2909,7 +2913,7 @@ msgstr "累積ポジティブファンディング手数料"
 msgid "You’ll need some {nativeTokenSymbol} in your account to withdraw funds."
 msgstr ""
 
-#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 msgid "Unstake submitted."
 msgstr ""
 
@@ -3211,11 +3215,11 @@ msgstr "{0}アップグレード待ちのためアプリ無効"
 msgid "Please accept the Claim Terms above to continue."
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
-#: src/pages/Stake/UnstakeModal.tsx
-#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 msgid "Unstake"
 msgstr "アンステーク"
 
@@ -3641,8 +3645,8 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/Stake.tsx
-msgid "Unstake esGMX"
-msgstr "esGMXをアンステーク"
+#~ msgid "Unstake esGMX"
+#~ msgstr "esGMXをアンステーク"
 
 #: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "Why do I receive two different GLV tokens?"
@@ -4395,8 +4399,8 @@ msgstr "Firebird Finance"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/Stake.tsx
-msgid "Stake GMX"
-msgstr "GMXをステーク"
+#~ msgid "Stake GMX"
+#~ msgstr "GMXをステーク"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
@@ -4426,6 +4430,10 @@ msgstr "理由: {0}"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Approval nonce expired. Please sign a new approval."
 msgstr "ワンクリック承認のノンスが期限切れです。新規承認に署名してください。"
+
+#: src/pages/Stake/StakeModal.tsx
+msgid "Pending {tokenSymbol} approval"
+msgstr ""
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
@@ -4583,6 +4591,10 @@ msgstr "ワンクリック設定"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Announcements"
 msgstr "GMXのお知らせ"
+
+#: src/pages/Stake/StakeModal.tsx
+msgid "Approve {tokenSymbol} to be spent"
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is only settled on position decrease. <0>Read more</0>"
@@ -5171,7 +5183,7 @@ msgid "Enter your answer here."
 msgstr ""
 
 #: src/pages/Stake/StakeModal.tsx
-#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Max amount exceeded"
 msgstr "最大値超過"
@@ -5778,7 +5790,7 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/StakeModal.tsx
-#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Enter an amount"
 msgstr "額を入力"
@@ -6732,6 +6744,10 @@ msgstr "このサイズのショート増加のための流動性がありませ
 msgid "Seamless Trading"
 msgstr ""
 
+#: src/pages/Stake/StakeModal.tsx
+msgid "Stake {tokenSymbol}"
+msgstr ""
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
 msgstr "{nativeTokenSymbol} APR"
@@ -6809,7 +6825,7 @@ msgstr "{increaseOrDecreaseText} {tokenText} を {sizeText} で"
 msgid "Dark"
 msgstr ""
 
-#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
 msgstr "{0}<0>このアクションで{1}%少ない報酬を獲得します。</0>"
 
@@ -6948,8 +6964,8 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/Stake.tsx
-msgid "Stake esGMX"
-msgstr "esGMXをステーク"
+#~ msgid "Stake esGMX"
+#~ msgstr "esGMXをステーク"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7584,6 +7600,10 @@ msgstr "頻度"
 msgid "Loading Express params"
 msgstr ""
 
+#: src/pages/Stake/StakeModal.tsx
+msgid "You have {0} tokens reserved for vesting."
+msgstr ""
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No funding activity matching your search"
 msgstr ""
@@ -7929,8 +7949,8 @@ msgstr "古いバージョン1CTサブアカウントに{balanceFormatted}が残
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
-msgid "Unstake GMX"
-msgstr "GMXをアンストーク"
+#~ msgid "Unstake GMX"
+#~ msgstr "GMXをアンストーク"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>"

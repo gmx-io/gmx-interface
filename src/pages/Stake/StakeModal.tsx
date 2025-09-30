@@ -29,43 +29,59 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
+import Tabs from "components/Tabs/Tabs";
 
 import { GMX_DAO_LINKS } from "./constants";
+
+export type StakeModalTab = "stake" | "unstake";
+
+export type StakeModalTabConfig = {
+  maxAmount: bigint | undefined;
+  value: string;
+  setValue: (value: string) => void;
+};
+
+const METHOD_NAME_MAP: Record<string, { stake: string; unstake: string }> = {
+  GMX: { stake: "stakeGmx", unstake: "unstakeGmx" },
+  esGMX: { stake: "stakeEsGmx", unstake: "unstakeEsGmx" },
+};
 
 export function StakeModal(props: {
   isVisible: boolean;
   setIsVisible: (isVisible: boolean) => void;
   chainId: ContractsChainId;
-  title: string;
-  maxAmount: bigint | undefined;
-  value: string;
-  setValue: (value: string) => void;
   signer: UncheckedJsonRpcSigner | undefined;
-  stakingTokenSymbol: string;
-  stakingTokenAddress: string;
-  farmAddress: string;
+  tokenSymbol: string;
   rewardRouterAddress: string;
-  stakeMethodName: string;
+  stake: StakeModalTabConfig;
+  unstake: StakeModalTabConfig;
   setPendingTxns: SetPendingTransactions;
   processedData: ProcessedData | undefined;
+  stakeTokenAddress: string;
+  stakeFarmAddress: string;
+  reservedAmount: bigint;
 }) {
   const {
     isVisible,
     setIsVisible,
     chainId,
-    title,
-    maxAmount,
-    value,
-    setValue,
     signer,
-    stakingTokenSymbol,
-    stakingTokenAddress,
-    farmAddress,
+    tokenSymbol,
     rewardRouterAddress,
-    stakeMethodName,
+    stake,
+    unstake,
     setPendingTxns,
     processedData,
+    stakeTokenAddress,
+    stakeFarmAddress,
+    reservedAmount,
   } = props;
+
+  const { maxAmount: stakeMaxAmount, value: stakeValue, setValue: setStakeValue } = stake;
+
+  const { maxAmount: unstakeMaxAmount, value: unstakeValue, setValue: setUnstakeValue } = unstake;
+
+  const [activeTab, setActiveTab] = useState<StakeModalTab>("stake");
 
   const govTokenAmount = useGovTokenAmount(chainId);
   const govTokenDelegatesAddress = useGovTokenDelegates(chainId);
@@ -76,72 +92,86 @@ export function StakeModal(props: {
   );
 
   const [isStaking, setIsStaking] = useState(false);
-  const isMetamaskMobile = useIsMetamaskMobile();
+  const [isUnstaking, setIsUnstaking] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
+  const isMetamaskMobile = useIsMetamaskMobile();
   const icons = getIcons(chainId);
 
-  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
-    spenderAddress: farmAddress,
-    tokenAddresses: [stakingTokenAddress].filter(Boolean),
-  });
-  const tokenAllowance = tokensAllowanceData?.[stakingTokenAddress];
+  const stakeAmount = useMemo(() => parseValue(stakeValue, 18), [stakeValue]);
+  const unstakeAmount = useMemo(() => parseValue(unstakeValue, 18), [unstakeValue]);
 
-  const amount = useMemo(() => parseValue(value, 18), [value]);
+  const stakeMethodName = METHOD_NAME_MAP[tokenSymbol].stake;
+  const unstakeMethodName = METHOD_NAME_MAP[tokenSymbol].unstake;
+
+  if (!stakeMethodName || !unstakeMethodName) {
+    throw new Error(`StakeModal: method names are required for token ${tokenSymbol}`);
+  }
+
+  const stakeTitle = t`Stake ${tokenSymbol}`;
+  const unstakeTitle = t`Unstake ${tokenSymbol}`;
+
+  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+    spenderAddress: stakeFarmAddress,
+    tokenAddresses: [stakeTokenAddress].filter(Boolean),
+  });
+  const tokenAllowance = tokensAllowanceData?.[stakeTokenAddress];
 
   const needApproval =
-    farmAddress !== ZeroAddress && tokenAllowance !== undefined && amount !== undefined && amount > tokenAllowance;
+    stakeFarmAddress !== ZeroAddress &&
+    tokenAllowance !== undefined &&
+    stakeAmount !== undefined &&
+    stakeAmount > tokenAllowance;
 
   const stakeBonusPercentage = useMemo(() => {
     if (
       processedData &&
-      amount !== undefined &&
-      amount > 0 &&
+      stakeAmount !== undefined &&
+      stakeAmount > 0 &&
       processedData.esGmxInStakedGmx !== undefined &&
       processedData.gmxInStakedGmx !== undefined
     ) {
       const divisor = processedData.esGmxInStakedGmx + processedData.gmxInStakedGmx;
       if (divisor !== 0n) {
-        return bigMath.mulDiv(amount, BASIS_POINTS_DIVISOR_BIGINT, divisor);
+        return bigMath.mulDiv(stakeAmount, BASIS_POINTS_DIVISOR_BIGINT, divisor);
       }
     }
     return undefined;
-  }, [amount, processedData]);
+  }, [stakeAmount, processedData]);
 
-  const error = useMemo(() => {
-    if (amount === undefined || amount === 0n) {
-      return t`Enter an amount`;
+  const stakeError = useMemo(() => {
+    if (stakeAmount === undefined || stakeAmount === 0n) {
+      return <Trans>Enter an amount</Trans>;
     }
-    if (maxAmount !== undefined && amount > maxAmount) {
-      return t`Max amount exceeded`;
+    if (stakeMaxAmount !== undefined && stakeAmount > stakeMaxAmount) {
+      return <Trans>Max amount exceeded</Trans>;
     }
     return undefined;
-  }, [amount, maxAmount]);
+  }, [stakeAmount, stakeMaxAmount]);
 
-  const isPrimaryEnabled = useMemo(
-    () => !error && !isApproving && !needApproval && !isStaking && !isUndelegatedGovToken,
-    [error, isApproving, needApproval, isStaking, isUndelegatedGovToken]
+  const unstakeError = useMemo(() => {
+    if (unstakeAmount === undefined || unstakeAmount === 0n) {
+      return <Trans>Enter an amount</Trans>;
+    }
+    if (unstakeMaxAmount !== undefined && unstakeAmount > unstakeMaxAmount) {
+      return <Trans>Max amount exceeded</Trans>;
+    }
+    return undefined;
+  }, [unstakeAmount, unstakeMaxAmount]);
+
+  const isStakePrimaryEnabled = useMemo(
+    () => !stakeError && !isApproving && !isStaking && !isUndelegatedGovToken,
+    [stakeError, isApproving, isStaking, isUndelegatedGovToken]
   );
 
-  const primaryText = useMemo(() => {
-    if (error) {
-      return error;
-    }
-    if (isApproving || needApproval) {
-      return t`Pending ${stakingTokenSymbol} approval`;
-    }
-    if (isStaking) {
-      return t`Staking`;
-    }
-    return t`Stake`;
-  }, [error, isApproving, needApproval, isStaking, stakingTokenSymbol]);
+  const isUnstakePrimaryEnabled = useMemo(() => !unstakeError && !isUnstaking, [unstakeError, isUnstaking]);
 
-  const onClickPrimary = useCallback(() => {
+  const handleStake = useCallback(() => {
     if (needApproval) {
       approveTokens({
         setIsApproving,
         signer,
-        tokenAddress: stakingTokenAddress,
-        spender: farmAddress,
+        tokenAddress: stakeTokenAddress,
+        spender: stakeFarmAddress,
         chainId,
         permitParams: undefined,
         approveAmount: undefined,
@@ -152,7 +182,7 @@ export function StakeModal(props: {
     setIsStaking(true);
     const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
 
-    callContract(chainId, contract, stakeMethodName, [amount], {
+    callContract(chainId, contract, stakeMethodName, [stakeAmount], {
       sentMsg: t`Stake submitted.`,
       failMsg: t`Stake failed.`,
       setPendingTxns,
@@ -166,71 +196,188 @@ export function StakeModal(props: {
   }, [
     needApproval,
     signer,
-    stakingTokenAddress,
-    farmAddress,
+    stakeTokenAddress,
+    stakeFarmAddress,
     chainId,
-    rewardRouterAddress,
     stakeMethodName,
-    amount,
+    stakeAmount,
     setPendingTxns,
     setIsVisible,
+    rewardRouterAddress,
   ]);
 
-  const onClickMaxButton = useCallback(() => {
-    if (maxAmount === undefined) return;
-    const formattedMaxAmount = formatAmountFree(maxAmount, 18, 18);
+  const handleUnstake = useCallback(() => {
+    setIsUnstaking(true);
+    const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
+
+    callContract(chainId, contract, unstakeMethodName, [unstakeAmount], {
+      sentMsg: t`Unstake submitted.`,
+      failMsg: t`Unstake failed.`,
+      successMsg: t`Unstake completed.`,
+      setPendingTxns,
+    })
+      .then(() => {
+        setIsVisible(false);
+      })
+      .finally(() => {
+        setIsUnstaking(false);
+      });
+  }, [chainId, signer, unstakeMethodName, rewardRouterAddress, unstakeAmount, setPendingTxns, setIsVisible]);
+
+  const handleStakeMax = useCallback(() => {
+    if (stakeMaxAmount === undefined) return;
+    const formattedMaxAmount = formatAmountFree(stakeMaxAmount, 18, 18);
     const finalMaxAmount = isMetamaskMobile
       ? limitDecimals(formattedMaxAmount, MAX_METAMASK_MOBILE_DECIMALS)
       : formattedMaxAmount;
-    setValue(finalMaxAmount);
-  }, [maxAmount, isMetamaskMobile, setValue]);
+    setStakeValue(finalMaxAmount);
+  }, [isMetamaskMobile, setStakeValue, stakeMaxAmount]);
+
+  const handleUnstakeMax = useCallback(() => {
+    if (unstakeMaxAmount === undefined) return;
+    setUnstakeValue(formatAmountFree(unstakeMaxAmount, 18, 18));
+  }, [setUnstakeValue, unstakeMaxAmount]);
+
+  const primaryText = useMemo(() => {
+    if (activeTab === "stake") {
+      if (stakeError) {
+        return stakeError;
+      }
+      if (isApproving || needApproval) {
+        if (isApproving) {
+          return <Trans>Pending {tokenSymbol} approval</Trans>;
+        }
+
+        return <Trans>Approve {tokenSymbol} to be spent</Trans>;
+      }
+      if (isStaking) {
+        return <Trans>Staking</Trans>;
+      }
+      return <Trans>Stake</Trans>;
+    }
+
+    if (unstakeError) {
+      return unstakeError;
+    }
+    if (isUnstaking) {
+      return <Trans>Unstaking</Trans>;
+    }
+    return <Trans>Unstake</Trans>;
+  }, [activeTab, isApproving, isStaking, isUnstaking, needApproval, tokenSymbol, stakeError, unstakeError]);
+
+  const isPrimaryEnabled = activeTab === "stake" ? isStakePrimaryEnabled : isUnstakePrimaryEnabled;
+
+  const onClickPrimary = useCallback(() => {
+    if (activeTab === "stake") {
+      handleStake();
+      return;
+    }
+
+    handleUnstake();
+  }, [activeTab, handleStake, handleUnstake]);
+
+  const activeValue = activeTab === "stake" ? stakeValue : unstakeValue;
+  const activeMaxAmount = activeTab === "stake" ? stakeMaxAmount : unstakeMaxAmount;
+  const activeTokenSymbol = tokenSymbol;
+  const activeTitle = activeTab === "stake" ? stakeTitle : unstakeTitle;
+
+  const stakeCanClickMax = stakeMaxAmount !== undefined && stakeMaxAmount !== 0n && stakeAmount !== stakeMaxAmount;
+  const unstakeCanClickMax =
+    unstakeMaxAmount !== undefined && unstakeMaxAmount !== 0n && unstakeAmount !== unstakeMaxAmount;
+  const canClickMax = activeTab === "stake" ? stakeCanClickMax : unstakeCanClickMax;
+  const onClickMax = activeTab === "stake" ? handleStakeMax : handleUnstakeMax;
+
+  const showStakeBonus =
+    activeTab === "stake" &&
+    stakeBonusPercentage !== undefined &&
+    stakeBonusPercentage > 0 &&
+    stakeAmount !== undefined &&
+    stakeMaxAmount !== undefined &&
+    stakeAmount <= stakeMaxAmount;
+
+  const unstakeBonusLostPercentage = useMemo(() => {
+    if (
+      processedData &&
+      unstakeAmount !== undefined &&
+      unstakeAmount > 0 &&
+      processedData.esGmxInStakedGmx !== undefined &&
+      processedData.gmxInStakedGmx !== undefined
+    ) {
+      const divisor = processedData.esGmxInStakedGmx + processedData.gmxInStakedGmx;
+      if (divisor !== 0n) {
+        return bigMath.mulDiv(unstakeAmount, BASIS_POINTS_DIVISOR_BIGINT, divisor);
+      }
+    }
+    return undefined;
+  }, [processedData, unstakeAmount]);
+
+  const tabs = useMemo(
+    () => [
+      { label: <Trans>Stake</Trans>, value: "stake" as const },
+      { label: <Trans>Unstake</Trans>, value: "unstake" as const },
+    ],
+    []
+  );
+
+  const showUnstakePenalty =
+    activeTab === "unstake" &&
+    unstakeBonusLostPercentage !== undefined &&
+    unstakeBonusLostPercentage > 0 &&
+    unstakeAmount !== undefined &&
+    unstakeMaxAmount !== undefined &&
+    unstakeAmount <= unstakeMaxAmount;
 
   return (
     <div className="StakeModal">
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={activeTitle}>
+        <Tabs<StakeModalTab>
+          className="mb-12"
+          type="inline"
+          options={tabs}
+          selectedValue={activeTab}
+          onChange={(value) => setActiveTab(value)}
+        />
         <div className="mb-12">
           <BuyInputSection
-            topLeftLabel={t`Stake`}
+            topLeftLabel={activeTab === "stake" ? t`Stake` : t`Unstake`}
             topRightLabel={t`Max`}
-            topRightValue={formatAmount(maxAmount, 18, 4, true)}
-            onClickMax={amount !== maxAmount && maxAmount !== 0n ? onClickMaxButton : undefined}
-            inputValue={value}
-            onInputValueChange={(e) => setValue(e.target.value)}
+            topRightValue={formatAmount(activeMaxAmount, 18, 4, true)}
+            onClickMax={canClickMax ? onClickMax : undefined}
+            inputValue={activeValue}
+            onInputValueChange={(e) =>
+              activeTab === "stake" ? setStakeValue(e.target.value) : setUnstakeValue(e.target.value)
+            }
           >
             <div className="flex items-center gap-4 py-8">
               <img
                 className="icon h-24"
                 height="24"
-                src={icons?.[stakingTokenSymbol.toLowerCase()]}
-                alt={stakingTokenSymbol}
+                src={icons?.[activeTokenSymbol.toLowerCase()]}
+                alt={activeTokenSymbol}
               />
-              {stakingTokenSymbol}
+              {activeTokenSymbol}
             </div>
           </BuyInputSection>
         </div>
 
-        {true && (
+        {activeTab === "stake" && (needApproval || isApproving) && (
           <div className="mb-12">
             <ApproveTokenButton
-              tokenAddress={stakingTokenAddress}
-              spenderAddress={farmAddress}
-              tokenSymbol={stakingTokenSymbol}
+              tokenAddress={stakeTokenAddress}
+              spenderAddress={stakeFarmAddress}
+              tokenSymbol={tokenSymbol}
               isApproved={!needApproval}
             />
           </div>
         )}
 
-        {stakeBonusPercentage !== undefined &&
-          stakeBonusPercentage > 0 &&
-          amount !== undefined &&
-          maxAmount !== undefined &&
-          amount <= maxAmount && (
-            <AlertInfo type="info">
-              <Trans>You will earn {formatAmount(stakeBonusPercentage, 2, 2)}% more rewards with this action.</Trans>
-            </AlertInfo>
-          )}
+        {showStakeBonus && (
+          <AlertInfo type="info">
+            <Trans>You will earn {formatAmount(stakeBonusPercentage, 2, 2)}% more rewards with this action.</Trans>
+          </AlertInfo>
+        )}
 
-        {isUndelegatedGovToken ? (
+        {activeTab === "stake" && isUndelegatedGovToken ? (
           <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-300">
             <Trans>
               <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
@@ -240,6 +387,25 @@ export function StakeModal(props: {
             </Trans>
           </AlertInfo>
         ) : null}
+
+        {activeTab === "unstake" && reservedAmount !== undefined && reservedAmount > 0 && (
+          <AlertInfo type="info">
+            <Trans>You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.</Trans>
+          </AlertInfo>
+        )}
+
+        {showUnstakePenalty && (
+          <AlertInfo type="warning">
+            <Trans>
+              {chainId === ARBITRUM ? (
+                <span>Unstaking will burn {formatAmount(unstakeAmount, 18, 2, true)} voting power.&nbsp;</span>
+              ) : null}
+              <span>
+                You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less rewards with this action.
+              </span>
+            </Trans>
+          </AlertInfo>
+        )}
 
         <SwitchToSettlementChainWarning topic="staking" />
         <div className="Exchange-swap-button-container">

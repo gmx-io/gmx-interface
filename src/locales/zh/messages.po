@@ -359,8 +359,8 @@ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>{
 msgstr ""
 
 #: src/pages/Stake/StakeModal.tsx
-msgid "Pending {stakingTokenSymbol} approval"
-msgstr "待处理 {stakingTokenSymbol} 批准"
+#~ msgid "Pending {stakingTokenSymbol} approval"
+#~ msgstr "待处理 {stakingTokenSymbol} 批准"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
@@ -449,7 +449,7 @@ msgstr "国库"
 msgid "Classic"
 msgstr ""
 
-#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 msgid "Unstaking"
 msgstr ""
 
@@ -808,6 +808,10 @@ msgstr "跨链一键存款到 GM"
 #: src/components/MarketSelector/MarketSelector.tsx
 msgid "No markets matched"
 msgstr "没有匹配的市场"
+
+#: src/pages/Stake/StakeModal.tsx
+msgid "Unstake {tokenSymbol}"
+msgstr ""
 
 #: src/components/InputSection/InputSection.jsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
@@ -1794,7 +1798,6 @@ msgstr "费用的 USD 值在赚取时计算，不包括激励。"
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/pages/Stake/StakeModal.tsx
-#: src/pages/Stake/UnstakeModal.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Max"
 msgstr "最大"
@@ -2153,7 +2156,7 @@ msgstr "清除选择"
 msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
 msgstr "该订单将不会执行，因为其触发价格超出仓位的清算价格。"
 
-#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 msgid "Unstake completed."
 msgstr ""
 
@@ -2361,7 +2364,7 @@ msgstr ""
 msgid "Trigger"
 msgstr "触发"
 
-#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 msgid "Unstake failed."
 msgstr "解除质押失败。"
 
@@ -2632,6 +2635,7 @@ msgstr "SL"
 #: src/pages/Stake/Stake.tsx
 #: src/pages/Stake/Stake.tsx
 #: src/pages/Stake/Stake.tsx
+#: src/pages/Stake/StakeModal.tsx
 #: src/pages/Stake/StakeModal.tsx
 #: src/pages/Stake/StakeModal.tsx
 msgid "Stake"
@@ -2909,7 +2913,7 @@ msgstr "累积正资金费用"
 msgid "You’ll need some {nativeTokenSymbol} in your account to withdraw funds."
 msgstr ""
 
-#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 msgid "Unstake submitted."
 msgstr ""
 
@@ -3211,11 +3215,11 @@ msgstr "应用程序禁用，待 {0} 升级"
 msgid "Please accept the Claim Terms above to continue."
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
-#: src/pages/Stake/UnstakeModal.tsx
-#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 msgid "Unstake"
 msgstr "解除质押"
 
@@ -3641,8 +3645,8 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/Stake.tsx
-msgid "Unstake esGMX"
-msgstr "解除质押 esGMX"
+#~ msgid "Unstake esGMX"
+#~ msgstr "解除质押 esGMX"
 
 #: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "Why do I receive two different GLV tokens?"
@@ -4395,8 +4399,8 @@ msgstr "Firebird Finance"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/Stake.tsx
-msgid "Stake GMX"
-msgstr "质押 GMX"
+#~ msgid "Stake GMX"
+#~ msgstr "质押 GMX"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
@@ -4426,6 +4430,10 @@ msgstr "原因：{0}"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Approval nonce expired. Please sign a new approval."
 msgstr "一键批准 nonce 已过期。请签署新的批准。"
+
+#: src/pages/Stake/StakeModal.tsx
+msgid "Pending {tokenSymbol} approval"
+msgstr ""
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
@@ -4583,6 +4591,10 @@ msgstr "一键设置"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Announcements"
 msgstr "GMX 公告"
+
+#: src/pages/Stake/StakeModal.tsx
+msgid "Approve {tokenSymbol} to be spent"
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is only settled on position decrease. <0>Read more</0>"
@@ -5171,7 +5183,7 @@ msgid "Enter your answer here."
 msgstr ""
 
 #: src/pages/Stake/StakeModal.tsx
-#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Max amount exceeded"
 msgstr "超出最大金额"
@@ -5778,7 +5790,7 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/StakeModal.tsx
-#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Enter an amount"
 msgstr "输入金额"
@@ -6732,6 +6744,10 @@ msgstr "此规模的增加空头没有可用流动性。最大空头规模：{0}
 msgid "Seamless Trading"
 msgstr ""
 
+#: src/pages/Stake/StakeModal.tsx
+msgid "Stake {tokenSymbol}"
+msgstr ""
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
 msgstr "{nativeTokenSymbol} 年利率"
@@ -6809,7 +6825,7 @@ msgstr "{increaseOrDecreaseText} {tokenText} 按 {sizeText}"
 msgid "Dark"
 msgstr ""
 
-#: src/pages/Stake/UnstakeModal.tsx
+#: src/pages/Stake/StakeModal.tsx
 msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
 msgstr "{0}<0>通过此操作，您将赚取 {1}% 更少的奖励。</0>"
 
@@ -6948,8 +6964,8 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/Stake.tsx
-msgid "Stake esGMX"
-msgstr "质押 esGMX"
+#~ msgid "Stake esGMX"
+#~ msgstr "质押 esGMX"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7584,6 +7600,10 @@ msgstr "频率"
 msgid "Loading Express params"
 msgstr ""
 
+#: src/pages/Stake/StakeModal.tsx
+msgid "You have {0} tokens reserved for vesting."
+msgstr ""
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No funding activity matching your search"
 msgstr ""
@@ -7929,8 +7949,8 @@ msgstr "您的旧版 1CT 子账户中剩余 {balanceFormatted}。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
-msgid "Unstake GMX"
-msgstr "取消质押 GMX"
+#~ msgid "Unstake GMX"
+#~ msgstr "取消质押 GMX"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>"

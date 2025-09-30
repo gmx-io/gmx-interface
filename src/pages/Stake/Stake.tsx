@@ -28,9 +28,8 @@ import UserIncentiveDistributionList from "components/UserIncentiveDistributionL
 
 import { EscrowedGmxCard } from "./EscrowedGmxCard";
 import { GmxAndVotingPowerCard } from "./GmxAndVotingPowerCard";
-import { StakeModal } from "./StakeModal";
+import { StakeModal, StakeModalTabConfig } from "./StakeModal";
 import { TotalRewardsCard } from "./TotalRewardsCard";
-import { UnstakeModal } from "./UnstakeModal";
 import { useProcessedData } from "./useProcessedData";
 import { Vesting } from "./Vesting";
 
@@ -71,17 +70,13 @@ function StakeContent() {
 
   const { setPendingTxns } = usePendingTxns();
 
-  const [isStakeGmxModalVisible, setIsStakeGmxModalVisible] = useState(false);
+  const [isGmxModalVisible, setIsGmxModalVisible] = useState(false);
   const [stakeGmxValue, setStakeGmxValue] = useState("");
-  const [isStakeEsGmxModalVisible, setIsStakeEsGmxModalVisible] = useState(false);
-  const [stakeEsGmxValue, setStakeEsGmxValue] = useState("");
+  const [unstakeGmxValue, setUnstakeGmxValue] = useState("");
 
-  const [isUnstakeModalVisible, setIsUnstakeModalVisible] = useState(false);
-  const [unstakeModalTitle, setUnstakeModalTitle] = useState("");
-  const [unstakeModalMaxAmount, setUnstakeModalMaxAmount] = useState<bigint | undefined>(undefined);
-  const [unstakeValue, setUnstakeValue] = useState("");
-  const [unstakingTokenSymbol, setUnstakingTokenSymbol] = useState("");
-  const [unstakeMethodName, setUnstakeMethodName] = useState("");
+  const [isEsGmxModalVisible, setIsEsGmxModalVisible] = useState(false);
+  const [stakeEsGmxValue, setStakeEsGmxValue] = useState("");
+  const [unstakeEsGmxValue, setUnstakeEsGmxValue] = useState("");
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
 
@@ -120,6 +115,32 @@ function StakeContent() {
       processedData?.gmxInStakedGmx + processedData?.esGmxInStakedGmx - sbfGmxBalance) ||
     0n;
 
+  const gmxUnstakeMaxAmount = useMemo(() => {
+    const stakedGmx = processedData?.gmxInStakedGmx;
+    if (stakedGmx === undefined) {
+      return undefined;
+    }
+
+    if (sbfGmxBalance === undefined) {
+      return stakedGmx;
+    }
+
+    return bigMath.min(stakedGmx, sbfGmxBalance);
+  }, [processedData?.gmxInStakedGmx, sbfGmxBalance]);
+
+  const esGmxUnstakeMaxAmount = useMemo(() => {
+    const stakedEsGmx = processedData?.esGmxInStakedGmx;
+    if (stakedEsGmx === undefined) {
+      return undefined;
+    }
+
+    if (sbfGmxBalance === undefined) {
+      return stakedEsGmx;
+    }
+
+    return bigMath.min(stakedEsGmx, sbfGmxBalance);
+  }, [processedData?.esGmxInStakedGmx, sbfGmxBalance]);
+
   let totalRewardTokens;
 
   if (processedData && processedData.bonusGmxInFeeGmx !== undefined) {
@@ -135,29 +156,24 @@ function StakeContent() {
   }
 
   const showStakeGmxModal = useCallback(() => {
-    setIsStakeGmxModalVisible(true);
+    setIsGmxModalVisible(true);
     setStakeGmxValue("");
   }, []);
 
   const showStakeEsGmxModal = useCallback(() => {
-    setIsStakeEsGmxModalVisible(true);
+    setIsEsGmxModalVisible(true);
     setStakeEsGmxValue("");
   }, []);
 
-  const showUnstakeEsGmxModal = () => {
-    setIsUnstakeModalVisible(true);
-    setUnstakeModalTitle(t`Unstake esGMX`);
-    let maxAmount = processedData?.esGmxInStakedGmx;
+  const showUnstakeGmxModal = useCallback(() => {
+    setIsGmxModalVisible(true);
+    setUnstakeGmxValue("");
+  }, []);
 
-    if (maxAmount !== undefined) {
-      maxAmount = bigMath.min(maxAmount, sbfGmxBalance);
-    }
-
-    setUnstakeModalMaxAmount(maxAmount);
-    setUnstakeValue("");
-    setUnstakingTokenSymbol("esGMX");
-    setUnstakeMethodName("unstakeEsGmx");
-  };
+  const showUnstakeEsGmxModal = useCallback(() => {
+    setIsEsGmxModalVisible(true);
+    setUnstakeEsGmxValue("");
+  }, []);
 
   let earnMsg;
   if (totalRewardAndLpTokens && totalRewardAndLpTokens > 0) {
@@ -189,60 +205,75 @@ function StakeContent() {
     );
   }
 
+  const stakeGmxConfig: StakeModalTabConfig = useMemo(
+    () => ({
+      maxAmount: processedData?.gmxBalance,
+      value: stakeGmxValue,
+      setValue: setStakeGmxValue,
+    }),
+    [processedData?.gmxBalance, stakeGmxValue, setStakeGmxValue]
+  );
+
+  const unstakeGmxConfig: StakeModalTabConfig = useMemo(
+    () => ({
+      maxAmount: gmxUnstakeMaxAmount,
+      value: unstakeGmxValue,
+      setValue: setUnstakeGmxValue,
+    }),
+    [gmxUnstakeMaxAmount, unstakeGmxValue, setUnstakeGmxValue]
+  );
+
+  const stakeEsGmxConfig: StakeModalTabConfig = useMemo(
+    () => ({
+      maxAmount: processedData?.esGmxBalance,
+      value: stakeEsGmxValue,
+      setValue: setStakeEsGmxValue,
+    }),
+    [processedData?.esGmxBalance, stakeEsGmxValue, setStakeEsGmxValue]
+  );
+
+  const unstakeEsGmxConfig: StakeModalTabConfig = useMemo(
+    () => ({
+      maxAmount: esGmxUnstakeMaxAmount,
+      value: unstakeEsGmxValue,
+      setValue: setUnstakeEsGmxValue,
+    }),
+    [esGmxUnstakeMaxAmount, unstakeEsGmxValue, setUnstakeEsGmxValue]
+  );
+
   return (
     <div className="default-container page-layout">
       <SEO title={getPageTitle(t`Stake`)} />
 
       <StakeModal
-        isVisible={isStakeGmxModalVisible}
-        setIsVisible={setIsStakeGmxModalVisible}
+        isVisible={isGmxModalVisible}
+        setIsVisible={setIsGmxModalVisible}
         chainId={chainId}
-        title={t`Stake GMX`}
-        maxAmount={processedData?.gmxBalance}
-        value={stakeGmxValue}
-        setValue={setStakeGmxValue}
         signer={signer}
-        stakingTokenSymbol="GMX"
-        stakingTokenAddress={gmxAddress}
-        farmAddress={stakedGmxTrackerAddress}
+        tokenSymbol="GMX"
         rewardRouterAddress={rewardRouterAddress}
-        stakeMethodName="stakeGmx"
+        stakeTokenAddress={gmxAddress}
+        stakeFarmAddress={stakedGmxTrackerAddress}
+        reservedAmount={reservedAmount}
+        stake={stakeGmxConfig}
+        unstake={unstakeGmxConfig}
         setPendingTxns={setPendingTxns}
         processedData={processedData}
       />
 
       <StakeModal
-        isVisible={isStakeEsGmxModalVisible}
-        setIsVisible={setIsStakeEsGmxModalVisible}
+        isVisible={isEsGmxModalVisible}
+        setIsVisible={setIsEsGmxModalVisible}
         chainId={chainId}
-        title={t`Stake esGMX`}
-        maxAmount={processedData?.esGmxBalance}
-        value={stakeEsGmxValue}
-        setValue={setStakeEsGmxValue}
         signer={signer}
-        stakingTokenSymbol="esGMX"
-        stakingTokenAddress={esGmxAddress}
-        farmAddress={zeroAddress}
+        tokenSymbol="esGMX"
         rewardRouterAddress={rewardRouterAddress}
-        stakeMethodName="stakeEsGmx"
-        setPendingTxns={setPendingTxns}
-        processedData={processedData}
-      />
-
-      <UnstakeModal
-        setPendingTxns={setPendingTxns}
-        isVisible={isUnstakeModalVisible}
-        setIsVisible={setIsUnstakeModalVisible}
-        chainId={chainId}
-        title={unstakeModalTitle}
-        maxAmount={unstakeModalMaxAmount}
+        stakeTokenAddress={esGmxAddress}
+        stakeFarmAddress={zeroAddress}
         reservedAmount={reservedAmount}
-        value={unstakeValue}
-        setValue={setUnstakeValue}
-        signer={signer}
-        unstakingTokenSymbol={unstakingTokenSymbol}
-        rewardRouterAddress={rewardRouterAddress}
-        unstakeMethodName={unstakeMethodName}
+        stake={stakeEsGmxConfig}
+        unstake={unstakeEsGmxConfig}
+        setPendingTxns={setPendingTxns}
         processedData={processedData}
       />
 
@@ -267,13 +298,8 @@ function StakeContent() {
           <GmxAndVotingPowerCard
             processedData={processedData}
             sbfGmxBalance={sbfGmxBalance}
-            setIsUnstakeModalVisible={setIsUnstakeModalVisible}
-            setUnstakeModalTitle={setUnstakeModalTitle}
-            setUnstakeModalMaxAmount={setUnstakeModalMaxAmount}
-            setUnstakeValue={setUnstakeValue}
-            setUnstakingTokenSymbol={setUnstakingTokenSymbol}
-            setUnstakeMethodName={setUnstakeMethodName}
             showStakeGmxModal={showStakeGmxModal}
+            showUnstakeGmxModal={showUnstakeGmxModal}
           />
           <TotalRewardsCard processedData={processedData} showStakeGmxModal={showStakeGmxModal} />
           <EscrowedGmxCard
