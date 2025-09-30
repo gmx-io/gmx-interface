@@ -1436,6 +1436,7 @@ msgstr "Waiting for remaining Safe confirmations..."
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the order."
 msgstr "Mark price for the order."
 

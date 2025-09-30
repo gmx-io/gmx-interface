@@ -1436,6 +1436,7 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the order."
 msgstr "Prix mark pour l'ordre."
 

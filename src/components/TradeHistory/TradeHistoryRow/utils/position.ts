@@ -198,7 +198,7 @@ export const formatPositionMessage = (
     const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
 
     const priceComment =
-      sizeDeltaUsd > 0
+      sizeDeltaUsd > 0 && priceImpactLines.length > 0
         ? lines(t`Mark price for the order.`, "", ...priceImpactLines)
         : lines(t`Mark price for the order.`);
 
@@ -401,7 +401,10 @@ export const formatPositionMessage = (
     result = {
       action: customAction,
       size: customSize,
-      priceComment: lines(t`Mark price for the order.`, ...priceImpactLines),
+      priceComment:
+        priceImpactLines.length > 0
+          ? lines(t`Mark price for the order.`, "", ...priceImpactLines)
+          : lines(t`Mark price for the order.`),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
       pnl: formattedPnl,
       pnlState: numberToState(tradeAction.pnlUsd),
