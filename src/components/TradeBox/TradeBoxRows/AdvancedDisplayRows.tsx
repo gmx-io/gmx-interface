@@ -218,7 +218,9 @@ export function TradeBoxAdvancedGroups({
       contentClassName="flex flex-col gap-14"
       scrollIntoViewOnMobile
     >
-      {isTrigger ? <ExitPriceRow isSwap={isSwap} fees={fees} markPrice={markPrice} isLong={isLong} /> : null}
+      {isTrigger ? (
+        <ExitPriceRow isSwap={isSwap} fees={fees} price={isTrigger ? limitPrice : markPrice} isLong={isLong} />
+      ) : null}
       {(isLimit || isTrigger || isTwap) && !isSwap && isSetAcceptablePriceImpactEnabled && (
         <>
           <AcceptablePriceImpactInputRow

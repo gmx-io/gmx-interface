@@ -12,22 +12,22 @@ import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 const ONE_HUNDRED_PERCENT = expandDecimals(100n, PERCENT_PRECISION_DECIMALS);
 
 export function ExitPriceRow({
-  markPrice,
+  price,
   isLong,
   isSwap,
   fees,
 }: {
-  markPrice: bigint | undefined;
+  price: bigint | undefined;
   isLong: boolean;
   isSwap: boolean;
   fees: TradeFees | undefined;
 }) {
   const cappedPriceImpact = getCappedPriceImpactPercentageFromFees({ fees, isSwap });
   const exitPrice =
-    cappedPriceImpact !== undefined && markPrice !== undefined
+    cappedPriceImpact !== undefined && price !== undefined
       ? isLong
-        ? bigMath.mulDiv(markPrice, ONE_HUNDRED_PERCENT + cappedPriceImpact, ONE_HUNDRED_PERCENT)
-        : bigMath.mulDiv(markPrice, ONE_HUNDRED_PERCENT - cappedPriceImpact, ONE_HUNDRED_PERCENT)
+        ? bigMath.mulDiv(price, ONE_HUNDRED_PERCENT + cappedPriceImpact, ONE_HUNDRED_PERCENT)
+        : bigMath.mulDiv(price, ONE_HUNDRED_PERCENT - cappedPriceImpact, ONE_HUNDRED_PERCENT)
       : undefined;
 
   return (
