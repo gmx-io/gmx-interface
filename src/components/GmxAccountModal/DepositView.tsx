@@ -659,8 +659,8 @@ export const DepositView = () => {
     buttonState = {
       text:
         depositViewChain !== undefined
-          ? t`No assets available for deposit on ${getChainName(depositViewChain)}`
-          : t`No assets available for deposit`,
+          ? t`No eligible tokens available on ${getChainName(depositViewChain)} for deposit`
+          : t`No eligible tokens available for deposit`,
       disabled: true,
     };
   } else if (needTokenApprove) {
@@ -757,9 +757,9 @@ export const DepositView = () => {
             <div className="rounded-8 border border-slate-800 bg-slate-800 px-14 py-13 text-typography-secondary">
               <span className="flex min-h-20 items-center">
                 {depositViewChain !== undefined ? (
-                  <Trans>No assets available for deposit on {getChainName(depositViewChain)}</Trans>
+                  <Trans>No eligible tokens available on ${getChainName(depositViewChain)} for deposit</Trans>
                 ) : (
-                  <Trans>No assets available for deposit</Trans>
+                  <Trans>No eligible tokens available for deposit</Trans>
                 )}
               </span>
             </div>
