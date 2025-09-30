@@ -1,20 +1,16 @@
 import { t } from "@lingui/macro";
 import { ethers } from "ethers";
 import mapKeys from "lodash/mapKeys";
-import useSWR from "swr";
 import { useEnsName } from "wagmi";
 
-import { getServerBaseUrl } from "config/backend";
-import { CHAIN_ID, ETH_MAINNET, getExplorerUrl, ContractsChainId } from "config/chains";
+import { CHAIN_ID, ETH_MAINNET, getExplorerUrl } from "config/chains";
 import { getContract } from "config/contracts";
 import { isLocal } from "config/env";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { PRODUCTION_HOST } from "config/links";
 import { TokenInfo, getMostAbundantStableToken } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
-import { abis } from "sdk/abis";
-import { isValidToken } from "sdk/configs/tokens";
 
-import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
 import {
   PRECISION,
@@ -25,8 +21,6 @@ import {
   formatAmount,
   adjustForDecimals,
 } from "./numbers";
-import { getProvider } from "./rpc";
-import useWallet from "./wallets/useWallet";
 
 export { adjustForDecimals } from "./numbers";
 
@@ -58,8 +52,6 @@ export const STABLE_SWAP_FEE_BASIS_POINTS = 1;
 export const MARGIN_FEE_BASIS_POINTS = 10;
 
 export const LIQUIDATION_FEE = expandDecimals(5, USD_DECIMALS);
-
-export const TRADES_PAGE_SIZE = 100;
 
 export const GLP_COOLDOWN_DURATION = 0;
 export const THRESHOLD_REDEMPTION_VALUE = expandDecimals(993, 27); // 0.993
@@ -97,7 +89,7 @@ export const MAX_REFERRAL_CODE_LENGTH = 20;
 
 export const MIN_PROFIT_BIPS = 0;
 
-export const TOKEN_IMG_DIR = "/src/img/";
+// Removed: TOKEN_IMG_DIR (unused)
 
 export function deserialize(data) {
   return deserializeBigIntsInObject(data);
@@ -780,209 +772,12 @@ export function useENS(address) {
   return { ensName };
 }
 
-function _parseOrdersData(ordersData, account, indexes, extractor, uintPropsLength, addressPropsLength) {
-  if (!ordersData || ordersData.length === 0) {
-    return [];
-  }
-  const [uintProps, addressProps] = ordersData;
-  const count = uintProps.length / uintPropsLength;
+// Removed: order parsing helpers (unused)
+// Removed: order parsing helpers (unused)
 
-  const orders: any[] = [];
-  for (let i = 0; i < count; i++) {
-    const sliced = addressProps
-      .slice(addressPropsLength * i, addressPropsLength * (i + 1))
-      .concat(uintProps.slice(uintPropsLength * i, uintPropsLength * (i + 1)));
+// Removed: getOrderKey (unused)
 
-    if (sliced[0] === ZeroAddress && sliced[1] === ZeroAddress) {
-      continue;
-    }
-
-    const order = extractor(sliced);
-    order.index = indexes[i];
-    order.account = account;
-    orders.push(order);
-  }
-
-  return orders;
-}
-
-function parseDecreaseOrdersData(chainId, decreaseOrdersData, account, indexes) {
-  const extractor = (sliced) => {
-    const isLong = sliced[4].toString() === "1";
-    return {
-      collateralToken: sliced[0],
-      indexToken: sliced[1],
-      collateralDelta: sliced[2],
-      sizeDelta: sliced[3],
-      isLong,
-      triggerPrice: sliced[5],
-      triggerAboveThreshold: sliced[6].toString() === "1",
-      type: DECREASE,
-    };
-  };
-  return _parseOrdersData(decreaseOrdersData, account, indexes, extractor, 5, 2).filter((order) => {
-    return isValidToken(chainId, order.collateralToken) && isValidToken(chainId, order.indexToken);
-  });
-}
-
-function parseIncreaseOrdersData(chainId, increaseOrdersData, account, indexes) {
-  const extractor = (sliced) => {
-    const isLong = sliced[5].toString() === "1";
-    return {
-      purchaseToken: sliced[0],
-      collateralToken: sliced[1],
-      indexToken: sliced[2],
-      purchaseTokenAmount: sliced[3],
-      sizeDelta: sliced[4],
-      isLong,
-      triggerPrice: sliced[6],
-      triggerAboveThreshold: sliced[7].toString() === "1",
-      type: INCREASE,
-    };
-  };
-  return _parseOrdersData(increaseOrdersData, account, indexes, extractor, 5, 3).filter((order) => {
-    return (
-      isValidToken(chainId, order.purchaseToken) &&
-      isValidToken(chainId, order.collateralToken) &&
-      isValidToken(chainId, order.indexToken)
-    );
-  });
-}
-
-function parseSwapOrdersData(chainId, swapOrdersData, account, indexes) {
-  if (!swapOrdersData || !swapOrdersData.length) {
-    return [];
-  }
-
-  const extractor = (sliced) => {
-    const triggerAboveThreshold = sliced[6].toString() === "1";
-    const shouldUnwrap = sliced[7].toString() === "1";
-
-    return {
-      path: [sliced[0], sliced[1], sliced[2]].filter((address) => address !== ZeroAddress),
-      amountIn: sliced[3],
-      minOut: sliced[4],
-      triggerRatio: sliced[5],
-      triggerAboveThreshold,
-      type: SWAP,
-      shouldUnwrap,
-    };
-  };
-  return _parseOrdersData(swapOrdersData, account, indexes, extractor, 5, 3).filter((order) => {
-    return order.path.every((token) => isValidToken(chainId, token));
-  });
-}
-
-export function getOrderKey(order) {
-  return `${order.type}-${order.account}-${order.index}`;
-}
-
-export function useAccountOrders(
-  flagOrdersEnabled: boolean,
-  overrideAccount?: string,
-  overrideChainId?: ContractsChainId,
-  overrideSigner?: ethers.JsonRpcSigner,
-  overrideActive?: boolean
-) {
-  const { signer: fallbackSigner, account: connectedAccount } = useWallet();
-  const signer = overrideSigner || fallbackSigner;
-
-  const active = overrideActive ?? true; // this is used in Actions.js so set active to always be true
-  const account = overrideAccount || connectedAccount;
-
-  const { chainId: fallbackChainId } = useChainId();
-  const chainId = overrideChainId || fallbackChainId;
-  const shouldRequest = active && account && flagOrdersEnabled;
-
-  const orderBookAddress = getContract(chainId, "OrderBook");
-  const orderBookReaderAddress = getContract(chainId, "OrderBookReader");
-  const key: any = shouldRequest ? [active, chainId, orderBookAddress, account] : false;
-  const {
-    data: orders = [],
-    mutate: updateOrders,
-    error: ordersError,
-  } = useSWR(key, {
-    dedupingInterval: 5000,
-    fetcher: async ([, chainId, orderBookAddress, account]) => {
-      const provider = getProvider(signer, chainId);
-      const orderBookContract = new ethers.Contract(orderBookAddress, abis.OrderBook, provider);
-      const orderBookReaderContract = new ethers.Contract(orderBookReaderAddress, abis.OrderBookReader, provider);
-
-      const fetchIndexesFromServer = () => {
-        const ordersIndexesUrl = `${getServerBaseUrl(chainId)}/orders_indices?account=${account}`;
-        return fetch(ordersIndexesUrl)
-          .then(async (res) => {
-            const json = await res.json();
-            const ret = {};
-            for (const key of Object.keys(json)) {
-              ret[key.toLowerCase()] = json[key].map((val) => parseInt(val.value)).sort((a, b) => a - b);
-            }
-
-            return ret;
-          })
-          .catch(() => ({ swap: [], increase: [], decrease: [] }));
-      };
-
-      const fetchLastIndex = async (type) => {
-        const method = type.toLowerCase() + "OrdersIndex";
-        return await orderBookContract[method](account).then((res) => Number(res));
-      };
-
-      const fetchLastIndexes = async () => {
-        const [swap, increase, decrease] = await Promise.all([
-          fetchLastIndex("swap"),
-          fetchLastIndex("increase"),
-          fetchLastIndex("decrease"),
-        ]);
-
-        return { swap, increase, decrease };
-      };
-
-      const getRange = (to: number, from?: number) => {
-        const LIMIT = 10;
-        const _indexes: number[] = [];
-        from = from || Math.max(to - LIMIT, 0);
-        for (let i = to - 1; i >= from; i--) {
-          _indexes.push(i);
-        }
-        return _indexes;
-      };
-
-      const getIndexes = (knownIndexes, lastIndex) => {
-        if (knownIndexes.length === 0) {
-          return getRange(lastIndex);
-        }
-        return [
-          ...knownIndexes,
-          ...getRange(lastIndex, knownIndexes[knownIndexes.length - 1] + 1).sort((a, b) => b - a),
-        ];
-      };
-
-      const getOrders = async (method, knownIndexes, lastIndex, parseFunc) => {
-        const indexes = getIndexes(knownIndexes, lastIndex);
-        const ordersData = await orderBookReaderContract[method](orderBookAddress, account, indexes);
-        const orders = parseFunc(chainId, ordersData, account, indexes);
-
-        return orders;
-      };
-
-      try {
-        const [serverIndexes, lastIndexes]: any = await Promise.all([fetchIndexesFromServer(), fetchLastIndexes()]);
-        const [swapOrders = [], increaseOrders = [], decreaseOrders = []] = await Promise.all([
-          getOrders("getSwapOrders", serverIndexes.swap, lastIndexes.swap, parseSwapOrdersData),
-          getOrders("getIncreaseOrders", serverIndexes.increase, lastIndexes.increase, parseIncreaseOrdersData),
-          getOrders("getDecreaseOrders", serverIndexes.decrease, lastIndexes.decrease, parseDecreaseOrdersData),
-        ]);
-        return [...swapOrders, ...increaseOrders, ...decreaseOrders];
-      } catch (ex) {
-        // eslint-disable-next-line no-console
-        console.error(ex);
-      }
-    },
-  });
-
-  return [orders, updateOrders, ordersError];
-}
+// Removed: useAccountOrders and related order parsing helpers (unused)
 
 export function getAccountUrl(chainId: number, account: string) {
   if (!account) {
@@ -991,9 +786,7 @@ export function getAccountUrl(chainId: number, account: string) {
   return getExplorerUrl(chainId) + "address/" + account;
 }
 
-export function isMobileDevice(navigator) {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-}
+// Removed: isMobileDevice (unused)
 
 export const CHART_PERIODS = {
   "1m": 60,
@@ -1469,7 +1262,7 @@ export function getAppBaseUrl() {
     return "http://localhost:3011/#";
   }
 
-  return "https://app.gmx.io/#";
+  return PRODUCTION_HOST;
 }
 
 export function getRootShareApiUrl() {
@@ -1485,7 +1278,7 @@ export function getTradePageUrl() {
     return "http://localhost:3011/#/trade";
   }
 
-  return "https://app.gmx.io/#/trade";
+  return PRODUCTION_HOST + "/#/trade";
 }
 
 // Resolves all images in the folder that match the pattern and store them as `fileName -> path` pairs

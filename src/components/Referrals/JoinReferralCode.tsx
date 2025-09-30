@@ -40,9 +40,9 @@ import type { IStargate } from "typechain-types-stargate";
 import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import Button from "components/Button/Button";
-import { useMultichainTokensRequest } from "components/Synthetics/GmxAccountModal/hooks";
-import { toastCustomOrStargateError } from "components/Synthetics/GmxAccountModal/toastCustomOrStargateError";
-import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
+import { useMultichainTokensRequest } from "components/GmxAccountModal/hooks";
+import { toastCustomOrStargateError } from "components/GmxAccountModal/toastCustomOrStargateError";
+import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 

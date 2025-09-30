@@ -19,9 +19,9 @@ import { searchBy } from "lib/searchBy";
 import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
+import { useGlvGmMarketsWithComposition } from "components/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
-import { useGlvGmMarketsWithComposition } from "components/Synthetics/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -53,13 +53,15 @@ function PoolLabel({
 
   return (
     <div
-      className={cx("flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300", {
+      className={cx("group flex cursor-pointer items-center gap-4 whitespace-nowrap hover:text-blue-300", {
         "pointer-events-none": disablePoolSelector,
       })}
       onClick={!disablePoolSelector ? onClick : undefined}
     >
       {getMarketIndexName(marketInfo)} [{getMarketPoolName(marketInfo)}]
-      {!disablePoolSelector && <ChevronDownIcon className="size-16" />}
+      {!disablePoolSelector && (
+        <ChevronDownIcon className="size-16 text-typography-secondary group-hover:text-blue-300" />
+      )}
     </div>
   );
 }

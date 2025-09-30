@@ -193,7 +193,7 @@ function useMarketInfos() {
 function usePerformanceByChainId(chainId: number) {
   const fetcher = useOracleKeeperFetcher(chainId);
   return useSWR(["performance", chainId], async () => {
-    const res = await fetcher.fetchPerformance("90d");
+    const res = await fetcher.fetchPerformanceAnnualized("90d");
     return res;
   });
 }

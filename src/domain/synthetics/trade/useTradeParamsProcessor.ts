@@ -1,9 +1,11 @@
 import isMatch from "lodash/isMatch";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useLatest } from "react-use";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "config/chains";
+import { isContractsChain } from "config/chains";
+import { isDevelopment } from "config/env";
+import { isSourceChain } from "config/multichain";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxCollateralTokenAddress,
@@ -33,14 +35,6 @@ type TradeOptions = {
   collateralAddress?: string;
 };
 
-const validChainIds: Record<ContractsChainId, true> = {
-  [ARBITRUM]: true,
-  [AVALANCHE]: true,
-  [AVALANCHE_FUJI]: true,
-  [BOTANIX]: true,
-  [ARBITRUM_SEPOLIA]: true,
-};
-
 export function useTradeParamsProcessor() {
   const setTradeConfig = useSelector(selectTradeboxSetTradeConfig);
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
@@ -60,123 +54,138 @@ export function useTradeParamsProcessor() {
     collateralAddress: useSelector(selectTradeboxCollateralTokenAddress),
   });
 
+  const changingNetwork = useRef(false);
   useEffect(() => {
-    const { tradeType } = params;
-    const {
-      mode: tradeMode,
-      from: fromToken,
-      to,
-      market,
-      pool,
-      collateral: collateralToken,
-      chainId: chainIdFromParams,
-    } = searchParams;
-
-    if (chainIdFromParams && validChainIds[chainIdFromParams]) {
-      switchNetwork(Number(chainIdFromParams), true);
+    if (changingNetwork.current) {
+      return;
     }
+    changingNetwork.current = true;
 
-    const toToken = to ?? market;
+    async function changeNetwork() {
+      const { tradeType } = params;
+      const {
+        mode: tradeMode,
+        from: fromToken,
+        to,
+        market,
+        pool,
+        collateral: collateralToken,
+        chainId: chainIdFromParams,
+      } = searchParams;
 
-    const tradeOptions: TradeOptions = {};
-
-    if (tradeType) {
-      const validTradeType = getMatchingValueFromObject(TradeType, tradeType);
-      if (validTradeType) {
-        tradeOptions.tradeType = validTradeType as TradeType;
+      if (
+        chainIdFromParams &&
+        (isContractsChain(Number(chainIdFromParams), isDevelopment()) || isSourceChain(Number(chainIdFromParams)))
+      ) {
+        await switchNetwork(Number(chainIdFromParams), true);
       }
-    }
 
-    if (tradeMode) {
-      if (tradeMode.toLowerCase() === "tpsl") {
-        tradeOptions.tradeMode = TradeMode.Trigger;
-      } else {
-        const validTradeMode = getMatchingValueFromObject(TradeMode, tradeMode);
-        if (validTradeMode) {
-          tradeOptions.tradeMode = validTradeMode as TradeMode;
-        }
-      }
-    }
+      const toToken = to ?? market;
 
-    if (fromToken) {
-      const fromTokenInfo = getTokenBySymbolSafe(chainId, fromToken, {
-        version: "v2",
-      });
-      if (fromTokenInfo) {
-        tradeOptions.fromTokenAddress = fromTokenInfo?.address;
-      }
-    }
+      const tradeOptions: TradeOptions = {};
 
-    if (collateralToken) {
-      const collateralTokenInfo = getTokenBySymbolSafe(chainId, collateralToken, {
-        version: "v2",
-      });
-      if (collateralTokenInfo) {
-        tradeOptions.collateralAddress = collateralTokenInfo?.address;
-      }
-    }
-
-    if (toToken && markets.length > 0) {
-      const toTokenInfo = getTokenBySymbolSafe(chainId, toToken, {
-        version: "v2",
-      });
-
-      if (toTokenInfo) {
-        const isSwapTrade = tradeOptions.tradeType === TradeType.Swap;
-        const isLongOrShortTrade =
-          tradeOptions.tradeType === TradeType.Long || tradeOptions.tradeType === TradeType.Short;
-        const isTokenInSwapList = isSwapTrade && isTokenInList(toTokenInfo, swapTokens);
-        const isTokenInIndexList = isLongOrShortTrade && isTokenInList(toTokenInfo, indexTokens);
-
-        if (isTokenInSwapList || isTokenInIndexList) {
-          tradeOptions.toTokenAddress = toTokenInfo.address;
+      if (tradeType) {
+        const validTradeType = getMatchingValueFromObject(TradeType, tradeType);
+        if (validTradeType) {
+          tradeOptions.tradeType = validTradeType as TradeType;
         }
       }
 
-      if (pool) {
-        const marketPool = markets.find((market) => {
-          const poolName = getMarketPoolName(market);
-          const isSameMarket = market.indexTokenAddress === tradeOptions.toTokenAddress;
-          return isSameMarket && poolName.toLowerCase() === pool.toLowerCase();
+      if (tradeMode) {
+        if (tradeMode.toLowerCase() === "tpsl") {
+          tradeOptions.tradeMode = TradeMode.Trigger;
+        } else {
+          const validTradeMode = getMatchingValueFromObject(TradeMode, tradeMode);
+          if (validTradeMode) {
+            tradeOptions.tradeMode = validTradeMode as TradeMode;
+          }
+        }
+      }
+
+      if (fromToken) {
+        const fromTokenInfo = getTokenBySymbolSafe(chainId, fromToken, {
+          version: "v2",
         });
-        if (marketPool) {
-          tradeOptions.marketAddress = marketPool?.marketTokenAddress;
+        if (fromTokenInfo) {
+          tradeOptions.fromTokenAddress = fromTokenInfo?.address;
         }
       }
-      setTimeout(() => {
-        if (history.location.search) {
-          const query = new URLSearchParams(history.location.search);
-          query.delete("mode");
-          query.delete("from");
-          query.delete("to");
-          query.delete("market");
-          query.delete("pool");
-          query.delete("collateral");
-          query.delete("chainId");
-          history.replace({ search: query.toString() });
+
+      if (collateralToken) {
+        const collateralTokenInfo = getTokenBySymbolSafe(chainId, collateralToken, {
+          version: "v2",
+        });
+        if (collateralTokenInfo) {
+          tradeOptions.collateralAddress = collateralTokenInfo?.address;
         }
-      }, 2000);
+      }
+
+      if (toToken && markets.length > 0) {
+        const toTokenInfo = getTokenBySymbolSafe(chainId, toToken, {
+          version: "v2",
+        });
+
+        if (toTokenInfo) {
+          const isSwapTrade = tradeOptions.tradeType === TradeType.Swap;
+          const isLongOrShortTrade =
+            tradeOptions.tradeType === TradeType.Long || tradeOptions.tradeType === TradeType.Short;
+          const isTokenInSwapList = isSwapTrade && isTokenInList(toTokenInfo, swapTokens);
+          const isTokenInIndexList = isLongOrShortTrade && isTokenInList(toTokenInfo, indexTokens);
+
+          if (isTokenInSwapList || isTokenInIndexList) {
+            tradeOptions.toTokenAddress = toTokenInfo.address;
+          }
+        }
+
+        if (pool) {
+          const marketPool = markets.find((market) => {
+            const poolName = getMarketPoolName(market);
+            const isSameMarket = market.indexTokenAddress === tradeOptions.toTokenAddress;
+            return isSameMarket && poolName.toLowerCase() === pool.toLowerCase();
+          });
+          if (marketPool) {
+            tradeOptions.marketAddress = marketPool?.marketTokenAddress;
+          }
+        }
+        setTimeout(() => {
+          if (history.location.search) {
+            const query = new URLSearchParams(history.location.search);
+            query.delete("mode");
+            query.delete("from");
+            query.delete("to");
+            query.delete("market");
+            query.delete("pool");
+            query.delete("collateral");
+            query.delete("chainId");
+            history.replace({ search: query.toString() });
+          }
+        }, 2000);
+      }
+
+      if (!isMatch(latestTradeOptions.current, tradeOptions)) {
+        setTradeConfig(tradeOptions);
+      }
+
+      if (history.location.search && !toToken && !pool) {
+        setTimeout(() => {
+          if (history.location.search) {
+            const query = new URLSearchParams(history.location.search);
+            query.delete("mode");
+            query.delete("from");
+            query.delete("to");
+            query.delete("market");
+            query.delete("pool");
+            query.delete("collateral");
+            query.delete("chainId");
+            history.replace({ search: query.toString() });
+          }
+        }, 2000);
+      }
     }
 
-    if (!isMatch(latestTradeOptions.current, tradeOptions)) {
-      setTradeConfig(tradeOptions);
-    }
-
-    if (history.location.search && !toToken && !pool) {
-      setTimeout(() => {
-        if (history.location.search) {
-          const query = new URLSearchParams(history.location.search);
-          query.delete("mode");
-          query.delete("from");
-          query.delete("to");
-          query.delete("market");
-          query.delete("pool");
-          query.delete("collateral");
-          query.delete("chainId");
-          history.replace({ search: query.toString() });
-        }
-      }, 2000);
-    }
+    changeNetwork().then(() => {
+      changingNetwork.current = false;
+    });
   }, [
     params,
     searchParams,

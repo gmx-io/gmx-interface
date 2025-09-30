@@ -9,7 +9,7 @@ import { useChainId } from "lib/chains";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { Breadcrumbs, BreadcrumbItem } from "components/Breadcrumbs/Breadcrumbs";
-import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
+import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 
 import { LeaderboardContainer } from "./components/LeaderboardContainer";
 import "./LeaderboardPage.scss";

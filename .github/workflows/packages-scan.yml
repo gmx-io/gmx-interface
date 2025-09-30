@@ -1,0 +1,39 @@
+name: Packages Scan
+
+on:
+  pull_request:
+    branches:
+      - master
+      - release-*
+    types: [opened, edited, synchronized, reopened]
+  workflow_dispatch:
+
+jobs:
+  packages-scan:
+    name: Scan for Vulnerable Packages
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Generate package-lock.json (root)
+        run: npm install --package-lock-only
+
+      - name: Generate package-lock.json (SDK)
+        run: |
+          cd sdk
+          npm install --package-lock-only
+
+      - name: Make scan script executable
+        run: chmod +x scripts/scan-packages.sh
+
+      - name: Run vulnerability scan
+        run: |
+          echo "Running vulnerability scan for root directory and SDK..."
+          ./scripts/scan-packages.sh . sdk

@@ -303,7 +303,7 @@ export default function TokenSelector(props: Props) {
             {showTokenName ? tokenInfo.name : tokenInfo.symbol}
           </span>
         )}
-        <ChevronDownIcon className="w-12 text-typography-secondary group-hover:text-blue-300" />
+        <ChevronDownIcon className="w-16 text-typography-secondary group-hover:text-blue-300" />
       </div>
     </div>
   );

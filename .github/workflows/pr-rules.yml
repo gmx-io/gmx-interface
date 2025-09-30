@@ -13,9 +13,6 @@ jobs:
     steps:
       - name: Check branch and PR title naming conventions
         run: |
-          branch_name="${{ github.event.pull_request.head.ref }}"
-          pr_title="${{ github.event.pull_request.title }}"
-
           echo "Checking branch name and PR title..."
 
           # Check for Release branches
@@ -38,3 +35,7 @@ jobs:
           fi
 
           echo "Branch and PR title naming conventions are correct."
+        env:
+          branch_name: ${{ github.event.pull_request.head.ref }}
+          pr_title: ${{ github.event.pull_request.title }}
+          

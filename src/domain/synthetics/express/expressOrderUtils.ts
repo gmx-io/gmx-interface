@@ -414,6 +414,7 @@ export async function estimateExpressParams({
     gasPrice,
     subaccountValidations,
     gasPaymentValidations,
+    isGmxAccount,
   };
 }
 

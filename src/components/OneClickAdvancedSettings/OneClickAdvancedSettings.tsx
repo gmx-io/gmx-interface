@@ -7,9 +7,9 @@ import { getRemainingSubaccountActions, getRemainingSubaccountSeconds } from "do
 import { periodToSeconds, secondsToPeriod } from "sdk/utils/time";
 
 import Button from "components/Button/Button";
+import { ExpandableRow } from "components/ExpandableRow";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
-import { ExpandableRow } from "components/Synthetics/ExpandableRow";
-import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
+import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export function OneClickAdvancedSettings() {
