@@ -9,6 +9,7 @@ import {
   AVALANCHE_FUJI,
   BOTANIX,
   SOURCE_BASE_MAINNET,
+  SOURCE_BSC_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
   getChainName,
@@ -68,6 +69,12 @@ export const NETWORK_OPTIONS: NetworkOption[] = [
     value: SOURCE_BASE_MAINNET,
     icon: getChainIcon(SOURCE_BASE_MAINNET),
     color: "#0052ff",
+  },
+  {
+    label: getChainName(SOURCE_BSC_MAINNET),
+    value: SOURCE_BSC_MAINNET,
+    icon: getChainIcon(SOURCE_BSC_MAINNET),
+    color: "#F7931A",
   },
 ];
 

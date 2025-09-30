@@ -1,8 +1,27 @@
-import { AVALANCHE, SettlementChainId, SOURCE_BASE_MAINNET, SourceChainId } from "config/static/chains";
+import {
+  ARBITRUM,
+  AVALANCHE,
+  SettlementChainId,
+  SOURCE_BASE_MAINNET,
+  SOURCE_BSC_MAINNET,
+  SourceChainId,
+} from "config/static/chains";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
-export const NATIVE_TOKEN_PRICE_MAP: Partial<Record<SourceChainId, Partial<Record<SettlementChainId, string>>>> = {
+export const NATIVE_TOKEN_PRICE_MAP: Partial<
+  Record<SourceChainId, Partial<Record<SettlementChainId, Partial<Record<SettlementChainId, string>>>>>
+> = {
   [SOURCE_BASE_MAINNET]: {
-    [AVALANCHE]: getTokenBySymbol(AVALANCHE, "ETH").address,
+    [AVALANCHE]: {
+      [AVALANCHE]: getTokenBySymbol(AVALANCHE, "ETH").address,
+    },
+  },
+  [SOURCE_BSC_MAINNET]: {
+    [ARBITRUM]: {
+      [ARBITRUM]: getTokenBySymbol(ARBITRUM, "BNB").address,
+    },
+    [AVALANCHE]: {
+      [ARBITRUM]: getTokenBySymbol(ARBITRUM, "BNB").address,
+    },
   },
 };

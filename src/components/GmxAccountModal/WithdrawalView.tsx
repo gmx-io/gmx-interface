@@ -231,7 +231,7 @@ export const WithdrawalView = () => {
     return getMultichainTransferSendParams({
       dstChainId: withdrawalViewChain,
       account,
-      inputAmount,
+      amountLD: inputAmount,
       isDeposit: false,
     });
   }, [account, inputAmount, withdrawalViewChain]);
@@ -246,7 +246,7 @@ export const WithdrawalView = () => {
 
   const { isBelowLimit, lowerLimitFormatted, isAboveLimit, upperLimitFormatted } = useQuoteOftLimits({
     quoteOft,
-    inputAmount,
+    amountLD: inputAmount,
     isStable: selectedToken?.isStable,
     decimals: selectedTokenSettlementChainTokenId?.decimals,
   });
@@ -290,7 +290,7 @@ export const WithdrawalView = () => {
     return getMultichainTransferSendParams({
       dstChainId: withdrawalViewChain,
       account,
-      inputAmount: fakeInputAmount,
+      amountLD: fakeInputAmount,
       isDeposit: false,
       srcChainId: chainId,
     });

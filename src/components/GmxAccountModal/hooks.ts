@@ -12,7 +12,6 @@ import { TokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getToken } from "sdk/configs/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 
 export function useAvailableToTradeAssetSymbolsSettlementChain(): string[] {
   const { chainId, srcChainId } = useChainId();
@@ -218,33 +217,7 @@ export function useMultichainTokensRequest(): {
         };
 
         if (pricesData && settlementChainTokenAddress in pricesData) {
-          // convert prices from settlement chain decimals to source chain decimals if decimals are different
-
-          const settlementChainTokenDecimals = token.decimals;
-          const sourceChainTokenDecimals = mapping.sourceChainTokenDecimals;
-
-          let adjustedPrices = pricesData[settlementChainTokenAddress];
-
-          if (settlementChainTokenDecimals !== sourceChainTokenDecimals) {
-            // if current price is 1000 with 1 decimal (100_0) on settlement chain
-            // and source chain has 3 decimals
-            // then price should be 100_000
-            // so, 1000 * 10 ** 3 / 10 ** 1 = 100_000
-            adjustedPrices = {
-              minPrice: bigMath.mulDiv(
-                adjustedPrices.minPrice,
-                10n ** BigInt(sourceChainTokenDecimals),
-                10n ** BigInt(settlementChainTokenDecimals)
-              ),
-              maxPrice: bigMath.mulDiv(
-                adjustedPrices.maxPrice,
-                10n ** BigInt(sourceChainTokenDecimals),
-                10n ** BigInt(settlementChainTokenDecimals)
-              ),
-            };
-          }
-
-          tokenChainData.sourceChainPrices = adjustedPrices;
+          tokenChainData.sourceChainPrices = pricesData[settlementChainTokenAddress];
         }
 
         tokenChainDataArray.push(tokenChainData);

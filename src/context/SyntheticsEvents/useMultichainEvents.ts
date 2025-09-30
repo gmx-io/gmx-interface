@@ -149,6 +149,11 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       }
 
       const tokenIdMap = CHAIN_ID_TO_TOKEN_ID_MAP[srcChainId];
+
+      if (!tokenIdMap) {
+        return;
+      }
+
       const sourceChainStargates = Object.values(tokenIdMap).map((tokenId) => tokenId.stargate);
       const tokenIdByStargate = keyBy(Object.values(tokenIdMap), (tokenId: MultichainTokenId) => tokenId.stargate);
 
@@ -395,6 +400,11 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       }
 
       const tokenIdMap = CHAIN_ID_TO_TOKEN_ID_MAP[chainId];
+
+      if (!tokenIdMap) {
+        return;
+      }
+
       const settlementChainStargates = Object.values(tokenIdMap).map((tokenId) => tokenId.stargate);
       const tokenIdByStargate = keyBy(Object.values(tokenIdMap), (tokenId: MultichainTokenId) => tokenId.stargate);
 
@@ -503,6 +513,11 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       }
 
       const tokenIdMap = CHAIN_ID_TO_TOKEN_ID_MAP[srcChainId];
+
+      if (!tokenIdMap) {
+        return;
+      }
+
       const sourceChainStargates = Object.values(tokenIdMap).map((tokenId) => tokenId.stargate);
 
       debugLog("subscribing to source chain OFTReceive events for", srcChainId, guids);

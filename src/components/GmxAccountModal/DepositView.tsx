@@ -149,6 +149,7 @@ export const DepositView = () => {
   }, [selectedToken, multichainTokens, depositViewChain]);
 
   const selectedTokenSourceChainBalance = selectedTokenChainData?.sourceChainBalance;
+  const selectedTokenSourceChainDecimals = selectedTokenChainData?.sourceChainDecimals;
   const nativeTokenSourceChainBalance = useMemo(() => {
     if (multichainTokens === undefined) return undefined;
     return multichainTokens.find((token) => token.address === zeroAddress)?.sourceChainBalance;
@@ -165,8 +166,17 @@ export const DepositView = () => {
     : undefined;
   const latestInputAmountUsd = useLatest(inputAmountUsd);
 
+  const amountLD =
+    inputAmount !== undefined && selectedTokenSourceChainDecimals !== undefined && selectedToken?.decimals !== undefined
+      ? (inputAmount * 10n ** BigInt(selectedTokenSourceChainDecimals)) / 10n ** BigInt(selectedToken?.decimals)
+      : undefined;
+
   const handleMaxButtonClick = useCallback(() => {
-    if (selectedToken === undefined || selectedTokenSourceChainBalance === undefined) {
+    if (
+      selectedToken === undefined ||
+      selectedTokenSourceChainBalance === undefined ||
+      selectedTokenSourceChainDecimals === undefined
+    ) {
       return;
     }
 
@@ -189,11 +199,12 @@ export const DepositView = () => {
       return;
     }
 
-    setInputValue(formatAmountFree(selectedTokenSourceChainBalance, selectedToken.decimals));
+    setInputValue(formatAmountFree(selectedTokenSourceChainBalance, selectedTokenSourceChainDecimals));
   }, [
     selectedToken,
     selectedTokenChainData?.sourceChainPrices,
     selectedTokenSourceChainBalance,
+    selectedTokenSourceChainDecimals,
     setInputValue,
     unwrappedSelectedTokenAddress,
   ]);
@@ -235,12 +246,12 @@ export const DepositView = () => {
   const needTokenApprove = getNeedTokenApprove(
     tokensAllowanceData,
     depositViewTokenAddress === zeroAddress ? zeroAddress : selectedTokenSourceChainTokenId?.address,
-    inputAmount,
+    amountLD,
     EMPTY_ARRAY
   );
 
   const handleApprove = useCallback(async () => {
-    if (!depositViewTokenAddress || inputAmount === undefined || !spenderAddress || !depositViewChain) {
+    if (!depositViewTokenAddress || amountLD === undefined || !spenderAddress || !depositViewChain) {
       helperToast.error(t`Approval failed`);
       return;
     }
@@ -266,12 +277,12 @@ export const DepositView = () => {
         onApproveSubmitted: () => setIsApproving(true),
         setIsApproving: noop,
         permitParams: undefined,
-        approveAmount: inputAmount,
+        approveAmount: amountLD,
       });
     });
   }, [
     depositViewTokenAddress,
-    inputAmount,
+    amountLD,
     spenderAddress,
     depositViewChain,
     selectedTokenSourceChainTokenId,
@@ -284,7 +295,7 @@ export const DepositView = () => {
     }
   }, [isApproving, needTokenApprove]);
 
-  const isInputEmpty = inputAmount === undefined || inputAmount <= 0n;
+  const isInputEmpty = inputAmount === undefined || inputAmount <= 0n || amountLD === undefined || amountLD <= 0n;
 
   const { composeGas } = useMultichainDepositNetworkComposeGas({
     tokenAddress: depositViewTokenAddress,
@@ -293,8 +304,8 @@ export const DepositView = () => {
   const sendParamsWithoutSlippage: SendParamStruct | undefined = useMemo(() => {
     if (
       !account ||
-      inputAmount === undefined ||
-      inputAmount <= 0n ||
+      amountLD === undefined ||
+      amountLD <= 0n ||
       depositViewChain === undefined ||
       composeGas === undefined
     ) {
@@ -303,13 +314,13 @@ export const DepositView = () => {
 
     return getMultichainTransferSendParams({
       account,
-      inputAmount,
+      amountLD,
       srcChainId: depositViewChain,
       composeGas,
       dstChainId: settlementChainId,
       isDeposit: true,
     });
-  }, [account, inputAmount, depositViewChain, composeGas, settlementChainId]);
+  }, [account, amountLD, depositViewChain, composeGas, settlementChainId]);
 
   const quoteOft = useQuoteOft({
     sendParams: sendParamsWithoutSlippage,
@@ -321,7 +332,7 @@ export const DepositView = () => {
 
   const { isBelowLimit, lowerLimitFormatted, isAboveLimit, upperLimitFormatted } = useQuoteOftLimits({
     quoteOft,
-    inputAmount,
+    amountLD,
     isStable: selectedToken?.isStable,
     decimals: selectedTokenSourceChainTokenId?.decimals,
   });
@@ -443,13 +454,19 @@ export const DepositView = () => {
           sendTxnSentMetric(params.metricId);
 
           if (txnEvent.data.type === "wallet") {
-            setMultichainSubmittedDeposit({
-              amount: params.sendParams.amountLD as bigint,
-              settlementChainId,
-              sourceChainId: params.depositViewChain,
-              tokenAddress: params.tokenAddress,
-              sentTxn: txnEvent.data.transactionHash,
-            });
+            if (selectedToken?.decimals !== undefined && selectedTokenSourceChainDecimals !== undefined) {
+              const amount =
+                ((params.sendParams.amountLD as bigint) * 10n ** BigInt(selectedToken?.decimals)) /
+                10n ** BigInt(selectedTokenSourceChainDecimals);
+
+              setMultichainSubmittedDeposit({
+                amount,
+                settlementChainId,
+                sourceChainId: params.depositViewChain,
+                tokenAddress: params.tokenAddress,
+                sentTxn: txnEvent.data.transactionHash,
+              });
+            }
           }
         } else if (txnEvent.event === TxnEventName.Simulated) {
           sendOrderSimulatedMetric(params.metricId);
@@ -457,14 +474,20 @@ export const DepositView = () => {
           sendOrderTxnSubmittedMetric(params.metricId);
         }
       },
-    [setIsVisibleOrView, setMultichainSubmittedDeposit, settlementChainId]
+    [
+      selectedToken?.decimals,
+      selectedTokenSourceChainDecimals,
+      setIsVisibleOrView,
+      setMultichainSubmittedDeposit,
+      settlementChainId,
+    ]
   );
 
   const canSendCrossChainDeposit =
     depositViewTokenAddress &&
     account &&
-    inputAmount !== undefined &&
-    inputAmount > 0n &&
+    amountLD !== undefined &&
+    amountLD > 0n &&
     depositViewChain &&
     quoteSend &&
     sendParamsWithSlippage &&
@@ -493,7 +516,7 @@ export const DepositView = () => {
         signer,
         tokenAddress: selectedTokenSourceChainTokenId.address,
         stargateAddress: selectedTokenSourceChainTokenId.stargate,
-        amount: inputAmount,
+        amount: amountLD,
         quoteSend,
         sendParams: sendParamsWithSlippage,
         account,
@@ -509,10 +532,10 @@ export const DepositView = () => {
     return true;
   }, [
     account,
+    amountLD,
     canSendCrossChainDeposit,
     depositViewChain,
     depositViewTokenAddress,
-    inputAmount,
     latestInputAmountUsd,
     latestIsFirstDeposit,
     makeCrossChainCallback,
@@ -688,14 +711,14 @@ export const DepositView = () => {
       text: t`Enter deposit amount`,
       disabled: true,
     };
-  } else if (selectedTokenSourceChainBalance !== undefined && inputAmount > selectedTokenSourceChainBalance) {
+  } else if (selectedTokenSourceChainBalance !== undefined && amountLD > selectedTokenSourceChainBalance) {
     buttonState = {
       text: t`Insufficient balance`,
       disabled: true,
     };
   } else if (nativeTokenSourceChainBalance !== undefined && quoteSend !== undefined) {
     const isNative = unwrappedSelectedTokenAddress === zeroAddress;
-    const value = isNative ? inputAmount : 0n;
+    const value = isNative ? amountLD : 0n;
 
     if (quoteSend.nativeFee + value > nativeTokenSourceChainBalance) {
       const nativeTokenSymbol = getNativeToken(settlementChainId)?.symbol;
@@ -785,18 +808,20 @@ export const DepositView = () => {
         <div className={cx("flex flex-col gap-6", { invisible: depositViewTokenAddress === undefined })}>
           <div className="text-body-medium flex items-center justify-between gap-6 text-typography-secondary">
             <Trans>Deposit</Trans>
-            {selectedTokenSourceChainBalance !== undefined && selectedToken !== undefined && (
-              <div>
-                <Trans>Available:</Trans>{" "}
-                <Amount
-                  className="text-typography-primary"
-                  amount={selectedTokenSourceChainBalance}
-                  decimals={selectedToken.decimals}
-                  isStable={selectedToken.isStable}
-                  symbol={selectedToken.symbol}
-                />
-              </div>
-            )}
+            {selectedTokenSourceChainBalance !== undefined &&
+              selectedToken !== undefined &&
+              selectedTokenSourceChainDecimals !== undefined && (
+                <div>
+                  <Trans>Available:</Trans>{" "}
+                  <Amount
+                    className="text-typography-primary"
+                    amount={selectedTokenSourceChainBalance}
+                    decimals={selectedTokenSourceChainDecimals}
+                    isStable={selectedToken.isStable}
+                    symbol={selectedToken.symbol}
+                  />
+                </div>
+              )}
           </div>
           <div className="relative text-16 leading-base">
             <NumberInput

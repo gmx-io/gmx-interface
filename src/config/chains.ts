@@ -9,6 +9,7 @@ import {
   CONTRACTS_CHAIN_IDS as SDK_CONTRACTS_CHAIN_IDS,
   CONTRACTS_CHAIN_IDS_DEV as SDK_CONTRACTS_CHAIN_IDS_DEV,
   SOURCE_BASE_MAINNET,
+  SOURCE_BSC_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
 } from "sdk/configs/chains";
@@ -161,6 +162,13 @@ export const RPC_PROVIDERS: Record<AnyChainId | typeof ETH_MAINNET, string[]> = 
     // "https://rpc.botanixlabs.com",
     "https://rpc.ankr.com/botanix_mainnet",
   ],
+  [SOURCE_BSC_MAINNET]: [
+    "https://binance.llamarpc.com",
+    "https://bsc-dataseed.bnbchain.org",
+    "https://1rpc.io/bnb",
+    "https://bsc.drpc.org",
+    "https://bsc-rpc.publicnode.com",
+  ],
 };
 
 export const FALLBACK_PROVIDERS: Record<AnyChainId, string[]> = {
@@ -175,7 +183,8 @@ export const FALLBACK_PROVIDERS: Record<AnyChainId, string[]> = {
   [ARBITRUM_SEPOLIA]: [getAlchemyArbitrumSepoliaHttpUrl("fallback")],
   [SOURCE_BASE_MAINNET]: [getAlchemyBaseMainnetHttpUrl("fallback")],
   [SOURCE_OPTIMISM_SEPOLIA]: [getAlchemyOptimismSepoliaHttpUrl("fallback")],
-  [SOURCE_SEPOLIA]: [getAlchemyBaseSepoliaHttpUrl("fallback")],
+  [SOURCE_SEPOLIA]: [getAlchemySepoliaHttpUrl("fallback")],
+  [SOURCE_BSC_MAINNET]: [getAlchemyBscMainnetHttpUrl("fallback")],
 };
 
 export const PRIVATE_RPC_PROVIDERS: Partial<Record<AnyChainId, string[]>> = {
@@ -277,8 +286,12 @@ export function getAlchemyBaseMainnetWsUrl(purpose: AlchemyKeyPurpose) {
   return `wss://base-mainnet.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
 }
 
-export function getAlchemyBaseSepoliaHttpUrl(purpose: AlchemyKeyPurpose) {
-  return `https://base-sepolia.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
+export function getAlchemyBscMainnetHttpUrl(purpose: AlchemyKeyPurpose) {
+  return `https://bnb-mainnet.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
+}
+
+export function getAlchemyBscMainnetWsUrl(purpose: AlchemyKeyPurpose) {
+  return `wss://bnb-mainnet.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
 }
 
 export function getAlchemySepoliaHttpUrl(purpose: AlchemyKeyPurpose) {
@@ -307,6 +320,8 @@ export function getExplorerUrl(chainId: number | "layerzero" | "layerzero-testne
       return "https://botanixscan.io/";
     case SOURCE_BASE_MAINNET:
       return "https://basescan.org/";
+    case SOURCE_BSC_MAINNET:
+      return "https://bscscan.com/";
     case "layerzero":
       return "https://layerzeroscan.com/";
     case "layerzero-testnet":
