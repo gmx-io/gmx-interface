@@ -20,14 +20,14 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
     { value: "discovery" as const, label: t`Discover` },
     { value: "portfolio" as const, label: t`Portfolio` },
     { value: "additional-opportunities" as const, label: t`Additional Opportunities` },
-    { value: "distribution" as const, label: t`Distribution` },
+    { value: "distributions" as const, label: t`Distributions` },
   ];
 
   return (
     <AppPageLayout header={<ChainContentHeader />}>
       <PageTitle title={t`Earn`} subtitle={t`Stake GMX and buy GLV or GM to earn rewards.`} isTop />
 
-      <div className="mt-20 flex grow flex-col gap-8">
+      <div className="mt-12 flex grow flex-col gap-8">
         <div className="overflow-x-auto scrollbar-hide">
           <div className="flex gap-8">
             {tabOptions.map((tab) => (

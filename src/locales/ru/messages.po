@@ -54,7 +54,7 @@ msgstr ""
 msgid "Buy order executed."
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Claims are disabled"
 msgstr ""
 
@@ -114,7 +114,7 @@ msgstr "Ежедневный убыток"
 msgid "Claim {tokenSymbol} Rewards"
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "earns fees from providing liquidity to multiple GMX V2 markets"
 msgstr ""
 
@@ -146,7 +146,7 @@ msgstr "стоп-лосс"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Type"
 msgstr "Вид"
 
@@ -529,7 +529,7 @@ msgstr "Максимальная емкость"
 msgid "Market Swap"
 msgstr "Рыночный обмен"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "A $500,000 GLV pool (funded by DAO funds) rewards long-term holders: If you keep your distributed GLV for at least 3 months (without selling or transferring), you'll receive a pro rata share."
 msgstr ""
 
@@ -598,7 +598,7 @@ msgstr "Контакт в Telegram (опционально)"
 msgid "Market order will be cancellable in {minutesText}{seconds}s."
 msgstr "Рыночный ордер можно отменить через {minutesText}{seconds}с."
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "About GLP Incident"
 msgstr ""
 
@@ -1273,6 +1273,7 @@ msgstr "Текущее влияние на цену {0}. Рассмотрите 
 msgid "Hide error"
 msgstr "Скрыть ошибку"
 
+#: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Stake/Stake.tsx
 msgid "Distributions"
 msgstr ""
@@ -1465,7 +1466,7 @@ msgstr "Страница Голосования по предложениям GM
 msgid "DEX Aggregator"
 msgstr "Агрегатор DEX"
 
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Waiting for remaining Safe confirmations..."
 msgstr ""
 
@@ -1632,7 +1633,7 @@ msgstr "Купить GMX на Uniswap или напрямую на GMX (убед
 msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
 msgstr "Экспресс и торговля в один клик недоступны из-за недостаточного баланса газа."
 
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "No funds to claim"
 msgstr ""
 
@@ -2053,7 +2054,7 @@ msgstr ""
 msgid "Max {0} sellable amount exceeded"
 msgstr "Максимальная сумма продажи {0} превышена"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "What is the bonus incentive for holding your GLV?"
 msgstr ""
 
@@ -2229,7 +2230,7 @@ msgstr "{0} Цена"
 msgid "Buy GMX from centralized services"
 msgstr "Купить GMX на централизованных сервисах"
 
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "The distribution history for your incentives, airdrops, and prizes will be displayed here."
 msgstr ""
 
@@ -2275,7 +2276,7 @@ msgstr "График рынка"
 msgid "Buy order cancelled."
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/utils.tsx
+#: src/components/UserIncentiveDistribution/utils.tsx
 msgid "Unable to sign message with EOA"
 msgstr ""
 
@@ -2430,8 +2431,8 @@ msgid "and"
 msgstr "и"
 
 #: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
-msgid "Distribution History"
-msgstr ""
+#~ msgid "Distribution History"
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GLV liquidity"
@@ -2526,7 +2527,7 @@ msgstr "Расчёт"
 msgid "{typeString} Short TWAP: {0} a short position in evenly distributed parts over a specified time."
 msgstr "{typeString} Шорт TWAP: {0} шорт позицию в равномерно распределённых частях за указанное время."
 
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Insufficient gas for network fees"
 msgstr ""
 
@@ -2599,7 +2600,7 @@ msgstr "Годовые данные на основе последних 7 дн�
 msgid "GMX Solana is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open the GMX Solana frontend in a new tab."
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/utils.tsx
+#: src/components/UserIncentiveDistribution/utils.tsx
 msgid "Please continue signing on your wallet interface where the signature request should appear. You will be able to claim once all signers have signed."
 msgstr ""
 
@@ -2689,7 +2690,7 @@ msgstr ""
 msgid "Create Take Profit"
 msgstr "Создать Take Profit"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Can I sell my GLV if I want, and where?"
 msgstr ""
 
@@ -3073,7 +3074,7 @@ msgstr "Ордер не может быть выполнен, поскольку
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/AffiliateClaimModal.tsx
 #: src/pages/Stake/ClaimModal.tsx
@@ -3225,7 +3226,7 @@ msgstr "Пожалуйста, введите реферальный код, чт
 msgid "Failed Deposit"
 msgstr "Неудачный Депозит"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Distribution happens in two GLV variants to mirror GLP's multi-asset exposure: one variant is optimized for ETH-based markets (50% ETH / 50% USDC) and the other for BTC-based markets (50% BTC / 50% USDC). This allocation reflects the composition of recovered funds and allows for dynamic shifting of GLV liquidity to all top GMX markets to enhance your yield."
 msgstr ""
 
@@ -3245,7 +3246,7 @@ msgstr "Недостаточно ликвидности в пуле рынка {
 msgid "App disabled, pending {0} upgrade"
 msgstr "Приложение отключено, ожидается обновление {0}"
 
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Please accept the Claim Terms above to continue."
 msgstr ""
 
@@ -3273,7 +3274,7 @@ msgstr "GLV — это токен поставщика ликвидности д
 msgid "The settlement chain is the network used for your GMX Account and opening positions. GMX Account balances and positions are specific to the selected network."
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Yes, GLV is fully liquid and permissionless. You can sell via the GMX interface to redeem for underlying assets, with low fees."
 msgstr ""
 
@@ -3686,7 +3687,7 @@ msgstr ""
 #~ msgid "Unstake esGMX"
 #~ msgstr "Снять стейкинг esGMX"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why do I receive two different GLV tokens?"
 msgstr ""
 
@@ -3980,7 +3981,7 @@ msgstr "Симуляция выполнения ордера не удалась
 msgid "Support for"
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "No distribution history yet"
 msgstr ""
 
@@ -4187,7 +4188,7 @@ msgstr "Недостаточно {0} на вашем аккаунте в {networ
 msgid "SL - Long Dec."
 msgstr "SL - Лонг Уменьш."
 
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Airdrop"
 msgstr "Аирдроп"
 
@@ -4204,7 +4205,7 @@ msgid "Create Stop Loss"
 msgstr "Создать Stop Loss"
 
 #: src/components/AppHeader/AppHeaderUser.tsx
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/TotalRewardsCard.tsx
@@ -4302,7 +4303,7 @@ msgstr "Годовая Процентная Ставка GMX"
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "GLV (GMX Liquidity Vaults) should be seen as GMX V2’s improved version of GLP. It is a yield-optimizing crypto-index token that"
 msgstr ""
 
@@ -4866,7 +4867,7 @@ msgstr "Целевой вес"
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr "У вас может быть до {allowedAutoCancelOrdersNumber} активных автоканцелируемых ордеров TP/SL. Дополнительные ордера должны отменяться вручную, в то время как существующие все равно закроются автоматически с связанной позицией."
 
-#: src/components/UserIncentiveDistributionList/utils.tsx
+#: src/components/UserIncentiveDistribution/utils.tsx
 msgid "Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing"
 msgstr ""
 
@@ -4879,7 +4880,7 @@ msgstr "Топ PnL (%)"
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr "Может не хватить ликвидности для выполнения вашего ордера, когда условия цены будут выполнены."
 
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims are not available on Avalanche Fuji"
 msgstr ""
 
@@ -4889,7 +4890,7 @@ msgstr "Отменить TWAP обмен"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Transaction"
 msgstr "Транзакция"
 
@@ -5623,7 +5624,7 @@ msgstr ""
 msgid "Trigger price below mark price"
 msgstr "Цена триггера ниже маркированной цены"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "and automatically compounds its yield (unlike GLP, no manual claiming is needed)"
 msgstr ""
 
@@ -5760,7 +5761,7 @@ msgstr "Копировать"
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Amount"
 msgstr "Сумма"
 
@@ -5818,7 +5819,7 @@ msgstr "Цена исполнения ордера учитывает влиян
 msgid "Buy GLP or GMX"
 msgstr "Купить GLP или GMX"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools, with auto-compounding for seamless growth (20-30% historical average annualized performance). View real-time earnings, performance, and portfolio value on the <0>Pools page</0>."
 msgstr ""
 
@@ -6055,7 +6056,7 @@ msgstr "{0} и {1} можно использовать для покупки GM 
 msgid "GMX rewards"
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "GLV tokens are similar in composition to GLP, and enable seamless integration into GMX V2's liquidity ecosystem. Users can either sell or hold the tokens to earn yield. To encourage long-term participation, a $500,000 GLV incentive pool will be distributed proportionally to those who hold their allocated GLV for at least 3 months."
 msgstr ""
 
@@ -6186,7 +6187,7 @@ msgstr "Допустимая цена"
 msgid "DeFi Margin Protocol"
 msgstr "Протокол маржи DeFi"
 
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claimable Balance"
 msgstr ""
 
@@ -6271,7 +6272,7 @@ msgstr "Стоп-лосс"
 msgid "Liquidity incentives program is live on {avalancheLink}."
 msgstr "Программа стимулов ликвидности активна на {avalancheLink}."
 
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "GLP Distribution (test)"
 msgstr ""
 
@@ -6443,7 +6444,7 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Date"
@@ -6474,7 +6475,7 @@ msgstr "Продаваемый"
 msgid "Avalanche Trading Incentives"
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "COMPETITION Airdrop"
 msgstr "Эйрдроп СОРЕВНОВАНИЯ"
 
@@ -6493,7 +6494,7 @@ msgstr "Требуется дополнительный резерв"
 msgid "Terms and Conditions"
 msgstr "Правила и условия"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "What is GLV exactly?"
 msgstr ""
 
@@ -6661,11 +6662,11 @@ msgstr "Доступная ликвидность будет меньшей из
 msgid "shift"
 msgstr "сдвиг"
 
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "GLP Distribution"
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
 msgstr ""
 
@@ -7079,7 +7080,7 @@ msgstr "HoudiniSwap"
 msgid "Claim completed."
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "dynamically allocates its liquidity to the highest-utilised markets, maximising capital efficiency and annualized performance"
 msgstr ""
 
@@ -7414,7 +7415,7 @@ msgstr "Лимит - Увеличение лонга"
 msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming."
 msgstr "<0>Делегируйте вашу не делегированную {0} GMX DAO</0> голосовую силу перед заявкой."
 
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Claim funds"
 msgstr ""
 
@@ -7512,7 +7513,6 @@ msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not r
 msgstr "Этот код еще не зарегистрирован на {nonTakenNetworkNames}, вы не будете получать рибейты там.<0/><1/>Переключите сеть, чтобы создать этот код на {nonTakenNetworkNames}."
 
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Earn/EarnPageLayout.tsx
 msgid "Distribution"
 msgstr "Распределение"
 
@@ -7729,7 +7729,7 @@ msgstr "Ликвидность для увеличения лонгов недо
 msgid "24H VOL."
 msgstr "ОБЪЕМ ЗА 24Ч."
 
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Accept Claim Terms"
 msgstr ""
 
@@ -7790,7 +7790,7 @@ msgstr "Запрос на рыночное уменьшение"
 msgid "Max. Leverage exceeded"
 msgstr "Превышено макс. плечо"
 
-#: src/components/UserIncentiveDistributionList/utils.tsx
+#: src/components/UserIncentiveDistribution/utils.tsx
 msgid "Unable to sign message with smart account"
 msgstr ""
 
@@ -7984,7 +7984,7 @@ msgstr "Обновить часть TWAP свопа"
 msgid "Update TWAP Part"
 msgstr "Обновить часть TWAP"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "How does GLV earn yield, and where do I see my earnings?"
 msgstr ""
 

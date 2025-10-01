@@ -54,7 +54,7 @@ msgstr ""
 msgid "Buy order executed."
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Claims are disabled"
 msgstr ""
 
@@ -114,7 +114,7 @@ msgstr "每日损失"
 msgid "Claim {tokenSymbol} Rewards"
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "earns fees from providing liquidity to multiple GMX V2 markets"
 msgstr ""
 
@@ -146,7 +146,7 @@ msgstr "止损"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Type"
 msgstr "类型"
 
@@ -529,7 +529,7 @@ msgstr "最大容量"
 msgid "Market Swap"
 msgstr "市场交换"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "A $500,000 GLV pool (funded by DAO funds) rewards long-term holders: If you keep your distributed GLV for at least 3 months (without selling or transferring), you'll receive a pro rata share."
 msgstr ""
 
@@ -598,7 +598,7 @@ msgstr "Telegram 联系方式（可选）"
 msgid "Market order will be cancellable in {minutesText}{seconds}s."
 msgstr "市场订单将在 {minutesText}{seconds}秒 内可取消。"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "About GLP Incident"
 msgstr ""
 
@@ -1273,6 +1273,7 @@ msgstr "当前价格影响为 {0}。考虑添加 0.30% 的缓冲，使订单更�
 msgid "Hide error"
 msgstr "隐藏错误"
 
+#: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Stake/Stake.tsx
 msgid "Distributions"
 msgstr ""
@@ -1465,7 +1466,7 @@ msgstr "GMX 提案投票页面"
 msgid "DEX Aggregator"
 msgstr "DEX 聚合器"
 
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Waiting for remaining Safe confirmations..."
 msgstr ""
 
@@ -1632,7 +1633,7 @@ msgstr "从 Uniswap 购买 GMX 或直接在 GMX 上购买（确保选择 Arbitru
 msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
 msgstr "由于 Gas 余额不足，快速和一键交易不可用。"
 
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "No funds to claim"
 msgstr ""
 
@@ -2053,7 +2054,7 @@ msgstr ""
 msgid "Max {0} sellable amount exceeded"
 msgstr "超过最大 {0} 可售卖金额"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "What is the bonus incentive for holding your GLV?"
 msgstr ""
 
@@ -2229,7 +2230,7 @@ msgstr "{0} 价格"
 msgid "Buy GMX from centralized services"
 msgstr "从中心化服务购买 GMX"
 
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "The distribution history for your incentives, airdrops, and prizes will be displayed here."
 msgstr ""
 
@@ -2275,7 +2276,7 @@ msgstr "市场图表"
 msgid "Buy order cancelled."
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/utils.tsx
+#: src/components/UserIncentiveDistribution/utils.tsx
 msgid "Unable to sign message with EOA"
 msgstr ""
 
@@ -2430,8 +2431,8 @@ msgid "and"
 msgstr "和"
 
 #: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
-msgid "Distribution History"
-msgstr ""
+#~ msgid "Distribution History"
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GLV liquidity"
@@ -2526,7 +2527,7 @@ msgstr "结算"
 msgid "{typeString} Short TWAP: {0} a short position in evenly distributed parts over a specified time."
 msgstr "{typeString} 做空 TWAP：在指定时间内均匀分布部分 {0} 一个做空仓位。"
 
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Insufficient gas for network fees"
 msgstr ""
 
@@ -2599,7 +2600,7 @@ msgstr "基于过去 7 天的年化数据。"
 msgid "GMX Solana is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open the GMX Solana frontend in a new tab."
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/utils.tsx
+#: src/components/UserIncentiveDistribution/utils.tsx
 msgid "Please continue signing on your wallet interface where the signature request should appear. You will be able to claim once all signers have signed."
 msgstr ""
 
@@ -2689,7 +2690,7 @@ msgstr ""
 msgid "Create Take Profit"
 msgstr "创建止盈"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Can I sell my GLV if I want, and where?"
 msgstr ""
 
@@ -3073,7 +3074,7 @@ msgstr "订单无法执行，因为剩余仓位将小于 5.00 美元"
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/AffiliateClaimModal.tsx
 #: src/pages/Stake/ClaimModal.tsx
@@ -3225,7 +3226,7 @@ msgstr "请输入推荐代码以享受费用折扣。"
 msgid "Failed Deposit"
 msgstr "存入失败"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Distribution happens in two GLV variants to mirror GLP's multi-asset exposure: one variant is optimized for ETH-based markets (50% ETH / 50% USDC) and the other for BTC-based markets (50% BTC / 50% USDC). This allocation reflects the composition of recovered funds and allows for dynamic shifting of GLV liquidity to all top GMX markets to enhance your yield."
 msgstr ""
 
@@ -3245,7 +3246,7 @@ msgstr "{0} 市场池流动性不足。请为此市场选择不同的池。{1}"
 msgid "App disabled, pending {0} upgrade"
 msgstr "应用程序禁用，待 {0} 升级"
 
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Please accept the Claim Terms above to continue."
 msgstr ""
 
@@ -3273,7 +3274,7 @@ msgstr "GLV 是 GMX V2 金库的流动性提供者代币。由多个 GM 代币�
 msgid "The settlement chain is the network used for your GMX Account and opening positions. GMX Account balances and positions are specific to the selected network."
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Yes, GLV is fully liquid and permissionless. You can sell via the GMX interface to redeem for underlying assets, with low fees."
 msgstr ""
 
@@ -3686,7 +3687,7 @@ msgstr ""
 #~ msgid "Unstake esGMX"
 #~ msgstr "解除质押 esGMX"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why do I receive two different GLV tokens?"
 msgstr ""
 
@@ -3980,7 +3981,7 @@ msgstr "执行订单模拟失败。"
 msgid "Support for"
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "No distribution history yet"
 msgstr ""
 
@@ -4187,7 +4188,7 @@ msgstr "您的 {networkName} 账户中没有足够的 {0} 来发送此交易。<
 msgid "SL - Long Dec."
 msgstr "SL - 做多减少"
 
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Airdrop"
 msgstr "空投"
 
@@ -4204,7 +4205,7 @@ msgid "Create Stop Loss"
 msgstr "创建止损"
 
 #: src/components/AppHeader/AppHeaderUser.tsx
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/TotalRewardsCard.tsx
@@ -4302,7 +4303,7 @@ msgstr "GMX 年化收益率"
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "GLV (GMX Liquidity Vaults) should be seen as GMX V2’s improved version of GLP. It is a yield-optimizing crypto-index token that"
 msgstr ""
 
@@ -4866,7 +4867,7 @@ msgstr "目标权重"
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr "您最多可以有 {allowedAutoCancelOrdersNumber} 个活跃的可自动取消 TP/SL 订单。额外订单必须手动取消，而现有订单仍将与其相关头寸自动关闭。"
 
-#: src/components/UserIncentiveDistributionList/utils.tsx
+#: src/components/UserIncentiveDistribution/utils.tsx
 msgid "Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing"
 msgstr ""
 
@@ -4879,7 +4880,7 @@ msgstr "最高 PnL (%)"
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr "当满足价格条件时，可能没有足够的流动性来执行您的订单。"
 
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims are not available on Avalanche Fuji"
 msgstr ""
 
@@ -4889,7 +4890,7 @@ msgstr "取消 TWAP 交换"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Transaction"
 msgstr "交易"
 
@@ -5623,7 +5624,7 @@ msgstr ""
 msgid "Trigger price below mark price"
 msgstr "触发价格低于标记价格"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "and automatically compounds its yield (unlike GLP, no manual claiming is needed)"
 msgstr ""
 
@@ -5760,7 +5761,7 @@ msgstr "复制"
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Amount"
 msgstr "金额"
 
@@ -5818,7 +5819,7 @@ msgstr "订单执行价格考虑了价格影响。"
 msgid "Buy GLP or GMX"
 msgstr "购买 GLP 或 GMX"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools, with auto-compounding for seamless growth (20-30% historical average annualized performance). View real-time earnings, performance, and portfolio value on the <0>Pools page</0>."
 msgstr ""
 
@@ -6055,7 +6056,7 @@ msgstr "{0} 和 {1} 可用于为此市场购买 GM，最高可达指定的购买
 msgid "GMX rewards"
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "GLV tokens are similar in composition to GLP, and enable seamless integration into GMX V2's liquidity ecosystem. Users can either sell or hold the tokens to earn yield. To encourage long-term participation, a $500,000 GLV incentive pool will be distributed proportionally to those who hold their allocated GLV for at least 3 months."
 msgstr ""
 
@@ -6186,7 +6187,7 @@ msgstr "可接受价格"
 msgid "DeFi Margin Protocol"
 msgstr "DeFi 保证金协议"
 
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claimable Balance"
 msgstr ""
 
@@ -6271,7 +6272,7 @@ msgstr "止损"
 msgid "Liquidity incentives program is live on {avalancheLink}."
 msgstr "流动性激励程序已在 {avalancheLink} 上线。"
 
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "GLP Distribution (test)"
 msgstr ""
 
@@ -6443,7 +6444,7 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Date"
@@ -6474,7 +6475,7 @@ msgstr "可出售"
 msgid "Avalanche Trading Incentives"
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "COMPETITION Airdrop"
 msgstr "竞赛空投"
 
@@ -6493,7 +6494,7 @@ msgstr "需要额外储备"
 msgid "Terms and Conditions"
 msgstr "条款和条件"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "What is GLV exactly?"
 msgstr ""
 
@@ -6661,11 +6662,11 @@ msgstr "可用流动性将是储备和未平仓利息的最大值与当前值之
 msgid "shift"
 msgstr "转移"
 
-#: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "GLP Distribution"
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
 msgstr ""
 
@@ -7079,7 +7080,7 @@ msgstr "HoudiniSwap"
 msgid "Claim completed."
 msgstr ""
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "dynamically allocates its liquidity to the highest-utilised markets, maximising capital efficiency and annualized performance"
 msgstr ""
 
@@ -7414,7 +7415,7 @@ msgstr "限价 - 多头增加"
 msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming."
 msgstr "<0>在领取前委托您未委托的 {0} GMX DAO</0> 投票权。"
 
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Claim funds"
 msgstr ""
 
@@ -7512,7 +7513,6 @@ msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not r
 msgstr "此代码尚未在 {nonTakenNetworkNames} 上注册，您将无法在那里获得返利。<0/><1/>切换您的网络以在 {nonTakenNetworkNames} 上创建此代码。"
 
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Earn/EarnPageLayout.tsx
 msgid "Distribution"
 msgstr "分配"
 
@@ -7729,7 +7729,7 @@ msgstr "此规模的增加多头没有可用流动性。最大多头规模：{0}
 msgid "24H VOL."
 msgstr "24 小时交易量"
 
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Accept Claim Terms"
 msgstr ""
 
@@ -7790,7 +7790,7 @@ msgstr "请求市场减少"
 msgid "Max. Leverage exceeded"
 msgstr "超过最大杠杆"
 
-#: src/components/UserIncentiveDistributionList/utils.tsx
+#: src/components/UserIncentiveDistribution/utils.tsx
 msgid "Unable to sign message with smart account"
 msgstr ""
 
@@ -7984,7 +7984,7 @@ msgstr "更新 TWAP 交换部分"
 msgid "Update TWAP Part"
 msgstr "更新 TWAP 部分"
 
-#: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "How does GLV earn yield, and where do I see my earnings?"
 msgstr ""
 

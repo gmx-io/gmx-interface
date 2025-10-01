@@ -16,7 +16,7 @@ import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
 import EarnAdditionalOpportunitiesPage from "pages/Earn/EarnAdditionalOpportunitiesPage";
 import EarnDiscoveryPage from "pages/Earn/EarnDiscoveryPage";
-import EarnDistributionPage from "pages/Earn/EarnDistributionPage";
+import EarnDistributionsPage from "pages/Earn/EarnDistributionsPage";
 import EarnPortfolioPage from "pages/Earn/EarnPortfolioPage";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import Jobs from "pages/Jobs/Jobs";
@@ -113,9 +113,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
           <EarnAdditionalOpportunitiesPage />
         </SyntheticsStateContextProvider>
       </Route>
-      <Route exact path="/earn/distribution">
+      <Route exact path="/earn/distributions">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
-          <EarnDistributionPage />
+          <EarnDistributionsPage />
         </SyntheticsStateContextProvider>
       </Route>
 

@@ -26,7 +26,6 @@ import { Distribution } from "sdk/types/subsquid";
 import { bigMath } from "sdk/utils/bigmath";
 
 import Button from "components/Button/Button";
-import Card from "components/Card/Card";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import EmptyMessage from "components/Referrals/EmptyMessage";
@@ -81,7 +80,7 @@ function getNormalizedIncentive(
   };
 }
 
-export default function UserIncentiveDistributionList() {
+export default function UserIncentiveDistribution() {
   const { account, active } = useWallet();
   const { openConnectModal } = useConnectModal();
   const { chainId, srcChainId } = useChainId();
@@ -108,14 +107,17 @@ export default function UserIncentiveDistributionList() {
 
   return (
     <div
-      className={cn("flex gap-18", {
+      className={cn("flex gap-8", {
         "flex-row": !isSmallResolution,
         "flex-col-reverse": isSmallResolution,
       })}
     >
-      <div className="flex flex-grow flex-col gap-18">
+      <div className="flex flex-grow flex-col gap-8">
         {account ? (
-          <Card title={t`Claimable Balance`} bodyPadding={false} divider={false}>
+          <div className="flex flex-col gap-20 rounded-8 bg-slate-900 p-20">
+            <div className="text-body-large font-medium text-typography-primary">
+              <Trans>Claimable Balance</Trans>
+            </div>
             {chainId !== AVALANCHE_FUJI ? (
               <ClaimableAmounts />
             ) : (
@@ -123,56 +125,55 @@ export default function UserIncentiveDistributionList() {
                 <Trans>Claims are not available on Avalanche Fuji</Trans>
               </p>
             )}
-          </Card>
+          </div>
         ) : null}
-        <Card title={t`Distribution History`} bodyPadding={false} divider={false}>
-          {!userIncentiveData?.data?.length ? (
-            <EmptyMessage
-              tooltipText={t`The distribution history for your incentives, airdrops, and prizes will be displayed here.`}
-              message={t`No distribution history yet`}
-              className="!mt-10"
-            >
-              {!active && (
-                <div className="mt-15">
-                  <Button variant="secondary" onClick={openConnectModal}>
-                    <Trans>Connect wallet</Trans>
-                  </Button>
-                </div>
-              )}
-            </EmptyMessage>
-          ) : (
-            <TableScrollFadeContainer>
-              <table className="w-full min-w-max">
-                <thead>
-                  <TableTheadTr>
-                    <TableTh>
-                      <Trans>Date</Trans>
-                    </TableTh>
-                    <TableTh>
-                      <Trans>Type</Trans>
-                    </TableTh>
-                    <TableTh>
-                      <Trans>Amount</Trans>
-                    </TableTh>
-                    <TableTh>
-                      <Trans>Transaction</Trans>
-                    </TableTh>
-                  </TableTheadTr>
-                </thead>
-                <tbody>
-                  {currentIncentiveData?.map((incentive) => <IncentiveItem incentive={incentive} key={incentive.id} />)}
-                  {currentIncentiveData &&
-                    currentIncentiveData.length > 0 &&
-                    currentIncentiveData.length < DEFAULT_PAGE_SIZE && (
-                      // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                      <tr style={{ height: 42.5 * (DEFAULT_PAGE_SIZE - currentIncentiveData.length) }} />
-                    )}
-                </tbody>
-              </table>
-            </TableScrollFadeContainer>
-          )}
-          <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
-        </Card>
+
+        {!userIncentiveData?.data?.length ? (
+          <EmptyMessage
+            tooltipText={t`The distribution history for your incentives, airdrops, and prizes will be displayed here.`}
+            message={t`No distribution history yet`}
+            className="!mt-0"
+          >
+            {!active && (
+              <div className="mt-15">
+                <Button variant="secondary" onClick={openConnectModal}>
+                  <Trans>Connect wallet</Trans>
+                </Button>
+              </div>
+            )}
+          </EmptyMessage>
+        ) : (
+          <TableScrollFadeContainer>
+            <table className="w-full min-w-max">
+              <thead>
+                <TableTheadTr>
+                  <TableTh>
+                    <Trans>Date</Trans>
+                  </TableTh>
+                  <TableTh>
+                    <Trans>Type</Trans>
+                  </TableTh>
+                  <TableTh>
+                    <Trans>Amount</Trans>
+                  </TableTh>
+                  <TableTh>
+                    <Trans>Transaction</Trans>
+                  </TableTh>
+                </TableTheadTr>
+              </thead>
+              <tbody>
+                {currentIncentiveData?.map((incentive) => <IncentiveItem incentive={incentive} key={incentive.id} />)}
+                {currentIncentiveData &&
+                  currentIncentiveData.length > 0 &&
+                  currentIncentiveData.length < DEFAULT_PAGE_SIZE && (
+                    // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+                    <tr style={{ height: 42.5 * (DEFAULT_PAGE_SIZE - currentIncentiveData.length) }} />
+                  )}
+              </tbody>
+            </table>
+          </TableScrollFadeContainer>
+        )}
+        <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
       </div>
       {chainId === ARBITRUM ? <AboutGlpIncident /> : null}
     </div>

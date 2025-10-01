@@ -4,7 +4,6 @@ import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMedia } from "react-use";
 
-import Card from "components/Card/Card";
 import { ExpandableRow } from "components/ExpandableRow";
 
 export function AboutGlpIncident() {
@@ -32,13 +31,19 @@ export function AboutGlpIncident() {
         "w-full": isSmallResolution,
       })}
     >
-      <Card title={t`About GLP Incident`}>
+      <div className="flex flex-col rounded-8 bg-slate-900 p-20">
+        <div className="text-body-large mt-4 font-medium text-typography-primary">
+          <Trans>About GLP Incident</Trans>
+        </div>
+
         <ExpandableRow
           contentClassName="flex flex-col gap-14"
           title={t`Why is the claim in GLV tokens?`}
           open={rowStates[0]}
           onToggle={toggleRow(0)}
-          handleClassName="text-left !text-typography-primary"
+          handleClassName="text-left"
+          className="border-b-1/2 border-slate-600 py-16"
+          chevronClassName="mr-8 mt-4"
         >
           <div className="text-typography-secondary">
             <Trans>
@@ -49,13 +54,15 @@ export function AboutGlpIncident() {
             </Trans>
           </div>
         </ExpandableRow>
-        <div className="App-card-divider" />
+
         <ExpandableRow
           contentClassName="flex flex-col gap-14"
           title={t`What is GLV exactly?`}
           open={rowStates[1]}
           onToggle={toggleRow(1)}
-          handleClassName="text-left !text-typography-primary"
+          handleClassName="text-left"
+          className="border-b-1/2 border-slate-600 py-16"
+          chevronClassName="mr-8 mt-4"
         >
           <div className="text-typography-secondary">
             <p className="mb-8">
@@ -80,13 +87,15 @@ export function AboutGlpIncident() {
             </ul>
           </div>
         </ExpandableRow>
-        <div className="App-card-divider" />
+
         <ExpandableRow
           contentClassName="flex flex-col gap-14"
           title={t`Why do I receive two different GLV tokens?`}
           open={rowStates[2]}
           onToggle={toggleRow(2)}
-          handleClassName="text-left !text-typography-primary"
+          handleClassName="text-left"
+          className="border-b-1/2 border-slate-600 py-16"
+          chevronClassName="mr-8 mt-4"
         >
           <div className="text-typography-secondary">
             <Trans>
@@ -97,13 +106,15 @@ export function AboutGlpIncident() {
             </Trans>
           </div>
         </ExpandableRow>
-        <div className="App-card-divider" />
+
         <ExpandableRow
           contentClassName="flex flex-col gap-14"
           title={t`Can I sell my GLV if I want, and where?`}
           open={rowStates[3]}
           onToggle={toggleRow(3)}
-          handleClassName="text-left !text-typography-primary"
+          handleClassName="text-left"
+          className="border-b-1/2 border-slate-600 py-16"
+          chevronClassName="mr-8 mt-4"
         >
           <div className="text-typography-secondary">
             <Trans>
@@ -112,13 +123,15 @@ export function AboutGlpIncident() {
             </Trans>
           </div>
         </ExpandableRow>
-        <div className="App-card-divider" />
+
         <ExpandableRow
           contentClassName="flex flex-col gap-14"
           title={t`How does GLV earn yield, and where do I see my earnings?`}
           open={rowStates[4]}
           onToggle={toggleRow(4)}
-          handleClassName="text-left !text-typography-primary"
+          handleClassName="text-left"
+          className="border-b-1/2 border-slate-600 py-16"
+          chevronClassName="mr-8 mt-4"
         >
           <div className="text-typography-secondary">
             <Trans>
@@ -128,13 +141,15 @@ export function AboutGlpIncident() {
             </Trans>
           </div>
         </ExpandableRow>
-        <div className="App-card-divider" />
+
         <ExpandableRow
           contentClassName="flex flex-col gap-14"
           title={t`What is the bonus incentive for holding your GLV?`}
           open={rowStates[5]}
           onToggle={toggleRow(5)}
-          handleClassName="text-left !text-typography-primary"
+          handleClassName="text-left"
+          className="pt-16"
+          chevronClassName="mr-8 mt-4"
         >
           <div className="text-typography-secondary">
             <Trans>
@@ -143,7 +158,7 @@ export function AboutGlpIncident() {
             </Trans>
           </div>
         </ExpandableRow>
-      </Card>
+      </div>
     </div>
   );
 }

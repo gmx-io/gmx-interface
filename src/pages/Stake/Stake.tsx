@@ -24,7 +24,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import PageTitle from "components/PageTitle/PageTitle";
 import SEO from "components/Seo/SEO";
-import UserIncentiveDistributionList from "components/UserIncentiveDistributionList/UserIncentiveDistributionList";
+import UserIncentiveDistribution from "components/UserIncentiveDistribution/UserIncentiveDistribution";
 
 import { EscrowedGmxCard } from "./EscrowedGmxCard";
 import { GmxAndVotingPowerCard } from "./GmxAndVotingPowerCard";
@@ -317,7 +317,7 @@ function StakeContent() {
             subtitle={<Trans>Claim and view your incentives, airdrops, and prizes.</Trans>}
           />
         </div>
-        <UserIncentiveDistributionList />
+        <UserIncentiveDistribution />
       </div>
 
       <InterviewModal type="lp" isVisible={isLpInterviewModalVisible} setIsVisible={setIsLpInterviewModalVisible} />
