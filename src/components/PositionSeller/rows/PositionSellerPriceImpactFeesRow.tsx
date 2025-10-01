@@ -14,7 +14,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 export function PositionSellerPriceImpactFeesRow() {
   const { fees } = useSelector(selectPositionSellerFees);
 
-  const totalPriceImpactPercentage = getCappedPriceImpactPercentageFromFees({ fees, isSwap: false });
+  const totalPriceImpactPercentage = getCappedPriceImpactPercentageFromFees({ fees, isSwap: false, isIncrease: false });
 
   const formattedPriceImpactPercentage =
     totalPriceImpactPercentage === undefined

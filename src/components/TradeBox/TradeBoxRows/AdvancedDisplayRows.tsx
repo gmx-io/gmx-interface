@@ -146,7 +146,7 @@ export function TradeBoxAdvancedGroups({
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isSwap, isMarket, isLimit, isTrigger, isTwap, isLong } = tradeFlags;
+  const { isSwap, isMarket, isLimit, isTrigger, isTwap, isLong, isIncrease } = tradeFlags;
 
   const { isLiquidityRisk } = useSelector(selectTradeboxLiquidityInfo);
 
@@ -219,7 +219,13 @@ export function TradeBoxAdvancedGroups({
       scrollIntoViewOnMobile
     >
       {isTrigger ? (
-        <ExitPriceRow isSwap={isSwap} fees={fees} price={isTrigger ? limitPrice : markPrice} isLong={isLong} />
+        <ExitPriceRow
+          isIncrease={isIncrease}
+          isSwap={isSwap}
+          fees={fees}
+          price={isTrigger ? limitPrice : markPrice}
+          isLong={isLong}
+        />
       ) : null}
       {(isLimit || isTrigger || isTwap) && !isSwap && isSetAcceptablePriceImpactEnabled && (
         <>

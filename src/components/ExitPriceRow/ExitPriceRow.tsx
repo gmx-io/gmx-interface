@@ -16,13 +16,15 @@ export function ExitPriceRow({
   isLong,
   isSwap,
   fees,
+  isIncrease,
 }: {
   price: bigint | undefined;
   isLong: boolean;
   isSwap: boolean;
+  isIncrease: boolean;
   fees: TradeFees | undefined;
 }) {
-  const cappedPriceImpact = getCappedPriceImpactPercentageFromFees({ fees, isSwap });
+  const cappedPriceImpact = getCappedPriceImpactPercentageFromFees({ fees, isSwap, isIncrease });
   const exitPrice =
     cappedPriceImpact !== undefined && price !== undefined
       ? isLong
