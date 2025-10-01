@@ -36,6 +36,7 @@ import { SidecarLimitOrderEntry, SidecarOrderEntry, SidecarSlTpOrderEntry, Sidec
 import { useSidecarOrdersChanged } from "./useSidecarOrdersChanged";
 import { useSidecarOrdersGroup } from "./useSidecarOrdersGroup";
 import { getCommonError, handleEntryError } from "./utils";
+import { isLimitOrderType } from "../orders";
 
 export * from "./types";
 
@@ -204,6 +205,9 @@ export function useSidecarOrders() {
         chainId,
         externalSwapQuoteParams,
         isSetAcceptablePriceImpactEnabled,
+        limitOrderType: isLimitOrderType(order.orderType)
+          ? (order.orderType as OrderType.LimitIncrease | OrderType.StopIncrease)
+          : undefined,
       });
     },
     [
