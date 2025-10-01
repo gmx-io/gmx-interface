@@ -8,7 +8,7 @@ const SUBGRAPH_URLS = {
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-referrals/api",
     nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
-    subsquid: "https://gmx-test.squids.live/multichain-arbitrum@835129/api/graphql",
+    subsquid: "https://gmx-test.squids.live/gmx-synthetics-arbitrum@835129/api/graphql",
   },
 
   [AVALANCHE]: {
@@ -16,7 +16,7 @@ const SUBGRAPH_URLS = {
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-referrals/api",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-avalanche-stats/api",
     // subsquid: "https://gmx.squids.live/gmx-synthetics-avalanche:prod/api/graphql",
-    subsquid: "https://gmx-test.squids.live/multichain-avalanche@835129/api/graphql",
+    subsquid: "https://gmx-test.squids.live/gmx-synthetics-avalanche@835129/api/graphql",
   },
 
   [AVALANCHE_FUJI]: {
