@@ -2,15 +2,18 @@ import { gql } from "@apollo/client";
 import useSWR from "swr";
 
 import { getSubsquidGraphClient } from "lib/subgraph";
+import { AprSnapshot } from "sdk/types/subsquid";
+import { queryPaginated } from "sdk/utils/subgraph";
 
 import { Period } from "./usePoolsTimeRange";
 
 const APR_SNAPSHOTS_QUERY = gql`
-  query AprSnapshots($fromTimestamp: Int, $tokenAddresses: [String!]) {
+  query AprSnapshots($fromTimestamp: Int, $tokenAddresses: [String!], $limit: Int, $offset: Int) {
     aprSnapshots(
       where: { snapshotTimestamp_gt: $fromTimestamp, address_in: $tokenAddresses }
       orderBy: snapshotTimestamp_ASC
-      limit: 2000
+      limit: $limit
+      offset: $offset
     ) {
       address
       aprByFee
@@ -22,13 +25,6 @@ const APR_SNAPSHOTS_QUERY = gql`
 
 type AprSnapshotsQuery = {
   aprSnapshots: AprSnapshot[];
-};
-
-export type AprSnapshot = {
-  address: string;
-  aprByFee: string;
-  aprByBorrowingFee: string;
-  snapshotTimestamp: number;
 };
 
 export type AprData = {
@@ -49,13 +45,18 @@ export function useAprSnapshots({
     {
       fetcher: async () => {
         const client = getSubsquidGraphClient(chainId);
-        const res = await client?.query<AprSnapshotsQuery>({
-          query: APR_SNAPSHOTS_QUERY,
-          variables: { fromTimestamp: period.periodStart, tokenAddresses },
-          fetchPolicy: "no-cache",
-        });
+        const snapshots = await queryPaginated(
+          async (limit, offset) =>
+            client
+              ?.query<AprSnapshotsQuery>({
+                query: APR_SNAPSHOTS_QUERY,
+                variables: { fromTimestamp: period.periodStart, tokenAddresses, limit, offset },
+                fetchPolicy: "no-cache",
+              })
+              .then((response) => response?.data?.aprSnapshots || []) ?? []
+        );
 
-        const aprSnapshotsByToken = res?.data?.aprSnapshots.reduce(
+        const aprSnapshotsByToken = snapshots.reduce(
           (acc, aprSnapshot) => {
             if (!acc[aprSnapshot.address]) {
               acc[aprSnapshot.address] = [];

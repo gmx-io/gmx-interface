@@ -62,3 +62,5 @@ export function getSubgraphUrl(
 
   return SUBGRAPH_URLS?.[chainId]?.[subgraph];
 }
+
+export const SUBSQUID_PAGINATION_LIMIT = 500;

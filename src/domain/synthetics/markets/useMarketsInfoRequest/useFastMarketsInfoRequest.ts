@@ -4,126 +4,133 @@ import useSWR from "swr";
 
 import { metrics } from "lib/metrics";
 import { getSubsquidGraphClient } from "lib/subgraph";
+import { queryPaginated } from "sdk/utils/subgraph";
 
-import { FastMarketInfoData } from "..";
+import { FastMarketInfo, FastMarketInfoData } from "..";
+
+const MARKETS_INFO_QUERY = gql`
+  query MarketsInfo($limit: Int, $offset: Int) {
+    marketInfos(limit: $limit, offset: $offset) {
+      marketTokenAddress
+      indexTokenAddress
+      longTokenAddress
+      shortTokenAddress
+
+      isDisabled
+
+      longPoolAmount
+      shortPoolAmount
+
+      maxLongPoolAmount
+      maxShortPoolAmount
+      maxLongPoolUsdForDeposit
+      maxShortPoolUsdForDeposit
+
+      poolValueMax
+      poolValueMin
+
+      reserveFactorLong
+      reserveFactorShort
+
+      openInterestReserveFactorLong
+      openInterestReserveFactorShort
+
+      maxOpenInterestLong
+      maxOpenInterestShort
+
+      fundingFactor
+      fundingExponentFactor
+      fundingIncreaseFactorPerSecond
+      fundingDecreaseFactorPerSecond
+      thresholdForStableFunding
+      thresholdForDecreaseFunding
+      minFundingFactorPerSecond
+      maxFundingFactorPerSecond
+
+      totalBorrowingFees
+
+      positionImpactPoolAmount
+      minPositionImpactPoolAmount
+      positionImpactPoolDistributionRate
+
+      minCollateralFactor
+      minCollateralFactorForOpenInterestLong
+      minCollateralFactorForOpenInterestShort
+
+      swapImpactPoolAmountLong
+      swapImpactPoolAmountShort
+
+      maxPnlFactorForTradersLong
+      maxPnlFactorForTradersShort
+
+      longOpenInterestUsd
+      shortOpenInterestUsd
+      longOpenInterestInTokens
+      shortOpenInterestInTokens
+
+      positionFeeFactorForPositiveImpact
+      positionFeeFactorForNegativeImpact
+      positionImpactFactorPositive
+      positionImpactFactorNegative
+      maxPositionImpactFactorPositive
+      maxPositionImpactFactorNegative
+      maxLendableImpactFactor
+      maxLendableImpactFactorForWithdrawals
+      maxLendableImpactUsd
+      lentPositionImpactPoolAmount
+      atomicSwapFeeFactor
+      maxPositionImpactFactorForLiquidations
+      positionImpactExponentFactor
+
+      swapFeeFactorForPositiveImpact
+      swapFeeFactorForNegativeImpact
+      swapImpactFactorPositive
+      swapImpactFactorNegative
+      swapImpactExponentFactor
+
+      borrowingFactorPerSecondForLongs
+      borrowingFactorPerSecondForShorts
+
+      fundingFactorPerSecond
+      longsPayShorts
+
+      virtualPoolAmountForLongToken
+      virtualPoolAmountForShortToken
+      virtualInventoryForPositions
+
+      virtualMarketId
+      virtualLongTokenId
+      virtualShortTokenId
+    }
+  }
+`;
 
 export function useFastMarketsInfoRequest(chainId: number) {
   const {
     data: fastMarketInfoData,
     error,
     isLoading,
-  } = useSWR<FastMarketInfoData>([chainId, "useFastMarketsInfoRequest"], {
+  } = useSWR<FastMarketInfoData | undefined>([chainId, "useFastMarketsInfoRequest"], {
     refreshInterval: undefined,
     fetcher: async () => {
       try {
         const client = getSubsquidGraphClient(chainId);
-        const res = await client?.query({
-          query: gql`
-            query MarketsInfo {
-              marketInfos(limit: 1000) {
-                marketTokenAddress
-                indexTokenAddress
-                longTokenAddress
-                shortTokenAddress
+        const rawMarketsInfos = await queryPaginated<FastMarketInfo>(
+          async (limit, offset) =>
+            client
+              ?.query<{ marketInfos: FastMarketInfo[] }>({
+                query: MARKETS_INFO_QUERY,
+                variables: { limit, offset },
+                fetchPolicy: "no-cache",
+              })
+              .then((response) => response?.data?.marketInfos ?? []) ?? []
+        );
 
-                isDisabled
-
-                longPoolAmount
-                shortPoolAmount
-
-                maxLongPoolAmount
-                maxShortPoolAmount
-                maxLongPoolUsdForDeposit
-                maxShortPoolUsdForDeposit
-
-                poolValueMax
-                poolValueMin
-
-                reserveFactorLong
-                reserveFactorShort
-
-                openInterestReserveFactorLong
-                openInterestReserveFactorShort
-
-                maxOpenInterestLong
-                maxOpenInterestShort
-
-                fundingFactor
-                fundingExponentFactor
-                fundingIncreaseFactorPerSecond
-                fundingDecreaseFactorPerSecond
-                thresholdForStableFunding
-                thresholdForDecreaseFunding
-                minFundingFactorPerSecond
-                maxFundingFactorPerSecond
-
-                totalBorrowingFees
-
-                positionImpactPoolAmount
-                minPositionImpactPoolAmount
-                positionImpactPoolDistributionRate
-
-                minCollateralFactor
-                minCollateralFactorForOpenInterestLong
-                minCollateralFactorForOpenInterestShort
-
-                swapImpactPoolAmountLong
-                swapImpactPoolAmountShort
-
-                maxPnlFactorForTradersLong
-                maxPnlFactorForTradersShort
-
-                longOpenInterestUsd
-                shortOpenInterestUsd
-                longOpenInterestInTokens
-                shortOpenInterestInTokens
-
-                positionFeeFactorForPositiveImpact
-                positionFeeFactorForNegativeImpact
-                positionImpactFactorPositive
-                positionImpactFactorNegative
-                maxPositionImpactFactorPositive
-                maxPositionImpactFactorNegative
-                maxLendableImpactFactor
-                maxLendableImpactFactorForWithdrawals
-                maxLendableImpactUsd
-                lentPositionImpactPoolAmount
-                atomicSwapFeeFactor
-                maxPositionImpactFactorForLiquidations
-                positionImpactExponentFactor
-
-                swapFeeFactorForPositiveImpact
-                swapFeeFactorForNegativeImpact
-                swapImpactFactorPositive
-                swapImpactFactorNegative
-                swapImpactExponentFactor
-
-                borrowingFactorPerSecondForLongs
-                borrowingFactorPerSecondForShorts
-
-                fundingFactorPerSecond
-                longsPayShorts
-
-                virtualPoolAmountForLongToken
-                virtualPoolAmountForShortToken
-                virtualInventoryForPositions
-
-                virtualMarketId
-                virtualLongTokenId
-                virtualShortTokenId
-              }
-            }
-          `,
-          fetchPolicy: "no-cache",
-        });
-
-        const rawMarketsInfo = res?.data?.marketInfos;
-
-        if (!rawMarketsInfo) {
+        if (!rawMarketsInfos) {
           return undefined;
         }
 
-        return rawMarketsInfo.reduce((acc: FastMarketInfoData, mInfo) => {
+        return rawMarketsInfos.reduce((acc: FastMarketInfoData, mInfo) => {
           acc[mInfo.marketTokenAddress] = {
             marketTokenAddress: mInfo.marketTokenAddress,
             indexTokenAddress: mInfo.indexTokenAddress,

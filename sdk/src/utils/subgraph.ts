@@ -1,3 +1,4 @@
+import { SUBSQUID_PAGINATION_LIMIT } from "../../../src/config/subgraph";
 export type GraphQlFilters =
   | {
       OR: GraphQlFilters[];
@@ -114,4 +115,27 @@ export function buildFiltersBody(filters: GraphQlFilters, options?: { enums?: Re
   }, "");
 
   return `{${str}}`;
+}
+
+export async function queryPaginated<T>(
+  fetcher: (offset: number, limit: number) => Promise<T[]>,
+  limit = SUBSQUID_PAGINATION_LIMIT
+): Promise<T[]> {
+  let offset = 0;
+
+  const results: T[] = [];
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const res = await fetcher(offset, limit);
+    results.push(...res);
+
+    if (res.length < limit) {
+      break;
+    }
+
+    offset += limit;
+  }
+
+  return results;
 }

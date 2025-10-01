@@ -3,15 +3,18 @@ import { useMemo } from "react";
 import useSWR from "swr";
 
 import { getSubsquidGraphClient } from "lib/subgraph";
+import { Price } from "sdk/types/subsquid";
+import { queryPaginated } from "sdk/utils/subgraph";
 
 import { Period } from "./usePoolsTimeRange";
 
 const PRICES_QUERY = gql`
-  query Prices($fromTimestamp: Int, $tokenAddresses: [String!]) {
+  query Prices($fromTimestamp: Int, $tokenAddresses: [String!], $limit: Int, $offset: Int) {
     prices(
       where: { isSnapshot_eq: true, snapshotTimestamp_gt: $fromTimestamp, token_in: $tokenAddresses }
       orderBy: snapshotTimestamp_ASC
-      limit: 2000
+      limit: $limit
+      offset: $offset
     ) {
       minPrice
       maxPrice
@@ -21,6 +24,8 @@ const PRICES_QUERY = gql`
     }
   }
 `;
+
+type PriceSnapshot = Price & { snapshotTimestamp: number };
 
 type PriceQuery = {
   prices: PriceSnapshot[];
@@ -32,14 +37,6 @@ export type PriceData = {
 
 export type PriceDataMapped = {
   [tokenAddress: string]: Record<number, PriceSnapshot>;
-};
-
-export type PriceSnapshot = {
-  minPrice: string;
-  maxPrice: string;
-  snapshotTimestamp: number;
-  token: string;
-  type: string;
 };
 
 export function usePriceSnapshots({
@@ -56,16 +53,23 @@ export function usePriceSnapshots({
     {
       fetcher: async () => {
         const client = getSubsquidGraphClient(chainId);
-        const res = await client?.query<PriceQuery>({
-          query: PRICES_QUERY,
-          variables: {
-            fromTimestamp: period.periodStart,
-            tokenAddresses,
-          },
-          fetchPolicy: "no-cache",
-        });
+        const res = await queryPaginated(
+          async (limit, offset) =>
+            client
+              ?.query<PriceQuery>({
+                query: PRICES_QUERY,
+                variables: {
+                  fromTimestamp: period.periodStart,
+                  tokenAddresses,
+                  limit,
+                  offset,
+                },
+                fetchPolicy: "no-cache",
+              })
+              .then((response) => response?.data?.prices || []) ?? []
+        );
 
-        const pricesByToken = res?.data?.prices.reduce(
+        const pricesByToken = res.reduce(
           (acc, price) => {
             if (!acc[price.token]) {
               acc[price.token] = [];
