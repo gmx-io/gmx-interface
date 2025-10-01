@@ -222,7 +222,9 @@ export default function ClaimableAmounts() {
     });
 
     const hasAvailableFundsToCoverExecutionFee =
-      userNativeTokenBalance !== undefined && userNativeTokenBalance >= requiredExecutionFee;
+      userNativeTokenBalance !== undefined &&
+      executionFee !== undefined &&
+      userNativeTokenBalance >= requiredExecutionFee;
 
     isButtonDisabled = !hasAvailableFundsToCoverExecutionFee;
 
@@ -305,7 +307,7 @@ export default function ClaimableAmounts() {
     return (
       <>
         {!hasAvailableFundsToCoverExecutionFee ? (
-          <AlertInfoCard type="warning">
+          <AlertInfoCard type="warning" hideClose>
             <Trans>Insufficient gas for network fees</Trans>
           </AlertInfoCard>
         ) : null}
