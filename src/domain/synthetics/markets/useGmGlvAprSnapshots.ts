@@ -10,6 +10,7 @@ const APR_SNAPSHOTS_QUERY = gql`
     aprSnapshots(
       where: { snapshotTimestamp_gt: $fromTimestamp, address_in: $tokenAddresses }
       orderBy: snapshotTimestamp_ASC
+      limit: 2000
     ) {
       address
       aprByFee

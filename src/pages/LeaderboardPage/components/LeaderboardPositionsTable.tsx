@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
 
+import { LEADERBOARD_POSITIONS_PER_PAGE } from "config/ui";
 import type { SortDirection } from "context/SorterContext/types";
 import { useTokenInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useLeaderboardIsCompetition } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
@@ -10,9 +11,13 @@ import {
   selectPositionConstants,
   selectUserReferralInfo,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectLeaderboardPositionsPage,
+  selectLeaderboardSetPositionsPage,
+} from "context/SyntheticsStateContext/selectors/leaderboardSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { LeaderboardPosition, RemoteData } from "domain/synthetics/leaderboard";
+import { LEADERBOARD_PRELOAD_SIZE, LeaderboardPosition, RemoteData } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getLiquidationPrice } from "domain/synthetics/positions";
@@ -23,6 +28,7 @@ import { formatAmount, formatUsd } from "lib/numbers";
 import AddressView from "components/AddressView/AddressView";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
+import usePagination from "components/Referrals/usePagination";
 import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -53,7 +59,10 @@ export function LeaderboardPositionsTable({
   searchAddress: string | undefined;
 }) {
   const { isLoading, data } = positions;
-  const [page, setPage] = useState(1);
+
+  const positionsPageIndex = useSelector(selectLeaderboardPositionsPage);
+  const setPositionsPageIndex = useSelector(selectLeaderboardSetPositionsPage);
+
   const { orderBy, direction, getSorterProps } = useSorterHandlers<LeaderboardPositionField>(
     "leaderboard-positions-table",
     {
@@ -64,8 +73,8 @@ export function LeaderboardPositionsTable({
   const term = useDebounce(searchAddress, 300);
 
   useEffect(() => {
-    setPage(1);
-  }, [term]);
+    setPositionsPageIndex(1);
+  }, [term, setPositionsPageIndex]);
 
   const sorted = useMemo(() => {
     return [...data].sort((a, b) => {
@@ -91,18 +100,33 @@ export function LeaderboardPositionsTable({
     return sorted.filter((a) => a.account.toLowerCase().indexOf(q) >= 0);
   }, [sorted, term]);
 
-  const indexFrom = (page - 1) * PER_PAGE;
-  const rowsData = useMemo(
+  const rowsDataUnpaginated = useMemo(
     () =>
-      filteredStats.slice(indexFrom, indexFrom + PER_PAGE).map((position, i) => ({
+      filteredStats.map((position, i) => ({
         position,
         index: i,
         rank: position.rank,
       })),
-    [filteredStats, indexFrom]
+    [filteredStats]
   );
 
-  const pageCount = Math.ceil(filteredStats.length / PER_PAGE);
+  const {
+    currentPage,
+    setCurrentPage,
+    currentData: rowsData,
+    pageCount,
+  } = usePagination([searchAddress].toString(), rowsDataUnpaginated, LEADERBOARD_POSITIONS_PER_PAGE);
+
+  useEffect(() => {
+    if (!pageCount || !currentPage) return;
+    const totalPossiblePages = (LEADERBOARD_PRELOAD_SIZE * positionsPageIndex) / LEADERBOARD_POSITIONS_PER_PAGE;
+    const doesMoreDataExist = pageCount >= totalPossiblePages;
+    const isCloseToEnd = pageCount && pageCount < currentPage + 2;
+
+    if (doesMoreDataExist && isCloseToEnd) {
+      setPositionsPageIndex((prevIndex) => prevIndex + 1);
+    }
+  }, [currentPage, pageCount, positionsPageIndex, setPositionsPageIndex]);
 
   const content = isLoading ? (
     <TopPositionsSkeleton count={PER_PAGE} />
@@ -151,7 +175,7 @@ export function LeaderboardPositionsTable({
           <tbody>{content}</tbody>
         </table>
       </TableScrollFadeContainer>
-      <BottomTablePagination page={page} pageCount={pageCount} onPageChange={setPage} />
+      <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
     </div>
   );
 }

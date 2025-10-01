@@ -11,6 +11,7 @@ const PRICES_QUERY = gql`
     prices(
       where: { isSnapshot_eq: true, snapshotTimestamp_gt: $fromTimestamp, token_in: $tokenAddresses }
       orderBy: snapshotTimestamp_ASC
+      limit: 2000
     ) {
       minPrice
       maxPrice

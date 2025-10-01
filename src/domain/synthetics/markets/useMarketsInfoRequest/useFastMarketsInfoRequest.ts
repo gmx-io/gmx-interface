@@ -20,7 +20,7 @@ export function useFastMarketsInfoRequest(chainId: number) {
         const res = await client?.query({
           query: gql`
             query MarketsInfo {
-              marketInfos {
+              marketInfos(limit: 1000) {
                 marketTokenAddress
                 indexTokenAddress
                 longTokenAddress

@@ -1,6 +1,7 @@
 import { LeaderboardAccount, LeaderboardPosition, LeaderboardPositionBase } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { MarketInfo } from "domain/synthetics/markets";
+import { applyFactor } from "lib/numbers";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
@@ -10,7 +11,9 @@ const BASIS_POINTS_DIVISOR = 10000n;
 
 export const selectLeaderboardAccountBases = (s: SyntheticsState) => s.leaderboard.accounts;
 
-export const selectLeaderboardPositionBases = (s: SyntheticsState) => s.leaderboard.positions;
+export const selectLeaderboardPositionBases = (s: SyntheticsState) => {
+  return s.leaderboard.positions?.flat().filter(Boolean as unknown as FilterOutFalsy);
+};
 
 export const selectLeaderboardTimeframeType = (s: SyntheticsState) => s.leaderboard.leaderboardTimeframeType;
 
@@ -31,6 +34,10 @@ export const selectLeaderboardIsLoading = (s: SyntheticsState) => s.leaderboard.
 export const selectLeaderboardSearchAddress = (s: SyntheticsState) => s.leaderboard.searchAddress;
 
 export const selectLeaderboardSetSearchAddress = (s: SyntheticsState) => s.leaderboard.setSearchAddress;
+
+export const selectLeaderboardPositionsPage = (s: SyntheticsState) => s.leaderboard.positionsPageIndex;
+
+export const selectLeaderboardSetPositionsPage = (s: SyntheticsState) => s.leaderboard.setPositionsPageIndex;
 
 export const selectLeaderboardIsCompetition = createSelector(function selectLeaderboardIsCompetition(q) {
   const pageKey = q((s) => s.leaderboard.leaderboardPageKey);
@@ -321,12 +328,6 @@ function getCloseFee(
   positionFeeUsd = positionFeeUsd - discountUsd;
 
   return positionFeeUsd;
-}
-
-const PRECISION = 10n ** 30n;
-
-function applyFactor(value: bigint, factor: bigint) {
-  return (value * factor) / PRECISION;
 }
 
 function getLeverage(sizeInUsd: bigint, collateralUsd: bigint, unrealizedPnl: bigint, unrealizedFees: bigint) {

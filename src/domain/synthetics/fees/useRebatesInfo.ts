@@ -56,7 +56,8 @@ export function useRebatesInfoRequest(
     fetcher: async () => {
       const query = gql(`{
         claimableCollaterals(
-          where: { account_eq: "${account}", claimed_eq: false }
+          where: { account_eq: "${account}", claimed_eq: false },
+          limit: 1000
         ) {
           id
           marketAddress
