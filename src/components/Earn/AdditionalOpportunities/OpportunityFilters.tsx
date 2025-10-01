@@ -1,5 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
+import { useHistory } from "react-router-dom";
 
 import SearchInput from "components/SearchInput/SearchInput";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
@@ -13,13 +14,12 @@ export type OpportunityFilterValue = "for-me" | "all" | OpportunityTag;
 
 type Props = {
   activeFilter: OpportunityFilterValue;
-  onFilterChange: (value: OpportunityFilterValue) => void;
   search: string;
   onSearchChange: (value: string) => void;
   isForMeDisabled?: boolean;
 };
 
-const TAG_FILTER_ORDER: OpportunityTag[] = [
+export const TAG_FILTER_ORDER: OpportunityTag[] = [
   "lending-and-borrowing",
   "looping",
   "delta-neutral-vaults",
@@ -27,7 +27,7 @@ const TAG_FILTER_ORDER: OpportunityTag[] = [
   "yield-trading",
 ];
 
-export function OpportunityFilters({ activeFilter, onFilterChange, search, onSearchChange, isForMeDisabled }: Props) {
+export function OpportunityFilters({ activeFilter, search, onSearchChange, isForMeDisabled }: Props) {
   const forMeClasses =
     "cursor-not-allowed opacity-50 pointer-events-none hover:opacity-50 focus-visible:outline-none focus-visible:ring-0";
 
@@ -50,21 +50,23 @@ export function OpportunityFilters({ activeFilter, onFilterChange, search, onSea
     [forMeClasses, isForMeDisabled, opportunityTagLabels]
   );
 
+  const history = useHistory();
+
   const handleFilterChange = useCallback(
     (value: OpportunityFilterValue) => {
       if (value === "for-me" && isForMeDisabled) {
         return;
       }
 
-      onFilterChange(value);
+      history.push(`/earn/additional-opportunities/${value}`);
     },
-    [isForMeDisabled, onFilterChange]
+    [isForMeDisabled, history]
   );
 
   return (
     <div className="flex gap-12 overflow-hidden rounded-8 bg-slate-900 p-12">
       <div className="flex grow overflow-hidden">
-        <TableScrollFadeContainer className="grow w-full">
+        <TableScrollFadeContainer className="w-full grow">
           <Tabs
             options={filterOptions}
             selectedValue={activeFilter}

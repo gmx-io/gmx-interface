@@ -108,7 +108,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
           <EarnPortfolioPage />
         </SyntheticsStateContextProvider>
       </Route>
-      <Route exact path="/earn/additional-opportunities">
+      <Route exact path="/earn/additional-opportunities/:filter?">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
           <EarnAdditionalOpportunitiesPage />
         </SyntheticsStateContextProvider>

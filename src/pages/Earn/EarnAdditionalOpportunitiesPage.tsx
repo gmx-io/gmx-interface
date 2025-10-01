@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/macro";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import { BOTANIX } from "config/chains";
 import {
@@ -16,7 +17,10 @@ import { TokensData } from "sdk/types/tokens";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import OpportunityCard from "components/Earn/AdditionalOpportunities/OpportunityCard";
-import OpportunityFilters, { OpportunityFilterValue } from "components/Earn/AdditionalOpportunities/OpportunityFilters";
+import OpportunityFilters, {
+  OpportunityFilterValue,
+  TAG_FILTER_ORDER,
+} from "components/Earn/AdditionalOpportunities/OpportunityFilters";
 import { useOpportunities, useOpportunityTagLabels } from "components/Earn/AdditionalOpportunities/useOpportunities";
 
 import EarnPageLayout from "./EarnPageLayout";
@@ -63,6 +67,17 @@ export default function EarnAdditionalOpportunitiesPage() {
 
   const [activeFilter, setActiveFilter] = useState<OpportunityFilterValue>("all");
   const [searchQuery, setSearchQuery] = useState("");
+
+  const { filter: filterParam } = useParams<{ filter: string | undefined }>();
+
+  useEffect(() => {
+    if (filterParam) {
+      const filter = TAG_FILTER_ORDER.find((tag) => tag === filterParam);
+      if (filter) {
+        setActiveFilter(filter);
+      }
+    }
+  }, [filterParam]);
 
   const userTokens = useMemo(() => {
     const userAssets = new Set([
@@ -151,7 +166,6 @@ export default function EarnAdditionalOpportunitiesPage() {
       <div className="flex flex-col gap-8">
         <OpportunityFilters
           activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
           search={searchQuery}
           onSearchChange={setSearchQuery}
           isForMeDisabled={userTokens.size === 0}
