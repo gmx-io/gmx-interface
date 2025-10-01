@@ -680,6 +680,10 @@ msgstr "DeltaPrime"
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
 msgstr "使用去中心化交易所聚合器购买 GMX："
 
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+msgid "Trade spot yield and earn fixed yield."
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Min. Required Collateral"
 msgstr "最低所需抵押品"
@@ -1023,6 +1027,8 @@ msgstr "GMX 质押奖励"
 msgid "Staked Tokens"
 msgstr "质押代币"
 
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Beefy"
 msgstr "Beefy"
@@ -1367,6 +1373,10 @@ msgstr "图表仓位"
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Unknown Order"
 msgstr "未知订单"
+
+#: src/components/Earn/AdditionalOpportunities/OpportunityCard.tsx
+msgid "Explore"
+msgstr ""
 
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Transfer submitted."
@@ -1950,9 +1960,17 @@ msgstr ""
 msgid "Total:"
 msgstr "总计："
 
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+msgid "Lend out your GMX tokens or borrow against them."
+msgstr ""
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
 msgstr "{0} 已批准！"
+
+#: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
+msgid "No additional opportunities at this time on Botanix. Change to Arbitrum or Avalanche to see more."
+msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sending sell request."
@@ -2307,6 +2325,7 @@ msgstr "可领取金额"
 msgid "Job openings at GMX."
 msgstr "GMX 的职位空缺。"
 
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Autocompound"
 msgstr ""
@@ -2367,6 +2386,10 @@ msgstr "触发"
 #: src/pages/Stake/StakeModal.tsx
 msgid "Unstake failed."
 msgstr "解除质押失败。"
+
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+msgid "Autocompound your earned GMX rewards periodically without having to manually claim and compound your rewards."
+msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order cancelled"
@@ -2491,6 +2514,10 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation Fee"
 msgstr "清算费用"
+
+#: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
+msgid "No opportunities match the selected filters."
+msgstr ""
 
 #: src/components/Claims/SettleAccruedCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -2773,6 +2800,10 @@ msgstr "杠杆"
 msgid "over 100 protocols"
 msgstr ""
 
+#: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
+msgid "No opportunities currently match your holdings. Try another filter or check back soon."
+msgstr ""
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawing..."
 msgstr ""
@@ -3007,6 +3038,10 @@ msgstr "V1 esGMX"
 msgid "Take Profit PnL"
 msgstr "止盈 PnL"
 
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+msgid "Lend out your GLV or GM tokens, and borrow against them, or put your LP tokens into strategies to maximize your yield."
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "您的 esGMX (IOU) 余额在领取后将减少您的领取金额，这是预期行为。"
@@ -3047,6 +3082,7 @@ msgstr "订单无法执行，因为剩余仓位将小于 5.00 美元"
 msgid "Claiming..."
 msgstr "领取中..."
 
+#: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "All"
 msgstr ""
@@ -3491,6 +3527,10 @@ msgstr "过去 180 天"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown buy GM order"
 msgstr "未知购买 GM 订单"
+
+#: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
+msgid "No additional opportunities are available on this chain yet."
+msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order"
@@ -4121,6 +4161,10 @@ msgstr "无开订单"
 msgid "Traders Referred on Avalanche Fuji"
 msgstr "在 Avalanche Fuji 上推荐的交易者"
 
+#: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
+msgid "No opportunities match your search."
+msgstr ""
+
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in GM Pools."
 msgstr "GM 池中代币的总价值。"
@@ -4485,6 +4529,10 @@ msgstr "委托"
 msgid "Harmonix"
 msgstr "Harmonix"
 
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+msgid "Radiant"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Invalid NFT Address"
 msgstr "无效的 NFT 地址"
@@ -4678,6 +4726,10 @@ msgstr "交易"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
+msgstr ""
+
+#: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
+msgid "Maximize your earnings on your ecosystem tokens (GMX, GLV and GM) with the following integrated partner protocols."
 msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
@@ -4890,6 +4942,10 @@ msgstr ""
 msgid "Stake GMX to earn GMX rewards"
 msgstr ""
 
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+msgid "Lodestar"
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling shift request."
 msgstr ""
@@ -5036,6 +5092,10 @@ msgstr ""
 msgid "GMX Trading Chat"
 msgstr "GMX 交易聊天"
 
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+msgid "Pendle"
+msgstr ""
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H%"
@@ -5081,6 +5141,10 @@ msgstr ""
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Governance Alerts"
 msgstr "治理警报"
+
+#: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
+msgid "For me"
+msgstr ""
 
 #: src/components/GmList/GlvList.tsx
 msgid "Yield-optimized vaults supplying liquidity across multiple GMX<0/> markets."
@@ -5140,6 +5204,10 @@ msgstr "期间的总已实现和未实现损益，包括费用和价格影响。
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Ann. Performance"
 msgstr "年化表现"
+
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+msgid "Umami"
+msgstr ""
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
@@ -5315,6 +5383,7 @@ msgstr ""
 msgid "Generative Market eXplore - AIGMX Agent"
 msgstr "生成市场探索 - AIGMX 代理"
 
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dolomite"
 msgstr "Dolomite"
@@ -5355,6 +5424,10 @@ msgstr "需要大小百分比"
 msgid "Show more"
 msgstr "显示更多"
 
+#: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
+msgid "No eligible holdings detected. Acquire or stake GMX, GLV, or GM tokens to unlock personalized opportunities."
+msgstr ""
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -5382,6 +5455,10 @@ msgstr ""
 #: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
 msgid "Withdrawn!"
 msgstr "已提取！"
+
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+msgid "Yield Trading"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -5520,6 +5597,10 @@ msgstr "市场"
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"
 msgstr "与当前活跃代码相同"
+
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+msgid "Autocompound your earned GMX rewards instantly without having to manually claim and compound your rewards."
+msgstr ""
 
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "The current swap impact including fees is {0}. Consider adding a buffer of 1% to it so the order is more likely to be processed"
@@ -5913,6 +5994,7 @@ msgstr "活跃订单"
 msgid "You have set a high acceptable price impact. The current price impact is {0}."
 msgstr "您设置了高可接受价格影响。当前价格影响为 {0}。"
 
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Lending and Borrowing"
 msgstr "借贷"
@@ -6174,6 +6256,10 @@ msgstr "池"
 msgid "VAULT"
 msgstr "金库"
 
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+msgid "Looping"
+msgstr ""
+
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "We Value Your Feedback"
 msgstr "我们重视您的反馈"
@@ -6318,6 +6404,11 @@ msgstr "回扣"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Yes. All tokens (GMX, GLV and GM) are liquid and can be unstaked and withdrawn at any time. For LP tokens, there could be some edge cases where your liquidity is being used by active trades."
+msgstr ""
+
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+msgid "Lend out your GM LP tokens, or borrow against them."
 msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -6679,6 +6770,7 @@ msgstr "做多"
 msgid "Pool"
 msgstr "池子"
 
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Venus"
 msgstr "Venus"
@@ -6820,6 +6912,10 @@ msgstr "GLP 是 GMX V1 市场流动性提供者代币。累积 V1 市场生成�
 #: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 msgstr "{increaseOrDecreaseText} {tokenText} 按 {sizeText}"
+
+#: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
+msgid "Search opportunities"
+msgstr ""
 
 #: src/components/SettingsModal/ThemeSelector.tsx
 msgid "Dark"
@@ -7201,6 +7297,10 @@ msgstr "当时间条件满足时，可能没有足够的流动性来执行此订
 msgid "The PnL ($) compared to the capital used.<0/><1/>The capital used is calculated as the highest value of [<2>sum of collateral of open positions - realized PnL + period start pending PnL</2>]."
 msgstr "与所用资金相比的盈亏 ($)。<0/><1/>所用资金计算为 [<2>未平仓仓位抵押品总和 - 已实现盈亏 + 期初待处理盈亏</2>] 的最高值。"
 
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+msgid "Delta Neutral Vaults"
+msgstr ""
+
 #: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
 msgid "Failed to {0}."
 msgstr ""
@@ -7220,6 +7320,10 @@ msgstr "无可用数据"
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "{prefix} <0>{text}</0>"
 msgstr "{prefix} <0>{text}</0>"
+
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+msgid "Umami GM vaults enable depositors to provide single-sided liquidity to GMX liquidity pools. Deposits are actively managed to optimize for capital efficiency while minimizing exposure to impermanent loss."
+msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to update settings"
