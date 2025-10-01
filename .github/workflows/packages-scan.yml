@@ -21,15 +21,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: "yarn"
 
-      - name: Install dependencies (root)
-        run: yarn install --frozen-lockfile
+      - name: Generate package-lock.json (root)
+        run: npm install --package-lock-only
 
-      - name: Install dependencies (SDK)
+      - name: Generate package-lock.json (SDK)
         run: |
           cd sdk
-          yarn install --frozen-lockfile
+          npm install --package-lock-only
 
       - name: Make scan script executable
         run: chmod +x scripts/scan-packages.sh

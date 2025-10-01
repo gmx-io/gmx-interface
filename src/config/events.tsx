@@ -29,6 +29,19 @@ export const MKR_USD_DELISTING_EVENT_ID = "mkr-usd-delisting";
 
 export const appEventsData: EventData[] = [
   {
+    id: "xpl-bnb-sol-listing",
+    isActive: true,
+    startDate: "25 Sep 2025, 16:50",
+    endDate: "02 Oct 2025, 18:00",
+    title: "XPL (Plasma), BNB and SOL markets added on Arbitrum",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
+        <span className="text-slate-100">[WBTC-USDC]</span>.
+      </>
+    ),
+  },
+  {
     id: "zora-kta-listing",
     isActive: true,
     startDate: "18 Sep 2025, 14:00",
