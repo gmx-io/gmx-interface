@@ -85,6 +85,7 @@ export default function TVChartContainer({
         if (isFirstDraw) {
           setIsCandlesLoaded(true);
         }
+        setChartDataLoading(false);
       });
     }
     setDatafeed((prev) => {
