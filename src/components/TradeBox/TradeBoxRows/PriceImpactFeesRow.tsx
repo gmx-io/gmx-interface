@@ -27,13 +27,12 @@ export function PriceImpactFeesRow() {
   const userReferralInfo = useSelector(selectUserReferralInfo);
   const feesType = useSelector(selectTradeboxTradeFeesType);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isTrigger, isSwap, isIncrease } = tradeFlags;
+  const { isTrigger, isSwap } = tradeFlags;
   const tradingIncentives = useTradingIncentives(chainId);
   const estimatedRebatesPercentage = tradingIncentives?.estimatedRebatePercent ?? 0n;
 
   const { formattedPriceImpactPercentage, isPriceImpactPositive } = useMemo(() => {
-    const priceImpactPercentage =
-      isTrigger || isSwap ? getCappedPriceImpactPercentageFromFees({ fees, isSwap, isIncrease }) : 0n;
+    const priceImpactPercentage = isTrigger || isSwap ? getCappedPriceImpactPercentageFromFees({ fees, isSwap }) : 0n;
     return {
       formattedPriceImpactPercentage:
         priceImpactPercentage === undefined
@@ -45,7 +44,7 @@ export function PriceImpactFeesRow() {
             }),
       isPriceImpactPositive: priceImpactPercentage !== undefined && priceImpactPercentage > 0,
     };
-  }, [fees, isTrigger, isSwap, isIncrease]);
+  }, [fees, isTrigger, isSwap]);
 
   const rebateIsApplicable =
     fees?.positionFee?.deltaUsd !== undefined && fees.positionFee.deltaUsd <= 0 && feesType !== "swap";

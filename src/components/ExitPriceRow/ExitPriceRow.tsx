@@ -16,15 +16,13 @@ export function ExitPriceRow({
   isLong,
   isSwap,
   fees,
-  isIncrease,
 }: {
   price: bigint | undefined;
   isLong: boolean;
   isSwap: boolean;
-  isIncrease: boolean;
   fees: TradeFees | undefined;
 }) {
-  const cappedPriceImpact = getCappedPriceImpactPercentageFromFees({ fees, isSwap, isIncrease });
+  const cappedPriceImpact = getCappedPriceImpactPercentageFromFees({ fees, isSwap });
   const exitPrice =
     cappedPriceImpact !== undefined && price !== undefined
       ? isLong
@@ -41,7 +39,7 @@ export function ExitPriceRow({
           content={t`Expected exit price for the order, including the current capped net price impact.`}
         />
       }
-      value={exitPrice !== undefined ? formatUsdPrice(exitPrice) : "..."}
+      value={exitPrice !== undefined ? formatUsdPrice(exitPrice) : "-"}
     />
   );
 }

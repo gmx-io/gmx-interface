@@ -109,7 +109,6 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
         fees={fees}
         price={isTrigger ? triggerPrice : position.markPrice}
         isLong={position.isLong}
-        isIncrease={false}
       />
       <TradeFeesRow {...fees} feesType="decrease" />
       <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} />

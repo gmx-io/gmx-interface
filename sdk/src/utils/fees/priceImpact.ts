@@ -513,19 +513,13 @@ export function applyImpactFactor(diff: bigint, factor: bigint, exponent: bigint
 export function getCappedPriceImpactPercentageFromFees({
   fees,
   isSwap,
-  isIncrease,
 }: {
   fees: TradeFees | undefined;
   isSwap: boolean;
-  isIncrease: boolean;
 }): bigint | undefined {
   if (isSwap) {
-    return fees?.swapPriceImpact?.precisePercentage;
+    return fees?.swapPriceImpact?.precisePercentage ?? 0n;
   }
 
-  if (isIncrease) {
-    return fees?.positionNetPriceImpact?.precisePercentage;
-  }
-
-  return (fees?.totalPendingImpact?.precisePercentage ?? 0n) + (fees?.priceImpactDiff?.precisePercentage ?? 0n);
+  return fees?.positionNetPriceImpact?.precisePercentage ?? 0n;
 }
