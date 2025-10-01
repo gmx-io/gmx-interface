@@ -22,14 +22,6 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Generate package-lock.json (root)
-        run: npm install --package-lock-only
-
-      - name: Generate package-lock.json (SDK)
-        run: |
-          cd sdk
-          npm install --package-lock-only
-
       - name: Make scan script executable
         run: chmod +x scripts/scan-packages.sh
 
