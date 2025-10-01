@@ -1027,8 +1027,6 @@ msgstr "GMX Staked Rewards"
 msgid "Staked Tokens"
 msgstr "Staked Tokens"
 
-#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
-#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Beefy"
 msgstr "Beefy"
@@ -4530,8 +4528,8 @@ msgid "Harmonix"
 msgstr "Harmonix"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
-msgid "Radiant"
-msgstr "Radiant"
+#~ msgid "Radiant"
+#~ msgstr "Radiant"
 
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Invalid NFT Address"
@@ -4943,8 +4941,8 @@ msgid "Stake GMX to earn GMX rewards"
 msgstr "Stake GMX to earn GMX rewards"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
-msgid "Lodestar"
-msgstr "Lodestar"
+#~ msgid "Lodestar"
+#~ msgstr "Lodestar"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling shift request."
@@ -5093,8 +5091,8 @@ msgid "GMX Trading Chat"
 msgstr "GMX Trading Chat"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
-msgid "Pendle"
-msgstr "Pendle"
+#~ msgid "Pendle"
+#~ msgstr "Pendle"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
@@ -5206,8 +5204,8 @@ msgid "Ann. Performance"
 msgstr "Ann. Performance"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
-msgid "Umami"
-msgstr "Umami"
+#~ msgid "Umami"
+#~ msgstr "Umami"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
@@ -5383,7 +5381,6 @@ msgstr "Pick an asset to deposit"
 msgid "Generative Market eXplore - AIGMX Agent"
 msgstr "Generative Market eXplore - AIGMX Agent"
 
-#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dolomite"
 msgstr "Dolomite"
@@ -6770,7 +6767,6 @@ msgstr "Long"
 msgid "Pool"
 msgstr "Pool"
 
-#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Venus"
 msgstr "Venus"

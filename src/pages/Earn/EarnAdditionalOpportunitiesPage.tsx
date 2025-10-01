@@ -1,16 +1,18 @@
 import { Trans } from "@lingui/macro";
 import { useMemo, useState } from "react";
 
-import { BOTANIX, getChainName } from "config/chains";
+import { BOTANIX } from "config/chains";
 import {
   selectGlvAndMarketsInfoData,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { GlvAndGmMarketsInfoData, GlvInfo, getMarketPoolName, useMarketTokensData } from "domain/synthetics/markets";
+import { GlvAndGmMarketsInfoData, getMarketPoolName, useMarketTokensData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useChainId } from "lib/chains";
+import { defined } from "lib/guards";
 import { useProcessedData } from "pages/Stake/useProcessedData";
+import { TokensData } from "sdk/types/tokens";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import OpportunityCard from "components/Earn/AdditionalOpportunities/OpportunityCard";
@@ -19,49 +21,38 @@ import { useOpportunities, useOpportunityTagLabels } from "components/Earn/Addit
 
 import EarnPageLayout from "./EarnPageLayout";
 
-function getGlvTokenLabel(glv: GlvInfo) {
-  if (glv.name) {
-    return `GLV ${glv.name}`;
-  }
-
-  const rawSymbol = glv.glvToken.contractSymbol || glv.glvToken.symbol || "";
-  const trimmed = rawSymbol.replace(/^GLV[:\-_.]?/i, "");
-  const clean = trimmed.replace(/[^a-z0-9]/gi, "");
-
-  if (clean) {
-    return `GLV ${clean.toUpperCase()}`;
-  }
-
-  return "GLV";
-}
-
-function collectMarketTokenLabels(
+function collectUserMarketTokenLabels(
   marketsInfoData: GlvAndGmMarketsInfoData | undefined,
   marketTokensData: ReturnType<typeof useMarketTokensData>["marketTokensData"]
-) {
-  const tokens = new Set<string>();
-
+): string[] {
   if (!marketsInfoData || !marketTokensData) {
-    return tokens;
+    return [];
   }
 
-  Object.values(marketsInfoData).forEach((info) => {
-    const address = isGlvInfo(info) ? info.glvTokenAddress : info.marketTokenAddress;
-    const balance = marketTokensData[address]?.balance;
+  return Object.values(marketsInfoData)
+    .map((info) => {
+      const address = isGlvInfo(info) ? info.glvTokenAddress : info.marketTokenAddress;
+      const balance = marketTokensData[address]?.balance;
 
-    if (balance === undefined || balance <= 0n) {
-      return;
-    }
+      if (balance === undefined || balance <= 0n) {
+        return null;
+      }
 
-    if (isGlvInfo(info)) {
-      tokens.add(getGlvTokenLabel(info));
-    } else {
-      tokens.add(`GM ${getMarketPoolName(info)}`);
-    }
-  });
-
-  return tokens;
+      return `${isGlvInfo(info) ? "GLV" : "GM"} ${getMarketPoolName(info, "-")}`;
+    })
+    .filter(defined);
 }
+
+const collectUserTokenLabels = (tokensData: TokensData | undefined): string[] => {
+  return Object.values(tokensData || {})
+    .filter(
+      (token) =>
+        (token.balance !== undefined && token.balance > 0n) ||
+        (token.walletBalance !== undefined && token.walletBalance > 0n) ||
+        (token.gmxAccountBalance !== undefined && token.gmxAccountBalance > 0n)
+    )
+    .map((token) => token.symbol);
+};
 
 export default function EarnAdditionalOpportunitiesPage() {
   const { chainId, srcChainId } = useChainId();
@@ -74,37 +65,18 @@ export default function EarnAdditionalOpportunitiesPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const userTokens = useMemo(() => {
-    const holdings = collectMarketTokenLabels(marketsInfoData, marketTokensData);
+    const userAssets = new Set([
+      ...collectUserMarketTokenLabels(marketsInfoData, marketTokensData),
+      ...collectUserTokenLabels(tokensData),
+    ]);
 
     if (processedData) {
-      if ((processedData.gmxBalance ?? 0n) > 0n) {
-        holdings.add("GMX");
-      }
       if ((processedData.gmxInStakedGmx ?? 0n) > 0n) {
-        holdings.add("stGMX");
+        userAssets.add("stGMX");
       }
     }
 
-    if (tokensData) {
-      Object.values(tokensData).forEach((token) => {
-        const balance = token.balance ?? token.walletBalance;
-
-        if (balance === undefined || balance <= 0n || !token.symbol) {
-          return;
-        }
-
-        const normalized = token.symbol.toUpperCase();
-        const sanitized = normalized.replace(/[^A-Z]/g, "");
-
-        if (normalized === "GMX") {
-          holdings.add("GMX");
-        } else if (sanitized === "USDC" || sanitized === "USDCE") {
-          holdings.add("USDC");
-        }
-      });
-    }
-
-    return holdings;
+    return userAssets;
   }, [marketsInfoData, marketTokensData, processedData, tokensData]);
 
   const allOpportunities = useOpportunities();
@@ -115,7 +87,7 @@ export default function EarnAdditionalOpportunitiesPage() {
     let list = allOpportunities;
 
     if (activeFilter === "for-me") {
-      list = list.filter((opportunity) => opportunity.tokens.some((token) => userTokens.has(token)));
+      list = list.filter((opportunity) => opportunity.assets.some((token) => userTokens.has(token)));
     } else if (activeFilter !== "all") {
       list = list.filter((opportunity) => opportunity.tags.includes(activeFilter));
     }
@@ -125,13 +97,12 @@ export default function EarnAdditionalOpportunitiesPage() {
     if (normalizedQuery) {
       list = list.filter((opportunity) => {
         const matchesName = opportunity.name.toLowerCase().includes(normalizedQuery);
-        const matchesDescription = opportunity.description.toLowerCase().includes(normalizedQuery);
-        const matchesTokens = opportunity.tokens.some((token) => token.toLowerCase().includes(normalizedQuery));
+        const matchesTokens = opportunity.assets.some((token) => token.toLowerCase().includes(normalizedQuery));
         const matchesTags = opportunity.tags.some((tag) =>
           opportunityTagLabels[tag].toLowerCase().includes(normalizedQuery)
         );
 
-        return matchesName || matchesDescription || matchesTokens || matchesTags;
+        return matchesName || matchesTokens || matchesTags;
       });
     }
 
@@ -187,7 +158,11 @@ export default function EarnAdditionalOpportunitiesPage() {
         />
 
         {filteredOpportunities.length > 0 ? (
-          <div className="grid gap-8 grid-cols-2 max-lg:grid-cols-1">{filteredOpportunities.map((opportunity) => <OpportunityCard key={opportunity.id} opportunity={opportunity} />)}</div>
+          <div className="grid grid-cols-2 gap-8 max-lg:grid-cols-1">
+            {filteredOpportunities.map((opportunity) => (
+              <OpportunityCard key={opportunity.id} opportunity={opportunity} marketsInfoData={marketsInfoData} />
+            ))}
+          </div>
         ) : (
           <div className="rounded-12 bg-slate-900 p-20 text-13 text-typography-secondary">{emptyStateMessage}</div>
         )}

@@ -1027,8 +1027,6 @@ msgstr "GMX 스테이킹 보상"
 msgid "Staked Tokens"
 msgstr "스테이킹된 토큰"
 
-#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
-#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Beefy"
 msgstr "Beefy"
@@ -4530,8 +4528,8 @@ msgid "Harmonix"
 msgstr "Harmonix"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
-msgid "Radiant"
-msgstr ""
+#~ msgid "Radiant"
+#~ msgstr ""
 
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Invalid NFT Address"
@@ -4943,8 +4941,8 @@ msgid "Stake GMX to earn GMX rewards"
 msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
-msgid "Lodestar"
-msgstr ""
+#~ msgid "Lodestar"
+#~ msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling shift request."
@@ -5093,8 +5091,8 @@ msgid "GMX Trading Chat"
 msgstr "GMX 거래 채팅"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
-msgid "Pendle"
-msgstr ""
+#~ msgid "Pendle"
+#~ msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
@@ -5206,8 +5204,8 @@ msgid "Ann. Performance"
 msgstr "연간 성과"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
-msgid "Umami"
-msgstr ""
+#~ msgid "Umami"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
@@ -5383,7 +5381,6 @@ msgstr ""
 msgid "Generative Market eXplore - AIGMX Agent"
 msgstr "Generative Market eXplore - AIGMX 에이전트"
 
-#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dolomite"
 msgstr "Dolomite"
@@ -6770,7 +6767,6 @@ msgstr "롱"
 msgid "Pool"
 msgstr "풀"
 
-#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Venus"
 msgstr "비너스"

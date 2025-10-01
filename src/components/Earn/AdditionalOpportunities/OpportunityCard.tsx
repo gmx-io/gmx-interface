@@ -1,79 +1,179 @@
 import { Trans } from "@lingui/macro";
+import cx from "classnames";
+
+import {
+  getMarketIndexName,
+  getMarketPoolName,
+  GlvAndGmMarketsInfoData,
+  isMarketInfo,
+  MarketInfo,
+} from "domain/synthetics/markets";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import Badge from "components/Badge/Badge";
 import Button from "components/Button/Button";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { Opportunity, OpportunityTag, useOpportunityTagLabels } from "./useOpportunities";
+import GlvRoundedIcon from "img/ic_glv_rounded.svg?react";
+import GmxRoundedIcon from "img/ic_gmx_rounded.svg?react";
+
+import { Opportunity, useOpportunityTagLabels } from "./useOpportunities";
 
 type Props = {
   opportunity: Opportunity;
+  marketsInfoData: GlvAndGmMarketsInfoData | undefined;
 };
 
-const tokenChipClass =
-  "rounded-8 bg-slate-800 px-8 py-4 text-12 font-medium uppercase tracking-[0.08em] text-typography-secondary";
-
-function OpportunityTokens({ tokens }: { tokens: string[] }) {
+function OpportunityTokens({
+  tokens,
+  marketsInfoData,
+}: {
+  tokens: string[];
+  marketsInfoData: GlvAndGmMarketsInfoData | undefined;
+}) {
   if (!tokens.length) {
     return null;
   }
 
-  const visibleTokens = tokens.slice(0, 1);
+  const visibleTokens = tokens.slice(0, 3);
   const remainingCount = tokens.length - visibleTokens.length;
 
-  const tooltipContent = (
-    <div className="flex flex-col gap-4 text-12">
-      {tokens.map((token) => (
-        <span key={token} className="text-typography-primary">
-          {token}
-        </span>
-      ))}
-    </div>
-  );
-
-  const chips = (
-    <div className="flex flex-wrap justify-end gap-6">
-      {visibleTokens.map((token) => (
-        <span key={token} className={tokenChipClass}>
-          {token}
-        </span>
-      ))}
-      {remainingCount > 0 ? <span className={tokenChipClass}>{`+${remainingCount}`}</span> : null}
-    </div>
-  );
-
   return (
-    <div className="flex flex-col items-end gap-6 text-right">
-      {tokens.length > visibleTokens.length ? (
-        <TooltipWithPortal
-          handle={chips}
-          content={tooltipContent}
-          variant="none"
-          tooltipClassName="!rounded-12 !bg-slate-800 !p-12"
-          contentClassName="text-left"
-          fitHandleWidth
-        />
-      ) : (
-        chips
-      )}
-    </div>
+    <TooltipWithPortal
+      handle={
+        <div className="flex items-center justify-end">
+          {visibleTokens.map((token) => (
+            <span key={token} className="relative -mr-6 size-24">
+              <OpportunityTokenIcon
+                token={token}
+                marketsInfoData={marketsInfoData}
+                className="absolute left-0 border-2 border-slate-700 "
+              />
+            </span>
+          ))}
+          {remainingCount > 0 ? (
+            <div className="relative -mr-6 size-24">
+              <span className="flex size-24 items-center justify-center rounded-full border-2 border-slate-700 bg-slate-800 text-11 font-medium text-typography-secondary">{`+${remainingCount}`}</span>
+            </div>
+          ) : null}
+        </div>
+      }
+      content={
+        <div className="flex flex-col gap-6 text-12">
+          {tokens.map((token) => (
+            <span key={token} className="flex items-center gap-6">
+              <OpportunityTokenIcon token={token} marketsInfoData={marketsInfoData} />
+
+              <OpportunityTokenLabel token={token} marketsInfoData={marketsInfoData} />
+            </span>
+          ))}
+        </div>
+      }
+      variant="none"
+      position="bottom"
+      className="h-24"
+    />
   );
 }
 
-export function OpportunityCard({ opportunity }: Props) {
-  const { name, description, tags, tokens, link } = opportunity;
+function OpportunityTokenIcon({
+  token,
+  marketsInfoData,
+  className: _className,
+}: {
+  token: string;
+  marketsInfoData: GlvAndGmMarketsInfoData | undefined;
+  className?: string;
+}) {
+  const className = cx("size-24 rounded-full", _className);
+  const displaySize = 24;
+
+  if (token === "stGMX" || token === "GMX") {
+    return <GmxRoundedIcon className={className} />;
+  }
+
+  if (token.startsWith("GLV ")) {
+    return <GlvRoundedIcon className={className} />;
+  }
+
+  if (token.startsWith("GM ")) {
+    if (!marketsInfoData) {
+      return null;
+    }
+
+    const market = Object.values(marketsInfoData).find(
+      (marketInfo): marketInfo is MarketInfo =>
+        isMarketInfo(marketInfo) && `GM ${getMarketPoolName(marketInfo, "-")}` === token
+    );
+    if (!market) {
+      return null;
+    }
+
+    const iconSymbol = market.isSpotOnly
+      ? getNormalizedTokenSymbol(market.longToken.symbol) + getNormalizedTokenSymbol(market.shortToken.symbol)
+      : getNormalizedTokenSymbol(market.indexToken.symbol);
+
+    return market ? (
+      <TokenIcon importSize={24} displaySize={displaySize} symbol={iconSymbol} className={className} />
+    ) : null;
+  }
+
+  return <TokenIcon importSize={24} displaySize={displaySize} symbol={token} className={className} />;
+}
+
+export const OpportunityTokenLabel = ({
+  token,
+  marketsInfoData,
+}: {
+  token: string;
+  marketsInfoData: GlvAndGmMarketsInfoData | undefined;
+}) => {
+  if (token === "stGMX") {
+    return "Staked GMX";
+  }
+
+  if (token.startsWith("GLV ") || token.startsWith("GM ")) {
+    if (!marketsInfoData) {
+      return null;
+    }
+
+    const market = Object.values(marketsInfoData).find(
+      (marketInfo) => `${isGlvInfo(marketInfo) ? "GLV" : "GM"} ${getMarketPoolName(marketInfo, "-")}` === token
+    );
+
+    if (!market) {
+      return null;
+    }
+
+    return (
+      <span>
+        <span className="font-medium text-typography-primary">
+          {isGlvInfo(market) ? "GLV" : getMarketIndexName(market)}{" "}
+        </span>
+        <span className="text-typography-secondary">[{getMarketPoolName(market, "-")}]</span>
+      </span>
+    );
+  }
+
+  return token;
+};
+
+export function OpportunityCard({ opportunity, marketsInfoData }: Props) {
+  const { name, description, tags, assets: tokens, link } = opportunity;
 
   const opportunityTagLabels = useOpportunityTagLabels();
 
   return (
     <div>
-      <div className="flex justify-end gap-8 rounded-t-8 bg-slate-750 p-10">
-        <OpportunityTokens tokens={tokens} />
+      <div className="flex justify-end gap-12 rounded-t-8 bg-slate-750 p-10">
+        <OpportunityTokens tokens={tokens} marketsInfoData={marketsInfoData} />
         {tags.length ? (
           <div className="flex flex-wrap gap-6">
             {tags.map((tag) => (
               <Badge key={tag} className="bg-slate-800 px-8 py-4 text-12 text-typography-secondary">
-                {opportunityTagLabels[tag as OpportunityTag]}
+                {opportunityTagLabels[tag]}
               </Badge>
             ))}
           </div>
