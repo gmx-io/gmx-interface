@@ -18,6 +18,7 @@ import { useChainId } from "lib/chains";
 import { formatDate, formatDateTime, getDaysAgo } from "lib/dates";
 import { GM_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { useBreakpoints } from "lib/useBreakpoints";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { getTokens } from "sdk/configs/tokens";
@@ -104,77 +105,94 @@ export default function UserIncentiveDistribution() {
 
   const { currentPage, getCurrentData, setCurrentPage, pageCount } = usePagination(
     "UserIncentiveDistributionList",
-    normalizedIncentiveData
+    normalizedIncentiveData,
+    15
   );
   const currentIncentiveData = getCurrentData();
 
+  const { isMobile, isTablet } = useBreakpoints();
+
+  const claimableBalance = account ? (
+    <div className="flex flex-col gap-20 rounded-8 bg-slate-900 p-20">
+      <div className="text-body-large font-medium text-typography-primary">
+        <Trans>Claimable Balance</Trans>
+      </div>
+      {chainId !== AVALANCHE_FUJI ? (
+        <ClaimableAmounts />
+      ) : (
+        <p className="p-18 text-gray-500">
+          <Trans>Claims are not available on Avalanche Fuji</Trans>
+        </p>
+      )}
+    </div>
+  ) : null;
+
   return (
-    <div className={cx("grid grid-cols-[1fr_400px] gap-8")}>
-      <div className="flex grow flex-col gap-8 rounded-8 bg-slate-900 p-8">
-        {!userIncentiveData?.data?.length ? (
-          <EmptyTableContent
-            emptyText={
-              <div className="flex flex-col items-center">
-                <TooltipWithPortal
-                  handle={t`No distribution history yet`}
-                  content={t`The distribution history for your incentives, airdrops, and prizes will be displayed here.`}
-                />
-                {!active ? (
-                  <div className="mt-15">
-                    <Button variant="primary" onClick={openConnectModal}>
-                      <WalletIcon className="size-16" />
-                      <Trans>Connect wallet</Trans>
-                    </Button>
-                  </div>
-                ) : null}
-              </div>
-            }
-            isEmpty={true}
-            isLoading={!userIncentiveData}
+    <div className={cx("grid grid-cols-[1fr_400px] gap-8 max-xl:grid-cols-[1fr]")}>
+      <div className="flex grow flex-col gap-8">
+        {isTablet && claimableBalance}
+        <div className="flex grow flex-col gap-8 rounded-8 bg-slate-900">
+          {!userIncentiveData?.data?.length ? (
+            <EmptyTableContent
+              emptyText={
+                <div className="flex flex-col items-center">
+                  <TooltipWithPortal
+                    handle={t`No distribution history yet`}
+                    content={t`The distribution history for your incentives, airdrops, and prizes will be displayed here.`}
+                  />
+                  {!active ? (
+                    <div className="mt-15">
+                      <Button variant="primary" onClick={openConnectModal}>
+                        <WalletIcon className="size-16" />
+                        <Trans>Connect wallet</Trans>
+                      </Button>
+                    </div>
+                  ) : null}
+                </div>
+              }
+              isEmpty={true}
+              isLoading={!userIncentiveData}
+            />
+          ) : (
+            <TableScrollFadeContainer className="grow px-8">
+              <table className="w-full min-w-max">
+                <thead>
+                  <TableTheadTr>
+                    <TableTh>
+                      <Trans>Date</Trans>
+                    </TableTh>
+                    {!isMobile && (
+                      <TableTh>
+                        <Trans>Type</Trans>
+                      </TableTh>
+                    )}
+                    <TableTh className="max-xl:text-right">
+                      <Trans>Amount</Trans>
+                    </TableTh>
+                    {!isMobile && (
+                      <TableTh className="text-right">
+                        <Trans>Transaction</Trans>
+                      </TableTh>
+                    )}
+                    <TableTh className="w-24" />
+                  </TableTheadTr>
+                </thead>
+                <tbody>
+                  {currentIncentiveData?.map((incentive) => <IncentiveItem incentive={incentive} key={incentive.id} />)}
+                </tbody>
+              </table>
+            </TableScrollFadeContainer>
+          )}
+          <BottomTablePagination
+            page={currentPage}
+            pageCount={pageCount}
+            onPageChange={setCurrentPage}
+            className="border-t-1/2 border-slate-600"
           />
-        ) : (
-          <TableScrollFadeContainer className="grow">
-            <table className="w-full min-w-max">
-              <thead>
-                <TableTheadTr>
-                  <TableTh>
-                    <Trans>Date</Trans>
-                  </TableTh>
-                  <TableTh>
-                    <Trans>Type</Trans>
-                  </TableTh>
-                  <TableTh>
-                    <Trans>Amount</Trans>
-                  </TableTh>
-                  <TableTh className="text-right">
-                    <Trans>Transaction</Trans>
-                  </TableTh>
-                  <TableTh className="w-24" />
-                </TableTheadTr>
-              </thead>
-              <tbody>
-                {currentIncentiveData?.map((incentive) => <IncentiveItem incentive={incentive} key={incentive.id} />)}
-              </tbody>
-            </table>
-          </TableScrollFadeContainer>
-        )}
-        <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
+        </div>
       </div>
       <div className="min-w-400 flex flex-col gap-8">
-        {account ? (
-          <div className="flex flex-col gap-20 rounded-8 bg-slate-900 p-20">
-            <div className="text-body-large font-medium text-typography-primary">
-              <Trans>Claimable Balance</Trans>
-            </div>
-            {chainId !== AVALANCHE_FUJI ? (
-              <ClaimableAmounts />
-            ) : (
-              <p className="p-18 text-gray-500">
-                <Trans>Claims are not available on Avalanche Fuji</Trans>
-              </p>
-            )}
-          </div>
-        ) : null}
+        {!isTablet && claimableBalance}
         {chainId === ARBITRUM ? <AboutGlpIncident /> : null}
       </div>
     </div>
@@ -232,12 +250,27 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
     setIsExpanded((prev) => !prev);
   }, []);
 
+  const { isMobile } = useBreakpoints();
+
+  const txnTimestamp = (
+    <span>
+      {formatDateTime(transaction.timestamp)}{" "}
+      <span className="text-typography-secondary">({getDaysAgo(transaction.timestamp)} days ago)</span>
+    </span>
+  );
+  const txnLink = (
+    <ExternalLink href={`${explorerURL}tx/${transaction.hash}`} variant="icon">
+      {shortenAddressOrEns(transaction.hash, 27)}
+    </ExternalLink>
+  );
+  const txnStatus = <TxnStatus hash={transaction.hash} />;
+
   return (
     <>
       <TableTrActionable onClick={onClick}>
         <TableTdActionable data-label="Date">{formatDate(transaction.timestamp)}</TableTdActionable>
-        <TableTdActionable data-label="Type">{type}</TableTdActionable>
-        <TableTdActionable data-label="Amount">
+        {!isMobile && <TableTdActionable data-label="Type">{type}</TableTdActionable>}
+        <TableTdActionable className="max-xl:text-right" data-label="Amount">
           <Tooltip
             handle={formatUsd(totalUsd)}
             handleClassName="numbers"
@@ -245,61 +278,98 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
             renderContent={renderTotalTooltipContent}
           />
         </TableTdActionable>
-        <TableTdActionable data-label="Transaction" className="text-right">
-          <ExternalLink
-            className="font-medium text-typography-secondary"
-            href={`${explorerURL}tx/${transaction.hash}`}
-            variant="icon"
-          >
-            {shortenAddressOrEns(transaction.hash, 13)}
-          </ExternalLink>
-        </TableTdActionable>
+        {!isMobile && (
+          <TableTdActionable data-label="Transaction" className="text-right">
+            <ExternalLink
+              className="font-medium text-typography-secondary"
+              href={`${explorerURL}tx/${transaction.hash}`}
+              variant="icon"
+            >
+              {shortenAddressOrEns(transaction.hash, 13)}
+            </ExternalLink>
+          </TableTdActionable>
+        )}
         <TableTdActionable className="w-24">
           <ChevronDownIcon className={cx("size-16 text-typography-secondary", { "rotate-180": isExpanded })} />
         </TableTdActionable>
       </TableTrActionable>
       {isExpanded && (
         <tr>
-          <td colSpan={1} className="px-12 py-10">
+          <td colSpan={isMobile ? 4 : 1} className="px-4 py-10 pl-20">
             <div className="flex flex-col gap-2">
-              <div className="flex h-28 items-center font-medium text-typography-secondary">
+              <div
+                className={cx("flex items-center justify-between font-medium text-typography-secondary", {
+                  "text-13": isMobile,
+                  "h-28": !isMobile,
+                })}
+              >
                 <Trans>Status</Trans>
+                {isMobile && txnStatus}
+              </div>
+              <div
+                className={cx("flex font-medium text-typography-secondary", {
+                  "flex-col justify-center gap-2 text-13": isMobile,
+                  "h-28 items-center": !isMobile,
+                })}
+              >
+                <Trans>Type</Trans>
+
+                {isMobile && <span className="text-14 text-typography-primary">{type}</span>}
               </div>
               {tokenIncentiveDetails.map((tokenInfo) => (
-                <div key={tokenInfo.id} className="flex h-28 items-center font-medium text-typography-secondary">
+                <div
+                  key={tokenInfo.id}
+                  className={cx("flex font-medium text-typography-secondary", {
+                    "flex-col justify-center gap-2 text-13": isMobile,
+                    "h-28 items-center": !isMobile,
+                  })}
+                >
                   <Trans>{tokenInfo.symbol} Amount</Trans>
+
+                  {isMobile && (
+                    <span className="text-14 text-typography-primary">
+                      {formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}{" "}
+                      <span className="text-typography-secondary">{tokenInfo.symbol}</span>
+                    </span>
+                  )}
                 </div>
               ))}
-              <div className="flex h-28 items-center font-medium text-typography-secondary">
+              <div
+                className={cx("flex font-medium text-typography-secondary", {
+                  "flex-col justify-center gap-2 text-13": isMobile,
+                  "h-28 items-center": !isMobile,
+                })}
+              >
                 <Trans>Transaction hash</Trans>
+                {isMobile && <span className="text-14 text-typography-primary">{txnLink}</span>}
               </div>
-              <div className="flex h-28 items-center font-medium text-typography-secondary">
+              <div
+                className={cx("flex font-medium text-typography-secondary", {
+                  "flex-col justify-center gap-2 text-13": isMobile,
+                  "h-28 items-center": !isMobile,
+                })}
+              >
                 <Trans>Timestamp</Trans>
+                {isMobile && <span className="text-14 text-typography-primary">{txnTimestamp}</span>}
               </div>
             </div>
           </td>
-          <td colSpan={3} className="px-12 py-10">
-            <div className="flex flex-col gap-2">
-              <div className="flex h-28 items-center font-medium text-typography-primary">
-                <TxnStatus hash={transaction.hash} />
+          {!isMobile && (
+            <td colSpan={4} className="px-4 py-10">
+              <div className="flex flex-col gap-2">
+                <div className="flex h-28 items-center font-medium text-typography-primary">{txnStatus}</div>
+                <div className="flex h-28 items-center font-medium text-typography-primary">{type}</div>
+                {tokenIncentiveDetails.map((tokenInfo) => (
+                  <div key={tokenInfo.id} className="flex h-28 items-center gap-2 font-medium text-typography-primary">
+                    {formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}
+                    <span className="text-typography-secondary">{tokenInfo.symbol}</span>
+                  </div>
+                ))}
+                <div className="flex h-28 items-center font-medium text-typography-primary">{txnLink}</div>
+                <div className="flex h-28 items-center gap-2 font-medium text-typography-primary">{txnTimestamp}</div>
               </div>
-              {tokenIncentiveDetails.map((tokenInfo) => (
-                <div key={tokenInfo.id} className="flex h-28 items-center gap-2 font-medium text-typography-primary">
-                  {formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}
-                  <span className="text-typography-secondary">{tokenInfo.symbol}</span>
-                </div>
-              ))}
-              <div className="flex h-28 items-center font-medium text-typography-primary">
-                <ExternalLink href={`${explorerURL}tx/${transaction.hash}`} variant="icon">
-                  {shortenAddressOrEns(transaction.hash, 27)}
-                </ExternalLink>
-              </div>
-              <div className="flex h-28 items-center gap-2 font-medium text-typography-primary">
-                {formatDateTime(transaction.timestamp)}{" "}
-                <span className="text-typography-secondary">({getDaysAgo(transaction.timestamp)} days ago)</span>
-              </div>
-            </div>
-          </td>
+            </td>
+          )}
         </tr>
       )}
     </>
