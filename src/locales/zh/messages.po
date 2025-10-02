@@ -741,6 +741,10 @@ msgstr "市场"
 msgid "What did you like the most about our service?"
 msgstr "您最喜欢我们服务的哪些方面？"
 
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "View breakdown"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Paraswap"
 msgstr "Paraswap"
@@ -1463,6 +1467,10 @@ msgstr "NFT 钱包"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals Voting page"
 msgstr "GMX 提案投票页面"
+
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "GLP Reimbursement"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -6572,6 +6580,10 @@ msgstr "已实现基础盈亏"
 msgid "Swap failed."
 msgstr "交换失败。"
 
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "Accept claim terms"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Page outdated, please refresh"
 msgstr "页面已过期，请刷新"
@@ -7268,6 +7280,10 @@ msgstr "稳定协议"
 msgid "All assets"
 msgstr ""
 
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "Hide breakdown"
+msgstr ""
+
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "Long Liq."
@@ -7751,8 +7767,8 @@ msgid "24H VOL."
 msgstr "24 小时交易量"
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-msgid "Accept Claim Terms"
-msgstr ""
+#~ msgid "Accept Claim Terms"
+#~ msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "You will receive a {currentTierDiscount}% discount on opening and closing fees."

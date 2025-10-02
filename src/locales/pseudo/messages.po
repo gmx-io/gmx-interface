@@ -741,6 +741,10 @@ msgstr ""
 msgid "What did you like the most about our service?"
 msgstr ""
 
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "View breakdown"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Paraswap"
 msgstr ""
@@ -1462,6 +1466,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals Voting page"
+msgstr ""
+
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "GLP Reimbursement"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -6572,6 +6580,10 @@ msgstr ""
 msgid "Swap failed."
 msgstr ""
 
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "Accept claim terms"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Page outdated, please refresh"
 msgstr ""
@@ -7268,6 +7280,10 @@ msgstr ""
 msgid "All assets"
 msgstr ""
 
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "Hide breakdown"
+msgstr ""
+
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "Long Liq."
@@ -7751,8 +7767,8 @@ msgid "24H VOL."
 msgstr ""
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-msgid "Accept Claim Terms"
-msgstr ""
+#~ msgid "Accept Claim Terms"
+#~ msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "You will receive a {currentTierDiscount}% discount on opening and closing fees."

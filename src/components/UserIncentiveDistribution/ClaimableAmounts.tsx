@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useLocalStorage } from "react-use";
@@ -22,8 +23,11 @@ import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
-import Checkbox from "components/Checkbox/Checkbox";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
+import EarnIcon from "img/ic_earn.svg?react";
+import LockIcon from "img/ic_lock.svg?react";
 
 import { checkValidity, signMessage } from "./utils";
 
@@ -249,6 +253,11 @@ export default function ClaimableAmounts() {
       buttonTooltipText = <Trans>Waiting for remaining Safe confirmations...</Trans>;
     }
 
+    if (totalFundsToClaimUsd === 0n) {
+      isButtonDisabled = true;
+      buttonText = <Trans>No funds to claim</Trans>;
+    }
+
     return {
       isButtonDisabled,
       buttonText,
@@ -270,89 +279,101 @@ export default function ClaimableAmounts() {
     isSafeSigValid,
     isContractOwnersSigned,
     isStartedMultisig,
-  ]);
-
-  const controls = useMemo(() => {
-    if (totalFundsToClaimUsd === 0n) {
-      return (
-        <Button variant="secondary" disabled>
-          <Trans>No funds to claim</Trans>
-        </Button>
-      );
-    }
-
-    const buttonContent = (
-      <Button variant="primary" className="!py-10" disabled={isButtonDisabled} onClick={claimAmounts}>
-        {buttonText}
-      </Button>
-    );
-
-    const buttonElement = buttonTooltipText ? (
-      <TooltipWithPortal content={buttonTooltipText}>{buttonContent}</TooltipWithPortal>
-    ) : (
-      buttonContent
-    );
-
-    return (
-      <>
-        {!hasAvailableFundsToCoverExecutionFee ? (
-          <AlertInfoCard type="warning">
-            <Trans>Insufficient gas for network fees</Trans>
-          </AlertInfoCard>
-        ) : null}
-        {claimTerms && hasAvailableFundsToCoverExecutionFee && !claimsFeatureDisabled ? (
-          <Checkbox
-            isChecked={Boolean(claimTermsAcceptedSignature)}
-            setIsChecked={signClaimTerms}
-            disabled={Boolean(claimTermsAcceptedSignature)}
-          >
-            <span className="muted">
-              <Trans>Accept Claim Terms</Trans>
-            </span>
-          </Checkbox>
-        ) : null}
-        {buttonElement}
-      </>
-    );
-  }, [
     totalFundsToClaimUsd,
-    claimTermsAcceptedSignature,
-    signClaimTerms,
-    claimTerms,
-    claimAmounts,
-    claimsFeatureDisabled,
-    buttonText,
-    buttonTooltipText,
-    hasAvailableFundsToCoverExecutionFee,
-    isButtonDisabled,
   ]);
 
-  return (
-    <div className="flex flex-row gap-20 p-18">
-      <div className="flex flex-row items-center justify-between gap-20">
-        {claimableAmountsLoaded ? (
-          Object.entries(claimableAmounts)
-            .filter(([, data]) => data?.amount !== undefined && data?.amount !== 0n)
-            .map(([token, data]) => (
-              <div key={token}>
-                <div className="flex flex-col gap-5">
-                  <div className="text-body-small text-nowrap text-typography-secondary">
-                    {claimableTokenTitles[token]}
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <span>{formatBalanceAmount(data?.amount ?? 0n, data?.decimals ?? 18)}</span>
-                    <span className="text-body-small whitespace-nowrap text-typography-secondary">
-                      ({formatUsd(data?.usd ?? 0n)})
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))
-        ) : (
-          <Skeleton width={300} height={32} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />
+  const buttonContent = (
+    <Button variant="primary" size="medium" disabled={isButtonDisabled} onClick={claimAmounts} className="w-full">
+      <EarnIcon className="size-16" />
+      {buttonText}
+    </Button>
+  );
+
+  const buttonElement = buttonTooltipText ? (
+    <TooltipWithPortal content={buttonTooltipText} variant="none" handleClassName="w-full" contentClassName="w-full">
+      {buttonContent}
+    </TooltipWithPortal>
+  ) : (
+    buttonContent
+  );
+
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const onViewBreakdown = useCallback(() => {
+    setIsExpanded((prev) => !prev);
+  }, [setIsExpanded]);
+
+  const glpReimbursement = (
+    <div>
+      <div className="flex items-center justify-between rounded-t-8 border-b-1/2 border-slate-600 bg-fill-surfaceElevated50 p-12">
+        <div className="flex items-center gap-4">
+          {claimTerms && !claimTermsAcceptedSignature && <LockIcon className="size-16 text-slate-500" />}
+          <span className="text-body-medium font-medium text-typography-primary">
+            <Trans>GLP Reimbursement</Trans>
+          </span>
+        </div>
+
+        {claimTerms && !claimTermsAcceptedSignature && (
+          <span className="cursor-pointer text-13 font-medium text-blue-300" onClick={signClaimTerms}>
+            <Trans>Accept claim terms</Trans>
+          </span>
         )}
       </div>
-      <div className="flex flex-grow flex-row items-center justify-end gap-20">{controls}</div>
+      <div className="flex flex-col gap-8 rounded-b-8 bg-fill-surfaceElevated50 p-12">
+        <div className="flex items-center justify-between">
+          <div className="flex cursor-pointer items-center gap-4" onClick={onViewBreakdown}>
+            <span className="text-body-small cursor-pointer select-none font-medium text-typography-secondary">
+              {isExpanded ? <Trans>Hide breakdown</Trans> : <Trans>View breakdown</Trans>}
+            </span>
+            <ChevronDownIcon className={cx("size-14 text-typography-secondary", { "rotate-180": isExpanded })} />
+          </div>
+
+          <span className="text-body-small text-typography-secondary">{formatUsd(totalFundsToClaimUsd)}</span>
+        </div>
+
+        {isExpanded ? (
+          claimableAmountsLoaded ? (
+            Object.entries(claimableAmounts)
+              .filter(([, data]) => data?.amount !== undefined && data?.amount !== 0n)
+              .map(([token, data]) => (
+                <div key={token}>
+                  <div className="flex justify-between">
+                    <div className="text-body-small font-medium text-typography-secondary">
+                      {claimableTokenTitles[token]}
+                    </div>
+                    <div className="flex gap-2 text-12">
+                      <span>{formatBalanceAmount(data?.amount ?? 0n, data?.decimals ?? 18)}</span>
+                      <span className="text-body-small whitespace-nowrap text-typography-secondary">
+                        ({formatUsd(data?.usd ?? 0n)})
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))
+          ) : (
+            <Skeleton width={300} height={32} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />
+          )
+        ) : null}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col gap-16">
+      {glpReimbursement}
+
+      <div className="flex items-center justify-between">
+        <span className="text-body-medium font-medium text-typography-secondary">Total to claim</span>
+        <span className="text-body-medium text-typography-primary">{formatUsd(totalFundsToClaimUsd)}</span>
+      </div>
+
+      {!hasAvailableFundsToCoverExecutionFee ? (
+        <AlertInfoCard type="warning">
+          <Trans>Insufficient gas for network fees</Trans>
+        </AlertInfoCard>
+      ) : null}
+
+      {buttonElement}
     </div>
   );
 }

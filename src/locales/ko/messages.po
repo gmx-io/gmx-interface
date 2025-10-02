@@ -741,6 +741,10 @@ msgstr "마켓"
 msgid "What did you like the most about our service?"
 msgstr "우리 서비스에서 가장 마음에 들었던 점은 무엇인가요?"
 
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "View breakdown"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Paraswap"
 msgstr "Paraswap"
@@ -1463,6 +1467,10 @@ msgstr "NFT 지갑"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals Voting page"
 msgstr "GMX 프로포절 투표 페이지"
+
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "GLP Reimbursement"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -6572,6 +6580,10 @@ msgstr "실현 기본 PnL"
 msgid "Swap failed."
 msgstr "스왑 실패."
 
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "Accept claim terms"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Page outdated, please refresh"
 msgstr "페이지가 오래되었습니다. 새로고침해주세요."
@@ -7268,6 +7280,10 @@ msgstr "스태빌라이즈 프로토콜"
 msgid "All assets"
 msgstr ""
 
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "Hide breakdown"
+msgstr ""
+
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "Long Liq."
@@ -7751,8 +7767,8 @@ msgid "24H VOL."
 msgstr "24시간 거래량"
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-msgid "Accept Claim Terms"
-msgstr ""
+#~ msgid "Accept Claim Terms"
+#~ msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "You will receive a {currentTierDiscount}% discount on opening and closing fees."

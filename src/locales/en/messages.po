@@ -741,6 +741,10 @@ msgstr "MARKET"
 msgid "What did you like the most about our service?"
 msgstr "What did you like the most about our service?"
 
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "View breakdown"
+msgstr "View breakdown"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Paraswap"
 msgstr "Paraswap"
@@ -1463,6 +1467,10 @@ msgstr "NFT Wallet"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals Voting page"
 msgstr "GMX Proposals Voting page"
+
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "GLP Reimbursement"
+msgstr "GLP Reimbursement"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -6572,6 +6580,10 @@ msgstr "Realized Base PnL"
 msgid "Swap failed."
 msgstr "Swap failed."
 
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "Accept claim terms"
+msgstr "Accept claim terms"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Page outdated, please refresh"
 msgstr "Page outdated, please refresh"
@@ -7268,6 +7280,10 @@ msgstr "Stabilize Protocol"
 msgid "All assets"
 msgstr "All assets"
 
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "Hide breakdown"
+msgstr "Hide breakdown"
+
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "Long Liq."
@@ -7751,8 +7767,8 @@ msgid "24H VOL."
 msgstr "24H VOL."
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-msgid "Accept Claim Terms"
-msgstr "Accept Claim Terms"
+#~ msgid "Accept Claim Terms"
+#~ msgstr "Accept Claim Terms"
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "You will receive a {currentTierDiscount}% discount on opening and closing fees."

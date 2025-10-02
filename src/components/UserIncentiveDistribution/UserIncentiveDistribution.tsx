@@ -158,7 +158,7 @@ export default function UserIncentiveDistribution() {
               <table className="w-full min-w-max">
                 <thead>
                   <TableTheadTr>
-                    <TableTh>
+                    <TableTh className="w-[25%]">
                       <Trans>Date</Trans>
                     </TableTh>
                     {!isMobile && (
