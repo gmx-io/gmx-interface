@@ -4,6 +4,14 @@ import { ReactNode, useMemo } from "react";
 import { ARBITRUM, AVALANCHE, ContractsChainId } from "config/chains";
 import { useChainId } from "lib/chains";
 
+import beefyIcon from "img/ic_beefy.svg";
+import dolomiteIcon from "img/ic_dolo_24.svg";
+import lodestarIcon from "img/ic_lodestar.svg";
+import pendleIcon from "img/ic_pendle_24.svg";
+import radiantIcon from "img/ic_radiant.svg";
+import umamiIcon from "img/ic_umami.svg";
+import venusIcon from "img/ic_venus.svg";
+
 export type OpportunityTag =
   | "lending-and-borrowing"
   | "looping"
@@ -17,6 +25,7 @@ export type Opportunity = {
   description: ReactNode;
   tags: OpportunityTag[];
   assets: OpportunityAsset[];
+  icon: string;
   link?: string;
 };
 
@@ -41,6 +50,7 @@ export const useOpportunities = () => {
         {
           id: "arbitrum-dolomite",
           name: "Dolomite",
+          icon: dolomiteIcon,
           description: (
             <Trans>
               Lend out your GLV or GM tokens, and borrow against them, or put your LP tokens into strategies to maximize
@@ -73,6 +83,7 @@ export const useOpportunities = () => {
         {
           id: "arbitrum-lodestar",
           name: "Lodestar",
+          icon: lodestarIcon,
           description: <Trans>Lend out your GMX tokens or borrow against them.</Trans>,
           tags: ["lending-and-borrowing"],
           assets: ["GMX"],
@@ -81,6 +92,7 @@ export const useOpportunities = () => {
         {
           id: "arbitrum-beefy",
           name: "Beefy",
+          icon: beefyIcon,
           description: (
             <Trans>
               Autocompound your earned GMX rewards periodically without having to manually claim and compound your
@@ -94,6 +106,7 @@ export const useOpportunities = () => {
         {
           id: "arbitrum-umami",
           name: "Umami",
+          icon: umamiIcon,
           description: (
             <Trans>
               Umami GM vaults enable depositors to provide single-sided liquidity to GMX liquidity pools. Deposits are
@@ -107,6 +120,7 @@ export const useOpportunities = () => {
         {
           id: "arbitrum-venus",
           name: "Venus",
+          icon: venusIcon,
           description: <Trans>Lend out your GM LP tokens, or borrow against them.</Trans>,
           tags: ["lending-and-borrowing"],
           assets: ["GM BTC-USDC", "GM WETH-USDC"],
@@ -115,6 +129,7 @@ export const useOpportunities = () => {
         {
           id: "arbitrum-radiant",
           name: "Radiant",
+          icon: radiantIcon,
           description: <Trans>Lend out your GM LP tokens, or borrow against them.</Trans>,
           tags: ["lending-and-borrowing", "looping"],
           assets: ["GM ARB-USDC"],
@@ -123,6 +138,7 @@ export const useOpportunities = () => {
         {
           id: "arbitrum-pendle",
           name: "Pendle",
+          icon: pendleIcon,
           description: <Trans>Trade spot yield and earn fixed yield.</Trans>,
           tags: ["yield-trading"],
           assets: ["GM WETH-WETH"],
@@ -133,6 +149,7 @@ export const useOpportunities = () => {
         {
           id: "avalanche-beefy",
           name: "Beefy",
+          icon: beefyIcon,
           description: (
             <Trans>
               Autocompound your earned GMX rewards instantly without having to manually claim and compound your rewards.

@@ -180,9 +180,10 @@ export function OpportunityCard({ opportunity, marketsInfoData }: Props) {
         ) : null}
       </div>
       <div className="relative flex min-h-[136px] flex-col justify-end rounded-b-8 bg-slate-900 p-20 pt-28">
-        <div
-          aria-hidden
-          className="absolute -top-20 left-20 flex size-40 shrink-0 items-center justify-center rounded-full border border-slate-700 bg-slate-800"
+        <img
+          className="absolute -top-20 left-20 flex size-40 shrink-0 items-center justify-center rounded-full bg-slate-800"
+          src={opportunity.icon}
+          alt={name}
         />
         <div className="flex items-end justify-between gap-16">
           <div className="flex flex-col gap-4">
