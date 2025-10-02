@@ -61,8 +61,8 @@ export default function EarnPortfolioPage() {
 
   return (
     <EarnPageLayout>
-      <RewardsBar processedData={processedData} mutateProcessedData={mutateProcessedData} />
-      {marketsInfoData && marketTokensData ? (
+      {processedData && <RewardsBar processedData={processedData} mutateProcessedData={mutateProcessedData} />}
+      {marketsInfoData && marketTokensData && processedData ? (
         <>
           {hasAnyAssets && (
             <AssetsList

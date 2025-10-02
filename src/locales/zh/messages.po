@@ -147,6 +147,7 @@ msgstr "止损"
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Type"
 msgstr "类型"
 
