@@ -1232,6 +1232,10 @@ msgstr "Realized Price Impact"
 msgid "Failed Limit Swap"
 msgstr "Failed Limit Swap"
 
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "Failed"
+msgstr "Failed"
+
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "Liq. {longOrShortText} - {marketIndexName}"
@@ -1351,6 +1355,10 @@ msgstr "Staking is only available on {chainNames}. Please switch to {chainNames}
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Shift GM"
 msgstr "Shift GM"
+
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "Timestamp"
+msgstr "Timestamp"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
@@ -1859,6 +1867,10 @@ msgstr "Short Positions"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
 msgstr "Buying {symbol}..."
+
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "Transaction hash"
+msgstr "Transaction hash"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
@@ -3424,6 +3436,10 @@ msgstr "Fee"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Secure & Permissionless"
 msgstr "Secure & Permissionless"
+
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "{0} Amount"
+msgstr "{0} Amount"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Avalanche"
@@ -7370,6 +7386,10 @@ msgstr "COLLATERAL"
 msgid "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
 msgstr "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
 
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "Status"
+msgstr "Status"
+
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
@@ -8055,3 +8075,7 @@ msgstr "You have {balanceFormatted} remaining in your old version 1CT subaccount
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>"
 msgstr "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>"
+
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "Success"
+msgstr "Success"

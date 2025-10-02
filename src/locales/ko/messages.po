@@ -1232,6 +1232,10 @@ msgstr "실현 가격 영향"
 msgid "Failed Limit Swap"
 msgstr "지정가 스왑 실패"
 
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "Failed"
+msgstr ""
+
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "청산 {longOrShortText} - {marketIndexName}"
@@ -1351,6 +1355,10 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Shift GM"
 msgstr "GM 이동"
+
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "Timestamp"
+msgstr ""
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
@@ -1859,6 +1867,10 @@ msgstr "숏 포지션"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
 msgstr "{symbol} 구매 중..."
+
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "Transaction hash"
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
@@ -3423,6 +3435,10 @@ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Secure & Permissionless"
+msgstr ""
+
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "{0} Amount"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -7370,6 +7386,10 @@ msgstr "담보"
 msgid "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
 msgstr "적립된 가격 영향 리베이트. 약 10일 후 청구 가능.<0/><1/><2>더 읽기</2>."
 
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "Status"
+msgstr ""
+
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
@@ -8054,4 +8074,8 @@ msgstr "구 버전 1CT 서브계정에 {balanceFormatted} 남음."
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>"
+msgstr ""
+
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "Success"
 msgstr ""

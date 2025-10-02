@@ -1,8 +1,6 @@
 import { t, Trans } from "@lingui/macro";
-import cn from "classnames";
 import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
-import { useMedia } from "react-use";
 
 import { ExpandableRow } from "components/ExpandableRow";
 
@@ -20,17 +18,8 @@ export function AboutGlpIncident() {
     [setRowStates]
   );
 
-  const isBigResolution = useMedia("(min-width: 1200px)");
-  const isSmallResolution = useMedia("(max-width: 1024px)");
-
   return (
-    <div
-      className={cn("flex-grow-0", {
-        ["min-w-[388px] max-w-[388px]"]: isBigResolution,
-        ["min-w-[300px] max-w-[300px]"]: !isBigResolution && !isSmallResolution,
-        "w-full": isSmallResolution,
-      })}
-    >
+    <div>
       <div className="flex flex-col rounded-8 bg-slate-900 p-20">
         <div className="text-body-large mt-4 font-medium text-typography-primary">
           <Trans>About GLP Incident</Trans>

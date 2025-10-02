@@ -1,10 +1,9 @@
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import cn from "classnames";
-import { useCallback, useMemo } from "react";
+import cx from "classnames";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { useMedia } from "react-use";
 
 import { ARBITRUM, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { selectGmMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -16,7 +15,7 @@ import { MarketsData, useMarketTokensData } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
-import { formatDate } from "lib/dates";
+import { formatDate, formatDateTime, getDaysAgo } from "lib/dates";
 import { GM_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
@@ -26,14 +25,20 @@ import { Distribution } from "sdk/types/subsquid";
 import { bigMath } from "sdk/utils/bigmath";
 
 import Button from "components/Button/Button";
+import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
-import EmptyMessage from "components/Referrals/EmptyMessage";
-import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
+import usePagination from "components/Referrals/usePagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableTdActionable, TableTh, TableTheadTr, TableTrActionable } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import CheckIcon from "img/ic_check.svg?react";
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
+import CloseIcon from "img/ic_close.svg?react";
+import WalletIcon from "img/ic_wallet.svg?react";
 
 import { AboutGlpIncident } from "./AboutGlpIncident";
 import ClaimableAmounts from "./ClaimableAmounts";
@@ -103,16 +108,59 @@ export default function UserIncentiveDistribution() {
   );
   const currentIncentiveData = getCurrentData();
 
-  const isSmallResolution = useMedia("(max-width: 1024px)");
-
   return (
-    <div
-      className={cn("flex gap-8", {
-        "flex-row": !isSmallResolution,
-        "flex-col-reverse": isSmallResolution,
-      })}
-    >
-      <div className="flex flex-grow flex-col gap-8">
+    <div className={cx("grid grid-cols-[1fr_400px] gap-8")}>
+      <div className="flex grow flex-col gap-8 rounded-8 bg-slate-900 p-8">
+        {!userIncentiveData?.data?.length ? (
+          <EmptyTableContent
+            emptyText={
+              <div className="flex flex-col items-center">
+                <TooltipWithPortal
+                  handle={t`No distribution history yet`}
+                  content={t`The distribution history for your incentives, airdrops, and prizes will be displayed here.`}
+                />
+                {!active ? (
+                  <div className="mt-15">
+                    <Button variant="primary" onClick={openConnectModal}>
+                      <WalletIcon className="size-16" />
+                      <Trans>Connect wallet</Trans>
+                    </Button>
+                  </div>
+                ) : null}
+              </div>
+            }
+            isEmpty={true}
+            isLoading={!userIncentiveData}
+          />
+        ) : (
+          <TableScrollFadeContainer className="grow">
+            <table className="w-full min-w-max">
+              <thead>
+                <TableTheadTr>
+                  <TableTh>
+                    <Trans>Date</Trans>
+                  </TableTh>
+                  <TableTh>
+                    <Trans>Type</Trans>
+                  </TableTh>
+                  <TableTh>
+                    <Trans>Amount</Trans>
+                  </TableTh>
+                  <TableTh className="text-right">
+                    <Trans>Transaction</Trans>
+                  </TableTh>
+                  <TableTh className="w-24" />
+                </TableTheadTr>
+              </thead>
+              <tbody>
+                {currentIncentiveData?.map((incentive) => <IncentiveItem incentive={incentive} key={incentive.id} />)}
+              </tbody>
+            </table>
+          </TableScrollFadeContainer>
+        )}
+        <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
+      </div>
+      <div className="min-w-400 flex flex-col gap-8">
         {account ? (
           <div className="flex flex-col gap-20 rounded-8 bg-slate-900 p-20">
             <div className="text-body-large font-medium text-typography-primary">
@@ -127,55 +175,8 @@ export default function UserIncentiveDistribution() {
             )}
           </div>
         ) : null}
-
-        {!userIncentiveData?.data?.length ? (
-          <EmptyMessage
-            tooltipText={t`The distribution history for your incentives, airdrops, and prizes will be displayed here.`}
-            message={t`No distribution history yet`}
-            className="!mt-0"
-          >
-            {!active && (
-              <div className="mt-15">
-                <Button variant="secondary" onClick={openConnectModal}>
-                  <Trans>Connect wallet</Trans>
-                </Button>
-              </div>
-            )}
-          </EmptyMessage>
-        ) : (
-          <TableScrollFadeContainer>
-            <table className="w-full min-w-max">
-              <thead>
-                <TableTheadTr>
-                  <TableTh>
-                    <Trans>Date</Trans>
-                  </TableTh>
-                  <TableTh>
-                    <Trans>Type</Trans>
-                  </TableTh>
-                  <TableTh>
-                    <Trans>Amount</Trans>
-                  </TableTh>
-                  <TableTh>
-                    <Trans>Transaction</Trans>
-                  </TableTh>
-                </TableTheadTr>
-              </thead>
-              <tbody>
-                {currentIncentiveData?.map((incentive) => <IncentiveItem incentive={incentive} key={incentive.id} />)}
-                {currentIncentiveData &&
-                  currentIncentiveData.length > 0 &&
-                  currentIncentiveData.length < DEFAULT_PAGE_SIZE && (
-                    // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                    <tr style={{ height: 42.5 * (DEFAULT_PAGE_SIZE - currentIncentiveData.length) }} />
-                  )}
-              </tbody>
-            </table>
-          </TableScrollFadeContainer>
-        )}
-        <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
+        {chainId === ARBITRUM ? <AboutGlpIncident /> : null}
       </div>
-      {chainId === ARBITRUM ? <AboutGlpIncident /> : null}
     </div>
   );
 }
@@ -225,25 +226,111 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   );
   const type = tooltipData ? <Tooltip handle={typeStr} renderContent={renderTooltipTypeContent} /> : typeStr;
 
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const onClick = useCallback(() => {
+    setIsExpanded((prev) => !prev);
+  }, []);
+
   return (
-    <TableTr>
-      <TableTd data-label="Date">{formatDate(transaction.timestamp)}</TableTd>
-      <TableTd data-label="Type" className="font-medium">
-        {type}
-      </TableTd>
-      <TableTd data-label="Amount">
-        <Tooltip
-          handle={formatUsd(totalUsd)}
-          handleClassName="numbers"
-          className="whitespace-nowrap"
-          renderContent={renderTotalTooltipContent}
-        />
-      </TableTd>
-      <TableTd data-label="Transaction">
-        <ExternalLink href={`${explorerURL}tx/${transaction.hash}`}>
-          {shortenAddressOrEns(transaction.hash, 13)}
-        </ExternalLink>
-      </TableTd>
-    </TableTr>
+    <>
+      <TableTrActionable onClick={onClick}>
+        <TableTdActionable data-label="Date">{formatDate(transaction.timestamp)}</TableTdActionable>
+        <TableTdActionable data-label="Type">{type}</TableTdActionable>
+        <TableTdActionable data-label="Amount">
+          <Tooltip
+            handle={formatUsd(totalUsd)}
+            handleClassName="numbers"
+            className="whitespace-nowrap"
+            renderContent={renderTotalTooltipContent}
+          />
+        </TableTdActionable>
+        <TableTdActionable data-label="Transaction" className="text-right">
+          <ExternalLink
+            className="font-medium text-typography-secondary"
+            href={`${explorerURL}tx/${transaction.hash}`}
+            variant="icon"
+          >
+            {shortenAddressOrEns(transaction.hash, 13)}
+          </ExternalLink>
+        </TableTdActionable>
+        <TableTdActionable className="w-24">
+          <ChevronDownIcon className={cx("size-16 text-typography-secondary", { "rotate-180": isExpanded })} />
+        </TableTdActionable>
+      </TableTrActionable>
+      {isExpanded && (
+        <tr>
+          <td colSpan={1} className="px-12 py-10">
+            <div className="flex flex-col gap-2">
+              <div className="flex h-28 items-center font-medium text-typography-secondary">
+                <Trans>Status</Trans>
+              </div>
+              {tokenIncentiveDetails.map((tokenInfo) => (
+                <div key={tokenInfo.id} className="flex h-28 items-center font-medium text-typography-secondary">
+                  <Trans>{tokenInfo.symbol} Amount</Trans>
+                </div>
+              ))}
+              <div className="flex h-28 items-center font-medium text-typography-secondary">
+                <Trans>Transaction hash</Trans>
+              </div>
+              <div className="flex h-28 items-center font-medium text-typography-secondary">
+                <Trans>Timestamp</Trans>
+              </div>
+            </div>
+          </td>
+          <td colSpan={3} className="px-12 py-10">
+            <div className="flex flex-col gap-2">
+              <div className="flex h-28 items-center font-medium text-typography-primary">
+                <TxnStatus hash={transaction.hash} />
+              </div>
+              {tokenIncentiveDetails.map((tokenInfo) => (
+                <div key={tokenInfo.id} className="flex h-28 items-center gap-2 font-medium text-typography-primary">
+                  {formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}
+                  <span className="text-typography-secondary">{tokenInfo.symbol}</span>
+                </div>
+              ))}
+              <div className="flex h-28 items-center font-medium text-typography-primary">
+                <ExternalLink href={`${explorerURL}tx/${transaction.hash}`} variant="icon">
+                  {shortenAddressOrEns(transaction.hash, 27)}
+                </ExternalLink>
+              </div>
+              <div className="flex h-28 items-center gap-2 font-medium text-typography-primary">
+                {formatDateTime(transaction.timestamp)}{" "}
+                <span className="text-typography-secondary">({getDaysAgo(transaction.timestamp)} days ago)</span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      )}
+    </>
   );
 }
+
+const TxnStatus = ({ hash }: { hash: string }) => {
+  const { signer } = useWallet();
+  const [status, setStatus] = useState<"success" | "failed" | null>(null);
+
+  useEffect(() => {
+    signer?.provider?.getTransactionReceipt(hash).then((receipt) => {
+      setStatus(receipt?.status === 0 ? "failed" : "success");
+    });
+  }, [hash, signer?.provider]);
+
+  return (
+    <div className="flex h-28 items-center font-medium text-typography-primary">
+      {!status && <span>...</span>}
+      {status === "success" && (
+        <div className="flex items-center gap-2 rounded-full bg-green-100/20 px-8 py-2 text-green-500">
+          <CheckIcon className="size-16" />
+          <Trans>Success</Trans>
+        </div>
+      )}
+      {status === "failed" && (
+        <div className="flex items-center gap-2 rounded-full bg-red-100/20 px-8 py-2 text-red-500">
+          <CloseIcon className="size-16" />
+          <Trans>Failed</Trans>
+        </div>
+      )}
+    </div>
+  );
+};

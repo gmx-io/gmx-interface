@@ -1232,6 +1232,10 @@ msgstr ""
 msgid "Failed Limit Swap"
 msgstr ""
 
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "Failed"
+msgstr ""
+
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr ""
@@ -1350,6 +1354,10 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Shift GM"
+msgstr ""
+
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "Timestamp"
 msgstr ""
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -1858,6 +1866,10 @@ msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
+msgstr ""
+
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "Transaction hash"
 msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
@@ -3423,6 +3435,10 @@ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Secure & Permissionless"
+msgstr ""
+
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "{0} Amount"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -7370,6 +7386,10 @@ msgstr ""
 msgid "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
 msgstr ""
 
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "Status"
+msgstr ""
+
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
@@ -8054,4 +8074,8 @@ msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>"
+msgstr ""
+
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "Success"
 msgstr ""

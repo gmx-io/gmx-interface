@@ -6,11 +6,8 @@ export function BottomTablePagination({ page, pageCount, onPageChange }: Omit<Pa
   }
 
   return (
-    <>
-      <div className="h-1 bg-slate-700"></div>
-      <div className="p-8">
-        <Pagination topMargin={false} page={page} pageCount={pageCount} onPageChange={onPageChange} />
-      </div>
-    </>
+    <div className="p-8">
+      <Pagination topMargin={false} page={page} pageCount={pageCount} onPageChange={onPageChange} />
+    </div>
   );
 }

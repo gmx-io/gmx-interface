@@ -55,7 +55,7 @@ function OpportunityTokens({
           ))}
           {remainingCount > 0 ? (
             <div className="relative -mr-6 size-24">
-              <span className="flex size-24 items-center justify-center rounded-full border-2 border-slate-700 bg-slate-800 text-11 font-medium text-typography-secondary">{`+${remainingCount}`}</span>
+              <span className="flex size-24 items-center justify-center rounded-full border-2 border-slate-700 bg-slate-800 text-[9px] font-medium text-typography-secondary">{`+${remainingCount}`}</span>
             </div>
           ) : null}
         </div>
@@ -167,7 +167,7 @@ export function OpportunityCard({ opportunity, marketsInfoData }: Props) {
 
   return (
     <div>
-      <div className="flex justify-end gap-12 rounded-t-8 bg-slate-750 p-10">
+      <div className="flex justify-end gap-12 rounded-t-8 bg-slate-750/50 p-10 dark:bg-slate-750">
         <OpportunityTokens tokens={tokens} marketsInfoData={marketsInfoData} />
         {tags.length ? (
           <div className="flex flex-wrap gap-6">
