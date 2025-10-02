@@ -65,7 +65,11 @@ import {
   selectUiFeeFactor,
   selectUserReferralInfo,
 } from "./globalSelectors";
-import { selectIsPnlInLeverage, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
+import {
+  selectIsPnlInLeverage,
+  selectSavedAcceptablePriceImpactBuffer,
+  selectIsSetAcceptablePriceImpactEnabled,
+} from "./settingsSelectors";
 import { selectExternalSwapQuote, selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
 import { makeSelectFindSwapPath, makeSelectNextPositionValuesForIncrease } from "./tradeSelectors";
 
@@ -407,6 +411,7 @@ export const selectOrderEditorDecreaseAmounts = createSelector((q) => {
   const savedAcceptablePriceImpactBuffer = q(selectSavedAcceptablePriceImpactBuffer);
   const userReferralInfo = q(selectUserReferralInfo);
   const uiFeeFactor = q(selectUiFeeFactor);
+  const isSetAcceptablePriceImpactEnabled = q(selectIsSetAcceptablePriceImpactEnabled);
 
   return getDecreasePositionAmounts({
     marketInfo: market,
@@ -423,6 +428,7 @@ export const selectOrderEditorDecreaseAmounts = createSelector((q) => {
     minPositionSizeUsd,
     uiFeeFactor,
     triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined,
+    isSetAcceptablePriceImpactEnabled,
   });
 });
 
@@ -678,6 +684,8 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
   const indexTokenAmount = convertToTokenAmount(sizeDeltaUsd, positionOrder.indexToken.decimals, triggerPrice);
   const externalSwapQuote = q(selectExternalSwapQuote);
 
+  const isSetAcceptablePriceImpactEnabled = q(selectIsSetAcceptablePriceImpactEnabled);
+
   return getIncreasePositionAmounts({
     marketInfo: market,
     indexToken: positionOrder.indexToken,
@@ -698,6 +706,7 @@ export const selectOrderEditorIncreaseAmounts = createSelector((q) => {
     marketsInfoData,
     chainId,
     externalSwapQuoteParams: undefined,
+    isSetAcceptablePriceImpactEnabled,
   });
 });
 

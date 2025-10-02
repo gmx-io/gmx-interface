@@ -106,6 +106,7 @@ import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 
 import "./OrderEditor.scss";
+
 type Props = {
   order: OrderInfo;
   source: EditingOrderSource;
@@ -215,7 +216,7 @@ export function OrderEditor(p: Props) {
     return false;
   }
 
-  const { savedAcceptablePriceImpactBuffer } = useSettings();
+  const { savedAcceptablePriceImpactBuffer, isSetAcceptablePriceImpactEnabled } = useSettings();
 
   function detectAndSetAvailableMaxLeverage() {
     const positionOrder = p.order as PositionOrderInfo;
@@ -251,6 +252,7 @@ export function OrderEditor(p: Props) {
           marketsInfoData,
           chainId,
           externalSwapQuoteParams: undefined,
+          isSetAcceptablePriceImpactEnabled,
         });
 
         const nextPositionValues = getNextPositionValuesForIncreaseTrade({
@@ -690,7 +692,8 @@ export function OrderEditor(p: Props) {
 
           {!isSwapOrderType(p.order.orderType) &&
             !isStopLossOrderType(p.order.orderType) &&
-            !isStopIncreaseOrderType(p.order.orderType) && (
+            !isStopIncreaseOrderType(p.order.orderType) &&
+            isSetAcceptablePriceImpactEnabled && (
               <AcceptablePriceImpactInputRow
                 acceptablePriceImpactBps={acceptablePriceImpactBps}
                 initialPriceImpactFeeBps={initialAcceptablePriceImpactBps}
@@ -701,12 +704,14 @@ export function OrderEditor(p: Props) {
             )}
           {!isSwapOrderType(p.order.orderType) && (
             <>
-              <SyntheticsInfoRow
-                label={t`Acceptable Price`}
-                value={formatAcceptablePrice(acceptablePrice, {
-                  visualMultiplier: indexToken?.visualMultiplier,
-                })}
-              />
+              {isSetAcceptablePriceImpactEnabled && (
+                <SyntheticsInfoRow
+                  label={t`Acceptable Price`}
+                  value={formatAcceptablePrice(acceptablePrice, {
+                    visualMultiplier: indexToken?.visualMultiplier,
+                  })}
+                />
+              )}
 
               {existingPosition && (
                 <SyntheticsInfoRow

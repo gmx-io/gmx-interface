@@ -198,14 +198,8 @@ export const formatPositionMessage = (
     const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
 
     const priceComment =
-      sizeDeltaUsd > 0
-        ? lines(
-            t`Mark price for the order.`,
-            "",
-            infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice),
-            infoRow(t`Order Execution Price`, formattedExecutionPrice!),
-            ...priceImpactLines
-          )
+      sizeDeltaUsd > 0 && priceImpactLines.length > 0
+        ? lines(t`Mark price for the order.`, "", ...priceImpactLines)
         : lines(t`Mark price for the order.`);
 
     result = {
@@ -250,7 +244,6 @@ export const formatPositionMessage = (
     //#region Twap
   } else if (tradeAction.twapParams) {
     if (ev === TradeActionType.OrderExecuted) {
-      const isAcceptablePriceUseful = tradeAction.acceptablePrice !== 0n && tradeAction.acceptablePrice < MaxInt256;
       const formattedPnl = sizeDeltaUsd > 0n ? formatUsd(tradeAction.pnlUsd) : undefined;
 
       result = {
@@ -258,10 +251,6 @@ export const formatPositionMessage = (
           t`Mark price for the order.`,
           "",
           infoRow(t`Order Trigger Price`, t`N/A`),
-          isAcceptablePriceUseful
-            ? infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
-            : undefined,
-          infoRow(t`Order Execution Price`, formattedExecutionPrice!),
           ...priceImpactLines
         ),
         acceptablePrice: t`N/A`,
@@ -302,17 +291,9 @@ export const formatPositionMessage = (
 
     const isAcceptablePriceUseful = tradeAction.acceptablePrice !== 0n && tradeAction.acceptablePrice < MaxInt256;
 
-    const priceComment = isAcceptablePriceUseful
-      ? lines(
-          t`Trigger price for the order.`,
-          "",
-          infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
-        )
-      : lines(t`Trigger price for the order.`);
-
     result = {
       price: customPrice,
-      priceComment: priceComment,
+      priceComment: lines(t`Trigger price for the order.`),
       triggerPrice: customPrice,
       acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
     };
@@ -327,10 +308,6 @@ export const formatPositionMessage = (
         t`Mark price for the order.`,
         "",
         infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
-        isAcceptablePriceUseful
-          ? infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
-          : undefined,
-        infoRow(t`Order Execution Price`, formattedExecutionPrice!),
         ...priceImpactLines
       ),
       acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
@@ -424,13 +401,10 @@ export const formatPositionMessage = (
     result = {
       action: customAction,
       size: customSize,
-      priceComment: lines(
-        t`Mark price for the order.`,
-        "",
-        infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice),
-        infoRow(t`Order Execution Price`, formattedExecutionPrice!),
-        ...priceImpactLines
-      ),
+      priceComment:
+        priceImpactLines.length > 0
+          ? lines(t`Mark price for the order.`, "", ...priceImpactLines)
+          : lines(t`Mark price for the order.`),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
       pnl: formattedPnl,
       pnlState: numberToState(tradeAction.pnlUsd),
@@ -451,11 +425,7 @@ export const formatPositionMessage = (
 
     result = {
       price: customPrice,
-      priceComment: lines(
-        t`Trigger price for the order.`,
-        "",
-        infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
-      ),
+      priceComment: lines(t`Trigger price for the order.`),
       triggerPrice: customPrice,
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
     };
@@ -467,8 +437,6 @@ export const formatPositionMessage = (
         t`Mark price for the order.`,
         "",
         infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
-        infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice),
-        infoRow(t`Order Execution Price`, formattedExecutionPrice!),
         ...priceImpactLines
       ),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
@@ -516,24 +484,12 @@ export const formatPositionMessage = (
         visualMultiplier: tradeAction.indexToken.visualMultiplier,
       })!;
 
-    const isAcceptablePriceUseful = tradeAction.acceptablePrice !== 0n && tradeAction.acceptablePrice < MaxInt256;
-
-    const priceComment = isAcceptablePriceUseful
-      ? lines(
-          t`Trigger price for the order.`,
-          "",
-          infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
-        )
-      : lines(t`Trigger price for the order.`);
-
     result = {
       price: customPrice,
-      priceComment: priceComment,
+      priceComment: lines(t`Trigger price for the order.`),
       triggerPrice: customPrice,
     };
   } else if (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderExecuted) {
-    const isAcceptablePriceUseful = tradeAction.acceptablePrice !== 0n && tradeAction.acceptablePrice < MaxInt256;
-
     const formattedPnl = formatUsd(tradeAction.pnlUsd);
 
     result = {
@@ -541,10 +497,6 @@ export const formatPositionMessage = (
         t`Mark price for the order.`,
         "",
         infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
-        isAcceptablePriceUseful
-          ? infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
-          : undefined,
-        infoRow(t`Order Execution Price`, formattedExecutionPrice!),
         ...priceImpactLines
       ),
       pnl: formattedPnl,
@@ -691,10 +643,6 @@ export const formatPositionMessage = (
         "",
         t`This position was liquidated as the max. leverage of ${formattedMaxLeverage} was exceeded when taking into account fees.`,
         "",
-        infoRow(t`Order Execution Price`, formattedExecutionPrice!),
-        "",
-        t`Order execution price takes into account price impact.`,
-        "",
         infoRow(t`Initial Collateral`, formattedInitialCollateral!),
         infoRow(t`PnL`, {
           text: formattedBasePnl,
@@ -813,10 +761,6 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
         })
       );
     }
-  }
-
-  if (lines.length > 0) {
-    lines.push("", t`Order execution price takes into account price impact.`);
   }
 
   return lines;

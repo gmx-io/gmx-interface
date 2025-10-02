@@ -865,6 +865,45 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         }
       }
     },
+
+    MultichainTransferOut: (eventData: EventLogData) => {
+      const token = eventData.addressItems.items.token;
+      const amount = eventData.uintItems.items.amount;
+
+      setWebsocketTokenBalancesUpdates((old) => {
+        const oldDiff = old[token]?.diff || 0n;
+        return setByKey(old, token, {
+          balanceType: "gmxAccount",
+          diff: oldDiff - amount,
+        });
+      });
+
+      setOptimisticTokensBalancesUpdates((old) => {
+        return updateByKey(old, token, {
+          balanceType: "gmxAccount",
+          isPending: false,
+        });
+      });
+    },
+    MultichainTransferIn: (eventData: EventLogData) => {
+      const token = eventData.addressItems.items.token;
+      const amount = eventData.uintItems.items.amount;
+
+      setWebsocketTokenBalancesUpdates((old) => {
+        const oldDiff = old[token]?.diff || 0n;
+        return setByKey(old, token, {
+          balanceType: "gmxAccount",
+          diff: oldDiff + amount,
+        });
+      });
+
+      setOptimisticTokensBalancesUpdates((old) => {
+        return updateByKey(old, token, {
+          balanceType: "gmxAccount",
+          isPending: false,
+        });
+      });
+    },
   };
 
   useEffect(

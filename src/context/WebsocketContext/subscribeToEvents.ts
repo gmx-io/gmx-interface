@@ -43,6 +43,8 @@ const APPROVED_HASH = ethers.id("Approval(address,address,uint256)");
 const TRANSFER_HASH = ethers.id("Transfer(address,address,uint256)");
 
 const MULTICHAIN_BRIDGE_IN_HASH = ethers.id("MultichainBridgeIn");
+const MULTICHAIN_TRANSFER_OUT_HASH = ethers.id("MultichainTransferOut");
+const MULTICHAIN_TRANSFER_IN_HASH = ethers.id("MultichainTransferIn");
 
 const OFT_SENT_HASH = ethers.id("OFTSent(bytes32,uint32,address,uint256,uint256)");
 const OFT_RECEIVED_HASH = ethers.id("OFTReceived(bytes32,uint32,address,uint256)");
@@ -534,7 +536,11 @@ function createV2EventFilters(chainId: ContractsChainId, account: string, wsProv
     // Multichain
     {
       address: getContract(chainId, "EventEmitter"),
-      topics: [EVENT_LOG1_TOPIC, [MULTICHAIN_BRIDGE_IN_HASH], addressHash],
+      topics: [
+        EVENT_LOG1_TOPIC,
+        [MULTICHAIN_BRIDGE_IN_HASH, MULTICHAIN_TRANSFER_OUT_HASH, MULTICHAIN_TRANSFER_IN_HASH],
+        addressHash,
+      ],
     },
   ];
 }

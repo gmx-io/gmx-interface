@@ -112,12 +112,11 @@ export default function ClaimableAmounts() {
     async function runCheckValidity() {
       try {
         if (
-          !accountType ||
+          accountType === null ||
           ![AccountType.Safe, AccountType.SmartAccount].includes(accountType) ||
           !account ||
           !publicClient ||
-          !claimTerms ||
-          !claimTermsAcceptedSignature
+          !claimTerms
         ) {
           setIsSafeSigValid(false);
           return;
@@ -130,8 +129,10 @@ export default function ClaimableAmounts() {
           claimTerms,
           claimTermsAcceptedSignature,
         });
+
         setIsSafeSigValid(isValid);
         setIsContractOwnersSigned(isValid);
+        setClaimTermsAcceptedSignature(isValid ? claimTermsAcceptedSignature || "0x" : "");
       } catch (e) {
         setIsSafeSigValid(false);
       }
@@ -146,7 +147,15 @@ export default function ClaimableAmounts() {
         clearInterval(intervalId);
       }
     };
-  }, [accountType, account, publicClient, claimTerms, claimTermsAcceptedSignature, chainId]);
+  }, [
+    accountType,
+    account,
+    publicClient,
+    claimTerms,
+    claimTermsAcceptedSignature,
+    chainId,
+    setClaimTermsAcceptedSignature,
+  ]);
 
   const claimFundsTransactionCallback = useClaimFundsTransactionCallback({
     tokens: claimableTokens,
@@ -213,7 +222,9 @@ export default function ClaimableAmounts() {
     });
 
     const hasAvailableFundsToCoverExecutionFee =
-      userNativeTokenBalance !== undefined && userNativeTokenBalance >= requiredExecutionFee;
+      userNativeTokenBalance !== undefined &&
+      executionFee !== undefined &&
+      userNativeTokenBalance >= requiredExecutionFee;
 
     isButtonDisabled = !hasAvailableFundsToCoverExecutionFee;
 
@@ -296,7 +307,7 @@ export default function ClaimableAmounts() {
     return (
       <>
         {!hasAvailableFundsToCoverExecutionFee ? (
-          <AlertInfoCard type="warning">
+          <AlertInfoCard type="warning" hideClose>
             <Trans>Insufficient gas for network fees</Trans>
           </AlertInfoCard>
         ) : null}
