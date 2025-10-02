@@ -555,6 +555,10 @@ msgstr ""
 msgid "in liquidity"
 msgstr "en liquidez"
 
+#: src/components/ExitPriceRow/ExitPriceRow.tsx
+msgid "Exit Price"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V2"
 msgstr "Reembolsos en V2"
@@ -1422,6 +1426,7 @@ msgstr "Agregador de DEX"
 msgid "Waiting for remaining Safe confirmations..."
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2822,6 +2827,10 @@ msgstr "Comisión UI de Intercambio"
 msgid "Decrease the size to match the max. allowed leverage:"
 msgstr "Reduce el tamaño para coincidir con el apalancamiento máximo permitido:"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Set Acceptable Price Impact"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Accrued Positive Funding Fee"
 msgstr "Comisión de Financiación Positiva Acumulada"
@@ -2869,15 +2878,6 @@ msgstr "GM puede venderse por {0} y {1} para este mercado hasta los límites de 
 msgid "Graph showing performance vs benchmark over the selected period."
 msgstr "Gráfico mostrando rendimiento vs benchmark durante el período seleccionado."
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3585,8 +3585,6 @@ msgstr "NA"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Trigger price for the order."
 msgstr "Precio de activación para la orden."
 
@@ -3999,6 +3997,10 @@ msgstr "Traders Referidos en Avalanche Fuji"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in GM Pools."
 msgstr "Valor total de tokens en Reservas GM."
+
+#: src/components/Claims/SettleAccruedCard.tsx
+msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take Profit / Stop Loss"
@@ -4612,6 +4614,10 @@ msgstr "Firma de permiso cancelada"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Optimizer"
 msgstr "Optimizador Yield Yak"
+
+#: src/components/ExitPriceRow/ExitPriceRow.tsx
+msgid "Expected exit price for the order, including the current capped net price impact."
+msgstr ""
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "GMX & Voting Power"
@@ -5526,11 +5532,6 @@ msgstr "Reclamar"
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price Impact / Fees"
 msgstr "Impacto de Precio / Comisiones"
-
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Order execution price takes into account price impact."
-msgstr "El precio de ejecución de la orden tiene en cuenta el impacto del precio."
 
 #: src/pages/Buy/Buy.tsx
 msgid "Buy GLP or GMX"
@@ -7000,10 +7001,6 @@ msgstr "Transacción fallida"
 msgid "COLLATERAL"
 msgstr "GARANTÍA"
 
-#: src/components/Claims/SettleAccruedCard.tsx
-msgid "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
-msgstr "Reembolsos de impacto de precio acumulados. Serán reclamables después de aproximadamente diez días.<0/><1/><2>Leer más</2>."
-
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
@@ -7416,13 +7413,6 @@ msgstr ""
 msgid "PNG"
 msgstr ""
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts

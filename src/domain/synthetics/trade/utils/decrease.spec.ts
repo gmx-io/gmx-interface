@@ -205,6 +205,7 @@ describe("getDecreasePositionAmounts DecreasePositionSwapType", () => {
       uiFeeFactor,
       acceptablePriceImpactBuffer: 30,
       userReferralInfo: undefined,
+      isSetAcceptablePriceImpactEnabled: true,
     });
     expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapPnlTokenToCollateralToken);
   });
@@ -222,6 +223,7 @@ describe("getDecreasePositionAmounts DecreasePositionSwapType", () => {
       uiFeeFactor,
       acceptablePriceImpactBuffer: 30,
       userReferralInfo: undefined,
+      isSetAcceptablePriceImpactEnabled: true,
     });
     expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.NoSwap);
   });
@@ -240,6 +242,7 @@ describe("getDecreasePositionAmounts DecreasePositionSwapType", () => {
       uiFeeFactor,
       acceptablePriceImpactBuffer: 30,
       userReferralInfo: undefined,
+      isSetAcceptablePriceImpactEnabled: true,
     });
     expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapCollateralTokenToPnlToken);
   });
