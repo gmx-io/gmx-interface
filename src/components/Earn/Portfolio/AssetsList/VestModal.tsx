@@ -21,6 +21,7 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import Modal from "components/Modal/Modal";
+import { ProgressRow } from "components/ProgressRow/ProgressRow";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -405,7 +406,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
       isVisible={isVisible}
       setIsVisible={setIsVisible}
       label={t`Vesting`}
-      contentClassName="w-[420px] min-h-[560px]"
+      contentClassName="w-[420px] min-h-[596px]"
       contentPadding={false}
     >
       <div className="flex flex-col gap-20">
@@ -500,8 +501,12 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
               label={<Trans>Wallet</Trans>}
               value={`${formatAmount(processedData?.esGmxBalance, 18, 4, true)} esGMX`}
             />
+            <SyntheticsInfoRow
+              label={<Trans>Claimable</Trans>}
+              value={`${formatAmount(claimableAmount, 18, 4, true)} GMX`}
+            />
             {selectedVault === "gmx" && gmxDepositConfig.reserveAmount !== undefined && (
-              <SyntheticsInfoRow
+              <ProgressRow
                 label={<Trans>Staked tokens reserved for vesting</Trans>}
                 value={
                   <TooltipWithPortal
@@ -527,13 +532,11 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                     }
                   />
                 }
+                currentValue={gmxReservePreview.nextReserveAmount}
+                totalValue={gmxDepositConfig.maxReserveAmount}
               />
             )}
-            <SyntheticsInfoRow
-              label={<Trans>Claimable</Trans>}
-              value={`${formatAmount(claimableAmount, 18, 4, true)} GMX`}
-            />
-            <SyntheticsInfoRow
+            <ProgressRow
               label={<Trans>Vault Capacity</Trans>}
               value={
                 <TooltipWithPortal
@@ -556,10 +559,14 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                   }
                 />
               }
+              currentValue={selectedVault === "gmx" ? gmxReservePreview.nextDepositAmount : affiliateNextDepositAmount}
+              totalValue={depositConfig.maxVestableAmount}
             />
-            <SyntheticsInfoRow
+            <ProgressRow
               label={<Trans>Vesting Status</Trans>}
               value={`${formatAmount(claimSum, 18, 4, true)} / ${formatAmount(vestedAmount, 18, 4, true)}`}
+              currentValue={claimSum}
+              totalValue={vestedAmount}
             />
           </div>
         </div>
