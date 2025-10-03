@@ -253,11 +253,11 @@ export default function ClaimableAmounts() {
     let buttonTooltipText: React.ReactNode | null = null;
 
     if (isSmartAccount && !isContractOwnersSigned) {
-      buttonTooltipText = <Trans>Please accept the Claim Terms above to continue.</Trans>;
+      buttonTooltipText = <Trans>Accept the claim terms to continue.</Trans>;
     }
 
     if (accountType === AccountType.Safe && isStartedMultisig && !isSafeSigValid) {
-      buttonTooltipText = <Trans>Waiting for remaining Safe confirmations...</Trans>;
+      buttonTooltipText = <Trans>Waiting for the remaining Safe confirmations.</Trans>;
     }
 
     return {
@@ -308,7 +308,7 @@ export default function ClaimableAmounts() {
       <>
         {!hasAvailableFundsToCoverExecutionFee ? (
           <AlertInfoCard type="warning" hideClose>
-            <Trans>Insufficient gas for network fees</Trans>
+            <Trans>Insufficient gas for network fees.</Trans>
           </AlertInfoCard>
         ) : null}
         {claimTerms && hasAvailableFundsToCoverExecutionFee && !claimsFeatureDisabled ? (
