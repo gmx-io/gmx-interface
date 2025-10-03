@@ -13,7 +13,7 @@ import {
 } from "@rainbow-me/rainbowkit/wallets";
 import once from "lodash/once";
 import { http } from "viem";
-import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, base, optimismSepolia, sepolia, bsc } from "viem/chains";
+import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, base, bsc, optimismSepolia, sepolia } from "viem/chains";
 
 import { botanix } from "config/chains";
 import { isDevelopment } from "config/env";

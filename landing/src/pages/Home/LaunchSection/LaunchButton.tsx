@@ -1,10 +1,11 @@
 import { RedirectChainIds } from "landing/pages/Home/hooks/useGoToTrade";
 
 import IcArb from "img/ic_arb_24.svg?react";
-import IcArrowRight from "img/ic_arrow_right.svg?react";
 import IcAvax from "img/ic_avax_24.svg?react";
 import IcBase from "img/ic_base.svg?react";
 import IcBotanix from "img/ic_botanix_landing.svg?react";
+import IcBsc from "img/ic_bsc_96.svg?react";
+import MidChevronIcon from "img/ic_mid_chevron.svg?react";
 import IcSol from "img/ic_sol_24.svg?react";
 
 const icons = {
@@ -13,6 +14,7 @@ const icons = {
   [RedirectChainIds.Solana]: IcSol,
   [RedirectChainIds.Avalanche]: IcAvax,
   [RedirectChainIds.Botanix]: IcBotanix,
+  [RedirectChainIds.Bsc]: IcBsc,
 };
 
 const names = {
@@ -21,6 +23,7 @@ const names = {
   [RedirectChainIds.Solana]: "Solana",
   [RedirectChainIds.Avalanche]: "Avalanche",
   [RedirectChainIds.Botanix]: "Botanix",
+  [RedirectChainIds.Bsc]: "BNB",
 };
 
 type Props = {
@@ -40,7 +43,7 @@ export function LaunchButton({ chainId, onClick }: Props) {
         <Icon className="size-24" />
       </div>
       <span className="text-16 font-medium -tracking-[0.768px] sm:text-24">{name}</span>
-      <IcArrowRight className="duration-180 ml-auto size-18 translate-x-0 transition-all ease-in-out group-hover:translate-x-4" />
+      <MidChevronIcon className="duration-180 ml-auto size-24 translate-x-0 text-slate-500 transition-all ease-in-out group-hover:translate-x-4" />
     </button>
   );
 }

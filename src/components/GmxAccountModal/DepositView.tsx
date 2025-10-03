@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useLatest } from "react-use";
 import { Hex, decodeErrorResult, zeroAddress } from "viem";
-import { useAccount } from "wagmi";
+import { useAccount, useChains } from "wagmi";
 
 import { AnyChainId, SettlementChainId, SourceChainId, getChainName, isTestnetChain } from "config/chains";
 import { getContract } from "config/contracts";
@@ -35,6 +35,7 @@ import { sendSameChainDepositTxn } from "domain/multichain/sendSameChainDepositT
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
+import { useNativeTokenBalance } from "domain/multichain/useNativeTokenBalance";
 import { useQuoteOft } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSend } from "domain/multichain/useQuoteSend";
@@ -65,6 +66,7 @@ import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { Amount } from "components/Amount/Amount";
+import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import NumberInput from "components/NumberInput/NumberInput";
@@ -105,6 +107,7 @@ const useIsFirstDeposit = () => {
 export const DepositView = () => {
   const { chainId: settlementChainId, srcChainId } = useChainId();
   const { address: account, chainId: walletChainId } = useAccount();
+
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const [depositViewChain, setDepositViewChain] = useGmxAccountDepositViewChain();
   const walletSigner = useEthersSigner({ chainId: srcChainId });
@@ -150,10 +153,17 @@ export const DepositView = () => {
 
   const selectedTokenSourceChainBalance = selectedTokenChainData?.sourceChainBalance;
   const selectedTokenSourceChainDecimals = selectedTokenChainData?.sourceChainDecimals;
-  const nativeTokenSourceChainBalance = useMemo(() => {
-    if (multichainTokens === undefined) return undefined;
-    return multichainTokens.find((token) => token.address === zeroAddress)?.sourceChainBalance;
-  }, [multichainTokens]);
+
+  const viemChains = useChains();
+  const depositViewViemChain = useMemo(
+    () =>
+      depositViewChain !== undefined && viemChains.length > 0
+        ? viemChains.find((chain) => chain.id === depositViewChain)
+        : undefined,
+    [viemChains, depositViewChain]
+  );
+
+  const nativeTokenSourceChainBalance = useNativeTokenBalance(depositViewChain, account);
 
   const realInputAmount = useGmxAccountSelector(selectGmxAccountDepositViewTokenInputAmount);
 
@@ -363,7 +373,7 @@ export const DepositView = () => {
     composeGas,
   });
 
-  const { networkFeeUsd, protocolFeeUsd } = useMultichainQuoteFeeUsd({
+  const { networkFee, networkFeeUsd, protocolFeeAmount, protocolFeeUsd } = useMultichainQuoteFeeUsd({
     quoteSend,
     quoteOft,
     unwrappedTokenAddress: unwrappedSelectedTokenAddress,
@@ -882,13 +892,36 @@ export const DepositView = () => {
           />
           <SyntheticsInfoRow
             label={<Trans>Network Fee</Trans>}
-            valueClassName="numbers"
-            value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
+            value={
+              networkFeeUsd !== undefined && networkFee !== undefined && depositViewViemChain ? (
+                <AmountWithUsdBalance
+                  className="numbers"
+                  amount={networkFee}
+                  decimals={depositViewViemChain.nativeCurrency.decimals}
+                  usd={networkFeeUsd}
+                  symbol={depositViewViemChain.nativeCurrency.symbol}
+                />
+              ) : (
+                "..."
+              )
+            }
           />
           <SyntheticsInfoRow
             label={<Trans>Deposit Fee</Trans>}
             valueClassName="numbers"
-            value={protocolFeeUsd !== undefined ? formatUsd(protocolFeeUsd) : "..."}
+            value={
+              protocolFeeUsd !== undefined && selectedTokenSourceChainDecimals !== undefined ? (
+                <AmountWithUsdBalance
+                  className="numbers"
+                  amount={protocolFeeAmount}
+                  decimals={selectedTokenSourceChainDecimals}
+                  usd={protocolFeeUsd}
+                  symbol={selectedToken?.symbol}
+                />
+              ) : (
+                "..."
+              )
+            }
           />
           <SyntheticsInfoRow
             label={<Trans>GMX Balance</Trans>}

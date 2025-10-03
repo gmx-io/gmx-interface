@@ -15,6 +15,9 @@ export const NATIVE_TOKEN_PRICE_MAP: Partial<
     [AVALANCHE]: {
       [AVALANCHE]: getTokenBySymbol(AVALANCHE, "ETH").address,
     },
+    [ARBITRUM]: {
+      [ARBITRUM]: getTokenBySymbol(ARBITRUM, "ETH").address,
+    },
   },
   [SOURCE_BSC_MAINNET]: {
     [ARBITRUM]: {

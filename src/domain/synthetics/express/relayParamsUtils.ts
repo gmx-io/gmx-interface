@@ -140,6 +140,7 @@ export function getRelayerFeeParams({
         amountOut: totalRelayerFeeTokenAmount,
         isLimit: false,
         findSwapPath: findFeeSwapPath,
+        swapOptimizationOrder: ["length"],
         uiFeeFactor: 0n,
         marketsInfoData: undefined,
         chainId,
