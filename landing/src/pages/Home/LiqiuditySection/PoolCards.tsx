@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { useHomePageContext } from "landing/pages/Home/contexts/HomePageContext";
-import { useProcessedData } from "pages/Stake/useProcessedData";
+import { useProcessedData } from "pages/Earn/useProcessedData";
 import { ARBITRUM } from "sdk/configs/chainIds";
 
 import glvCoin from "img/bg_coin_glv.png";

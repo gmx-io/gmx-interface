@@ -15,13 +15,11 @@ import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT, ProcessedData } from "lib/legacy";
 import { formatAmount, formatUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
-import { GMX_DAO_LINKS } from "pages/Stake/constants";
-import { StakeModal, StakeModalTabConfig } from "pages/Stake/StakeModal";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
-import { VestModal } from "components/Earn/Portfolio/AssetsList/VestModal";
+import { VestModal } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -34,7 +32,9 @@ import MenuDotsIcon from "img/ic_menu_dots.svg?react";
 import PlusCircleIcon from "img/ic_plus_circle.svg?react";
 import ShareIcon from "img/ic_share.svg?react";
 
-import { BaseAssetCard } from "./BaseAssetCard";
+import { GMX_DAO_LINKS } from "./constants";
+import { StakeModal, StakeModalTabConfig } from "./StakeModal";
+import { BaseAssetCard } from "../BaseAssetCard";
 
 export function GmxAssetCard({ processedData, esGmx = false }: { processedData: ProcessedData; esGmx?: boolean }) {
   const { chainId } = useChainId();

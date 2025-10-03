@@ -29,7 +29,6 @@ import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import Referrals from "pages/Referrals/Referrals";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
-import Stake from "pages/Stake/Stake";
 import Stats from "pages/Stats/Stats";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
@@ -88,11 +87,6 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         <SyntheticsStats />
       </Route>
 
-      <Route exact path="/stake">
-        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="stake">
-          <Stake />
-        </SyntheticsStateContextProvider>
-      </Route>
       <Route exact path="/earn">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
           <EarnRedirect />

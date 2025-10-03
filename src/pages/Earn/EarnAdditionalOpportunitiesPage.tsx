@@ -12,7 +12,7 @@ import { GlvAndGmMarketsInfoData, getMarketPoolName, useMarketTokensData } from 
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
-import { useProcessedData } from "pages/Stake/useProcessedData";
+import { useProcessedData } from "pages/Earn/useProcessedData";
 import { TokensData } from "sdk/types/tokens";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";

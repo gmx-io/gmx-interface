@@ -414,7 +414,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
           options={vaultTabs}
           selectedValue={selectedVault}
           onChange={(value) => handleSelectVault(value as VestVault)}
-          className="mt-12 border-t-1/2 border-t-slate-600 bg-fill-surfaceElevated50"
+          className="mt-12 !rounded-t-0 border-t-1/2 border-t-slate-600 bg-fill-surfaceElevated50"
           regularOptionClassname="grow"
         />
 

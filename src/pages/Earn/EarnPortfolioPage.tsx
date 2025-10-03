@@ -8,7 +8,7 @@ import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import EarnPageLayout from "pages/Earn/EarnPageLayout";
-import { useProcessedData } from "pages/Stake/useProcessedData";
+import { useProcessedData } from "pages/Earn/useProcessedData";
 
 import AssetsList from "components/Earn/Portfolio/AssetsList/AssetsList";
 import { RecommendedAssets } from "components/Earn/Portfolio/RecommendedAssets/RecommendedAssets";

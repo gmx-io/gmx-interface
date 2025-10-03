@@ -12,9 +12,9 @@ import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts/contractFetcher";
 import { PLACEHOLDER_ACCOUNT, ProcessedData } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
-import { ClaimModal } from "pages/Stake/ClaimModal";
 
 import Button from "components/Button/Button";
+import { ClaimModal } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal";
 
 import EarnIcon from "img/ic_earn.svg?react";
 

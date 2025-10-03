@@ -110,7 +110,7 @@ msgstr ""
 msgid "Daily Loss"
 msgstr "일일 손실"
 
-#: src/pages/Stake/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim {tokenSymbol} Rewards"
 msgstr ""
 
@@ -136,8 +136,8 @@ msgstr "주문 ({0})"
 
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-msgid "You have not deposited any tokens for vesting."
-msgstr "베스팅을 위해 예치한 토큰이 없습니다."
+#~ msgid "You have not deposited any tokens for vesting."
+#~ msgstr "베스팅을 위해 예치한 토큰이 없습니다."
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "stop loss"
@@ -186,8 +186,8 @@ msgid "Annualized return of the pool or vault over the selected period, compared
 msgstr "선택 기간 동안 풀 또는 볼트의 연환산 수익률로, 동일 GM 풀 또는 GLV 볼트의 백킹 토큰을 Uniswap V2 스타일 재조정 벤치마크와 비교.<0/><1/>단기 기간 기반 연환산 수치는 단기 변동성으로 왜곡될 수 있음.<2/><3/>상세 통계 및 비교를 위해 <4>GMX V2 LP 대시보드</4>를 참조하세요."
 
 #: src/pages/Stake/VesterDepositModal.tsx
-msgid "Current Reserved"
-msgstr "현재 예약됨"
+#~ msgid "Current Reserved"
+#~ msgstr "현재 예약됨"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -450,7 +450,7 @@ msgstr "트레저리"
 msgid "Classic"
 msgstr ""
 
-#: src/pages/Stake/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking"
 msgstr ""
 
@@ -462,7 +462,7 @@ msgstr ""
 msgid "Orders"
 msgstr "주문"
 
-#: src/pages/Stake/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "No rewards"
 msgstr ""
 
@@ -479,8 +479,7 @@ msgstr "펀딩 수수료"
 msgid "Light"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Confirm Withdraw"
 msgstr "인출 확인"
 
@@ -524,8 +523,8 @@ msgid "Claim Price Impact Rebates"
 msgstr "가격 영향 리베이트 수령"
 
 #: src/pages/Stake/VesterDepositModal.tsx
-msgid "Max Capacity"
-msgstr "최대 수용량"
+#~ msgid "Max Capacity"
+#~ msgstr "최대 수용량"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
@@ -578,7 +577,7 @@ msgstr "유동성 내"
 msgid "Rebates on V2"
 msgstr "V2 리베이트"
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max Capacity: {0} esGMX"
 msgstr ""
 
@@ -591,8 +590,7 @@ msgstr "허용 가능한 가격 영향"
 msgid "Add to Metamask"
 msgstr "메타마스크에 추가해주세요"
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/pages/Stake/VesterDepositModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Insufficient staked tokens"
 msgstr "스테이킹된 토큰 부족"
 
@@ -630,7 +628,7 @@ msgstr "Plutus"
 msgid "Pairs Trading"
 msgstr "페어 트레이딩"
 
-#: src/pages/Stake/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Stake {tokenSymbol} Rewards"
 msgstr ""
 
@@ -824,7 +822,7 @@ msgstr "GM으로 크로스체인 원클릭 예치"
 msgid "No markets matched"
 msgstr "일치하는 마켓 없음"
 
-#: src/pages/Stake/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake {tokenSymbol}"
 msgstr ""
 
@@ -873,7 +871,6 @@ msgid "This value may be higher on other websites due to the collateral of posit
 msgstr "다른 웹사이트에서 포지션 담보가 계산에 포함되어 이 값이 더 높을 수 있습니다."
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Rewards"
 msgstr "보상"
 
@@ -915,16 +912,16 @@ msgid "using GLV and GM tokens. Buying or staking GMX, or using referrals, is no
 msgstr "GLV 및 GM 토큰 사용. GMX 구매 또는 스테이킹, 또는 추천인 사용은 현재 지원되지 않습니다."
 
 #: src/pages/Stake/TotalRewardsCard.tsx
-msgid "<0>Trade GMX</0>"
-msgstr "<0>GMX 거래</0>"
+#~ msgid "<0>Trade GMX</0>"
+#~ msgstr "<0>GMX 거래</0>"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "As network fees have increased, an additional network fee is needed."
 msgstr "네트워크 수수료가 증가하여 추가 네트워크 수수료가 필요합니다."
 
 #: src/pages/Stake/VesterDepositModal.tsx
-msgid "Deposited"
-msgstr "예치됨"
+#~ msgid "Deposited"
+#~ msgstr "예치됨"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Limit: Swap tokens when the trigger price is reached."
@@ -977,8 +974,8 @@ msgstr "사용된 평균 레버리지."
 
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/TotalRewardsCard.tsx
-msgid "Escrowed GMX"
-msgstr "에스크로 GMX"
+#~ msgid "Escrowed GMX"
+#~ msgstr "에스크로 GMX"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We want your insights to help improve GMX for Liquidity Providers. For security reasons, we won't contact you first. Please send the message \"I’m a Liquidity Provider\" to our official telegram account:"
@@ -1031,12 +1028,12 @@ msgid "Charts by TradingView"
 msgstr "TradingView 차트"
 
 #: src/pages/Stake/TotalRewardsCard.tsx
-msgid "GMX Staked Rewards"
-msgstr "GMX 스테이킹 보상"
+#~ msgid "GMX Staked Rewards"
+#~ msgstr "GMX 스테이킹 보상"
 
 #: src/pages/Stake/Vesting.tsx
-msgid "Staked Tokens"
-msgstr "스테이킹된 토큰"
+#~ msgid "Staked Tokens"
+#~ msgstr "스테이킹된 토큰"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Beefy"
@@ -1183,8 +1180,7 @@ msgstr "V2 거래량"
 msgid "Show less"
 msgstr "적게 표시"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
-#: src/pages/Stake/Vesting.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Vest"
 msgstr "베스트"
 
@@ -1201,10 +1197,8 @@ msgid "Select pool"
 msgstr "풀 선택"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
-#: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "APR"
 msgstr "APR"
 
@@ -1221,7 +1215,6 @@ msgstr "전송중..."
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
-#: src/pages/Stake/TotalRewardsCard.tsx
 msgid "Total"
 msgstr "총계"
 
@@ -1290,7 +1283,6 @@ msgid "Hide error"
 msgstr "오류 숨기기"
 
 #: src/pages/Earn/EarnPageLayout.tsx
-#: src/pages/Stake/Stake.tsx
 msgid "Distributions"
 msgstr ""
 
@@ -1381,7 +1373,6 @@ msgid "Discover GMX Alerts"
 msgstr "GMX 알림 발견"
 
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Price on Avalanche"
 msgstr "Avalanche에서 가격"
 
@@ -1543,8 +1534,8 @@ msgid "Search"
 msgstr "검색"
 
 #: src/pages/Stake/Vesting.tsx
-msgid "Withdraw from GMX Vault"
-msgstr "GMX 볼트에서 인출"
+#~ msgid "Withdraw from GMX Vault"
+#~ msgstr "GMX 볼트에서 인출"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Referral Discount"
@@ -1644,7 +1635,6 @@ msgstr "V1 에어드랍"
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "GMX"
 msgstr "GMX"
 
@@ -1657,7 +1647,7 @@ msgstr "Uniswap 또는 GMX에서 직접 GMX 구매(Arbitrum 선택 확인):"
 msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
 msgstr "가스 잔고 부족으로 익스프레스 및 원클릭 트레이딩 사용 불가."
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "No funds to claim"
 msgstr ""
@@ -1779,8 +1769,7 @@ msgstr "데이터에 {0} 가격이 포함되지 않아 USD 가치가 정확하�
 msgid "GMX Blueberry Club"
 msgstr "GMX Blueberry Club"
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/pages/Stake/VesterWithdrawModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdrawn."
 msgstr ""
 
@@ -1789,8 +1778,8 @@ msgid "Cumulative PnL"
 msgstr "누적 PnL"
 
 #: src/pages/Stake/VesterDepositModal.tsx
-msgid "Vault Capacity for your Account:"
-msgstr "계정에 대한 볼트 수용량:"
+#~ msgid "Vault Capacity for your Account:"
+#~ msgstr "계정에 대한 볼트 수용량:"
 
 #: src/components/OrderList/OrderList.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -1827,14 +1816,13 @@ msgid "The fees' USD value is calculated at the time they are earned and does no
 msgstr "수수료의 USD 가치는 적립 시 계산되며 인센티브를 포함하지 않습니다."
 
 #: src/components/BuyInputSection/BuyInputSection.tsx
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/pages/Stake/StakeModal.tsx
-#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Max"
 msgstr "최대"
 
@@ -1859,8 +1847,8 @@ msgid "Buy request sent."
 msgstr ""
 
 #: src/pages/Stake/Vesting.tsx
-msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
-msgstr "esGMX 토큰을 GMX 토큰으로 변환.<0/>볼트 사용 전에 <1>베스팅 세부 사항</1>을 읽으세요."
+#~ msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
+#~ msgstr "esGMX 토큰을 GMX 토큰으로 변환.<0/>볼트 사용 전에 <1>베스팅 세부 사항</1>을 읽으세요."
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Passive"
@@ -1925,7 +1913,7 @@ msgstr "귀하의 경험과 통찰을 소중히 여기며 익명 일대일 채�
 msgid "Market - Short Inc."
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Header/AppHeaderChainAndSettings.tsx
@@ -2012,8 +2000,8 @@ msgid "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral
 msgstr "스왑 경로 없음. {1}을 담보로 사용하려면 <0>{0}을 STBTC로 스왑</0>."
 
 #: src/pages/Stake/TotalRewardsCard.tsx
-msgid "<0>Provide liquidity</0> and earn {gmxMarketApyDataText} APY"
-msgstr "<0>유동성 제공</0> 및 {gmxMarketApyDataText} APY 획득"
+#~ msgid "<0>Provide liquidity</0> and earn {gmxMarketApyDataText} APY"
+#~ msgstr "<0>유동성 제공</0> 및 {gmxMarketApyDataText} APY 획득"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -2146,8 +2134,8 @@ msgid "You have an existing limit order in the {0} market pool but it lacks liqu
 msgstr "{0} 마켓 풀에 기존 지정가 주문이 있지만 이 주문에 대한 유동성이 부족합니다."
 
 #: src/pages/Stake/Vesting.tsx
-msgid "Reserved for Vesting"
-msgstr "베스팅 예약"
+#~ msgid "Reserved for Vesting"
+#~ msgstr "베스팅 예약"
 
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -2185,8 +2173,8 @@ msgid "Active"
 msgstr ""
 
 #: src/pages/Stake/VesterDepositModal.tsx
-msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
-msgstr "최소 {0} {stakeTokenLabel}이 {1} esGMX를 베스팅하기 위해 필요합니다."
+#~ msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
+#~ msgstr "최소 {0} {stakeTokenLabel}이 {1} esGMX를 베스팅하기 위해 필요합니다."
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Native token cannot be approved"
@@ -2205,7 +2193,7 @@ msgstr "선택 해제"
 msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
 msgstr "트리거 가격이 포지션의 청산 가격을 초과하므로 주문이 실행되지 않습니다."
 
-#: src/pages/Stake/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake completed."
 msgstr ""
 
@@ -2414,7 +2402,7 @@ msgstr ""
 msgid "Trigger"
 msgstr "트리거"
 
-#: src/pages/Stake/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake failed."
 msgstr "언스테이킹 실패"
 
@@ -2519,8 +2507,8 @@ msgid "Only positions with over {0} in \"Capital Used\" are ranked."
 msgstr "\"자본 사용\"이 {0} 초과인 포지션만 랭킹됩니다."
 
 #: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
-msgid "Withdraw from Affiliate Vault"
-msgstr "어필리에이트 볼트에서 인출"
+#~ msgid "Withdraw from Affiliate Vault"
+#~ msgstr "어필리에이트 볼트에서 인출"
 
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "The order will be executed if there is sufficient liquidity and the execution price guarantees that you will receive the minimum receive amount."
@@ -2686,16 +2674,10 @@ msgstr "수수료 APR"
 msgid "SL"
 msgstr "SL"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
-#: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GmxAndVotingPowerCard.tsx
-#: src/pages/Stake/Stake.tsx
-#: src/pages/Stake/Stake.tsx
-#: src/pages/Stake/Stake.tsx
-#: src/pages/Stake/Stake.tsx
-#: src/pages/Stake/StakeModal.tsx
-#: src/pages/Stake/StakeModal.tsx
-#: src/pages/Stake/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake"
 msgstr "스테이킹"
 
@@ -2759,8 +2741,8 @@ msgid "Staked on Arbitrum"
 msgstr "Arbitrum에서 스테이킹됨"
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
-msgid "Delegated to"
-msgstr "위임됨"
+#~ msgid "Delegated to"
+#~ msgstr "위임됨"
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} update failed."
@@ -2797,8 +2779,6 @@ msgid "How do I get started on GMX?"
 msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Total Staked"
 msgstr "총 스테이킹"
 
@@ -2843,7 +2823,7 @@ msgstr ""
 msgid "No claims match the selected filters"
 msgstr "선택한 필터와 일치하는 수령이 없습니다"
 
-#: src/pages/Stake/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Staking"
 msgstr ""
 
@@ -2852,7 +2832,7 @@ msgstr ""
 msgid "Claiming"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Staked tokens reserved for vesting"
 msgstr ""
 
@@ -2901,7 +2881,7 @@ msgstr ""
 msgid "Can I unstake anytime?"
 msgstr ""
 
-#: src/pages/Stake/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake failed."
 msgstr "스테이킹 실패"
 
@@ -2909,7 +2889,7 @@ msgstr "스테이킹 실패"
 msgid "Withdrawal"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "No funds to withdraw"
 msgstr ""
 
@@ -2944,10 +2924,9 @@ msgstr "디버그 값 사용 불가"
 msgid "Trigger price below liq. price"
 msgstr "트리거 가격이 청산 가격 미만"
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#: src/pages/Stake/AffiliateClaimModal.tsx
-#: src/pages/Stake/ClaimModal.tsx
 msgid "Claim failed."
 msgstr "수령 실패"
 
@@ -2984,7 +2963,7 @@ msgstr "누적 양의 자금 수수료"
 msgid "You’ll need some {nativeTokenSymbol} in your account to withdraw funds."
 msgstr ""
 
-#: src/pages/Stake/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake submitted."
 msgstr ""
 
@@ -3062,7 +3041,7 @@ msgstr "<0>{0}{1} 구매<1>{poolName}</1></0> <2>{tokensText}로</2>"
 msgid "Initial Collateral"
 msgstr "최초 담보"
 
-#: src/pages/Stake/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking."
 msgstr "<0>스테이킹 전에 위임되지 않은 {0} GMX DAO</0> 투표 권한을 위임하세요."
 
@@ -3114,12 +3093,11 @@ msgstr "포지션의 금액이 $5.00 이하로 남게되면 주문은 실행될 
 
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#: src/pages/Stake/AffiliateClaimModal.tsx
-#: src/pages/Stake/ClaimModal.tsx
 msgid "Claiming..."
 msgstr "수령중..."
 
@@ -3162,16 +3140,15 @@ msgid "TWAP"
 msgstr "TWAP"
 
 #: src/pages/Stake/Stake.tsx
-msgid "You are earning rewards with {0} tokens.<0/>Tokens: {amountStr}."
-msgstr "{0} 토큰으로 보상을 획득 중입니다.<0/>토큰: {amountStr}."
+#~ msgid "You are earning rewards with {0} tokens.<0/>Tokens: {amountStr}."
+#~ msgstr "{0} 토큰으로 보상을 획득 중입니다.<0/>토큰: {amountStr}."
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "웹사이트는 오픈소스인 <0>GMX front end</0>를 이용하고 커뮤니티에의해 배포되며, P2P <1>IPFS network<1/>에 의해 서빙및 호스팅됩니다."
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/pages/Stake/VesterDepositModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposit failed."
 msgstr "입금 실패"
 
@@ -3249,8 +3226,8 @@ msgid "{longShortText} {0} Open Interest"
 msgstr "{longShortText} {0} 미결제 약정"
 
 #: src/pages/Stake/Vesting.tsx
-msgid "You have no GMX tokens to claim."
-msgstr "수령할 GMX 토큰이 없습니다."
+#~ msgid "You have no GMX tokens to claim."
+#~ msgstr "수령할 GMX 토큰이 없습니다."
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
@@ -3293,11 +3270,9 @@ msgstr "{0} 업그레이드 대기 중 앱 비활성화"
 msgid "Please accept the Claim Terms above to continue."
 msgstr ""
 
-#: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GmxAndVotingPowerCard.tsx
-#: src/pages/Stake/StakeModal.tsx
-#: src/pages/Stake/StakeModal.tsx
-#: src/pages/Stake/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake"
 msgstr "언스테이킹"
 
@@ -3402,8 +3377,8 @@ msgstr "주문 취소"
 msgid "Claiming position price impact fees failed"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -3411,8 +3386,6 @@ msgstr ""
 #: src/components/PositionEditor/types.ts
 #: src/components/TradeHistory/keys.ts
 #: src/domain/multichain/useMultichainFundingToast.tsx
-#: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Withdraw"
 msgstr "인출"
 
@@ -3425,8 +3398,8 @@ msgid "Update Stop Market"
 msgstr "스탑 마켓 업데이트"
 
 #: src/pages/Stake/TotalRewardsCard.tsx
-msgid "Vested Claimable GMX"
-msgstr "베스팅된 수령 가능 GMX"
+#~ msgid "Vested Claimable GMX"
+#~ msgstr "베스팅된 수령 가능 GMX"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
@@ -3454,8 +3427,8 @@ msgid "After you scan, a connection prompt will appear for you to connect your w
 msgstr "스캔 후, 지갑을 연결할 수 있는 연결 프롬프트가 나타납니다."
 
 #: src/pages/Stake/Vesting.tsx
-msgid "Unsupported network"
-msgstr "지원되지 않는 네트워크"
+#~ msgid "Unsupported network"
+#~ msgstr "지원되지 않는 네트워크"
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -3525,7 +3498,7 @@ msgstr "TWAP 생성"
 msgid "Claimable rebates from your referred traders."
 msgstr ""
 
-#: src/pages/Stake/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake submitted."
 msgstr ""
 
@@ -3648,8 +3621,8 @@ msgid "Estimated Time"
 msgstr ""
 
 #: src/pages/Stake/Vesting.tsx
-msgid "<0>{0}</0> GMX tokens can be claimed, use the options under the total rewards section to claim them."
-msgstr ""
+#~ msgid "<0>{0}</0> GMX tokens can be claimed, use the options under the total rewards section to claim them."
+#~ msgstr ""
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing"
@@ -3710,9 +3683,7 @@ msgstr "더 알아보기"
 msgid "This Year"
 msgstr "올해"
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vesting Status"
 msgstr "베스팅 상태"
 
@@ -3755,8 +3726,8 @@ msgid "from your wallet"
 msgstr ""
 
 #: src/pages/Stake/Stake.tsx
-msgid "Trading incentives program is live on {avalancheLink}."
-msgstr "{avalancheLink}에서 거래 인센티브 프로그램이 라이브입니다."
+#~ msgid "Trading incentives program is live on {avalancheLink}."
+#~ msgstr "{avalancheLink}에서 거래 인센티브 프로그램이 라이브입니다."
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum number of actions allowed before reauthorization is required."
@@ -3829,9 +3800,7 @@ msgstr "스탑 마켓 가격이 시장 평균가 초과"
 msgid "Txn failed. <0>View</0>."
 msgstr "트랜잭션 실패. <0>보기</0>."
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Affiliate Vault"
 msgstr "어필리에이트 볼트"
 
@@ -3946,8 +3915,7 @@ msgstr "스왑 경로 없음. <0>{0}을 {swapToTokenSymbol}로 스왑</0>, 그 �
 msgid "Longs"
 msgstr "롱"
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/pages/Stake/VesterDepositModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposit submitted."
 msgstr "입금 제출 완료."
 
@@ -4054,9 +4022,7 @@ msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
 msgstr "Binance 앱에 로그인하고 [지갑]을 탭하세요. [Web3]로 이동하세요."
 
 #: src/components/Claims/ClaimableCard.tsx
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claimable"
 msgstr "수령가능"
 
@@ -4150,9 +4116,7 @@ msgstr "파생상품 포트폴리오 트래커"
 msgid "Create Limit"
 msgstr "지정가 생성"
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
-#: src/pages/Stake/VesterWithdrawModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw submitted."
 msgstr "인출 제출 완료."
 
@@ -4261,10 +4225,6 @@ msgstr "손절 생성"
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
-#: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/TotalRewardsCard.tsx
-#: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Connect wallet"
 msgstr ""
 
@@ -4296,8 +4256,8 @@ msgid "GMX (Portuguese)"
 msgstr "GMX (포르투갈어)"
 
 #: src/pages/Stake/TotalRewardsCard.tsx
-msgid "<0>Stake GMX</0> and earn {gmxAvgAprText} APR"
-msgstr "<0>GMX 스테이킹</0>하고 {gmxAvgAprText} APR 획득"
+#~ msgid "<0>Stake GMX</0> and earn {gmxAvgAprText} APR"
+#~ msgstr "<0>GMX 스테이킹</0>하고 {gmxAvgAprText} APR 획득"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Mozaic Finance"
@@ -4307,13 +4267,11 @@ msgstr "Mozaic Finance"
 msgid "Accrued Funding Fee."
 msgstr "누적 자금 수수료."
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
-#: src/pages/Stake/VesterWithdrawModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw failed."
 msgstr "인출 실패"
 
-#: src/pages/Stake/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Pending GMX approval"
 msgstr "GMX 승인 대기 중"
 
@@ -4461,7 +4419,6 @@ msgid "Settle request for {0, plural, one {# position} other {# positions}} sent
 msgstr "{0, plural, one {# 포지션} other {# 포지션}}에 대한 정산 요청이 전송되었습니다"
 
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Price on Arbitrum"
 msgstr "Arbitrum에서 가격"
 
@@ -4518,8 +4475,8 @@ msgid "Favorites"
 msgstr "즐겨찾기"
 
 #: src/pages/Stake/VesterDepositModal.tsx
-msgid "Reserve Amount"
-msgstr "예비 수량"
+#~ msgid "Reserve Amount"
+#~ msgstr "예비 수량"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Reason: {0}"
@@ -4529,7 +4486,7 @@ msgstr "이유: {0}"
 msgid "One-Click Approval nonce expired. Please sign a new approval."
 msgstr "원클릭 승인 논스가 만료되었습니다. 새로운 승인을 서명해주세요."
 
-#: src/pages/Stake/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Pending {tokenSymbol} approval"
 msgstr ""
 
@@ -4566,7 +4523,7 @@ msgstr "비용 절감"
 msgid "Failed to cancel {ordersText}."
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vesting"
 msgstr ""
 
@@ -4578,8 +4535,7 @@ msgstr "{longShortText} {0} 예비"
 msgid "Cancel newly created orders"
 msgstr "새로 생성된 주문 취소"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
-#: src/pages/Stake/GmxAndVotingPowerCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Delegate"
 msgstr "위임"
 
@@ -4620,8 +4576,8 @@ msgid "Execution prices for increasing shorts and<0/>decreasing longs."
 msgstr "숏 증가 및<0/>롱 감소에 대한 실행 가격."
 
 #: src/pages/Stake/Stake.tsx
-msgid "Deposit <0>GMX</0> and <1>esGMX</1> tokens to earn rewards."
-msgstr "<0>GMX</0> 및 <1>esGMX</1> 토큰을 예치하여 보상을 받으세요."
+#~ msgid "Deposit <0>GMX</0> and <1>esGMX</1> tokens to earn rewards."
+#~ msgstr "<0>GMX</0> 및 <1>esGMX</1> 토큰을 예치하여 보상을 받으세요."
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
@@ -4652,7 +4608,7 @@ msgstr "V1 Avalanche"
 msgid "Collateral ({0})"
 msgstr "담보 ({0})"
 
-#: src/pages/Stake/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."
 msgstr "이 작업으로 {0}% 더 많은 보상을 받게 됩니다."
 
@@ -4698,7 +4654,7 @@ msgstr "원클릭 설정"
 msgid "GMX Announcements"
 msgstr "GMX 발표"
 
-#: src/pages/Stake/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approve {tokenSymbol} to be spent"
 msgstr ""
 
@@ -4864,15 +4820,13 @@ msgstr "이 주문의 트리거 가격은 스왑 수수료와 가격 영향을 �
 msgid "Referral code updated failed."
 msgstr "추천인 코드 업데이트 실패."
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/components/SideOrderEntries.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/components/TVChart/Chart.tsx
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Price"
 msgstr "가격"
 
@@ -4889,8 +4843,8 @@ msgid "Yield Yak Optimizer"
 msgstr "Yield Yak Optimizer"
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
-msgid "GMX & Voting Power"
-msgstr "GMX 및 투표권"
+#~ msgid "GMX & Voting Power"
+#~ msgstr "GMX 및 투표권"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -5106,8 +5060,8 @@ msgid "Est. Impact Rebate"
 msgstr ""
 
 #: src/pages/Stake/AffiliateClaimModal.tsx
-msgid "Claim Affiliate Vault Rewards"
-msgstr "제휴 볼트 보상 수령"
+#~ msgid "Claim Affiliate Vault Rewards"
+#~ msgstr "제휴 볼트 보상 수령"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select different tokens"
@@ -5297,8 +5251,8 @@ msgid "Wins and losses for fully closed positions."
 msgstr "완전히 종료된 포지션의 승패."
 
 #: src/pages/Stake/AffiliateClaimModal.tsx
-msgid "<0>This will claim {formattedRewards} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
-msgstr "<0>{formattedRewards} GMX를 수령합니다.<1/><2/>수령 후, 이 Earn 페이지의 GMX 섹션에서 \"스테이킹\" 버튼을 사용하여 이러한 GMX 토큰을 스테이킹할 수 있습니다.<3/><4/></0>"
+#~ msgid "<0>This will claim {formattedRewards} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
+#~ msgstr "<0>{formattedRewards} GMX를 수령합니다.<1/><2/>수령 후, 이 Earn 페이지의 GMX 섹션에서 \"스테이킹\" 버튼을 사용하여 이러한 GMX 토큰을 스테이킹할 수 있습니다.<3/><4/></0>"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Open Binance app"
@@ -5308,10 +5262,9 @@ msgstr "Binance 앱 열기"
 msgid "Enter your answer here."
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/pages/Stake/StakeModal.tsx
-#: src/pages/Stake/StakeModal.tsx
-#: src/pages/Stake/VesterDepositModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max amount exceeded"
 msgstr "최대 수량 초과"
 
@@ -5511,8 +5464,8 @@ msgid "Time Limit"
 msgstr ""
 
 #: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
-msgid "Withdrawn!"
-msgstr "인출 완료!"
+#~ msgid "Withdrawn!"
+#~ msgstr "인출 완료!"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield Trading"
@@ -5584,8 +5537,8 @@ msgid "Balance"
 msgstr "잔고"
 
 #: src/pages/Stake/Stake.tsx
-msgid "Liquidity and trading incentives programs are live on {avalancheLink}."
-msgstr "{avalancheLink}에서 유동성 및 거래 인센티브 프로그램이 라이브 중입니다."
+#~ msgid "Liquidity and trading incentives programs are live on {avalancheLink}."
+#~ msgstr "{avalancheLink}에서 유동성 및 거래 인센티브 프로그램이 라이브 중입니다."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX v2 Telegram & Discord Analytics"
@@ -5625,10 +5578,9 @@ msgstr ""
 msgid "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} market."
 msgstr "이 TWAP 주문은 {3} 시장에 대해 다음 {2} 동안 {1}씩 {numberOfParts} {0} {type} 주문을 실행합니다."
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#: src/pages/Stake/AffiliateClaimModal.tsx
-#: src/pages/Stake/ClaimModal.tsx
 msgid "Claim submitted."
 msgstr "수령 제출됨."
 
@@ -5694,8 +5646,8 @@ msgid "Sell request sent."
 msgstr ""
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
-msgid "No delegate found"
-msgstr "위임자 없음"
+#~ msgid "No delegate found"
+#~ msgstr "위임자 없음"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Community with NFTs, Trading and Education initiatives"
@@ -5857,15 +5809,12 @@ msgstr ""
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Claims/ClaimableCard.tsx
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#: src/pages/Stake/AffiliateClaimModal.tsx
-#: src/pages/Stake/ClaimModal.tsx
-#: src/pages/Stake/TotalRewardsCard.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Claim"
 msgstr "수령"
 
@@ -5915,8 +5864,7 @@ msgstr ""
 msgid "No decentralized exchanges available for this network."
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/pages/Stake/VesterDepositModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposited."
 msgstr ""
 
@@ -5924,7 +5872,9 @@ msgstr ""
 msgid "There may not be sufficient liquidity to execute your order when the min. receive is met."
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5934,9 +5884,6 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#: src/pages/Stake/StakeModal.tsx
-#: src/pages/Stake/StakeModal.tsx
-#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Enter an amount"
 msgstr "금액 입력"
 
@@ -6063,9 +6010,7 @@ msgstr "높은 허용 가격 영향을 설정했습니다. 현재 가격 영향�
 msgid "Lending and Borrowing"
 msgstr "대출 및 차입"
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "GMX Vault"
 msgstr "GMX 볼트"
 
@@ -6073,7 +6018,7 @@ msgstr "GMX 볼트"
 msgid "Jones DAO"
 msgstr "Jones DAO"
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Additional reserve required: {0}"
 msgstr ""
 
@@ -6214,9 +6159,9 @@ msgid "Deactivate 1CT (One-Click Trading)"
 msgstr "1CT(원클릭 거래) 비활성화"
 
 #: src/components/AddressDropdown/AddressDropdownWithMultichain.tsx
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/keys.ts
@@ -6226,10 +6171,6 @@ msgstr "1CT(원클릭 거래) 비활성화"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeHistory/keys.ts
 #: src/domain/multichain/useMultichainFundingToast.tsx
-#: src/pages/Stake/VesterDepositModal.tsx
-#: src/pages/Stake/VesterDepositModal.tsx
-#: src/pages/Stake/Vesting.tsx
-#: src/pages/Stake/Vesting.tsx
 msgid "Deposit"
 msgstr "예치"
 
@@ -6241,7 +6182,7 @@ msgstr "365일 예상 수수료"
 msgid "Trigger price below highest limit price"
 msgstr "트리거 가격이 최고 지정가 미만"
 
-#: src/pages/Stake/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Select rewards to claim"
 msgstr ""
 
@@ -6343,8 +6284,8 @@ msgid "Stop Loss"
 msgstr "손절"
 
 #: src/pages/Stake/Stake.tsx
-msgid "Liquidity incentives program is live on {avalancheLink}."
-msgstr "{avalancheLink}에서 유동성 인센티브 프로그램이 라이브 중입니다."
+#~ msgid "Liquidity incentives program is live on {avalancheLink}."
+#~ msgstr "{avalancheLink}에서 유동성 인센티브 프로그램이 라이브 중입니다."
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "GLP Distribution (test)"
@@ -6384,12 +6325,12 @@ msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies wit
 msgstr "Arbitrum 및 Avalanche에서 지갑에서 직접 최대 100x 레버리지로 BTC, ETH, AVAX 및 기타 상위 암호화폐를 스팟 또는 퍼페추얼 거래하세요."
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
-msgid "Myself"
-msgstr "나 자신"
+#~ msgid "Myself"
+#~ msgstr "나 자신"
 
 #: src/pages/Stake/Stake.tsx
-msgid "Claim and view your incentives, airdrops, and prizes."
-msgstr ""
+#~ msgid "Claim and view your incentives, airdrops, and prizes."
+#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search Address"
@@ -6404,10 +6345,9 @@ msgid "Session generated"
 msgstr "세션 생성됨"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Buy GMX"
 msgstr "GMX 구매"
 
@@ -6499,7 +6439,7 @@ msgstr ""
 msgid "Edit order"
 msgstr "주문 수정"
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposited: {0} esGMX"
 msgstr ""
 
@@ -6562,8 +6502,8 @@ msgid "Enter Receiver Address"
 msgstr "수령 주소 입력"
 
 #: src/pages/Stake/VesterDepositModal.tsx
-msgid "Additional reserve required"
-msgstr "추가 예비 필요"
+#~ msgid "Additional reserve required"
+#~ msgstr "추가 예비 필요"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
@@ -6584,8 +6524,7 @@ msgstr "다운로드"
 msgid "Swap {0} for {1}"
 msgstr "{0}을 {1}로 스왑"
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/pages/Stake/VesterDepositModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vault Capacity"
 msgstr "볼트 용량"
 
@@ -6601,9 +6540,8 @@ msgstr ""
 msgid "Layer 1"
 msgstr "레이어 1"
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
-#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Depositing"
 msgstr ""
 
@@ -6688,8 +6626,7 @@ msgstr "동결"
 msgid "Depositing Funds to GMX"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/pages/Stake/AffiliateClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim completed!"
 msgstr "수령 완료!"
 
@@ -6810,8 +6747,8 @@ msgid "Sell GM"
 msgstr "GM 판매"
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
-msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power."
-msgstr "<0>위임되지 않은 {0} GMX DAO</0> 투표권을 위임하세요."
+#~ msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power."
+#~ msgstr "<0>위임되지 않은 {0} GMX DAO</0> 투표권을 위임하세요."
 
 #: src/domain/synthetics/markets/createShiftTxn.ts
 msgid "Shift error."
@@ -6918,7 +6855,7 @@ msgstr "이 크기 숏 증가를 위한 유동성이 없습니다. 최대 숏 �
 msgid "Seamless Trading"
 msgstr ""
 
-#: src/pages/Stake/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake {tokenSymbol}"
 msgstr ""
 
@@ -6935,8 +6872,8 @@ msgid "Telegram Group (Chinese)"
 msgstr "텔레그램 그룹 (중국어)"
 
 #: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
-msgid "<0>This will withdraw all esGMX tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button.<5/><6/></0>"
-msgstr "<0>모든 esGMX 토큰을 인출하고 베스팅을 일시 중지합니다.<1/><2/>GMX로 변환된 esGMX 토큰은 청구되고 GMX 토큰으로 유지됩니다.<3/><4/>인출 없이 GMX 토큰 청구는 \"청구\" 버튼 사용.<5/><6/></0>"
+#~ msgid "<0>This will withdraw all esGMX tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button.<5/><6/></0>"
+#~ msgstr "<0>모든 esGMX 토큰을 인출하고 베스팅을 일시 중지합니다.<1/><2/>GMX로 변환된 esGMX 토큰은 청구되고 GMX 토큰으로 유지됩니다.<3/><4/>인출 없이 GMX 토큰 청구는 \"청구\" 버튼 사용.<5/><6/></0>"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "DeFi"
@@ -6959,8 +6896,8 @@ msgid "No active management required"
 msgstr ""
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
-msgid "Voting Power"
-msgstr "투표권"
+#~ msgid "Voting Power"
+#~ msgstr "투표권"
 
 #: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "The long reserve accounts for the PnL of open positions, while the open interest does not."
@@ -7003,12 +6940,11 @@ msgstr ""
 msgid "Dark"
 msgstr ""
 
-#: src/pages/Stake/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
 msgstr "{0}<0>이 작업으로 {1}% 적은 보상을 받습니다.</0>"
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
-#: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Confirming..."
 msgstr "확인 중..."
 
@@ -7018,8 +6954,6 @@ msgid "Increase"
 msgstr "증가"
 
 #: src/pages/Dashboard/GmxCard.tsx
-#: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Total Supply"
 msgstr "총 공급량"
 
@@ -7029,13 +6963,11 @@ msgstr "총 공급량"
 msgid "GMX is the utility and governance token. It also accrues 30% of the protocol fees via a buyback and distribution mechanism."
 msgstr ""
 
-#: src/pages/Stake/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Convert {tokenSymbol} to {nativeTokenSymbol}"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
-#: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GmxAndVotingPowerCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staked"
 msgstr "스테이킹됨"
 
@@ -7099,8 +7031,8 @@ msgid "Buy"
 msgstr "구매"
 
 #: src/pages/Stake/TotalRewardsCard.tsx
-msgid "Total Rewards"
-msgstr "총 보상"
+#~ msgid "Total Rewards"
+#~ msgstr "총 보상"
 
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "NFT ID"
@@ -7161,8 +7093,8 @@ msgstr "시장 스왑 실패"
 msgid "HoudiniSwap"
 msgstr "후디니스왑"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#: src/pages/Stake/ClaimModal.tsx
 msgid "Claim completed."
 msgstr ""
 
@@ -7278,16 +7210,13 @@ msgstr "1CT (원클릭 거래) 활성화"
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr "보너스 APR은 {airdropTokenTitle} 토큰으로 에어드랍됩니다. <0>더 읽기</0>."
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmList/GmListItem.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
-#: src/pages/Stake/EscrowedGmxCard.tsx
-#: src/pages/Stake/GmxAndVotingPowerCard.tsx
-#: src/pages/Stake/VesterDepositModal.tsx
 msgid "Wallet"
 msgstr "지갑"
 
@@ -7359,7 +7288,7 @@ msgstr "{0} esGMX (IOU) 토큰 보유."
 msgid "Increase Size (Stop Market)"
 msgstr "크기 증가 (스탑 마켓)"
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Convert esGMX tokens to GMX tokens. Please read the vesting details before using the vaults."
 msgstr ""
 
@@ -7510,7 +7439,7 @@ msgstr "재서명"
 msgid "Limit - Long Inc."
 msgstr "지정가 - 롱 증가"
 
-#: src/pages/Stake/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming."
 msgstr "<0>청구 전 위임되지 않은 {0} GMX DAO</0> 투표권 위임."
 
@@ -7532,8 +7461,8 @@ msgstr "롱 포지션과 {collateralSymbol} 담보로부터 {indexSymbol} 롱이
 
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
-msgid "<0>{0}</0> tokens have been converted to GMX from the <1>{1}</1> esGMX deposited for vesting."
-msgstr "<1>{1}</1> esGMX 예치로부터 <0>{0}</0> 토큰이 GMX로 변환되었습니다."
+#~ msgid "<0>{0}</0> tokens have been converted to GMX from the <1>{1}</1> esGMX deposited for vesting."
+#~ msgstr "<1>{1}</1> esGMX 예치로부터 <0>{0}</0> 토큰이 GMX로 변환되었습니다."
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your position."
@@ -7683,7 +7612,7 @@ msgstr "{column}"
 msgid "Stay Safe from <0/> Liquidations"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Current Reserved: {0}"
 msgstr ""
 
@@ -7803,7 +7732,7 @@ msgstr "빈도"
 msgid "Loading Express params"
 msgstr ""
 
-#: src/pages/Stake/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "You have {0} tokens reserved for vesting."
 msgstr ""
 
@@ -8095,7 +8024,7 @@ msgstr ""
 msgid "Please switch to {0} to create your referral code. It will work across all other networks."
 msgstr ""
 
-#: src/pages/Stake/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim Rewards"
 msgstr "보상 청구"
 
@@ -8130,8 +8059,8 @@ msgid "General Performance Details"
 msgstr "일반 성과 세부 사항"
 
 #: src/pages/Stake/VesterWithdrawModal.tsx
-msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
-msgstr "<0>모든 토큰 인출 및 예약 해제, 베스팅 일시 중지.<1/><2/>GMX로 변환된 esGMX 토큰 청구 및 GMX 유지.<3/><4/>인출 없이 GMX 청구는 총 보상 섹션 \"청구\" 버튼 사용.<5/><6/></0>"
+#~ msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
+#~ msgstr "<0>모든 토큰 인출 및 예약 해제, 베스팅 일시 중지.<1/><2/>GMX로 변환된 esGMX 토큰 청구 및 GMX 유지.<3/><4/>인출 없이 GMX 청구는 총 보상 섹션 \"청구\" 버튼 사용.<5/><6/></0>"
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Backing Composition"

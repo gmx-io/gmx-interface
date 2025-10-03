@@ -33,7 +33,7 @@ export function ProgressRow({ label, value, currentValue, totalValue }: Progress
         <div className="font-medium text-typography-secondary">{label}</div>
         {value}
       </div>
-      <div className="h-4 w-full rounded-full bg-fill-accent">
+      <div className="h-4 w-full rounded-full bg-slate-700">
         <div className="h-full rounded-full bg-blue-300" style={barFillStyle} />
       </div>
     </div>
