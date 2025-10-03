@@ -103,7 +103,7 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(createOrderDecreaseLong, minCollateralUsd)).toMatchInlineSnapshot(`
       {
-        "acceptablePrice": ">  $\u200a\u200d29,700.00",
+        "acceptablePrice": ">  $ ‍29,700.00",
         "action": "Create Take Profit",
         "executionPrice": undefined,
         "fullMarket": "BTC/USD [BTC-USDC]",
@@ -113,26 +113,21 @@ describe("TradeHistoryRow helpers", () => {
         "market": "Long BTC/USD",
         "marketPrice": undefined,
         "poolName": "BTC-USDC",
-        "price": ">  $\u200a\u200d30,000.00",
+        "price": ">  $ ‍30,000.00",
         "priceComment": [
           "Trigger price for the order.",
-          "",
-          {
-            "key": "Order Acceptable Price",
-            "value": ">  $\u200a\u200d29,700.00",
-          },
         ],
         "priceImpact": undefined,
-        "size": "-$\u200a\u200d266.23",
+        "size": "-$ ‍266.23",
         "timestamp": "15 Sep 2023, 13:29",
         "timestampISO": "2023-09-15T13:29:36+04:00",
-        "triggerPrice": ">  $\u200a\u200d30,000.00",
+        "triggerPrice": ">  $ ‍30,000.00",
       }
     `);
 
     expect(formatPositionMessage(cancelOrderIncreaseLong, minCollateralUsd)).toMatchInlineSnapshot(`
       {
-        "acceptablePrice": "<  $\u200a\u200d1,645.69",
+        "acceptablePrice": "<  $ ‍1,645.69",
         "action": "Cancel Limit",
         "executionPrice": undefined,
         "fullMarket": "ETH/USD [WETH-USDC]",
@@ -142,26 +137,21 @@ describe("TradeHistoryRow helpers", () => {
         "market": "Long ETH/USD",
         "marketPrice": undefined,
         "poolName": "WETH-USDC",
-        "price": "<  $\u200a\u200d1,629.40",
+        "price": "<  $ ‍1,629.40",
         "priceComment": [
           "Trigger price for the order.",
-          "",
-          {
-            "key": "Order Acceptable Price",
-            "value": "<  $\u200a\u200d1,645.69",
-          },
         ],
         "priceImpact": undefined,
-        "size": "+$\u200a\u200d4.11",
+        "size": "+$ ‍4.11",
         "timestamp": "15 Sep 2023, 13:37",
         "timestampISO": "2023-09-15T13:37:13+04:00",
-        "triggerPrice": "<  $\u200a\u200d1,629.40",
+        "triggerPrice": "<  $ ‍1,629.40",
       }
     `);
 
     expect(formatPositionMessage(createOrderIncreaseLong, minCollateralUsd)).toMatchInlineSnapshot(`
       {
-        "acceptablePrice": "<  $\u200a\u200d1.01",
+        "acceptablePrice": "<  $ ‍1.01",
         "action": "Create Limit",
         "executionPrice": undefined,
         "fullMarket": "BTC/USD [BTC-USDC]",
@@ -171,20 +161,15 @@ describe("TradeHistoryRow helpers", () => {
         "market": "Long BTC/USD",
         "marketPrice": undefined,
         "poolName": "BTC-USDC",
-        "price": "<  $\u200a\u200d1.00",
+        "price": "<  $ ‍1.00",
         "priceComment": [
           "Trigger price for the order.",
-          "",
-          {
-            "key": "Order Acceptable Price",
-            "value": "<  $\u200a\u200d1.01",
-          },
         ],
         "priceImpact": undefined,
-        "size": "+$\u200a\u200d2.64",
+        "size": "+$ ‍2.64",
         "timestamp": "15 Sep 2023, 14:54",
         "timestampISO": "2023-09-15T14:54:04+04:00",
-        "triggerPrice": "<  $\u200a\u200d1.00",
+        "triggerPrice": "<  $ ‍1.00",
       }
     `);
 
@@ -209,22 +194,12 @@ describe("TradeHistoryRow helpers", () => {
             "value": ">  $ ‍0.83600",
           },
           {
-            "key": "Order Acceptable Price",
-            "value": ">  $ ‍0.82764",
-          },
-          {
-            "key": "Order Execution Price",
-            "value": "$ ‍0.83711",
-          },
-          {
             "key": "Price Impact",
             "value": {
               "state": "error",
               "text": "-$ ‍16.82",
             },
           },
-          "",
-          "Order execution price takes into account price impact.",
         ],
         "priceImpact": "-$ ‍16.82",
         "size": "+$ ‍2,070.19",
@@ -308,13 +283,6 @@ describe("TradeHistoryRow helpers", () => {
           "This position was liquidated as the max. leverage of 0.0x was exceeded when taking into account fees.",
           "",
           {
-            "key": "Order Execution Price",
-            "value": "$ ‍6.1063",
-          },
-          "",
-          "Order execution price takes into account price impact.",
-          "",
-          {
             "key": "Initial Collateral",
             "value": "214.78 USDC ($ ‍214.78)",
           },
@@ -385,40 +353,30 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(increaseLongETH, minCollateralUsd)).toMatchInlineSnapshot(`
       {
-        "acceptablePrice": "<  $\u200a\u200d1,589.47",
+        "acceptablePrice": "<  $ ‍1,589.47",
         "action": "Market Increase",
-        "executionPrice": "$\u200a\u200d1,584.74",
+        "executionPrice": "$ ‍1,584.74",
         "fullMarket": "ETH/USD [WETH-USDC]",
         "indexName": "ETH/USD",
         "indexTokenSymbol": "ETH",
         "isLong": true,
         "market": "Long ETH/USD",
-        "marketPrice": "$\u200a\u200d4.47",
+        "marketPrice": "$ ‍4.47",
         "poolName": "WETH-USDC",
-        "price": "$\u200a\u200d4.47",
+        "price": "$ ‍4.47",
         "priceComment": [
           "Mark price for the order.",
           "",
           {
-            "key": "Order Acceptable Price",
-            "value": "<  $\u200a\u200d1,589.47",
-          },
-          {
-            "key": "Order Execution Price",
-            "value": "$\u200a\u200d1,584.74",
-          },
-          {
             "key": "Price Impact",
             "value": {
               "state": "error",
-              "text": "-$\u200a\u200d0.09",
+              "text": "-$ ‍0.09",
             },
           },
-          "",
-          "Order execution price takes into account price impact.",
         ],
-        "priceImpact": "-$\u200a\u200d0.09",
-        "size": "+$\u200a\u200d49.83",
+        "priceImpact": "-$ ‍0.09",
+        "size": "+$ ‍49.83",
         "timestamp": "21 Sep 2023, 19:32",
         "timestampISO": "2023-09-21T19:32:40+04:00",
       }
@@ -452,39 +410,32 @@ describe("TradeHistoryRow helpers", () => {
       {
         "acceptablePrice": undefined,
         "action": "Execute Stop Market",
-        "executionPrice": "$\u200a\u200d95,754.58",
+        "executionPrice": "$ ‍95,754.58",
         "fullMarket": "BTC/USD [BTC-USDC]",
         "indexName": "BTC/USD",
         "indexTokenSymbol": "BTC",
         "isLong": true,
         "market": "Long BTC/USD",
-        "marketPrice": "$\u200a\u200d95,754.20",
+        "marketPrice": "$ ‍95,754.20",
         "poolName": "BTC-USDC",
-        "price": "$\u200a\u200d95,754.20",
+        "price": "$ ‍95,754.20",
         "priceComment": [
           "Mark price for the order.",
           "",
           {
             "key": "Order Trigger Price",
-            "value": ">  $\u200a\u200d95,600.00",
-          },
-          undefined,
-          {
-            "key": "Order Execution Price",
-            "value": "$\u200a\u200d95,754.58",
+            "value": ">  $ ‍95,600.00",
           },
           {
             "key": "Price Impact",
             "value": {
               "state": "success",
-              "text": "< +$\u200a\u200d0.01",
+              "text": "< +$ ‍0.01",
             },
           },
-          "",
-          "Order execution price takes into account price impact.",
         ],
-        "priceImpact": "< +$\u200a\u200d0.01",
-        "size": "+$\u200a\u200d3.62",
+        "priceImpact": "< +$ ‍0.01",
+        "size": "+$ ‍3.62",
         "timestamp": "18 Sep 2023, 16:43",
         "timestampISO": "2023-09-18T16:43:18+04:00",
       }

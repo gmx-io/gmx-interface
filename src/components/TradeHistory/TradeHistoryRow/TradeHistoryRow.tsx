@@ -4,7 +4,7 @@ import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import type { Address } from "viem";
 
-import { getExplorerUrl } from "config/chains";
+import { CHAIN_SLUGS_MAP, getExplorerUrl } from "config/chains";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -12,7 +12,6 @@ import { isSwapOrderType } from "domain/synthetics/orders";
 import { PositionTradeAction, SwapTradeAction, TradeAction } from "domain/synthetics/tradeHistory";
 import { EMPTY_ARRAY } from "lib/objects";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
-import { NETWORKS_BY_CHAIN_IDS } from "pages/ParseTransaction/ParseTransaction";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
@@ -219,7 +218,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             <div className="flex flex-row items-center">
               {showDebugValues && (
                 <Link
-                  to={`/parsetx/${NETWORKS_BY_CHAIN_IDS[chainId]}/${tradeAction.transaction.hash}`}
+                  to={`/parsetx/${CHAIN_SLUGS_MAP[chainId]}/${tradeAction.transaction.hash}`}
                   className="text-body-small ml-5 text-typography-secondary hover:text-typography-primary"
                 >
                   Events
