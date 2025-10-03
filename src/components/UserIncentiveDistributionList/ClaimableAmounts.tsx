@@ -297,7 +297,7 @@ export default function ClaimableAmounts() {
       <>
         {!hasAvailableFundsToCoverExecutionFee ? (
           <AlertInfoCard type="warning">
-            <Trans>Insufficient gas for network fees</Trans>
+            <Trans>Insufficient gas for network fees.</Trans>
           </AlertInfoCard>
         ) : null}
         {claimTerms && hasAvailableFundsToCoverExecutionFee && !claimsFeatureDisabled ? (
