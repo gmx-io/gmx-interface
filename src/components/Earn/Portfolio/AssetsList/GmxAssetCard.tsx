@@ -161,7 +161,7 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
               <PlusCircleIcon className="size-16 shrink-0" />
               <Trans>Buy GMX</Trans>
             </Button>
-            <Button variant="secondary" onClick={handleOpenStakeModal} disabled={!active}>
+            <Button variant="secondary" onClick={handleOpenStakeModal}>
               <DownloadIcon className="size-16 shrink-0" />
               <Trans>Stake</Trans>
             </Button>

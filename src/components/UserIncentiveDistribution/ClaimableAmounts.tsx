@@ -1,7 +1,6 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Skeleton from "react-loading-skeleton";
 import { useLocalStorage } from "react-use";
 import { usePublicClient } from "wagmi";
 
@@ -303,6 +302,13 @@ export default function ClaimableAmounts() {
     setIsExpanded((prev) => !prev);
   }, [setIsExpanded]);
 
+  const hasClaimableAmounts = useMemo(() => {
+    return (
+      claimableAmountsLoaded &&
+      Object.values(claimableAmounts).some((data) => data?.amount !== undefined && data?.amount !== 0n)
+    );
+  }, [claimableAmounts, claimableAmountsLoaded]);
+
   const glpReimbursement = (
     <div>
       <div className="flex items-center justify-between rounded-t-8 border-b-1/2 border-slate-600 bg-fill-surfaceElevated50 p-12">
@@ -322,18 +328,21 @@ export default function ClaimableAmounts() {
       <div className="flex flex-col gap-8 rounded-b-8 bg-fill-surfaceElevated50 p-12">
         <div className="flex items-center justify-between">
           <div className="flex cursor-pointer items-center gap-4" onClick={onViewBreakdown}>
-            <span className="text-body-small cursor-pointer select-none font-medium text-typography-secondary">
-              {isExpanded ? <Trans>Hide breakdown</Trans> : <Trans>View breakdown</Trans>}
-            </span>
-            <ChevronDownIcon className={cx("size-14 text-typography-secondary", { "rotate-180": isExpanded })} />
+            {hasClaimableAmounts ? (
+              <>
+                <span className="text-body-small cursor-pointer select-none font-medium text-typography-secondary">
+                  {isExpanded ? <Trans>Hide breakdown</Trans> : <Trans>View breakdown</Trans>}
+                </span>
+                <ChevronDownIcon className={cx("size-14 text-typography-secondary", { "rotate-180": isExpanded })} />
+              </>
+            ) : null}
           </div>
 
           <span className="text-body-small text-typography-secondary">{formatUsd(totalFundsToClaimUsd)}</span>
         </div>
 
-        {isExpanded ? (
-          claimableAmountsLoaded ? (
-            Object.entries(claimableAmounts)
+        {isExpanded
+          ? Object.entries(claimableAmounts)
               .filter(([, data]) => data?.amount !== undefined && data?.amount !== 0n)
               .map(([token, data]) => (
                 <div key={token}>
@@ -350,10 +359,7 @@ export default function ClaimableAmounts() {
                   </div>
                 </div>
               ))
-          ) : (
-            <Skeleton width={300} height={32} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />
-          )
-        ) : null}
+          : null}
       </div>
     </div>
   );
