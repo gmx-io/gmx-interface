@@ -1,0 +1,569 @@
+import { Trans, t } from "@lingui/macro";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { ethers } from "ethers";
+import { useCallback, useMemo, useState } from "react";
+
+import { getContract } from "config/contracts";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import useVestingData from "domain/vesting/useVestingData";
+import { useChainId } from "lib/chains";
+import { callContract } from "lib/contracts";
+import { defined } from "lib/guards";
+import { ProcessedData } from "lib/legacy";
+import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";
+import { mustNeverExist } from "lib/types";
+import useWallet from "lib/wallets/useWallet";
+import { abis } from "sdk/abis";
+import { bigMath } from "sdk/utils/bigmath";
+
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
+import Modal from "components/Modal/Modal";
+import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
+import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
+import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
+import Tabs from "components/Tabs/Tabs";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import EsGmxIcon from "img/ic_esgmx_24.svg?react";
+import GmxIcon from "img/ic_gmx_24.svg?react";
+
+export type VestVault = "gmx" | "affiliate";
+export type VestAction = "deposit" | "withdraw" | "claim";
+
+type VestModalProps = {
+  isVisible: boolean;
+  setIsVisible: (value: boolean) => void;
+  processedData: ProcessedData | undefined;
+  reservedAmount: bigint;
+};
+
+export function VestModal({ isVisible, setIsVisible, processedData, reservedAmount }: VestModalProps) {
+  const { chainId } = useChainId();
+  const { signer, account, active } = useWallet();
+  const { setPendingTxns } = usePendingTxns();
+  const { openConnectModal } = useConnectModal();
+  const vestingData = useVestingData(account);
+
+  const [selectedVault, setSelectedVault] = useState<VestVault>("gmx");
+  const [selectedActionByVault, setSelectedActionByVault] = useState<Record<VestVault, VestAction>>({
+    gmx: "deposit",
+    affiliate: "deposit",
+  });
+  const [depositValues, setDepositValues] = useState<Record<VestVault, string>>({
+    gmx: "",
+    affiliate: "",
+  });
+  const [isDepositing, setIsDepositing] = useState(false);
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
+  const [isClaiming, setIsClaiming] = useState(false);
+
+  const activeAction = selectedActionByVault[selectedVault];
+
+  const gmxDepositAmount = parseValue(depositValues.gmx, 18);
+  const affiliateDepositAmount = parseValue(depositValues.affiliate, 18);
+
+  const totalRewardTokens = processedData?.bonusGmxInFeeGmx;
+
+  const gmxDepositConfig = useMemo(() => {
+    const maxVestableAmount = vestingData?.gmxVesterMaxVestableAmount;
+    const vestedAmount = vestingData?.gmxVesterVestedAmount;
+    const balance = processedData?.esGmxBalance;
+
+    let maxAmount: bigint | undefined;
+
+    if (maxVestableAmount !== undefined && vestedAmount !== undefined) {
+      const remainingVestableAmount = maxVestableAmount > vestedAmount ? maxVestableAmount - vestedAmount : 0n;
+      maxAmount = remainingVestableAmount;
+    }
+
+    if (balance !== undefined) {
+      maxAmount = maxAmount !== undefined ? (balance < maxAmount ? balance : maxAmount) : balance;
+    }
+
+    return {
+      maxAmount,
+      balance,
+      vestedAmount,
+      averageStakedAmount: vestingData?.gmxVesterAverageStakedAmount,
+      maxVestableAmount,
+      reserveAmount: reservedAmount,
+      maxReserveAmount: totalRewardTokens,
+    };
+  }, [processedData?.esGmxBalance, reservedAmount, totalRewardTokens, vestingData]);
+
+  const affiliateDepositConfig = useMemo(() => {
+    const maxVestableAmount = vestingData?.affiliateVesterMaxVestableAmount;
+    const vestedAmount = vestingData?.affiliateVesterVestedAmount;
+    const balance = processedData?.esGmxBalance;
+
+    let maxAmount: bigint | undefined;
+
+    if (maxVestableAmount !== undefined && vestedAmount !== undefined) {
+      const remainingVestableAmount = maxVestableAmount > vestedAmount ? maxVestableAmount - vestedAmount : 0n;
+      maxAmount = remainingVestableAmount;
+    }
+
+    if (balance !== undefined) {
+      maxAmount = maxAmount !== undefined ? (balance < maxAmount ? balance : maxAmount) : balance;
+    }
+
+    return {
+      maxAmount,
+      balance,
+      vestedAmount,
+      averageStakedAmount: vestingData?.affiliateVesterAverageStakedAmount,
+      maxVestableAmount,
+    };
+  }, [processedData?.esGmxBalance, vestingData]);
+
+  const gmxReservePreview = useMemo(() => {
+    let nextReserveAmount = gmxDepositConfig.reserveAmount;
+    let nextDepositAmount = gmxDepositConfig.vestedAmount;
+    let additionalReserveAmount = 0n;
+
+    if (gmxDepositAmount !== undefined && gmxDepositConfig.vestedAmount !== undefined) {
+      nextDepositAmount = gmxDepositConfig.vestedAmount + gmxDepositAmount;
+    }
+
+    if (
+      gmxDepositAmount !== undefined &&
+      nextDepositAmount !== undefined &&
+      gmxDepositConfig.averageStakedAmount !== undefined &&
+      gmxDepositConfig.maxVestableAmount !== undefined &&
+      gmxDepositConfig.maxVestableAmount > 0n &&
+      nextReserveAmount !== undefined
+    ) {
+      nextReserveAmount = bigMath.mulDiv(
+        nextDepositAmount,
+        gmxDepositConfig.averageStakedAmount,
+        gmxDepositConfig.maxVestableAmount
+      );
+      if (gmxDepositConfig.reserveAmount !== undefined && nextReserveAmount > gmxDepositConfig.reserveAmount) {
+        additionalReserveAmount = nextReserveAmount - gmxDepositConfig.reserveAmount;
+      }
+    }
+
+    return {
+      nextReserveAmount,
+      nextDepositAmount,
+      additionalReserveAmount,
+    };
+  }, [gmxDepositAmount, gmxDepositConfig]);
+
+  const affiliateNextDepositAmount = (affiliateDepositConfig.vestedAmount ?? 0n) + (affiliateDepositAmount ?? 0n);
+
+  const depositConfig = selectedVault === "gmx" ? gmxDepositConfig : affiliateDepositConfig;
+  const depositAmount = selectedVault === "gmx" ? gmxDepositAmount : affiliateDepositAmount;
+
+  const depositError = useMemo(() => {
+    if (activeAction !== "deposit") {
+      return undefined;
+    }
+
+    if (depositAmount === undefined || depositAmount === 0n) {
+      return t`Enter an amount`;
+    }
+
+    if (depositConfig.maxAmount !== undefined && depositAmount > depositConfig.maxAmount) {
+      return t`Max amount exceeded`;
+    }
+
+    if (
+      selectedVault === "gmx" &&
+      gmxDepositConfig.maxReserveAmount !== undefined &&
+      gmxReservePreview.nextReserveAmount !== undefined &&
+      gmxReservePreview.nextReserveAmount > gmxDepositConfig.maxReserveAmount
+    ) {
+      return t`Insufficient staked tokens`;
+    }
+
+    return undefined;
+  }, [
+    activeAction,
+    depositAmount,
+    depositConfig.maxAmount,
+    gmxDepositConfig.maxReserveAmount,
+    gmxReservePreview.nextReserveAmount,
+    selectedVault,
+  ]);
+
+  const handleSelectVault = useCallback((vault: VestVault) => {
+    setSelectedVault(vault);
+  }, []);
+
+  const handleSelectAction = useCallback(
+    (action: VestAction) => {
+      setSelectedActionByVault((prev) => ({ ...prev, [selectedVault]: action }));
+    },
+    [selectedVault]
+  );
+
+  const handleSetDepositValue = useCallback(
+    (value: string) => {
+      setDepositValues((prev) => ({ ...prev, [selectedVault]: value }));
+    },
+    [selectedVault]
+  );
+
+  const resetDepositValue = useCallback((vault: VestVault) => {
+    setDepositValues((prev) => ({ ...prev, [vault]: "" }));
+  }, []);
+
+  const handleDeposit = useCallback(() => {
+    if (!chainId || !signer || depositAmount === undefined || depositAmount === 0n) {
+      return;
+    }
+
+    const vesterAddress =
+      selectedVault === "gmx" ? getContract(chainId, "GmxVester") : getContract(chainId, "AffiliateVester");
+    const contract = new ethers.Contract(vesterAddress, abis.Vester, signer);
+
+    setIsDepositing(true);
+    callContract(chainId, contract, "deposit", [depositAmount], {
+      sentMsg: t`Deposit submitted.`,
+      failMsg: t`Deposit failed.`,
+      successMsg: t`Deposited.`,
+      setPendingTxns,
+    })
+      .then(() => {
+        resetDepositValue(selectedVault);
+        setIsVisible(false);
+      })
+      .finally(() => {
+        setIsDepositing(false);
+      });
+  }, [chainId, depositAmount, resetDepositValue, selectedVault, setIsVisible, setPendingTxns, signer]);
+
+  const handleWithdraw = useCallback(() => {
+    if (!chainId || !signer) {
+      return;
+    }
+
+    const vesterAddress =
+      selectedVault === "gmx" ? getContract(chainId, "GmxVester") : getContract(chainId, "AffiliateVester");
+    const contract = new ethers.Contract(vesterAddress, abis.Vester, signer);
+
+    setIsWithdrawing(true);
+    callContract(chainId, contract, "withdraw", [], {
+      sentMsg: t`Withdraw submitted.`,
+      failMsg: t`Withdraw failed.`,
+      successMsg: t`Withdrawn.`,
+      setPendingTxns,
+    })
+      .then(() => {
+        setIsVisible(false);
+      })
+      .finally(() => {
+        setIsWithdrawing(false);
+      });
+  }, [chainId, selectedVault, setIsVisible, setPendingTxns, signer]);
+
+  const handleClaim = useCallback(() => {
+    if (!chainId || !signer) {
+      return;
+    }
+
+    const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
+    const contract = new ethers.Contract(affiliateVesterAddress, abis.Vester, signer);
+
+    setIsClaiming(true);
+    callContract(chainId, contract, "claim", [], {
+      sentMsg: t`Claim submitted.`,
+      failMsg: t`Claim failed.`,
+      successMsg: t`Claim completed!`,
+      setPendingTxns,
+    })
+      .then(() => {
+        setIsVisible(false);
+      })
+      .finally(() => {
+        setIsClaiming(false);
+      });
+  }, [chainId, setIsVisible, setPendingTxns, signer]);
+
+  const canClaimAffiliate = (vestingData?.affiliateVesterClaimable ?? 0n) > 0n;
+
+  const vaultTabs = useMemo(
+    () => [
+      { value: "gmx", label: <Trans>GMX Vault</Trans> },
+      { value: "affiliate", label: <Trans>Affiliate Vault</Trans> },
+    ],
+    []
+  );
+
+  const actionTabs = useMemo(() => {
+    return [
+      { value: "deposit", label: <Trans>Deposit</Trans> },
+      { value: "withdraw", label: <Trans>Withdraw</Trans> },
+      selectedVault === "affiliate" ? { value: "claim", label: <Trans>Claim</Trans> } : null,
+    ].filter(defined);
+  }, [selectedVault]);
+
+  const onClickMax = useCallback(() => {
+    if (depositConfig.maxAmount === undefined || depositConfig.maxAmount === 0n) {
+      return;
+    }
+
+    handleSetDepositValue(formatAmountFree(depositConfig.maxAmount, 18, 18));
+  }, [depositConfig.maxAmount, handleSetDepositValue]);
+
+  const claimableAmount =
+    selectedVault === "gmx" ? vestingData?.gmxVesterClaimable : vestingData?.affiliateVesterClaimable;
+  const vestedAmount =
+    selectedVault === "gmx" ? vestingData?.gmxVesterVestedAmount : vestingData?.affiliateVesterVestedAmount;
+  const claimSum = selectedVault === "gmx" ? vestingData?.gmxVesterClaimSum : vestingData?.affiliateVesterClaimSum;
+  const canWithdraw = vestedAmount !== undefined && vestedAmount > 0n;
+
+  const actionPrimaryText = useMemo(() => {
+    if (activeAction === "deposit") {
+      if (depositError) {
+        return depositError;
+      }
+      return isDepositing ? <Trans>Depositing</Trans> : <Trans>Deposit</Trans>;
+    }
+    if (activeAction === "withdraw") {
+      if (vestedAmount === undefined || vestedAmount === 0n) {
+        return <Trans>No funds to withdraw</Trans>;
+      }
+      return isWithdrawing ? <Trans>Confirming...</Trans> : <Trans>Confirm Withdraw</Trans>;
+    }
+
+    if (claimableAmount === undefined || claimableAmount === 0n) {
+      return <Trans>No funds to claim</Trans>;
+    }
+
+    return isClaiming ? <Trans>Claiming...</Trans> : <Trans>Claim</Trans>;
+  }, [activeAction, depositError, isClaiming, isDepositing, isWithdrawing, vestedAmount, claimableAmount]);
+
+  const isPrimaryDisabled = useMemo(() => {
+    if (!active) {
+      return false;
+    }
+
+    if (chainId === undefined || !signer) {
+      return true;
+    }
+
+    if (activeAction === "deposit") {
+      return Boolean(depositError) || isDepositing;
+    }
+
+    if (activeAction === "withdraw") {
+      return !canWithdraw || isWithdrawing;
+    }
+
+    return !canClaimAffiliate || isClaiming;
+  }, [
+    active,
+    activeAction,
+    canClaimAffiliate,
+    canWithdraw,
+    chainId,
+    depositError,
+    isClaiming,
+    isDepositing,
+    isWithdrawing,
+    signer,
+  ]);
+
+  const handleClick = useCallback(() => {
+    switch (activeAction) {
+      case "deposit":
+        handleDeposit();
+        break;
+      case "withdraw":
+        handleWithdraw();
+        break;
+      case "claim":
+        handleClaim();
+        break;
+      default:
+        mustNeverExist(activeAction);
+    }
+  }, [activeAction, handleDeposit, handleWithdraw, handleClaim]);
+
+  const primaryButton = active ? (
+    <Button variant="primary-action" className="w-full" onClick={handleClick} disabled={isPrimaryDisabled}>
+      {actionPrimaryText}
+    </Button>
+  ) : (
+    <Button
+      variant="primary-action"
+      className="w-full"
+      onClick={() => openConnectModal?.()}
+      disabled={!openConnectModal}
+    >
+      <Trans>Connect Wallet</Trans>
+    </Button>
+  );
+
+  return (
+    <Modal
+      isVisible={isVisible}
+      setIsVisible={setIsVisible}
+      label={t`Vesting`}
+      contentClassName="w-[420px] min-h-[560px]"
+      contentPadding={false}
+    >
+      <div className="flex flex-col gap-20">
+        <Tabs
+          options={vaultTabs}
+          selectedValue={selectedVault}
+          onChange={(value) => handleSelectVault(value as VestVault)}
+          className="mt-12 border-t-1/2 border-t-slate-600 bg-fill-surfaceElevated50"
+          regularOptionClassname="grow"
+        />
+
+        <div className="flex flex-col gap-8 px-20">
+          <AlertInfoCard type="info">
+            <Trans>Convert esGMX tokens to GMX tokens. Please read the vesting details before using the vaults.</Trans>
+
+            <ColorfulButtonLink to="https://docs.gmx.io/docs/tokenomics/rewards#vesting" newTab>
+              Read details
+            </ColorfulButtonLink>
+          </AlertInfoCard>
+
+          <Tabs
+            options={actionTabs}
+            selectedValue={activeAction}
+            onChange={(value) => handleSelectAction(value as VestAction)}
+            type="inline-primary"
+          />
+
+          {activeAction === "deposit" && (
+            <>
+              <BuyInputSection
+                topLeftLabel={t`Deposit`}
+                topRightLabel={t`Max`}
+                topRightValue={formatAmount(depositConfig.maxAmount, 18, 4, true)}
+                onClickMax={
+                  depositConfig.maxAmount !== undefined && depositConfig.maxAmount > 0n ? onClickMax : undefined
+                }
+                inputValue={depositValues[selectedVault]}
+                onInputValueChange={(e) => handleSetDepositValue(e.target.value)}
+              >
+                <div className="flex items-center gap-4">
+                  <EsGmxIcon />
+                  esGMX
+                </div>
+              </BuyInputSection>
+              <SwitchToSettlementChainWarning topic="vesting" />
+              <div className="Exchange-swap-button-container">
+                <SwitchToSettlementChainButtons>{primaryButton}</SwitchToSettlementChainButtons>
+              </div>
+            </>
+          )}
+
+          {activeAction === "withdraw" && (
+            <>
+              <BuyInputSection
+                topLeftLabel={t`Withdraw`}
+                inputValue={formatAmount(vestedAmount, 18, 4, true)}
+                isDisabled
+              >
+                <div className="flex items-center gap-4">
+                  <EsGmxIcon />
+                  esGMX
+                </div>
+              </BuyInputSection>
+              <SwitchToSettlementChainWarning topic="vesting" />
+              <div className="Exchange-swap-button-container">
+                <SwitchToSettlementChainButtons>{primaryButton}</SwitchToSettlementChainButtons>
+              </div>
+            </>
+          )}
+
+          {activeAction === "claim" && (
+            <>
+              <BuyInputSection
+                topLeftLabel={t`Claim`}
+                inputValue={formatAmount(claimableAmount, 18, 4, true)}
+                isDisabled
+              >
+                <div className="flex items-center gap-4">
+                  <GmxIcon className="size-20" />
+                  GMX
+                </div>
+              </BuyInputSection>
+              <SwitchToSettlementChainWarning topic="staking" />
+              <div className="Exchange-swap-button-container">
+                <SwitchToSettlementChainButtons>{primaryButton}</SwitchToSettlementChainButtons>
+              </div>
+            </>
+          )}
+
+          <div className="mt-8 flex flex-col gap-12">
+            <SyntheticsInfoRow
+              label={<Trans>Wallet</Trans>}
+              value={`${formatAmount(processedData?.esGmxBalance, 18, 4, true)} esGMX`}
+            />
+            {selectedVault === "gmx" && gmxDepositConfig.reserveAmount !== undefined && (
+              <SyntheticsInfoRow
+                label={<Trans>Staked tokens reserved for vesting</Trans>}
+                value={
+                  <TooltipWithPortal
+                    handle={`${formatAmount(gmxReservePreview.nextReserveAmount, 18, 2, true)} / ${formatAmount(
+                      gmxDepositConfig.maxReserveAmount,
+                      18,
+                      2,
+                      true
+                    )}`}
+                    position="top-end"
+                    content={
+                      <div className="flex flex-col gap-8 text-typography-primary">
+                        <span>
+                          <Trans>Current Reserved: {formatAmount(gmxDepositConfig.reserveAmount, 18, 2, true)}</Trans>
+                        </span>
+                        <span>
+                          <Trans>
+                            Additional reserve required:{" "}
+                            {formatAmount(gmxReservePreview.additionalReserveAmount, 18, 2, true)}
+                          </Trans>
+                        </span>
+                      </div>
+                    }
+                  />
+                }
+              />
+            )}
+            <SyntheticsInfoRow
+              label={<Trans>Claimable</Trans>}
+              value={`${formatAmount(claimableAmount, 18, 4, true)} GMX`}
+            />
+            <SyntheticsInfoRow
+              label={<Trans>Vault Capacity</Trans>}
+              value={
+                <TooltipWithPortal
+                  handle={`${formatAmount(
+                    selectedVault === "gmx" ? gmxReservePreview.nextDepositAmount : affiliateNextDepositAmount,
+                    18,
+                    2,
+                    true
+                  )} / ${formatAmount(depositConfig.maxVestableAmount, 18, 2, true)}`}
+                  position="top-end"
+                  content={
+                    <div className="flex flex-col gap-8 text-typography-primary">
+                      <span>
+                        <Trans>Deposited: {formatAmount(depositConfig.vestedAmount, 18, 2, true)} esGMX</Trans>
+                      </span>
+                      <span>
+                        <Trans>Max Capacity: {formatAmount(depositConfig.maxVestableAmount, 18, 2, true)} esGMX</Trans>
+                      </span>
+                    </div>
+                  }
+                />
+              }
+            />
+            <SyntheticsInfoRow
+              label={<Trans>Vesting Status</Trans>}
+              value={`${formatAmount(claimSum, 18, 4, true)} / ${formatAmount(vestedAmount, 18, 4, true)}`}
+            />
+          </div>
+        </div>
+      </div>
+    </Modal>
+  );
+}

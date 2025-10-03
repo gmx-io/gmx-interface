@@ -479,6 +479,7 @@ msgstr ""
 msgid "Light"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
 msgid "Confirm Withdraw"
 msgstr ""
@@ -577,6 +578,10 @@ msgstr ""
 msgid "Rebates on V2"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+msgid "Max Capacity: {0} esGMX"
+msgstr ""
+
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Acceptable Price Impact"
@@ -586,6 +591,7 @@ msgstr ""
 msgid "Add to Metamask"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Insufficient staked tokens"
 msgstr ""
@@ -1177,6 +1183,7 @@ msgstr ""
 msgid "Show less"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Vest"
 msgstr ""
@@ -1650,6 +1657,7 @@ msgstr ""
 msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "No funds to claim"
 msgstr ""
@@ -1771,6 +1779,7 @@ msgstr ""
 msgid "GMX Blueberry Club"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/pages/Stake/VesterWithdrawModal.tsx
 msgid "Withdrawn."
 msgstr ""
@@ -1818,6 +1827,7 @@ msgid "The fees' USD value is calculated at the time they are earned and does no
 msgstr ""
 
 #: src/components/BuyInputSection/BuyInputSection.tsx
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -1915,6 +1925,7 @@ msgstr ""
 msgid "Market - Short Inc."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Header/AppHeaderChainAndSettings.tsx
@@ -2841,6 +2852,10 @@ msgstr ""
 msgid "Claiming"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+msgid "Staked tokens reserved for vesting"
+msgstr ""
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Claims/ClaimsHistory.tsx
@@ -2894,6 +2909,10 @@ msgstr ""
 msgid "Withdrawal"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+msgid "No funds to withdraw"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submitting..."
@@ -2925,6 +2944,7 @@ msgstr ""
 msgid "Trigger price below liq. price"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/AffiliateClaimModal.tsx
 #: src/pages/Stake/ClaimModal.tsx
@@ -3094,6 +3114,7 @@ msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
@@ -3149,6 +3170,7 @@ msgstr ""
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Deposit failed."
 msgstr ""
@@ -3380,6 +3402,8 @@ msgstr ""
 msgid "Claiming position price impact fees failed"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -3686,6 +3710,7 @@ msgstr ""
 msgid "This Year"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Vesting Status"
@@ -3804,6 +3829,7 @@ msgstr ""
 msgid "Txn failed. <0>View</0>."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Affiliate Vault"
@@ -3920,6 +3946,7 @@ msgstr ""
 msgid "Longs"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Deposit submitted."
 msgstr ""
@@ -4027,6 +4054,7 @@ msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
 msgstr ""
 
 #: src/components/Claims/ClaimableCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "Claimable"
@@ -4122,6 +4150,7 @@ msgstr ""
 msgid "Create Limit"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
 #: src/pages/Stake/VesterWithdrawModal.tsx
 msgid "Withdraw submitted."
@@ -4278,6 +4307,7 @@ msgstr ""
 msgid "Accrued Funding Fee."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
 #: src/pages/Stake/VesterWithdrawModal.tsx
 msgid "Withdraw failed."
@@ -4534,6 +4564,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Failed to cancel {ordersText}."
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+msgid "Vesting"
 msgstr ""
 
 #: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
@@ -5274,6 +5308,7 @@ msgstr ""
 msgid "Enter your answer here."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/pages/Stake/StakeModal.tsx
 #: src/pages/Stake/StakeModal.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
@@ -5590,6 +5625,7 @@ msgstr ""
 msgid "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} market."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/AffiliateClaimModal.tsx
 #: src/pages/Stake/ClaimModal.tsx
@@ -5821,6 +5857,9 @@ msgstr ""
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Claims/ClaimableCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/AffiliateClaimModal.tsx
@@ -5876,6 +5915,7 @@ msgstr ""
 msgid "No decentralized exchanges available for this network."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Deposited."
 msgstr ""
@@ -5884,6 +5924,7 @@ msgstr ""
 msgid "There may not be sufficient liquidity to execute your order when the min. receive is met."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6022,6 +6063,7 @@ msgstr ""
 msgid "Lending and Borrowing"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/pages/Stake/Vesting.tsx
 #: src/pages/Stake/Vesting.tsx
 msgid "GMX Vault"
@@ -6029,6 +6071,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+msgid "Additional reserve required: {0}"
 msgstr ""
 
 #: src/components/TwapRows/TwapRows.tsx
@@ -6168,6 +6214,9 @@ msgid "Deactivate 1CT (One-Click Trading)"
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdownWithMultichain.tsx
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/keys.ts
@@ -6450,6 +6499,10 @@ msgstr ""
 msgid "Edit order"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+msgid "Deposited: {0} esGMX"
+msgstr ""
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Error simulating withdrawal"
 msgstr ""
@@ -6531,6 +6584,7 @@ msgstr ""
 msgid "Swap {0} for {1}"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Vault Capacity"
 msgstr ""
@@ -6547,6 +6601,7 @@ msgstr ""
 msgid "Layer 1"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Depositing"
@@ -6633,6 +6688,7 @@ msgstr ""
 msgid "Depositing Funds to GMX"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim completed!"
 msgstr ""
@@ -6951,6 +7007,7 @@ msgstr ""
 msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
 msgid "Confirming..."
 msgstr ""
@@ -7222,6 +7279,7 @@ msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read m
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
 #: src/components/GmList/GmListItem.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
@@ -7299,6 +7357,10 @@ msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase Size (Stop Market)"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+msgid "Convert esGMX tokens to GMX tokens. Please read the vesting details before using the vaults."
 msgstr ""
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
@@ -7619,6 +7681,10 @@ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Stay Safe from <0/> Liquidations"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/VestModal.tsx
+msgid "Current Reserved: {0}"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx

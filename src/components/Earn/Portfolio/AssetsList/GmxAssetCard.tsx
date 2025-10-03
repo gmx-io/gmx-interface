@@ -1,6 +1,7 @@
 import { autoUpdate, flip, FloatingPortal, offset, shift, useFloating } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
+import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 import { zeroAddress } from "viem";
@@ -20,6 +21,7 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
+import { VestModal } from "components/Earn/Portfolio/AssetsList/VestModal";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -27,6 +29,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import DownloadIcon from "img/ic_download2.svg?react";
 import esGmxIcon from "img/ic_esgmx_40.svg";
 import gmxIcon from "img/ic_gmx_40.svg";
+import IncreaseMarketIcon from "img/ic_increasemarket_16.svg?react";
 import MenuDotsIcon from "img/ic_menu_dots.svg?react";
 import PlusCircleIcon from "img/ic_plus_circle.svg?react";
 import ShareIcon from "img/ic_share.svg?react";
@@ -44,6 +47,7 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [stakeValue, setStakeValue] = useState("");
   const [unstakeValue, setUnstakeValue] = useState("");
+  const [isVestModalVisible, setIsVestModalVisible] = useState(false);
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
@@ -105,6 +109,10 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
     setStakeValue("");
   }, []);
 
+  const handleOpenVestModal = useCallback(() => {
+    setIsVestModalVisible(true);
+  }, []);
+
   const priceRowValue = gmxPrice === undefined ? "..." : formatUsd(gmxPrice);
 
   const aprHandle = useMemo(() => {
@@ -156,7 +164,7 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
         title={title}
         headerButton={<DelegateDropdown />}
         footer={
-          <div className="grid w-full grid-cols-3 gap-8">
+          <div className={cx("grid w-full grid-cols-2 gap-8", { "grid-cols-3": esGmx })}>
             <Button variant="secondary" to="/buy_gmx" className="whitespace-nowrap">
               <PlusCircleIcon className="size-16 shrink-0" />
               <Trans>Buy GMX</Trans>
@@ -165,6 +173,12 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
               <DownloadIcon className="size-16 shrink-0" />
               <Trans>Stake</Trans>
             </Button>
+            {esGmx && (
+              <Button variant="secondary" onClick={handleOpenVestModal}>
+                <IncreaseMarketIcon className="size-16 shrink-0" />
+                <Trans>Vest</Trans>
+              </Button>
+            )}
           </div>
         }
       >
@@ -201,6 +215,14 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
         setPendingTxns={setPendingTxns}
         processedData={processedData}
       />
+      {esGmx && (
+        <VestModal
+          isVisible={isVestModalVisible}
+          setIsVisible={setIsVestModalVisible}
+          processedData={processedData}
+          reservedAmount={reservedAmount}
+        />
+      )}
     </div>
   );
 }
