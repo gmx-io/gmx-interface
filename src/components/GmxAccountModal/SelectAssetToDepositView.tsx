@@ -172,7 +172,7 @@ export const SelectAssetToDepositView = () => {
             {selectedNetwork === "all" ? (
               <Trans>No assets are available for deposit</Trans>
             ) : (
-              <Trans>No eligible tokens available on ${getChainName(depositViewChain)} for deposit</Trans>
+              <Trans>No eligible tokens available on {getChainName(selectedNetwork)} for deposit</Trans>
             )}
           </div>
         )}

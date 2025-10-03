@@ -762,7 +762,7 @@ export const DepositView = () => {
             <div className="rounded-8 border border-slate-800 bg-slate-800 px-14 py-13 text-typography-secondary">
               <span className="flex min-h-20 items-center">
                 {depositViewChain !== undefined ? (
-                  <Trans>No eligible tokens available on ${getChainName(depositViewChain)} for deposit</Trans>
+                  <Trans>No eligible tokens available on {getChainName(depositViewChain)} for deposit</Trans>
                 ) : (
                   <Trans>No eligible tokens available for deposit</Trans>
                 )}
