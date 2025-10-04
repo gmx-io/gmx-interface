@@ -27,6 +27,8 @@ export const TAG_FILTER_ORDER: OpportunityTag[] = [
   "yield-trading",
 ];
 
+export const AVAILABLE_FILTERS: OpportunityFilterValue[] = ["for-me", "all", ...TAG_FILTER_ORDER];
+
 export function OpportunityFilters({ activeFilter, search, onSearchChange, isForMeDisabled }: Props) {
   const forMeClasses =
     "cursor-not-allowed opacity-50 pointer-events-none hover:opacity-50 focus-visible:outline-none focus-visible:ring-0";

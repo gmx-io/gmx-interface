@@ -8,7 +8,7 @@ import {
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { GlvAndGmMarketsInfoData, getMarketPoolName, useMarketTokensData } from "domain/synthetics/markets";
+import { GlvAndGmMarketsInfoData, useMarketTokensData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
@@ -18,17 +18,25 @@ import { TokensData } from "sdk/types/tokens";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import OpportunityCard from "components/Earn/AdditionalOpportunities/OpportunityCard";
 import OpportunityFilters, {
+  AVAILABLE_FILTERS,
   OpportunityFilterValue,
   TAG_FILTER_ORDER,
 } from "components/Earn/AdditionalOpportunities/OpportunityFilters";
-import { useOpportunities, useOpportunityTagLabels } from "components/Earn/AdditionalOpportunities/useOpportunities";
+import {
+  OpportunityAsset,
+  ST_GMX_OPPORTUNITY_ASSET,
+  getOpportunityAssetKey,
+  getOpportunityAssetLabel,
+  useOpportunities,
+  useOpportunityTagLabels,
+} from "components/Earn/AdditionalOpportunities/useOpportunities";
 
 import EarnPageLayout from "./EarnPageLayout";
 
-function collectUserMarketTokenLabels(
+function collectUserMarketAssets(
   marketsInfoData: GlvAndGmMarketsInfoData | undefined,
   marketTokensData: ReturnType<typeof useMarketTokensData>["marketTokensData"]
-): string[] {
+): OpportunityAsset[] {
   if (!marketsInfoData || !marketTokensData) {
     return [];
   }
@@ -42,12 +50,14 @@ function collectUserMarketTokenLabels(
         return null;
       }
 
-      return `${isGlvInfo(info) ? "GLV" : "GM"} ${getMarketPoolName(info, "-")}`;
+      return isGlvInfo(info)
+        ? ({ type: "glv", address } as OpportunityAsset)
+        : ({ type: "market", address } as OpportunityAsset);
     })
     .filter(defined);
 }
 
-const collectUserTokenLabels = (tokensData: TokensData | undefined): string[] => {
+const collectUserTokenAssets = (tokensData: TokensData | undefined): OpportunityAsset[] => {
   return Object.values(tokensData || {})
     .filter(
       (token) =>
@@ -55,7 +65,7 @@ const collectUserTokenLabels = (tokensData: TokensData | undefined): string[] =>
         (token.walletBalance !== undefined && token.walletBalance > 0n) ||
         (token.gmxAccountBalance !== undefined && token.gmxAccountBalance > 0n)
     )
-    .map((token) => token.symbol);
+    .map((token) => ({ type: "token", address: token.address }) as OpportunityAsset);
 };
 
 export default function EarnAdditionalOpportunitiesPage() {
@@ -72,7 +82,7 @@ export default function EarnAdditionalOpportunitiesPage() {
 
   useEffect(() => {
     if (filterParam) {
-      const filter = TAG_FILTER_ORDER.find((tag) => tag === filterParam);
+      const filter = AVAILABLE_FILTERS.find((tag) => tag === filterParam);
       if (filter) {
         setActiveFilter(filter);
       }
@@ -80,18 +90,21 @@ export default function EarnAdditionalOpportunitiesPage() {
   }, [filterParam]);
 
   const userTokens = useMemo(() => {
-    const userAssets = new Set([
-      ...collectUserMarketTokenLabels(marketsInfoData, marketTokensData),
-      ...collectUserTokenLabels(tokensData),
-    ]);
+    const userAssetKeys = new Set<string>();
 
-    if (processedData) {
-      if ((processedData.gmxInStakedGmx ?? 0n) > 0n) {
-        userAssets.add("stGMX");
-      }
+    collectUserMarketAssets(marketsInfoData, marketTokensData).forEach((asset) => {
+      userAssetKeys.add(getOpportunityAssetKey(asset));
+    });
+
+    collectUserTokenAssets(tokensData).forEach((asset) => {
+      userAssetKeys.add(getOpportunityAssetKey(asset));
+    });
+
+    if (processedData && (processedData.gmxInStakedGmx ?? 0n) > 0n) {
+      userAssetKeys.add(getOpportunityAssetKey(ST_GMX_OPPORTUNITY_ASSET));
     }
 
-    return userAssets;
+    return userAssetKeys;
   }, [marketsInfoData, marketTokensData, processedData, tokensData]);
 
   const allOpportunities = useOpportunities();
@@ -102,7 +115,9 @@ export default function EarnAdditionalOpportunitiesPage() {
     let list = allOpportunities;
 
     if (activeFilter === "for-me") {
-      list = list.filter((opportunity) => opportunity.assets.some((token) => userTokens.has(token)));
+      list = list.filter((opportunity) =>
+        opportunity.assets.some((asset) => userTokens.has(getOpportunityAssetKey(asset)))
+      );
     } else if (activeFilter !== "all") {
       list = list.filter((opportunity) => opportunity.tags.includes(activeFilter));
     }
@@ -112,7 +127,14 @@ export default function EarnAdditionalOpportunitiesPage() {
     if (normalizedQuery) {
       list = list.filter((opportunity) => {
         const matchesName = opportunity.name.toLowerCase().includes(normalizedQuery);
-        const matchesTokens = opportunity.assets.some((token) => token.toLowerCase().includes(normalizedQuery));
+        const matchesTokens = opportunity.assets.some((asset) =>
+          getOpportunityAssetLabel(asset, {
+            marketsInfoData,
+            tokensData,
+          })
+            ?.toLowerCase()
+            .includes(normalizedQuery)
+        );
         const matchesTags = opportunity.tags.some((tag) =>
           opportunityTagLabels[tag].toLowerCase().includes(normalizedQuery)
         );
@@ -122,7 +144,7 @@ export default function EarnAdditionalOpportunitiesPage() {
     }
 
     return list;
-  }, [activeFilter, allOpportunities, searchQuery, userTokens, opportunityTagLabels]);
+  }, [activeFilter, allOpportunities, searchQuery, userTokens, opportunityTagLabels, marketsInfoData, tokensData]);
 
   const emptyStateMessage = useMemo(() => {
     if (chainId === BOTANIX) {
@@ -174,7 +196,12 @@ export default function EarnAdditionalOpportunitiesPage() {
         {filteredOpportunities.length > 0 ? (
           <div className="grid grid-cols-2 gap-8 max-lg:grid-cols-1">
             {filteredOpportunities.map((opportunity) => (
-              <OpportunityCard key={opportunity.id} opportunity={opportunity} marketsInfoData={marketsInfoData} />
+              <OpportunityCard
+                key={opportunity.id}
+                opportunity={opportunity}
+                marketsInfoData={marketsInfoData}
+                tokensData={tokensData}
+              />
             ))}
           </div>
         ) : (

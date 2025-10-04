@@ -2,12 +2,17 @@ import { t, Trans } from "@lingui/macro";
 import { ReactNode, useMemo } from "react";
 
 import { ARBITRUM, AVALANCHE, ContractsChainId } from "config/chains";
+import { GlvAndGmMarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
+import { mustNeverExist } from "lib/types";
+import { getTokenBySymbol } from "sdk/configs/tokens";
+import { TokensData } from "sdk/types/tokens";
 
 import beefyIcon from "img/ic_beefy.svg";
+import deltaPrimeIcon from "img/ic_delta_prime.svg";
 import dolomiteIcon from "img/ic_dolo_24.svg";
-import lodestarIcon from "img/ic_lodestar.svg";
-import pendleIcon from "img/ic_pendle_24.svg";
+import gloopIcon from "img/ic_gloop.svg";
+import morphoIcon from "img/ic_morpho.svg";
 import radiantIcon from "img/ic_radiant.svg";
 import umamiIcon from "img/ic_umami.svg";
 import venusIcon from "img/ic_venus.svg";
@@ -29,7 +34,63 @@ export type Opportunity = {
   link?: string;
 };
 
-export type OpportunityAsset = "GMX" | "stGMX" | `GLV ${string}` | `GM ${string}` | "USDC";
+export type OpportunityAsset =
+  | { type: "market"; address: string }
+  | { type: "glv"; address: string }
+  | { type: "token"; address: string }
+  | { type: "stGmx" };
+
+export const ST_GMX_OPPORTUNITY_ASSET: OpportunityAsset = { type: "stGmx" };
+
+const MARKET_POOL_SEPARATOR = "-";
+
+const makeMarketAsset = (address: string): OpportunityAsset => ({ type: "market", address });
+const makeGlvAsset = (address: string): OpportunityAsset => ({ type: "glv", address });
+const makeTokenAsset = (address: string): OpportunityAsset => ({ type: "token", address });
+
+export const getOpportunityAssetKey = (asset: OpportunityAsset): string => {
+  if (asset.type === "stGmx") {
+    return "stGmx";
+  }
+  return asset.type + ":" + asset.address;
+};
+
+export const getOpportunityAssetLabel = (
+  asset: OpportunityAsset,
+  {
+    marketsInfoData,
+    tokensData,
+  }: {
+    marketsInfoData: GlvAndGmMarketsInfoData | undefined;
+    tokensData: TokensData | undefined;
+  }
+): string | undefined => {
+  switch (asset.type) {
+    case "stGmx":
+      return "Staked GMX";
+    case "token": {
+      const token = tokensData?.[asset.address];
+      return token?.symbol;
+    }
+    case "market": {
+      const marketInfo = marketsInfoData?.[asset.address];
+      if (marketInfo) {
+        return `GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo, MARKET_POOL_SEPARATOR)}]`;
+      }
+      return undefined;
+    }
+    case "glv": {
+      const glvInfo = marketsInfoData?.[asset.address];
+      if (glvInfo) {
+        const poolName = getMarketPoolName(glvInfo, MARKET_POOL_SEPARATOR);
+        return `GLV [${poolName}]`;
+      }
+      return undefined;
+    }
+    default:
+      mustNeverExist(asset);
+  }
+};
 
 export const useOpportunityTagLabels = () => {
   return {
@@ -44,8 +105,8 @@ export const useOpportunityTagLabels = () => {
 export const useOpportunities = () => {
   const { chainId } = useChainId();
 
-  const opportunities: Partial<Record<ContractsChainId, Opportunity[]>> = useMemo(
-    () => ({
+  const opportunities: Partial<Record<ContractsChainId, Opportunity[]>> = useMemo(() => {
+    return {
       [ARBITRUM]: [
         {
           id: "arbitrum-dolomite",
@@ -59,35 +120,44 @@ export const useOpportunities = () => {
           ),
           tags: ["lending-and-borrowing", "looping"],
           assets: [
-            "GLV BTC-USDC",
-            "GM BTC-BTC",
-            "GM WETH-WETH",
-            "GLV WETH-USDC",
-            "GM AAVE-USDC",
-            "GM ARB-USDC",
-            "GM BTC-USDC",
-            // "GM DOGE-USDC",
-            "GM GMX-GMX",
-            "GM GMX-USDC",
-            "GM LINK-USDC",
-            "GM PENDLE-USDC",
-            "GM PEPE-USDC",
-            "GM SOL-USDC",
-            "GM UNI-USDC",
-            "GM WIF-USDC",
-            "GMX",
-            "stGMX",
+            // GLV BTC [WBTC-USDC]
+            makeGlvAsset("0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9"),
+            // GM BTC/USD [WBTC-USDC]
+            makeMarketAsset("0x47c031236e19d024b42f8AE6780E44A573170703"),
+            // GM ETH/USD [WETH-WETH]
+            makeMarketAsset("0x450bb6774Dd8a756274E0ab4107953259d2ac541"),
+            // GM BTC/USD [WBTC-WBTC]
+            makeMarketAsset("0x7C11F78Ce78768518D743E81Fdfa2F860C6b9A77"),
+            // GLV ETH [WETH-USDC]
+            makeGlvAsset("0xdF03EEd325b82bC1d4Db8b49c30ecc9E05104b96"),
+            // GM ETH/USD [WETH-USDC]
+            makeMarketAsset("0x70d95587d40A2caf56bd97485aB3Eec10Bee6336"),
+            // GM AAVE/USD [AAVE-USDC]
+            makeMarketAsset("0x1CbBa6346F110c8A5ea739ef2d1eb182990e4EB2"),
+            // GM ARB/USD [ARB-USDC]
+            makeMarketAsset("0xC25cEf6061Cf5dE5eb761b50E4743c1F5D7E5407"),
+            // GM DOGE/USD [DOGE-USDC]
+            makeMarketAsset("0x6853EA96FF216fAb11D2d930CE3C508556A4bdc4"),
+            // GM GMX/USD [GMX-GMX]
+            makeMarketAsset("0xbD48149673724f9cAeE647bb4e9D9dDaF896Efeb"),
+            // GM GMX/USD [GMX-USDC]
+            makeMarketAsset("0x55391D178Ce46e7AC8eaAEa50A72D1A5a8A622Da"),
+            // GM LINK/USD [LINK-USDC]
+            makeMarketAsset("0x7f1fa204bb700853D36994DA19F830b6Ad18455C"),
+            // GM PENDLE/USD [PENDLE-USDC]
+            makeMarketAsset("0x784292E87715d93afD7cb8C941BacaFAAA9A5102"),
+            // GM PEPE/USD [PEPE-USDC]
+            makeMarketAsset("0x2b477989A149B17073D9C9C82eC9cB03591e20c6"),
+            // GM SOL/USD [SOL-USDC]
+            makeMarketAsset("0x09400D9DB990D5ed3f35D7be61DfAEB900Af03C9"),
+            // GM UNI/USD [UNI-USDC]
+            makeMarketAsset("0xc7Abb2C5f3BF3CEB389dF0Eecd6120D451170B50"),
+            // GM WIF/USD [WIF-USDC]
+            makeMarketAsset("0x0418643F94Ef14917f1345cE5C460C37dE463ef7"),
+            makeTokenAsset(getTokenBySymbol(ARBITRUM, "GMX").address),
+            makeTokenAsset(getTokenBySymbol(ARBITRUM, "USDC").address),
           ],
           link: "https://dolomite.io/",
-        },
-        {
-          id: "arbitrum-lodestar",
-          name: "Lodestar",
-          icon: lodestarIcon,
-          description: <Trans>Lend out your GMX tokens or borrow against them.</Trans>,
-          tags: ["lending-and-borrowing"],
-          assets: ["GMX"],
-          link: "https://www.lodestarfinance.io/",
         },
         {
           id: "arbitrum-beefy",
@@ -100,8 +170,20 @@ export const useOpportunities = () => {
             </Trans>
           ),
           tags: ["autocompound"],
-          assets: ["GMX"],
+          assets: [makeTokenAsset(getTokenBySymbol(ARBITRUM, "GMX").address)],
           link: "https://beefy.com/",
+        },
+        {
+          id: "arbitrum-morpho",
+          name: "Morpho",
+          icon: morphoIcon,
+          description: <Trans>Lend out your GM tokens, and borrow against them.</Trans>,
+          tags: ["lending-and-borrowing"],
+          assets: [
+            // GM ETH/USD [WETH-USDC]
+            makeMarketAsset("0x70d95587d40A2caf56bd97485aB3Eec10Bee6336"),
+          ],
+          link: "https://morpho.org/",
         },
         {
           id: "arbitrum-umami",
@@ -110,11 +192,12 @@ export const useOpportunities = () => {
           description: (
             <Trans>
               Umami GM vaults enable depositors to provide single-sided liquidity to GMX liquidity pools. Deposits are
-              actively managed to optimize for capital efficiency while minimizing exposure to impermanent loss.
+              actively managed through a system of hedges and index rebalancing, optimizing for capital efficiency while
+              minimizing exposure to impermanent loss.
             </Trans>
           ),
           tags: ["delta-neutral-vaults"],
-          assets: ["USDC"],
+          assets: [makeTokenAsset(getTokenBySymbol(ARBITRUM, "USDC").address)],
           link: "https://umami.finance/",
         },
         {
@@ -123,7 +206,12 @@ export const useOpportunities = () => {
           icon: venusIcon,
           description: <Trans>Lend out your GM LP tokens, or borrow against them.</Trans>,
           tags: ["lending-and-borrowing"],
-          assets: ["GM BTC-USDC", "GM WETH-USDC"],
+          assets: [
+            // GM BTC/USD [WBTC-USDC]
+            makeMarketAsset("0x47c031236e19d024b42f8AE6780E44A573170703"),
+            // GM ETH/USD [WETH-USDC]
+            makeMarketAsset("0x70d95587d40A2caf56bd97485aB3Eec10Bee6336"),
+          ],
           link: "https://venus.io/",
         },
         {
@@ -132,17 +220,42 @@ export const useOpportunities = () => {
           icon: radiantIcon,
           description: <Trans>Lend out your GM LP tokens, or borrow against them.</Trans>,
           tags: ["lending-and-borrowing", "looping"],
-          assets: ["GM ARB-USDC"],
+          assets: [
+            // GLV BTC [WBTC-USDC]
+            makeGlvAsset("0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9"),
+            // GM BTC/USD [WBTC-USDC]
+            makeMarketAsset("0x47c031236e19d024b42f8AE6780E44A573170703"),
+            // GM ETH/USD [WETH-USDC]
+            makeMarketAsset("0x70d95587d40A2caf56bd97485aB3Eec10Bee6336"),
+            // GLV ETH [WETH-USDC]
+            makeGlvAsset("0xdF03EEd325b82bC1d4Db8b49c30ecc9E05104b96"),
+          ],
           link: "https://radiant.capital/",
         },
         {
-          id: "arbitrum-pendle",
-          name: "Pendle",
-          icon: pendleIcon,
-          description: <Trans>Trade spot yield and earn fixed yield.</Trans>,
-          tags: ["yield-trading"],
-          assets: ["GM WETH-WETH"],
-          link: "https://pendle.finance/",
+          id: "arbitrum-deltaprime",
+          name: "DeltaPrime",
+          icon: deltaPrimeIcon,
+          description: <Trans>Lend out your tokens, or borrow against it.</Trans>,
+          tags: ["lending-and-borrowing"],
+          assets: [makeTokenAsset(getTokenBySymbol(ARBITRUM, "GMX").address)],
+          link: "https://deltaprime.io/",
+        },
+        {
+          id: "arbitrum-gloop",
+          name: "Gloop",
+          icon: gloopIcon,
+          description: <Trans>Lend out your tokens, or borrow against them.</Trans>,
+          tags: ["lending-and-borrowing", "looping"],
+          assets: [
+            // GM BTC/USD [WBTC-USDC]
+            makeMarketAsset("0x47c031236e19d024b42f8AE6780E44A573170703"),
+            // GM ETH/USD [WETH-USDC]
+            makeMarketAsset("0x70d95587d40A2caf56bd97485aB3Eec10Bee6336"),
+            // GM SOL/USD [SOL-USDC]
+            makeMarketAsset("0x09400D9DB990D5ed3f35D7be61DfAEB900Af03C9"),
+          ],
+          link: "https://gloop.finance/",
         },
       ],
       [AVALANCHE]: [
@@ -156,13 +269,21 @@ export const useOpportunities = () => {
             </Trans>
           ),
           tags: ["autocompound"],
-          assets: ["GMX"],
+          assets: [makeTokenAsset(getTokenBySymbol(AVALANCHE, "GMX").address)],
           link: "https://beefy.com/",
         },
+        {
+          id: "avalanche-deltaprime",
+          name: "DeltaPrime",
+          icon: deltaPrimeIcon,
+          description: <Trans>Lend out your tokens, or borrow against it.</Trans>,
+          tags: ["lending-and-borrowing"],
+          assets: [makeTokenAsset(getTokenBySymbol(AVALANCHE, "GMX").address)],
+          link: "https://deltaprime.io/",
+        },
       ],
-    }),
-    []
-  );
+    };
+  }, []);
 
   return useMemo(() => opportunities[chainId] ?? [], [chainId, opportunities]);
 };

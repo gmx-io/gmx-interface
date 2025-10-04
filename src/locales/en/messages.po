@@ -686,8 +686,8 @@ msgid "Buy GMX using Decentralized Exchange Aggregators:"
 msgstr "Buy GMX using Decentralized Exchange Aggregators:"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
-msgid "Trade spot yield and earn fixed yield."
-msgstr "Trade spot yield and earn fixed yield."
+#~ msgid "Trade spot yield and earn fixed yield."
+#~ msgstr "Trade spot yield and earn fixed yield."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Min. Required Collateral"
@@ -1094,6 +1094,10 @@ msgstr "Express"
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "Start Earning"
 msgstr "Start Earning"
+
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+msgid "Lend out your tokens, or borrow against them."
+msgstr "Lend out your tokens, or borrow against them."
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
@@ -1905,6 +1909,10 @@ msgstr "Buy GMX on {chainName}"
 msgid "Size"
 msgstr "Size"
 
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+msgid "Umami GM vaults enable depositors to provide single-sided liquidity to GMX liquidity pools. Deposits are actively managed through a system of hedges and index rebalancing, optimizing for capital efficiency while minimizing exposure to impermanent loss."
+msgstr "Umami GM vaults enable depositors to provide single-sided liquidity to GMX liquidity pools. Deposits are actively managed through a system of hedges and index rebalancing, optimizing for capital efficiency while minimizing exposure to impermanent loss."
+
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "We value your experience and insights and invite you to participate in an anonymous one-on-one chat."
 msgstr "We value your experience and insights and invite you to participate in an anonymous one-on-one chat."
@@ -1980,8 +1988,8 @@ msgid "Total:"
 msgstr "Total:"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
-msgid "Lend out your GMX tokens or borrow against them."
-msgstr "Lend out your GMX tokens or borrow against them."
+#~ msgid "Lend out your GMX tokens or borrow against them."
+#~ msgstr "Lend out your GMX tokens or borrow against them."
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
@@ -3653,6 +3661,11 @@ msgstr "The maximum allowed percentage difference between the mark price and the
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr "Rebates earned by this account as a trader."
+
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+msgid "Lend out your tokens, or borrow against it."
+msgstr "Lend out your tokens, or borrow against it."
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "<0>GMX executes trades against a dynamically balanced liquidity pool, unlike traditional order books. This model supports deep liquidity, allowing for opening positions of over $50m with reduced price impact, even when compared to the biggest order books in the space. In some cases, you may even get paid when executing an order due to a positive price impact.</0><1>GMX prevents unfair liquidations by using decentralized oracles from Chainlink and Chaos Labs, which aggregate prices from multiple trusted sources to avoid manipulation.</1>"
@@ -7021,6 +7034,10 @@ msgstr "Shift order cancelled."
 msgid "Success claiming position price impact fees"
 msgstr "Success claiming position price impact fees"
 
+#: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
+msgid "Lend out your GM tokens, and borrow against them."
+msgstr "Lend out your GM tokens, and borrow against them."
+
 #: src/lib/legacy.ts
 msgid "Order size is bigger than position, will only be executable if position increases"
 msgstr "Order size is bigger than position, will only be executable if position increases"
@@ -7343,8 +7360,8 @@ msgid "{prefix} <0>{text}</0>"
 msgstr "{prefix} <0>{text}</0>"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
-msgid "Umami GM vaults enable depositors to provide single-sided liquidity to GMX liquidity pools. Deposits are actively managed to optimize for capital efficiency while minimizing exposure to impermanent loss."
-msgstr "Umami GM vaults enable depositors to provide single-sided liquidity to GMX liquidity pools. Deposits are actively managed to optimize for capital efficiency while minimizing exposure to impermanent loss."
+#~ msgid "Umami GM vaults enable depositors to provide single-sided liquidity to GMX liquidity pools. Deposits are actively managed to optimize for capital efficiency while minimizing exposure to impermanent loss."
+#~ msgstr "Umami GM vaults enable depositors to provide single-sided liquidity to GMX liquidity pools. Deposits are actively managed to optimize for capital efficiency while minimizing exposure to impermanent loss."
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to update settings"
