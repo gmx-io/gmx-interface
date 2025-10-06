@@ -31,7 +31,7 @@ export const useClaimExecutionFee = ({
     [claimTermsAcceptedSignature, signer, account, claimableTokens, gasPrice]
   );
 
-  return useSWR(enabled ? [account, claimableTokens, chainId, claimTermsAcceptedSignature, signer, gasPrice] : null, {
+  return useSWR(enabled ? [account, claimableTokens, chainId, claimTermsAcceptedSignature, signer] : null, {
     refreshInterval: undefined,
     fetcher: async () => {
       const callData = getClaimTransactionCallData(

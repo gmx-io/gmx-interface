@@ -555,6 +555,10 @@ msgstr ""
 msgid "in liquidity"
 msgstr "используется для обеспечения ликвидности"
 
+#: src/components/ExitPriceRow/ExitPriceRow.tsx
+msgid "Exit Price"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V2"
 msgstr "Ребейты на V2"
@@ -1422,6 +1426,7 @@ msgstr "Агрегатор DEX"
 msgid "Waiting for remaining Safe confirmations..."
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -2822,6 +2827,10 @@ msgstr "Комиссия UI Обмена"
 msgid "Decrease the size to match the max. allowed leverage:"
 msgstr "Уменьшите размер, чтобы соответствовать макс. допустимому плечу:"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Set Acceptable Price Impact"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Accrued Positive Funding Fee"
 msgstr "Начисленная Положительная Комиссия за Финансирование"
@@ -2869,15 +2878,6 @@ msgstr "GM можно продать за {0} и {1} на этом рынке д
 msgid "Graph showing performance vs benchmark over the selected period."
 msgstr "График, показывающий производительность по сравнению с эталоном за выбранный период."
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3585,8 +3585,6 @@ msgstr "Н/Д"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Trigger price for the order."
 msgstr "Триггерная цена для ордера."
 
@@ -3999,6 +3997,10 @@ msgstr "Трейдеры, Привлечённые на Avalanche Fuji"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in GM Pools."
 msgstr "Общая стоимость токенов в Пулах GM."
+
+#: src/components/Claims/SettleAccruedCard.tsx
+msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take Profit / Stop Loss"
@@ -4612,6 +4614,10 @@ msgstr "Подпись разрешения отменена"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Optimizer"
 msgstr "Оптимизатор Yield Yak"
+
+#: src/components/ExitPriceRow/ExitPriceRow.tsx
+msgid "Expected exit price for the order, including the current capped net price impact."
+msgstr ""
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "GMX & Voting Power"
@@ -5290,10 +5296,6 @@ msgstr "Купить GMX на децентрализованных биржах"
 msgid "Powered by"
 msgstr "Работает на"
 
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "Asset Balance"
-msgstr ""
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No options available to transfer {nativeTokenSymbol} to {chainName}."
 msgstr ""
@@ -5530,11 +5532,6 @@ msgstr "Запросить"
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price Impact / Fees"
 msgstr "Влияние цены / Комиссии"
-
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Order execution price takes into account price impact."
-msgstr "Цена исполнения ордера учитывает влияние цены."
 
 #: src/pages/Buy/Buy.tsx
 msgid "Buy GLP or GMX"
@@ -7004,10 +7001,6 @@ msgstr "Транзакция не удалась"
 msgid "COLLATERAL"
 msgstr "ЗАЛОГ"
 
-#: src/components/Claims/SettleAccruedCard.tsx
-msgid "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
-msgstr "Начисленные рибейты за влияние на цену. Они станут доступны для заявки примерно через десять дней.<0/><1/><2>Подробнее</2>."
-
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
@@ -7420,13 +7413,6 @@ msgstr ""
 msgid "PNG"
 msgstr ""
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
