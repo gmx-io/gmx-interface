@@ -4191,7 +4191,7 @@ msgstr "減少"
 
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr "レバレッジ倍率が1倍以下になるため注文を執行できません<<<<<<< HEAD"
+msgstr "レバレッジ倍率が1倍以下になるため注文を執行できません"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."

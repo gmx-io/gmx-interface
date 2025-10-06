@@ -4191,7 +4191,7 @@ msgstr "감소"
 
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr "포지션의 레버리지가 1 미만으로 감소되므로 주문을 실행할 수 없습니다<<<<<<< HEAD"
+msgstr "포지션의 레버리지가 1 미만으로 감소되므로 주문을 실행할 수 없습니다"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."

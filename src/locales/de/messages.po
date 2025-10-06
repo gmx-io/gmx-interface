@@ -4191,7 +4191,7 @@ msgstr "Verringern"
 
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr "Auftrag kann nicht ausgeführt werden, da er die Hebelwirkung der Position unter 1 reduzieren würde<<<<<<< HEAD"
+msgstr "Auftrag kann nicht ausgeführt werden, da er die Hebelwirkung der Position unter 1 reduzieren würde"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."

@@ -4191,7 +4191,7 @@ msgstr "Уменьшить"
 
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr "Ордер не может быть выполнен, так как это уменьшит кредитное плечо позиции ниже 1<<<<<<< HEAD"
+msgstr "Ордер не может быть выполнен, так как это уменьшит кредитное плечо позиции ниже 1"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."
