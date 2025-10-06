@@ -2,7 +2,9 @@ import { Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
 import { getConstant } from "config/chains";
+import { UserEarningsData } from "domain/synthetics/markets/types";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
+import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { getTotalGlvInfo, getTotalGmInfo } from "domain/synthetics/markets/utils";
 import { useChainId } from "lib/chains";
 import { ProcessedData } from "lib/legacy";
@@ -25,6 +27,8 @@ export function RewardsBar({
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
 
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
+
+  const userEarnings = useUserEarnings(chainId, srcChainId);
 
   const totalGmInfo = useMemo(() => getTotalGmInfo(marketTokensData), [marketTokensData]);
   const totalGlvInfo = useMemo(() => getTotalGlvInfo(marketTokensData), [marketTokensData]);
@@ -50,7 +54,11 @@ export function RewardsBar({
               <span className="text-12 font-medium text-typography-secondary">
                 <Trans>Total Earned</Trans>
               </span>
-              <TotalEarned processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
+              <TotalEarned
+                processedData={processedData}
+                nativeTokenSymbol={nativeTokenSymbol}
+                userEarnings={userEarnings}
+              />
             </div>
           </div>
 
@@ -86,9 +94,11 @@ export function RewardsBar({
 function TotalEarned({
   processedData,
   nativeTokenSymbol,
+  userEarnings,
 }: {
   processedData: ProcessedData | undefined;
   nativeTokenSymbol: string;
+  userEarnings: UserEarningsData | null;
 }) {
   const earnedTooltipContent = useMemo(() => {
     if (!processedData) {
@@ -147,10 +157,21 @@ function TotalEarned({
       );
     }
 
-    return <div className="flex flex-col gap-4">{rows}</div>;
-  }, [nativeTokenSymbol, processedData]);
+    if (userEarnings && userEarnings.allMarkets.total > 0n) {
+      rows.push(
+        <StatsTooltipRow
+          key="allMarkets"
+          label={<Trans>GM Pools</Trans>}
+          showDollar={false}
+          value={<span className="text-body-medium numbers">{formatUsd(userEarnings.allMarkets.total)}</span>}
+        />
+      );
+    }
 
-  const totalEarnedUsd = processedData?.cumulativeTotalRewardsUsd ?? 0n;
+    return <div className="flex flex-col gap-4">{rows}</div>;
+  }, [nativeTokenSymbol, processedData, userEarnings]);
+
+  const totalEarnedUsd = (processedData?.cumulativeTotalRewardsUsd ?? 0n) + (userEarnings?.allMarkets.total ?? 0n);
 
   return (
     <Tooltip
