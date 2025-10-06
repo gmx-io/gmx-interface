@@ -7315,6 +7315,10 @@ msgstr "Frequency"
 msgid "Loading Express params"
 msgstr "Loading Express params"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Transaction failed due to signature validation. Please try a different wallet app or switch to 1CT or Classic mode."
+msgstr "Transaction failed due to signature validation. Please try a different wallet app or switch to 1CT or Classic mode."
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No funding activity matching your search"
 msgstr "No funding activity matching your search"
