@@ -88,7 +88,7 @@ const enabledFeatures: ChartingLibraryFeatureset[] = [
 export const defaultChartProps = {
   theme: "dark",
   locale: "en",
-  library_path: "/charting_library/",
+  library_path: import.meta.env.DEV ? "public/charting_library/" : "/charting_library/",
   client_id: "tradingview.com",
   user_id: "public_user_id",
   fullscreen: false,

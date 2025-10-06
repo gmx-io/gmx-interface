@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { selectPositionSellerFees } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatPercentage } from "lib/numbers";
+import { getCappedPriceImpactPercentageFromFees } from "sdk/utils/fees";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -13,8 +14,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 export function PositionSellerPriceImpactFeesRow() {
   const { fees } = useSelector(selectPositionSellerFees);
 
-  const totalPriceImpactPercentage =
-    (fees?.totalPendingImpact?.precisePercentage ?? 0n) + (fees?.priceImpactDiff?.precisePercentage ?? 0n);
+  const totalPriceImpactPercentage = getCappedPriceImpactPercentageFromFees({ fees, isSwap: false });
 
   const formattedPriceImpactPercentage =
     totalPriceImpactPercentage === undefined
@@ -25,7 +25,7 @@ export function PositionSellerPriceImpactFeesRow() {
           displayDecimals: 3,
         });
 
-  const isPriceImpactPositive = totalPriceImpactPercentage > 0;
+  const isPriceImpactPositive = totalPriceImpactPercentage !== undefined && totalPriceImpactPercentage > 0;
 
   const feesPercentage = fees?.positionFee?.precisePercentage ?? 0n;
 

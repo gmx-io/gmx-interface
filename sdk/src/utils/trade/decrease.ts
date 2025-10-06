@@ -49,6 +49,7 @@ export function getDecreasePositionAmounts(p: {
   isLimit?: boolean;
   limitPrice?: bigint;
   triggerOrderType?: DecreasePositionAmounts["triggerOrderType"];
+  isSetAcceptablePriceImpactEnabled: boolean;
 
   receiveToken?: TokenData;
 }) {
@@ -68,6 +69,7 @@ export function getDecreasePositionAmounts(p: {
     uiFeeFactor,
     triggerOrderType: orderType,
     receiveToken: receiveTokenArg,
+    isSetAcceptablePriceImpactEnabled,
   } = p;
 
   const { indexToken } = marketInfo;
@@ -153,6 +155,7 @@ export function getDecreasePositionAmounts(p: {
       fixedAcceptablePriceImpactBps,
       acceptablePriceImpactBuffer,
       values,
+      isSetAcceptablePriceImpactEnabled,
     });
 
     const positionFeeInfo = getPositionFee(
@@ -237,6 +240,7 @@ export function getDecreasePositionAmounts(p: {
     fixedAcceptablePriceImpactBps,
     acceptablePriceImpactBuffer,
     values,
+    isSetAcceptablePriceImpactEnabled,
   });
 
   // Profit
@@ -495,6 +499,7 @@ function applyAcceptablePrice(p: {
   fixedAcceptablePriceImpactBps?: bigint;
   acceptablePriceImpactBuffer?: number;
   values: DecreasePositionAmounts;
+  isSetAcceptablePriceImpactEnabled: boolean;
 }) {
   const {
     position,
@@ -504,6 +509,7 @@ function applyAcceptablePrice(p: {
     isTrigger,
     fixedAcceptablePriceImpactBps,
     acceptablePriceImpactBuffer,
+    isSetAcceptablePriceImpactEnabled,
   } = p;
 
   const acceptablePriceInfo = getAcceptablePriceInfo({
@@ -533,12 +539,8 @@ function applyAcceptablePrice(p: {
   values.priceImpactDiffUsd = totalImpactValues.priceImpactDiffUsd;
 
   if (isTrigger) {
-    if (values.triggerOrderType === OrderType.StopLossDecrease) {
-      if (isLong) {
-        values.acceptablePrice = 0n;
-      } else {
-        values.acceptablePrice = MaxUint256;
-      }
+    if (!isSetAcceptablePriceImpactEnabled || values.triggerOrderType === OrderType.StopLossDecrease) {
+      values.acceptablePrice = isLong ? 0n : MaxUint256;
     } else {
       let maxNegativePriceImpactBps = fixedAcceptablePriceImpactBps;
       values.recommendedAcceptablePriceDeltaBps = getDefaultAcceptablePriceImpactBps({
