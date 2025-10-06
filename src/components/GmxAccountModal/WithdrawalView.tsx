@@ -200,8 +200,10 @@ export const WithdrawalView = () => {
 
     return (
       MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[chainId]
-        ?.map((tokenAddress) => tokensData[tokenAddress])
-        .filter((token) => token.address !== zeroAddress)
+        ?.map((tokenAddress) => tokensData[tokenAddress] as TokenData | undefined)
+        .filter((token): token is TokenData => {
+          return token !== undefined && token.address !== zeroAddress;
+        })
         .sort((a, b) => {
           const aFloat = bigintToNumber(a.gmxAccountBalance ?? 0n, a.decimals);
           const bFloat = bigintToNumber(b.gmxAccountBalance ?? 0n, b.decimals);

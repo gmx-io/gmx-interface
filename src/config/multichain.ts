@@ -5,7 +5,9 @@ import { address as usdcPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/dep
 import { address as usdtPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbitrum-mainnet/StargatePoolUSDT.json";
 import { address as ethPoolArbitrumSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolArbitrumSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/StargatePoolUSDC.json";
+import { address as usdtPoolArbitrumSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/StargatePoolUSDT.json";
 import { address as usdcPoolAvalanche } from "@stargatefinance/stg-evm-sdk-v2/deployments/avalanche-mainnet/StargatePoolUSDC.json";
+import { address as usdtPoolAvalanche } from "@stargatefinance/stg-evm-sdk-v2/deployments/avalanche-mainnet/StargatePoolUSDT.json";
 import { address as ethPoolBase } from "@stargatefinance/stg-evm-sdk-v2/deployments/base-mainnet/StargatePoolNative.json";
 import { address as usdcPoolBase } from "@stargatefinance/stg-evm-sdk-v2/deployments/base-mainnet/StargatePoolUSDC.json";
 import { address as usdcPoolBsc } from "@stargatefinance/stg-evm-sdk-v2/deployments/bsc-mainnet/StargatePoolUSDC.json";
@@ -14,6 +16,7 @@ import { address as ethPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-
 import { address as usdcSgPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolUSDC.json";
 import { address as ethPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolUSDC.json";
+import { address as usdtPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolUSDT.json";
 import { Wallet, type JsonFragment } from "ethers";
 import invert from "lodash/invert";
 import mapValues from "lodash/mapValues";
@@ -131,6 +134,13 @@ const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | Settle
       stargate: usdtPoolArbitrum,
       symbol: "USDT",
     },
+    [AVALANCHE]: {
+      address: "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
+      decimals: 6,
+      chainId: AVALANCHE,
+      stargate: usdtPoolAvalanche,
+      symbol: "USDT",
+    },
     [SOURCE_BSC_MAINNET]: {
       address: "0x55d398326f99059fF775485246999027B3197955",
       decimals: 18,
@@ -210,6 +220,26 @@ if (isDevelopment()) {
       chainId: SOURCE_SEPOLIA,
       stargate: ethPoolSepolia,
       symbol: "ETH",
+      isTestnet: true,
+    },
+  };
+
+  TOKEN_GROUPS["USDT"] = {
+    ...TOKEN_GROUPS["USDT"],
+    [ARBITRUM_SEPOLIA]: {
+      address: "0x095f40616FA98Ff75D1a7D0c68685c5ef806f110",
+      decimals: 6,
+      chainId: ARBITRUM_SEPOLIA,
+      stargate: usdtPoolArbitrumSepolia,
+      symbol: "USDT",
+      isTestnet: true,
+    },
+    [SOURCE_SEPOLIA]: {
+      address: "0xF3F2b4815A58152c9BE53250275e8211163268BA",
+      decimals: 6,
+      chainId: SOURCE_SEPOLIA,
+      stargate: usdtPoolSepolia,
+      symbol: "USDT",
       isTestnet: true,
     },
   };

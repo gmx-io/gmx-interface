@@ -893,7 +893,7 @@ export const DepositView = () => {
           <SyntheticsInfoRow
             label={<Trans>Network Fee</Trans>}
             value={
-              networkFeeUsd !== undefined && networkFee !== undefined && depositViewViemChain ? (
+              networkFee !== undefined && depositViewViemChain ? (
                 <AmountWithUsdBalance
                   className="numbers"
                   amount={networkFee}
@@ -910,7 +910,7 @@ export const DepositView = () => {
             label={<Trans>Deposit Fee</Trans>}
             valueClassName="numbers"
             value={
-              protocolFeeUsd !== undefined && selectedTokenSourceChainDecimals !== undefined ? (
+              protocolFeeAmount !== undefined && selectedTokenSourceChainDecimals !== undefined ? (
                 <AmountWithUsdBalance
                   className="numbers"
                   amount={protocolFeeAmount}
