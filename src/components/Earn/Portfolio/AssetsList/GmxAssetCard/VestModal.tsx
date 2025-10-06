@@ -24,7 +24,6 @@ import Modal from "components/Modal/Modal";
 import { ProgressRow } from "components/ProgressRow/ProgressRow";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
-import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tabs from "components/Tabs/Tabs";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -400,7 +399,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
       isVisible={isVisible}
       setIsVisible={setIsVisible}
       label={t`Vesting`}
-      contentClassName="md:w-[420px] md:min-h-[596px] max-md:pb-20"
+      contentClassName="md:w-[420px] md:min-h-[576px] max-md:pb-20"
       contentPadding={false}
       withMobileBottomPosition={true}
     >
@@ -434,7 +433,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
               <BuyInputSection
                 topLeftLabel={t`Deposit`}
                 topRightLabel={t`Max`}
-                topRightValue={formatAmount(depositConfig.maxAmount, 18, 4, true)}
+                topRightValue={formatGmxAmount(depositConfig.maxAmount)}
                 onClickMax={
                   depositConfig.maxAmount !== undefined && depositConfig.maxAmount > 0n ? onClickMax : undefined
                 }
@@ -455,11 +454,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
 
           {activeAction === "withdraw" && (
             <>
-              <BuyInputSection
-                topLeftLabel={t`Withdraw`}
-                inputValue={formatAmount(vestedAmount, 18, 4, true)}
-                isDisabled
-              >
+              <BuyInputSection topLeftLabel={t`Withdraw`} inputValue={formatGmxAmount(vestedAmount)} isDisabled>
                 <div className="flex items-center gap-4">
                   <EsGmxIcon />
                   esGMX
@@ -474,11 +469,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
 
           {activeAction === "claim" && (
             <>
-              <BuyInputSection
-                topLeftLabel={t`Claim`}
-                inputValue={formatAmount(claimableAmount, 18, 4, true)}
-                isDisabled
-              >
+              <BuyInputSection topLeftLabel={t`Claim`} inputValue={formatGmxAmount(claimableAmount)} isDisabled>
                 <div className="flex items-center gap-4">
                   <GmxIcon className="size-20" />
                   GMX
@@ -492,35 +483,36 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
           )}
 
           <div className="mt-8 flex flex-col gap-12">
-            <SyntheticsInfoRow
-              label={<Trans>Wallet</Trans>}
-              value={`${formatAmount(processedData?.esGmxBalance, 18, 4, true)} esGMX`}
-            />
-            <SyntheticsInfoRow
+            <ProgressRow
               label={<Trans>Claimable</Trans>}
-              value={`${formatAmount(claimableAmount, 18, 4, true)} GMX`}
+              value={`${formatGmxAmount(claimableAmount)} GMX`}
+              currentValue={claimableAmount}
+              totalValue={vestedAmount}
+            />
+            <ProgressRow
+              label={<Trans>Vesting Status</Trans>}
+              value={`${formatGmxAmount(claimSum)} / ${formatGmxAmount(vestedAmount)}`}
+              currentValue={claimSum}
+              totalValue={vestedAmount}
             />
             {selectedVault === "gmx" && gmxDepositConfig.reserveAmount !== undefined && (
               <ProgressRow
                 label={<Trans>Staked tokens reserved for vesting</Trans>}
                 value={
                   <TooltipWithPortal
-                    handle={`${formatAmount(gmxReservePreview.nextReserveAmount, 18, 2, true)} / ${formatAmount(
-                      gmxDepositConfig.maxReserveAmount,
-                      18,
-                      2,
-                      true
+                    handle={`${formatGmxAmount(gmxReservePreview.nextReserveAmount)} / ${formatGmxAmount(
+                      gmxDepositConfig.maxReserveAmount
                     )}`}
                     position="top-end"
+                    handleClassName="whitespace-nowrap"
                     content={
                       <div className="flex flex-col gap-8 text-typography-primary">
                         <span>
-                          <Trans>Current Reserved: {formatAmount(gmxDepositConfig.reserveAmount, 18, 2, true)}</Trans>
+                          <Trans>Current Reserved: {formatGmxAmount(gmxDepositConfig.reserveAmount)}</Trans>
                         </span>
                         <span>
                           <Trans>
-                            Additional reserve required:{" "}
-                            {formatAmount(gmxReservePreview.additionalReserveAmount, 18, 2, true)}
+                            Additional reserve required: {formatGmxAmount(gmxReservePreview.additionalReserveAmount)}
                           </Trans>
                         </span>
                       </div>
@@ -535,20 +527,17 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
               label={<Trans>Vault Capacity</Trans>}
               value={
                 <TooltipWithPortal
-                  handle={`${formatAmount(
-                    selectedVault === "gmx" ? gmxReservePreview.nextDepositAmount : affiliateNextDepositAmount,
-                    18,
-                    2,
-                    true
-                  )} / ${formatAmount(depositConfig.maxVestableAmount, 18, 2, true)}`}
+                  handle={`${formatGmxAmount(
+                    selectedVault === "gmx" ? gmxReservePreview.nextDepositAmount : affiliateNextDepositAmount
+                  )} / ${formatGmxAmount(depositConfig.maxVestableAmount)}`}
                   position="top-end"
                   content={
                     <div className="flex flex-col gap-8 text-typography-primary">
                       <span>
-                        <Trans>Deposited: {formatAmount(depositConfig.vestedAmount, 18, 2, true)} esGMX</Trans>
+                        <Trans>Deposited: {formatGmxAmount(depositConfig.vestedAmount)} esGMX</Trans>
                       </span>
                       <span>
-                        <Trans>Max Capacity: {formatAmount(depositConfig.maxVestableAmount, 18, 2, true)} esGMX</Trans>
+                        <Trans>Max Capacity: {formatGmxAmount(depositConfig.maxVestableAmount)} esGMX</Trans>
                       </span>
                     </div>
                   }
@@ -557,15 +546,13 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
               currentValue={selectedVault === "gmx" ? gmxReservePreview.nextDepositAmount : affiliateNextDepositAmount}
               totalValue={depositConfig.maxVestableAmount}
             />
-            <ProgressRow
-              label={<Trans>Vesting Status</Trans>}
-              value={`${formatAmount(claimSum, 18, 4, true)} / ${formatAmount(vestedAmount, 18, 4, true)}`}
-              currentValue={claimSum}
-              totalValue={vestedAmount}
-            />
           </div>
         </div>
       </div>
     </Modal>
   );
 }
+
+const formatGmxAmount = (amount: bigint | undefined) => {
+  return formatAmount(amount, 18, 4, true);
+};
