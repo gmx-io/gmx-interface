@@ -4,9 +4,10 @@ import useSWR from "swr";
 
 import { metrics } from "lib/metrics";
 import { getSubsquidGraphClient } from "lib/subgraph";
+import { MarketInfo as SquidMarketInfo } from "sdk/types/subsquid";
 import { queryPaginated } from "sdk/utils/subgraph";
 
-import { FastMarketInfo, FastMarketInfoData } from "..";
+import { FastMarketInfoData } from "..";
 
 const MARKETS_INFO_QUERY = gql`
   query MarketsInfo($limit: Int, $offset: Int) {
@@ -115,10 +116,10 @@ export function useFastMarketsInfoRequest(chainId: number) {
     fetcher: async () => {
       try {
         const client = getSubsquidGraphClient(chainId);
-        const rawMarketsInfos = await queryPaginated<FastMarketInfo>(
+        const rawMarketsInfos = await queryPaginated<SquidMarketInfo>(
           async (limit, offset) =>
             client
-              ?.query<{ marketInfos: FastMarketInfo[] }>({
+              ?.query<{ marketInfos: SquidMarketInfo[] }>({
                 query: MARKETS_INFO_QUERY,
                 variables: { limit, offset },
                 fetchPolicy: "no-cache",

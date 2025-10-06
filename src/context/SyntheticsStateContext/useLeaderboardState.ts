@@ -6,8 +6,7 @@ import {
   LeaderboardTimeframe,
   LeaderboardTimeframeType,
   LeaderboardDataType,
-  useLeaderboardAccountsData,
-  useLeaderboardPositionsData,
+  useLeaderboardData,
 } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
@@ -35,36 +34,22 @@ export const useLeaderboardState = (account: string | undefined, enabled: boolea
   const [searchAddress, setSearchAddress] = useState("");
 
   const {
-    data: accountsData,
-    error: accountsDataError,
-    isLoading: accountsDataIsLoading,
-  } = useLeaderboardAccountsData(leaderboardDataType === "accounts", chainId, {
-    account,
-    from: timeframe.from,
-    to: timeframe.to,
-  });
-
-  const {
-    data: positionsData,
-    error: positionsDataError,
-    isLoading: positionsDataIsLoading,
-    size: positionsPageIndex,
-    setSize: setPositionsPageIndex,
-  } = useLeaderboardPositionsData(leaderboardDataType === "positions", chainId, {
+    data,
+    error: leaderboardDataError,
+    isLoading,
+  } = useLeaderboardData(enabled, chainId, {
     account,
     from: timeframe.from,
     to: timeframe.to,
     positionsSnapshotTimestamp,
+    leaderboardDataType: leaderboardPageKey === "leaderboard" ? leaderboardDataType : undefined,
   });
-
-  const error = accountsDataError || positionsDataError;
-  const isLoading = accountsDataIsLoading || positionsDataIsLoading;
 
   return useMemo(
     () => ({
-      accounts: accountsData,
-      positions: positionsData,
-      leaderboardDataError: error,
+      accounts: data?.accounts,
+      leaderboardDataError,
+      positions: data?.positions,
       leaderboardTimeframeType,
       setLeaderboardTimeframeType,
       leaderboardDataType,
@@ -77,13 +62,11 @@ export const useLeaderboardState = (account: string | undefined, enabled: boolea
       isLoading,
       searchAddress,
       setSearchAddress,
-      positionsPageIndex,
-      setPositionsPageIndex,
     }),
     [
-      accountsData,
-      positionsData,
-      error,
+      data?.accounts,
+      data?.positions,
+      leaderboardDataError,
       leaderboardTimeframeType,
       leaderboardDataType,
       isStartInFuture,
@@ -94,8 +77,6 @@ export const useLeaderboardState = (account: string | undefined, enabled: boolea
       isLoading,
       searchAddress,
       setSearchAddress,
-      positionsPageIndex,
-      setPositionsPageIndex,
     ]
   );
 };

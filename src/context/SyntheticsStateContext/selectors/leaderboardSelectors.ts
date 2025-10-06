@@ -11,9 +11,7 @@ const BASIS_POINTS_DIVISOR = 10000n;
 
 export const selectLeaderboardAccountBases = (s: SyntheticsState) => s.leaderboard.accounts;
 
-export const selectLeaderboardPositionBases = (s: SyntheticsState) => {
-  return s.leaderboard.positions?.flat().filter(Boolean as unknown as FilterOutFalsy);
-};
+export const selectLeaderboardPositionBases = (s: SyntheticsState) => s.leaderboard.positions;
 
 export const selectLeaderboardTimeframeType = (s: SyntheticsState) => s.leaderboard.leaderboardTimeframeType;
 
@@ -34,10 +32,6 @@ export const selectLeaderboardIsLoading = (s: SyntheticsState) => s.leaderboard.
 export const selectLeaderboardSearchAddress = (s: SyntheticsState) => s.leaderboard.searchAddress;
 
 export const selectLeaderboardSetSearchAddress = (s: SyntheticsState) => s.leaderboard.setSearchAddress;
-
-export const selectLeaderboardPositionsPage = (s: SyntheticsState) => s.leaderboard.positionsPageIndex;
-
-export const selectLeaderboardSetPositionsPage = (s: SyntheticsState) => s.leaderboard.setPositionsPageIndex;
 
 export const selectLeaderboardIsCompetition = createSelector(function selectLeaderboardIsCompetition(q) {
   const pageKey = q((s) => s.leaderboard.leaderboardPageKey);
