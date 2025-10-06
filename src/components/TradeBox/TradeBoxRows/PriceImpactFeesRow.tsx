@@ -14,6 +14,7 @@ import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats
 import { formatPercentage, PRECISION } from "lib/numbers";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "sdk/configs/factors";
 import { bigMath } from "sdk/utils/bigmath";
+import { getCappedPriceImpactPercentageFromFees } from "sdk/utils/fees";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -31,54 +32,19 @@ export function PriceImpactFeesRow() {
   const estimatedRebatesPercentage = tradingIncentives?.estimatedRebatePercent ?? 0n;
 
   const { formattedPriceImpactPercentage, isPriceImpactPositive } = useMemo(() => {
-    if (isTrigger) {
-      const totalPriceImpactPercentage =
-        (fees?.totalPendingImpact?.precisePercentage ?? 0n) + (fees?.priceImpactDiff?.precisePercentage ?? 0n);
-
-      const formattedPriceImpactPercentage =
-        totalPriceImpactPercentage === undefined
+    const priceImpactPercentage = isTrigger || isSwap ? getCappedPriceImpactPercentageFromFees({ fees, isSwap }) : 0n;
+    return {
+      formattedPriceImpactPercentage:
+        priceImpactPercentage === undefined
           ? "..."
-          : formatPercentage(totalPriceImpactPercentage, {
+          : formatPercentage(priceImpactPercentage, {
               bps: false,
               signed: true,
               displayDecimals: 3,
-            });
-
-      const isPriceImpactPositive = totalPriceImpactPercentage !== undefined && totalPriceImpactPercentage > 0;
-
-      return {
-        totalPriceImpactPercentage,
-        formattedPriceImpactPercentage: formattedPriceImpactPercentage,
-        isPriceImpactPositive,
-      };
-    } else if (isSwap) {
-      const formattedPriceImpactPercentage =
-        fees?.swapPriceImpact?.precisePercentage === undefined
-          ? "..."
-          : formatPercentage(fees?.swapPriceImpact?.precisePercentage, {
-              bps: false,
-              signed: true,
-              displayDecimals: 3,
-            });
-
-      return {
-        formattedPriceImpactPercentage: formattedPriceImpactPercentage,
-        isPriceImpactPositive:
-          fees?.swapPriceImpact?.precisePercentage !== undefined && fees?.swapPriceImpact?.precisePercentage > 0,
-      };
-    } else {
-      return {
-        formattedPriceImpactPercentage: "...",
-        isPriceImpactPositive: false,
-      };
-    }
-  }, [
-    isTrigger,
-    isSwap,
-    fees?.totalPendingImpact?.precisePercentage,
-    fees?.priceImpactDiff?.precisePercentage,
-    fees?.swapPriceImpact?.precisePercentage,
-  ]);
+            }),
+      isPriceImpactPositive: priceImpactPercentage !== undefined && priceImpactPercentage > 0,
+    };
+  }, [fees, isTrigger, isSwap]);
 
   const rebateIsApplicable =
     fees?.positionFee?.deltaUsd !== undefined && fees.positionFee.deltaUsd <= 0 && feesType !== "swap";
@@ -201,8 +167,8 @@ export function PriceImpactFeesRow() {
             handle={t`Price Impact`}
             content={
               <Trans>
-                There is no price impact for increasing positions, and orders are filled at the mark price. Price impact
-                is applied during position decreases.
+                There is no price impact for increase orders, orders are filled at the mark price. Price impact is
+                applied during decrease orders.{" "}
                 <ExternalLink href={"https://docs.gmx.io/docs/trading/v2#price-impact"} newTab>
                   Read more
                 </ExternalLink>

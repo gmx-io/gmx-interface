@@ -62,15 +62,10 @@ export function getPositionFee(
 export function getFundingFactorPerPeriod(marketInfo: MarketInfo, isLong: boolean, periodInSeconds: number) {
   const { fundingFactorPerSecond, longsPayShorts, longInterestUsd, shortInterestUsd } = marketInfo;
 
-  const largerInterestUsd = bigMath.max(longInterestUsd, shortInterestUsd);
-
   const payingInterestUsd = longsPayShorts ? longInterestUsd : shortInterestUsd;
   const receivingInterestUsd = longsPayShorts ? shortInterestUsd : longInterestUsd;
 
-  let fundingForPayingSide = 0n;
-  if (payingInterestUsd !== 0n) {
-    fundingForPayingSide = bigMath.mulDiv(fundingFactorPerSecond, largerInterestUsd, payingInterestUsd);
-  }
+  const fundingForPayingSide = fundingFactorPerSecond;
   let fundingForReceivingSide = 0n;
   if (receivingInterestUsd !== 0n) {
     fundingForReceivingSide = bigMath.mulDiv(fundingForPayingSide, payingInterestUsd, receivingInterestUsd);

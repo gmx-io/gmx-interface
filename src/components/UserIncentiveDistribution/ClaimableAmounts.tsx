@@ -81,7 +81,7 @@ export default function ClaimableAmounts() {
   );
 
   const signClaimTerms = useCallback(async () => {
-    if (!account || !claimTerms || !publicClient || !walletClient || !signer || !accountType) {
+    if (!account || !claimTerms || !publicClient || !walletClient || !signer || accountType === null) {
       return;
     }
 
@@ -115,12 +115,11 @@ export default function ClaimableAmounts() {
     async function runCheckValidity() {
       try {
         if (
-          !accountType ||
+          accountType === null ||
           ![AccountType.Safe, AccountType.SmartAccount].includes(accountType) ||
           !account ||
           !publicClient ||
-          !claimTerms ||
-          !claimTermsAcceptedSignature
+          !claimTerms
         ) {
           setIsSafeSigValid(false);
           return;
@@ -133,8 +132,10 @@ export default function ClaimableAmounts() {
           claimTerms,
           claimTermsAcceptedSignature,
         });
+
         setIsSafeSigValid(isValid);
         setIsContractOwnersSigned(isValid);
+        setClaimTermsAcceptedSignature(isValid ? claimTermsAcceptedSignature || "0x" : "");
       } catch (e) {
         setIsSafeSigValid(false);
       }
@@ -149,7 +150,15 @@ export default function ClaimableAmounts() {
         clearInterval(intervalId);
       }
     };
-  }, [accountType, account, publicClient, claimTerms, claimTermsAcceptedSignature, chainId]);
+  }, [
+    accountType,
+    account,
+    publicClient,
+    claimTerms,
+    claimTermsAcceptedSignature,
+    chainId,
+    setClaimTermsAcceptedSignature,
+  ]);
 
   const claimFundsTransactionCallback = useClaimFundsTransactionCallback({
     tokens: claimableTokens,
@@ -216,7 +225,9 @@ export default function ClaimableAmounts() {
     });
 
     const hasAvailableFundsToCoverExecutionFee =
-      userNativeTokenBalance !== undefined && userNativeTokenBalance >= requiredExecutionFee;
+      userNativeTokenBalance !== undefined &&
+      executionFee !== undefined &&
+      userNativeTokenBalance >= requiredExecutionFee;
 
     isButtonDisabled = !hasAvailableFundsToCoverExecutionFee;
 
@@ -245,11 +256,11 @@ export default function ClaimableAmounts() {
     let buttonTooltipText: React.ReactNode | null = null;
 
     if (isSmartAccount && !isContractOwnersSigned) {
-      buttonTooltipText = <Trans>Please accept the Claim Terms above to continue.</Trans>;
+      buttonTooltipText = <Trans>Accept the claim terms to continue.</Trans>;
     }
 
     if (accountType === AccountType.Safe && isStartedMultisig && !isSafeSigValid) {
-      buttonTooltipText = <Trans>Waiting for remaining Safe confirmations...</Trans>;
+      buttonTooltipText = <Trans>Waiting for the remaining Safe confirmations.</Trans>;
     }
 
     if (totalFundsToClaimUsd === 0n) {
@@ -374,7 +385,7 @@ export default function ClaimableAmounts() {
       </div>
 
       {!hasAvailableFundsToCoverExecutionFee ? (
-        <AlertInfoCard type="warning">
+        <AlertInfoCard type="warning" hideClose>
           <Trans>Insufficient gas for network fees</Trans>
         </AlertInfoCard>
       ) : null}

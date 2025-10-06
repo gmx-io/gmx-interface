@@ -42,10 +42,10 @@ describe("getFundingFactorPerPeriod", () => {
     } as MarketInfo;
 
     const forLongs = getFundingFactorPerPeriod(marketInfo, true, second);
-    expect(forLongs.toString()).toBe(toFactor("50%").toString());
+    expect(forLongs.toString()).toBe(toFactor("40%").toString());
 
     const forShorts = getFundingFactorPerPeriod(marketInfo, false, second);
-    expect(forShorts.toString()).toBe(toFactor("-62.5%").toString());
+    expect(forShorts.toString()).toBe(toFactor("-50%").toString());
   });
 
   it("works when long pay, shorts OI bigger", () => {
@@ -57,10 +57,10 @@ describe("getFundingFactorPerPeriod", () => {
     } as MarketInfo;
 
     const forLongs = getFundingFactorPerPeriod(marketInfo, true, second);
-    expect(forLongs.toString()).toBe(toFactor("-62.5%").toString());
+    expect(forLongs.toString()).toBe(toFactor("-50%").toString());
 
     const forShorts = getFundingFactorPerPeriod(marketInfo, false, second);
-    expect(forShorts.toString()).toBe(toFactor("50%").toString());
+    expect(forShorts.toString()).toBe(toFactor("40%").toString());
   });
 
   it("works when long pay, longs OI bigger", () => {

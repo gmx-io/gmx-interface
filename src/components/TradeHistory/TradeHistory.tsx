@@ -149,7 +149,7 @@ export function TradeHistory(p: Props) {
       <div className="flex items-center justify-between gap-8 pl-20 pr-8 pt-8">
         {!isMobile ? (
           <span className="text-body-medium font-medium">
-            <Trans>Trade history</Trans>
+            <Trans>Trade History</Trans>
           </span>
         ) : null}
 
@@ -185,7 +185,7 @@ export function TradeHistory(p: Props) {
               <TableTh className="TradeHistorySynthetics-pnl-fees-header w-[12%]">
                 <TooltipWithPortal
                   variant="iconStroke"
-                  content={<Trans>Realized PnL after fees and price impact.</Trans>}
+                  content={<Trans>Realized PnL after fees and net price impact.</Trans>}
                 >
                   <Trans>RPnL</Trans>
                 </TooltipWithPortal>

@@ -39,11 +39,13 @@ export function DisplaySettings() {
             <TooltipWithPortal
               handle={<Trans>Breakdown Net Price Impact</Trans>}
               position="top"
+              variant="icon"
               renderContent={() => (
                 <div>
                   <Trans>
-                    The net price impact is broken down into stored impact and close price impact in the net value
-                    tooltip and execution details in the close modal. Display stored impact for increase actions.{" "}
+                    Displays the stored price impact for increase orders. The net price impact is broken down into
+                    stored price impact and close price impact in the net value tooltip and execution details in the
+                    close modal.{" "}
                     <ExternalLink href="https://docs.gmx.io/docs/trading/v2#price-impact" newTab>
                       Read more
                     </ExternalLink>
