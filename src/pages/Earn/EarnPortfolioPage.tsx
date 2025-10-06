@@ -5,6 +5,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
+import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import EarnPageLayout from "pages/Earn/EarnPageLayout";
@@ -28,11 +29,22 @@ export default function EarnPortfolioPage() {
     { period: "total" }
   );
 
-  const { marketsTokensApyData: marketsThirtyDayApyData, glvApyInfoData: glvThirtyDayApyData } = useGmMarketsApy(
+  const { marketsTokensApyData: markets30dApyData, glvApyInfoData: glv30dApyData } = useGmMarketsApy(
     chainId,
     srcChainId,
     { period: "30d" }
   );
+
+  const { marketsTokensApyData: markets90dApyData, glvApyInfoData: glv90dApyData } = useGmMarketsApy(
+    chainId,
+    srcChainId,
+    { period: "90d" }
+  );
+
+  const { performance: performance90d } = usePerformanceAnnualized({
+    chainId,
+    period: "90d",
+  });
 
   const gmGlvAssets = useMemo(() => {
     if (!marketsInfoData || !marketTokensData) {
@@ -75,17 +87,20 @@ export default function EarnPortfolioPage() {
               marketTokensData={marketTokensData}
               glvTotalApyData={glvTotalApyData}
               marketsTotalApyData={marketsTotalApyData}
-              glvThirtyDayApyData={glvThirtyDayApyData}
-              marketsThirtyDayApyData={marketsThirtyDayApyData}
+              glvThirtyDayApyData={glv30dApyData}
+              marketsThirtyDayApyData={markets30dApyData}
             />
           )}
-          <RecommendedAssets
-            hasGmxAssets={hasGmxAssets}
-            marketsInfoData={marketsInfoData}
-            marketsApyInfo={marketsThirtyDayApyData}
-            marketTokensData={marketTokensData}
-            glvsApyInfo={glvThirtyDayApyData}
-          />
+          {glv90dApyData && markets90dApyData && performance90d && (
+            <RecommendedAssets
+              hasGmxAssets={hasGmxAssets}
+              marketsInfoData={marketsInfoData}
+              marketTokensData={marketTokensData}
+              marketsApyInfo={markets90dApyData}
+              glvsApyInfo={glv90dApyData}
+              performance={performance90d}
+            />
+          )}
           {!hasAnyAssets && (
             <AssetsList
               processedData={processedData}
@@ -97,8 +112,8 @@ export default function EarnPortfolioPage() {
               marketTokensData={marketTokensData}
               glvTotalApyData={glvTotalApyData}
               marketsTotalApyData={marketsTotalApyData}
-              glvThirtyDayApyData={glvThirtyDayApyData}
-              marketsThirtyDayApyData={marketsThirtyDayApyData}
+              glvThirtyDayApyData={glv30dApyData}
+              marketsThirtyDayApyData={markets30dApyData}
             />
           )}
         </>

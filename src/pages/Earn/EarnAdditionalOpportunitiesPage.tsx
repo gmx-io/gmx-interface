@@ -20,7 +20,6 @@ import OpportunityCard from "components/Earn/AdditionalOpportunities/Opportunity
 import OpportunityFilters, {
   AVAILABLE_FILTERS,
   OpportunityFilterValue,
-  TAG_FILTER_ORDER,
 } from "components/Earn/AdditionalOpportunities/OpportunityFilters";
 import {
   OpportunityAsset,

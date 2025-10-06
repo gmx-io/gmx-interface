@@ -12,9 +12,10 @@ import {
   isMarketInfo,
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { TokensData } from "domain/tokens";
+import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
+import { convertToUsd, getMidPrice, TokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
-import { formatPercentage } from "lib/numbers";
+import { expandDecimals, formatPercentage, USD_DECIMALS } from "lib/numbers";
 import { AnyChainId } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { MarketInfo, MarketTokensAPRData } from "sdk/types/markets";
@@ -28,7 +29,7 @@ import BoltGradientIcon from "img/ic_bolt_gradient.svg?react";
 import GmxIcon from "img/ic_gmx_40.svg?react";
 import NewLinkIcon from "img/ic_new_link.svg?react";
 
-const getGlvsToShow = ({
+const getRecommendedGlvs = ({
   hasGmxAssets,
   marketsInfoData,
 }: {
@@ -44,18 +45,22 @@ const getGlvsToShow = ({
   return glvs.slice(0, maxCount);
 };
 
-const getGmsToShow = ({
+export const MIN_LIQUIDITY_USD = expandDecimals(500_000, USD_DECIMALS);
+
+const getRecommendedGms = ({
   hasGmxAssets,
   marketsInfoData,
   glvsToShow,
   marketsApyInfo,
   marketTokensData,
+  performance,
 }: {
   hasGmxAssets: boolean;
   marketsInfoData: { [marketAddress: string]: GlvOrMarketInfo };
   glvsToShow: GlvInfo[];
-  marketsApyInfo: MarketTokensAPRData | undefined;
-  marketTokensData: TokensData | undefined;
+  marketsApyInfo: MarketTokensAPRData;
+  marketTokensData: TokensData;
+  performance: PerformanceData;
 }) => {
   let count = 4;
 
@@ -75,6 +80,23 @@ const getGmsToShow = ({
 
       return typeof balance === "undefined" || balance <= 0n;
     })
+    .filter((info) => {
+      const midLongPrice = getMidPrice(info.longToken.prices);
+      const midShortPrice = getMidPrice(info.shortToken.prices);
+
+      const longPoolUsd = convertToUsd(info.longPoolAmount, info.longToken.decimals, midLongPrice);
+      const shortPoolUsd = convertToUsd(info.shortPoolAmount, info.shortToken.decimals, midShortPrice);
+      const totalPoolUsd = (longPoolUsd ?? 0n) + (shortPoolUsd ?? 0n);
+
+      const poolPerformance = getByKey(performance, info.marketTokenAddress);
+
+      return (
+        !info.isDisabled &&
+        totalPoolUsd >= MIN_LIQUIDITY_USD &&
+        typeof poolPerformance !== "undefined" &&
+        poolPerformance > 0n
+      );
+    })
     .sort((a, b) => {
       return (getByKey(marketsApyInfo, b.marketTokenAddress) ?? 0n) >
         (getByKey(marketsApyInfo, a.marketTokenAddress) ?? 0n)
@@ -90,30 +112,33 @@ export function RecommendedAssets({
   marketsApyInfo,
   glvsApyInfo,
   marketTokensData,
+  performance,
 }: {
   hasGmxAssets: boolean;
   marketsInfoData: { [marketAddress: string]: GlvOrMarketInfo };
-  marketsApyInfo: MarketTokensAPRData | undefined;
-  glvsApyInfo: MarketTokensAPRData | undefined;
-  marketTokensData: TokensData | undefined;
+  marketsApyInfo: MarketTokensAPRData;
+  glvsApyInfo: MarketTokensAPRData;
+  marketTokensData: TokensData;
+  performance: PerformanceData;
 }) {
   const { chainId } = useChainId();
   const glvsToShow = useMemo(() => {
-    return getGlvsToShow({
+    return getRecommendedGlvs({
       hasGmxAssets,
       marketsInfoData: marketsInfoData,
     });
   }, [hasGmxAssets, marketsInfoData]);
 
   const gmsToShow = useMemo(() => {
-    return getGmsToShow({
+    return getRecommendedGms({
       hasGmxAssets,
       marketsInfoData: marketsInfoData,
       glvsToShow,
       marketsApyInfo,
       marketTokensData,
+      performance,
     });
-  }, [hasGmxAssets, marketsInfoData, glvsToShow, marketsApyInfo, marketTokensData]);
+  }, [hasGmxAssets, marketsInfoData, glvsToShow, marketsApyInfo, marketTokensData, performance]);
 
   return (
     <section className="flex flex-col gap-8">
