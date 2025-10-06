@@ -50,10 +50,6 @@ msgstr "STIP.b Trading Incentives"
 msgid "You can transfer {nativeTokenSymbol} from other networks to {chainName} using any of the below options:"
 msgstr "You can transfer {nativeTokenSymbol} from other networks to {chainName} using any of the below options:"
 
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "from 5 blockchains"
-msgstr "from 5 blockchains"
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order executed."
 msgstr "Buy order executed."
@@ -4807,6 +4803,10 @@ msgstr "Operates on open, permissionless networks to ensure transparency, decent
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b Retroactive Bonus"
 msgstr "STIP.b Retroactive Bonus"
+
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "from {BLOCKCHAIN_COUNT} blockchains"
+msgstr "from {BLOCKCHAIN_COUNT} blockchains"
 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated."
