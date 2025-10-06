@@ -30,7 +30,7 @@ import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
-import { getIsInsufficientExecutionFeeError } from "lib/errors/customErrors";
+import { getIsInsufficientExecutionFeeError, getIsInvalidSignatureError } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import {
   getGLVSwapMetricId,
@@ -56,7 +56,10 @@ import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tok
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
-import { getInsufficientExecutionFeeToastContent } from "components/Errors/errorToasts";
+import {
+  getInsufficientExecutionFeeToastContent,
+  getInvalidSignatureToastContent,
+} from "components/Errors/errorToasts";
 import { FeesSettlementStatusNotification } from "components/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/StatusNotification/GmStatusNotification";
 import { OrdersStatusNotificiation } from "components/StatusNotification/OrderStatusNotification";
@@ -1052,6 +1055,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
             if (pendingExpressTxn.metricId && !pendingExpressTxn.isRelayerMetricSent) {
               const gelatoError = extractGelatoError(gelatoTaskStatuses[pendingExpressTxn.taskId]);
+
               sendTxnErrorMetric(pendingExpressTxn.metricId, gelatoError, "relayer");
 
               const executionFeeErrorParams = getIsInsufficientExecutionFeeError(gelatoError);
@@ -1073,6 +1077,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                 });
 
                 helperToast.error(totastContent);
+                isViewed = true;
+              }
+
+              const invalidSignatureErrorParams = getIsInvalidSignatureError(gelatoError);
+
+              if (invalidSignatureErrorParams.isErrorMatched) {
+                helperToast.error(getInvalidSignatureToastContent());
                 isViewed = true;
               }
 

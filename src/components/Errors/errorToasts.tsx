@@ -289,6 +289,17 @@ export function getInvalidNetworkToastContent(chainId: number) {
   );
 }
 
+export function getInvalidSignatureToastContent() {
+  return (
+    <div>
+      <Trans>
+        Transaction failed due to signature validation. Please try a different wallet app or switch to 1CT or Classic
+        mode.
+      </Trans>
+    </div>
+  );
+}
+
 export function getInsufficientExecutionFeeToastContent({
   minExecutionFee,
   executionFee,
