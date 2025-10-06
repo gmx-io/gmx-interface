@@ -31,7 +31,7 @@ export function BaseAssetCard({
 
       {children}
 
-      {footer ? <div className="mt-auto">{footer}</div> : null}
+      <div className="mt-auto">{footer}</div>
     </div>
   );
 }

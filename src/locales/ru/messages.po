@@ -980,9 +980,9 @@ msgstr "Рыночная капитализация"
 msgid "Average leverage used."
 msgstr "Средний используемый левередж."
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
-#~ msgid "GMX Rewards"
-#~ msgstr ""
+#: src/components/Earn/Discovery/EarnDocumentation.tsx
+msgid "GMX Rewards"
+msgstr ""
 
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/TotalRewardsCard.tsx
@@ -1522,6 +1522,10 @@ msgstr "Чистая Стоимость"
 msgid "Withdrawn {balanceFormatted} to main account."
 msgstr ""
 
+#: src/components/Earn/Discovery/EarnDocumentation.tsx
+msgid "GMX Token"
+msgstr ""
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -1841,6 +1845,7 @@ msgstr "Стоимость комиссий в USD рассчитывается 
 msgid "Max"
 msgstr "Макс"
 
+#: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/GmList/GmList.tsx
@@ -4280,6 +4285,7 @@ msgstr "Чистая Ставка Шортов / 1ч"
 msgid "Discover GMX Earn"
 msgstr ""
 
+#: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx

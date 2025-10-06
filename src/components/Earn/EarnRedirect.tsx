@@ -1,9 +1,9 @@
 import { useMemo } from "react";
-import { useAccount } from "wagmi";
 
 import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
 import type { TokensData } from "domain/synthetics/tokens";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
+import useWallet from "lib/wallets/useWallet";
 
 import Loader from "components/Loader/Loader";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
@@ -28,7 +28,7 @@ function hasEarnTokenBalance(tokensData: TokensData | undefined) {
 }
 
 export function EarnRedirect() {
-  const { address: account } = useAccount();
+  const { account } = useWallet();
 
   const arbitrumTokens = useTokensDataRequest(ARBITRUM);
   const avalancheTokens = useTokensDataRequest(AVALANCHE);

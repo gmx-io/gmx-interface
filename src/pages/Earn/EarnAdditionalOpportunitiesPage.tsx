@@ -185,18 +185,13 @@ export default function EarnAdditionalOpportunitiesPage() {
       </ColorfulBanner>
 
       <div className="flex flex-col gap-8">
-        <OpportunityFilters
-          activeFilter={activeFilter}
-          search={searchQuery}
-          onSearchChange={setSearchQuery}
-          isForMeDisabled={userTokens.size === 0}
-        />
+        <OpportunityFilters activeFilter={activeFilter} search={searchQuery} onSearchChange={setSearchQuery} />
 
         {filteredOpportunities.length > 0 ? (
           <div className="grid grid-cols-2 gap-8 max-lg:grid-cols-1">
             {filteredOpportunities.map((opportunity) => (
               <OpportunityCard
-                key={opportunity.id}
+                key={opportunity.name}
                 opportunity={opportunity}
                 marketsInfoData={marketsInfoData}
                 tokensData={tokensData}

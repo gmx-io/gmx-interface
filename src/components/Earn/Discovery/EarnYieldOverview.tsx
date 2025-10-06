@@ -67,7 +67,7 @@ function calculateMaxApr(
   return maxValue;
 }
 
-function formatAprValue(value?: bigint) {
+function formatAprValue(value: bigint | undefined) {
   if (value === undefined) {
     return "...%";
   }
@@ -205,7 +205,7 @@ function YieldRow({ token, metric, to, disabled, chainId: targetChainId }: Yield
 
 const CHAINS_ORDER = [ARBITRUM, AVALANCHE, BOTANIX];
 
-export function EarnYieldOverview() {
+export default function EarnYieldOverview() {
   const { address: account } = useAccount();
   const { isDesktop: isTabsMode } = useBreakpoints();
 
@@ -226,44 +226,23 @@ export function EarnYieldOverview() {
   const gmxLink = account && hasGmxHoldings ? "/earn/portfolio" : "/buy";
   const poolsLink = "/pools";
 
-  const {
-    glvApyInfoData: arbGlvApy,
-    glvTokensIncentiveAprData: arbGlvIncentive,
-    marketsTokensApyData: arbGmApy,
-    marketsTokensIncentiveAprData: arbGmIncentive,
-    marketsTokensLidoAprData: arbGmLido,
-  } = useGmMarketsApy(ARBITRUM, undefined, { period: PERIOD });
+  const { glvApyInfoData: arbGlvApy, marketsTokensApyData: arbGmApy } = useGmMarketsApy(ARBITRUM, undefined, {
+    period: PERIOD,
+  });
 
-  const {
-    glvApyInfoData: avaxGlvApy,
-    glvTokensIncentiveAprData: avaxGlvIncentive,
-    marketsTokensApyData: avaxGmApy,
-    marketsTokensIncentiveAprData: avaxGmIncentive,
-    marketsTokensLidoAprData: avaxGmLido,
-  } = useGmMarketsApy(AVALANCHE, undefined, { period: PERIOD });
+  const { glvApyInfoData: avaxGlvApy, marketsTokensApyData: avaxGmApy } = useGmMarketsApy(AVALANCHE, undefined, {
+    period: PERIOD,
+  });
 
-  const {
-    marketsTokensApyData: botanixGmApy,
-    marketsTokensIncentiveAprData: botanixGmIncentive,
-    marketsTokensLidoAprData: botanixGmLido,
-  } = useGmMarketsApy(BOTANIX, undefined, { period: PERIOD });
+  const { marketsTokensApyData: botanixGmApy } = useGmMarketsApy(BOTANIX, undefined, { period: PERIOD });
 
-  const arbMaxGlv = useMemo(() => calculateMaxApr(arbGlvApy, arbGlvIncentive), [arbGlvApy, arbGlvIncentive]);
-  const arbMaxGm = useMemo(
-    () => calculateMaxApr(arbGmApy, arbGmIncentive, arbGmLido),
-    [arbGmApy, arbGmIncentive, arbGmLido]
-  );
+  const arbMaxGlv = useMemo(() => calculateMaxApr(arbGlvApy), [arbGlvApy]);
+  const arbMaxGm = useMemo(() => calculateMaxApr(arbGmApy), [arbGmApy]);
 
-  const avaxMaxGlv = useMemo(() => calculateMaxApr(avaxGlvApy, avaxGlvIncentive), [avaxGlvApy, avaxGlvIncentive]);
-  const avaxMaxGm = useMemo(
-    () => calculateMaxApr(avaxGmApy, avaxGmIncentive, avaxGmLido),
-    [avaxGmApy, avaxGmIncentive, avaxGmLido]
-  );
+  const avaxMaxGlv = useMemo(() => calculateMaxApr(avaxGlvApy), [avaxGlvApy]);
+  const avaxMaxGm = useMemo(() => calculateMaxApr(avaxGmApy), [avaxGmApy]);
 
-  const botanixMaxGm = useMemo(
-    () => calculateMaxApr(botanixGmApy, botanixGmIncentive, botanixGmLido),
-    [botanixGmApy, botanixGmIncentive, botanixGmLido]
-  );
+  const botanixMaxGm = useMemo(() => calculateMaxApr(botanixGmApy), [botanixGmApy]);
 
   const networkCards = useMemo(
     () => ({
@@ -326,7 +305,7 @@ export function EarnYieldOverview() {
         title: <Trans>Botanix</Trans>,
         rows: [
           <YieldRow
-            key="bot-gmx"
+            key="botanix-gmx"
             token="GMX"
             disabled
             chainId={BOTANIX}
@@ -339,7 +318,7 @@ export function EarnYieldOverview() {
             }
           />,
           <YieldRow
-            key="bot-glv"
+            key="botanix-glv"
             token="GLV"
             disabled
             chainId={BOTANIX}
@@ -352,7 +331,7 @@ export function EarnYieldOverview() {
             }
           />,
           <YieldRow
-            key="bot-gm"
+            key="botanix-gm"
             token="GM"
             to={poolsLink}
             chainId={BOTANIX}
@@ -390,7 +369,7 @@ export function EarnYieldOverview() {
 
       {isTabsMode ? (
         <div className="flex flex-col">
-          <Tabs<number>
+          <Tabs
             options={tabs}
             selectedValue={mobileChainId}
             onChange={setMobileChainId}
@@ -414,5 +393,3 @@ export function EarnYieldOverview() {
     </div>
   );
 }
-
-export default EarnYieldOverview;

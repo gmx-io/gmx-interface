@@ -46,56 +46,56 @@ export function BuyGmxModal({
             <BuyGmxModalButton
               variant="secondary"
               icon={<UniswapIcon className="size-20" />}
-              newTab={false}
               to="https://uniswap.org/"
+              newTab
             >
               Uniswap
             </BuyGmxModalButton>
             <BuyGmxModalButton
               variant="secondary"
               icon={<OneInchIcon className="size-20" />}
-              newTab={false}
               to="https://1inch.io/"
+              newTab
             >
               1inch
             </BuyGmxModalButton>
             <BuyGmxModalButton
               variant="secondary"
               icon={<MatchaIcon className="size-20" />}
-              newTab={false}
               to="https://www.matcha.xyz/"
+              newTab
             >
               Matcha
             </BuyGmxModalButton>
             <BuyGmxModalButton
               variant="secondary"
               icon={<BinanceIcon className="size-20" />}
-              newTab={false}
               to="https://www.binance.com/"
+              newTab
             >
               Binance
             </BuyGmxModalButton>
             <BuyGmxModalButton
               variant="secondary"
               icon={<BybitIcon className="size-20" />}
-              newTab={false}
               to="https://www.bybit.com/"
+              newTab
             >
               Bybit
             </BuyGmxModalButton>
             <BuyGmxModalButton
               variant="secondary"
               icon={<BanxaIcon className="size-20" />}
-              newTab={false}
               to="https://www.banxa.com/"
+              newTab
             >
               Banxa
             </BuyGmxModalButton>
             <BuyGmxModalButton
               variant="secondary"
               icon={<TransakIcon className="size-20" />}
-              newTab={false}
               to="https://www.transak.com/"
+              newTab
             >
               Transak
             </BuyGmxModalButton>

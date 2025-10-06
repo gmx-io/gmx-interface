@@ -87,8 +87,8 @@ export default function EarnPortfolioPage() {
               marketTokensData={marketTokensData}
               glvTotalApyData={glvTotalApyData}
               marketsTotalApyData={marketsTotalApyData}
-              glvThirtyDayApyData={glv30dApyData}
-              marketsThirtyDayApyData={markets30dApyData}
+              glv30dApyData={glv30dApyData}
+              markets30dApyData={markets30dApyData}
             />
           )}
           {glv90dApyData && markets90dApyData && performance90d && (
@@ -112,8 +112,8 @@ export default function EarnPortfolioPage() {
               marketTokensData={marketTokensData}
               glvTotalApyData={glvTotalApyData}
               marketsTotalApyData={marketsTotalApyData}
-              glvThirtyDayApyData={glv30dApyData}
-              marketsThirtyDayApyData={markets30dApyData}
+              glv30dApyData={glv30dApyData}
+              markets30dApyData={markets30dApyData}
             />
           )}
         </>

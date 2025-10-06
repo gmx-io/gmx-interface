@@ -108,7 +108,7 @@ const BuyLink = ({
     <Button to={to} onClick={handleClick} variant="secondary" className="flex gap-8">
       <Icon className="size-24" />
       <span className="text-typography-primary">{getChainName(network)}</span>
-      {badge ? <Badge>{badge}</Badge> : null}
+      {badge ? <Badge className="!bg-fill-accent">{badge}</Badge> : null}
     </Button>
   );
 };
@@ -334,7 +334,7 @@ function BuyCard({
     <div className="flex w-full flex-col gap-20 rounded-8 bg-slate-900 p-20">
       <div className="flex flex-col gap-8">
         <div className="flex items-center gap-4">
-          <img src={icon} alt={alt} className="size-16" />
+          <img src={icon} alt={alt} className="size-20" />
           <div className="text-20 font-medium text-typography-primary">{title}</div>
         </div>
         <div className="text-13 text-typography-secondary">{description}</div>

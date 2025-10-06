@@ -25,24 +25,17 @@ export type OpportunityTag =
   | "yield-trading";
 
 export type Opportunity = {
-  id: string;
   name: string;
   description: ReactNode;
   tags: OpportunityTag[];
   assets: OpportunityAsset[];
   icon: string;
-  link?: string;
+  link: string;
 };
 
-export type OpportunityAsset =
-  | { type: "market"; address: string }
-  | { type: "glv"; address: string }
-  | { type: "token"; address: string }
-  | { type: "stGmx" };
+export type OpportunityAsset = { type: "market" | "glv" | "token"; address: string } | { type: "stGmx" };
 
 export const ST_GMX_OPPORTUNITY_ASSET: OpportunityAsset = { type: "stGmx" };
-
-const MARKET_POOL_SEPARATOR = "-";
 
 const makeMarketAsset = (address: string): OpportunityAsset => ({ type: "market", address });
 const makeGlvAsset = (address: string): OpportunityAsset => ({ type: "glv", address });
@@ -75,14 +68,14 @@ export const getOpportunityAssetLabel = (
     case "market": {
       const marketInfo = marketsInfoData?.[asset.address];
       if (marketInfo) {
-        return `GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo, MARKET_POOL_SEPARATOR)}]`;
+        return `GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}]`;
       }
       return undefined;
     }
     case "glv": {
       const glvInfo = marketsInfoData?.[asset.address];
       if (glvInfo) {
-        const poolName = getMarketPoolName(glvInfo, MARKET_POOL_SEPARATOR);
+        const poolName = getMarketPoolName(glvInfo);
         return `GLV [${poolName}]`;
       }
       return undefined;
@@ -109,7 +102,6 @@ export const useOpportunities = () => {
     return {
       [ARBITRUM]: [
         {
-          id: "arbitrum-dolomite",
           name: "Dolomite",
           icon: dolomiteIcon,
           description: (
@@ -160,7 +152,6 @@ export const useOpportunities = () => {
           link: "https://dolomite.io/",
         },
         {
-          id: "arbitrum-beefy",
           name: "Beefy",
           icon: beefyIcon,
           description: (
@@ -174,7 +165,6 @@ export const useOpportunities = () => {
           link: "https://beefy.com/",
         },
         {
-          id: "arbitrum-morpho",
           name: "Morpho",
           icon: morphoIcon,
           description: <Trans>Lend out your GM tokens, and borrow against them.</Trans>,
@@ -186,7 +176,6 @@ export const useOpportunities = () => {
           link: "https://morpho.org/",
         },
         {
-          id: "arbitrum-umami",
           name: "Umami",
           icon: umamiIcon,
           description: (
@@ -201,7 +190,6 @@ export const useOpportunities = () => {
           link: "https://umami.finance/",
         },
         {
-          id: "arbitrum-venus",
           name: "Venus",
           icon: venusIcon,
           description: <Trans>Lend out your GM LP tokens, or borrow against them.</Trans>,
@@ -215,7 +203,6 @@ export const useOpportunities = () => {
           link: "https://venus.io/",
         },
         {
-          id: "arbitrum-radiant",
           name: "Radiant",
           icon: radiantIcon,
           description: <Trans>Lend out your GM LP tokens, or borrow against them.</Trans>,
@@ -233,7 +220,6 @@ export const useOpportunities = () => {
           link: "https://radiant.capital/",
         },
         {
-          id: "arbitrum-deltaprime",
           name: "DeltaPrime",
           icon: deltaPrimeIcon,
           description: <Trans>Lend out your tokens, or borrow against it.</Trans>,
@@ -242,7 +228,6 @@ export const useOpportunities = () => {
           link: "https://deltaprime.io/",
         },
         {
-          id: "arbitrum-gloop",
           name: "Gloop",
           icon: gloopIcon,
           description: <Trans>Lend out your tokens, or borrow against them.</Trans>,
@@ -260,7 +245,6 @@ export const useOpportunities = () => {
       ],
       [AVALANCHE]: [
         {
-          id: "avalanche-beefy",
           name: "Beefy",
           icon: beefyIcon,
           description: (
@@ -273,7 +257,6 @@ export const useOpportunities = () => {
           link: "https://beefy.com/",
         },
         {
-          id: "avalanche-deltaprime",
           name: "DeltaPrime",
           icon: deltaPrimeIcon,
           description: <Trans>Lend out your tokens, or borrow against it.</Trans>,

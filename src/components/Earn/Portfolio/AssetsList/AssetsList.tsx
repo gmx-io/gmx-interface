@@ -23,8 +23,8 @@ export function AssetsList({
   marketTokensData,
   glvTotalApyData,
   marketsTotalApyData,
-  glvThirtyDayApyData,
-  marketsThirtyDayApyData,
+  glv30dApyData,
+  markets30dApyData,
 }: {
   chainId: ContractsChainId;
   processedData: ProcessedData | undefined;
@@ -35,8 +35,8 @@ export function AssetsList({
   marketTokensData: TokensData | undefined;
   glvTotalApyData: MarketTokensAPRData | undefined;
   marketsTotalApyData: MarketTokensAPRData | undefined;
-  glvThirtyDayApyData: MarketTokensAPRData | undefined;
-  marketsThirtyDayApyData: MarketTokensAPRData | undefined;
+  glv30dApyData: MarketTokensAPRData | undefined;
+  markets30dApyData: MarketTokensAPRData | undefined;
 }) {
   return (
     <section className="flex grow flex-col rounded-8 bg-slate-900">
@@ -61,8 +61,8 @@ export function AssetsList({
               }
               thirtyDayFeeApy={
                 isGlvInfo(info)
-                  ? getByKey(glvThirtyDayApyData, info.glvTokenAddress)
-                  : getByKey(marketsThirtyDayApyData, info.marketTokenAddress)
+                  ? getByKey(glv30dApyData, info.glvTokenAddress)
+                  : getByKey(markets30dApyData, info.marketTokenAddress)
               }
             />
           ))}

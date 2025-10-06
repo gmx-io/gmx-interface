@@ -1,4 +1,4 @@
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { ReactNode, useCallback, useState } from "react";
 
 import { ExpandableRow } from "components/ExpandableRow";
@@ -6,7 +6,9 @@ import { ExpandableRow } from "components/ExpandableRow";
 export default function EarnFaq() {
   return (
     <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-20">
-      <h4 className="text-16 font-medium text-typography-primary">{t`FAQ`}</h4>
+      <h4 className="text-16 font-medium text-typography-primary">
+        <Trans>FAQ</Trans>
+      </h4>
       <div className="flex flex-col">
         <EarnFaqItem
           question={<Trans>Where do GMX staking rewards come from?</Trans>}

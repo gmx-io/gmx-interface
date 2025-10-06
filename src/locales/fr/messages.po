@@ -980,9 +980,9 @@ msgstr "Capitalisation boursière"
 msgid "Average leverage used."
 msgstr "Effet de levier moyen utilisé."
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
-#~ msgid "GMX Rewards"
-#~ msgstr ""
+#: src/components/Earn/Discovery/EarnDocumentation.tsx
+msgid "GMX Rewards"
+msgstr ""
 
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/TotalRewardsCard.tsx
@@ -1522,6 +1522,10 @@ msgstr "Valeur nette"
 msgid "Withdrawn {balanceFormatted} to main account."
 msgstr ""
 
+#: src/components/Earn/Discovery/EarnDocumentation.tsx
+msgid "GMX Token"
+msgstr ""
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -1841,6 +1845,7 @@ msgstr "La valeur USD des frais est calculée au moment où ils sont gagnés et 
 msgid "Max"
 msgstr "Max"
 
+#: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/GmList/GmList.tsx
@@ -4280,6 +4285,7 @@ msgstr "Taux net Shorts / 1h"
 msgid "Discover GMX Earn"
 msgstr ""
 
+#: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx

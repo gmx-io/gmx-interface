@@ -14,13 +14,6 @@ import { OpportunityTag, useOpportunityTagLabels } from "./useOpportunities";
 
 export type OpportunityFilterValue = "for-me" | "all" | OpportunityTag;
 
-type Props = {
-  activeFilter: OpportunityFilterValue;
-  search: string;
-  onSearchChange: (value: string) => void;
-  isForMeDisabled?: boolean;
-};
-
 export const TAG_FILTER_ORDER: OpportunityTag[] = [
   "lending-and-borrowing",
   "looping",
@@ -31,7 +24,7 @@ export const TAG_FILTER_ORDER: OpportunityTag[] = [
 
 export const AVAILABLE_FILTERS: OpportunityFilterValue[] = ["for-me", "all", ...TAG_FILTER_ORDER];
 
-const FILTER_EVENT_LABELS: Record<OpportunityFilterValue, string> = {
+const FILTER_ANALYTICS_EVENT_LABELS: Record<OpportunityFilterValue, string> = {
   "for-me": "ForMe",
   all: "All",
   "lending-and-borrowing": "LendingAndBorrowing",
@@ -41,10 +34,15 @@ const FILTER_EVENT_LABELS: Record<OpportunityFilterValue, string> = {
   "yield-trading": "YieldTrading",
 };
 
-export function OpportunityFilters({ activeFilter, search, onSearchChange, isForMeDisabled }: Props) {
-  const forMeClasses =
-    "cursor-not-allowed opacity-50 pointer-events-none hover:opacity-50 focus-visible:outline-none focus-visible:ring-0";
-
+export function OpportunityFilters({
+  activeFilter,
+  search,
+  onSearchChange,
+}: {
+  activeFilter: OpportunityFilterValue;
+  search: string;
+  onSearchChange: (value: string) => void;
+}) {
   const opportunityTagLabels = useOpportunityTagLabels();
 
   const filterOptions = useMemo(
@@ -56,28 +54,23 @@ export function OpportunityFilters({ activeFilter, search, onSearchChange, isFor
             <StarGradientIcon className="size-16" /> <Trans>For me</Trans>
           </div>
         ),
-        className: isForMeDisabled ? { active: forMeClasses, regular: forMeClasses } : undefined,
       },
       { value: "all" as const, label: <Trans>All</Trans> },
       ...TAG_FILTER_ORDER.map((tag) => ({ value: tag, label: opportunityTagLabels[tag] })),
     ],
-    [forMeClasses, isForMeDisabled, opportunityTagLabels]
+    [opportunityTagLabels]
   );
 
   const history = useHistory();
 
   const handleFilterChange = useCallback(
     (value: OpportunityFilterValue) => {
-      if (value === "for-me" && isForMeDisabled) {
-        return;
-      }
-
-      const filterLabel = FILTER_EVENT_LABELS[value] ?? value;
+      const filterLabel = FILTER_ANALYTICS_EVENT_LABELS[value] ?? value;
       sendEarnOpportunitiesFilterAppliedEvent(filterLabel);
 
       history.push(`/earn/additional-opportunities/${value}`);
     },
-    [isForMeDisabled, history]
+    [history]
   );
 
   return (

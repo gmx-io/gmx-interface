@@ -980,9 +980,9 @@ msgstr "시가총액"
 msgid "Average leverage used."
 msgstr "사용된 평균 레버리지."
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
-#~ msgid "GMX Rewards"
-#~ msgstr ""
+#: src/components/Earn/Discovery/EarnDocumentation.tsx
+msgid "GMX Rewards"
+msgstr ""
 
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/TotalRewardsCard.tsx
@@ -1522,6 +1522,10 @@ msgstr "순 가치"
 msgid "Withdrawn {balanceFormatted} to main account."
 msgstr ""
 
+#: src/components/Earn/Discovery/EarnDocumentation.tsx
+msgid "GMX Token"
+msgstr ""
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -1841,6 +1845,7 @@ msgstr "수수료의 USD 가치는 적립 시 계산되며 인센티브를 포�
 msgid "Max"
 msgstr "최대"
 
+#: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/GmList/GmList.tsx
@@ -4280,6 +4285,7 @@ msgstr "숏 순율 / 1시간"
 msgid "Discover GMX Earn"
 msgstr ""
 
+#: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
