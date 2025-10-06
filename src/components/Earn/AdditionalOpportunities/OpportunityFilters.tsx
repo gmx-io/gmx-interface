@@ -2,7 +2,10 @@ import { t, Trans } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
-import { sendEarnOpportunitiesFilterAppliedEvent } from "lib/userAnalytics";
+import {
+  sendEarnOpportunitiesFilterAppliedEvent,
+  EarnPageOpportunitiesAnalyticsFilter,
+} from "lib/userAnalytics/earnAnalytics";
 
 import SearchInput from "components/SearchInput/SearchInput";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
@@ -24,7 +27,7 @@ export const TAG_FILTER_ORDER: OpportunityTag[] = [
 
 export const AVAILABLE_FILTERS: OpportunityFilterValue[] = ["for-me", "all", ...TAG_FILTER_ORDER];
 
-const FILTER_ANALYTICS_EVENT_LABELS: Record<OpportunityFilterValue, string> = {
+const FILTER_ANALYTICS_EVENT_LABELS: Record<OpportunityFilterValue, EarnPageOpportunitiesAnalyticsFilter> = {
   "for-me": "ForMe",
   all: "All",
   "lending-and-borrowing": "LendingAndBorrowing",

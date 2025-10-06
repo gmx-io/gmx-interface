@@ -310,63 +310,6 @@ export type TradePageEditOrderEvent = {
   };
 };
 
-export type EarnAnalyticsTab = "discover" | "portfolio" | "additionalOpportunities" | "distributions";
-
-export type EarnPageViewEvent = {
-  event: "EarnPageView";
-  data: {
-    tab: EarnAnalyticsTab;
-  };
-};
-
-export type EarnPageActionEvent = {
-  event: "EarnPageAction";
-  data: {
-    action: "TabView";
-    tab: EarnAnalyticsTab;
-  };
-};
-
-export type EarnRecommendationContext = "AboutTokens" | "YieldLandscape" | "PortfolioRecommendations";
-
-export type EarnRecommendationToken = "GM" | "GLV" | "GMX";
-
-export type EarnPageRecommendationClickedEvent = {
-  event: "EarnPage";
-  data: {
-    action: "RecommendationClicked";
-    activeTab: EarnAnalyticsTab;
-    context: EarnRecommendationContext;
-    token: EarnRecommendationToken;
-    details?: string;
-  };
-};
-
-export type EarnPagePortfolioItemClickEvent = {
-  event: "EarnPage";
-  data: {
-    action: "PortfolioItemClick";
-    item: EarnRecommendationToken;
-    type: string;
-  };
-};
-
-export type EarnPageOpportunitiesFilterAppliedEvent = {
-  event: "EarnPage";
-  data: {
-    action: "OpportunitiesFilterApplied";
-    filter: string;
-  };
-};
-
-export type EarnPageOpportunityClickedEvent = {
-  event: "EarnPage";
-  data: {
-    action: "OpportunityClicked";
-    name: string;
-  };
-};
-
 export type MultichainActionEvent = {
   event: "MultichainAction";
   data: {

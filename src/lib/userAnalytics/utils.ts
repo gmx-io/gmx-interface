@@ -29,15 +29,6 @@ import {
   AnalyticsOrderType,
   ConnectWalletClickEvent,
   DepthChartInteractionEvent,
-  EarnAnalyticsTab,
-  EarnPageActionEvent,
-  EarnPageOpportunityClickedEvent,
-  EarnPageOpportunitiesFilterAppliedEvent,
-  EarnPagePortfolioItemClickEvent,
-  EarnPageRecommendationClickedEvent,
-  EarnPageViewEvent,
-  EarnRecommendationContext,
-  EarnRecommendationToken,
   PoolsPageBuyConfirmEvent,
   PoolsPageBuyResultEvent,
   TradeBoxConfirmClickEvent,
@@ -484,79 +475,6 @@ export const sendEditOrderEvent = ({
     },
   });
 };
-
-export function sendEarnPageViewEvent(tab: EarnAnalyticsTab) {
-  userAnalytics.pushEvent<EarnPageViewEvent>({
-    event: "EarnPageView",
-    data: {
-      tab,
-    },
-  });
-}
-
-export function sendEarnPageTabViewEvent(tab: EarnAnalyticsTab) {
-  userAnalytics.pushEvent<EarnPageActionEvent>({
-    event: "EarnPageAction",
-    data: {
-      action: "TabView",
-      tab,
-    },
-  });
-}
-
-export function sendEarnRecommendationClickedEvent({
-  activeTab,
-  context,
-  token,
-  details,
-}: {
-  activeTab: EarnAnalyticsTab;
-  context: EarnRecommendationContext;
-  token: EarnRecommendationToken;
-  details?: string;
-}) {
-  userAnalytics.pushEvent<EarnPageRecommendationClickedEvent>({
-    event: "EarnPage",
-    data: {
-      action: "RecommendationClicked",
-      activeTab,
-      context,
-      token,
-      details,
-    },
-  });
-}
-
-export function sendEarnPortfolioItemClickEvent({ item, type }: { item: EarnRecommendationToken; type: string }) {
-  userAnalytics.pushEvent<EarnPagePortfolioItemClickEvent>({
-    event: "EarnPage",
-    data: {
-      action: "PortfolioItemClick",
-      item,
-      type,
-    },
-  });
-}
-
-export function sendEarnOpportunitiesFilterAppliedEvent(filter: string) {
-  userAnalytics.pushEvent<EarnPageOpportunitiesFilterAppliedEvent>({
-    event: "EarnPage",
-    data: {
-      action: "OpportunitiesFilterApplied",
-      filter,
-    },
-  });
-}
-
-export function sendEarnOpportunityClickedEvent(name: string) {
-  userAnalytics.pushEvent<EarnPageOpportunityClickedEvent>({
-    event: "EarnPage",
-    data: {
-      action: "OpportunityClicked",
-      name,
-    },
-  });
-}
 
 export function sendMultichainDepositSuccessEvent({
   settlementChain,

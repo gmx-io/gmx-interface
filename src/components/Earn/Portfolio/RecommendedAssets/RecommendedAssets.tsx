@@ -16,7 +16,7 @@ import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnuali
 import { convertToUsd, getMidPrice, TokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { expandDecimals, formatPercentage, USD_DECIMALS } from "lib/numbers";
-import { sendEarnRecommendationClickedEvent } from "lib/userAnalytics";
+import { sendEarnRecommendationClickedEvent } from "lib/userAnalytics/earnAnalytics";
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import { AnyChainId } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
@@ -277,7 +277,6 @@ function GlvGmxRecommendedAssetItem({
       activeTab: "portfolio",
       context: "PortfolioRecommendations",
       token,
-      details: getMarketIndexName(glvOrMarketInfo),
     });
   };
 

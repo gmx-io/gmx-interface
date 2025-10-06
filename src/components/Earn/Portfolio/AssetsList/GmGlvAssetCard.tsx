@@ -11,7 +11,7 @@ import {
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { formatPercentage } from "lib/numbers";
-import { sendEarnPortfolioItemClickEvent } from "lib/userAnalytics";
+import { sendEarnPortfolioItemClickEvent, EarnPagePortfolioItemType } from "lib/userAnalytics/earnAnalytics";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
@@ -58,11 +58,9 @@ export function GmGlvAssetCard({ token, marketInfo, chainId, totalFeeApy, thirty
   const buyPath = `${detailsPath}&operation=${Operation.Deposit}&mode=${Mode.Single}`;
   const sellPath = `${detailsPath}&operation=${Operation.Withdrawal}&mode=${Mode.Single}`;
 
-  const itemToken = isGlv ? "GLV" : "GM";
-
-  const makeHandleClick = (type: string) => {
+  const makeHandleClick = (type: EarnPagePortfolioItemType) => {
     return () => {
-      sendEarnPortfolioItemClickEvent({ item: itemToken, type });
+      sendEarnPortfolioItemClickEvent({ item: isGlv ? "GLV" : "GM", type });
     };
   };
 

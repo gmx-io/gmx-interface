@@ -2,7 +2,7 @@ import { autoUpdate, flip, FloatingPortal, offset, shift, useFloating } from "@f
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import useSWR from "swr";
 import { zeroAddress } from "viem";
 
@@ -14,7 +14,7 @@ import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT, ProcessedData } from "lib/legacy";
 import { formatAmount, formatUsd } from "lib/numbers";
-import { sendEarnPortfolioItemClickEvent } from "lib/userAnalytics";
+import { sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import { bigMath } from "sdk/utils/bigmath";
@@ -107,21 +107,23 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
     return bigMath.min(stakedAmount, sbfGmxBalance);
   }, [sbfGmxBalance, stakedAmount]);
 
-  const handleOpenStakeModal = useCallback(() => {
-    sendEarnPortfolioItemClickEvent({ item: "GMX", type: esGmx ? "stake_esGMX" : "stake" });
+  const itemToken = esGmx ? "esGMX" : "GMX";
+
+  const handleOpenStakeModal = () => {
+    sendEarnPortfolioItemClickEvent({ item: itemToken, type: "stake" });
     setIsStakeModalVisible(true);
     setStakeValue("");
-  }, [esGmx]);
+  };
 
-  const handleOpenVestModal = useCallback(() => {
-    sendEarnPortfolioItemClickEvent({ item: "GMX", type: "vest" });
+  const handleOpenVestModal = () => {
+    sendEarnPortfolioItemClickEvent({ item: itemToken, type: "vest" });
     setIsVestModalVisible(true);
-  }, []);
+  };
 
-  const handleOpenBuyModal = useCallback(() => {
-    sendEarnPortfolioItemClickEvent({ item: "GMX", type: esGmx ? "buy_esGMX" : "buy" });
+  const handleOpenBuyModal = () => {
+    sendEarnPortfolioItemClickEvent({ item: itemToken, type: "buy" });
     setIsBuyModalVisible(true);
-  }, [esGmx]);
+  };
 
   const priceRowValue = gmxPrice === undefined ? "..." : formatUsd(gmxPrice);
 

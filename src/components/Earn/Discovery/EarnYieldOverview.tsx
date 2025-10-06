@@ -14,7 +14,7 @@ import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
 import { formatPercentage } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
-import { sendEarnRecommendationClickedEvent } from "lib/userAnalytics";
+import { sendEarnRecommendationClickedEvent } from "lib/userAnalytics/earnAnalytics";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 

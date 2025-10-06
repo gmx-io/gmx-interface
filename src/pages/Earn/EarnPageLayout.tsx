@@ -2,8 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 
-import { sendEarnPageTabViewEvent, sendEarnPageViewEvent } from "lib/userAnalytics";
-import type { EarnAnalyticsTab } from "lib/userAnalytics/types";
+import { sendEarnPageTabViewEvent, sendEarnPageViewEvent, EarnAnalyticsTab } from "lib/userAnalytics/earnAnalytics";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
