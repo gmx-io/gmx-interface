@@ -48,6 +48,7 @@ export type EarnPageOpportunitiesAnalyticsFilter =
   | "DeltaNeutralVaults"
   | "Autocompound"
   | "YieldTrading";
+
 export type EarnPageOpportunitiesFilterAppliedEvent = {
   event: "EarnPage";
   data: {

@@ -32,10 +32,10 @@ type Props = {
   marketInfo: GlvOrMarketInfo;
   chainId: ContractsChainId;
   totalFeeApy: bigint | undefined;
-  thirtyDayFeeApy: bigint | undefined;
+  feeApy30d: bigint | undefined;
 };
 
-export function GmGlvAssetCard({ token, marketInfo, chainId, totalFeeApy, thirtyDayFeeApy }: Props) {
+export function GmGlvAssetCard({ token, marketInfo, chainId, totalFeeApy, feeApy30d }: Props) {
   const marketAddress = getGlvOrMarketAddress(marketInfo);
 
   const isGlv = isGlvInfo(marketInfo);
@@ -72,7 +72,7 @@ export function GmGlvAssetCard({ token, marketInfo, chainId, totalFeeApy, thirty
           displaySize={40}
           importSize={40}
           badge={getMarketBadge(chainId, marketInfo)}
-          badgeClassName={isGlv ? "left-[50%] -translate-x-1/2 right-[unset] bottom-0" : undefined}
+          badgeClassName={isGlv ? "left-[50%] -translate-x-1/2 right-[unset] -bottom-1" : undefined}
         />
       }
       title={title}
@@ -97,10 +97,7 @@ export function GmGlvAssetCard({ token, marketInfo, chainId, totalFeeApy, thirty
     >
       <div className="flex flex-col gap-12">
         <SyntheticsInfoRow label={<Trans>Total Fee APY</Trans>} value={formatPercentage(totalFeeApy, { bps: false })} />
-        <SyntheticsInfoRow
-          label={<Trans>30d Fee APY</Trans>}
-          value={formatPercentage(thirtyDayFeeApy, { bps: false })}
-        />
+        <SyntheticsInfoRow label={<Trans>30d Fee APY</Trans>} value={formatPercentage(feeApy30d, { bps: false })} />
         <SyntheticsInfoRow
           label={<Trans>Balance</Trans>}
           value={

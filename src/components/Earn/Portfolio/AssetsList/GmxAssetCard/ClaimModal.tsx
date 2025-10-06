@@ -127,18 +127,18 @@ export function ClaimModal(props: {
 
   const primaryText = useMemo(() => {
     if (!hasAnyPendingRewards) {
-      return t`No rewards`;
+      return <Trans>No rewards</Trans>;
     }
     if (!isAnySelectedToClaim) {
-      return t`Select rewards to claim`;
+      return <Trans>Select rewards to claim</Trans>;
     }
     if (needApproval || isApproving) {
-      return t`Pending GMX approval`;
+      return <Trans>Pending GMX approval</Trans>;
     }
     if (isClaiming) {
-      return t`Claiming...`;
+      return <Trans>Claiming...</Trans>;
     }
-    return t`Claim`;
+    return <Trans>Claim</Trans>;
   }, [hasAnyPendingRewards, isAnySelectedToClaim, needApproval, isApproving, isClaiming]);
 
   const onClickPrimary = useCallback(() => {
@@ -244,7 +244,7 @@ export function ClaimModal(props: {
       withMobileBottomPosition
     >
       <div className="flex flex-col gap-12 pb-20 ">
-        <RewardOptionCard
+        <ClaimRewardOption
           tokenSymbol="GMX"
           amount={totalGmxRewards}
           amountDecimals={18}
@@ -254,7 +254,7 @@ export function ClaimModal(props: {
           secondaryChecked={shouldStakeGmx}
           setSecondaryChecked={toggleShouldStakeGmx}
         />
-        <RewardOptionCard
+        <ClaimRewardOption
           tokenSymbol="esGMX"
           amount={totalEsGmxRewards}
           amountDecimals={18}
@@ -265,7 +265,7 @@ export function ClaimModal(props: {
           setSecondaryChecked={toggleShouldStakeEsGmx}
         />
         {isNativeTokenToClaim && (
-          <RewardOptionCard
+          <ClaimRewardOption
             tokenSymbol={wrappedTokenSymbol}
             amount={totalNativeTokenRewards}
             amountDecimals={18}
@@ -275,6 +275,7 @@ export function ClaimModal(props: {
             secondaryChecked={shouldConvertWeth}
             setSecondaryChecked={toggleConvertWeth}
             nativeTokenSymbol={nativeTokenSymbol}
+            isNativeTokenToClaim={isNativeTokenToClaim}
           />
         )}
       </div>
@@ -310,7 +311,7 @@ export function ClaimModal(props: {
   );
 }
 
-function RewardOptionCard({
+function ClaimRewardOption({
   tokenSymbol,
   amount,
   amountDecimals,
@@ -320,6 +321,7 @@ function RewardOptionCard({
   secondaryChecked,
   setSecondaryChecked,
   nativeTokenSymbol,
+  isNativeTokenToClaim,
 }: {
   tokenSymbol: string;
   amount: bigint | undefined;
@@ -330,6 +332,7 @@ function RewardOptionCard({
   secondaryChecked: boolean | undefined;
   setSecondaryChecked: (value: boolean) => void;
   nativeTokenSymbol?: string;
+  isNativeTokenToClaim?: boolean;
 }) {
   const amountText = amount !== undefined ? `${formatAmount(amount, amountDecimals)} ${amountSymbol}` : "...";
   const isPrimaryDisabled = Boolean(secondaryChecked);
@@ -361,7 +364,7 @@ function RewardOptionCard({
         className="w-full justify-start px-16 py-14 text-left"
       >
         <span className="text-14">
-          {nativeTokenSymbol ? (
+          {nativeTokenSymbol && isNativeTokenToClaim ? (
             <Trans>
               Convert {tokenSymbol} to {nativeTokenSymbol}
             </Trans>

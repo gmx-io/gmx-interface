@@ -174,7 +174,7 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
       <BaseAssetCard
         icon={<img src={icon} alt={title} className="size-40" />}
         title={title}
-        headerButton={<DelegateDropdown />}
+        headerButton={<GmxAssetCardOptionsDropdown />}
         footer={
           <div className={cx("grid w-full grid-cols-2 gap-8", { "grid-cols-3": esGmx })}>
             <Button variant="secondary" onClick={handleOpenBuyModal} className="whitespace-nowrap">
@@ -240,7 +240,7 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
   );
 }
 
-function DelegateDropdown() {
+function GmxAssetCardOptionsDropdown() {
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(8), flip(), shift()],
     placement: "bottom-end",

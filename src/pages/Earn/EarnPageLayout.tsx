@@ -9,9 +9,9 @@ import Button from "components/Button/Button";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 import PageTitle from "components/PageTitle/PageTitle";
 
-export type EarnTabValue = "discovery" | "portfolio" | "additional-opportunities" | "distributions";
+export type EarnTab = "discovery" | "portfolio" | "additional-opportunities" | "distributions";
 
-const TAB_TO_ANALYTICS_MAP: Record<EarnTabValue, EarnAnalyticsTab> = {
+const TAB_TO_ANALYTICS_MAP: Record<EarnTab, EarnAnalyticsTab> = {
   discovery: "discover",
   portfolio: "portfolio",
   "additional-opportunities": "additionalOpportunities",

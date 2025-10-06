@@ -49,9 +49,8 @@ function collectUserMarketAssets(
         return null;
       }
 
-      return isGlvInfo(info)
-        ? ({ type: "glv", address } as OpportunityAsset)
-        : ({ type: "market", address } as OpportunityAsset);
+      const asset: OpportunityAsset = { type: isGlvInfo(info) ? "glv" : "market", address };
+      return asset;
     })
     .filter(defined);
 }

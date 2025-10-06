@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 import { zeroAddress } from "viem";
 
@@ -59,19 +59,19 @@ export function ClaimRewardsButton({ processedData, mutateProcessedData, classNa
 
   const hasNativeRewards = (processedData?.totalNativeTokenRewards ?? 0n) > 0n;
 
-  const handleClick = useCallback(() => {
+  const handleClick = () => {
     if (!active) {
       openConnectModal?.();
       return;
     }
 
     setIsClaimModalVisible(true);
-  }, [active, openConnectModal]);
+  };
 
-  const handleClaimSuccess = useCallback(() => {
+  const handleClaimSuccess = () => {
     refetchBalances?.();
     mutateProcessedData?.();
-  }, [mutateProcessedData, refetchBalances]);
+  };
 
   return (
     <div className={cx("flex justify-end max-lg:w-full", className)}>

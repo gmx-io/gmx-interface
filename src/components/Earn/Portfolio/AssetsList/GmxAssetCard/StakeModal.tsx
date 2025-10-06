@@ -103,10 +103,6 @@ export function StakeModal(props: {
   const stakeMethodName = METHOD_NAME_MAP[tokenSymbol].stake;
   const unstakeMethodName = METHOD_NAME_MAP[tokenSymbol].unstake;
 
-  if (!stakeMethodName || !unstakeMethodName) {
-    throw new Error(`StakeModal: method names are required for token ${tokenSymbol}`);
-  }
-
   const stakeTitle = t`Stake ${tokenSymbol}`;
   const unstakeTitle = t`Unstake ${tokenSymbol}`;
 

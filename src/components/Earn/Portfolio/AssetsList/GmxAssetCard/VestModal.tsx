@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ethers } from "ethers";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -165,11 +165,11 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
     }
 
     if (depositAmount === undefined || depositAmount === 0n) {
-      return t`Enter an amount`;
+      return <Trans>Enter an amount</Trans>;
     }
 
     if (depositConfig.maxAmount !== undefined && depositAmount > depositConfig.maxAmount) {
-      return t`Max amount exceeded`;
+      return <Trans>Max amount exceeded</Trans>;
     }
 
     if (
@@ -178,7 +178,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
       gmxReservePreview.nextReserveAmount !== undefined &&
       gmxReservePreview.nextReserveAmount > gmxDepositConfig.maxReserveAmount
     ) {
-      return t`Insufficient staked tokens`;
+      return <Trans>Insufficient staked tokens</Trans>;
     }
 
     return undefined;
@@ -191,29 +191,23 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
     selectedVault,
   ]);
 
-  const handleSelectVault = useCallback((vault: VestVault) => {
+  const handleSelectVault = (vault: VestVault) => {
     setSelectedVault(vault);
-  }, []);
+  };
 
-  const handleSelectAction = useCallback(
-    (action: VestAction) => {
-      setSelectedActionByVault((prev) => ({ ...prev, [selectedVault]: action }));
-    },
-    [selectedVault]
-  );
+  const handleSelectAction = (action: VestAction) => {
+    setSelectedActionByVault((prev) => ({ ...prev, [selectedVault]: action }));
+  };
 
-  const handleSetDepositValue = useCallback(
-    (value: string) => {
-      setDepositValues((prev) => ({ ...prev, [selectedVault]: value }));
-    },
-    [selectedVault]
-  );
+  const handleSetDepositValue = (value: string) => {
+    setDepositValues((prev) => ({ ...prev, [selectedVault]: value }));
+  };
 
-  const resetDepositValue = useCallback((vault: VestVault) => {
+  const resetDepositValue = (vault: VestVault) => {
     setDepositValues((prev) => ({ ...prev, [vault]: "" }));
-  }, []);
+  };
 
-  const handleDeposit = useCallback(() => {
+  const handleDeposit = () => {
     if (!chainId || !signer || depositAmount === undefined || depositAmount === 0n) {
       return;
     }
@@ -236,9 +230,9 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
       .finally(() => {
         setIsDepositing(false);
       });
-  }, [chainId, depositAmount, resetDepositValue, selectedVault, setIsVisible, setPendingTxns, signer]);
+  };
 
-  const handleWithdraw = useCallback(() => {
+  const handleWithdraw = () => {
     if (!chainId || !signer) {
       return;
     }
@@ -260,9 +254,9 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
       .finally(() => {
         setIsWithdrawing(false);
       });
-  }, [chainId, selectedVault, setIsVisible, setPendingTxns, signer]);
+  };
 
-  const handleClaim = useCallback(() => {
+  const handleClaim = () => {
     if (!chainId || !signer) {
       return;
     }
@@ -283,7 +277,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
       .finally(() => {
         setIsClaiming(false);
       });
-  }, [chainId, setIsVisible, setPendingTxns, signer]);
+  };
 
   const canClaimAffiliate = (vestingData?.affiliateVesterClaimable ?? 0n) > 0n;
 
@@ -303,13 +297,13 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
     ].filter(defined);
   }, [selectedVault]);
 
-  const onClickMax = useCallback(() => {
+  const onClickMax = () => {
     if (depositConfig.maxAmount === undefined || depositConfig.maxAmount === 0n) {
       return;
     }
 
     handleSetDepositValue(formatAmountFree(depositConfig.maxAmount, 18, 18));
-  }, [depositConfig.maxAmount, handleSetDepositValue]);
+  };
 
   const claimableAmount =
     selectedVault === "gmx" ? vestingData?.gmxVesterClaimable : vestingData?.affiliateVesterClaimable;
@@ -370,7 +364,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
     signer,
   ]);
 
-  const handleClick = useCallback(() => {
+  const handleClick = () => {
     switch (activeAction) {
       case "deposit":
         handleDeposit();
@@ -384,7 +378,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
       default:
         mustNeverExist(activeAction);
     }
-  }, [activeAction, handleDeposit, handleWithdraw, handleClaim]);
+  };
 
   const primaryButton = active ? (
     <Button variant="primary-action" className="w-full" onClick={handleClick} disabled={isPrimaryDisabled}>

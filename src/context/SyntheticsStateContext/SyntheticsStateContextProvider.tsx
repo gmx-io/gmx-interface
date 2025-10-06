@@ -76,7 +76,6 @@ export type SyntheticsPageType =
   | "leaderboard"
   | "competitions"
   | "stats"
-  | "stake"
   | "earn"
   | "buy"
   | "home"
@@ -190,8 +189,7 @@ export function SyntheticsStateContextProvider({
   const { isFirstOrder } = useIsFirstOrder(chainId, { account });
 
   const shouldFetchGlvMarkets =
-    isGlvEnabled(chainId) &&
-    (pageType === "pools" || pageType === "buy" || pageType === "stake" || pageType === "earn");
+    isGlvEnabled(chainId) && (pageType === "pools" || pageType === "buy" || pageType === "earn");
   const glvInfo = useGlvMarketsInfo(shouldFetchGlvMarkets, {
     marketsInfoData: marketsInfo.marketsInfoData,
     tokensData: tokensDataResult.tokensData,

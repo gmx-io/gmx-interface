@@ -59,7 +59,7 @@ export function AssetsList({
                   ? getByKey(glvTotalApyData, info.glvTokenAddress)
                   : getByKey(marketsTotalApyData, info.marketTokenAddress)
               }
-              thirtyDayFeeApy={
+              feeApy30d={
                 isGlvInfo(info)
                   ? getByKey(glv30dApyData, info.glvTokenAddress)
                   : getByKey(markets30dApyData, info.marketTokenAddress)
