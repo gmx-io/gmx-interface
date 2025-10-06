@@ -14,6 +14,7 @@ import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT, ProcessedData } from "lib/legacy";
 import { formatAmount, formatUsd } from "lib/numbers";
+import { sendEarnPortfolioItemClickEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import { bigMath } from "sdk/utils/bigmath";
@@ -107,13 +108,20 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
   }, [sbfGmxBalance, stakedAmount]);
 
   const handleOpenStakeModal = useCallback(() => {
+    sendEarnPortfolioItemClickEvent({ item: "GMX", type: esGmx ? "stake_esGMX" : "stake" });
     setIsStakeModalVisible(true);
     setStakeValue("");
-  }, []);
+  }, [esGmx]);
 
   const handleOpenVestModal = useCallback(() => {
+    sendEarnPortfolioItemClickEvent({ item: "GMX", type: "vest" });
     setIsVestModalVisible(true);
   }, []);
+
+  const handleOpenBuyModal = useCallback(() => {
+    sendEarnPortfolioItemClickEvent({ item: "GMX", type: esGmx ? "buy_esGMX" : "buy" });
+    setIsBuyModalVisible(true);
+  }, [esGmx]);
 
   const priceRowValue = gmxPrice === undefined ? "..." : formatUsd(gmxPrice);
 
@@ -167,7 +175,7 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
         headerButton={<DelegateDropdown />}
         footer={
           <div className={cx("grid w-full grid-cols-2 gap-8", { "grid-cols-3": esGmx })}>
-            <Button variant="secondary" onClick={() => setIsBuyModalVisible(true)} className="whitespace-nowrap">
+            <Button variant="secondary" onClick={handleOpenBuyModal} className="whitespace-nowrap">
               <PlusCircleIcon className="size-16 shrink-0" />
               <Trans>Buy GMX</Trans>
             </Button>

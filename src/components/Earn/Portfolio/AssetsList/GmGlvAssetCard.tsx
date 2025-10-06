@@ -11,6 +11,7 @@ import {
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { formatPercentage } from "lib/numbers";
+import { sendEarnPortfolioItemClickEvent } from "lib/userAnalytics";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
@@ -57,6 +58,14 @@ export function GmGlvAssetCard({ token, marketInfo, chainId, totalFeeApy, thirty
   const buyPath = `${detailsPath}&operation=${Operation.Deposit}&mode=${Mode.Single}`;
   const sellPath = `${detailsPath}&operation=${Operation.Withdrawal}&mode=${Mode.Single}`;
 
+  const itemToken = isGlv ? "GLV" : "GM";
+
+  const makeHandleClick = (type: string) => {
+    return () => {
+      sendEarnPortfolioItemClickEvent({ item: itemToken, type });
+    };
+  };
+
   return (
     <BaseAssetCard
       icon={
@@ -71,17 +80,17 @@ export function GmGlvAssetCard({ token, marketInfo, chainId, totalFeeApy, thirty
       title={title}
       subtitle={subtitle}
       headerButton={
-        <Button variant="secondary" className="w-32 !p-0" to={detailsPath}>
+        <Button variant="secondary" className="w-32 !p-0" to={detailsPath} onClick={makeHandleClick("details")}>
           <NewLinkIcon className="size-16" />
         </Button>
       }
       footer={
         <div className="grid w-full grid-cols-2 gap-8">
-          <Button variant="secondary" to={buyPath}>
+          <Button variant="secondary" to={buyPath} onClick={makeHandleClick("buy")}>
             <PlusCircleIcon className="size-16" />
             <Trans>Buy</Trans>
           </Button>
-          <Button variant="secondary" to={sellPath}>
+          <Button variant="secondary" to={sellPath} onClick={makeHandleClick("sell")}>
             <MinusCircleIcon className="size-16" />
             <Trans>Sell</Trans>
           </Button>

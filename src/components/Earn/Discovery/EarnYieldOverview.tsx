@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import uniq from "lodash/uniq";
-import { ReactNode, useCallback, useMemo, useState } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAccount } from "wagmi";
 
@@ -14,6 +14,7 @@ import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
 import { formatPercentage } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
+import { sendEarnRecommendationClickedEvent } from "lib/userAnalytics";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
@@ -142,7 +143,7 @@ function YieldRow({ token, metric, to, disabled, chainId: targetChainId }: Yield
   const { chainId: currentChainId } = useChainId();
   const { active } = useWallet();
 
-  const changeNetwork = useCallback(() => {
+  const changeNetwork = () => {
     if (!targetChainId || targetChainId === currentChainId) {
       return;
     }
@@ -154,7 +155,17 @@ function YieldRow({ token, metric, to, disabled, chainId: targetChainId }: Yield
     } else {
       void switchNetwork(targetChainId, active);
     }
-  }, [active, currentChainId, targetChainId]);
+  };
+
+  const handleClick = () => {
+    sendEarnRecommendationClickedEvent({
+      activeTab: "discover",
+      context: "YieldLandscape",
+      token,
+    });
+
+    changeNetwork();
+  };
 
   const className = cx(
     "group flex items-center justify-between gap-8 border-b-1/2 border-slate-600 px-12 py-8 last:border-b-0",
@@ -186,7 +197,7 @@ function YieldRow({ token, metric, to, disabled, chainId: targetChainId }: Yield
   }
 
   return (
-    <Link to={to} className={className} onClick={changeNetwork}>
+    <Link to={to} className={className} onClick={handleClick}>
       {content}
     </Link>
   );

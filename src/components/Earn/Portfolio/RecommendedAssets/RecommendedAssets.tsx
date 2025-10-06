@@ -16,6 +16,7 @@ import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnuali
 import { convertToUsd, getMidPrice, TokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { expandDecimals, formatPercentage, USD_DECIMALS } from "lib/numbers";
+import { sendEarnRecommendationClickedEvent } from "lib/userAnalytics";
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import { AnyChainId } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
@@ -230,6 +231,16 @@ function RecommendedAssetSection({
 }
 
 function GmxRecommendedAssetItem({ chainId, openBuyGmxModal }: { chainId: AnyChainId; openBuyGmxModal: () => void }) {
+  const handleClick = () => {
+    sendEarnRecommendationClickedEvent({
+      activeTab: "portfolio",
+      context: "PortfolioRecommendations",
+      token: "GMX",
+    });
+
+    openBuyGmxModal();
+  };
+
   return (
     <BaseRecommendedAssetItem
       icon={<GmxIcon className="size-32" />}
@@ -237,7 +248,7 @@ function GmxRecommendedAssetItem({ chainId, openBuyGmxModal }: { chainId: AnyCha
       metricValue={<APRLabel chainId={chainId} label="gmxAprTotal" />}
       metricLabel={<Trans>APR</Trans>}
       button={
-        <Button variant="primary" onClick={openBuyGmxModal}>
+        <Button variant="primary" onClick={handleClick}>
           <Trans>Buy GMX</Trans>
         </Button>
       }
@@ -259,6 +270,17 @@ function GlvGmxRecommendedAssetItem({
         getNormalizedTokenSymbol(glvOrMarketInfo.shortToken.symbol)
       : getNormalizedTokenSymbol(glvOrMarketInfo.indexToken.symbol);
 
+  const handleClick = () => {
+    const token = isGlvInfo(glvOrMarketInfo) ? "GLV" : "GM";
+
+    sendEarnRecommendationClickedEvent({
+      activeTab: "portfolio",
+      context: "PortfolioRecommendations",
+      token,
+      details: getMarketIndexName(glvOrMarketInfo),
+    });
+  };
+
   return (
     <BaseRecommendedAssetItem
       icon={
@@ -274,7 +296,11 @@ function GlvGmxRecommendedAssetItem({
       metricValue={formatPercentage(feeApy, { bps: false })}
       metricLabel={<Trans>Fee APY</Trans>}
       button={
-        <Button variant="primary" to={`/pools/details?market=${getGlvOrMarketAddress(glvOrMarketInfo)}`}>
+        <Button
+          variant="primary"
+          to={`/pools/details?market=${getGlvOrMarketAddress(glvOrMarketInfo)}`}
+          onClick={handleClick}
+        >
           <Trans>Earn</Trans>
         </Button>
       }

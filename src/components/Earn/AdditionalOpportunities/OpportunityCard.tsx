@@ -4,6 +4,7 @@ import cx from "classnames";
 import { getMarketIndexName, getMarketPoolName, GlvAndGmMarketsInfoData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { mustNeverExist } from "lib/types";
+import { sendEarnOpportunityClickedEvent } from "lib/userAnalytics";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { TokensData } from "sdk/types/tokens";
 
@@ -55,7 +56,7 @@ function OpportunityAssets({
           ))}
           {remainingCount > 0 ? (
             <div className="relative -mr-6 size-24">
-              <span className="flex size-24 items-center justify-center rounded-full border-2 border-slate-700 bg-slate-800 text-[11px] font-medium text-typography-secondary normal-nums">{`+${remainingCount}`}</span>
+              <span className="flex size-24 items-center justify-center rounded-full border-2 border-slate-700 bg-slate-800 text-[11px] font-medium normal-nums text-typography-secondary">{`+${remainingCount}`}</span>
             </div>
           ) : null}
         </div>
@@ -180,6 +181,10 @@ export function OpportunityCard({ opportunity, marketsInfoData, tokensData }: Pr
 
   const opportunityTagLabels = useOpportunityTagLabels();
 
+  const handleExploreClick = () => {
+    sendEarnOpportunityClickedEvent(name);
+  };
+
   return (
     <div>
       <div className="flex justify-end gap-12 rounded-t-8 bg-slate-750/50 p-10 dark:bg-slate-750">
@@ -207,7 +212,7 @@ export function OpportunityCard({ opportunity, marketsInfoData, tokensData }: Pr
           </div>
 
           {link ? (
-            <Button variant="secondary" to={link} newTab showExternalLinkArrow>
+            <Button variant="secondary" to={link} newTab showExternalLinkArrow onClick={handleExploreClick}>
               <Trans>Explore</Trans>
             </Button>
           ) : null}

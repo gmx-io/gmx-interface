@@ -3,6 +3,8 @@ import cx from "classnames";
 import { ReactNode, useState } from "react";
 
 import { useBreakpoints } from "lib/useBreakpoints";
+import { sendEarnRecommendationClickedEvent } from "lib/userAnalytics";
+import type { EarnRecommendationToken } from "lib/userAnalytics/types";
 
 import Badge from "components/Badge/Badge";
 import Button from "components/Button/Button";
@@ -102,6 +104,18 @@ export default function EarnProductCard({
 
   const shouldCollapse = isMobile && !isExpanded;
 
+  const handleRecommendationClick = () => {
+    sendEarnRecommendationClickedEvent({
+      activeTab: "discover",
+      context: "AboutTokens",
+      token: content.tokenSymbol as EarnRecommendationToken,
+    });
+
+    if (type === "gmx") {
+      openBuyGmxModal();
+    }
+  };
+
   return (
     <div
       className={cx(
@@ -158,7 +172,7 @@ export default function EarnProductCard({
           variant="primary"
           className="flex-1 justify-center"
           to={type !== "gmx" ? content.cta.to : undefined}
-          onClick={type === "gmx" ? openBuyGmxModal : undefined}
+          onClick={handleRecommendationClick}
         >
           {content.cta.label}
         </Button>

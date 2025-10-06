@@ -1,13 +1,23 @@
-import { t } from "@lingui/macro";
-import { ReactNode } from "react";
+import { t, Trans } from "@lingui/macro";
+import { ReactNode, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
+
+import { sendEarnPageTabViewEvent, sendEarnPageViewEvent } from "lib/userAnalytics";
+import type { EarnAnalyticsTab } from "lib/userAnalytics/types";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 import PageTitle from "components/PageTitle/PageTitle";
 
-export type EarnTabValue = "discovery" | "portfolio" | "additional-opportunities" | "distribution";
+export type EarnTabValue = "discovery" | "portfolio" | "additional-opportunities" | "distributions";
+
+const TAB_TO_ANALYTICS_MAP: Record<EarnTabValue, EarnAnalyticsTab> = {
+  discovery: "discover",
+  portfolio: "portfolio",
+  "additional-opportunities": "additionalOpportunities",
+  distributions: "distributions",
+};
 
 type EarnPageLayoutProps = {
   children?: ReactNode;
@@ -16,12 +26,34 @@ type EarnPageLayoutProps = {
 export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
   const { pathname } = useLocation();
 
-  const tabOptions = [
-    { value: "discovery" as const, label: t`Discover` },
-    { value: "portfolio" as const, label: t`Portfolio` },
-    { value: "additional-opportunities" as const, label: t`Additional Opportunities` },
-    { value: "distributions" as const, label: t`Distributions` },
-  ];
+  const tabOptions = useMemo(
+    () => [
+      { value: "discovery" as const, label: <Trans>Discover</Trans> },
+      { value: "portfolio" as const, label: <Trans>Portfolio</Trans> },
+      { value: "additional-opportunities" as const, label: <Trans>Additional Opportunities</Trans> },
+      { value: "distributions" as const, label: <Trans>Distributions</Trans> },
+    ],
+    []
+  );
+
+  const activeTabValue = useMemo(() => {
+    const match = tabOptions.find((tab) => pathname.startsWith(`/earn/${tab.value}`));
+    return match?.value;
+  }, [pathname, tabOptions]);
+
+  const analyticsTab = useMemo(
+    () => (activeTabValue ? TAB_TO_ANALYTICS_MAP[activeTabValue] : undefined),
+    [activeTabValue]
+  );
+
+  useEffect(() => {
+    if (!analyticsTab) {
+      return;
+    }
+
+    sendEarnPageViewEvent(analyticsTab);
+    sendEarnPageTabViewEvent(analyticsTab);
+  }, [analyticsTab]);
 
   return (
     <AppPageLayout header={<ChainContentHeader />}>

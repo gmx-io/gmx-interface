@@ -2,6 +2,8 @@ import { t, Trans } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
+import { sendEarnOpportunitiesFilterAppliedEvent } from "lib/userAnalytics";
+
 import SearchInput from "components/SearchInput/SearchInput";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tabs from "components/Tabs/Tabs";
@@ -28,6 +30,16 @@ export const TAG_FILTER_ORDER: OpportunityTag[] = [
 ];
 
 export const AVAILABLE_FILTERS: OpportunityFilterValue[] = ["for-me", "all", ...TAG_FILTER_ORDER];
+
+const FILTER_EVENT_LABELS: Record<OpportunityFilterValue, string> = {
+  "for-me": "ForMe",
+  all: "All",
+  "lending-and-borrowing": "LendingAndBorrowing",
+  looping: "Looping",
+  "delta-neutral-vaults": "DeltaNeutralVaults",
+  autocompound: "Autocompound",
+  "yield-trading": "YieldTrading",
+};
 
 export function OpportunityFilters({ activeFilter, search, onSearchChange, isForMeDisabled }: Props) {
   const forMeClasses =
@@ -59,6 +71,9 @@ export function OpportunityFilters({ activeFilter, search, onSearchChange, isFor
       if (value === "for-me" && isForMeDisabled) {
         return;
       }
+
+      const filterLabel = FILTER_EVENT_LABELS[value] ?? value;
+      sendEarnOpportunitiesFilterAppliedEvent(filterLabel);
 
       history.push(`/earn/additional-opportunities/${value}`);
     },
