@@ -1,18 +1,15 @@
 import { Trans } from "@lingui/macro";
 import { ReactNode } from "react";
 
+import { useChainId } from "lib/chains";
+
 import Button from "components/Button/Button";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 
-import OneInchIcon from "img/ic_1inch.svg?react";
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
-import BanxaIcon from "img/ic_banxa.svg?react";
-import BinanceIcon from "img/ic_binance.svg?react";
-import BybitIcon from "img/ic_bybit.svg?react";
 import GmxRoundedWhiteIcon from "img/ic_gmx_rounded_white.svg?react";
-import MatchaIcon from "img/ic_matcha.svg?react";
-import TransakIcon from "img/ic_tansak.svg?react";
-import UniswapIcon from "img/ic_uni_24.svg?react";
+
+import { BUY_GMX_MODAL_LINKS } from "./buyGmxModalConfig";
 
 export function BuyGmxModal({
   isVisible,
@@ -21,6 +18,8 @@ export function BuyGmxModal({
   isVisible: boolean;
   setIsVisible: (isVisible: boolean) => void;
 }) {
+  const { chainId } = useChainId();
+
   return (
     <ModalWithPortal
       isVisible={isVisible}
@@ -43,62 +42,15 @@ export function BuyGmxModal({
             <Trans>Buy on other platforms</Trans>
           </span>
           <div className="grid grid-cols-2 gap-12">
-            <BuyGmxModalButton
-              variant="secondary"
-              icon={<UniswapIcon className="size-20" />}
-              to="https://uniswap.org/"
-              newTab
-            >
-              Uniswap
-            </BuyGmxModalButton>
-            <BuyGmxModalButton
-              variant="secondary"
-              icon={<OneInchIcon className="size-20" />}
-              to="https://1inch.io/"
-              newTab
-            >
-              1inch
-            </BuyGmxModalButton>
-            <BuyGmxModalButton
-              variant="secondary"
-              icon={<MatchaIcon className="size-20" />}
-              to="https://www.matcha.xyz/"
-              newTab
-            >
-              Matcha
-            </BuyGmxModalButton>
-            <BuyGmxModalButton
-              variant="secondary"
-              icon={<BinanceIcon className="size-20" />}
-              to="https://www.binance.com/"
-              newTab
-            >
-              Binance
-            </BuyGmxModalButton>
-            <BuyGmxModalButton
-              variant="secondary"
-              icon={<BybitIcon className="size-20" />}
-              to="https://www.bybit.com/"
-              newTab
-            >
-              Bybit
-            </BuyGmxModalButton>
-            <BuyGmxModalButton
-              variant="secondary"
-              icon={<BanxaIcon className="size-20" />}
-              to="https://www.banxa.com/"
-              newTab
-            >
-              Banxa
-            </BuyGmxModalButton>
-            <BuyGmxModalButton
-              variant="secondary"
-              icon={<TransakIcon className="size-20" />}
-              to="https://www.transak.com/"
-              newTab
-            >
-              Transak
-            </BuyGmxModalButton>
+            {BUY_GMX_MODAL_LINKS.map((button) => {
+              const link = button.getLink(chainId);
+
+              return (
+                <BuyGmxModalButton key={button.id} variant="secondary" icon={button.icon} to={link} newTab>
+                  {button.label}
+                </BuyGmxModalButton>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -108,16 +60,16 @@ export function BuyGmxModal({
 
 export function BuyGmxModalButton({
   to,
-  newTab,
   icon,
   children,
   variant,
+  newTab,
 }: {
   to: string;
-  newTab: boolean;
   icon: ReactNode;
   children: ReactNode;
   variant: "primary" | "secondary";
+  newTab: boolean;
 }) {
   return (
     <Button
