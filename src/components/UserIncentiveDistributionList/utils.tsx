@@ -44,7 +44,7 @@ export async function checkValidity({
       address: account,
       abi: abis.SmartAccount,
       functionName: "isValidSignature",
-      args: [hash, claimTermsAcceptedSignature],
+      args: [hash, claimTermsAcceptedSignature ?? "0x"],
     }),
     publicClient.readContract({
       address: account,
