@@ -66,7 +66,7 @@ export function OpportunityFilters({ activeFilter, search, onSearchChange, isFor
   );
 
   return (
-    <div className="flex gap-12 overflow-hidden rounded-8 bg-slate-900 p-12">
+    <div className="flex gap-12 overflow-hidden rounded-8 bg-slate-900 p-12 max-md:flex-col">
       <div className="flex grow overflow-hidden">
         <TableScrollFadeContainer className="w-full grow">
           <Tabs

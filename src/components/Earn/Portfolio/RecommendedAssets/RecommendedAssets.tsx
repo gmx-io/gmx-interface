@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { ReactNode, useMemo } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import {
@@ -16,6 +16,7 @@ import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnuali
 import { convertToUsd, getMidPrice, TokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { expandDecimals, formatPercentage, USD_DECIMALS } from "lib/numbers";
+import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import { AnyChainId } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { MarketInfo, MarketTokensAPRData } from "sdk/types/markets";
@@ -140,8 +141,11 @@ export function RecommendedAssets({
     });
   }, [hasGmxAssets, marketsInfoData, glvsToShow, marketsApyInfo, marketTokensData, performance]);
 
+  const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
+
   return (
     <section className="flex flex-col gap-8">
+      <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
       <h2 className="flex items-center gap-4 pb-12 pt-20 text-24 font-medium text-typography-primary">
         <BoltGradientIcon className="inline-block size-20" />
         <Trans>Recommended</Trans>
@@ -154,7 +158,13 @@ export function RecommendedAssets({
       >
         {!hasGmxAssets && (
           <RecommendedAssetSection title={<Trans>GMX</Trans>}>
-            {[<GmxRecommendedAssetItem key="gmx" chainId={chainId} />]}
+            {[
+              <GmxRecommendedAssetItem
+                key="gmx"
+                chainId={chainId}
+                openBuyGmxModal={() => setIsBuyGmxModalVisible(true)}
+              />,
+            ]}
           </RecommendedAssetSection>
         )}
         {glvsToShow.length > 0 && (
@@ -219,7 +229,7 @@ function RecommendedAssetSection({
   );
 }
 
-function GmxRecommendedAssetItem({ chainId }: { chainId: AnyChainId }) {
+function GmxRecommendedAssetItem({ chainId, openBuyGmxModal }: { chainId: AnyChainId; openBuyGmxModal: () => void }) {
   return (
     <BaseRecommendedAssetItem
       icon={<GmxIcon className="size-32" />}
@@ -227,7 +237,7 @@ function GmxRecommendedAssetItem({ chainId }: { chainId: AnyChainId }) {
       metricValue={<APRLabel chainId={chainId} label="gmxAprTotal" />}
       metricLabel={<Trans>APR</Trans>}
       button={
-        <Button variant="primary" to="/buy_gmx">
+        <Button variant="primary" onClick={openBuyGmxModal}>
           <Trans>Buy GMX</Trans>
         </Button>
       }

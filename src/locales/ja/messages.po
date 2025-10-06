@@ -6361,6 +6361,7 @@ msgstr "セッション生成済"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
 msgstr "GMXを購入"
@@ -7384,6 +7385,10 @@ msgstr "ポジションが最大許容レバレッジを超えるため、レバ
 msgid "Add {0} to Metamask"
 msgstr "{0}をMetamaskに追加"
 
+#: src/pages/BuyGMX/BuyGmxModal.tsx
+msgid "Buy GMX directly"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
 msgstr "ストップロス失敗"
@@ -7878,6 +7883,10 @@ msgstr "ネットレートはファンディングと借入手数料を組み合
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 msgid "Accrued Price Impact Rebates"
 msgstr "蓄積価格インパクトリベート"
+
+#: src/pages/BuyGMX/BuyGmxModal.tsx
+msgid "Buy on other platforms"
+msgstr ""
 
 #: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx

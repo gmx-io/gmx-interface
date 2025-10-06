@@ -6361,6 +6361,7 @@ msgstr "Сессия сгенерирована"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
 msgstr "Купить GMX"
@@ -7384,6 +7385,10 @@ msgstr "Сохранение плеча недоступно, поскольку
 msgid "Add {0} to Metamask"
 msgstr "Добавить {0} в Metamask"
 
+#: src/pages/BuyGMX/BuyGmxModal.tsx
+msgid "Buy GMX directly"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
 msgstr "Неудачный стоп-лосс"
@@ -7878,6 +7883,10 @@ msgstr "Чистая ставка объединяет комиссии за ф�
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 msgid "Accrued Price Impact Rebates"
 msgstr "Начисленные рибейты за влияние на цену"
+
+#: src/pages/BuyGMX/BuyGmxModal.tsx
+msgid "Buy on other platforms"
+msgstr ""
 
 #: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx

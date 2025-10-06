@@ -13,11 +13,6 @@ import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 type EarnProductType = "gmx" | "glv" | "gm";
 
-type EarnProductCardProps = {
-  type: EarnProductType;
-  className?: string;
-};
-
 type ProductCopy = {
   tokenSymbol: string;
   badge: ReactNode;
@@ -92,7 +87,15 @@ const BULLET_GRADIENT_STYLE = {
   background: "linear-gradient(180deg, #03D1CFFC 10%, #4E09F8 140%)",
 };
 
-export default function EarnProductCard({ type, className }: EarnProductCardProps) {
+export default function EarnProductCard({
+  type,
+  className,
+  openBuyGmxModal,
+}: {
+  type: EarnProductType;
+  className?: string;
+  openBuyGmxModal: () => void;
+}) {
   const content = getCardContent(type);
   const { isMobile } = useBreakpoints();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -151,7 +154,12 @@ export default function EarnProductCard({ type, className }: EarnProductCardProp
             </span>
           </Button>
         )}
-        <Button variant="primary" className="flex-1 justify-center" to={content.cta.to}>
+        <Button
+          variant="primary"
+          className="flex-1 justify-center"
+          to={type !== "gmx" ? content.cta.to : undefined}
+          onClick={type === "gmx" ? openBuyGmxModal : undefined}
+        >
           {content.cta.label}
         </Button>
       </div>

@@ -329,7 +329,7 @@ export function StakeModal(props: {
 
   return (
     <div className="StakeModal">
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={activeTitle}>
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={activeTitle} withMobileBottomPosition={true}>
         <Tabs<StakeModalTab>
           className="mb-12"
           type="inline"

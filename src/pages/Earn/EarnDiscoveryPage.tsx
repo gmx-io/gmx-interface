@@ -1,8 +1,9 @@
 import { Trans } from "@lingui/macro";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { Theme, useTheme } from "context/ThemeContext/ThemeContext";
 import { useBreakpoints } from "lib/useBreakpoints";
+import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import EarnPageLayout from "pages/Earn/EarnPageLayout";
 
 import EarnDocumentation from "components/Earn/Discovery/EarnDocumentation";
@@ -28,8 +29,12 @@ export default function EarnDiscoveryPage() {
 
   const style = useMemo(() => getDiscoverStyle({ theme, isMobileBg: isDesktop }), [theme, isDesktop]);
 
+  const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
+
   return (
     <EarnPageLayout>
+      <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
+
       <div className="flex gap-8 max-md:flex-col">
         <div className="flex grow flex-col gap-8">
           <div className="flex flex-col gap-8 rounded-8 bg-slate-900 p-20" style={style}>
@@ -46,9 +51,9 @@ export default function EarnDiscoveryPage() {
           </div>
 
           <div className="grid gap-8 xl:grid-cols-3">
-            <EarnProductCard type="gmx" />
-            <EarnProductCard type="glv" />
-            <EarnProductCard type="gm" />
+            <EarnProductCard type="gmx" openBuyGmxModal={() => setIsBuyGmxModalVisible(true)} />
+            <EarnProductCard type="glv" openBuyGmxModal={() => setIsBuyGmxModalVisible(true)} />
+            <EarnProductCard type="gm" openBuyGmxModal={() => setIsBuyGmxModalVisible(true)} />
           </div>
           <EarnYieldOverview />
         </div>

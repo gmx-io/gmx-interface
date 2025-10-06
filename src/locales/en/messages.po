@@ -6361,6 +6361,7 @@ msgstr "Session generated"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
 msgstr "Buy GMX"
@@ -7384,6 +7385,10 @@ msgstr "Keep leverage is not available as Position exceeds max. allowed leverage
 msgid "Add {0} to Metamask"
 msgstr "Add {0} to Metamask"
 
+#: src/pages/BuyGMX/BuyGmxModal.tsx
+msgid "Buy GMX directly"
+msgstr "Buy GMX directly"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
 msgstr "Failed Stop Loss"
@@ -7878,6 +7883,10 @@ msgstr "Net rate combines funding and borrowing fees but excludes open, swap or 
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 msgid "Accrued Price Impact Rebates"
 msgstr "Accrued Price Impact Rebates"
+
+#: src/pages/BuyGMX/BuyGmxModal.tsx
+msgid "Buy on other platforms"
+msgstr "Buy on other platforms"
 
 #: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx

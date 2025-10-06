@@ -406,8 +406,9 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
       isVisible={isVisible}
       setIsVisible={setIsVisible}
       label={t`Vesting`}
-      contentClassName="w-[420px] min-h-[596px]"
+      contentClassName="md:w-[420px] md:min-h-[596px] max-md:pb-20"
       contentPadding={false}
+      withMobileBottomPosition={true}
     >
       <div className="flex flex-col gap-20">
         <Tabs

@@ -237,7 +237,12 @@ export function ClaimModal(props: {
   );
 
   return (
-    <ModalWithPortal className="StakeModal" isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Rewards`}>
+    <ModalWithPortal
+      isVisible={isVisible}
+      setIsVisible={setIsVisible}
+      label={t`Claim Rewards`}
+      withMobileBottomPosition
+    >
       <div className="flex flex-col gap-12 pb-20 ">
         <RewardOptionCard
           tokenSymbol="GMX"

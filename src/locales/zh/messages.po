@@ -6361,6 +6361,7 @@ msgstr "会话已生成"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
 msgstr "购买 GMX"
@@ -7384,6 +7385,10 @@ msgstr "保持杠杆不可用，因为仓位超过最大允许杠杆。<0>阅读
 msgid "Add {0} to Metamask"
 msgstr "将 {0} 添加到 Metamask"
 
+#: src/pages/BuyGMX/BuyGmxModal.tsx
+msgid "Buy GMX directly"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
 msgstr "止损失败"
@@ -7878,6 +7883,10 @@ msgstr "净率结合了资金费用和借款费用，但不包括开仓、交换
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 msgid "Accrued Price Impact Rebates"
 msgstr "已累积价格影响返利"
+
+#: src/pages/BuyGMX/BuyGmxModal.tsx
+msgid "Buy on other platforms"
+msgstr ""
 
 #: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx

@@ -2,7 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import keys from "lodash/keys";
 import uniq from "lodash/uniq";
-import { ReactNode, useCallback, useMemo } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 
 import {
   ARBITRUM,
@@ -22,6 +22,7 @@ import { formatAmount } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
+import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 
 import APRLabel from "components/APRLabel/APRLabel";
 import Badge from "components/Badge/Badge";
@@ -70,12 +71,14 @@ const BuyLink = ({
   to,
   network,
   badge,
+  onClick,
 }: {
   chainId: number;
   active: boolean;
-  to: string;
+  to?: string;
   network: number;
   badge?: ReactNode;
+  onClick?: () => void;
 }) => {
   const changeNetwork = useCallback(
     (network) => {
@@ -96,8 +99,13 @@ const BuyLink = ({
 
   const Icon = NETWORK_ICONS[network];
 
+  const handleClick = useCallback(() => {
+    onClick?.();
+    changeNetwork(network);
+  }, [onClick, changeNetwork, network]);
+
   return (
-    <Button to={to} onClick={() => changeNetwork(network)} variant="secondary" className="flex gap-8">
+    <Button to={to} onClick={handleClick} variant="secondary" className="flex gap-8">
       <Icon className="size-24" />
       <span className="text-typography-primary">{getChainName(network)}</span>
       {badge ? <Badge>{badge}</Badge> : null}
@@ -158,8 +166,11 @@ export default function BuyCards() {
     };
   }, [arbGlvApy, avaxGlvApy, arbGlvIncentiveApr, avaxGlvIncentiveApr]);
 
+  const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
+
   return (
     <div className="flex w-full flex-col gap-8">
+      <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
       {chainId !== BOTANIX && (
         <BuyCard
           title={<Trans>GMX</Trans>}
@@ -178,8 +189,8 @@ export default function BuyCards() {
               <BuyLink
                 chainId={chainId}
                 active={active}
-                to={getTrackingLink("/buy_gmx")}
                 network={ARBITRUM}
+                onClick={() => setIsBuyGmxModalVisible(true)}
                 badge={
                   <span>
                     APR <APRLabel chainId={ARBITRUM} label="avgGMXAprTotal" />
@@ -189,8 +200,8 @@ export default function BuyCards() {
               <BuyLink
                 chainId={chainId}
                 active={active}
-                to={getTrackingLink("/buy_gmx")}
                 network={AVALANCHE}
+                onClick={() => setIsBuyGmxModalVisible(true)}
                 badge={
                   <span>
                     APR <APRLabel chainId={AVALANCHE} label="avgGMXAprTotal" />

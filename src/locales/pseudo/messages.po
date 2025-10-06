@@ -6361,6 +6361,7 @@ msgstr ""
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
 msgstr ""
@@ -7384,6 +7385,10 @@ msgstr ""
 msgid "Add {0} to Metamask"
 msgstr ""
 
+#: src/pages/BuyGMX/BuyGmxModal.tsx
+msgid "Buy GMX directly"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
 msgstr ""
@@ -7877,6 +7882,10 @@ msgstr ""
 
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 msgid "Accrued Price Impact Rebates"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGmxModal.tsx
+msgid "Buy on other platforms"
 msgstr ""
 
 #: src/lib/dates.ts

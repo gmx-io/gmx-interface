@@ -15,6 +15,7 @@ import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT, ProcessedData } from "lib/legacy";
 import { formatAmount, formatUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
@@ -44,10 +45,11 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
 
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
   const [stakeValue, setStakeValue] = useState("");
   const [unstakeValue, setUnstakeValue] = useState("");
   const [isVestModalVisible, setIsVestModalVisible] = useState(false);
+  const [isBuyModalVisible, setIsBuyModalVisible] = useState(false);
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
@@ -105,7 +107,7 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
   }, [sbfGmxBalance, stakedAmount]);
 
   const handleOpenStakeModal = useCallback(() => {
-    setIsModalVisible(true);
+    setIsStakeModalVisible(true);
     setStakeValue("");
   }, []);
 
@@ -165,7 +167,7 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
         headerButton={<DelegateDropdown />}
         footer={
           <div className={cx("grid w-full grid-cols-2 gap-8", { "grid-cols-3": esGmx })}>
-            <Button variant="secondary" to="/buy_gmx" className="whitespace-nowrap">
+            <Button variant="secondary" onClick={() => setIsBuyModalVisible(true)} className="whitespace-nowrap">
               <PlusCircleIcon className="size-16 shrink-0" />
               <Trans>Buy GMX</Trans>
             </Button>
@@ -201,8 +203,8 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
       </BaseAssetCard>
 
       <StakeModal
-        isVisible={isModalVisible}
-        setIsVisible={setIsModalVisible}
+        isVisible={isStakeModalVisible}
+        setIsVisible={setIsStakeModalVisible}
         chainId={chainId}
         signer={signer}
         tokenSymbol={stakeTokenSymbol}
@@ -223,6 +225,7 @@ export function GmxAssetCard({ processedData, esGmx = false }: { processedData: 
           reservedAmount={reservedAmount}
         />
       )}
+      <BuyGmxModal isVisible={isBuyModalVisible} setIsVisible={setIsBuyModalVisible} />
     </div>
   );
 }

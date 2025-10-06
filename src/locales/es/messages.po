@@ -6361,6 +6361,7 @@ msgstr "Sesión generada"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
 msgstr "Comprar GMX"
@@ -7384,6 +7385,10 @@ msgstr "Mantener apalancamiento no disponible ya que la Posición excede el apal
 msgid "Add {0} to Metamask"
 msgstr "Agregar {0} a Metamask"
 
+#: src/pages/BuyGMX/BuyGmxModal.tsx
+msgid "Buy GMX directly"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
 msgstr "Stop Loss Fallido"
@@ -7878,6 +7883,10 @@ msgstr "Tasa neta combina comisiones de financiación y préstamo pero excluye c
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 msgid "Accrued Price Impact Rebates"
 msgstr "Reembolsos de Impacto de Precio Acumulados"
+
+#: src/pages/BuyGMX/BuyGmxModal.tsx
+msgid "Buy on other platforms"
+msgstr ""
 
 #: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
