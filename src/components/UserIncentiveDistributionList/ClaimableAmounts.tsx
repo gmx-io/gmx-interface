@@ -64,6 +64,8 @@ export default function ClaimableAmounts() {
     account,
     claimableTokens,
     chainId,
+    isSmartAccount,
+    isContractOwnersSigned,
     claimTermsAcceptedSignature,
     signer,
     distributionId: GLP_DISTRIBUTION_ID,
@@ -78,7 +80,7 @@ export default function ClaimableAmounts() {
   );
 
   const signClaimTerms = useCallback(async () => {
-    if (!account || !claimTerms || !publicClient || !walletClient || !signer || !accountType) {
+    if (!account || !claimTerms || !publicClient || !walletClient || !signer || accountType === null) {
       return;
     }
 
@@ -112,12 +114,12 @@ export default function ClaimableAmounts() {
     async function runCheckValidity() {
       try {
         if (
-          !accountType ||
-          ![AccountType.Safe, AccountType.SmartAccount].includes(accountType) ||
+          accountType === null ||
+          !isSmartAccount ||
           !account ||
           !publicClient ||
           !claimTerms ||
-          !claimTermsAcceptedSignature
+          !isContractOwnersSigned
         ) {
           setIsSafeSigValid(false);
           return;
@@ -130,8 +132,10 @@ export default function ClaimableAmounts() {
           claimTerms,
           claimTermsAcceptedSignature,
         });
+
         setIsSafeSigValid(isValid);
         setIsContractOwnersSigned(isValid);
+        setClaimTermsAcceptedSignature(isValid ? claimTermsAcceptedSignature || "0x" : "");
       } catch (e) {
         setIsSafeSigValid(false);
       }
@@ -146,7 +150,17 @@ export default function ClaimableAmounts() {
         clearInterval(intervalId);
       }
     };
-  }, [accountType, account, publicClient, claimTerms, claimTermsAcceptedSignature, chainId]);
+  }, [
+    accountType,
+    account,
+    publicClient,
+    claimTerms,
+    claimTermsAcceptedSignature,
+    chainId,
+    isSmartAccount,
+    isContractOwnersSigned,
+    setClaimTermsAcceptedSignature,
+  ]);
 
   const claimFundsTransactionCallback = useClaimFundsTransactionCallback({
     tokens: claimableTokens,
@@ -213,7 +227,9 @@ export default function ClaimableAmounts() {
     });
 
     const hasAvailableFundsToCoverExecutionFee =
-      userNativeTokenBalance !== undefined && userNativeTokenBalance >= requiredExecutionFee;
+      userNativeTokenBalance !== undefined &&
+      executionFee !== undefined &&
+      userNativeTokenBalance >= requiredExecutionFee;
 
     isButtonDisabled = !hasAvailableFundsToCoverExecutionFee;
 
@@ -293,18 +309,35 @@ export default function ClaimableAmounts() {
       buttonContent
     );
 
+    /**
+     * Display the accept claim terms checkbox if:
+     * - The claim terms are set and the feature is not disabled
+     * - The user is a smart account and the contract owners have not signed the claim terms
+     * - The user is not a smart account and the claim terms have not been accepted
+     */
+    const displayAcceptClaimTermsCheckbox =
+      claimTerms && !claimsFeatureDisabled && (isSmartAccount ? !isContractOwnersSigned : !claimTermsAcceptedSignature);
+
+    /**
+     * Display the insufficient gas alert if:
+     * - The user signed the claim terms
+     * - The user does not have enough funds to cover the execution fee
+     */
+    const displayInsufficientGasAlert =
+      (isSmartAccount ? isContractOwnersSigned : claimTermsAcceptedSignature) && !hasAvailableFundsToCoverExecutionFee;
+
     return (
       <>
-        {!hasAvailableFundsToCoverExecutionFee ? (
-          <AlertInfoCard type="warning">
+        {displayInsufficientGasAlert ? (
+          <AlertInfoCard type="warning" hideClose>
             <Trans>Insufficient gas for network fees</Trans>
           </AlertInfoCard>
         ) : null}
-        {claimTerms && hasAvailableFundsToCoverExecutionFee && !claimsFeatureDisabled ? (
+        {displayAcceptClaimTermsCheckbox ? (
           <Checkbox
-            isChecked={Boolean(claimTermsAcceptedSignature)}
+            isChecked={Boolean(claimTermsAcceptedSignature || isContractOwnersSigned)}
             setIsChecked={signClaimTerms}
-            disabled={Boolean(claimTermsAcceptedSignature)}
+            disabled={Boolean(claimTermsAcceptedSignature || isContractOwnersSigned)}
           >
             <span className="muted">
               <Trans>Accept Claim Terms</Trans>
@@ -320,6 +353,8 @@ export default function ClaimableAmounts() {
     signClaimTerms,
     claimTerms,
     claimAmounts,
+    isSmartAccount,
+    isContractOwnersSigned,
     claimsFeatureDisabled,
     buttonText,
     buttonTooltipText,

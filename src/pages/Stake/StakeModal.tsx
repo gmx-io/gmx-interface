@@ -209,7 +209,7 @@ export function StakeModal(props: {
           </BuyInputSection>
         </div>
 
-        {true && (
+        {(needApproval || isApproving) && (
           <div className="mb-12">
             <ApproveTokenButton
               tokenAddress={stakingTokenAddress}

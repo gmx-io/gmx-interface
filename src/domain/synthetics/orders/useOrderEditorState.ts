@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
-import { BN_ZERO, getBasisPoints, parseValue } from "lib/numbers";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { BN_ZERO, getBasisPoints, MaxUint256, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { bigMath } from "sdk/utils/bigmath";
 import { isIncreaseOrderType, isStopIncreaseOrderType, isStopLossOrderType, isSwapOrderType } from "sdk/utils/orders";
@@ -145,6 +146,7 @@ function useAcceptablePrice(
   acceptablePriceImpactBps: bigint;
   setAcceptablePriceImpactBps: (bps: bigint) => void;
 } {
+  const { isSetAcceptablePriceImpactEnabled } = useSettings();
   const isSwapOrder = order ? isSwapOrderType(order.orderType) : false;
 
   let initialAcceptablePriceImpactBps = BN_ZERO;
@@ -182,6 +184,12 @@ function useAcceptablePrice(
     } else if (isStopLossOrderType(order.orderType) || isStopIncreaseOrderType(order.orderType)) {
       // For Stop Loss and Stop Market orders Acceptable Price is not applicable and set to 0 or MaxUnit256
       acceptablePrice = (order as PositionOrderInfo).acceptablePrice;
+    } else if (!isSetAcceptablePriceImpactEnabled) {
+      const increaseOrderAcceptablePrice = order.isLong ? MaxUint256 : 0n;
+      const decreaseOrderAcceptablePrice = order.isLong ? 0n : MaxUint256;
+      acceptablePrice = isIncreaseOrderType(order.orderType)
+        ? increaseOrderAcceptablePrice
+        : decreaseOrderAcceptablePrice;
     } else {
       const initialTriggerPrice = (order as PositionOrderInfo).triggerPrice;
       acceptablePrice = applySlippageToPrice(

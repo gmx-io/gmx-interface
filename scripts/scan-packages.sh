@@ -51,7 +51,7 @@ check_package() {
     fi
     
     # Use npm ls to find installed versions in the specific folder
-    installed_versions=$(cd "$folder" && npm ls $package --all --depth=Infinity 2>/dev/null | grep -E "($package@[^ ]+)" | sed -E "s/^.*($package@[^ ]+).*$/\1/" | cut -d "@" -f2 | sort -u)
+    installed_versions=$(cd "$folder" && yarn dlx npm ls $package --all --depth=Infinity 2>/dev/null | grep -E "($package@[^ ]+)" | sed -E "s/^.*($package@[^ ]+).*$/\1/" | cut -d "@" -f2 | sort -u)
     
     if [ -z "$installed_versions" ]; then
         echo "Installed version: Not found"

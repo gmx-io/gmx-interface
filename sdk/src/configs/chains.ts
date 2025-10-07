@@ -79,6 +79,14 @@ export const CHAIN_NAMES_MAP: Record<AnyChainId, ChainName> = {
   [SOURCE_BSC_MAINNET]: "BNB",
 };
 
+export const CHAIN_SLUGS_MAP: Record<ContractsChainId, string> = {
+  [ARBITRUM]: "arbitrum",
+  [AVALANCHE]: "avalanche",
+  [AVALANCHE_FUJI]: "fuji",
+  [ARBITRUM_SEPOLIA]: "arbitrum-sepolia",
+  [BOTANIX]: "botanix",
+};
+
 export const HIGH_EXECUTION_FEES_MAP: Record<ContractsChainId, number> = {
   [ARBITRUM]: 5, // 5 USD
   [AVALANCHE]: 5, // 5 USD

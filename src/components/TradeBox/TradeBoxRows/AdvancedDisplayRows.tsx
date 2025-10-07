@@ -1,6 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { ReactNode, useCallback, useMemo } from "react";
 
+import { selectIsSetAcceptablePriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAdvancedOptions,
   selectTradeboxDecreasePositionAmounts,
@@ -8,6 +9,7 @@ import {
   selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
+  selectTradeboxMarkPrice,
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedAllowedSwapSlippageBps,
   selectTradeboxSelectedPosition,
@@ -33,6 +35,7 @@ import { isStopIncreaseOrderType } from "sdk/utils/orders";
 
 import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { AllowedSwapSlippageInputRow } from "components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
+import { ExitPriceRow } from "components/ExitPriceRow/ExitPriceRow";
 import { ExpandableRow } from "components/ExpandableRow";
 import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -143,7 +146,7 @@ export function TradeBoxAdvancedGroups({
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isSwap, isMarket, isLimit, isTrigger, isTwap } = tradeFlags;
+  const { isSwap, isMarket, isLimit, isTrigger, isTwap, isLong } = tradeFlags;
 
   const { isLiquidityRisk } = useSelector(selectTradeboxLiquidityInfo);
 
@@ -158,6 +161,7 @@ export function TradeBoxAdvancedGroups({
   const setSelectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
   const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
   const defaultTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxDefaultTriggerAcceptablePriceImpactBps);
+  const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
 
   const defaultAllowedSwapSlippageBps = useSelector(selectTradeboxDefaultAllowedSwapSlippageBps);
   const selectedAllowedSwapSlippageBps = useSelector(selectTradeboxSelectedAllowedSwapSlippageBps);
@@ -202,6 +206,7 @@ export function TradeBoxAdvancedGroups({
   );
 
   const isVisible = options.advancedDisplay;
+  const markPrice = useSelector(selectTradeboxMarkPrice);
 
   return (
     <ExpandableRow
@@ -213,7 +218,10 @@ export function TradeBoxAdvancedGroups({
       contentClassName="flex flex-col gap-14"
       scrollIntoViewOnMobile
     >
-      {(isLimit || isTrigger || isTwap) && !isSwap && (
+      {isTrigger ? (
+        <ExitPriceRow isSwap={isSwap} fees={fees} price={isTrigger ? limitPrice : markPrice} isLong={isLong} />
+      ) : null}
+      {(isLimit || isTrigger || isTwap) && !isSwap && isSetAcceptablePriceImpactEnabled && (
         <>
           <AcceptablePriceImpactInputRow
             notAvailable={

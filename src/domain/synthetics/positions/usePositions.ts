@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
 import { hashedPositionKey } from "config/dataStore";
@@ -38,6 +38,7 @@ export function usePositions(
   }
 ): PositionsResult {
   const { marketsData, tokensData, account } = p;
+  const [disableBatching, setDisableBatching] = useState(true);
 
   const keysAndPrices = useKeysAndPricesParams({
     marketsData,
@@ -55,6 +56,7 @@ export function usePositions(
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     clearUnusedKeys: true,
     keepPreviousData: true,
+    disableBatching,
 
     request: (requestChainId) => {
       return {
@@ -124,6 +126,12 @@ export function usePositions(
       }, {} as PositionsData);
     },
   });
+
+  useEffect(() => {
+    if (positionsData && disableBatching) {
+      setDisableBatching(false);
+    }
+  }, [disableBatching, positionsData]);
 
   const optimisticPositionsData = useOptimisticPositions({
     positionsData: positionsData,
