@@ -727,6 +727,10 @@ export const WithdrawalView = () => {
   ]);
 
   const isInputEmpty = inputAmount === undefined || inputAmount <= 0n;
+  const isInsufficientBalance =
+    selectedToken?.gmxAccountBalance !== undefined &&
+    inputAmount !== undefined &&
+    inputAmount > selectedToken.gmxAccountBalance;
 
   let buttonState: {
     text: React.ReactNode;
@@ -959,87 +963,94 @@ export const WithdrawalView = () => {
         </div>
       </div>
 
-      {isAboveLimit && (
-        <AlertInfoCard type="warning" className="my-4">
-          <Trans>
-            The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than{" "}
-            <span className="numbers">{upperLimitFormatted}</span>.
-          </Trans>
-        </AlertInfoCard>
-      )}
-      {isBelowLimit && (
-        <AlertInfoCard type="warning" className="my-4">
-          <Trans>
-            The amount you are trying to withdraw is below the limit. Please try an amount larger than{" "}
-            <span className="numbers">{lowerLimitFormatted}</span>.
-          </Trans>
-        </AlertInfoCard>
-      )}
+      {!isInsufficientBalance && (
+        <>
+          {isAboveLimit && (
+            <AlertInfoCard type="warning" className="my-4">
+              <Trans>
+                The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than{" "}
+                <span className="numbers">{upperLimitFormatted}</span>.
+              </Trans>
+            </AlertInfoCard>
+          )}
+          {isBelowLimit && (
+            <AlertInfoCard type="warning" className="my-4">
+              <Trans>
+                The amount you are trying to withdraw is below the limit. Please try an amount larger than{" "}
+                <span className="numbers">{lowerLimitFormatted}</span>.
+              </Trans>
+            </AlertInfoCard>
+          )}
 
-      {shouldShowMinRecommendedAmount && (
-        <AlertInfoCard type="info" className="my-4">
-          <Trans>
-            You're withdrawing {selectedToken?.symbol}, your gas token. Gas is required for this withdrawal, so please
-            keep at least <span className="numbers">{formatUsd(gasTokenBuffer, { displayDecimals: 0 })}</span> in{" "}
-            {selectedToken?.symbol} or switch your gas token in settings.
-          </Trans>
-        </AlertInfoCard>
-      )}
+          {shouldShowMinRecommendedAmount && (
+            <AlertInfoCard type="info" className="my-4">
+              <Trans>
+                You're withdrawing {selectedToken?.symbol}, your gas token. Gas is required for this withdrawal, so
+                please keep at least{" "}
+                <span className="numbers">{formatUsd(gasTokenBuffer, { displayDecimals: 0 })}</span> in{" "}
+                {selectedToken?.symbol} or switch your gas token in settings.
+              </Trans>
+            </AlertInfoCard>
+          )}
 
-      {errors?.isOutOfTokenError &&
-        !errors.isOutOfTokenError.isGasPaymentToken &&
-        isOutOfTokenErrorToken !== undefined && (
-          <AlertInfoCard type="error" className="my-4">
-            <Trans>
-              Withdrawing requires{" "}
-              <Amount
-                amount={errors.isOutOfTokenError.requiredAmount ?? 0n}
-                decimals={isOutOfTokenErrorToken.decimals}
-                isStable={isOutOfTokenErrorToken.isStable}
-                symbol={isOutOfTokenErrorToken.symbol}
-              />{" "}
-              while you have{" "}
-              <Amount
-                amount={isOutOfTokenErrorToken.gmxAccountBalance ?? 0n}
-                decimals={isOutOfTokenErrorToken.decimals}
-                isStable={isOutOfTokenErrorToken.isStable}
-                symbol={isOutOfTokenErrorToken.symbol}
-              />
-              . Please{" "}
-              <Button
-                variant="link"
-                onClick={() => {
-                  setIsVisibleOrView(false);
-                  history.push(`/trade/swap?to=${isOutOfTokenErrorToken.symbol}`);
-                }}
-              >
-                swap
-              </Button>{" "}
-              or{" "}
-              <Button
-                variant="link"
-                onClick={() => {
-                  setDepositViewTokenAddress(convertTokenAddress(chainId, isOutOfTokenErrorToken.address, "native"));
-                  if (errors?.isOutOfTokenError?.requiredAmount !== undefined) {
-                    setDepositViewTokenInputValue(
-                      formatAmountFree(errors.isOutOfTokenError.requiredAmount, isOutOfTokenErrorToken.decimals)
-                    );
-                  }
-                  setIsVisibleOrView("deposit");
-                }}
-              >
-                deposit
-              </Button>{" "}
-              more {isOutOfTokenErrorToken?.symbol} to your GMX account.
-            </Trans>
-          </AlertInfoCard>
-        )}
+          {errors?.isOutOfTokenError &&
+            !errors.isOutOfTokenError.isGasPaymentToken &&
+            isOutOfTokenErrorToken !== undefined && (
+              <AlertInfoCard type="error" className="my-4">
+                <Trans>
+                  Withdrawing requires{" "}
+                  <Amount
+                    amount={errors.isOutOfTokenError.requiredAmount ?? 0n}
+                    decimals={isOutOfTokenErrorToken.decimals}
+                    isStable={isOutOfTokenErrorToken.isStable}
+                    symbol={isOutOfTokenErrorToken.symbol}
+                  />{" "}
+                  while you have{" "}
+                  <Amount
+                    amount={isOutOfTokenErrorToken.gmxAccountBalance ?? 0n}
+                    decimals={isOutOfTokenErrorToken.decimals}
+                    isStable={isOutOfTokenErrorToken.isStable}
+                    symbol={isOutOfTokenErrorToken.symbol}
+                  />
+                  . Please{" "}
+                  <Button
+                    variant="link"
+                    onClick={() => {
+                      setIsVisibleOrView(false);
+                      history.push(`/trade/swap?to=${isOutOfTokenErrorToken.symbol}`);
+                    }}
+                  >
+                    swap
+                  </Button>{" "}
+                  or{" "}
+                  <Button
+                    variant="link"
+                    onClick={() => {
+                      setDepositViewTokenAddress(
+                        convertTokenAddress(chainId, isOutOfTokenErrorToken.address, "native")
+                      );
+                      if (errors?.isOutOfTokenError?.requiredAmount !== undefined) {
+                        setDepositViewTokenInputValue(
+                          formatAmountFree(errors.isOutOfTokenError.requiredAmount, isOutOfTokenErrorToken.decimals)
+                        );
+                      }
+                      setIsVisibleOrView("deposit");
+                    }}
+                  >
+                    deposit
+                  </Button>{" "}
+                  more {isOutOfTokenErrorToken?.symbol} to your GMX account.
+                </Trans>
+              </AlertInfoCard>
+            )}
 
-      {showWntWarning && (
-        <InsufficientWntBanner
-          neededAmount={networkFee ?? lastValidNetworkFees.networkFee}
-          neededAmountUsd={networkFeeUsd ?? lastValidNetworkFees.networkFeeUsd}
-        />
+          {showWntWarning && !(errors?.isOutOfTokenError?.tokenAddress === wrappedNativeTokenAddress) && (
+            <InsufficientWntBanner
+              neededAmount={networkFee ?? lastValidNetworkFees.networkFee}
+              neededAmountUsd={networkFeeUsd ?? lastValidNetworkFees.networkFeeUsd}
+            />
+          )}
+        </>
       )}
 
       <div className="h-32 shrink-0 grow" />
