@@ -20,10 +20,12 @@ import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
   FAKE_INPUT_AMOUNT_MAP,
   getLayerZeroEndpointId,
+  getMappedTokenId,
   getMultichainTokenId,
   getStargatePoolAddress,
   isSettlementChain,
   MULTICHAIN_FUNDING_SLIPPAGE_BPS,
+  MULTICHAIN_TOKEN_MAPPING,
   MULTICHAIN_TRANSFER_SUPPORTED_TOKENS,
 } from "config/multichain";
 import {
@@ -83,6 +85,7 @@ import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { Amount } from "components/Amount/Amount";
+import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { useAvailableToTradeAssetMultichain, useGmxAccountWithdrawNetworks } from "components/GmxAccountModal/hooks";
@@ -192,6 +195,21 @@ export const WithdrawalView = () => {
   const inputAmountUsd = selectedToken
     ? convertToUsd(inputAmount, selectedToken.decimals, selectedToken.prices.maxPrice)
     : undefined;
+
+  const filteredNetworks = useMemo(() => {
+    if (!unwrappedSelectedTokenAddress) {
+      return networks;
+    }
+
+    return networks.filter((network) => {
+      const mappedTokenId = getMappedTokenId(
+        chainId as SettlementChainId,
+        unwrappedSelectedTokenAddress,
+        network.id as SourceChainId
+      );
+      return mappedTokenId !== undefined;
+    });
+  }, [unwrappedSelectedTokenAddress, networks, chainId]);
 
   const options = useMemo((): TokenData[] => {
     if (!isSettlementChain(chainId) || !tokensData) {
@@ -316,6 +334,7 @@ export const WithdrawalView = () => {
   const {
     networkFeeUsd: bridgeNetworkFeeUsd,
     protocolFeeUsd,
+    protocolFeeAmount,
     networkFee: bridgeNetworkFee,
   } = useMultichainQuoteFeeUsd({
     quoteSend,
@@ -475,6 +494,39 @@ export const WithdrawalView = () => {
     lastValidNetworkFees.networkFee,
     wrappedNativeTokenAddress,
   ]);
+
+  const handlePickToken = useCallback(
+    (tokenAddress: string) => {
+      setSelectedTokenAddress(tokenAddress);
+
+      if (withdrawalViewChain !== undefined) {
+        const unwrappedTokenAddress = convertTokenAddress(chainId, tokenAddress, "native");
+        const tokenId = getMappedTokenId(chainId as SettlementChainId, unwrappedTokenAddress, withdrawalViewChain);
+        if (tokenId === undefined) {
+          for (const someSourceChainId of Object.keys(MULTICHAIN_TOKEN_MAPPING[chainId]).map(
+            Number
+          ) as SourceChainId[]) {
+            if (someSourceChainId === withdrawalViewChain) {
+              continue;
+            }
+
+            const mappedTokenId = getMappedTokenId(
+              chainId as SettlementChainId,
+              unwrappedTokenAddress,
+              someSourceChainId
+            );
+            if (mappedTokenId) {
+              setWithdrawalViewChain(someSourceChainId);
+              return;
+            }
+          }
+
+          setWithdrawalViewChain(undefined);
+        }
+      }
+    },
+    [chainId, setSelectedTokenAddress, setWithdrawalViewChain, withdrawalViewChain]
+  );
 
   const handleWithdraw = async () => {
     if (withdrawalViewChain === undefined || selectedToken === undefined || account === undefined) {
@@ -808,7 +860,7 @@ export const WithdrawalView = () => {
           </div>
           <DropdownSelector
             value={selectedTokenAddress}
-            onChange={setSelectedTokenAddress}
+            onChange={handlePickToken}
             placeholder={t`Select token`}
             button={
               selectedTokenAddress && selectedToken ? (
@@ -859,7 +911,7 @@ export const WithdrawalView = () => {
                 )}
               </div>
             }
-            options={networks}
+            options={filteredNetworks}
             item={NetworkItem}
             itemKey={networkItemKey}
           />
@@ -1009,13 +1061,35 @@ export const WithdrawalView = () => {
           />
           <SyntheticsInfoRow
             label={<Trans>Network Fee</Trans>}
-            valueClassName="numbers"
-            value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
+            value={
+              networkFeeUsd !== undefined && relayerFeeToken ? (
+                <AmountWithUsdBalance
+                  className="leading-1"
+                  amount={networkFee}
+                  decimals={relayerFeeToken.decimals}
+                  usd={networkFeeUsd}
+                  symbol={relayerFeeToken.symbol}
+                />
+              ) : (
+                "..."
+              )
+            }
           />
           <SyntheticsInfoRow
             label={<Trans>Withdraw Fee</Trans>}
-            valueClassName="numbers"
-            value={protocolFeeUsd !== undefined ? formatUsd(protocolFeeUsd) : "..."}
+            value={
+              protocolFeeUsd !== undefined && selectedTokenSettlementChainTokenId ? (
+                <AmountWithUsdBalance
+                  className="leading-1"
+                  amount={protocolFeeAmount}
+                  decimals={selectedTokenSettlementChainTokenId.decimals}
+                  usd={protocolFeeUsd}
+                  symbol={selectedToken?.symbol}
+                />
+              ) : (
+                "..."
+              )
+            }
           />
           <SyntheticsInfoRow
             label={<Trans>GMX Balance</Trans>}

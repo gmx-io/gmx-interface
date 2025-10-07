@@ -17,8 +17,12 @@ import { useChainId } from "lib/chains";
 export type TokenBalanceUpdate = {
   isPending?: boolean;
   balanceType: "wallet" | "gmxAccount";
+  /**
+   * Used only for native token
+   */
   balance?: bigint;
   diff?: bigint;
+  clearTimerId?: number;
 };
 
 export type TokensBalancesUpdates = {
@@ -30,8 +34,11 @@ type TokensBalancesContextType = {
   optimisticTokensBalancesUpdates: TokensBalancesUpdates;
   setWebsocketTokenBalancesUpdates: Dispatch<SetStateAction<TokensBalancesUpdates>>;
   setOptimisticTokensBalancesUpdates: Dispatch<SetStateAction<TokensBalancesUpdates>>;
+  addOptimisticTokensBalancesUpdates: (tokenBalanceUpdates: TokensBalancesUpdates) => void;
   resetTokensBalancesUpdates: (tokenAddresses: string[], balanceType: "wallet" | "gmxAccount") => void;
 };
+
+const MAX_PENDING_TIME_MS = 5_000;
 
 const Context = createContext<TokensBalancesContextType | null>(null);
 
@@ -82,6 +89,63 @@ export function TokensBalancesContextProvider({ children }: PropsWithChildren) {
     });
   }, []);
 
+  const addOptimisticTokensBalancesUpdates = useCallback((tokenBalanceUpdates: TokensBalancesUpdates) => {
+    setOptimisticTokensBalancesUpdates((prevState) => {
+      const clearTimerId = window.setTimeout(() => {
+        setOptimisticTokensBalancesUpdates((clearingState) => {
+          let newState = { ...clearingState };
+
+          for (const [tokenAddress] of Object.entries(tokenBalanceUpdates)) {
+            if (!clearingState[tokenAddress] || clearingState[tokenAddress]?.clearTimerId !== clearTimerId) {
+              continue;
+            }
+
+            const prevBalanceUpdate = clearingState[tokenAddress]!;
+
+            newState[tokenAddress] = {
+              ...prevBalanceUpdate,
+              isPending: false,
+              clearTimerId: undefined,
+            };
+          }
+
+          return newState;
+        });
+      }, MAX_PENDING_TIME_MS);
+
+      let newState = { ...prevState };
+
+      for (const [tokenAddress, balanceUpdate] of Object.entries(tokenBalanceUpdates)) {
+        if (!balanceUpdate) {
+          continue;
+        }
+        const prevBalanceUpdate = prevState[tokenAddress];
+
+        let diff = 0n;
+        if (balanceUpdate.diff !== undefined) {
+          diff = balanceUpdate.diff;
+
+          if (
+            prevBalanceUpdate &&
+            prevBalanceUpdate.balanceType === balanceUpdate.balanceType &&
+            prevBalanceUpdate.diff !== undefined
+          ) {
+            diff += prevBalanceUpdate.diff;
+          }
+        }
+
+        newState[tokenAddress] = {
+          balanceType: balanceUpdate.balanceType,
+          isPending: balanceUpdate.isPending,
+          diff,
+          clearTimerId: balanceUpdate.isPending ? clearTimerId : undefined,
+        };
+      }
+
+      return newState;
+    });
+  }, []);
+
   useEffect(() => {
     setWebsocketTokenBalancesUpdates({});
     setOptimisticTokensBalancesUpdates({});
@@ -94,8 +158,14 @@ export function TokensBalancesContextProvider({ children }: PropsWithChildren) {
       setOptimisticTokensBalancesUpdates,
       setWebsocketTokenBalancesUpdates,
       resetTokensBalancesUpdates,
+      addOptimisticTokensBalancesUpdates,
     }),
-    [optimisticTokensBalancesUpdates, resetTokensBalancesUpdates, websocketTokenBalancesUpdates]
+    [
+      addOptimisticTokensBalancesUpdates,
+      optimisticTokensBalancesUpdates,
+      resetTokensBalancesUpdates,
+      websocketTokenBalancesUpdates,
+    ]
   );
 
   return <Context.Provider value={state}>{children}</Context.Provider>;
@@ -172,9 +242,14 @@ const applyBalanceUpdate = <T extends TokenBalancesData | TokensData>(
       balanceType!
     );
   } else if (typeof (nextBalancesData[tokenAddress] as TokenData).balance === "bigint") {
-    const tokenData = { ...(nextBalancesData[tokenAddress] as TokenData & { balance: bigint }) };
-    const balanceType = tokenData.isGmxAccount ? "gmxAccount" : "wallet";
-    tokenData.balance = updateTokenBalance(balanceUpdate, tokenData.balance, balanceType);
+    const tokenData = { ...(nextBalancesData[tokenAddress] as TokenData) };
+    if (tokenData.walletBalance !== undefined) {
+      tokenData.walletBalance = updateTokenBalance(balanceUpdate, tokenData.walletBalance, "wallet");
+    }
+    if (tokenData.gmxAccountBalance !== undefined) {
+      tokenData.gmxAccountBalance = updateTokenBalance(balanceUpdate, tokenData.gmxAccountBalance, "gmxAccount");
+    }
+    tokenData.balance = tokenData.isGmxAccount ? tokenData.gmxAccountBalance! : tokenData.walletBalance!;
     nextBalancesData[tokenAddress] = tokenData;
   }
 

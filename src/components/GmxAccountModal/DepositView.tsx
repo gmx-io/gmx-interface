@@ -464,10 +464,17 @@ export const DepositView = () => {
           sendTxnSentMetric(params.metricId);
 
           if (txnEvent.data.type === "wallet") {
-            if (selectedToken?.decimals !== undefined && selectedTokenSourceChainDecimals !== undefined) {
+            const settlementChainDecimals = getToken(settlementChainId, params.tokenAddress)?.decimals;
+            const sourceChainDecimals = getMappedTokenId(
+              settlementChainId as SettlementChainId,
+              params.tokenAddress,
+              params.depositViewChain
+            )?.decimals;
+
+            if (settlementChainDecimals !== undefined && sourceChainDecimals !== undefined) {
               const amount =
-                ((params.sendParams.amountLD as bigint) * 10n ** BigInt(selectedToken?.decimals)) /
-                10n ** BigInt(selectedTokenSourceChainDecimals);
+                ((params.sendParams.amountLD as bigint) * 10n ** BigInt(settlementChainDecimals)) /
+                10n ** BigInt(sourceChainDecimals);
 
               setMultichainSubmittedDeposit({
                 amount,
@@ -484,13 +491,7 @@ export const DepositView = () => {
           sendOrderTxnSubmittedMetric(params.metricId);
         }
       },
-    [
-      selectedToken?.decimals,
-      selectedTokenSourceChainDecimals,
-      setIsVisibleOrView,
-      setMultichainSubmittedDeposit,
-      settlementChainId,
-    ]
+    [setIsVisibleOrView, setMultichainSubmittedDeposit, settlementChainId]
   );
 
   const canSendCrossChainDeposit =
@@ -879,7 +880,6 @@ export const DepositView = () => {
         <div className="mb-16 flex flex-col gap-10">
           <SyntheticsInfoRow
             label={<Trans>Estimated Time</Trans>}
-            valueClassName="numbers"
             value={
               inputAmount === undefined || inputAmount === 0n ? (
                 "..."
@@ -895,7 +895,7 @@ export const DepositView = () => {
             value={
               networkFee !== undefined && depositViewViemChain ? (
                 <AmountWithUsdBalance
-                  className="numbers"
+                  className="leading-1"
                   amount={networkFee}
                   decimals={depositViewViemChain.nativeCurrency.decimals}
                   usd={networkFeeUsd}
@@ -908,11 +908,10 @@ export const DepositView = () => {
           />
           <SyntheticsInfoRow
             label={<Trans>Deposit Fee</Trans>}
-            valueClassName="numbers"
             value={
               protocolFeeAmount !== undefined && selectedTokenSourceChainDecimals !== undefined ? (
                 <AmountWithUsdBalance
-                  className="numbers"
+                  className="leading-1"
                   amount={protocolFeeAmount}
                   decimals={selectedTokenSourceChainDecimals}
                   usd={protocolFeeUsd}

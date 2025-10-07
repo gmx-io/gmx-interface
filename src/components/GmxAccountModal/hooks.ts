@@ -192,7 +192,8 @@ export function useMultichainTokensRequest(): {
       const tokensChainBalanceData = tokenBalances[sourceChainId];
 
       for (const sourceChainTokenAddress in tokensChainBalanceData) {
-        const mapping = MULTICHAIN_TOKEN_MAPPING[chainId]?.[sourceChainId]?.[sourceChainTokenAddress];
+        const mapping =
+          MULTICHAIN_TOKEN_MAPPING[chainId as SettlementChainId]?.[sourceChainId]?.[sourceChainTokenAddress];
 
         if (!mapping) {
           continue;
