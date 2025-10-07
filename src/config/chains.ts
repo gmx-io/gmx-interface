@@ -163,7 +163,6 @@ export const RPC_PROVIDERS: Record<AnyChainId | typeof ETH_MAINNET, string[]> = 
     "https://rpc.ankr.com/botanix_mainnet",
   ],
   [SOURCE_BSC_MAINNET]: [
-    "https://binance.llamarpc.com",
     "https://bsc-dataseed.bnbchain.org",
     "https://1rpc.io/bnb",
     "https://bsc.drpc.org",
