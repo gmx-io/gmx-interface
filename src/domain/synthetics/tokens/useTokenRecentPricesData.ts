@@ -10,7 +10,7 @@ import { TokenPricesData } from "./types";
 import { useSequentialTimedSWR } from "./useSequentialTimedSWR";
 import { parseContractPrice } from "./utils";
 
-type TokenPricesDataResult = {
+export type TokenPricesDataResult = {
   pricesData?: TokenPricesData;
   updatedAt?: number;
   error?: Error;

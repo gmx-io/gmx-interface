@@ -1,15 +1,16 @@
 import { Trans } from "@lingui/macro";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useTotalVolume, useV1FeesInfo } from "domain/stats";
+import { useTreasuryAllChains } from "domain/stats/useTreasuryAllChains";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { useInfoTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { GLP_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatAmountHuman } from "lib/numbers";
+import { expandDecimals, formatAmountHuman, formatUsd } from "lib/numbers";
 import { sumBigInts } from "lib/sumBigInts";
 import useWallet from "lib/wallets/useWallet";
 import { getTokenBySymbol } from "sdk/configs/tokens";
@@ -87,6 +88,13 @@ export function StatsCard({
 
     totalTreasuryFundUsd = ethTreasuryFundUsd + glpTreasuryFundUsd + usdcTreasuryFund;
   }
+
+  const treasuryData = useTreasuryAllChains();
+
+  useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log("treasuryData", formatUsd(treasuryData?.totalUsd), treasuryData);
+  }, [treasuryData]);
 
   // #endregion Treasury
 
