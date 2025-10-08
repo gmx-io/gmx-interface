@@ -53,7 +53,7 @@ import {
   sendTxnErrorMetric,
   sendTxnSentMetric,
 } from "lib/metrics";
-import { USD_DECIMALS, formatAmountFree, formatUsd } from "lib/numbers";
+import { USD_DECIMALS, adjustForDecimals, formatAmountFree, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
@@ -472,9 +472,11 @@ export const DepositView = () => {
             )?.decimals;
 
             if (settlementChainDecimals !== undefined && sourceChainDecimals !== undefined) {
-              const amount =
-                ((params.sendParams.amountLD as bigint) * 10n ** BigInt(settlementChainDecimals)) /
-                10n ** BigInt(sourceChainDecimals);
+              const amount = adjustForDecimals(
+                params.sendParams.amountLD as bigint,
+                sourceChainDecimals,
+                settlementChainDecimals
+              );
 
               setMultichainSubmittedDeposit({
                 amount,

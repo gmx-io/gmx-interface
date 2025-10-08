@@ -34,7 +34,7 @@ export type MultichainFundingHistoryItem = {
   executedTxn: string | undefined;
   executedTimestamp: number | undefined;
 
-  isFromWs?: boolean;
+  source?: "optimistic" | "ws";
 };
 
 export type StrippedGeneratedType<T> = Omit<T, keyof [] | `${number}`>;
