@@ -45,7 +45,7 @@ export function useTreasuryGlv({
   tokensData?: TokensData;
   tokenMap: Record<string, Token>;
   marketsData?: MarketsData;
-}): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } {
+}): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } | undefined {
   const glvListConfig = useMemo(() => {
     if (!GLV_MARKETS[chainId] || Object.keys(GLV_MARKETS[chainId]).length === 0) {
       return undefined;
@@ -60,8 +60,12 @@ export function useTreasuryGlv({
     parseResponse: (res) => extractGlvList(res.data),
   });
 
-  const { entries: glvEntries, request: glvBalancesConfig } = useMemo(() => {
-    if (!tokensData || !glvList?.length) {
+  const glvEntriesData = useMemo(() => {
+    if (!tokensData || glvList === undefined) {
+      return undefined;
+    }
+
+    if (!glvList.length) {
       return { entries: [] as GlvEntry[], request: undefined as TreasuryMulticallRequest | undefined };
     }
 
@@ -74,14 +78,26 @@ export function useTreasuryGlv({
     });
   }, [addresses, chainId, glvList, marketsData, tokensData]);
 
+  const glvEntries = glvEntriesData?.entries;
+  const glvBalancesConfig = glvEntriesData?.request;
+  const glvEntriesCount = glvEntries?.length ?? 0;
+
   const { data: glvBalancesResponse } = useMulticall(chainId, "useTreasuryGlv", {
-    key: glvBalancesConfig && glvEntries.length ? [chainId, "glv", glvEntries.length] : null,
+    key: glvBalancesConfig && glvEntriesCount ? [chainId, "glv", glvEntriesCount] : null,
     request: glvBalancesConfig ?? {},
     parseResponse: (res) => res.data,
   });
 
   return useMemo(() => {
-    if (!glvBalancesResponse || !glvEntries.length) {
+    if (glvList === undefined || tokensData === undefined || marketsData === undefined) {
+      return undefined;
+    }
+
+    if (glvBalancesConfig && glvBalancesResponse === undefined) {
+      return undefined;
+    }
+
+    if (!glvBalancesResponse || !glvEntries?.length) {
       return { entries: [], totalUsd: 0n };
     }
 
@@ -130,7 +146,17 @@ export function useTreasuryGlv({
     });
 
     return { entries, totalUsd };
-  }, [addresses.length, chainId, glvBalancesResponse, glvEntries, tokenMap, tokensData]);
+  }, [
+    addresses.length,
+    chainId,
+    glvBalancesResponse,
+    glvEntries,
+    glvBalancesConfig,
+    glvList,
+    marketsData,
+    tokenMap,
+    tokensData,
+  ]);
 }
 
 function extractGlvList(data: Record<string, any> | undefined): GlvListItem[] | undefined {
@@ -222,7 +248,10 @@ function buildTreasuryGlvRequest({
     const marketPriceRanges: [bigint, bigint][] = [];
 
     markets.forEach((marketAddress) => {
-      const market = marketsData[marketAddress] ?? marketsData[marketAddress.toLowerCase()] ?? marketsData[marketAddress.toUpperCase()];
+      const market =
+        marketsData[marketAddress] ??
+        marketsData[marketAddress.toLowerCase()] ??
+        marketsData[marketAddress.toUpperCase()];
 
       if (!market) {
         return;

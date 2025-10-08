@@ -89,6 +89,10 @@ export function useTreasury(chainId: ContractsChainId, _sourceChainId?: SourceCh
   });
 
   return useMemo(() => {
+    if (!tokenResult || !gmResult || !glvResult || !uniswapV3Result || !venusResult || !pendleResult) {
+      return undefined;
+    }
+
     const entries = [
       ...tokenResult.entries,
       ...gmResult.entries,
@@ -97,10 +101,6 @@ export function useTreasury(chainId: ContractsChainId, _sourceChainId?: SourceCh
       ...venusResult.entries,
       ...pendleResult.entries,
     ];
-
-    if (!entries.length) {
-      return undefined;
-    }
 
     const totalUsd =
       tokenResult.totalUsd +

@@ -30,7 +30,7 @@ export function useTreasuryVenus({
   pricesData?: TokenPricesData;
   tokensData?: TokensData;
   marketsData?: MarketsData;
-}): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } {
+}): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } | undefined {
   const deployment = getVenusDeployment(chainId);
 
   const requestConfig = useMemo(() => {
@@ -142,6 +142,10 @@ export function useTreasuryVenus({
   }, [gmPriceResponse]);
 
   return useMemo(() => {
+    if ((requestConfig && data === undefined) || (gmPriceRequest && gmPriceResponse === undefined)) {
+      return undefined;
+    }
+
     if (!deployment || !data) {
       return { entries: [], totalUsd: 0n };
     }
@@ -202,7 +206,18 @@ export function useTreasuryVenus({
     });
 
     return { entries, totalUsd };
-  }, [chainId, data, deployment, addresses.length, gmPrices, pricesData, tokenMap]);
+  }, [
+    addresses.length,
+    chainId,
+    data,
+    deployment,
+    gmPriceRequest,
+    gmPriceResponse,
+    gmPrices,
+    pricesData,
+    requestConfig,
+    tokenMap,
+  ]);
 }
 
 function buildVenusRequest({

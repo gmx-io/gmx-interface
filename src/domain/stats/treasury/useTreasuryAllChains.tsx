@@ -13,18 +13,21 @@ export function useTreasuryAllChains() {
 }
 
 function combineTreasuryData(treasuryDataByChain: Record<ContractsChainIdProduction, TreasuryData>): TreasuryData {
-  return Object.values(treasuryDataByChain).reduce((acc, treasuryData): TreasuryData => {
-    if (!acc) {
-      return treasuryData;
-    }
+  const results = Object.values(treasuryDataByChain);
 
-    if (!treasuryData) {
-      return acc;
-    }
+  const definedResults = results.filter(
+    (treasuryData): treasuryData is Exclude<TreasuryData, undefined> => treasuryData !== undefined
+  );
 
-    return {
+  if (definedResults.length !== results.length) {
+    return undefined;
+  }
+
+  return definedResults.reduce(
+    (acc, treasuryData) => ({
       totalUsd: acc.totalUsd + treasuryData.totalUsd,
       tokens: acc.tokens.concat(treasuryData.tokens),
-    };
-  }, undefined);
+    }),
+    { totalUsd: 0n, tokens: [] }
+  );
 }

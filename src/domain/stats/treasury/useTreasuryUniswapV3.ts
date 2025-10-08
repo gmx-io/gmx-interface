@@ -65,9 +65,7 @@ export function useTreasuryUniswapV3({
   addresses: string[];
   tokenMap: Record<string, Token>;
   pricesData?: TokenPricesData;
-}): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } {
-  const chainIdNumber = Number(chainId);
-
+}): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } | undefined {
   const normalizedTokenMap = useMemo(() => {
     const map = new Map<string, Token>();
 
@@ -433,6 +431,16 @@ export function useTreasuryUniswapV3({
   }, [poolSlot0Request, poolSlot0Response]);
 
   return useMemo(() => {
+    if (
+      (balancesRequest && balancesResponse === undefined) ||
+      (tokenIdsRequest && tokenIdsResponse === undefined) ||
+      (positionsRequest && positionsResponse === undefined) ||
+      (poolsRequest && poolsResponse === undefined) ||
+      (poolSlot0Request && poolSlot0Response === undefined)
+    ) {
+      return undefined;
+    }
+
     if (!deployment || !positions.length || !poolStates.size) {
       return EMPTY_RESULT;
     }
@@ -456,14 +464,14 @@ export function useTreasuryUniswapV3({
 
       try {
         const token0 = new UniToken(
-          chainIdNumber,
+          chainId,
           token0Config.address,
           token0Config.decimals,
           token0Config.symbol,
           token0Config.name
         );
         const token1 = new UniToken(
-          chainIdNumber,
+          chainId,
           token1Config.address,
           token1Config.decimals,
           token1Config.symbol,
@@ -543,7 +551,24 @@ export function useTreasuryUniswapV3({
     }
 
     return { entries, totalUsd };
-  }, [chainId, chainIdNumber, deployment, normalizedTokenMap, poolStates, positions, pricesData]);
+  }, [
+    balancesRequest,
+    balancesResponse,
+    chainId,
+    deployment,
+    normalizedTokenMap,
+    poolSlot0Request,
+    poolSlot0Response,
+    poolStates,
+    poolsRequest,
+    poolsResponse,
+    positions,
+    positionsRequest,
+    positionsResponse,
+    pricesData,
+    tokenIdsRequest,
+    tokenIdsResponse,
+  ]);
 }
 
 function buildBalancesRequest(positionManager: string, owners: string[]): TreasuryMulticallRequest {

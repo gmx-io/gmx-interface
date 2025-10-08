@@ -24,7 +24,7 @@ export function useTreasuryTokens({
   addresses: string[];
   tokenMap: Record<string, Token>;
   pricesData?: TokenPricesData;
-}): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } {
+}): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } | undefined {
   const tokenAddresses = useMemo(() => {
     const uniqueAddresses = new Set<string>();
 
@@ -56,6 +56,10 @@ export function useTreasuryTokens({
   });
 
   return useMemo(() => {
+    if (requestConfig && tokenBalancesResponse === undefined) {
+      return undefined;
+    }
+
     if (!tokenBalancesResponse) {
       return { entries: [], totalUsd: 0n };
     }
@@ -95,7 +99,7 @@ export function useTreasuryTokens({
     });
 
     return { entries, totalUsd };
-  }, [addresses.length, chainId, tokenAddresses, tokenBalancesResponse, tokenMap, pricesData]);
+  }, [addresses.length, chainId, requestConfig, tokenAddresses, tokenBalancesResponse, tokenMap, pricesData]);
 }
 
 function sumBalancesFromCalls(result: MulticallContractResults | undefined, addressesCount: number): bigint {

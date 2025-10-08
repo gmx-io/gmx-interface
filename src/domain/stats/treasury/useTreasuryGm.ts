@@ -27,7 +27,7 @@ export function useTreasuryGm({
   tokensData?: TokensData;
   marketsData?: MarketsData;
   marketsAddresses?: string[];
-}): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } {
+}): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } | undefined {
   const requestConfig = useMemo(() => {
     if (!addresses.length || !marketsAddresses?.length || !marketsData || !tokensData) {
       return undefined;
@@ -49,7 +49,19 @@ export function useTreasuryGm({
   });
 
   return useMemo(() => {
-    if (!marketBalancesResponse || !marketsAddresses?.length) {
+    if (marketsAddresses === undefined || marketsData === undefined || tokensData === undefined) {
+      return undefined;
+    }
+
+    if (!marketsAddresses.length) {
+      return { entries: [], totalUsd: 0n };
+    }
+
+    if (requestConfig && marketBalancesResponse === undefined) {
+      return undefined;
+    }
+
+    if (!marketBalancesResponse) {
       return { entries: [], totalUsd: 0n };
     }
 
@@ -95,7 +107,7 @@ export function useTreasuryGm({
     });
 
     return { entries, totalUsd };
-  }, [addresses.length, chainId, marketBalancesResponse, marketsAddresses]);
+  }, [addresses.length, chainId, marketBalancesResponse, marketsAddresses, marketsData, requestConfig, tokensData]);
 }
 
 function createBalanceCalls(

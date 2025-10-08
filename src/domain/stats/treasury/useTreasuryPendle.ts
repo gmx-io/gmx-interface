@@ -27,7 +27,7 @@ export function useTreasuryPendle({
   tokenMap: Record<string, Token>;
   pricesData?: TokenPricesData;
   tokensData?: TokensData;
-}): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } {
+}): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } | undefined {
   const shouldFetch = chainId === SUPPORTED_CHAIN_ID && addresses.length > 0;
 
   const { data } = useSWR(shouldFetch ? ["useTreasuryPendle", chainId, addresses.join("-")] : null, () =>
@@ -35,8 +35,12 @@ export function useTreasuryPendle({
   );
 
   return useMemo(() => {
-    if (!shouldFetch || !data) {
+    if (!shouldFetch) {
       return { entries: [], totalUsd: 0n };
+    }
+
+    if (!data) {
+      return undefined;
     }
 
     const entries: TreasuryBalanceEntry[] = [];
