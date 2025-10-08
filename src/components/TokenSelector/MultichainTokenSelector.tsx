@@ -17,6 +17,8 @@ import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletBut
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
+import Tabs from "components/Tabs/Tabs";
+import type { Option as TabOption } from "components/Tabs/types";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
@@ -140,6 +142,13 @@ export function MultichainTokenSelector({
     }
   }, [isGmxAccountEmpty, isModalVisible, setSearchKeyword, srcChainId]);
 
+  const tabsOptions: TabOption<"pay" | "deposit">[] = useMemo(() => {
+    return [
+      { value: "pay", label: <Trans>Available to Pay</Trans> },
+      { value: "deposit", label: <Trans>Available to Deposit</Trans> },
+    ];
+  }, []);
+
   if (!token) {
     return null;
   }
@@ -167,30 +176,7 @@ export function MultichainTokenSelector({
                   <Trans>To begin trading on GMX deposit assets into GMX account.</Trans>
                 </div>
               ) : (
-                <div className="flex gap-4">
-                  <Button
-                    type="button"
-                    variant={activeFilter === "pay" ? "secondary" : "ghost"}
-                    size="small"
-                    className={cx({
-                      "!text-typography-primary": activeFilter === "pay",
-                    })}
-                    onClick={() => setActiveFilter("pay")}
-                  >
-                    <Trans>Available to Pay</Trans>
-                  </Button>
-                  <Button
-                    type="button"
-                    variant={activeFilter === "deposit" ? "secondary" : "ghost"}
-                    size="small"
-                    className={cx({
-                      "!text-typography-primary": activeFilter === "deposit",
-                    })}
-                    onClick={() => setActiveFilter("deposit")}
-                  >
-                    <Trans>Available to Deposit</Trans>
-                  </Button>
-                </div>
+                <Tabs type="inline" options={tabsOptions} selectedValue={activeFilter} onChange={setActiveFilter} />
               )}
             </div>
           )

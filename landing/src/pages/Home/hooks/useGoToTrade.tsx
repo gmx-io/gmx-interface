@@ -21,7 +21,7 @@ type Props = {
   buttonPosition: LandingPageLaunchAppEvent["data"]["buttonPosition"];
 };
 
-const REDIRECT_MAP = {
+const REDIRECT_MAP: Record<RedirectChainIds, string> = {
   [RedirectChainIds.Solana]: "https://gmxsol.io/",
   [RedirectChainIds.Base]: makeLink(SOURCE_BASE_MAINNET),
   [RedirectChainIds.Arbitum]: makeLink(ARBITRUM),

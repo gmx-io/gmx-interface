@@ -1,4 +1,7 @@
 import { RedirectChainIds } from "landing/pages/Home/hooks/useGoToTrade";
+import type { ComponentPropsWithoutRef } from "react";
+
+import type { ChainName } from "config/chains";
 
 import IcArb from "img/ic_arb_24.svg?react";
 import IcAvax from "img/ic_avax_24.svg?react";
@@ -8,7 +11,7 @@ import IcBsc from "img/ic_bsc_96.svg?react";
 import MidChevronIcon from "img/ic_mid_chevron.svg?react";
 import IcSol from "img/ic_sol_24.svg?react";
 
-const icons = {
+const icons: Record<RedirectChainIds, React.ComponentType<ComponentPropsWithoutRef<"svg">>> = {
   [RedirectChainIds.Arbitum]: IcArb,
   [RedirectChainIds.Base]: IcBase,
   [RedirectChainIds.Solana]: IcSol,
@@ -17,7 +20,7 @@ const icons = {
   [RedirectChainIds.Bsc]: IcBsc,
 };
 
-const names = {
+const names: Record<RedirectChainIds, ChainName | "Solana"> = {
   [RedirectChainIds.Arbitum]: "Arbitrum",
   [RedirectChainIds.Base]: "Base",
   [RedirectChainIds.Solana]: "Solana",
