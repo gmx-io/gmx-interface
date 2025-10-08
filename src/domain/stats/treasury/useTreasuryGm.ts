@@ -18,14 +18,12 @@ type MulticallContractResults = Record<string, ContractCallResult | undefined>;
 export function useTreasuryGm({
   chainId,
   addresses,
-  addressesCount,
   tokensData,
   marketsData,
   marketsAddresses,
 }: {
   chainId: ContractsChainId;
   addresses: string[];
-  addressesCount: number;
   tokensData?: TokensData;
   marketsData?: MarketsData;
   marketsAddresses?: string[];
@@ -45,7 +43,7 @@ export function useTreasuryGm({
   }, [addresses, chainId, marketsAddresses, marketsData, tokensData]);
 
   const { data: marketBalancesResponse } = useMulticall(chainId, "useTreasuryMarkets", {
-    key: requestConfig && marketsAddresses ? [chainId, "markets", addressesCount, marketsAddresses!.length] : null,
+    key: requestConfig && marketsAddresses ? [chainId, "markets", addresses.length, marketsAddresses!.length] : null,
     request: requestConfig ?? {},
     parseResponse: (res) => res.data,
   });
@@ -60,7 +58,7 @@ export function useTreasuryGm({
 
     marketsAddresses.forEach((marketAddress) => {
       const balancesConfig = marketBalancesResponse[`${marketAddress}-balances`];
-      const balance = sumBalancesFromCalls(balancesConfig, addressesCount);
+      const balance = sumBalancesFromCalls(balancesConfig, addresses.length);
 
       if (balance === 0n) {
         return;
@@ -97,7 +95,7 @@ export function useTreasuryGm({
     });
 
     return { entries, totalUsd };
-  }, [addressesCount, chainId, marketBalancesResponse, marketsAddresses]);
+  }, [addresses.length, chainId, marketBalancesResponse, marketsAddresses]);
 }
 
 function createBalanceCalls(

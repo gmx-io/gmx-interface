@@ -17,13 +17,11 @@ type TreasuryMulticallRequest = MulticallRequestConfig<Record<string, { calls: R
 export function useTreasuryTokens({
   chainId,
   addresses,
-  addressesCount,
   tokenMap,
   pricesData,
 }: {
   chainId: ContractsChainId;
   addresses: string[];
-  addressesCount: number;
   tokenMap: Record<string, Token>;
   pricesData?: TokenPricesData;
 }): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } {
@@ -52,7 +50,7 @@ export function useTreasuryTokens({
   }, [addresses, chainId, tokenAddresses]);
 
   const { data: tokenBalancesResponse } = useMulticall(chainId, "useTreasuryTokens", {
-    key: requestConfig ? [chainId, "tokens", addressesCount, tokenAddresses.length] : null,
+    key: requestConfig ? [chainId, "tokens", addresses.length, tokenAddresses.length] : null,
     request: requestConfig ?? {},
     parseResponse: (res) => res.data,
   });
@@ -72,7 +70,7 @@ export function useTreasuryTokens({
         return;
       }
 
-      const balance = sumBalancesFromCalls(tokenBalancesResponse[tokenAddress], addressesCount);
+      const balance = sumBalancesFromCalls(tokenBalancesResponse[tokenAddress], addresses.length);
 
       if (balance === 0n) {
         return;
@@ -97,7 +95,7 @@ export function useTreasuryTokens({
     });
 
     return { entries, totalUsd };
-  }, [addressesCount, chainId, tokenAddresses, tokenBalancesResponse, tokenMap, pricesData]);
+  }, [addresses.length, chainId, tokenAddresses, tokenBalancesResponse, tokenMap, pricesData]);
 }
 
 function sumBalancesFromCalls(result: MulticallContractResults | undefined, addressesCount: number): bigint {

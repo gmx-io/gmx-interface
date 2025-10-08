@@ -4,7 +4,7 @@ import { useEffect, useMemo } from "react";
 import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useTotalVolume, useV1FeesInfo } from "domain/stats";
-import { useTreasuryAllChains } from "domain/stats/useTreasuryAllChains";
+import { useTreasuryAllChains } from "domain/stats/treasury/useTreasuryAllChains";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { useInfoTokens } from "domain/tokens";

@@ -39,7 +39,7 @@ export function useTreasuryVenus({
     }
 
     return buildVenusRequest({ addresses, deployment });
-  }, [addresses, deployment]);
+  }, [deployment, addresses]);
 
   const { data } = useMulticall(chainId, "useTreasuryVenus", {
     key: requestConfig ? [chainId, "venus", addresses.length] : null,
@@ -202,7 +202,7 @@ export function useTreasuryVenus({
     });
 
     return { entries, totalUsd };
-  }, [addresses.length, chainId, data, deployment, gmPrices, pricesData, tokenMap]);
+  }, [chainId, data, deployment, addresses.length, gmPrices, pricesData, tokenMap]);
 }
 
 function buildVenusRequest({

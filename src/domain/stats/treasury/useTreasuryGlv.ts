@@ -36,14 +36,12 @@ type NormalizedGlvEntry = {
 export function useTreasuryGlv({
   chainId,
   addresses,
-  addressesCount,
   tokensData,
   tokenMap,
   marketsData,
 }: {
   chainId: ContractsChainId;
   addresses: string[];
-  addressesCount: number;
   tokensData?: TokensData;
   tokenMap: Record<string, Token>;
   marketsData?: MarketsData;
@@ -97,7 +95,7 @@ export function useTreasuryGlv({
 
     normalizedGlvEntries.forEach((entry) => {
       const balancesConfig = glvBalancesResponse[`${entry.glvToken}-balances`];
-      const balance = sumBalancesFromCalls(balancesConfig, addressesCount);
+      const balance = sumBalancesFromCalls(balancesConfig, addresses.length);
 
       if (balance === 0n) {
         return;
@@ -137,7 +135,7 @@ export function useTreasuryGlv({
     });
 
     return { entries, totalUsd };
-  }, [addressesCount, chainId, glvBalancesResponse, normalizedGlvEntries, tokenMap, tokensData]);
+  }, [addresses.length, chainId, glvBalancesResponse, normalizedGlvEntries, tokenMap, tokensData]);
 }
 
 function extractGlvList(data: Record<string, any> | undefined): GlvListItem[] | undefined {
