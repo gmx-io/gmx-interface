@@ -291,7 +291,7 @@ export function getInvalidNetworkToastContent(chainId: number) {
 }
 
 export function InvalidSignatureToastContent() {
-  const { setFeedbackModalVisible } = useSettings();
+  const { setFeedbackModalVisible, setIsSettingsVisible } = useSettings();
 
   return (
     <div>
@@ -299,7 +299,10 @@ export function InvalidSignatureToastContent() {
         Transaction failed due to invalid signature.
         <br />
         <br />
-        Please try a different wallet app or switch to 1CT or Classic mode.
+        Please try a different wallet provider, or switch to Classic or One-Click Trading mode within the{" "}
+        <span className="clickable underline" onClick={() => setIsSettingsVisible(true)}>
+          Settings.
+        </span>
       </Trans>
       <br />
       <br />
