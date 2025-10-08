@@ -2312,8 +2312,8 @@ msgid "Unstake failed."
 msgstr ""
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Debug Express Signature Error"
-msgstr ""
+#~ msgid "Debug Express Signature Error"
+#~ msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order cancelled"
