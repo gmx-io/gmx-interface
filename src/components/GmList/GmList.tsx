@@ -3,12 +3,14 @@ import { useMemo, useState } from "react";
 
 import {
   selectChainId,
+  selectDepositMarketTokensData,
   selectMarketsInfoData,
+  selectProgressiveDepositMarketTokensData,
   selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
-import { MarketTokensAPRData, getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
+import { MarketTokensAPRData, getTotalGmInfo } from "domain/synthetics/markets";
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
@@ -42,7 +44,6 @@ export type Props = {
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
   performance: PerformanceData | undefined;
   performanceSnapshots: PerformanceSnapshotsData | undefined;
-  isDeposit: boolean;
 };
 
 export type SortField = "price" | "totalSupply" | "wallet" | "apy" | "performance" | "unspecified";
@@ -51,26 +52,26 @@ export function GmList({
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
-  isDeposit,
   performance,
   performanceSnapshots,
 }: Props) {
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const marketsInfo = useSelector(selectMarketsInfoData);
+  const marketTokensData = useSelector(selectDepositMarketTokensData);
+  const progressiveMarketTokensData = useSelector(selectProgressiveDepositMarketTokensData);
 
-  const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit, withGlv: false });
   const { active } = useWallet();
   const userEarnings = useUserEarnings(chainId, srcChainId);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-list");
   const [searchText, setSearchText] = useState("");
   const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("gm-list");
 
-  const isLoading = !marketsInfo || !marketTokensData;
+  const isLoading = !marketsInfo || !progressiveMarketTokensData;
 
   const filteredGmTokens = useFilterSortPools({
     marketsInfo,
-    marketTokensData,
+    marketTokensData: progressiveMarketTokensData,
     orderBy,
     direction,
     marketsTokensApyData,
@@ -89,7 +90,7 @@ export function GmList({
   );
 
   const userTotalGmInfo = useMemo(() => {
-    if (!active) return;
+    if (!active || !marketTokensData) return;
     return getTotalGmInfo(marketTokensData);
   }, [marketTokensData, active]);
 

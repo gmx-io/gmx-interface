@@ -18,14 +18,16 @@ import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokenBySymbol } from "sdk/configs/tokens";
+import { ProgressiveTokensData } from "sdk/types/tokens";
 
 import { isGlvEnabled } from "./glv";
-import { GlvInfoData } from "./types";
+import { GlvInfoData, MarketsData } from "./types";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
 
 type MarketTokensDataResult = {
   marketTokensData?: TokensData;
+  progressiveMarketTokensData?: ProgressiveTokensData;
 };
 
 export function useMarketTokensDataRequest(
@@ -179,8 +181,17 @@ export function useMarketTokensDataRequest(
 
   const updatedGmAndGlvMarketTokensData = useUpdatedTokensBalances(gmAndGlvMarketTokensData);
 
+  const progressiveMarketTokensData = useMemo(() => {
+    if (marketTokensData) {
+      return marketTokensData;
+    }
+
+    return getProgressiveMarketTokensData(chainId, marketsData);
+  }, [chainId, marketsData, marketTokensData]);
+
   return {
     marketTokensData: updatedGmAndGlvMarketTokensData,
+    progressiveMarketTokensData: updatedGmAndGlvMarketTokensData || progressiveMarketTokensData,
   };
 }
 
@@ -202,4 +213,27 @@ export function useMarketTokensData(
     glvData: glvData,
     withGlv: glvs?.length ? p.withGlv : false,
   });
+}
+
+export function getProgressiveMarketTokensData(chainId: ContractsChainId, marketsData: MarketsData | undefined) {
+  if (!marketsData) {
+    return {};
+  }
+
+  const marketsAddresses = Object.keys(marketsData);
+
+  return marketsAddresses.reduce((marketTokensMap: ProgressiveTokensData, marketAddress: string) => {
+    const tokenConfig = getTokenBySymbol(chainId, "GM");
+
+    marketTokensMap[marketAddress] = {
+      ...tokenConfig,
+      address: marketAddress,
+      prices: undefined,
+      totalSupply: 0n,
+      balance: undefined,
+      explorerUrl: `${getExplorerUrl(chainId)}/token/${marketAddress}`,
+    };
+
+    return marketTokensMap;
+  }, {} as ProgressiveTokensData);
 }

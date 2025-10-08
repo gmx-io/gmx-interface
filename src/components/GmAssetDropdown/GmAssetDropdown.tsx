@@ -14,7 +14,8 @@ import {
   getMarketPoolName,
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { TokenData, TokensData, getTokenData } from "domain/synthetics/tokens";
+import { TokensData, getTokenData } from "domain/synthetics/tokens";
+import { ProgressiveTokenData, Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { isMobile as headlessUiIsMobile } from "lib/headlessUiIsMobile";
 import { getByKey } from "lib/objects";
@@ -28,7 +29,7 @@ import WalletIcon from "img/ic_wallet.svg?react";
 import "./GmAssetDropdown.scss";
 
 type Props = {
-  token?: TokenData;
+  token?: ProgressiveTokenData;
   marketsInfoData?: GlvAndGmMarketsInfoData;
   position?: Placement;
   tokensData?: TokensData;
@@ -161,7 +162,7 @@ function AddToWalletButton({
 }: {
   active?: boolean;
   walletClient: WalletClient;
-  token?: TokenData;
+  token?: Token;
   marketName: ReactNode;
   contractSymbol?: string;
 }) {

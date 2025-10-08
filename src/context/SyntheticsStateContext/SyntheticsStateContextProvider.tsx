@@ -56,6 +56,7 @@ import { PositionSellerState, usePositionSellerState } from "domain/synthetics/t
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+import { ProgressiveTokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -98,6 +99,8 @@ export type SyntheticsState = {
     uiFeeFactor: bigint;
     userReferralInfo: UserReferralInfo | undefined;
     depositMarketTokensData: TokensData | undefined;
+    progressiveDepositMarketTokensData: ProgressiveTokensData | undefined;
+
     glvInfo: ReturnType<typeof useGlvMarketsInfo>;
     botanixStakingAssetsPerShare: bigint | undefined;
 
@@ -190,6 +193,7 @@ export function SyntheticsStateContextProvider({
 
   const shouldFetchGlvMarkets =
     isGlvEnabled(chainId) && (pageType === "pools" || pageType === "buy" || pageType === "stake");
+
   const glvInfo = useGlvMarketsInfo(shouldFetchGlvMarkets, {
     marketsInfoData: marketsInfo.marketsInfoData,
     tokensData: tokensDataResult.tokensData,
@@ -197,12 +201,14 @@ export function SyntheticsStateContextProvider({
     account: account,
   });
 
-  const { marketTokensData: depositMarketTokensData } = useMarketTokensDataRequest(chainId, srcChainId, {
-    isDeposit: true,
-    account,
-    glvData: glvInfo.glvData,
-    withGlv: shouldFetchGlvMarkets,
-  });
+  const { marketTokensData: depositMarketTokensData, progressiveMarketTokensData: progressiveDepositMarketTokensData } =
+    useMarketTokensDataRequest(chainId, srcChainId, {
+      isDeposit: true,
+      account,
+      glvData: glvInfo.glvData,
+      withGlv: shouldFetchGlvMarkets,
+    });
+
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
@@ -334,6 +340,7 @@ export function SyntheticsStateContextProvider({
         uiFeeFactor,
         userReferralInfo,
         depositMarketTokensData,
+        progressiveDepositMarketTokensData,
 
         closingPositionKey,
         setClosingPositionKey,
@@ -412,6 +419,7 @@ export function SyntheticsStateContextProvider({
     positionSellerState,
     positionsConstants,
     positionsInfoData,
+    progressiveDepositMarketTokensData,
     setKeepLeverage,
     settings,
     signer,

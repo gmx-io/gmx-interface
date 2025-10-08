@@ -10,6 +10,7 @@ export type ContractPrice = bigint & { __brand: "contractPrice" };
 
 export type TokenCategory = "meme" | "layer1" | "layer2" | "defi";
 
+// Static token data
 export type Token = {
   name: string;
   symbol: string;
@@ -116,16 +117,12 @@ export type SignedTokenPermit = {
   };
 };
 
-export type InfoTokens = {
-  [key: string]: TokenInfo;
-};
-
 export type TokenPrices = {
   minPrice: bigint;
   maxPrice: bigint;
 };
 
-export type TokenData = Token & {
+export type TokenAsyncData = {
   prices: TokenPrices;
   isGmxAccount?: boolean;
   walletBalance?: bigint;
@@ -139,6 +136,10 @@ export type TokenData = Token & {
   hasPriceFeedProvider?: boolean;
 };
 
+export type TokenData = Token & TokenAsyncData;
+
+export type ProgressiveTokenData = Token & Partial<TokenAsyncData>;
+
 export type TokensRatio = {
   ratio: bigint;
   largestToken: Token;
@@ -148,6 +149,10 @@ export type TokensRatio = {
 export type TokensRatioAndSlippage = TokensRatio & {
   allowedSwapSlippageBps: bigint;
   acceptablePrice: bigint;
+};
+
+export type InfoTokens = {
+  [key: string]: TokenInfo;
 };
 
 export type TokenBalancesData = {
@@ -164,4 +169,8 @@ export type TokensAllowanceData = {
 
 export type TokensData = {
   [address: string]: TokenData;
+};
+
+export type ProgressiveTokensData = {
+  [address: string]: ProgressiveTokenData;
 };

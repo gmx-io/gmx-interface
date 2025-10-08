@@ -24,8 +24,9 @@ import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDays
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { PerformanceSnapshot, PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
-import { TokenData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
-import { bigintToNumber, formatPercentage, PRECISION_DECIMALS } from "lib/numbers";
+import { convertToUsd, getTokenData } from "domain/synthetics/tokens";
+import { ProgressiveTokenData } from "domain/tokens";
+import { PRECISION_DECIMALS, bigintToNumber, formatPercentage } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
@@ -39,10 +40,10 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import MenuDotsIcon from "img/ic_menu_dots.svg?react";
 
-import { GmTokensBalanceInfo } from "./GmTokensTotalBalanceInfo";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { FeeApyLabel } from "./FeeApyLabel";
+import { GmTokensBalanceInfo } from "./GmTokensTotalBalanceInfo";
 import { PerformanceLabel } from "./PerformanceLabel";
 
 export const tokenAddressStyle = { fontSize: 5 };
@@ -59,7 +60,7 @@ export function GmListItem({
   performance,
   performanceSnapshots,
 }: {
-  token: TokenData;
+  token: ProgressiveTokenData;
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   glvTokensIncentiveAprData: MarketTokensAPRData | undefined;
