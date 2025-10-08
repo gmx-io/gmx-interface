@@ -83,6 +83,9 @@ export type SettingsContextType = {
   settingsWarningDotVisible: boolean;
   setSettingsWarningDotVisible: (val: boolean) => void;
 
+  feedbackModalVisible: boolean;
+  setFeedbackModalVisible: (val: boolean) => void;
+
   debugSwapMarketsConfig:
     | {
         disabledSwapMarkets?: string[];
@@ -220,6 +223,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     DEFAULT_TWAP_NUMBER_OF_PARTS
   );
 
+  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
+
   useEffect(() => {
     if (shouldUseExecutionFeeBuffer && executionFeeBufferBps === undefined) {
       setExecutionFeeBufferBps(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps);
@@ -306,6 +311,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       savedTwapNumberOfParts: savedTwapNumberOfParts!,
       setSavedTWAPNumberOfParts,
+
+      feedbackModalVisible,
+      setFeedbackModalVisible,
     };
   }, [
     showDebugValues,
@@ -355,6 +363,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSettingsWarningDotVisible,
     savedTwapNumberOfParts,
     setSavedTWAPNumberOfParts,
+    feedbackModalVisible,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

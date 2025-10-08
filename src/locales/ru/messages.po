@@ -2329,6 +2329,10 @@ msgstr "Триггер"
 msgid "Unstake failed."
 msgstr "Снятие стейкинга не удалось."
 
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Debug Express Signature Error"
+#~ msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order cancelled"
 msgstr "Ордер отменён"
@@ -6300,6 +6304,10 @@ msgstr "Заявка выполнена!"
 msgid "Stop Market"
 msgstr "Стоп-рынок"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Transaction failed due to invalid signature.<0/><1/>Please try a different wallet provider, or switch to Classic or One-Click Trading mode within the <2>Settings.</2>"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6948,6 +6956,10 @@ msgstr "Не удалось обновить настройки"
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Tweet"
 msgstr "Твитнуть"
+
+#: src/components/Errors/errorToasts.tsx
+#~ msgid "Transaction failed due to invalid signature.<0/><1/>Please try a different wallet app or switch to 1CT or Classic mode."
+#~ msgstr ""
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."
