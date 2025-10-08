@@ -3,7 +3,7 @@ import useSWR from "swr";
 
 import { USD_DECIMALS } from "config/factors";
 import type { TokensData, TokenPricesData, TokenPrices } from "domain/synthetics/tokens";
-import type { ContractsChainId } from "sdk/configs/chains";
+import { ARBITRUM, type ContractsChainId } from "sdk/configs/chains";
 import type { Token } from "sdk/types/tokens";
 import { expandDecimals } from "sdk/utils/numbers";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
@@ -11,7 +11,7 @@ import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 import type { TreasuryBalanceEntry } from "../treasuryTypes";
 
 const PENDLE_API_URL = "https://api-v2.pendle.finance/core/v1/dashboard/positions/database";
-const SUPPORTED_CHAIN_ID = 42161;
+const SUPPORTED_CHAIN_ID = ARBITRUM;
 const MICRO_DECIMALS = 6;
 const USD_MICRO_MULTIPLIER = expandDecimals(1, USD_DECIMALS - MICRO_DECIMALS);
 

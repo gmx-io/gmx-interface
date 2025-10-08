@@ -61,11 +61,11 @@ export function useTreasuryGlv({
   });
 
   const glvEntriesData = useMemo(() => {
-    if (!tokensData || glvList === undefined) {
+    if (!tokensData) {
       return undefined;
     }
 
-    if (!glvList.length) {
+    if (!glvList?.length || glvListConfig === undefined) {
       return { entries: [] as GlvEntry[], request: undefined as TreasuryMulticallRequest | undefined };
     }
 
@@ -76,7 +76,7 @@ export function useTreasuryGlv({
       tokensData,
       marketsData: marketsData ?? {},
     });
-  }, [addresses, chainId, glvList, marketsData, tokensData]);
+  }, [addresses, chainId, glvList, glvListConfig, marketsData, tokensData]);
 
   const glvEntries = glvEntriesData?.entries;
   const glvBalancesConfig = glvEntriesData?.request;
@@ -89,7 +89,7 @@ export function useTreasuryGlv({
   });
 
   return useMemo(() => {
-    if (glvList === undefined || tokensData === undefined || marketsData === undefined) {
+    if (tokensData === undefined || marketsData === undefined) {
       return undefined;
     }
 
@@ -97,7 +97,7 @@ export function useTreasuryGlv({
       return undefined;
     }
 
-    if (!glvBalancesResponse || !glvEntries?.length) {
+    if (!glvBalancesResponse || !glvEntries?.length || glvListConfig === undefined) {
       return { entries: [], totalUsd: 0n };
     }
 
@@ -147,15 +147,15 @@ export function useTreasuryGlv({
 
     return { entries, totalUsd };
   }, [
-    addresses.length,
-    chainId,
+    tokensData,
+    marketsData,
+    glvBalancesConfig,
     glvBalancesResponse,
     glvEntries,
-    glvBalancesConfig,
-    glvList,
-    marketsData,
+    glvListConfig,
+    addresses.length,
     tokenMap,
-    tokensData,
+    chainId,
   ]);
 }
 
