@@ -554,6 +554,10 @@ export async function buildAndSignExpressBatchOrderTxn({
     });
 
     signature = await signTypedData(signatureParams);
+
+    if (localStorage.getItem("debugExpressSignatureError")) {
+      signature = "0x0000000000000000000000000000000000000000000000000000000000000000";
+    }
   }
 
   let batchCalldata: string;

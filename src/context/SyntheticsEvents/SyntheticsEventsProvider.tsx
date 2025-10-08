@@ -1,6 +1,7 @@
 import { TaskState } from "@gelatonetwork/relay-sdk";
 import { t } from "@lingui/macro";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import { useLatest } from "react-use";
 
 import { isDevelopment } from "config/env";
@@ -46,6 +47,7 @@ import {
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { deleteByKey, getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
+import { sleep } from "lib/sleep";
 import { getTenderlyAccountParams } from "lib/tenderly";
 import { getGelatoTaskDebugInfo } from "lib/transactions/sendExpressTransaction";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
@@ -56,10 +58,7 @@ import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tok
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
-import {
-  getInsufficientExecutionFeeToastContent,
-  getInvalidSignatureToastContent,
-} from "components/Errors/errorToasts";
+import { getInsufficientExecutionFeeToastContent, InvalidSignatureToastContent } from "components/Errors/errorToasts";
 import { FeesSettlementStatusNotification } from "components/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/StatusNotification/GmStatusNotification";
 import { OrdersStatusNotificiation } from "components/StatusNotification/OrderStatusNotification";
@@ -151,6 +150,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     [key: string]: Partial<PendingExpressTxnParams>;
   }>({});
   const latestPendingExpressTxnParams = useLatest(pendingExpressTxnParams);
+  const pendingOrderToastIdRef = useRef<number>();
   const eventLogHandlers = useRef({});
 
   const handleExpressTxnSuccess = useCallback(
@@ -1076,14 +1076,22 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                   setIsSettingsVisible,
                 });
 
-                helperToast.error(totastContent);
+                // Wait to ensure there is no race condition with the pending order toast
+                sleep(500).then(() => {
+                  toast.dismiss(pendingOrderToastIdRef.current);
+                  helperToast.error(totastContent);
+                });
                 isViewed = true;
               }
 
               const invalidSignatureErrorParams = getIsInvalidSignatureError(gelatoError);
 
               if (invalidSignatureErrorParams.isErrorMatched) {
-                helperToast.error(getInvalidSignatureToastContent());
+                // Wait to ensure there is no race condition with the pending order toast
+                sleep(500).then(() => {
+                  toast.dismiss(pendingOrderToastIdRef.current);
+                  helperToast.error(<InvalidSignatureToastContent />, {});
+                });
                 isViewed = true;
               }
 
@@ -1159,18 +1167,18 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         });
       },
       setPendingOrder: (data: PendingOrderData | PendingOrderData[]) => {
-        const toastId = Date.now();
+        pendingOrderToastIdRef.current = Date.now();
 
         helperToast.success(
           <OrdersStatusNotificiation
             pendingOrderData={data}
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
-            toastTimestamp={toastId}
+            toastTimestamp={pendingOrderToastIdRef.current}
           />,
           {
             autoClose: false,
-            toastId,
+            toastId: pendingOrderToastIdRef.current,
           }
         );
 
