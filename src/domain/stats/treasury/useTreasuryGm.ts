@@ -36,8 +36,8 @@ export function useTreasuryGm({
     return buildTreasuryMarketsRequest({
       chainId,
       addresses,
-      marketsAddresses: marketsAddresses!,
-      marketsData: marketsData ?? {},
+      marketsAddresses,
+      marketsData,
       tokensData,
     });
   }, [addresses, chainId, marketsAddresses, marketsData, tokensData]);
