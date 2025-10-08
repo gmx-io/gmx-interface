@@ -2,7 +2,6 @@ import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
 import { MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
-import { useMarkets } from "domain/synthetics/markets/useMarkets";
 import { getContractMarketPrices } from "domain/synthetics/markets/utils";
 import type { TokensData } from "domain/synthetics/tokens";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
@@ -21,14 +20,16 @@ export function useTreasuryGm({
   addresses,
   addressesCount,
   tokensData,
+  marketsData,
+  marketsAddresses,
 }: {
   chainId: ContractsChainId;
   addresses: string[];
   addressesCount: number;
   tokensData?: TokensData;
+  marketsData?: MarketsData;
+  marketsAddresses?: string[];
 }): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } {
-  const { marketsData, marketsAddresses } = useMarkets(chainId);
-
   const requestConfig = useMemo(() => {
     if (!addresses.length || !marketsAddresses?.length || !marketsData || !tokensData) {
       return undefined;

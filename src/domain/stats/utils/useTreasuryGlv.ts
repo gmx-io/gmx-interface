@@ -2,7 +2,6 @@ import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
 import { GLV_MARKETS } from "config/markets";
-import { useMarkets } from "domain/synthetics/markets/useMarkets";
 import { getContractMarketPrices } from "domain/synthetics/markets/utils";
 import { convertToContractTokenPrices } from "domain/synthetics/tokens";
 import type { TokensData } from "domain/synthetics/tokens";
@@ -40,15 +39,15 @@ export function useTreasuryGlv({
   addressesCount,
   tokensData,
   tokenMap,
+  marketsData,
 }: {
   chainId: ContractsChainId;
   addresses: string[];
   addressesCount: number;
   tokensData?: TokensData;
   tokenMap: Record<string, Token>;
+  marketsData?: MarketsData;
 }): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } {
-  const { marketsData } = useMarkets(chainId);
-
   const glvListConfig = useMemo(() => {
     if (!GLV_MARKETS[chainId] || Object.keys(GLV_MARKETS[chainId]).length === 0) {
       return undefined;
@@ -124,7 +123,7 @@ export function useTreasuryGlv({
         }
       }
 
-      const tokenConfig = tokensData?.[entry.glvToken] ?? tokenMap[entry.glvToken];
+      const tokenConfig = tokensData?.[entry.glvToken] ?? findToken(tokenMap, entry.glvToken);
 
       entries.push({
         address: entry.glvToken,
@@ -168,7 +167,7 @@ function buildNormalizedGlvEntries(
       glvToken: glv.glvToken,
       longToken: glv.longToken,
       shortToken: glv.shortToken,
-      markets: markets.filter((market) => Boolean(marketsData[market])),
+      markets: markets.filter((market) => Boolean(findMarket(marketsData, market))),
     }))
     .filter((entry) => entry.markets.length > 0);
 
@@ -191,6 +190,14 @@ function sumBalancesFromCalls(result: MulticallContractResults | undefined, addr
   }
 
   return balance;
+}
+
+function findToken(tokenMap: Record<string, Token>, address: string) {
+  return tokenMap[address] ?? tokenMap[address.toLowerCase()] ?? tokenMap[address.toUpperCase()];
+}
+
+function findMarket(marketsData: MarketsData, address: string) {
+  return marketsData[address] ?? marketsData[address.toLowerCase()] ?? marketsData[address.toUpperCase()];
 }
 
 function buildTreasuryGlvListRequest(chainId: ContractsChainId): TreasuryMulticallRequest {

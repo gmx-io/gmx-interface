@@ -93,7 +93,11 @@ export function StatsCard({
 
   useEffect(() => {
     // eslint-disable-next-line no-console
-    console.log("treasuryData", formatUsd(treasuryData?.totalUsd), treasuryData);
+    console.log(
+      "treasuryData",
+      formatUsd(treasuryData?.totalUsd, { maxThreshold: "9999999999999999999999999" }),
+      treasuryData
+    );
   }, [treasuryData]);
 
   // #endregion Treasury

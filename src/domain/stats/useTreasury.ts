@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { useMarkets } from "domain/synthetics/markets/useMarkets";
 import { useTokenRecentPricesRequest, useTokensDataRequest } from "domain/synthetics/tokens";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokensMap } from "sdk/configs/tokens";
@@ -9,6 +10,7 @@ import { useTreasuryUniswapV3 } from "./uniswapV3/useTreasuryUniswapV3";
 import { useTreasuryGlv } from "./utils/useTreasuryGlv";
 import { useTreasuryGm } from "./utils/useTreasuryGm";
 import { useTreasuryTokens } from "./utils/useTreasuryTokens";
+import { useTreasuryVenus } from "./utils/useTreasuryVenus";
 
 export type { TreasuryData } from "./treasuryTypes";
 
@@ -31,6 +33,7 @@ export function useTreasury(chainId: ContractsChainId, _sourceChainId?: SourceCh
 
   const { tokensData } = useTokensDataRequest(chainId);
   const { pricesData } = useTokenRecentPricesRequest(chainId);
+  const { marketsData, marketsAddresses } = useMarkets(chainId);
 
   const tokenResult = useTreasuryTokens({
     chainId,
@@ -45,6 +48,8 @@ export function useTreasury(chainId: ContractsChainId, _sourceChainId?: SourceCh
     addresses,
     addressesCount,
     tokensData,
+    marketsData,
+    marketsAddresses,
   });
 
   const glvResult = useTreasuryGlv({
@@ -53,6 +58,7 @@ export function useTreasury(chainId: ContractsChainId, _sourceChainId?: SourceCh
     addressesCount,
     tokensData,
     tokenMap,
+    marketsData,
   });
 
   const uniswapV3Result = useTreasuryUniswapV3({
@@ -62,18 +68,34 @@ export function useTreasury(chainId: ContractsChainId, _sourceChainId?: SourceCh
     pricesData,
   });
 
+  const venusResult = useTreasuryVenus({
+    chainId,
+    addresses,
+    tokenMap,
+    pricesData,
+    tokensData,
+    marketsData,
+  });
+
   return useMemo(() => {
-    const entries = [...tokenResult.entries, ...gmResult.entries, ...glvResult.entries, ...uniswapV3Result.entries];
+    const entries = [
+      ...tokenResult.entries,
+      ...gmResult.entries,
+      ...glvResult.entries,
+      ...uniswapV3Result.entries,
+      ...venusResult.entries,
+    ];
 
     if (!entries.length) {
       return undefined;
     }
 
-    const totalUsd = tokenResult.totalUsd + gmResult.totalUsd + glvResult.totalUsd + uniswapV3Result.totalUsd;
+    const totalUsd =
+      tokenResult.totalUsd + gmResult.totalUsd + glvResult.totalUsd + uniswapV3Result.totalUsd + venusResult.totalUsd;
 
     return {
       tokens: entries,
       totalUsd,
     };
-  }, [glvResult, gmResult, tokenResult, uniswapV3Result]);
+  }, [glvResult, gmResult, tokenResult, uniswapV3Result, venusResult]);
 }
