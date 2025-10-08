@@ -2,13 +2,14 @@ import { useMemo } from "react";
 import useSWR from "swr";
 
 import { USD_DECIMALS } from "config/factors";
-import type { TokensData, TokenPricesData, TokenPrices } from "domain/synthetics/tokens";
+import type { TokenPricesData } from "domain/synthetics/tokens";
 import { ARBITRUM, type ContractsChainId } from "sdk/configs/chains";
 import type { Token } from "sdk/types/tokens";
 import { expandDecimals } from "sdk/utils/numbers";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
-import type { TreasuryBalanceEntry } from "../treasuryTypes";
+import { TREASURY_EMPTY_RESULT } from "./constants";
+import type { TreasuryBalanceEntry } from "./types";
 
 const PENDLE_API_URL = "https://api-v2.pendle.finance/core/v1/dashboard/positions/database";
 const SUPPORTED_CHAIN_ID = ARBITRUM;
@@ -20,13 +21,11 @@ export function useTreasuryPendle({
   addresses,
   tokenMap,
   pricesData,
-  tokensData,
 }: {
   chainId: ContractsChainId;
   addresses: string[];
   tokenMap: Record<string, Token>;
   pricesData?: TokenPricesData;
-  tokensData?: TokensData;
 }): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } | undefined {
   const shouldFetch = chainId === SUPPORTED_CHAIN_ID && addresses.length > 0;
 
@@ -36,7 +35,7 @@ export function useTreasuryPendle({
 
   return useMemo(() => {
     if (!shouldFetch) {
-      return { entries: [], totalUsd: 0n };
+      return TREASURY_EMPTY_RESULT;
     }
 
     if (!data) {
@@ -79,7 +78,6 @@ export function useTreasuryPendle({
             claimTokenAmounts: openPosition.lp?.claimTokenAmounts,
             chainId,
             tokenMap,
-            tokensData,
             pricesData,
           });
 
@@ -88,7 +86,6 @@ export function useTreasuryPendle({
             claimTokenAmounts: openPosition.yt?.claimTokenAmounts,
             chainId,
             tokenMap,
-            tokensData,
             pricesData,
           });
         });
@@ -96,7 +93,7 @@ export function useTreasuryPendle({
     });
 
     return { entries, totalUsd };
-  }, [chainId, data, pricesData, shouldFetch, tokenMap, tokensData]);
+  }, [chainId, data, pricesData, shouldFetch, tokenMap]);
 }
 
 async function fetchPendlePositions(addresses: string[]) {
@@ -115,7 +112,7 @@ async function fetchPendlePositions(addresses: string[]) {
         // eslint-disable-next-line no-console
         console.error("pendle fetch error", address, error);
 
-        return { positions: [] } as PendlePositionsResponse;
+        return { positions: [] };
       }
     })
   );
@@ -157,14 +154,12 @@ function processClaimTokens({
   claimTokenAmounts,
   chainId,
   tokenMap,
-  tokensData,
   pricesData,
 }: {
   entries: TreasuryBalanceEntry[];
   claimTokenAmounts?: PendleClaimToken[];
   chainId: ContractsChainId;
   tokenMap: Record<string, Token>;
-  tokensData?: TokensData;
   pricesData?: TokenPricesData;
 }): bigint {
   if (!claimTokenAmounts?.length) {
@@ -181,8 +176,8 @@ function processClaimTokens({
     }
 
     const tokenAddress = tokenAddressRaw.toLowerCase();
-    const token = findToken(tokenMap, tokenAddress);
-    const tokenPrices = tokensData?.[tokenAddress]?.prices ?? findPrice(pricesData, tokenAddress);
+    const token = tokenMap[tokenAddress];
+    const tokenPrices = pricesData?.[tokenAddress];
 
     if (!token || !tokenPrices) {
       return;
@@ -219,18 +214,6 @@ function numberToUsdBigInt(value?: number) {
   const micro = Math.round(value * 10 ** MICRO_DECIMALS);
 
   return BigInt(micro) * USD_MICRO_MULTIPLIER;
-}
-
-function findToken(tokenMap: Record<string, Token>, address: string) {
-  return tokenMap[address] ?? tokenMap[address.toLowerCase()] ?? tokenMap[address.toUpperCase()];
-}
-
-function findPrice(pricesData: TokenPricesData | undefined, address: string): TokenPrices | undefined {
-  if (!pricesData) {
-    return undefined;
-  }
-
-  return pricesData[address] ?? pricesData[address.toLowerCase()] ?? pricesData[address.toUpperCase()];
 }
 
 type PendleClaimToken = {

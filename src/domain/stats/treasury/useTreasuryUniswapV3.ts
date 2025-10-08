@@ -11,7 +11,8 @@ import { getUniswapV3Deployment } from "sdk/configs/uniswapV3";
 import type { Token } from "sdk/types/tokens";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
-import type { TreasuryBalanceEntry } from "../treasuryTypes";
+import { TREASURY_EMPTY_RESULT } from "./constants";
+import type { TreasuryBalanceEntry } from "./types";
 
 const MAX_POSITIONS_PER_OWNER = 200;
 const MAX_TOTAL_POSITIONS = 800;
@@ -52,8 +53,6 @@ type PoolSlot0State = {
   tick: number;
   liquidity: bigint;
 };
-
-const EMPTY_RESULT = { entries: [] as TreasuryBalanceEntry[], totalUsd: 0n };
 
 export function useTreasuryUniswapV3({
   chainId,
@@ -112,7 +111,7 @@ export function useTreasuryUniswapV3({
 
       const rawValue = balancesResponse.positionManager[`balance_${index}`]?.returnValues?.[0];
 
-      const balance = rawValue === undefined || rawValue === null ? 0n : toBigInt(rawValue);
+      const balance = rawValue === undefined || rawValue === null ? 0n : BigInt(rawValue);
       const asNumber = balance > BigInt(MAX_POSITIONS_PER_OWNER) ? MAX_POSITIONS_PER_OWNER : Number(balance);
       const allowed = Math.min(asNumber, remaining);
 
@@ -178,7 +177,7 @@ export function useTreasuryUniswapV3({
           continue;
         }
 
-        ids.push(toBigInt(rawValue));
+        ids.push(BigInt(rawValue));
       }
     });
 
@@ -256,12 +255,12 @@ export function useTreasuryUniswapV3({
         return;
       }
 
-      const fee = toNumber(feeRaw);
-      const tickLower = toNumber(tickLowerRaw);
-      const tickUpper = toNumber(tickUpperRaw);
-      const liquidity = toBigInt(liquidityRaw);
-      const tokensOwed0 = tokensOwed0Raw === undefined ? 0n : toBigInt(tokensOwed0Raw);
-      const tokensOwed1 = tokensOwed1Raw === undefined ? 0n : toBigInt(tokensOwed1Raw);
+      const fee = Number(feeRaw);
+      const tickLower = Number(tickLowerRaw);
+      const tickUpper = Number(tickUpperRaw);
+      const liquidity = BigInt(liquidityRaw);
+      const tokensOwed0 = tokensOwed0Raw === undefined ? 0n : BigInt(tokensOwed0Raw);
+      const tokensOwed1 = tokensOwed1Raw === undefined ? 0n : BigInt(tokensOwed1Raw);
 
       if (Number.isNaN(fee) || Number.isNaN(tickLower) || Number.isNaN(tickUpper)) {
         return;
@@ -414,16 +413,16 @@ export function useTreasuryUniswapV3({
         return;
       }
 
-      const tick = toNumber(tickRaw);
+      const tick = Number(tickRaw);
 
       if (Number.isNaN(tick)) {
         return;
       }
 
       map.set(key, {
-        sqrtPriceX96: toBigInt(sqrtPriceRaw),
+        sqrtPriceX96: BigInt(sqrtPriceRaw),
         tick,
-        liquidity: toBigInt(liquidityRaw),
+        liquidity: BigInt(liquidityRaw),
       });
     });
 
@@ -442,7 +441,7 @@ export function useTreasuryUniswapV3({
     }
 
     if (!deployment || !positions.length || !poolStates.size) {
-      return EMPTY_RESULT;
+      return TREASURY_EMPTY_RESULT;
     }
 
     const tokenBalances = new Map<string, bigint>();
@@ -515,7 +514,7 @@ export function useTreasuryUniswapV3({
     });
 
     if (!tokenBalances.size) {
-      return EMPTY_RESULT;
+      return TREASURY_EMPTY_RESULT;
     }
 
     const entries: TreasuryBalanceEntry[] = [];
@@ -590,28 +589,4 @@ function buildBalancesRequest(positionManager: string, owners: string[]): Treasu
 
 function buildPoolKey(token0: string, token1: string, fee: number) {
   return `${token0}-${token1}-${fee}`;
-}
-
-function toBigInt(value: string | number | bigint): bigint {
-  if (typeof value === "bigint") {
-    return value;
-  }
-
-  if (typeof value === "number") {
-    return BigInt(value);
-  }
-
-  return BigInt(value);
-}
-
-function toNumber(value: string | number | bigint | undefined): number {
-  if (value === undefined) {
-    return Number.NaN;
-  }
-
-  if (typeof value === "number") {
-    return value;
-  }
-
-  return Number(value);
 }

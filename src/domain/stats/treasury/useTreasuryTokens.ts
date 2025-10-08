@@ -9,7 +9,8 @@ import { getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import type { Token } from "sdk/types/tokens";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
-import type { TreasuryBalanceEntry } from "../treasuryTypes";
+import { TREASURY_EMPTY_RESULT } from "./constants";
+import type { TreasuryBalanceEntry } from "./types";
 
 type MulticallContractResults = Record<string, ContractCallResult | undefined>;
 type TreasuryMulticallRequest = MulticallRequestConfig<Record<string, { calls: Record<string, unknown> }>>;
@@ -61,7 +62,7 @@ export function useTreasuryTokens({
     }
 
     if (!tokenBalancesResponse) {
-      return { entries: [], totalUsd: 0n };
+      return TREASURY_EMPTY_RESULT;
     }
 
     const entries: TreasuryBalanceEntry[] = [];
@@ -171,5 +172,5 @@ function buildTreasuryTokensRequest({
     };
 
     return acc;
-  }, {} as TreasuryMulticallRequest);
+  }, {});
 }

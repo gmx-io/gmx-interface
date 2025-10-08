@@ -12,7 +12,8 @@ import type { MarketsData } from "sdk/types/markets";
 import type { Token } from "sdk/types/tokens";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
-import type { TreasuryBalanceEntry } from "../treasuryTypes";
+import { TREASURY_EMPTY_RESULT } from "./constants";
+import type { TreasuryBalanceEntry } from "./types";
 
 const EXCHANGE_RATE_DECIMALS = 18n;
 
@@ -57,7 +58,7 @@ export function useTreasuryVenus({
     const request: MulticallRequestConfig<Record<string, { calls: Record<string, ContractCallConfig> }>> = {};
 
     deployment.vTokens.forEach((config) => {
-      const market = findMarket(marketsData, config.underlyingAddress);
+      const market = marketsData?.[config.underlyingAddress];
 
       if (!market) {
         return;
@@ -147,7 +148,7 @@ export function useTreasuryVenus({
     }
 
     if (!deployment || !data) {
-      return { entries: [], totalUsd: 0n };
+      return TREASURY_EMPTY_RESULT;
     }
 
     const entries: TreasuryBalanceEntry[] = [];
@@ -160,7 +161,7 @@ export function useTreasuryVenus({
         return;
       }
 
-      const underlyingToken = findToken(tokenMap, config.underlyingAddress);
+      const underlyingToken = tokenMap[config.underlyingAddress];
       const tokenDecimals = underlyingToken?.decimals ?? 18;
 
       const balance = sumBalances(tokenResult, addresses.length);
@@ -175,10 +176,10 @@ export function useTreasuryVenus({
         return;
       }
 
-      const exchangeRate = toBigInt(exchangeRateRaw);
+      const exchangeRate = BigInt(exchangeRateRaw);
       const underlyingBalance = (balance * exchangeRate) / 10n ** EXCHANGE_RATE_DECIMALS;
 
-      const tokenPrice = underlyingToken ? findPrice(pricesData, underlyingToken.address) : undefined;
+      const tokenPrice = underlyingToken ? pricesData?.[underlyingToken.address] : undefined;
       const gmPrice = gmPrices?.get(config.underlyingAddress.toLowerCase());
       const effectivePrice = tokenPrice ?? gmPrice;
 
@@ -200,7 +201,6 @@ export function useTreasuryVenus({
         balance: underlyingBalance,
         usdValue: usd,
         chainId,
-        token: underlyingToken,
         decimals: tokenDecimals,
       });
     });
@@ -265,41 +265,9 @@ function sumBalances(result: Record<string, ContractCallResult | undefined> | un
     const rawValue = result[`balance_${index}`]?.returnValues?.[0];
 
     if (rawValue !== undefined && rawValue !== null) {
-      balance += toBigInt(rawValue);
+      balance += BigInt(rawValue);
     }
   }
 
   return balance;
-}
-
-function findToken(tokenMap: Record<string, Token>, address: string) {
-  return tokenMap[address] ?? tokenMap[address.toLowerCase()] ?? tokenMap[address.toUpperCase()];
-}
-
-function findPrice(prices: TokenPricesData | undefined, address: string) {
-  if (!prices) {
-    return undefined;
-  }
-
-  return prices[address] ?? prices[address.toLowerCase()] ?? prices[address.toUpperCase()];
-}
-
-function findMarket(marketsData: MarketsData | undefined, address: string) {
-  if (!marketsData) {
-    return undefined;
-  }
-
-  return marketsData[address] ?? marketsData[address.toLowerCase()] ?? marketsData[address.toUpperCase()];
-}
-
-function toBigInt(value: string | number | bigint): bigint {
-  if (typeof value === "bigint") {
-    return value;
-  }
-
-  if (typeof value === "number") {
-    return BigInt(value);
-  }
-
-  return BigInt(value);
 }

@@ -9,10 +9,10 @@ import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import type { ContractCallResult } from "lib/multicall";
 import type { ContractsChainId } from "sdk/configs/chains";
 import type { MarketsData } from "sdk/types/markets";
-import type { Token } from "sdk/types/tokens";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
-import type { TreasuryBalanceEntry } from "../treasuryTypes";
+import { TREASURY_EMPTY_RESULT } from "./constants";
+import type { TreasuryBalanceEntry } from "./types";
 
 type TreasuryMulticallRequest = MulticallRequestConfig<Record<string, { calls: Record<string, unknown> }>>;
 type MulticallContractResults = Record<string, ContractCallResult | undefined>;
@@ -37,13 +37,11 @@ export function useTreasuryGlv({
   chainId,
   addresses,
   tokensData,
-  tokenMap,
   marketsData,
 }: {
   chainId: ContractsChainId;
   addresses: string[];
   tokensData?: TokensData;
-  tokenMap: Record<string, Token>;
   marketsData?: MarketsData;
 }): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } | undefined {
   const glvListConfig = useMemo(() => {
@@ -66,7 +64,7 @@ export function useTreasuryGlv({
     }
 
     if (!glvList?.length || glvListConfig === undefined) {
-      return { entries: [] as GlvEntry[], request: undefined as TreasuryMulticallRequest | undefined };
+      return { entries: [], request: undefined };
     }
 
     return buildTreasuryGlvRequest({
@@ -98,7 +96,7 @@ export function useTreasuryGlv({
     }
 
     if (!glvBalancesResponse || !glvEntries?.length || glvListConfig === undefined) {
-      return { entries: [], totalUsd: 0n };
+      return TREASURY_EMPTY_RESULT;
     }
 
     const entries: TreasuryBalanceEntry[] = [];
@@ -121,9 +119,7 @@ export function useTreasuryGlv({
       const maxRaw = pricesConfig?.glvTokenPriceMax?.returnValues?.[0];
 
       if (minRaw !== undefined && maxRaw !== undefined) {
-        const minPrice = typeof minRaw === "bigint" ? minRaw : BigInt(minRaw);
-        const maxPrice = typeof maxRaw === "bigint" ? maxRaw : BigInt(maxRaw);
-        const price = getMidPrice({ minPrice, maxPrice });
+        const price = getMidPrice({ minPrice: BigInt(minRaw), maxPrice: BigInt(maxRaw) });
         const usd = convertToUsd(balance, decimals, price);
 
         if (usd !== undefined) {
@@ -132,8 +128,6 @@ export function useTreasuryGlv({
         }
       }
 
-      const tokenConfig = tokensData?.[entry.glvToken] ?? findToken(tokenMap, entry.glvToken);
-
       entries.push({
         address: entry.glvToken,
         type: "glv",
@@ -141,7 +135,6 @@ export function useTreasuryGlv({
         usdValue,
         chainId,
         decimals,
-        token: tokenConfig,
       });
     });
 
@@ -154,7 +147,6 @@ export function useTreasuryGlv({
     glvEntries,
     glvListConfig,
     addresses.length,
-    tokenMap,
     chainId,
   ]);
 }
@@ -166,7 +158,7 @@ function extractGlvList(data: Record<string, any> | undefined): GlvListItem[] | 
     return undefined;
   }
 
-  return rawList as GlvListItem[];
+  return rawList;
 }
 
 function sumBalancesFromCalls(result: MulticallContractResults | undefined, addressesCount: number): bigint {
@@ -187,10 +179,6 @@ function sumBalancesFromCalls(result: MulticallContractResults | undefined, addr
   return balance;
 }
 
-function findToken(tokenMap: Record<string, Token>, address: string) {
-  return tokenMap[address] ?? tokenMap[address.toLowerCase()] ?? tokenMap[address.toUpperCase()];
-}
-
 function buildTreasuryGlvListRequest(chainId: ContractsChainId): TreasuryMulticallRequest {
   const dataStoreAddress = getContract(chainId, "DataStore");
   const glvReaderAddress = getContract(chainId, "GlvReader");
@@ -206,7 +194,7 @@ function buildTreasuryGlvListRequest(chainId: ContractsChainId): TreasuryMultica
         },
       },
     },
-  } as TreasuryMulticallRequest;
+  };
 }
 
 function buildTreasuryGlvRequest({
@@ -226,7 +214,7 @@ function buildTreasuryGlvRequest({
   const dataStoreAddress = getContract(chainId, "DataStore");
   const glvReaderAddress = getContract(chainId, "GlvReader");
 
-  const request: TreasuryMulticallRequest = {} as TreasuryMulticallRequest;
+  const request: TreasuryMulticallRequest = {};
   const entries: GlvEntry[] = [];
 
   glvList.forEach(({ glv, markets }) => {
@@ -291,7 +279,7 @@ function buildTreasuryGlvRequest({
       [contractGlvPricesLong.min, contractGlvPricesLong.max],
       [contractGlvPricesShort.min, contractGlvPricesShort.max],
       glv.glvToken,
-    ] as const;
+    ];
 
     request[`${glv.glvToken}-prices`] = {
       contractAddress: glvReaderAddress,

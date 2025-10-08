@@ -10,7 +10,8 @@ import type { ContractsChainId } from "sdk/configs/chains";
 import type { MarketsData } from "sdk/types/markets";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
-import type { TreasuryBalanceEntry } from "../treasuryTypes";
+import { TREASURY_EMPTY_RESULT } from "./constants";
+import type { TreasuryBalanceEntry } from "./types";
 
 type TreasuryMulticallRequest = MulticallRequestConfig<Record<string, { calls: Record<string, unknown> }>>;
 type MulticallContractResults = Record<string, ContractCallResult | undefined>;
@@ -62,7 +63,7 @@ export function useTreasuryGm({
     }
 
     if (!marketBalancesResponse) {
-      return { entries: [], totalUsd: 0n };
+      return TREASURY_EMPTY_RESULT;
     }
 
     const entries: TreasuryBalanceEntry[] = [];
@@ -223,5 +224,5 @@ function buildTreasuryMarketsRequest({
     }
 
     return acc;
-  }, {} as TreasuryMulticallRequest);
+  }, {});
 }

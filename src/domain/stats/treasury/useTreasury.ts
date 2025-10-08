@@ -5,7 +5,7 @@ import { useTokenRecentPricesRequest, useTokensDataRequest } from "domain/synthe
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokensMap } from "sdk/configs/tokens";
 
-import type { TreasuryData } from "../treasuryTypes";
+import type { TreasuryData } from "./types";
 import { useTreasuryGlv } from "./useTreasuryGlv";
 import { useTreasuryGm } from "./useTreasuryGm";
 import { useTreasuryPendle } from "./useTreasuryPendle";
@@ -13,7 +13,7 @@ import { useTreasuryTokens } from "./useTreasuryTokens";
 import { useTreasuryUniswapV3 } from "./useTreasuryUniswapV3";
 import { useTreasuryVenus } from "./useTreasuryVenus";
 
-export type { TreasuryData } from "../treasuryTypes";
+export type { TreasuryData } from "./types";
 
 const TREASURY_ADDRESSES: {
   address: string;
@@ -60,7 +60,6 @@ export function useTreasury(chainId: ContractsChainId, _sourceChainId?: SourceCh
     chainId,
     addresses,
     tokensData,
-    tokenMap,
     marketsData,
   });
 
@@ -85,7 +84,6 @@ export function useTreasury(chainId: ContractsChainId, _sourceChainId?: SourceCh
     addresses: pendleAddresses,
     tokenMap,
     pricesData,
-    tokensData,
   });
 
   return useMemo(() => {
