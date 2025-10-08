@@ -1,3 +1,6 @@
+import { Token as UniToken } from "@uniswap/sdk-core";
+import { Pool, Position } from "@uniswap/v3-sdk";
+import JSBI from "jsbi";
 import { useMemo } from "react";
 
 import type { TokenPricesData } from "domain/synthetics/tokens";
@@ -9,7 +12,6 @@ import type { Token } from "sdk/types/tokens";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import type { TreasuryBalanceEntry } from "../treasuryTypes";
-import { getAmountsForPosition } from "./math";
 
 const MAX_POSITIONS_PER_OWNER = 200;
 const MAX_TOTAL_POSITIONS = 800;
@@ -47,6 +49,8 @@ type PoolDescriptor = {
 
 type PoolSlot0State = {
   sqrtPriceX96: bigint;
+  tick: number;
+  liquidity: bigint;
 };
 
 const EMPTY_RESULT = { entries: [] as TreasuryBalanceEntry[], totalUsd: 0n };
@@ -62,6 +66,8 @@ export function useTreasuryUniswapV3({
   tokenMap: Record<string, Token>;
   pricesData?: TokenPricesData;
 }): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } {
+  const chainIdNumber = Number(chainId);
+
   const normalizedTokenMap = useMemo(() => {
     const map = new Map<string, Token>();
 
@@ -370,6 +376,10 @@ export function useTreasuryUniswapV3({
             methodName: "slot0",
             params: [],
           },
+          liquidity: {
+            methodName: "liquidity",
+            params: [],
+          },
         },
       };
     }
@@ -398,13 +408,24 @@ export function useTreasuryUniswapV3({
       const slot0Call = poolSlot0Response[key]?.slot0;
       const slot0Values = (slot0Call?.returnValues as (bigint | number | string | undefined)[] | undefined) ?? [];
       const sqrtPriceRaw = slot0Values[0];
+      const tickRaw = slot0Values[1];
+      const liquidityCall = poolSlot0Response[key]?.liquidity;
+      const liquidityRaw = liquidityCall?.returnValues?.[0];
 
-      if (sqrtPriceRaw === undefined || sqrtPriceRaw === null) {
+      if (sqrtPriceRaw === undefined || sqrtPriceRaw === null || tickRaw === undefined || liquidityRaw === undefined) {
+        return;
+      }
+
+      const tick = toNumber(tickRaw);
+
+      if (Number.isNaN(tick)) {
         return;
       }
 
       map.set(key, {
         sqrtPriceX96: toBigInt(sqrtPriceRaw),
+        tick,
+        liquidity: toBigInt(liquidityRaw),
       });
     });
 
@@ -426,24 +447,62 @@ export function useTreasuryUniswapV3({
         return;
       }
 
-      const { amount0, amount1 } = getAmountsForPosition({
-        liquidity: position.liquidity,
-        sqrtPriceX96: state.sqrtPriceX96,
-        tickLower: position.tickLower,
-        tickUpper: position.tickUpper,
-      });
+      const token0Config = normalizedTokenMap.get(position.token0);
+      const token1Config = normalizedTokenMap.get(position.token1);
 
-      const totalAmount0 = amount0 + position.tokensOwed0;
-      const totalAmount1 = amount1 + position.tokensOwed1;
-
-      if (totalAmount0 > 0n) {
-        const previous = tokenBalances.get(position.token0) ?? 0n;
-        tokenBalances.set(position.token0, previous + totalAmount0);
+      if (!token0Config || !token1Config) {
+        return;
       }
 
-      if (totalAmount1 > 0n) {
-        const previous = tokenBalances.get(position.token1) ?? 0n;
-        tokenBalances.set(position.token1, previous + totalAmount1);
+      try {
+        const token0 = new UniToken(
+          chainIdNumber,
+          token0Config.address,
+          token0Config.decimals,
+          token0Config.symbol,
+          token0Config.name
+        );
+        const token1 = new UniToken(
+          chainIdNumber,
+          token1Config.address,
+          token1Config.decimals,
+          token1Config.symbol,
+          token1Config.name
+        );
+
+        const pool = new Pool(
+          token0,
+          token1,
+          position.fee,
+          JSBI.BigInt(state.sqrtPriceX96.toString()),
+          JSBI.BigInt(state.liquidity.toString()),
+          state.tick
+        );
+
+        const sdkPosition = new Position({
+          pool,
+          liquidity: JSBI.BigInt(position.liquidity.toString()),
+          tickLower: position.tickLower,
+          tickUpper: position.tickUpper,
+        });
+
+        const amount0 = BigInt(sdkPosition.amount0.quotient.toString());
+        const amount1 = BigInt(sdkPosition.amount1.quotient.toString());
+
+        const totalAmount0 = amount0 + position.tokensOwed0;
+        const totalAmount1 = amount1 + position.tokensOwed1;
+
+        if (totalAmount0 > 0n) {
+          const previous = tokenBalances.get(position.token0) ?? 0n;
+          tokenBalances.set(position.token0, previous + totalAmount0);
+        }
+
+        if (totalAmount1 > 0n) {
+          const previous = tokenBalances.get(position.token1) ?? 0n;
+          tokenBalances.set(position.token1, previous + totalAmount1);
+        }
+      } catch (e) {
+        // Ignore SDK errors for malformed pools or unsupported tokens
       }
     });
 
@@ -484,7 +543,7 @@ export function useTreasuryUniswapV3({
     }
 
     return { entries, totalUsd };
-  }, [chainId, deployment, normalizedTokenMap, poolStates, positions, pricesData]);
+  }, [chainId, chainIdNumber, deployment, normalizedTokenMap, poolStates, positions, pricesData]);
 }
 
 function buildBalancesRequest(positionManager: string, owners: string[]): TreasuryMulticallRequest {
