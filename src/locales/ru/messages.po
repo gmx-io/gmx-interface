@@ -2311,6 +2311,10 @@ msgstr "Триггер"
 msgid "Unstake failed."
 msgstr "Снятие стейкинга не удалось."
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Debug Express Signature Error"
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order cancelled"
 msgstr "Ордер отменён"
@@ -6965,6 +6969,10 @@ msgstr "Не удалось обновить настройки"
 msgid "Tweet"
 msgstr "Твитнуть"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Transaction failed due to invalid signature.<0/><1/>Please try a different wallet app or switch to 1CT or Classic mode."
+msgstr ""
+
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."
 msgstr ""
@@ -7316,8 +7324,8 @@ msgid "Loading Express params"
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
-msgid "Transaction failed due to signature validation. Please try a different wallet app or switch to 1CT or Classic mode."
-msgstr ""
+#~ msgid "Transaction failed due to signature validation. Please try a different wallet app or switch to 1CT or Classic mode."
+#~ msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No funding activity matching your search"

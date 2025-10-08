@@ -555,7 +555,7 @@ export async function buildAndSignExpressBatchOrderTxn({
 
     signature = await signTypedData(signatureParams);
 
-    if (localStorage.getItem("debugExpressSignatureError")) {
+    if (localStorage.getItem("debugExpressSignatureError") === "true") {
       signature = "0x0000000000000000000000000000000000000000000000000000000000000000";
     }
   }
