@@ -24,13 +24,6 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
         </ToggleSwitch>
 
         <ToggleSwitch
-          isChecked={localStorage.getItem("debugExpressSignatureError") === "true"}
-          setIsChecked={(value) => localStorage.setItem("debugExpressSignatureError", value.toString())}
-        >
-          <Trans>Debug Express Signature Error</Trans>
-        </ToggleSwitch>
-
-        <ToggleSwitch
           isChecked={settings.shouldDisableValidationForTesting}
           setIsChecked={settings.setShouldDisableValidationForTesting}
         >
