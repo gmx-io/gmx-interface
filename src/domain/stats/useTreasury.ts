@@ -20,6 +20,11 @@ import type { MarketsData } from "sdk/types/markets";
 import type { Token } from "sdk/types/tokens";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
+import type { TreasuryBalanceEntry, TreasuryData } from "./treasuryTypes";
+import { useTreasuryUniswapV3 } from "./uniswapV3/useTreasuryUniswapV3";
+
+export type { TreasuryData } from "./treasuryTypes";
+
 const TREASURY_ADDRESSES = [
   "0x4bd1cdaab4254fc43ef6424653ca2375b4c94c0e",
   "0xc6378ddf536410c14666dc59bc92b5ebc0f2f79e",
@@ -32,16 +37,6 @@ const TREASURY_ADDRESSES = [
 ];
 
 type TreasuryMulticallRequest = MulticallRequestConfig<Record<string, { calls: Record<string, unknown> }>>;
-
-type TreasuryBalanceEntry = {
-  address: string;
-  type: "token" | "gmxV2" | "glv";
-  balance: bigint;
-  usdValue: bigint;
-  chainId: ContractsChainId;
-  token?: Token;
-  decimals?: number;
-};
 
 type GlvListItem = {
   glv: {
@@ -319,13 +314,6 @@ function collectGlvEntries({
   return { entries, totalUsd };
 }
 
-export type TreasuryData =
-  | {
-      tokens: TreasuryBalanceEntry[];
-      totalUsd: bigint;
-    }
-  | undefined;
-
 export function useTreasury(chainId: ContractsChainId, _sourceChainId?: SourceChainId): TreasuryData {
   const addresses = TREASURY_ADDRESSES;
   const addressesCount = addresses.length;
@@ -424,6 +412,14 @@ export function useTreasury(chainId: ContractsChainId, _sourceChainId?: SourceCh
     request: glvBalancesConfig ?? {},
     parseResponse: (res) => res.data,
   });
+
+  const uniswapV3Result = useTreasuryUniswapV3({
+    chainId,
+    addresses,
+    tokenMap,
+    pricesData,
+  });
+
   const data = useMemo(() => {
     const tokenResult = collectTokenEntries({
       chainId,
@@ -450,13 +446,13 @@ export function useTreasury(chainId: ContractsChainId, _sourceChainId?: SourceCh
       tokenMap,
     });
 
-    const entries = [...tokenResult.entries, ...marketResult.entries, ...glvResult.entries];
+    const entries = [...tokenResult.entries, ...marketResult.entries, ...glvResult.entries, ...uniswapV3Result.entries];
 
     if (!entries.length) {
       return undefined;
     }
 
-    const totalUsd = tokenResult.totalUsd + marketResult.totalUsd + glvResult.totalUsd;
+    const totalUsd = tokenResult.totalUsd + marketResult.totalUsd + glvResult.totalUsd + uniswapV3Result.totalUsd;
 
     return {
       tokens: entries,
@@ -474,6 +470,7 @@ export function useTreasury(chainId: ContractsChainId, _sourceChainId?: SourceCh
     tokenBalancesResponse,
     tokenMap,
     tokensData,
+    uniswapV3Result,
   ]);
 
   return data;
