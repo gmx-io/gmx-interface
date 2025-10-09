@@ -9,11 +9,26 @@ import useUniqueUsers from "domain/stats/useUniqueUsers";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { formatAmountHuman } from "lib/numbers";
 import { sumBigInts } from "lib/sumBigInts";
+import { MARKETS } from "sdk/configs/markets";
+import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+const chains = [ARBITRUM, AVALANCHE, BOTANIX];
+const gmxTokenAddresses = chains.map((chain) => getTokenBySymbol(chain, "GMX").address);
+const gmGmxTokenAddresses = chains.map((chain) =>
+  Object.keys(MARKETS[chain]).filter((address) => {
+    return (
+      gmxTokenAddresses.includes(MARKETS[chain][address].longTokenAddress) &&
+      gmxTokenAddresses.includes(MARKETS[chain][address].shortTokenAddress)
+    );
+  })
+);
+const gmxGmAndTokensAddresses = [...gmxTokenAddresses, ...gmGmxTokenAddresses];
 
 export function StatsCard() {
   const v1TotalVolume = useTotalVolume();
@@ -36,19 +51,22 @@ export function StatsCard() {
 
   // #endregion Fees
 
+  // #region Treasury
   const treasuryData = useTreasuryAllChains();
 
   const treasuryWithoutGmxUsd = useMemo(() => {
     return treasuryData?.assets
-      .filter((token) => token.token?.symbol !== "GMX")
-      .reduce((acc, token) => acc + token.usdValue, 0n);
+      .filter((asset) => !gmxGmAndTokensAddresses.includes(asset.address))
+      .reduce((acc, asset) => acc + asset.usdValue, 0n);
   }, [treasuryData]);
 
   const gmxInTreasuryUsd = useMemo(() => {
     return treasuryData?.assets
-      .filter((token) => token.token?.symbol === "GMX")
-      .reduce((acc, token) => acc + token.usdValue, 0n);
+      .filter((asset) => gmxGmAndTokensAddresses.includes(asset.address))
+      .reduce((acc, asset) => acc + asset.usdValue, 0n);
   }, [treasuryData]);
+
+  // #endregion Treasury
 
   const totalFeesEntries = useMemo(
     () => ({
@@ -171,10 +189,17 @@ export function StatsCard() {
             <TooltipWithPortal
               handle={formatAmountHuman(treasuryData?.totalUsd, USD_DECIMALS, true, 2)}
               handleClassName="numbers"
+              position="bottom-end"
               content={
                 <div>
-                  <div>In other tokens: {formatAmountHuman(treasuryWithoutGmxUsd, USD_DECIMALS, true, 2)}</div>
-                  <div>In GMX: {formatAmountHuman(gmxInTreasuryUsd, USD_DECIMALS, true, 2)}</div>
+                  <StatsTooltipRow
+                    label={<Trans>In other tokens:</Trans>}
+                    value={formatAmountHuman(treasuryWithoutGmxUsd, USD_DECIMALS, false, 2)}
+                  />
+                  <StatsTooltipRow
+                    label={<Trans>In GMX:</Trans>}
+                    value={formatAmountHuman(gmxInTreasuryUsd, USD_DECIMALS, false, 2)}
+                  />
                 </div>
               }
             />

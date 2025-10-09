@@ -87,7 +87,7 @@ export function useTreasury(chainId: ContractsChainId, _sourceChainId?: SourceCh
   });
 
   return useMemo(() => {
-    if (!tokenResult || !gmResult || !glvResult || !uniswapV3Result || !venusResult || !pendleResult) {
+    if (!tokenResult || !gmResult || !glvResult || !uniswapV3Result) {
       return undefined;
     }
 
@@ -96,8 +96,8 @@ export function useTreasury(chainId: ContractsChainId, _sourceChainId?: SourceCh
       ...gmResult.assets,
       ...glvResult.assets,
       ...uniswapV3Result.assets,
-      ...venusResult.assets,
-      ...pendleResult.assets,
+      ...(venusResult?.assets ?? []),
+      ...(pendleResult?.assets ?? []),
     ];
 
     const totalUsd =
@@ -105,8 +105,8 @@ export function useTreasury(chainId: ContractsChainId, _sourceChainId?: SourceCh
       gmResult.totalUsd +
       glvResult.totalUsd +
       uniswapV3Result.totalUsd +
-      venusResult.totalUsd +
-      pendleResult.totalUsd;
+      (venusResult?.totalUsd ?? 0n) +
+      (pendleResult?.totalUsd ?? 0n);
 
     return {
       assets,
