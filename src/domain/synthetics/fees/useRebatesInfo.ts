@@ -6,20 +6,11 @@ import useSWR from "swr";
 import { expandDecimals, PRECISION } from "lib/numbers";
 import { getSubsquidGraphClient } from "lib/subgraph";
 import useWallet from "lib/wallets/useWallet";
+import { ClaimableCollateral } from "sdk/types/subsquid";
+import { queryPaginated } from "sdk/utils/subgraph";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { PositionsConstants } from "../positions/usePositionsConstants";
-
-type RawClaimableCollateral = {
-  marketAddress: string;
-  tokenAddress: string;
-  timeKey: string;
-  value: string;
-  factor: string;
-  factorByTime: string;
-  reductionFactor: string;
-  id: string;
-};
 
 export type RebateInfoItem = {
   factor: bigint;
@@ -37,6 +28,21 @@ export type RebatesInfoResult = {
   claimablePositionPriceImpactFees: RebateInfoItem[];
 };
 
+const CLAIMABLE_COLLATERALS_QUERY = gql`
+  query ClaimableCollaterals($account: String!, $limit: Int, $offset: Int) {
+    claimableCollaterals(where: { account_eq: $account, claimed_eq: false }, limit: $limit, offset: $offset) {
+      id
+      marketAddress
+      tokenAddress
+      timeKey
+      value
+      factor
+      reductionFactor
+      factorByTime
+    }
+  }
+`;
+
 export function useRebatesInfoRequest(
   chainId: number,
   {
@@ -52,26 +58,18 @@ export function useRebatesInfoRequest(
 
   const key = enabled && chainId && client && account ? [chainId, "useRebatesInfo", account] : null;
 
-  const { data } = useSWR<RawClaimableCollateral[]>(key, {
+  const { data } = useSWR<ClaimableCollateral[]>(key, {
     fetcher: async () => {
-      const query = gql(`{
-        claimableCollaterals(
-          where: { account_eq: "${account}", claimed_eq: false }
-        ) {
-          id
-          marketAddress
-          tokenAddress
-          timeKey
-          value
-          factor
-          reductionFactor
-          factorByTime
-        }
-      }`);
+      const claimableCollaterals = await queryPaginated(
+        async (limit, offset) =>
+          client!
+            .query<{
+              claimableCollaterals: ClaimableCollateral[];
+            }>({ query: CLAIMABLE_COLLATERALS_QUERY, variables: { account, limit, offset }, fetchPolicy: "no-cache" })
+            .then((response) => response?.data?.claimableCollaterals ?? []) ?? []
+      );
 
-      const { data } = await client!.query({ query, fetchPolicy: "no-cache" });
-
-      return data.claimableCollaterals as RawClaimableCollateral[];
+      return claimableCollaterals;
     },
   });
 

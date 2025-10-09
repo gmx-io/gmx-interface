@@ -8,13 +8,13 @@ import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YA
 import { USD_DECIMALS } from "config/factors";
 import { GlvOrMarketInfo, MarketTokensAPRData, useMarketTokensData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { AprSnapshot, useAprSnapshots } from "domain/synthetics/markets/useGmGlvAprSnapshots";
+import { useAprSnapshots } from "domain/synthetics/markets/useGmGlvAprSnapshots";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { PerformanceSnapshot, usePerformanceSnapshots } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { POOLS_TIME_RANGE_OPTIONS, convertPoolsTimeRangeToPeriod } from "domain/synthetics/markets/usePoolsTimeRange";
 import { PoolsTimeRange, usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
-import { PriceSnapshot, usePriceSnapshots } from "domain/synthetics/markets/usePriceSnapshots";
+import { usePriceSnapshots } from "domain/synthetics/markets/usePriceSnapshots";
 import { TokensData, getMidPrice } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
@@ -22,6 +22,7 @@ import { bigintToNumber, formatPercentage, formatUsdPrice, parseValue, PRECISION
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
+import { AprSnapshot, Price as PriceSnapshot } from "sdk/types/subsquid";
 
 import Tabs from "components/Tabs/Tabs";
 
@@ -276,7 +277,7 @@ const GraphChart = ({
   const priceData = useMemo(
     () =>
       priceSnapshots.map((snapshot) => ({
-        snapshotTimestamp: new Date(snapshot.snapshotTimestamp * 1000),
+        snapshotTimestamp: new Date(snapshot.snapshotTimestamp ?? 0 * 1000),
         value: bigintToNumber(
           getMidPrice({
             minPrice: BigInt(snapshot.minPrice),

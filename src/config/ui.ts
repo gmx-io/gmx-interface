@@ -9,6 +9,7 @@ export const INPUT_LABEL_SEPARATOR = ":";
 
 export const TRADE_HISTORY_PER_PAGE = 25;
 export const CLAIMS_HISTORY_PER_PAGE = 25;
+export const LEADERBOARD_POSITIONS_PER_PAGE = 20;
 export const UI_FEE_RECEIVER_ACCOUNT = import.meta.env.VITE_APP_UI_FEE_RECEIVER || null;
 
 export const DEFAULT_TOOLTIP_POSITION = "bottom-start";
