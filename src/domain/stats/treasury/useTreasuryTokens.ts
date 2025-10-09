@@ -2,18 +2,15 @@ import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
 import type { TokenPricesData } from "domain/synthetics/tokens";
-import { MulticallRequestConfig, useMulticall } from "lib/multicall";
-import type { ContractCallConfig, ContractCallResult } from "lib/multicall";
+import { useMulticall } from "lib/multicall";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import type { Token } from "sdk/types/tokens";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import { TREASURY_EMPTY_RESULT } from "./constants";
+import { createBalanceCalls, sumBalancesFromCalls } from "./shared";
 import type { TreasuryBalanceAsset, TreasuryData } from "./types";
-
-type MulticallContractResults = Record<string, ContractCallResult | undefined>;
-type TreasuryMulticallRequest = MulticallRequestConfig<Record<string, { calls: Record<string, unknown> }>>;
 
 export function useTreasuryTokens({
   chainId,
@@ -103,49 +100,6 @@ export function useTreasuryTokens({
   }, [addresses.length, chainId, requestConfig, tokenAddresses, tokenBalancesResponse, tokenMap, pricesData]);
 }
 
-function sumBalancesFromCalls(result: MulticallContractResults | undefined, addressesCount: number): bigint {
-  if (!result || !addressesCount) {
-    return 0n;
-  }
-
-  let balance = 0n;
-
-  for (let index = 0; index < addressesCount; index++) {
-    const rawValue = result[`balance_${index}`]?.returnValues?.[0];
-
-    if (rawValue !== undefined && rawValue !== null) {
-      balance += BigInt(rawValue);
-    }
-  }
-
-  return balance;
-}
-
-function createBalanceCalls(
-  addresses: string[],
-  options: { balanceMethodName?: string; includeDecimals?: boolean } = {}
-): Record<string, ContractCallConfig> {
-  const { balanceMethodName = "balanceOf", includeDecimals } = options;
-
-  const baseCalls: Record<string, ContractCallConfig> = includeDecimals
-    ? {
-        decimals: {
-          methodName: "decimals",
-          params: [],
-        },
-      }
-    : {};
-
-  return addresses.reduce<Record<string, ContractCallConfig>>((calls, account, index) => {
-    calls[`balance_${index}`] = {
-      methodName: balanceMethodName,
-      params: [account],
-    };
-
-    return calls;
-  }, baseCalls);
-}
-
 function buildTreasuryTokensRequest({
   chainId,
   addresses,
@@ -154,7 +108,7 @@ function buildTreasuryTokensRequest({
   chainId: ContractsChainId;
   addresses: string[];
   tokenAddresses: string[];
-}): TreasuryMulticallRequest {
+}) {
   const multicallAddress = getContract(chainId, "Multicall");
 
   return tokenAddresses.reduce((acc, tokenAddress) => {

@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
-import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
+import { ARBITRUM, AVALANCHE, BOTANIX, ContractsChainIdProduction } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useTotalVolume, useV1FeesInfo } from "domain/stats";
 import { useTreasuryAllChains } from "domain/stats/treasury/useTreasuryAllChains";
@@ -18,7 +18,12 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-const chains = [ARBITRUM, AVALANCHE, BOTANIX];
+const chainsMap: Record<ContractsChainIdProduction, ContractsChainIdProduction> = {
+  [ARBITRUM]: ARBITRUM,
+  [AVALANCHE]: AVALANCHE,
+  [BOTANIX]: BOTANIX,
+};
+const chains = Object.values(chainsMap);
 const gmxTokenAddresses = chains.map((chain) => getTokenBySymbol(chain, "GMX").address);
 const gmGmxTokenAddresses = chains.map((chain) =>
   Object.keys(MARKETS[chain]).filter((address) => {

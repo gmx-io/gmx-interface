@@ -1,15 +1,23 @@
-import { ARBITRUM, AVALANCHE, BOTANIX, ContractsChainIdProduction, SOURCE_BASE_MAINNET } from "sdk/configs/chains";
+import { useMemo } from "react";
+
+import { ARBITRUM, AVALANCHE, BOTANIX, ContractsChainIdProduction } from "sdk/configs/chains";
 
 import { TreasuryData, useTreasury } from "./useTreasury";
 
 export function useTreasuryAllChains() {
-  const treasuryDataByChain: Record<ContractsChainIdProduction, TreasuryData> = {
-    [ARBITRUM]: useTreasury(ARBITRUM, SOURCE_BASE_MAINNET),
-    [AVALANCHE]: useTreasury(AVALANCHE, SOURCE_BASE_MAINNET),
-    [BOTANIX]: useTreasury(BOTANIX, SOURCE_BASE_MAINNET),
-  };
+  const arbitrumTreasuryData = useTreasury(ARBITRUM);
+  const avalancheTreasuryData = useTreasury(AVALANCHE);
+  const botanixTreasuryData = useTreasury(BOTANIX);
 
-  return combineTreasuryData(treasuryDataByChain);
+  return useMemo(
+    () =>
+      combineTreasuryData({
+        [ARBITRUM]: arbitrumTreasuryData,
+        [AVALANCHE]: avalancheTreasuryData,
+        [BOTANIX]: botanixTreasuryData,
+      }),
+    [arbitrumTreasuryData, avalancheTreasuryData, botanixTreasuryData]
+  );
 }
 
 function combineTreasuryData(treasuryDataByChain: Record<ContractsChainIdProduction, TreasuryData>): TreasuryData {

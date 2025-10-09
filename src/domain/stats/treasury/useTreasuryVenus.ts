@@ -3,19 +3,19 @@ import { useMemo } from "react";
 import { getContract } from "config/contracts";
 import { MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
 import { getContractMarketPrices } from "domain/synthetics/markets/utils";
-import type { TokensData, TokenPrices, TokenPricesData } from "domain/synthetics/tokens";
+import type { TokensData, TokenPricesData } from "domain/synthetics/tokens";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
-import type { ContractCallConfig, ContractCallResult } from "lib/multicall";
+import type { ContractCallConfig } from "lib/multicall";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { getVenusDeployment, type VenusDeployment } from "sdk/configs/venus";
 import type { MarketsData } from "sdk/types/markets";
 import type { Token } from "sdk/types/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
-import { TREASURY_EMPTY_RESULT } from "./constants";
+import { TREASURY_EMPTY_RESULT, VENUS_EXCHANGE_RATE_DECIMALS } from "./constants";
+import { sumBalancesFromCalls } from "./shared";
 import type { TreasuryBalanceAsset, TreasuryData } from "./types";
-
-const EXCHANGE_RATE_DECIMALS = 18n;
 
 export function useTreasuryVenus({
   chainId,
@@ -123,20 +123,20 @@ export function useTreasuryVenus({
       return undefined;
     }
 
-    const map = new Map<string, TokenPrices>();
+    const map = {};
 
     Object.entries(gmPriceResponse).forEach(([address, result]) => {
-      const minRaw = result?.minPrice?.returnValues?.[0];
-      const maxRaw = result?.maxPrice?.returnValues?.[0];
+      const minPrice = result?.minPrice?.returnValues?.[0];
+      const maxPrice = result?.maxPrice?.returnValues?.[0];
 
-      if (minRaw === undefined || maxRaw === undefined) {
+      if (minPrice === undefined || maxPrice === undefined) {
         return;
       }
 
-      map.set(address.toLowerCase(), {
-        minPrice: BigInt(minRaw),
-        maxPrice: BigInt(maxRaw),
-      });
+      map[address] = {
+        minPrice,
+        maxPrice,
+      };
     });
 
     return map;
@@ -164,34 +164,29 @@ export function useTreasuryVenus({
       const underlyingToken = tokenMap[config.underlyingAddress];
       const tokenDecimals = underlyingToken?.decimals ?? 18;
 
-      const balance = sumBalances(tokenResult, addresses.length);
+      const balance = sumBalancesFromCalls(tokenResult, addresses.length);
 
       if (balance === 0n) {
         return;
       }
 
-      const exchangeRateRaw = tokenResult.exchangeRate?.returnValues?.[0];
+      const exchangeRate = tokenResult.exchangeRate?.returnValues?.[0];
 
-      if (exchangeRateRaw === undefined) {
+      if (exchangeRate === undefined) {
         return;
       }
 
-      const exchangeRate = BigInt(exchangeRateRaw);
-      const underlyingBalance = (balance * exchangeRate) / 10n ** EXCHANGE_RATE_DECIMALS;
+      const underlyingBalance = bigMath.mulDiv(balance, exchangeRate, 10n ** VENUS_EXCHANGE_RATE_DECIMALS);
 
       const tokenPrice = underlyingToken ? pricesData?.[underlyingToken.address] : undefined;
-      const gmPrice = gmPrices?.get(config.underlyingAddress.toLowerCase());
+      const gmPrice = gmPrices?.[config.underlyingAddress];
       const price = tokenPrice ?? gmPrice;
 
       if (!price) {
         return;
       }
 
-      const usd = convertToUsd(underlyingBalance, tokenDecimals, getMidPrice(price));
-
-      if (typeof usd !== "bigint") {
-        return;
-      }
+      const usd = convertToUsd(underlyingBalance, tokenDecimals, getMidPrice(price))!;
 
       totalUsd += usd;
 
@@ -220,14 +215,8 @@ export function useTreasuryVenus({
   ]);
 }
 
-function buildVenusRequest({
-  addresses,
-  deployment,
-}: {
-  addresses: string[];
-  deployment: VenusDeployment;
-}): MulticallRequestConfig<Record<string, { calls: Record<string, ContractCallConfig> }>> {
-  const request: MulticallRequestConfig<Record<string, { calls: Record<string, ContractCallConfig> }>> = {};
+function buildVenusRequest({ addresses, deployment }: { addresses: string[]; deployment: VenusDeployment }) {
+  const request = {};
 
   deployment.vTokens.forEach((vToken) => {
     const calls: Record<string, ContractCallConfig> = {};
@@ -252,22 +241,4 @@ function buildVenusRequest({
   });
 
   return request;
-}
-
-function sumBalances(result: Record<string, ContractCallResult | undefined> | undefined, count: number): bigint {
-  if (!result) {
-    return 0n;
-  }
-
-  let balance = 0n;
-
-  for (let index = 0; index < count; index++) {
-    const rawValue = result[`balance_${index}`]?.returnValues?.[0];
-
-    if (rawValue !== undefined && rawValue !== null) {
-      balance += BigInt(rawValue);
-    }
-  }
-
-  return balance;
 }

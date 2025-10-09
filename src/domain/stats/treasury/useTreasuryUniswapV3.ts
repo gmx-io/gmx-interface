@@ -4,9 +4,9 @@ import JSBI from "jsbi";
 import { useMemo } from "react";
 
 import type { TokenPricesData } from "domain/synthetics/tokens";
-import { MulticallRequestConfig, useMulticall } from "lib/multicall";
-import type { ContractCallResult } from "lib/multicall";
+import { ContractCallResult, useMulticall } from "lib/multicall";
 import type { ContractsChainId } from "sdk/configs/chains";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { getUniswapV3Deployment } from "sdk/configs/uniswapV3";
 import type { Token } from "sdk/types/tokens";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
@@ -16,13 +16,6 @@ import type { TreasuryBalanceAsset, TreasuryData } from "./types";
 
 const MAX_POSITIONS_PER_OWNER = 200;
 const MAX_TOTAL_POSITIONS = 800;
-
-const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
-
-type TreasuryMulticallRequest = MulticallRequestConfig<Record<string, { calls: Record<string, unknown> }>>;
-
-type MulticallContractResults = Record<string, ContractCallResult | undefined>;
-type MulticallResponse = Record<string, MulticallContractResults | undefined>;
 
 type OwnerPositionSlot = {
   address: string;
@@ -54,6 +47,8 @@ type PoolSlot0State = {
   liquidity: bigint;
 };
 
+type MulticallContractResults = Record<string, Record<string, ContractCallResult | undefined> | undefined>;
+
 export function useTreasuryUniswapV3({
   chainId,
   addresses,
@@ -75,15 +70,11 @@ export function useTreasuryUniswapV3({
     return buildBalancesRequest(deployment.positionManager, addresses);
   }, [addresses, deployment]);
 
-  const { data: balancesResponse } = useMulticall<TreasuryMulticallRequest, MulticallResponse>(
-    chainId,
-    "useTreasuryUniswapV3Balances",
-    {
-      key: balancesRequest ? [chainId, "uniswapV3", "balances", addresses.length] : null,
-      request: balancesRequest ?? {},
-      parseResponse: (res) => res.data,
-    }
-  );
+  const { data: balancesResponse } = useMulticall(chainId, "useTreasuryUniswapV3Balances", {
+    key: balancesRequest ? [chainId, "uniswapV3", "balances", addresses.length] : null,
+    request: balancesRequest ?? {},
+    parseResponse: (res): MulticallContractResults => res.data,
+  });
 
   const ownerSlots = useMemo(() => {
     if (!deployment || !balancesRequest || !balancesResponse?.positionManager) {
@@ -99,9 +90,9 @@ export function useTreasuryUniswapV3({
         continue;
       }
 
-      const rawValue = balancesResponse.positionManager[`balance_${index}`]?.returnValues?.[0];
+      const balanceValue = balancesResponse.positionManager[`balance_${index}`]?.returnValues?.[0];
 
-      const balance = rawValue === undefined || rawValue === null ? 0n : BigInt(rawValue);
+      const balance = balanceValue === undefined || balanceValue === null ? 0n : balanceValue;
       const asNumber = balance > BigInt(MAX_POSITIONS_PER_OWNER) ? MAX_POSITIONS_PER_OWNER : Number(balance);
       const allowed = Math.min(asNumber, remaining);
 
@@ -138,18 +129,14 @@ export function useTreasuryUniswapV3({
         abiId: "UniswapV3PositionManager",
         calls,
       },
-    } satisfies TreasuryMulticallRequest;
+    };
   }, [deployment, ownerSlots]);
 
-  const { data: tokenIdsResponse } = useMulticall<TreasuryMulticallRequest, MulticallResponse>(
-    chainId,
-    "useTreasuryUniswapV3TokenIds",
-    {
-      key: tokenIdsRequest ? [chainId, "uniswapV3", "tokenIds", addresses.length] : null,
-      request: tokenIdsRequest ?? {},
-      parseResponse: (res) => res.data,
-    }
-  );
+  const { data: tokenIdsResponse } = useMulticall(chainId, "useTreasuryUniswapV3TokenIds", {
+    key: tokenIdsRequest ? [chainId, "uniswapV3", "tokenIds", addresses.length] : null,
+    request: tokenIdsRequest ?? {},
+    parseResponse: (res): MulticallContractResults => res.data,
+  });
 
   const tokenIds = useMemo(() => {
     const ids: bigint[] = [];
@@ -162,13 +149,13 @@ export function useTreasuryUniswapV3({
 
     ownerSlots.forEach((slot, ownerIndex) => {
       for (let positionIndex = 0; positionIndex < slot.count; positionIndex++) {
-        const rawValue = positionManagerResponse[`token_${ownerIndex}_${positionIndex}`]?.returnValues?.[0];
+        const value = positionManagerResponse[`token_${ownerIndex}_${positionIndex}`]?.returnValues?.[0];
 
-        if (rawValue === undefined || rawValue === null) {
+        if (value === undefined || value === null) {
           continue;
         }
 
-        ids.push(BigInt(rawValue));
+        ids.push(value);
       }
     });
 
@@ -199,18 +186,14 @@ export function useTreasuryUniswapV3({
         abiId: "UniswapV3PositionManager",
         calls,
       },
-    } satisfies TreasuryMulticallRequest;
+    };
   }, [deployment, tokenIds]);
 
-  const { data: positionsResponse } = useMulticall<TreasuryMulticallRequest, MulticallResponse>(
-    chainId,
-    "useTreasuryUniswapV3Positions",
-    {
-      key: positionsRequest ? [chainId, "uniswapV3", "positions", tokenIds.length] : null,
-      request: positionsRequest ?? {},
-      parseResponse: (res) => res.data,
-    }
-  );
+  const { data: positionsResponse } = useMulticall(chainId, "useTreasuryUniswapV3Positions", {
+    key: positionsRequest ? [chainId, "uniswapV3", "positions", tokenIds.length] : null,
+    request: positionsRequest ?? {},
+    parseResponse: (res): MulticallContractResults => res.data,
+  });
 
   const positions = useMemo(() => {
     const parsed: PositionData[] = [];
@@ -232,7 +215,7 @@ export function useTreasuryUniswapV3({
       const token0 = values[2] as string | undefined;
       const token1 = values[3] as string | undefined;
 
-      if (!token0 || !token1 || token0 === ZERO_ADDRESS || token1 === ZERO_ADDRESS) {
+      if (!token0 || !token1 || token0 === NATIVE_TOKEN_ADDRESS || token1 === NATIVE_TOKEN_ADDRESS) {
         return;
       }
 
@@ -316,18 +299,14 @@ export function useTreasuryUniswapV3({
         abiId: "UniswapV3Factory",
         calls,
       },
-    } satisfies TreasuryMulticallRequest;
+    };
   }, [deployment, uniquePools]);
 
-  const { data: poolsResponse } = useMulticall<TreasuryMulticallRequest, MulticallResponse>(
-    chainId,
-    "useTreasuryUniswapV3Pools",
-    {
-      key: poolsRequest ? [chainId, "uniswapV3", "pools", uniquePools.length] : null,
-      request: poolsRequest ?? {},
-      parseResponse: (res) => res.data,
-    }
-  );
+  const { data: poolsResponse } = useMulticall(chainId, "useTreasuryUniswapV3Pools", {
+    key: poolsRequest ? [chainId, "uniswapV3", "pools", uniquePools.length] : null,
+    request: poolsRequest ?? {},
+    parseResponse: (res): MulticallContractResults => res.data,
+  });
 
   const poolAddressMap = useMemo(() => {
     if (!poolsRequest || !poolsResponse?.factory) {
@@ -341,7 +320,7 @@ export function useTreasuryUniswapV3({
       const call = factoryResponse[`pool_${pool.key}`];
       const address = call?.returnValues?.[0];
 
-      if (typeof address === "string" && address !== ZERO_ADDRESS) {
+      if (typeof address === "string" && address !== NATIVE_TOKEN_ADDRESS) {
         map.set(pool.key, address);
       }
     });
@@ -354,7 +333,7 @@ export function useTreasuryUniswapV3({
       return undefined;
     }
 
-    const request: TreasuryMulticallRequest = {};
+    const request = {};
 
     for (const [key, address] of poolAddressMap.entries()) {
       request[key] = {
@@ -376,15 +355,11 @@ export function useTreasuryUniswapV3({
     return request;
   }, [poolAddressMap]);
 
-  const { data: poolSlot0Response } = useMulticall<TreasuryMulticallRequest, MulticallResponse>(
-    chainId,
-    "useTreasuryUniswapV3Slot0",
-    {
-      key: poolSlot0Request ? [chainId, "uniswapV3", "slot0", poolAddressMap.size] : null,
-      request: poolSlot0Request ?? {},
-      parseResponse: (res) => res.data,
-    }
-  );
+  const { data: poolSlot0Response } = useMulticall(chainId, "useTreasuryUniswapV3Slot0", {
+    key: poolSlot0Request ? [chainId, "uniswapV3", "slot0", poolAddressMap.size] : null,
+    request: poolSlot0Request ?? {},
+    parseResponse: (res): MulticallContractResults => res.data,
+  });
 
   const poolStates = useMemo(() => {
     if (!poolSlot0Request || !poolSlot0Response) {
@@ -561,7 +536,7 @@ export function useTreasuryUniswapV3({
   ]);
 }
 
-function buildBalancesRequest(positionManager: string, owners: string[]): TreasuryMulticallRequest {
+function buildBalancesRequest(positionManager: string, owners: string[]) {
   return {
     positionManager: {
       contractAddress: positionManager,
@@ -575,7 +550,7 @@ function buildBalancesRequest(positionManager: string, owners: string[]): Treasu
         return acc;
       }, {}),
     },
-  } satisfies TreasuryMulticallRequest;
+  };
 }
 
 function buildPoolKey(token0: string, token1: string, fee: number) {

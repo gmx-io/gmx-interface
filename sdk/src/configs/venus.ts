@@ -14,6 +14,8 @@ export type VenusDeployment = {
   vTokens: VenusVTokenConfig[];
 };
 
+export const VENUS_EXCHANGE_RATE_DECIMALS = 18n;
+
 const VENUS_DEPLOYMENTS: Partial<Record<ContractsChainId, VenusDeployment>> = {
   [ARBITRUM]: {
     comptroller: "0x317c1A5739F39046E20b08ac9BeEa3f10fD43326",

@@ -5,17 +5,14 @@ import { GLV_MARKETS } from "config/markets";
 import { getContractMarketPrices } from "domain/synthetics/markets/utils";
 import { convertToContractTokenPrices } from "domain/synthetics/tokens";
 import type { TokensData } from "domain/synthetics/tokens";
-import { MulticallRequestConfig, useMulticall } from "lib/multicall";
-import type { ContractCallResult } from "lib/multicall";
+import { useMulticall } from "lib/multicall";
 import type { ContractsChainId } from "sdk/configs/chains";
 import type { MarketsData } from "sdk/types/markets";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import { TREASURY_EMPTY_RESULT } from "./constants";
+import { createBalanceCalls, sumBalancesFromCalls } from "./shared";
 import type { TreasuryBalanceAsset, TreasuryData } from "./types";
-
-type TreasuryMulticallRequest = MulticallRequestConfig<Record<string, { calls: Record<string, unknown> }>>;
-type MulticallContractResults = Record<string, ContractCallResult | undefined>;
 
 type GlvListItem = {
   glv: {
@@ -110,16 +107,16 @@ export function useTreasuryGlv({
         return;
       }
 
-      const decimalsRaw = balancesConfig?.decimals?.returnValues?.[0];
-      const decimals = decimalsRaw !== undefined ? Number(decimalsRaw) : 18;
+      const decimalsValue = balancesConfig?.decimals?.returnValues?.[0];
+      const decimals = decimalsValue !== undefined ? Number(decimalsValue) : 18;
 
       let usdValue = 0n;
       const pricesConfig = glvBalancesResponse[`${asset.glvToken}-prices`];
-      const minRaw = pricesConfig?.glvTokenPriceMin?.returnValues?.[0];
-      const maxRaw = pricesConfig?.glvTokenPriceMax?.returnValues?.[0];
+      const minPrice = pricesConfig?.glvTokenPriceMin?.returnValues?.[0];
+      const maxPrice = pricesConfig?.glvTokenPriceMax?.returnValues?.[0];
 
-      if (minRaw !== undefined && maxRaw !== undefined) {
-        const price = getMidPrice({ minPrice: BigInt(minRaw), maxPrice: BigInt(maxRaw) });
+      if (minPrice !== undefined && maxPrice !== undefined) {
+        const price = getMidPrice({ minPrice, maxPrice });
         const usd = convertToUsd(balance, decimals, price);
 
         if (usd !== undefined) {
@@ -152,34 +149,16 @@ export function useTreasuryGlv({
 }
 
 function extractGlvList(data: Record<string, any> | undefined): GlvListItem[] | undefined {
-  const rawList = data?.glvs?.list?.returnValues;
+  const list = data?.glvs?.list?.returnValues;
 
-  if (!Array.isArray(rawList)) {
+  if (!Array.isArray(list)) {
     return undefined;
   }
 
-  return rawList;
+  return list;
 }
 
-function sumBalancesFromCalls(result: MulticallContractResults | undefined, addressesCount: number): bigint {
-  if (!result || !addressesCount) {
-    return 0n;
-  }
-
-  let balance = 0n;
-
-  for (let index = 0; index < addressesCount; index++) {
-    const rawValue = result[`balance_${index}`]?.returnValues?.[0];
-
-    if (rawValue !== undefined && rawValue !== null) {
-      balance += BigInt(rawValue);
-    }
-  }
-
-  return balance;
-}
-
-function buildTreasuryGlvListRequest(chainId: ContractsChainId): TreasuryMulticallRequest {
+function buildTreasuryGlvListRequest(chainId: ContractsChainId) {
   const dataStoreAddress = getContract(chainId, "DataStore");
   const glvReaderAddress = getContract(chainId, "GlvReader");
 
@@ -209,12 +188,12 @@ function buildTreasuryGlvRequest({
   glvList: GlvListItem[];
   tokensData: TokensData;
   marketsData: MarketsData;
-}): { assets: GlvAsset[]; request: TreasuryMulticallRequest | undefined } {
+}) {
   const glvConfig = GLV_MARKETS[chainId] ?? {};
   const dataStoreAddress = getContract(chainId, "DataStore");
   const glvReaderAddress = getContract(chainId, "GlvReader");
 
-  const request: TreasuryMulticallRequest = {};
+  const request = {};
   const assets: GlvAsset[] = [];
 
   glvList.forEach(({ glv, markets }) => {
@@ -298,29 +277,4 @@ function buildTreasuryGlvRequest({
     assets,
     request: assets.length ? request : undefined,
   };
-}
-
-function createBalanceCalls(
-  addresses: string[],
-  options: { balanceMethodName?: string; includeDecimals?: boolean } = {}
-): Record<string, { methodName: string; params: unknown[] }> {
-  const { balanceMethodName = "balanceOf", includeDecimals } = options;
-
-  const baseCalls: Record<string, { methodName: string; params: unknown[] }> = includeDecimals
-    ? {
-        decimals: {
-          methodName: "decimals",
-          params: [],
-        },
-      }
-    : {};
-
-  return addresses.reduce<Record<string, { methodName: string; params: unknown[] }>>((calls, account, index) => {
-    calls[`balance_${index}`] = {
-      methodName: balanceMethodName,
-      params: [account],
-    };
-
-    return calls;
-  }, baseCalls);
 }

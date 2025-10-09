@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { useMarkets } from "domain/synthetics/markets/useMarkets";
 import { useTokenRecentPricesRequest, useTokensDataRequest } from "domain/synthetics/tokens";
-import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { getTokensMap } from "sdk/configs/tokens";
 
 import type { TreasuryData } from "./types";
@@ -36,7 +36,7 @@ const addresses = TREASURY_ADDRESSES.map((item) => item.address);
 const venusAddresses = TREASURY_ADDRESSES.filter((item) => item.hasVenus).map((item) => item.address);
 const pendleAddresses = TREASURY_ADDRESSES.filter((item) => item.hasPendle).map((item) => item.address);
 
-export function useTreasury(chainId: ContractsChainId, _sourceChainId?: SourceChainId): TreasuryData {
+export function useTreasury(chainId: ContractsChainId): TreasuryData {
   const tokenMap = useMemo(() => getTokensMap(chainId), [chainId]);
 
   const { tokensData } = useTokensDataRequest(chainId);

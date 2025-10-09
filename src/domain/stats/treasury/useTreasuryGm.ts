@@ -4,17 +4,14 @@ import { getContract } from "config/contracts";
 import { MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
 import { getContractMarketPrices } from "domain/synthetics/markets/utils";
 import type { TokensData } from "domain/synthetics/tokens";
-import { MulticallRequestConfig, useMulticall } from "lib/multicall";
-import type { ContractCallConfig, ContractCallResult } from "lib/multicall";
+import { useMulticall } from "lib/multicall";
 import type { ContractsChainId } from "sdk/configs/chains";
 import type { MarketsData } from "sdk/types/markets";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import { TREASURY_EMPTY_RESULT } from "./constants";
+import { createBalanceCalls, sumBalancesFromCalls } from "./shared";
 import type { TreasuryBalanceAsset, TreasuryData } from "./types";
-
-type TreasuryMulticallRequest = MulticallRequestConfig<Record<string, { calls: Record<string, unknown> }>>;
-type MulticallContractResults = Record<string, ContractCallResult | undefined>;
 
 export function useTreasuryGm({
   chainId,
@@ -82,12 +79,10 @@ export function useTreasuryGm({
 
       let usdValue = 0n;
       const pricesConfig = marketBalancesResponse[`${marketAddress}-prices`];
-      const minRaw = pricesConfig?.minPrice?.returnValues?.[0];
-      const maxRaw = pricesConfig?.maxPrice?.returnValues?.[0];
+      const minPrice = pricesConfig?.minPrice?.returnValues?.[0];
+      const maxPrice = pricesConfig?.maxPrice?.returnValues?.[0];
 
-      if (minRaw !== undefined && maxRaw !== undefined) {
-        const minPrice = typeof minRaw === "bigint" ? minRaw : BigInt(minRaw);
-        const maxPrice = typeof maxRaw === "bigint" ? maxRaw : BigInt(maxRaw);
+      if (minPrice !== undefined && maxPrice !== undefined) {
         const price = getMidPrice({ minPrice, maxPrice });
         const usd = convertToUsd(balance, decimals, price);
 
@@ -111,49 +106,6 @@ export function useTreasuryGm({
   }, [addresses.length, chainId, marketBalancesResponse, marketsAddresses, marketsData, requestConfig, tokensData]);
 }
 
-function createBalanceCalls(
-  addresses: string[],
-  options: { balanceMethodName?: string; includeDecimals?: boolean } = {}
-): Record<string, ContractCallConfig> {
-  const { balanceMethodName = "balanceOf", includeDecimals } = options;
-
-  const baseCalls: Record<string, ContractCallConfig> = includeDecimals
-    ? {
-        decimals: {
-          methodName: "decimals",
-          params: [],
-        },
-      }
-    : {};
-
-  return addresses.reduce<Record<string, ContractCallConfig>>((calls, account, index) => {
-    calls[`balance_${index}`] = {
-      methodName: balanceMethodName,
-      params: [account],
-    };
-
-    return calls;
-  }, baseCalls);
-}
-
-function sumBalancesFromCalls(result: MulticallContractResults | undefined, addressesCount: number): bigint {
-  if (!result || !addressesCount) {
-    return 0n;
-  }
-
-  let balance = 0n;
-
-  for (let index = 0; index < addressesCount; index++) {
-    const rawValue = result[`balance_${index}`]?.returnValues?.[0];
-
-    if (rawValue !== undefined && rawValue !== null) {
-      balance += BigInt(rawValue);
-    }
-  }
-
-  return balance;
-}
-
 function buildTreasuryMarketsRequest({
   chainId,
   addresses,
@@ -166,7 +118,7 @@ function buildTreasuryMarketsRequest({
   marketsAddresses: string[];
   marketsData: MarketsData;
   tokensData: TokensData;
-}): TreasuryMulticallRequest {
+}) {
   const dataStoreAddress = getContract(chainId, "DataStore");
   const syntheticsReaderAddress = getContract(chainId, "SyntheticsReader");
 
