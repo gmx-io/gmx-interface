@@ -66,15 +66,9 @@ export function usePositionsInfoRequest(
   const error = positionsError || positionsConstantsError || uiFeeFactorError || userReferralInfo?.error;
 
   return useMemo(() => {
-    if (error) {
-      return {
-        isLoading: false,
-        error,
-      };
-    }
-
     if (!marketsData || !tokensData || !positionsData || minCollateralUsd === undefined) {
       return {
+        error,
         isLoading: true,
       };
     }
@@ -286,6 +280,7 @@ export function usePositionsInfoRequest(
     return {
       positionsInfoData,
       isLoading: false,
+      error,
     };
   }, [
     error,
