@@ -1205,7 +1205,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       categories: ["layer1", "defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/66489/standard/Plasma-symbol-green-1.png?1755142558",
       coingeckoUrl: "https://www.coingecko.com/en/coins/plasma",
-      explorerUrl: "https://arbiscan.io/token/0x2e73bDBee83D91623736D514b0BB41f2afd9C7Fd",
       isSynthetic: true,
     },
     {
@@ -1215,9 +1214,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       priceDecimals: 4,
       categories: ["defi"],
-      imageUrl: "https://coin-images.coingecko.com/coins/images/69040/thumb/_ASTER.png?1757326782",
+      imageUrl: "https://assets.coingecko.com/coins/images/69040/standard/_ASTER.png?1757326782",
       coingeckoUrl: "https://www.coingecko.com/en/coins/aster-2",
-      explorerUrl: "https://arbiscan.io/token/0x2aAB60E62f05d17e58dEc982870bfAdc7F4e7ADF",
       isSynthetic: true,
     },
     {
@@ -1228,9 +1226,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["layer1"],
       imageUrl:
-        "https://coin-images.coingecko.com/coins/images/69096/thumb/0G_1024x1024_Circular_Outlined.png?1758637574",
+        "https://assets.coingecko.com/coins/images/69096/standard/0G_1024x1024_Circular_Outlined.png?1758637574",
       coingeckoUrl: "https://www.coingecko.com/en/coins/0g",
-      explorerUrl: "https://arbiscan.io/token/0x95c317066CF214b2E6588B2685D949384504F51e",
       isSynthetic: true,
     },
     {
@@ -1240,9 +1237,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       priceDecimals: 5,
       categories: ["defi"],
-      imageUrl: "https://coin-images.coingecko.com/coins/images/68972/thumb/avnt-token.png?1757134448",
+      imageUrl: "https://assets.coingecko.com/coins/images/68972/standard/avnt-token.png?1757134448",
       coingeckoUrl: "https://www.coingecko.com/en/coins/avantis",
-      explorerUrl: "https://arbiscan.io/token/0xdB58EB7f408EbA2176eCb44A4696292605cCEB39",
       isSynthetic: true,
     },
     {
@@ -1252,9 +1248,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       priceDecimals: 6,
       categories: ["layer2"],
-      imageUrl: "https://coin-images.coingecko.com/coins/images/68507/thumb/linea-logo.jpeg?1756025484",
+      imageUrl: "https://assets.coingecko.com/coins/images/68507/standard/linea-logo.jpeg?1756025484",
       coingeckoUrl: "https://www.coingecko.com/en/coins/linea",
-      explorerUrl: "https://arbiscan.io/token/0xc4017CFe7D7eaBDE63d3252caBF26A286fE2B1E0",
       isSynthetic: true,
     },
   ],
