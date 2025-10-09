@@ -65,16 +65,6 @@ export function useTreasuryUniswapV3({
   tokenMap: Record<string, Token>;
   pricesData?: TokenPricesData;
 }): TreasuryData | undefined {
-  const normalizedTokenMap = useMemo(() => {
-    const map = new Map<string, Token>();
-
-    Object.entries(tokenMap).forEach(([address, token]) => {
-      map.set(address.toLowerCase(), token);
-    });
-
-    return map;
-  }, [tokenMap]);
-
   const deployment = getUniswapV3Deployment(chainId);
 
   const balancesRequest = useMemo(() => {
@@ -270,8 +260,8 @@ export function useTreasuryUniswapV3({
 
       parsed.push({
         tokenId,
-        token0: token0.toLowerCase(),
-        token1: token1.toLowerCase(),
+        token0: token0,
+        token1: token1,
         fee,
         tickLower,
         tickUpper,
@@ -352,7 +342,7 @@ export function useTreasuryUniswapV3({
       const address = call?.returnValues?.[0];
 
       if (typeof address === "string" && address !== ZERO_ADDRESS) {
-        map.set(pool.key, address.toLowerCase());
+        map.set(pool.key, address);
       }
     });
 
@@ -456,8 +446,8 @@ export function useTreasuryUniswapV3({
         return;
       }
 
-      const token0Config = normalizedTokenMap.get(position.token0);
-      const token1Config = normalizedTokenMap.get(position.token1);
+      const token0Config = tokenMap[position.token0];
+      const token1Config = tokenMap[position.token1];
 
       if (!token0Config || !token1Config) {
         return;
@@ -523,10 +513,9 @@ export function useTreasuryUniswapV3({
     let totalUsd = 0n;
 
     for (const [tokenAddress, balance] of tokenBalances.entries()) {
-      const normalizedAddress = tokenAddress.toLowerCase();
-      const tokenConfig = normalizedTokenMap.get(normalizedAddress);
+      const tokenConfig = tokenMap[tokenAddress];
       const decimals = tokenConfig?.decimals;
-      const priceKey = tokenConfig?.address ?? normalizedAddress;
+      const priceKey = tokenConfig?.address ?? tokenAddress;
 
       let usdValue = 0n;
 
@@ -541,7 +530,7 @@ export function useTreasuryUniswapV3({
       }
 
       assets.push({
-        address: tokenConfig?.address ?? normalizedAddress,
+        address: tokenConfig?.address ?? tokenAddress,
         type: "uniswapV3",
         balance,
         usdValue,
@@ -557,7 +546,7 @@ export function useTreasuryUniswapV3({
     balancesResponse,
     chainId,
     deployment,
-    normalizedTokenMap,
+    tokenMap,
     poolSlot0Request,
     poolSlot0Response,
     poolStates,
