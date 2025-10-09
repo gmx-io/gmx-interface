@@ -31,7 +31,7 @@ export const appEventsData: EventData[] = [
   {
     id: "aster-0g-avnt-linea-listing",
     isActive: true,
-    startDate: "09 Oct 2025, 12:00",
+    startDate: "09 Oct 2025, 14:30",
     endDate: "16 Oct 2025, 12:00",
     title: "0G, ASTER, AVNT and LINEA markets added on Arbitrum",
     bodyText: (
