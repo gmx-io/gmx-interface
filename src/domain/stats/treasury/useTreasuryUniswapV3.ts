@@ -12,7 +12,7 @@ import type { Token } from "sdk/types/tokens";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import { TREASURY_EMPTY_RESULT } from "./constants";
-import type { TreasuryBalanceEntry } from "./types";
+import type { TreasuryBalanceAsset, TreasuryData } from "./types";
 
 const MAX_POSITIONS_PER_OWNER = 200;
 const MAX_TOTAL_POSITIONS = 800;
@@ -64,7 +64,7 @@ export function useTreasuryUniswapV3({
   addresses: string[];
   tokenMap: Record<string, Token>;
   pricesData?: TokenPricesData;
-}): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } | undefined {
+}): TreasuryData | undefined {
   const normalizedTokenMap = useMemo(() => {
     const map = new Map<string, Token>();
 
@@ -162,11 +162,12 @@ export function useTreasuryUniswapV3({
   );
 
   const tokenIds = useMemo(() => {
+    const ids: bigint[] = [];
+
     if (!ownerSlots || !tokenIdsRequest || !tokenIdsResponse?.positionManager) {
-      return [] as bigint[];
+      return ids;
     }
 
-    const ids: bigint[] = [];
     const positionManagerResponse = tokenIdsResponse.positionManager!;
 
     ownerSlots.forEach((slot, ownerIndex) => {
@@ -222,11 +223,12 @@ export function useTreasuryUniswapV3({
   );
 
   const positions = useMemo(() => {
+    const parsed: PositionData[] = [];
+
     if (!positionsRequest || !positionsResponse?.positionManager) {
-      return [] as PositionData[];
+      return parsed;
     }
 
-    const parsed: PositionData[] = [];
     const positionManagerResponse = positionsResponse.positionManager!;
 
     tokenIds.forEach((tokenId) => {
@@ -517,7 +519,7 @@ export function useTreasuryUniswapV3({
       return TREASURY_EMPTY_RESULT;
     }
 
-    const entries: TreasuryBalanceEntry[] = [];
+    const assets: TreasuryBalanceAsset[] = [];
     let totalUsd = 0n;
 
     for (const [tokenAddress, balance] of tokenBalances.entries()) {
@@ -538,7 +540,7 @@ export function useTreasuryUniswapV3({
         }
       }
 
-      entries.push({
+      assets.push({
         address: tokenConfig?.address ?? normalizedAddress,
         type: "uniswapV3",
         balance,
@@ -549,7 +551,7 @@ export function useTreasuryUniswapV3({
       });
     }
 
-    return { entries, totalUsd };
+    return { assets, totalUsd };
   }, [
     balancesRequest,
     balancesResponse,

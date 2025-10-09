@@ -91,13 +91,13 @@ export function useTreasury(chainId: ContractsChainId, _sourceChainId?: SourceCh
       return undefined;
     }
 
-    const entries = [
-      ...tokenResult.entries,
-      ...gmResult.entries,
-      ...glvResult.entries,
-      ...uniswapV3Result.entries,
-      ...venusResult.entries,
-      ...pendleResult.entries,
+    const assets = [
+      ...tokenResult.assets,
+      ...gmResult.assets,
+      ...glvResult.assets,
+      ...uniswapV3Result.assets,
+      ...venusResult.assets,
+      ...pendleResult.assets,
     ];
 
     const totalUsd =
@@ -109,7 +109,7 @@ export function useTreasury(chainId: ContractsChainId, _sourceChainId?: SourceCh
       pendleResult.totalUsd;
 
     return {
-      tokens: entries,
+      assets,
       totalUsd,
     };
   }, [glvResult, gmResult, pendleResult, tokenResult, uniswapV3Result, venusResult]);

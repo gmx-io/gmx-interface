@@ -3,7 +3,7 @@ import type { Token } from "sdk/types/tokens";
 
 export type TreasuryEntryType = "token" | "gmxV2" | "glv" | "uniswapV3" | "venus" | "pendle";
 
-export type TreasuryBalanceEntry = {
+export type TreasuryBalanceAsset = {
   address: string;
   type: TreasuryEntryType;
   balance: bigint;
@@ -15,7 +15,7 @@ export type TreasuryBalanceEntry = {
 
 export type TreasuryData =
   | {
-      tokens: TreasuryBalanceEntry[];
+      assets: TreasuryBalanceAsset[];
       totalUsd: bigint;
     }
   | undefined;

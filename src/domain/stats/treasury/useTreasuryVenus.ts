@@ -13,7 +13,7 @@ import type { Token } from "sdk/types/tokens";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import { TREASURY_EMPTY_RESULT } from "./constants";
-import type { TreasuryBalanceEntry } from "./types";
+import type { TreasuryBalanceAsset, TreasuryData } from "./types";
 
 const EXCHANGE_RATE_DECIMALS = 18n;
 
@@ -31,7 +31,7 @@ export function useTreasuryVenus({
   pricesData?: TokenPricesData;
   tokensData?: TokensData;
   marketsData?: MarketsData;
-}): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } | undefined {
+}): TreasuryData | undefined {
   const deployment = getVenusDeployment(chainId);
 
   const requestConfig = useMemo(() => {
@@ -151,7 +151,7 @@ export function useTreasuryVenus({
       return TREASURY_EMPTY_RESULT;
     }
 
-    const entries: TreasuryBalanceEntry[] = [];
+    const assets: TreasuryBalanceAsset[] = [];
     let totalUsd = 0n;
 
     deployment.vTokens.forEach((config) => {
@@ -181,13 +181,13 @@ export function useTreasuryVenus({
 
       const tokenPrice = underlyingToken ? pricesData?.[underlyingToken.address] : undefined;
       const gmPrice = gmPrices?.get(config.underlyingAddress.toLowerCase());
-      const effectivePrice = tokenPrice ?? gmPrice;
+      const price = tokenPrice ?? gmPrice;
 
-      if (!effectivePrice) {
+      if (!price) {
         return;
       }
 
-      const usd = convertToUsd(underlyingBalance, tokenDecimals, getMidPrice(effectivePrice));
+      const usd = convertToUsd(underlyingBalance, tokenDecimals, getMidPrice(price));
 
       if (typeof usd !== "bigint") {
         return;
@@ -195,7 +195,7 @@ export function useTreasuryVenus({
 
       totalUsd += usd;
 
-      entries.push({
+      assets.push({
         address: config.vTokenAddress,
         type: "venus",
         balance: underlyingBalance,
@@ -205,7 +205,7 @@ export function useTreasuryVenus({
       });
     });
 
-    return { entries, totalUsd };
+    return { assets, totalUsd };
   }, [
     addresses.length,
     chainId,

@@ -11,7 +11,7 @@ import type { MarketsData } from "sdk/types/markets";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import { TREASURY_EMPTY_RESULT } from "./constants";
-import type { TreasuryBalanceEntry } from "./types";
+import type { TreasuryBalanceAsset, TreasuryData } from "./types";
 
 type TreasuryMulticallRequest = MulticallRequestConfig<Record<string, { calls: Record<string, unknown> }>>;
 type MulticallContractResults = Record<string, ContractCallResult | undefined>;
@@ -28,7 +28,7 @@ export function useTreasuryGm({
   tokensData?: TokensData;
   marketsData?: MarketsData;
   marketsAddresses?: string[];
-}): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } | undefined {
+}): TreasuryData | undefined {
   const requestConfig = useMemo(() => {
     if (!addresses.length || !marketsAddresses?.length || !marketsData || !tokensData) {
       return undefined;
@@ -55,7 +55,7 @@ export function useTreasuryGm({
     }
 
     if (!marketsAddresses.length) {
-      return { entries: [], totalUsd: 0n };
+      return TREASURY_EMPTY_RESULT;
     }
 
     if (requestConfig && marketBalancesResponse === undefined) {
@@ -66,7 +66,7 @@ export function useTreasuryGm({
       return TREASURY_EMPTY_RESULT;
     }
 
-    const entries: TreasuryBalanceEntry[] = [];
+    const assets: TreasuryBalanceAsset[] = [];
     let totalUsd = 0n;
 
     marketsAddresses.forEach((marketAddress) => {
@@ -97,7 +97,7 @@ export function useTreasuryGm({
         }
       }
 
-      entries.push({
+      assets.push({
         address: marketAddress,
         type: "gmxV2",
         balance,
@@ -107,7 +107,7 @@ export function useTreasuryGm({
       });
     });
 
-    return { entries, totalUsd };
+    return { assets, totalUsd };
   }, [addresses.length, chainId, marketBalancesResponse, marketsAddresses, marketsData, requestConfig, tokensData]);
 }
 
@@ -147,7 +147,7 @@ function sumBalancesFromCalls(result: MulticallContractResults | undefined, addr
     const rawValue = result[`balance_${index}`]?.returnValues?.[0];
 
     if (rawValue !== undefined && rawValue !== null) {
-      balance += typeof rawValue === "bigint" ? rawValue : BigInt(rawValue);
+      balance += BigInt(rawValue);
     }
   }
 

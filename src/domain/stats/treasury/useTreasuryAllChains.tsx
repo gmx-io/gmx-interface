@@ -26,8 +26,8 @@ function combineTreasuryData(treasuryDataByChain: Record<ContractsChainIdProduct
   return definedResults.reduce(
     (acc, treasuryData) => ({
       totalUsd: acc.totalUsd + treasuryData.totalUsd,
-      tokens: acc.tokens.concat(treasuryData.tokens),
+      assets: acc.assets.concat(treasuryData.assets),
     }),
-    { totalUsd: 0n, tokens: [] }
+    { totalUsd: 0n, assets: [] }
   );
 }

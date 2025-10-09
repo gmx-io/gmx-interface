@@ -9,7 +9,7 @@ import { expandDecimals } from "sdk/utils/numbers";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import { TREASURY_EMPTY_RESULT } from "./constants";
-import type { TreasuryBalanceEntry } from "./types";
+import type { TreasuryBalanceAsset, TreasuryData } from "./types";
 
 const PENDLE_API_URL = "https://api-v2.pendle.finance/core/v1/dashboard/positions/database";
 const SUPPORTED_CHAIN_ID = ARBITRUM;
@@ -26,7 +26,7 @@ export function useTreasuryPendle({
   addresses: string[];
   tokenMap: Record<string, Token>;
   pricesData?: TokenPricesData;
-}): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } | undefined {
+}): TreasuryData | undefined {
   const shouldFetch = chainId === SUPPORTED_CHAIN_ID && addresses.length > 0;
 
   const { data } = useSWR(shouldFetch ? ["useTreasuryPendle", chainId, addresses.join("-")] : null, () =>
@@ -42,7 +42,7 @@ export function useTreasuryPendle({
       return undefined;
     }
 
-    const entries: TreasuryBalanceEntry[] = [];
+    const assets: TreasuryBalanceAsset[] = [];
     let totalUsd = 0n;
 
     data.forEach(({ positions }) => {
@@ -52,29 +52,29 @@ export function useTreasuryPendle({
         }
 
         position.openPositions?.forEach((openPosition) => {
-          totalUsd += addComponentEntry({
-            entries,
+          totalUsd += addComponentAsset({
+            assets,
             componentKey: `${openPosition.marketId}-lp`,
             valuation: openPosition.lp?.valuation,
             chainId,
           });
 
-          totalUsd += addComponentEntry({
-            entries,
+          totalUsd += addComponentAsset({
+            assets,
             componentKey: `${openPosition.marketId}-pt`,
             valuation: openPosition.pt?.valuation,
             chainId,
           });
 
-          totalUsd += addComponentEntry({
-            entries,
+          totalUsd += addComponentAsset({
+            assets,
             componentKey: `${openPosition.marketId}-yt`,
             valuation: openPosition.yt?.valuation,
             chainId,
           });
 
           totalUsd += processClaimTokens({
-            entries,
+            assets,
             claimTokenAmounts: openPosition.lp?.claimTokenAmounts,
             chainId,
             tokenMap,
@@ -82,7 +82,7 @@ export function useTreasuryPendle({
           });
 
           totalUsd += processClaimTokens({
-            entries,
+            assets,
             claimTokenAmounts: openPosition.yt?.claimTokenAmounts,
             chainId,
             tokenMap,
@@ -92,7 +92,7 @@ export function useTreasuryPendle({
       });
     });
 
-    return { entries, totalUsd };
+    return { assets, totalUsd };
   }, [chainId, data, pricesData, shouldFetch, tokenMap]);
 }
 
@@ -120,13 +120,13 @@ async function fetchPendlePositions(addresses: string[]) {
   return responses;
 }
 
-function addComponentEntry({
-  entries,
+function addComponentAsset({
+  assets,
   componentKey,
   valuation,
   chainId,
 }: {
-  entries: TreasuryBalanceEntry[];
+  assets: TreasuryBalanceAsset[];
   componentKey: string;
   valuation?: number;
   chainId: ContractsChainId;
@@ -137,7 +137,7 @@ function addComponentEntry({
     return 0n;
   }
 
-  entries.push({
+  assets.push({
     address: componentKey,
     type: "pendle",
     balance: usdValue,
@@ -150,13 +150,13 @@ function addComponentEntry({
 }
 
 function processClaimTokens({
-  entries,
+  assets,
   claimTokenAmounts,
   chainId,
   tokenMap,
   pricesData,
 }: {
-  entries: TreasuryBalanceEntry[];
+  assets: TreasuryBalanceAsset[];
   claimTokenAmounts?: PendleClaimToken[];
   chainId: ContractsChainId;
   tokenMap: Record<string, Token>;
@@ -175,9 +175,8 @@ function processClaimTokens({
       return;
     }
 
-    const tokenAddress = tokenAddressRaw.toLowerCase();
-    const token = tokenMap[tokenAddress];
-    const tokenPrices = pricesData?.[tokenAddress];
+    const token = tokenMap[tokenAddressRaw];
+    const tokenPrices = pricesData?.[tokenAddressRaw];
 
     if (!token || !tokenPrices) {
       return;
@@ -190,7 +189,7 @@ function processClaimTokens({
       return;
     }
 
-    entries.push({
+    assets.push({
       address: `${claim.token}-rewards`,
       type: "pendle",
       balance: amount,

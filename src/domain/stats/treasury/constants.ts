@@ -1,9 +1,6 @@
-import type { TreasuryBalanceEntry } from "./types";
+import type { TreasuryData } from "./types";
 
-export const TREASURY_EMPTY_RESULT: {
-  entries: TreasuryBalanceEntry[];
-  totalUsd: bigint;
-} = {
-  entries: [],
+export const TREASURY_EMPTY_RESULT: TreasuryData = {
+  assets: [],
   totalUsd: 0n,
 };

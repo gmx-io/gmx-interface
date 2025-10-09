@@ -10,7 +10,7 @@ import type { Token } from "sdk/types/tokens";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import { TREASURY_EMPTY_RESULT } from "./constants";
-import type { TreasuryBalanceEntry } from "./types";
+import type { TreasuryBalanceAsset, TreasuryData } from "./types";
 
 type MulticallContractResults = Record<string, ContractCallResult | undefined>;
 type TreasuryMulticallRequest = MulticallRequestConfig<Record<string, { calls: Record<string, unknown> }>>;
@@ -25,7 +25,7 @@ export function useTreasuryTokens({
   addresses: string[];
   tokenMap: Record<string, Token>;
   pricesData?: TokenPricesData;
-}): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } | undefined {
+}): TreasuryData | undefined {
   const tokenAddresses = useMemo(() => {
     const uniqueAddresses = new Set<string>();
 
@@ -65,7 +65,7 @@ export function useTreasuryTokens({
       return TREASURY_EMPTY_RESULT;
     }
 
-    const entries: TreasuryBalanceEntry[] = [];
+    const assets: TreasuryBalanceAsset[] = [];
     let totalUsd = 0n;
 
     tokenAddresses.forEach((tokenAddress) => {
@@ -88,7 +88,7 @@ export function useTreasuryTokens({
         totalUsd += usdValue;
       }
 
-      entries.push({
+      assets.push({
         address: tokenAddress,
         type: "token",
         balance,
@@ -99,7 +99,7 @@ export function useTreasuryTokens({
       });
     });
 
-    return { entries, totalUsd };
+    return { assets, totalUsd };
   }, [addresses.length, chainId, requestConfig, tokenAddresses, tokenBalancesResponse, tokenMap, pricesData]);
 }
 
@@ -114,7 +114,7 @@ function sumBalancesFromCalls(result: MulticallContractResults | undefined, addr
     const rawValue = result[`balance_${index}`]?.returnValues?.[0];
 
     if (rawValue !== undefined && rawValue !== null) {
-      balance += typeof rawValue === "bigint" ? rawValue : BigInt(rawValue);
+      balance += BigInt(rawValue);
     }
   }
 

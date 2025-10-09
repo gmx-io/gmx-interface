@@ -39,13 +39,13 @@ export function StatsCard() {
   const treasuryData = useTreasuryAllChains();
 
   const treasuryWithoutGmxUsd = useMemo(() => {
-    return treasuryData?.tokens
+    return treasuryData?.assets
       .filter((token) => token.token?.symbol !== "GMX")
       .reduce((acc, token) => acc + token.usdValue, 0n);
   }, [treasuryData]);
 
   const gmxInTreasuryUsd = useMemo(() => {
-    return treasuryData?.tokens
+    return treasuryData?.assets
       .filter((token) => token.token?.symbol === "GMX")
       .reduce((acc, token) => acc + token.usdValue, 0n);
   }, [treasuryData]);

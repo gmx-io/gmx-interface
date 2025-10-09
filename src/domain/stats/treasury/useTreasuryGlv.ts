@@ -12,7 +12,7 @@ import type { MarketsData } from "sdk/types/markets";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import { TREASURY_EMPTY_RESULT } from "./constants";
-import type { TreasuryBalanceEntry } from "./types";
+import type { TreasuryBalanceAsset, TreasuryData } from "./types";
 
 type TreasuryMulticallRequest = MulticallRequestConfig<Record<string, { calls: Record<string, unknown> }>>;
 type MulticallContractResults = Record<string, ContractCallResult | undefined>;
@@ -26,7 +26,7 @@ type GlvListItem = {
   markets: string[];
 };
 
-type GlvEntry = {
+type GlvAsset = {
   glvToken: string;
   longToken: string;
   shortToken: string;
@@ -43,7 +43,7 @@ export function useTreasuryGlv({
   addresses: string[];
   tokensData?: TokensData;
   marketsData?: MarketsData;
-}): { entries: TreasuryBalanceEntry[]; totalUsd: bigint } | undefined {
+}): TreasuryData | undefined {
   const glvListConfig = useMemo(() => {
     if (!GLV_MARKETS[chainId] || Object.keys(GLV_MARKETS[chainId]).length === 0) {
       return undefined;
@@ -58,13 +58,13 @@ export function useTreasuryGlv({
     parseResponse: (res) => extractGlvList(res.data),
   });
 
-  const glvEntriesData = useMemo(() => {
+  const glvAssetsData = useMemo(() => {
     if (!tokensData) {
       return undefined;
     }
 
     if (!glvList?.length || glvListConfig === undefined) {
-      return { entries: [], request: undefined };
+      return { assets: [], request: undefined };
     }
 
     return buildTreasuryGlvRequest({
@@ -76,12 +76,12 @@ export function useTreasuryGlv({
     });
   }, [addresses, chainId, glvList, glvListConfig, marketsData, tokensData]);
 
-  const glvEntries = glvEntriesData?.entries;
-  const glvBalancesConfig = glvEntriesData?.request;
-  const glvEntriesCount = glvEntries?.length ?? 0;
+  const glvAssets = glvAssetsData?.assets;
+  const glvBalancesConfig = glvAssetsData?.request;
+  const glvAssetsCount = glvAssets?.length ?? 0;
 
   const { data: glvBalancesResponse } = useMulticall(chainId, "useTreasuryGlv", {
-    key: glvBalancesConfig && glvEntriesCount ? [chainId, "glv", glvEntriesCount] : null,
+    key: glvBalancesConfig && glvAssetsCount ? [chainId, "glv", glvAssetsCount] : null,
     request: glvBalancesConfig ?? {},
     parseResponse: (res) => res.data,
   });
@@ -95,15 +95,15 @@ export function useTreasuryGlv({
       return undefined;
     }
 
-    if (!glvBalancesResponse || !glvEntries?.length || glvListConfig === undefined) {
+    if (!glvBalancesResponse || !glvAssets?.length || glvListConfig === undefined) {
       return TREASURY_EMPTY_RESULT;
     }
 
-    const entries: TreasuryBalanceEntry[] = [];
+    const assets: TreasuryBalanceAsset[] = [];
     let totalUsd = 0n;
 
-    glvEntries.forEach((entry) => {
-      const balancesConfig = glvBalancesResponse[`${entry.glvToken}-balances`];
+    glvAssets.forEach((asset) => {
+      const balancesConfig = glvBalancesResponse[`${asset.glvToken}-balances`];
       const balance = sumBalancesFromCalls(balancesConfig, addresses.length);
 
       if (balance === 0n) {
@@ -114,7 +114,7 @@ export function useTreasuryGlv({
       const decimals = decimalsRaw !== undefined ? Number(decimalsRaw) : 18;
 
       let usdValue = 0n;
-      const pricesConfig = glvBalancesResponse[`${entry.glvToken}-prices`];
+      const pricesConfig = glvBalancesResponse[`${asset.glvToken}-prices`];
       const minRaw = pricesConfig?.glvTokenPriceMin?.returnValues?.[0];
       const maxRaw = pricesConfig?.glvTokenPriceMax?.returnValues?.[0];
 
@@ -128,8 +128,8 @@ export function useTreasuryGlv({
         }
       }
 
-      entries.push({
-        address: entry.glvToken,
+      assets.push({
+        address: asset.glvToken,
         type: "glv",
         balance,
         usdValue,
@@ -138,13 +138,13 @@ export function useTreasuryGlv({
       });
     });
 
-    return { entries, totalUsd };
+    return { assets, totalUsd };
   }, [
     tokensData,
     marketsData,
     glvBalancesConfig,
     glvBalancesResponse,
-    glvEntries,
+    glvAssets,
     glvListConfig,
     addresses.length,
     chainId,
@@ -172,7 +172,7 @@ function sumBalancesFromCalls(result: MulticallContractResults | undefined, addr
     const rawValue = result[`balance_${index}`]?.returnValues?.[0];
 
     if (rawValue !== undefined && rawValue !== null) {
-      balance += typeof rawValue === "bigint" ? rawValue : BigInt(rawValue);
+      balance += BigInt(rawValue);
     }
   }
 
@@ -209,13 +209,13 @@ function buildTreasuryGlvRequest({
   glvList: GlvListItem[];
   tokensData: TokensData;
   marketsData: MarketsData;
-}): { entries: GlvEntry[]; request: TreasuryMulticallRequest | undefined } {
+}): { assets: GlvAsset[]; request: TreasuryMulticallRequest | undefined } {
   const glvConfig = GLV_MARKETS[chainId] ?? {};
   const dataStoreAddress = getContract(chainId, "DataStore");
   const glvReaderAddress = getContract(chainId, "GlvReader");
 
   const request: TreasuryMulticallRequest = {};
-  const entries: GlvEntry[] = [];
+  const assets: GlvAsset[] = [];
 
   glvList.forEach(({ glv, markets }) => {
     if (!glvConfig[glv.glvToken]) {
@@ -236,10 +236,7 @@ function buildTreasuryGlvRequest({
     const marketPriceRanges: [bigint, bigint][] = [];
 
     markets.forEach((marketAddress) => {
-      const market =
-        marketsData[marketAddress] ??
-        marketsData[marketAddress.toLowerCase()] ??
-        marketsData[marketAddress.toUpperCase()];
+      const market = marketsData[marketAddress];
 
       if (!market) {
         return;
@@ -259,7 +256,7 @@ function buildTreasuryGlvRequest({
       return;
     }
 
-    entries.push({
+    assets.push({
       glvToken: glv.glvToken,
       longToken: glv.longToken,
       shortToken: glv.shortToken,
@@ -298,8 +295,8 @@ function buildTreasuryGlvRequest({
   });
 
   return {
-    entries,
-    request: entries.length ? request : undefined,
+    assets,
+    request: assets.length ? request : undefined,
   };
 }
 
