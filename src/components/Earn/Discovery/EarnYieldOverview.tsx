@@ -14,7 +14,7 @@ import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
 import { formatPercentage } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
-import { sendEarnRecommendationClickedEvent } from "lib/userAnalytics/earnAnalytics";
+import { sendEarnRecommendationClickedEvent } from "lib/userAnalytics/earnEvents";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
@@ -144,16 +144,8 @@ function YieldRow({ token, metric, to, disabled, chainId: targetChainId }: Yield
   const { active } = useWallet();
 
   const changeNetwork = () => {
-    if (!targetChainId || targetChainId === currentChainId) {
-      return;
-    }
-
-    if (!active) {
-      setTimeout(() => {
-        void switchNetwork(targetChainId, active);
-      }, 500);
-    } else {
-      void switchNetwork(targetChainId, active);
+    if (targetChainId && targetChainId !== currentChainId) {
+      switchNetwork(targetChainId, active);
     }
   };
 

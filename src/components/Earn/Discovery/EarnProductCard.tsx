@@ -3,7 +3,7 @@ import cx from "classnames";
 import { ReactNode, useState } from "react";
 
 import { useBreakpoints } from "lib/useBreakpoints";
-import { EarnRecommendationToken, sendEarnRecommendationClickedEvent } from "lib/userAnalytics/earnAnalytics";
+import { EarnRecommendationToken, sendEarnRecommendationClickedEvent } from "lib/userAnalytics/earnEvents";
 
 import Badge from "components/Badge/Badge";
 import Button from "components/Button/Button";

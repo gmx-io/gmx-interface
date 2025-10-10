@@ -10,7 +10,7 @@ import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts/contractFetcher";
-import { PLACEHOLDER_ACCOUNT, ProcessedData } from "lib/legacy";
+import { PLACEHOLDER_ACCOUNT, StakingProcessedData } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
@@ -19,7 +19,7 @@ import { ClaimModal } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/Cl
 import EarnIcon from "img/ic_earn.svg?react";
 
 type ClaimRewardsButtonProps = {
-  processedData: ProcessedData | undefined;
+  processedData: StakingProcessedData | undefined;
   mutateProcessedData?: () => Promise<unknown> | void;
   className?: string;
 };

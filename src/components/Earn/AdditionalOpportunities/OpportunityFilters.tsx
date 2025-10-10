@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import {
   sendEarnOpportunitiesFilterAppliedEvent,
   EarnPageOpportunitiesAnalyticsFilter,
-} from "lib/userAnalytics/earnAnalytics";
+} from "lib/userAnalytics/earnEvents";
 
 import SearchInput from "components/SearchInput/SearchInput";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";

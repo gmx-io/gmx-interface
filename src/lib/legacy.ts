@@ -999,7 +999,7 @@ export function getStakingData(stakingInfo: bigint[] | undefined):
   return data as any;
 }
 
-export type ProcessedData = Partial<{
+export type StakingProcessedData = Partial<{
   gmxBalance: bigint;
   gmxBalanceUsd: bigint;
   gmxSupply: bigint;
@@ -1069,7 +1069,7 @@ export type ProcessedData = Partial<{
   gmxAprForNativeToken: bigint;
 };
 
-export function getProcessedData(
+export function getStakingProcessedData(
   balanceData: Partial<Record<"glp" | "gmx" | "esGmx" | "stakedGmxTracker", bigint>> | undefined,
   supplyData: Partial<Record<"gmx" | "esGmx" | "glp" | "stakedGmxTracker", bigint>> | undefined,
   depositBalanceData:
@@ -1106,7 +1106,7 @@ export function getProcessedData(
   stakedGmxSupply: bigint | undefined,
   gmxPrice: bigint | undefined,
   gmxSupply: string | undefined
-): ProcessedData | undefined {
+): StakingProcessedData | undefined {
   if (
     !balanceData ||
     !supplyData ||

@@ -12,9 +12,9 @@ import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useGmxPrice } from "domain/legacy";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
-import { PLACEHOLDER_ACCOUNT, ProcessedData } from "lib/legacy";
+import { PLACEHOLDER_ACCOUNT, StakingProcessedData } from "lib/legacy";
 import { formatAmount, formatUsd } from "lib/numbers";
-import { sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnAnalytics";
+import { sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnEvents";
 import useWallet from "lib/wallets/useWallet";
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import { bigMath } from "sdk/utils/bigmath";
@@ -38,7 +38,13 @@ import { GMX_DAO_LINKS } from "./constants";
 import { StakeModal, StakeModalTabConfig } from "./StakeModal";
 import { BaseAssetCard } from "../BaseAssetCard";
 
-export function GmxAssetCard({ processedData, esGmx = false }: { processedData: ProcessedData; esGmx?: boolean }) {
+export function GmxAssetCard({
+  processedData,
+  esGmx = false,
+}: {
+  processedData: StakingProcessedData;
+  esGmx?: boolean;
+}) {
   const { chainId } = useChainId();
   const { active, signer, account } = useWallet();
   const { setPendingTxns } = usePendingTxns();

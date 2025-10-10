@@ -78,8 +78,9 @@ export function AmountWithUsdBalance({
 
   const formattedUsd = formatUsd(usd);
 
-  const primaryValue = usdAsPrimary ? formattedUsd : formattedAmount;
-  const secondaryValue = usdAsPrimary ? formattedAmount : formattedUsd;
+  const { primaryValue, secondaryValue } = usdAsPrimary
+    ? { primaryValue: formattedUsd, secondaryValue: formattedAmount }
+    : { primaryValue: formattedAmount, secondaryValue: formattedUsd };
 
   return (
     <span className={className}>

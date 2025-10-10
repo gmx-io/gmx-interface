@@ -11,7 +11,7 @@ import {
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { formatPercentage } from "lib/numbers";
-import { sendEarnPortfolioItemClickEvent, EarnPagePortfolioItemType } from "lib/userAnalytics/earnAnalytics";
+import { sendEarnPortfolioItemClickEvent, EarnPagePortfolioItemType } from "lib/userAnalytics/earnEvents";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 

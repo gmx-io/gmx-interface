@@ -8,12 +8,13 @@ import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getIcons } from "config/icons";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
+import { calculateStakeBonusPercentage } from "domain/stake/calculateStakeBonusPercentage";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { callContract } from "lib/contracts";
-import { ProcessedData } from "lib/legacy";
+import { StakingProcessedData } from "lib/legacy";
 import { formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
@@ -56,7 +57,7 @@ export function StakeModal(props: {
   stake: StakeModalTabConfig;
   unstake: StakeModalTabConfig;
   setPendingTxns: SetPendingTransactions;
-  processedData: ProcessedData | undefined;
+  processedData: StakingProcessedData | undefined;
   stakeTokenAddress: string;
   stakeFarmAddress: string;
   reservedAmount: bigint;
@@ -119,19 +120,11 @@ export function StakeModal(props: {
     stakeAmount > tokenAllowance;
 
   const stakeBonusPercentage = useMemo(() => {
-    if (
-      processedData &&
-      stakeAmount !== undefined &&
-      stakeAmount > 0 &&
-      processedData.esGmxInStakedGmx !== undefined &&
-      processedData.gmxInStakedGmx !== undefined
-    ) {
-      const divisor = processedData.esGmxInStakedGmx + processedData.gmxInStakedGmx;
-      if (divisor !== 0n) {
-        return bigMath.mulDiv(stakeAmount, BASIS_POINTS_DIVISOR_BIGINT, divisor);
-      }
-    }
-    return undefined;
+    return calculateStakeBonusPercentage({
+      esGmxInStakedGmx: processedData?.esGmxInStakedGmx,
+      gmxInStakedGmx: processedData?.gmxInStakedGmx,
+      stakeAmount,
+    });
   }, [stakeAmount, processedData]);
 
   const stakeError = useMemo(() => {

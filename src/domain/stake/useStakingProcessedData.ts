@@ -12,14 +12,14 @@ import {
   PLACEHOLDER_ACCOUNT,
   getBalanceAndSupplyData,
   getDepositBalanceData,
-  getProcessedData,
+  getStakingProcessedData,
   getStakingData,
 } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
 import type { MulticallRequestConfig, MulticallResult } from "lib/multicall";
 import useWallet from "lib/wallets/useWallet";
 
-export function useProcessedData(targetChainId?: ContractsChainId) {
+export function useStakingProcessedData(targetChainId?: ContractsChainId) {
   const { active, signer, account } = useWallet();
   const { chainId: currentChainId } = useChainId();
   const chainId = targetChainId ?? currentChainId;
@@ -35,7 +35,7 @@ export function useProcessedData(targetChainId?: ContractsChainId) {
   const { data: contractsData, mutate: mutateContractsData } = useMulticall<
     MulticallRequestConfig<any>,
     StakeProcessedDataMulticallResult | undefined
-  >(chainId, "Stake:useProcessedData", {
+  >(chainId, "Earn:useStakingProcessedData", {
     key: chainId ? [accountForQuery, active ? "1" : "0"] : null,
     request: () =>
       buildStakeProcessedDataRequest({
@@ -59,7 +59,7 @@ export function useProcessedData(targetChainId?: ContractsChainId) {
 
   const processedData = useMemo(
     () =>
-      getProcessedData(
+      getStakingProcessedData(
         balanceData,
         supplyData,
         depositBalanceData,

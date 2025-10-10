@@ -1,7 +1,7 @@
 import { TokensData } from "domain/synthetics/tokens/types";
 import { convertToUsd } from "domain/synthetics/tokens/utils";
 
-export function getTotalTokenBalance(tokensData: TokensData | undefined, tokenSymbol: string) {
+export function getTotalTokensBalance(tokensData: TokensData | undefined, tokenSymbols: string[]) {
   const defaultResult = {
     balance: 0n,
     balanceUsd: 0n,
@@ -11,7 +11,7 @@ export function getTotalTokenBalance(tokensData: TokensData | undefined, tokenSy
     return defaultResult;
   }
 
-  const tokens = Object.values(tokensData).filter((token) => token.symbol === tokenSymbol);
+  const tokens = Object.values(tokensData).filter((token) => tokenSymbols.includes(token.symbol));
 
   return tokens.reduce((acc, token) => {
     const balanceUsd = convertToUsd(token.balance, token.decimals, token.prices.minPrice);

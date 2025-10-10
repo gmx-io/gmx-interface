@@ -2,6 +2,7 @@ import { useMemo } from "react";
 
 import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import { useMarketTokensData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
@@ -9,7 +10,6 @@ import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerforman
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import EarnPageLayout from "pages/Earn/EarnPageLayout";
-import { useProcessedData } from "pages/Earn/useProcessedData";
 
 import AssetsList from "components/Earn/Portfolio/AssetsList/AssetsList";
 import { RecommendedAssets } from "components/Earn/Portfolio/RecommendedAssets/RecommendedAssets";
@@ -17,7 +17,7 @@ import RewardsBar from "components/Earn/Portfolio/RewardsBar";
 import Loader from "components/Loader/Loader";
 
 export default function EarnPortfolioPage() {
-  const { data: processedData, mutate: mutateProcessedData } = useProcessedData();
+  const { data: processedData, mutate: mutateProcessedData } = useStakingProcessedData();
 
   const { chainId, srcChainId } = useChainId();
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);

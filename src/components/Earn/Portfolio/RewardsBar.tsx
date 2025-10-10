@@ -7,7 +7,7 @@ import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensDa
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { getTotalGlvInfo, getTotalGmInfo } from "domain/synthetics/markets/utils";
 import { useChainId } from "lib/chains";
-import { ProcessedData } from "lib/legacy";
+import { StakingProcessedData } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
@@ -20,7 +20,7 @@ export function RewardsBar({
   processedData,
   mutateProcessedData,
 }: {
-  processedData: ProcessedData | undefined;
+  processedData: StakingProcessedData | undefined;
   mutateProcessedData: () => void;
 }) {
   const { chainId, srcChainId } = useChainId();
@@ -96,7 +96,7 @@ function TotalEarned({
   nativeTokenSymbol,
   userEarnings,
 }: {
-  processedData: ProcessedData | undefined;
+  processedData: StakingProcessedData | undefined;
   nativeTokenSymbol: string;
   userEarnings: UserEarningsData | null;
 }) {
@@ -186,7 +186,7 @@ function PendingRewards({
   processedData,
   nativeTokenSymbol,
 }: {
-  processedData: ProcessedData | undefined;
+  processedData: StakingProcessedData | undefined;
   nativeTokenSymbol: string;
 }) {
   const hasNativeRewards = (processedData?.totalNativeTokenRewards ?? 0n) > 0n;

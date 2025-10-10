@@ -1,6 +1,6 @@
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { GLV_MARKETS } from "config/markets";
-import { getTotalTokenBalance } from "domain/tokens/getTotalTokenBalance";
+import { getTotalTokensBalance } from "domain/tokens/getTotalTokensBalance";
 import { PRECISION, expandDecimals } from "lib/numbers";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
@@ -379,11 +379,11 @@ export function marketTokenAmountToUsd(marketInfo: MarketInfo, marketToken: Toke
 }
 
 export function getTotalGmInfo(tokensData?: TokensData) {
-  return getTotalTokenBalance(tokensData, "GM");
+  return getTotalTokensBalance(tokensData, ["GM"]);
 }
 
 export function getTotalGlvInfo(tokensData?: TokensData) {
-  return getTotalTokenBalance(tokensData, "GLV");
+  return getTotalTokensBalance(tokensData, ["GLV"]);
 }
 
 export function getIsZeroPriceImpactMarket(marketInfo: MarketInfo) {

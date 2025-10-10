@@ -8,11 +8,11 @@ import {
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import { GlvAndGmMarketsInfoData, useMarketTokensData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
-import { useProcessedData } from "pages/Earn/useProcessedData";
 import { TokensData } from "sdk/types/tokens";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
@@ -68,7 +68,7 @@ const collectUserTokenAssets = (tokensData: TokensData | undefined): Opportunity
 
 export default function EarnAdditionalOpportunitiesPage() {
   const { chainId, srcChainId } = useChainId();
-  const { data: processedData } = useProcessedData();
+  const { data: processedData } = useStakingProcessedData();
   const tokensData = useSelector(selectTokensData);
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });

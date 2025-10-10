@@ -9,7 +9,7 @@ import useVestingData from "domain/vesting/useVestingData";
 import { useChainId } from "lib/chains";
 import { callContract } from "lib/contracts";
 import { defined } from "lib/guards";
-import { ProcessedData } from "lib/legacy";
+import { StakingProcessedData } from "lib/legacy";
 import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { mustNeverExist } from "lib/types";
 import useWallet from "lib/wallets/useWallet";
@@ -36,7 +36,7 @@ export type VestAction = "deposit" | "withdraw" | "claim";
 type VestModalProps = {
   isVisible: boolean;
   setIsVisible: (value: boolean) => void;
-  processedData: ProcessedData | undefined;
+  processedData: StakingProcessedData | undefined;
   reservedAmount: bigint;
 };
 

@@ -5,7 +5,7 @@ import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/market
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { MarketTokensAPRData } from "domain/synthetics/markets/types";
 import { TokensData } from "domain/synthetics/tokens";
-import { ProcessedData } from "lib/legacy";
+import { StakingProcessedData } from "lib/legacy";
 import { getByKey } from "lib/objects";
 
 import EarnIcon from "img/ic_earn.svg?react";
@@ -27,7 +27,7 @@ export function AssetsList({
   markets30dApyData,
 }: {
   chainId: ContractsChainId;
-  processedData: ProcessedData | undefined;
+  processedData: StakingProcessedData | undefined;
   hasAnyAssets: boolean;
   hasGmx: boolean;
   hasEsGmx: boolean;
