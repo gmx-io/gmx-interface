@@ -40,18 +40,24 @@ export async function checkValidity({
   const hash = hashMessage(message);
 
   const [inMemorySignatureResponse, onchainSignatureResponse] = (await Promise.all([
-    publicClient.readContract({
-      address: account,
-      abi: abis.SmartAccount,
-      functionName: "isValidSignature",
-      args: [hash, claimTermsAcceptedSignature ?? "0x"],
-    }),
-    publicClient.readContract({
-      address: account,
-      abi: abis.SmartAccount,
-      functionName: "isValidSignature",
-      args: [CLAIM_TERMS_HASH, "0x"],
-    }),
+    claimTermsAcceptedSignature
+      ? publicClient
+          .readContract({
+            address: account,
+            abi: abis.SmartAccount,
+            functionName: "isValidSignature",
+            args: [hash, claimTermsAcceptedSignature],
+          })
+          .catch(() => "0x")
+      : Promise.resolve("0x"),
+    publicClient
+      .readContract({
+        address: account,
+        abi: abis.SmartAccount,
+        functionName: "isValidSignature",
+        args: [CLAIM_TERMS_HASH, "0x"],
+      })
+      .catch(() => "0x"),
   ])) as [string, string];
 
   return (

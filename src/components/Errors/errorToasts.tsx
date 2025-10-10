@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 import { getChainName } from "config/chains";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   getExecutionFeeBufferBps,
   getGasPremium,
@@ -286,6 +287,29 @@ export function getInvalidNetworkToastContent(chainId: number) {
         Switch to {getChainName(chainId)}
       </div>
     </Trans>
+  );
+}
+
+export function InvalidSignatureToastContent() {
+  const { setFeedbackModalVisible, setIsSettingsVisible } = useSettings();
+
+  return (
+    <div>
+      <Trans>
+        Transaction failed due to invalid signature.
+        <br />
+        <br />
+        Please try a different wallet provider, or switch to Classic or One-Click Trading mode within the{" "}
+        <span className="clickable underline" onClick={() => setIsSettingsVisible(true)}>
+          Settings.
+        </span>
+      </Trans>
+      <br />
+      <br />
+      <div className="clickable underline" onClick={() => setFeedbackModalVisible(true)}>
+        Report Issue.
+      </div>
+    </div>
   );
 }
 

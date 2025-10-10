@@ -29,6 +29,19 @@ export const MKR_USD_DELISTING_EVENT_ID = "mkr-usd-delisting";
 
 export const appEventsData: EventData[] = [
   {
+    id: "aster-0g-avnt-linea-listing",
+    isActive: true,
+    startDate: "09 Oct 2025, 14:30",
+    endDate: "16 Oct 2025, 12:00",
+    title: "0G, ASTER, AVNT and LINEA markets added on Arbitrum",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
+        <span className="text-slate-100">[WETH-USDC]</span>, or GLV <span className="text-slate-100">[WBTC-USDC]</span>.
+      </>
+    ),
+  },
+  {
     id: "xpl-bnb-sol-listing",
     isActive: true,
     startDate: "25 Sep 2025, 16:50",
