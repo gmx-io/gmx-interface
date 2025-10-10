@@ -144,8 +144,16 @@ function YieldRow({ token, metric, to, disabled, chainId: targetChainId }: Yield
   const { active } = useWallet();
 
   const changeNetwork = () => {
-    if (targetChainId && targetChainId !== currentChainId) {
-      switchNetwork(targetChainId, active);
+    if (!targetChainId || targetChainId === currentChainId) {
+      return;
+    }
+
+    if (!active) {
+      setTimeout(() => {
+        void switchNetwork(targetChainId, active);
+      }, 500);
+    } else {
+      void switchNetwork(targetChainId, active);
     }
   };
 

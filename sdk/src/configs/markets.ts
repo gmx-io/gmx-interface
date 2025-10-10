@@ -3,6 +3,7 @@
   Avoid adding client-side code here, as it can break the build process.
 */
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "./chains";
+import { getNormalizedTokenSymbol, getTokenBySymbol, getTokenBySymbolSafe } from "./tokens";
 
 export const SWAP_GRAPH_MAX_MARKETS_PER_TOKEN = 5;
 
@@ -1120,4 +1121,70 @@ export const MARKETS: Record<ContractsChainId, Record<string, MarketConfig>> = {
       shortTokenAddress: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
     },
   },
+};
+
+export type MarketLabel = `${string}/USD [${string}-${string}]`;
+
+export function getMarketByLabel(chainId: ContractsChainId, label: MarketLabel): MarketConfig {
+  const marketsByAddress = MARKETS[chainId];
+
+  if (!marketsByAddress) {
+    throw new Error(`Markets not found for chainId ${chainId}`);
+  }
+
+  const labelMatch = label.match(/^(.+?)\/USD\s*\[([^\]]+)\]$/i);
+
+  if (!labelMatch) {
+    throw new Error(`Invalid market label ${label}`);
+  }
+
+  const [, indexSymbolRaw, tokensPart] = labelMatch;
+
+  const separatorIndex = tokensPart.search(/[-/]/);
+
+  if (separatorIndex === -1) {
+    throw new Error(`Invalid market label ${label}`);
+  }
+
+  const longSymbolRaw = tokensPart.slice(0, separatorIndex).trim();
+  const shortSymbolRaw = tokensPart.slice(separatorIndex + 1).trim();
+
+  if (!longSymbolRaw || !shortSymbolRaw) {
+    throw new Error(`Invalid market label ${label}`);
+  }
+
+  const indexToken = getTokenBySymbol(chainId, fixTokenSymbolFromMarketLabel(chainId, indexSymbolRaw));
+  const longToken = getTokenBySymbol(chainId, fixTokenSymbolFromMarketLabel(chainId, longSymbolRaw), {
+    isSynthetic: false,
+  });
+  const shortToken = getTokenBySymbol(chainId, fixTokenSymbolFromMarketLabel(chainId, shortSymbolRaw), {
+    isSynthetic: false,
+  });
+
+  if (!longToken || !shortToken || !indexToken) {
+    throw new Error(`Invalid market label ${label}`);
+  }
+
+  const market = Object.values(marketsByAddress).find(
+    (market) =>
+      market.longTokenAddress === longToken.address &&
+      market.shortTokenAddress === shortToken.address &&
+      market.indexTokenAddress === indexToken.address
+  );
+
+  if (!market) {
+    throw new Error(`Market ${label} not found`);
+  }
+
+  return market;
+}
+
+export const fixTokenSymbolFromMarketLabel = (chainId: ContractsChainId, symbol: string) => {
+  if (chainId === ARBITRUM && symbol === "WBTC") {
+    return "BTC";
+  }
+  if (chainId === ARBITRUM && symbol === "ETH") {
+    return "WETH";
+  }
+  return symbol;
 };
