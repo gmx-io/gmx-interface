@@ -39,6 +39,23 @@ export function getIsInsufficientExecutionFeeError(
   };
 }
 
+export function getIsInvalidSignatureError(error: ErrorLike) {
+  const parsedError = parseError(error);
+
+  const isErrorMatched = parsedError?.contractError === "InvalidSignature";
+
+  if (!isErrorMatched || !parsedError) {
+    return {
+      isErrorMatched: false,
+    };
+  }
+
+  return {
+    isErrorMatched: true,
+    errorData: parsedError,
+  };
+}
+
 export function getIsPermitSignatureErrorOnSimulation(error: ErrorLike) {
   const parsedError = parseError(error);
 

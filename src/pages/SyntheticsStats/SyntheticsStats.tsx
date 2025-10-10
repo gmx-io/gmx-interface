@@ -47,13 +47,7 @@ function pow(bn: bigint, exponent: bigint) {
   return expandDecimals(afterExponent.toFixed(0), 30);
 }
 
-const CSV_EXCLUDED_FIELDS: (keyof MarketInfo)[] = [
-  "longToken",
-  "shortToken",
-  "indexToken",
-  "longPoolAmountAdjustment",
-  "shortPoolAmountAdjustment",
-];
+const CSV_EXCLUDED_FIELDS: (keyof MarketInfo)[] = ["longToken", "shortToken", "indexToken"];
 
 export function SyntheticsStats() {
   const { chainId, srcChainId } = useChainId();
@@ -799,7 +793,7 @@ export function SyntheticsStats() {
                   return (
                     <div className="cell">
                       <TooltipWithPortal
-                        handle={`$\u200a${formatAmount(positionImpactUsd, 30, 2, true)}`}
+                        handle={`$\u200a\u200d${formatAmount(positionImpactUsd, 30, 2, true)}`}
                         position="bottom-end"
                         renderContent={() => (
                           <>

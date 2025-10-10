@@ -15,7 +15,8 @@
     {
       "path": "src/locales/{locale}/messages",
       "include": [
-        "src"
+        "src",
+        "landing"
       ]
     }
   ],

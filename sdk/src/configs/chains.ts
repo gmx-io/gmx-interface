@@ -12,19 +12,28 @@ import {
 
 import type { GasLimitsConfig } from "types/fees";
 
-export const ETH_MAINNET = 1;
-// Production
-export const AVALANCHE = 43114;
-export const ARBITRUM = 42161;
-export const BOTANIX = 3637;
-// Production source
-export const SOURCE_BASE_MAINNET = 8453;
-// Testnets
-export const AVALANCHE_FUJI = 43113;
-export const ARBITRUM_SEPOLIA = 421614;
-// Testnet source
-export const SOURCE_OPTIMISM_SEPOLIA = 11155420;
-export const SOURCE_SEPOLIA = 11155111;
+import {
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  ARBITRUM,
+  BOTANIX,
+  ETH_MAINNET,
+  ARBITRUM_SEPOLIA,
+  SOURCE_OPTIMISM_SEPOLIA,
+  SOURCE_SEPOLIA,
+  SOURCE_BASE_MAINNET,
+} from "./chainIds";
+export {
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  ARBITRUM,
+  BOTANIX,
+  ETH_MAINNET,
+  ARBITRUM_SEPOLIA,
+  SOURCE_OPTIMISM_SEPOLIA,
+  SOURCE_SEPOLIA,
+  SOURCE_BASE_MAINNET,
+};
 
 export const CONTRACTS_CHAIN_IDS: ContractsChainId[] = [ARBITRUM, AVALANCHE, BOTANIX];
 export const CONTRACTS_CHAIN_IDS_DEV: ContractsChainId[] = [...CONTRACTS_CHAIN_IDS, AVALANCHE_FUJI, ARBITRUM_SEPOLIA];
@@ -59,6 +68,14 @@ export const CHAIN_NAMES_MAP: Record<AnyChainId, ChainName> = {
   [SOURCE_OPTIMISM_SEPOLIA]: "Optimism Sepolia",
   [SOURCE_SEPOLIA]: "Sepolia",
   [SOURCE_BASE_MAINNET]: "Base",
+};
+
+export const CHAIN_SLUGS_MAP: Record<ContractsChainId, string> = {
+  [ARBITRUM]: "arbitrum",
+  [AVALANCHE]: "avalanche",
+  [AVALANCHE_FUJI]: "fuji",
+  [ARBITRUM_SEPOLIA]: "arbitrum-sepolia",
+  [BOTANIX]: "botanix",
 };
 
 export const HIGH_EXECUTION_FEES_MAP: Record<ContractsChainId, number> = {
@@ -193,6 +210,10 @@ export function getExcessiveExecutionFee(chainId: number) {
 
 export function isContractsChain(chainId: number, dev = false): chainId is ContractsChainId {
   return (dev ? CONTRACTS_CHAIN_IDS_DEV : CONTRACTS_CHAIN_IDS).includes(chainId as ContractsChainId);
+}
+
+export function isTestnetChain(chainId: number): boolean {
+  return [AVALANCHE_FUJI, ARBITRUM_SEPOLIA].includes(chainId);
 }
 
 export const EXECUTION_FEE_CONFIG_V2: {

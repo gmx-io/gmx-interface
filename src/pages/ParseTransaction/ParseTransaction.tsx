@@ -3,22 +3,13 @@ import invert from "lodash/invert";
 import mapValues from "lodash/mapValues";
 import { useCallback, useMemo, useState } from "react";
 import { Fragment } from "react/jsx-runtime";
-import { BiCopy } from "react-icons/bi";
 import { Link, useParams } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 import useSWR from "swr";
 import { Hash, PublicClient, isHash } from "viem";
 import { usePublicClient } from "wagmi";
 
-import {
-  ARBITRUM,
-  ARBITRUM_SEPOLIA,
-  AVALANCHE,
-  AVALANCHE_FUJI,
-  BOTANIX,
-  ContractsChainId,
-  getExplorerUrl,
-} from "config/chains";
+import { ARBITRUM, CHAIN_SLUGS_MAP, ContractsChainId, getExplorerUrl } from "config/chains";
 import { getIcon } from "config/icons";
 import {
   getGlvDisplayName,
@@ -35,10 +26,12 @@ import { formatFactor, formatUsd } from "lib/numbers";
 import { parseTxEvents } from "pages/ParseTransaction/parseTxEvents";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
-import Loader from "components/Common/Loader";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Loader from "components/Loader/Loader";
 import { Table, TableTd, TableTr } from "components/Table/Table";
 import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolWithIcon";
+
+import CopyIcon from "img/ic_copy.svg?react";
 
 import {
   formatAmountByCollateralToken,
@@ -65,15 +58,7 @@ import {
 } from "./formatting";
 import { LogEntryComponentProps } from "./types";
 
-export const NETWORKS_BY_CHAIN_IDS: Record<ContractsChainId, string> = {
-  [ARBITRUM]: "arbitrum",
-  [AVALANCHE]: "avalanche",
-  [AVALANCHE_FUJI]: "fuji",
-  [ARBITRUM_SEPOLIA]: "arbitrum-sepolia",
-  [BOTANIX]: "botanix",
-};
-
-const NETWORKS = mapValues(invert(NETWORKS_BY_CHAIN_IDS), Number) as Record<string, ContractsChainId>;
+const NETWORKS = mapValues(invert(CHAIN_SLUGS_MAP), Number) as Record<string, ContractsChainId>;
 
 export function ParseTransactionPage() {
   const { tx, network } = useParams<{ tx: string; network: string }>();
@@ -392,7 +377,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
   }
 
   if (props.item === "trader" || props.item === "account" || props.item === "receiver") {
-    const network = NETWORKS_BY_CHAIN_IDS[props.chainId];
+    const network = CHAIN_SLUGS_MAP[props.chainId];
     const explorerUrl = getExplorerUrl(props.chainId);
 
     value = (
@@ -500,10 +485,9 @@ function CopyButton({ value }: { value: string }) {
   }, [copyToClipboard, value]);
 
   return (
-    <BiCopy
-      size={16}
+    <CopyIcon
       className={cx(
-        "invisible cursor-pointer text-typography-secondary transition-transform hover:text-typography-primary group-hover:visible",
+        "invisible size-16 cursor-pointer text-typography-secondary transition-transform hover:text-typography-primary group-hover:visible",
         {
           "scale-110 text-typography-primary": isCopied,
         }

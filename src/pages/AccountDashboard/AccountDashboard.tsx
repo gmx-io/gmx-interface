@@ -7,12 +7,12 @@ import { useChainId } from "lib/chains";
 
 import AddressView from "components/AddressView/AddressView";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 import PageTitle from "components/PageTitle/PageTitle";
-import { ChainContentHeader } from "components/Synthetics/ChainContentHeader/ChainContentHeader";
 
 import { DailyAndCumulativePnL } from "./DailyAndCumulativePnL";
 import { GeneralPerformanceDetails } from "./GeneralPerformanceDetails";
-import { HistoricalLists, HistoricalListsV1 } from "./HistoricalLists";
+import { HistoricalLists } from "./HistoricalLists";
 import { usePageParams } from "./usePageParams";
 import { VersionNetworkSwitcherRow } from "./VersionNetworkSwitcherRow";
 
@@ -68,8 +68,6 @@ export function AccountDashboard() {
             </div>
           </SyntheticsStateContextProvider>
         )}
-
-        {version === 1 && <HistoricalListsV1 account={account} chainId={chainId} />}
       </div>
     </AppPageLayout>
   );

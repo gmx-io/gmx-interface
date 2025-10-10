@@ -12,7 +12,7 @@ import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { isChartAvailableForToken } from "sdk/configs/tokens";
 
-import Loader from "components/Common/Loader";
+import Loader from "components/Loader/Loader";
 
 import { chartOverridesDark, chartOverridesLight, defaultChartProps, disabledFeaturesOnMobile } from "./constants";
 import { DynamicLines } from "./DynamicLines";
@@ -176,7 +176,10 @@ export default function TVChartContainer({
     };
     tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
 
+    let didTriggerOnChartReady = { current: false };
+
     tvWidgetRef.current!.onChartReady(function () {
+      didTriggerOnChartReady.current = true;
       setChartReady(true);
 
       const savedPeriod = tvWidgetRef.current?.activeChart().resolution();
@@ -215,7 +218,37 @@ export default function TVChartContainer({
       });
     });
 
+    /*
+    For some reason on prod TV sometimes does not get initialized properly,
+    for these cases we wait some fixed amount of time and force TV into initialization
+    */
+
+    const forceInitTimeout = setTimeout(() => {
+      if (didTriggerOnChartReady.current || !chartContainerRef.current) {
+        return;
+      }
+
+      const iframe = chartContainerRef.current.querySelector("iframe");
+
+      if (!iframe || !iframe.contentWindow) {
+        return;
+      }
+      const iframeWindow = iframe.contentWindow;
+      const iframeDocument = iframeWindow.document;
+
+      if (iframeDocument.readyState !== "complete") {
+        iframeDocument.addEventListener("readystatechange", () => {
+          if (iframeDocument.readyState === "complete") {
+            iframeWindow.dispatchEvent(new Event("innerWindowLoad"));
+          }
+        });
+      } else {
+        iframeWindow.dispatchEvent(new Event("innerWindowLoad"));
+      }
+    }, 800);
+
     return () => {
+      clearTimeout(forceInitTimeout);
       if (tvWidgetRef.current) {
         tvWidgetRef.current.remove();
         tvWidgetRef.current = null;

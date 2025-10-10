@@ -1,7 +1,6 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { FaChevronDown } from "react-icons/fa6";
 
 import { getMarketUiConfig } from "config/markets";
 import { getMarketBadge, getMarketIndexName, getMarketPoolName, MarketsInfoData } from "domain/synthetics/markets";
@@ -9,7 +8,7 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { InfoTokens, Token, TokenInfo } from "domain/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
-import { expandDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { expandDecimals, formatBalanceAmount, formatBigUsd } from "lib/numbers";
 import { searchBy } from "lib/searchBy";
 import { getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
@@ -18,6 +17,8 @@ import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import { WithMissedCoinsSearch } from "../WithMissedCoinsSearch/WithMissedCoinsSearch";
@@ -273,7 +274,10 @@ export default function TokenSelector(props: Props) {
                   )) ||
                     null}
                   <span className="text-body-small text-typography-secondary">
-                    {showBalances && balanceUsd !== undefined && balanceUsd > 0 && formatUsd(balanceUsd)}
+                    {showBalances &&
+                      balanceUsd !== undefined &&
+                      balanceUsd > 0 &&
+                      formatBigUsd(balanceUsd, { displayDecimals: 2 })}
                   </span>
                 </div>
               </div>
@@ -299,7 +303,7 @@ export default function TokenSelector(props: Props) {
             {showTokenName ? tokenInfo.name : tokenInfo.symbol}
           </span>
         )}
-        <FaChevronDown className="w-12 text-typography-secondary group-hover:text-blue-300" />
+        <ChevronDownIcon className="w-16 text-typography-secondary group-hover:text-blue-300" />
       </div>
     </div>
   );

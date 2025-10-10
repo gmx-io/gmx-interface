@@ -438,6 +438,42 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0x2347EbB8645Cc2EA0Ba92D1EC59704031F2fCCf4": {
       enabled: true,
     },
+    // KTA/USD [WETH-USDC]
+    "0x970b730b5dD18de53A230eE8F4af088dBC3a6F8d": {
+      enabled: true,
+    },
+    // ZORA/USD [WETH-USDC]
+    "0xac484106d935f0f20F1485b631fA6F65AeEff550": {
+      enabled: true,
+    },
+    // XPL/USD [WBTC.e-USDC]
+    "0x4b67aa8F754b17b1029Ad2DB4fb6a276CCe350c4": {
+      enabled: true,
+    },
+    // ASTER/USD [WBTC-USDC]
+    "0x0164B6c847c65e07C9F6226149ADBFA7C1dE40Cf": {
+      enabled: true,
+    },
+    // 0G/USD [WBTC-USDC]
+    "0xe024188850A822409F362209C1EF2cFdc7c4DE4C": {
+      enabled: true,
+    },
+    // AVNT/USD [WETH-USDC]
+    "0xCEff9D261A96Cb78Df35f9333ba9F2F4CFcb8a68": {
+      enabled: true,
+    },
+    // LINEA/USD [WETH-USDC]
+    "0x6d9430A116ed4d4FC6FE1996A5493662d555b07E": {
+      enabled: true,
+    },
+    // SOL/USD [WBTC.e-USDC]
+    "0xcf083d35AD306A042d4Fb312fCdd8228b52b82f8": {
+      enabled: true,
+    },
+    // BNB/USD [WBTC.e-USDC]
+    "0x065577D05c3D4C11505ed7bc97BBF85d462A6A6f": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

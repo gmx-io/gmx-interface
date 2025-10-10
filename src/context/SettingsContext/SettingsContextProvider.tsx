@@ -11,6 +11,7 @@ import {
   EXTERNAL_SWAPS_ENABLED_KEY,
   IS_AUTO_CANCEL_TPSL_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
+  SET_ACCEPTABLE_PRICE_IMPACT_ENABLED_KEY,
   SETTINGS_WARNING_DOT_VISIBLE_KEY,
   SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_DEBUG_VALUES_KEY,
@@ -82,6 +83,9 @@ export type SettingsContextType = {
   settingsWarningDotVisible: boolean;
   setSettingsWarningDotVisible: (val: boolean) => void;
 
+  feedbackModalVisible: boolean;
+  setFeedbackModalVisible: (val: boolean) => void;
+
   debugSwapMarketsConfig:
     | {
         disabledSwapMarkets?: string[];
@@ -92,6 +96,9 @@ export type SettingsContextType = {
 
   savedTwapNumberOfParts: number;
   setSavedTWAPNumberOfParts: (val: number) => void;
+
+  isSetAcceptablePriceImpactEnabled: boolean;
+  setIsSetAcceptablePriceImpactEnabled: (val: boolean) => void;
 };
 
 export const SettingsContext = createContext({});
@@ -178,6 +185,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     false
   );
 
+  const [savedSetAcceptablePriceImpactEnabled, setSavedSetAcceptablePriceImpactEnabled] = useLocalStorageSerializeKey(
+    [chainId, SET_ACCEPTABLE_PRICE_IMPACT_ENABLED_KEY],
+    false
+  );
+
   let [gasPaymentTokenAddress, setGasPaymentTokenAddress] = useLocalStorageSerializeKey(
     getGasPaymentTokenAddressKey(chainId, account),
     getDefaultGasPaymentToken(chainId)
@@ -210,6 +222,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     [chainId, TWAP_NUMBER_OF_PARTS_KEY],
     DEFAULT_TWAP_NUMBER_OF_PARTS
   );
+
+  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
 
   useEffect(() => {
     if (shouldUseExecutionFeeBuffer && executionFeeBufferBps === undefined) {
@@ -265,6 +279,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       breakdownNetPriceImpactEnabled: savedBreakdownNetPriceImpactEnabled!,
       setBreakdownNetPriceImpactEnabled: setSavedBreakdownNetPriceImpactEnabled,
 
+      isSetAcceptablePriceImpactEnabled: savedSetAcceptablePriceImpactEnabled!,
+      setIsSetAcceptablePriceImpactEnabled: setSavedSetAcceptablePriceImpactEnabled,
+
       setTenderlyAccessKey,
       setTenderlyAccountSlug,
       setTenderlyProjectSlug,
@@ -294,6 +311,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       savedTwapNumberOfParts: savedTwapNumberOfParts!,
       setSavedTWAPNumberOfParts,
+
+      feedbackModalVisible,
+      setFeedbackModalVisible,
     };
   }, [
     showDebugValues,
@@ -319,6 +339,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setIsLeverageSliderEnabled,
     savedBreakdownNetPriceImpactEnabled,
     setSavedBreakdownNetPriceImpactEnabled,
+    savedSetAcceptablePriceImpactEnabled,
+    setSavedSetAcceptablePriceImpactEnabled,
     setTenderlyAccessKey,
     setTenderlyAccountSlug,
     setTenderlyProjectSlug,
@@ -341,6 +363,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSettingsWarningDotVisible,
     savedTwapNumberOfParts,
     setSavedTWAPNumberOfParts,
+    feedbackModalVisible,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

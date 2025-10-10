@@ -1,6 +1,5 @@
 import { Trans } from "@lingui/macro";
 import { useState } from "react";
-import { ImCheckboxUnchecked, ImSpinner2 } from "react-icons/im";
 
 import { approveTokens } from "domain/tokens";
 import { isAddressZero } from "lib/legacy";
@@ -8,6 +7,10 @@ import { userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getWrappedToken } from "sdk/configs/tokens";
+
+import Checkbox from "components/Checkbox/Checkbox";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import "./ApproveTokenButton.scss";
 
@@ -68,17 +71,13 @@ export function ApproveTokenButton(p: Props) {
   const isLoading = isApproving || (isApproveSubmitted && !p.isApproved);
 
   return (
-    <div className="ApproveTokenButton Checkbox fullRow" onClick={onApprove}>
+    <div className="ApproveTokenButton Checkbox fullRow" onClickCapture={onApprove}>
       <span className="text-body-medium text-yellow-300">
         {p.customLabel ?? <Trans>Allow {p.tokenSymbol} to be spent</Trans>}
       </span>
 
       <div className="ApproveTokenButton-checkbox">
-        {isLoading ? (
-          <ImSpinner2 className="spin ApproveTokenButton-spin" />
-        ) : (
-          <ImCheckboxUnchecked className="App-icon Checkbox-icon inactive" />
-        )}
+        {isLoading ? <SpinnerIcon className="spin ApproveTokenButton-spin" /> : <Checkbox isChecked={p.isApproved} />}
       </div>
     </div>
   );

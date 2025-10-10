@@ -63,6 +63,7 @@ type IncreasePositionParams = {
   marketsInfoData: MarketsInfoData | undefined;
   chainId: number;
   externalSwapQuoteParams: ExternalSwapQuoteParams | undefined;
+  isSetAcceptablePriceImpactEnabled: boolean;
 };
 
 export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreasePositionAmounts {
@@ -88,6 +89,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     marketsInfoData,
     chainId,
     externalSwapQuoteParams,
+    isSetAcceptablePriceImpactEnabled,
   } = p;
 
   const swapStrategy: NoSwapStrategy = {
@@ -134,6 +136,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     borrowingFeeUsd: 0n,
     fundingFeeUsd: 0n,
     positionPriceImpactDeltaUsd: 0n,
+    potentialPriceImpactDiffUsd: 0n,
 
     limitOrderType: limitOrderType,
     triggerThresholdType: undefined,
@@ -395,17 +398,18 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
   });
 
   values.positionPriceImpactDeltaUsd = acceptablePriceInfo.priceImpactDeltaUsd;
+  values.potentialPriceImpactDiffUsd = getPriceImpactDiffUsd({
+    totalImpactDeltaUsd: values.positionPriceImpactDeltaUsd,
+    marketInfo,
+    sizeDeltaUsd: values.sizeDeltaUsd,
+  });
 
   values.acceptablePrice = acceptablePriceInfo.acceptablePrice;
   values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
 
   if (isLimit) {
-    if (limitOrderType === OrderType.StopIncrease) {
-      if (isLong) {
-        values.acceptablePrice = maxUint256;
-      } else {
-        values.acceptablePrice = 0n;
-      }
+    if (!isSetAcceptablePriceImpactEnabled || limitOrderType === OrderType.StopIncrease) {
+      values.acceptablePrice = isLong ? maxUint256 : 0n;
     } else {
       let maxNegativePriceImpactBps = fixedAcceptablePriceImpactBps;
       values.recommendedAcceptablePriceDeltaBps = getDefaultAcceptablePriceImpactBps({

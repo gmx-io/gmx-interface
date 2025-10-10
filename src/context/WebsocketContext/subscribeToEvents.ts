@@ -1,4 +1,4 @@
-import { AbiCoder, Contract, ethers, isAddress, LogParams, Provider, ProviderEvent, ZeroAddress } from "ethers";
+import { AbiCoder, ethers, isAddress, LogParams, Provider, ProviderEvent, ZeroAddress } from "ethers";
 import { MutableRefObject } from "react";
 import { Abi, decodeEventLog, Hex } from "viem";
 import type { ContractEventArgsFromTopics } from "viem/_types/types/contract";
@@ -10,44 +10,6 @@ import type { ContractsChainId } from "sdk/configs/chains";
 import { getTokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 const coder = AbiCoder.defaultAbiCoder();
-
-const vaultEvents = {
-  UpdatePosition: "onUpdatePosition",
-  ClosePosition: "onClosePosition",
-  IncreasePosition: "onIncreasePosition",
-  DecreasePosition: "onDecreasePosition",
-} as const;
-
-const positionRouterEvents = {
-  CancelIncreasePosition: "onCancelIncreasePosition",
-  CancelDecreasePosition: "onCancelDecreasePosition",
-} as const;
-
-export function subscribeToV1Events(
-  wsVault: Contract,
-  wsPositionRouter: Contract,
-  callExchangeRef: (method: any, ...args: any[]) => void
-) {
-  const unsubs: (() => void)[] = [];
-
-  Object.keys(vaultEvents).forEach((eventName) => {
-    const handlerName = vaultEvents[eventName];
-    const handler = (...args) => callExchangeRef(handlerName, ...args);
-    wsVault.on(eventName, handler);
-    unsubs.push(() => wsVault.off(eventName, handler));
-  });
-
-  Object.keys(positionRouterEvents).forEach((eventName) => {
-    const handlerName = positionRouterEvents[eventName];
-    const handler = (...args) => callExchangeRef(handlerName, ...args);
-    wsPositionRouter.on(eventName, handler);
-    unsubs.push(() => wsPositionRouter.off(eventName, handler));
-  });
-
-  return () => {
-    unsubs.forEach((unsub) => unsub());
-  };
-}
 
 const DEPOSIT_CREATED_HASH = ethers.id("DepositCreated");
 const DEPOSIT_EXECUTED_HASH = ethers.id("DepositExecuted");
@@ -81,6 +43,8 @@ const APPROVED_HASH = ethers.id("Approval(address,address,uint256)");
 const TRANSFER_HASH = ethers.id("Transfer(address,address,uint256)");
 
 const MULTICHAIN_BRIDGE_IN_HASH = ethers.id("MultichainBridgeIn");
+const MULTICHAIN_TRANSFER_OUT_HASH = ethers.id("MultichainTransferOut");
+const MULTICHAIN_TRANSFER_IN_HASH = ethers.id("MultichainTransferIn");
 
 const OFT_SENT_HASH = ethers.id("OFTSent(bytes32,uint32,address,uint256,uint256)");
 const OFT_RECEIVED_HASH = ethers.id("OFTReceived(bytes32,uint32,address,uint256)");
@@ -572,17 +536,17 @@ function createV2EventFilters(chainId: ContractsChainId, account: string, wsProv
     // Multichain
     {
       address: getContract(chainId, "EventEmitter"),
-      topics: [EVENT_LOG1_TOPIC, [MULTICHAIN_BRIDGE_IN_HASH], addressHash],
+      topics: [
+        EVENT_LOG1_TOPIC,
+        [MULTICHAIN_BRIDGE_IN_HASH, MULTICHAIN_TRANSFER_OUT_HASH, MULTICHAIN_TRANSFER_IN_HASH],
+        addressHash,
+      ],
     },
   ];
 }
 
-export function getTotalSubscribersEventsCount(
-  chainId: ContractsChainId,
-  provider: Provider,
-  { v1, v2 }: { v1: boolean; v2: boolean }
-) {
-  const v1Count = v1 ? Object.keys(vaultEvents).length + Object.keys(positionRouterEvents).length : 0;
+export function getTotalSubscribersEventsCount(chainId: ContractsChainId, provider: Provider, { v2 }: { v2: boolean }) {
+  const v1Count = 0;
   const v2Count = v2 ? createV2EventFilters(chainId, ZeroAddress, provider).length : 0;
   return v1Count + v2Count;
 }

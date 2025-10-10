@@ -40,6 +40,7 @@ export type ExpressTxnParams = {
   gasPaymentValidations: GasPaymentValidations;
   subaccountValidations: SubaccountValidations | undefined;
   isSponsoredCall: boolean;
+  isGmxAccount: boolean;
 };
 
 export type ExpressTransactionBuilder = ({

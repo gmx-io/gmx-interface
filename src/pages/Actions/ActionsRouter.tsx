@@ -11,7 +11,6 @@ import { VersionNetworkSwitcherRow } from "pages/AccountDashboard/VersionNetwork
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import PageTitle from "components/PageTitle/PageTitle";
 
-import ActionsPageV1 from "./ActionsV1/ActionsV1";
 import SyntheticsActions from "./SyntheticsActions";
 
 export function AccountsRouter() {
@@ -39,13 +38,11 @@ export function AccountsRouter() {
     );
   }
 
-  if (version === 1) {
-    return <ActionsPageV1 chainId={chainId} />;
-  }
-
   return (
     <SyntheticsStateContextProvider overrideChainId={chainId} pageType="accounts" skipLocalReferralCode>
-      <SyntheticsActions />
+      <AppPageLayout>
+        <SyntheticsActions />
+      </AppPageLayout>
     </SyntheticsStateContextProvider>
   );
 }

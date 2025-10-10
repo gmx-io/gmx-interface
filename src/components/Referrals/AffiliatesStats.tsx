@@ -1,7 +1,5 @@
 import { Trans, t } from "@lingui/macro";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { FiPlus } from "react-icons/fi";
-import { IoWarningOutline } from "react-icons/io5";
 import { useCopyToClipboard } from "react-use";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ContractsChainId, getExplorerUrl, SourceChainId } from "config/chains";
@@ -14,7 +12,7 @@ import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { formatDate } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { shortenAddress } from "lib/legacy";
-import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatBalanceAmount, formatBigUsd, formatUsd } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
 import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
@@ -29,7 +27,9 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 import Tooltip from "components/Tooltip/Tooltip";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
-import CopyIcon from "img/ic_copy_20.svg?react";
+import CopyIcon from "img/ic_copy.svg?react";
+import PlusIcon from "img/ic_plus.svg?react";
+import WarnIcon from "img/ic_warn.svg?react";
 import TwitterIcon from "img/ic_x.svg?react";
 
 import { AffiliateCodeForm } from "./AddAffiliateCode";
@@ -46,7 +46,7 @@ import {
   isRecentReferralCodeNotExpired,
 } from "./referralsHelper";
 import usePagination, { DEFAULT_PAGE_SIZE } from "./usePagination";
-import Card from "../Common/Card";
+import Card from "../Card/Card";
 import Modal from "../Modal/Modal";
 
 import "./AffiliatesStats.scss";
@@ -198,7 +198,7 @@ function AffiliatesStats({
           }
         />
         <ReferralInfoCard
-          value={formatUsd(currentReferralsData?.affiliateTotalStats?.volume)}
+          value={formatBigUsd(currentReferralsData?.affiliateTotalStats?.volume)}
           label={t`Trading Volume`}
           labelTooltipText={t`Volume traded by your referred traders.`}
           tooltipContent={
@@ -243,7 +243,7 @@ function AffiliatesStats({
           }
         />
         <ReferralInfoCard
-          value={formatUsd(currentReferralsData?.affiliateTotalStats?.affiliateRebateUsd)}
+          value={formatBigUsd(currentReferralsData?.affiliateTotalStats?.affiliateRebateUsd)}
           label={t`Rebates`}
           labelTooltipText={t`Rebates earned as an affiliate.`}
           tooltipContent={
@@ -336,7 +336,7 @@ function AffiliatesStats({
               </p>
               <Button variant="secondary" onClick={open} size="small">
                 <Trans>Create new code</Trans>
-                <FiPlus />
+                <PlusIcon />
               </Button>
             </div>
           }
@@ -376,7 +376,7 @@ function AffiliatesStats({
                             }}
                             className="referral-code-icon size-14 text-typography-secondary hover:text-typography-primary"
                           >
-                            <CopyIcon width={14} height={14} />
+                            <CopyIcon className="size-14" />
                           </div>
                           <TrackingLink onClick={trackShareTwitter}>
                             <a
@@ -393,7 +393,7 @@ function AffiliatesStats({
                       </TableTd>
                       <TableTd data-label="Total Volume">
                         <Tooltip
-                          handle={formatUsd(stat.volume)}
+                          handle={formatBigUsd(stat.volume)}
                           handleClassName="numbers"
                           position="bottom-start"
                           className="whitespace-nowrap"
@@ -418,7 +418,7 @@ function AffiliatesStats({
                       </TableTd>
                       <TableTd data-label="Total Rebates">
                         <Tooltip
-                          handle={formatUsd(stat.affiliateRebateUsd)}
+                          handle={formatBigUsd(stat.affiliateRebateUsd)}
                           handleClassName="numbers"
                           position="bottom-start"
                           className="whitespace-nowrap"
@@ -535,11 +535,11 @@ function AffiliatesStats({
                             <div className="Rebate-amount-value numbers">
                               {tokensWithoutPrices.length > 0 && (
                                 <>
-                                  <IoWarningOutline color="#ffba0e" size={16} />
+                                  <WarnIcon className="size-20 text-yellow-300" />
                                   &nbsp;
                                 </>
                               )}
-                              {formatUsd(totalUsd)}
+                              {formatBigUsd(totalUsd)}
                             </div>
                           }
                           renderContent={() => (

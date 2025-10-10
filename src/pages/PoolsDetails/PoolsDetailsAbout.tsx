@@ -18,10 +18,10 @@ import { bigintToNumber, formatAmountHuman } from "lib/numbers";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
 import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
+import { BridgingInfo } from "components/BridgingInfo/BridgingInfo";
+import { useMarketMintableTokens } from "components/MarketStats/hooks/useMarketMintableTokens";
+import { useMarketSellableToken } from "components/MarketStats/hooks/useMarketSellableToken";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { BridgingInfo } from "components/Synthetics/BridgingInfo/BridgingInfo";
-import { useMarketMintableTokens } from "components/Synthetics/MarketStats/hooks/useMarketMintableTokens";
-import { useMarketSellableToken } from "components/Synthetics/MarketStats/hooks/useMarketSellableToken";
 
 import { PoolsDetailsMarketAmount } from "./PoolsDetailsMarketAmount";
 

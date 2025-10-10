@@ -2,7 +2,6 @@ import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { Contract } from "ethers";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ImSpinner2 } from "react-icons/im";
 import { encodeFunctionData, zeroAddress } from "viem";
 import { usePublicClient } from "wagmi";
 
@@ -41,9 +40,11 @@ import type { IStargate } from "typechain-types-stargate";
 import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import Button from "components/Button/Button";
-import { useMultichainTokensRequest } from "components/Synthetics/GmxAccountModal/hooks";
-import { toastCustomOrStargateError } from "components/Synthetics/GmxAccountModal/toastCustomOrStargateError";
-import { SyntheticsInfoRow } from "components/Synthetics/SyntheticsInfoRow";
+import { useMultichainTokensRequest } from "components/GmxAccountModal/hooks";
+import { toastCustomOrStargateError } from "components/GmxAccountModal/toastCustomOrStargateError";
+import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { REFERRAL_CODE_REGEX } from "./referralsHelper";
 
@@ -574,7 +575,7 @@ function ReferralCodeFormMultichain({
       text: (
         <>
           <Trans>Loading</Trans>
-          <ImSpinner2 className="ml-4 animate-spin" />
+          <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
       disabled: true,

@@ -34,6 +34,7 @@ export const WAS_TV_CHART_OVERRIDDEN_KEY = "was-tv-chart-overridden-1";
 export const UTM_PARAMS_KEY = "utm_params";
 
 export const BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY = "breakdown-net-price-impact-enabled";
+export const SET_ACCEPTABLE_PRICE_IMPACT_ENABLED_KEY = "set-acceptable-price-impact-enabled";
 
 export const SYNTHETICS_TRADE_OPTIONS = "synthetics-trade-options";
 export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY = "synthetics-acceptable-price-impact-buffer";
@@ -73,10 +74,7 @@ export const PERMITS_DISABLED_KEY = "permits-disabled";
 export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
 export const RPC_PROVIDER_KEY = "rpc-provider";
-export const IS_LARGE_ACCOUNT_KEY = "is-large-account";
-
-export const IS_SOURCE_BASE_ALLOWED_KEY = "is-source-base-allowed";
-export const IS_SOURCE_BASE_ALLOWED_NOTIFICATION_SHOWN_KEY = "is-source-base-allowed-notification-shown";
+export const IS_LARGE_ACCOUNT_KEY = "is-large-account-2";
 
 /**
  * @deprecated

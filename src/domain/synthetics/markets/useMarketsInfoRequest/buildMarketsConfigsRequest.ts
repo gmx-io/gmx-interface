@@ -45,14 +45,6 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.maxShortPoolUsdForDeposit],
         },
-        longPoolAmountAdjustment: {
-          methodName: "getUint",
-          params: [prebuiltHashedKeys.longPoolAmountAdjustment],
-        },
-        shortPoolAmountAdjustment: {
-          methodName: "getUint",
-          params: [prebuiltHashedKeys.shortPoolAmountAdjustment],
-        },
         reserveFactorLong: {
           methodName: "getUint",
           params: [prebuiltHashedKeys.reserveFactorLong],
