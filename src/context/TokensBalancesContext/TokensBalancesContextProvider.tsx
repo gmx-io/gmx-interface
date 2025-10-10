@@ -13,10 +13,11 @@ import {
 
 import type { TokenBalancesData, TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
+import { TokenBalanceType } from "sdk/types/tokens";
 
 export type TokenBalanceUpdate = {
   isPending?: boolean;
-  balanceType: "wallet" | "gmxAccount";
+  balanceType: TokenBalanceType;
   balance?: bigint;
   diff?: bigint;
 };
@@ -30,7 +31,7 @@ type TokensBalancesContextType = {
   optimisticTokensBalancesUpdates: TokensBalancesUpdates;
   setWebsocketTokenBalancesUpdates: Dispatch<SetStateAction<TokensBalancesUpdates>>;
   setOptimisticTokensBalancesUpdates: Dispatch<SetStateAction<TokensBalancesUpdates>>;
-  resetTokensBalancesUpdates: (tokenAddresses: string[], balanceType: "wallet" | "gmxAccount") => void;
+  resetTokensBalancesUpdates: (tokenAddresses: string[], balanceType: TokenBalanceType) => void;
 };
 
 const Context = createContext<TokensBalancesContextType | null>(null);
@@ -49,7 +50,7 @@ export function TokensBalancesContextProvider({ children }: PropsWithChildren) {
   const [optimisticTokensBalancesUpdates, setOptimisticTokensBalancesUpdates] = useState<TokensBalancesUpdates>({});
   const [websocketTokenBalancesUpdates, setWebsocketTokenBalancesUpdates] = useState<TokensBalancesUpdates>({});
 
-  const resetTokensBalancesUpdates = useCallback((tokenAddresses: string[], balanceType: "wallet" | "gmxAccount") => {
+  const resetTokensBalancesUpdates = useCallback((tokenAddresses: string[], balanceType: TokenBalanceType) => {
     setWebsocketTokenBalancesUpdates((old) => {
       const newState = { ...old };
 
@@ -117,11 +118,11 @@ export function useUpdatedTokensBalances(
 ): TokensData | undefined;
 export function useUpdatedTokensBalances(
   balancesData: TokenBalancesData | undefined,
-  balanceType: "wallet" | "gmxAccount"
+  balanceType: TokenBalanceType
 ): TokenBalancesData | undefined;
 export function useUpdatedTokensBalances<T extends TokenBalancesData | TokensData>(
   balancesData: T | undefined,
-  balanceType: T extends TokensData ? undefined : "wallet" | "gmxAccount"
+  balanceType: T extends TokensData ? undefined : TokenBalanceType
 ): T | undefined {
   const { websocketTokenBalancesUpdates, optimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
 
@@ -157,7 +158,7 @@ const applyBalanceUpdate = <T extends TokenBalancesData | TokensData>(
   currentUpdates: T,
   tokenAddress: string,
   balanceUpdate: TokenBalanceUpdate,
-  balanceType: T extends TokensData ? undefined : "wallet" | "gmxAccount"
+  balanceType: T extends TokensData ? undefined : TokenBalanceType
 ): T => {
   const nextBalancesData = { ...currentUpdates };
 
@@ -173,19 +174,18 @@ const applyBalanceUpdate = <T extends TokenBalancesData | TokensData>(
     );
   } else if (typeof (nextBalancesData[tokenAddress] as TokenData).balance === "bigint") {
     const tokenData = { ...(nextBalancesData[tokenAddress] as TokenData & { balance: bigint }) };
-    const balanceType = tokenData.isGmxAccount ? "gmxAccount" : "wallet";
-    tokenData.balance = updateTokenBalance(balanceUpdate, tokenData.balance, balanceType);
+    tokenData.balance = updateTokenBalance(
+      balanceUpdate,
+      tokenData.balance,
+      tokenData.balanceType ?? TokenBalanceType.Wallet
+    );
     nextBalancesData[tokenAddress] = tokenData;
   }
 
   return nextBalancesData;
 };
 
-export function updateTokenBalance(
-  balanceUpdate: TokenBalanceUpdate,
-  balance: bigint,
-  balanceType: "wallet" | "gmxAccount"
-) {
+export function updateTokenBalance(balanceUpdate: TokenBalanceUpdate, balance: bigint, balanceType: TokenBalanceType) {
   if (balanceType !== balanceUpdate.balanceType) {
     return balance;
   }

@@ -3,7 +3,7 @@ export function estimateDepositOraclePriceCount(swapsCount: number): bigint {
   return 3n + BigInt(swapsCount);
 }
 
-export function estimateWithdrawalOraclePriceCount(swapsCount: number): bigint {
+export function estimateWithdrawalOraclePriceCount(swapsCount: bigint): bigint {
   return 3n + BigInt(swapsCount);
 }
 

@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 
 import {
+  estimateDepositOraclePriceCount,
   estimateExecuteDepositGasLimit,
   estimateExecuteGlvDepositGasLimit,
   estimateExecuteGlvWithdrawalGasLimit,
   estimateExecuteWithdrawalGasLimit,
-  estimateDepositOraclePriceCount,
   estimateGlvDepositOraclePriceCount,
   estimateGlvWithdrawalOraclePriceCount,
   estimateWithdrawalOraclePriceCount,
@@ -16,7 +16,7 @@ import {
 } from "domain/synthetics/fees";
 import { GlvInfo } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
-import { GmSwapFees } from "domain/synthetics/trade";
+import { GmSwapFees, WithdrawalAmounts } from "domain/synthetics/trade";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
@@ -67,6 +67,10 @@ export const useDepositWithdrawalFees = ({
     let oraclePriceCount;
 
     const glvMarketsCount = BigInt(glvInfo?.markets?.length ?? 0);
+    const swapPathCount = BigInt(
+      ((amounts as WithdrawalAmounts)?.longTokenSwapPathStats?.swapPath.length ?? 0) +
+        ((amounts as WithdrawalAmounts)?.shortTokenSwapPathStats?.swapPath.length ?? 0)
+    );
 
     if (glvInfo) {
       gasLimit = isDeposit
@@ -78,16 +82,22 @@ export const useDepositWithdrawalFees = ({
           })
         : estimateExecuteGlvWithdrawalGasLimit(gasLimits, {
             marketsCount: glvMarketsCount,
+            swapsCount: swapPathCount,
           });
 
       oraclePriceCount = isDeposit
         ? estimateGlvDepositOraclePriceCount(glvMarketsCount)
-        : estimateGlvWithdrawalOraclePriceCount(glvMarketsCount);
+        : estimateGlvWithdrawalOraclePriceCount(glvMarketsCount, swapPathCount);
     } else {
       gasLimit = isDeposit
         ? estimateExecuteDepositGasLimit(gasLimits, {})
-        : estimateExecuteWithdrawalGasLimit(gasLimits, {});
-      oraclePriceCount = isDeposit ? estimateDepositOraclePriceCount(0) : estimateWithdrawalOraclePriceCount(0);
+        : estimateExecuteWithdrawalGasLimit(gasLimits, {
+            swapsCount: swapPathCount,
+          });
+
+      oraclePriceCount = isDeposit
+        ? estimateDepositOraclePriceCount(0)
+        : estimateWithdrawalOraclePriceCount(swapPathCount);
     }
 
     const executionFee = getExecutionFee(chainId, gasLimits, tokensData, gasLimit, gasPrice, oraclePriceCount);

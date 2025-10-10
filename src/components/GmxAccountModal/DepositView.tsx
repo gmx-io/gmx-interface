@@ -14,7 +14,7 @@ import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
   DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT,
   MULTICHAIN_FUNDING_SLIPPAGE_BPS,
-  MULTICHAIN_TRANSFER_SUPPORTED_TOKENS,
+  MULTI_CHAIN_DEPOSIT_TRADE_TOKENS,
   StargateErrorsAbi,
   getMappedTokenId,
 } from "config/multichain";
@@ -32,6 +32,7 @@ import { useMultichainApprovalsActiveListener } from "context/SyntheticsEvents/u
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { sendCrossChainDepositTxn } from "domain/multichain/sendCrossChainDepositTxn";
 import { sendSameChainDepositTxn } from "domain/multichain/sendSameChainDepositTxn";
+import { SendParam } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
@@ -61,7 +62,6 @@ import { convertTokenAddress, getNativeToken, getToken } from "sdk/configs/token
 import { bigMath } from "sdk/utils/bigmath";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
-import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { Amount } from "components/Amount/Amount";
@@ -118,7 +118,7 @@ export const DepositView = () => {
     tokenChainDataArray: multichainTokens,
     isPriceDataLoading,
     isBalanceDataLoading,
-  } = useMultichainTokensRequest();
+  } = useMultichainTokensRequest(settlementChainId, account);
   const [isApproving, setIsApproving] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [shouldSendCrossChainDepositWhenLoaded, setShouldSendCrossChainDepositWhenLoaded] = useState(false);
@@ -290,7 +290,7 @@ export const DepositView = () => {
     tokenAddress: depositViewTokenAddress,
   });
 
-  const sendParamsWithoutSlippage: SendParamStruct | undefined = useMemo(() => {
+  const sendParamsWithoutSlippage: SendParam | undefined = useMemo(() => {
     if (
       !account ||
       inputAmount === undefined ||
@@ -303,11 +303,11 @@ export const DepositView = () => {
 
     return getMultichainTransferSendParams({
       account,
-      inputAmount,
+      amount: inputAmount,
       srcChainId: depositViewChain,
       composeGas,
       dstChainId: settlementChainId,
-      isDeposit: true,
+      isToGmx: true,
     });
   }, [account, inputAmount, depositViewChain, composeGas, settlementChainId]);
 
@@ -326,7 +326,7 @@ export const DepositView = () => {
     decimals: selectedTokenSourceChainTokenId?.decimals,
   });
 
-  const sendParamsWithSlippage: SendParamStruct | undefined = useMemo(() => {
+  const sendParamsWithSlippage: SendParam | undefined = useMemo(() => {
     if (!quoteOft || !sendParamsWithoutSlippage) {
       return undefined;
     }
@@ -335,7 +335,7 @@ export const DepositView = () => {
 
     const minAmountLD = applySlippageToMinOut(MULTICHAIN_FUNDING_SLIPPAGE_BPS, receipt.amountReceivedLD as bigint);
 
-    const newSendParams: SendParamStruct = {
+    const newSendParams: SendParam = {
       ...sendParamsWithoutSlippage,
       minAmountLD,
     };
@@ -394,7 +394,7 @@ export const DepositView = () => {
     (params: {
       depositViewChain: SourceChainId;
       metricId: OrderMetricId;
-      sendParams: SendParamStruct;
+      sendParams: SendParam;
       tokenAddress: string;
     }): TxnCallback<WalletTxnCtx> =>
       (txnEvent) => {
@@ -572,9 +572,9 @@ export const DepositView = () => {
 
       const isInvalidTokenAddress =
         depositViewTokenAddress === undefined ||
-        !MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId as SettlementChainId]
-          ?.map((token) => convertTokenAddress(settlementChainId, token, "native"))
-          .includes(depositViewTokenAddress as NativeTokenSupportedAddress);
+        !MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[settlementChainId as SettlementChainId].includes(
+          depositViewTokenAddress as NativeTokenSupportedAddress
+        );
 
       if (
         !isPriceDataLoading &&

@@ -135,6 +135,10 @@ msgstr "Orders ({0})"
 msgid "You have not deposited any tokens for vesting."
 msgstr "You have not deposited any tokens for vesting."
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Deposit from source chain support only single token"
+msgstr "Deposit from source chain support only single token"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "stop loss"
 msgstr "stop loss"
@@ -223,6 +227,11 @@ msgstr "Buy {gasPaymentTokensText}"
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Show error"
 msgstr "Show error"
+
+#: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
+#: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
+msgid "Sent withdrawal transaction"
+msgstr "Sent withdrawal transaction"
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "{0} can be used to buy GM for this market up to the specified buying caps."
@@ -1253,6 +1262,10 @@ msgstr "Mint tBTC using BTC with <0>Threshold</0>."
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap Price Impact"
 msgstr "Swap Price Impact"
+
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
+msgid "Withdraw {glvOrGm}"
+msgstr "Withdraw {glvOrGm}"
 
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What issues did you encounter that led to your rating?"
@@ -3248,6 +3261,7 @@ msgstr "Cancel Order"
 msgid "Claiming position price impact fees failed"
 msgstr "Claiming position price impact fees failed"
 
+#: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -3566,6 +3580,10 @@ msgstr "Why do I receive two different GLV tokens?"
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Set TP/SL"
 msgstr "Set TP/SL"
+
+#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
+msgid "All Networks"
+msgstr "All Networks"
 
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -4896,6 +4914,11 @@ msgstr "Supported by"
 msgid "Trade Confirmations"
 msgstr "Trade Confirmations"
 
+#: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
+msgid "Available"
+msgstr "Available"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Solv Finance"
 msgstr "Solv Finance"
@@ -5278,6 +5301,7 @@ msgstr "{formattedNetRate} / 1h"
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Balance"
 msgstr "Balance"
 
@@ -5597,6 +5621,7 @@ msgstr "Deposited."
 msgid "There may not be sufficient liquidity to execute your order when the min. receive is met."
 msgstr "There may not be sufficient liquidity to execute your order when the min. receive is met."
 
+#: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5739,6 +5764,10 @@ msgstr "GMX Vault"
 msgid "Jones DAO"
 msgstr "Jones DAO"
 
+#: src/components/BridgeModal/BridgeOutModal.tsx
+msgid "{0} Balance"
+msgstr "{0} Balance"
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minute(s)"
 msgstr "Minute(s)"
@@ -5868,6 +5897,7 @@ msgid "Deactivate 1CT (One-Click Trading)"
 msgstr "Deactivate 1CT (One-Click Trading)"
 
 #: src/components/AddressDropdown/AddressDropdownWithMultichain.tsx
+#: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/keys.ts
@@ -6005,8 +6035,10 @@ msgstr "Transfer {nativeTokenSymbol}"
 msgid "Meme"
 msgstr "Meme"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalTransactions.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftTransactions.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -6084,6 +6116,11 @@ msgstr "Size per part"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance"
 msgstr "Insufficient {0} balance"
+
+#: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
+#: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
+msgid "Sent deposit transaction"
+msgstr "Sent deposit transaction"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "limit price"
@@ -6245,6 +6282,16 @@ msgstr "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messagi
 msgid "Max {0} amount exceeded"
 msgstr "Max {0} amount exceeded"
 
+#: src/components/BridgeModal/BridgeInModal.tsx
+msgid "Deposit {glvOrGm}: {0}"
+msgstr "Deposit {glvOrGm}: {0}"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
+#~ msgid "No assets available for deposit on {0}"
+#~ msgstr "No assets available for deposit on {0}"
+
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Realized Base PnL"
 msgstr "Realized Base PnL"
@@ -6402,6 +6449,7 @@ msgstr "This code has been taken by someone else on {takenNetworkNames}, you wil
 msgid "Confirm Claim"
 msgstr "Confirm Claim"
 
+#: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "GMX Account Balance"
@@ -6646,7 +6694,9 @@ msgstr "Choose to buy from decentralized or centralized exchanges."
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "GMX Account"
 msgstr "GMX Account"
 
@@ -6836,7 +6886,6 @@ msgstr "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
-#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 #: src/pages/Stake/VesterDepositModal.tsx
@@ -7372,6 +7421,10 @@ msgstr "Daily and Cumulative PnL"
 msgid "short"
 msgstr "short"
 
+#: src/components/BridgeModal/BridgeOutModal.tsx
+msgid "Withdraw {glvOrGm}: {0}"
+msgstr "Withdraw {glvOrGm}: {0}"
+
 #: src/components/RatingToast/RatingToast.tsx
 msgid "Very likely"
 msgstr "Very likely"
@@ -7462,6 +7515,10 @@ msgstr "Market order will be cancellable in ..."
 msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in settings."
 msgstr "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in settings."
 
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
+msgid "Deposit {glvOrGm}"
+msgstr "Deposit {glvOrGm}"
+
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"
 msgstr "Anonymous chat with GMX"
@@ -7546,6 +7603,10 @@ msgstr "Depositing {0} to {positionText}"
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Network Fee"
 msgstr "Max Network Fee"
+
+#: src/domain/synthetics/markets/createBridgeInTxn.ts
+msgid "Sent transfer in transaction"
+msgstr "Sent transfer in transaction"
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."

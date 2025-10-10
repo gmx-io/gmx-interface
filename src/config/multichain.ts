@@ -49,7 +49,7 @@ export {
   usdcSgPoolSepolia,
 };
 
-type MultichainTokenMapping = Record<
+export type MultichainTokenMapping = Record<
   // settlement chain id
   SettlementChainId,
   Record<
@@ -68,15 +68,6 @@ type MultichainTokenMapping = Record<
   >
 >;
 
-type MultichainWithdrawSupportedTokens = Partial<
-  Record<
-    // settlement chain id
-    SettlementChainId,
-    // settlement chain wrapped token address
-    string[]
-  >
->;
-
 type MultichainSourceToSettlementsMap = Record<SourceChainId, SettlementChainId[]>;
 
 export type MultichainTokenId = {
@@ -86,6 +77,7 @@ export type MultichainTokenId = {
   stargate: string;
   symbol: string;
   isTestnet?: boolean;
+  isPlatformToken?: boolean;
 };
 
 const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | SettlementChainId, MultichainTokenId>>>> = {
@@ -186,6 +178,45 @@ if (isDevelopment()) {
       isTestnet: true,
     },
   };
+
+  // TODO MLTCH wrap it in a factory
+  TOKEN_GROUPS["<GM-ETH-WETH-UDSC.SG>"] = {
+    [ARBITRUM_SEPOLIA]: {
+      address: "0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc",
+      decimals: 18,
+      chainId: ARBITRUM_SEPOLIA,
+      stargate: "0xe4EBcAC4a2e6CBEE385eE407f7D5E278Bc07e11e",
+      symbol: "<GM-ETH-WETH-UDSC.SG>",
+      isPlatformToken: true,
+    },
+    [SOURCE_SEPOLIA]: {
+      address: "0xe4EBcAC4a2e6CBEE385eE407f7D5E278Bc07e11e",
+      decimals: 18,
+      chainId: SOURCE_SEPOLIA,
+      stargate: "0xe4EBcAC4a2e6CBEE385eE407f7D5E278Bc07e11e",
+      symbol: "<GM-ETH-WETH-UDSC.SG>",
+      isPlatformToken: true,
+    },
+  };
+
+  TOKEN_GROUPS["<GLV-HIGH_CAPS-WETH-UDSC.SG>"] = {
+    [ARBITRUM_SEPOLIA]: {
+      address: "0xAb3567e55c205c62B141967145F37b7695a9F854",
+      decimals: 18,
+      chainId: ARBITRUM_SEPOLIA,
+      stargate: "0xD5BdEa6dC8E4B7429b72675386fC903DEf06599d",
+      symbol: "<GLV-HIGH_CAPS-WETH-UDSC.SG>",
+      isPlatformToken: true,
+    },
+    [SOURCE_SEPOLIA]: {
+      address: "0xD5BdEa6dC8E4B7429b72675386fC903DEf06599d",
+      decimals: 18,
+      chainId: SOURCE_SEPOLIA,
+      stargate: "0xD5BdEa6dC8E4B7429b72675386fC903DEf06599d",
+      symbol: "<GLV-HIGH_CAPS-WETH-UDSC.SG>",
+      isPlatformToken: true,
+    },
+  };
 }
 
 export const DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT = false;
@@ -194,9 +225,9 @@ if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
   SOURCE_CHAINS.push(ARBITRUM_SEPOLIA as SourceChainId, ARBITRUM as SourceChainId, AVALANCHE as SourceChainId);
 }
 
-export const MULTICHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;
-
-export const MULTICHAIN_TRANSFER_SUPPORTED_TOKENS = {} as MultichainWithdrawSupportedTokens;
+export const MULTI_CHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;
+export const MULTI_CHAIN_DEPOSIT_TRADE_TOKENS = {} as Record<SettlementChainId, string[]>;
+export const MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS = {} as Record<SettlementChainId, string[]>;
 
 export const CHAIN_ID_TO_TOKEN_ID_MAP: Record<
   SettlementChainId | SourceChainId,
@@ -210,10 +241,13 @@ for (const tokenSymbol in TOKEN_GROUPS) {
     const firstChainId = parseInt(chainIdString) as SettlementChainId | SourceChainId;
 
     const tokenId = TOKEN_GROUPS[tokenSymbol]![firstChainId]!;
-    if (tokenId) {
-      CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId] = CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId] || {};
-      CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId][tokenId.address] = tokenId;
+
+    if (!tokenId) {
+      continue;
     }
+
+    CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId] = CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId] || {};
+    CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId][tokenId.address] = tokenId;
 
     if (!isSettlementChain(firstChainId)) {
       continue;
@@ -221,7 +255,16 @@ for (const tokenSymbol in TOKEN_GROUPS) {
 
     const settlementChainId = firstChainId;
 
-    let empty = true;
+    if (!tokenId?.isPlatformToken) {
+      MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[settlementChainId] = MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[settlementChainId] || [];
+      MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[settlementChainId].push(tokenId.address);
+      MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[settlementChainId] =
+        MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[settlementChainId] || [];
+      MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[settlementChainId].push(
+        convertTokenAddress(settlementChainId, tokenId.address, "wrapped")
+      );
+    }
+
     for (const sourceChainIdString in TOKEN_GROUPS[tokenSymbol]) {
       const sourceChainId = parseInt(sourceChainIdString) as SettlementChainId | SourceChainId;
       if (!isSourceChain(sourceChainId)) {
@@ -238,31 +281,21 @@ for (const tokenSymbol in TOKEN_GROUPS) {
         continue;
       }
 
-      empty = false;
-
       MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId] =
         MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId] || [];
       MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId] = uniq(
         MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId].concat(settlementChainId)
       );
 
-      MULTICHAIN_TOKEN_MAPPING[settlementChainId] = MULTICHAIN_TOKEN_MAPPING[settlementChainId] || {};
-      MULTICHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] =
-        MULTICHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] || {};
+      MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] = MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] || {};
+      MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] =
+        MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] || {};
 
-      MULTICHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString][sourceChainToken.address] = {
+      MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString][sourceChainToken.address] = {
         settlementChainTokenAddress: tokenId.address,
         sourceChainTokenAddress: sourceChainToken.address,
         sourceChainTokenDecimals: sourceChainToken.decimals,
       };
-    }
-
-    if (!empty) {
-      MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId] =
-        MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId] || [];
-      MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId]!.push(
-        convertTokenAddress(settlementChainId, tokenId.address, "wrapped")
-      );
     }
   }
 }

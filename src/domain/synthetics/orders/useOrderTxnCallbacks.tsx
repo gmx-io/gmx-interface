@@ -15,6 +15,7 @@ import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermits
 import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { getPositionKey } from "domain/synthetics/positions/utils";
 import { getRemainingSubaccountActions, Subaccount } from "domain/synthetics/subaccount";
+import { TokenBalanceType } from "domain/tokens";
 import { validateTokenPermitSignature } from "domain/tokens/permitUtils";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
@@ -120,7 +121,7 @@ export function useOrderTxnCallbacks() {
             newState[tokenAddress] = {
               diff: -amount,
               isPending: true,
-              balanceType: expressParams?.isGmxAccount ? "gmxAccount" : "wallet",
+              balanceType: expressParams?.isGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet,
             };
           });
           return newState;

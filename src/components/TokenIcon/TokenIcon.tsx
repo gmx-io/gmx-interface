@@ -85,7 +85,7 @@ function TokenIcon({ className, symbol, displaySize, importSize = 24, badge, bad
         src={CHAIN_ID_TO_NETWORK_ICON[chainIdBadge]}
         width={size}
         height={size}
-        className={cx("absolute  z-10 box-content rounded-full bg-slate-900", offset)}
+        className={cx("absolute z-10 box-content rounded-full bg-slate-900", offset)}
       />
     );
   }
@@ -106,7 +106,7 @@ function TokenIcon({ className, symbol, displaySize, importSize = 24, badge, bad
   }
 
   return (
-    <span className={cx("relative", className)}>
+    <span className={cx("relative shrink-0", className)}>
       {img}
       {sub}
     </span>

@@ -8,7 +8,7 @@ import { useChainId } from "lib/chains";
 import { getToken } from "sdk/configs/tokens";
 
 import { NATIVE_TOKEN_PRICE_MAP } from "./nativeTokenPriceMap";
-import type { QuoteOft, QuoteSend } from "./types";
+import type { QuoteOft, MessagingFee } from "./types";
 
 export function useMultichainQuoteFeeUsd({
   quoteSend,
@@ -17,7 +17,7 @@ export function useMultichainQuoteFeeUsd({
   sourceChainId,
   targetChainId,
 }: {
-  quoteSend: QuoteSend | undefined;
+  quoteSend: MessagingFee | undefined;
   quoteOft: QuoteOft | undefined;
   unwrappedTokenAddress: string | undefined;
   sourceChainId: AnyChainId | undefined;
@@ -79,8 +79,8 @@ export function useMultichainQuoteFeeUsd({
   if (quoteOft !== undefined) {
     protocolFeeAmount = 0n;
     for (const feeDetail of quoteOft.oftFeeDetails) {
-      if (feeDetail.feeAmountLD) {
-        protocolFeeAmount -= feeDetail.feeAmountLD as bigint;
+      if (feeDetail.feeAmountLD !== 0n) {
+        protocolFeeAmount -= feeDetail.feeAmountLD;
       }
     }
     protocolFeeUsd = convertToUsd(protocolFeeAmount, sourceChainDepositTokenDecimals, transferTokenPrices?.maxPrice);
