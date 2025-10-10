@@ -2311,10 +2311,6 @@ msgstr "Trigger"
 msgid "Unstake failed."
 msgstr "Unstake failed."
 
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Debug Express Signature Error"
-msgstr "Debug Express Signature Error"
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order cancelled"
 msgstr "Order cancelled"
@@ -6973,10 +6969,6 @@ msgstr "Failed to update settings"
 msgid "Tweet"
 msgstr "Tweet"
 
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Transaction failed due to invalid signature.<0/><1/>Please try a different wallet app or switch to 1CT or Classic mode."
-#~ msgstr "Transaction failed due to invalid signature.<0/><1/>Please try a different wallet app or switch to 1CT or Classic mode."
-
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."
 msgstr "Funding claimed."
@@ -7326,10 +7318,6 @@ msgstr "Frequency"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Loading Express params"
 msgstr "Loading Express params"
-
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Transaction failed due to signature validation. Please try a different wallet app or switch to 1CT or Classic mode."
-#~ msgstr "Transaction failed due to signature validation. Please try a different wallet app or switch to 1CT or Classic mode."
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No funding activity matching your search"
