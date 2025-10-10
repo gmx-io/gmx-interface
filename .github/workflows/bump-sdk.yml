@@ -23,7 +23,7 @@ on:
         type: string
 
 jobs:
-  publish:
+  bump-sdk:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

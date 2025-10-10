@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  publish:
+  publish-sdk:
     runs-on: ubuntu-latest
     environment: sdk_deploy
     steps:
