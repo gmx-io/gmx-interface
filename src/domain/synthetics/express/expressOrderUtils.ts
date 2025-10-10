@@ -56,8 +56,6 @@ import {
 } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 import { setUiFeeReceiverIsExpress } from "sdk/utils/twap/uiFeeReceiver";
-import { GelatoRelayRouter, MultichainSubaccountRouter, SubaccountGelatoRelayRouter } from "typechain-types";
-import { MultichainOrderRouter } from "typechain-types/MultichainOrderRouter";
 
 import { approximateL1GasBuffer, estimateBatchGasLimit, estimateRelayerGasLimit, GasLimitsConfig } from "../fees";
 import { getNeedTokenApprove } from "../tokens";
@@ -533,7 +531,7 @@ export async function buildAndSignExpressBatchOrderTxn({
     relayPayload: {
       ...(relayParamsPayload as RelayParamsPayload),
       deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
-      userNonce: nowInSeconds(),
+      userNonce: BigInt(nowInSeconds()),
     } satisfies RelayParamsPayload,
     subaccountApproval: subaccount?.signedApproval,
     paramsLists: getBatchParamsLists(batchParams),
@@ -586,7 +584,7 @@ export async function buildAndSignExpressBatchOrderTxn({
           BigInt(srcChainId),
           subaccount.signedApproval?.subaccount,
           params.paramsLists,
-        ] satisfies Parameters<MultichainSubaccountRouter["batch"]>,
+        ],
       });
     } else {
       batchCalldata = encodeFunctionData({
@@ -600,7 +598,7 @@ export async function buildAndSignExpressBatchOrderTxn({
           params.account,
           BigInt(srcChainId),
           params.paramsLists,
-        ] satisfies Parameters<MultichainOrderRouter["batch"]>,
+        ],
       });
     }
   } else {
@@ -617,7 +615,7 @@ export async function buildAndSignExpressBatchOrderTxn({
           params.account,
           subaccount.signedApproval?.subaccount,
           params.paramsLists,
-        ] satisfies Parameters<SubaccountGelatoRelayRouter["batch"]>,
+        ],
       });
     } else {
       batchCalldata = encodeFunctionData({
@@ -630,7 +628,7 @@ export async function buildAndSignExpressBatchOrderTxn({
           },
           params.account,
           params.paramsLists,
-        ] satisfies Parameters<GelatoRelayRouter["batch"]>,
+        ],
       });
     }
   }

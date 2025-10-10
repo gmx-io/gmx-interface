@@ -19,6 +19,7 @@ import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { CodecUiHelper, GMX_DATA_ACTION_HASH, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
+import { TransferRequests } from "domain/multichain/types";
 import { CreateDepositParamsStruct, CreateGlvDepositParamsStruct, createDepositTxn } from "domain/synthetics/markets";
 import { createGlvDepositTxn } from "domain/synthetics/markets/createGlvDepositTxn";
 import { createMultichainDepositTxn } from "domain/synthetics/markets/createMultichainDepositTxn";
@@ -43,7 +44,6 @@ import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { nowInSeconds } from "sdk/utils/time";
 import { applySlippageToMinOut } from "sdk/utils/trade";
-import { IRelayUtils } from "typechain-types/MultichainGmRouter";
 
 import type { UseLpTransactionProps } from "./useLpTransactions";
 import { useMultichainDepositExpressTxnParams } from "./useMultichainDepositExpressTxnParams";
@@ -100,7 +100,7 @@ export const useDepositTransactions = ({
 
   const isGlv = glvInfo !== undefined && selectedMarketForGlv !== undefined;
 
-  const transferRequests = useMemo((): IRelayUtils.TransferRequestsStruct => {
+  const transferRequests = useMemo((): TransferRequests => {
     const vaultAddress = isGlv ? getContract(chainId, "GlvVault") : getContract(chainId, "DepositVault");
     return getTransferRequests([
       {

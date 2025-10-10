@@ -1,4 +1,4 @@
-import type { IRelayUtils } from "typechain-types/MultichainGmRouter";
+import type { TransferRequests } from "domain/multichain/types";
 
 export function getTransferRequests(
   transfers: {
@@ -6,8 +6,8 @@ export function getTransferRequests(
     token: string | undefined;
     amount: bigint | undefined;
   }[]
-): IRelayUtils.TransferRequestsStruct {
-  const requests: IRelayUtils.TransferRequestsStruct = {
+): TransferRequests {
+  const requests: TransferRequests = {
     tokens: [],
     receivers: [],
     amounts: [],

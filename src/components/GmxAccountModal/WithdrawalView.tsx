@@ -44,7 +44,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
 import { fallbackCustomError } from "domain/multichain/fallbackCustomError";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
-import { BridgeOutParams } from "domain/multichain/types";
+import { BridgeOutParams, SendParam } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useQuoteOft } from "domain/multichain/useQuoteOft";
@@ -79,7 +79,6 @@ import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
-import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { Amount } from "components/Amount/Amount";
@@ -222,7 +221,7 @@ export const WithdrawalView = () => {
     return { nextGmxAccountBalanceUsd };
   }, [selectedToken, inputAmount, inputAmountUsd, gmxAccountUsd]);
 
-  const sendParamsWithoutSlippage: SendParamStruct | undefined = useMemo(() => {
+  const sendParamsWithoutSlippage: SendParam | undefined = useMemo(() => {
     if (!account || inputAmount === undefined || inputAmount <= 0n || withdrawalViewChain === undefined) {
       return;
     }
@@ -250,7 +249,7 @@ export const WithdrawalView = () => {
     decimals: selectedTokenSettlementChainTokenId?.decimals,
   });
 
-  const sendParamsWithSlippage: SendParamStruct | undefined = useMemo(() => {
+  const sendParamsWithSlippage: SendParam | undefined = useMemo(() => {
     if (!quoteOft || !sendParamsWithoutSlippage) {
       return undefined;
     }
@@ -259,7 +258,7 @@ export const WithdrawalView = () => {
 
     const minAmountLD = applySlippageToMinOut(MULTICHAIN_FUNDING_SLIPPAGE_BPS, receipt.amountReceivedLD as bigint);
 
-    const newSendParams: SendParamStruct = {
+    const newSendParams: SendParam = {
       ...sendParamsWithoutSlippage,
       minAmountLD,
     };

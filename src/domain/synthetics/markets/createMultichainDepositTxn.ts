@@ -1,6 +1,7 @@
 import { encodeFunctionData } from "viem";
 
 import { getContract } from "config/contracts";
+import { TransferRequests } from "domain/multichain/types";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions";
 import { AsyncResult } from "lib/useThrottledAsync";
 import type { WalletSigner } from "lib/wallets";
@@ -8,7 +9,6 @@ import { abis } from "sdk/abis";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
-import type { IRelayUtils, MultichainGmRouter } from "typechain-types/MultichainGmRouter";
 
 import { CreateDepositParamsStruct } from ".";
 import { ExpressTxnParams, RelayParamsPayload } from "../express";
@@ -21,7 +21,7 @@ type TxnParams = {
   relayParams: RelayParamsPayload;
   emptySignature?: boolean;
   account: string;
-  transferRequests: IRelayUtils.TransferRequestsStruct;
+  transferRequests: TransferRequests;
   params: CreateDepositParamsStruct;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
@@ -63,10 +63,10 @@ export async function buildAndSignMultichainDepositTxn({
         signature,
       },
       account,
-      srcChainId ?? chainId,
+      BigInt(srcChainId ?? chainId),
       transferRequests,
       params,
-    ] satisfies Parameters<MultichainGmRouter["createDeposit"]>,
+    ],
   });
 
   return {
@@ -88,7 +88,7 @@ export function createMultichainDepositTxn({
   chainId: ContractsChainId;
   srcChainId: SourceChainId | undefined;
   signer: WalletSigner;
-  transferRequests: IRelayUtils.TransferRequestsStruct;
+  transferRequests: TransferRequests;
   // TODO MLTCH: make it just ExpressTxnParams
   asyncExpressTxnResult: AsyncResult<ExpressTxnParams | undefined>;
   params: CreateDepositParamsStruct;

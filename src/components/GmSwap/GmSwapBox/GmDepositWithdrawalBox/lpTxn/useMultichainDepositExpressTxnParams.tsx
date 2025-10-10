@@ -1,4 +1,5 @@
 import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
+import { TransferRequests } from "domain/multichain/types";
 import type { CreateDepositParamsStruct, CreateGlvDepositParamsStruct } from "domain/synthetics/markets";
 import { buildAndSignMultichainDepositTxn } from "domain/synthetics/markets/createMultichainDepositTxn";
 import { buildAndSignMultichainGlvDepositTxn } from "domain/synthetics/markets/createMultichainGlvDepositTxn";
@@ -6,7 +7,6 @@ import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
-import type { IRelayUtils } from "typechain-types/MultichainGmRouter";
 
 import type { GmPaySource } from "../types";
 
@@ -16,7 +16,7 @@ export function useMultichainDepositExpressTxnParams({
   gmParams,
   glvParams,
 }: {
-  transferRequests: IRelayUtils.TransferRequestsStruct;
+  transferRequests: TransferRequests;
   paySource: GmPaySource;
   gmParams: CreateDepositParamsStruct | undefined;
   glvParams: CreateGlvDepositParamsStruct | undefined;

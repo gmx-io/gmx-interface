@@ -1,14 +1,13 @@
 import { encodeFunctionData } from "viem";
 
 import { getContract } from "config/contracts";
+import { TransferRequests } from "domain/multichain/types";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
-import { MultichainGlvRouter } from "typechain-types/MultichainGlvRouter";
-import type { IRelayUtils } from "typechain-types/MultichainGmRouter";
 
 import type { ExpressTxnParams, RelayParamsPayload } from "../express";
 import { signCreateGlvWithdrawal } from "./signCreateGlvWithdrawal";
@@ -21,7 +20,7 @@ type TxnParams = {
   relayParams: RelayParamsPayload;
   emptySignature?: boolean;
   account: string;
-  transferRequests: IRelayUtils.TransferRequestsStruct;
+  transferRequests: TransferRequests;
   params: CreateGlvWithdrawalParamsStruct;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
@@ -63,10 +62,10 @@ export async function buildAndSignMultichainGlvWithdrawalTxn({
         signature,
       },
       account,
-      srcChainId ?? chainId,
+      BigInt(srcChainId ?? chainId),
       transferRequests,
       params,
-    ] satisfies Parameters<MultichainGlvRouter["createGlvWithdrawal"]>,
+    ],
   });
 
   return {
@@ -88,7 +87,7 @@ export async function createMultichainGlvWithdrawalTxn({
   chainId: ContractsChainId;
   srcChainId: SourceChainId | undefined;
   signer: WalletSigner;
-  transferRequests: IRelayUtils.TransferRequestsStruct;
+  transferRequests: TransferRequests;
   expressTxnParams: ExpressTxnParams;
   params: CreateGlvWithdrawalParamsStruct;
   // TODO MLTCH: support pending txns

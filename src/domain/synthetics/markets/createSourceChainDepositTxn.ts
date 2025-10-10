@@ -7,6 +7,7 @@ import { SettlementChainId, SourceChainId } from "config/chains";
 import { getMappedTokenId, IStargateAbi } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { SendParam, TransferRequests } from "domain/multichain/types";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
 import { getRawRelayerParams, GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
 import { CreateDepositParamsStruct } from "domain/synthetics/markets";
@@ -16,9 +17,7 @@ import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
-import { IRelayUtils } from "typechain-types/MultichainGmRouter";
 import { IStargate } from "typechain-types-stargate";
-import { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import { toastCustomOrStargateError } from "components/GmxAccountModal/toastCustomOrStargateError";
 
@@ -40,7 +39,7 @@ export async function createSourceChainDepositTxn({
   globalExpressParams: GlobalExpressParams;
   srcChainId: SourceChainId;
   signer: WalletSigner;
-  transferRequests: IRelayUtils.TransferRequestsStruct;
+  transferRequests: TransferRequests;
   params: CreateDepositParamsStruct;
   account: string;
   tokenAddress: string;
@@ -97,7 +96,7 @@ export async function createSourceChainDepositTxn({
     settlementChainPublicClient: getPublicClient(getRainbowKitConfig(), { chainId })!,
   });
 
-  const sendParams: SendParamStruct = getMultichainTransferSendParams({
+  const sendParams: SendParam = getMultichainTransferSendParams({
     dstChainId: chainId,
     account,
     srcChainId,

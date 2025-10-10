@@ -1,6 +1,7 @@
 import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { Address, concatHex, encodeAbiParameters, Hex, isHex, toHex, zeroAddress } from "viem";
 
+import { TransferRequests } from "domain/multichain/types";
 import type { RelayParamsPayload } from "domain/synthetics/express";
 import {
   CreateDepositParamsStruct,
@@ -11,7 +12,6 @@ import {
 import type { ContractsChainId, SettlementChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { hashString } from "sdk/utils/hash";
-import type { IRelayUtils } from "typechain-types/MultichainGmRouter";
 
 import {
   BRIDGE_OUT_PARAMS,
@@ -48,7 +48,7 @@ type SetTraderReferralCodeAction = {
 };
 
 type DepositActionData = CommonActionData & {
-  transferRequests: IRelayUtils.TransferRequestsStruct;
+  transferRequests: TransferRequests;
   params: CreateDepositParamsStruct;
 };
 
@@ -74,7 +74,7 @@ type BridgeOutAction = {
 };
 
 type GlvDepositActionData = CommonActionData & {
-  transferRequests: IRelayUtils.TransferRequestsStruct;
+  transferRequests: TransferRequests;
   params: CreateGlvDepositParamsStruct;
 };
 
@@ -84,7 +84,7 @@ type GlvDepositAction = {
 };
 
 type WithdrawalActionData = CommonActionData & {
-  transferRequests: IRelayUtils.TransferRequestsStruct;
+  transferRequests: TransferRequests;
   params: CreateWithdrawalParamsStruct;
 };
 
@@ -94,7 +94,7 @@ type WithdrawalAction = {
 };
 
 type GlvWithdrawalActionData = CommonActionData & {
-  transferRequests: IRelayUtils.TransferRequestsStruct;
+  transferRequests: TransferRequests;
   params: CreateGlvWithdrawalParamsStruct;
 };
 

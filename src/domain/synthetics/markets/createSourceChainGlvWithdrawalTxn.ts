@@ -1,25 +1,23 @@
 import { t } from "@lingui/macro";
 import { getPublicClient } from "@wagmi/core";
-import { Contract } from "ethers";
-import { encodeFunctionData, Hex, zeroAddress } from "viem";
+import { encodeFunctionData, zeroAddress } from "viem";
 
 import { SettlementChainId, SourceChainId } from "config/chains";
-import { getMappedTokenId, IStargateAbi } from "config/multichain";
+import { getMappedTokenId } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { SendParam, TransferRequests } from "domain/multichain/types";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
 import { getRawRelayerParams, GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
 import { CreateGlvWithdrawalParamsStruct } from "domain/synthetics/markets";
 import { sendWalletTransaction } from "lib/transactions";
 import { WalletSigner } from "lib/wallets";
 import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
+import { abis } from "sdk/abis";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
-import { IRelayUtils } from "typechain-types/MultichainGlvRouter";
-import { IStargate, IStargate__factory } from "typechain-types-stargate";
-import { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import { toastCustomOrStargateError } from "components/GmxAccountModal/toastCustomOrStargateError";
 
@@ -39,7 +37,7 @@ export async function createSourceChainGlvWithdrawalTxn({
   globalExpressParams: GlobalExpressParams;
   srcChainId: SourceChainId;
   signer: WalletSigner;
-  transferRequests: IRelayUtils.TransferRequestsStruct;
+  transferRequests: TransferRequests;
   params: CreateGlvWithdrawalParamsStruct;
   tokenAmount: bigint;
   // additionalFee: bigint;
@@ -100,7 +98,7 @@ export async function createSourceChainGlvWithdrawalTxn({
 
   // TODO MLTCH withdrawal also includes a withdrawal compose gas
 
-  const sendParams: SendParamStruct = getMultichainTransferSendParams({
+  const sendParams: SendParam = getMultichainTransferSendParams({
     dstChainId: chainId,
     account,
     srcChainId,
@@ -117,9 +115,14 @@ export async function createSourceChainGlvWithdrawalTxn({
     throw new Error("Token ID not found");
   }
 
-  const iStargateInstance = new Contract(sourceChainTokenId.stargate, IStargateAbi, signer) as unknown as IStargate;
+  const publicClient = getPublicClient(getRainbowKitConfig(), { chainId })!;
 
-  const quoteSend = await iStargateInstance.quoteSend(sendParams, false);
+  const quoteSend = await publicClient.readContract({
+    address: sourceChainTokenId.stargate,
+    abi: abis.IStargate,
+    functionName: "quoteSend",
+    args: [sendParams, false],
+  });
 
   const value = quoteSend.nativeFee + (glvTokenAddress === zeroAddress ? tokenAmount : 0n);
 
@@ -129,9 +132,9 @@ export async function createSourceChainGlvWithdrawalTxn({
       to: sourceChainTokenId.stargate,
       signer,
       callData: encodeFunctionData({
-        abi: IStargateAbi as unknown as typeof IStargate__factory.abi,
+        abi: abis.IStargate,
         functionName: "send",
-        args: [sendParams as any, { nativeFee: quoteSend.nativeFee, lzTokenFee: 0n }, account as Hex],
+        args: [sendParams, { nativeFee: quoteSend.nativeFee, lzTokenFee: 0n }, account],
       }),
       value,
       msg: t`Sent withdrawal transaction`,

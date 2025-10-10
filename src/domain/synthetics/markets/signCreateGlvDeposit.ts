@@ -1,8 +1,8 @@
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
+import { TransferRequests } from "domain/multichain/types";
 import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
-import type { IRelayUtils } from "typechain-types/MultichainGmRouter";
 
 import type { CreateGlvDepositParamsStruct } from ".";
 import { getGelatoRelayRouterDomain, hashRelayParams, RelayParamsPayload } from "../express";
@@ -19,7 +19,7 @@ export function signCreateGlvDeposit({
   srcChainId: SourceChainId | undefined;
   signer: WalletSigner;
   relayParams: RelayParamsPayload;
-  transferRequests: IRelayUtils.TransferRequestsStruct;
+  transferRequests: TransferRequests;
   params: CreateGlvDepositParamsStruct;
 }) {
   const types = {

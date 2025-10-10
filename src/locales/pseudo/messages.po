@@ -2342,10 +2342,6 @@ msgstr ""
 msgid "Unstake failed."
 msgstr ""
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Express Signature Error"
-#~ msgstr ""
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order cancelled"
 msgstr ""
@@ -7013,10 +7009,6 @@ msgstr ""
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Tweet"
 msgstr ""
-
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Transaction failed due to invalid signature.<0/><1/>Please try a different wallet app or switch to 1CT or Classic mode."
-#~ msgstr ""
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."

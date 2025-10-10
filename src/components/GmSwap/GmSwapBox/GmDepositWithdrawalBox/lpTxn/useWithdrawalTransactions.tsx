@@ -12,6 +12,7 @@ import { selectBlockTimestampData } from "context/SyntheticsStateContext/selecto
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { CodecUiHelper, GMX_DATA_ACTION_HASH, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
+import { TransferRequests } from "domain/multichain/types";
 import {
   CreateGlvWithdrawalParamsStruct,
   CreateWithdrawalParamsStruct,
@@ -37,7 +38,6 @@ import { getContract } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { nowInSeconds } from "sdk/utils/time";
-import { IRelayUtils } from "typechain-types/MultichainGmRouter";
 
 import type { UseLpTransactionProps } from "./useLpTransactions";
 import { useMultichainWithdrawalExpressTxnParams } from "./useMultichainWithdrawalExpressTxnParams";
@@ -88,7 +88,7 @@ export const useWithdrawalTransactions = ({
   //       )
   //     : undefined;
 
-  const transferRequests = useMemo((): IRelayUtils.TransferRequestsStruct => {
+  const transferRequests = useMemo((): TransferRequests => {
     if (isGlv) {
       return getTransferRequests([
         {

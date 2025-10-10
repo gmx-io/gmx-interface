@@ -2342,10 +2342,6 @@ msgstr "Trigger"
 msgid "Unstake failed."
 msgstr "Unstaking fehlgeschlagen."
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Express Signature Error"
-#~ msgstr ""
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order cancelled"
 msgstr "Order storniert"
@@ -4232,7 +4228,7 @@ msgstr "Verringern"
 
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr "Auftrag kann nicht ausgeführt werden, da er die Hebelwirkung der Position unter 1 reduzieren würde<<<<<<< HEAD"
+msgstr "Auftrag kann nicht ausgeführt werden, da er die Hebelwirkung der Position unter 1 reduzieren würde"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -7013,10 +7009,6 @@ msgstr "Einstellungen aktualisieren fehlgeschlagen"
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Tweet"
 msgstr "Tweeten"
-
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Transaction failed due to invalid signature.<0/><1/>Please try a different wallet app or switch to 1CT or Classic mode."
-#~ msgstr ""
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."

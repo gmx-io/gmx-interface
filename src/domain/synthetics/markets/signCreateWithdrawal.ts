@@ -2,9 +2,9 @@ import type { AbstractSigner, Wallet } from "ethers";
 
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
+import { TransferRequests } from "domain/multichain/types";
 import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
-import type { IRelayUtils } from "typechain-types/MultichainGmRouter";
 
 import type { CreateWithdrawalParamsStruct } from ".";
 import { getGelatoRelayRouterDomain, hashRelayParams } from "../express/relayParamsUtils";
@@ -20,7 +20,7 @@ export async function signCreateWithdrawal({
 }: {
   signer: AbstractSigner | WalletSigner | Wallet;
   relayParams: RelayParamsPayload;
-  transferRequests: IRelayUtils.TransferRequestsStruct;
+  transferRequests: TransferRequests;
   params: CreateWithdrawalParamsStruct;
   chainId: ContractsChainId;
   srcChainId: SourceChainId | undefined;
