@@ -2329,10 +2329,6 @@ msgstr "Триггер"
 msgid "Unstake failed."
 msgstr "Снятие стейкинга не удалось."
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Express Signature Error"
-#~ msgstr ""
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order cancelled"
 msgstr "Ордер отменён"
@@ -4214,7 +4210,7 @@ msgstr "Уменьшить"
 
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr "Ордер не может быть выполнен, так как это уменьшит кредитное плечо позиции ниже 1<<<<<<< HEAD"
+msgstr "Ордер не может быть выполнен, так как это уменьшит кредитное плечо позиции ниже 1"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -6964,10 +6960,6 @@ msgstr "Не удалось обновить настройки"
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Tweet"
 msgstr "Твитнуть"
-
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Transaction failed due to invalid signature.<0/><1/>Please try a different wallet app or switch to 1CT or Classic mode."
-#~ msgstr ""
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."

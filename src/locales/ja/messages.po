@@ -2329,10 +2329,6 @@ msgstr "トリガー"
 msgid "Unstake failed."
 msgstr "アンステークに失敗しました。"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Express Signature Error"
-#~ msgstr ""
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order cancelled"
 msgstr "注文はキャンセルされました"
@@ -4214,7 +4210,7 @@ msgstr "減少"
 
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr "レバレッジ倍率が1倍以下になるため注文を執行できません<<<<<<< HEAD"
+msgstr "レバレッジ倍率が1倍以下になるため注文を執行できません"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -6964,10 +6960,6 @@ msgstr "設定更新に失敗"
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Tweet"
 msgstr "ツイート"
-
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Transaction failed due to invalid signature.<0/><1/>Please try a different wallet app or switch to 1CT or Classic mode."
-#~ msgstr ""
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."

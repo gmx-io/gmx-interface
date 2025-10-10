@@ -2329,10 +2329,6 @@ msgstr "Déclencheur"
 msgid "Unstake failed."
 msgstr "Échec du unstaking."
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Express Signature Error"
-#~ msgstr ""
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order cancelled"
 msgstr "Ordre annulé"
@@ -4214,7 +4210,7 @@ msgstr "Diminuer"
 
 #: src/lib/legacy.ts
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr "L'ordre ne peut être exécuté car il réduirait l'effet de levier de la position en dessous de 1<<<<<<< HEAD"
+msgstr "L'ordre ne peut être exécuté car il réduirait l'effet de levier de la position en dessous de 1"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -6964,10 +6960,6 @@ msgstr "Échec de la mise à jour des paramètres"
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Tweet"
 msgstr "Tweet"
-
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Transaction failed due to invalid signature.<0/><1/>Please try a different wallet app or switch to 1CT or Classic mode."
-#~ msgstr ""
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."

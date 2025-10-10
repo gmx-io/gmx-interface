@@ -167,8 +167,8 @@ export function PriceImpactFeesRow() {
             handle={t`Price Impact`}
             content={
               <Trans>
-                There is no price impact for increase orders, orders are filled at the mark price. Price impact
-                is applied during decrease orders.{" "}
+                There is no price impact for increase orders, orders are filled at the mark price. Price impact is
+                applied during decrease orders.{" "}
                 <ExternalLink href={"https://docs.gmx.io/docs/trading/v2#price-impact"} newTab>
                   Read more
                 </ExternalLink>

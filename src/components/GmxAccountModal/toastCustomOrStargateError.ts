@@ -1,4 +1,4 @@
-import { decodeErrorResult } from "viem";
+import { Abi, decodeErrorResult } from "viem";
 
 import type { AnyChainId } from "config/chains";
 import { StargateErrorsAbi } from "config/multichain";
@@ -15,7 +15,7 @@ export function toastCustomOrStargateError(chainId: AnyChainId, error: Error) {
   if (data) {
     try {
       const parsedError = decodeErrorResult({
-        abi: abis.CustomErrors.concat(StargateErrorsAbi),
+        abi: (abis.CustomErrors as Abi).concat(StargateErrorsAbi),
         data,
       });
 

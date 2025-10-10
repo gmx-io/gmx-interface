@@ -93,7 +93,7 @@ export async function buildAndSignClaimFundingFeesTxn({
   const claimFundingFeesCallData = encodeFunctionData({
     abi: abis.MultichainClaimsRouter,
     functionName: "claimFundingFees",
-    args: [{ ...relayParams, signature }, account, srcChainId, markets, tokens, receiver],
+    args: [{ ...relayParams, signature }, account, BigInt(srcChainId), markets, tokens, receiver],
   });
 
   return {
