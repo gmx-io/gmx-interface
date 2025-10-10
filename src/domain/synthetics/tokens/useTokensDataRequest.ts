@@ -33,17 +33,6 @@ export function useTokensDataRequest(chainId: ContractsChainId, srcChainId?: Sou
   const error = walletBalancesError || pricesError || onchainConfigsError || gmxAccountBalancesError;
 
   return useMemo((): TokensDataResult => {
-    if (error) {
-      return {
-        error,
-        tokensData: undefined,
-        pricesUpdatedAt: undefined,
-        isGmxAccountBalancesLoaded: false,
-        isWalletBalancesLoaded: false,
-        isBalancesLoaded: false,
-      };
-    }
-
     const tokenAddresses = getV2Tokens(chainId).map((token) => token.address);
 
     if (!pricesData) {
@@ -53,7 +42,7 @@ export function useTokensDataRequest(chainId: ContractsChainId, srcChainId?: Sou
         isGmxAccountBalancesLoaded: false,
         isWalletBalancesLoaded: false,
         isBalancesLoaded: false,
-        error: undefined,
+        error,
       };
     }
 
@@ -90,7 +79,7 @@ export function useTokensDataRequest(chainId: ContractsChainId, srcChainId?: Sou
       isBalancesLoaded,
       isGmxAccountBalancesLoaded,
       isWalletBalancesLoaded,
-      error: undefined,
+      error,
     };
   }, [
     walletBalancesData,

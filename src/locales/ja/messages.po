@@ -188,6 +188,10 @@ msgstr "選択された期間におけるプールまたはボールトの年換
 msgid "Current Reserved"
 msgstr "現在のリザーブ"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL after fees and net price impact."
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -225,6 +229,7 @@ msgid "Show error"
 msgstr "エラーを表示"
 
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
+#: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
 msgid "Sent withdrawal transaction"
 msgstr ""
 
@@ -255,7 +260,7 @@ msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
-msgstr "<<<<<<< HEAD======="
+msgstr ""
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "FAQ"
@@ -524,6 +529,10 @@ msgstr "市場スワップ"
 msgid "A $500,000 GLV pool (funded by DAO funds) rewards long-term holders: If you keep your distributed GLV for at least 3 months (without selling or transferring), you'll receive a pro rata share."
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Trade History"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
 msgstr ""
@@ -562,6 +571,10 @@ msgstr ""
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "in liquidity"
 msgstr "流動性で"
+
+#: src/components/ExitPriceRow/ExitPriceRow.tsx
+msgid "Exit Price"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V2"
@@ -1046,6 +1059,10 @@ msgstr "概要"
 msgid "Collateral"
 msgstr "担保"
 
+#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Accept the claim terms to continue."
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
 msgstr "ストップ市場をキャンセル"
@@ -1155,10 +1172,6 @@ msgstr "べスト"
 msgid "Total value of tokens in the GLP pools."
 msgstr "GLPプールのトークン合計価値。"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
-msgid "Not enough available liquidity to fill the order. The order will get filled when the condition is met and there is enough available liquidity."
-msgstr ""
-
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "Select pool"
 msgstr "プールを選択"
@@ -1185,10 +1198,6 @@ msgstr "移転中..."
 #: src/pages/Stake/TotalRewardsCard.tsx
 msgid "Total"
 msgstr "総計"
-
-#: src/components/Claims/ClaimsHistory.tsx
-msgid "Claims history"
-msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Please sign a new approval to continue."
@@ -1345,6 +1354,12 @@ msgstr "ポジションをチャートに"
 msgid "Unknown Order"
 msgstr "不明な注文"
 
+#: src/components/BuyCards/BuyCards.tsx
+#: src/pages/Dashboard/DashboardPageTitle.tsx
+#: src/pages/Dashboard/DashboardPageTitle.tsx
+msgid "GMX is the utility and governance token. It also accrues 27% of the protocol fees via a buyback and distribution mechanism."
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Transfer submitted."
 msgstr ""
@@ -1430,10 +1445,7 @@ msgstr "GMXのプロポーザル投票ページ"
 msgid "DEX Aggregator"
 msgstr "DEXアグリゲーター"
 
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
-msgid "Waiting for remaining Safe confirmations..."
-msgstr ""
-
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -1566,6 +1578,10 @@ msgstr "価格を入力"
 msgid "Using high leverage increases the risk of liquidation."
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "The execution price didn't meet the acceptable price."
+msgstr ""
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading is not available for wrapping or unwrapping native token {0}."
 msgstr "ネイティブトークン{0}のラップまたはアンラップではエクスプレストレーディングが利用できません。"
@@ -1618,14 +1634,13 @@ msgstr "結果が見つかりません"
 msgid "Pair"
 msgstr "ペア"
 
+#: src/domain/multichain/useMultichainFundingToast.tsx
+msgid "Depositing funds to GMX Account"
+msgstr ""
+
 #: src/components/SwapCard/SwapCard.tsx
 msgid "Max {0} out"
 msgstr "最大 {0} out"
-
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No assets available for deposit"
-msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "There is no price impact. There is a single<0/>execution price for increasing shorts or<1/>decreasing longs for this size."
@@ -1659,11 +1674,6 @@ msgstr "レイヤー2"
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates Distribution History"
 msgstr "リベート分配履歴"
-
-#: src/components/PositionItem/PositionItem.tsx
-#: src/components/PositionItem/PositionItem.tsx
-msgid "Accrued Negative Funding Fee"
-msgstr "蓄積された負のファンディング手数料"
 
 #: src/components/Footer/constants.tsx
 msgid "V1 Interface"
@@ -1748,6 +1758,8 @@ msgstr "プロトコルリスクエクスプローラーと統計"
 msgid "Generating shareable image..."
 msgstr "シェア可能な画像を作成中..."
 
+#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Borrow Fee"
@@ -1895,10 +1907,6 @@ msgstr "売却リクエストを満たすためのGLV内のGM: {0} [{1}]流動�
 msgid "Deposited {0} into {positionText}"
 msgstr "{positionText}に{0}を入金"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
-msgid "The execution price didn't meet the acceptable price condition."
-msgstr ""
-
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Claim Funding Fees"
@@ -1975,6 +1983,7 @@ msgid "Decentralized Finance Dashboard"
 msgstr "DeFiダッシュボード"
 
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
+#: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Initial collateral (collateral excluding borrow and funding fee)."
 msgstr ""
 
@@ -2002,6 +2011,11 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} sellable amount exceeded"
 msgstr "最大{0}売却可能額超過"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "No eligible tokens available for deposit"
+msgstr ""
 
 #: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "What is the bonus incentive for holding your GLV?"
@@ -2049,6 +2063,10 @@ msgstr "{0}の支出を許可"
 msgid "POSITION"
 msgstr "ポジション"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "The execution price didn't meet acceptable price. The order will fill when the condition is met."
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Trading Volume"
@@ -2080,10 +2098,6 @@ msgstr "選択された期間のトレーディング活動（オープン、ク
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation Risk Alerts"
 msgstr "清算リスクアラート"
-
-#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
-msgid "Not enough available liquidity to fill the order."
-msgstr ""
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "The actual execution price may differ from the set limit price due to fees and price impact. This ensures that you receive at least the minimum receive amount."
@@ -2141,6 +2155,10 @@ msgstr ""
 msgid "TVL"
 msgstr "TVL"
 
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Your GMX Account balance, usable for trading from any supported chain. <0>Read more</0>."
+msgstr ""
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Shift Fee"
 msgstr "シフト手数料"
@@ -2156,6 +2174,12 @@ msgstr "TraderjoeからGMXを購入:"
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "V1 is not supported on {chainName}. Please switch to Arbitrum to use V1."
 msgstr "V1は{chainName}でサポートされていません。V1を使用するにはArbitrumに切り替えてください。"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Insufficient available liquidity."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Saulius GMX Analytics"
@@ -2207,6 +2231,10 @@ msgstr ""
 
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
+msgstr ""
+
+#: src/domain/multichain/useMultichainFundingToast.tsx
+msgid "Withdrawing funds from GMX Account"
 msgstr ""
 
 #: src/components/TVChart/Chart.tsx
@@ -2265,10 +2293,6 @@ msgstr "請求額"
 msgid "Job openings at GMX."
 msgstr "GMXの求人"
 
-#: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
-msgid "Initial collateral (collateral excluding borrow and funding Fee)."
-msgstr ""
-
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Trade from your wallet"
 msgstr ""
@@ -2317,6 +2341,10 @@ msgstr "トリガー"
 #: src/pages/Stake/UnstakeModal.tsx
 msgid "Unstake failed."
 msgstr "アンステークに失敗しました。"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Debug Express Signature Error"
+#~ msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order cancelled"
@@ -2394,6 +2422,10 @@ msgstr ""
 msgid "<0>No KYC, no lengthy onboarding, and no depositing is required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, Avalanche, Solana, or Botanix, or deposit to your GMX Account to trade from any supported Multichain network.</5>"
 msgstr ""
 
+#: src/pages/Dashboard/StatsCard.tsx
+msgid "In other tokens:"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Returned Collateral"
 msgstr "返却された担保"
@@ -2428,7 +2460,7 @@ msgstr "サイズ増加 (リミット)"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
-msgstr "許容価格インパクトが{formattedOrderAcceptablePriceImpact}に設定されており、現在の市場価格インパクト{formattedCurrentAcceptablePriceImpact}より低いため、希望の{priceText}で注文が実行されない可能性があります。\"編集\"ボタンで編集できます。<<<<<<< HEAD======="
+msgstr "許容価格インパクトが{formattedOrderAcceptablePriceImpact}に設定されており、現在の市場価格インパクト{formattedCurrentAcceptablePriceImpact}より低いため、希望の{priceText}で注文が実行されない可能性があります。\"編集\"ボタンで編集できます。"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "<0>Yes, we encourage you to build on top of GMX or integrate it into your DeFi app. GMX is fully composable and already integrated with hundreds of protocols across the ecosystem, including notable names like Pendle, Dolomite, Radiant, Silo Finance, Venus Protocol, Abracadabra, Compound, and Beefy. You can interact directly with GMX smart contracts or use available APIs and SDKs to plug into trading, liquidity, or data flows. Check out the <1>GMX Developer Docs</1> to get started.</0>"
@@ -2446,10 +2478,6 @@ msgstr "決済"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short TWAP: {0} a short position in evenly distributed parts over a specified time."
 msgstr "{typeString} ショートTWAP: 指定された時間に均等に分散されたパートでショートポジションを{0}。"
-
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
-msgid "Insufficient gas for network fees"
-msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the swap when the min. receive conditions are met."
@@ -2617,6 +2645,12 @@ msgstr "清算のためのマーク価格"
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>{0}{1}の売却<1>{poolName}</1></0>"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
+msgid "No eligible tokens available on {0} for deposit"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max close amount exceeded"
 msgstr "最大クローズ額を超えています"
@@ -2693,10 +2727,6 @@ msgstr "ネットワーク手数料"
 msgid "20s"
 msgstr ""
 
-#: src/components/NetworkFeeRow/NetworkFeeRow.tsx
-msgid "The aximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
-msgstr ""
-
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -2725,6 +2755,10 @@ msgstr ""
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Claiming"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Insufficient available liquidity. The order will fill when there is liquidity available."
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
@@ -2834,6 +2868,10 @@ msgstr "スワップUI手数料"
 msgid "Decrease the size to match the max. allowed leverage:"
 msgstr "最大許容レバレッジに合わせるためにサイズを減少させてください:"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Set Acceptable Price Impact"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Accrued Positive Funding Fee"
 msgstr "累積ポジティブファンディング手数料"
@@ -2881,15 +2919,6 @@ msgstr "このマーケットでは指定された売却上限までGMを{0}と{
 msgid "Graph showing performance vs benchmark over the selected period."
 msgstr "選択された期間のパフォーマンス対ベンチマークのグラフ。"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3131,10 +3160,6 @@ msgstr "{0}マーケットプールの流動性が不足しています。この
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
 msgstr "{0}アップグレード待ちのためアプリ無効"
-
-#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
-msgid "Please accept the Claim Terms above to continue."
-msgstr ""
 
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
@@ -3413,10 +3438,6 @@ msgstr "不明なGM購入注文"
 msgid "Updating order"
 msgstr ""
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
-msgid "Not enough available swap liquidity to fill the order. The order will get filled when the condition is met and there is enough available swap liquidity."
-msgstr ""
-
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "There is no price impact. There is a single<0/>execution price for increasing longs or<1/>decreasing shorts for this size."
 msgstr "価格インパクトはありません。このサイズのロング増加または<0/>ショート減少のための単一の<1/>実行価格です。"
@@ -3602,8 +3623,6 @@ msgstr "NA"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Trigger price for the order."
 msgstr "注文のトリガー価格"
 
@@ -3694,6 +3713,10 @@ msgstr "{daysConsidered}日間の獲得手数料"
 msgid "Fulfilling order request"
 msgstr "注文リクエストを履行中"
 
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "There is no price impact for increase orders, orders are filled at the mark price. Price impact is applied during decrease orders. <0>Read more</0>."
+msgstr ""
+
 #: src/components/BuyCards/BuyCards.tsx
 msgid "GLV"
 msgstr ""
@@ -3735,11 +3758,6 @@ msgstr ""
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "あなたはGMX.ioを離れ、第三者の別のウェブサイトへ転送されます。"
-
-#: src/components/PositionItem/PositionItem.tsx
-#: src/components/PositionItem/PositionItem.tsx
-msgid "Accrued Borrow Fee"
-msgstr "累積借入手数料"
 
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "Read more."
@@ -3950,6 +3968,10 @@ msgstr "デリバティブポートフォリオトラッカー"
 msgid "Create Limit"
 msgstr "リミットを作成"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Displays the stored price impact for increase orders. The net price impact is broken down into stored price impact and close price impact in the net value tooltip and execution details in the close modal. <0>Read more</0>."
+msgstr ""
+
 #: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
 #: src/pages/Stake/VesterWithdrawModal.tsx
 msgid "Withdraw submitted."
@@ -4016,6 +4038,10 @@ msgstr "Avalanche Fujiで紹介したトレーダー"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in GM Pools."
 msgstr "GMプールのトークン総額。"
+
+#: src/components/Claims/SettleAccruedCard.tsx
+msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take Profit / Stop Loss"
@@ -4318,6 +4344,10 @@ msgstr "すべての時間"
 msgid "Select your vesting option below then click \"Claim\"."
 msgstr "べスティングオプションを選択して\"請求\"をクリック。"
 
+#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Insufficient gas for network fees."
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 msgstr "時間加重平均価格 (TWAP) 注文のデフォルト部分数。"
@@ -4468,7 +4498,6 @@ msgstr "注文タイプ"
 msgid "GMX Solana"
 msgstr "GMX Solana"
 
-#: src/components/Errors/errorToasts.tsx
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
 msgstr "注文エラー。この市場の価格が現在変動しています。<0>最大スリッページを増加</0>させて先進表示セクションで再試行してください。"
@@ -4480,7 +4509,7 @@ msgstr "外部スワップ閾値のスワップ価格インパクト"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Limit / Take Profit / Stop Loss"
-msgstr "指値 / テイクプロフィット / ストップロス<<<<<<< HEAD======="
+msgstr "指値 / テイクプロフィット / ストップロス"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Steady returns without management"
@@ -4554,17 +4583,9 @@ msgstr "レバレッジスライダーを表示"
 msgid "Cancelling {orderText}."
 msgstr "{orderText} をキャンセル中。"
 
-#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
-msgid "There is no price impact for increasing positions, and orders are filled at the mark price. Price impact is applied during position decreases.<0>Read more</0>."
-msgstr ""
-
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Collateral Delta"
 msgstr "担保デルタ"
-
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized PnL after fees and price impact."
-msgstr "手数料と価格インパクト後の実現PnL。"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -4629,6 +4650,10 @@ msgstr "許可署名がキャンセルされました"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Optimizer"
 msgstr "Yield Yak Optimizer"
+
+#: src/components/ExitPriceRow/ExitPriceRow.tsx
+msgid "Expected exit price for the order, including the current capped net price impact."
+msgstr ""
 
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "GMX & Voting Power"
@@ -4762,10 +4787,6 @@ msgstr ""
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
 msgid "No items yet"
 msgstr "項目なし"
-
-#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
-msgid "Not enough available swap liquidity to fill the order."
-msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop Loss Decrease"
@@ -5007,6 +5028,10 @@ msgstr "清算"
 msgid "GMX Risk Monitoring"
 msgstr "GMXリスク監視"
 
+#: src/pages/Dashboard/StatsCard.tsx
+msgid "In GMX:"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min collateral: {0}"
 msgstr "最小担保: {0}"
@@ -5103,6 +5128,7 @@ msgstr "から"
 msgid "Order Trigger Price"
 msgstr "注文トリガー価格"
 
+#: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "The maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
 msgstr ""
@@ -5313,10 +5339,6 @@ msgstr "分散型取引所からGMXを購入"
 msgid "Powered by"
 msgstr "提供:"
 
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "Asset Balance"
-msgstr ""
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No options available to transfer {nativeTokenSymbol} to {chainName}."
 msgstr ""
@@ -5424,6 +5446,15 @@ msgstr ""
 msgid "of open fee"
 msgstr "オープン手数料の"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the execution details section."
+msgstr ""
+
+#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Negative Funding Fee"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -5450,7 +5481,7 @@ msgstr "{0}ブロックチェーン上でGMXを購入するには、<0>ネット
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions with orders"
-msgstr "<<<<<<< HEAD======="
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>⬡ Chainlink Data Story ⬡ <1/><2>#Chainlink</2> Data Streams have secured over $56B in volume for the <3>@GMX_IO</3> V2 protocol.</0><4>Data Streams’ low-latency delivery of high-quality market data has supercharged GMX's perpetual markets across <5>@arbitrum</5> and <6>@avax</6>. <7>https://dune.com/gmx-io/gmx-analytics#v2-volume</7></4>"
@@ -5554,11 +5585,6 @@ msgstr "請求"
 msgid "Price Impact / Fees"
 msgstr "価格インパクト / 手数料"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Order execution price takes into account price impact."
-msgstr "注文執行価格は価格インパクトを考慮しています。"
-
 #: src/pages/Buy/Buy.tsx
 msgid "Buy GLP or GMX"
 msgstr "GLPまたはGMXを購入"
@@ -5581,10 +5607,6 @@ msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Referral code created."
-msgstr ""
-
-#: src/domain/multichain/useMultichainFundingToast.tsx
-msgid "Withdrawing Funds from GMX"
 msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
@@ -5904,10 +5926,6 @@ msgstr "365日推定手数料"
 msgid "Trigger price below highest limit price"
 msgstr "トリガー価格が最高指値価格を下回る"
 
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "The net price impact is broken down into stored impact and close price impact in the net value tooltip and execution details in the close modal. Display stored impact for increase actions. <0>Read more</0>."
-msgstr ""
-
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -6105,7 +6123,6 @@ msgstr "{0} 残高の不足"
 
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
-#: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
 msgid "Sent deposit transaction"
 msgstr ""
 
@@ -6276,8 +6293,8 @@ msgstr ""
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
-msgid "No assets available for deposit on {0}"
-msgstr ""
+#~ msgid "No assets available for deposit on {0}"
+#~ msgstr ""
 
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Realized Base PnL"
@@ -6333,10 +6350,6 @@ msgstr ""
 msgid "Freeze"
 msgstr "凍結"
 
-#: src/domain/multichain/useMultichainFundingToast.tsx
-msgid "Depositing Funds to GMX"
-msgstr ""
-
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "Claim completed!"
 msgstr "請求完了!"
@@ -6346,15 +6359,15 @@ msgstr "請求完了!"
 msgid "Stop Market"
 msgstr "ストップマーケット"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Transaction failed due to invalid signature.<0/><1/>Please try a different wallet provider, or switch to Classic or One-Click Trading mode within the <2>Settings.</2>"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min number of parts: {MIN_TWAP_NUMBER_OF_PARTS}"
 msgstr "最小パート数: {MIN_TWAP_NUMBER_OF_PARTS}"
-
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Trade history"
-msgstr ""
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
@@ -6646,12 +6659,6 @@ msgstr "{wrappedTokenSymbol}報酬を請求"
 msgid "Total Supply"
 msgstr "総供給量"
 
-#: src/components/BuyCards/BuyCards.tsx
-#: src/pages/Dashboard/DashboardPageTitle.tsx
-#: src/pages/Dashboard/DashboardPageTitle.tsx
-msgid "GMX is the utility and governance token. It also accrues 30% of the protocol fees via a buyback and distribution mechanism."
-msgstr ""
-
 #: src/pages/Stake/EscrowedGmxCard.tsx
 #: src/pages/Stake/GmxAndVotingPowerCard.tsx
 msgid "Staked"
@@ -6742,10 +6749,6 @@ msgstr ""
 #: src/components/Footer/constants.tsx
 msgid "Referral Terms"
 msgstr "紹介規約"
-
-#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
-msgid "The execution price didn't meet the acceptable price condition. The order will get filled when the condition is met."
-msgstr ""
 
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
@@ -6863,10 +6866,6 @@ msgstr "DeFiポートフォリオトラッカー"
 msgid "Current Funding Fee / Day"
 msgstr "現在のファンディング手数料 / 日"
 
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "Your GMX Account balance, usable for trading from any supported chain.<0/><1>Read more</1>."
-msgstr ""
-
 #: src/pages/Jobs/Jobs.jsx
 msgid "Job Openings"
 msgstr "求人"
@@ -6931,6 +6930,10 @@ msgstr "ストップロスをキャンセル"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Decrease"
 msgstr "リミット減少"
+
+#: src/components/UserIncentiveDistributionList/ClaimableAmounts.tsx
+msgid "Waiting for the remaining Safe confirmations."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stabilize Protocol"
@@ -7011,6 +7014,10 @@ msgstr "設定更新に失敗"
 msgid "Tweet"
 msgstr "ツイート"
 
+#: src/components/Errors/errorToasts.tsx
+#~ msgid "Transaction failed due to invalid signature.<0/><1/>Please try a different wallet app or switch to 1CT or Classic mode."
+#~ msgstr ""
+
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."
 msgstr ""
@@ -7046,10 +7053,6 @@ msgstr "取引失敗"
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "COLLATERAL"
 msgstr "担保"
-
-#: src/components/Claims/SettleAccruedCard.tsx
-msgid "Accrued price impact rebates. They will become claimable after approximately ten days.<0/><1/><2>Read more</2>."
-msgstr "蓄積された価格インパクトリベート。約10日後に請求可能になります。<0/><1/><2>詳細を読む</2>。"
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
@@ -7123,6 +7126,10 @@ msgstr "執行価格"
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
 msgid "No pools matched"
+msgstr ""
+
+#: src/components/Claims/ClaimsHistory.tsx
+msgid "Claims History"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
@@ -7365,6 +7372,10 @@ msgstr "頻度"
 msgid "Loading Express params"
 msgstr ""
 
+#: src/domain/multichain/useMultichainFundingToast.tsx
+msgid "Depositing and withdrawing funds to/from GMX Account"
+msgstr ""
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No funding activity matching your search"
 msgstr ""
@@ -7472,13 +7483,6 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order Execution Price"
 msgstr "注文執行価格"
 
@@ -7548,10 +7552,6 @@ msgstr "リミット"
 msgid "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact."
 msgstr "この注文が執行された場合、少なくとも{toAmountText}を受け取ります。この価格はスワップ手数料と価格インパクトに基づいてリアルタイムで更新されます。"
 
-#: src/domain/multichain/useMultichainFundingToast.tsx
-msgid "Depositing and Withdrawing Funds to/from GMX"
-msgstr ""
-
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We'll then schedule a chat or interview with you. As a thank you, you'll receive <0>100 <1/></0> for providing your feedback."
 msgstr "あなたとチャットまたはインタビューをスケジュールします。フィードバック提供の感謝として<0>100 <1/></0>をお受け取りください。"
@@ -7575,7 +7575,7 @@ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute as the max. allowed leverage is exceeded. Consider decreasing the order's leverage by editing and decreasing its size. <0>Read more</0>."
-msgstr "最大許容レバレッジを超えるため注文が執行されない可能性があります。サイズを減少させて注文のレバレッジを減少させてください。<0>詳細を読む</0>。<<<<<<< HEAD======="
+msgstr "最大許容レバレッジを超えるため注文が執行されない可能性があります。サイズを減少させて注文のレバレッジを減少させてください。<0>詳細を読む</0>。"
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "multiple asset classes"

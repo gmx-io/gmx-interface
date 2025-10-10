@@ -42,10 +42,14 @@ import Token from "./Token.json";
 import Treasury from "./Treasury.json";
 import UniPool from "./UniPool.json";
 import UniswapV2 from "./UniswapV2.json";
+import UniswapV3Factory from "./UniswapV3Factory.json";
+import UniswapV3Pool from "./UniswapV3Pool.json";
+import UniswapV3PositionManager from "./UniswapV3PositionManager.json";
 import Vault from "./Vault.json";
 import VaultReader from "./VaultReader.json";
 import VaultV2 from "./VaultV2.json";
 import VaultV2b from "./VaultV2b.json";
+import VenusVToken from "./VenusVToken.json";
 import Vester from "./Vester.json";
 import WETH from "./WETH.json";
 
@@ -97,6 +101,10 @@ export type AbiId =
   | "Treasury"
   | "UniPool"
   | "UniswapV2"
+  | "UniswapV3Factory"
+  | "UniswapV3Pool"
+  | "UniswapV3PositionManager"
+  | "VenusVToken"
   | "Vault"
   | "VaultReader"
   | "VaultV2"
@@ -192,6 +200,10 @@ export const abis: Record<AbiId, readonly (Abi[number] & JsonFragment)[]> = {
   Treasury: Treasury.abi,
   UniPool: UniPool.abi,
   UniswapV2: UniswapV2.abi,
+  UniswapV3Factory: UniswapV3Factory.abi,
+  UniswapV3Pool: UniswapV3Pool.abi,
+  UniswapV3PositionManager: UniswapV3PositionManager.abi,
+  VenusVToken: VenusVToken.abi,
   Vault: Vault.abi,
   VaultReader: VaultReader.abi,
   VaultV2: VaultV2.abi,

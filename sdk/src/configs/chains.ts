@@ -44,6 +44,7 @@ export type ContractsChainId =
   | typeof AVALANCHE_FUJI
   | typeof BOTANIX
   | typeof ARBITRUM_SEPOLIA;
+export type ContractsChainIdProduction = Exclude<ContractsChainId, typeof AVALANCHE_FUJI | typeof ARBITRUM_SEPOLIA>;
 
 export type SettlementChainId = typeof ARBITRUM_SEPOLIA | typeof ARBITRUM | typeof AVALANCHE;
 export type SourceChainId = typeof SOURCE_OPTIMISM_SEPOLIA | typeof SOURCE_SEPOLIA | typeof SOURCE_BASE_MAINNET;
@@ -68,6 +69,14 @@ export const CHAIN_NAMES_MAP: Record<AnyChainId, ChainName> = {
   [SOURCE_OPTIMISM_SEPOLIA]: "Optimism Sepolia",
   [SOURCE_SEPOLIA]: "Sepolia",
   [SOURCE_BASE_MAINNET]: "Base",
+};
+
+export const CHAIN_SLUGS_MAP: Record<ContractsChainId, string> = {
+  [ARBITRUM]: "arbitrum",
+  [AVALANCHE]: "avalanche",
+  [AVALANCHE_FUJI]: "fuji",
+  [ARBITRUM_SEPOLIA]: "arbitrum-sepolia",
+  [BOTANIX]: "botanix",
 };
 
 export const HIGH_EXECUTION_FEES_MAP: Record<ContractsChainId, number> = {

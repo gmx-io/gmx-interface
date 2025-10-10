@@ -11,7 +11,7 @@ import {
   useState,
 } from "react";
 
-import { TokenBalancesData, TokenData, TokensData } from "domain/synthetics/tokens";
+import type { TokenBalancesData, TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { TokenBalanceType } from "sdk/types/tokens";
 
@@ -96,7 +96,7 @@ export function TokensBalancesContextProvider({ children }: PropsWithChildren) {
       setWebsocketTokenBalancesUpdates,
       resetTokensBalancesUpdates,
     }),
-    [websocketTokenBalancesUpdates, optimisticTokensBalancesUpdates, resetTokensBalancesUpdates]
+    [optimisticTokensBalancesUpdates, resetTokensBalancesUpdates, websocketTokenBalancesUpdates]
   );
 
   return <Context.Provider value={state}>{children}</Context.Provider>;

@@ -286,6 +286,14 @@ export function TradingSettings({
             <Trans>Enable External Swaps</Trans>
           </ToggleSwitch>
         )}
+
+        <ToggleSwitch
+          isChecked={settings.isSetAcceptablePriceImpactEnabled}
+          setIsChecked={settings.setIsSetAcceptablePriceImpactEnabled}
+          className="font-medium"
+        >
+          <Trans>Set Acceptable Price Impact</Trans>
+        </ToggleSwitch>
       </SettingsSection>
     </div>
   );

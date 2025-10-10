@@ -68,15 +68,7 @@ import {
   sendTxnSentMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics";
-import {
-  bigintToNumber,
-  expandDecimals,
-  formatAmountFree,
-  formatBalanceAmount,
-  formatUsd,
-  parseValue,
-  USD_DECIMALS,
-} from "lib/numbers";
+import { bigintToNumber, expandDecimals, formatAmountFree, formatUsd, parseValue, USD_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
@@ -220,15 +212,14 @@ export const WithdrawalView = () => {
 
   const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
 
-  const { nextGmxAccountBalanceUsd, nextTokenGmxAccountBalance } = useMemo(() => {
+  const { nextGmxAccountBalanceUsd } = useMemo(() => {
     if (selectedToken === undefined || inputAmount === undefined || inputAmountUsd === undefined) {
-      return { nextGmxAccountBalanceUsd: undefined, nextTokenGmxAccountBalance: undefined };
+      return { nextGmxAccountBalanceUsd: undefined };
     }
 
     const nextGmxAccountBalanceUsd = (gmxAccountUsd ?? 0n) - inputAmountUsd;
-    const nextTokenGmxAccountBalance = (selectedToken.gmxAccountBalance ?? 0n) - inputAmount;
 
-    return { nextGmxAccountBalanceUsd, nextTokenGmxAccountBalance };
+    return { nextGmxAccountBalanceUsd };
   }, [selectedToken, inputAmount, inputAmountUsd, gmxAccountUsd]);
 
   const sendParamsWithoutSlippage: SendParamStruct | undefined = useMemo(() => {
@@ -1024,32 +1015,6 @@ export const WithdrawalView = () => {
           <SyntheticsInfoRow
             label={<Trans>GMX Balance</Trans>}
             value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
-          />
-          <SyntheticsInfoRow
-            label={<Trans>Asset Balance</Trans>}
-            value={
-              <ValueTransition
-                from={
-                  selectedToken !== undefined && selectedToken.gmxAccountBalance !== undefined
-                    ? formatBalanceAmount(
-                        selectedToken.gmxAccountBalance,
-                        selectedToken.decimals,
-                        selectedToken.symbol,
-                        {
-                          isStable: selectedToken.isStable,
-                        }
-                      )
-                    : undefined
-                }
-                to={
-                  nextTokenGmxAccountBalance !== undefined && selectedToken !== undefined
-                    ? formatBalanceAmount(nextTokenGmxAccountBalance, selectedToken.decimals, selectedToken.symbol, {
-                        isStable: selectedToken.isStable,
-                      })
-                    : undefined
-                }
-              />
-            }
           />
         </div>
       )}

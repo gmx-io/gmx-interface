@@ -79,7 +79,7 @@ export default function DashboardV2() {
           <div className="flex flex-col gap-20">
             <div className="DashboardV2-cards">
               <OverviewCard statsArbitrum={statsArbitrum} statsAvalanche={statsAvalanche} />
-              <StatsCard statsArbitrum={statsArbitrum} statsAvalanche={statsAvalanche} />
+              <StatsCard />
             </div>
             <h2 className="text-h2 px-12 font-medium">{t`Tokens`}</h2>
             <div className="DashboardV2-token-cards">

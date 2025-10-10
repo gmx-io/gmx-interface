@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { Trans } from "@lingui/macro";
-import { hashMessage, PublicClient, WalletClient } from "viem";
+import { Address, hashMessage, PublicClient, WalletClient } from "viem";
 
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -17,6 +17,7 @@ import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
  * @see https://eips.ethereum.org/EIPS/eip-1271
  */
 const VALID_SIGNATURE_RESPONSE = "0x1626ba7e";
+const CLAIM_TERMS_HASH = "0x09335c037e73849fe301478f91674da05757165154d1dccb1b881c1846938f3d";
 
 function getMessage({ chainId, claimTerms }) {
   return `${claimTerms}\ndistributionId ${GLP_DISTRIBUTION_ID}\ncontract ${getContract(chainId, "ClaimHandler").toLowerCase()}\nchainId ${chainId}`;
@@ -30,21 +31,37 @@ export async function checkValidity({
   claimTermsAcceptedSignature,
 }: {
   chainId: ContractsChainId;
-  account: string;
+  account: Address;
   publicClient: PublicClient;
   claimTerms: string;
-  claimTermsAcceptedSignature: string;
+  claimTermsAcceptedSignature: string | undefined;
 }) {
   const message = getMessage({ chainId, claimTerms });
   const hash = hashMessage(message);
-  const magic = (await publicClient.readContract({
-    address: account as `0x${string}`,
-    abi: abis.SmartAccount,
-    functionName: "isValidSignature",
-    args: [hash, claimTermsAcceptedSignature],
-  })) as `0x${string}`;
 
-  return magic?.toLowerCase() === VALID_SIGNATURE_RESPONSE;
+  const [inMemorySignatureResponse, onchainSignatureResponse] = (await Promise.all([
+    publicClient
+      .readContract({
+        address: account,
+        abi: abis.SmartAccount,
+        functionName: "isValidSignature",
+        args: [hash, claimTermsAcceptedSignature],
+      })
+      .catch(() => "0x"),
+    publicClient
+      .readContract({
+        address: account,
+        abi: abis.SmartAccount,
+        functionName: "isValidSignature",
+        args: [CLAIM_TERMS_HASH, "0x"],
+      })
+      .catch(() => "0x"),
+  ])) as [string, string];
+
+  return (
+    inMemorySignatureResponse?.toLowerCase() === VALID_SIGNATURE_RESPONSE ||
+    onchainSignatureResponse?.toLowerCase() === VALID_SIGNATURE_RESPONSE
+  );
 }
 
 export async function beginSignatureProcess({
@@ -90,7 +107,7 @@ export async function beginSignatureProcess({
 
     const isValid = await checkValidity({
       chainId,
-      account,
+      account: account as Address,
       publicClient,
       claimTerms,
       claimTermsAcceptedSignature: signature,

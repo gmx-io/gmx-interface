@@ -41,7 +41,11 @@ import {
   selectUiFeeFactor,
   selectUserReferralInfo,
 } from "./globalSelectors";
-import { selectDebugSwapMarketsConfig, selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
+import {
+  selectDebugSwapMarketsConfig,
+  selectSavedAcceptablePriceImpactBuffer,
+  selectIsSetAcceptablePriceImpactEnabled,
+} from "./settingsSelectors";
 import { selectTradeboxTradeFlags } from "./shared/baseSelectors";
 import { selectChartToken } from "./shared/marketSelectors";
 
@@ -283,6 +287,7 @@ export const makeSelectIncreasePositionAmounts = ({
     const position = q((state) => getByKey(selectPositionsInfoData(state), positionKey));
 
     const acceptablePriceImpactBuffer = q(selectSavedAcceptablePriceImpactBuffer);
+    const isSetAcceptablePriceImpactEnabled = q(selectIsSetAcceptablePriceImpactEnabled);
     const findSwapPath = q(selectFindSwapPath);
     const userReferralInfo = q(selectUserReferralInfo);
     const uiFeeFactor = q(selectUiFeeFactor);
@@ -332,6 +337,7 @@ export const makeSelectIncreasePositionAmounts = ({
       marketsInfoData,
       chainId,
       externalSwapQuoteParams,
+      isSetAcceptablePriceImpactEnabled,
     });
   });
 };
@@ -367,6 +373,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
         selectMarketsInfoData,
         selectPositionConstants,
         selectSavedAcceptablePriceImpactBuffer,
+        selectIsSetAcceptablePriceImpactEnabled,
         selectUserReferralInfo,
         selectUiFeeFactor,
       ],
@@ -376,6 +383,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
         marketsInfoData,
         { minCollateralUsd, minPositionSizeUsd },
         savedAcceptablePriceImpactBuffer,
+        isSetAcceptablePriceImpactEnabled,
         userReferralInfo,
         uiFeeFactor
       ) => {
@@ -434,6 +442,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
           uiFeeFactor,
           receiveToken,
           triggerOrderType,
+          isSetAcceptablePriceImpactEnabled,
         });
       }
     )

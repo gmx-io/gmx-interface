@@ -6,6 +6,7 @@ import {
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectIsSetAcceptablePriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxCollateralToken,
   selectTradeboxFindSwapPath,
@@ -35,6 +36,7 @@ import { SidecarLimitOrderEntry, SidecarOrderEntry, SidecarSlTpOrderEntry, Sidec
 import { useSidecarOrdersChanged } from "./useSidecarOrdersChanged";
 import { useSidecarOrdersGroup } from "./useSidecarOrdersGroup";
 import { getCommonError, handleEntryError } from "./utils";
+import { isLimitOrderType } from "../orders";
 
 export * from "./types";
 
@@ -43,6 +45,7 @@ export function useSidecarOrders() {
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const uiFeeFactor = useUiFeeFactor();
   const setIsUntouched = useSelector(selectTradeboxSidecarEntriesSetIsUntouched);
+  const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
 
   const { isLong, isLimit } = useSelector(selectTradeboxTradeFlags);
   const findSwapPath = useSelector(selectTradeboxFindSwapPath);
@@ -201,6 +204,10 @@ export function useSidecarOrders() {
         marketsInfoData,
         chainId,
         externalSwapQuoteParams,
+        isSetAcceptablePriceImpactEnabled,
+        limitOrderType: isLimitOrderType(order.orderType)
+          ? (order.orderType as OrderType.LimitIncrease | OrderType.StopIncrease)
+          : undefined,
       });
     },
     [
@@ -212,6 +219,7 @@ export function useSidecarOrders() {
       marketsInfoData,
       chainId,
       externalSwapQuoteParams,
+      isSetAcceptablePriceImpactEnabled,
     ]
   );
 
@@ -293,6 +301,7 @@ export function useSidecarOrders() {
         isLimit,
         limitPrice: triggerPrice,
         triggerOrderType,
+        isSetAcceptablePriceImpactEnabled,
       });
     },
     [
@@ -307,6 +316,7 @@ export function useSidecarOrders() {
       minPositionSizeUsd,
       uiFeeFactor,
       userReferralInfo,
+      isSetAcceptablePriceImpactEnabled,
     ]
   );
 

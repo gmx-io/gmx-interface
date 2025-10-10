@@ -16,6 +16,8 @@ export const useClaimExecutionFee = ({
   claimTermsAcceptedSignature,
   signer,
   distributionId,
+  isSmartAccount,
+  isContractOwnersSigned,
 }: {
   account: string | undefined;
   claimableTokens: string[];
@@ -23,15 +25,16 @@ export const useClaimExecutionFee = ({
   claimTermsAcceptedSignature: string | undefined;
   signer: WalletSigner | undefined;
   distributionId: bigint;
+  isSmartAccount: boolean;
+  isContractOwnersSigned: boolean;
 }) => {
   const gasPrice = useGasPrice(chainId);
-  const enabled = useMemo(
-    () =>
-      Boolean(claimTermsAcceptedSignature && signer && account && claimableTokens.length > 0 && gasPrice !== undefined),
-    [claimTermsAcceptedSignature, signer, account, claimableTokens, gasPrice]
-  );
+  const enabled = useMemo(() => {
+    const hasSignature = isSmartAccount ? isContractOwnersSigned : claimTermsAcceptedSignature;
+    return Boolean(hasSignature && signer && account && claimableTokens.length > 0 && gasPrice !== undefined);
+  }, [claimTermsAcceptedSignature, signer, account, claimableTokens, gasPrice, isSmartAccount, isContractOwnersSigned]);
 
-  return useSWR(enabled ? [account, claimableTokens, chainId, claimTermsAcceptedSignature, signer, gasPrice] : null, {
+  return useSWR(enabled ? [account, claimableTokens, chainId, claimTermsAcceptedSignature, signer] : null, {
     refreshInterval: undefined,
     fetcher: async () => {
       const callData = getClaimTransactionCallData(
