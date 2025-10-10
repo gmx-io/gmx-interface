@@ -43,10 +43,14 @@ import Token from "./Token";
 import Treasury from "./Treasury";
 import UniPool from "./UniPool";
 import UniswapV2 from "./UniswapV2";
+import UniswapV3Factory from "./UniswapV3Factory";
+import UniswapV3Pool from "./UniswapV3Pool";
+import UniswapV3PositionManager from "./UniswapV3PositionManager";
 import Vault from "./Vault";
 import VaultReader from "./VaultReader";
 import VaultV2 from "./VaultV2";
 import VaultV2b from "./VaultV2b";
+import VenusVToken from "./VenusVToken";
 import Vester from "./Vester";
 import WETH from "./WETH";
 
@@ -118,10 +122,14 @@ export const abis = {
   Treasury,
   UniPool,
   UniswapV2,
+  UniswapV3Factory,
+  UniswapV3Pool,
+  UniswapV3PositionManager,
   Vault,
   VaultReader,
   VaultV2,
   VaultV2b,
+  VenusVToken,
   Vester,
   WETH,
 } satisfies Record<string, any>;
