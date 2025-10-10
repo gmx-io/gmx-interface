@@ -47,6 +47,7 @@ export type ContractsChainId =
   | typeof AVALANCHE_FUJI
   | typeof BOTANIX
   | typeof ARBITRUM_SEPOLIA;
+export type ContractsChainIdProduction = Exclude<ContractsChainId, typeof AVALANCHE_FUJI | typeof ARBITRUM_SEPOLIA>;
 
 export type SettlementChainId = typeof ARBITRUM_SEPOLIA | typeof ARBITRUM | typeof AVALANCHE;
 export type SourceChainId =

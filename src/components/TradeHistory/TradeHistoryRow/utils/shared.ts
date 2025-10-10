@@ -182,17 +182,17 @@ export function tryGetError(reasonBytes: BytesLike): ReturnType<typeof customErr
 
 export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean) {
   if (errorName === CustomErrorName.OrderNotFulfillableAtAcceptablePrice && !isMarketOrder) {
-    return t`The execution price didn't meet the acceptable price condition. The order will get filled when the condition is met.`;
+    return t`The execution price didn't meet acceptable price. The order will fill when the condition is met.`;
   } else if (errorName === CustomErrorName.OrderNotFulfillableAtAcceptablePrice && isMarketOrder) {
-    return t`The execution price didn't meet the acceptable price condition.`;
+    return t`The execution price didn't meet the acceptable price.`;
   } else if (errorName === CustomErrorName.InsufficientReserveForOpenInterest && !isMarketOrder) {
-    return t`Not enough available liquidity to fill the order. The order will get filled when the condition is met and there is enough available liquidity.`;
+    return t`Insufficient available liquidity. The order will fill when there is liquidity available.`;
   } else if (errorName === CustomErrorName.InsufficientReserveForOpenInterest && isMarketOrder) {
-    return t`Not enough available liquidity to fill the order.`;
+    return t`Insufficient available liquidity.`;
   } else if (errorName === CustomErrorName.InsufficientSwapOutputAmount && !isMarketOrder) {
-    return t`Not enough available swap liquidity to fill the order. The order will get filled when the condition is met and there is enough available swap liquidity.`;
+    return t`Insufficient available liquidity.`;
   } else if (errorName === CustomErrorName.InsufficientSwapOutputAmount && isMarketOrder) {
-    return t`Not enough available swap liquidity to fill the order.`;
+    return t`Insufficient available liquidity.`;
   }
 
   return t`Reason: ${words(errorName).join(" ").toLowerCase()}`;

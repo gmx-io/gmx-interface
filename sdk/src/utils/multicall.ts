@@ -68,8 +68,8 @@ export class Multicall {
 
         // Add Errors ABI to each contract ABI to correctly parse errors
         abis[contractCallConfig.contractAddress] = abis[contractCallConfig.contractAddress] || [
-          ...allAbis[contractCallConfig.abiId],
-          ...allAbis.CustomErrors,
+          ...(allAbis[contractCallConfig.abiId] as any),
+          ...(allAbis.CustomErrors as any),
         ];
         const abi = abis[contractCallConfig.contractAddress];
 

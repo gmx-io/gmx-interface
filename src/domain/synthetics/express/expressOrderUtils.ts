@@ -1,5 +1,5 @@
 import { AbstractSigner, Provider, Signer, Wallet } from "ethers";
-import { encodeFunctionData, size, zeroAddress, zeroHash } from "viem";
+import { Address, encodeFunctionData, recoverTypedDataAddress, size, zeroAddress, zeroHash } from "viem";
 
 import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
@@ -37,7 +37,7 @@ import { applyFactor, expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { ExpressTxnData } from "lib/transactions/sendExpressTransaction";
 import { WalletSigner } from "lib/wallets";
-import { signTypedData, SignTypedDataParams } from "lib/wallets/signing";
+import { SignatureDomain, signTypedData, SignTypedDataParams } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import { AnyChainId, ContractsChainId, SettlementChainId, SourceChainId } from "sdk/configs/chains";
 import { ContractName } from "sdk/configs/contracts";
@@ -56,8 +56,6 @@ import {
 } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 import { setUiFeeReceiverIsExpress } from "sdk/utils/twap/uiFeeReceiver";
-import { GelatoRelayRouter, MultichainSubaccountRouter, SubaccountGelatoRelayRouter } from "typechain-types";
-import { MultichainOrderRouter } from "typechain-types/MultichainOrderRouter";
 
 import { approximateL1GasBuffer, estimateBatchGasLimit, estimateRelayerGasLimit, GasLimitsConfig } from "../fees";
 import { getNeedTokenApprove } from "../tokens";
@@ -533,7 +531,7 @@ export async function buildAndSignExpressBatchOrderTxn({
     relayPayload: {
       ...(relayParamsPayload as RelayParamsPayload),
       deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
-      userNonce: nowInSeconds(),
+      userNonce: BigInt(nowInSeconds()),
     } satisfies RelayParamsPayload,
     subaccountApproval: subaccount?.signedApproval,
     paramsLists: getBatchParamsLists(batchParams),
@@ -554,6 +552,14 @@ export async function buildAndSignExpressBatchOrderTxn({
     });
 
     signature = await signTypedData(signatureParams);
+
+    validateSignature({
+      signatureParams,
+      signature,
+      expectedAccount: params.messageSigner.address,
+      errorSource: "expressOrders.batch.signatureValidation",
+      silent: true,
+    });
   }
 
   let batchCalldata: string;
@@ -578,7 +584,7 @@ export async function buildAndSignExpressBatchOrderTxn({
           BigInt(srcChainId),
           subaccount.signedApproval?.subaccount,
           params.paramsLists,
-        ] satisfies Parameters<MultichainSubaccountRouter["batch"]>,
+        ],
       });
     } else {
       batchCalldata = encodeFunctionData({
@@ -592,7 +598,7 @@ export async function buildAndSignExpressBatchOrderTxn({
           params.account,
           BigInt(srcChainId),
           params.paramsLists,
-        ] satisfies Parameters<MultichainOrderRouter["batch"]>,
+        ],
       });
     }
   } else {
@@ -609,7 +615,7 @@ export async function buildAndSignExpressBatchOrderTxn({
           params.account,
           subaccount.signedApproval?.subaccount,
           params.paramsLists,
-        ] satisfies Parameters<SubaccountGelatoRelayRouter["batch"]>,
+        ],
       });
     } else {
       batchCalldata = encodeFunctionData({
@@ -622,7 +628,7 @@ export async function buildAndSignExpressBatchOrderTxn({
           },
           params.account,
           params.paramsLists,
-        ] satisfies Parameters<GelatoRelayRouter["batch"]>,
+        ],
       });
     }
   }
@@ -995,4 +1001,61 @@ function updateExpressOrdersAddresses(addressess: CreateOrderPayload["addresses"
     ...addressess,
     uiFeeReceiver: setUiFeeReceiverIsExpress(addressess.uiFeeReceiver, true),
   };
+}
+
+export async function validateSignature({
+  signatureParams,
+  signature,
+  expectedAccount,
+  silent = false,
+  errorSource = "validateSignature",
+}: {
+  signatureParams: {
+    domain: SignatureDomain;
+    types: Record<string, any>;
+    typedData: Record<string, any>;
+  };
+  signature: string;
+  expectedAccount: string;
+  silent?: boolean;
+  errorSource?: string;
+}) {
+  try {
+    // Validate the signature
+    const recoveredAddress = await recoverTypedDataAddress({
+      domain: {
+        ...signatureParams.domain,
+        verifyingContract: signatureParams.domain.verifyingContract as Address,
+      },
+      types: signatureParams.types,
+      primaryType: "Batch",
+      message: signatureParams.typedData,
+      signature: signature as `0x${string}`,
+    });
+
+    const isValid = recoveredAddress.toLowerCase() === expectedAccount.toLowerCase();
+
+    if (!isValid) {
+      throw extendError(new Error("Signature validation failed"), {
+        data: {
+          recoveredAddress,
+          expectedAccount,
+          signature,
+        },
+      });
+    }
+  } catch (error) {
+    metrics.pushError(error, errorSource);
+
+    if (silent) {
+      return;
+    }
+
+    throw extendError(error, {
+      data: {
+        signature,
+        expectedAccount,
+      },
+    });
+  }
 }
