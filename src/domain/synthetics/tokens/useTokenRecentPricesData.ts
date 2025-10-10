@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
@@ -28,6 +28,8 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
       : PRICES_UPDATE_INTERVAL;
   }, [pathname]);
 
+  const pricesCacheRef = useRef<TokenPricesData>({});
+
   const { data, error, isLoading } = useSequentialTimedSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
     refreshInterval: refreshPricesInterval,
     fetcher: ([chainId]) =>
@@ -49,6 +51,14 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
             minPrice: parseContractPrice(BigInt(priceItem.minPrice), tokenConfig.decimals),
             maxPrice: parseContractPrice(BigInt(priceItem.maxPrice), tokenConfig.decimals),
           };
+
+          pricesCacheRef.current[priceItem.tokenAddress] = result[tokenConfig.address];
+        });
+
+        Object.entries(pricesCacheRef.current).forEach(([tokenAddress, cachedPrices]) => {
+          if (!result[tokenAddress]) {
+            result[tokenAddress] = cachedPrices;
+          }
         });
 
         const wrappedToken = getWrappedToken(chainId);
