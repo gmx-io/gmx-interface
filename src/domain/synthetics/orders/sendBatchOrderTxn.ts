@@ -89,7 +89,7 @@ export async function sendBatchOrderTxn({
     if (expressParams) {
       await runSimulation().then(() => callback?.(eventBuilder.Simulated()));
       const txnData = await buildAndSignExpressBatchOrderTxn({
-        chainId: chainId as ContractsChainId,
+        chainId,
         signer,
         batchParams,
         relayParamsPayload: expressParams.relayParamsPayload,

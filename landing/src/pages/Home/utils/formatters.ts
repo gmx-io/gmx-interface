@@ -38,13 +38,5 @@ export function cleanFormatUsd(rawValue: bigint): string {
 
 export function percentFormat(value: number) {
   const percent = value * 100;
-  let prefix: string;
-  if (percent > 9) {
-    prefix = "";
-  } else if (percent > 0.9) {
-    prefix = "0";
-  } else {
-    prefix = "00";
-  }
-  return `${prefix}${percent.toFixed(2)}%`;
+  return `${percent.toFixed(2)}%`;
 }

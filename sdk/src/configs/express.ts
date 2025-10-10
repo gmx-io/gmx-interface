@@ -21,8 +21,16 @@ export const MIN_RELAYER_FEE_USD = 5n ** BigInt(USD_DECIMALS - 1); // 0.5$
 export const EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS = 1000;
 
 const GAS_PAYMENT_TOKENS: Record<ContractsChainId, string[]> = {
-  [ARBITRUM]: [getTokenBySymbol(ARBITRUM, "USDC").address, getTokenBySymbol(ARBITRUM, "WETH").address],
-  [AVALANCHE]: [getTokenBySymbol(AVALANCHE, "USDC").address, getTokenBySymbol(AVALANCHE, "WAVAX").address],
+  [ARBITRUM]: [
+    getTokenBySymbol(ARBITRUM, "USDC").address,
+    getTokenBySymbol(ARBITRUM, "WETH").address,
+    getTokenBySymbol(ARBITRUM, "USDT").address,
+  ],
+  [AVALANCHE]: [
+    getTokenBySymbol(AVALANCHE, "USDC").address,
+    getTokenBySymbol(AVALANCHE, "WAVAX").address,
+    getTokenBySymbol(AVALANCHE, "USDT").address,
+  ],
   [AVALANCHE_FUJI]: [
     getTokenBySymbol(AVALANCHE_FUJI, "USDC").address,
     getTokenBySymbol(AVALANCHE_FUJI, "WAVAX").address,

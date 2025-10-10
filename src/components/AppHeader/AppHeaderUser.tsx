@@ -1,11 +1,11 @@
 import { Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 
+import { NETWORK_OPTIONS } from "config/networkOptions";
 import { useChainId } from "lib/chains";
 import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 
-import { NETWORK_OPTIONS } from "components/Header/AppHeaderChainAndSettings";
 import { OneClickButton } from "components/OneClickButton/OneClickButton";
 
 import { AddressDropdown } from "../AddressDropdown/AddressDropdown";

@@ -6,7 +6,7 @@ import WalletIcon from "img/ic_wallet.svg?react";
 
 type Props = {
   children: ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
 };
 
 export default function ConnectWalletButton({ children, onClick }: Props) {

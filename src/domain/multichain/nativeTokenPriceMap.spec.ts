@@ -1,9 +1,10 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { SETTLEMENT_CHAINS, SOURCE_CHAINS } from "config/multichain";
 import {
   getChainName,
   SOURCE_BASE_MAINNET,
+  SOURCE_BSC_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
   SourceChainId,
@@ -17,6 +18,7 @@ const SOURCE_CHAIN_NATIVE_SYMBOL_MAP: Record<SourceChainId, string> = {
   [SOURCE_OPTIMISM_SEPOLIA]: "ETH",
   [SOURCE_SEPOLIA]: "ETH",
   [SOURCE_BASE_MAINNET]: "ETH",
+  [SOURCE_BSC_MAINNET]: "BNB",
 };
 
 describe("NATIVE_TOKEN_PRICE_MAP", () => {
@@ -35,9 +37,9 @@ describe("NATIVE_TOKEN_PRICE_MAP", () => {
         }
 
         expect(
-          NATIVE_TOKEN_PRICE_MAP[srcChainId]?.[settlementChainId],
+          Object.keys(NATIVE_TOKEN_PRICE_MAP[srcChainId]?.[settlementChainId] ?? {}).length > 0,
           `Native token price map is not defined for ${getChainName(srcChainId)} -> ${getChainName(settlementChainId)}`
-        ).toBeDefined();
+        ).toBeTruthy();
       }
     }
   });

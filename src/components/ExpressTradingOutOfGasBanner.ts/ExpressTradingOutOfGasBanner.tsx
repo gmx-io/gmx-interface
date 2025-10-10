@@ -57,7 +57,7 @@ export function ExpressTradingOutOfGasBanner({ onClose }: { onClose: () => void 
       {srcChainId !== undefined ? (
         <>
           {hasEth ? (
-            <Trans>Insufficient gas balance, please deposit more ETH or USDC.</Trans>
+            <Trans>Insufficient gas balance, please deposit more WETH or USDC.</Trans>
           ) : (
             <Trans>Insufficient gas balance, please deposit more USDC.</Trans>
           )}

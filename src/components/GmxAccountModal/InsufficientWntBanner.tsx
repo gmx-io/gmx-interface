@@ -2,10 +2,10 @@ import { Trans } from "@lingui/macro";
 import { useHistory } from "react-router-dom";
 import { zeroAddress } from "viem";
 
-import { useGmxAccountModalOpen, useGmxAccountDepositViewTokenAddress } from "context/GmxAccountContext/hooks";
+import { useGmxAccountDepositViewTokenAddress, useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatUsd } from "lib/numbers";
-import { getWrappedToken, getNativeToken } from "sdk/configs/tokens";
+import { getWrappedToken } from "sdk/configs/tokens";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -56,39 +56,40 @@ export function InsufficientWntBanner({
 }) {
   const { chainId } = useChainId();
 
-  const nativeToken = getNativeToken(chainId);
-  const nativeTokenSymbol = nativeToken.symbol;
-  const nativeTokenDecimals = nativeToken.decimals;
+  const wrappedNativeToken = getWrappedToken(chainId);
+  const wrappedNativeTokenSymbol = wrappedNativeToken.symbol;
+  const wrappedNativeTokenDecimals = wrappedNativeToken.decimals;
 
-  const hasEth = nativeTokenSymbol === "ETH";
+  const hasWeth = wrappedNativeTokenSymbol === "WETH";
 
   let firstLine: React.ReactNode | undefined;
   let secondLine: React.ReactNode | undefined;
 
   if (neededAmount !== undefined && neededAmountUsd !== undefined) {
-    const formattedAmount = formatAmount(neededAmount, nativeTokenDecimals);
+    const formattedAmount = formatAmount(neededAmount, wrappedNativeTokenDecimals);
     const formattedUsd = formatUsd(neededAmountUsd);
 
     firstLine = (
       <Trans>
         You’ll need <span className="numbers">{formattedAmount}</span> (<span className="numbers">{formattedUsd}</span>){" "}
-        {nativeTokenSymbol} in your account to withdraw funds.
+        {wrappedNativeTokenSymbol} in your account to withdraw funds.
       </Trans>
     );
   } else {
-    firstLine = <Trans>You’ll need some {nativeTokenSymbol} in your account to withdraw funds.</Trans>;
+    firstLine = <Trans>You’ll need some {wrappedNativeTokenSymbol} in your account to withdraw funds.</Trans>;
   }
 
-  if (hasEth) {
+  if (hasWeth) {
     secondLine = (
       <Trans>
-        Please <DepositButton>deposit</DepositButton> or <SwapButton>swap</SwapButton> to get {nativeTokenSymbol}.
+        Please <DepositButton>deposit</DepositButton> or <SwapButton>swap</SwapButton> to get {wrappedNativeTokenSymbol}
+        .
       </Trans>
     );
   } else {
     secondLine = (
       <Trans>
-        Please <SwapButton>swap</SwapButton> to get {nativeTokenSymbol}.
+        Please <SwapButton>swap</SwapButton> to get {wrappedNativeTokenSymbol}.
       </Trans>
     );
   }

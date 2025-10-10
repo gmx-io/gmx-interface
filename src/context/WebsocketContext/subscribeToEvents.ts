@@ -268,16 +268,16 @@ export function subscribeToApprovalEvents(
   };
 }
 
+export type OftSentInfo = {
+  sender: string;
+  txnHash: string;
+} & ContractEventArgsFromTopics<typeof OFT_SENT_ABI, "OFTSent">;
+
 export function subscribeToOftSentEvents(
   provider: Provider,
   account: string,
   stargates: string[],
-  onOftSent: (
-    info: {
-      sender: string;
-      txnHash: string;
-    } & ContractEventArgsFromTopics<typeof OFT_SENT_ABI, "OFTSent">
-  ) => void
+  onOftSent: (info: OftSentInfo) => void
 ): () => void {
   const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [account]);
 

@@ -5,12 +5,12 @@ import { formatBalanceAmount } from "lib/numbers";
 
 export function useQuoteOftLimits({
   quoteOft,
-  inputAmount,
+  amountLD,
   isStable,
   decimals,
 }: {
   quoteOft: QuoteOft | undefined;
-  inputAmount: bigint | undefined;
+  amountLD: bigint | undefined;
   isStable: boolean | undefined;
   decimals: number | undefined;
 }) {
@@ -23,8 +23,8 @@ export function useQuoteOftLimits({
   }
 
   const isBelowLimit =
-    lastMinAmountLD.current !== undefined && inputAmount !== undefined && inputAmount > 0n
-      ? inputAmount < lastMinAmountLD.current
+    lastMinAmountLD.current !== undefined && amountLD !== undefined && amountLD > 0n
+      ? amountLD < lastMinAmountLD.current
       : false;
 
   const lowerLimitFormatted =
@@ -35,8 +35,8 @@ export function useQuoteOftLimits({
       : undefined;
 
   const isAboveLimit =
-    lastMaxAmountLD.current !== undefined && inputAmount !== undefined && inputAmount > 0n
-      ? inputAmount > lastMaxAmountLD.current
+    lastMaxAmountLD.current !== undefined && amountLD !== undefined && amountLD > 0n
+      ? amountLD > lastMaxAmountLD.current
       : false;
 
   const upperLimitFormatted =

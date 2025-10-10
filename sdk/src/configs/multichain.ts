@@ -5,6 +5,7 @@ import {
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
   SOURCE_BASE_MAINNET,
+  SOURCE_BSC_MAINNET,
 } from "./chainIds";
 import { SettlementChainId, SourceChainId } from "./chains";
 
@@ -22,6 +23,7 @@ export const SOURCE_CHAINS: SourceChainId[] = ensureExhaustive<SourceChainId>({
   [SOURCE_OPTIMISM_SEPOLIA]: true,
   [SOURCE_SEPOLIA]: true,
   [SOURCE_BASE_MAINNET]: true,
+  [SOURCE_BSC_MAINNET]: true,
 });
 
 export function isSettlementChain(chainId: number): chainId is SettlementChainId {
