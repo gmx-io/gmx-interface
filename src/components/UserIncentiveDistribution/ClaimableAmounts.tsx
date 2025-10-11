@@ -67,6 +67,8 @@ export default function ClaimableAmounts() {
     account,
     claimableTokens,
     chainId,
+    isSmartAccount,
+    isContractOwnersSigned,
     claimTermsAcceptedSignature,
     signer,
     distributionId: GLP_DISTRIBUTION_ID,
@@ -116,10 +118,11 @@ export default function ClaimableAmounts() {
       try {
         if (
           accountType === null ||
-          ![AccountType.Safe, AccountType.SmartAccount].includes(accountType) ||
+          !isSmartAccount ||
           !account ||
           !publicClient ||
-          !claimTerms
+          !claimTerms ||
+          !isContractOwnersSigned
         ) {
           setIsSafeSigValid(false);
           return;
@@ -157,6 +160,8 @@ export default function ClaimableAmounts() {
     claimTerms,
     claimTermsAcceptedSignature,
     chainId,
+    isSmartAccount,
+    isContractOwnersSigned,
     setClaimTermsAcceptedSignature,
   ]);
 
@@ -292,6 +297,23 @@ export default function ClaimableAmounts() {
     totalFundsToClaimUsd,
   ]);
 
+  /**
+   * Display the accept claim terms if:
+   * - The claim terms are set and the feature is not disabled
+   * - The user is a smart account and the contract owners have not signed the claim terms
+   * - The user is not a smart account and the claim terms have not been accepted
+   */
+  const displayAcceptClaimTerms =
+    claimTerms && !claimsFeatureDisabled && (isSmartAccount ? !isContractOwnersSigned : !claimTermsAcceptedSignature);
+
+  /**
+   * Display the insufficient gas alert if:
+   * - The user signed the claim terms
+   * - The user does not have enough funds to cover the execution fee
+   */
+  const displayInsufficientGasAlert =
+    (isSmartAccount ? isContractOwnersSigned : claimTermsAcceptedSignature) && !hasAvailableFundsToCoverExecutionFee;
+
   const buttonContent = (
     <Button variant="primary" size="medium" disabled={isButtonDisabled} onClick={claimAmounts} className="w-full">
       <EarnIcon className="size-16" />
@@ -330,7 +352,7 @@ export default function ClaimableAmounts() {
           </span>
         </div>
 
-        {claimTerms && !claimTermsAcceptedSignature && (
+        {displayAcceptClaimTerms && (
           <span className="cursor-pointer text-13 font-medium text-blue-300" onClick={signClaimTerms}>
             <Trans>Accept claim terms</Trans>
           </span>
@@ -384,7 +406,7 @@ export default function ClaimableAmounts() {
         <span className="text-body-medium text-typography-primary">{formatUsd(totalFundsToClaimUsd)}</span>
       </div>
 
-      {!hasAvailableFundsToCoverExecutionFee ? (
+      {displayInsufficientGasAlert ? (
         <AlertInfoCard type="warning" hideClose>
           <Trans>Insufficient gas for network fees</Trans>
         </AlertInfoCard>

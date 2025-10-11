@@ -142,24 +142,22 @@ export async function estimateMultichainDepositNetworkComposeGas({
     stateOverride.push(stateOverrideForNative);
   }
 
-  const args = [
-    // From
-    stargatePool,
-    // Guid
-    toHex(0, { size: 32 }),
-    // Message
-    message,
-    // Executor
-    zeroAddress,
-    // Extra Data
-    "0x",
-  ];
-
   const gas = await settlementChainPublicClient.estimateContractGas({
     address,
     abi: abis.LayerZeroProvider,
     functionName: "lzCompose",
-    args,
+    args: [
+      // From
+      stargatePool,
+      // Guid
+      toHex(0, { size: 32 }),
+      // Message
+      message,
+      // Executor
+      zeroAddress,
+      // Extra Data
+      "0x",
+    ],
     account: CodecUiHelper.getLzEndpoint(chainId),
     stateOverride,
   });

@@ -1,12 +1,18 @@
 import { ethers } from "ethers";
-import { decodeFunctionResult, encodeFunctionData, recoverTypedDataAddress } from "viem";
+import {
+  Abi,
+  decodeFunctionResult,
+  encodeFunctionData,
+  EncodeFunctionDataParameters,
+  recoverTypedDataAddress,
+} from "viem";
 
 import { parseError } from "lib/errors";
 import { defined } from "lib/guards";
 import { WalletSigner } from "lib/wallets";
 import { signTypedData, splitSignature } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
-import ERC20PermitInterfaceAbi from "sdk/abis/ERC20PermitInterface.json";
+import ERC20PermitInterfaceAbi from "sdk/abis/ERC20PermitInterface";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { DEFAULT_PERMIT_DEADLINE_DURATION } from "sdk/configs/express";
@@ -87,26 +93,33 @@ export async function getTokenPermitParams(
 }> {
   const token = getToken(chainId, tokenAddress);
 
-  const calls = [
+  const calls: {
+    contractAddress: string;
+    abi: Abi;
+    functionName: string;
+    args: any[];
+  }[] = [
     {
       contractAddress: tokenAddress,
       abi: abis.ERC20PermitInterface,
       functionName: "name",
       args: [],
-    },
+    } satisfies EncodeFunctionDataParameters<typeof abis.ERC20PermitInterface, "name"> & { contractAddress: string },
     {
       contractAddress: tokenAddress,
       abi: abis.ERC20PermitInterface,
       functionName: "nonces",
       args: [owner],
-    },
+    } satisfies EncodeFunctionDataParameters<typeof abis.ERC20PermitInterface, "nonces"> & { contractAddress: string },
     !token.contractVersion
-      ? {
+      ? ({
           contractAddress: tokenAddress,
           abi: abis.ERC20PermitInterface,
           functionName: "version",
           args: [],
-        }
+        } satisfies EncodeFunctionDataParameters<typeof abis.ERC20PermitInterface, "version"> & {
+          contractAddress: string;
+        })
       : undefined,
   ].filter(defined);
 
@@ -133,21 +146,21 @@ export async function getTokenPermitParams(
   }) as [bigint, string[]];
 
   const name = decodeFunctionResult({
-    abi: ERC20PermitInterfaceAbi.abi,
+    abi: ERC20PermitInterfaceAbi,
     functionName: "name",
     data: decodedMulticallResults[0] as `0x${string}`,
   }) as string;
 
   const nonce = decodeFunctionResult({
-    abi: ERC20PermitInterfaceAbi.abi,
+    abi: ERC20PermitInterfaceAbi,
     functionName: "nonces",
-    data: decodedMulticallResults[1] as `0x${string}`,
+    data: decodedMulticallResults[1],
   }) as bigint;
 
   const version =
     token.contractVersion ??
     (decodeFunctionResult({
-      abi: ERC20PermitInterfaceAbi.abi,
+      abi: ERC20PermitInterfaceAbi,
       functionName: "version",
       data: decodedMulticallResults[2] as `0x${string}`,
     }) as string);
