@@ -63,8 +63,9 @@ export const TableTdActionable = forwardRef<
       {...props}
       ref={ref}
       className={cx(
-        "relative text-[13px] last-of-type:[&:not(:first-of-type)]:text-right",
-        "px-12 py-10 first-of-type:before:rounded-l-8 last-of-type:before:rounded-r-8 group-hover/tr:before:bg-fill-surfaceHover",
+        "relative select-none text-[13px] last-of-type:[&:not(:first-of-type)]:text-right",
+        "px-4 py-12 pb-8 first-of-type:pl-20 first-of-type:before:rounded-l-8",
+        "last-of-type:pr-20 last-of-type:before:rounded-r-8 group-hover/tr:before:bg-fill-surfaceHover",
         "before:absolute before:bottom-2 before:left-0 before:top-2 before:z-0 before:bg-fill-surfaceElevated50",
         "before:h-[calc(100%-4px)] before:w-full before:content-['']",
         className

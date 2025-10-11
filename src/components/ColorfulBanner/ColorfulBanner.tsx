@@ -89,17 +89,19 @@ export const ColorfulButtonLink = ({
   to,
   onClick,
   color = "blue",
+  newTab,
 }: {
   children: React.ReactNode;
   to?: string;
   onClick?: () => void;
   color?: keyof typeof colorSchemas;
+  newTab?: boolean;
 }) => {
   const className = cx("mt-4 flex items-center gap-4 font-medium", colorSchemas[color].icon);
 
   if (to) {
     return (
-      <ButtonLink className={className} to={to} onClick={onClick}>
+      <ButtonLink className={className} to={to} onClick={onClick} newTab={newTab}>
         {children}
 
         <ChevronRightIcon className="size-12" />

@@ -14,6 +14,10 @@ import Buy from "pages/Buy/Buy";
 import BuyGMX from "pages/BuyGMX/BuyGMX";
 import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
+import EarnAdditionalOpportunitiesPage from "pages/Earn/EarnAdditionalOpportunitiesPage";
+import EarnDiscoveryPage from "pages/Earn/EarnDiscoveryPage";
+import EarnDistributionsPage from "pages/Earn/EarnDistributionsPage";
+import EarnPortfolioPage from "pages/Earn/EarnPortfolioPage";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import Jobs from "pages/Jobs/Jobs";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
@@ -25,12 +29,12 @@ import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import Referrals from "pages/Referrals/Referrals";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
-import Stake from "pages/Stake/Stake";
 import Stats from "pages/Stats/Stats";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { TestPermits } from "pages/TestPermits/TestPermits";
 
+import { EarnRedirect } from "components/Earn/EarnRedirect";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 
 const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
@@ -58,8 +62,6 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       {/* redirect from previous dashboard url */}
       <RedirectWithQuery exact from="/dashboard" to="/stats" />
       <RedirectWithQuery exact from="/monitor/v2" to="/monitor" />
-      {/* redirect from previous stake(earn) url */}
-      <RedirectWithQuery exact from="/earn" to="/stake" />
       <RedirectWithQuery from="/v2" to="/trade" />
 
       <Route exact path="/">
@@ -85,9 +87,29 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         <SyntheticsStats />
       </Route>
 
-      <Route exact path="/stake">
-        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="stake">
-          <Stake />
+      <Route exact path="/earn">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
+          <EarnRedirect />
+        </SyntheticsStateContextProvider>
+      </Route>
+      <Route exact path="/earn/discovery">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
+          <EarnDiscoveryPage />
+        </SyntheticsStateContextProvider>
+      </Route>
+      <Route exact path="/earn/portfolio">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
+          <EarnPortfolioPage />
+        </SyntheticsStateContextProvider>
+      </Route>
+      <Route exact path="/earn/additional-opportunities/:filter?">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
+          <EarnAdditionalOpportunitiesPage />
+        </SyntheticsStateContextProvider>
+      </Route>
+      <Route exact path="/earn/distributions">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
+          <EarnDistributionsPage />
         </SyntheticsStateContextProvider>
       </Route>
 
