@@ -32,9 +32,11 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
 
   const { data, error, isLoading } = useSequentialTimedSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
     refreshInterval: refreshPricesInterval,
-    fetcher: ([chainId]) =>
-      oracleKeeperFetcher.fetchTickers().then((priceItems) => {
-        const result: TokenPricesData = {};
+    fetcher: async ([chainId]) => {
+      const result: TokenPricesData = { ...pricesCacheRef.current };
+
+      try {
+        const priceItems = await oracleKeeperFetcher.fetchTickers();
 
         priceItems.forEach((priceItem) => {
           let tokenConfig: Token;
@@ -55,12 +57,6 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
           pricesCacheRef.current[priceItem.tokenAddress] = result[tokenConfig.address];
         });
 
-        Object.entries(pricesCacheRef.current).forEach(([tokenAddress, cachedPrices]) => {
-          if (!result[tokenAddress]) {
-            result[tokenAddress] = cachedPrices;
-          }
-        });
-
         const wrappedToken = getWrappedToken(chainId);
 
         if (result[wrappedToken.address] && !result[NATIVE_TOKEN_ADDRESS]) {
@@ -71,8 +67,13 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
           pricesData: result,
           updatedAt: Date.now(),
         };
-      }),
-    refreshWhenHidden: true,
+      } catch (e) {
+        return {
+          pricesData: result,
+          updatedAt: Date.now(),
+        };
+      }
+    },
   });
 
   return {
