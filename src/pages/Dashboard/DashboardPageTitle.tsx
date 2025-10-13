@@ -10,7 +10,7 @@ export function DashboardPageTitle({ tradePageVersion }: { tradePageVersion: num
         tradePageVersion === 1 ? (
           <>
             <Trans>
-              GMX is the utility and governance token. It also accrues 30% of the protocol fees via a buyback and
+              GMX is the utility and governance token. It also accrues 27% of the protocol fees via a buyback and
               distribution mechanism.
             </Trans>
             <br />
@@ -21,7 +21,7 @@ export function DashboardPageTitle({ tradePageVersion }: { tradePageVersion: num
         ) : (
           <>
             <Trans>
-              GMX is the utility and governance token. It also accrues 30% of the protocol fees via a buyback and
+              GMX is the utility and governance token. It also accrues 27% of the protocol fees via a buyback and
               distribution mechanism.
             </Trans>
             <br />

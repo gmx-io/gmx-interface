@@ -118,7 +118,7 @@ export function getTxnErrorToast(
         >
           <Trans>increasing the allowed slippage</Trans>
         </span>{" "}
-        under the advanced display section.
+        under the execution details section.
       </Trans>
     );
 

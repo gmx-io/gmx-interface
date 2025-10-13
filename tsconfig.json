@@ -27,5 +27,5 @@
     }
   },
   "references": [{ "path": "./sdk" }],
-  "include": ["src", "scripts"]
+  "include": ["src", "scripts", "viem-override.d.ts"]
 }

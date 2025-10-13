@@ -45,7 +45,7 @@ export function MobileSideNav() {
               <div className="border-b-1/2 border-slate-600 p-8">
                 <ul className="flex list-none flex-col px-0">
                   <SettingsNavItem isCollapsed={false} onClick={handleToggle} />
-                  <LanguageNavItem isCollapsed={false} onClick={handleToggle} />
+                  <LanguageNavItem isCollapsed={false} />
                   <DocsNavItem isCollapsed={false} />
                 </ul>
               </div>

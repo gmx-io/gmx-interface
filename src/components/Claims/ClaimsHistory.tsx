@@ -116,7 +116,7 @@ export function ClaimsHistory() {
       <div className="flex items-center justify-between gap-8 pl-20 pr-8 pt-8">
         {!isMobile ? (
           <span className="text-body-medium font-medium">
-            <Trans>Claims history</Trans>
+            <Trans>Claims History</Trans>
           </span>
         ) : null}
 
