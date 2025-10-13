@@ -8,12 +8,12 @@ import { getChainName } from "sdk/configs/chains";
 import { useHomePageContext } from "../contexts/HomePageContext";
 
 export enum RedirectChainIds {
-  Arbitum,
-  Avalanche,
-  Botanix,
-  Solana,
-  Base,
-  Bsc,
+  Arbitum = ARBITRUM,
+  Avalanche = AVALANCHE,
+  Botanix = BOTANIX,
+  Base = SOURCE_BASE_MAINNET,
+  Bsc = SOURCE_BSC_MAINNET,
+  Solana = -1,
 }
 
 type Props = {
@@ -36,12 +36,19 @@ export function useGoToTrade({ buttonPosition, chainId }: Props) {
     userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
       {
         event: "LandingPageAction",
-        data: {
-          action: chainId === RedirectChainIds.Solana ? "SolanaNavigation" : "LaunchApp",
-          buttonPosition: buttonPosition,
-          shouldSeeConfirmationDialog: shouldShowRedirectModal(),
-          chain: getChainName(chainId),
-        },
+        data:
+          chainId === RedirectChainIds.Solana
+            ? {
+                action: "SolanaNavigation",
+                buttonPosition: buttonPosition,
+                shouldSeeConfirmationDialog: shouldShowRedirectModal(),
+              }
+            : {
+                action: "LaunchApp",
+                buttonPosition: buttonPosition,
+                shouldSeeConfirmationDialog: shouldShowRedirectModal(),
+                chain: getChainName(chainId),
+              },
       },
       { instantSend: true }
     );
