@@ -124,7 +124,6 @@ export const selectExpressFindSwapPath = createSelector(function selectExpressFi
     disabledMarkets: _debugSwapMarketsConfig?.disabledSwapMarkets,
     manualPath: _debugSwapMarketsConfig?.manualPath,
     gasEstimationParams,
-    maxSwapPathLength: 1,
   });
 
   return findFeeSwapPath;

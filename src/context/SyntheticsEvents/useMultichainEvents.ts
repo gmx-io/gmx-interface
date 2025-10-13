@@ -1,15 +1,22 @@
 import keyBy from "lodash/keyBy";
 import pickBy from "lodash/pickBy";
+import uniqBy from "lodash/uniqBy";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import { getChainName, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
-import { CHAIN_ID_TO_TOKEN_ID_MAP, getMappedTokenId, isSettlementChain, MultichainTokenId } from "config/multichain";
-import { ENDPOINT_ID_TO_CHAIN_ID } from "config/multichain";
+import {
+  CHAIN_ID_TO_TOKEN_ID_MAP,
+  ENDPOINT_ID_TO_CHAIN_ID,
+  getMappedTokenId,
+  isSettlementChain,
+  MultichainTokenId,
+} from "config/multichain";
 import { useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
 import {
+  OftSentInfo,
   subscribeToComposeDeliveredEvents,
   subscribeToMultichainApprovalEvents,
   subscribeToOftReceivedEvents,
@@ -28,10 +35,10 @@ import {
   MultichainWithdrawalMetricData,
   sendOrderExecutedMetric,
 } from "lib/metrics";
-import { EMPTY_OBJECT } from "lib/objects";
+import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { sendMultichainDepositSuccessEvent, sendMultichainWithdrawalSuccessEvent } from "lib/userAnalytics/utils";
 import { getToken } from "sdk/configs/tokens";
-import { LRUCache } from "sdk/utils/LruCache";
+import { adjustForDecimals } from "sdk/utils/numbers";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { useSyntheticsEvents } from "./SyntheticsEventsProvider";
@@ -66,12 +73,11 @@ export type MultichainEventsState = {
 
 const DEFAULT_MULTICHAIN_FUNDING_STATE: PendingMultichainFunding = [];
 
-const UNCERTAIN_WITHDRAWALS_CACHE = new LRUCache<string>(1000);
-
 const FINISHED_FUNDING_ITEM_CLEARING_DELAY_MS = 5000;
 const SUBSCRIPTION_MAX_TTL_MS = 5 * 60 * 1000;
 const SOURCE_CHAIN_APPROVAL_LISTENER_CLEANUP_DELAY_MS = 1 * 60 * 1000;
 const DEBUG_MULTICHAIN_EVENTS_LOGGING = false;
+const WS_EVENT_CACHE_TIMEOUT_MS = 20_000;
 
 const debugLog = (...args: any[]) => {
   if (DEBUG_MULTICHAIN_EVENTS_LOGGING) {
@@ -136,6 +142,111 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
   //#region Deposits
 
   // TODO MLTCH: make send events listening regardless of srcChainId
+
+  const [sourceChainOftSentQueue, setSourceChainOftSentQueue] = useState<OftSentInfo[]>(EMPTY_ARRAY);
+
+  useEffect(() => {
+    if (srcChainId === undefined || !isSettlementChain(chainId) || !currentAccount) {
+      return;
+    }
+
+    const tokenIdMap = CHAIN_ID_TO_TOKEN_ID_MAP[srcChainId];
+
+    if (!tokenIdMap) {
+      return;
+    }
+
+    const tokenIdByStargate = keyBy(Object.values(tokenIdMap), (tokenId: MultichainTokenId) => tokenId.stargate);
+
+    const patch: Record<number, MultichainFundingHistoryItem> = {};
+
+    for (let pendingItemIndex = 0; pendingItemIndex < pendingMultichainFunding.length; pendingItemIndex++) {
+      const submittedDeposit = pendingMultichainFunding[pendingItemIndex];
+      if (submittedDeposit.step !== "submitted" || submittedDeposit.operation !== "deposit") {
+        continue;
+      }
+
+      const info = sourceChainOftSentQueue.find((item) => item.txnHash === submittedDeposit.sentTxn);
+      if (!info) {
+        continue;
+      }
+
+      const settlementChainId = ENDPOINT_ID_TO_CHAIN_ID[info.dstEid];
+      if (settlementChainId !== chainId) {
+        return;
+      }
+      const stargatePoolAddress = info.sender;
+      const sourceChainTokenId = tokenIdByStargate[stargatePoolAddress];
+      const settlementChainTokenId = getMappedTokenId(sourceChainTokenId.chainId, sourceChainTokenId.address, chainId);
+      const tokenAddress = settlementChainTokenId?.address;
+      if (!tokenAddress) {
+        // eslint-disable-next-line no-console
+        console.error("No settlement chain token address for OFTSent event", info);
+        continue;
+      }
+      debugLog("got OFTSent event for", srcChainId, tokenAddress, info.txnHash);
+
+      setSelectedTransferGuid((prev) => {
+        if (!prev || prev !== submittedDeposit.id) {
+          return prev;
+        }
+        return info.guid;
+      });
+      setMultichainFundingPendingIds((prev) => {
+        if (submittedDeposit.id in prev) {
+          return { ...prev, [submittedDeposit.id]: info.guid };
+        }
+        return prev;
+      });
+      const sentAmount = adjustForDecimals(
+        info.amountSentLD,
+        sourceChainTokenId.decimals,
+        settlementChainTokenId.decimals
+      );
+
+      patch[pendingItemIndex] = {
+        account: currentAccount,
+        sentAmount,
+        id: info.guid,
+        sentTxn: info.txnHash,
+        operation: "deposit",
+        step: "sent",
+        token: tokenAddress,
+        sourceChainId: srcChainId,
+        settlementChainId: chainId,
+        sentTimestamp: submittedDeposit.sentTimestamp,
+
+        executedTimestamp: undefined,
+        executedTxn: undefined,
+        isExecutionError: undefined,
+        receivedAmount: undefined,
+        receivedTimestamp: undefined,
+        receivedTxn: undefined,
+
+        source: "ws",
+      };
+    }
+
+    if (Object.keys(patch).length === 0) {
+      return;
+    }
+
+    setPendingMultichainFunding((prev) => {
+      const newPendingMultichainFunding = [...prev];
+      for (const [index, item] of Object.entries(patch)) {
+        debugLog("patching pending multichain funding item", index, item);
+        newPendingMultichainFunding[parseInt(index)] = item;
+      }
+      return newPendingMultichainFunding;
+    });
+
+    const usedTxns = Object.values(patch).map((item) => item.sentTxn);
+
+    setSourceChainOftSentQueue((prev) => {
+      return prev.filter((item) => !usedTxns.includes(item.txnHash));
+    });
+  }, [chainId, currentAccount, pendingMultichainFunding, setSelectedTransferGuid, sourceChainOftSentQueue, srcChainId]);
+
   useEffect(
     function subscribeSourceChainOftSentEvents() {
       if (
@@ -149,8 +260,12 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       }
 
       const tokenIdMap = CHAIN_ID_TO_TOKEN_ID_MAP[srcChainId];
+
+      if (!tokenIdMap) {
+        return;
+      }
+
       const sourceChainStargates = Object.values(tokenIdMap).map((tokenId) => tokenId.stargate);
-      const tokenIdByStargate = keyBy(Object.values(tokenIdMap), (tokenId: MultichainTokenId) => tokenId.stargate);
 
       debugLog("subscribing to OFTSent events for", srcChainId);
 
@@ -159,81 +274,15 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         currentAccount,
         sourceChainStargates,
         (info) => {
-          const settlementChainId = ENDPOINT_ID_TO_CHAIN_ID[info.dstEid];
-
-          if (settlementChainId !== chainId) {
-            return;
-          }
-
-          const stargatePoolAddress = info.sender;
-          const tokenId = tokenIdByStargate[stargatePoolAddress];
-
-          const settlementChainTokenId = getMappedTokenId(tokenId.chainId, tokenId.address, chainId);
-          const tokenAddress = settlementChainTokenId?.address;
-
-          if (!tokenAddress) {
-            throw new Error("No settlement chain token address for OFTSent event");
-          }
-
-          debugLog("got OFTSent event for", srcChainId, tokenAddress, info.txnHash);
-
-          setPendingMultichainFunding((prev) => {
-            const newPendingMultichainFunding: PendingMultichainFunding = structuredClone(prev);
-
-            const currentSubmittingDepositIndex = newPendingMultichainFunding.findIndex(
-              (item) => item.sentTxn === info.txnHash && item.step === "submitted"
-            );
-
-            if (currentSubmittingDepositIndex === -1) {
-              // If there were no submitted order from UI we can not be sure if this sent event is related to GMX without parsing the whole transaction for events
-              // If its really necessary we could fetch the tx to get PacketSent withing the same transaction event and parse the contents
-
-              // eslint-disable-next-line no-console
-              console.warn("Got OFTSent event but no deposits were submitted from UI");
-              return prev;
-            }
-
-            const currentSubmittingDeposit = newPendingMultichainFunding[currentSubmittingDepositIndex];
-
-            setSelectedTransferGuid((prev) => {
-              if (!prev || prev !== currentSubmittingDeposit.id) {
-                return prev;
-              }
-
-              return info.guid;
+          setTimeout(function clear() {
+            debugLog("clearing OFTSent event for", srcChainId, info.txnHash);
+            setSourceChainOftSentQueue((prev) => {
+              return prev.filter((item) => item.txnHash !== info.txnHash);
             });
+          }, WS_EVENT_CACHE_TIMEOUT_MS);
 
-            setMultichainFundingPendingIds((prev) => {
-              if (currentSubmittingDeposit.id in prev) {
-                return { ...prev, [currentSubmittingDeposit.id]: info.guid };
-              }
-
-              return prev;
-            });
-
-            newPendingMultichainFunding[currentSubmittingDepositIndex] = {
-              account: currentAccount,
-              sentAmount: info.amountSentLD,
-              id: info.guid,
-              sentTxn: info.txnHash,
-              operation: "deposit",
-              step: "sent",
-              token: tokenAddress,
-              sourceChainId: srcChainId,
-              settlementChainId: chainId,
-              sentTimestamp: currentSubmittingDeposit.sentTimestamp,
-
-              executedTimestamp: undefined,
-              executedTxn: undefined,
-              isExecutionError: undefined,
-              receivedAmount: undefined,
-              receivedTimestamp: undefined,
-              receivedTxn: undefined,
-
-              isFromWs: true,
-            };
-
-            return newPendingMultichainFunding;
+          setSourceChainOftSentQueue((prev) => {
+            return uniqBy(prev.concat(info), (item) => item.txnHash);
           });
         }
       );
@@ -282,6 +331,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
             debugLog("got OFTReceive event for", chainId, pendingSentDeposit.token, info.txnHash);
 
             pendingSentDeposit.step = "received";
+            // This is already on settlement chain, no need to convert amount
             pendingSentDeposit.receivedAmount = info.amountReceivedLD;
             pendingSentDeposit.receivedTimestamp = nowInSeconds();
             pendingSentDeposit.receivedTxn = info.txnHash;
@@ -382,6 +432,118 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
   //#region Withdrawals
 
+  const [settlementChainOftSentQueue, setSettlementChainOftSentQueue] = useState<OftSentInfo[]>(EMPTY_ARRAY);
+
+  useEffect(() => {
+    if (!isSettlementChain(chainId) || !currentAccount) {
+      return;
+    }
+
+    const tokenIdMap = CHAIN_ID_TO_TOKEN_ID_MAP[chainId];
+
+    if (!tokenIdMap) {
+      return;
+    }
+
+    const tokenIdByStargate = keyBy(Object.values(tokenIdMap), (tokenId: MultichainTokenId) => tokenId.stargate);
+
+    const patch: Record<number, MultichainFundingHistoryItem> = {};
+
+    for (let pendingItemIndex = 0; pendingItemIndex < pendingMultichainFunding.length; pendingItemIndex++) {
+      const submittedWithdrawal = pendingMultichainFunding[pendingItemIndex];
+      if (
+        submittedWithdrawal.step !== "submitted" ||
+        submittedWithdrawal.operation !== "withdrawal" ||
+        submittedWithdrawal.sentTxn === undefined
+      ) {
+        continue;
+      }
+
+      const info = settlementChainOftSentQueue.find((item) => item.txnHash === submittedWithdrawal.sentTxn);
+      if (!info) {
+        continue;
+      }
+
+      const sourceChainId = ENDPOINT_ID_TO_CHAIN_ID[info.dstEid];
+
+      if (sourceChainId !== srcChainId) {
+        return;
+      }
+
+      debugLog("withdrawal got OFTSent event for", srcChainId, info.txnHash);
+
+      const stargatePoolAddress = info.sender;
+      const tokenId = tokenIdByStargate[stargatePoolAddress];
+
+      const tokenAddress = tokenId.address;
+
+      setSelectedTransferGuid((prev) => {
+        if (!prev || prev !== submittedWithdrawal.id) {
+          return prev;
+        }
+
+        return info.guid;
+      });
+
+      setMultichainFundingPendingIds((prev) => {
+        if (submittedWithdrawal.id in prev) {
+          return { ...prev, [submittedWithdrawal.id]: info.guid };
+        }
+
+        return prev;
+      });
+
+      patch[pendingItemIndex] = {
+        account: currentAccount,
+        // This is on settlement chain, no need to convert amount
+        sentAmount: info.amountSentLD,
+        id: info.guid,
+        sentTxn: info.txnHash,
+        operation: "withdrawal",
+        step: "sent",
+        token: tokenAddress,
+        sourceChainId: sourceChainId,
+        settlementChainId: chainId,
+        sentTimestamp: submittedWithdrawal.sentTimestamp,
+
+        executedTimestamp: undefined,
+        executedTxn: undefined,
+        isExecutionError: undefined,
+        receivedAmount: undefined,
+        receivedTimestamp: undefined,
+        receivedTxn: undefined,
+
+        source: "ws",
+      };
+    }
+
+    if (Object.keys(patch).length === 0) {
+      return;
+    }
+
+    setPendingMultichainFunding((prev) => {
+      const newPendingMultichainFunding = [...prev];
+      for (const [index, item] of Object.entries(patch)) {
+        debugLog("patching pending multichain funding item", index, item);
+        newPendingMultichainFunding[parseInt(index)] = item;
+      }
+      return newPendingMultichainFunding;
+    });
+
+    const usedTxns = Object.values(patch).map((item) => item.sentTxn);
+
+    setSettlementChainOftSentQueue((prev) => {
+      return prev.filter((item) => !usedTxns.includes(item.txnHash));
+    });
+  }, [
+    chainId,
+    currentAccount,
+    pendingMultichainFunding,
+    setSelectedTransferGuid,
+    settlementChainOftSentQueue,
+    srcChainId,
+  ]);
+
   useEffect(
     function subscribeSettlementChainOftSentEvents() {
       if (
@@ -395,88 +557,28 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       }
 
       const tokenIdMap = CHAIN_ID_TO_TOKEN_ID_MAP[chainId];
+
+      if (!tokenIdMap) {
+        return;
+      }
+
       const settlementChainStargates = Object.values(tokenIdMap).map((tokenId) => tokenId.stargate);
-      const tokenIdByStargate = keyBy(Object.values(tokenIdMap), (tokenId: MultichainTokenId) => tokenId.stargate);
 
       const unsubscribeFromOftSentEvents = subscribeToOftSentEvents(
         wsProvider,
         getContract(chainId, "LayerZeroProvider"),
         settlementChainStargates,
         (info) => {
-          const sourceChainId = ENDPOINT_ID_TO_CHAIN_ID[info.dstEid];
-
-          if (sourceChainId !== srcChainId) {
-            return;
-          }
-
-          debugLog("withdrawal got OFTSent event for", srcChainId, info.txnHash);
-
-          const stargatePoolAddress = info.sender;
-          const tokenId = tokenIdByStargate[stargatePoolAddress];
-
-          const tokenAddress = tokenId.address;
-
-          setPendingMultichainFunding((prev) => {
-            const newPendingMultichainFunding: PendingMultichainFunding = structuredClone(prev);
-
-            const currentSubmittingWithdrawalIndex = newPendingMultichainFunding.findIndex(
-              (item) => item.sentTxn === info.txnHash && item.step === "submitted"
-            );
-
-            if (currentSubmittingWithdrawalIndex === -1) {
-              // If there were no submitted order from UI we can not be sure if this sent event is related to GMX without parsing the whole transaction for events
-              // If its really necessary we could fetch the tx to get PacketSent withing the same transaction event and parse the contents
-
-              // eslint-disable-next-line no-console
-              console.warn(
-                "[multichain] Got OFTSent event but no withdrawals were submitted from UI",
-                newPendingMultichainFunding
-              );
-              UNCERTAIN_WITHDRAWALS_CACHE.set(info.txnHash, info.guid);
-              return prev;
-            }
-
-            const currentSubmittingWithdrawal = newPendingMultichainFunding[currentSubmittingWithdrawalIndex];
-
-            setSelectedTransferGuid((prev) => {
-              if (!prev || prev !== currentSubmittingWithdrawal.id) {
-                return prev;
-              }
-
-              return info.guid;
+          setTimeout(function clear() {
+            debugLog("clearing OFTSent event for", chainId, info.txnHash);
+            setSettlementChainOftSentQueue((prev) => {
+              return prev.filter((item) => item.txnHash !== info.txnHash);
             });
+          }, WS_EVENT_CACHE_TIMEOUT_MS);
 
-            setMultichainFundingPendingIds((prev) => {
-              if (currentSubmittingWithdrawal.id in prev) {
-                return { ...prev, [currentSubmittingWithdrawal.id]: info.guid };
-              }
-
-              return prev;
-            });
-
-            newPendingMultichainFunding[currentSubmittingWithdrawalIndex] = {
-              account: currentAccount,
-              sentAmount: info.amountSentLD,
-              id: info.guid,
-              sentTxn: info.txnHash,
-              operation: "withdrawal",
-              step: "sent",
-              token: tokenAddress,
-              sourceChainId: sourceChainId,
-              settlementChainId: chainId,
-              sentTimestamp: currentSubmittingWithdrawal.sentTimestamp,
-
-              executedTimestamp: undefined,
-              executedTxn: undefined,
-              isExecutionError: undefined,
-              receivedAmount: undefined,
-              receivedTimestamp: undefined,
-              receivedTxn: undefined,
-
-              isFromWs: true,
-            };
-
-            return newPendingMultichainFunding;
+          debugLog("withdrawal got OFTSent event for", chainId, info.txnHash);
+          setSettlementChainOftSentQueue((prev) => {
+            return uniqBy(prev.concat(info), (item) => item.txnHash);
           });
         }
       );
@@ -503,7 +605,13 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       }
 
       const tokenIdMap = CHAIN_ID_TO_TOKEN_ID_MAP[srcChainId];
+
+      if (!tokenIdMap) {
+        return;
+      }
+
       const sourceChainStargates = Object.values(tokenIdMap).map((tokenId) => tokenId.stargate);
+      const tokenIdByStargate = keyBy(Object.values(tokenIdMap), (tokenId: MultichainTokenId) => tokenId.stargate);
 
       debugLog("subscribing to source chain OFTReceive events for", srcChainId, guids);
 
@@ -531,7 +639,27 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
             }
 
             pendingSentWithdrawal.step = "received";
-            pendingSentWithdrawal.receivedAmount = info.amountReceivedLD;
+
+            const sourceChainTokenId = tokenIdByStargate[info.sender];
+            const settlementChainTokenId = getMappedTokenId(
+              sourceChainTokenId.chainId,
+              sourceChainTokenId.address,
+              chainId
+            );
+
+            if (!sourceChainTokenId || !settlementChainTokenId) {
+              // eslint-disable-next-line no-console
+              console.warn("No settlement chain token address for OFTReceive event", info);
+              return newPendingMultichainFunding;
+            }
+
+            const receivedAmount = adjustForDecimals(
+              info.amountReceivedLD,
+              sourceChainTokenId.decimals,
+              settlementChainTokenId.decimals
+            );
+
+            pendingSentWithdrawal.receivedAmount = receivedAmount;
             pendingSentWithdrawal.receivedTimestamp = nowInSeconds();
             pendingSentWithdrawal.receivedTxn = info.txnHash;
 
@@ -670,7 +798,8 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         }
       };
     },
-    [currentAccount, sourceChainApprovalActiveListeners, wsSourceChainProviders]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [currentAccount, JSON.stringify(sourceChainApprovalActiveListeners), wsSourceChainProviders]
   );
 
   const multichainEventsState = useMemo(
@@ -704,7 +833,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
             executedTxn: undefined,
             executedTimestamp: undefined,
 
-            isFromWs: true,
+            source: "optimistic",
           });
           return newPendingMultichainFunding;
         });
@@ -740,7 +869,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
             executedTxn: undefined,
             executedTimestamp: undefined,
 
-            isFromWs: true,
+            source: "optimistic",
           });
           return newPendingMultichainFunding;
         });
@@ -758,32 +887,6 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
             const submittedWithdrawal = newPendingMultichainFunding[submittedWithdrawalIndex];
             submittedWithdrawal.sentTxn = txnHash;
             submittedWithdrawal.sentTimestamp = nowInSeconds();
-            debugLog("Found submitted withdrawal", submittedWithdrawal, UNCERTAIN_WITHDRAWALS_CACHE.get(txnHash));
-
-            if (UNCERTAIN_WITHDRAWALS_CACHE.has(txnHash)) {
-              debugLog("Found uncertain withdrawal in cache", txnHash);
-              const guid = UNCERTAIN_WITHDRAWALS_CACHE.get(txnHash)!;
-              submittedWithdrawal.step = "sent";
-              submittedWithdrawal.id = guid;
-
-              setSelectedTransferGuid((prev) => {
-                if (!prev || prev !== mockId) {
-                  return prev;
-                }
-
-                return guid;
-              });
-
-              setMultichainFundingPendingIds((prev) => {
-                if (mockId in prev) {
-                  return { ...prev, [mockId]: guid };
-                }
-
-                return prev;
-              });
-
-              UNCERTAIN_WITHDRAWALS_CACHE.delete(txnHash);
-            }
           }
           return newPendingMultichainFunding;
         });

@@ -15,6 +15,7 @@ export type LandingPageLaunchAppEvent = {
     action: "LaunchApp" | "SolanaNavigation";
     buttonPosition: "MenuButton" | "StickyHeader" | "Title" | "Chains" | "LaunchSection" | "HeroSection";
     shouldSeeConfirmationDialog: boolean;
+    chain: ChainName;
   };
 };
 
