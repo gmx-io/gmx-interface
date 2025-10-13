@@ -32,47 +32,42 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
 
   const { data, error, isLoading } = useSequentialTimedSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
     refreshInterval: refreshPricesInterval,
+    keepPreviousData: true,
+
     fetcher: async ([chainId]) => {
       const result: TokenPricesData = { ...pricesCacheRef.current };
 
-      try {
-        const priceItems = await oracleKeeperFetcher.fetchTickers();
+      const priceItems = await oracleKeeperFetcher.fetchTickers();
 
-        priceItems.forEach((priceItem) => {
-          let tokenConfig: Token;
+      priceItems.forEach((priceItem) => {
+        let tokenConfig: Token;
 
-          try {
-            tokenConfig = getToken(chainId, priceItem.tokenAddress);
-          } catch (e) {
-            // ignore unknown token errors
+        try {
+          tokenConfig = getToken(chainId, priceItem.tokenAddress);
+        } catch (e) {
+          // ignore unknown token errors
 
-            return;
-          }
-
-          result[tokenConfig.address] = {
-            minPrice: parseContractPrice(BigInt(priceItem.minPrice), tokenConfig.decimals),
-            maxPrice: parseContractPrice(BigInt(priceItem.maxPrice), tokenConfig.decimals),
-          };
-
-          pricesCacheRef.current[priceItem.tokenAddress] = result[tokenConfig.address];
-        });
-
-        const wrappedToken = getWrappedToken(chainId);
-
-        if (result[wrappedToken.address] && !result[NATIVE_TOKEN_ADDRESS]) {
-          result[NATIVE_TOKEN_ADDRESS] = result[wrappedToken.address];
+          return;
         }
 
-        return {
-          pricesData: result,
-          updatedAt: Date.now(),
+        result[tokenConfig.address] = {
+          minPrice: parseContractPrice(BigInt(priceItem.minPrice), tokenConfig.decimals),
+          maxPrice: parseContractPrice(BigInt(priceItem.maxPrice), tokenConfig.decimals),
         };
-      } catch (e) {
-        return {
-          pricesData: result,
-          updatedAt: Date.now(),
-        };
+
+        pricesCacheRef.current[tokenConfig.address] = result[tokenConfig.address];
+      });
+
+      const wrappedToken = getWrappedToken(chainId);
+
+      if (result[wrappedToken.address] && !result[NATIVE_TOKEN_ADDRESS]) {
+        result[NATIVE_TOKEN_ADDRESS] = result[wrappedToken.address];
       }
+
+      return {
+        pricesData: result,
+        updatedAt: Date.now(),
+      };
     },
   });
 
