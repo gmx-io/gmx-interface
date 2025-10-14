@@ -27,9 +27,8 @@
     "ts:clean": "tsc --build --clean && tsc --build",
     "tscheck": "yarn ts:clean && tsc -p tsconfig.json --noEmit",
     "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss}",
-    "typechain": "typechain --target ethers-v6 --out-dir ./src/typechain-types './sdk/src/abis/*.json'",
     "typechain:stargate": "typechain --target ethers-v6 --out-dir ./src/typechain-types-stargate './node_modules/@stargatefinance/stg-evm-sdk-v2/artifacts/src/interfaces/IStargate.sol/IStargate.json'",
-    "postinstall": "yarn typechain && cd ./sdk && echo \"Building SDK\" && yarn && yarn build",
+    "postinstall": "cd ./sdk && echo \"Building SDK\" && yarn && yarn build",
     "prebuild": "cd ./sdk && yarn tsx scripts/prebuild"
   },
   "dependencies": {
@@ -110,7 +109,8 @@
     "react-error-overlay": "6.0.9",
     "@coinbase/wallet-sdk": "4.3.0",
     "ethers@6.12.1": "patch:ethers@npm:6.12.1#.yarn/patches/ethers-npm-6.12.1-7d4a09a25c",
-    "jest-runner": "patch:jest-runner@npm:27.5.1#.yarn/patches/jest-runner-npm-27.5.1-2ed2c1cda8"
+    "jest-runner": "patch:jest-runner@npm:27.5.1#.yarn/patches/jest-runner-npm-27.5.1-2ed2c1cda8",
+    "viem@2.37.1": "patch:viem@npm:2.37.1#.yarn/patches/viem-npm-2.37.1-7013552341"
   },
   "eslintConfig": {
     "extends": [

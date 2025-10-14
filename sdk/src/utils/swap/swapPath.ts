@@ -74,7 +74,6 @@ export const createFindSwapPath = (params: {
   isExpressFeeSwap: boolean | undefined;
   disabledMarkets?: string[] | undefined;
   manualPath?: string[] | undefined;
-  maxSwapPathLength?: number | undefined;
 }): FindSwapPath => {
   const {
     chainId,
@@ -85,7 +84,6 @@ export const createFindSwapPath = (params: {
     manualPath,
     gasEstimationParams,
     isExpressFeeSwap,
-    maxSwapPathLength,
   } = params;
   const wrappedFromAddress = getWrappedAddress(chainId, fromTokenAddress);
   const wrappedToAddress = getWrappedAddress(chainId, toTokenAddress);
@@ -95,16 +93,6 @@ export const createFindSwapPath = (params: {
     wrappedFromAddress && wrappedToAddress
       ? getTokenSwapPathsForTokenPairPrebuilt(chainId, wrappedFromAddress, wrappedToAddress)
       : [];
-
-  if (maxSwapPathLength) {
-    /**
-     * As tokenSwapPath contains what tokens can we between input and output token,
-     * restricting intermediate tokens to 0 would mean we filter out any non-direct market swaps,
-     * length of 1 would mean all 2-step swaps
-     */
-    const nonDirectPathLength = maxSwapPathLength - 1;
-    tokenSwapPaths = tokenSwapPaths.filter((path) => path.length <= nonDirectPathLength);
-  }
 
   const finalDisabledMarkets = [...(disabledMarkets ?? [])];
 

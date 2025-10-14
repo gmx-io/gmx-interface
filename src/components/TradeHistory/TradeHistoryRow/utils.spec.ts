@@ -525,7 +525,7 @@ describe("TradeHistoryRow helpers", () => {
         "actionComment": [
           {
             "state": "error",
-            "text": "Not enough available swap liquidity to fill the order. The order will get filled when the condition is met and there is enough available swap liquidity.",
+            "text": "Insufficient available liquidity.",
           },
         ],
         "executionPrice": "...",
