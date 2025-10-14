@@ -1209,6 +1209,10 @@ msgstr "Failed Limit Swap"
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "Liq. {longOrShortText} - {marketIndexName}"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Simulate Tickers Errors"
+msgstr "Simulate Tickers Errors"
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Inc."
 msgstr "Market - Long Inc."
@@ -5022,6 +5026,10 @@ msgstr "Wins and losses for fully closed positions."
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "<0>This will claim {formattedRewards} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
 msgstr "<0>This will claim {formattedRewards} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Simulate Partial Tickers"
+msgstr "Simulate Partial Tickers"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Open Binance app"

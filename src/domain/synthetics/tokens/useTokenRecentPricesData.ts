@@ -1,6 +1,7 @@
 import { useMemo, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
+import { metrics, TickersErrorsCounter, TickersPartialDataCounter } from "lib/metrics";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { LEADERBOARD_PRICES_UPDATE_INTERVAL, PRICES_CACHE_TTL, PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -29,19 +30,28 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
   }, [pathname]);
 
   const pricesCacheRef = useRef<TokenPricesData>({});
-  const pricesCacheUpdatedRef = useRef<number>(0);
+  const pricesCacheUpdatedRef = useRef<{ [address: string]: number }>({});
 
   const { data, error, isLoading } = useSequentialTimedSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
     refreshInterval: refreshPricesInterval,
 
-    keepPreviousData: true,
-
     fetcher: async ([chainId]) => {
-      const shouldUseCache = Date.now() - pricesCacheUpdatedRef.current < PRICES_CACHE_TTL;
+      const result: TokenPricesData = {};
 
-      const result: TokenPricesData = shouldUseCache ? { ...pricesCacheRef.current } : {};
+      // TODO: Remove this after testing
+      if (localStorage.getItem("simulateTickersErrors") === "true") {
+        throw new Error("Simulate Tickers Errors");
+      }
 
-      const priceItems = await oracleKeeperFetcher.fetchTickers();
+      let priceItems = await oracleKeeperFetcher.fetchTickers().catch(() => {
+        metrics.pushCounter<TickersErrorsCounter>("tickersErrors");
+        return [];
+      });
+
+      // TODO: Remove this after testing
+      if (localStorage.getItem("simulatePartialTickers") === "true") {
+        priceItems = priceItems.slice(0, 9);
+      }
 
       priceItems.forEach((priceItem) => {
         let tokenConfig: Token;
@@ -59,8 +69,27 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
           maxPrice: parseContractPrice(BigInt(priceItem.maxPrice), tokenConfig.decimals),
         };
 
+        // Update cache of new received tokens
         pricesCacheRef.current[tokenConfig.address] = result[tokenConfig.address];
+        pricesCacheUpdatedRef.current[tokenConfig.address] = Date.now();
       });
+
+      const hasPartialData = Object.keys(result).length < Object.keys(pricesCacheRef.current).length;
+
+      if (hasPartialData) {
+        // eslint-disable-next-line no-console
+        console.warn("tickersPartialData");
+        metrics.pushCounter<TickersPartialDataCounter>("tickersPartialData");
+
+        Object.keys(pricesCacheUpdatedRef.current).forEach((address) => {
+          const cacheUpdatedAt = pricesCacheUpdatedRef.current[address];
+          const canUseCache = cacheUpdatedAt && Date.now() - cacheUpdatedAt < PRICES_CACHE_TTL;
+
+          if (!result[address] && canUseCache) {
+            result[address] = pricesCacheRef.current[address];
+          }
+        });
+      }
 
       const wrappedToken = getWrappedToken(chainId);
 
@@ -68,12 +97,9 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
         result[NATIVE_TOKEN_ADDRESS] = result[wrappedToken.address];
       }
 
-      const now = Date.now();
-      pricesCacheUpdatedRef.current = now;
-
       return {
         pricesData: result,
-        updatedAt: now,
+        updatedAt: Date.now(),
       };
     },
   });

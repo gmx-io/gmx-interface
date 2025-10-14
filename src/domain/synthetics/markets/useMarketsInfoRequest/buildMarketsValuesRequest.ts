@@ -2,8 +2,7 @@ import { MAX_PNL_FACTOR_FOR_TRADERS_KEY } from "config/dataStore";
 import { MarketsData } from "domain/synthetics/markets/types";
 import { getContractMarketPrices } from "domain/synthetics/markets/utils";
 import { TokensData } from "domain/synthetics/tokens/types";
-import { extendError } from "lib/errors";
-import { metrics } from "lib/metrics";
+import { metrics, MissedMarketPricesCounter } from "lib/metrics";
 import { getByKey } from "lib/objects";
 import { MarketValuesMulticallRequestConfig } from "sdk/modules/markets/types";
 import { HASHED_MARKET_VALUES_KEYS } from "sdk/prebuilt";
@@ -34,10 +33,10 @@ export async function buildMarketsValuesRequest(
     if (!marketPrices) {
       // eslint-disable-next-line no-console
       console.warn("missed market prices", market);
-      metrics.pushError(
-        extendError(new Error("Missed market prices"), { data: { marketName: market.name } }),
-        "buildMarketsValuesRequest"
-      );
+      metrics.pushCounter<MissedMarketPricesCounter>("missedMarketPrices", {
+        marketName: market.name,
+        source: "buildMarketsValuesRequest",
+      });
       continue;
     }
 
