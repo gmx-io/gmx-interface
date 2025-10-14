@@ -896,6 +896,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       setWebsocketTokenBalancesUpdates((old) => {
         const oldDiff = old[token]?.diff || 0n;
+
         return setByKey(old, token, {
           balanceType: TokenBalanceType.GmxAccount,
           diff: oldDiff + amount,

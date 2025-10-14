@@ -27,7 +27,7 @@ export type MultichainFundingHistoryItem = {
   executedTxn: string | undefined;
   executedTimestamp: number | undefined;
 
-  isFromWs?: boolean;
+  source?: "optimistic" | "ws";
 };
 
 export type BridgeOutParams = {
@@ -38,7 +38,7 @@ export type BridgeOutParams = {
   data: string;
 };
 
-export type LayerZeroEndpointId = 40161 | 40231 | 40232 | 30184 | 30110 | 30106;
+export type LayerZeroEndpointId = 40161 | 40231 | 40232 | 30184 | 30110 | 30106 | 30102;
 
 export type OFTLimit = {
   minAmountLD: bigint;

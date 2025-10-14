@@ -100,7 +100,7 @@ export async function createSourceChainDepositTxn({
     dstChainId: chainId,
     account,
     srcChainId,
-    amount: tokenAmount,
+    amountLD: tokenAmount,
     composeGas: composeGas,
     isToGmx: true,
     action,

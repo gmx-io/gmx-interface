@@ -102,7 +102,7 @@ export async function createSourceChainGlvWithdrawalTxn({
     dstChainId: chainId,
     account,
     srcChainId,
-    amount: tokenAmount,
+    amountLD: tokenAmount,
     composeGas: composeGas,
     isToGmx: true,
     isManualGas: true,

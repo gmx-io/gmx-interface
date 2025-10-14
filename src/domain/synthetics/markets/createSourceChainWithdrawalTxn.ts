@@ -114,7 +114,7 @@ export async function createSourceChainWithdrawalTxn({
     dstChainId: chainId,
     account,
     srcChainId,
-    amount: tokenAmount,
+    amountLD: tokenAmount,
     composeGas: composeGas,
     isToGmx: true,
     isManualGas: true,

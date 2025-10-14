@@ -99,7 +99,7 @@ export async function createSourceChainGlvDepositTxn({
     dstChainId: chainId,
     account,
     srcChainId,
-    amount: tokenAmount + relayFeePayload.feeAmount,
+    amountLD: tokenAmount + relayFeePayload.feeAmount,
     composeGas: composeGas,
     isToGmx: true,
     action,

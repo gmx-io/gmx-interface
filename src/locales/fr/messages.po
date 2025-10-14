@@ -30,6 +30,10 @@ msgstr ""
 msgid "Pear Protocol"
 msgstr "Protocole Pear"
 
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
+msgid "Please connect your wallet to view<0/>all available payment options"
+msgstr ""
+
 #: src/components/RatingToast/RatingToast.tsx
 msgid "Not likely"
 msgstr "Peu probable"
@@ -44,10 +48,6 @@ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer {nativeTokenSymbol} from other networks to {chainName} using any of the below options:"
-msgstr ""
-
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "from 5 blockchains"
 msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
@@ -498,10 +498,6 @@ msgstr ""
 msgid "Adding"
 msgstr ""
 
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "Please <0>deposit</0> or <1>swap</1> to get {nativeTokenSymbol}."
-msgstr ""
-
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to claim price impact rebates."
 msgstr ""
@@ -876,6 +872,10 @@ msgstr ""
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Pay"
 msgstr "Payer"
+
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "You’ll need some {wrappedNativeTokenSymbol} in your account to withdraw funds."
+msgstr ""
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
@@ -1865,9 +1865,9 @@ msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#: src/components/Header/AppHeaderChainAndSettings.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Connect Wallet"
 msgstr "Connecter le portefeuille"
 
@@ -2219,8 +2219,6 @@ msgstr "Nombre maximum de parties : {MAX_TWAP_NUMBER_OF_PARTS}"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/Header/AppHeaderChainAndSettings.tsx
-#: src/components/Header/AppHeaderChainAndSettings.tsx
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Launch App"
 msgstr "Lancer l'application"
@@ -2872,10 +2870,6 @@ msgstr ""
 msgid "Accrued Positive Funding Fee"
 msgstr "Frais de financement positif accumulé"
 
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "You’ll need some {nativeTokenSymbol} in your account to withdraw funds."
-msgstr ""
-
 #: src/pages/Stake/UnstakeModal.tsx
 msgid "Unstake submitted."
 msgstr ""
@@ -3235,6 +3229,10 @@ msgstr "PnL"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading is not available using network's native token {0}. Consider using {1} instead."
 msgstr "Le trading express n'est pas disponible en utilisant le token natif du réseau {0}. Envisagez d'utiliser {1} à la place."
+
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "You’ll need <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} in your account to withdraw funds."
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
@@ -4840,6 +4838,10 @@ msgstr ""
 msgid "STIP.b Retroactive Bonus"
 msgstr "Bonus rétroactif STIP.b"
 
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "from {BLOCKCHAIN_COUNT} blockchains"
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated."
 msgstr ""
@@ -5406,6 +5408,10 @@ msgstr ""
 msgid "No delegate found"
 msgstr "Aucun délégué trouvé"
 
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "Please <0>swap</0> to get {wrappedNativeTokenSymbol}."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Community with NFTs, Trading and Education initiatives"
 msgstr "Communauté GMX avec initiatives NFTs, Trading et Éducation"
@@ -5413,6 +5419,11 @@ msgstr "Communauté GMX avec initiatives NFTs, Trading et Éducation"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation Confirmations"
 msgstr "Confirmations de liquidation"
+
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Insufficient gas balance, please deposit more WETH or USDC."
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
@@ -6117,6 +6128,10 @@ msgstr "Taille par partie"
 msgid "Insufficient {0} balance"
 msgstr "Solde {0} insuffisant"
 
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "Please <0>deposit</0> or <1>swap</1> to get {wrappedNativeTokenSymbol}."
+msgstr ""
+
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Sent deposit transaction"
@@ -6286,12 +6301,6 @@ msgstr "Montant max. {0} dépassé"
 msgid "Deposit {glvOrGm}: {0}"
 msgstr ""
 
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
-#~ msgid "No assets available for deposit on {0}"
-#~ msgstr ""
-
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Realized Base PnL"
 msgstr "PnL de base réalisé"
@@ -6410,10 +6419,6 @@ msgstr ""
 
 #: src/components/UserIncentiveDistributionList/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
-msgstr ""
-
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "You’ll need <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {nativeTokenSymbol} in your account to withdraw funds."
 msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -6752,10 +6757,6 @@ msgstr "TAEG des frais"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "Can I build on top of GMX or integrate it into my DeFi app?"
-msgstr ""
-
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "Please <0>swap</0> to get {nativeTokenSymbol}."
 msgstr ""
 
 #: src/pages/Stake/Stake.tsx
@@ -7623,11 +7624,6 @@ msgstr "Pages GMX"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Options Protocol"
 msgstr "Protocole d'options décentralisé"
-
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more ETH or USDC."
-msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Swap Part"

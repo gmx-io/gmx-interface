@@ -6,11 +6,11 @@ import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { getChainIcon } from "config/icons";
+import type { NetworkOption } from "config/networkOptions";
 import { switchNetwork } from "lib/wallets";
 import { getChainName } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
-import type { NetworkOption } from "components/Header/AppHeaderChainAndSettings";
 import type { ModalProps } from "components/Modal/Modal";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";

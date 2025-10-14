@@ -44,7 +44,7 @@ export async function createBridgeInTxn({
     dstChainId: chainId,
     account,
     srcChainId,
-    amount: tokenAmount,
+    amountLD: tokenAmount,
     composeGas,
     isToGmx: true,
     isManualGas: true,

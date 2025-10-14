@@ -1,4 +1,5 @@
 import { plural, t, Trans } from "@lingui/macro";
+import mapValues from "lodash/mapValues";
 import { useCallback, useMemo } from "react";
 
 import { PendingTransaction, usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -12,7 +13,10 @@ import {
 import { selectOrdersInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
-import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
+import {
+  TokenBalanceUpdate,
+  useTokensBalancesUpdates,
+} from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { getPositionKey } from "domain/synthetics/positions/utils";
 import { getRemainingSubaccountActions, Subaccount } from "domain/synthetics/subaccount";
 import { TokenBalanceType } from "domain/tokens";
@@ -78,7 +82,7 @@ export function useOrderTxnCallbacks() {
   const { chainId } = useChainId();
   const { showDebugValues, setIsSettingsVisible } = useSettings();
   const ordersInfoData = useSelector(selectOrdersInfoData);
-  const { setOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
+  const { addOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
   const { setIsPermitsDisabled, resetTokenPermits } = useTokenPermitsContext();
   const tokensData = useSelector(selectTokensData);
   const blockNumber = useBlockNumber(chainId);
@@ -115,17 +119,16 @@ export function useOrderTxnCallbacks() {
 
         const optimisticBatchPayAmounts = getOptimisticBatchPayAmounts(e.data);
 
-        setOptimisticTokensBalancesUpdates((old) => {
-          const newState = { ...old };
-          Object.entries(optimisticBatchPayAmounts).forEach(([tokenAddress, amount]) => {
-            newState[tokenAddress] = {
+        addOptimisticTokensBalancesUpdates(
+          mapValues(
+            optimisticBatchPayAmounts,
+            (amount): TokenBalanceUpdate => ({
               diff: -amount,
               isPending: true,
               balanceType: expressParams?.isGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet,
-            };
-          });
-          return newState;
-        });
+            })
+          )
+        );
 
         if (mainActionType === "update" && batchParams.updateOrderParams[0]) {
           const updateOrderParams = batchParams.updateOrderParams[0];
@@ -350,13 +353,13 @@ export function useOrderTxnCallbacks() {
       }
     },
     [
+      addOptimisticTokensBalancesUpdates,
       blockNumber,
       chainId,
       ordersInfoData,
       resetTokenPermits,
       setIsPermitsDisabled,
       setIsSettingsVisible,
-      setOptimisticTokensBalancesUpdates,
       setPendingExpressTxn,
       setPendingFundingFeeSettlement,
       setPendingOrder,

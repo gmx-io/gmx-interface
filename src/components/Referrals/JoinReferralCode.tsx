@@ -352,7 +352,8 @@ function ReferralCodeFormMultichain({
         isToGmx: true,
         dstChainId: p.chainId,
         account: p.simulationSigner.address,
-        amount: tokenAmount,
+        // TODO MLTCH take into account LD
+        amountLD: tokenAmount,
         srcChainId: p.srcChainId,
         composeGas,
         action,
@@ -481,7 +482,7 @@ function ReferralCodeFormMultichain({
         dstChainId: chainId,
         account,
         srcChainId,
-        amount: result.data.amount,
+        amountLD: result.data.amount,
         composeGas: result.data.composeGas,
         isToGmx: true,
         action,

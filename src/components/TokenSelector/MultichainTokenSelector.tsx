@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { memo, ReactNode, useEffect, useMemo, useState } from "react";
 
 import type { AnyChainId, ContractsChainId, SourceChainId } from "config/chains";
 import { isSourceChain } from "config/multichain";
@@ -14,9 +14,12 @@ import { searchBy } from "lib/searchBy";
 import { getToken } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
+import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
+import Tabs from "components/Tabs/Tabs";
+import type { Option as TabOption } from "components/Tabs/types";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
@@ -44,6 +47,10 @@ type Props = {
   includeMultichainTokensInPay?: boolean;
 
   onDepositTokenAddress: (tokenAddress: string, chainId: SourceChainId) => void;
+
+  isConnected?: boolean;
+  walletIconUrls?: string[];
+  openConnectModal?: () => void;
 };
 
 export function MultichainTokenSelector({
@@ -61,6 +68,9 @@ export function MultichainTokenSelector({
   multichainTokens,
   includeMultichainTokensInPay,
   onDepositTokenAddress: propsOnDepositTokenAddress,
+  isConnected,
+  walletIconUrls,
+  openConnectModal,
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -141,6 +151,13 @@ export function MultichainTokenSelector({
     }
   }, [isGmxAccountEmpty, isModalVisible, setSearchKeyword, srcChainId]);
 
+  const tabsOptions: TabOption<"pay" | "deposit">[] = useMemo(() => {
+    return [
+      { value: "pay", label: <Trans>Available to Pay</Trans> },
+      { value: "deposit", label: <Trans>Available to Deposit</Trans> },
+    ];
+  }, []);
+
   if (!token) {
     return null;
   }
@@ -155,52 +172,41 @@ export function MultichainTokenSelector({
         label={label}
         footerContent={footerContent}
         headerContent={
-          <div className="pb-12">
-            <SearchInput
-              value={searchKeyword}
-              setValue={setSearchKeyword}
-              className="mb-16"
-              onKeyDown={handleKeyDown}
-            />
-            {isGmxAccountEmpty && srcChainId !== undefined ? (
-              <div className="text-body-medium text-typography-secondary">
-                <Trans>To begin trading on GMX deposit assets into GMX account.</Trans>
-              </div>
-            ) : (
-              <div className="flex gap-4">
-                <Button
-                  type="button"
-                  variant={activeFilter === "pay" ? "secondary" : "ghost"}
-                  size="small"
-                  className={cx({
-                    "!text-typography-primary": activeFilter === "pay",
-                  })}
-                  onClick={() => setActiveFilter("pay")}
-                >
-                  <Trans>Available to Pay</Trans>
-                </Button>
-                <Button
-                  type="button"
-                  variant={activeFilter === "deposit" ? "secondary" : "ghost"}
-                  size="small"
-                  className={cx({
-                    "!text-typography-primary": activeFilter === "deposit",
-                  })}
-                  onClick={() => setActiveFilter("deposit")}
-                >
-                  <Trans>Available to Deposit</Trans>
-                </Button>
-              </div>
-            )}
-          </div>
+          isConnected === false ? null : (
+            <div className="pb-12">
+              <SearchInput
+                value={searchKeyword}
+                setValue={setSearchKeyword}
+                className="mb-16"
+                onKeyDown={handleKeyDown}
+              />
+              {isGmxAccountEmpty && srcChainId !== undefined ? (
+                <div className="text-body-medium text-typography-secondary">
+                  <Trans>To begin trading on GMX deposit assets into GMX account.</Trans>
+                </div>
+              ) : (
+                <Tabs type="inline" options={tabsOptions} selectedValue={activeFilter} onChange={setActiveFilter} />
+              )}
+            </div>
+          )
         }
         contentPadding={false}
+        disableOverflowHandling={isConnected === false}
       >
-        {activeFilter === "pay" && (
-          <AvailableToTradeTokenList onSelectTokenAddress={onSelectTokenAddress} tokens={availableToTradeTokenList} />
-        )}
-        {activeFilter === "deposit" && multichainTokens && (
-          <MultichainTokenList tokens={multichainTokenList} onDepositTokenAddress={onDepositTokenAddress} />
+        {isConnected === false ? (
+          <ConnectWalletModalContent openConnectModal={openConnectModal} walletIconUrls={walletIconUrls} />
+        ) : (
+          <>
+            {activeFilter === "pay" && (
+              <AvailableToTradeTokenList
+                onSelectTokenAddress={onSelectTokenAddress}
+                tokens={availableToTradeTokenList}
+              />
+            )}
+            {activeFilter === "deposit" && multichainTokens && (
+              <MultichainTokenList tokens={multichainTokenList} onDepositTokenAddress={onDepositTokenAddress} />
+            )}
+          </>
         )}
       </SlideModal>
       <div
@@ -539,3 +545,43 @@ function MultichainTokenList({
     </div>
   );
 }
+
+const ConnectWalletModalContent = memo(function ConnectWalletModalContent({
+  openConnectModal,
+  walletIconUrls,
+}: {
+  openConnectModal: (() => void) | undefined;
+  walletIconUrls: string[] | undefined;
+}) {
+  return (
+    <div className="flex grow flex-col items-center justify-center gap-20 p-adaptive">
+      {walletIconUrls?.length && (
+        <div className="flex rounded-full bg-slate-800 p-2">
+          {walletIconUrls.map((url, index) => (
+            <img
+              src={url}
+              alt="Wallet Icon"
+              className="relative -ml-8 size-24 rounded-full border-2 border-slate-800 first-of-type:ml-0"
+              // Safety: walletIconUrls is not changing, memo prevents parent caused re-renders
+              // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+              style={{
+                zIndex: walletIconUrls.length - index,
+              }}
+              key={url}
+            />
+          ))}
+        </div>
+      )}
+      <div className="text-body-medium text-center text-typography-secondary">
+        <Trans>
+          Please connect your wallet to view
+          <br />
+          all available payment options
+        </Trans>
+      </div>
+      <ConnectWalletButton onClick={openConnectModal}>
+        <Trans>Connect Wallet</Trans>
+      </ConnectWalletButton>
+    </div>
+  );
+});
