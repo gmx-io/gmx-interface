@@ -2,11 +2,11 @@
 
 ## Responsiveness
 - Breakpoints are centralized in `src/lib/breakpoints.ts` (`mobile: 768`, `tablet: 1024`, `desktop: 1280`, `smallMobile: 400`). Tailwind extends these so `sm/md/lg/xl` map to the same values while arbitrary queries such as `min-[1300px]` stay available for finer control.
-- Build the mobile layout and add enhancements with `md:`/`lg:` modifiers or `max-md:` fallbacks.
+- Build the desktop layout first and add enhancements with `md:`/`lg:` modifiers or `max-md:` fallbacks.
 - When behavior depends on viewport width (e.g., collapsible sections), gate it behind `useBreakpoints()` from `src/lib/useBreakpoints.ts` to keep logic and styling aligned.
 
 ## Common Styles
-- Spacing and radii follow the 1 px spacing scale declared in `tailwind.config.ts:167`; use numeric tokens (`p-20`, `gap-8`, `rounded-8`) instead of hard-coded values so components stay aligned with the design rhythm.
+- Spacing and radius properties follow the 1 px spacing scale declared in `tailwind.config.ts`; use numeric tokens (`p-20`, `gap-8`, `rounded-8`) instead of hard-coded values so components stay aligned with the design rhythm.
 - Almost all borders in app .5px width as `border-1/2` and color slate-600 set as `border-slate-600`.
 - Most common rounding which applied almost for all blocks in app is `rounded-8`.
 - Background depends on context where block placed, usually this is `bg-slate-900` or `bg-slate-800`.
