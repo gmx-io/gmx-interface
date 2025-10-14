@@ -106,6 +106,8 @@ const MARKETS_INFO_QUERY = gql`
   }
 `;
 
+const MARKETS_INFO_QUERY_LIMIT = 250;
+
 export function useFastMarketsInfoRequest(chainId: number) {
   const {
     data: fastMarketInfoData,
@@ -124,7 +126,8 @@ export function useFastMarketsInfoRequest(chainId: number) {
                 variables: { limit, offset },
                 fetchPolicy: "no-cache",
               })
-              .then((response) => response?.data?.marketInfos ?? []) ?? []
+              .then((response) => response?.data?.marketInfos ?? []) ?? [],
+          MARKETS_INFO_QUERY_LIMIT
         );
 
         if (!rawMarketsInfos) {
