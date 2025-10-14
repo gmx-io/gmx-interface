@@ -34,7 +34,7 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(requestIncreasePosition, minCollateralUsd)).toMatchInlineSnapshot(`
       {
-        "acceptablePrice": ">  $\u200a\u200d35.0578",
+        "acceptablePrice": ">  $\u200a35.0578",
         "action": "Request Market Increase",
         "executionPrice": undefined,
         "fullMarket": "AVAX/USD [WAVAX-USDC]",
@@ -44,12 +44,12 @@ describe("TradeHistoryRow helpers", () => {
         "market": "Short AVAX/USD",
         "marketPrice": undefined,
         "poolName": "WAVAX-USDC",
-        "price": ">  $\u200a\u200d35.0578",
+        "price": ">  $\u200a35.0578",
         "priceComment": [
           "Acceptable price for the order.",
         ],
         "priceImpact": undefined,
-        "size": "+$\u200a\u200d1,054.88",
+        "size": "+$\u200a1,054.88",
         "timestamp": "08 Feb 2024, 10:50",
         "timestampISO": "2024-02-08T10:50:50+04:00",
       }
@@ -57,7 +57,7 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(withdraw1Usd, minCollateralUsd)).toMatchInlineSnapshot(`
       {
-        "acceptablePrice": "<  $\u200a\u200d43.2376",
+        "acceptablePrice": "<  $\u200a43.2376",
         "action": "Request Withdraw",
         "executionPrice": undefined,
         "fullMarket": "AVAX/USD [WAVAX-USDC]",
@@ -67,7 +67,7 @@ describe("TradeHistoryRow helpers", () => {
         "market": "Short AVAX/USD",
         "marketPrice": undefined,
         "poolName": "WAVAX-USDC",
-        "price": "<  $\u200a\u200d43.2376",
+        "price": "<  $\u200a43.2376",
         "priceComment": [
           "Acceptable price for the order.",
         ],
@@ -80,7 +80,7 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(deposit1Usd, minCollateralUsd)).toMatchInlineSnapshot(`
       {
-        "acceptablePrice": "<  $\u200a\u200d0.085152",
+        "acceptablePrice": "<  $\u200a0.085152",
         "action": "Request Deposit",
         "executionPrice": undefined,
         "fullMarket": "DOGE/USD [ETH-DAI]",
@@ -90,7 +90,7 @@ describe("TradeHistoryRow helpers", () => {
         "market": "Long DOGE/USD",
         "marketPrice": undefined,
         "poolName": "ETH-DAI",
-        "price": "<  $\u200a\u200d0.085152",
+        "price": "<  $\u200a0.085152",
         "priceComment": [
           "Acceptable price for the order.",
         ],
@@ -256,7 +256,7 @@ describe("TradeHistoryRow helpers", () => {
         "poolName": "WETH-USDC",
         "price": "",
         "priceImpact": undefined,
-        "size": "-$\u200a\u200d4,954.24",
+        "size": "-$\u200a4,954.24",
         "timestamp": "18 Sep 2023, 11:52",
         "timestampISO": "2023-09-18T11:52:39+04:00",
       }
@@ -394,15 +394,15 @@ describe("TradeHistoryRow helpers", () => {
         "market": "Long BTC/USD",
         "marketPrice": undefined,
         "poolName": "BTC-USDC",
-        "price": ">  $\u200a\u200d95,600.00",
+        "price": ">  $\u200a95,600.00",
         "priceComment": [
           "Trigger price for the order.",
         ],
         "priceImpact": undefined,
-        "size": "+$\u200a\u200d3.62",
+        "size": "+$\u200a3.62",
         "timestamp": "18 Sep 2023, 16:43",
         "timestampISO": "2023-09-18T16:43:18+04:00",
-        "triggerPrice": ">  $\u200a\u200d95,600.00",
+        "triggerPrice": ">  $\u200a95,600.00",
       }
     `);
 
