@@ -17,7 +17,6 @@ msgstr ""
 msgid "Unrealized Base PnL"
 msgstr "Nicht realisierter Basis-Gewinn/Verlust"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Wallet not connected"
 msgstr "Wallet nicht verbunden"
@@ -780,8 +779,8 @@ msgid "Total value locked takes into account:"
 msgstr "Gesamtwert gesperrt berücksichtigt:"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-msgid "You can check your claim history <0>here</0>."
-msgstr "Du kannst deine Claim-Historie <0>hier</0> einsehen."
+#~ msgid "You can check your claim history <0>here</0>."
+#~ msgstr "Du kannst deine Claim-Historie <0>hier</0> einsehen."
 
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Claimable positive funding fees.<0/><1/>They become available after modifying the position by increasing or decreasing it, depositing or withdrawing collateral, or settling the fees using the \"Settle\" button."
@@ -814,7 +813,6 @@ msgid "Unstake {tokenSymbol}"
 msgstr ""
 
 #: src/components/InputSection/InputSection.jsx
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "MAX"
 msgstr "MAX"
 
@@ -1704,8 +1702,8 @@ msgid "of close fee"
 msgstr "von Schließgebühr"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
-msgstr "Die Adresse des esGMX (IOU)-Tokens lautet {esGmxIouAddress}"
+#~ msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
+#~ msgstr "Die Adresse des esGMX (IOU)-Tokens lautet {esGmxIouAddress}"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX Alerts"
@@ -1894,12 +1892,12 @@ msgid "Connect Wallet"
 msgstr "Wallet verbinden"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-msgid "Vest with GLP on Avalanche"
-msgstr "Vesting mit GLP auf Avalanche"
+#~ msgid "Vest with GLP on Avalanche"
+#~ msgstr "Vesting mit GLP auf Avalanche"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-msgid "No esGMX to claim"
-msgstr "Kein esGMX zu beanspruchen"
+#~ msgid "No esGMX to claim"
+#~ msgstr "Kein esGMX zu beanspruchen"
 
 #: src/components/SettingsModal/ThemeSelector.tsx
 msgid "System"
@@ -2278,8 +2276,8 @@ msgid "NET RATE / 1 H"
 msgstr "NETTO-RATE / 1 H"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-msgid "Vest with GMX on Avalanche"
-msgstr "Vesting mit GMX auf Avalanche"
+#~ msgid "Vest with GMX on Avalanche"
+#~ msgstr "Vesting mit GMX auf Avalanche"
 
 #: src/domain/multichain/SettlementChainWarningContainer.tsx
 msgid "Change to {0}"
@@ -2306,8 +2304,8 @@ msgid "Swap Profit Fee"
 msgstr "Tausch-Gewinngebühr"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-msgid "Amount to claim"
-msgstr "Zu beanspruchender Betrag"
+#~ msgid "Amount to claim"
+#~ msgstr "Zu beanspruchender Betrag"
 
 #: src/pages/Jobs/Jobs.jsx
 msgid "Job openings at GMX."
@@ -2726,8 +2724,8 @@ msgid "How can we continue to meet your expectations?"
 msgstr "Wie können wir weiterhin deine Erwartungen erfüllen?"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
-msgstr "Der esGMX (IOU)-Token ist übertragbar. Du kannst den Token zu deiner Wallet hinzufügen und ihn an eine andere Adresse senden, um ihn zu beanspruchen, falls gewünscht."
+#~ msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
+#~ msgstr "Der esGMX (IOU)-Token ist übertragbar. Du kannst den Token zu deiner Wallet hinzufügen und ihn an eine andere Adresse senden, um ihn zu beanspruchen, falls gewünscht."
 
 #: src/domain/multichain/SettlementChainWarningContainer.tsx
 msgid "You switched your settlement network to {0}, but you still have {1} remaining in your {2} GMX Account."
@@ -2889,7 +2887,6 @@ msgstr "Trigger-Preis unter Liq.-Preis"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Claim failed."
 msgstr "Beanspruchen fehlgeschlagen."
 
@@ -3016,8 +3013,8 @@ msgid "Lend out your GLV or GM tokens, and borrow against them, or put your LP t
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
-msgstr "Dein esGMX (IOU)-Guthaben wird nach dem Beanspruchen um deinen Beanspruchungsbetrag verringert, dies ist ein erwartetes Verhalten."
+#~ msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
+#~ msgstr "Dein esGMX (IOU)-Guthaben wird nach dem Beanspruchen um deinen Beanspruchungsbetrag verringert, dies ist ein erwartetes Verhalten."
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Portfolio"
@@ -3051,7 +3048,6 @@ msgstr "Order kann nicht ausgeführt werden, da die verbleibende Position kleine
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Claiming..."
 msgstr "Beanspruchen..."
 
@@ -3073,8 +3069,8 @@ msgid "Price impact rebates claimed."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-msgid "Vest with GMX on Arbitrum"
-msgstr "Vesting mit GMX auf Arbitrum"
+#~ msgid "Vest with GMX on Arbitrum"
+#~ msgstr "Vesting mit GMX auf Arbitrum"
 
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Claimable price impact rebates.<0/><1/><2>Read more</2>."
@@ -3421,8 +3417,8 @@ msgid "Save One-Click Trading settings"
 msgstr "One-Click-Trading-Einstellungen speichern"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-msgid "Please switch your network to Arbitrum."
-msgstr "Bitte wechsle dein Netzwerk zu Arbitrum."
+#~ msgid "Please switch your network to Arbitrum."
+#~ msgstr "Bitte wechsle dein Netzwerk zu Arbitrum."
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "The position would be immediately liquidated upon order execution. Try reducing the size."
@@ -3500,8 +3496,8 @@ msgid "There is no price impact. There is a single<0/>execution price for increa
 msgstr "Es gibt keinen Preisimpact. Es gibt einen einzelnen<0/>Ausführungspreis für die Erhöhung von Longs oder<1/>die Verringerung von Shorts für diese Größe."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
-msgstr "Nach dem Beanspruchen werden die esGMX-Tokens innerhalb von 7 Tagen auf dein Konto im ausgewählten Netzwerk airdropped."
+#~ msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
+#~ msgstr "Nach dem Beanspruchen werden die esGMX-Tokens innerhalb von 7 Tagen auf dein Konto im ausgewählten Netzwerk airdropped."
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Funding Activity"
@@ -3783,8 +3779,8 @@ msgid "Insufficient {0} balance to pay for gas"
 msgstr "Unzureichendes {0}-Guthaben, um Gas zu bezahlen"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
-msgstr "Du kannst derzeit maximal {0} esGMX-Tokens in einem Verhältnis von {1} {stakingToken} zu 1 esGMX vesten."
+#~ msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
+#~ msgstr "Du kannst derzeit maximal {0} esGMX-Tokens in einem Verhältnis von {1} {stakingToken} zu 1 esGMX vesten."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Open Ocean"
@@ -4423,8 +4419,8 @@ msgid "All time"
 msgstr "Gesamtzeit"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-msgid "Select your vesting option below then click \"Claim\"."
-msgstr "Wähle unten deine Vestingoption aus und klicke dann auf \"Beanspruchen\"."
+#~ msgid "Select your vesting option below then click \"Claim\"."
+#~ msgstr "Wähle unten deine Vestingoption aus und klicke dann auf \"Beanspruchen\"."
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
@@ -5201,8 +5197,8 @@ msgid "Collateral at Liquidation"
 msgstr "Kollateral bei Liquidation"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
-msgstr "Nach dem Beanspruchen kannst du maximal {0} esGMX in einem Verhältnis von {1} {stakingToken} zu 1 esGMX vesten."
+#~ msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
+#~ msgstr "Nach dem Beanspruchen kannst du maximal {0} esGMX in einem Verhältnis von {1} {stakingToken} zu 1 esGMX vesten."
 
 #: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -5455,7 +5451,6 @@ msgstr "Diese TWAP-Order wird {numberOfParts} {0} {type}-Orders von je {1} über
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Claim submitted."
 msgstr "Beanspruchung übermittelt."
 
@@ -5550,8 +5545,8 @@ msgid "We want your insights to help improve GMX. For security reasons, we won't
 msgstr "Wir wollen deine Einblicke, um GMX zu verbessern. Aus Sicherheitsgründen kontaktieren wir dich nicht zuerst. Bitte sende die Nachricht \"I have feedback\" an einen unserer offiziellen Accounts:"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-msgid "Claim esGMX"
-msgstr "esGMX beanspruchen"
+#~ msgid "Claim esGMX"
+#~ msgstr "esGMX beanspruchen"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
@@ -5622,8 +5617,8 @@ msgid "Permit signed!"
 msgstr "Erlaubnis signiert!"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-msgid "Select an option"
-msgstr "Option auswählen"
+#~ msgid "Select an option"
+#~ msgstr "Option auswählen"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "less than a minute"
@@ -5703,7 +5698,6 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Claim"
 msgstr "Beanspruchen"
 
@@ -5763,7 +5757,6 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Enter an amount"
 msgstr "Betrag eingeben"
 
@@ -6445,8 +6438,8 @@ msgid "GMX Proposals"
 msgstr "GMX-Vorschläge"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-msgid "Vest with GLP on Arbitrum"
-msgstr "Vesting mit GLP auf Arbitrum"
+#~ msgid "Vest with GLP on Arbitrum"
+#~ msgstr "Vesting mit GLP auf Arbitrum"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 #: src/components/InterviewModal/InterviewModal.tsx
@@ -6914,7 +6907,6 @@ msgid "HoudiniSwap"
 msgstr "HoudiniSwap"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 msgid "Claim completed."
 msgstr ""
 
@@ -7096,8 +7088,8 @@ msgid "GBC Kudai AI Agent"
 msgstr "GBC Kudai AI Agent"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-msgid "You have {0} esGMX (IOU) tokens."
-msgstr "Du hast {0} esGMX (IOU)-Tokens."
+#~ msgid "You have {0} esGMX (IOU) tokens."
+#~ msgstr "Du hast {0} esGMX (IOU)-Tokens."
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase Size (Stop Market)"
@@ -7194,8 +7186,8 @@ msgid "You can buy {nativeTokenSymbol} directly on <0>{chainName}</0> using thes
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-msgid "The esGMX tokens can be staked or vested at any time."
-msgstr "Die esGMX-Tokens können jederzeit gestaket oder gevested werden."
+#~ msgid "The esGMX tokens can be staked or vested at any time."
+#~ msgstr "Die esGMX-Tokens können jederzeit gestaket oder gevested werden."
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed"

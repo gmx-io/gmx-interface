@@ -12,7 +12,6 @@ import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDas
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
 import Buy from "pages/Buy/Buy";
 import BuyGMX from "pages/BuyGMX/BuyGMX";
-import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
 import EarnAdditionalOpportunitiesPage from "pages/Earn/EarnAdditionalOpportunitiesPage";
 import EarnDiscoveryPage from "pages/Earn/EarnDiscoveryPage";
@@ -62,6 +61,8 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       {/* redirect from previous dashboard url */}
       <RedirectWithQuery exact from="/dashboard" to="/stats" />
       <RedirectWithQuery exact from="/monitor/v2" to="/monitor" />
+      {/* redirect from previous stake(earn) url */}
+      <RedirectWithQuery exact from="/stake" to="/earn" />
       <RedirectWithQuery from="/v2" to="/trade" />
 
       <Route exact path="/">
@@ -177,10 +178,6 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
 
       <Route exact path="/nft_wallet">
         <NftWallet />
-      </Route>
-
-      <Route exact path="/claim_es_gmx">
-        <ClaimEsGmx />
       </Route>
 
       <Route exact path="/actions/:v/:account">
