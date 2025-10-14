@@ -26,7 +26,7 @@ const KNOWN_SAFE_SINGLETONS = new Set(
 );
 
 async function isSafeAccount(
-  address: `0x${string}`,
+  address: string,
   client: PublicClient,
   safeSingletonAddresses: Set<string>
 ): Promise<boolean> {
@@ -46,7 +46,7 @@ async function isSafeAccount(
 }
 
 async function getAccountType(
-  address: `0x${string}`,
+  address: string,
   client: PublicClient,
   safeSingletonAddresses: Set<string>
 ): Promise<AccountType> {

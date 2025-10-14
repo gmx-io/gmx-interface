@@ -2,16 +2,22 @@ import { errors as _StargateErrorsAbi } from "@stargatefinance/stg-evm-sdk-v2";
 import { abi as IStargateAbi } from "@stargatefinance/stg-evm-sdk-v2/artifacts/src/interfaces/IStargate.sol/IStargate.json";
 import { address as ethPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbitrum-mainnet/StargatePoolNative.json";
 import { address as usdcPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbitrum-mainnet/StargatePoolUSDC.json";
+import { address as usdtPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbitrum-mainnet/StargatePoolUSDT.json";
 import { address as ethPoolArbitrumSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolArbitrumSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/StargatePoolUSDC.json";
+import { address as usdtPoolArbitrumSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbsep-testnet/StargatePoolUSDT.json";
 import { address as usdcPoolAvalanche } from "@stargatefinance/stg-evm-sdk-v2/deployments/avalanche-mainnet/StargatePoolUSDC.json";
+import { address as usdtPoolAvalanche } from "@stargatefinance/stg-evm-sdk-v2/deployments/avalanche-mainnet/StargatePoolUSDT.json";
 import { address as ethPoolBase } from "@stargatefinance/stg-evm-sdk-v2/deployments/base-mainnet/StargatePoolNative.json";
 import { address as usdcPoolBase } from "@stargatefinance/stg-evm-sdk-v2/deployments/base-mainnet/StargatePoolUSDC.json";
+import { address as usdcPoolBsc } from "@stargatefinance/stg-evm-sdk-v2/deployments/bsc-mainnet/StargatePoolUSDC.json";
+import { address as usdtPoolBsc } from "@stargatefinance/stg-evm-sdk-v2/deployments/bsc-mainnet/StargatePoolUSDT.json";
 import { address as ethPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolUSDC.json";
 import { address as ethPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolUSDC.json";
-import { Wallet, type JsonFragment } from "ethers";
+import { address as usdtPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolUSDT.json";
+import { Wallet } from "ethers";
 import invert from "lodash/invert";
 import mapValues from "lodash/mapValues";
 import uniq from "lodash/uniq";
@@ -27,6 +33,7 @@ import {
   BOTANIX,
   SettlementChainId,
   SOURCE_BASE_MAINNET,
+  SOURCE_BSC_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
   SourceChainId,
@@ -111,6 +118,36 @@ const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | Settle
       stargate: usdcPoolBase,
       symbol: "USDC",
     },
+    [SOURCE_BSC_MAINNET]: {
+      address: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+      decimals: 18,
+      chainId: SOURCE_BSC_MAINNET,
+      stargate: usdcPoolBsc,
+      symbol: "USDC",
+    },
+  },
+  ["USDT"]: {
+    [ARBITRUM]: {
+      address: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+      decimals: 6,
+      chainId: ARBITRUM,
+      stargate: usdtPoolArbitrum,
+      symbol: "USDT",
+    },
+    [AVALANCHE]: {
+      address: "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
+      decimals: 6,
+      chainId: AVALANCHE,
+      stargate: usdtPoolAvalanche,
+      symbol: "USDT",
+    },
+    [SOURCE_BSC_MAINNET]: {
+      address: "0x55d398326f99059fF775485246999027B3197955",
+      decimals: 18,
+      chainId: SOURCE_BSC_MAINNET,
+      stargate: usdtPoolBsc,
+      symbol: "USDT",
+    },
   },
   ["ETH"]: {
     [ARBITRUM]: {
@@ -183,6 +220,26 @@ if (isDevelopment()) {
       chainId: SOURCE_SEPOLIA,
       stargate: ethPoolSepolia,
       symbol: "ETH",
+      isTestnet: true,
+    },
+  };
+
+  TOKEN_GROUPS["USDT"] = {
+    ...TOKEN_GROUPS["USDT"],
+    [ARBITRUM_SEPOLIA]: {
+      address: "0x095f40616FA98Ff75D1a7D0c68685c5ef806f110",
+      decimals: 6,
+      chainId: ARBITRUM_SEPOLIA,
+      stargate: usdtPoolArbitrumSepolia,
+      symbol: "USDT",
+      isTestnet: true,
+    },
+    [SOURCE_SEPOLIA]: {
+      address: "0xF3F2b4815A58152c9BE53250275e8211163268BA",
+      decimals: 6,
+      chainId: SOURCE_SEPOLIA,
+      stargate: usdtPoolSepolia,
+      symbol: "USDT",
       isTestnet: true,
     },
   };
@@ -272,6 +329,7 @@ export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Record<AnyChainId, SettlementChain
   [SOURCE_OPTIMISM_SEPOLIA]: ARBITRUM_SEPOLIA,
   [SOURCE_SEPOLIA]: ARBITRUM_SEPOLIA,
   [SOURCE_BASE_MAINNET]: ARBITRUM,
+  [SOURCE_BSC_MAINNET]: ARBITRUM,
   [BOTANIX]: ARBITRUM,
 
   // Stubs
@@ -316,6 +374,7 @@ export const MULTICALLS_MAP: Record<SourceChainId, string> = {
   [SOURCE_OPTIMISM_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_BASE_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
+  [SOURCE_BSC_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
 };
 
 if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
@@ -338,7 +397,7 @@ export const CHAIN_ID_PREFERRED_DEPOSIT_TOKEN: Record<SettlementChainId, string>
 
 export const MULTICHAIN_FUNDING_SLIPPAGE_BPS = 50;
 
-export const StargateErrorsAbi = _StargateErrorsAbi as readonly (Abi[number] & JsonFragment)[];
+export const StargateErrorsAbi = _StargateErrorsAbi as Abi;
 
 export const CHAIN_ID_TO_ENDPOINT_ID: Record<SettlementChainId | SourceChainId, LayerZeroEndpointId> = {
   [ARBITRUM_SEPOLIA]: 40231,
@@ -347,6 +406,7 @@ export const CHAIN_ID_TO_ENDPOINT_ID: Record<SettlementChainId | SourceChainId, 
   [ARBITRUM]: 30110,
   [SOURCE_BASE_MAINNET]: 30184,
   [AVALANCHE]: 30106,
+  [SOURCE_BSC_MAINNET]: 30102,
 };
 
 export const ENDPOINT_ID_TO_CHAIN_ID: Partial<Record<LayerZeroEndpointId, SettlementChainId | SourceChainId>> =
@@ -356,6 +416,7 @@ export const FAKE_INPUT_AMOUNT_MAP: Record<string, bigint> = {
   "USDC.SG": numberToBigint(1, getTokenBySymbol(ARBITRUM_SEPOLIA, "USDC.SG").decimals),
   ETH: numberToBigint(0.0015, getTokenBySymbol(ARBITRUM_SEPOLIA, "ETH").decimals),
   USDC: numberToBigint(1, getTokenBySymbol(ARBITRUM, "USDC").decimals),
+  USDT: numberToBigint(1, getTokenBySymbol(ARBITRUM, "USDT").decimals),
 };
 
 export const RANDOM_SLOT = "0x23995301f0ea59f7cace2ae906341fc4662f3f5d23f124431ee3520d1070148c";

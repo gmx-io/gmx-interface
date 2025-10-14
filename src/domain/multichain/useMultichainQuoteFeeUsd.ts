@@ -32,7 +32,40 @@ export function useMultichainQuoteFeeUsd({
   const { chainId } = useChainId();
   const { pricesData: settlementChainTokenPricesData } = useTokenRecentPricesRequest(chainId);
 
-  if (!unwrappedTokenAddress || sourceChainId === undefined || targetChainId === undefined) {
+  const nativeFee = quoteSend?.nativeFee as bigint;
+  const amountReceivedLD = quoteOft?.receipt.amountReceivedLD as bigint;
+
+  let sourceNativeTokenPriceChain = chainId;
+  let sourceNativeTokenAddress = zeroAddress;
+  let hasSourceNativeTokenPrice = false;
+  if (sourceChainId !== undefined && targetChainId !== undefined && sourceChainId !== chainId) {
+    if (NATIVE_TOKEN_PRICE_MAP[sourceChainId]?.[targetChainId]?.[targetChainId]) {
+      sourceNativeTokenPriceChain = chainId;
+      sourceNativeTokenAddress = NATIVE_TOKEN_PRICE_MAP[sourceChainId]?.[targetChainId]?.[targetChainId];
+      hasSourceNativeTokenPrice = true;
+    } else {
+      const someChain = Object.keys(NATIVE_TOKEN_PRICE_MAP[sourceChainId]?.[targetChainId] ?? {})[0];
+      if (someChain) {
+        sourceNativeTokenPriceChain = parseInt(someChain) as SettlementChainId;
+        sourceNativeTokenAddress =
+          NATIVE_TOKEN_PRICE_MAP[sourceChainId]?.[targetChainId]?.[sourceNativeTokenPriceChain];
+        hasSourceNativeTokenPrice = true;
+      }
+    }
+  } else if (sourceChainId === chainId) {
+    sourceNativeTokenPriceChain = chainId;
+    sourceNativeTokenAddress = zeroAddress;
+    hasSourceNativeTokenPrice = true;
+  }
+
+  const { pricesData: priceChainTokenPricesData } = useTokenRecentPricesRequest(sourceNativeTokenPriceChain);
+
+  if (
+    !unwrappedTokenAddress ||
+    sourceChainId === undefined ||
+    targetChainId === undefined ||
+    !hasSourceNativeTokenPrice
+  ) {
     return {
       networkFee: undefined,
       networkFeeUsd: undefined,
@@ -58,11 +91,7 @@ export function useMultichainQuoteFeeUsd({
     };
   }
 
-  const nativeFee = quoteSend?.nativeFee as bigint;
-  const amountReceivedLD = quoteOft?.receipt.amountReceivedLD as bigint;
-
-  const sourceChainNativeTokenPrices =
-    settlementChainTokenPricesData?.[NATIVE_TOKEN_PRICE_MAP[sourceChainId]?.[targetChainId] ?? zeroAddress];
+  const sourceChainNativeTokenPrices = priceChainTokenPricesData?.[sourceNativeTokenAddress];
 
   const transferTokenPrices = settlementChainTokenPricesData?.[unwrappedTokenAddress];
   const sourceChainNativeTokenDecimals = getToken(chainId, zeroAddress)?.decimals ?? 18;

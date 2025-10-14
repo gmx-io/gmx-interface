@@ -1,6 +1,6 @@
 import { encodeFunctionData } from "viem";
 
-import StBTCABI from "abis/StBTC.json";
+import StBTCABI from "abis/StBTC";
 import { BOTANIX } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { TokensData } from "types/tokens";
@@ -62,7 +62,7 @@ export const getBotanixStakingExternalSwapQuote = ({
       txnData: {
         to: getContract(BOTANIX, "StBTC"),
         data: encodeFunctionData({
-          abi: StBTCABI.abi,
+          abi: StBTCABI,
           functionName: "deposit",
           args: [amountIn, receiverAddress],
         }),
@@ -97,7 +97,7 @@ export const getBotanixStakingExternalSwapQuote = ({
       txnData: {
         to: getContract(BOTANIX, "StBTC"),
         data: encodeFunctionData({
-          abi: StBTCABI.abi,
+          abi: StBTCABI,
           functionName: "withdraw",
           args: [amountIn, receiverAddress, getContract(BOTANIX, "ExternalHandler")],
         }),
