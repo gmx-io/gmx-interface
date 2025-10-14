@@ -778,10 +778,6 @@ msgstr "我们如何解决您的担忧并改善您的体验？"
 msgid "Total value locked takes into account:"
 msgstr "锁定的总价值考虑："
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "You can check your claim history <0>here</0>."
-#~ msgstr "您可以在这里查看您的领取历史 <0></0>。"
-
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Claimable positive funding fees.<0/><1/>They become available after modifying the position by increasing or decreasing it, depositing or withdrawing collateral, or settling the fees using the \"Settle\" button."
 msgstr "可领取正资金费用。<0/><1/>通过增加或减少仓位、存入或提取抵押品，或使用“结算”按钮结算费用后，它们变得可用。"
@@ -850,6 +846,10 @@ msgstr "可接受交换影响"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Unrealized PnL"
 msgstr "未实现盈亏"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Passive Management"
+msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "This value may be higher on other websites due to the collateral of positions being included in the calculation."
@@ -1520,6 +1520,10 @@ msgstr "{longOrShort} 仓位不支付资金费用或借款费用。"
 msgid "Fees for the past"
 msgstr "过去的费用"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "{nativeTokenSymbol} Rewards:"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Optimizations"
 msgstr "产量优化"
@@ -1701,10 +1705,6 @@ msgstr "购买 GM"
 msgid "of close fee"
 msgstr "关闭费用之"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
-#~ msgstr "esGMX (IOU) 代币的地址是 {esGmxIouAddress}。"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX Alerts"
 msgstr "GMX 警报"
@@ -1815,10 +1815,6 @@ msgstr "附属"
 msgid "Buy request sent."
 msgstr ""
 
-#: src/components/Earn/Discovery/EarnProductCard.tsx
-msgid "Passive"
-msgstr ""
-
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
 msgid "Try Express"
 msgstr "尝试快速"
@@ -1890,14 +1886,6 @@ msgstr ""
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Connect Wallet"
 msgstr "连接钱包"
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Vest with GLP on Avalanche"
-#~ msgstr "在 Avalanche 上归属 GLP"
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "No esGMX to claim"
-#~ msgstr "没有 esGMX 可领取"
 
 #: src/components/SettingsModal/ThemeSelector.tsx
 msgid "System"
@@ -2127,10 +2115,6 @@ msgstr ""
 msgid "The amount you are trying to deposit exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr ""
 
-#: src/components/Earn/Discovery/EarnProductCard.tsx
-msgid "Active"
-msgstr ""
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Native token cannot be approved"
 msgstr ""
@@ -2275,10 +2259,6 @@ msgstr "GMX 的 Dune Analytics"
 msgid "NET RATE / 1 H"
 msgstr "净率 / 1 小时"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Vest with GMX on Avalanche"
-#~ msgstr "在 Avalanche 上授权 GMX"
-
 #: src/domain/multichain/SettlementChainWarningContainer.tsx
 msgid "Change to {0}"
 msgstr ""
@@ -2303,16 +2283,11 @@ msgstr "执行 TWAP 部分"
 msgid "Swap Profit Fee"
 msgstr "交换利润费用"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Amount to claim"
-#~ msgstr "可领取金额"
-
 #: src/pages/Jobs/Jobs.jsx
 msgid "Job openings at GMX."
 msgstr "GMX 的职位空缺。"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
-#: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Autocompound"
 msgstr ""
 
@@ -2723,10 +2698,6 @@ msgstr "PnL (%)"
 msgid "How can we continue to meet your expectations?"
 msgstr "我们如何继续满足您的期望？"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
-#~ msgstr "esGMX (IOU) 代币是可转移的。如果您愿意，可以将代币添加到您的钱包并发送到另一个地址进行领取。"
-
 #: src/domain/multichain/SettlementChainWarningContainer.tsx
 msgid "You switched your settlement network to {0}, but you still have {1} remaining in your {2} GMX Account."
 msgstr ""
@@ -2898,10 +2869,6 @@ msgstr ""
 msgid "Unknown Error"
 msgstr "未知错误"
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
-msgid "Pending Rewards"
-msgstr ""
-
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a new ratio or allowed slippage"
 msgstr "输入新比率或允许滑点"
@@ -3012,10 +2979,6 @@ msgstr "止盈 PnL"
 msgid "Lend out your GLV or GM tokens, and borrow against them, or put your LP tokens into strategies to maximize your yield."
 msgstr ""
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
-#~ msgstr "您的 esGMX (IOU) 余额在领取后将减少您的领取金额，这是预期行为。"
-
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Portfolio"
 msgstr ""
@@ -3067,10 +3030,6 @@ msgstr "编辑 {0}"
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Price impact rebates claimed."
 msgstr ""
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Vest with GMX on Arbitrum"
-#~ msgstr "在 Arbitrum 上授权 GMX"
 
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Claimable price impact rebates.<0/><1/><2>Read more</2>."
@@ -3416,10 +3375,6 @@ msgstr ""
 msgid "Save One-Click Trading settings"
 msgstr "保存一键交易设置"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Please switch your network to Arbitrum."
-#~ msgstr "请将您的网络切换到 Arbitrum。"
-
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "The position would be immediately liquidated upon order execution. Try reducing the size."
 msgstr "订单执行后仓位将立即清算。请尝试减少规模。"
@@ -3494,10 +3449,6 @@ msgstr ""
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "There is no price impact. There is a single<0/>execution price for increasing longs or<1/>decreasing shorts for this size."
 msgstr "没有价格影响。对于此规模增加做多或<1/>减少做空有一个单一<0/>执行价格。"
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
-#~ msgstr "领取后，esGMX 代币将在 7 天内空投到您所选网络的账户。"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Funding Activity"
@@ -3777,10 +3728,6 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance to pay for gas"
 msgstr "{0} 余额不足以支付 gas"
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
-#~ msgstr "您目前最多可以授权 {0} esGMX 代币，比例为 {1} {stakingToken} 到 1 esGMX。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Open Ocean"
@@ -4418,10 +4365,6 @@ msgstr "可用流动性"
 msgid "All time"
 msgstr "所有时间"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Select your vesting option below then click \"Claim\"."
-#~ msgstr "在下面选择您的归属选项，然后点击“领取”。"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 msgstr "时间加权平均价格 (TWAP) 订单的默认部分数量。"
@@ -5049,6 +4992,7 @@ msgid "Yield-optimized vaults supplying liquidity across multiple GMX<0/> market
 msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Governance"
 msgstr "治理"
 
@@ -5195,10 +5139,6 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Collateral at Liquidation"
 msgstr "清算时的抵押品"
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
-#~ msgstr "领取后，您将能够以 {1} {stakingToken} 比 1 esGMX 的比例归属最多 {0} esGMX。"
 
 #: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -5544,10 +5484,6 @@ msgstr "高价格影响"
 msgid "We want your insights to help improve GMX. For security reasons, we won't contact you first. Please send the message \"I have feedback\" to any of our official accounts:"
 msgstr "我们希望您的见解帮助改进 GMX。出于安全原因，我们不会先联系您。请将消息“我有反馈”发送到我们的任何官方账户："
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Claim esGMX"
-#~ msgstr "领取 esGMX"
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
 msgstr ""
@@ -5615,10 +5551,6 @@ msgstr ""
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signed!"
 msgstr "许可已签名！"
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Select an option"
-#~ msgstr "选择一个选项"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "less than a minute"
@@ -6095,6 +6027,10 @@ msgstr "考虑仅选择累积资金费用超过结算每个头寸的 {0} gas 成
 msgid "The buyable cap for the pool GM: {0} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens."
 msgstr "使用所选支付代币的池 GM: {0} 的可买入上限已达到。请选择不同的池、减少买入大小或选择不同的代币组成。"
 
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Active Management"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "deep liquid markets"
 msgstr ""
@@ -6254,6 +6190,10 @@ msgstr ""
 #: src/domain/synthetics/orders/utils.tsx
 msgid "limit price"
 msgstr "限价"
+
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "Vested Claimable GMX:"
+msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Sending order request"
@@ -6436,10 +6376,6 @@ msgstr "页面已过期，请刷新"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals"
 msgstr "GMX 提案"
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Vest with GLP on Arbitrum"
-#~ msgstr "在 Arbitrum 上授权 GLP"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 #: src/components/InterviewModal/InterviewModal.tsx
@@ -7087,10 +7023,6 @@ msgstr "多头清算"
 msgid "GBC Kudai AI Agent"
 msgstr "GBC Kudai AI 代理"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "You have {0} esGMX (IOU) tokens."
-#~ msgstr "您有 {0} esGMX (IOU) 代币。"
-
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase Size (Stop Market)"
 msgstr "增加规模（止损市价）"
@@ -7184,10 +7116,6 @@ msgstr "每日利润"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can buy {nativeTokenSymbol} directly on <0>{chainName}</0> using these options:"
 msgstr ""
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "The esGMX tokens can be staked or vested at any time."
-#~ msgstr "esGMX 代币可以随时质押或授权。"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed"
@@ -7418,6 +7346,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You do not have any eligible trade during the competition window."
 msgstr "您在竞赛窗口期间没有任何符合条件的交易。"
+
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "GMX Staked Rewards:"
+msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution prices for increasing longs and<0/>decreasing shorts."

@@ -778,10 +778,6 @@ msgstr "우리는 귀하의 우려를 어떻게 해결하고 경험을 개선할
 msgid "Total value locked takes into account:"
 msgstr "잠긴 총 가치 고려:"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "You can check your claim history <0>here</0>."
-#~ msgstr "<0>여기</0>에서 수령한 내역을 확인할 수 있습니다."
-
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Claimable positive funding fees.<0/><1/>They become available after modifying the position by increasing or decreasing it, depositing or withdrawing collateral, or settling the fees using the \"Settle\" button."
 msgstr "수령 가능한 양의 펀딩 수수료.<0/><1/>포지션을 증가 또는 감소, 담보 예치 또는 인출, 또는 \"정산\" 버튼을 사용해 수수료 정산 후 사용 가능."
@@ -850,6 +846,10 @@ msgstr "허용 가능한 스왑 영향"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Unrealized PnL"
 msgstr "미실현 PnL"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Passive Management"
+msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "This value may be higher on other websites due to the collateral of positions being included in the calculation."
@@ -1520,6 +1520,10 @@ msgstr "{longOrShort} 포지션은 펀딩 수수료 또는 차용 수수료를 �
 msgid "Fees for the past"
 msgstr "과거 수수료"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "{nativeTokenSymbol} Rewards:"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Optimizations"
 msgstr "일드 최적화"
@@ -1701,10 +1705,6 @@ msgstr "GM 구매"
 msgid "of close fee"
 msgstr "종료 수수료의"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
-#~ msgstr "esGMX (IOU) 토큰의 주소는 {esGmxIouAddress}입니다."
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX Alerts"
 msgstr "GMX 알림"
@@ -1815,10 +1815,6 @@ msgstr "제휴사"
 msgid "Buy request sent."
 msgstr ""
 
-#: src/components/Earn/Discovery/EarnProductCard.tsx
-msgid "Passive"
-msgstr ""
-
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
 msgid "Try Express"
 msgstr "익스프레스 시도"
@@ -1890,14 +1886,6 @@ msgstr ""
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Connect Wallet"
 msgstr "지갑 연동"
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Vest with GLP on Avalanche"
-#~ msgstr "Avalanche에서 GMX로 베스팅하기"
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "No esGMX to claim"
-#~ msgstr "수령할 수 있는 esGMX가 없습니다"
 
 #: src/components/SettingsModal/ThemeSelector.tsx
 msgid "System"
@@ -2127,10 +2115,6 @@ msgstr ""
 msgid "The amount you are trying to deposit exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr ""
 
-#: src/components/Earn/Discovery/EarnProductCard.tsx
-msgid "Active"
-msgstr ""
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Native token cannot be approved"
 msgstr ""
@@ -2275,10 +2259,6 @@ msgstr "GMX를 위한 Dune 분석"
 msgid "NET RATE / 1 H"
 msgstr "1시간 당 순 수수료율"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Vest with GMX on Avalanche"
-#~ msgstr "Avalanche에서 GMX로 베스팅하기"
-
 #: src/domain/multichain/SettlementChainWarningContainer.tsx
 msgid "Change to {0}"
 msgstr ""
@@ -2303,16 +2283,11 @@ msgstr "TWAP 부분 실행"
 msgid "Swap Profit Fee"
 msgstr "스왑 이익 수수료"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Amount to claim"
-#~ msgstr "수령할 양"
-
 #: src/pages/Jobs/Jobs.jsx
 msgid "Job openings at GMX."
 msgstr "GMX의 구인"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
-#: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Autocompound"
 msgstr ""
 
@@ -2723,10 +2698,6 @@ msgstr "PnL (%)"
 msgid "How can we continue to meet your expectations?"
 msgstr "귀하의 기대를 지속적으로 충족시키기 위해 어떻게 할 수 있을까요?"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
-#~ msgstr "esGMX (IOU) 토큰은 양도 가능합니다. 지갑에 토큰을 추가하고 다른 주소로 보내 수령할 수 있습니다."
-
 #: src/domain/multichain/SettlementChainWarningContainer.tsx
 msgid "You switched your settlement network to {0}, but you still have {1} remaining in your {2} GMX Account."
 msgstr ""
@@ -2898,10 +2869,6 @@ msgstr ""
 msgid "Unknown Error"
 msgstr "알 수 없는 오류"
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
-msgid "Pending Rewards"
-msgstr ""
-
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a new ratio or allowed slippage"
 msgstr "새 비율 또는 허용 슬리피지 입력"
@@ -3012,10 +2979,6 @@ msgstr "이익 실현 PnL"
 msgid "Lend out your GLV or GM tokens, and borrow against them, or put your LP tokens into strategies to maximize your yield."
 msgstr ""
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
-#~ msgstr "수령 후 esGMX (IOU) 잔액이 수령액만큼 감소하며, 이는 예상된 행동입니다."
-
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Portfolio"
 msgstr ""
@@ -3067,10 +3030,6 @@ msgstr "{0} 편집"
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Price impact rebates claimed."
 msgstr ""
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Vest with GMX on Arbitrum"
-#~ msgstr "Arbitrum에서 GMX로 베스팅하기"
 
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Claimable price impact rebates.<0/><1/><2>Read more</2>."
@@ -3416,10 +3375,6 @@ msgstr ""
 msgid "Save One-Click Trading settings"
 msgstr "원클릭 거래 설정 저장"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Please switch your network to Arbitrum."
-#~ msgstr "네트워크를 Arbitrum으로 변경해주세요."
-
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "The position would be immediately liquidated upon order execution. Try reducing the size."
 msgstr "주문 실행 시 포지션이 즉시 청산될 수 있습니다. 크기를 줄여보세요."
@@ -3494,10 +3449,6 @@ msgstr ""
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "There is no price impact. There is a single<0/>execution price for increasing longs or<1/>decreasing shorts for this size."
 msgstr "가격 영향이 없습니다. 이 크기로 롱 증가 또는 숏 감소를 위한 단일<0/>실행 가격입니다."
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
-#~ msgstr "수령 후, esGMX 토큰은 7일 이내에 선택한 네트워크의 계정으로 에어드랍됩니다."
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Funding Activity"
@@ -3777,10 +3728,6 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance to pay for gas"
 msgstr "가스 지불을 위한 {0} 잔액 부족"
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
-#~ msgstr "{1} {stakingToken} 대 1 esGMX 비율로 최대 {0} esGMX 토큰을 현재 베스팅 할 수 있습니다."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Open Ocean"
@@ -4418,10 +4365,6 @@ msgstr "사용가능 유동성"
 msgid "All time"
 msgstr "모든 시간"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Select your vesting option below then click \"Claim\"."
-#~ msgstr "베스팅 옵션을 선택한 후 \"수령하기\" 버튼을 클릭해주세요."
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 msgstr "시간 가중 평균 가격(TWAP) 주문의 기본 부분 수."
@@ -5049,6 +4992,7 @@ msgid "Yield-optimized vaults supplying liquidity across multiple GMX<0/> market
 msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Governance"
 msgstr "거버넌스"
 
@@ -5195,10 +5139,6 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Collateral at Liquidation"
 msgstr "청산 시 담보"
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
-#~ msgstr "수령 후 {1} {stakingToken} 대 1 esGMX 비율로 최대 {0} esGMX를 베스팅할 수 있습니다."
 
 #: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -5544,10 +5484,6 @@ msgstr "높은 가격 영향"
 msgid "We want your insights to help improve GMX. For security reasons, we won't contact you first. Please send the message \"I have feedback\" to any of our official accounts:"
 msgstr "GMX 개선을 돕기 위해 귀하의 통찰을 원합니다. 보안 이유로 먼저 연락하지 않습니다. 공식 계정에 \"피드백이 있습니다\" 메시지를 보내주세요:"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Claim esGMX"
-#~ msgstr "esGMX 수령"
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
 msgstr ""
@@ -5615,10 +5551,6 @@ msgstr ""
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signed!"
 msgstr "허가 서명됨!"
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Select an option"
-#~ msgstr "옵션 선택"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "less than a minute"
@@ -6095,6 +6027,10 @@ msgstr "누적 펀딩 수수료가 각 포지션 정산을 위한 {0} 가스 비
 msgid "The buyable cap for the pool GM: {0} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens."
 msgstr "선택된 지불 토큰을 사용하는 풀 GM: {0}의 구매 가능 상한에 도달했습니다. 다른 풀을 선택하거나 구매 크기를 줄이거나 다른 토큰 구성을 선택해주세요."
 
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Active Management"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "deep liquid markets"
 msgstr ""
@@ -6254,6 +6190,10 @@ msgstr ""
 #: src/domain/synthetics/orders/utils.tsx
 msgid "limit price"
 msgstr "지정가"
+
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "Vested Claimable GMX:"
+msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Sending order request"
@@ -6436,10 +6376,6 @@ msgstr "페이지가 오래되었습니다. 새로고침해주세요."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals"
 msgstr "GMX 제안"
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Vest with GLP on Arbitrum"
-#~ msgstr "Arbitrum에서 GLP로 베스팅하기"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 #: src/components/InterviewModal/InterviewModal.tsx
@@ -7087,10 +7023,6 @@ msgstr "롱 청산"
 msgid "GBC Kudai AI Agent"
 msgstr "GBC Kudai AI 에이전트"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "You have {0} esGMX (IOU) tokens."
-#~ msgstr "{0} esGMX (IOU) 토큰 보유."
-
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase Size (Stop Market)"
 msgstr "크기 증가 (스탑 마켓)"
@@ -7184,10 +7116,6 @@ msgstr "일일 이익"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can buy {nativeTokenSymbol} directly on <0>{chainName}</0> using these options:"
 msgstr ""
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "The esGMX tokens can be staked or vested at any time."
-#~ msgstr "esGMX 토큰은 언제든 스테이킹 또는 베스팅 가능."
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed"
@@ -7418,6 +7346,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You do not have any eligible trade during the competition window."
 msgstr "대회 기간 동안 적격 거래 없음."
+
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "GMX Staked Rewards:"
+msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution prices for increasing longs and<0/>decreasing shorts."

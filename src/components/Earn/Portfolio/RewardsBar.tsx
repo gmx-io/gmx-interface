@@ -13,6 +13,7 @@ import { formatUsd } from "lib/numbers";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { ClaimRewardsButton } from "./ClaimRewardsButton";
 
@@ -35,8 +36,6 @@ export function RewardsBar({
 
   const stakedGmxUsd = (processedData?.gmxInStakedGmxUsd ?? 0n) + (processedData?.esGmxInStakedGmxUsd ?? 0n);
   const totalInvestmentUsd = stakedGmxUsd + totalGmInfo.balanceUsd + totalGlvInfo.balanceUsd;
-
-  const totalPendingRewardsUsd = processedData?.totalRewardsUsd ?? 0n;
 
   return (
     <div className="rounded-8 bg-slate-900 p-20 text-typography-primary">
@@ -67,16 +66,9 @@ export function RewardsBar({
           <div className="flex gap-28 max-lg:flex-col max-lg:gap-12">
             <div className="flex flex-col gap-2">
               <span className="text-12 font-medium text-typography-secondary">
-                <Trans>Pending Rewards</Trans>
-              </span>
-              <PendingRewards processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
-            </div>
-
-            <div className="flex shrink-0 flex-col gap-2">
-              <span className="text-12 font-medium text-typography-secondary">
                 <Trans>Total Pending Rewards</Trans>
               </span>
-              <span className="text-body-large font-medium numbers">{formatUsd(totalPendingRewardsUsd)}</span>
+              <TotalPendingRewards processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
             </div>
           </div>
         </div>
@@ -182,52 +174,66 @@ function TotalEarned({
   );
 }
 
-function PendingRewards({
+function TotalPendingRewards({
   processedData,
   nativeTokenSymbol,
 }: {
   processedData: StakingProcessedData | undefined;
   nativeTokenSymbol: string;
 }) {
+  const totalPendingRewardsUsd = processedData?.totalRewardsUsd ?? 0n;
+
   const hasNativeRewards = (processedData?.totalNativeTokenRewards ?? 0n) > 0n;
 
   return (
-    <div className="flex flex-wrap gap-6">
-      <div className="flex items-center gap-4">
-        <AmountWithUsdBalance
-          amount={processedData?.totalGmxRewards ?? 0n}
-          decimals={18}
-          usd={processedData?.totalGmxRewardsUsd ?? 0n}
-          symbol="GMX"
-          className="text-body-large font-medium"
-          secondaryValueClassName="!text-body-large font-medium"
-        />
-        <span className="mb-2 text-16 text-typography-inactive">/</span>
-      </div>
-      <div className="flex items-center gap-4">
-        <AmountWithUsdBalance
-          amount={processedData?.totalEsGmxRewards ?? 0n}
-          decimals={18}
-          usd={processedData?.totalEsGmxRewardsUsd ?? 0n}
-          symbol="esGMX"
-          className="text-body-large font-medium"
-          secondaryValueClassName="!text-body-large font-medium"
-        />
-        {hasNativeRewards && <span className="mb-2 text-16 text-typography-inactive">/</span>}
-      </div>
-      {hasNativeRewards && (
-        <div className="flex items-center gap-4">
-          <AmountWithUsdBalance
-            amount={processedData?.totalNativeTokenRewards ?? 0n}
-            decimals={18}
-            usd={processedData?.totalNativeTokenRewardsUsd ?? 0n}
-            symbol={nativeTokenSymbol}
-            className="text-body-large font-medium"
-            secondaryValueClassName="!text-body-large font-medium"
+    <TooltipWithPortal
+      handle={formatUsd(totalPendingRewardsUsd)}
+      handleClassName="text-body-large font-medium numbers"
+      content={
+        <div className="flex flex-col">
+          <StatsTooltipRow
+            label={<Trans>GMX Staked Rewards:</Trans>}
+            showDollar={false}
+            value={
+              <AmountWithUsdBalance
+                amount={processedData?.totalGmxRewards ?? 0n}
+                decimals={18}
+                usd={processedData?.totalGmxRewardsUsd ?? 0n}
+                symbol="GMX"
+              />
+            }
           />
+
+          <StatsTooltipRow
+            label={<Trans>Vested Claimable GMX:</Trans>}
+            showDollar={false}
+            value={
+              <AmountWithUsdBalance
+                amount={processedData?.totalEsGmxRewards ?? 0n}
+                decimals={18}
+                usd={processedData?.totalEsGmxRewardsUsd ?? 0n}
+                symbol="esGMX"
+              />
+            }
+          />
+
+          {hasNativeRewards && (
+            <StatsTooltipRow
+              label={<Trans>{nativeTokenSymbol} Rewards:</Trans>}
+              showDollar={false}
+              value={
+                <AmountWithUsdBalance
+                  amount={processedData?.totalNativeTokenRewards ?? 0n}
+                  decimals={18}
+                  usd={processedData?.totalNativeTokenRewardsUsd ?? 0n}
+                  symbol={nativeTokenSymbol}
+                />
+              }
+            />
+          )}
         </div>
-      )}
-    </div>
+      }
+    />
   );
 }
 

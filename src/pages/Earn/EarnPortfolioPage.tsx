@@ -7,8 +7,10 @@ import { useMarketTokensData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerformanceAnnualized";
+import useVestingData from "domain/vesting/useVestingData";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
+import useWallet from "lib/wallets/useWallet";
 import EarnPageLayout from "pages/Earn/EarnPageLayout";
 
 import AssetsList from "components/Earn/Portfolio/AssetsList/AssetsList";
@@ -17,6 +19,7 @@ import RewardsBar from "components/Earn/Portfolio/RewardsBar";
 import Loader from "components/Loader/Loader";
 
 export default function EarnPortfolioPage() {
+  const { account } = useWallet();
   const { data: processedData, mutate: mutateProcessedData } = useStakingProcessedData();
 
   const { chainId, srcChainId } = useChainId();
@@ -60,11 +63,16 @@ export default function EarnPortfolioPage() {
     });
   }, [marketTokensData, marketsInfoData]);
 
+  const vestingData = useVestingData(account);
+
   const hasGmxAssets = processedData
     ? (processedData.gmxBalance ?? 0n) > 0n || (processedData.gmxInStakedGmx ?? 0n) > 0n
     : false;
   const hasEsGmxAssets = processedData
-    ? (processedData.esGmxBalance ?? 0n) > 0n || (processedData.esGmxInStakedGmx ?? 0n) > 0n
+    ? (processedData.esGmxBalance ?? 0n) > 0n ||
+      (processedData.esGmxInStakedGmx ?? 0n) > 0n ||
+      (vestingData?.gmxVesterVestedAmount ?? 0n) > 0n ||
+      (vestingData?.affiliateVesterVestedAmount ?? 0n) > 0n
     : false;
 
   const hasGmGlvAssets = gmGlvAssets.length > 0;

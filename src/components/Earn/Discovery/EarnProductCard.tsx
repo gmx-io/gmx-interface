@@ -31,7 +31,7 @@ const getCardContent = (type: EarnProductType) => {
   const cardContentByType: Record<EarnProductType, ProductCopy> = {
     gmx: {
       tokenSymbol: "GMX",
-      badge: t`Active`,
+      badge: t`Governance`,
       title: t`What is GMX?`,
       description: t`GMX is the governance and utility token of the GMX protocol. Staking GMX grants rewards funded by trading fees and protocol buybacks.`,
       readMoreUrl: "https://docs.gmx.io/docs/tokenomics/gmx-token",
@@ -47,7 +47,7 @@ const getCardContent = (type: EarnProductType) => {
     },
     glv: {
       tokenSymbol: "GLV",
-      badge: t`Passive`,
+      badge: t`Passive Management`,
       title: t`What is GLV?`,
       description: t`GLV (GMX Liquidity Vault) gives diversified exposure to a basket of GM markets. Vault positions rebalance automatically based on utilization, unlocking higher potential yield versus single pools.`,
       readMoreUrl: "https://docs.gmx.io/docs/providing-liquidity/v2#glv-pools",
@@ -65,7 +65,7 @@ const getCardContent = (type: EarnProductType) => {
     },
     gm: {
       tokenSymbol: "GM",
-      badge: t`Autocompound`,
+      badge: t`Active Management`,
       title: t`What is GM?`,
       description: t`GM is a yield bearing token that tracks liquidity for specific GMX markets. Liquidity providers earn trading, swap, and borrowing fees that automatically compound into their GM balance.`,
       readMoreUrl: "https://docs.gmx.io/docs/providing-liquidity/v2#gm-pools",

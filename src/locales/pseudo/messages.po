@@ -778,10 +778,6 @@ msgstr ""
 msgid "Total value locked takes into account:"
 msgstr ""
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "You can check your claim history <0>here</0>."
-#~ msgstr ""
-
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Claimable positive funding fees.<0/><1/>They become available after modifying the position by increasing or decreasing it, depositing or withdrawing collateral, or settling the fees using the \"Settle\" button."
 msgstr ""
@@ -849,6 +845,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Unrealized PnL"
+msgstr ""
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Passive Management"
 msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -1520,6 +1520,10 @@ msgstr ""
 msgid "Fees for the past"
 msgstr ""
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "{nativeTokenSymbol} Rewards:"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Optimizations"
 msgstr ""
@@ -1701,10 +1705,6 @@ msgstr ""
 msgid "of close fee"
 msgstr ""
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
-#~ msgstr ""
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX Alerts"
 msgstr ""
@@ -1815,10 +1815,6 @@ msgstr ""
 msgid "Buy request sent."
 msgstr ""
 
-#: src/components/Earn/Discovery/EarnProductCard.tsx
-msgid "Passive"
-msgstr ""
-
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
 msgid "Try Express"
 msgstr ""
@@ -1890,14 +1886,6 @@ msgstr ""
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Connect Wallet"
 msgstr ""
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Vest with GLP on Avalanche"
-#~ msgstr ""
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "No esGMX to claim"
-#~ msgstr ""
 
 #: src/components/SettingsModal/ThemeSelector.tsx
 msgid "System"
@@ -2127,10 +2115,6 @@ msgstr ""
 msgid "The amount you are trying to deposit exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr ""
 
-#: src/components/Earn/Discovery/EarnProductCard.tsx
-msgid "Active"
-msgstr ""
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Native token cannot be approved"
 msgstr ""
@@ -2275,10 +2259,6 @@ msgstr ""
 msgid "NET RATE / 1 H"
 msgstr ""
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Vest with GMX on Avalanche"
-#~ msgstr ""
-
 #: src/domain/multichain/SettlementChainWarningContainer.tsx
 msgid "Change to {0}"
 msgstr ""
@@ -2303,16 +2283,11 @@ msgstr ""
 msgid "Swap Profit Fee"
 msgstr ""
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Amount to claim"
-#~ msgstr ""
-
 #: src/pages/Jobs/Jobs.jsx
 msgid "Job openings at GMX."
 msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
-#: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Autocompound"
 msgstr ""
 
@@ -2723,10 +2698,6 @@ msgstr ""
 msgid "How can we continue to meet your expectations?"
 msgstr ""
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
-#~ msgstr ""
-
 #: src/domain/multichain/SettlementChainWarningContainer.tsx
 msgid "You switched your settlement network to {0}, but you still have {1} remaining in your {2} GMX Account."
 msgstr ""
@@ -2898,10 +2869,6 @@ msgstr ""
 msgid "Unknown Error"
 msgstr ""
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
-msgid "Pending Rewards"
-msgstr ""
-
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a new ratio or allowed slippage"
 msgstr ""
@@ -3012,10 +2979,6 @@ msgstr ""
 msgid "Lend out your GLV or GM tokens, and borrow against them, or put your LP tokens into strategies to maximize your yield."
 msgstr ""
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
-#~ msgstr ""
-
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Portfolio"
 msgstr ""
@@ -3067,10 +3030,6 @@ msgstr ""
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Price impact rebates claimed."
 msgstr ""
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Vest with GMX on Arbitrum"
-#~ msgstr ""
 
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Claimable price impact rebates.<0/><1/><2>Read more</2>."
@@ -3416,10 +3375,6 @@ msgstr ""
 msgid "Save One-Click Trading settings"
 msgstr ""
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Please switch your network to Arbitrum."
-#~ msgstr ""
-
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "The position would be immediately liquidated upon order execution. Try reducing the size."
 msgstr ""
@@ -3494,10 +3449,6 @@ msgstr ""
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "There is no price impact. There is a single<0/>execution price for increasing longs or<1/>decreasing shorts for this size."
 msgstr ""
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
-#~ msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Funding Activity"
@@ -3777,10 +3728,6 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance to pay for gas"
 msgstr ""
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
-#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Open Ocean"
@@ -4418,10 +4365,6 @@ msgstr ""
 msgid "All time"
 msgstr ""
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Select your vesting option below then click \"Claim\"."
-#~ msgstr ""
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "The default number of parts for Time-Weighted Average Price (TWAP) orders."
 msgstr ""
@@ -5049,6 +4992,7 @@ msgid "Yield-optimized vaults supplying liquidity across multiple GMX<0/> market
 msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Governance"
 msgstr ""
 
@@ -5195,10 +5139,6 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Collateral at Liquidation"
 msgstr ""
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
-#~ msgstr ""
 
 #: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -5544,10 +5484,6 @@ msgstr ""
 msgid "We want your insights to help improve GMX. For security reasons, we won't contact you first. Please send the message \"I have feedback\" to any of our official accounts:"
 msgstr ""
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Claim esGMX"
-#~ msgstr ""
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
 msgstr ""
@@ -5615,10 +5551,6 @@ msgstr ""
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signed!"
 msgstr ""
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Select an option"
-#~ msgstr ""
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "less than a minute"
@@ -6095,6 +6027,10 @@ msgstr ""
 msgid "The buyable cap for the pool GM: {0} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens."
 msgstr ""
 
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Active Management"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "deep liquid markets"
 msgstr ""
@@ -6253,6 +6189,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "limit price"
+msgstr ""
+
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "Vested Claimable GMX:"
 msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -6436,10 +6376,6 @@ msgstr ""
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals"
 msgstr ""
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "Vest with GLP on Arbitrum"
-#~ msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 #: src/components/InterviewModal/InterviewModal.tsx
@@ -7087,10 +7023,6 @@ msgstr ""
 msgid "GBC Kudai AI Agent"
 msgstr ""
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "You have {0} esGMX (IOU) tokens."
-#~ msgstr ""
-
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase Size (Stop Market)"
 msgstr ""
@@ -7184,10 +7116,6 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can buy {nativeTokenSymbol} directly on <0>{chainName}</0> using these options:"
 msgstr ""
-
-#: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
-#~ msgid "The esGMX tokens can be staked or vested at any time."
-#~ msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed"
@@ -7417,6 +7345,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You do not have any eligible trade during the competition window."
+msgstr ""
+
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "GMX Staked Rewards:"
 msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx

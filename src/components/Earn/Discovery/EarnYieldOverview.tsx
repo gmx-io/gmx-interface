@@ -312,7 +312,7 @@ export default function EarnYieldOverview() {
             metric={
               <YieldMetric
                 value={<Trans>N/A</Trans>}
-                suffix="APR"
+                suffix=""
                 tooltip={<Trans>GMX staking isn't currently supported on Botanix.</Trans>}
               />
             }
@@ -325,7 +325,7 @@ export default function EarnYieldOverview() {
             metric={
               <YieldMetric
                 value={<Trans>N/A</Trans>}
-                suffix="APY"
+                suffix=""
                 tooltip={<Trans>No GLV vaults are currently active on Botanix.</Trans>}
               />
             }

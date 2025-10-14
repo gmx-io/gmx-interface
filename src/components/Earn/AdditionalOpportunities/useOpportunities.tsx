@@ -171,7 +171,11 @@ export const useOpportunities = () => {
           icon: morphoIcon,
           description: <Trans>Lend out your GM tokens, and borrow against them.</Trans>,
           tags: ["lending-and-borrowing"],
-          assets: [makeMarketAsset(ARBITRUM, "ETH/USD [WETH-USDC]")],
+          assets: [
+            makeMarketAsset(ARBITRUM, "ETH/USD [WETH-USDC]"),
+            makeGlvAsset(ARBITRUM, "GLV [WBTC-USDC]"),
+            makeGlvAsset(ARBITRUM, "GLV [WETH-USDC]"),
+          ],
           link: "https://morpho.org/",
         },
         {
