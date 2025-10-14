@@ -34,7 +34,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "14 Oct 2025, 6:00",
     endDate: "21 Oct 2025, 6:00",
-    title: "Morpho GLV lending",
+    title: "Morpho now supports GLV",
     bodyText: (
       <>
         Lending and borrowing is now available for GLV assets:{" "}
