@@ -1830,6 +1830,15 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/curve-dao-token",
     },
+    {
+      name: "USDT",
+      symbol: "USDT",
+      address: "0x095f40616FA98Ff75D1a7D0c68685c5ef806f110",
+      decimals: 6,
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
+    },
     /** Placeholder tokens */
     {
       name: "GMX",

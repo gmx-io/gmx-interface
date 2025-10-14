@@ -9,6 +9,7 @@ import {
   BOTANIX,
   getExplorerUrl,
   SOURCE_BASE_MAINNET,
+  SOURCE_BSC_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
 } from "config/chains";
@@ -25,6 +26,7 @@ export const CHAIN_ID_TO_TX_URL_BUILDER: Record<
   [AVALANCHE_FUJI]: (txId: string) => `${getExplorerUrl(AVALANCHE_FUJI)}tx/${txId}`,
   [SOURCE_SEPOLIA]: (txId: string) => `${getExplorerUrl(SOURCE_SEPOLIA)}tx/${txId}`,
   [BOTANIX]: (txId: string) => `${getExplorerUrl(BOTANIX)}tx/${txId}`,
+  [SOURCE_BSC_MAINNET]: (txId: string) => `${getExplorerUrl(SOURCE_BSC_MAINNET)}tx/${txId}`,
   layerzero: (txId: string) => `${getExplorerUrl("layerzero")}tx/${txId}`,
   "layerzero-testnet": (txId: string) => `${getExplorerUrl("layerzero-testnet")}tx/${txId}`,
 };
@@ -38,4 +40,5 @@ export const CHAIN_ID_TO_EXPLORER_NAME: Record<AnyChainId, string> = {
   [SOURCE_OPTIMISM_SEPOLIA]: "OP Sepolia Etherscan",
   [SOURCE_SEPOLIA]: "Sepolia Etherscan",
   [BOTANIX]: "Botanix Explorer",
+  [SOURCE_BSC_MAINNET]: "BSC Scan",
 };

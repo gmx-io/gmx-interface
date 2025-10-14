@@ -4,6 +4,7 @@ import { type JSX } from "react";
 import { Link } from "react-router-dom";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 export type EventData = {
   id: string;
@@ -28,6 +29,22 @@ export const homeEventsData: EventData[] = [];
 export const MKR_USD_DELISTING_EVENT_ID = "mkr-usd-delisting";
 
 export const appEventsData: EventData[] = [
+  {
+    id: "morpho-glv-lending",
+    isActive: true,
+    startDate: "14 Oct 2025, 6:00",
+    endDate: "21 Oct 2025, 6:00",
+    title: "Morpho now supports GLV",
+    bodyText: (
+      <>
+        Lending and borrowing is now available for GLV assets:{" "}
+        <TokenIcon symbol="GLV" displaySize={16} className="mb-4" /> <span className="text-slate-100">[BTC-USDC]</span>{" "}
+        and <TokenIcon symbol="GLV" displaySize={16} className="mb-4" />{" "}
+        <span className="text-slate-100">[ETH-USDC]</span> on{" "}
+        <ExternalLink href="https://app.morpho.org/arbitrum/borrow?search=GLV">Morpho</ExternalLink>.
+      </>
+    ),
+  },
   {
     id: "aster-0g-avnt-linea-listing",
     isActive: true,

@@ -30,6 +30,10 @@ msgstr ""
 msgid "Pear Protocol"
 msgstr "Pear Protocol"
 
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
+msgid "Please connect your wallet to view<0/>all available payment options"
+msgstr ""
+
 #: src/components/RatingToast/RatingToast.tsx
 msgid "Not likely"
 msgstr "不太可能"
@@ -44,10 +48,6 @@ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer {nativeTokenSymbol} from other networks to {chainName} using any of the below options:"
-msgstr ""
-
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "from 5 blockchains"
 msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
@@ -494,10 +494,6 @@ msgstr ""
 msgid "Adding"
 msgstr ""
 
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "Please <0>deposit</0> or <1>swap</1> to get {nativeTokenSymbol}."
-msgstr ""
-
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to claim price impact rebates."
 msgstr ""
@@ -879,6 +875,10 @@ msgstr ""
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Pay"
 msgstr "支付"
+
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "You’ll need some {wrappedNativeTokenSymbol} in your account to withdraw funds."
+msgstr ""
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
@@ -1887,9 +1887,9 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#: src/components/Header/AppHeaderChainAndSettings.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Connect Wallet"
 msgstr "连接钱包"
 
@@ -2241,8 +2241,6 @@ msgstr "最大部分数量：{MAX_TWAP_NUMBER_OF_PARTS}"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/Header/AppHeaderChainAndSettings.tsx
-#: src/components/Header/AppHeaderChainAndSettings.tsx
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Launch App"
 msgstr "启动应用程序"
@@ -2928,10 +2926,6 @@ msgstr ""
 msgid "Accrued Positive Funding Fee"
 msgstr "累积正资金费用"
 
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "You’ll need some {nativeTokenSymbol} in your account to withdraw funds."
-msgstr ""
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake submitted."
 msgstr ""
@@ -3298,6 +3292,10 @@ msgstr "使用网络的本机代币 {0} 无法进行快速交易。请考虑使�
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Total Earned"
+msgstr ""
+
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "You’ll need <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} in your account to withdraw funds."
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -4943,6 +4941,10 @@ msgstr ""
 msgid "STIP.b Retroactive Bonus"
 msgstr "STIP.b 追溯奖金"
 
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "from {BLOCKCHAIN_COUNT} blockchains"
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated."
 msgstr ""
@@ -5518,6 +5520,10 @@ msgstr ""
 msgid "Sell request sent."
 msgstr ""
 
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "Please <0>swap</0> to get {wrappedNativeTokenSymbol}."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Community with NFTs, Trading and Education initiatives"
 msgstr "GMX 社区，包含 NFT、交易和教育举措"
@@ -5525,6 +5531,11 @@ msgstr "GMX 社区，包含 NFT、交易和教育举措"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation Confirmations"
 msgstr "清算确认"
+
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Insufficient gas balance, please deposit more WETH or USDC."
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
@@ -6243,6 +6254,10 @@ msgstr "每个部分的大小"
 msgid "Insufficient {0} balance"
 msgstr "{0} 余额不足"
 
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "Please <0>deposit</0> or <1>swap</1> to get {wrappedNativeTokenSymbol}."
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "limit price"
 msgstr "限价"
@@ -6530,10 +6545,6 @@ msgstr ""
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
-msgstr ""
-
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "You’ll need <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {nativeTokenSymbol} in your account to withdraw funds."
 msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -6885,10 +6896,6 @@ msgstr "费用年利率"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "Can I build on top of GMX or integrate it into my DeFi app?"
-msgstr ""
-
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "Please <0>swap</0> to get {nativeTokenSymbol}."
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7794,11 +7801,6 @@ msgstr "GMX 页面"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Options Protocol"
 msgstr "去中心化期权协议"
-
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more ETH or USDC."
-msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Swap Part"
