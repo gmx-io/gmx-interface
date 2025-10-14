@@ -37,10 +37,10 @@ export const appEventsData: EventData[] = [
     title: "Morpho GLV lending",
     bodyText: (
       <>
-        Lending and borrowing is now available for GLV assets (
+        Lending and borrowing is now available for GLV assets:{" "}
         <TokenIcon symbol="GLV" displaySize={16} className="mb-4" /> <span className="text-slate-100">[BTC-USDC]</span>{" "}
         and <TokenIcon symbol="GLV" displaySize={16} className="mb-4" />{" "}
-        <span className="text-slate-100">[ETH-USDC]</span>) on{" "}
+        <span className="text-slate-100">[ETH-USDC]</span> on{" "}
         <ExternalLink href="https://app.morpho.org/arbitrum/borrow?search=GLV">Morpho</ExternalLink>.
       </>
     ),
