@@ -279,8 +279,10 @@ export function estimateExecuteGlvWithdrawalGasLimit(
   gasLimits: GasLimitsConfig,
   {
     marketsCount,
+    swapsCount,
   }: {
     marketsCount: bigint;
+    swapsCount: bigint;
   }
 ) {
   const gasPerGlvPerMarket = gasLimits.glvPerMarketGasLimit;
@@ -288,7 +290,10 @@ export function estimateExecuteGlvWithdrawalGasLimit(
   const glvWithdrawalGasLimit = gasLimits.glvWithdrawalGasLimit;
   const gasLimit = glvWithdrawalGasLimit + gasForGlvMarkets;
 
-  return gasLimit + gasLimits.withdrawalMultiToken;
+  const gasPerSwap = gasLimits.singleSwap;
+  const gasForSwaps = swapsCount * gasPerSwap;
+
+  return gasLimit + gasLimits.withdrawalMultiToken + gasForSwaps;
 }
 
 /**
@@ -298,14 +303,13 @@ export function estimateExecuteGlvWithdrawalGasLimit(
  */
 export function estimateExecuteWithdrawalGasLimit(
   gasLimits: GasLimitsConfig,
-  withdrawal: { callbackGasLimit?: bigint }
+  withdrawal: { callbackGasLimit?: bigint; swapsCount?: bigint }
 ) {
-  // Swap is not used but supported in the contract.
-  // const gasPerSwap = gasLimits.singleSwap;
-  // const swapsCount = 0n;
-  // const gasForSwaps = swapsCount * gasPerSwap;
+  const gasPerSwap = gasLimits.singleSwap;
+  const swapsCount = withdrawal.swapsCount ?? 0n;
+  const gasForSwaps = swapsCount * gasPerSwap;
 
-  return gasLimits.withdrawalMultiToken + (withdrawal.callbackGasLimit ?? 0n);
+  return gasLimits.withdrawalMultiToken + (withdrawal.callbackGasLimit ?? 0n) + gasForSwaps;
 }
 
 /**

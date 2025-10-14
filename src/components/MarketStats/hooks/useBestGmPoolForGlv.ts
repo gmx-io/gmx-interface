@@ -122,6 +122,8 @@ export const useBestGmPoolAddressForGlv = ({
         fees,
         priceImpactUsd: fees?.swapPriceImpact?.deltaUsd,
         marketTokensData,
+        paySource: "settlementChain",
+        isPair: false,
       });
 
       return {

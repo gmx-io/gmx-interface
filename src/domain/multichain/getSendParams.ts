@@ -4,7 +4,7 @@ import { toHex } from "viem";
 import type { AnyChainId, ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { getLayerZeroEndpointId, isSettlementChain, isSourceChain } from "config/multichain";
-import type { SendParamStruct } from "typechain-types-stargate/IStargate";
+import { SendParam } from "domain/multichain/types";
 
 import { CodecUiHelper, MultichainAction } from "./codecs/CodecUiHelper";
 import { OftCmd, SEND_MODE_TAXI } from "./codecs/OftCmd";
@@ -18,32 +18,34 @@ export function getMultichainTransferSendParams({
   srcChainId,
   amountLD,
   composeGas,
-  isDeposit,
+  isToGmx,
   action,
+  isManualGas = false,
 }: {
   dstChainId: AnyChainId;
   account: string;
   srcChainId?: AnyChainId;
   amountLD: bigint;
   composeGas?: bigint;
-  isDeposit: boolean;
+  isToGmx: boolean;
+  isManualGas?: boolean;
   action?: MultichainAction;
-}): SendParamStruct {
+}): SendParam {
   const oftCmd: OftCmd = new OftCmd(SEND_MODE_TAXI, []);
 
   const dstEid = getLayerZeroEndpointId(dstChainId);
 
   if (dstEid === undefined) {
-    throw new Error(`No layer zero endpoint for chain id ${dstChainId}`);
+    throw new Error(`No layer zero endpoint for chain: ${dstChainId}`);
   }
 
-  if (isDeposit && (!isSettlementChain(dstChainId) || composeGas === undefined)) {
-    throw new Error("LayerZero provider is not supported on this chain");
+  if (isToGmx && (!isSettlementChain(dstChainId) || composeGas === undefined)) {
+    throw new Error(`LayerZero provider is not supported on this chain: ${dstChainId}`);
   }
 
   let to: string;
 
-  if (isDeposit) {
+  if (isToGmx) {
     to = toHex(addressToBytes32(getContract(dstChainId as ContractsChainId, "LayerZeroProvider")));
   } else {
     to = toHex(addressToBytes32(account));
@@ -52,11 +54,8 @@ export function getMultichainTransferSendParams({
   let composeMsg = "0x";
   let extraOptions = "0x";
 
-  if (isDeposit) {
-    if (srcChainId === undefined) {
-      throw new Error("Source chain is not supported");
-    }
-    if (!isSourceChain(srcChainId)) {
+  if (isToGmx) {
+    if (srcChainId === undefined || !isSourceChain(srcChainId)) {
       throw new Error("Source chain is not supported");
     }
 
@@ -64,13 +63,19 @@ export function getMultichainTransferSendParams({
 
     composeMsg = CodecUiHelper.encodeDepositMessage(account, data);
     const builder = Options.newOptions();
-    extraOptions = builder.addExecutorComposeOption(0, composeGas!, 0).toHex();
+
+    if (isManualGas) {
+      // TODO MLTCH remove hardcode
+      extraOptions = builder.addExecutorLzReceiveOption(150_000n).addExecutorComposeOption(0, composeGas!, 0n).toHex();
+    } else {
+      extraOptions = builder.addExecutorComposeOption(0, composeGas!, 0).toHex();
+    }
   } else {
     const builder = Options.newOptions();
     extraOptions = builder.toHex();
   }
 
-  const sendParams: SendParamStruct = {
+  const sendParams: SendParam = {
     dstEid,
     to,
     amountLD,

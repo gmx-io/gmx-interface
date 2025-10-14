@@ -19,6 +19,7 @@ import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/S
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { type MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { SendParam } from "domain/multichain/types";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals/hooks";
 import { getRawRelayerParams, RawRelayParamsPayload, RelayParamsPayload } from "domain/synthetics/express";
@@ -37,7 +38,6 @@ import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { encodeReferralCode } from "sdk/utils/referrals";
 import { nowInSeconds } from "sdk/utils/time";
 import type { IStargate } from "typechain-types-stargate";
-import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import Button from "components/Button/Button";
 import { useMultichainTokensRequest } from "components/GmxAccountModal/hooks";
@@ -248,7 +248,7 @@ function ReferralCodeFormMultichain({
   const [referralCodeExists, setReferralCodeExists] = useState(true);
   const debouncedReferralCode = useDebounce(referralCode, 300);
   const settlementChainPublicClient = usePublicClient({ chainId });
-  const { tokenChainDataArray: multichainTokens } = useMultichainTokensRequest();
+  const { tokenChainDataArray: multichainTokens } = useMultichainTokensRequest(chainId, account);
 
   const simulationSigner = useMemo(() => {
     if (!signer?.provider) {
@@ -349,9 +349,10 @@ function ReferralCodeFormMultichain({
         FAKE_INPUT_AMOUNT_MAP[p.sourceChainTokenId.symbol] ?? numberToBigint(0.02, p.sourceChainTokenId.decimals);
 
       const sendParamsWithRoughAmount = getMultichainTransferSendParams({
-        isDeposit: true,
+        isToGmx: true,
         dstChainId: p.chainId,
         account: p.simulationSigner.address,
+        // TODO MLTCH take into account LD
         amountLD: tokenAmount,
         srcChainId: p.srcChainId,
         composeGas,
@@ -370,11 +371,11 @@ function ReferralCodeFormMultichain({
       let amountBeforeFee = minAmount - negativeFee;
       amountBeforeFee = (amountBeforeFee * 15n) / 10n;
 
-      const sendParamsWithMinimumAmount: SendParamStruct = {
+      const sendParamsWithMinimumAmount: SendParam = {
         ...sendParamsWithRoughAmount,
 
         amountLD: amountBeforeFee,
-        minAmountLD: 0,
+        minAmountLD: 0n,
       };
 
       const quoteSend = await iStargateInstance.quoteSend(sendParamsWithMinimumAmount, false);
@@ -477,13 +478,13 @@ function ReferralCodeFormMultichain({
         },
       };
 
-      const sendParams: SendParamStruct = getMultichainTransferSendParams({
+      const sendParams: SendParam = getMultichainTransferSendParams({
         dstChainId: chainId,
         account,
         srcChainId,
         amountLD: result.data.amount,
         composeGas: result.data.composeGas,
-        isDeposit: true,
+        isToGmx: true,
         action,
       });
 
