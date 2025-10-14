@@ -35,18 +35,25 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
   const { data, error, isLoading } = useSequentialTimedSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
     refreshInterval: refreshPricesInterval,
 
+    keepPreviousData: true,
+
     fetcher: async ([chainId]) => {
       const result: TokenPricesData = {};
 
-      // TODO: Remove this after testing
-      if (localStorage.getItem("simulateTickersErrors") === "true") {
-        throw new Error("Simulate Tickers Errors");
-      }
+      let priceItems = await oracleKeeperFetcher
+        .fetchTickers()
+        .then(() => {
+          // TODO: Remove this after testing
+          if (localStorage.getItem("simulateTickersErrors") === "true") {
+            throw new Error("Simulate Tickers Errors");
+          }
 
-      let priceItems = await oracleKeeperFetcher.fetchTickers().catch(() => {
-        metrics.pushCounter<TickersErrorsCounter>("tickersErrors");
-        return [];
-      });
+          return priceItems;
+        })
+        .catch(() => {
+          metrics.pushCounter<TickersErrorsCounter>("tickersErrors");
+          return [];
+        });
 
       // TODO: Remove this after testing
       if (localStorage.getItem("simulatePartialTickers") === "true") {
