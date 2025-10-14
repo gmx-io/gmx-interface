@@ -1,5 +1,5 @@
 import cryptoJs from "crypto-js";
-import { Abi, Address, decodeErrorResult } from "viem";
+import { Abi, decodeErrorResult } from "viem";
 
 import { abis } from "abis";
 
@@ -155,7 +155,7 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
       if (errorData) {
         const parsedError = decodeErrorResult({
           abi: abis.CustomErrors as Abi,
-          data: errorData as Address,
+          data: errorData,
         });
 
         if (parsedError) {
