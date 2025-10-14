@@ -2,7 +2,7 @@ import { useMemo, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
-import { LEADERBOARD_PRICES_UPDATE_INTERVAL, PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
+import { LEADERBOARD_PRICES_UPDATE_INTERVAL, PRICES_CACHE_TTL, PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import type { Token } from "sdk/types/tokens";
 
@@ -29,13 +29,17 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
   }, [pathname]);
 
   const pricesCacheRef = useRef<TokenPricesData>({});
+  const pricesCacheUpdatedRef = useRef<number>(0);
 
   const { data, error, isLoading } = useSequentialTimedSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
     refreshInterval: refreshPricesInterval,
+
     keepPreviousData: true,
 
     fetcher: async ([chainId]) => {
-      const result: TokenPricesData = { ...pricesCacheRef.current };
+      const shouldUseCache = Date.now() - pricesCacheUpdatedRef.current < PRICES_CACHE_TTL;
+
+      const result: TokenPricesData = shouldUseCache ? { ...pricesCacheRef.current } : {};
 
       const priceItems = await oracleKeeperFetcher.fetchTickers();
 
@@ -64,9 +68,12 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
         result[NATIVE_TOKEN_ADDRESS] = result[wrappedToken.address];
       }
 
+      const now = Date.now();
+      pricesCacheUpdatedRef.current = now;
+
       return {
         pricesData: result,
-        updatedAt: Date.now(),
+        updatedAt: now,
       };
     },
   });
