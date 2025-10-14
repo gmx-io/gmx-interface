@@ -1,21 +1,11 @@
 ## Use Case: Tabs Component
-- `Tabs` renders three visual styles controlled by the `type` prop:
-  - `block`: underlined bar suitable for page-level navigation. Active state is handled via border color.
-  - `inline`: lightweight pill buttons you can embed inside cards or toolbars; inactive options fall back to the `ghost` variant while the active option adopts `secondary`.
-  - `inline-primary`: CTA-style tabs that switch between `primary` and `secondary` buttons.
-- Provide `regularOptionClassname` for layout-specific tweaks instead of overriding button variants; this keeps typography and padding consistent with the global styles.
+- Keep layout tweaks scoped to wrappers instead of overriding built-in button variants so gaps and paddings stay consistent.
 - Pair inline tabs with responsive containers when they might overflow: wrap them in `TableScrollFadeContainer` or another `overflow-x-auto` parent.
 
-## Use Case: Button Variants
-- `Button` covers five variants: `primary`, `primary-action`, `secondary` and `ghost`. Rely on the variant API instead of duplicating classes.
-- `primary` and `primary-action` share the same palette but `primary-action` bumps padding (`px-24 py-18`) and minimum height for hero CTAs.
-- Use the `size` prop (`small`, `medium`, `controlled`) to fit layouts; the helper adjusts min-height and gaps, keeping typography consistent without extra overrides.
-- When you need navigational behavior, pass the `to` prop so the component renders a `ButtonLink` with the same visual style and analytics hooks.
-
 ## Use Case: Links
-- `ExternalLink` keeps typography consistent for out-of-app anchors, use the `variant` prop to switch between the default underline and the icon decorator.
-- `Link` common link component from `react-router-dom` used for internal navigation. Use it when you need to style simple text-like link
-- `Button` with prop `to` use for Links styled as app button
+- `ExternalLink` keeps typography consistent for out-of-app anchors, offering either the default underline or an icon-decorated option.
+- `Link` common link component from `react-router-dom` used for internal navigation. Use it when you need to style simple text-like links.
+- `Button` can render navigational links while preserving button styling.
 
 ## Use Case: Token & Icon Rendering
 - Keep inline informational icons as React SVGs (e.g., `img/ic_info.svg?react`) to share palette tokens and respond to `currentColor` without manual theming. It will accept color from text, which also helps with color change on hover.
@@ -23,17 +13,14 @@
 - When adding new svg icon please set primary color to `currentColor` and size it to `1em`.
 
 ## Use Case: Tooltips
-- `Tooltip` is the base primitive; it accepts `variant` (`icon`, `iconStroke`, `underline`, `none`) to control the handle decoration and defaults to a dashed underline.
+- Use when you need to surface short clarifications without disrupting the surrounding layout.
 - Prefer `TooltipWithPortal` when the tooltip might overflow masked containers - this wrapper simply enables portals while keeping the same API.
 
 ## Use Case: Alerts & Colorful Banners
-- `ColorfulBanner` provides a slim announcement surface. Choose a `color` scheme (`blue`, `green`, `yellow`, `red`) to map border, background, and icon classes via theme tokens.
-- Pass an SVG component to `icon` for contextual visuals; the component constrains it to `size-20` and adapts the tint automatically.
-- For dismissible banners, supply `onClose`; the built-in close button stops propagation before invoking your callback, which keeps parent click handlers intact.
+- Add an SVG component for contextual visuals; the component constrains it to `size-20` and adapts the tint automatically.
+- When dismissal is enabled, the built-in close button stops propagation before invoking your handler, which keeps parent click handlers intact.
 - `AlertInfoCard` wraps `ColorfulBanner` with opinionated defaults for `info`, `warning`, and `error`. Use it when you just need tone-appropriate styling with optional close behavior.
-- Use `ColorfulButtonLink` for primary actions of banner/alert. It correctly highlights action and align with it designs
+- Use `ColorfulButtonLink` for primary banner or alert actions so the CTA stays highlighted and aligned with the design system.
 
 ## Use Case: Page Layout
 - `AppPageLayout` is the shell for all page views. It pins the `SideNav`, wraps content in a max-width column, and injects the global `AppHeader`/`Footer` for page.
-- Override `header` when a page needs custom chrome (e.g. `ChainContentHeader`) - the layout still handles spacing and scroll behavior.
-- Pass `sideNav` to swap out or tweak the default nav; hand in an empty fragment when the feature should hide the sidebar but keep the rest of the layout.
