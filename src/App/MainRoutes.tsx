@@ -9,6 +9,8 @@ import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/S
 import { useChainId } from "lib/chains";
 import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
+import BeginAccountTransfer from "pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer";
+import CompleteAccountTransfer from "pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer";
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
 import Buy from "pages/Buy/Buy";
 import BuyGMX from "pages/BuyGMX/BuyGMX";
@@ -206,6 +208,14 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
 
       <Route path="/parsetx/:network/:tx">
         <ParseTransactionPage />
+      </Route>
+
+      <Route exact path="/begin_account_transfer">
+        <BeginAccountTransfer />
+      </Route>
+
+      <Route exact path="/complete_account_transfer/:sender/:receiver">
+        <CompleteAccountTransfer />
       </Route>
 
       {isDevelopment() && (

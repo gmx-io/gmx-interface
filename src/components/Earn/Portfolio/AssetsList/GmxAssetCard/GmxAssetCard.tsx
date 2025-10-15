@@ -3,6 +3,7 @@ import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import useSWR from "swr";
 import { zeroAddress } from "viem";
 
@@ -26,6 +27,7 @@ import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
+import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import DownloadIcon from "img/ic_download2.svg?react";
 import esGmxIcon from "img/ic_esgmx_40.svg";
 import gmxIcon from "img/ic_gmx_40.svg";
@@ -275,6 +277,16 @@ function GmxAssetCardOptionsDropdown() {
                   <Trans>Delegate</Trans>
                 </p>
               </a>
+            )}
+          </Menu.Item>
+          <Menu.Item>
+            {() => (
+              <Link to="/begin_account_transfer" className="menu-item">
+                <ArrowRightIcon className="size-16" />
+                <p>
+                  <Trans>Transfer account</Trans>
+                </p>
+              </Link>
             )}
           </Menu.Item>
         </Menu.Items>
