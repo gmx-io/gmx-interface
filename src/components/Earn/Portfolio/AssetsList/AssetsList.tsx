@@ -1,4 +1,6 @@
 import { Trans } from "@lingui/macro";
+import cx from "classnames";
+import { useMedia } from "react-use";
 
 import { ContractsChainId } from "config/chains";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
@@ -7,6 +9,7 @@ import { MarketTokensAPRData } from "domain/synthetics/markets/types";
 import { TokensData } from "domain/synthetics/tokens";
 import { StakingProcessedData } from "lib/legacy";
 import { getByKey } from "lib/objects";
+import { useBreakpoints } from "lib/useBreakpoints";
 
 import EarnIcon from "img/ic_earn.svg?react";
 
@@ -38,6 +41,14 @@ export function AssetsList({
   glv30dApyData: MarketTokensAPRData | undefined;
   markets30dApyData: MarketTokensAPRData | undefined;
 }) {
+  const cardsCount = (hasGmx ? 1 : 0) + (hasEsGmx ? 1 : 0) + gmGlvAssets.length;
+  const { isMobile } = useBreakpoints();
+
+  const isEnoughSpaceFor3Columns = useMedia(`(min-width: 1340px)`);
+  const isEnoughSpaceFor2Columns = !isMobile;
+
+  const shouldUseFlex = (cardsCount < 3 && isEnoughSpaceFor2Columns) || (cardsCount < 4 && isEnoughSpaceFor3Columns);
+
   return (
     <section className="flex grow flex-col rounded-8 bg-slate-900">
       <h2 className="text-body-large p-20 pb-2 font-medium text-typography-primary">
@@ -45,7 +56,14 @@ export function AssetsList({
       </h2>
 
       {hasAnyAssets && (
-        <div className="grid grid-cols-1 gap-12 p-12 md:grid-cols-2 min-[1300px]:grid-cols-3 min-[1460px]:grid-cols-4">
+        <div
+          className={cx(
+            "grid grid-cols-1 gap-12 p-12 ",
+            shouldUseFlex
+              ? "md:flex md:flex-wrap md:[&>div]:w-[359px]"
+              : "md:grid-cols-2 min-[1300px]:grid-cols-3 min-[1460px]:grid-cols-4"
+          )}
+        >
           {hasGmx && processedData ? <GmxAssetCard processedData={processedData} /> : null}
           {hasEsGmx && processedData ? <GmxAssetCard processedData={processedData} esGmx /> : null}
           {gmGlvAssets.map((info) => (
