@@ -371,12 +371,12 @@ export default function EarnYieldOverview() {
 
   return (
     <div className="flex flex-col max-xl:rounded-8 max-xl:bg-slate-900 max-xl:p-16">
-      <h4 className="py-20 text-20 font-medium text-typography-primary max-xl:pb-12 max-xl:pt-0">
+      <h4 className="py-20 text-20 font-medium text-typography-primary max-xl:pb-12 max-xl:pt-0 max-xl:text-16">
         <Trans>Current Yield Landscape</Trans>
       </h4>
 
       {isTabsMode ? (
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-12">
           <Tabs
             options={tabs}
             selectedValue={mobileChainId}

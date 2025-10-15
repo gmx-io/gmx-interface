@@ -342,8 +342,8 @@ export default function ClaimableAmounts() {
   }, [claimableAmounts, claimableAmountsLoaded]);
 
   const glpReimbursement = (
-    <div>
-      <div className="flex items-center justify-between rounded-t-8 border-b-1/2 border-slate-600 bg-fill-surfaceElevated50 p-12">
+    <div className="rounded-8 bg-fill-surfaceElevated50 lg:pl-12">
+      <div className="flex items-center justify-between rounded-t-8 border-b-1/2 border-slate-600 p-12 lg:pl-0">
         <div className="flex items-center gap-4">
           {claimTerms && !claimTermsAcceptedSignature && <LockIcon className="size-16 text-slate-500" />}
           <span className="text-body-medium font-medium text-typography-primary">
@@ -357,7 +357,7 @@ export default function ClaimableAmounts() {
           </span>
         )}
       </div>
-      <div className="flex flex-col gap-8 rounded-b-8 bg-fill-surfaceElevated50 p-12">
+      <div className="flex flex-col gap-8 rounded-b-8 p-12 lg:pl-0">
         <div className="flex items-center justify-between">
           {hasClaimableAmounts ? (
             <div className="flex cursor-pointer items-center gap-4" onClick={onViewBreakdown}>
