@@ -87,7 +87,7 @@ export default function EarnAdditionalOpportunitiesPage() {
     }
   }, [filterParam]);
 
-  const userTokens = useMemo(() => {
+  const userAssets = useMemo(() => {
     const userAssetKeys = new Set<string>();
 
     collectUserMarketAssets(marketsInfoData, marketTokensData).forEach((asset) => {
@@ -113,9 +113,12 @@ export default function EarnAdditionalOpportunitiesPage() {
     let list = allOpportunities;
 
     if (activeFilter === "for-me") {
-      list = list.filter((opportunity) =>
-        opportunity.assets.some((asset) => userTokens.has(getOpportunityAssetKey(asset)))
-      );
+      list = list
+        .map((opportunity) => {
+          const assets = opportunity.assets.filter((asset) => userAssets.has(getOpportunityAssetKey(asset)));
+          return assets.length > 0 ? { ...opportunity, assets } : null;
+        })
+        .filter(defined);
     } else if (activeFilter !== "all") {
       list = list.filter((opportunity) => opportunity.tags.includes(activeFilter));
     }
@@ -142,7 +145,7 @@ export default function EarnAdditionalOpportunitiesPage() {
     }
 
     return list;
-  }, [activeFilter, allOpportunities, searchQuery, userTokens, opportunityTagLabels, marketsInfoData, tokensData]);
+  }, [activeFilter, allOpportunities, searchQuery, userAssets, opportunityTagLabels, marketsInfoData, tokensData]);
 
   const emptyStateMessage = useMemo(() => {
     if (chainId === BOTANIX) {
@@ -156,7 +159,7 @@ export default function EarnAdditionalOpportunitiesPage() {
     }
 
     if (activeFilter === "for-me") {
-      if (userTokens.size === 0) {
+      if (userAssets.size === 0) {
         return (
           <Trans>
             No eligible holdings detected. Acquire or stake GMX, GLV, or GM tokens to unlock personalized opportunities.
@@ -172,7 +175,7 @@ export default function EarnAdditionalOpportunitiesPage() {
     }
 
     return <Trans>No opportunities match the selected filters.</Trans>;
-  }, [activeFilter, allOpportunities.length, chainId, searchQuery, userTokens.size]);
+  }, [activeFilter, allOpportunities.length, chainId, searchQuery, userAssets.size]);
 
   return (
     <EarnPageLayout>
