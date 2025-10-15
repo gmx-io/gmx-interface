@@ -34,7 +34,7 @@ export function AboutGlpIncident() {
           className="border-b-1/2 border-slate-600 py-16"
           chevronClassName="mr-8 mt-4"
         >
-          <div className="text-typography-secondary">
+          <div className="text-typography-primary">
             <Trans>
               GLV tokens are similar in composition to GLP, and enable seamless integration into GMX V2's liquidity
               ecosystem. Users can either sell or hold the tokens to earn yield. To encourage long-term participation, a
@@ -53,7 +53,7 @@ export function AboutGlpIncident() {
           className="border-b-1/2 border-slate-600 py-16"
           chevronClassName="mr-8 mt-4"
         >
-          <div className="text-typography-secondary">
+          <div className="text-typography-primary">
             <p className="mb-8">
               <Trans>
                 GLV (GMX Liquidity Vaults) should be seen as GMX V2’s improved version of GLP. It is a yield-optimizing
@@ -86,7 +86,7 @@ export function AboutGlpIncident() {
           className="border-b-1/2 border-slate-600 py-16"
           chevronClassName="mr-8 mt-4"
         >
-          <div className="text-typography-secondary">
+          <div className="text-typography-primary">
             <Trans>
               Distribution happens in two GLV variants to mirror GLP's multi-asset exposure: one variant is optimized
               for ETH-based markets (50% ETH / 50% USDC) and the other for BTC-based markets (50% BTC / 50% USDC). This
@@ -105,7 +105,7 @@ export function AboutGlpIncident() {
           className="border-b-1/2 border-slate-600 py-16"
           chevronClassName="mr-8 mt-4"
         >
-          <div className="text-typography-secondary">
+          <div className="text-typography-primary">
             <Trans>
               Yes, GLV is fully liquid and permissionless. You can sell via the GMX interface to redeem for underlying
               assets, with low fees.
@@ -122,7 +122,7 @@ export function AboutGlpIncident() {
           className="border-b-1/2 border-slate-600 py-16"
           chevronClassName="mr-8 mt-4"
         >
-          <div className="text-typography-secondary">
+          <div className="text-typography-primary">
             <Trans>
               GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools,
               with auto-compounding for seamless growth (20-30% historical average annualized performance). View
@@ -140,7 +140,7 @@ export function AboutGlpIncident() {
           className="pt-16"
           chevronClassName="mr-8 mt-4"
         >
-          <div className="text-typography-secondary">
+          <div className="text-typography-primary">
             <Trans>
               A $500,000 GLV pool (funded by DAO funds) rewards long-term holders: If you keep your distributed GLV for
               at least 3 months (without selling or transferring), you'll receive a pro rata share.

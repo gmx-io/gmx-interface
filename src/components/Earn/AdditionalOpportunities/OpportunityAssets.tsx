@@ -3,6 +3,7 @@ import cx from "classnames";
 import { getMarketIndexName, getMarketPoolName, GlvAndGmMarketsInfoData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { mustNeverExist } from "lib/types";
+import { useBreakpoints } from "lib/useBreakpoints";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { TokensData } from "sdk/types/tokens";
 
@@ -23,11 +24,14 @@ export function OpportunityAssets({
   marketsInfoData: GlvAndGmMarketsInfoData | undefined;
   tokensData: TokensData | undefined;
 }) {
+  const { isSmallMobile } = useBreakpoints();
+
   if (!assets.length) {
     return null;
   }
 
-  const visibleAssets = assets.slice(0, 3);
+  const maxVisibleAssets = isSmallMobile ? 2 : 3;
+  const visibleAssets = assets.slice(0, maxVisibleAssets);
   const remainingCount = assets.length - visibleAssets.length;
 
   return (

@@ -2,7 +2,7 @@ import cx from "classnames";
 import React, { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-import openInNewTab from "img/open-new-tab.svg";
+import OpenInNewTabIcon from "img/open-new-tab.svg?react";
 
 type ButtonProps = {
   children: ReactNode;
@@ -46,7 +46,7 @@ export default function ButtonLink({
     };
     return (
       <a data-qa={qa} {...anchorProps}>
-        {showExternalLinkArrow && <img className="arrow-icon" src={openInNewTab} width="100%" alt="open in new tab" />}
+        {showExternalLinkArrow && <OpenInNewTabIcon className="arrow-icon" />}
         {children}
       </a>
     );

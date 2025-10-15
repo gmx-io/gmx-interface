@@ -57,6 +57,8 @@ export function ClaimRewardsButton({ processedData, mutateProcessedData, classNa
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const wrappedTokenSymbol = getConstant(chainId, "wrappedTokenSymbol");
 
+  const hasGmxRewards = (processedData?.totalGmxRewards ?? 0n) > 0n;
+  const hasEsGmxRewards = (processedData?.totalEsGmxRewards ?? 0n) > 0n;
   const hasNativeRewards = (processedData?.totalNativeTokenRewards ?? 0n) > 0n;
 
   const handleClick = () => {
@@ -75,7 +77,12 @@ export function ClaimRewardsButton({ processedData, mutateProcessedData, classNa
 
   return (
     <div className={cx("flex justify-end max-lg:w-full", className)}>
-      <Button variant="secondary" onClick={handleClick} className="max-lg:w-full">
+      <Button
+        variant="secondary"
+        onClick={handleClick}
+        className="max-lg:w-full"
+        disabled={!hasGmxRewards && !hasEsGmxRewards && !hasNativeRewards}
+      >
         <EarnIcon className="size-16" />
         <Trans>Claim rewards</Trans>
       </Button>

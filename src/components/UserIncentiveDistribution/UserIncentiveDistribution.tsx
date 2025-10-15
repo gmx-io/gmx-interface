@@ -131,7 +131,7 @@ export default function UserIncentiveDistribution() {
     <div className={cx("grid grid-cols-[1fr_400px] gap-8 max-xl:grid-cols-[1fr]")}>
       <div className="flex grow flex-col gap-8">
         {isTablet && claimableBalance}
-        <div className="flex grow flex-col gap-8 rounded-8 bg-slate-900">
+        <div className="flex grow flex-col gap-8 overflow-hidden rounded-8 bg-slate-900">
           {!userIncentiveData?.data?.length ? (
             <EmptyTableContent
               emptyText={

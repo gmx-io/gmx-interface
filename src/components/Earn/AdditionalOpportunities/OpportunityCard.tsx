@@ -7,6 +7,8 @@ import { TokensData } from "sdk/types/tokens";
 import Badge from "components/Badge/Badge";
 import Button from "components/Button/Button";
 
+import UpRightArrowIcon from "img/ic_up_right_arrow.svg?react";
+
 import { OpportunityAssets } from "./OpportunityAssets";
 import { Opportunity, useOpportunityTagLabels } from "./useOpportunities";
 
@@ -22,8 +24,8 @@ export function OpportunityCard({ opportunity, marketsInfoData, tokensData }: Pr
   const opportunityTagLabels = useOpportunityTagLabels();
 
   return (
-    <div>
-      <div className="flex justify-end gap-12 rounded-t-8 bg-slate-750/50 p-10 dark:bg-slate-750">
+    <div className="rounded-8 bg-slate-900">
+      <div className="flex justify-end gap-12 rounded-t-8 bg-fill-surfaceElevated50 p-10">
         <OpportunityAssets assets={tokens} marketsInfoData={marketsInfoData} tokensData={tokensData} />
         {tags.length ? (
           <div className="flex flex-wrap gap-6">
@@ -35,7 +37,7 @@ export function OpportunityCard({ opportunity, marketsInfoData, tokensData }: Pr
           </div>
         ) : null}
       </div>
-      <div className="relative flex min-h-[136px] flex-col justify-end rounded-b-8 bg-slate-900 p-20 pt-28">
+      <div className="relative flex min-h-[136px] flex-col justify-end p-20 pt-28">
         <img
           className="absolute -top-20 left-20 flex size-40 shrink-0 items-center justify-center rounded-full bg-slate-800"
           src={opportunity.icon}
@@ -51,10 +53,14 @@ export function OpportunityCard({ opportunity, marketsInfoData, tokensData }: Pr
             variant="secondary"
             to={link}
             newTab
-            showExternalLinkArrow
+            showExternalLinkArrow={false}
             onClick={() => sendEarnOpportunityClickedEvent(name)}
+            className="max-sm:p-8"
           >
-            <Trans>Explore</Trans>
+            <span className="max-sm:hidden">
+              <Trans>Explore</Trans>
+            </span>
+            <UpRightArrowIcon className="size-16" />
           </Button>
         </div>
       </div>

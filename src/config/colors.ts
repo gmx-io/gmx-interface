@@ -71,6 +71,7 @@ export const colors: ColorTree = {
   },
   fill: {
     surfaceElevated50: { light: "#EDEDF280", dark: "#1E203380" },
+    surfaceElevated: { light: "#EDEDF2", dark: "#1E2033" },
     surfaceElevatedHover: { light: "#EFEFEF", dark: "#18192a" },
     surfaceHover: { light: "#696D961A", dark: "#A0A3C41A" },
     accent: { light: "#D4D4E2", dark: "#363A59" },

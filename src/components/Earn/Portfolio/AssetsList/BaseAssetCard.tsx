@@ -29,9 +29,10 @@ export function BaseAssetCard({
         <div className="flex shrink-0 items-start">{headerButton}</div>
       </div>
 
-      {children}
-
-      <div className="mt-auto">{footer}</div>
+      <div className="mt-auto flex flex-col gap-12">
+        {children}
+        {footer}
+      </div>
     </div>
   );
 }

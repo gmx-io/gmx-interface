@@ -114,7 +114,7 @@ export function DynamicLine({
             if (error) {
               helperToast.error(
                 <>
-                  <span className="text-body-large font-bold">
+                  <span className="text-body-large font-medium">
                     <Trans>The order could not be updated</Trans>
                   </span>
                   <br />

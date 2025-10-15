@@ -16,6 +16,7 @@ import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnuali
 import { convertToUsd, getMidPrice, TokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { expandDecimals, formatPercentage, USD_DECIMALS } from "lib/numbers";
+import { useBreakpoints } from "lib/useBreakpoints";
 import { sendEarnRecommendationClickedEvent } from "lib/userAnalytics/earnEvents";
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import { AnyChainId } from "sdk/configs/chains";
@@ -29,7 +30,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import BoltGradientIcon from "img/ic_bolt_gradient.svg?react";
 import GmxIcon from "img/ic_gmx_40.svg?react";
-import NewLinkIcon from "img/ic_new_link.svg?react";
+import NewLinkThinIcon from "img/ic_new_link_thin.svg?react";
 
 const getRecommendedGlvs = ({
   hasGmxAssets,
@@ -182,10 +183,13 @@ export function RecommendedAssets({
         {gmsToShow.length > 0 && (
           <RecommendedAssetSection
             title={<Trans>GM Pools</Trans>}
-            rightCornerAction={
-              <Link to="/pools" className="text-body-medium flex items-center gap-4 text-typography-secondary">
+            additionalLink={
+              <Link
+                to="/pools"
+                className="text-body-medium flex items-center gap-4 text-typography-secondary hover:text-blue-300"
+              >
                 <Trans>Explore more</Trans>
-                <NewLinkIcon className="size-16" />
+                <NewLinkThinIcon className="size-16" />
               </Link>
             }
           >
@@ -205,13 +209,14 @@ export function RecommendedAssets({
 
 function RecommendedAssetSection({
   title,
-  rightCornerAction,
+  additionalLink,
   children,
 }: {
   title: ReactNode;
-  rightCornerAction?: ReactNode;
+  additionalLink?: ReactNode;
   children: ReactNode[];
 }) {
+  const { isMobile } = useBreakpoints();
   return (
     <div
       className={cx("flex flex-col gap-12 rounded-8 bg-slate-900 px-20 py-16", {
@@ -223,9 +228,10 @@ function RecommendedAssetSection({
     >
       <div className="flex items-center justify-between">
         <h5 className="text-body-medium flex items-center gap-4 font-medium text-typography-primary">{title}</h5>
-        {rightCornerAction}
+        {!isMobile ? additionalLink : null}
       </div>
       <div className="flex flex-wrap gap-12">{children}</div>
+      <div className="flex justify-end">{isMobile ? additionalLink : null}</div>
     </div>
   );
 }

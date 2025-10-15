@@ -70,7 +70,7 @@ export function ColorfulBanner({
             <Icon className="size-20 p-[1.25px]" />
           </div>
         )}
-        <div>{children}</div>
+        <div className="flex items-center">{children}</div>
       </div>
       {onClose && (
         <button

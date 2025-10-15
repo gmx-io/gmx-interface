@@ -162,7 +162,7 @@ export async function signMessage({
       onError: (error) => {
         helperToast.error(
           <div className="flex flex-col gap-10">
-            <div className="text-body-medium font-bold">
+            <div className="text-body-medium font-medium">
               <Trans>Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing</Trans>
             </div>
             <ToastifyDebug error={error?.message ?? error.toString()} />
@@ -192,7 +192,7 @@ export async function signMessage({
       onError: (error) => {
         helperToast.error(
           <div className="flex flex-col gap-10">
-            <div className="text-body-medium font-bold">
+            <div className="text-body-medium font-medium">
               <Trans>Unable to sign message with smart account</Trans>
             </div>
             <ToastifyDebug error={error?.message ?? error.toString()} />
@@ -211,7 +211,7 @@ export async function signMessage({
   } catch (error: any) {
     helperToast.error(
       <div className="flex flex-col gap-10">
-        <div className="text-body-medium font-bold">
+        <div className="text-body-medium">
           <Trans>Unable to sign message with EOA</Trans>
         </div>
         <ToastifyDebug error={error?.message ?? error.toString()} />

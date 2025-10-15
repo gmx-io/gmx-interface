@@ -89,7 +89,11 @@ function YieldMetric({
   const metricNode = (
     <div className="flex items-center gap-6 text-13">
       <span className={cx("text-typography-primary", { "group-hover:text-blue-300": !disabled })}>{value}</span>
-      {!disabled && <span className="uppercase text-typography-secondary">{suffix}</span>}
+      {!disabled && (
+        <span className={cx("uppercase text-typography-secondary", { "group-hover:text-blue-300": !disabled })}>
+          {suffix}
+        </span>
+      )}
     </div>
   );
 
@@ -128,7 +132,7 @@ function NetworkYieldCard({
   return (
     <div className="flex flex-col gap-8 rounded-8 bg-slate-900 p-16 max-xl:p-0">
       {showTitle && (
-        <div className="flex items-center gap-8 pl-12 text-13 font-medium text-typography-primary">
+        <div className="flex items-center gap-8 pl-12 text-16 font-medium text-typography-primary">
           <img src={getIcon(chainId, "network")} alt="network" className="h-20 w-20" />
           {title}
         </div>
@@ -178,7 +182,9 @@ function YieldRow({ token, metric, to, disabled, chainId: targetChainId }: Yield
     <>
       <div className="flex items-center gap-8">
         <img className="size-20" src={ASSET_ICONS[token]} alt={token} />
-        <span className="text-13 font-medium text-typography-primary">{token}</span>
+        <span className={cx("text-13 font-medium text-typography-primary", { "group-hover:text-blue-300": !disabled })}>
+          {token}
+        </span>
       </div>
 
       <div className="flex items-center gap-8">
@@ -314,6 +320,7 @@ export default function EarnYieldOverview() {
                 value={<Trans>N/A</Trans>}
                 suffix=""
                 tooltip={<Trans>GMX staking isn't currently supported on Botanix.</Trans>}
+                disabled
               />
             }
           />,
@@ -327,6 +334,7 @@ export default function EarnYieldOverview() {
                 value={<Trans>N/A</Trans>}
                 suffix=""
                 tooltip={<Trans>No GLV vaults are currently active on Botanix.</Trans>}
+                disabled
               />
             }
           />,

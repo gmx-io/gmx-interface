@@ -270,7 +270,6 @@ export default function ClaimableAmounts() {
 
     if (totalFundsToClaimUsd === 0n) {
       isButtonDisabled = true;
-      buttonText = <Trans>No funds to claim</Trans>;
     }
 
     return {
@@ -360,16 +359,14 @@ export default function ClaimableAmounts() {
       </div>
       <div className="flex flex-col gap-8 rounded-b-8 bg-fill-surfaceElevated50 p-12">
         <div className="flex items-center justify-between">
-          <div className="flex cursor-pointer items-center gap-4" onClick={onViewBreakdown}>
-            {hasClaimableAmounts ? (
-              <>
-                <span className="text-body-small cursor-pointer select-none font-medium text-typography-secondary">
-                  {isExpanded ? <Trans>Hide breakdown</Trans> : <Trans>View breakdown</Trans>}
-                </span>
-                <ChevronDownIcon className={cx("size-14 text-typography-secondary", { "rotate-180": isExpanded })} />
-              </>
-            ) : null}
-          </div>
+          {hasClaimableAmounts ? (
+            <div className="flex cursor-pointer items-center gap-4" onClick={onViewBreakdown}>
+              <span className="text-body-small cursor-pointer select-none font-medium text-typography-secondary">
+                {isExpanded ? <Trans>Hide breakdown</Trans> : <Trans>View breakdown</Trans>}
+              </span>
+              <ChevronDownIcon className={cx("size-14 text-typography-secondary", { "rotate-180": isExpanded })} />
+            </div>
+          ) : null}
 
           <span className="text-body-small text-typography-secondary">{formatUsd(totalFundsToClaimUsd)}</span>
         </div>
