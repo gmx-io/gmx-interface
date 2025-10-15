@@ -1,4 +1,4 @@
-# GMX Styling Guide
+# GMX Style Guidelines
 
 ## Responsiveness
 - Breakpoints are centralized in `src/lib/breakpoints.ts` (`mobile: 768`, `tablet: 1024`, `desktop: 1280`, `smallMobile: 400`). Tailwind extends these so `sm/md/lg/xl` map to the same values while arbitrary queries such as `min-[1300px]` stay available for finer control.
