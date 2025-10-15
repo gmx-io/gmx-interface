@@ -141,7 +141,7 @@ export function formatUsd(
   const sign = usd < 0n ? "-" : maybePlus;
   const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol}\u00a0` : "";
   const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, displayDecimals, true);
-  return `${symbol}${sign}$\u200a\u200d${displayUsd}`;
+  return `${symbol}${sign}$\u200a${displayUsd}`;
 }
 
 export function formatBigUsd(amount: bigint, opts: { displayDecimals?: number } = {}) {
@@ -168,7 +168,7 @@ export function formatDeltaUsd(
   const deltaUsdStr = formatAmount(exceedingInfo.value, USD_DECIMALS, 2, true);
   const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
 
-  return `${symbol}${sign}$\u200a\u200d${deltaUsdStr}${percentageStr}`;
+  return `${symbol}${sign}$\u200a${deltaUsdStr}${percentageStr}`;
 }
 
 export function formatPercentage(
@@ -188,7 +188,7 @@ export function formatPercentage(
   const sign = signed ? `${getPlusOrMinusSymbol(percentage)}` : "";
   const displaySign = !showPlus && sign === "+" ? "" : `${sign}`;
 
-  return `${displaySign}${displaySign ? "\u200a\u200d" : ""}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
+  return `${displaySign}${displaySign ? "\u200a" : ""}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
 }
 
 export function formatTokenAmount(
@@ -288,7 +288,7 @@ export function formatRatePercentage(rate?: bigint, opts?: { displayDecimals?: n
   const plurOrMinus = signed ? getPlusOrMinusSymbol(rate) : "";
 
   const amount = bigMath.abs(rate * 100n);
-  return `${plurOrMinus}\u200a\u200d${formatAmount(amount, 30, opts?.displayDecimals ?? 4)}%`;
+  return `${plurOrMinus}\u200a${formatAmount(amount, 30, opts?.displayDecimals ?? 4)}%`;
 }
 
 export function formatUsdPrice(price?: bigint, opts: Parameters<typeof formatUsd>[1] = {}) {
@@ -333,7 +333,7 @@ export function formatAmountHuman(
   }
   const isNegative = n < 0;
   const absN = Math.abs(n);
-  const sign = showDollar ? "$\u200a\u200d" : "";
+  const sign = showDollar ? "$\u200a" : "";
 
   if (absN >= 1_000_000_000) {
     return `${isNegative ? "-" : ""}${sign}${(absN / 1_000_000_000).toFixed(displayDecimals)}b`;
@@ -437,7 +437,7 @@ export function numberWithCommas(x: BigNumberish, { showDollar = false }: { show
 
   const parts = x.toString().split(".");
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return `${showDollar ? "$\u200a\u200d" : ""}${parts.join(".")}`;
+  return `${showDollar ? "$\u200a" : ""}${parts.join(".")}`;
 }
 
 export const formatAmount = (
