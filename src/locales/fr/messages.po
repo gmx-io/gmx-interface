@@ -1627,7 +1627,6 @@ msgid "Express and One-Click Trading are unavailable due to insufficient gas bal
 msgstr "Trading Express et en un clic indisponibles en raison d'un solde de gas insuffisant."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "No funds to claim"
 msgstr ""
 
