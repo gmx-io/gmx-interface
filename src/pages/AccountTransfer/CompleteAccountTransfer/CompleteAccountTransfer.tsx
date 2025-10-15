@@ -14,13 +14,13 @@ import { abis } from "sdk/abis";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
+import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import Modal from "components/Modal/Modal";
-
-import "./CompleteAccountTransfer.css";
+import PageTitle from "components/PageTitle/PageTitle";
 
 export default function CompleteAccountTransfer() {
   const [, copyToClipboard] = useCopyToClipboard();
-  const { sender, receiver } = useParams();
+  const { sender, receiver } = useParams<{ sender: string | undefined; receiver: string | undefined }>();
   const isSenderAndReceiverValid = ethers.isAddress(sender) && ethers.isAddress(receiver);
   const { setPendingTxns } = usePendingTxns();
   const { signer, account } = useWallet();
@@ -81,40 +81,40 @@ export default function CompleteAccountTransfer() {
 
   if (!isSenderAndReceiverValid) {
     return (
-      <div className="CompleteAccountTransfer Page page-layout">
-        <div className="default-container !m-0">
-          <div className="Page-title">
-            <Trans>Complete Account Transfer</Trans>
-          </div>
-          <div className="Page-description">
-            <Trans>Invalid Transfer Addresses: Please check the url.</Trans>
-          </div>
-        </div>
-      </div>
+      <AppPageLayout>
+        <PageTitle title={t`Complete Account Transfer`} />
+
+        <ColorfulBanner color="red">
+          <Trans>Invalid Transfer Addresses: Please check the url.</Trans>
+        </ColorfulBanner>
+      </AppPageLayout>
     );
   }
 
   return (
     <AppPageLayout>
-      <div className="CompleteAccountTransfer Page page-layout">
-        <Modal
-          isVisible={isTransferSubmittedModalVisible}
-          setIsVisible={setIsTransferSubmittedModalVisible}
-          label="Transfer Completed"
-        >
-          <Trans>Your transfer has been completed.</Trans>
-          <br />
-          <br />
-          <Link className="App-cta" to="/earn">
-            <Trans>Continue</Trans>
-          </Link>
-        </Modal>
-        <div className="default-container !m-0 pb-16">
-          <div className="Page-title">
-            <Trans>Complete Account Transfer</Trans>
-          </div>
-          {!isCorrectAccount && (
-            <div className="Page-description">
+      <Modal
+        isVisible={isTransferSubmittedModalVisible}
+        setIsVisible={setIsTransferSubmittedModalVisible}
+        label="Transfer Completed"
+      >
+        <Trans>Your transfer has been completed.</Trans>
+        <br />
+        <br />
+        <Link className="App-cta" to="/earn">
+          <Trans>Continue</Trans>
+        </Link>
+      </Modal>
+      <PageTitle
+        title={t`Complete Account Transfer`}
+        subtitle={
+          isCorrectAccount ? (
+            <div className="hyphens-auto">
+              <Trans>You have a pending transfer from {sender}.</Trans>
+              <br />
+            </div>
+          ) : (
+            <div>
               <Trans>To complete the transfer, you must switch your connected account to {receiver}.</Trans>
               <br />
               <br />
@@ -133,31 +133,26 @@ export default function CompleteAccountTransfer() {
               <br />
               <br />
             </div>
-          )}
-          {isCorrectAccount && (
-            <div className="Page-description hyphens-auto">
-              <Trans>You have a pending transfer from {sender}.</Trans>
-              <br />
-            </div>
-          )}
-        </div>
-        {isCorrectAccount && (
-          <div className="default-container !m-0">
-            <div className="input-form">
-              <div className="input-row">
-                <Button
-                  variant="primary-action"
-                  className="w-full"
-                  disabled={!isPrimaryEnabled()}
-                  onClick={onClickPrimary}
-                >
-                  {getPrimaryText()}
-                </Button>
-              </div>
+          )
+        }
+      />
+
+      {isCorrectAccount && (
+        <div className="mt-16">
+          <div className="input-form">
+            <div className="input-row">
+              <Button
+                variant="primary-action"
+                className="w-full"
+                disabled={!isPrimaryEnabled()}
+                onClick={onClickPrimary}
+              >
+                {getPrimaryText()}
+              </Button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </AppPageLayout>
   );
 }
