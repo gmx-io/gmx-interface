@@ -122,12 +122,12 @@ export default function Stats() {
           handle={
             <div className={className}>
               <span className="numbers">
-                ${"\u200a\u200d"}
+                ${"\u200a"}
                 {formatAmountHuman(oi, 30)}
               </span>{" "}
               /{" "}
               <span className="numbers">
-                ${"\u200a\u200d"}
+                ${"\u200a"}
                 {formatAmountHuman(maxGlobalSize, 30)}
               </span>
             </div>
@@ -138,7 +138,7 @@ export default function Stats() {
                 <>
                   Increase rate:{" "}
                   <span className="numbers">
-                    ${"\u200a\u200d"}
+                    ${"\u200a"}
                     {formatAmountHuman(openInterestIncrement, 0)}
                   </span>{" "}
                   / 30 minutes
@@ -152,7 +152,7 @@ export default function Stats() {
                   <br />
                   Max possible cap:{" "}
                   <span className="numbers">
-                    ${"\u200a\u200d"}
+                    ${"\u200a"}
                     {formatAmountHuman(maxOpenInterest, 0)}
                   </span>
                 </>
@@ -254,18 +254,18 @@ export default function Stats() {
                   <td>{tokenInfo.symbol}</td>
                   <td>
                     <span className="numbers">
-                      ${"\u200a\u200d"}
+                      ${"\u200a"}
                       {formatAmountHuman(tokenInfo.managedUsd, 30)}
                     </span>
                   </td>
                   <td className={maxPoolClassName}>
                     <span className="numbers">
-                      ${"\u200a\u200d"}
+                      ${"\u200a"}
                       {formatAmountHuman(tokenInfo.usdgAmount, 18)}
                     </span>{" "}
                     /{" "}
                     <span className="numbers">
-                      ${"\u200a\u200d"}
+                      ${"\u200a"}
                       {formatAmountHuman(tokenInfo.maxUsdgAmount, 18)}
                     </span>
                     {shareBar(tokenInfo.usdgAmount, tokenInfo.maxUsdgAmount)}
@@ -283,12 +283,12 @@ export default function Stats() {
                   </td>
                   <td>
                     <span className="numbers">
-                      ${"\u200a\u200d"}
+                      ${"\u200a"}
                       {formatAmountHuman(tokenInfo.usdgAmount, 18)}
                     </span>{" "}
                     /{" "}
                     <span className="numbers">
-                      ${"\u200a\u200d"}
+                      ${"\u200a"}
                       {formatAmountHuman(targetUsdg, 18)}
                     </span>
                   </td>

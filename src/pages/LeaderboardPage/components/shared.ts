@@ -18,9 +18,9 @@ export function formatDelta(
     postfix?: string;
   } = {}
 ) {
-  return `${p.prefixoid ? `${p.prefixoid}\u200a\u200d` : ""}${p.signed ? (delta === 0n ? "" : delta > 0 ? "+" : "-") : ""}${
+  return `${p.prefixoid ? `${p.prefixoid}\u200a` : ""}${p.signed ? (delta === 0n ? "" : delta > 0 ? "+" : "-") : ""}${
     p.prefix || ""
-  }\u200a\u200d${formatAmount(p.signed ? bigMath.abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
+  }\u200a${formatAmount(p.signed ? bigMath.abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
 }
 
 export function getSignedValueClassName(num: bigint) {

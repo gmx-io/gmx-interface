@@ -384,7 +384,7 @@ const TableRow = memo(
             "text-typography-secondary": account.averageSize === 0n,
           })}
         >
-          {account.averageSize ? formatUsd(account.averageSize) : "$\u200a\u200d0.00"}
+          {account.averageSize ? formatUsd(account.averageSize) : "$\u200a0.00"}
         </TableTd>
         <TableTd
           className={cx("numbers", {
