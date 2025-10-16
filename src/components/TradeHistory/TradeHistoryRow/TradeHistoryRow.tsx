@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Address } from "viem";
 
@@ -8,11 +8,18 @@ import { CHAIN_SLUGS_MAP, getExplorerUrl } from "config/chains";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { isSwapOrderType } from "domain/synthetics/orders";
-import { PositionTradeAction, SwapTradeAction, TradeAction } from "domain/synthetics/tradeHistory";
+import { isDecreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
+import {
+  isPositionTradeAction,
+  PositionTradeAction,
+  SwapTradeAction,
+  TradeAction,
+  TradeActionType,
+} from "domain/synthetics/tradeHistory";
 import { EMPTY_ARRAY } from "lib/objects";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
+import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -22,7 +29,9 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import NewLinkIcon from "img/ic_new_link.svg?react";
+import ShareIcon from "img/ic_share.svg?react";
 
+import ShareClosedPosition from "./ShareClosedPosition";
 import { formatPositionMessage } from "./utils/position";
 import { TooltipContent, TooltipString } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";
@@ -179,6 +188,8 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
     [msg.indexName, msg.indexTokenSymbol, msg.isLong, msg.swapFromTokenSymbol, msg.swapToTokenSymbol]
   );
 
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+
   return (
     <>
       <TableTr
@@ -277,7 +288,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             <span className="numbers">{msg.price}</span>
           )}
         </TableTd>
-        <TableTd className="TradeHistoryRow-pnl-fees">
+        <TableTd>
           {!msg.pnl ? (
             <span className="text-typography-secondary">-</span>
           ) : (
@@ -291,7 +302,27 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             </span>
           )}
         </TableTd>
+        <TableTd>
+          {isDecreaseOrderType(tradeAction.orderType) && tradeAction.eventName === TradeActionType.OrderExecuted ? (
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setIsShareModalOpen(true);
+              }}
+            >
+              <ShareIcon />
+              <Trans>Share</Trans>
+            </Button>
+          ) : null}
+        </TableTd>
       </TableTr>
+      {isPositionTradeAction(tradeAction) ? (
+        <ShareClosedPosition
+          tradeAction={tradeAction}
+          isShareModalOpen={isShareModalOpen}
+          setIsShareModalOpen={setIsShareModalOpen}
+        />
+      ) : null}
       {showDebugValues && (
         <TableTr>
           <TableTd colSpan={42}>

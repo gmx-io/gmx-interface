@@ -45,6 +45,7 @@ export function createRawTradeActionTransformer(
       }
 
       const tradeAction: SwapTradeAction = {
+        type: "swap",
         id: rawAction.id,
         srcChainId: rawAction.srcChainId ? Number(rawAction.srcChainId) : undefined,
         eventName: rawAction.eventName as TradeActionType,
@@ -95,6 +96,7 @@ export function createRawTradeActionTransformer(
       }
 
       const tradeAction: PositionTradeAction = {
+        type: "position",
         id: rawAction.id,
         eventName: rawAction.eventName as TradeActionType,
         account: rawAction.account,
@@ -108,6 +110,7 @@ export function createRawTradeActionTransformer(
         targetCollateralToken,
         initialCollateralDeltaAmount: bigNumberify(rawAction.initialCollateralDeltaAmount)!,
         sizeDeltaUsd: bigNumberify(rawAction.sizeDeltaUsd)!,
+        sizeDeltaInTokens: bigNumberify(rawAction.sizeDeltaInTokens)!,
         triggerPrice: rawAction.triggerPrice
           ? parseContractPrice(bigNumberify(rawAction.triggerPrice)!, indexToken.decimals)
           : undefined,

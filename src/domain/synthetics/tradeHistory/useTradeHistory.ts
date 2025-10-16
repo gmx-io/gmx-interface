@@ -325,6 +325,7 @@ export async function fetchTradeActions({
 
             initialCollateralDeltaAmount
             sizeDeltaUsd
+            sizeDeltaInTokens
             triggerPrice
             acceptablePrice
             executionPrice

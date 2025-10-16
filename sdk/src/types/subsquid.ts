@@ -8315,6 +8315,7 @@ export interface TradeAction {
   reasonBytes?: Maybe<Scalars["String"]["output"]>;
   shouldUnwrapNativeToken?: Maybe<Scalars["Boolean"]["output"]>;
   sizeDeltaUsd?: Maybe<Scalars["BigInt"]["output"]>;
+  sizeDeltaInTokens?: Maybe<Scalars["BigInt"]["output"]>;
   srcChainId?: Maybe<Scalars["BigInt"]["output"]>;
   swapPath: Array<Scalars["String"]["output"]>;
   timestamp: Scalars["Int"]["output"];
