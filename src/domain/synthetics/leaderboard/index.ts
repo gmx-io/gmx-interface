@@ -4,6 +4,8 @@ import useSWR from "swr";
 import { expandDecimals } from "lib/numbers";
 import { getSubsquidGraphClient } from "lib/subgraph";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import { Position as SquidPosition } from "sdk/types/subsquid";
+import { queryPaginated } from "sdk/utils/subgraph";
 
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "./constants";
 import { LeaderboardDataType } from "./types";
@@ -95,29 +97,6 @@ export type LeaderboardAccount = LeaderboardAccountBase & {
   pnlPercentage: bigint;
   averageSize: bigint;
   averageLeverage: bigint;
-};
-
-type LeaderboardPositionsJson = {
-  positions: {
-    account: string;
-    collateralAmount: string;
-    collateralToken: string;
-    entryPrice: string;
-    id: string;
-    isLong: boolean;
-    isSnapshot: boolean;
-    market: string;
-    maxSize: string;
-    realizedFees: string;
-    realizedPriceImpact: string;
-    unrealizedFees: string;
-    unrealizedPnl: string;
-    unrealizedPriceImpact: string;
-    realizedPnl: string;
-    sizeInTokens: string;
-    sizeInUsd: string;
-    snapshotTimestamp: number;
-  }[];
 };
 
 export type LeaderboardPositionBase = {
@@ -287,6 +266,45 @@ export function useLeaderboardData(
   return { data, error, isLoading };
 }
 
+const positionsQuery = gql`
+  query PositionQuery(
+    $requiredMaxCapital: BigInt
+    $isSnapshot: Boolean
+    $snapshotTimestamp: Int
+    $limit: Int
+    $offset: Int
+  ) {
+    positions(
+      where: {
+        isSnapshot_eq: $isSnapshot
+        snapshotTimestamp_eq: $snapshotTimestamp
+        accountStat: { maxCapital_gt: $requiredMaxCapital }
+      }
+      limit: $limit
+      offset: $offset
+    ) {
+      id
+      account
+      market
+      collateralToken
+      isLong
+      realizedFees
+      unrealizedFees
+      maxSize
+      realizedPriceImpact
+      unrealizedPriceImpact
+      unrealizedPnl
+      realizedPnl
+      sizeInTokens
+      sizeInUsd
+      entryPrice
+      collateralAmount
+      snapshotTimestamp
+      isSnapshot
+    }
+  }
+`;
+
 const fetchPositions = async (
   chainId: number,
   snapshotTimestamp: number | undefined
@@ -298,52 +316,28 @@ const fetchPositions = async (
     return;
   }
 
-  const response = await client.query<LeaderboardPositionsJson>({
-    query: gql`
-      query PositionQuery($requiredMaxCapital: BigInt, $isSnapshot: Boolean, $snapshotTimestamp: Int) {
-        positions(
-          limit: 100000
-          where: {
-            isSnapshot_eq: $isSnapshot
-            snapshotTimestamp_eq: $snapshotTimestamp
-            accountStat: { maxCapital_gt: $requiredMaxCapital }
-          }
-        ) {
-          id
-          account
-          market
-          collateralToken
-          isLong
-          realizedFees
-          unrealizedFees
-          maxSize
-          realizedPriceImpact
-          unrealizedPriceImpact
-          unrealizedPnl
-          realizedPnl
-          sizeInTokens
-          sizeInUsd
-          entryPrice
-          collateralAmount
-          snapshotTimestamp
-          isSnapshot
-        }
-      }
-    `,
-    variables: {
-      isSnapshot: snapshotTimestamp !== undefined,
-      // filtering by maxCapital capital is not accurate for any specific period
-      // because it uses maxCapital of total period
-      // if trader's pnl is positive at the start of the period
-      // then maxCapital at the start of the period is higher than total maxCapital
-      // use lower threshold to mitigate this issue
-      requiredMaxCapital: expandDecimals(50, 30).toString(),
-      snapshotTimestamp,
-    },
-    fetchPolicy: "no-cache",
-  });
+  const response = await queryPaginated<SquidPosition>(async (limit, offset) =>
+    client
+      .query({
+        query: positionsQuery,
+        variables: {
+          isSnapshot: snapshotTimestamp !== undefined,
+          // filtering by maxCapital capital is not accurate for any specific period
+          // because it uses maxCapital of total period
+          // if trader's pnl is positive at the start of the period
+          // then maxCapital at the start of the period is higher than total maxCapital
+          // use lower threshold to mitigate this issue
+          requiredMaxCapital: expandDecimals(100, 30).toString(),
+          snapshotTimestamp,
+          limit,
+          offset,
+        },
+        fetchPolicy: "no-cache",
+      })
+      .then((response) => response?.data?.positions || [])
+  );
 
-  return response?.data.positions.map((p) => {
+  return response.map((p) => {
     return {
       key: p.id,
       account: p.account,
@@ -361,7 +355,7 @@ const fetchPositions = async (
       unrealizedPriceImpact: BigInt(p.unrealizedPriceImpact),
       unrealizedPnl: BigInt(p.unrealizedPnl),
       maxSize: BigInt(p.maxSize),
-      snapshotTimestamp: p.snapshotTimestamp,
+      snapshotTimestamp: p.snapshotTimestamp ?? 0,
       isSnapshot: p.isSnapshot,
     };
   });

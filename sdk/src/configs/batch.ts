@@ -131,3 +131,5 @@ export const BATCH_CONFIGS: Record<
     },
   },
 };
+
+export const SUBSQUID_PAGINATION_LIMIT = 500;
