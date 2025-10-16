@@ -548,6 +548,14 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0x1cb9932CE322877A2B86489BD1aA3C3CfF879F0d": {
       enabled: true,
     },
+    // XAUt0/USD [XAUt0-XAUt0]
+    "0x1635eF7FBdce68eC80A3672aB710A5a99044f5c9": {
+      enabled: true,
+    },
+    // XAUt0/USD [XAUt0-USDT]
+    "0x92d3DA41E166A12e3Ede9e2Dd9A272C5c6FC55E1": {
+      enabled: true,
+    },
   },
   [AVALANCHE_FUJI]: {
     // AVAX/USD [WAVAX-USDC]
