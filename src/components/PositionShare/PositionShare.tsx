@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { toPng } from "html-to-image";
+import { toJpeg } from "html-to-image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
@@ -83,9 +83,9 @@ function PositionShare({
       if (element && userAffiliateCode.success && sharePositionBgImg) {
         // We have to call the toJpeg function multiple times to make sure the canvas renders all the elements like background image
         // @refer https://github.com/tsayen/dom-to-image/issues/343#issuecomment-652831863
-        const image = await toPng(element, config)
-          .then(() => toPng(element, config))
-          .then(() => toPng(element, config));
+        const image = await toJpeg(element, config)
+          .then(() => toJpeg(element, config))
+          .then(() => toJpeg(element, config));
         try {
           const imageInfo = await fetch(UPLOAD_URL, { method: "POST", body: image }).then((res) => res.json());
           setUploadedImageInfo(imageInfo);
@@ -107,10 +107,10 @@ function PositionShare({
       },
     });
 
-    const imgBlob = await toPng(element, config)
-      .then(() => toPng(element, config))
-      .then(() => toPng(element, config));
-    downloadImage(imgBlob, "share.png");
+    const imgBlob = await toJpeg(element, config)
+      .then(() => toJpeg(element, config))
+      .then(() => toJpeg(element, config));
+    downloadImage(imgBlob, "share.jpg");
   }
 
   function handleCopy() {
