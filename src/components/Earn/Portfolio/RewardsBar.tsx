@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { useMemo } from "react";
+import { ReactNode, useMemo } from "react";
 
 import { getConstant } from "config/chains";
 import { UserEarningsData } from "domain/synthetics/markets/types";
@@ -97,10 +97,10 @@ function TotalEarned({
       return null;
     }
 
-    const rows = [
+    const stakingRows: ReactNode[] = [
       <StatsTooltipRow
         key="gmx"
-        label={<Trans>GMX rewards</Trans>}
+        label={<Trans>GMX rewards:</Trans>}
         showDollar={false}
         value={
           <AmountWithUsdBalance
@@ -114,10 +114,10 @@ function TotalEarned({
     ];
 
     if ((processedData.cumulativeEsGmxRewards ?? 0n) > 0n) {
-      rows.push(
+      stakingRows.push(
         <StatsTooltipRow
           key="esgmx"
-          label={<Trans>esGMX rewards</Trans>}
+          label={<Trans>esGMX rewards:</Trans>}
           showDollar={false}
           value={
             <AmountWithUsdBalance
@@ -132,10 +132,10 @@ function TotalEarned({
     }
 
     if ((processedData.cumulativeNativeTokenRewards ?? 0n) > 0n) {
-      rows.push(
+      stakingRows.push(
         <StatsTooltipRow
           key="native"
-          label={<Trans>{nativeTokenSymbol} rewards</Trans>}
+          label={<Trans>{nativeTokenSymbol} rewards:</Trans>}
           showDollar={false}
           value={
             <AmountWithUsdBalance
@@ -149,18 +149,37 @@ function TotalEarned({
       );
     }
 
-    if (userEarnings && userEarnings.allMarkets.total > 0n) {
-      rows.push(
-        <StatsTooltipRow
-          key="allMarkets"
-          label={<Trans>GM Pools</Trans>}
-          showDollar={false}
-          value={<span className="text-body-medium numbers">{formatUsd(userEarnings.allMarkets.total)}</span>}
-        />
+    const tooltipSections: ReactNode[] = [];
+
+    if (stakingRows.length > 0) {
+      tooltipSections.push(
+        <div key="staking" className="flex flex-col gap-8">
+          <span className="text-14 font-medium text-typography-secondary">
+            <Trans>Lifetime staking rewards:</Trans>
+          </span>
+          <div className="flex flex-col">{stakingRows}</div>
+        </div>
       );
     }
 
-    return <div className="flex flex-col gap-4">{rows}</div>;
+    if (userEarnings && userEarnings.allMarkets.total > 0n) {
+      tooltipSections.push(
+        <div key="lp" className="flex flex-col gap-8">
+          <span className="text-14 font-medium text-typography-secondary">
+            <Trans>Lifetime LP rewards:</Trans>
+          </span>
+          <div className="flex flex-col">
+            <StatsTooltipRow
+              label={<Trans>GM Pools:</Trans>}
+              showDollar={false}
+              value={<span className="text-body-medium numbers">{formatUsd(userEarnings.allMarkets.total)}</span>}
+            />
+          </div>
+        </div>
+      );
+    }
+
+    return <div className="flex flex-col gap-8">{tooltipSections}</div>;
   }, [nativeTokenSymbol, processedData, userEarnings]);
 
   const totalEarnedUsd = (processedData?.cumulativeTotalRewardsUsd ?? 0n) + (userEarnings?.allMarkets.total ?? 0n);

@@ -43,9 +43,9 @@ export default function EarnDiscoveryPage() {
             </h4>
             <p className="text-13 text-typography-secondary xl:max-w-[50%]">
               <Trans>
-                Welcome to GMX Earn. Learn how GMX, GLV, and GM work together to power a decentralized and efficient
-                trading experience. Start your journey by understanding how each token fits into the bigger picture —
-                and how you can participate.
+                Welcome to GMX Earn! Learn how the GMX, GLV, and GM tokens work together to power a highly efficient,
+                decentralized trading experience. Explore the unique role of each token, and discover how you can stake
+                or provide liquidity to earn rewards — just like tens of thousands of other GMX users.
               </Trans>
             </p>
           </div>

@@ -10,6 +10,7 @@ import { useChainId } from "lib/chains";
 import { callContract } from "lib/contracts";
 import { defined } from "lib/guards";
 import { StakingProcessedData } from "lib/legacy";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { mustNeverExist } from "lib/types";
 import useWallet from "lib/wallets/useWallet";
@@ -22,6 +23,7 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import Modal from "components/Modal/Modal";
 import { ProgressRow } from "components/ProgressRow/ProgressRow";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import Tabs from "components/Tabs/Tabs";
@@ -394,6 +396,11 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
     </Button>
   );
 
+  const [isReadVestingDetailsBannerClosed, setIsReadVestingDetailsBannerClosed] = useLocalStorageSerializeKey(
+    "is-read-vesting-details-banner-closed",
+    false
+  );
+
   return (
     <Modal
       isVisible={isVisible}
@@ -413,13 +420,19 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
         />
 
         <div className="flex flex-col gap-8 px-20">
-          <AlertInfoCard type="info">
-            <Trans>Convert esGMX tokens to GMX tokens. Please read the vesting details before using the vaults.</Trans>
+          {!isReadVestingDetailsBannerClosed && (
+            <AlertInfoCard type="info" onClose={() => setIsReadVestingDetailsBannerClosed(true)}>
+              <div>
+                <Trans>
+                  Convert esGMX tokens to GMX tokens. Please read the vesting details before using the vaults.
+                </Trans>
 
-            <ColorfulButtonLink to="https://docs.gmx.io/docs/tokenomics/rewards#vesting" newTab>
-              Read details
-            </ColorfulButtonLink>
-          </AlertInfoCard>
+                <ColorfulButtonLink to="https://docs.gmx.io/docs/tokenomics/rewards#vesting" newTab>
+                  Read details
+                </ColorfulButtonLink>
+              </div>
+            </AlertInfoCard>
+          )}
 
           <Tabs
             options={actionTabs}
@@ -506,15 +519,15 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                     position="top-end"
                     handleClassName="whitespace-nowrap"
                     content={
-                      <div className="flex flex-col gap-8 text-typography-primary">
-                        <span>
-                          <Trans>Current Reserved: {formatGmxAmount(gmxDepositConfig.reserveAmount)}</Trans>
-                        </span>
-                        <span>
-                          <Trans>
-                            Additional reserve required: {formatGmxAmount(gmxReservePreview.additionalReserveAmount)}
-                          </Trans>
-                        </span>
+                      <div>
+                        <StatsTooltipRow
+                          label={<Trans>Current Reserved:</Trans>}
+                          value={formatGmxAmount(gmxDepositConfig.reserveAmount)}
+                        />
+                        <StatsTooltipRow
+                          label={<Trans>Additional reserve required:</Trans>}
+                          value={formatGmxAmount(gmxReservePreview.additionalReserveAmount)}
+                        />
                       </div>
                     }
                   />
@@ -532,13 +545,15 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                   )} / ${formatGmxAmount(depositConfig.maxVestableAmount)}`}
                   position="top-end"
                   content={
-                    <div className="flex flex-col gap-8 text-typography-primary">
-                      <span>
-                        <Trans>Deposited: {formatGmxAmount(depositConfig.vestedAmount)} esGMX</Trans>
-                      </span>
-                      <span>
-                        <Trans>Max Capacity: {formatGmxAmount(depositConfig.maxVestableAmount)} esGMX</Trans>
-                      </span>
+                    <div>
+                      <StatsTooltipRow
+                        label={<Trans>Deposited:</Trans>}
+                        value={formatGmxAmount(depositConfig.vestedAmount)}
+                      />
+                      <StatsTooltipRow
+                        label={<Trans>Max Capacity:</Trans>}
+                        value={formatGmxAmount(depositConfig.maxVestableAmount)}
+                      />
                     </div>
                   }
                 />

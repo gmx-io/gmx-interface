@@ -142,8 +142,8 @@ export function MenuSection({
 }) {
   const mainNavItems = [
     { icon: <TradeIcon className="size-24" />, label: t`Trade`, key: "trade", to: "/trade" },
-    { icon: <DatabaseIcon className="size-24" />, label: t`Pools`, key: "pools", to: "/pools" },
     { icon: <EarnIcon className="size-24" />, label: t`Earn`, key: "earn", to: "/earn" },
+    { icon: <DatabaseIcon className="size-24" />, label: t`Pools`, key: "pools", to: "/pools" },
     { icon: <DashboardIcon className="size-24" />, label: t`Stats`, key: "stats", to: "/stats" },
     { icon: <BuyIcon className="size-24" />, label: t`Buy`, key: "buy", to: "/buy" },
     { icon: <ReferralsIcon className="size-24" />, label: t`Referrals`, key: "referrals", to: "/referrals" },

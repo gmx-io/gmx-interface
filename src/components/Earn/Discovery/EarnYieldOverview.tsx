@@ -319,7 +319,12 @@ export default function EarnYieldOverview() {
               <YieldMetric
                 value={<Trans>N/A</Trans>}
                 suffix=""
-                tooltip={<Trans>GMX staking isn't currently supported on Botanix.</Trans>}
+                tooltip={
+                  <Trans>
+                    Staking GMX is currently not supported on Botanix. For access to these features, please visit the
+                    Arbitrum and Avalanche deployments.
+                  </Trans>
+                }
                 disabled
               />
             }
@@ -333,7 +338,15 @@ export default function EarnYieldOverview() {
               <YieldMetric
                 value={<Trans>N/A</Trans>}
                 suffix=""
-                tooltip={<Trans>No GLV vaults are currently active on Botanix.</Trans>}
+                tooltip={
+                  <Trans>
+                    Botanix currently has no GLV vault(s) active. You can provide liquidity by{" "}
+                    <Link to="/pools" className="underline hover:text-blue-300">
+                      purchasing
+                    </Link>{" "}
+                    GM tokens.
+                  </Trans>
+                }
                 disabled
               />
             }

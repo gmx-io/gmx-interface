@@ -169,7 +169,7 @@ export const useOpportunities = () => {
         {
           name: "Morpho",
           icon: morphoIcon,
-          description: <Trans>Lend out your GM tokens, and borrow against them.</Trans>,
+          description: <Trans>Lend out your GLV or GM tokens, and borrow against them.</Trans>,
           tags: ["lending-and-borrowing"],
           assets: [
             makeMarketAsset(ARBITRUM, "ETH/USD [WETH-USDC]"),
@@ -195,7 +195,7 @@ export const useOpportunities = () => {
         {
           name: "Venus",
           icon: venusIcon,
-          description: <Trans>Lend out your GM LP tokens, or borrow against them.</Trans>,
+          description: <Trans>Lend out your GM tokens, and borrow against them.</Trans>,
           tags: ["lending-and-borrowing"],
           assets: [makeMarketAsset(ARBITRUM, "BTC/USD [WBTC-USDC]"), makeMarketAsset(ARBITRUM, "ETH/USD [WETH-USDC]")],
           link: "https://venus.io/",
@@ -203,7 +203,7 @@ export const useOpportunities = () => {
         {
           name: "Radiant",
           icon: radiantIcon,
-          description: <Trans>Lend out your GM LP tokens, or borrow against them.</Trans>,
+          description: <Trans>Lend out your GLV or GM tokens, and borrow against them.</Trans>,
           tags: ["lending-and-borrowing", "looping"],
           assets: [
             makeGlvAsset(ARBITRUM, "GLV [WBTC-USDC]"),
@@ -224,7 +224,7 @@ export const useOpportunities = () => {
         {
           name: "Gloop",
           icon: gloopIcon,
-          description: <Trans>Lend out your tokens, or borrow against them.</Trans>,
+          description: <Trans>Lend out your GM tokens, and borrow against them.</Trans>,
           tags: ["lending-and-borrowing", "looping"],
           assets: [
             makeMarketAsset(ARBITRUM, "BTC/USD [WBTC-USDC]"),
