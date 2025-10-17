@@ -26,6 +26,8 @@ type Props = {
   pnlAfterFeesPercentage: bigint;
   sharePositionBgImg: string | null;
   userAffiliateCode: any;
+  showPnlAmounts: boolean;
+  pnlAfterFeesUsd: bigint;
 };
 
 export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
@@ -40,6 +42,8 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
       pnlAfterFeesPercentage,
       sharePositionBgImg,
       userAffiliateCode,
+      showPnlAmounts,
+      pnlAfterFeesUsd,
     },
     ref
   ) => {
@@ -63,13 +67,13 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
               <div
                 className={cx(
                   "inline-flex items-center gap-4 text-13 font-medium",
-                  isLong ? "text-green-500" : "text-red-500"
+                  isLong ? "text-[#0FDE8D]" : "text-[#FF506A]"
                 )}
               >
                 <VectorCircleIcon className={cx("size-14", { "rotate-180": !isLong })} />
-                {isLong ? "LONG" : "SHORT"} {formatAmount(leverage, 4, 2, true)}x
+                {isLong ? "Long" : "Short"} {formatAmount(leverage, 4, 2, true)}x
               </div>
-              <div className="flex items-center gap-4 font-medium">
+              <div className="flex items-center gap-4 font-medium text-white">
                 <TokenIcon symbol={indexToken.symbol} displaySize={16} importSize={24} />
                 <span>
                   {getTokenVisualMultiplier(indexToken)}
@@ -77,17 +81,29 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
                 </span>
               </div>
             </div>
-            <h3
-              className={cx(
-                "text-[40px] font-medium max-md:text-[32px]",
-                pnlAfterFeesPercentage < 0 ? "text-red-500" : "text-green-500"
+            <div className="flex items-end gap-6">
+              <h3
+                className={cx(
+                  "text-[40px] font-medium max-md:text-[32px]",
+                  pnlAfterFeesPercentage < 0 ? "text-[#FF506A]" : "text-[#0FDE8D]"
+                )}
+              >
+                {formatPercentage(pnlAfterFeesPercentage, { signed: true })}
+              </h3>
+              {showPnlAmounts && (
+                <p
+                  className={cx(
+                    "pb-8 text-14 font-medium",
+                    pnlAfterFeesPercentage < 0 ? "text-[#FF506A]" : "text-[#0FDE8D]"
+                  )}
+                >
+                  {formatUsd(pnlAfterFeesUsd, { displayPlus: true })}
+                </p>
               )}
-            >
-              {formatPercentage(pnlAfterFeesPercentage, { signed: true })}
-            </h3>
+            </div>
             <div className="flex gap-20 max-md:gap-10">
               <div className="flex flex-col gap-4">
-                <p className="text-caption">Entry Price</p>
+                <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">Entry Price</p>
                 <p className="text-13 font-medium text-white">
                   {formatUsd(entryPrice, {
                     displayDecimals: priceDecimals,
@@ -96,7 +112,7 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
                 </p>
               </div>
               <div className="flex flex-col gap-4">
-                <p className="text-caption">Mark Price</p>
+                <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">Mark Price</p>
                 <p className="text-13 font-medium text-white">
                   {formatUsd(markPrice, {
                     displayDecimals: priceDecimals,
@@ -105,17 +121,23 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
                 </p>
               </div>
 
-              {success && code ? (
-                <div className="flex flex-col gap-4">
-                  <p className="text-caption">Referral Code:</p>
+              <div className="flex flex-col gap-4">
+                <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">Referral Code:</p>
+                {success && code ? (
                   <p className="text-13 font-medium text-white">{code}</p>
-                </div>
-              ) : null}
+                ) : (
+                  <p className="text-13 font-medium text-[#A0A3C4]">-</p>
+                )}
+              </div>
             </div>
           </div>
 
           <div className="flex flex-col items-end justify-between">
-            <QRCodeSVG size={isMobile ? 24 : 32} value={success && code ? `${homeURL}/#/?ref=${code}` : `${homeURL}`} />
+            <QRCodeSVG
+              size={isMobile ? 32 : 52}
+              value={success && code ? `${homeURL}/#/?ref=${code}` : `${homeURL}`}
+              className="rounded-4 bg-white p-4"
+            />
             <div className="size-80 max-md:size-50"></div>
           </div>
         </div>

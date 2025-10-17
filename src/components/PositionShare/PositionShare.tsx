@@ -13,9 +13,10 @@ import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionActionEvent } from "lib/userAnalytics/types";
 
 import Button from "components/Button/Button";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
-import CopyIcon from "img/ic_copy.svg?react";
+import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
 import DownloadIcon from "img/ic_download2.svg?react";
 import TwitterIcon from "img/ic_x.svg?react";
 import shareBgImg from "img/position-share-bg.jpg";
@@ -44,6 +45,7 @@ type Props = {
   leverage: bigint | undefined;
   markPrice: bigint;
   pnlAfterFeesPercentage: bigint;
+  pnlAfterFeesUsd: bigint;
   setIsPositionShareModalOpen: (isOpen: boolean) => void;
   isPositionShareModalOpen: boolean;
   account: string | undefined | null;
@@ -57,6 +59,7 @@ function PositionShare({
   leverage,
   markPrice,
   pnlAfterFeesPercentage,
+  pnlAfterFeesUsd,
   setIsPositionShareModalOpen,
   isPositionShareModalOpen,
   account,
@@ -65,6 +68,7 @@ function PositionShare({
   const userAffiliateCode = useAffiliateCodes(chainId, account);
   const [uploadedImageInfo, setUploadedImageInfo] = useState<any>();
   const [uploadedImageError, setUploadedImageError] = useState<string | null>(null);
+  const [showPnlAmounts, setShowPnlAmounts] = useState(false);
   const [, copyToClipboard] = useCopyToClipboard();
   const sharePositionBgImg = useLoadImage(shareBgImg);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -141,9 +145,10 @@ function PositionShare({
       className="position-share-modal"
       isVisible={isPositionShareModalOpen}
       setIsVisible={setIsPositionShareModalOpen}
-      label={t`Share Position`}
+      label={t`Share your sucessful GMX trade on X`}
+      contentPadding={false}
     >
-      <div className="flex flex-col gap-20">
+      <div className="flex flex-col gap-20 border-b-1/2 border-slate-600 p-20">
         <PositionShareCard
           entryPrice={entryPrice}
           indexToken={indexToken}
@@ -155,22 +160,51 @@ function PositionShare({
           ref={cardRef}
           loading={!uploadedImageInfo && !uploadedImageError}
           sharePositionBgImg={sharePositionBgImg}
+          showPnlAmounts={showPnlAmounts}
+          pnlAfterFeesUsd={pnlAfterFeesUsd}
         />
         {uploadedImageError && <span className="error">{uploadedImageError}</span>}
-
-        <div className="actions">
-          <Button variant="secondary" disabled={!uploadedImageInfo} className="mr-15" onClick={handleCopy}>
-            <CopyIcon className="icon" />
-            <Trans>Copy</Trans>
+      </div>
+      <div className="flex flex-col gap-16 p-20">
+        <div>
+          <ToggleSwitch isChecked={showPnlAmounts} setIsChecked={setShowPnlAmounts}>
+            <span className="text-14 font-medium text-typography-secondary">
+              <Trans>Show PnL Amounts</Trans>
+            </span>
+          </ToggleSwitch>
+        </div>
+        <div className="flex gap-12">
+          <Button
+            variant="secondary"
+            disabled={!uploadedImageInfo}
+            onClick={handleCopy}
+            size="medium"
+            className="grow !text-14"
+          >
+            <Trans>Copy link</Trans>
+            <CopyStrokeIcon className="size-16" />
           </Button>
-          <Button variant="secondary" disabled={!uploadedImageInfo} className="mr-15" onClick={handleDownload}>
-            <DownloadIcon className="icon" />
+          <Button
+            variant="secondary"
+            disabled={!uploadedImageInfo}
+            onClick={handleDownload}
+            size="medium"
+            className="grow !text-14"
+          >
             <Trans>Download</Trans>
+            <DownloadIcon className="size-16" />
           </Button>
           <TrackingLink onClick={trackShareTwitter}>
-            <Button newTab variant="secondary" disabled={!uploadedImageInfo} className="mr-15" to={tweetLink}>
-              <TwitterIcon className="icon" />
-              <Trans>Tweet</Trans>
+            <Button
+              newTab
+              variant="secondary"
+              disabled={!uploadedImageInfo}
+              to={tweetLink}
+              size="medium"
+              className="grow !text-14"
+            >
+              <Trans>Share on</Trans>
+              <TwitterIcon className="size-16" />
             </Button>
           </TrackingLink>
         </div>

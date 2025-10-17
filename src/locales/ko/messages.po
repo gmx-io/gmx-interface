@@ -4465,6 +4465,10 @@ msgstr ""
 msgid "Referrals"
 msgstr "추천"
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show PnL Amounts"
+msgstr ""
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order Type"
 msgstr "주문 유형"
@@ -5517,8 +5521,8 @@ msgid "Swap {fromAmount} for {toAmount}"
 msgstr "{fromAmount}을 {toAmount}으로 스왑"
 
 #: src/components/PositionShare/PositionShare.tsx
-msgid "Copy"
-msgstr "복사"
+#~ msgid "Copy"
+#~ msgstr "복사"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -5934,6 +5938,10 @@ msgstr "가격 조건 충족 시 수령 토큰으로의 스왑 실행을 위한 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Errors"
 msgstr "거래 오류"
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Share your sucessful GMX trade on X"
+msgstr ""
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Consider selecting only positions where the accrued funding fee exceeds the {0} gas cost to settle each position."
@@ -6969,8 +6977,8 @@ msgid "Failed to update settings"
 msgstr "설정 업데이트 실패"
 
 #: src/components/PositionShare/PositionShare.tsx
-msgid "Tweet"
-msgstr "트윗"
+#~ msgid "Tweet"
+#~ msgstr "트윗"
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."
@@ -7168,7 +7176,6 @@ msgid "GMX V2 discounts are automatically applied on each trade and are not disp
 msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
-#: src/components/PositionShare/PositionShare.tsx
 msgid "Share Position"
 msgstr "포지션 공유"
 
@@ -7453,6 +7460,10 @@ msgstr "어제"
 msgid "Request Deposit"
 msgstr "입금 요청"
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Copy link"
+msgstr ""
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Number of Parts"
 msgstr "파트 수"
@@ -7514,6 +7525,10 @@ msgstr "지정가"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Trading Settings"
 msgstr "거래 설정"
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Share on"
+msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero Scan"

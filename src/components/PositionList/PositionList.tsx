@@ -148,6 +148,7 @@ export function PositionList(p: Props) {
       {positionToShare && (
         <PositionShare
           key={positionToShare.key}
+          pnlAfterFeesUsd={positionToShare.pnlAfterFees}
           setIsPositionShareModalOpen={setIsPositionShareModalOpen}
           isPositionShareModalOpen={isPositionShareModalOpen}
           entryPrice={positionToShare.entryPrice}

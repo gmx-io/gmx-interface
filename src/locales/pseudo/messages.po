@@ -4465,6 +4465,10 @@ msgstr ""
 msgid "Referrals"
 msgstr ""
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show PnL Amounts"
+msgstr ""
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order Type"
 msgstr ""
@@ -5517,8 +5521,8 @@ msgid "Swap {fromAmount} for {toAmount}"
 msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
-msgid "Copy"
-msgstr ""
+#~ msgid "Copy"
+#~ msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -5933,6 +5937,10 @@ msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Errors"
+msgstr ""
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Share your sucessful GMX trade on X"
 msgstr ""
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -6969,8 +6977,8 @@ msgid "Failed to update settings"
 msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
-msgid "Tweet"
-msgstr ""
+#~ msgid "Tweet"
+#~ msgstr ""
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."
@@ -7168,7 +7176,6 @@ msgid "GMX V2 discounts are automatically applied on each trade and are not disp
 msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
-#: src/components/PositionShare/PositionShare.tsx
 msgid "Share Position"
 msgstr ""
 
@@ -7453,6 +7460,10 @@ msgstr ""
 msgid "Request Deposit"
 msgstr ""
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Copy link"
+msgstr ""
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Number of Parts"
 msgstr ""
@@ -7513,6 +7524,10 @@ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Trading Settings"
+msgstr ""
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Share on"
 msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx

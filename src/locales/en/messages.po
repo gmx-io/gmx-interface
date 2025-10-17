@@ -4465,6 +4465,10 @@ msgstr "Net price impact is the sum of the stored impact at increase and the imp
 msgid "Referrals"
 msgstr "Referrals"
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show PnL Amounts"
+msgstr "Show PnL Amounts"
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order Type"
 msgstr "Order Type"
@@ -5517,8 +5521,8 @@ msgid "Swap {fromAmount} for {toAmount}"
 msgstr "Swap {fromAmount} for {toAmount}"
 
 #: src/components/PositionShare/PositionShare.tsx
-msgid "Copy"
-msgstr "Copy"
+#~ msgid "Copy"
+#~ msgstr "Copy"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -5934,6 +5938,10 @@ msgstr "There may not be sufficient liquidity to execute the swap to the receive
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Errors"
 msgstr "Trade Errors"
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Share your sucessful GMX trade on X"
+msgstr "Share your sucessful GMX trade on X"
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Consider selecting only positions where the accrued funding fee exceeds the {0} gas cost to settle each position."
@@ -6969,8 +6977,8 @@ msgid "Failed to update settings"
 msgstr "Failed to update settings"
 
 #: src/components/PositionShare/PositionShare.tsx
-msgid "Tweet"
-msgstr "Tweet"
+#~ msgid "Tweet"
+#~ msgstr "Tweet"
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."
@@ -7168,7 +7176,6 @@ msgid "GMX V2 discounts are automatically applied on each trade and are not disp
 msgstr "GMX V2 discounts are automatically applied on each trade and are not displayed on this table."
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
-#: src/components/PositionShare/PositionShare.tsx
 msgid "Share Position"
 msgstr "Share Position"
 
@@ -7453,6 +7460,10 @@ msgstr "Yesterday"
 msgid "Request Deposit"
 msgstr "Request Deposit"
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Copy link"
+msgstr "Copy link"
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Number of Parts"
 msgstr "Number of Parts"
@@ -7514,6 +7525,10 @@ msgstr "limit"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Trading Settings"
 msgstr "Trading Settings"
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Share on"
+msgstr "Share on"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero Scan"

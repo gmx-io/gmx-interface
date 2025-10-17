@@ -54,6 +54,7 @@ export default function ShareClosedPosition({
       pnlAfterFeesPercentage={pnlAfterFeesPercentage}
       chainId={chainId}
       account={tradeAction.account}
+      pnlAfterFeesUsd={tradeAction.pnlUsd ?? 0n}
       isPositionShareModalOpen={isShareModalOpen}
       setIsPositionShareModalOpen={setIsShareModalOpen}
     />

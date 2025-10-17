@@ -4465,6 +4465,10 @@ msgstr ""
 msgid "Referrals"
 msgstr "推荐"
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show PnL Amounts"
+msgstr ""
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order Type"
 msgstr "订单类型"
@@ -5517,8 +5521,8 @@ msgid "Swap {fromAmount} for {toAmount}"
 msgstr "将 {fromAmount} 交换为 {toAmount}"
 
 #: src/components/PositionShare/PositionShare.tsx
-msgid "Copy"
-msgstr "复制"
+#~ msgid "Copy"
+#~ msgstr "复制"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -5934,6 +5938,10 @@ msgstr "当满足价格条件时，可能没有足够的流动性来执行交换
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Errors"
 msgstr "交易错误"
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Share your sucessful GMX trade on X"
+msgstr ""
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Consider selecting only positions where the accrued funding fee exceeds the {0} gas cost to settle each position."
@@ -6969,8 +6977,8 @@ msgid "Failed to update settings"
 msgstr "更新设置失败"
 
 #: src/components/PositionShare/PositionShare.tsx
-msgid "Tweet"
-msgstr "推文"
+#~ msgid "Tweet"
+#~ msgstr "推文"
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."
@@ -7168,7 +7176,6 @@ msgid "GMX V2 discounts are automatically applied on each trade and are not disp
 msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
-#: src/components/PositionShare/PositionShare.tsx
 msgid "Share Position"
 msgstr "分享仓位"
 
@@ -7453,6 +7460,10 @@ msgstr "昨天"
 msgid "Request Deposit"
 msgstr "请求存款"
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Copy link"
+msgstr ""
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Number of Parts"
 msgstr "部分数量"
@@ -7514,6 +7525,10 @@ msgstr "限价"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Trading Settings"
 msgstr "交易设置"
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Share on"
+msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero Scan"
