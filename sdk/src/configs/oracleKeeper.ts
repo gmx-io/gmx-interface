@@ -1,7 +1,7 @@
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "./chains";
 
 const ORACLE_KEEPER_URLS: Record<ContractsChainId, string> = {
-  [ARBITRUM]: "https://arbitrum-api-fallback.gmxinfra2.io",
+  [ARBITRUM]: "https://arbitrum-api.gmxinfra.io",
 
   [AVALANCHE]: "https://avalanche-api.gmxinfra.io",
 
