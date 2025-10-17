@@ -126,7 +126,7 @@ export function TestPermits() {
   return (
     <AppPageLayout>
       <div className="mx-auto max-w-4xl p-4">
-        <h1 className="text-2xl mb-6 font-bold">Token Permit Testing</h1>
+        <h1 className="text-2xl mb-6 font-medium">Token Permit Testing</h1>
 
         <div className="mt-8 space-y-16">
           {tokens
@@ -233,7 +233,7 @@ export function TestPermits() {
 
               {permitData && (
                 <div className="rounded-xl text-slate-200 text-base bg-slate-800 p-6 shadow-inner">
-                  <h2 className="text-lg mb-4 font-bold tracking-wide text-typography-secondary">Permit Details</h2>
+                  <h2 className="text-lg mb-4 font-medium tracking-wide text-typography-secondary">Permit Details</h2>
                   <div className="space-y-2">
                     <div>
                       <span className="font-semibold">Deadline:</span>{" "}
@@ -245,13 +245,13 @@ export function TestPermits() {
                     <div className="mb-1 mt-16 font-semibold">Signature:</div>
                     <div className="rounded text-xs text-slate-300 space-y-1 overflow-x-auto p-3">
                       <div>
-                        <span className="font-bold">r:</span> {permitData.r}
+                        <span className="font-medium">r:</span> {permitData.r}
                       </div>
                       <div>
-                        <span className="font-bold">s:</span> {permitData.s}
+                        <span className="font-medium">s:</span> {permitData.s}
                       </div>
                       <div>
-                        <span className="font-bold">v:</span> {permitData.v}
+                        <span className="font-medium">v:</span> {permitData.v}
                       </div>
                     </div>
                   </div>

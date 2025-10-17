@@ -230,7 +230,7 @@
   justify-content: center;
   align-items: center;
   padding: 3rem 1.5rem;
-  border-radius: 0.4rem;
+  border-radius: 8px;
   background: var(--color-slate-900);
   font-size: var(--font-size-body-medium);
   color: var(--color-slate-100);

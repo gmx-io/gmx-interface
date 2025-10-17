@@ -9,14 +9,22 @@ export type LandingPageViewEvent = {
   };
 };
 
+type LandingPageButtonPosition = "MenuButton" | "StickyHeader" | "Title" | "Chains" | "LaunchSection" | "HeroSection";
+
 export type LandingPageLaunchAppEvent = {
   event: "LandingPageAction";
-  data: {
-    action: "LaunchApp" | "SolanaNavigation";
-    buttonPosition: "MenuButton" | "StickyHeader" | "Title" | "Chains" | "LaunchSection" | "HeroSection";
-    shouldSeeConfirmationDialog: boolean;
-    chain: ChainName;
-  };
+  data:
+    | {
+        action: "SolanaNavigation";
+        buttonPosition: LandingPageButtonPosition;
+        shouldSeeConfirmationDialog: boolean;
+      }
+    | {
+        action: "LaunchApp";
+        buttonPosition: LandingPageButtonPosition;
+        shouldSeeConfirmationDialog: boolean;
+        chain: ChainName;
+      };
 };
 
 export type LandingPageProtocolTokenEvent = {

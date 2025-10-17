@@ -1,12 +1,12 @@
 import { t } from "@lingui/macro";
 
-import { ProcessedData } from "lib/legacy";
+import { StakingProcessedData } from "lib/legacy";
 import { formatKeyAmount } from "lib/numbers";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 type Props = {
-  processedData?: ProcessedData;
+  processedData?: StakingProcessedData;
   nativeTokenSymbol: string;
   isUserConnected?: boolean;
 };

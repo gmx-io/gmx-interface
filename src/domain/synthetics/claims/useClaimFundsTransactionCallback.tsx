@@ -20,7 +20,7 @@ export function useClaimFundsTransactionCallback(data: {
         case TxnEventName.Submitted:
           helperToast.success(
             <div className="flex flex-col gap-10">
-              <div className="text-body-medium font-bold">
+              <div className="text-body-medium font-medium">
                 <Trans>Processing your claim…</Trans>
               </div>
               <div className="flex flex-row gap-10 text-gray-200">
@@ -34,7 +34,7 @@ export function useClaimFundsTransactionCallback(data: {
         case TxnEventName.Error:
           helperToast.error(
             <div className="flex flex-col gap-10">
-              <div className="text-body-medium font-bold">
+              <div className="text-body-medium font-medium">
                 <Trans>Failed to claim funds</Trans>
               </div>
               <ToastifyDebug error={event.data.error.message ?? "Unknown error"} />
@@ -45,7 +45,7 @@ export function useClaimFundsTransactionCallback(data: {
         case TxnEventName.Sent:
           helperToast.success(
             <div className="flex flex-col gap-10">
-              <div className="text-body-medium font-bold">
+              <div className="text-body-medium font-medium">
                 <Trans>Funds claimed</Trans>
               </div>
               <div>
