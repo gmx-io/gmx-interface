@@ -24,32 +24,6 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
         </ToggleSwitch>
 
         <ToggleSwitch
-          isChecked={localStorage.getItem("simulateTickersErrors") === "true"}
-          setIsChecked={() => {
-            if (localStorage.getItem("simulateTickersErrors") === "true") {
-              localStorage.removeItem("simulateTickersErrors");
-            } else {
-              localStorage.setItem("simulateTickersErrors", "true");
-            }
-          }}
-        >
-          <Trans>Simulate Tickers Errors</Trans>
-        </ToggleSwitch>
-
-        <ToggleSwitch
-          isChecked={localStorage.getItem("simulatePartialTickers") === "true"}
-          setIsChecked={() => {
-            if (localStorage.getItem("simulatePartialTickers") === "true") {
-              localStorage.removeItem("simulatePartialTickers");
-            } else {
-              localStorage.setItem("simulatePartialTickers", "true");
-            }
-          }}
-        >
-          <Trans>Simulate Partial Tickers</Trans>
-        </ToggleSwitch>
-
-        <ToggleSwitch
           isChecked={settings.shouldDisableValidationForTesting}
           setIsChecked={settings.setShouldDisableValidationForTesting}
         >

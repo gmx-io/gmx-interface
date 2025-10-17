@@ -40,25 +40,10 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
     fetcher: async ([chainId]) => {
       const result: TokenPricesData = {};
 
-      let priceItems = await oracleKeeperFetcher
-        .fetchTickers()
-        .then((response) => {
-          // TODO: Remove this after testing
-          if (localStorage.getItem("simulateTickersErrors") === "true") {
-            throw new Error("Simulate Tickers Errors");
-          }
-
-          return response;
-        })
-        .catch(() => {
-          metrics.pushCounter<TickersErrorsCounter>("tickersErrors");
-          return [];
-        });
-
-      // TODO: Remove this after testing
-      if (localStorage.getItem("simulatePartialTickers") === "true") {
-        priceItems = priceItems.slice(0, 9);
-      }
+      let priceItems = await oracleKeeperFetcher.fetchTickers().catch(() => {
+        metrics.pushCounter<TickersErrorsCounter>("tickersErrors");
+        return [];
+      });
 
       priceItems.forEach((priceItem) => {
         let tokenConfig: Token;
