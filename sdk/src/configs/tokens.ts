@@ -1460,6 +1460,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/nl/coins/tether-gold",
       explorerUrl: "https://snowtrace.io/address/0x2775d5105276781B4b85bA6eA6a6653bEeD1dd32",
       isPermitSupported: true,
+      isPermitDisabled: true,
       contractVersion: "1",
     },
     {
