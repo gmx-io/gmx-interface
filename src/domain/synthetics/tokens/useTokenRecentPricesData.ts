@@ -42,13 +42,13 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
 
       let priceItems = await oracleKeeperFetcher
         .fetchTickers()
-        .then(() => {
+        .then((response) => {
           // TODO: Remove this after testing
           if (localStorage.getItem("simulateTickersErrors") === "true") {
             throw new Error("Simulate Tickers Errors");
           }
 
-          return priceItems;
+          return response;
         })
         .catch(() => {
           metrics.pushCounter<TickersErrorsCounter>("tickersErrors");
