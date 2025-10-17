@@ -26,6 +26,10 @@ msgstr "Wallet not connected"
 msgid "Transaction completed."
 msgstr "Transaction completed."
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "No rewards selected"
+msgstr "No rewards selected"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Pear Protocol"
 msgstr "Pear Protocol"

@@ -26,6 +26,10 @@ msgstr "ウォレットが接続されていません"
 msgid "Transaction completed."
 msgstr ""
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "No rewards selected"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Pear Protocol"
 msgstr "Pear Protocol"
