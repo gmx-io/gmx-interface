@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { toJpeg } from "html-to-image";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useCopyToClipboard } from "react-use";
+import { useCopyToClipboard, usePrevious } from "react-use";
 
 import { useAffiliateCodes } from "domain/referrals/hooks";
 import { Token } from "domain/tokens";
@@ -77,10 +77,47 @@ function PositionShare({
     getShareURL(uploadedImageInfo, userAffiliateCode)
   );
 
+  const prevIsOpen = usePrevious(isPositionShareModalOpen);
+
+  const [cachedPositionData, setCachedPositionData] = useState<{
+    entryPrice: bigint | undefined;
+    indexToken: Token;
+    isLong: boolean;
+    leverage: bigint | undefined;
+    markPrice: bigint;
+    pnlAfterFeesPercentage: bigint;
+    pnlAfterFeesUsd: bigint;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!prevIsOpen && isPositionShareModalOpen) {
+      setCachedPositionData({
+        entryPrice,
+        indexToken,
+        isLong,
+        leverage,
+        markPrice,
+        pnlAfterFeesPercentage,
+        pnlAfterFeesUsd,
+      });
+    }
+  }, [
+    isPositionShareModalOpen,
+    entryPrice,
+    indexToken,
+    isLong,
+    leverage,
+    markPrice,
+    pnlAfterFeesPercentage,
+    pnlAfterFeesUsd,
+    prevIsOpen,
+  ]);
+
   useEffect(() => {
     (async function () {
       const element = cardRef.current;
-      if (element && userAffiliateCode.success && sharePositionBgImg) {
+      setUploadedImageInfo(null);
+      if (element && userAffiliateCode.success && sharePositionBgImg && cachedPositionData) {
         // We have to call the toJpeg function multiple times to make sure the canvas renders all the elements like background image
         // @refer https://github.com/tsayen/dom-to-image/issues/343#issuecomment-652831863
         const image = await toJpeg(element, config)
@@ -95,7 +132,7 @@ function PositionShare({
         }
       }
     })();
-  }, [userAffiliateCode, sharePositionBgImg, cardRef]);
+  }, [userAffiliateCode, sharePositionBgImg, showPnlAmounts, cachedPositionData]);
 
   async function handleDownload() {
     const element = cardRef.current;
@@ -149,20 +186,22 @@ function PositionShare({
       contentPadding={false}
     >
       <div className="flex flex-col gap-20 border-b-1/2 border-slate-600 p-20">
-        <PositionShareCard
-          entryPrice={entryPrice}
-          indexToken={indexToken}
-          isLong={isLong}
-          leverage={leverage}
-          markPrice={markPrice}
-          pnlAfterFeesPercentage={pnlAfterFeesPercentage}
-          userAffiliateCode={userAffiliateCode}
-          ref={cardRef}
-          loading={!uploadedImageInfo && !uploadedImageError}
-          sharePositionBgImg={sharePositionBgImg}
-          showPnlAmounts={showPnlAmounts}
-          pnlAfterFeesUsd={pnlAfterFeesUsd}
-        />
+        {cachedPositionData && (
+          <PositionShareCard
+            entryPrice={cachedPositionData.entryPrice}
+            indexToken={cachedPositionData.indexToken}
+            isLong={cachedPositionData.isLong}
+            leverage={cachedPositionData.leverage}
+            markPrice={cachedPositionData.markPrice}
+            pnlAfterFeesPercentage={cachedPositionData.pnlAfterFeesPercentage}
+            pnlAfterFeesUsd={cachedPositionData.pnlAfterFeesUsd}
+            userAffiliateCode={userAffiliateCode}
+            ref={cardRef}
+            loading={!uploadedImageInfo && !uploadedImageError}
+            sharePositionBgImg={sharePositionBgImg}
+            showPnlAmounts={showPnlAmounts}
+          />
+        )}
         {uploadedImageError && <span className="error">{uploadedImageError}</span>}
       </div>
       <div className="flex flex-col gap-16 p-20">
