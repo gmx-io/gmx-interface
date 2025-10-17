@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -30,6 +30,7 @@ import {
   getNameByOrderType,
 } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
+import { useChainId } from "lib/chains";
 import { CHART_PERIODS } from "lib/legacy";
 import { calculateDisplayDecimals, formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
@@ -39,6 +40,7 @@ import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
 import PositionDropdown from "components/PositionDropdown/PositionDropdown";
+import PositionShare from "components/PositionShare/PositionShare";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -47,6 +49,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
 import EditIcon from "img/ic_edit.svg?react";
+import ShareIcon from "img/ic_share.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { TwapOrderProgress } from "../OrderItem/OrderItem";
@@ -67,6 +70,7 @@ export type Props = {
 };
 
 export function PositionItem(p: Props) {
+  const { chainId } = useChainId();
   const { showDebugValues, breakdownNetPriceImpactEnabled } = useSettings();
   const savedShowPnlAfterFees = useSelector(selectShowPnlAfterFees);
   const displayedPnl = savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
@@ -76,6 +80,12 @@ export function PositionItem(p: Props) {
   const isCurrentMarket = tradeboxSelectedPositionKey === p.position.key;
 
   const marketDecimals = useSelector(makeSelectMarketPriceDecimals(p.position.market.indexTokenAddress));
+
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+
+  const handleShareClick = useCallback(() => {
+    setIsShareModalOpen(true);
+  }, []);
 
   function renderNetValue() {
     return (
@@ -215,6 +225,22 @@ export function PositionItem(p: Props) {
       ),
     };
   }, [p.position.marketInfo, p.position.isLong, p.position.sizeInUsd]);
+
+  const positionShareModal = (
+    <PositionShare
+      entryPrice={p.position.entryPrice}
+      indexToken={p.position.indexToken}
+      isLong={p.position.isLong}
+      leverage={p.position.leverage}
+      markPrice={p.position.markPrice}
+      pnlAfterFeesPercentage={p.position.pnlAfterFeesPercentage}
+      chainId={chainId}
+      isPositionShareModalOpen={isShareModalOpen}
+      setIsPositionShareModalOpen={setIsShareModalOpen}
+      account={p.position.account}
+      pnlAfterFeesUsd={p.position.pnlAfterFees}
+    />
+  );
 
   function renderCollateral() {
     return (
@@ -427,6 +453,7 @@ export function PositionItem(p: Props) {
 
     return (
       <TableTr hoverable={true} data-qa={qaAttr}>
+        {positionShareModal}
         <TableTd
           data-qa="position-handle"
           className={cx("flex", {
@@ -519,13 +546,15 @@ export function PositionItem(p: Props) {
               {renderNetValue()}
               {displayedPnl !== undefined && (
                 <div
-                  className={cx("Exchange-list-info-label Position-pnl text-body-small numbers", {
+                  className={cx("text-body-small flex cursor-pointer items-center gap-2 numbers", {
                     positive: displayedPnl > 0,
                     negative: displayedPnl < 0,
                     muted: displayedPnl == 0n,
                   })}
+                  onClick={handleShareClick}
                 >
                   {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
+                  <ShareIcon className="mt-1 size-14" />
                 </div>
               )}
             </div>
@@ -601,6 +630,7 @@ export function PositionItem(p: Props) {
 
     return (
       <AppCard dataQa="position-item">
+        {positionShareModal}
         <AppCardSection onClick={() => p.onSelectPositionClick?.()}>
           <div className="text-body-medium flex items-center gap-8">
             <span
@@ -662,13 +692,15 @@ export function PositionItem(p: Props) {
             </div>
             <div>
               <span
-                className={cx("Exchange-list-info-label Position-pnl numbers", {
+                className={cx("flex cursor-pointer items-center gap-2 numbers", {
                   positive: displayedPnl > 0,
                   negative: displayedPnl < 0,
                   muted: displayedPnl == 0n,
                 })}
+                onClick={handleShareClick}
               >
                 {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
+                <ShareIcon className="mt-2 size-16" />
               </span>
             </div>
           </div>
