@@ -483,6 +483,24 @@ export type GelatoPollingTiming = {
 };
 
 // Counters
+export type MissedMarketPricesCounter = {
+  event: "missedMarketPrices";
+  data: {
+    marketName: string;
+    source: string;
+  };
+};
+
+export type TickersErrorsCounter = {
+  event: "tickersErrors";
+  data: {};
+};
+
+export type TickersPartialDataCounter = {
+  event: "tickersPartialData";
+  data: {};
+};
+
 export type MulticallBatchedCallCounter = {
   event: "multicall.batched.call";
   data: {

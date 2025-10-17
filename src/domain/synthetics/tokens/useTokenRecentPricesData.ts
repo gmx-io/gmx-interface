@@ -1,8 +1,9 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
+import { metrics, TickersErrorsCounter, TickersPartialDataCounter } from "lib/metrics";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
-import { LEADERBOARD_PRICES_UPDATE_INTERVAL, PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
+import { LEADERBOARD_PRICES_UPDATE_INTERVAL, PRICES_CACHE_TTL, PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import type { Token } from "sdk/types/tokens";
 
@@ -28,43 +29,71 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
       : PRICES_UPDATE_INTERVAL;
   }, [pathname]);
 
+  const pricesCacheRef = useRef<TokenPricesData>({});
+  const pricesCacheUpdatedRef = useRef<{ [address: string]: number }>({});
+
   const { data, error, isLoading } = useSequentialTimedSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
     refreshInterval: refreshPricesInterval,
+
     keepPreviousData: true,
 
-    fetcher: ([chainId]) =>
-      oracleKeeperFetcher.fetchTickers().then((priceItems) => {
-        const result: TokenPricesData = {};
+    fetcher: async ([chainId]) => {
+      const result: TokenPricesData = {};
 
-        priceItems.forEach((priceItem) => {
-          let tokenConfig: Token;
+      let priceItems = await oracleKeeperFetcher.fetchTickers().catch(() => {
+        metrics.pushCounter<TickersErrorsCounter>("tickersErrors");
+        return [];
+      });
 
-          try {
-            tokenConfig = getToken(chainId, priceItem.tokenAddress);
-          } catch (e) {
-            // ignore unknown token errors
+      priceItems.forEach((priceItem) => {
+        let tokenConfig: Token;
 
-            return;
-          }
+        try {
+          tokenConfig = getToken(chainId, priceItem.tokenAddress);
+        } catch (e) {
+          // ignore unknown token errors
 
-          result[tokenConfig.address] = {
-            minPrice: parseContractPrice(BigInt(priceItem.minPrice), tokenConfig.decimals),
-            maxPrice: parseContractPrice(BigInt(priceItem.maxPrice), tokenConfig.decimals),
-          };
-        });
-
-        const wrappedToken = getWrappedToken(chainId);
-
-        if (result[wrappedToken.address] && !result[NATIVE_TOKEN_ADDRESS]) {
-          result[NATIVE_TOKEN_ADDRESS] = result[wrappedToken.address];
+          return;
         }
 
-        return {
-          pricesData: result,
-          updatedAt: Date.now(),
+        result[tokenConfig.address] = {
+          minPrice: parseContractPrice(BigInt(priceItem.minPrice), tokenConfig.decimals),
+          maxPrice: parseContractPrice(BigInt(priceItem.maxPrice), tokenConfig.decimals),
         };
-      }),
-    refreshWhenHidden: true,
+
+        // Update cache of new received tokens
+        pricesCacheRef.current[tokenConfig.address] = result[tokenConfig.address];
+        pricesCacheUpdatedRef.current[tokenConfig.address] = Date.now();
+      });
+
+      const hasPartialData = Object.keys(result).length < Object.keys(pricesCacheRef.current).length;
+
+      if (hasPartialData) {
+        // eslint-disable-next-line no-console
+        console.warn("tickersPartialData");
+        metrics.pushCounter<TickersPartialDataCounter>("tickersPartialData");
+
+        Object.keys(pricesCacheUpdatedRef.current).forEach((address) => {
+          const cacheUpdatedAt = pricesCacheUpdatedRef.current[address];
+          const canUseCache = cacheUpdatedAt && Date.now() - cacheUpdatedAt < PRICES_CACHE_TTL;
+
+          if (!result[address] && canUseCache) {
+            result[address] = pricesCacheRef.current[address];
+          }
+        });
+      }
+
+      const wrappedToken = getWrappedToken(chainId);
+
+      if (result[wrappedToken.address] && !result[NATIVE_TOKEN_ADDRESS]) {
+        result[NATIVE_TOKEN_ADDRESS] = result[wrappedToken.address];
+      }
+
+      return {
+        pricesData: result,
+        updatedAt: Date.now(),
+      };
+    },
   });
 
   return {
