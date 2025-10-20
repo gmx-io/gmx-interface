@@ -12,6 +12,7 @@ export type Props = {
   collateralImpact?: FeeItem;
   positionImpact?: FeeItem;
   swapPriceImpact?: FeeItem;
+  swapProfitFee?: FeeItem;
   externalSwapFeeItem?: FeeItem;
   executionFeeUsd?: bigint;
 };
@@ -21,6 +22,7 @@ export function HighPriceImpactOrFeesWarningCard({
   collateralImpact,
   positionImpact,
   swapPriceImpact,
+  swapProfitFee,
   externalSwapFeeItem,
   executionFeeUsd,
 }: Props) {
@@ -66,6 +68,14 @@ export function HighPriceImpactOrFeesWarningCard({
       });
     }
 
+    if (priceImpactWarningState.shouldShowWarningForSwapProfitFee) {
+      warnings.push({
+        id: "high-swap-profit-fee",
+        key: t`High swap profit fee`,
+        value: formatUsd(swapProfitFee?.deltaUsd),
+      });
+    }
+
     if (priceImpactWarningState.shouldShowWarningForTriggerOrders) {
       warnings.push({
         id: "high-trigger-orders",
@@ -88,6 +98,7 @@ export function HighPriceImpactOrFeesWarningCard({
     collateralImpact?.precisePercentage,
     executionFeeUsd,
     swapPriceImpact?.deltaUsd,
+    swapProfitFee?.deltaUsd,
   ]);
 
   if (!priceImpactWarningState.shouldShowWarning) {

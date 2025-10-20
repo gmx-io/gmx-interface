@@ -990,6 +990,7 @@ export function PositionSeller() {
                   collateralImpact={fees?.collateralNetPriceImpact}
                   positionImpact={fees?.positionNetPriceImpact}
                   swapPriceImpact={fees?.swapPriceImpact}
+                  swapProfitFee={fees?.swapProfitFee}
                   executionFeeUsd={executionFee?.feeUsd}
                 />
 

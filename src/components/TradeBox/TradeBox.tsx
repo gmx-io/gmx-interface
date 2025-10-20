@@ -1095,6 +1095,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   collateralImpact={fees?.collateralNetPriceImpact}
                   positionImpact={fees?.positionNetPriceImpact}
                   swapPriceImpact={fees?.swapPriceImpact}
+                  swapProfitFee={fees?.swapProfitFee}
                   executionFeeUsd={executionFee?.feeUsd}
                   externalSwapFeeItem={fees?.externalSwapFee}
                 />
