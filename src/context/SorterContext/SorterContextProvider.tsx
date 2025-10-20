@@ -3,7 +3,7 @@ import { PropsWithChildren, createContext, useCallback, useContext, useMemo, use
 
 import { SORTER_CONFIG_KEY } from "config/localStorage";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { updateByKey } from "sdk/utils/objects";
+import { setByKey, updateByKey } from "sdk/utils/objects";
 
 import { SorterConfig, SorterKey } from "./types";
 
@@ -46,7 +46,7 @@ export function SorterContextProvider({ children }: PropsWithChildren) {
           typeof config === "function" ? config(newState[key]) : config
         ) as SorterState;
       } else {
-        newState = { ...newState, [key]: config };
+        newState = setByKey(newState, key, config) as SorterState;
       }
       newState = updateByKey(newState, key, { isDefault: false }) as SorterState;
       setState(newState);
