@@ -3,12 +3,16 @@ import { toJpeg } from "html-to-image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard, usePrevious } from "react-use";
 
+import { USD_DECIMALS } from "config/factors";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { registerReferralCode, useAffiliateCodes } from "domain/referrals";
+import { usePeriodAccountStats } from "domain/synthetics/accountStats";
 import { Token } from "domain/tokens";
+import { getTimePeriodsInSeconds } from "lib/dates";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
 import { getRootShareApiUrl, getTwitterIntentURL } from "lib/legacy";
+import { expandDecimals } from "lib/numbers";
 import useLoadImage from "lib/useLoadImage";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionActionEvent } from "lib/userAnalytics/types";
@@ -32,6 +36,7 @@ const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";
 const config = { quality: 0.95, canvasWidth: 518, canvasHeight: 292, type: "image/jpeg" };
+const SEVEN_DAY_REFERRAL_VOLUME_THRESHOLD = expandDecimals(5_000_000, USD_DECIMALS);
 
 function getShareURL(imageInfo, ref) {
   if (!imageInfo) return;
@@ -69,7 +74,17 @@ function PositionShare({
   account,
   chainId,
 }: Props) {
+  const normalizedAccount = account ?? undefined;
   const userAffiliateCode = useAffiliateCodes(chainId, account);
+  const weekPeriod = useMemo(() => getTimePeriodsInSeconds().week, []);
+  const { data: lastWeekAccountStats } = usePeriodAccountStats(chainId, {
+    account: normalizedAccount,
+    from: weekPeriod[0],
+    to: weekPeriod[1],
+    enabled: Boolean(normalizedAccount),
+  });
+  const hasSevenDayVolume =
+    normalizedAccount !== undefined && (lastWeekAccountStats?.volume ?? 0n) >= SEVEN_DAY_REFERRAL_VOLUME_THRESHOLD;
   const { signer } = useWallet();
   const { pendingTxns } = usePendingTxns();
   const [uploadedImageInfo, setUploadedImageInfo] = useState<any>();
@@ -169,7 +184,8 @@ function PositionShare({
     [chainId, pendingTxns, signer]
   );
 
-  const shouldShowCreateReferralCard = userAffiliateCode.success && !userAffiliateCode.code && !createdReferralCode;
+  const shouldShowCreateReferralCard =
+    userAffiliateCode.success && !userAffiliateCode.code && !createdReferralCode && hasSevenDayVolume;
   async function handleDownload() {
     const element = cardRef.current;
     if (!element) return;
