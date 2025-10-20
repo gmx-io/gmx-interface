@@ -110,7 +110,7 @@ export function createRawTradeActionTransformer(
         targetCollateralToken,
         initialCollateralDeltaAmount: bigNumberify(rawAction.initialCollateralDeltaAmount)!,
         sizeDeltaUsd: bigNumberify(rawAction.sizeDeltaUsd)!,
-        sizeDeltaInTokens: bigNumberify(rawAction.sizeDeltaInTokens)!,
+        sizeDeltaInTokens: rawAction.sizeDeltaInTokens ? bigNumberify(rawAction.sizeDeltaInTokens) : undefined,
         triggerPrice: rawAction.triggerPrice
           ? parseContractPrice(bigNumberify(rawAction.triggerPrice)!, indexToken.decimals)
           : undefined,

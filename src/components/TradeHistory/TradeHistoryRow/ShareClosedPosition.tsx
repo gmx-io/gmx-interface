@@ -39,7 +39,7 @@ export default function ShareClosedPosition({
   const markPrice = getTokenPriceByTradeAction(tradeAction);
 
   const entryPrice = getEntryPrice({
-    sizeInTokens: tradeAction.sizeDeltaInTokens,
+    sizeInTokens: tradeAction.sizeDeltaInTokens ?? 0n,
     sizeInUsd: tradeAction.sizeDeltaUsd ?? 0n,
     indexToken: tradeAction.marketInfo.indexToken,
   });

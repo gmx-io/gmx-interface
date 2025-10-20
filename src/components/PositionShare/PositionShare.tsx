@@ -1,9 +1,10 @@
 import { Trans, t } from "@lingui/macro";
 import { toJpeg } from "html-to-image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard, usePrevious } from "react-use";
 
-import { useAffiliateCodes } from "domain/referrals/hooks";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { registerReferralCode, useAffiliateCodes } from "domain/referrals";
 import { Token } from "domain/tokens";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
@@ -11,8 +12,11 @@ import { getRootShareApiUrl, getTwitterIntentURL } from "lib/legacy";
 import useLoadImage from "lib/useLoadImage";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionActionEvent } from "lib/userAnalytics/types";
+import useWallet from "lib/wallets/useWallet";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import ModalWithPortal from "components/Modal/ModalWithPortal";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
@@ -21,8 +25,8 @@ import DownloadIcon from "img/ic_download2.svg?react";
 import TwitterIcon from "img/ic_x.svg?react";
 import shareBgImg from "img/position-share-bg.jpg";
 
+import CreateReferralCode from "./CreateReferralCode";
 import { PositionShareCard } from "./PositionShareCard";
-import Modal from "../Modal/Modal";
 
 const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
@@ -66,15 +70,25 @@ function PositionShare({
   chainId,
 }: Props) {
   const userAffiliateCode = useAffiliateCodes(chainId, account);
+  const { signer } = useWallet();
+  const { pendingTxns } = usePendingTxns();
   const [uploadedImageInfo, setUploadedImageInfo] = useState<any>();
   const [uploadedImageError, setUploadedImageError] = useState<string | null>(null);
   const [showPnlAmounts, setShowPnlAmounts] = useState(false);
   const [, copyToClipboard] = useCopyToClipboard();
   const sharePositionBgImg = useLoadImage(shareBgImg);
   const cardRef = useRef<HTMLDivElement>(null);
+  const [createdReferralCode, setCreatedReferralCode] = useState<string | null>(null);
+  const shareAffiliateCode = useMemo(() => {
+    if (createdReferralCode) {
+      return { code: createdReferralCode, success: true };
+    }
+    return userAffiliateCode;
+  }, [createdReferralCode, userAffiliateCode]);
+
   const tweetLink = getTwitterIntentURL(
     `Latest $\u200a${indexToken?.symbol} trade on @GMX_IO`,
-    getShareURL(uploadedImageInfo, userAffiliateCode)
+    getShareURL(uploadedImageInfo, shareAffiliateCode)
   );
 
   const prevIsOpen = usePrevious(isPositionShareModalOpen);
@@ -114,10 +128,16 @@ function PositionShare({
   ]);
 
   useEffect(() => {
+    if (userAffiliateCode.code) {
+      setCreatedReferralCode(null);
+    }
+  }, [userAffiliateCode.code]);
+
+  useEffect(() => {
     (async function () {
       const element = cardRef.current;
       setUploadedImageInfo(null);
-      if (element && userAffiliateCode.success && sharePositionBgImg && cachedPositionData) {
+      if (element && shareAffiliateCode.success && sharePositionBgImg && cachedPositionData) {
         // We have to call the toJpeg function multiple times to make sure the canvas renders all the elements like background image
         // @refer https://github.com/tsayen/dom-to-image/issues/343#issuecomment-652831863
         const image = await toJpeg(element, config)
@@ -132,8 +152,24 @@ function PositionShare({
         }
       }
     })();
-  }, [userAffiliateCode, sharePositionBgImg, showPnlAmounts, cachedPositionData]);
+  }, [shareAffiliateCode, sharePositionBgImg, showPnlAmounts, cachedPositionData]);
 
+  const handleCreateReferralCode = useCallback(
+    (referralCode: string) => {
+      if (!signer) {
+        return Promise.reject(new Error("Wallet not connected"));
+      }
+
+      return registerReferralCode(chainId, referralCode, signer, {
+        sentMsg: t`Referral code submitted.`,
+        failMsg: t`Referral code creation failed.`,
+        pendingTxns,
+      });
+    },
+    [chainId, pendingTxns, signer]
+  );
+
+  const shouldShowCreateReferralCard = userAffiliateCode.success && !userAffiliateCode.code && !createdReferralCode;
   async function handleDownload() {
     const element = cardRef.current;
     if (!element) return;
@@ -160,7 +196,7 @@ function PositionShare({
       },
     });
 
-    const url = getShareURL(uploadedImageInfo, userAffiliateCode);
+    const url = getShareURL(uploadedImageInfo, shareAffiliateCode);
     copyToClipboard(url as string);
     helperToast.success(t`Link copied to clipboard.`);
   }
@@ -178,8 +214,8 @@ function PositionShare({
   }, []);
 
   return (
-    <Modal
-      className="position-share-modal"
+    <ModalWithPortal
+      contentClassName="!max-w-[500px]"
       isVisible={isPositionShareModalOpen}
       setIsVisible={setIsPositionShareModalOpen}
       label={t`Share your sucessful GMX trade on X`}
@@ -195,14 +231,17 @@ function PositionShare({
             markPrice={cachedPositionData.markPrice}
             pnlAfterFeesPercentage={cachedPositionData.pnlAfterFeesPercentage}
             pnlAfterFeesUsd={cachedPositionData.pnlAfterFeesUsd}
-            userAffiliateCode={userAffiliateCode}
+            userAffiliateCode={shareAffiliateCode}
             ref={cardRef}
             loading={!uploadedImageInfo && !uploadedImageError}
             sharePositionBgImg={sharePositionBgImg}
             showPnlAmounts={showPnlAmounts}
           />
         )}
-        {uploadedImageError && <span className="error">{uploadedImageError}</span>}
+        {shouldShowCreateReferralCard && (
+          <CreateReferralCode handleCreateReferralCode={handleCreateReferralCode} onSuccess={setCreatedReferralCode} />
+        )}
+        {uploadedImageError && <AlertInfoCard type="error">{uploadedImageError}</AlertInfoCard>}
       </div>
       <div className="flex flex-col gap-16 p-20">
         <div>
@@ -248,7 +287,7 @@ function PositionShare({
           </TrackingLink>
         </div>
       </div>
-    </Modal>
+    </ModalWithPortal>
   );
 }
 

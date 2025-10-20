@@ -398,6 +398,7 @@ msgstr "Limitpreis unter Markpreis"
 msgid "sell"
 msgstr "verkaufen"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
 msgid "Switch to {0}"
@@ -821,6 +822,7 @@ msgstr "Ungültiger Schlupfwert"
 msgid "Max {0} buyable amount exceeded"
 msgstr "Max. {0} kaufbarer Betrag überschritten"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Code already taken"
 msgstr "Code bereits vergeben"
@@ -1874,6 +1876,10 @@ msgstr "Kein esGMX zu beanspruchen"
 msgid "System"
 msgstr ""
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+msgid "Earn rewards by sharing your code!"
+msgstr ""
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
 msgstr ""
@@ -2763,6 +2769,7 @@ msgstr ""
 msgid "Market"
 msgstr "Markt"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -3186,6 +3193,10 @@ msgstr "<0>jede</0> {hours} Stunden{0}"
 msgid "Fail External Swaps"
 msgstr "Externe Tausche fehlschlagen"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+msgid "Get 5% back and give your community 5% off every trade. Higher referral tiers unlock even more. <0>Learn more</0>"
+msgstr ""
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat Transaction"
 msgstr ""
@@ -3287,6 +3298,7 @@ msgstr "Im Explorer anzeigen"
 msgid "Bonus APR"
 msgstr "Bonus-APR"
 
+#: src/components/PositionShare/PositionShare.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code submitted."
 msgstr ""
@@ -3966,6 +3978,7 @@ msgstr "Abheben eingereicht."
 msgid "Net Price Impact"
 msgstr ""
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Enter a code"
@@ -4056,6 +4069,7 @@ msgid "Create Stop Loss"
 msgstr "Stop-Loss erstellen"
 
 #: src/components/AppHeader/AppHeaderUser.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/Stake/EscrowedGmxCard.tsx
@@ -5524,10 +5538,6 @@ msgstr "Letzte 7T"
 msgid "Swap {fromAmount} for {toAmount}"
 msgstr "Swap {fromAmount} für {toAmount}"
 
-#: src/components/PositionShare/PositionShare.tsx
-#~ msgid "Copy"
-#~ msgstr "Kopieren"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5600,6 +5610,7 @@ msgstr ""
 msgid "Deposit USDC or ETH"
 msgstr ""
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Referral code created."
 msgstr ""
@@ -6032,6 +6043,10 @@ msgstr "{nativeTokenSymbol} transferieren"
 msgid "Meme"
 msgstr "Meme"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+msgid "Create code"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftTransactions.tsx
@@ -6280,6 +6295,10 @@ msgstr "Max. {0}-Betrag überschritten"
 msgid "Realized Base PnL"
 msgstr "Realisierter Basis-Gewinn/Verlust"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+msgid "Creating code"
+msgstr ""
+
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed."
@@ -6490,6 +6509,7 @@ msgstr "Pool"
 msgid "Venus"
 msgstr "Venus"
 
+#: src/components/PositionShare/PositionShare.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
 msgstr "Erstellung des Referral-Codes fehlgeschlagen."
@@ -6979,10 +6999,6 @@ msgstr "{prefix} <0>{text}</0>"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to update settings"
 msgstr "Einstellungen aktualisieren fehlgeschlagen"
-
-#: src/components/PositionShare/PositionShare.tsx
-#~ msgid "Tweet"
-#~ msgstr "Tweeten"
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."
