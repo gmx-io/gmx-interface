@@ -92,6 +92,7 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
+import PositionShare from "components/PositionShare/PositionShare";
 import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
@@ -120,9 +121,22 @@ const ORDER_OPTION_LABELS: Record<OrderOption, MessageDescriptor> = {
   [OrderOption.Twap]: msg`TWAP`,
 };
 
+type SharePayload = {
+  entryPrice: bigint | undefined;
+  indexToken: Token;
+  isLong: boolean;
+  leverage: bigint | undefined;
+  markPrice: bigint;
+  pnlAfterFeesPercentage: bigint;
+  pnlAfterFeesUsd: bigint;
+};
+
 export function PositionSeller() {
   const [, setClosingPositionKey] = useClosingPositionKeyState();
   const [isApproving, setIsApproving] = useState(false);
+  const [sharePositionData, setSharePositionData] = useState<SharePayload | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const sharePayloadRef = useRef<SharePayload | null>(null);
 
   const onClose = useCallback(() => {
     setClosingPositionKey(undefined);
@@ -133,6 +147,12 @@ export function PositionSeller() {
   const { chainId, srcChainId } = useChainId();
   const { signer, account } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
+  useEffect(() => {
+    sharePayloadRef.current = null;
+    setSharePositionData(null);
+    setIsShareModalOpen(false);
+  }, [account]);
+
   const { openConnectModal } = useConnectModal();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
@@ -544,6 +564,18 @@ export function PositionSeller() {
 
     setIsSubmitting(true);
 
+    if (isMarket && decreaseAmounts?.sizeDeltaUsd !== undefined && decreaseAmounts.sizeDeltaUsd > 0n && position) {
+      sharePayloadRef.current = {
+        entryPrice: position.entryPrice,
+        indexToken: position.indexToken,
+        isLong: position.isLong,
+        leverage: position.leverage,
+        markPrice: position.markPrice,
+        pnlAfterFeesPercentage: position.pnlAfterFeesPercentage,
+        pnlAfterFeesUsd: position.pnlAfterFees,
+      };
+    }
+
     const fulfilledExpressParams = await expressParamsPromise;
 
     const txnPromise = sendBatchOrderTxn({
@@ -570,13 +602,36 @@ export function PositionSeller() {
       onClose();
       setIsSubmitting(false);
       setDefaultReceiveToken(receiveToken.address);
+      const payload = sharePayloadRef.current;
+      sharePayloadRef.current = null;
+
+      if (payload) {
+        setSharePositionData(payload);
+        setIsShareModalOpen(true);
+      }
       return;
     }
 
-    txnPromise.then(onClose).finally(() => {
-      setIsSubmitting(false);
-      setDefaultReceiveToken(receiveToken.address);
-    });
+    txnPromise
+      .then(() => {
+        const payload = sharePayloadRef.current;
+        sharePayloadRef.current = null;
+
+        if (payload) {
+          setSharePositionData(payload);
+          setIsShareModalOpen(true);
+        }
+
+        onClose();
+      })
+      .catch((error) => {
+        sharePayloadRef.current = null;
+        throw error;
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+        setDefaultReceiveToken(receiveToken.address);
+      });
   }
 
   const latestOnSubmit = useLatest(onSubmit);
@@ -1043,6 +1098,26 @@ export function PositionSeller() {
           )}
         </div>
       </Modal>
+      {sharePositionData ? (
+        <PositionShare
+          entryPrice={sharePositionData.entryPrice}
+          indexToken={sharePositionData.indexToken}
+          isLong={sharePositionData.isLong}
+          leverage={sharePositionData.leverage}
+          markPrice={sharePositionData.markPrice}
+          pnlAfterFeesPercentage={sharePositionData.pnlAfterFeesPercentage}
+          pnlAfterFeesUsd={sharePositionData.pnlAfterFeesUsd}
+          chainId={chainId}
+          account={account}
+          isPositionShareModalOpen={isShareModalOpen}
+          setIsPositionShareModalOpen={(isOpen) => {
+            setIsShareModalOpen(isOpen);
+            if (!isOpen) {
+              setSharePositionData(null);
+            }
+          }}
+        />
+      ) : null}
     </div>
   );
 }

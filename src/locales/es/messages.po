@@ -7547,6 +7547,10 @@ msgid "Trading Settings"
 msgstr "Ajustes de Trading"
 
 #: src/components/PositionShare/PositionShare.tsx
+msgid "Don't show this again"
+msgstr ""
+
+#: src/components/PositionShare/PositionShare.tsx
 msgid "Share on"
 msgstr ""
 
