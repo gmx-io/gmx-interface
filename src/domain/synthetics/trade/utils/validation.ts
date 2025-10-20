@@ -667,8 +667,8 @@ export function getGmSwapError(p: {
   isMarketTokenDeposit?: boolean;
   paySource: GmPaySource;
   isPair: boolean;
-  chainId: ContractsChainId;
-  srcChainId: SourceChainId | undefined;
+  chainId?: ContractsChainId | undefined;
+  srcChainId?: SourceChainId | undefined;
 }) {
   const {
     isDeposit,

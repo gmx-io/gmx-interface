@@ -358,7 +358,7 @@ function addMultichainPlatformTokenConfig(
   tokenGroups[symbol] = {};
 
   for (const chainIdString in chainAddresses) {
-    tokenGroups[symbol][chainIdString] = {
+    tokenGroups[symbol]![chainIdString] = {
       address: chainAddresses[chainIdString].address,
       decimals: 18,
       chainId: parseInt(chainIdString) as SettlementChainId | SourceChainId,

@@ -114,7 +114,6 @@ export function GmShiftBox({
   const { fees, executionFee } = useShiftFees({ gasLimits, gasPrice, tokensData, amounts, chainId });
 
   const { shouldShowWarning, shouldShowWarningForExecutionFee, shouldShowWarningForPosition } = useGmWarningState({
-    executionFee,
     logicalFees: fees,
   });
 
