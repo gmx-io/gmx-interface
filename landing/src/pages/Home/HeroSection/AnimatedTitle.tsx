@@ -18,6 +18,8 @@ const TRANSITION = {
   },
 };
 
+const BLOCKCHAIN_COUNT = 6;
+
 export function AnimatedTitle() {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const titles = useMemo(() => {
@@ -26,7 +28,7 @@ export function AnimatedTitle() {
       t`80+ crypto tokens`,
       t`multiple asset classes`,
       t`deep liquid markets`,
-      t`from 5 blockchains`,
+      t`from ${BLOCKCHAIN_COUNT} blockchains`,
     ];
   }, []);
   const intervalRef = useRef<number | null>(null);

@@ -8,6 +8,7 @@ import {
   AVALANCHE_FUJI,
   BOTANIX,
   SOURCE_BASE_MAINNET,
+  SOURCE_BSC_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
 } from "./chains";
@@ -45,6 +46,18 @@ export const BATCH_CONFIGS: Record<
   },
 
   [SOURCE_BASE_MAINNET]: {
+    http: {
+      batchSize: 0,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
+  },
+  [SOURCE_BSC_MAINNET]: {
     http: {
       batchSize: 0,
       wait: 0,

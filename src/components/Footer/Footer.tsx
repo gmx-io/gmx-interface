@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useState } from "react";
 
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getAppBaseUrl, isHomeSite, shouldShowRedirectModal } from "lib/legacy";
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageFooterMenuEvent } from "lib/userAnalytics/types";
@@ -22,7 +22,7 @@ type Props = {
 
 export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMobileSideNav }: Props) {
   const isHome = isHomeSite();
-  const [isUserFeedbackModalVisible, setIsUserFeedbackModalVisible] = useState(false);
+  const { feedbackModalVisible, setFeedbackModalVisible } = useSettings();
 
   return (
     <>
@@ -59,7 +59,7 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
             );
           })}
           {!isHome && (
-            <Button variant="ghost" onClick={() => setIsUserFeedbackModalVisible(true)}>
+            <Button variant="ghost" onClick={() => setFeedbackModalVisible(true)}>
               {isMobileSideNav ? null : <FeedbackIcon />}
               <Trans>Leave Feedback</Trans>
             </Button>
@@ -96,9 +96,7 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
           })}
         </div>
       </div>
-      {!isHome && (
-        <UserFeedbackModal isVisible={isUserFeedbackModalVisible} setIsVisible={setIsUserFeedbackModalVisible} />
-      )}
+      {!isHome && <UserFeedbackModal isVisible={feedbackModalVisible} setIsVisible={setFeedbackModalVisible} />}
     </>
   );
 }

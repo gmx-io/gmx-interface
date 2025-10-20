@@ -1,9 +1,9 @@
 import uniq from "lodash/uniq";
 import { encodeFunctionData, zeroAddress, zeroHash } from "viem";
 
-import ExchangeRouterAbi from "abis/ExchangeRouter.json";
+import ExchangeRouterAbi from "abis/ExchangeRouter";
 import { abis } from "abis/index";
-import ERC20ABI from "abis/Token.json";
+import ERC20ABI from "abis/Token";
 import { ContractsChainId, getExcessiveExecutionFee, getHighExecutionFee } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { convertTokenAddress, getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
@@ -759,7 +759,7 @@ export function getExternalCallsPayload({
     payload.externalCallTargets.push(inTokenAddress);
     payload.externalCallDataList.push(
       encodeFunctionData({
-        abi: ERC20ABI.abi,
+        abi: ERC20ABI,
         functionName: "approve",
         args: [quote.txnData.to, MaxUint256],
       })
@@ -909,13 +909,13 @@ export function encodeExchangeRouterMulticall(multicall: ExchangeRouterCall[]) {
   const encodedMulticall = multicall.map((call) =>
     encodeFunctionData({
       abi: abis.ExchangeRouter,
-      functionName: call.method,
-      args: call.params,
+      functionName: call.method as any,
+      args: call.params as any,
     })
   );
 
   const callData = encodeFunctionData({
-    abi: ExchangeRouterAbi.abi,
+    abi: ExchangeRouterAbi,
     functionName: "multicall",
     args: [encodedMulticall],
   });

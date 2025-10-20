@@ -1,39 +1,41 @@
 import { Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
-import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
+import { ARBITRUM, AVALANCHE, BOTANIX, ContractsChainIdProduction } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useTotalVolume, useV1FeesInfo } from "domain/stats";
+import { useTreasuryAllChains } from "domain/stats/treasury/useTreasuryAllChains";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
-import { useInfoTokens } from "domain/tokens";
-import { useChainId } from "lib/chains";
-import { GLP_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatAmountHuman } from "lib/numbers";
+import { formatAmountHuman } from "lib/numbers";
 import { sumBigInts } from "lib/sumBigInts";
-import useWallet from "lib/wallets/useWallet";
+import { MARKETS } from "sdk/configs/markets";
 import { getTokenBySymbol } from "sdk/configs/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import type { ChainStats } from "./useDashboardChainStatsMulticall";
+const chainsMap: Record<ContractsChainIdProduction, ContractsChainIdProduction> = {
+  [ARBITRUM]: ARBITRUM,
+  [AVALANCHE]: AVALANCHE,
+  [BOTANIX]: BOTANIX,
+};
+const chains = Object.values(chainsMap);
+const gmxTokenAddresses = chains.map((chain) => getTokenBySymbol(chain, "GMX").address);
+const gmGmxTokenAddresses = chains.map((chain) =>
+  Object.keys(MARKETS[chain]).filter((address) => {
+    return (
+      gmxTokenAddresses.includes(MARKETS[chain][address].longTokenAddress) &&
+      gmxTokenAddresses.includes(MARKETS[chain][address].shortTokenAddress)
+    );
+  })
+);
+const gmxGmAndTokensAddresses = [...gmxTokenAddresses, ...gmGmxTokenAddresses];
 
-const ethTreasuryFund = expandDecimals(350 + 148 + 384, 18);
-const glpTreasuryFund = expandDecimals(660001, 18);
-const usdcTreasuryFund = expandDecimals(784598 + 200000, 30);
-
-export function StatsCard({
-  statsArbitrum,
-  statsAvalanche,
-}: {
-  statsArbitrum?: ChainStats;
-  statsAvalanche?: ChainStats;
-}) {
-  const { active } = useWallet();
-  const { chainId } = useChainId();
+export function StatsCard() {
   const v1TotalVolume = useTotalVolume();
 
   const v2ArbitrumOverview = useV2Stats(ARBITRUM);
@@ -41,14 +43,6 @@ export function StatsCard({
   const v2BotanixOverview = useV2Stats(BOTANIX);
 
   const uniqueUsers = useUniqueUsers();
-
-  const suppliesArbitrum = statsArbitrum?.reader.tokenBalancesWithSupplies;
-  const suppliesAvalanche = statsAvalanche?.reader.tokenBalancesWithSupplies;
-
-  const { infoTokens: infoTokensArbitrum } = useInfoTokens(undefined, ARBITRUM, active, undefined, undefined);
-  const { infoTokens: infoTokensAvax } = useInfoTokens(undefined, AVALANCHE, active, undefined, undefined);
-  const infoTokens = chainId === ARBITRUM ? infoTokensArbitrum : infoTokensAvax;
-  const eth = infoTokens[getTokenBySymbol(chainId === ARBITRUM ? ARBITRUM : AVALANCHE, "ETH").address];
 
   const v1ArbitrumTotalFees = useV1FeesInfo(ARBITRUM);
   const v1AvalancheTotalFees = useV1FeesInfo(AVALANCHE);
@@ -63,30 +57,19 @@ export function StatsCard({
   // #endregion Fees
 
   // #region Treasury
-  const glpTvlArbitrum = statsArbitrum?.glp.aum;
-  const glpTvlAvalanche = statsAvalanche?.glp.aum;
+  const treasuryData = useTreasuryAllChains();
 
-  const glpTvl = chainId === ARBITRUM ? glpTvlArbitrum : glpTvlAvalanche;
+  const treasuryWithoutGmxUsd = useMemo(() => {
+    return treasuryData?.assets
+      .filter((asset) => !gmxGmAndTokensAddresses.includes(asset.address))
+      .reduce((acc, asset) => acc + asset.usdValue, 0n);
+  }, [treasuryData]);
 
-  const glpSupplyArbitrum = suppliesArbitrum?.glpSupply;
-  const glpSupplyAvalanche = suppliesAvalanche?.glpSupply;
-
-  const glpSupply = chainId === ARBITRUM ? glpSupplyArbitrum : glpSupplyAvalanche;
-
-  const glpPrice =
-    glpTvl !== undefined && glpTvl > 0n && glpSupply !== undefined
-      ? bigMath.mulDiv(glpTvl, expandDecimals(1, GLP_DECIMALS), glpSupply)
-      : expandDecimals(1, USD_DECIMALS);
-
-  let totalTreasuryFundUsd: bigint | undefined = undefined;
-
-  if (eth && eth.contractMinPrice !== undefined && glpPrice !== undefined) {
-    const ethTreasuryFundUsd = bigMath.mulDiv(ethTreasuryFund, eth.contractMinPrice, expandDecimals(1, eth.decimals));
-
-    const glpTreasuryFundUsd = bigMath.mulDiv(glpTreasuryFund, glpPrice, expandDecimals(1, 18));
-
-    totalTreasuryFundUsd = ethTreasuryFundUsd + glpTreasuryFundUsd + usdcTreasuryFund;
-  }
+  const gmxInTreasuryUsd = useMemo(() => {
+    return treasuryData?.assets
+      .filter((asset) => gmxGmAndTokensAddresses.includes(asset.address))
+      .reduce((acc, asset) => acc + asset.usdValue, 0n);
+  }, [treasuryData]);
 
   // #endregion Treasury
 
@@ -208,7 +191,23 @@ export function StatsCard({
             <Trans>Treasury</Trans>
           </div>
           <div>
-            <span className="numbers">{formatAmountHuman(totalTreasuryFundUsd, USD_DECIMALS, true, 2)}</span>
+            <TooltipWithPortal
+              handle={formatAmountHuman(treasuryData?.totalUsd, USD_DECIMALS, true, 2)}
+              handleClassName="numbers"
+              position="bottom-end"
+              content={
+                <div>
+                  <StatsTooltipRow
+                    label={<Trans>In other tokens:</Trans>}
+                    value={formatAmountHuman(treasuryWithoutGmxUsd, USD_DECIMALS, false, 2)}
+                  />
+                  <StatsTooltipRow
+                    label={<Trans>In GMX:</Trans>}
+                    value={formatAmountHuman(gmxInTreasuryUsd, USD_DECIMALS, false, 2)}
+                  />
+                </div>
+              }
+            />
           </div>
         </div>
       </AppCardSection>

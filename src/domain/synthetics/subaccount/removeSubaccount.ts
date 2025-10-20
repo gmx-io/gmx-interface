@@ -12,11 +12,10 @@ import { ExpressTxnData, sendExpressTransaction } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
-import SubaccountRouter from "sdk/abis/SubaccountRouter.json";
+import SubaccountRouterAbi from "sdk/abis/SubaccountRouter";
 import { getContract } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
-import { MultichainSubaccountRouter, SubaccountGelatoRelayRouter } from "typechain-types";
 
 import {
   ExpressTransactionBuilder,
@@ -34,7 +33,7 @@ export async function removeSubaccountWalletTxn(
   signer: Signer,
   subaccountAddress: string
 ): Promise<void> {
-  const subaccountRouter = new ethers.Contract(getContract(chainId, "SubaccountRouter"), SubaccountRouter.abi, signer);
+  const subaccountRouter = new ethers.Contract(getContract(chainId, "SubaccountRouter"), SubaccountRouterAbi, signer);
 
   return callContract(chainId, subaccountRouter, "removeSubaccount", [subaccountAddress], {
     value: 0n,
@@ -84,20 +83,20 @@ export async function buildAndSignRemoveSubaccountTxn({
     });
   }
 
-  const removeSubaccountCallData = encodeFunctionData({
-    abi: isMultichain ? abis.MultichainSubaccountRouter : abis.SubaccountGelatoRelayRouter,
-    functionName: "removeSubaccount",
-    args: isMultichain
-      ? ([
-          { ...relayParamsPayload, signature },
-          signer.address,
-          srcChainId ?? chainId,
-          subaccount.address,
-        ] satisfies Parameters<MultichainSubaccountRouter["removeSubaccount"]>)
-      : ([{ ...relayParamsPayload, signature }, signer.address, subaccount.address] satisfies Parameters<
-          SubaccountGelatoRelayRouter["removeSubaccount"]
-        >),
-  });
+  let removeSubaccountCallData: string;
+  if (isMultichain) {
+    removeSubaccountCallData = encodeFunctionData({
+      abi: abis.MultichainSubaccountRouter,
+      functionName: "removeSubaccount",
+      args: [{ ...relayParamsPayload, signature }, signer.address, BigInt(srcChainId ?? chainId), subaccount.address],
+    });
+  } else {
+    removeSubaccountCallData = encodeFunctionData({
+      abi: abis.SubaccountGelatoRelayRouter,
+      functionName: "removeSubaccount",
+      args: [{ ...relayParamsPayload, signature }, signer.address, subaccount.address],
+    });
+  }
 
   return {
     callData: removeSubaccountCallData,
