@@ -4,7 +4,12 @@ import useSWRSubscription, { SWRSubscription } from "swr/subscription";
 import { useAccount } from "wagmi";
 
 import { AnyChainId, ContractsChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
-import { getMappedTokenId, MULTI_CHAIN_TOKEN_MAPPING, MultichainTokenMapping } from "config/multichain";
+import {
+  getMappedTokenId,
+  MULTI_CHAIN_PLATFORM_TOKENS_MAP,
+  MULTI_CHAIN_TOKEN_MAPPING,
+  MultichainTokenMapping,
+} from "config/multichain";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
@@ -143,13 +148,25 @@ export function useAvailableToTradeAssetMultichain(): {
 }
 
 const subscribeMultichainTokenBalances: SWRSubscription<
-  [name: string, chainId: ContractsChainId, account: string, tokens: string[] | undefined],
+  [
+    name: string,
+    chainId: ContractsChainId,
+    account: string,
+    tokens: string[] | undefined,
+    specificChainId: SourceChainId | undefined,
+  ],
   {
     tokenBalances: Record<number, Record<string, bigint>>;
     isLoading: boolean;
   }
 > = (key, options) => {
-  const [, settlementChainId, account, tokens] = key as [string, SettlementChainId, string, string[] | undefined];
+  const [, settlementChainId, account, tokens, specificChainId] = key as [
+    string,
+    SettlementChainId,
+    string,
+    string[] | undefined,
+    SourceChainId | undefined,
+  ];
 
   let tokenBalances: Record<number, Record<string, bigint>> | undefined;
   let isLoaded = false;
@@ -162,6 +179,7 @@ const subscribeMultichainTokenBalances: SWRSubscription<
         options.next(null, { tokenBalances, isLoading: isLoaded ? false : true });
       },
       tokens,
+      specificChainId,
     }).then((finalTokenBalances) => {
       if (!isLoaded) {
         isLoaded = true;
@@ -175,7 +193,7 @@ const subscribeMultichainTokenBalances: SWRSubscription<
   };
 };
 
-export function useMultichainTokensRequest(
+export function useMultichainTradeTokensRequest(
   chainId: ContractsChainId,
   account: string | undefined
 ): {
@@ -186,7 +204,7 @@ export function useMultichainTokensRequest(
   const { pricesData, isPriceDataLoading } = useTokenRecentPricesRequest(chainId);
 
   const { data: balanceData } = useSWRSubscription(
-    account ? ["multichain-tokens", chainId, account, undefined] : null,
+    account ? ["multichain-trade-tokens-balances", chainId, account, undefined, undefined] : null,
     // TODO MLTCH optimistically update useSourceChainTokensDataRequest
     subscribeMultichainTokenBalances
   );
@@ -236,7 +254,7 @@ export function useMultichainTokens() {
   const { chainId } = useChainId();
   const account = useSelector(selectAccount);
 
-  return useMultichainTokensRequest(chainId, account);
+  return useMultichainTradeTokensRequest(chainId, account);
 }
 
 export function useMultichainMarketTokenBalancesRequest(
@@ -255,7 +273,7 @@ export function useMultichainMarketTokenBalancesRequest(
   });
 
   const { data: balancesResult } = useSWRSubscription(
-    account && tokenAddress ? ["multichain-market-tokens", chainId, account, [tokenAddress]] : null,
+    account && tokenAddress ? ["multichain-market-token-balances", chainId, account, [tokenAddress], undefined] : null,
     // TODO MLTCH optimistically update useSourceChainTokensDataRequest
     subscribeMultichainTokenBalances
   );
@@ -311,6 +329,64 @@ export function useMultichainMarketTokenBalancesRequest(
     tokenBalancesData,
     totalBalance,
     isBalanceDataLoading: balancesResult?.isLoading ?? true,
+  };
+}
+
+export function useMultichainMarketTokensBalancesRequest({
+  chainId,
+  account,
+  enabled,
+  specificChainId,
+}: {
+  chainId: ContractsChainId;
+  account: string | undefined;
+  enabled: boolean;
+  specificChainId: SourceChainId | undefined;
+}): {
+  tokenBalances: Record<string, bigint>;
+  isLoading: boolean;
+} {
+  const platformTokens = MULTI_CHAIN_PLATFORM_TOKENS_MAP[chainId as SettlementChainId] as string[] | undefined;
+
+  const { data: balancesResult } = useSWRSubscription(
+    account && platformTokens?.length && enabled && specificChainId !== undefined
+      ? ["multichain-market-tokens-balances", chainId, account, platformTokens, specificChainId]
+      : null,
+    // TODO MLTCH optimistically update useSourceChainTokensDataRequest
+    subscribeMultichainTokenBalances
+  );
+
+  const tokenBalances: Record<string, bigint> = useMemo(() => {
+    if (!balancesResult || !specificChainId) {
+      return EMPTY_OBJECT;
+    }
+
+    const balances: Record<string, bigint> = {};
+
+    for (const sourceChainTokenAddress in balancesResult.tokenBalances[specificChainId]) {
+      const settlementChainTokenId = getMappedTokenId(
+        specificChainId,
+        sourceChainTokenAddress,
+        chainId as SettlementChainId
+      );
+
+      if (!settlementChainTokenId) {
+        continue;
+      }
+
+      const balance = balancesResult.tokenBalances[specificChainId][sourceChainTokenAddress];
+
+      if (balance !== undefined && balance !== 0n) {
+        balances[settlementChainTokenId.address] = balance;
+      }
+    }
+
+    return balances;
+  }, [balancesResult, chainId, specificChainId]);
+
+  return {
+    tokenBalances,
+    isLoading: balancesResult?.isLoading ?? true,
   };
 }
 

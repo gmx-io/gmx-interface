@@ -63,7 +63,7 @@ export type ClaimableFundingData = {
   [marketAddress: string]: ClaimableFunding;
 };
 
-export type CreateDepositParamsAddressesStruct = {
+export type CreateDepositParamsAddresses = {
   receiver: string;
   callbackContract: string;
   uiFeeReceiver: string;
@@ -74,8 +74,8 @@ export type CreateDepositParamsAddressesStruct = {
   shortTokenSwapPath: string[];
 };
 
-export type CreateDepositParamsStruct = {
-  addresses: CreateDepositParamsAddressesStruct;
+export type CreateDepositParams = {
+  addresses: CreateDepositParamsAddresses;
   minMarketTokens: bigint;
   shouldUnwrapNativeToken: boolean;
   executionFee: bigint;
@@ -83,7 +83,9 @@ export type CreateDepositParamsStruct = {
   dataList: string[];
 };
 
-export type CreateGlvDepositAddressesStruct = {
+export type RawCreateDepositParams = Omit<CreateDepositParams, "executionFee">;
+
+export type CreateGlvDepositAddresses = {
   glv: string;
   market: string;
   receiver: string;
@@ -95,8 +97,8 @@ export type CreateGlvDepositAddressesStruct = {
   shortTokenSwapPath: string[];
 };
 
-export type CreateGlvDepositParamsStruct = {
-  addresses: CreateGlvDepositAddressesStruct;
+export type CreateGlvDepositParams = {
+  addresses: CreateGlvDepositAddresses;
   minGlvTokens: bigint;
   executionFee: bigint;
   callbackGasLimit: bigint;
@@ -105,7 +107,9 @@ export type CreateGlvDepositParamsStruct = {
   dataList: string[];
 };
 
-export type CreateWithdrawalAddressesStruct = {
+export type RawCreateGlvDepositParams = Omit<CreateGlvDepositParams, "executionFee">;
+
+export type CreateWithdrawalAddresses = {
   receiver: string;
   callbackContract: string;
   uiFeeReceiver: string;
@@ -114,8 +118,8 @@ export type CreateWithdrawalAddressesStruct = {
   shortTokenSwapPath: string[];
 };
 
-export type CreateWithdrawalParamsStruct = {
-  addresses: CreateWithdrawalAddressesStruct;
+export type CreateWithdrawalParams = {
+  addresses: CreateWithdrawalAddresses;
   minLongTokenAmount: bigint;
   minShortTokenAmount: bigint;
   shouldUnwrapNativeToken: boolean;
@@ -124,7 +128,9 @@ export type CreateWithdrawalParamsStruct = {
   dataList: string[];
 };
 
-export type CreateGlvWithdrawalAddressesStruct = {
+export type RawCreateWithdrawalParams = Omit<CreateWithdrawalParams, "executionFee">;
+
+export type CreateGlvWithdrawalAddresses = {
   receiver: string;
   callbackContract: string;
   uiFeeReceiver: string;
@@ -134,8 +140,8 @@ export type CreateGlvWithdrawalAddressesStruct = {
   shortTokenSwapPath: string[];
 };
 
-export type CreateGlvWithdrawalParamsStruct = {
-  addresses: CreateGlvWithdrawalAddressesStruct;
+export type CreateGlvWithdrawalParams = {
+  addresses: CreateGlvWithdrawalAddresses;
   minLongTokenAmount: bigint;
   minShortTokenAmount: bigint;
   shouldUnwrapNativeToken: boolean;
@@ -143,3 +149,5 @@ export type CreateGlvWithdrawalParamsStruct = {
   callbackGasLimit: bigint;
   dataList: string[];
 };
+
+export type RawCreateGlvWithdrawalParams = Omit<CreateGlvWithdrawalParams, "executionFee">;

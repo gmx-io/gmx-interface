@@ -4,10 +4,10 @@ import { Address, concatHex, encodeAbiParameters, Hex, isHex, toHex, zeroAddress
 import { TransferRequests } from "domain/multichain/types";
 import type { RelayParamsPayload } from "domain/synthetics/express";
 import {
-  CreateDepositParamsStruct,
-  CreateGlvDepositParamsStruct,
-  CreateGlvWithdrawalParamsStruct,
-  CreateWithdrawalParamsStruct,
+  CreateDepositParams,
+  CreateGlvDepositParams,
+  CreateGlvWithdrawalParams,
+  CreateWithdrawalParams,
 } from "domain/synthetics/markets/types";
 import type { ContractsChainId, SettlementChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
@@ -49,7 +49,7 @@ type SetTraderReferralCodeAction = {
 
 type DepositActionData = CommonActionData & {
   transferRequests: TransferRequests;
-  params: CreateDepositParamsStruct;
+  params: CreateDepositParams;
 };
 
 type DepositAction = {
@@ -75,7 +75,7 @@ type BridgeOutAction = {
 
 type GlvDepositActionData = CommonActionData & {
   transferRequests: TransferRequests;
-  params: CreateGlvDepositParamsStruct;
+  params: CreateGlvDepositParams;
 };
 
 type GlvDepositAction = {
@@ -85,7 +85,7 @@ type GlvDepositAction = {
 
 type WithdrawalActionData = CommonActionData & {
   transferRequests: TransferRequests;
-  params: CreateWithdrawalParamsStruct;
+  params: CreateWithdrawalParams;
 };
 
 type WithdrawalAction = {
@@ -95,7 +95,7 @@ type WithdrawalAction = {
 
 type GlvWithdrawalActionData = CommonActionData & {
   transferRequests: TransferRequests;
-  params: CreateGlvWithdrawalParamsStruct;
+  params: CreateGlvWithdrawalParams;
 };
 
 type GlvWithdrawalAction = {

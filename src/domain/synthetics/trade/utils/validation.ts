@@ -1,8 +1,9 @@
 import { t } from "@lingui/macro";
 import { ethers } from "ethers";
 
-import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
+import { ContractsChainId, IS_NETWORK_DISABLED, SourceChainId, getChainName } from "config/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { getMappedTokenId } from "config/multichain";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
 import {
   GlvInfo,
@@ -18,7 +19,7 @@ import {
 import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
 import { TokenData, TokensData, TokensRatio, getIsEquivalentTokens } from "domain/synthetics/tokens";
 import { DUST_USD, isAddressZero } from "lib/legacy";
-import { PRECISION, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
+import { PRECISION, adjustForDecimals, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { NATIVE_TOKEN_ADDRESS, getToken } from "sdk/configs/tokens";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
@@ -666,6 +667,8 @@ export function getGmSwapError(p: {
   isMarketTokenDeposit?: boolean;
   paySource: GmPaySource;
   isPair: boolean;
+  chainId: ContractsChainId;
+  srcChainId: SourceChainId | undefined;
 }) {
   const {
     isDeposit,
@@ -690,6 +693,8 @@ export function getGmSwapError(p: {
     isMarketTokenDeposit,
     paySource,
     isPair,
+    chainId,
+    srcChainId,
   } = p;
 
   if (!marketInfo || !marketToken) {
@@ -780,6 +785,35 @@ export function getGmSwapError(p: {
     return [t`Enter an amount`];
   }
 
+  let marketTokenBalance = 0n;
+  // let glvTokenBalance = 0n;
+  if (paySource === "settlementChain") {
+    marketTokenBalance = marketToken?.walletBalance ?? 0n;
+    // glvTokenBalance = glvToken?.walletBalance ?? 0n;
+  } else if (paySource === "sourceChain") {
+    if (srcChainId) {
+      if (marketToken) {
+        const mappedTokenId = getMappedTokenId(chainId as SourceChainId, marketToken.address, srcChainId);
+        if (mappedTokenId) {
+          marketTokenBalance =
+            adjustForDecimals(marketToken?.sourceChainBalance ?? 0n, marketToken?.decimals, mappedTokenId.decimals) ??
+            0n;
+        }
+      }
+
+      // if (glvToken) {
+      //   const mappedTokenId = getMappedTokenId(chainId as SourceChainId, glvToken.address, srcChainId);
+      //   if (mappedTokenId) {
+      //     glvTokenBalance =
+      //       adjustForDecimals(glvToken.sourceChainBalance ?? 0n, glvToken.decimals, mappedTokenId.decimals) ?? 0n;
+      //   }
+      // }
+    }
+  } else if (paySource === "gmxAccount") {
+    marketTokenBalance = marketToken?.gmxAccountBalance ?? 0n;
+    // glvTokenBalance = glvToken?.gmxAccountBalance ?? 0n;
+  }
+
   if (isDeposit) {
     if (marketInfo.isSameCollaterals) {
       if ((longTokenAmount ?? 0n) + (shortTokenAmount ?? 0n) > (longToken?.balance ?? 0n)) {
@@ -796,7 +830,7 @@ export function getGmSwapError(p: {
     }
 
     if (glvInfo) {
-      if (isMarketTokenDeposit && marketToken && (marketTokenAmount ?? 0n) > (marketToken?.balance ?? 0n)) {
+      if (isMarketTokenDeposit && marketToken && (marketTokenAmount ?? 0n) > marketTokenBalance) {
         return [t`Insufficient GM balance`];
       }
 
@@ -827,7 +861,7 @@ export function getGmSwapError(p: {
         return [t`Insufficient ${glvToken?.symbol} balance`];
       }
     } else {
-      if (marketTokenAmount > (marketToken?.balance ?? 0n)) {
+      if (marketTokenAmount > marketTokenBalance) {
         return [t`Insufficient ${marketToken?.symbol} balance`];
       }
     }

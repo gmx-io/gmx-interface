@@ -6,6 +6,13 @@ import { bytesToHex, Hex, hexToBytes, numberToHex, zeroAddress } from "viem";
 import { getLayerZeroEndpointId, getStargatePoolAddress, isSettlementChain } from "config/multichain";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import {
+  selectPoolsDetailsGlvInfo,
+  selectPoolsDetailsLongTokenAddress,
+  selectPoolsDetailsMarketInfo,
+  selectPoolsDetailsMarketTokenData,
+} from "context/PoolsDetailsContext/PoolsDetailsContext";
+import { selectPoolsDetailsShortTokenAddress } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -14,15 +21,19 @@ import { CodecUiHelper, GMX_DATA_ACTION_HASH, MultichainActionType } from "domai
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
 import { TransferRequests } from "domain/multichain/types";
 import {
-  CreateGlvWithdrawalParamsStruct,
-  CreateWithdrawalParamsStruct,
+  CreateGlvWithdrawalParams,
+  CreateWithdrawalParams,
   createWithdrawalTxn,
+  RawCreateGlvWithdrawalParams,
+  RawCreateWithdrawalParams,
 } from "domain/synthetics/markets";
 import { createGlvWithdrawalTxn } from "domain/synthetics/markets/createGlvWithdrawalTxn";
 import { createMultichainGlvWithdrawalTxn } from "domain/synthetics/markets/createMultichainGlvWithdrawalTxn";
 import { createMultichainWithdrawalTxn } from "domain/synthetics/markets/createMultichainWithdrawalTxn";
 import { createSourceChainGlvWithdrawalTxn } from "domain/synthetics/markets/createSourceChainGlvWithdrawalTxn";
 import { createSourceChainWithdrawalTxn } from "domain/synthetics/markets/createSourceChainWithdrawalTxn";
+import { SourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
+import { SourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import {
@@ -36,17 +47,18 @@ import { EMPTY_ARRAY } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
-import { convertTokenAddress } from "sdk/configs/tokens";
+import { convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
+import { ExecutionFee } from "sdk/types/fees";
 import { nowInSeconds } from "sdk/utils/time";
 
 import type { UseLpTransactionProps } from "./useLpTransactions";
 import { useMultichainWithdrawalExpressTxnParams } from "./useMultichainWithdrawalExpressTxnParams";
 
 export const useWithdrawalTransactions = ({
-  glvInfo,
+  // glvInfo,
   selectedMarketForGlv,
-  longTokenAddress,
-  shortTokenAddress,
+  // longTokenAddress,
+  // shortTokenAddress,
   longTokenAmount,
   longTokenSwapPath,
   shortTokenSwapPath,
@@ -57,11 +69,11 @@ export const useWithdrawalTransactions = ({
   glvTokenUsd,
   isFirstBuy,
   paySource,
-  executionFee,
+  technicalFees,
   selectedMarketInfoForGlv,
-  marketToken,
+  // marketToken,
   tokensData,
-  marketInfo,
+  // marketInfo,
   shouldDisableValidation,
 }: UseLpTransactionProps) => {
   const { chainId, srcChainId } = useChainId();
@@ -70,12 +82,19 @@ export const useWithdrawalTransactions = ({
   const { setPendingTxns } = usePendingTxns();
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
+  const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
 
+  const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
   const isGlv = glvInfo !== undefined && selectedMarketForGlv !== undefined;
-  const marketTokenAddress = marketToken?.address || marketInfo?.marketTokenAddress;
+  // const marketTokenAddress = useSelector(selectmarkettokenaddress);
+  const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
+  const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
+  const marketTokenAddress = marketToken?.address;
   const glvTokenAddress = glvInfo?.glvTokenAddress;
   const glvTokenTotalSupply = glvInfo?.glvToken.totalSupply;
-  const executionFeeTokenAmount = executionFee?.feeTokenAmount;
+  // const executionFeeTokenAmount = (technicalFees as SourceChainWithdrawalFees)?.executionFee;
+  const executionFeeTokenDecimals = getWrappedToken(chainId)!.decimals;
   // const initialLongTokenAddress = longTokenAddress
   //   ? convertTokenAddress(chainId, longTokenAddress, "wrapped")
   //   : undefined;
@@ -88,8 +107,11 @@ export const useWithdrawalTransactions = ({
   //       )
   //     : undefined;
 
-  const transferRequests = useMemo((): TransferRequests => {
+  const transferRequests = useMemo((): TransferRequests | undefined => {
     if (isGlv) {
+      if (!glvTokenAddress) {
+        return undefined;
+      }
       return getTransferRequests([
         {
           to: getContract(chainId, "GlvVault"),
@@ -97,6 +119,10 @@ export const useWithdrawalTransactions = ({
           amount: glvTokenAmount,
         },
       ]);
+    }
+
+    if (!marketTokenAddress) {
+      return undefined;
     }
 
     return getTransferRequests([
@@ -171,12 +197,12 @@ export const useWithdrawalTransactions = ({
   //   fromStargateAddress: shortOftProvider,
   // });
 
-  const gmParams = useMemo((): CreateWithdrawalParamsStruct | undefined => {
+  const rawGmParams = useMemo((): RawCreateWithdrawalParams | undefined => {
     if (
       !account ||
       !marketTokenAddress ||
       marketTokenAmount === undefined ||
-      executionFeeTokenAmount === undefined ||
+      // executionFeeTokenAmount === undefined ||
       isGlv
     ) {
       return undefined;
@@ -186,7 +212,7 @@ export const useWithdrawalTransactions = ({
 
     let dataList: string[] = EMPTY_ARRAY;
 
-    let executionFee = executionFeeTokenAmount;
+    // let executionFee = executionFeeTokenAmount;
 
     if (paySource === "sourceChain") {
       if (!srcChainId) {
@@ -235,7 +261,7 @@ export const useWithdrawalTransactions = ({
       shouldUnwrapNativeToken = longTokenAddress === zeroAddress || shortTokenAddress === zeroAddress ? true : false;
     }
 
-    const params: CreateWithdrawalParamsStruct = {
+    const params: RawCreateWithdrawalParams = {
       addresses: {
         market: marketTokenAddress,
         receiver: account,
@@ -251,7 +277,6 @@ export const useWithdrawalTransactions = ({
       // minShortTokenAmount: applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, shortTokenAmount ?? 0n),
       minShortTokenAmount: 0n,
       shouldUnwrapNativeToken,
-      executionFee,
       callbackGasLimit: 0n,
       dataList,
     };
@@ -260,7 +285,6 @@ export const useWithdrawalTransactions = ({
   }, [
     account,
     chainId,
-    executionFeeTokenAmount,
     isGlv,
     longOftProvider,
     longTokenAddress,
@@ -274,8 +298,8 @@ export const useWithdrawalTransactions = ({
     srcChainId,
   ]);
 
-  const glvParams = useMemo((): CreateGlvWithdrawalParamsStruct | undefined => {
-    if (!account || executionFeeTokenAmount === undefined || !isGlv || glvTokenAmount === undefined) {
+  const rawGlvParams = useMemo((): RawCreateGlvWithdrawalParams | undefined => {
+    if (!account || !isGlv || glvTokenAmount === undefined) {
       return undefined;
     }
 
@@ -327,7 +351,7 @@ export const useWithdrawalTransactions = ({
       shouldUnwrapNativeToken = longTokenAddress === zeroAddress || shortTokenAddress === zeroAddress ? true : false;
     }
 
-    const params: CreateGlvWithdrawalParamsStruct = {
+    const params: RawCreateGlvWithdrawalParams = {
       addresses: {
         glv: glvTokenAddress!,
         market: selectedMarketForGlv!,
@@ -341,7 +365,6 @@ export const useWithdrawalTransactions = ({
       minLongTokenAmount: 0n,
       // minShortTokenAmount: applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, shortTokenAmount ?? 0n),
       minShortTokenAmount: 0n,
-      executionFee: executionFeeTokenAmount,
       callbackGasLimit: 0n,
       shouldUnwrapNativeToken,
       dataList,
@@ -351,7 +374,6 @@ export const useWithdrawalTransactions = ({
   }, [
     account,
     chainId,
-    executionFeeTokenAmount,
     glvTokenAddress,
     glvTokenAmount,
     glvTokenTotalSupply,
@@ -366,6 +388,40 @@ export const useWithdrawalTransactions = ({
     shortTokenSwapPath,
     srcChainId,
   ]);
+
+  const gmParams = useMemo((): CreateWithdrawalParams | undefined => {
+    if (!rawGmParams || !technicalFees) {
+      // console.log("no gm params becayse no", { rawGmParams, technicalFees });
+
+      return undefined;
+    }
+
+    const executionFee =
+      paySource === "sourceChain"
+        ? (technicalFees as SourceChainWithdrawalFees).executionFee
+        : (technicalFees as ExecutionFee).feeTokenAmount;
+
+    return {
+      ...rawGmParams,
+      executionFee,
+    };
+  }, [rawGmParams, technicalFees, paySource]);
+
+  const glvParams = useMemo((): CreateGlvWithdrawalParams | undefined => {
+    if (!rawGlvParams || !technicalFees) {
+      return undefined;
+    }
+
+    const executionFee =
+      paySource === "sourceChain"
+        ? (technicalFees as SourceChainGlvWithdrawalFees).executionFee
+        : (technicalFees as ExecutionFee).feeTokenAmount;
+
+    return {
+      ...rawGlvParams,
+      executionFee,
+    };
+  }, [paySource, rawGlvParams, technicalFees]);
 
   const multichainWithdrawalExpressTxnParams = useMultichainWithdrawalExpressTxnParams({
     transferRequests,
@@ -383,7 +439,8 @@ export const useWithdrawalTransactions = ({
             shortTokenAddress,
             selectedMarketForGlv,
             isDeposit: false,
-            executionFee,
+            executionFeeTokenAmount: glvParams?.executionFee,
+            executionFeeTokenDecimals,
             glvAddress: glvInfo.glvTokenAddress,
             glvToken: glvInfo.glvToken,
             longTokenAmount,
@@ -400,7 +457,9 @@ export const useWithdrawalTransactions = ({
             shortTokenAddress,
             marketToken,
             isDeposit: false,
-            executionFee,
+
+            executionFeeTokenAmount: gmParams?.executionFee,
+            executionFeeTokenDecimals,
             marketInfo,
             longTokenAmount,
             shortTokenAmount,
@@ -412,7 +471,9 @@ export const useWithdrawalTransactions = ({
     return metricData;
   }, [
     chainId,
-    executionFee,
+    glvParams?.executionFee,
+    gmParams?.executionFee,
+    executionFeeTokenDecimals,
     glvInfo,
     glvTokenAmount,
     glvTokenUsd,
@@ -437,9 +498,9 @@ export const useWithdrawalTransactions = ({
         !account ||
         !marketInfo ||
         !marketToken ||
-        !executionFee ||
         longTokenAmount === undefined ||
         shortTokenAmount === undefined ||
+        !transferRequests ||
         !tokensData ||
         !signer ||
         !glvParams
@@ -460,10 +521,10 @@ export const useWithdrawalTransactions = ({
           chainId,
           srcChainId,
           signer,
-          globalExpressParams,
           transferRequests,
           params: glvParams,
           tokenAmount: glvTokenAmount!,
+          fees: technicalFees as SourceChainGlvWithdrawalFees,
         });
       } else if (paySource === "gmxAccount") {
         const expressTxnParams = await multichainWithdrawalExpressTxnParams.promise;
@@ -484,7 +545,7 @@ export const useWithdrawalTransactions = ({
           chainId,
           signer,
           params: glvParams,
-          executionGasLimit: executionFee.gasLimit,
+          executionGasLimit: (technicalFees as ExecutionFee).gasLimit,
           tokensData,
           setPendingTxns,
           setPendingWithdrawal,
@@ -504,18 +565,18 @@ export const useWithdrawalTransactions = ({
       account,
       marketInfo,
       marketToken,
-      executionFee,
       longTokenAmount,
       shortTokenAmount,
       tokensData,
       signer,
+      glvParams,
       paySource,
       chainId,
       srcChainId,
       globalExpressParams,
       transferRequests,
-      glvParams,
       glvTokenAmount,
+      technicalFees,
       multichainWithdrawalExpressTxnParams.promise,
       setPendingTxns,
       setPendingWithdrawal,
@@ -531,9 +592,9 @@ export const useWithdrawalTransactions = ({
         !account ||
         !marketInfo ||
         !marketToken ||
-        !executionFee ||
         longTokenAmount === undefined ||
         shortTokenAmount === undefined ||
+        !transferRequests ||
         !tokensData ||
         !signer ||
         !gmParams
@@ -546,7 +607,7 @@ export const useWithdrawalTransactions = ({
       let promise: Promise<void>;
 
       if (paySource === "sourceChain") {
-        if (!isSettlementChain(chainId) || !srcChainId || !globalExpressParams) {
+        if (!isSettlementChain(chainId) || !srcChainId || !globalExpressParams || !technicalFees || !rawGmParams) {
           throw new Error("An error occurred");
         }
 
@@ -555,10 +616,9 @@ export const useWithdrawalTransactions = ({
           chainId,
           srcChainId,
           signer,
-          globalExpressParams,
-          // executionFee: executionFee.feeTokenAmount,
+          fees: technicalFees as SourceChainWithdrawalFees,
           transferRequests,
-          params: gmParams,
+          params: rawGmParams!,
           tokenAmount: marketTokenAmount!,
         });
       } else if (paySource === "gmxAccount") {
@@ -580,7 +640,7 @@ export const useWithdrawalTransactions = ({
           chainId,
           signer,
           marketTokenAmount: marketTokenAmount!,
-          executionGasLimit: executionFee.gasLimit,
+          executionGasLimit: (technicalFees as ExecutionFee).gasLimit,
           params: gmParams,
           tokensData,
           skipSimulation: shouldDisableValidation,
@@ -601,17 +661,18 @@ export const useWithdrawalTransactions = ({
       account,
       marketInfo,
       marketToken,
-      executionFee,
       longTokenAmount,
       shortTokenAmount,
       tokensData,
       signer,
+      gmParams,
       paySource,
       chainId,
       srcChainId,
       globalExpressParams,
+      technicalFees,
+      rawGmParams,
       transferRequests,
-      gmParams,
       marketTokenAmount,
       multichainWithdrawalExpressTxnParams.promise,
       shouldDisableValidation,

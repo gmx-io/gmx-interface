@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
+import { usePoolsDetailsFirstTokenAddress } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData, useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
@@ -33,7 +34,6 @@ import { GmFees } from "../../GmFees/GmFees";
 import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
 import { SelectedPool } from "../SelectedPool";
 import { Operation } from "../types";
-import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
 import { useGmWarningState } from "../useGmWarningState";
 import { useShiftAmounts } from "./useShiftAmounts";
 import { useShiftAvailableRelatedMarkets } from "./useShiftAvailableRelatedMarkets";
@@ -115,7 +115,7 @@ export function GmShiftBox({
 
   const { shouldShowWarning, shouldShowWarningForExecutionFee, shouldShowWarningForPosition } = useGmWarningState({
     executionFee,
-    fees,
+    logicalFees: fees,
   });
 
   const noAmountSet = amounts?.fromTokenAmount === undefined;
@@ -162,7 +162,7 @@ export function GmShiftBox({
   useUpdateTokens({ amounts, selectedToken, toToken, focusedInput, setToMarketText, setSelectedMarketText });
 
   const [glvForShiftAddress, setGlvForShiftAddress] = useState<string | undefined>(undefined);
-  const [, setFirstTokenAddressForDeposit] = useDepositWithdrawalSetFirstTokenAddress(true, glvForShiftAddress);
+  const [, setFirstTokenAddressForDeposit] = usePoolsDetailsFirstTokenAddress();
 
   const handleFormSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {

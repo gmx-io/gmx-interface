@@ -1,4 +1,5 @@
 import { BASIS_POINTS_DIVISOR } from "configs/factors";
+import { MarketConfig } from "configs/markets";
 import { getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { ContractMarketPrices, Market, MarketInfo } from "types/markets";
 import { Token, TokenPrices, TokensData } from "types/tokens";
@@ -143,6 +144,12 @@ export function getOppositeCollateral(marketInfo: MarketInfo, tokenAddress: stri
   }
 
   return undefined;
+}
+
+export function getOppositeCollateralFromConfig(marketConfig: MarketConfig, tokenAddress: string) {
+  return marketConfig.shortTokenAddress === tokenAddress
+    ? marketConfig.longTokenAddress
+    : marketConfig.shortTokenAddress;
 }
 
 export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, isLong: boolean) {

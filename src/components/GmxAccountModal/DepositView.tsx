@@ -77,7 +77,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
-import { useAvailableToTradeAssetMultichain, useMultichainTokensRequest } from "./hooks";
+import { useAvailableToTradeAssetMultichain, useMultichainTradeTokensRequest } from "./hooks";
 import { wrapChainAction } from "./wrapChainAction";
 
 const useIsFirstDeposit = () => {
@@ -121,7 +121,7 @@ export const DepositView = () => {
     tokenChainDataArray: multichainTokens,
     isPriceDataLoading,
     isBalanceDataLoading,
-  } = useMultichainTokensRequest(settlementChainId, account);
+  } = useMultichainTradeTokensRequest(settlementChainId, account);
   const [isApproving, setIsApproving] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [shouldSendCrossChainDepositWhenLoaded, setShouldSendCrossChainDepositWhenLoaded] = useState(false);

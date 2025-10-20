@@ -507,7 +507,8 @@ export function initGMSwapMetricData({
   longTokenAddress,
   shortTokenAddress,
   isDeposit,
-  executionFee,
+  executionFeeTokenAmount,
+  executionFeeTokenDecimals,
   marketInfo,
   marketToken,
   longTokenAmount,
@@ -521,7 +522,8 @@ export function initGMSwapMetricData({
   shortTokenAddress: string | undefined;
   marketToken: TokenData | undefined;
   isDeposit: boolean;
-  executionFee: ExecutionFee | undefined;
+  executionFeeTokenAmount: bigint | undefined;
+  executionFeeTokenDecimals: number | undefined;
   marketInfo: MarketInfo | undefined;
   longTokenAmount: bigint | undefined;
   shortTokenAmount: bigint | undefined;
@@ -533,7 +535,7 @@ export function initGMSwapMetricData({
   return metrics.setCachedMetricData<SwapGmMetricData>({
     metricId: getGMSwapMetricId({
       marketAddress: marketInfo?.marketTokenAddress,
-      executionFee: executionFee?.feeTokenAmount,
+      executionFee: executionFeeTokenAmount,
     }),
     metricType: isDeposit ? "buyGM" : "sellGM",
     requestId: getRequestId(),
@@ -541,7 +543,7 @@ export function initGMSwapMetricData({
     initialShortTokenAddress: shortTokenAddress,
     marketAddress: marketInfo?.marketTokenAddress,
     marketName: marketInfo?.name,
-    executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
+    executionFee: formatAmountForMetrics(executionFeeTokenAmount, executionFeeTokenDecimals),
     longTokenAmount: formatAmountForMetrics(
       longTokenAmount,
       longTokenAddress ? getToken(chainId, longTokenAddress)?.decimals : undefined
@@ -561,7 +563,8 @@ export function initGLVSwapMetricData({
   longTokenAddress,
   shortTokenAddress,
   isDeposit,
-  executionFee,
+  executionFeeTokenAmount,
+  executionFeeTokenDecimals,
   marketName,
   glvAddress,
   selectedMarketForGlv,
@@ -577,7 +580,8 @@ export function initGLVSwapMetricData({
   shortTokenAddress: string | undefined;
   selectedMarketForGlv: string | undefined;
   isDeposit: boolean;
-  executionFee: ExecutionFee | undefined;
+  executionFeeTokenAmount: bigint | undefined;
+  executionFeeTokenDecimals: number | undefined;
   marketName: string | undefined;
   glvAddress: string | undefined;
   longTokenAmount: bigint | undefined;
@@ -591,7 +595,7 @@ export function initGLVSwapMetricData({
   return metrics.setCachedMetricData<SwapGLVMetricData>({
     metricId: getGLVSwapMetricId({
       glvAddress,
-      executionFee: executionFee?.feeTokenAmount,
+      executionFee: executionFeeTokenAmount,
     }),
     metricType: isDeposit ? "buyGLV" : "sellGLV",
     requestId: getRequestId(),
@@ -600,7 +604,7 @@ export function initGLVSwapMetricData({
     glvAddress,
     selectedMarketForGlv,
     marketName,
-    executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
+    executionFee: formatAmountForMetrics(executionFeeTokenAmount, executionFeeTokenDecimals),
     longTokenAmount: formatAmountForMetrics(
       longTokenAmount,
       longTokenAddress ? getToken(chainId, longTokenAddress)?.decimals : undefined

@@ -152,14 +152,16 @@ export function buildReverseSwapStrategy({
   chainId,
   externalSwapQuoteParams,
   swapOptimizationOrder,
+  isAtomicSwap,
 }: {
   chainId: number;
   amountOut: bigint;
   tokenIn: TokenData;
   tokenOut: TokenData;
   marketsInfoData: MarketsInfoData | undefined;
-  externalSwapQuoteParams: ExternalSwapQuoteParams;
+  externalSwapQuoteParams: ExternalSwapQuoteParams | undefined;
   swapOptimizationOrder: SwapOptimizationOrderArray | undefined;
+  isAtomicSwap?: boolean;
 }): SwapStrategyForSwapOrders {
   const priceIn = getMidPrice(tokenIn.prices);
   const priceOut = getMidPrice(tokenOut.prices);
@@ -190,7 +192,7 @@ export function buildReverseSwapStrategy({
     fromTokenAddress: tokenIn.address,
     toTokenAddress: tokenOut.address,
     marketsInfoData,
-    isExpressFeeSwap: false,
+    isExpressFeeSwap: isAtomicSwap,
   });
 
   const approximateSwapPathStats = findSwapPath(approximateUsdIn, { order: swapOptimizationOrder });
@@ -241,7 +243,7 @@ export function buildReverseSwapStrategy({
     return Boolean(swapPathStats);
   });
 
-  if (suitableSwapPath) {
+  if (suitableSwapPath && externalSwapQuoteParams) {
     const approximateExternalSwapQuoteForCombinedSwap = getExternalSwapQuoteByPath({
       amountIn: approximateAmountIn,
       externalSwapPath: suitableSwapPath,

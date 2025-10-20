@@ -1,6 +1,6 @@
 import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
 import { TransferRequests } from "domain/multichain/types";
-import type { CreateDepositParamsStruct, CreateGlvDepositParamsStruct } from "domain/synthetics/markets";
+import type { CreateDepositParams, CreateGlvDepositParams } from "domain/synthetics/markets";
 import { buildAndSignMultichainDepositTxn } from "domain/synthetics/markets/createMultichainDepositTxn";
 import { buildAndSignMultichainGlvDepositTxn } from "domain/synthetics/markets/createMultichainGlvDepositTxn";
 import { useChainId } from "lib/chains";
@@ -18,15 +18,15 @@ export function useMultichainDepositExpressTxnParams({
 }: {
   transferRequests: TransferRequests;
   paySource: GmPaySource;
-  gmParams: CreateDepositParamsStruct | undefined;
-  glvParams: CreateGlvDepositParamsStruct | undefined;
+  gmParams: CreateDepositParams | undefined;
+  glvParams: CreateGlvDepositParams | undefined;
 }) {
   const { chainId, srcChainId } = useChainId();
   const { signer } = useWallet();
 
   const multichainDepositExpressTxnParams = useArbitraryRelayParamsAndPayload({
     isGmxAccount: paySource === "gmxAccount",
-    enabled: paySource === "gmxAccount",
+    enabled: paySource === "gmxAccount" && Boolean(glvParams || gmParams),
     executionFeeAmount: glvParams ? glvParams.executionFee : gmParams?.executionFee,
     expressTransactionBuilder: async ({ relayParams, gasPaymentParams }) => {
       if ((!gmParams && !glvParams) || !signer) {

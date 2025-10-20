@@ -17,7 +17,8 @@ export type TokenPricesDataResult = {
   isPriceDataLoading: boolean;
 };
 
-export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataResult {
+export function useTokenRecentPricesRequest(chainId: number, params?: { enabled?: boolean }): TokenPricesDataResult {
+  const { enabled = true } = params ?? {};
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
   const pathname = useLocation().pathname;
 
@@ -28,44 +29,47 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
       : PRICES_UPDATE_INTERVAL;
   }, [pathname]);
 
-  const { data, error, isLoading } = useSequentialTimedSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
-    refreshInterval: refreshPricesInterval,
-    keepPreviousData: true,
+  const { data, error, isLoading } = useSequentialTimedSWR(
+    enabled ? [chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"] : undefined,
+    {
+      refreshInterval: refreshPricesInterval,
+      keepPreviousData: true,
 
-    fetcher: ([chainId]) =>
-      oracleKeeperFetcher.fetchTickers().then((priceItems) => {
-        const result: TokenPricesData = {};
+      fetcher: ([chainId]) =>
+        oracleKeeperFetcher.fetchTickers().then((priceItems) => {
+          const result: TokenPricesData = {};
 
-        priceItems.forEach((priceItem) => {
-          let tokenConfig: Token;
+          priceItems.forEach((priceItem) => {
+            let tokenConfig: Token;
 
-          try {
-            tokenConfig = getToken(chainId, priceItem.tokenAddress);
-          } catch (e) {
-            // ignore unknown token errors
+            try {
+              tokenConfig = getToken(chainId, priceItem.tokenAddress);
+            } catch (e) {
+              // ignore unknown token errors
 
-            return;
+              return;
+            }
+
+            result[tokenConfig.address] = {
+              minPrice: parseContractPrice(BigInt(priceItem.minPrice), tokenConfig.decimals),
+              maxPrice: parseContractPrice(BigInt(priceItem.maxPrice), tokenConfig.decimals),
+            };
+          });
+
+          const wrappedToken = getWrappedToken(chainId);
+
+          if (result[wrappedToken.address] && !result[NATIVE_TOKEN_ADDRESS]) {
+            result[NATIVE_TOKEN_ADDRESS] = result[wrappedToken.address];
           }
 
-          result[tokenConfig.address] = {
-            minPrice: parseContractPrice(BigInt(priceItem.minPrice), tokenConfig.decimals),
-            maxPrice: parseContractPrice(BigInt(priceItem.maxPrice), tokenConfig.decimals),
+          return {
+            pricesData: result,
+            updatedAt: Date.now(),
           };
-        });
-
-        const wrappedToken = getWrappedToken(chainId);
-
-        if (result[wrappedToken.address] && !result[NATIVE_TOKEN_ADDRESS]) {
-          result[NATIVE_TOKEN_ADDRESS] = result[wrappedToken.address];
-        }
-
-        return {
-          pricesData: result,
-          updatedAt: Date.now(),
-        };
-      }),
-    refreshWhenHidden: true,
-  });
+        }),
+      refreshWhenHidden: true,
+    }
+  );
 
   return {
     pricesData: data?.pricesData,

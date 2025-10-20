@@ -135,6 +135,9 @@ export type TokenData = Token & {
   prices: TokenPrices;
   walletBalance?: bigint;
   gmxAccountBalance?: bigint;
+  /**
+   * In source chain decimals, use `getMappedTokenId` to get the decimals
+   */
   sourceChainBalance?: bigint;
   balanceType?: TokenBalanceType;
   /**

@@ -1,5 +1,3 @@
-import { TransactionRequest, TransactionResponse } from "ethers";
-
 import { extendError } from "lib/errors";
 import { additionalTxnErrorValidation } from "lib/errors/additionalValidation";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
@@ -8,6 +6,7 @@ import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateCallDataWithTenderly } from "lib/tenderly";
 import { WalletSigner } from "lib/wallets";
 
+import { ISigner, ISignerSendTransactionParams, ISignerSendTransactionResult } from "./iSigner";
 import { TransactionWaiterResult, TxnCallback, TxnEventBuilder } from "./types";
 
 export type WalletTxnCtx = {};
@@ -31,11 +30,11 @@ export async function sendWalletTransaction({
   callback,
 }: {
   chainId: number;
-  signer: WalletSigner;
+  signer: WalletSigner | ISigner;
   to: string;
   callData: string;
-  value?: bigint | number;
-  gasLimit?: bigint | number;
+  value?: bigint;
+  gasLimit?: bigint;
   gasPriceData?: GasPriceData;
   nonce?: number | bigint;
   msg?: string;
@@ -94,7 +93,7 @@ export async function sendWalletTransaction({
 
     callback?.(eventBuilder.Sending());
 
-    const txnData: TransactionRequest = {
+    const txnData: ISignerSendTransactionParams = {
       to,
       data: callData,
       value,
@@ -130,7 +129,7 @@ export async function sendWalletTransaction({
   }
 }
 
-function makeWalletTxnResultWaiter(hash: string, txn: TransactionResponse) {
+function makeWalletTxnResultWaiter(hash: string, txn: ISignerSendTransactionResult) {
   return async () => {
     const receipt = await txn.wait();
     return {

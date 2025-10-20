@@ -1,3 +1,4 @@
+import mapValues from "lodash/mapValues";
 import { useMemo } from "react";
 
 import { getExplorerUrl } from "config/chains";
@@ -24,6 +25,8 @@ import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
+import { useMultichainMarketTokensBalancesRequest } from "components/GmxAccountModal/hooks";
+
 import { isGlvEnabled } from "./glv";
 import { GlvInfoData } from "./types";
 import { useMarkets } from "./useMarkets";
@@ -44,12 +47,26 @@ export function useMarketTokensDataRequest(
      * @default true
      */
     withGlv?: boolean;
+    enabled?: boolean;
+    withMultichainBalances?: boolean;
   }
 ): MarketTokensDataResult {
-  const { isDeposit, account, glvData = {}, withGlv = true } = p;
-  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { isDeposit, account, glvData = {}, withGlv = true, enabled = true, withMultichainBalances = false } = p;
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId, {
+    enabled: enabled,
+  });
   const { marketsData, marketsAddresses } = useMarkets(chainId);
   const { resetTokensBalancesUpdates } = useTokensBalancesUpdates();
+  const marketTokensMultichainBalancesResult = useMultichainMarketTokensBalancesRequest({
+    chainId,
+    account,
+    enabled: enabled && withMultichainBalances && srcChainId !== undefined,
+    specificChainId: srcChainId,
+  });
+
+  // useEffect(() => {
+  //   console.log({ marketTokensMultichainBalancesResult });
+  // }, [marketTokensMultichainBalancesResult]);
 
   let isGlvTokensLoaded;
 
@@ -62,7 +79,7 @@ export function useMarketTokensDataRequest(
   const isDataLoaded = tokensData && marketsAddresses?.length && isGlvTokensLoaded;
 
   const { data: marketTokensData } = useMulticall(chainId, "useMarketTokensData", {
-    key: isDataLoaded ? [account, marketsAddresses.join("-")] : undefined,
+    key: isDataLoaded && enabled ? [account, marketsAddresses.join("-")] : undefined,
 
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     clearUnusedKeys: true,
@@ -171,6 +188,7 @@ export function useMarketTokensDataRequest(
           account && gmxAccountData?.balance?.returnValues
             ? BigInt(gmxAccountData?.balance?.returnValues[0])
             : undefined;
+
         const balance = srcChainId !== undefined ? gmxAccountBalance : walletBalance;
 
         marketTokensMap[marketAddress] = {
@@ -183,6 +201,7 @@ export function useMarketTokensDataRequest(
           totalSupply: BigInt(tokenData?.totalSupply.returnValues[0]),
           walletBalance,
           gmxAccountBalance,
+          // sourceChainBalance,
           balanceType: getBalanceTypeFromSrcChainId(srcChainId),
           balance,
           explorerUrl: `${getExplorerUrl(chainId)}/token/${marketAddress}`,
@@ -196,7 +215,20 @@ export function useMarketTokensDataRequest(
 
   const gmAndGlvMarketTokensData = useMemo(() => {
     if (!marketTokensData || !glvData || Object.values(glvData).length === 0 || !withGlv) {
-      return marketTokensData;
+      if (!marketTokensData) {
+        return undefined;
+      }
+
+      if (!withMultichainBalances || !marketTokensMultichainBalancesResult.isLoading) {
+        return marketTokensData;
+      }
+
+      return mapValues(marketTokensData, (marketToken) => {
+        return {
+          ...marketToken,
+          sourceChainBalance: marketTokensMultichainBalancesResult.tokenBalances[marketToken.address],
+        };
+      });
     }
 
     const result = { ...marketTokensData };
@@ -204,8 +236,24 @@ export function useMarketTokensDataRequest(
       result[glvMarket.glvTokenAddress] = glvMarket.glvToken;
     });
 
+    if (withMultichainBalances && !marketTokensMultichainBalancesResult.isLoading) {
+      return mapValues(result, (marketToken) => {
+        return {
+          ...marketToken,
+          sourceChainBalance: marketTokensMultichainBalancesResult.tokenBalances[marketToken.address],
+        };
+      });
+    }
+
     return result;
-  }, [marketTokensData, glvData, withGlv]);
+  }, [
+    marketTokensData,
+    glvData,
+    withGlv,
+    withMultichainBalances,
+    marketTokensMultichainBalancesResult.isLoading,
+    marketTokensMultichainBalancesResult.tokenBalances,
+  ]);
 
   const updatedGmAndGlvMarketTokensData = useUpdatedTokensBalances(gmAndGlvMarketTokensData);
 
@@ -217,7 +265,7 @@ export function useMarketTokensDataRequest(
 export function useMarketTokensData(
   chainId: ContractsChainId,
   srcChainId: SourceChainId | undefined,
-  p: { isDeposit: boolean; withGlv?: boolean; glvData?: GlvInfoData }
+  p: { isDeposit: boolean; withGlv?: boolean; glvData?: GlvInfoData; enabled?: boolean }
 ): MarketTokensDataResult {
   const { isDeposit } = p;
   const account = useSelector((s) => s.globals.account);
@@ -231,5 +279,6 @@ export function useMarketTokensData(
     account,
     glvData: glvData,
     withGlv: glvs?.length ? p.withGlv : false,
+    enabled: p.enabled,
   });
 }

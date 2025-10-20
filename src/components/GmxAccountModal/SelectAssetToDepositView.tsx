@@ -19,7 +19,7 @@ import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
-import { useMultichainTokensRequest } from "components/GmxAccountModal/hooks";
+import { useMultichainTradeTokensRequest } from "components/GmxAccountModal/hooks";
 import SearchInput from "components/SearchInput/SearchInput";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
@@ -83,7 +83,7 @@ export const SelectAssetToDepositView = () => {
   const [selectedNetwork, setSelectedNetwork] = useState<number | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { tokenChainDataArray } = useMultichainTokensRequest(chainId, account);
+  const { tokenChainDataArray } = useMultichainTradeTokensRequest(chainId, account);
 
   const NETWORKS_FILTER = useMemo(() => {
     const wildCard = { id: "all" as const, name: "All Networks" };

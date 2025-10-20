@@ -2,10 +2,9 @@ import uniq from "lodash/uniq";
 
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
-import { MarketsInfoData } from "domain/synthetics/markets/types";
+import { MARKETS } from "sdk/configs/markets";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { getOppositeCollateral } from "sdk/utils/markets";
-import { getByKey } from "sdk/utils/objects";
+import { getOppositeCollateralFromConfig } from "sdk/utils/markets";
 import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 export function getOracleParams({ chainId, tokenAddresses }: { chainId: ContractsChainId; tokenAddresses: string[] }) {
@@ -27,14 +26,14 @@ export function getOracleParamsForRelayParams({
   relayerFeeTokenAddress,
   feeSwapPath,
   externalCalls,
-  marketsInfoData,
+  // marketsInfoData,
 }: {
   chainId: ContractsChainId;
   gasPaymentTokenAddress: string;
   relayerFeeTokenAddress: string;
   feeSwapPath: string[];
   externalCalls: ExternalCallsPayload | undefined;
-  marketsInfoData: MarketsInfoData;
+  // marketsInfoData: MarketsInfoData;
 }) {
   const tokenAddresses = [gasPaymentTokenAddress, relayerFeeTokenAddress];
 
@@ -45,7 +44,8 @@ export function getOracleParamsForRelayParams({
   if (feeSwapPath.length) {
     tokenAddresses.push(
       ...getSwapPathOracleTokens({
-        marketsInfoData,
+        chainId,
+        // marketsInfoData,
         initialCollateralAddress: gasPaymentTokenAddress,
         swapPath: feeSwapPath,
       })
@@ -56,11 +56,14 @@ export function getOracleParamsForRelayParams({
 }
 
 export function getSwapPathOracleTokens({
-  marketsInfoData,
+  chainId,
+  // marketsInfoData,
   initialCollateralAddress,
   swapPath,
 }: {
-  marketsInfoData: MarketsInfoData;
+  chainId: ContractsChainId;
+  // TODO MLTCH: why is it a heavy MarketsInfoData when it could be static MarketConfig
+  // marketsInfoData: MarketsInfoData;
   initialCollateralAddress: string;
   swapPath: string[];
 }): string[] {
@@ -68,20 +71,22 @@ export function getSwapPathOracleTokens({
   const tokenAddresses: string[] = [initialCollateralAddress];
 
   for (const marketAddress of swapPath) {
-    const marketInfo = getByKey(marketsInfoData, marketAddress);
+    // const marketInfo = getByKey(marketsInfoData, marketAddress);
+    const marketConfig = MARKETS[chainId]?.[marketAddress];
 
-    if (!marketInfo) {
+    if (!marketConfig) {
       throw new Error(`Market not found for oracle params: ${marketAddress}`);
     }
 
-    const tokenOut = getOppositeCollateral(marketInfo, currentToken);
+    // const tokenOut = getOppositeCollateral(marketInfo, currentToken);
+    const tokenOut = getOppositeCollateralFromConfig(marketConfig, currentToken);
 
-    if (!tokenOut?.address) {
-      throw new Error(`Token not found for oracle params: ${initialCollateralAddress}`);
-    }
+    // if (!tokenOut?.address) {
+    //   throw new Error(`Token not found for oracle params: ${initialCollateralAddress}`);
+    // }
 
-    currentToken = tokenOut.address;
-    tokenAddresses.push(currentToken, marketInfo.indexToken.address);
+    currentToken = tokenOut;
+    tokenAddresses.push(currentToken, marketConfig.indexTokenAddress);
   }
 
   return tokenAddresses;

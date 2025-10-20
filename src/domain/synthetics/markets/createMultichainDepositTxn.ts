@@ -10,7 +10,7 @@ import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
 
-import { CreateDepositParamsStruct } from ".";
+import { CreateDepositParams } from ".";
 import { ExpressTxnParams, RelayParamsPayload } from "../express";
 import { signCreateDeposit } from "./signCreateDeposit";
 
@@ -22,7 +22,7 @@ type TxnParams = {
   emptySignature?: boolean;
   account: string;
   transferRequests: TransferRequests;
-  params: CreateDepositParamsStruct;
+  params: CreateDepositParams;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
 };
@@ -91,7 +91,7 @@ export function createMultichainDepositTxn({
   transferRequests: TransferRequests;
   // TODO MLTCH: make it just ExpressTxnParams
   asyncExpressTxnResult: AsyncResult<ExpressTxnParams | undefined>;
-  params: CreateDepositParamsStruct;
+  params: CreateDepositParams;
   // TODO MLTCH: support pending txns
   // setPendingTxns,
   // setPendingDeposit,

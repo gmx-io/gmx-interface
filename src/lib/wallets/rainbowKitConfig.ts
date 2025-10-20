@@ -12,11 +12,13 @@ import {
   walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import once from "lodash/once";
-import { http } from "viem";
+import { createPublicClient, http, PublicClient } from "viem";
 import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, base, bsc, optimismSepolia, sepolia } from "viem/chains";
 
-import { botanix } from "config/chains";
+import { botanix, getFallbackRpcUrl, getViemChain } from "config/chains";
 import { isDevelopment } from "config/env";
+import { getCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
+import { LRUCache } from "sdk/utils/LruCache";
 
 import binanceWallet from "./connecters/binanceW3W/binanceWallet";
 
@@ -63,13 +65,29 @@ export const getRainbowKitConfig = once(() =>
       [arbitrum.id]: http(),
       [avalanche.id]: http(),
       [avalancheFuji.id]: http(),
-      [arbitrumSepolia.id]: http(),
+      [arbitrumSepolia.id]: http(getFallbackRpcUrl(arbitrumSepolia.id, false)),
       [base.id]: http(),
-      [optimismSepolia.id]: http(),
-      [sepolia.id]: http(),
+      [optimismSepolia.id]: http(getFallbackRpcUrl(optimismSepolia.id, false)),
+      [sepolia.id]: http(getFallbackRpcUrl(sepolia.id, false)),
       [botanix.id]: http(),
       [bsc.id]: http(),
     },
     wallets: [...popularWalletList, ...othersWalletList],
   })
 );
+
+const PUBLIC_CLIENTS_CACHE = new LRUCache<PublicClient>(100);
+
+export function getPublicClientWithRpc(chainId: number): PublicClient {
+  const primaryRpcUrl = getCurrentRpcUrls(chainId).primary;
+  const key = `chainId:${chainId}-rpcUrl:${primaryRpcUrl}`;
+  if (PUBLIC_CLIENTS_CACHE.has(key)) {
+    return PUBLIC_CLIENTS_CACHE.get(key)!;
+  }
+  const publicClient = createPublicClient({
+    transport: http(primaryRpcUrl),
+    chain: getViemChain(chainId),
+  });
+  PUBLIC_CLIENTS_CACHE.set(key, publicClient);
+  return publicClient;
+}

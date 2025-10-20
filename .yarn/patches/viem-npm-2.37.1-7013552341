@@ -7,7 +7,8 @@ index 2fa2d166d6e708ad2adea724a2e20f40b0b9ac88..032498f54ab08dfba43dd125637f0c70
  export type ByteArray = Uint8Array;
 -export type Hex = `0x${string}`;
 +export type Hex = string
- export type Hash = `0x${string}`;
+-export type Hash = `0x${string}`;
++export type Hash = string;
  export type LogTopic = Hex | Hex[] | null;
  export type SignableMessage = string | {
 diff --git a/types/misc.ts b/types/misc.ts
@@ -20,6 +21,7 @@ index 625ba085cc64d197faff2f981ff06e706c2898a0..59e49bec00ac4a7a2f351c1406a35676
  export type ByteArray = Uint8Array
 -export type Hex = `0x${string}`
 +export type Hex = string
- export type Hash = `0x${string}`
+-export type Hash = `0x${string}`
++export type Hash = string
  export type LogTopic = Hex | Hex[] | null
  export type SignableMessage =

@@ -15,26 +15,7 @@ import { validateSignerAddress } from "components/Errors/errorToasts";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import type { TokensData } from "../tokens";
-import type { CreateGlvDepositParamsStruct } from "./types";
-
-interface CreateGlvDepositParams {
-  chainId: ContractsChainId;
-  signer: Signer;
-  longTokenAddress: string;
-  shortTokenAddress: string;
-  longTokenAmount: bigint;
-  shortTokenAmount: bigint;
-  executionFee: bigint;
-  executionGasLimit: bigint;
-  tokensData: TokensData;
-  skipSimulation?: boolean;
-  metricId?: OrderMetricId;
-  blockTimestampData: BlockTimestampData | undefined;
-  setPendingTxns: (txns: any) => void;
-  setPendingDeposit: SetPendingDeposit;
-  params: CreateGlvDepositParamsStruct;
-  marketTokenAmount: bigint;
-}
+import type { CreateGlvDepositParams } from "./types";
 
 export async function createGlvDepositTxn({
   chainId,
@@ -53,7 +34,24 @@ export async function createGlvDepositTxn({
   blockTimestampData,
   setPendingTxns,
   setPendingDeposit,
-}: CreateGlvDepositParams) {
+}: {
+  chainId: ContractsChainId;
+  signer: Signer;
+  longTokenAddress: string;
+  shortTokenAddress: string;
+  longTokenAmount: bigint;
+  shortTokenAmount: bigint;
+  executionFee: bigint;
+  executionGasLimit: bigint;
+  tokensData: TokensData;
+  skipSimulation?: boolean;
+  metricId?: OrderMetricId;
+  blockTimestampData: BlockTimestampData | undefined;
+  setPendingTxns: (txns: any) => void;
+  setPendingDeposit: SetPendingDeposit;
+  params: CreateGlvDepositParams;
+  marketTokenAmount: bigint;
+}) {
   const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), abis.GlvRouter, signer);
   const depositVaultAddress = getContract(chainId, "GlvVault");
 

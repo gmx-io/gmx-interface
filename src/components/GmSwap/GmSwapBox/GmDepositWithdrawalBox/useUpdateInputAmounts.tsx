@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { useEffect } from "react";
 
 import { GlvInfo, MarketInfo } from "domain/synthetics/markets/types";
 import { TokenData } from "domain/synthetics/tokens";
@@ -39,12 +39,12 @@ export function useUpdateInputAmounts({
   isDeposit: boolean;
   focusedInput: string;
   amounts: DepositAmounts | WithdrawalAmounts | undefined;
-  setMarketOrGlvTokenInputValue: Dispatch<SetStateAction<string>>;
+  setMarketOrGlvTokenInputValue: (value: string) => void;
   marketTokenAmount: bigint;
   glvTokenAmount: bigint;
   isWithdrawal: boolean;
-  setFirstTokenInputValue: Dispatch<SetStateAction<string>>;
-  setSecondTokenInputValue: Dispatch<SetStateAction<string>>;
+  setFirstTokenInputValue: (value: string) => void;
+  setSecondTokenInputValue: (value: string) => void;
 }) {
   useEffect(
     function updateInputAmounts() {

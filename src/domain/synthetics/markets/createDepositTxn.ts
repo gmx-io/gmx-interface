@@ -15,23 +15,7 @@ import { validateSignerAddress } from "components/Errors/errorToasts";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import type { TokensData } from "../tokens";
-import type { CreateDepositParamsStruct } from "./types";
-
-export type CreateDepositParams = {
-  chainId: ContractsChainId;
-  signer: Signer;
-  longTokenAmount: bigint;
-  shortTokenAmount: bigint;
-  executionFee: bigint;
-  executionGasLimit: bigint;
-  tokensData: TokensData;
-  skipSimulation?: boolean;
-  metricId?: OrderMetricId;
-  blockTimestampData: BlockTimestampData | undefined;
-  setPendingTxns: (txns: any) => void;
-  setPendingDeposit: SetPendingDeposit;
-  params: CreateDepositParamsStruct;
-};
+import type { CreateDepositParams } from "./types";
 
 export async function createDepositTxn({
   chainId,
@@ -47,7 +31,21 @@ export async function createDepositTxn({
   blockTimestampData,
   setPendingTxns,
   setPendingDeposit,
-}: CreateDepositParams) {
+}: {
+  chainId: ContractsChainId;
+  signer: Signer;
+  longTokenAmount: bigint;
+  shortTokenAmount: bigint;
+  executionFee: bigint;
+  executionGasLimit: bigint;
+  tokensData: TokensData;
+  skipSimulation?: boolean;
+  metricId?: OrderMetricId;
+  blockTimestampData: BlockTimestampData | undefined;
+  setPendingTxns: (txns: any) => void;
+  setPendingDeposit: SetPendingDeposit;
+  params: CreateDepositParams;
+}) {
   const contract = new Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const depositVaultAddress = getContract(chainId, "DepositVault");
 

@@ -18,9 +18,21 @@ import { SwapPricingType } from "../orders";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import type { TokensData } from "../tokens";
-import type { CreateGlvWithdrawalParamsStruct } from "./types";
+import type { CreateGlvWithdrawalParams } from "./types";
 
-type CreateGlvWithdrawalParams = {
+export async function createGlvWithdrawalTxn({
+  chainId,
+  signer,
+  executionGasLimit,
+  skipSimulation,
+  tokensData,
+  metricId,
+  blockTimestampData,
+  params,
+  glvTokenAmount,
+  setPendingTxns,
+  setPendingWithdrawal,
+}: {
   chainId: ContractsChainId;
   signer: WalletSigner;
   executionGasLimit: bigint;
@@ -28,19 +40,17 @@ type CreateGlvWithdrawalParams = {
   tokensData: TokensData;
   metricId?: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
-  params: CreateGlvWithdrawalParamsStruct;
+  params: CreateGlvWithdrawalParams;
   glvTokenAmount: bigint;
   setPendingTxns: (txns: any) => void;
   setPendingWithdrawal: SetPendingWithdrawal;
-};
+}) {
+  const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), abis.GlvRouter, signer);
+  const withdrawalVaultAddress = getContract(chainId, "GlvVault");
 
-export async function createGlvWithdrawalTxn(p: CreateGlvWithdrawalParams) {
-  const contract = new ethers.Contract(getContract(p.chainId, "GlvRouter"), abis.GlvRouter, p.signer);
-  const withdrawalVaultAddress = getContract(p.chainId, "GlvVault");
+  const wntAmount = params.executionFee;
 
-  const wntAmount = p.params.executionFee;
-
-  await validateSignerAddress(p.signer, p.params.addresses.receiver);
+  await validateSignerAddress(signer, params.addresses.receiver);
 
   // TODO MLTCH: do not forget to apply slippage elsewhere
   // const minLongTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minLongTokenAmount);
@@ -48,24 +58,24 @@ export async function createGlvWithdrawalTxn(p: CreateGlvWithdrawalParams) {
 
   const multicall = [
     { method: "sendWnt", params: [withdrawalVaultAddress, wntAmount] },
-    { method: "sendTokens", params: [p.params.addresses.glv, withdrawalVaultAddress, p.glvTokenAmount] },
+    { method: "sendTokens", params: [params.addresses.glv, withdrawalVaultAddress, glvTokenAmount] },
     {
       method: "createGlvWithdrawal",
       params: [
         {
           addresses: {
-            receiver: p.params.addresses.receiver,
+            receiver: params.addresses.receiver,
             callbackContract: ethers.ZeroAddress,
             uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
-            market: p.params.addresses.market,
-            glv: p.params.addresses.glv,
-            longTokenSwapPath: p.params.addresses.longTokenSwapPath,
-            shortTokenSwapPath: p.params.addresses.shortTokenSwapPath,
+            market: params.addresses.market,
+            glv: params.addresses.glv,
+            longTokenSwapPath: params.addresses.longTokenSwapPath,
+            shortTokenSwapPath: params.addresses.shortTokenSwapPath,
           },
-          minLongTokenAmount: p.params.minLongTokenAmount,
-          minShortTokenAmount: p.params.minShortTokenAmount,
-          shouldUnwrapNativeToken: p.params.shouldUnwrapNativeToken,
-          executionFee: p.params.executionFee,
+          minLongTokenAmount: params.minLongTokenAmount,
+          minShortTokenAmount: params.minShortTokenAmount,
+          shouldUnwrapNativeToken: params.shouldUnwrapNativeToken,
+          executionFee: params.executionFee,
           callbackGasLimit: 0n,
           dataList: [],
         } satisfies IGlvWithdrawalUtils.CreateGlvWithdrawalParamsStruct,
@@ -77,51 +87,51 @@ export async function createGlvWithdrawalTxn(p: CreateGlvWithdrawalParams) {
     .filter(Boolean)
     .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
 
-  const simulationPromise = !p.skipSimulation
-    ? simulateExecuteTxn(p.chainId, {
-        account: p.params.addresses.receiver,
+  const simulationPromise = !skipSimulation
+    ? simulateExecuteTxn(chainId, {
+        account: params.addresses.receiver,
         primaryPriceOverrides: {},
-        tokensData: p.tokensData,
+        tokensData: tokensData,
         createMulticallPayload: encodedPayload,
         method: "simulateExecuteLatestGlvWithdrawal",
         errorTitle: t`Withdrawal error.`,
         value: wntAmount,
         swapPricingType: SwapPricingType.TwoStep,
-        metricId: p.metricId,
-        blockTimestampData: p.blockTimestampData,
+        metricId: metricId,
+        blockTimestampData: blockTimestampData,
       })
     : undefined;
 
   const { gasLimit, gasPriceData } = await prepareOrderTxn(
-    p.chainId,
+    chainId,
     contract,
     "multicall",
     [encodedPayload],
     wntAmount,
     simulationPromise,
-    p.metricId
+    metricId
   );
 
-  return callContract(p.chainId, contract, "multicall", [encodedPayload], {
+  return callContract(chainId, contract, "multicall", [encodedPayload], {
     value: wntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
-    metricId: p.metricId,
+    metricId: metricId,
     gasLimit,
     gasPriceData,
-    setPendingTxns: p.setPendingTxns,
+    setPendingTxns: setPendingTxns,
     pendingTransactionData: {
-      estimatedExecutionFee: p.params.executionFee,
-      estimatedExecutionGasLimit: p.executionGasLimit,
+      estimatedExecutionFee: params.executionFee,
+      estimatedExecutionGasLimit: executionGasLimit,
     },
   }).then(() => {
-    p.setPendingWithdrawal({
-      account: p.params.addresses.receiver,
-      marketAddress: p.params.addresses.glv,
-      marketTokenAmount: p.glvTokenAmount,
-      minLongTokenAmount: p.params.minLongTokenAmount,
-      minShortTokenAmount: p.params.minShortTokenAmount,
-      shouldUnwrapNativeToken: p.params.shouldUnwrapNativeToken,
+    setPendingWithdrawal({
+      account: params.addresses.receiver,
+      marketAddress: params.addresses.glv,
+      marketTokenAmount: glvTokenAmount,
+      minLongTokenAmount: params.minLongTokenAmount,
+      minShortTokenAmount: params.minShortTokenAmount,
+      shouldUnwrapNativeToken: params.shouldUnwrapNativeToken,
     });
   });
 }

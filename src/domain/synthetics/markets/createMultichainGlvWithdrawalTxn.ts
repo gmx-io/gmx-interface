@@ -11,7 +11,7 @@ import { nowInSeconds } from "sdk/utils/time";
 
 import type { ExpressTxnParams, RelayParamsPayload } from "../express";
 import { signCreateGlvWithdrawal } from "./signCreateGlvWithdrawal";
-import type { CreateGlvWithdrawalParamsStruct } from "./types";
+import type { CreateGlvWithdrawalParams } from "./types";
 
 type TxnParams = {
   chainId: ContractsChainId;
@@ -21,7 +21,7 @@ type TxnParams = {
   emptySignature?: boolean;
   account: string;
   transferRequests: TransferRequests;
-  params: CreateGlvWithdrawalParamsStruct;
+  params: CreateGlvWithdrawalParams;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
 };
@@ -89,7 +89,7 @@ export async function createMultichainGlvWithdrawalTxn({
   signer: WalletSigner;
   transferRequests: TransferRequests;
   expressTxnParams: ExpressTxnParams;
-  params: CreateGlvWithdrawalParamsStruct;
+  params: CreateGlvWithdrawalParams;
   // TODO MLTCH: support pending txns
   // setPendingTxns,
   // setPendingDeposit,

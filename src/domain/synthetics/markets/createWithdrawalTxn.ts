@@ -16,9 +16,21 @@ import { SwapPricingType } from "../orders";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import type { TokensData } from "../tokens";
-import type { CreateWithdrawalParamsStruct } from "./types";
+import type { CreateWithdrawalParams } from "./types";
 
-export type CreateWithdrawalParams = {
+export async function createWithdrawalTxn({
+  chainId,
+  signer,
+  marketTokenAmount,
+  executionGasLimit,
+  skipSimulation,
+  tokensData,
+  metricId,
+  blockTimestampData,
+  params,
+  setPendingTxns,
+  setPendingWithdrawal,
+}: {
   chainId: ContractsChainId;
   signer: Signer;
   marketTokenAmount: bigint;
@@ -27,16 +39,14 @@ export type CreateWithdrawalParams = {
   tokensData: TokensData;
   metricId?: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
-  params: CreateWithdrawalParamsStruct;
+  params: CreateWithdrawalParams;
   setPendingTxns: (txns: any) => void;
   setPendingWithdrawal: SetPendingWithdrawal;
-};
+}) {
+  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
+  const withdrawalVaultAddress = getContract(chainId, "WithdrawalVault");
 
-export async function createWithdrawalTxn(p: CreateWithdrawalParams) {
-  const contract = new ethers.Contract(getContract(p.chainId, "ExchangeRouter"), abis.ExchangeRouter, p.signer);
-  const withdrawalVaultAddress = getContract(p.chainId, "WithdrawalVault");
-
-  await validateSignerAddress(p.signer, p.params.addresses.receiver);
+  await validateSignerAddress(signer, params.addresses.receiver);
 
   // const wntAmount = p.params.executionFee;
 
@@ -45,27 +55,27 @@ export async function createWithdrawalTxn(p: CreateWithdrawalParams) {
   // const minShortTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.params.minShortTokenAmount);
 
   const multicall = [
-    { method: "sendWnt", params: [withdrawalVaultAddress, p.params.executionFee] },
-    { method: "sendTokens", params: [p.params.addresses.market, withdrawalVaultAddress, p.marketTokenAmount] },
+    { method: "sendWnt", params: [withdrawalVaultAddress, params.executionFee] },
+    { method: "sendTokens", params: [params.addresses.market, withdrawalVaultAddress, marketTokenAmount] },
     {
       method: "createWithdrawal",
       params: [
         {
           addresses: {
-            receiver: p.params.addresses.receiver,
+            receiver: params.addresses.receiver,
             callbackContract: ethers.ZeroAddress,
-            market: p.params.addresses.market,
-            longTokenSwapPath: p.params.addresses.longTokenSwapPath,
-            shortTokenSwapPath: p.params.addresses.shortTokenSwapPath,
+            market: params.addresses.market,
+            longTokenSwapPath: params.addresses.longTokenSwapPath,
+            shortTokenSwapPath: params.addresses.shortTokenSwapPath,
             uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
           },
-          minLongTokenAmount: p.params.minLongTokenAmount,
-          minShortTokenAmount: p.params.minShortTokenAmount,
-          shouldUnwrapNativeToken: p.params.shouldUnwrapNativeToken,
-          executionFee: p.params.executionFee,
+          minLongTokenAmount: params.minLongTokenAmount,
+          minShortTokenAmount: params.minShortTokenAmount,
+          shouldUnwrapNativeToken: params.shouldUnwrapNativeToken,
+          executionFee: params.executionFee,
           callbackGasLimit: 0n,
           dataList: [],
-        } satisfies CreateWithdrawalParamsStruct,
+        } satisfies CreateWithdrawalParams,
       ],
     },
   ];
@@ -74,51 +84,51 @@ export async function createWithdrawalTxn(p: CreateWithdrawalParams) {
     .filter(Boolean)
     .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
 
-  const simulationPromise = !p.skipSimulation
-    ? simulateExecuteTxn(p.chainId, {
-        account: p.params.addresses.receiver,
+  const simulationPromise = !skipSimulation
+    ? simulateExecuteTxn(chainId, {
+        account: params.addresses.receiver,
         primaryPriceOverrides: {},
-        tokensData: p.tokensData,
+        tokensData: tokensData,
         createMulticallPayload: encodedPayload,
         method: "simulateExecuteLatestWithdrawal",
         errorTitle: t`Withdrawal error.`,
-        value: p.params.executionFee,
+        value: params.executionFee,
         swapPricingType: SwapPricingType.TwoStep,
-        metricId: p.metricId,
-        blockTimestampData: p.blockTimestampData,
+        metricId: metricId,
+        blockTimestampData: blockTimestampData,
       })
     : undefined;
 
   const { gasLimit, gasPriceData } = await prepareOrderTxn(
-    p.chainId,
+    chainId,
     contract,
     "multicall",
     [encodedPayload],
-    p.params.executionFee,
+    params.executionFee,
     simulationPromise,
-    p.metricId
+    metricId
   );
 
-  return callContract(p.chainId, contract, "multicall", [encodedPayload], {
-    value: p.params.executionFee,
+  return callContract(chainId, contract, "multicall", [encodedPayload], {
+    value: params.executionFee,
     hideSentMsg: true,
     hideSuccessMsg: true,
-    metricId: p.metricId,
+    metricId: metricId,
     gasLimit,
     gasPriceData,
-    setPendingTxns: p.setPendingTxns,
+    setPendingTxns: setPendingTxns,
     pendingTransactionData: {
-      estimatedExecutionFee: p.params.executionFee,
-      estimatedExecutionGasLimit: p.executionGasLimit,
+      estimatedExecutionFee: params.executionFee,
+      estimatedExecutionGasLimit: executionGasLimit,
     },
   }).then(() => {
-    p.setPendingWithdrawal({
-      account: p.params.addresses.receiver,
-      marketAddress: p.params.addresses.market,
-      marketTokenAmount: p.marketTokenAmount,
-      minLongTokenAmount: p.params.minLongTokenAmount,
-      minShortTokenAmount: p.params.minShortTokenAmount,
-      shouldUnwrapNativeToken: p.params.shouldUnwrapNativeToken,
+    setPendingWithdrawal({
+      account: params.addresses.receiver,
+      marketAddress: params.addresses.market,
+      marketTokenAmount: marketTokenAmount,
+      minLongTokenAmount: params.minLongTokenAmount,
+      minShortTokenAmount: params.minShortTokenAmount,
+      shouldUnwrapNativeToken: params.shouldUnwrapNativeToken,
     });
   });
 }

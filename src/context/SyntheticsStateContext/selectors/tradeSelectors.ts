@@ -216,7 +216,7 @@ export const makeSelectMaxLiquidityPath = createSelectorFactory(
 
 const ENABLE_DEBUG_SWAP_MARKETS_CONFIG = isDevelopment();
 export const makeSelectFindSwapPath = createSelectorFactory(
-  (fromTokenAddress: string | undefined, toTokenAddress: string | undefined) => {
+  (fromTokenAddress: string | undefined, toTokenAddress: string | undefined, isAtomicSwap?: boolean | undefined) => {
     return createSelector((q) => {
       const chainId = q(selectChainId);
       const marketsInfoData = q(selectMarketsInfoData);
@@ -229,7 +229,7 @@ export const makeSelectFindSwapPath = createSelectorFactory(
         fromTokenAddress,
         toTokenAddress,
         marketsInfoData,
-        isExpressFeeSwap: false,
+        isExpressFeeSwap: isAtomicSwap,
         disabledMarkets: _debugSwapMarketsConfig?.disabledSwapMarkets,
         manualPath: _debugSwapMarketsConfig?.manualPath,
         gasEstimationParams,

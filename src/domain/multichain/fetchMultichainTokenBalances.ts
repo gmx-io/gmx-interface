@@ -16,11 +16,13 @@ export async function fetchMultichainTokenBalances({
   account,
   progressCallback,
   tokens = MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[settlementChainId],
+  specificChainId,
 }: {
   settlementChainId: SettlementChainId;
   account: string;
   progressCallback?: (chainId: number, tokensChainData: Record<string, bigint>) => void;
   tokens?: string[];
+  specificChainId?: SourceChainId | undefined;
 }): Promise<Record<number, Record<string, bigint>>> {
   const requests: Promise<void>[] = [];
 
@@ -30,6 +32,10 @@ export async function fetchMultichainTokenBalances({
 
   for (const sourceChainIdString in sourceChainsTokenIdMap) {
     const sourceChainId = parseInt(sourceChainIdString) as SourceChainId;
+
+    if (specificChainId && sourceChainId !== specificChainId) {
+      continue;
+    }
 
     const sourceChainTokenIdMap = tokens
       ? pickBy(sourceChainsTokenIdMap[sourceChainId], (value) => tokens.includes(value.settlementChainTokenAddress))

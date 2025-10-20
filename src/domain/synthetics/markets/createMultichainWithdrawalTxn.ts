@@ -9,7 +9,7 @@ import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
 
-import { CreateWithdrawalParamsStruct } from ".";
+import { CreateWithdrawalParams } from ".";
 import { ExpressTxnParams, RelayParamsPayload } from "../express";
 import { signCreateWithdrawal } from "./signCreateWithdrawal";
 
@@ -21,7 +21,7 @@ type TxnParams = {
   emptySignature?: boolean;
   account: string;
   transferRequests: TransferRequests;
-  params: CreateWithdrawalParamsStruct;
+  params: CreateWithdrawalParams;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
 };
@@ -89,7 +89,7 @@ export async function createMultichainWithdrawalTxn({
   signer: WalletSigner;
   transferRequests: TransferRequests;
   expressTxnParams: ExpressTxnParams;
-  params: CreateWithdrawalParamsStruct;
+  params: CreateWithdrawalParams;
   // TODO MLTCH: support pending txns
   // setPendingTxns,
   // setPendingDeposit,

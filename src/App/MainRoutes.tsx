@@ -4,7 +4,6 @@ import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import type { Address } from "viem";
 
 import { isDevelopment } from "config/env";
-import { PoolsDetailsContextProvider } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useChainId } from "lib/chains";
 import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
@@ -105,9 +104,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
 
       <Route exact path="/pools/details">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
-          <PoolsDetailsContextProvider>
-            <PoolsDetails />
-          </PoolsDetailsContextProvider>
+          {/* <PoolsDetailsContextProvider> */}
+          <PoolsDetails />
+          {/* </PoolsDetailsContextProvider> */}
         </SyntheticsStateContextProvider>
       </Route>
 

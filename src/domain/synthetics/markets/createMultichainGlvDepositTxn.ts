@@ -9,7 +9,7 @@ import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
 
-import { CreateGlvDepositParamsStruct } from ".";
+import { CreateGlvDepositParams } from ".";
 import { ExpressTxnParams, RelayParamsPayload } from "../express";
 import { signCreateGlvDeposit } from "./signCreateGlvDeposit";
 
@@ -21,7 +21,7 @@ export type CreateMultichainGlvDepositParams = {
   emptySignature?: boolean;
   account: string;
   transferRequests: TransferRequests;
-  params: CreateGlvDepositParamsStruct;
+  params: CreateGlvDepositParams;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
 };
@@ -89,7 +89,7 @@ export function createMultichainGlvDepositTxn({
   signer: WalletSigner;
   transferRequests: TransferRequests;
   expressTxnParams: ExpressTxnParams;
-  params: CreateGlvDepositParamsStruct;
+  params: CreateGlvDepositParams;
   // TODO MLTCH: support pending txns
   // setPendingTxns,
   // setPendingDeposit,

@@ -1,8 +1,12 @@
 import { useCallback, useState } from "react";
 
-import { ExecutionFee } from "domain/synthetics/fees";
-import { GlvInfo, MarketInfo } from "domain/synthetics/markets";
-import { TokenData, TokensData } from "domain/synthetics/tokens";
+import type { ExecutionFee } from "domain/synthetics/fees";
+import type { MarketInfo } from "domain/synthetics/markets";
+import type { SourceChainDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
+import type { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
+import { SourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
+import { SourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
+import type { TokensData } from "domain/synthetics/tokens";
 
 import { Operation } from "../../types";
 import type { GmPaySource } from "../types";
@@ -10,12 +14,7 @@ import { useDepositTransactions } from "./useDepositTransactions";
 import { useWithdrawalTransactions } from "./useWithdrawalTransactions";
 
 export interface UseLpTransactionProps {
-  marketInfo?: MarketInfo;
-  glvInfo?: GlvInfo;
-  marketToken: TokenData | undefined;
   operation: Operation;
-  longTokenAddress: string | undefined;
-  shortTokenAddress: string | undefined;
 
   marketTokenAmount: bigint | undefined;
   marketTokenUsd: bigint | undefined;
@@ -30,7 +29,13 @@ export interface UseLpTransactionProps {
   shouldDisableValidation?: boolean;
 
   tokensData: TokensData | undefined;
-  executionFee: ExecutionFee | undefined;
+  technicalFees:
+    | ExecutionFee
+    | SourceChainGlvDepositFees
+    | SourceChainDepositFees
+    | SourceChainWithdrawalFees
+    | SourceChainGlvWithdrawalFees
+    | undefined;
   selectedMarketForGlv?: string;
   selectedMarketInfoForGlv?: MarketInfo;
   isMarketTokenDeposit?: boolean;

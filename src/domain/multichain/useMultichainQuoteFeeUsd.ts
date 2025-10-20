@@ -1,39 +1,26 @@
+import { useEffect, useState } from "react";
 import { zeroAddress } from "viem";
 
-import { AnyChainId, type SettlementChainId, type SourceChainId } from "config/chains";
+import { AnyChainId, getViemChain, type SettlementChainId, type SourceChainId } from "config/chains";
 import { getMappedTokenId } from "config/multichain";
-import { useTokenRecentPricesRequest } from "domain/synthetics/tokens";
+import { getMidPrice, useTokenRecentPricesRequest } from "domain/synthetics/tokens";
 import { convertToUsd } from "domain/tokens";
 import { useChainId } from "lib/chains";
-import { getToken } from "sdk/configs/tokens";
+import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 
 import { NATIVE_TOKEN_PRICE_MAP } from "./nativeTokenPriceMap";
-import type { QuoteOft, MessagingFee } from "./types";
+import type { MessagingFee, QuoteOft } from "./types";
 
-export function useMultichainQuoteFeeUsd({
-  quoteSend,
-  quoteOft,
-  unwrappedTokenAddress,
+export function useNativeTokenMultichainUsd({
   sourceChainId,
+  sourceChainTokenAmount,
   targetChainId,
 }: {
-  quoteSend: MessagingFee | undefined;
-  quoteOft: QuoteOft | undefined;
-  unwrappedTokenAddress: string | undefined;
   sourceChainId: AnyChainId | undefined;
+  sourceChainTokenAmount: bigint | undefined;
   targetChainId: AnyChainId | undefined;
-}): {
-  networkFee: bigint | undefined;
-  networkFeeUsd: bigint | undefined;
-  protocolFeeAmount: bigint | undefined;
-  protocolFeeUsd: bigint | undefined;
-  amountReceivedLD: bigint | undefined;
-} {
+}): bigint | undefined {
   const { chainId } = useChainId();
-  const { pricesData: settlementChainTokenPricesData } = useTokenRecentPricesRequest(chainId);
-
-  const nativeFee = quoteSend?.nativeFee as bigint;
-  const amountReceivedLD = quoteOft?.receipt.amountReceivedLD as bigint;
 
   let sourceNativeTokenPriceChain = chainId;
   let sourceNativeTokenAddress = zeroAddress;
@@ -61,10 +48,90 @@ export function useMultichainQuoteFeeUsd({
   const { pricesData: priceChainTokenPricesData } = useTokenRecentPricesRequest(sourceNativeTokenPriceChain);
 
   if (
+    sourceChainTokenAmount === undefined ||
+    sourceChainId === undefined ||
+    targetChainId === undefined ||
+    chainId === undefined ||
+    !hasSourceNativeTokenPrice
+  ) {
+    return undefined;
+  }
+
+  const nativeFeeUsd =
+    sourceChainTokenAmount !== undefined && priceChainTokenPricesData?.[sourceNativeTokenAddress] !== undefined
+      ? convertToUsd(
+          sourceChainTokenAmount as bigint,
+          getViemChain(sourceChainId).nativeCurrency.decimals,
+          getMidPrice(priceChainTokenPricesData[sourceNativeTokenAddress])
+        )
+      : undefined;
+
+  return nativeFeeUsd;
+}
+export function useGasMultichainUsd({
+  sourceChainId,
+  sourceChainGas,
+  targetChainId,
+}: {
+  sourceChainId: AnyChainId | undefined;
+  sourceChainGas: bigint | undefined;
+  targetChainId: AnyChainId | undefined;
+}): bigint | undefined {
+  const [nativeWeiAmount, setNativeWeiAmount] = useState<bigint | undefined>(undefined);
+
+  useEffect(() => {
+    if (!sourceChainId || sourceChainGas === undefined) {
+      return;
+    }
+
+    getPublicClientWithRpc(sourceChainId)
+      .getGasPrice()
+      .then((price) => setNativeWeiAmount(sourceChainGas * price));
+  }, [sourceChainGas, sourceChainId]);
+
+  return useNativeTokenMultichainUsd({
+    sourceChainId,
+    sourceChainTokenAmount: nativeWeiAmount,
+    targetChainId,
+  });
+}
+
+export function useMultichainQuoteFeeUsd({
+  quoteSend,
+  quoteOft,
+  unwrappedTokenAddress,
+  sourceChainId,
+  targetChainId,
+}: {
+  quoteSend: MessagingFee | undefined;
+  quoteOft: QuoteOft | undefined;
+  unwrappedTokenAddress: string | undefined;
+  sourceChainId: AnyChainId | undefined;
+  targetChainId: AnyChainId | undefined;
+}): {
+  networkFee: bigint | undefined;
+  networkFeeUsd: bigint | undefined;
+  protocolFeeAmount: bigint | undefined;
+  protocolFeeUsd: bigint | undefined;
+  amountReceivedLD: bigint | undefined;
+} {
+  const { chainId } = useChainId();
+  const { pricesData: settlementChainTokenPricesData } = useTokenRecentPricesRequest(chainId);
+
+  const nativeFee = quoteSend?.nativeFee as bigint;
+  const amountReceivedLD = quoteOft?.receipt.amountReceivedLD as bigint;
+
+  const nativeFeeUsd = useNativeTokenMultichainUsd({
+    sourceChainId,
+    sourceChainTokenAmount: nativeFee,
+    targetChainId,
+  });
+
+  if (
     !unwrappedTokenAddress ||
     sourceChainId === undefined ||
     targetChainId === undefined ||
-    !hasSourceNativeTokenPrice
+    nativeFeeUsd === undefined
   ) {
     return {
       networkFee: undefined,
@@ -81,27 +148,9 @@ export function useMultichainQuoteFeeUsd({
     sourceChainId as SourceChainId
   );
 
-  if (!sourceChainTokenId) {
-    return {
-      networkFee: undefined,
-      networkFeeUsd: undefined,
-      protocolFeeAmount: undefined,
-      protocolFeeUsd: undefined,
-      amountReceivedLD: undefined,
-    };
-  }
-
-  const sourceChainNativeTokenPrices = priceChainTokenPricesData?.[sourceNativeTokenAddress];
-
   const transferTokenPrices = settlementChainTokenPricesData?.[unwrappedTokenAddress];
-  const sourceChainNativeTokenDecimals = getToken(chainId, zeroAddress)?.decimals ?? 18;
 
   const sourceChainDepositTokenDecimals = sourceChainTokenId?.decimals;
-
-  const nativeFeeUsd =
-    nativeFee !== undefined
-      ? convertToUsd(nativeFee as bigint, sourceChainNativeTokenDecimals, sourceChainNativeTokenPrices?.maxPrice)
-      : undefined;
 
   let protocolFeeAmount: bigint | undefined = undefined;
   let protocolFeeUsd: bigint | undefined = undefined;

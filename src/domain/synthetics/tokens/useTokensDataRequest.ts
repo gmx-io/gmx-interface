@@ -23,18 +23,32 @@ export type TokensDataResult = {
   error: Error | undefined;
 };
 
-export function useTokensDataRequest(chainId: ContractsChainId, srcChainId?: SourceChainId): TokensDataResult {
+export function useTokensDataRequest(
+  chainId: ContractsChainId,
+  srcChainId?: SourceChainId,
+  params?: { enabled?: boolean }
+): TokensDataResult {
   const tokenConfigs = getTokensMap(chainId);
-  const { balancesData: walletBalancesData, error: walletBalancesError } = useTokenBalances(chainId);
-  const { balancesData: gmxAccountBalancesData, error: gmxAccountBalancesError } = useGmxAccountTokenBalances(chainId);
-  const { pricesData, updatedAt: pricesUpdatedAt, error: pricesError } = useTokenRecentPricesRequest(chainId);
-  const { data: onchainConfigsData, error: onchainConfigsError } = useOnchainTokenConfigs(chainId);
+  const { balancesData: walletBalancesData, error: walletBalancesError } = useTokenBalances(chainId, {
+    enabled: params?.enabled,
+  });
+  const { balancesData: gmxAccountBalancesData, error: gmxAccountBalancesError } = useGmxAccountTokenBalances(chainId, {
+    enabled: params?.enabled,
+  });
+  const {
+    pricesData,
+    updatedAt: pricesUpdatedAt,
+    error: pricesError,
+  } = useTokenRecentPricesRequest(chainId, {
+    enabled: params?.enabled,
+  });
+  const { data: onchainConfigsData, error: onchainConfigsError } = useOnchainTokenConfigs(chainId, {
+    enabled: params?.enabled,
+  });
 
   const error = walletBalancesError || pricesError || onchainConfigsError || gmxAccountBalancesError;
 
   return useMemo((): TokensDataResult => {
-    const tokenAddresses = getV2Tokens(chainId).map((token) => token.address);
-
     if (!pricesData) {
       return {
         tokensData: undefined,
@@ -45,6 +59,8 @@ export function useTokensDataRequest(chainId: ContractsChainId, srcChainId?: Sou
         error,
       };
     }
+
+    const tokenAddresses = getV2Tokens(chainId).map((token) => token.address);
 
     const isWalletBalancesLoaded = Boolean(walletBalancesData);
     const isGmxAccountBalancesLoaded = Boolean(gmxAccountBalancesData);

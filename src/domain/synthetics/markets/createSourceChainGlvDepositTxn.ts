@@ -1,6 +1,4 @@
 import { t } from "@lingui/macro";
-import { getPublicClient } from "@wagmi/core";
-import { Contract } from "ethers";
 import { encodeFunctionData, zeroAddress } from "viem";
 
 import type { SettlementChainId, SourceChainId } from "config/chains";
@@ -8,99 +6,90 @@ import { getMappedTokenId, IStargateAbi } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { SendParam, TransferRequests } from "domain/multichain/types";
-import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
-import {
-  getRawRelayerParams,
-  GlobalExpressParams,
-  RelayFeePayload,
-  RelayParamsPayload,
-} from "domain/synthetics/express";
-import type { CreateGlvDepositParamsStruct } from "domain/synthetics/markets";
+import { GlobalExpressParams } from "domain/synthetics/express";
+import type { CreateGlvDepositParams, RawCreateGlvDepositParams } from "domain/synthetics/markets";
 import { sendWalletTransaction } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
-import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
-import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
-import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
-import { nowInSeconds } from "sdk/utils/time";
-import type { IStargate } from "typechain-types-stargate";
 
 import { toastCustomOrStargateError } from "components/GmxAccountModal/toastCustomOrStargateError";
 
+import { sendQuoteFromNative } from "./feeEstimation/estimateSourceChainDepositFees";
+import {
+  estimateSourceChainGlvDepositFees,
+  SourceChainGlvDepositFees,
+} from "./feeEstimation/estimateSourceChainGlvDepositFees";
 import { signCreateGlvDeposit } from "./signCreateGlvDeposit";
 
 export async function createSourceChainGlvDepositTxn({
   chainId,
-  globalExpressParams,
   srcChainId,
   signer,
   transferRequests,
   params,
-  account,
   tokenAddress,
   tokenAmount,
-  // executionFee,
-  relayFeePayload,
+  glvMarketCount,
+  globalExpressParams,
+  fees,
 }: {
   chainId: SettlementChainId;
-  globalExpressParams: GlobalExpressParams;
   srcChainId: SourceChainId;
   signer: WalletSigner;
   transferRequests: TransferRequests;
-  params: CreateGlvDepositParamsStruct;
-  account: string;
+  params: RawCreateGlvDepositParams;
   tokenAddress: string;
   tokenAmount: bigint;
-  relayFeePayload: RelayFeePayload;
-}) {
-  const rawRelayParamsPayload = getRawRelayerParams({
-    chainId: chainId,
-    gasPaymentTokenAddress: globalExpressParams!.gasPaymentTokenAddress,
-    relayerFeeTokenAddress: globalExpressParams!.relayerFeeTokenAddress,
-    feeParams: relayFeePayload,
-    externalCalls: getEmptyExternalCallsPayload(),
-    tokenPermits: [],
-    marketsInfoData: globalExpressParams!.marketsInfoData,
-  });
+} & (
+  | {
+      fees: SourceChainGlvDepositFees;
+      glvMarketCount?: undefined;
+      globalExpressParams?: undefined;
+    }
+  | {
+      fees?: undefined;
+      glvMarketCount: bigint;
+      globalExpressParams: GlobalExpressParams;
+    }
+)) {
+  const ensuredFees = fees
+    ? fees
+    : await estimateSourceChainGlvDepositFees({
+        chainId,
+        srcChainId,
+        params,
+        tokenAddress,
+        tokenAmount,
+        globalExpressParams,
+        glvMarketCount,
+      });
 
-  const relayParams: RelayParamsPayload = {
-    ...rawRelayParamsPayload,
-    deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
-  };
+  const adjusterParams: CreateGlvDepositParams = { ...params, executionFee: ensuredFees.executionFee };
 
   const signature = await signCreateGlvDeposit({
     chainId,
     srcChainId,
     signer,
-    relayParams,
+    relayParams: ensuredFees.relayParamsPayload,
     transferRequests,
-    params,
+    params: adjusterParams,
   });
 
   const action: MultichainAction = {
     actionType: MultichainActionType.GlvDeposit,
     actionData: {
-      relayParams,
+      relayParams: ensuredFees.relayParamsPayload,
       transferRequests,
-      params,
+      params: adjusterParams,
       signature,
     },
   };
 
-  const composeGas = await estimateMultichainDepositNetworkComposeGas({
-    action,
-    chainId,
-    account,
-    srcChainId,
-    tokenAddress,
-    settlementChainPublicClient: getPublicClient(getRainbowKitConfig(), { chainId })!,
-  });
-
   const sendParams: SendParam = getMultichainTransferSendParams({
     dstChainId: chainId,
-    account,
+    account: params.addresses.receiver,
     srcChainId,
-    amountLD: tokenAmount + relayFeePayload.feeAmount,
-    composeGas: composeGas,
+    amountLD: tokenAmount,
+    composeGas: ensuredFees.txnEstimatedComposeGas,
     isToGmx: true,
     action,
   });
@@ -111,11 +100,10 @@ export async function createSourceChainGlvDepositTxn({
     throw new Error("Token ID not found");
   }
 
-  const iStargateInstance = new Contract(sourceChainTokenId.stargate, IStargateAbi, signer) as unknown as IStargate;
-
-  const quoteSend = await iStargateInstance.quoteSend(sendParams, false);
-
-  const value = quoteSend.nativeFee + (tokenAddress === zeroAddress ? tokenAmount + relayFeePayload.feeAmount : 0n);
+  let value = ensuredFees.txnEstimatedNativeFee;
+  if (tokenAddress === zeroAddress) {
+    value += tokenAmount;
+  }
 
   try {
     const txnResult = await sendWalletTransaction({
@@ -125,7 +113,7 @@ export async function createSourceChainGlvDepositTxn({
       callData: encodeFunctionData({
         abi: IStargateAbi,
         functionName: "sendToken",
-        args: [sendParams, { nativeFee: quoteSend.nativeFee, lzTokenFee: 0n }, account],
+        args: [sendParams, sendQuoteFromNative(ensuredFees.txnEstimatedNativeFee), params.addresses.receiver],
       }),
       value,
       msg: t`Sent deposit transaction`,

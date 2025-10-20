@@ -159,6 +159,78 @@ const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | Settle
   },
 };
 
+addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
+  symbol: "<GLV-GLV-WBTC-USDC>",
+  chainAddresses: {
+    [ARBITRUM]: {
+      address: "0xdF03EEd325b82bC1d4Db8b49c30ecc9E05104b96",
+      stargate: "0xdF03EEd325b82bC1d4Db8b49c30ecc9E05104b96",
+    },
+    [SOURCE_BASE_MAINNET]: {
+      address: "0xbCB170fEDDa90cd7593f016DFdabA032Ca1F222b",
+      stargate: "0xbCB170fEDDa90cd7593f016DFdabA032Ca1F222b",
+    },
+    [SOURCE_BSC_MAINNET]: {
+      address: "0x3c21894169D669C5f0767c1289E71Ec8d6132C0F",
+      stargate: "0x3c21894169D669C5f0767c1289E71Ec8d6132C0F",
+    },
+  },
+});
+
+addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
+  symbol: "<GLV-GLV-WETH-USDC>",
+  chainAddresses: {
+    [ARBITRUM]: {
+      address: "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9",
+      stargate: "0x8c92eaE643040fF0Fb65B423433001c176cB0bb6",
+    },
+    [SOURCE_BASE_MAINNET]: {
+      address: "0x8c92eaE643040fF0Fb65B423433001c176cB0bb6",
+      stargate: "0x8c92eaE643040fF0Fb65B423433001c176cB0bb6",
+    },
+    [SOURCE_BSC_MAINNET]: {
+      address: "0x0BC5aB50Fd581b34681A9be180179b1Ef0b238c7",
+      stargate: "0x0BC5aB50Fd581b34681A9be180179b1Ef0b238c7",
+    },
+  },
+});
+
+addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
+  symbol: "<GM-BTC-WBTC-USDC>",
+  chainAddresses: {
+    [ARBITRUM]: {
+      address: "0x47c031236e19d024b42f8AE6780E44A573170703",
+      stargate: "0x91dd54AA8BA9Dfde8b956Cfb709a7c418f870e21",
+    },
+    [SOURCE_BASE_MAINNET]: {
+      address: "0x91dd54AA8BA9Dfde8b956Cfb709a7c418f870e21",
+      stargate: "0x91dd54AA8BA9Dfde8b956Cfb709a7c418f870e21",
+    },
+    [SOURCE_BSC_MAINNET]: {
+      address: "0x91dd54AA8BA9Dfde8b956Cfb709a7c418f870e21",
+      stargate: "0x91dd54AA8BA9Dfde8b956Cfb709a7c418f870e21",
+    },
+  },
+});
+
+addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
+  symbol: "<GM-ETH-WETH-USDC>",
+  chainAddresses: {
+    [ARBITRUM]: {
+      address: "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336",
+      stargate: "0xfcff5015627B8ce9CeAA7F5b38a6679F65fE39a7",
+    },
+    [SOURCE_BASE_MAINNET]: {
+      address: "0xfcff5015627B8ce9CeAA7F5b38a6679F65fE39a7",
+      stargate: "0xfcff5015627B8ce9CeAA7F5b38a6679F65fE39a7",
+    },
+    [SOURCE_BSC_MAINNET]: {
+      address: "0xfcff5015627B8ce9CeAA7F5b38a6679F65fE39a7",
+      stargate: "0xfcff5015627B8ce9CeAA7F5b38a6679F65fE39a7",
+    },
+  },
+});
+
 if (isDevelopment()) {
   TOKEN_GROUPS["USDC.SG"] = {
     ...TOKEN_GROUPS["USDC.SG"],
@@ -236,44 +308,65 @@ if (isDevelopment()) {
     },
   };
 
-  // TODO MLTCH wrap it in a factory
-  TOKEN_GROUPS["<GM-ETH-WETH-UDSC.SG>"] = {
-    [ARBITRUM_SEPOLIA]: {
-      address: "0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc",
-      decimals: 18,
-      chainId: ARBITRUM_SEPOLIA,
-      stargate: "0xe4EBcAC4a2e6CBEE385eE407f7D5E278Bc07e11e",
-      symbol: "<GM-ETH-WETH-UDSC.SG>",
-      isPlatformToken: true,
+  addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
+    symbol: "<GM-ETH-WETH-USDC.SG>",
+    chainAddresses: {
+      [ARBITRUM_SEPOLIA]: {
+        address: "0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc",
+        stargate: "0xe4EBcAC4a2e6CBEE385eE407f7D5E278Bc07e11e",
+      },
+      [SOURCE_SEPOLIA]: {
+        address: "0xe4EBcAC4a2e6CBEE385eE407f7D5E278Bc07e11e",
+        stargate: "0xe4EBcAC4a2e6CBEE385eE407f7D5E278Bc07e11e",
+      },
     },
-    [SOURCE_SEPOLIA]: {
-      address: "0xe4EBcAC4a2e6CBEE385eE407f7D5E278Bc07e11e",
-      decimals: 18,
-      chainId: SOURCE_SEPOLIA,
-      stargate: "0xe4EBcAC4a2e6CBEE385eE407f7D5E278Bc07e11e",
-      symbol: "<GM-ETH-WETH-UDSC.SG>",
-      isPlatformToken: true,
-    },
-  };
+  });
 
-  TOKEN_GROUPS["<GLV-HIGH_CAPS-WETH-UDSC.SG>"] = {
-    [ARBITRUM_SEPOLIA]: {
-      address: "0xAb3567e55c205c62B141967145F37b7695a9F854",
-      decimals: 18,
-      chainId: ARBITRUM_SEPOLIA,
-      stargate: "0xD5BdEa6dC8E4B7429b72675386fC903DEf06599d",
-      symbol: "<GLV-HIGH_CAPS-WETH-UDSC.SG>",
-      isPlatformToken: true,
+  addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
+    symbol: "<GLV-HIGH_CAPS-WETH-USDC.SG>",
+    chainAddresses: {
+      [ARBITRUM_SEPOLIA]: {
+        address: "0xAb3567e55c205c62B141967145F37b7695a9F854",
+        stargate: "0xD5BdEa6dC8E4B7429b72675386fC903DEf06599d",
+      },
+      [SOURCE_SEPOLIA]: {
+        address: "0xD5BdEa6dC8E4B7429b72675386fC903DEf06599d",
+        stargate: "0xD5BdEa6dC8E4B7429b72675386fC903DEf06599d",
+      },
     },
-    [SOURCE_SEPOLIA]: {
-      address: "0xD5BdEa6dC8E4B7429b72675386fC903DEf06599d",
+  });
+}
+
+function addMultichainPlatformTokenConfig(
+  tokenGroups: typeof TOKEN_GROUPS,
+  {
+    symbol,
+    chainAddresses,
+  }: {
+    symbol: string;
+    chainAddresses: Partial<
+      Record<
+        AnyChainId,
+        {
+          address: string;
+          stargate: string;
+        }
+      >
+    >;
+  }
+) {
+  tokenGroups[symbol] = {};
+
+  for (const chainIdString in chainAddresses) {
+    tokenGroups[symbol][chainIdString] = {
+      address: chainAddresses[chainIdString].address,
       decimals: 18,
-      chainId: SOURCE_SEPOLIA,
-      stargate: "0xD5BdEa6dC8E4B7429b72675386fC903DEf06599d",
-      symbol: "<GLV-HIGH_CAPS-WETH-UDSC.SG>",
+      chainId: parseInt(chainIdString) as SettlementChainId | SourceChainId,
+      stargate: chainAddresses[chainIdString].stargate,
+      symbol: symbol,
       isPlatformToken: true,
-    },
-  };
+    } satisfies MultichainTokenId;
+  }
 }
 
 export const DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT = false;
@@ -285,6 +378,7 @@ if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
 export const MULTI_CHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;
 export const MULTI_CHAIN_DEPOSIT_TRADE_TOKENS = {} as Record<SettlementChainId, string[]>;
 export const MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS = {} as Record<SettlementChainId, string[]>;
+export const MULTI_CHAIN_PLATFORM_TOKENS_MAP = {} as Record<SettlementChainId, string[]>;
 
 export const CHAIN_ID_TO_TOKEN_ID_MAP: Record<
   SettlementChainId | SourceChainId,
@@ -353,6 +447,11 @@ for (const tokenSymbol in TOKEN_GROUPS) {
         sourceChainTokenAddress: sourceChainToken.address,
         sourceChainTokenDecimals: sourceChainToken.decimals,
       };
+    }
+
+    if (tokenId?.isPlatformToken) {
+      MULTI_CHAIN_PLATFORM_TOKENS_MAP[settlementChainId] = MULTI_CHAIN_PLATFORM_TOKENS_MAP[settlementChainId] || [];
+      MULTI_CHAIN_PLATFORM_TOKENS_MAP[settlementChainId].push(tokenId.address);
     }
   }
 }

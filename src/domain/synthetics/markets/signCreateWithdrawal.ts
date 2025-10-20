@@ -6,7 +6,7 @@ import { TransferRequests } from "domain/multichain/types";
 import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
 
-import type { CreateWithdrawalParamsStruct } from ".";
+import type { CreateWithdrawalParams } from ".";
 import { getGelatoRelayRouterDomain, hashRelayParams } from "../express/relayParamsUtils";
 import type { RelayParamsPayload } from "../express/types";
 
@@ -17,13 +17,15 @@ export async function signCreateWithdrawal({
   relayParams,
   transferRequests,
   params,
+  shouldUseSignerMethod = false,
 }: {
   signer: AbstractSigner | WalletSigner | Wallet;
   relayParams: RelayParamsPayload;
   transferRequests: TransferRequests;
-  params: CreateWithdrawalParamsStruct;
+  params: CreateWithdrawalParams;
   chainId: ContractsChainId;
   srcChainId: SourceChainId | undefined;
+  shouldUseSignerMethod?: boolean;
 }) {
   const types = {
     CreateWithdrawal: [
@@ -64,5 +66,5 @@ export async function signCreateWithdrawal({
     relayParams: hashRelayParams(relayParams),
   };
 
-  return signTypedData({ signer, domain, types, typedData });
+  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod });
 }

@@ -51,7 +51,7 @@ export const useBestGmPoolAddressForGlv = ({
 
   marketTokensData: TokensData | undefined;
 
-  fees: ReturnType<typeof useDepositWithdrawalFees>["fees"];
+  fees: ReturnType<typeof useDepositWithdrawalFees>["logicalFees"];
 
   isMarketForGlvSelectedManually: boolean;
   onSelectedMarketForGlv?: (marketAddress?: string) => void;

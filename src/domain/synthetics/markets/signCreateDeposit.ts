@@ -1,4 +1,4 @@
-import type { Wallet } from "ethers";
+import type { AbstractSigner, Wallet } from "ethers";
 
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -6,7 +6,7 @@ import { TransferRequests } from "domain/multichain/types";
 import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
 
-import type { CreateDepositParamsStruct } from ".";
+import type { CreateDepositParams } from ".";
 import { getGelatoRelayRouterDomain, hashRelayParams } from "../express/relayParamsUtils";
 import type { RelayParamsPayload } from "../express/types";
 
@@ -17,13 +17,15 @@ export async function signCreateDeposit({
   relayParams,
   transferRequests,
   params,
+  shouldUseSignerMethod,
 }: {
-  signer: WalletSigner | Wallet;
+  signer: WalletSigner | Wallet | AbstractSigner;
   relayParams: RelayParamsPayload;
   transferRequests: TransferRequests;
-  params: CreateDepositParamsStruct;
+  params: CreateDepositParams;
   chainId: ContractsChainId;
   srcChainId: SourceChainId | undefined;
+  shouldUseSignerMethod?: boolean;
 }) {
   const types = {
     CreateDeposit: [
@@ -64,5 +66,5 @@ export async function signCreateDeposit({
     relayParams: hashRelayParams(relayParams),
   };
 
-  return signTypedData({ signer, domain, types, typedData });
+  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod });
 }

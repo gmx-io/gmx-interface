@@ -7,10 +7,23 @@ import uniqBy from "lodash/uniqBy";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
+import { SettlementChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
-import { isSourceChain } from "config/multichain";
+import { getMappedTokenId, isSourceChain } from "config/multichain";
+import {
+  selectPoolsDetailsGlvOrMarketAddress,
+  selectPoolsDetailsMarketTokenData,
+  usePoolsDetailsFirstTokenAddress,
+  usePoolsDetailsFirstTokenInputValue,
+  usePoolsDetailsFocusedInput,
+  usePoolsDetailsMarketOrGlvTokenInputValue,
+  usePoolsDetailsPaySource,
+  usePoolsDetailsSecondTokenAddress,
+  usePoolsDetailsSecondTokenInputValue,
+} from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectGlvAndMarketsInfoData,
   selectMarketsInfoData,
@@ -18,7 +31,18 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
-import { useMarketTokensData } from "domain/synthetics/markets";
+import {
+  RawCreateDepositParams,
+  RawCreateGlvDepositParams,
+  RawCreateGlvWithdrawalParams,
+  RawCreateWithdrawalParams,
+  useMarketTokensData,
+} from "domain/synthetics/markets";
+import { estimatePureLpActionExecutionFee } from "domain/synthetics/markets/feeEstimation/estimatePureLpActionExecutionFee";
+import { estimateSourceChainDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
+import { estimateSourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
+import { estimateSourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
+import { estimateSourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import {
   getAvailableUsdLiquidityForCollateral,
@@ -33,8 +57,12 @@ import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { usePrevious } from "lib/usePrevious";
+import { useThrottledAsync } from "lib/useThrottledAsync";
 import { switchNetwork } from "lib/wallets";
+import { MARKETS } from "sdk/configs/markets";
 import { getNativeToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { WithdrawalAmounts } from "sdk/types/trade";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -52,23 +80,26 @@ import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
 import { Mode, Operation } from "../types";
 import { useGmWarningState } from "../useGmWarningState";
 import { InfoRows } from "./InfoRows";
+import { selectPoolsDetailsParams } from "./lpTxn/useParams";
+import { selectDepositWithdrawalAmounts } from "./selectDepositWithdrawalAmounts";
 import { TokenInputState } from "./types";
-import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
-import { useGmDepositWithdrawalBoxState } from "./useGmDepositWithdrawalBoxState";
 import { useGmSwapSubmitState } from "./useGmSwapSubmitState";
 import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
 import { useUpdateTokens } from "./useUpdateTokens";
 
 export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const {
-    selectedGlvOrMarketAddress,
+    // selectedGlvOrMarketAddress,
     operation,
     mode,
     onSelectGlvOrMarket,
     selectedMarketForGlv,
     onSelectedMarketForGlv,
   } = p;
+  const selectedGlvOrMarketAddress = useSelector(selectPoolsDetailsGlvOrMarketAddress);
+  const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
+  // const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const { shouldDisableValidationForTesting } = useSettings();
   const { chainId, srcChainId } = useChainId();
   const [isMarketForGlvSelectedManually, setIsMarketForGlvSelectedManually] = useState(false);
@@ -96,6 +127,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     account,
     selectedGlvOrMarketAddress
   );
+
   // #endregion
 
   // #region Selectors
@@ -110,22 +142,13 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const rawTradeTokensData = useTokensData();
 
   // #region State
-  const {
-    focusedInput,
-    setFocusedInput,
-    paySource,
-    setPaySource,
-    firstTokenAddress,
-    setFirstTokenAddress,
-    secondTokenAddress,
-    setSecondTokenAddress,
-    firstTokenInputValue,
-    setFirstTokenInputValue,
-    secondTokenInputValue,
-    setSecondTokenInputValue,
-    marketOrGlvTokenInputValue,
-    setMarketOrGlvTokenInputValue,
-  } = useGmDepositWithdrawalBoxState(operation, mode, selectedGlvOrMarketAddress);
+  const [focusedInput, setFocusedInput] = usePoolsDetailsFocusedInput();
+  const [paySource, setPaySource] = usePoolsDetailsPaySource();
+  const [firstTokenAddress, setFirstTokenAddress] = usePoolsDetailsFirstTokenAddress();
+  const [secondTokenAddress, setSecondTokenAddress] = usePoolsDetailsSecondTokenAddress();
+  const [firstTokenInputValue, setFirstTokenInputValue] = usePoolsDetailsFirstTokenInputValue();
+  const [secondTokenInputValue, setSecondTokenInputValue] = usePoolsDetailsSecondTokenInputValue();
+  const [marketOrGlvTokenInputValue, setMarketOrGlvTokenInputValue] = usePoolsDetailsMarketOrGlvTokenInputValue();
   // #endregion
   // #region Derived state
 
@@ -235,7 +258,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
       inputs.push({
         address: firstTokenAddress,
         isMarketToken: firstToken?.symbol === "GM",
-        value: firstTokenInputValue,
+        value: firstTokenInputValue || "",
         setValue: setFirstTokenInputValue,
         amount: firstTokenAmount,
         usd: firstTokenUsd,
@@ -245,7 +268,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     if (isPair && secondTokenAddress) {
       inputs.push({
         address: secondTokenAddress,
-        value: secondTokenInputValue,
+        value: secondTokenInputValue || "",
         isMarketToken: false,
         setValue: setSecondTokenInputValue,
         amount: secondTokenAmount,
@@ -286,7 +309,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
    * When buy/sell GM - marketToken is GM token, glvToken is undefined
    * When buy/sell GLV - marketToken is corresponding GM token, glvToken is selected GLV token
    */
-  const { marketTokenAmount, marketToken, glvToken, glvTokenAmount } = useMemo(() => {
+  const { marketTokenAmount, glvToken, glvTokenAmount } = useMemo(() => {
     const marketToken = getTokenData(marketTokensData, marketInfo?.marketTokenAddress);
     const marketTokenAmount = glvInfo
       ? fromMarketTokenInputState?.amount ?? 0n
@@ -364,10 +387,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     });
   }, [tradeTokensData, tokenOptions]);
 
-  // useEffect(() => {
-  //   console.log({ availableTokensData, tokenOptions });
-  // }, [availableTokensData, tokenOptions]);
-
   const { longCollateralLiquidityUsd, shortCollateralLiquidityUsd } = useMemo(() => {
     if (!marketInfo) {
       return {};
@@ -381,26 +400,204 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
   const isMarketTokenDeposit = Boolean(fromMarketTokenInputState);
 
-  const amounts = useDepositWithdrawalAmounts({
-    chainId,
-    isDeposit,
-    marketInfo,
-    marketToken,
-    glvToken,
-    glvTokenAmount,
-    longTokenInputState,
-    shortTokenInputState,
-    marketTokenAmount,
-    uiFeeFactor,
-    focusedInput,
-    isWithdrawal,
-    marketTokensData,
-    isMarketTokenDeposit,
-    glvInfo,
-    isPair,
-  });
+  const amounts = useSelector(selectDepositWithdrawalAmounts);
 
-  const { fees, executionFee } = useDepositWithdrawalFees({
+  const globalExpressParams = useSelector(selectExpressGlobalParams);
+
+  const tokenAddress =
+    longTokenInputState?.amount !== undefined && longTokenInputState?.amount > 0n
+      ? longTokenInputState?.address
+      : shortTokenInputState?.address;
+  const tokenAmount =
+    longTokenInputState?.amount !== undefined && longTokenInputState?.amount > 0n
+      ? longTokenInputState?.amount
+      : shortTokenInputState?.amount;
+
+  const isGlv = glvInfo !== undefined && selectedMarketForGlv !== undefined;
+
+  const params = useSelector(selectPoolsDetailsParams);
+
+  // paySource !== usePrevious(paySource) || operation !== usePrevious(operation)
+  const prevPaySource = usePrevious(paySource);
+  const prevOperation = usePrevious(operation);
+  const prevIsPair = usePrevious(isPair);
+  const forceRecalculate = prevPaySource !== paySource || prevOperation !== operation || prevIsPair !== isPair;
+
+  // if (forceRecalculate) {
+  //   console.log({ forceRecalculate });
+  // }
+
+  const technicalFeesAsyncResult = useThrottledAsync(
+    async (p) => {
+      if (p.params.paySource === "gmxAccount" || p.params.paySource === "settlementChain") {
+        if (!p.params.globalExpressParams) {
+          return undefined;
+        }
+        if (p.params.operation === Operation.Deposit) {
+          if (p.params.isGlv) {
+            const castedParams = p.params.params as RawCreateGlvDepositParams;
+            return estimatePureLpActionExecutionFee({
+              action: {
+                operation: Operation.Deposit,
+                isGlv: true,
+                marketsCount: BigInt(p.params.glvInfo!.markets.length),
+                swapsCount: BigInt(
+                  castedParams.addresses.longTokenSwapPath.length + castedParams.addresses.shortTokenSwapPath.length
+                ),
+                isMarketTokenDeposit: castedParams.isMarketTokenDeposit,
+              },
+              chainId: p.params.chainId,
+              globalExpressParams: p.params.globalExpressParams,
+            });
+          } else {
+            const castedParams = p.params.params as RawCreateDepositParams;
+            return estimatePureLpActionExecutionFee({
+              action: {
+                operation: Operation.Deposit,
+                isGlv: false,
+                swapsCount: BigInt(
+                  castedParams.addresses.longTokenSwapPath.length + castedParams.addresses.shortTokenSwapPath.length
+                ),
+              },
+              chainId: p.params.chainId,
+              globalExpressParams: p.params.globalExpressParams,
+            });
+          }
+        } else if (p.params.operation === Operation.Withdrawal) {
+          if (p.params.isGlv) {
+            const castedParams = p.params.params as RawCreateGlvWithdrawalParams;
+            return estimatePureLpActionExecutionFee({
+              action: {
+                operation: Operation.Withdrawal,
+                isGlv: true,
+                marketsCount: BigInt(p.params.glvInfo!.markets.length),
+                swapsCount: BigInt(
+                  castedParams.addresses.longTokenSwapPath.length + castedParams.addresses.shortTokenSwapPath.length
+                ),
+              },
+              chainId: p.params.chainId,
+              globalExpressParams: p.params.globalExpressParams,
+            });
+          }
+          const castedParams = p.params.params as RawCreateWithdrawalParams;
+          return estimatePureLpActionExecutionFee({
+            action: {
+              operation: Operation.Withdrawal,
+              isGlv: false,
+              swapsCount: BigInt(
+                castedParams.addresses.longTokenSwapPath.length + castedParams.addresses.shortTokenSwapPath.length
+              ),
+            },
+            chainId: p.params.chainId,
+            globalExpressParams: p.params.globalExpressParams,
+          });
+        }
+      } else if (p.params.paySource === "sourceChain") {
+        if (p.params.tokenAddress === undefined || p.params.tokenAmount === undefined) {
+          // throw new Error("Token address or token amount is not defined");
+          return undefined;
+        }
+        if (p.params.operation === Operation.Deposit) {
+          if (p.params.isGlv) {
+            const castedParams = p.params.params as RawCreateGlvDepositParams;
+            return await estimateSourceChainGlvDepositFees({
+              chainId: p.params.chainId as SettlementChainId,
+              srcChainId: p.params.srcChainId as SourceChainId,
+              params: castedParams,
+              tokenAddress: p.params.tokenAddress,
+              tokenAmount: p.params.tokenAmount,
+              globalExpressParams: p.params.globalExpressParams,
+              glvMarketCount: BigInt(p.params.glvInfo!.markets.length),
+            });
+          } else {
+            const castedParams = p.params.params as RawCreateDepositParams;
+            return await estimateSourceChainDepositFees({
+              chainId: p.params.chainId as SettlementChainId,
+              srcChainId: p.params.srcChainId as SourceChainId,
+              params: castedParams,
+              tokenAddress: p.params.tokenAddress,
+              tokenAmount: p.params.tokenAmount,
+              globalExpressParams: p.params.globalExpressParams,
+            });
+          }
+        } else if (p.params.operation === Operation.Withdrawal) {
+          if (p.params.isGlv) {
+            const castedParams = p.params.params as RawCreateGlvWithdrawalParams;
+            const glvWithdrawalAmounts = p.params.amounts as WithdrawalAmounts;
+            const outputLongTokenAddress =
+              glvWithdrawalAmounts.longTokenSwapPathStats?.tokenOutAddress ?? glvInfo!.longTokenAddress;
+            const outputShortTokenAddress =
+              glvWithdrawalAmounts.shortTokenSwapPathStats?.tokenOutAddress ?? glvInfo!.shortTokenAddress;
+
+            return await estimateSourceChainGlvWithdrawalFees({
+              chainId: p.params.chainId as SettlementChainId,
+              srcChainId: p.params.srcChainId as SourceChainId,
+              params: castedParams,
+              tokenAddress: castedParams.addresses.glv,
+              tokenAmount: p.params.marketTokenAmount,
+              globalExpressParams: p.params.globalExpressParams,
+              marketsCount: BigInt(p.params.glvInfo!.markets.length),
+              outputLongTokenAddress,
+              outputShortTokenAddress,
+            });
+          } else {
+            const castedParams = p.params.params as RawCreateWithdrawalParams;
+            if (!p.params.amounts) {
+              // throw new Error("Amounts are not defined");
+              return undefined;
+            }
+
+            const gmWithdrawalAmounts = p.params.amounts as WithdrawalAmounts;
+
+            const outputLongTokenAddress =
+              gmWithdrawalAmounts.longTokenSwapPathStats?.tokenOutAddress ??
+              MARKETS[p.params.chainId][p.params.params.addresses.market].longTokenAddress;
+            const outputShortTokenAddress =
+              gmWithdrawalAmounts.shortTokenSwapPathStats?.tokenOutAddress ??
+              MARKETS[p.params.chainId][p.params.params.addresses.market].shortTokenAddress;
+
+            return await estimateSourceChainWithdrawalFees({
+              chainId: p.params.chainId as SettlementChainId,
+              srcChainId: p.params.srcChainId as SourceChainId,
+              params: castedParams,
+              tokenAddress: p.params.params.addresses.market,
+              tokenAmount: p.params.marketTokenAmount,
+              globalExpressParams: p.params.globalExpressParams,
+              outputLongTokenAddress,
+              outputShortTokenAddress,
+            });
+          }
+        }
+      }
+    },
+    {
+      params:
+        globalExpressParams && params
+          ? {
+              chainId,
+              globalExpressParams,
+              params,
+              isGlv,
+              glvInfo,
+              paySource,
+              srcChainId,
+              tokenAddress,
+              marketTokenAmount,
+              tokenAmount,
+              operation,
+              amounts,
+            }
+          : undefined,
+      withLoading: true,
+      forceRecalculate,
+    }
+  );
+
+  // useEffect(() => {
+  //   console.log(technicalFeesAsyncResult);
+  // }, [technicalFeesAsyncResult]);
+
+  const { logicalFees } = useDepositWithdrawalFees({
     amounts,
     chainId,
     gasLimits,
@@ -409,44 +606,44 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     tokensData: tradeTokensData,
     glvInfo,
     isMarketTokenDeposit,
+    technicalFees: technicalFeesAsyncResult.data,
+    srcChainId,
   });
 
   const { shouldShowWarning, shouldShowWarningForExecutionFee, shouldShowWarningForPosition } = useGmWarningState({
-    executionFee,
-    fees,
+    logicalFees,
   });
 
   const submitState = useGmSwapSubmitState({
     routerAddress,
-    amounts,
-    executionFee,
-    fees,
-    isDeposit,
-    marketInfo,
-    glvInfo,
-    marketToken: marketToken!,
-    operation,
-    glvToken,
+    // amounts,
+    logicalFees,
+    technicalFees: technicalFeesAsyncResult.data,
+    // isDeposit,
+    // marketInfo,
+    // glvInfo,
+    // operation,
+    // glvToken,
     shouldDisableValidation: shouldDisableValidationForTesting,
     tokensData: tradeTokensData,
-    longTokenAddress: longTokenInputState?.address,
-    shortTokenAddress: shortTokenInputState?.address,
+    // longTokenAddress: longTokenInputState?.address,
+    // shortTokenAddress: shortTokenInputState?.address,
     longTokenLiquidityUsd: longCollateralLiquidityUsd,
     shortTokenLiquidityUsd: shortCollateralLiquidityUsd,
-    marketTokensData,
-    selectedMarketForGlv,
-    selectedMarketInfoForGlv: getByKey(marketsInfoData, selectedMarketForGlv),
-    isMarketTokenDeposit: isMarketTokenDeposit,
+    // marketTokensData,
+    // selectedMarketForGlv,
+    // selectedMarketInfoForGlv: getByKey(marketsInfoData, selectedMarketForGlv),
+    // isMarketTokenDeposit: isMarketTokenDeposit,
     marketsInfoData,
     glvAndMarketsInfoData,
-    paySource,
-    isPair,
+    // paySource: paySource || "settlementChain",
+    // isPair,
   });
 
   const firstTokenMaxDetails = useMaxAvailableAmount({
     fromToken: firstToken,
     fromTokenAmount: firstTokenAmount ?? 0n,
-    fromTokenInputValue: firstTokenInputValue,
+    fromTokenInputValue: firstTokenInputValue || "",
     nativeToken: nativeToken,
     minResidualAmount: undefined,
     isLoading: false,
@@ -515,22 +712,34 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     }
 
     let balance;
+    let decimals;
     if (paySource === "gmxAccount") {
       balance = firstToken.gmxAccountBalance;
+      decimals = firstToken.decimals;
     } else if (paySource === "sourceChain") {
       balance = firstToken.sourceChainBalance;
+
+      decimals = getMappedTokenId(
+        chainId as SettlementChainId,
+        firstToken.address,
+        srcChainId as SourceChainId
+      )?.decimals;
+      if (!decimals) {
+        return undefined;
+      }
     } else {
       balance = firstToken.walletBalance;
+      decimals = firstToken.decimals;
     }
 
     if (balance === undefined) {
       return undefined;
     }
 
-    return formatBalanceAmount(balance, firstToken.decimals, undefined, {
+    return formatBalanceAmount(balance, decimals, undefined, {
       isStable: firstToken.isStable,
     });
-  }, [firstToken, paySource]);
+  }, [firstToken, paySource, chainId, srcChainId]);
 
   // #region Callbacks
   const onFocusedCollateralInputChange = useCallback(
@@ -722,7 +931,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     isDeposit,
     glvInfo,
     selectedMarketForGlv,
-    fees,
+    fees: logicalFees,
     uiFeeFactor,
     focusedInput,
     marketTokenAmount,
@@ -884,7 +1093,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                       chainId={chainId}
                       label={isWithdrawal ? t`Pay` : t`Receive`}
                       srcChainId={srcChainId}
-                      paySource={paySource}
+                      paySource={paySource || "settlementChain"}
                       onSelectTokenAddress={async (newChainId) => {
                         if (newChainId === 0) {
                           setPaySource("gmxAccount");
@@ -935,7 +1144,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           <div className="border-t border-slate-600 p-12">{submitButton}</div>
         </div>
 
-        <InfoRows fees={fees} executionFee={executionFee} isDeposit={isDeposit} />
+        <InfoRows fees={logicalFees} isLoading={technicalFeesAsyncResult.isLoading} isDeposit={isDeposit} />
       </form>
     </>
   );

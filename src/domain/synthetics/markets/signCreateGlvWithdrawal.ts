@@ -3,10 +3,11 @@ import type { Wallet } from "ethers";
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { TransferRequests } from "domain/multichain/types";
+import { ISigner } from "lib/transactions/iSigner";
 import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
 
-import type { CreateWithdrawalParamsStruct } from ".";
+import type { CreateWithdrawalParams } from ".";
 import { getGelatoRelayRouterDomain, hashRelayParams } from "../express/relayParamsUtils";
 import type { RelayParamsPayload } from "../express/types";
 
@@ -18,10 +19,10 @@ export async function signCreateGlvWithdrawal({
   transferRequests,
   params,
 }: {
-  signer: WalletSigner | Wallet;
+  signer: WalletSigner | Wallet | ISigner;
   relayParams: RelayParamsPayload;
   transferRequests: TransferRequests;
-  params: CreateWithdrawalParamsStruct;
+  params: CreateWithdrawalParams;
   chainId: ContractsChainId;
   srcChainId: SourceChainId | undefined;
 }) {

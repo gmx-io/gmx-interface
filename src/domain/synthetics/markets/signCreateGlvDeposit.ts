@@ -1,10 +1,11 @@
+import { AbstractSigner } from "ethers";
+
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { TransferRequests } from "domain/multichain/types";
-import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
 
-import type { CreateGlvDepositParamsStruct } from ".";
+import type { CreateGlvDepositParams } from ".";
 import { getGelatoRelayRouterDomain, hashRelayParams, RelayParamsPayload } from "../express";
 
 export function signCreateGlvDeposit({
@@ -14,13 +15,15 @@ export function signCreateGlvDeposit({
   relayParams,
   transferRequests,
   params,
+  shouldUseSignerMethod,
 }: {
   chainId: ContractsChainId;
   srcChainId: SourceChainId | undefined;
-  signer: WalletSigner;
+  signer: AbstractSigner;
   relayParams: RelayParamsPayload;
   transferRequests: TransferRequests;
-  params: CreateGlvDepositParamsStruct;
+  params: CreateGlvDepositParams;
+  shouldUseSignerMethod?: boolean;
 }) {
   const types = {
     CreateGlvDeposit: [
@@ -64,5 +67,5 @@ export function signCreateGlvDeposit({
     relayParams: hashRelayParams(relayParams),
   };
 
-  return signTypedData({ signer, domain, types, typedData });
+  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod });
 }

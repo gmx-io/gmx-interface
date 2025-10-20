@@ -1,9 +1,11 @@
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { useEffect } from "react";
 
 import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { getTokenPoolType } from "domain/synthetics/markets/utils";
 import { Token } from "domain/tokens";
 import { convertTokenAddress } from "sdk/configs/tokens";
+
+import { FocusedInput } from "./types";
 
 export function useUpdateTokens({
   chainId,
@@ -22,15 +24,15 @@ export function useUpdateTokens({
   chainId: number;
   tokenOptions: Token[];
   firstTokenAddress: string | undefined;
-  setFirstTokenAddress: Dispatch<SetStateAction<string | undefined>>;
+  setFirstTokenAddress: (address: string | undefined) => void;
   isSingle: boolean;
   isPair: boolean;
   secondTokenAddress: string | undefined;
   marketInfo: GlvOrMarketInfo | undefined;
   secondTokenAmount: bigint | undefined;
-  setFocusedInput: Dispatch<SetStateAction<"market" | "longCollateral" | "shortCollateral">>;
-  setSecondTokenAddress: Dispatch<SetStateAction<string | undefined>>;
-  setSecondTokenInputValue: Dispatch<SetStateAction<string>>;
+  setFocusedInput: (input: FocusedInput) => void;
+  setSecondTokenAddress: (address: string | undefined) => void;
+  setSecondTokenInputValue: (value: string) => void;
 }) {
   useEffect(
     function updateTokens() {

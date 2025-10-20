@@ -103,7 +103,6 @@ export function getRawBaseRelayerParams({
     feeParams: baseRelayFeeSwapParams.feeParams,
     externalCalls: getEmptyExternalCallsPayload(),
     tokenPermits: EMPTY_ARRAY,
-    marketsInfoData,
   });
 
   return { rawBaseRelayParamsPayload, baseRelayFeeSwapParams };
@@ -275,7 +274,6 @@ export function getArbitraryRelayParamsAndPayload({
     feeParams: relayFeeParams.feeParams,
     externalCalls: getEmptyExternalCallsPayload(),
     tokenPermits: [],
-    marketsInfoData: globalExpressParams.marketsInfoData,
   });
 
   const subaccountValidations =
@@ -331,7 +329,6 @@ export function useArbitraryRelayParamsAndPayload({
         throw new Error("no baseRelayFeeSwapParams or rawBaseRelayParamsPayload");
       }
 
-      // HERE
       const gasLimit: bigint = await estimateArbitraryGasLimit({
         chainId,
         provider: p.provider,
