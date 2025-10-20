@@ -1210,8 +1210,8 @@ msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr ""
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Simulate Tickers Errors"
-msgstr ""
+#~ msgid "Simulate Tickers Errors"
+#~ msgstr ""
 
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Inc."
