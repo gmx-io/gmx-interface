@@ -4,7 +4,7 @@ import { withRetry } from "viem";
 import { ContractsChainId } from "config/chains";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { buildAndSignExpressBatchOrderTxn } from "domain/synthetics/express/expressOrderUtils";
-import { isLimitOrderType, isLimitSwapOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
+import { isLimitOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
 import { TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
 import { sendExpressTransaction } from "lib/transactions/sendExpressTransaction";

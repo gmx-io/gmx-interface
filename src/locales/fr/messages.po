@@ -1210,8 +1210,8 @@ msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "Liq. {longOrShortText} - {marketIndexName}"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Simulate Tickers Errors"
-msgstr ""
+#~ msgid "Simulate Tickers Errors"
+#~ msgstr ""
 
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Inc."
@@ -3191,8 +3191,8 @@ msgid "Repeat Transaction"
 msgstr ""
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High swap profit fee"
-msgstr ""
+#~ msgid "High swap profit fee"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap {fromTokenText} for {toTokenText}"
@@ -5028,8 +5028,8 @@ msgid "<0>This will claim {formattedRewards} GMX.<1/><2/>After claiming, you can
 msgstr "<0>Cela réclamera {formattedRewards} GMX.<1/><2/>Après réclamation, vous pouvez staker ces tokens GMX en utilisant le bouton \"Staker\" dans la section GMX de cette page Gains.<3/><4/></0>"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Simulate Partial Tickers"
-msgstr ""
+#~ msgid "Simulate Partial Tickers"
+#~ msgstr ""
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Open Binance app"

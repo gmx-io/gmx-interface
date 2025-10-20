@@ -1210,8 +1210,8 @@ msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "청산 {longOrShortText} - {marketIndexName}"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Simulate Tickers Errors"
-msgstr ""
+#~ msgid "Simulate Tickers Errors"
+#~ msgstr ""
 
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Inc."
@@ -3191,8 +3191,8 @@ msgid "Repeat Transaction"
 msgstr ""
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High swap profit fee"
-msgstr ""
+#~ msgid "High swap profit fee"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap {fromTokenText} for {toTokenText}"
@@ -5028,8 +5028,8 @@ msgid "<0>This will claim {formattedRewards} GMX.<1/><2/>After claiming, you can
 msgstr "<0>{formattedRewards} GMX를 수령합니다.<1/><2/>수령 후, 이 Earn 페이지의 GMX 섹션에서 \"스테이킹\" 버튼을 사용하여 이러한 GMX 토큰을 스테이킹할 수 있습니다.<3/><4/></0>"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Simulate Partial Tickers"
-msgstr ""
+#~ msgid "Simulate Partial Tickers"
+#~ msgstr ""
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Open Binance app"

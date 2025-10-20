@@ -21,7 +21,6 @@ export type WarningState = {
   shouldShowWarningForPosition: boolean;
   shouldShowWarningForCollateral: boolean;
   shouldShowWarningForSwap: boolean;
-  shouldShowWarningForSwapProfitFee: boolean;
   shouldShowWarningForExecutionFee: boolean;
   shouldShowWarningForTriggerOrders: boolean;
   shouldShowWarningForExternalSwap: boolean;
@@ -103,7 +102,6 @@ export function usePriceImpactWarningState({
         prevIsHighCollateralImpact === undefined ||
         prevIsHighPositionImpact === undefined ||
         prevIsHighSwapImpact === undefined ||
-        prevIsHightSwapProfitFee === undefined ||
         prevIsHightExecutionPrice === undefined ||
         prevWillDecreaseOrdersBeExecuted === undefined ||
         prevIsHighExternalSwapFees === undefined ||
@@ -151,7 +149,6 @@ export function usePriceImpactWarningState({
   let shouldShowWarningForSwap = false;
   let shouldShowWarningForPosition = false;
   let shouldShowWarningForCollateral = false;
-  let shouldShowWarningForSwapProfitFee = false;
   let shouldShowWarningForExecutionFee = false;
   let shouldShowWarningForTriggerOrders = false;
   let shouldShowWarningForExternalSwap = false;
@@ -159,7 +156,6 @@ export function usePriceImpactWarningState({
 
   shouldShowWarningForSwap = isHighSwapImpact;
   shouldShowWarningForPosition = isHighPositionImpact;
-  shouldShowWarningForSwapProfitFee = isHightSwapProfitFee;
   shouldShowWarningForExecutionFee = isHightExecutionPrice;
   shouldShowWarningForTriggerOrders = willDecreaseOrdersBeExecuted ?? false;
   shouldShowWarningForExternalSwap = isHighExternalSwapFees;
@@ -175,7 +171,6 @@ export function usePriceImpactWarningState({
     shouldShowWarningForPosition ||
     shouldShowWarningForCollateral ||
     shouldShowWarningForSwap ||
-    shouldShowWarningForSwapProfitFee ||
     shouldShowWarningForExecutionFee ||
     shouldShowWarningForTriggerOrders ||
     shouldShowWarningForExternalSwap ||
@@ -186,7 +181,6 @@ export function usePriceImpactWarningState({
       shouldShowWarningForPosition,
       shouldShowWarningForCollateral,
       shouldShowWarningForSwap,
-      shouldShowWarningForSwapProfitFee,
       shouldShowWarningForExecutionFee,
       shouldShowWarningForTriggerOrders,
       shouldShowWarningForExternalSwap,
@@ -200,7 +194,6 @@ export function usePriceImpactWarningState({
     shouldShowWarningForPosition,
     shouldShowWarningForCollateral,
     shouldShowWarningForSwap,
-    shouldShowWarningForSwapProfitFee,
     shouldShowWarningForExecutionFee,
     shouldShowWarningForTriggerOrders,
     shouldShowWarningForExternalSwap,
