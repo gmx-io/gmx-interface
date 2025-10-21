@@ -473,7 +473,11 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
 
           {activeAction === "withdraw" && (
             <>
-              <BuyInputSection topLeftLabel={t`Withdraw`} inputValue={formatGmxAmount(vestedAmount)} isDisabled>
+              <BuyInputSection
+                topLeftLabel={t`Withdraw`}
+                inputValue={formatGmxAmount((vestedAmount ?? 0n) - (claimSum ?? 0n))}
+                isDisabled
+              >
                 <div className="flex items-center gap-4">
                   <EsGmxIcon />
                   esGMX
