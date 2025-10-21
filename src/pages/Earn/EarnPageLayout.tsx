@@ -13,6 +13,13 @@ import PageTitle from "components/PageTitle/PageTitle";
 
 export type EarnTab = "discovery" | "portfolio" | "additional-opportunities" | "distributions";
 
+export const EARN_TABS: ReadonlyArray<EarnTab> = [
+  "discovery",
+  "portfolio",
+  "additional-opportunities",
+  "distributions",
+];
+
 const TAB_TO_ANALYTICS_MAP: Record<EarnTab, EarnAnalyticsTab> = {
   discovery: "discover",
   portfolio: "portfolio",
