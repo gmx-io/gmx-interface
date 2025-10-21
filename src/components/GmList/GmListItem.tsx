@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/macro";
 import React, { useCallback, useMemo } from "react";
+import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
 import { Area, AreaChart } from "recharts";
 
@@ -267,14 +268,18 @@ export function GmListItem({
         {showDebugValues && <span style={tokenAddressStyle}>{marketOrGlvTokenAddress}</span>}
       </TableTdActionable>
       <TableTdActionable className="w-[13%]">
-        <AmountWithUsdHuman
-          multiline
-          amount={totalSupply}
-          decimals={token.decimals}
-          usd={totalSupplyUsd}
-          symbol={token.symbol}
-          usdOnTop
-        />
+        {totalSupplyUsd ? (
+          <AmountWithUsdHuman
+            multiline
+            amount={totalSupply}
+            decimals={token.decimals}
+            usd={totalSupplyUsd}
+            symbol={token.symbol}
+            usdOnTop
+          />
+        ) : (
+          <Skeleton width={60} count={1} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />
+        )}
       </TableTdActionable>
       <TableTdActionable className="w-[11%]">
         <GmTokensBalanceInfo
@@ -287,7 +292,11 @@ export function GmListItem({
       </TableTdActionable>
 
       <TableTdActionable className="w-[11%]">
-        <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
+        {apy ? (
+          <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
+        ) : (
+          <Skeleton width={60} count={1} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />
+        )}
       </TableTdActionable>
 
       <TableTdActionable className="w-[18%]">
@@ -296,7 +305,7 @@ export function GmListItem({
             {formatPercentage(marketPerformance, { bps: false, signed: true, showPlus: false })}
           </div>
         ) : (
-          "..."
+          <Skeleton width={60} count={1} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />
         )}
       </TableTdActionable>
 
