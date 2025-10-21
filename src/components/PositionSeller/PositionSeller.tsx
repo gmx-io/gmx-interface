@@ -63,7 +63,6 @@ import { useChainId } from "lib/chains";
 import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
 import {
   calculateDisplayDecimals,
@@ -93,7 +92,6 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
-import PositionShare from "components/PositionShare/PositionShare";
 import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
@@ -122,24 +120,9 @@ const ORDER_OPTION_LABELS: Record<OrderOption, MessageDescriptor> = {
   [OrderOption.Twap]: msg`TWAP`,
 };
 
-type SharePayload = {
-  entryPrice: bigint | undefined;
-  indexToken: Token;
-  isLong: boolean;
-  leverage: bigint | undefined;
-  markPrice: bigint;
-  pnlAfterFeesPercentage: bigint;
-  pnlAfterFeesUsd: bigint;
-};
-
-const POSITION_SHARE_MIN_PNL_THRESHOLD_BPS = 1000n;
-
 export function PositionSeller() {
   const [, setClosingPositionKey] = useClosingPositionKeyState();
   const [isApproving, setIsApproving] = useState(false);
-  const [sharePositionData, setSharePositionData] = useState<SharePayload | null>(null);
-  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const [hasShareModalInteraction, setHasShareModalInteraction] = useState(false);
 
   const onClose = useCallback(() => {
     setClosingPositionKey(undefined);
@@ -150,52 +133,6 @@ export function PositionSeller() {
   const { chainId, srcChainId } = useChainId();
   const { signer, account } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
-  const [doNotShowShareAgain, setDoNotShowShareAgain] = useLocalStorageSerializeKey<boolean>(
-    "position-share-do-not-show-again",
-    false
-  );
-  const [_notInteractedShareViewCount, setNotInteractedShareViewCount] = useLocalStorageSerializeKey<number>(
-    "position-share-not-interacted-view-count",
-    0
-  );
-  const notInteractedShareViewCount = _notInteractedShareViewCount ?? 0;
-
-  useEffect(() => {
-    setSharePositionData(null);
-    setIsShareModalOpen(false);
-    setHasShareModalInteraction(false);
-  }, [account]);
-
-  const openShareModal = useCallback(() => {
-    setHasShareModalInteraction(false);
-    setIsShareModalOpen(true);
-  }, [setHasShareModalInteraction, setIsShareModalOpen]);
-
-  const handleShareModalVisibilityChange = useCallback(
-    (isOpen: boolean) => {
-      setIsShareModalOpen(isOpen);
-
-      if (isOpen) {
-        setHasShareModalInteraction(false);
-        return;
-      }
-
-      setSharePositionData(null);
-      setNotInteractedShareViewCount((_prev) => {
-        const prev = _prev ?? 0;
-        return hasShareModalInteraction ? 0 : prev + 1;
-      });
-      setHasShareModalInteraction(false);
-    },
-    [hasShareModalInteraction, setNotInteractedShareViewCount]
-  );
-
-  const shouldShowShareModal =
-    sharePositionData &&
-    sharePositionData.pnlAfterFeesPercentage >= POSITION_SHARE_MIN_PNL_THRESHOLD_BPS &&
-    !doNotShowShareAgain &&
-    notInteractedShareViewCount < 5;
-
   const { openConnectModal } = useConnectModal();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
@@ -607,18 +544,6 @@ export function PositionSeller() {
 
     setIsSubmitting(true);
 
-    if (isMarket && decreaseAmounts?.sizeDeltaUsd !== undefined && decreaseAmounts.sizeDeltaUsd > 0n && position) {
-      setSharePositionData({
-        entryPrice: position.entryPrice,
-        indexToken: position.indexToken,
-        isLong: position.isLong,
-        leverage: position.leverage,
-        markPrice: position.markPrice,
-        pnlAfterFeesPercentage: position.pnlAfterFeesPercentage,
-        pnlAfterFeesUsd: position.pnlAfterFees,
-      });
-    }
-
     const fulfilledExpressParams = await expressParamsPromise;
 
     const txnPromise = sendBatchOrderTxn({
@@ -645,19 +570,11 @@ export function PositionSeller() {
       onClose();
       setIsSubmitting(false);
       setDefaultReceiveToken(receiveToken.address);
-
-      if (sharePositionData && shouldShowShareModal) {
-        openShareModal();
-      }
       return;
     }
 
     txnPromise
       .then(() => {
-        if (sharePositionData && shouldShowShareModal) {
-          openShareModal();
-        }
-
         onClose();
       })
       .catch((error) => {
@@ -1133,24 +1050,6 @@ export function PositionSeller() {
           )}
         </div>
       </Modal>
-      {sharePositionData ? (
-        <PositionShare
-          entryPrice={sharePositionData.entryPrice}
-          indexToken={sharePositionData.indexToken}
-          isLong={sharePositionData.isLong}
-          leverage={sharePositionData.leverage}
-          markPrice={sharePositionData.markPrice}
-          pnlAfterFeesPercentage={sharePositionData.pnlAfterFeesPercentage}
-          pnlAfterFeesUsd={sharePositionData.pnlAfterFeesUsd}
-          chainId={chainId}
-          account={account}
-          isPositionShareModalOpen={isShareModalOpen}
-          setIsPositionShareModalOpen={handleShareModalVisibilityChange}
-          doNotShowAgain={doNotShowShareAgain}
-          onDoNotShowAgainChange={setDoNotShowShareAgain}
-          onShareAction={() => setHasShareModalInteraction(true)}
-        />
-      ) : null}
     </div>
   );
 }

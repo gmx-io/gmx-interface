@@ -276,13 +276,6 @@ function PositionShare({
               <Trans>Show PnL Amounts</Trans>
             </span>
           </ToggleSwitch>
-          {Boolean(onDoNotShowAgainChange) && (
-            <Checkbox isChecked={doNotShowAgain} setIsChecked={onDoNotShowAgainChange}>
-              <span className="text-14 font-medium text-typography-secondary">
-                <Trans>Don't show this again</Trans>
-              </span>
-            </Checkbox>
-          )}
         </div>
         <div className="flex gap-12">
           <Button
@@ -319,6 +312,15 @@ function PositionShare({
             </Button>
           </TrackingLink>
         </div>
+        {Boolean(onDoNotShowAgainChange) && (
+          <div className="flex justify-center">
+            <Checkbox isChecked={doNotShowAgain} setIsChecked={onDoNotShowAgainChange}>
+              <span className="text-14 font-medium text-typography-secondary">
+                <Trans>Don't show this again</Trans>
+              </span>
+            </Checkbox>
+          </div>
+        )}
       </div>
     </ModalWithPortal>
   );

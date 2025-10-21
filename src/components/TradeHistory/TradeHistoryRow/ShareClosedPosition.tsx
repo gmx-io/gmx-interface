@@ -8,15 +8,23 @@ import PositionShare from "components/PositionShare/PositionShare";
 
 import { getTokenPriceByTradeAction } from "./utils/position";
 
+type ShareClosedPositionProps = {
+  tradeAction: PositionTradeAction;
+  isShareModalOpen: boolean;
+  setIsShareModalOpen: (isOpen: boolean) => void;
+  doNotShowAgain?: boolean;
+  onDoNotShowAgainChange?: (value: boolean) => void;
+  onShareAction?: () => void;
+};
+
 export default function ShareClosedPosition({
   tradeAction,
   isShareModalOpen,
   setIsShareModalOpen,
-}: {
-  tradeAction: PositionTradeAction;
-  isShareModalOpen: boolean;
-  setIsShareModalOpen: (isOpen: boolean) => void;
-}) {
+  doNotShowAgain,
+  onDoNotShowAgainChange,
+  onShareAction,
+}: ShareClosedPositionProps) {
   const { chainId } = useChainId();
 
   const collateralUsd =
@@ -57,6 +65,9 @@ export default function ShareClosedPosition({
       pnlAfterFeesUsd={tradeAction.pnlUsd ?? 0n}
       isPositionShareModalOpen={isShareModalOpen}
       setIsPositionShareModalOpen={setIsShareModalOpen}
+      doNotShowAgain={doNotShowAgain}
+      onDoNotShowAgainChange={onDoNotShowAgainChange}
+      onShareAction={onShareAction}
     />
   );
 }
