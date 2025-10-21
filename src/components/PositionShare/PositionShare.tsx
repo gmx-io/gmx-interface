@@ -20,6 +20,7 @@ import useWallet from "lib/wallets/useWallet";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import Checkbox from "components/Checkbox/Checkbox";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
@@ -59,6 +60,9 @@ type Props = {
   isPositionShareModalOpen: boolean;
   account: string | undefined | null;
   chainId: number;
+  doNotShowAgain?: boolean;
+  onDoNotShowAgainChange?: (value: boolean) => void;
+  onShareAction?: () => void;
 };
 
 function PositionShare({
@@ -73,6 +77,9 @@ function PositionShare({
   isPositionShareModalOpen,
   account,
   chainId,
+  doNotShowAgain = false,
+  onDoNotShowAgainChange,
+  onShareAction,
 }: Props) {
   const normalizedAccount = account ?? undefined;
   const userAffiliateCode = useAffiliateCodes(chainId, account);
@@ -188,6 +195,7 @@ function PositionShare({
     userAffiliateCode.success && !userAffiliateCode.code && !createdReferralCode && hasSevenDayVolume;
   async function handleDownload() {
     const element = cardRef.current;
+    onShareAction?.();
     if (!element) return;
     userAnalytics.pushEvent<SharePositionActionEvent>({
       event: "SharePositionAction",
@@ -203,6 +211,7 @@ function PositionShare({
   }
 
   function handleCopy() {
+    onShareAction?.();
     if (!uploadedImageInfo) return;
 
     userAnalytics.pushEvent<SharePositionActionEvent>({
@@ -218,6 +227,7 @@ function PositionShare({
   }
 
   const trackShareTwitter = useCallback(() => {
+    onShareAction?.();
     userAnalytics.pushEvent<SharePositionActionEvent>(
       {
         event: "SharePositionAction",
@@ -227,7 +237,7 @@ function PositionShare({
       },
       { instantSend: true }
     );
-  }, []);
+  }, [onShareAction]);
 
   return (
     <ModalWithPortal
@@ -260,12 +270,19 @@ function PositionShare({
         {uploadedImageError && <AlertInfoCard type="error">{uploadedImageError}</AlertInfoCard>}
       </div>
       <div className="flex flex-col gap-16 p-20">
-        <div>
+        <div className="flex flex-col gap-12">
           <ToggleSwitch isChecked={showPnlAmounts} setIsChecked={setShowPnlAmounts}>
             <span className="text-14 font-medium text-typography-secondary">
               <Trans>Show PnL Amounts</Trans>
             </span>
           </ToggleSwitch>
+          {Boolean(onDoNotShowAgainChange) && (
+            <Checkbox isChecked={doNotShowAgain} setIsChecked={onDoNotShowAgainChange}>
+              <span className="text-14 font-medium text-typography-secondary">
+                <Trans>Don't show this again</Trans>
+              </span>
+            </Checkbox>
+          )}
         </div>
         <div className="flex gap-12">
           <Button
