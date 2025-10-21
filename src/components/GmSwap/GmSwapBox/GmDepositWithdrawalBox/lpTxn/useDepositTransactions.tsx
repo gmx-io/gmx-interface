@@ -49,6 +49,7 @@ import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/types/fees";
+import { applySlippageToMinOut } from "sdk/utils/trade";
 
 import { selectPoolsDetailsParams } from "./selectPoolsDetailsParams";
 import type { UseLpTransactionProps } from "./useLpTransactions";
@@ -117,7 +118,7 @@ export const useDepositTransactions = ({
         {
           to: vaultAddress,
           token: tokenAddress,
-          amount: estimatedReceivedAmount ?? amount,
+          amount: applySlippageToMinOut(1, estimatedReceivedAmount ?? amount),
         },
       ]);
     }
@@ -152,8 +153,6 @@ export const useDepositTransactions = ({
 
   const gmParams = useMemo((): CreateDepositParams | undefined => {
     if (!rawParams || !technicalFees) {
-      // console.log("no gm params becayse no", { rawGmParams, technicalFees });
-
       return undefined;
     }
 

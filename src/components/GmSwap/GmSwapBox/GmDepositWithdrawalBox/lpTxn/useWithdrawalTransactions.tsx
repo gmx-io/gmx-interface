@@ -1,23 +1,19 @@
 import { t } from "@lingui/macro";
-import chunk from "lodash/chunk";
 import { useCallback, useMemo } from "react";
-import { bytesToHex, Hex, hexToBytes, numberToHex, zeroAddress } from "viem";
 
-import { getLayerZeroEndpointId, getStargatePoolAddress, isSettlementChain } from "config/multichain";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { getStargatePoolAddress, isSettlementChain } from "config/multichain";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import {
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsMarketInfo,
   selectPoolsDetailsMarketTokenData,
+  selectPoolsDetailsShortTokenAddress,
 } from "context/PoolsDetailsContext/PoolsDetailsContext";
-import { selectPoolsDetailsShortTokenAddress } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { CodecUiHelper, GMX_DATA_ACTION_HASH, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
 import { TransferRequests } from "domain/multichain/types";
 import {
@@ -43,14 +39,12 @@ import {
   makeTxnSentMetricsHandler,
   sendTxnValidationErrorMetric,
 } from "lib/metrics";
-import { EMPTY_ARRAY } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
-import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/types/fees";
-import { nowInSeconds } from "sdk/utils/time";
 
+import { selectPoolsDetailsParams } from "./selectPoolsDetailsParams";
 import type { UseLpTransactionProps } from "./useLpTransactions";
 import { useMultichainWithdrawalExpressTxnParams } from "./useMultichainWithdrawalExpressTxnParams";
 
@@ -197,202 +191,10 @@ export const useWithdrawalTransactions = ({
   //   fromStargateAddress: shortOftProvider,
   // });
 
-  const rawGmParams = useMemo((): RawCreateWithdrawalParams | undefined => {
-    if (
-      !account ||
-      !marketTokenAddress ||
-      marketTokenAmount === undefined ||
-      // executionFeeTokenAmount === undefined ||
-      isGlv
-    ) {
-      return undefined;
-    }
-
-    // const minMarketTokens = applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, marketTokenAmount);
-
-    let dataList: string[] = EMPTY_ARRAY;
-
-    // let executionFee = executionFeeTokenAmount;
-
-    if (paySource === "sourceChain") {
-      if (!srcChainId) {
-        return undefined;
-      }
-
-      const provider = longOftProvider ?? shortOftProvider;
-
-      if (!provider) {
-        return undefined;
-      }
-
-      const secondaryProvider = provider === shortOftProvider ? undefined : shortTokenAddress;
-
-      const dstEid = getLayerZeroEndpointId(srcChainId);
-
-      if (!dstEid) {
-        return undefined;
-      }
-
-      const providerData = numberToHex(dstEid, { size: 32 });
-
-      const actionHash = CodecUiHelper.encodeMultichainActionData({
-        actionType: MultichainActionType.BridgeOut,
-        actionData: {
-          deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
-          desChainId: chainId,
-          provider: provider,
-          providerData: providerData,
-          // TODO MLTCH apply some slippage
-          minAmountOut: 0n,
-          // TODO MLTCH put secondary provider and data
-          secondaryProvider: secondaryProvider ?? zeroAddress,
-          secondaryProviderData: secondaryProvider ? providerData : "0x",
-          secondaryMinAmountOut: 0n,
-        },
-      });
-      const bytes = hexToBytes(actionHash as Hex);
-      const bytes32array = chunk(bytes, 32).map((b) => bytesToHex(Uint8Array.from(b)));
-
-      dataList = [GMX_DATA_ACTION_HASH, ...bytes32array];
-    }
-
-    let shouldUnwrapNativeToken = false;
-    if (paySource === "settlementChain") {
-      shouldUnwrapNativeToken = longTokenAddress === zeroAddress || shortTokenAddress === zeroAddress ? true : false;
-    }
-
-    const params: RawCreateWithdrawalParams = {
-      addresses: {
-        market: marketTokenAddress,
-        receiver: account,
-        callbackContract: zeroAddress,
-        uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? zeroAddress,
-        longTokenSwapPath: longTokenSwapPath ?? [],
-        shortTokenSwapPath: shortTokenSwapPath ?? [],
-      },
-      // TODO MLTCH: do not forget to apply slippage here
-      // minLongTokenAmount: applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, longTokenAmount ?? 0n),
-      minLongTokenAmount: 0n,
-      // TODO MLTCH: do not forget to apply slippage
-      // minShortTokenAmount: applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, shortTokenAmount ?? 0n),
-      minShortTokenAmount: 0n,
-      shouldUnwrapNativeToken,
-      callbackGasLimit: 0n,
-      dataList,
-    };
-
-    return params;
-  }, [
-    account,
-    chainId,
-    isGlv,
-    longOftProvider,
-    longTokenAddress,
-    longTokenSwapPath,
-    marketTokenAddress,
-    marketTokenAmount,
-    paySource,
-    shortOftProvider,
-    shortTokenAddress,
-    shortTokenSwapPath,
-    srcChainId,
-  ]);
-
-  const rawGlvParams = useMemo((): RawCreateGlvWithdrawalParams | undefined => {
-    if (!account || !isGlv || glvTokenAmount === undefined) {
-      return undefined;
-    }
-
-    let dataList: string[] = EMPTY_ARRAY;
-    if (paySource === "sourceChain") {
-      if (!srcChainId) {
-        return undefined;
-      }
-
-      const provider = longOftProvider ?? shortOftProvider;
-
-      if (!provider) {
-        return undefined;
-      }
-
-      const secondaryProvider = provider === shortOftProvider ? undefined : shortTokenAddress;
-
-      const dstEid = getLayerZeroEndpointId(srcChainId);
-
-      if (!dstEid) {
-        return undefined;
-      }
-
-      const providerData = numberToHex(dstEid, { size: 32 });
-
-      const actionHash = CodecUiHelper.encodeMultichainActionData({
-        actionType: MultichainActionType.BridgeOut,
-        actionData: {
-          deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
-          desChainId: chainId,
-          provider: provider,
-          providerData: providerData,
-          // TODO MLTCH apply some slippage
-          minAmountOut: 0n,
-          secondaryProvider: secondaryProvider ?? zeroAddress,
-          secondaryProviderData: secondaryProvider ? providerData : "0x",
-          secondaryMinAmountOut: 0n,
-        },
-      });
-      const bytes = hexToBytes(actionHash as Hex);
-
-      const bytes32array = chunk(bytes, 32).map((b) => bytesToHex(Uint8Array.from(b)));
-
-      dataList = [GMX_DATA_ACTION_HASH, ...bytes32array];
-    }
-
-    let shouldUnwrapNativeToken = false;
-    if (paySource === "settlementChain") {
-      shouldUnwrapNativeToken = longTokenAddress === zeroAddress || shortTokenAddress === zeroAddress ? true : false;
-    }
-
-    const params: RawCreateGlvWithdrawalParams = {
-      addresses: {
-        glv: glvTokenAddress!,
-        market: selectedMarketForGlv!,
-        receiver: glvTokenTotalSupply === 0n ? numberToHex(1, { size: 20 }) : account,
-        callbackContract: zeroAddress,
-        uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? zeroAddress,
-        longTokenSwapPath: longTokenSwapPath ?? [],
-        shortTokenSwapPath: shortTokenSwapPath ?? [],
-      },
-      // minLongTokenAmount: applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, longTokenAmount ?? 0n),
-      minLongTokenAmount: 0n,
-      // minShortTokenAmount: applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, shortTokenAmount ?? 0n),
-      minShortTokenAmount: 0n,
-      callbackGasLimit: 0n,
-      shouldUnwrapNativeToken,
-      dataList,
-    };
-
-    return params;
-  }, [
-    account,
-    chainId,
-    glvTokenAddress,
-    glvTokenAmount,
-    glvTokenTotalSupply,
-    isGlv,
-    longOftProvider,
-    longTokenAddress,
-    longTokenSwapPath,
-    paySource,
-    selectedMarketForGlv,
-    shortOftProvider,
-    shortTokenAddress,
-    shortTokenSwapPath,
-    srcChainId,
-  ]);
+  const rawParams = useSelector(selectPoolsDetailsParams);
 
   const gmParams = useMemo((): CreateWithdrawalParams | undefined => {
-    if (!rawGmParams || !technicalFees) {
-      // console.log("no gm params becayse no", { rawGmParams, technicalFees });
-
+    if (!rawParams || !technicalFees) {
       return undefined;
     }
 
@@ -402,13 +204,13 @@ export const useWithdrawalTransactions = ({
         : (technicalFees as ExecutionFee).feeTokenAmount;
 
     return {
-      ...rawGmParams,
+      ...(rawParams as RawCreateWithdrawalParams),
       executionFee,
     };
-  }, [rawGmParams, technicalFees, paySource]);
+  }, [rawParams, technicalFees, paySource]);
 
   const glvParams = useMemo((): CreateGlvWithdrawalParams | undefined => {
-    if (!rawGlvParams || !technicalFees) {
+    if (!rawParams || !technicalFees) {
       return undefined;
     }
 
@@ -418,10 +220,10 @@ export const useWithdrawalTransactions = ({
         : (technicalFees as ExecutionFee).feeTokenAmount;
 
     return {
-      ...rawGlvParams,
+      ...(rawParams as RawCreateGlvWithdrawalParams),
       executionFee,
     };
-  }, [paySource, rawGlvParams, technicalFees]);
+  }, [paySource, rawParams, technicalFees]);
 
   const multichainWithdrawalExpressTxnParams = useMultichainWithdrawalExpressTxnParams({
     transferRequests,
@@ -607,18 +409,17 @@ export const useWithdrawalTransactions = ({
       let promise: Promise<void>;
 
       if (paySource === "sourceChain") {
-        if (!isSettlementChain(chainId) || !srcChainId || !globalExpressParams || !technicalFees || !rawGmParams) {
+        if (!isSettlementChain(chainId) || !srcChainId || !globalExpressParams || !technicalFees || !rawParams) {
           throw new Error("An error occurred");
         }
 
-        // throw new Error("Not implemented");
         promise = createSourceChainWithdrawalTxn({
           chainId,
           srcChainId,
           signer,
           fees: technicalFees as SourceChainWithdrawalFees,
           transferRequests,
-          params: rawGmParams!,
+          params: rawParams as RawCreateWithdrawalParams,
           tokenAmount: marketTokenAmount!,
         });
       } else if (paySource === "gmxAccount") {
@@ -663,6 +464,7 @@ export const useWithdrawalTransactions = ({
       marketToken,
       longTokenAmount,
       shortTokenAmount,
+      transferRequests,
       tokensData,
       signer,
       gmParams,
@@ -671,8 +473,7 @@ export const useWithdrawalTransactions = ({
       srcChainId,
       globalExpressParams,
       technicalFees,
-      rawGmParams,
-      transferRequests,
+      rawParams,
       marketTokenAmount,
       multichainWithdrawalExpressTxnParams.promise,
       shouldDisableValidation,

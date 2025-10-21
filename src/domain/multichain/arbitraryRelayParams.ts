@@ -73,7 +73,7 @@ export function getRawBaseRelayerParams({
   }
 
   const baseRelayerFeeAmount = convertToTokenAmount(
-    expandDecimals(10, USD_DECIMALS),
+    expandDecimals(3, USD_DECIMALS),
     relayerFeeToken.decimals,
     relayerFeeToken.prices.maxPrice
   )!;

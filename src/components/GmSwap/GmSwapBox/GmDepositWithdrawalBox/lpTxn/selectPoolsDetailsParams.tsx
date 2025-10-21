@@ -134,6 +134,7 @@ export const selectPoolsDetailsParams = createSelector((q) => {
         : false
       : false;
 
+  //#region GM Deposit
   if (isDeposit && !isGlv) {
     // Raw GM Deposit Params
     if (!marketOrGlvTokenAddress || marketOrGlvTokenAmount === undefined) {
@@ -191,14 +192,18 @@ export const selectPoolsDetailsParams = createSelector((q) => {
       dataList,
     } satisfies RawCreateDepositParams;
   }
+  //#endregion
 
+  //#region GLV Deposit
   if (isDeposit && isGlv) {
     // Raw GLV Deposit Params
     if (!marketInfo || !glvTokenAddress || !selectedMarketForGlv || marketOrGlvTokenAmount === undefined) {
       return undefined;
     }
 
-    const minGlvTokens = applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, marketOrGlvTokenAmount);
+    // TODO MLTCH: do not forget to apply slippage here
+    // const minGlvTokens = applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, marketOrGlvTokenAmount);
+    const minGlvTokens = 0n; //applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, marketOrGlvTokenAmount);
 
     let dataList: string[] = EMPTY_ARRAY;
     if (paySource === "sourceChain") {
@@ -257,7 +262,9 @@ export const selectPoolsDetailsParams = createSelector((q) => {
       dataList,
     } satisfies RawCreateGlvDepositParams;
   }
+  //#endregion
 
+  //#region GM Withdrawal
   if (isWithdrawal && !isGlv) {
     // Raw GM Withdrawal Params
     if (!longTokenAddress || !shortTokenAddress) {
@@ -335,7 +342,9 @@ export const selectPoolsDetailsParams = createSelector((q) => {
       dataList,
     } satisfies RawCreateWithdrawalParams;
   }
+  //#endregion
 
+  //#region GLV Withdrawal
   if (isWithdrawal && isGlv) {
     // Raw GLV Withdrawal Params
     if (!firstTokenAddress || !secondTokenAddress) {
@@ -421,6 +430,7 @@ export const selectPoolsDetailsParams = createSelector((q) => {
       dataList,
     } satisfies RawCreateGlvWithdrawalParams;
   }
+  //#endregion
 
   return undefined;
 });

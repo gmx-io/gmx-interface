@@ -18,7 +18,7 @@ import {
 import { useMultichainApprovalsActiveListener } from "context/SyntheticsEvents/useMultichainEvents";
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { GlvInfo } from "domain/synthetics/markets";
+import { GlvInfo, isMarketTokenAddress } from "domain/synthetics/markets";
 import { getNeedTokenApprove, TokenData, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
@@ -214,7 +214,7 @@ export const useTokensToApprove = ({
   } = useTokensAllowanceData(paySource === "settlementChain" ? chainId : undefined, {
     spenderAddress: routerAddress,
     tokenAddresses: payTokenAddresses,
-    skip: paySource === "settlementChain" ? true : false,
+    skip: paySource === "settlementChain" ? false : true,
   });
 
   const settlementChainTokensToApprove = useMemo(
@@ -292,8 +292,8 @@ export const useTokensToApprove = ({
     ]
   );
 
-  const settlementChainTokensToApproveSymbols = settlementChainTokensToApprove.map(
-    (tokenAddress) => getToken(chainId, tokenAddress).symbol
+  const settlementChainTokensToApproveSymbols = settlementChainTokensToApprove.map((tokenAddress) =>
+    isMarketTokenAddress(chainId, tokenAddress) ? "GM" : getToken(chainId, tokenAddress).symbol
   );
 
   const onApproveSettlementChain = () => {
