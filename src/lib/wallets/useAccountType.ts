@@ -1,8 +1,12 @@
+import { getPublicClient } from "@wagmi/core";
 import useSWR from "swr";
 import { Hex, PublicClient } from "viem";
 import { useAccount, useChainId, usePublicClient } from "wagmi";
 
-import { CHAIN_SLUGS_MAP } from "config/chains";
+import { AnyChainId, CHAIN_SLUGS_MAP, CONTRACTS_CHAIN_IDS } from "config/chains";
+import { SOURCE_CHAINS } from "config/multichain";
+
+import { getRainbowKitConfig } from "./rainbowKitConfig";
 
 export enum AccountType {
   Safe,
@@ -59,9 +63,11 @@ async function getAccountType(
     return AccountType.PostEip7702EOA;
   }
 
-  const isSafe = await isSafeAccount(address, client, safeSingletonAddresses);
-  if (isSafe) {
-    return AccountType.Safe;
+  if (safeSingletonAddresses.size > 0) {
+    const isSafe = await isSafeAccount(address, client, safeSingletonAddresses);
+    if (isSafe) {
+      return AccountType.Safe;
+    }
   }
 
   return AccountType.SmartAccount;
@@ -96,6 +102,10 @@ export function useAccountType() {
         const account = await getAccountType(address, publicClient, safeSingletonAddresses);
         return account;
       },
+      refreshInterval: 0,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
     }
   );
 
@@ -103,4 +113,59 @@ export function useAccountType() {
     accountType,
     isSmartAccount: accountType !== AccountType.EOA && accountType !== AccountType.PostEip7702EOA,
   };
+}
+
+export function useIsNonEoaAccountOnAnyChain(): boolean {
+  const { address } = useAccount();
+
+  const condition = address !== undefined;
+
+  const { data: isNonEoaAccountOnAnyChain = undefined } = useSWR<boolean | undefined>(
+    condition && [address, "detectIsNonEoaAccountOnAnyChain"],
+    {
+      fetcher: async (): Promise<boolean | undefined> => {
+        if (!condition) {
+          return undefined;
+        }
+
+        return new Promise<boolean | undefined>((resolve) => {
+          let resolved = false;
+          Promise.allSettled(
+            (CONTRACTS_CHAIN_IDS as AnyChainId[]).concat(SOURCE_CHAINS).map(async (chainId) => {
+              // TODO get best current rpc url for the chain
+              const publicClient = getPublicClient(getRainbowKitConfig(), { chainId });
+
+              if (!publicClient) {
+                return undefined;
+              }
+
+              const accountType = await getAccountType(address, publicClient, new Set<string>());
+
+              const isSomeEoaAccount = accountType === AccountType.EOA || accountType === AccountType.PostEip7702EOA;
+
+              if (!isSomeEoaAccount) {
+                return false;
+              }
+
+              // return true;
+              resolved = true;
+              resolve(true);
+              return true;
+            })
+          ).then((results) => {
+            if (resolved) {
+              return;
+            }
+            resolve(results.some((result) => result.status === "fulfilled" && result.value === true));
+          });
+        });
+      },
+      refreshInterval: 0,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
+    }
+  );
+
+  return isNonEoaAccountOnAnyChain ?? false;
 }

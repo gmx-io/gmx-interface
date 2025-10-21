@@ -1209,10 +1209,6 @@ msgstr "Failed Limit Swap"
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "Liq. {longOrShortText} - {marketIndexName}"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Simulate Tickers Errors"
-msgstr "Simulate Tickers Errors"
-
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Inc."
 msgstr "Market - Long Inc."
@@ -4715,6 +4711,10 @@ msgstr "Rebates earned as an affiliate."
 msgid "Invalid liq. price"
 msgstr "Invalid liq. price"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Smart wallets are not supported on {0}.</0><1/><2>Please switch to a different network or use a EOA wallet.</2>"
+msgstr "<0>Smart wallets are not supported on {0}.</0><1/><2>Please switch to a different network or use a EOA wallet.</2>"
+
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized Buy Pressure (BB&D):"
 msgstr "Annualized Buy Pressure (BB&D):"
@@ -5026,10 +5026,6 @@ msgstr "Wins and losses for fully closed positions."
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "<0>This will claim {formattedRewards} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
 msgstr "<0>This will claim {formattedRewards} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Simulate Partial Tickers"
-msgstr "Simulate Partial Tickers"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Open Binance app"
@@ -5733,6 +5729,10 @@ msgstr "{addressLabel} on {networkLabel}"
 msgid "Approving"
 msgstr "Approving"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Smart wallets are not supported on this network."
+msgstr "Smart wallets are not supported on this network."
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Take Profit"
 msgstr "Update Take Profit"
@@ -6194,6 +6194,12 @@ msgstr "Trigger Price"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sellable"
 msgstr "Sellable"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Smart wallets are not supported on Express or One-Click Trading."
+msgstr "Smart wallets are not supported on Express or One-Click Trading."
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche Trading Incentives"
@@ -7423,10 +7429,6 @@ msgstr "Unable to sign message with smart account"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
-
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Gemini Wallet is not supported for Express or One-Click trading."
-msgstr "Gemini Wallet is not supported for Express or One-Click trading."
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"

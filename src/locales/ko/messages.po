@@ -1209,10 +1209,6 @@ msgstr "지정가 스왑 실패"
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "청산 {longOrShortText} - {marketIndexName}"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Simulate Tickers Errors"
-msgstr ""
-
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Inc."
 msgstr ""
@@ -4715,6 +4711,10 @@ msgstr ""
 msgid "Invalid liq. price"
 msgstr "유효하지 않은 청산 가격"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Smart wallets are not supported on {0}.</0><1/><2>Please switch to a different network or use a EOA wallet.</2>"
+msgstr ""
+
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized Buy Pressure (BB&D):"
 msgstr "연간화된 구매 압력 (BB&D):"
@@ -5026,10 +5026,6 @@ msgstr "완전히 종료된 포지션의 승패."
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "<0>This will claim {formattedRewards} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
 msgstr "<0>{formattedRewards} GMX를 수령합니다.<1/><2/>수령 후, 이 Earn 페이지의 GMX 섹션에서 \"스테이킹\" 버튼을 사용하여 이러한 GMX 토큰을 스테이킹할 수 있습니다.<3/><4/></0>"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Simulate Partial Tickers"
-msgstr ""
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Open Binance app"
@@ -5733,6 +5729,10 @@ msgstr ""
 msgid "Approving"
 msgstr ""
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Smart wallets are not supported on this network."
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Take Profit"
 msgstr "이익 실현 업데이트"
@@ -6194,6 +6194,12 @@ msgstr "트리거 가격"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sellable"
 msgstr "판매 가능"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Smart wallets are not supported on Express or One-Click Trading."
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche Trading Incentives"
@@ -7423,10 +7429,6 @@ msgstr ""
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "자금 및 대출 수수료율로 인해 가격 움직임 제외 포지션 담보 감소로 청산될 수 있음."
-
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Gemini Wallet is not supported for Express or One-Click trading."
-msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"

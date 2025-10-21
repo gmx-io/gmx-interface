@@ -1209,10 +1209,6 @@ msgstr "Лимитный обмен не удался"
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "Ликв. {longOrShortText} - {marketIndexName}"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Simulate Tickers Errors"
-msgstr ""
-
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Inc."
 msgstr ""
@@ -4715,6 +4711,10 @@ msgstr ""
 msgid "Invalid liq. price"
 msgstr "Неверная цена ликвид."
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Smart wallets are not supported on {0}.</0><1/><2>Please switch to a different network or use a EOA wallet.</2>"
+msgstr ""
+
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized Buy Pressure (BB&D):"
 msgstr "Годовое давление на покупку (BB&D):"
@@ -5026,10 +5026,6 @@ msgstr "Победы и поражения для полностью закры�
 #: src/pages/Stake/AffiliateClaimModal.tsx
 msgid "<0>This will claim {formattedRewards} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
 msgstr "<0>Это запросит {formattedRewards} GMX.<1/><2/>После запроса вы можете стейкать эти токены GMX, используя кнопку \"Стейк\" в разделе GMX на этой странице Заработка.<3/><4/></0>"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Simulate Partial Tickers"
-msgstr ""
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Open Binance app"
@@ -5733,6 +5729,10 @@ msgstr ""
 msgid "Approving"
 msgstr ""
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Smart wallets are not supported on this network."
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Take Profit"
 msgstr "Обновить тейк-профит"
@@ -6194,6 +6194,12 @@ msgstr "Цена триггера"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sellable"
 msgstr "Продаваемый"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Smart wallets are not supported on Express or One-Click Trading."
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche Trading Incentives"
@@ -7423,10 +7429,6 @@ msgstr ""
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "Эта позиция может быть ликвидирована, исключая любое движение цены, из-за ставок комиссий за финансирование и заем, снижающих залог позиции со временем."
-
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Gemini Wallet is not supported for Express or One-Click trading."
-msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"
