@@ -2,6 +2,8 @@ import { t, Trans } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 
+import { LAST_EARN_TAB_KEY } from "config/localStorage";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { sendEarnPageTabViewEvent, sendEarnPageViewEvent, EarnAnalyticsTab } from "lib/userAnalytics/earnEvents";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
@@ -44,6 +46,16 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
     () => (activeTabValue ? TAB_TO_ANALYTICS_MAP[activeTabValue] : undefined),
     [activeTabValue]
   );
+
+  const [, setLastEarnTab] = useLocalStorageSerializeKey<EarnTab | undefined>(LAST_EARN_TAB_KEY, undefined);
+
+  useEffect(() => {
+    if (!activeTabValue || typeof window === "undefined") {
+      return;
+    }
+
+    setLastEarnTab(activeTabValue);
+  }, [activeTabValue, setLastEarnTab]);
 
   useEffect(() => {
     if (!analyticsTab) {

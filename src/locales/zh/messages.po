@@ -6868,7 +6868,6 @@ msgid "Order size is bigger than position, will only be executable if position i
 msgstr "订单规模大于仓位，只有在仓位增加时才可执行"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-#: src/components/SideNav/SideNav.tsx
 msgid "Buy"
 msgstr "购买"
 

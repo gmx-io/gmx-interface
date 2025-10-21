@@ -6868,7 +6868,6 @@ msgid "Order size is bigger than position, will only be executable if position i
 msgstr "El tamaño de la orden es mayor que la posición, solo se ejecutará si la posición aumenta"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-#: src/components/SideNav/SideNav.tsx
 msgid "Buy"
 msgstr "Comprar"
 

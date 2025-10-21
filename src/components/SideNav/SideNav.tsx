@@ -12,7 +12,6 @@ import DashboardIcon from "img/dashboard.svg?react";
 import DatabaseIcon from "img/database.svg?react";
 import DocsIcon from "img/docs.svg?react";
 import EcosystemIcon from "img/ecosystem.svg?react";
-import BuyIcon from "img/ic_buy.svg?react";
 import EarnIcon from "img/ic_earn.svg?react";
 import LeaderboardIcon from "img/leaderboard.svg?react";
 import logoIcon from "img/logo-icon.svg";
@@ -145,7 +144,6 @@ export function MenuSection({
     { icon: <EarnIcon className="size-24" />, label: t`Earn`, key: "earn", to: "/earn" },
     { icon: <DatabaseIcon className="size-24" />, label: t`Pools`, key: "pools", to: "/pools" },
     { icon: <DashboardIcon className="size-24" />, label: t`Stats`, key: "stats", to: "/stats" },
-    { icon: <BuyIcon className="size-24" />, label: t`Buy`, key: "buy", to: "/buy" },
     { icon: <ReferralsIcon className="size-24" />, label: t`Referrals`, key: "referrals", to: "/referrals" },
     { icon: <LeaderboardIcon className="size-24" />, label: t`Leaderboard`, key: "leaderboard", to: "/leaderboard" },
     { icon: <EcosystemIcon className="size-24" />, label: t`Ecosystem`, key: "ecosystem", to: "/ecosystem" },

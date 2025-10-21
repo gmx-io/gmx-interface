@@ -1,16 +1,23 @@
 import { useMemo } from "react";
 
 import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
+import { LAST_EARN_TAB_KEY } from "config/localStorage";
 import type { TokensData } from "domain/synthetics/tokens";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
 
 import Loader from "components/Loader/Loader";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 
-import EarnPageLayout from "../../pages/Earn/EarnPageLayout";
+import EarnPageLayout, { EarnTab } from "../../pages/Earn/EarnPageLayout";
 
 const EARN_TOKEN_SYMBOLS = new Set(["GMX", "GM", "GLV"]);
+const EARN_TABS: ReadonlyArray<EarnTab> = ["discovery", "portfolio", "additional-opportunities", "distributions"];
+
+function isEarnTab(value: string | null): value is EarnTab {
+  return typeof value === "string" && (EARN_TABS as ReadonlyArray<string>).includes(value);
+}
 
 function hasEarnTokenBalance(tokensData: TokensData | undefined) {
   if (!tokensData) {
@@ -30,13 +37,16 @@ function hasEarnTokenBalance(tokensData: TokensData | undefined) {
 export function EarnRedirect() {
   const { account } = useWallet();
 
+  const [lastEarnTab] = useLocalStorageSerializeKey<EarnTab | undefined>(LAST_EARN_TAB_KEY, undefined);
+
   const arbitrumTokens = useTokensDataRequest(ARBITRUM);
   const avalancheTokens = useTokensDataRequest(AVALANCHE);
   const botanixTokens = useTokensDataRequest(BOTANIX);
 
   const stateByChain = [arbitrumTokens, avalancheTokens, botanixTokens];
   const hasError = stateByChain.some((state) => state.error);
-  const isBalancesReady = !account || hasError || stateByChain.every((state) => state.isWalletBalancesLoaded);
+  const isBalancesReady =
+    Boolean(lastEarnTab) || !account || hasError || stateByChain.every((state) => state.isWalletBalancesLoaded);
 
   const hasEarnHoldings = useMemo(
     () =>
@@ -46,7 +56,12 @@ export function EarnRedirect() {
     [arbitrumTokens.tokensData, avalancheTokens.tokensData, botanixTokens.tokensData]
   );
 
-  const target = account && hasEarnHoldings ? "/earn/portfolio" : "/earn/discovery";
+  const target =
+    lastEarnTab !== undefined && isEarnTab(lastEarnTab)
+      ? `/earn/${lastEarnTab}`
+      : account && hasEarnHoldings
+        ? "/earn/portfolio"
+        : "/earn/discovery";
 
   return (
     <EarnPageLayout>
