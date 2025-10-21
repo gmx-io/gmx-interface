@@ -1210,8 +1210,8 @@ msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "清算 {longOrShortText} - {marketIndexName}"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Simulate Tickers Errors"
-msgstr ""
+#~ msgid "Simulate Tickers Errors"
+#~ msgstr ""
 
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Inc."
@@ -5028,8 +5028,8 @@ msgid "<0>This will claim {formattedRewards} GMX.<1/><2/>After claiming, you can
 msgstr "<0>这将领取 {formattedRewards} GMX。<1/><2/>领取后，您可以使用此赚取页面 GMX 部分的“质押”按钮质押这些 GMX 代币。<3/><4/></0>"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Simulate Partial Tickers"
-msgstr ""
+#~ msgid "Simulate Partial Tickers"
+#~ msgstr ""
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Open Binance app"
