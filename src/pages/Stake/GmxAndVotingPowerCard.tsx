@@ -129,7 +129,7 @@ export function GmxAndVotingPowerCard({
               <Tooltip
                 position="bottom-end"
                 className="whitespace-nowrap"
-                handle={"$\u200a\u200d" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
+                handle={"$\u200a" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
                 handleClassName="numbers"
                 renderContent={() => (
                   <>
@@ -250,7 +250,7 @@ export function GmxAndVotingPowerCard({
           </div>
           <div>
             <Tooltip
-              handle={`$\u200a\u200d${formatKeyAmount(processedData, "totalStakingRewardsUsd", USD_DECIMALS, 2, true)}`}
+              handle={`$\u200a${formatKeyAmount(processedData, "totalStakingRewardsUsd", USD_DECIMALS, 2, true)}`}
               handleClassName="numbers"
               position="bottom-end"
               content={
