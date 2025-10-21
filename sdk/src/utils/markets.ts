@@ -1,6 +1,6 @@
 import { BASIS_POINTS_DIVISOR } from "configs/factors";
-import { MarketConfig } from "configs/markets";
-import { getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { MARKETS, MarketConfig } from "configs/markets";
+import { convertTokenAddress, getToken, getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { ContractMarketPrices, Market, MarketInfo } from "types/markets";
 import { Token, TokenPrices, TokensData } from "types/tokens";
 
@@ -232,4 +232,48 @@ export function getIsMarketAvailableForExpressSwaps(marketInfo: MarketInfo) {
   return [marketInfo.indexToken, marketInfo.longToken, marketInfo.shortToken].every(
     (token) => token.hasPriceFeedProvider
   );
+}
+
+export function isMarketTokenAddress(chainId: number, marketTokenAddress: string): boolean {
+  return Boolean(MARKETS[chainId]?.[marketTokenAddress]);
+}
+
+export function getMarketIndexTokenAddress(chainId: number, marketTokenAddress: string): string | undefined {
+  return convertTokenAddress(chainId, MARKETS[chainId]?.[marketTokenAddress]?.indexTokenAddress, "native");
+}
+
+export function getMarketIndexToken(chainId: number, marketTokenAddress: string): Token | undefined {
+  const indexTokenAddress = getMarketIndexTokenAddress(chainId, marketTokenAddress);
+  if (!indexTokenAddress) {
+    return undefined;
+  }
+
+  return getToken(chainId, indexTokenAddress);
+}
+
+export function getMarketIndexTokenSymbol(chainId: number, marketTokenAddress: string): string {
+  const indexToken = getMarketIndexToken(chainId, marketTokenAddress);
+  if (!indexToken) {
+    return "";
+  }
+
+  return indexToken.symbol;
+}
+
+export function getMarketLongTokenSymbol(chainId: number, marketTokenAddress: string): string {
+  const longTokenAddress = MARKETS[chainId]?.[marketTokenAddress]?.longTokenAddress;
+  if (!longTokenAddress) {
+    return "";
+  }
+
+  return getToken(chainId, convertTokenAddress(chainId, longTokenAddress, "native")).symbol;
+}
+
+export function getMarketShortTokenSymbol(chainId: number, marketTokenAddress: string): string {
+  const shortTokenAddress = MARKETS[chainId]?.[marketTokenAddress]?.shortTokenAddress;
+  if (!shortTokenAddress) {
+    return "";
+  }
+
+  return getToken(chainId, convertTokenAddress(chainId, shortTokenAddress, "native")).symbol;
 }

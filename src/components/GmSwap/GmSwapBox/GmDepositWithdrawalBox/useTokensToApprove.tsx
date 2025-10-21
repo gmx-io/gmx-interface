@@ -8,6 +8,7 @@ import { SourceChainId } from "config/chains";
 import { getMappedTokenId } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import {
+  selectPoolsDetailsFirstToken,
   selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsFirstTokenAmount,
   selectPoolsDetailsPaySource,
@@ -84,6 +85,7 @@ export const useTokensToApprove = ({
   const firstTokenAmount = useSelector(selectPoolsDetailsFirstTokenAmount);
   const secondTokenAmount = useSelector(selectPoolsDetailsSecondTokenAmount);
 
+  const firstToken = useSelector(selectPoolsDetailsFirstToken);
   const firstTokenSourceChainTokenId =
     firstTokenAddress !== undefined && srcChainId !== undefined
       ? getMappedTokenId(chainId as SourceChainId, firstTokenAddress, srcChainId)
@@ -106,14 +108,13 @@ export const useTokensToApprove = ({
     srcChainId !== undefined ? multichainTokensAllowanceResult.tokensAllowanceData : undefined;
 
   const firstTokenAmountLD =
-    firstTokenAmount !== undefined && firstTokenAddress !== undefined && firstTokenSourceChainTokenId !== undefined
-      ? adjustForDecimals(
-          firstTokenAmount,
-          getToken(chainId, firstTokenAddress).decimals,
-          firstTokenSourceChainTokenId.decimals
-        )
+    firstTokenAmount !== undefined &&
+    firstTokenAddress !== undefined &&
+    firstTokenSourceChainTokenId !== undefined &&
+    firstToken
+      ? adjustForDecimals(firstTokenAmount, firstToken.decimals, firstTokenSourceChainTokenId.decimals)
       : undefined;
-  const firstTokenSymbol = firstTokenAddress ? getToken(chainId, firstTokenAddress).symbol : undefined;
+  const fistToken = useSelector(selectPoolsDetailsFirstToken);
   const multichainNeedTokenApprove =
     paySource === "sourceChain"
       ? getNeedTokenApprove(
@@ -124,8 +125,8 @@ export const useTokensToApprove = ({
         )
       : false;
   const multichainTokensToApproveSymbols = useMemo(() => {
-    return firstTokenSymbol && multichainNeedTokenApprove ? [firstTokenSymbol] : EMPTY_ARRAY;
-  }, [firstTokenSymbol, multichainNeedTokenApprove]);
+    return fistToken?.symbol && multichainNeedTokenApprove ? [fistToken.symbol] : EMPTY_ARRAY;
+  }, [fistToken, multichainNeedTokenApprove]);
 
   const handleApproveSourceChain = useCallback(async () => {
     if (!firstTokenAddress || firstTokenAmountLD === undefined || !multichainSpenderAddress || !srcChainId) {

@@ -48,6 +48,7 @@ export type SourceChainGlvDepositFees = {
    */
   txnEstimatedNativeFee: bigint;
   txnEstimatedComposeGas: bigint;
+  txnEstimatedReceivedAmount: bigint;
 };
 
 /**
@@ -98,19 +99,24 @@ export async function estimateSourceChainGlvDepositFees({
 
   const fullWntFee = keeperDepositFeeWNTAmount + returnGmTransferNativeFee;
 
-  const { initialTxNativeFee, initialTxGasLimit, relayParamsPayload, initialTransferComposeGas } =
-    await estimateSourceChainGlvDepositInitialTxFees({
-      chainId,
-      srcChainId,
-      params: {
-        ...params,
-        executionFee: keeperDepositFeeWNTAmount,
-      },
-      tokenAddress,
-      tokenAmount,
-      globalExpressParams,
-      fullWntFee,
-    });
+  const {
+    initialTxNativeFee,
+    initialTxGasLimit,
+    relayParamsPayload,
+    initialTransferComposeGas,
+    initialTxReceivedAmount,
+  } = await estimateSourceChainGlvDepositInitialTxFees({
+    chainId,
+    srcChainId,
+    params: {
+      ...params,
+      executionFee: keeperDepositFeeWNTAmount,
+    },
+    tokenAddress,
+    tokenAmount,
+    globalExpressParams,
+    fullWntFee,
+  });
 
   const relayFeeUsd = convertToUsd(
     relayParamsPayload.fee.feeAmount,
@@ -125,6 +131,7 @@ export async function estimateSourceChainGlvDepositFees({
     executionFee: keeperDepositFeeWNTAmount,
     relayFeeUsd,
     relayParamsPayload,
+    txnEstimatedReceivedAmount: initialTxReceivedAmount,
   };
 }
 
@@ -149,6 +156,7 @@ async function estimateSourceChainGlvDepositInitialTxFees({
   initialTxGasLimit: bigint;
   initialTransferComposeGas: bigint;
   relayParamsPayload: RelayParamsPayload;
+  initialTxReceivedAmount: bigint;
 }> {
   const sourceChainClient = getPublicClientWithRpc(srcChainId);
 
@@ -251,6 +259,13 @@ async function estimateSourceChainGlvDepositInitialTxFees({
     action,
   });
 
+  const initialQuoteOft = await sourceChainClient.readContract({
+    address: sourceChainTokenId.stargate,
+    abi: abis.IStargate,
+    functionName: "quoteOFT",
+    args: [sendParams],
+  });
+
   const initialQuoteSend = await sourceChainClient.readContract({
     address: sourceChainTokenId.stargate,
     abi: abis.IStargate,
@@ -289,5 +304,6 @@ async function estimateSourceChainGlvDepositInitialTxFees({
     initialTxGasLimit: initialStargateTxnGasLimit,
     initialTransferComposeGas: initialComposeGas,
     relayParamsPayload: returnRelayParamsPayload,
+    initialTxReceivedAmount: initialQuoteOft[2].amountReceivedLD,
   };
 }

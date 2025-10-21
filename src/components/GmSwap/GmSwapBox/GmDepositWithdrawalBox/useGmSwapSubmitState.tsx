@@ -3,17 +3,17 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback, useMemo } from "react";
 
 import {
-  selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsIsMarketTokenDeposit,
+  selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsMarketInfo,
   selectPoolsDetailsMarketTokenData,
   selectPoolsDetailsMarketTokensData,
   selectPoolsDetailsOperation,
   selectPoolsDetailsPaySource,
-  selectPoolsDetailsSecondTokenAddress,
   selectPoolsDetailsSelectedMarketForGlv,
+  selectPoolsDetailsShortTokenAddress,
 } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -21,6 +21,8 @@ import type { ExecutionFee } from "domain/synthetics/fees";
 import type { GlvAndGmMarketsInfoData, MarketsInfoData } from "domain/synthetics/markets";
 import type { SourceChainDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
 import type { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
+import { SourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
+import { SourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
 import { getTokenData, TokensData } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -35,35 +37,21 @@ import { selectDepositWithdrawalAmounts } from "./selectDepositWithdrawalAmounts
 import { useTokensToApprove } from "./useTokensToApprove";
 
 interface Props {
-  // amounts: DepositAmounts | WithdrawalAmounts | undefined;
-  // isDeposit: boolean;
   routerAddress: string;
-  // marketInfo?: MarketInfo;
-  // glvInfo?: GlvInfo;
-  // marketToken: TokenData;
-  // operation: Operation;
-  // longTokenAddress: string | undefined;
-  // shortTokenAddress: string | undefined;
-  // glvToken: TokenData | undefined;
   longTokenLiquidityUsd?: bigint | undefined;
   shortTokenLiquidityUsd?: bigint | undefined;
-
   shouldDisableValidation?: boolean;
-
   tokensData: TokensData | undefined;
-  // marketTokensData?: TokensData;
-  technicalFees: ExecutionFee | SourceChainGlvDepositFees | SourceChainDepositFees | undefined;
+  technicalFees:
+    | ExecutionFee
+    | SourceChainGlvDepositFees
+    | SourceChainDepositFees
+    | SourceChainWithdrawalFees
+    | SourceChainGlvWithdrawalFees
+    | undefined;
   logicalFees: GmSwapFees | undefined;
-  // selectedMarketForGlv?: string;
-  // isMarketTokenDeposit?: boolean;
   marketsInfoData?: MarketsInfoData;
   glvAndMarketsInfoData: GlvAndGmMarketsInfoData;
-  // selectedMarketInfoForGlv?: MarketInfo;
-  // paySource: GmPaySource;
-  // isPair: boolean;
-  // needTokenApprove: boolean;
-  // isApproving: boolean;
-  // handleApprove: () => void;
 }
 
 const processingTextMap = {
@@ -83,29 +71,13 @@ type SubmitButtonState = {
 };
 
 export const useGmSwapSubmitState = ({
-  // isDeposit,
   routerAddress,
-  // amounts,
   logicalFees,
   technicalFees,
-  // marketInfo,
-  // longTokenAddress,
-  // shortTokenAddress,
-  // operation,
-  // glvToken,
   longTokenLiquidityUsd,
   shortTokenLiquidityUsd,
-
   shouldDisableValidation,
-
   tokensData,
-  // marketTokensData,
-  // selectedMarketForGlv,
-  // selectedMarketInfoForGlv,
-  // glvInfo,
-  // isMarketTokenDeposit,
-  // paySource,
-  // isPair,
 }: Props): SubmitButtonState => {
   const { isDeposit, isPair } = useSelector(selectPoolsDetailsFlags);
   const operation = useSelector(selectPoolsDetailsOperation);
@@ -116,8 +88,8 @@ export const useGmSwapSubmitState = ({
   const marketTokensData = useSelector(selectPoolsDetailsMarketTokensData);
   const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
   const selectedMarketForGlv = useSelector(selectPoolsDetailsSelectedMarketForGlv);
-  const longTokenAddress = useSelector(selectPoolsDetailsFirstTokenAddress);
-  const shortTokenAddress = useSelector(selectPoolsDetailsSecondTokenAddress);
+  const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
+  const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const amounts = useSelector(selectDepositWithdrawalAmounts);
   const chainId = useSelector(selectChainId);
@@ -178,7 +150,6 @@ export const useGmSwapSubmitState = ({
     isDeposit,
     marketInfo,
     glvInfo,
-    // marketToken,
     longToken: getTokenData(tokensData, longTokenAddress),
     shortToken: getTokenData(tokensData, shortTokenAddress),
     glvToken,

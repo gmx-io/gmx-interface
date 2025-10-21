@@ -26,7 +26,7 @@ export function estimatePureGlvDepositGasLimit({
     marketsCount,
   });
 
-  const oraclePriceCount = estimateGlvDepositOraclePriceCount(swapPathCount);
+  const oraclePriceCount = estimateGlvDepositOraclePriceCount(marketsCount, swapPathCount);
 
   const executionFee = getExecutionFee(
     chainId,

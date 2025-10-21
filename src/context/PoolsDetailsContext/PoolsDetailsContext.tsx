@@ -1,3 +1,4 @@
+import mapValues from "lodash/mapValues";
 import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -7,26 +8,35 @@ import {
   selectDepositMarketTokensData,
   selectGlvInfo,
   selectMarketsInfoData,
+  selectSrcChainId,
+  selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
-import { GlvInfoData, MarketsInfoData, useMarketTokensDataRequest } from "domain/synthetics/markets";
+import {
+  GlvInfoData,
+  isMarketTokenAddress,
+  MarketsInfoData,
+  useMarketTokensDataRequest,
+} from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokensData } from "domain/synthetics/tokens";
+import { Token, TokenBalanceType } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { parseValue } from "lib/numbers";
-import { getByKey } from "lib/objects";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import useRouteQuery from "lib/useRouteQuery";
 import { useSafeState } from "lib/useSafeState";
 import { MARKETS } from "sdk/configs/markets";
-import { convertTokenAddress, getToken } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken, GM_STUB_ADDRESS } from "sdk/configs/tokens";
 import { getTokenData } from "sdk/utils/tokens";
 
 import { getGmSwapBoxAvailableModes } from "components/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
 import { FocusedInput, GmPaySource } from "components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
 import { Mode, Operation, isMode, isOperation } from "components/GmSwap/GmSwapBox/types";
+import { useMultichainTokens, useMultichainTradeTokensRequest } from "components/GmxAccountModal/hooks";
 
 export type PoolsDetailsQueryParams = {
   market: string;
@@ -79,6 +89,8 @@ export type PoolsDetailsState = {
   firstTokenInputValue: string;
   secondTokenInputValue: string;
   marketOrGlvTokenInputValue: string;
+  isMarketForGlvSelectedManually: boolean;
+  multichainTokensResult: ReturnType<typeof useMultichainTokens>;
   // marketTokensBalancesResult: ReturnType<typeof useMultichainMarketTokensBalancesRequest>;
 
   setOperation: (operation: Operation) => void;
@@ -92,6 +104,7 @@ export type PoolsDetailsState = {
   setFirstTokenInputValue: (value: string) => void;
   setSecondTokenInputValue: (value: string) => void;
   setMarketOrGlvTokenInputValue: (value: string) => void;
+  setIsMarketForGlvSelectedManually: (value: boolean) => void;
 };
 
 function useReactRouterSearchParam(param: string): [string | undefined, (value: string | undefined) => void] {
@@ -137,8 +150,7 @@ export function usePoolsDetailsState({
     enabled,
     withMultichainBalances: enabled,
   });
-
-  // const marketTokensBalancesResult = useMultichainMarketTokensBalancesRequest(chainId, account);
+  const multichainTokensResult = useMultichainTradeTokensRequest(chainId, account);
 
   // GM Deposit/Withdrawal Box State
   const isDeposit = operation === Operation.Deposit;
@@ -149,7 +161,7 @@ export function usePoolsDetailsState({
     "settlementChain"
   );
 
-  let paySource = fallbackPaySource({ operation, mode, paySource: rawPaySource, srcChainId });
+  const paySource = fallbackPaySource({ operation, mode, paySource: rawPaySource, srcChainId });
 
   useEffect(
     function fallbackSourceChainPaySource() {
@@ -172,6 +184,7 @@ export function usePoolsDetailsState({
   const [firstTokenInputValue, setFirstTokenInputValue] = useSafeState<string>("");
   const [secondTokenInputValue, setSecondTokenInputValue] = useSafeState<string>("");
   const [marketOrGlvTokenInputValue, setMarketOrGlvTokenInputValue] = useSafeState<string>("");
+  const [isMarketForGlvSelectedManually, setIsMarketForGlvSelectedManually] = useState(false);
 
   useEffect(() => {
     if (!enabled) {
@@ -226,6 +239,8 @@ export function usePoolsDetailsState({
       firstTokenInputValue,
       secondTokenInputValue,
       marketOrGlvTokenInputValue,
+      isMarketForGlvSelectedManually,
+      multichainTokensResult,
 
       // Setters
       setOperation,
@@ -239,6 +254,7 @@ export function usePoolsDetailsState({
       setFirstTokenInputValue,
       setSecondTokenInputValue,
       setMarketOrGlvTokenInputValue,
+      setIsMarketForGlvSelectedManually,
     };
   }, [
     enabled,
@@ -254,6 +270,8 @@ export function usePoolsDetailsState({
     firstTokenInputValue,
     secondTokenInputValue,
     marketOrGlvTokenInputValue,
+    isMarketForGlvSelectedManually,
+    multichainTokensResult,
     setGlvOrMarketAddress,
     setPaySource,
     setFirstTokenAddress,
@@ -287,6 +305,8 @@ const selectPoolsDetailsFirstTokenInputValue = (s: SyntheticsState) => s.poolsDe
 const selectPoolsDetailsSecondTokenInputValue = (s: SyntheticsState) => s.poolsDetails?.secondTokenInputValue ?? "";
 const selectPoolsDetailsMarketOrGlvTokenInputValue = (s: SyntheticsState) =>
   s.poolsDetails?.marketOrGlvTokenInputValue ?? "";
+export const selectPoolsDetailsIsMarketForGlvSelectedManually = (s: SyntheticsState) =>
+  s.poolsDetails?.isMarketForGlvSelectedManually ?? false;
 // const selectPoolsDetailsMarketTokenMultichainBalances = (s: SyntheticsState) =>
 //   s.poolsDetails?.marketTokensBalancesResult.tokenBalances;
 
@@ -298,40 +318,43 @@ export const selectPoolsDetailsMarketOrGlvTokenAmount = createSelector((q) => {
   return parseValue(marketOrGlvTokenInputValue || "0", PLATFORM_TOKEN_DECIMALS)!;
 });
 
-// const selectGlvTokenAmount = createSelector((q) => {
-//   const marketOrGlvTokenInputValue = q(selectMarketOrGlvTokenInputValue);
+export const selectPoolsDetailsGlvTokenAmount = createSelector((q) => {
+  const glvInfo = q(selectPoolsDetailsGlvInfo);
+  const marketOrGlvTokenAmount = q(selectPoolsDetailsMarketOrGlvTokenAmount);
 
-//   return parseValue(marketOrGlvTokenInputValue || "0", PLATFORM_TOKEN_DECIMALS)!;
-// });
+  if (!glvInfo) {
+    return 0n;
+  }
+
+  return marketOrGlvTokenAmount;
+});
 
 export const selectPoolsDetailsFirstTokenAmount = createSelector((q) => {
-  const firstTokenAddress = q(selectPoolsDetailsFirstTokenAddress);
+  const firstToken = q(selectPoolsDetailsFirstToken);
 
-  if (!firstTokenAddress) {
+  if (!firstToken) {
     return 0n;
   }
 
   const firstTokenInputValue = q(selectPoolsDetailsFirstTokenInputValue);
-  const chainId = q(selectChainId);
-  const token = getToken(chainId, firstTokenAddress);
 
-  return parseValue(firstTokenInputValue || "0", token.decimals)!;
+  return parseValue(firstTokenInputValue || "0", firstToken.decimals)!;
 });
 
 export const selectPoolsDetailsSecondTokenAmount = createSelector((q) => {
-  const secondTokenAddress = q(selectPoolsDetailsSecondTokenAddress);
+  const secondToken = q(selectPoolsDetailsSecondToken);
 
-  if (!secondTokenAddress) {
+  if (!secondToken) {
     return 0n;
   }
 
   const secondTokenInputValue = q(selectPoolsDetailsSecondTokenInputValue);
-  const chainId = q(selectChainId);
-  const token = getToken(chainId, secondTokenAddress);
 
-  return parseValue(secondTokenInputValue || "0", token.decimals)!;
+  return parseValue(secondTokenInputValue || "0", secondToken.decimals)!;
 });
 
+const FALLBACK_STRING_SETTER = noop as (value: string) => void;
+const FALLBACK_BOOLEAN_SETTER = noop as (value: boolean) => void;
 // Setters
 const selectSetGlvOrMarketAddress = (s: SyntheticsState) => s.poolsDetails?.setGlvOrMarketAddress;
 const selectSetSelectedMarketForGlv = (s: SyntheticsState) => s.poolsDetails?.setSelectedMarketForGlv;
@@ -341,9 +364,14 @@ const selectSetFocusedInput = (s: SyntheticsState) => s.poolsDetails?.setFocused
 const selectSetPaySource = (s: SyntheticsState) => s.poolsDetails?.setPaySource;
 const selectSetFirstTokenAddress = (s: SyntheticsState) => s.poolsDetails?.setFirstTokenAddress;
 const selectSetSecondTokenAddress = (s: SyntheticsState) => s.poolsDetails?.setSecondTokenAddress;
-const selectSetFirstTokenInputValue = (s: SyntheticsState) => s.poolsDetails?.setFirstTokenInputValue;
-const selectSetSecondTokenInputValue = (s: SyntheticsState) => s.poolsDetails?.setSecondTokenInputValue;
-const selectSetMarketOrGlvTokenInputValue = (s: SyntheticsState) => s.poolsDetails?.setMarketOrGlvTokenInputValue;
+export const selectPoolsDetailsSetFirstTokenInputValue = (s: SyntheticsState) =>
+  s.poolsDetails?.setFirstTokenInputValue ?? FALLBACK_STRING_SETTER;
+export const selectPoolsDetailsSetSecondTokenInputValue = (s: SyntheticsState) =>
+  s.poolsDetails?.setSecondTokenInputValue ?? FALLBACK_STRING_SETTER;
+export const selectPoolsDetailsSetMarketOrGlvTokenInputValue = (s: SyntheticsState) =>
+  s.poolsDetails?.setMarketOrGlvTokenInputValue ?? FALLBACK_STRING_SETTER;
+export const selectPoolsDetailsSetIsMarketForGlvSelectedManually = (s: SyntheticsState) =>
+  s.poolsDetails?.setIsMarketForGlvSelectedManually ?? FALLBACK_BOOLEAN_SETTER;
 
 export const selectPoolsDetailsGlvInfo = createSelector((q) => {
   const glvOrMarketAddress = q(selectPoolsDetailsGlvOrMarketAddress);
@@ -361,9 +389,26 @@ export const selectPoolsDetailsGlvTokenAddress = createSelector((q) => {
   return glvInfo?.glvTokenAddress;
 });
 
-export const selectPoolsDetailsMarketInfo = createSelector((q) => {
+export const selectPoolsDetailsGlvTokenData = createSelector((q) => {
+  const glvInfo = q(selectPoolsDetailsGlvInfo);
+  return glvInfo?.glvToken;
+});
+
+export const selectPoolsDetailsMarketOrGlvTokenData = createSelector((q) => {
+  const glvTokenData = q(selectPoolsDetailsGlvTokenData);
+  if (glvTokenData) {
+    return glvTokenData;
+  }
+
+  return q(selectPoolsDetailsMarketTokenData);
+});
+
+export const selectPoolsDetailsMarketTokenAddress = createSelector((q) => {
+  const chainId = q(selectChainId);
   const glvOrMarketAddress = q(selectPoolsDetailsGlvOrMarketAddress);
   const selectedMarketForGlv = q(selectPoolsDetailsSelectedMarketForGlv);
+  const firstTokenAddress = q(selectPoolsDetailsFirstTokenAddress);
+
   const glvInfo = q(selectPoolsDetailsGlvInfo);
 
   // If it's a GLV but no market is selected, return undefined
@@ -373,12 +418,22 @@ export const selectPoolsDetailsMarketInfo = createSelector((q) => {
 
   const isGlv = glvInfo !== undefined && selectedMarketForGlv !== undefined;
 
-  return q((state) => {
-    if (isGlv) {
-      return getByKey(selectMarketsInfoData(state), selectedMarketForGlv);
+  if (isGlv) {
+    if (firstTokenAddress && MARKETS[chainId][firstTokenAddress]) {
+      return firstTokenAddress;
     }
 
-    return getByKey(selectMarketsInfoData(state), glvOrMarketAddress);
+    return selectedMarketForGlv;
+  }
+
+  return glvOrMarketAddress;
+});
+
+export const selectPoolsDetailsMarketInfo = createSelector((q) => {
+  const marketTokenAddress = q(selectPoolsDetailsMarketTokenAddress);
+
+  return q((state) => {
+    return getByKey(selectMarketsInfoData(state), marketTokenAddress);
   });
 });
 
@@ -390,15 +445,12 @@ export const selectPoolsDetailsFlags = createSelector((q) => {
     isPair: mode === Mode.Pair,
     isDeposit: operation === Operation.Deposit,
     isWithdrawal: operation === Operation.Withdrawal,
+    isSingle: mode === Mode.Single,
   };
 });
 
 export const selectPoolsDetailsMarketTokensData = createSelector((q) => {
   const { isDeposit } = q(selectPoolsDetailsFlags);
-  // const srcChainId = q(selectSrcChainId);
-  // const marketTokensMultichainBalances = srcChainId
-  //   ? q((state) => selectPoolsDetailsMarketTokenMultichainBalances(state)?.[srcChainId])
-  //   : undefined;
 
   if (isDeposit) {
     return q(selectDepositMarketTokensData);
@@ -416,10 +468,9 @@ export const selectPoolsDetailsMarketTokenData = createSelector((q) => {
   if (!marketTokensData) {
     return undefined;
   }
+  const marketTokenAddress = q(selectPoolsDetailsMarketTokenAddress);
 
-  const marketInfo = q(selectPoolsDetailsMarketInfo);
-
-  return getTokenData(marketTokensData, marketInfo?.marketTokenAddress);
+  return getTokenData(marketTokensData, marketTokenAddress);
 });
 
 export const selectPoolsDetailsLongTokenAddress = createSelector((q) => {
@@ -463,49 +514,6 @@ export const selectPoolsDetailsShortTokenAddress = createSelector((q) => {
 
   return glvInfo.shortTokenAddress;
 });
-
-// export const selectPoolsDetailsFirstTokenToLongTokenFindSwapPath = createSelector((q) => {
-//   const firstTokenAddress = q(selectFirstTokenAddress);
-
-//   if (!firstTokenAddress) {
-//     return undefined;
-//   }
-
-//   const longTokenAddress = q(selectPoolsDetailsLongTokenAddress);
-
-//   if (!longTokenAddress) {
-//     return undefined;
-//   }
-
-//   return q(makeSelectFindSwapPath(firstTokenAddress, longTokenAddress));
-// });
-
-// export const selectPoolsDetailsSecondTokenToShortTokenFindSwapPath = createSelector((q) => {
-//   const secondTokenAddress = q(selectSecondTokenAddress);
-
-//   if (!secondTokenAddress) {
-//     return undefined;
-//   }
-
-//   const shortTokenAddress = q(selectPoolsDetailsShortTokenAddress);
-
-//   if (!shortTokenAddress) {
-//     return undefined;
-//   }
-
-//   return q(makeSelectFindSwapPath(secondTokenAddress, shortTokenAddress));
-// });
-
-// TODO MLTCH maybe its just for deposit and not for withdrawal
-// export const selectPoolsDetailsFindSwapPaths = createSelector((q) => {
-//   const firstTokenToLongTokenFindSwapPath = q(selectPoolsDetailsFirstTokenToLongTokenFindSwapPath);
-//   const secondTokenToShortTokenFindSwapPath = q(selectPoolsDetailsSecondTokenToShortTokenFindSwapPath);
-
-//   return {
-//     firstTokenToLongTokenFindSwapPath,
-//     secondTokenToShortTokenFindSwapPath,
-//   };
-// });
 
 export const selectPoolsDetailsWithdrawalReceiveTokenAddress = createSelector((q) => {
   const { isPair, isWithdrawal } = q(selectPoolsDetailsFlags);
@@ -577,54 +585,53 @@ export const selectPoolsDetailsIsMarketTokenDeposit = createSelector((q) => {
   }
 
   const chainId = q(selectChainId);
-  const isMarket = Boolean(MARKETS[chainId][firstTokenAddress]);
 
-  return isMarket;
+  return isMarketTokenAddress(chainId, firstTokenAddress);
 });
 
-export const selectPoolsDetailsGlvDepositMarketTokenAddress = createSelector((q) => {
-  const { isDeposit } = q(selectPoolsDetailsFlags);
+// export const selectPoolsDetailsGlvDepositMarketTokenAddress = createSelector((q) => {
+//   const { isDeposit } = q(selectPoolsDetailsFlags);
 
-  if (!isDeposit) {
-    return undefined;
-  }
+//   if (!isDeposit) {
+//     return undefined;
+//   }
 
-  const glvInfo = q(selectPoolsDetailsGlvInfo);
+//   const glvInfo = q(selectPoolsDetailsGlvInfo);
 
-  if (!glvInfo) {
-    return undefined;
-  }
+//   if (!glvInfo) {
+//     return undefined;
+//   }
 
-  const firstTokenAddress = q(selectPoolsDetailsFirstTokenAddress);
+//   const firstTokenAddress = q(selectPoolsDetailsFirstTokenAddress);
 
-  if (!firstTokenAddress) {
-    return undefined;
-  }
+//   if (!firstTokenAddress) {
+//     return undefined;
+//   }
 
-  if (!glvInfo.markets.some((market) => market.address === firstTokenAddress)) {
-    return undefined;
-  }
+//   if (!glvInfo.markets.some((market) => market.address === firstTokenAddress)) {
+//     return undefined;
+//   }
 
-  return firstTokenAddress;
-});
+//   return firstTokenAddress;
+// });
 
 // export const selectPoolsDetailsGlvDepositOr
 
-export const selectPoolsDetailsGlvDepositMarketTokenAmount = createSelector((q) => {
-  const glvDepositMarketTokenAddress = q(selectPoolsDetailsGlvDepositMarketTokenAddress);
+// export const selectPoolsDetailsGlvDepositMarketTokenAmount = createSelector((q) => {
+//   const glvDepositMarketTokenAddress = q(selectPoolsDetailsGlvDepositMarketTokenAddress);
 
-  if (!glvDepositMarketTokenAddress) {
-    return undefined;
-  }
+//   if (!glvDepositMarketTokenAddress) {
+//     return undefined;
+//   }
 
-  const firstTokenAddress = q(selectPoolsDetailsFirstTokenAddress);
+//   const firstTokenAddress = q(selectPoolsDetailsFirstTokenAddress);
 
-  if (glvDepositMarketTokenAddress === firstTokenAddress) {
-    return q(selectPoolsDetailsFirstTokenAmount);
-  }
+//   if (glvDepositMarketTokenAddress === firstTokenAddress) {
+//     return q(selectPoolsDetailsFirstTokenAmount);
+//   }
 
-  throw new Error("Weird state");
-});
+//   throw new Error("Weird state");
+// });
 
 export const selectPoolsDetailsLongTokenAmount = createSelector((q) => {
   const firstTokenAddress = q(selectPoolsDetailsFirstTokenAddress);
@@ -662,6 +669,75 @@ export const selectPoolsDetailsShortTokenAmount = createSelector((q) => {
   return shortTokenAmount;
 });
 
+export const selectPoolsDetailsFirstToken = createSelector((q): Token | undefined => {
+  const chainId = q(selectChainId);
+  const firstTokenAddress = q(selectPoolsDetailsFirstTokenAddress);
+  if (!firstTokenAddress) {
+    return undefined;
+  }
+
+  if (MARKETS[chainId][firstTokenAddress]) {
+    return getToken(chainId, GM_STUB_ADDRESS);
+  }
+
+  return getToken(chainId, firstTokenAddress);
+});
+
+export const selectPoolsDetailsSecondToken = createSelector((q): Token | undefined => {
+  const chainId = q(selectChainId);
+  const secondTokenAddress = q(selectPoolsDetailsSecondTokenAddress);
+  if (!secondTokenAddress) {
+    return undefined;
+  }
+
+  if (MARKETS[chainId][secondTokenAddress]) {
+    return getToken(chainId, GM_STUB_ADDRESS);
+  }
+
+  return getToken(chainId, secondTokenAddress);
+});
+
+export const selectPoolsDetailsMultichainTokensArray = (s: SyntheticsState) =>
+  s.poolsDetails?.multichainTokensResult?.tokenChainDataArray || EMPTY_ARRAY;
+
+export const selectPoolsDetailsTradeTokensDataWithSourceChainBalances = createSelector((q) => {
+  const srcChainId = q(selectSrcChainId);
+  const paySource = q(selectPoolsDetailsPaySource);
+  const rawTradeTokensData = q(selectTokensData);
+  const tokenChainDataArray = q(selectPoolsDetailsMultichainTokensArray);
+
+  if (paySource !== "sourceChain") {
+    return rawTradeTokensData;
+  }
+
+  return mapValues(rawTradeTokensData, (token) => {
+    const sourceChainToken = tokenChainDataArray.find(
+      (t) => t.address === token.address && t.sourceChainId === srcChainId
+    );
+
+    if (!sourceChainToken) {
+      return token;
+    }
+
+    return {
+      ...token,
+      balanceType: TokenBalanceType.SourceChain,
+      balance: sourceChainToken.sourceChainBalance,
+      sourceChainBalance: sourceChainToken.sourceChainBalance,
+    };
+  });
+});
+
+export const selectPoolsDetailsMarketAndTradeTokensData = createSelector((q) => {
+  const marketTokensData = q(selectPoolsDetailsMarketTokensData);
+  const tradeTokensData = q(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
+
+  return {
+    ...marketTokensData,
+    ...tradeTokensData,
+  };
+});
+
 // GM Deposit/Withdrawal Box State Hooks
 export function usePoolsDetailsFocusedInput() {
   const value = useSelector(selectPoolsDetailsFocusedInput);
@@ -689,19 +765,19 @@ export function usePoolsDetailsSecondTokenAddress() {
 
 export function usePoolsDetailsFirstTokenInputValue() {
   const value = useSelector(selectPoolsDetailsFirstTokenInputValue);
-  const setter = useSelector(selectSetFirstTokenInputValue);
+  const setter = useSelector(selectPoolsDetailsSetFirstTokenInputValue);
   return [value, (setter || noop) as Exclude<typeof setter, undefined>] as const;
 }
 
 export function usePoolsDetailsSecondTokenInputValue() {
   const value = useSelector(selectPoolsDetailsSecondTokenInputValue);
-  const setter = useSelector(selectSetSecondTokenInputValue);
+  const setter = useSelector(selectPoolsDetailsSetSecondTokenInputValue);
   return [value, (setter || noop) as Exclude<typeof setter, undefined>] as const;
 }
 
 export function usePoolsDetailsMarketOrGlvTokenInputValue() {
   const value = useSelector(selectPoolsDetailsMarketOrGlvTokenInputValue);
-  const setter = useSelector(selectSetMarketOrGlvTokenInputValue);
+  const setter = useSelector(selectPoolsDetailsSetMarketOrGlvTokenInputValue);
   return [value, (setter || noop) as Exclude<typeof setter, undefined>] as const;
 }
 
@@ -727,5 +803,11 @@ export function usePoolsDetailsGlvOrMarketAddress() {
 export function usePoolsDetailsSelectedMarketForGlv() {
   const value = useSelector(selectPoolsDetailsSelectedMarketForGlv);
   const setter = useSelector(selectSetSelectedMarketForGlv);
+  return [value, (setter || noop) as Exclude<typeof setter, undefined>] as const;
+}
+
+export function usePoolsDetailsIsMarketForGlvSelectedManually() {
+  const value = useSelector(selectPoolsDetailsIsMarketForGlvSelectedManually);
+  const setter = useSelector(selectPoolsDetailsSetIsMarketForGlvSelectedManually);
   return [value, (setter || noop) as Exclude<typeof setter, undefined>] as const;
 }

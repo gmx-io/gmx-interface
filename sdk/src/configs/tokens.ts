@@ -7,6 +7,12 @@ import { getContract } from "./contracts";
 
 export const NATIVE_TOKEN_ADDRESS = zeroAddress;
 
+export const GM_STUB_ADDRESS = "<GM-ADDRESS>";
+const GLV_STUB_ADDRESS = "<GLV-ADDRESS>";
+const GMX_STUB_ADDRESS = "<GMX-ADDRESS>";
+const ESGMX_STUB_ADDRESS = "<ESGMX-ADDRESS>";
+const GLP_STUB_ADDRESS = "<GLP-ADDRESS>";
+
 export const TOKENS: { [chainId: number]: Token[] } = {
   [ARBITRUM]: [
     {
@@ -1029,7 +1035,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GMX Market tokens",
       symbol: "GM",
-      address: "<market-token-address>",
+      address: GM_STUB_ADDRESS,
       decimals: 18,
       imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GM_LOGO.png",
       isPlatformToken: true,
@@ -1037,7 +1043,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GLV Market tokens",
       symbol: "GLV",
-      address: "<market-token-address>",
+      address: GLV_STUB_ADDRESS,
       decimals: 18,
       imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GLV_LOGO.png",
       isPlatformToken: true,
@@ -1526,7 +1532,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GMX Market tokens",
       symbol: "GM",
-      address: "<market-token-address>",
+      address: GM_STUB_ADDRESS,
       decimals: 18,
       imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GM_LOGO.png",
       isPlatformToken: true,
@@ -1534,7 +1540,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GLV Market tokens",
       symbol: "GLV",
-      address: "<market-token-address>",
+      address: GLV_STUB_ADDRESS,
       decimals: 18,
       imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GLV_LOGO.png",
       isPlatformToken: true,
@@ -1756,7 +1762,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GMX Market tokens",
       symbol: "GM",
-      address: "<market-token-address>",
+      address: GM_STUB_ADDRESS,
       decimals: 18,
       imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GM_LOGO.png",
       isPlatformToken: true,
@@ -1764,7 +1770,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GLV Market tokens",
       symbol: "GLV",
-      address: "<market-token-address>",
+      address: GLV_STUB_ADDRESS,
       decimals: 18,
       imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GLV_LOGO.png",
       isPlatformToken: true,
@@ -1843,7 +1849,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GMX",
       symbol: "GMX",
-      address: "<gmx-address>",
+      address: GMX_STUB_ADDRESS,
       decimals: 18,
       imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
       isPlatformToken: true,
@@ -1851,14 +1857,14 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Escrowed GMX",
       symbol: "ESGMX",
-      address: "<esgmx-address>",
+      address: ESGMX_STUB_ADDRESS,
       decimals: 18,
       isPlatformToken: true,
     },
     {
       name: "GMX LP",
       symbol: "GLP",
-      address: "<glp-address>",
+      address: GLP_STUB_ADDRESS,
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
       isPlatformToken: true,
@@ -1866,7 +1872,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GMX Market tokens",
       symbol: "GM",
-      address: "<market-token-address>",
+      address: GM_STUB_ADDRESS,
       decimals: 18,
       imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GM_LOGO.png",
       isPlatformToken: true,
@@ -1874,7 +1880,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GLV Market tokens",
       symbol: "GLV",
-      address: "<market-token-address>",
+      address: GLV_STUB_ADDRESS,
       decimals: 18,
       imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GLV_LOGO.png",
       isPlatformToken: true,
@@ -1969,7 +1975,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GMX Market tokens",
       symbol: "GM",
-      address: "<market-token-address>",
+      address: GM_STUB_ADDRESS,
       decimals: 18,
       imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GM_LOGO.png",
       isPlatformToken: true,
@@ -1977,7 +1983,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GLV Market tokens",
       symbol: "GLV",
-      address: "<market-token-address>",
+      address: GLV_STUB_ADDRESS,
       decimals: 18,
       imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GLV_LOGO.png",
       isPlatformToken: true,

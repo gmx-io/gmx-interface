@@ -194,7 +194,7 @@ export const selectPoolsDetailsParams = createSelector((q) => {
 
   if (isDeposit && isGlv) {
     // Raw GLV Deposit Params
-    if (!marketInfo || !glvTokenAddress || marketOrGlvTokenAmount === undefined) {
+    if (!marketInfo || !glvTokenAddress || !selectedMarketForGlv || marketOrGlvTokenAmount === undefined) {
       return undefined;
     }
 
@@ -203,13 +203,15 @@ export const selectPoolsDetailsParams = createSelector((q) => {
     let dataList: string[] = EMPTY_ARRAY;
     if (paySource === "sourceChain") {
       if (!srcChainId) {
-        throw new Error("Source chain ID is required");
+        // throw new Error("Source chain ID is required");
+        return undefined;
       }
 
       const tokenId = getMultichainTokenId(chainId, glvTokenAddress);
 
       if (!tokenId) {
-        throw new Error("Token ID not found");
+        // throw new Error("Token ID not found");
+        return undefined;
       }
 
       const actionHash = CodecUiHelper.encodeMultichainActionData({
@@ -235,16 +237,16 @@ export const selectPoolsDetailsParams = createSelector((q) => {
     return {
       addresses: {
         glv: glvInfo!.glvTokenAddress,
-        market: selectedMarketForGlv!,
+        market: selectedMarketForGlv,
         receiver: glvInfo!.glvToken.totalSupply === 0n ? numberToHex(1, { size: 20 }) : account,
         callbackContract: zeroAddress,
         uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? zeroAddress,
         initialLongToken: isMarketTokenDeposit
           ? zeroAddress
-          : (MARKETS[chainId][marketOrGlvTokenAddress!].longTokenAddress as ERC20Address),
+          : (MARKETS[chainId][selectedMarketForGlv].longTokenAddress as ERC20Address),
         initialShortToken: isMarketTokenDeposit
           ? zeroAddress
-          : (MARKETS[chainId][marketOrGlvTokenAddress!].shortTokenAddress as ERC20Address),
+          : (MARKETS[chainId][selectedMarketForGlv].shortTokenAddress as ERC20Address),
         longTokenSwapPath: [],
         shortTokenSwapPath: [],
       },

@@ -62,11 +62,11 @@ export const getRainbowKitConfig = once(() =>
       ...(isDevelopment() ? [avalancheFuji, arbitrumSepolia, optimismSepolia, sepolia] : []),
     ],
     transports: {
-      [arbitrum.id]: http(),
+      [arbitrum.id]: http(getFallbackRpcUrl(arbitrum.id, false)),
       [avalanche.id]: http(),
       [avalancheFuji.id]: http(),
       [arbitrumSepolia.id]: http(getFallbackRpcUrl(arbitrumSepolia.id, false)),
-      [base.id]: http(),
+      [base.id]: http(getFallbackRpcUrl(base.id, false)),
       [optimismSepolia.id]: http(getFallbackRpcUrl(optimismSepolia.id, false)),
       [sepolia.id]: http(getFallbackRpcUrl(sepolia.id, false)),
       [botanix.id]: http(),

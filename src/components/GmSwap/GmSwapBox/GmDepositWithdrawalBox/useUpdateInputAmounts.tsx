@@ -1,59 +1,52 @@
 import { useEffect } from "react";
 
-import { GlvInfo, MarketInfo } from "domain/synthetics/markets/types";
-import { TokenData } from "domain/synthetics/tokens";
-import type { DepositAmounts, WithdrawalAmounts } from "domain/synthetics/trade";
+import {
+  selectPoolsDetailsFirstToken,
+  selectPoolsDetailsFlags,
+  selectPoolsDetailsFocusedInput,
+  selectPoolsDetailsGlvInfo,
+  selectPoolsDetailsGlvTokenAmount,
+  selectPoolsDetailsGlvTokenData,
+  selectPoolsDetailsLongTokenAddress,
+  selectPoolsDetailsMarketInfo,
+  selectPoolsDetailsMarketOrGlvTokenAmount,
+  selectPoolsDetailsMarketTokenData,
+  selectPoolsDetailsSecondToken,
+  selectPoolsDetailsSetFirstTokenInputValue,
+  selectPoolsDetailsSetMarketOrGlvTokenInputValue,
+  selectPoolsDetailsSetSecondTokenInputValue,
+  selectPoolsDetailsShortTokenAddress,
+} from "context/PoolsDetailsContext/PoolsDetailsContext";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatAmountFree } from "lib/numbers";
-import { ContractsChainId } from "sdk/configs/chains";
-import { getToken } from "sdk/configs/tokens";
 
-import { TokenInputState } from "./types";
+import { selectDepositWithdrawalAmounts } from "./selectDepositWithdrawalAmounts";
 
-export function useUpdateInputAmounts({
-  chainId,
-  marketToken,
-  marketInfo,
-  longTokenInputState,
-  shortTokenInputState,
-  fromMarketTokenInputState,
-  isDeposit,
-  focusedInput,
-  amounts,
-  glvInfo,
-  glvToken,
-  setMarketOrGlvTokenInputValue,
-  marketTokenAmount,
-  glvTokenAmount,
-  isWithdrawal,
-  setFirstTokenInputValue,
-  setSecondTokenInputValue,
-}: {
-  chainId: ContractsChainId;
-  marketToken: TokenData | undefined;
-  glvToken: TokenData | undefined;
-  marketInfo: MarketInfo | undefined;
-  glvInfo: GlvInfo | undefined;
-  longTokenInputState: TokenInputState | undefined;
-  shortTokenInputState: TokenInputState | undefined;
-  fromMarketTokenInputState: TokenInputState | undefined;
-  isDeposit: boolean;
-  focusedInput: string;
-  amounts: DepositAmounts | WithdrawalAmounts | undefined;
-  setMarketOrGlvTokenInputValue: (value: string) => void;
-  marketTokenAmount: bigint;
-  glvTokenAmount: bigint;
-  isWithdrawal: boolean;
-  setFirstTokenInputValue: (value: string) => void;
-  setSecondTokenInputValue: (value: string) => void;
-}) {
+export function useUpdateInputAmounts() {
+  const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
+  const glvToken = useSelector(selectPoolsDetailsGlvTokenData);
+  const glvTokenAmount = useSelector(selectPoolsDetailsGlvTokenAmount);
+  const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
+  const marketTokenAmount = useSelector(selectPoolsDetailsMarketOrGlvTokenAmount);
+  const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
+  const longToken = useSelector(selectPoolsDetailsLongTokenAddress);
+  const shortToken = useSelector(selectPoolsDetailsShortTokenAddress);
+  const { isDeposit, isWithdrawal } = useSelector(selectPoolsDetailsFlags);
+  const amounts = useSelector(selectDepositWithdrawalAmounts);
+  const firstToken = useSelector(selectPoolsDetailsFirstToken);
+  const secondToken = useSelector(selectPoolsDetailsSecondToken);
+  const focusedInput = useSelector(selectPoolsDetailsFocusedInput);
+
+  const setFirstTokenInputValue = useSelector(selectPoolsDetailsSetFirstTokenInputValue);
+  const setSecondTokenInputValue = useSelector(selectPoolsDetailsSetSecondTokenInputValue);
+  const setMarketOrGlvTokenInputValue = useSelector(selectPoolsDetailsSetMarketOrGlvTokenInputValue);
+
   useEffect(
     function updateInputAmounts() {
       if (!marketToken || !marketInfo) {
         return;
       }
 
-      const longToken = longTokenInputState ? getToken(chainId, longTokenInputState.address) : undefined;
-      const shortToken = shortTokenInputState ? getToken(chainId, shortTokenInputState.address) : undefined;
       const fromMarketToken = marketToken;
 
       if (isDeposit) {
@@ -74,30 +67,41 @@ export function useUpdateInputAmounts({
           }
         } else if (focusedInput === "market") {
           if (glvInfo ? glvTokenAmount <= 0 : marketTokenAmount <= 0) {
-            longTokenInputState?.setValue("");
-            shortTokenInputState?.setValue("");
-            fromMarketTokenInputState?.setValue("");
+            // longTokenInputState?.setValue("");
+            // shortTokenInputState?.setValue("");
+            // fromMarketTokenInputState?.setValue("");
+            setFirstTokenInputValue("");
+            setSecondTokenInputValue("");
             return;
           }
 
           if (amounts) {
-            if (longToken) {
+            if (longToken && firstToken) {
               let longTokenAmountToSet = amounts.longTokenAmount;
 
-              longTokenInputState?.setValue(
-                longTokenAmountToSet > 0 ? formatAmountFree(longTokenAmountToSet, longToken.decimals) : ""
+              // longTokenInputState?.setValue(
+              //   longTokenAmountToSet > 0 ? formatAmountFree(longTokenAmountToSet, longToken.decimals) : ""
+              // );
+              setFirstTokenInputValue(
+                longTokenAmountToSet > 0 ? formatAmountFree(longTokenAmountToSet, firstToken.decimals) : ""
               );
             }
 
-            if (shortToken) {
-              shortTokenInputState?.setValue(
-                amounts.shortTokenAmount > 0 ? formatAmountFree(amounts.shortTokenAmount, shortToken.decimals) : ""
+            if (shortToken && secondToken) {
+              // shortTokenInputState?.setValue(
+              //   amounts.shortTokenAmount > 0 ? formatAmountFree(amounts.shortTokenAmount, shortToken.decimals) : ""
+              // );
+              setSecondTokenInputValue(
+                amounts.shortTokenAmount > 0 ? formatAmountFree(amounts.shortTokenAmount, secondToken.decimals) : ""
               );
             }
 
-            if (fromMarketToken) {
-              fromMarketTokenInputState?.setValue(
-                amounts.marketTokenAmount > 0 ? formatAmountFree(amounts.marketTokenAmount, marketToken.decimals) : ""
+            if (fromMarketToken && firstToken) {
+              // fromMarketTokenInputState?.setValue(
+              //   amounts.marketTokenAmount > 0 ? formatAmountFree(amounts.marketTokenAmount, marketToken.decimals) : ""
+              // );
+              setFirstTokenInputValue(
+                amounts.marketTokenAmount > 0 ? formatAmountFree(amounts.marketTokenAmount, firstToken.decimals) : ""
               );
             }
             return;
@@ -110,42 +114,52 @@ export function useUpdateInputAmounts({
       if (isWithdrawal) {
         if (focusedInput === "market") {
           if ((amounts?.marketTokenAmount ?? 0) <= 0) {
-            longTokenInputState?.setValue("");
-            shortTokenInputState?.setValue("");
+            // longTokenInputState?.setValue("");
+            setFirstTokenInputValue("");
+            // shortTokenInputState?.setValue("");
+            setSecondTokenInputValue("");
             return;
           }
 
           if (amounts) {
             if (marketInfo.isSameCollaterals) {
-              if (longToken) {
+              if (longToken && firstToken) {
                 setFirstTokenInputValue(
                   amounts.longTokenAmount > 0
-                    ? formatAmountFree(amounts.longTokenAmount + amounts.shortTokenAmount, longToken.decimals)
+                    ? formatAmountFree(amounts.longTokenAmount + amounts.shortTokenAmount, firstToken.decimals)
                     : ""
                 );
               }
             } else {
-              if (longToken) {
-                longTokenInputState?.setValue(
-                  amounts.longTokenAmount > 0 ? formatAmountFree(amounts.longTokenAmount, longToken.decimals) : ""
+              if (longToken && firstToken) {
+                // longTokenInputState?.setValue(
+                //   amounts.longTokenAmount > 0 ? formatAmountFree(amounts.longTokenAmount, longToken.decimals) : ""
+                // );
+                setFirstTokenInputValue(
+                  amounts.longTokenAmount > 0 ? formatAmountFree(amounts.longTokenAmount, firstToken.decimals) : ""
                 );
               }
-              if (shortToken) {
-                shortTokenInputState?.setValue(
-                  amounts.shortTokenAmount > 0 ? formatAmountFree(amounts.shortTokenAmount, shortToken.decimals) : ""
+              if (shortToken && secondToken) {
+                // shortTokenInputState?.setValue(
+                //   amounts.shortTokenAmount > 0 ? formatAmountFree(amounts.shortTokenAmount, shortToken.decimals) : ""
+                // );
+                setSecondTokenInputValue(
+                  amounts.shortTokenAmount > 0 ? formatAmountFree(amounts.shortTokenAmount, secondToken.decimals) : ""
                 );
               }
             }
           }
         } else if (["longCollateral", "shortCollateral"].includes(focusedInput)) {
           if (focusedInput === "longCollateral" && (amounts?.longTokenAmount ?? 0) <= 0) {
-            shortTokenInputState?.setValue("");
+            // shortTokenInputState?.setValue("");
+            setSecondTokenInputValue("");
             setMarketOrGlvTokenInputValue("");
             return;
           }
 
           if (focusedInput === "shortCollateral" && (amounts?.shortTokenAmount ?? 0) <= 0) {
-            longTokenInputState?.setValue("");
+            // longTokenInputState?.setValue("");
+            setFirstTokenInputValue("");
             setMarketOrGlvTokenInputValue("");
             return;
           }
@@ -155,17 +169,22 @@ export function useUpdateInputAmounts({
               amounts.marketTokenAmount > 0 ? formatAmountFree(amounts.marketTokenAmount, marketToken.decimals) : ""
             );
             if (marketInfo.isSameCollaterals) {
-              if (longToken) {
-                longTokenInputState?.setValue(
-                  formatAmountFree(amounts.longTokenAmount + amounts.shortTokenAmount, longToken.decimals)
+              if (longToken && firstToken) {
+                // longTokenInputState?.setValue(
+                //   formatAmountFree(amounts.longTokenAmount + amounts.shortTokenAmount, longToken.decimals)
+                // );
+                setFirstTokenInputValue(
+                  formatAmountFree(amounts.longTokenAmount + amounts.shortTokenAmount, firstToken.decimals)
                 );
               }
             } else {
-              if (longToken) {
-                longTokenInputState?.setValue(formatAmountFree(amounts.longTokenAmount, longToken.decimals));
+              if (longToken && firstToken) {
+                // longTokenInputState?.setValue(formatAmountFree(amounts.longTokenAmount, longToken.decimals));
+                setFirstTokenInputValue(formatAmountFree(amounts.longTokenAmount, firstToken.decimals));
               }
-              if (shortToken) {
-                shortTokenInputState?.setValue(formatAmountFree(amounts.shortTokenAmount, shortToken.decimals));
+              if (shortToken && secondToken) {
+                // shortTokenInputState?.setValue(formatAmountFree(amounts.shortTokenAmount, shortToken.decimals));
+                setSecondTokenInputValue(formatAmountFree(amounts.shortTokenAmount, secondToken.decimals));
               }
             }
           }
@@ -177,19 +196,19 @@ export function useUpdateInputAmounts({
       focusedInput,
       isDeposit,
       isWithdrawal,
-      longTokenInputState,
       marketInfo,
       marketToken,
       marketTokenAmount,
       setFirstTokenInputValue,
       setMarketOrGlvTokenInputValue,
       setSecondTokenInputValue,
-      shortTokenInputState,
-      fromMarketTokenInputState,
       glvInfo,
       glvToken,
       glvTokenAmount,
-      chainId,
+      longToken,
+      firstToken,
+      shortToken,
+      secondToken,
     ]
   );
 }

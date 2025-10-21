@@ -174,11 +174,6 @@ export function atomicSwapFeeFactorKey(market: string) {
   return hashData(["bytes32", "address"], [ATOMIC_SWAP_FEE_FACTOR_KEY, market]);
 }
 
-// 0xc46dff7dcd179b6c69db86df5ffc8eaf8ae18c2a8aa86f51a930178d6a1f63b9
-//  22500000000000000000000000000
-console.log("ATOMIC_SWAP_FEE_FACTOR_KEY", atomicSwapFeeFactorKey("0xb6fc4c9eb02c35a134044526c62bb15014ac0bcc"));
-console.log(applyFactor(expandDecimals(1, 30), 22500000000000000000000000000n));
-
 export function openInterestKey(market: string, collateralToken: string, isLong: boolean) {
   return hashData(["bytes32", "address", "address", "bool"], [OPEN_INTEREST_KEY, market, collateralToken, isLong]);
 }

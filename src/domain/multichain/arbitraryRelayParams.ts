@@ -34,6 +34,7 @@ import { getSubaccountValidations } from "domain/synthetics/subaccount";
 import type { Subaccount, SubaccountValidations } from "domain/synthetics/subaccount/types";
 import { convertToTokenAmount } from "domain/tokens";
 import { CustomError, isCustomError } from "lib/errors";
+import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
 import { expandDecimals, USD_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
@@ -139,29 +140,20 @@ async function estimateArbitraryGasLimit({
     ]
   );
 
-  // try {
   const gasLimit = await fallbackCustomError(
     async () =>
-      provider.estimateGas({
-        from: GMX_SIMULATION_ORIGIN as Address,
-        to: baseTxnData.to as Address,
-        data: baseData,
-        value: 0n,
-      }),
+      provider
+        .estimateGas({
+          from: GMX_SIMULATION_ORIGIN as Address,
+          to: baseTxnData.to as Address,
+          data: baseData,
+          value: 0n,
+        })
+        .then(applyGasLimitBuffer),
     "gasLimit"
   );
-  // } catch (error) {
-  //   console.log({
-  //     from: GMX_SIMULATION_ORIGIN as Address,
-  //     to: baseTxnData.to as Address,
-  //     data: baseData,
-  //     value: 0n,
-  //   });
-  //   debugger;
-  //   throw error;
-  // }
 
-  return gasLimit + 100_000n;
+  return gasLimit;
 }
 
 export async function estimateArbitraryRelayFee({

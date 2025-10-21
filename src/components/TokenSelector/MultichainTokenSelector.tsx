@@ -11,7 +11,17 @@ import { stripBlacklistedWords } from "domain/tokens/utils";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { searchBy } from "lib/searchBy";
-import { getToken } from "sdk/configs/tokens";
+import { MARKETS } from "sdk/configs/markets";
+import { getToken, GM_STUB_ADDRESS } from "sdk/configs/tokens";
+import {
+  getMarketIndexName,
+  getMarketIndexToken,
+  getMarketIndexTokenSymbol,
+  getMarketLongTokenSymbol,
+  getMarketPoolName,
+  getMarketShortTokenSymbol,
+  isMarketTokenAddress,
+} from "sdk/utils/markets";
 
 import Button from "components/Button/Button";
 import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
@@ -74,7 +84,9 @@ export function MultichainTokenSelector({
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
-  let token: Token | undefined = getToken(chainId, tokenAddress);
+  let token: Token | undefined = isMarketTokenAddress(chainId, tokenAddress)
+    ? getToken(chainId, GM_STUB_ADDRESS)
+    : getToken(chainId, tokenAddress);
 
   const onSelectTokenAddress = (tokenAddress: string, _chainId: AnyChainId | 0) => {
     setIsModalVisible(false);
@@ -199,6 +211,7 @@ export function MultichainTokenSelector({
           <>
             {activeFilter === "pay" && (
               <AvailableToTradeTokenList
+                chainId={chainId}
                 onSelectTokenAddress={onSelectTokenAddress}
                 tokens={availableToTradeTokenList}
               />
@@ -214,17 +227,32 @@ export function MultichainTokenSelector({
         className="group/hoverable group flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-300"
         onClick={() => setIsModalVisible(true)}
       >
-        <span className="inline-flex items-center">
-          <TokenIcon
-            className="mr-4"
-            symbol={token.symbol}
-            importSize={24}
-            displaySize={20}
-            chainIdBadge={payChainId}
-          />
-          {token.symbol}
-        </span>
+        {!token.isPlatformToken ? (
+          <span className="inline-flex items-center">
+            <TokenIcon
+              className="mr-4"
+              symbol={token.symbol}
+              importSize={24}
+              displaySize={20}
+              chainIdBadge={payChainId}
+            />
+            {token.symbol}
+          </span>
+        ) : (
+          <span className="inline-flex items-center">
+            <TokenIcon
+              symbol={getMarketIndexTokenSymbol(chainId, tokenAddress)}
+              className="mr-4"
+              displaySize={20}
+              importSize={24}
+            />
 
+            {getMarketIndexName({
+              indexToken: getMarketIndexToken(chainId, tokenAddress)!,
+              isSpotOnly: false,
+            })}
+          </span>
+        )}
         <ChevronDownIcon className="w-16 text-typography-secondary group-hover:text-[inherit]" />
       </div>
     </div>
@@ -366,9 +394,11 @@ function useAvailableToTradeTokenList({
 }
 
 function AvailableToTradeTokenList({
+  chainId,
   onSelectTokenAddress,
   tokens,
 }: {
+  chainId: ContractsChainId;
   onSelectTokenAddress: (tokenAddress: string, chainId: AnyChainId | 0) => void;
   tokens: DisplayAvailableToTradeToken[];
 }) {
@@ -382,18 +412,53 @@ function AvailableToTradeTokenList({
             onClick={() => onSelectTokenAddress(token.address, token.chainId)}
           >
             <div className="flex items-center gap-16">
-              <TokenIcon
-                symbol={token.symbol}
-                className="size-40"
-                displaySize={40}
-                importSize={40}
-                chainIdBadge={token.chainId}
-              />
+              {token.isPlatformToken && isMarketTokenAddress(chainId, token.address) ? (
+                <>
+                  <TokenIcon
+                    symbol={getMarketIndexTokenSymbol(chainId, token.address)}
+                    className="size-40"
+                    displaySize={40}
+                    importSize={40}
+                    chainIdBadge={token.chainId}
+                    badge={
+                      [
+                        getMarketLongTokenSymbol(chainId, token.address),
+                        getMarketShortTokenSymbol(chainId, token.address),
+                      ] as [string, string]
+                    }
+                  />
 
-              <div>
-                <div className="text-body-large">{token.symbol}</div>
-                <span className="text-body-small text-typography-secondary">{token.name}</span>
-              </div>
+                  <div className="text-body-large">
+                    GM:{" "}
+                    {getMarketIndexName({
+                      indexToken: getMarketIndexToken(chainId, token.address)!,
+                      isSpotOnly: false,
+                    })}{" "}
+                    <span className="text-accent">
+                      [
+                      {getMarketPoolName({
+                        longToken: getToken(chainId, MARKETS[chainId]?.[token.address]?.longTokenAddress),
+                        shortToken: getToken(chainId, MARKETS[chainId]?.[token.address]?.shortTokenAddress),
+                      })}
+                      ]
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <TokenIcon
+                    symbol={token.symbol}
+                    className="size-40"
+                    displaySize={40}
+                    importSize={40}
+                    chainIdBadge={token.chainId}
+                  />
+                  <div>
+                    <div className="text-body-large">{token.symbol}</div>
+                    <span className="text-body-small text-typography-secondary">{token.name}</span>
+                  </div>
+                </>
+              )}
             </div>
             <div className="text-right">
               <div className="text-body-large">

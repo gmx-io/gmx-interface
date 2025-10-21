@@ -49,6 +49,7 @@ export type SourceChainDepositFees = {
    */
   txnEstimatedNativeFee: bigint;
   txnEstimatedComposeGas: bigint;
+  txnEstimatedReceivedAmount: bigint;
 };
 
 /**
@@ -96,19 +97,24 @@ export async function estimateSourceChainDepositFees({
 
   const fullWntFee = keeperDepositFeeWNTAmount + returnGmTransferNativeFee;
 
-  const { initialTxNativeFee, initialTxGasLimit, relayParamsPayload, initialTransferComposeGas } =
-    await estimateSourceChainDepositInitialTxFees({
-      chainId,
-      srcChainId,
-      params: {
-        ...params,
-        executionFee: keeperDepositFeeWNTAmount,
-      },
-      tokenAddress,
-      tokenAmount,
-      globalExpressParams,
-      fullWntFee,
-    });
+  const {
+    initialTxNativeFee,
+    initialTxGasLimit,
+    relayParamsPayload,
+    initialTransferComposeGas,
+    initialTxReceivedAmount,
+  } = await estimateSourceChainDepositInitialTxFees({
+    chainId,
+    srcChainId,
+    params: {
+      ...params,
+      executionFee: keeperDepositFeeWNTAmount,
+    },
+    tokenAddress,
+    tokenAmount,
+    globalExpressParams,
+    fullWntFee,
+  });
 
   const relayFeeUsd = convertToUsd(
     relayParamsPayload.fee.feeAmount,
@@ -123,6 +129,7 @@ export async function estimateSourceChainDepositFees({
     executionFee: keeperDepositFeeWNTAmount,
     relayFeeUsd,
     relayParamsPayload,
+    txnEstimatedReceivedAmount: initialTxReceivedAmount,
   };
 }
 
@@ -145,6 +152,7 @@ async function estimateSourceChainDepositInitialTxFees({
 }): Promise<{
   initialTxNativeFee: bigint;
   initialTxGasLimit: bigint;
+  initialTxReceivedAmount: bigint;
   initialTransferComposeGas: bigint;
   relayParamsPayload: RelayParamsPayload;
 }> {
@@ -189,13 +197,6 @@ async function estimateSourceChainDepositInitialTxFees({
   if (feeSwapStrategy && !feeSwapStrategy.swapPathStats) {
     throw new Error("Fee swap strategy has no swap path stats");
   }
-
-  // console.log({
-  //   wrappedTokenAddress,
-  //   wrappedTokenData: globalExpressParams.tokensData[wrappedTokenAddress],
-  //   feeSwapStrategy,
-  //   settlementWrappedTokenData,
-  // });
 
   const returnRawRelayParamsPayload: RawRelayParamsPayload = getRawRelayerParams({
     chainId,
@@ -273,15 +274,12 @@ async function estimateSourceChainDepositInitialTxFees({
     action,
   });
 
-  // const initialQuoteOft = await sourceChainClient.readContract({
-  //   address: sourceChainTokenId.stargate,
-  //   abi: abis.IStargate,
-  //   functionName: "quoteOFT",
-  //   args: [sendParams],
-  // });
-
-  // TODO MLTCH
-  // sendParams.amountLD = initialQuoteOft[0].minAmountLD * 100n;
+  const initialQuoteOft = await sourceChainClient.readContract({
+    address: sourceChainTokenId.stargate,
+    abi: abis.IStargate,
+    functionName: "quoteOFT",
+    args: [sendParams],
+  });
 
   const initialQuoteSend = await sourceChainClient.readContract({
     address: sourceChainTokenId.stargate,
@@ -324,6 +322,7 @@ async function estimateSourceChainDepositInitialTxFees({
   return {
     initialTxNativeFee: initialQuoteSend.nativeFee,
     initialTxGasLimit: initialStargateTxnGasLimit,
+    initialTxReceivedAmount: initialQuoteOft[2].amountReceivedLD,
     initialTransferComposeGas: initialComposeGas,
     relayParamsPayload: returnRelayParamsPayload,
   };

@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { ethers } from "ethers";
 
-import { ContractsChainId, IS_NETWORK_DISABLED, SourceChainId, getChainName } from "config/chains";
+import { ContractsChainId, IS_NETWORK_DISABLED, SettlementChainId, SourceChainId, getChainName } from "config/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getMappedTokenId } from "config/multichain";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
@@ -643,6 +643,61 @@ export function decreasePositionSizeByLeverageDiff(
   );
 }
 
+// function getTokenBalance(token: TokenData | undefined, balanceType: TokenBalanceType) {
+//   if (!token) {
+//     return 0n;
+//   }
+
+//   if (balanceType === TokenBalanceType.Wallet) {
+//     return token.walletBalance;
+//   }
+
+//   if (balanceType === TokenBalanceType.GmxAccount) {
+//     return token.gmxAccountBalance;
+//   }
+
+//   if (balanceType === TokenBalanceType.SourceChain) {
+//     return token.sourceChainBalance;
+//   }
+
+//   throw new Error(`Invalid balance type: ${balanceType}`);
+// }
+
+function getTokenBalanceByPaySource(
+  token: TokenData | undefined,
+  paySource: GmPaySource,
+  chainId: ContractsChainId,
+  srcChainId: SourceChainId | undefined
+): bigint {
+  if (!token) {
+    return 0n;
+  }
+
+  if (paySource === "settlementChain") {
+    return token.walletBalance ?? 0n;
+  }
+
+  if (paySource === "sourceChain") {
+    // adjust for decimals
+    const mappedTokenId = getMappedTokenId(chainId as SettlementChainId, token.address, srcChainId as SourceChainId);
+    if (!mappedTokenId) {
+      return 0n;
+    }
+
+    if (token.sourceChainBalance === undefined) {
+      return 0n;
+    }
+
+    return adjustForDecimals(token.sourceChainBalance, mappedTokenId.decimals, token.decimals) ?? 0n;
+  }
+
+  if (paySource === "gmxAccount") {
+    return token.gmxAccountBalance ?? 0n;
+  }
+
+  return 0n;
+}
+
 export function getGmSwapError(p: {
   isDeposit: boolean;
   marketInfo: MarketInfo | undefined;
@@ -667,7 +722,7 @@ export function getGmSwapError(p: {
   isMarketTokenDeposit?: boolean;
   paySource: GmPaySource;
   isPair: boolean;
-  chainId?: ContractsChainId | undefined;
+  chainId: ContractsChainId;
   srcChainId?: SourceChainId | undefined;
 }) {
   const {
@@ -785,46 +840,22 @@ export function getGmSwapError(p: {
     return [t`Enter an amount`];
   }
 
-  let marketTokenBalance = 0n;
-  // let glvTokenBalance = 0n;
-  if (paySource === "settlementChain") {
-    marketTokenBalance = marketToken?.walletBalance ?? 0n;
-    // glvTokenBalance = glvToken?.walletBalance ?? 0n;
-  } else if (paySource === "sourceChain") {
-    if (srcChainId) {
-      if (marketToken) {
-        const mappedTokenId = getMappedTokenId(chainId as SourceChainId, marketToken.address, srcChainId);
-        if (mappedTokenId) {
-          marketTokenBalance =
-            adjustForDecimals(marketToken?.sourceChainBalance ?? 0n, marketToken?.decimals, mappedTokenId.decimals) ??
-            0n;
-        }
-      }
-
-      // if (glvToken) {
-      //   const mappedTokenId = getMappedTokenId(chainId as SourceChainId, glvToken.address, srcChainId);
-      //   if (mappedTokenId) {
-      //     glvTokenBalance =
-      //       adjustForDecimals(glvToken.sourceChainBalance ?? 0n, glvToken.decimals, mappedTokenId.decimals) ?? 0n;
-      //   }
-      // }
-    }
-  } else if (paySource === "gmxAccount") {
-    marketTokenBalance = marketToken?.gmxAccountBalance ?? 0n;
-    // glvTokenBalance = glvToken?.gmxAccountBalance ?? 0n;
-  }
+  const marketTokenBalance = getTokenBalanceByPaySource(marketToken, paySource, chainId, srcChainId);
 
   if (isDeposit) {
+    const longTokenBalance = getTokenBalanceByPaySource(longToken, paySource, chainId, srcChainId);
+    const shortTokenBalance = getTokenBalanceByPaySource(shortToken, paySource, chainId, srcChainId);
+
     if (marketInfo.isSameCollaterals) {
-      if ((longTokenAmount ?? 0n) + (shortTokenAmount ?? 0n) > (longToken?.balance ?? 0n)) {
+      if ((longTokenAmount ?? 0n) + (shortTokenAmount ?? 0n) > longTokenBalance) {
         return [t`Insufficient ${longToken?.symbol} balance`];
       }
     } else {
-      if ((longTokenAmount ?? 0n) > (longToken?.balance ?? 0n)) {
+      if ((longTokenAmount ?? 0n) > longTokenBalance) {
         return [t`Insufficient ${longToken?.symbol} balance`];
       }
 
-      if ((shortTokenAmount ?? 0n) > (shortToken?.balance ?? 0n)) {
+      if ((shortTokenAmount ?? 0n) > shortTokenBalance) {
         return [t`Insufficient ${shortToken?.symbol} balance`];
       }
     }
@@ -856,8 +887,9 @@ export function getGmSwapError(p: {
       }
     }
   } else {
+    const glvTokenBalance = getTokenBalanceByPaySource(glvToken, paySource, chainId, srcChainId);
     if (glvInfo) {
-      if ((glvTokenAmount ?? 0n) > (glvToken?.balance ?? 0n)) {
+      if ((glvTokenAmount ?? 0n) > glvTokenBalance) {
         return [t`Insufficient ${glvToken?.symbol} balance`];
       }
     } else {
@@ -897,6 +929,7 @@ export function getGmSwapError(p: {
 
   return [undefined];
 }
+
 export function getGmShiftError({
   fromMarketInfo,
   fromToken,
