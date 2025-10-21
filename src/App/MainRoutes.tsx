@@ -12,7 +12,6 @@ import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDas
 import BeginAccountTransfer from "pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer";
 import CompleteAccountTransfer from "pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer";
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
-import Buy from "pages/Buy/Buy";
 import BuyGMX from "pages/BuyGMX/BuyGMX";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
 import EarnAdditionalOpportunitiesPage from "pages/Earn/EarnAdditionalOpportunitiesPage";
@@ -113,12 +112,6 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/earn/distributions">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
           <EarnDistributionsPage />
-        </SyntheticsStateContextProvider>
-      </Route>
-
-      <Route exact path="/buy">
-        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="buy">
-          <Buy />
         </SyntheticsStateContextProvider>
       </Route>
 

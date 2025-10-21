@@ -50,7 +50,7 @@ export function AssetsList({
   const shouldUseFlex = (cardsCount < 3 && isEnoughSpaceFor2Columns) || (cardsCount < 4 && isEnoughSpaceFor3Columns);
 
   return (
-    <section className="flex grow flex-col rounded-8 bg-slate-900">
+    <section className={cx("flex flex-col rounded-8 bg-slate-900", { grow: !hasAnyAssets })}>
       <h2 className="text-body-large p-20 pb-2 font-medium text-typography-primary">
         <Trans>My assets</Trans>
       </h2>

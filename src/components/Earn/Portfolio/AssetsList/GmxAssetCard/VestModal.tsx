@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ethers } from "ethers";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -42,6 +42,11 @@ type VestModalProps = {
   reservedAmount: bigint;
 };
 
+const INITIAL_VALUES = {
+  gmx: "",
+  affiliate: "",
+};
+
 export function VestModal({ isVisible, setIsVisible, processedData, reservedAmount }: VestModalProps) {
   const { chainId } = useChainId();
   const { signer, account, active } = useWallet();
@@ -54,10 +59,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
     gmx: "deposit",
     affiliate: "deposit",
   });
-  const [depositValues, setDepositValues] = useState<Record<VestVault, string>>({
-    gmx: "",
-    affiliate: "",
-  });
+  const [depositValues, setDepositValues] = useState<Record<VestVault, string>>(INITIAL_VALUES);
   const [isDepositing, setIsDepositing] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
@@ -68,6 +70,10 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
   const affiliateDepositAmount = parseValue(depositValues.affiliate, 18);
 
   const totalRewardTokens = processedData?.bonusGmxInFeeGmx;
+
+  useEffect(() => {
+    setDepositValues(INITIAL_VALUES);
+  }, [isVisible]);
 
   const gmxDepositConfig = useMemo(() => {
     const maxVestableAmount = vestingData?.gmxVesterMaxVestableAmount;
@@ -406,7 +412,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
       isVisible={isVisible}
       setIsVisible={setIsVisible}
       label={t`Vesting`}
-      contentClassName="md:w-[420px] md:min-h-[576px] max-md:pb-20"
+      contentClassName="md:w-[420px] md:min-h-[484px] max-md:pb-20"
       contentPadding={false}
       withMobileBottomPosition={true}
     >
@@ -504,7 +510,19 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
             />
             <ProgressRow
               label={<Trans>Vesting Status</Trans>}
-              value={`${formatGmxAmount(claimSum)} / ${formatGmxAmount(vestedAmount)}`}
+              value={
+                <TooltipWithPortal
+                  handle={`${formatGmxAmount(claimSum)} / ${formatGmxAmount(vestedAmount)}`}
+                  position="top-end"
+                  handleClassName="whitespace-nowrap"
+                  content={
+                    <span>
+                      {formatGmxAmount(claimSum)} tokens have been converted to GMX from the{" "}
+                      {formatGmxAmount(vestedAmount)} esGMX deposited for vesting.
+                    </span>
+                  }
+                />
+              }
               currentValue={claimSum}
               totalValue={vestedAmount}
             />
@@ -523,10 +541,12 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                         <StatsTooltipRow
                           label={<Trans>Current Reserved:</Trans>}
                           value={formatGmxAmount(gmxDepositConfig.reserveAmount)}
+                          showDollar={false}
                         />
                         <StatsTooltipRow
                           label={<Trans>Additional reserve required:</Trans>}
                           value={formatGmxAmount(gmxReservePreview.additionalReserveAmount)}
+                          showDollar={false}
                         />
                       </div>
                     }
@@ -549,10 +569,12 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                       <StatsTooltipRow
                         label={<Trans>Deposited:</Trans>}
                         value={formatGmxAmount(depositConfig.vestedAmount)}
+                        showDollar={false}
                       />
                       <StatsTooltipRow
                         label={<Trans>Max Capacity:</Trans>}
                         value={formatGmxAmount(depositConfig.maxVestableAmount)}
+                        showDollar={false}
                       />
                     </div>
                   }

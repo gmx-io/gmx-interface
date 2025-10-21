@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ZeroAddress, ethers } from "ethers";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ARBITRUM, ContractsChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
@@ -112,6 +112,11 @@ export function StakeModal(props: {
     tokenAddresses: [stakeTokenAddress].filter(Boolean),
   });
   const tokenAllowance = tokensAllowanceData?.[stakeTokenAddress];
+
+  useEffect(() => {
+    setStakeValue("");
+    setUnstakeValue("");
+  }, [isVisible, setStakeValue, setUnstakeValue]);
 
   const needApproval =
     stakeFarmAddress !== ZeroAddress &&

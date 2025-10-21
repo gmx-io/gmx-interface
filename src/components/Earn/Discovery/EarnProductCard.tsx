@@ -72,8 +72,8 @@ const getCardContent = (type: EarnProductType) => {
       bullets: [
         t`Support isolated liquidity per market`,
         t`Become a market maker`,
-        t`No active management required`,
-        t`Earn auto-compounding yield`,
+        t`More active management required compared to GLV`,
+        t`All earnings are auto-compounded`,
       ],
       cta: {
         label: t`Buy GM`,

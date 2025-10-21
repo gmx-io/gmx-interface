@@ -45,7 +45,7 @@ export function GmGlvAssetCard({ token, marketInfo, chainId, totalFeeApy, feeApy
 
   const title = isGlv
     ? getGlvDisplayName(marketInfo)
-    : getMarketIndexName({ indexToken, isSpotOnly: marketInfo.isSpotOnly });
+    : `GM: ${getMarketIndexName({ indexToken, isSpotOnly: marketInfo.isSpotOnly })}`;
   const subtitle = `[${getMarketPoolName({ longToken, shortToken })}]`;
 
   const iconTokenSymbol = isGlv
