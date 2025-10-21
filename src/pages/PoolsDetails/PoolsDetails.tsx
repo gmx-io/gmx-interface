@@ -1,8 +1,12 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useState } from "react";
 
-import { usePoolsDetailsContext } from "context/PoolsDetailsContext/PoolsDetailsContext";
+import {
+  usePoolsDetailsGlvOrMarketAddress,
+  usePoolsDetailsMode,
+  usePoolsDetailsOperation,
+  usePoolsDetailsSelectedMarketForGlv,
+} from "context/PoolsDetailsContext/PoolsDetailsContext";
 import {
   selectDepositMarketTokensData,
   selectGlvAndMarketsInfoData,
@@ -37,10 +41,10 @@ export function PoolsDetails() {
 
   const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
 
-  const { operation, mode, glvOrMarketAddress, setOperation, setMode, setGlvOrMarketAddress } =
-    usePoolsDetailsContext();
-
-  const [selectedMarketForGlv, setSelectedMarketForGlv] = useState<string | undefined>(undefined);
+  const [operation, setOperation] = usePoolsDetailsOperation();
+  const [mode, setMode] = usePoolsDetailsMode();
+  const [glvOrMarketAddress, setGlvOrMarketAddress] = usePoolsDetailsGlvOrMarketAddress();
+  const [selectedMarketForGlv, setSelectedMarketForGlv] = usePoolsDetailsSelectedMarketForGlv();
 
   const glvOrMarketInfo = getByKey(glvAndMarketsInfoData, glvOrMarketAddress);
 

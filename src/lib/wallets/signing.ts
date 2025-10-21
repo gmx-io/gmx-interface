@@ -2,6 +2,7 @@ import { AbstractSigner, TypedDataEncoder, type Wallet } from "ethers";
 import { withRetry } from "viem";
 
 import { parseError } from "lib/errors";
+import { ISigner } from "lib/transactions/iSigner";
 
 import type { WalletSigner } from ".";
 
@@ -15,7 +16,7 @@ export type SignatureDomain = {
 export type SignatureTypes = Record<string, { name: string; type: string }[]>;
 
 export type SignTypedDataParams = {
-  signer: WalletSigner | Wallet | AbstractSigner;
+  signer: WalletSigner | Wallet | AbstractSigner | ISigner;
   types: SignatureTypes;
   typedData: Record<string, any>;
   domain: SignatureDomain;
@@ -98,7 +99,7 @@ export async function signTypedData({
 
   const signature = await withRetry<string>(
     () => {
-      return (provider as any).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]);
+      return (provider as ISigner).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]);
     },
     {
       retryCount: 1,

@@ -1,9 +1,27 @@
 import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
-import { Address, concatHex, encodeAbiParameters, Hex, isHex, toHex } from "viem";
+import { Address, concatHex, encodeAbiParameters, Hex, isHex, toHex, zeroAddress } from "viem";
 
-import { RelayParamsPayload } from "domain/synthetics/express";
+import { TransferRequests } from "domain/multichain/types";
+import type { RelayParamsPayload } from "domain/synthetics/express";
+import {
+  CreateDepositParams,
+  CreateGlvDepositParams,
+  CreateGlvWithdrawalParams,
+  CreateWithdrawalParams,
+} from "domain/synthetics/markets/types";
 import type { ContractsChainId, SettlementChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
+import { hashString } from "sdk/utils/hash";
+
+import {
+  BRIDGE_OUT_PARAMS,
+  CREATE_DEPOSIT_PARAMS_TYPE,
+  CREATE_GLV_DEPOSIT_PARAMS_TYPE,
+  CREATE_GLV_WITHDRAWAL_PARAMS_TYPE,
+  CREATE_WITHDRAWAL_PARAMS_TYPE,
+  RELAY_PARAMS_TYPE,
+  TRANSFER_REQUESTS_TYPE,
+} from "./hashParamsAbiItems";
 
 export enum MultichainActionType {
   None = 0,
@@ -11,6 +29,8 @@ export enum MultichainActionType {
   GlvDeposit = 2,
   BridgeOut = 3,
   SetTraderReferralCode = 4,
+  Withdrawal = 5,
+  GlvWithdrawal = 6,
 }
 
 type CommonActionData = {
@@ -27,59 +47,72 @@ type SetTraderReferralCodeAction = {
   actionData: SetTraderReferralCodeActionData;
 };
 
-const RELAY_PARAMS_TYPE = {
-  type: "tuple",
-  name: "",
-  components: [
-    {
-      type: "tuple",
-      name: "oracleParams",
-      components: [
-        { type: "address[]", name: "tokens" },
-        { type: "address[]", name: "providers" },
-        { type: "bytes[]", name: "data" },
-      ],
-    },
-    {
-      type: "tuple",
-      name: "externalCalls",
-      components: [
-        { type: "address[]", name: "sendTokens" },
-        { type: "uint256[]", name: "sendAmounts" },
-        { type: "address[]", name: "externalCallTargets" },
-        { type: "bytes[]", name: "externalCallDataList" },
-        { type: "address[]", name: "refundTokens" },
-        { type: "address[]", name: "refundReceivers" },
-      ],
-    },
-    {
-      type: "tuple[]",
-      name: "tokenPermits",
-      components: [
-        { type: "address", name: "owner" },
-        { type: "address", name: "spender" },
-        { type: "uint256", name: "value" },
-        { type: "uint256", name: "deadline" },
-        { type: "address", name: "token" },
-      ],
-    },
-    {
-      type: "tuple",
-      name: "fee",
-      components: [
-        { type: "address", name: "feeToken" },
-        { type: "uint256", name: "feeAmount" },
-        { type: "address[]", name: "feeSwapPath" },
-      ],
-    },
-    { type: "uint256", name: "userNonce" },
-    { type: "uint256", name: "deadline" },
-    { type: "bytes", name: "signature" },
-    { type: "uint256", name: "desChainId" },
-  ],
-} as const;
+type DepositActionData = CommonActionData & {
+  transferRequests: TransferRequests;
+  params: CreateDepositParams;
+};
 
-export type MultichainAction = SetTraderReferralCodeAction;
+type DepositAction = {
+  actionType: MultichainActionType.Deposit;
+  actionData: DepositActionData;
+};
+
+type BridgeOutActionData = {
+  desChainId: ContractsChainId;
+  deadline: bigint;
+  provider: string;
+  providerData: string;
+  minAmountOut: bigint;
+  secondaryProvider: string;
+  secondaryProviderData: string;
+  secondaryMinAmountOut: bigint;
+};
+
+type BridgeOutAction = {
+  actionType: MultichainActionType.BridgeOut;
+  actionData: BridgeOutActionData;
+};
+
+type GlvDepositActionData = CommonActionData & {
+  transferRequests: TransferRequests;
+  params: CreateGlvDepositParams;
+};
+
+type GlvDepositAction = {
+  actionType: MultichainActionType.GlvDeposit;
+  actionData: GlvDepositActionData;
+};
+
+type WithdrawalActionData = CommonActionData & {
+  transferRequests: TransferRequests;
+  params: CreateWithdrawalParams;
+};
+
+type WithdrawalAction = {
+  actionType: MultichainActionType.Withdrawal;
+  actionData: WithdrawalActionData;
+};
+
+type GlvWithdrawalActionData = CommonActionData & {
+  transferRequests: TransferRequests;
+  params: CreateGlvWithdrawalParams;
+};
+
+type GlvWithdrawalAction = {
+  actionType: MultichainActionType.GlvWithdrawal;
+  actionData: GlvWithdrawalActionData;
+};
+
+export type MultichainAction =
+  | SetTraderReferralCodeAction
+  | DepositAction
+  | BridgeOutAction
+  | GlvDepositAction
+  | WithdrawalAction
+  | GlvWithdrawalAction;
+
+export const GMX_DATA_ACTION_HASH = hashString("GMX_DATA_ACTION");
+// TODO MLTCH also implement     bytes32 public constant MAX_DATA_LENGTH = keccak256(abi.encode("MAX_DATA_LENGTH"));
 
 export class CodecUiHelper {
   public static encodeDepositMessage(account: string, data?: string): string {
@@ -109,21 +142,96 @@ export class CodecUiHelper {
     return layerZeroEndpoint;
   }
 
+  // TODO MLTCH make this type safe
   public static encodeMultichainActionData(action: MultichainAction): string {
+    let actionData: Hex | undefined;
     if (action.actionType === MultichainActionType.SetTraderReferralCode) {
-      const actionData = encodeAbiParameters(
+      actionData = encodeAbiParameters(
         [RELAY_PARAMS_TYPE, { type: "bytes32" }],
         [
           { ...(action.actionData.relayParams as any), signature: action.actionData.signature as Hex },
           action.actionData.referralCode as Hex,
         ]
       );
-
-      const data = encodeAbiParameters([{ type: "uint8" }, { type: "bytes" }], [action.actionType, actionData]);
-
-      return data;
+    } else if (action.actionType === MultichainActionType.Deposit) {
+      actionData = encodeAbiParameters(
+        [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_DEPOSIT_PARAMS_TYPE],
+        [
+          { ...(action.actionData.relayParams as any), signature: action.actionData.signature as Hex },
+          action.actionData.transferRequests as any,
+          action.actionData.params as any,
+        ]
+      );
+    } else if (action.actionType === MultichainActionType.BridgeOut) {
+      if (action.actionData.secondaryProvider === zeroAddress || action.actionData.secondaryProviderData === "0x") {
+        actionData = encodeAbiParameters(
+          [
+            { type: "uint256", name: "desChainId" },
+            { type: "uint256", name: "deadline" },
+            { type: "address", name: "provider" },
+            { type: "bytes", name: "providerData" },
+            { type: "uint256", name: "minAmountOut" },
+          ],
+          [
+            BigInt(action.actionData.desChainId),
+            action.actionData.deadline,
+            action.actionData.provider as Address,
+            action.actionData.providerData as Hex,
+            action.actionData.minAmountOut,
+          ]
+        );
+      } else {
+        actionData = encodeAbiParameters(
+          [BRIDGE_OUT_PARAMS],
+          [
+            {
+              desChainId: BigInt(action.actionData.desChainId),
+              deadline: action.actionData.deadline,
+              provider: action.actionData.provider as Address,
+              providerData: action.actionData.providerData as Hex,
+              minAmountOut: action.actionData.minAmountOut,
+              secondaryProvider: action.actionData.secondaryProvider as Address,
+              secondaryProviderData: action.actionData.secondaryProviderData as Hex,
+              secondaryMinAmountOut: action.actionData.secondaryMinAmountOut,
+            },
+          ]
+        );
+      }
+    } else if (action.actionType === MultichainActionType.GlvDeposit) {
+      actionData = encodeAbiParameters(
+        [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_GLV_DEPOSIT_PARAMS_TYPE],
+        [
+          { ...(action.actionData.relayParams as any), signature: action.actionData.signature as Hex },
+          action.actionData.transferRequests as any,
+          action.actionData.params as any,
+        ]
+      );
+    } else if (action.actionType === MultichainActionType.Withdrawal) {
+      actionData = encodeAbiParameters(
+        [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_WITHDRAWAL_PARAMS_TYPE],
+        [
+          { ...(action.actionData.relayParams as any), signature: action.actionData.signature as Hex },
+          action.actionData.transferRequests as any,
+          action.actionData.params as any,
+        ]
+      );
+    } else if (action.actionType === MultichainActionType.GlvWithdrawal) {
+      actionData = encodeAbiParameters(
+        [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_GLV_WITHDRAWAL_PARAMS_TYPE],
+        [
+          { ...(action.actionData.relayParams as any), signature: action.actionData.signature as Hex },
+          action.actionData.transferRequests as any,
+          action.actionData.params as any,
+        ]
+      );
     }
 
-    throw new Error("Unsupported multichain action type");
+    if (!actionData) {
+      throw new Error("Unsupported multichain action type");
+    }
+
+    const data = encodeAbiParameters([{ type: "uint8" }, { type: "bytes" }], [action.actionType, actionData]);
+
+    return data;
   }
 }

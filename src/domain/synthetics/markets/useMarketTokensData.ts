@@ -1,8 +1,13 @@
+import mapValues from "lodash/mapValues";
 import { useMemo } from "react";
 
 import { getExplorerUrl } from "config/chains";
 import { getContract } from "config/contracts";
-import { MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
+import {
+  MAX_PNL_FACTOR_FOR_DEPOSITS_KEY,
+  MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY,
+  multichainBalanceKey,
+} from "config/dataStore";
 // Warning: do not import through reexport, it will break jest
 import { USD_DECIMALS } from "config/factors";
 import { selectGlvInfo, selectGlvs } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -11,13 +16,16 @@ import {
   useTokensBalancesUpdates,
   useUpdatedTokensBalances,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
-import { TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
+import { getBalanceTypeFromSrcChainId, TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
+import { TokenBalanceType } from "domain/tokens";
 import { ContractCallsConfig, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokenBySymbol } from "sdk/configs/tokens";
+
+import { useMultichainMarketTokensBalancesRequest } from "components/GmxAccountModal/hooks";
 
 import { isGlvEnabled } from "./glv";
 import { GlvInfoData } from "./types";
@@ -39,12 +47,26 @@ export function useMarketTokensDataRequest(
      * @default true
      */
     withGlv?: boolean;
+    enabled?: boolean;
+    withMultichainBalances?: boolean;
   }
 ): MarketTokensDataResult {
-  const { isDeposit, account, glvData = {}, withGlv = true } = p;
-  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const { isDeposit, account, glvData = {}, withGlv = true, enabled = true, withMultichainBalances = false } = p;
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId, {
+    enabled: enabled,
+  });
   const { marketsData, marketsAddresses } = useMarkets(chainId);
   const { resetTokensBalancesUpdates } = useTokensBalancesUpdates();
+  const marketTokensMultichainBalancesResult = useMultichainMarketTokensBalancesRequest({
+    chainId,
+    account,
+    enabled: enabled && withMultichainBalances && srcChainId !== undefined,
+    specificChainId: srcChainId,
+  });
+
+  // useEffect(() => {
+  //   console.log({ marketTokensMultichainBalancesResult });
+  // }, [marketTokensMultichainBalancesResult]);
 
   let isGlvTokensLoaded;
 
@@ -57,7 +79,7 @@ export function useMarketTokensDataRequest(
   const isDataLoaded = tokensData && marketsAddresses?.length && isGlvTokensLoaded;
 
   const { data: marketTokensData } = useMulticall(chainId, "useMarketTokensData", {
-    key: isDataLoaded ? [account, marketsAddresses.join("-")] : undefined,
+    key: isDataLoaded && enabled ? [account, marketsAddresses.join("-")] : undefined,
 
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     clearUnusedKeys: true,
@@ -127,6 +149,19 @@ export function useMarketTokensDataRequest(
           },
         } satisfies ContractCallsConfig<any>;
 
+        if (account) {
+          requests[`${marketAddress}-gmxAccountData`] = {
+            contractAddress: getContract(chainId, "DataStore"),
+            abiId: "DataStore",
+            calls: {
+              balance: {
+                methodName: "getUint",
+                params: [multichainBalanceKey(account, marketAddress)],
+              },
+            },
+          } satisfies ContractCallsConfig<any>;
+        }
+
         return requests;
       }, {}),
     parseResponse: (res) =>
@@ -136,6 +171,7 @@ export function useMarketTokensDataRequest(
 
         const pricesData = res.data[`${marketAddress}-prices`];
         const tokenData = res.data[`${marketAddress}-tokenData`];
+        const gmxAccountData = res.data[`${marketAddress}-gmxAccountData`];
 
         if (pricesErrors || tokenDataErrors || !pricesData || !tokenData) {
           return marketTokensMap;
@@ -146,6 +182,15 @@ export function useMarketTokensDataRequest(
         const minPrice = BigInt(pricesData?.minPrice.returnValues[0]);
         const maxPrice = BigInt(pricesData?.maxPrice.returnValues[0]);
 
+        const walletBalance =
+          account && tokenData.balance?.returnValues ? BigInt(tokenData?.balance?.returnValues[0]) : undefined;
+        const gmxAccountBalance =
+          account && gmxAccountData?.balance?.returnValues
+            ? BigInt(gmxAccountData?.balance?.returnValues[0])
+            : undefined;
+
+        const balance = srcChainId !== undefined ? gmxAccountBalance : walletBalance;
+
         marketTokensMap[marketAddress] = {
           ...tokenConfig,
           address: marketAddress,
@@ -154,11 +199,15 @@ export function useMarketTokensDataRequest(
             maxPrice: maxPrice !== undefined && maxPrice > 0 ? maxPrice : expandDecimals(1, USD_DECIMALS),
           },
           totalSupply: BigInt(tokenData?.totalSupply.returnValues[0]),
-          balance: account && tokenData.balance?.returnValues ? BigInt(tokenData?.balance?.returnValues[0]) : undefined,
+          walletBalance,
+          gmxAccountBalance,
+          // sourceChainBalance,
+          balanceType: getBalanceTypeFromSrcChainId(srcChainId),
+          balance,
           explorerUrl: `${getExplorerUrl(chainId)}/token/${marketAddress}`,
         };
 
-        resetTokensBalancesUpdates(Object.keys(marketTokensMap), "wallet");
+        resetTokensBalancesUpdates(Object.keys(marketTokensMap), TokenBalanceType.Wallet);
 
         return marketTokensMap;
       }, {} as TokensData),
@@ -166,7 +215,20 @@ export function useMarketTokensDataRequest(
 
   const gmAndGlvMarketTokensData = useMemo(() => {
     if (!marketTokensData || !glvData || Object.values(glvData).length === 0 || !withGlv) {
-      return marketTokensData;
+      if (!marketTokensData) {
+        return undefined;
+      }
+
+      if (!withMultichainBalances || !marketTokensMultichainBalancesResult.isLoading) {
+        return marketTokensData;
+      }
+
+      return mapValues(marketTokensData, (marketToken) => {
+        return {
+          ...marketToken,
+          sourceChainBalance: marketTokensMultichainBalancesResult.tokenBalances[marketToken.address],
+        };
+      });
     }
 
     const result = { ...marketTokensData };
@@ -174,8 +236,24 @@ export function useMarketTokensDataRequest(
       result[glvMarket.glvTokenAddress] = glvMarket.glvToken;
     });
 
+    if (withMultichainBalances && !marketTokensMultichainBalancesResult.isLoading) {
+      return mapValues(result, (marketToken) => {
+        return {
+          ...marketToken,
+          sourceChainBalance: marketTokensMultichainBalancesResult.tokenBalances[marketToken.address],
+        };
+      });
+    }
+
     return result;
-  }, [marketTokensData, glvData, withGlv]);
+  }, [
+    marketTokensData,
+    glvData,
+    withGlv,
+    withMultichainBalances,
+    marketTokensMultichainBalancesResult.isLoading,
+    marketTokensMultichainBalancesResult.tokenBalances,
+  ]);
 
   const updatedGmAndGlvMarketTokensData = useUpdatedTokensBalances(gmAndGlvMarketTokensData);
 
@@ -187,7 +265,7 @@ export function useMarketTokensDataRequest(
 export function useMarketTokensData(
   chainId: ContractsChainId,
   srcChainId: SourceChainId | undefined,
-  p: { isDeposit: boolean; withGlv?: boolean; glvData?: GlvInfoData }
+  p: { isDeposit: boolean; withGlv?: boolean; glvData?: GlvInfoData; enabled?: boolean }
 ): MarketTokensDataResult {
   const { isDeposit } = p;
   const account = useSelector((s) => s.globals.account);
@@ -201,5 +279,6 @@ export function useMarketTokensData(
     account,
     glvData: glvData,
     withGlv: glvs?.length ? p.withGlv : false,
+    enabled: p.enabled,
   });
 }

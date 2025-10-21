@@ -1,11 +1,12 @@
 import { encodeFunctionData, zeroAddress } from "viem";
 
 import type { SourceChainId } from "config/chains";
-import { IStargateAbi } from "config/multichain";
-import type { QuoteSend } from "domain/multichain/types";
+import { SendParam } from "domain/multichain/types";
 import { TxnCallback, WalletTxnCtx, sendWalletTransaction } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
-import type { SendParamStruct } from "typechain-types-stargate/IStargate";
+import { abis } from "sdk/abis";
+
+import type { MessagingFee } from "./types";
 
 export async function sendCrossChainDepositTxn({
   chainId,
@@ -23,9 +24,9 @@ export async function sendCrossChainDepositTxn({
   tokenAddress: string;
   stargateAddress: string;
   amount: bigint;
-  sendParams: SendParamStruct;
+  sendParams: SendParam;
   account: string;
-  quoteSend: QuoteSend;
+  quoteSend: MessagingFee;
   callback?: TxnCallback<WalletTxnCtx>;
 }) {
   const isNative = tokenAddress === zeroAddress;
@@ -36,7 +37,7 @@ export async function sendCrossChainDepositTxn({
     to: stargateAddress,
     signer: signer,
     callData: encodeFunctionData({
-      abi: IStargateAbi,
+      abi: abis.IStargate,
       functionName: "sendToken",
       args: [sendParams, quoteSend, account],
     }),

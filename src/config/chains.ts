@@ -156,7 +156,7 @@ export const RPC_PROVIDERS: Record<AnyChainId | typeof ETH_MAINNET, string[]> = 
     "https://optimism-sepolia.drpc.org",
     "https://optimism-sepolia.therpc.io",
   ],
-  [SOURCE_SEPOLIA]: ["https://sepolia.drpc.org"],
+  [SOURCE_SEPOLIA]: ["https://sepolia.drpc.org", "https://ethereum-sepolia-rpc.publicnode.com"],
   [BOTANIX]: [
     // returns incorrect gas price
     // "https://rpc.botanixlabs.com",

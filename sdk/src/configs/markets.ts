@@ -13,11 +13,13 @@ export type MarketConfig = {
   shortTokenAddress: string;
 };
 
+export type MarketsConfigMap = Record<string, MarketConfig>;
+
 /*
   ATTENTION
   When adding new markets, please add them also to the end of the list in ./src/configs/static/sortedMarkets.ts
 */
-export const MARKETS: Record<ContractsChainId, Record<string, MarketConfig>> = {
+export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
   [ARBITRUM]: {
     // BTC/USD [WBTC.e-USDC]
     "0x47c031236e19d024b42f8AE6780E44A573170703": {
