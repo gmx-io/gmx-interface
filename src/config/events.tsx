@@ -30,6 +30,20 @@ export const MKR_USD_DELISTING_EVENT_ID = "mkr-usd-delisting";
 
 export const appEventsData: EventData[] = [
   {
+    id: "xaut0-avalanche-listing",
+    isActive: true,
+    startDate: "17 Oct 2025, 10:00",
+    endDate: "24 Oct 2025, 10:00",
+    title: "XAUt0 markets added on Avalanche",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM{" "}
+        <span className="text-slate-100">[XAUt0-XAUt0]</span> or GM <span className="text-slate-100">[XAUt0-USDT]</span>
+        .
+      </>
+    ),
+  },
+  {
     id: "morpho-glv-lending",
     isActive: true,
     startDate: "14 Oct 2025, 6:00",

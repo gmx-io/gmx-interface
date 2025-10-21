@@ -1,8 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import partition from "lodash/partition";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { usePrevious } from "react-use";
+import React, { useCallback, useMemo, useState } from "react";
 import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
@@ -182,16 +181,12 @@ function MarketsList() {
 
   const close = useSelectorClose();
 
-  const { orderBy, direction, getSorterProps, setOrderBy } = useSorterHandlers<SortField>("chart-token-selector");
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const isSwap = tradeType === TradeType.Swap;
-  const prevIsSwap = usePrevious(isSwap);
+  const { isSwap } = useSelector(selectTradeboxTradeFlags);
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>(
+    `chart-token-selector-${isSwap ? "spot" : "perp"}`
+  );
 
-  useEffect(() => {
-    if (isSwap !== prevIsSwap) {
-      setOrderBy("unspecified");
-    }
-  }, [isSwap, setOrderBy, prevIsSwap]);
+  const [searchKeyword, setSearchKeyword] = useState("");
 
   const sortedTokens = useFilterSortTokens({
     chainId,
