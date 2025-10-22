@@ -489,6 +489,10 @@ msgstr "高い外部スワップ影響"
 msgid "Adding"
 msgstr "追加中"
 
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "90+ crypto tokens"
+msgstr ""
+
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to claim price impact rebates."
 msgstr "価格影響リベートの請求に失敗しました。"
@@ -549,10 +553,6 @@ msgstr "<0>Camelot</0>でArbitrum上のAPEを購入。"
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Don't show this message again for 30 days."
 msgstr "30日間このメッセージを表示しない"
-
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "80+ crypto tokens"
-msgstr "80以上の暗号トークン"
 
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -867,6 +867,10 @@ msgstr "支払い"
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "You’ll need some {wrappedNativeTokenSymbol} in your account to withdraw funds."
 msgstr "資金を引き出すには、アカウントにいくらかの {wrappedNativeTokenSymbol} が必要です。"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Failed to update settings."
+msgstr ""
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
@@ -1208,10 +1212,6 @@ msgstr "指値スワップ失敗"
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "清算 {longOrShortText} - {marketIndexName}"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Simulate Tickers Errors"
-msgstr "ティッカーエラーをシミュレート"
 
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Inc."
@@ -1690,6 +1690,10 @@ msgstr "GMX Alerts"
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settling position fees"
 msgstr "ポジション手数料を決済中"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Technically, net price impact breaks down into stored price impact (for increase orders) and close price impact (for decrease orders). This setting shows both in the net value tooltip and close modal execution details, plus the stored price impact for increase orders. <0>Read more</0>."
+msgstr ""
 
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Show details"
@@ -2257,10 +2261,6 @@ msgstr "{0} に変更"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Relayer request failed"
 msgstr "リレヤーリクエストに失敗しました"
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "settings updated"
-msgstr "設定が更新されました"
 
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 Actions"
@@ -3948,10 +3948,6 @@ msgstr "デリバティブポートフォリオトラッカー"
 msgid "Create Limit"
 msgstr "リミットを作成"
 
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Displays the stored price impact for increase orders. The net price impact is broken down into stored price impact and close price impact in the net value tooltip and execution details in the close modal. <0>Read more</0>."
-msgstr "増加注文の保存価格影響を表示。ネット価格影響はネット価値ツールチップとクローズモーダルの実行詳細で保存価格影響とクローズ価格影響に内訳されます。<0>詳細を読む</0>。"
-
 #: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
 #: src/pages/Stake/VesterWithdrawModal.tsx
 msgid "Withdraw submitted."
@@ -4458,10 +4454,6 @@ msgstr "ワンクリック設定"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Announcements"
 msgstr "GMXのお知らせ"
-
-#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
-msgid "Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is only settled on position decrease. <0>Read more</0>"
-msgstr "ネット価格影響は増加時の保存影響と減少アクション時の影響の合計で、ポジション減少時にのみ決済されます。<0>詳細を読む</0>"
 
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Referrals/Referrals.tsx
@@ -5027,10 +5019,6 @@ msgstr "完全にクローズされたポジションの勝敗。"
 msgid "<0>This will claim {formattedRewards} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
 msgstr "<0>{formattedRewards} GMXを請求します。<1/><2/>請求後、このEarnページのGMXセクションの\"ステーク\"ボタンを使ってこれらのGMXトークンをステークできます。<3/><4/></0>"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Simulate Partial Tickers"
-msgstr "部分ティッカーをシミュレート"
-
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Open Binance app"
 msgstr "Binanceアプリを開く"
@@ -5461,6 +5449,10 @@ msgstr "ポジションをクリックして選択し、取引ボックスを使
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Create {0} Order"
 msgstr "{0}注文を作成"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Settings updated."
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Limit Swap"
@@ -5931,6 +5923,10 @@ msgstr ""
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
 msgstr ""
 
+#: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
+msgid "Net price impact is the price impact for your position, calculated when decreasing it. <0>Read more</0>."
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the swap to the receive token when the price conditions are met."
 msgstr "価格条件が満たされた場合でも、受取トークンへのスワップを執行するための十分な流動性がない可能性があります。"
@@ -6254,10 +6250,6 @@ msgstr "レイヤー1"
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Depositing"
 msgstr "入金中"
-
-#: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
-msgid "Net price impact is the sum of the stored impact at increase and the impact at decrease, which is settled on position decrease. <0>Read more</0>."
-msgstr "ネット価格影響は増加時の保存影響と減少時の影響の合計で、ポジション減少時に決済されます。<0>詳細を読む</0>。"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
@@ -6968,10 +6960,6 @@ msgstr "データなし"
 msgid "{prefix} <0>{text}</0>"
 msgstr "{prefix} <0>{text}</0>"
 
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Failed to update settings"
-msgstr "設定更新に失敗"
-
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Tweet"
 msgstr "ツイート"
@@ -7141,6 +7129,10 @@ msgstr "ロング"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "24h High"
 msgstr "24時間高値"
+
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Net price impact is the price impact for your position, calculated when decreasing it. <0>Read more</0>"
+msgstr ""
 
 #: src/components/Referrals/ReferralCodeWarnings.tsx
 msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."

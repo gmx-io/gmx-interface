@@ -489,6 +489,10 @@ msgstr "Alto impacto de swap externo"
 msgid "Adding"
 msgstr "Agregando"
 
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "90+ crypto tokens"
+msgstr ""
+
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to claim price impact rebates."
 msgstr "Falló la reclamación de reembolsos de impacto de precio."
@@ -549,10 +553,6 @@ msgstr "Compra APE en Arbitrum con <0>Camelot</0>."
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Don't show this message again for 30 days."
 msgstr "No muestres este mensaje de nuevo en los próximos 30 días."
-
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "80+ crypto tokens"
-msgstr "Más de 80 tokens cripto"
 
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -867,6 +867,10 @@ msgstr "Pagar"
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "You’ll need some {wrappedNativeTokenSymbol} in your account to withdraw funds."
 msgstr "Necesitarás algo de {wrappedNativeTokenSymbol} en tu cuenta para retirar fondos."
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Failed to update settings."
+msgstr ""
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
@@ -1208,10 +1212,6 @@ msgstr "Intercambio Límite Fallido"
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "Liq. {longOrShortText} - {marketIndexName}"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Simulate Tickers Errors"
-msgstr "Simular Errores de Tickers"
 
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Inc."
@@ -1690,6 +1690,10 @@ msgstr "Alertas GMX"
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settling position fees"
 msgstr "Liquidando tarifas de posición"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Technically, net price impact breaks down into stored price impact (for increase orders) and close price impact (for decrease orders). This setting shows both in the net value tooltip and close modal execution details, plus the stored price impact for increase orders. <0>Read more</0>."
+msgstr ""
 
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Show details"
@@ -2257,10 +2261,6 @@ msgstr "Cambiar a {0}"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Relayer request failed"
 msgstr "Solicitud de relayer fallida"
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "settings updated"
-msgstr "ajustes actualizados"
 
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 Actions"
@@ -3948,10 +3948,6 @@ msgstr "Tracker de Portafolio de Derivados"
 msgid "Create Limit"
 msgstr "Crear Límite"
 
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Displays the stored price impact for increase orders. The net price impact is broken down into stored price impact and close price impact in the net value tooltip and execution details in the close modal. <0>Read more</0>."
-msgstr "Muestra el impacto de precio almacenado para órdenes de aumento. El impacto de precio neto se desglosa en impacto de precio almacenado e impacto de precio al cierre en el tooltip de valor neto y detalles de ejecución en el modal de cierre. <0>Leer más</0>."
-
 #: src/pages/Stake/AffiliateVesterWithdrawModal.tsx
 #: src/pages/Stake/VesterWithdrawModal.tsx
 msgid "Withdraw submitted."
@@ -4458,10 +4454,6 @@ msgstr "Configuraciones One-Click"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Announcements"
 msgstr "Anuncios de GMX"
-
-#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
-msgid "Net price impact is the sum of the stored impact at increase and the impact at decrease action, which is only settled on position decrease. <0>Read more</0>"
-msgstr "El impacto de precio neto es la suma del impacto almacenado al aumento y el impacto en la acción de disminución, que solo se liquida en la disminución de posición. <0>Leer más</0>"
 
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Referrals/Referrals.tsx
@@ -5027,10 +5019,6 @@ msgstr "Ganancias y pérdidas para posiciones completamente cerradas."
 msgid "<0>This will claim {formattedRewards} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
 msgstr "<0>Esto reclamará {formattedRewards} GMX.<1/><2/>Después de reclamar, puedes stakear estos tokens GMX usando el botón \"Stake\" en la sección GMX de esta página de Ganancias.<3/><4/></0>"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Simulate Partial Tickers"
-msgstr "Simular Tickers Parciales"
-
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "Open Binance app"
 msgstr "Abrir la app de Binance"
@@ -5461,6 +5449,10 @@ msgstr "Haz clic en la posición para seleccionarla, luego usa el cuadro de oper
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Create {0} Order"
 msgstr "Crear Orden {0}"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Settings updated."
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Limit Swap"
@@ -5931,6 +5923,10 @@ msgstr "Saldo Reclamable"
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
 msgstr "Exchange descentralizado sin permisos on-chain con liquidez profunda y bajos costos, en vivo desde 2021"
 
+#: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
+msgid "Net price impact is the price impact for your position, calculated when decreasing it. <0>Read more</0>."
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the swap to the receive token when the price conditions are met."
 msgstr "Es posible que no haya suficiente liquidez para ejecutar el intercambio al token de recepción cuando se cumplan las condiciones de precio."
@@ -6254,10 +6250,6 @@ msgstr "Capa 1"
 #: src/pages/Stake/VesterDepositModal.tsx
 msgid "Depositing"
 msgstr "Depositando"
-
-#: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
-msgid "Net price impact is the sum of the stored impact at increase and the impact at decrease, which is settled on position decrease. <0>Read more</0>."
-msgstr "El impacto de precio neto es la suma del impacto almacenado al aumento y el impacto al disminución, que se liquida en disminución de posición. <0>Leer más</0>."
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
@@ -6968,10 +6960,6 @@ msgstr "No hay datos disponibles"
 msgid "{prefix} <0>{text}</0>"
 msgstr "{prefix} <0>{text}</0>"
 
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Failed to update settings"
-msgstr "Falló la actualización de ajustes"
-
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Tweet"
 msgstr "Tweet"
@@ -7141,6 +7129,10 @@ msgstr "largo"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "24h High"
 msgstr "Máximo 24h"
+
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Net price impact is the price impact for your position, calculated when decreasing it. <0>Read more</0>"
+msgstr ""
 
 #: src/components/Referrals/ReferralCodeWarnings.tsx
 msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."
