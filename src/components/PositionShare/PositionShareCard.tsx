@@ -55,10 +55,10 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
     const priceDecimals = calculateDisplayDecimals(markPrice, undefined, indexToken.visualMultiplier);
 
     return (
-      <div className="relative overflow-hidden rounded-9">
+      <div className="relative max-w-[460px] grow overflow-hidden rounded-9">
         <div
           ref={ref}
-          className="flex aspect-[460/240] w-[460px] justify-between rounded-9 bg-contain bg-no-repeat p-20 max-md:w-[360px] max-md:p-16 max-smallMobile:w-full"
+          className="flex aspect-[460/240] w-full justify-between rounded-9 bg-contain bg-no-repeat p-20 max-md:p-16"
           style={style}
         >
           <img src={coinImg} alt="coin" className="z-1 absolute bottom-0 right-0 size-[100px] max-md:size-[70px]" />
@@ -134,7 +134,7 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
 
           <div className="flex flex-col items-end justify-between">
             <QRCodeSVG
-              size={isMobile ? 32 : 52}
+              size={isMobile ? 40 : 52}
               value={success && code ? `${homeURL}/#/?ref=${code}` : `${homeURL}`}
               className="rounded-4 bg-white p-4"
             />

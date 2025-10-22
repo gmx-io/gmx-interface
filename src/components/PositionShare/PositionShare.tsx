@@ -298,29 +298,32 @@ function PositionShare({
 
   return (
     <ModalWithPortal
-      contentClassName="!max-w-[500px]"
+      contentClassName="md:!max-w-[500px]"
       isVisible={isPositionShareModalOpen}
       setIsVisible={setIsPositionShareModalOpen}
       label={t`Share your sucessful GMX trade on X`}
       contentPadding={false}
+      withMobileBottomPosition
     >
       <div className="flex flex-col gap-20 border-b-1/2 border-slate-600 p-20">
-        {cachedPositionData && (
-          <PositionShareCard
-            entryPrice={cachedPositionData.entryPrice}
-            indexToken={cachedPositionData.indexToken}
-            isLong={cachedPositionData.isLong}
-            leverage={cachedPositionData.leverage}
-            markPrice={cachedPositionData.markPrice}
-            pnlAfterFeesPercentage={cachedPositionData.pnlAfterFeesPercentage}
-            pnlAfterFeesUsd={cachedPositionData.pnlAfterFeesUsd}
-            userAffiliateCode={shareAffiliateCode}
-            ref={cardRef}
-            loading={!uploadedImageInfo && !uploadedImageError}
-            sharePositionBgImg={sharePositionBgImg}
-            showPnlAmounts={showPnlAmounts}
-          />
-        )}
+        <div className="flex justify-center">
+          {cachedPositionData && (
+            <PositionShareCard
+              entryPrice={cachedPositionData.entryPrice}
+              indexToken={cachedPositionData.indexToken}
+              isLong={cachedPositionData.isLong}
+              leverage={cachedPositionData.leverage}
+              markPrice={cachedPositionData.markPrice}
+              pnlAfterFeesPercentage={cachedPositionData.pnlAfterFeesPercentage}
+              pnlAfterFeesUsd={cachedPositionData.pnlAfterFeesUsd}
+              userAffiliateCode={shareAffiliateCode}
+              ref={cardRef}
+              loading={!uploadedImageInfo && !uploadedImageError}
+              sharePositionBgImg={sharePositionBgImg}
+              showPnlAmounts={showPnlAmounts}
+            />
+          )}
+        </div>
         {shouldShowCreateReferralCard && (
           <CreateReferralCode
             handleCreateReferralCode={handleCreateReferralCode}

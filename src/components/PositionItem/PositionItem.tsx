@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -30,7 +30,6 @@ import {
   getNameByOrderType,
 } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
-import { useChainId } from "lib/chains";
 import { CHART_PERIODS } from "lib/legacy";
 import { calculateDisplayDecimals, formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
@@ -40,7 +39,6 @@ import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
 import PositionDropdown from "components/PositionDropdown/PositionDropdown";
-import PositionShare from "components/PositionShare/PositionShare";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -70,7 +68,6 @@ export type Props = {
 };
 
 export function PositionItem(p: Props) {
-  const { chainId } = useChainId();
   const { showDebugValues, breakdownNetPriceImpactEnabled } = useSettings();
   const savedShowPnlAfterFees = useSelector(selectShowPnlAfterFees);
   const displayedPnl = savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
@@ -80,12 +77,6 @@ export function PositionItem(p: Props) {
   const isCurrentMarket = tradeboxSelectedPositionKey === p.position.key;
 
   const marketDecimals = useSelector(makeSelectMarketPriceDecimals(p.position.market.indexTokenAddress));
-
-  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-
-  const handleShareClick = useCallback(() => {
-    setIsShareModalOpen(true);
-  }, []);
 
   function renderNetValue() {
     return (
@@ -225,23 +216,6 @@ export function PositionItem(p: Props) {
       ),
     };
   }, [p.position.marketInfo, p.position.isLong, p.position.sizeInUsd]);
-
-  const positionShareModal = (
-    <PositionShare
-      entryPrice={p.position.entryPrice}
-      indexToken={p.position.indexToken}
-      isLong={p.position.isLong}
-      leverage={p.position.leverage}
-      markPrice={p.position.markPrice}
-      pnlAfterFeesPercentage={p.position.pnlAfterFeesPercentage}
-      chainId={chainId}
-      isPositionShareModalOpen={isShareModalOpen}
-      setIsPositionShareModalOpen={setIsShareModalOpen}
-      account={p.position.account}
-      pnlAfterFeesUsd={p.position.pnlAfterFees}
-      shareSource="position-item-dropdown"
-    />
-  );
 
   function renderCollateral() {
     return (
@@ -454,7 +428,6 @@ export function PositionItem(p: Props) {
 
     return (
       <TableTr hoverable={true} data-qa={qaAttr}>
-        {positionShareModal}
         <TableTd
           data-qa="position-handle"
           className={cx("flex", {
@@ -552,7 +525,7 @@ export function PositionItem(p: Props) {
                     negative: displayedPnl < 0,
                     muted: displayedPnl == 0n,
                   })}
-                  onClick={handleShareClick}
+                  onClick={p.onShareClick}
                 >
                   {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
                   <ShareIcon className="mt-1 size-14" />
@@ -631,7 +604,6 @@ export function PositionItem(p: Props) {
 
     return (
       <AppCard dataQa="position-item">
-        {positionShareModal}
         <AppCardSection onClick={() => p.onSelectPositionClick?.()}>
           <div className="text-body-medium flex items-center gap-8">
             <span
@@ -698,7 +670,7 @@ export function PositionItem(p: Props) {
                   negative: displayedPnl < 0,
                   muted: displayedPnl == 0n,
                 })}
-                onClick={handleShareClick}
+                onClick={p.onShareClick}
               >
                 {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
                 <ShareIcon className="mt-2 size-16" />

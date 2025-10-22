@@ -158,7 +158,7 @@ export function PositionList(p: Props) {
           account={positionToShare.account}
           pnlAfterFeesPercentage={positionToShare?.pnlAfterFeesPercentage}
           chainId={chainId}
-          shareSource="position-item-pnl"
+          shareSource="positions-list"
         />
       )}
       <OrderEditorContainer />
@@ -221,8 +221,8 @@ const PositionItemWrapper = memo(
         showPnlAfterFees={showPnlAfterFees}
         isLarge={isLarge}
         hideActions={hideActions}
-        onShareClick={handleShareClick}
         onCancelOrder={handleCancelOrder}
+        onShareClick={handleShareClick}
       />
     );
   }
