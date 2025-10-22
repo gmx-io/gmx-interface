@@ -3306,7 +3306,7 @@ msgstr "在浏览器中查看"
 msgid "Bonus APR"
 msgstr "奖金年化收益率"
 
-#: src/components/PositionShare/PositionShare.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code submitted."
 msgstr ""
@@ -6521,7 +6521,7 @@ msgstr "池子"
 msgid "Venus"
 msgstr "Venus"
 
-#: src/components/PositionShare/PositionShare.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
 msgstr "推荐代码创建失败。"

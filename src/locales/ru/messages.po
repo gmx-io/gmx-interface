@@ -3306,7 +3306,7 @@ msgstr "Просмотреть в Эксплорере"
 msgid "Bonus APR"
 msgstr "Бонусная Годовая Процентная Ставка"
 
-#: src/components/PositionShare/PositionShare.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code submitted."
 msgstr ""
@@ -6521,7 +6521,7 @@ msgstr "Пул"
 msgid "Venus"
 msgstr "Venus"
 
-#: src/components/PositionShare/PositionShare.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
 msgstr "Создание реферального кода не удалось."

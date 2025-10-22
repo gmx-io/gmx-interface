@@ -3306,7 +3306,7 @@ msgstr "Ver en Explorador"
 msgid "Bonus APR"
 msgstr "APR de Bono"
 
-#: src/components/PositionShare/PositionShare.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code submitted."
 msgstr ""
@@ -6521,7 +6521,7 @@ msgstr "Reserva"
 msgid "Venus"
 msgstr "Venus"
 
-#: src/components/PositionShare/PositionShare.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
 msgstr "Creación del código de referido fallida."

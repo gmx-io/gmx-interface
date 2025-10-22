@@ -3306,7 +3306,7 @@ msgstr "Explorer에서 보기"
 msgid "Bonus APR"
 msgstr "보너스 APR"
 
-#: src/components/PositionShare/PositionShare.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code submitted."
 msgstr ""
@@ -6521,7 +6521,7 @@ msgstr "풀"
 msgid "Venus"
 msgstr "비너스"
 
-#: src/components/PositionShare/PositionShare.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
 msgstr "추천 코드 생성 실패."
