@@ -493,6 +493,7 @@ export function SyntheticsPage(p: Props) {
           doNotShowAgain={shareSuccessDoNotShowAgain}
           onDoNotShowAgainChange={handleShareSuccessDoNotShowAgainChange}
           onShareAction={handleShareSuccessShareAction}
+          shareSource="auto-prompt"
         />
       ) : null}
       <InterviewModal type="trader" isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />

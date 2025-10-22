@@ -239,6 +239,7 @@ export function PositionItem(p: Props) {
       setIsPositionShareModalOpen={setIsShareModalOpen}
       account={p.position.account}
       pnlAfterFeesUsd={p.position.pnlAfterFees}
+      shareSource="position-item-dropdown"
     />
   );
 

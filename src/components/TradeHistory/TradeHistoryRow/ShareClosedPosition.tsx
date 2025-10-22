@@ -1,6 +1,7 @@
 import { convertToUsd } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { getBasisPoints } from "lib/numbers";
+import { SharePositionActionSource } from "lib/userAnalytics/types";
 import { PositionTradeAction } from "sdk/types/tradeHistory";
 import { getEntryPrice, getLeverage } from "sdk/utils/positions";
 
@@ -15,6 +16,7 @@ type ShareClosedPositionProps = {
   doNotShowAgain?: boolean;
   onDoNotShowAgainChange?: (value: boolean) => void;
   onShareAction?: () => void;
+  shareSource?: SharePositionActionSource;
 };
 
 export default function ShareClosedPosition({
@@ -24,6 +26,7 @@ export default function ShareClosedPosition({
   doNotShowAgain,
   onDoNotShowAgainChange,
   onShareAction,
+  shareSource,
 }: ShareClosedPositionProps) {
   const { chainId } = useChainId();
 
@@ -68,6 +71,7 @@ export default function ShareClosedPosition({
       doNotShowAgain={doNotShowAgain}
       onDoNotShowAgainChange={onDoNotShowAgainChange}
       onShareAction={onShareAction}
+      shareSource={shareSource}
     />
   );
 }

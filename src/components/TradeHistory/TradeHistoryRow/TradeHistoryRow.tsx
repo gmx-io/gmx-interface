@@ -321,6 +321,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           tradeAction={tradeAction}
           isShareModalOpen={isShareModalOpen}
           setIsShareModalOpen={setIsShareModalOpen}
+          shareSource="trade-history-list"
         />
       ) : null}
       {showDebugValues && (

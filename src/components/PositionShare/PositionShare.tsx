@@ -15,7 +15,7 @@ import { getRootShareApiUrl, getTwitterIntentURL } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import useLoadImage from "lib/useLoadImage";
 import { userAnalytics } from "lib/userAnalytics";
-import { SharePositionActionEvent } from "lib/userAnalytics/types";
+import { SharePositionActionEvent, SharePositionActionSource } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -63,6 +63,7 @@ type Props = {
   doNotShowAgain?: boolean;
   onDoNotShowAgainChange?: (value: boolean) => void;
   onShareAction?: () => void;
+  shareSource?: SharePositionActionSource;
 };
 
 function PositionShare({
@@ -80,6 +81,7 @@ function PositionShare({
   doNotShowAgain = false,
   onDoNotShowAgainChange,
   onShareAction,
+  shareSource,
 }: Props) {
   const normalizedAccount = account ?? undefined;
   const userAffiliateCode = useAffiliateCodes(chainId, account);
@@ -107,6 +109,9 @@ function PositionShare({
     }
     return userAffiliateCode;
   }, [createdReferralCode, userAffiliateCode]);
+  const shareSourceWithFallback: SharePositionActionSource = shareSource ?? "unknown";
+  const hasExistingReferralCode = Boolean(userAffiliateCode?.code);
+  const hasCurrentReferralCode = Boolean(shareAffiliateCode?.code);
 
   const tweetLink = getTwitterIntentURL(
     `Latest $\u200a${indexToken?.symbol} trade on @GMX_IO`,
@@ -148,6 +153,19 @@ function PositionShare({
     pnlAfterFeesUsd,
     prevIsOpen,
   ]);
+
+  useEffect(() => {
+    if (!prevIsOpen && isPositionShareModalOpen && shareSource === "auto-prompt") {
+      userAnalytics.pushEvent<SharePositionActionEvent>({
+        event: "SharePositionAction",
+        data: {
+          action: "PromptShown",
+          source: "auto-prompt",
+          hasReferralCode: hasExistingReferralCode,
+        },
+      });
+    }
+  }, [hasExistingReferralCode, isPositionShareModalOpen, prevIsOpen, shareSource]);
 
   useEffect(() => {
     if (userAffiliateCode.code) {
@@ -193,6 +211,21 @@ function PositionShare({
 
   const shouldShowCreateReferralCard =
     userAffiliateCode.success && !userAffiliateCode.code && !createdReferralCode && hasSevenDayVolume;
+  const handleReferralCodeSuccess = useCallback(
+    (code: string) => {
+      setCreatedReferralCode(code);
+
+      userAnalytics.pushEvent<SharePositionActionEvent>({
+        event: "SharePositionAction",
+        data: {
+          action: "ReferralCodeCreated",
+          source: shareSourceWithFallback,
+          hasReferralCode: true,
+        },
+      });
+    },
+    [shareSourceWithFallback]
+  );
   async function handleDownload() {
     const element = cardRef.current;
     onShareAction?.();
@@ -201,6 +234,8 @@ function PositionShare({
       event: "SharePositionAction",
       data: {
         action: "Download",
+        source: shareSourceWithFallback,
+        hasReferralCode: hasCurrentReferralCode,
       },
     });
 
@@ -218,6 +253,8 @@ function PositionShare({
       event: "SharePositionAction",
       data: {
         action: "Copy",
+        source: shareSourceWithFallback,
+        hasReferralCode: hasCurrentReferralCode,
       },
     });
 
@@ -233,11 +270,31 @@ function PositionShare({
         event: "SharePositionAction",
         data: {
           action: "ShareTwitter",
+          source: shareSourceWithFallback,
+          hasReferralCode: hasCurrentReferralCode,
         },
       },
       { instantSend: true }
     );
-  }, [onShareAction]);
+  }, [hasCurrentReferralCode, onShareAction, shareSourceWithFallback]);
+
+  const handleDoNotShowAgainToggle = useCallback(
+    (value: boolean) => {
+      onDoNotShowAgainChange?.(value);
+
+      if (value) {
+        userAnalytics.pushEvent<SharePositionActionEvent>({
+          event: "SharePositionAction",
+          data: {
+            action: "PromptDontShowAgain",
+            source: shareSourceWithFallback,
+            hasReferralCode: hasCurrentReferralCode,
+          },
+        });
+      }
+    },
+    [hasCurrentReferralCode, onDoNotShowAgainChange, shareSourceWithFallback]
+  );
 
   return (
     <ModalWithPortal
@@ -265,7 +322,10 @@ function PositionShare({
           />
         )}
         {shouldShowCreateReferralCard && (
-          <CreateReferralCode handleCreateReferralCode={handleCreateReferralCode} onSuccess={setCreatedReferralCode} />
+          <CreateReferralCode
+            handleCreateReferralCode={handleCreateReferralCode}
+            onSuccess={handleReferralCodeSuccess}
+          />
         )}
         {uploadedImageError && <AlertInfoCard type="error">{uploadedImageError}</AlertInfoCard>}
       </div>
@@ -314,7 +374,7 @@ function PositionShare({
         </div>
         {Boolean(onDoNotShowAgainChange) && (
           <div className="flex justify-center">
-            <Checkbox isChecked={doNotShowAgain} setIsChecked={onDoNotShowAgainChange}>
+            <Checkbox isChecked={doNotShowAgain} setIsChecked={handleDoNotShowAgainToggle}>
               <span className="text-14 font-medium text-typography-secondary">
                 <Trans>Don't show this again</Trans>
               </span>

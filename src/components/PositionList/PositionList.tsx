@@ -158,6 +158,7 @@ export function PositionList(p: Props) {
           account={positionToShare.account}
           pnlAfterFeesPercentage={positionToShare?.pnlAfterFeesPercentage}
           chainId={chainId}
+          shareSource="position-item-pnl"
         />
       )}
       <OrderEditorContainer />
