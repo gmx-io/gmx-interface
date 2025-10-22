@@ -49,10 +49,10 @@ const makeMarketAsset = (chainId: ContractsChainId, marketLabel: MarketLabel): O
 
 const makeGlvAsset = (chainId: ContractsChainId, glvLabel: GlvLabel): OpportunityAsset => {
   const glv = getGlvByLabel(chainId, glvLabel);
-  if (!glv?.marketTokenAddress) {
+  if (!glv?.glvTokenAddress) {
     throw new Error(`${glvLabel} not found`);
   }
-  return { type: "glv", address: glv.marketTokenAddress };
+  return { type: "glv", address: glv.glvTokenAddress };
 };
 
 const makeTokenAsset = (chainId: ContractsChainId, tokenSymbol: string): OpportunityAsset => ({

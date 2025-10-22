@@ -29,7 +29,7 @@ export const GLV_MARKETS: {
       name: string | undefined;
       subtitle: string;
       shortening: string;
-      marketTokenAddress: string;
+      glvTokenAddress: string;
       longTokenAddress: string;
       shortTokenAddress: string;
     }
@@ -40,7 +40,7 @@ export const GLV_MARKETS: {
       name: undefined,
       subtitle: "GMX Liquidity Vault",
       shortening: "GLV",
-      marketTokenAddress: "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9",
+      glvTokenAddress: "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9",
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
@@ -48,7 +48,7 @@ export const GLV_MARKETS: {
       name: undefined,
       subtitle: "GMX Liquidity Vault",
       shortening: "GLV",
-      marketTokenAddress: "0xdF03EEd325b82bC1d4Db8b49c30ecc9E05104b96",
+      glvTokenAddress: "0xdF03EEd325b82bC1d4Db8b49c30ecc9E05104b96",
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
@@ -58,7 +58,7 @@ export const GLV_MARKETS: {
       name: undefined,
       subtitle: "GMX Liquidity Vault",
       shortening: "GLV",
-      marketTokenAddress: "0x901eE57f7118A7be56ac079cbCDa7F22663A3874",
+      glvTokenAddress: "0x901eE57f7118A7be56ac079cbCDa7F22663A3874",
       longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
       shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
     },
@@ -68,7 +68,7 @@ export const GLV_MARKETS: {
       name: "High Caps",
       subtitle: "Core ETH Markets Vault",
       shortening: "HC",
-      marketTokenAddress: "0xc519a5b8e5e93D3ec85D62231C1681c44952689d",
+      glvTokenAddress: "0xc519a5b8e5e93D3ec85D62231C1681c44952689d",
       longTokenAddress: "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
       shortTokenAddress: "0x3321Fd36aEaB0d5CdfD26f4A3A93E2D2aAcCB99f",
     },
@@ -78,7 +78,7 @@ export const GLV_MARKETS: {
       name: "High Caps",
       subtitle: "Core ETH Markets Vault",
       shortening: "HC",
-      marketTokenAddress: "0xAb3567e55c205c62B141967145F37b7695a9F854",
+      glvTokenAddress: "0xAb3567e55c205c62B141967145F37b7695a9F854",
       longTokenAddress: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
       shortTokenAddress: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
     },
