@@ -67,9 +67,8 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
       });
 
       const hasPartialData = Object.keys(result).length < Object.keys(pricesCacheRef.current).length;
-      const shouldDebug = localStorage.getItem("debugTickersPartialData") === "true";
 
-      if (hasPartialData || shouldDebug) {
+      if (hasPartialData) {
         // eslint-disable-next-line no-console
         console.warn("tickersPartialData");
         metrics.pushCounter<TickersPartialDataCounter>("tickersPartialData");

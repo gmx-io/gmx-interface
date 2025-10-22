@@ -30,15 +30,6 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
           <Trans>Disable Validation for Testing</Trans>
         </ToggleSwitch>
 
-        <ToggleSwitch
-          isChecked={localStorage.getItem("debugTickersPartialData") === "true"}
-          setIsChecked={() => {
-            localStorage.setItem("debugTickersPartialData", "true");
-          }}
-        >
-          <Trans>Simulate Partial Tickers</Trans>
-        </ToggleSwitch>
-
         <AbFlagSettings />
 
         <DebugSwapsSettings />
