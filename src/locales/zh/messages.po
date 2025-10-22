@@ -822,6 +822,10 @@ msgstr "无效滑点值"
 msgid "Max {0} buyable amount exceeded"
 msgstr "超过最大 {0} 可购买金额"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Disable Share Modal PnL Check"
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Code already taken"

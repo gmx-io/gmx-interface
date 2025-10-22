@@ -822,6 +822,10 @@ msgstr "無効なスリッページ値"
 msgid "Max {0} buyable amount exceeded"
 msgstr "最大{0}購入可能額超過"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Disable Share Modal PnL Check"
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Code already taken"

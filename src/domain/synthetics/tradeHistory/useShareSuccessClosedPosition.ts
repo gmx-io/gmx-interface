@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { OrderType } from "domain/synthetics/orders";
 import { convertToUsd } from "domain/tokens";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -39,6 +40,7 @@ export function useShareSuccessClosedPosition({ chainId, account }: Params): Sha
   const [shareTradeAction, setShareTradeAction] = useState<PositionTradeAction | null>(null);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [hasShareModalInteraction, setHasShareModalInteraction] = useState(false);
+  const { shouldDisableShareModalPnlCheck } = useSettings();
 
   const [doNotShowShareAgain, setDoNotShowShareAgain] = useLocalStorageSerializeKey<boolean>(
     "position-share-do-not-show-again",
@@ -81,6 +83,10 @@ export function useShareSuccessClosedPosition({ chainId, account }: Params): Sha
         return false;
       }
 
+      if (shouldDisableShareModalPnlCheck) {
+        return true;
+      }
+
       const collateralUsd =
         convertToUsd(
           tradeAction.initialCollateralDeltaAmount,
@@ -92,7 +98,7 @@ export function useShareSuccessClosedPosition({ chainId, account }: Params): Sha
 
       return pnlAfterFeesBps >= POSITION_SHARE_MIN_PNL_THRESHOLD_BPS;
     },
-    [doNotShowShareAgain, notInteractedShareViewCount, seenTradeActionsIds]
+    [doNotShowShareAgain, notInteractedShareViewCount, seenTradeActionsIds, shouldDisableShareModalPnlCheck]
   );
 
   useEffect(() => {

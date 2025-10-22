@@ -822,6 +822,10 @@ msgstr "유효하지 않은 슬리피지 값"
 msgid "Max {0} buyable amount exceeded"
 msgstr "최대 {0} 구매 가능 금액 초과"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Disable Share Modal PnL Check"
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Code already taken"

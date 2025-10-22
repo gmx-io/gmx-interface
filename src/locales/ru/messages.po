@@ -822,6 +822,10 @@ msgstr "Недопустимое значение скольжения"
 msgid "Max {0} buyable amount exceeded"
 msgstr "Максимальная сумма покупки {0} превышена"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Disable Share Modal PnL Check"
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Code already taken"

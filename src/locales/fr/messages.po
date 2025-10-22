@@ -822,6 +822,10 @@ msgstr "Valeur de slippage invalide"
 msgid "Max {0} buyable amount exceeded"
 msgstr "Montant achetable max {0} dépassé"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Disable Share Modal PnL Check"
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Code already taken"

@@ -822,6 +822,10 @@ msgstr "Ungültiger Schlupfwert"
 msgid "Max {0} buyable amount exceeded"
 msgstr "Max. {0} kaufbarer Betrag überschritten"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Disable Share Modal PnL Check"
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Code already taken"
