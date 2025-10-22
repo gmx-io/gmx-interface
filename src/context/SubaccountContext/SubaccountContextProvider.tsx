@@ -167,7 +167,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
         helperToast.success(
           <StatusNotification key="updateSubaccountSettingsSuccess" title={t`Update 1CT (One-Click Trading) settings`}>
-            <TransactionStatus status="success" text={t`settings updated`} />
+            <TransactionStatus status="success" text={t`Settings updated.`} />
           </StatusNotification>
         );
         setSignedApproval(signedSubaccountApproval);
@@ -179,7 +179,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         toast.dismiss();
         helperToast.error(
           <StatusNotification key="updateSubaccountSettingsError" title={t`Update 1CT (One-Click Trading) settings`}>
-            <TransactionStatus status="error" text={t`Failed to update settings`} />
+            <TransactionStatus status="error" text={t`Failed to update settings.`} />
           </StatusNotification>
         );
         return false;
