@@ -123,6 +123,7 @@ export function ClaimAffiliatesModal(p: Props) {
       isVisible={true}
       setIsVisible={onClose}
       label={t`Confirm Claim`}
+      withMobileBottomPosition
     >
       <div className="flex flex-col gap-12">
         <div className="text-center text-20 font-medium">Claim {formatUsd(totalClaimableFundingUsd)}</div>

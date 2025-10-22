@@ -573,17 +573,10 @@ export function PositionSeller() {
       return;
     }
 
-    txnPromise
-      .then(() => {
-        onClose();
-      })
-      .catch((error) => {
-        throw error;
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-        setDefaultReceiveToken(receiveToken.address);
-      });
+    txnPromise.then(onClose).finally(() => {
+      setIsSubmitting(false);
+      setDefaultReceiveToken(receiveToken.address);
+    });
   }
 
   const latestOnSubmit = useLatest(onSubmit);

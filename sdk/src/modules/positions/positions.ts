@@ -333,7 +333,7 @@ export class Positions extends Module {
       });
   }
 
-  private async getUserRefferalCode() {
+  private async getUserReferralCode() {
     if (this.chainId === BOTANIX) {
       return {
         attachedOnChain: false,
@@ -455,7 +455,7 @@ export class Positions extends Module {
 
   private async getUserReferralInfo(): Promise<UserReferralInfo | undefined> {
     const { userReferralCode, userReferralCodeString, attachedOnChain, referralCodeForTxn } =
-      await this.getUserRefferalCode();
+      await this.getUserReferralCode();
 
     const codeOwner = await this.getCodeOwner(userReferralCodeString);
     const tierId = await this.getAffiliateTier();

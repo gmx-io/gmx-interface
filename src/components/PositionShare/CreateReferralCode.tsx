@@ -2,13 +2,16 @@ import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import type { TransactionResponse } from "ethers";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { registerReferralCode } from "domain/referrals";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { switchNetwork } from "lib/wallets";
+import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -17,13 +20,14 @@ import { getReferralCodeTakenStatus } from "components/Referrals/referralsHelper
 import ReferralsIcon from "img/referrals.svg?react";
 
 type Props = {
-  handleCreateReferralCode: (code: string) => Promise<unknown>;
   onSuccess: (code: string) => void;
 };
 
 const REFERRAL_DOCS_LINK = "https://docs.gmx.io/docs/referrals";
 
-export function CreateReferralCode({ handleCreateReferralCode, onSuccess }: Props) {
+export function CreateReferralCode({ onSuccess }: Props) {
+  const { signer } = useWallet();
+  const { pendingTxns } = usePendingTxns();
   const { openConnectModal } = useConnectModal();
   const { address: account, isConnected } = useAccount();
   const { chainId, srcChainId } = useChainId();
@@ -34,13 +38,23 @@ export function CreateReferralCode({ handleCreateReferralCode, onSuccess }: Prop
   const [isAlreadyTaken, setIsAlreadyTaken] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const createReferralCode = useCallback(
+    (referralCode: string) => {
+      if (!signer) {
+        return Promise.reject(new Error("Wallet not connected"));
+      }
+
+      return registerReferralCode(chainId, referralCode, signer, {
+        sentMsg: t`Referral code submitted.`,
+        failMsg: t`Referral code creation failed.`,
+        pendingTxns,
+      });
+    },
+    [chainId, pendingTxns, signer]
+  );
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!isConnected) {
-      openConnectModal?.();
-      return;
-    }
-
     setIsProcessing(true);
     try {
       const { takenStatus } = await getReferralCodeTakenStatus(account, referralCode, chainId);
@@ -50,7 +64,7 @@ export function CreateReferralCode({ handleCreateReferralCode, onSuccess }: Prop
         return;
       }
 
-      const tx = (await handleCreateReferralCode(referralCode)) as TransactionResponse;
+      const tx = (await createReferralCode(referralCode)) as TransactionResponse;
       const receipt = await tx.wait();
 
       if (receipt?.status === 1) {

@@ -12,11 +12,14 @@ import { useTradeHistory } from "./useTradeHistory";
 
 const POSITION_SHARE_MIN_PNL_THRESHOLD_BPS = 1000n;
 const MAX_NOT_INTERACTED_VIEW_COUNT = 5;
+const LAST_HOUR_MS = 60 * 60 * 1000;
 
-type Params = {
-  chainId: number;
-  account: string | null | undefined;
-};
+const ORDER_EVENT_COMBINATIONS = [
+  {
+    eventName: TradeActionType.OrderExecuted,
+    orderType: [OrderType.MarketDecrease],
+  },
+];
 
 type ShareSuccessClosedPositionResult = {
   tradeAction: PositionTradeAction | null;
@@ -27,16 +30,13 @@ type ShareSuccessClosedPositionResult = {
   onShareAction: () => void;
 };
 
-const ORDER_EVENT_COMBINATIONS = [
-  {
-    eventName: TradeActionType.OrderExecuted,
-    orderType: [OrderType.MarketDecrease],
-  },
-];
-
-const LAST_HOUR_MS = 60 * 60 * 1000;
-
-export function useShareSuccessClosedPosition({ chainId, account }: Params): ShareSuccessClosedPositionResult {
+export function useShareSuccessClosedPosition({
+  chainId,
+  account,
+}: {
+  chainId: number;
+  account: string | null | undefined;
+}): ShareSuccessClosedPositionResult {
   const [shareTradeAction, setShareTradeAction] = useState<PositionTradeAction | null>(null);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [hasShareModalInteraction, setHasShareModalInteraction] = useState(false);

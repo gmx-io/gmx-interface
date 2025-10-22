@@ -3,20 +3,14 @@ import { toJpeg } from "html-to-image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard, usePrevious } from "react-use";
 
-import { USD_DECIMALS } from "config/factors";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { registerReferralCode, useAffiliateCodes } from "domain/referrals";
-import { usePeriodAccountStats } from "domain/synthetics/accountStats";
+import { useAffiliateCodes } from "domain/referrals";
 import { Token } from "domain/tokens";
-import { getTimePeriodsInSeconds } from "lib/dates";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
 import { getRootShareApiUrl, getTwitterIntentURL } from "lib/legacy";
-import { expandDecimals } from "lib/numbers";
 import useLoadImage from "lib/useLoadImage";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionActionEvent, SharePositionActionSource } from "lib/userAnalytics/types";
-import useWallet from "lib/wallets/useWallet";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -37,7 +31,6 @@ const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";
 const config = { quality: 0.95, canvasWidth: 518, canvasHeight: 292, type: "image/jpeg" };
-const SEVEN_DAY_REFERRAL_VOLUME_THRESHOLD = expandDecimals(5_000_000, USD_DECIMALS);
 
 function getShareURL(imageInfo, ref) {
   if (!imageInfo) return;
@@ -83,19 +76,7 @@ function PositionShare({
   onShareAction,
   shareSource,
 }: Props) {
-  const normalizedAccount = account ?? undefined;
   const userAffiliateCode = useAffiliateCodes(chainId, account);
-  const weekPeriod = useMemo(() => getTimePeriodsInSeconds().week, []);
-  const { data: lastWeekAccountStats } = usePeriodAccountStats(chainId, {
-    account: normalizedAccount,
-    from: weekPeriod[0],
-    to: weekPeriod[1],
-    enabled: Boolean(normalizedAccount),
-  });
-  const hasSevenDayVolume =
-    normalizedAccount !== undefined && (lastWeekAccountStats?.volume ?? 0n) >= SEVEN_DAY_REFERRAL_VOLUME_THRESHOLD;
-  const { signer } = useWallet();
-  const { pendingTxns } = usePendingTxns();
   const [uploadedImageInfo, setUploadedImageInfo] = useState<any>();
   const [uploadedImageError, setUploadedImageError] = useState<string | null>(null);
   const [showPnlAmounts, setShowPnlAmounts] = useState(false);
@@ -120,6 +101,7 @@ function PositionShare({
 
   const prevIsOpen = usePrevious(isPositionShareModalOpen);
 
+  // cache position on open to not upload new image on every position change
   const [cachedPositionData, setCachedPositionData] = useState<{
     entryPrice: bigint | undefined;
     indexToken: Token;
@@ -194,23 +176,7 @@ function PositionShare({
     })();
   }, [shareAffiliateCode, sharePositionBgImg, showPnlAmounts, cachedPositionData]);
 
-  const handleCreateReferralCode = useCallback(
-    (referralCode: string) => {
-      if (!signer) {
-        return Promise.reject(new Error("Wallet not connected"));
-      }
-
-      return registerReferralCode(chainId, referralCode, signer, {
-        sentMsg: t`Referral code submitted.`,
-        failMsg: t`Referral code creation failed.`,
-        pendingTxns,
-      });
-    },
-    [chainId, pendingTxns, signer]
-  );
-
-  const shouldShowCreateReferralCard =
-    userAffiliateCode.success && !userAffiliateCode.code && !createdReferralCode && hasSevenDayVolume;
+  const shouldShowCreateReferralCard = userAffiliateCode.success && !userAffiliateCode.code && !createdReferralCode;
   const handleReferralCodeSuccess = useCallback(
     (code: string) => {
       setCreatedReferralCode(code);
@@ -324,12 +290,7 @@ function PositionShare({
             />
           )}
         </div>
-        {shouldShowCreateReferralCard && (
-          <CreateReferralCode
-            handleCreateReferralCode={handleCreateReferralCode}
-            onSuccess={handleReferralCodeSuccess}
-          />
-        )}
+        {shouldShowCreateReferralCard && <CreateReferralCode onSuccess={handleReferralCodeSuccess} />}
         {uploadedImageError && <AlertInfoCard type="error">{uploadedImageError}</AlertInfoCard>}
       </div>
       <div className="flex flex-col gap-16 p-20">
