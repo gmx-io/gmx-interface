@@ -49,6 +49,9 @@ export type Token = {
   shouldResetAllowance?: boolean;
 };
 
+/**
+ * @deprecated V1 TokenInfo struct
+ */
 export type TokenInfo = Token & {
   hasMaxAvailableLong?: boolean;
   hasMaxAvailableShort?: boolean;
@@ -151,6 +154,9 @@ export type TokensRatioAndSlippage = TokensRatio & {
   acceptablePrice: bigint;
 };
 
+/**
+ * @deprecated V1 InfoTokens struct
+ */
 export type InfoTokens = {
   [key: string]: TokenInfo;
 };
