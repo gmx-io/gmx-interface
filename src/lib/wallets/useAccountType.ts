@@ -5,6 +5,7 @@ import { useAccount, useChainId, usePublicClient } from "wagmi";
 
 import { AnyChainId, CHAIN_SLUGS_MAP, CONTRACTS_CHAIN_IDS } from "config/chains";
 import { SOURCE_CHAINS } from "config/multichain";
+import { getIsNonEoaAccountError, nonEoaAccountError } from "lib/errors/customErrors";
 
 import { getRainbowKitConfig } from "./rainbowKitConfig";
 
@@ -118,47 +119,41 @@ export function useAccountType() {
 export function useIsNonEoaAccountOnAnyChain(): boolean {
   const { address } = useAccount();
 
-  const condition = address !== undefined;
-
-  const { data: isNonEoaAccountOnAnyChain = undefined } = useSWR<boolean | undefined>(
-    condition && [address, "detectIsNonEoaAccountOnAnyChain"],
+  const { data: isNonEoaAccountOnAnyChain = false } = useSWR<boolean | undefined>(
+    address && [address, "detectIsNonEoaAccountOnAnyChain"],
     {
       fetcher: async (): Promise<boolean | undefined> => {
-        if (!condition) {
+        if (!address) {
           return undefined;
         }
 
-        return new Promise<boolean | undefined>((resolve) => {
-          let resolved = false;
-          Promise.allSettled(
-            (CONTRACTS_CHAIN_IDS as AnyChainId[]).concat(SOURCE_CHAINS).map(async (chainId) => {
-              // TODO get best current rpc url for the chain
-              const publicClient = getPublicClient(getRainbowKitConfig(), { chainId });
+        return Promise.all(
+          (CONTRACTS_CHAIN_IDS as AnyChainId[]).concat(SOURCE_CHAINS).map(async (chainId) => {
+            const publicClient = getPublicClient(getRainbowKitConfig(), { chainId });
 
-              if (!publicClient) {
-                return undefined;
-              }
-
-              const accountType = await getAccountType(address, publicClient, new Set<string>());
-
-              const isSomeEoaAccount = accountType === AccountType.EOA || accountType === AccountType.PostEip7702EOA;
-
-              if (!isSomeEoaAccount) {
-                return false;
-              }
-
-              // return true;
-              resolved = true;
-              resolve(true);
-              return true;
-            })
-          ).then((results) => {
-            if (resolved) {
-              return;
+            if (!publicClient) {
+              return undefined;
             }
-            resolve(results.some((result) => result.status === "fulfilled" && result.value === true));
+
+            const accountType = await getAccountType(address, publicClient, new Set<string>());
+
+            const isSomeEoaAccount = accountType === AccountType.EOA || accountType === AccountType.PostEip7702EOA;
+
+            if (!isSomeEoaAccount) {
+              return Promise.reject(nonEoaAccountError(chainId));
+            }
+          })
+        )
+          .then(() => {
+            return false;
+          })
+          .catch((error) => {
+            if (getIsNonEoaAccountError(error)) {
+              return true;
+            }
+
+            return false;
           });
-        });
       },
       refreshInterval: 0,
       revalidateOnFocus: false,
@@ -167,5 +162,5 @@ export function useIsNonEoaAccountOnAnyChain(): boolean {
     }
   );
 
-  return isNonEoaAccountOnAnyChain ?? false;
+  return isNonEoaAccountOnAnyChain;
 }
