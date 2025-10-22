@@ -30,7 +30,7 @@ import { PositionShareCard } from "./PositionShareCard";
 const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";
-const config = { quality: 0.95, canvasWidth: 518, canvasHeight: 292, type: "image/jpeg" };
+const config = { quality: 0.95, canvasWidth: 460, canvasHeight: 240, type: "image/jpeg" };
 
 function getShareURL(imageInfo, ref) {
   if (!imageInfo) return;
