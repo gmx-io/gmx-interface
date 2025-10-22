@@ -32,7 +32,7 @@ export function NextStoredImpactRows() {
               <Trans>
                 The price impact is not applied until the decrease action. These are the current estimated values at
                 increase.{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/trading/v2#price-impact" newTab>
+                <ExternalLink href="https://docs.gmx.io/docs/trading/v2#price-impact-and-price-impact-rebates" newTab>
                   Read more
                 </ExternalLink>
                 .

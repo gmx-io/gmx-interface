@@ -117,7 +117,7 @@ export const GmTokensTotalBalanceInfo = ({
       <>
         <StatsTooltipRow
           label={t`Wallet`}
-          value={<AmountWithUsdBalance amount={balance} decimals={18} symbol="GM" usd={balanceUsd} usdOnTop />}
+          value={<AmountWithUsdBalance amount={balance} decimals={18} symbol="GM" usd={balanceUsd} usdAsPrimary />}
           showDollar={false}
         />
         {userEarnings && (
