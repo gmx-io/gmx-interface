@@ -143,7 +143,7 @@ export function ExpressTradingWarningCard({
 
       const hasEth = getNativeToken(chainId).symbol === "ETH";
       content = hasEth ? (
-        <Trans>Insufficient gas balance, please deposit more ETH or USDC.</Trans>
+        <Trans>Insufficient gas balance, please deposit more WETH or USDC.</Trans>
       ) : (
         <Trans>Insufficient gas balance, please deposit more USDC.</Trans>
       );

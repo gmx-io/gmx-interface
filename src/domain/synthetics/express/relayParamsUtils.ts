@@ -77,7 +77,7 @@ export function getGelatoRelayRouterDomain(
     name,
     version: "1",
     chainId,
-    verifyingContract: relayRouterAddress,
+    verifyingContract: relayRouterAddress as Address,
   };
 }
 
@@ -140,6 +140,7 @@ export function getRelayerFeeParams({
         amountOut: totalRelayerFeeTokenAmount,
         isLimit: false,
         findSwapPath: findFeeSwapPath,
+        swapOptimizationOrder: ["length"],
         uiFeeFactor: 0n,
         marketsInfoData: undefined,
         chainId,
@@ -222,7 +223,7 @@ export function getRawRelayerParams({
     externalCalls,
     fee: feeParams,
     desChainId: BigInt(chainId),
-    userNonce: nowInSeconds(),
+    userNonce: BigInt(nowInSeconds()),
   };
 
   return relayParamsPayload;
@@ -230,17 +231,25 @@ export function getRawRelayerParams({
 
 export function hashRelayParams(relayParams: RelayParamsPayload) {
   const encoded = encodeAbiParameters(abis.RelayParams, [
-    [relayParams.oracleParams.tokens, relayParams.oracleParams.providers, relayParams.oracleParams.data],
-    [
-      relayParams.externalCalls.sendTokens,
-      relayParams.externalCalls.sendAmounts,
-      relayParams.externalCalls.externalCallTargets,
-      relayParams.externalCalls.externalCallDataList,
-      relayParams.externalCalls.refundTokens,
-      relayParams.externalCalls.refundReceivers,
-    ],
+    {
+      tokens: relayParams.oracleParams.tokens,
+      providers: relayParams.oracleParams.providers,
+      data: relayParams.oracleParams.data,
+    },
+    {
+      sendTokens: relayParams.externalCalls.sendTokens,
+      sendAmounts: relayParams.externalCalls.sendAmounts,
+      externalCallTargets: relayParams.externalCalls.externalCallTargets,
+      externalCallDataList: relayParams.externalCalls.externalCallDataList,
+      refundTokens: relayParams.externalCalls.refundTokens,
+      refundReceivers: relayParams.externalCalls.refundReceivers,
+    },
     relayParams.tokenPermits,
-    [relayParams.fee.feeToken, relayParams.fee.feeAmount, relayParams.fee.feeSwapPath],
+    {
+      feeToken: relayParams.fee.feeToken,
+      feeAmount: relayParams.fee.feeAmount,
+      feeSwapPath: relayParams.fee.feeSwapPath,
+    },
     relayParams.userNonce,
     relayParams.deadline,
     relayParams.desChainId,
