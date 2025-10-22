@@ -95,6 +95,7 @@ export function OpportunityFilters({
         setValue={onSearchChange}
         placeholder={t`Search opportunities`}
         className="min-w-[170px] md:max-w-[320px]"
+        autoFocus={false}
       />
     </div>
   );
