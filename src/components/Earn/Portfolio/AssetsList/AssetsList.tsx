@@ -10,6 +10,7 @@ import { TokensData } from "domain/synthetics/tokens";
 import { StakingProcessedData } from "lib/legacy";
 import { getByKey } from "lib/objects";
 import { useBreakpoints } from "lib/useBreakpoints";
+import useWallet from "lib/wallets/useWallet";
 
 import EarnIcon from "img/ic_earn.svg?react";
 
@@ -48,6 +49,8 @@ export function AssetsList({
   const isEnoughSpaceFor2Columns = !isMobile;
 
   const shouldUseFlex = (cardsCount < 3 && isEnoughSpaceFor2Columns) || (cardsCount < 4 && isEnoughSpaceFor3Columns);
+
+  const { account } = useWallet();
 
   return (
     <section className={cx("flex flex-col rounded-8 bg-slate-900", { grow: !hasAnyAssets })}>
@@ -91,11 +94,15 @@ export function AssetsList({
         <div className="flex h-full flex-col items-center justify-center gap-8 p-20">
           <EarnIcon className="size-20 text-blue-300" />
           <span className="text-body-small text-center font-medium text-typography-secondary">
-            <Trans>
-              You currently don't have any assets.
-              <br />
-              Please check the recommended section above to start earning.
-            </Trans>
+            {account ? (
+              <>
+                <Trans>It seems you currently don't own any assets.</Trans>
+                <br />
+                <Trans>Please check the recommended section above to start earning yield!</Trans>
+              </>
+            ) : (
+              <Trans>Please connect your wallet to see your assets.</Trans>
+            )}
           </span>
         </div>
       )}

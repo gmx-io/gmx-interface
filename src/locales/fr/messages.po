@@ -3308,6 +3308,10 @@ msgstr "Augmentation du marché"
 msgid "No funding activity"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+msgid "Please check the recommended section above to start earning yield!"
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
 msgid "The price impact is not applied until the decrease action. These are the current estimated values at increase. <0>Read more</0>."
 msgstr ""
@@ -4629,6 +4633,10 @@ msgstr "Chargement..."
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Use your preferred token to pay and collateralize your positions"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+msgid "It seems you currently don't own any assets."
 msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -7285,6 +7293,10 @@ msgstr "Vous serez long {indexSymbol} depuis votre position longue, ainsi que de
 msgid "Use the \"Close\" button to reduce your position."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+msgid "Please connect your wallet to see your assets."
+msgstr ""
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "Execution Price"
@@ -7809,8 +7821,8 @@ msgid "Long Positions"
 msgstr "Positions longues"
 
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
-msgid "You currently don't have any assets.<0/>Please check the recommended section above to start earning."
-msgstr ""
+#~ msgid "You currently don't have any assets.<0/>Please check the recommended section above to start earning."
+#~ msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {0} to {positionText}"
