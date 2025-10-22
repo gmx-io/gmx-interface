@@ -17,6 +17,7 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import { sendEarnRecommendationClickedEvent } from "lib/userAnalytics/earnEvents";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
+import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 
 import APRLabel from "components/APRLabel/APRLabel";
 import Tabs from "components/Tabs/Tabs";
@@ -110,6 +111,7 @@ type YieldRowProps = {
   to?: string;
   disabled?: boolean;
   chainId?: number;
+  onClick?: () => void;
 };
 
 const ASSET_ICONS: Record<YieldRowProps["token"], string> = {
@@ -143,7 +145,7 @@ function NetworkYieldCard({
   );
 }
 
-function YieldRow({ token, metric, to, disabled, chainId: targetChainId }: YieldRowProps) {
+function YieldRow({ token, metric, to, disabled, chainId: targetChainId, onClick }: YieldRowProps) {
   const { chainId: currentChainId } = useChainId();
   const { active } = useWallet();
 
@@ -199,7 +201,11 @@ function YieldRow({ token, metric, to, disabled, chainId: targetChainId }: Yield
   );
 
   if (disabled || !to) {
-    return <div className={className}>{content}</div>;
+    return (
+      <div className={className} onClick={onClick}>
+        {content}
+      </div>
+    );
   }
 
   return (
@@ -229,7 +235,9 @@ export default function EarnYieldOverview() {
     [arbitrumTokens.tokensData, avalancheTokens.tokensData, botanixTokens.tokensData]
   );
 
-  const gmxLink = account && hasGmxHoldings ? "/earn/portfolio" : "/buy";
+  const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
+
+  const showGmxLink = account && hasGmxHoldings;
   const poolsLink = "/pools";
 
   const { glvApyInfoData: arbGlvApy, marketsTokensApyData: arbGmApy } = useGmMarketsApy(ARBITRUM, undefined, {
@@ -259,7 +267,8 @@ export default function EarnYieldOverview() {
           <YieldRow
             key="arb-gmx"
             token="GMX"
-            to={gmxLink}
+            onClick={!showGmxLink ? () => setIsBuyGmxModalVisible(true) : undefined}
+            to={showGmxLink ? "/earn/portfolio" : undefined}
             chainId={ARBITRUM}
             metric={<YieldMetric value={<APRLabel chainId={ARBITRUM} label="avgGMXAprTotal" />} suffix="APR" />}
           />,
@@ -286,7 +295,8 @@ export default function EarnYieldOverview() {
           <YieldRow
             key="avax-gmx"
             token="GMX"
-            to={gmxLink}
+            to={showGmxLink ? "/earn/portfolio" : undefined}
+            onClick={!showGmxLink ? () => setIsBuyGmxModalVisible(true) : undefined}
             chainId={AVALANCHE}
             metric={<YieldMetric value={<APRLabel chainId={AVALANCHE} label="avgGMXAprTotal" />} suffix="APR" />}
           />,
@@ -361,7 +371,7 @@ export default function EarnYieldOverview() {
         ],
       },
     }),
-    [arbMaxGlv, arbMaxGm, avaxMaxGlv, avaxMaxGm, botanixMaxGm, gmxLink, poolsLink]
+    [arbMaxGlv, arbMaxGm, avaxMaxGlv, avaxMaxGm, botanixMaxGm, showGmxLink, poolsLink]
   );
 
   const tabs = useMemo(
@@ -384,6 +394,7 @@ export default function EarnYieldOverview() {
 
   return (
     <div className="flex flex-col max-xl:rounded-8 max-xl:bg-slate-900 max-xl:p-16">
+      <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
       <h4 className="py-20 text-20 font-medium text-typography-primary max-xl:pb-12 max-xl:pt-0 max-xl:text-16">
         <Trans>Current Yield Landscape</Trans>
       </h4>
