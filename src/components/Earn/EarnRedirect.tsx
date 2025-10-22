@@ -18,11 +18,7 @@ import { getTokenBySymbolSafe } from "sdk/configs/tokens";
 import Loader from "components/Loader/Loader";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 
-import EarnPageLayout, { EARN_TABS, EarnTab } from "../../pages/Earn/EarnPageLayout";
-
-function isEarnTab(value: string | null): value is EarnTab {
-  return typeof value === "string" && (EARN_TABS as ReadonlyArray<string>).includes(value);
-}
+import EarnPageLayout, { EarnTab, isEarnTab } from "../../pages/Earn/EarnPageLayout";
 
 function hasGmxTokenBalance(chainId: ContractsChainId, tokensData: TokensData | undefined) {
   if (!tokensData) {

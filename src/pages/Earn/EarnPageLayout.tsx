@@ -11,20 +11,24 @@ import Button from "components/Button/Button";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 import PageTitle from "components/PageTitle/PageTitle";
 
-export type EarnTab = "discovery" | "portfolio" | "additional-opportunities" | "distributions";
+export enum EarnTab {
+  Discovery = "discovery",
+  Portfolio = "portfolio",
+  "AdditionalOpportunities" = "additional-opportunities",
+  Distributions = "distributions",
+}
 
-export const EARN_TABS: ReadonlyArray<EarnTab> = [
-  "discovery",
-  "portfolio",
-  "additional-opportunities",
-  "distributions",
-];
+export const EARN_TABS = Object.values(EarnTab);
+
+export function isEarnTab(value: string | null): value is EarnTab {
+  return typeof value === "string" && Object.values(EarnTab).includes(value as EarnTab);
+}
 
 const TAB_TO_ANALYTICS_MAP: Record<EarnTab, EarnAnalyticsTab> = {
-  discovery: "discover",
-  portfolio: "portfolio",
-  "additional-opportunities": "additionalOpportunities",
-  distributions: "distributions",
+  [EarnTab.Discovery]: "discover",
+  [EarnTab.Portfolio]: "portfolio",
+  [EarnTab.AdditionalOpportunities]: "additionalOpportunities",
+  [EarnTab.Distributions]: "distributions",
 };
 
 type EarnPageLayoutProps = {
@@ -36,10 +40,10 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
 
   const tabOptions = useMemo(
     () => [
-      { value: "discovery" as const, label: <Trans>Discover</Trans> },
-      { value: "portfolio" as const, label: <Trans>Portfolio</Trans> },
-      { value: "additional-opportunities" as const, label: <Trans>Additional Opportunities</Trans> },
-      { value: "distributions" as const, label: <Trans>Distributions</Trans> },
+      { value: EarnTab.Discovery as const, label: <Trans>Discover</Trans> },
+      { value: EarnTab.Portfolio as const, label: <Trans>Portfolio</Trans> },
+      { value: EarnTab.AdditionalOpportunities as const, label: <Trans>Additional Opportunities</Trans> },
+      { value: EarnTab.Distributions as const, label: <Trans>Distributions</Trans> },
     ],
     []
   );
@@ -57,7 +61,7 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
   const [, setLastEarnTab] = useLocalStorageSerializeKey<EarnTab | undefined>(LAST_EARN_TAB_KEY, undefined);
 
   useEffect(() => {
-    if (!activeTabValue || typeof window === "undefined") {
+    if (!activeTabValue || typeof window === "undefined" || !isEarnTab(activeTabValue)) {
       return;
     }
 
