@@ -1231,11 +1231,7 @@ msgstr ""
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
-msgstr "清算 {longOrShortText} - {marketIndexName}<<<<<<< HEAD"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Simulate Tickers Errors"
-#~ msgstr "=======>>>>>>> 9a4580fde34e0f9ed7e7ac2bdff4d2275f227f20"
+msgstr "清算 {longOrShortText} - {marketIndexName}"
 
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Inc."
