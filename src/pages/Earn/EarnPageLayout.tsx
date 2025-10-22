@@ -12,9 +12,9 @@ import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHe
 import PageTitle from "components/PageTitle/PageTitle";
 
 export enum EarnTab {
-  Discovery = "discovery",
+  Discover = "discover",
   Portfolio = "portfolio",
-  "AdditionalOpportunities" = "additional-opportunities",
+  "AdditionalOpportunities" = "additional_opportunities",
   Distributions = "distributions",
 }
 
@@ -25,7 +25,7 @@ export function isEarnTab(value: string | null): value is EarnTab {
 }
 
 const TAB_TO_ANALYTICS_MAP: Record<EarnTab, EarnAnalyticsTab> = {
-  [EarnTab.Discovery]: "discover",
+  [EarnTab.Discover]: "discover",
   [EarnTab.Portfolio]: "portfolio",
   [EarnTab.AdditionalOpportunities]: "additionalOpportunities",
   [EarnTab.Distributions]: "distributions",
@@ -40,10 +40,10 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
 
   const tabOptions = useMemo(
     () => [
-      { value: EarnTab.Discovery as const, label: <Trans>Discover</Trans> },
-      { value: EarnTab.Portfolio as const, label: <Trans>Portfolio</Trans> },
-      { value: EarnTab.AdditionalOpportunities as const, label: <Trans>Additional Opportunities</Trans> },
-      { value: EarnTab.Distributions as const, label: <Trans>Distributions</Trans> },
+      { value: EarnTab.Discover, label: <Trans>Discover</Trans> },
+      { value: EarnTab.Portfolio, label: <Trans>Portfolio</Trans> },
+      { value: EarnTab.AdditionalOpportunities, label: <Trans>Additional Opportunities</Trans> },
+      { value: EarnTab.Distributions, label: <Trans>Distributions</Trans> },
     ],
     []
   );

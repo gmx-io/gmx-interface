@@ -20,7 +20,7 @@ export function useGoToPools(pool: LandingPageProtocolTokenEvent["data"]["type"]
       },
       { instantSend: true }
     );
-    redirectWithWarning(makeLink(`earn/discovery`));
+    redirectWithWarning(makeLink(`earn/discover`));
   }, [redirectWithWarning, pool]);
 }
 

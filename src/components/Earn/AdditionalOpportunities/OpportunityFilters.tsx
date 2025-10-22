@@ -71,7 +71,7 @@ export function OpportunityFilters({
       const filterLabel = FILTER_ANALYTICS_EVENT_LABELS[value] ?? value;
       sendEarnOpportunitiesFilterAppliedEvent(filterLabel);
 
-      history.push(`/earn/additional-opportunities/${value}`);
+      history.push(`/earn/additional_opportunities/${value}`);
     },
     [history]
   );

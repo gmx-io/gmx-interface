@@ -83,7 +83,7 @@ export function EarnFirstVisitRedirect() {
   const isBalancesReady =
     !account || (tokenBalancesReady && processedDataReady && marketsInfoReady && marketTokensReady);
 
-  const target = account && hasAnyEarnHoldings ? "/earn/portfolio" : "/earn/discovery";
+  const target = account && hasAnyEarnHoldings ? "/earn/portfolio" : "/earn/discover";
 
   return (
     <EarnPageLayout>
