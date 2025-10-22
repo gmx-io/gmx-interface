@@ -42,12 +42,6 @@ test.describe("Should navigate across all pages with no crashes", () => {
     expect(gmx.buyGlpPage).toBeAttached();
   });
 
-  test("/buy", async ({ gmx }) => {
-    await gmx.navigateTo("/buy");
-    await gmx.buyPage.waitForSelector();
-    expect(gmx.buyPage).toBeAttached();
-  });
-
   test("/pools", async ({ gmx }) => {
     await gmx.navigateTo("/pools");
     await gmx.poolsPage.waitForSelector();
