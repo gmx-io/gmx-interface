@@ -3,7 +3,7 @@ import useSWR from "swr";
 import { zeroAddress } from "viem";
 
 import { getServerUrl } from "config/backend";
-import { ARBITRUM, ContractsChainId } from "config/chains";
+import { ARBITRUM, BOTANIX, ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { useGmxPrice } from "domain/legacy";
 import useVestingData from "domain/vesting/useVestingData";
@@ -14,6 +14,7 @@ import {
   getDepositBalanceData,
   getStakingProcessedData,
   getStakingData,
+  StakingProcessedData,
 } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
 import type { MulticallRequestConfig, MulticallResult } from "lib/multicall";
@@ -108,6 +109,13 @@ export function useStakingProcessedData(targetChainId?: ContractsChainId) {
 
     return Promise.all(promises);
   }, [mutateContractsData, mutateGmxSupply]);
+
+  if (chainId === BOTANIX) {
+    return {
+      data: {} as StakingProcessedData,
+      mutate: mutateProcessedData,
+    };
+  }
 
   return {
     data: processedData,

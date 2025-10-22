@@ -19,7 +19,7 @@ import { expandDecimals, formatPercentage, USD_DECIMALS } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { sendEarnRecommendationClickedEvent } from "lib/userAnalytics/earnEvents";
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
-import { AnyChainId } from "sdk/configs/chains";
+import { AnyChainId, BOTANIX } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { MarketInfo, MarketTokensAPRData } from "sdk/types/markets";
 import { getByKey } from "sdk/utils/objects";
@@ -158,7 +158,7 @@ export function RecommendedAssets({
           "md:grid-flow-col": gmsToShow.length === 3,
         })}
       >
-        {!hasGmxAssets && (
+        {!hasGmxAssets && chainId !== BOTANIX && (
           <RecommendedAssetSection title={<Trans>GMX</Trans>}>
             {[
               <GmxRecommendedAssetItem
@@ -296,7 +296,7 @@ function GlvGmxRecommendedAssetItem({
           className={cx({ "!rounded-0": isGlvInfo(glvOrMarketInfo) })}
         />
       }
-      title={getMarketIndexName(glvOrMarketInfo)}
+      title={isGlvInfo(glvOrMarketInfo) ? "GLV" : getMarketIndexName(glvOrMarketInfo)}
       subtitle={`[${getMarketPoolName(glvOrMarketInfo)}]`}
       metricValue={formatPercentage(feeApy, { bps: false })}
       metricLabel={<Trans>Fee APY</Trans>}

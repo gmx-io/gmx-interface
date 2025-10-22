@@ -17,8 +17,8 @@ import { formatKeyAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 export default function APRLabel({ chainId, label }) {
-  const { active } = useWallet();
-  const vestingData = useVestingData();
+  const { active, account } = useWallet();
+  const vestingData = useVestingData(account, chainId);
   const rewardReaderAddress = getContract(chainId, "RewardReader");
   const readerAddress = getContract(chainId, "Reader");
 

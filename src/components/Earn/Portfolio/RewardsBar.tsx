@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { ReactNode, useMemo } from "react";
 
-import { getConstant } from "config/chains";
+import { BOTANIX, ContractsChainId, getConstant } from "config/chains";
 import { UserEarningsData } from "domain/synthetics/markets/types";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
@@ -57,6 +57,7 @@ export function RewardsBar({
                 processedData={processedData}
                 nativeTokenSymbol={nativeTokenSymbol}
                 userEarnings={userEarnings}
+                chainId={chainId}
               />
             </div>
           </div>
@@ -68,7 +69,11 @@ export function RewardsBar({
               <span className="text-12 font-medium text-typography-secondary">
                 <Trans>Total Pending Rewards</Trans>
               </span>
-              <TotalPendingRewards processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
+              <TotalPendingRewards
+                processedData={processedData}
+                nativeTokenSymbol={nativeTokenSymbol}
+                chainId={chainId}
+              />
             </div>
           </div>
         </div>
@@ -87,31 +92,37 @@ function TotalEarned({
   processedData,
   nativeTokenSymbol,
   userEarnings,
+  chainId,
 }: {
   processedData: StakingProcessedData | undefined;
   nativeTokenSymbol: string;
   userEarnings: UserEarningsData | null;
+  chainId: ContractsChainId;
 }) {
   const earnedTooltipContent = useMemo(() => {
     if (!processedData) {
       return null;
     }
 
-    const stakingRows: ReactNode[] = [
-      <StatsTooltipRow
-        key="gmx"
-        label={<Trans>GMX rewards:</Trans>}
-        showDollar={false}
-        value={
-          <AmountWithUsdBalance
-            amount={processedData.cumulativeGmxRewards}
-            decimals={18}
-            usd={processedData.cumulativeGmxRewardsUsd}
-            symbol="GMX"
-          />
-        }
-      />,
-    ];
+    const stakingRows: ReactNode[] = [];
+
+    if (chainId !== BOTANIX) {
+      stakingRows.push(
+        <StatsTooltipRow
+          key="gmx"
+          label={<Trans>GMX rewards:</Trans>}
+          showDollar={false}
+          value={
+            <AmountWithUsdBalance
+              amount={processedData.cumulativeGmxRewards}
+              decimals={18}
+              usd={processedData.cumulativeGmxRewardsUsd}
+              symbol="GMX"
+            />
+          }
+        />
+      );
+    }
 
     if ((processedData.cumulativeEsGmxRewards ?? 0n) > 0n) {
       stakingRows.push(
@@ -180,7 +191,7 @@ function TotalEarned({
     }
 
     return <div className="flex flex-col gap-8">{tooltipSections}</div>;
-  }, [nativeTokenSymbol, processedData, userEarnings]);
+  }, [nativeTokenSymbol, processedData, userEarnings, chainId]);
 
   const totalEarnedUsd = (processedData?.cumulativeTotalRewardsUsd ?? 0n) + (userEarnings?.allMarkets.total ?? 0n);
 
@@ -196,13 +207,19 @@ function TotalEarned({
 function TotalPendingRewards({
   processedData,
   nativeTokenSymbol,
+  chainId,
 }: {
   processedData: StakingProcessedData | undefined;
   nativeTokenSymbol: string;
+  chainId: ContractsChainId;
 }) {
   const totalPendingRewardsUsd = processedData?.totalRewardsUsd ?? 0n;
 
   const hasNativeRewards = (processedData?.totalNativeTokenRewards ?? 0n) > 0n;
+
+  if (chainId === BOTANIX) {
+    return <span className="text-body-large font-medium numbers">{formatUsd(totalPendingRewardsUsd)}</span>;
+  }
 
   return (
     <TooltipWithPortal
