@@ -58,48 +58,50 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
       <div className="relative max-w-[460px] grow overflow-hidden rounded-9">
         <div
           ref={ref}
-          className="flex aspect-[460/240] w-full justify-between rounded-9 bg-contain bg-no-repeat p-20 max-md:p-16"
+          className="flex aspect-[460/240] w-full justify-between rounded-9 bg-contain bg-no-repeat p-20 pb-28 max-md:p-16"
           style={style}
         >
           <img src={coinImg} alt="coin" className="z-1 absolute bottom-0 right-0 size-[100px] max-md:size-[70px]" />
           <div className="z-3 relative flex flex-col justify-end gap-12 max-md:gap-4 max-smallMobile:gap-0">
-            <div className="flex gap-8">
-              <div
-                className={cx(
-                  "inline-flex items-center gap-4 text-13 font-medium",
-                  isLong ? "text-[#0FDE8D]" : "text-[#FF506A]"
-                )}
-              >
-                <VectorCircleIcon className={cx("size-14", { "rotate-180": !isLong })} />
-                {isLong ? "Long" : "Short"} {formatAmount(leverage, 4, 2, true)}x
-              </div>
-              <div className="flex items-center gap-4 font-medium text-white">
-                <TokenIcon symbol={indexToken.symbol} displaySize={16} importSize={24} />
-                <span>
-                  {getTokenVisualMultiplier(indexToken)}
-                  {indexToken.symbol} / USD
-                </span>
-              </div>
-            </div>
-            <div className="flex items-end gap-6">
-              <h3
-                className={cx(
-                  "text-[40px] font-medium max-md:text-[32px]",
-                  pnlAfterFeesPercentage < 0 ? "text-[#FF506A]" : "text-[#0FDE8D]"
-                )}
-              >
-                {formatPercentage(pnlAfterFeesPercentage, { signed: true })}
-              </h3>
-              {showPnlAmounts && (
-                <p
+            <div className="flex flex-col gap-4 max-md:gap-0">
+              <div className="flex gap-8">
+                <div
                   className={cx(
-                    "pb-8 text-14 font-medium",
+                    "inline-flex items-center gap-4 text-13 font-medium",
+                    isLong ? "text-[#0FDE8D]" : "text-[#FF506A]"
+                  )}
+                >
+                  <VectorCircleIcon className={cx("size-14", { "rotate-180": !isLong })} />
+                  {isLong ? "Long" : "Short"} {formatAmount(leverage, 4, 2, true)}x
+                </div>
+                <div className="flex items-center gap-4 font-medium text-white">
+                  <TokenIcon symbol={indexToken.symbol} displaySize={14} importSize={24} />
+                  <span>
+                    {getTokenVisualMultiplier(indexToken)}
+                    {indexToken.symbol} / USD
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-end gap-6">
+                <h3
+                  className={cx(
+                    "text-[40px] font-medium max-md:text-[32px]",
                     pnlAfterFeesPercentage < 0 ? "text-[#FF506A]" : "text-[#0FDE8D]"
                   )}
                 >
-                  {formatUsd(pnlAfterFeesUsd, { displayPlus: true })}
-                </p>
-              )}
+                  {formatPercentage(pnlAfterFeesPercentage, { signed: true })}
+                </h3>
+                {showPnlAmounts && (
+                  <p
+                    className={cx(
+                      "pb-8 text-14 font-medium",
+                      pnlAfterFeesPercentage < 0 ? "text-[#FF506A]" : "text-[#0FDE8D]"
+                    )}
+                  >
+                    {formatUsd(pnlAfterFeesUsd, { displayPlus: true })}
+                  </p>
+                )}
+              </div>
             </div>
             <div className="flex gap-20 max-md:gap-10">
               <div className="flex flex-col gap-4">
