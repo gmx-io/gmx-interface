@@ -28,8 +28,7 @@ import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import NewLinkIcon from "img/ic_new_link.svg?react";
-import ShareIcon from "img/ic_share.svg?react";
+import NewLinkIconThin from "img/ic_new_link_thin.svg?react";
 
 import ShareClosedPosition from "./ShareClosedPosition";
 import { formatPositionMessage } from "./utils/position";
@@ -220,10 +219,10 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
                 </span>
               )}
               <ExternalLink
-                className="TradeHistoryRow-external-link size-10"
+                className="TradeHistoryRow-external-link size-12"
                 href={`${getExplorerUrl(chainId)}tx/${tradeAction.transaction.hash}`}
               >
-                <NewLinkIcon />
+                <NewLinkIconThin />
               </ExternalLink>
             </div>
             <div className="flex flex-row items-center">
@@ -310,7 +309,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
                 setIsShareModalOpen(true);
               }}
             >
-              <ShareIcon />
+              <NewLinkIconThin className="size-16" />
               <Trans>Share</Trans>
             </Button>
           ) : null}

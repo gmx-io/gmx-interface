@@ -47,7 +47,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
 import EditIcon from "img/ic_edit.svg?react";
-import ShareIcon from "img/ic_share.svg?react";
+import NewLinkThinIcon from "img/ic_new_link_thin.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { TwapOrderProgress } from "../OrderItem/OrderItem";
@@ -528,7 +528,7 @@ export function PositionItem(p: Props) {
                   onClick={p.onShareClick}
                 >
                   {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
-                  <ShareIcon className="mt-1 size-14" />
+                  <NewLinkThinIcon className="mt-1 size-14" />
                 </div>
               )}
             </div>
@@ -673,7 +673,7 @@ export function PositionItem(p: Props) {
                 onClick={p.onShareClick}
               >
                 {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
-                <ShareIcon className="mt-2 size-16" />
+                <NewLinkThinIcon className="mt-2 size-16" />
               </span>
             </div>
           </div>
