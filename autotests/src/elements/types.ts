@@ -8,7 +8,6 @@ export type GmxNavigation =
   | "/earn"
   | "/leaderboard"
   | "/ecosystem"
-  | "/buy"
   | "/buy_glp"
   | "/pools"
   | "/referrals";

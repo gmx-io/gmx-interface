@@ -18,7 +18,7 @@ export function StakeNotification({
   const toAmount = formatTokenAmount(amount, 18, toTokenSymbol, { isStable: false });
 
   return (
-    <span className="flex justify-between font-bold">
+    <span className="flex justify-between font-medium">
       <Trans>
         Swap {fromAmount} for {toAmount}
       </Trans>
