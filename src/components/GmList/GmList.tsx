@@ -5,7 +5,7 @@ import {
   selectChainId,
   selectDepositMarketTokensData,
   selectMarketsInfoData,
-  selectProgressiveDepositMarketTokensData,
+  selectProgressiveDepositMarketTokensDataWithoutGlv,
   selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -59,7 +59,7 @@ export function GmList({
   const srcChainId = useSelector(selectSrcChainId);
   const marketsInfo = useSelector(selectMarketsInfoData);
   const marketTokensData = useSelector(selectDepositMarketTokensData);
-  const progressiveMarketTokensData = useSelector(selectProgressiveDepositMarketTokensData);
+  const progressiveMarketTokensData = useSelector(selectProgressiveDepositMarketTokensDataWithoutGlv);
 
   const { active } = useWallet();
   const userEarnings = useUserEarnings(chainId, srcChainId);

@@ -7690,8 +7690,8 @@ msgid "This position could be liquidated, excluding any price movement, due to f
 msgstr "此仓位可能被清算（不包括任何价格变动），因为资金和借款费用率会随着时间减少仓位的抵押品。"
 
 #: src/components/SettingsModal/TradingSettings.tsx
-msgid "Gemini Wallet is not supported for Express or One-Click trading."
-msgstr "Gemini 钱包不支持快速或一键交易。"
+#~ msgid "Gemini Wallet is not supported for Express or One-Click trading."
+#~ msgstr "Gemini 钱包不支持快速或一键交易。"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"
