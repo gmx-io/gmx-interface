@@ -4,6 +4,7 @@ import { getPageTitle } from "lib/legacy";
 import { getHomeUrl, getTradePageUrl } from "lib/legacy";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+import Footer from "components/Footer/Footer";
 import SEO from "components/Seo/SEO";
 
 import "./PageNotFound.css";
@@ -13,7 +14,7 @@ function PageNotFound() {
   const tradePageUrl = getTradePageUrl();
 
   return (
-    <AppPageLayout>
+    <AppPageLayout footer={<Footer disableFeedbackModal />}>
       <SEO title={getPageTitle(t`Page not found`)}>
         <div className="page-layout">
           <div className="page-not-found-container">
