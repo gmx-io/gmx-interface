@@ -102,8 +102,8 @@ msgid "Approval signed"
 msgstr "批准已签名"
 
 #: src/components/Footer/Footer.tsx
-msgid "Leave Feedback"
-msgstr "留下反馈"
+#~ msgid "Leave Feedback"
+#~ msgstr "留下反馈"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
@@ -4075,7 +4075,6 @@ msgstr "在 Avalanche 上质押"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: src/components/Footer/constants.tsx
-#: src/components/Footer/constants.tsx
 msgid "Media Kit"
 msgstr "媒体工具包"
 
@@ -6393,7 +6392,6 @@ msgstr "输入接收方地址"
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/TermsAndConditions/TermsAndConditions.tsx
-#: src/components/Footer/constants.tsx
 msgid "Terms and Conditions"
 msgstr "条款和条件"
 
@@ -6897,7 +6895,6 @@ msgstr "无资金所有权损失"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/ReferralTerms/ReferralTerms.tsx
-#: src/components/Footer/constants.tsx
 msgid "Referral Terms"
 msgstr "推荐条款"
 

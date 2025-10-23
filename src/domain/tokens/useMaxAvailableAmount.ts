@@ -1,6 +1,7 @@
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { TokenData } from "domain/synthetics/tokens";
 import { getMinResidualAmount } from "domain/tokens";
+import { useChainId } from "lib/chains";
 import { absDiffBps, formatAmountFree } from "lib/numbers";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 
@@ -22,13 +23,15 @@ export function useMaxAvailableAmount({
   formattedMaxAvailableAmount: string;
   showClickMax: boolean;
 } {
+  const { chainId } = useChainId();
   const isMetamaskMobile = useIsMetamaskMobile();
 
   if (fromToken === undefined || fromToken.balance === undefined || fromToken.balance === 0n || isLoading) {
     return { formattedMaxAvailableAmount: "", showClickMax: false };
   }
 
-  const minNativeTokenBalance = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices.maxPrice) ?? 0n;
+  const minNativeTokenBalance =
+    getMinResidualAmount({ chainId, decimals: nativeToken?.decimals, price: nativeToken?.prices.maxPrice }) ?? 0n;
   const minResidualBalance = (fromToken.isNative ? minNativeTokenBalance : 0n) + (minResidualAmount ?? 0n);
 
   let maxAvailableAmount = fromToken.balance - minResidualBalance;
