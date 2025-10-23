@@ -1,40 +1,34 @@
-import { Trans } from "@lingui/macro";
 import cx from "classnames";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { getAppBaseUrl, isHomeSite, shouldShowRedirectModal } from "lib/legacy";
+import { getAppBaseUrl, shouldShowRedirectModal } from "lib/legacy";
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageFooterMenuEvent } from "lib/userAnalytics/types";
 
 import Button from "components/Button/Button";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
-import FeedbackIcon from "img/ic_feedback.svg?react";
-
-import { SOCIAL_LINKS, getFooterLinks } from "./constants";
+import { FOOTER_LINKS, SOCIAL_LINKS } from "./constants";
 import { UserFeedbackModal } from "../UserFeedbackModal/UserFeedbackModal";
 
 type Props = {
   showRedirectModal?: (to: string) => void;
   redirectPopupTimestamp?: number;
   isMobileSideNav?: boolean;
-  disableFeedbackModal?: boolean;
 };
 
 export default function Footer({
   showRedirectModal,
   redirectPopupTimestamp,
   isMobileSideNav,
-  disableFeedbackModal,
 }: Props) {
-  const isHome = isHomeSite();
   const { feedbackModalVisible, setFeedbackModalVisible } = useSettings();
 
   return (
     <>
       <div className={cx("flex w-full justify-between", { "flex-col": isMobileSideNav })}>
         <div className={cx("flex flex-row items-center justify-center", { "flex-wrap": isMobileSideNav })}>
-          {getFooterLinks(isHome).map(({ external, label, link, isAppLink }) => {
+          {FOOTER_LINKS.map(({ external, label, link, isAppLink }) => {
             if (external) {
               return (
                 <Button variant="ghost" key={link} to={link} newTab>
@@ -64,12 +58,6 @@ export default function Footer({
               </Button>
             );
           })}
-          {!isHome && (
-            <Button variant="ghost" onClick={() => setFeedbackModalVisible(true)}>
-              {isMobileSideNav ? null : <FeedbackIcon />}
-              <Trans>Leave Feedback</Trans>
-            </Button>
-          )}
         </div>
         <div
           className={cx("flex", {
@@ -102,9 +90,7 @@ export default function Footer({
           })}
         </div>
       </div>
-      {!isHome && !disableFeedbackModal && (
-        <UserFeedbackModal isVisible={feedbackModalVisible} setIsVisible={setFeedbackModalVisible} />
-      )}
+      <UserFeedbackModal isVisible={feedbackModalVisible} setIsVisible={setFeedbackModalVisible} />
     </>
   );
 }

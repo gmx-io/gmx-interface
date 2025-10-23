@@ -102,8 +102,8 @@ msgid "Approval signed"
 msgstr "Одобрение подписано"
 
 #: src/components/Footer/Footer.tsx
-msgid "Leave Feedback"
-msgstr "Оставить отзыв"
+#~ msgid "Leave Feedback"
+#~ msgstr "Оставить отзыв"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
@@ -4075,7 +4075,6 @@ msgstr "Стейкано на Avalanche"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: src/components/Footer/constants.tsx
-#: src/components/Footer/constants.tsx
 msgid "Media Kit"
 msgstr "Медиа-Кит"
 
@@ -6393,7 +6392,6 @@ msgstr "Введите адрес получателя"
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/TermsAndConditions/TermsAndConditions.tsx
-#: src/components/Footer/constants.tsx
 msgid "Terms and Conditions"
 msgstr "Правила и условия"
 
@@ -6897,7 +6895,6 @@ msgstr "Нет потери владения средствами"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/ReferralTerms/ReferralTerms.tsx
-#: src/components/Footer/constants.tsx
 msgid "Referral Terms"
 msgstr "Условия рефералов"
 

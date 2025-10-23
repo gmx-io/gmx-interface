@@ -102,8 +102,8 @@ msgid "Approval signed"
 msgstr "Approbation signée"
 
 #: src/components/Footer/Footer.tsx
-msgid "Leave Feedback"
-msgstr "Laisser un Avis"
+#~ msgid "Leave Feedback"
+#~ msgstr "Laisser un Avis"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
@@ -4075,7 +4075,6 @@ msgstr "Staké sur Avalanche"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: src/components/Footer/constants.tsx
-#: src/components/Footer/constants.tsx
 msgid "Media Kit"
 msgstr "Kit Média"
 
@@ -6393,7 +6392,6 @@ msgstr "Entrez l'adresse du destinataire"
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/TermsAndConditions/TermsAndConditions.tsx
-#: src/components/Footer/constants.tsx
 msgid "Terms and Conditions"
 msgstr "Termes et conditions"
 
@@ -6897,7 +6895,6 @@ msgstr "Aucune perte de propriété des fonds"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/ReferralTerms/ReferralTerms.tsx
-#: src/components/Footer/constants.tsx
 msgid "Referral Terms"
 msgstr "Termes de parrainage"
 

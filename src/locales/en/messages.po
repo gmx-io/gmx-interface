@@ -102,8 +102,8 @@ msgid "Approval signed"
 msgstr "Approval signed"
 
 #: src/components/Footer/Footer.tsx
-msgid "Leave Feedback"
-msgstr "Leave Feedback"
+#~ msgid "Leave Feedback"
+#~ msgstr "Leave Feedback"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
@@ -4075,7 +4075,6 @@ msgstr "Staked on Avalanche"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: src/components/Footer/constants.tsx
-#: src/components/Footer/constants.tsx
 msgid "Media Kit"
 msgstr "Media Kit"
 
@@ -6393,7 +6392,6 @@ msgstr "Enter Receiver Address"
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/TermsAndConditions/TermsAndConditions.tsx
-#: src/components/Footer/constants.tsx
 msgid "Terms and Conditions"
 msgstr "Terms and Conditions"
 
@@ -6897,7 +6895,6 @@ msgstr "No loss of fund ownership"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/ReferralTerms/ReferralTerms.tsx
-#: src/components/Footer/constants.tsx
 msgid "Referral Terms"
 msgstr "Referral Terms"
 
