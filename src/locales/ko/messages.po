@@ -7690,8 +7690,8 @@ msgid "This position could be liquidated, excluding any price movement, due to f
 msgstr "자금 및 대출 수수료율로 인해 가격 움직임 제외 포지션 담보 감소로 청산될 수 있음."
 
 #: src/components/SettingsModal/TradingSettings.tsx
-msgid "Gemini Wallet is not supported for Express or One-Click trading."
-msgstr "Gemini 지갑은 익스프레스 또는 원클릭 거래를 지원하지 않습니다."
+#~ msgid "Gemini Wallet is not supported for Express or One-Click trading."
+#~ msgstr "Gemini 지갑은 익스프레스 또는 원클릭 거래를 지원하지 않습니다."
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"
