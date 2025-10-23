@@ -5,17 +5,15 @@ import type { TransactionResponse } from "ethers";
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useAccount } from "wagmi";
 
-import { getChainName } from "config/chains";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { registerReferralCode } from "domain/referrals";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getReferralCodeTakenStatus } from "components/Referrals/referralsHelper";
+import { getReferralCodeTakenStatus, getReferralsPageUrlForCreateCode } from "components/Referrals/referralsHelper";
 
 import ReferralsIcon from "img/referrals.svg?react";
 
@@ -105,11 +103,17 @@ export function CreateReferralCode({ onSuccess }: Props) {
     };
   } else if (srcChainId !== undefined) {
     buttonState = {
-      text: t`Switch to ${getChainName(chainId)}`,
-      disabled: false,
+      text: t`Create code`,
+      disabled: !referralCode,
       onSubmit: (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        switchNetwork(chainId, isConnected);
+
+        if (!referralCode) {
+          return;
+        }
+
+        const url = getReferralsPageUrlForCreateCode(referralCode);
+        window.location.assign(url);
       },
     };
   } else if (isProcessing) {
@@ -155,7 +159,7 @@ export function CreateReferralCode({ onSuccess }: Props) {
           <input
             ref={inputRef}
             value={referralCode}
-            disabled={isProcessing || !isConnected || srcChainId !== undefined}
+            disabled={isProcessing || !isConnected}
             placeholder={t`Enter referral code`}
             className="grow p-0 py-2 text-13 leading-[13px] placeholder:text-typography-secondary"
             onChange={(event) => {

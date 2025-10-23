@@ -398,7 +398,6 @@ msgstr "指値価格がマーク価格を下回っています"
 msgid "sell"
 msgstr "売却"
 
-#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
 msgid "Switch to {0}"
@@ -2840,6 +2839,10 @@ msgstr "デバッグ値は利用できません"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below liq. price"
 msgstr "トリガー価格が清算価格を下回っています"
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Share your successful GMX trade on X"
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.jsx
 #: src/pages/Stake/AffiliateClaimModal.tsx
@@ -5967,8 +5970,8 @@ msgid "Trade Errors"
 msgstr "取引エラー"
 
 #: src/components/PositionShare/PositionShare.tsx
-msgid "Share your sucessful GMX trade on X"
-msgstr ""
+#~ msgid "Share your sucessful GMX trade on X"
+#~ msgstr ""
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Consider selecting only positions where the accrued funding fee exceeds the {0} gas cost to settle each position."
@@ -6055,6 +6058,7 @@ msgstr "{nativeTokenSymbol} を移転"
 msgid "Meme"
 msgstr "ミーム"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Create code"
 msgstr ""

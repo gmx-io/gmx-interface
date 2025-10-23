@@ -267,7 +267,7 @@ function PositionShare({
       contentClassName="md:!max-w-[500px]"
       isVisible={isPositionShareModalOpen}
       setIsVisible={setIsPositionShareModalOpen}
-      label={t`Share your sucessful GMX trade on X`}
+      label={t`Share your successful GMX trade on X`}
       contentPadding={false}
       withMobileBottomPosition
     >
