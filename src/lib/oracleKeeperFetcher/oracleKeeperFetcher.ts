@@ -2,6 +2,12 @@ import random from "lodash/random";
 
 import { isLocal } from "config/env";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
+import {
+  metrics,
+  OracleKeeperFailureCounter,
+  OracleKeeperFallbackCounter,
+  OracleKeeperMetricMethodId,
+} from "lib/metrics";
 import { getOracleKeeperFallbackUrls, getOracleKeeperUrl } from "sdk/configs/oracleKeeper";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { buildUrl } from "sdk/utils/buildUrl";
@@ -37,7 +43,6 @@ const failsPerMinuteToFallback = 5;
 export class OracleKeeperFetcher implements OracleFetcher {
   private readonly chainId: number;
 
-  private readonly forceIncentivesActive: boolean;
   private isFallback: boolean;
   private fallbackUrls: string[];
   private fallbackThrottleTimerId: number | undefined;
@@ -45,11 +50,10 @@ export class OracleKeeperFetcher implements OracleFetcher {
   private failTimes: number[];
   private mainUrl: string;
 
-  constructor(p: { chainId: number; forceIncentivesActive: boolean }) {
+  constructor(p: { chainId: number }) {
     this.chainId = p.chainId;
     this.fallbackUrls = getOracleKeeperFallbackUrls(this.chainId);
     this.mainUrl = getOracleKeeperUrl(this.chainId);
-    this.forceIncentivesActive = p.forceIncentivesActive;
     this.isFallback = false;
     this.failTimes = [];
   }
@@ -58,10 +62,15 @@ export class OracleKeeperFetcher implements OracleFetcher {
     return this.isFallback ? this.fallbackUrls[this.fallbackIndex] : this.mainUrl;
   }
 
-  handleFailure() {
+  handleFailure(method: OracleKeeperMetricMethodId) {
     if (this.fallbackThrottleTimerId) {
       return;
     }
+
+    metrics.pushCounter<OracleKeeperFailureCounter>("oracleKeeper.failure", {
+      chainId: this.chainId,
+      method,
+    });
 
     this.failTimes.push(Date.now());
 
@@ -74,8 +83,14 @@ export class OracleKeeperFetcher implements OracleFetcher {
         this.fallbackIndex = random(0, this.fallbackUrls.length - 1);
       }
 
+      // eslint-disable-next-line no-console
+      console.warn(`oracle keeper fallback ${this.chainId} to ${this.fallbackIndex}`);
       this.isFallback = true;
       this.failTimes = [];
+
+      metrics.pushCounter<OracleKeeperFallbackCounter>("oracleKeeper.fallback", {
+        chainId: this.chainId,
+      });
     }
 
     this.fallbackThrottleTimerId = window.setTimeout(() => {
@@ -96,7 +111,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
       .catch((e) => {
         // eslint-disable-next-line no-console
         console.error(e);
-        this.handleFailure();
+        this.handleFailure("tickers");
 
         throw e;
       });
@@ -115,7 +130,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
       .catch((e) => {
         // eslint-disable-next-line no-console
         console.error(e);
-        this.handleFailure();
+        this.handleFailure("24hPrices");
         throw e;
       });
   }
@@ -165,7 +180,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
       .catch((e) => {
         // eslint-disable-next-line no-console
         console.error(e);
-        this.handleFailure();
+        this.handleFailure("candles");
         throw e;
       });
   }
@@ -185,7 +200,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
       .catch((e) => {
         // eslint-disable-next-line no-console
         console.error(e);
-        this.handleFailure();
+        this.handleFailure("candles");
         throw e;
       });
   }
@@ -193,14 +208,14 @@ export class OracleKeeperFetcher implements OracleFetcher {
   async fetchIncentivesRewards(): Promise<RawIncentivesStats | null> {
     return fetch(
       buildUrl(this.url!, "/incentives", {
-        ignoreStartDate: this.forceIncentivesActive ? "1" : undefined,
+        ignoreStartDate: undefined,
       })
     )
       .then((res) => res.json())
       .catch((e) => {
         // eslint-disable-next-line no-console
         console.error(e);
-        this.handleFailure();
+        this.handleFailure("incentives");
         return null;
       });
   }
@@ -222,7 +237,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
       .catch((e) => {
         // eslint-disable-next-line no-console
         console.error(e);
-        this.handleFailure();
+        this.handleFailure("annualized");
         throw e;
       });
   }
@@ -238,7 +253,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
       .catch((e) => {
         // eslint-disable-next-line no-console
         console.error(e);
-        this.handleFailure();
+        this.handleFailure("snapshots");
         throw e;
       });
   }
