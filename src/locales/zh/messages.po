@@ -101,10 +101,6 @@ msgstr "BonsaiDAO"
 msgid "Approval signed"
 msgstr "批准已签名"
 
-#: src/components/Footer/Footer.tsx
-#~ msgid "Leave Feedback"
-#~ msgstr "留下反馈"
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr "每日损失"
@@ -570,6 +566,11 @@ msgstr "30 天内不再显示此消息。"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "in liquidity"
 msgstr "流动性中"
+
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Insufficient gas balance, please deposit more {gasPaymentTokensText}."
+msgstr ""
 
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Exit Price"
@@ -2634,11 +2635,6 @@ msgstr "添加推荐代码失败。"
 msgid "Updating"
 msgstr "更新中"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Deposit USDC"
-msgstr "存入 USDC"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -4171,6 +4167,11 @@ msgstr "做空净率 / 1h"
 msgid "Discover GMX Earn"
 msgstr ""
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Deposit {gasPaymentTokensText}"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
@@ -5548,11 +5549,6 @@ msgstr "GMX 社区，包含 NFT、交易和教育举措"
 msgid "Liquidation Confirmations"
 msgstr "清算确认"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more WETH or USDC."
-msgstr "gas 余额不足，请存入更多 WETH 或 USDC。"
-
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0><1>#GMX V2</1> 的 OI 看起来很棒</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>查看更多: <4>https://tradao.xyz/#/open-interest</4></3>"
@@ -5733,11 +5729,6 @@ msgstr "GLV 从 GM 资金池的交易费用（开仓、平仓、借款、清算�
 #: src/components/GmxAccountModal/keys.ts
 msgid "Deposit failed"
 msgstr "存入失败"
-
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Deposit USDC or ETH"
-msgstr "存入 USDC 或 ETH"
 
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Referral code created."
@@ -7418,11 +7409,6 @@ msgstr "GMX V2 折扣自动应用于每笔交易，并未在此表格中显示�
 msgid "Share Position"
 msgstr "分享仓位"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more USDC."
-msgstr "gas 余额不足，请存入更多 USDC。"
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Deposit Fee"
 msgstr "存款费用"
@@ -7688,10 +7674,6 @@ msgstr "无法使用智能账户签署消息"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "此仓位可能被清算（不包括任何价格变动），因为资金和借款费用率会随着时间减少仓位的抵押品。"
-
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Gemini Wallet is not supported for Express or One-Click trading."
-msgstr "Gemini 钱包不支持快速或一键交易。"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"

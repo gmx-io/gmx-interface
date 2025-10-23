@@ -101,10 +101,6 @@ msgstr "BonsaiDAO"
 msgid "Approval signed"
 msgstr "승인 서명 완료"
 
-#: src/components/Footer/Footer.tsx
-#~ msgid "Leave Feedback"
-#~ msgstr "피드백 남기기"
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr "일일 손실"
@@ -570,6 +566,11 @@ msgstr "30일 동안 해당 메시지 다시보지 않기"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "in liquidity"
 msgstr "유동성 내"
+
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Insufficient gas balance, please deposit more {gasPaymentTokensText}."
+msgstr ""
 
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Exit Price"
@@ -2634,11 +2635,6 @@ msgstr "추천 코드 추가 실패"
 msgid "Updating"
 msgstr "업데이트 중"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Deposit USDC"
-msgstr "USDC 입금"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -4171,6 +4167,11 @@ msgstr "숏 순율 / 1시간"
 msgid "Discover GMX Earn"
 msgstr ""
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Deposit {gasPaymentTokensText}"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
@@ -5548,11 +5549,6 @@ msgstr "NFT, 거래 및 교육 이니셔티브를 가진 GMX 커뮤니티"
 msgid "Liquidation Confirmations"
 msgstr "청산 확인"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more WETH or USDC."
-msgstr "가스 잔액 부족, 더 많은 WETH 또는 USDC를 입금하세요."
-
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0><1>#GMX V2</1>의 OI가 훌륭합니다</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>더 확인: <4>https://tradao.xyz/#/open-interest</4></3>"
@@ -5733,11 +5729,6 @@ msgstr "GLV는 GM 풀 전반의 거래 수수료(개설, 종료, 대출, 청산,
 #: src/components/GmxAccountModal/keys.ts
 msgid "Deposit failed"
 msgstr "입금 실패"
-
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Deposit USDC or ETH"
-msgstr "USDC 또는 ETH 입금"
 
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Referral code created."
@@ -7418,11 +7409,6 @@ msgstr "GMX V2 할인은 각 거래에서 자동 적용되며 이 테이블에 �
 msgid "Share Position"
 msgstr "포지션 공유"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more USDC."
-msgstr "가스 잔액 부족, 더 많은 USDC를 입금하세요."
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Deposit Fee"
 msgstr "입금 수수료"
@@ -7688,10 +7674,6 @@ msgstr "스마트 계정으로 메시지 서명 불가"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "자금 및 대출 수수료율로 인해 가격 움직임 제외 포지션 담보 감소로 청산될 수 있음."
-
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Gemini Wallet is not supported for Express or One-Click trading."
-msgstr "Gemini 지갑은 익스프레스 또는 원클릭 거래를 지원하지 않습니다."
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"

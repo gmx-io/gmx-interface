@@ -101,10 +101,6 @@ msgstr "BonsaiDAO"
 msgid "Approval signed"
 msgstr "Genehmigung unterzeichnet"
 
-#: src/components/Footer/Footer.tsx
-#~ msgid "Leave Feedback"
-#~ msgstr "Feedback hinterlassen"
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr "Täglicher Verlust"
@@ -570,6 +566,11 @@ msgstr "Diese Meldung 30 Tage lang nicht mehr anzeigen."
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "in liquidity"
 msgstr "In Liquidität"
+
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Insufficient gas balance, please deposit more {gasPaymentTokensText}."
+msgstr ""
 
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Exit Price"
@@ -2634,11 +2635,6 @@ msgstr "Hinzufügen des Referral-Codes fehlgeschlagen."
 msgid "Updating"
 msgstr "Aktualisieren"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Deposit USDC"
-msgstr "USDC einzahlen"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -4171,6 +4167,11 @@ msgstr "Shorts Netto-Rate / 1h"
 msgid "Discover GMX Earn"
 msgstr ""
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Deposit {gasPaymentTokensText}"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
@@ -5548,11 +5549,6 @@ msgstr "GMX-Community mit NFTs, Trading und Bildungsinitiativen"
 msgid "Liquidation Confirmations"
 msgstr "Liquidationsbestätigungen"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more WETH or USDC."
-msgstr "Unzureichender Gas-Saldo, bitte mehr WETH oder USDC einzahlen."
-
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0><1>#GMX V2</1>'s OI sieht großartig aus</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Mehr prüfen: <4>https://tradao.xyz/#/open-interest</4></3>"
@@ -5733,11 +5729,6 @@ msgstr "GLV verdient aus Handelsgebühren (Öffnen, Schließen, Borrow, Liquidat
 #: src/components/GmxAccountModal/keys.ts
 msgid "Deposit failed"
 msgstr "Einzahlung fehlgeschlagen"
-
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Deposit USDC or ETH"
-msgstr "USDC oder ETH einzahlen"
 
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Referral code created."
@@ -7418,11 +7409,6 @@ msgstr "GMX V2-Rabatte werden automatisch auf jeden Handel angewendet und nicht 
 msgid "Share Position"
 msgstr "Position teilen"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more USDC."
-msgstr "Unzureichender Gas-Saldo, bitte mehr USDC einzahlen."
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Deposit Fee"
 msgstr "Einzahlungsgebühr"
@@ -7688,10 +7674,6 @@ msgstr "Nachricht mit Smart-Account kann nicht unterschrieben werden"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "Diese Position könnte liquidiert werden, ausgenommen Preisbewegungen, aufgrund von Finanzierungs- und Leihgebührensätzen, die das Kollateral der Position im Laufe der Zeit reduzieren."
-
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Gemini Wallet is not supported for Express or One-Click trading."
-msgstr "Gemini Wallet wird für Express- oder One-Click-Trading nicht unterstützt."
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"
