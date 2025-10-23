@@ -5,17 +5,23 @@ import { useHistory } from "react-router-dom";
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { useChainId } from "lib/chains";
 import { getGasPaymentTokens } from "sdk/configs/express";
-import { getNativeToken, getToken } from "sdk/configs/tokens";
+import { getToken } from "sdk/configs/tokens";
 
 import { ColorfulBanner, ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 
 import ExpressIcon from "img/ic_express.svg?react";
 
+import { useMultichainTransferableGasPaymentTokenSymbols } from "../../domain/multichain/useMultichainTransferableGasPaymentTokenSymbols";
+
 export function useGasPaymentTokensText(chainId: number) {
-  const gasPaymentTokenSymbols = useMemo(
+  const { srcChainId } = useChainId();
+
+  const settlementGasPaymentTokenSymbols = useMemo(
     () => getGasPaymentTokens(chainId).map((tokenAddress) => getToken(chainId, tokenAddress)?.symbol),
     [chainId]
   );
+  const multichainGasPaymentTokenSymbols = useMultichainTransferableGasPaymentTokenSymbols();
+  const gasPaymentTokenSymbols = srcChainId ? multichainGasPaymentTokenSymbols : settlementGasPaymentTokenSymbols;
 
   const gasPaymentTokensText = gasPaymentTokenSymbols.reduce((acc, symbol, index) => {
     if (index === 0) {
@@ -50,20 +56,14 @@ export function ExpressTradingOutOfGasBanner({ onClose }: { onClose: () => void 
     onClose();
   }, [onClose, setGmxAccountModalOpen]);
 
-  const hasEth = getNativeToken(chainId).symbol === "ETH";
-
   return (
     <ColorfulBanner color="blue" icon={ExpressIcon}>
       {srcChainId !== undefined ? (
         <>
-          {hasEth ? (
-            <Trans>Insufficient gas balance, please deposit more WETH or USDC.</Trans>
-          ) : (
-            <Trans>Insufficient gas balance, please deposit more USDC.</Trans>
-          )}
+          <Trans>Insufficient gas balance, please deposit more {gasPaymentTokensText}.</Trans>
           <br />
           <ColorfulButtonLink color="blue" onClick={onDepositClick}>
-            {hasEth ? <Trans>Deposit USDC or ETH</Trans> : <Trans>Deposit USDC</Trans>}
+            <Trans>Deposit {gasPaymentTokensText}</Trans>
           </ColorfulButtonLink>
         </>
       ) : (
