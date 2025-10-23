@@ -706,7 +706,7 @@ export function getDeltaStr({ delta, deltaPercentage, hasProfit }) {
     deltaStr = "";
     deltaPercentageStr = "";
   }
-  deltaStr += `$\u200a\u200d${formatAmount(delta, USD_DECIMALS, 2, true)}`;
+  deltaStr += `$\u200a${formatAmount(delta, USD_DECIMALS, 2, true)}`;
   deltaPercentageStr += `${formatAmount(deltaPercentage, 2, 2)}%`;
 
   return { deltaStr, deltaPercentageStr };
@@ -999,7 +999,7 @@ export function getStakingData(stakingInfo: bigint[] | undefined):
   return data as any;
 }
 
-export type ProcessedData = Partial<{
+export type StakingProcessedData = Partial<{
   gmxBalance: bigint;
   gmxBalanceUsd: bigint;
   gmxSupply: bigint;
@@ -1057,12 +1057,19 @@ export type ProcessedData = Partial<{
   totalNativeTokenRewards: bigint;
   totalNativeTokenRewardsUsd: bigint;
   totalRewardsUsd: bigint;
+  cumulativeTotalRewardsUsd: bigint;
+  cumulativeEsGmxRewards: bigint;
+  cumulativeEsGmxRewardsUsd: bigint;
+  cumulativeGmxRewards: bigint;
+  cumulativeGmxRewardsUsd: bigint;
+  cumulativeNativeTokenRewards: bigint;
+  cumulativeNativeTokenRewardsUsd: bigint;
 }> & {
   gmxAprForEsGmx: bigint;
   gmxAprForNativeToken: bigint;
 };
 
-export function getProcessedData(
+export function getStakingProcessedData(
   balanceData: Partial<Record<"glp" | "gmx" | "esGmx" | "stakedGmxTracker", bigint>> | undefined,
   supplyData: Partial<Record<"gmx" | "esGmx" | "glp" | "stakedGmxTracker", bigint>> | undefined,
   depositBalanceData:
@@ -1099,7 +1106,7 @@ export function getProcessedData(
   stakedGmxSupply: bigint | undefined,
   gmxPrice: bigint | undefined,
   gmxSupply: string | undefined
-): ProcessedData | undefined {
+): StakingProcessedData | undefined {
   if (
     !balanceData ||
     !supplyData ||
@@ -1229,6 +1236,29 @@ export function getProcessedData(
 
   data.totalNativeTokenRewards = data.feeGmxTrackerRewards + data.feeGlpTrackerRewards;
   data.totalNativeTokenRewardsUsd = data.feeGmxTrackerRewardsUsd + data.feeGlpTrackerRewardsUsd;
+
+  const cumulativeEsGmxRewards =
+    stakingData.stakedGmxTracker.cumulativeRewards + stakingData.stakedGlpTracker.cumulativeRewards;
+  const cumulativeEsGmxRewardsUsd = mulDiv(cumulativeEsGmxRewards, gmxPrice, expandDecimals(1, 18)) ?? 0n;
+
+  const cumulativeGmxRewards =
+    stakingData.extendedGmxTracker.cumulativeRewards + vestingData.gmxVesterClaimSum + vestingData.glpVesterClaimSum;
+  const cumulativeGmxRewardsUsd = mulDiv(cumulativeGmxRewards, gmxPrice, expandDecimals(1, 18)) ?? 0n;
+
+  const cumulativeNativeTokenRewards =
+    stakingData.feeGmxTracker.cumulativeRewards + stakingData.feeGlpTracker.cumulativeRewards;
+  const cumulativeNativeTokenRewardsUsd =
+    mulDiv(cumulativeNativeTokenRewards, nativeTokenPrice, expandDecimals(1, 18)) ?? 0n;
+
+  data.cumulativeEsGmxRewards = cumulativeEsGmxRewards;
+  data.cumulativeEsGmxRewardsUsd = cumulativeEsGmxRewardsUsd;
+  data.cumulativeGmxRewards = cumulativeGmxRewards;
+  data.cumulativeGmxRewardsUsd = cumulativeGmxRewardsUsd;
+  data.cumulativeNativeTokenRewards = cumulativeNativeTokenRewards;
+  data.cumulativeNativeTokenRewardsUsd = cumulativeNativeTokenRewardsUsd;
+
+  data.cumulativeTotalRewardsUsd =
+    cumulativeEsGmxRewardsUsd + cumulativeGmxRewardsUsd + cumulativeNativeTokenRewardsUsd;
 
   data.totalRewardsUsd = data.totalEsGmxRewardsUsd + data.totalNativeTokenRewardsUsd + data.totalGmxRewardsUsd;
 

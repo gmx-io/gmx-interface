@@ -11,6 +11,7 @@ import {
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
 import type { Position } from "domain/synthetics/positions/types";
+import { metrics, MissedMarketPricesCounter } from "lib/metrics";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
@@ -168,7 +169,15 @@ function useKeysAndPricesParams(p: {
     for (const market of markets) {
       const marketPrices = getContractMarketPrices(tokensData, market);
 
-      if (!marketPrices || market.isSpotOnly) {
+      if (market.isSpotOnly) {
+        continue;
+      }
+
+      if (!marketPrices) {
+        metrics.pushCounter<MissedMarketPricesCounter>("missedMarketPrices", {
+          marketName: market.name,
+          source: "useKeysAndPricesParams",
+        });
         continue;
       }
 

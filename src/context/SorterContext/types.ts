@@ -1,5 +1,6 @@
 export type SorterKey =
-  | "chart-token-selector"
+  | "chart-token-selector-spot"
+  | "chart-token-selector-perp"
   | "gm-list"
   | "dashboard-markets-list"
   | "gm-token-selector"
