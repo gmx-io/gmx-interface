@@ -15,14 +15,12 @@ type Props = {
   showRedirectModal?: (to: string) => void;
   redirectPopupTimestamp?: number;
   isMobileSideNav?: boolean;
-  enableFeedbackModal?: boolean;
 };
 
 export default function Footer({
   showRedirectModal,
   redirectPopupTimestamp,
   isMobileSideNav,
-  enableFeedbackModal,
 }: Props) {
   const { feedbackModalVisible, setFeedbackModalVisible } = useSettings();
 
@@ -92,9 +90,7 @@ export default function Footer({
           })}
         </div>
       </div>
-      {!enableFeedbackModal && (
-        <UserFeedbackModal isVisible={feedbackModalVisible} setIsVisible={setFeedbackModalVisible} />
-      )}
+      <UserFeedbackModal isVisible={feedbackModalVisible} setIsVisible={setFeedbackModalVisible} />
     </>
   );
 }
