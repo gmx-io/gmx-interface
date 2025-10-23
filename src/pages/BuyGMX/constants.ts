@@ -212,7 +212,7 @@ export const DECENTRALISED_AGGRIGATORS: Exchange[] = [
   },
   {
     name: "Matcha",
-    icon: "ic_matcha.png",
+    icon: "ic_matcha.svg",
     links: {
       [ARBITRUM]: `https://www.matcha.xyz/markets/42161/${ARBITRUM_GMX}`,
       [AVALANCHE]: `https://www.matcha.xyz/markets/43114/${AVALANCHE_GMX}`,

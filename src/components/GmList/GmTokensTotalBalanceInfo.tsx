@@ -4,7 +4,8 @@ import { useCallback, useMemo } from "react";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { UserEarningsData } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
-import { TokenData, convertToUsd } from "domain/synthetics/tokens";
+import { convertToUsd } from "domain/synthetics/tokens";
+import { ProgressiveTokenData } from "domain/tokens";
 import { formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
@@ -24,7 +25,7 @@ export const GmTokensBalanceInfo = ({
   singleLine = false,
   className,
 }: {
-  token: TokenData;
+  token: ProgressiveTokenData | undefined;
   earnedTotal?: bigint;
   earnedRecently?: bigint;
   daysConsidered: number;
@@ -33,7 +34,7 @@ export const GmTokensBalanceInfo = ({
   className?: string;
 }) => {
   const content =
-    token.balance !== undefined && token.balance !== 0n ? (
+    token && token.balance !== undefined && token.balance !== 0n ? (
       <TokenValuesInfoCell
         value={formatBalanceAmount(token.balance, token.decimals)}
         usd={
@@ -116,7 +117,7 @@ export const GmTokensTotalBalanceInfo = ({
       <>
         <StatsTooltipRow
           label={t`Wallet`}
-          value={<AmountWithUsdBalance amount={balance} decimals={18} symbol="GM" usd={balanceUsd} usdOnTop />}
+          value={<AmountWithUsdBalance amount={balance} decimals={18} symbol="GM" usd={balanceUsd} usdAsPrimary />}
           showDollar={false}
         />
         {userEarnings && (

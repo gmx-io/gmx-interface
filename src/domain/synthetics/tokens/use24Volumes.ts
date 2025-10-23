@@ -12,8 +12,8 @@ import { getByKey } from "sdk/utils/objects";
 type PositionVolumeInfosResponse = Record<Address, bigint>;
 
 const MARKET_VOLUMES_QUERY = gql`
-  query MarketVolumesInfoResolver($timestamp: Float!) {
-    positionsVolume(where: { timestamp: $timestamp }) {
+  {
+    positionsVolume(where: { period: "1d" }) {
       volume
       market
     }
@@ -23,13 +23,6 @@ const MARKET_VOLUMES_QUERY = gql`
 export function use24hVolumes() {
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useSelector(selectMarketsInfoData);
-
-  const LAST_DAY_UNIX_TIMESTAMP = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
-  const timestamp = LAST_DAY_UNIX_TIMESTAMP;
-
-  const variables = {
-    timestamp: timestamp,
-  };
 
   const { data } = useSWR<PositionVolumeInfosResponse | undefined>(
     [chainId, "24hVolume"],
@@ -42,7 +35,6 @@ export function use24hVolumes() {
 
       const response = await client.query<{ positionsVolume: { volume: string; market: Address }[] }>({
         query: MARKET_VOLUMES_QUERY,
-        variables,
       });
 
       return response.data?.positionsVolume.reduce(

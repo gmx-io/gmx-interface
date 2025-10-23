@@ -9,11 +9,15 @@ import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/S
 import { useChainId } from "lib/chains";
 import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
+import BeginAccountTransfer from "pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer";
+import CompleteAccountTransfer from "pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer";
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
-import Buy from "pages/Buy/Buy";
 import BuyGMX from "pages/BuyGMX/BuyGMX";
-import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
+import EarnAdditionalOpportunitiesPage from "pages/Earn/EarnAdditionalOpportunitiesPage";
+import EarnDiscoveryPage from "pages/Earn/EarnDiscoveryPage";
+import EarnDistributionsPage from "pages/Earn/EarnDistributionsPage";
+import EarnPortfolioPage from "pages/Earn/EarnPortfolioPage";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import Jobs from "pages/Jobs/Jobs";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
@@ -25,12 +29,12 @@ import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import Referrals from "pages/Referrals/Referrals";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
-import Stake from "pages/Stake/Stake";
 import Stats from "pages/Stats/Stats";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { TestPermits } from "pages/TestPermits/TestPermits";
 
+import { EarnRedirect } from "components/Earn/EarnRedirect";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 
 const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
@@ -59,7 +63,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <RedirectWithQuery exact from="/dashboard" to="/stats" />
       <RedirectWithQuery exact from="/monitor/v2" to="/monitor" />
       {/* redirect from previous stake(earn) url */}
-      <RedirectWithQuery exact from="/earn" to="/stake" />
+      <RedirectWithQuery exact from="/stake" to="/earn" />
       <RedirectWithQuery from="/v2" to="/trade" />
 
       <Route exact path="/">
@@ -85,15 +89,29 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         <SyntheticsStats />
       </Route>
 
-      <Route exact path="/stake">
-        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="stake">
-          <Stake />
+      <Route exact path="/earn/discover">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
+          <EarnDiscoveryPage />
         </SyntheticsStateContextProvider>
       </Route>
-
-      <Route exact path="/buy">
-        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="buy">
-          <Buy />
+      <Route exact path="/earn/portfolio">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
+          <EarnPortfolioPage />
+        </SyntheticsStateContextProvider>
+      </Route>
+      <Route exact path="/earn/additional_opportunities/:filter?">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
+          <EarnAdditionalOpportunitiesPage />
+        </SyntheticsStateContextProvider>
+      </Route>
+      <Route exact path="/earn/distributions">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
+          <EarnDistributionsPage />
+        </SyntheticsStateContextProvider>
+      </Route>
+      <Route path="/earn">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
+          <EarnRedirect />
         </SyntheticsStateContextProvider>
       </Route>
 
@@ -157,10 +175,6 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         <NftWallet />
       </Route>
 
-      <Route exact path="/claim_es_gmx">
-        <ClaimEsGmx />
-      </Route>
-
       <Route exact path="/actions/:v/:account">
         {({ match }) => (
           <Redirect
@@ -189,16 +203,22 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         <ParseTransactionPage />
       </Route>
 
-      {isDevelopment() && (
-        <>
-          <Route exact path="/ui">
-            <UiPage />
-          </Route>
-          <Route exact path="/permits">
-            <TestPermits />
-          </Route>
-        </>
-      )}
+      <Route exact path="/begin_account_transfer">
+        <BeginAccountTransfer />
+      </Route>
+
+      <Route exact path="/complete_account_transfer/:sender/:receiver">
+        <CompleteAccountTransfer />
+      </Route>
+
+      {isDevelopment() && [
+        <Route exact path="/ui" key="ui">
+          <UiPage />
+        </Route>,
+        <Route exact path="/permits" key="permits">
+          <TestPermits />
+        </Route>,
+      ]}
 
       <Route path="*">
         <PageNotFound />
