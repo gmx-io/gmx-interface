@@ -12,7 +12,7 @@ import {
 } from "config/chains";
 
 import gmIcon from "img/gm_icon.svg";
-import bsc from "img/ic_bsc_96.svg";
+import bsc from "img/ic_bsc.svg";
 import esGMXArbitrumIcon from "img/ic_esgmx_arbitrum.svg";
 import esGMXAvaxIcon from "img/ic_esgmx_avalanche.svg";
 import glpArbitrum from "img/ic_glp_arbitrum.svg";

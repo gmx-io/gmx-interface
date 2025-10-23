@@ -101,10 +101,6 @@ msgstr "BonsaiDAO"
 msgid "Approval signed"
 msgstr "Одобрение подписано"
 
-#: src/components/Footer/Footer.tsx
-#~ msgid "Leave Feedback"
-#~ msgstr "Оставить отзыв"
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr "Ежедневный убыток"
