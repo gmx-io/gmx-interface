@@ -102,8 +102,8 @@ msgid "Approval signed"
 msgstr "승인 서명 완료"
 
 #: src/components/Footer/Footer.tsx
-msgid "Leave Feedback"
-msgstr "피드백 남기기"
+#~ msgid "Leave Feedback"
+#~ msgstr "피드백 남기기"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
@@ -4075,7 +4075,6 @@ msgstr "Avalanche에서 스테이킹됨"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: src/components/Footer/constants.tsx
-#: src/components/Footer/constants.tsx
 msgid "Media Kit"
 msgstr "미디어 키트"
 
@@ -6393,7 +6392,6 @@ msgstr "수령 주소 입력"
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/TermsAndConditions/TermsAndConditions.tsx
-#: src/components/Footer/constants.tsx
 msgid "Terms and Conditions"
 msgstr "약관"
 
@@ -6897,7 +6895,6 @@ msgstr "자금 소유권 손실 없음"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/ReferralTerms/ReferralTerms.tsx
-#: src/components/Footer/constants.tsx
 msgid "Referral Terms"
 msgstr "추천 약관"
 

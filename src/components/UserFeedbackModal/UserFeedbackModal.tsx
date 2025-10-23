@@ -3,11 +3,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
 import { MAX_FEEDBACK_LENGTH } from "config/ui";
-import { selectLastMonthAccountStats } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useAccountStats } from "domain/synthetics/accountStats";
+import { useAccountStats, usePeriodAccountStats } from "domain/synthetics/accountStats";
 import { formatAnswersByQuestionType, QuestionType } from "domain/synthetics/userFeedback";
 import { useChainId } from "lib/chains";
+import { getTimePeriodsInSeconds } from "lib/dates";
 import { formatAmountForMetrics } from "lib/metrics";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import useWallet from "lib/wallets/useWallet";
@@ -22,12 +21,19 @@ type Props = {
   setIsVisible: (isVisible: boolean) => void;
 };
 
+const TIME_PERIODS = getTimePeriodsInSeconds();
+
 export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
   const { account } = useWallet();
   const { chainId } = useChainId();
   const fetcher = useOracleKeeperFetcher(chainId);
 
-  const lastMonthAccountStats = useSelector(selectLastMonthAccountStats);
+  const { data: lastMonthAccountStats } = usePeriodAccountStats(chainId, {
+    account,
+    from: TIME_PERIODS.month[0],
+    to: TIME_PERIODS.month[1],
+    enabled: isVisible,
+  });
 
   const { data: accountStats } = useAccountStats(chainId, {
     account,
