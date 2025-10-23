@@ -128,10 +128,10 @@ export async function queryPaginated<T>(
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    const res = await fetcher(limit, offset);
-    results.push(...res);
+    const page = await fetcher(limit, offset);
+    results.push(...page);
 
-    if (res.length < limit) {
+    if (page.length < limit) {
       break;
     }
 

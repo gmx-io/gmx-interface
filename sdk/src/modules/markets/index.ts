@@ -479,7 +479,7 @@ type PositionVolumeInfosResponse = {
 
 const POSITIONS_VOLUME_INFOS_QUERY = `
 {
-  positionsVolume(where: {period: "1d}) {
+  positionsVolume(where: {period: "1d"}) {
     market
     volume
   }
