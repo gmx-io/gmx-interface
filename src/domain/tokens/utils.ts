@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 
-import { getExplorerUrl } from "config/chains";
+import { BOTANIX, ContractsChainId, getExplorerUrl } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { convertToTokenAmount } from "domain/synthetics/tokens/utils";
 import {
@@ -258,14 +258,28 @@ export function getMidPrice(prices: TokenPrices) {
   return (prices.minPrice + prices.maxPrice) / 2n;
 }
 
+const MIN_NATIVE_CURRENCY_FOR_GAS = expandDecimals(10, USD_DECIMALS);
+const MIN_NATIVE_CURRENCY_FOR_GAS_BOTANIX = expandDecimals(15, USD_DECIMALS);
 // calculates the minimum amount of native currency that should be left to be used as gas fees
-export function getMinResidualAmount(decimals?: number, price?: bigint) {
+export function getMinResidualAmount({
+  chainId,
+  decimals,
+  price,
+}: {
+  chainId: ContractsChainId;
+  decimals: number | undefined;
+  price: bigint | undefined;
+}) {
   if (!decimals || price === undefined) {
     return 0n;
   }
 
-  const MIN_NATIVE_CURRENCY_FOR_GAS = expandDecimals(10, USD_DECIMALS);
-  return convertToTokenAmount(MIN_NATIVE_CURRENCY_FOR_GAS, decimals, price);
+  let minResidualAmountUsd = MIN_NATIVE_CURRENCY_FOR_GAS;
+  if (chainId === BOTANIX) {
+    minResidualAmountUsd = MIN_NATIVE_CURRENCY_FOR_GAS_BOTANIX;
+  }
+
+  return convertToTokenAmount(minResidualAmountUsd, decimals, price);
 }
 
 const BLACKLISTED_REGEX = /Wrapped|\(Wormhole\)|\(LayerZero\)/gim;
