@@ -4827,6 +4827,10 @@ msgstr "作为附属机构赚取的返利。"
 msgid "Invalid liq. price"
 msgstr "无效的清算价格"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Smart wallets are not supported on {0}.</0><1/><2>Please switch to a different network or use a EOA wallet.</2>"
+msgstr ""
+
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized Buy Pressure (BB&D):"
 msgstr "年化买入压力 (BB&D)："
@@ -5875,6 +5879,10 @@ msgstr "{networkLabel} 上的 {addressLabel}"
 msgid "Approving"
 msgstr "批准中"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Smart wallets are not supported on this network."
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Take Profit"
 msgstr "更新止盈"
@@ -6375,6 +6383,12 @@ msgstr "触发价格"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sellable"
 msgstr "可出售"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Smart wallets are not supported on Express or One-Click Trading."
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche Trading Incentives"

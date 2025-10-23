@@ -4827,6 +4827,10 @@ msgstr "アフィリエイトとして稼いだリベート。"
 msgid "Invalid liq. price"
 msgstr "無効な清算価格"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Smart wallets are not supported on {0}.</0><1/><2>Please switch to a different network or use a EOA wallet.</2>"
+msgstr ""
+
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized Buy Pressure (BB&D):"
 msgstr "年率化された買い圧力 (BB&D):"
@@ -5875,6 +5879,10 @@ msgstr "{networkLabel}上の{addressLabel}"
 msgid "Approving"
 msgstr "承認中"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Smart wallets are not supported on this network."
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Take Profit"
 msgstr "テイクプロフィットを更新"
@@ -6375,6 +6383,12 @@ msgstr "トリガー価格"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sellable"
 msgstr "売却可能"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Smart wallets are not supported on Express or One-Click Trading."
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche Trading Incentives"

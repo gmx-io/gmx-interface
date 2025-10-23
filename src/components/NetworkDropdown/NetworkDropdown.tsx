@@ -2,16 +2,20 @@ import { Menu } from "@headlessui/react";
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import noop from "lodash/noop";
-import { useMemo, useState } from "react";
+import partition from "lodash/partition";
+import { Fragment, useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { getChainIcon } from "config/icons";
+import { isSourceChain } from "config/multichain";
 import type { NetworkOption } from "config/networkOptions";
 import { switchNetwork } from "lib/wallets";
+import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import { getChainName } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
 import type { ModalProps } from "components/Modal/Modal";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import SettingsIcon from "img/ic_settings.svg?react";
@@ -142,45 +146,74 @@ function DesktopDropdown({
 }
 
 function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: NetworkOption[]; chainId: number }) {
-  return networkOptions
-    .map((network) => {
-      return <NetworkMenuItem key={network.value} chainId={chainId} network={network} />;
-    })
-    .concat(
+  const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
+
+  const [disabledNetworks, enabledNetworks] = partition(
+    networkOptions,
+    (network) => isSourceChain(network.value) && isNonEoaAccountOnAnyChain
+  );
+
+  return (
+    <>
+      {enabledNetworks.map((network) => (
+        <NetworkMenuItem key={network.value} network={network} chainId={chainId} disabled={false} />
+      ))}
       <Menu.Item key="solana">
         <SolanaNetworkItem />
       </Menu.Item>
-    );
+      {disabledNetworks.map((network) => (
+        <NetworkMenuItem key={network.value} network={network} chainId={chainId} disabled={true} />
+      ))}
+    </>
+  );
 }
 
-function NetworkMenuItem({ network, chainId }: { network: NetworkOption; chainId: number }) {
+function NetworkMenuItem({
+  network,
+  chainId,
+  disabled,
+}: {
+  network: NetworkOption;
+  chainId: number;
+  disabled?: boolean;
+}) {
   const { isConnected } = useAccount();
+  const Wrapper = disabled ? TooltipWithPortal : Fragment;
 
   return (
-    <Menu.Item key={network.value}>
-      <div
-        className="network-dropdown-menu-item menu-item"
-        data-qa={`networks-dropdown-${network.label}`}
-        onClick={() => switchNetwork(network.value, isConnected)}
-      >
-        <div className="menu-item-group">
-          <div className="menu-item-icon">
-            <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
+    <Menu.Item key={network.value} disabled={disabled}>
+      <Wrapper variant="none" as="div" content={<Trans>Smart wallets are not supported on this network.</Trans>}>
+        <div
+          className={cx("network-dropdown-menu-item menu-item", {
+            "disabled !cursor-not-allowed opacity-50": disabled,
+          })}
+          data-qa={`networks-dropdown-${network.label}`}
+          onClick={() => {
+            if (disabled) {
+              return;
+            }
+            switchNetwork(network.value, isConnected);
+          }}
+        >
+          <div className="menu-item-group">
+            <div className="menu-item-icon">
+              <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
+            </div>
+            <span
+              className={cx("network-dropdown-item-label", {
+                "text-typography-primary": chainId === network.value,
+              })}
+            >
+              {network.label}
+            </span>
           </div>
-          <span
-            className={cx("network-dropdown-item-label", {
-              "text-typography-primary": chainId === network.value,
-            })}
-          >
-            {network.label}
-          </span>
+          <div className="network-dropdown-menu-item-img">
+            {chainId === network.value && (
+              <div className={"h-8 w-8 rounded-full border-[2.5px] border-green-600 bg-green-500"} />
+            )}
+          </div>
         </div>
-        <div className="network-dropdown-menu-item-img">
-          {chainId === network.value && (
-            <div className={"h-8 w-8 rounded-full border-[2.5px] border-green-600 bg-green-500"} />
-          )}
-        </div>
-      </div>
+      </Wrapper>
     </Menu.Item>
   );
 }

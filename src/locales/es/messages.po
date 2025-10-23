@@ -4827,6 +4827,10 @@ msgstr "Reembolsos ganados como afiliado."
 msgid "Invalid liq. price"
 msgstr "Precio de liquidación inválido"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Smart wallets are not supported on {0}.</0><1/><2>Please switch to a different network or use a EOA wallet.</2>"
+msgstr ""
+
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized Buy Pressure (BB&D):"
 msgstr "Presión de Compra Anualizada (BB&D):"
@@ -5875,6 +5879,10 @@ msgstr "{addressLabel} en {networkLabel}"
 msgid "Approving"
 msgstr "Aprobando"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Smart wallets are not supported on this network."
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Take Profit"
 msgstr "Actualizar Take Profit"
@@ -6375,6 +6383,12 @@ msgstr "Precio de Activación"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sellable"
 msgstr "Vendible"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Smart wallets are not supported on Express or One-Click Trading."
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche Trading Incentives"

@@ -4827,6 +4827,10 @@ msgstr "제휴자로 벌어들인 리베이트."
 msgid "Invalid liq. price"
 msgstr "유효하지 않은 청산 가격"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Smart wallets are not supported on {0}.</0><1/><2>Please switch to a different network or use a EOA wallet.</2>"
+msgstr ""
+
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized Buy Pressure (BB&D):"
 msgstr "연간화된 구매 압력 (BB&D):"
@@ -5875,6 +5879,10 @@ msgstr "{networkLabel}의 {addressLabel}"
 msgid "Approving"
 msgstr "승인 중"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+msgid "Smart wallets are not supported on this network."
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Take Profit"
 msgstr "이익 실현 업데이트"
@@ -6375,6 +6383,12 @@ msgstr "트리거 가격"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sellable"
 msgstr "판매 가능"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Smart wallets are not supported on Express or One-Click Trading."
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche Trading Incentives"
