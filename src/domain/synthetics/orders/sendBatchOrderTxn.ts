@@ -4,7 +4,7 @@ import { withRetry } from "viem";
 import { ContractsChainId } from "config/chains";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { buildAndSignExpressBatchOrderTxn } from "domain/synthetics/express/expressOrderUtils";
-import { isLimitSwapOrderType } from "domain/synthetics/orders";
+import { isLimitOrderType, isLimitSwapOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
 import { TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
 import { sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
@@ -229,7 +229,10 @@ export const makeBatchOrderSimulation = async ({
     }
 
     const isSimulationAllowed = batchParams.createOrderParams.every(
-      (co) => !isLimitSwapOrderType(co.orderPayload.orderType) && !getIsTwapOrderPayload(co.orderPayload)
+      (co) =>
+        !isLimitOrderType(co.orderPayload.orderType) &&
+        !isTriggerDecreaseOrderType(co.orderPayload.orderType) &&
+        !getIsTwapOrderPayload(co.orderPayload)
     );
 
     // Simulate execution makes sense only for order creation transactions

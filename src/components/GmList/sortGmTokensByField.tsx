@@ -3,7 +3,8 @@ import values from "lodash/values";
 import type { SortDirection } from "context/SorterContext/types";
 import { MarketTokensAPRData, MarketsInfoData } from "domain/synthetics/markets";
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
-import { convertToUsd, type TokensData } from "domain/synthetics/tokens";
+import { convertToUsd } from "domain/synthetics/tokens";
+import { ProgressiveTokensData } from "sdk/types/tokens";
 
 import type { SortField } from "./GmList";
 import { sortGmTokensDefault } from "./sortGmTokensDefault";
@@ -19,7 +20,7 @@ export function sortGmTokensByField({
   performance,
 }: {
   marketsInfo: MarketsInfoData;
-  marketTokensData: TokensData;
+  marketTokensData: ProgressiveTokensData;
   orderBy: SortField;
   direction: SortDirection;
   marketsTokensApyData: MarketTokensAPRData | undefined;
@@ -32,12 +33,20 @@ export function sortGmTokensByField({
   const directionMultiplier = direction === "asc" ? 1 : -1;
   if (orderBy === "price") {
     return gmTokens.sort((a, b) => {
+      if (!a.prices || !b.prices) {
+        return 0;
+      }
+
       return a.prices.minPrice > b.prices.minPrice ? directionMultiplier : -directionMultiplier;
     });
   }
 
   if (orderBy === "totalSupply") {
     return gmTokens.sort((a, b) => {
+      if (!a.prices || !b.prices) {
+        return 0;
+      }
+
       const totalSupplyUsdA = convertToUsd(a.totalSupply, a.decimals, a.prices.minPrice) ?? 0n;
       const totalSupplyUsdB = convertToUsd(b.totalSupply, b.decimals, b.prices.minPrice) ?? 0n;
 
@@ -47,6 +56,10 @@ export function sortGmTokensByField({
 
   if (orderBy === "wallet") {
     return gmTokens.sort((a, b) => {
+      if (!a.prices || !b.prices) {
+        return 0;
+      }
+
       const aUsd = convertToUsd(a.balance, a.decimals, a.prices.minPrice) ?? 0n;
       const bUsd = convertToUsd(b.balance, b.decimals, b.prices.minPrice) ?? 0n;
 

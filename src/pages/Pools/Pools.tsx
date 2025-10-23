@@ -74,7 +74,6 @@ export default function Pools() {
             glvTokensApyData={glvApyInfoData}
             performance={performance}
             performanceSnapshots={performanceSnapshots}
-            isDeposit
           />
         )}
 
@@ -86,7 +85,6 @@ export default function Pools() {
           marketsTokensLidoAprData={marketsTokensLidoAprData}
           performance={performance}
           performanceSnapshots={performanceSnapshots}
-          isDeposit
         />
       </div>
     </AppPageLayout>

@@ -11,6 +11,7 @@ export default function AppPageLayout({
   sideNav,
   contentClassName,
   pageWrapperClassName,
+  footer,
 }: {
   children: React.ReactNode;
   header?: React.ReactNode;
@@ -18,6 +19,7 @@ export default function AppPageLayout({
   sideNav?: React.ReactNode;
   contentClassName?: string;
   pageWrapperClassName?: string;
+  footer?: React.ReactNode;
 }) {
   return (
     <div className={cx("flex h-full w-full", className)}>
@@ -30,9 +32,7 @@ export default function AppPageLayout({
           <div className={cx("flex w-full max-w-[1512px] grow flex-col gap-8 py-8 max-md:px-8", contentClassName)}>
             {children}
           </div>
-          <div className="mt-auto hidden w-full pt-8 lg:block">
-            <Footer />
-          </div>
+          <div className="mt-auto hidden w-full pt-8 lg:block">{footer ? footer : <Footer />}</div>
         </div>
       </div>
     </div>

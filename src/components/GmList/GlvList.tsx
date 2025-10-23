@@ -2,13 +2,11 @@ import { Trans, t } from "@lingui/macro";
 import { useMemo } from "react";
 
 import {
-  selectChainId,
   selectGlvInfo,
   selectGlvInfoLoading,
-  selectSrcChainId,
+  selectProgressiveDepositMarketTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useMarketTokensData } from "domain/synthetics/markets";
 import PoolsCard from "pages/Pools/PoolsCard";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
@@ -30,26 +28,22 @@ export function GlvList({
   marketsTokensIncentiveAprData,
   glvTokensIncentiveAprData,
   marketsTokensLidoAprData,
-  isDeposit,
   performance,
   performanceSnapshots,
 }: Props) {
-  const chainId = useSelector(selectChainId);
-  const srcChainId = useSelector(selectSrcChainId);
-  const marketsInfo = useSelector(selectGlvInfo);
+  const glvsInfo = useSelector(selectGlvInfo);
   const glvsLoading = useSelector(selectGlvInfoLoading);
+  const progressiveMarketTokensData = useSelector(selectProgressiveDepositMarketTokensData);
 
-  const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit, withGlv: true });
-
-  const isLoading = !marketsInfo || !marketTokensData || glvsLoading;
+  const isLoading = !glvsInfo || !progressiveMarketTokensData || glvsLoading;
 
   const sortedGlvTokens = useMemo(() => {
-    if (!marketsInfo || !marketTokensData) {
+    if (!glvsInfo || !progressiveMarketTokensData) {
       return [];
     }
 
-    return sortGmTokensDefault(marketsInfo, marketTokensData);
-  }, [marketsInfo, marketTokensData]);
+    return sortGmTokensDefault(glvsInfo, progressiveMarketTokensData);
+  }, [glvsInfo, progressiveMarketTokensData]);
 
   const rows =
     sortedGlvTokens.length > 0 &&
