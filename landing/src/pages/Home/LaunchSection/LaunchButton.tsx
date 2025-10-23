@@ -3,13 +3,13 @@ import type { ComponentPropsWithoutRef } from "react";
 
 import type { ChainName } from "config/chains";
 
-import IcArb from "img/ic_arb_24.svg?react";
-import IcAvax from "img/ic_avax_24.svg?react";
+import IcArb from "img/tokens/ic_arb.svg?react";
+import IcAvax from "img/tokens/ic_avax.svg?react";
 import IcBase from "img/ic_base.svg?react";
 import IcBotanix from "img/ic_botanix_landing.svg?react";
 import IcBsc from "img/ic_bsc_96.svg?react";
 import MidChevronIcon from "img/ic_mid_chevron.svg?react";
-import IcSol from "img/ic_sol_24.svg?react";
+import IcSol from "img/tokens/ic_sol.svg?react";
 
 const icons: Record<RedirectChainIds, React.ComponentType<ComponentPropsWithoutRef<"svg">>> = {
   [RedirectChainIds.Arbitum]: IcArb,

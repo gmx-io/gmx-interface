@@ -29,7 +29,7 @@ import Button from "components/Button/Button";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import BoltGradientIcon from "img/ic_bolt_gradient.svg?react";
-import GmxIcon from "img/ic_gmx_40.svg?react";
+import GmxIcon from "img/tokens/ic_gmx.svg?react";
 import NewLinkThinIcon from "img/ic_new_link_thin.svg?react";
 
 const getRecommendedGlvs = ({
