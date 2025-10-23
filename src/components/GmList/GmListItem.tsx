@@ -139,7 +139,6 @@ export function GmListItem({
               <TokenIcon
                 symbol={tokenIconName}
                 displaySize={40}
-                importSize={40}
                 badge={tokenIconBadge}
                 className="min-h-40 min-w-40"
                 badgeClassName={isGlv ? "left-[50%] -translate-x-1/2 right-[unset] bottom-0" : undefined}
@@ -240,7 +239,6 @@ export function GmListItem({
             <TokenIcon
               symbol={tokenIconName}
               displaySize={40}
-              importSize={40}
               badge={tokenIconBadge}
               className="min-h-40 min-w-40"
               badgeClassName={isGlv ? "left-[50%] -translate-x-1/2 right-[unset] bottom-0" : undefined}

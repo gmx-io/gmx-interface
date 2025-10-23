@@ -83,7 +83,7 @@ const TokenIcons = ({ tokens }: { tokens: string[] }) => {
             zIndex: tokens.length - index,
           }}
         >
-          <TokenIcon symbol={token} displaySize={18} importSize={24} />
+          <TokenIcon symbol={token} displaySize={18} />
         </div>
       ))}
     </div>
@@ -431,7 +431,7 @@ const FundingHistorySection = () => {
             onClick={() => handleTransferClick(transfer)}
           >
             <div className="flex items-center gap-16">
-              <TokenIcon symbol={transfer.token.symbol} displaySize={40} importSize={40} />
+              <TokenIcon symbol={transfer.token.symbol} displaySize={40} />
               <div>
                 <div className="text-body-large">{transfer.token.symbol}</div>
                 <FundingHistoryItemLabel

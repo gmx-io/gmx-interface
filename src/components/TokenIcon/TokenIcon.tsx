@@ -51,14 +51,14 @@ function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chai
         >
           <img
             className="z-20 -mr-10 rounded-[100%] border-2 border-slate-900 bg-slate-900"
-            src={importImage(getIconUrlPath(badge[0], 24))}
+            src={importImage(getIconUrlPath(badge[0]))}
             alt={badge[0]}
             width={20}
             height={20}
           />
           <img
             className="z-10 rounded-[100%] border-2 border-slate-900 bg-slate-900"
-            src={importImage(getIconUrlPath(badge[1], 24))}
+            src={importImage(getIconUrlPath(badge[1]))}
             alt={badge[0]}
             width={20}
             height={20}

@@ -775,7 +775,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 selectedMarketLabel={
                   toToken && (
                     <div className="flex items-center">
-                      <TokenIcon className="mr-4" symbol={toToken.symbol} importSize={24} displaySize={20} />
+                      <TokenIcon className="mr-4" symbol={toToken.symbol} displaySize={20} />
                       <span>{getMarketIndexName({ indexToken: toToken, isSpotOnly: false })}</span>
                     </div>
                   )
