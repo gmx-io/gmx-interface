@@ -259,12 +259,12 @@ export function SizeWithIcon({ order, className }: { order: OrderInfo; className
         isStable: initialCollateralToken.isStable,
       }
     );
-    const fromTokenIcon = <TokenIcon symbol={initialCollateralToken.symbol} displaySize={18} importSize={24} />;
+    const fromTokenIcon = <TokenIcon symbol={initialCollateralToken.symbol} displaySize={18} />;
 
     const toTokenText = formatBalanceAmount(minOutputAmount, targetCollateralToken.decimals, undefined, {
       isStable: targetCollateralToken.isStable,
     });
-    const toTokenIcon = <TokenIcon symbol={targetCollateralToken.symbol} displaySize={18} importSize={24} />;
+    const toTokenIcon = <TokenIcon symbol={targetCollateralToken.symbol} displaySize={18} />;
 
     const handle = (
       <span className={className}>

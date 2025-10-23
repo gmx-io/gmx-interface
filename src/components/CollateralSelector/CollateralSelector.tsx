@@ -174,7 +174,7 @@ function CollateralListItemMobile({
   return (
     <SelectorBaseMobileButton onSelect={handleSelect} disabled={disabled}>
       <div className="CollateralSelector-mobile-column-pool" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
-        <TokenIcon symbol={tokenData.symbol} displaySize={24} importSize={24} />
+        <TokenIcon symbol={tokenData.symbol} displaySize={24} />
         <div>{tokenData.symbol}</div>
       </div>
     </SelectorBaseMobileButton>

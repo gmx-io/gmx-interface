@@ -253,10 +253,9 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           <span className="numbers">
             {msg.swapFromTokenSymbol ? (
               <Trans>
-                {msg.swapFromTokenAmount}{" "}
-                <TokenIcon symbol={msg.swapFromTokenSymbol!} displaySize={18} importSize={24} />
+                {msg.swapFromTokenAmount} <TokenIcon symbol={msg.swapFromTokenSymbol!} displaySize={18} />
                 <span> to </span>
-                {msg.swapToTokenAmount} <TokenIcon symbol={msg.swapToTokenSymbol!} displaySize={18} importSize={24} />
+                {msg.swapToTokenAmount} <TokenIcon symbol={msg.swapToTokenSymbol!} displaySize={18} />
               </Trans>
             ) : (
               msg.size

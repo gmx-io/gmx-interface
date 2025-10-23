@@ -8,7 +8,7 @@ import BinanceIcon from "img/ic_binance.svg?react";
 import BybitIcon from "img/ic_bybit.svg?react";
 import MatchaIcon from "img/ic_matcha.svg?react";
 import TransakIcon from "img/ic_tansak.svg?react";
-import UniswapIcon from "img/ic_uni_24.svg?react";
+import UniswapIcon from "img/tokens/ic_uni.svg?react";
 
 export type BuyGmxModalButtonConfig = {
   id: string;

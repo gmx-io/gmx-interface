@@ -349,7 +349,7 @@ function ClaimRewardOption({
         )}
       >
         <div className="flex items-center gap-4">
-          <TokenIcon symbol={tokenSymbol} displaySize={20} importSize={40} className="!rounded-0" />
+          <TokenIcon symbol={tokenSymbol} displaySize={20} className="!rounded-0" />
           <span className="text-14 font-medium text-typography-primary">
             <Trans>Claim {tokenSymbol} Rewards</Trans>
           </span>

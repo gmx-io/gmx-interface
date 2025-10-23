@@ -28,7 +28,6 @@ export function SelectedPool({
                 ? glvOrMarketInfo.glvToken.symbol
                 : glvOrMarketInfo?.indexToken.symbol
           }
-          importSize={40}
           displaySize={20}
         />
       ) : null}

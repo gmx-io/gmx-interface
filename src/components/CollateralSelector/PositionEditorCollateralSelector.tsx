@@ -46,7 +46,6 @@ export function PositionEditorCollateralSelector(props: Props) {
             <TokenIcon
               symbol={props.selectedTokenSymbol}
               displaySize={20}
-              importSize={24}
               chainIdBadge={props.isCollateralTokenFromGmxAccount ? 0 : props.chainId}
             />
             {props.selectedTokenSymbol}
@@ -118,7 +117,6 @@ function CollateralListItemDesktop({
             <TokenIcon
               symbol={tokenData.symbol}
               displaySize={variant === "destination" ? 16 : 28}
-              importSize={24}
               chainIdBadge={variant === "destination" ? undefined : tokenData.isGmxAccount ? 0 : chainId}
             />
             {tokenData.symbol}
@@ -198,12 +196,7 @@ function CollateralListItemMobile({
   return (
     <SelectorBaseMobileButton onSelect={handleSelect}>
       <div className="CollateralSelector-mobile-column-pool" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
-        <TokenIcon
-          symbol={tokenData.symbol}
-          displaySize={28}
-          importSize={24}
-          chainIdBadge={tokenData.isGmxAccount ? 0 : chainId}
-        />
+        <TokenIcon symbol={tokenData.symbol} displaySize={28} chainIdBadge={tokenData.isGmxAccount ? 0 : chainId} />
         <div>{tokenData.symbol}</div>
       </div>
       {variant === "balance" &&

@@ -130,7 +130,7 @@ export const TRANSFER_EXCHANGES: Exchange[] = [
   },
   {
     name: "Arbitrum",
-    icon: "ic_arbitrum_24.svg",
+    icon: "ic_arbitrum.svg",
     links: {
       [ARBITRUM]: "https://bridge.arbitrum.io/",
       [ARBITRUM_SEPOLIA]:

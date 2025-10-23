@@ -259,7 +259,6 @@ export function GmPoolsSelectorForGlvMarket({
                     getNormalizedTokenSymbol(marketInfo.shortToken.symbol)
                   : marketInfo?.indexToken.symbol
               }
-              importSize={40}
               displaySize={20}
             />
           )}

@@ -97,7 +97,7 @@ export default function ChartTokenSelector(props: Props) {
               ) : null}
 
               <div className="flex items-center gap-8">
-                <TokenIcon symbol={selectedToken.symbol} displaySize={isMobile ? 32 : 20} importSize={40} />
+                <TokenIcon symbol={selectedToken.symbol} displaySize={isMobile ? 32 : 20} />
                 <div className="flex gap-2 md:items-center md:gap-8">
                   <span
                     className={cx("flex justify-start leading-base", {
@@ -605,12 +605,7 @@ function MarketListItem({
           onClick={handleSelectLargePosition}
         >
           <span className="flex items-center gap-4">
-            <TokenIcon
-              className="ChartToken-list-icon -my-5 mr-6"
-              symbol={token.symbol}
-              displaySize={16}
-              importSize={24}
-            />
+            <TokenIcon className="ChartToken-list-icon -my-5 mr-6" symbol={token.symbol} displaySize={16} />
             <span>{token.name}</span>
             <span className="font-medium text-typography-secondary">{token.symbol}</span>
           </span>
@@ -644,7 +639,7 @@ function MarketListItem({
       </td>
       <td className={cx("pl-4 text-[13px]", rowVerticalPadding, isMobile ? "pr-2" : "pr-8")}>
         <div className={cx("flex", isMobile ? "items-start" : "items-center")}>
-          <TokenIcon className="ChartToken-list-icon mr-6" symbol={token.symbol} displaySize={16} importSize={24} />
+          <TokenIcon className="ChartToken-list-icon mr-6" symbol={token.symbol} displaySize={16} />
           <span className={cx("flex flex-wrap items-center gap-6")}>
             <span className="font-medium leading-1">
               <MarketLabel token={token} />

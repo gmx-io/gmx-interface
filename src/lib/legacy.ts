@@ -1313,7 +1313,7 @@ export function getTradePageUrl() {
 
 // Resolves all images in the folder that match the pattern and store them as `fileName -> path` pairs
 const imageStaticMap = mapKeys(
-  import.meta.glob("img/*.*", {
+  import.meta.glob("img/**/*.*", {
     query: "?url",
     import: "default",
     eager: true,
@@ -1322,14 +1322,22 @@ const imageStaticMap = mapKeys(
 );
 
 export function importImage(name) {
-  if (name in imageStaticMap) {
-    return imageStaticMap[name] as string;
+  const sizeSuffixRegex = /_(?:24|40)\.svg$/;
+  const candidates = sizeSuffixRegex.test(name) ? [name.replace(sizeSuffixRegex, ".svg"), name] : [name];
+
+  for (const candidate of candidates) {
+    if (candidate in imageStaticMap) {
+      return imageStaticMap[candidate] as string;
+    }
   }
 
-  const pngName = name.replace(/_\d+\.svg$/, ".png");
-  if (pngName in imageStaticMap) {
-    return imageStaticMap[pngName] as string;
+  for (const candidate of candidates) {
+    const pngCandidate = candidate.replace(/\.svg$/, ".png");
+    if (pngCandidate in imageStaticMap) {
+      return imageStaticMap[pngCandidate] as string;
+    }
   }
+
   throw new Error(`Image ${name} not found`);
 }
 

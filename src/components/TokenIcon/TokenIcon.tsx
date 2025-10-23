@@ -5,24 +5,23 @@ import { importImage } from "lib/legacy";
 
 import "./TokenIcon.scss";
 
-function getIconUrlPath(symbol, size: 24 | 40) {
-  if (!symbol || !size) return;
+function getIconUrlPath(symbol) {
+  if (!symbol) return;
 
-  return `ic_${symbol.toLowerCase()}_${size}.svg`;
+  return `ic_${symbol.toLowerCase()}.svg`;
 }
 
 type Props = {
   symbol: string;
   displaySize: number;
-  importSize?: 24 | 40;
   className?: string;
   badge?: string | readonly [topSymbol: string, bottomSymbol: string];
   chainIdBadge?: number;
   badgeClassName?: string;
 };
 
-function TokenIcon({ className, symbol, displaySize, importSize = 24, badge, badgeClassName, chainIdBadge }: Props) {
-  const iconPath = getIconUrlPath(symbol, importSize);
+function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chainIdBadge }: Props) {
+  const iconPath = getIconUrlPath(symbol);
   const classNames = cx("Token-icon inline rounded-full", className);
 
   if (!iconPath) return <></>;
@@ -52,14 +51,14 @@ function TokenIcon({ className, symbol, displaySize, importSize = 24, badge, bad
         >
           <img
             className="z-20 -mr-10 rounded-[100%] border-2 border-slate-900 bg-slate-900"
-            src={importImage(getIconUrlPath(badge[0], 24))}
+            src={importImage(getIconUrlPath(badge[0]))}
             alt={badge[0]}
             width={20}
             height={20}
           />
           <img
             className="z-10 rounded-[100%] border-2 border-slate-900 bg-slate-900"
-            src={importImage(getIconUrlPath(badge[1], 24))}
+            src={importImage(getIconUrlPath(badge[1]))}
             alt={badge[0]}
             width={20}
             height={20}

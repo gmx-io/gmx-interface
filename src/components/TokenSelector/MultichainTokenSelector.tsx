@@ -211,7 +211,6 @@ export function MultichainTokenSelector({
             <TokenIcon
               className="mr-4"
               symbol={token.symbol}
-              importSize={24}
               displaySize={20}
               chainIdBadge={isGmxAccount ? 0 : undefined}
             />
@@ -336,7 +335,6 @@ function AvailableToTradeTokenList({
                 symbol={token.symbol}
                 className="size-40"
                 displaySize={40}
-                importSize={40}
                 chainIdBadge={token.isGmxAccount ? 0 : chainId}
               />
 
@@ -459,7 +457,6 @@ function MultichainTokenList({
                 symbol={token.symbol}
                 className="size-40"
                 displaySize={40}
-                importSize={40}
                 chainIdBadge={token.sourceChainId}
               />
 

@@ -41,12 +41,7 @@ const TokenListItem = ({ tokenChainData, onClick, className }: TokenListItemProp
       onClick={onClick}
     >
       <div className="flex items-center gap-16">
-        <TokenIcon
-          symbol={tokenChainData.symbol}
-          displaySize={40}
-          importSize={40}
-          chainIdBadge={tokenChainData.sourceChainId}
-        />
+        <TokenIcon symbol={tokenChainData.symbol} displaySize={40} chainIdBadge={tokenChainData.sourceChainId} />
         <div>
           <div className="text-body-large">{tokenChainData.symbol}</div>
           <div className="text-body-small text-typography-secondary">{getChainName(tokenChainData.sourceChainId)}</div>

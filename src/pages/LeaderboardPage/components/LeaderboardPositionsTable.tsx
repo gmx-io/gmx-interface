@@ -375,12 +375,7 @@ const TableRow = memo(
             handle={
               <span>
                 {indexToken ? (
-                  <TokenIcon
-                    className="PositionList-token-icon"
-                    symbol={indexToken.symbol}
-                    displaySize={20}
-                    importSize={24}
-                  />
+                  <TokenIcon className="PositionList-token-icon" symbol={indexToken.symbol} displaySize={20} />
                 ) : null}
                 <span>
                   {marketInfo ? getMarketIndexName({ indexToken: marketInfo?.indexToken, isSpotOnly: false }) : null}
