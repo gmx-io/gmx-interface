@@ -8,29 +8,29 @@ const SUBGRAPH_URLS = {
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-referrals/api",
     nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum:prod/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum@578191/api/graphql",
   },
 
   [AVALANCHE]: {
     stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-stats/api",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-referrals/api",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-avalanche-stats/api",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-avalanche:prod/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-avalanche@578191/api/graphql",
   },
 
   [AVALANCHE_FUJI]: {
     stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-fuji-referrals/api",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-fuji-stats/api",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-fuji:prod/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-fuji@578191/api/graphql",
   },
 
   [ARBITRUM_SEPOLIA]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arb-sepolia:prod/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-arb-sepolia@578191/api/graphql",
   },
 
   [BOTANIX]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-botanix:prod/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-botanix@578191/api/graphql",
     stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-botanix-stats/api",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-botanix-stats/api",
   },
