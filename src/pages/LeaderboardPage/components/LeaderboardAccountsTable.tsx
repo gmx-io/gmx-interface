@@ -179,14 +179,21 @@ export function LeaderboardAccountsTable({
         <table className="w-full min-w-[1000px]">
           <thead>
             <TableTheadTr className="text-body-medium">
-              <TableHeaderCell
-                title={t`Rank`}
-                width={6}
-                tooltip={t`Only addresses with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
-                  displayDecimals: 0,
-                })} in "Capital Used" are ranked.`}
-                tooltipPosition="bottom-start"
-              />
+				<TableHeaderCell
+				  title={t`Rank`}
+				  width={6}
+				  tooltip={
+					<Trans values={{ minCollateral: formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, { displayDecimals: 0 }) }}>
+					  Only addresses with over {{ minCollateral }} in capital used are ranked.
+					  <br />
+					  <br />
+					  The capital used is calculated as the highest value of [
+					  <i>sum of collateral of open positions - realized PnL + period start pending PnL</i>
+					  ].
+					</Trans>
+				  }
+				  tooltipPosition="bottom-start"
+				/>
               <TableHeaderCell title={t`Address`} width={16} tooltipPosition="bottom-end" />
               <TableHeaderCell
                 title={t`PnL ($)`}

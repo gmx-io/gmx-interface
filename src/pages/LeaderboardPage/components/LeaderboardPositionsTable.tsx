@@ -125,14 +125,21 @@ export function LeaderboardPositionsTable({
         <table className="w-full min-w-[1024px] table-fixed">
           <thead>
             <TableTheadTr className="text-body-medium">
-              <TableHeaderCell
-                title={t`Rank`}
-                width={6}
-                tooltip={t`Only positions with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
-                  displayDecimals: 0,
-                })} in "Capital Used" are ranked.`}
-                tooltipPosition="bottom-start"
-              />
+				<TableHeaderCell
+				  title={t`Rank`}
+				  width={6}
+				  tooltip={
+					<Trans values={{ minCollateral: formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, { displayDecimals: 0 }) }}>
+					  Only positions with over {{ minCollateral }} in capital used are ranked.
+					  <br />
+					  <br />
+					  The capital used is calculated as the highest value of [
+					  <i>sum of collateral of open positions - realized PnL + period start pending PnL</i>
+					  ].
+					</Trans>
+				  }
+				  tooltipPosition="bottom-start"
+				/>
               <TableHeaderCell title={t`Address`} width={14} tooltipPosition="bottom-end" />
               <TableHeaderCell
                 {...getSorterProps("qualifyingPnl")}
