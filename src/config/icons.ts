@@ -12,26 +12,26 @@ import {
 } from "config/chains";
 
 import gmIcon from "img/gm_icon.svg";
+import bsc from "img/ic_bsc_96.svg";
+import esGMXArbitrumIcon from "img/ic_esgmx_arbitrum.svg";
+import esGMXAvaxIcon from "img/ic_esgmx_avalanche.svg";
+import glpArbitrum from "img/ic_glp_arbitrum.svg";
+import glpAvax from "img/ic_glp_avalanche.svg";
+import gmArbitrum from "img/ic_gm_arbitrum.svg";
+import gmAvax from "img/ic_gm_avax.svg";
+import gmxArbitrum from "img/ic_gmx_arbitrum.svg";
+import gmxAvax from "img/ic_gmx_avax.svg";
+import gmxOutlineIcon from "img/ic_gmxv1flat.svg";
 import arbitrum from "img/tokens/ic_arbitrum.svg";
 import arbitrumSepolia from "img/tokens/ic_arbitrum_sepolia.svg";
 import avalanche from "img/tokens/ic_avalanche.svg";
 import avalancheTestnet from "img/tokens/ic_avalanche_testnet.svg";
 import base from "img/tokens/ic_base.svg";
 import botanix from "img/tokens/ic_botanix.svg";
-import bsc from "img/ic_bsc_96.svg";
 import esGMXIcon from "img/tokens/ic_esgmx.svg";
-import esGMXArbitrumIcon from "img/ic_esgmx_arbitrum.svg";
-import esGMXAvaxIcon from "img/ic_esgmx_avalanche.svg";
 import glpIcon from "img/tokens/ic_glp.svg";
-import glpArbitrum from "img/ic_glp_arbitrum.svg";
-import glpAvax from "img/ic_glp_avalanche.svg";
 import glvIcon from "img/tokens/ic_glv.svg";
-import gmArbitrum from "img/ic_gm_arbitrum.svg";
-import gmAvax from "img/ic_gm_avax.svg";
 import gmxIcon from "img/tokens/ic_gmx.svg";
-import gmxArbitrum from "img/ic_gmx_arbitrum.svg";
-import gmxAvax from "img/ic_gmx_avax.svg";
-import gmxOutlineIcon from "img/ic_gmxv1flat.svg";
 import optimismSepolia from "img/tokens/ic_op.svg";
 import sepolia from "img/tokens/ic_sepolia.svg";
 

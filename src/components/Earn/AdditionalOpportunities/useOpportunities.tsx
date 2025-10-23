@@ -12,12 +12,12 @@ import { TokensData } from "sdk/types/tokens";
 
 import beefyIcon from "img/ic_beefy.svg";
 import deltaPrimeIcon from "img/ic_delta_prime.svg";
-import dolomiteIcon from "img/tokens/ic_dolo.svg";
 import gloopIcon from "img/ic_gloop.svg";
 import morphoIcon from "img/ic_morpho.svg";
 import radiantIcon from "img/ic_radiant.svg";
 import umamiIcon from "img/ic_umami.svg";
 import venusIcon from "img/ic_venus.svg";
+import dolomiteIcon from "img/tokens/ic_dolo.svg";
 
 export type OpportunityTag =
   | "lending-and-borrowing"

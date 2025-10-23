@@ -29,12 +29,12 @@ import Tooltip from "components/Tooltip/Tooltip";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import DownloadIcon from "img/ic_download2.svg?react";
-import esGmxIcon from "img/tokens/ic_esgmx.svg";
-import gmxIcon from "img/tokens/ic_gmx.svg";
 import IncreaseMarketIcon from "img/ic_increasemarket_16.svg?react";
 import MenuDotsIcon from "img/ic_menu_dots.svg?react";
 import PlusCircleIcon from "img/ic_plus_circle.svg?react";
 import ShareIcon from "img/ic_share.svg?react";
+import esGmxIcon from "img/tokens/ic_esgmx.svg";
+import gmxIcon from "img/tokens/ic_gmx.svg";
 
 import { GMX_DAO_LINKS } from "./constants";
 import { StakeModal, StakeModalTabConfig } from "./StakeModal";
