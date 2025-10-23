@@ -89,11 +89,6 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         <SyntheticsStats />
       </Route>
 
-      <Route exact path="/earn">
-        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
-          <EarnRedirect />
-        </SyntheticsStateContextProvider>
-      </Route>
       <Route exact path="/earn/discover">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
           <EarnDiscoveryPage />
@@ -112,6 +107,11 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/earn/distributions">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
           <EarnDistributionsPage />
+        </SyntheticsStateContextProvider>
+      </Route>
+      <Route path="/earn">
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
+          <EarnRedirect />
         </SyntheticsStateContextProvider>
       </Route>
 
@@ -211,16 +211,14 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         <CompleteAccountTransfer />
       </Route>
 
-      {isDevelopment() && (
-        <>
-          <Route exact path="/ui">
-            <UiPage />
-          </Route>
-          <Route exact path="/permits">
-            <TestPermits />
-          </Route>
-        </>
-      )}
+      {isDevelopment() && [
+        <Route exact path="/ui" key="ui">
+          <UiPage />
+        </Route>,
+        <Route exact path="/permits" key="permits">
+          <TestPermits />
+        </Route>,
+      ]}
 
       <Route path="*">
         <PageNotFound />
