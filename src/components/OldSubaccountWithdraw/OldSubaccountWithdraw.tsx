@@ -15,8 +15,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
 import { getNativeToken } from "sdk/configs/tokens";
 
-import Button from "components/Button/Button";
-import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import { ColorfulBanner, ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import { StatusNotification } from "components/StatusNotification/StatusNotification";
 import { TransactionStatus } from "components/TransactionStatus/TransactionStatus";
 
@@ -98,10 +97,10 @@ export function OldSubaccountWithdraw() {
   return (
     <ColorfulBanner color="blue" icon={IconInfo}>
       <Trans>You have {balanceFormatted} remaining in your old version 1CT subaccount.</Trans>
-      <br />
-      <Button variant="link" className="mt-8 !text-12" onClick={withdrawWeth} disabled={isWithdrawing}>
+
+      <ColorfulButtonLink color="blue" onClick={withdrawWeth} disabled={isWithdrawing}>
         {isWithdrawing ? <Trans>Withdrawing</Trans> : <Trans>Withdraw</Trans>}
-      </Button>
+      </ColorfulButtonLink>
     </ColorfulBanner>
   );
 }
