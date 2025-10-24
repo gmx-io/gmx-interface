@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 
 import { LAST_EARN_TAB_KEY } from "config/localStorage";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { sendEarnPageTabViewEvent, sendEarnPageViewEvent, EarnAnalyticsTab } from "lib/userAnalytics/earnEvents";
+import { sendEarnPageTabViewEvent, EarnAnalyticsTab } from "lib/userAnalytics/earnEvents";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
@@ -73,7 +73,6 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
       return;
     }
 
-    sendEarnPageViewEvent(analyticsTab);
     sendEarnPageTabViewEvent(analyticsTab);
   }, [analyticsTab]);
 

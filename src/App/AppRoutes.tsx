@@ -16,6 +16,7 @@ import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
 import { useHashQueryParams } from "lib/useHashQueryParams";
+import { sendEarnPageViewEvent } from "lib/userAnalytics/earnEvents";
 import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigureUserAnalyticsProfile";
 import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalletConnectedEvent";
 import useRouteQuery from "lib/useRouteQuery";
@@ -113,6 +114,13 @@ export function AppRoutes() {
       });
     }
   }, [urlParams, history]);
+
+  const isEarnPage = history.location.pathname.startsWith("/earn");
+  useEffect(() => {
+    if (isEarnPage) {
+      sendEarnPageViewEvent();
+    }
+  }, [isEarnPage]);
 
   useRealChainIdWarning();
   useNonEoaAccountChainWarning();
