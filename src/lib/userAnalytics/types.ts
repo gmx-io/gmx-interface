@@ -266,10 +266,14 @@ export type SharePositionClickEvent = {
   };
 };
 
+export type SharePositionActionSource = "auto-prompt" | "positions-list" | "trade-history-list" | "unknown";
+
 export type SharePositionActionEvent = {
   event: "SharePositionAction";
   data: {
-    action: "Copy" | "Download" | "ShareTwitter";
+    action: "Copy" | "Download" | "ShareTwitter" | "PromptShown" | "PromptDontShowAgain" | "ReferralCodeCreated";
+    source?: SharePositionActionSource;
+    hasReferralCode?: boolean;
   };
 };
 

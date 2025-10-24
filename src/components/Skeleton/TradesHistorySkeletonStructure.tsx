@@ -26,6 +26,9 @@ export default function TradesHistorySkeletonStructure(props: Props) {
       <TableTd>
         <Skeleton width={60} />
       </TableTd>
+      <TableTd>
+        <Skeleton width={60} />
+      </TableTd>
     </TableTr>
   );
 }

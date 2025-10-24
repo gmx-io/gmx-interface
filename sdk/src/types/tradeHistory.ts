@@ -11,6 +11,7 @@ export enum TradeActionType {
 }
 
 export type PositionTradeAction = {
+  type: "position";
   id: string;
   srcChainId?: number;
   eventName: TradeActionType;
@@ -24,6 +25,7 @@ export type PositionTradeAction = {
   swapPath: string[];
   initialCollateralDeltaAmount: bigint;
   sizeDeltaUsd: bigint;
+  sizeDeltaInTokens?: bigint;
   indexTokenPriceMin?: bigint;
   indexTokenPriceMax?: bigint;
   triggerPrice?: bigint;
@@ -60,6 +62,7 @@ export type PositionTradeAction = {
 };
 
 export type SwapTradeAction = {
+  type: "swap";
   id: string;
   srcChainId?: number;
   account: string;
@@ -90,3 +93,11 @@ export type SwapTradeAction = {
 };
 
 export type TradeAction = PositionTradeAction | SwapTradeAction;
+
+export function isPositionTradeAction(tradeAction: TradeAction): tradeAction is PositionTradeAction {
+  return tradeAction.type === "position";
+}
+
+export function isSwapTradeAction(tradeAction: TradeAction): tradeAction is SwapTradeAction {
+  return tradeAction.type === "swap";
+}

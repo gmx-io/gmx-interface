@@ -766,7 +766,7 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
   return lines;
 }
 
-function getTokenPriceByTradeAction(tradeAction: PositionTradeAction) {
+export function getTokenPriceByTradeAction(tradeAction: PositionTradeAction) {
   return getShouldUseMaxPrice(isIncreaseOrderType(tradeAction.orderType), tradeAction.isLong)
     ? tradeAction.indexTokenPriceMax
     : tradeAction.indexTokenPriceMin;
