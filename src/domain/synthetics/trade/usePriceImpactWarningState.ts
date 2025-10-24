@@ -159,7 +159,7 @@ export function usePriceImpactWarningState({
 
   shouldShowWarningForSwap = isHighSwapImpact;
   shouldShowWarningForPosition = isHighPositionImpact;
-  shouldShowWarningForSwapProfitFee = isHightSwapProfitFee;
+  shouldShowWarningForSwapProfitFee = isHightSwapProfitFee && tradeFlags.isMarket;
   shouldShowWarningForExecutionFee = isHightExecutionPrice;
   shouldShowWarningForTriggerOrders = willDecreaseOrdersBeExecuted ?? false;
   shouldShowWarningForExternalSwap = isHighExternalSwapFees;

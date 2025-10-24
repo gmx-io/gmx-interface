@@ -21,17 +21,17 @@ type Props = {
   setIsVisible: (isVisible: boolean) => void;
 };
 
+const TIME_PERIODS = getTimePeriodsInSeconds();
+
 export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
   const { account } = useWallet();
   const { chainId } = useChainId();
   const fetcher = useOracleKeeperFetcher(chainId);
 
-  const timePerios = useMemo(() => getTimePeriodsInSeconds(), []);
-
   const { data: lastMonthAccountStats } = usePeriodAccountStats(chainId, {
     account,
-    from: timePerios.month[0],
-    to: timePerios.month[1],
+    from: TIME_PERIODS.month[0],
+    to: TIME_PERIODS.month[1],
     enabled: isVisible,
   });
 

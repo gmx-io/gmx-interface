@@ -45,6 +45,7 @@ export const SYNTHETICS_DEPOSIT_MARKET_KEY = "synthetics-market-deposit-market";
 export const SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY = "synthetics-market-deposit-token";
 export const SYNTHETICS_LIST_SECTION_KEY = "synthetics-list-section";
 export const ACCOUNT_DASHBOARD_TAB_KEY = "account-dashboard-tab";
+export const LAST_EARN_TAB_KEY = "last-earn-tab";
 export const SYNTHETICS_COLLATERAL_EDIT_TOKEN_MAP_KEY = "synthetics-collateral-edit-token-map";
 export const SYNTHETICS_COLLATERAL_EDIT_TOKEN_IS_FROM_GMX_ACCOUNT_KEY =
   "synthetics-collateral-edit-token-is-from-gmx-account";

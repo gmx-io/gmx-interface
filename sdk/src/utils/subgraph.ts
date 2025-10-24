@@ -1,3 +1,5 @@
+import { SUBSQUID_PAGINATION_LIMIT } from "../configs/batch";
+
 export type GraphQlFilters =
   | {
       OR: GraphQlFilters[];
@@ -114,4 +116,27 @@ export function buildFiltersBody(filters: GraphQlFilters, options?: { enums?: Re
   }, "");
 
   return `{${str}}`;
+}
+
+export async function queryPaginated<T>(
+  fetcher: (limit: number, offset: number) => Promise<T[]>,
+  limit = SUBSQUID_PAGINATION_LIMIT
+): Promise<T[]> {
+  let offset = 0;
+
+  const results: T[] = [];
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const page = await fetcher(limit, offset);
+    results.push(...page);
+
+    if (page.length < limit) {
+      break;
+    }
+
+    offset += limit;
+  }
+
+  return results;
 }
