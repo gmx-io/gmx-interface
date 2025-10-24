@@ -277,7 +277,7 @@ const GraphChart = ({
   const priceData = useMemo(
     () =>
       priceSnapshots.map((snapshot) => ({
-        snapshotTimestamp: new Date(snapshot.snapshotTimestamp ?? 0 * 1000),
+        snapshotTimestamp: new Date((snapshot.snapshotTimestamp ?? 0) * 1000),
         value: bigintToNumber(
           getMidPrice({
             minPrice: BigInt(snapshot.minPrice),
