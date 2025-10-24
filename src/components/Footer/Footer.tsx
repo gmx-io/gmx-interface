@@ -17,11 +17,7 @@ type Props = {
   isMobileSideNav?: boolean;
 };
 
-export default function Footer({
-  showRedirectModal,
-  redirectPopupTimestamp,
-  isMobileSideNav,
-}: Props) {
+export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMobileSideNav }: Props) {
   const { feedbackModalVisible, setFeedbackModalVisible } = useSettings();
 
   return (

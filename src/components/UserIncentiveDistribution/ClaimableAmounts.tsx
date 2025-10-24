@@ -185,12 +185,15 @@ export default function ClaimableAmounts() {
 
     setIsClaiming(true);
     try {
+      const signature =
+        claimTermsAcceptedSignature && claimTermsAcceptedSignature !== "0x" ? claimTermsAcceptedSignature : undefined;
+
       await createClaimAmountsTransaction({
         tokens: claimableTokens,
         chainId,
         signer,
         account,
-        signature: isSmartAccount ? undefined : claimTermsAcceptedSignature,
+        signature,
         distributionId: GLP_DISTRIBUTION_ID,
         claimableTokenTitles,
         callback: claimFundsTransactionCallback,
@@ -213,7 +216,6 @@ export default function ClaimableAmounts() {
     claimFundsTransactionCallback,
     accountType,
     isSafeSigValid,
-    isSmartAccount,
   ]);
 
   const { balancesData } = useTokenBalances(chainId);
