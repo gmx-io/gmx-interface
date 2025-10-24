@@ -4,7 +4,6 @@ import { getContract } from "configs/contracts";
 import { convertTokenAddress, getToken } from "configs/tokens";
 import { ClaimableFundingData, MarketInfo, MarketsData, MarketSdkConfig, MarketsInfoData } from "types/markets";
 import { TokensData } from "types/tokens";
-import { TIMEZONE_OFFSET_SEC } from "utils/common";
 import graphqlFetcher from "utils/graphqlFetcher";
 import { getMarketDivisor, getMarketFullName } from "utils/markets";
 import { getByKey } from "utils/objects";
@@ -461,21 +460,13 @@ export class Markets extends Module {
       return;
     }
 
-    const LAST_DAY_UNIX_TIMESTAMP = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
-    const timestamp = LAST_DAY_UNIX_TIMESTAMP + TIMEZONE_OFFSET_SEC;
-    const variables = {
-      timestamp: timestamp,
-    };
-
-    return graphqlFetcher<PositionVolumeInfosResponse>(endpoint, POSITIONS_VOLUME_INFOS_QUERY, variables).then(
-      (data) => {
-        return data?.positionsVolume.length
-          ? data?.positionsVolume.reduce((acc, { market, volume }) => {
-              return { ...acc, [market]: BigInt(volume) };
-            }, {})
-          : {};
-      }
-    );
+    return graphqlFetcher<PositionVolumeInfosResponse>(endpoint, POSITIONS_VOLUME_INFOS_QUERY).then((data) => {
+      return data?.positionsVolume.length
+        ? data?.positionsVolume.reduce((acc, { market, volume }) => {
+            return { ...acc, [market]: BigInt(volume) };
+          }, {})
+        : {};
+    });
   }
 }
 
@@ -487,8 +478,8 @@ type PositionVolumeInfosResponse = {
 };
 
 const POSITIONS_VOLUME_INFOS_QUERY = `
-query PositionVolumeInfoResolver($timestamp: Float!) {
-  positionsVolume(where: {timestamp: $timestamp}) {
+{
+  positionsVolume(where: {period: "1d"}) {
     market
     volume
   }

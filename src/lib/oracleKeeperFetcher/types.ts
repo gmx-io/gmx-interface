@@ -2,6 +2,7 @@ import type { Address } from "viem";
 
 import { UserFeedback } from "domain/synthetics/userFeedback";
 import { FromNewToOldArray, Bar } from "domain/tradingview/types";
+import { OracleKeeperMetricMethodId } from "lib/metrics";
 
 export type EventPayload = {
   isError: boolean;
@@ -125,6 +126,7 @@ export interface OracleFetcher {
   fetchApys(period: ApyPeriod, debug?: boolean): Promise<ApyInfo>;
   fetchPerformanceAnnualized(period: PerformancePeriod, address?: string): Promise<PerformanceAnnualizedResponse>;
   fetchPerformanceSnapshots(period: PerformancePeriod, address?: string): Promise<PerformanceSnapshotsResponse>;
+  handleFailure(method: OracleKeeperMetricMethodId): void;
 }
 
 export type TickersResponse = {

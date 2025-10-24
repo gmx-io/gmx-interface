@@ -3,6 +3,7 @@
   Avoid adding client-side code here, as it can break the build process.
 */
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "./chains";
+import { getTokenBySymbol } from "./tokens";
 
 export const SWAP_GRAPH_MAX_MARKETS_PER_TOKEN = 5;
 
@@ -945,6 +946,20 @@ export const MARKETS: Record<ContractsChainId, Record<string, MarketConfig>> = {
       longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
       shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
     },
+    // XAUt0/USD [XAUt0-XAUt0]
+    "0x1635eF7FBdce68eC80A3672aB710A5a99044f5c9": {
+      marketTokenAddress: "0x1635eF7FBdce68eC80A3672aB710A5a99044f5c9",
+      indexTokenAddress: "0x2775d5105276781B4b85bA6eA6a6653bEeD1dd32",
+      longTokenAddress: "0x2775d5105276781B4b85bA6eA6a6653bEeD1dd32",
+      shortTokenAddress: "0x2775d5105276781B4b85bA6eA6a6653bEeD1dd32",
+    },
+    // XAUt0/USD [XAUt0-USDT]
+    "0x92d3DA41E166A12e3Ede9e2Dd9A272C5c6FC55E1": {
+      marketTokenAddress: "0x92d3DA41E166A12e3Ede9e2Dd9A272C5c6FC55E1",
+      indexTokenAddress: "0x2775d5105276781B4b85bA6eA6a6653bEeD1dd32",
+      longTokenAddress: "0x2775d5105276781B4b85bA6eA6a6653bEeD1dd32",
+      shortTokenAddress: "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
+    },
   },
   [AVALANCHE_FUJI]: {
     // AVAX/USD [WAVAX-USDC]
@@ -1148,4 +1163,70 @@ export const MARKETS: Record<ContractsChainId, Record<string, MarketConfig>> = {
       shortTokenAddress: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
     },
   },
+};
+
+export type MarketLabel = `${string}/USD [${string}-${string}]`;
+
+export function getMarketByLabel(chainId: ContractsChainId, label: MarketLabel): MarketConfig {
+  const marketsByAddress = MARKETS[chainId];
+
+  if (!marketsByAddress) {
+    throw new Error(`Markets not found for chainId ${chainId}`);
+  }
+
+  const labelMatch = label.match(/^(.+?)\/USD\s*\[([^\]]+)\]$/i);
+
+  if (!labelMatch) {
+    throw new Error(`Invalid market label ${label}`);
+  }
+
+  const [, indexSymbolRaw, tokensPart] = labelMatch;
+
+  const separatorIndex = tokensPart.search(/[-/]/);
+
+  if (separatorIndex === -1) {
+    throw new Error(`Invalid market label ${label}`);
+  }
+
+  const longSymbolRaw = tokensPart.slice(0, separatorIndex).trim();
+  const shortSymbolRaw = tokensPart.slice(separatorIndex + 1).trim();
+
+  if (!longSymbolRaw || !shortSymbolRaw) {
+    throw new Error(`Invalid market label ${label}`);
+  }
+
+  const indexToken = getTokenBySymbol(chainId, fixTokenSymbolFromMarketLabel(chainId, indexSymbolRaw));
+  const longToken = getTokenBySymbol(chainId, fixTokenSymbolFromMarketLabel(chainId, longSymbolRaw), {
+    isSynthetic: false,
+  });
+  const shortToken = getTokenBySymbol(chainId, fixTokenSymbolFromMarketLabel(chainId, shortSymbolRaw), {
+    isSynthetic: false,
+  });
+
+  if (!longToken || !shortToken || !indexToken) {
+    throw new Error(`Invalid market label ${label}`);
+  }
+
+  const market = Object.values(marketsByAddress).find(
+    (market) =>
+      market.longTokenAddress === longToken.address &&
+      market.shortTokenAddress === shortToken.address &&
+      market.indexTokenAddress === indexToken.address
+  );
+
+  if (!market) {
+    throw new Error(`Market ${label} not found`);
+  }
+
+  return market;
+}
+
+export const fixTokenSymbolFromMarketLabel = (chainId: ContractsChainId, symbol: string) => {
+  if (chainId === ARBITRUM && symbol === "WBTC") {
+    return "BTC";
+  }
+  if (chainId === ARBITRUM && symbol === "ETH") {
+    return "WETH";
+  }
+  return symbol;
 };

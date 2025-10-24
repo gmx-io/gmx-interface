@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useMemo, useRef } from "react";
 import { useKey, useLatest, usePrevious } from "react-use";
@@ -59,6 +60,7 @@ import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpa
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { Token } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
+import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { throttleLog } from "lib/logging";
 import {
@@ -76,6 +78,8 @@ import {
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
+import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
+import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { TradeMode } from "sdk/types/trade";
@@ -146,7 +150,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
-  const { account } = useWallet();
+  const { account, active } = useWallet();
+  const { openConnectModal } = useConnectModal();
+
+  const walletIconUrls = useWalletIconUrls();
 
   const { shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
 
@@ -512,8 +519,14 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     },
     [setFocusedInput, setToTokenInputValue]
   );
+  const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
   const handleSelectFromTokenAddress = useCallback(
     (tokenAddress: string, isGmxAccount: boolean) => {
+      if (isGmxAccount && isNonEoaAccountOnAnyChain) {
+        helperToast.error(t`Smart wallets are not supported on Express or One-Click Trading.`);
+        return;
+      }
+
       if (isGmxAccount && !expressOrdersEnabled) {
         setExpressOrdersEnabled(true);
 
@@ -525,6 +538,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     },
     [
       expressOrdersEnabled,
+      isNonEoaAccountOnAnyChain,
       onSelectFromTokenAddress,
       setExpressOrdersEnabled,
       setIsFromTokenGmxAccount,
@@ -652,7 +666,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           qa="pay"
         >
           {fromTokenAddress &&
-            (!isSettlementChain(chainId) ? (
+            (!isSettlementChain(chainId) || isNonEoaAccountOnAnyChain ? (
               <TokenSelector
                 label={t`Pay`}
                 chainId={chainId}
@@ -670,6 +684,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               />
             ) : (
               <MultichainTokenSelector
+                isConnected={active}
+                openConnectModal={openConnectModal}
+                walletIconUrls={walletIconUrls}
                 chainId={chainId}
                 srcChainId={srcChainId}
                 label={t`Pay`}

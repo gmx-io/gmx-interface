@@ -151,7 +151,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
               <Tooltip
                 handle={<Trans>Collateral ({position?.collateralToken?.symbol})</Trans>}
                 position="top-start"
-                content={<Trans>Initial collateral (collateral excluding borrow and funding Fee).</Trans>}
+                content={<Trans>Initial collateral (collateral excluding borrow and funding fee).</Trans>}
                 variant="icon"
               />
             }

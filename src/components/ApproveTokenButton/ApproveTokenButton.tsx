@@ -76,9 +76,7 @@ export function ApproveTokenButton(p: Props) {
         {p.customLabel ?? <Trans>Allow {p.tokenSymbol} to be spent</Trans>}
       </span>
 
-      <div className="ApproveTokenButton-checkbox">
-        {isLoading ? <SpinnerIcon className="spin ApproveTokenButton-spin" /> : <Checkbox isChecked={p.isApproved} />}
-      </div>
+      {isLoading ? <SpinnerIcon className="spin ApproveTokenButton-spin" /> : <Checkbox />}
     </div>
   );
 }

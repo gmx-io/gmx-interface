@@ -6,6 +6,7 @@ import { getOneClickTradingPromoHiddenKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { useChainId } from "lib/chains";
+import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
@@ -21,9 +22,10 @@ export function OneClickPromoBanner({ openSettings, isShort }: { openSettings: (
   );
 
   const isGeminiWallet = useIsGeminiWallet();
+  const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
 
-  const shouldShow = !isOneClickPromoHidden && !expressOrdersEnabled && !isGeminiWallet;
+  const shouldShow = !isOneClickPromoHidden && !expressOrdersEnabled && !isGeminiWallet && !isNonEoaAccountOnAnyChain;
 
   const onClickEnable = useCallback(() => {
     openSettings();

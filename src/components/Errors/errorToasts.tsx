@@ -118,7 +118,7 @@ export function getTxnErrorToast(
         >
           <Trans>increasing the allowed slippage</Trans>
         </span>{" "}
-        under the advanced display section.
+        under the execution details section.
       </Trans>
     );
 
@@ -277,6 +277,7 @@ export function getErrorMessage(
 }
 
 export const INVALID_NETWORK_TOAST_ID = "invalid-network";
+export const NON_EOA_ACCOUNT_CHAIN_WARNING_TOAST_ID = "non-eoa-account-chain-warning";
 
 export function getInvalidNetworkToastContent(chainId: number) {
   return (
@@ -286,6 +287,16 @@ export function getInvalidNetworkToastContent(chainId: number) {
       <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
         Switch to {getChainName(chainId)}
       </div>
+    </Trans>
+  );
+}
+
+export function getNonEoaAccountChainWarningToastContent(chainId: number) {
+  return (
+    <Trans>
+      <div>Smart wallets are not supported on {getChainName(chainId)}.</div>
+      <br />
+      <div>Please switch to a different network or use a EOA wallet.</div>
     </Trans>
   );
 }

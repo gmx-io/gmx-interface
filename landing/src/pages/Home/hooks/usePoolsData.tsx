@@ -133,13 +133,13 @@ function useApysByChainId(chainId: number) {
 const marketInfoQuery = {
   query: gql`
     query MarketInfos {
-      marketInfos(orderBy: poolValue_DESC, where: { isDisabled_eq: false }) {
+      marketInfos(orderBy: poolValue_DESC, where: { isDisabled_eq: false }, limit: 1000) {
         poolValue
         longOpenInterestUsd
         shortOpenInterestUsd
         id
       }
-      platformStats {
+      platformStats(limit: 1) {
         depositedUsers
       }
     }

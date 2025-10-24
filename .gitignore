@@ -6,6 +6,9 @@
 .pnp.js
 .vscode
 
+# typechain-types
+/src/typechain-types
+
 # lingui
 /src/locales/**/*.js
 /src/locales/en/messages.po

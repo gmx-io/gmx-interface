@@ -1,6 +1,7 @@
 import { LeaderboardAccount, LeaderboardPosition, LeaderboardPositionBase } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { MarketInfo } from "domain/synthetics/markets";
+import { applyFactor } from "lib/numbers";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
@@ -321,12 +322,6 @@ function getCloseFee(
   positionFeeUsd = positionFeeUsd - discountUsd;
 
   return positionFeeUsd;
-}
-
-const PRECISION = 10n ** 30n;
-
-function applyFactor(value: bigint, factor: bigint) {
-  return (value * factor) / PRECISION;
 }
 
 function getLeverage(sizeInUsd: bigint, collateralUsd: bigint, unrealizedPnl: bigint, unrealizedFees: bigint) {
