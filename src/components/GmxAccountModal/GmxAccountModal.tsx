@@ -141,7 +141,7 @@ export const GmxAccountModal = memo(() => {
       <ModalWithPortal
         label={VIEW_TITLE[view]}
         isVisible={isVisible}
-        setIsVisible={setIsVisibleOrView}
+        setIsVisible={() => setIsVisibleOrView("main")}
         withMobileBottomPosition={true}
         contentPadding={false}
         contentClassName="w-[420px]"

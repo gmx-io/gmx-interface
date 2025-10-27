@@ -4437,8 +4437,8 @@ msgid "Pending {tokenSymbol} approval"
 msgstr ""
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
-msgid "Back to GMX Account"
-msgstr ""
+#~ msgid "Back to GMX Account"
+#~ msgstr ""
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
@@ -6031,8 +6031,8 @@ msgid "Volume traded by this account with an active referral code."
 msgstr "Объем торгов этого аккаунта с активным реферальным кодом."
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
-msgid "This view is only available for deposits"
-msgstr ""
+#~ msgid "This view is only available for deposits"
+#~ msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized fees"

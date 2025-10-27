@@ -1,7 +1,9 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
+import { useState } from "react";
 
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useGmxAccountFundingHistoryItem } from "domain/multichain/useGmxAccountFundingHistory";
 import { getToken } from "sdk/configs/tokens";
 
@@ -11,11 +13,12 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import CheckCircleIcon from "img/ic_check_circle.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
+import SpinnerBlueIcon from "img/ic_spinner_blue.svg?react";
 import OneClickCoinImage from "img/one_click_coin.png";
 
 const StatusBadge = ({ variant }: { variant: "loading" | "success" }) => {
   return variant === "loading" ? (
-    <SpinnerIcon className="size-16 animate-spin text-blue-300" />
+    <SpinnerBlueIcon className="size-16 animate-spin" />
   ) : (
     <CheckCircleIcon className="size-16 text-green-500" />
   );
@@ -27,6 +30,22 @@ export const DepositStatusView = () => {
   const transfer = useGmxAccountFundingHistoryItem(selectedTransferGuid, {
     refetch: Boolean(selectedTransferGuid),
   });
+  const [isSubaccountActivating, setIsSubaccountActivating] = useState(false);
+  const subaccountState = useSubaccountContext();
+
+  const onEnableOneClickClick = () => {
+    setIsSubaccountActivating(true);
+    subaccountState
+      .tryEnableSubaccount()
+      .then((isSubaccountActivated) => {
+        if (isSubaccountActivated) {
+          setIsVisibleOrView("main");
+        }
+      })
+      .finally(() => {
+        setIsSubaccountActivating(false);
+      });
+  };
 
   if (!selectedTransferGuid) {
     return (
@@ -41,21 +60,7 @@ export const DepositStatusView = () => {
     );
   }
 
-  const isDepositTransfer = transfer?.operation === "deposit";
-
-  if (transfer && !isDepositTransfer) {
-    return (
-      <div className="flex grow flex-col gap-16 px-adaptive pb-adaptive pt-adaptive">
-        <div className="text-body-medium rounded-12 bg-fill-surfaceElevated50 p-20 text-center text-typography-secondary">
-          <Trans>This view is only available for deposits</Trans>
-        </div>
-        <Button variant="secondary" onClick={() => setIsVisibleOrView("main")}>
-          <Trans>Back to GMX Account</Trans>
-        </Button>
-      </div>
-    );
-  }
-  const token = transfer && isDepositTransfer ? getToken(transfer.settlementChainId, transfer.token) : undefined;
+  const token = transfer ? getToken(transfer.settlementChainId, transfer.token) : undefined;
   const isCompleted = transfer?.step === "executed";
   const statusVariant: "loading" | "success" = isCompleted ? "success" : "loading";
 
@@ -92,7 +97,7 @@ export const DepositStatusView = () => {
         <div className={cx(isCompleted ? "text-green-500" : "text-typography-secondary")}>{statusLabel}</div>
       </div>
 
-      <div className="flex justify-between rounded-8 border-1/2 border-slate-600 bg-slate-950/50">
+      <div className="mt-12 flex justify-between rounded-8 border-1/2 border-slate-600 bg-slate-950/50">
         <div className="flex flex-col gap-4 p-12">
           <h4 className="text-14 font-medium">
             <Trans>Want to trade faster with One-Click?</Trans>
@@ -120,10 +125,11 @@ export const DepositStatusView = () => {
         </div>
         <img src={OneClickCoinImage} alt="One-Click" className="mr-6 mt-6 h-93 w-92 transform" />
       </div>
-      <Button variant="primary" size="medium">
+      <Button variant="primary" size="medium" onClick={onEnableOneClickClick} disabled={isSubaccountActivating}>
+        {isSubaccountActivating ? <SpinnerIcon className="size-16 animate-spin" /> : null}
         <Trans>Enable One-Click Trading</Trans>
       </Button>
-      <Button variant="ghost" size="medium" onClick={() => setIsVisibleOrView(false)}>
+      <Button variant="ghost" size="medium" onClick={() => setIsVisibleOrView("main")}>
         <Trans>Remind me later</Trans>
       </Button>
     </div>

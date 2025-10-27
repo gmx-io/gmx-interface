@@ -28,6 +28,7 @@ import {
   useGmxAccountSettlementChainId,
 } from "context/GmxAccountContext/hooks";
 import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountContext/selectors";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useMultichainApprovalsActiveListener } from "context/SyntheticsEvents/useMultichainEvents";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
@@ -58,7 +59,9 @@ import { USD_DECIMALS, adjustForDecimals, formatAmountFree, formatUsd } from "li
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
+import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 import { convertTokenAddress, getNativeToken, getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens";
@@ -386,6 +389,12 @@ export const DepositView = () => {
   const isFirstDeposit = useIsFirstDeposit();
   const latestIsFirstDeposit = useLatest(isFirstDeposit);
 
+  const subaccountState = useSubaccountContext();
+
+  const isGeminiWallet = useIsGeminiWallet();
+  const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
+  const isExpressTradingDisabled = isNonEoaAccountOnAnyChain || isGeminiWallet;
+
   const sameChainCallback: TxnCallback<WalletTxnCtx> = useCallback(
     (txnEvent) => {
       if (txnEvent.event === TxnEventName.Sent) {
@@ -495,14 +504,23 @@ export const DepositView = () => {
             setSelectedTransferGuid(submittedDepositGuid);
           }
 
-          setIsVisibleOrView("depositStatus");
+          if (!subaccountState.subaccount && !isExpressTradingDisabled) {
+            setIsVisibleOrView("depositStatus");
+          }
         } else if (txnEvent.event === TxnEventName.Simulated) {
           sendOrderSimulatedMetric(params.metricId);
         } else if (txnEvent.event === TxnEventName.Sending) {
           sendOrderTxnSubmittedMetric(params.metricId);
         }
       },
-    [setIsVisibleOrView, setMultichainSubmittedDeposit, setSelectedTransferGuid, settlementChainId]
+    [
+      setIsVisibleOrView,
+      setMultichainSubmittedDeposit,
+      setSelectedTransferGuid,
+      settlementChainId,
+      subaccountState.subaccount,
+      isExpressTradingDisabled,
+    ]
   );
 
   const canSendCrossChainDeposit =
