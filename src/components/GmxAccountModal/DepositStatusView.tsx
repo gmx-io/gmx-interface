@@ -72,19 +72,6 @@ export const DepositStatusView = () => {
     setIsVisibleOrView("main");
   };
 
-  if (!selectedTransferGuid) {
-    return (
-      <div className="flex grow flex-col gap-16 px-adaptive pb-adaptive pt-adaptive">
-        <div className="text-body-medium rounded-12 bg-fill-surfaceElevated50 p-20 text-center text-typography-secondary">
-          <Trans>No deposit in progress</Trans>
-        </div>
-        <Button variant="primary-action" onClick={() => setIsVisibleOrView("deposit")}>
-          <Trans>Start a deposit</Trans>
-        </Button>
-      </div>
-    );
-  }
-
   const token = transfer ? getToken(transfer.settlementChainId, transfer.token) : undefined;
   const isCompleted = transfer?.step === "executed";
   const statusVariant: "loading" | "success" = isCompleted ? "success" : "loading";

@@ -3435,8 +3435,8 @@ msgid "Funding Fees"
 msgstr "Funding Fees"
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
-msgid "No deposit in progress"
-msgstr "No deposit in progress"
+#~ msgid "No deposit in progress"
+#~ msgstr "No deposit in progress"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -5957,8 +5957,8 @@ msgid "Jones DAO"
 msgstr "Jones DAO"
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
-msgid "Start a deposit"
-msgstr "Start a deposit"
+#~ msgid "Start a deposit"
+#~ msgstr "Start a deposit"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minute(s)"

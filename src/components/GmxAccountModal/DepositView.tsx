@@ -502,10 +502,9 @@ export const DepositView = () => {
 
           if (submittedDepositGuid) {
             setSelectedTransferGuid(submittedDepositGuid);
-          }
-
-          if (!subaccountState.subaccount && !isExpressTradingDisabled) {
-            setIsVisibleOrView("depositStatus");
+            if (!subaccountState.subaccount && !isExpressTradingDisabled) {
+              setIsVisibleOrView("depositStatus");
+            }
           }
         } else if (txnEvent.event === TxnEventName.Simulated) {
           sendOrderSimulatedMetric(params.metricId);

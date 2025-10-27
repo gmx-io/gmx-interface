@@ -128,7 +128,6 @@ const VIEW_TITLE: Record<GmxAccountModalView, React.ReactNode> = {
 export const GmxAccountModal = memo(() => {
   const { address: account } = useAccount();
   const [isVisibleOrView, setIsVisibleOrView] = useGmxAccountModalOpen();
-  const [selectedTransferGuid] = useGmxAccountSelectedTransferGuid();
 
   const isVisible = isVisibleOrView !== false && account !== undefined;
   const view = typeof isVisibleOrView === "string" ? isVisibleOrView : "main";
@@ -142,12 +141,10 @@ export const GmxAccountModal = memo(() => {
   if (view === "depositStatus") {
     const handleDepositStatusModalVisibility = (nextVisible: boolean) => {
       if (!nextVisible) {
-        if (selectedTransferGuid) {
-          userAnalytics.pushEvent<OneClickPromotionEvent>({
-            event: "OneClickPromotion",
-            data: { action: "UserRejected" },
-          });
-        }
+        userAnalytics.pushEvent<OneClickPromotionEvent>({
+          event: "OneClickPromotion",
+          data: { action: "UserRejected" },
+        });
 
         setIsVisibleOrView("main");
       }
