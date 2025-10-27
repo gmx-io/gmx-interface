@@ -1,13 +1,13 @@
 # <img src="https://app.gmx.io/favicon/apple-icon-144x144.png" width="28" height="28"> GMX SDK
 
-## Install
+## Installation
 
 ```bash
 yarn add @gmx-io/sdk # or
 npm install --save @gmx-io/sdk
 ```
 
-## Usage
+## Getting Started
 
 ```typescript
 import { GmxSdk } from "@gmx-io/sdk";
@@ -37,50 +37,50 @@ sdk.positions
   });
 ```
 
-## Documentation
+## API Reference
 
-### Read methods
+### Read Methods
 
 ### Markets
 
-- `getMarkets(offset?: number, limit?: number): Promise<Market[]>` - returns a list of markets
-- `getMarketsInfo(): Promise<{ marketsInfoData: MarketInfoData[], tokensData: TokenData[] }>` - returns a list of markets info and tokens data
-- `getDailyVolumes(): Promise<{market: string; volume: bigint}[]>` - returns markets' daily volume data
+- `getMarkets(offset?: number, limit?: number): Promise<Market[]>` - fetches a list of available markets
+- `getMarketsInfo(): Promise<{ marketsInfoData: MarketInfoData[], tokensData: TokenData[] }>` - retrieves detailed market information along with token data
+- `getDailyVolumes(): Promise<{market: string; volume: bigint}[]>` - gets daily trading volume for each market
 
 ### Positions
 
-- `getPositions(): Promise<Position[]>` - returns a list of positions
+- `getPositions(): Promise<Position[]>` - retrieves all open positions
 
 ### Tokens
 
-- `getTokensData(): Promise<TokenData[]>` - returns a list of tokens data
+- `getTokensData(): Promise<TokenData[]>` - fetches data for all available tokens
 
 ### Orders
 
-- `getOrders(): Promise<Order[]>` - returns a list of orders
+- `getOrders(): Promise<Order[]>` - retrieves all active orders
 
 ### Trades
 
-- `getTradeHistory(p: Parameters): Promise<TradeAction[]>` - returns a list of trades
+- `getTradeHistory(p: Parameters): Promise<TradeAction[]>` - fetches historical trade data
 
-### Write methods
+### Write Methods
 
 ### Orders
 
-#### Quick methods:
+#### Quick Methods:
 
-- `long(p: Parameters)` - creates long positions (see [examples](#helpers))
-- `short(p: Parameters)` - creates short positions (see [examples](#helpers))
-- `swap(p: Parameters)` - creates a swap order (see [examples](#helpers))
+- `long(p: Parameters)` - opens a long position (see [examples](#helpers))
+- `short(p: Parameters)` - opens a short position (see [examples](#helpers))
+- `swap(p: Parameters)` - executes a token swap (see [examples](#helpers))
 
-#### Full methods:
+#### Full Methods:
 
-- `cancelOrders(orderKeys: string[])` - cancels orders by order keys
-- `createIncreaseOrder(p: Parameters)` - creates an increase order (see [examples](#examples))
-- `createDecreaseOrder(p: Parameters)` - creates a decrease order (see [examples](#examples))
-- `createSwapOrder(p: Parameters)` - creates a swap order (see [examples](#examples))
+- `cancelOrders(orderKeys: string[])` - cancels one or more orders using their keys
+- `createIncreaseOrder(p: Parameters)` - creates an order to increase position size (see [examples](#examples))
+- `createDecreaseOrder(p: Parameters)` - creates an order to decrease position size (see [examples](#examples))
+- `createSwapOrder(p: Parameters)` - creates a token swap order (see [examples](#examples))
 
-## Configuration
+## Configuration Options
 
 ```typescript
 interface GmxSdkConfig {
@@ -101,9 +101,9 @@ interface GmxSdkConfig {
 }
 ```
 
-### Custom Viem clients
+### Setting Up Custom Viem Clients
 
-When using custom Viem clients, pass batching configuration to the client.
+When working with custom Viem clients, make sure to include the batching configuration:
 
 ```typescript
 import { BATCH_CONFIGS } from "@gmx-io/sdk/configs/batch";
@@ -114,15 +114,15 @@ const publicClient = createPublicClient({
 });
 ```
 
-### Urls
+### Network URLs
 
-- RPC URLs - use preferred RPC URL
-- [Actual Oracle URLs](https://github.com/gmx-io/gmx-interface/blob/master/src/config/oracleKeeper.ts#L5-L11)
-- [Actual Subsquid/Subgraph URLs](https://github.com/gmx-io/gmx-interface/blob/master/src/config/subgraph.ts#L5) (subgraph url is `synthetics-stats` field)
+- RPC URLs - use your preferred RPC endpoint
+- [Current Oracle URLs](https://github.com/gmx-io/gmx-interface/blob/master/src/config/oracleKeeper.ts#L5-L11)
+- [Current Subsquid/Subgraph URLs](https://github.com/gmx-io/gmx-interface/blob/master/src/config/subgraph.ts#L5) (the subgraph url corresponds to the `synthetics-stats` field)
 
-### Tokens customization
+### Customizing Token Data
 
-If you need to override some field in tokens, just pass extension object in SDK config:
+You can override default token properties by passing an extension object in the SDK configuration:
 
 ```typescript
 const sdk = new GmxSdk({
@@ -135,11 +135,11 @@ const sdk = new GmxSdk({
 });
 ```
 
-Here and further, `name` field in tokens data object will be taken from the extension object.
+With this configuration, the `name` field for this token will use your custom value throughout the SDK.
 
-### Markets customization
+### Customizing Market Availability
 
-To enable/disable market in SDK use config field `markets`
+To control which markets are available in the SDK, use the `markets` configuration field:
 
 ```typescript
 const sdk = new GmxSdk({
@@ -152,9 +152,9 @@ const sdk = new GmxSdk({
 });
 ```
 
-## Examples
+## Usage Examples
 
-### Open long position
+### Opening a Long Position
 
 ```typescript
 import type { IncreasePositionAmounts } from "@gmx-io/sdk/types/orders";
@@ -209,7 +209,7 @@ sdk.orders.createIncreaseOrder({
 
 ### Helpers
 
-Helpers are a set of functions that help you create orders without manually calculating the amounts, swap paths, etc. By default helpers will fetch the latest data from the API, but you can pass both `marketsInfoData` and `tokensData` to the helpers to avoid extra calls to the API.
+Helper functions simplify order creation by automatically calculating amounts, swap paths, and other parameters. By default, helpers fetch the latest data from the API, but you can optionally pass `marketsInfoData` and `tokensData` yourself to reduce API calls.
 
 ```typescript
 sdk.orders.long({
@@ -229,4 +229,4 @@ sdk.orders.swap({
 });
 ```
 
-Pay attention to the `payTokenAddress` and `collateralTokenAddress` fields. They are the addresses of ERC20 tokens that you are paying for and receiving, respectively, some markets may have synthetic tokens in these fields, so you need to pass the correct address. For instance BTC/USD [WETH-USDC] market has synthetic BTC token in `indexTokenAddress` so you need to pass WBTC address instead of BTC.
+Note the distinction between `payTokenAddress` and `collateralTokenAddress`. These represent the ERC20 token addresses for payment and collateral respectively. Some markets use synthetic tokens, so you'll need to provide the correct underlying token address. For example, the BTC/USD [WETH-USDC] market has a synthetic BTC token as its `indexTokenAddress`, so you should pass the WBTC address instead of BTC.
