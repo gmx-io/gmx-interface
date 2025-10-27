@@ -61,6 +61,7 @@ export function useShareSuccessClosedPosition({
     account,
     pageSize: 5,
     orderEventCombinations: ORDER_EVENT_COMBINATIONS,
+    refreshInterval: 1000,
   });
 
   useEffect(() => {
