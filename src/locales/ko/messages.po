@@ -4599,6 +4599,10 @@ msgstr ""
 msgid "Order Type"
 msgstr "주문 유형"
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Are you sure you want to skip creating a referral code?"
+msgstr ""
+
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana"
@@ -5983,6 +5987,10 @@ msgstr ""
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Explorer"
 msgstr "탐색기에서 {0} 열기"
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "It allows you to earn rewards."
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."

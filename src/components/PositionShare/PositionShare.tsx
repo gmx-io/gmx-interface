@@ -8,6 +8,7 @@ import { Token } from "domain/tokens";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
 import { getRootShareApiUrl, getTwitterIntentURL } from "lib/legacy";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useLoadImage from "lib/useLoadImage";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionActionEvent, SharePositionActionSource } from "lib/userAnalytics/types";
@@ -15,10 +16,11 @@ import { SharePositionActionEvent, SharePositionActionSource } from "lib/userAna
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
+import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
+import AlertIcon from "img/ic_alert.svg?react";
 import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
 import DownloadIcon from "img/ic_download2.svg?react";
 import TwitterIcon from "img/ic_x.svg?react";
@@ -84,6 +86,10 @@ function PositionShare({
   const sharePositionBgImg = useLoadImage(shareBgImg);
   const cardRef = useRef<HTMLDivElement>(null);
   const [createdReferralCode, setCreatedReferralCode] = useState<string | null>(null);
+  const [isCreateReferralCodeInfoMessageClosed, setIsCreateReferralCodeInfoMessageClosed] = useLocalStorageSerializeKey(
+    "is-create-referral-code-info-message-closed",
+    false
+  );
   const shareAffiliateCode = useMemo(() => {
     if (createdReferralCode) {
       return { code: createdReferralCode, success: true };
@@ -93,6 +99,10 @@ function PositionShare({
   const shareSourceWithFallback: SharePositionActionSource = shareSource ?? "unknown";
   const hasExistingReferralCode = Boolean(userAffiliateCode?.code);
   const hasCurrentReferralCode = Boolean(shareAffiliateCode?.code);
+
+  const [doNotShowAgainSetInCurrentModal, setDoNotShowAgainSetInCurrentModal] = useState(false);
+
+  const [promptedToCreateReferralCode, setPromptedToCreateReferralCode] = useState(false);
 
   const tweetLink = getTwitterIntentURL(
     `Latest $\u200a${indexToken?.symbol} trade on @GMX_IO`,
@@ -154,6 +164,32 @@ function PositionShare({
       setCreatedReferralCode(null);
     }
   }, [userAffiliateCode.code]);
+
+  useEffect(() => {
+    if (prevIsOpen && !isPositionShareModalOpen) {
+      setPromptedToCreateReferralCode(false);
+    }
+  }, [prevIsOpen, isPositionShareModalOpen]);
+
+  useEffect(() => {
+    if (prevIsOpen && !isPositionShareModalOpen && doNotShowAgain && doNotShowAgainSetInCurrentModal) {
+      userAnalytics.pushEvent<SharePositionActionEvent>({
+        event: "SharePositionAction",
+        data: {
+          action: "PromptDontShowAgain",
+          source: shareSourceWithFallback,
+          hasReferralCode: hasCurrentReferralCode,
+        },
+      });
+    }
+  }, [
+    prevIsOpen,
+    isPositionShareModalOpen,
+    doNotShowAgain,
+    hasCurrentReferralCode,
+    shareSourceWithFallback,
+    doNotShowAgainSetInCurrentModal,
+  ]);
 
   useEffect(() => {
     (async function () {
@@ -247,20 +283,18 @@ function PositionShare({
   const handleDoNotShowAgainToggle = useCallback(
     (value: boolean) => {
       onDoNotShowAgainChange?.(value);
-
-      if (value) {
-        userAnalytics.pushEvent<SharePositionActionEvent>({
-          event: "SharePositionAction",
-          data: {
-            action: "PromptDontShowAgain",
-            source: shareSourceWithFallback,
-            hasReferralCode: hasCurrentReferralCode,
-          },
-        });
-      }
+      setDoNotShowAgainSetInCurrentModal(true);
     },
-    [hasCurrentReferralCode, onDoNotShowAgainChange, shareSourceWithFallback]
+    [onDoNotShowAgainChange]
   );
+
+  const handlePromptToCreateReferralCode = (e: React.MouseEvent<unknown>) => {
+    e.preventDefault();
+    setPromptedToCreateReferralCode(true);
+  };
+
+  const shouldPromptToCreateReferralCode =
+    !hasCurrentReferralCode && !promptedToCreateReferralCode && !isCreateReferralCodeInfoMessageClosed;
 
   return (
     <ModalWithPortal
@@ -293,6 +327,18 @@ function PositionShare({
         {shouldShowCreateReferralCard && <CreateReferralCode onSuccess={handleReferralCodeSuccess} />}
         {uploadedImageError && <AlertInfoCard type="error">{uploadedImageError}</AlertInfoCard>}
       </div>
+      {promptedToCreateReferralCode && !isCreateReferralCodeInfoMessageClosed && (
+        <div className="p-20 pb-0">
+          <ColorfulBanner color="blue" icon={AlertIcon} onClose={() => setIsCreateReferralCodeInfoMessageClosed(true)}>
+            <span className="font-medium text-blue-300">
+              <Trans>Are you sure you want to skip creating a referral code?</Trans>
+            </span>
+            <span className="text-blue-100">
+              <Trans>It allows you to earn rewards.</Trans>
+            </span>
+          </ColorfulBanner>
+        </div>
+      )}
       <div className="flex flex-col gap-16 p-20">
         <div className="flex flex-col gap-12">
           <ToggleSwitch isChecked={showPnlAmounts} setIsChecked={setShowPnlAmounts}>
@@ -305,7 +351,7 @@ function PositionShare({
           <Button
             variant="secondary"
             disabled={!uploadedImageInfo}
-            onClick={handleCopy}
+            onClick={shouldPromptToCreateReferralCode ? handlePromptToCreateReferralCode : handleCopy}
             size="medium"
             className="grow !text-14"
           >
@@ -315,26 +361,25 @@ function PositionShare({
           <Button
             variant="secondary"
             disabled={!uploadedImageInfo}
-            onClick={handleDownload}
+            onClick={shouldPromptToCreateReferralCode ? handlePromptToCreateReferralCode : handleDownload}
             size="medium"
             className="grow !text-14"
           >
             <Trans>Download</Trans>
             <DownloadIcon className="size-16" />
           </Button>
-          <TrackingLink onClick={trackShareTwitter}>
-            <Button
-              newTab
-              variant="secondary"
-              disabled={!uploadedImageInfo}
-              to={tweetLink}
-              size="medium"
-              className="grow !text-14"
-            >
-              <Trans>Share on</Trans>
-              <TwitterIcon className="size-16" />
-            </Button>
-          </TrackingLink>
+          <Button
+            newTab
+            variant="secondary"
+            disabled={!uploadedImageInfo}
+            to={tweetLink}
+            size="medium"
+            className="grow !text-14"
+            onClick={shouldPromptToCreateReferralCode ? handlePromptToCreateReferralCode : trackShareTwitter}
+          >
+            <Trans>Share on</Trans>
+            <TwitterIcon className="size-16" />
+          </Button>
         </div>
         {Boolean(onDoNotShowAgainChange) && (
           <div className="flex justify-center">

@@ -4599,6 +4599,10 @@ msgstr "Show PnL Amounts"
 msgid "Order Type"
 msgstr "Order Type"
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Are you sure you want to skip creating a referral code?"
+msgstr "Are you sure you want to skip creating a referral code?"
+
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana"
@@ -5983,6 +5987,10 @@ msgstr "You have esGMX tokens in the Affiliate Vault, you need to withdraw these
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Explorer"
 msgstr "Open {0} in Explorer"
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "It allows you to earn rewards."
+msgstr "It allows you to earn rewards."
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."

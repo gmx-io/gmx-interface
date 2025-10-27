@@ -150,7 +150,6 @@ export function useShareSuccessClosedPosition({
 
       setNotInteractedShareViewCount(hasShareModalInteraction ? 0 : notInteractedShareViewCount + 1);
 
-      setShareTradeAction(null);
       setHasShareModalInteraction(false);
     },
     [hasShareModalInteraction, setNotInteractedShareViewCount, shareTradeAction, notInteractedShareViewCount]
