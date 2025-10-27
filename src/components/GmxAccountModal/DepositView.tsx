@@ -24,6 +24,7 @@ import {
   useGmxAccountDepositViewTokenInputValue,
   useGmxAccountModalOpen,
   useGmxAccountSelector,
+  useGmxAccountSelectedTransferGuid,
   useGmxAccountSettlementChainId,
 } from "context/GmxAccountContext/hooks";
 import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountContext/selectors";
@@ -114,6 +115,7 @@ export const DepositView = () => {
   const { provider: sourceChainProvider } = useJsonRpcProvider(depositViewChain);
 
   const [isVisibleOrView, setIsVisibleOrView] = useGmxAccountModalOpen();
+  const [, setSelectedTransferGuid] = useGmxAccountSelectedTransferGuid();
 
   const [depositViewTokenAddress, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const [inputValue, setInputValue] = useGmxAccountDepositViewTokenInputValue();
@@ -458,10 +460,11 @@ export const DepositView = () => {
 
           sendTxnErrorMetric(params.metricId, prettyError, "unknown");
         } else if (txnEvent.event === TxnEventName.Sent) {
-          setIsVisibleOrView("main");
           setIsSubmitting(false);
 
           sendTxnSentMetric(params.metricId);
+
+          let submittedDepositGuid: string | undefined;
 
           if (txnEvent.data.type === "wallet") {
             const settlementChainDecimals = getToken(settlementChainId, params.tokenAddress)?.decimals;
@@ -478,7 +481,7 @@ export const DepositView = () => {
                 settlementChainDecimals
               );
 
-              setMultichainSubmittedDeposit({
+              submittedDepositGuid = setMultichainSubmittedDeposit({
                 amount,
                 settlementChainId,
                 sourceChainId: params.depositViewChain,
@@ -487,13 +490,19 @@ export const DepositView = () => {
               });
             }
           }
+
+          if (submittedDepositGuid) {
+            setSelectedTransferGuid(submittedDepositGuid);
+          }
+
+          setIsVisibleOrView("depositStatus");
         } else if (txnEvent.event === TxnEventName.Simulated) {
           sendOrderSimulatedMetric(params.metricId);
         } else if (txnEvent.event === TxnEventName.Sending) {
           sendOrderTxnSubmittedMetric(params.metricId);
         }
       },
-    [setIsVisibleOrView, setMultichainSubmittedDeposit, settlementChainId]
+    [setIsVisibleOrView, setMultichainSubmittedDeposit, setSelectedTransferGuid, settlementChainId]
   );
 
   const canSendCrossChainDeposit =

@@ -8,11 +8,13 @@ import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/S
 import { useGmxAccountFundingHistoryItem } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
 
+import ModalWithPortal from "components/Modal/ModalWithPortal";
 import { SlideModal } from "components/Modal/SlideModal";
 
 import ArrowLeftIcon from "img/ic_arrow_left.svg?react";
 
 import { AvailableToTradeAssetsView } from "./AvailableToTradeAssetsView";
+import { DepositStatusView } from "./DepositStatusView";
 import { DepositView } from "./DepositView";
 import { MainView } from "./MainView";
 import { SelectAssetToDepositView } from "./SelectAssetToDepositView";
@@ -73,6 +75,14 @@ const DepositTitle = () => {
   );
 };
 
+const DepositStatusTitle = () => {
+  return (
+    <div className="flex items-center gap-8">
+      <Trans>Your deposit is in progress</Trans>
+    </div>
+  );
+};
+
 const SelectAssetToDepositTitle = () => {
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   return (
@@ -108,6 +118,7 @@ const VIEW_TITLE: Record<GmxAccountModalView, React.ReactNode> = {
   availableToTradeAssets: <AvailableToTradeAssetsTitle />,
   transferDetails: <TransferDetailsTitle />,
   deposit: <DepositTitle />,
+  depositStatus: <DepositStatusTitle />,
   selectAssetToDeposit: <SelectAssetToDepositTitle />,
   withdraw: <WithdrawTitle />,
 };
@@ -124,6 +135,21 @@ export const GmxAccountModal = memo(() => {
       setIsVisibleOrView(false);
     }
   }, [account, isVisibleOrView, setIsVisibleOrView]);
+
+  if (view === "depositStatus") {
+    return (
+      <ModalWithPortal
+        label={VIEW_TITLE[view]}
+        isVisible={isVisible}
+        setIsVisible={setIsVisibleOrView}
+        withMobileBottomPosition={true}
+        contentPadding={false}
+        contentClassName="w-[420px]"
+      >
+        <DepositStatusView />
+      </ModalWithPortal>
+    );
+  }
 
   return (
     <SlideModal
