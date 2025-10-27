@@ -139,7 +139,7 @@ Here and further, `name` field in tokens data object will be taken from the exte
 
 ### Markets customization
 
-To enable/disable market in SDK use config field `markets
+To enable/disable market in SDK use config field `markets`
 
 ```typescript
 const sdk = new GmxSdk({

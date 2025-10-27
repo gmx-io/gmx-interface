@@ -54,27 +54,29 @@ export function ExpressTradingOutOfGasBanner({ onClose }: { onClose: () => void 
 
   return (
     <ColorfulBanner color="blue" icon={ExpressIcon}>
-      {srcChainId !== undefined ? (
-        <>
-          {hasEth ? (
-            <Trans>Insufficient gas balance, please deposit more WETH or USDC.</Trans>
-          ) : (
-            <Trans>Insufficient gas balance, please deposit more USDC.</Trans>
-          )}
-          <br />
-          <ColorfulButtonLink color="blue" onClick={onDepositClick}>
-            {hasEth ? <Trans>Deposit USDC or ETH</Trans> : <Trans>Deposit USDC</Trans>}
-          </ColorfulButtonLink>
-        </>
-      ) : (
-        <>
-          <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance.</Trans>
-          <br />
-          <ColorfulButtonLink color="blue" onClick={onBuyClick}>
-            <Trans>Buy {gasPaymentTokensText}</Trans>
-          </ColorfulButtonLink>
-        </>
-      )}
+      <div>
+        {srcChainId !== undefined ? (
+          <>
+            {hasEth ? (
+              <Trans>Insufficient gas balance, please deposit more WETH or USDC.</Trans>
+            ) : (
+              <Trans>Insufficient gas balance, please deposit more USDC.</Trans>
+            )}
+            <br />
+            <ColorfulButtonLink color="blue" onClick={onDepositClick}>
+              {hasEth ? <Trans>Deposit USDC or ETH</Trans> : <Trans>Deposit USDC</Trans>}
+            </ColorfulButtonLink>
+          </>
+        ) : (
+          <>
+            <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance.</Trans>
+            <br />
+            <ColorfulButtonLink color="blue" onClick={onBuyClick}>
+              <Trans>Buy {gasPaymentTokensText}</Trans>
+            </ColorfulButtonLink>
+          </>
+        )}
+      </div>
     </ColorfulBanner>
   );
 }
