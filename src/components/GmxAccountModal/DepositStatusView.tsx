@@ -1,10 +1,12 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useGmxAccountFundingHistoryItem } from "domain/multichain/useGmxAccountFundingHistory";
+import { userAnalytics } from "lib/userAnalytics";
+import { OneClickPromotionEvent } from "lib/userAnalytics/types";
 import { getToken } from "sdk/configs/tokens";
 
 import { Amount } from "components/Amount/Amount";
@@ -33,18 +35,41 @@ export const DepositStatusView = () => {
   const [isSubaccountActivating, setIsSubaccountActivating] = useState(false);
   const subaccountState = useSubaccountContext();
 
+  useEffect(() => {
+    userAnalytics.pushEvent<OneClickPromotionEvent>({
+      event: "OneClickPromotion",
+      data: { action: "PopupShown" },
+    });
+  }, []);
+
   const onEnableOneClickClick = () => {
+    userAnalytics.pushEvent<OneClickPromotionEvent>({
+      event: "OneClickPromotion",
+      data: { action: "EnableOneClickClicked" },
+    });
     setIsSubaccountActivating(true);
     subaccountState
       .tryEnableSubaccount()
       .then((isSubaccountActivated) => {
         if (isSubaccountActivated) {
+          userAnalytics.pushEvent<OneClickPromotionEvent>({
+            event: "OneClickPromotion",
+            data: { action: "EnableOneClickSuccess" },
+          });
           setIsVisibleOrView("main");
         }
       })
       .finally(() => {
         setIsSubaccountActivating(false);
       });
+  };
+
+  const onRemindLaterClick = () => {
+    userAnalytics.pushEvent<OneClickPromotionEvent>({
+      event: "OneClickPromotion",
+      data: { action: "UserRejected" },
+    });
+    setIsVisibleOrView("main");
   };
 
   if (!selectedTransferGuid) {
@@ -129,7 +154,7 @@ export const DepositStatusView = () => {
         {isSubaccountActivating ? <SpinnerIcon className="size-16 animate-spin" /> : null}
         <Trans>Enable One-Click Trading</Trans>
       </Button>
-      <Button variant="ghost" size="medium" onClick={() => setIsVisibleOrView("main")}>
+      <Button variant="ghost" size="medium" onClick={onRemindLaterClick}>
         <Trans>Remind me later</Trans>
       </Button>
     </div>
