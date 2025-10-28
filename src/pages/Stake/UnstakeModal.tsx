@@ -93,7 +93,7 @@ export function UnstakeModal(props: {
       return error;
     }
     if (isUnstaking) {
-      return t`Unstaking`;
+      return t`Unstaking...`;
     }
     return t`Unstake`;
   }, [error, isUnstaking]);

@@ -446,7 +446,7 @@ export function PositionSeller() {
     }
 
     if (isSubmitting) {
-      return t`Creating order`;
+      return t`Creating order...`;
     }
   }, [
     account,
@@ -816,7 +816,7 @@ export function PositionSeller() {
   const buttonState = useMemo(() => {
     if (!isAllowanceLoaded) {
       return {
-        text: t`Loading`,
+        text: t`Loading...`,
         disabled: true,
       };
     }
@@ -825,7 +825,7 @@ export function PositionSeller() {
       return {
         text: (
           <>
-            {t`Loading Express params`}
+            {t`Loading Express params...`}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),

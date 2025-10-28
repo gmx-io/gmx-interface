@@ -231,7 +231,7 @@ export function ClaimModalMultichain(p: Props) {
         helperToast.success(
           <div className="flex items-center justify-between">
             <div className="text-white/50">
-              <Trans>Claiming funding fees</Trans>
+              <Trans>Claiming funding fees...</Trans>
             </div>
             <SpinnerIcon className="spin size-15 text-white" />
           </div>,
@@ -281,7 +281,7 @@ export function ClaimModalMultichain(p: Props) {
       return {
         text: (
           <>
-            <Trans>Loading</Trans>
+            <Trans>Loading...</Trans>
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),

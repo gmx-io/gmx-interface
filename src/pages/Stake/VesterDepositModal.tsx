@@ -108,7 +108,7 @@ export function VesterDepositModal(props: {
       return error;
     }
     if (isDepositing) {
-      return t`Depositing`;
+      return t`Depositing...`;
     }
     return t`Deposit`;
   }, [error, isDepositing]);

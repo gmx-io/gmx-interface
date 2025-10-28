@@ -139,12 +139,12 @@ function ReferralCodeForm({
     };
   } else if (isEdit && isSubmitting) {
     buttonState = {
-      text: t`Updating`,
+      text: t`Updating...`,
       disabled: true,
     };
   } else if (isSubmitting) {
     buttonState = {
-      text: t`Adding`,
+      text: t`Adding...`,
       disabled: true,
     };
   } else if (debouncedReferralCode === "") {
@@ -547,12 +547,12 @@ function ReferralCodeFormMultichain({
     };
   } else if (isEdit && isSubmitting) {
     buttonState = {
-      text: t`Updating`,
+      text: t`Updating...`,
       disabled: true,
     };
   } else if (isSubmitting) {
     buttonState = {
-      text: t`Adding`,
+      text: t`Adding...`,
       disabled: true,
     };
   } else if (debouncedReferralCode === "") {
@@ -574,7 +574,7 @@ function ReferralCodeFormMultichain({
     buttonState = {
       text: (
         <>
-          <Trans>Loading</Trans>
+          <Trans>Loading...</Trans>
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),

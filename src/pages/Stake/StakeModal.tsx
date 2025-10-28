@@ -130,7 +130,7 @@ export function StakeModal(props: {
       return t`Pending ${stakingTokenSymbol} approval`;
     }
     if (isStaking) {
-      return t`Staking`;
+      return t`Staking...`;
     }
     return t`Stake`;
   }, [error, isApproving, needApproval, isStaking, stakingTokenSymbol]);

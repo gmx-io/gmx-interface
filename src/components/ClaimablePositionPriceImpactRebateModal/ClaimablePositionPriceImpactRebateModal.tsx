@@ -94,7 +94,7 @@ function ClaimablePositionPriceImpactRebateModalSettlementChain({
     onSubmit?: () => void;
   } = useMemo(() => {
     if (isSubmitting) {
-      return { text: t`Claiming`, disabled: true };
+      return { text: t`Claiming...`, disabled: true };
     }
     return { text: t`Claim`, disabled: false, onSubmit: handleSubmit };
   }, [handleSubmit, isSubmitting]);
@@ -201,7 +201,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
         helperToast.success(
           <div className="flex items-center justify-between">
             <div className="text-white/50">
-              <Trans>Claiming position price impact fees</Trans>
+              <Trans>Claiming position price impact fees...</Trans>
             </div>
             <SpinnerIcon className="spin size-15 text-white" />
           </div>,
@@ -247,7 +247,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
     onSubmit?: () => void;
   } = useMemo(() => {
     if (isSubmitting) {
-      return { text: t`Claiming`, disabled: true };
+      return { text: t`Claiming...`, disabled: true };
     }
     return { text: t`Claim`, disabled: false, onSubmit: handleSubmit };
   }, [handleSubmit, isSubmitting]);
