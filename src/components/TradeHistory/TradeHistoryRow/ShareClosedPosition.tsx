@@ -16,7 +16,7 @@ type ShareClosedPositionProps = {
   doNotShowAgain?: boolean;
   onDoNotShowAgainChange?: (value: boolean) => void;
   onShareAction?: () => void;
-  shareSource?: SharePositionActionSource;
+  shareSource: SharePositionActionSource;
 };
 
 export default function ShareClosedPosition({

@@ -58,7 +58,7 @@ type Props = {
   doNotShowAgain?: boolean;
   onDoNotShowAgainChange?: (value: boolean) => void;
   onShareAction?: () => void;
-  shareSource?: SharePositionActionSource;
+  shareSource: SharePositionActionSource;
 };
 
 function PositionShare({
@@ -73,7 +73,7 @@ function PositionShare({
   isPositionShareModalOpen,
   account,
   chainId,
-  doNotShowAgain = false,
+  doNotShowAgain,
   onDoNotShowAgainChange,
   onShareAction,
   shareSource,
@@ -96,9 +96,7 @@ function PositionShare({
     }
     return userAffiliateCode;
   }, [createdReferralCode, userAffiliateCode]);
-  const shareSourceWithFallback: SharePositionActionSource = shareSource ?? "unknown";
-  const hasExistingReferralCode = Boolean(userAffiliateCode?.code);
-  const hasCurrentReferralCode = Boolean(shareAffiliateCode?.code);
+  const hasReferralCode = Boolean(shareAffiliateCode?.code);
 
   const [promptedToCreateReferralCode, setPromptedToCreateReferralCode] = useState(false);
 
@@ -151,11 +149,11 @@ function PositionShare({
         data: {
           action: "PromptShown",
           source: "auto-prompt",
-          hasReferralCode: hasExistingReferralCode,
+          hasReferralCode: hasReferralCode,
         },
       });
     }
-  }, [hasExistingReferralCode, isPositionShareModalOpen, prevIsOpen, shareSource]);
+  }, [hasReferralCode, isPositionShareModalOpen, prevIsOpen, shareSource]);
 
   useEffect(() => {
     if (userAffiliateCode.code) {
@@ -170,18 +168,18 @@ function PositionShare({
   }, [prevIsOpen, isPositionShareModalOpen]);
 
   useEffect(() => {
-    if (prevIsOpen && !isPositionShareModalOpen && shareSourceWithFallback === "auto-prompt") {
+    if (prevIsOpen && !isPositionShareModalOpen && shareSource === "auto-prompt") {
       userAnalytics.pushEvent<SharePositionActionEvent>({
         event: "SharePositionAction",
         data: {
           action: "PromptClose",
-          source: shareSourceWithFallback,
-          hasReferralCode: hasCurrentReferralCode,
+          source: shareSource,
+          hasReferralCode: hasReferralCode,
           doNotShowAgain,
         },
       });
     }
-  }, [prevIsOpen, isPositionShareModalOpen, hasCurrentReferralCode, shareSourceWithFallback, doNotShowAgain]);
+  }, [prevIsOpen, isPositionShareModalOpen, hasReferralCode, shareSource, doNotShowAgain]);
 
   useEffect(() => {
     (async function () {
@@ -213,12 +211,12 @@ function PositionShare({
         event: "SharePositionAction",
         data: {
           action: "ReferralCodeCreated",
-          source: shareSourceWithFallback,
+          source: shareSource,
           hasReferralCode: true,
         },
       });
     },
-    [shareSourceWithFallback]
+    [shareSource]
   );
   async function handleDownload() {
     const element = cardRef.current;
@@ -228,8 +226,8 @@ function PositionShare({
       event: "SharePositionAction",
       data: {
         action: "Download",
-        source: shareSourceWithFallback,
-        hasReferralCode: hasCurrentReferralCode,
+        source: shareSource,
+        hasReferralCode: hasReferralCode,
       },
     });
 
@@ -247,8 +245,8 @@ function PositionShare({
       event: "SharePositionAction",
       data: {
         action: "Copy",
-        source: shareSourceWithFallback,
-        hasReferralCode: hasCurrentReferralCode,
+        source: shareSource,
+        hasReferralCode: hasReferralCode,
       },
     });
 
@@ -264,13 +262,13 @@ function PositionShare({
         event: "SharePositionAction",
         data: {
           action: "ShareTwitter",
-          source: shareSourceWithFallback,
-          hasReferralCode: hasCurrentReferralCode,
+          source: shareSource,
+          hasReferralCode: hasReferralCode,
         },
       },
       { instantSend: true }
     );
-  }, [hasCurrentReferralCode, onShareAction, shareSourceWithFallback]);
+  }, [hasReferralCode, onShareAction, shareSource]);
 
   const handleDoNotShowAgainToggle = useCallback(
     (value: boolean) => {
@@ -285,7 +283,7 @@ function PositionShare({
   };
 
   const shouldPromptToCreateReferralCode =
-    !hasCurrentReferralCode && !promptedToCreateReferralCode && !isCreateReferralCodeInfoMessageClosed;
+    !hasReferralCode && !promptedToCreateReferralCode && !isCreateReferralCodeInfoMessageClosed;
 
   return (
     <ModalWithPortal

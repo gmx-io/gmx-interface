@@ -266,7 +266,7 @@ export type SharePositionClickEvent = {
   };
 };
 
-export type SharePositionActionSource = "auto-prompt" | "positions-list" | "trade-history-list" | "unknown";
+export type SharePositionActionSource = "auto-prompt" | "positions-list" | "trade-history-list";
 
 export type SharePositionActionEvent = {
   event: "SharePositionAction";
