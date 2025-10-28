@@ -55,7 +55,7 @@ export function ChainIcons() {
     <div className="grid grid-cols-[repeat(12,56px)] gap-12 md:grid-cols-[repeat(12,64px)] lg:grid-cols-[repeat(6,64px)]">
       {icons.map((Icon, index) => (
         <div key={index} className="flex size-64 rounded-12 bg-slate-800/50">
-          <Icon className="m-auto" width={28} height={28} />
+          <Icon className="m-auto size-28" />
         </div>
       ))}
     </div>
