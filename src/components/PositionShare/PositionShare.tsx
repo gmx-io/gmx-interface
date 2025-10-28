@@ -316,8 +316,14 @@ function PositionShare({
         {shouldShowCreateReferralCard && <CreateReferralCode onSuccess={handleReferralCodeSuccess} />}
         {uploadedImageError && <AlertInfoCard type="error">{uploadedImageError}</AlertInfoCard>}
       </div>
-      {promptedToCreateReferralCode && !isCreateReferralCodeInfoMessageClosed && (
-        <div className="p-20 pb-0">
+      <div className="flex flex-col gap-12 p-20 pb-0">
+        <ToggleSwitch isChecked={showPnlAmounts} setIsChecked={setShowPnlAmounts}>
+          <span className="text-14 font-medium text-typography-secondary">
+            <Trans>Show PnL Amounts</Trans>
+          </span>
+        </ToggleSwitch>
+
+        {promptedToCreateReferralCode && !isCreateReferralCodeInfoMessageClosed && (
           <ColorfulBanner color="blue" icon={AlertIcon} onClose={() => setIsCreateReferralCodeInfoMessageClosed(true)}>
             <span className="font-medium text-blue-300">
               <Trans>Are you sure you want to skip creating a referral code?</Trans>
@@ -326,16 +332,9 @@ function PositionShare({
               <Trans>It allows you to earn rewards.</Trans>
             </span>
           </ColorfulBanner>
-        </div>
-      )}
-      <div className="flex flex-col gap-16 p-20">
-        <div className="flex flex-col gap-12">
-          <ToggleSwitch isChecked={showPnlAmounts} setIsChecked={setShowPnlAmounts}>
-            <span className="text-14 font-medium text-typography-secondary">
-              <Trans>Show PnL Amounts</Trans>
-            </span>
-          </ToggleSwitch>
-        </div>
+        )}
+      </div>
+      <div className="flex flex-col gap-16 p-20 pt-12">
         <div className="flex gap-12">
           <Button
             variant="secondary"
