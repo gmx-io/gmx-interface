@@ -100,8 +100,6 @@ function PositionShare({
   const hasExistingReferralCode = Boolean(userAffiliateCode?.code);
   const hasCurrentReferralCode = Boolean(shareAffiliateCode?.code);
 
-  const [doNotShowAgainSetInCurrentModal, setDoNotShowAgainSetInCurrentModal] = useState(false);
-
   const [promptedToCreateReferralCode, setPromptedToCreateReferralCode] = useState(false);
 
   const tweetLink = getTwitterIntentURL(
@@ -172,24 +170,18 @@ function PositionShare({
   }, [prevIsOpen, isPositionShareModalOpen]);
 
   useEffect(() => {
-    if (prevIsOpen && !isPositionShareModalOpen && doNotShowAgain && doNotShowAgainSetInCurrentModal) {
+    if (prevIsOpen && !isPositionShareModalOpen && shareSourceWithFallback === "auto-prompt") {
       userAnalytics.pushEvent<SharePositionActionEvent>({
         event: "SharePositionAction",
         data: {
-          action: "PromptDontShowAgain",
+          action: "PromptClose",
           source: shareSourceWithFallback,
           hasReferralCode: hasCurrentReferralCode,
+          doNotShowAgain,
         },
       });
     }
-  }, [
-    prevIsOpen,
-    isPositionShareModalOpen,
-    doNotShowAgain,
-    hasCurrentReferralCode,
-    shareSourceWithFallback,
-    doNotShowAgainSetInCurrentModal,
-  ]);
+  }, [prevIsOpen, isPositionShareModalOpen, hasCurrentReferralCode, shareSourceWithFallback, doNotShowAgain]);
 
   useEffect(() => {
     (async function () {
@@ -283,7 +275,6 @@ function PositionShare({
   const handleDoNotShowAgainToggle = useCallback(
     (value: boolean) => {
       onDoNotShowAgainChange?.(value);
-      setDoNotShowAgainSetInCurrentModal(true);
     },
     [onDoNotShowAgainChange]
   );

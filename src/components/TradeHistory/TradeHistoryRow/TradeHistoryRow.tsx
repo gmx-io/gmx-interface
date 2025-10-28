@@ -17,6 +17,8 @@ import {
   TradeActionType,
 } from "domain/synthetics/tradeHistory";
 import { EMPTY_ARRAY } from "lib/objects";
+import { userAnalytics } from "lib/userAnalytics";
+import { SharePositionClickEvent } from "lib/userAnalytics/types";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import Button from "components/Button/Button";
@@ -188,6 +190,15 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
   );
 
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const handleShareClick = useCallback(() => {
+    userAnalytics.pushEvent<SharePositionClickEvent>({
+      event: "SharePositionAction",
+      data: {
+        action: "SharePositionClick",
+      },
+    });
+    setIsShareModalOpen(true);
+  }, [setIsShareModalOpen]);
 
   return (
     <>
@@ -303,12 +314,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
         </TableTd>
         <TableTd>
           {isDecreaseOrderType(tradeAction.orderType) && tradeAction.eventName === TradeActionType.OrderExecuted ? (
-            <Button
-              variant="ghost"
-              onClick={() => {
-                setIsShareModalOpen(true);
-              }}
-            >
+            <Button variant="ghost" onClick={handleShareClick}>
               <NewLinkIconThin className="size-16" />
               <Trans>Share</Trans>
             </Button>

@@ -271,9 +271,10 @@ export type SharePositionActionSource = "auto-prompt" | "positions-list" | "trad
 export type SharePositionActionEvent = {
   event: "SharePositionAction";
   data: {
-    action: "Copy" | "Download" | "ShareTwitter" | "PromptShown" | "PromptDontShowAgain" | "ReferralCodeCreated";
+    action: "Copy" | "Download" | "ShareTwitter" | "PromptShown" | "PromptClose" | "ReferralCodeCreated";
     source?: SharePositionActionSource;
     hasReferralCode?: boolean;
+    doNotShowAgain?: boolean;
   };
 };
 
