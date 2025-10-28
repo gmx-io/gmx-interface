@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
-import { usePoolsDetailsFirstTokenAddress } from "context/PoolsDetailsContext/PoolsDetailsContext";
+import { usePoolsDetailsFirstTokenAddress } from "context/PoolsDetailsContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData, useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {

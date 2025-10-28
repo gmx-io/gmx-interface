@@ -1,18 +1,16 @@
 // import { getPublicClient } from "@wagmi/core";
-import { maxUint256, zeroAddress, zeroHash } from "viem";
+import { zeroAddress } from "viem";
 
 import { SettlementChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
-import { getMappedTokenId, OVERRIDE_ERC20_BYTECODE, RANDOM_SLOT, RANDOM_WALLET } from "config/multichain";
+import { getMappedTokenId, RANDOM_WALLET } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
-import { MessagingFee, SendParam } from "domain/multichain/types";
-import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
+import { SendParam } from "domain/multichain/types";
 import { adjustForDecimals } from "lib/numbers";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
-import { abis } from "sdk/abis";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { MARKETS } from "sdk/configs/markets";
 import { convertTokenAddress, getToken, getWrappedToken } from "sdk/configs/tokens";
@@ -26,6 +24,7 @@ import { signCreateDeposit } from "../signCreateDeposit";
 import { CreateDepositParams, RawCreateDepositParams } from "../types";
 import { estimateDepositPlatformTokenTransferOutFees } from "./estimateDepositPlatformTokenTransferOutFees";
 import { estimatePureDepositGasLimit } from "./estimatePureDepositGasLimit";
+import { stargateTransferFees } from "./stargateTransferFees";
 
 export type SourceChainDepositFees = {
   /**
@@ -156,7 +155,6 @@ async function estimateSourceChainDepositInitialTxFees({
   initialTransferComposeGas: bigint;
   relayParamsPayload: RelayParamsPayload;
 }> {
-  const sourceChainClient = getPublicClientWithRpc(srcChainId);
   const settlementNativeWrappedTokenData = globalExpressParams.tokensData[getWrappedToken(chainId).address];
   const unwrappedPayTokenAddress = convertTokenAddress(chainId, tokenAddress, "native");
   const wrappedPayTokenAddress = convertTokenAddress(chainId, tokenAddress, "wrapped");
@@ -274,50 +272,20 @@ async function estimateSourceChainDepositInitialTxFees({
     action,
   });
 
-  const initialQuoteOft = await sourceChainClient.readContract({
-    address: sourceChainTokenId.stargate,
-    abi: abis.IStargate,
-    functionName: "quoteOFT",
-    args: [sendParams],
+  const additionalValue = unwrappedPayTokenAddress === zeroAddress ? amountLD : 0n;
+
+  const {
+    quoteSend: initialQuoteSend,
+    quoteOft: initialQuoteOft,
+    returnTransferGasLimit: initialStargateTxnGasLimit,
+  } = await stargateTransferFees({
+    chainId: srcChainId,
+    stargateAddress: sourceChainTokenId.stargate,
+    sendParams,
+    tokenAddress: sourceChainTokenId.address,
+    useSendToken: true,
+    additionalValue,
   });
-
-  const initialQuoteSend = await sourceChainClient.readContract({
-    address: sourceChainTokenId.stargate,
-    abi: abis.IStargate,
-    functionName: "quoteSend",
-    args: [sendParams, false],
-  });
-
-  let value = initialQuoteSend.nativeFee;
-  if (unwrappedPayTokenAddress === zeroAddress) {
-    value += amountLD;
-  }
-
-  const initialStargateTxnGasLimit = await sourceChainClient
-    .estimateContractGas({
-      address: sourceChainTokenId.stargate,
-      abi: abis.IStargate,
-      functionName: "sendToken",
-      args: [sendParams, initialQuoteSend, RANDOM_WALLET.address],
-      value,
-      stateOverride: [
-        {
-          address: RANDOM_WALLET.address,
-          balance: maxUint256,
-        },
-        {
-          address: sourceChainTokenId.address,
-          code: OVERRIDE_ERC20_BYTECODE,
-          state: [
-            {
-              slot: RANDOM_SLOT,
-              value: zeroHash,
-            },
-          ],
-        },
-      ],
-    })
-    .then(applyGasLimitBuffer);
 
   return {
     initialTxNativeFee: initialQuoteSend.nativeFee,
@@ -325,12 +293,5 @@ async function estimateSourceChainDepositInitialTxFees({
     initialTxReceivedAmount: initialQuoteOft[2].amountReceivedLD,
     initialTransferComposeGas: initialComposeGas,
     relayParamsPayload: returnRelayParamsPayload,
-  };
-}
-
-export function sendQuoteFromNative(nativeFee: bigint): MessagingFee {
-  return {
-    nativeFee,
-    lzTokenFee: 0n,
   };
 }

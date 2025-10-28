@@ -9,7 +9,7 @@ import {
   selectPoolsDetailsMarketInfo,
   selectPoolsDetailsMarketTokenData,
   selectPoolsDetailsShortTokenAddress,
-} from "context/PoolsDetailsContext/PoolsDetailsContext";
+} from "context/PoolsDetailsContext/selectors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";

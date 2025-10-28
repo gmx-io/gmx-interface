@@ -5,6 +5,7 @@ import { SettlementChainId, SourceChainId } from "config/chains";
 import { getMappedTokenId, IStargateAbi } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { SendParam, TransferRequests } from "domain/multichain/types";
 import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
 import { CreateDepositParams, RawCreateDepositParams } from "domain/synthetics/markets";
@@ -13,11 +14,7 @@ import { WalletSigner } from "lib/wallets";
 
 import { toastCustomOrStargateError } from "components/GmxAccountModal/toastCustomOrStargateError";
 
-import {
-  estimateSourceChainDepositFees,
-  sendQuoteFromNative,
-  SourceChainDepositFees,
-} from "./feeEstimation/estimateSourceChainDepositFees";
+import { estimateSourceChainDepositFees, SourceChainDepositFees } from "./feeEstimation/estimateSourceChainDepositFees";
 import { signCreateDeposit } from "./signCreateDeposit";
 
 export async function createSourceChainDepositTxn({

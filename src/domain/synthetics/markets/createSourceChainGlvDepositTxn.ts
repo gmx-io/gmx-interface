@@ -5,6 +5,7 @@ import type { SettlementChainId, SourceChainId } from "config/chains";
 import { getMappedTokenId, IStargateAbi } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { SendParam, TransferRequests } from "domain/multichain/types";
 import { GlobalExpressParams } from "domain/synthetics/express";
 import type { CreateGlvDepositParams, RawCreateGlvDepositParams } from "domain/synthetics/markets";
@@ -13,7 +14,6 @@ import type { WalletSigner } from "lib/wallets";
 
 import { toastCustomOrStargateError } from "components/GmxAccountModal/toastCustomOrStargateError";
 
-import { sendQuoteFromNative } from "./feeEstimation/estimateSourceChainDepositFees";
 import {
   estimateSourceChainGlvDepositFees,
   SourceChainGlvDepositFees,

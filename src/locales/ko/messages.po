@@ -2605,6 +2605,8 @@ msgstr "이 스왑은 가능한 최저 수수료와 가격 영향을 위해 여�
 
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
+#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "{0}"
 msgstr "{0}"
 

@@ -3,12 +3,11 @@ import { TransferRequests } from "domain/multichain/types";
 import type { CreateGlvWithdrawalParams, CreateWithdrawalParams } from "domain/synthetics/markets";
 import { buildAndSignMultichainGlvWithdrawalTxn } from "domain/synthetics/markets/createMultichainGlvWithdrawalTxn";
 import { buildAndSignMultichainWithdrawalTxn } from "domain/synthetics/markets/createMultichainWithdrawalTxn";
+import type { GmPaySource } from "domain/synthetics/markets/types";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
-
-import type { GmPaySource } from "../types";
 
 export function useMultichainWithdrawalExpressTxnParams({
   transferRequests,

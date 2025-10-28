@@ -11,7 +11,7 @@ import {
   selectPoolsDetailsPaySource,
   selectPoolsDetailsSelectedMarketForGlv,
   selectPoolsDetailsShortTokenAddress,
-} from "context/PoolsDetailsContext/PoolsDetailsContext";
+} from "context/PoolsDetailsContext/selectors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   selectBlockTimestampData,

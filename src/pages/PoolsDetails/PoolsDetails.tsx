@@ -6,7 +6,7 @@ import {
   usePoolsDetailsMode,
   usePoolsDetailsOperation,
   usePoolsDetailsSelectedMarketForGlv,
-} from "context/PoolsDetailsContext/PoolsDetailsContext";
+} from "context/PoolsDetailsContext/hooks";
 import {
   selectDepositMarketTokensData,
   selectGlvAndMarketsInfoData,

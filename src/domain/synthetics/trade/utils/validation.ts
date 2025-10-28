@@ -16,6 +16,7 @@ import {
   getOpenInterestUsd,
   getSellableMarketToken,
 } from "domain/synthetics/markets";
+import type { GmPaySource } from "domain/synthetics/markets/types";
 import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
 import { TokenData, TokensData, TokensRatio, getIsEquivalentTokens } from "domain/synthetics/tokens";
 import { DUST_USD, isAddressZero } from "lib/legacy";
@@ -32,8 +33,6 @@ import {
   TriggerThresholdType,
 } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
-
-import type { GmPaySource } from "components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
 
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
 

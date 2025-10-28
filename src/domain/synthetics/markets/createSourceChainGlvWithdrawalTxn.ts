@@ -5,6 +5,7 @@ import { SettlementChainId, SourceChainId } from "config/chains";
 import { getMappedTokenId } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { SendParam, TransferRequests } from "domain/multichain/types";
 import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
 import { CreateGlvWithdrawalParams, RawCreateGlvWithdrawalParams } from "domain/synthetics/markets";
@@ -15,7 +16,6 @@ import { abis } from "sdk/abis";
 
 import { toastCustomOrStargateError } from "components/GmxAccountModal/toastCustomOrStargateError";
 
-import { sendQuoteFromNative } from "./feeEstimation/estimateSourceChainDepositFees";
 import {
   estimateSourceChainGlvWithdrawalFees,
   SourceChainGlvWithdrawalFees,

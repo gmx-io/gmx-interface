@@ -8,11 +8,6 @@ export type TokenInputState = {
 };
 
 /**
- * GM or GLV pay source
- */
-export type GmPaySource = "settlementChain" | "gmxAccount" | "sourceChain";
-
-/**
  * Focused input types for GM deposit/withdrawal box
  */
 export type FocusedInput = "market" | "longCollateral" | "shortCollateral";

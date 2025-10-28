@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 
@@ -7,6 +7,7 @@ import { getChainIcon } from "config/icons";
 import { MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
+import { GmPaySource } from "domain/synthetics/markets/types";
 import { convertToUsd } from "domain/tokens";
 import { formatAmount, formatBalanceAmount } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
@@ -14,11 +15,11 @@ import { USD_DECIMALS } from "sdk/configs/factors";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import { getMarketPoolName } from "sdk/utils/markets";
 
-import Button from "components/Button/Button";
-import { GmPaySource } from "components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
 import { SelectedPoolLabel } from "components/GmSwap/GmSwapBox/SelectedPool";
 import { SlideModal } from "components/Modal/SlideModal";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import Tabs from "components/Tabs/Tabs";
+import type { RegularOption } from "components/Tabs/types";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
@@ -54,15 +55,46 @@ export function MultichainMarketTokenSelector({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState<"all" | AnyChainId | 0>("all");
 
-  const NETWORKS_FILTER = useMemo(() => {
-    const wildCard = { id: "all" as const, name: t`All Networks` };
-    const gmxAccount = { id: 0 as const, name: t`GMX Account` };
-    const settlementChain = { id: chainId, name: getChainName(chainId) };
+  const NETWORKS_FILTER = useMemo<RegularOption<"all" | AnyChainId | 0>[]>(() => {
+    const wildCard: RegularOption<"all"> = {
+      value: "all",
+      label: (
+        <span className="whitespace-nowrap">
+          <Trans>All Networks</Trans>
+        </span>
+      ),
+    };
+    const gmxAccount: RegularOption<0> = {
+      value: 0,
+      label: (
+        <span className="whitespace-nowrap">
+          <Trans>GMX Account</Trans>
+        </span>
+      ),
+      icon: <img src={getChainIcon(0)} alt="GMX Account" className="size-24 shrink-0" />,
+    };
+    const settlementChain: RegularOption<ContractsChainId> = {
+      value: chainId,
+      label: (
+        <span className="whitespace-nowrap">
+          <Trans>{getChainName(chainId)}</Trans>
+        </span>
+      ),
+      icon: <img src={getChainIcon(chainId)} alt={getChainName(chainId)} className="size-24 shrink-0" />,
+    };
 
-    const chainFilters = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId] ?? EMPTY_OBJECT).map((sourceChainId) => ({
-      id: parseInt(sourceChainId) as AnyChainId | 0,
-      name: getChainName(parseInt(sourceChainId)),
-    }));
+    const chainFilters = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId] ?? EMPTY_OBJECT).map((sourceChainId) => {
+      const chainIdNum = parseInt(sourceChainId) as AnyChainId | 0;
+      return {
+        value: chainIdNum,
+        label: (
+          <span className="whitespace-nowrap">
+            <Trans>{getChainName(chainIdNum)}</Trans>
+          </span>
+        ),
+        icon: <img src={getChainIcon(chainIdNum)} alt={getChainName(chainIdNum)} className="size-24 shrink-0" />,
+      };
+    });
 
     return [wildCard, settlementChain, gmxAccount, ...chainFilters];
   }, [chainId]);
@@ -72,55 +104,11 @@ export function MultichainMarketTokenSelector({
     propsOnSelectTokenAddress(tokenChainId);
   };
 
-  // useEffect(() => {
-  //   if (isModalVisible) {
-  //     setSearchKeyword("");
-  //   }
-  // }, [isModalVisible]);
-
-  // TODO implement
-  // const _handleKeyDown = (e) => {
-  //   if (e.key === "Enter") {
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     if (filteredTokens.length > 0) {
-  //       onSelectToken(filteredTokens[0]);
-  //     }
-  //   }
-  // };
-
-  // const isGmxAccountEmpty = useMemo(() => {
-  //   if (!tokensData) return true;
-
-  //   const allEmpty = Object.values(tokensData).every(
-  //     (token) => token.gmxAccountBalance === undefined || token.gmxAccountBalance === 0n
-  //   );
-
-  //   return allEmpty;
-  // }, [tokensData]);
-
-  // useEffect(() => {
-  //   if (isModalVisible) {
-  //     setSearchKeyword("");
-
-  //     if (srcChainId === undefined) {
-  //       setActiveFilter("pay");
-  //     } else {
-  //       if (isGmxAccountEmpty) {
-  //         setActiveFilter("deposit");
-  //       } else {
-  //         setActiveFilter("pay");
-  //       }
-  //     }
-  //   }
-  // }, [isGmxAccountEmpty, isModalVisible, setSearchKeyword, srcChainId]);
-
-  // if (!token) {
-  //   return null;
-  // }
-
   return (
-    <div className={cx("TokenSelector", "text-h2 -mr-5", className)} onClick={(event) => event.stopPropagation()}>
+    <div
+      className={cx("TokenSelector text-20 leading-1 tracking-wide", className)}
+      onClick={(event) => event.stopPropagation()}
+    >
       <SlideModal
         qa={"market-token-selector-modal"}
         className="TokenSelector-modal text-body-medium text-white"
@@ -130,25 +118,14 @@ export function MultichainMarketTokenSelector({
         headerContent={
           <div className="mt-16">
             <ButtonRowScrollFadeContainer>
-              <div className="flex gap-4">
-                {NETWORKS_FILTER.map((network) => (
-                  <Button
-                    key={network.id}
-                    type="button"
-                    variant="secondary"
-                    size="small"
-                    className={cx(
-                      "whitespace-nowrap",
-                      activeFilter === network.id ? "!bg-cold-blue-500" : "!text-slate-100"
-                    )}
-                    onClick={() => setActiveFilter(network.id)}
-                    imgSrc={network.id !== "all" ? getChainIcon(network.id) : undefined}
-                    imgClassName="size-16 !mr-4"
-                  >
-                    {network.name}
-                  </Button>
-                ))}
-              </div>
+              <Tabs
+                options={NETWORKS_FILTER}
+                selectedValue={activeFilter}
+                onChange={(value) => setActiveFilter(value)}
+                type="inline"
+                qa="network-filter"
+                regularOptionClassname="shrink-0"
+              />
             </ButtonRowScrollFadeContainer>
           </div>
         }
@@ -166,7 +143,7 @@ export function MultichainMarketTokenSelector({
       </SlideModal>
       <div
         data-qa={"market-token-selector"}
-        className="flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
+        className="group/hoverable flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
         onClick={() => setIsModalVisible(true)}
       >
         {marketInfo && (
@@ -182,7 +159,7 @@ export function MultichainMarketTokenSelector({
           </span>
         )}
 
-        <ChevronDownIcon className="text-body-large" />
+        <ChevronDownIcon className="text-body-large size-16 text-typography-secondary group-hover/hoverable:text-blue-300" />
       </div>
     </div>
   );
@@ -225,79 +202,6 @@ function AvailableToTradeTokenList({
 
   const sortedFilteredTokens = useMemo((): DisplayToken[] => {
     if (!marketInfo) return EMPTY_ARRAY;
-    // const concatenatedTokens: DisplayToken[] = [];
-
-    // if (includeMultichainTokensInPay && multichainTokens) {
-    //   for (const token of multichainTokens) {
-    //     if (token.sourceChainBalance === undefined) {
-    //       continue;
-    //     }
-
-    //     const balanceUsd =
-    //       convertToUsd(token.sourceChainBalance, token.sourceChainDecimals, token.sourceChainPrices?.maxPrice) ?? 0n;
-    //     concatenatedTokens.push({
-    //       ...token,
-    //       balance: token.sourceChainBalance,
-    //       balanceUsd,
-    //       chainId: token.sourceChainId,
-    //     });
-    //   }
-    // }
-
-    // let filteredTokens: DisplayToken[];
-    // if (!searchKeyword.trim()) {
-    //   filteredTokens = concatenatedTokens;
-    // } else {
-    //   filteredTokens = searchBy(
-    //     concatenatedTokens,
-    //     [
-    //       (item) => {
-    //         let name = item.name;
-
-    //         return stripBlacklistedWords(name);
-    //       },
-    //       "symbol",
-    //     ],
-    //     searchKeyword
-    //   );
-    // }
-
-    // const tokensWithBalance: DisplayToken[] = [];
-    // const tokensWithoutBalance: DisplayToken[] = [];
-
-    // for (const token of filteredTokens) {
-    //   const balance = token.balance;
-
-    //   if (balance !== undefined && balance > 0n) {
-    //     tokensWithBalance.push(token);
-    //   } else {
-    //     tokensWithoutBalance.push(token);
-    //   }
-    // }
-
-    // const sortedTokensWithBalance: DisplayToken[] = tokensWithBalance.sort((a, b) => {
-    //   if (a.balanceUsd === b.balanceUsd) {
-    //     return 0;
-    //   }
-    //   return b.balanceUsd - a.balanceUsd > 0n ? 1 : -1;
-    // });
-
-    // const sortedTokensWithoutBalance: DisplayToken[] = tokensWithoutBalance.sort((a, b) => {
-    //   if (extendedSortSequence) {
-    //     // making sure to use the wrapped address if it exists in the extended sort sequence
-    //     const aAddress =
-    //       a.wrappedAddress && extendedSortSequence.includes(a.wrappedAddress) ? a.wrappedAddress : a.address;
-
-    //     const bAddress =
-    //       b.wrappedAddress && extendedSortSequence.includes(b.wrappedAddress) ? b.wrappedAddress : b.address;
-
-    //     return extendedSortSequence.indexOf(aAddress) - extendedSortSequence.indexOf(bAddress);
-    //   }
-
-    //   return 0;
-    // });
-
-    // return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
     return Object.entries(tokenBalancesData)
       .filter(([chainId]) => {
         if (activeFilter === "all") {

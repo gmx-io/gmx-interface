@@ -1,12 +1,11 @@
 import { SettlementChainId, SourceChainId } from "config/chains";
-import { getMappedTokenId, RANDOM_WALLET } from "config/multichain";
+import { RANDOM_WALLET } from "config/multichain";
+import { getMappedTokenId } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
-import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
-import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
@@ -18,6 +17,7 @@ import { getRawRelayerParams } from "../../express";
 import { GlobalExpressParams, RawRelayParamsPayload, RelayParamsPayload } from "../../express/types";
 import { signCreateWithdrawal } from "../signCreateWithdrawal";
 import { CreateGlvWithdrawalParams } from "../types";
+import { stargateTransferFees } from "./stargateTransferFees";
 
 export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
   chainId,
@@ -143,37 +143,24 @@ export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
     composeGas,
   });
 
-  const sourceChainClient = getPublicClientWithRpc(srcChainId);
-  const sourceChainTokenId = getMappedTokenId(chainId, params.addresses.market, srcChainId);
-  if (!sourceChainTokenId) {
-    throw new Error("Source chain token ID not found");
+  const tokenId = getMappedTokenId(chainId, params.addresses.market, srcChainId);
+
+  if (!tokenId) {
+    throw new Error("Token ID not found");
   }
 
-  const platformTokenTransferInQuoteSend = await sourceChainClient.readContract({
-    address: sourceChainTokenId.stargate,
-    abi: abis.IStargate,
-    functionName: "quoteSend",
-    args: [returnTransferSendParams, false],
-  });
-
-  const platformTokenTransferInNativeFee = platformTokenTransferInQuoteSend.nativeFee;
-
-  // The txn of stargate itself what will it take
-  const platformTokenTransferInGasLimit = await sourceChainClient
-    .estimateContractGas({
-      address: sourceChainTokenId.stargate,
-      abi: abis.IStargate,
-      functionName: "send",
-      account: params.addresses.receiver,
-      args: [returnTransferSendParams, platformTokenTransferInQuoteSend, params.addresses.receiver],
-      value: platformTokenTransferInQuoteSend.nativeFee,
-      // No need to override state because we are using the users account on source chain
-    })
-    .then(applyGasLimitBuffer);
+  const { quoteSend: platformTokenTransferInQuoteSend, returnTransferGasLimit: platformTokenTransferInGasLimit } =
+    await stargateTransferFees({
+      chainId: srcChainId,
+      stargateAddress: tokenId.stargate,
+      sendParams: returnTransferSendParams,
+      tokenAddress: params.addresses.market,
+      disableOverrides: true,
+    });
 
   return {
-    platformTokenTransferInGasLimit: platformTokenTransferInGasLimit,
-    platformTokenTransferInNativeFee: platformTokenTransferInNativeFee,
+    platformTokenTransferInGasLimit,
+    platformTokenTransferInNativeFee: platformTokenTransferInQuoteSend.nativeFee,
     platformTokenTransferInComposeGas: composeGas,
     relayParamsPayload: returnRelayParamsPayload,
   };

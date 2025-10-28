@@ -83,6 +83,7 @@ export function getWithdrawalAmounts(p: {
     values.longTokenUsd = bigMath.mulDiv(values.marketTokenUsd, longPoolUsd, totalPoolUsd);
     values.shortTokenUsd = bigMath.mulDiv(values.marketTokenUsd, shortPoolUsd, totalPoolUsd);
 
+    // TODO MLTCH: add atomic swap fees
     const longSwapFeeUsd = p.forShift
       ? 0n
       : applyFactor(values.longTokenUsd, p.marketInfo.swapFeeFactorForBalanceWasNotImproved);
@@ -138,32 +139,50 @@ export function getWithdrawalAmounts(p: {
       )!;
     }
   } else {
-    if (strategy === "byLongCollateral" && longPoolUsd > 0) {
-      values.longTokenAmount = longTokenAmount;
-      values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
-      values.shortTokenUsd = bigMath.mulDiv(values.longTokenUsd, shortPoolUsd, longPoolUsd);
-      values.shortTokenAmount = convertToTokenAmount(
-        values.shortTokenUsd,
-        shortToken.decimals,
-        shortToken.prices.maxPrice
-      )!;
-    } else if (strategy === "byShortCollateral" && shortPoolUsd > 0) {
-      values.shortTokenAmount = shortTokenAmount;
-      values.shortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
-      values.longTokenUsd = bigMath.mulDiv(values.shortTokenUsd, longPoolUsd, shortPoolUsd);
-      values.longTokenAmount = convertToTokenAmount(
-        values.longTokenUsd,
-        longToken.decimals,
-        longToken.prices.maxPrice
-      )!;
-    } else if (strategy === "byCollaterals") {
-      values.longTokenAmount = longTokenAmount;
-      values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
-      values.shortTokenAmount = shortTokenAmount;
-      values.shortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
+    if (wrappedReceiveTokenAddress) {
+      if (strategy === "byLongCollateral" && longPoolUsd > 0 && wrappedReceiveTokenAddress === longToken.address) {
+        values.longTokenAmount = longTokenAmount;
+        values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
+        values.shortTokenUsd = 0n;
+        values.shortTokenAmount = 0n;
+      } else if (
+        strategy === "byShortCollateral" &&
+        shortPoolUsd > 0 &&
+        wrappedReceiveTokenAddress === shortToken.address
+      ) {
+        values.shortTokenAmount = shortTokenAmount;
+        values.shortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
+        values.longTokenUsd = 0n;
+        values.longTokenAmount = 0n;
+      }
+    } else {
+      if (strategy === "byLongCollateral" && longPoolUsd > 0) {
+        values.longTokenAmount = longTokenAmount;
+        values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
+        values.shortTokenUsd = bigMath.mulDiv(values.longTokenUsd, shortPoolUsd, longPoolUsd);
+        values.shortTokenAmount = convertToTokenAmount(
+          values.shortTokenUsd,
+          shortToken.decimals,
+          shortToken.prices.maxPrice
+        )!;
+      } else if (strategy === "byShortCollateral" && shortPoolUsd > 0) {
+        values.shortTokenAmount = shortTokenAmount;
+        values.shortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
+        values.longTokenUsd = bigMath.mulDiv(values.shortTokenUsd, longPoolUsd, shortPoolUsd);
+        values.longTokenAmount = convertToTokenAmount(
+          values.longTokenUsd,
+          longToken.decimals,
+          longToken.prices.maxPrice
+        )!;
+      } else if (strategy === "byCollaterals") {
+        values.longTokenAmount = longTokenAmount;
+        values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
+        values.shortTokenAmount = shortTokenAmount;
+        values.shortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
 
-      values.uiFeeUsd = applyFactor(values.longTokenUsd + values.shortTokenUsd, uiFeeFactor);
-      values.marketTokenUsd += values.uiFeeUsd;
+        values.uiFeeUsd = applyFactor(values.longTokenUsd + values.shortTokenUsd, uiFeeFactor);
+        values.marketTokenUsd += values.uiFeeUsd;
+      }
     }
 
     values.marketTokenUsd = values.marketTokenUsd + values.longTokenUsd + values.shortTokenUsd;

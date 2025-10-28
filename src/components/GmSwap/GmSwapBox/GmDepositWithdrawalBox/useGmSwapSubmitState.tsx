@@ -14,7 +14,7 @@ import {
   selectPoolsDetailsPaySource,
   selectPoolsDetailsSelectedMarketForGlv,
   selectPoolsDetailsShortTokenAddress,
-} from "context/PoolsDetailsContext/PoolsDetailsContext";
+} from "context/PoolsDetailsContext/selectors";
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import type { ExecutionFee } from "domain/synthetics/fees";

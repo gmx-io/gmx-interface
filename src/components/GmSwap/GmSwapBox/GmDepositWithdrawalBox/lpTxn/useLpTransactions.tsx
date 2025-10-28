@@ -6,12 +6,12 @@ import type { SourceChainDepositFees } from "domain/synthetics/markets/feeEstima
 import type { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
 import { SourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
 import { SourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
+import type { GmPaySource } from "domain/synthetics/markets/types";
 import type { TokensData } from "domain/synthetics/tokens";
 
-import { Operation } from "../../types";
-import type { GmPaySource } from "../types";
 import { useDepositTransactions } from "./useDepositTransactions";
 import { useWithdrawalTransactions } from "./useWithdrawalTransactions";
+import { Operation } from "../../types";
 
 export interface UseLpTransactionProps {
   operation: Operation;

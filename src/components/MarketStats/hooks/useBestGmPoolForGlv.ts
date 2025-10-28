@@ -12,7 +12,7 @@ import {
   selectPoolsDetailsSelectedMarketForGlv,
   selectPoolsDetailsShortTokenAddress,
   selectPoolsDetailsShortTokenAmount,
-} from "context/PoolsDetailsContext/PoolsDetailsContext";
+} from "context/PoolsDetailsContext/selectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getAvailableUsdLiquidityForCollateral } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";

@@ -4,6 +4,7 @@ import { MultichainAction, MultichainActionType } from "domain/multichain/codecs
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
+import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
@@ -127,6 +128,10 @@ export async function estimateWithdrawalPlatformTokenTransferInFees({
     srcChainId,
     tokenAddress: params.addresses.market,
     settlementChainPublicClient: getPublicClientWithRpc(chainId),
+  }).catch(() => {
+    // eslint-disable-next-line no-console
+    console.warn("[multichain-lp] Failed to estimate compose gas on settlement chain");
+    return applyGasLimitBuffer(5889082n);
   });
 
   const returnTransferSendParams = getMultichainTransferSendParams({
@@ -147,12 +152,18 @@ export async function estimateWithdrawalPlatformTokenTransferInFees({
     throw new Error("Source chain token ID not found");
   }
 
-  const platformTokenTransferInQuoteSend = await sourceChainClient.readContract({
-    address: sourceChainTokenId.stargate,
-    abi: abis.IStargate,
-    functionName: "quoteSend",
-    args: [returnTransferSendParams, false],
-  });
+  const platformTokenTransferInQuoteSend = await sourceChainClient
+    .readContract({
+      address: sourceChainTokenId.stargate,
+      abi: abis.IStargate,
+      functionName: "quoteSend",
+      args: [returnTransferSendParams, false],
+    })
+    .catch(() => {
+      // eslint-disable-next-line no-console
+      console.warn("[multichain-lp] Failed to quote send on source chain");
+      return sendQuoteFromNative(366102683193600n);
+    });
 
   // No need to quote OFT because we are using our own contracts that do not apply any fees
 
@@ -169,6 +180,11 @@ export async function estimateWithdrawalPlatformTokenTransferInFees({
       value: platformTokenTransferInQuoteSend.nativeFee,
       // No need to override state because we are using the users account on source chain
       // where tokens already are an initial state
+    })
+    .catch(() => {
+      // eslint-disable-next-line no-console
+      console.warn("[multichain-lp] Failed to estimate contract gas on source chain");
+      return 525841n;
     })
     .then(applyGasLimitBuffer);
 

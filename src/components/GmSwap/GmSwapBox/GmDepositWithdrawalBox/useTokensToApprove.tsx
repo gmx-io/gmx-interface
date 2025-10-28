@@ -14,7 +14,7 @@ import {
   selectPoolsDetailsPaySource,
   selectPoolsDetailsSecondTokenAddress,
   selectPoolsDetailsSecondTokenAmount,
-} from "context/PoolsDetailsContext/PoolsDetailsContext";
+} from "context/PoolsDetailsContext/selectors";
 import { useMultichainApprovalsActiveListener } from "context/SyntheticsEvents/useMultichainEvents";
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";

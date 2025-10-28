@@ -8,7 +8,16 @@ import { useAccount } from "wagmi";
 
 import { SettlementChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
-import { getMappedTokenId, isSourceChain } from "config/multichain";
+import { isSourceChain } from "config/multichain";
+import {
+  usePoolsDetailsFirstTokenAddress,
+  usePoolsDetailsFirstTokenInputValue,
+  usePoolsDetailsFocusedInput,
+  usePoolsDetailsMarketOrGlvTokenInputValue,
+  usePoolsDetailsPaySource,
+  usePoolsDetailsSecondTokenAddress,
+  usePoolsDetailsSecondTokenInputValue,
+} from "context/PoolsDetailsContext/hooks";
 import {
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
@@ -28,14 +37,7 @@ import {
   selectPoolsDetailsSetIsMarketForGlvSelectedManually,
   selectPoolsDetailsShortTokenAddress,
   selectPoolsDetailsTradeTokensDataWithSourceChainBalances,
-  usePoolsDetailsFirstTokenAddress,
-  usePoolsDetailsFirstTokenInputValue,
-  usePoolsDetailsFocusedInput,
-  usePoolsDetailsMarketOrGlvTokenInputValue,
-  usePoolsDetailsPaySource,
-  usePoolsDetailsSecondTokenAddress,
-  usePoolsDetailsSecondTokenInputValue,
-} from "context/PoolsDetailsContext/PoolsDetailsContext";
+} from "context/PoolsDetailsContext/selectors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
@@ -43,6 +45,7 @@ import {
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { paySourceToTokenBalanceType } from "domain/multichain/paySourceToTokenBalanceType";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
@@ -115,12 +118,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
   // #region Requests
 
-  const { tokenBalancesData: selectedGlvOrMarketTokenBalancesData } = useMultichainMarketTokenBalancesRequest(
-    chainId,
-    srcChainId,
-    account,
-    selectedGlvOrMarketAddress
-  );
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
@@ -156,6 +153,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const [secondTokenAddress, setSecondTokenAddress] = usePoolsDetailsSecondTokenAddress();
   const [firstTokenInputValue, setFirstTokenInputValue] = usePoolsDetailsFirstTokenInputValue();
   const [secondTokenInputValue, setSecondTokenInputValue] = usePoolsDetailsSecondTokenInputValue();
+
   const [marketOrGlvTokenInputValue, setMarketOrGlvTokenInputValue] = usePoolsDetailsMarketOrGlvTokenInputValue();
   // #endregion
   // #region Derived state
@@ -454,14 +452,10 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
               amounts,
             }
           : undefined,
-      withLoading: true,
+      withLoading: false,
       forceRecalculate,
     }
   );
-
-  // useEffect(() => {
-  //   console.log(technicalFeesAsyncResult);
-  // }, [technicalFeesAsyncResult]);
 
   const { logicalFees } = useDepositWithdrawalFees({
     amounts,
@@ -499,6 +493,8 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     nativeToken: nativeToken,
     minResidualAmount: undefined,
     isLoading: false,
+    srcChainId,
+    tokenBalanceType: paySourceToTokenBalanceType(paySource),
   });
 
   const firstTokenShowMaxButton = isDeposit && firstTokenMaxDetails.showClickMax;
@@ -521,34 +517,10 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     nativeToken: nativeToken,
     minResidualAmount: undefined,
     isLoading: false,
+    tokenBalanceType: paySourceToTokenBalanceType(paySource),
   });
 
   const marketTokenInputShowMaxButton = isWithdrawal && marketTokenMaxDetails.showClickMax;
-
-  const marketTokenBalanceFormatted = useMemo(() => {
-    const usedMarketToken = glvInfo ? glvToken : marketToken;
-
-    if (!usedMarketToken) {
-      return undefined;
-    }
-
-    let balance;
-    if (paySource === "gmxAccount") {
-      balance = usedMarketToken.gmxAccountBalance;
-    } else if (paySource === "sourceChain") {
-      if (srcChainId !== undefined) {
-        balance = selectedGlvOrMarketTokenBalancesData[srcChainId];
-      }
-    } else {
-      balance = usedMarketToken.walletBalance;
-    }
-
-    if (balance === undefined) {
-      return undefined;
-    }
-
-    return formatBalanceAmount(balance, usedMarketToken.decimals);
-  }, [glvInfo, glvToken, marketToken, paySource, selectedGlvOrMarketTokenBalancesData, srcChainId]);
 
   const receiveTokenUsd = glvInfo
     ? amounts?.glvTokenUsd ?? 0n
@@ -557,41 +529,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
         marketToken?.decimals,
         isDeposit ? marketToken?.prices?.maxPrice : marketToken?.prices?.minPrice
       )!;
-
-  const payTokenBalanceFormatted = useMemo(() => {
-    if (!firstToken) {
-      return undefined;
-    }
-
-    let balance;
-    let decimals;
-    if (paySource === "gmxAccount") {
-      balance = firstToken.gmxAccountBalance;
-      decimals = firstToken.decimals;
-    } else if (paySource === "sourceChain") {
-      balance = firstToken.sourceChainBalance;
-
-      decimals = getMappedTokenId(
-        chainId as SettlementChainId,
-        firstToken.address,
-        srcChainId as SourceChainId
-      )?.decimals;
-      if (!decimals) {
-        return undefined;
-      }
-    } else {
-      balance = firstToken.walletBalance;
-      decimals = firstToken.decimals;
-    }
-
-    if (balance === undefined) {
-      return undefined;
-    }
-
-    return formatBalanceAmount(balance, decimals, undefined, {
-      isStable: firstToken.isStable,
-    });
-  }, [firstToken, paySource, chainId, srcChainId]);
 
   // #region Callbacks
   const onFocusedCollateralInputChange = useCallback(
@@ -839,7 +776,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                   topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
                   bottomLeftValue={formatUsd(firstTokenUsd ?? 0n)}
                   bottomRightLabel={t`Balance`}
-                  bottomRightValue={payTokenBalanceFormatted}
+                  bottomRightValue={firstTokenMaxDetails.formattedBalance}
                   onClickTopRightLabel={isDeposit ? onMaxClickFirstToken : undefined}
                   inputValue={firstTokenInputValue}
                   onInputValueChange={handleFirstTokenInputValueChange}
@@ -924,7 +861,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                   topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
                   bottomLeftValue={formatUsd(receiveTokenUsd ?? 0n)}
                   bottomRightLabel={t`Balance`}
-                  bottomRightValue={marketTokenBalanceFormatted}
+                  bottomRightValue={marketTokenMaxDetails.formattedBalance}
                   inputValue={marketOrGlvTokenInputValue}
                   onInputValueChange={marketOrGlvTokenInputValueChange}
                   onClickTopRightLabel={marketTokenInputClickTopRightLabel}
@@ -986,7 +923,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           <div className="border-t border-slate-600 p-12">{submitButton}</div>
         </div>
 
-        <InfoRows fees={logicalFees} isLoading={technicalFeesAsyncResult.isLoading} isDeposit={isDeposit} />
+        <InfoRows fees={logicalFees} isLoading={!technicalFeesAsyncResult.data} isDeposit={isDeposit} />
       </form>
     </>
   );

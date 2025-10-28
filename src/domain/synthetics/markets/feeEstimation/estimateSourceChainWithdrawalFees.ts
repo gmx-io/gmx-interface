@@ -1,14 +1,11 @@
 // import { getPublicClient } from "@wagmi/core";
-import { maxUint256, zeroAddress, zeroHash } from "viem";
+import { zeroAddress } from "viem";
 
 import { SettlementChainId, SourceChainId } from "config/chains";
-import { getStargatePoolAddress, OVERRIDE_ERC20_BYTECODE, RANDOM_SLOT, RANDOM_WALLET } from "config/multichain";
+import { getStargatePoolAddress, RANDOM_WALLET } from "config/multichain";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { SendParam } from "domain/multichain/types";
-import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { expandDecimals } from "lib/numbers";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
-import { abis } from "sdk/abis";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
 import { GlobalExpressParams, RelayParamsPayload } from "../../express";
@@ -16,6 +13,7 @@ import { convertToUsd, getMidPrice } from "../../tokens";
 import { CreateWithdrawalParams, RawCreateWithdrawalParams } from "../types";
 import { estimatePureWithdrawalGasLimit } from "./estimatePureWithdrawalGasLimit";
 import { estimateWithdrawalPlatformTokenTransferInFees } from "./estimateWithdrawalPlatformTokenTransferInFees";
+import { stargateTransferFees } from "./stargateTransferFees";
 
 export type SourceChainWithdrawalFees = {
   /**
@@ -125,6 +123,52 @@ export async function estimateSourceChainWithdrawalFees({
   };
 }
 
+async function estimateSingleTokenReturnTransfer({
+  chainId,
+  srcChainId,
+  tokenAddress,
+}: {
+  chainId: SettlementChainId;
+  srcChainId: SourceChainId;
+  tokenAddress: string;
+}): Promise<{
+  transferGasLimit: bigint;
+  transferNativeFee: bigint;
+}> {
+  const token = getToken(chainId, tokenAddress);
+  const unwrappedAddress = convertTokenAddress(chainId, tokenAddress, "native");
+  const stargateAddress = getStargatePoolAddress(chainId, unwrappedAddress);
+
+  if (!stargateAddress) {
+    throw new Error(`Stargate not found for token: ${tokenAddress}`);
+  }
+
+  const tokenAmount = expandDecimals(1, token.decimals) / 100n;
+  const additionalValue = unwrappedAddress === zeroAddress ? tokenAmount : 0n;
+
+  const sendParams: SendParam = getMultichainTransferSendParams({
+    dstChainId: srcChainId,
+    account: RANDOM_WALLET.address,
+    srcChainId,
+    amountLD: tokenAmount,
+    isToGmx: false,
+  });
+
+  const { quoteSend, returnTransferGasLimit } = await stargateTransferFees({
+    chainId,
+    stargateAddress,
+    sendParams,
+    tokenAddress,
+    useSendToken: true,
+    additionalValue,
+  });
+
+  return {
+    transferGasLimit: returnTransferGasLimit,
+    transferNativeFee: quoteSend.nativeFee,
+  };
+}
+
 export async function estimateSourceChainWithdrawalReturnTokenTransferFees({
   chainId,
   srcChainId,
@@ -141,135 +185,28 @@ export async function estimateSourceChainWithdrawalReturnTokenTransferFees({
   shortTokenTransferGasLimit: bigint;
   shortTokenTransferNativeFee: bigint;
 }> {
-  const settlementChainClient = getPublicClientWithRpc(chainId);
+  const shouldEstimateShort = outputShortTokenAddress !== outputLongTokenAddress;
 
-  let longTokenTransferGasLimit = 0n;
-  let longTokenTransferNativeFee = 0n;
-
-  const outputLongToken = getToken(chainId, outputLongTokenAddress);
-  const outputLongTokenUnwrappedAddress = convertTokenAddress(chainId, outputLongTokenAddress, "native");
-  const outputLongTokenStargate = getStargatePoolAddress(chainId, outputLongTokenUnwrappedAddress);
-
-  if (!outputLongTokenStargate) {
-    throw new Error(`Output long token stargate not found: ${outputLongTokenAddress}`);
-  }
-
-  const someAmount = expandDecimals(1, outputLongToken.decimals) / 100n;
-
-  const sendParams: SendParam = getMultichainTransferSendParams({
-    dstChainId: srcChainId,
-    account: RANDOM_WALLET.address,
-    srcChainId,
-    amountLD: someAmount,
-    isToGmx: false,
-  });
-
-  const quoteSend = await settlementChainClient.readContract({
-    address: outputLongTokenStargate,
-    abi: abis.IStargate,
-    functionName: "quoteSend",
-    args: [sendParams, false],
-  });
-
-  let longNativeValue = quoteSend.nativeFee;
-  if (outputLongTokenUnwrappedAddress === zeroAddress) {
-    longNativeValue += someAmount;
-  }
-
-  longTokenTransferGasLimit = await settlementChainClient
-    .estimateContractGas({
-      address: outputLongTokenStargate,
-      abi: abis.IStargate,
-      functionName: "sendToken",
-      args: [sendParams, quoteSend, RANDOM_WALLET.address],
-      value: longNativeValue,
-      stateOverride: [
-        {
-          address: RANDOM_WALLET.address,
-          balance: maxUint256,
-        },
-        {
-          address: outputLongTokenAddress,
-          code: OVERRIDE_ERC20_BYTECODE,
-          state: [
-            {
-              slot: RANDOM_SLOT,
-              value: zeroHash,
-            },
-          ],
-        },
-      ],
-    })
-    .then(applyGasLimitBuffer);
-
-  let shortTokenTransferGasLimit = 0n;
-  let shortTokenTransferNativeFee = 0n;
-  if (outputShortTokenAddress !== outputLongTokenAddress) {
-    const outputShortToken = getToken(chainId, outputShortTokenAddress);
-    const outputShortTokenUnwrappedAddress = convertTokenAddress(chainId, outputShortTokenAddress, "native");
-    const outputShortTokenStargate = getStargatePoolAddress(chainId, outputShortTokenUnwrappedAddress);
-
-    if (!outputShortTokenStargate) {
-      throw new Error("Output short token stargate not found");
-    }
-
-    const someAmount = expandDecimals(1, outputShortToken.decimals) / 100n;
-
-    const secondarySendParams: SendParam = getMultichainTransferSendParams({
-      dstChainId: srcChainId,
-      account: RANDOM_WALLET.address,
+  // Run estimations in parallel
+  const [longResult, shortResult] = await Promise.all([
+    estimateSingleTokenReturnTransfer({
+      chainId,
       srcChainId,
-      amountLD: someAmount,
-      isToGmx: false,
-    });
-
-    // console.log({ outputShortTokenStargate , });
-
-    const secondaryQuoteSend = await settlementChainClient.readContract({
-      address: outputShortTokenStargate,
-      abi: abis.IStargate,
-      functionName: "quoteSend",
-      args: [secondarySendParams, false],
-    });
-
-    let secondaryNativeValue = secondaryQuoteSend.nativeFee;
-    if (outputShortTokenUnwrappedAddress === zeroAddress) {
-      secondaryNativeValue += someAmount;
-    }
-
-    shortTokenTransferGasLimit = await settlementChainClient
-      .estimateContractGas({
-        address: outputShortTokenStargate,
-        abi: abis.IStargate,
-        functionName: "sendToken",
-        args: [secondarySendParams, secondaryQuoteSend, RANDOM_WALLET.address],
-        value: secondaryNativeValue,
-        stateOverride: [
-          {
-            address: RANDOM_WALLET.address,
-            balance: maxUint256,
-          },
-          {
-            address: outputShortTokenAddress,
-            code: OVERRIDE_ERC20_BYTECODE,
-            state: [
-              {
-                slot: RANDOM_SLOT,
-                value: zeroHash,
-              },
-            ],
-          },
-        ],
-      })
-      .then(applyGasLimitBuffer);
-
-    shortTokenTransferNativeFee = secondaryQuoteSend.nativeFee;
-  }
+      tokenAddress: outputLongTokenAddress,
+    }),
+    shouldEstimateShort
+      ? estimateSingleTokenReturnTransfer({
+          chainId,
+          srcChainId,
+          tokenAddress: outputShortTokenAddress,
+        })
+      : Promise.resolve(null),
+  ]);
 
   return {
-    longTokenTransferGasLimit,
-    longTokenTransferNativeFee,
-    shortTokenTransferGasLimit,
-    shortTokenTransferNativeFee,
+    longTokenTransferGasLimit: longResult.transferGasLimit,
+    longTokenTransferNativeFee: longResult.transferNativeFee,
+    shortTokenTransferGasLimit: shortResult?.transferGasLimit ?? 0n,
+    shortTokenTransferNativeFee: shortResult?.transferNativeFee ?? 0n,
   };
 }

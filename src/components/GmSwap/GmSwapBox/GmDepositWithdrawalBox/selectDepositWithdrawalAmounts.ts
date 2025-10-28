@@ -1,21 +1,23 @@
 import {
-  selectPoolsDetailsIsMarketTokenDeposit,
-  selectPoolsDetailsLongTokenAmount,
-  selectPoolsDetailsMarketOrGlvTokenAmount,
-  selectPoolsDetailsShortTokenAmount,
-  selectPoolsDetailsWithdrawalFindSwapPath,
-  selectPoolsDetailsWithdrawalReceiveTokenAddress,
   selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsFirstTokenAmount,
   selectPoolsDetailsFlags,
   selectPoolsDetailsFocusedInput,
   selectPoolsDetailsGlvInfo,
+  selectPoolsDetailsIsMarketTokenDeposit,
+  selectPoolsDetailsLongTokenAddress,
+  selectPoolsDetailsLongTokenAmount,
   selectPoolsDetailsMarketInfo,
+  selectPoolsDetailsMarketOrGlvTokenAmount,
   selectPoolsDetailsMarketTokenData,
   selectPoolsDetailsMarketTokensData,
   selectPoolsDetailsSecondTokenAddress,
   selectPoolsDetailsSecondTokenAmount,
-} from "context/PoolsDetailsContext/PoolsDetailsContext";
+  selectPoolsDetailsShortTokenAddress,
+  selectPoolsDetailsShortTokenAmount,
+  selectPoolsDetailsWithdrawalFindSwapPath,
+  selectPoolsDetailsWithdrawalReceiveTokenAddress,
+} from "context/PoolsDetailsContext/selectors";
 import { selectUiFeeFactor } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
@@ -36,8 +38,11 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
 
   const marketOrGlvTokenAmount = q(selectPoolsDetailsMarketOrGlvTokenAmount);
 
+  const { isPair } = q(selectPoolsDetailsFlags);
   const longTokenAmount = q(selectPoolsDetailsLongTokenAmount);
   const shortTokenAmount = q(selectPoolsDetailsShortTokenAmount);
+  const longTokenAddress = q(selectPoolsDetailsLongTokenAddress);
+  const shortTokenAddress = q(selectPoolsDetailsShortTokenAddress);
   const firstTokenAddress = q(selectPoolsDetailsFirstTokenAddress);
   const secondTokenAddress = q(selectPoolsDetailsSecondTokenAddress);
   const firstTokenAmount = q(selectPoolsDetailsFirstTokenAmount);
@@ -109,9 +114,12 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
       shortTokenAmount,
       marketTokenAmount,
       glvTokenAmount,
-      // TODO MLTCH check it
-      includeLongToken: longTokenAmount > 0n,
-      includeShortToken: shortTokenAmount > 0n,
+      includeLongToken: isPair
+        ? true
+        : firstTokenAddress === longTokenAddress || secondTokenAddress === longTokenAddress,
+      includeShortToken: isPair
+        ? true
+        : secondTokenAddress === shortTokenAddress || firstTokenAddress === shortTokenAddress,
       uiFeeFactor,
       strategy: focusedInput === "market" ? "byMarketToken" : "byCollaterals",
       isMarketTokenDeposit,
@@ -119,7 +127,7 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
       glvToken: glvToken!,
     });
   } else if (isWithdrawal) {
-    let strategy;
+    let strategy: "byMarketToken" | "byLongCollateral" | "byShortCollateral" | "byCollaterals" = "byMarketToken";
     if (focusedInput === "market") {
       strategy = "byMarketToken";
     } else if (focusedInput === "longCollateral") {

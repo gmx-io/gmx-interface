@@ -23,7 +23,7 @@ import {
   selectPoolsDetailsSelectedMarketForGlv,
   selectPoolsDetailsShortTokenAddress,
   selectPoolsDetailsShortTokenAmount,
-} from "context/PoolsDetailsContext/PoolsDetailsContext";
+} from "context/PoolsDetailsContext/selectors";
 import {
   selectGlvAndMarketsInfoData,
   selectMarketsInfoData,

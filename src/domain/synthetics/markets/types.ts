@@ -151,3 +151,9 @@ export type CreateGlvWithdrawalParams = {
 };
 
 export type RawCreateGlvWithdrawalParams = Omit<CreateGlvWithdrawalParams, "executionFee">;
+
+/**
+ * GM or GLV pay source
+ */
+
+export type GmPaySource = "settlementChain" | "gmxAccount" | "sourceChain";
