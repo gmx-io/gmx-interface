@@ -126,7 +126,7 @@
   grid-template-columns: 1fr;
 }
 
-.menu-item:hover .menu-item-label {
+.menu-item:not(.disabled):hover .menu-item-label {
   color: var(--color-gray-50);
 }
 
@@ -184,7 +184,7 @@
     font-size: 13px;
     cursor: pointer;
 
-    &:hover {
+    &:not(.disabled):hover {
       background: var(--color-fill-surfaceHover) !important;
       opacity: 1;
       color: var(--color-typography-secondary);

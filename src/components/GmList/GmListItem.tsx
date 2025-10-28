@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/macro";
 import React, { useCallback, useMemo } from "react";
+import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
 import { Area, AreaChart } from "recharts";
 
@@ -24,8 +25,9 @@ import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDays
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { PerformanceSnapshot, PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
-import { TokenData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
-import { bigintToNumber, formatPercentage, PRECISION_DECIMALS } from "lib/numbers";
+import { convertToUsd, getTokenData } from "domain/synthetics/tokens";
+import { ProgressiveTokenData } from "domain/tokens";
+import { PRECISION_DECIMALS, bigintToNumber, formatPercentage } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
@@ -39,10 +41,10 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import MenuDotsIcon from "img/ic_menu_dots.svg?react";
 
-import { GmTokensBalanceInfo } from "./GmTokensTotalBalanceInfo";
 import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { FeeApyLabel } from "./FeeApyLabel";
+import { GmTokensBalanceInfo } from "./GmTokensTotalBalanceInfo";
 import { PerformanceLabel } from "./PerformanceLabel";
 
 export const tokenAddressStyle = { fontSize: 5 };
@@ -59,7 +61,7 @@ export function GmListItem({
   performance,
   performanceSnapshots,
 }: {
-  token: TokenData;
+  token: ProgressiveTokenData;
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   glvTokensIncentiveAprData: MarketTokensAPRData | undefined;
@@ -266,14 +268,18 @@ export function GmListItem({
         {showDebugValues && <span style={tokenAddressStyle}>{marketOrGlvTokenAddress}</span>}
       </TableTdActionable>
       <TableTdActionable className="w-[13%]">
-        <AmountWithUsdHuman
-          multiline
-          amount={totalSupply}
-          decimals={token.decimals}
-          usd={totalSupplyUsd}
-          symbol={token.symbol}
-          usdOnTop
-        />
+        {totalSupplyUsd ? (
+          <AmountWithUsdHuman
+            multiline
+            amount={totalSupply}
+            decimals={token.decimals}
+            usd={totalSupplyUsd}
+            symbol={token.symbol}
+            usdOnTop
+          />
+        ) : (
+          <Skeleton width={60} count={1} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />
+        )}
       </TableTdActionable>
       <TableTdActionable className="w-[11%]">
         <GmTokensBalanceInfo
@@ -286,7 +292,11 @@ export function GmListItem({
       </TableTdActionable>
 
       <TableTdActionable className="w-[11%]">
-        <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
+        {apy ? (
+          <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
+        ) : (
+          <Skeleton width={60} count={1} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />
+        )}
       </TableTdActionable>
 
       <TableTdActionable className="w-[18%]">
@@ -295,7 +305,7 @@ export function GmListItem({
             {formatPercentage(marketPerformance, { bps: false, signed: true, showPlus: false })}
           </div>
         ) : (
-          "..."
+          <Skeleton width={60} count={1} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />
         )}
       </TableTdActionable>
 

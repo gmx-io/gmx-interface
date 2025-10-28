@@ -137,7 +137,7 @@ export function ParseTransactionPage() {
                 return (
                   <Fragment key={event.key}>
                     <TableTr>
-                      <TableTd className="w-[25rem] font-bold">Name</TableTd>
+                      <TableTd className="w-[25rem] font-medium">Name</TableTd>
                       <TableTd className="group !text-left" colSpan={2}>
                         <div className="flex flex-row items-center justify-between gap-8">
                           <span className="flex flex-row items-center gap-8 whitespace-nowrap">
@@ -149,7 +149,7 @@ export function ParseTransactionPage() {
                       </TableTd>
                     </TableTr>
                     <TableTr>
-                      <TableTd className="w-[25rem] font-bold">Topics</TableTd>
+                      <TableTd className="w-[25rem] font-medium">Topics</TableTd>
                       <TableTd className="group !text-left" colSpan={3}>
                         {event.topics.length > 0
                           ? event.topics.map((t) => (
@@ -185,7 +185,7 @@ export function ParseTransactionPage() {
               })
             ) : (
               <TableTr>
-                <TableTd className="!text-center font-bold" colSpan={3}>
+                <TableTd className="!text-center font-medium" colSpan={3}>
                   No events
                 </TableTd>
               </TableTr>
@@ -449,7 +449,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
   if (props.error) {
     return (
       <TableTr>
-        <TableTd className="font-bold">{props.item}</TableTd>
+        <TableTd className="font-medium">{props.item}</TableTd>
         <TableTd className="text-red-400">{props.error ?? props.value.toString()}</TableTd>
         <TableTd>{props.type}</TableTd>
       </TableTr>
@@ -458,7 +458,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
 
   return (
     <TableTr className="group">
-      <TableTd className="font-bold">{props.item}</TableTd>
+      <TableTd className="font-medium">{props.item}</TableTd>
       <TableTd
         className={cx("!text-left", {
           "text-red-400": withError,

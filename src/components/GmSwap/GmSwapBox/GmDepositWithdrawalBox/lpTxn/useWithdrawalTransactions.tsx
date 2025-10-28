@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 
-import { getStargatePoolAddress, isSettlementChain } from "config/multichain";
+import { isSettlementChain } from "config/multichain";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import {
   selectPoolsDetailsGlvInfo,
@@ -41,7 +41,7 @@ import {
 } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
-import { convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
+import { getWrappedToken } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/types/fees";
 
 import { selectPoolsDetailsParams } from "./selectPoolsDetailsParams";
@@ -49,13 +49,8 @@ import type { UseLpTransactionProps } from "./useLpTransactions";
 import { useMultichainWithdrawalExpressTxnParams } from "./useMultichainWithdrawalExpressTxnParams";
 
 export const useWithdrawalTransactions = ({
-  // glvInfo,
   selectedMarketForGlv,
-  // longTokenAddress,
-  // shortTokenAddress,
   longTokenAmount,
-  longTokenSwapPath,
-  shortTokenSwapPath,
   shortTokenAmount,
   marketTokenAmount,
   marketTokenUsd,
@@ -65,9 +60,7 @@ export const useWithdrawalTransactions = ({
   paySource,
   technicalFees,
   selectedMarketInfoForGlv,
-  // marketToken,
   tokensData,
-  // marketInfo,
   shouldDisableValidation,
 }: UseLpTransactionProps) => {
   const { chainId, srcChainId } = useChainId();
@@ -81,25 +74,11 @@ export const useWithdrawalTransactions = ({
 
   const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
   const isGlv = glvInfo !== undefined && selectedMarketForGlv !== undefined;
-  // const marketTokenAddress = useSelector(selectmarkettokenaddress);
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
   const marketTokenAddress = marketToken?.address;
   const glvTokenAddress = glvInfo?.glvTokenAddress;
-  const glvTokenTotalSupply = glvInfo?.glvToken.totalSupply;
-  // const executionFeeTokenAmount = (technicalFees as SourceChainWithdrawalFees)?.executionFee;
   const executionFeeTokenDecimals = getWrappedToken(chainId)!.decimals;
-  // const initialLongTokenAddress = longTokenAddress
-  //   ? convertTokenAddress(chainId, longTokenAddress, "wrapped")
-  //   : undefined;
-  // const initialShortTokenAddress =
-  //   shortTokenAddress && initialLongTokenAddress
-  //     ? convertTokenAddress(
-  //         chainId,
-  //         marketInfo?.isSameCollaterals ? initialLongTokenAddress : shortTokenAddress,
-  //         "wrapped"
-  //       )
-  //     : undefined;
 
   const transferRequests = useMemo((): TransferRequests | undefined => {
     if (isGlv) {
@@ -127,69 +106,6 @@ export const useWithdrawalTransactions = ({
       },
     ]);
   }, [chainId, glvTokenAddress, glvTokenAmount, isGlv, marketTokenAddress, marketTokenAmount]);
-
-  // const { provider: settlementChainRpcProvider } = useJsonRpcProvider(chainId);
-
-  const longTokenProviderTokenAddress = longTokenAddress;
-  const shortTokenProviderTokenAddress = shortTokenAddress;
-  const longOftProvider = longTokenProviderTokenAddress
-    ? getStargatePoolAddress(chainId, convertTokenAddress(chainId, longTokenProviderTokenAddress, "native"))
-    : undefined;
-  const shortOftProvider = shortTokenProviderTokenAddress
-    ? getStargatePoolAddress(chainId, convertTokenAddress(chainId, shortTokenProviderTokenAddress, "native"))
-    : undefined;
-
-  // const longTokenBaseSendParams = useMemo(() => {
-  //   if (!srcChainId || !account) {
-  //     return undefined;
-  //   }
-
-  //   if (longTokenAmount === undefined || longTokenAmount === 0n) {
-  //     return undefined;
-  //   }
-
-  //   return getMultichainTransferSendParams({
-  //     dstChainId: srcChainId,
-  //     account,
-  //     amount: longTokenAmount,
-  //     isToGmx: false,
-  //     srcChainId: chainId,
-  //   });
-  // }, [account, chainId, longTokenAmount, srcChainId]);
-
-  // const shortTokenBaseSendParams = useMemo(() => {
-  //   if (!srcChainId || !account) {
-  //     return undefined;
-  //   }
-
-  //   if (shortTokenAmount === undefined || shortTokenAmount === 0n) {
-  //     return undefined;
-  //   }
-
-  //   return getMultichainTransferSendParams({
-  //     dstChainId: srcChainId,
-  //     account,
-  //     amount: shortTokenAmount,
-  //     isToGmx: false,
-  //     srcChainId: chainId,
-  //   });
-  // }, [account, chainId, shortTokenAmount, srcChainId]);
-
-  // const longTokenQuoteSend = useQuoteSend({
-  //   fromChainId: chainId,
-  //   toChainId: srcChainId,
-  //   sendParams: longTokenBaseSendParams,
-  //   fromChainProvider: settlementChainRpcProvider,
-  //   fromStargateAddress: longOftProvider,
-  // });
-
-  // const shortTokenQuoteSend = useQuoteSend({
-  //   fromChainId: chainId,
-  //   toChainId: srcChainId,
-  //   sendParams: shortTokenBaseSendParams,
-  //   fromChainProvider: settlementChainRpcProvider,
-  //   fromStargateAddress: shortOftProvider,
-  // });
 
   const rawParams = useSelector(selectPoolsDetailsParams);
 

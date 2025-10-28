@@ -10,15 +10,15 @@ import {
   PLACEHOLDER_ACCOUNT,
   getBalanceAndSupplyData,
   getDepositBalanceData,
-  getProcessedData,
+  getStakingProcessedData,
   getStakingData,
 } from "lib/legacy";
 import { formatKeyAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 export default function APRLabel({ chainId, label }) {
-  const { active } = useWallet();
-  const vestingData = useVestingData();
+  const { active, account } = useWallet();
+  const vestingData = useVestingData(account, chainId);
   const rewardReaderAddress = getContract(chainId, "RewardReader");
   const readerAddress = getContract(chainId, "Reader");
 
@@ -119,7 +119,7 @@ export default function APRLabel({ chainId, label }) {
   const depositBalanceData = getDepositBalanceData(depositBalances);
   const stakingData = getStakingData(stakingInfo);
 
-  const processedData = getProcessedData(
+  const processedData = getStakingProcessedData(
     balanceData,
     supplyData,
     depositBalanceData,

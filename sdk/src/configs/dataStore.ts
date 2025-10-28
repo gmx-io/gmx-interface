@@ -1,5 +1,4 @@
 import { hashData, hashString, keccakString } from "utils/hash";
-import { applyFactor, expandDecimals } from "utils/numbers";
 
 export const POSITION_IMPACT_FACTOR_KEY = hashString("POSITION_IMPACT_FACTOR");
 export const MAX_POSITION_IMPACT_FACTOR_KEY = hashString("MAX_POSITION_IMPACT_FACTOR");

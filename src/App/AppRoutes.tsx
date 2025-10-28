@@ -10,6 +10,7 @@ import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
+import { useNonEoaAccountChainWarning } from "lib/chains/useNonEoaAccountChainWarning";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
@@ -114,6 +115,7 @@ export function AppRoutes() {
   }, [urlParams, history]);
 
   useRealChainIdWarning();
+  useNonEoaAccountChainWarning();
 
   return (
     <>
