@@ -20,6 +20,15 @@ export type GlobalMetricData = {
   srcChainId?: SourceChainId;
 };
 
+export type OracleKeeperMetricMethodId =
+  | "tickers"
+  | "24hPrices"
+  | "candles"
+  | "incentives"
+  | "uiVersion"
+  | "annualized"
+  | "snapshots";
+
 export enum OrderStage {
   Submitted = "submitted",
   Simulated = "simulated",
@@ -506,6 +515,21 @@ export type MulticallBatchedCallCounter = {
   data: {
     chainId: number;
     priority: string;
+  };
+};
+
+export type OracleKeeperFallbackCounter = {
+  event: "oracleKeeper.fallback";
+  data: {
+    chainId: number;
+  };
+};
+
+export type OracleKeeperFailureCounter = {
+  event: "oracleKeeper.failure";
+  data: {
+    chainId: number;
+    method: string;
   };
 };
 

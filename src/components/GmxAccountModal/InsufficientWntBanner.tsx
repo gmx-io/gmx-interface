@@ -8,7 +8,6 @@ import { formatAmount, formatUsd } from "lib/numbers";
 import { getWrappedToken } from "sdk/configs/tokens";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
-import Button from "components/Button/Button";
 
 function SwapButton({ children }: { children: React.ReactNode }) {
   const { chainId } = useChainId();
@@ -18,16 +17,15 @@ function SwapButton({ children }: { children: React.ReactNode }) {
   const wrappedTokenSymbol = getWrappedToken(chainId).symbol;
 
   return (
-    <Button
-      className="!text-body-small !text-yellow-500"
-      variant="link"
+    <span
+      className="text-body-small cursor-pointer text-13 font-medium text-yellow-500 underline underline-offset-2"
       onClick={() => {
         setGmxAccountModalOpen(false);
         history.push(`/trade/swap?to=${wrappedTokenSymbol}`);
       }}
     >
       {children}
-    </Button>
+    </span>
   );
 }
 function DepositButton({ children }: { children: React.ReactNode }) {
@@ -35,16 +33,15 @@ function DepositButton({ children }: { children: React.ReactNode }) {
   const [, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
 
   return (
-    <Button
-      className="!text-body-small !text-yellow-500"
-      variant="link"
+    <span
+      className="text-body-small cursor-pointer text-13 font-medium text-yellow-500 underline underline-offset-2"
       onClick={() => {
         setGmxAccountModalOpen("deposit");
         setDepositViewTokenAddress(zeroAddress);
       }}
     >
       {children}
-    </Button>
+    </span>
   );
 }
 export function InsufficientWntBanner({
@@ -96,9 +93,11 @@ export function InsufficientWntBanner({
 
   return (
     <AlertInfoCard type="warning" className="my-4">
-      {firstLine}
-      <br />
-      {secondLine}
+      <div>
+        {firstLine}
+        <br />
+        {secondLine}
+      </div>
     </AlertInfoCard>
   );
 }

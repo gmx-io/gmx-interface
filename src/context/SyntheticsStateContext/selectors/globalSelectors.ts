@@ -1,6 +1,7 @@
 import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
 import type { FeaturesSettings } from "domain/synthetics/features/useDisabledFeatures";
 import { getIsInvalidSubaccount } from "domain/synthetics/subaccount/utils";
+import { ProgressiveTokensData } from "domain/tokens";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorDeprecated } from "../utils";
@@ -20,6 +21,24 @@ export const selectUserReferralInfo = (s: SyntheticsState) => s.globals.userRefe
 export const selectChainId = (s: SyntheticsState) => s.globals.chainId;
 export const selectSrcChainId = (s: SyntheticsState) => s.globals.srcChainId;
 export const selectDepositMarketTokensData = (s: SyntheticsState) => s.globals.depositMarketTokensData;
+export const selectProgressiveDepositMarketTokensData = (s: SyntheticsState) =>
+  s.globals.progressiveDepositMarketTokensData;
+
+export const selectProgressiveDepositMarketTokensDataWithoutGlv = createSelector((q) => {
+  const progressiveDepositMarketTokensData = q(selectProgressiveDepositMarketTokensData);
+
+  if (!progressiveDepositMarketTokensData) {
+    return undefined;
+  }
+
+  return Object.entries(progressiveDepositMarketTokensData).reduce((acc, [address, token]) => {
+    if (token.symbol === "GM") {
+      acc[address] = token;
+    }
+    return acc;
+  }, {} as ProgressiveTokensData);
+});
+
 export const selectIsFirstOrder = (s: SyntheticsState) => s.globals.isFirstOrder;
 export const selectFeatures = (s: SyntheticsState) => s.features;
 export const selectIsSponsoredCallAvailable = (s: SyntheticsState) =>

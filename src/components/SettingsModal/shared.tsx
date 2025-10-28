@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { ReactNode } from "react";
+import { Fragment, ReactNode } from "react";
 
 import { useBreakpoints } from "lib/useBreakpoints";
 
@@ -85,6 +85,7 @@ export function SettingButton({
   chip,
   info,
   disabled,
+  disabledTooltip,
 }: {
   title: ReactNode;
   icon: ReactNode;
@@ -94,6 +95,7 @@ export function SettingButton({
   onClick: () => void;
   info?: ReactNode;
   disabled?: boolean;
+  disabledTooltip?: ReactNode;
 }) {
   const { isMobile, isTablet } = useBreakpoints();
 
@@ -104,42 +106,46 @@ export function SettingButton({
     }
   };
 
+  const Wrapper = disabled && disabledTooltip ? TooltipWithPortal : Fragment;
+
   return (
-    <div
-      className={cx(
-        `grid min-h-66 select-none grid-cols-[66px_auto] items-center rounded-8 border border-solid hover:border-slate-100`,
-        active ? "border-slate-100 text-typography-primary" : "border-slate-600",
-        disabled ? "muted cursor-not-allowed" : "cursor-pointer"
-      )}
-      onClick={disabled ? undefined : onClick}
-    >
+    <Wrapper content={disabledTooltip} variant="none">
       <div
         className={cx(
-          "flex items-center justify-center text-typography-secondary",
-          disabled && "opacity-50",
-          active && "text-typography-primary"
+          `grid min-h-66 select-none grid-cols-[66px_auto] items-center rounded-8 border border-solid hover:border-slate-100`,
+          active ? "border-slate-100 text-typography-primary" : "border-slate-600",
+          disabled ? "muted cursor-not-allowed" : "cursor-pointer"
         )}
+        onClick={disabled ? undefined : onClick}
       >
-        {icon}
-      </div>
-      <div className="flex gap-4 py-6">
-        <div className="flex flex-col border-l border-solid border-slate-600 pl-12">
-          <div className="flex items-center gap-4">
-            <div>{title}</div>
-            {info && (
-              <TooltipWithPortal
-                content={info}
-                handleClassName="-mb-6"
-                handle={<InfoIcon className="size-12" onClickCapture={handleInfoClick} />}
-                variant="none"
-              />
-            )}
-          </div>
-          <div>{description}</div>
+        <div
+          className={cx(
+            "flex items-center justify-center text-typography-secondary",
+            disabled && "opacity-50",
+            active && "text-typography-primary"
+          )}
+        >
+          {icon}
         </div>
-        {chip ? <div className="mr-6 mt-4">{chip}</div> : null}
+        <div className="flex gap-4 py-6">
+          <div className="flex flex-col border-l border-solid border-slate-600 pl-12">
+            <div className="flex items-center gap-4">
+              <div>{title}</div>
+              {info && (
+                <TooltipWithPortal
+                  content={info}
+                  handleClassName="-mb-6"
+                  handle={<InfoIcon className="size-12" onClickCapture={handleInfoClick} />}
+                  variant="none"
+                />
+              )}
+            </div>
+            <div>{description}</div>
+          </div>
+          {chip ? <div className="mr-6 mt-4">{chip}</div> : null}
+        </div>
       </div>
-    </div>
+    </Wrapper>
   );
 }
 
