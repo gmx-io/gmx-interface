@@ -4,9 +4,7 @@ export type EarnAnalyticsTab = "discover" | "portfolio" | "additionalOpportuniti
 
 export type EarnPageViewEvent = {
   event: "EarnPageView";
-  data: {
-    tab: EarnAnalyticsTab;
-  };
+  data: {};
 };
 
 export type EarnPageActionEvent = {
@@ -20,7 +18,7 @@ export type EarnPageActionEvent = {
 export type EarnRecommendationContext = "AboutTokens" | "YieldLandscape" | "PortfolioRecommendations";
 export type EarnRecommendationToken = "GM" | "GLV" | "GMX";
 export type EarnPageRecommendationClickedEvent = {
-  event: "EarnPage";
+  event: "EarnPageAction";
   data: {
     action: "RecommendationClicked";
     activeTab: EarnAnalyticsTab;
@@ -32,7 +30,7 @@ export type EarnPageRecommendationClickedEvent = {
 export type EarnPagePortfolioItem = "GMX" | "esGMX" | "GLV" | "GM";
 export type EarnPagePortfolioItemType = "stake" | "vest" | "buy" | "sell" | "details";
 export type EarnPagePortfolioItemClickEvent = {
-  event: "EarnPage";
+  event: "EarnPageAction";
   data: {
     action: "PortfolioItemClick";
     item: EarnPagePortfolioItem;
@@ -50,7 +48,7 @@ export type EarnPageOpportunitiesAnalyticsFilter =
   | "YieldTrading";
 
 export type EarnPageOpportunitiesFilterAppliedEvent = {
-  event: "EarnPage";
+  event: "EarnPageAction";
   data: {
     action: "OpportunitiesFilterApplied";
     filter: EarnPageOpportunitiesAnalyticsFilter;
@@ -58,19 +56,17 @@ export type EarnPageOpportunitiesFilterAppliedEvent = {
 };
 
 export type EarnPageOpportunityClickedEvent = {
-  event: "EarnPage";
+  event: "EarnPageAction";
   data: {
     action: "OpportunityClicked";
     name: string;
   };
 };
 
-export function sendEarnPageViewEvent(tab: EarnAnalyticsTab) {
+export function sendEarnPageViewEvent() {
   userAnalytics.pushEvent<EarnPageViewEvent>({
     event: "EarnPageView",
-    data: {
-      tab,
-    },
+    data: {},
   });
 }
 
@@ -94,7 +90,7 @@ export function sendEarnRecommendationClickedEvent({
   token: EarnRecommendationToken;
 }) {
   userAnalytics.pushEvent<EarnPageRecommendationClickedEvent>({
-    event: "EarnPage",
+    event: "EarnPageAction",
     data: {
       action: "RecommendationClicked",
       activeTab,
@@ -112,7 +108,7 @@ export function sendEarnPortfolioItemClickEvent({
   type: EarnPagePortfolioItemType;
 }) {
   userAnalytics.pushEvent<EarnPagePortfolioItemClickEvent>({
-    event: "EarnPage",
+    event: "EarnPageAction",
     data: {
       action: "PortfolioItemClick",
       item,
@@ -123,7 +119,7 @@ export function sendEarnPortfolioItemClickEvent({
 
 export function sendEarnOpportunitiesFilterAppliedEvent(filter: EarnPageOpportunitiesAnalyticsFilter) {
   userAnalytics.pushEvent<EarnPageOpportunitiesFilterAppliedEvent>({
-    event: "EarnPage",
+    event: "EarnPageAction",
     data: {
       action: "OpportunitiesFilterApplied",
       filter,
@@ -133,7 +129,7 @@ export function sendEarnOpportunitiesFilterAppliedEvent(filter: EarnPageOpportun
 
 export function sendEarnOpportunityClickedEvent(name: string) {
   userAnalytics.pushEvent<EarnPageOpportunityClickedEvent>({
-    event: "EarnPage",
+    event: "EarnPageAction",
     data: {
       action: "OpportunityClicked",
       name,
