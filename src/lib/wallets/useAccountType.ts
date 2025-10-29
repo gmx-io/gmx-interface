@@ -26,17 +26,18 @@ const KNOWN_SAFE_SINGLETONS = new Set(
     "0xfb1bffc9d739b8d520daf37df666da4c687191ea", // v1.3.0 L2
     "0xd9db270c1b5e3bd161e8c8503c55ceabee709552", // v1.3.0
     "0x69f4d1788e39c87893c980c06edf4b7f686e2938", // v1.3.0
+    "0x41675c099f32341bf84bfc5382af534df5c7461a", // v1.4.1
     "0x29fcb43b46531bca003ddc8fcb67ffe91900c762", // v1.4.1 L2
   ].map((a) => a.toLowerCase() as Hex)
 );
 
 async function isSafeAccount(
+  bytecode: Hex,
   address: string,
   client: PublicClient,
   safeSingletonAddresses: Set<string>
 ): Promise<boolean> {
-  const bytecode = await client.getBytecode({ address });
-  if (!bytecode || bytecode === "0x") {
+  if (bytecode === "0x") {
     return false;
   }
 
@@ -65,7 +66,7 @@ async function getAccountType(
   }
 
   if (safeSingletonAddresses.size > 0) {
-    const isSafe = await isSafeAccount(address, client, safeSingletonAddresses);
+    const isSafe = await isSafeAccount(bytecode, address, client, safeSingletonAddresses);
     if (isSafe) {
       return AccountType.Safe;
     }

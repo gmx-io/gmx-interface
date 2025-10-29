@@ -8,7 +8,7 @@ import { LandingPageFooterMenuEvent } from "lib/userAnalytics/types";
 import Button from "components/Button/Button";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
-import { FOOTER_LINKS, SOCIAL_LINKS } from "./constants";
+import { getFooterLinks, SOCIAL_LINKS } from "./constants";
 import { UserFeedbackModal } from "../UserFeedbackModal/UserFeedbackModal";
 
 type Props = {
@@ -17,18 +17,14 @@ type Props = {
   isMobileSideNav?: boolean;
 };
 
-export default function Footer({
-  showRedirectModal,
-  redirectPopupTimestamp,
-  isMobileSideNav,
-}: Props) {
+export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMobileSideNav }: Props) {
   const { feedbackModalVisible, setFeedbackModalVisible } = useSettings();
 
   return (
     <>
       <div className={cx("flex w-full justify-between", { "flex-col": isMobileSideNav })}>
         <div className={cx("flex flex-row items-center justify-center", { "flex-wrap": isMobileSideNav })}>
-          {FOOTER_LINKS.map(({ external, label, link, isAppLink }) => {
+          {getFooterLinks().map(({ external, label, link, isAppLink }) => {
             if (external) {
               return (
                 <Button variant="ghost" key={link} to={link} newTab>

@@ -16380,7 +16380,7 @@ __metadata:
 
 "viem@patch:viem@npm:2.37.1#.yarn/patches/viem-npm-2.37.1-7013552341::locator=gmx-interface%40workspace%3A.":
   version: 2.37.1
-  resolution: "viem@patch:viem@npm%3A2.37.1#.yarn/patches/viem-npm-2.37.1-7013552341::version=2.37.1&hash=410eea&locator=gmx-interface%40workspace%3A."
+  resolution: "viem@patch:viem@npm%3A2.37.1#.yarn/patches/viem-npm-2.37.1-7013552341::version=2.37.1&hash=aa32ba&locator=gmx-interface%40workspace%3A."
   dependencies:
     "@noble/curves": 1.9.1
     "@noble/hashes": 1.8.0
@@ -16395,7 +16395,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 7f0c63f1f263c9af7bc437aa0a99503985733bb779578462c5c225098637fa0735abab219f9c0b6cbac593c977c4fd1f735f80536ab7d47cec60f6e25c124df4
+  checksum: d6e24123d5ccab32ccfad86f35d5800876e677992ba5c7a8cf29110cab7653aa5a45a583b6d44e6a5451278f8307630f25eb4c6a8bda07c6f41dc96c3b4aec20
   languageName: node
   linkType: hard
 

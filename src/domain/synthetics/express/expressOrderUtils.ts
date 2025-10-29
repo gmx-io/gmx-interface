@@ -214,7 +214,6 @@ export async function estimateExpressParams({
     gasPrice,
     isSponsoredCall,
     bufferBps,
-    marketsInfoData,
     gasPaymentAllowanceData,
   } = globalExpressParams;
 
@@ -277,7 +276,6 @@ export async function estimateExpressParams({
     feeParams: baseRelayFeeParams.feeParams,
     externalCalls: baseRelayFeeParams.externalCalls,
     tokenPermits,
-    marketsInfoData,
   });
 
   const baseTxn = await expressTransactionBuilder({
@@ -379,7 +377,6 @@ export async function estimateExpressParams({
     feeParams: finalRelayFeeParams.feeParams,
     externalCalls: finalRelayFeeParams.externalCalls,
     tokenPermits,
-    marketsInfoData,
   });
 
   const gasPaymentValidations = getGasPaymentValidations({
@@ -801,6 +798,7 @@ export function getOrderRelayRouterAddress(
   return getContract(chainId, contractName);
 }
 
+// TODO MLTCH: move to bridge out utils
 export async function buildAndSignBridgeOutTxn({
   chainId,
   srcChainId,

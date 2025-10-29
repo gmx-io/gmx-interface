@@ -34,6 +34,7 @@ import { getSubaccountValidations } from "domain/synthetics/subaccount";
 import type { Subaccount, SubaccountValidations } from "domain/synthetics/subaccount/types";
 import { convertToTokenAmount } from "domain/tokens";
 import { CustomError, isCustomError } from "lib/errors";
+import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
 import { expandDecimals, USD_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
@@ -49,10 +50,12 @@ export function getRawBaseRelayerParams({
   chainId,
   account,
   globalExpressParams,
+  executionFeeAmount,
 }: {
   chainId: ContractsChainId;
   account: string;
   globalExpressParams: GlobalExpressParams;
+  executionFeeAmount?: bigint;
 }): Partial<{
   rawBaseRelayParamsPayload: RawRelayParamsPayload;
   baseRelayFeeSwapParams: {
@@ -70,7 +73,7 @@ export function getRawBaseRelayerParams({
   }
 
   const baseRelayerFeeAmount = convertToTokenAmount(
-    expandDecimals(1, USD_DECIMALS),
+    expandDecimals(3, USD_DECIMALS),
     relayerFeeToken.decimals,
     relayerFeeToken.prices.maxPrice
   )!;
@@ -82,7 +85,7 @@ export function getRawBaseRelayerParams({
     gasPaymentToken,
     relayerFeeToken,
     relayerFeeAmount: baseRelayerFeeAmount,
-    totalRelayerFeeTokenAmount: baseRelayerFeeAmount,
+    totalRelayerFeeTokenAmount: baseRelayerFeeAmount + (executionFeeAmount ?? 0n),
     gasPaymentTokenAsCollateralAmount: 0n,
     findFeeSwapPath: findFeeSwapPath,
 
@@ -101,7 +104,6 @@ export function getRawBaseRelayerParams({
     feeParams: baseRelayFeeSwapParams.feeParams,
     externalCalls: getEmptyExternalCallsPayload(),
     tokenPermits: EMPTY_ARRAY,
-    marketsInfoData,
   });
 
   return { rawBaseRelayParamsPayload, baseRelayFeeSwapParams };
@@ -140,16 +142,18 @@ async function estimateArbitraryGasLimit({
 
   const gasLimit = await fallbackCustomError(
     async () =>
-      provider.estimateGas({
-        from: GMX_SIMULATION_ORIGIN as Address,
-        to: baseTxnData.to as Address,
-        data: baseData,
-        value: 0n,
-      }),
+      provider
+        .estimateGas({
+          from: GMX_SIMULATION_ORIGIN as Address,
+          to: baseTxnData.to as Address,
+          data: baseData,
+          value: 0n,
+        })
+        .then(applyGasLimitBuffer),
     "gasLimit"
   );
 
-  return gasLimit + 100_000n;
+  return gasLimit;
 }
 
 export async function estimateArbitraryRelayFee({
@@ -262,7 +266,6 @@ export function getArbitraryRelayParamsAndPayload({
     feeParams: relayFeeParams.feeParams,
     externalCalls: getEmptyExternalCallsPayload(),
     tokenPermits: [],
-    marketsInfoData: globalExpressParams.marketsInfoData,
   });
 
   const subaccountValidations =
@@ -284,9 +287,13 @@ export function getArbitraryRelayParamsAndPayload({
 export function useArbitraryRelayParamsAndPayload({
   expressTransactionBuilder,
   isGmxAccount,
+  enabled = true,
+  executionFeeAmount,
 }: {
   expressTransactionBuilder: ExpressTransactionBuilder | undefined;
   isGmxAccount: boolean;
+  enabled?: boolean;
+  executionFeeAmount?: bigint;
 }): AsyncResult<ExpressTxnParams | undefined> {
   const account = useSelector(selectAccount);
   const chainId = useSelector(selectChainId);
@@ -307,24 +314,21 @@ export function useArbitraryRelayParamsAndPayload({
         chainId,
         account: p.account,
         globalExpressParams: p.globalExpressParams,
+        executionFeeAmount: p.executionFeeAmount,
       });
 
       if (baseRelayFeeSwapParams === undefined || rawBaseRelayParamsPayload === undefined) {
         throw new Error("no baseRelayFeeSwapParams or rawBaseRelayParamsPayload");
       }
 
-      let gasLimit: bigint = await fallbackCustomError(
-        async () =>
-          await estimateArbitraryGasLimit({
-            chainId,
-            provider: p.provider,
-            expressTransactionBuilder: p.expressTransactionBuilder,
-            rawRelayParamsPayload: rawBaseRelayParamsPayload,
-            gasPaymentParams: baseRelayFeeSwapParams.gasPaymentParams,
-            subaccount: p.subaccount,
-          }),
-        "gasLimit"
-      ).catch((error) => {
+      const gasLimit: bigint = await estimateArbitraryGasLimit({
+        chainId,
+        provider: p.provider,
+        expressTransactionBuilder: p.expressTransactionBuilder,
+        rawRelayParamsPayload: rawBaseRelayParamsPayload,
+        gasPaymentParams: baseRelayFeeSwapParams.gasPaymentParams,
+        subaccount: p.subaccount,
+      }).catch((error) => {
         metrics.pushError(error, "expressArbitrary.estimateGas");
         throw error;
       });
@@ -342,7 +346,7 @@ export function useArbitraryRelayParamsAndPayload({
             account: p.account,
             isValid: true,
             transactionExternalCalls: getEmptyExternalCallsPayload(),
-            executionFeeAmount: 0n,
+            executionFeeAmount: p.executionFeeAmount ?? 0n,
             gasPaymentTokenAsCollateralAmount: 0n,
             subaccountActions: 0,
             transactionPayloadGasLimit: gasLimit,
@@ -350,6 +354,7 @@ export function useArbitraryRelayParamsAndPayload({
             executionGasLimit: 0n,
           },
         });
+
         return expressParams;
       } catch (error) {
         throw new Error("no expressParams");
@@ -361,6 +366,7 @@ export function useArbitraryRelayParamsAndPayload({
       throttleMs: 2500,
       withLoading: true,
       params:
+        enabled &&
         account !== undefined &&
         provider !== undefined &&
         globalExpressParams !== undefined &&
@@ -373,6 +379,7 @@ export function useArbitraryRelayParamsAndPayload({
               expressTransactionBuilder,
               isGmxAccount,
               subaccount,
+              executionFeeAmount,
             }
           : undefined,
       forceRecalculate,

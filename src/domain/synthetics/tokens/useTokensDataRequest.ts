@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useGmxAccountTokenBalances } from "domain/multichain/useGmxAccountTokenBalances";
 import { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokensMap, getV2Tokens } from "sdk/configs/tokens";
+import { TokenBalanceType } from "sdk/types/tokens";
 
 import { TokensData } from "./types";
 import { useOnchainTokenConfigs } from "./useOnchainTokenConfigs";
@@ -22,18 +23,32 @@ export type TokensDataResult = {
   error: Error | undefined;
 };
 
-export function useTokensDataRequest(chainId: ContractsChainId, srcChainId?: SourceChainId): TokensDataResult {
+export function useTokensDataRequest(
+  chainId: ContractsChainId,
+  srcChainId?: SourceChainId,
+  params?: { enabled?: boolean }
+): TokensDataResult {
   const tokenConfigs = getTokensMap(chainId);
-  const { balancesData: walletBalancesData, error: walletBalancesError } = useTokenBalances(chainId);
-  const { balancesData: gmxAccountBalancesData, error: gmxAccountBalancesError } = useGmxAccountTokenBalances(chainId);
-  const { pricesData, updatedAt: pricesUpdatedAt, error: pricesError } = useTokenRecentPricesRequest(chainId);
-  const { data: onchainConfigsData, error: onchainConfigsError } = useOnchainTokenConfigs(chainId);
+  const { balancesData: walletBalancesData, error: walletBalancesError } = useTokenBalances(chainId, {
+    enabled: params?.enabled,
+  });
+  const { balancesData: gmxAccountBalancesData, error: gmxAccountBalancesError } = useGmxAccountTokenBalances(chainId, {
+    enabled: params?.enabled,
+  });
+  const {
+    pricesData,
+    updatedAt: pricesUpdatedAt,
+    error: pricesError,
+  } = useTokenRecentPricesRequest(chainId, {
+    enabled: params?.enabled,
+  });
+  const { data: onchainConfigsData, error: onchainConfigsError } = useOnchainTokenConfigs(chainId, {
+    enabled: params?.enabled,
+  });
 
   const error = walletBalancesError || pricesError || onchainConfigsError || gmxAccountBalancesError;
 
   return useMemo((): TokensDataResult => {
-    const tokenAddresses = getV2Tokens(chainId).map((token) => token.address);
-
     if (!pricesData) {
       return {
         tokensData: undefined,
@@ -44,6 +59,8 @@ export function useTokensDataRequest(chainId: ContractsChainId, srcChainId?: Sou
         error,
       };
     }
+
+    const tokenAddresses = getV2Tokens(chainId).map((token) => token.address);
 
     const isWalletBalancesLoaded = Boolean(walletBalancesData);
     const isGmxAccountBalancesLoaded = Boolean(gmxAccountBalancesData);
@@ -69,7 +86,7 @@ export function useTokensDataRequest(chainId: ContractsChainId, srcChainId?: Sou
           walletBalance,
           gmxAccountBalance,
           balance: srcChainId !== undefined ? gmxAccountBalance : walletBalance,
-          isGmxAccount: srcChainId !== undefined,
+          balanceType: getBalanceTypeFromSrcChainId(srcChainId),
         };
 
         return acc;
@@ -91,4 +108,12 @@ export function useTokensDataRequest(chainId: ContractsChainId, srcChainId?: Sou
     srcChainId,
     tokenConfigs,
   ]);
+}
+
+export function getBalanceTypeFromSrcChainId(srcChainId: SourceChainId | undefined) {
+  if (srcChainId !== undefined) {
+    return TokenBalanceType.GmxAccount;
+  }
+
+  return TokenBalanceType.Wallet;
 }

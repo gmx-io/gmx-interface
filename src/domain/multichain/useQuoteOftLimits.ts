@@ -17,9 +17,9 @@ export function useQuoteOftLimits({
   const lastMinAmountLD = useRef<bigint | undefined>(undefined);
   const lastMaxAmountLD = useRef<bigint | undefined>(undefined);
 
-  if (quoteOft && quoteOft.limit.maxAmountLD && quoteOft.limit.minAmountLD) {
-    lastMaxAmountLD.current = quoteOft.limit.maxAmountLD as bigint;
-    lastMinAmountLD.current = quoteOft.limit.minAmountLD as bigint;
+  if (quoteOft) {
+    lastMaxAmountLD.current = quoteOft.limit.maxAmountLD;
+    lastMinAmountLD.current = quoteOft.limit.minAmountLD;
   }
 
   const isBelowLimit =

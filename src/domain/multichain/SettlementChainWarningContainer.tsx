@@ -9,8 +9,7 @@ import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
 
-import Button from "components/Button/Button";
-import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import { ColorfulBanner, ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import { useAvailableToTradeAssetMultichainRequest } from "components/GmxAccountModal/hooks";
 
 import InfoIcon from "img/ic_info.svg?react";
@@ -50,16 +49,14 @@ export function SettlementChainWarningContainer() {
 
   return (
     <ColorfulBanner color="blue" icon={InfoIcon} className="text-body-small">
-      <div className="pl-5">
-        <Trans>
-          You switched your settlement network to {getChainName(settlementChainId)}, but you still have{" "}
-          {formatUsd(gmxAccountUsd)} remaining in your {getChainName(anyNonEmptyGmxAccountChainId)} GMX Account.
-        </Trans>
-        <br />
-        <Button variant="link" className="mt-2 !text-12" onClick={handleNetworkSwitch}>
-          <Trans>Change to {getChainName(anyNonEmptyGmxAccountChainId)}</Trans>
-        </Button>
-      </div>
+      <Trans>
+        You switched your settlement network to {getChainName(settlementChainId)}, but you still have{" "}
+        {formatUsd(gmxAccountUsd)} remaining in your {getChainName(anyNonEmptyGmxAccountChainId)} GMX Account.
+      </Trans>
+
+      <ColorfulButtonLink color="blue" onClick={handleNetworkSwitch}>
+        <Trans>Change to {getChainName(anyNonEmptyGmxAccountChainId)}</Trans>
+      </ColorfulButtonLink>
     </ColorfulBanner>
   );
 }

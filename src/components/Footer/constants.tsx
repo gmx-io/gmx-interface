@@ -20,7 +20,7 @@ type SocialLink = {
   icon: React.ReactNode;
 };
 
-export const FOOTER_LINKS: Link[] = [
+export const getFooterLinks = (): Link[] => [
   {
     label: (
       <>
