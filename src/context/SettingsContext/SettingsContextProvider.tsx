@@ -202,30 +202,20 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     gasPaymentTokenAddress = getDefaultGasPaymentToken(chainId);
   }
 
-  let savedShouldDisableValidationForTesting: boolean | undefined;
-  let setSavedShouldDisableValidationForTesting: (val: boolean) => void;
-  if (isDevelopment()) {
-    // Safety: isDevelopment never changes
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] = useLocalStorageSerializeKey(
-      [chainId, DISABLE_ORDER_VALIDATION_KEY],
-      false
-    );
-  } else {
+  let [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] = useLocalStorageSerializeKey(
+    [chainId, DISABLE_ORDER_VALIDATION_KEY],
+    false
+  );
+  if (!isDevelopment()) {
     savedShouldDisableValidationForTesting = false;
     setSavedShouldDisableValidationForTesting = noop;
   }
 
-  let savedShouldDisableShareModalPnlCheck: boolean | undefined;
-  let setSavedShouldDisableShareModalPnlCheck: (val: boolean) => void;
-  if (isDevelopment()) {
-    // Safety: isDevelopment never changes
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    [savedShouldDisableShareModalPnlCheck, setSavedShouldDisableShareModalPnlCheck] = useLocalStorageSerializeKey(
-      [chainId, DISABLE_SHARE_MODAL_PNL_CHECK_KEY],
-      false
-    );
-  } else {
+  let [savedShouldDisableShareModalPnlCheck, setSavedShouldDisableShareModalPnlCheck] = useLocalStorageSerializeKey(
+    [chainId, DISABLE_SHARE_MODAL_PNL_CHECK_KEY],
+    false
+  );
+  if (!isDevelopment()) {
     savedShouldDisableShareModalPnlCheck = false;
     setSavedShouldDisableShareModalPnlCheck = noop;
   }
