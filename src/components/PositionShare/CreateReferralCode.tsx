@@ -9,11 +9,17 @@ import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { registerReferralCode } from "domain/referrals";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
+import { metrics } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getReferralCodeTakenStatus, getReferralsPageUrlForCreateCode } from "components/Referrals/referralsHelper";
+import {
+  getCodeError,
+  getReferralCodeTakenStatus,
+  getReferralsPageUrlForCreateCode,
+} from "components/Referrals/referralsHelper";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ReferralsIcon from "img/referrals.svg?react";
 
@@ -32,7 +38,7 @@ export function CreateReferralCode({ onSuccess }: Props) {
 
   const [referralCode, setReferralCode] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [isAlreadyTaken, setIsAlreadyTaken] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -71,7 +77,8 @@ export function CreateReferralCode({ onSuccess }: Props) {
         setReferralCode("");
       }
     } catch (err) {
-      setError(true);
+      setError("Referral code creation failed.");
+      metrics.pushError(err, "createReferralCode");
     } finally {
       setIsProcessing(false);
     }
@@ -79,7 +86,7 @@ export function CreateReferralCode({ onSuccess }: Props) {
 
   useEffect(() => {
     setIsAlreadyTaken(false);
-    setError(false);
+    setError(getCodeError(referralCode));
   }, [referralCode]);
 
   let buttonState: {
@@ -88,7 +95,7 @@ export function CreateReferralCode({ onSuccess }: Props) {
     onSubmit?: (event: FormEvent<HTMLFormElement>) => void;
   } = {
     text: t`Create code`,
-    disabled: false,
+    disabled: Boolean(error),
     onSubmit: handleSubmit,
   };
 
@@ -99,21 +106,6 @@ export function CreateReferralCode({ onSuccess }: Props) {
       onSubmit: (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         openConnectModal?.();
-      },
-    };
-  } else if (srcChainId !== undefined) {
-    buttonState = {
-      text: t`Create code`,
-      disabled: !referralCode,
-      onSubmit: (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        if (!referralCode) {
-          return;
-        }
-
-        const url = getReferralsPageUrlForCreateCode(referralCode);
-        window.location.assign(url);
       },
     };
   } else if (isProcessing) {
@@ -130,6 +122,21 @@ export function CreateReferralCode({ onSuccess }: Props) {
     buttonState = {
       text: t`Code already taken`,
       disabled: true,
+    };
+  } else if (srcChainId !== undefined) {
+    buttonState = {
+      text: t`Create code`,
+      disabled: !referralCode || !!error,
+      onSubmit: (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        if (!referralCode) {
+          return;
+        }
+
+        const url = getReferralsPageUrlForCreateCode(referralCode);
+        window.location.assign(url);
+      },
     };
   }
 
@@ -176,7 +183,7 @@ export function CreateReferralCode({ onSuccess }: Props) {
             disabled={buttonState.disabled}
             className="min-w-[140px] justify-center"
           >
-            {buttonState.text}
+            {error ? <TooltipWithPortal handle={buttonState.text} content={error} /> : buttonState.text}
           </Button>
         </div>
       </form>
