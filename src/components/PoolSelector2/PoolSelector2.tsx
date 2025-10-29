@@ -8,7 +8,7 @@ import type { MarketLiquidityAndFeeStat } from "context/SyntheticsStateContext/s
 import { getMarketPoolName } from "domain/synthetics/markets/utils";
 import type { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { TradeType } from "domain/synthetics/trade";
-import { formatAmountHuman, formatPercentage, formatRatePercentage, formatUsd } from "lib/numbers";
+import { formatAmountHuman, formatRatePercentage, formatUsd } from "lib/numbers";
 
 import { TableTd, TableTh, TableTheadTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -62,9 +62,6 @@ function PoolSelector2Desktop(props: Props) {
           <TableTh padding="compact">
             <Trans>Net Rate</Trans>
           </TableTh>
-          <TableTh padding="compact">
-            <Trans>Impact+Fees</Trans>
-          </TableTh>
         </TableTheadTr>
       </thead>
       <tbody>
@@ -73,7 +70,6 @@ function PoolSelector2Desktop(props: Props) {
             key={option.marketInfo.marketTokenAddress}
             marketStat={option}
             tradeType={props.tradeType}
-            openFees={props.positionStats[option.marketInfo.marketTokenAddress].openFees}
             isEnoughLiquidity={props.positionStats[option.marketInfo.marketTokenAddress].isEnoughLiquidity}
             liquidity={props.positionStats[option.marketInfo.marketTokenAddress].liquidity}
             data-qa="pool-selector-row"
@@ -91,7 +87,6 @@ function PoolSelector2Desktop(props: Props) {
 function PoolListItemDesktop({
   marketStat,
   tradeType,
-  openFees,
   isEnoughLiquidity,
   liquidity,
   onSelect,
@@ -106,8 +101,6 @@ function PoolListItemDesktop({
 
   const formattedNetRate = formatRatePercentage(isLong ? marketStat.netFeeLong : marketStat.netFeeShort);
   const netRateState = numberToState(isLong ? marketStat.netFeeLong : marketStat.netFeeShort);
-  const formattedOpenFees = openFees !== undefined ? formatPercentage(openFees, { signed: true }) : "-";
-  const openFeesState = numberToState(openFees);
   const handleClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
@@ -139,15 +132,6 @@ function PoolListItemDesktop({
       >
         <Trans>{formattedNetRate} / 1h</Trans>
       </TableTd>
-      <TableTd
-        padding="compact"
-        className={cx("PoolSelector2-column-open-fees", {
-          "text-red-500": openFeesState === "error",
-          "text-green-500": openFeesState === "success",
-        })}
-      >
-        {formattedOpenFees}
-      </TableTd>
     </SelectorBaseDesktopRow>
   );
 }
@@ -162,7 +146,6 @@ function PoolSelector2Mobile(props: Props) {
           key={option.marketInfo.marketTokenAddress}
           marketStat={option}
           tradeType={props.tradeType}
-          openFees={props.positionStats[option.marketInfo.marketTokenAddress].openFees}
           isEnoughLiquidity={props.positionStats[option.marketInfo.marketTokenAddress].isEnoughLiquidity}
           liquidity={props.positionStats[option.marketInfo.marketTokenAddress].liquidity}
           onSelect={() => {
@@ -178,7 +161,6 @@ function PoolSelector2Mobile(props: Props) {
 function PoolListItemMobile({
   marketStat,
   tradeType,
-  openFees,
   isEnoughLiquidity,
   liquidity,
   onSelect,
@@ -195,8 +177,6 @@ function PoolListItemMobile({
   const formattedNetRate = formatRatePercentage(isLong ? marketStat.netFeeLong : marketStat.netFeeShort);
 
   const netRateState = numberToState(isLong ? marketStat.netFeeLong : marketStat.netFeeShort);
-  const formattedOpenFees = openFees !== undefined ? formatPercentage(openFees, { signed: true }) : "-";
-  const openFeesState = numberToState(openFees);
 
   return (
     <SelectorBaseMobileButton
@@ -242,17 +222,6 @@ function PoolListItemMobile({
           })}
         >
           {formattedNetRate} / 1h
-        </dd>
-        <dt>
-          <Trans>Impact+Fees</Trans>
-        </dt>
-        <dd
-          className={cx({
-            "text-red-500": openFeesState === "error",
-            "text-green-500": openFeesState === "success",
-          })}
-        >
-          {formattedOpenFees}
         </dd>
       </dl>
     </SelectorBaseMobileButton>

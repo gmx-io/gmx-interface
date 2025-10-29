@@ -3525,8 +3525,8 @@ msgstr "TWAP 部分失败"
 
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
-msgid "Impact+Fees"
-msgstr "影响+费用"
+#~ msgid "Impact+Fees"
+#~ msgstr "影响+费用"
 
 #: src/components/TVChartContainer/constants.ts
 msgid "TP - Short Dec."
@@ -4121,8 +4121,8 @@ msgid "Take Profit / Stop Loss"
 msgstr "止盈 / 止损"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Save {0} in price impact and fees by <0>switching to the {1} pool</0>"
-msgstr "通过 <0>切换到 {1} 资金池</0> 保存 {0} 的价格影响和费用"
+#~ msgid "Save {0} in price impact and fees by <0>switching to the {1} pool</0>"
+#~ msgstr "通过 <0>切换到 {1} 资金池</0> 保存 {0} 的价格影响和费用"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
@@ -5494,6 +5494,10 @@ msgstr "未平仓合约"
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "Failed to download trade history CSV."
 msgstr "下载交易历史 CSV 失败。"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "<0>Switch to the {0} pool</0> for potentially lower net price impact"
+msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "market"

@@ -3525,8 +3525,8 @@ msgstr "TWAP 부분 실패"
 
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
-msgid "Impact+Fees"
-msgstr "영향+수수료"
+#~ msgid "Impact+Fees"
+#~ msgstr "영향+수수료"
 
 #: src/components/TVChartContainer/constants.ts
 msgid "TP - Short Dec."
@@ -4121,8 +4121,8 @@ msgid "Take Profit / Stop Loss"
 msgstr "이익 실현 / 손절"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Save {0} in price impact and fees by <0>switching to the {1} pool</0>"
-msgstr "<0>{1} 풀로 전환</0>하여 가격 영향 및 수수료에서 {0} 절약"
+#~ msgid "Save {0} in price impact and fees by <0>switching to the {1} pool</0>"
+#~ msgstr "<0>{1} 풀로 전환</0>하여 가격 영향 및 수수료에서 {0} 절약"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
@@ -5494,6 +5494,10 @@ msgstr "미결제약정"
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "Failed to download trade history CSV."
 msgstr "거래 내역 CSV 다운로드 실패."
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "<0>Switch to the {0} pool</0> for potentially lower net price impact"
+msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "market"
