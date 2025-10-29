@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { getChainName, SettlementChainId, SourceChainId } from "config/chains";
 import { MULTICHAIN_TOKEN_MAPPING } from "config/multichain";
 
-import { getMultichainTransferableGasPaymentTokenSymbols } from "./getMultichainTransferableGasPaymentTokenAddresses";
+import { getMultichainTransferableGasPaymentTokenSymbols } from "../getMultichainTransferableGasPaymentTokenAddresses";
 
 function forEachSettlementSourceCombination(
   callback: (params: {
