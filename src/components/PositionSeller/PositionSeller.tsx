@@ -243,7 +243,6 @@ export function PositionSeller() {
 
   const priceImpactWarningState = usePriceImpactWarningState({
     collateralNetPriceImpact: fees?.collateralNetPriceImpact,
-    positionNetPriceImpact: fees?.positionNetPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
@@ -987,8 +986,6 @@ export function PositionSeller() {
                 {isTrigger && maxAutoCancelOrdersWarning}
                 <HighPriceImpactOrFeesWarningCard
                   priceImpactWarningState={priceImpactWarningState}
-                  collateralImpact={fees?.collateralNetPriceImpact}
-                  positionImpact={fees?.positionNetPriceImpact}
                   swapPriceImpact={fees?.swapPriceImpact}
                   swapProfitFee={fees?.swapProfitFee}
                   executionFeeUsd={executionFee?.feeUsd}

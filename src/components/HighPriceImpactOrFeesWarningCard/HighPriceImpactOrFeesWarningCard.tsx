@@ -1,16 +1,17 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
+import { DOCS_LINKS } from "config/links";
 import { FeeItem } from "domain/synthetics/fees";
 import { WarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
-import { formatPercentage, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export type Props = {
   priceImpactWarningState: WarningState;
-  collateralImpact?: FeeItem;
-  positionImpact?: FeeItem;
   swapPriceImpact?: FeeItem;
   swapProfitFee?: FeeItem;
   externalSwapFeeItem?: FeeItem;
@@ -19,28 +20,27 @@ export type Props = {
 
 export function HighPriceImpactOrFeesWarningCard({
   priceImpactWarningState,
-  collateralImpact,
-  positionImpact,
   swapPriceImpact,
   swapProfitFee,
   externalSwapFeeItem,
   executionFeeUsd,
 }: Props) {
   const warnings = useMemo(() => {
-    const warnings: { id: string; key: React.ReactNode; value?: React.ReactNode }[] = [];
-    if (priceImpactWarningState.shouldShowWarningForPosition) {
-      warnings.push({
-        id: "high-price-impact",
-        key: t`High price impact`,
-        value: formatPercentage(positionImpact?.precisePercentage, { signed: true, bps: false, displayDecimals: 3 }),
-      });
-    }
+    const warnings: { id: string; key: React.ReactNode; value?: React.ReactNode; tooltipContent?: React.ReactNode }[] =
+      [];
 
     if (priceImpactWarningState.shouldShowWarningForCollateral) {
       warnings.push({
         id: "high-impact-on-collateral",
-        key: t`High impact on collateral`,
-        value: formatPercentage(collateralImpact?.precisePercentage, { signed: true, bps: false, displayDecimals: 3 }),
+        key: t`High Net Price Impact`,
+        value: undefined,
+        tooltipContent: (
+          <Trans>
+            The potential net price impact that will apply when closing this position may be high compared to the amount
+            of collateral you're using. Consider reducing leverage.{" "}
+            <ExternalLink href={DOCS_LINKS.priceImpact}>Read more</ExternalLink>.
+          </Trans>
+        ),
       });
     }
 
@@ -94,8 +94,6 @@ export function HighPriceImpactOrFeesWarningCard({
   }, [
     priceImpactWarningState,
     externalSwapFeeItem,
-    positionImpact?.precisePercentage,
-    collateralImpact?.precisePercentage,
     executionFeeUsd,
     swapPriceImpact?.deltaUsd,
     swapProfitFee?.deltaUsd,
@@ -108,12 +106,20 @@ export function HighPriceImpactOrFeesWarningCard({
   return (
     <AlertInfoCard className="h-fit" type="warning" onClose={() => priceImpactWarningState.setIsDismissed(true)}>
       <div className="flex flex-col gap-4">
-        {warnings.map((warning) => (
-          <div key={warning.id} className="flex justify-between gap-4">
-            <div>{warning.key}</div>
-            <div className="font-medium text-yellow-300">{warning.value}</div>
-          </div>
-        ))}
+        {warnings.map((warning) => {
+          const warningContent = (
+            <div key={warning.id} className="flex justify-between gap-4">
+              <div>{warning.key}</div>
+              <div className="font-medium text-yellow-300">{warning.value}</div>
+            </div>
+          );
+
+          return warning.tooltipContent ? (
+            <TooltipWithPortal handle={warningContent} content={warning.tooltipContent} position="bottom" />
+          ) : (
+            warningContent
+          );
+        })}
       </div>
     </AlertInfoCard>
   );

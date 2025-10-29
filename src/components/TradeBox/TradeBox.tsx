@@ -235,7 +235,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const priceImpactWarningState = usePriceImpactWarningState({
     collateralNetPriceImpact: fees?.collateralNetPriceImpact,
-    positionNetPriceImpact: fees?.positionNetPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
@@ -1101,8 +1100,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               {priceImpactWarningState.shouldShowWarning && (
                 <HighPriceImpactOrFeesWarningCard
                   priceImpactWarningState={priceImpactWarningState}
-                  collateralImpact={fees?.collateralNetPriceImpact}
-                  positionImpact={fees?.positionNetPriceImpact}
                   swapPriceImpact={fees?.swapPriceImpact}
                   swapProfitFee={fees?.swapProfitFee}
                   executionFeeUsd={executionFee?.feeUsd}
