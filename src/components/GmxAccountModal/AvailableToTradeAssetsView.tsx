@@ -107,12 +107,7 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
             className="flex items-center justify-between px-adaptive py-8 gmx-hover:bg-fill-surfaceElevated50"
           >
             <div className="flex items-center gap-16">
-              <TokenIcon
-                symbol={displayToken.symbol}
-                displaySize={40}
-                importSize={40}
-                chainIdBadge={displayToken.chainId}
-              />
+              <TokenIcon symbol={displayToken.symbol} displaySize={40} chainIdBadge={displayToken.chainId} />
               <div>
                 <div>{displayToken.symbol}</div>
                 <div className="text-body-small text-slate-100">

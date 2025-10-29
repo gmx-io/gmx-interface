@@ -12,28 +12,28 @@ import {
 } from "config/chains";
 
 import gmIcon from "img/gm_icon.svg";
-import arbitrum from "img/ic_arbitrum_24.svg";
-import arbitrumSepolia from "img/ic_arbitrum_sepolia_24.svg";
-import avalanche from "img/ic_avalanche_24.svg";
-import avalancheTestnet from "img/ic_avalanche_testnet_24.svg";
-import base from "img/ic_base_24.svg";
-import botanix from "img/ic_botanix_24.svg";
-import bsc from "img/ic_bsc_96.svg";
-import esGMXIcon from "img/ic_esgmx_40.svg";
+import bsc from "img/ic_bsc.svg";
 import esGMXArbitrumIcon from "img/ic_esgmx_arbitrum.svg";
 import esGMXAvaxIcon from "img/ic_esgmx_avalanche.svg";
-import glpIcon from "img/ic_glp_40.svg";
 import glpArbitrum from "img/ic_glp_arbitrum.svg";
 import glpAvax from "img/ic_glp_avalanche.svg";
-import glvIcon from "img/ic_glv_40.svg";
 import gmArbitrum from "img/ic_gm_arbitrum.svg";
 import gmAvax from "img/ic_gm_avax.svg";
-import gmxIcon from "img/ic_gmx_40.svg";
 import gmxArbitrum from "img/ic_gmx_arbitrum.svg";
 import gmxAvax from "img/ic_gmx_avax.svg";
 import gmxOutlineIcon from "img/ic_gmxv1flat.svg";
-import optimismSepolia from "img/ic_op_24.svg";
-import sepolia from "img/ic_sepolia_24.svg";
+import arbitrum from "img/tokens/ic_arbitrum.svg";
+import arbitrumSepolia from "img/tokens/ic_arbitrum_sepolia.svg";
+import avalanche from "img/tokens/ic_avalanche.svg";
+import avalancheTestnet from "img/tokens/ic_avalanche_testnet.svg";
+import base from "img/tokens/ic_base.svg";
+import botanix from "img/tokens/ic_botanix.svg";
+import esGMXIcon from "img/tokens/ic_esgmx.svg";
+import glpIcon from "img/tokens/ic_glp.svg";
+import glvIcon from "img/tokens/ic_glv.svg";
+import gmxIcon from "img/tokens/ic_gmx.svg";
+import optimismSepolia from "img/tokens/ic_op.svg";
+import sepolia from "img/tokens/ic_sepolia.svg";
 
 type ChainIcons = {
   network?: string;

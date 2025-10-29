@@ -251,7 +251,7 @@ function MarketListItem(props: {
     onSelectOption,
   } = props;
   const assetImage = importImage(
-    `ic_${marketInfo.isSpotOnly ? "swap" : marketInfo.indexToken.symbol.toLowerCase()}_40.svg`
+    `ic_${marketInfo.isSpotOnly ? "swap" : marketInfo.indexToken.symbol.toLowerCase()}.svg`
   );
 
   const handleFavoriteClick = useCallback(

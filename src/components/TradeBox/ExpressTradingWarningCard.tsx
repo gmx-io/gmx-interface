@@ -172,12 +172,9 @@ export function ExpressTradingWarningCard({
     <ColorfulBanner color="blue" icon={icon} onClose={onCloseClick}>
       {content}
       {onClick && (
-        <>
-          <br />
-          <ColorfulButtonLink color="blue" onClick={onClick}>
-            {buttonText}
-          </ColorfulButtonLink>
-        </>
+        <ColorfulButtonLink color="blue" onClick={onClick}>
+          {buttonText}
+        </ColorfulButtonLink>
       )}
     </ColorfulBanner>
   );

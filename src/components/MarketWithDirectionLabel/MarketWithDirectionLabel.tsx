@@ -8,13 +8,11 @@ export function MarketWithDirectionLabel({
   isLong,
   tokenSymbol,
   bordered,
-  iconImportSize,
 }: {
   indexName: string;
   isLong: boolean;
   tokenSymbol: string;
   bordered?: boolean;
-  iconImportSize?: 24 | 40;
 }) {
   return (
     <div
@@ -22,7 +20,7 @@ export function MarketWithDirectionLabel({
         "cursor-help": bordered,
       })}
     >
-      <TokenIcon className="size-20 !align-[-3px]" displaySize={20} symbol={tokenSymbol} importSize={iconImportSize} />
+      <TokenIcon className="size-20 !align-[-3px]" displaySize={20} symbol={tokenSymbol} />
       <span className="font-medium text-typography-primary">{indexName}</span>
       <span className={cx(isLong ? "text-green-500" : "text-red-500")}>{isLong ? t`Long` : t`Short`}</span>
     </div>
