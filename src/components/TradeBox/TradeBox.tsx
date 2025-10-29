@@ -999,7 +999,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
                     <Trans>
                       The actual execution price may differ from the set limit price due to fees and price impact. This
-                      ensures that you receive at least the minimum receive amount.
+                      ensures that you receive at least the minimum receive amount. <a href="https://docs.gmx.io/docs/trading/v2/#limit-orders">Read more</a>.
                     </Trans>
                   </AlertInfoCard>
                 )}
