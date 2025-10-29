@@ -772,7 +772,7 @@ export const DepositView = () => {
               <div className="flex items-center gap-8">
                 {selectedToken ? (
                   <>
-                    <TokenIcon symbol={selectedToken.symbol} displaySize={20} importSize={40} />
+                    <TokenIcon symbol={selectedToken.symbol} displaySize={20} />
                     <span className="text-16 leading-base">{selectedToken.symbol}</span>
                   </>
                 ) : depositViewChain !== undefined ? (
