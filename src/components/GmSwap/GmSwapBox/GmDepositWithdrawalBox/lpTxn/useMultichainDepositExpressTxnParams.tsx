@@ -12,32 +12,42 @@ import { nowInSeconds } from "sdk/utils/time";
 export function useMultichainDepositExpressTxnParams({
   transferRequests,
   paySource,
-  gmParams,
-  glvParams,
+  params,
+  isGlv,
+  isDeposit,
 }: {
-  transferRequests: TransferRequests;
+  transferRequests: TransferRequests | undefined;
   paySource: GmPaySource;
-  gmParams: CreateDepositParams | undefined;
-  glvParams: CreateGlvDepositParams | undefined;
+  params: CreateDepositParams | CreateGlvDepositParams | undefined;
+  isGlv: boolean;
+  isDeposit: boolean;
 }) {
   const { chainId, srcChainId } = useChainId();
   const { signer } = useWallet();
 
+  const enabled =
+    paySource === "gmxAccount" &&
+    Boolean(params) &&
+    isDeposit &&
+    transferRequests !== undefined &&
+    signer !== undefined;
+
   const multichainDepositExpressTxnParams = useArbitraryRelayParamsAndPayload({
     isGmxAccount: paySource === "gmxAccount",
-    enabled: paySource === "gmxAccount" && Boolean(glvParams || gmParams),
-    executionFeeAmount: glvParams ? glvParams.executionFee : gmParams?.executionFee,
+    enabled,
+    executionFeeAmount: params?.executionFee,
     expressTransactionBuilder: async ({ relayParams, gasPaymentParams }) => {
-      if ((!gmParams && !glvParams) || !signer) {
+      if (!enabled) {
         throw new Error("Invalid params");
       }
 
-      if (glvParams) {
+      if (isGlv) {
+        const glvParams = params as CreateGlvDepositParams;
         const txnData = await buildAndSignMultichainGlvDepositTxn({
           emptySignature: true,
-          account: glvParams!.addresses.receiver,
+          account: glvParams.addresses.receiver,
           chainId,
-          params: glvParams!,
+          params: glvParams,
           srcChainId,
           relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
           relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
@@ -53,12 +63,12 @@ export function useMultichainDepositExpressTxnParams({
           txnData,
         };
       }
-
+      const gmParams = params as CreateDepositParams;
       const txnData = await buildAndSignMultichainDepositTxn({
         emptySignature: true,
-        account: gmParams!.addresses.receiver,
+        account: gmParams.addresses.receiver,
         chainId,
-        params: gmParams!,
+        params: gmParams,
         srcChainId,
         relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
         relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,

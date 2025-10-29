@@ -12,38 +12,42 @@ import { nowInSeconds } from "sdk/utils/time";
 export function useMultichainWithdrawalExpressTxnParams({
   transferRequests,
   paySource,
-  gmParams,
-  glvParams,
+  params,
+  isGlv,
+  isWithdrawal,
 }: {
   transferRequests: TransferRequests | undefined;
   paySource: GmPaySource;
-  gmParams: CreateWithdrawalParams | undefined;
-  glvParams: CreateGlvWithdrawalParams | undefined;
+  params: CreateWithdrawalParams | CreateGlvWithdrawalParams | undefined;
+  isGlv: boolean;
+  isWithdrawal: boolean;
 }) {
   const { chainId, srcChainId } = useChainId();
   const { signer } = useWallet();
 
   const enabled =
     paySource === "gmxAccount" &&
-    Boolean(glvParams || gmParams) &&
+    isWithdrawal &&
+    Boolean(params) &&
     transferRequests !== undefined &&
     signer !== undefined;
 
   const multichainWithdrawalExpressTxnParams = useArbitraryRelayParamsAndPayload({
     isGmxAccount: paySource === "gmxAccount",
     enabled,
-    executionFeeAmount: glvParams ? glvParams.executionFee : gmParams?.executionFee,
+    executionFeeAmount: params?.executionFee,
     expressTransactionBuilder: async ({ relayParams, gasPaymentParams }) => {
       if (!enabled) {
         throw new Error("Invalid params");
       }
 
-      if (glvParams) {
+      if (isGlv) {
+        const glvParams = params as CreateGlvWithdrawalParams;
         const txnData = await buildAndSignMultichainGlvWithdrawalTxn({
           emptySignature: true,
-          account: glvParams!.addresses.receiver,
+          account: glvParams.addresses.receiver,
           chainId,
-          params: glvParams!,
+          params: glvParams,
           srcChainId,
           relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
           relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
@@ -60,11 +64,12 @@ export function useMultichainWithdrawalExpressTxnParams({
         };
       }
 
+      const gmParams = params as CreateWithdrawalParams;
       const txnData = await buildAndSignMultichainWithdrawalTxn({
         emptySignature: true,
-        account: gmParams!.addresses.receiver,
+        account: gmParams.addresses.receiver,
         chainId,
-        params: gmParams!,
+        params: gmParams,
         srcChainId,
         relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
         relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,

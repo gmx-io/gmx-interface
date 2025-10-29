@@ -53,7 +53,7 @@ export async function buildAndSignMultichainGlvWithdrawalTxn({
     });
   }
 
-  const depositData = encodeFunctionData({
+  const glvWithdrawalData = encodeFunctionData({
     abi: abis.MultichainGlvRouter,
     functionName: "createGlvWithdrawal",
     args: [
@@ -69,7 +69,7 @@ export async function buildAndSignMultichainGlvWithdrawalTxn({
   });
 
   return {
-    callData: depositData,
+    callData: glvWithdrawalData,
     to: getContract(chainId, "MultichainGlvRouter"),
     feeToken: relayerFeeTokenAddress,
     feeAmount: relayerFeeAmount,

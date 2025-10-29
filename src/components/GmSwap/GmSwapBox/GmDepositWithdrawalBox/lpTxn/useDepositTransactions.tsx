@@ -4,6 +4,7 @@ import { useCallback, useMemo } from "react";
 import { SettlementChainId } from "config/chains";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import {
+  selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsMarketInfo,
@@ -78,6 +79,7 @@ export const useDepositTransactions = ({
   const { setPendingDeposit } = useSyntheticsEvents();
   const { setPendingTxns } = usePendingTxns();
   const blockTimestampData = useSelector(selectBlockTimestampData);
+  const { isDeposit } = useSelector(selectPoolsDetailsFlags);
 
   const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
@@ -101,7 +103,11 @@ export const useDepositTransactions = ({
 
   const isGlv = glvInfo !== undefined && selectedMarketForGlv !== undefined;
 
-  const transferRequests = useMemo((): TransferRequests => {
+  const transferRequests = useMemo((): TransferRequests | undefined => {
+    if (!isDeposit) {
+      return undefined;
+    }
+
     const vaultAddress = isGlv ? getContract(chainId, "GlvVault") : getContract(chainId, "DepositVault");
 
     if (paySource === "sourceChain") {
@@ -139,6 +145,7 @@ export const useDepositTransactions = ({
     chainId,
     initialLongTokenAddress,
     initialShortTokenAddress,
+    isDeposit,
     isGlv,
     longTokenAmount,
     paySource,
@@ -151,43 +158,28 @@ export const useDepositTransactions = ({
   const tokenAddress = longTokenAmount! > 0n ? longTokenAddress! : shortTokenAddress!;
   const tokenAmount = longTokenAmount! > 0n ? longTokenAmount! : shortTokenAmount!;
 
-  const gmParams = useMemo((): CreateDepositParams | undefined => {
-    if (!rawParams || !technicalFees) {
+  const params = useMemo((): CreateDepositParams | CreateGlvDepositParams | undefined => {
+    if (!rawParams || !technicalFees || !isDeposit) {
       return undefined;
     }
 
     const executionFee =
       paySource === "sourceChain"
-        ? (technicalFees as SourceChainDepositFees).executionFee
+        ? (technicalFees as SourceChainDepositFees | SourceChainGlvDepositFees).executionFee
         : (technicalFees as ExecutionFee).feeTokenAmount;
 
     return {
       ...(rawParams as RawCreateDepositParams),
       executionFee,
     };
-  }, [rawParams, technicalFees, paySource]);
-
-  const glvParams = useMemo((): CreateGlvDepositParams | undefined => {
-    if (!rawParams || !technicalFees) {
-      return undefined;
-    }
-
-    const executionFee =
-      paySource === "sourceChain"
-        ? (technicalFees as SourceChainGlvDepositFees).executionFee
-        : (technicalFees as ExecutionFee).feeTokenAmount;
-
-    return {
-      ...(rawParams as RawCreateGlvDepositParams),
-      executionFee,
-    };
-  }, [paySource, rawParams, technicalFees]);
+  }, [rawParams, technicalFees, isDeposit, paySource]);
 
   const multichainDepositExpressTxnParams = useMultichainDepositExpressTxnParams({
     transferRequests,
     paySource,
-    gmParams,
-    glvParams,
+    params,
+    isGlv,
+    isDeposit,
   });
 
   const getDepositMetricData = useCallback(() => {
@@ -198,7 +190,7 @@ export const useDepositTransactions = ({
         shortTokenAddress,
         selectedMarketForGlv,
         isDeposit: true,
-        executionFeeTokenAmount: glvParams?.executionFee,
+        executionFeeTokenAmount: params?.executionFee,
         executionFeeTokenDecimals: getWrappedToken(chainId)!.decimals,
         glvAddress: glvInfo!.glvTokenAddress,
         glvToken: glvInfo!.glvToken,
@@ -218,7 +210,7 @@ export const useDepositTransactions = ({
       shortTokenAddress,
       marketToken,
       isDeposit: true,
-      executionFeeTokenAmount: gmParams?.executionFee,
+      executionFeeTokenAmount: params?.executionFee,
       executionFeeTokenDecimals: getWrappedToken(chainId)!.decimals,
       marketInfo,
       longTokenAmount,
@@ -230,10 +222,9 @@ export const useDepositTransactions = ({
   }, [
     chainId,
     glvInfo,
-    glvParams?.executionFee,
+    params?.executionFee,
     glvTokenAmount,
     glvTokenUsd,
-    gmParams?.executionFee,
     isFirstBuy,
     isGlv,
     longTokenAddress,
@@ -250,11 +241,15 @@ export const useDepositTransactions = ({
 
   const onCreateGmDeposit = useCallback(
     async function onCreateGmDeposit() {
+      if (!isDeposit) {
+        return Promise.reject();
+      }
+
       const metricData = getDepositMetricData();
 
       sendOrderSubmittedMetric(metricData.metricId);
 
-      if (!tokensData || !account || !signer || !rawParams) {
+      if (!tokensData || !account || !signer || !rawParams || !transferRequests) {
         helperToast.error(t`Error submitting order`);
         sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
@@ -293,7 +288,7 @@ export const useDepositTransactions = ({
           signer,
           transferRequests,
           asyncExpressTxnResult: multichainDepositExpressTxnParams,
-          params: gmParams!,
+          params: params as CreateDepositParams,
         });
       } else if (paySource === "settlementChain") {
         promise = createDepositTxn({
@@ -307,7 +302,7 @@ export const useDepositTransactions = ({
           skipSimulation: shouldDisableValidation,
           tokensData,
           metricId: metricData.metricId,
-          params: gmParams!,
+          params: params as CreateDepositParams,
           setPendingTxns,
           setPendingDeposit,
         });
@@ -321,11 +316,13 @@ export const useDepositTransactions = ({
         .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
     },
     [
+      isDeposit,
       getDepositMetricData,
       tokensData,
       account,
       signer,
       rawParams,
+      transferRequests,
       chainId,
       paySource,
       longTokenAmount,
@@ -334,9 +331,8 @@ export const useDepositTransactions = ({
       longTokenAddress,
       shortTokenAddress,
       srcChainId,
-      transferRequests,
       multichainDepositExpressTxnParams,
-      gmParams,
+      params,
       blockTimestampData,
       shouldDisableValidation,
       setPendingTxns,
@@ -350,6 +346,10 @@ export const useDepositTransactions = ({
 
   const onCreateGlvDeposit = useCallback(
     async function onCreateGlvDeposit() {
+      if (!isDeposit) {
+        return Promise.reject();
+      }
+
       const metricData = getDepositMetricData();
 
       sendOrderSubmittedMetric(metricData.metricId);
@@ -360,7 +360,8 @@ export const useDepositTransactions = ({
         marketTokenAmount === undefined ||
         !tokensData ||
         !signer ||
-        (isGlv && !rawParams)
+        (isGlv && !rawParams) ||
+        !transferRequests
       ) {
         helperToast.error(t`Error submitting order`);
         sendTxnValidationErrorMetric(metricData.metricId);
@@ -401,13 +402,13 @@ export const useDepositTransactions = ({
           signer,
           transferRequests,
           expressTxnParams,
-          params: glvParams!,
+          params: params as CreateGlvDepositParams,
         });
       } else if (paySource === "settlementChain") {
         promise = createGlvDepositTxn({
           chainId,
           signer,
-          params: glvParams!,
+          params: params as CreateGlvDepositParams,
           longTokenAddress: longTokenAddress!,
           shortTokenAddress: shortTokenAddress!,
           longTokenAmount: longTokenAmount ?? 0n,
@@ -431,6 +432,7 @@ export const useDepositTransactions = ({
         .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
     },
     [
+      isDeposit,
       getDepositMetricData,
       account,
       marketInfo,
@@ -439,17 +441,17 @@ export const useDepositTransactions = ({
       signer,
       isGlv,
       rawParams,
+      transferRequests,
       chainId,
       paySource,
       longTokenAmount,
       shortTokenAmount,
       technicalFees,
       srcChainId,
-      transferRequests,
       tokenAddress,
       tokenAmount,
       multichainDepositExpressTxnParams.promise,
-      glvParams,
+      params,
       longTokenAddress,
       shortTokenAddress,
       shouldDisableValidation,

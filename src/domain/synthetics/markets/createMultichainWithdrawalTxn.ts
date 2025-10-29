@@ -53,7 +53,7 @@ export async function buildAndSignMultichainWithdrawalTxn({
     });
   }
 
-  const depositData = encodeFunctionData({
+  const withdrawalData = encodeFunctionData({
     abi: abis.MultichainGmRouter,
     functionName: "createWithdrawal",
     args: [
@@ -69,7 +69,7 @@ export async function buildAndSignMultichainWithdrawalTxn({
   });
 
   return {
-    callData: depositData,
+    callData: withdrawalData,
     to: getContract(chainId, "MultichainGmRouter"),
     feeToken: relayerFeeTokenAddress,
     feeAmount: relayerFeeAmount,
