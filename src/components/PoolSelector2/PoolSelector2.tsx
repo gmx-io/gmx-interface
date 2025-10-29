@@ -206,17 +206,11 @@ function PoolListItemMobile({
     >
       <div className="PoolSelector2-mobile-column-pool" data-qa={`pool-selector-row-${poolName}`}>
         <div className="PoolSelector2-mobile-collateral-logos">
-          <TokenIcon
-            symbol={longTokenSymbol}
-            displaySize={18}
-            importSize={24}
-            className="PoolSelector2-mobile-collateral-logo-first"
-          />
+          <TokenIcon symbol={longTokenSymbol} displaySize={18} className="PoolSelector2-mobile-collateral-logo-first" />
           {shortTokenSymbol && (
             <TokenIcon
               symbol={shortTokenSymbol}
               displaySize={18}
-              importSize={24}
               className="PoolSelector2-mobile-collateral-logo-second"
             />
           )}

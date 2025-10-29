@@ -445,7 +445,6 @@ export function PositionItem(p: Props) {
                       className="PositionList-token-icon"
                       symbol={p.position.indexToken.symbol}
                       displaySize={20}
-                      importSize={24}
                     />
                     <span className="font-medium">
                       {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
@@ -612,7 +611,7 @@ export function PositionItem(p: Props) {
                   isCurrentMarket,
               })}
             >
-              <TokenIcon symbol={p.position.indexToken?.symbol} displaySize={16} importSize={24} />
+              <TokenIcon symbol={p.position.indexToken?.symbol} displaySize={16} />
               {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
             </span>
             <div className="text-body-small flex items-center gap-4">

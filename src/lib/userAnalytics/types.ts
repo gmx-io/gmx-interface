@@ -83,6 +83,23 @@ export type DisconnectWalletEvent = {
   };
 };
 
+export type OneClickPromotionEvent = {
+  event: "OneClickPromotion";
+  data:
+    | {
+        action: "PopupShown";
+      }
+    | {
+        action: "EnableOneClickClicked";
+      }
+    | {
+        action: "UserRejected";
+      }
+    | {
+        action: "EnableOneClickSuccess";
+      };
+};
+
 export type TradeBoxInteractionStartedEvent = {
   event: "TradeBoxAction";
   data: {

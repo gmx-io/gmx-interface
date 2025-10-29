@@ -77,8 +77,8 @@ function TwapOrderItem({
       undefined,
       { isStable: order.initialCollateralToken.isStable }
     );
-    const fromTokenIcon = <TokenIcon symbol={order.initialCollateralToken.symbol} displaySize={18} importSize={24} />;
-    const toTokenIcon = <TokenIcon symbol={order.targetCollateralToken.symbol} displaySize={18} importSize={24} />;
+    const fromTokenIcon = <TokenIcon symbol={order.initialCollateralToken.symbol} displaySize={18} />;
+    const toTokenIcon = <TokenIcon symbol={order.targetCollateralToken.symbol} displaySize={18} />;
 
     return (
       <tr key={order.key} className="gap-x-8 border-b-1/2 border-slate-600 last:border-b-0">

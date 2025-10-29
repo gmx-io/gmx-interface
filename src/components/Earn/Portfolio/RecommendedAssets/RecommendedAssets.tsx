@@ -29,8 +29,8 @@ import Button from "components/Button/Button";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import BoltGradientIcon from "img/ic_bolt_gradient.svg?react";
-import GmxIcon from "img/ic_gmx_40.svg?react";
 import NewLinkThinIcon from "img/ic_new_link_thin.svg?react";
+import GmxIcon from "img/tokens/ic_gmx.svg?react";
 
 const getRecommendedGlvs = ({
   hasGmxAssets,
@@ -292,7 +292,6 @@ function GlvGmxRecommendedAssetItem({
         <TokenIcon
           symbol={iconTokenSymbol}
           displaySize={32}
-          importSize={40}
           className={cx({ "!rounded-0": isGlvInfo(glvOrMarketInfo) })}
         />
       }
